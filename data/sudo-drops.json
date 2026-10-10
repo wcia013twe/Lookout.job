@@ -416,7 +416,7 @@
       "source": "zero2sudo",
       "status": "pending",
       "skipReason": null,
-      "note": "Summary story mention, no link sticker. 2027 US applied-science internships recruit primarily PhD students; no MS/undergrad-eligible posting identified, so not added to the board."
+      "note": "Summary story mention, no link sticker. 2027 US applied-science internships recruit primarily PhD students; no MS/undergrad-eligible posting identified, so not added to the board. Evening story check 2026-10-10: story gave Amazon Job ID 10564599 (2027 Applied Science Internship, US) via amazon.jobs; direct posting URL not captured."
     },
     {
       "company": "Schonfeld",
@@ -443,6 +443,32 @@
       "status": "skipped",
       "skipReason": "Hardware/semiconductor focus, weak fit for backend/infra targets",
       "note": null
+    },
+    {
+      "company": "Sephora",
+      "title": "Intern, AI/ML Engineering",
+      "location": "San Francisco, CA (Hybrid; 350 Mission St)",
+      "type": "Internship",
+      "comp": "$30.00/hr (target hourly pay)",
+      "url": "https://join.sephora.com/careers/job/790318857461",
+      "dateSeen": "2026-10-10",
+      "source": "zero2sudo",
+      "status": "added",
+      "skipReason": null,
+      "note": "Summer 2027 internship (Jun 14 - Aug 20, 2027, 36 hrs/wk); posting live on join.sephora.com (Job ID 297537). Eligibility: graduating 2027 or 2028, US."
+    },
+    {
+      "company": "Docusign",
+      "title": "Software Engineer Intern (University)",
+      "location": "Chicago, IL",
+      "type": "Internship",
+      "comp": null,
+      "url": "https://careers.docusign.com",
+      "dateSeen": "2026-10-10",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "Generalist SWE intern role with no platform/AI team signal; below the selective internship bar (must beat starting at Oracle).",
+      "note": "Posted 10/09/2026 per story. Distinct from the added 'Software Engineer Intern - Observability (Platform)' role."
     }
   ]
 }
