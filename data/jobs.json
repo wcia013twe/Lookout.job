@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastRun": "2026-10-10T12:00:00-04:00",
+  "lastRun": "2026-10-10T17:00 zero2sudo evening check",
   "roles": [
     {
       "id": "doordash-software-engineer-storage-8024644",
@@ -865,6 +865,21 @@
       "applicationStatus": "New",
       "discoverySource": "@zero2sudo Instagram stories",
       "verifiedDate": "2026-10-10"
+    },
+    {
+      "id": "sephora-intern-ai-ml-engineering-297537",
+      "company": "Sephora",
+      "title": "Intern, AI/ML Engineering",
+      "employmentType": "Internship",
+      "location": "San Francisco, CA (Hybrid)",
+      "category": "AI/ML",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-10-10",
+      "sourceFreshness": "5 days ago",
+      "whyItFits": "AI/ML engineering internship with explicit $30/hr pay; summer 2027 dates (Jun 14 - Aug 20); eligibility includes 2027/2028 graduates. Applied ML work at retail scale, hybrid in SF.",
+      "applicationUrl": "https://join.sephora.com/careers/job/790318857461",
+      "applicationStatus": "New"
     }
   ]
 }
