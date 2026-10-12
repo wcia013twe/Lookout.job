@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-10-12T16:24 midday zero2sudo story check",
+ "lastRun": "2026-10-12",
  "roles": [
   {
    "id": "doordash-software-engineer-storage-8024644",
@@ -1118,6 +1118,23 @@
    "whyItFits": "Developer Infrastructure team: platform/tooling and build-system scope that matches his dev-infra/platform target. 2027-start campus role, San Jose, $45-$60/hr intern band. ByteDance caps applications per cycle (per zero2sudo), so spend one slot deliberately.",
    "applicationUrl": "https://joinbytedance.com/search/7678555814927730949",
    "applicationStatus": "New"
+  },
+  {
+   "id": "databricks-software-engineering-intern-2027",
+   "company": "Databricks",
+   "title": "Software Engineering Intern (2027)",
+   "employmentType": "Internship",
+   "location": "Bellevue, WA; Mountain View, CA; San Francisco, CA; Vancouver, Canada",
+   "category": "ML systems & AI infrastructure",
+   "priority": "Apply Now",
+   "postedDate": null,
+   "discoveredDate": "2026-10-12",
+   "sourceFreshness": "today",
+   "whyItFits": "Mythic-tier target on Wesley's #1 list: SWE intern on the Databricks data+AI platform across distributed systems, data infra, and ML/AI infra. Direct hit on his backend/distributed-systems/AI-infra targets.",
+   "applicationUrl": "http://job-boards.greenhouse.io/embed/job_app?for=databricks&token=6865687002",
+   "applicationStatus": "New",
+   "discoverySource": "zero2sudo stories",
+   "verifiedDate": "2026-10-12"
   }
  ]
 }
