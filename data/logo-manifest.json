@@ -61,5 +61,8 @@
  "micron": "assets/logos/micron.png",
  "bytedance": "assets/logos/bytedance.png",
  "google": "assets/logos/google.png",
- "tencent": "assets/logos/tencent.png"
+ "tencent": "assets/logos/tencent.png",
+ "databricks": "assets/logos/databricks.png",
+ "versant": "assets/logos/versant.png",
+ "figure-ai": "assets/logos/figure-ai.png"
 }
