@@ -1073,6 +1073,36 @@
    "whyItFits": "AI Data Engineering team: agentic AI systems, MCP servers, RAG-based search, and data pipelines over large telemetry datasets for Falcon/Starship. Squarely in his data-infra + AI-agents lane at Level 1 ($125K-$160K). Flags: internal-tooling team rather than product infra, and ITAR requires US citizen/permanent resident.",
    "applicationUrl": "https://boards.greenhouse.io/spacex/jobs/8880868002?gh_jid=8880868002",
    "applicationStatus": "New"
+  },
+  {
+   "id": "apple-ai-software-engineer-cloud-ai-platform-200686380",
+   "company": "Apple",
+   "title": "AI Software Engineer, Apple Cloud AI Platform",
+   "employmentType": "FT",
+   "location": "Seattle, WA",
+   "category": "AI platform & infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-10-12",
+   "sourceFreshness": "posted 2026-10-01 (labeled older than 72h)",
+   "whyItFits": "Apple Cloud AI Platform team builds the platform behind Apple's cloud AI workloads: core AI-infra scope at Epic tier, $122.7K-$214.3K range. Posted as an early-career role; minimum bar is 1+ years of industry experience building production software, so his Oracle/Goldman internships are the eligibility argument. Verify fit before applying.",
+   "applicationUrl": "https://jobs.apple.com/en-us/details/200686380-3337/ai-software-engineer-apple-cloud-ai-platform",
+   "applicationStatus": "New"
+  },
+  {
+   "id": "bytedance-ai-agent-infra-graduate-security-7667976924430633269",
+   "company": "ByteDance",
+   "title": "Software Engineer - AI Agent Infra Graduate (Security Engineering) - 2027 Start",
+   "employmentType": "FT",
+   "location": "San Jose, CA",
+   "category": "AI infra & agents",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-10-12",
+   "sourceFreshness": "posted ~2026-10-11 (within 72h)",
+   "whyItFits": "Explicitly 2027 new-grad eligible (Bachelor/Master Graduate - 2027 Start, job code A150302). AI agent infrastructure with a security-engineering angle; $128K-$316.8K band. Company tier is Common but the team is a direct hit on his AI-infra lane, and review is rolling so early application matters.",
+   "applicationUrl": "https://joinbytedance.com/search/7667976924430633269",
+   "applicationStatus": "New"
   }
  ]
 }
