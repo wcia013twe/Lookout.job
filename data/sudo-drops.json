@@ -1,5 +1,5 @@
 {
- "date": "2026-10-11",
+ "date": "2026-10-12",
  "source": "zero2sudo",
  "drops": [
   {
@@ -715,6 +715,84 @@
    "source": "zero2sudo",
    "status": "skipped",
    "skipReason": "IT/data-analytics support role, not SWE",
+   "note": null
+  },
+  {
+   "company": "ByteDance",
+   "title": "Software Engineer Project Intern (Developer Infrastructure) - 2027 Start",
+   "location": "San Jose, CA",
+   "type": "Internship",
+   "comp": "$45-$60/hr",
+   "url": "https://joinbytedance.com/search/7678555814927730949",
+   "dateSeen": "2026-10-12",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified LIVE via joinbytedance.com (job code A49252, campus intern band $45-$60/hr). zero2sudo warned ByteDance caps apps per cycle."
+  },
+  {
+   "company": "Wolverine Trading",
+   "title": "C++ Software Engineer (Early Career)",
+   "location": "Chicago, IL (on-site)",
+   "type": "FT new grad",
+   "comp": "$80K-$120K/yr",
+   "url": "https://builtin.com/job/entry-level-c-software-engineer-spring-2027-graduates/10700286",
+   "dateSeen": "2026-10-12",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Live per trackers (Built In, crawled <12h ago; $80K-$120K/yr; Spring 2027 grads, Chicago on-site). Built In apply requires login and exposes no employer ATS URL (directApply=false). wolve.com/careers bot-blocks direct fetches, so the exact employer ATS URL is not pinned."
+  },
+  {
+   "company": "Google",
+   "title": "Forward Deployed Engineering Intern, BS/MS, Summer 2027",
+   "location": "Sunnyvale, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-12",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Live on Google careers (trackers: internstreet 'New today' Sunnyvale; zapplyjobs US listing). Exact US application URL not pinned (Google careers search pages are JS-rendered). BS/MS eligible, AI/RAG/vector-DB engineering scope."
+  },
+  {
+   "company": "General Motors",
+   "title": "2027 Summer Intern, SEAM, Embodied AI",
+   "location": "Sunnyvale, CA (hybrid, 3 days on-site)",
+   "type": "Internship",
+   "comp": "$11,800-$14,600/mo",
+   "url": null,
+   "dateSeen": "2026-10-12",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Live per trackers (themuse, internships.com; posted Oct 10). Exact GM Workday ATS URL not pinnable (bot-blocked). Comp band per internships.com. Verify degree eligibility on live page."
+  },
+  {
+   "company": "Tencent",
+   "title": "Data Science Intern (Level Infinite)",
+   "location": "Palo Alto, CA (onsite)",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-12",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Data Science internship at gaming publishing brand; not SWE/infra",
+   "note": null
+  },
+  {
+   "company": "Rivian",
+   "title": "Software Engineer, Enterprise Software (new grad)",
+   "location": null,
+   "type": "FT new grad",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-12",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Story was a PSA chat screenshot: Rivian only considering December graduates / immediate starts for this new-grad role right now; more roles expected March/April",
    "note": null
   }
  ]
