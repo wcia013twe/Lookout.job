@@ -58,5 +58,8 @@
  "dropbox": "assets/logos/dropbox.png",
  "rivian": "assets/logos/rivian.png",
  "general-motors": "assets/logos/general-motors.png",
- "micron": "assets/logos/micron.png"
+ "micron": "assets/logos/micron.png",
+ "bytedance": "assets/logos/bytedance.png",
+ "google": "assets/logos/google.png",
+ "tencent": "assets/logos/tencent.png"
 }
