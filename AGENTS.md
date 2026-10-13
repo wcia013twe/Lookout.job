@@ -17,3 +17,10 @@
 - Together AI: surface core inference, training infrastructure, ML systems, platform, kernels, compilers, scheduling, hardware-utilization, and model-systems internships prominently. Generic SWE, frontend, API-integration, generic internal-tooling, or low-depth solutions work can be lower priority, but do not hide a potentially strong opening merely because the team detail is incomplete; explicitly flag that team verification is needed.
 - When a current candidate resume or profile is available in the workspace, ground each top-priority recommendation in concrete matching evidence and one material gap. Never invent resume experience; otherwise state that the resume comparison is unavailable.
 - Run `npm run validate:data` before committing. Commit and push only the relevant dashboard/data changes.
+
+## UI development workflow
+
+- For user-requested feature work, update `main` directly through GitHub after relevant checks; the user has authorized automatic pushes and merges. Refresh the current main head first and preserve unrelated changes.
+- Keep a concise `CHANGELOG.md` entry for each feature pass, including validation and any verification limits.
+- Keep basic framing and interaction state in code; new visual CSS and GPU shaders belong in `styles/`.
+- Preserve the existing static Web Component structure; do not add a React runtime solely for motion.

@@ -471,6 +471,7 @@
       const focused = this.contains(document.activeElement);
       this.render();
       if (focused) this.querySelector('[tabindex]')?.focus();
+      this.dispatchEvent(new CustomEvent('dropcard:stage', { bubbles: true, composed: true, detail: { tier: this._stage } }));
       const el = this.querySelector('.dropcard');
       if (!el) return;
       el.classList.add('pop');
@@ -565,7 +566,9 @@
       store().set('ui.packOpen', true);
       this.render();
       this._wire();
+      this.querySelectorAll('.pack-row [tabindex], .pack-tools button, .pack-nav button').forEach((el) => el.setAttribute('tabindex', '-1'));
       this.querySelector('.pack-close')?.focus();
+      this.dispatchEvent(new CustomEvent('pack:mounted', { bubbles: true }));
     }
     set items(val) {
       this._items = Array.isArray(val) ? val : [];
@@ -575,6 +578,7 @@
 
     _wire() {
       this.addEventListener('click', (e) => {
+        if (e.target.closest('.pack-tear-button')) return this.openSeal();
         if (e.target.closest('.pack-close')) return this.close(false);
         if (e.target === this.querySelector('.pack-overlay')) return this.close(false);
         if (e.target.closest('.pack-reveal-all')) return this.revealAll();
@@ -609,13 +613,47 @@
           return;
         }
         if (e.key === 'Tab') {
-          const targets = [...this.querySelectorAll('button, a[href], [tabindex="0"]')].filter((el) => !el.disabled && !el.closest('[hidden]'));
+          const targets = [...this.querySelectorAll('button, a[href], [tabindex="0"]')].filter((el) => !el.disabled && !el.closest('[hidden]') && el.getAttribute('tabindex') !== '-1');
           const first = targets[0], last = targets[targets.length - 1];
           if (e.shiftKey && (document.activeElement === first || !this.contains(document.activeElement))) { e.preventDefault(); last?.focus(); }
           else if (!e.shiftKey && (document.activeElement === last || !this.contains(document.activeElement))) { e.preventDefault(); first?.focus(); }
         }
       });
+      let startX = null;
+      const tear = this.querySelector('.pack-tear-button');
+      tear?.addEventListener('pointerdown', (e) => {
+        startX = e.clientX;
+        tear.setPointerCapture(e.pointerId);
+      });
+      tear?.addEventListener('pointermove', (e) => {
+        if (startX === null || this._sealOpen) return;
+        this._tearProgress = Math.min(1, Math.abs(e.clientX-startX) / Math.max(80, tear.offsetWidth * .65));
+        this.style.setProperty('--tear-progress', this._tearProgress);
+        this.dispatchEvent(new CustomEvent('pack:charge', { bubbles: true }));
+        if (this._tearProgress >= 1) this.openSeal();
+      });
+      const resetTear = () => { startX = null; if (!this._sealOpen) { this._tearProgress = 0; this.style.setProperty('--tear-progress', 0); } };
+      tear?.addEventListener('pointerup', resetTear);
+      tear?.addEventListener('pointercancel', resetTear);
       document.body.style.overflow = 'hidden';
+    }
+
+    openSeal() {
+      if (this._sealOpen || this._closed) return;
+      this._sealOpen = true;
+      this.classList.add('pack-tearing');
+      this.querySelector('.pack-seal')?.setAttribute('aria-hidden', 'true');
+      const button = this.querySelector('.pack-tear-button');
+      if (button) button.disabled = true;
+      this.dispatchEvent(new CustomEvent('pack:tear', { bubbles: true }));
+      const delay = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650;
+      this._tearTimer = setTimeout(() => {
+        if (this._closed) return;
+        this.classList.remove('pack-sealed', 'pack-tearing');
+        this.querySelectorAll('.pack-row [tabindex], .pack-tools button, .pack-nav button').forEach((el) => el.setAttribute('tabindex', '0'));
+        this.querySelector('.pack-seal')?.setAttribute('hidden', '');
+        this.querySelector('.dropcard, .double-combo')?.focus();
+      }, delay);
     }
 
     _cardAttrs(d) {
@@ -648,6 +686,7 @@
           cards += `<drop-card ${this._cardAttrs(it.drop)}></drop-card>`;
         }
       });
+      this.classList.toggle('pack-sealed', !this._sealOpen);
       this.innerHTML = `<div class="pack-overlay">
         <div class="pack-modal" role="dialog" aria-modal="true" aria-label="Today's Drop Pack">
           <div class="pack-head">
@@ -655,6 +694,15 @@
             <p class="pack-sub">${total} drop${total === 1 ? '' : 's'} · charge, reveal, collect</p></div>
             <button class="pack-close icon-btn" aria-label="Close pack">x</button>
           </div>
+          <section class="pack-seal" aria-label="Sealed opportunity pack">
+            <div class="pack-seal-art">
+              <span class="seal-edition">ZERO2SUDO · DAILY EDITION</span>
+              <strong class="seal-title">Your next<br>big move.</strong>
+              <span class="seal-count">${total} opportunities inside</span>
+              <button class="pack-tear-button">Slide across to tear · or tap</button>
+            </div>
+            <p class="seal-instruction">Break the seal. See what’s inside.</p>
+          </section>
           <div class="pack-tools"><p class="pack-progress" role="status">0 / ${total} revealed</p><button class="pack-reveal-all">Reveal all</button></div>
           <div class="pack-row">${cards || '<p class="empty">No drops today.</p>'}</div>
           <div class="pack-nav"><button data-pack-nav="-1" aria-label="Previous card">Previous</button><span>Swipe between cards</span><button data-pack-nav="1" aria-label="Next card">Next</button></div>
@@ -750,6 +798,7 @@
     }
 
     disconnectedCallback() {
+      clearTimeout(this._tearTimer);
       document.removeEventListener('keydown', this._escHandler);
       document.body.style.overflow = this._previousOverflow || '';
       store().set('ui.packOpen', false);

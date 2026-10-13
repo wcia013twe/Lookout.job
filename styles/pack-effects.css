@@ -1,0 +1,32 @@
+/* Pack presentation only. Structure and state belong in components.js. */
+.pack-effects-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.pack-seal { position: absolute; inset: 120px 0 70px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 22px; }
+.pack-seal[hidden] { display: none; }
+.pack-seal-art { width: min(72vw, 300px); height: min(52dvh, 410px); min-height: 270px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 24px; background: linear-gradient(125deg, #352053, #85729b 48%, #281b3d); box-shadow: 0 24px 60px #0009; color: #fff; }
+.pack-seal-art::before, .pack-seal-art::after { content: ''; position: absolute; inset-inline: 0; height: 25px; background: repeating-linear-gradient(90deg, #fff2 0 2px, #0003 2px 5px); }
+.pack-seal-art::before { top: 0; border-radius: 24px 24px 0 0; }
+.pack-seal-art::after { bottom: 0; border-radius: 0 0 24px 24px; }
+.seal-edition, .seal-title, .seal-count, .pack-tear-button { position: relative; z-index: 4; }
+.seal-edition { font-size: .7rem; font-weight: 800; letter-spacing: .1em; color: #f5eaff; }
+.seal-title { font-size: clamp(2.2rem, 7vw, 3rem); line-height: 1.05; text-align: center; margin: 28px 0 18px; letter-spacing: -.03em; }
+.seal-count { color: #f5eaff; font-size: .9rem; }
+.pack-tear-button { position: absolute; inset: 0 0 auto; min-height: 48px; touch-action: none; border: 0; border-radius: 24px 24px 0 0; background: #eadaff; color: #241736; cursor: pointer; font: inherit; font-size: .8rem; font-weight: 800; transform: translateX(calc(var(--tear-progress, 0) * 32px)); }
+.seal-instruction { color: #d4c4e8; font-size: .9rem; margin: 0; }
+.pack-sealed .pack-row, .pack-sealed .pack-tools, .pack-sealed .pack-nav { visibility: hidden; pointer-events: none; }
+.pack-sealed .pack-foot { display: none; }
+.pack-tearing .pack-seal-art { animation: wrapper-open .65s cubic-bezier(.16,1,.3,1) forwards; }
+.pack-tearing .pack-tear-button { animation: seam-tear .65s cubic-bezier(.16,1,.3,1) forwards; }
+.pack-tearing .seal-instruction { opacity: 0; }
+.effects-ready .pack-seal-art { background: transparent; }
+.effects-ready .pack-seal-art::before, .effects-ready .pack-seal-art::after { opacity: .25; }
+.pack-head, .pack-tools, .pack-nav, .pack-foot { position: relative; z-index: 5; }
+.pack-row { scrollbar-width: none; }
+.pack-row::-webkit-scrollbar { display: none; }
+@keyframes wrapper-open { 40% { transform: translateY(12px) scale(.98); opacity: 1; } 100% { transform: translateY(60px) scale(.88); opacity: 0; } }
+@keyframes seam-tear { to { transform: translate(120px, -90px) rotate(-25deg); opacity: 0; } }
+@media (max-width: 650px) { .pack-seal { inset-block-start: calc(90px + env(safe-area-inset-top)); } }
+@media (prefers-reduced-motion: reduce) {
+  .pack-tearing .pack-seal-art, .pack-tearing .pack-tear-button { animation: none; }
+  .pack-effects-canvas { display: none; }
+  .pack-tear-button { transform: none; }
+}
