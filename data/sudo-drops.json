@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Estée Lauder",
+   "company": "Est\u00e9e Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -832,7 +832,7 @@
    "source": "zero2sudo",
    "status": "skipped",
    "skipReason": "Electrical engineering/hardware intern, not SWE",
-   "note": null
+   "note": " Evening story 2026-10-13 (PSA DM screenshot): poster says DoorDash postings close fast when opened and this one was taken down to fix wrong JD grad dates."
   },
   {
    "company": "Versant",
@@ -879,12 +879,12 @@
    "location": "Santa Clara, CA",
    "type": "FT",
    "comp": null,
-   "url": null,
+   "url": "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Software-Engineer--DL-Kernel-Libraries---New-College-Grad-2027_JR2027337",
    "dateSeen": "2026-10-12",
    "source": "zero2sudo",
-   "status": "pending",
+   "status": "added",
    "skipReason": null,
-   "note": "Confirmed live 2026-10-12 via 4 new-grad trackers (posted 2026-10-11); direct NVIDIA Workday application URL not extractable via text fetch; resolve in next run."
+   "note": "Verified live; added to jobs.json (JR2027337). Employer published 2026-10-11."
   },
   {
    "company": "Databricks",
@@ -989,6 +989,19 @@
    "status": "skipped",
    "skipReason": "Hardware-only role",
    "note": null
+  },
+  {
+   "company": "NVIDIA",
+   "title": "Deep Learning Software Engineer, TensorRT Performance - New College Grad 2027",
+   "location": "US, CA, Santa Clara; US, CA, Remote",
+   "type": "FT",
+   "comp": "$124K-$195.5K base (Level 2); $152K-$241.5K (Level 3)",
+   "url": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Deep-Learning-Software-Engineer--TensorRT-Performance---New-College-Grad-2027_JR2027083",
+   "dateSeen": "2026-10-13",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Duplicate: already on the board; story re-drop 2026-10-13 confirmed the posting live",
+   "note": "Story (posted ~22h ago, Oct 12) was a screen recording of the NVIDIA Workday posting marked 'Posted Today'. Already on the board as JR2027083, verified live 2026-10-13 (apps accepted at least until Oct 16)."
   }
  ]
 }
