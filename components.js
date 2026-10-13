@@ -447,8 +447,17 @@
       this.dispatchEvent(new CustomEvent('dropcard:seen', { bubbles: true, composed: true }));
     }
 
+    revealFully() {
+      if (this._stage === 'mystery') this._unlock();
+      this._stage = this.trueTier;
+      this._pop();
+      this._checkDone();
+    }
+
     _pop() {
+      const focused = this.contains(document.activeElement);
       this.render();
+      if (focused) this.querySelector('[tabindex]')?.focus();
       const el = this.querySelector('.dropcard');
       if (!el) return;
       el.classList.add('pop');
@@ -536,9 +545,12 @@
     connectedCallback() {
       if (this._wired) return;
       this._wired = true;
+      this._previousFocus = document.activeElement;
+      this._previousOverflow = document.body.style.overflow;
       store().set('ui.packOpen', true);
       this.render();
       this._wire();
+      this.querySelector('.pack-close')?.focus();
     }
     set items(val) {
       this._items = Array.isArray(val) ? val : [];
@@ -550,6 +562,7 @@
       this.addEventListener('click', (e) => {
         if (e.target.closest('.pack-close')) return this.close(false);
         if (e.target === this.querySelector('.pack-overlay')) return this.close(false);
+        if (e.target.closest('.pack-reveal-all')) return this.revealAll();
         const claim = e.target.closest('.pack-claim');
         if (claim) return this.claim();
         const combo = e.target.closest('.double-combo');
@@ -564,7 +577,19 @@
         }
       });
       document.addEventListener('keydown', this._escHandler = (e) => {
-        if (e.key === 'Escape') this.close(false);
+        if (e.key === 'Escape') return this.close(false);
+        const combo = e.target.closest?.('.double-combo');
+        if (combo && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          this._splitDouble(combo);
+          return;
+        }
+        if (e.key === 'Tab') {
+          const targets = [...this.querySelectorAll('button, a[href], [tabindex="0"]')].filter((el) => !el.disabled && !el.closest('[hidden]'));
+          const first = targets[0], last = targets[targets.length - 1];
+          if (e.shiftKey && (document.activeElement === first || !this.contains(document.activeElement))) { e.preventDefault(); last?.focus(); }
+          else if (!e.shiftKey && (document.activeElement === last || !this.contains(document.activeElement))) { e.preventDefault(); first?.focus(); }
+        }
       });
       document.body.style.overflow = 'hidden';
     }
@@ -606,10 +631,11 @@
             <p class="pack-sub">${total} drop${total === 1 ? '' : 's'} · tap cards to reveal and upgrade</p></div>
             <button class="pack-close icon-btn" aria-label="Close pack">x</button>
           </div>
+          <div class="pack-tools"><p class="pack-progress" role="status">0 / ${total} revealed</p><button class="pack-reveal-all">Reveal all</button></div>
           <div class="pack-row">${cards || '<p class="empty">No drops today.</p>'}</div>
           <div class="pack-foot" hidden>
             <p class="pack-summary"></p>
-            <button class="pack-claim">Claim +25 XP</button>
+            <button class="pack-claim">${store().get(`drops.packRewards.${dayStamp()}`) ? "Done · XP already claimed" : "Claim +25 XP"}</button>
           </div>
         </div>
       </div>`;
@@ -617,6 +643,7 @@
     }
 
     _splitDouble(comboEl) {
+      const focused = comboEl.contains(document.activeElement) || comboEl === document.activeElement;
       const wrap = comboEl.closest('.double-wrap');
       const idx = Number(wrap.dataset.double);
       const it = this._items[idx];
@@ -638,10 +665,18 @@
       split.appendChild(mk(a));
       split.appendChild(mk(b));
       wrap.replaceWith(split);
+      if (focused) split.querySelector('[tabindex]')?.focus();
       this.dispatchEvent(new CustomEvent('dropcard:seen', { bubbles: true, composed: true }));
     }
 
+    revealAll() {
+      this.querySelectorAll('.double-combo').forEach((combo) => this._splitDouble(combo));
+      this.querySelectorAll('drop-card').forEach((card) => card.revealFully());
+    }
+
     _checkComplete() {
+      const progress = this.querySelector('.pack-progress');
+      if (progress) progress.textContent = `${this._doneKeys.size} / ${this._expected} revealed`;
       if (this._doneKeys.size >= this._expected && this._expected > 0) this._showComplete();
     }
 
@@ -659,27 +694,40 @@
       const total = Object.values(counts).reduce((a, b) => a + b, 0);
       foot.querySelector('.pack-summary').textContent = `${total} drop${total === 1 ? '' : 's'} revealed${parts.length ? ': ' + parts.join(' · ') : ''}`;
       foot.hidden = false;
+      const reveal = this.querySelector('.pack-reveal-all');
+      if (reveal) reveal.disabled = true;
     }
 
     claim() {
-      if (this._claimed) return;
+      if (this._claimed || !this._expected || this._doneKeys.size < this._expected) return;
       this._claimed = true;
-      addXp(25); // store subscription refreshes the HUD automatically
+      const rewarded = store().get(`drops.packRewards.${dayStamp()}`);
+      if (!rewarded) {
+        store().set(`drops.packRewards.${dayStamp()}`, true);
+        addXp(25);
+      } // store subscription refreshes the HUD automatically
       recordStreakDay();
       const btn = this.querySelector('.pack-claim');
-      if (btn) { btn.textContent = '+25 XP claimed'; btn.disabled = true; }
+      if (btn) { btn.textContent = rewarded ? 'Pack complete' : '+25 XP claimed'; btn.disabled = true; }
       setTimeout(() => this.close(true), 650);
     }
 
     close(claimed) {
       if (this._closed) return;
       this._closed = true;
-      document.body.style.overflow = '';
+      document.body.style.overflow = this._previousOverflow || '';
       document.removeEventListener('keydown', this._escHandler);
       store().set('ui.packOpen', false);
       store().set(`drops.packStamps.${dayStamp()}`, true);
       this.dispatchEvent(new CustomEvent('pack:closed', { bubbles: true, composed: true, detail: { claimed: !!claimed } }));
       this.remove();
+      if (this._previousFocus?.isConnected) this._previousFocus.focus();
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener('keydown', this._escHandler);
+      document.body.style.overflow = this._previousOverflow || '';
+      store().set('ui.packOpen', false);
     }
   }
 

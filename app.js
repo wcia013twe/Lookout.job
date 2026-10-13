@@ -417,7 +417,9 @@ document.addEventListener('pack:closed', () => {
   renderSudo(sudoDrops);
 });
 const packReplay = document.querySelector('#pack-replay');
-if (packReplay) packReplay.addEventListener('click', () => {
+if (packReplay) packReplay.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
   if (todaysPackDrops.length) showPack(todaysPackDrops);
 });
 

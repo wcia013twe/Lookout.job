@@ -280,3 +280,13 @@ span.drop-row-logo.logo-fallback { font-size: 1rem; height: 30px; width: 30px; }
   .rarity.legendary { animation: none; }
   .game-card, .game-card:hover, .game-foot a { transform: none; transition: none; }
 }
+
+/* Pack review controls keep long daily drops manageable. */
+.pack-tools { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 16px 0 0; }
+.pack-progress { margin: 0; color: #d1d9e5; font-variant-numeric: tabular-nums; }
+.pack-reveal-all { background: #232332; color: #f5f3ff; border: 1px solid #7b5ea7; border-radius: 12px; font: inherit; padding: 10px 18px; min-height: 44px; cursor: pointer; }
+.pack-reveal-all:hover { background: #37304c; }
+.pack-reveal-all:disabled { opacity: .55; cursor: default; }
+.pack-modal :focus-visible { outline: 3px solid #ffcb05; outline-offset: 5px; }
+.pack-row { min-height: 0; }
+.dropcard-sheet h4 { overflow-wrap: anywhere; }
