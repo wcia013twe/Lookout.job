@@ -1,5 +1,5 @@
-const CACHE = 'job-signal-v14';
-const ASSETS = ['./', './index.html', './styles.css', './store.js', './components.js', './app.js', './pack-effects.js', './pack-motion.js', './pack-haptics.js', './styles/pack-motion.js', './assets/vendor/motion-mini.js', './styles/pack-effects.css', './styles/pack-shaders.js', './assets/vendor/three.module.min.js', './data/jobs.json', './manifest.webmanifest', './icon.svg'];
+const CACHE = 'job-signal-v15';
+const ASSETS = ['./', './index.html', './styles.css', './store.js', './components.js', './app.js', './pack-effects.js', './pack-motion.js', './pack-haptics.js', './styles/pack-motion.js', './assets/vendor/motion-mini.js', './styles/pack-effects.css', './styles/role-cards.css', './styles/pack-shaders.js', './assets/vendor/three.module.min.js', './data/jobs.json', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', (event) => event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim())));

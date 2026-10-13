@@ -7,7 +7,7 @@ function setup() {
   const store = { get: k => state[k], set: (k,v) => state[k] = v, update: (k, fn) => state[k] = fn(state[k]), subscribe: () => {} };
   const context = { window: { JB: { store } }, HTMLElement: class {}, customElements: { define: (n,c) => classes[n] = c }, document: { addEventListener() {} }, setTimeout() {}, Date, console, clearTimeout() {}, matchMedia: () => ({matches:false}), CustomEvent: class {constructor(type, options) {this.type=type; this.detail=options?.detail;} } };
   vm.runInNewContext(fs.readFileSync('components.js', 'utf8'), context);
-  return { Pack: classes['pack-opening'], Card: classes['drop-card'], state };
+  return { Pack: classes['pack-opening'], Card: classes['drop-card'], compensationTag: context.window.JB.compensationTag, state };
 }
 test('incomplete packs cannot claim XP', () => {
   const { Pack, state } = setup(); const p = new Pack(); p._expected = 2; p._doneKeys.add('one'); p.claim();
@@ -47,4 +47,13 @@ test('a single tap starts revealing and later taps upgrade without a speed requi
   const { Card } = setup(); const c = new Card(); c._stage = 'mystery'; c._trueTier = 'rare';
   c._unlock = () => { c._stage = 'back'; }; c._pop = () => {}; c._checkDone = () => {};
   c._tap(); assert.equal(c._stage, 'common'); c._tap(); assert.equal(c._stage, 'rare');
+});
+
+test('compensation tags distinguish base, TC, hourly pay, and missing pay', () => {
+  const { compensationTag: tag } = setup();
+  assert.equal(tag('Base $108K-$178.25K (Level 1) + equity.'), 'Base $108K-$178.25K');
+  assert.equal(tag('$150k–$160k base plus equity.'), 'Base $150k–$160k');
+  assert.equal(tag('Total compensation: $200K-$250K.'), 'TC $200K-$250K');
+  assert.equal(tag('Internship at $45-$60/hr.'), 'Comp $45-$60/hr');
+  assert.equal(tag('Compensation not disclosed.'), 'Comp not listed');
 });

@@ -61,6 +61,20 @@
     return `<ul class="fit-bullets">${items.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>`;
   };
 
+  // Display only compensation explicitly present in the collected analysis.
+  const compensationTag = (text) => {
+    const t = String(text || '');
+    const money = /\$\s?[\d,]+(?:\.\d+)?\s?[KkMm]?(?:\s*[-–—]\s*\$?\s?[\d,]+(?:\.\d+)?\s?[KkMm]?)?(?:\s*(?:\/(?:hr|hour|year|yr|week)|per (?:hour|year)))?/g;
+    const matches = [...t.matchAll(money)];
+    if (!matches.length) return 'Comp not listed';
+    const labelled = matches.find(m => /(?:base|salary|total compensation|\bTC\b)\s*[:=]?\s*$/i.test(t.slice(Math.max(0, m.index - 30), m.index)));
+    const hit = labelled || matches[0];
+    const before = t.slice(Math.max(0, hit.index - 30), hit.index);
+    const after = t.slice(hit.index + hit[0].length, hit.index + hit[0].length + 25);
+    const kind = /(?:total compensation|\bTC\b)\s*[:=]?\s*$/i.test(before) ? 'TC' : (/(?:base|salary)\s*[:=]?\s*$/i.test(before) || /^\s*(?:US\s+)?(?:base|salary)\b/i.test(after)) ? 'Base' : 'Comp';
+    return `${kind} ${hit[0].trim()}`;
+  };
+
   /* ---------- Shiny: comp at or above $200K, parsed from existing text only ---------- */
   const maxCompValue = (text) => {
     if (!text) return 0;
@@ -150,7 +164,7 @@
     esc, normCompany,
     logoManifest: {},
     TIER_ORDER, tierIndex, TIER_HEX, toBullets,
-    rarityOf, maxCompValue,
+    rarityOf, maxCompValue, compensationTag,
     getXp, addXp, awardXpForStatus, levelFor, recordStreakDay, streakCount, dayStamp,
     dropKey, seenDrops, markDropSeen, SEEN_DROPS_KEY,
     logoFallback(img) {
@@ -233,19 +247,39 @@
       const g = (n) => this.getAttribute(n) || '';
       const tier = rarityOf(g('company'), g('emptype'), g('title'));
       const fresh = g('freshness') ? `<span class="freshness">Source freshness: ${esc(g('freshness'))}</span>` : '';
-      this.innerHTML = `<article class="role-card game-card t-${tier}">
-        <div class="game-top">
-          <div class="game-art"><logo-img company="${esc(g('company'))}" cls="company-logo"></logo-img></div>
-          <span class="rarity ${tier}">${RARITY_LABEL[tier]}</span>
+      const officialTitle = g('title');
+      const title = officialTitle.replace(/\s*[-–—]\s*(?:New College Grad|New Grad|New Graduate|University Graduate)\s*\d{4}.*$/i, '');
+      const year = officialTitle.match(/\b20\d{2}\b/)?.[0];
+      const locations = g('location').split(/;\s*/).filter(Boolean);
+      const locationTags = locations.slice(0, 2).map(location => `<span class="role-tag">${esc(location)}</span>`).join('');
+      const fullAnalysis = toBullets(g('rationale'));
+      const preview = fullAnalysis.match(/<li>(.*?)<\/li>/s)?.[1] || 'Open analysis for role details.';
+      this.innerHTML = `<article class="role-card compact-role t-${tier}">
+        <div class="compact-role-head">
+          <logo-img company="${esc(g('company'))}" cls="company-logo"></logo-img>
+          <strong class="compact-company">${esc(g('company'))}</strong>
+          <span class="rarity ${tier}" title="Company tier">${RARITY_LABEL[tier]}</span>
         </div>
-        <div class="game-sheet">
-          <p class="eyebrow">${esc(g('emptype'))} · ${esc(g('category'))}</p>
-          <h3>${esc(g('title'))}</h3>
-          <p class="company">${esc(g('company'))} <span>·</span> ${esc(g('location'))}</p>
-          ${toBullets(g('rationale'))}
-          <div class="meta"><span>Posted: ${esc(g('posted') || 'Not listed')}</span><span>Discovered: ${esc(g('discovered'))}</span>${fresh}</div>
-          <div class="game-foot"><status-pill kind="priority" value="${esc(g('priority'))}"></status-pill><shiny-badge comp="${esc(g('rationale'))}"></shiny-badge><a href="${esc(g('url'))}" target="_blank" rel="noreferrer" data-track-role="${esc(g('role-id'))}">Open application</a></div>
+        <h3>${esc(title)}</h3>
+        <div class="role-tags" aria-label="Role basics">
+          <span class="role-tag">${g('emptype') === 'FT' ? 'Full-time' : esc(g('emptype'))}</span>
+          ${year ? `<span class="role-tag">${esc(year)}</span>` : ''}
+          ${locationTags}${locations.length > 2 ? `<span class="role-tag">+${locations.length - 2} locations</span>` : ''}
+          <span class="role-tag role-tag-comp">${esc(compensationTag(g('rationale')))}</span>
         </div>
+        <p class="role-fit-preview">${preview}</p>
+        <details class="role-analysis">
+          <summary>View analysis</summary>
+          <p class="role-domain">${esc(g('category'))}</p>
+          ${fullAnalysis}
+          <details class="role-source-details">
+            <summary>Source details</summary>
+            <p><strong>Official title:</strong> ${esc(officialTitle)}</p>
+            <p><strong>Locations:</strong> ${esc(g('location'))}</p>
+            <div class="meta"><span>Employer posted date: ${esc(g('posted') || 'Not listed')}</span><span>Discovered: ${esc(g('discovered'))}</span>${fresh}</div>
+          </details>
+        </details>
+        <div class="compact-role-foot"><status-pill kind="priority" value="${esc(g('priority'))}"></status-pill><a href="${esc(g('url'))}" target="_blank" rel="noreferrer" data-track-role="${esc(g('role-id'))}">Open application</a></div>
       </article>`;
     }
   }

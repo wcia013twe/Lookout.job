@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-12 — Compact role cards and basic tags
+
+- Replaced oversized role-card artwork with a compact logo, company, and company-tier header.
+- Added employment type, title year, location, and compensation tags. Compensation is extracted from existing analysis; base salary is never labelled TC.
+- Kept a one-sentence preview visible; full analysis, official titles, and provenance remain expandable.
+- Kept the canonical job data and application tracking behavior intact.
+- New styles live in `styles/role-cards.css`.
+- Validation: compensation-label regressions, existing pack tests, and all 72 job records. Mobile rendering remains unverified.
+
 ## 2026-10-12 — Reliable tapping and Motion tear
 
 - Replaced the snap-scrolling reveal row with one active card and explicit Previous/Next navigation.
