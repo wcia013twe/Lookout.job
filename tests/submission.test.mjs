@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { authorizeSubmission } from '../supabase/functions/agent-gateway/submission-authorization.mjs';
 import { submissionDispatch } from '../supabase/functions/agent-gateway/submission-dispatch.mjs';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
-import { submitApplication } from '../runner/submit.mjs';
+import { submitApplication, assertSubmitFormScope } from '../runner/submit.mjs';
 import { formResult, identifyJob } from '../runner/forms.mjs';
 const aid='00000000-0000-4000-8000-000000000001', rid='00000000-0000-4000-8000-000000000002', claimId='00000000-0000-4000-8000-000000000003';
 const url='https://job-boards.greenhouse.io/example/jobs/123', user='owner';
@@ -119,4 +119,11 @@ test('generic success text without supported confirmation marker cannot mark Sub
   f.page.locator=selector=>selector==='#confirmation'?{count:async()=>0}:locator(selector);
   const result=await submitApplication({applicationId:aid,attemptId:'unsupported',gateway:f.gateway,getPage:async()=>f.page});
   assert.equal(result.status,'Needs you');assert.equal(f.clicks,1);assert.equal(f.calls.at(-1).payload.outcome,'uncertain');
+});
+
+test('additional documents cannot receive the résumé file even with human approval',()=>{
+  const resume={question:'Resume/CV *',fields:[{type:'file'}]};
+  assert.doesNotThrow(()=>assertSubmitFormScope({questions:[resume]}));
+  assert.throws(()=>assertSubmitFormScope({questions:[resume,{question:'Undergraduate transcript',fields:[{type:'file'}]}]}));
+  assert.throws(()=>assertSubmitFormScope({questions:[{question:'Cover letter',fields:[{type:'file'}]}]}));
 });

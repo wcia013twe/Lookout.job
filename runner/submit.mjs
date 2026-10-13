@@ -18,11 +18,20 @@ export async function readConfirmation(page,jobUrl) {
   return null;
 }
 
+// Additional documents stay manual even if a draft accidentally references the
+// résumé ID for them. Never upload the résumé into a transcript/cover-letter slot.
+export function assertSubmitFormScope(form) {
+  const uploads=form.questions.flatMap(q=>q.fields.filter(f=>f.type==='file').map(f=>({question:q.question,field:f})));
+  const labels=['resume','resume/cv','resume / cv','cv','upload resume','attach resume'];
+  if(uploads.length>1 || uploads.some(q=>!labels.includes(q.question.toLowerCase().replace(/[ *:]+$/g,'').trim()))) throw new Error('Additional document upload requires manual completion');
+}
+
 // All labels/values are fixed by the trusted execution snapshot, not model choices.
 export async function readyToSubmit(page,context,plan) {
   if(identifyJob(page.url()).ats!=='greenhouse' || identifyJob(page.url()).url!==plan.url) throw new Error('Unsupported submission target');
   assertExecutionAuthorization(context);
   const form=await inspectBrowserForm(page);
+  assertSubmitFormScope(form);
   if(form.formFingerprint!==plan.formFingerprint || form.blockers.length) throw new Error('Employer form changed');
   const valid=await page.evaluate(async ({fields,resumeSha256})=>{
     const forms=[...document.querySelectorAll('form')].filter(el=>{const r=el.getBoundingClientRect();return r.width>0&&r.height>0;});
@@ -69,6 +78,7 @@ export async function submitApplication({applicationId,attemptId,gateway,getPage
     if(target.ats!=='greenhouse') throw new Error('Unsupported ATS');
     const page=await getPage(); await page.goto(target.url,{waitUntil:'domcontentloaded',timeout:30000});
     const entry=await openApplicationForm(page); if(entry.status==='Blocked') throw new Error('Form entry unavailable');
+    assertSubmitFormScope(await inspectBrowserForm(page));
     const plan=await prefillApprovedForm(page,context); if(plan.status!=='Prepared') throw new Error('Prefill blocked');
     await readyToSubmit(page,context,plan);
     const payload={applicationId,expectedRevision:context.application.revision,expectedPersonalVersion:context.personalVersion};
