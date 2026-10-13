@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-10-12",
+ "lastRun": "2026-10-13",
  "roles": [
   {
    "id": "doordash-software-engineer-storage-8024644",
@@ -1135,6 +1135,53 @@
    "applicationStatus": "New",
    "discoverySource": "zero2sudo stories",
    "verifiedDate": "2026-10-12"
+  },
+  {
+   "applicationStatus": "New",
+   "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Deep-Learning-Software-Engineer--TensorRT-Performance---New-College-Grad-2027_JR2027083",
+   "category": "ML systems & AI infrastructure",
+   "company": "NVIDIA",
+   "discoveredDate": "2026-10-13",
+   "employmentType": "FT",
+   "id": "nvidia-tensorrt-performance-new-grad-2027-jr2027083",
+   "location": "Santa Clara, CA (remote option listed)",
+   "postedDate": "2026-10-12",
+   "priority": "Apply Now",
+   "sourceFreshness": "posted 2026-10-12 (within 24h)",
+   "title": "Deep Learning Software Engineer, TensorRT Performance - New College Grad 2027",
+   "verification": "Verified live on NVIDIA Workday on 2026-10-13: full posting text rendered, applications accepted at least until Oct 16, 2026.",
+   "whyItFits": "TensorRT inference ecosystem performance: benchmarking, graph compilers, frontend operators, code generators, quantization, scheduling, memory management, distributed inference across NVIDIA accelerators; OSS contributions to TensorRT/Torch-TensorRT. Core ML-systems/inference lane at Legendary tier. Confirmed 2027 new-grad eligible (BS/MS/PhD); applications accepted at least until Oct 16. Base $124K-$195.5K (L2) / $152K-$241.5K (L3) + equity."
+  },
+  {
+   "applicationStatus": "New",
+   "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/NVIDIA-2027-Internships--Systems-Software-Engineering_JR2023492",
+   "category": "GPU, systems & AI infrastructure",
+   "company": "NVIDIA",
+   "discoveredDate": "2026-10-13",
+   "employmentType": "Internship",
+   "id": "nvidia-systems-software-engineering-intern-2027-jr2023492",
+   "location": "Santa Clara, CA",
+   "postedDate": "2026-09-06",
+   "priority": "Apply Now",
+   "sourceFreshness": "posted 2026-09-06 (labeled older than 72h)",
+   "title": "NVIDIA 2027 Internships: Systems Software Engineering",
+   "verification": "Verified live on NVIDIA Workday on 2026-10-13: full posting text rendered, applications accepted on an ongoing basis.",
+   "whyItFits": "12-week systems software internship spanning GPU system software, compilers (XLA/TVM/Halide), OS/kernel, networking, and firmware. Legendary intern tier: pursue aggressively; beats the Oracle baseline on brand and scarce systems adjacency. Must be actively enrolled with anticipated graduation date on resume."
+  },
+  {
+   "id": "cerebras-ai-inference-core-integration-90879967",
+   "company": "Cerebras",
+   "title": "AI Inference Core - Software Integration Engineer",
+   "employmentType": "FT",
+   "location": "Sunnyvale, CA (also Toronto, ON; hybrid 3d/week, no remote)",
+   "category": "ML systems & AI infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": "2026-10-03",
+   "discoveredDate": "2026-10-13",
+   "sourceFreshness": "posted 2026-10-03 (labeled older than 72h)",
+   "whyItFits": "Cross-stack AI inference integration across frameworks, runtime, compiler, kernels, distributed systems, and hardware. Explicitly welcomes exceptional junior engineers with no experience minimum; internships, research, projects, or open source accepted as systems evidence. Exceptional ML-systems/inference team fit kept under the team-over-brand rule despite Common tier. Hybrid 3 days/week in Sunnyvale or Toronto; remote not offered.",
+   "applicationUrl": "https://jobs.ashbyhq.com/cerebras/90879967-1071-4d05-9180-6e18023ed887/",
+   "applicationStatus": "New"
   }
  ]
 }
