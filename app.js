@@ -80,10 +80,27 @@ function render() {
   renderProcs();
 }
 
-document.querySelectorAll('[role="tab"]').forEach((tab) => tab.addEventListener('click', () => {
-  document.querySelectorAll('[role="tab"]').forEach((item) => item.setAttribute('aria-selected', item === tab));
-  document.querySelectorAll('[role="tabpanel"]').forEach((panel) => panel.hidden = panel.id !== tab.getAttribute('aria-controls'));
-}));
+const dashboardTabs = [...document.querySelectorAll('[role="tab"]')];
+function activateTab(tab, focus = false) {
+  dashboardTabs.forEach((item) => {
+    item.setAttribute('aria-selected', item === tab);
+    item.tabIndex = item === tab ? 0 : -1;
+  });
+  document.querySelectorAll('[role="tabpanel"]').forEach((panel) => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
+  if (focus) tab.focus({ preventScroll: true });
+}
+dashboardTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => activateTab(tab));
+  tab.addEventListener('keydown', (event) => {
+    let next;
+    if (event.key === 'ArrowRight') next = (index + 1) % dashboardTabs.length;
+    if (event.key === 'ArrowLeft') next = (index - 1 + dashboardTabs.length) % dashboardTabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = dashboardTabs.length - 1;
+    if (next === undefined) return;
+    event.preventDefault(); activateTab(dashboardTabs[next], true);
+  });
+});
 search.addEventListener('input', render);
 typeFilter.addEventListener('change', render);
 tracker.addEventListener('change', (event) => {

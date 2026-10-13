@@ -15,42 +15,51 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles/pack-effects.css">
     <link rel="stylesheet" href="styles/role-cards.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
   </head>
   <body>
     <main>
-      <header><div><p class="eyebrow">US SOFTWARE ENGINEERING</p><h1>Job signal board</h1><p class="subhead">A selective inbox for systems, data, ML infrastructure, and high-leverage roles.</p></div><div class="header-meta"><p id="updated"></p><xp-hud id="game-hud" aria-live="polite"></xp-hud></div></header>
-      <section class="controls"><input id="search" type="search" placeholder="Filter company, role, or domain"><select id="type-filter" aria-label="Employment type"><option value="">All roles</option><option value="FT">Full-time</option><option value="Internship">Internships</option></select><p id="summary"></p></section>
-      <div class="tabs" role="tablist" aria-label="Job dashboard"><button role="tab" aria-selected="true" aria-controls="daily-board">Daily Board</button><button role="tab" aria-selected="false" aria-controls="auto-tracker">Auto Tracker</button><button role="tab" aria-selected="false" aria-controls="procs">Procs</button><button role="tab" aria-selected="false" aria-controls="referrals">Referrals</button></div>
-      <section id="daily-board" role="tabpanel">
-        <p class="panel-note">Your inbox for this run. Opening an application moves it to Auto Tracker. Older source results are labeled so freshness is never implied.</p>
-        <section class="board-section sudo-strip" id="sudo-section">
-          <details class="sudo-block" id="sudo-block">
-            <summary class="sudo-summary">
-              <span class="sudo-strip-tag">ZERO2SUDO</span>
-              <div id="sudo-collapsed" class="sudo-banner-wrap"></div>
-              <button id="pack-replay" class="pack-replay-btn" hidden>Open pack</button>
-              <span class="sudo-caret" aria-hidden="true">&#9662;</span>
-            </summary>
-            <div id="sudo-full" class="sudo-full"></div>
-          </details>
-        </section>
-        <section class="board-section"><div class="section-heading"><p class="eyebrow">FULL-TIME</p><h2>New-grad & early-career roles</h2></div><div id="full-time-grid" class="grid"></div></section>
-        <section class="board-section"><div class="section-heading"><p class="eyebrow">INTERNSHIPS</p><h2>Specialization opportunities</h2></div><div id="internship-grid" class="grid"></div></section>
+      <header class="dashboard-header">
+        <div class="dashboard-identity"><h1>Job signal board</h1><p id="updated">Loading scan…</p></div>
+        <details class="dashboard-progress"><summary><span id="progress-summary">Progress</span></summary><xp-hud id="game-hud" aria-live="polite"></xp-hud></details>
+      </header>
+      <div class="tabs" role="tablist" aria-label="Job dashboard">
+        <button id="tab-daily" role="tab" aria-selected="true" aria-controls="daily-board" tabindex="0">Daily Board</button>
+        <button id="tab-tracker" role="tab" aria-selected="false" aria-controls="auto-tracker" tabindex="-1">Auto Tracker</button>
+        <button id="tab-procs" role="tab" aria-selected="false" aria-controls="procs" tabindex="-1">Procs</button>
+        <button id="tab-referrals" role="tab" aria-selected="false" aria-controls="referrals" tabindex="-1">Referrals</button>
+      </div>
+      <section class="controls" aria-label="Filter roles">
+        <input id="search" type="search" placeholder="Search roles or companies" aria-label="Search company, role, domain, or location">
+        <select id="type-filter" aria-label="Employment type"><option value="">All roles</option><option value="FT">Full-time</option><option value="Internship">Internships</option></select>
+        <p id="summary" role="status"></p>
       </section>
-      <section id="auto-tracker" role="tabpanel" hidden>
+      <section id="daily-board" role="tabpanel" aria-labelledby="tab-daily">
+        <section class="board-section sudo-strip" id="sudo-section" aria-label="Daily opportunity pack">
+          <div class="pack-strip-header">
+            <div class="pack-strip-info"><strong class="pack-strip-title">Daily drops</strong><div id="sudo-collapsed" class="sudo-banner-wrap"></div></div>
+            <button id="pack-replay" class="pack-replay-btn" hidden>Open pack</button>
+          </div>
+          <details class="sudo-block" id="sudo-block"><summary class="sudo-details-toggle">View all drops</summary><div id="sudo-full" class="sudo-full"></div></details>
+        </section>
+        <section class="board-section"><div class="section-heading"><h2>Full-time</h2><p>New-grad & early-career</p></div><div id="full-time-grid" class="grid"></div></section>
+        <section class="board-section"><div class="section-heading"><h2>Internships</h2><p>Specialization opportunities</p></div><div id="internship-grid" class="grid"></div></section>
+        <details class="board-help"><summary>How tracking works</summary><p class="panel-note">Opening an application moves it to Auto Tracker. Update its status after applying. Your tracker is saved in this browser. Source details are available within each role’s analysis.</p></details>
+      </section>
+      <section id="auto-tracker" role="tabpanel" aria-labelledby="tab-tracker" hidden>
         <p class="panel-note">Only roles you have opened live here. Status changes and applied dates are kept locally in your browser.</p>
         <div id="tracker-counts" class="tracker-counts"></div>
         <div class="tracker-table" role="table" aria-label="Tracked applications"><div class="tracker-row tracker-head" role="row"><span>Company</span><span>Job title</span><span>Type</span><span>Date applied</span><span>Status</span></div><div id="tracker"></div></div>
       </section>
-      <section id="procs" role="tabpanel" hidden>
+      <section id="procs" role="tabpanel" aria-labelledby="tab-procs" hidden>
         <p class="panel-note">Your active interview pipeline, read from the same Auto Tracker data. Change a status in Auto Tracker and the card moves here. Nothing new to enter.</p>
         <div id="proc-pipeline" class="proc-pipeline"></div>
         <details class="proc-closed"><summary>Closed (<span id="proc-closed-count">0</span>)</summary><div id="proc-closed" class="grid"></div></details>
       </section>
-      <section id="referrals" role="tabpanel" hidden>
+      <section id="referrals" role="tabpanel" aria-labelledby="tab-referrals" hidden>
         <p class="panel-note">People beat portals. Track who can refer you, stay in touch with your network, and grab a copy paste message when it is time to ask. Everything here stays in your browser.</p>
         <section class="board-section">
           <div class="section-heading"><p class="eyebrow">REFERRALS</p><h2>Referral tracker</h2></div>

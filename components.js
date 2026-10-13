@@ -367,6 +367,8 @@
     }
     render() {
       const xp = getXp();
+      const compact = this.closest('.dashboard-progress')?.querySelector('#progress-summary');
+      if (compact) compact.textContent = `${xp} XP · ${streakCount()}d streak`;
       const { lvl, next } = levelFor(xp);
       const pct = next ? Math.min(100, Math.round(((xp - lvl.min) / (next.min - lvl.min)) * 100)) : 100;
       this.innerHTML = `<div class="hud-row">`

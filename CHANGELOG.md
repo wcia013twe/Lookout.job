@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-12 — Mobile dashboard layout
+
+- Replaced the oversized hero with a compact title and scan date.
+- Collapsed XP details into a progress disclosure, keeping XP/streak visible.
+- Made all four navigation tabs fit on mobile and added arrow-key navigation.
+- Put search and employment type on one responsive row.
+- Simplified the pack entry and moved tracking instructions into a disclosure below the roles.
+- Preserved the role basics, expandable analysis, tracker, and pack interactions.
+- Dashboard presentation lives in `styles/dashboard.css`.
+- Validation: existing regression suite, data validation, source structure checks. Mobile rendering remains unverified.
+
 ## 2026-10-12 — Compact role cards and basic tags
 
 - Replaced oversized role-card artwork with a compact logo, company, and company-tier header.
