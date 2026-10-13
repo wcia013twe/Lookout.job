@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-12 — Supabase backend foundation
+
+- Added relational schema for private profiles, preferences, resume versions, answer library, morning batches, applications, immutable approvals, and deduplicated activity.
+- Added shared employer job catalog, private resume Storage bucket, protected opt-in leaderboard metrics, and private agent credential hashes.
+- Added ownership RLS, cross-owner foreign keys, server-controlled draft revisions, and checked approval RPC with exact snapshots.
+- Added reusable authenticated client adapter and detailed Muse/deployment handoff.
+- Validation: disposable PostgreSQL schema/isolation/approval/storage-policy checks pass; existing 20 tests and all 72 roles pass.
+- Deployment pending organization/cost confirmation; cloud UI sync, agent gateway, leaderboard score computation, and SMS remain unconnected.
+
 ## 2026-10-12 — Ranked starter profiles and JSON lookup
 
 - Added separate Full-time and Internship starter profiles with subjective initial company rankings.
