@@ -16,8 +16,9 @@
   "leaderboardProjection": true,
   "employerSubmissionEnabled": false,
   "agentContextVersions": true,
-  "developerContractVersion": 4,
+  "developerContractVersion": 5,
   "runnerFailureReporting": true,
   "companyLogoCacheCount": 66,
-  "localRunnerMcp": true
+  "localRunnerMcp": true,
+  "applicationReviewPolicy": true
 }

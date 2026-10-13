@@ -1,11 +1,12 @@
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['workspace:read', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = ['connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure'];
+export const OPERATIONS = ['connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
   if (!p || typeof p !== 'object' || Array.isArray(p)) throw new Error('Payload must be an object');
+  if (input.operation === 'applications.policy' && (Object.keys(p).length !== 1 || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(p.jobId || ''))) throw new Error('Job ID required');
   if (input.operation.startsWith('context.') && Object.keys(p).length) throw new Error('No context arguments allowed');
   if (input.operation === 'runner.report_failure') {
     const keys = ['applicationId','eventKey','expectedRevision','stage','outcome','reason','nextAction','attempts'];

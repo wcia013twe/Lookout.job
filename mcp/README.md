@@ -123,3 +123,8 @@ prefill. Register it once on an agent host with Node/Chromium and a graphical
 session. No custom gateway loader is required. The hosted endpoint remains
 data-only. Muse must support that host's local MCP connection; reading developer
 version 3 does not install the adapter.
+
+`read_application_policy({jobId})` uses `workspace:read` to evaluate owned review
+thresholds against canonical public job data. No owner/tier/approval arguments
+are accepted. It returns `auto-apply`, `review` or `skip` plus current execution
+limits; a policy decision does not grant submission authority.

@@ -1,3 +1,11 @@
+## 2026-10-13 — Importance-based application review policy
+
+- Added separate full-time/internship company-list choices and review thresholds, default A and above; changes autosync through existing personal-version flags.
+- Added deterministic, account-scoped read_application_policy tool using canonical employer facts; excluded roles skip, important/unknown/ambiguous ranks review, routine ranks select the auto-apply policy.
+- Developer contract v5 tells Muse to prepare important matches fully and text a focused review; unfamiliar questions/blockers always pause. Theme labels do not alter tier semantics.
+- Policy does not bypass the existing approval boundary: automatic runner authorization, duplicate-safe submission and receipts remain unfinished. No employer submission performed.
+- Validation: 112 tests, database migration/ownership checks and 75 job records pass; frontend cache v28.
+
 ## 2026-10-13 — Muse auto-submit preference
 
 - Added a default-off Profile switch that saves immediately and uses existing account autosync/personal-version updates.

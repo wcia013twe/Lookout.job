@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
 import { validateRequest, generateToken, hashToken } from './contract.mjs';
 import { contextResponse } from './context.mjs';
+import { applicationPolicy } from './application-policy.mjs';
 
 // Platform JWT verification is disabled because agents use opaque credentials.
 // Every request is verified here: Supabase getUser for people; hash + expiry +
@@ -51,8 +52,9 @@ Deno.serve(async request => {
       return respond(token ? { connection: data, token } : { data });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
+    const policyRequest = operation === 'applications.policy';
     const { data, error } = await admin.rpc('agent_dispatch', {
-      credential_hash: await hashToken(bearer), operation, payload,
+      credential_hash: await hashToken(bearer), operation: policyRequest ? 'context.personal' : operation, payload: policyRequest ? {} : payload,
     });
     if (error) {
       const messages: Record<string, [number, string]> = {
@@ -64,6 +66,13 @@ Deno.serve(async request => {
       };
       const [status, message] = messages[error.code] ?? [400, 'Operation rejected'];
       return respond({ error: message }, status);
+    }
+    if (policyRequest) {
+      const { data: job, error: jobError } = await admin.from('jobs').select('id,employer').eq('id', payload.jobId).maybeSingle();
+      if (jobError || !job) return respond({ error: 'Job not found' }, 404);
+      return respond({ data: { jobId: job.id, personalVersion: data.personalVersion,
+        ...applicationPolicy({ preferences: data.settings.preferences, job: job.employer }),
+        execution: { automaticSubmission: false, bundledRunnerRequiresApproval: true } } });
     }
     if (operation === 'resumes.read') {
       let url = data.reference_url;

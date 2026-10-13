@@ -130,3 +130,12 @@ submission remains unimplemented. Missing or failed backend reporting returns
 `reported:false` and a pending payload; retain it privately and retry reporting,
 not application execution. Text the user through the agent's own channel; this
 code does not send notifications.
+
+## Review policy vs runner authorization
+
+`read_application_policy({jobId})` is forwarded through this adapter and reads the
+current account preferences. Routine matches may have `reviewRequired:false` in
+the desired policy; that result does not bypass `assertApproval` or add a Submit
+tool. Important matches, unknown company rankings and unresolved questions need
+focused human review. The bundled execution boundary remains approved prefill
+until a separate automatic-authorization and confirmed-submit adapter is built.

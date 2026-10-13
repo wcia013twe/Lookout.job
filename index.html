@@ -12,16 +12,16 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=27">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=27">
-    <link rel="stylesheet" href="styles/role-cards.css?v=27">
-    <link rel="stylesheet" href="styles/dashboard.css?v=27">
-    <link rel="stylesheet" href="styles/workflow.css?v=27">
-    <link rel="stylesheet" href="styles/tierlists.css?v=27">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=27">
-    <link rel="stylesheet" href="styles/account.css?v=27">
-    <link rel="stylesheet" href="styles/resume-files.css?v=27">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=27">
+    <link rel="stylesheet" href="styles.css?v=28">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=28">
+    <link rel="stylesheet" href="styles/role-cards.css?v=28">
+    <link rel="stylesheet" href="styles/dashboard.css?v=28">
+    <link rel="stylesheet" href="styles/workflow.css?v=28">
+    <link rel="stylesheet" href="styles/tierlists.css?v=28">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=28">
+    <link rel="stylesheet" href="styles/account.css?v=28">
+    <link rel="stylesheet" href="styles/resume-files.css?v=28">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=28">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -135,8 +135,15 @@
         <p class="panel-note">Save factual answers and resume references. Nothing here is sent to employers.</p>
         <section class="board-section" aria-labelledby="application-mode-heading">
           <h2 id="application-mode-heading">Application automation</h2>
-          <label class="workflow-check"><input id="auto-submit-approved" type="checkbox" role="switch" aria-describedby="auto-submit-help">Auto-submit approved applications</label>
-          <p id="auto-submit-help" class="panel-note">Off: Muse stops before submission. On: Muse may submit the exact approved draft through a supported submit tool. The current board runner prefills only. This preference saves automatically.</p>
+          <label class="workflow-check"><input id="auto-submit-approved" type="checkbox" role="switch" aria-describedby="auto-submit-help">Auto-apply routine matches</label>
+          <p id="auto-submit-help" class="panel-note">Off: review every application. On: auto-apply routine matches; important matches need focused review. Unknown answers and blockers always pause. These choices save automatically. The current board runner still requires approval for prefill and cannot submit.</p>
+          <div class="workflow-form">
+            <label>Full-time company list<select id="review-fullTime-list" aria-describedby="review-policy-help"></select></label>
+            <label>Full-time review threshold<select id="review-fullTime-threshold"><option value="S">S tier only</option><option value="A">A tier and above</option><option value="B">B tier and above</option><option value="C">C tier and above</option><option value="D">All ranked companies</option><option value="all">Every company</option></select></label>
+            <label>Internship company list<select id="review-internship-list" aria-describedby="review-policy-help"></select></label>
+            <label>Internship review threshold<select id="review-internship-threshold"><option value="S">S tier only</option><option value="A">A tier and above</option><option value="B">B tier and above</option><option value="C">C tier and above</option><option value="D">All ranked companies</option><option value="all">Every company</option></select></label>
+          </div>
+          <p id="review-policy-help" class="panel-note">Company tiers come from your chosen ranking list. Unranked companies require review. For important matches, Muse prepares the résumé and answers, then texts you only the choices to review.</p>
           <p id="auto-submit-feedback" role="status" aria-live="polite"></p>
         </section>
         <details class="workflow-section"><summary>Search preferences</summary>
@@ -231,24 +238,24 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=27"></script>
-    <script src="components.js?v=27"></script>
-    <script src="workflow-model.js?v=27"></script>
-    <script src="app.js?v=27"></script>
-    <script src="saved-answers-model.js?v=27"></script>
-    <script src="workflow.js?v=27"></script>
-    <script src="saved-answers.js?v=27"></script>
-    <script src="tierlist-model.js?v=27"></script>
-    <script src="tierlists.js?v=27"></script>
-    <script type="module" src="workflow-motion.js?v=27"></script>
-    <script type="module" src="pack-effects.js?v=27"></script>
-    <script type="module" src="pack-motion.js?v=27"></script>
-    <script type="module" src="pack-haptics.js?v=27"></script>
-    <script src="profile-preferences.js?v=27"></script>
-    <script src="agent-connections.js?v=27"></script>
-    <script type="module" src="resume-files.js?v=27"></script>
-    <script type="module" src="leaderboard.mjs?v=27"></script>
-    <script src="app-updates.js?v=27"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=27"></script>
+    <script src="store.js?v=28"></script>
+    <script src="components.js?v=28"></script>
+    <script src="workflow-model.js?v=28"></script>
+    <script src="app.js?v=28"></script>
+    <script src="saved-answers-model.js?v=28"></script>
+    <script src="workflow.js?v=28"></script>
+    <script src="saved-answers.js?v=28"></script>
+    <script src="tierlist-model.js?v=28"></script>
+    <script src="tierlists.js?v=28"></script>
+    <script type="module" src="workflow-motion.js?v=28"></script>
+    <script type="module" src="pack-effects.js?v=28"></script>
+    <script type="module" src="pack-motion.js?v=28"></script>
+    <script type="module" src="pack-haptics.js?v=28"></script>
+    <script src="profile-preferences.js?v=28"></script>
+    <script src="agent-connections.js?v=28"></script>
+    <script type="module" src="resume-files.js?v=28"></script>
+    <script type="module" src="leaderboard.mjs?v=28"></script>
+    <script src="app-updates.js?v=28"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=28"></script>
   </body>
 </html>

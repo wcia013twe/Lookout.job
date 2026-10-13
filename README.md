@@ -127,16 +127,36 @@ The local runner uses deterministic Playwright operations and makes no model cal
 
 ## Ask Muse to read this update
 
-Developer contract version **4** advertises the concrete local MCP adapter. Tell Muse:
+Developer contract version **5** advertises the concrete local MCP adapter. Tell Muse:
 
 > Check my Job Signal Board context versions. Load and retain the updated developer instructions, and reload my personal settings only if changed or missing. Follow my settings and message templates. Check whether inspect_application, fingerprint_resume and try_application are available. If missing, report the one-time runner setup needed; never claim it is connected. Inspect and prepare drafts, ask me to review unfamiliar answers, and only prefill the exact approved version. Report unresolved failures to Needs you and text me using my configured template. Prepared is not submitted.
 
 This refreshes instructions on an existing authenticated board connection. It
 does not create schedules, send a text, install a runner or submit a job by itself.
 
-Profile → Application automation has an automatically saved **Auto-submit approved
-applications** switch (off by default). Muse reads
-`preferences.search.autoSubmitApproved` after the personal version changes. Off
-requires human submission action; on prefers a supported submit tool for the
-exact approved draft. It does not approve drafts or add submission support to
-the current prefill-only runner. Guests must sign in to sync this choice to Muse.
+Profile → Application automation saves **Auto-apply routine matches** and separate
+full-time/internship review policies immediately. Both thresholds default to
+**A tier and above**. Choose a company list per role type, or let Muse use the
+single matching list. Unknown companies, conflicting placements or ambiguous
+list selections require review. Company-tier IDs stay independent of theme labels.
+
+Muse reads `preferences.search.autoSubmitApproved` and
+`preferences.search.reviewPolicy.{fullTime,internship}` (`tierListId`, `threshold`).
+`read_application_policy({jobId})` checks current owned settings and canonical
+employer data; returns `auto-apply`, `review` or `skip`, with the personal version
+and honest execution limits. This is a read-only policy decision, not approval or
+a submission receipt. No agent can inject its own company tier or owner ID.
+
+Desired interaction: routine matches use verified facts, résumé rules and
+permitted saved answers; important matches get fully prepared and Muse texts a
+focused review of résumé, written answers and consequential choices. Unfamiliar
+questions, missing facts, CAPTCHA, unsupported controls and uncertain outcomes
+always pause. Important-match messages use your theme templates. Auto-apply off
+requires review for every application. Recheck policy before submission.
+
+**Execution limitation:** the bundled runner still requires exact human approval
+for prefill and has no submit adapter. Developer version 5 tells Muse the desired
+policy without claiming this missing execution path is complete. Backend automatic
+authorization for routine applications, duplicate-safe submission claims and
+verified employer receipts remain to implement. Guests must sign in to sync
+policy choices to Muse.
