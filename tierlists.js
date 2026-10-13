@@ -11,7 +11,7 @@
     return `<div class="company-tile${selected === company.id ? ' selected' : ''}" data-company-key="${esc(company.id)}"><button type="button" class="company-select" aria-label="Select ${esc(company.name)} to move" aria-pressed="${selected === company.id}"><logo-img company="${esc(company.name)}" cls="tier-company-logo"></logo-img><span>${esc(company.name)}</span></button><button type="button" class="tier-drag-handle" aria-label="Drag ${esc(company.name)}">${grip}</button></div>`;
   }
   function render() {
-    const list = current(); if (!list) return;
+    const list = current(); if (!list) { document.querySelector('#tierlist-profile').innerHTML=''; document.querySelector('#tierlist-board').innerHTML=''; return; }
     document.querySelector('#tierlist-profile').innerHTML = lists().map(l => `<option value="${esc(l.id)}"${l.id === list.id ? ' selected' : ''}>${esc(l.name)}</option>`).join('');
     document.querySelector('#tierlist-rename').elements.name.value = list.name;
     document.querySelector('#tierlist-context').textContent = [list.description, list.rankingBasis].filter(Boolean).join(' ');
@@ -113,6 +113,7 @@
       feedback(`${error.message} Refresh to retry.`); render();
     } finally { root.removeAttribute('aria-busy'); }
   }
+  document.addEventListener('workspace:hydrated', () => { if(!lists().length)loadConfiguration(); else render(); });
   document.addEventListener('workspace:account', () => { selected=null; cleanup(); loadConfiguration(); });
   render(); loadConfiguration();
 })();

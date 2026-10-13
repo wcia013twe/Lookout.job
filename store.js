@@ -43,7 +43,7 @@
       tracker: { ids: [], items: {} }, // items: id -> { appliedDate, status, statusDate }
       drops: { seenDropIds: [], packStamps: {} }, // packStamps: 'YYYY-MM-DD' -> true
       network: { referrals: [], people: [] },
-      workflow: { applications: {}, profile: { name: '', email: '', phone: '', location: '', authorization: '', verified: false }, resumes: [], savedAnswers: [], tierLists: [], activeTierListId: '' },
+      workflow: { applications: {}, profile: { name: '', email: '', phone: '', location: '', authorization: '', verified: false }, resumes: [], savedAnswers: [], deletedAnswerIds: [], cloudDirty: false, tierLists: [], activeTierListId: '' },
       ui: { packOpen: false }, // transient only, never persisted
     };
   }

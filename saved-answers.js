@@ -36,10 +36,11 @@
     if (remove) {
       deleted = answers().find(a => a.id === remove.dataset.deleteAnswer);
       if (!deleted) return;
+      store.update('workflow.deletedAnswerIds', ids => [...new Set([...(ids || []),deleted.id])]);
       store.set('workflow.savedAnswers',answers().filter(a => a.id !== deleted.id));
       if (editing === deleted.id) reset();
       feedback.textContent = 'Answer deleted. '; const undo = document.createElement('button'); undo.type='button'; undo.textContent='Undo';
-      undo.addEventListener('click', () => { if (deleted) store.set('workflow.savedAnswers',[...answers(),deleted]); deleted=null; feedback.textContent='Answer restored.'; }); feedback.append(undo);
+      undo.addEventListener('click', () => { if (deleted) {store.update('workflow.deletedAnswerIds',ids=>(ids || []).filter(id=>id!==deleted.id));store.set('workflow.savedAnswers',[...answers(),deleted]);} deleted=null; feedback.textContent='Answer restored.'; }); feedback.append(undo);
     }
   });
   document.querySelector('#saved-answer-cancel').addEventListener('click',reset);

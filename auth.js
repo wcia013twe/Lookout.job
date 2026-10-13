@@ -1,4 +1,5 @@
 import {createClient} from '@supabase/supabase-js';
+import {connectCloud} from './cloud.mjs';
 // Project URL and publishable key are public configuration, protected by RLS.
 const url = 'https://umhqfqzpwmszhcknwtrs.supabase.co';
 const key = 'sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5';
@@ -17,7 +18,7 @@ function showSession(session) {
     JB.store.switchAccount(id);
   }
   button.hidden = Boolean(id); signOut.hidden = !id;
-  message.textContent = id ? `Signed in as ${session.user.email || 'your Google account'}. Workspace is saved in this browser; cloud sync is not connected yet.` : 'Browse jobs without an account. Your current workspace is saved in this browser.';
+  message.textContent = id ? `Signed in as ${session.user.email || 'your Google account'}. Your private account is connected.` : 'Browse jobs without an account. Your current workspace is saved in this browser.';
 }
 button.addEventListener('click',async () => {
   if (!providerReady) return;
@@ -35,6 +36,7 @@ signOut.addEventListener('click',async () => {
   if (error) message.textContent='Could not sign out. Try again.';
   signOut.disabled=false;
 });
+connectCloud(client);
 // Keep the auth callback synchronous: database requests inside it can deadlock.
 client.auth.onAuthStateChange((_event,session) => showSession(session));
 try {

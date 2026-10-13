@@ -134,7 +134,7 @@ document.querySelector('#daily-board').addEventListener('click', (event) => {
   window.setTimeout(render, 0);
 });
 
-Promise.all([
+JB.catalogReady = Promise.all([
   fetch('./data/jobs.json').then((response) => response.json()),
   fetch('./data/sudo-drops.json').then((response) => response.json()).catch(() => ({ drops: [] })),
   fetch('./data/logo-manifest.json').then((response) => response.json()).catch(() => ({})),
@@ -553,3 +553,16 @@ document.addEventListener('workspace:account', () => {
   activateTab(document.querySelector('#tab-daily'));
 });
 activateTab(document.querySelector('#tab-daily'));
+
+let publicCatalog = null;
+JB.setBatch = batch => {
+  if (!JB.roles) return;
+  if (!publicCatalog) publicCatalog = {roles:JB.roles,date:currentRunDate};
+  const source = batch || publicCatalog;
+  JB.roles = source.roles;
+  roles = source.roles.map(role => ({...role,applicationStatus:trackerItem(role.id).status || 'New'}));
+  currentRunDate = source.date;
+  document.querySelector('#updated').textContent = batch ? batch.label : `Last scan: ${source.date}`;
+  document.querySelector('#sudo-section').hidden = Boolean(batch);
+  render();
+};

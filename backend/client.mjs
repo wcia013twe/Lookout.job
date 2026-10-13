@@ -1,5 +1,5 @@
 /** Receives an authenticated supabase-js client. Never pass a service-role client here. */
-export function createBackend(client) {
+export function createBackend(client, expectedUserId = null) {
   async function result(request) {
     const { data, error } = await request;
     if (error) throw error;
@@ -9,6 +9,7 @@ export function createBackend(client) {
     const { data, error } = await client.auth.getUser();
     if (error) throw error;
     if (!data.user) throw new Error('Sign in required');
+    if (expectedUserId && data.user.id !== expectedUserId) throw new Error('Account changed');
     return data.user.id;
   }
   const owned = async (table, fields, conflict) => result(client.from(table).upsert(
@@ -20,8 +21,8 @@ export function createBackend(client) {
     signOut() { return result(client.auth.signOut()); },
     async loadWorkspace() {
       const userId = await owner();
-      const tables = ['profiles','preferences','resumes','answer_library','job_batches','applications'];
-      const rows = await Promise.all(tables.map(t => result(client.from(t).select('*').eq('user_id',userId))));
+      const tables = ['profiles','preferences','resumes','answer_library','applications'];
+      const rows = await Promise.all(tables.map(t => result(client.from(t).select('*').eq('user_id',userId).limit(t === 'applications' ? 200 : 500))));
       return Object.fromEntries(tables.map((t,i) => [t,rows[i]]));
     },
     saveProfile(facts, verified = false) {
@@ -30,10 +31,10 @@ export function createBackend(client) {
     savePreferences({search={},tierLists=[],activeTierListId=null,theme={pack:'base'}}) {
       return owned('preferences',{search,tier_lists:tierLists,active_tier_list_id:activeTierListId,theme,updated_at:new Date().toISOString()},'user_id');
     },
-    saveAnswer({id,question,answer,policy='ask',companyScope='',verified=false}) {
+    saveAnswer({id,question,answer,policy='ask',companyScope='',verified=false,context={}}) {
       if (policy === 'auto' && !verified) throw new Error('Review the answer before allowing autofill');
       return owned('answer_library',{...(id ? {id} : {}),question,answer,autofill_policy:policy,
-        company_scope:companyScope.trim() || null,provenance:'user',verified_at:verified ? new Date().toISOString() : null,
+        company_scope:companyScope.trim() || null,context,provenance:'user',verified_at:verified ? new Date().toISOString() : null,
         updated_at:new Date().toISOString()},'id');
     },
     async deleteAnswer(id) {

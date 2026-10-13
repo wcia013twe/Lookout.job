@@ -12,14 +12,14 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=22">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=22">
-    <link rel="stylesheet" href="styles/role-cards.css?v=22">
-    <link rel="stylesheet" href="styles/dashboard.css?v=22">
-    <link rel="stylesheet" href="styles/workflow.css?v=22">
-    <link rel="stylesheet" href="styles/tierlists.css?v=22">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=22">
-    <link rel="stylesheet" href="styles/account.css?v=22">
+    <link rel="stylesheet" href="styles.css?v=23">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=23">
+    <link rel="stylesheet" href="styles/role-cards.css?v=23">
+    <link rel="stylesheet" href="styles/dashboard.css?v=23">
+    <link rel="stylesheet" href="styles/workflow.css?v=23">
+    <link rel="stylesheet" href="styles/tierlists.css?v=23">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=23">
+    <link rel="stylesheet" href="styles/account.css?v=23">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -34,7 +34,10 @@
       <section class="account-bar" aria-label="Account">
         <p id="account-status" role="status">Browse jobs without an account. Your workspace is saved in this browser.</p>
         <button id="account-sign-in" type="button" disabled>Sign in with Google</button>
+        <button id="account-load" type="button" hidden>Load account</button>
+        <button id="account-save" type="button" hidden>Retry sync</button>
         <button id="account-sign-out" type="button" hidden>Sign out</button>
+        <p id="cloud-status" role="status" aria-live="polite"></p>
       </section>
       <div class="tabs" role="tablist" aria-label="Application workspace">
         <button id="tab-needs" role="tab" aria-selected="true" aria-controls="needs-you" tabindex="0">Needs you <span id="needs-count"></span></button>
@@ -155,7 +158,7 @@
         </form>
         <section class="board-section" aria-labelledby="saved-answers-title">
           <h2 id="saved-answers-title">Saved answers</h2>
-          <p class="panel-note">Reuse answers to exact common questions. Saved here in this browser; cloud sign-in and Muse access are not connected yet. Factual contact and authorization answers belong in the profile above.</p>
+          <p class="panel-note">Reuse answers to exact common questions. Saved in this browser. Signed-in changes sync privately to your account. Factual contact and authorization answers belong in the profile above.</p>
           <form id="saved-answer-form" class="workflow-form">
             <label class="workflow-wide">Common question<textarea name="question" required placeholder="e.g. Are you willing to relocate?"></textarea></label>
             <label class="workflow-wide">Your answer<textarea name="answer" required></textarea></label>
@@ -186,24 +189,24 @@
           <label class="workflow-wide">Blocker<input name="blocker" placeholder="Missing fact, login, or another issue"></label>
           <div class="workflow-actions workflow-wide"><button type="submit">Save draft</button><button type="button" id="approve-draft">Approve draft</button></div>
         </form>
-        <p class="panel-note">Approval records this version locally. It does not submit an application.</p>
+        <p class="panel-note">Approval records the reviewed version. It does not submit an application.</p>
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=22"></script>
-    <script src="components.js?v=22"></script>
-    <script src="workflow-model.js?v=22"></script>
-    <script src="app.js?v=22"></script>
-    <script src="saved-answers-model.js?v=22"></script>
-    <script src="workflow.js?v=22"></script>
-    <script src="saved-answers.js?v=22"></script>
-    <script src="tierlist-model.js?v=22"></script>
-    <script src="tierlists.js?v=22"></script>
-    <script type="module" src="workflow-motion.js?v=22"></script>
-    <script type="module" src="pack-effects.js?v=22"></script>
-    <script type="module" src="pack-motion.js?v=22"></script>
-    <script type="module" src="pack-haptics.js?v=22"></script>
-    <script src="app-updates.js?v=22"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=22"></script>
+    <script src="store.js?v=23"></script>
+    <script src="components.js?v=23"></script>
+    <script src="workflow-model.js?v=23"></script>
+    <script src="app.js?v=23"></script>
+    <script src="saved-answers-model.js?v=23"></script>
+    <script src="workflow.js?v=23"></script>
+    <script src="saved-answers.js?v=23"></script>
+    <script src="tierlist-model.js?v=23"></script>
+    <script src="tierlists.js?v=23"></script>
+    <script type="module" src="workflow-motion.js?v=23"></script>
+    <script type="module" src="pack-effects.js?v=23"></script>
+    <script type="module" src="pack-motion.js?v=23"></script>
+    <script type="module" src="pack-haptics.js?v=23"></script>
+    <script src="app-updates.js?v=23"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=23"></script>
   </body>
 </html>

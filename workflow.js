@@ -3,7 +3,7 @@
   const applications = () => store.get('workflow.applications') || {};
   const resumes = () => store.get('workflow.resumes') || [];
   const profile = () => store.get('workflow.profile') || {};
-  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const uid = () => crypto.randomUUID();
   const dialog = document.querySelector('#application-review');
   const draftForm = document.querySelector('#draft-form');
   let reviewing = null;
@@ -132,11 +132,17 @@
     const draft = collect(); save(draft); renderTimeline(draft);
     document.querySelector('#review-feedback').textContent = 'Draft saved.';
   });
-  document.querySelector('#approve-draft').addEventListener('click', () => {
+  document.querySelector('#approve-draft').addEventListener('click', async () => {
     const feedback = document.querySelector('#review-feedback');
     try {
       if (!draftForm.reportValidity()) return;
       const draft = collect(); save(draft);
+      if (JB.auth?.userId) {
+        await JB.cloud.approve(draft.id);
+        renderTimeline(applications()[draft.id]);
+        feedback.textContent = 'This version is approved in your account. It has not been submitted.';
+        return;
+      }
       const approved = model.approve(draft, resumes().find(r => r.id === draft.resumeId), profile());
       save(approved); renderTimeline(approved);
       feedback.textContent = 'This version is approved. It has not been submitted.';
@@ -147,8 +153,9 @@
     const input = profileForm.elements[key];
     if (input) { if (input.type === 'checkbox') input.checked = value; else input.value = value; }
   });
-  document.addEventListener('workspace:account', () => {
-    reviewing = null; dialog.close(); draftForm.reset(); profileForm.reset();
+  function refreshProfile(event) {
+    if(event.type === 'workspace:account') { reviewing = null; dialog.close(); draftForm.reset(); }
+    profileForm.reset();
     document.querySelector('#resume-form').reset();
     document.querySelector('#profile-feedback').textContent = '';
     Object.entries(profile()).forEach(([key,value]) => {
@@ -156,7 +163,9 @@
       if (input.type === 'checkbox') input.checked = value; else input.value = value;
     });
     render();
-  });
+  }
+  document.addEventListener('workspace:account',refreshProfile);
+  document.addEventListener('workspace:hydrated',refreshProfile);
   profileForm.addEventListener('submit', event => {
     event.preventDefault(); const p = {};
     ['name', 'email', 'phone', 'location', 'authorization'].forEach(key => { p[key] = profileForm.elements[key].value.trim(); });
@@ -166,7 +175,7 @@
   document.querySelector('#resume-form').addEventListener('submit', event => {
     event.preventDefault(); const form = event.target;
     const url = form.elements.url.value.trim();
-    if (!/^https?:\/\//i.test(url)) { form.elements.url.setCustomValidity('Use an http or https resume link.'); form.reportValidity(); return; }
+    if (!(JB.auth?.userId ? /^https:\/\//i : /^https?:\/\//i).test(url)) { form.elements.url.setCustomValidity('Use an http or https resume link.'); form.reportValidity(); return; }
     store.set('workflow.resumes', [...resumes(), { id: uid(), name: form.elements.name.value, url }]); form.reset();
   });
   document.querySelector('#resume-form input').addEventListener('input', event => event.target.setCustomValidity(''));

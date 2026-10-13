@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-13 — Account auto-sync and private batch links
+
+- Connected signed-in profile, tier lists, saved answers, resume references and applications to owner-scoped Supabase records.
+- Added debounced background sync, locally retained pending edits, reconnect retry, and explicit conflict reload. No separate save-to-account step.
+- Routed owned morning batch links into Discover while keeping public browsing and guest data local.
+- Switched signed-in approvals to the backend RPC and restricted client status writes; stale application revisions are rejected.
+- Validation: 28 tests, 75 job records, hosted approval/stale-write/batch isolation checks, and clean security advisors. Full OAuth/mobile UI verification remains pending.
+- Agent gateway, full server timeline, legacy tracking/XP/networking sync, and resume-file UI remain unconnected.
+
 ## 2026-10-13 — Google provider enabled
 
 - Verified Google is enabled through hosted Auth settings after owner setup.

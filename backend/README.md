@@ -1,6 +1,6 @@
 # Job board backend — Muse handoff
 
-Status: schema deployed to the `job-board` project (`umhqfqzpwmszhcknwtrs`) in `personal-projects`, US East. All 75 employer job records are seeded. Browser cloud sync is not connected yet. Existing local data is untouched. Do not claim an agent runner, SMS delivery, or automated submission is live.
+Status: schema deployed to the `job-board` project (`umhqfqzpwmszhcknwtrs`) in `personal-projects`, US East. All 75 employer job records are seeded. Signed-in profiles, preferences, saved answers, resume references, and application drafts now sync automatically. Existing local data is untouched. Do not claim an agent runner, SMS delivery, or automated submission is live.
 
 ## Deploy
 
@@ -51,11 +51,11 @@ Both migration versions are recorded in `supabase/migrations/` using the exact h
 
 ## Saved answer controls
 
-The `saved_answer_controls` migration adds `autofill_policy` (ask by default) and `company_scope`; automatic reuse requires a non-null verification timestamp. `client.mjs` has save/delete methods but the browser controls currently use `workflow.savedAnswers` locally. Match exact normalized question text and company scope only, fill empty draft answers only, and retain saved-answer ID/version provenance in the draft snapshot. Never treat reuse permission as permission to submit.
+The `saved_answer_controls` migration adds `autofill_policy` (ask by default) and `company_scope`; automatic reuse requires a non-null verification timestamp. `client.mjs` has save/delete methods but the browser controls use `workflow.savedAnswers` locally and sync those records for signed-in users. Match exact normalized question text and company scope only, fill empty draft answers only, and retain saved-answer ID/version provenance in the draft snapshot. Never treat reuse permission as permission to submit.
 
 ## Google sign-in activation
 
-The app-side Google OAuth client is bundled locally from pinned `@supabase/supabase-js@2.117.3` using `npm run build:auth`. Only the publishable project key is shipped. PKCE callback handling and remembered sessions are enabled. Per-account browser state is isolated; the previous guest workspace remains intact. This does not yet sync that state to the database or grant Muse access. Google was verified enabled in the project on 2026-10-13 after owner configuration. The deployed app includes the auth bundle; a complete user sign-in round trip remains unverified.
+The app-side Google OAuth client is bundled locally from pinned `@supabase/supabase-js@2.117.3` using `npm run build:auth`. Only the publishable project key is shipped. PKCE callback handling and remembered sessions are enabled. Per-account browser state is isolated; the previous guest workspace remains intact. Signed-in workflow state syncs to the database; Muse access is not connected yet. Google was verified enabled in the project on 2026-10-13 after owner configuration. The deployed app includes the auth bundle; a complete user sign-in round trip remains unverified.
 
 To activate:
 
@@ -67,4 +67,14 @@ To activate:
 
 Settings documentation: https://supabase.com/docs/guides/auth/social-login/auth-google
 
-Public Discover remains usable without login. The existing local-only Profile/Application tools remain available while provider setup and cloud sync are pending. Real cloud records continue to require Supabase authentication via RLS. Do not mistake local browser namespacing for encrypted or server-authenticated storage.
+Public Discover remains usable without login. The existing local-only Profile/Application tools remain available while agent access is pending. Real cloud records continue to require Supabase authentication via RLS. Do not mistake local browser namespacing for encrypted or server-authenticated storage.
+
+## Signed-in cloud sync
+
+`cloud.mjs` connects the existing browser store to the owner-scoped backend. Saved form edits, company-tier moves, saved answers and application drafts sync after a 650 ms debounce; it does not upload unsaved form keystrokes. Guest data remains local and is never implicitly imported. Failed sync retains browser edits and retries on reconnection, with a Retry button for other failures. Unsynced edits persist across reloads; explicit Load account asks before replacing them. Application revisions are checked before updates; conflicts pause for review.
+
+Morning links use `?batch=<uuid>` and load only batches owned by the signed-in user. Shared employer facts and personal recommendations are combined for display without mixing them in storage. Agents still need the pending gateway to publish batches.
+
+Signed-in approval waits for sync and uses the database approval RPC; browser clients cannot set application approval/submission statuses directly. Private transitions were verified on the hosted database. Legacy opened-role tracker, networking, XP, and pack history remain browser-local. Resume file upload helpers exist but the current UI syncs references only. The timeline currently shows the cloud application state rather than a complete server event history.
+
+Validation: 28 tests, including actual sync-controller behavior with offline/retry and owner isolation; hosted approval, stale-write and batch-access checks; security advisors clean. Full Google sign-in and mobile interaction remain unverified.

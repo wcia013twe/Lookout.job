@@ -5,8 +5,9 @@
   "region": "us-east-1",
   "schemaDeployed": true,
   "catalogSeedCount": 75,
-  "frontendConnected": false,
+  "frontendConnected": true,
   "agentGatewayDeployed": false,
   "authClientWired": true,
-  "googleProviderEnabled": true
+  "googleProviderEnabled": true,
+  "workspaceAutoSync": true
 }
