@@ -12,16 +12,16 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=25">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=25">
-    <link rel="stylesheet" href="styles/role-cards.css?v=25">
-    <link rel="stylesheet" href="styles/dashboard.css?v=25">
-    <link rel="stylesheet" href="styles/workflow.css?v=25">
-    <link rel="stylesheet" href="styles/tierlists.css?v=25">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=25">
-    <link rel="stylesheet" href="styles/account.css?v=25">
-    <link rel="stylesheet" href="styles/resume-files.css?v=25">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=25">
+    <link rel="stylesheet" href="styles.css?v=26">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=26">
+    <link rel="stylesheet" href="styles/role-cards.css?v=26">
+    <link rel="stylesheet" href="styles/dashboard.css?v=26">
+    <link rel="stylesheet" href="styles/workflow.css?v=26">
+    <link rel="stylesheet" href="styles/tierlists.css?v=26">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=26">
+    <link rel="stylesheet" href="styles/account.css?v=26">
+    <link rel="stylesheet" href="styles/resume-files.css?v=26">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=26">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -195,8 +195,9 @@
           <p id="agent-connection-feedback" role="status" aria-live="polite"></p>
           <div id="agent-issued" hidden>
             <p class="panel-note">This key expires in 30 days. Copy it now; it is shown only once.</p>
-            <label>Agent key<input id="agent-issued-key" type="password" readonly autocomplete="off"></label>
-            <div class="workflow-actions"><button id="agent-copy-setup" type="button">Copy MCP setup</button><button id="agent-hide-key" type="button">Done</button></div>
+            <label>Agent token<input id="agent-issued-key" type="password" readonly autocomplete="off" autocapitalize="none" spellcheck="false"></label>
+            <p class="panel-note">For Muse’s secure token field, copy only the token beginning with <code>jb_agent_</code>. MCP setup includes extra configuration.</p>
+            <div class="workflow-actions"><button id="agent-copy-token" type="button">Copy token</button><button id="agent-copy-setup" type="button">Copy MCP setup</button><button id="agent-hide-key" type="button">Done</button></div>
             <p class="panel-note">Custom MCP server: <code>https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp</code></p>
           </div>
           <div id="agent-connection-list"></div>
@@ -224,24 +225,24 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=25"></script>
-    <script src="components.js?v=25"></script>
-    <script src="workflow-model.js?v=25"></script>
-    <script src="app.js?v=25"></script>
-    <script src="saved-answers-model.js?v=25"></script>
-    <script src="workflow.js?v=25"></script>
-    <script src="saved-answers.js?v=25"></script>
-    <script src="tierlist-model.js?v=25"></script>
-    <script src="tierlists.js?v=25"></script>
-    <script type="module" src="workflow-motion.js?v=25"></script>
-    <script type="module" src="pack-effects.js?v=25"></script>
-    <script type="module" src="pack-motion.js?v=25"></script>
-    <script type="module" src="pack-haptics.js?v=25"></script>
-    <script src="profile-preferences.js?v=25"></script>
-    <script src="agent-connections.js?v=25"></script>
-    <script type="module" src="resume-files.js?v=25"></script>
-    <script type="module" src="leaderboard.mjs?v=25"></script>
-    <script src="app-updates.js?v=25"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=25"></script>
+    <script src="store.js?v=26"></script>
+    <script src="components.js?v=26"></script>
+    <script src="workflow-model.js?v=26"></script>
+    <script src="app.js?v=26"></script>
+    <script src="saved-answers-model.js?v=26"></script>
+    <script src="workflow.js?v=26"></script>
+    <script src="saved-answers.js?v=26"></script>
+    <script src="tierlist-model.js?v=26"></script>
+    <script src="tierlists.js?v=26"></script>
+    <script type="module" src="workflow-motion.js?v=26"></script>
+    <script type="module" src="pack-effects.js?v=26"></script>
+    <script type="module" src="pack-motion.js?v=26"></script>
+    <script type="module" src="pack-haptics.js?v=26"></script>
+    <script src="profile-preferences.js?v=26"></script>
+    <script src="agent-connections.js?v=26"></script>
+    <script type="module" src="resume-files.js?v=26"></script>
+    <script type="module" src="leaderboard.mjs?v=26"></script>
+    <script src="app-updates.js?v=26"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=26"></script>
   </body>
 </html>

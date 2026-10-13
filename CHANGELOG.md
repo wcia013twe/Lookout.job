@@ -1,3 +1,9 @@
+## 2026-10-13 — Copy raw agent token for Muse
+
+- Added a separate Copy token button for secure secret fields; retained Copy MCP setup for full client configuration.
+- Clarified the two formats and disabled token-field autocapitalization/spellcheck. Bumped frontend cache to v26.
+- Validation: JavaScript syntax, existing test suite and data validation pass. User’s private credential and Muse host authentication remain unverified.
+
 ## 2026-10-13 — Runnable local application MCP and Muse developer version 3
 
 - Added a local stdio MCP adapter with a dedicated lazy Playwright browser; forwards hosted data tools and exposes inspection, private résumé fingerprinting and approved prefill.

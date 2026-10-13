@@ -91,7 +91,7 @@
       key.value = response.token;
       issued.hidden = false;
       feedback.textContent =
-        "Connection created. Copy this setup into your agent; the key will not be shown again.";
+        "Connection created. Use Copy token for Muse’s secure token field. The token will not be shown again.";
     } catch (error) {
       if (token === generation) feedback.textContent = error.message;
     } finally {
@@ -109,6 +109,18 @@
     } catch (error) {
       feedback.textContent = error.message;
       button.disabled = false;
+    }
+  });
+  document.querySelector("#agent-copy-token").addEventListener("click", async () => {
+    if (!key.value) return;
+    try {
+      await navigator.clipboard.writeText(key.value);
+      feedback.textContent = "Token copied. Paste it into Muse’s secure token field.";
+    } catch {
+      key.type = "text";
+      key.focus();
+      key.select();
+      feedback.textContent = "Copy the selected token manually into Muse’s secure token field.";
     }
   });
   document
