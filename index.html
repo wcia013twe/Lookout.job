@@ -12,20 +12,20 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=31">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=31">
-    <link rel="stylesheet" href="styles/role-cards.css?v=31">
-    <link rel="stylesheet" href="styles/dashboard.css?v=31">
-    <link rel="stylesheet" href="styles/workflow.css?v=31">
-    <link rel="stylesheet" href="styles/tierlists.css?v=31">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=31">
-    <link rel="stylesheet" href="styles/account.css?v=31">
-    <link rel="stylesheet" href="styles/resume-files.css?v=31">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=31">
+    <link rel="stylesheet" href="styles.css?v=32">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=32">
+    <link rel="stylesheet" href="styles/role-cards.css?v=32">
+    <link rel="stylesheet" href="styles/dashboard.css?v=32">
+    <link rel="stylesheet" href="styles/workflow.css?v=32">
+    <link rel="stylesheet" href="styles/tierlists.css?v=32">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=32">
+    <link rel="stylesheet" href="styles/account.css?v=32">
+    <link rel="stylesheet" href="styles/resume-files.css?v=32">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=32">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="styles/profile.css?v=31">
+      <link rel="stylesheet" href="styles/profile.css?v=32">
   </head>
   <body>
     <main>
@@ -136,7 +136,17 @@
         <p class="panel-note">Save factual answers and resume references. Nothing here is sent to employers.</p>
         <section class="profile-hub" aria-labelledby="candidate-profile-heading">
           <div class="profile-identity"><div class="profile-avatar" id="profile-initials" aria-hidden="true">?</div><h2 id="candidate-profile-heading">My Profile</h2><p id="profile-headline">Add your details to prepare job applications.</p></div>
-          <p id="profile-autofill-help" class="panel-note">Use the same sections as your Simplify profile. Fill them with your browser or Simplify Copilot where supported, or copy your details. Review all facts before saving. Simplify recognition on this site has not been verified.</p>
+          <div class="profile-setup-entry"><button id="profile-start-setup" type="button" aria-expanded="false" aria-controls="profile-onboarding">Start setup</button><p>Choose your agent and introduce yourself.</p></div>
+          <section id="profile-onboarding" class="profile-onboarding" hidden aria-labelledby="setup-heading">
+            <h3 id="setup-heading" tabindex="-1">Let’s set up your search</h3>
+            <form id="profile-setup-form">
+              <fieldset><legend>Choose your agent</legend><label><input type="radio" name="agent" value="platform" checked> Use platform suggestions</label><label><input type="radio" name="agent" value="own"> Bring my own agent</label><label id="setup-agent-name-label" hidden>Agent name<input name="agentName" maxlength="100" placeholder="My career assistant"></label></fieldset>
+              <fieldset><legend>Fill your profile</legend><label><input type="radio" name="source" value="muse" checked> Use Muse with a resume or Simplify profile PDF</label><label><input type="radio" name="source" value="manual"> I’ll fill it out myself</label><div id="setup-muse-help"><p>Send your PDF to Muse. Extracted facts must stay <strong>unverified</strong>, missing facts stay blank, and you review them before application use.</p><blockquote id="setup-muse-request">Read my attached resume or Simplify profile PDF and fill my Job Signal Board profile directly. Save extracted facts as unverified, leave missing facts blank, and let me review them before they are used for applications.</blockquote><button id="setup-copy-muse" type="button">Copy request for Muse</button><p>This button copies a request; it does not upload or extract your PDF.</p></div></fieldset>
+              <fieldset><legend>A quick introduction</legend><label>Your name<input name="name" autocomplete="name" maxlength="100" required></label><label>A little about you (optional)<textarea name="introduction" maxlength="600" rows="3" placeholder="What do you do, and what are you looking for next?"></textarea></label></fieldset>
+              <div class="setup-controls"><button type="submit">Save setup</button><button id="setup-close" type="button">Close</button></div><p id="setup-feedback" role="status" aria-live="polite"></p>
+            </form>
+          </section>
+          <p id="profile-autofill-help" class="panel-note">Ask Muse to read your resume or Simplify profile PDF, or enter your details below. Extracted facts must remain unverified until you review them. Leave missing facts blank.</p>
           <nav class="profile-jump" aria-label="Profile sections"><a href="#profile-personal">Personal information</a><a href="#profile-work">Work experience</a><a href="#profile-education">Education</a><a href="#profile-projects">Projects</a><a href="#profile-skills">Skills &amp; languages</a></nav>
           <form id="profile-form" name="candidate_profile" autocomplete="on" aria-labelledby="candidate-profile-heading" aria-describedby="profile-autofill-help">
             <fieldset id="profile-personal" class="profile-section"><legend>Personal information</legend><div class="workflow-form">
@@ -269,27 +279,28 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=31"></script>
-    <script src="components.js?v=31"></script>
-    <script src="workflow-model.js?v=31"></script>
-    <script src="app.js?v=31"></script>
-    <script src="saved-answers-model.js?v=31"></script>
-    <script src="profile-schema.js?v=31"></script>
-    <script src="profile-editor.js?v=31"></script>
-    <script src="profile-autofill.js?v=31"></script>
-    <script src="workflow.js?v=31"></script>
-    <script src="saved-answers.js?v=31"></script>
-    <script src="tierlist-model.js?v=31"></script>
-    <script src="tierlists.js?v=31"></script>
-    <script type="module" src="workflow-motion.js?v=31"></script>
-    <script type="module" src="pack-effects.js?v=31"></script>
-    <script type="module" src="pack-motion.js?v=31"></script>
-    <script type="module" src="pack-haptics.js?v=31"></script>
-    <script src="profile-preferences.js?v=31"></script>
-    <script src="agent-connections.js?v=31"></script>
-    <script type="module" src="resume-files.js?v=31"></script>
-    <script type="module" src="leaderboard.mjs?v=31"></script>
-    <script src="app-updates.js?v=31"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=31"></script>
+    <script src="store.js?v=32"></script>
+    <script src="components.js?v=32"></script>
+    <script src="workflow-model.js?v=32"></script>
+    <script src="app.js?v=32"></script>
+    <script src="saved-answers-model.js?v=32"></script>
+    <script src="profile-schema.js?v=32"></script>
+    <script src="profile-editor.js?v=32"></script>
+    <script src="profile-autofill.js?v=32"></script>
+    <script src="workflow.js?v=32"></script>
+    <script src="saved-answers.js?v=32"></script>
+    <script src="tierlist-model.js?v=32"></script>
+    <script src="tierlists.js?v=32"></script>
+    <script type="module" src="workflow-motion.js?v=32"></script>
+    <script type="module" src="pack-effects.js?v=32"></script>
+    <script type="module" src="pack-motion.js?v=32"></script>
+    <script type="module" src="pack-haptics.js?v=32"></script>
+    <script src="profile-onboarding.js?v=32"></script>
+    <script src="profile-preferences.js?v=32"></script>
+    <script src="agent-connections.js?v=32"></script>
+    <script type="module" src="resume-files.js?v=32"></script>
+    <script type="module" src="leaderboard.mjs?v=32"></script>
+    <script src="app-updates.js?v=32"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=32"></script>
   </body>
 </html>

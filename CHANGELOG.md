@@ -255,3 +255,9 @@
 - Replaced Simplify/Jobright autofill choices with Muse-assisted resume or Simplify profile PDF setup and manual entry.
 - Added a copyable Muse request requiring unverified extracted facts, blank missing facts, and human review before application use.
 - The Next.js preview does not perform PDF extraction or save extracted facts to the board; this is an explicit handoff to Muse.
+
+## 2026-10-13 — Make onboarding visible on the live Profile tab
+- Added a prominent Start setup button and expandable setup form to the deployed static board, alongside the existing Next.js preview.
+- Added agent preferences, Muse PDF handoff with copyable request, and introduction saving through the existing profile store. Saving clears verification and preserves existing profile facts.
+- Replaced Simplify autofill guidance and bumped asset/service-worker cache to v32.
+- Validation: JavaScript syntax, setup interaction/store checks, data validation (76 roles), and diff whitespace checks passed. No live browser capture performed.
