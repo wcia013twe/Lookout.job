@@ -20,7 +20,7 @@
 
 ## UI development workflow
 
-- For user-requested feature work, update `main` directly through GitHub after relevant checks; the user has authorized automatic pushes and merges. Refresh the current main head first and preserve unrelated changes.
+- For user-requested feature work, always commit and push completed relevant changes to `main` automatically after relevant checks; the user has authorized automatic pushes and merges. Do not ask for push confirmation. Refresh the current main head first and preserve unrelated changes.
 - Keep a concise `CHANGELOG.md` entry for each feature pass, including validation and any verification limits.
 - Keep basic framing and interaction state in code; new visual CSS and GPU shaders belong in `styles/`.
 - Preserve the existing static Web Component structure; do not add a React runtime solely for motion.

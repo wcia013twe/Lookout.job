@@ -240,3 +240,18 @@
 - Reveal all and progress counter.
 - Fixed duplicate XP rewards on replay, keyboard splitting, and modal focus handling.
 - Normalized one internship employment type.
+
+## Mobile onboarding (Next.js)
+- Added `/onboarding/`: choose an agent, select Simplify/Jobright or manual profile setup, and add a short introduction.
+- Setup saves locally; external profile imports and agent connections are not connected.
+- Mobile-first controls, progress, required-name validation, back navigation, and storage-error handling.
+- Validation: design detector reported no findings. Next.js build blocked by pre-existing invalid `@swc/helpers/package.json`; browser verification unavailable.
+
+## Profile setup entry point
+- Added a mobile-friendly Start setup button on the Next.js profile page linking to the interactive onboarding flow.
+- Verified route and component wiring; build remains blocked by the previously reported dependency configuration issue.
+
+## Muse profile setup guidance
+- Replaced Simplify/Jobright autofill choices with Muse-assisted resume or Simplify profile PDF setup and manual entry.
+- Added a copyable Muse request requiring unverified extracted facts, blank missing facts, and human review before application use.
+- The Next.js preview does not perform PDF extraction or save extracted facts to the board; this is an explicit handoff to Muse.
