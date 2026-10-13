@@ -19,3 +19,9 @@ The dashboard keeps manual status edits in browser local storage. The scheduled 
 ## CSV helper?
 
 Not yet. JSON is the canonical dashboard format and avoids a second persistence path. Add CSV export/import only when a spreadsheet becomes a regular part of the workflow; a query helper is not necessary for the current scale.
+
+## Application workspace
+
+The four tabs are Needs you, Discover, Applications, and Profile. Queue a role from Discover, open its review panel in Applications, select a saved resume reference, and enter the exact employer questions and draft answers. Review the complete question list and verify your profile before approving. An edit invalidates the prior approval. Approval stores a versioned snapshot; it never submits an application.
+
+Application drafts, profile facts, and resume references persist in the browser through the existing store. Existing tracker, interview, and referral data remain accessible under Applications. No shared backend, application runner, question extraction, or SMS integration is connected yet.

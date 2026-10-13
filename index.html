@@ -12,10 +12,11 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="styles/pack-effects.css">
-    <link rel="stylesheet" href="styles/role-cards.css">
-    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles.css?v=18">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=18">
+    <link rel="stylesheet" href="styles/role-cards.css?v=18">
+    <link rel="stylesheet" href="styles/dashboard.css?v=18">
+    <link rel="stylesheet" href="styles/workflow.css?v=18">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -27,18 +28,23 @@
         <button id="app-refresh" class="app-refresh" hidden>Update available · Reload</button>
         <details class="dashboard-progress"><summary><span id="progress-summary">Progress</span></summary><xp-hud id="game-hud" aria-live="polite"></xp-hud></details>
       </header>
-      <div class="tabs" role="tablist" aria-label="Job dashboard">
-        <button id="tab-daily" role="tab" aria-selected="true" aria-controls="daily-board" tabindex="0">Daily Board</button>
-        <button id="tab-tracker" role="tab" aria-selected="false" aria-controls="auto-tracker" tabindex="-1">Auto Tracker</button>
-        <button id="tab-procs" role="tab" aria-selected="false" aria-controls="procs" tabindex="-1">Procs</button>
-        <button id="tab-referrals" role="tab" aria-selected="false" aria-controls="referrals" tabindex="-1">Referrals</button>
+      <div class="tabs" role="tablist" aria-label="Application workspace">
+        <button id="tab-needs" role="tab" aria-selected="true" aria-controls="needs-you" tabindex="0">Needs you <span id="needs-count"></span></button>
+        <button id="tab-daily" role="tab" aria-selected="false" aria-controls="daily-board" tabindex="-1">Discover</button>
+        <button id="tab-tracker" role="tab" aria-selected="false" aria-controls="auto-tracker" tabindex="-1">Applications</button>
+        <button id="tab-profile" role="tab" aria-selected="false" aria-controls="profile" tabindex="-1">Profile</button>
       </div>
-      <section class="controls" aria-label="Filter roles">
+      <section id="needs-you" role="tabpanel" aria-labelledby="tab-needs">
+        <div class="section-heading"><h2>Needs you</h2></div>
+        <p class="panel-note">Review answers and resolve blockers. Queued applications stay queued until a runner is connected.</p>
+        <div id="needs-list"></div>
+      </section>
+      <section class="controls" aria-label="Filter roles" hidden>
         <input id="search" type="search" placeholder="Search roles or companies" aria-label="Search company, role, domain, or location">
         <select id="type-filter" aria-label="Employment type"><option value="">All roles</option><option value="FT">Full-time</option><option value="Internship">Internships</option></select>
         <p id="summary" role="status"></p>
       </section>
-      <section id="daily-board" role="tabpanel" aria-labelledby="tab-daily">
+      <section id="daily-board" role="tabpanel" aria-labelledby="tab-daily" hidden>
         <section class="board-section sudo-strip" id="sudo-section" aria-label="Daily opportunity pack">
           <div class="pack-strip-header">
             <div class="pack-strip-info"><strong class="pack-strip-title">Daily drops</strong><div id="sudo-collapsed" class="sudo-banner-wrap"></div></div>
@@ -51,16 +57,22 @@
         <details class="board-help"><summary>How tracking works</summary><p class="panel-note">Opening an application moves it to Auto Tracker. Update its status after applying. Your tracker is saved in this browser. Source details are available within each role’s analysis.</p></details>
       </section>
       <section id="auto-tracker" role="tabpanel" aria-labelledby="tab-tracker" hidden>
-        <p class="panel-note">Only roles you have opened live here. Status changes and applied dates are kept locally in your browser.</p>
+        <div class="section-heading"><h2>Applications</h2></div>
+        <p class="panel-note">Drafts and approvals are saved in this browser. Agent execution and text notifications are not connected yet.</p>
+        <label class="workflow-stage">Stage <select id="application-stage"><option value="">All drafts</option><option>Queued</option><option>Draft</option><option>Awaiting approval</option><option>Approved</option><option>Blocked</option></select></label>
+        <div id="application-list"></div>
+        <details class="workflow-section"><summary>Opened roles and statuses</summary>      <div>
+        <p class="panel-note">Opened roles are separate from submitted applications. Update a status after you apply.</p>
         <div id="tracker-counts" class="tracker-counts"></div>
-        <div class="tracker-table" role="table" aria-label="Tracked applications"><div class="tracker-row tracker-head" role="row"><span>Company</span><span>Job title</span><span>Type</span><span>Date applied</span><span>Status</span></div><div id="tracker"></div></div>
-      </section>
-      <section id="procs" role="tabpanel" aria-labelledby="tab-procs" hidden>
+        <div class="tracker-table" role="table" aria-label="Tracked applications"><div class="tracker-row tracker-head" role="row"><span>Company</span><span>Job title</span><span>Type</span><span>Date opened/applied</span><span>Status</span></div><div id="tracker"></div></div>
+      </div></details>
+        <details class="workflow-section"><summary>Interview pipeline</summary>      <section id="procs">
         <p class="panel-note">Your active interview pipeline, read from the same Auto Tracker data. Change a status in Auto Tracker and the card moves here. Nothing new to enter.</p>
         <div id="proc-pipeline" class="proc-pipeline"></div>
         <details class="proc-closed"><summary>Closed (<span id="proc-closed-count">0</span>)</summary><div id="proc-closed" class="grid"></div></details>
       </section>
-      <section id="referrals" role="tabpanel" aria-labelledby="tab-referrals" hidden>
+</details>
+        <details class="workflow-section"><summary>Referrals and networking</summary>      <section id="referrals">
         <p class="panel-note">People beat portals. Track who can refer you, stay in touch with your network, and grab a copy paste message when it is time to ask. Everything here stays in your browser.</p>
         <section class="board-section">
           <div class="section-heading"><p class="eyebrow">REFERRALS</p><h2>Referral tracker</h2></div>
@@ -103,13 +115,52 @@
           <div id="templates" class="grid"></div>
         </section>
       </section>
+</details>
+      </section>
+      <section id="profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
+        <div class="section-heading"><h2>Profile</h2></div>
+        <p class="panel-note">Save factual answers and resume references. Nothing here is sent to employers.</p>
+        <form id="profile-form" class="workflow-form">
+          <label>Name<input name="name" autocomplete="name"></label>
+          <label>Email<input name="email" type="email" autocomplete="email"></label>
+          <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
+          <label>Location<input name="location" autocomplete="address-level2"></label>
+          <label class="workflow-wide">Work authorization<input name="authorization" placeholder="Your exact verified answer"></label>
+          <label class="workflow-check workflow-wide"><input name="verified" type="checkbox">I have checked these facts</label>
+          <button type="submit">Save profile</button><p id="profile-feedback" role="status"></p>
+        </form>
+        <section class="board-section"><h2>Resume variants</h2>
+          <form id="resume-form" class="workflow-form">
+            <label>Variant<select name="name"><option>Backend</option><option>Distributed Systems</option><option>ML Infrastructure</option><option>Master</option></select></label>
+            <label>Resume link<input name="url" type="url" required placeholder="https://…"></label>
+            <button type="submit">Add reference</button>
+          </form><div id="resume-list"></div>
+        </section>
+      </section>
+      <dialog id="application-review" aria-labelledby="review-title">
+        <div class="workflow-review-head"><h2 id="review-title">Review application</h2><button type="button" id="review-close">Close</button></div>
+        <p id="review-role"></p><p id="review-feedback" role="status"></p>
+        <details><summary>Factual profile</summary><p id="review-profile"></p></details>
+        <form id="draft-form" class="workflow-form">
+          <label class="workflow-wide">Resume<select id="review-resume" name="resumeId"></select></label>
+          <section class="workflow-wide"><h3>Application questions</h3><p class="panel-note">Enter the exact employer question and draft answer. Extraction is not connected yet.</p><div id="review-questions"></div><button type="button" id="add-question">Add question</button></section>
+          <label class="workflow-check workflow-wide"><input name="questionsReviewed" type="checkbox">I reviewed the complete question list for this application</label>
+          <label class="workflow-wide">Blocker<input name="blocker" placeholder="Missing fact, login, or another issue"></label>
+          <div class="workflow-actions workflow-wide"><button type="submit">Save draft</button><button type="button" id="approve-draft">Approve draft</button></div>
+        </form>
+        <p class="panel-note">Approval records this version locally. It does not submit an application.</p>
+        <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
+      </dialog>
     </main>
-    <script src="store.js"></script>
-    <script src="components.js"></script>
-    <script src="app.js"></script>
-    <script type="module" src="pack-effects.js"></script>
-    <script type="module" src="pack-motion.js"></script>
-    <script type="module" src="pack-haptics.js"></script>
-    <script src="app-updates.js?v=17"></script>
+    <script src="store.js?v=18"></script>
+    <script src="components.js?v=18"></script>
+    <script src="workflow-model.js?v=18"></script>
+    <script src="app.js?v=18"></script>
+    <script src="workflow.js?v=18"></script>
+    <script type="module" src="workflow-motion.js?v=18"></script>
+    <script type="module" src="pack-effects.js?v=18"></script>
+    <script type="module" src="pack-motion.js?v=18"></script>
+    <script type="module" src="pack-haptics.js?v=18"></script>
+    <script src="app-updates.js?v=18"></script>
   </body>
 </html>

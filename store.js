@@ -42,6 +42,7 @@
       tracker: { ids: [], items: {} }, // items: id -> { appliedDate, status, statusDate }
       drops: { seenDropIds: [], packStamps: {} }, // packStamps: 'YYYY-MM-DD' -> true
       network: { referrals: [], people: [] },
+      workflow: { applications: {}, profile: { name: '', email: '', phone: '', location: '', authorization: '', verified: false }, resumes: [] },
       ui: { packOpen: false }, // transient only, never persisted
     };
   }
@@ -129,6 +130,7 @@
         tracker: s.tracker,
         drops: s.drops,
         network: s.network,
+        workflow: s.workflow,
       }));
     } catch (e) { /* storage full or unavailable: state stays in memory */ }
   }
@@ -139,7 +141,7 @@
       if (raw !== null) {
         var parsed = JSON.parse(raw);
         var s = defaultState();
-        ['progress', 'tracker', 'drops', 'network'].forEach(function (slice) {
+        ['progress', 'tracker', 'drops', 'network', 'workflow'].forEach(function (slice) {
           if (parsed && parsed[slice] && typeof parsed[slice] === 'object') {
             Object.keys(s[slice]).forEach(function (k) {
               if (parsed[slice][k] !== undefined) s[slice][k] = parsed[slice][k];

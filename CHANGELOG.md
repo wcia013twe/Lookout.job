@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-12 — Application workflow scaffolding
+
+- Added Needs you, Discover, Applications, and Profile tabs.
+- Added a local application queue, editable question/resume review dialog, blockers, versioned approvals, and an activity timeline.
+- Added verified factual profile fields and resume references.
+- Preserved existing tracking, interview pipeline, referrals, and networking inside Applications.
+- Opening a posting records opening, not submission; approval never marks an application submitted.
+- Added basic Motion panel transitions; visual CSS and animation definitions remain in `styles/`.
+- Automation, question extraction, server sync, and text notifications are not connected. All new state is browser-local.
+- Validation: 13 tests, including approval invalidation and persistence migration; all 72 job records and page structure checks pass. Mobile rendering remains unverified.
+
 ## 2026-10-12 — Refresh deployed layouts reliably
 
 - Confirmed the compact dashboard is deployed on GitHub Pages.

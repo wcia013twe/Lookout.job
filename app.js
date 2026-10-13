@@ -18,7 +18,7 @@ const store = () => JB.store;
 const trackedIds = () => new Set(store().get('tracker.ids') || []);
 const saveTrackedIds = (ids) => store().set('tracker.ids', [...ids]);
 const trackerItem = (id) => (store().get('tracker.items') || {})[id] || {};
-const appliedDate = (id) => trackerItem(id).appliedDate || 'Not applied';
+const appliedDate = (id) => { const item = trackerItem(id); return (!item.status || item.status === 'New') ? item.openedDate || item.appliedDate || 'Opened' : item.appliedDate || 'Not applied'; };
 
 const TRACKER_STATUSES = ['New', 'Applied', 'OA', 'Phone Screen', 'Interview', 'Onsite', 'Offer', 'Rejected', 'Withdrawn'];
 
@@ -41,7 +41,7 @@ function roleCardEl(role) {
 
 function trackerRow(role) {
   const status = role.applicationStatus;
-  const opts = TRACKER_STATUSES.map((s) => `<option${s === status ? ' selected' : ''}>${s}</option>`).join('');
+  const opts = TRACKER_STATUSES.map((s) => `<option value="${s}"${s === status ? ' selected' : ''}>${s === 'New' ? 'Opened' : s}</option>`).join('');
   return `<div class="tracker-row" role="row">
     <strong>${escapeHtml(role.company)}</strong>
     <a href="${escapeHtml(role.applicationUrl)}" target="_blank" rel="noreferrer">${escapeHtml(role.title)}</a>
@@ -87,6 +87,8 @@ function activateTab(tab, focus = false) {
     item.tabIndex = item === tab ? 0 : -1;
   });
   document.querySelectorAll('[role="tabpanel"]').forEach((panel) => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
+  document.querySelector('.controls').hidden = !['daily-board', 'auto-tracker'].includes(tab.getAttribute('aria-controls'));
+  document.dispatchEvent(new CustomEvent('workspace:view', { detail: { panel: tab.getAttribute('aria-controls') } }));
   if (focus) tab.focus({ preventScroll: true });
 }
 dashboardTabs.forEach((tab, index) => {
@@ -110,7 +112,7 @@ tracker.addEventListener('change', (event) => {
   role.applicationStatus = event.target.value;
   store().update('tracker.items', (items) => {
     const cur = items[role.id] || {};
-    items[role.id] = { ...cur, status: event.target.value, statusDate: JB.dayStamp() };
+    items[role.id] = { ...cur, status: event.target.value, statusDate: JB.dayStamp(), ...(event.target.value === 'Applied' && (!cur.appliedDate || !cur.status || cur.status === 'New') ? { appliedDate: JB.dayStamp() } : {}) };
     return items;
   });
   JB.awardXpForStatus(role.id, event.target.value);
@@ -125,7 +127,7 @@ document.querySelector('#daily-board').addEventListener('click', (event) => {
   saveTrackedIds(tracked);
   store().update('tracker.items', (items) => {
     const cur = items[link.dataset.trackRole] || {};
-    items[link.dataset.trackRole] = { ...cur, appliedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) };
+    items[link.dataset.trackRole] = { ...cur, openedDate: cur.openedDate || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) };
     return items;
   });
   JB.recordStreakDay();
@@ -143,6 +145,7 @@ Promise.all([
   // object and no logos would ever render.
   Object.assign(JB.logoManifest, manifest || {});
   document.dispatchEvent(new Event('jb:logos'));
+  JB.roles = jobsData.roles;
   roles = jobsData.roles.map((role) => ({ ...role, applicationStatus: trackerItem(role.id).status || role.applicationStatus }));
   currentRunDate = jobsData.lastRun;
   document.querySelector('#updated').textContent = `Last scan: ${jobsData.lastRun}`;
@@ -203,7 +206,7 @@ function renderProcs() {
     .filter((r) => tracked.has(r.id))
     .map((r) => ({ role: r, status: r.applicationStatus || 'New', days: daysSince(statusDateOf(r.id)) }));
   const active = items
-    .filter((i) => !CLOSED_STATUSES.has(i.status))
+    .filter((i) => !CLOSED_STATUSES.has(i.status) && i.status !== 'New')
     .sort((a, b) => (b.days === null ? -1 : b.days) - (a.days === null ? -1 : a.days));
   const closed = items.filter((i) => CLOSED_STATUSES.has(i.status));
   pipeline.innerHTML = '';
@@ -427,7 +430,7 @@ function maybeShowPack() {
   const replay = document.querySelector('#pack-replay');
   if (replay) replay.hidden = !todaysPackDrops.length;
   const stamped = store().get(`drops.packStamps.${JB.dayStamp()}`);
-  if (todaysPackDrops.length && !stamped) showPack(todaysPackDrops);
+  if (todaysPackDrops.length && !stamped && !document.querySelector('#daily-board').hidden) showPack(todaysPackDrops);
 }
 document.addEventListener('pack:closed', () => {
   markDropsSeen();

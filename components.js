@@ -279,7 +279,7 @@
             <div class="meta"><span>Employer posted date: ${esc(g('posted') || 'Not listed')}</span><span>Discovered: ${esc(g('discovered'))}</span>${fresh}</div>
           </details>
         </details>
-        <div class="compact-role-foot"><status-pill kind="priority" value="${esc(g('priority'))}"></status-pill><a href="${esc(g('url'))}" target="_blank" rel="noreferrer" data-track-role="${esc(g('role-id'))}">Open application</a></div>
+        <div class="compact-role-foot"><button type="button" data-queue-role="${esc(g('role-id'))}"${(store().get('workflow.applications') || {})[g('role-id')] ? ' disabled' : ''}>${(store().get('workflow.applications') || {})[g('role-id')] ? 'Queued' : 'Queue application'}</button><status-pill kind="priority" value="${esc(g('priority'))}"></status-pill><a href="${esc(g('url'))}" target="_blank" rel="noreferrer" data-track-role="${esc(g('role-id'))}">Open application</a></div>
       </article>`;
     }
   }
