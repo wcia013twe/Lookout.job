@@ -422,14 +422,10 @@
 
     _tap() {
       if (this._stage === 'mystery') {
-        const now = Date.now();
-        this._taps = [...this._taps.filter((t) => now - t < 1500), now];
-        const el = this.querySelector('.dropcard');
-        if (el) { el.classList.remove('jiggle'); void el.offsetWidth; el.classList.add('jiggle'); }
-        const need = 3 - this._taps.length;
-        const counter = this.querySelector('.mystery-count');
-        if (counter) counter.textContent = need > 0 ? `${need} more tap${need === 1 ? '' : 's'}!` : '';
-        if (this._taps.length >= 3) this._unlock();
+        this._unlock();
+        this._stage = 'common';
+        this._pop();
+        this._checkDone();
         return;
       }
       if (this._stage === 'back') {
@@ -470,7 +466,7 @@
     _pop() {
       const focused = this.contains(document.activeElement);
       this.render();
-      if (focused) this.querySelector('[tabindex]')?.focus();
+      if (focused) this.querySelector('[tabindex]')?.focus({ preventScroll: true });
       this.dispatchEvent(new CustomEvent('dropcard:stage', { bubbles: true, composed: true, detail: { tier: this._stage } }));
       const el = this.querySelector('.dropcard');
       if (!el) return;
@@ -502,11 +498,11 @@
       const glowCls = glow === 'strong' ? ' glow-strong' : glow === 'weak' ? ' glow-weak' : '';
       const miniCls = mini ? ' mini' : '';
       if (this._stage === 'mystery') {
-        this.innerHTML = `<article class="dropcard mystery${miniCls}" role="button" tabindex="0" aria-label="Sealed drop. Tap to open.">
+        this.innerHTML = `<article class="dropcard mystery${miniCls}" role="button" tabindex="0" aria-label="Mystery drop. Tap to reveal.">
           <p class="wild-header">A new opportunity awaits</p>
           <div class="mystery-q">?</div>
-          <p class="mystery-count">Tap to break the seal</p>
-          <p class="dropcard-hint">three taps to charge · swipe to unlock</p>
+          <p class="mystery-count">Tap to reveal</p>
+          <p class="dropcard-hint">tap to open</p>
         </article>`;
         return;
       }
@@ -533,7 +529,7 @@
           ${g('url') ? `<a class="dropcard-link" href="${esc(g('url'))}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">Open posting</a>` : ''}`
         : '';
       const nextHint = !isTrue ? `<p class="dropcard-hint">tap to power up</p>` : `<p class="dropcard-hint done">Fully revealed</p>`;
-      this.innerHTML = `<article class="dropcard t-${stage}${glowCls}${miniCls}" role="button" tabindex="0" aria-label="${isTrue ? esc(g('title')) + ' at ' + esc(g('company')) : 'Charging drop'}, ${RARITY_LABEL[stage]} tier.">
+      this.innerHTML = `<article data-revealed="${isTrue}" class="dropcard t-${stage}${glowCls}${miniCls}" role="button" tabindex="0" aria-label="${isTrue ? esc(g('title')) + ' at ' + esc(g('company')) : 'Charging drop'}, ${RARITY_LABEL[stage]} tier.">
         <div class="dropcard-top">
           <div class="dropcard-art">${isTrue ? `<logo-img company="${esc(g('company'))}" cls="company-logo"></logo-img>` : `<span class="charge-symbol" aria-hidden="true">?</span>`}</div>
           <span class="rarity ${stage}">${RARITY_LABEL[stage]}</span>
@@ -566,8 +562,9 @@
       store().set('ui.packOpen', true);
       this.render();
       this._wire();
+      this.setActiveCard(0);
       this.querySelectorAll('.pack-row [tabindex], .pack-tools button, .pack-nav button').forEach((el) => el.setAttribute('tabindex', '-1'));
-      this.querySelector('.pack-close')?.focus();
+      this.querySelector('.pack-close')?.focus({ preventScroll: true });
       this.dispatchEvent(new CustomEvent('pack:mounted', { bubbles: true }));
     }
     set items(val) {
@@ -586,11 +583,7 @@
         if (claim) return this.claim();
         const nav = e.target.closest('[data-pack-nav]');
         if (nav) {
-          const row = this.querySelector('.pack-row');
-          const cards = [...row.querySelectorAll('drop-card, .double-wrap')];
-          const index = cards.reduce((best, card, i) => Math.abs(card.offsetLeft-row.scrollLeft-row.offsetLeft) < Math.abs(cards[best].offsetLeft-row.scrollLeft-row.offsetLeft) ? i : best, 0);
-          const next = cards[Math.max(0, Math.min(cards.length-1, index + Number(nav.dataset.packNav)))];
-          next?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest', inline: 'center' });
+          this.setActiveCard((this._activeIndex || 0) + Number(nav.dataset.packNav));
           return;
         }
         const combo = e.target.closest('.double-combo');
@@ -615,8 +608,8 @@
         if (e.key === 'Tab') {
           const targets = [...this.querySelectorAll('button, a[href], [tabindex="0"]')].filter((el) => !el.disabled && !el.closest('[hidden]') && el.getAttribute('tabindex') !== '-1');
           const first = targets[0], last = targets[targets.length - 1];
-          if (e.shiftKey && (document.activeElement === first || !this.contains(document.activeElement))) { e.preventDefault(); last?.focus(); }
-          else if (!e.shiftKey && (document.activeElement === last || !this.contains(document.activeElement))) { e.preventDefault(); first?.focus(); }
+          if (e.shiftKey && (document.activeElement === first || !this.contains(document.activeElement))) { e.preventDefault(); last?.focus({ preventScroll: true }); }
+          else if (!e.shiftKey && (document.activeElement === last || !this.contains(document.activeElement))) { e.preventDefault(); first?.focus({ preventScroll: true }); }
         }
       });
       let startX = null;
@@ -652,8 +645,21 @@
         this.classList.remove('pack-sealed', 'pack-tearing');
         this.querySelectorAll('.pack-row [tabindex], .pack-tools button, .pack-nav button').forEach((el) => el.setAttribute('tabindex', '0'));
         this.querySelector('.pack-seal')?.setAttribute('hidden', '');
-        this.querySelector('.dropcard, .double-combo')?.focus();
+        this.querySelector('.dropcard, .double-combo')?.focus({ preventScroll: true });
       }, delay);
+    }
+
+    setActiveCard(index) {
+      const cards = [...this.querySelectorAll('.pack-row drop-card, .pack-row .double-wrap')];
+      this._activeIndex = Math.max(0, Math.min(cards.length - 1, index));
+      cards.forEach((card, i) => { card.hidden = i !== this._activeIndex; });
+      const label = this.querySelector('.pack-nav span');
+      if (label) label.textContent = cards.length ? `Card ${this._activeIndex + 1} of ${cards.length}` : 'No cards';
+      const previous = this.querySelector('[data-pack-nav="-1"]');
+      const next = this.querySelector('[data-pack-nav="1"]');
+      if (previous) previous.disabled = this._activeIndex <= 0;
+      if (next) next.disabled = this._activeIndex >= cards.length - 1;
+      this.dispatchEvent(new CustomEvent('pack:charge', { bubbles: true }));
     }
 
     _cardAttrs(d) {
@@ -695,7 +701,7 @@
             <button class="pack-close icon-btn" aria-label="Close pack">x</button>
           </div>
           <section class="pack-seal" aria-label="Sealed opportunity pack">
-            <div class="pack-seal-art">
+            <div class="pack-seal-art"><div class="seal-shard seal-shard-top" aria-hidden="true"></div><div class="seal-shard seal-shard-bottom" aria-hidden="true"></div>
               <span class="seal-edition">ZERO2SUDO · DAILY EDITION</span>
               <strong class="seal-title">Your next<br>big move.</strong>
               <span class="seal-count">${total} opportunities inside</span>
@@ -705,7 +711,7 @@
           </section>
           <div class="pack-tools"><p class="pack-progress" role="status">0 / ${total} revealed</p><button class="pack-reveal-all">Reveal all</button></div>
           <div class="pack-row">${cards || '<p class="empty">No drops today.</p>'}</div>
-          <div class="pack-nav"><button data-pack-nav="-1" aria-label="Previous card">Previous</button><span>Swipe between cards</span><button data-pack-nav="1" aria-label="Next card">Next</button></div>
+          <div class="pack-nav"><button data-pack-nav="-1" aria-label="Previous card">Previous</button><span>Card 1</span><button data-pack-nav="1" aria-label="Next card">Next</button></div>
           <div class="pack-foot" hidden>
             <p class="pack-summary"></p>
             <button class="pack-claim">${store().get(`drops.packRewards.${dayStamp()}`) ? "Done · XP already claimed" : "Claim +25 XP"}</button>
@@ -738,7 +744,8 @@
       split.appendChild(mk(a));
       split.appendChild(mk(b));
       wrap.replaceWith(split);
-      if (focused) split.querySelector('[tabindex]')?.focus();
+      this.setActiveCard(this._activeIndex || 0);
+      if (focused) split.querySelector('[tabindex]')?.focus({ preventScroll: true });
       this.dispatchEvent(new CustomEvent('dropcard:seen', { bubbles: true, composed: true }));
     }
 
@@ -794,7 +801,7 @@
       store().set(`drops.packStamps.${dayStamp()}`, true);
       this.dispatchEvent(new CustomEvent('pack:closed', { bubbles: true, composed: true, detail: { claimed: !!claimed } }));
       this.remove();
-      if (this._previousFocus?.isConnected) this._previousFocus.focus();
+      if (this._previousFocus?.isConnected) this._previousFocus.focus({ preventScroll: true });
     }
 
     disconnectedCallback() {

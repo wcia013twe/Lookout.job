@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-12 — Reliable tapping and Motion tear
+
+- Replaced the snap-scrolling reveal row with one active card and explicit Previous/Next navigation.
+- Focus restoration now uses `preventScroll`; unrevealed cards own the touch gesture.
+- A single tap begins revealing; removed the rapid-tap timing requirement.
+- Added Motion’s vanilla JavaScript mini engine for two interlocking ragged wrapper halves.
+- Reference: Framer Marketplace Page Tear Transition; independently implemented, no marketplace code copied.
+- Presentation keyframes stay in `styles/`; CSS tearing remains available when Motion cannot load.
+- Added best-effort native-switch haptic ticks on iPhone reveal taps and claims, with Vibration API feedback on supported other browsers. iPhone feedback requires on-device verification.
+- Validation: seven interaction regression tests and all 72 job records. Device rendering remains unverified.
+
 ## 2026-10-12 — Interactive pack opening
 
 - Added a tear-open wrapper: slide the seal or tap; keyboard opening also works.
