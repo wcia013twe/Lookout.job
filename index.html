@@ -12,16 +12,16 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=26">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=26">
-    <link rel="stylesheet" href="styles/role-cards.css?v=26">
-    <link rel="stylesheet" href="styles/dashboard.css?v=26">
-    <link rel="stylesheet" href="styles/workflow.css?v=26">
-    <link rel="stylesheet" href="styles/tierlists.css?v=26">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=26">
-    <link rel="stylesheet" href="styles/account.css?v=26">
-    <link rel="stylesheet" href="styles/resume-files.css?v=26">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=26">
+    <link rel="stylesheet" href="styles.css?v=27">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=27">
+    <link rel="stylesheet" href="styles/role-cards.css?v=27">
+    <link rel="stylesheet" href="styles/dashboard.css?v=27">
+    <link rel="stylesheet" href="styles/workflow.css?v=27">
+    <link rel="stylesheet" href="styles/tierlists.css?v=27">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=27">
+    <link rel="stylesheet" href="styles/account.css?v=27">
+    <link rel="stylesheet" href="styles/resume-files.css?v=27">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=27">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -133,6 +133,12 @@
       <section id="profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
         <div class="section-heading"><h2>Profile</h2></div>
         <p class="panel-note">Save factual answers and resume references. Nothing here is sent to employers.</p>
+        <section class="board-section" aria-labelledby="application-mode-heading">
+          <h2 id="application-mode-heading">Application automation</h2>
+          <label class="workflow-check"><input id="auto-submit-approved" type="checkbox" role="switch" aria-describedby="auto-submit-help">Auto-submit approved applications</label>
+          <p id="auto-submit-help" class="panel-note">Off: Muse stops before submission. On: Muse may submit the exact approved draft through a supported submit tool. The current board runner prefills only. This preference saves automatically.</p>
+          <p id="auto-submit-feedback" role="status" aria-live="polite"></p>
+        </section>
         <details class="workflow-section"><summary>Search preferences</summary>
           <p class="panel-note">Muse uses these preferences for your private morning batch. They do not hide public jobs.</p>
           <form id="search-preferences-form" class="workflow-form">
@@ -225,24 +231,24 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=26"></script>
-    <script src="components.js?v=26"></script>
-    <script src="workflow-model.js?v=26"></script>
-    <script src="app.js?v=26"></script>
-    <script src="saved-answers-model.js?v=26"></script>
-    <script src="workflow.js?v=26"></script>
-    <script src="saved-answers.js?v=26"></script>
-    <script src="tierlist-model.js?v=26"></script>
-    <script src="tierlists.js?v=26"></script>
-    <script type="module" src="workflow-motion.js?v=26"></script>
-    <script type="module" src="pack-effects.js?v=26"></script>
-    <script type="module" src="pack-motion.js?v=26"></script>
-    <script type="module" src="pack-haptics.js?v=26"></script>
-    <script src="profile-preferences.js?v=26"></script>
-    <script src="agent-connections.js?v=26"></script>
-    <script type="module" src="resume-files.js?v=26"></script>
-    <script type="module" src="leaderboard.mjs?v=26"></script>
-    <script src="app-updates.js?v=26"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=26"></script>
+    <script src="store.js?v=27"></script>
+    <script src="components.js?v=27"></script>
+    <script src="workflow-model.js?v=27"></script>
+    <script src="app.js?v=27"></script>
+    <script src="saved-answers-model.js?v=27"></script>
+    <script src="workflow.js?v=27"></script>
+    <script src="saved-answers.js?v=27"></script>
+    <script src="tierlist-model.js?v=27"></script>
+    <script src="tierlists.js?v=27"></script>
+    <script type="module" src="workflow-motion.js?v=27"></script>
+    <script type="module" src="pack-effects.js?v=27"></script>
+    <script type="module" src="pack-motion.js?v=27"></script>
+    <script type="module" src="pack-haptics.js?v=27"></script>
+    <script src="profile-preferences.js?v=27"></script>
+    <script src="agent-connections.js?v=27"></script>
+    <script type="module" src="resume-files.js?v=27"></script>
+    <script type="module" src="leaderboard.mjs?v=27"></script>
+    <script src="app-updates.js?v=27"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=27"></script>
   </body>
 </html>

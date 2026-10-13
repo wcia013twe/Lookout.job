@@ -1,3 +1,9 @@
+## 2026-10-13 — Muse auto-submit preference
+
+- Added a default-off Profile switch that saves immediately and uses existing account autosync/personal-version updates.
+- Developer contract v4 maps the setting to Muse: off stops before submission, on prefers a supported submit tool for the exact approved draft. Approval and confirmation requirements remain enforced; bundled runner still prefills only.
+- Validation: preference persistence/hydration/account switching and existing tests; no live employer submission performed. Frontend cache v27.
+
 ## 2026-10-13 — Copy raw agent token for Muse
 
 - Added a separate Copy token button for secure secret fields; retained Copy MCP setup for full client configuration.

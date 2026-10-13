@@ -127,9 +127,16 @@ The local runner uses deterministic Playwright operations and makes no model cal
 
 ## Ask Muse to read this update
 
-Developer contract version **3** advertises the concrete local MCP adapter. Tell Muse:
+Developer contract version **4** advertises the concrete local MCP adapter. Tell Muse:
 
 > Check my Job Signal Board context versions. Load and retain the updated developer instructions, and reload my personal settings only if changed or missing. Follow my settings and message templates. Check whether inspect_application, fingerprint_resume and try_application are available. If missing, report the one-time runner setup needed; never claim it is connected. Inspect and prepare drafts, ask me to review unfamiliar answers, and only prefill the exact approved version. Report unresolved failures to Needs you and text me using my configured template. Prepared is not submitted.
 
 This refreshes instructions on an existing authenticated board connection. It
 does not create schedules, send a text, install a runner or submit a job by itself.
+
+Profile → Application automation has an automatically saved **Auto-submit approved
+applications** switch (off by default). Muse reads
+`preferences.search.autoSubmitApproved` after the personal version changes. Off
+requires human submission action; on prefers a supported submit tool for the
+exact approved draft. It does not approve drafts or add submission support to
+the current prefill-only runner. Guests must sign in to sync this choice to Muse.

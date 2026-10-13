@@ -2,6 +2,8 @@
 (function () {
   const form = document.querySelector("#search-preferences-form");
   const feedback = document.querySelector("#search-preferences-feedback");
+  const autoSubmit = document.querySelector("#auto-submit-approved");
+  const autoSubmitFeedback = document.querySelector("#auto-submit-feedback");
   const store = JB.store;
   const values = () => store.get("workflow.searchPreferences") || {};
   const lines = (text) => [
@@ -15,6 +17,7 @@
 
   function render() {
     const preferences = values();
+    autoSubmit.checked = preferences.autoSubmitApproved === true;
     for (const field of ["locations", "categories", "excludedCompanies"]) {
       form.elements[field].value = (
         Array.isArray(preferences[field])
@@ -30,6 +33,13 @@
       preferences.employmentTypes.includes("Internship");
     form.elements.targetYear.value = preferences.targetYear || "";
   }
+
+  autoSubmit.addEventListener("change", () => {
+    store.set("workflow.searchPreferences", { ...values(), autoSubmitApproved: autoSubmit.checked });
+    autoSubmitFeedback.textContent = JB.auth?.userId
+      ? "Preference saved. Syncing to your account for Muse’s next settings check."
+      : "Preference saved in this browser. Sign in to share it with Muse.";
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -55,6 +65,7 @@
 
   document.addEventListener("workspace:account", () => {
     feedback.textContent = "";
+    autoSubmitFeedback.textContent = "";
     render();
   });
   document.addEventListener("workspace:hydrated", render);
