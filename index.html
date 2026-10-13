@@ -24,6 +24,7 @@
     <main>
       <header class="dashboard-header">
         <div class="dashboard-identity"><h1>Job signal board</h1><p id="updated">Loading scan…</p></div>
+        <button id="app-refresh" class="app-refresh" hidden>Update available · Reload</button>
         <details class="dashboard-progress"><summary><span id="progress-summary">Progress</span></summary><xp-hud id="game-hud" aria-live="polite"></xp-hud></details>
       </header>
       <div class="tabs" role="tablist" aria-label="Job dashboard">
@@ -109,6 +110,6 @@
     <script type="module" src="pack-effects.js"></script>
     <script type="module" src="pack-motion.js"></script>
     <script type="module" src="pack-haptics.js"></script>
-    <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');</script>
+    <script src="app-updates.js?v=17"></script>
   </body>
 </html>

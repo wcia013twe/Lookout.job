@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-12 — Refresh deployed layouts reliably
+
+- Confirmed the compact dashboard is deployed on GitHub Pages.
+- Versioned CSS/JS requests and changed service-worker network requests to revalidate HTTP cache entries.
+- Service-worker installation reloads assets instead of precaching stale browser responses.
+- Added an update notice so the user can reload after a new worker activates without losing in-progress form input unexpectedly.
+- Validation: syntax checks and live HTML/CSS checks.
+
 ## 2026-10-12 — Mobile dashboard layout
 
 - Replaced the oversized hero with a compact title and scan date.
