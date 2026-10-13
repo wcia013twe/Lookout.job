@@ -1,0 +1,9 @@
+{
+  "name": "job-board-local-runner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node mcp-server.mjs", "install:browser": "playwright install chromium" },
+  "dependencies": { "playwright": "1.64.0" }
+}

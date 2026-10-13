@@ -114,3 +114,12 @@ notification text. Prompt-cache support remains agent/provider-specific.
 Developer configuration lives in `supabase/functions/agent-gateway/instructions.json`.
 Bump `developerVersion` and redeploy the gateway when that contract changes.
 There is no server-side LLM invocation or per-run prompt assembly.
+
+## Optional browser connection
+
+The concrete [local stdio adapter](../runner/README.md#local-mcp-server--concrete-runtime)
+forwards these data tools and adds inspection, resume fingerprinting and approved
+prefill. Register it once on an agent host with Node/Chromium and a graphical
+session. No custom gateway loader is required. The hosted endpoint remains
+data-only. Muse must support that host's local MCP connection; reading developer
+version 3 does not install the adapter.

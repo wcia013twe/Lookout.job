@@ -1,10 +1,10 @@
 # Application runner boundary
 
-This is a small deterministic inspector and approved-prefill library. It does not submit applications, launch a browser, bypass CAPTCHA, or claim generic Workday support. Public ATS submission APIs require employer credentials; applicant automation must use the actual employer form or manual handoff.
+This is a small deterministic inspector and approved-prefill library. It does not submit applications, bypass CAPTCHA, or claim generic Workday support. The local MCP adapter launches a dedicated browser. Public ATS submission APIs require employer credentials; applicant automation must use the actual employer form or manual handoff.
 
 ## Working commands
 
-Node 22+, no new package dependencies:
+Node 22+; the offline inspection commands need no extra dependencies:
 
 ```sh
 node scripts/runner-inspect.mjs https://job-boards.greenhouse.io/company/jobs/123
@@ -33,46 +33,62 @@ The result is `Prepared` or `Blocked`, always with `submission: manual-handoff`.
 
 Sources: [Greenhouse Job Board API](https://docs.greenhouse.io/job-board.html), [Ashby public postings API](https://developers.ashbyhq.com/docs/public-job-posting-api).
 
-## Adapted local tools — no decision model
+## Local MCP server — concrete runtime
 
-Licensed browser primitives and ATS entry selectors have been extracted rather
-than adding either upstream application's dependency tree. See [THIRD_PARTY.md](THIRD_PARTY.md)
-for pinned revisions, modifications and MIT notices. No Jev SDK, AI provider or
-inference calls are included. A successful native prefill uses zero model calls;
-Muse may separately draft new written answers before approval.
+The runnable stdio adapter owns a dedicated visible Chromium browser and fetches
+trusted records directly. It forwards all hosted data tools and adds
+`inspect_application({url})`, `fingerprint_resume({resumeId})`, and
+`try_application({applicationId,attemptId})`. No model provider or custom loader
+is needed. Existing library hooks remain available to custom hosts.
 
-`createApplicationTools({getPage, loadCurrentContext})` in `agent-tools.mjs`
-provides three functions for Muse's **own local browser runtime**:
+One-time setup on the machine running the agent (Node 22+, graphical session):
 
-- `inspect_application({url})`: navigate to an allowlisted job, open one unambiguous
-  form entry, and return full questions, exact choices and a form fingerprint.
-- `select_resume({userId,job,resumes,preferences})`: propose an owned resume from
-  explicit keyword rules or a default; overlapping rules/missing files return
-  Needs selection. Selection never approves a resume or edits an approved draft.
-- `prefill_application({applicationId})`: obtain current records through the
-  trusted loader, validate approval/resume bytes/form, then fill the existing
-  page. Return compact progress/blockers; never click Submit.
-
-Example host integration (browser creation and authentication belong to your
-agent runtime; do not supply agent-asserted approval records):
-
-```js
-import { createApplicationTools } from './runner/agent-tools.mjs';
-const tools = createApplicationTools({
-  getPage: async () => dedicatedEmployerPage,
-  loadCurrentContext: async (id) => trustedBackend.loadApprovedContext(id),
-});
-const form = await tools.inspect_application({url: employerJobUrl});
-// Prepare a draft with form metadata; get human review in the board.
-const progress = await tools.prefill_application({applicationId});
+```sh
+git clone https://github.com/wcia013twe/codex-automated-job-board.git
+cd codex-automated-job-board
+npm ci --prefix runner
+npm run install:browser --prefix runner
 ```
 
-`trustedBackend.loadApprovedContext` is a host-provided capability, not an
-implemented function exported by this repository. It must return current gateway
-approval/application rows plus the owned resume, canonical job and pinned file
-bytes. The remote job-board MCP does not launch browsers or expose these local
-functions yet. Live employer testing, client registration and an atomic
-submission/receipt adapter remain outstanding.
+Create a private agent connection in Profile with `workspace:read`,
+`batches:write`, `drafts:write`, `activity:write`, `approvals:read`, and
+`resumes:read`. Store the issued credential in the client's secret settings.
+Register this **local stdio** MCP server; substitute an absolute checkout path:
+
+```json
+{
+  "mcpServers": {
+    "job-board-runner": {
+      "command": "node",
+      "args": ["/absolute/path/codex-automated-job-board/runner/mcp-server.mjs"],
+      "env": { "JOB_BOARD_AGENT_TOKEN": "YOUR_PRIVATE_AGENT_CREDENTIAL" }
+    }
+  }
+}
+```
+
+Do not commit a populated client configuration. Use this connection instead of
+a duplicate hosted data connection. A remote-only Muse client cannot launch a
+local stdio server; its host must support registering/running this adapter.
+Reading developer instructions alone cannot install a browser or grant tools.
+Muse client support and live employer execution remain unverified.
+
+Workflow: check versions → inspect official job form → fingerprint the owned
+uploaded PDF → prepare draft with exact fields/answers/hash/fingerprint → human
+review → `try_application` with a stable attempt ID. The runner loads current
+approval, public canonical job and private signed file, verifies all snapshots,
+opens the form, and rechecks approval immediately before filling. It never
+returns résumé bytes or signed URLs in its fingerprint result. Downloads allow
+only this project's exact signed Storage object, no redirects or external résumé
+references; upload those references to private Storage first.
+
+Calls run serially because one process owns one browser. The browser stays open
+for human completion until the client ends the process. No arbitrary browser,
+shell or Submit tool is exposed. `Prepared` means prefilled, not submitted.
+If prefill fails, this adapter reports Needs you directly: an embedded agent
+recovery is **not connected**. Custom hosts may supply the existing bounded
+recovery hook. Retain `pendingReport` when reporting is offline; retry only the
+failure report. New answers/documents/forms require renewed approval.
 
 Resume rules can live in the agent's local JSON configuration or the preserved
 custom search-preference keys. No resume-rule editor is added to the UI:

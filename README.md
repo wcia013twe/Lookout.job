@@ -107,7 +107,7 @@ Keep verified personal facts, agent-generated drafts, and employer requirements 
 
 ## Agent and runner setup
 
-Sign in → Profile → Your agent → Create agent connection. Copy the setup into an MCP client that supports bearer headers; keep the key in the agent's secret settings. Connection formats vary by client; Muse's exact custom-MCP/auth support still needs confirmation. Browser tools come from the agent's own runtime, not from the job-board MCP server.
+Sign in → Profile → Your agent → Create agent connection. Copy the setup into an MCP client that supports bearer headers; keep the key in the agent's secret settings. Connection formats vary by client; Muse's exact custom-MCP/auth support still needs confirmation. A concrete local stdio MCP adapter now provides browser inspection and approved prefill; its one-time installation is documented in runner/README.md. The hosted data endpoint does not launch browsers.
 
 - [MCP setup and tools](mcp/README.md)
 - [HTTP gateway contract](backend/agent-contract.md)
@@ -115,7 +115,7 @@ Sign in → Profile → Your agent → Create agent connection. Copy the setup i
 - [Extracted open-source code and licenses](runner/THIRD_PARTY.md)
 - [Backend deployment and auth configuration](backend/README.md)
 
-The local runner uses deterministic Playwright operations and makes no model calls. Jev and other decision models are excluded for now. Muse runtime registration is still required; these browser tools are separate from the hosted data MCP.
+The local runner uses deterministic Playwright operations and makes no model calls. Jev and other decision models are excluded for now. The local adapter forwards data tools as well, so one connection suffices. Muse must support local stdio registration; remote-only client support needs a runner host. Automatic submission and embedded agent recovery remain unfinished.
 
 ## Remaining work
 
@@ -124,3 +124,12 @@ The local runner uses deterministic Playwright operations and makes no model cal
 - Validate prefill against live employer forms, then build a submission adapter with duplicate-attempt protection and employer-confirmed receipts. Workday, CAPTCHA, custom controls and conditional forms still require handoff.
 - Add user account export/deletion, stale-file cleanup, operational alerts/rate limits, and leaderboard abuse handling before broader rollout.
 - Optional later: sync legacy browser link history/networking, add theme packs, and expand job-source automation. Do not add these ahead of the core apply/review loop.
+
+## Ask Muse to read this update
+
+Developer contract version **3** advertises the concrete local MCP adapter. Tell Muse:
+
+> Check my Job Signal Board context versions. Load and retain the updated developer instructions, and reload my personal settings only if changed or missing. Follow my settings and message templates. Check whether inspect_application, fingerprint_resume and try_application are available. If missing, report the one-time runner setup needed; never claim it is connected. Inspect and prepare drafts, ask me to review unfamiliar answers, and only prefill the exact approved version. Report unresolved failures to Needs you and text me using my configured template. Prepared is not submitted.
+
+This refreshes instructions on an existing authenticated board connection. It
+does not create schedules, send a text, install a runner or submit a job by itself.

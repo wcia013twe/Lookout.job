@@ -1,3 +1,11 @@
+## 2026-10-13 — Runnable local application MCP and Muse developer version 3
+
+- Added a local stdio MCP adapter with a dedicated lazy Playwright browser; forwards hosted data tools and exposes inspection, private résumé fingerprinting and approved prefill.
+- Implemented a fixed-endpoint gateway loader for current approval, public canonical job and bounded private Storage downloads; no caller-provided authorization records or custom loader required.
+- Prefill navigates to the approved job and rechecks approval before filling; missing browser/recovery routes to Needs you through the deployed failure tool.
+- Updated versioned Muse instructions, one-time client configuration and README refresh prompt. No model dependency, Submit tool, or embedded agent recovery.
+- Validation: 100 tests, database migration/ownership checks and 75 job records pass. Live Muse registration and live employer forms remain unverified; local stdio needs a compatible agent host.
+
 # Changelog
 
 ## 2026-10-13 — Bounded runner recovery and Needs you reporting
