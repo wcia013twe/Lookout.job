@@ -66,8 +66,10 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 Company logos are public branding assets in the Supabase `company-logos` Storage
 bucket. The website resolves normalized company names through
 `data/logo-manifest.json`; agents do not search for or download logos during job
-scans. Content-hashed URLs keep browser/CDN caches stable. Existing local images
-remain fallbacks, and companies without an asset show initials. This bucket is
+scans. Content-hashed URLs keep browser/CDN caches stable. Missing or unavailable company logos show initials; no company images are bundled.
+Verify stored assets with `node scripts/company-logo-cache.mjs --verify`.
+Upload new PNG/JPEG assets from an external directory with
+`node scripts/company-logo-cache.mjs --upload /path/to/logos`. This bucket is
 separate from private resume storage.
 
 ## Run and validate

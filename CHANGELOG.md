@@ -1,3 +1,9 @@
+## 2026-10-13 — Backend-only company logos
+
+- Removed 66 bundled company images and local fallback paths; unavailable backend logos show initials.
+- Logo maintenance verifies the backend manifest and accepts upload sources from an external directory.
+- Validation: 133 tests, database checks and 76-role validation passed.
+
 ## 2026-10-13 — Simplify-shaped profile and gradual React migration
 
 - Put the candidate profile first with identity, job-search status, repeatable work experience, education and projects, GitHub/other links, skills, preferred skills and languages. Keep resume variants and existing application preferences available.
