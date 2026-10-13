@@ -12,12 +12,13 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=20">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=20">
-    <link rel="stylesheet" href="styles/role-cards.css?v=20">
-    <link rel="stylesheet" href="styles/dashboard.css?v=20">
-    <link rel="stylesheet" href="styles/workflow.css?v=20">
-    <link rel="stylesheet" href="styles/tierlists.css?v=20">
+    <link rel="stylesheet" href="styles.css?v=21">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=21">
+    <link rel="stylesheet" href="styles/role-cards.css?v=21">
+    <link rel="stylesheet" href="styles/dashboard.css?v=21">
+    <link rel="stylesheet" href="styles/workflow.css?v=21">
+    <link rel="stylesheet" href="styles/tierlists.css?v=21">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=21">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -146,6 +147,20 @@
           <label class="workflow-check workflow-wide"><input name="verified" type="checkbox">I have checked these facts</label>
           <button type="submit">Save profile</button><p id="profile-feedback" role="status"></p>
         </form>
+        <section class="board-section" aria-labelledby="saved-answers-title">
+          <h2 id="saved-answers-title">Saved answers</h2>
+          <p class="panel-note">Reuse answers to exact common questions. Saved here in this browser; cloud sign-in and Muse access are not connected yet. Factual contact and authorization answers belong in the profile above.</p>
+          <form id="saved-answer-form" class="workflow-form">
+            <label class="workflow-wide">Common question<textarea name="question" required placeholder="e.g. Are you willing to relocate?"></textarea></label>
+            <label class="workflow-wide">Your answer<textarea name="answer" required></textarea></label>
+            <label>Company scope (optional)<input name="companyScope" placeholder="Leave blank for any company"></label>
+            <label>Reuse permission<select name="policy"><option value="ask">Always ask me</option><option value="auto">Can autofill</option></select></label>
+            <label class="workflow-check workflow-wide"><input name="verified" type="checkbox">I reviewed this answer for reuse</label>
+            <div class="workflow-actions workflow-wide"><button id="saved-answer-save" type="submit">Save answer</button><button id="saved-answer-cancel" type="button" hidden>Cancel edit</button></div>
+          </form>
+          <p id="saved-answer-feedback" role="status" aria-live="polite"></p>
+          <div id="saved-answer-list"></div>
+        </section>
         <section class="board-section"><h2>Resume variants</h2>
           <form id="resume-form" class="workflow-form">
             <label>Variant<select name="name"><option>Backend</option><option>Distributed Systems</option><option>ML Infrastructure</option><option>Master</option></select></label>
@@ -169,17 +184,19 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=20"></script>
-    <script src="components.js?v=20"></script>
-    <script src="workflow-model.js?v=20"></script>
-    <script src="app.js?v=20"></script>
-    <script src="workflow.js?v=20"></script>
-    <script src="tierlist-model.js?v=20"></script>
-    <script src="tierlists.js?v=20"></script>
-    <script type="module" src="workflow-motion.js?v=20"></script>
-    <script type="module" src="pack-effects.js?v=20"></script>
-    <script type="module" src="pack-motion.js?v=20"></script>
-    <script type="module" src="pack-haptics.js?v=20"></script>
-    <script src="app-updates.js?v=20"></script>
+    <script src="store.js?v=21"></script>
+    <script src="components.js?v=21"></script>
+    <script src="workflow-model.js?v=21"></script>
+    <script src="app.js?v=21"></script>
+    <script src="saved-answers-model.js?v=21"></script>
+    <script src="workflow.js?v=21"></script>
+    <script src="saved-answers.js?v=21"></script>
+    <script src="tierlist-model.js?v=21"></script>
+    <script src="tierlists.js?v=21"></script>
+    <script type="module" src="workflow-motion.js?v=21"></script>
+    <script type="module" src="pack-effects.js?v=21"></script>
+    <script type="module" src="pack-motion.js?v=21"></script>
+    <script type="module" src="pack-haptics.js?v=21"></script>
+    <script src="app-updates.js?v=21"></script>
   </body>
 </html>

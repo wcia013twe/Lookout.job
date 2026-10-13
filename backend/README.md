@@ -48,3 +48,7 @@ Passwords, raw session cookies, agent plaintext tokens, and service keys do not 
 ## Hosted verification — 2026-10-13
 
 Both migration versions are recorded in `supabase/migrations/` using the exact hosted history versions. Hosted transaction tests passed for cross-owner isolation, approval creation, and edit-driven revision invalidation; all fixtures were rolled back. Security advisors report no findings. Performance advisors only report unused indexes, expected on a fresh project. The private resume bucket and all 11 public tables were verified. Use migrations for redeployment rather than applying the initial schema twice.
+
+## Saved answer controls
+
+The `saved_answer_controls` migration adds `autofill_policy` (ask by default) and `company_scope`; automatic reuse requires a non-null verification timestamp. `client.mjs` has save/delete methods but the browser controls currently use `workflow.savedAnswers` locally. Match exact normalized question text and company scope only, fill empty draft answers only, and retain saved-answer ID/version provenance in the draft snapshot. Never treat reuse permission as permission to submit.

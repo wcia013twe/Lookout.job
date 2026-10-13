@@ -28,8 +28,28 @@
     document.querySelector('#resume-list').innerHTML = resumes().map(r => `<div class="workflow-row"><div><strong>${esc(r.name)}</strong><p><a href="${esc(r.url)}" target="_blank" rel="noreferrer">Open resume reference</a></p></div></div>`).join('') || '<p class="panel-note">No resume references yet.</p>';
   }
 
+  function suggestAnswer(el) {
+    const question = el.querySelector('[data-field="question"]').value;
+    const answer = el.querySelector('[data-field="answer"]');
+    const target = el.querySelector('.saved-answer-suggestion');
+    target.innerHTML = '';
+    if (answer.value.trim()) return;
+    const library = store.get('workflow.savedAnswers') || [];
+    const company = applications()[reviewing]?.company || '';
+    const automatic = JB.savedAnswerModel.automatic(library,question,company);
+    if (automatic) {
+      applySavedAnswer(el,automatic); target.textContent = 'Filled from your reviewed saved answer. Review before approving.'; return;
+    }
+    target.innerHTML = JB.savedAnswerModel.matching(library,question,company).map(a => `<button type="button" class="saved-answer-use" data-use-answer="${esc(a.id)}">Use saved answer${a.companyScope ? ` · ${esc(a.companyScope)}` : ''}</button>`).join('');
+  }
+  function applySavedAnswer(el,answer) {
+    if (el.querySelector('[data-field="answer"]').value.trim()) return;
+    el.querySelector('[data-field="answer"]').value = answer.answer;
+    el.dataset.savedAnswerId = answer.id; el.dataset.savedAnswerVersion = answer.version;
+    draftForm.elements.questionsReviewed.checked = false;
+  }
   function questionHTML(q) {
-    return `<fieldset class="review-question" data-question="${esc(q.id)}"><label>Employer question<textarea data-field="question" required>${esc(q.question)}</textarea></label><label>Draft answer<textarea data-field="answer">${esc(q.answer)}</textarea></label><button type="button" data-remove-question>Remove question</button></fieldset>`;
+    return `<fieldset class="review-question" data-question="${esc(q.id)}" data-saved-answer-id="${esc(q.savedAnswerId || '')}" data-saved-answer-version="${esc(q.savedAnswerVersion || '')}"><label>Employer question<textarea data-field="question" required>${esc(q.question)}</textarea></label><label>Draft answer<textarea data-field="answer">${esc(q.answer)}</textarea></label><div class="saved-answer-suggestion"></div><button type="button" data-remove-question>Remove question</button></fieldset>`;
   }
 
   function openReview(id) {
@@ -43,6 +63,7 @@
     draftForm.elements.questionsReviewed.checked = draft.questionsReviewed;
     draftForm.elements.blocker.value = draft.blocker;
     document.querySelector('#review-questions').innerHTML = draft.questions.map(questionHTML).join('');
+    document.querySelectorAll('#review-questions [data-question]').forEach(suggestAnswer);
     const p = profile();
     document.querySelector('#review-profile').textContent = [p.name, p.email, p.phone, p.location, p.authorization].filter(Boolean).join(' · ') || 'No factual profile saved.';
     renderTimeline(draft);
@@ -65,6 +86,7 @@
         id: el.dataset.question,
         question: el.querySelector('[data-field="question"]').value.trim(),
         answer: el.querySelector('[data-field="answer"]').value.trim(),
+        ...(el.dataset.savedAnswerId ? {savedAnswerId:el.dataset.savedAnswerId, savedAnswerVersion:Number(el.dataset.savedAnswerVersion)} : {}),
       })),
     });
   }
@@ -80,10 +102,27 @@
       if (!role || applications()[role.id]) return;
       save(model.create(role)); queue.textContent = 'Queued'; queue.disabled = true;
     }
-    if (event.target.closest('[data-remove-question]')) event.target.closest('[data-question]').remove();
+    if (event.target.closest('[data-remove-question]')) { event.target.closest('[data-question]').remove(); draftForm.elements.questionsReviewed.checked = false; }
+  });
+  document.querySelector('#review-questions').addEventListener('input', event => {
+    const el = event.target.closest('[data-question]'); if (!el) return;
+    delete el.dataset.savedAnswerId; delete el.dataset.savedAnswerVersion;
+    el.querySelector('.saved-answer-suggestion').innerHTML = '';
+    draftForm.elements.questionsReviewed.checked = false;
+  });
+  document.querySelector('#review-questions').addEventListener('change', event => {
+    const el = event.target.closest('[data-question]'); if (el) suggestAnswer(el);
+  });
+  document.querySelector('#review-questions').addEventListener('click', event => {
+    const button = event.target.closest('[data-use-answer]'); if (!button) return;
+    const el = button.closest('[data-question]');
+    const company = applications()[reviewing]?.company || '';
+    const answer = JB.savedAnswerModel.matching(store.get('workflow.savedAnswers') || [],el.querySelector('[data-field="question"]').value,company).find(a => a.id === button.dataset.useAnswer);
+    if (answer) { applySavedAnswer(el,answer); el.querySelector('.saved-answer-suggestion').textContent = 'Saved answer selected. Review before approving.'; }
   });
   document.querySelector('#review-close').addEventListener('click', () => dialog.close());
   document.querySelector('#add-question').addEventListener('click', () => {
+    draftForm.elements.questionsReviewed.checked = false;
     const list = document.querySelector('#review-questions');
     list.insertAdjacentHTML('beforeend', questionHTML({ id: uid(), question: '', answer: '' }));
     list.lastElementChild.querySelector('textarea').focus({ preventScroll: true });

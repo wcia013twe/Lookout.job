@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-13 — Saved answer controls
+
+- Added Profile saved answers with editing, deletion/Undo, reuse permissions, review check, and optional company scope.
+- Blank draft answers autofill only from a single reviewed exact-question match; other matches offer explicit Use saved answer. Existing text is preserved.
+- Added saved-answer ID/version provenance; changing question content requires fresh question-list review. Saved answer edits never rewrite existing drafts.
+- Added owner-scoped Supabase control fields, verification constraint, and client save/delete methods. Browser UI remains local until login/sync is connected.
+- Validation: 23 regression tests and hosted verification-constraint check pass. Mobile rendering remains unverified.
+
 ## 2026-10-13 — Hosted Supabase deployment
 
 - Deployed the backend to job-board in personal-projects, US East.

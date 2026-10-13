@@ -39,3 +39,7 @@ Starter lists are copied into browser state once by `presetKey`. Changing the sh
 ## Supabase backend foundation
 
 See [backend/README.md](backend/README.md) for the data model, deployment steps, client adapter, and Muse handoff. The schema separates private profiles/preferences/resumes/answers/batches/applications/approval snapshots/activity from shared employer job facts and opt-in leaderboard metrics. The schema is deployed to the Supabase job-board project with shared job records and private resume storage. Browser cloud sync is not enabled yet; existing local state remains intact.
+
+### Saved answers
+
+Profile → Saved answers stores reusable exact-question responses with Can autofill / Always ask me controls and optional company scope. Autofill requires one reviewed exact match, fills only blank draft fields, and clears the question-list review checkbox. Existing drafts are not changed when a saved answer is edited or deleted. These UI records remain browser-local until cloud sign-in/sync is connected; Supabase has the matching owner-scoped fields and client CRUD methods ready.

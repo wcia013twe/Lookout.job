@@ -30,6 +30,15 @@ export function createBackend(client) {
     savePreferences({search={},tierLists=[],activeTierListId=null,theme={pack:'base'}}) {
       return owned('preferences',{search,tier_lists:tierLists,active_tier_list_id:activeTierListId,theme,updated_at:new Date().toISOString()},'user_id');
     },
+    saveAnswer({id,question,answer,policy='ask',companyScope='',verified=false}) {
+      if (policy === 'auto' && !verified) throw new Error('Review the answer before allowing autofill');
+      return owned('answer_library',{...(id ? {id} : {}),question,answer,autofill_policy:policy,
+        company_scope:companyScope.trim() || null,provenance:'user',verified_at:verified ? new Date().toISOString() : null,
+        updated_at:new Date().toISOString()},'id');
+    },
+    async deleteAnswer(id) {
+      return result(client.from('answer_library').delete().eq('id',id).eq('user_id',await owner()));
+    },
     async uploadResume(file,{name,variant='Master',version=1}) {
       const userId = await owner();
       const extension = file.type === 'application/pdf' ? 'pdf' : file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 'docx' : null;
