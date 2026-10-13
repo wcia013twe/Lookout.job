@@ -14,5 +14,7 @@
   "privateResumeUploads": true,
   "applicationTimeline": true,
   "leaderboardProjection": true,
-  "employerSubmissionEnabled": false
+  "employerSubmissionEnabled": false,
+  "agentContextVersions": true,
+  "developerContractVersion": 1
 }

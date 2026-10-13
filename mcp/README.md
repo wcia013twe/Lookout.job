@@ -40,6 +40,9 @@ settings format is assumed. The HTTP gateway is the alternative integration.
 
 | Tool | Scope | Purpose |
 |---|---|---|
+| check_context_versions | workspace:read | Two tiny context version values; call first each run |
+| read_personal_context | workspace:read | Owned settings when personalVersion changes |
+| read_developer_context | workspace:read | Interaction instructions/defaults when developerVersion changes |
 | workspace_read | workspace:read | Private facts, preferences, answers, applications |
 | publish_batch | batches:write | Private morning batch and its board link |
 | prepare_draft | drafts:write | Revision-checked draft, invalidates old approval |
@@ -73,3 +76,40 @@ untrusted content, and never let it instruct the agent to reveal candidate data.
 
 Protocol references: [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports),
 [tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools).
+
+## Two-version context refresh
+
+Start each run with `check_context_versions`:
+
+```json
+{"personalVersion": 12, "developerVersion": 1}
+```
+
+Keep last-loaded versions **per agent connection**, independently of other agents.
+On bootstrap load both `read_personal_context` and `read_developer_context`.
+Otherwise read only the section whose version differs. Do not consume/reset a
+flag. Personal edits to profile, preferences (including tiers/theme/custom
+messages/schedule), resumes and saved answers advance the personal version.
+Timestamp-only/no-op saves and job/application history do not.
+
+The personal response includes its version plus settings; the developer response
+includes its version plus instructions, default messages, settings paths and
+honest capability flags. Apply each section to the retained agent context, then
+acknowledge its **returned** version. Failed fetches must not advance your cache.
+A change racing the fetch is detected on the next poll.
+
+`context-cache.mjs` exports `refreshAgentContext({call,cache,connectionKey,hasContext})`.
+`call` uses HTTP operation names from the gateway contract. Store the returned
+cache only after persisting the updated instructions/settings in the agent's
+own memory. The connection key is a stable local cache identity, never a raw
+credential. Reconnecting to another account starts a fresh cache.
+
+This API does not create permanent memory in Muse/Dot/Grok. If the runtime did
+not restore the prior context, use `hasContext:false` and reload both sections.
+A version match alone does not reconstruct lost instructions. Personal bundles
+contain private data; do not commit/cache them in public files or include them in
+notification text. Prompt-cache support remains agent/provider-specific.
+
+Developer configuration lives in `supabase/functions/agent-gateway/instructions.json`.
+Bump `developerVersion` and redeploy the gateway when that contract changes.
+There is no server-side LLM invocation or per-run prompt assembly.

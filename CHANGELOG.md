@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-13 — Two-version agent context checks
+
+- Added scoped context-version, personal-settings and developer-instruction tools to HTTP/MCP.
+- Personal profile/preferences/resume/answer changes advance a private per-user counter; unchanged saves and application history do not.
+- Added a versioned developer JSON contract with personal settings mappings, themed message defaults and current capabilities.
+- Added per-connection cache helper: refresh changed sections, bootstrap on lost context, acknowledge only after successful reads; no Jev/model calls.
+- Documented client memory responsibilities; the server does not create permanent Muse/Dot/Grok memory.
+- Validation: 82 tests, migration-chain checks and 75 job records pass; hosted rollback checks cover version changes, ownership, scopes and revocation. Gateway/MCP deployed.
+
 ## 2026-10-13 — Minimal Muse onboarding prompt
 
 - Documented the copy-and-paste prompt: morning full scan, noon/evening Instagram story scans, and text updates.

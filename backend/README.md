@@ -55,3 +55,17 @@ The auth bundle uses pinned Supabase JS and PKCE. A complete real-user Google si
 Backend/MCP tools do not themselves provide a browser, SMS delivery, inbox monitoring, a scheduler or automatic submission. Muse needs a compatible custom-header MCP client plus its own notification/browser runtime. Short-lived resume URLs must not be logged. Native/private browser file operations remain unverified on iPhone.
 
 Before inviting a wider audience, add account export/deletion, orphan-file cleanup, operational monitoring/rate limits and abuse handling. Browser-only networking/link history and local pack rewards remain separate from account state/progress. Themes and animations must not change approval or tracking semantics.
+
+## Agent context versions
+
+Migration `20261013183736_agent_context_versions.sql` adds private per-owner
+settings versions and scoped context reads. The private version table deliberately
+has no client policy or write grants; its RLS/no-policy advisor message is
+informational and reflects deny-by-default client access. Only setting-table
+triggers advance counters; the service gateway can read them.
+
+Developer instructions/message defaults are deployed JSON in
+`supabase/functions/agent-gateway/instructions.json`. Increment its version and
+redeploy the gateway for changes. The two-value check does not retrieve personal
+settings. `mcp/context-cache.mjs` is the agent-runtime helper; no server-side agent
+memory, messaging transport or scheduler is added by this feature.

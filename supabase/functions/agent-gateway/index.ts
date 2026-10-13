@@ -1,5 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
 import { validateRequest, generateToken, hashToken } from './contract.mjs';
+import { contextResponse } from './context.mjs';
 
 // Platform JWT verification is disabled because agents use opaque credentials.
 // Every request is verified here: Supabase getUser for people; hash + expiry +
@@ -73,6 +74,6 @@ Deno.serve(async request => {
       }
       return respond({ data: { resume: data, url } });
     }
-    return respond({ data });
+    return respond({ data: contextResponse(operation, data) });
   } catch { return respond({ error: 'Invalid request' }, 400); }
 });

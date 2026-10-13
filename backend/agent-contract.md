@@ -32,6 +32,9 @@ Scopes can be narrowed independently. Agents have no approval/submission endpoin
 
 | Operation | Scope | Payload/result |
 |---|---|---|
+| `context.versions` | `workspace:read` | `{}` → exactly `{personalVersion,developerVersion}` |
+| `context.personal` | `workspace:read` | `{}` → `{personalVersion,settings}` (owned profile/preferences/answers/resume metadata) |
+| `context.developer` | `workspace:read` | `{}` → developer version, stable interaction instructions, defaults and capability flags |
 | `credentials.verify` | Valid key, no extra scope | `{}` → id/name/scopes/expiry for authenticated discovery; no candidate data |
 | `resumes.read` | `resumes:read` | `{resumeId}` → `{resume,url}` with 60-second private file URL or external reference URL |
 | `workspace.read` | `workspace:read` | `{}` → profile, preferences, saved answers, resume references and latest 100 owned applications |
@@ -80,3 +83,10 @@ The gateway deliberately has no schedules, SMS transport, ATS submit function,
 queue framework, refresh tokens, or general SQL tool. An agent can search locally,
 publish a batch, prepare drafts, and return the link to its user using its own
 supported notification channel. Tokens require manual replacement after expiry.
+
+Context operations accept no caller-supplied owner or cache state. Personal
+version counters are private and read-only to clients. Checks never consume
+updates, so several agents remain independent. Full settings are returned only
+on explicit personal-context reads, not on the two-number check. Personal theme
+messages take precedence over the developer defaults; neither can alter approval
+or submission semantics. See `mcp/README.md` for cache/reset behavior.

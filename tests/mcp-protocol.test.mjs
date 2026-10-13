@@ -30,6 +30,15 @@ test('scope-filtered discovery exposes only bounded workspace tools', async () =
   assert.deepEqual(body.result.tools.map(tool => tool.name), ['read_approval']);
   assert.ok(!TOOLS.some(tool => /browser|shell|sql|submit|approve|issue|revoke/.test(tool.name)));
 });
+test('context discovery and calls use workspace scope and accept no owner injection', async () => {
+  const calls = [], handle = handler(calls, ['workspace:read']);
+  const list = await (await handle(request(rpc('tools/list')))).json();
+  assert.deepEqual(list.result.tools.map(tool => tool.name), ['check_context_versions', 'read_personal_context', 'read_developer_context', 'workspace_read']);
+  await handle(request(rpc('tools/call', { name: 'check_context_versions', arguments: {} })));
+  assert.deepEqual(calls.at(-1), { operation: 'context.versions', payload: {} });
+  const invalid = await handle(request(rpc('tools/call', { name: 'read_personal_context', arguments: { userId: 'other' } })));
+  assert.equal((await invalid.json()).error.code, -32602);
+});
 test('tool calls map only to fixed gateway operations, reject missing scope and unknown arguments', async () => {
   const calls = []; const handle = handler(calls);
   const response = await handle(request(rpc('tools/call', { name: 'read_approval', arguments: { applicationId: 'app' } })));

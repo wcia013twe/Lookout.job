@@ -21,6 +21,16 @@ text interface; the website is available for opening packs, detailed review and
 tracking. Scheduling and Instagram access depend on the connected agent’s
 capabilities; this README entry does not activate automations.
 
+## Agent context updates
+
+Each run checks just `personalVersion` and `developerVersion`. The agent reloads
+only changed personal settings or developer instructions. On first connection or
+lost memory it loads both. Personal edits increment their version automatically;
+developer instructions and message defaults live in
+`supabase/functions/agent-gateway/instructions.json`. Agents keep independent
+last-seen versions. See [context refresh setup](mcp/README.md#two-version-context-refresh).
+This avoids repeated full prompt reads; permanent agent memory depends on its runtime.
+
 ## Desired daily interaction
 
 1. **Set up once.** Optionally sign in with Google; save verified profile facts, resume variants, search preferences, and separate Full-time / Internship company rankings. Choose which saved answers may autofill and which must always ask.

@@ -33,3 +33,4 @@
 - Keep migrations, server functions, pure mapping/models, UI framing, and `styles/` in their existing locations.
 - Run `npm test`, `npm run test:db`, `npm run validate:data` and rebuild the auth bundle for auth/cloud/client changes.
 - Add new features with current-state documentation and honest verification limits; do not describe unconnected external services as live.
+- `supabase/functions/agent-gateway/instructions.json` owns the agent interaction contract and developer message defaults. Increment `developerVersion` whenever instructions, defaults, settings mappings or advertised capabilities change, and deploy the gateway with the config. Personal versions are server-controlled triggers; never reset or edit them from clients.
