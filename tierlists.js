@@ -14,6 +14,7 @@
     const list = current(); if (!list) return;
     document.querySelector('#tierlist-profile').innerHTML = lists().map(l => `<option value="${esc(l.id)}"${l.id === list.id ? ' selected' : ''}>${esc(l.name)}</option>`).join('');
     document.querySelector('#tierlist-rename').elements.name.value = list.name;
+    document.querySelector('#tierlist-context').textContent = [list.description, list.rankingBasis].filter(Boolean).join(' ');
     const companies = new Map(list.companies.map(c => [c.id, c]));
     document.querySelector('#tierlist-board').innerHTML = [...list.tiers, { id: 'unranked', label: 'Unranked' }].map(t => `<section class="tier-row" data-tier="${esc(t.id)}" aria-label="${esc(t.label)} tier"><div class="tier-label">${t.id === 'unranked' ? '<strong>Unranked</strong>' : `<input data-tier-label="${esc(t.id)}" value="${esc(t.label)}" aria-label="Rename ${esc(t.id)} tier" maxlength="24">`}</div><div class="tier-tiles">${(list.placements[t.id] || []).map(id => companies.has(id) ? tile(companies.get(id)) : '').join('')}<span class="tier-drop-hint">Drop here</span></div></section>`).join('');
     document.querySelector('#tierlist-destination').innerHTML = [...list.tiers, { id: 'unranked', label: 'Unranked' }].map(t => `<option value="${esc(t.id)}">${esc(t.label)}</option>`).join('');
@@ -36,7 +37,8 @@
     store.set('workflow.activeTierListId', list.id); event.target.reset(); feedback('New list created.');
   });
   document.querySelector('#tierlist-duplicate').addEventListener('click', () => {
-    const list = model.duplicate(current(), `${current().name} copy`); selected = null;
+    const source = current(); if (!source) { feedback('Starter lists are loading.'); return; }
+    const list = model.duplicate(source, `${source.name} copy`); selected = null;
     store.set('workflow.tierLists', [...lists(), list]); store.set('workflow.activeTierListId', list.id); feedback('List duplicated.');
   });
   document.querySelector('#tierlist-rename').addEventListener('submit', event => {
@@ -94,8 +96,22 @@
   root.addEventListener('pointercancel', () => { cleanup(); feedback('Move cancelled.'); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && drag) { cleanup(); feedback('Move cancelled.'); } });
   store.subscribe('workflow.tierLists', render); store.subscribe('workflow.activeTierListId', render);
-  if (!lists().length) {
-    const list = model.create('Company preferences'); store.set('workflow.tierLists', [list]); store.set('workflow.activeTierListId', list.id);
+  async function loadConfiguration() {
+    root.setAttribute('aria-busy', 'true');
+    try {
+      const response = await fetch(root.dataset.configUrl || './data/tierlist-presets.json');
+      if (!response.ok) throw new Error('Could not load starter lists.');
+      const config = await response.json(); model.configure(config);
+      document.querySelector('#tierlist-heading').textContent = config.branding?.heading || 'Company tier lists';
+      const existing = lists();
+      const additions = (config.presets || []).filter(p => !existing.some(l => l.presetKey === p.key)).map(p => model.seed(p));
+      if (additions.length) store.set('workflow.tierLists', [...existing, ...additions]);
+      if (additions.length) store.set('workflow.activeTierListId', additions[0].id);
+      else if (!current() && lists().length) store.set('workflow.activeTierListId', lists()[0].id);
+      render(); feedback('Starter rankings loaded. Your existing edits are preserved.');
+    } catch (error) {
+      feedback(`${error.message} Refresh to retry.`); render();
+    } finally { root.removeAttribute('aria-busy'); }
   }
-  render();
+  render(); loadConfiguration();
 })();

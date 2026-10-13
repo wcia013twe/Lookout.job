@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-12 — Ranked starter profiles and JSON lookup
+
+- Added separate Full-time and Internship starter profiles with subjective initial company rankings.
+- Set Oracle at C-tier as the full-time baseline.
+- Moved company names, tier labels, baseline, branding, and preset placements into `data/tierlist-presets.json`.
+- Added a configurable JSON source for white-label reuse and non-destructive starter seeding.
+- Preserved saved custom lists and edits; defaults copy into browser state rather than replacing user data.
+- Validation: 20 tests and all 72 job records pass. Mobile rendering remains unverified.
+
 ## 2026-10-12 — Saved company tier lists
 
 - Added a Profile tier-list builder seeded with 26 tech companies, all initially unranked.

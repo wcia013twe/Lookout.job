@@ -5,6 +5,7 @@ const fs = require('node:fs');
 function model() {
   const c = { window: { JB: { normCompany: name => name.toLowerCase().replaceAll(' ', '-') } }, Date, Math };
   vm.runInNewContext(fs.readFileSync('tierlist-model.js', 'utf8'), c);
+  c.window.JB.tierlistModel.configure(JSON.parse(fs.readFileSync('data/tierlist-presets.json', 'utf8')));
   return c.window.JB.tierlistModel;
 }
 test('companies start unranked with no assigned priorities', () => {
@@ -38,4 +39,18 @@ test('custom companies are unranked and invalid moves cannot alter a list', () =
   assert.throws(() => m.addCompany(list, ' example tech '), /already/);
   assert.throws(() => m.move(list, 'nvidia', 'missing'), /Unknown tier/);
   assert.throws(() => m.move(list, 'missing-company', 'S'), /Unknown company/);
+});
+
+test('starter profiles assign every company once and keep FT and internships separate', () => {
+  const m = model(), config = JSON.parse(fs.readFileSync('data/tierlist-presets.json', 'utf8'));
+  const ft = m.seed(config.presets[0]), intern = m.seed(config.presets[1]);
+  for (const list of [ft, intern]) { const ids = Object.values(list.placements).flat(); assert.equal(ids.length, list.companies.length); assert.equal(new Set(ids).size, ids.length); }
+  assert.ok(ft.placements.S.includes('databricks')); assert.ok(intern.placements.S.includes('nvidia'));
+  assert.ok(ft.placements.C.includes('oracle')); assert.equal(config.baseline.tierId, 'C');
+  assert.equal(ft.employmentType, 'FT'); assert.equal(intern.employmentType, 'Internship');
+  assert.ok(!ft.placements.S.includes('linkedin')); assert.ok(intern.placements.S.includes('linkedin'));
+});
+test('duplicating a preset creates a custom profile rather than another starter marker', () => {
+  const m = model(), config = JSON.parse(fs.readFileSync('data/tierlist-presets.json', 'utf8'));
+  const copy = m.duplicate(m.seed(config.presets[0]), 'My version'); assert.equal(copy.presetKey, undefined);
 });

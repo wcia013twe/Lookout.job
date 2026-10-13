@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "branding": {
+    "heading": "Company tier lists"
+  },
+  "rankingBasis": "Subjective starting preferences for systems and AI infrastructure; not hiring odds or guaranteed team quality.",
+  "companies": [
+    {
+      "id": "google",
+      "name": "Google"
+    },
+    {
+      "id": "apple",
+      "name": "Apple"
+    },
+    {
+      "id": "microsoft",
+      "name": "Microsoft"
+    },
+    {
+      "id": "amazon",
+      "name": "Amazon"
+    },
+    {
+      "id": "meta",
+      "name": "Meta"
+    },
+    {
+      "id": "nvidia",
+      "name": "NVIDIA"
+    },
+    {
+      "id": "databricks",
+      "name": "Databricks"
+    },
+    {
+      "id": "snowflake",
+      "name": "Snowflake"
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI"
+    },
+    {
+      "id": "anthropic",
+      "name": "Anthropic"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe"
+    },
+    {
+      "id": "netflix",
+      "name": "Netflix"
+    },
+    {
+      "id": "uber",
+      "name": "Uber"
+    },
+    {
+      "id": "airbnb",
+      "name": "Airbnb"
+    },
+    {
+      "id": "salesforce",
+      "name": "Salesforce"
+    },
+    {
+      "id": "adobe",
+      "name": "Adobe"
+    },
+    {
+      "id": "oracle",
+      "name": "Oracle"
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn"
+    },
+    {
+      "id": "amd",
+      "name": "AMD"
+    },
+    {
+      "id": "intel",
+      "name": "Intel"
+    },
+    {
+      "id": "cisco",
+      "name": "Cisco"
+    },
+    {
+      "id": "ibm",
+      "name": "IBM"
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare"
+    },
+    {
+      "id": "mongodb",
+      "name": "MongoDB"
+    },
+    {
+      "id": "palantir",
+      "name": "Palantir"
+    },
+    {
+      "id": "bloomberg",
+      "name": "Bloomberg"
+    }
+  ],
+  "tiers": [
+    {
+      "id": "S",
+      "label": "S"
+    },
+    {
+      "id": "A",
+      "label": "A"
+    },
+    {
+      "id": "B",
+      "label": "B"
+    },
+    {
+      "id": "C",
+      "label": "C"
+    },
+    {
+      "id": "D",
+      "label": "D"
+    }
+  ],
+  "presets": [
+    {
+      "key": "full-time",
+      "name": "Full-time",
+      "employmentType": "FT",
+      "description": "Full-time preferences. Oracle is the C-tier baseline; higher tiers represent potential trade-ups. Team fit still matters.",
+      "placements": {
+        "S": [
+          "databricks",
+          "snowflake",
+          "nvidia",
+          "openai",
+          "anthropic"
+        ],
+        "A": [
+          "google",
+          "meta",
+          "microsoft",
+          "stripe",
+          "cloudflare",
+          "mongodb",
+          "linkedin",
+          "palantir"
+        ],
+        "B": [
+          "apple",
+          "amazon",
+          "netflix",
+          "uber",
+          "airbnb",
+          "amd",
+          "intel",
+          "bloomberg"
+        ],
+        "C": [
+          "oracle",
+          "salesforce",
+          "adobe"
+        ],
+        "D": [
+          "cisco",
+          "ibm"
+        ]
+      }
+    },
+    {
+      "key": "internship",
+      "name": "Internship",
+      "employmentType": "Internship",
+      "description": "Internship preferences. Prioritize specialization and conversion upside; a high company tier alone does not justify delaying graduation.",
+      "placements": {
+        "S": [
+          "databricks",
+          "snowflake",
+          "nvidia",
+          "google",
+          "meta",
+          "linkedin"
+        ],
+        "A": [
+          "microsoft",
+          "amazon",
+          "stripe",
+          "openai",
+          "anthropic",
+          "cloudflare",
+          "mongodb"
+        ],
+        "B": [
+          "apple",
+          "netflix",
+          "uber",
+          "airbnb",
+          "amd",
+          "intel",
+          "palantir",
+          "bloomberg"
+        ],
+        "C": [
+          "oracle",
+          "salesforce",
+          "adobe",
+          "cisco",
+          "ibm"
+        ],
+        "D": []
+      },
+      "notes": {}
+    }
+  ],
+  "baseline": {
+    "employmentType": "FT",
+    "companyId": "oracle",
+    "tierId": "C"
+  }
+}
