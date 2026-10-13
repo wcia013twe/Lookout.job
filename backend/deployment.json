@@ -8,5 +8,5 @@
   "frontendConnected": false,
   "agentGatewayDeployed": false,
   "authClientWired": true,
-  "googleProviderEnabled": false
+  "googleProviderEnabled": true
 }

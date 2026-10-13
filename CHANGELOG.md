@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-13 — Google provider enabled
+
+- Verified Google is enabled through hosted Auth settings after owner setup.
+- Verified the deployed app references the Google auth bundle.
+- Login remains optional for public browsing and local tools; cloud sync and agent access remain unconnected.
+- Full user OAuth round-trip verification remains pending.
+
 ## 2026-10-13 — Google account scaffolding
 
 - Added locally bundled Supabase Google OAuth client, PKCE callbacks, remembered sessions, sign-out, and provider readiness checks.

@@ -46,4 +46,4 @@ Profile → Saved answers stores reusable exact-question responses with Can auto
 
 ### Google account setup
 
-Discover opens without login. The Google sign-in client and per-account local workspace are wired; provider activation instructions are in `backend/README.md`. Google is currently disabled in Supabase, so sign-in remains unavailable until OAuth credentials/redirects are configured. Cloud workspace sync and Muse access remain unconnected. Rebuild the vendored auth bundle with `npm run build:auth` after editing `auth.js`.
+Discover opens without login. The Google sign-in client and per-account local workspace are wired; provider activation instructions are in `backend/README.md`. Google is enabled in Supabase and the sign-in client is deployed. Login is optional for browsing and local tools; a complete user sign-in round trip remains to be verified. Cloud workspace sync and Muse access remain unconnected. Rebuild the vendored auth bundle with `npm run build:auth` after editing `auth.js`.

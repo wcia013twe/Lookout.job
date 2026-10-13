@@ -55,7 +55,7 @@ The `saved_answer_controls` migration adds `autofill_policy` (ask by default) an
 
 ## Google sign-in activation
 
-The app-side Google OAuth client is bundled locally from pinned `@supabase/supabase-js@2.117.3` using `npm run build:auth`. Only the publishable project key is shipped. PKCE callback handling and remembered sessions are enabled. Per-account browser state is isolated; the previous guest workspace remains intact. This does not yet sync that state to the database or grant Muse access. Google was verified disabled in the project on 2026-10-13, so the app checks provider readiness and keeps sign-in unavailable until configured.
+The app-side Google OAuth client is bundled locally from pinned `@supabase/supabase-js@2.117.3` using `npm run build:auth`. Only the publishable project key is shipped. PKCE callback handling and remembered sessions are enabled. Per-account browser state is isolated; the previous guest workspace remains intact. This does not yet sync that state to the database or grant Muse access. Google was verified enabled in the project on 2026-10-13 after owner configuration. The deployed app includes the auth bundle; a complete user sign-in round trip remains unverified.
 
 To activate:
 
