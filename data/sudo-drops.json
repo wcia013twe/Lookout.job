@@ -1,5 +1,5 @@
 {
- "date": "2026-10-12",
+ "date": "2026-10-13",
  "source": "zero2sudo",
  "drops": [
   {
@@ -937,6 +937,58 @@
    "status": "pending",
    "skipReason": null,
    "note": "Slide said posted Oct 12, 2026; direct Microsoft careers job URL not extractable via text fetch; resolve in next run."
+  },
+  {
+   "company": "IMC",
+   "title": "Deep Learning Research Intern - Summer 2027",
+   "location": "Chicago, IL; New York, NY",
+   "type": "Internship",
+   "comp": "$300,000 base",
+   "url": "https://job-boards.eu.greenhouse.io/imc/jobs/4907430101",
+   "dateSeen": "2026-10-13",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live 2026-10-13. 10-week program, in person from Jun 7, 2027; competitive comp plus accommodations; grad window Sep 2027-Jul 2028 (Dec 2027 MS finish fits, May 2027 does not); graduate DL researcher offer path."
+  },
+  {
+   "company": "DoorDash",
+   "title": "Software Engineer, Intern - Labs (Summer 2027)",
+   "location": "San Francisco, CA; Sunnyvale, CA",
+   "type": "Internship",
+   "comp": "$107,400-$158,000 base",
+   "url": "https://job-boards.greenhouse.io/doordashusa/jobs/8263774",
+   "dateSeen": "2026-10-13",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Duplicate: already on the board; story re-drop 2026-10-13 confirmed the posting reopened and is live",
+   "note": "Story noted it closed Fri Oct 10 and reopened; verified live on Greenhouse 2026-10-13."
+  },
+  {
+   "company": "DV",
+   "title": "Data Center Engineer Intern - Summer 2027",
+   "location": "Chicago, IL",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-13",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Hardware/data-center role, off-target",
+   "note": "DV Trading / DV Group. Link sticker pointed to job-boards.greenhouse.io."
+  },
+  {
+   "company": "Meta",
+   "title": "Signal Integrity Intern",
+   "location": "Menlo Park, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-13",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Hardware-only role",
+   "note": null
   }
  ]
 }
