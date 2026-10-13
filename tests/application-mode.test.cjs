@@ -14,7 +14,7 @@ function setup(initial = {}) {
   vm.runInNewContext(fs.readFileSync('profile-preferences.js', 'utf8'), {
     document: { querySelector: element, addEventListener: (event, fn) => events[event] = fn },
     Option: function(text, value) { return { text, value }; },
-    JB: { auth: { userId: 'one' }, store: { get: key => key === 'workflow.tierLists' ? lists : preferences, set: (_key, value) => preferences = value, subscribe() {} } },
+    JB: { auth: { userId: 'one' }, store: { get: key => key === 'workflow.tierLists' ? lists : key === 'workflow.resumes' ? [] : preferences, set: (_key, value) => preferences = value, subscribe() {} } },
   });
   return { element, events, get: () => preferences, replace: value => preferences = value };
 }
@@ -32,10 +32,10 @@ test('hydration and account changes use only strict true, without retaining anot
   f.replace({ autoSubmitApproved: 'true' }); f.events['workspace:hydrated'](); assert.equal(toggle.checked, false);
   f.replace({ autoSubmitApproved: true }); f.events['workspace:hydrated'](); assert.equal(toggle.checked, true);
 });
-test('Muse contract maps the choice without advertising automatic submission', async () => {
+test('Muse contract maps the choice advertises only the supported submission adapter', async () => {
   const contract = JSON.parse(fs.readFileSync('supabase/functions/agent-gateway/instructions.json'));
   assert.equal(contract.personalSettingsPaths.autoSubmitApproved, 'preferences.search.autoSubmitApproved');
-  assert.equal(contract.capabilities.automaticSubmission, false);
+  assert.equal(contract.capabilities.automaticSubmission, 'supported-greenhouse-native-forms');
   const { fromCloud } = await import('../cloud-model.mjs');
   const workspace = fromCloud({ profiles: [], preferences: [{ search: { autoSubmitApproved: true } }], resumes: [], answer_library: [], applications: [] });
   assert.equal(workspace.searchPreferences.autoSubmitApproved, true);

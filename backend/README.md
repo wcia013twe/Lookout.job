@@ -69,3 +69,16 @@ Developer instructions/message defaults are deployed JSON in
 redeploy the gateway for changes. The two-value check does not retrieve personal
 settings. `mcp/context-cache.mjs` is the agent-runtime helper; no server-side agent
 memory, messaging transport or scheduler is added by this feature.
+
+## Guarded native Greenhouse submission
+
+Migrations 20261013225545 and 20261013225637 add attempts and explicit read-only
+client grants. The service-only submission context/transition RPCs authenticate
+scoped agent keys and compare current context at claim/start. Automatic policy
+authorization is distinct from a human approval row. One-use permits, partial
+unique active-attempt indexing and in-flight draft freezing prevent second clicks.
+Unknown results persist a blocker; human-only negative verification releases a
+retry. Signed receipts are unavailable: stored confirmation is specifically
+runner-observed employer evidence. The browser can read its own minimal attempt
+metadata, not write receipts or transitions. See runner/README.md and the gateway
+submission modules for the execution contract.

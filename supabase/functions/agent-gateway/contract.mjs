@@ -1,11 +1,32 @@
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['workspace:read', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = ['connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy'];
+export const OPERATIONS = ['connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy','submission.context','submission.claim','submission.start','submission.finish'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
   if (!p || typeof p !== 'object' || Array.isArray(p)) throw new Error('Payload must be an object');
+  if (input.operation.startsWith('submission.')) {
+    const uuid = value => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
+    const op = input.operation.slice(11);
+    const keys = {context:['applicationId'],claim:['applicationId','attemptId','expectedRevision','expectedPersonalVersion'],start:['applicationId','claimId','expectedRevision','expectedPersonalVersion'],finish:['applicationId','claimId','outcome','receipt']}[op];
+    if (!keys || Object.keys(p).some(key => !keys.includes(key)) || !uuid(p.applicationId)) throw new Error('Invalid submission payload');
+    if (['claim','start'].includes(op) && (!Number.isInteger(p.expectedRevision) || p.expectedRevision<0 || !Number.isSafeInteger(p.expectedPersonalVersion) || p.expectedPersonalVersion<1)) throw new Error('Current revision and settings version required');
+    if (op==='claim' && !/^[a-zA-Z0-9_-]{1,80}$/.test(p.attemptId || '')) throw new Error('Stable attempt ID required');
+    if (['start','finish'].includes(op) && !uuid(p.claimId)) throw new Error('Claim ID required');
+    if (op==='finish') {
+      if (!['confirmed','uncertain','cancelled'].includes(p.outcome)) throw new Error('Outcome required');
+      if (p.outcome==='confirmed') {
+        const r=p.receipt;
+        if(!r || Object.keys(r).some(key=>!['source','jobUrl','observedUrl','marker','message'].includes(key)) || r.source!=='runner-observed-greenhouse-confirmation'
+          || typeof r.jobUrl!=='string' || typeof r.observedUrl!=='string' || r.jobUrl.length>2048 || r.observedUrl.length>2048
+          || !['#confirmation','#application_confirmation','[data-testid="application-confirmation"]'].includes(r.marker)
+          || typeof r.message!=='string' || !/thank you for applying|application (?:has been |was )?submitted|application (?:has been |was )?received/i.test(r.message) || r.message.length>1000) throw new Error('Observed employer confirmation required');
+        const expected=new URL(r.jobUrl), observed=new URL(r.observedUrl);
+        if(expected.origin!==observed.origin || ![expected.pathname,expected.pathname+'/confirmation'].includes(observed.pathname) || observed.search || observed.hash || observed.username || observed.password) throw new Error('Confirmation URL mismatch');
+      } else if(p.receipt!==undefined) throw new Error('Receipt not allowed without confirmation');
+    }
+  }
   if (input.operation === 'applications.policy' && (Object.keys(p).length !== 1 || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(p.jobId || ''))) throw new Error('Job ID required');
   if (input.operation.startsWith('context.') && Object.keys(p).length) throw new Error('No context arguments allowed');
   if (input.operation === 'runner.report_failure') {

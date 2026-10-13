@@ -28,7 +28,7 @@
     document.querySelector(`[aria-controls="${id}"]`)?.click();
 
   function row(draft) {
-    return `<article class="workflow-row"><div><strong>${esc(draft.company)}</strong><p>${esc(draft.title)}</p><small>${esc(draft.status)}${draft.status === "Approved" ? " · waiting for runner" : draft.status === "Submitted" ? (draft.receipt ? " · receipt saved" : " · reported by you") : ""}</small></div><button type="button" data-review="${esc(draft.id)}">${model.canEdit(draft) ? "Review" : "View progress"}</button></article>`;
+    return `<article class="workflow-row"><div><strong>${esc(draft.company)}</strong><p>${esc(draft.title)}</p><small>${esc(draft.status)}${draft.status === "Approved" ? " · waiting for runner" : draft.status === "Submitted" ? (draft.receipt ? " · employer confirmation observed" : " · reported by you") : ""}</small></div><button type="button" data-review="${esc(draft.id)}">${model.canEdit(draft) ? "Review" : "View progress"}</button></article>`;
   }
 
   function render() {
@@ -46,7 +46,7 @@
       filtered.map(row).join("") ||
       '<p class="empty">No drafts here. Queue a role from Discover.</p>';
     const needs = list.filter(
-      (d) => d.status === "Awaiting approval" || d.status === "Blocked",
+(d) => d.status === "Awaiting approval" || d.status === "Blocked" || (model.canEdit(d) && (d.submissionAttempts || []).some(t => t.state=== "uncertain" || (t.state==="started" && Date.parse(t.startedAt)<Date.now()-300000))),
     );
     const setup = !profile().verified || !resumes().length;
     document.querySelector("#needs-count").textContent =
@@ -143,6 +143,10 @@
       .forEach((input) => {
         input.disabled = false;
       });
+    const unresolved=(draft.submissionAttempts || []).find(t=>t.state==='uncertain' || (t.state==='started' && Date.parse(t.startedAt)<Date.now()-300000));
+    document.querySelector("#submission-recovery").hidden = !unresolved || !JB.auth?.userId || !model.canEdit(draft);
+    document.querySelector("#submission-recovery-note").value = "";
+    document.querySelector("#submission-recovery-button").dataset.claimId = unresolved?.id || "";
     renderTimeline(draft);
     if (!dialog.open) dialog.showModal();
     dialog.dispatchEvent(new CustomEvent("workflow:review", { bubbles: true }));
@@ -328,6 +332,16 @@
         feedback.textContent = error.message;
       }
     });
+  document.querySelector("#submission-recovery-button").addEventListener("click", async event => {
+    const button=event.currentTarget, feedback=document.querySelector("#review-feedback");
+    const jobId=reviewing, claimId=button.dataset.claimId;
+    const note=document.querySelector("#submission-recovery-note").value.trim();
+    if(!note) { feedback.textContent="Check the employer portal or confirmation email and add your verification note first."; return; }
+    button.disabled=true;
+    try { await JB.cloud.resolveAttempt(jobId,claimId,note); if(reviewing===jobId) openReview(jobId); feedback.textContent="Verified not submitted. Muse may prepare a fresh attempt under your current policy."; }
+    catch(error) { feedback.textContent=error.message; }
+    finally { button.disabled=false; }
+  });
   const profileForm = document.querySelector("#profile-form");
   Object.entries(profile()).forEach(([key, value]) => {
     const input = profileForm.elements[key];
@@ -358,7 +372,7 @@
   profileForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const p = {};
-    ["name", "email", "phone", "location", "authorization"].forEach((key) => {
+    ["name", "firstName", "lastName", "email", "phone", "location", "authorization"].forEach((key) => {
       p[key] = profileForm.elements[key].value.trim();
     });
     p.verified = profileForm.elements.verified.checked;

@@ -12,16 +12,16 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=28">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=28">
-    <link rel="stylesheet" href="styles/role-cards.css?v=28">
-    <link rel="stylesheet" href="styles/dashboard.css?v=28">
-    <link rel="stylesheet" href="styles/workflow.css?v=28">
-    <link rel="stylesheet" href="styles/tierlists.css?v=28">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=28">
-    <link rel="stylesheet" href="styles/account.css?v=28">
-    <link rel="stylesheet" href="styles/resume-files.css?v=28">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=28">
+    <link rel="stylesheet" href="styles.css?v=29">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=29">
+    <link rel="stylesheet" href="styles/role-cards.css?v=29">
+    <link rel="stylesheet" href="styles/dashboard.css?v=29">
+    <link rel="stylesheet" href="styles/workflow.css?v=29">
+    <link rel="stylesheet" href="styles/tierlists.css?v=29">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=29">
+    <link rel="stylesheet" href="styles/account.css?v=29">
+    <link rel="stylesheet" href="styles/resume-files.css?v=29">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=29">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -136,7 +136,8 @@
         <section class="board-section" aria-labelledby="application-mode-heading">
           <h2 id="application-mode-heading">Application automation</h2>
           <label class="workflow-check"><input id="auto-submit-approved" type="checkbox" role="switch" aria-describedby="auto-submit-help">Auto-apply routine matches</label>
-          <p id="auto-submit-help" class="panel-note">Off: review every application. On: auto-apply routine matches; important matches need focused review. Unknown answers and blockers always pause. These choices save automatically. The current board runner still requires approval for prefill and cannot submit.</p>
+          <p id="auto-submit-help" class="panel-note">Off: review every application. On: auto-apply routine matches; important matches need focused review. Unknown answers and blockers always pause. These choices save automatically. Supported Greenhouse forms can submit automatically. Other forms and uncertain outcomes require your help.</p>
+          <label>Default PDF résumé for routine auto-apply<select id="auto-apply-default-resume"></select></label>
           <div class="workflow-form">
             <label>Full-time company list<select id="review-fullTime-list" aria-describedby="review-policy-help"></select></label>
             <label>Full-time review threshold<select id="review-fullTime-threshold"><option value="S">S tier only</option><option value="A">A tier and above</option><option value="B">B tier and above</option><option value="C">C tier and above</option><option value="D">All ranked companies</option><option value="all">Every company</option></select></label>
@@ -176,6 +177,8 @@
         <h2>Factual answers</h2>
         <form id="profile-form" class="workflow-form">
           <label>Name<input name="name" autocomplete="name"></label>
+          <label>First name<input name="firstName" autocomplete="given-name"></label>
+          <label>Last name<input name="lastName" autocomplete="family-name"></label>
           <label>Email<input name="email" type="email" autocomplete="email"></label>
           <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
           <label>Location<input name="location" autocomplete="address-level2"></label>
@@ -232,30 +235,36 @@
           <section class="workflow-wide"><h3>Application questions</h3><p class="panel-note">Enter the exact employer question and draft answer. Extraction is not connected yet.</p><div id="review-questions"></div><button type="button" id="add-question">Add question</button></section>
           <label class="workflow-check workflow-wide"><input name="questionsReviewed" type="checkbox">I reviewed the complete question list for this application</label>
           <label class="workflow-wide">Blocker<input name="blocker" placeholder="Missing fact, login, or another issue"></label>
-          <div class="workflow-actions workflow-wide"><button type="submit">Save draft</button><button type="button" id="approve-draft">Approve draft</button></div>
+          <div class="workflow-actions workflow-wide"><button type="submit">Save draft</button><button type="button" id="approve-draft">Approve application</button></div>
         </form>
-        <p class="panel-note">Approval records the reviewed version. It does not submit an application.</p>
+        <p class="panel-note">Approval permits the runner to submit this exact version. Approving does not submit immediately.</p>
+        <section id="submission-recovery" hidden>
+          <h3>Verify uncertain submission</h3>
+          <p>Check the employer portal or confirmation email first. If it was submitted, record that under application progress. Only allow a retry after verifying it was not submitted.</p>
+          <label>Verification note<input id="submission-recovery-note" maxlength="500" placeholder="Where you checked and what you found"></label>
+          <button type="button" id="submission-recovery-button">Verified not submitted — allow a new attempt</button>
+        </section>
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=28"></script>
-    <script src="components.js?v=28"></script>
-    <script src="workflow-model.js?v=28"></script>
-    <script src="app.js?v=28"></script>
-    <script src="saved-answers-model.js?v=28"></script>
-    <script src="workflow.js?v=28"></script>
-    <script src="saved-answers.js?v=28"></script>
-    <script src="tierlist-model.js?v=28"></script>
-    <script src="tierlists.js?v=28"></script>
-    <script type="module" src="workflow-motion.js?v=28"></script>
-    <script type="module" src="pack-effects.js?v=28"></script>
-    <script type="module" src="pack-motion.js?v=28"></script>
-    <script type="module" src="pack-haptics.js?v=28"></script>
-    <script src="profile-preferences.js?v=28"></script>
-    <script src="agent-connections.js?v=28"></script>
-    <script type="module" src="resume-files.js?v=28"></script>
-    <script type="module" src="leaderboard.mjs?v=28"></script>
-    <script src="app-updates.js?v=28"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=28"></script>
+    <script src="store.js?v=29"></script>
+    <script src="components.js?v=29"></script>
+    <script src="workflow-model.js?v=29"></script>
+    <script src="app.js?v=29"></script>
+    <script src="saved-answers-model.js?v=29"></script>
+    <script src="workflow.js?v=29"></script>
+    <script src="saved-answers.js?v=29"></script>
+    <script src="tierlist-model.js?v=29"></script>
+    <script src="tierlists.js?v=29"></script>
+    <script type="module" src="workflow-motion.js?v=29"></script>
+    <script type="module" src="pack-effects.js?v=29"></script>
+    <script type="module" src="pack-motion.js?v=29"></script>
+    <script type="module" src="pack-haptics.js?v=29"></script>
+    <script src="profile-preferences.js?v=29"></script>
+    <script src="agent-connections.js?v=29"></script>
+    <script type="module" src="resume-files.js?v=29"></script>
+    <script type="module" src="leaderboard.mjs?v=29"></script>
+    <script src="app-updates.js?v=29"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=29"></script>
   </body>
 </html>

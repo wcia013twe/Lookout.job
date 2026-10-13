@@ -78,6 +78,8 @@ function fromCloud(rows) {
           backendRevision: a.revision,
           submittedAt: a.submitted_at || null,
           receipt: a.receipt || null,
+          submissionAttempts: (rows.submission_attempts || []).filter(t => t.application_id === a.id)
+            .map(t => ({id:t.id,state:t.state,startedAt:t.started_at,createdAt:t.created_at,finishedAt:t.finished_at})) ,
           status: a.status,
           revision: a.revision,
           blocker: a.blocker || "",

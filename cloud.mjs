@@ -229,6 +229,7 @@ function connectCloud(client) {
       if (!app) throw Error("Application has not synced.");
       const sent = snapshot(store.get("workflow")), api = createBackend(client, userId);
       if (status === "Approved") await api.approve(app.id, app.revision);
+      else if (status === "Verified not submitted") await api.resolveAttempt(app.id, app.revision, note.claimId, note.note);
       else await api.setStage(app.id, app.revision, status, note);
       const rows = await api.loadWorkspace();
       if (token !== generation || userId !== JB.auth.userId) throw Error("Account changed.");
@@ -266,7 +267,7 @@ function connectCloud(client) {
       schedule();
     }
   });
-  JB.cloud = { save, approve: (jobId) => transition(jobId, "Approved"), setStage: transition, get ready() {
+  JB.cloud = { save, approve: (jobId) => transition(jobId, "Approved"), setStage: transition, resolveAttempt: (jobId,claimId,note) => transition(jobId,"Verified not submitted",{claimId,note}), get ready() {
     return Boolean(account && loaded && !loading && !loadFailed);
   } };
   document.addEventListener("workspace:account", (event) => {

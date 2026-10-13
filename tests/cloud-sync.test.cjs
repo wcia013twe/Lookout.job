@@ -12,7 +12,7 @@ async function environment(batch=null){
  const timeout=fn=>{timers.set(++next,fn);return next;};
  const ctx={document,window:{addEventListener(){}},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:()=>null,setItem(){},removeItem(){},length:0}};
  vm.runInNewContext(fs.readFileSync('store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
- const db={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[],activity_events:[],job_batches:[]};
+ const db={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],job_batches:[]};
  const client={auth:{getUser:async()=>({data:{user:{id:owner}}})},from(table){
   let operation='select',fields=null,filters=[],start=0,end=Infinity,single=false;
   const query={select(){return query;},eq(key,value){filters.push([key,value]);return query;},order(){return query;},range(a,b){start=a;end=b;return query;},limit(n){end=n-1;return query;},single(){single=true;return query;},upsert(value){operation='upsert';fields=value;return query;},insert(value){operation='insert';fields=value;return query;},delete(){operation='delete';return query;},then(resolve,reject){return (async()=>{

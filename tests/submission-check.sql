@@ -1,0 +1,63 @@
+begin;
+do $$
+declare u uuid:=gen_random_uuid(); other_u uuid:=gen_random_uuid(); r uuid; app uuid; ctx jsonb; authz jsonb; result jsonb; claim uuid; rev integer;
+  h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); other_h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text);
+  j text:='submit-test-'||gen_random_uuid()::text; d jsonb;
+begin
+  insert into auth.users(id) values(u),(other_u);
+  insert into public.profiles(user_id,facts,verified_at) values(u,'{"name":"Test","email":"test@example.com"}',now());
+  insert into public.preferences(user_id,search) values(u,'{"autoSubmitApproved":true}');
+  insert into public.resumes(user_id,name,object_path,content_hash) values(u,'Master',u||'/resume.pdf',repeat('a',64)) returning id into r;
+  insert into public.jobs(id,canonical_url,employer) values(j,'https://job-boards.greenhouse.io/test/jobs/'||floor(random()*10000000+1)::bigint,'{"company":"Oracle","employmentType":"FT"}');
+  d:=jsonb_build_object('url',(select canonical_url from public.jobs where id=j),'resumeId',r,'resumeSha256',repeat('a',64),'questions','[]'::jsonb,'questionsReviewed',false);
+  insert into public.applications(user_id,job_id,draft) values(u,j,d) returning id into app;
+  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values
+    (u,'Submit test',h,array['workspace:read','drafts:write','approvals:read','resumes:read'],now()+interval '1 hour'),
+    (other_u,'Other',other_h,array['workspace:read','drafts:write','approvals:read','resumes:read'],now()+interval '1 hour');
+  begin perform public.runner_submission_context(other_h,app); raise exception 'Owner bypass'; exception when no_data_found then null; end;
+  update private.agent_connections set scopes=array['drafts:write'] where token_hash=other_h;
+  begin perform public.runner_submission_context(other_h,app); raise exception 'Scope bypass'; exception when insufficient_privilege then null; end;
+  ctx:=public.runner_submission_context(h,app);
+  authz:=jsonb_build_object('mode','automatic','id','auto-test','applicationId',app,'userId',u,'revision',0,'snapshot',jsonb_build_object('draft',d,'resume',ctx->'resume'));
+  result:=public.runner_submission_transition(h,'claim',jsonb_build_object('applicationId',app,'attemptId','one'),ctx,authz);
+  if result->>'canProceed'<>'true' then raise exception 'Claim failed'; end if;
+  claim:=(result->'attempt'->>'id')::uuid;
+  result:=public.runner_submission_transition(h,'claim',jsonb_build_object('applicationId',app,'attemptId','another-worker'),ctx,authz);
+  if result->>'canProceed'<>'false' or (select count(*) from public.submission_attempts where application_id=app)<>1 then raise exception 'Duplicate claim permitted'; end if;
+  begin update public.applications set draft='{}' where id=app; raise exception 'In-flight draft changed'; exception when serialization_failure then null; end;
+  result:=public.runner_submission_transition(h,'start',jsonb_build_object('applicationId',app,'claimId',claim),ctx,authz);
+  if result->>'canClick'<>'true' then raise exception 'First start denied'; end if;
+  result:=public.runner_submission_transition(h,'start',jsonb_build_object('applicationId',app,'claimId',claim),ctx,authz);
+  if result->>'canClick'<>'false' then raise exception 'Repeated click permitted'; end if;
+  result:=public.runner_submission_transition(h,'finish',jsonb_build_object('applicationId',app,'claimId',claim,'outcome','uncertain'));
+  if result->'application'->>'status'<>'Blocked' then raise exception 'Uncertain attempt not blocked'; end if;
+  if (select count(*) from public.approvals where application_id=app)<>0 then raise exception 'Automatic attempt forged human approval'; end if;
+  rev:=(result->'application'->>'revision')::integer;
+  perform set_config('test.uid',other_u::text,true); perform set_config('request.jwt.claim.sub',other_u::text,true);
+  begin perform public.resolve_submission_attempt(app,rev,claim,'Checked portal'); raise exception 'Foreign resolution allowed'; exception when serialization_failure then null; end;
+  perform set_config('test.uid',u::text,true); perform set_config('request.jwt.claim.sub',u::text,true);
+  perform public.resolve_submission_attempt(app,rev,claim,'Checked portal and email; not submitted');
+  ctx:=public.runner_submission_context(h,app);
+  authz:=jsonb_set(authz,'{revision}',ctx->'application'->'revision');
+  result:=public.runner_submission_transition(h,'claim',jsonb_build_object('applicationId',app,'attemptId','after-human-verification'),ctx,authz);
+  if result->>'canProceed'<>'true' then raise exception 'Human verified retry blocked'; end if;
+  claim:=(result->'attempt'->>'id')::uuid;
+  -- Preference changes after prefill/claim invalidate the permit.
+  update public.preferences set search='{"autoSubmitApproved":false}' where user_id=u;
+  begin perform public.runner_submission_transition(h,'start',jsonb_build_object('applicationId',app,'claimId',claim),ctx,authz); raise exception 'Stale settings accepted'; exception when serialization_failure then null; end;
+  perform public.runner_submission_transition(h,'finish',jsonb_build_object('applicationId',app,'claimId',claim,'outcome','cancelled'));
+  update public.preferences set search='{"autoSubmitApproved":true}' where user_id=u;
+  ctx:=public.runner_submission_context(h,app);
+  result:=public.runner_submission_transition(h,'claim',jsonb_build_object('applicationId',app,'attemptId','confirmed-run'),ctx,authz);
+  claim:=(result->'attempt'->>'id')::uuid;
+  perform public.runner_submission_transition(h,'start',jsonb_build_object('applicationId',app,'claimId',claim),ctx,authz);
+  result:=public.runner_submission_transition(h,'finish',jsonb_build_object('applicationId',app,'claimId',claim,'outcome','confirmed','receipt',jsonb_build_object('source','runner-observed-greenhouse-confirmation','jobUrl',ctx->'job'->>'canonical_url','observedUrl',ctx->'job'->>'canonical_url','marker','#confirmation','message','Thank you for applying')));
+  if result->'application'->>'status'<>'Submitted' or result->'application'->'receipt'->>'source'<>'runner-observed-greenhouse-confirmation' then raise exception 'Confirmation not saved'; end if;
+  result:=public.runner_submission_transition(h,'finish',jsonb_build_object('applicationId',app,'claimId',claim,'outcome','uncertain'));
+  if result->>'state'<>'confirmed' or result->>'replayed'<>'true' then raise exception 'Retry changed confirmed outcome'; end if;
+  update private.agent_connections set revoked_at=now() where token_hash=h;
+  begin perform public.runner_submission_context(h,app); raise exception 'Revocation bypass'; exception when invalid_authorization_specification then null; end;
+  if has_function_privilege('authenticated','public.runner_submission_transition(text,text,jsonb,jsonb,jsonb)','execute') then raise exception 'Browser can invoke trusted submission RPC'; end if;
+  if has_table_privilege('authenticated','public.submission_attempts','update') then raise exception 'Browser can forge attempt outcome'; end if;
+end $$;
+rollback;

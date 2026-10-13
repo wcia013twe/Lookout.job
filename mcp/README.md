@@ -128,3 +128,9 @@ version 3 does not install the adapter.
 thresholds against canonical public job data. No owner/tier/approval arguments
 are accepted. It returns `auto-apply`, `review` or `skip` plus current execution
 limits; a policy decision does not grant submission authority.
+
+Developer version 6 adds local `submit_application({applicationId,attemptId})` for
+supported native Greenhouse forms, and hosted `report_submission_result` for
+retrying result delivery without execution. Update the local checkout and refresh
+discovery. The hosted endpoint does not launch browsers. Routine auto-apply uses
+server-checked facts/rules; important applications require exact human approval.

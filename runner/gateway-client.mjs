@@ -56,5 +56,13 @@ export function createGatewayClient({ token, fetchImpl = fetch }) {
     if (!Array.isArray(jobs) || jobs.length !== 1 || jobs[0].id !== context.application.job_id) throw new Error('Canonical job unavailable');
     return { ...context, job: jobs[0], resume: resumeData.resume, resumeBytes: resumeData.resumeBytes };
   }
-  return { forward, call, loadResume, loadCurrentContext };
+  async function loadSubmissionContext(applicationId) {
+    if (!uuid(applicationId)) throw new Error('Application ID required');
+    const context = await call('submission.context', {applicationId});
+    if (context.application?.id !== applicationId) throw new Error('Application mismatch');
+    if (!context.allowed) return context;
+    const file=await loadResume(context.application.draft.resumeId);
+    return {...context,resumeBytes:file.resumeBytes};
+  }
+  return { forward, call, loadResume, loadCurrentContext, loadSubmissionContext };
 }

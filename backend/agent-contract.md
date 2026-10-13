@@ -28,7 +28,7 @@ calling agent operations. Public RPCs are executable only by service_role.
 
 ## Agent operations
 
-Scopes can be narrowed independently. Agents have no approval/submission endpoint.
+Scopes can be narrowed independently. Agents cannot create human approvals. Scoped submission transitions authorize, claim, start and report supported runner attempts.
 
 | Operation | Scope | Payload/result |
 |---|---|---|
@@ -59,7 +59,7 @@ revision from workspace.read. A stale revision returns 409. Updating a draft
 invalidates approval through the existing database version trigger. Final-stage
 applications cannot be drafted again. The draft uses the same resumeId,
 questionsReviewed, questions and optional runner metadata as the web app.
-Agents cannot mark questions reviewed. Changed drafts set questionsReviewed=false and enter Awaiting approval (or Blocked); the person must review and check the form in the UI. Exact retries ignoring that human-only flag preserve approval.
+Agents cannot mark questions reviewed. Changed drafts set questionsReviewed=false and enter Awaiting approval (or Blocked); human review checks that flag; routine submission can instead use separate automatic authorization after exact fact/answer validation. Exact retries ignoring that human-only flag preserve approval.
 
 Transition activity is owned by database triggers; activity.append is for extra
 agent observations, not proof of submission. Reusing an eventKey returns its
@@ -80,7 +80,7 @@ atomic batches, ownership, stale drafts, expiry and revocation without durable
 fixture records (the transaction rolls back). HTTP 401/403/409/404 map to invalid
 credential, missing scope, stale revision and missing owned record respectively.
 
-The gateway deliberately has no schedules, SMS transport, ATS submit function,
+The gateway deliberately has no schedules, SMS transport, general employer submit API,
 queue framework, refresh tokens, or general SQL tool. An agent can search locally,
 publish a batch, prepare drafts, and return the link to its user using its own
 supported notification channel. Tokens require manual replacement after expiry.
@@ -98,3 +98,36 @@ Failure reports preserve the draft, set Blocked and invalidate prior approval.
 errors, typed answers or credentials. Retry the same eventKey without replaying
 application execution. Submitted/final records cannot be downgraded. Notifications
 remain in the agent's channel, with the personal theme's runner_failure template.
+
+## Guarded submission operations (developer version 6)
+
+`submission.context`, `submission.claim`, `submission.start`, `submission.finish`
+require all of workspace:read, drafts:write, approvals:read and resumes:read.
+They never accept user IDs, authorization snapshots or agent-provided ranks.
+Context/claim/start derive policy and answer authorization server-side. Claim/start
+requests pin expectedRevision and expectedPersonalVersion; SQL compares the entire
+current context under row/settings locks. Only service-role RPC calls can supply
+trusted authorization to the database. No human approval is minted automatically.
+
+- Context: `{applicationId}` returns compact current records and allowed/reason.
+- Claim: `{applicationId,attemptId,expectedRevision,expectedPersonalVersion}`.
+- Start: `{applicationId,claimId,expectedRevision,expectedPersonalVersion}` returns
+  canClick once and a five-second permit. Replayed/lost responses never authorize retry.
+- Finish: `{applicationId,claimId,outcome,receipt?}`; outcomes confirmed/uncertain/
+  cancelled. Confirmation is structured runner-observed evidence. Finish retries
+  are idempotent and cannot turn an uncertain result into a fresh execution.
+
+The local runner submits only supported native Greenhouse forms with a PDF résumé.
+Additional documents, CAPTCHA, custom widgets, multiple/embedded forms and unsupported
+confirmation markers pause. Automatic drafts need exact profileField provenance
+for allowlisted contact labels, or savedAnswerId/savedAnswerVersion referencing a
+unique verified exact answer with autofill_policy auto and matching company scope.
+File questions carry fieldType file and the résumé ID. Defaults/rules select the
+résumé; unfamiliar essays cannot automatically pass on an agent assertion.
+
+The owner can call resolve_submission_attempt after verifying a negative outcome;
+it records user-reported verification and permits a fresh attempt. Opaque agent
+keys cannot invoke this human RPC. Private history contains attempts/snapshots;
+no credentials or file bytes are stored there. No real application was sent in
+development testing; official browser confirmations are observations, not signed
+employer API receipts.

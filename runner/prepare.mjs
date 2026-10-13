@@ -19,8 +19,20 @@ export function assertApproval({ application, approval, job, resume, resumeBytes
   return snapshot;
 }
 
+// Authorization is loaded from the trusted gateway. Routine permission is
+// distinct from a human approval; never manufacture an approval row locally.
+export function assertExecutionAuthorization(context) {
+  const { authorization: auth, application:a, resume, resumeBytes, job } = context;
+  if (!auth || !['human','automatic'].includes(auth.mode) || auth.applicationId!==a?.id || auth.userId!==a.user_id || auth.revision!==a.revision || !['Queued','Draft','Awaiting approval','Approved'].includes(a.status) || a.blocker) throw new Error('Current execution authorization required');
+  if (auth.mode==='human') return assertApproval(context);
+  const snapshot=auth.snapshot;
+  if (!isDeepStrictEqual(snapshot?.draft,a.draft) || !isDeepStrictEqual(snapshot?.resume,resume) || resume.user_id!==a.user_id || resume.id!==a.draft.resumeId || job.id!==a.job_id) throw new Error('Execution snapshot changed');
+  if (!resumeBytes || createHash('sha256').update(resumeBytes).digest('hex')!==a.draft.resumeSha256 || identifyJob(job.canonical_url).url!==a.draft.url) throw new Error('Execution document or job changed');
+  return snapshot;
+}
+
 export function prepareApprovedFields(context, form) {
-  const snapshot = assertApproval(context);
+  const snapshot = context.authorization ? assertExecutionAuthorization(context) : assertApproval(context);
   const actualFingerprint = fingerprint({ url: form.url, questions: form.questions, blockers: form.blockers, source: form.source });
   if (actualFingerprint !== form.formFingerprint) throw new Error('Employer form data does not match its fingerprint');
   if (form.url !== snapshot.draft.url || snapshot.draft.formFingerprint !== form.formFingerprint) throw new Error('Employer form changed; inspect and approve again');
@@ -33,9 +45,10 @@ export function prepareApprovedFields(context, form) {
       if (answers.length > 1) { blockers.push(`Duplicate approved answer: ${question.question}`); continue; }
       const answer = answers[0];
       if (!answer || !String(answer.answer ?? '').trim()) {
-        if (question.required) blockers.push(`Missing approved answer: ${question.question}`);
+        if (question.required || context.authorization?.mode === 'automatic') blockers.push(`Missing approved answer: ${question.question}`);
         continue;
       }
+      if (answer.fieldType && answer.fieldType !== field.type) { blockers.push('Employer field type changed'); continue; }
       if (!['text', 'email', 'tel', 'url', 'textarea', 'select', 'radio', 'checkbox', 'file'].includes(field.type)) { blockers.push(`Unsupported field: ${question.question}`); continue; }
       if (['select', 'radio'].includes(field.type) && !field.options.some(option => option.value === String(answer.answer))) { blockers.push(`Unrecognized choice: ${question.question}`); continue; }
       if (field.type === 'checkbox' && !['true', 'false'].includes(String(answer.answer))) { blockers.push(`Checkbox needs explicit true or false: ${question.question}`); continue; }
@@ -44,7 +57,7 @@ export function prepareApprovedFields(context, form) {
       fields.push({ id: field.id, type: field.type, value: answer.answer });
     }
   }
-  return { applicationId: context.application.id, approvalId: context.approval.id, revision: context.application.revision,
+  return { applicationId: context.application.id, approvalId: context.authorization?.id || context.approval.id, revision: context.application.revision,
     url: form.url, formFingerprint: form.formFingerprint, fields, blockers, status: blockers.length ? 'Blocked' : 'Prepared',
     submission: 'manual-handoff', message: 'Prefill is not submission. Complete conditional questions and submit on the employer page.' };
 }

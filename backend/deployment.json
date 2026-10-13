@@ -14,11 +14,12 @@
   "privateResumeUploads": true,
   "applicationTimeline": true,
   "leaderboardProjection": true,
-  "employerSubmissionEnabled": false,
+  "employerSubmissionEnabled": "supported-greenhouse-native-forms",
   "agentContextVersions": true,
-  "developerContractVersion": 5,
+  "developerContractVersion": 6,
   "runnerFailureReporting": true,
   "companyLogoCacheCount": 66,
   "localRunnerMcp": true,
-  "applicationReviewPolicy": true
+  "applicationReviewPolicy": true,
+  "submissionAttempts": true
 }

@@ -2,6 +2,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
 import { validateRequest, generateToken, hashToken } from './contract.mjs';
 import { contextResponse } from './context.mjs';
 import { applicationPolicy } from './application-policy.mjs';
+import { submissionDispatch } from './submission-dispatch.mjs';
 
 // Platform JWT verification is disabled because agents use opaque credentials.
 // Every request is verified here: Supabase getUser for people; hash + expiry +
@@ -52,6 +53,10 @@ Deno.serve(async request => {
       return respond(token ? { connection: data, token } : { data });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
+    if (operation.startsWith('submission.')) {
+      const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});
+      return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
+    }
     const policyRequest = operation === 'applications.policy';
     const { data, error } = await admin.rpc('agent_dispatch', {
       credential_hash: await hashToken(bearer), operation: policyRequest ? 'context.personal' : operation, payload: policyRequest ? {} : payload,
@@ -72,7 +77,7 @@ Deno.serve(async request => {
       if (jobError || !job) return respond({ error: 'Job not found' }, 404);
       return respond({ data: { jobId: job.id, personalVersion: data.personalVersion,
         ...applicationPolicy({ preferences: data.settings.preferences, job: job.employer }),
-        execution: { automaticSubmission: false, bundledRunnerRequiresApproval: true } } });
+        execution: { automaticSubmission: 'supported-greenhouse-native-forms', bundledRunnerRequiresApproval: false, importantMatchesRequireApproval: true } } });
     }
     if (operation === 'resumes.read') {
       let url = data.reference_url;

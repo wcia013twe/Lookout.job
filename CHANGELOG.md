@@ -1,3 +1,11 @@
+## 2026-10-13 — Guarded Greenhouse auto-submission
+
+- Added submit_application to the local MCP runner: current authorization, native prefill/validation, atomic claim, one-use short-lived permit, one Submit click, and supported employer confirmation detection.
+- Routine matches use verified facts, explicit résumé rules/defaults and permitted exact saved answers without forging human approvals; important matches require exact approval. Uploaded PDF bytes and live form fingerprint must match.
+- Added scoped database attempts, in-flight draft freezing, duplicate protection, revoked/stale-context checks, idempotent result reporting and human-only negative verification for uncertain outcomes. Explicitly removed Supabase's default client write grants.
+- Added default PDF selector, verified first/last-name fields and uncertain-attempt recovery in review; rebuilt auth bundle and cache v29. Developer contract v6 documents actual submission tools and limits.
+- Validation: 126 tests, migration-chain checks, hosted rollback authorization/claim/receipt/recovery checks and 75 public roles pass. No real employer application submitted. Live Muse/employer verification remains; Ashby/Workday, CAPTCHA, custom controls, extra documents and unsupported confirmation pages remain manual. Confirmation is labelled runner-observed evidence, distinct from user-reported progress.
+
 ## 2026-10-13 — Importance-based application review policy
 
 - Added separate full-time/internship company-list choices and review thresholds, default A and above; changes autosync through existing personal-version flags.

@@ -50,7 +50,7 @@ test('version response contains exactly two values and developer config is isola
   assert.deepEqual(Object.keys(contextResponse('context.versions', { personalVersion: 2, secret: 'never return' })), ['personalVersion', 'developerVersion']);
   const first = contextResponse('context.developer', {}); first.instructions.push('mutated');
   assert.ok(!contextResponse('context.developer', {}).instructions.includes('mutated'));
-  assert.equal(contextResponse('context.developer', {}).capabilities.automaticSubmission, false);
+  assert.equal(contextResponse('context.developer', {}).capabilities.automaticSubmission, 'supported-greenhouse-native-forms');
   for (const operation of ['context.versions', 'context.personal', 'context.developer']) {
     assert.equal(validateRequest({ operation }).operation, operation);
     assert.throws(() => validateRequest({ operation, payload: { userId: 'other' } }), /arguments/);

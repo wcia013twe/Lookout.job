@@ -62,6 +62,7 @@ function createBackend(client, expectedUserId = null) {
         "answer_library",
         "applications",
         "activity_events",
+        "submission_attempts",
       ];
       const rows = await Promise.all(
         tables.map((t) =>
@@ -69,7 +70,7 @@ function createBackend(client, expectedUserId = null) {
             t,
             userId,
             ["profiles", "preferences"].includes(t) ? "user_id" : "id",
-            t === "applications" ? "*,jobs(*)" : "*",
+            t === "applications" ? "*,jobs(*)" : t === "submission_attempts" ? "id,user_id,application_id,state,started_at,created_at,finished_at,receipt" : "*",
           ),
         ),
       );
@@ -182,6 +183,10 @@ function createBackend(client, expectedUserId = null) {
         if (!inserted) throw error;
         return inserted;
       }
+    },
+    async resolveAttempt(applicationId, revision, claimId, note) {
+      await owner();
+      return result(client.rpc("resolve_submission_attempt", {app_id:applicationId,expected_revision:revision,claim_id:claimId,note}));
     },
     async createDraft(jobId, draft, blocker = null) {
       const userId = await owner();

@@ -37,10 +37,10 @@ This avoids repeated full prompt reads; permanent agent memory depends on its ru
 2. **Muse prepares the morning batch.** Your connected agent reads your preferences, searches for relevant jobs, verifies employer postings, and publishes a private batch. Personal fit notes stay separate from the shared job catalog.
 3. **Open the link.** Muse sends “Your morning jobs are ready” through its own notification channel. The link opens your batch on the shared website. Login identifies the owner; a batch ID alone does not grant access.
 4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Opening a posting is not applying.
-5. **Prepare and review.** Muse inspects supported forms, selects the right resume, drafts answers, and sends blockers or ready drafts to **Needs you**. Agents do not mark a human review complete. You check the complete employer question list and approve the exact version.
+5. **Prepare under your policy.** Muse inspects the live form and selects your configured résumé. Routine matches can proceed using verified facts and permitted saved answers. Important matches, auto-apply-off, unfamiliar answers and missing choices go to **Needs you** for focused exact-version review. Agents never manufacture a human approval.
 Unresolved Playwright and agent recovery failures go to **Needs you** with a reason and next action. Uncertain submission outcomes pause for human verification.
 
-6. **Apply with evidence.** The intended final runner submits only a current approved version and records employer confirmation. **Current runner support stops at inspection and approved prefill/manual handoff.** You can record a manual submission with a note; this is labelled user-reported and never fabricates a receipt.
+6. **Apply with evidence.** `submit_application` supports native Greenhouse forms: current server authorization → prefill/validation → atomic claim → one-use click permit → one Submit click → observed employer confirmation. Routine authorization is distinct from human approval. Unsupported forms/CAPTCHA/additional files pause. Uncertain outcomes block retry; verify in the board before allowing a new attempt. Manual submission notes remain user-reported.
 7. **Track outcomes.** Applications shows progress and a durable timeline. Muse can add observations; interviews, offers and rejections remain distinguishable from draft preparation. Progress is private by default; leaderboard participation shares only an alias and aggregate metrics.
 
 Card-opening animations and new theme packs are outside this pass. Existing pack effects are optional; public job browsing never requires opening a pack.
@@ -96,12 +96,12 @@ Open `http://localhost:8000`. Production Google redirect configuration is docume
 | `saved-answers-*`, `tierlist-*`, `tierlists.js`, `resume-files.js` | Profile features; standalone modules use the shared store |
 | `agent-connections.js` | Human credential management; keys shown once, never persisted in browser state |
 | `supabase/migrations/` | **Single source of truth for the database schema**; use exact deployed migration versions |
-| `supabase/functions/agent-gateway/`, `agent-mcp/` | Scoped server tools; no general SQL/shell tool and no agent approval/submission endpoint |
-| `runner/`, `scripts/runner-*` | Deterministic form inspection and approved prefill; no automatic submit |
+| `supabase/functions/agent-gateway/`, `agent-mcp/` | Scoped server tools; no general SQL/shell tool and no agent-created human approval; guarded submission transitions |
+| `runner/`, `scripts/runner-*` | Deterministic form inspection and approved prefill and guarded native Greenhouse submission |
 | `styles/` | New CSS, motion definitions and shaders; keep presentation out of state logic |
 | `data/jobs.json`, `data/tierlist-presets.json` | Public discovery feed and configurable ranking defaults |
 
-Keep verified personal facts, agent-generated drafts, and employer requirements distinct. Never share service-role keys. Derive ownership from the authenticated user/agent token, not a caller-supplied user ID. A runner must fetch the **current** approval and verify job URL, draft, resume bytes and form fingerprint; adding metadata after approval requires reapproval. A status is not proof of submission.
+Keep verified personal facts, agent-generated drafts, and employer requirements distinct. Never share service-role keys. Derive ownership from the authenticated user/agent token, not a caller-supplied user ID. A runner must fetch the **current** execution authorization and verify job URL, draft, resume bytes and form fingerprint; adding metadata after approval requires reapproval. A status is not proof of submission.
 
 `data/jobs.json` is the canonical static discovery feed. Preserve known application statuses when updating it, deduplicate canonical URLs, and never invent source dates. Supabase is authoritative for signed-in private application state. Personal recommendations belong in batch items, not employer records. `data/tierlist-presets.json` holds subjective ranking defaults and white-label labels; theme changes must not change workflow semantics.
 
@@ -115,7 +115,7 @@ Sign in → Profile → Your agent → Create agent connection. Copy the setup i
 - [Extracted open-source code and licenses](runner/THIRD_PARTY.md)
 - [Backend deployment and auth configuration](backend/README.md)
 
-The local runner uses deterministic Playwright operations and makes no model calls. Jev and other decision models are excluded for now. The local adapter forwards data tools as well, so one connection suffices. Muse must support local stdio registration; remote-only client support needs a runner host. Automatic submission and embedded agent recovery remain unfinished.
+The local runner uses deterministic Playwright operations and makes no model calls. Jev and other decision models are excluded for now. The local adapter forwards data tools as well, so one connection suffices. Muse must support local stdio registration; remote-only client support needs a runner host. Native Greenhouse submission is implemented; other ATS submit adapters and embedded agent recovery remain unsupported.
 
 ## Remaining work
 
@@ -127,9 +127,9 @@ The local runner uses deterministic Playwright operations and makes no model cal
 
 ## Ask Muse to read this update
 
-Developer contract version **5** advertises the concrete local MCP adapter. Tell Muse:
+Developer contract version **6** advertises the concrete local MCP adapter. Tell Muse:
 
-> Check my Job Signal Board context versions. Load and retain the updated developer instructions, and reload my personal settings only if changed or missing. Follow my settings and message templates. Check whether inspect_application, fingerprint_resume and try_application are available. If missing, report the one-time runner setup needed; never claim it is connected. Inspect and prepare drafts, ask me to review unfamiliar answers, and only prefill the exact approved version. Report unresolved failures to Needs you and text me using my configured template. Prepared is not submitted.
+> Check my Job Signal Board context versions. Load and retain the updated developer instructions, and reload my personal settings only if changed or missing. Follow my settings and message templates. Check whether inspect_application, fingerprint_resume, try_application and submit_application are available. If missing, report the one-time runner setup needed; never claim it is connected. Inspect and prepare drafts, ask me to review unfamiliar answers, and use submit_application for routine authorized matches or exact approved important matches. Never retry an uncertain submission. Update the local checkout to obtain the new tool. Report unresolved failures to Needs you and text me using my configured template. Prepared is not submitted.
 
 This refreshes instructions on an existing authenticated board connection. It
 does not create schedules, send a text, install a runner or submit a job by itself.
@@ -154,9 +154,21 @@ questions, missing facts, CAPTCHA, unsupported controls and uncertain outcomes
 always pause. Important-match messages use your theme templates. Auto-apply off
 requires review for every application. Recheck policy before submission.
 
-**Execution limitation:** the bundled runner still requires exact human approval
-for prefill and has no submit adapter. Developer version 5 tells Muse the desired
-policy without claiming this missing execution path is complete. Backend automatic
-authorization for routine applications, duplicate-safe submission claims and
-verified employer receipts remain to implement. Guests must sign in to sync
-policy choices to Muse.
+**Supported execution:** `submit_application` now submits native Greenhouse forms.
+The gateway derives authorization from current owned records; routine answers
+require exact verified fact/saved-answer provenance and a configured résumé.
+Important matches require exact approval. Claims freeze the draft, prevent a
+second worker, and produce a one-use short-lived click permit. The runner checks
+filled values, required fields, fingerprint and PDF hash before clicking once.
+Only supported confirmation markers appearing afterward record Submitted.
+Receipts are labelled **runner-observed employer confirmation**, not a
+cryptographically authenticated employer API receipt. Agent credentials are
+trusted to report these observations; browser users cannot forge receipt columns.
+
+Unknown outcomes stay Needs you. The review dialog lets the user record where
+they verified an application was not sent and release the attempt for a fresh
+run; started attempts must age five minutes before this recovery. Pending result
+reports retry through `report_submission_result` without another click. An
+expired pre-click claim can expire; started/uncertain attempts never automatically
+expire into retry. No real employer application was submitted during development;
+fixture transport/database tests pass, live Muse/employer validation remains.

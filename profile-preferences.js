@@ -4,12 +4,19 @@
   const feedback = document.querySelector("#search-preferences-feedback");
   const autoSubmit = document.querySelector("#auto-submit-approved");
   const autoSubmitFeedback = document.querySelector("#auto-submit-feedback");
+  const defaultResume = document.querySelector("#auto-apply-default-resume");
   const store = JB.store;
   const reviewControls = ["fullTime", "internship"].map(key => ({
     key, type: key === "fullTime" ? "FT" : "Internship",
     list: document.querySelector(`#review-${key}-list`),
     threshold: document.querySelector(`#review-${key}-threshold`),
   }));
+  function renderDefaultResume(preferences) {
+    const resumes = (store.get("workflow.resumes") || []).filter(r => /\.pdf$/i.test(r.objectPath || "") && r.contentHash);
+    defaultResume.replaceChildren(new Option("Choose a private uploaded PDF", ""), ...resumes.map(r => new Option(r.name, r.id)));
+    if (preferences.defaultResumeId && !resumes.some(r => r.id === preferences.defaultResumeId)) defaultResume.add(new Option("Selected résumé unavailable — review required", preferences.defaultResumeId));
+    defaultResume.value = preferences.defaultResumeId || "";
+  }
   function renderReviewPolicy(preferences) {
     const lists = store.get("workflow.tierLists") || [];
     for (const control of reviewControls) {
@@ -38,6 +45,7 @@
     const preferences = values();
     autoSubmit.checked = preferences.autoSubmitApproved === true;
     renderReviewPolicy(preferences);
+    renderDefaultResume(preferences);
     for (const field of ["locations", "categories", "excludedCompanies"]) {
       form.elements[field].value = (
         Array.isArray(preferences[field])
@@ -53,6 +61,12 @@
       preferences.employmentTypes.includes("Internship");
     form.elements.targetYear.value = preferences.targetYear || "";
   }
+
+  defaultResume.addEventListener("change", () => {
+    store.set("workflow.searchPreferences", { ...values(), defaultResumeId: defaultResume.value || null });
+    autoSubmitFeedback.textContent = JB.auth?.userId ? "Default résumé saved. Syncing for Muse." : "Default résumé saved in this browser. Sign in to share it with Muse.";
+  });
+  store.subscribe("workflow.resumes", () => renderDefaultResume(values()));
 
   autoSubmit.addEventListener("change", () => {
     store.set("workflow.searchPreferences", { ...values(), autoSubmitApproved: autoSubmit.checked });
