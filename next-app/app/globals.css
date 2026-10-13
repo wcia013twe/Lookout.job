@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@theme {
+  --color-board-bg: #101419;
+  --color-board-panel: #171c24;
+  --color-board-text: #edf0f6;
+  --color-board-muted: #c6ced9;
+  --color-board-accent: #9cffda;
+}
+body { background: var(--color-board-bg); color: var(--color-board-text); font-family: Arial, sans-serif; }
+:focus-visible { outline: 3px solid var(--color-board-accent); outline-offset: 3px; }
+::selection { background: var(--color-board-accent); color: var(--color-board-bg); }

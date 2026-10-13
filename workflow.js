@@ -343,17 +343,13 @@
     finally { button.disabled=false; }
   });
   const profileForm = document.querySelector("#profile-form");
-  Object.entries(profile()).forEach(([key, value]) => {
-    const input = profileForm.elements[key];
-    if (input) {
-      if (input.type === "checkbox") input.checked = value;
-      else input.value = value;
-    }
-  });
-  const profileFields = ["name", "firstName", "lastName", "email", "phone", "location", "linkedin", "portfolio", "authorization"];
+  const profileEditor = JB.profileEditor(profileForm);
+  profileEditor.hydrate(profile());
+  const profileFields = profileEditor.fields;
   const profileGuard = JB.profileAutofillGuard(profileForm, profileFields, () => {
     document.querySelector("#profile-feedback").textContent = "Details changed. Review them and check your facts before saving.";
-  });
+  }, () => profileEditor.read());
+  profileEditor.onStructureChange = () => profileGuard.invalidate();
   profileGuard.reset(profile().verified);
   function refreshProfile(event) {
     if (event.type === "workspace:account") {
@@ -364,12 +360,7 @@
     profileForm.reset();
     document.querySelector("#resume-form").reset();
     document.querySelector("#profile-feedback").textContent = "";
-    Object.entries(profile()).forEach(([key, value]) => {
-      const input = profileForm.elements[key];
-      if (!input) return;
-      if (input.type === "checkbox") input.checked = value;
-      else input.value = value;
-    });
+    profileEditor.hydrate(profile());
     profileGuard.reset(profile().verified);
     render();
   }
@@ -377,10 +368,7 @@
   document.addEventListener("workspace:hydrated", refreshProfile);
   profileForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const p = {};
-    profileFields.forEach((key) => {
-      p[key] = profileForm.elements[key].value.trim();
-    });
+    const p = { ...profile(), ...profileEditor.read() };
     p.verified = profileGuard.isReviewed();
     store.set("workflow.profile", p);
     document.querySelector("#profile-feedback").textContent = p.verified

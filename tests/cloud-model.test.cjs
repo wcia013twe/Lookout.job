@@ -29,3 +29,10 @@ test('sparse agent drafts use canonical employer identity before human approval'
  const rows={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[{id:'app',job_id:'job',revision:1,status:'Draft',draft:{company:'Invented',resumeId:'resume',questions:[{fieldId:'why',question:'Why?',answer:'Fit'}]},jobs:{canonical_url:'https://jobs.example.com/job',employer:{company:'Canonical',title:'Engineer',employmentType:'FT',location:'Remote'}}}]};
  const application=fromCloud(rows).applications.job,payload=draftPayload(application);assert.equal(application.company,'Canonical');assert.equal(application.title,'Engineer');assert.equal(payload.url,'https://jobs.example.com/job');assert.equal(payload.questions[0].fieldId,'why');
 });
+test('expanded profile facts survive cloud hydration without coercing nested records',async()=>{
+ const {fromCloud}=await import('../cloud-model.mjs');
+ const facts={name:'One',github:'https://github.com/example',skills:'Python\nSQL',languages:'Mandarin',workExperience:[{title:'Engineer',company:'Example',current:true,description:'Built systems'}],education:[{school:'University',degree:'Master',gpa:'3.57'}],projects:[{name:'Project',url:'https://example.com'}]};
+ const result=fromCloud({profiles:[{facts,verified_at:'today'}],preferences:[],resumes:[],answer_library:[],applications:[]});
+ for(const key of Object.keys(facts)) assert.deepEqual(result.profile[key],facts[key]);
+ assert.equal(result.profile.verified,true);
+});

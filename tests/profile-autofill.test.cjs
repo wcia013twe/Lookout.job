@@ -25,3 +25,13 @@ test('account hydration resets the verification basis instead of retaining anoth
 test('an extension cannot mark its own imported values as human-reviewed',()=>{
  const f=setup();f.form.elements.name.value='Imported';f.form.elements.verified.checked=true;f.verification.change({isTrusted:false});assert.equal(f.guard.isReviewed(),false);
 });
+
+test('silent changes to nested profile facts invalidate prior review', () => {
+ const window={JB:{}}; vm.runInNewContext(fs.readFileSync('profile-autofill.js','utf8'),{window});
+ const facts={name:'One',workExperience:[{title:'Engineer'}]};
+ const form={elements:{verified:{checked:false,addEventListener(){}}},addEventListener(){}};
+ const guard=window.JB.profileAutofillGuard(form,[],null,()=>facts);
+ guard.reset(true); facts.workExperience[0].title='Changed';
+ assert.equal(guard.isReviewed(),false);
+ guard.reset(true); guard.invalidate(); assert.equal(guard.isReviewed(),false);
+});

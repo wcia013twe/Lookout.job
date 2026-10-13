@@ -184,3 +184,9 @@ request site support from the extension. Review imported facts, check the
 verification box and save. Changed values clear prior verification, including
 silent programmatic autofill. Saving syncs to the account through existing autosync.
 Live Simplify extension recognition has not been verified.
+
+## Simplify-shaped profile and React migration
+
+Profile starts with candidate identity and editable personal details, then repeatable Work Experience, Education and Projects & Outside Experience, portfolio links, skills and languages. Stable labelled fields support browser autofill; Simplify Copilot recognition remains unverified. Added or removed records and changed facts clear verification. Profile facts keep the existing guest/account namespaces and signed-in private JSON syncing. No personal details from the reference PDF are bundled in public assets. Resume variants and saved answers remain existing features; Simplify recruiter discovery, premium products and external cover-letter/template services are not implemented.
+
+`next-app/` begins the requested gradual Next.js/React/Tailwind migration. Its isolated static-export profile preview shares `profile-schema.js`, with a server-rendered shell and a small client form. It does not replace production or save candidate data yet. See [migration instructions](next-app/README.md).

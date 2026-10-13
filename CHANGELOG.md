@@ -1,3 +1,10 @@
+## 2026-10-13 — Simplify-shaped profile and gradual React migration
+
+- Put the candidate profile first with identity, job-search status, repeatable work experience, education and projects, GitHub/other links, skills, preferred skills and languages. Keep resume variants and existing application preferences available.
+- Added a shared profile field schema, stable labelled native controls and structured private JSON facts. Edits, removed/added entries and silent nested autofill invalidate prior verification. Preserve unknown profile metadata and existing guest/account storage namespaces.
+- Started an isolated Next.js 16 / React 19 / Tailwind 4 static-export preview in `next-app/`, sharing the production schema with a server-rendered shell and client-only interaction. No production framework cutover or preview persistence yet; account/auth/approval parity gates future migration.
+- Validation: 133 tests, database ownership/schema checks, 76-role validation, rebuilt auth bundle, optimized Next build, browser add/save/reload/edit checks and 390px layout without horizontal overflow. Cache v31. Existing global design-detector warnings remain outside this pass. Live Simplify Copilot recognition and signed-in cloud round-trip remain unverified; no personal reference-PDF values were published.
+
 ## 2026-10-13 — Autofill-compatible application profile
 
 - Added stable standard field IDs, explicit labels, native input types/autocomplete and LinkedIn/portfolio fields for Simplify/browser form recognition.

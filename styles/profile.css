@@ -1,0 +1,20 @@
+.profile-hub { max-width: 960px; margin: 28px auto; }
+.profile-identity { text-align: center; padding: 24px 0; }
+.profile-identity h2 { margin: 16px 0 8px; }
+.profile-identity p { color: #c6ced9; overflow-wrap: anywhere; }
+.profile-avatar { display: grid; place-items: center; width: 72px; height: 72px; margin: auto; border-radius: 14px; background: #9cffda; color: #101419; font-size: 1.8rem; font-weight: 800; }
+.profile-jump { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 24px 0; }
+.profile-jump a { color: #9cffda; text-underline-offset: 4px; padding: 8px 0; }
+.profile-section { border: 0; border-top: 1px solid #3f4a5e; margin: 32px 0; padding: 20px 0 0; min-width: 0; scroll-margin-top: 24px; }
+.profile-section > legend { font-size: 1.25rem; font-weight: 700; padding-right: 16px; }
+.profile-section button, .profile-entry button { min-height: 44px; padding: 10px 16px; color: #edf0f6; background: #242d3a; border: 1px solid #3f4a5e; border-radius: 10px; font: inherit; cursor: pointer; }
+.profile-section button:hover { background: #334156; }
+.profile-entry { border: 0; border-bottom: 1px solid #303947; padding: 0 0 24px; margin: 0 0 24px; min-width: 0; }
+.profile-entry > legend { color: #c6ced9; font-weight: 700; }
+.profile-entry button { margin-top: 16px; }
+.profile-empty { color: #c6ced9; margin: 0 0 16px; }
+.profile-hub :focus-visible { outline: 3px solid #9cffda; outline-offset: 3px; }
+.profile-hub input, .profile-hub textarea { caret-color: #9cffda; }
+.profile-hub ::selection { background: #9cffda; color: #101419; }
+.profile-save { border-top: 1px solid #3f4a5e; padding-top: 20px; }
+@media (max-width: 650px) { .profile-hub { margin: 20px 0; } .profile-jump { gap: 4px 16px; } }

@@ -12,19 +12,20 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=30">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=30">
-    <link rel="stylesheet" href="styles/role-cards.css?v=30">
-    <link rel="stylesheet" href="styles/dashboard.css?v=30">
-    <link rel="stylesheet" href="styles/workflow.css?v=30">
-    <link rel="stylesheet" href="styles/tierlists.css?v=30">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=30">
-    <link rel="stylesheet" href="styles/account.css?v=30">
-    <link rel="stylesheet" href="styles/resume-files.css?v=30">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=30">
+    <link rel="stylesheet" href="styles.css?v=31">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=31">
+    <link rel="stylesheet" href="styles/role-cards.css?v=31">
+    <link rel="stylesheet" href="styles/dashboard.css?v=31">
+    <link rel="stylesheet" href="styles/workflow.css?v=31">
+    <link rel="stylesheet" href="styles/tierlists.css?v=31">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=31">
+    <link rel="stylesheet" href="styles/account.css?v=31">
+    <link rel="stylesheet" href="styles/resume-files.css?v=31">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=31">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="styles/profile.css?v=31">
   </head>
   <body>
     <main>
@@ -133,6 +134,45 @@
       <section id="profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
         <div class="section-heading"><h2>Profile</h2></div>
         <p class="panel-note">Save factual answers and resume references. Nothing here is sent to employers.</p>
+        <section class="profile-hub" aria-labelledby="candidate-profile-heading">
+          <div class="profile-identity"><div class="profile-avatar" id="profile-initials" aria-hidden="true">?</div><h2 id="candidate-profile-heading">My Profile</h2><p id="profile-headline">Add your details to prepare job applications.</p></div>
+          <p id="profile-autofill-help" class="panel-note">Use the same sections as your Simplify profile. Fill them with your browser or Simplify Copilot where supported, or copy your details. Review all facts before saving. Simplify recognition on this site has not been verified.</p>
+          <nav class="profile-jump" aria-label="Profile sections"><a href="#profile-personal">Personal information</a><a href="#profile-work">Work experience</a><a href="#profile-education">Education</a><a href="#profile-projects">Projects</a><a href="#profile-skills">Skills &amp; languages</a></nav>
+          <form id="profile-form" name="candidate_profile" autocomplete="on" aria-labelledby="candidate-profile-heading" aria-describedby="profile-autofill-help">
+            <fieldset id="profile-personal" class="profile-section"><legend>Personal information</legend><div class="workflow-form">
+          <label for="full_name">Full name<input id="full_name" name="name" type="text" autocomplete="name"></label>
+          <label for="first_name">First name<input id="first_name" name="firstName" type="text" autocomplete="given-name"></label>
+          <label for="last_name">Last name<input id="last_name" name="lastName" type="text" autocomplete="family-name"></label>
+          <label for="email">Email address<input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></label>
+          <label for="phone_number">Phone number<input id="phone_number" name="phone" type="tel" autocomplete="tel" inputmode="tel"></label>
+          <label for="city">City / location<input id="city" name="location" type="text" autocomplete="address-level2"></label>
+          <label for="linkedin_url">LinkedIn profile URL<input id="linkedin_url" name="linkedin" type="url" autocomplete="section-linkedin url" autocapitalize="none" spellcheck="false"></label>
+          <label for="portfolio_url">Portfolio URL<input id="portfolio_url" name="portfolio" type="url" autocomplete="section-portfolio url" autocapitalize="none" spellcheck="false"></label>
+          <label for="github_url">GitHub URL<input id="github_url" name="github" type="url" autocomplete="section-github url" autocapitalize="none" spellcheck="false"></label>
+          <label for="other_url">Other URL<input id="other_url" name="otherUrl" type="url" autocomplete="section-other url" autocapitalize="none" spellcheck="false"></label>
+          <label for="work_authorization" class="workflow-wide">Work authorization<input id="work_authorization" name="authorization" type="text" autocomplete="off" placeholder="Your exact verified answer"></label>
+              <label>Current title<input id="current_title" name="headline" autocomplete="organization-title"></label>
+              <label>Current employer<input id="current_employer" name="currentEmployer" autocomplete="organization"></label>
+              <label>Job search status<select id="job_search_status" name="jobSearchStatus"><option value="">Select status</option><option>Actively looking</option><option>Open to opportunities</option><option>Not looking</option></select></label>
+            </div></fieldset>
+            <fieldset id="profile-work" class="profile-section"><legend>Work Experience</legend><div data-profile-list="workExperience"></div><button type="button" data-profile-add="workExperience">Add work experience</button></fieldset>
+            <fieldset id="profile-education" class="profile-section"><legend>Education</legend><div data-profile-list="education"></div><button type="button" data-profile-add="education">Add education</button></fieldset>
+            <fieldset id="profile-projects" class="profile-section"><legend>Projects & Outside Experience</legend><div data-profile-list="projects"></div><button type="button" data-profile-add="projects">Add project</button></fieldset>
+            <fieldset id="profile-skills" class="profile-section"><legend>Skills &amp; Languages</legend><div class="workflow-form">
+              <label for="skills">Skills (one per line)<textarea id="skills" name="skills" autocomplete="off" placeholder="Python&#10;React.js&#10;SQL"></textarea></label>
+              <label for="preferred_skills">Skills you prefer to use (one per line)<textarea id="preferred_skills" name="preferredSkills" autocomplete="off"></textarea></label>
+              <label for="languages">Languages (one per line)<textarea id="languages" name="languages" autocomplete="off" placeholder="Chinese Mandarin"></textarea></label>
+            </div></fieldset>
+            <div class="profile-save workflow-form"><label for="profile_facts_verified" class="workflow-check workflow-wide"><input id="profile_facts_verified" name="verified" type="checkbox" autocomplete="off">I have checked these facts</label><button type="submit">Save profile</button><p id="profile-feedback" role="status" aria-live="polite"></p></div>
+          </form>
+        </section>
+        <section class="board-section"><h2>Resume variants</h2>
+          <form id="resume-form" class="workflow-form">
+            <label>Variant<select name="name"><option>Backend</option><option>Distributed Systems</option><option>ML Infrastructure</option><option>Master</option></select></label>
+            <label>Resume link<input name="url" type="url" required placeholder="https://…"></label>
+            <button type="submit">Add reference</button>
+          </form><div id="resume-list"></div>
+        </section>
         <section class="board-section" aria-labelledby="application-mode-heading">
           <h2 id="application-mode-heading">Application automation</h2>
           <label class="workflow-check"><input id="auto-submit-approved" type="checkbox" role="switch" aria-describedby="auto-submit-help">Auto-apply routine matches</label>
@@ -174,21 +214,6 @@
           <form id="tierlist-company" class="tierlist-toolbar"><label>Add company<input name="name" required placeholder="Company name"></label><button type="submit">Add tile</button></form>
           <p id="tierlist-feedback" role="status" aria-live="polite"></p>
         </section>
-        <h2 id="candidate-profile-heading">Application profile</h2>
-        <p id="profile-autofill-help" class="panel-note">Use Simplify Copilot to fill these details if it recognizes this site. Otherwise, copy them from Simplify’s Profile tab. Review the filled values and check your facts before saving.</p>
-        <form id="profile-form" name="candidate_profile" class="workflow-form" autocomplete="on" aria-labelledby="candidate-profile-heading" aria-describedby="profile-autofill-help">
-          <label for="full_name">Full name<input id="full_name" name="name" type="text" autocomplete="name"></label>
-          <label for="first_name">First name<input id="first_name" name="firstName" type="text" autocomplete="given-name"></label>
-          <label for="last_name">Last name<input id="last_name" name="lastName" type="text" autocomplete="family-name"></label>
-          <label for="email">Email address<input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></label>
-          <label for="phone_number">Phone number<input id="phone_number" name="phone" type="tel" autocomplete="tel" inputmode="tel"></label>
-          <label for="city">City / location<input id="city" name="location" type="text" autocomplete="address-level2"></label>
-          <label for="linkedin_url">LinkedIn profile URL<input id="linkedin_url" name="linkedin" type="url" autocomplete="section-linkedin url" autocapitalize="none" spellcheck="false"></label>
-          <label for="portfolio_url">Portfolio / website URL<input id="portfolio_url" name="portfolio" type="url" autocomplete="section-portfolio url" autocapitalize="none" spellcheck="false"></label>
-          <label for="work_authorization" class="workflow-wide">Work authorization<input id="work_authorization" name="authorization" type="text" autocomplete="off" placeholder="Your exact verified answer"></label>
-          <label for="profile_facts_verified" class="workflow-check workflow-wide"><input id="profile_facts_verified" name="verified" type="checkbox" autocomplete="off">I have checked these facts</label>
-          <button type="submit">Save profile</button><p id="profile-feedback" role="status" aria-live="polite"></p>
-        </form>
         <section class="board-section" aria-labelledby="saved-answers-title">
           <h2 id="saved-answers-title">Saved answers</h2>
           <p class="panel-note">Reuse answers to exact common questions. Saved in this browser. Signed-in changes sync privately to your account. Factual contact and authorization answers belong in the profile above.</p>
@@ -221,13 +246,7 @@
           </div>
           <div id="agent-connection-list"></div>
         </section>
-        <section class="board-section"><h2>Resume variants</h2>
-          <form id="resume-form" class="workflow-form">
-            <label>Variant<select name="name"><option>Backend</option><option>Distributed Systems</option><option>ML Infrastructure</option><option>Master</option></select></label>
-            <label>Resume link<input name="url" type="url" required placeholder="https://…"></label>
-            <button type="submit">Add reference</button>
-          </form><div id="resume-list"></div>
-        </section>
+
       </section>
       <dialog id="application-review" aria-labelledby="review-title">
         <div class="workflow-review-head"><h2 id="review-title">Review application</h2><button type="button" id="review-close">Close</button></div>
@@ -250,25 +269,27 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=30"></script>
-    <script src="components.js?v=30"></script>
-    <script src="workflow-model.js?v=30"></script>
-    <script src="app.js?v=30"></script>
-    <script src="saved-answers-model.js?v=30"></script>
-    <script src="profile-autofill.js?v=30"></script>
-    <script src="workflow.js?v=30"></script>
-    <script src="saved-answers.js?v=30"></script>
-    <script src="tierlist-model.js?v=30"></script>
-    <script src="tierlists.js?v=30"></script>
-    <script type="module" src="workflow-motion.js?v=30"></script>
-    <script type="module" src="pack-effects.js?v=30"></script>
-    <script type="module" src="pack-motion.js?v=30"></script>
-    <script type="module" src="pack-haptics.js?v=30"></script>
-    <script src="profile-preferences.js?v=30"></script>
-    <script src="agent-connections.js?v=30"></script>
-    <script type="module" src="resume-files.js?v=30"></script>
-    <script type="module" src="leaderboard.mjs?v=30"></script>
-    <script src="app-updates.js?v=30"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=30"></script>
+    <script src="store.js?v=31"></script>
+    <script src="components.js?v=31"></script>
+    <script src="workflow-model.js?v=31"></script>
+    <script src="app.js?v=31"></script>
+    <script src="saved-answers-model.js?v=31"></script>
+    <script src="profile-schema.js?v=31"></script>
+    <script src="profile-editor.js?v=31"></script>
+    <script src="profile-autofill.js?v=31"></script>
+    <script src="workflow.js?v=31"></script>
+    <script src="saved-answers.js?v=31"></script>
+    <script src="tierlist-model.js?v=31"></script>
+    <script src="tierlists.js?v=31"></script>
+    <script type="module" src="workflow-motion.js?v=31"></script>
+    <script type="module" src="pack-effects.js?v=31"></script>
+    <script type="module" src="pack-motion.js?v=31"></script>
+    <script type="module" src="pack-haptics.js?v=31"></script>
+    <script src="profile-preferences.js?v=31"></script>
+    <script src="agent-connections.js?v=31"></script>
+    <script type="module" src="resume-files.js?v=31"></script>
+    <script type="module" src="leaderboard.mjs?v=31"></script>
+    <script src="app-updates.js?v=31"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=31"></script>
   </body>
 </html>
