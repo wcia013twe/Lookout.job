@@ -38,6 +38,8 @@ This avoids repeated full prompt reads; permanent agent memory depends on its ru
 3. **Open the link.** Muse sends “Your morning jobs are ready” through its own notification channel. The link opens your batch on the shared website. Login identifies the owner; a batch ID alone does not grant access.
 4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Opening a posting is not applying.
 5. **Prepare and review.** Muse inspects supported forms, selects the right resume, drafts answers, and sends blockers or ready drafts to **Needs you**. Agents do not mark a human review complete. You check the complete employer question list and approve the exact version.
+Unresolved Playwright and agent recovery failures go to **Needs you** with a reason and next action. Uncertain submission outcomes pause for human verification.
+
 6. **Apply with evidence.** The intended final runner submits only a current approved version and records employer confirmation. **Current runner support stops at inspection and approved prefill/manual handoff.** You can record a manual submission with a note; this is labelled user-reported and never fabricates a receipt.
 7. **Track outcomes.** Applications shows progress and a durable timeline. Muse can add observations; interviews, offers and rejections remain distinguishable from draft preparation. Progress is private by default; leaderboard participation shares only an alias and aggregate metrics.
 
@@ -58,6 +60,15 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 | Morning batch links | Owned `?batch=<uuid>` routes; latest private batch can load for a signed-in user |
 | Form inspection/prefill | Greenhouse public form inspector; adapted Greenhouse/Ashby browser tools, explicit resume rules, reviewed native radios/checkboxes and strict approval checks |
 | Progress/leaderboard | Opt-in alias and server-derived aggregate metrics; self-reported submissions remain tracking claims |
+
+## Company logo cache
+
+Company logos are public branding assets in the Supabase `company-logos` Storage
+bucket. The website resolves normalized company names through
+`data/logo-manifest.json`; agents do not search for or download logos during job
+scans. Content-hashed URLs keep browser/CDN caches stable. Existing local images
+remain fallbacks, and companies without an asset show initials. This bucket is
+separate from private resume storage.
 
 ## Run and validate
 

@@ -119,6 +119,8 @@ try {
     ]),
   );
   await checkApplicationPipeline(db, one, two);
+  await db.exec("reset role");
+  await db.exec(await readFile(new URL("../tests/runner-failure-check.sql", import.meta.url), "utf8"));
   console.log(
     "PASS: schema, owner isolation, immutable/idempotent approvals, revision invalidation, private credentials/storage, leaderboard metric protection",
   );

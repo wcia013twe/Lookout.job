@@ -168,6 +168,13 @@
     getXp, addXp, awardXpForStatus, levelFor, recordStreakDay, streakCount, dayStamp,
     dropKey, seenDrops, markDropSeen, SEEN_DROPS_KEY,
     logoFallback(img) {
+      // Storage is a cache, not a dependency: retry the bundled public asset once.
+      const local = img.getAttribute('data-local');
+      if (local && !img.hasAttribute('data-local-tried')) {
+        img.setAttribute('data-local-tried', 'true');
+        img.src = local;
+        return;
+      }
       const company = img.getAttribute('data-company') || '';
       const cls = img.getAttribute('data-cls') || 'company-logo';
       const initial = (String(company).trim()[0] || '?').toUpperCase();
@@ -188,9 +195,12 @@
     render() {
       const company = this.getAttribute('company') || '';
       const cls = this.getAttribute('cls') || 'company-logo';
-      const path = JB.logoManifest[normCompany(company)];
+      const entry = JB.logoManifest[normCompany(company)];
+      // Accept legacy manifests while cached entries roll out.
+      const path = typeof entry === 'string' ? entry : entry?.url;
+      const local = typeof entry === 'object' ? entry?.local : '';
       if (path) {
-        this.innerHTML = `<img class="${esc(cls)}" src="${esc(path)}" alt="${esc(company)} logo" loading="lazy" data-company="${esc(company)}" data-cls="${esc(cls)}" onerror="JB.logoFallback(this)">`;
+        this.innerHTML = `<img class="${esc(cls)}" src="${esc(path)}" alt="${esc(company)} logo" loading="lazy" data-company="${esc(company)}" data-cls="${esc(cls)}" data-local="${esc(local || '')}" onerror="JB.logoFallback(this)">`;
       } else {
         const initial = (String(company).trim()[0] || '?').toUpperCase();
         this.innerHTML = `<span class="${esc(cls)} logo-fallback" aria-hidden="true">${esc(initial)}</span>`;

@@ -2,14 +2,15 @@ import { identifyJob } from './forms.mjs';
 import { openApplicationForm } from './ats.mjs';
 import { inspectBrowserForm, prefillCurrentApplication } from './browser.mjs';
 import { selectResume } from './resume-selection.mjs';
+import { runApplicationAttempt } from './attempt.mjs';
 
 // Register these functions in Muse's local runtime. The remote board MCP remains data-only.
 // A dedicated Page is required; do not reuse a person's unrelated browser tab.
-export function createApplicationTools({ getPage, loadCurrentContext }) {
+export function createApplicationTools({ getPage, loadCurrentContext, agentRecovery, reportFailure }) {
   if (typeof getPage !== 'function' || typeof loadCurrentContext !== 'function') {
     throw new Error('Dedicated browser provider and trusted current-context loader required');
   }
-  return {
+  const tools = {
     async inspect_application({ url }) {
       const target = identifyJob(url);
       const page = await getPage();
@@ -31,4 +32,13 @@ export function createApplicationTools({ getPage, loadCurrentContext }) {
     // Proposal-only helper: call before creating the draft and seeking human approval.
     select_resume: selectResume,
   };
+  if (typeof reportFailure === 'function') tools.try_application = async ({ applicationId, attemptId }) => {
+    if (typeof applicationId !== 'string' || !applicationId) throw new Error('Application ID required');
+    return runApplicationAttempt({ applicationId, attemptId, loadCurrentContext, reportFailure,
+      agentRecovery, playwrightAttempt: async ({ context }) => {
+        const page = await getPage();
+        return prefillCurrentApplication(page, applicationId, async () => context);
+      } });
+  };
+  return tools;
 }

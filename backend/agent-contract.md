@@ -39,6 +39,7 @@ Scopes can be narrowed independently. Agents have no approval/submission endpoin
 | `resumes.read` | `resumes:read` | `{resumeId}` → `{resume,url}` with 60-second private file URL or external reference URL |
 | `workspace.read` | `workspace:read` | `{}` → profile, preferences, saved answers, resume references and latest 100 owned applications |
 | `batches.publish` | `batches:write` | `{eventKey,label,date?,jobs}` → immutable batch, items and personalized `?batch=UUID` link |
+| `runner.report_failure` | `drafts:write` | `{applicationId,eventKey,expectedRevision,stage,outcome,reason,nextAction,attempts}` → application + failure event; stale revisions reject |
 | `drafts.prepare` | `drafts:write` | `{jobId,expectedRevision,draft,blocker?}` → application with current revision |
 | `activity.append` | `activity:write` | `{eventKey,kind,applicationId?,data?}` → persisted event; actor is always agent |
 | `approvals.read` | `approvals:read` | `{applicationId}` → owned application and exact approval matching current revision, or null |
@@ -90,3 +91,10 @@ updates, so several agents remain independent. Full settings are returned only
 on explicit personal-context reads, not on the two-number check. Personal theme
 messages take precedence over the developer defaults; neither can alter approval
 or submission semantics. See `mcp/README.md` for cache/reset behavior.
+
+Failure reports preserve the draft, set Blocked and invalidate prior approval.
+`stage` is approval/playwright/agent/submission; `outcome` is blocked/uncertain.
+`attempts` contains at most three `{stage,status}` summaries; no raw browser
+errors, typed answers or credentials. Retry the same eventKey without replaying
+application execution. Submitted/final records cannot be downgraded. Notifications
+remain in the agent's channel, with the personal theme's runner_failure template.

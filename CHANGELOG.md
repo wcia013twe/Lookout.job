@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-13 — Bounded runner recovery and Needs you reporting
+
+- Added Playwright-first prefill with one optional agent recovery and independent deterministic validation.
+- Added revision-checked, deduplicated failure reporting that preserves answers and records a reason/next action in Needs you.
+- Uncertain submission outcomes pause without retry; failed reporting remains pending rather than claiming website success.
+- Updated developer instructions/version to 2. Browser-runtime/recovery hooks, notifications and actual submission still need client integration.
+- Validation: 94 tests, complete migration checks and 75 jobs pass. Hosted failure checks cover scope/ownership, stale writes, idempotency and final-state protection.
+
+## 2026-10-13 — Public company logo cache
+
+- Cached and hash-verified 66 existing public branding images in Supabase Storage; company-name lookup uses immutable URLs with local/initials fallbacks.
+- Retired the one-time privileged bootstrap; browser writes are denied. Added maintenance verification and cache version 25.
+
 ## 2026-10-13 — Two-version agent context checks
 
 - Added scoped context-version, personal-settings and developer-instruction tools to HTTP/MCP.

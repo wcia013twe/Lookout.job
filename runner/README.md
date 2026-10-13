@@ -90,3 +90,27 @@ custom search-preference keys. No resume-rule editor is added to the UI:
 Each rule matches **any** listed keyword in the job title/category. Different
 matched resume IDs require a choice; there is no hidden ranking or model decision.
 Rules remain candidate-specific data, separate from public employer records.
+
+## Bounded recovery and Needs you
+
+`runApplicationAttempt` in `attempt.mjs` and the optional `try_application` tool
+perform Playwright prefill first. On a pre-submit failure they allow one
+host-provided agent recovery, then rerun deterministic validation. The recovery
+hook is not a bundled model and must be restricted to pre-submit operations.
+When both fail (or no recovery exists), `runner.report_failure` persists a blocker
+and next action in Needs you without replacing answers or resume selection.
+
+Supply `reportFailure` in `createApplicationTools`; it should call the gateway's
+`runner.report_failure` operation with the supplied payload. Supply an
+`agentRecovery` hook only when your runtime supports constrained browser
+recovery. The host still supplies the actual browser and current-context loader.
+Use a stable attempt ID for reporting retries. The backend rejects stale
+revisions, foreign applications and changes to submitted/final applications.
+
+Uncertain outcomes or any indication submission started skip recovery and
+require checking the employer portal/confirmation email. A callback claiming
+Submitted is never accepted as evidence by this prefill orchestrator. Native
+submission remains unimplemented. Missing or failed backend reporting returns
+`reported:false` and a pending payload; retain it privately and retry reporting,
+not application execution. Text the user through the agent's own channel; this
+code does not send notifications.

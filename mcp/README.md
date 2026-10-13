@@ -45,6 +45,7 @@ settings format is assumed. The HTTP gateway is the alternative integration.
 | read_developer_context | workspace:read | Interaction instructions/defaults when developerVersion changes |
 | workspace_read | workspace:read | Private facts, preferences, answers, applications |
 | publish_batch | batches:write | Private morning batch and its board link |
+| report_application_failure | drafts:write | Record unresolved runner/agent blocker and next action in Needs you |
 | prepare_draft | drafts:write | Revision-checked draft, invalidates old approval |
 | append_activity | activity:write | Agent observation, never submission proof |
 | read_approval | approvals:read | Exact current human approval |
