@@ -290,3 +290,53 @@ span.drop-row-logo.logo-fallback { font-size: 1rem; height: 30px; width: 30px; }
 .pack-modal :focus-visible { outline: 3px solid #ffcb05; outline-offset: 5px; }
 .pack-row { min-height: 0; }
 .dropcard-sheet h4 { overflow-wrap: anywhere; }
+
+/* Mobile pack stage: one collectible owns the viewport. */
+.pack-nav { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 0; flex-shrink: 0; }
+.pack-nav span { color: #b9c2cf; font-size: .8rem; }
+.pack-nav button { background: #242334; border: 0; color: #fff; padding: 12px 16px; min-height: 44px; border-radius: 12px; font: inherit; cursor: pointer; }
+.pack-modal { box-sizing: border-box; }
+.pack-row { perspective: 1000px; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
+.pack-row > drop-card, .pack-row > .double-wrap { flex-shrink: 0; scroll-snap-align: center; }
+.pack-row .dropcard { transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
+.pack-row .dropcard-art { width: 128px; height: 128px; border-radius: 24px; background: #fff; box-shadow: 0 18px 36px rgba(0,0,0,.45); }
+.pack-row .dropcard-art .company-logo { width: 100px; height: 100px; object-fit: contain; border-radius: 0; }
+.pack-row .dropcard-top { padding-top: 48px; padding-bottom: 40px; }
+.pack-row .dropcard-company { color: #fff; font-size: 1.6rem; font-weight: 900; }
+.pack-row .dropcard-sheet h4 { color: #d1d9e5; font-size: 1rem; line-height: 1.35; }
+.charge-symbol { font-size: 5rem; color: #15202d; font-weight: 900; }
+.pack-row .dropcard.mystery { background: radial-gradient(ellipse at 50% 25%, #49306a, #141321 70%); border-color: #aa85e3; }
+.pack-row .mystery-q { font-size: 7rem; }
+@media (max-width: 650px) {
+  .pack-modal { padding: calc(18px + env(safe-area-inset-top)) 0 calc(8px + env(safe-area-inset-bottom)); overflow: hidden; }
+  .pack-head { padding: 0 54px; flex-shrink: 0; }
+  .pack-head h2 { font-size: 1.35rem; letter-spacing: .02em; text-transform: none; text-shadow: none; }
+  .pack-head .pack-close { top: calc(12px + env(safe-area-inset-top)); right: 12px; width: 44px; height: 44px; }
+  .pack-sub { font-size: .8rem; }
+  .pack-tools { padding-top: 8px; gap: 12px; flex-shrink: 0; }
+  .pack-progress { font-size: .8rem; }
+  .pack-reveal-all { background: transparent; border: 0; padding: 8px 12px; color: #cbb4ed; font-size: .8rem; }
+  .pack-row { gap: 24px; align-items: center; padding: 14px 9vw; scroll-padding-inline: 9vw; }
+  .pack-row > drop-card, .pack-row > .double-wrap { width: 82vw; }
+  .pack-row .dropcard, .pack-row .dropcard.mini { width: 100%; min-height: min(440px, 57dvh); border-radius: 24px; box-sizing: border-box; }
+  .pack-row .double-combo { min-height: min(440px, 57dvh); }
+  .pack-row .double-split { display: contents; }
+  .pack-row .dropcard-sheet { justify-content: flex-start; padding: 20px; gap: 8px; }
+  .pack-row .dropcard-top { padding-top: 38px; padding-bottom: 30px; }
+  .pack-row .dropcard-art { width: 108px; height: 108px; }
+  .pack-row .dropcard-art .company-logo { width: 84px; height: 84px; }
+  .pack-row .dropcard-company { font-size: 1.5rem; }
+  .pack-row .dropcard-stats { gap: 4px; }
+  .pack-row .dropcard-hint { font-size: .85rem; }
+  .pack-row .dropcard-link { min-height: 44px; box-sizing: border-box; }
+  .pack-foot { padding: 10px 20px; gap: 8px; flex-shrink: 0; }
+  .pack-summary { font-size: .8rem; letter-spacing: .02em; }
+  .pack-nav { gap: 12px; padding: 8px 12px; }
+}
+@media (max-height: 700px) and (max-width: 650px) {
+  .pack-row { align-items: flex-start; overflow-y: auto; }
+  .pack-row .dropcard-top { padding-top: 32px; padding-bottom: 24px; }
+  .pack-row .dropcard-art { width: 80px; height: 80px; }
+  .pack-row .dropcard-art .company-logo { width: 64px; height: 64px; }
+}
+@media (prefers-reduced-motion: reduce) { .pack-row .dropcard { transform: none; } }

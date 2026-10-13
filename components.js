@@ -260,7 +260,7 @@
       const g = (n) => this.getAttribute(n) || '';
       if (g('mode') === 'compact') {
         const isNew = g('wild') === '1';
-        const wild = isNew ? `<span class="wild-header">A wild ${esc(g('company'))} appeared!</span>` : '';
+        const wild = isNew ? `<span class="wild-header">A new opportunity awaits</span>` : '';
         this.innerHTML = `<div class="sudo-line${isNew ? ' wild-new' : ''}">${wild}<status-pill kind="sudo" value="${esc(g('status'))}"></status-pill><span>${esc(g('title'))} — ${esc(g('company'))}</span></div>`;
         return;
       }
@@ -400,6 +400,19 @@
         if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('a')) { e.preventDefault(); this._tap(); }
       });
       let sx = null;
+      this.addEventListener('pointermove', (e) => {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const card = this.querySelector('.dropcard');
+        if (!card) return;
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--tilt-x', `${((e.clientY-r.top)/r.height-.5)*-10}deg`);
+        card.style.setProperty('--tilt-y', `${((e.clientX-r.left)/r.width-.5)*12}deg`);
+      });
+      this.addEventListener('pointerleave', () => {
+        const card = this.querySelector('.dropcard');
+        card?.style.setProperty('--tilt-x', '0deg');
+        card?.style.setProperty('--tilt-y', '0deg');
+      });
       this.addEventListener('pointerdown', (e) => { sx = e.clientX; });
       this.addEventListener('pointerup', (e) => {
         if (sx !== null && Math.abs(e.clientX - sx) > 60 && this._stage === 'mystery') this._unlock();
@@ -475,6 +488,8 @@
     _checkDone() {
       if (!this._done && this._stage === this.trueTier) {
         this._done = true;
+        const logo = this.querySelector('.dropcard-art');
+        if (logo?.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches) logo.animate([{transform:'scale(.6)',filter:'brightness(3)'},{transform:'scale(1.15)',filter:'brightness(1.4)',offset:.6},{transform:'scale(1)',filter:'brightness(1)'}],{duration:650,easing:'cubic-bezier(.16,1,.3,1)'});
         this.dispatchEvent(new CustomEvent('dropcard:done', { bubbles: true, composed: true, detail: { tier: this.trueTier } }));
       }
     }
@@ -486,11 +501,11 @@
       const glowCls = glow === 'strong' ? ' glow-strong' : glow === 'weak' ? ' glow-weak' : '';
       const miniCls = mini ? ' mini' : '';
       if (this._stage === 'mystery') {
-        this.innerHTML = `<article class="dropcard mystery${miniCls}" role="button" tabindex="0" aria-label="Mystery drop. Tap rapidly or swipe to reveal.">
-          <p class="wild-header">A wild ${esc(g('company'))} appeared!</p>
+        this.innerHTML = `<article class="dropcard mystery${miniCls}" role="button" tabindex="0" aria-label="Sealed drop. Tap to open.">
+          <p class="wild-header">A new opportunity awaits</p>
           <div class="mystery-q">?</div>
-          <p class="mystery-count">3 more taps!</p>
-          <p class="dropcard-hint">tap rapidly or swipe to unlock</p>
+          <p class="mystery-count">Tap to break the seal</p>
+          <p class="dropcard-hint">three taps to charge · swipe to unlock</p>
         </article>`;
         return;
       }
@@ -516,15 +531,15 @@
           ${reason}
           ${g('url') ? `<a class="dropcard-link" href="${esc(g('url'))}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">Open posting</a>` : ''}`
         : '';
-      const nextHint = !isTrue ? `<p class="dropcard-hint">tap to upgrade</p>` : `<p class="dropcard-hint done">maxed</p>`;
-      this.innerHTML = `<article class="dropcard t-${stage}${glowCls}${miniCls}" role="button" tabindex="0" aria-label="${esc(g('title'))} at ${esc(g('company'))}, ${RARITY_LABEL[stage]} tier.">
+      const nextHint = !isTrue ? `<p class="dropcard-hint">tap to power up</p>` : `<p class="dropcard-hint done">Fully revealed</p>`;
+      this.innerHTML = `<article class="dropcard t-${stage}${glowCls}${miniCls}" role="button" tabindex="0" aria-label="${isTrue ? esc(g('title')) + ' at ' + esc(g('company')) : 'Charging drop'}, ${RARITY_LABEL[stage]} tier.">
         <div class="dropcard-top">
-          <div class="dropcard-art"><logo-img company="${esc(g('company'))}" cls="company-logo"></logo-img></div>
+          <div class="dropcard-art">${isTrue ? `<logo-img company="${esc(g('company'))}" cls="company-logo"></logo-img>` : `<span class="charge-symbol" aria-hidden="true">?</span>`}</div>
           <span class="rarity ${stage}">${RARITY_LABEL[stage]}</span>
         </div>
         <div class="dropcard-sheet">
-          <h4>${esc(g('title'))}</h4>
-          <p class="dropcard-company">${esc(g('company'))}</p>
+          <p class="dropcard-company">${isTrue ? esc(g('company')) : 'Power building'}</p>
+          <h4>${isTrue ? esc(g('title')) : 'Something stronger is inside'}</h4>
           ${full}
           ${nextHint}
         </div>
@@ -565,6 +580,15 @@
         if (e.target.closest('.pack-reveal-all')) return this.revealAll();
         const claim = e.target.closest('.pack-claim');
         if (claim) return this.claim();
+        const nav = e.target.closest('[data-pack-nav]');
+        if (nav) {
+          const row = this.querySelector('.pack-row');
+          const cards = [...row.querySelectorAll('drop-card, .double-wrap')];
+          const index = cards.reduce((best, card, i) => Math.abs(card.offsetLeft-row.scrollLeft-row.offsetLeft) < Math.abs(cards[best].offsetLeft-row.scrollLeft-row.offsetLeft) ? i : best, 0);
+          const next = cards[Math.max(0, Math.min(cards.length-1, index + Number(nav.dataset.packNav)))];
+          next?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest', inline: 'center' });
+          return;
+        }
         const combo = e.target.closest('.double-combo');
         if (combo) return this._splitDouble(combo);
       });
@@ -616,7 +640,7 @@
           const anyMystery = [a, b].some((d) => !seenDrops().has(dropKey(d)));
           cards += `<div class="double-wrap" data-double="${i}">
             <div class="double-combo${anyMystery ? ' mystery' : ''}" role="button" tabindex="0" aria-label="Double drop from ${esc(a.company || '')}. Tap to split.">
-              ${anyMystery ? `<p class="wild-header">A wild ${esc(a.company || '')} appeared!</p><div class="mystery-q dim">2?</div><p class="dropcard-hint">spam-tap or swipe to unlock</p>`
+              ${anyMystery ? `<p class="wild-header">Double drop</p><div class="mystery-q dim">2?</div><p class="dropcard-hint">tap to split your two drops</p>`
                 : `<div class="card-back-pattern"></div><p class="double-label">2-in-1 drop</p><p class="dropcard-hint">tap to split</p>`}
             </div>
           </div>`;
@@ -627,12 +651,13 @@
       this.innerHTML = `<div class="pack-overlay">
         <div class="pack-modal" role="dialog" aria-modal="true" aria-label="Today's Drop Pack">
           <div class="pack-head">
-            <div><p class="eyebrow">ZERO2SUDO</p><h2>Today's Drop Pack</h2>
-            <p class="pack-sub">${total} drop${total === 1 ? '' : 's'} · tap cards to reveal and upgrade</p></div>
+            <div><h2>Daily drop pack</h2>
+            <p class="pack-sub">${total} drop${total === 1 ? '' : 's'} · charge, reveal, collect</p></div>
             <button class="pack-close icon-btn" aria-label="Close pack">x</button>
           </div>
           <div class="pack-tools"><p class="pack-progress" role="status">0 / ${total} revealed</p><button class="pack-reveal-all">Reveal all</button></div>
           <div class="pack-row">${cards || '<p class="empty">No drops today.</p>'}</div>
+          <div class="pack-nav"><button data-pack-nav="-1" aria-label="Previous card">Previous</button><span>Swipe between cards</span><button data-pack-nav="1" aria-label="Next card">Next</button></div>
           <div class="pack-foot" hidden>
             <p class="pack-summary"></p>
             <button class="pack-claim">${store().get(`drops.packRewards.${dayStamp()}`) ? "Done · XP already claimed" : "Claim +25 XP"}</button>
