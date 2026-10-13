@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-13 — Minimal Muse onboarding prompt
+
+- Documented the copy-and-paste prompt: morning full scan, noon/evening Instagram story scans, and text updates.
+- Clarified that app-side instructions own workflow and themed messaging; scheduling is not activated by this documentation update.
+- Documentation-only change; reviewed the saved prompt.
+
 ## 2026-10-13 — Adapt licensed browser primitives without Jev
 
 - Extracted MIT-licensed visibility/label primitives from jev-browser and ATS entry selectors from job-application-agent; pinned source commits and retained full notices.

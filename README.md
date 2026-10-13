@@ -2,6 +2,25 @@
 
 A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. GitHub Pages serves the UI; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
 
+## Copy into Muse
+
+```text
+Connect to my Job Signal Board: [website URL]. Follow the agent instructions provided there.
+
+Set up these daily automations:
+- Morning: full job scan.
+- Noon: Instagram story scan.
+- Evening: Instagram story scan.
+
+Text me the updates using the app’s message settings. Ask me which times to use.
+```
+
+This is the intended onboarding prompt. Workflow instructions, user preferences,
+and themed message templates are maintained on the app side. Muse is the primary
+text interface; the website is available for opening packs, detailed review and
+tracking. Scheduling and Instagram access depend on the connected agent’s
+capabilities; this README entry does not activate automations.
+
 ## Desired daily interaction
 
 1. **Set up once.** Optionally sign in with Google; save verified profile facts, resume variants, search preferences, and separate Full-time / Internship company rankings. Choose which saved answers may autofill and which must always ask.
