@@ -797,10 +797,11 @@
    "priority": "Apply Now",
    "postedDate": null,
    "discoveredDate": "2026-10-10",
-   "sourceFreshness": "2 days ago",
+   "sourceFreshness": "Story re-drop 2026-10-13: posting closed Fri Oct 10 and reopened; verified live on Greenhouse. Eligibility is Fall 2027-Summer 2028 grads (Dec 2027 MS finish fits, May 2027 does not).",
    "whyItFits": "DoorDash Labs (robotics) summer intern; Legendary intern tier and a scarce lane with real conversion odds. Posted Oct 8 with a $107.4k-$158k salary band.",
    "applicationUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8263774",
-   "applicationStatus": "New"
+   "applicationStatus": "New",
+   "verifiedDate": "2026-10-13"
   },
   {
    "id": "decagon-engineering-intern-summer-2027",
@@ -1182,6 +1183,23 @@
    "whyItFits": "Cross-stack AI inference integration across frameworks, runtime, compiler, kernels, distributed systems, and hardware. Explicitly welcomes exceptional junior engineers with no experience minimum; internships, research, projects, or open source accepted as systems evidence. Exceptional ML-systems/inference team fit kept under the team-over-brand rule despite Common tier. Hybrid 3 days/week in Sunnyvale or Toronto; remote not offered.",
    "applicationUrl": "https://jobs.ashbyhq.com/cerebras/90879967-1071-4d05-9180-6e18023ed887/",
    "applicationStatus": "New"
+  },
+  {
+   "id": "imc-deep-learning-research-intern-summer-2027-4907430101",
+   "company": "IMC",
+   "title": "Deep Learning Research Intern - Summer 2027",
+   "employmentType": "Internship",
+   "location": "Chicago, IL; New York, NY",
+   "category": "AI/ML",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-10-13",
+   "discoverySource": "@zero2sudo Instagram stories",
+   "sourceFreshness": "today",
+   "whyItFits": "Deep learning research at a top prop trading firm on production-scale datasets and modern training infra, in your ML lane, with a $300,000 base and a graduate-researcher offer path for strong performers, which beats the Oracle return on comp and credential capital. Gaps: research-heavy bar (NeurIPS/ICML/ICLR publications a plus; your ML evidence is applied retrieval/reranking, not published research) and eligibility (grad window Sep 2027-Jul 2028, so only a Dec 2027 MS finish fits, not May 2027). 10-week program, in person from Jun 7, 2027.",
+   "applicationUrl": "https://job-boards.eu.greenhouse.io/imc/jobs/4907430101",
+   "applicationStatus": "New",
+   "verifiedDate": "2026-10-13"
   }
  ]
 }
