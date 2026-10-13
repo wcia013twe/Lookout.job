@@ -1,53 +1,83 @@
 # Job Signal Board
 
-A static, data-first dashboard for selective U.S. software-engineering job discovery.
+A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. GitHub Pages serves the UI; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
 
-## Use it
+## Desired daily interaction
 
-Serve the repository with any static server, then open `index.html`. The dashboard reads `data/jobs.json` directly.
+1. **Set up once.** Optionally sign in with Google; save verified profile facts, resume variants, search preferences, and separate Full-time / Internship company rankings. Choose which saved answers may autofill and which must always ask.
+2. **Muse prepares the morning batch.** Your connected agent reads your preferences, searches for relevant jobs, verifies employer postings, and publishes a private batch. Personal fit notes stay separate from the shared job catalog.
+3. **Open the link.** Muse sends “Your morning jobs are ready” through its own notification channel. The link opens your batch on the shared website. Login identifies the owner; a batch ID alone does not grant access.
+4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Opening a posting is not applying.
+5. **Prepare and review.** Muse inspects supported forms, selects the right resume, drafts answers, and sends blockers or ready drafts to **Needs you**. Agents do not mark a human review complete. You check the complete employer question list and approve the exact version.
+6. **Apply with evidence.** The intended final runner submits only a current approved version and records employer confirmation. **Current runner support stops at inspection and approved prefill/manual handoff.** You can record a manual submission with a note; this is labelled user-reported and never fabricates a receipt.
+7. **Track outcomes.** Applications shows progress and a durable timeline. Muse can add observations; interviews, offers and rejections remain distinguishable from draft preparation. Progress is private by default; leaderboard participation shares only an alias and aggregate metrics.
+
+Card-opening animations and new theme packs are outside this pass. Existing pack effects are optional; public job browsing never requires opening a pack.
+
+## What works
+
+| Feature | Current behavior |
+| --- | --- |
+| Public Discover | Browse without login; shared static JSON catalog remains available |
+| Google account | Optional sign-in, remembered session and sign-out; real user round-trip still needs verification |
+| Cloud workspace | Signed-in profile, rankings, answers, resumes and drafts sync automatically; offline changes are retained; conflicting drafts pause for review |
+| Company rankings | Editable/drag-and-drop Full-time and Internship profiles; Oracle is the full-time C-tier baseline |
+| Saved answers | Reviewed exact-question autofill, company scope and Always ask me; no overwrite of existing draft text |
+| Private resumes | PDF/DOCX uploads, immutable file versions, checksums and short-lived private download links |
+| Needs you / Applications | Versioned approval, blockers, human progress reports, immutable submitted drafts and server timeline |
+| Agent connection | Per-user expiring/revocable credentials; HTTP gateway and custom MCP endpoint |
+| Morning batch links | Owned `?batch=<uuid>` routes; latest private batch can load for a signed-in user |
+| Form inspection/prefill | Greenhouse public form inspector; authored Greenhouse/Ashby browser adapter with strict approval checks and manual blockers |
+| Progress/leaderboard | Opt-in alias and server-derived aggregate metrics; self-reported submissions remain tracking claims |
+
+## Run and validate
+
+Node 22+:
 
 ```sh
+npm ci
+npm run build:auth
+npm test
+npm run test:db
 npm run validate:data
+python -m http.server 8000
 ```
 
-## Data contract
+Open `http://localhost:8000`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The committed auth bundle lets GitHub Pages serve the app without a build server. Rebuild it after changes to `auth.js`, `cloud.mjs`, `cloud-model.mjs`, or `backend/client.mjs`.
 
-`data/jobs.json` is the source of truth. Each role must have a stable ID, canonical application URL, company, title, employment type, location, category, priority, posted/discovered dates, rationale, and application status.
+## Code map and invariants for Muse/other agents
 
-The dashboard keeps manual status edits in browser local storage. The scheduled automation must preserve any existing `applicationStatus` values when it updates data. It should deduplicate by canonical application URL as well as company/title/location.
+| Location | Responsibility |
+| --- | --- |
+| `index.html`, `app.js`, `components.js` | Basic page framing, public discovery and existing Web Components |
+| `store.js` | Guest/per-account browser cache; account switching preserves guest records |
+| `workflow-model.js`, `workflow.js` | Local review controls and workflow rules; signed-in approval/stage writes go to backend RPCs |
+| `auth.js`, `cloud.mjs`, `cloud-model.mjs`, `backend/client.mjs` | Google auth, serialized autosync, record mapping and owner-checked database requests |
+| `saved-answers-*`, `tierlist-*`, `tierlists.js`, `resume-files.js` | Profile features; standalone modules use the shared store |
+| `agent-connections.js` | Human credential management; keys shown once, never persisted in browser state |
+| `supabase/migrations/` | **Single source of truth for the database schema**; use exact deployed migration versions |
+| `supabase/functions/agent-gateway/`, `agent-mcp/` | Scoped server tools; no general SQL/shell tool and no agent approval/submission endpoint |
+| `runner/`, `scripts/runner-*` | Deterministic form inspection and approved prefill; no automatic submit |
+| `styles/` | New CSS, motion definitions and shaders; keep presentation out of state logic |
+| `data/jobs.json`, `data/tierlist-presets.json` | Public discovery feed and configurable ranking defaults |
 
-## CSV helper?
+Keep verified personal facts, agent-generated drafts, and employer requirements distinct. Never share service-role keys. Derive ownership from the authenticated user/agent token, not a caller-supplied user ID. A runner must fetch the **current** approval and verify job URL, draft, resume bytes and form fingerprint; adding metadata after approval requires reapproval. A status is not proof of submission.
 
-Not yet. JSON is the canonical dashboard format and avoids a second persistence path. Add CSV export/import only when a spreadsheet becomes a regular part of the workflow; a query helper is not necessary for the current scale.
+`data/jobs.json` is the canonical static discovery feed. Preserve known application statuses when updating it, deduplicate canonical URLs, and never invent source dates. Supabase is authoritative for signed-in private application state. Personal recommendations belong in batch items, not employer records. `data/tierlist-presets.json` holds subjective ranking defaults and white-label labels; theme changes must not change workflow semantics.
 
-## Application workspace
+## Agent and runner setup
 
-The four tabs are Needs you, Discover, Applications, and Profile. Queue a role from Discover, open its review panel in Applications, select a saved resume reference, and enter the exact employer questions and draft answers. Review the complete question list and verify your profile before approving. An edit invalidates the prior approval. Approval stores a versioned snapshot; it never submits an application.
+Sign in → Profile → Your agent → Create agent connection. Copy the setup into an MCP client that supports bearer headers; keep the key in the agent's secret settings. Connection formats vary by client; Muse's exact custom-MCP/auth support still needs confirmation. Browser tools come from the agent's own runtime, not from the job-board MCP server.
 
-Application drafts, profile facts, and resume references persist in the browser through the existing store. Existing tracker, interview, and referral data remain accessible under Applications. No shared backend, application runner, question extraction, or SMS integration is connected yet.
+- [MCP setup and tools](mcp/README.md)
+- [HTTP gateway contract](backend/agent-contract.md)
+- [Runner commands and safeguards](runner/README.md)
+- [Backend deployment and auth configuration](backend/README.md)
 
-### Company tier-list profiles
+## Remaining work
 
-Profile includes separate saved company tier lists. Drag a tile by its handle, or select a company and use Move to. You can create, duplicate, and rename lists, edit S/A/B/C/D labels, and add company tiles. All companies begin unranked. Lists are browser-local preferences and do not alter the board’s existing company rarity or submit applications.
-
-### White-label tier configuration
-
-`data/tierlist-presets.json` is the lookup for the company catalog, branding label, tiers, baseline, and separate Full-time/Internship starter placements. The builder’s `data-config-url` attribute selects that JSON source, so another deployment can swap catalogs and presets without editing UI logic. These rankings are subjective starting preferences; Oracle is the full-time C-tier baseline.
-
-Starter lists are copied into browser state once by `presetKey`. Changing the shipped JSON never overwrites existing user rankings; duplicating a starter produces an independent custom profile. Saved user profiles remain browser-local today. A multi-user white-label product would need tenant-scoped server storage and authentication.
-
-## Supabase backend foundation
-
-See [backend/README.md](backend/README.md) for the data model, deployment steps, client adapter, and Muse handoff. The schema separates private profiles/preferences/resumes/answers/batches/applications/approval snapshots/activity from shared employer job facts and opt-in leaderboard metrics. The schema is deployed to the Supabase job-board project with shared job records and private resume storage. Signed-in workflow edits sync automatically; guest data stays local.
-
-### Saved answers
-
-Profile → Saved answers stores reusable exact-question responses with Can autofill / Always ask me controls and optional company scope. Autofill requires one reviewed exact match, fills only blank draft fields, and clears the question-list review checkbox. Existing drafts are not changed when a saved answer is edited or deleted. Guest answers remain browser-local; signed-in saved answers sync to private Supabase records.
-
-### Google account setup
-
-Discover opens without login. The Google sign-in client and per-account local workspace are wired; provider activation instructions are in `backend/README.md`. Google is enabled in Supabase and the sign-in client is deployed. Login is optional for browsing and local tools; a complete user sign-in round trip remains to be verified. Signed-in workspace sync is connected; Muse access remains unconnected. Rebuild the vendored auth bundle with `npm run build:auth` after editing `auth.js`.
-
-### Account auto-sync
-
-Sign in to load and automatically sync your profile, company rankings, saved answers, resume references, and application drafts. Saved edits sync in the background; guest records are not imported automatically. Offline changes remain in this browser and retry on reconnect. Application conflicts require review. Morning links containing `?batch=<uuid>` load your private batch. Guest browsing and local tools remain available. Legacy tracking/XP/networking and Muse’s agent gateway are not connected yet.
+- Verify a real Google sign-in, private workspace sync, file upload/download and MCP connection on the intended devices/clients.
+- Connect Muse's scheduler and notification channel to send actual morning/review links; the backend does not send texts or monitor inboxes.
+- Validate prefill against live employer forms, then build a submission adapter with duplicate-attempt protection and employer-confirmed receipts. Workday, CAPTCHA, custom controls and conditional forms still require handoff.
+- Add user account export/deletion, stale-file cleanup, operational alerts/rate limits, and leaderboard abuse handling before broader rollout.
+- Optional later: sync legacy browser link history/networking, add theme packs, and expand job-source automation. Do not add these ahead of the core apply/review loop.

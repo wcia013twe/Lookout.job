@@ -1,26 +1,122 @@
-export const uuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value || '');
-export function draftPayload(application) {
-  return {resumeId:application.resumeId,questions:application.questions,questionsReviewed:application.questionsReviewed,
-    company:application.company,title:application.title,employmentType:application.employmentType,location:application.location,url:application.url};
-}
-export function fromCloud(rows) {
-  const p=rows.profiles[0],pref=rows.preferences[0];
+const uuid = (value) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    value || "",
+  );
+function draftPayload(application) {
   return {
-    cloudDirty:false,deletedAnswerIds:[],
-    profile:{name:'',email:'',phone:'',location:'',authorization:'',...(p?.facts || {}),verified:Boolean(p?.verified_at)},
-    tierLists:pref?.tier_lists || [],activeTierListId:pref?.active_tier_list_id || '',
-    savedAnswers:rows.answer_library.map(a=>({id:a.id,question:a.question,answer:a.answer,policy:a.autofill_policy,
-      companyScope:a.company_scope || '',verifiedAt:a.verified_at,version:a.context?.version || 1,updatedAt:a.updated_at})),
-    resumes:rows.resumes.map(r=>({id:r.id,name:r.name,url:r.reference_url || '',objectPath:r.object_path,version:r.version})),
-    applications:Object.fromEntries(rows.applications.map(a=>[a.job_id,{
-      resumeId:'',questions:[],questionsReviewed:false,...a.draft,id:a.job_id,backendId:a.id,backendRevision:a.revision,status:a.status,revision:a.revision,blocker:a.blocker || '',
-      approved:a.status==='Approved' ? {revision:a.revision,at:a.updated_at} : null,
-      activity:[{at:a.updated_at,text:`Account application: ${a.status}`}],
-    }])),
+    resumeId: application.resumeId,
+    questions: application.questions,
+    questionsReviewed: application.questionsReviewed,
+    company: application.company,
+    title: application.title,
+    employmentType: application.employmentType,
+    location: application.location,
+    url: application.url,
+    // Agent-prepared evidence is part of the approved draft, not UI-only state.
+    // Preserve only supported runner metadata; arbitrary client fields stay local.
+    ...(application.resumeSha256
+      ? { resumeSha256: application.resumeSha256 }
+      : {}),
+    ...(application.formFingerprint
+      ? { formFingerprint: application.formFingerprint }
+      : {}),
   };
 }
-export function batchRoles(items,date) {
-  return items.map(item=>({...(item.jobs?.employer || {}),id:item.job_id,applicationUrl:item.jobs?.canonical_url,
-    discoveredDate:date,whyItFits:item.recommendation?.whyItFits || '',priority:item.recommendation?.priority || 'Strong Consider',
-    category:item.recommendation?.category || '',sourceFreshness:'See employer listing',applicationStatus:'New'}));
+function fromCloud(rows) {
+  const p = rows.profiles[0],
+    pref = rows.preferences[0];
+  return {
+    cloudDirty: false,
+    deletedAnswerIds: [],
+    profile: {
+      name: "",
+      email: "",
+      phone: "",
+      location: "",
+      authorization: "",
+      ...(p?.facts || {}),
+      verified: Boolean(p?.verified_at),
+    },
+    searchPreferences: pref?.search || {},
+    tierLists: pref?.tier_lists || [],
+    activeTierListId: pref?.active_tier_list_id || "",
+    savedAnswers: rows.answer_library.map((a) => ({
+      id: a.id,
+      question: a.question,
+      answer: a.answer,
+      policy: a.autofill_policy,
+      companyScope: a.company_scope || "",
+      verifiedAt: a.verified_at,
+      version: a.context?.version || 1,
+      updatedAt: a.updated_at,
+    })),
+    resumes: rows.resumes.map((r) => ({
+      id: r.id,
+      name: r.name,
+      url: r.reference_url || "",
+      objectPath: r.object_path,
+      contentHash: r.content_hash || null,
+      variant: r.variant || "Master",
+      version: r.version,
+    })),
+    applications: Object.fromEntries(
+      rows.applications.map((a) => [
+        a.job_id,
+        {
+          resumeId: "",
+          questions: [],
+          questionsReviewed: false,
+          ...a.draft,
+          // Shared employer facts identify the role; drafts supply personal answers.
+          company: a.jobs?.employer?.company ?? a.draft?.company,
+          title: a.jobs?.employer?.title ?? a.draft?.title,
+          employmentType: a.jobs?.employer?.employmentType ?? a.draft?.employmentType,
+          location: a.jobs?.employer?.location ?? a.draft?.location,
+          url: a.jobs?.canonical_url ?? a.draft?.url,
+          id: a.job_id,
+          backendId: a.id,
+          backendRevision: a.revision,
+          submittedAt: a.submitted_at || null,
+          receipt: a.receipt || null,
+          status: a.status,
+          revision: a.revision,
+          blocker: a.blocker || "",
+          approved:
+            a.status === "Approved"
+              ? { revision: a.revision, at: a.updated_at }
+              : null,
+          activity: (rows.activity_events || [])
+            .filter((event) => event.application_id === a.id)
+            .sort((one, two) => one.occurred_at.localeCompare(two.occurred_at))
+            .map((event) => ({
+              id: event.id,
+              at: event.occurred_at,
+              text:
+                event.payload?.text ||
+                event.payload?.note ||
+                event.payload?.message ||
+                event.kind,
+              actor: event.actor,
+              kind: event.kind,
+            })),
+        },
+      ]),
+    ),
+  };
 }
+function batchRoles(items, date) {
+  return items
+    .filter((item) => item.jobs)
+    .map((item) => ({
+      ...(item.jobs?.employer || {}),
+      id: item.job_id,
+      applicationUrl: item.jobs?.canonical_url,
+      discoveredDate: date,
+      whyItFits: item.recommendation?.whyItFits || "",
+      priority: item.recommendation?.priority || "Strong Consider",
+      category: item.recommendation?.category || "",
+      sourceFreshness: "See employer listing",
+      applicationStatus: "New",
+    }));
+}
+export { batchRoles, draftPayload, fromCloud, uuid };

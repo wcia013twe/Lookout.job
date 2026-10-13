@@ -78,6 +78,7 @@ function render() {
   const trackedInternships = trackedRoles.filter((role) => role.employmentType === 'Internship').length;
   trackerCounts.innerHTML = `<span><strong>${trackedFT}</strong> full-time</span><span><strong>${trackedInternships}</strong> internships</span>`;
   renderProcs();
+  updateQueueButtons();
 }
 
 const dashboardTabs = [...document.querySelectorAll('[role="tab"]')];
@@ -151,7 +152,7 @@ JB.catalogReady = Promise.all([
   document.querySelector('#updated').textContent = `Last scan: ${jobsData.lastRun}`;
   render();
   renderSudo(dropsData.drops || []);
-  maybeShowPack();
+  // Card-pack effects are opt-in through Open pack, never required to browse jobs.
 });
 
 /* ---- Procs tab: interview pipeline from the same tracker data (no new entry, no schema changes) ---- */
@@ -566,3 +567,13 @@ JB.setBatch = batch => {
   document.querySelector('#sudo-section').hidden = Boolean(batch);
   render();
 };
+
+function updateQueueButtons() {
+  const applications = store().get('workflow.applications') || {};
+  document.querySelectorAll('[data-queue-role]').forEach(button => {
+    const tracked = Boolean(applications[button.dataset.queueRole]);
+    button.disabled = tracked;
+    button.textContent = tracked ? 'In applications' : 'Queue application';
+  });
+}
+store().subscribe('workflow.applications', updateQueueButtons);

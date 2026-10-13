@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-13 — Connected agent and application workflow
+
+- Deployed scoped, expiring/revocable Muse credentials, an HTTP gateway and a custom MCP endpoint; agents cannot approve or submit applications.
+- Added private PDF/DOCX resume uploads, immutable versions and short-lived downloads; added search preferences and optional leaderboard controls to Profile.
+- Connected versioned draft preparation, human approval, manual progress reporting and a durable server timeline. Submitted drafts retain their evidence.
+- Hardened serialized autosync, account switching, canonical job hydration and private batch fallback. Public browsing opens directly; packs are optional.
+- Added Greenhouse inspection and strict approved browser prefill scaffolding with honest handoffs; no automatic employer submission is enabled.
+- Consolidated schema ownership into migrations and documented the intended daily interaction, module boundaries and remaining integration work.
+- Validation: 67 tests, complete migration-chain checks and 75 public job records pass. Hosted owner/scope/revision checks pass. Real Google sign-in, iPhone interactions and live employer prefill remain unverified.
+- Remaining operational review: password leaked-credential protection is disabled in hosted Auth; account export/deletion, file cleanup, rate limits and abuse controls are pending.
+
 ## 2026-10-13 — Account auto-sync and private batch links
 
 - Connected signed-in profile, tier lists, saved answers, resume references and applications to owner-scoped Supabase records.

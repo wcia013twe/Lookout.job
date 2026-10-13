@@ -53,3 +53,43 @@ test('new workflow state survives reload without dropping existing tracker data'
   assert.equal(reloaded.get('workflow.activeTierListId'), 'preferences'); assert.equal(reloaded.get('workflow.savedAnswers')[0].answer,'My answer');
   assert.equal(reloaded.get('tracker.ids')[0], 'old-role'); assert.equal(reloaded.get('progress.xp'), 50);
 });
+test('manual submission is an explicit user report and does not fabricate a receipt', () => {
+  const m = model(), draft = ready(m);
+  assert.throws(() => m.recordStage(draft, 'Submitted', ''), /note/);
+  const submitted = m.recordStage(draft, 'Submitted', 'Submitted on the employer website.');
+  assert.equal(submitted.status, 'Submitted');
+  assert.ok(submitted.submittedAt);
+  assert.equal(submitted.receipt, undefined);
+  assert.match(submitted.activity.at(-1).text, /You reported Submitted/);
+  assert.equal(submitted.revision, draft.revision);
+  assert.throws(() => m.edit(submitted, { questions: [] }), /cannot be edited/);
+  assert.throws(() => m.approve(submitted, resume, profile), /already in tracking/);
+});
+test('outcome tracking requires submission, while withdrawal or rejection can close any application', () => {
+  const m = model(), draft = m.create(role);
+  assert.throws(() => m.recordStage(draft, 'Approved', 'Approved'), /tracking stage/);
+  assert.throws(() => m.recordStage(draft, 'Interview', 'Recruiter replied'), /Record submission/);
+  const submitted = m.recordStage(draft, 'Submitted', 'Submitted manually');
+  const interview = m.recordStage(submitted, 'Interview', 'Recruiter screen scheduled');
+  assert.equal(m.recordStage(interview, 'Offer', 'Written offer received').status, 'Offer');
+  assert.equal(m.recordStage(draft, 'Withdrawn', 'Role no longer fits').status, 'Withdrawn');
+  assert.equal(m.recordStage(draft, 'Rejected', 'Employer closed role').status, 'Rejected');
+  assert.equal(m.recordStage(submitted, 'Submitted', '').activity.length, submitted.activity.length);
+});
+test('changing resume clears obsolete file hash and preserves employer mapping metadata', () => {
+  const m = model();
+  const draft = { ...ready(m), resumeSha256: 'old-file-hash', formFingerprint: 'employer-form' };
+  draft.questions[0] = { ...draft.questions[0], fieldId: 'why_role', type: 'textarea', required: true };
+  const updated = m.edit(draft, { resumeId: 'resume-2' });
+  assert.equal(updated.resumeSha256, undefined);
+  assert.equal(updated.formFingerprint, 'employer-form');
+  assert.equal(updated.questions[0].fieldId, 'why_role');
+  assert.equal(updated.questions[0].required, true);
+});
+
+test('agent questions keep stable review identifiers even when only employer field IDs are supplied', () => {
+  const m = model();
+  assert.equal(m.questionId({fieldId:'first_name'}), 'first_name');
+  assert.notEqual(m.questionId({},0),m.questionId({},1));
+  assert.equal(m.questionId({id:123,fieldId:'employer'}),'123');
+});

@@ -1,8 +1,8 @@
 # Job Signal Board maintenance
 
 - `data/jobs.json` is the source of truth. Update data before touching the UI.
-- On the first run, build the two-tab UI only if it is absent. Later runs should normally only update `data/jobs.json`.
-- `Daily Board` shows only roles whose `discoveredDate` matches `lastRun` and which have not been opened by the user. Split it into a full-time grid followed by an internship grid. `Auto Tracker` is client-side and receives a role only after the user opens its application link. Automation runs should update `data/jobs.json`, not pre-populate Auto Tracker.
+- Daily catalog maintenance should update `data/jobs.json` rather than rebuilding the workspace. Feature requests may extend the four-tab workflow.
+- `Discover` shows public roles whose `discoveredDate` matches `lastRun` and which have not been opened by the user. Split it into a full-time grid followed by an internship grid. `Auto Tracker` is client-side and receives a role only after the user opens its application link. Catalog maintenance should update `data/jobs.json`; personal Muse batches and drafts use the scoped backend tools. Opening links is not applying.
 - Auto Tracker should remain a compact row view with company, job title, type, date opened/applied, status, and separate full-time and internship counters.
 - Aim for up to 20 full-time roles and up to 10 internships per run. These are discovery targets, not an acceptance filter: quality wins when sources do not support the counts.
 - Deduplicate by canonical application URL and then by normalized company/title/location.
@@ -24,3 +24,12 @@
 - Keep a concise `CHANGELOG.md` entry for each feature pass, including validation and any verification limits.
 - Keep basic framing and interaction state in code; new visual CSS and GPU shaders belong in `styles/`.
 - Preserve the existing static Web Component structure; do not add a React runtime solely for motion.
+
+## Backend and agent work
+
+- `supabase/migrations/` is the database schema source of truth. Do not maintain a duplicate schema dump.
+- Read the root README desired interaction and the gateway/MCP/runner contracts before extending behavior.
+- Keep human approval, user-reported progress, and validated submission receipts distinct.
+- Keep migrations, server functions, pure mapping/models, UI framing, and `styles/` in their existing locations.
+- Run `npm test`, `npm run test:db`, `npm run validate:data` and rebuild the auth bundle for auth/cloud/client changes.
+- Add new features with current-state documentation and honest verification limits; do not describe unconnected external services as live.

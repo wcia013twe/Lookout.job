@@ -1,45 +1,52 @@
-const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
-const {setImmediate:immediate}=require('node:timers/promises');
-const owner='11111111-1111-4111-8111-111111111111';
-function setup(){
- const elements=new Map(),listeners=new Map(),storage=new Map();
- const document={getElementById:id=>element(id),querySelector:s=>element(s.slice(1)),addEventListener:(name,fn)=>{const callbacks=listeners.get(name)||[];callbacks.push(fn);listeners.set(name,callbacks);},dispatchEvent:e=>(listeners.get(e.type)||[]).forEach(fn=>fn(e))};
- function element(id){if(!elements.has(id))elements.set(id,{disabled:false,hidden:false,textContent:'',inert:false,addEventListener(){}});return elements.get(id);}
- const window={addEventListener(){}};
- const c={window,document,CustomEvent,setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k),length:0}};
- vm.runInNewContext(fs.readFileSync('store.js','utf8'),c);const store=c.window.JB.store;
- const tables=Object.fromEntries(['profiles','preferences','resumes','answer_library','applications'].map(k=>[k,[]]));
- let currentOwner=owner,fail=false;
- const client={auth:{getUser:async()=>({data:{user:{id:currentOwner}}})},from(table){
-  let op='select',fields={},filters=[],one=false;
-  const q={select(){return q;},eq(k,v){filters.push([k,v]);return q;},limit(){return q;},single(){one=true;return q;},upsert(v){op='upsert';fields=v;return q;},insert(v){op='insert';fields=v;return q;},delete(){op='delete';return q;},update(v){op='update';fields=v;return q;},then(resolve){
-   if(fail && op!=='select')return Promise.resolve({data:null,error:new Error('Offline')}).then(resolve);
-   let rows=tables[table].filter(r=>filters.every(([k,v])=>r[k]===v));
-   if(op==='upsert'){let r=tables[table].find(r=>fields.id ? r.id===fields.id : r.user_id===fields.user_id);if(!r){r={};tables[table].push(r);}Object.assign(r,fields);rows=[r];}
-   if(op==='insert'){const r={id:crypto.randomUUID(),revision:0,status:'Queued',...fields};tables[table].push(r);rows=[r];}
-   if(op==='delete')tables[table]=tables[table].filter(r=>!rows.includes(r));
-   if(op==='update')rows.forEach(r=>Object.assign(r,fields,{revision:r.revision+1}));
-   return Promise.resolve({data:structuredClone(one?rows[0]:rows),error:null}).then(resolve);
-  }};return q;
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const vm=require('node:vm');
+const fs=require('node:fs');
+const one='11111111-1111-4111-8111-111111111111',two='22222222-2222-4222-8222-222222222222';
+const clone=value=>JSON.parse(JSON.stringify(value));
+function deferred(){let resolve;const promise=new Promise(done=>resolve=done);return {promise,resolve};}
+async function environment(batch=null){
+ const listeners=new Map(),timers=new Map(),elements=new Map();let next=0,owner=one,gate=null,fail=false,writes=0;
+ const document={getElementById:id=>element(id),querySelector:selector=>element(selector),addEventListener:(type,fn)=>listeners.set(type,fn),dispatchEvent:event=>listeners.get(event.type)?.(event)};
+ function element(id){if(!elements.has(id))elements.set(id,{hidden:false,disabled:false,textContent:'',addEventListener(){}});return elements.get(id);}
+ const timeout=fn=>{timers.set(++next,fn);return next;};
+ const ctx={document,window:{addEventListener(){}},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:()=>null,setItem(){},removeItem(){},length:0}};
+ vm.runInNewContext(fs.readFileSync('store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
+ const db={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[],activity_events:[],job_batches:[]};
+ const client={auth:{getUser:async()=>({data:{user:{id:owner}}})},from(table){
+  let operation='select',fields=null,filters=[],start=0,end=Infinity,single=false;
+  const query={select(){return query;},eq(key,value){filters.push([key,value]);return query;},order(){return query;},range(a,b){start=a;end=b;return query;},limit(n){end=n-1;return query;},single(){single=true;return query;},upsert(value){operation='upsert';fields=value;return query;},insert(value){operation='insert';fields=value;return query;},delete(){operation='delete';return query;},then(resolve,reject){return (async()=>{
+   if(operation==='upsert'){writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}db[table]=[clone(fields)];return {data:clone(fields)};}
+   const rows=db[table].filter(row=>filters.every(([key,value])=>row[key]===value)).slice(start,end+1);return {data:single?rows[0]:clone(rows)};
+  })().then(resolve,reject);}};return query;
  }};
- global.document=document;global.window=window;global.location={href:'https://example.com/'};global.JB={store,auth:{userId:owner}};
- return {client,store,tables,elements,setFail:v=>fail=v,setOwner:v=>currentOwner=v};
+ global.JB={store,auth:{get userId(){return owner;}},catalogReady:Promise.resolve(),setBatch(){}};
+ global.document=document;global.window=ctx.window;global.location={href:'https://example.com/'+(batch?'?batch='+batch:'')};global.CustomEvent=ctx.CustomEvent;
+ global.setTimeout=timeout;global.clearTimeout=ctx.clearTimeout;
+ const {connectCloud}=await import('../cloud.mjs');connectCloud(client);
+ async function flush(){const pending=[...timers.values()];timers.clear();pending.forEach(fn=>fn());for(let i=0;i<30;i++)await Promise.resolve();}
+ await flush();
+ return {store,db,flush,get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
 }
-async function settle(){for(let i=0;i<5;i++)await immediate();}
-test('signed-in edits autosync and offline failures preserve a dirty browser copy',async t=>{
- t.mock.timers.enable({apis:['setTimeout']});const ctx=setup();
- const {connectCloud}=await import('../cloud.mjs');connectCloud(ctx.client);
- t.mock.timers.tick(1);await settle();assert.equal(JB.cloud.ready,true);
- ctx.store.set('workflow.profile',{name:'Cloud One',email:'one@example.com',verified:true});
- t.mock.timers.tick(651);await settle();
- assert.equal(ctx.tables.profiles[0].facts.name,'Cloud One');assert.equal(ctx.store.get('workflow.cloudDirty'),false);
- ctx.setFail(true);ctx.store.set('workflow.profile',{name:'Offline edit',email:'one@example.com',verified:true});
- t.mock.timers.tick(651);await settle();
- assert.equal(ctx.tables.profiles[0].facts.name,'Cloud One');assert.equal(ctx.store.get('workflow.profile').name,'Offline edit');assert.equal(ctx.store.get('workflow.cloudDirty'),true);
- assert.equal(ctx.elements.get('account-save').hidden,false);
- ctx.setFail(false);await JB.cloud.save();assert.equal(ctx.tables.profiles[0].facts.name,'Offline edit');
- ctx.setOwner('22222222-2222-4222-8222-222222222222');ctx.store.set('workflow.profile',{name:'Must not cross accounts',verified:false});
- t.mock.timers.tick(651);await settle();
- assert.equal(ctx.tables.profiles[0].facts.name,'Offline edit');assert.equal(ctx.tables.profiles.length,1);
- delete global.JB;delete global.window;delete global.document;delete global.location;
+const realTimeout=global.setTimeout,realClear=global.clearTimeout;
+test('sync serializes concurrent callers and drains edits made during a request',async()=>{
+ try{const env=await environment();const hold=env.block();env.store.set('workflow.profile.name','First');const first=JB.cloud.save();env.store.set('workflow.profile.name','Latest');assert.equal(JB.cloud.save(),first);hold.resolve();await first;assert.equal(env.db.profiles[0].facts.name,'Latest');assert.equal(env.store.get('workflow.cloudDirty'),false);assert.equal(env.writes,2);}
+ finally{global.setTimeout=realTimeout;global.clearTimeout=realClear;}
+});
+test('failed sync preserves edits and manual retry starts a fresh worker',async()=>{
+ try{const env=await environment();env.fail();env.store.set('workflow.profile.name','Retained');await assert.rejects(JB.cloud.save(),/Offline/);assert.equal(env.store.get('workflow.cloudDirty'),true);await JB.cloud.save();assert.equal(env.db.profiles[0].facts.name,'Retained');assert.equal(env.store.get('workflow.cloudDirty'),false);}
+ finally{global.setTimeout=realTimeout;global.clearTimeout=realClear;}
+});
+test('an account switch prevents an old sync from overwriting the new account workspace',async()=>{
+ try{const env=await environment();const hold=env.block();env.store.set('workflow.profile.name','Private one');const pending=JB.cloud.save();for(let i=0;i<10;i++)await Promise.resolve();env.switch(two);await env.flush();hold.resolve();await assert.rejects(pending,/Account changed/);assert.equal(env.store.get('workflow.profile.name'),'');assert.equal(env.store.get('workflow.cloudDirty'),false);}
+ finally{global.setTimeout=realTimeout;global.clearTimeout=realClear;}
+});
+
+test('an unavailable morning link falls back to public jobs without blocking autosync',async()=>{
+ try{const env=await environment('invalid-batch');assert.equal(JB.cloud.ready,true);env.store.set('workflow.profile.name','Still syncs');await JB.cloud.save();assert.equal(env.db.profiles[0].facts.name,'Still syncs');}
+ finally{global.setTimeout=realTimeout;global.clearTimeout=realClear;}
+});
+test('search preference edits autosync with the existing theme and tier configuration',async()=>{
+ try{const env=await environment();env.store.set('workflow.searchPreferences',{locations:['Remote'],employmentTypes:['Internship'],agentFilters:{visa:false}});await JB.cloud.save();assert.deepEqual(env.db.preferences[0].search,{locations:['Remote'],employmentTypes:['Internship'],agentFilters:{visa:false}});assert.equal(env.db.preferences[0].theme.pack,'base');assert.equal(env.store.get('workflow.cloudDirty'),false);}
+ finally{global.setTimeout=realTimeout;global.clearTimeout=realClear;}
 });

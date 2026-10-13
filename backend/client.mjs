@@ -1,5 +1,6 @@
-/** Receives an authenticated supabase-js client. Never pass a service-role client here. */
-export function createBackend(client, expectedUserId = null) {
+// Data access for an authenticated browser client. Never use a service-role client.
+// expectedUserId catches account changes before requests; database RLS is authoritative.
+function createBackend(client, expectedUserId = null) {
   async function result(request) {
     const { data, error } = await request;
     if (error) throw error;
@@ -8,72 +9,294 @@ export function createBackend(client, expectedUserId = null) {
   async function owner() {
     const { data, error } = await client.auth.getUser();
     if (error) throw error;
-    if (!data.user) throw new Error('Sign in required');
-    if (expectedUserId && data.user.id !== expectedUserId) throw new Error('Account changed');
+    if (!data.user) throw new Error("Sign in required");
+    if (expectedUserId && data.user.id !== expectedUserId)
+      throw new Error("Account changed");
     return data.user.id;
   }
-  const owned = async (table, fields, conflict) => result(client.from(table).upsert(
-    { ...fields, user_id: await owner() }, { onConflict: conflict }).select().single());
+  // Stable ordering prevents pagination from silently losing application history.
+  async function allRows(table, userId, order = "id", fields = "*") {
+    const rows = [],
+      pageSize = 200;
+    for (let offset = 0; ; offset += pageSize) {
+      const page = await result(
+        client
+          .from(table)
+          .select(fields)
+          .eq("user_id", userId)
+          .order(order)
+          .range(offset, offset + pageSize - 1),
+      );
+      rows.push(...page);
+      if (page.length < pageSize) return rows;
+    }
+  }
+  async function owned(table, fields, conflict) {
+    const userId = await owner();
+    return result(
+      client
+        .from(table)
+        .upsert({ ...fields, user_id: userId }, { onConflict: conflict })
+        .select()
+        .single(),
+    );
+  }
   return {
     signIn(email, redirectTo) {
-      return result(client.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } }));
+      return result(
+        client.auth.signInWithOtp({
+          email,
+          options: { emailRedirectTo: redirectTo },
+        }),
+      );
     },
-    signOut() { return result(client.auth.signOut()); },
+    signOut() {
+      return result(client.auth.signOut());
+    },
     async loadWorkspace() {
       const userId = await owner();
-      const tables = ['profiles','preferences','resumes','answer_library','applications'];
-      const rows = await Promise.all(tables.map(t => result(client.from(t).select('*').eq('user_id',userId).limit(t === 'applications' ? 200 : 500))));
-      return Object.fromEntries(tables.map((t,i) => [t,rows[i]]));
+      const tables = [
+        "profiles",
+        "preferences",
+        "resumes",
+        "answer_library",
+        "applications",
+        "activity_events",
+      ];
+      const rows = await Promise.all(
+        tables.map((t) =>
+          allRows(
+            t,
+            userId,
+            ["profiles", "preferences"].includes(t) ? "user_id" : "id",
+            t === "applications" ? "*,jobs(*)" : "*",
+          ),
+        ),
+      );
+      return Object.fromEntries(tables.map((t, i) => [t, rows[i]]));
     },
     saveProfile(facts, verified = false) {
-      return owned('profiles',{facts,verified_at:verified ? new Date().toISOString() : null,updated_at:new Date().toISOString()},'user_id');
+      return owned(
+        "profiles",
+        {
+          facts,
+          verified_at: verified ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString(),
+        },
+        "user_id",
+      );
     },
-    savePreferences({search={},tierLists=[],activeTierListId=null,theme={pack:'base'}}) {
-      return owned('preferences',{search,tier_lists:tierLists,active_tier_list_id:activeTierListId,theme,updated_at:new Date().toISOString()},'user_id');
+    savePreferences({
+      search = {},
+      tierLists = [],
+      activeTierListId = null,
+      theme = { pack: "base" },
+    }) {
+      return owned(
+        "preferences",
+        {
+          search,
+          tier_lists: tierLists,
+          active_tier_list_id: activeTierListId,
+          theme,
+          updated_at: new Date().toISOString(),
+        },
+        "user_id",
+      );
     },
-    saveAnswer({id,question,answer,policy='ask',companyScope='',verified=false,context={}}) {
-      if (policy === 'auto' && !verified) throw new Error('Review the answer before allowing autofill');
-      return owned('answer_library',{...(id ? {id} : {}),question,answer,autofill_policy:policy,
-        company_scope:companyScope.trim() || null,context,provenance:'user',verified_at:verified ? new Date().toISOString() : null,
-        updated_at:new Date().toISOString()},'id');
+    saveAnswer({
+      id,
+      question,
+      answer,
+      policy = "ask",
+      companyScope = "",
+      verified = false,
+      context = {},
+    }) {
+      if (policy === "auto" && !verified)
+        throw new Error("Review the answer before allowing autofill");
+      return owned(
+        "answer_library",
+        {
+          ...(id ? { id } : {}),
+          question,
+          answer,
+          autofill_policy: policy,
+          company_scope: companyScope.trim() || null,
+          context,
+          provenance: "user",
+          verified_at: verified ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString(),
+        },
+        "id",
+      );
     },
     async deleteAnswer(id) {
-      return result(client.from('answer_library').delete().eq('id',id).eq('user_id',await owner()));
-    },
-    async uploadResume(file,{name,variant='Master',version=1}) {
       const userId = await owner();
-      const extension = file.type === 'application/pdf' ? 'pdf' : file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 'docx' : null;
-      if (!extension || file.size > 10485760) throw new Error('Use PDF or DOCX, up to 10 MB');
+      return result(
+        client
+          .from("answer_library")
+          .delete()
+          .eq("id", id)
+          .eq("user_id", userId),
+      );
+    },
+    async createResume(resume) {
+      const userId = await owner();
+      // Uploads insert metadata before local autosync observes them. Adopt that exact
+      // immutable version rather than overwriting it or failing on a duplicate ID.
+      async function existing() {
+        const row = await result(
+          client
+            .from("resumes")
+            .select("*")
+            .eq("id", resume.id)
+            .eq("user_id", userId)
+            .maybeSingle(),
+        );
+        if (!row) return null;
+        const sameVersion =
+          (row.object_path || null) === (resume.object_path || null) &&
+          (row.reference_url || null) === (resume.reference_url || null) &&
+          row.version === (resume.version || 1) &&
+          (!resume.content_hash || row.content_hash === resume.content_hash);
+        if (!sameVersion)
+          throw new Error(
+            "Resume ID refers to a different version. Reload the account workspace.",
+          );
+        return row;
+      }
+      const found = await existing();
+      if (found) return found;
+      try {
+        return await result(
+          client
+            .from("resumes")
+            .insert({ ...resume, user_id: userId })
+            .select()
+            .single(),
+        );
+      } catch (error) {
+        if (error.code !== "23505") throw error;
+        const inserted = await existing();
+        if (!inserted) throw error;
+        return inserted;
+      }
+    },
+    async createDraft(jobId, draft, blocker = null) {
+      const userId = await owner();
+      return result(
+        client
+          .from("applications")
+          .insert({ user_id: userId, job_id: jobId, draft, blocker })
+          .select()
+          .single(),
+      );
+    },
+    async uploadResume(file, { name, variant = "Master", version = 1 }) {
+      const userId = await owner();
+      const extension =
+        file.type === "application/pdf"
+          ? "pdf"
+          : file.type ===
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ? "docx"
+            : null;
+      if (!extension || file.size > 10485760)
+        throw new Error("Use PDF or DOCX, up to 10 MB");
       const id = crypto.randomUUID();
       const path = `${userId}/${id}.${extension}`;
-      await result(client.storage.from('resumes').upload(path,file,{contentType:file.type,upsert:false}));
+      await result(
+        client.storage
+          .from("resumes")
+          .upload(path, file, { contentType: file.type, upsert: false }),
+      );
       try {
-        return await owned('resumes',{id,name,variant,version,object_path:path},'id');
+        return await owned(
+          "resumes",
+          { id, name, variant, version, object_path: path },
+          "id",
+        );
       } catch (error) {
-        await client.storage.from('resumes').remove([path]);
+        await client.storage.from("resumes").remove([path]);
         throw error;
       }
     },
-    resumeLink(path) { return result(client.storage.from('resumes').createSignedUrl(path,60)); },
+    resumeLink(path) {
+      return result(client.storage.from("resumes").createSignedUrl(path, 60));
+    },
+    async latestBatch() {
+      const userId = await owner();
+      const rows = await result(
+        client
+          .from("job_batches")
+          .select("id")
+          .eq("user_id", userId)
+          .order("batch_date", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(1),
+      );
+      return rows.length ? this.getBatch(rows[0].id) : null;
+    },
     async getBatch(id) {
       const userId = await owner();
-      const batch = await result(client.from('job_batches').select('*').eq('id',id).eq('user_id',userId).single());
-      const items = await result(client.from('batch_items').select('*,jobs(*)').eq('batch_id',id).eq('user_id',userId).order('position'));
-      return {batch,items};
+      const batch = await result(
+        client
+          .from("job_batches")
+          .select("*")
+          .eq("id", id)
+          .eq("user_id", userId)
+          .single(),
+      );
+      const items = await result(
+        client
+          .from("batch_items")
+          .select("*,jobs(*)")
+          .eq("batch_id", id)
+          .eq("user_id", userId)
+          .order("position"),
+      );
+      return { batch, items };
     },
-    async saveDraft(id,expectedRevision,draft,blocker=null) {
+    async saveDraft(id, expectedRevision, draft, blocker = null) {
       const userId = await owner();
-      return result(client.from('applications').update({draft,blocker}).eq('id',id).eq('user_id',userId).eq('revision',expectedRevision).select().single());
+      return result(
+        client
+          .from("applications")
+          .update({ draft, blocker })
+          .eq("id", id)
+          .eq("user_id", userId)
+          .eq("revision", expectedRevision)
+          .select()
+          .single(),
+      );
     },
-    approve(id,expectedRevision) {
-      return result(client.rpc('approve_application',{application_id:id,expected_revision:expectedRevision}));
+    async setStage(id, expectedRevision, status, note = "") {
+      await owner();
+      return result(
+        client.rpc("set_application_stage", {
+          application_id: id,
+          expected_revision: expectedRevision,
+          target_status: status,
+          note,
+        }),
+      );
     },
-    async setLeaderboard(alias,optedIn) {
-      const userId = await owner();
-      const existing = await result(client.from('leaderboard_entries').select('user_id').eq('user_id',userId).maybeSingle());
-      return result(existing
-        ? client.from('leaderboard_entries').update({alias,opted_in:optedIn}).eq('user_id',userId).select().single()
-        : client.from('leaderboard_entries').insert({user_id:userId,alias,opted_in:optedIn}).select().single());
+    async approve(id, expectedRevision) {
+      await owner();
+      return result(
+        client.rpc("approve_application", {
+          application_id: id,
+          expected_revision: expectedRevision,
+        }),
+      );
+    },
+    async setLeaderboard(alias, optedIn) {
+      await owner();
+      return result(
+        client.rpc("set_leaderboard_preferences", { alias, opted_in: optedIn }),
+      );
     },
   };
 }
+export { createBackend };

@@ -6,8 +6,13 @@
   "schemaDeployed": true,
   "catalogSeedCount": 75,
   "frontendConnected": true,
-  "agentGatewayDeployed": false,
+  "agentGatewayDeployed": true,
   "authClientWired": true,
   "googleProviderEnabled": true,
-  "workspaceAutoSync": true
+  "workspaceAutoSync": true,
+  "agentMcpDeployed": true,
+  "privateResumeUploads": true,
+  "applicationTimeline": true,
+  "leaderboardProjection": true,
+  "employerSubmissionEnabled": false
 }

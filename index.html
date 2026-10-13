@@ -12,14 +12,16 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=23">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=23">
-    <link rel="stylesheet" href="styles/role-cards.css?v=23">
-    <link rel="stylesheet" href="styles/dashboard.css?v=23">
-    <link rel="stylesheet" href="styles/workflow.css?v=23">
-    <link rel="stylesheet" href="styles/tierlists.css?v=23">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=23">
-    <link rel="stylesheet" href="styles/account.css?v=23">
+    <link rel="stylesheet" href="styles.css?v=24">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=24">
+    <link rel="stylesheet" href="styles/role-cards.css?v=24">
+    <link rel="stylesheet" href="styles/dashboard.css?v=24">
+    <link rel="stylesheet" href="styles/workflow.css?v=24">
+    <link rel="stylesheet" href="styles/tierlists.css?v=24">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=24">
+    <link rel="stylesheet" href="styles/account.css?v=24">
+    <link rel="stylesheet" href="styles/resume-files.css?v=24">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=24">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -69,16 +71,16 @@
       </section>
       <section id="auto-tracker" role="tabpanel" aria-labelledby="tab-tracker" hidden>
         <div class="section-heading"><h2>Applications</h2></div>
-        <p class="panel-note">Drafts and approvals are saved in this browser. Agent execution and text notifications are not connected yet.</p>
+        <p class="panel-note">Track applications and review drafts here. Signed-in updates sync privately; opening a job link does not mean you applied.</p>
         <label class="workflow-stage">Stage <select id="application-stage"><option value="">All drafts</option><option>Queued</option><option>Draft</option><option>Awaiting approval</option><option>Approved</option><option>Blocked</option></select></label>
         <div id="application-list"></div>
-        <details class="workflow-section"><summary>Opened roles and statuses</summary>      <div>
+        <details class="workflow-section"><summary>Browser-only link history</summary>      <div>
         <p class="panel-note">Opened roles are separate from submitted applications. Update a status after you apply.</p>
         <div id="tracker-counts" class="tracker-counts"></div>
         <div class="tracker-table" role="table" aria-label="Tracked applications"><div class="tracker-row tracker-head" role="row"><span>Company</span><span>Job title</span><span>Type</span><span>Date opened/applied</span><span>Status</span></div><div id="tracker"></div></div>
       </div></details>
-        <details class="workflow-section"><summary>Interview pipeline</summary>      <section id="procs">
-        <p class="panel-note">Your active interview pipeline, read from the same Auto Tracker data. Change a status in Auto Tracker and the card moves here. Nothing new to enter.</p>
+        <details class="workflow-section"><summary>Legacy browser interview history</summary>      <section id="procs">
+        <p class="panel-note">Earlier browser tracking is kept here for reference. Use the application review panel above for the current account pipeline.</p>
         <div id="proc-pipeline" class="proc-pipeline"></div>
         <details class="proc-closed"><summary>Closed (<span id="proc-closed-count">0</span>)</summary><div id="proc-closed" class="grid"></div></details>
       </section>
@@ -131,9 +133,21 @@
       <section id="profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
         <div class="section-heading"><h2>Profile</h2></div>
         <p class="panel-note">Save factual answers and resume references. Nothing here is sent to employers.</p>
+        <details class="workflow-section"><summary>Search preferences</summary>
+          <p class="panel-note">Muse uses these preferences for your private morning batch. They do not hide public jobs.</p>
+          <form id="search-preferences-form" class="workflow-form">
+            <label class="workflow-check"><input name="fullTime" type="checkbox" checked>Full-time</label>
+            <label class="workflow-check"><input name="internship" type="checkbox" checked>Internships</label>
+            <label>Preferred locations (one per line)<textarea name="locations" placeholder="San Francisco, CA&#10;Remote (US)"></textarea></label>
+            <label>Domains (one per line)<textarea name="categories" placeholder="Distributed systems&#10;ML infrastructure"></textarea></label>
+            <label>Excluded companies (one per line)<textarea name="excludedCompanies"></textarea></label>
+            <label>Target hiring year<input name="targetYear" type="number" min="2020" max="2100" placeholder="2027"></label>
+            <button type="submit">Save preferences</button><p id="search-preferences-feedback" role="status"></p>
+          </form>
+        </details>
         <section id="company-tierlists" data-config-url="./data/tierlist-presets.json" class="board-section" aria-labelledby="tierlist-heading">
           <h2 id="tierlist-heading">Company tier lists</h2>
-          <p class="panel-note">Save different company preferences. Drag a tile by its handle, or select a company and choose a tier. Lists are saved in this browser.</p>
+          <p class="panel-note">Save different company preferences. Drag a tile by its handle, or select a company and choose a tier. Guest lists stay in this browser; signed-in lists sync to your account.</p>
           <div class="tierlist-toolbar">
             <label>List<select id="tierlist-profile"></select></label>
             <button type="button" id="tierlist-duplicate">Duplicate</button>
@@ -170,6 +184,23 @@
           <p id="saved-answer-feedback" role="status" aria-live="polite"></p>
           <div id="saved-answer-list"></div>
         </section>
+        <section class="board-section" aria-labelledby="agent-connections-heading">
+          <h2 id="agent-connections-heading">Your agent</h2>
+          <p class="panel-note">Give Muse access to your own profile, saved answers and resume files. It can prepare private job batches and drafts and read approved versions. It cannot approve on your behalf.</p>
+          <form id="agent-connection-form" class="workflow-form">
+            <label>Connection name<input name="name" required maxlength="80" placeholder="My Muse"></label>
+            <label>Access<select name="access"><option value="prepare">Read and prepare applications</option><option value="read">Read workspace only</option></select></label>
+            <button type="submit">Create agent connection</button>
+          </form>
+          <p id="agent-connection-feedback" role="status" aria-live="polite"></p>
+          <div id="agent-issued" hidden>
+            <p class="panel-note">This key expires in 30 days. Copy it now; it is shown only once.</p>
+            <label>Agent key<input id="agent-issued-key" type="password" readonly autocomplete="off"></label>
+            <div class="workflow-actions"><button id="agent-copy-setup" type="button">Copy MCP setup</button><button id="agent-hide-key" type="button">Done</button></div>
+            <p class="panel-note">Custom MCP server: <code>https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp</code></p>
+          </div>
+          <div id="agent-connection-list"></div>
+        </section>
         <section class="board-section"><h2>Resume variants</h2>
           <form id="resume-form" class="workflow-form">
             <label>Variant<select name="name"><option>Backend</option><option>Distributed Systems</option><option>ML Infrastructure</option><option>Master</option></select></label>
@@ -193,20 +224,24 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=23"></script>
-    <script src="components.js?v=23"></script>
-    <script src="workflow-model.js?v=23"></script>
-    <script src="app.js?v=23"></script>
-    <script src="saved-answers-model.js?v=23"></script>
-    <script src="workflow.js?v=23"></script>
-    <script src="saved-answers.js?v=23"></script>
-    <script src="tierlist-model.js?v=23"></script>
-    <script src="tierlists.js?v=23"></script>
-    <script type="module" src="workflow-motion.js?v=23"></script>
-    <script type="module" src="pack-effects.js?v=23"></script>
-    <script type="module" src="pack-motion.js?v=23"></script>
-    <script type="module" src="pack-haptics.js?v=23"></script>
-    <script src="app-updates.js?v=23"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=23"></script>
+    <script src="store.js?v=24"></script>
+    <script src="components.js?v=24"></script>
+    <script src="workflow-model.js?v=24"></script>
+    <script src="app.js?v=24"></script>
+    <script src="saved-answers-model.js?v=24"></script>
+    <script src="workflow.js?v=24"></script>
+    <script src="saved-answers.js?v=24"></script>
+    <script src="tierlist-model.js?v=24"></script>
+    <script src="tierlists.js?v=24"></script>
+    <script type="module" src="workflow-motion.js?v=24"></script>
+    <script type="module" src="pack-effects.js?v=24"></script>
+    <script type="module" src="pack-motion.js?v=24"></script>
+    <script type="module" src="pack-haptics.js?v=24"></script>
+    <script src="profile-preferences.js?v=24"></script>
+    <script src="agent-connections.js?v=24"></script>
+    <script type="module" src="resume-files.js?v=24"></script>
+    <script type="module" src="leaderboard.mjs?v=24"></script>
+    <script src="app-updates.js?v=24"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=24"></script>
   </body>
 </html>

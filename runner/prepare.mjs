@@ -1,0 +1,45 @@
+import { isDeepStrictEqual } from 'node:util';
+import { createHash } from 'node:crypto';
+import { identifyJob, fingerprint } from './forms.mjs';
+
+// The caller must obtain these rows from the trusted gateway, never from an agent's claims.
+export function assertApproval({ application, approval, job, resume, resumeBytes }) {
+  if (!application?.id || !approval?.id || !application.user_id || application.status !== 'Approved' || application.blocker) throw new Error('Current application is not approved');
+  if (approval.application_id !== application.id || approval.user_id !== application.user_id || approval.revision !== application.revision) throw new Error('Approval owner or revision mismatch');
+  if (job?.id !== application.job_id) throw new Error('Approval job mismatch');
+  const snapshot = approval.snapshot;
+  if (!snapshot || !isDeepStrictEqual(snapshot.draft, application.draft)) throw new Error('Draft differs from approved snapshot');
+  if (!snapshot.draft.questionsReviewed || !Array.isArray(snapshot.draft.questions)) throw new Error('Employer questions not reviewed');
+  if (resume?.id !== snapshot.draft.resumeId || resume.user_id !== application.user_id || !isDeepStrictEqual(resume, snapshot.resume)) throw new Error('Resume differs from approved version');
+  // A URL reference may change its contents. Require a pinned file hash before any runner use.
+  const expectedHash = snapshot.draft.resumeSha256;
+  if (!/^[a-f0-9]{64}$/.test(expectedHash || '') || !resumeBytes || createHash('sha256').update(resumeBytes).digest('hex') !== expectedHash) throw new Error('Pinned approved resume file checksum required');
+  const target = identifyJob(job.canonical_url || job.application_url || job.applicationUrl || job.employer?.applicationUrl);
+  if (snapshot.draft.url !== target.url) throw new Error('Exact approved job URL required');
+  return snapshot;
+}
+
+export function prepareApprovedFields(context, form) {
+  const snapshot = assertApproval(context);
+  const actualFingerprint = fingerprint({ url: form.url, questions: form.questions, blockers: form.blockers, source: form.source });
+  if (actualFingerprint !== form.formFingerprint) throw new Error('Employer form data does not match its fingerprint');
+  if (form.url !== snapshot.draft.url || snapshot.draft.formFingerprint !== form.formFingerprint) throw new Error('Employer form changed; inspect and approve again');
+  const blockers = [...form.blockers];
+  const fields = [];
+  for (const question of form.questions) {
+    // Field IDs are explicit. Never infer personal answers from similar labels.
+    const answer = snapshot.draft.questions.find(q => q.fieldId && question.fields.some(f => f.id === q.fieldId) && q.question === question.question);
+    if (!answer || !String(answer.answer ?? '').trim()) {
+      if (question.required) blockers.push(`Missing approved answer: ${question.question}`);
+      continue;
+    }
+    const field = question.fields.find(f => f.id === answer.fieldId);
+    if (!['text', 'email', 'tel', 'url', 'textarea', 'select', 'file'].includes(field.type)) { blockers.push(`Unsupported field: ${question.question}`); continue; }
+    if (field.type === 'select' && !field.options.some(option => option.value === String(answer.answer))) { blockers.push(`Unrecognized choice: ${question.question}`); continue; }
+    if (field.type === 'file' && answer.answer !== context.resume.id) { blockers.push('File answer must reference the approved resume'); continue; }
+    fields.push({ id: field.id, type: field.type, value: answer.answer });
+  }
+  return { applicationId: context.application.id, approvalId: context.approval.id, revision: context.application.revision,
+    url: form.url, formFingerprint: form.formFingerprint, fields, blockers, status: blockers.length ? 'Blocked' : 'Prepared',
+    submission: 'manual-handoff', message: 'Prefill is not submission. Complete conditional questions and submit on the employer page.' };
+}
