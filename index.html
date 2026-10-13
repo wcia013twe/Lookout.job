@@ -12,16 +12,16 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=29">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=29">
-    <link rel="stylesheet" href="styles/role-cards.css?v=29">
-    <link rel="stylesheet" href="styles/dashboard.css?v=29">
-    <link rel="stylesheet" href="styles/workflow.css?v=29">
-    <link rel="stylesheet" href="styles/tierlists.css?v=29">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=29">
-    <link rel="stylesheet" href="styles/account.css?v=29">
-    <link rel="stylesheet" href="styles/resume-files.css?v=29">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=29">
+    <link rel="stylesheet" href="styles.css?v=30">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=30">
+    <link rel="stylesheet" href="styles/role-cards.css?v=30">
+    <link rel="stylesheet" href="styles/dashboard.css?v=30">
+    <link rel="stylesheet" href="styles/workflow.css?v=30">
+    <link rel="stylesheet" href="styles/tierlists.css?v=30">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=30">
+    <link rel="stylesheet" href="styles/account.css?v=30">
+    <link rel="stylesheet" href="styles/resume-files.css?v=30">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=30">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -174,17 +174,20 @@
           <form id="tierlist-company" class="tierlist-toolbar"><label>Add company<input name="name" required placeholder="Company name"></label><button type="submit">Add tile</button></form>
           <p id="tierlist-feedback" role="status" aria-live="polite"></p>
         </section>
-        <h2>Factual answers</h2>
-        <form id="profile-form" class="workflow-form">
-          <label>Name<input name="name" autocomplete="name"></label>
-          <label>First name<input name="firstName" autocomplete="given-name"></label>
-          <label>Last name<input name="lastName" autocomplete="family-name"></label>
-          <label>Email<input name="email" type="email" autocomplete="email"></label>
-          <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
-          <label>Location<input name="location" autocomplete="address-level2"></label>
-          <label class="workflow-wide">Work authorization<input name="authorization" placeholder="Your exact verified answer"></label>
-          <label class="workflow-check workflow-wide"><input name="verified" type="checkbox">I have checked these facts</label>
-          <button type="submit">Save profile</button><p id="profile-feedback" role="status"></p>
+        <h2 id="candidate-profile-heading">Application profile</h2>
+        <p id="profile-autofill-help" class="panel-note">Use Simplify Copilot to fill these details if it recognizes this site. Otherwise, copy them from Simplify’s Profile tab. Review the filled values and check your facts before saving.</p>
+        <form id="profile-form" name="candidate_profile" class="workflow-form" autocomplete="on" aria-labelledby="candidate-profile-heading" aria-describedby="profile-autofill-help">
+          <label for="full_name">Full name<input id="full_name" name="name" type="text" autocomplete="name"></label>
+          <label for="first_name">First name<input id="first_name" name="firstName" type="text" autocomplete="given-name"></label>
+          <label for="last_name">Last name<input id="last_name" name="lastName" type="text" autocomplete="family-name"></label>
+          <label for="email">Email address<input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></label>
+          <label for="phone_number">Phone number<input id="phone_number" name="phone" type="tel" autocomplete="tel" inputmode="tel"></label>
+          <label for="city">City / location<input id="city" name="location" type="text" autocomplete="address-level2"></label>
+          <label for="linkedin_url">LinkedIn profile URL<input id="linkedin_url" name="linkedin" type="url" autocomplete="section-linkedin url" autocapitalize="none" spellcheck="false"></label>
+          <label for="portfolio_url">Portfolio / website URL<input id="portfolio_url" name="portfolio" type="url" autocomplete="section-portfolio url" autocapitalize="none" spellcheck="false"></label>
+          <label for="work_authorization" class="workflow-wide">Work authorization<input id="work_authorization" name="authorization" type="text" autocomplete="off" placeholder="Your exact verified answer"></label>
+          <label for="profile_facts_verified" class="workflow-check workflow-wide"><input id="profile_facts_verified" name="verified" type="checkbox" autocomplete="off">I have checked these facts</label>
+          <button type="submit">Save profile</button><p id="profile-feedback" role="status" aria-live="polite"></p>
         </form>
         <section class="board-section" aria-labelledby="saved-answers-title">
           <h2 id="saved-answers-title">Saved answers</h2>
@@ -247,24 +250,25 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=29"></script>
-    <script src="components.js?v=29"></script>
-    <script src="workflow-model.js?v=29"></script>
-    <script src="app.js?v=29"></script>
-    <script src="saved-answers-model.js?v=29"></script>
-    <script src="workflow.js?v=29"></script>
-    <script src="saved-answers.js?v=29"></script>
-    <script src="tierlist-model.js?v=29"></script>
-    <script src="tierlists.js?v=29"></script>
-    <script type="module" src="workflow-motion.js?v=29"></script>
-    <script type="module" src="pack-effects.js?v=29"></script>
-    <script type="module" src="pack-motion.js?v=29"></script>
-    <script type="module" src="pack-haptics.js?v=29"></script>
-    <script src="profile-preferences.js?v=29"></script>
-    <script src="agent-connections.js?v=29"></script>
-    <script type="module" src="resume-files.js?v=29"></script>
-    <script type="module" src="leaderboard.mjs?v=29"></script>
-    <script src="app-updates.js?v=29"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=29"></script>
+    <script src="store.js?v=30"></script>
+    <script src="components.js?v=30"></script>
+    <script src="workflow-model.js?v=30"></script>
+    <script src="app.js?v=30"></script>
+    <script src="saved-answers-model.js?v=30"></script>
+    <script src="profile-autofill.js?v=30"></script>
+    <script src="workflow.js?v=30"></script>
+    <script src="saved-answers.js?v=30"></script>
+    <script src="tierlist-model.js?v=30"></script>
+    <script src="tierlists.js?v=30"></script>
+    <script type="module" src="workflow-motion.js?v=30"></script>
+    <script type="module" src="pack-effects.js?v=30"></script>
+    <script type="module" src="pack-motion.js?v=30"></script>
+    <script type="module" src="pack-haptics.js?v=30"></script>
+    <script src="profile-preferences.js?v=30"></script>
+    <script src="agent-connections.js?v=30"></script>
+    <script type="module" src="resume-files.js?v=30"></script>
+    <script type="module" src="leaderboard.mjs?v=30"></script>
+    <script src="app-updates.js?v=30"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=30"></script>
   </body>
 </html>

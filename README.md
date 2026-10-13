@@ -172,3 +172,15 @@ reports retry through `report_submission_result` without another click. An
 expired pre-click claim can expire; started/uncertain attempts never automatically
 expire into retry. No real employer application was submitted during development;
 fixture transport/database tests pass, live Muse/employer validation remains.
+
+## Simplify / browser autofill
+
+Profile → Application profile uses native, labelled inputs with stable field IDs
+and standard autocomplete tokens for name, email, phone, city, LinkedIn and
+portfolio. Simplify Copilot may fill these if it recognizes the site; this is
+form compatibility, not a private Simplify API integration or guaranteed site
+support. If detection is unavailable, use its Profile tab to copy details and
+request site support from the extension. Review imported facts, check the
+verification box and save. Changed values clear prior verification, including
+silent programmatic autofill. Saving syncs to the account through existing autosync.
+Live Simplify extension recognition has not been verified.

@@ -1,3 +1,10 @@
+## 2026-10-13 — Autofill-compatible application profile
+
+- Added stable standard field IDs, explicit labels, native input types/autocomplete and LinkedIn/portfolio fields for Simplify/browser form recognition.
+- Imported or edited values clear verification, including silent autofill; extension-generated checkbox events cannot mark facts human-reviewed.
+- Preserved account autosync and server ownership; no Simplify SDK/API, automatic approval or fake compatibility claim. Cache v30.
+- Validation: verification/autofill/account-reset checks and existing suite. Live Simplify recognition remains unverified and may require their site-support request.
+
 ## 2026-10-13 — Guarded Greenhouse auto-submission
 
 - Added submit_application to the local MCP runner: current authorization, native prefill/validation, atomic claim, one-use short-lived permit, one Submit click, and supported employer confirmation detection.

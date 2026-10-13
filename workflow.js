@@ -350,6 +350,11 @@
       else input.value = value;
     }
   });
+  const profileFields = ["name", "firstName", "lastName", "email", "phone", "location", "linkedin", "portfolio", "authorization"];
+  const profileGuard = JB.profileAutofillGuard(profileForm, profileFields, () => {
+    document.querySelector("#profile-feedback").textContent = "Details changed. Review them and check your facts before saving.";
+  });
+  profileGuard.reset(profile().verified);
   function refreshProfile(event) {
     if (event.type === "workspace:account") {
       reviewing = null;
@@ -365,6 +370,7 @@
       if (input.type === "checkbox") input.checked = value;
       else input.value = value;
     });
+    profileGuard.reset(profile().verified);
     render();
   }
   document.addEventListener("workspace:account", refreshProfile);
@@ -372,10 +378,10 @@
   profileForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const p = {};
-    ["name", "firstName", "lastName", "email", "phone", "location", "authorization"].forEach((key) => {
+    profileFields.forEach((key) => {
       p[key] = profileForm.elements[key].value.trim();
     });
-    p.verified = profileForm.elements.verified.checked;
+    p.verified = profileGuard.isReviewed();
     store.set("workflow.profile", p);
     document.querySelector("#profile-feedback").textContent = p.verified
       ? "Profile saved and checked by you."
