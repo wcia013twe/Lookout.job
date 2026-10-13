@@ -261,3 +261,10 @@
 - Added agent preferences, Muse PDF handoff with copyable request, and introduction saving through the existing profile store. Saving clears verification and preserves existing profile facts.
 - Replaced Simplify autofill guidance and bumped asset/service-worker cache to v32.
 - Validation: JavaScript syntax, setup interaction/store checks, data validation (76 roles), and diff whitespace checks passed. No live browser capture performed.
+
+## 2026-10-13 — Applications redesign and separate Referrals page
+- Made tracked roles visible immediately with compact counts, status controls, and an actionable Discover empty state. Removed the duplicate legacy interview view.
+- Moved referrals and networking into their own tab; replaced ten expanded template cards with one message picker. Kept existing browser data and agent draft/review flow.
+- Added responsive row layouts, mobile navigation showing every tab, scoped theme color variables, accessible form labels, and honest clipboard failure feedback. Cache v33.
+- Validation: browser navigation, Browse roles action, template switching, 356px/1280px overflow checks, workflow tests, design detector and whitespace checks. Finish reviewer: ship; populated rows inspected in source, not visually captured.
+- Full test suite: 133 passed. Scoped design documentation review confirmed incumbent system preservation; alternate themes and populated rows remain visually unverified.

@@ -43,11 +43,11 @@ function trackerRow(role) {
   const status = role.applicationStatus;
   const opts = TRACKER_STATUSES.map((s) => `<option value="${s}"${s === status ? ' selected' : ''}>${s === 'New' ? 'Opened' : s}</option>`).join('');
   return `<div class="tracker-row" role="row">
-    <strong>${escapeHtml(role.company)}</strong>
-    <a href="${escapeHtml(role.applicationUrl)}" target="_blank" rel="noreferrer">${escapeHtml(role.title)}</a>
-    <span>${escapeHtml(role.employmentType)}</span>
-    <span>${appliedDate(role.id)}</span>
-    <select aria-label="Status for ${escapeHtml(role.title)}" data-id="${escapeHtml(role.id)}">${opts}</select>
+    <strong role="cell" data-label="Company">${escapeHtml(role.company)}</strong>
+    <a role="cell" data-label="Job title" href="${escapeHtml(role.applicationUrl)}" target="_blank" rel="noreferrer">${escapeHtml(role.title)}</a>
+    <span role="cell" data-label="Type">${role.employmentType === "FT" ? "Full-time" : escapeHtml(role.employmentType)}</span>
+    <span role="cell" data-label="Opened / applied">${escapeHtml(appliedDate(role.id))}</span>
+    <div role="cell" class="tracker-status"><label class="sr-only" for="status-${escapeHtml(role.id)}">Status for ${escapeHtml(role.title)}</label><select id="status-${escapeHtml(role.id)}" data-id="${escapeHtml(role.id)}">${opts}</select></div>
   </div>`;
 }
 
@@ -70,10 +70,10 @@ function render() {
   const fullTimeRoles = dailyRoles.filter((role) => role.employmentType === 'FT');
   const internshipRoles = dailyRoles.filter((role) => role.employmentType === 'Internship');
   const applyNow = dailyRoles.filter((role) => role.priority === 'Apply Now').length;
-  summary.textContent = `${dailyRoles.length} to review · ${applyNow} apply now`;
+  summary.textContent = document.querySelector('#tab-tracker').getAttribute('aria-selected') === 'true' ? `${trackedRoles.length} tracked role${trackedRoles.length === 1 ? '' : 's'}` : `${dailyRoles.length} to review · ${applyNow} apply now`;
   setGrid(fullTimeGrid, fullTimeRoles, 'No new full-time roles in this run.', roleCardEl);
   setGrid(internshipGrid, internshipRoles, 'No internships cleared the specialization bar in this run.', roleCardEl);
-  tracker.innerHTML = trackedRoles.map(trackerRow).join('') || '<p class="empty tracker-empty">Open an application from Daily Board to start tracking it here.</p>';
+  tracker.innerHTML = trackedRoles.map(trackerRow).join('') || (tracked.size ? '<div class="application-empty"><h3>No matching roles</h3><p>Try another search or role type.</p></div>' : '<div class="application-empty"><h3>Your next opportunity starts here</h3><p>Open a role from Discover to track it. When you apply, update its status here.</p><button type="button" data-browse-roles>Browse roles</button></div>');
   const trackedFT = trackedRoles.filter((role) => role.employmentType === 'FT').length;
   const trackedInternships = trackedRoles.filter((role) => role.employmentType === 'Internship').length;
   trackerCounts.innerHTML = `<span><strong>${trackedFT}</strong> full-time</span><span><strong>${trackedInternships}</strong> internships</span>`;
@@ -90,6 +90,7 @@ function activateTab(tab, focus = false) {
   document.querySelectorAll('[role="tabpanel"]').forEach((panel) => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
   document.querySelector('.controls').hidden = !['daily-board', 'auto-tracker'].includes(tab.getAttribute('aria-controls'));
   document.dispatchEvent(new CustomEvent('workspace:view', { detail: { panel: tab.getAttribute('aria-controls') } }));
+  render();
   if (focus) tab.focus({ preventScroll: true });
 }
 dashboardTabs.forEach((tab, index) => {
@@ -259,12 +260,16 @@ const TEMPLATES = [
 
 function renderTemplates() {
   if (!templatesGrid) return;
-  templatesGrid.innerHTML = TEMPLATES.map((t, i) => `<article class="role-card template-card">
-    <div class="role-head"><div><p class="eyebrow">${escapeHtml(t.use)}</p><h3>${escapeHtml(t.name)}</h3></div></div>
-    <p class="template-body">${escapeHtml(t.body)}</p>
-    <button class="copy-btn" data-template="${i}">Copy message</button>
-  </article>`).join('');
+  const picker = document.querySelector('#template-picker');
+  if (picker && !picker.options.length) picker.innerHTML = TEMPLATES.map((t, i) => `<option value="${i}">${escapeHtml(t.name)}</option>`).join('');
+  const i = Number(picker?.value || 0);
+  const t = TEMPLATES[i] || TEMPLATES[0];
+  templatesGrid.innerHTML = `<article class="message-template"><h4>${escapeHtml(t.name)}</h4><p class="template-use">${escapeHtml(t.use)}</p><p class="template-body">${escapeHtml(t.body)}</p><button class="copy-btn" data-template="${i}">Copy message</button><p class="template-feedback" role="status"></p></article>`;
 }
+document.querySelector('#template-picker')?.addEventListener('change', renderTemplates);
+tracker.addEventListener('click', event => {
+  if (event.target.closest('[data-browse-roles]')) activateTab(document.querySelector('#tab-daily'), true);
+});
 
 function renderReferrals() {
   if (!referralList) return;
@@ -347,7 +352,7 @@ document.querySelector('#referrals').addEventListener('click', (e) => {
     const t = TEMPLATES[Number(copyBtn.dataset.template)];
     const done = () => { copyBtn.textContent = 'Copied'; setTimeout(() => { copyBtn.textContent = 'Copy message'; }, 1500); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(t.body).then(done).catch(done);
+      navigator.clipboard.writeText(t.body).then(done).catch(() => { templatesGrid.querySelector('.template-feedback').textContent = 'Copy failed. Select the message text and copy it manually.'; });
     } else {
       const ta = document.createElement('textarea');
       ta.value = t.body;

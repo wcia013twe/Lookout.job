@@ -12,20 +12,21 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=32">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=32">
-    <link rel="stylesheet" href="styles/role-cards.css?v=32">
-    <link rel="stylesheet" href="styles/dashboard.css?v=32">
-    <link rel="stylesheet" href="styles/workflow.css?v=32">
-    <link rel="stylesheet" href="styles/tierlists.css?v=32">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=32">
-    <link rel="stylesheet" href="styles/account.css?v=32">
-    <link rel="stylesheet" href="styles/resume-files.css?v=32">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=32">
+    <link rel="stylesheet" href="styles.css?v=33">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=33">
+    <link rel="stylesheet" href="styles/role-cards.css?v=33">
+    <link rel="stylesheet" href="styles/dashboard.css?v=33">
+    <link rel="stylesheet" href="styles/workflow.css?v=33">
+    <link rel="stylesheet" href="styles/tierlists.css?v=33">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=33">
+    <link rel="stylesheet" href="styles/account.css?v=33">
+    <link rel="stylesheet" href="styles/resume-files.css?v=33">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=33">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="styles/profile.css?v=32">
+      <link rel="stylesheet" href="styles/profile.css?v=33">
+    <link rel="stylesheet" href="styles/applications.css?v=33">
   </head>
   <body>
     <main>
@@ -46,6 +47,7 @@
         <button id="tab-needs" role="tab" aria-selected="true" aria-controls="needs-you" tabindex="0">Needs you <span id="needs-count"></span></button>
         <button id="tab-daily" role="tab" aria-selected="false" aria-controls="daily-board" tabindex="-1">Discover</button>
         <button id="tab-tracker" role="tab" aria-selected="false" aria-controls="auto-tracker" tabindex="-1">Applications</button>
+        <button id="tab-referrals" role="tab" aria-selected="false" aria-controls="referrals" tabindex="-1">Referrals</button>
         <button id="tab-profile" role="tab" aria-selected="false" aria-controls="profile" tabindex="-1">Profile</button>
       </div>
       <section id="needs-you" role="tabpanel" aria-labelledby="tab-needs">
@@ -71,29 +73,21 @@
         <details class="board-help"><summary>How tracking works</summary><p class="panel-note">Opening an application moves it to Auto Tracker. Update its status after applying. Your tracker is saved in this browser. Source details are available within each role’s analysis.</p></details>
       </section>
       <section id="auto-tracker" role="tabpanel" aria-labelledby="tab-tracker" hidden>
-        <div class="section-heading"><h2>Applications</h2></div>
-        <p class="panel-note">Track applications and review drafts here. Signed-in updates sync privately; opening a job link does not mean you applied.</p>
-        <label class="workflow-stage">Stage <select id="application-stage"><option value="">All drafts</option><option>Queued</option><option>Draft</option><option>Awaiting approval</option><option>Approved</option><option>Blocked</option></select></label>
-        <div id="application-list"></div>
-        <details class="workflow-section"><summary>Browser-only link history</summary>      <div>
-        <p class="panel-note">Opened roles are separate from submitted applications. Update a status after you apply.</p>
-        <div id="tracker-counts" class="tracker-counts"></div>
-        <div class="tracker-table" role="table" aria-label="Tracked applications"><div class="tracker-row tracker-head" role="row"><span>Company</span><span>Job title</span><span>Type</span><span>Date opened/applied</span><span>Status</span></div><div id="tracker"></div></div>
-      </div></details>
-        <details class="workflow-section"><summary>Legacy browser interview history</summary>      <section id="procs">
-        <p class="panel-note">Earlier browser tracking is kept here for reference. Use the application review panel above for the current account pipeline.</p>
-        <div id="proc-pipeline" class="proc-pipeline"></div>
-        <details class="proc-closed"><summary>Closed (<span id="proc-closed-count">0</span>)</summary><div id="proc-closed" class="grid"></div></details>
+        <div class="workspace-heading"><h2>Applications</h2><p>Track the roles you’ve opened and update your progress after applying.</p></div>
+        <div class="application-toolbar"><h3>Your tracked roles</h3><div id="tracker-counts" class="tracker-counts" aria-live="polite"></div></div>
+        <p class="tracking-note">Opening a role adds it here as <strong>Opened</strong>. Change its status only after you apply.</p>
+        <div class="tracker-table" role="table" aria-label="Tracked applications"><div class="tracker-row tracker-head" role="row"><span role="columnheader">Company</span><span role="columnheader">Job title</span><span role="columnheader">Type</span><span role="columnheader">Opened / applied</span><span role="columnheader">Status</span></div><div id="tracker" role="rowgroup"></div></div>
+        <section class="application-drafts" aria-labelledby="drafts-heading"><div class="application-toolbar"><h3 id="drafts-heading">Agent workspace</h3><label class="workflow-stage">Stage <select id="application-stage"><option value="">All stages</option><option>Queued</option><option>Draft</option><option>Awaiting approval</option><option>Approved</option><option>Blocked</option></select></label></div><p class="tracking-note">Prepared drafts and review actions. A draft is not a submitted application. Signed-in updates sync privately.</p><div id="application-list"></div></section>
       </section>
-</details>
-        <details class="workflow-section"><summary>Referrals and networking</summary>      <section id="referrals">
-        <p class="panel-note">People beat portals. Track who can refer you, stay in touch with your network, and grab a copy paste message when it is time to ask. Everything here stays in your browser.</p>
+      <section id="referrals" role="tabpanel" aria-labelledby="tab-referrals" hidden>
+        <div class="workspace-heading"><h2>Referrals &amp; networking</h2><p>Keep your contacts, follow-ups, and outreach in one place.</p></div>
+        <p class="panel-note">Referrals and contacts are saved in this browser.</p>
         <section class="board-section">
-          <div class="section-heading"><p class="eyebrow">REFERRALS</p><h2>Referral tracker</h2></div>
+          <div class="section-heading"><h3>Referral targets</h3></div>
           <form id="referral-form" class="mini-form">
-            <input id="ref-company" placeholder="Company" required>
-            <input id="ref-title" placeholder="Role title" required>
-            <input id="ref-contact" placeholder="Contact name" required>
+            <input aria-label="Company" id="ref-company" placeholder="Company" required>
+            <input aria-label="Role title" id="ref-title" placeholder="Role title" required>
+            <input aria-label="Contact name" id="ref-contact" placeholder="Contact name" required>
             <select id="ref-path" aria-label="Referral path">
               <option>Engineer I know</option>
               <option>Engineer (cold)</option>
@@ -102,34 +96,32 @@
               <option>Former coworker</option>
               <option>Friend</option>
             </select>
-            <input id="ref-link" placeholder="Job link (optional)">
+            <input aria-label="Job link (optional)" id="ref-link" placeholder="Job link (optional)">
             <button type="submit">Add</button>
           </form>
           <div class="tracker-table" role="table" aria-label="Referral tracker"><div class="tracker-row tracker-head ref-head" role="row"><span>Company</span><span>Role</span><span>Contact</span><span>Path</span><span>Status</span><span></span></div><div id="referral-list"></div></div>
         </section>
         <section class="board-section">
-          <div class="section-heading"><p class="eyebrow">NETWORKING</p><h2>People to stay in touch with</h2></div>
+          <div class="section-heading"><h3>Your network</h3></div>
           <form id="network-form" class="mini-form">
-            <input id="net-name" placeholder="Name" required>
-            <input id="net-company" placeholder="Company" required>
+            <input aria-label="Name" id="net-name" placeholder="Name" required>
+            <input aria-label="Company" id="net-company" placeholder="Company" required>
             <select id="net-warmth" aria-label="Warmth">
               <option>Warm</option>
               <option>Cooling</option>
               <option>Cold</option>
             </select>
             <input id="net-followup" type="date" aria-label="Next follow-up">
-            <input id="net-notes" placeholder="Notes (optional)">
+            <input aria-label="Notes (optional)" id="net-notes" placeholder="Notes (optional)">
             <button type="submit">Add</button>
           </form>
           <div class="tracker-table" role="table" aria-label="Networking tracker"><div class="tracker-row tracker-head net-head" role="row"><span>Name</span><span>Company</span><span>Warmth</span><span>Follow up</span><span></span></div><div id="network-list"></div></div>
         </section>
         <section class="board-section">
-          <div class="section-heading"><p class="eyebrow">TEMPLATES</p><h2>Copy paste messages</h2></div>
-          <p class="panel-note">Pick the path, copy, fill in the brackets, send.</p>
-          <div id="templates" class="grid"></div>
+          <div class="section-heading"><h3>Message templates</h3></div>
+          <p class="panel-note">Choose a message, replace the brackets, and make it your own.</p><label class="template-picker">Message type<select id="template-picker"></select></label>
+          <div id="templates"></div>
         </section>
-      </section>
-</details>
       </section>
       <section id="profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
         <div class="section-heading"><h2>Profile</h2></div>
@@ -279,28 +271,28 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=32"></script>
-    <script src="components.js?v=32"></script>
-    <script src="workflow-model.js?v=32"></script>
-    <script src="app.js?v=32"></script>
-    <script src="saved-answers-model.js?v=32"></script>
-    <script src="profile-schema.js?v=32"></script>
-    <script src="profile-editor.js?v=32"></script>
-    <script src="profile-autofill.js?v=32"></script>
-    <script src="workflow.js?v=32"></script>
-    <script src="saved-answers.js?v=32"></script>
-    <script src="tierlist-model.js?v=32"></script>
-    <script src="tierlists.js?v=32"></script>
-    <script type="module" src="workflow-motion.js?v=32"></script>
-    <script type="module" src="pack-effects.js?v=32"></script>
-    <script type="module" src="pack-motion.js?v=32"></script>
-    <script type="module" src="pack-haptics.js?v=32"></script>
-    <script src="profile-onboarding.js?v=32"></script>
-    <script src="profile-preferences.js?v=32"></script>
-    <script src="agent-connections.js?v=32"></script>
-    <script type="module" src="resume-files.js?v=32"></script>
-    <script type="module" src="leaderboard.mjs?v=32"></script>
-    <script src="app-updates.js?v=32"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=32"></script>
+    <script src="store.js?v=33"></script>
+    <script src="components.js?v=33"></script>
+    <script src="workflow-model.js?v=33"></script>
+    <script src="app.js?v=33"></script>
+    <script src="saved-answers-model.js?v=33"></script>
+    <script src="profile-schema.js?v=33"></script>
+    <script src="profile-editor.js?v=33"></script>
+    <script src="profile-autofill.js?v=33"></script>
+    <script src="workflow.js?v=33"></script>
+    <script src="saved-answers.js?v=33"></script>
+    <script src="tierlist-model.js?v=33"></script>
+    <script src="tierlists.js?v=33"></script>
+    <script type="module" src="workflow-motion.js?v=33"></script>
+    <script type="module" src="pack-effects.js?v=33"></script>
+    <script type="module" src="pack-motion.js?v=33"></script>
+    <script type="module" src="pack-haptics.js?v=33"></script>
+    <script src="profile-onboarding.js?v=33"></script>
+    <script src="profile-preferences.js?v=33"></script>
+    <script src="agent-connections.js?v=33"></script>
+    <script type="module" src="resume-files.js?v=33"></script>
+    <script type="module" src="leaderboard.mjs?v=33"></script>
+    <script src="app-updates.js?v=33"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=33"></script>
   </body>
 </html>
