@@ -83,7 +83,7 @@ test('browser prefill reports newly exposed conditional questions and never subm
     click: () => { throw new Error('Must never submit'); },
   };
   const plan = await prefillApprovedForm(page, context);
-  assert.equal(filled.length, 2); assert.equal(plan.status, 'Blocked');
+  assert.equal(filled.length, 1); assert.equal(plan.status, 'Blocked');
   assert.match(plan.blockers[0], /Conditional/);
 });
 

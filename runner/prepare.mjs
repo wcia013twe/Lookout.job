@@ -28,16 +28,21 @@ export function prepareApprovedFields(context, form) {
   const fields = [];
   for (const question of form.questions) {
     // Field IDs are explicit. Never infer personal answers from similar labels.
-    const answer = snapshot.draft.questions.find(q => q.fieldId && question.fields.some(f => f.id === q.fieldId) && q.question === question.question);
-    if (!answer || !String(answer.answer ?? '').trim()) {
-      if (question.required) blockers.push(`Missing approved answer: ${question.question}`);
-      continue;
+    for (const field of question.fields) {
+      const answers = snapshot.draft.questions.filter(q => q.fieldId === field.id && q.question === question.question);
+      if (answers.length > 1) { blockers.push(`Duplicate approved answer: ${question.question}`); continue; }
+      const answer = answers[0];
+      if (!answer || !String(answer.answer ?? '').trim()) {
+        if (question.required) blockers.push(`Missing approved answer: ${question.question}`);
+        continue;
+      }
+      if (!['text', 'email', 'tel', 'url', 'textarea', 'select', 'radio', 'checkbox', 'file'].includes(field.type)) { blockers.push(`Unsupported field: ${question.question}`); continue; }
+      if (['select', 'radio'].includes(field.type) && !field.options.some(option => option.value === String(answer.answer))) { blockers.push(`Unrecognized choice: ${question.question}`); continue; }
+      if (field.type === 'checkbox' && !['true', 'false'].includes(String(answer.answer))) { blockers.push(`Checkbox needs explicit true or false: ${question.question}`); continue; }
+      if (field.type === 'checkbox' && question.required && String(answer.answer) !== 'true') { blockers.push(`Required checkbox is not approved: ${question.question}`); continue; }
+      if (field.type === 'file' && answer.answer !== context.resume.id) { blockers.push('File answer must reference the approved resume'); continue; }
+      fields.push({ id: field.id, type: field.type, value: answer.answer });
     }
-    const field = question.fields.find(f => f.id === answer.fieldId);
-    if (!['text', 'email', 'tel', 'url', 'textarea', 'select', 'file'].includes(field.type)) { blockers.push(`Unsupported field: ${question.question}`); continue; }
-    if (field.type === 'select' && !field.options.some(option => option.value === String(answer.answer))) { blockers.push(`Unrecognized choice: ${question.question}`); continue; }
-    if (field.type === 'file' && answer.answer !== context.resume.id) { blockers.push('File answer must reference the approved resume'); continue; }
-    fields.push({ id: field.id, type: field.type, value: answer.answer });
   }
   return { applicationId: context.application.id, approvalId: context.approval.id, revision: context.application.revision,
     url: form.url, formFingerprint: form.formFingerprint, fields, blockers, status: blockers.length ? 'Blocked' : 'Prepared',

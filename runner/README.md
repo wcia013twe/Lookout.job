@@ -14,7 +14,7 @@ node --test tests/runner-adapter.test.mjs
 
 Inspection performs one public Greenhouse GET with `questions=true`, preserves exact field/choice IDs, and lists consent, hidden, demographic and unsupported controls as blockers. Ashby public postings do not provide applicant forms; the command reports a browser handoff rather than using private employer APIs.
 
-`browser.mjs` accepts an existing Playwright `Page` supplied by the user's permitted local runtime. `inspectBrowserForm(page)` extracts labelled native controls on official Greenhouse/Ashby pages. `prefillApprovedForm(page, context)` fills supported native fields and PDF uploads only after approval validation; it never clicks Submit. It re-inspects for conditional-field changes and reports a blocker. Custom dropdowns, radio groups, checkboxes, consent, CAPTCHA, embeds, multiple forms and dynamic unanswered controls stay manual. Browser execution has not been validated against a live employer form.
+`browser.mjs` accepts an existing Playwright `Page` supplied by the user's permitted local runtime. `inspectBrowserForm(page)` extracts labelled native controls on official Greenhouse/Ashby pages. `prefillApprovedForm(page, context)` fills supported native fields and PDF uploads only after approval validation; it never clicks Submit. It re-inspects for conditional-field changes and reports a blocker. Native grouped radios and checkboxes are supported only with exact human-approved answers; checkbox values must be `true` or `false`, and required consent cannot be left false. Custom dropdowns, CAPTCHA, embeds, multiple forms and dynamic unanswered controls stay manual. Bindings are checked before any fill; the form is inspected again after every write. Browser execution has not been validated against a live employer form.
 
 ## Trusted contract
 
@@ -32,3 +32,61 @@ Existing manually approved drafts without these fields remain valid for manual a
 The result is `Prepared` or `Blocked`, always with `submission: manual-handoff`. It is not a submission receipt and must not set the application to Submitted. A future submit adapter needs a freshly checked current approval, an atomic submission claim to prevent duplicate attempts, and employer confirmation before recording a receipt. Credentials, arbitrary endpoint access, Workday, SMS and inbox handling are intentionally absent.
 
 Sources: [Greenhouse Job Board API](https://docs.greenhouse.io/job-board.html), [Ashby public postings API](https://developers.ashbyhq.com/docs/public-job-posting-api).
+
+## Adapted local tools — no decision model
+
+Licensed browser primitives and ATS entry selectors have been extracted rather
+than adding either upstream application's dependency tree. See [THIRD_PARTY.md](THIRD_PARTY.md)
+for pinned revisions, modifications and MIT notices. No Jev SDK, AI provider or
+inference calls are included. A successful native prefill uses zero model calls;
+Muse may separately draft new written answers before approval.
+
+`createApplicationTools({getPage, loadCurrentContext})` in `agent-tools.mjs`
+provides three functions for Muse's **own local browser runtime**:
+
+- `inspect_application({url})`: navigate to an allowlisted job, open one unambiguous
+  form entry, and return full questions, exact choices and a form fingerprint.
+- `select_resume({userId,job,resumes,preferences})`: propose an owned resume from
+  explicit keyword rules or a default; overlapping rules/missing files return
+  Needs selection. Selection never approves a resume or edits an approved draft.
+- `prefill_application({applicationId})`: obtain current records through the
+  trusted loader, validate approval/resume bytes/form, then fill the existing
+  page. Return compact progress/blockers; never click Submit.
+
+Example host integration (browser creation and authentication belong to your
+agent runtime; do not supply agent-asserted approval records):
+
+```js
+import { createApplicationTools } from './runner/agent-tools.mjs';
+const tools = createApplicationTools({
+  getPage: async () => dedicatedEmployerPage,
+  loadCurrentContext: async (id) => trustedBackend.loadApprovedContext(id),
+});
+const form = await tools.inspect_application({url: employerJobUrl});
+// Prepare a draft with form metadata; get human review in the board.
+const progress = await tools.prefill_application({applicationId});
+```
+
+`trustedBackend.loadApprovedContext` is a host-provided capability, not an
+implemented function exported by this repository. It must return current gateway
+approval/application rows plus the owned resume, canonical job and pinned file
+bytes. The remote job-board MCP does not launch browsers or expose these local
+functions yet. Live employer testing, client registration and an atomic
+submission/receipt adapter remain outstanding.
+
+Resume rules can live in the agent's local JSON configuration or the preserved
+custom search-preference keys. No resume-rule editor is added to the UI:
+
+```json
+{
+  "defaultResumeId": "owned-backend-resume-id",
+  "resumeRules": [
+    {"keywords": ["ML infrastructure", "inference"], "resumeId": "owned-ml-resume-id"},
+    {"keywords": ["distributed systems"], "resumeId": "owned-systems-resume-id"}
+  ]
+}
+```
+
+Each rule matches **any** listed keyword in the job title/category. Different
+matched resume IDs require a choice; there is no hidden ranking or model decision.
+Rules remain candidate-specific data, separate from public employer records.

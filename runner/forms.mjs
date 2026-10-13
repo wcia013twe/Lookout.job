@@ -10,8 +10,8 @@ export function identifyJob(rawUrl) {
   if (['boards.greenhouse.io', 'job-boards.greenhouse.io'].includes(url.hostname) && path.length === 3 && path[1] === 'jobs' && /^\d+$/.test(path[2])) {
     return { ats: 'greenhouse', board: path[0], jobId: path[2], url: `${url.origin}/${path.join('/')}` };
   }
-  if (url.hostname === 'jobs.ashbyhq.com' && path.length === 2 && /^[a-z0-9-]+$/i.test(path[1])) {
-    return { ats: 'ashby', board: path[0], jobId: path[1], url: `${url.origin}/${path.join('/')}` };
+  if (url.hostname === 'jobs.ashbyhq.com' && (path.length === 2 || (path.length === 3 && path[2] === 'application')) && /^[a-z0-9-]+$/i.test(path[1])) {
+    return { ats: 'ashby', board: path[0], jobId: path[1], url: `${url.origin}/${path.slice(0, 2).join('/')}` };
   }
   throw new Error('Unsupported ATS URL; use manual application handoff');
 }

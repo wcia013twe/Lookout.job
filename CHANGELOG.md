@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-13 — Adapt licensed browser primitives without Jev
+
+- Extracted MIT-licensed visibility/label primitives from jev-browser and ATS entry selectors from job-application-agent; pinned source commits and retained full notices.
+- Added local Muse tool wrappers for form inspection, current-approval prefill and explicit owned-resume selection. No decision model or new dependency tree.
+- Added reviewed native radio/checkbox handling, complete required multi-field checks, all-binding preflight and conditional-form checks after each fill.
+- Stopped ambiguous entry controls, cross-job navigation, overlapping resume rules and duplicate approved answers.
+- Validation: all 75 tests pass, including 16 runner tests; complete migration-chain checks and all 75 public job records pass. Browser runtime registration, live employer execution and automatic submission remain unconnected.
+
 ## 2026-10-13 — Connected agent and application workflow
 
 - Deployed scoped, expiring/revocable Muse credentials, an HTTP gateway and a custom MCP endpoint; agents cannot approve or submit applications.

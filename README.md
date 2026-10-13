@@ -27,7 +27,7 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 | Needs you / Applications | Versioned approval, blockers, human progress reports, immutable submitted drafts and server timeline |
 | Agent connection | Per-user expiring/revocable credentials; HTTP gateway and custom MCP endpoint |
 | Morning batch links | Owned `?batch=<uuid>` routes; latest private batch can load for a signed-in user |
-| Form inspection/prefill | Greenhouse public form inspector; authored Greenhouse/Ashby browser adapter with strict approval checks and manual blockers |
+| Form inspection/prefill | Greenhouse public form inspector; adapted Greenhouse/Ashby browser tools, explicit resume rules, reviewed native radios/checkboxes and strict approval checks |
 | Progress/leaderboard | Opt-in alias and server-derived aggregate metrics; self-reported submissions remain tracking claims |
 
 ## Run and validate
@@ -72,7 +72,10 @@ Sign in → Profile → Your agent → Create agent connection. Copy the setup i
 - [MCP setup and tools](mcp/README.md)
 - [HTTP gateway contract](backend/agent-contract.md)
 - [Runner commands and safeguards](runner/README.md)
+- [Extracted open-source code and licenses](runner/THIRD_PARTY.md)
 - [Backend deployment and auth configuration](backend/README.md)
+
+The local runner uses deterministic Playwright operations and makes no model calls. Jev and other decision models are excluded for now. Muse runtime registration is still required; these browser tools are separate from the hosted data MCP.
 
 ## Remaining work
 
