@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-12 — Saved company tier lists
+
+- Added a Profile tier-list builder seeded with 26 tech companies, all initially unranked.
+- Added drag handles for mouse/touch and a tap/select/Move alternative for keyboard and iPhone.
+- Added creating, duplicating, renaming, and switching between saved list profiles, editable tier labels, custom company tiles, and within-tier ordering.
+- Reused local company logos when available and initials otherwise.
+- Lists persist through the existing browser store; one profile’s edits do not change another.
+- Kept presentation in `styles/` and reused Motion for move feedback.
+- Validation: 18 regression tests, saved-profile persistence, and all 72 job records pass. Touch dragging and mobile rendering still need on-device verification.
+
 ## 2026-10-12 — Application workflow scaffolding
 
 - Added Needs you, Discover, Applications, and Profile tabs.

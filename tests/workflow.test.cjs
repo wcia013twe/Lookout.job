@@ -46,8 +46,10 @@ test('new workflow state survives reload without dropping existing tracker data'
     } };
     vm.runInNewContext(fs.readFileSync('store.js', 'utf8'), context); return context.window.JB.store;
   };
-  const s = load(); s.set('workflow.applications', { 'role-1': model().create(role) }); s.set('workflow.profile', profile); s._flush();
+  const s = load(); s.set('workflow.applications', { 'role-1': model().create(role) }); s.set('workflow.profile', profile); s.set('workflow.tierLists', [{ id: 'preferences', name: 'My companies', placements: { S: ['nvidia'] } }]); s.set('workflow.activeTierListId', 'preferences'); s._flush();
   const reloaded = load(); assert.equal(reloaded.get('workflow.applications')['role-1'].status, 'Queued');
   assert.equal(reloaded.get('workflow.profile').email, profile.email);
+  assert.equal(reloaded.get('workflow.tierLists')[0].placements.S[0], 'nvidia');
+  assert.equal(reloaded.get('workflow.activeTierListId'), 'preferences');
   assert.equal(reloaded.get('tracker.ids')[0], 'old-role'); assert.equal(reloaded.get('progress.xp'), 50);
 });

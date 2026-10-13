@@ -12,11 +12,12 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=18">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=18">
-    <link rel="stylesheet" href="styles/role-cards.css?v=18">
-    <link rel="stylesheet" href="styles/dashboard.css?v=18">
-    <link rel="stylesheet" href="styles/workflow.css?v=18">
+    <link rel="stylesheet" href="styles.css?v=19">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=19">
+    <link rel="stylesheet" href="styles/role-cards.css?v=19">
+    <link rel="stylesheet" href="styles/dashboard.css?v=19">
+    <link rel="stylesheet" href="styles/workflow.css?v=19">
+    <link rel="stylesheet" href="styles/tierlists.css?v=19">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -120,6 +121,21 @@
       <section id="profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
         <div class="section-heading"><h2>Profile</h2></div>
         <p class="panel-note">Save factual answers and resume references. Nothing here is sent to employers.</p>
+        <section id="company-tierlists" class="board-section" aria-labelledby="tierlist-heading">
+          <h2 id="tierlist-heading">Company tier lists</h2>
+          <p class="panel-note">Save different company preferences. Drag a tile by its handle, or select a company and choose a tier. Lists are saved in this browser.</p>
+          <div class="tierlist-toolbar">
+            <label>List<select id="tierlist-profile"></select></label>
+            <button type="button" id="tierlist-duplicate">Duplicate</button>
+          </div>
+          <form id="tierlist-create" class="tierlist-toolbar"><label>New list name<input name="name" required placeholder="e.g. ML infrastructure"></label><button type="submit">Create list</button></form>
+          <form id="tierlist-rename" class="tierlist-toolbar"><label>Current list name<input name="name" required></label><button type="submit">Rename</button></form>
+          <div id="tierlist-board"></div>
+          <div id="tierlist-move" class="tierlist-toolbar" hidden><span id="tierlist-selected"></span><label>Move to<select id="tierlist-destination"></select></label><button type="button" id="tierlist-move-button">Move</button><button type="button" id="tierlist-cancel-selection">Cancel</button></div>
+          <form id="tierlist-company" class="tierlist-toolbar"><label>Add company<input name="name" required placeholder="Company name"></label><button type="submit">Add tile</button></form>
+          <p id="tierlist-feedback" role="status" aria-live="polite"></p>
+        </section>
+        <h2>Factual answers</h2>
         <form id="profile-form" class="workflow-form">
           <label>Name<input name="name" autocomplete="name"></label>
           <label>Email<input name="email" type="email" autocomplete="email"></label>
@@ -152,15 +168,17 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=18"></script>
-    <script src="components.js?v=18"></script>
-    <script src="workflow-model.js?v=18"></script>
-    <script src="app.js?v=18"></script>
-    <script src="workflow.js?v=18"></script>
-    <script type="module" src="workflow-motion.js?v=18"></script>
-    <script type="module" src="pack-effects.js?v=18"></script>
-    <script type="module" src="pack-motion.js?v=18"></script>
-    <script type="module" src="pack-haptics.js?v=18"></script>
-    <script src="app-updates.js?v=18"></script>
+    <script src="store.js?v=19"></script>
+    <script src="components.js?v=19"></script>
+    <script src="workflow-model.js?v=19"></script>
+    <script src="app.js?v=19"></script>
+    <script src="workflow.js?v=19"></script>
+    <script src="tierlist-model.js?v=19"></script>
+    <script src="tierlists.js?v=19"></script>
+    <script type="module" src="workflow-motion.js?v=19"></script>
+    <script type="module" src="pack-effects.js?v=19"></script>
+    <script type="module" src="pack-motion.js?v=19"></script>
+    <script type="module" src="pack-haptics.js?v=19"></script>
+    <script src="app-updates.js?v=19"></script>
   </body>
 </html>
