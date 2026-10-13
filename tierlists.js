@@ -113,5 +113,6 @@
       feedback(`${error.message} Refresh to retry.`); render();
     } finally { root.removeAttribute('aria-busy'); }
   }
+  document.addEventListener('workspace:account', () => { selected=null; cleanup(); loadConfiguration(); });
   render(); loadConfiguration();
 })();

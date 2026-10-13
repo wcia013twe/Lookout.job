@@ -545,3 +545,11 @@ function renderSudo(drops) {
     full.appendChild(fullGroup);
   });
 }
+
+// Public catalog first; private browser slices switch independently by account.
+document.addEventListener('workspace:account', () => {
+  roles.forEach(role => { role.applicationStatus = trackerItem(role.id).status || 'New'; });
+  render();
+  activateTab(document.querySelector('#tab-daily'));
+});
+activateTab(document.querySelector('#tab-daily'));

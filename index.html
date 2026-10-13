@@ -12,13 +12,14 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=21">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=21">
-    <link rel="stylesheet" href="styles/role-cards.css?v=21">
-    <link rel="stylesheet" href="styles/dashboard.css?v=21">
-    <link rel="stylesheet" href="styles/workflow.css?v=21">
-    <link rel="stylesheet" href="styles/tierlists.css?v=21">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=21">
+    <link rel="stylesheet" href="styles.css?v=22">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=22">
+    <link rel="stylesheet" href="styles/role-cards.css?v=22">
+    <link rel="stylesheet" href="styles/dashboard.css?v=22">
+    <link rel="stylesheet" href="styles/workflow.css?v=22">
+    <link rel="stylesheet" href="styles/tierlists.css?v=22">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=22">
+    <link rel="stylesheet" href="styles/account.css?v=22">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -30,6 +31,11 @@
         <button id="app-refresh" class="app-refresh" hidden>Update available · Reload</button>
         <details class="dashboard-progress"><summary><span id="progress-summary">Progress</span></summary><xp-hud id="game-hud" aria-live="polite"></xp-hud></details>
       </header>
+      <section class="account-bar" aria-label="Account">
+        <p id="account-status" role="status">Browse jobs without an account. Your workspace is saved in this browser.</p>
+        <button id="account-sign-in" type="button" disabled>Sign in with Google</button>
+        <button id="account-sign-out" type="button" hidden>Sign out</button>
+      </section>
       <div class="tabs" role="tablist" aria-label="Application workspace">
         <button id="tab-needs" role="tab" aria-selected="true" aria-controls="needs-you" tabindex="0">Needs you <span id="needs-count"></span></button>
         <button id="tab-daily" role="tab" aria-selected="false" aria-controls="daily-board" tabindex="-1">Discover</button>
@@ -184,19 +190,20 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=21"></script>
-    <script src="components.js?v=21"></script>
-    <script src="workflow-model.js?v=21"></script>
-    <script src="app.js?v=21"></script>
-    <script src="saved-answers-model.js?v=21"></script>
-    <script src="workflow.js?v=21"></script>
-    <script src="saved-answers.js?v=21"></script>
-    <script src="tierlist-model.js?v=21"></script>
-    <script src="tierlists.js?v=21"></script>
-    <script type="module" src="workflow-motion.js?v=21"></script>
-    <script type="module" src="pack-effects.js?v=21"></script>
-    <script type="module" src="pack-motion.js?v=21"></script>
-    <script type="module" src="pack-haptics.js?v=21"></script>
-    <script src="app-updates.js?v=21"></script>
+    <script src="store.js?v=22"></script>
+    <script src="components.js?v=22"></script>
+    <script src="workflow-model.js?v=22"></script>
+    <script src="app.js?v=22"></script>
+    <script src="saved-answers-model.js?v=22"></script>
+    <script src="workflow.js?v=22"></script>
+    <script src="saved-answers.js?v=22"></script>
+    <script src="tierlist-model.js?v=22"></script>
+    <script src="tierlists.js?v=22"></script>
+    <script type="module" src="workflow-motion.js?v=22"></script>
+    <script type="module" src="pack-effects.js?v=22"></script>
+    <script type="module" src="pack-motion.js?v=22"></script>
+    <script type="module" src="pack-haptics.js?v=22"></script>
+    <script src="app-updates.js?v=22"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=22"></script>
   </body>
 </html>

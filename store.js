@@ -7,7 +7,8 @@
 (function () {
   'use strict';
 
-  var STORE_KEY = 'job-signal-state-v1';
+  var GUEST_KEY = 'job-signal-state-v1';
+  var STORE_KEY = GUEST_KEY;
   var SAVE_DEBOUNCE_MS = 250;
 
   function clone(v) {
@@ -151,7 +152,7 @@
         return s;
       }
     } catch (e) { /* fall through to migration */ }
-    return migrate();
+    return STORE_KEY === GUEST_KEY ? migrate() : defaultState();
   }
 
   var state = load();
@@ -213,6 +214,14 @@
       return function unsubscribe() {
         listeners[path] = (listeners[path] || []).filter(function (e) { return e !== entry; });
       };
+    },
+    switchAccount: function (userId) {
+      if (userId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId)) throw new Error('Invalid account ID');
+      var nextKey = userId ? GUEST_KEY + ':user:' + userId : GUEST_KEY;
+      if (STORE_KEY === nextKey) return;
+      flushSave(); STORE_KEY = nextKey; state = load();
+      ['progress', 'tracker', 'drops', 'network', 'workflow', 'ui'].forEach(notify);
+      document.dispatchEvent(new CustomEvent('workspace:account', {detail:{userId:userId || null}}));
     },
     /* test/debug helpers */
     _key: STORE_KEY,

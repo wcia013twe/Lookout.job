@@ -147,6 +147,16 @@
     const input = profileForm.elements[key];
     if (input) { if (input.type === 'checkbox') input.checked = value; else input.value = value; }
   });
+  document.addEventListener('workspace:account', () => {
+    reviewing = null; dialog.close(); draftForm.reset(); profileForm.reset();
+    document.querySelector('#resume-form').reset();
+    document.querySelector('#profile-feedback').textContent = '';
+    Object.entries(profile()).forEach(([key,value]) => {
+      const input = profileForm.elements[key]; if (!input) return;
+      if (input.type === 'checkbox') input.checked = value; else input.value = value;
+    });
+    render();
+  });
   profileForm.addEventListener('submit', event => {
     event.preventDefault(); const p = {};
     ['name', 'email', 'phone', 'location', 'authorization'].forEach(key => { p[key] = profileForm.elements[key].value.trim(); });

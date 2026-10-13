@@ -52,3 +52,19 @@ Both migration versions are recorded in `supabase/migrations/` using the exact h
 ## Saved answer controls
 
 The `saved_answer_controls` migration adds `autofill_policy` (ask by default) and `company_scope`; automatic reuse requires a non-null verification timestamp. `client.mjs` has save/delete methods but the browser controls currently use `workflow.savedAnswers` locally. Match exact normalized question text and company scope only, fill empty draft answers only, and retain saved-answer ID/version provenance in the draft snapshot. Never treat reuse permission as permission to submit.
+
+## Google sign-in activation
+
+The app-side Google OAuth client is bundled locally from pinned `@supabase/supabase-js@2.117.3` using `npm run build:auth`. Only the publishable project key is shipped. PKCE callback handling and remembered sessions are enabled. Per-account browser state is isolated; the previous guest workspace remains intact. This does not yet sync that state to the database or grant Muse access. Google was verified disabled in the project on 2026-10-13, so the app checks provider readiness and keeps sign-in unavailable until configured.
+
+To activate:
+
+1. In Google Auth Platform, create/configure a Web OAuth client using only openid, email, and profile scopes. Add the authorized JavaScript origin `https://wcia013twe.github.io`.
+2. Add the authorized redirect URI `https://umhqfqzpwmszhcknwtrs.supabase.co/auth/v1/callback`.
+3. Enter the Google Client ID and secret directly in Supabase Authentication → Sign In / Providers → Google, then enable it. Keep the secret out of git and chat.
+4. Set Supabase Auth Site URL to `https://wcia013twe.github.io/codex-automated-job-board/`. Allow that same redirect URL, plus `https://wcia013twe.github.io/codex-automated-job-board/?batch=*` for morning batch links. Verify exact allowlist behavior with a real test batch.
+5. If the Google app is in testing, add the intended users as test users. Test the complete sign-in/return/sign-out flow before claiming authentication is live.
+
+Settings documentation: https://supabase.com/docs/guides/auth/social-login/auth-google
+
+Public Discover remains usable without login. The existing local-only Profile/Application tools remain available while provider setup and cloud sync are pending. Real cloud records continue to require Supabase authentication via RLS. Do not mistake local browser namespacing for encrypted or server-authenticated storage.

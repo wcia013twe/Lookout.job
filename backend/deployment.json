@@ -6,5 +6,7 @@
   "schemaDeployed": true,
   "catalogSeedCount": 75,
   "frontendConnected": false,
-  "agentGatewayDeployed": false
+  "agentGatewayDeployed": false,
+  "authClientWired": true,
+  "googleProviderEnabled": false
 }

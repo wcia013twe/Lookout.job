@@ -43,3 +43,7 @@ See [backend/README.md](backend/README.md) for the data model, deployment steps,
 ### Saved answers
 
 Profile → Saved answers stores reusable exact-question responses with Can autofill / Always ask me controls and optional company scope. Autofill requires one reviewed exact match, fills only blank draft fields, and clears the question-list review checkbox. Existing drafts are not changed when a saved answer is edited or deleted. These UI records remain browser-local until cloud sign-in/sync is connected; Supabase has the matching owner-scoped fields and client CRUD methods ready.
+
+### Google account setup
+
+Discover opens without login. The Google sign-in client and per-account local workspace are wired; provider activation instructions are in `backend/README.md`. Google is currently disabled in Supabase, so sign-in remains unavailable until OAuth credentials/redirects are configured. Cloud workspace sync and Muse access remain unconnected. Rebuild the vendored auth bundle with `npm run build:auth` after editing `auth.js`.

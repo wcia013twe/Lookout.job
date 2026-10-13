@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-13 — Google account scaffolding
+
+- Added locally bundled Supabase Google OAuth client, PKCE callbacks, remembered sessions, sign-out, and provider readiness checks.
+- Opened public Discover by default and preserved the existing local workspace.
+- Isolated local state per account and cleared draft/form/drag state on account changes. Google sign-in does not silently import guest records.
+- Pinned dependencies and added a reproducible auth bundle build. Excluded OAuth callbacks from service-worker caching.
+- Validation: 25 tests and all 75 job records pass. Project settings confirm Google is disabled; full OAuth and mobile rendering remain unverified.
+- Activation needs Google OAuth credentials and redirect configuration in Supabase; cloud sync and Muse access are still unconnected.
+
 ## 2026-10-13 — Saved answer controls
 
 - Added Profile saved answers with editing, deletion/Undo, reuse permissions, review check, and optional company scope.

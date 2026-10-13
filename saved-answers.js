@@ -43,5 +43,6 @@
     }
   });
   document.querySelector('#saved-answer-cancel').addEventListener('click',reset);
+  document.addEventListener('workspace:account', () => { reset(); deleted=null; feedback.textContent=''; render(); });
   store.subscribe('workflow.savedAnswers',render); render();
 })();
