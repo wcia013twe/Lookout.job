@@ -1,12 +1,22 @@
 # Changelog
 
+## 2026-10-13 — Hosted Supabase deployment
+
+- Deployed the backend to job-board in personal-projects, US East.
+- Seeded 75 shared employer job records without personal fit reasoning or application statuses.
+- Verified all 11 public tables have RLS and the resume bucket is private.
+- Added missing job foreign-key indexes and explicit client denial for agent credentials.
+- Hosted ownership/approval/revision checks pass; disposable fixtures rolled back. Security advisors report no findings.
+- Recorded exact hosted migration versions and project metadata for Muse. Browser cloud sync and agent gateway remain unconnected.
+
+
 ## 2026-10-12 — Supabase backend foundation
 
 - Added relational schema for private profiles, preferences, resume versions, answer library, morning batches, applications, immutable approvals, and deduplicated activity.
 - Added shared employer job catalog, private resume Storage bucket, protected opt-in leaderboard metrics, and private agent credential hashes.
 - Added ownership RLS, cross-owner foreign keys, server-controlled draft revisions, and checked approval RPC with exact snapshots.
 - Added reusable authenticated client adapter and detailed Muse/deployment handoff.
-- Validation: disposable PostgreSQL schema/isolation/approval/storage-policy checks pass; existing 20 tests and all 72 roles pass.
+- Validation: disposable PostgreSQL schema/isolation/approval/storage-policy checks pass; existing 20 tests and all 75 roles pass.
 - Deployment pending organization/cost confirmation; cloud UI sync, agent gateway, leaderboard score computation, and SMS remain unconnected.
 
 ## 2026-10-12 — Ranked starter profiles and JSON lookup
@@ -16,7 +26,7 @@
 - Moved company names, tier labels, baseline, branding, and preset placements into `data/tierlist-presets.json`.
 - Added a configurable JSON source for white-label reuse and non-destructive starter seeding.
 - Preserved saved custom lists and edits; defaults copy into browser state rather than replacing user data.
-- Validation: 20 tests and all 72 job records pass. Mobile rendering remains unverified.
+- Validation: 20 tests and all 75 job records pass. Mobile rendering remains unverified.
 
 ## 2026-10-12 — Saved company tier lists
 
@@ -26,7 +36,7 @@
 - Reused local company logos when available and initials otherwise.
 - Lists persist through the existing browser store; one profile’s edits do not change another.
 - Kept presentation in `styles/` and reused Motion for move feedback.
-- Validation: 18 regression tests, saved-profile persistence, and all 72 job records pass. Touch dragging and mobile rendering still need on-device verification.
+- Validation: 18 regression tests, saved-profile persistence, and all 75 job records pass. Touch dragging and mobile rendering still need on-device verification.
 
 ## 2026-10-12 — Application workflow scaffolding
 
@@ -37,7 +47,7 @@
 - Opening a posting records opening, not submission; approval never marks an application submitted.
 - Added basic Motion panel transitions; visual CSS and animation definitions remain in `styles/`.
 - Automation, question extraction, server sync, and text notifications are not connected. All new state is browser-local.
-- Validation: 13 tests, including approval invalidation and persistence migration; all 72 job records and page structure checks pass. Mobile rendering remains unverified.
+- Validation: 13 tests, including approval invalidation and persistence migration; all 75 job records and page structure checks pass. Mobile rendering remains unverified.
 
 ## 2026-10-12 — Refresh deployed layouts reliably
 
@@ -65,7 +75,7 @@
 - Kept a one-sentence preview visible; full analysis, official titles, and provenance remain expandable.
 - Kept the canonical job data and application tracking behavior intact.
 - New styles live in `styles/role-cards.css`.
-- Validation: compensation-label regressions, existing pack tests, and all 72 job records. Mobile rendering remains unverified.
+- Validation: compensation-label regressions, existing pack tests, and all 75 job records. Mobile rendering remains unverified.
 
 ## 2026-10-12 — Reliable tapping and Motion tear
 
@@ -76,7 +86,7 @@
 - Reference: Framer Marketplace Page Tear Transition; independently implemented, no marketplace code copied.
 - Presentation keyframes stay in `styles/`; CSS tearing remains available when Motion cannot load.
 - Added best-effort native-switch haptic ticks on iPhone reveal taps and claims, with Vibration API feedback on supported other browsers. iPhone feedback requires on-device verification.
-- Validation: seven interaction regression tests and all 72 job records. Device rendering remains unverified.
+- Validation: seven interaction regression tests and all 75 job records. Device rendering remains unverified.
 
 ## 2026-10-12 — Interactive pack opening
 
@@ -86,7 +96,7 @@
 - Kept the new CSS and GPU shaders in `styles/`, separate from markup and interaction logic.
 - Bundled Three.js locally; effects load only while opening a pack.
 - Added reduced-motion and WebGL fallback behavior, capped render resolution, and cleanup on close.
-- Validation: five interaction regression tests, syntax checks, and all 72 job records.
+- Validation: five interaction regression tests, syntax checks, and all 75 job records.
 - Verification limit: no mobile browser or device rendering test in this environment.
 
 ## 2026-10-12 — Mobile card spotlight

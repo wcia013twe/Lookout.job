@@ -38,4 +38,4 @@ Starter lists are copied into browser state once by `presetKey`. Changing the sh
 
 ## Supabase backend foundation
 
-See [backend/README.md](backend/README.md) for the data model, deployment steps, client adapter, and Muse handoff. The schema separates private profiles/preferences/resumes/answers/batches/applications/approval snapshots/activity from shared employer job facts and opt-in leaderboard metrics. Hosted provisioning and browser cloud sync are not enabled yet; existing local state remains intact.
+See [backend/README.md](backend/README.md) for the data model, deployment steps, client adapter, and Muse handoff. The schema separates private profiles/preferences/resumes/answers/batches/applications/approval snapshots/activity from shared employer job facts and opt-in leaderboard metrics. The schema is deployed to the Supabase job-board project with shared job records and private resume storage. Browser cloud sync is not enabled yet; existing local state remains intact.

@@ -1,6 +1,6 @@
 # Job board backend — Muse handoff
 
-Status: deployment-ready schema and client adapter; no hosted project or browser sync connected yet. Existing local data is untouched. Do not claim an agent runner, SMS delivery, or automated submission is live.
+Status: schema deployed to the `job-board` project (`umhqfqzpwmszhcknwtrs`) in `personal-projects`, US East. All 75 employer job records are seeded. Browser cloud sync is not connected yet. Existing local data is untouched. Do not claim an agent runner, SMS delivery, or automated submission is live.
 
 ## Deploy
 
@@ -44,3 +44,7 @@ Passwords, raw session cookies, agent plaintext tokens, and service keys do not 
 ## Validation
 
 `check-schema.mjs` runs schema and isolation/approval tests against disposable PostgreSQL via PGlite. It requires a pinned external PGlite installation supplied by `PGLITE_MODULE_PATH`. Auth and Storage schemas are minimal test doubles; hosted Auth, Storage, email delivery, advisors, and RLS must also be checked on the real project.
+
+## Hosted verification — 2026-10-13
+
+Both migration versions are recorded in `supabase/migrations/` using the exact hosted history versions. Hosted transaction tests passed for cross-owner isolation, approval creation, and edit-driven revision invalidation; all fixtures were rolled back. Security advisors report no findings. Performance advisors only report unused indexes, expected on a fresh project. The private resume bucket and all 11 public tables were verified. Use migrations for redeployment rather than applying the initial schema twice.

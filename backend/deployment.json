@@ -1,0 +1,10 @@
+{
+  "projectRef": "umhqfqzpwmszhcknwtrs",
+  "projectName": "job-board",
+  "organization": "personal-projects",
+  "region": "us-east-1",
+  "schemaDeployed": true,
+  "catalogSeedCount": 75,
+  "frontendConnected": false,
+  "agentGatewayDeployed": false
+}
