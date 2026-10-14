@@ -25,6 +25,9 @@ export default function AppShell({ children }) {
     !w.state?.workflow?.resumes?.length
       ? 1
       : 0);
+  if (/\/onboarding\/?$/.test(path)) {
+    return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
+  }
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       <header className="flex flex-wrap items-start justify-between gap-4">

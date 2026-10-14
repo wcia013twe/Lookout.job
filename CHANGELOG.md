@@ -1,3 +1,9 @@
+## 2026-10-13 — Full-screen cinematic setup
+
+- Start setup now opens a dedicated full-screen onboarding scene, removing dashboard navigation, account controls and progress stats during setup. Exit setup returns to Profile.
+- Added a large selected-character stage, compact companion choices, gentle step transitions and focused profile/introduction screens. Preserved native selection, stored profile behavior, pause motion and reduced-motion support.
+- Validation: 179 tests, production export and catalog checks passed; desktop/mobile browser checks confirmed selection, motion control, Continue, and Exit restoring the dashboard. Supplied image provenance and GIF limitations remain unchanged.
+
 ## 2026-10-13 — Agent character selection
 
 - Added Dot, Grok Bot and Muse character cards to Profile’s onboarding flow, alongside platform suggestions and a custom agent option. Uses user-supplied PNG references with optional idle motion, native radio selection and reduced-motion support.

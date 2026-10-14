@@ -100,13 +100,13 @@ Role titles use snug line height (1.375); supporting copy uses relaxed line heig
 
 The shell is centered at a maximum width of 1152px, with 16px horizontal padding and 24px vertical padding. Horizontal padding becomes 24px from the small breakpoint (640px). The body has a minimum width of 320px.
 
-Navigation uses three columns below 640px and five columns above it. Header, account status, and card actions wrap. Discover cards use one column initially, two from 768px, and three from 1024px, with 16px gaps. Search and filter rows become a flexible column plus a 160px filter at 640px. Shared forms commonly become two columns at 640px. Onboarding uses a centered 576px maximum-width column.
+Navigation uses three columns below 640px and five columns above it. Header, account status, and card actions wrap. Discover cards use one column initially, two from 768px, and three from 1024px, with 16px gaps. Search and filter rows become a flexible column plus a 160px filter at 640px. Shared forms commonly become two columns at 640px. Onboarding is a full-height focused composition outside the workspace header and navigation, retaining the shared palette and controls. Its companion step uses a centered 1024px maximum-width scene: the selected intact character image sits beside compact radio choices from 768px, stacking on narrower screens. Later profile steps use a centered 576px maximum-width column. A compact top bar provides an exit to Profile; setup progress and actions stay centered.
 
 Application rows render as separated cards on narrow screens and align with a table-like header from 768px. Sections use a top border, 32px preceding margin, and 24px top padding. Content generally follows the extracted 4px spacing rhythm; role-card padding becomes 18px from 640px.
 
 ## Elevation & Depth
 
-The shared shell, cards, and controls use surface color and borders rather than shadows. Dialogs use a dark backdrop and a bounded scrolling surface. The global focus indicator is a 3px solid lavender outline (`#d3b0ff`) offset by 3px. Pack reveal uses a 300ms blur/vertical reveal with `cubic-bezier(0.16, 1, 0.3, 1)`; reduced-motion preferences disable animation and transition.
+The shared shell, cards, and controls use surface color and borders rather than shadows. Dialogs use a dark backdrop and a bounded scrolling surface. The global focus indicator is a 3px solid lavender outline (`#d3b0ff`) offset by 3px. Pack reveal uses a 300ms blur/vertical reveal with `cubic-bezier(0.16, 1, 0.3, 1)`; reduced-motion preferences disable animation and transition. Onboarding adds a scoped 650ms arrival transition and an optional 4-second, 4px character idle movement with a pause control; both honor reduced motion.
 
 ## Shapes
 

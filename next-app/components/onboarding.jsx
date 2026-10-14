@@ -55,7 +55,12 @@ export default function Onboarding() {
     }
   }
   return (
-    <div className={`mx-auto ${step === 0 && !done ? "max-w-4xl" : "max-w-xl"}`}>
+    <div className="setup-experience flex min-h-dvh flex-col px-5 py-5 sm:px-10 sm:py-7">
+      <header className="flex items-center justify-between gap-4">
+        <Link href="/" className="text-sm font-semibold">Job signal board</Link>
+        <Link href="/profile/" className={secondary}>Exit setup</Link>
+      </header>
+      <div className={`mx-auto flex w-full flex-1 flex-col justify-center py-7 sm:py-10 ${step === 0 && !done ? "max-w-5xl" : "max-w-xl"}`}>
       {done ? (
         <>
           <Heading title={`You’re ready, ${name.trim()}.`}>
@@ -70,7 +75,7 @@ export default function Onboarding() {
         <>
           <ol
             aria-label="Setup progress"
-            className="mb-8 flex justify-between gap-2 text-xs"
+            className="mx-auto mb-8 flex w-full max-w-lg justify-between gap-2 text-xs"
           >
             {steps.map((s, i) => (
               <li
@@ -87,10 +92,10 @@ export default function Onboarding() {
               </li>
             ))}
           </ol>
-          <form onSubmit={next}>
+          <form onSubmit={next} className="setup-scene" key={step}>
             {step === 0 && (
               <>
-                <Heading title="A little help. A better job search.">
+                <Heading title="Your search starts with a companion.">
                   Choose your own agent or use the platform’s suggestions.
                 </Heading>
                 <AgentSelector agent={agent} provider={provider} onSelect={(value, label) => {
@@ -192,7 +197,7 @@ export default function Onboarding() {
               </>
             )}
             <Notice>{feedback}</Notice>
-            <div className="mt-7 flex gap-3">
+            <div className="mx-auto mt-7 flex max-w-lg gap-3">
               {step > 0 && (
                 <button
                   className={secondary}
@@ -212,6 +217,7 @@ export default function Onboarding() {
           </form>
         </>
       )}
+      </div>
     </div>
   );
 }
