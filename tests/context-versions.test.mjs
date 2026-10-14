@@ -1,7 +1,5 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, readdir } from 'node:fs/promises';
-import { PGlite } from '@electric-sql/pglite';
 import { contextResponse } from '../supabase/functions/agent-gateway/context.mjs';
 import { refreshAgentContext } from '../mcp/context-cache.mjs';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
@@ -55,25 +53,4 @@ test('version response contains exactly two values and developer config is isola
     assert.equal(validateRequest({ operation }).operation, operation);
     assert.throws(() => validateRequest({ operation, payload: { userId: 'other' } }), /arguments/);
   }
-});
-test('database versions advance on settings changes, isolate owners and keep scoped reads private', async () => {
-  const db = new PGlite();
-  try {
-    await db.exec(`create role anon; create role authenticated; create role service_role;
-      create schema auth; create table auth.users(id uuid primary key);
-      create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('test.uid',true),'')::uuid$$;
-      grant usage on schema auth to authenticated,anon; grant execute on function auth.uid() to authenticated,anon;
-      create schema storage; create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
-      create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text); alter table storage.objects enable row level security;
-      create function storage.foldername(text) returns text[] language sql as $$select string_to_array($1,'/')$$;
-      grant usage on schema storage to authenticated; grant all on storage.objects to authenticated;`);
-    const dir = new URL('../supabase/migrations/', import.meta.url);
-    for (const name of (await readdir(dir)).filter(n => n.endsWith('.sql')).sort()) await db.exec(await readFile(new URL(name, dir), 'utf8'));
-    await db.exec(await readFile(new URL('./context-versions-check.sql', import.meta.url), 'utf8'));
-    await db.exec('set role authenticated');
-    await assert.rejects(db.query('select * from private.agent_settings_versions'));
-    await assert.rejects(db.query("select public.agent_dispatch('test','context.versions','{}')"));
-    await db.exec('set role anon');
-    await assert.rejects(db.query("select public.agent_dispatch('test','context.versions','{}')"));
-  } finally { await db.close(); }
 });

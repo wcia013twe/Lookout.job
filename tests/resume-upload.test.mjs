@@ -8,10 +8,21 @@ test('finalization verifies exact bytes before the metadata write',async()=>{
  const result=await resumeUploadDispatch({operation:'resumes.upload.complete',payload:{id:'owned'},rpc:async(op,p)=>{calls.push(op);return op.endsWith('context')?{data:{id:'owned',objectPath:'owner/owned.pdf',fileType:'pdf',sizeBytes:bytes.length,sha256:sha}}:{data:{id:'owned'}};},storage:{download:async(path)=>{assert.equal(path,'owner/owned.pdf');return {data:new Blob([bytes])};}}});
  assert.deepEqual(calls,['resumes.upload.context','resumes.upload.finalize']);assert.equal(result.data.id,'owned');
 });
-test('a hash mismatch never registers the file',async()=>{
- const calls=[];
- const result=await resumeUploadDispatch({operation:'resumes.upload.complete',payload:{id:'owned'},rpc:async(op)=>{calls.push(op);return {data:{objectPath:'owner/owned.pdf',fileType:'pdf',sizeBytes:bytes.length,sha256:'bad'}};},storage:{download:async()=>({data:new Blob([bytes])})}});
- assert.ok(result.error);assert.deepEqual(calls,['resumes.upload.context']);
+test('hash, length and file signature mismatches never register an uploaded file', async () => {
+ for (const [label, changes] of [
+  ['hash', { sha256: '0'.repeat(64) }],
+  ['length', { sizeBytes: bytes.length + 1 }],
+  ['signature', { fileType: 'docx' }],
+ ]) {
+  const calls = [];
+  const result = await resumeUploadDispatch({
+   operation: 'resumes.upload.complete', payload: { id: 'owned' },
+   rpc: async op => { calls.push(op); return { data: { objectPath: 'owner/owned.pdf', fileType: 'pdf', sizeBytes: bytes.length, sha256: sha, ...changes } }; },
+   storage: { download: async () => ({ data: new Blob([bytes]) }) },
+  });
+  assert.equal(result.error?.code, '22023', label);
+  assert.deepEqual(calls, ['resumes.upload.context'], label);
+ }
 });
 test('expired, revoked or foreign intents do not access storage',async()=>{
  const result=await resumeUploadDispatch({operation:'resumes.upload.complete',payload:{id:'other'},rpc:async()=>({error:{code:'42501'}}),storage:{download:()=>{throw Error('Must not download');}}});assert.equal(result.error.code,'42501');

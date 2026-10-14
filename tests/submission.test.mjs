@@ -86,11 +86,37 @@ test('submission payloads cannot inject owners/snapshots or fabricate generic re
   for(const extra of [{userId:'other'},{authorization:{mode:'automatic'}},{expectedContext:{}}]) assert.throws(()=>validateRequest({operation:'submission.claim',payload:{...payload,...extra}}));
   assert.throws(()=>validateRequest({operation:'submission.finish',payload:{applicationId:aid,claimId,outcome:'confirmed',receipt:{message:'done'}}}));
 });
-test('gateway dispatch derives authorization server-side and checks preflight settings version',async()=>{
-  const f=fixture();let transitions=0;
-  const rpc=async name=> name==='runner_submission_context'?{data:f.context}:{data:{canProceed:true},...(transitions++,{})};
-  const result=await submissionDispatch({operation:'submission.claim',payload:{applicationId:aid,attemptId:'r',expectedRevision:1,expectedPersonalVersion:3},credentialHash:'hash',rpc});
-  assert.equal(result.status,409);assert.equal(transitions,0);
+test('gateway dispatch derives authorization from current records before a transition', async () => {
+  const payload = { applicationId: aid, attemptId: 'r', expectedRevision: 1, expectedPersonalVersion: 4 };
+  for (const [label, change] of [
+    ['settings changed', f => f.context.personalVersion++],
+    ['draft changed', f => f.context.application.revision++],
+    ['automation disabled', f => f.context.preferences.search.autoSubmitApproved = false],
+    ['unverified facts', f => f.context.profile.verified_at = null],
+    ['current authorization', () => {}],
+  ]) {
+    const f = fixture(), calls = [];
+    change(f);
+    const result = await submissionDispatch({
+      operation: 'submission.claim', payload, credentialHash: 'hash',
+      rpc: async (name, args) => {
+        calls.push({ name, args });
+        return name === 'runner_submission_context' ? { data: f.context } : { data: { canProceed: true } };
+      },
+    });
+    assert.deepEqual(calls[0], { name: 'runner_submission_context', args: { credential_hash: 'hash', app_id: aid } }, label);
+    if (label !== 'current authorization') {
+      assert.equal(result.status, 409, label);
+      assert.equal(calls.length, 1, label);
+    } else {
+      assert.deepEqual(result, { status: 200, data: { canProceed: true } });
+      assert.equal(calls.length, 2);
+      assert.deepEqual(calls[1], { name: 'runner_submission_transition', args: {
+        credential_hash: 'hash', operation: 'claim', p_payload: payload,
+        expected_context: f.context, execution_authorization: authorizeSubmission(f.context).authorization,
+      } });
+    }
+  }
 });
 test('another worker holding the claim prevents a Submit click',async()=>{
   const f=fixture(),call=f.gateway.call;
