@@ -116,9 +116,9 @@ export default function RoleCard({ role }) {
           href={role.applicationUrl}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={open}
+          onClick={e=>{if(w.demo)e.preventDefault();open();}}
         >
-          Open application
+          {w.demo ? "Simulate opening" : "Open application"}
         </a>
       </div>
     </article>

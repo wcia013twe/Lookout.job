@@ -15,7 +15,7 @@ Use offers and timelines only when supplied and current. Keep follow-ups concise
 
 ## Platform execution
 
-At each connected run, call read_outreach_workspace to check pending requests and current contacts. Follow this platform skill from read_developer_context; no local skill installation or user-pasted prompt is required. Read the current candidate profile and roles using existing authorized tools. Research contacts for each requested company and prepare complete messages.
+At each connected run, call read_outreach_workspace to check pending requests and current contacts. Load this platform guide with read_guide("cold-outreach"); no local skill installation or user-pasted prompt is required. Read the current candidate profile and roles using existing authorized tools. Research contacts for each requested company and prepare complete messages.
 
 Call save_outreach_package with requestId, a stable eventKey and contacts. For existing contacts, include id and expectedRevision from read_outreach_workspace. Reuse exactly the same eventKey/payload after transport failure. A revision conflict means a person or another agent edited the contact: reread and preserve those changes. The platform preserves human outreach status. This saves drafts, never sends messages. If needed facts or research capabilities are unavailable, report the gap truthfully rather than fabricating contacts or completion.
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import AgentSelector from "./agent-selector";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, primary, secondary, control, Field, Notice } from "./ui";
-const steps = ["Your agent", "Your profile", "About you"];
+const steps = ["Your agent", "Your profile"];
 const prompt =
   "Read my attached resume or Simplify profile PDF and fill my Job Signal Board profile directly. Save extracted facts as unverified, leave missing facts blank, and let me review them before they are used for applications.";
 export default function Onboarding() {
@@ -15,8 +15,6 @@ export default function Onboarding() {
     [agentName, setAgentName] = useState(profile.setupAgentName || ""),
     [provider, setProvider] = useState(profile.setupAgentProvider || (["Dot", "Grok Bot", "Muse"].includes(profile.setupAgentName) ? {Dot:"dot", "Grok Bot":"grok", Muse:"muse"}[profile.setupAgentName] : "custom")),
     [source, setSource] = useState(profile.profileSource || "muse"),
-    [name, setName] = useState(profile.name || ""),
-    [intro, setIntro] = useState(profile.introduction || ""),
     [feedback, setFeedback] = useState(""),
     [done, setDone] = useState(false);
   function next(e) {
@@ -26,18 +24,12 @@ export default function Onboarding() {
       setFeedback("Enter your agent’s name to continue.");
       return;
     }
-    if (step < 2) {
+    if (step < 1) {
       setStep(step + 1);
-      return;
-    }
-    if (!name.trim()) {
-      setFeedback("Enter your name to finish setup.");
       return;
     }
     w.store.set("workflow.profile", {
       ...w.store.get("workflow.profile"),
-      name: name.trim(),
-      introduction: intro.trim(),
       setupAgent: agent,
       setupAgentName: agent === "own" ? agentName.trim() : "",
       setupAgentProvider: agent === "own" ? provider : "platform",
@@ -55,22 +47,31 @@ export default function Onboarding() {
     }
   }
   return (
-    <div className={`mx-auto ${step === 0 && !done ? "max-w-4xl" : "max-w-xl"}`}>
+    <div className="setup-experience flex min-h-dvh flex-col px-5 py-5 sm:px-10 sm:py-7">
+      <header className="flex items-center justify-between gap-4">
+        <Link href="/" className="text-sm font-semibold">Job signal board</Link>
+        <Link href="/profile/" className={secondary}>Exit setup</Link>
+      </header>
+      <div className={`mx-auto flex w-full flex-1 flex-col justify-center py-7 sm:py-10 ${step === 0 && !done ? "max-w-5xl" : "max-w-xl"}`}>
       {done ? (
         <>
-          <Heading title={`You’re ready, ${name.trim()}.`}>
-            Your setup is saved. Review your profile facts before using them for
-            applications.
+          <Heading title={source === "muse" ? "Talk to Muse. Make it yours." : "Your setup is saved."}>
+            {source === "muse" ? "Tell Muse what you’re looking for and share your resume or Simplify profile PDF. Let it fill your profile, then review the details." : "Fill in your profile and review your facts before using them for applications."}
           </Heading>
+          {source === "muse" && <>
+            <blockquote className="mb-4 rounded-xl border border-board-line p-4 text-sm leading-relaxed">{prompt}</blockquote>
+            <button className={`${secondary} mb-4`} type="button" onClick={copy}>Copy request for Muse</button>
+            <Notice>{feedback}</Notice>
+          </>}
           <Link className={primary} href="/profile/">
-            Go to your profile
+            Review your profile
           </Link>
         </>
       ) : (
         <>
           <ol
             aria-label="Setup progress"
-            className="mb-8 flex justify-between gap-2 text-xs"
+            className="mx-auto mb-8 flex w-full max-w-lg justify-between gap-2 text-xs"
           >
             {steps.map((s, i) => (
               <li
@@ -87,10 +88,10 @@ export default function Onboarding() {
               </li>
             ))}
           </ol>
-          <form onSubmit={next}>
+          <form onSubmit={next} key={step}>
             {step === 0 && (
               <>
-                <Heading title="A little help. A better job search.">
+                <Heading title="Your search starts with a companion.">
                   Choose your own agent or use the platform’s suggestions.
                 </Heading>
                 <AgentSelector agent={agent} provider={provider} onSelect={(value, label) => {
@@ -157,42 +158,8 @@ export default function Onboarding() {
                 )}
               </>
             )}
-            {step === 2 && (
-              <>
-                <Heading title="Let’s start with you.">
-                  A quick introduction gives your search a personal starting
-                  point.
-                </Heading>
-                <div className="space-y-5">
-                  <Field label="What should we call you?">
-                    <input
-                      className={control}
-                      required
-                      autoComplete="name"
-                      maxLength={100}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </Field>
-                  <Field label="A little about you (optional)">
-                    <textarea
-                      className={control}
-                      rows={4}
-                      maxLength={600}
-                      value={intro}
-                      onChange={(e) => setIntro(e.target.value)}
-                      placeholder="What do you do, and what are you looking for next?"
-                    />
-                  </Field>
-                </div>
-                <Notice>
-                  Setup uses your existing workspace and leaves your profile
-                  unverified.
-                </Notice>
-              </>
-            )}
             <Notice>{feedback}</Notice>
-            <div className="mt-7 flex gap-3">
+            <div className="mx-auto mt-7 flex max-w-lg gap-3">
               {step > 0 && (
                 <button
                   className={secondary}
@@ -206,12 +173,13 @@ export default function Onboarding() {
                 </button>
               )}
               <button className={`${primary} flex-1`} type="submit">
-                {step === 2 ? "Finish setup" : "Continue"}
+                {step === 1 ? (source === "muse" ? "Finish & talk to Muse" : "Finish setup") : "Continue"}
               </button>
             </div>
           </form>
         </>
       )}
+      </div>
     </div>
   );
 }

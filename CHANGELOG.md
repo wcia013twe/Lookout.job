@@ -6,11 +6,53 @@
 - Updated agent instructions to use feature worktrees and PRs instead of direct pushes/shared production mutation. Added repository protection configuration and queue operator documentation.
 - Validation: queue race/failure/scope tests, full regression suite, database checks, catalog validation and optimized production build; hosted workflow/Copilot/protection verification is recorded in the PR. No candidate data or employer application was sent.
 
+## 2026-10-13 — Rainbow glass onboarding
+
+- Applied the supplied reference’s dark glass surfaces, curved illuminated backdrop, and cyan/mint/lilac/pink edge lighting to onboarding only. Retained static characters, two-step flow, native choices and visible focus.
+- Validation: production export and catalog validation; mobile/desktop visual review. No onboarding animations introduced.
+
+## Internal Muse guide library — 2026-10-13
+
+- Added backend-only résumé parsing and cold outreach guides, a lightweight versioned index and scoped read_guide tool. Full instructions load only when relevant.
+- Guide reads reuse existing credential/context authorization; no schema or permissions changes. Developer version 10 triggers discovery/context refresh.
+- Demo parsed profile stays unverified and existing fictional referral drafts illustrate guide outputs; demo remains isolated.
+- Validation: full tests, database/data checks and production build; authorization rejection and unknown-guide behavior tested. No real résumé parsing or external Muse run performed.
+
+## 2026-10-13 — Static onboarding
+
+- Removed character idle motion, step arrival animation, and pause/resume controls. Character selection and the full-screen setup layout remain interactive without animation.
+- Validation: production export, catalog validation and source checks confirm setup motion and its controls are removed.
+
+## 2026-10-13 — Muse onboarding handoff
+
+- Removed the About you step and required name/introduction entry. Setup now takes two steps and preserves existing profile facts.
+- Finishing with Muse directs the user to talk to Muse and share a resume or Simplify PDF, with a copyable request and profile-review link. Manual profile entry remains available; no external conversation opens automatically.
+- Validation: production export, catalog check and browser verification of the two-step completion/handoff passed.
+
+## 2026-10-13 — Daily Discover and pack history
+
+- Default Discover and zero2sudo drops to their latest day. Added date selectors and All history; search and employment filters still narrow Discover. Historical Discover includes previously opened roles; pack XP remains restricted to today.
+- Validation: 76-role data validation and UI detector passed. Build and standalone JSX checks stalled without diagnostics; browser verification remains unverified. No existing admin demo fixtures were found for these boards.
+
+
+## 2026-10-13 — Full-screen cinematic setup
+
+- Start setup now opens a dedicated full-screen onboarding scene, removing dashboard navigation, account controls and progress stats during setup. Exit setup returns to Profile.
+- Added a large selected-character stage, compact companion choices, gentle step transitions and focused profile/introduction screens. Preserved native selection, stored profile behavior, pause motion and reduced-motion support.
+- Validation: 179 tests, production export and catalog checks passed; desktop/mobile browser checks confirmed selection, motion control, Continue, and Exit restoring the dashboard. Supplied image provenance and GIF limitations remain unchanged.
+
 ## 2026-10-13 — Agent character selection
 
 - Added Dot, Grok Bot and Muse character cards to Profile’s onboarding flow, alongside platform suggestions and a custom agent option. Uses user-supplied PNG references with optional idle motion, native radio selection and reduced-motion support.
 - Saves the chosen provider/name with the existing profile; selecting a character does not create an external connection. The supplied Grok reference bears Bleap branding and is not verified official artwork; source GIFs were not supplied.
 - Validation: 177 tests, catalog validation, production export, mobile/desktop visual checks, selection/pause/continue and setup-save checks passed. Existing Discover theme tokens are preserved.
+
+## 2026-10-13 — Admin demo workspace and company logos
+
+- Added an admin-gated in-memory demo workspace with representative roles, applications, profile, tiers and Robinhood/Stripe outreach. Reset/exit preserve real records; demo client access and real submission recovery are disabled.
+- Added company logos to referral groups and selected contacts, including Robinhood’s verified official public icon.
+- Saved the requirement to update demo fixtures and interactions after every completed feature in AGENTS.md.
+- Validation: 179 tests, database/data checks, production build and UI detector passed; Robinhood/Stripe logo loading verified in the browser. Server-managed demo access enabled only for the requested account.
 
 ## 2026-10-13 — Backend-hosted outreach preparation
 
