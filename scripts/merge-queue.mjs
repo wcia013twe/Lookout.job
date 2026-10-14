@@ -4,8 +4,8 @@ import { githubApi, paginate } from './github-api.mjs';
 export const isCopilot = actor => actor?.type === 'Bot' && ['copilot-pull-request-reviewer[bot]','Copilot'].includes(actor.login);
 export const queuedPull = pulls => pulls.filter(pr=>!pr.draft && pr.labels.some(label=>label.name==='merge-ready')).sort((a,b)=>a.created_at.localeCompare(b.created_at)||a.number-b.number)[0];
 export function reviewGate(reviews,head,threads) {
-  const current=reviews.filter(review=>isCopilot(review.user) && review.commit_id===head && ['COMMENTED','APPROVED','CHANGES_REQUESTED'].includes(review.state)).sort((a,b)=>b.id-a.id)[0];
-  if(!current)return {state:'pending',reason:'Waiting for Copilot to review this commit'};
+  const current=reviews.filter(review=>isCopilot(review.user) && review.commit_id===head).sort((a,b)=>b.id-a.id)[0];
+  if(!current || !['COMMENTED','APPROVED','CHANGES_REQUESTED'].includes(current.state))return {state:'pending',reason:'Waiting for Copilot to review this commit'};
   if(current.state==='CHANGES_REQUESTED')return {state:'failure',reason:'Copilot requested changes'};
   if(threads.some(thread=>!thread.isResolved))return {state:'pending',reason:'Resolve review conversations before merging'};
   return {state:'success',reason:'Copilot reviewed this commit; conversations resolved'};

@@ -9,6 +9,7 @@ test('only an actual Copilot review of the current commit can satisfy review gat
  assert.equal(reviewGate([{id:1,user:bot,commit_id:base,state:'COMMENTED'}],head,[]).state,'pending');
  assert.equal(reviewGate([{id:1,user:{...bot,type:'User'},commit_id:head,state:'APPROVED'}],head,[]).state,'pending');
  assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'}],head,[{isResolved:false}]).state,'pending');
+ assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'},{id:2,user:bot,commit_id:head,state:'DISMISSED'}],head,[]).state,'pending');
  assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'CHANGES_REQUESTED'}],head,[]).state,'failure');
  assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'}],head,[]).state,'success');
 });
