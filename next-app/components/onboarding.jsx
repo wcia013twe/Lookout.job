@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import AgentSelector from "./agent-selector";
 import { useWorkspace } from "../lib/workspace";
@@ -8,6 +8,7 @@ const steps = ["Your agent", "Your profile"];
 const prompt =
   "Read my attached resume or Simplify profile PDF and fill my Job Signal Board profile directly. Save extracted facts as unverified, leave missing facts blank, and let me review them before they are used for applications.";
 export default function Onboarding() {
+  const joinedOnce = useRef(false);
   const w = useWorkspace(),
     profile = w.state.workflow.profile;
   const [step, setStep] = useState(0),
@@ -31,7 +32,7 @@ export default function Onboarding() {
     w.store.set("workflow.profile", {
       ...w.store.get("workflow.profile"),
       setupAgent: agent,
-      setupAgentName: agent === "own" ? agentName.trim() : "",
+      setupAgentName: agent === "own" ? agentName.trim() : "Cappy",
       setupAgentProvider: agent === "own" ? provider : "platform",
       profileSource: source,
       verified: false,
@@ -52,7 +53,7 @@ export default function Onboarding() {
         <Link href="/" className="text-sm font-semibold">Job signal board</Link>
         <Link href="/profile/" className={secondary}>Exit setup</Link>
       </header>
-      <div className={`mx-auto flex w-full flex-1 flex-col justify-center py-7 sm:py-10 ${step === 0 && !done ? "max-w-5xl" : "max-w-xl"}`}>
+      <div className={`mx-auto flex w-full flex-1 flex-col justify-center py-7 sm:py-10 ${step === 0 && !done ? "max-w-4xl" : "max-w-xl"}`}>
       {done ? (
         <>
           <Heading title={source === "muse" ? "Talk to Muse. Make it yours." : "Your setup is saved."}>
@@ -91,10 +92,10 @@ export default function Onboarding() {
           <form onSubmit={next} key={step}>
             {step === 0 && (
               <>
-                <Heading title="Your search starts with a companion.">
-                  Choose your own agent or use the platform’s suggestions.
+                <Heading title="Meet your search companion.">
+                  Choose your own agent or meet Cappy, your platform companion.
                 </Heading>
-                <AgentSelector agent={agent} provider={provider} onSelect={(value, label) => {
+                <AgentSelector joinedOnce={joinedOnce} agent={agent} provider={provider} onSelect={(value, label) => {
                   setAgent(value === "platform" ? "platform" : "own");
                   setProvider(value);
                   setAgentName(value === "custom" ? "" : label);
@@ -173,7 +174,7 @@ export default function Onboarding() {
                 </button>
               )}
               <button className={`${primary} flex-1`} type="submit">
-                {step === 1 ? (source === "muse" ? "Finish & talk to Muse" : "Finish setup") : "Continue"}
+                {step === 1 ? (source === "muse" ? "Finish & talk to Muse" : "Finish setup") : "Let’s get started"}
               </button>
             </div>
           </form>
