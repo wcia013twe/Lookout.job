@@ -49,11 +49,12 @@ function Editor() {
     </li>; })}</ul>
     {draft ? <form className="glass-inset mt-5 space-y-4 rounded-xl p-5" onSubmit={e => { e.preventDefault(); const target = { ...draft, id: draft.id || crypto.randomUUID(), name: draft.name.trim(), address: draft.address.trim() }; persist(draft.id ? targets.map(t => t.id === draft.id ? target : t) : [...targets,target]); }}>
       <h3 className="font-semibold">{draft.id ? 'Edit target' : 'Add target'}</h3>
-      <div className="grid gap-4 sm:grid-cols-2"><Field label="Name"><input autoFocus required maxLength={120} className={control} value={draft.name} placeholder="HiringCafe, company name, or account name" onChange={e => setDraft({ ...draft,name:e.target.value })} /></Field><Field label="Source type"><select className={control} value={draft.kind} onChange={e => setDraft({ ...draft,kind:e.target.value as TargetKind })}>{Object.entries(targetKinds).map(([kind,label]) => <option key={kind} value={kind}>{label}</option>)}</select></Field></div>
+      <fieldset disabled={busy || w.locked} className="space-y-4"><div className="grid gap-4 sm:grid-cols-2"><Field label="Name"><input autoFocus required maxLength={120} className={control} value={draft.name} placeholder="HiringCafe, company name, or account name" onChange={e => setDraft({ ...draft,name:e.target.value })} /></Field><Field label="Source type"><select className={control} value={draft.kind} onChange={e => setDraft({ ...draft,kind:e.target.value as TargetKind })}>{Object.entries(targetKinds).map(([kind,label]) => <option key={kind} value={kind}>{label}</option>)}</select></Field></div>
       <Field label={draft.kind === 'social' ? 'Profile URL or @handle' : 'Source URL'}><input required maxLength={2048} className={control} value={draft.address} placeholder={draft.kind === 'social' ? '@zero2sudo' : 'https://…'} onChange={e => setDraft({ ...draft,address:e.target.value })} /></Field>
+      </fieldset>
       <div className="flex flex-wrap gap-2"><button className={primary} disabled={busy || w.locked}>{busy ? 'Saving…' : 'Save target'}</button><button type="button" className={secondary} disabled={busy} onClick={() => setDraft(null)}>Cancel</button></div>
     </form> : <button type="button" className={`${primary} mt-5`} disabled={busy || w.locked || targets.length >= 100} onClick={() => { setDraft({ ...blank }); setFeedback(''); }}>Add target</button>}
-    {w.user && !w.demo && <button type="button" className={`${secondary} ml-2 mt-5`} disabled={busy} onClick={reload}>Reload saved list</button>}
+    {w.user && !w.demo && <button type="button" className={`${secondary} ml-2 mt-5`} disabled={busy || w.locked} onClick={reload}>Reload saved list</button>}
     <Notice>{feedback}</Notice>
   </Section>;
 }

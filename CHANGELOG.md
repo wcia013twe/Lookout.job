@@ -5,6 +5,12 @@
 - Recorded React/Next.js boundaries and the remaining global-store migration in the frontend instructions and README. Preserved the existing product vision unchanged. Active shared models and legacy regression dependencies remain until their consumers are migrated safely.
 - Validation: all 271 tests (including database scenarios), strict frontend typecheck, 76-role catalog, production static export with the GitHub Pages base path, and all 31 ignore/backup checks passed. No UI behavior or backend actions changed; authenticated user and employer round trips were not exercised.
 
+## 2026-10-14 — Search target editor verification
+
+- Verified the merged Profile search targets for job boards, company careers pages and social accounts.
+- Disable target fields during saving or account synchronization so edits cannot be lost while a save is in flight.
+- Validation: 267 tests, 76-role validation, production build, hosted rollback-only scoped write/autosync checks, deployed gateway/MCP target-tool verification, and desktop/mobile Chrome add/edit/remove/reset/conflict checks with zero demo backend requests.
+
 ## 2026-10-14 — Rainbow glass workspace polish
 
 - Polished Discover, Applications, Needs you, Profile, Referrals and Progress with scoped rainbow glass surfaces, shared controls, mobile composition and clearer loading/empty states. Start/setup routes and setup styling stay unchanged.
@@ -45,6 +51,16 @@
 - Add owned, idempotent timeline services and scoped MCP tools for authorized email updates.
 - Move skipped-role explanations to occasional Muse insights and extend isolated demo coverage.
 - Validation: 219 tests, owner isolation/idempotency database checks, 76-role validation, production build and desktop/mobile demo interactions with zero backend requests; email ingestion requires Muse’s authorized runtime.
+
+## 2026-10-13 — Companion setup room
+
+- Replaced platform suggestions with Cappy, the platform companion, directly after Muse in the sidebar.
+- Changed the local onboarding preview to a playful video-call layout: selected companion centered as the focused speaker, three selectable participant tiles in an independently scrollable desktop sidebar (a compact strip on mobile), and a joined notice. Preview labeling distinguishes the scene from a live call; no fake camera or microphone controls.
+- Keeps static poster references and reserved animation metadata for future supplied media. Mobile flow and two-step Muse handoff remain intact.
+- Added a 450ms joining state on the first agent selection in each setup visit; subsequent speaker selections switch immediately. Pending joins cancel on switching or leaving the flow.
+- Added static camera/muted-microphone overlays on agent tiles and the focused speaker. No user device controls or device access.
+- Invite your own agent opens a keyboard-accessible waiting room with Hermes and OpenClaw; inviting focuses the chosen agent and keeps manual agent naming available. Uses text avatars until character assets are supplied.
+- Validation: 267 tests, production export, 76-role catalog validation, local browser selection and navigation checks. Integrated current workspace/theme changes before publishing.
 
 ## 2026-10-13 — Rainbow glass onboarding
 
