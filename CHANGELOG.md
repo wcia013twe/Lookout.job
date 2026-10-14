@@ -456,3 +456,15 @@
 - Documented the shared-checkout avoidance and retry workflow in agent instructions.
 - Validation: full suite, publisher/queue failure and retry scenarios, and a live
   fresh-checkout smoke test. Main retains strict CI and conversation protection.
+
+### 2026-10-14 — Native drop packs and tier glass
+
+- Migrated Zero2Sudo drop history and the sealed pack into Next.js: drag/tap foil
+  tearing, paired full-time/internship drops, tier upgrades, tilt and bounded sparks.
+- Added tier-colored glass banners above role titles, refracted facets and a subtle
+  pointer/keyboard sheen. Mobile cards wrap and paired reveals stack with scrolling.
+- Historical replay cannot award XP; today's completed pack awards once. Fictional
+  demo drops cover pairing, rarity upgrades and skipped rows without posting links.
+- Validation: 262 tests, 76-role catalog validation, TypeScript and production export;
+  desktop/mobile, keyboard focus, drag, replay, repeat reward and reduced-motion UI
+  checks. Device vibration and integrated signed-in behavior remain unverified.

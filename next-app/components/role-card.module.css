@@ -1,0 +1,67 @@
+.banner {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 108px;
+  padding: 20px 20px 32px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 0% -110%, color-mix(in srgb, var(--role-tier) 35%, transparent), transparent 72%),
+    linear-gradient(120deg, color-mix(in srgb, var(--role-tier) 32%, #071421), #101b2d 68%, color-mix(in srgb, var(--role-tier) 21%, #101426));
+  color: #f6f8ff;
+}
+/* The two shallow facets carry the tier's color; the dark center protects type. */
+.banner::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: 0;
+  background:
+    linear-gradient(#07132373, #07132373),
+    linear-gradient(165deg, transparent 38%, color-mix(in srgb, var(--role-tier) 20%, transparent) 39%, transparent 67%),
+    radial-gradient(ellipse at 115% 120%, color-mix(in srgb, var(--role-refraction) 22%, transparent), transparent 58%);
+}
+.banner::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--role-tier) 55%, #fff), var(--role-refraction), transparent);
+}
+.sheen {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 65% 180% at var(--sheen-x, 50%) -35%, #eef9ff16, transparent 65%);
+  opacity: var(--sheen-strength, .2);
+}
+.company { min-width: 0; flex: 1; overflow-wrap: anywhere; line-height: 1.4; text-shadow: 0 2px 8px #02081166; }
+.rarity {
+  flex-shrink: 0;
+  border-radius: 6px;
+  padding: 5px 8px;
+  color: #f6f8ff;
+  background: #091426c9;
+  border: 1px solid color-mix(in srgb, var(--role-tier) 48%, #ffffff26);
+  font-size: 12px;
+  font-weight: 700;
+}
+.body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: -14px;
+  padding: 22px 20px 20px;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(145deg, #14283be8, #0e172bef 50%, #2c2035e8);
+}
+@media (min-width: 640px) { .banner { padding-inline: 24px; } .body { padding: 24px; } }
+@media (prefers-reduced-motion: reduce) { .sheen { opacity: .2; background-position: center; } }
+@media (prefers-reduced-transparency: reduce) { .body { background: #111e30; } }
