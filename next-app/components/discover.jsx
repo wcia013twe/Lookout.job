@@ -4,14 +4,18 @@ import { useWorkspace } from "../lib/workspace";
 import { Heading, control, Notice, primary } from "./ui";
 import RoleCard from "./role-card";
 import DailyDrops from "./daily-drops";
+import DayFilter from "./day-filter";
 export default function Discover() {
   const w = useWorkspace();
   const [search, setSearch] = useState(""),
-    [type, setType] = useState("");
+    [type, setType] = useState(""),
+    [day, setDay] = useState("latest");
+  const dates = [...new Set([w.date, ...w.roles.map((r) => r.discoveredDate)].filter(Boolean))].sort().reverse();
+  const selectedDay = day === "latest" ? w.date : day;
   const roles = w.roles.filter(
     (r) =>
-      r.discoveredDate === w.date &&
-      !w.state.tracker.ids.includes(r.id) &&
+      (selectedDay === "all" || r.discoveredDate === selectedDay) &&
+      (day !== "latest" || !w.state.tracker.ids.includes(r.id)) &&
       (!type || r.employmentType === type) &&
       `${r.company} ${r.title} ${r.location} ${r.category}`
         .toLowerCase()
@@ -22,7 +26,7 @@ export default function Discover() {
       <Heading title="Discover">
         {w.batchLabel || "Your latest roles, ready to explore."}
       </Heading>
-      <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_160px]">
+      <div className="mb-6 grid items-end gap-3 sm:grid-cols-[1fr_180px_160px]">
         <input
           aria-label="Search roles or companies"
           placeholder="Search roles or companies"
@@ -30,6 +34,7 @@ export default function Discover() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <DayFilter label="Discover day" dates={dates} latest={w.date} value={day} onChange={setDay} />
         <select
           aria-label="Employment type"
           className={control}
@@ -60,7 +65,7 @@ export default function Discover() {
               ))}
           </div>
           {!roles.some((r) => r.employmentType === key) && (
-            <Notice>No new {label.toLowerCase()} roles in this run.</Notice>
+            <Notice>No new {label.toLowerCase()} roles for this view.</Notice>
           )}
         </section>
       ))}

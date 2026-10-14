@@ -1,3 +1,9 @@
+## 2026-10-13 — Daily Discover and pack history
+
+- Default Discover and zero2sudo drops to their latest day. Added date selectors and All history; search and employment filters still narrow Discover. Historical Discover includes previously opened roles; pack XP remains restricted to today.
+- Validation: 76-role data validation and UI detector passed. Build and standalone JSX checks stalled without diagnostics; browser verification remains unverified. No existing admin demo fixtures were found for these boards.
+
+
 ## 2026-10-13 — Full-screen cinematic setup
 
 - Start setup now opens a dedicated full-screen onboarding scene, removing dashboard navigation, account controls and progress stats during setup. Exit setup returns to Profile.

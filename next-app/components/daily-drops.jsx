@@ -4,12 +4,14 @@ import { asset, useWorkspace } from "../lib/workspace";
 import { claimPack, dayStamp } from "../lib/progress.mjs";
 import { rarityOf, RARITY_LABEL, TIER_HEX } from "../lib/role-display";
 import { secondary, primary, Notice } from "./ui";
+import DayFilter from "./day-filter";
 export default function DailyDrops() {
   const [drops, setDrops] = useState([]),
     [opened, setOpened] = useState(false),
     [index, setIndex] = useState(0),
     [revealed, setRevealed] = useState(0),
-    [feedback, setFeedback] = useState("");
+    [feedback, setFeedback] = useState(""),
+    [day, setDay] = useState("latest");
   const w = useWorkspace();
   useEffect(() => {
     fetch(asset("data/sudo-drops.json"))
@@ -21,6 +23,9 @@ export default function DailyDrops() {
   const latest = [...drops].sort((a, b) =>
     String(b.dateSeen).localeCompare(String(a.dateSeen)),
   );
+  const dates = [...new Set(latest.map((d) => d.dateSeen))];
+  const selectedDay = day === "latest" ? dates[0] : day;
+  const visible = latest.filter((d) => selectedDay === "all" || d.dateSeen === selectedDay);
   const today = dayStamp();
   const pack = latest.filter(
     (d) =>
@@ -62,11 +67,11 @@ export default function DailyDrops() {
         <div>
           <h2 className="font-bold">Daily drops</h2>
           <p className="mt-1 text-xs text-board-muted">
-            {latest.length} opportunities across{" "}
-            {new Set(latest.map((d) => d.dateSeen)).size} days
+            {visible.length} opportunities · {selectedDay === "all" ? "All history" : selectedDay}
           </p>
         </div>
-        {pack.length > 0 && (
+        <DayFilter label="Pack drops day" dates={dates} latest={dates[0]} value={day} onChange={(value) => { setDay(value); setOpened(false); }} />
+        {pack.length > 0 && selectedDay === today && (
           <button className={secondary} onClick={open}>
             Open pack
           </button>
@@ -146,9 +151,9 @@ export default function DailyDrops() {
       )}
       <details className="mt-3 text-sm">
         <summary className="min-h-11 py-3 text-board-accent">
-          View all drops
+          View {selectedDay === "all" ? "drop history" : "day’s drops"}
         </summary>
-        {latest.map((d, i) => (
+        {visible.map((d, i) => (
           <article key={i} className="border-t border-board-line py-3">
             <strong>
               {d.company} · {d.title}
