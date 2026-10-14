@@ -1,9 +1,0 @@
-project_id = "codex-automated-job-board"
-
-# Both gateways implement human JWT / opaque agent credential authentication.
-# Platform JWT verification would reject the board's opaque agent tokens.
-[functions.agent-gateway]
-verify_jwt = false
-
-[functions.agent-mcp]
-verify_jwt = false

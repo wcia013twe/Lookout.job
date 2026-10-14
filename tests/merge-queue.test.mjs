@@ -1,19 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {reviewGate,queuedPull,runQueue} from '../scripts/merge-queue.mjs';
+import {queuedPull,runQueue} from '../scripts/merge-queue.mjs';
 import {githubApi} from '../scripts/github-api.mjs';
 const head='a'.repeat(40),base='b'.repeat(40),changed='c'.repeat(40);
-const bot={login:'copilot-pull-request-reviewer[bot]',type:'Bot'};
 const pr={number:1,state:'open',draft:false,created_at:'2026-10-13',labels:[{name:'merge-ready'}],head:{sha:head,ref:'codex/feature',repo:{full_name:'owner/repo'}},base:{sha:base},requested_reviewers:[],merge_commit_sha:'d'.repeat(40),mergeable_state:'clean'};
-test('only an actual Copilot review of the current commit can satisfy review gate',()=>{
- assert.equal(reviewGate([{id:1,user:bot,commit_id:base,state:'COMMENTED'}],head,[]).state,'pending');
- assert.equal(reviewGate([{id:1,user:{...bot,type:'User'},commit_id:head,state:'APPROVED'}],head,[]).state,'pending');
- assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'}],head,[{isResolved:false}]).state,'pending');
- assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'},{id:2,user:bot,commit_id:head,state:'DISMISSED'}],head,[]).state,'pending');
- assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'CHANGES_REQUESTED'}],head,[]).state,'failure');
- assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED',body:'Copilot was unable to review this pull request because the user who requested the review has reached their quota limit.'}],head,[]).state,'pending');
- assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'}],head,[]).state,'success');
-});
 test('queue picks oldest ready non-draft PR and never skips a blocker for a newer PR',()=>{
  assert.equal(queuedPull([{...pr,number:2,created_at:'2026-10-14'},pr,{...pr,number:3,created_at:'2026-10-12',draft:true}]).number,1);
 });
@@ -28,8 +18,6 @@ function fixture(options={}) {
   if(path.includes('/actions/workflows/deploy.yml/runs'))return options.noDeploy?{workflow_runs:[]}:{workflow_runs:[{id:10,head_sha:base,status:'completed',conclusion:options.deployFailed?'failure':'success'}]};
   if(path.includes('/compare/'))return {status:options.behind?'behind':'ahead'};
   if(path.endsWith('/update-branch')){if(options.conflict){const error=Error('conflict');error.status=422;throw error;}return {};}
-  if(path.includes('/reviews?'))return options.noReview?[]:[{id:1,user:bot,commit_id:head,state:'COMMENTED'}];
-  if(path==='/graphql')return {data:{repository:{pullRequest:{reviewThreads:{nodes:options.unresolved?[{isResolved:false}]:[],pageInfo:{hasNextPage:false}}}}}};
   if(path.includes('/check-runs?'))return {check_runs:[{id:1,name:'CI',status:'completed',conclusion:options.ciFailed?'failure':'success'}]};
   if(path.endsWith('/merge'))return {merged:true};
   if(path.endsWith('/requested_reviewers')||path.endsWith('/dispatches'))return {};
@@ -37,7 +25,7 @@ function fixture(options={}) {
  };
  return {calls,api};
 }
-for(const [flag,result] of [['fork','fork'],['deployFailed','deployment-failed'],['noDeploy','deploying'],['behind','updated'],['noReview','review'],['unresolved','review'],['ciFailed','testing'],['headChanged','changed'],['baseChanged','changed']])test('queue holds safely: '+flag,async()=>{
+for(const [flag,result] of [['fork','fork'],['deployFailed','deployment-failed'],['noDeploy','deploying'],['behind','updated'],['ciFailed','testing'],['headChanged','changed'],['baseChanged','changed']])test('queue holds safely: '+flag,async()=>{
  const f=fixture({[flag]:true});assert.equal(await runQueue({api:f.api,repo:'owner/repo',log:()=>{}}),result);assert.equal(f.calls.some(call=>call.path.endsWith('/merge')),false);
  if(flag==='behind')assert.ok(f.calls.some(call=>call.path.endsWith('/ci.yml/dispatches')));
 });

@@ -1,4 +1,4 @@
-name: Review and merge queue
+name: Feature merge queue
 on:
   pull_request_target:
     branches: [main]
@@ -12,7 +12,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  statuses: write
   actions: write
 concurrency:
   group: merge-main
