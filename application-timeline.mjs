@@ -51,7 +51,7 @@ export function timelineItems(application = {}, milestones = application.milesto
   const confirmed = observed(application), submittedAt = timelineDate(application.submitted_at || application.submittedAt);
   const explicitSubmission = entries.find(item => item.kind === 'application_submitted');
   if (confirmed || submittedAt || statuses(application.status) === 'submitted') {
-    if (explicitSubmission) { if (confirmed) explicitSubmission.observedConfirmation = true; }
+    if (explicitSubmission) { if (confirmed) { explicitSubmission.observedConfirmation = true; explicitSubmission.phase = 'completed'; } }
     else entries.unshift({ id: 'application-submission', kind: 'application_submitted', label: 'Application submitted', occurred_at: submittedAt || timelineDate(application.receipt?.observedAt), phase: 'completed', source: { kind: confirmed ? 'record' : 'user', messageId: '', subject: '', excerpt: confirmed ? clean(application.receipt.message) : '', receivedAt: '', url: '' }, observedConfirmation: confirmed });
   }
   const status = statuses(application.status);
