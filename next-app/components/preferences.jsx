@@ -4,7 +4,7 @@ import QuietDemoPreview from "./quiet-demo-preview";
 import { useQuietSettings } from "../lib/quiet-settings";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, Notice } from "./ui";
-export default function Preferences() {
+export default function Preferences({ showDefaultResume = true }) {
   const w = useWorkspace(),
     p = w.state.workflow.searchPreferences || {};
   const [feedback, setFeedback] = useState("");
@@ -172,7 +172,7 @@ export default function Preferences() {
               </Field>
             </div>
           ))}
-          <Field label="Default private PDF resume">
+          {showDefaultResume && <Field label="Default private PDF resume">
             <select
               className={control}
               value={p.defaultResumeId || ""}
@@ -191,7 +191,7 @@ export default function Preferences() {
                   </option>
                 ))}
             </select>
-          </Field>
+          </Field>}
         </div>
       </Section>
       <Section title="Search preferences">
