@@ -1,3 +1,9 @@
+## 2026-10-13 — Muse onboarding handoff
+
+- Removed the About you step and required name/introduction entry. Setup now takes two steps and preserves existing profile facts.
+- Finishing with Muse directs the user to talk to Muse and share a resume or Simplify PDF, with a copyable request and profile-review link. Manual profile entry remains available; no external conversation opens automatically.
+- Validation: production export, catalog check and browser verification of the two-step completion/handoff passed.
+
 ## 2026-10-13 — Daily Discover and pack history
 
 - Default Discover and zero2sudo drops to their latest day. Added date selectors and All history; search and employment filters still narrow Discover. Historical Discover includes previously opened roles; pack XP remains restricted to today.
