@@ -42,3 +42,9 @@ Consolidation proceeds by reconciling numbered copies, tracing live imports befo
 References: [Next.js project organization](https://nextjs.org/docs/app/getting-started/project-structure), [Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components), [static exports](https://nextjs.org/docs/app/guides/static-exports), [React Effects](https://react.dev/learn/you-might-not-need-an-effect), and [external store subscriptions](https://react.dev/reference/react/useSyncExternalStore).
 
 Validation: static production build, 144 domain/unit tests, database checks, browser profile save/reload, profile verification, queue/review/approval invalidation, tracker updates, referral persistence, template selection, and mobile/desktop rendering. Real authenticated Google sign-in, private file round trips, credential issuance, and employer submission remain live verification limits; no employer application was submitted during migration.
+
+## Profile navigation
+
+The top-left profile avatar opens My Profile, Sharing & privacy, and sign-in/sign-out. My Agent stays inside My Profile. Sharing & privacy opens the existing Progress page and its opt-in leaderboard controls. Main navigation focuses on Needs you, Discover, Applications and Referrals.
+
+Demo check: open the avatar, visit My Profile and My Agent, return to Sharing & privacy, and reset the fictional profile. Check Escape, outside click and keyboard tab dismissal. The dropdown reads existing demo state and uses existing authentication actions; no new backend or MCP action is introduced.
