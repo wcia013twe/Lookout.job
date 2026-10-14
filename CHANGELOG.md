@@ -2,7 +2,7 @@
 
 - Added read-only PR CI with tests, schema checks, catalog validation and production export build; shared it with the existing Pages deployment.
 - Added a GitHub-hosted merge-ready queue using trusted-main code, current-main integration and exact-head squash merges. Explicit dispatch handles GITHUB_TOKEN workflow suppression; production failure pauses subsequent merges.
-- Serialized production releases without canceling active deployments, skipped stale releases, and wired pending migrations/custom-auth gateway deployment before Pages when backend files change. Supabase environment secrets are required for backend releases; no secrets are bundled.
+- Serialized Pages releases without canceling active deployments. Backend deployment remains separate.
 - Updated agent instructions to use feature worktrees and PRs instead of direct pushes/shared production mutation. Added repository protection configuration and queue operator documentation.
 - Validation: queue race/failure/scope tests, full regression suite, database checks, catalog validation and optimized production build; hosted workflow/protection verification is recorded in the PR. No candidate data or employer application was sent.
 
