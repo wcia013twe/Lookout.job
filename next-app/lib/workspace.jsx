@@ -213,6 +213,9 @@ export function WorkspaceProvider({ children }) {
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
+/** Legacy domain/store boundary; presentation components type the records they consume.
+ * @returns {any}
+ */
 export function useWorkspace() {
   return useContext(Context);
 }

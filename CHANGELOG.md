@@ -1,3 +1,11 @@
+## 2026-10-14 — Rainbow glass workspace polish
+
+- Polished Discover, Applications, Needs you, Profile, Referrals and Progress with scoped rainbow glass surfaces, shared controls, mobile composition and clearer loading/empty states. Start/setup routes and setup styling stay unchanged.
+- Migrated the active workspace presentation to strict TSX with record/prop types and kept shared legacy model/store boundaries in JavaScript. Added Framer Motion for navigation, pack reveals, company placement and preparation disclosures with reduced-motion support; consolidated surface tokens, permission definitions and status rendering.
+- Reconciled the UI against current main to preserve timelines, resume versions, cloud service contracts, versioned quiet settings and isolated fictional demos. Added no backend operations or submission behavior.
+- Validation: 235 tests, schema suite, 76-role catalog, strict typecheck and production static export passed. Browser review covered desktop (1440px) and phone (390px) discovery, populated tracker rows, profile/kit, referrals, preparation, Needs you and application dialogs; no phone page overflow. Progress guest state was also inspected. Impeccable detector found only the retained incumbent Inter font warning.
+- Limits: authenticated account and leaderboard behavior was not exercised; populated UI was reviewed with fictional memory fixtures in a temporary local checkout, and the temporary demo override was restored before shipping.
+
 ## 2026-10-14 — Search profiles and scoped MCP product actions
 
 - Added deterministic prompt/pill editing with separate database-backed filters, evaluation priorities and prose instructions; profiles support named searches, pause, version conflicts and reload.

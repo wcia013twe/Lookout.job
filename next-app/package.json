@@ -5,16 +5,22 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/prepare-public.mjs && next build --webpack && node scripts/finalize-export.mjs",
-    "predev": "node scripts/prepare-public.mjs"
+    "predev": "node scripts/prepare-public.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.117.3",
+    "framer-motion": "^14.2.0",
     "next": "16.4.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "@supabase/supabase-js": "2.117.3"
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "tailwindcss": "4.3.3",
-    "@tailwindcss/postcss": "4.3.3"
+    "typescript": "^7.0.2"
   }
 }
