@@ -282,3 +282,13 @@
 - Added responsive row layouts, mobile navigation showing every tab, scoped theme color variables, accessible form labels, and honest clipboard failure feedback. Cache v33.
 - Validation: browser navigation, Browse roles action, template switching, 356px/1280px overflow checks, workflow tests, design detector and whitespace checks. Finish reviewer: ship; populated rows inspected in source, not visually captured.
 - Full test suite: 133 passed. Scoped design documentation review confirmed incumbent system preservation; alternate themes and populated rows remain visually unverified.
+
+## 2026-10-13 — Full Next.js / React / Tailwind frontend migration
+- Replaced the production frontend with React routes for Discover, Applications, Needs you, Referrals, Profile and onboarding; migrated all profile tools and application review controls.
+- Reused the existing guest/account store, serialized private sync controller and versioned workflow models. Added a React UI bridge, isolated resume helpers, shared outreach content, and browser progress/reward parity.
+- Adopted Discover surfaces, lavender controls and shared Tailwind theme tokens while keeping the simple responsive workspace layout.
+- Added GitHub Pages build/deploy workflow, base-path support, generated public assets, and a versioned offline worker. Legacy static UI remains source-only rollback/reference.
+- Validation: 137 tests, schema/ownership/approval checks, 76-role validation, optimized Next.js export; browser profile save/reload/review, reference save, queue/approve/edit invalidation, tracking and referral/template/saved-answer checks. Live signed-in OAuth, private files, credential issuance and employer submission are not end-to-end verified.
+- Finish review: ship within tested scope. Documented shared React/Tailwind system in DESIGN.md and .impeccable/design.json; inherited Inter detector warning retained to match Discover.
+- Rebased onto concurrent Muse-import and backend-logo updates; ported profile-setup permission toggles and unverified imported-answer notices into React, keeping profile scalars compatible with the shared schema.
+- After integrating concurrent backend changes, all 144 tests and database checks pass; production assets now omit bundled logos.

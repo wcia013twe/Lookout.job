@@ -3,8 +3,8 @@
 // server baseline. cloudDirty remains true until that exact local snapshot is synced.
 import { createBackend } from "./backend/client.mjs";
 import { fromCloud, draftPayload, batchRoles, uuid } from "./cloud-model.mjs";
-function connectCloud(client) {
-  const store = JB.store, button = document.querySelector("#account-save"), reload = document.querySelector("#account-load"), feedback = document.querySelector("#cloud-status");
+function connectCloud(client, ui = null) {
+  const store = JB.store, button = ui?.retry || document.querySelector("#account-save"), reload = ui?.reload || document.querySelector("#account-load"), feedback = ui?.feedback || document.querySelector("#cloud-status");
   let loaded = null, account = null, generation = 0, applying = false, loading = false, running = null, timer = null, loadFailed = false;
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   const snapshot = (w) => JSON.stringify({ ...w, cloudDirty: false });
@@ -12,6 +12,7 @@ function connectCloud(client) {
     document.dispatchEvent(new CustomEvent("workspace:cloud-ready", {detail:{userId:account}}));
   }
   function controls(locked) {
+    if (ui) { ui.locked(locked); return; }
     ["profile", "auto-tracker", "needs-you"].forEach((id) => {
       const element = document.getElementById(id);
       if (element) element.inert = locked;
@@ -278,6 +279,7 @@ function connectCloud(client) {
     setTimeout(() => load(event.detail.userId), 0);
   });
   if (JB.auth.userId) setTimeout(() => load(JB.auth.userId), 0);
+  return JB.cloud;
 }
 export {
   connectCloud

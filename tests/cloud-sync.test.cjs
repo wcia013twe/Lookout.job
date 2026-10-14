@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const one='11111111-1111-4111-8111-111111111111',two='22222222-2222-4222-8222-222222222222';
 const clone=value=>JSON.parse(JSON.stringify(value));
 function deferred(){let resolve;const promise=new Promise(done=>resolve=done);return {promise,resolve};}
-async function environment(batch=null){
+async function environment(batch=null,reactUI=false){
  const listeners=new Map(),timers=new Map(),elements=new Map();let next=0,owner=one,gate=null,fail=false,writes=0;
  const document={getElementById:id=>element(id),querySelector:selector=>element(selector),addEventListener:(type,fn)=>listeners.set(type,fn),dispatchEvent:event=>listeners.get(event.type)?.(event)};
  function element(id){if(!elements.has(id))elements.set(id,{hidden:false,disabled:false,textContent:'',addEventListener(){}});return elements.get(id);}
@@ -23,10 +23,11 @@ async function environment(batch=null){
  global.JB={store,auth:{get userId(){return owner;}},catalogReady:Promise.resolve(),setBatch(){}};
  global.document=document;global.window=ctx.window;global.location={href:'https://example.com/'+(batch?'?batch='+batch:'')};global.CustomEvent=ctx.CustomEvent;
  global.setTimeout=timeout;global.clearTimeout=ctx.clearTimeout;
- const {connectCloud}=await import('../cloud.mjs');connectCloud(client);
+ const ui={retry:{addEventListener(){}},reload:{addEventListener(){}},feedback:{textContent:''},locks:[],locked(value){this.locks.push(value);}};
+ const {connectCloud}=await import('../cloud.mjs');connectCloud(client,reactUI?ui:null);
  async function flush(){const pending=[...timers.values()];timers.clear();pending.forEach(fn=>fn());for(let i=0;i<30;i++)await Promise.resolve();}
  await flush();
- return {store,db,flush,get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
+ return {store,db,ui,flush,get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
 }
 const realTimeout=global.setTimeout,realClear=global.clearTimeout;
 test('sync serializes concurrent callers and drains edits made during a request',async()=>{
@@ -48,5 +49,10 @@ test('an unavailable morning link falls back to public jobs without blocking aut
 });
 test('search preference edits autosync with the existing theme and tier configuration',async()=>{
  try{const env=await environment();env.store.set('workflow.searchPreferences',{locations:['Remote'],employmentTypes:['Internship'],agentFilters:{visa:false}});await JB.cloud.save();assert.deepEqual(env.db.preferences[0].search,{locations:['Remote'],employmentTypes:['Internship'],agentFilters:{visa:false}});assert.equal(env.db.preferences[0].theme.pack,'base');assert.equal(env.store.get('workflow.cloudDirty'),false);}
+ finally{global.setTimeout=realTimeout;global.clearTimeout=realClear;}
+});
+
+test('React cloud adapter receives sync and lock state without static page controls',async()=>{
+ try{const env=await environment(null,true);assert.equal(JB.cloud.ready,true);assert.deepEqual(env.ui.locks,[true,false]);env.store.set('workflow.profile.name','React profile');await JB.cloud.save();assert.equal(env.db.profiles[0].facts.name,'React profile');assert.equal(env.ui.feedback.textContent,'Synced');}
  finally{global.setTimeout=realTimeout;global.clearTimeout=realClear;}
 });

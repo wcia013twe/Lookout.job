@@ -1,41 +1,250 @@
-'use client';
-import { useState } from 'react';
-import Link from 'next/link';
-import '../styles/onboarding.css';
-const steps = ['Your agent', 'Your profile', 'About you'];
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { useWorkspace } from "../lib/workspace";
+import { Heading, primary, secondary, control, Field, Notice } from "./ui";
+const steps = ["Your agent", "Your profile", "About you"];
+const prompt =
+  "Read my attached resume or Simplify profile PDF and fill my Job Signal Board profile directly. Save extracted facts as unverified, leave missing facts blank, and let me review them before they are used for applications.";
 export default function Onboarding() {
-  const [step, setStep] = useState(0);
-  const [agent, setAgent] = useState('platform');
-  const [agentName, setAgentName] = useState('');
-  const [source, setSource] = useState('muse');
-  const [name, setName] = useState('');
-  const [intro, setIntro] = useState('');
-  const [error, setError] = useState('');
-  const [done, setDone] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const musePrompt = 'Read my attached resume or Simplify profile PDF and fill my Job Signal Board profile directly. Save extracted facts as unverified, leave missing facts blank, and let me review them before they are used for applications.';
-  async function copyMusePrompt() {
-    try { await navigator.clipboard.writeText(musePrompt); setCopied(true); setError(''); }
-    catch { setError('Copy the request shown below and send it to Muse with your PDF.'); }
-  }
+  const w = useWorkspace(),
+    profile = w.state.workflow.profile;
+  const [step, setStep] = useState(0),
+    [agent, setAgent] = useState(profile.setupAgent || "platform"),
+    [agentName, setAgentName] = useState(profile.setupAgentName || ""),
+    [source, setSource] = useState(profile.profileSource || "muse"),
+    [name, setName] = useState(profile.name || ""),
+    [intro, setIntro] = useState(profile.introduction || ""),
+    [feedback, setFeedback] = useState(""),
+    [done, setDone] = useState(false);
   function next(e) {
-    e.preventDefault(); setError('');
-    if (step === 0 && agent === 'own' && !agentName.trim()) { setError('Enter your agent’s name to continue.'); return; }
-    if (step < 2) { setStep(step + 1); return; }
-    try { localStorage.setItem('job-board-onboarding', JSON.stringify({ agent, agentName: agentName.trim(), profileSource: source, name: name.trim(), introduction: intro.trim() })); setDone(true); }
-    catch { setError('Your setup could not be saved. Allow browser storage and try again.'); }
+    e.preventDefault();
+    setFeedback("");
+    if (step === 0 && agent === "own" && !agentName.trim()) {
+      setFeedback("Enter your agent’s name to continue.");
+      return;
+    }
+    if (step < 2) {
+      setStep(step + 1);
+      return;
+    }
+    if (!name.trim()) {
+      setFeedback("Enter your name to finish setup.");
+      return;
+    }
+    w.store.set("workflow.profile", {
+      ...w.store.get("workflow.profile"),
+      name: name.trim(),
+      introduction: intro.trim(),
+      setupAgent: agent,
+      setupAgentName: agentName.trim(),
+      profileSource: source,
+      verified: false,
+    });
+    setDone(true);
   }
-  return <div className="onboarding">
-    <header><Link href="/" className="brand"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 16 5-7 4 5 7-9M4 21h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>Job Signal Board</Link><span className="muted">Your setup</span></header>
-    {done ? <section className="completion" aria-live="polite"><h1>You’re ready{name.trim() ? `, ${name.trim()}` : ''}.</h1><p>Your preferences and introduction are saved in this browser.</p><Link className="primary" href="/profile/">Go to your profile</Link></section> : <>
-      <ol className="progress" aria-label="Setup progress">{steps.map((title, i) => <li key={title} aria-current={i === step ? 'step' : undefined} className={i <= step ? 'active' : ''}><span>{i + 1}</span>{title}</li>)}</ol>
-      <form onSubmit={next}>
-        {step === 0 && <><h1>A little help.<br />A better job search.</h1><p>Choose your own agent or use the platform’s suggestions. You’re in control of what comes next.</p><fieldset><legend>Who will help with your search?</legend>{[['platform', 'Use platform suggestions', 'Start with guided recommendations.'], ['own', 'Bring my own agent', 'Use an agent you already work with.']].map(([value, title, text]) => <label className={`choice ${agent === value ? 'selected' : ''}`} key={value}><input type="radio" name="agent" checked={agent === value} onChange={() => setAgent(value)} /><span><strong>{title}</strong><small>{text}</small></span></label>)}</fieldset>{agent === 'own' && <label className="field">Agent name<input value={agentName} onChange={e => setAgentName(e.target.value)} placeholder="My career assistant" maxLength={100} /><small>We’ll save your preference. Connecting your agent is a separate step.</small></label>}<p className="note">A starting point, not a commitment.<br />You can change your preferences later.</p></>}
-        {step === 1 && <><h1>Your profile.<br />Less busywork.</h1><p>Start with your resume or a Simplify profile PDF. Ask Muse to fill the board, then review the extracted details.</p><fieldset><legend>How would you like to get started?</legend>{[['muse', 'Use Muse with a PDF', 'Bring your resume or Simplify profile PDF.'], ['manual', 'I’ll fill it out myself', 'Add your details at your own pace.']].map(([value, title, text]) => <label key={value} className={`choice ${source === value ? 'selected' : ''}`}><input type="radio" name="source" checked={source === value} onChange={() => setSource(value)} /><span><strong>{title}</strong><small>{text}</small></span></label>)}</fieldset>{source === 'muse' && <div className="provider"><p>Send your PDF to Muse with this request. Extracted facts should be saved as <strong>unverified</strong>, missing facts left blank, and reviewed before use in applications.</p><blockquote className="muse-request">{musePrompt}</blockquote><button type="button" className="back" onClick={copyMusePrompt}>{copied ? 'Request copied' : 'Copy request for Muse'}</button><p className="note" role="status">{copied ? 'Paste the request into Muse and attach your PDF.' : 'This preview saves your setup choice. PDF extraction runs through Muse, outside this page.'}</p></div>}</>}
-        {step === 2 && <><h1>Let’s start<br />with you.</h1><p>A quick introduction gives your search a personal starting point.</p><label className="field">What should we call you?<input required autoComplete="given-name" maxLength={80} value={name} onChange={e => setName(e.target.value)} placeholder="Your first name" /></label><label className="field">A little about you <span className="muted">(optional)</span><textarea rows={4} maxLength={600} value={intro} onChange={e => setIntro(e.target.value)} placeholder="What do you do, and what are you looking for next?" /><small>A sentence or two is plenty. {intro.length}/600</small></label><p className="note">This setup is saved on this device.</p></>}
-        {error && <p role="alert" className="error">{error}</p>}
-        <footer>{step > 0 && <button type="button" className="back" onClick={() => {setStep(step - 1); setError('');}}>Back</button>}<button type="submit" className="primary">{step === 2 ? 'Finish setup' : 'Continue'}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></button><span className="count">{step + 1} of 3</span></footer>
-      </form>
-    </>}
-  </div>;
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(prompt);
+      setFeedback("Request copied. Paste it into Muse and attach your PDF.");
+    } catch {
+      setFeedback("Select the request below and copy it manually.");
+    }
+  }
+  return (
+    <div className="mx-auto max-w-xl">
+      {done ? (
+        <>
+          <Heading title={`You’re ready, ${name.trim()}.`}>
+            Your setup is saved. Review your profile facts before using them for
+            applications.
+          </Heading>
+          <Link className={primary} href="/profile/">
+            Go to your profile
+          </Link>
+        </>
+      ) : (
+        <>
+          <ol
+            aria-label="Setup progress"
+            className="mb-8 flex justify-between gap-2 text-xs"
+          >
+            {steps.map((s, i) => (
+              <li
+                aria-current={i === step ? "step" : undefined}
+                key={s}
+                className="flex items-center gap-2"
+              >
+                <span
+                  className={`grid h-6 w-6 place-items-center rounded-full ${i <= step ? "bg-board-accent text-board-ink" : "bg-board-tag text-board-muted"}`}
+                >
+                  {i + 1}
+                </span>
+                {s}
+              </li>
+            ))}
+          </ol>
+          <form onSubmit={next}>
+            {step === 0 && (
+              <>
+                <Heading title="A little help. A better job search.">
+                  Choose your own agent or use the platform’s suggestions.
+                </Heading>
+                <fieldset>
+                  <legend className="mb-3 text-sm font-bold">
+                    Who will help with your search?
+                  </legend>
+                  {[
+                    [
+                      "platform",
+                      "Use platform suggestions",
+                      "Start with guided recommendations.",
+                    ],
+                    [
+                      "own",
+                      "Bring my own agent",
+                      "Use an agent you already work with.",
+                    ],
+                  ].map(([value, title, text]) => (
+                    <label
+                      key={value}
+                      className={`mb-3 flex min-h-20 items-center gap-3 rounded-xl border bg-board-panel p-4 ${agent === value ? "border-board-accent" : "border-board-line"}`}
+                    >
+                      <input
+                        type="radio"
+                        name="agent"
+                        checked={agent === value}
+                        onChange={() => setAgent(value)}
+                      />
+                      <span>
+                        <strong className="block text-sm">{title}</strong>
+                        <small className="mt-1 block text-board-muted">
+                          {text}
+                        </small>
+                      </span>
+                    </label>
+                  ))}
+                </fieldset>
+                {agent === "own" && (
+                  <Field label="Agent name">
+                    <input
+                      className={control}
+                      value={agentName}
+                      onChange={(e) => setAgentName(e.target.value)}
+                      maxLength={100}
+                      placeholder="My career assistant"
+                    />
+                  </Field>
+                )}
+                <Notice>
+                  Your agent preference is saved here. Create its connection in
+                  Profile.
+                </Notice>
+              </>
+            )}
+            {step === 1 && (
+              <>
+                <Heading title="Your profile. Less busywork.">
+                  Start with your resume or a Simplify profile PDF, then review
+                  the extracted details.
+                </Heading>
+                <fieldset>
+                  <legend className="mb-3 text-sm font-bold">
+                    How would you like to get started?
+                  </legend>
+                  {[
+                    ["muse", "Use Muse with a PDF"],
+                    ["manual", "I’ll fill it out myself"],
+                  ].map(([value, label]) => (
+                    <label
+                      className={`mb-3 flex min-h-16 items-center gap-3 rounded-xl border bg-board-panel p-4 ${source === value ? "border-board-accent" : "border-board-line"}`}
+                      key={value}
+                    >
+                      <input
+                        type="radio"
+                        name="source"
+                        checked={source === value}
+                        onChange={() => setSource(value)}
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </fieldset>
+                {source === "muse" && (
+                  <>
+                    <p className="mt-4 text-sm leading-relaxed text-board-muted">
+                      Send your PDF to Muse. Extracted facts stay unverified,
+                      missing facts stay blank, and you review them before
+                      application use.
+                    </p>
+                    <blockquote className="my-4 rounded-xl border border-board-line p-4 text-sm leading-relaxed">
+                      {prompt}
+                    </blockquote>
+                    <button className={secondary} type="button" onClick={copy}>
+                      Copy request for Muse
+                    </button>
+                    <Notice>
+                      PDF extraction runs through Muse, outside this page.
+                    </Notice>
+                  </>
+                )}
+              </>
+            )}
+            {step === 2 && (
+              <>
+                <Heading title="Let’s start with you.">
+                  A quick introduction gives your search a personal starting
+                  point.
+                </Heading>
+                <div className="space-y-5">
+                  <Field label="What should we call you?">
+                    <input
+                      className={control}
+                      required
+                      autoComplete="name"
+                      maxLength={100}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </Field>
+                  <Field label="A little about you (optional)">
+                    <textarea
+                      className={control}
+                      rows={4}
+                      maxLength={600}
+                      value={intro}
+                      onChange={(e) => setIntro(e.target.value)}
+                      placeholder="What do you do, and what are you looking for next?"
+                    />
+                  </Field>
+                </div>
+                <Notice>
+                  Setup uses your existing workspace and leaves your profile
+                  unverified.
+                </Notice>
+              </>
+            )}
+            <Notice>{feedback}</Notice>
+            <div className="mt-7 flex gap-3">
+              {step > 0 && (
+                <button
+                  className={secondary}
+                  type="button"
+                  onClick={() => {
+                    setStep(step - 1);
+                    setFeedback("");
+                  }}
+                >
+                  Back
+                </button>
+              )}
+              <button className={`${primary} flex-1`} type="submit">
+                {step === 2 ? "Finish setup" : "Continue"}
+              </button>
+            </div>
+          </form>
+        </>
+      )}
+    </div>
+  );
 }

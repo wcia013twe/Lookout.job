@@ -1,8 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-const source = await readFile(new URL('../resume-files.js', import.meta.url), 'utf8');
-const { validateResume, sha256, assertOwner, uploadResume, resumeDownloadUrl, MAX_RESUME_BYTES } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+import { validateResume, sha256, assertOwner, uploadResume, resumeDownloadUrl, MAX_RESUME_BYTES } from '../resume-model.mjs';
 const owner = '11111111-1111-4111-8111-111111111111';
 const file = { name: 'resume.pdf', type: 'application/pdf', size: 3, arrayBuffer: async () => new TextEncoder().encode('abc').buffer };
 

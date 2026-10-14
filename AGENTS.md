@@ -1,7 +1,7 @@
 # Job Signal Board maintenance
 
 - `data/jobs.json` is the source of truth. Update data before touching the UI.
-- Daily catalog maintenance should update `data/jobs.json` rather than rebuilding the workspace. Feature requests may extend the four-tab workflow.
+- Daily catalog maintenance should update `data/jobs.json` rather than rebuilding the workspace. Feature requests may extend the React workspace pages.
 - `Discover` shows public roles whose `discoveredDate` matches `lastRun` and which have not been opened by the user. Split it into a full-time grid followed by an internship grid. `Auto Tracker` is client-side and receives a role only after the user opens its application link. Catalog maintenance should update `data/jobs.json`; personal Muse batches and drafts use the scoped backend tools. Opening links is not applying.
 - Auto Tracker should remain a compact row view with company, job title, type, date opened/applied, status, and separate full-time and internship counters.
 - Aim for up to 20 full-time roles and up to 10 internships per run. These are discovery targets, not an acceptance filter: quality wins when sources do not support the counts.
@@ -22,8 +22,8 @@
 
 - For user-requested feature work, always commit and push completed relevant changes to `main` automatically after relevant checks; the user has authorized automatic pushes and merges. Do not ask for push confirmation. Refresh the current main head first and preserve unrelated changes.
 - Keep a concise `CHANGELOG.md` entry for each feature pass, including validation and any verification limits.
-- Keep basic framing and interaction state in code; new visual CSS and GPU shaders belong in `styles/`.
-- Preserve the existing static Web Component structure; do not add a React runtime solely for motion.
+- Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
+- The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. Legacy static modules are retained for regression/reference and shared models, not new UI work.
 
 ## Backend and agent work
 

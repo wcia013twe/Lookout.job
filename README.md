@@ -1,6 +1,6 @@
 # Job Signal Board
 
-A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. GitHub Pages serves the UI; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
+A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. Next.js, React, and Tailwind provide the UI; GitHub Pages serves its static export; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
 
 ## Copy into Muse
 
@@ -78,29 +78,30 @@ Node 22+:
 
 ```sh
 npm ci
-npm run build:auth
+npm ci --prefix next-app
 npm test
 npm run test:db
 npm run validate:data
-python -m http.server 8000
+npm run dev
 ```
 
-Open `http://localhost:8000`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The committed auth bundle lets GitHub Pages serve the app without a build server. Rebuild it after changes to `auth.js`, `cloud.mjs`, `cloud-model.mjs`, or `backend/client.mjs`.
+Open `http://localhost:3000`. Production is built and deployed by `.github/workflows/deploy.yml` from `next-app/out/`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The React export bundles the browser client at build time. The legacy auth bundle is retained only for the old static reference.
 
 ## Code map and invariants for Muse/other agents
 
 | Location | Responsibility |
 | --- | --- |
-| `index.html`, `app.js`, `components.js` | Basic page framing, public discovery and existing Web Components |
+| `next-app/app/`, `next-app/components/` | Production React routes, public discovery and interactive workspace UI |
+| `next-app/lib/workspace.jsx` | React store/account adapter, shared domain initialization and cloud status |
 | `store.js` | Guest/per-account browser cache; account switching preserves guest records |
-| `workflow-model.js`, `workflow.js` | Local review controls and workflow rules; signed-in approval/stage writes go to backend RPCs |
+| `workflow-model.js`, `next-app/components/draft-review.jsx` | Versioned review/approval rules and React review controls; signed-in transitions use backend RPCs |
 | `auth.js`, `cloud.mjs`, `cloud-model.mjs`, `backend/client.mjs` | Google auth, serialized autosync, record mapping and owner-checked database requests |
 | `saved-answers-*`, `tierlist-*`, `tierlists.js`, `resume-files.js` | Profile features; standalone modules use the shared store |
 | `agent-connections.js` | Human credential management; keys shown once, never persisted in browser state |
 | `supabase/migrations/` | **Single source of truth for the database schema**; use exact deployed migration versions |
 | `supabase/functions/agent-gateway/`, `agent-mcp/` | Scoped server tools; no general SQL/shell tool and no agent-created human approval; guarded submission transitions |
 | `runner/`, `scripts/runner-*` | Deterministic form inspection and approved prefill and guarded native Greenhouse submission |
-| `styles/` | New CSS, motion definitions and shaders; keep presentation out of state logic |
+| `next-app/app/globals.css` and Tailwind utilities | Shared Discover theme and responsive presentation; root `styles/` is legacy reference |
 | `data/jobs.json`, `data/tierlist-presets.json` | Public discovery feed and configurable ranking defaults |
 
 Keep verified personal facts, agent-generated drafts, and employer requirements distinct. Never share service-role keys. Derive ownership from the authenticated user/agent token, not a caller-supplied user ID. A runner must fetch the **current** execution authorization and verify job URL, draft, resume bytes and form fingerprint; adding metadata after approval requires reapproval. A status is not proof of submission.
@@ -191,7 +192,7 @@ Live Simplify extension recognition has not been verified.
 
 Profile starts with candidate identity and editable personal details, then repeatable Work Experience, Education and Projects & Outside Experience, portfolio links, skills and languages. Stable labelled fields support browser autofill; Simplify Copilot recognition remains unverified. Added or removed records and changed facts clear verification. Profile facts keep the existing guest/account namespaces and signed-in private JSON syncing. No personal details from the reference PDF are bundled in public assets. Resume variants and saved answers remain existing features; Simplify recruiter discovery, premium products and external cover-letter/template services are not implemented.
 
-`next-app/` begins the requested gradual Next.js/React/Tailwind migration. Its isolated static-export profile preview shares `profile-schema.js`, with a server-rendered shell and a small client form. It does not replace production or save candidate data yet. See [migration instructions](next-app/README.md).
+`next-app/` now contains the production Next.js/React/Tailwind frontend. It preserves the existing browser store and Supabase adapters and is deployed through GitHub Actions. See [frontend instructions](next-app/README.md).
 
 ## Applications and referrals layout
 

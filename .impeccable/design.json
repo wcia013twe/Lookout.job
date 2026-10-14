@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-14T00:11:04.367758+00:00",
+  "title": "Design System: Job signal board",
+  "extensions": {
+    "shadows": [],
+    "motion": [
+      {
+        "name": "pack-reveal",
+        "value": "300ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Blur from 3px and vertical offset from 6px to zero; disabled for reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary application action.",
+      "html": "<button class=\"ds-primary\">Open application</button>",
+      "css": ".ds-primary{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border-radius:8px;padding:8px 16px;font:700 14px/20px Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer;border:0;background:var(--color-board-accent,#e9dcff);color:var(--color-board-ink,#211332)}.ds-primary:hover{background:var(--color-board-accent-hover,#f4ebff)}.ds-primary:focus-visible{outline:3px solid #d3b0ff;outline-offset:3px}.ds-primary:disabled{opacity:.5;cursor:not-allowed}"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting action.",
+      "html": "<button class=\"ds-secondary\">Queue application</button>",
+      "css": ".ds-secondary{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border-radius:8px;padding:8px 16px;font:700 14px/20px Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer;font-weight:600;border:1px solid var(--color-board-line,#343442);background:var(--color-board-tag,#242430);color:var(--color-board-text,#f5f4fa)}.ds-secondary:hover{border-color:var(--color-board-accent,#e9dcff)}.ds-secondary:focus-visible{outline:3px solid #d3b0ff;outline-offset:3px}.ds-secondary:disabled{opacity:.5}"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Shared text-field appearance.",
+      "html": "<input class=\"ds-field\" aria-label=\"Search roles\" placeholder=\"Search roles\">",
+      "css": ".ds-field{min-height:44px;width:100%;min-width:0;border-radius:8px;border:1px solid var(--color-board-line,#343442);background:var(--color-board-tag,#242430);color:var(--color-board-text,#f5f4fa);padding:8px 12px;font:400 16px/24px Inter,ui-sans-serif,system-ui,sans-serif;caret-color:#d3b0ff}.ds-field::placeholder{color:var(--color-board-muted,#bfc2cf)}.ds-field:focus-visible{outline:3px solid #d3b0ff;outline-offset:3px}"
+    },
+    {
+      "name": "Workspace navigation",
+      "kind": "nav",
+      "description": "Wrapping grid with current-page contrast.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Workspace\"><a class=\"ds-tab\" href=\"#needs\">Needs you</a><a class=\"ds-tab ds-current\" href=\"#discover\" aria-current=\"page\">Discover</a><a class=\"ds-tab\" href=\"#apps\">Applications</a><a class=\"ds-tab\" href=\"#referrals\">Referrals</a><a class=\"ds-tab\" href=\"#profile\">Profile</a></nav>",
+      "css": ".ds-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:var(--color-board-tag,#242430);padding:4px;border-radius:12px}.ds-tab{display:flex;min-height:44px;align-items:center;justify-content:center;padding:8px;border-radius:8px;text-align:center;font:700 14px/20px Inter,ui-sans-serif,system-ui,sans-serif;text-decoration:none;color:var(--color-board-muted,#bfc2cf)}.ds-tab:hover{color:var(--color-board-text,#f5f4fa)}.ds-current{background:var(--color-board-panel,#101016);color:var(--color-board-accent,#e9dcff)}.ds-tab:focus-visible{outline:3px solid #d3b0ff;outline-offset:3px}@media(min-width:640px){.ds-nav{grid-template-columns:repeat(5,minmax(0,1fr))}}"
+    },
+    {
+      "name": "Metadata chip",
+      "kind": "chip",
+      "description": "Compact noninteractive metadata.",
+      "html": "<span class=\"ds-chip\">Full-time</span>",
+      "css": ".ds-chip{display:inline-block;border-radius:6px;padding:4px 8px;background:var(--color-board-tag,#242430);color:var(--color-board-text,#f5f4fa);font:400 12px/16px Inter,ui-sans-serif,system-ui,sans-serif}"
+    },
+    {
+      "name": "Role card",
+      "kind": "card",
+      "refersTo": "role-card",
+      "description": "Shared role-card surface; production border is mixed with its tier color.",
+      "html": "<article class=\"ds-card\"><strong>Company</strong><h3 class=\"ds-title\">Role title</h3><p class=\"ds-copy\">Supporting role analysis.</p></article>",
+      "css": ".ds-card{display:flex;flex-direction:column;gap:12px;min-width:0;border:1px solid var(--color-board-line,#343442);border-radius:16px;padding:16px;background:var(--color-board-panel,#101016);color:var(--color-board-text,#f5f4fa);font-family:Inter,ui-sans-serif,system-ui,sans-serif}.ds-title{margin:0;font-size:18px;line-height:1.375;font-weight:700}.ds-copy{margin:0;color:var(--color-board-muted,#bfc2cf);font-size:14px;line-height:1.625}@media(min-width:640px){.ds-card{padding:18px}}"
+    }
+  ],
+  "narrative": {
+    "overview": "The implemented workspace uses a dark canvas, subtly separated panels, pale lavender actions, and compact sans-serif typography. Discover's role cards establish the shared visual vocabulary used by forms, application lists, and onboarding.\n\nThis is a description of the incumbent React UI, not a new brand direction. Source authority is `next-app/app/globals.css`, `next-app/components/ui.jsx`, `role-card.jsx`, and `app-shell.jsx`; the legacy root static UI is not the deployed visual reference.",
+    "keyCharacteristics": [
+      "Dark surfaces with restrained borders.",
+      "Lavender primary actions and active navigation.",
+      "Rounded controls with generous touch targets.",
+      "Wrapping layouts and responsive content grids."
+    ],
+    "rules": [],
+    "dos": [
+      "Do reuse the shared color tokens and `ui.jsx` controls.",
+      "Do retain the global focus indicator, 44px minimum control height, wrapping behavior, and reduced-motion handling.",
+      "Do use surface tones and borders to separate shared panels."
+    ],
+    "donts": [
+      "Don't use the legacy root static UI as the reference for new React screens.",
+      "Don't replace data-driven rarity accents with primary action styling."
+    ]
+  }
+}

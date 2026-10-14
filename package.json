@@ -6,7 +6,9 @@
     "test": "node --test",
     "validate:data": "node scripts/validate-data.mjs",
     "build:auth": "esbuild auth.js --bundle --format=esm --platform=browser --target=es2022 --minify --outfile=assets/vendor/auth.bundle.js",
-    "test:db": "node backend/check-schema.mjs"
+    "test:db": "node backend/check-schema.mjs",
+    "dev": "npm --prefix next-app run dev",
+    "build": "npm --prefix next-app run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3"
