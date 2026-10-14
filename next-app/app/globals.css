@@ -246,3 +246,76 @@ button:not(:disabled) {
 
 .workspace-shell .role-card-actions .workspace-primary,
 .workspace-shell .role-card-actions .workspace-secondary { padding-inline: 12px; font-size: 13px; }
+
+/* Tailwind v4's selector variant follows the same semantic palette as custom CSS. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@theme { --color-board-warning: #fcd68a; --color-board-success: #a2efd1; }
+:root { color-scheme: dark; }
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-board-bg: #f4f6fa;
+  --color-board-panel: #ffffff;
+  --color-board-text: #152338;
+  --color-board-muted: #4b5b70;
+  --color-board-accent: #24517b;
+  --color-board-accent-hover: #193f64;
+  --color-board-ink: #ffffff;
+  --color-board-line: #adb9c9;
+  --color-board-tag: #e7edf5;
+  --color-board-warning: #85500b;
+  --color-board-success: #146c4c;
+}
+[data-theme="light"] .workspace-shell {
+  --color-board-panel: #ffffff;
+  --color-board-tag: #e7edf5;
+  --color-board-muted: #4b5b70;
+  --color-board-line: #adb9c9;
+  --color-board-accent: #24517b;
+  --color-board-accent-hover: #193f64;
+  --color-board-ink: #ffffff;
+  background: radial-gradient(ellipse at 4% 0%, #bddced66, transparent 45%), radial-gradient(ellipse at 95% 15%, #ecd9f04d, transparent 40%);
+}
+[data-theme="light"] .workspace-shell .glass-panel {
+  border-color: #a9b9ce;
+  background: linear-gradient(130deg, #e7f3facf, #ffffffed 48%, #f4eaf8b3);
+  box-shadow: 0 18px 42px -30px #243b5833;
+}
+[data-theme="light"] .workspace-shell .glass-inset { border-color: #bdc9d8; background: #ffffffb3; }
+[data-theme="light"] .workspace-shell .glass-toolbar { border-color: #b6c4d6; background: linear-gradient(110deg, #e1edf5d9, #ece9f4d9); }
+[data-theme="light"] .workspace-brand { color: #193c5b; }
+[data-theme="light"] .workspace-brand svg { color: #24517b; }
+[data-theme="light"] .workspace-header { border-color: #bdcadb; }
+[data-theme="light"] .workspace-nav a:hover { background: #cbdceb80; }
+[data-theme="light"] .workspace-active-tab { background: linear-gradient(115deg, #c2dbeccc, #ddd6ee99); border-color: #9eb6d0; }
+[data-theme="light"] .workspace-count { color: #ffffff; background: #315e83; }
+[data-theme="light"] .workspace-shell .workspace-section { border-color: #bdcadb; }
+[data-theme="light"] .workspace-shell .workspace-control { background: #ffffffd9; border-color: #a3b3c8; }
+[data-theme="light"] .workspace-shell .workspace-control:hover:not(:disabled) { border-color: #577390; }
+[data-theme="light"] .workspace-shell .workspace-control:focus { border-color: #24517b; background: #ffffff; }
+[data-theme="light"] .workspace-shell .workspace-secondary { background: #e9eff7d9; border-color: #a9bbcf; }
+[data-theme="light"] .workspace-shell .workspace-secondary:hover:not(:disabled) { background: #dce8f4; border-color: #55718e; }
+[data-theme="light"] :focus-visible { outline-color: #6741a4; }
+[data-theme="light"] .workspace-shell :focus-visible { outline-color: #24517b; }
+[data-theme="light"] .workspace-shell ::selection { background: #c0ddef; color: #152338; }
+[data-theme="light"] input, [data-theme="light"] textarea { caret-color: #24517b; }
+[data-theme="light"] *, [data-theme="light"] .workspace-shell * { scrollbar-color: #889bb4 #e7edf5; }
+[data-theme="light"] .workspace-shell select option { background: #f4f6fa; color: #152338; }
+.color-mode-control { border-color: var(--color-board-line); }
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="light"] .workspace-shell .glass-panel,
+  [data-theme="light"] .workspace-shell .glass-toolbar { background: #ffffff; }
+}
+/* Setup retains its approved night-glass composition in either workspace mode. */
+.setup-experience {
+  color-scheme: dark;
+  --color-board-bg: #0e1116;
+  --color-board-panel: #101016;
+  --color-board-text: #f5f4fa;
+  --color-board-muted: #bfc2cf;
+  --color-board-accent: #e9dcff;
+  --color-board-accent-hover: #f4ebff;
+  --color-board-ink: #211332;
+  --color-board-line: #343442;
+  --color-board-tag: #242430;
+  color: var(--color-board-text);
+}

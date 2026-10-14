@@ -9,13 +9,13 @@ const labels: Record<string, string>={submitted:'Application submitted',recruite
 type MilestonePayload = { kind: string; label: string; phase: ApplicationMilestone['phase']; occurredAt: string | null; source: ApplicationMilestone['source']; eventKey: string };
 export default function TimelineEditor({application}: { application: Application }) {
  const w=useWorkspace(),owner=w.demo?'demo':w.user?.id||'guest';
- const [kind,setKind]=useState('recruiter_call'),[label,setLabel]=useState(labels.recruiter_call),[phase,setPhase]=useState<ApplicationMilestone['phase']>('completed'),[date,setDate]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
+ const [kind,setKind]=useState('recruiter_call'),[label,setLabel]=useState(labels.recruiter_call),[phase,setPhase]=useState<ApplicationMilestone['phase']>('completed'),[date,setDate]=useState(''),[note,setNote]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
  const retry=useRef<{ signature: string; payload: MilestonePayload } | null>(null),ownerRef=useRef(owner);ownerRef.current=owner;
  async function save(event: FormEvent<HTMLFormElement>){
   event.preventDefault();setBusy(true);setMessage('');
   try{
   const occurredAt=date?new Date(date).toISOString():null;
-  const payload={kind,label:label.trim(),phase,occurredAt,source:{kind:'user',note:'Recorded by you in the application timeline.',...(occurredAt?{timestampConfirmed:true}:{})}};
+  const payload={kind,label:label.trim(),phase,occurredAt,source:{kind:'user',note:note.trim(),...(occurredAt?{timestampConfirmed:true}:{})}};
   const signature=JSON.stringify(payload);
   if(!retry.current||retry.current.signature!==signature)retry.current={signature,payload:{...payload,eventKey:`user-milestone-${crypto.randomUUID()}`}};
    let row: ApplicationMilestone;
@@ -37,6 +37,7 @@ export default function TimelineEditor({application}: { application: Application
    <Field label="Stage name"><input className={control} required maxLength={300} value={label} onChange={e=>setLabel(e.target.value)}/></Field>
    <Field label="Stage progress"><select className={control} value={phase} onChange={e=>setPhase(e.target.value as ApplicationMilestone['phase'])}><option value="completed">Completed</option><option value="scheduled">Scheduled</option><option value="received">Update received</option></select></Field>
    <Field label="Confirmed date and time (optional)"><input type="datetime-local" className={control} value={date} onChange={e=>setDate(e.target.value)}/></Field>
+   <Field label="Round notes (private)"><textarea className={control} placeholder="Topics covered, reminders, contacts, or your interview experience" maxLength={2000} value={note} onChange={e=>setNote(e.target.value)}/></Field>
   </fieldset>
   <button className={primary} disabled={busy||w.locked}>{busy?'Saving…':'Record timeline update'}</button>
   <Notice>{message}</Notice>

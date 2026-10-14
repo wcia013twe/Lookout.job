@@ -456,3 +456,37 @@
 - Documented the shared-checkout avoidance and retry workflow in agent instructions.
 - Validation: full suite, publisher/queue failure and retry scenarios, and a live
   fresh-checkout smoke test. Main retains strict CI and conversation protection.
+
+## 2026-10-14 — Simplify-style application tracker
+
+- Unified tracked roles and workflow applications into a light list with progress dots, shared filters, company logos, and distinct preparation state labels.
+- Added the reference's wide tabbed detail layout and status/notes sidebar; retained resume evidence, question review, approval, interview preparation, and separate round history.
+- Added private round notes through the existing milestone service and editable experience-card text drafts with explicit local download. Community publishing and numeric resume scoring are not connected.
+- Admin fixtures now include a fictional round note. Browser checks exercised a second round, note persistence in demo memory, experience-card preview, filters, and desktop/mobile layouts. A temporary isolated fixture provider used for QA was removed before delivery.
+- Validation: TypeScript, production static export, catalog validation, all tests (including database scenarios), and Impeccable detector. No real-account writes or submissions performed during browser QA.
+
+### 2026-10-14 — Native drop packs and tier glass
+
+- Migrated Zero2Sudo drop history and the sealed pack into Next.js: drag/tap foil
+  tearing, paired full-time/internship drops, tier upgrades, tilt and bounded sparks.
+- Added tier-colored glass banners above role titles, refracted facets and a subtle
+  pointer/keyboard sheen. Mobile cards wrap and paired reveals stack with scrolling.
+- Historical replay cannot award XP; today's completed pack awards once. Fictional
+  demo drops cover pairing, rarity upgrades and skipped rows without posting links.
+- Validation: 262 tests, 76-role catalog validation, TypeScript and production export;
+  desktop/mobile, keyboard focus, drag, replay, repeat reward and reduced-motion UI
+  checks. Device vibration and integrated signed-in behavior remain unverified.
+
+### 2026-10-14 — Light, dark and system themes
+
+- Added a header theme selector using Tailwind v4's data-theme dark variant.
+  Explicit light/dark choices persist in browser storage; System follows OS changes.
+  A guarded first-paint script applies the palette before React hydration.
+- Light mode uses pale glass and dark ink across navigation, forms, profile tabs,
+  role bodies, Zero2Sudo history and pack dialogs. Tier banners retain dark glass.
+- Theme is a device presentation preference shared by real/demo views, independent
+  of account records and backend/MCP actions. Setup retains its original night glass.
+- Validation: 267 tests (including first-paint, invalid and unavailable storage),
+  TypeScript, 76-role catalog validation and production export; mobile/desktop
+  palette, pack/profile controls, saved preference reload and System checks.
+  Live cross-tab and OS-change events remain unverified in the browser.

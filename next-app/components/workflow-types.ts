@@ -12,6 +12,7 @@ export interface Application {
   title: string;
   status: string;
   employmentType?: string;
+  location?: string;
   applicationUrl?: string;
   url?: string;
   backendId?: string;
