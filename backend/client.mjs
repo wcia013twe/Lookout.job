@@ -42,6 +42,10 @@ function createBackend(client, expectedUserId = null) {
     );
   }
   return {
+    async onboardingAction(operation, payload = {}) {
+      await owner();
+      return result(client.rpc("onboarding_action", { operation, payload }));
+    },
     async performPlatformAction(operation, payload) {
       await owner();
       return result(client.rpc("perform_platform_action", { operation, payload }));

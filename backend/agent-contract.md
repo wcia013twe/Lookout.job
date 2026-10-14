@@ -205,3 +205,70 @@ never employer submission. No scheduler, email reader or SMS service is added.
 Submission record output omits personal settings, profile, answer library and
 authorization snapshots. Exact draft materials and resume metadata come from the
 immutable attempt context; current editable drafts never prove submission.
+
+## Agent-first onboarding and task inbox
+
+`read_onboarding_state` (`onboarding.get_state`, workspace:read) returns the
+canonical step, revision, completed steps, next plain-text prompt, blockers,
+capability flags, the first evidenced job, and recent owned tasks. State persists
+across reconnects; the UI is a renderer of this same contract.
+
+`update_onboarding_step` (`onboarding.submit_step`, preferences:write) takes
+`{expectedRevision,eventKey,event,data}`. Replay the exact request/key to recover
+its original response. Changed payloads with an old key reject. Read the current
+state after a stale-revision error. The backend supports:
+
+- `runtime`: `{browsing:true}` only after checking live runtime tools. Requires a
+  verified, unexpired agent key with discovery and preferences scopes; browser
+  credentials cannot impersonate this handshake.
+- `intent`: `{text,constraints?}`. Ask one open question, parse only stated hard
+  constraints, or import context the user explicitly permitted. Unknowns stay
+  unknown. No full profile form or résumé is required before the first match.
+- `first_match`: `{jobId,sourceUrl,available:true,checkedAt,evidence,fit}` for an
+  owned published batch item. Freshness is limited to 24 hours and the source must
+  match the canonical employer URL. The agent must actually browse and verify;
+  this endpoint validates the evidence contract, not arbitrary live websites.
+  Fit stays preliminary without profile verification and a résumé record.
+- `no_match`: `{reason}` preserves first-match pending and records a concrete
+  blocker. Refine `intent` after asking a focused question; never publish a demo
+  role as real.
+- `policy`: `{choice:"recommend"|"prepare"|"auto_apply_requested"}` only after the
+  first match. Recommend-only skips résumé setup. The other branches require a
+  human-verified profile plus an owned uploaded/hashed résumé before execution.
+  This records a request; it does not alter existing submission authorization.
+- `profile_checked`: `{}` derives prerequisites from canonical tables; no agent
+  or browser-supplied verification flags are accepted.
+- `execution_result`: `{taskId}` requires a completed owned task of the selected
+  policy's kind. Prepared applications and found batches require real records.
+- `delivery`: `{mode:"daily"|"important"|"quiet"|"skip",channel?,timezone?,time?}`
+  records an inactive request. Non-skipped delivery needs a valid time zone and
+  channel; daily needs local HH:MM. Separate social sharing starts private.
+- `pause` / `resume`: `{}` preserve the previous active step.
+- Human-only `resolve_task`: `{taskId,expectedTaskRevision}` marks uncertain work failed only after the person explicitly checks the runtime; agents cannot manufacture this recovery. Existing submission uncertainty still needs its separate guarded recovery.
+
+The authenticated browser calls `onboarding_action(operation,payload)` using its
+existing Supabase client. Ownership always comes from Auth; caller-supplied owner
+IDs reject. Browser autosync preserves the scoped onboarding/delivery preference
+records. Nothing in onboarding verifies facts, creates approvals, issues click
+permits, reports submission, or enables automatic submission.
+
+Task tools: `create_agent_task`, `read_agent_tasks`, `claim_agent_task`, and
+`report_agent_task_result` map to `tasks.create/read/claim/report_result`. Creation
+takes `{kind,eventKey,expectedRevision,target?}`. Kinds are bounded to `discover`,
+`prepare_application`, `validate_auto_apply`, `configure_delivery`; no general
+instructions or submission operation are accepted. Targets must be owned job or
+application IDs. Creation is idempotent and limited to 20 tasks per owner/hour and three per kind/hour. Active or uncertain work cannot be duplicated. Known failures can retry with a new stable key; policy can downgrade to recommendations after work is settled. All agent onboarding writes also require workspace:read.
+Poll each connected run, claim a task before work, then report with
+`{taskId,claimToken,expectedRevision,state,result:{summary,...}}`. A claim lasts
+five minutes. Exact reports replay safely. Concurrent claims cannot both win;
+expired discovery claims retry at most three times, while expired preparation
+and delivery become uncertain and require review. Agent expiry/revocation and
+scopes are rechecked on every operation. State transitions serialize per owner.
+
+**Unverified capabilities remain unavailable:** no verified Muse inbound hook,
+managed Cappy runtime, scheduler/channel activation service, or onboarding
+runner-attestation service is installed. Dispatch is polling, not push.
+Auto-apply/delivery validation tasks must report `needs_user` with missing
+prerequisites, not fabricate completion. Existing guarded Greenhouse submission
+remains separate and unchanged. A webhook acknowledgment would never constitute
+completion. No real notifications or applications are sent by onboarding.
