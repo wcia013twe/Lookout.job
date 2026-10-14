@@ -1,0 +1,48 @@
+begin;
+do $$
+declare u uuid:=gen_random_uuid(); other_u uuid:=gen_random_uuid(); app uuid; foreign_app uuid; j text:='milestone-'||gen_random_uuid()::text;
+ h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); result jsonb; first_id uuid;
+ payload jsonb:='{"eventKey":"email:test:round","kind":"technical_round","label":"Technical round invitation","occurredAt":null,"phase":"scheduled","source":{"kind":"email","messageId":"test","subject":"Next round","excerpt":"We will schedule a time soon.","receivedAt":"2026-10-14T12:00:00Z"}}';
+begin
+ insert into auth.users(id) values(u),(other_u);
+ insert into public.jobs(id,canonical_url,employer) values(j,'https://example.com/milestone','{}');
+ insert into public.applications(user_id,job_id,status,draft) values(u,j,'Submitted','{}') returning id into app;
+ insert into public.applications(user_id,job_id,draft) values(other_u,j,'{}') returning id into foreign_app;
+ update public.applications set status='Submitted' where id=app;
+ insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Milestone tests',h,array['workspace:read','activity:write'],now()+interval '1 hour');
+ result:=public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app)); first_id:=(result->>'id')::uuid;
+ if result->'occurred_at'<>'null'::jsonb then raise exception 'Uncertain date invented'; end if;
+ result:=public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app));
+ if (result->>'id')::uuid<>first_id or (select count(*) from public.application_milestones where application_id=app)<>1 then raise exception 'Milestone retry duplicated event'; end if;
+ begin perform public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app,'label','Changed label')); raise exception 'Changed evidence reused event key'; exception when serialization_failure then null; end;
+ begin perform public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',foreign_app)); raise exception 'Agent foreign milestone allowed'; exception when no_data_found then null; end;
+ begin perform public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app,'eventKey','made-up-date','occurredAt','2026-10-20T12:00:00Z')); raise exception 'Unconfirmed timestamp allowed'; exception when invalid_parameter_value then null; end;
+ result:=public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app,'eventKey','known-date','occurredAt','2026-10-20T12:00:00-04:00','source',(payload->'source')||'{"timestampConfirmed":true}'));
+ if (result->>'occurred_at')::timestamptz<>'2026-10-20T16:00:00Z'::timestamptz then raise exception 'Verified event timezone lost'; end if;
+ begin perform public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app,'eventKey','missing-email','source','{"kind":"email"}'::jsonb)); raise exception 'Missing email provenance accepted'; exception when invalid_parameter_value then null; end;
+ result:=public.agent_dispatch(h,'applications.timeline',jsonb_build_object('applicationId',app));
+ if jsonb_array_length(result->'milestones')<>2 then raise exception 'Timeline missing milestones'; end if;
+ result:=public.agent_dispatch(h,'applications.record',jsonb_build_object('applicationId',app));
+ if jsonb_array_length(result->'milestones')<>2 then raise exception 'Completion record missing timeline'; end if;
+ if (select status from public.applications where id=app)<>'Submitted' or (select receipt from public.applications where id=app) is not null or exists(select 1 from public.approvals where application_id=app) then raise exception 'Interview milestone changed application evidence'; end if;
+ -- A reported submitted milestone is not a submission receipt or status update.
+ result:=public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app,'eventKey','reported-submit','kind','submitted','phase','received'));
+ if (select receipt from public.applications where id=app) is not null then raise exception 'Milestone minted submission receipt'; end if;
+ perform set_config('test.uid',u::text,true); execute 'set local role authenticated';
+ begin perform public.record_application_milestone(foreign_app,jsonb_build_object('eventKey','user-foreign','kind','offer','label','Offer','phase','received','source','{"kind":"user"}'::jsonb)); raise exception 'Human foreign milestone allowed'; exception when no_data_found then null; end;
+ perform public.record_application_milestone(app,jsonb_build_object('eventKey','user-offer','kind','offer','label','Offer received','phase','received','occurredAt',null,'source','{"kind":"user","note":"I received an offer"}'::jsonb));
+ begin perform public.record_application_milestone(app,payload); raise exception 'Human spoofed email source'; exception when invalid_parameter_value then null; end;
+ begin update public.application_milestones set label='Forged' where id=first_id; raise exception 'Historical milestone mutable'; exception when insufficient_privilege then null; end;
+ perform set_config('test.uid',other_u::text,true);
+ if exists(select 1 from public.application_milestones where application_id=app) then raise exception 'Foreign milestone visible'; end if;
+ execute 'reset role';
+ update private.agent_connections set scopes=array['workspace:read'] where token_hash=h;
+ begin perform public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app)); raise exception 'Milestone scope bypass'; exception when insufficient_privilege then null; end;
+ update private.agent_connections set scopes=array['activity:write'] where token_hash=h;
+ begin perform public.agent_dispatch(h,'applications.timeline',jsonb_build_object('applicationId',app)); raise exception 'Timeline scope bypass'; exception when insufficient_privilege then null; end;
+ update private.agent_connections set revoked_at=now() where token_hash=h;
+ begin perform public.agent_dispatch(h,'applications.milestone',payload||jsonb_build_object('applicationId',app)); raise exception 'Milestone revocation bypass'; exception when invalid_authorization_specification then null; end;
+ if has_function_privilege('anon','public.record_application_milestone(uuid,jsonb)','execute') or has_function_privilege('authenticated','private.record_application_milestone_owned(uuid,uuid,jsonb,text)','execute') then raise exception 'Milestone helper privilege leak'; end if;
+ if exists(select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname='record_application_milestone' and p.prosecdef) then raise exception 'Public milestone RPC definer'; end if;
+end $$;
+rollback;

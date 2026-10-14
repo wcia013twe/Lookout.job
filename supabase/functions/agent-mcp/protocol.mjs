@@ -5,6 +5,8 @@ const object = (properties = {}, required = []) => ({ type: 'object', properties
 const string = { type: 'string' };
 const json = { type: 'object' };
 export const TOOLS = [
+  {name:'read_application_timeline',operation:'applications.timeline',scope:'workspace:read',readOnly:true,description:'Read an owned application and immutable process milestones, including email evidence and unknown dates. Milestones do not prove submission or human approval.',inputSchema:object({applicationId:string},['applicationId'])},
+  {name:'record_application_milestone',operation:'applications.milestone',scope:'activity:write',description:'Append an email-evidenced process milestone: submitted/recruiter_call/technical_round/interview/offer/rejected/withdrawn; phase scheduled/completed/received. source must contain kind email, messageId, subject, excerpt, receivedAt (ISO timestamp with timezone). Leave occurredAt null when uncertain; a timestamp requires source.timestampConfirmed true after verifying the exact date/time/timezone in the message. Reuse eventKey and exact evidence for retries. Never writes a submission receipt, approval, or application status. Use preparation tools separately for scheduling.',inputSchema:object({applicationId:string,eventKey:string,kind:string,label:string,occurredAt:{type:['string','null']},phase:string,source:json},['applicationId','eventKey','kind','label','phase','source'])},
   {name:'read_guide',operation:'guides.read',scope:'workspace:read',readOnly:true,description:'Load a versioned backend guide by ID from read_developer_context.guides when relevant. Guides do not grant permissions.',inputSchema:object({id:string},['id'])},
   {name:'reconsider_skipped_opportunity',operation:'selection.reconsider',scope:'activity:write',description:'Request reconsideration of an owned skipped role. Read skipped opportunities first; pass expectedReconsideredAt as its timestamp or empty string when absent. Does not change preferences or apply.',inputSchema:object({decisionId:string,expectedReconsideredAt:string},['decisionId','expectedReconsideredAt'])},
   {name:'read_quiet_mode',operation:'quiet.read',scope:'workspace:read',readOnly:true,description:'Read quiet delivery settings and personalVersion for a subsequent scoped update.',inputSchema:object()},
@@ -60,6 +62,7 @@ function validArgs(tool, args) {
   if (schema.required.some(key => !Object.hasOwn(args, key))) return false;
   return Object.entries(args).every(([key, value]) => {
     const type = schema.properties[key].type;
+    if (Array.isArray(type)) return type.includes(value===null?'null':typeof value);
     if (type === 'object') return value !== null && typeof value === 'object' && !Array.isArray(value);
     if (type === 'array') return Array.isArray(value) && value.length <= (schema.properties[key].maxItems || 100);
     if (type === 'integer') return Number.isInteger(value);
