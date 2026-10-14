@@ -61,7 +61,7 @@ export function createDemoWorkspace(now = new Date()) {
   applications['demo-confirmed'].submittedResume = { ...copy(submittedResume), evidenceSource: 'observed_confirmation' };
   applications['demo-interview'].submittedResume = { ...copy(submittedResume), evidenceSource: 'email' };
   const email = (messageId, subject, excerpt) => ({ kind: 'email', messageId, subject, excerpt, receivedAt: at, url: `https://example.com/demo/email/${messageId}` });
-  const milestone = (applicationId, key, kind, label, occurredAt, phase, source) => ({ id: `${applicationId}-${key}`, user_id: identity, application_id: applicationId, event_key: key, kind, label, occurred_at: occurredAt, phase, source: { ...copy(source), ...(occurredAt ? { timestampConfirmed: true } : {}) }, created_at: at });
+  const milestone = (applicationId, key, kind, label, occurredAt, phase, source) => ({ id: `${applicationId}-${key}`, user_id: identity, application_id: applicationId, event_key: key, kind, label, occurred_at: occurredAt, phase, source: { ...copy(source), ...(kind === 'technical_round' ? {note:'Fictional private note: review SQL query plans and distributed-system tradeoffs before this round.'} : {}), ...(occurredAt ? { timestampConfirmed: true } : {}) }, created_at: at });
   const cedarSubmitted = `${day(today, -3)}T14:00:00Z`;
   applications['demo-interview'].submittedAt = cedarSubmitted;
   applications['demo-interview'].milestones = [

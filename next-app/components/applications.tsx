@@ -1,184 +1,24 @@
 "use client";
-import { useState } from "react";
-import { dayStamp, awardStatus } from "../lib/progress.mjs";
-import { useWorkspace } from "../lib/workspace";
-import { Heading, control, Empty, Section, Notice } from "./ui";
-import ApplicationList from "./application-list";
-import SkippedOpportunities from "./skipped-opportunities";
-import { sortApplications } from "../../application-timeline.mjs";
-import type { Application } from "./workflow-types";
-const statuses = [
-  "New",
-  "Applied",
-  "OA",
-  "Phone Screen",
-  "Interview",
-  "Onsite",
-  "Offer",
-  "Rejected",
-  "Withdrawn",
-];
+import { useState } from 'react';
+import Link from 'next/link';
+import { useWorkspace } from '../lib/workspace';
+import ApplicationList from './application-list';
+import SkippedOpportunities from './skipped-opportunities';
+import { trackerProgress } from '../../tracker-display.mjs';
+import type { Application } from './workflow-types';
+import './tracker.css';
 export default function Applications() {
-  const w = useWorkspace();
-  const [search, setSearch] = useState(""),
-    [type, setType] = useState(""),
-    [stage, setStage] = useState("");
-  const catalog = [
-    ...w.roles,
-    ...Object.values(w.state.workflow.applications as Record<string, Application>)
-      .filter((a) => !w.roles.some((r: Application) => r.id === a.id))
-      .map((a) => ({ ...a, applicationUrl: a.url })),
-  ];
-  const matches = (r: Pick<Application, "employmentType" | "company" | "title">) =>
-    (!type || r.employmentType === type) &&
-    `${r.company} ${r.title}`.toLowerCase().includes(search.toLowerCase());
-  const tracked: Application[] = sortApplications(catalog.filter(
-    (r) => w.state.tracker.ids.includes(r.id) && matches(r),
-  ).map((r: Application) => ({...r, status: w.state.workflow.applications[r.id]?.status || w.state.tracker.items[r.id]?.status || r.status, milestones: w.state.workflow.applications[r.id]?.milestones || []})));
-  const apps = Object.values(w.state.workflow.applications as Record<string, Application>).filter(
-    (a) => matches(a) && (!stage || a.status === stage),
-  );
-  function update(id: string, status: string) {
-    awardStatus(w.store, id, status);
-    w.store.update("tracker.items", (items: Record<string, { status?: string; statusDate?: string; openedDate?: string; appliedDate?: string }>) => ({
-      ...items,
-      [id]: {
-        ...items[id],
-        status,
-        statusDate: dayStamp(),
-        ...(status !== "New" && !items[id]?.appliedDate
-          ? { appliedDate: dayStamp() }
-          : {}),
-      },
-    }));
-  }
-  return (
-    <>
-      <Heading title="Applications">
-        Callbacks and upcoming interviews appear first. See the resume used and the stages recorded for each application.
-      </Heading>
-      <div className="glass-toolbar grid gap-3 rounded-xl p-3 sm:grid-cols-[1fr_160px]">
-        <input
-          aria-label="Search tracked roles"
-          className={control}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search roles or companies"
-        />
-        <select
-          aria-label="Role type"
-          className={control}
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="">All roles</option>
-          <option value="FT">Full-time</option>
-          <option>Internship</option>
-        </select>
-      </div>
-      <div className="mt-7 flex flex-wrap justify-between gap-3">
-        <h2 className="text-lg font-bold">Your tracked roles</h2>
-        <div className="flex gap-2 text-xs">
-          {[
-            ["FT", "full-time"],
-            ["Internship", "internships"],
-          ].map(([key, label]) => (
-            <span className="glass-inset rounded-md px-2 py-1 tabular-nums" key={key}>
-              {tracked.filter((r) => r.employmentType === key).length} {label}
-            </span>
-          ))}
-        </div>
-      </div>
-      <Notice>
-        Opening a role is separate from applying. Update its status after you
-        apply.
-      </Notice>
-      <div className="mt-4">
-        {!tracked.length ? (
-          <Empty
-            title={
-              w.state.tracker.ids.length
-                ? "No matching roles"
-                : "Your next opportunity starts here"
-            }
-            href="/"
-            action="Browse roles"
-          >
-            Open a role from Discover to track it.
-          </Empty>
-        ) : (
-          <div className="glass-panel overflow-hidden rounded-2xl">
-            <div className="hidden grid-cols-[minmax(0,1fr)_minmax(0,2fr)_90px_120px_160px] gap-3 border-b border-board-line bg-board-tag/35 p-4 text-xs font-semibold text-board-muted xl:grid">
-              <span>Company</span>
-              <span>Job title</span>
-              <span>Type</span>
-              <span>Opened / applied</span>
-              <span>Status</span>
-            </div>
-            {tracked.map((r) => {
-              const item = w.state.tracker.items[r.id] || {};
-              return (
-                <div
-                  key={r.id}
-                  className="grid grid-cols-2 gap-x-3 gap-y-2 border-b border-board-line p-4 transition-colors last:border-b-0 hover:bg-board-accent/3 xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_90px_120px_160px] xl:items-center"
-                >
-                  <strong className="col-span-2 break-words text-sm xl:col-span-1">{r.company}</strong>
-                  <a
-                    href={r.applicationUrl}
-                    onClick={(e) => { if (w.demo) e.preventDefault(); }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="col-span-2 min-w-0 break-words text-sm font-medium text-board-accent underline-offset-4 hover:underline xl:col-span-1"
-                  >
-                    {r.title}
-                  </a>
-                  <span className="text-sm text-board-muted">
-                    <span className="mb-1 block text-xs xl:hidden">Type</span>
-                    {r.employmentType === "FT" ? "Full-time" : "Internship"}
-                  </span>
-                  <span className="text-sm tabular-nums text-board-muted">
-                    <span className="mb-1 block text-xs xl:hidden">Opened / applied</span>
-                    {item.appliedDate || item.openedDate || "Not listed"}
-                  </span>
-                  <select
-                    className={`${control} col-span-2 mt-1 xl:col-span-1 xl:mt-0`}
-                    aria-label={`Status for ${r.title}`}
-                    value={item.status || "New"}
-                    onChange={(e) => update(r.id, e.target.value)}
-                  >
-                    {statuses.map((s) => (
-                      <option key={s} value={s}>
-                        {s === "New" ? "Opened" : s}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-      <Section title="Application progress">
-        <p className="mb-4 text-sm text-board-muted">
-          Active callbacks come first. Email updates can add stages when Muse has authorized inbox access.
-        </p>
-        <select
-          className={`${control} mb-4 sm:max-w-xs`}
-          aria-label="Application stage"
-          value={stage}
-          onChange={(e) => setStage(e.target.value)}
-        >
-          <option value="">All stages</option>
-          {w.models.workflowModel.stages.map((s: string) => (
-            <option key={s}>{s}</option>
-          ))}
-        </select>
-        {!!apps.length && <ApplicationList items={apps} />}
-        {!apps.length && (
-          <Notice>No drafts here. Queue a role from Discover.</Notice>
-        )}
-      </Section>
-      <SkippedOpportunities />
-    </>
-  );
+ const w=useWorkspace();
+ const [search,setSearch]=useState(''),[type,setType]=useState(''),[stage,setStage]=useState(''),[closed,setClosed]=useState(false);
+ const ids=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])];
+ const all:Application[]=ids.map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status || w.state.tracker.items[id]?.status || 'New',questions:w.state.workflow.applications[id]?.questions || []})).filter(a=>a.company && a.title);
+ const items=all.filter(a=>{const status=trackerProgress(a,w.state.tracker.items[a.id]).status;return closed===['Rejected','Withdrawn'].includes(status)&&(!type||a.employmentType===type)&&(!stage||status===stage)&&`${a.company} ${a.title}`.toLowerCase().includes(search.toLowerCase());});
+ return <div className="tracker-surface">
+ <header className="tracker-page-header"><div><h1>Your Job Tracker</h1><div className="tracker-header-tabs"><span>{all.length} TOTAL JOBS</span><button aria-pressed={!closed} onClick={()=>setClosed(false)}>Active</button><button aria-pressed={closed} onClick={()=>setClosed(true)}>Closed</button></div></div><Link href="/" className="tracker-button tracker-primary">Browse roles</Link></header>
+ <div className="tracker-filters"><input aria-label="Search tracked roles" placeholder="Search for roles or companies" value={search} onChange={e=>setSearch(e.target.value)}/><select aria-label="Job type" value={type} onChange={e=>setType(e.target.value)}><option value="">Job type · All</option><option value="FT">Full-time</option><option value="Internship">Internship</option></select><select aria-label="Hiring stage" value={stage} onChange={e=>setStage(e.target.value)}><option value="">Status · All</option>{['Opened','Applied','Screen','Interview','Offer','Rejected','Withdrawn'].map(s=><option key={s}>{s}</option>)}</select></div>
+ <div className="tracker-list-meta"><p>{items.length} roles · {items.filter(a=>a.employmentType==='FT').length} full-time · {items.filter(a=>a.employmentType==='Internship').length} internships</p>{(search||type||stage)&&<button className="tracker-button" onClick={()=>{setSearch('');setType('');setStage('');}}>Clear filters</button>}<span>List view</span></div>
+ <ApplicationList items={items}/>
+ {!items.length&&<div className="tracker-empty"><h2>{all.length?'No matching roles':'Your next opportunity starts here'}</h2><p>{all.length?'Try another search or clear your filters.':'Open a role from Discover to track it. Opening a role is separate from applying.'}</p><Link href="/" className="tracker-button tracker-primary">Browse roles</Link></div>}
+ <SkippedOpportunities/>
+ </div>;
 }

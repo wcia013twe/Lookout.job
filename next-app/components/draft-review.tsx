@@ -7,12 +7,20 @@ import ApplicationTimeline from "./application-timeline";
 import TimelineEditor from "./timeline-editor";
 import SubmissionRecord from "./submission-record";
 import type { SubmissionRecordProps } from "./submission-record";
-import { ApplicationStatus } from "./workflow-surface";
+import TrackerProgress, { CompanyMark } from "./tracker-progress";
+import ApplicationPreparation from "./application-preparation";
+import { timelineItems } from "../../application-timeline.mjs";
+import "./tracker.css";
+import { dayStamp, awardStatus } from "../lib/progress.mjs";
 import type { Application, SavedResume } from "./workflow-types";
 export default function DraftReview({ id, onClose }: { id: string; onClose: () => void }) {
   const w = useWorkspace(),
     model = w.models.workflowModel;
-  const current: Application | undefined = w.state.workflow.applications[id];
+  const workflow: Application | undefined = w.state.workflow.applications[id];
+  const role = w.roles.find((r: Application) => r.id === id);
+  const current: Application | undefined = workflow || (role ? {...role, status: w.state.tracker.items[id]?.status || "New", questions: []} : undefined);
+  const [tab, setTab] = useState("Overview");
+  const [experience, setExperience] = useState<string | null>(null);
   const initial: Application = {
     id,
     company: "",
@@ -41,7 +49,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
   const [draft, setDraft] = useState<Application>(initial),
     [feedback, setFeedback] = useState(""),
     [busy, setBusy] = useState(false),
-    [stage, setStage] = useState("Submitted"),
+    [stage, setStage] = useState(model.trackingStages.includes(current?.status) ? current!.status : "Submitted"),
     [note, setNote] = useState("");
   const dialog = useRef<HTMLDialogElement | null>(null);
   const [recordOpen, setRecordOpen] = useState(false);
@@ -112,7 +120,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     if (current) setDraft(current);
   }, [current?.revision, current?.backendRevision, current?.status]);
   if (!current) return null;
-  const editable = !w.demo && model.canEdit(current);
+  const editable = !!workflow && !w.demo && !w.locked && model.canEdit(current);
   const unresolved = (current.submissionAttempts || []).find(
     (t) =>
       t.state === "uncertain" ||
@@ -147,7 +155,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     }));
   }
   async function action(kind: "save" | "approve" | "record" | "recover") {
-    if (w.demo) { setFeedback("Application actions are disabled in this fictional demo."); return; }
+    if (w.demo || w.locked || !workflow) { setFeedback("Application actions are disabled in this fictional demo."); return; }
     setBusy(true);
     setFeedback("");
     try {
@@ -209,30 +217,22 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
       ),
     });
   }
-  return (
-    <dialog
-      ref={dialog}
-      onCancel={onClose}
-      aria-labelledby="draft-review-heading"
-      className="glass-panel fixed inset-0 m-auto max-h-[calc(100dvh-24px)] w-[calc(100%-24px)] max-w-2xl overflow-y-auto overscroll-contain rounded-2xl bg-board-bg p-4 text-board-text backdrop:bg-black/70 backdrop:backdrop-blur-sm sm:max-h-[90dvh] sm:p-6"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 id="draft-review-heading" className="break-words text-xl font-bold">{current.company}</h2>
-          <p className="mt-2 text-sm text-board-muted">{current.title}</p>
-        </div>
-        <button className={secondary} onClick={onClose}>
-          Close
-        </button>
-      </div>
-      <div className="mt-4"><ApplicationStatus status={current.status}>
-        {current.receipt
-          ? " · Employer confirmation observed"
-          : current.status === "Submitted"
-            ? " · Reported by you"
-            : ""}
-      </ApplicationStatus></div>
-      <details className="mt-5 border-t border-board-line pt-3" onToggle={e => setRecordOpen(e.currentTarget.open)}>
+  const events = timelineItems(current);
+  const selectedResume = w.state.workflow.resumes.find((r: SavedResume) => r.id === current.resumeId);
+  function createExperience() {
+    setExperience([`${current!.company} — ${current!.title}`, "Interview experience (draft)", ...events.filter(e => ["recruiter_call","technical_round","interview","onsite"].includes(e.kind)).map(e => `${e.label} · ${e.phase} · ${e.occurred_at || "Date not recorded"}\n${e.source.note || ""}`), "\nTopics covered:\n\nWhat helped:\n\nAdvice for other candidates:"].join("\n\n"));
+  }
+  function downloadExperience() {
+    const url = URL.createObjectURL(new Blob([experience || ""], {type:"text/plain"}));
+    const link = document.createElement("a"); link.href=url; link.download="interview-experience-draft.txt"; link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  return <dialog ref={dialog} onCancel={onClose} aria-labelledby="draft-review-heading" className="tracker-detail tracker-surface">
+    <header className="tracker-detail-header"><CompanyMark company={current.company}/><div><h2 id="draft-review-heading">{current.title}</h2><p>{current.company}</p></div><button className="tracker-button tracker-close" onClick={onClose} aria-label="Close application details"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div className="tracker-detail-grid"><div className="tracker-detail-main">
+      <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Resume Match","Email","Questions","Rounds"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
+      <div className="tracker-detail-content">
+        {tab === "Overview" && <><h3>Job Posting</h3><dl className="tracker-facts"><div><dt>Location</dt><dd>{role?.location || "Not recorded"}</dd></div><div><dt>Job type</dt><dd>{current.employmentType === "FT" ? "Full-time" : current.employmentType || "Not recorded"}</dd></div><div><dt>Application</dt><dd>{!w.demo && (current.url || current.applicationUrl) ? <a href={current.url || current.applicationUrl} target="_blank" rel="noopener noreferrer">View Job Posting</a> : "Demo listing"}</dd></div><div><dt>Preparation status</dt><dd>{workflow?.status || "Opened — not queued"}</dd></div></dl><h3>Job Summary</h3><p className="tracker-prose">{role?.whyItFits || "No job summary has been recorded for this application."}</p>{current.blocker && <p className="tracker-alert">{current.blocker}</p>}{workflow && <><h3 className="mt-8">Interview preparation</h3><ApplicationPreparation application={{...role,...current}}/></>}</>}
+        {tab === "Documents" && <><h3>Documents</h3><p className="tracker-prose">Resume used for this application</p><div className="tracker-document"><h4>{current.submittedResume?.name || selectedResume?.name || "No resume selected"}</h4><p>{current.submittedResume?.version || selectedResume?.version ? `Version ${current.submittedResume?.version || selectedResume?.version}` : "Version not recorded"}</p><p>{current.submittedResume?.evidenceSource === "email" ? "Recorded from email" : current.submittedResume ? "Submitted resume" : "Draft resume"}</p></div>      <details className="mt-5 border-t border-board-line pt-3" onToggle={e => setRecordOpen(e.currentTarget.open)}>
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
         {(!w.demo && !w.user) || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
           : recordOpen && <>
@@ -247,8 +247,10 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
             {downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}
           </>}
       </details>
-      {w.demo && <Notice>This fictional application demonstrates saved answers and submission evidence. Approval, progress updates, and downloads are disabled.</Notice>}
-      <form
+{editable && <p className="tracker-prose">Change the selected resume in Questions before approving the draft.</p>}</>}
+        {tab === "Resume Match" && <><h3>Resume Match</h3><p className="tracker-prose">{role?.whyItFits || "No role-fit analysis has been recorded."}</p><div className="tracker-document"><h4>{selectedResume?.name || current.submittedResume?.name || "Resume not selected"}</h4><p>No numeric resume score is available for this application.</p></div></>}
+        {tab === "Email" && <><h3>Recruiting emails</h3>{events.filter(e=>e.source.kind === "email").length ? events.filter(e=>e.source.kind === "email").map(e=><article className="tracker-question" key={e.id}><h4>{e.source.subject || e.label}</h4><p>{e.source.excerpt || "No excerpt recorded."}</p><small>{e.source.receivedAt || "Received date not recorded"}</small>{!w.demo && e.source.url && <a href={e.source.url} target="_blank" rel="noopener noreferrer">Open source email</a>}</article>) : <p className="tracker-prose">No recruiting emails are linked to this application yet. Authorized inbox updates appear here when recorded.</p>}</>}
+        {tab === "Questions" && <><h3>Application Questions</h3>{!workflow && <p>Queue this role from Discover to prepare application answers.</p>}{!draft.questions.length && <p className="tracker-prose">No employer questions recorded yet.</p>}      <form
         onSubmit={(e) => {
           e.preventDefault();
           action("save");
@@ -376,14 +378,34 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </div>
         </fieldset>
       </form>
-      <Section title="Update application progress">
+</>}
+        {tab === "Rounds" && <><div className="tracker-section-heading"><h3>Interview rounds & history</h3><button className="tracker-button" onClick={createExperience}>Create experience card</button></div>      <Section title="Application timeline">
+        <ApplicationTimeline application={current} demo={w.demo}/>
+        {workflow && <TimelineEditor application={current}/>}
+        <details className="mt-5"><summary className="min-h-11 cursor-pointer py-3 text-sm text-board-muted">Application activity</summary>
+        <ol className="divide-y divide-board-line text-sm">
+          {(current.activity || []).map((a, i) => (
+            <li key={i} className="py-3 first:pt-0">
+              {a.text}
+              <small className="mt-1 block text-board-muted">
+                {a.actor === "user" ? "You" : a.actor} ·{" "}
+                {new Date(a.at).toLocaleString()}
+              </small>
+            </li>
+          ))}
+        </ol>
+        </details>
+      </Section>
+{experience !== null && <section className="tracker-experience"><h3>Experience card preview</h3><p>Private draft. Edit what you want to share; nothing is published automatically.</p><label>Card content<textarea value={experience} maxLength={12000} onChange={e=>setExperience(e.target.value)}/></label><button className="tracker-button tracker-primary" onClick={downloadExperience}>Download draft</button><button className="tracker-button" onClick={()=>setExperience(null)}>Cancel</button></section>}</>}
+      </div>
+    </div><aside className="tracker-detail-sidebar"><section className="tracker-status-panel"><h3>Application Status</h3>{!workflow && <label>Hiring stage<select aria-label="Update hiring stage" disabled={w.locked} value={current.status} onChange={e=>{const status=e.target.value;awardStatus(w.store,id,status);w.store.update("tracker.items",(items:Record<string,unknown>)=>({...items,[id]:{...w.state.tracker.items[id],status,statusDate:dayStamp(),...(status!=="New"&&!w.state.tracker.items[id]?.appliedDate?{appliedDate:dayStamp()}:{})}}));}}>{["New","Applied","OA","Phone Screen","Interview","Onsite","Offer","Rejected","Withdrawn"].map(s=><option key={s} value={s}>{s==="New"?"Opened":s}</option>)}</select></label>}<TrackerProgress application={current} item={w.state.tracker.items[id] || {}} vertical/><details className="tracker-update"><summary>Update status</summary>      <Section title="Update application progress">
         <p className="mb-4 text-sm text-board-muted">
           Record an application you submitted yourself or a later outcome.
         </p>
         <Field label="Stage">
           <select
             className={control}
-            disabled={w.demo}
+            disabled={w.demo || w.locked || !workflow}
             value={stage}
             onChange={(e) => setStage(e.target.value)}
           >
@@ -395,7 +417,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
         <Field label="Update / verification note">
           <input
             className={control}
-            disabled={w.demo}
+            disabled={w.demo || w.locked || !workflow}
             value={note}
             maxLength={2000}
             onChange={(e) => setNote(e.target.value)}
@@ -403,7 +425,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
         </Field>
         <button
           className={`${secondary} mt-4`}
-          disabled={busy || w.demo}
+          disabled={busy || w.demo || w.locked || !workflow}
           onClick={() => action("record")}
         >
           Record update
@@ -424,24 +446,6 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </div>
         )}
       </Section>
-      <Notice>{feedback}</Notice>
-      <Section title="Application timeline">
-        <ApplicationTimeline application={current} demo={w.demo}/>
-        <TimelineEditor application={current}/>
-        <details className="mt-5"><summary className="min-h-11 cursor-pointer py-3 text-sm text-board-muted">Application activity</summary>
-        <ol className="divide-y divide-board-line text-sm">
-          {(current.activity || []).map((a, i) => (
-            <li key={i} className="py-3 first:pt-0">
-              {a.text}
-              <small className="mt-1 block text-board-muted">
-                {a.actor === "user" ? "You" : a.actor} ·{" "}
-                {new Date(a.at).toLocaleString()}
-              </small>
-            </li>
-          ))}
-        </ol>
-        </details>
-      </Section>
-    </dialog>
-  );
+</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button" onClick={()=>setTab("Rounds")}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
+  </dialog>;
 }

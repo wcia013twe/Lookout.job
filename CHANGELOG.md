@@ -457,6 +457,14 @@
 - Validation: full suite, publisher/queue failure and retry scenarios, and a live
   fresh-checkout smoke test. Main retains strict CI and conversation protection.
 
+## 2026-10-14 — Simplify-style application tracker
+
+- Unified tracked roles and workflow applications into a light list with progress dots, shared filters, company logos, and distinct preparation state labels.
+- Added the reference's wide tabbed detail layout and status/notes sidebar; retained resume evidence, question review, approval, interview preparation, and separate round history.
+- Added private round notes through the existing milestone service and editable experience-card text drafts with explicit local download. Community publishing and numeric resume scoring are not connected.
+- Admin fixtures now include a fictional round note. Browser checks exercised a second round, note persistence in demo memory, experience-card preview, filters, and desktop/mobile layouts. A temporary isolated fixture provider used for QA was removed before delivery.
+- Validation: TypeScript, production static export, catalog validation, all tests (including database scenarios), and Impeccable detector. No real-account writes or submissions performed during browser QA.
+
 ### 2026-10-14 — Native drop packs and tier glass
 
 - Migrated Zero2Sudo drop history and the sealed pack into Next.js: drag/tap foil
