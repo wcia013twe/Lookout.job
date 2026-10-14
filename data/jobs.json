@@ -1217,6 +1217,22 @@
       "applicationUrl": "https://lifeattiktok.com/search/7672532801686571317",
       "applicationStatus": "New",
       "verification": "Verified live on lifeattiktok.com on 2026-10-14: page renders with the full posting title, no dead markers."
+    },
+    {
+      "id": "nvidia-soc-software-engineer-new-college-grad-2027-jr2026744",
+      "company": "NVIDIA",
+      "title": "SoC Software Engineer - New College Grad 2027",
+      "employmentType": "FT",
+      "location": "Santa Clara, CA",
+      "category": "Systems software (SoC)",
+      "priority": "Strong Consider",
+      "postedDate": "2026-10-13",
+      "discoveredDate": "2026-10-14",
+      "sourceFreshness": "posted 2026-10-13 (within 24h)",
+      "whyItFits": "Legendary tier and a genuine 2027 new-grad SWE req posted yesterday, so it clears the FT wide-net bar. Fit caveat: SoC software is chip-adjacent systems work, off his core backend/distributed/data-infra lanes; include for the interview rep and the NVIDIA credential, with eyes open on team fit.",
+      "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/SoC-Software-Engineer---New-College-Grad-2027_JR2026744",
+      "applicationStatus": "New",
+      "verification": "Verified live on NVIDIA Workday CXS API on 2026-10-14 (JR2026744, Santa Clara, posted yesterday)."
     }
   ]
 }
