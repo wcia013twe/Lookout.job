@@ -138,3 +138,26 @@ Onboarding uses the user-approved rainbow glass reference: near-black navy backd
 ### Workspace refinement — October 2026
 
 Workspace pages now use `.workspace-shell` scoped navy/cyan tokens and the setup card's restrained cyan, mint, lavender and pink edge spectrum. `glass-panel` owns the shared translucent fill and edge; `glass-inset` owns recessed editing areas; `glass-toolbar` groups controls. Setup CSS and routes keep their existing visual authority. Typography retains the incumbent Inter/system stack, with responsive 26–32px page headings and 44px controls. Tracking rows become a two-column metadata composition below the wide table breakpoint. Framer Motion is limited to navigation highlights, pack reveals, tier placement, and preparation disclosures, respecting reduced-motion preferences. Reduced transparency switches glass surfaces to opaque navy. Profile and referrals retain only their composition rules in the profile CSS module; controls and material tokens are shared.
+
+### Tier banners and daily pack
+
+Role banners sit behind the overlapping title sheet. Each tier uses a deep tinted
+glass base, a complementary refracted facet and a fine luminous upper edge; labels
+stay white over dark glass. Spring-smoothed sheen responds to mouse position and
+keyboard focus. Touch and reduced-motion users receive a static material.
+
+Zero2Sudo history uses compact native disclosures with separate skipped rows. The
+pack uses a native modal dialog and restores focus on close. Foil tearing, tier
+upgrades and bounded sparks run only while the pack is active; reduced motion
+removes the WebGL scene and motion. Paired drops stack in a scrollable phone view.
+
+### Color modes
+
+The header offers System, Light and Dark. Tailwind v4's dark variant is driven by
+`html[data-theme]`; semantic board colors and native color-scheme switch together.
+A small pre-paint script respects the saved device preference, with guarded storage
+and system fallback. Light mode pairs pale cyan/lavender pearl glass with dark navy
+ink and darker action/status colors. Dark mode keeps the existing navy spectrum.
+Tier banners and sealed foil remain deliberately dark in both modes; role sheets
+and pack dialog chrome adopt the chosen palette. Setup keeps its approved night
+composition. Preference changes never alter account or demo records.
