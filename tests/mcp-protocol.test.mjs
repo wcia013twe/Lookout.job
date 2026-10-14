@@ -33,7 +33,7 @@ test('scope-filtered discovery exposes only bounded workspace tools', async () =
 test('context discovery and calls use workspace scope and accept no owner injection', async () => {
   const calls = [], handle = handler(calls, ['workspace:read']);
   const list = await (await handle(request(rpc('tools/list')))).json();
-  assert.deepEqual(list.result.tools.map(tool => tool.name), ['read_application_timeline','read_guide','read_quiet_mode','open_human_application_action','read_preparation_plan','read_skipped_opportunities','read_delivery_policy','read_application_record','read_outreach_workspace', 'read_application_policy', 'check_context_versions', 'read_personal_context', 'read_developer_context', 'workspace_read']);
+  assert.deepEqual(list.result.tools.map(tool => tool.name), TOOLS.filter(t => t.scope === 'workspace:read').map(t => t.name));
   await handle(request(rpc('tools/call', { name: 'check_context_versions', arguments: {} })));
   assert.deepEqual(calls.at(-1), { operation: 'context.versions', payload: {} });
   const invalid = await handle(request(rpc('tools/call', { name: 'read_personal_context', arguments: { userId: 'other' } })));
@@ -63,4 +63,12 @@ test('gateway conflicts become MCP tool errors, infrastructure errors never echo
   const failing = createHandler(async () => { throw new Error(token); });
   const failed = await failing(request(rpc('initialize', { protocolVersion: '2025-11-25' })));
   assert.equal(failed.status, 502); assert.ok(!(await failed.text()).includes(token));
+});
+
+test("every registered tool rejects a connection without its scope", async () => {
+ for (const tool of TOOLS) {
+  const calls = [], response = await handler(calls, [])(request(rpc("tools/call", {name:tool.name,arguments:{}})));
+  assert.equal((await response.json()).result.isError,true,tool.name);
+  assert.ok(!calls.some(c=>c.operation===tool.operation),tool.name);
+ }
 });

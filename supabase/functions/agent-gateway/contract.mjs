@@ -1,10 +1,11 @@
+import { PLATFORM_TOOLS, validatePlatformPayload } from './platform-tools.mjs';
 import { validateMilestone } from './milestones.mjs';
 import { validateOutreach } from './outreach.mjs';
 import { validateProfileSetup } from './profile-setup.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
-export const SCOPES = ['workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = ['guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
+export const SCOPES = ['answers:write','resumes:write','network:write','tracking:write','preferences:write','workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
+export const OPERATIONS = [...PLATFORM_TOOLS.map(t=>t.operation), 'preferences.profile.save','guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
@@ -12,6 +13,13 @@ export function validateRequest(input) {
   if (input.operation === 'guides.read' && (Object.keys(p).length !== 1 || typeof p.id !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/.test(p.id))) throw new Error('Guide ID required');
   validateProfileSetup(input.operation, p);
   if (input.operation.startsWith('outreach.')) validateOutreach(input.operation,p);
+  if (input.operation === 'preferences.profile.save') {
+    if (Object.keys(p).some(k => !['expectedVersion','profile'].includes(k)) || !Number.isSafeInteger(p.expectedVersion) || p.expectedVersion < 0) throw Error('Current profile version required');
+    const v = p.profile;
+    if (!v || typeof v !== 'object' || Array.isArray(v) || Object.keys(v).some(k => !['id','name','active','filters','priorities','instructions'].includes(k)) || !/^[a-zA-Z0-9_-]{1,80}$/.test(v.id || '') || typeof v.name !== 'string' || !v.name.trim() || v.name.length > 80 || typeof v.active !== 'boolean' || typeof v.instructions !== 'string' || v.instructions.length > 20000 || !v.filters || !v.priorities || Array.isArray(v.filters) || Array.isArray(v.priorities) || typeof v.filters !== 'object' || typeof v.priorities !== 'object') throw Error('Invalid search profile');
+    if (Object.entries(v.filters).some(([k,value]) => !['Employment','Work arrangement','Location','Minimum base pay','Schedule','Experience level'].includes(k) || typeof value !== 'string' || value.length > 500) || Object.entries(v.priorities).some(([k,value]) => !['Pay','Stability','Flexibility','Growth','Meaningful work','Team quality','Getting employed quickly'].includes(k) || !['Important','Very important'].includes(value))) throw Error('Invalid profile fields');
+  }
+  validatePlatformPayload(input.operation, p);
   const featureKeys = {
     'applications.timeline':['applicationId'], 'applications.milestone':['applicationId','eventKey','kind','label','occurredAt','phase','source'],
     'preparation.read':['applicationId'], 'applications.record':['applicationId'],

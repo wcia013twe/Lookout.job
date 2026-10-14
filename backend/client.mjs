@@ -42,6 +42,10 @@ function createBackend(client, expectedUserId = null) {
     );
   }
   return {
+    async performPlatformAction(operation, payload) {
+      await owner();
+      return result(client.rpc("perform_platform_action", { operation, payload }));
+    },
     signIn(email, redirectTo) {
       return result(
         client.auth.signInWithOtp({

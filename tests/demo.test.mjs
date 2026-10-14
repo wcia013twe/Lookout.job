@@ -191,3 +191,18 @@ test('demo callback sorting and timelines preserve evidence and historical resum
  assert.equal(apps['demo-confirmed'].submittedResume.version,2);
  assert.equal(state.demo.submissionRecords['demo-confirmed'].attempts[0].context_snapshot.resume.version,2);
 });
+
+test('demo search profiles include active and paused searches and reset isolated edits', () => {
+ const initial = demoFixtures('2026-10-14').state;
+ const store = createMemoryStore(initial);
+ const profiles = store.get('workflow.searchPreferences.profiles');
+ assert.equal(profiles[0].filters['Work arrangement'], 'Remote');
+ assert.equal(profiles[0].active, true);
+ assert.equal(profiles[1].active, false);
+ profiles[0].instructions = 'Edited demo instructions';
+ store.set('workflow.searchPreferences.profiles', profiles);
+ assert.equal(store.get('workflow.searchPreferences.profiles')[0].instructions, 'Edited demo instructions');
+ const reset = demoFixtures('2026-10-14').state;
+ assert.equal(reset.workflow.searchPreferences.profiles[0].instructions, 'I want a reliable team with time to learn.');
+ assert.notEqual(initial.workflow.searchPreferences.profiles[0].instructions, profiles[0].instructions);
+});
