@@ -1,0 +1,21 @@
+import "./globals.css";
+import type { ReactNode } from "react";
+import { WorkspaceProvider } from "../lib/workspace";
+import AppShell from "../components/app-shell";
+export const metadata = {
+  title: "Lookout",
+  description: "Your personal job hunter. Your crew for what’s next. Discover roles, track applications, and make the hunt your own.",
+  manifest: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/manifest.webmanifest`,
+  icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg` },
+};
+export default function Layout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <WorkspaceProvider>
+          <AppShell>{children}</AppShell>
+        </WorkspaceProvider>
+      </body>
+    </html>
+  );
+}
