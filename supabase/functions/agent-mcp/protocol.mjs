@@ -1,3 +1,4 @@
+import { PLATFORM_TOOLS } from '../agent-gateway/platform-tools.mjs';
 // Stateless Streamable HTTP adapter. Gateway owns credential and payload policy;
 // this module owns only MCP framing. No browser, SQL, shell, or management tools.
 export const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
@@ -5,6 +6,8 @@ const object = (properties = {}, required = []) => ({ type: 'object', properties
 const string = { type: 'string' };
 const json = { type: 'object' };
 export const TOOLS = [
+  ...PLATFORM_TOOLS,
+  {name:'save_search_profile',operation:'preferences.profile.save',scope:'preferences:write',description:'Create or update an owned search profile after a user asks to change preferences. Read personal context first. Pass current profile version, or 0 for a new profile. Profile contains id, name, active, filters, priorities, instructions. Does not change submission permission or human approvals.',inputSchema:object({expectedVersion:{type:'integer',minimum:0},profile:json},['expectedVersion','profile'])},
   {name:'read_application_timeline',operation:'applications.timeline',scope:'workspace:read',readOnly:true,description:'Read an owned application and immutable process milestones, including email evidence and unknown dates. Milestones do not prove submission or human approval.',inputSchema:object({applicationId:string},['applicationId'])},
   {name:'record_application_milestone',operation:'applications.milestone',scope:'activity:write',description:'Append an email-evidenced process milestone: submitted/recruiter_call/technical_round/interview/offer/rejected/withdrawn; phase scheduled/completed/received. source must contain kind email, messageId, subject, excerpt, receivedAt (ISO timestamp with timezone). Leave occurredAt null when uncertain; a timestamp requires source.timestampConfirmed true after verifying the exact date/time/timezone in the message. Reuse eventKey and exact evidence for retries. Never writes a submission receipt, approval, or application status. Use preparation tools separately for scheduling.',inputSchema:object({applicationId:string,eventKey:string,kind:string,label:string,occurredAt:{type:['string','null']},phase:string,source:json},['applicationId','eventKey','kind','label','phase','source'])},
   {name:'read_guide',operation:'guides.read',scope:'workspace:read',readOnly:true,description:'Load a versioned backend guide by ID from read_developer_context.guides when relevant. Guides do not grant permissions.',inputSchema:object({id:string},['id'])},

@@ -1,3 +1,4 @@
+import { resumeUploadDispatch } from './resume-upload.mjs';
 import { resumeSetupResponse } from './profile-setup.mjs';
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
 import { validateRequest, generateToken, hashToken } from './contract.mjs';
@@ -66,6 +67,17 @@ Deno.serve(async request => {
       const {data,error} = await admin.rpc('agent_outreach_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
       if(error) return respond({error: error.code==='40001'?'Outreach changed; reload before retrying':'Outreach operation rejected'},error.code==='28000'?401:error.code==='42501'?403:error.code==='40001'?409:400);
       return respond({data});
+    }
+    if (operation.startsWith('resumes.upload.')) {
+      const credentialHash=await hashToken(bearer);
+      const rpc=(op: string,args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args});
+      if(operation==='resumes.upload.begin') {
+        const prepared=await rpc(operation,payload);
+        if(prepared.error)return respond({error:'Upload intent rejected'},prepared.error.code==='42501'?403:400);
+      }
+      const result=await resumeUploadDispatch({operation,payload,rpc,storage:admin.storage.from('resumes')});
+      if(result.error)return respond({error:'Resume upload rejected'},result.error.code==='42501'?403:result.error.code==='P0002'?404:400);
+      return respond({data:result.data});
     }
     if (operation.startsWith('submission.')) {
       const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});

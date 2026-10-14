@@ -39,3 +39,13 @@
 
 - After completing a feature, update the admin demo fixtures and demo interactions to cover its representative content and important states. Treat demo coverage as part of feature completion, not a separate follow-up.
 - Keep demo data clearly fictional, resettable and isolated from real account storage, backend writes, private files and external submissions. Include the relevant demo verification in the changelog.
+
+## MCP parity
+
+Every new or changed product service or user action must fit an existing scoped
+MCP tool or ship with a narrowly scoped new MCP tool in the same feature pass.
+The website and MCP must share backend validation, ownership and version checks;
+do not add generic SQL/database-edit tools. Document the tool mapping and test
+both paths. Human-only actions still need an explicit tool boundary that explains
+or requests the human action; agents must never forge approvals or bypass consent.
+Do not advertise parity until the capability is deployed and verified.
