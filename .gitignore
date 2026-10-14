@@ -3,3 +3,12 @@ node_modules/
 
 
 supabase/.temp/
+
+# Machine-generated conflict copies are not project history.
+/CHANGELOG [0-9]*.md
+/DESIGN [0-9]*.md
+/.impeccable/design [0-9]*.json
+/next-app/**/* [0-9]*.jsx
+/next-app/**/* [0-9]*.tsx
+/next-app/**/* [0-9]*.css
+/next-app/scripts/* [0-9]*.mjs

@@ -1,3 +1,10 @@
+## 2026-10-14 — Repository cleanup
+
+- Audited and archived 31 untracked numbered copies from the shared workspace, retaining every original version and verifying archive checksums. Canonical code and documents were preserved; older copies contain intermediate design and implementation states, not a second production frontend.
+- Added narrow Git ignore rules for numbered conflict copies, removed six obsolete TypeScript copy exclusions, and declared the frontend package as ES modules to remove Node module-format guessing. Kept all features, stored data, routes, demo behavior and backend contracts intact.
+- Recorded React/Next.js boundaries and the remaining global-store migration in the frontend instructions and README. Preserved the existing product vision unchanged. Active shared models and legacy regression dependencies remain until their consumers are migrated safely.
+- Validation: all 271 tests (including database scenarios), strict frontend typecheck, 76-role catalog, production static export with the GitHub Pages base path, and all 31 ignore/backup checks passed. No UI behavior or backend actions changed; authenticated user and employer round trips were not exercised.
+
 ## 2026-10-14 — Search target editor verification
 
 - Verified the merged Profile search targets for job boards, company careers pages and social accounts.
