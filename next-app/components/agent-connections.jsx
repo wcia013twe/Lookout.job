@@ -5,6 +5,7 @@ import { Section, Field, control, primary, secondary, Notice } from "./ui";
 const gateway =
     "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-gateway",
   mcp = "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp";
+const optionalScopes = [["preferences:write","Edit search profiles and preferences"],["answers:write","Edit saved answers"],["resumes:write","Upload and add résumés"],["network:write","Edit contacts and outreach drafts"],["tracking:write","Record user-reported progress"]];
 const scopes = [
   "workspace:read",
   "profile:write",
@@ -68,7 +69,7 @@ export default function AgentConnections() {
         name: form.elements.name.value.trim(),
         expiresInDays: 30,
         scopes:
-          form.elements.access.value === "read" ? ["workspace:read"] : scopes,
+          form.elements.access.value === "read" ? ["workspace:read"] : [...scopes,...optionalScopes.filter(([scope]) => form.elements[scope].checked).map(([scope]) => scope)],
       });
       if (epoch !== generation.current) return;
       await refresh();
@@ -163,6 +164,10 @@ export default function AgentConnections() {
             </option>
           </select>
         </Field>
+        <fieldset className="space-y-2"><legend className="mb-2 text-sm font-medium">Optional editing access</legend>
+          {optionalScopes.map(([scope,label]) => <label key={scope} className="flex items-center gap-2 text-sm"><input type="checkbox" name={scope} />{label}</label>)}
+          <p className="text-xs text-board-muted">Used only with application access. These permissions never approve applications or verify answers.</p>
+        </fieldset>
         <button className={primary} disabled={!w.user || busy}>
           Create agent connection
         </button>

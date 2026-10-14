@@ -1,3 +1,11 @@
+## 2026-10-14 — Search profiles and scoped MCP product actions
+
+- Added deterministic prompt/pill editing with separate database-backed filters, evaluation priorities and prose instructions; profiles support named searches, pause, version conflicts and reload.
+- Added 20 scoped product tools plus search-profile saving while preserving all 32 current interfaces. Added the MCP parity rule and optional connection permissions; human approval, verification and uncertain submission recovery remain explicit handoffs.
+- Reused the existing owner-keyed contact table and revision trigger. Preserved profile-setup permissions, newer quiet settings and timelines, and protected scoped search profiles from ordinary browser sync.
+- Expanded fictional demo search profiles and isolated editor save/reload/reset from account storage. Local validation: 235 unit tests, database suite, 76 catalog roles, auth bundle and production static export pass.
+- Verification limits: hosted storage and full HTTP tool actions await deployment. Published as a draft PR; the broader Supabase deployment remains blocked by automatic approval review pending explicit approval.
+
 ## 2026-10-13 — Compact Profile workspace
 
 - Replaced the long Profile page with an overview and four focused sections: About me, Application kit, Job preferences and My agent. Visited sections stay mounted to preserve unsaved edits while switching. Experience, education and projects use expandable summaries; profile Save remains sticky.
