@@ -1,0 +1,37 @@
+name: Feature merge queue
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, labeled, unlabeled, synchronize, ready_for_review, closed]
+  workflow_run:
+    workflows: [CI, Deploy React board]
+    types: [completed]
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+concurrency:
+  group: merge-main
+  cancel-in-progress: false
+jobs:
+  integrate:
+    if: ${{ vars.MERGE_QUEUE_ENABLED != 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Never check out or execute pull-request code in this privileged workflow.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Advance one ready PR
+        run: node scripts/merge-queue.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}

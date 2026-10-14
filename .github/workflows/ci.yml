@@ -1,0 +1,47 @@
+name: CI
+on:
+  pull_request:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      upload_pages:
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}-${{ github.workflow }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  validate:
+    name: CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            next-app/package-lock.json
+      - run: npm ci
+      - run: npm ci --prefix next-app
+      - run: npm test
+      - run: npm run test:db
+      - run: npm run validate:data
+      - name: Build reference auth module
+        run: npm run build:auth
+      - name: Build production static export
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /codex-automated-job-board
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        if: ${{ inputs.upload_pages == true }}
+        with:
+          path: next-app/out

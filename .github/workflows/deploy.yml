@@ -5,42 +5,26 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  actions: read
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: production-deploy
+  cancel-in-progress: false
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            next-app/package-lock.json
-      - run: npm ci
-      - run: npm ci --prefix next-app
-      - run: npm test
-      - run: npm run test:db
-      - run: npm run validate:data
-      - uses: actions/configure-pages@v5
-        id: pages
-      - run: npm run build
-        env:
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: next-app/out
+    uses: ./.github/workflows/ci.yml
+    with:
+      upload_pages: true
   deploy:
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
         id: deployment

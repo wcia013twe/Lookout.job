@@ -243,6 +243,14 @@ resume/answer snapshots, each attempt's timestamps, confirmation markers and
 uncertainty. A user-reported application remains distinct from an observed receipt.
 Developer contract version **9** advertises these tools.
 
+## GitHub-owned integration
+
+Parallel features use isolated `codex/` branches/worktrees and PRs. Add
+`merge-ready` to enter the GitHub-hosted CI → squash merge →
+production deployment sequence. The oldest ready PR advances first, and failures
+pause the queue. The queue continues while Codex is closed. Read
+[queue controls and deployment prerequisites](.github/INTEGRATION.md).
+
 ## Admin demo mode
 
 Accounts with server-managed `app_metadata.demo_preview=true` can toggle Demo mode in the header. Mock jobs, applications, profile, tier lists and Robinhood/Stripe outreach live in a separate in-memory store. Demo mode disconnects the view from the authenticated client, prevents real submissions/uploads and supports Reset demo/Exit demo mode. Real account data remains in its original store. Company logos scaffold referral groups and the selected contact; Robinhood uses its official public icon URL when no cached asset exists.

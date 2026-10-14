@@ -20,7 +20,7 @@
 
 ## UI development workflow
 
-- For user-requested feature work, always commit and push completed relevant changes to `main` automatically after relevant checks; the user has authorized automatic pushes and merges. Do not ask for push confirmation. Refresh the current main head first and preserve unrelated changes.
+- For feature work, refresh main and use a separate `codex/` branch/worktree for each parallel feature. Push the branch, open a PR and add `merge-ready` when implementation and local checks pass. GitHub validates current changes, merges ready PRs serially and deploys. The user authorized automatic PR creation, queueing, merges and deployment; do not ask for push/merge confirmation. Do not push feature changes directly to protected main. Address review findings on the feature branch; unresolved findings, failed CI or failed production deployment pause the queue.
 - Keep a concise `CHANGELOG.md` entry for each feature pass, including validation and any verification limits.
 - Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
 - The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. Legacy static modules are retained for regression/reference and shared models, not new UI work.
@@ -33,7 +33,7 @@
 - Keep migrations, server functions, pure mapping/models, UI framing, and `styles/` in their existing locations.
 - Run `npm test`, `npm run test:db`, `npm run validate:data` and rebuild the auth bundle for auth/cloud/client changes.
 - Add new features with current-state documentation and honest verification limits; do not describe unconnected external services as live.
-- `supabase/functions/agent-gateway/instructions.json` owns the agent interaction contract and developer message defaults. Increment `developerVersion` whenever instructions, defaults, settings mappings or advertised capabilities change, and deploy the gateway with the config. Personal versions are server-controlled triggers; never reset or edit them from clients.
+- `supabase/functions/agent-gateway/instructions.json` owns the agent interaction contract and developer message defaults. Increment `developerVersion` whenever instructions, defaults, settings mappings or advertised capabilities change, and deploy the gateway with the config through the production workflow after merge. Do not deploy feature branches directly to the shared production project. Personal versions are server-controlled triggers; never reset or edit them from clients.
 
 ## Demo coverage
 
