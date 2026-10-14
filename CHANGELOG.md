@@ -1,3 +1,7 @@
+## Work-life balance and benefits — 2026-10-14
+
+Added editable Work-life balance and Employer benefits criteria to each named search profile, with independent Required/Preferred/Flexible priorities. Both remain in the shared preference instructions and advanced prompt. Fictional demo and round-trip/MCP contract coverage include these fields. Validation: preference tests, typecheck and production build; live agent analysis remains unverified.
+
 ## Organized preference profiles — 2026-10-14
 
 Grouped job preferences into familiar role, location, company, skills, compensation,

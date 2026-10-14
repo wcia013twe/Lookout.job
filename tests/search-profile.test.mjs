@@ -49,6 +49,9 @@ test('extended preferences and multiline career goals survive the existing profi
   for (const [heading, key, value] of [
     ['Role preferences','Roles','Software engineering, ML engineering'],
     ['Priority & flexibility','Roles','Preferred'],
+    ['Work-life balance & benefits','Work-life balance','Predictable hours; limited on-call'],
+    ['Work-life balance & benefits','Employer benefits','Health insurance, retirement match'],
+    ['Priority & flexibility','Employer benefits','Required'],
     ['Career goals & tradeoffs','Career goals','Deepen systems experience.\nOwn reliability and performance.'],
     ['Career goals & tradeoffs','Tradeoffs','Relocate for strong mentorship.'],
     ['Company priorities','Tier list ID','owned-list'],
@@ -57,6 +60,9 @@ test('extended preferences and multiline career goals survive the existing profi
   const restored = promptFromProfile(profile);
   assert.equal(readField(restored,'Career goals & tradeoffs','Career goals').value, 'Deepen systems experience.\nOwn reliability and performance.');
   assert.equal(readField(restored,'Company priorities','Tier list ID').value,'owned-list');
+  assert.equal(readField(restored,'Work-life balance & benefits','Work-life balance').value,'Predictable hours; limited on-call');
+  assert.equal(readField(restored,'Work-life balance & benefits','Employer benefits').value,'Health insurance, retirement match');
+  assert.equal(readField(restored,'Priority & flexibility','Employer benefits').value,'Required');
   assert.equal(readField(restored,'Priority & flexibility','Roles').value,'Preferred');
   assert.ok(restored.includes('Custom context must stay.'));
   assert.deepEqual(profileFromPrompt(restored, profile), profile);

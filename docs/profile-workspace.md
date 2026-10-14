@@ -50,3 +50,5 @@ and review thresholds now live in My agent. Existing values and permissions rema
 Demo has fictional full-time and paused internship profiles with separate goals
 and company lists. Verify edit/save/reload, switch profiles with unsaved text, pause
 and resume, maintain/associate a tier list, and reset to restore demo defaults.
+
+Work-life balance and Employer benefits are editable criteria with individual flexibility settings, saved as labeled instructions. They support descriptive preferences about hours, on-call, boundaries, leave, insurance, retirement match and learning budgets; unknown listing details remain questions for verification.
