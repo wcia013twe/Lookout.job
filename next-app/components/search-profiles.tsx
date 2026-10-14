@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useWorkspace } from '../lib/workspace';
 import { Section, Field, control, secondary, Notice } from './ui';
-import { filterFields, priorities, initialPrompt, readField, updateField, profileFromPrompt, promptFromProfile, normalizeSearchProfile } from '../../search-profile.mjs';
+import { filterFields, priorities, initialPrompt, readField, updateField, profileFromPrompt, promptFromProfile, normalizeSearchProfile } from '../../lib/search-profile.mjs';
 
 type SearchProfile = { id: string; name: string; active: boolean; version?: number; prompt: string; filters?: Record<string, unknown>; priorities?: Record<string, unknown>; instructions?: string };
 import { errorMessage } from "./profile-types";

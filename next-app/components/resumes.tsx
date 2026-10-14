@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { useWorkspace } from "../lib/workspace";
-import { uploadResume, resumeDownloadUrl } from "../../resume-model.mjs";
+import { uploadResume, resumeDownloadUrl } from "../../lib/resume-model.mjs";
 import { control, primary, secondary, Field, Section, Notice } from "./ui";
 import { errorMessage, type ResumeRecord } from "./profile-types";
 type ResumeForm = HTMLFormElement & { elements: HTMLFormControlsCollection & { variant: HTMLSelectElement; name: HTMLSelectElement; file: HTMLInputElement; url: HTMLInputElement } };

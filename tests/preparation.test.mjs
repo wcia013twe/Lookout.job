@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createPreparationPlan, preparationDate, selectPreparationGuides, setPreparationTaskCompletion } from '../preparation-model.mjs';
+import { createPreparationPlan, preparationDate, selectPreparationGuides, setPreparationTaskCompletion } from '../lib/preparation-model.mjs';
 const application = { id: 'app-1', title: 'Backend Engineer', company: 'Acme', description: 'PostgreSQL SQL database systems' };
 const deadline = { date: '2026-10-23', stage: 'Technical interview', confirmed: true, source: { kind: 'email', messageId: 'message-1', excerpt: 'Your technical interview is October 23, 2026.', subject: 'Interview' } };
 const build = extra => createPreparationPlan({ application, deadline, now: '2026-10-14', ...extra });

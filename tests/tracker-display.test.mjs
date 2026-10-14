@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { trackerProgress } from '../tracker-display.mjs';
-import { timelineItems } from '../application-timeline.mjs';
+import { trackerProgress } from '../legacy/tracker-display.mjs';
+import { timelineItems } from '../lib/application-timeline.mjs';
 test('preparation state does not erase manually reported hiring progress',()=>{
  const p=trackerProgress({status:'Blocked'},{status:'Interview',openedDate:'2026-10-01'});
  assert.equal(p.status,'Interview');assert.equal(p.dates[1],undefined);

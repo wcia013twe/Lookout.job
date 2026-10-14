@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {timelineItems,hasCallback,sortApplications,timelineDate} from '../application-timeline.mjs';
-import {buildSubmissionRecord} from '../submission-record.mjs';
+import {timelineItems,hasCallback,sortApplications,timelineDate} from '../lib/application-timeline.mjs';
+import {buildSubmissionRecord} from '../lib/submission-record.mjs';
 const receipt={source:'runner-observed-greenhouse-confirmation',marker:'#confirmation',message:'Received',jobUrl:'https://example.com/job'};
 test('interview status never invents a submitted application or completed interview',()=>{
  const items=timelineItems({status:'Interview'});

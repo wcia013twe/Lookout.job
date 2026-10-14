@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
-import { fromCloud } from '../cloud-model.mjs';
+import { fromCloud } from '../lib/cloud-model.mjs';
 const id='11111111-1111-1111-1111-111111111111';
 const payload={applicationId:id,eventKey:'email:message:technical',kind:'technical_round',label:'Technical round',occurredAt:null,phase:'scheduled',source:{kind:'email',messageId:'message',subject:'Next round',excerpt:'We will arrange a time shortly.',receivedAt:'2026-10-14T12:00:00Z'}};
 test('milestone contract requires bounded email evidence, leaves unknown dates null and forbids arbitrary owners',()=>{

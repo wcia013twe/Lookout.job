@@ -11,7 +11,7 @@ function setup(initial = {}) {
   };
   const form = element('#search-preferences-form');
   form.elements = Object.fromEntries(['locations','categories','excludedCompanies','fullTime','internship','targetYear'].map(name => [name, element(name)]));
-  vm.runInNewContext(fs.readFileSync('profile-preferences.js', 'utf8'), {
+  vm.runInNewContext(fs.readFileSync('legacy/profile-preferences.js', 'utf8'), {
     document: { querySelector: element, addEventListener: (event, fn) => events[event] = fn },
     Option: function(text, value) { return { text, value }; },
     JB: { auth: { userId: 'one' }, store: { get: key => key === 'workflow.tierLists' ? lists : key === 'workflow.resumes' ? [] : preferences, set: (_key, value) => preferences = value, subscribe() {} } },
@@ -36,7 +36,7 @@ test('Muse contract maps the choice advertises only the supported submission ada
   const contract = JSON.parse(fs.readFileSync('supabase/functions/agent-gateway/instructions.json'));
   assert.equal(contract.personalSettingsPaths.autoSubmitApproved, 'preferences.search.autoSubmitApproved');
   assert.equal(contract.capabilities.automaticSubmission, 'supported-greenhouse-native-forms');
-  const { fromCloud } = await import('../cloud-model.mjs');
+  const { fromCloud } = await import('../lib/cloud-model.mjs');
   const workspace = fromCloud({ profiles: [], preferences: [{ search: { autoSubmitApproved: true } }], resumes: [], answer_library: [], applications: [] });
   assert.equal(workspace.searchPreferences.autoSubmitApproved, true);
 });

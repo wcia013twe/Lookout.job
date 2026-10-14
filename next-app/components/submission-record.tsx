@@ -1,5 +1,5 @@
 "use client";
-import { buildSubmissionRecord } from "../../submission-record.mjs";
+import { buildSubmissionRecord } from "../../lib/submission-record.mjs";
 import { secondary } from "./ui";
 import type { Application, SavedResume } from "./workflow-types";
 

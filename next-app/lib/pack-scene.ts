@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { foilVertex, foilFragment, sparkVertex, sparkFragment } from "../../styles/pack-shaders.js";
+import { foilVertex, foilFragment, sparkVertex, sparkFragment } from "../../lib/pack-shaders.js";
 import { TIER_HEX } from "./role-display";
 
 import { tierOrder as tiers, type Tier } from "./drop-pack";

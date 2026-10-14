@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useWorkspace } from '../lib/workspace';
 import { Section, Field, control, primary, secondary, Notice } from './ui';
-import { targetKinds, validateTargets, scanningStatus } from '../../search-targets.mjs';
+import { targetKinds, validateTargets, scanningStatus } from '../../lib/search-targets.mjs';
 import { errorMessage } from "./profile-types";
 type TargetKind = keyof typeof targetKinds;
 type SearchTarget = { id: string; name: string; kind: TargetKind; address: string };

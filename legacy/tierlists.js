@@ -99,7 +99,7 @@
   async function loadConfiguration() {
     root.setAttribute('aria-busy', 'true');
     try {
-      const response = await fetch(root.dataset.configUrl || './data/tierlist-presets.json');
+      const response = await fetch(root.dataset.configUrl || '../data/tierlist-presets.json');
       if (!response.ok) throw new Error('Could not load starter lists.');
       const config = await response.json(); model.configure(config);
       document.querySelector('#tierlist-heading').textContent = config.branding?.heading || 'Company tier lists';

@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const fs = require('node:fs');
 function model() {
   const c = { window: { JB: { normCompany: name => name.toLowerCase().replaceAll(' ', '-') } }, Date, Math };
-  vm.runInNewContext(fs.readFileSync('tierlist-model.js', 'utf8'), c);
+  vm.runInNewContext(fs.readFileSync('lib/tierlist-model.js', 'utf8'), c);
   c.window.JB.tierlistModel.configure(JSON.parse(fs.readFileSync('data/tierlist-presets.json', 'utf8')));
   return c.window.JB.tierlistModel;
 }

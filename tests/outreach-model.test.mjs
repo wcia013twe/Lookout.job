@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType } from '../outreach-model.mjs';
+import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType } from '../lib/outreach-model.mjs';
 test('company grouping retains contacts and legacy role types', () => {
  const groups = groupContacts([{id:'1',company:' Google ',path:'Engineer (cold)'},{id:'2',company:'google',path:'Recruiter'}]);
  assert.equal(groups.length,1); assert.equal(groups[0].contacts.length,2);

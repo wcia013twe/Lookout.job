@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useId, useState } from "react";
-import { createPreparationPlan, setPreparationTaskCompletion } from "../../preparation-model.mjs";
+import { createPreparationPlan, setPreparationTaskCompletion } from "../../lib/preparation-model.mjs";
 import { control, Field, Notice, primary } from "./ui";
 import type { FormEvent } from "react";
 import type { Application, PreparationPlan } from "./workflow-types";
