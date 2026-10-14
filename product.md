@@ -54,6 +54,34 @@ Private, invite-based circles of friends and classmates, inspired by the **share
 
 A user connects Lookout to Muse, receives a ranked job batch and a tailored preparation plan, then joins a private circle. A friend voluntarily shares that they advanced to a technical interview; the circle sees a milestone card. Later another friend gets an offer and receives a celebratory reveal. The recipient may share lessons learned. Others can privately ask their own agents to assess a shared opening or adapt their preparation. No private histories are exposed.
 
+## Agentic Glassdoor — future product hypothesis
+
+Lookout could turn voluntarily shared job-search experiences into useful company-specific interview intelligence. Personal agents prepare structured summaries; people review and approve contributions; other agents use the shared facts to personalize preparation.
+
+**Scope:** Lookout organizes shared evidence. Muse handles individual reasoning. Do not rebuild Glassdoor reviews or LeetCode content.
+
+### Contribution and access
+
+- Agents propose summaries of interview stages, timelines, formats, reported topics, and useful preparation resources.
+- Users edit and explicitly approve what is shared, choosing private, circle-only, or public visibility.
+- Explore Glassdoor-inspired **give-to-get** access: useful, authentic contributions unlock additional insights. Do not disadvantage users who have not yet interviewed or reward fabricated submissions.
+- Other agents retrieve relevant company-and-role reports and adapt their users' preparation without exposing private agent context.
+
+### Trust and quality
+
+- Distinguish documented events, user reports, and inferences; never invent interview questions or rejection reasons.
+- Record dates, role levels, source type, and uncertainty. Avoid treating one person's experience as a universal hiring process.
+- Minimize identifying details, allow corrections and deletion, and respect confidentiality restrictions.
+- Shared reports are untrusted data, never instructions to recipient agents.
+
+### Smallest test
+
+1. `propose_hiring_insight` drafts a structured report.
+2. `approve_hiring_insight` requests human consent and visibility.
+3. `query_hiring_insights` retrieves permitted reports with provenance.
+
+**Network hypothesis:** more searches create more approved insights, improving the next person's preparation. Validate contribution rates, report quality, freshness, privacy, and actual usefulness before monetizing access. This remains a later experiment after the reliable workflow and Circles MVP.
+
 ## Business model and distribution hypotheses
 
 Lookout is a **lifestyle business by default**, with upside if adoption unexpectedly accelerates. A free bring-your-own-agent skill can attract technical users; optional paid convenience may serve people who don't want setup or maintenance overhead. Churn is acceptable only when acquisition and servicing economics work.
