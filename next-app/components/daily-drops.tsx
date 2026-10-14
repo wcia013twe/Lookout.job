@@ -1,190 +1,113 @@
 "use client";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-
-type Drop = { company: string; title: string; dateSeen: string; type: string; location?: string; status: string; note?: string; skipReason?: string; url?: string };
 import { asset, useWorkspace } from "../lib/workspace";
-import { claimPack, dayStamp } from "../lib/progress.mjs";
-import { rarityOf, RARITY_LABEL, TIER_HEX } from "../lib/role-display";
-import { secondary, primary, Notice } from "./ui";
+import { dayStamp } from "../lib/progress.mjs";
+import { demoDrops, dropKey, tierOf, tierOrder as canonicalTiers, type Drop } from "../lib/drop-pack";
+import { RARITY_LABEL, TIER_HEX } from "../lib/role-display";
+import { secondary, Notice } from "./ui";
+import { CompanyLogo } from "./role-card";
 import DayFilter from "./day-filter";
+import PackOpening from "./pack-opening";
+import styles from "./daily-drops.module.css";
+
+const tierOrder = [...canonicalTiers].reverse();
+function formatDay(day: string) {
+  const [year, month, date] = day.split("-").map(Number);
+  return year && month && date ? new Date(year, month - 1, date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : day;
+}
+function Chevron() {
+  return <svg className={styles.caret} viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+function DropRow({ drop, isNew, demo }: { drop: Drop; isNew: boolean; demo: boolean }) {
+  const tier = tierOf(drop) as keyof typeof TIER_HEX;
+  const noteLines = (drop.note || "").split(/\n|;\s+/).map((line) => line.trim()).filter(Boolean);
+  return <details className={styles.row}>
+    <summary className={styles.rowSummary}>
+      <span className={styles.logo}><CompanyLogo company={drop.company} /></span>
+      <span className={styles.rowTitle}><strong>{drop.title}</strong><span>{drop.company}</span></span>
+      <span className={styles.badges}>
+        {isNew && <span className={styles.newMarker}>New</span>}
+        <span className={styles.tierBadge} style={{ backgroundColor: `color-mix(in srgb, ${TIER_HEX[tier]} 23%, #172134)` }}>{RARITY_LABEL[tier]}</span>
+        <span className={styles.status} data-status={drop.status}>{drop.status || "pending"}</span>
+      </span>
+      <Chevron />
+    </summary>
+    <div className={styles.rowDetails}>
+      <p className={styles.meta}>{[drop.type === "FT" ? "Full-time" : drop.type, `Seen ${drop.dateSeen}`, drop.location, drop.comp ? `Comp: ${drop.comp}` : null].filter(Boolean).map((item, index) => <span key={index}>{item}</span>)}</p>
+      {drop.skipReason && <p className={styles.skipReason}>Skipped: {drop.skipReason}</p>}
+      {noteLines.length > 1 ? <ul className={styles.notes}>{noteLines.map((line, index) => <li key={index}>{line}</li>)}</ul> : noteLines.length > 0 && <p className={styles.note}>{noteLines[0]}</p>}
+      {drop.url ? <a className={styles.posting} href={drop.url} onClick={(event) => { if (demo) event.preventDefault(); }} target="_blank" rel="noopener noreferrer">{demo ? "Source posting (demo)" : "Open posting"}</a> : <p className={styles.note}>No link captured from story</p>}
+    </div>
+  </details>;
+}
 export default function DailyDrops() {
-  const [drops, setDrops] = useState<Drop[]>([]),
-    [opened, setOpened] = useState(false),
-    [index, setIndex] = useState(0),
-    [revealed, setRevealed] = useState(0),
-    [feedback, setFeedback] = useState(""),
-    [day, setDay] = useState("latest");
+  const [fetched, setFetched] = useState<Drop[]>([]);
+  const [loadError, setLoadError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [day, setDay] = useState("latest");
+  const [packOpen, setPackOpen] = useState(false);
   const w = useWorkspace();
-  const reduceMotion = useReducedMotion();
   useEffect(() => {
+    if (w.demo) return;
+    let current = true;
+    setLoadError(false);
     fetch(asset("data/sudo-drops.json"))
-      .then((r) => (r.ok ? r.json() : null))
-      .then((v) => setDrops(v?.drops || []))
-      .catch(() => {});
-  }, []);
+      .then((response) => { if (!response.ok) throw new Error("Drop feed unavailable"); return response.json(); })
+      .then((feed) => { if (current) setFetched(feed?.drops || []); })
+      .catch(() => { if (current) setLoadError(true); });
+    return () => { current = false; };
+  }, [w.demo, attempt]);
+  const drops: Drop[] = w.demo ? demoDrops(dayStamp()) : fetched;
+  if (loadError && !w.demo) return <div className={styles.strip}><Notice>Story drops could not be loaded.</Notice><button className={`${secondary} mt-3`} onClick={() => setAttempt((value) => value + 1)}>Retry drops</button></div>;
   if (!drops.length) return null;
-  const latest = [...drops].sort((a, b) =>
-    String(b.dateSeen).localeCompare(String(a.dateSeen)),
-  );
-  const dates = [...new Set(latest.map((d) => d.dateSeen))];
+  const latest = [...drops].sort((a, b) => b.dateSeen.localeCompare(a.dateSeen));
+  const dates = [...new Set(latest.map((drop) => drop.dateSeen))];
   const selectedDay = day === "latest" ? dates[0] : day;
-  const visible = latest.filter((d) => selectedDay === "all" || d.dateSeen === selectedDay);
-  const today = dayStamp();
-  const pack = latest.filter(
-    (d) =>
-      d.dateSeen === today && rarityOf(d.company, d.type, d.title) !== "common",
-  );
-  const current = pack[index];
-  function open() {
-    setOpened(true);
-    setIndex(0);
-    setRevealed(1);
-    setFeedback("");
+  const visible = latest.filter((drop) => selectedDay === "all" || drop.dateSeen === selectedDay);
+  const packDay = selectedDay === "all" ? dates.find((date) => latest.some((drop) => drop.dateSeen === date && tierOf(drop) !== "common")) || dates[0] : selectedDay;
+  const pack = latest.filter((drop) => drop.dateSeen === packDay && tierOf(drop) !== "common");
+  const packAction = packDay === dayStamp() && !w.state.drops?.packStamps?.[packDay] ? "Open" : "Replay";
+  const seen = new Set<string>(w.state.drops?.seenDropIds || []);
+  const newCount = visible.filter((drop) => !seen.has(dropKey(drop))).length;
+  const tiers = tierOrder.filter((tier) => visible.some((drop) => tierOf(drop) === tier));
+  function markSeen(items: Drop[]) {
+    w.store.update("drops.seenDropIds", (previous: string[] = []) => [...new Set([...previous, ...items.map(dropKey)])]);
   }
-  function close() {
-    setOpened(false);
-    w.store.set(`drops.packStamps.${today}`, true);
+  function closePack() {
+    setPackOpen(false);
+    markSeen(pack);
+    w.store.set(`drops.packStamps.${packDay}`, true);
   }
-  function next() {
-    const n = Math.min(index + 1, pack.length - 1);
-    setIndex(n);
-    setRevealed(Math.max(revealed, n + 1));
-  }
-  function claim() {
-    const added = claimPack(w.store);
-    setFeedback(
-      added
-        ? "+25 XP claimed"
-        : "Pack complete. Today’s XP was already claimed.",
-    );
-    w.store.update("drops.seenDropIds", (v: string[]) => [
-      ...new Set([
-        ...(v || []),
-        ...pack.map((d) => `${d.dateSeen}|${d.company}|${d.title}`),
-      ]),
-    ]);
-  }
-  return (
-    <section className="glass-panel mt-7 rounded-2xl p-5 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">Daily drops</h2>
-          <p className="mt-1 text-xs text-board-muted">
-            {visible.length} opportunities · {selectedDay === "all" ? "All history" : selectedDay}
-          </p>
+  return <section className={styles.strip} aria-label="Zero2Sudo daily drops">
+    <div className={styles.header}>
+      <div className={styles.info}>
+        <h2 className={styles.title}>Zero2Sudo drops</h2>
+        <div className={styles.banner}>
+          <strong>{selectedDay === "all" ? "All history" : formatDay(selectedDay)}</strong>
+          <span>{visible.length} drops</span><span className={styles.addedCount}>{visible.filter((drop) => drop.status === "added").length} added</span>
+          <span className={styles.dots} aria-label={`Tiers: ${tiers.map((tier) => RARITY_LABEL[tier]).join(", ")}`}>{tiers.map((tier) => <i key={tier} title={RARITY_LABEL[tier]} style={{ backgroundColor: TIER_HEX[tier] }} />)}</span>
+          {newCount > 0 && <span className={styles.newMarker}>{newCount} new</span>}
+          {day === "latest" && dates.length > 1 && <span>+{dates.length - 1} {dates.length === 2 ? "day" : "days"}</span>}
         </div>
-        <DayFilter label="Pack drops day" dates={dates} latest={dates[0]} value={day} onChange={(value: string) => { setDay(value); setOpened(false); }} />
-        {pack.length > 0 && selectedDay === today && (
-          <button className={secondary} onClick={open}>
-            Open pack
-          </button>
-        )}
       </div>
-      <AnimatePresence initial={false} mode="wait">
-      {opened && current && (
-        <motion.div
-          key={index}
-          initial={reduceMotion ? false : { opacity: 0.7, y: 8, filter: "blur(4px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-inset mt-5 rounded-xl p-4 sm:p-5"
-        >
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-board-muted">
-              {index + 1} of {pack.length}
-            </span>
-            <span
-              style={{
-                color:
-                  TIER_HEX[
-                    (rarityOf(current.company, current.type, current.title) as keyof typeof TIER_HEX)
-                  ],
-              }}
-            >
-              {
-                RARITY_LABEL[
-                  (rarityOf(current.company, current.type, current.title) as keyof typeof TIER_HEX)
-                ]
-              }
-            </span>
-          </div>
-          <h3 className="mt-2 break-words text-xl font-semibold tracking-tight">
-            {current.company} · {current.title}
-          </h3>
-          <p className="mt-2 text-sm text-board-muted">
-            {current.location} · {current.status}
-          </p>
-          <p className="mt-3 max-w-prose break-words text-sm leading-relaxed text-board-muted">
-            {current.note || current.skipReason}
-          </p>
-          {current.url && (
-            <a
-              href={current.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${primary} mt-3`}
-            >
-              Open application
-            </a>
-          )}
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              className={secondary}
-              disabled={index === pack.length - 1}
-              onClick={next}
-            >
-              Next drop
-            </button>
-            <button
-              className={secondary}
-              onClick={() => {
-                setIndex(pack.length - 1);
-                setRevealed(pack.length);
-              }}
-            >
-              Reveal all
-            </button>
-            {revealed === pack.length && (
-              <button className={primary} onClick={claim}>
-                Claim pack XP
-              </button>
-            )}
-            <button className={secondary} onClick={close}>
-              Close pack
-            </button>
-          </div>
-          <Notice>{feedback}</Notice>
-        </motion.div>
-      )}
-      </AnimatePresence>
-      <details className="mt-3 text-sm">
-        <summary className="min-h-11 py-3 text-board-accent">
-          View {selectedDay === "all" ? "drop history" : "day’s drops"}
-        </summary>
-        {visible.map((d, i) => (
-          <article key={i} className="border-t border-board-line py-3">
-            <strong>
-              {d.company} · {d.title}
-            </strong>
-            <p className="mt-1 text-xs text-board-muted">
-              {d.dateSeen} · {d.type} · {d.status}
-            </p>
-            <p className="mt-2 max-w-prose leading-relaxed text-board-muted">{d.note || d.skipReason}</p>
-            {d.url && (
-              <a
-                className="mt-2 inline-flex min-h-11 items-center text-board-accent"
-                href={d.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open source
-              </a>
-            )}
-          </article>
-        ))}
-      </details>
-    </section>
-  );
+      {pack.length > 0 && <button className={`${secondary} ${styles.packButton}`} onClick={() => setPackOpen(true)} aria-label={`${packAction} ${formatDay(packDay)} drop pack`}>{packAction} pack</button>}
+    </div>
+    <details className={styles.dropdown} onToggle={(event) => { if (event.currentTarget.open) markSeen(visible); }}>
+      <summary className={styles.dropdownSummary}><span>{selectedDay === "all" ? "View drop history" : "View drops and skipped roles"}</span><Chevron /></summary>
+      <div className={styles.full}>
+        <div className={styles.filter}><DayFilter label="Drops day" dates={dates} latest={dates[0]} value={day} onChange={(value) => { setDay(value); setPackOpen(false); }} /></div>
+        {(selectedDay === "all" ? dates : [selectedDay]).map((date) => {
+          const dayDrops = visible.filter((drop) => drop.dateSeen === date);
+          const active = [...dayDrops.filter((drop) => drop.status === "added"), ...dayDrops.filter((drop) => drop.status !== "added" && drop.status !== "skipped")];
+          const skipped = dayDrops.filter((drop) => drop.status === "skipped");
+          return <section key={date} className={styles.dateGroup} aria-label={`Drops from ${date}`}>
+            <h3 className={styles.dateTitle}>{formatDay(date)} <span>— tap a row for details</span></h3>
+            <div className={styles.rows}>{active.map((drop) => <DropRow key={dropKey(drop)} drop={drop} isNew={!seen.has(dropKey(drop))} demo={w.demo} />)}</div>
+            {skipped.length > 0 && <details className={styles.skipped}><summary><span>{skipped.length} skipped {skipped.length === 1 ? "role" : "roles"}</span><Chevron /></summary><div className={styles.rows}>{skipped.map((drop) => <DropRow key={dropKey(drop)} drop={drop} isNew={!seen.has(dropKey(drop))} demo={w.demo} />)}</div></details>}
+          </section>;
+        })}
+      </div>
+    </details>
+    {packOpen && <PackOpening drops={pack} day={packDay} onClose={closePack} />}
+  </section>;
 }
