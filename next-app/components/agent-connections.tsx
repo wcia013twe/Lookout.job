@@ -17,7 +17,7 @@ const scopes = [
   "approvals:read",
   "resumes:read",
 ];
-export default function AgentConnections() {
+export default function AgentConnections({onboarding=false}:{onboarding?:boolean}) {
   const w = useWorkspace();
   const [connections, setConnections] = useState<AgentConnection[]>([]),
     [token, setToken] = useState(""),
@@ -160,15 +160,15 @@ export default function AgentConnections() {
         </Field>
         <Field label="Access">
           <select className={control} name="access" defaultValue="work">
-            <option value="read">Read workspace</option>
+            <option value="read" disabled={onboarding}>Read workspace</option>
             <option value="work">
               Set up profile and prepare applications
             </option>
           </select>
         </Field>
-        <fieldset className="space-y-2"><legend className="mb-2 text-sm font-medium">Optional editing access</legend>
-          {optionalScopes.map(([scope,label]) => <label key={scope} className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" name={scope} />{label}</label>)}
-          <p className="text-xs text-board-muted">Used only with application access. These permissions never approve applications or verify answers.</p>
+        <fieldset className="space-y-2"><legend className="mb-2 text-sm font-medium">{onboarding ? "Onboarding editing access" : "Optional editing access"}</legend>
+          {optionalScopes.map(([scope,label]) => <label key={scope} className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" name={scope} required={onboarding&&scope==="preferences:write"} />{label}</label>)}
+          <p className="text-xs text-board-muted">{onboarding ? "Search-preference editing is required to record onboarding choices. Select it explicitly before creating this connection." : "Used only with application access. These permissions never approve applications or verify answers."}</p>
         </fieldset>
         <button className={primary} disabled={!w.user || busy}>
           Create agent connection

@@ -1,3 +1,4 @@
+import { demoOnboardingAction } from "./onboarding-demo.mjs";
 import { createPreparationPlan, setPreparationTaskCompletion } from '../../lib/preparation-model.mjs';
 import { normalizeQuietMode, buildDeliveryPolicy } from '../../lib/quiet-mode.mjs';
 
@@ -108,6 +109,7 @@ export function createDemoServices(store) {
     return value;
   }
   return {
+    async onboardingAction(operation, payload = {}) { return demoOnboardingAction(store, operation, payload); },
     async readApplicationTimeline(id) {
       const current = application(id);
       return { application: { ...copy(current), submitted_at: current.submittedAt || null }, milestones: copy(current.milestones || []) };

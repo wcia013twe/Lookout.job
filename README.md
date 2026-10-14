@@ -294,3 +294,20 @@ quiet-mode management, reconsideration and owned review links.
 Applications uses a single light list with hiring-stage dots and a wide application detail dialog, based on the supplied Simplify reference. Workflow preparation states are labeled separately from hiring progress. Detail navigation contains Overview, Documents, Resume Match, Email, Questions, and Rounds. Existing question review, approval, submission records, preparation and milestone services retain their authorization rules; no resume score or connected inbox is fabricated.
 
 Round notes use the existing owned `record_application_milestone` RPC (`source.note`, up to 2000 characters), and are displayed with their recorded event. The scoped MCP milestone operation continues to require its existing evidence contract; there is no new generic write capability. Experience cards are editable local text drafts created from round labels and notes. Download is an explicit human action and does not publish to a community, transmit notes, or include resume files or email excerpts. Community publishing remains unconnected.
+
+## Agent-first onboarding
+
+The onboarding flow now implements the PR #19 handoff: connection verification →
+minimum search intent → one evidenced relevant employer posting → contextual
+policy choice. Recommend-only does not need a résumé. Preparation asks for
+verified facts and a résumé only after value; automatic-application requests stay
+subject to existing human/runner/answer safeguards. The website and agent tools
+share backend state, revision checks, idempotent transitions and an owned task
+inbox. The admin demo uses explicitly fictional memory-only results.
+
+See [onboarding and task contract](backend/agent-contract.md#agent-first-onboarding-and-task-inbox).
+There is no verified inbound Muse hook, hosted Cappy runtime or scheduler/channel
+activation service; these report blockers and use polling rather than claiming
+immediate execution. Deploy migration `20261014210000_agent_first_onboarding.sql`
+and the updated `agent-gateway` / `agent-mcp` functions together after merge.
+`developerVersion` is incremented so agents refresh their context and tool list.

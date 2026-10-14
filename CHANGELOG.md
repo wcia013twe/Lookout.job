@@ -1,3 +1,10 @@
+## 2026-10-14 — Agent-first onboarding from PR #19
+
+- Replaced résumé-first setup with verified runtime → minimal search intent → one evidenced job → contextual recommend/prepare/auto-apply-request policy. Resume/fact review is conditional; web and plain-text MCP use the same persisted server state.
+- Added owner-isolated, revisioned, idempotent onboarding and a bounded polling task inbox with exclusive expiring claims, safe discovery retries and uncertain-outcome handling. No new submission, approval, fact-verification or notification authority.
+- Added progressive inactive delivery requests, private social defaults and isolated fictional admin demo coverage. Unsupported push, hosted Cappy, scheduler/channel activation and onboarding runner attestations remain explicit blockers.
+- Validation: 275 tests including database owner/scope/revocation, stale revisions, idempotence, first match before résumé, auto-apply safety and fictional demo checks; typecheck, catalog validation and production export. No live runtime hooks, notifications or employer submissions were exercised. Backend migration and both edge functions must deploy together after merge.
+
 ## 2026-10-14 — Consolidated local source layout
 
 - Grouped live browser state, sync, domain models and shared shaders in root `lib/`; moved the retained static frontend, its styles and vendored assets into `legacy/`. Updated production imports, regression fixtures, reference assets, auth build command and current documentation; feature behavior, URLs, persistence and product vision are unchanged.
