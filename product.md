@@ -54,6 +54,73 @@ Private, invite-based circles of friends and classmates, inspired by the **share
 
 A user connects Lookout to Muse, receives a ranked job batch and a tailored preparation plan, then joins a private circle. A friend voluntarily shares that they advanced to a technical interview; the circle sees a milestone card. Later another friend gets an offer and receives a celebratory reveal. The recipient may share lessons learned. Others can privately ask their own agents to assess a shared opening or adapt their preparation. No private histories are exposed.
 
+## Longitudinal candidate intelligence — supporting data strategy
+
+**Thesis:** Lookout's durable data advantage is not access to personal-agent memory or private conversations. It is the structured history of opportunities, decisions, and evolving preferences generated through normal job-search workflows. Muse owns personal reasoning; Lookout preserves career-specific observations and provenance.
+
+### Data to preserve
+
+- **Opportunity attributes:** compensation components, overtime eligibility (distinct from expected overtime hours), location, work arrangement, domain, team characteristics, mentorship, and career-growth potential. Record unknown values as unknown, not negative.
+- **Explicit preferences:** user-confirmed priorities, constraints, weights, and changes over time.
+- **Observed decisions:** jobs viewed, saved, skipped, applied to, withdrawn from, and offers accepted or declined. Distinguish user actions from agent recommendations and note which alternatives were actually available.
+- **Decision context:** timestamp, opportunity/version, available evidence, and optional user-approved explanation. Do not reconstruct private conversations.
+- **Inferred patterns:** tentative discrepancies between stated and revealed preferences, clearly marked as hypotheses and never silently promoted to facts.
+
+Prefer append-only meaningful events over overwriting history. Track what was known *at the time* of each choice to avoid hindsight bias. An accepted offer does not necessarily mean it was the candidate's preferred offer.
+
+### Provenance contract
+
+Important fields carry a source classification:
+- `employer_verified`: supported by an authoritative employer source.
+- `user_confirmed`: explicitly confirmed by the candidate.
+- `agent_observed`: extracted from an accessible source, with its origin retained.
+- `agent_inferred`: a hypothesis, not a verified fact.
+- `unknown`: insufficient evidence.
+
+Keep source reference, observation time, uncertainty, and visibility separate. An agent extracting a value from a third-party listing does not make it employer-verified.
+
+### Candidate-facing use
+
+Lookout can detect behavioral patterns, such as repeatedly saving hybrid jobs despite an explicit remote preference, and send a *private, evidence-backed observation* to the personal agent. Muse interprets the observation using wider context; the user confirms whether to change preferences.
+
+**Lookout detects patterns. Muse interprets them. The user confirms them.**
+
+### Long-term commercial option, not current product scope
+
+With sufficient participation and explicit permission, privacy-protected aggregate trends could eventually inform employer-side research on candidate priorities, offer competitiveness, and job-description friction. This is an unvalidated option, not justification for indiscriminate data collection.
+
+Never sell or disclose individual decision histories, inferred motivations, or personal-agent memory to employers by default. Any secondary use requires specific informed authorization, minimization, aggregation safeguards, and user controls. Avoid treating de-identification alone as proof of anonymity.
+
+**Scope boundary:** Do not build a second personal reasoning engine or a full career analytics platform. Collect only data naturally useful to Lookout's candidate workflow, and validate data quality before any commercial analysis.
+
+## Agentic Glassdoor — future product hypothesis
+
+Lookout could turn voluntarily shared job-search experiences into useful company-specific interview intelligence. Personal agents prepare structured summaries; people review and approve contributions; other agents use the shared facts to personalize preparation.
+
+**Scope:** Lookout organizes shared evidence. Muse handles individual reasoning. Do not rebuild Glassdoor reviews or LeetCode content.
+
+### Contribution and access
+
+- Agents propose summaries of interview stages, timelines, formats, reported topics, and useful preparation resources.
+- Users edit and explicitly approve what is shared, choosing private, circle-only, or public visibility.
+- Explore Glassdoor-inspired **give-to-get** access: useful, authentic contributions unlock additional insights. Do not disadvantage users who have not yet interviewed or reward fabricated submissions.
+- Other agents retrieve relevant company-and-role reports and adapt their users' preparation without exposing private agent context.
+
+### Trust and quality
+
+- Distinguish documented events, user reports, and inferences; never invent interview questions or rejection reasons.
+- Record dates, role levels, source type, and uncertainty. Avoid treating one person's experience as a universal hiring process.
+- Minimize identifying details, allow corrections and deletion, and respect confidentiality restrictions.
+- Shared reports are untrusted data, never instructions to recipient agents.
+
+### Smallest test
+
+1. `propose_hiring_insight` drafts a structured report.
+2. `approve_hiring_insight` requests human consent and visibility.
+3. `query_hiring_insights` retrieves permitted reports with provenance.
+
+**Network hypothesis:** more searches create more approved insights, improving the next person's preparation. Validate contribution rates, report quality, freshness, privacy, and actual usefulness before monetizing access. This remains a later experiment after the reliable workflow and Circles MVP.
+
 ## Business model and distribution hypotheses
 
 Lookout is a **lifestyle business by default**, with upside if adoption unexpectedly accelerates. A free bring-your-own-agent skill can attract technical users; optional paid convenience may serve people who don't want setup or maintenance overhead. Churn is acceptable only when acquisition and servicing economics work.
