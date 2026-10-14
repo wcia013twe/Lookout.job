@@ -97,7 +97,6 @@ export default function RoleCard({ role }: { role: Role }) {
         "--role-tier": TIER_HEX[rarity],
         "--role-refraction": REFRACTION[rarity],
         borderColor: `color-mix(in srgb, ${TIER_HEX[rarity]} 35%, var(--color-board-line))`,
-        background: "linear-gradient(145deg, #18324c65, #0b1025b8 50%, #311a3b60)",
       } as CSSProperties}
     >
       <motion.div className={styles.banner} style={{ "--sheen-x": reduceMotion ? "50%" : sheenX, "--sheen-strength": reduceMotion ? .2 : smoothIntensity } as CSSProperties}>

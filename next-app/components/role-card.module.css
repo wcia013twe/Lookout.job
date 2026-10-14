@@ -65,3 +65,14 @@
 @media (min-width: 640px) { .banner { padding-inline: 24px; } .body { padding: 24px; } }
 @media (prefers-reduced-motion: reduce) { .sheen { opacity: .2; background-position: center; } }
 @media (prefers-reduced-transparency: reduce) { .body { background: #111e30; } }
+
+/* Rarity remains a dark, readable glass header in both themes. */
+:global([data-theme="light"]) .banner { --color-board-tag: #172438; }
+:global([data-theme="light"]) .banner > :global(.bg-board-tag) { color: #f6f8ff; }
+:global([data-theme="light"]) .body {
+  color: var(--color-board-text);
+  background: linear-gradient(145deg, #f7fcff, #f3f6fe 52%, #faf2fb);
+}
+@media (prefers-reduced-transparency: reduce) {
+  :global([data-theme="light"]) .body { background: #f5f8fd; }
+}

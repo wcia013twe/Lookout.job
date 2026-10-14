@@ -83,3 +83,69 @@
 }
 
 .experience[data-phase="tearing"] :global(.seal-copy) { opacity:0; transition:opacity .15s; }
+
+/* Light reading surfaces keep the sealed foil and tier artwork expressive. */
+:global([data-theme="light"]) .experience {
+  border-color: #a99bb8;
+  background: #faf8fd;
+  color: #251d34;
+  box-shadow: 0 28px 90px -30px #33234d66;
+}
+:global([data-theme="light"]) .experience::backdrop { background: #25163280; }
+:global([data-theme="light"]) .experience :global(.pack-modal) {
+  background: radial-gradient(ellipse at 50% 22%, #e4d6f4b3, transparent 65%), #f5f2fa;
+}
+:global([data-theme="light"]) .experience :global(.pack-head p),
+:global([data-theme="light"]) .experience :global(.seal-instruction),
+:global([data-theme="light"]) .experience :global(.pack-history),
+:global([data-theme="light"]) .experience :global(.pack-tools p),
+:global([data-theme="light"]) .experience :global(.pack-nav span) { color: #625270; }
+:global([data-theme="light"]) .experience :global(button) {
+  background: #eee8f5;
+  border-color: #8b73a4;
+  color: #352344;
+}
+:global([data-theme="light"]) .experience :global(button:hover:not(:disabled)) {
+  background: #e3d8f2;
+  border-color: #6e4b91;
+}
+:global([data-theme="light"]) .experience :global(button:disabled) { opacity: .58; }
+:global([data-theme="light"]) .experience :global(:focus-visible) { outline-color: #6940a4; }
+:global([data-theme="light"]) .experience :global(.pack-tools button) {
+  background: transparent;
+  border-color: transparent;
+  color: #65438a;
+}
+:global([data-theme="light"]) .experience :global(.pack-tools button:hover:not(:disabled)) {
+  background: #e7def1;
+  border-color: #8b73a4;
+}
+:global([data-theme="light"]) .experience :global(.pack-row) { scrollbar-color: #9580aa #f5f2fa; }
+:global([data-theme="light"]) .experience :global(.dropcard),
+:global([data-theme="light"]) .experience :global(.dropcard-sheet) { background: #fffafd; }
+:global([data-theme="light"]) .experience :global(.dropcard-sheet h4),
+:global([data-theme="light"]) .experience :global(.dropcard-sheet dt),
+:global([data-theme="light"]) .experience :global(.drop-note) { color: #625270; }
+:global([data-theme="light"]) .experience :global(.dropcard-hint),
+:global([data-theme="light"]) .experience :global(.drop-note summary) { color: #65438a; }
+:global([data-theme="light"]) .experience :global(.dropcard-hint.done) { color: #28654c; }
+:global([data-theme="light"]) .experience :global(.drop-status) { background: #e5deed; color: #493756; }
+:global([data-theme="light"]) .experience :global(.dropcard-link:hover) { text-decoration: underline; text-underline-offset: 3px; }
+:global([data-theme="light"]) .experience :global(.t-mythic .dropcard-link) { background: #c42f12; color: #fff; }
+:global([data-theme="light"]) .experience :global(.pack-foot) { background: #eae3f2; border-top-color: #b7a9c8; }
+:global([data-theme="light"]) .experience :global(.pack-foot button) { background: #65438a; border-color: transparent; color: #fff; }
+:global([data-theme="light"]) .experience :global(.pack-foot button:hover:not(:disabled)) { background: #4e306f; border-color: transparent; }
+/* These are dark objects inside the light dialog, so their text and focus stay light. */
+:global([data-theme="light"]) .experience :global(.seal-copy) { color: #f5efff; }
+:global([data-theme="light"]) .experience :global(.pack-tear-button) { background: #eadaff; color: #251936; border: 0; }
+:global([data-theme="light"]) .experience :global(.pack-tear-button:hover:not(:disabled)) { background: #f5edff; }
+:global([data-theme="light"]) .experience :global(.card-mystery),
+:global([data-theme="light"]) .experience :global(.double-combo) {
+  border-color: #ac8cd5;
+  background: radial-gradient(ellipse at 50% 25%, #49306a, #141321 70%);
+  color: #f5efff;
+}
+:global([data-theme="light"]) .experience :global(.card-mystery:hover:not(:disabled)),
+:global([data-theme="light"]) .experience :global(.double-combo:hover:not(:disabled)) { background: radial-gradient(ellipse at 50% 25%, #574076, #141321 75%); border-color: #bfa5e0; }
+:global([data-theme="light"]) .experience :global(.card-mystery:focus-visible),
+:global([data-theme="light"]) .experience :global(.double-combo:focus-visible) { outline-color: #ffda77; }

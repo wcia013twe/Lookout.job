@@ -61,3 +61,39 @@
   .filter { max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) { .caret { transition: none; } }
+
+/* The feed becomes pearlescent; tier chips retain their dark rarity colors. */
+:global([data-theme="light"]) .strip {
+  border-color: #8b9db5;
+  background: linear-gradient(120deg, #eef8fd, #f5f5fc 52%, #faf0f8);
+  color: #17263d;
+}
+:global([data-theme="light"]) .title,
+:global([data-theme="light"]) .banner strong,
+:global([data-theme="light"]) .dateTitle,
+:global([data-theme="light"]) .rowTitle strong { color: #17263d; }
+:global([data-theme="light"]) .banner,
+:global([data-theme="light"]) .dateTitle span,
+:global([data-theme="light"]) .rowTitle > span,
+:global([data-theme="light"]) .meta,
+:global([data-theme="light"]) .note,
+:global([data-theme="light"]) .notes,
+:global([data-theme="light"]) .caret { color: #465b75; }
+:global([data-theme="light"]) .addedCount { color: #216248; }
+:global([data-theme="light"]) .newMarker { background: #fff0b5; color: #6e5008; }
+:global([data-theme="light"]) .strip .packButton { background: #ebe5f8; border-color: #8c7ba8; color: #49336d; }
+:global([data-theme="light"]) .strip .packButton:hover { background: #e2d8f4; border-color: #725a95; }
+:global([data-theme="light"]) .dropdownSummary { color: #493c6c; }
+:global([data-theme="light"]) .full { border-color: #b6c3d5; }
+:global([data-theme="light"]) .row { border-color: #9aacc1; background: #ffffffd9; }
+:global([data-theme="light"]) .row:hover { border-color: #667f9b; }
+:global([data-theme="light"]) .row[open] { border-color: #8b72aa; }
+:global([data-theme="light"]) .rowDetails { border-color: #c4cfde; }
+:global([data-theme="light"]) .status { background: #e4ebf4; color: #334762; }
+:global([data-theme="light"]) .status[data-status="added"] { background: #dff2e8; color: #1b6045; }
+:global([data-theme="light"]) .status[data-status="skipped"] { background: #eee6f4; color: #674b78; }
+:global([data-theme="light"]) .status[data-status="pending"] { background: #fff0d6; color: #78520c; }
+:global([data-theme="light"]) .skipReason { color: #784866; }
+:global([data-theme="light"]) .posting { color: #5c3b86; }
+:global([data-theme="light"]) .skipped > summary { border-color: #9aacc1; color: #465b75; background: #f4f7fc; }
+:global([data-theme="light"]) .skipped[open] > summary { border-color: #667f9b; }

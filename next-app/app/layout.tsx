@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import { WorkspaceProvider } from "../lib/workspace";
+import { colorModeScript } from "../lib/color-mode";
 import AppShell from "../components/app-shell";
 export const metadata = {
   title: "Lookout",
@@ -10,7 +11,8 @@ export const metadata = {
 };
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: colorModeScript }} /></head>
       <body>
         <WorkspaceProvider>
           <AppShell>{children}</AppShell>

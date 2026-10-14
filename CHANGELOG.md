@@ -468,3 +468,17 @@
 - Validation: 262 tests, 76-role catalog validation, TypeScript and production export;
   desktop/mobile, keyboard focus, drag, replay, repeat reward and reduced-motion UI
   checks. Device vibration and integrated signed-in behavior remain unverified.
+
+### 2026-10-14 — Light, dark and system themes
+
+- Added a header theme selector using Tailwind v4's data-theme dark variant.
+  Explicit light/dark choices persist in browser storage; System follows OS changes.
+  A guarded first-paint script applies the palette before React hydration.
+- Light mode uses pale glass and dark ink across navigation, forms, profile tabs,
+  role bodies, Zero2Sudo history and pack dialogs. Tier banners retain dark glass.
+- Theme is a device presentation preference shared by real/demo views, independent
+  of account records and backend/MCP actions. Setup retains its original night glass.
+- Validation: 267 tests (including first-paint, invalid and unavailable storage),
+  TypeScript, 76-role catalog validation and production export; mobile/desktop
+  palette, pack/profile controls, saved preference reload and System checks.
+  Live cross-tab and OS-change events remain unverified in the browser.

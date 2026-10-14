@@ -21,9 +21,9 @@ export function PreparationDisclosure({ children }: { children: ReactNode }) {
 
 export function ApplicationStatus({ status, children }: { status: string; children?: ReactNode }) {
   const tone = status === "Blocked" || status === "Awaiting approval"
-    ? "text-amber-200 bg-amber-200/8"
+    ? "text-board-warning bg-board-warning/8"
     : status === "Offer" || status === "Submitted"
-      ? "text-emerald-200 bg-emerald-200/8"
+      ? "text-board-success bg-board-success/8"
       : "text-board-accent bg-board-accent/8";
   return <span className={`inline-flex max-w-full flex-wrap items-center gap-x-1 rounded-md px-2 py-1 text-xs leading-relaxed ${tone}`}>{status}{children}</span>;
 }

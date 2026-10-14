@@ -150,3 +150,14 @@ Zero2Sudo history uses compact native disclosures with separate skipped rows. Th
 pack uses a native modal dialog and restores focus on close. Foil tearing, tier
 upgrades and bounded sparks run only while the pack is active; reduced motion
 removes the WebGL scene and motion. Paired drops stack in a scrollable phone view.
+
+### Color modes
+
+The header offers System, Light and Dark. Tailwind v4's dark variant is driven by
+`html[data-theme]`; semantic board colors and native color-scheme switch together.
+A small pre-paint script respects the saved device preference, with guarded storage
+and system fallback. Light mode pairs pale cyan/lavender pearl glass with dark navy
+ink and darker action/status colors. Dark mode keeps the existing navy spectrum.
+Tier banners and sealed foil remain deliberately dark in both modes; role sheets
+and pack dialog chrome adopt the chosen palette. Setup keeps its approved night
+composition. Preference changes never alter account or demo records.
