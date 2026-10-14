@@ -71,3 +71,12 @@ button:not(:disabled) {
 .pack-reveal {
   animation: pack-reveal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+@keyframes agent-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.agent-idle { animation: agent-idle 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .agent-idle { animation: none; }
+}

@@ -1,3 +1,9 @@
+## 2026-10-13 — Agent character selection
+
+- Added Dot, Grok Bot and Muse character cards to Profile’s onboarding flow, alongside platform suggestions and a custom agent option. Uses user-supplied PNG references with optional idle motion, native radio selection and reduced-motion support.
+- Saves the chosen provider/name with the existing profile; selecting a character does not create an external connection. The supplied Grok reference bears Bleap branding and is not verified official artwork; source GIFs were not supplied.
+- Validation: 177 tests, catalog validation, production export, mobile/desktop visual checks, selection/pause/continue and setup-save checks passed. Existing Discover theme tokens are preserved.
+
 ## 2026-10-13 — Backend-hosted outreach preparation
 
 - Removed user-facing agent prompts and JSON import. Prepare with Muse queues company outreach on the backend; signed-in contacts and finished drafts sync automatically.

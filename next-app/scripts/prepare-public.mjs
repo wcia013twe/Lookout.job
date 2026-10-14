@@ -11,6 +11,7 @@ for (const name of ["data", "icon.svg", "manifest.webmanifest"]) {
     if (e.code !== "ENOENT") throw e;
   }
 }
+await cp(fileURLToPath(new URL("../assets/agents/", import.meta.url)), dest + "agents", { recursive: true });
 // Replace the old worker at the same scope and discard stale static UI caches.
 await writeFile(
   dest + "sw.js",

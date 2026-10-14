@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import AgentSelector from "./agent-selector";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, primary, secondary, control, Field, Notice } from "./ui";
 const steps = ["Your agent", "Your profile", "About you"];
@@ -12,6 +13,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(0),
     [agent, setAgent] = useState(profile.setupAgent || "platform"),
     [agentName, setAgentName] = useState(profile.setupAgentName || ""),
+    [provider, setProvider] = useState(profile.setupAgentProvider || (["Dot", "Grok Bot", "Muse"].includes(profile.setupAgentName) ? {Dot:"dot", "Grok Bot":"grok", Muse:"muse"}[profile.setupAgentName] : "custom")),
     [source, setSource] = useState(profile.profileSource || "muse"),
     [name, setName] = useState(profile.name || ""),
     [intro, setIntro] = useState(profile.introduction || ""),
@@ -37,7 +39,8 @@ export default function Onboarding() {
       name: name.trim(),
       introduction: intro.trim(),
       setupAgent: agent,
-      setupAgentName: agentName.trim(),
+      setupAgentName: agent === "own" ? agentName.trim() : "",
+      setupAgentProvider: agent === "own" ? provider : "platform",
       profileSource: source,
       verified: false,
     });
@@ -52,7 +55,7 @@ export default function Onboarding() {
     }
   }
   return (
-    <div className="mx-auto max-w-xl">
+    <div className={`mx-auto ${step === 0 && !done ? "max-w-4xl" : "max-w-xl"}`}>
       {done ? (
         <>
           <Heading title={`You’re ready, ${name.trim()}.`}>
@@ -90,50 +93,14 @@ export default function Onboarding() {
                 <Heading title="A little help. A better job search.">
                   Choose your own agent or use the platform’s suggestions.
                 </Heading>
-                <fieldset>
-                  <legend className="mb-3 text-sm font-bold">
-                    Who will help with your search?
-                  </legend>
-                  {[
-                    [
-                      "platform",
-                      "Use platform suggestions",
-                      "Start with guided recommendations.",
-                    ],
-                    [
-                      "own",
-                      "Bring my own agent",
-                      "Use an agent you already work with.",
-                    ],
-                  ].map(([value, title, text]) => (
-                    <label
-                      key={value}
-                      className={`mb-3 flex min-h-20 items-center gap-3 rounded-xl border bg-board-panel p-4 ${agent === value ? "border-board-accent" : "border-board-line"}`}
-                    >
-                      <input
-                        type="radio"
-                        name="agent"
-                        checked={agent === value}
-                        onChange={() => setAgent(value)}
-                      />
-                      <span>
-                        <strong className="block text-sm">{title}</strong>
-                        <small className="mt-1 block text-board-muted">
-                          {text}
-                        </small>
-                      </span>
-                    </label>
-                  ))}
-                </fieldset>
-                {agent === "own" && (
+                <AgentSelector agent={agent} provider={provider} onSelect={(value, label) => {
+                  setAgent(value === "platform" ? "platform" : "own");
+                  setProvider(value);
+                  setAgentName(value === "custom" ? "" : label);
+                }} />
+                {agent === "own" && provider === "custom" && (
                   <Field label="Agent name">
-                    <input
-                      className={control}
-                      value={agentName}
-                      onChange={(e) => setAgentName(e.target.value)}
-                      maxLength={100}
-                      placeholder="My career assistant"
-                    />
+                    <input className={control} value={agentName} onChange={(e) => setAgentName(e.target.value)} maxLength={100} placeholder="My career assistant" />
                   </Field>
                 )}
                 <Notice>
