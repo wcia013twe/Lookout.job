@@ -27,7 +27,7 @@ function normalize(row, index) {
   const label = clean(row.label) || (round ? `Technical round ${round}` : labelFor[kind]) || 'Process update';
   const phase = ['scheduled', 'completed', 'received'].includes(row.phase) ? row.phase : 'received';
   return { id: clean(row.id) || `milestone-${index}`, kind, label, occurred_at: timelineDate(row.occurred_at ?? row.at), phase,
-    source: { kind: source.kind === 'email' ? 'email' : source.kind === 'user' ? 'user' : 'record', messageId: clean(source.messageId), subject: clean(source.subject), excerpt: clean(source.excerpt), receivedAt: clean(source.receivedAt), url: safeUrl(source.url) },
+    source: { kind: source.kind === 'email' ? 'email' : source.kind === 'user' ? 'user' : 'record', note: clean(source.note), messageId: clean(source.messageId), subject: clean(source.subject), excerpt: clean(source.excerpt), receivedAt: clean(source.receivedAt), url: safeUrl(source.url) },
     observedConfirmation: false,
   };
 }
