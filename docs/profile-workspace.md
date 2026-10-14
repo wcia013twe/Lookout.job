@@ -21,3 +21,32 @@ Workspace autosync preserves this list. Guest edits stay in the browser.
 Social content must be forwarded; public-page scanning needs runtime verification.
 Saving targets does not create a scanner, schedule, or social connection. Sharing is deferred.
 Demo fixtures include fictional targets of each type and use the same editing controls.
+
+## Job preference profiles
+
+Job preferences groups roles/experience, locations/working style, companies/industries,
+skills/compensation, exclusions and values. Each criterion has an optional Required,
+Preferred or Flexible priority. Each named search profile independently maintains
+career goals, tradeoffs and an associated tier-list ID. Profile facts and employment
+answers stay shared. Multiple active profiles are supported; paused profiles remain
+editable. Unsaved drafts survive switching profiles and Profile sections, and reset
+when the account or demo epoch changes.
+
+The editor uses the existing versioned `save_search_profile` RPC and
+`save_search_profile` MCP tool (`preferences.profile.save`, preferences:write).
+The six established filters and seven evaluation priorities retain their existing
+structured fields. Additional criteria, flexibility, goals and tier-list references
+are labeled text in `instructions`, available in existing personal context. This
+is agent guidance, not a new deterministic filtering engine. Preserve these labeled
+lines during agent edits; tier-list ID is authoritative, with current list data in
+the workspace. Company priority does not override role/team evidence. Deleting a
+referenced list shows an unavailable selection until a replacement is chosen.
+
+Tier-list edits save through the established shared list boundary; changes affect
+all profiles referencing that list. Associating a list requires Save profile and
+does not alter automatic-submission review policy. Notification cadence, automation,
+and review thresholds now live in My agent. Existing values and permissions remain.
+
+Demo has fictional full-time and paused internship profiles with separate goals
+and company lists. Verify edit/save/reload, switch profiles with unsaved text, pause
+and resume, maintain/associate a tier list, and reset to restore demo defaults.

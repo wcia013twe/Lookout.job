@@ -1,3 +1,18 @@
+## Organized preference profiles — 2026-10-14
+
+Grouped job preferences into familiar role, location, company, skills, compensation,
+exclusion and value sections. Added per-criterion Required/Preferred/Flexible guidance,
+per-profile career goals/tradeoffs, and tier-list associations. Retained advanced prose
+editing, multiple active/paused profiles, version checks and account/demo isolation.
+Moved update cadence, auto-apply and review thresholds into My agent. Shared tier-list
+edits remain distinct from per-profile selection and submission policy.
+
+Validation: 279 tests, 16 database scenarios, typecheck, production static build,
+catalog validation and mechanical UI check pass. Browser checks verified guest save,
+reload persistence, multiline goals, independent profiles/lists, moved agent controls,
+and narrow/desktop layout. Live signed-in agent analysis was not exercised. Demo has
+fictional resettable full-time/internship strategies and separate company rankings.
+
 ## 2026-10-14 — Agent-first onboarding from PR #19
 
 - Replaced résumé-first setup with verified runtime → minimal search intent → one evidenced job → contextual recommend/prepare/auto-apply-request policy. Resume/fact review is conditional; web and plain-text MCP use the same persisted server state.

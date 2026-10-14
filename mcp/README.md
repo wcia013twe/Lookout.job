@@ -173,3 +173,14 @@ Muse supplies deadlines from its own authorized email connection, checks quiet-m
 advice before messaging, and acknowledges only after successful delivery. These
 tools do not connect an inbox, create a recurring schedule or send a notification.
 Read the gateway contract for payloads, versions and evidence boundaries.
+
+### Organized preference profiles
+
+The existing `save_search_profile` tool supports the reorganized editor without a
+new permission or payload schema. Additional criteria, Required/Preferred/Flexible
+weights, career goals/tradeoffs, and associated company-list ID are labeled lines in
+`profile.instructions`. Preserve custom prose and existing labeled sections. Resolve
+company tiers from the owned list identified by `Company priorities / Tier list ID`;
+its name is descriptive. This association guides job analysis and does not change
+automation review thresholds or grant submission permission. Website and MCP writes
+retain the same ownership, stale-version, and policy-injection checks.

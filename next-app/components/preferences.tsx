@@ -6,7 +6,7 @@ import QuietDemoPreview from "./quiet-demo-preview";
 import { useQuietSettings } from "../lib/quiet-settings";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, Notice } from "./ui";
-export default function Preferences({ showDefaultResume = true }: { showDefaultResume?: boolean }) {
+export default function Preferences({ showDefaultResume = true, mode = "all" }: { showDefaultResume?: boolean; mode?: "all" | "search" | "agent" }) {
   const w = useWorkspace(),
     p = w.state.workflow.searchPreferences || {};
   const [feedback, setFeedback] = useState("");
@@ -29,6 +29,7 @@ export default function Preferences({ showDefaultResume = true }: { showDefaultR
   }
   return (
     <>
+      {mode !== "search" && <>
       <Section title="Muse updates">
         <p className="mb-5 max-w-prose text-sm text-board-muted">
           Keep applying under your application policy. Choose when Muse should
@@ -169,7 +170,8 @@ export default function Preferences({ showDefaultResume = true }: { showDefaultR
           </Field>}
         </div>
       </Section>
-      <SearchProfiles />
+      </>}
+      {mode !== "agent" && <SearchProfiles />}
     </>
   );
 }

@@ -203,6 +203,7 @@ test('demo search profiles include active and paused searches and reset isolated
  store.set('workflow.searchPreferences.profiles', profiles);
  assert.equal(store.get('workflow.searchPreferences.profiles')[0].instructions, 'Edited demo instructions');
  const reset = demoFixtures('2026-10-14').state;
- assert.equal(reset.workflow.searchPreferences.profiles[0].instructions, 'I want a reliable team with time to learn.');
+ assert.ok(reset.workflow.searchPreferences.profiles[0].instructions.includes('I want a reliable team with time to learn.'));
+ assert.deepEqual(reset.workflow.searchPreferences.profiles, initial.workflow.searchPreferences.profiles);
  assert.notEqual(initial.workflow.searchPreferences.profiles[0].instructions, profiles[0].instructions);
 });
