@@ -15,7 +15,7 @@ function fixture(options={}) {
   if(path.includes('/pulls?'))return [pr];
   if(path.endsWith('/pulls/1'))return ++pulls>1&&options.headChanged?{...pr,head:{...pr.head,sha:changed}}:options.fork?{...pr,head:{...pr.head,repo:{full_name:'fork/repo'}}}:pr;
   if(path.endsWith('/git/ref/heads/main'))return {object:{sha:++refs>1&&options.baseChanged?changed:base}};
-  if(path.includes('/actions/workflows/deploy.yml/runs'))return options.noDeploy?{workflow_runs:[]}:{workflow_runs:[{id:10,head_sha:base,status:'completed',conclusion:options.deployFailed?'failure':'success'}]};
+  if(path.includes('/actions/workflows/deploy.yml/runs'))return options.noDeploy?{workflow_runs:[]}:{workflow_runs:[{id:10,head_sha:base,status:options.deployRunning?'in_progress':'completed',conclusion:options.deployFailed?'failure':'success'}]};
   if(path.includes('/compare/'))return {status:options.behind?'behind':'ahead'};
   if(path.endsWith('/update-branch')){if(options.conflict){const error=Error('conflict');error.status=422;throw error;}return {};}
   if(path.includes('/check-runs?'))return {check_runs:[{id:1,name:'CI',status:'completed',conclusion:options.ciFailed?'failure':'success'}]};
@@ -25,7 +25,7 @@ function fixture(options={}) {
  };
  return {calls,api};
 }
-for(const [flag,result] of [['fork','fork'],['deployFailed','deployment-failed'],['noDeploy','deploying'],['behind','updated'],['ciFailed','testing'],['headChanged','changed'],['baseChanged','changed']])test('queue holds safely: '+flag,async()=>{
+for(const [flag,result] of [['fork','fork'],['deployFailed','deployment-failed'],['behind','updated'],['ciFailed','testing'],['headChanged','changed'],['baseChanged','changed']])test('queue holds safely: '+flag,async()=>{
  const f=fixture({[flag]:true});assert.equal(await runQueue({api:f.api,repo:'owner/repo',log:()=>{}}),result);assert.equal(f.calls.some(call=>call.path.endsWith('/merge')),false);
  if(flag==='behind')assert.ok(f.calls.some(call=>call.path.endsWith('/ci.yml/dispatches')));
 });
@@ -33,9 +33,12 @@ test('merge pins tested head and explicitly triggers deployment despite GITHUB_T
  const f=fixture();assert.equal(await runQueue({api:f.api,repo:'owner/repo',log:()=>{}}),'merged');
  assert.deepEqual(f.calls.find(call=>call.path.endsWith('/merge')).body,{sha:head,merge_method:'squash'});
  assert.ok(f.calls.some(call=>call.path.endsWith('/deploy.yml/dispatches')));
+ assert.ok(f.calls.some(call=>call.path.endsWith('/merge-queue.yml/dispatches')));
 });
 test('API transport rejects external destinations and never exposes credential in errors',async()=>{
  let requested=false;const api=githubApi('secret',async()=>{requested=true;return new Response('{}',{status:403});});
  await assert.rejects(api('GET','//evil.test'),/Relative/);assert.equal(requested,false);
  await assert.rejects(api('GET','/repos/owner/repo'),/rejected \(403\)/);
 });
+
+for(const flag of ['deployRunning','noDeploy'])test('queue continues validated merges without waiting for deployment: '+flag,async()=>{const f=fixture({[flag]:true});assert.equal(await runQueue({api:f.api,repo:'owner/repo',log:()=>{}}),'merged');});

@@ -8,7 +8,10 @@
     "build:auth": "esbuild auth.js --bundle --format=esm --platform=browser --target=es2022 --minify --outfile=assets/vendor/auth.bundle.js",
     "test:db": "node backend/check-schema.mjs",
     "dev": "npm --prefix next-app run dev",
-    "build": "npm --prefix next-app run build"
+    "build": "npm --prefix next-app run build",
+    "feature:start": "node scripts/feature-delivery.mjs start",
+    "feature:publish": "node scripts/feature-delivery.mjs publish",
+    "feature:status": "node scripts/feature-delivery.mjs status"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3"

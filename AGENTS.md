@@ -20,7 +20,9 @@
 
 ## UI development workflow
 
-- For feature work, refresh main and use a separate `codex/` branch/worktree for each parallel feature. Push the branch, open a PR and add `merge-ready` when implementation and local checks pass. GitHub validates current changes, merges ready PRs serially and deploys. The user authorized automatic PR creation, queueing, merges and deployment; do not ask for push/merge confirmation. Do not push feature changes directly to protected main. Address review findings on the feature branch; unresolved findings, failed CI or failed production deployment pause the queue.
+- Start every feature with `npm run feature:start -- <name>` from this repository. Work only in the returned fresh checkout; run `npm ci` and `npm ci --prefix next-app` there. This prevents shared edits, stale main, Git index races, and cloud-offloaded dependencies. Reuse that checkout for follow-ups.
+- Commit the intended files, then run `npm run feature:publish -- --title "<feature>" --body-file <absolute-pr-description-file>`. This pushes, creates/updates a non-draft PR, labels it `merge-ready`, and immediately wakes the queue. Do not manually poll CI or merge each PR; inspect `npm run feature:status` when status is needed. Conflict or failed-check fixes stay on the same branch and use the same publish command.
+- For feature work, refresh main and use a separate `codex/` branch/worktree for each parallel feature. Push the branch, open a PR and add `merge-ready` when implementation and local checks pass. GitHub validates current changes, merges ready PRs serially and deploys. The user authorized automatic PR creation, queueing, merges and deployment; do not ask for push/merge confirmation. Do not push feature changes directly to protected main. Address review findings on the feature branch; unresolved findings, failed CI or a failed completed production deployment pause the queue. Running deployments do not hold up validated merges.
 - Keep a concise `CHANGELOG.md` entry for each feature pass, including validation and any verification limits.
 - Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
 - The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. Legacy static modules are retained for regression/reference and shared models, not new UI work.
@@ -31,7 +33,7 @@
 - Read the root README desired interaction and the gateway/MCP/runner contracts before extending behavior.
 - Keep human approval, user-reported progress, and validated submission receipts distinct.
 - Keep migrations, server functions, pure mapping/models, UI framing, and `styles/` in their existing locations.
-- Run `npm test`, `npm run test:db`, `npm run validate:data` and rebuild the auth bundle for auth/cloud/client changes.
+- Run `npm test` (includes every database scenario) and `npm run validate:data`; use `npm run test:db` only for focused database debugging and rebuild the auth bundle for auth/cloud/client changes.
 - Add new features with current-state documentation and honest verification limits; do not describe unconnected external services as live.
 - `supabase/functions/agent-gateway/instructions.json` owns the agent interaction contract and developer message defaults. Increment `developerVersion` whenever instructions, defaults, settings mappings or advertised capabilities change, and deploy the gateway with the config through the production workflow after merge. Do not deploy feature branches directly to the shared production project. Personal versions are server-controlled triggers; never reset or edit them from clients.
 

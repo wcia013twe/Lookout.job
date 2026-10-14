@@ -13,12 +13,11 @@ export async function runQueue({api,repo,log=console.log}) {
   let pr=await api('GET',root+'/pulls/'+candidate.number);
   if(pr.head.repo?.full_name!==repo){log('Fork PRs require maintainer integration');return 'fork';}
   const latest=(await api('GET',root+'/git/ref/heads/main')).object.sha;
-  // Do not merge the next feature until the current production release succeeds.
-  const releases=await paginate(api,root+'/actions/workflows/deploy.yml/runs?branch=main&head_sha='+latest,'workflow_runs');
-  const release=releases.filter(run=>run.head_sha===latest).sort((a,b)=>b.id-a.id)[0];
-  if(!release){await api('POST',root+'/actions/workflows/deploy.yml/dispatches',{ref:'main'});log('Dispatched missing production deployment');return 'deploying';}
-  if(release.status!=='completed'){log('Waiting for production deployment');return 'deploying';}
-  if(release.conclusion!=='success'){log('Production failed; queue paused until deployment is fixed');return 'deployment-failed';}
+  // Production publishes remain serialized, but a running release must not
+  // hold up branch refresh, CI, or another independently validated merge.
+  const releases=await paginate(api,root+'/actions/workflows/deploy.yml/runs?branch=main','workflow_runs');
+  const release=releases.filter(run=>run.status==='completed' && !['cancelled','skipped'].includes(run.conclusion)).sort((a,b)=>b.id-a.id)[0];
+  if(release && release.conclusion!=='success'){log('Latest completed production release failed; queue paused');return 'deployment-failed';}
   const comparison=await api('GET',root+'/compare/'+latest+'...'+pr.head.sha);
   if(!['ahead','identical'].includes(comparison.status)) {
     try {await api('PUT',root+'/pulls/'+pr.number+'/update-branch',{expected_head_sha:pr.head.sha});}
@@ -43,7 +42,8 @@ export async function runQueue({api,repo,log=console.log}) {
   // GITHUB_TOKEN merges suppress ordinary push events. Explicitly dispatch the
   // trusted main deployment, rather than leaving the new code undeployed.
   await api('POST',root+'/actions/workflows/deploy.yml/dispatches',{ref:'main'});
-  log('Merged PR #'+pr.number+' and dispatched production deployment');return 'merged';
+  await api('POST',root+'/actions/workflows/merge-queue.yml/dispatches',{ref:'main'});
+  log('Merged PR #'+pr.number+'; deployment and the next queue pass dispatched');return 'merged';
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {const result=await runQueue({api:githubApi(process.env.GH_TOKEN),repo:process.env.GITHUB_REPOSITORY});if(process.env.GITHUB_STEP_SUMMARY)await appendFile(process.env.GITHUB_STEP_SUMMARY,`Merge queue: **${result}**\n`);}

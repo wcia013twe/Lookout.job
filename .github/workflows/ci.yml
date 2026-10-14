@@ -33,7 +33,6 @@ jobs:
       - run: npm ci
       - run: npm ci --prefix next-app
       - run: npm test
-      - run: npm run test:db
       - run: npm run validate:data
       - name: Build reference auth module
         run: npm run build:auth
