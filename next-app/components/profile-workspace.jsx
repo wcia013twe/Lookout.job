@@ -6,6 +6,7 @@ import { Heading, primary, secondary, Field, control } from "./ui";
 import ProfileEditor from "./profile-editor";
 import Resumes from "./resumes";
 import SavedAnswers from "./saved-answers";
+import SearchTargets from "./search-targets";
 import Preferences from "./preferences";
 import TierLists from "./tierlists";
 import AgentConnections from "./agent-connections";
@@ -14,6 +15,7 @@ const sections = [
   ["about", "About me", "Contact details, experience, education, projects, and skills."],
   ["kit", "Application kit", "Resumes and saved answers for your applications."],
   ["preferences", "Job preferences", "Search criteria and company tiers."],
+  ["targets", "Search targets", "Job boards, company careers pages, and social accounts where Muse looks."],
   ["agent", "My agent", "Your companion, connection, and permissions."],
 ];
 
@@ -61,6 +63,7 @@ export default function ProfileWorkspace() {
       {visited.includes("about") && <section hidden={active !== "about"} aria-label="About me"><ProfileEditor /></section>}
       {visited.includes("kit") && <section hidden={active !== "kit"} aria-label="Application kit"><Resumes /><Field label="Default private PDF resume"><select className={control} value={w.state.workflow.searchPreferences?.defaultResumeId || ""} onChange={(e) => w.store.update("workflow.searchPreferences", (previous) => ({ ...previous, defaultResumeId: e.target.value || null }))}><option value="">Choose a private uploaded PDF</option>{resumes.filter((resume) => /\.pdf$/i.test(resume.objectPath || "") && resume.contentHash).map((resume) => <option key={resume.id} value={resume.id}>{resume.name}</option>)}</select></Field><p className="mt-2 text-xs text-board-muted">Default resume selection saves automatically.</p><SavedAnswers /></section>}
       {visited.includes("preferences") && <section hidden={active !== "preferences"} aria-label="Job preferences"><Preferences showDefaultResume={false} /><TierLists /></section>}
+      {visited.includes("targets") && <section hidden={active !== "targets"} aria-label="Search targets"><SearchTargets /></section>}
       {visited.includes("agent") && <section hidden={active !== "agent"} aria-label="My agent"><Heading title="My agent">Manage your connection and permissions.</Heading><Link href="/onboarding/" className={secondary}>Change companion</Link><AgentConnections /></section>}
     </>
   );
