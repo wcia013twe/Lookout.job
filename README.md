@@ -278,3 +278,9 @@ isolated from account storage, private files and external applications.
 [Feature MCP parity](backend/MUSE_FEATURE_PARITY.md) maps each action to a scoped
 tool or an explicit human-only boundary. Developer context version **12** includes
 quiet-mode management, reconsideration and owned review links.
+
+### Application tracker layout
+
+Applications uses a single light list with hiring-stage dots and a wide application detail dialog, based on the supplied Simplify reference. Workflow preparation states are labeled separately from hiring progress. Detail navigation contains Overview, Documents, Resume Match, Email, Questions, and Rounds. Existing question review, approval, submission records, preparation and milestone services retain their authorization rules; no resume score or connected inbox is fabricated.
+
+Round notes use the existing owned `record_application_milestone` RPC (`source.note`, up to 2000 characters), and are displayed with their recorded event. The scoped MCP milestone operation continues to require its existing evidence contract; there is no new generic write capability. Experience cards are editable local text drafts created from round labels and notes. Download is an explicit human action and does not publish to a community, transmit notes, or include resume files or email excerpts. Community publishing remains unconnected.
