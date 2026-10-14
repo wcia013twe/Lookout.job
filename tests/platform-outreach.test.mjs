@@ -1,3 +1,4 @@
+import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile,readdir } from 'node:fs/promises';
@@ -6,8 +7,8 @@ import { validateRequest } from '../supabase/functions/agent-gateway/contract.mj
 import { TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
 import { PGlite } from '@electric-sql/pglite';
 test('platform exposes full versioned skill and scoped tools without local installation',async()=>{
- const context=contextResponse('context.developer',{});const skill=context.skills.find(s=>s.id==='cold-outreach');assert.match(skill.instructions,/save_outreach_package/);assert.equal(skill.instructions,(await readFile('skills/cold-outreach/SKILL.md','utf8')).split('---',3)[2].trim());
- const copy=contextResponse('context.developer',{});copy.skills[0].instructions='changed';assert.notEqual(contextResponse('context.developer',{}).skills[0].instructions,'changed');
+ const context=contextResponse('context.developer',{});const skill=readGuide('cold-outreach');assert.match(skill.instructions,/save_outreach_package/);assert.equal(skill.instructions,(await readFile('skills/cold-outreach/SKILL.md','utf8')).split('---',3)[2].trim());
+ const copy=contextResponse('context.developer',{});copy.guides[0].name='changed';assert.notEqual(contextResponse('context.developer',{}).guides[0].name,'changed');
  assert.equal(TOOLS.find(t=>t.name==='read_outreach_workspace').scope,'workspace:read');assert.equal(TOOLS.find(t=>t.name==='save_outreach_package').scope,'drafts:write');
  assert.throws(()=>validateRequest({operation:'outreach.prepare',payload:{requestId:'x'}}));
  const valid={requestId:'11111111-1111-1111-1111-111111111111',eventKey:'stable',contacts:[{company:'Acme',contact:'Sam',contactType:'engineer',message:'Hi Sam, would you consider referring me?'}]};

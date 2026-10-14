@@ -215,7 +215,7 @@ as part of development validation.
 
 Referrals groups contacts by company and shows editable, copy-ready messages and LinkedIn links. Signed-in contacts, drafts and requests are owner-scoped backend records; guest contacts stay in the browser and existing signed-in local contacts migrate on the next visit.
 
-**Prepare with Muse** saves the chosen companies as a queued request. Muse checks `read_outreach_workspace` on each connected run and uses the platform-hosted `cold-outreach` skill from `read_developer_context.skills`. `save_outreach_package` writes researched contacts and finished messages directly to the backend; the page refreshes them automatically. Users do not copy agent prompts or import JSON. Requests wait for the next agent run; the backend does not start or wake an external Muse process. Copying/opening links never sends a message.
+**Prepare with Muse** saves the chosen companies as a queued request. Muse checks `read_outreach_workspace` on each connected run and uses the platform-hosted `cold-outreach` guide loaded through `read_guide` with id `cold-outreach`. `save_outreach_package` writes researched contacts and finished messages directly to the backend; the page refreshes them automatically. Users do not copy agent prompts or import JSON. Requests wait for the next agent run; the backend does not start or wake an external Muse process. Copying/opening links never sends a message.
 
 The skill's authoring source is `skills/cold-outreach/SKILL.md`; its deployed package is `supabase/functions/agent-gateway/skills/cold-outreach.json`. A regression check keeps their instructions identical. Updates increment `developerVersion` and deploy the gateway. No local skill installation is required. Outreach reads use `workspace:read`; draft preparation uses `drafts:write`. Existing contact edits require the current revision, completed requests retry idempotently, and agent changes preserve human outreach status.
 
@@ -246,3 +246,7 @@ Developer contract version **9** advertises these tools.
 ## Admin demo mode
 
 Accounts with server-managed `app_metadata.demo_preview=true` can toggle Demo mode in the header. Mock jobs, applications, profile, tier lists and Robinhood/Stripe outreach live in a separate in-memory store. Demo mode disconnects the view from the authenticated client, prevents real submissions/uploads and supports Reset demo/Exit demo mode. Real account data remains in its original store. Company logos scaffold referral groups and the selected contact; Robinhood uses its official public icon URL when no cached asset exists.
+
+## Internal Muse guides
+
+Developer context carries only a versioned guide index. The authenticated, read-only `read_guide(id)` tool loads `resume-parse` or `cold-outreach` on demand using existing workspace:read authorization. Guides are deployed backend configuration, never user-editable prompts. Each includes when-to-use guidance, instructions and expected output. Cache by id/version and refresh when the index changes. No new user interface or local skill installation is required. Demo profile and company-grouped referral drafts remain the representative outputs; demo mode makes no guide/backend calls.

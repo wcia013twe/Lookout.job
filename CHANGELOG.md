@@ -3,6 +3,13 @@
 - Applied the supplied reference’s dark glass surfaces, curved illuminated backdrop, and cyan/mint/lilac/pink edge lighting to onboarding only. Retained static characters, two-step flow, native choices and visible focus.
 - Validation: production export and catalog validation; mobile/desktop visual review. No onboarding animations introduced.
 
+## Internal Muse guide library — 2026-10-13
+
+- Added backend-only résumé parsing and cold outreach guides, a lightweight versioned index and scoped read_guide tool. Full instructions load only when relevant.
+- Guide reads reuse existing credential/context authorization; no schema or permissions changes. Developer version 10 triggers discovery/context refresh.
+- Demo parsed profile stays unverified and existing fictional referral drafts illustrate guide outputs; demo remains isolated.
+- Validation: full tests, database/data checks and production build; authorization rejection and unknown-guide behavior tested. No real résumé parsing or external Muse run performed.
+
 ## 2026-10-13 — Static onboarding
 
 - Removed character idle motion, step arrival animation, and pause/resume controls. Character selection and the full-screen setup layout remain interactive without animation.
