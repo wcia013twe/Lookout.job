@@ -27,6 +27,14 @@ export async function runQueue({api,repo,log=console.log}) {
     await api('POST',root+'/actions/workflows/ci.yml/dispatches',{ref:pr.head.ref});
     log('Updated oldest ready PR; waiting for fresh CI and review');return 'updated';
   }
+  // Bot branch updates create approval-required PR runs on current GitHub.
+  // Approve only this reviewed same-repository PR's CI at its exact head.
+  const pending=await paginate(api,root+'/actions/workflows/ci.yml/runs?head_sha='+pr.head.sha+'&status=action_required','workflow_runs');
+  const approval=pending.find(run=>run.head_sha===pr.head.sha && run.head_repository?.full_name===repo && run.path==='.github/workflows/ci.yml' && run.event==='pull_request' && run.pull_requests?.some(p=>p.number===pr.number));
+  if(approval){
+    await api('POST',root+'/actions/runs/'+approval.id+'/approve');
+    log('Approved queued PR CI for its reviewed head; waiting for checks');return 'approving';
+  }
   const checks=[];
   for(const sha of new Set([pr.head.sha,pr.merge_commit_sha].filter(Boolean)))checks.push(...await paginate(api,root+'/commits/'+sha+'/check-runs?check_name=CI','check_runs'));
   const ci=checks.filter(check=>check.name==='CI').sort((a,b)=>b.id-a.id)[0];

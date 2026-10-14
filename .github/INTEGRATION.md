@@ -29,7 +29,9 @@ an agent to sit waiting for CI. Agents must attach the returned PR URL in Codex.
 
 GitHub processes labelled PRs in creation order. The worker refreshes an outdated
 branch, explicitly starts CI for its new commit, and merges only the tested head
-when main is unchanged and GitHub protections are satisfied. Conflicts, failed
+when main is unchanged and GitHub protections are satisfied. Approval-required
+CI created by bot refreshes is approved only for the labelled same-repository PR
+and its exact current head; fork workflow runs are never approved by the queue. Conflicts, failed
 CI, unresolved reviews, or a failed completed production deployment hold the
 queue; fix the oldest PR or remove its `merge-ready` label to release the next.
 A running production deployment does not delay the next validated merge.

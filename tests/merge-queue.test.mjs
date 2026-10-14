@@ -16,6 +16,8 @@ function fixture(options={}) {
   if(path.endsWith('/pulls/1'))return ++pulls>1&&options.headChanged?{...pr,head:{...pr.head,sha:changed}}:options.fork?{...pr,head:{...pr.head,repo:{full_name:'fork/repo'}}}:pr;
   if(path.endsWith('/git/ref/heads/main'))return {object:{sha:++refs>1&&options.baseChanged?changed:base}};
   if(path.includes('/actions/workflows/deploy.yml/runs'))return options.noDeploy?{workflow_runs:[]}:{workflow_runs:[{id:10,head_sha:base,status:options.deployRunning?'in_progress':'completed',conclusion:options.deployFailed?'failure':'success'}]};
+  if(path.includes('/actions/workflows/ci.yml/runs'))return {workflow_runs:options.approval?[{id:20,head_sha:head,event:'pull_request',head_repository:{full_name:'owner/repo'},path:'.github/workflows/ci.yml',pull_requests:[{number:options.unrelatedApproval?2:1}]}]:[]};
+  if(path.endsWith('/approve'))return {};
   if(path.includes('/compare/'))return {status:options.behind?'behind':'ahead'};
   if(path.endsWith('/update-branch')){if(options.conflict){const error=Error('conflict');error.status=422;throw error;}return {};}
   if(path.includes('/check-runs?'))return {check_runs:[{id:1,name:'CI',status:'completed',conclusion:options.ciFailed?'failure':'success'}]};
@@ -42,3 +44,7 @@ test('API transport rejects external destinations and never exposes credential i
 });
 
 for(const flag of ['deployRunning','noDeploy'])test('queue continues validated merges without waiting for deployment: '+flag,async()=>{const f=fixture({[flag]:true});assert.equal(await runQueue({api:f.api,repo:'owner/repo',log:()=>{}}),'merged');});
+
+test('queue approves only reviewed same-repository CI before attempting a merge',async()=>{const f=fixture({approval:true});assert.equal(await runQueue({api:f.api,repo:'owner/repo',log:()=>{}}),'approving');assert.ok(f.calls.some(c=>c.path.endsWith('/actions/runs/20/approve')));assert.equal(f.calls.some(c=>c.path.endsWith('/merge')),false);});
+
+test('queue never approves unrelated PR workflows or fork workflows',async()=>{for(const options of [{approval:true,unrelatedApproval:true},{approval:true,fork:true}]){const f=fixture(options);await runQueue({api:f.api,repo:'owner/repo',log:()=>{}});assert.equal(f.calls.some(c=>c.path.endsWith('/approve')),false);}});
