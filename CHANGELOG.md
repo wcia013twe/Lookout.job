@@ -1,3 +1,8 @@
+## 2026-10-13 — Static onboarding
+
+- Removed character idle motion, step arrival animation, and pause/resume controls. Character selection and the full-screen setup layout remain interactive without animation.
+- Validation: production export, catalog validation and source checks confirm setup motion and its controls are removed.
+
 ## 2026-10-13 — Muse onboarding handoff
 
 - Removed the About you step and required name/introduction entry. Setup now takes two steps and preserves existing profile facts.

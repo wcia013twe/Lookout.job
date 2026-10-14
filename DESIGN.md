@@ -106,7 +106,7 @@ Application rows render as separated cards on narrow screens and align with a ta
 
 ## Elevation & Depth
 
-The shared shell, cards, and controls use surface color and borders rather than shadows. Dialogs use a dark backdrop and a bounded scrolling surface. The global focus indicator is a 3px solid lavender outline (`#d3b0ff`) offset by 3px. Pack reveal uses a 300ms blur/vertical reveal with `cubic-bezier(0.16, 1, 0.3, 1)`; reduced-motion preferences disable animation and transition. Onboarding adds a scoped 650ms arrival transition and an optional 4-second, 4px character idle movement with a pause control; both honor reduced motion.
+The shared shell, cards, and controls use surface color and borders rather than shadows. Dialogs use a dark backdrop and a bounded scrolling surface. The global focus indicator is a 3px solid lavender outline (`#d3b0ff`) offset by 3px. Pack reveal uses a 300ms blur/vertical reveal with `cubic-bezier(0.16, 1, 0.3, 1)`; reduced-motion preferences disable animation and transition. Onboarding is static: character portraits and step changes have no animation or motion controls.
 
 ## Shapes
 

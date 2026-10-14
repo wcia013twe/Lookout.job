@@ -88,7 +88,7 @@ export default function Onboarding() {
               </li>
             ))}
           </ol>
-          <form onSubmit={next} className="setup-scene" key={step}>
+          <form onSubmit={next} key={step}>
             {step === 0 && (
               <>
                 <Heading title="Your search starts with a companion.">
