@@ -6,6 +6,7 @@ export const queuedPull = pulls => pulls.filter(pr=>!pr.draft && pr.labels.some(
 export function reviewGate(reviews,head,threads) {
   const current=reviews.filter(review=>isCopilot(review.user) && review.commit_id===head).sort((a,b)=>b.id-a.id)[0];
   if(!current || !['COMMENTED','APPROVED','CHANGES_REQUESTED'].includes(current.state))return {state:'pending',reason:'Waiting for Copilot to review this commit'};
+  if(/unable to review|quota limit|review limit|failed to review/i.test(current.body || ''))return {state:'pending',reason:'Copilot could not review; restore review access and request a fresh review'};
   if(current.state==='CHANGES_REQUESTED')return {state:'failure',reason:'Copilot requested changes'};
   if(threads.some(thread=>!thread.isResolved))return {state:'pending',reason:'Resolve review conversations before merging'};
   return {state:'success',reason:'Copilot reviewed this commit; conversations resolved'};

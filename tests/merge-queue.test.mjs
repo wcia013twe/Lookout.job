@@ -11,6 +11,7 @@ test('only an actual Copilot review of the current commit can satisfy review gat
  assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'}],head,[{isResolved:false}]).state,'pending');
  assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'},{id:2,user:bot,commit_id:head,state:'DISMISSED'}],head,[]).state,'pending');
  assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'CHANGES_REQUESTED'}],head,[]).state,'failure');
+ assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED',body:'Copilot was unable to review this pull request because the user who requested the review has reached their quota limit.'}],head,[]).state,'pending');
  assert.equal(reviewGate([{id:1,user:bot,commit_id:head,state:'COMMENTED'}],head,[]).state,'success');
 });
 test('queue picks oldest ready non-draft PR and never skips a blocker for a newer PR',()=>{
