@@ -184,6 +184,31 @@ function createBackend(client, expectedUserId = null) {
         return inserted;
       }
     },
+    async readSubmissionRecord(applicationId) {
+      const userId = await owner();
+      const application = await result(client.from("applications").select("id,status,receipt,submitted_at").eq("id", applicationId).eq("user_id", userId).single());
+      const raw = await result(client.from("submission_attempts").select("id,application_id,state,revision,started_at,created_at,finished_at,receipt,context_snapshot").eq("application_id", applicationId).eq("user_id", userId).order("created_at"));
+      // Only the submitted materials are returned to the view, not saved facts/settings.
+      const attempts = raw.map(t => ({...t, context_snapshot: { application: {draft:t.context_snapshot?.application?.draft}, job:t.context_snapshot?.job, resume:t.context_snapshot?.resume }}));
+      await owner();
+      return {application, attempts};
+    },
+    async readPreparation(applicationId) {
+      const userId = await owner();
+      return result(client.from("preparation_plans").select("*").eq("application_id", applicationId).eq("user_id", userId).maybeSingle());
+    },
+    async savePreparation(applicationId, expectedVersion, plan) {
+      await owner();
+      return result(client.rpc("save_preparation_plan", {app_id:applicationId,expected_version:expectedVersion,next_plan:plan}));
+    },
+    async readSelectionDecisions() {
+      const userId = await owner();
+      return allRows("selection_decisions", userId, "id", "*,jobs(*)");
+    },
+    async reconsiderSelection(id) {
+      const userId = await owner();
+      return result(client.from("selection_decisions").update({reconsidered_at:new Date().toISOString()}).eq("id", id).eq("user_id", userId).select().single());
+    },
     async resolveAttempt(applicationId, revision, claimId, note) {
       await owner();
       return result(client.rpc("resolve_submission_attempt", {app_id:applicationId,expected_revision:revision,claim_id:claimId,note}));

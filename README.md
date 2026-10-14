@@ -218,3 +218,27 @@ Referrals groups contacts by company and shows editable, copy-ready messages and
 **Prepare with Muse** saves the chosen companies as a queued request. Muse checks `read_outreach_workspace` on each connected run and uses the platform-hosted `cold-outreach` skill from `read_developer_context.skills`. `save_outreach_package` writes researched contacts and finished messages directly to the backend; the page refreshes them automatically. Users do not copy agent prompts or import JSON. Requests wait for the next agent run; the backend does not start or wake an external Muse process. Copying/opening links never sends a message.
 
 The skill's authoring source is `skills/cold-outreach/SKILL.md`; its deployed package is `supabase/functions/agent-gateway/skills/cold-outreach.json`. A regression check keeps their instructions identical. Updates increment `developerVersion` and deploy the gateway. No local skill installation is required. Outreach reads use `workspace:read`; draft preparation uses `drafts:write`. Existing contact edits require the current revision, completed requests retry idempotently, and agent changes preserve human outreach status.
+
+## Preparation, quiet mode and application evidence
+
+Applications → Prepare builds a dated checklist from a saved application, exact
+questions, resume reference, company/role resource guides and a confirmed process
+deadline. Guest plans persist in this browser; signed-in plans are owned database
+records with optimistic versions. Muse can supply email deadline evidence through
+`update_preparation_plan`, refresh unfinished tasks and record user-reported task
+completion. Email access comes from Muse's connected runtime; this app does not
+monitor inboxes. Uncertain dates leave tasks unscheduled.
+
+Profile → Quiet mode chooses immediate updates, a daily digest or a weekly pack,
+with timezone and urgent deadline controls. `read_delivery_policy` returns pending
+activity and due/defer advice; important review decisions interrupt. Muse continues
+other authorized work and acknowledges only successfully delivered events. Actual
+scheduling and message delivery remain runtime capabilities.
+
+Applications → Why Muse skipped roles is on demand. Exclusions include the saved
+preference and posting evidence; uncertain fit assessments stay labelled.
+Reconsider requests another evaluation on Muse's next run; it does not apply or
+change preferences. Application review → Submission record exposes historical
+resume/answer snapshots, each attempt's timestamps, confirmation markers and
+uncertainty. A user-reported application remains distinct from an observed receipt.
+Developer contract version **9** advertises these tools.

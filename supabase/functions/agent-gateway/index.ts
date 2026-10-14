@@ -4,6 +4,7 @@ import { validateRequest, generateToken, hashToken } from './contract.mjs';
 import { contextResponse } from './context.mjs';
 import { applicationPolicy } from './application-policy.mjs';
 import { submissionDispatch } from './submission-dispatch.mjs';
+import { museFeatureDispatch } from './muse-features.mjs';
 
 // Platform JWT verification is disabled because agents use opaque credentials.
 // Every request is verified here: Supabase getUser for people; hash + expiry +
@@ -62,6 +63,18 @@ Deno.serve(async request => {
     if (operation.startsWith('submission.')) {
       const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});
       return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
+    }
+    if (['preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record'].includes(operation)) {
+      const credentialHash = await hashToken(bearer);
+      const result = await museFeatureDispatch({operation,payload,
+        rpc:(op: string, args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),
+        loadJob:async (id: string)=>{const {data}=await admin.from('jobs').select('id,employer').eq('id',id).maybeSingle();return data;},
+      });
+      if(result.error) {
+        const code=result.error.code;
+        return respond({error:code==='40001'?'Plan changed; reload before saving':code==='42501'?'Scope required':code==='P0002'?'Owned record not found':'Operation rejected'},code==='40001'?409:code==='42501'?403:code==='P0002'?404:400);
+      }
+      return respond({data:result.data});
     }
     const policyRequest = operation === 'applications.policy';
     const { data, error } = await admin.rpc('agent_dispatch', {

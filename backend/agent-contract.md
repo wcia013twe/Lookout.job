@@ -174,3 +174,34 @@ or application approval through this path. **Reload account** loads imported
 facts into the UI; review profile facts once and edit/review saved-answer proposals
 before allowing reuse. Import receipts and reservations are private server-only
 records; no new client write grants or public file bucket are introduced.
+
+## Preparation and trust tools (developer version 9)
+
+| Operation | Scope | Payload/result |
+|---|---|---|
+| preparation.read | workspace:read | {applicationId} → owned application, employer, resume, preparation |
+| preparation.update | drafts:write + workspace:read | {applicationId,expectedVersion,deadline,dailyMinutes?,resourceGuides?} → versioned server-generated plan |
+| preparation.complete | drafts:write + workspace:read | {applicationId,expectedVersion,taskId,completed} → updated plan |
+| selection.record | activity:write + workspace:read | {jobId,eventKey,reason,preference,evidence,certainty} → private skip explanation |
+| selection.read | workspace:read | {} → decisions, employer records and reconsideration timestamps |
+| notifications.read | workspace:read | {} → delivery advice, pending event IDs, summaries and application decisions |
+| notifications.ack | activity:write | {eventKey,kind: digest/immediate,eventIds} → durable successful-delivery acknowledgment |
+| applications.record | workspace:read | {applicationId} → application and historical attempt materials/receipt |
+
+Preparation starts with expectedVersion 0 when absent; concurrent updates return
+409. Deadline: {date: YYYY-MM-DD,stage,confirmed,source:{kind: email/manual,
+messageId,subject,excerpt,receivedAt,url}}. Email dates need an exact date, message
+reference and supporting wording; ambiguity never fabricates a schedule.
+Optional resourceGuides (maximum 10) contain verified HTTPS url, id, title, topics,
+optional companies and minutes. These are recommendations, never form instructions.
+
+Delivery settings live at preferences.search.quietMode. Important decisions come
+from owned Blocked/Awaiting approval records; deadline notifications require an
+unfinished confirmed plan. Date-only preparation deadlines use end-of-day UTC as
+advisory urgency, not an invented interview time. Acknowledgment accepts only
+owned event IDs or current owned decision/deadline IDs. It records runtime delivery,
+never employer submission. No scheduler, email reader or SMS service is added.
+
+Submission record output omits personal settings, profile, answer library and
+authorization snapshots. Exact draft materials and resume metadata come from the
+immutable attempt context; current editable drafts never prove submission.

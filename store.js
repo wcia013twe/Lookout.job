@@ -45,6 +45,7 @@
       network: { referrals: [], people: [] },
       workflow: {
         applications: {},
+        preparationPlans: {},
         profile: {
           name: "",
           email: "",

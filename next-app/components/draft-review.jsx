@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { control, primary, secondary, Field, Notice, Section } from "./ui";
+import { createBackend } from "../../backend/client.mjs";
+import SubmissionRecord from "./submission-record";
 export default function DraftReview({ id, onClose }) {
   const w = useWorkspace(),
     model = w.models.workflowModel;
@@ -33,6 +35,61 @@ export default function DraftReview({ id, onClose }) {
     [stage, setStage] = useState("Submitted"),
     [note, setNote] = useState("");
   const dialog = useRef(null);
+  const [recordOpen, setRecordOpen] = useState(false);
+  const [recordRetry, setRecordRetry] = useState(0);
+  const [recordState, setRecordState] = useState(null);
+  const [downloadFeedback, setDownloadFeedback] = useState("");
+  const recordKey = `${w.user?.id || "local"}:${current?.backendId || ""}`;
+  const recordOwner = useRef(recordKey);
+  recordOwner.current = recordKey;
+  const recordMounted = useRef(false);
+  useEffect(() => {
+    recordMounted.current = true;
+    return () => { recordMounted.current = false; };
+  }, []);
+  useEffect(() => {
+    if (!recordOpen || !w.user || !current?.backendId) return;
+    let cancelled = false;
+    const key = recordKey;
+    const ownerId = w.user.id;
+    setRecordState({ key, loading: true, error: "", data: null });
+    setDownloadFeedback("");
+    createBackend(w.client, w.user.id).readSubmissionRecord(current.backendId)
+      .then(data => {
+        if (!cancelled && recordOwner.current === key && window.JB.auth?.userId === ownerId)
+          setRecordState({ key, loading: false, error: "", data });
+      })
+      .catch(() => {
+        if (!cancelled && recordOwner.current === key && window.JB.auth?.userId === ownerId)
+          setRecordState({ key, loading: false, error: "Try loading the record again.", data: null });
+      });
+    return () => { cancelled = true; };
+  }, [recordOpen, recordRetry, recordKey, w.client, current?.backendRevision, current?.status]);
+  async function downloadRecordResume(resume) {
+    const key = recordKey;
+    if (!w.user || !w.client || !resume.objectPath) return;
+    setDownloadFeedback("");
+    const destination = window.open("about:blank", "_blank");
+    if (!destination) {
+      setDownloadFeedback("Allow a new tab for Muse, then try the download again.");
+      return;
+    }
+    destination.opener = null;
+    try {
+      const result = await createBackend(w.client, w.user.id).resumeLink(resume.objectPath);
+      if (!recordMounted.current || recordOwner.current !== key || window.JB.auth?.userId !== w.user.id) {
+        destination.close();
+        return;
+      }
+      const url = new URL(result.signedUrl);
+      if (url.protocol !== "https:") throw Error("Invalid download URL");
+      destination.location.replace(url.href);
+    } catch {
+      destination.close();
+      if (recordMounted.current && recordOwner.current === key)
+        setDownloadFeedback("The saved résumé could not download. Try again.");
+    }
+  }
   const firstHydration = useRef(true);
   useEffect(() => {
     dialog.current?.showModal();
@@ -164,6 +221,21 @@ export default function DraftReview({ id, onClose }) {
             ? " · Reported by you"
             : ""}
       </p>
+      <details className="mt-5 border-t border-board-line pt-3" onToggle={e => setRecordOpen(e.currentTarget.open)}>
+        <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
+        {!w.user || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
+          : recordOpen && <>
+            <SubmissionRecord
+              application={recordState?.key === recordKey ? recordState.data?.application || {} : {}}
+              attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []}
+              loading={recordState?.key !== recordKey || recordState.loading}
+              error={recordState?.key === recordKey ? recordState.error : ""}
+              onDownloadResume={downloadRecordResume}
+            />
+            {recordState?.key === recordKey && recordState.error && <button className={`${secondary} mt-3`} onClick={() => setRecordRetry(value => value + 1)}>Retry loading record</button>}
+            {downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}
+          </>}
+      </details>
       <form
         onSubmit={(e) => {
           e.preventDefault();

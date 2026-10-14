@@ -4,6 +4,7 @@ import { dayStamp, awardStatus } from "../lib/progress.mjs";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, control, Empty, Section, Notice } from "./ui";
 import ApplicationList from "./application-list";
+import SkippedOpportunities from "./skipped-opportunities";
 const statuses = [
   "New",
   "Applied",
@@ -173,6 +174,7 @@ export default function Applications() {
           <Notice>No drafts here. Queue a role from Discover.</Notice>
         )}
       </Section>
+      <SkippedOpportunities />
     </>
   );
 }

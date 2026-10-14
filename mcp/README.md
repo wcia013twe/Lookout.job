@@ -158,3 +158,18 @@ manually typing it. This does not grant general preference editing or approval.
 ## Platform outreach skill
 
 `read_developer_context.skills` includes the complete versioned cold-outreach skill. Check `read_outreach_workspace` (`workspace:read`) each connected run for queued company requests and contact revisions. Save researched contacts and messages using `save_outreach_package` (`drafts:write`) with requestId, stable eventKey and contacts. Existing contacts require id/expectedRevision; preserve changed human details by rereading on conflict. The platform retains human outreach status and never sends messages. No local skill installation, prompt copy or JSON import is part of the user flow.
+
+## Preparation and quiet-mode tools
+
+Refresh discovery and developer context version 9 to obtain
+`read_preparation_plan`, `update_preparation_plan`, `complete_preparation_task`,
+`record_selection_decision`, `read_skipped_opportunities`, `read_delivery_policy`,
+`acknowledge_delivery` and `read_application_record`. The local adapter forwards
+these same registry tools. Preparation/selection writes also need workspace:read;
+notification acknowledgments need activity:write. Existing credentials with those
+scopes work without replacement.
+
+Muse supplies deadlines from its own authorized email connection, checks quiet-mode
+advice before messaging, and acknowledges only after successful delivery. These
+tools do not connect an inbox, create a recurring schedule or send a notification.
+Read the gateway contract for payloads, versions and evidence boundaries.

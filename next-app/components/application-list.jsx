@@ -2,16 +2,20 @@
 import { useState } from "react";
 import { primary, secondary, Empty } from "./ui";
 import DraftReview from "./draft-review";
+import ApplicationPreparation from "./application-preparation";
+import { useWorkspace } from "../lib/workspace";
 export default function ApplicationList({ items }) {
-  const [review, setReview] = useState(null);
+  const [review, setReview] = useState(null), [preparing, setPreparing] = useState(null);
+  const w = useWorkspace();
   return (
     <>
       <ul className="divide-y divide-board-line">
         {items.map((d) => (
           <li
             key={d.id}
-            className="flex items-center justify-between gap-4 py-4"
+            className="py-4"
           >
+            <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="min-w-0">
               <strong>{d.company}</strong>
               <p className="mt-1 text-sm text-board-muted">{d.title}</p>
@@ -26,6 +30,8 @@ export default function ApplicationList({ items }) {
                       : ""}
               </p>
             </div>
+            <div className="flex flex-wrap gap-2">
+            <button className={secondary} aria-expanded={preparing === d.id} onClick={() => setPreparing(preparing === d.id ? null : d.id)}>Prepare</button>
             <button className={secondary} onClick={() => setReview(d.id)}>
               {[
                 "Submitted",
@@ -37,6 +43,9 @@ export default function ApplicationList({ items }) {
                 ? "View progress"
                 : "Review"}
             </button>
+            </div>
+            </div>
+            {preparing === d.id && <ApplicationPreparation key={`${w.user?.id || "guest"}:${d.id}`} application={{...w.roles.find(r=>r.id===d.id),...d}}/>}
           </li>
         ))}
       </ul>

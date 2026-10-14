@@ -306,3 +306,17 @@
 - Finish review: ship within tested scope. Documented shared React/Tailwind system in DESIGN.md and .impeccable/design.json; inherited Inter detector warning retained to match Discover.
 - Rebased onto concurrent Muse-import and backend-logo updates; ported profile-setup permission toggles and unverified imported-answer notices into React, keeping profile scalars compatible with the shared schema.
 - After integrating concurrent backend changes, all 144 tests and database checks pass; production assets now omit bundled logos.
+
+## 2026-10-13 — Preparation and trust features
+
+- Added owned, versioned preparation plans with email source evidence, relevant
+  company/role resource guides, deadline scheduling and preserved completed tasks.
+- Added quiet-mode preferences and scoped delivery advice/acknowledgments;
+  important application decisions interrupt while routine activity waits.
+- Added private skip explanations and explicit reconsideration requests.
+- Added inspectable immutable application attempts and secure resume downloads.
+- Validation: unit/contract and disposable PostgreSQL ownership/version/credential
+  tests (including the rebased outreach contract), hosted rollback-only SQL checks, catalog validation,
+  auth bundle and Next.js static build. Browser fixture
+  checks cover guest preparation and settings. Live inbox/message/Muse runtime
+  and real employer submissions are not exercised.

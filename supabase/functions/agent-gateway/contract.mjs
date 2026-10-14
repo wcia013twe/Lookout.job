@@ -3,13 +3,33 @@ import { validateProfileSetup } from './profile-setup.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = ['outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy','submission.context','submission.claim','submission.start','submission.finish'];
+export const OPERATIONS = ['outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
   if (!p || typeof p !== 'object' || Array.isArray(p)) throw new Error('Payload must be an object');
   validateProfileSetup(input.operation, p);
   if (input.operation.startsWith('outreach.')) validateOutreach(input.operation,p);
+  const featureKeys = {
+    'preparation.read':['applicationId'], 'applications.record':['applicationId'],
+    'preparation.update':['applicationId','expectedVersion','deadline','dailyMinutes','resourceGuides'],
+    'preparation.complete':['applicationId','expectedVersion','taskId','completed'],
+    'selection.record':['jobId','eventKey','reason','preference','evidence','certainty'],
+    'selection.read':[], 'notifications.read':[], 'notifications.ack':['eventKey','kind','eventIds'],
+  };
+  if (featureKeys[input.operation]) {
+    if (Object.keys(p).some(k => !featureKeys[input.operation].includes(k))) throw Error('Unknown feature argument');
+    const uuid = v => typeof v==='string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
+    if (input.operation.startsWith('preparation.') || input.operation==='applications.record') {
+      if(!uuid(p.applicationId)) throw Error('Application ID required');
+      if(['preparation.update','preparation.complete'].includes(input.operation) && (!Number.isSafeInteger(p.expectedVersion)||p.expectedVersion<0)) throw Error('Current plan version required');
+      if(input.operation==='preparation.update' && (!p.deadline || typeof p.deadline!=='object' || Array.isArray(p.deadline) || (p.dailyMinutes!==undefined && (!Number.isInteger(p.dailyMinutes)||p.dailyMinutes<15||p.dailyMinutes>240)))) throw Error('Deadline and available preparation time required');
+      if(input.operation==='preparation.update' && p.resourceGuides!==undefined && (!Array.isArray(p.resourceGuides)||p.resourceGuides.length>10||p.resourceGuides.some(g=>!g||typeof g.id!=='string'||g.id.length>100||typeof g.title!=='string'||g.title.length>200||typeof g.url!=='string'||g.url.length>2048||!/^https:\/\//.test(g.url)||!Array.isArray(g.topics)||g.topics.some(t=>typeof t!=='string'||t.length>100)||g.topics.length>20||(g.companies!==undefined&&(!Array.isArray(g.companies)||g.companies.some(c=>typeof c!=='string'||c.length>100)))||!Number.isInteger(g.minutes)||g.minutes<1||g.minutes>240))) throw Error('Bounded verified resource guides required');
+      if(input.operation==='preparation.complete' && (typeof p.taskId!=='string'||p.taskId.length>200||typeof p.completed!=='boolean')) throw Error('Task and completion required');
+    }
+    if(input.operation==='selection.record' && (!['jobId','eventKey','reason','preference','evidence'].every(k=>typeof p[k]==='string'&&p[k].trim()&&p[k].length<=({reason:1000,evidence:2000}[k]||200)) || !['exclusion','uncertain'].includes(p.certainty))) throw Error('Selection explanation required');
+    if(input.operation==='notifications.ack' && (typeof p.eventKey!=='string'||!p.eventKey.trim()||p.eventKey.length>200||!['digest','immediate'].includes(p.kind)||!Array.isArray(p.eventIds)||p.eventIds.length>500||p.eventIds.some(id=>typeof id!=='string'||id.length>200))) throw Error('Delivery acknowledgment required');
+  }
   if (input.operation.startsWith('submission.')) {
     const uuid = value => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
     const op = input.operation.slice(11);
