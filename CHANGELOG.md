@@ -416,3 +416,16 @@
   hosted rollback-only RPC checks, data validation, auth rebuild and static export
   pass. Desktop/mobile browser checks confirm demo reset and zero backend writes
   or real-storage changes. Live Muse inbox/notification delivery remains unverified.
+
+### 2026-10-14 — Personal search targets
+
+- Profile → Search targets separates source selection from opportunity fit. Add,
+  edit, and remove job boards, company careers pages, and social accounts.
+- Private versioned list uses one owned website/MCP write boundary; autosync
+  preserves independent target changes. No scanner or sharing is implied.
+- Social sources require forwarded content; public sources show scanning support
+  needs verification. Fictional demo targets cover all three kinds.
+- Validation: 221 Node tests, production static build, catalog validation,
+  local and hosted database scope/conflict/autosync checks, isolated desktop/mobile
+  add/edit/remove checks. Database migration and gateway/MCP deployed.
+  Integrated signed-in browser flow remains unverified.
