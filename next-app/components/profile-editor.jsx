@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import schema from "../../profile-schema.js";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, primary, secondary, Notice, Section } from "./ui";
@@ -71,23 +70,13 @@ export default function ProfileEditor() {
   }
   return (
     <>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <p className="text-sm text-board-muted">
-          {profile.verified ? "Facts checked by you" : "Profile is unverified"}
-        </p>
-        <Link href="/onboarding/" className={primary}>
-          Start setup
-        </Link>
-      </div>
-      <p className="mb-6 text-sm leading-relaxed text-board-muted">
-        Ask Muse to read your resume or Simplify profile PDF. Extracted facts
-        stay unverified and missing facts stay blank until you review them.
-      </p>
+      <h2 className="mb-3 text-lg font-bold">About me</h2>
+      <p className="mb-4 text-sm text-board-muted">Review imported facts before checking them. Changes remain unverified until you review and save them.</p>
       <form autoComplete="on" onSubmit={save}>
+        <details open className="border-t border-board-line py-5">
+          <summary className="text-lg font-bold">Personal information &amp; links</summary>
         <fieldset>
-          <legend className="text-lg font-bold">
-            Personal information &amp; links
-          </legend>
+          <legend className="sr-only">Personal information and links</legend>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             {schema.scalarFields
               .filter(
@@ -130,11 +119,15 @@ export default function ProfileEditor() {
               ))}
           </div>
         </fieldset>
+        </details>
         {Object.entries(schema.schemas).map(([kind, fields]) => (
-          <fieldset className="mt-8 border-t border-board-line pt-5" key={kind}>
-            <legend className="pr-3 text-lg font-bold">{sections[kind]}</legend>
+          <details className="border-t border-board-line py-5" key={kind}>
+            <summary className="text-lg font-bold">{sections[kind]} <span className="text-sm font-normal text-board-muted">({facts[kind]?.length || 0})</span></summary>
+            <fieldset><legend className="sr-only">{sections[kind]}</legend>
             {(facts[kind] || []).map((entry, index) => (
-              <div className="mb-5 border-b border-board-line py-4" key={index}>
+              <details className="border-b border-board-line py-4" key={index}>
+                <summary className="min-h-11 text-sm font-semibold">{entry.title || entry.degree || entry.name || "New entry"} · {entry.company || entry.school || entry.institution || "Edit details"}</summary>
+                <div className="pt-3">
                 <div className="grid gap-4 sm:grid-cols-2">
                   {fields.map(
                     ([key, label, type = "text", autocomplete = "off"]) => (
@@ -205,7 +198,8 @@ export default function ProfileEditor() {
                 >
                   Remove entry
                 </button>
-              </div>
+                </div>
+              </details>
             ))}
             {!facts[kind]?.length && <Notice>No entries added yet.</Notice>}
             <button
@@ -216,8 +210,10 @@ export default function ProfileEditor() {
               Add {sections[kind].toLowerCase()}
             </button>
           </fieldset>
+          </details>
         ))}
-        <Section title="Skills & languages">
+        <details className="border-t border-board-line py-5"><summary className="text-lg font-bold">Skills &amp; languages</summary>
+        <Section title="Edit skills & languages">
           <div className="grid gap-4 sm:grid-cols-2">
             {["skills", "preferredSkills", "languages"].map((key) => (
               <Field key={key} label={`${labels[key]} (one per line)`}>
@@ -236,7 +232,8 @@ export default function ProfileEditor() {
             ))}
           </div>
         </Section>
-        <div className="mt-7 space-y-4">
+        </details>
+        <div className="sticky bottom-3 z-10 mt-7 space-y-3 rounded-xl border border-board-line bg-board-panel p-4">
           <label className="flex items-center gap-3 text-sm">
             <input
               type="checkbox"

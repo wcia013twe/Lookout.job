@@ -1,3 +1,12 @@
+## 2026-10-13 — Compact Profile workspace
+
+- Replaced the long Profile page with an overview and four focused sections: About me, Application kit, Job preferences and My agent. Visited sections stay mounted to preserve unsaved edits while switching. Experience, education and projects use expandable summaries; profile Save remains sticky.
+- Moved the default resume control into Application kit, retained human verification and existing scoped tool contracts, and moved leaderboard settings to Progress through the header XP menu. Setup remains prominent for incomplete profiles.
+- Expanded isolated admin demo facts and saved answers; documented the section/edit/reset walkthrough in docs/profile-workspace.md.
+- Validation: catalog (76 roles), JSX bundle, UI detector and demo reset isolation passed. Fictional browser preview verified section switching, unsaved draft retention, save-to-overview updates and 390px overflow. Preview used exported theme CSS; Next.js build did not complete; the local dev server reported an invalid installed dependency package config, so production export and live account behavior remain unverified.
+
+
+
 ## 2026-10-13 — GitHub feature queue and serialized integration
 
 - Added read-only PR CI with tests, schema checks, catalog validation and production export build; shared it with the existing Pages deployment.

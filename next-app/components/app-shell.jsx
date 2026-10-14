@@ -50,6 +50,7 @@ export default function AppShell({ children }) {
           <p className="mt-3 max-w-xs text-sm text-board-muted">
             Browser progress is separate from account leaderboard metrics.
           </p>
+          <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link>
         </details>
       </header>
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-sm">
