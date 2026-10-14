@@ -13,15 +13,13 @@ Recruiters handle interview-process questions. Engineers can discuss referrals o
 
 Use offers and timelines only when supplied and current. Keep follow-ups concise; suggest a configurable cadence of several days between nudges and stop on replies or opt-outs. Weekday/business-hour timing is an anecdotal suggestion, not a guarantee. Do not schedule or send without authorization.
 
-## Job Signal Board handoff
+## Platform execution
 
-Prefer filling the native contact and message fields in the Referrals page when browser control is available. Otherwise return JSON for its Muse import, with no Markdown inside the JSON. Shape:
+At each connected run, call read_outreach_workspace to check pending requests and current contacts. Follow this platform skill from read_developer_context; no local skill installation or user-pasted prompt is required. Read the current candidate profile and roles using existing authorized tools. Research contacts for each requested company and prepare complete messages.
 
-```json
-{"contacts":[{"company":"Company","contact":"Full name","contactType":"recruiter","title":"Target job title","linkedin":"https://www.linkedin.com/in/verified-profile/","link":"https://employer.example/jobs/role","connection":"Confirmed shared context, or empty","evidence":"Candidate fact supporting fit","reason":"Specific team/company reason","subject":"Email subject","message":"Complete copy-ready message","sourceUrl":"Public source validating the contact"}]}
-```
+Call save_outreach_package with requestId, a stable eventKey and contacts. For existing contacts, include id and expectedRevision from read_outreach_workspace. Reuse exactly the same eventKey/payload after transport failure. A revision conflict means a person or another agent edited the contact: reread and preserve those changes. The platform preserves human outreach status. This saves drafts, never sends messages. If needed facts or research capabilities are unavailable, report the gap truthfully rather than fabricating contacts or completion.
 
-Allowed contactType values: recruiter, engineer, senior, manager, alumni, other. Do not use example URLs in real output. Leave absent optional URLs empty. Return contacts only when name and company are known; unresolved research stays outside the import. Messages remain drafts. Copying, opening LinkedIn and marking a record contacted are distinct actions; none proves a message was sent or an application submitted.
+Contact fields: company, contact, contactType (recruiter, engineer, senior, manager, alumni, other), title, linkedin, link, connection, evidence, reason, subject, message, sourceUrl. company/contact/contactType/message are required; other fields are optional. URLs must be HTTPS; linkedin must be a verified /in/ profile. Return one clear ask in a complete message, with no bracketed placeholders. The website will display the saved contacts and copy-ready messages automatically.
 
 ## Source
 

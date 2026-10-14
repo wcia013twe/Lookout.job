@@ -1,3 +1,10 @@
+## 2026-10-13 — Backend-hosted outreach preparation
+
+- Removed user-facing agent prompts and JSON import. Prepare with Muse queues company outreach on the backend; signed-in contacts and finished drafts sync automatically.
+- Served the full cold-outreach skill through versioned developer context and added scoped read/save tools. No local skill installation needed; requests wait for Muse’s next connected run.
+- Added owner RLS, optimistic contact revisions, tombstones, idempotent request completion and protection of human outreach status.
+- Validation: 150 tests, schema/data checks, production export, desktop/390px browser checks, skill validation and transactional live-backend save/retry smoke passed. No outreach-related security advisory. No external outreach was sent; external agent wake-up is not a backend capability.
+
 ## 2026-10-13 — Company-based referral outreach
 
 - Replaced generic referral tables/templates with company contact groups and editable, copy-ready messages; added role-type SVG icons, LinkedIn/job links, subject copy, follow-up details and mobile contact-to-message navigation.

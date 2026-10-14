@@ -1,13 +1,15 @@
+import { validateOutreach } from './outreach.mjs';
 import { validateProfileSetup } from './profile-setup.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = ['connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy','submission.context','submission.claim','submission.start','submission.finish'];
+export const OPERATIONS = ['outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy','submission.context','submission.claim','submission.start','submission.finish'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
   if (!p || typeof p !== 'object' || Array.isArray(p)) throw new Error('Payload must be an object');
   validateProfileSetup(input.operation, p);
+  if (input.operation.startsWith('outreach.')) validateOutreach(input.operation,p);
   if (input.operation.startsWith('submission.')) {
     const uuid = value => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
     const op = input.operation.slice(11);

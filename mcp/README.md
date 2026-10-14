@@ -154,3 +154,7 @@ Imported facts and proposed answers remain unverified. Missing facts and conflic
 May/December graduation dates require a specific question, not a guessed answer.
 The owner reloads the account and reviews the populated profile rather than
 manually typing it. This does not grant general preference editing or approval.
+
+## Platform outreach skill
+
+`read_developer_context.skills` includes the complete versioned cold-outreach skill. Check `read_outreach_workspace` (`workspace:read`) each connected run for queued company requests and contact revisions. Save researched contacts and messages using `save_outreach_package` (`drafts:write`) with requestId, stable eventKey and contacts. Existing contacts require id/expectedRevision; preserve changed human details by rereading on conflict. The platform retains human outreach status and never sends messages. No local skill installation, prompt copy or JSON import is part of the user flow.

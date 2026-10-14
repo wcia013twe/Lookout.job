@@ -1,0 +1,50 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile,readdir } from 'node:fs/promises';
+import { contextResponse } from '../supabase/functions/agent-gateway/context.mjs';
+import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
+import { TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
+import { PGlite } from '@electric-sql/pglite';
+test('platform exposes full versioned skill and scoped tools without local installation',async()=>{
+ const context=contextResponse('context.developer',{});const skill=context.skills.find(s=>s.id==='cold-outreach');assert.match(skill.instructions,/save_outreach_package/);assert.equal(skill.instructions,(await readFile('skills/cold-outreach/SKILL.md','utf8')).split('---',3)[2].trim());
+ const copy=contextResponse('context.developer',{});copy.skills[0].instructions='changed';assert.notEqual(contextResponse('context.developer',{}).skills[0].instructions,'changed');
+ assert.equal(TOOLS.find(t=>t.name==='read_outreach_workspace').scope,'workspace:read');assert.equal(TOOLS.find(t=>t.name==='save_outreach_package').scope,'drafts:write');
+ assert.throws(()=>validateRequest({operation:'outreach.prepare',payload:{requestId:'x'}}));
+ const valid={requestId:'11111111-1111-1111-1111-111111111111',eventKey:'stable',contacts:[{company:'Acme',contact:'Sam',contactType:'engineer',message:'Hi Sam, would you consider referring me?'}]};
+ validateRequest({operation:'outreach.prepare',payload:valid});
+ assert.throws(()=>validateRequest({operation:'outreach.prepare',payload:{...valid,contacts:[{...valid.contacts[0],linkedin:'https://linkedin.com.evil/in/sam'}]}}));
+});
+test('outreach enforces ownership, revisions, scope and idempotent preparation',async()=>{
+ const db=new PGlite(); const one='11111111-1111-1111-1111-111111111111',two='22222222-2222-2222-2222-222222222222';
+ try {
+ await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('test.uid',true),'')::uuid$$;grant usage on schema auth to authenticated,anon;grant execute on function auth.uid() to authenticated,anon;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text);alter table storage.objects enable row level security;create function storage.foldername(text) returns text[] language sql as $$select string_to_array($1,'/')$$;grant usage on schema storage to authenticated;grant all on storage.objects to authenticated;insert into auth.users values('${one}'),('${two}');`);
+ for(const name of (await readdir('supabase/migrations')).filter(n=>n.endsWith('.sql')).sort())await db.exec(await readFile('supabase/migrations/'+name,'utf8'));
+ await db.exec(`set role authenticated;set test.uid='${one}';`);
+ const request=(await db.query("insert into public.outreach_requests(companies) values('[\"Acme\"]') returning id")).rows[0].id;
+ await assert.rejects(db.query("update public.outreach_requests set status='Ready' where id=$1",[request]));
+ let saved=(await db.query('select public.save_outreach_contact($1,-1,$2,$3) data',['manual',{company:'Acme',contact:'Pat',status:'Referred'},one])).rows[0].data;
+ assert.equal(saved.revision,0);
+ await assert.rejects(db.query('select public.save_outreach_contact($1,-1,$2,$3)',['wrong',{company:'Acme'},two]));
+ await db.exec(`set test.uid='${two}';`); assert.equal((await db.query('select * from public.outreach_requests')).rows.length,0);
+ await assert.rejects(db.query("insert into public.outreach_requests(companies,user_id) values('[\"Acme\"]',$1)",[one]));
+ await db.exec('reset role');
+ await db.query('insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,$2,$3,$4,now()+interval \'1 day\')',[one,'writer','writerhash',['workspace:read','drafts:write']]);
+ await db.query('insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,$2,$3,$4,now()+interval \'1 day\')',[two,'other','otherhash',['workspace:read','drafts:write']]);
+ await db.query('insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,$2,$3,$4,now()+interval \'1 day\')',[one,'reader','readerhash',['workspace:read']]);
+ const packageData={requestId:request,eventKey:'once',contacts:[{company:'Acme',contact:'Sam',contactType:'engineer',message:'Hi Sam, referral?'}]};
+ await assert.rejects(db.query("select public.agent_outreach_dispatch('otherhash','outreach.prepare',$1)",[packageData]));
+ await assert.rejects(db.query("select public.agent_outreach_dispatch('readerhash','outreach.prepare',$1)",[packageData]));
+ assert.equal((await db.query("select public.agent_outreach_dispatch('writerhash','outreach.prepare',$1) data",[packageData])).rows[0].data.status,'Ready');
+ assert.equal((await db.query("select public.agent_outreach_dispatch('writerhash','outreach.prepare',$1) data",[packageData])).rows[0].data.reused,true);
+ await assert.rejects(db.query("select public.agent_outreach_dispatch('writerhash','outreach.prepare',$1)",[{...packageData,contacts:[{...packageData.contacts[0],message:'Different payload'}]}]));
+ assert.equal((await db.query('select * from public.outreach_contacts where user_id=$1',[one])).rows.length,2);
+ await db.exec(`set role authenticated;set test.uid='${one}';`);
+ await db.query('select public.save_outreach_contact($1,0,$2,$3)',['manual',{company:'Acme',contact:'Pat',status:'Referred',message:'My edit'},one]);
+ await assert.rejects(db.query('select public.save_outreach_contact($1,0,$2,$3)',['manual',{company:'Acme',contact:'Pat'},one]));
+ const q2=(await db.query("insert into public.outreach_requests(companies) values('[\"Acme\"]') returning id")).rows[0].id;
+ await db.exec('reset role');
+ await assert.rejects(db.query("select public.agent_outreach_dispatch('writerhash','outreach.prepare',$1)",[{requestId:q2,eventKey:'stale',contacts:[{id:'manual',expectedRevision:0,company:'Acme',contact:'Pat',message:'Override'}]}]));
+ await db.query("select public.agent_outreach_dispatch('writerhash','outreach.prepare',$1)",[{requestId:q2,eventKey:'fresh',contacts:[{id:'manual',expectedRevision:1,company:'Acme',contact:'Pat',message:'Prepared'}]}]);
+ assert.equal((await db.query("select record->>'status' status from public.outreach_contacts where id='manual'")).rows[0].status,'Referred');
+ }finally{await db.close();}
+});

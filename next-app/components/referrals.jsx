@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSlice } from "../lib/workspace";
+import { useOutreach } from "../lib/outreach";
 import { Field, Heading, Notice, control, primary, secondary } from "./ui";
-import { CONTACT_TYPES, OUTREACH_STATUSES, contactType, draftOutreach, groupContacts, importOutreach, museRequest, safeUrl } from "../../outreach-model.mjs";
+import { CONTACT_TYPES, OUTREACH_STATUSES, contactType, draftOutreach, groupContacts, safeUrl } from "../../outreach-model.mjs";
 
 const typeLabels = { recruiter: "Recruiter", engineer: "Engineer", senior: "Senior engineer", manager: "Hiring manager", alumni: "Alumni", other: "Other contact" };
 function ContactIcon({ type }) {
@@ -66,7 +67,8 @@ function MessageEditor({ contact, profile, update, remove }) {
   </section>;
 }
 export default function Referrals() {
-  const [targets, setTargets] = useSlice("network.referrals");
+  const outreach = useOutreach();
+  const targets = outreach.contacts, setTargets = outreach.setContacts;
   const [people, setPeople] = useSlice("network.people");
   const [profile] = useSlice("workflow.profile");
   const [selected, setSelected] = useState(null);
@@ -77,7 +79,8 @@ export default function Referrals() {
   const [query, setQuery] = useState("");
   const [addOpen, setAddOpen] = useState(false);
   const [museOpen, setMuseOpen] = useState(false);
-  const [json, setJson] = useState("");
+  const [companyText, setCompanyText] = useState("");
+  const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState("");
   const all = [...(targets || []).map(r => ({ ...r, origin: "target" })), ...(people || []).map(r => ({ ...r, origin: "person" }))];
   const groups = groupContacts(all.filter(r => `${r.company} ${r.contact || r.name} ${r.title || r.role || ""}`.toLowerCase().includes(query.toLowerCase())));
@@ -99,24 +102,26 @@ export default function Referrals() {
     const id = crypto.randomUUID(); setTargets([...(targets || []), { ...data, id, status: "Not asked", source: "Manual" }]);
     setSelected(`target:${id}`); setAddOpen(false); setFeedback("");
   }
-  async function copyRequest() {
-    try { await navigator.clipboard.writeText(museRequest(groupContacts(all).map(g => g.company), profile)); setFeedback("Request copied. Paste it into Muse, then import the contacts it prepares."); }
-    catch { setFeedback("Copy failed. Select the request below and copy it manually."); }
+  async function requestOutreach(e) {
+    e.preventDefault(); setBusy(true); setFeedback("");
+    try { await outreach.request(companyText.split(/[,\n]/)); setMuseOpen(false); setFeedback("Request saved. Muse will prepare your contacts and messages on its next connected run."); }
+    catch(error) { setFeedback(error.message); }
+    finally { setBusy(false); }
   }
-  function importContacts(e) {
-    e.preventDefault();
-    try { const next = importOutreach(json, targets || [], () => crypto.randomUUID()); setTargets(next); setJson(""); setFeedback("Muse contacts imported. Select a contact to review and copy their message."); }
-    catch (error) { setFeedback(error.message); }
-  }
+  function openMuse() { setMuseOpen(!museOpen); setCompanyText(groupContacts(all).map(g=>g.company).join(", ")); setAddOpen(false); setFeedback(""); }
   return <>
-    <div className="flex flex-wrap items-start justify-between gap-4"><Heading title="Referrals">Find the right person. Give them a reason to reply. Keep each company’s contacts and messages together.</Heading><div className="flex flex-wrap gap-2"><button type="button" className={primary} aria-expanded={museOpen} onClick={() => { setMuseOpen(!museOpen); setAddOpen(false); setFeedback(""); }}>Prepare with Muse</button><button type="button" className={secondary} aria-expanded={addOpen} onClick={() => { setAddOpen(!addOpen); setMuseOpen(false); setFeedback(""); }}>Add manually</button></div></div>
-    {museOpen && <section className="mb-6 border-y border-board-line py-5" aria-labelledby="muse-outreach-heading"><h2 id="muse-outreach-heading" className="text-lg font-bold">Let Muse prepare your outreach</h2><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">Ask Muse to research contacts and write each message. It can fill this page through browser access, or return contacts for import below.</p><label className="mt-4 block"><span className="mb-2 block text-sm text-board-muted">Request for Muse</span><textarea readOnly className={`${control} min-h-32`} value={museRequest(groupContacts(all).map(g => g.company), profile)}/></label><button type="button" className={`${secondary} mt-3`} onClick={copyRequest}>Copy request for Muse</button><form className="mt-5" onSubmit={importContacts}><Field label="Contacts prepared by Muse"><textarea className={`${control} min-h-28`} value={json} onChange={e => setJson(e.target.value)} placeholder="Paste Muse’s JSON response here." required/></Field><button className={`${primary} mt-3`}>Import contacts &amp; messages</button></form></section>}
+    <div className="flex flex-wrap items-start justify-between gap-4"><Heading title="Referrals">Find the right person. Give them a reason to reply. Keep each company’s contacts and messages together.</Heading><div className="flex flex-wrap gap-2"><button type="button" className={primary} aria-expanded={museOpen} onClick={openMuse}>Prepare with Muse</button><button type="button" className={secondary} aria-expanded={addOpen} onClick={() => { setAddOpen(!addOpen); setMuseOpen(false); setFeedback(""); }}>Add manually</button></div></div>
+    {museOpen && <section className="mb-6 border-y border-board-line py-5" aria-labelledby="muse-outreach-heading"><h2 id="muse-outreach-heading" className="text-lg font-bold">Prepare company outreach</h2><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">Choose companies for Muse to research. It will save contacts and personal messages here on its next connected run.</p><form onSubmit={requestOutreach} className="mt-4"><Field label="Companies"><textarea className={`${control} min-h-24`} value={companyText} onChange={e=>setCompanyText(e.target.value)} placeholder="Company names, separated by commas or new lines" required maxLength={10000}/></Field><button className={`${primary} mt-3`} disabled={busy || !outreach.ready}>{busy ? "Saving request…" : "Request outreach"}</button>{!outreach.signedIn && <p className="mt-3 text-sm text-board-muted">Sign in to save a request for Muse. You can still add contacts manually.</p>}</form></section>}
     {addOpen && <section className="mb-6 border-y border-board-line py-5"><h2 className="text-lg font-bold">Add an outreach contact</h2><form onSubmit={add} className="mt-4 grid gap-4 sm:grid-cols-2"><Field label="Company"><input className={control} name="company" required/></Field><Field label="Contact name"><input className={control} name="contact" required autoComplete="name"/></Field><Field label="Contact type"><select className={control} name="contactType">{CONTACT_TYPES.map(type => <option key={type} value={type}>{typeLabels[type]}</option>)}</select></Field><Field label="Target role"><input className={control} name="title"/></Field><Field label="LinkedIn profile"><input className={control} name="linkedin" type="url"/></Field><div className="flex items-end"><button className={primary}>Add contact</button></div></form></section>}
     <Notice>{feedback}</Notice>
+    {outreach.requests.some(r=>r.status==='Queued') && <section className="mb-6 border-b border-board-line pb-4" aria-label="Pending outreach"><h2 className="text-sm font-semibold">Waiting for Muse</h2><ul className="mt-2 space-y-2 text-sm text-board-muted">{outreach.requests.filter(r=>r.status==='Queued').map(r=><li key={r.id}>{r.companies.join(", ")} — queued for the next connected run</li>)}</ul><button type="button" className={`${secondary} mt-3`} onClick={()=>outreach.refresh().catch(()=>setFeedback("Could not refresh outreach. Try again."))}>Refresh outreach</button></section>}
+
     {all.length ? <div className="mt-5 grid gap-7 lg:grid-cols-[300px_minmax(0,1fr)]">
       <aside className="min-w-0 lg:border-r lg:border-board-line lg:pr-6"><Field label="Find a company or contact"><input type="search" className={control} value={query} onChange={e => setQuery(e.target.value)}/></Field><div className="mt-5 max-h-[60vh] overflow-y-auto pr-1">{groups.map(group => <section className="mb-6" key={group.key}><div className="mb-2 flex items-center justify-between gap-3"><h2 className="break-words text-sm font-bold">{group.company}</h2><span className="text-xs tabular-nums text-board-muted">{group.contacts.length}</span></div><ul className="space-y-1">{group.contacts.map(r => { const active = contact?.origin === r.origin && contact?.id === r.id; return <li key={`${r.origin}:${r.id}`}><button type="button" aria-pressed={active} onClick={() => setSelected(`${r.origin}:${r.id}`)} className={`flex min-h-16 w-full items-center gap-3 rounded-lg px-3 py-3 text-left ${active ? "bg-board-tag text-board-accent" : "text-board-muted hover:bg-board-panel hover:text-board-text"}`}><ContactIcon type={contactType(r)}/><span className="min-w-0"><span className="block break-words text-sm font-semibold">{r.contact || r.name}</span><span className="mt-1 block text-xs">{typeLabels[contactType(r)]} · {r.status || "Not asked"}</span></span></button></li>; })}</ul></section>)}{!groups.length && <p className="py-6 text-sm text-board-muted">No contacts match. Try another name.</p>}</div></aside>
       {contact ? <div ref={messageRef} className="min-w-0 scroll-mt-6"><MessageEditor key={`${contact.origin}:${contact.id}`} contact={contact} profile={profile} update={update} remove={remove}/></div> : <p className="text-sm text-board-muted">Select a contact to prepare their message.</p>}
-    </div> : <section className="mt-6 border-y border-board-line py-12"><h2 className="text-xl font-bold">Start with a company you want to join</h2><p className="mt-3 max-w-lg text-sm leading-relaxed text-board-muted">Let Muse find the right contacts and draft a personal message, or add someone you already know. Each contact gets their own LinkedIn link and message.</p><div className="mt-6 flex flex-wrap gap-3"><button type="button" className={primary} onClick={() => { setMuseOpen(true); setAddOpen(false); }}>Prepare with Muse</button><button type="button" className={secondary} onClick={() => { setAddOpen(true); setMuseOpen(false); }}>Add manually</button></div></section>}
-    <p className="mt-8 text-xs leading-relaxed text-board-muted">Contacts and drafts are saved in this browser. Messages are sent by you on LinkedIn or email.</p>
+    </div> : <section className="mt-6 border-y border-board-line py-12"><h2 className="text-xl font-bold">Start with a company you want to join</h2><p className="mt-3 max-w-lg text-sm leading-relaxed text-board-muted">Let Muse find the right contacts and draft a personal message, or add someone you already know. Each contact gets their own LinkedIn link and message.</p><div className="mt-6 flex flex-wrap gap-3"><button type="button" className={primary} onClick={openMuse}>Prepare with Muse</button><button type="button" className={secondary} onClick={() => { setAddOpen(true); setMuseOpen(false); }}>Add manually</button></div></section>}
+    <Notice>{outreach.status}</Notice>
+    {outreach.status.includes("paused") && <div className="flex flex-wrap gap-2"><button type="button" className={secondary} onClick={()=>outreach.retry().catch(()=>{})}>Retry outreach sync</button><button type="button" className={secondary} onClick={()=>outreach.loadSaved().catch(()=>setFeedback("Could not load saved outreach. Try again."))}>Load saved outreach</button></div>}
+    <p className="mt-8 text-xs leading-relaxed text-board-muted">You send the final message on LinkedIn or email.</p>
   </>;
 }
