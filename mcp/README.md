@@ -134,3 +134,23 @@ supported native Greenhouse forms, and hosted `report_submission_result` for
 retrying result delivery without execution. Update the local checkout and refresh
 discovery. The hosted endpoint does not launch browsers. Routine auto-apply uses
 server-checked facts/rules; important applications require exact human approval.
+
+## Profile package setup
+
+Developer version 7 adds `save_profile_package`, `begin_resume_upload` and
+`complete_resume_upload`, requiring `profile:write`. Older keys need the owner's
+**Enable profile setup** action on the existing connection, then tool discovery
+refresh; no replacement token or manual profile re-entry is needed.
+
+Local runner `upload_profile_resume({filePath,variant,eventKey})` uploads the
+user-provided resume with bounded byte/signature/checksum verification. The remote
+MCP is data-only: if the agent can make HTTP uploads, begin → PUT bytes → complete
+works directly. Otherwise use the local runner; do not send file bytes in MCP JSON.
+
+Read personal context → upload/reuse the resume → read fresh context →
+`save_profile_package({eventKey,expectedPersonalVersion,facts,answers,defaultResumeId,source})`.
+See the exact [gateway schema](../backend/agent-contract.md#profile-setup-developer-version-7).
+Imported facts and proposed answers remain unverified. Missing facts and conflicting
+May/December graduation dates require a specific question, not a guessed answer.
+The owner reloads the account and reviews the populated profile rather than
+manually typing it. This does not grant general preference editing or approval.

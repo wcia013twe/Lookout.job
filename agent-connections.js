@@ -9,6 +9,7 @@
     generation = 0;
   const scopes = [
     "workspace:read",
+    "profile:write",
     "batches:write",
     "drafts:write",
     "activity:write",
@@ -63,7 +64,7 @@
         (response.data || [])
           .map(
             (connection) =>
-              `<article class="workflow-row"><div><strong>${JB.esc(connection.name)}</strong><p>${connection.revoked_at ? "Revoked" : `${new Date(connection.expires_at).getTime() <= Date.now() ? "Expired" : "Expires"} ${JB.esc(new Date(connection.expires_at).toLocaleDateString())}`}</p></div>${connection.revoked_at ? "" : `<button type="button" data-revoke-agent="${JB.esc(connection.id)}">Revoke</button>`}</article>`,
+              `<article class="workflow-row"><div><strong>${JB.esc(connection.name)}</strong><p>${connection.revoked_at ? "Revoked" : `${new Date(connection.expires_at).getTime() <= Date.now() ? "Expired" : "Expires"} ${JB.esc(new Date(connection.expires_at).toLocaleDateString())}`}</p><p>${connection.scopes.includes("profile:write") ? "Profile setup enabled" : "Profile setup not enabled"}</p></div><div class="workflow-actions">${!connection.revoked_at && new Date(connection.expires_at).getTime() > Date.now() ? `<button type="button" data-profile-setup-agent="${JB.esc(connection.id)}" data-enabled="${connection.scopes.includes("profile:write") ? "false" : "true"}">${connection.scopes.includes("profile:write") ? "Disable profile setup" : "Enable profile setup"}</button>` : ""}${connection.revoked_at ? "" : `<button type="button" data-revoke-agent="${JB.esc(connection.id)}">Revoke</button>`}</div></article>`,
           )
           .join("") || '<p class="panel-note">No connected agents yet.</p>';
       feedback.textContent = "";
@@ -99,6 +100,16 @@
     }
   });
   list.addEventListener("click", async (event) => {
+    const setupButton = event.target.closest("[data-profile-setup-agent]");
+    if (setupButton) {
+      setupButton.disabled = true;
+      try {
+        await call("connections.profile_setup", {id:setupButton.dataset.profileSetupAgent,enabled:setupButton.dataset.enabled === "true"});
+        await refresh();
+        feedback.textContent = "Profile setup access updated. Ask your agent to refresh tools; your existing token still works.";
+      } catch (error) { feedback.textContent = error.message; setupButton.disabled = false; }
+      return;
+    }
     const button = event.target.closest("[data-revoke-agent]");
     if (!button) return;
     button.disabled = true;

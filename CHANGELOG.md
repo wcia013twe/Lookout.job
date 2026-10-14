@@ -1,3 +1,11 @@
+## 2026-10-13 — Muse profile package writes and private resume setup
+
+- Added owner-scoped profile:write setup permission, human-only enable/disable on existing connections (same token), and explicit setup access on new full connections. No existing key gains access automatically.
+- Added HTTP/MCP save_profile_package for merged facts, proposed saved answers and owned default-PDF selection; personal-version conflicts and stable retry receipts prevent stale overwrites and duplicates. Facts/changed answers remain unverified; requested autofill permission is a proposal, not human review.
+- Added begin/complete private resume uploads with measured byte count, PDF/DOCX signature checks, SHA-256 verification, immutable paths and owned variant/hash reuse. Local upload_profile_resume handles bounded user-provided files without launching a browser. Upload bookkeeping does not block owner resume deletion.
+- Deployed migration chain and gateway/MCP developer version 7. Preserved concurrent Applications/Referrals and backend-logo changes. Profile shows imported proposals and setup-access controls; cache v35. Reload account loads agent imports.
+- Validation: full test suite, schema/ownership checks, data validation, rebuilt auth bundle; hosted disposable upload → eight-answer import → default selection → readback → exact retry → identical-resume reuse and discovery passed, with fixture user/file cleanup confirmed. No real profile package or employer application was sent. Muse host discovery/restart remains user-side; general preference writes and agent-created human approvals remain unavailable. Security advisors retain only intentional private RLS/no-policy notices and the pre-existing leaked-password setting warning; [Supabase remediation](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+
 ## 2026-10-13 — Backend-only company logos
 
 - Removed 66 bundled company images and local fallback paths; unavailable backend logos show initials.

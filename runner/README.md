@@ -122,3 +122,15 @@ Offline JSON fixtures are not authorization. Only gateway-loaded current records
 are trusted. Downloads allow only this project's exact signed Storage object,
 no redirects/external references. Upload reference résumés to private Storage first.
 See [THIRD_PARTY.md](THIRD_PARTY.md) for extracted MIT primitives and pinned sources.
+
+## Agent-owned profile setup
+
+`upload_profile_resume({filePath,variant,eventKey})` accepts a user-provided local
+PDF/DOCX (up to 10 MB), uploads exact bytes privately and returns its registered
+resume ID. It needs `profile:write` and launches no browser. Identical owned
+variant/checksum reuses the existing ID. The other hosted setup tools are
+forwarded normally: read context, upload/reuse resume, read fresh context, then
+save_profile_package to set the default and proposed facts/answers. No agent can
+mark imported facts human-verified or enable proposed answers for automatic reuse.
+Old connections can enable profile setup without replacing their token. Restart
+this updated runner and refresh discovery to expose the local upload tool.

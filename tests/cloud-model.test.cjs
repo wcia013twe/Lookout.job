@@ -36,3 +36,8 @@ test('expanded profile facts survive cloud hydration without coercing nested rec
  for(const key of Object.keys(facts)) assert.deepEqual(result.profile[key],facts[key]);
  assert.equal(result.profile.verified,true);
 });
+test('agent-imported saved answers retain their proposed policy without becoming verified',async()=>{
+ const {fromCloud}=await import('../cloud-model.mjs');
+ const rows={profiles:[],preferences:[],resumes:[],applications:[],answer_library:[{id:'proposal',question:'Q',answer:'A',provenance:'agent',autofill_policy:'ask',verified_at:null,context:{version:1,requestedPolicy:'auto'}}]};
+ const answer=fromCloud(rows).savedAnswers[0];assert.equal(answer.imported,true);assert.equal(answer.requestedPolicy,'auto');assert.equal(answer.policy,'ask');assert.equal(answer.verifiedAt,null);
+});

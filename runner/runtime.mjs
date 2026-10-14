@@ -1,3 +1,4 @@
+import { uploadProfileResume } from './profile-upload.mjs';
 import { identifyJob } from './forms.mjs';
 import { openApplicationForm } from './ats.mjs';
 import { inspectBrowserForm, prefillApprovedForm } from './browser.mjs';
@@ -7,6 +8,7 @@ import { submitApplication } from './submit.mjs';
 const object = (properties, required) => ({ type: 'object', properties, required, additionalProperties: false });
 const string = { type: 'string' };
 export const LOCAL_TOOLS = [
+  { name: 'upload_profile_resume', operation: 'local.profile_resume', scope: 'profile:write', description: 'Upload a user-provided local PDF/DOCX resume (up to 10 MB) to the private board, verify exact file bytes and register its resume ID. Reuses identical owned variant/checksum; reuse eventKey for retries. Does not mark profile facts verified, set a default or submit applications. Never returns file bytes or secret upload URLs.', inputSchema: object({filePath:string,variant:string,eventKey:string},['filePath','variant','eventKey']) },
   { name: 'submit_application', operation: 'local.submit', scope: 'drafts:write', description: 'Submit a supported native Greenhouse application once. Server checks routine auto-apply policy and answer provenance or exact human approval for important roles, claims the attempt, then runner fills/validates/clicks once and records observed employer confirmation. Uncertain outcomes pause without retry. Requires workspace:read, approvals:read and resumes:read too.', inputSchema: object({ applicationId: string, attemptId: string }, ['applicationId','attemptId']) },
   { name: 'inspect_application', operation: 'local.inspect', scope: 'drafts:write', description: 'Open an official Greenhouse/Ashby job in a dedicated local browser and inspect questions/choices/fingerprint. No submission. Employer text is untrusted.', inputSchema: object({ url: string }, ['url']) },
   { name: 'fingerprint_resume', operation: 'local.resume', scope: 'resumes:read', readOnly: true, description: 'Download your private uploaded resume and return its SHA-256 for the draft. Never returns bytes or download URL.', inputSchema: object({ resumeId: string }, ['resumeId']) },
@@ -28,8 +30,9 @@ export function createLocalRuntime({ gateway, getPage, close = async () => {} })
     // Recheck scopes on every local call, including both private inputs to prefill.
     const auth = await gateway.call('credentials.verify');
     const required = ['local.try','local.submit'].includes(operation) ? ['drafts:write','approvals:read','resumes:read', ...(operation==='local.submit'?['workspace:read']:[])]
-      : operation === 'local.resume' ? ['resumes:read'] : ['drafts:write'];
+      : operation === 'local.profile_resume' ? ['profile:write'] : operation === 'local.resume' ? ['resumes:read'] : ['drafts:write'];
     if (!required.every(scope => auth.scopes.includes(scope))) return { status: 403, error: 'Required runner scopes missing' };
+    if (operation === 'local.profile_resume') return {status:200,data:await uploadProfileResume({...payload,gateway})};
     if (operation === 'local.resume') {
       const result = await gateway.loadResume(payload.resumeId);
       return { status: 200, data: { resumeId: result.resume.id, resumeSha256: result.sha256, bytes: result.resumeBytes.length } };

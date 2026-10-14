@@ -1,3 +1,4 @@
+import { resumeSetupResponse } from './profile-setup.mjs';
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
 import { validateRequest, generateToken, hashToken } from './contract.mjs';
 import { contextResponse } from './context.mjs';
@@ -65,7 +66,8 @@ Deno.serve(async request => {
       const messages: Record<string, [number, string]> = {
         '28000': [401, 'Credential expired, revoked, or invalid'],
         '42501': [403, 'Scope required'],
-        '40001': [409, 'Draft changed; fetch current revision'],
+        '40001': [409, 'Record or settings changed; reload current context'],
+        '40P01': [409, 'Concurrent edit; reload current context'],
         'P0002': [404, 'Owned record not found'],
         '22023': [400, 'Invalid payload'],
       };
@@ -78,6 +80,11 @@ Deno.serve(async request => {
       return respond({ data: { jobId: job.id, personalVersion: data.personalVersion,
         ...applicationPolicy({ preferences: data.settings.preferences, job: job.employer }),
         execution: { automaticSubmission: 'supported-greenhouse-native-forms', bundledRunnerRequiresApproval: false, importantMatchesRequireApproval: true } } });
+    }
+    if (['resumes.begin_upload','resumes.complete_upload'].includes(operation)) {
+      try {
+        return respond({data:await resumeSetupResponse({operation,data,storage:admin.storage.from('resumes'),rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
+      } catch { return respond({error:'Resume upload or verification incomplete; retry the same upload'},400); }
     }
     if (operation === 'resumes.read') {
       let url = data.reference_url;

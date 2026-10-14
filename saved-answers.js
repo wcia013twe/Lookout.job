@@ -6,7 +6,7 @@
   const feedback = document.querySelector('#saved-answer-feedback');
   let editing = null, deleted = null;
   function render() {
-    list.innerHTML = answers().map(a => `<article class="saved-answer-row"><div><strong>${esc(a.question)}</strong><p>${esc(a.answer)}</p><small>${a.policy === 'auto' && a.verifiedAt ? 'Can autofill' : 'Always ask me'} · ${esc(a.companyScope || 'Any company')}</small></div><div class="workflow-actions"><button type="button" data-edit-answer="${esc(a.id)}">Edit</button><button type="button" data-delete-answer="${esc(a.id)}">Delete</button></div></article>`).join('') || '<p class="panel-note">No saved answers yet. Add a common question and your preferred answer.</p>';
+    list.innerHTML = answers().map(a => `<article class="saved-answer-row"><div><strong>${esc(a.question)}</strong><p>${esc(a.answer)}</p><small>${a.imported && !a.verifiedAt ? 'Imported proposal · Review before reuse' : a.policy === 'auto' && a.verifiedAt ? 'Can autofill' : 'Always ask me'} · ${esc(a.companyScope || 'Any company')}</small></div><div class="workflow-actions"><button type="button" data-edit-answer="${esc(a.id)}">Edit</button><button type="button" data-delete-answer="${esc(a.id)}">Delete</button></div></article>`).join('') || '<p class="panel-note">No saved answers yet. Add a common question and your preferred answer.</p>';
   }
   function reset() {
     editing = null; form.reset(); document.querySelector('#saved-answer-save').textContent = 'Save answer';
@@ -27,6 +27,7 @@
       const answer = answers().find(a => a.id === edit.dataset.editAnswer); if (!answer) return;
       editing = answer.id;
       ['question','answer','companyScope','policy'].forEach(key => { form.elements[key].value = answer[key] || ''; });
+      if (answer.imported) form.elements.policy.value = answer.requestedPolicy || 'ask';
       // Every edited version requires a fresh review; do not inherit the checkmark.
       form.elements.verified.checked = false;
       document.querySelector('#saved-answer-save').textContent = 'Save changes';

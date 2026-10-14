@@ -196,3 +196,16 @@ Profile starts with candidate identity and editable personal details, then repea
 ## Applications and referrals layout
 
 Applications shows browser-tracked roles directly, with full-time/internship counts and status updates. Opening a role remains distinct from applying. Agent workspace contains prepared drafts and review actions; the duplicate legacy interview view is removed. Referrals is a separate navigation tab with referral targets, contacts/follow-ups, and a message-type picker showing one template at a time. Existing tracker and networking storage is preserved. Layout rules live in `styles/applications.css`; workspace color variables can change without changing the structural grid.
+
+## Muse can save profile packages
+
+Connected agents with profile setup access can import extracted candidate facts,
+propose saved answers, privately upload/reuse a resume and select its default.
+Older connections have an **Enable profile setup** button; their existing token
+continues to work. Muse should save the package rather than asking for manual
+entry, then ask only about missing/conflicting facts. Imports remain unverified
+until reviewed; saved-answer autofill suggestions are distinct from permission.
+Use **Reload account** to load Muse's changes. HTTP/MCP setup and local-file upload
+are documented in the gateway and runner contracts. Resume parsing itself runs
+in the user's agent, not in this backend. No real candidate package is imported
+as part of development validation.

@@ -131,3 +131,46 @@ keys cannot invoke this human RPC. Private history contains attempts/snapshots;
 no credentials or file bytes are stored there. No real application was sent in
 development testing; official browser confirmations are observations, not signed
 employer API receipts.
+
+## Profile setup (developer version 7)
+
+The `profile:write` grant lets an agent save a prepared package without asking the
+person to retype it. New full-access connections include it. Older connections
+keep their scopes until their owner clicks **Enable profile setup**; this updates
+the existing connection without replacing its token. Human-only
+`connections.profile_setup` takes `{id,enabled}` and verifies ownership, expiry
+and revocation. Agent keys cannot issue, grant or revoke their own permissions.
+
+- `profile.import`: `{eventKey,expectedPersonalVersion,facts?,answers?,defaultResumeId?,source?}`.
+  Facts merge into the owned profile; supplied history arrays replace those
+  sections. Preserve unrelated fields. Omit missing/conflicting facts. Changing
+  facts clears verification. A no-op does not clear an existing human review.
+  Answers accept `{id?,expectedVersion?,question,answer,companyScope?,requestedPolicy?}`.
+  New/changed answers have provenance agent, verified_at null and policy ask.
+  requestedPolicy auto is only a suggestion for human review, not reuse permission.
+  Existing answers require their own ID/version for changes; identical answers
+  reuse the existing record. The default must be an owned registered private PDF.
+  The result includes profile, affected answers, defaultResumeId, personalVersion
+  and reviewRequired. Stale settings return 409; reload before preparing a new import.
+  Retry exactly the same eventKey/payload for its original receipt, even after
+  later settings changes. Reusing the key with different data returns 409.
+- `resumes.begin_upload`: `{eventKey,fileName,variant,sha256,bytes}` → existing
+  `{resume,personalVersion}` when that variant/hash is already registered, or
+  `{uploadId,uploadUrl,method,contentType,expiresAt}`. PUT exact file bytes to the
+  secret returned URL with Content-Type and x-upsert false; never send the agent
+  credential to Storage. PDF/DOCX only, at most 10 MB. Begin with a fresh key if the
+  reservation expires (15 minutes). Storage's signed URL itself lasts two hours;
+  it never permits overwrite, while registration checks the reservation expiry.
+- `resumes.complete_upload`: `{uploadId}` verifies actual size, signature and
+  SHA-256, then registers immutable resume metadata and returns `{resume,personalVersion}`.
+  A valid upload gets its ID from the board, not the caller. Exact retries reuse
+  the registered row. Failed verification creates no resume row. The local
+  `upload_profile_resume` tool handles this flow from a user-provided file path.
+
+Read fresh personal context after uploading, then save the package against its
+returned settings version. Default selection changes only defaultResumeId;
+search/rankings/auto-apply/review rules stay intact. Agents cannot mint verification
+or application approval through this path. **Reload account** loads imported
+facts into the UI; review profile facts once and edit/review saved-answer proposals
+before allowing reuse. Import receipts and reservations are private server-only
+records; no new client write grants or public file bucket are introduced.

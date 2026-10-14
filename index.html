@@ -12,21 +12,21 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=33">
-    <link rel="stylesheet" href="styles/pack-effects.css?v=33">
-    <link rel="stylesheet" href="styles/role-cards.css?v=33">
-    <link rel="stylesheet" href="styles/dashboard.css?v=33">
-    <link rel="stylesheet" href="styles/workflow.css?v=33">
-    <link rel="stylesheet" href="styles/tierlists.css?v=33">
-    <link rel="stylesheet" href="styles/saved-answers.css?v=33">
-    <link rel="stylesheet" href="styles/account.css?v=33">
-    <link rel="stylesheet" href="styles/resume-files.css?v=33">
-    <link rel="stylesheet" href="styles/leaderboard.css?v=33">
+    <link rel="stylesheet" href="styles.css?v=35">
+    <link rel="stylesheet" href="styles/pack-effects.css?v=35">
+    <link rel="stylesheet" href="styles/role-cards.css?v=35">
+    <link rel="stylesheet" href="styles/dashboard.css?v=35">
+    <link rel="stylesheet" href="styles/workflow.css?v=35">
+    <link rel="stylesheet" href="styles/tierlists.css?v=35">
+    <link rel="stylesheet" href="styles/saved-answers.css?v=35">
+    <link rel="stylesheet" href="styles/account.css?v=35">
+    <link rel="stylesheet" href="styles/resume-files.css?v=35">
+    <link rel="stylesheet" href="styles/leaderboard.css?v=35">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="styles/profile.css?v=33">
-    <link rel="stylesheet" href="styles/applications.css?v=33">
+      <link rel="stylesheet" href="styles/profile.css?v=35">
+    <link rel="stylesheet" href="styles/applications.css?v=35">
   </head>
   <body>
     <main>
@@ -232,10 +232,10 @@
         </section>
         <section class="board-section" aria-labelledby="agent-connections-heading">
           <h2 id="agent-connections-heading">Your agent</h2>
-          <p class="panel-note">Give Muse access to your own profile, saved answers and resume files. It can prepare private job batches and drafts and read approved versions. It cannot approve on your behalf.</p>
+          <p class="panel-note">Give Muse access to your own profile, saved answers and resume files. Profile setup access lets it import facts and proposed answers, upload a private resume and select its default. It can prepare private job batches and drafts and read approved versions. Imported facts remain unverified; review them before application use. After an import, use Reload account to load your agent’s changes. It cannot approve on your behalf.</p>
           <form id="agent-connection-form" class="workflow-form">
             <label>Connection name<input name="name" required maxlength="80" placeholder="My Muse"></label>
-            <label>Access<select name="access"><option value="prepare">Read and prepare applications</option><option value="read">Read workspace only</option></select></label>
+            <label>Access<select name="access"><option value="prepare">Read, set up profile and prepare applications</option><option value="read">Read workspace only</option></select></label>
             <button type="submit">Create agent connection</button>
           </form>
           <p id="agent-connection-feedback" role="status" aria-live="polite"></p>
@@ -271,28 +271,28 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=33"></script>
-    <script src="components.js?v=34"></script>
-    <script src="workflow-model.js?v=33"></script>
-    <script src="app.js?v=33"></script>
-    <script src="saved-answers-model.js?v=33"></script>
-    <script src="profile-schema.js?v=33"></script>
-    <script src="profile-editor.js?v=33"></script>
-    <script src="profile-autofill.js?v=33"></script>
-    <script src="workflow.js?v=33"></script>
-    <script src="saved-answers.js?v=33"></script>
-    <script src="tierlist-model.js?v=33"></script>
-    <script src="tierlists.js?v=33"></script>
-    <script type="module" src="workflow-motion.js?v=33"></script>
-    <script type="module" src="pack-effects.js?v=33"></script>
-    <script type="module" src="pack-motion.js?v=33"></script>
-    <script type="module" src="pack-haptics.js?v=33"></script>
-    <script src="profile-onboarding.js?v=33"></script>
-    <script src="profile-preferences.js?v=33"></script>
-    <script src="agent-connections.js?v=33"></script>
-    <script type="module" src="resume-files.js?v=33"></script>
-    <script type="module" src="leaderboard.mjs?v=33"></script>
-    <script src="app-updates.js?v=33"></script>
-    <script type="module" src="assets/vendor/auth.bundle.js?v=33"></script>
+    <script src="store.js?v=35"></script>
+    <script src="components.js?v=35"></script>
+    <script src="workflow-model.js?v=35"></script>
+    <script src="app.js?v=35"></script>
+    <script src="saved-answers-model.js?v=35"></script>
+    <script src="profile-schema.js?v=35"></script>
+    <script src="profile-editor.js?v=35"></script>
+    <script src="profile-autofill.js?v=35"></script>
+    <script src="workflow.js?v=35"></script>
+    <script src="saved-answers.js?v=35"></script>
+    <script src="tierlist-model.js?v=35"></script>
+    <script src="tierlists.js?v=35"></script>
+    <script type="module" src="workflow-motion.js?v=35"></script>
+    <script type="module" src="pack-effects.js?v=35"></script>
+    <script type="module" src="pack-motion.js?v=35"></script>
+    <script type="module" src="pack-haptics.js?v=35"></script>
+    <script src="profile-onboarding.js?v=35"></script>
+    <script src="profile-preferences.js?v=35"></script>
+    <script src="agent-connections.js?v=35"></script>
+    <script type="module" src="resume-files.js?v=35"></script>
+    <script type="module" src="leaderboard.mjs?v=35"></script>
+    <script src="app-updates.js?v=35"></script>
+    <script type="module" src="assets/vendor/auth.bundle.js?v=35"></script>
   </body>
 </html>

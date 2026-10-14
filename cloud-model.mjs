@@ -49,6 +49,7 @@ function fromCloud(rows) {
       verifiedAt: a.verified_at,
       version: a.context?.version || 1,
       updatedAt: a.updated_at,
+      ...(a.provenance === "agent" ? { imported: true, requestedPolicy: a.context?.requestedPolicy || "ask" } : {}),
     })),
     resumes: rows.resumes.map((r) => ({
       id: r.id,
