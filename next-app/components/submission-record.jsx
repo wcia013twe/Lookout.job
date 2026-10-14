@@ -32,6 +32,10 @@ export default function SubmissionRecord({ application, attempts = [], loading =
           {!record.attempts.length && !record.legacyReceipt && !record.userReported && <p className="mt-2 text-sm text-board-muted">No submission attempt has been recorded.</p>}
           <ol className="mt-3 divide-y divide-board-line">
             {record.attempts.map(attempt => <li key={attempt.id} className="py-4">
+              <div className="mb-2 text-sm">
+                <p className="font-semibold">{attempt.resume ? `Résumé used: ${attempt.resume.name}` : 'Résumé used: snapshot unavailable'}</p>
+                {attempt.resume && <p className="mt-1 text-board-muted">{attempt.resume.version !== null && attempt.resume.version !== '' ? `Version ${attempt.resume.version}` : 'Version not recorded'}{attempt.resume.variant ? ` · ${attempt.resume.variant}` : ''} · {attempt.label}</p>}
+              </div>
               <details>
                 <summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold">{attempt.label} · {timestamp(attempt.createdAt)}</summary>
                 <div className="mt-3 space-y-3 text-sm leading-relaxed">
@@ -39,7 +43,7 @@ export default function SubmissionRecord({ application, attempts = [], loading =
                   <p className="break-all text-xs text-board-muted">Attempt: {attempt.id}</p>
                   {attempt.receipt && <Confirmation receipt={attempt.receipt} />}
                   <h4 className="font-semibold">Résumé pinned for this attempt</h4>
-                  {attempt.resume ? <div><p>{attempt.resume.name}</p><p className="mt-1 break-all text-xs text-board-muted">SHA-256: {attempt.resume.sha256 || "Not recorded"}</p>{onDownloadResume && attempt.resume.objectPath && <button className={`${secondary} mt-3`} onClick={() => onDownloadResume(attempt.resume)}>Download saved résumé</button>}</div> : <p className="text-board-muted">No résumé snapshot available.</p>}
+                  {attempt.resume ? <div><p>{attempt.resume.name}</p><p className="mt-1 text-board-muted">{attempt.resume.version !== null && attempt.resume.version !== '' ? `Version ${attempt.resume.version}` : 'Version not recorded'}{attempt.resume.variant ? ` · ${attempt.resume.variant}` : ''}</p><p className="mt-1 break-all text-xs text-board-muted">SHA-256: {attempt.resume.sha256 || "Not recorded"}</p>{onDownloadResume && attempt.resume.objectPath && <button className={`${secondary} mt-3`} onClick={() => onDownloadResume(attempt.resume)}>Download saved résumé</button>}</div> : <p className="text-board-muted">No résumé snapshot available.</p>}
                   <h4 className="pt-2 font-semibold">Answers pinned for this attempt</h4>
                   <p className="text-board-muted">These are the saved materials at execution time. Employer confirmation verifies the submission outcome; it does not independently verify every field.</p>
                   {attempt.questions.length ? <dl className="space-y-4">{attempt.questions.map((q, index) => <div key={index}><dt className="font-medium">{q.question}</dt><dd className="mt-1 whitespace-pre-wrap break-words text-board-muted">{q.fieldType === "file" && q.answer === attempt.resume?.id ? attempt.resume.name : answer(q.answer)}</dd></div>)}</dl> : <p className="text-board-muted">No answer snapshot available.</p>}

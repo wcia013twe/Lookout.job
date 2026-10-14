@@ -15,6 +15,14 @@
 - Updated agent instructions to use feature worktrees and PRs instead of direct pushes/shared production mutation. Added repository protection configuration and queue operator documentation.
 - Validation: queue race/failure/scope tests, full regression suite, database checks, catalog validation and optimized production build; hosted workflow/protection verification is recorded in the PR. No candidate data or employer application was sent.
 
+## Application progress and resume evidence
+
+- Surface active callbacks first, with vertical completed/scheduled/undated milestones.
+- Emphasize exact submitted resume versions from immutable attempt evidence.
+- Add owned, idempotent timeline services and scoped MCP tools for authorized email updates.
+- Move skipped-role explanations to occasional Muse insights and extend isolated demo coverage.
+- Validation: 219 tests, owner isolation/idempotency database checks, 76-role validation, production build and desktop/mobile demo interactions with zero backend requests; email ingestion requires Muse’s authorized runtime.
+
 ## 2026-10-13 — Rainbow glass onboarding
 
 - Applied the supplied reference’s dark glass surfaces, curved illuminated backdrop, and cyan/mint/lilac/pink edge lighting to onboarding only. Retained static characters, two-step flow, native choices and visible focus.

@@ -77,6 +77,14 @@ function fromCloud(rows) {
           id: a.job_id,
           backendId: a.id,
           backendRevision: a.revision,
+          milestones: (rows.application_milestones || []).filter(m => m.application_id === a.id)
+            .sort((one,two)=>String(one.created_at).localeCompare(String(two.created_at)) || String(one.id).localeCompare(String(two.id))),
+          submittedResume: (() => {
+            const t = (rows.submission_attempts || []).filter(t => t.application_id===a.id && t.state==='confirmed')
+              .sort((one,two)=>String(two.finished_at || two.created_at).localeCompare(String(one.finished_at || one.created_at)) || String(two.id).localeCompare(String(one.id)))[0];
+            const r=t?.resume_snapshot;
+            return r?.id ? {id:r.id,name:r.name || "Saved résumé",version:r.version ?? null,variant:r.variant || null,contentHash:r.content_hash || null} : null;
+          })(),
           submittedAt: a.submitted_at || null,
           receipt: a.receipt || null,
           submissionAttempts: (rows.submission_attempts || []).filter(t => t.application_id === a.id)

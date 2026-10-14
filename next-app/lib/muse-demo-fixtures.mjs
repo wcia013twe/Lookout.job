@@ -37,7 +37,7 @@ export function createDemoWorkspace(now = new Date()) {
   const confirmedDate = day(today, 8);
   let confirmedPlan = createPreparationPlan({ application: applications['demo-interview'], now: at, guides, deadline: {
     date: confirmedDate, stage: 'Technical interview', confirmed: true,
-    source: { kind: 'email', messageId: 'demo-email-confirmed', subject: 'Demo: your technical interview', receivedAt: at, excerpt: `Fictional email: your technical interview is on ${confirmedDate}. Prepare to discuss SQL and backend design.`, url: 'https://example.com/demo/email/confirmed' },
+    source: { kind: 'email', messageId: 'demo-email-confirmed', subject: 'Demo: your technical interview', receivedAt: at, excerpt: `Fictional email: your technical interview is on ${confirmedDate} at 14:00 UTC. Prepare to discuss SQL and backend design.`, url: 'https://example.com/demo/email/confirmed' },
   } });
   confirmedPlan = setPreparationTaskCompletion(confirmedPlan, confirmedPlan.tasks[0].id, true, at);
   const ambiguousPlan = createPreparationPlan({ application: applications['demo-ambiguous'], now: at, guides, deadline: {
@@ -57,6 +57,26 @@ export function createDemoWorkspace(now = new Date()) {
   const confirmedAttempt = attempt('demo-confirmed', 'confirmed'), uncertainAttempt = attempt('demo-uncertain', 'uncertain');
   applications['demo-confirmed'].receipt = copy(confirmedAttempt.receipt);
   applications['demo-confirmed'].submittedAt = at;
+  const submittedResume = { id: resumeId, name: resume.name, version: 2, variant: 'Backend', contentHash: hash };
+  applications['demo-confirmed'].submittedResume = { ...copy(submittedResume), evidenceSource: 'observed_confirmation' };
+  applications['demo-interview'].submittedResume = { ...copy(submittedResume), evidenceSource: 'email' };
+  const email = (messageId, subject, excerpt) => ({ kind: 'email', messageId, subject, excerpt, receivedAt: at, url: `https://example.com/demo/email/${messageId}` });
+  const milestone = (applicationId, key, kind, label, occurredAt, phase, source) => ({ id: `${applicationId}-${key}`, user_id: identity, application_id: applicationId, event_key: key, kind, label, occurred_at: occurredAt, phase, source: { ...copy(source), ...(occurredAt ? { timestampConfirmed: true } : {}) }, created_at: at });
+  const cedarSubmitted = `${day(today, -3)}T14:00:00Z`;
+  applications['demo-interview'].submittedAt = cedarSubmitted;
+  applications['demo-interview'].milestones = [
+    milestone('demo-interview', 'submitted', 'submitted', 'Application submitted', cedarSubmitted, 'received', email('cedar-submitted', 'Demo: application received', `Fictional email: Cedar received your application on ${day(today, -3)} at 14:00 UTC with the demo backend résumé, version 2.`)),
+    milestone('demo-interview', 'recruiter-call', 'recruiter_call', 'Recruiter call', `${day(today, -1)}T14:00:00Z`, 'completed', email('cedar-recruiter', 'Demo: thanks for the recruiter call', `Fictional email: thank you for speaking with our recruiter on ${day(today, -1)} at 14:00 UTC.`)),
+    milestone('demo-interview', 'technical-round-1', 'technical_round', 'Technical round 1', `${confirmedDate}T14:00:00Z`, 'scheduled', copy(confirmedPlan.deadline.source)),
+  ];
+  applications['demo-ambiguous'].milestones = [
+    milestone('demo-ambiguous', 'recruiter-date-unknown', 'recruiter_call', 'Recruiter call — date needs confirmation', null, 'scheduled', copy(ambiguousPlan.deadline.source)),
+  ];
+  applications['demo-confirmed'].milestones = [
+    milestone('demo-confirmed', 'submitted', 'submitted', 'Application submitted', at, 'received', email('harbor-submitted', 'Demo: application received', `Fictional email: Harbor received your database engineering application on ${today} at 14:00 UTC.`)),
+  ];
+  // An uncertain click is an attempt, never a completed submission milestone.
+  applications['demo-uncertain'].milestones = [];
   const submissionRecords = Object.fromEntries([
     ['demo-confirmed', confirmedAttempt], ['demo-uncertain', uncertainAttempt],
   ].map(([id, item]) => [id, { application: { id, status: applications[id].status, receipt: copy(item.receipt), submitted_at: item.state === 'confirmed' ? at : null }, attempts: [copy(item)] }]));
@@ -88,6 +108,28 @@ export function createDemoServices(store) {
     return value;
   }
   return {
+    async readApplicationTimeline(id) {
+      const current = application(id);
+      return { application: { ...copy(current), submitted_at: current.submittedAt || null }, milestones: copy(current.milestones || []) };
+    },
+    async recordApplicationMilestone(id, input) {
+      const current = application(id);
+      if (!input || typeof input.eventKey !== 'string' || !input.eventKey.trim() || input.eventKey.length > 120 || !['submitted', 'recruiter_call', 'technical_round', 'interview', 'offer', 'rejected', 'withdrawn'].includes(input.kind) || !['scheduled', 'completed', 'received'].includes(input.phase) || input.source?.kind !== 'user') throw new Error('Choose a valid user-reported demo milestone.');
+      if (input.occurredAt != null && (typeof input.occurredAt !== 'string' || !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(input.occurredAt) || !Number.isFinite(Date.parse(input.occurredAt)) || input.source.timestampConfirmed !== true)) throw new Error('Choose a valid milestone date with a confirmed time zone, or leave it unknown.');
+      const milestones = copy(current.milestones || []);
+      const source = { kind: 'user', ...(input.source.note ? { note: input.source.note } : {}), ...(input.occurredAt ? { timestampConfirmed: true } : {}) };
+      const content = { kind: input.kind, label: input.label || input.kind.replaceAll('_', ' '), occurred_at: input.occurredAt || null, phase: input.phase, source };
+      const existing = milestones.find(row => row.event_key === input.eventKey);
+      if (existing) {
+        if (Object.keys(content).some(key => JSON.stringify(existing[key]) !== JSON.stringify(content[key]))) {
+          const error = new Error('Demo milestone changed. Reload before recording.'); error.code = '40001'; throw error;
+        }
+        return copy(existing);
+      }
+      const row = { id: `${id}-user-${input.eventKey}`, user_id: identity, application_id: id, event_key: input.eventKey, ...content, created_at: new Date().toISOString() };
+      store.set(`workflow.applications.${id}`, { ...current, milestones: [...milestones, row] });
+      return copy(row);
+    },
     async readSubmissionRecord(id) {
       const current = application(id), record = store.get(`demo.submissionRecords.${id}`);
       return record ? copy(record) : { application: { id, status: current.status, receipt: null, submitted_at: null }, attempts: [] };
@@ -120,6 +162,8 @@ export function createDemoServices(store) {
       const now=new Date();
       const events=scenario==='decision'
         ? [{id:'demo-review',kind:'review',actionRequired:true,interrupt:true,summary:'Lantern Compute (demo) needs human verification of an uncertain submission.'}]
+        : scenario==='selectivity'
+        ? [{id:'demo-selectivity',kind:'selection',actionRequired:false,summary:'Muse skipped Pine Networks (demo) because it is excluded in your preferences. Willow Software (demo) may exceed your target experience; the team requirements still need verification. Ask Muse to reconsider either role or adjust your preferences.'}]
         : [{id:'demo-routine',kind:'submission',actionRequired:false,summary:'Harbor Data (demo) has a fictional observed confirmation.'}];
       return {fictional:true,delivery:buildDeliveryPolicy({settings:store.get('workflow.searchPreferences.quietMode'),now,lastDigestAt:now.toISOString(),events}),events};
     },

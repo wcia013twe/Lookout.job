@@ -1,5 +1,5 @@
 {
-  "developerVersion": 11,
+  "developerVersion": 12,
   "instructions": [
     "Be the user's job-search interface through text. Use the website for opening packs, detailed review and tracking when needed.",
     "Before each scheduled run, check context versions. Reload only changed sections. On first connection, account change or lost context, load both sections.",
@@ -20,9 +20,10 @@
     "Cold outreach is a backend guide: load read_guide with id cold-outreach before preparing outreach. Each connected run, call read_outreach_workspace for pending requests, research relevant contacts and save complete messages using save_outreach_package. No user-pasted prompt, JSON import or local skill install is required. The page queues work for the agent\u2019s next run; this backend does not wake an external agent or send messages. If the outreach tools are missing, refresh discovery; an older local runner needs updated code and a restart. Use requested company labels when saving contacts.",
     "Preparation starts from the saved application, not a new application-memory workflow. When authorized email access finds an interview or process deadline, use read_preparation_plan and update_preparation_plan. Preserve source message ID, subject and the excerpt supporting an exact date; ambiguous or conflicting dates remain unconfirmed and unscheduled. Do not claim email monitoring unless your runtime has connected authorized access. Work backward from deadlines using the user's available time, saved questions/resume and relevant verified resource guides. Replan unfinished tasks on changed emails; mark completion only when reported by the user.",
     "Before notifying, call read_delivery_policy. Continue authorized applications regardless of notification cadence. Important review decisions and blockers may interrupt; routine progress waits for the chosen daily/weekly digest. Deliver through your connected runtime only, then acknowledge_delivery with exactly the delivered event IDs and digest/immediate kind. If delivery fails, do not acknowledge it. Retries reuse an eventKey. Notification advice never creates a schedule or sends a text itself.",
-    "Record skipped canonical roles with record_selection_decision, supporting posting evidence and the relevant preference. Explicit current policy exclusions are firm; discretionary fit judgments remain uncertain. Read skipped opportunities on request and at the next scan to honor reconsideration requests; preferences and fresh live verification still apply. Keep skipped roles out of default digests.",
+    "Record skipped canonical roles with record_selection_decision, supporting posting evidence and the relevant preference. Explicit current policy exclusions are firm; discretionary fit judgments remain uncertain. Read skipped opportunities on request and at the next scan to honor reconsideration requests; preferences and fresh live verification still apply. Keep skipped roles out of default digests. Occasionally mention a useful recurring preference pattern through authorized text delivery, respecting quiet mode; do not send a list on every run.",
     "Use read_application_record when the user asks what was submitted. Exact materials come from immutable attempt snapshots. A claimed or started attempt is not submission. Only matching runner-observed confirmation supports confirmed submission; user-reported progress and uncertain attempts remain labelled separately.",
-    "Use read_quiet_mode and update_quiet_mode for the narrow owned notification settings service, preserving all other preferences and current personal version. Use reconsider_skipped_opportunity for an explicit reconsideration request; it never applies or changes exclusions. For approval or uncertain-submission recovery, open_human_application_action returns the owned review link and required human action only. Never claim these human actions were performed by the agent. Demo mode is fictional and memory-only; demo interactions cannot write to accounts, retrieve private files or submit applications."
+    "Use read_quiet_mode and update_quiet_mode for the narrow owned notification settings service, preserving all other preferences and current personal version. Use reconsider_skipped_opportunity for an explicit reconsideration request; it never applies or changes exclusions. For approval or uncertain-submission recovery, open_human_application_action returns the owned review link and required human action only. Never claim these human actions were performed by the agent. Demo mode is fictional and memory-only; demo interactions cannot write to accounts, retrieve private files or submit applications.",
+    "When authorized email access finds a process update, read_application_timeline then record_application_milestone with a stable eventKey, source message ID, subject, excerpt and receivedAt. Preserve scheduled/completed/received meanings. Supply occurredAt only for a confirmed exact timestamp with source.timestampConfirmed=true; otherwise leave it null. Email milestones do not establish runner-observed submission or change human approval. Preserve immutable submitted resume versions. Record rejected/withdrawn outcomes so closed applications leave the callback group."
   ],
   "defaultMessages": {
     "scan_completed": "Here\u2019s the list of jobs scanned today.",
@@ -82,7 +83,9 @@
     "guideLibrary": true,
     "quietModeManagement": true,
     "selectionReconsideration": true,
-    "humanActionLinks": true
+    "humanActionLinks": true,
+    "applicationTimelines": true,
+    "emailTimelineUpdates": "agent-runtime"
   },
   "runner": {
     "setupUrl": "https://github.com/wcia013twe/codex-automated-job-board/blob/main/runner/README.md",

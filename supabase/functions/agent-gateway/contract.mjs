@@ -1,9 +1,10 @@
+import { validateMilestone } from './milestones.mjs';
 import { validateOutreach } from './outreach.mjs';
 import { validateProfileSetup } from './profile-setup.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = ['guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action'];
+export const OPERATIONS = ['guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
@@ -12,6 +13,7 @@ export function validateRequest(input) {
   validateProfileSetup(input.operation, p);
   if (input.operation.startsWith('outreach.')) validateOutreach(input.operation,p);
   const featureKeys = {
+    'applications.timeline':['applicationId'], 'applications.milestone':['applicationId','eventKey','kind','label','occurredAt','phase','source'],
     'preparation.read':['applicationId'], 'applications.record':['applicationId'],
     'preparation.update':['applicationId','expectedVersion','deadline','dailyMinutes','resourceGuides'],
     'preparation.complete':['applicationId','expectedVersion','taskId','completed'],
@@ -22,6 +24,7 @@ export function validateRequest(input) {
   if (featureKeys[input.operation]) {
     if (Object.keys(p).some(k => !featureKeys[input.operation].includes(k))) throw Error('Unknown feature argument');
     const uuid = v => typeof v==='string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
+    if(input.operation==='applications.timeline'||input.operation==='applications.milestone') { if(!uuid(p.applicationId)) throw Error('Application ID required'); if(input.operation==='applications.milestone') validateMilestone(p); }
     if (input.operation.startsWith('preparation.') || input.operation==='applications.record') {
       if(!uuid(p.applicationId)) throw Error('Application ID required');
       if(['preparation.update','preparation.complete'].includes(input.operation) && (!Number.isSafeInteger(p.expectedVersion)||p.expectedVersion<0)) throw Error('Current plan version required');

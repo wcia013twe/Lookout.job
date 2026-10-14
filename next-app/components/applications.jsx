@@ -4,7 +4,7 @@ import { dayStamp, awardStatus } from "../lib/progress.mjs";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, control, Empty, Section, Notice } from "./ui";
 import ApplicationList from "./application-list";
-import SkippedOpportunities from "./skipped-opportunities";
+import {sortApplications} from "../../application-timeline.mjs";
 const statuses = [
   "New",
   "Applied",
@@ -30,9 +30,9 @@ export default function Applications() {
   const matches = (r) =>
     (!type || r.employmentType === type) &&
     `${r.company} ${r.title}`.toLowerCase().includes(search.toLowerCase());
-  const tracked = catalog.filter(
+  const tracked = sortApplications(catalog.filter(
     (r) => w.state.tracker.ids.includes(r.id) && matches(r),
-  );
+  ).map(r=>({...r,status:w.state.workflow.applications[r.id]?.status || w.state.tracker.items[r.id]?.status || r.status,milestones:w.state.workflow.applications[r.id]?.milestones || []})));
   const apps = Object.values(w.state.workflow.applications).filter(
     (a) => matches(a) && (!stage || a.status === stage),
   );
@@ -53,7 +53,7 @@ export default function Applications() {
   return (
     <>
       <Heading title="Applications">
-        Track the roles you’ve opened and update your progress after applying.
+        Callbacks and upcoming interviews appear first. See the resume used and the stages recorded for each application.
       </Heading>
       <div className="grid gap-3 sm:grid-cols-[1fr_160px]">
         <input
@@ -154,10 +154,9 @@ export default function Applications() {
           </div>
         )}
       </div>
-      <Section title="Agent workspace">
+      <Section title="Application progress">
         <p className="mb-4 text-sm text-board-muted">
-          Prepared drafts and review actions. A draft is not a submitted
-          application.
+          Active callbacks come first. Email updates can add stages when Muse has authorized inbox access.
         </p>
         <select
           className={`${control} mb-4 sm:max-w-xs`}
@@ -175,7 +174,6 @@ export default function Applications() {
           <Notice>No drafts here. Queue a role from Discover.</Notice>
         )}
       </Section>
-      <SkippedOpportunities />
     </>
   );
 }

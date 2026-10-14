@@ -26,7 +26,7 @@ export function buildSubmissionRecord(application = {}, attempts = []) {
       confirmed, createdAt: row.created_at || null, startedAt: row.started_at || null,
       finishedAt: row.finished_at || null,
       receipt: confirmed ? row.receipt : null,
-      resume: resume.id ? { id: resume.id, name: resume.name || 'Saved résumé', objectPath: resume.object_path || null, sha256: resume.content_hash || draft.resumeSha256 || null } : null,
+      resume: resume.id ? { id: resume.id, name: resume.name || 'Saved résumé', version: typeof resume.version === 'number' || typeof resume.version === 'string' ? resume.version : null, variant: typeof resume.variant === 'string' ? resume.variant : null, objectPath: resume.object_path || null, sha256: resume.content_hash || draft.resumeSha256 || null } : null,
       questions: Array.isArray(draft.questions) ? draft.questions.map(q => ({ question: q.question || 'Application question', answer: q.answer ?? null, fieldType: q.fieldType || null })) : [],
       hasSnapshot: Boolean(context.application),
     };

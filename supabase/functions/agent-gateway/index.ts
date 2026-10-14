@@ -71,7 +71,7 @@ Deno.serve(async request => {
       const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});
       return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
     }
-    if (['preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action'].includes(operation)) {
+    if (['preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'].includes(operation)) {
       const credentialHash = await hashToken(bearer);
       const result = await museFeatureDispatch({operation,payload,
         rpc:(op: string, args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),

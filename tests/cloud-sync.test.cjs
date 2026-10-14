@@ -12,7 +12,7 @@ async function environment(batch=null,reactUI=false){
  const timeout=fn=>{timers.set(++next,fn);return next;};
  const ctx={document,window:{addEventListener(){}},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:()=>null,setItem(){},removeItem(){},length:0}};
  vm.runInNewContext(fs.readFileSync('store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
- const db={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],job_batches:[]};
+ const db={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],job_batches:[]};
  const client={auth:{getUser:async()=>({data:{user:{id:owner}}})},async rpc(name,args){
   assert.equal(name,'save_preferences_preserving_quiet');
   const search=clone(args.search_next);delete search.quietMode;

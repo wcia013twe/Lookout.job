@@ -235,13 +235,15 @@ activity and due/defer advice; important review decisions interrupt. Muse contin
 other authorized work and acknowledges only successfully delivered events. Actual
 scheduling and message delivery remain runtime capabilities.
 
-Applications → Why Muse skipped roles is on demand. Exclusions include the saved
-preference and posting evidence; uncertain fit assessments stay labelled.
-Reconsider requests another evaluation on Muse's next run; it does not apply or
-change preferences. Application review → Submission record exposes historical
-resume/answer snapshots, each attempt's timestamps, confirmation markers and
-uncertainty. A user-reported application remains distinct from an observed receipt.
-Developer contract version **9** advertises these tools.
+Applications shows active callbacks first and a vertical process timeline with completed,
+scheduled and undated stages. Submission records emphasize the immutable resume name,
+version and variant used for each attempt, alongside answers and confirmation evidence.
+An email update does not prove a submission. Muse can append source-backed email
+milestones through `record_application_milestone` when its runtime has authorized
+email access; users can also record stages manually. Closed outcomes move below active
+applications. Skipped-role explanations remain available to Muse on request or for an
+occasional useful preference insight, rather than a permanent Applications section.
+Developer contract version **12** advertises these tools.
 
 ## GitHub-owned integration
 
@@ -261,11 +263,12 @@ Developer context carries only a versioned guide index. The authenticated, read-
 ## Demo feature coverage
 
 The existing admin Demo mode now includes evidenced and ambiguous deadlines,
-completed preparation, quiet settings and notification previews, skipped roles,
-and confirmed or uncertain submission attempts. Its resettable memory services
+completed preparation, quiet settings and notification previews, callback ordering,
+vertical email-backed timelines, exact resume versions, and confirmed or uncertain
+submission attempts. Its resettable memory services
 preserve existing fictional profile and referral scenarios. All new actions remain
 isolated from account storage, private files and external applications.
 
 [Feature MCP parity](backend/MUSE_FEATURE_PARITY.md) maps each action to a scoped
-tool or an explicit human-only boundary. Developer context version **11** includes
+tool or an explicit human-only boundary. Developer context version **12** includes
 quiet-mode management, reconsideration and owned review links.

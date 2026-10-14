@@ -4,6 +4,8 @@ import { useWorkspace } from "../lib/workspace";
 import { control, primary, secondary, Field, Notice, Section } from "./ui";
 import { createBackend } from "../../backend/client.mjs";
 import SubmissionRecord from "./submission-record";
+import ApplicationTimeline from "./application-timeline";
+import TimelineEditor from "./timeline-editor";
 export default function DraftReview({ id, onClose }) {
   const w = useWorkspace(),
     model = w.models.workflowModel;
@@ -416,7 +418,10 @@ export default function DraftReview({ id, onClose }) {
         )}
       </Section>
       <Notice>{feedback}</Notice>
-      <Section title="Timeline">
+      <Section title="Application timeline">
+        <ApplicationTimeline application={current} demo={w.demo}/>
+        <TimelineEditor application={current}/>
+        <details className="mt-5"><summary className="min-h-11 cursor-pointer py-3 text-sm text-board-muted">Application activity</summary>
         <ol className="space-y-3 text-sm">
           {(current.activity || []).map((a, i) => (
             <li key={i}>
@@ -428,6 +433,7 @@ export default function DraftReview({ id, onClose }) {
             </li>
           ))}
         </ol>
+        </details>
       </Section>
     </dialog>
   );

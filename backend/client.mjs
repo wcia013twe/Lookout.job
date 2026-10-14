@@ -63,6 +63,7 @@ function createBackend(client, expectedUserId = null) {
         "applications",
         "activity_events",
         "submission_attempts",
+        "application_milestones",
       ];
       const rows = await Promise.all(
         tables.map((t) =>
@@ -70,7 +71,7 @@ function createBackend(client, expectedUserId = null) {
             t,
             userId,
             ["profiles", "preferences"].includes(t) ? "user_id" : "id",
-            t === "applications" ? "*,jobs(*)" : t === "submission_attempts" ? "id,user_id,application_id,state,started_at,created_at,finished_at,receipt" : "*",
+            t === "applications" ? "*,jobs(*)" : t === "submission_attempts" ? "id,user_id,application_id,state,started_at,created_at,finished_at,receipt,resume_snapshot:context_snapshot->resume" : "*",
           ),
         ),
       );
@@ -182,6 +183,17 @@ function createBackend(client, expectedUserId = null) {
       const attempts = raw.map(t => ({...t, context_snapshot: { application: {draft:t.context_snapshot?.application?.draft}, job:t.context_snapshot?.job, resume:t.context_snapshot?.resume }}));
       await owner();
       return {application, attempts};
+    },
+    async readApplicationTimeline(applicationId) {
+      const userId = await owner();
+      const application = await result(client.from("applications").select("*").eq("id",applicationId).eq("user_id",userId).single());
+      const milestones = (await allRows("application_milestones",userId,"id")).filter(row=>row.application_id===applicationId);
+      await owner();
+      return {application,milestones};
+    },
+    async recordApplicationMilestone(applicationId, payload) {
+      await owner();
+      return result(client.rpc("record_application_milestone", {app_id:applicationId,payload}));
     },
     async readPreparation(applicationId) {
       const userId = await owner();
