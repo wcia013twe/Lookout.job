@@ -5,42 +5,81 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  actions: read
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: production-deploy
+  queue: max
+  cancel-in-progress: false
 jobs:
-  build:
+  plan:
     runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.plan.outputs.deploy }}
+      backend: ${{ steps.plan.outputs.backend }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            next-app/package-lock.json
-      - run: npm ci
-      - run: npm ci --prefix next-app
-      - run: npm test
-      - run: npm run test:db
-      - run: npm run validate:data
-      - uses: actions/configure-pages@v5
-        id: pages
-      - run: npm run build
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - id: plan
+        run: node scripts/deployment-plan.mjs
         env:
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
-      - uses: actions/upload-pages-artifact@v4
+          GH_TOKEN: ${{ github.token }}
+  build:
+    needs: plan
+    if: ${{ needs.plan.outputs.deploy == 'true' }}
+    uses: ./.github/workflows/ci.yml
+    with:
+      upload_pages: true
+  backend:
+    needs: [plan, build]
+    if: ${{ needs.plan.outputs.backend == 'true' }}
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          path: next-app/out
+          persist-credentials: false
+      - name: Check deployment credentials
+        shell: bash
+        run: |
+          if [[ -z "$SUPABASE_ACCESS_TOKEN" || -z "$SUPABASE_DB_PASSWORD" ]]; then
+            echo 'Set SUPABASE_ACCESS_TOKEN and SUPABASE_DB_PASSWORD in the production environment secrets before deploying backend changes.'
+            exit 1
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.72.7
+      - name: Deploy migrations then authenticated gateway functions
+        shell: bash
+        run: |
+          supabase link --project-ref "$SUPABASE_PROJECT_ID"
+          supabase db push --linked --yes
+          supabase functions deploy agent-gateway --project-ref "$SUPABASE_PROJECT_ID" --no-verify-jwt
+          supabase functions deploy agent-mcp --project-ref "$SUPABASE_PROJECT_ID" --no-verify-jwt
+        env:
+          SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID || 'umhqfqzpwmszhcknwtrs' }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
   deploy:
+    needs: [plan, build, backend]
+    if: ${{ always() && needs.plan.outputs.deploy == 'true' && needs.build.result == 'success' && (needs.backend.result == 'success' || needs.backend.result == 'skipped') }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
         id: deployment

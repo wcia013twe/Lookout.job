@@ -242,3 +242,11 @@ change preferences. Application review → Submission record exposes historical
 resume/answer snapshots, each attempt's timestamps, confirmation markers and
 uncertainty. A user-reported application remains distinct from an observed receipt.
 Developer contract version **9** advertises these tools.
+
+## GitHub-owned integration
+
+Parallel features use isolated `codex/` branches/worktrees and PRs. Add
+`merge-ready` to enter the GitHub-hosted Copilot review → CI → squash merge →
+production deployment sequence. The oldest ready PR advances first, and failures
+pause the queue. The queue continues while Codex is closed. Read
+[queue controls and deployment prerequisites](.github/INTEGRATION.md).
