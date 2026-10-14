@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { PLATFORM_TOOLS } from '../supabase/functions/agent-gateway/platform-tools.mjs';
+import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { createHandler, TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
 const token = 'jb_agent_' + 'a'.repeat(64); // Synthetic, never valid in production.
 const scopes = TOOLS.map(tool => tool.scope);
@@ -33,7 +35,7 @@ test('scope-filtered discovery exposes only bounded workspace tools', async () =
 test('context discovery and calls use workspace scope and accept no owner injection', async () => {
   const calls = [], handle = handler(calls, ['workspace:read']);
   const list = await (await handle(request(rpc('tools/list')))).json();
-  assert.deepEqual(list.result.tools.map(tool => tool.name), TOOLS.filter(t => t.scope === 'workspace:read').map(t => t.name));
+  assert.deepEqual(list.result.tools.map(tool => tool.name), TOOLS.filter(tool=>tool.scope==='workspace:read').map(tool=>tool.name));
   await handle(request(rpc('tools/call', { name: 'check_context_versions', arguments: {} })));
   assert.deepEqual(calls.at(-1), { operation: 'context.versions', payload: {} });
   const invalid = await handle(request(rpc('tools/call', { name: 'read_personal_context', arguments: { userId: 'other' } })));
@@ -44,8 +46,6 @@ test('tool calls map only to fixed gateway operations, reject missing scope and 
   const response = await handle(request(rpc('tools/call', { name: 'read_approval', arguments: { applicationId: 'app' } })));
   assert.equal((await response.json()).result.content[0].text, '{"ok":true}');
   assert.deepEqual(calls.at(-1), { operation: 'approvals.read', payload: { applicationId: 'app' } });
-  const forbidden = await handler([], [])(request(rpc('tools/call', { name: 'workspace_read' })));
-  assert.equal((await forbidden.json()).result.isError, true);
   const invalid = await handle(request(rpc('tools/call', { name: 'workspace_read', arguments: { url: 'https://attacker.test' } })));
   assert.equal((await invalid.json()).error.code, -32602);
 });
@@ -65,10 +65,25 @@ test('gateway conflicts become MCP tool errors, infrastructure errors never echo
   assert.equal(failed.status, 502); assert.ok(!(await failed.text()).includes(token));
 });
 
-test("every registered tool rejects a connection without its scope", async () => {
- for (const tool of TOOLS) {
-  const calls = [], response = await handler(calls, [])(request(rpc("tools/call", {name:tool.name,arguments:{}})));
-  assert.equal((await response.json()).result.isError,true,tool.name);
-  assert.ok(!calls.some(c=>c.operation===tool.operation),tool.name);
- }
+test('product and compatibility tools register once with distinct variant operations', () => {
+  for (const tool of PLATFORM_TOOLS) {
+    assert.equal(TOOLS.filter(t => t.operation === tool.operation).length, 1, tool.name);
+    assert.ok(tool.scope, tool.name);
+    assert.equal(tool.inputSchema.additionalProperties, false, tool.name);
+  }
+  assert.equal(new Set(TOOLS.map(tool => tool.name)).size, TOOLS.length);
+  assert.equal(new Set(TOOLS.map(tool => tool.operation)).size, TOOLS.length);
+  assert.equal(TOOLS.find(t => t.name === 'reconsider_skipped_opportunity').operation, 'selection.reconsider');
+  assert.equal(TOOLS.find(t => t.name === 'reconsider_opportunity').operation, 'selection.reconsider.simple');
+  assert.equal(validateRequest({ operation: 'guides.read', payload: { id: 'cold-outreach' } }).operation, 'guides.read');
+  assert.throws(() => validateRequest({ operation: 'guides.read', payload: { id: 'cold-outreach', userId: 'foreign' } }));
+});
+
+test('every registered tool rejects missing scope before forwarding an action', async () => {
+  for (const tool of TOOLS) {
+    const calls = [];
+    const response = await handler(calls, [])(request(rpc('tools/call', { name: tool.name, arguments: {} })));
+    assert.equal((await response.json()).result.isError, true, tool.name);
+    assert.deepEqual(calls, [{ operation: 'credentials.verify', payload: {} }], tool.name);
+  }
 });

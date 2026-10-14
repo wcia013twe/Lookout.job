@@ -26,6 +26,8 @@ begin
  if r->>'version'<>'2' then raise exception 'UI version mismatch'; end if;
  perform public.save_workspace_preferences('{"defaultResumeId":"keep","autoSubmitApproved":false,"targets":[],"targetsVersion":0}','[]',null,'{}');
  if (select jsonb_array_length(search->'targets') from public.preferences where user_id=u)<>2 then raise exception 'Autosync overwrote targets'; end if;
+ perform public.save_preferences_preserving_quiet('{"defaultResumeId":"keep","autoSubmitApproved":false,"targets":[],"targetsVersion":0}','[]',null,'{}');
+ if (select jsonb_array_length(search->'targets') from public.preferences where user_id=u)<>2 then raise exception 'Scoped browser autosync overwrote targets'; end if;
  r:=public.save_search_targets(2,'[]');
  if r->>'version'<>'3' or r->'targets'<>'[]' then raise exception 'Removal failed'; end if;
  execute 'reset role';

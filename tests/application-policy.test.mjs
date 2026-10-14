@@ -39,10 +39,10 @@ test('policy request accepts only canonical job ID; agent cannot inject ranking 
   assert.doesNotThrow(()=>validateRequest({operation:'applications.policy',payload}));
   for (const bad of [{...payload,userId:'other'},{...payload,companyTier:'C'},{jobId:'bad'}]) assert.throws(()=>validateRequest({operation:'applications.policy',payload:bad}));
 });
-test('MCP policy tool is scope-gated and forwards only the validated job argument', async () => {
+test('MCP policy tool forwards only the validated job argument', async () => {
   const calls=[]; const handler=createHandler(async(_token,operation,payload)=>{calls.push({operation,payload}); return {status:200,data: operation==='credentials.verify'?{scopes:['workspace:read']}:{mode:'review'}};});
   const request=new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_application_policy',arguments:{jobId:'00000000-0000-4000-8000-000000000001'}}})});
-  const response=await (await handler(request)).json(); assert.equal(JSON.parse(response.result.content[0].text).mode,'review'); assert.equal(calls[1].operation,'applications.policy');
+  const response=await (await handler(request)).json(); assert.equal(JSON.parse(response.result.content[0].text).mode,'review'); assert.deepEqual(calls, [{operation:'credentials.verify',payload:{}},{operation:'applications.policy',payload:{jobId:'00000000-0000-4000-8000-000000000001'}}]);
 });
 
 test('custom untyped lists work only when explicitly selected', () => {
