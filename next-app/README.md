@@ -18,7 +18,19 @@ From the repository root, `npm run dev` and `npm run build` delegate here. `.git
 
 The build emits a versioned service worker for public offline assets. No private Supabase responses or private resume links are cached by that worker. Browser edits persist in the same existing store; they remain available while account sync is paused.
 
-The retained `legacy/index.html`, Web Components, and DOM controllers are retained as a historical rollback/reference. They are not included in the deployed React export. New UI work belongs here.
+The static frontend in `../legacy/` is retained for regression/reference and is excluded from the production export. New UI work belongs here. `npm run build:auth` from the repository root rebuilds its reference auth bundle; serve the repository root when inspecting `legacy/index.html` so shared modules and catalog URLs resolve.
+
+## Profile verification and demo checks
+
+Profile panels stay mounted after first use so switching sections preserves unsaved fields; leaving the route still requires saving. Default resume selection belongs to Application kit and uses `workflow.searchPreferences.defaultResumeId`. Progress and leaderboard settings are reached through the header XP menu.
+
+In admin Demo mode, edit an About me field, switch to Application kit and return to verify the unsaved edit remains. Save and check fact verification. Inspect the fictional resume, unverified saved answer, preferences, search targets and agent connection controls. Reset demo and confirm the original fixtures return without changing account records. Check Progress through the XP menu.
+
+Search targets describe where Muse looks, separately from fit profiles. They use `preferences.search.targets` and `targetsVersion`; website/MCP `save_search_targets` share owner/version checks. Autosync preserves targets, and guest changes remain local. Saving a target does not create a scanner, schedule or social connection; social content requires runtime access or a user handoff.
+
+## Character asset provenance
+
+The three PNGs in `assets/agents/` were supplied by the user on October 13, 2026. They are intact character references rather than source GIFs. The Grok Bot reference bears Bleap branding and its official identity remains unverified; replace it when a confirmed asset is supplied. Selecting a character does not establish an agent connection.
 
 ## Scaffold and migration status
 

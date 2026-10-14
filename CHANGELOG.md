@@ -1,3 +1,9 @@
+## 2026-10-14 — Consolidated frontend documentation
+
+- Removed three redundant standalone notes: Profile workspace, static reference frontend and character references. Preserved the Profile save/demo checklist, reference auth build/inspection instructions and character provenance in `next-app/README.md`.
+- Kept product/design records, runtime/setup contracts, agent instructions, scoped MCP coverage and license notices. Product vision and runtime code are unchanged.
+- Validation: documentation links/reference audit, retained-content checks, whitespace checks and catalog validation passed; no runtime tests were needed for this documentation-only pass.
+
 ## 2026-10-14 — Consolidated local source layout
 
 - Grouped live browser state, sync, domain models and shared shaders in root `lib/`; moved the retained static frontend, its styles and vendored assets into `legacy/`. Updated production imports, regression fixtures, reference assets, auth build command and current documentation; feature behavior, URLs, persistence and product vision are unchanged.
