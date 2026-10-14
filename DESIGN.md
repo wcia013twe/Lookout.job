@@ -129,3 +129,7 @@ Navigation items use centered bold small text. Inactive items are muted, hover u
 - Do use surface tones and borders to separate shared panels.
 - Don't use the legacy root static UI as the reference for new React screens.
 - Don't replace data-driven rarity accents with primary action styling.
+
+### Onboarding surface exception
+
+Onboarding uses the user-approved rainbow glass reference: near-black navy backdrop, static curved illuminated upper band, translucent blue glass controls, and cyan/mint/lilac/pink edge lighting on the character stage. Glass uses backdrop filtering with a readable dark fallback. Text stays solid white/cool gray; selected controls use a pale cyan edge and blue-purple fill. This is scoped to `.setup-experience`; shared workspace tokens remain unchanged. No motion.

@@ -73,3 +73,78 @@ button:not(:disabled) {
 }
 
 .setup-experience h1 { font-size: clamp(1.75rem, 4vw, 3rem); line-height: 1.12; }
+
+/* Onboarding's static glass stage; scoped so workspace pages keep their theme. */
+.setup-experience {
+  isolation: isolate;
+  position: relative;
+  background:
+    radial-gradient(ellipse at 0% 4%, #064d7770, transparent 42%),
+    radial-gradient(ellipse at 100% 30%, #591c6870, transparent 40%),
+    radial-gradient(ellipse at 70% 100%, #163a6840, transparent 45%), #03060c;
+}
+.setup-experience::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: 0 0 auto;
+  height: 76px;
+  border-radius: 0 0 50% 50% / 0 0 16% 16%;
+  background: linear-gradient(110deg, #087fba35, #19225520 45%, #a3246d30);
+  border-bottom: 1px solid #b4cfff;
+  box-shadow: 0 9px 25px -17px #63baff;
+}
+.setup-experience header { position: relative; z-index: 1; }
+.setup-experience .setup-stage {
+  background: linear-gradient(145deg, #18324c85, #0b1025b8 48%, #311a3b80);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 22px 55px -32px #000;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+.setup-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, #42bfff, #67edd4 25%, #8d9bff 55%, #ff7bdf 80%, #ffd9a3);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+.setup-stage::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: auto 6% 0;
+  height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #28b8ff, #60efd1, #ffe783, #ed74dd);
+  filter: blur(5px);
+}
+.setup-experience label:has(input[type="radio"]) {
+  background: #101c2b9c;
+  border-color: #718fa84d;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.setup-experience label:has(input[type="radio"]:checked) {
+  border-color: #a6dfff;
+  background: linear-gradient(120deg, #123957dc, #302345dc);
+}
+.setup-experience label:has(input[type="radio"]):hover { border-color: #b2c8e7; }
+.setup-experience blockquote {
+  background: #14243a99;
+  border-color: #7d9cba66;
+  backdrop-filter: blur(16px);
+}
+.setup-experience button[type="submit"] {
+  background: #d9edff;
+  color: #101c30;
+  box-shadow: 0 8px 24px -16px #70c7ff;
+}
+.setup-experience button[type="submit"]:hover { background: #eff8ff; }
+.setup-experience .text-board-muted { color: #c0cddd; }

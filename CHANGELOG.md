@@ -1,3 +1,8 @@
+## 2026-10-13 — Rainbow glass onboarding
+
+- Applied the supplied reference’s dark glass surfaces, curved illuminated backdrop, and cyan/mint/lilac/pink edge lighting to onboarding only. Retained static characters, two-step flow, native choices and visible focus.
+- Validation: production export and catalog validation; mobile/desktop visual review. No onboarding animations introduced.
+
 ## 2026-10-13 — Static onboarding
 
 - Removed character idle motion, step arrival animation, and pause/resume controls. Character selection and the full-screen setup layout remain interactive without animation.
