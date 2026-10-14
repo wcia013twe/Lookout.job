@@ -6,6 +6,7 @@ import { streak } from "../lib/progress.mjs";
 import { usePathname } from "next/navigation";
 import { useWorkspace } from "../lib/workspace";
 import { secondary, Notice } from "./ui";
+import ColorModeControl from "./color-mode";
 export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
@@ -47,7 +48,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <p className="mt-1 max-w-sm text-sm text-board-muted">Your personal job hunter. Your crew for what’s next.</p>
           <p className="mt-1 text-xs text-board-muted">Last scan: {w.date}</p>
         </div>
-        <details className="text-sm">
+        <div className="flex flex-wrap items-start gap-2"><ColorModeControl /><details className="text-sm">
           <summary className={`${secondary} cursor-pointer`}>
             {w.state?.progress?.xp || 0} XP ·{" "}
             {streak(w.state?.progress?.streakDays)}d streak
@@ -56,7 +57,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             Browser progress is separate from account leaderboard metrics.
           </p>
           <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link>
-        </details>
+        </details></div>
       </header>
       <div className="workspace-account mt-5 flex flex-wrap items-center justify-between gap-3 text-sm">
         <p className="text-board-muted">
