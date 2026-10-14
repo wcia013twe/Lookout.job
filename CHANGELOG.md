@@ -446,3 +446,13 @@
   submission authorization, and preference-sync assertions; restored test globals.
 - Reconciled fixtures with current main's milestones and scoped preferences API.
 - Validation: full tests, standalone database scenarios, and catalog validation.
+
+### 2026-10-14 — Faster feature delivery
+
+- Added fresh-checkout start, one-command publish/queue, and queue-status commands.
+- Queue advances during production deployment and wakes itself immediately after
+  a merge; failed releases, conflicts, current-head CI, and protections still gate it.
+- Removed the duplicate CI database pass because npm test runs that suite already.
+- Documented the shared-checkout avoidance and retry workflow in agent instructions.
+- Validation: full suite, publisher/queue failure and retry scenarios, and a live
+  fresh-checkout smoke test. Main retains strict CI and conversation protection.

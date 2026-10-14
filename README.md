@@ -249,11 +249,15 @@ Developer contract version **12** advertises these tools.
 
 ## GitHub-owned integration
 
-Parallel features use isolated `codex/` branches/worktrees and PRs. Add
-`merge-ready` to enter the GitHub-hosted CI → squash merge →
-production deployment sequence. The oldest ready PR advances first, and failures
-pause the queue. The queue continues while Codex is closed. Read
-[queue controls and deployment prerequisites](.github/INTEGRATION.md).
+Start in a fresh checkout with `npm run feature:start -- <name>`. After committing
+and reviewing the feature, use `npm run feature:publish -- --title "<title>"
+--body-file <absolute-description-path>` to push, create/update its PR, and queue
+it in one step. `npm run feature:status` shows pending work. The GitHub worker
+refreshes branches, waits for current-head CI, merges serially, and wakes the
+next pass immediately; production deployment runs independently and remains
+serialized. Failed checks, conflicts, or failed completed releases hold the queue.
+The worker continues while Codex is closed. Read
+[feature delivery and queue controls](.github/INTEGRATION.md).
 
 ## Admin demo mode
 
