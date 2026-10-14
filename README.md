@@ -210,3 +210,11 @@ Use **Reload account** to load Muse's changes. HTTP/MCP setup and local-file upl
 are documented in the gateway and runner contracts. Resume parsing itself runs
 in the user's agent, not in this backend. No real candidate package is imported
 as part of development validation.
+
+## Company outreach
+
+Referrals groups existing referral targets and network contacts by company. Each contact has a type icon, target role, LinkedIn link, editable message, optional email subject and follow-up/status fields. Copying never marks outreach sent. Drafting from details requires the profile name, relevant experience and a company/team reason; it does not invent missing facts.
+
+Use **Prepare with Muse** to copy a research request. Muse can fill native fields using browser tools, or return contacts/messages for JSON import. Imports validate HTTPS/LinkedIn profile links, update matching company/contact records and preserve existing status/history. This is a browser/import handoff, not a connected AI generation service. Contacts and drafts remain browser-local; existing network records are retained.
+
+The reusable `skills/cold-outreach/SKILL.md` is adapted from Nick Singh’s cold-email article and installed locally as `$cold-outreach`. It guides grounded, recipient-specific messages and supplies the import schema. It does not authorize sending messages.

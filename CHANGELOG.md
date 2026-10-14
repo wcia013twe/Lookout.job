@@ -1,3 +1,10 @@
+## 2026-10-13 — Company-based referral outreach
+
+- Replaced generic referral tables/templates with company contact groups and editable, copy-ready messages; added role-type SVG icons, LinkedIn/job links, subject copy, follow-up details and mobile contact-to-message navigation.
+- Added manual entry and Muse browser/JSON handoff with atomic validation and duplicate updates that preserve history. Retained existing referral and network records.
+- Created and locally installed the cold-outreach skill from Nick Singh’s guidance.
+- Validation: 141 tests, schema checks, 76-role validation, production export, skill validation, detector and desktop/390px browser checks. Verified manual entry, import, copy and edit/reload persistence. Contacts remain browser-local; autonomous Muse research and delivery are not connected services.
+
 ## 2026-10-13 — Muse profile package writes and private resume setup
 
 - Added owner-scoped profile:write setup permission, human-only enable/disable on existing connections (same token), and explicit setup access on new full connections. No existing key gains access automatically.
