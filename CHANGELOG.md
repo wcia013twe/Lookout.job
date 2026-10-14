@@ -1,3 +1,9 @@
+## 2026-10-14 — Search target editor verification
+
+- Verified the merged Profile search targets for job boards, company careers pages and social accounts.
+- Disable target fields during saving or account synchronization so edits cannot be lost while a save is in flight.
+- Validation: 267 tests, 76-role validation, production build, hosted rollback-only scoped write/autosync checks, deployed gateway/MCP target-tool verification, and desktop/mobile Chrome add/edit/remove/reset/conflict checks with zero demo backend requests.
+
 ## 2026-10-14 — Rainbow glass workspace polish
 
 - Polished Discover, Applications, Needs you, Profile, Referrals and Progress with scoped rainbow glass surfaces, shared controls, mobile composition and clearer loading/empty states. Start/setup routes and setup styling stay unchanged.
