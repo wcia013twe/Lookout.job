@@ -41,8 +41,8 @@ review usage is billed by GitHub under that entitlement.
 
 ## Production
 
-`deploy.yml` uses one `production-deploy` concurrency group with pending runs
-queued and active deploys never canceled. It skips a stale commit if main already
+`deploy.yml` uses one `production-deploy` concurrency group with active deploys never canceled. GitHub may coalesce
+pending workflow wakeups; the durable PR-label queue preserves ready features. It skips a stale commit if main already
 advanced. The production export is built/tested before release; backend changes
 are applied before publishing the matching frontend.
 

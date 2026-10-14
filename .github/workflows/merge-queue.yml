@@ -16,7 +16,6 @@ permissions:
   actions: write
 concurrency:
   group: merge-main
-  queue: max
   cancel-in-progress: false
 jobs:
   integrate:

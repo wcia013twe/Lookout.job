@@ -8,7 +8,6 @@ permissions:
   actions: read
 concurrency:
   group: production-deploy
-  queue: max
   cancel-in-progress: false
 jobs:
   plan:
