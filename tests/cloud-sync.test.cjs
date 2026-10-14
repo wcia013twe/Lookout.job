@@ -11,7 +11,7 @@ async function environment(batch=null,reactUI=false,preferences=[]){
  function element(id){if(!elements.has(id))elements.set(id,{hidden:false,disabled:false,textContent:'',addEventListener(){}});return elements.get(id);}
  const timeout=fn=>{timers.set(++next,fn);return next;};
  const ctx={document,window:{addEventListener(){}},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:()=>null,setItem(){},removeItem(){},length:0}};
- vm.runInNewContext(fs.readFileSync('store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
+ vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
  const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],job_batches:[]};
  const client={async rpc(name,args){
   if(name!=='save_preferences_preserving_quiet')throw Error('Unexpected RPC');
@@ -31,7 +31,7 @@ async function environment(batch=null,reactUI=false,preferences=[]){
  global.document=document;global.window=ctx.window;global.location={href:'https://example.com/'+(batch?'?batch='+batch:'')};global.CustomEvent=ctx.CustomEvent;
  global.setTimeout=timeout;global.clearTimeout=ctx.clearTimeout;
  const ui={retry:{addEventListener(){}},reload:{addEventListener(){}},feedback:{textContent:''},locks:[],locked(value){this.locks.push(value);}};
- const {connectCloud}=await import('../cloud.mjs');connectCloud(client,reactUI?ui:null);
+ const {connectCloud}=await import('../lib/cloud.mjs');connectCloud(client,reactUI?ui:null);
  async function flush(){const pending=[...timers.values()];timers.clear();pending.forEach(fn=>fn());for(let i=0;i<30;i++)await Promise.resolve();}
  await flush();
  return {store,db,ui,flush,get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
 import { createBackend } from '../../backend/client.mjs';
-import { normalizeQuietMode } from '../../quiet-mode.mjs';
+import { normalizeQuietMode } from '../../lib/quiet-mode.mjs';
 import { useWorkspace } from './workspace';
 export function useQuietSettings() {
  const w=useWorkspace(),owner=w.demo?'demo':w.user?.id||'guest';

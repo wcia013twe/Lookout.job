@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, type FormEvent } from "react";
-import rawSchema from "../../profile-schema.js";
+import rawSchema from "../../lib/profile-schema.js";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, primary, secondary, Notice, Section } from "./ui";
 const labels: Record<string, string> = {

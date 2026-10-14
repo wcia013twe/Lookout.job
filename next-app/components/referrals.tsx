@@ -6,7 +6,7 @@ import { useOutreach } from "../lib/outreach";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { motion, useReducedMotion } from "framer-motion";
 import { Field, Heading, Notice, control, primary, secondary } from "./ui";
-import { CONTACT_TYPES, OUTREACH_STATUSES, contactType, draftOutreach, groupContacts, safeUrl } from "../../outreach-model.mjs";
+import { CONTACT_TYPES, OUTREACH_STATUSES, contactType, draftOutreach, groupContacts, safeUrl } from "../../lib/outreach-model.mjs";
 
 import { errorMessage } from "./profile-types";
 type ContactRecord = { id: string; origin?: "target" | "person"; company?: string; contact?: string; name?: string; title?: string; role?: string; contactType?: string; message?: string; subject?: string; linkedin?: string; link?: string; evidence?: string; reason?: string; connection?: string; sourceUrl?: string; followUp?: string; followup?: string; notes?: string; status?: string; _cloudId?: string; _revision?: number; collection?: string; [key: string]: unknown };

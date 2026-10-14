@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildSubmissionRecord } from '../submission-record.mjs';
+import { buildSubmissionRecord } from '../lib/submission-record.mjs';
 const receipt = { source: 'runner-observed-greenhouse-confirmation', marker: '#confirmation', message: 'Application received', jobUrl: 'https://example.com/job' };
 const attempt = { id: 'one', application_id: 'app', state: 'confirmed', receipt, context_snapshot: { application: { draft: { questions: [{ question: 'Why?', answer: 'Original' }] } }, resume: { id: 'resume', name: 'Original résumé', content_hash: 'hash' }, job: { canonical_url: receipt.jobUrl } } };
 test('historical materials never use current draft or unrelated answer library', () => {

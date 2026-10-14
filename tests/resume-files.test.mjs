@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateResume, sha256, assertOwner, uploadResume, resumeDownloadUrl, MAX_RESUME_BYTES } from '../resume-model.mjs';
+import { validateResume, sha256, assertOwner, uploadResume, resumeDownloadUrl, MAX_RESUME_BYTES } from '../lib/resume-model.mjs';
 const owner = '11111111-1111-4111-8111-111111111111';
 const file = { name: 'resume.pdf', type: 'application/pdf', size: 3, arrayBuffer: async () => new TextEncoder().encode('abc').buffer };
 

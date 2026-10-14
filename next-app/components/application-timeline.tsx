@@ -1,5 +1,5 @@
 "use client";
-import { timelineItems } from '../../application-timeline.mjs';
+import { timelineItems } from '../../lib/application-timeline.mjs';
 import type { Application, ApplicationMilestone } from './workflow-types';
 const phaseLabel = { scheduled: 'Scheduled', completed: 'Completed', received: 'Received' };
 function dateLabel(value?: string | null) {

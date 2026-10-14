@@ -6,7 +6,7 @@ const one='11111111-1111-4111-8111-111111111111',two='22222222-2222-4222-8222-22
 function store() {
  const data=new Map();
  const context={window:{addEventListener(){}},document:{addEventListener(){},dispatchEvent(){}},CustomEvent:function(){},setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k),length:0}};
- vm.runInNewContext(fs.readFileSync('store.js','utf8'),context);return context.window.JB.store;
+ vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),context);return context.window.JB.store;
 }
 test('account workspaces isolate profile, answers and drafts and preserve the guest workspace',()=>{
  const s=store();s.set('workflow.profile',{name:'Guest'});

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialPrompt, readField, updateField } from '../search-profile.mjs';
+import { initialPrompt, readField, updateField } from '../lib/search-profile.mjs';
 test('adjustments preserve prose and other sections, parse direct edits, and clear constraints', () => {
   const original = initialPrompt({ categories: ['Any industry'], locations: ['US'] }) + '\n## Additional Context\nRemote might be nice.\n';
   const edited = updateField(original, 'Search Filters', 'Work arrangement', 'Remote required');
@@ -23,7 +23,7 @@ test('priorities remain separate from filters and missing headings are appended'
 });
 
 test('structured profile round trip preserves prose without storing a competing prompt', async () => {
-  const { profileFromPrompt, promptFromProfile } = await import('../search-profile.mjs');
+  const { profileFromPrompt, promptFromProfile } = await import('../lib/search-profile.mjs');
   let prompt = initialPrompt({ categories: ['Any industry'] });
   prompt = updateField(prompt, 'Search Filters', 'Work arrangement', 'Remote required');
   prompt = updateField(prompt, 'How to Evaluate Opportunities', 'Stability', 'Very important');

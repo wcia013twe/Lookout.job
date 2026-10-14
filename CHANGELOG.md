@@ -1,3 +1,9 @@
+## 2026-10-14 — Consolidated local source layout
+
+- Grouped live browser state, sync, domain models and shared shaders in root `lib/`; moved the retained static frontend, its styles and vendored assets into `legacy/`. Updated production imports, regression fixtures, reference assets, auth build command and current documentation; feature behavior, URLs, persistence and product vision are unchanged.
+- Removed duplicate dependencies and disposable generated output from the shared local directory into a recovery backup. Kept installed dependencies needed for development and backed up source before changing paths. Stopped the shared local dev server while moving its active cache; restart it with `npm run dev` after cleanup.
+- Validation: all 271 tests including database checks, strict typecheck, 76-role catalog, production static export, reference auth build, and retained static script/style path checks passed. Production output excludes `legacy/`; no authenticated account or employer submission was exercised.
+
 ## 2026-10-14 — Repository cleanup
 
 - Audited and archived 31 untracked numbered copies from the shared workspace, retaining every original version and verifying archive checksums. Canonical code and documents were preserved; older copies contain intermediate design and implementation states, not a second production frontend.

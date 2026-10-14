@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const vm=require('node:vm');
 const fs=require('node:fs');
 function setup() {
- const window={JB:{}};vm.runInNewContext(fs.readFileSync('profile-autofill.js','utf8'),{window});
+ const window={JB:{}};vm.runInNewContext(fs.readFileSync('legacy/profile-autofill.js','utf8'),{window});
  const listeners={},verification={};
  const form={elements:{name:{name:'name',value:'One'},email:{name:'email',value:'one@example.com'},verified:{checked:false,addEventListener:(event,fn)=>verification[event]=fn}},addEventListener:(event,fn)=>listeners[event]=fn};
  const guard=window.JB.profileAutofillGuard(form,['name','email']);
@@ -27,7 +27,7 @@ test('an extension cannot mark its own imported values as human-reviewed',()=>{
 });
 
 test('silent changes to nested profile facts invalidate prior review', () => {
- const window={JB:{}}; vm.runInNewContext(fs.readFileSync('profile-autofill.js','utf8'),{window});
+ const window={JB:{}}; vm.runInNewContext(fs.readFileSync('legacy/profile-autofill.js','utf8'),{window});
  const facts={name:'One',workExperience:[{title:'Engineer'}]};
  const form={elements:{verified:{checked:false,addEventListener(){}}},addEventListener(){}};
  const guard=window.JB.profileAutofillGuard(form,[],null,()=>facts);

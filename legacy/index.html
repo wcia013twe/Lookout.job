@@ -9,9 +9,9 @@
     <meta name="apple-mobile-web-app-title" content="Job Signal">
     <meta name="description" content="A selective U.S. software engineering job tracker.">
     <title>Job Signal Board</title>
-    <link rel="icon" type="image/svg+xml" href="icon.svg">
-    <link rel="apple-touch-icon" href="icon.svg">
-    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="../icon.svg">
+    <link rel="apple-touch-icon" href="../icon.svg">
+    <link rel="manifest" href="../manifest.webmanifest">
     <link rel="stylesheet" href="styles.css?v=35">
     <link rel="stylesheet" href="styles/pack-effects.css?v=35">
     <link rel="stylesheet" href="styles/role-cards.css?v=35">
@@ -201,7 +201,7 @@
             <button type="submit">Save preferences</button><p id="search-preferences-feedback" role="status"></p>
           </form>
         </details>
-        <section id="company-tierlists" data-config-url="./data/tierlist-presets.json" class="board-section" aria-labelledby="tierlist-heading">
+        <section id="company-tierlists" data-config-url="../data/tierlist-presets.json" class="board-section" aria-labelledby="tierlist-heading">
           <h2 id="tierlist-heading">Company tier lists</h2>
           <p class="panel-note">Save different company preferences. Drag a tile by its handle, or select a company and choose a tier. Guest lists stay in this browser; signed-in lists sync to your account.</p>
           <div class="tierlist-toolbar">
@@ -271,17 +271,17 @@
         <section><h3>Activity</h3><ol id="review-timeline"></ol></section>
       </dialog>
     </main>
-    <script src="store.js?v=35"></script>
+    <script src="../lib/store.js?v=35"></script>
     <script src="components.js?v=35"></script>
-    <script src="workflow-model.js?v=35"></script>
+    <script src="../lib/workflow-model.js?v=35"></script>
     <script src="app.js?v=35"></script>
-    <script src="saved-answers-model.js?v=35"></script>
-    <script src="profile-schema.js?v=35"></script>
+    <script src="../lib/saved-answers-model.js?v=35"></script>
+    <script src="../lib/profile-schema.js?v=35"></script>
     <script src="profile-editor.js?v=35"></script>
     <script src="profile-autofill.js?v=35"></script>
     <script src="workflow.js?v=35"></script>
     <script src="saved-answers.js?v=35"></script>
-    <script src="tierlist-model.js?v=35"></script>
+    <script src="../lib/tierlist-model.js?v=35"></script>
     <script src="tierlists.js?v=35"></script>
     <script type="module" src="workflow-motion.js?v=35"></script>
     <script type="module" src="pack-effects.js?v=35"></script>

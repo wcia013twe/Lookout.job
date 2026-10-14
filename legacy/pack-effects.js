@@ -1,5 +1,5 @@
 // One lazy WebGL scene per open pack. No React runtime, no external asset requests.
-import { foilVertex, foilFragment, sparkVertex, sparkFragment } from './styles/pack-shaders.js';
+import { foilVertex, foilFragment, sparkVertex, sparkFragment } from '../lib/pack-shaders.js';
 
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 let threePromise;

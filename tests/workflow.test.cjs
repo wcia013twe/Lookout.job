@@ -7,7 +7,7 @@ const profile = { name: 'Applicant', email: 'applicant@example.com', verified: t
 const resume = { id: 'resume-1', name: 'Backend', url: 'https://example.com/resume.pdf' };
 function model() {
   const context = { window: { JB: {} }, Date };
-  vm.runInNewContext(fs.readFileSync('workflow-model.js', 'utf8'), context);
+  vm.runInNewContext(fs.readFileSync('lib/workflow-model.js', 'utf8'), context);
   return context.window.JB.workflowModel;
 }
 function ready(m) {
@@ -44,7 +44,7 @@ test('new workflow state survives reload without dropping existing tracker data'
     const context = { window: { addEventListener() {} }, document: { addEventListener() {} }, setTimeout: () => 1, clearTimeout() {}, localStorage: {
       getItem: key => data.get(key) ?? null, setItem: (key, value) => data.set(key, value), removeItem: key => data.delete(key), length: 0,
     } };
-    vm.runInNewContext(fs.readFileSync('store.js', 'utf8'), context); return context.window.JB.store;
+    vm.runInNewContext(fs.readFileSync('lib/store.js', 'utf8'), context); return context.window.JB.store;
   };
   const s = load(); s.set('workflow.applications', { 'role-1': model().create(role) }); s.set('workflow.profile', profile); s.set('workflow.tierLists', [{ id: 'preferences', name: 'My companies', placements: { S: ['nvidia'] } }]); s.set('workflow.activeTierListId', 'preferences'); s.set('workflow.savedAnswers', [{id:'a',question:'Common question',answer:'My answer',policy:'ask'}]); s._flush();
   const reloaded = load(); assert.equal(reloaded.get('workflow.applications')['role-1'].status, 'Queued');

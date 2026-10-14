@@ -1,4 +1,4 @@
-import { createPreparationPlan } from '../../preparation-model.mjs';
+import { createPreparationPlan } from '../../lib/preparation-model.mjs';
 import { createDemoWorkspace } from './muse-demo-fixtures.mjs';
 export { createDemoServices } from './muse-demo-fixtures.mjs';
 export function canUseDemo(user) {return Boolean(user?.id && !user.is_anonymous && user.app_metadata?.demo_preview === true);}

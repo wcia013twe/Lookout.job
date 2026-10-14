@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateTargets, scanningStatus } from '../search-targets.mjs';
+import { validateTargets, scanningStatus } from '../lib/search-targets.mjs';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
 const t = {id:'board',name:'HiringCafe',kind:'board',address:'https://hiring.cafe'};

@@ -1,5 +1,5 @@
-import { VARIANTS, validateResume, uploadResume, resumeDownloadUrl } from './resume-model.mjs';
-export { MAX_RESUME_BYTES, validateResume, sha256, assertOwner, uploadResume, resumeDownloadUrl } from './resume-model.mjs';
+import { VARIANTS, validateResume, uploadResume, resumeDownloadUrl } from '../lib/resume-model.mjs';
+export { MAX_RESUME_BYTES, validateResume, sha256, assertOwner, uploadResume, resumeDownloadUrl } from '../lib/resume-model.mjs';
 
 function mountResumeFiles() {
   const referenceForm = document.querySelector('#resume-form');

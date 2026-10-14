@@ -22,7 +22,7 @@ test('maintenance rejects invalid signatures, oversized images, traversal and ar
 });
 function components() {
   const classes = {}, context = { window: { JB: {} }, HTMLElement: class {}, customElements: { define: (name, value) => classes[name] = value }, document: { addEventListener() {}, createElement: () => ({ setAttribute() {} }) }, Date, console };
-  runInNewContext(readFileSync('components.js', 'utf8'), context);
+  runInNewContext(readFileSync('legacy/components.js', 'utf8'), context);
   return { Logo: classes['logo-img'], JB: context.window.JB };
 }
 test('company-name lookup renders backend URLs and falls back directly to initials', () => {

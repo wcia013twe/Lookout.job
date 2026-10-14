@@ -31,7 +31,7 @@ The two Edge Functions are deployed with platform `verify_jwt=false` because the
 
 ## Frontend sync
 
-`cloud.mjs` serializes debounced updates and drains edits made during requests. Guest data stays local and is not silently imported after login. Offline edits persist in the account's browser namespace and retry when connectivity returns. Application updates use the expected server revision; stale drafts pause for review. Account switching clears in-flight ownership and never adopts another user's results.
+`lib/cloud.mjs` serializes debounced updates and drains edits made during requests. Guest data stays local and is not silently imported after login. Offline edits persist in the account's browser namespace and retry when connectivity returns. Application updates use the expected server revision; stale drafts pause for review. Account switching clears in-flight ownership and never adopts another user's results.
 
 Signed-in approval waits for sync and calls the database RPC. Human progress updates require a note and mark submissions **user-reported** unless an actual runner receipt exists. Submitted drafts cannot be rewritten. Opening a posting stays browser link history, not a submission.
 
