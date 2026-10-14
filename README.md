@@ -85,6 +85,8 @@ npm run validate:data
 npm run dev
 ```
 
+`npm test` runs behavior checks and the consolidated database scenarios. The database suite applies migrations once in disposable PGlite; `npm run test:db` runs the same scenarios separately. Hosted checks remain separate.
+
 Open `http://localhost:3000`. Production is built and deployed by `.github/workflows/deploy.yml` from `next-app/out/`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The React export bundles the browser client at build time. The legacy auth bundle is retained only for the old static reference.
 
 ## Code map and invariants for Muse/other agents

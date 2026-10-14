@@ -429,3 +429,12 @@
   local and hosted database scope/conflict/autosync checks, isolated desktop/mobile
   add/edit/remove checks. Database migration and gateway/MCP deployed.
   Integrated signed-in browser flow remains unverified.
+
+### 2026-10-14 — Consolidated test coverage
+
+- Consolidated repeated database bootstrap and leaderboard checks into one suite;
+  kept all current database scenarios, including timeline and source-list checks.
+- Strengthened scope forwarding, upload verification, persisted pack rewards,
+  submission authorization, and preference-sync assertions; restored test globals.
+- Reconciled fixtures with current main's milestones and scoped preferences API.
+- Validation: full tests, standalone database scenarios, and catalog validation.

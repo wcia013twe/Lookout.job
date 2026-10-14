@@ -12,13 +12,13 @@ async function environment(batch=null,reactUI=false,preferences=[]){
  const timeout=fn=>{timers.set(++next,fn);return next;};
  const ctx={document,window:{addEventListener(){}},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:()=>null,setItem(){},removeItem(){},length:0}};
  vm.runInNewContext(fs.readFileSync('store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
- const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],job_batches:[]};
+ const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],job_batches:[]};
  const client={async rpc(name,args){
-  if(name!=='save_workspace_preferences')throw Error('Unexpected RPC');
+  if(name!=='save_preferences_preserving_quiet')throw Error('Unexpected RPC');
   const previous=db.preferences[0]||{};
-  const search={...args.next_search};delete search.profiles;
-  if(previous.search?.profiles)search.profiles=previous.search.profiles;
-  const row={user_id:owner,search,tier_lists:args.next_tier_lists,active_tier_list_id:args.next_active_tier_list_id,theme:args.next_theme};
+  const search={...args.search_next};
+  for(const key of ['profiles','quietMode','targets','targetsVersion']) {delete search[key];if(previous.search && key in previous.search)search[key]=previous.search[key];}
+  const row={user_id:owner,search,tier_lists:args.lists_next,active_tier_list_id:args.active_next,theme:args.theme_next};
   db.preferences=[clone(row)];return {data:row};
  },auth:{getUser:async()=>({data:{user:{id:owner}}})},from(table){
   let operation='select',fields=null,filters=[],start=0,end=Infinity,single=false;

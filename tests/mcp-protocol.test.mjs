@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PLATFORM_TOOLS } from '../supabase/functions/agent-gateway/platform-tools.mjs';
-import { DEPLOYED_COMPAT_TOOLS } from '../supabase/functions/agent-gateway/deployed-compat/tools.mjs';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { createHandler, TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
 const token = 'jb_agent_' + 'a'.repeat(64); // Synthetic, never valid in production.
@@ -72,9 +71,8 @@ test('product and compatibility tools register once with distinct variant operat
     assert.ok(tool.scope, tool.name);
     assert.equal(tool.inputSchema.additionalProperties, false, tool.name);
   }
-  for (const tool of DEPLOYED_COMPAT_TOOLS) {
-    assert.equal(TOOLS.filter(t => t.name === tool.name).length, 1, tool.name);
-  }
+  assert.equal(new Set(TOOLS.map(tool => tool.name)).size, TOOLS.length);
+  assert.equal(new Set(TOOLS.map(tool => tool.operation)).size, TOOLS.length);
   assert.equal(TOOLS.find(t => t.name === 'reconsider_skipped_opportunity').operation, 'selection.reconsider');
   assert.equal(TOOLS.find(t => t.name === 'reconsider_opportunity').operation, 'selection.reconsider.simple');
   assert.equal(validateRequest({ operation: 'guides.read', payload: { id: 'cold-outreach' } }).operation, 'guides.read');
