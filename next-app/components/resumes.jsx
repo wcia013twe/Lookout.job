@@ -81,6 +81,7 @@ export default function Resumes() {
     setFeedback("Resume reference saved.");
   }
   async function open(r) {
+    if(w.demo){setFeedback("Private files are unavailable in demo mode.");return;}
     const popup = window.open("about:blank", "_blank");
     try {
       if (popup) popup.opener = null;

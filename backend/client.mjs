@@ -87,23 +87,13 @@ function createBackend(client, expectedUserId = null) {
         "user_id",
       );
     },
-    savePreferences({
-      search = {},
-      tierLists = [],
-      activeTierListId = null,
-      theme = { pack: "base" },
+    async savePreferences({
+      search = {}, tierLists = [], activeTierListId = null, theme = { pack: "base" },
     }) {
-      return owned(
-        "preferences",
-        {
-          search,
-          tier_lists: tierLists,
-          active_tier_list_id: activeTierListId,
-          theme,
-          updated_at: new Date().toISOString(),
-        },
-        "user_id",
-      );
+      await owner();
+      return result(client.rpc("save_preferences_preserving_quiet", {
+        search_next:search,lists_next:tierLists,active_next:activeTierListId,theme_next:theme,
+      }));
     },
     saveAnswer({
       id,
@@ -205,9 +195,17 @@ function createBackend(client, expectedUserId = null) {
       const userId = await owner();
       return allRows("selection_decisions", userId, "id", "*,jobs(*)");
     },
-    async reconsiderSelection(id) {
-      const userId = await owner();
-      return result(client.from("selection_decisions").update({reconsidered_at:new Date().toISOString()}).eq("id", id).eq("user_id", userId).select().single());
+    async reconsiderSelection(id, expectedReconsideredAt = "") {
+      await owner();
+      return result(client.rpc("reconsider_selection", {decision_id:id,expected_at:expectedReconsideredAt}));
+    },
+    async readQuietMode() {
+      await owner();
+      return result(client.rpc("read_quiet_mode"));
+    },
+    async saveQuietMode(settings, expectedPersonalVersion) {
+      await owner();
+      return result(client.rpc("save_quiet_mode", {next_settings:settings,expected_version:expectedPersonalVersion}));
     },
     async resolveAttempt(applicationId, revision, claimId, note) {
       await owner();

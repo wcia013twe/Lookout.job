@@ -3,7 +3,7 @@ import { validateProfileSetup } from './profile-setup.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = ['guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue', 'connections.list', 'connections.revoke', 'workspace.read', 'credentials.verify', 'resumes.read', 'batches.publish', 'drafts.prepare', 'activity.append', 'approvals.read', 'context.versions', 'context.personal', 'context.developer', 'runner.report_failure', 'applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record'];
+export const OPERATIONS = ['guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
@@ -16,6 +16,7 @@ export function validateRequest(input) {
     'preparation.update':['applicationId','expectedVersion','deadline','dailyMinutes','resourceGuides'],
     'preparation.complete':['applicationId','expectedVersion','taskId','completed'],
     'selection.record':['jobId','eventKey','reason','preference','evidence','certainty'],
+    'selection.reconsider':['decisionId','expectedReconsideredAt'], 'quiet.read':[], 'quiet.update':['settings','expectedPersonalVersion'], 'applications.human_action':['applicationId','action'],
     'selection.read':[], 'notifications.read':[], 'notifications.ack':['eventKey','kind','eventIds'],
   };
   if (featureKeys[input.operation]) {
@@ -27,6 +28,13 @@ export function validateRequest(input) {
       if(input.operation==='preparation.update' && (!p.deadline || typeof p.deadline!=='object' || Array.isArray(p.deadline) || (p.dailyMinutes!==undefined && (!Number.isInteger(p.dailyMinutes)||p.dailyMinutes<15||p.dailyMinutes>240)))) throw Error('Deadline and available preparation time required');
       if(input.operation==='preparation.update' && p.resourceGuides!==undefined && (!Array.isArray(p.resourceGuides)||p.resourceGuides.length>10||p.resourceGuides.some(g=>!g||typeof g.id!=='string'||g.id.length>100||typeof g.title!=='string'||g.title.length>200||typeof g.url!=='string'||g.url.length>2048||!/^https:\/\//.test(g.url)||!Array.isArray(g.topics)||g.topics.some(t=>typeof t!=='string'||t.length>100)||g.topics.length>20||(g.companies!==undefined&&(!Array.isArray(g.companies)||g.companies.some(c=>typeof c!=='string'||c.length>100)))||!Number.isInteger(g.minutes)||g.minutes<1||g.minutes>240))) throw Error('Bounded verified resource guides required');
       if(input.operation==='preparation.complete' && (typeof p.taskId!=='string'||p.taskId.length>200||typeof p.completed!=='boolean')) throw Error('Task and completion required');
+    }
+    if(input.operation==='selection.reconsider' && (!uuid(p.decisionId)||typeof p.expectedReconsideredAt!=='string'||p.expectedReconsideredAt.length>50||(p.expectedReconsideredAt!==''&&!Number.isFinite(Date.parse(p.expectedReconsideredAt))))) throw Error('Decision ID and current reconsideration token required');
+    if(input.operation==='applications.human_action' && (!uuid(p.applicationId)||!['approve','resolve_submission'].includes(p.action))) throw Error('Owned application and human action required');
+    if(input.operation==='quiet.update') {
+      const q=p.settings;
+      if(!Number.isSafeInteger(p.expectedPersonalVersion)||p.expectedPersonalVersion<1||!q||typeof q!=='object'||Array.isArray(q)||Object.keys(q).some(k=>!['cadence','timezone','digestHour','digestDay','urgentDeadlineHours'].includes(k))||!['immediate','daily','weekly'].includes(q.cadence)||typeof q.timezone!=='string'||q.timezone.length>100||!Number.isInteger(q.digestHour)||q.digestHour<0||q.digestHour>23||!Number.isInteger(q.digestDay)||q.digestDay<0||q.digestDay>6||!Number.isInteger(q.urgentDeadlineHours)||q.urgentDeadlineHours<1||q.urgentDeadlineHours>168) throw Error('Valid quiet settings and current personal version required');
+      new Intl.DateTimeFormat('en',{timeZone:q.timezone});
     }
     if(input.operation==='selection.record' && (!['jobId','eventKey','reason','preference','evidence'].every(k=>typeof p[k]==='string'&&p[k].trim()&&p[k].length<=({reason:1000,evidence:2000}[k]||200)) || !['exclusion','uncertain'].includes(p.certainty))) throw Error('Selection explanation required');
     if(input.operation==='notifications.ack' && (typeof p.eventKey!=='string'||!p.eventKey.trim()||p.eventKey.length>200||!['digest','immediate'].includes(p.kind)||!Array.isArray(p.eventIds)||p.eventIds.length>500||p.eventIds.some(id=>typeof id!=='string'||id.length>200))) throw Error('Delivery acknowledgment required');

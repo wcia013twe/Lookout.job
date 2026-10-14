@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { primary, secondary, Empty } from "./ui";
 import DraftReview from "./draft-review";
 import ApplicationPreparation from "./application-preparation";
@@ -7,6 +7,11 @@ import { useWorkspace } from "../lib/workspace";
 export default function ApplicationList({ items }) {
   const [review, setReview] = useState(null), [preparing, setPreparing] = useState(null);
   const w = useWorkspace();
+  useEffect(()=>{
+    const requested=new URL(location.href).searchParams.get('application');
+    const owned=items.find(item=>item.backendId===requested);
+    if(owned)setReview(owned.id);
+  },[w.user?.id,items.map(item=>item.backendId).join(',')]);
   return (
     <>
       <ul className="divide-y divide-board-line">
@@ -45,12 +50,12 @@ export default function ApplicationList({ items }) {
             </button>
             </div>
             </div>
-            {preparing === d.id && <ApplicationPreparation key={`${w.user?.id || "guest"}:${d.id}`} application={{...w.roles.find(r=>r.id===d.id),...d}}/>}
+            {preparing === d.id && <ApplicationPreparation key={`${w.demo ? "demo" : w.user?.id || "guest"}:${d.id}`} application={{...w.roles.find(r=>r.id===d.id),...d}}/>}
           </li>
         ))}
       </ul>
       {review && (
-        <DraftReview key={review} id={review} onClose={() => setReview(null)} />
+        <DraftReview key={`${w.demo ? "demo" : w.user?.id || "guest"}:${review}`} id={review} onClose={() => setReview(null)} />
       )}
     </>
   );

@@ -3,7 +3,7 @@ import { useEffect, useId, useState } from "react";
 import { createPreparationPlan, setPreparationTaskCompletion } from "../../preparation-model.mjs";
 import { control, Field, Notice, primary } from "./ui";
 
-export default function Preparation({ application, plan = null, onSave, timeZone }) {
+export default function Preparation({ application, plan = null, onSave, timeZone, demo = false }) {
   const formId = useId();
   const [date, setDate] = useState(plan?.deadline?.date || "");
   const [stage, setStage] = useState(plan?.deadline?.stage || "Interview");
@@ -40,6 +40,7 @@ export default function Preparation({ application, plan = null, onSave, timeZone
       const next = createPreparationPlan({ application, previousPlan: current,
         deadline: { date, stage, confirmed: true, source: unchanged ? source : { kind: "manual" } },
         dailyMinutes: minutes, now: `${part("year")}-${part("month")}-${part("day")}`,
+        ...(demo ? { guides: current?.guides || [] } : {}),
       });
       if (next.deadline.status !== "confirmed") throw new Error(next.warnings.join(" "));
       save(next, "Preparation plan saved.");
@@ -54,7 +55,7 @@ export default function Preparation({ application, plan = null, onSave, timeZone
         {source.excerpt && <blockquote className="mt-2 break-words text-board-muted">{source.excerpt}</blockquote>}
         <p className="mt-2 break-all text-xs text-board-muted">Message reference: {source.messageId || "Missing"}</p>
         {source.receivedAt && <p className="mt-1 text-xs text-board-muted">Received: {source.receivedAt}</p>}
-        {source.url && <a className="mt-3 inline-flex min-h-11 items-center text-board-accent underline underline-offset-4" href={source.url} target="_blank" rel="noopener noreferrer">Open source email</a>}
+        {source.url && (demo ? <p className="mt-3 text-xs text-board-muted">Fictional email shown for this demo; external navigation is disabled.</p> : <a className="mt-3 inline-flex min-h-11 items-center text-board-accent underline underline-offset-4" href={source.url} target="_blank" rel="noopener noreferrer">Open source email</a>)}
       </div>}
       {current?.deadline?.status === "needs_confirmation" && <Notice>Confirm the exact deadline below. Preparation tasks remain unscheduled until the date is supported.</Notice>}
       <form onSubmit={build} className="mt-5 space-y-4">
@@ -88,7 +89,7 @@ export default function Preparation({ application, plan = null, onSave, timeZone
         </ul>
         <h4 className="mt-6 font-bold">Resource guides</h4>
         {current.guides.length ? <ul className="mt-2 divide-y divide-board-line">{current.guides.map(guide => <li key={guide.id} className="py-3">
-          <a className="inline-flex min-h-11 items-center text-sm font-semibold text-board-accent underline underline-offset-4" href={guide.url} target="_blank" rel="noopener noreferrer">{guide.title}</a>
+          {demo ? <p className="inline-flex min-h-11 items-center text-sm font-semibold">{guide.title}</p> : <a className="inline-flex min-h-11 items-center text-sm font-semibold text-board-accent underline underline-offset-4" href={guide.url} target="_blank" rel="noopener noreferrer">{guide.title}</a>}
           <p className="text-xs text-board-muted">Relevant to {guide.matchedTopics.join(", ")}. Use alongside any materials provided by the company.</p>
         </li>)}</ul> : <Notice>No matching guide in the current resource library. Start with the posting and the company’s supplied preparation materials.</Notice>}
       </>}

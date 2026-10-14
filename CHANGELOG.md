@@ -376,3 +376,18 @@
   auth bundle and Next.js static build. Browser fixture
   checks cover guest preparation and settings. Live inbox/message/Muse runtime
   and real employer submissions are not exercised.
+
+## 2026-10-13 — Demo coverage and scoped MCP parity
+
+- Added an isolated, resettable demo workspace with fictional preparation plans,
+  source-email excerpts, quiet settings, skipped roles and immutable attempt records.
+- Demo edits stay in memory; private downloads, external submissions and approval
+  transitions are disabled. Existing browser/account data remains separate.
+- Added shared owned/versioned RPCs and narrow MCP tools for quiet settings and
+  reconsideration, plus human-only review/recovery links. General preferences
+  saves preserve quiet settings under the same database lock.
+- Validation covers demo reset/storage isolation, service versions/ownership and
+  credential scopes. All 192 unit/contract tests, disposable database checks,
+  hosted rollback-only RPC checks, data validation, auth rebuild and static export
+  pass. Desktop/mobile browser checks confirm demo reset and zero backend writes
+  or real-storage changes. Live Muse inbox/notification delivery remains unverified.

@@ -258,3 +258,14 @@ Accounts with server-managed `app_metadata.demo_preview=true` can toggle Demo mo
 ## Internal Muse guides
 
 Developer context carries only a versioned guide index. The authenticated, read-only `read_guide(id)` tool loads `resume-parse` or `cold-outreach` on demand using existing workspace:read authorization. Guides are deployed backend configuration, never user-editable prompts. Each includes when-to-use guidance, instructions and expected output. Cache by id/version and refresh when the index changes. No new user interface or local skill installation is required. Demo profile and company-grouped referral drafts remain the representative outputs; demo mode makes no guide/backend calls.
+## Demo feature coverage
+
+The existing admin Demo mode now includes evidenced and ambiguous deadlines,
+completed preparation, quiet settings and notification previews, skipped roles,
+and confirmed or uncertain submission attempts. Its resettable memory services
+preserve existing fictional profile and referral scenarios. All new actions remain
+isolated from account storage, private files and external applications.
+
+[Feature MCP parity](backend/MUSE_FEATURE_PARITY.md) maps each action to a scoped
+tool or an explicit human-only boundary. Developer context version **11** includes
+quiet-mode management, reconsideration and owned review links.

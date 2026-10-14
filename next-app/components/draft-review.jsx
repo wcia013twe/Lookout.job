@@ -39,7 +39,7 @@ export default function DraftReview({ id, onClose }) {
   const [recordRetry, setRecordRetry] = useState(0);
   const [recordState, setRecordState] = useState(null);
   const [downloadFeedback, setDownloadFeedback] = useState("");
-  const recordKey = `${w.user?.id || "local"}:${current?.backendId || ""}`;
+  const recordKey = `${w.demo ? "demo" : w.user?.id || "local"}:${current?.backendId || ""}`;
   const recordOwner = useRef(recordKey);
   recordOwner.current = recordKey;
   const recordMounted = useRef(false);
@@ -48,26 +48,26 @@ export default function DraftReview({ id, onClose }) {
     return () => { recordMounted.current = false; };
   }, []);
   useEffect(() => {
-    if (!recordOpen || !w.user || !current?.backendId) return;
+    if (!recordOpen || (!w.demo && !w.user) || !current?.backendId) return;
     let cancelled = false;
     const key = recordKey;
-    const ownerId = w.user.id;
+    const ownerId = w.user?.id;
     setRecordState({ key, loading: true, error: "", data: null });
     setDownloadFeedback("");
-    createBackend(w.client, w.user.id).readSubmissionRecord(current.backendId)
+    (w.services || createBackend(w.client, ownerId)).readSubmissionRecord(current.backendId)
       .then(data => {
-        if (!cancelled && recordOwner.current === key && window.JB.auth?.userId === ownerId)
+        if (!cancelled && recordOwner.current === key && (w.demo || window.JB?.auth?.userId === ownerId))
           setRecordState({ key, loading: false, error: "", data });
       })
       .catch(() => {
-        if (!cancelled && recordOwner.current === key && window.JB.auth?.userId === ownerId)
+        if (!cancelled && recordOwner.current === key && (w.demo || window.JB?.auth?.userId === ownerId))
           setRecordState({ key, loading: false, error: "Try loading the record again.", data: null });
       });
     return () => { cancelled = true; };
-  }, [recordOpen, recordRetry, recordKey, w.client, current?.backendRevision, current?.status]);
+  }, [recordOpen, recordRetry, recordKey, w.client, w.services, current?.backendRevision, current?.status]);
   async function downloadRecordResume(resume) {
     const key = recordKey;
-    if (!w.user || !w.client || !resume.objectPath) return;
+    if (w.demo || !w.user || !w.client || !resume.objectPath) return;
     setDownloadFeedback("");
     const destination = window.open("about:blank", "_blank");
     if (!destination) {
@@ -76,7 +76,7 @@ export default function DraftReview({ id, onClose }) {
     }
     destination.opener = null;
     try {
-      const result = await createBackend(w.client, w.user.id).resumeLink(resume.objectPath);
+      const result = await (w.services || createBackend(w.client, w.user.id)).resumeLink(resume.objectPath);
       if (!recordMounted.current || recordOwner.current !== key || window.JB.auth?.userId !== w.user.id) {
         destination.close();
         return;
@@ -103,7 +103,7 @@ export default function DraftReview({ id, onClose }) {
     setDraft(current);
   }, [current?.revision, current?.backendRevision, current?.status]);
   if (!current) return null;
-  const editable = model.canEdit(current);
+  const editable = !w.demo && model.canEdit(current);
   const unresolved = (current.submissionAttempts || []).find(
     (t) =>
       t.state === "uncertain" ||
@@ -138,6 +138,7 @@ export default function DraftReview({ id, onClose }) {
     }));
   }
   async function action(kind) {
+    if (w.demo) { setFeedback("Application actions are disabled in this fictional demo."); return; }
     setBusy(true);
     setFeedback("");
     try {
@@ -224,19 +225,20 @@ export default function DraftReview({ id, onClose }) {
       </p>
       <details className="mt-5 border-t border-board-line pt-3" onToggle={e => setRecordOpen(e.currentTarget.open)}>
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
-        {!w.user || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
+        {(!w.demo && !w.user) || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
           : recordOpen && <>
             <SubmissionRecord
               application={recordState?.key === recordKey ? recordState.data?.application || {} : {}}
               attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []}
               loading={recordState?.key !== recordKey || recordState.loading}
               error={recordState?.key === recordKey ? recordState.error : ""}
-              onDownloadResume={downloadRecordResume}
+              onDownloadResume={w.demo ? undefined : downloadRecordResume}
             />
             {recordState?.key === recordKey && recordState.error && <button className={`${secondary} mt-3`} onClick={() => setRecordRetry(value => value + 1)}>Retry loading record</button>}
             {downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}
           </>}
       </details>
+      {w.demo && <Notice>This fictional application demonstrates saved answers and submission evidence. Approval, progress updates, and downloads are disabled.</Notice>}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -372,6 +374,7 @@ export default function DraftReview({ id, onClose }) {
         <Field label="Stage">
           <select
             className={control}
+            disabled={w.demo}
             value={stage}
             onChange={(e) => setStage(e.target.value)}
           >
@@ -383,6 +386,7 @@ export default function DraftReview({ id, onClose }) {
         <Field label="Update / verification note">
           <input
             className={control}
+            disabled={w.demo}
             value={note}
             maxLength={2000}
             onChange={(e) => setNote(e.target.value)}
@@ -390,12 +394,12 @@ export default function DraftReview({ id, onClose }) {
         </Field>
         <button
           className={`${secondary} mt-4`}
-          disabled={busy}
+          disabled={busy || w.demo}
           onClick={() => action("record")}
         >
           Record update
         </button>
-        {unresolved && w.user && editable && (
+        {unresolved && !w.demo && w.user && editable && (
           <div className="mt-4">
             <p className="text-sm text-board-muted">
               Submission outcome is uncertain. Verify with the employer before
