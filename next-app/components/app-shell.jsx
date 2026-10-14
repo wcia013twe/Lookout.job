@@ -46,18 +46,19 @@ export default function AppShell({ children }) {
       </header>
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-sm">
         <p className="text-board-muted">
-          {w.user
-            ? `Signed in as ${w.user.email || "your Google account"}`
+          {w.accountUser
+            ? `Signed in as ${w.accountUser.email || "your Google account"}`
             : "Browse jobs without an account. Your workspace is saved in this browser."}
         </p>
         <button
           className={secondary}
           disabled={!w.authReady}
-          onClick={w.user ? w.signOut : w.signIn}
+          onClick={w.accountUser ? w.signOut : w.signIn}
         >
-          {w.user ? "Sign out" : "Sign in with Google"}
+          {w.accountUser ? "Sign out" : "Sign in with Google"}
         </button>
       </div>
+      {w.canDemo && <div className="mt-4 flex flex-wrap items-center gap-3"><button type="button" className={secondary} aria-pressed={w.demo} onClick={w.toggleDemo}>{w.demo ? "Exit demo mode" : "Demo mode"}</button>{w.demo && <><p className="text-sm text-board-accent">Demo mode · mocked data · account records stay untouched</p><button type="button" className={secondary} onClick={w.resetDemo}>Reset demo</button></>}</div>}
       {w.status && (
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-board-muted">
           <span role="status">{w.status}</span>
@@ -107,7 +108,7 @@ export default function AppShell({ children }) {
         ))}
       </nav>
       {w.state ? (
-        <div key={w.user?.id || "guest"} inert={w.locked || undefined}>
+        <div key={w.demo ? `demo-${w.demoEpoch}` : w.user?.id || "guest"} inert={w.locked || undefined}>
           {children}
         </div>
       ) : (

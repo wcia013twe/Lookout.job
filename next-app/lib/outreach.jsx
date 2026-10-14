@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSlice, useWorkspace } from './workspace';
 const recordOf = row => { const {id,_revision,_outreachDirty,origin,...record}=row; return record; };
 export function useOutreach() {
- const {client,user,store}=useWorkspace(); const [contacts,setLocal]=useSlice('network.referrals');
+ const {client,user,store,demo}=useWorkspace(); const [contacts,setLocal]=useSlice('network.referrals');
  const [requests,setRequests]=useState([]),[status,setStatus]=useState(''),[ready,setReady]=useState(false);
  const session=useRef(null),latest=useRef(contacts||[]); latest.current=contacts||[];
  function isCurrent(s) {return session.current===s && window.JB?.auth?.userId===s.owner;}
@@ -43,6 +43,7 @@ export function useOutreach() {
  }
  useEffect(()=>{
   setReady(false);setRequests([]); const owner=user?.id;
+  if(demo){session.current=null;setReady(true);setStatus('Demo contacts — changes stay in memory.');return;}
   if(!owner || !client || !store) {session.current=null;setStatus('Saved in this browser. Sign in to ask Muse to prepare outreach.');return;}
   const s={owner,pending:new Map(),revisions:new Map(),running:null,timer:null};session.current=s;
   (async()=>{
@@ -57,8 +58,9 @@ export function useOutreach() {
   })().catch(()=>{if(isCurrent(s))setStatus('Outreach sync paused. Your edits are kept here. Retry, or load the saved account version.');});
   const timer=setInterval(()=>refresh(s).catch(()=>{}),15000);
   return()=>{clearInterval(timer);clearTimeout(s.timer);if(isCurrent(s))session.current=null;};
- },[user?.id,client,store]);
+ },[user?.id,client,store,demo]);
  async function request(companies) {
+  if(demo){const next=companies.map((company,i)=>({id:crypto.randomUUID(),company:company.trim(),contact:`Sample contact ${i+1} (demo)`,contactType:'recruiter',status:'Not asked',message:`Hi, I’m interested in engineering opportunities at ${company.trim()}. What is the best next step to speak with your team?`,source:'Demo'}));setContacts([...latest.current,...next]);setStatus('Demo outreach prepared. No backend request was sent.');return;}
   const s=session.current;if(!s||!ready)throw Error('Sign in and wait for your outreach account to connect.');
   const names=[...new Set(companies.map(v=>v.trim()).filter(Boolean))];if(!names.length||names.length>50||names.some(n=>n.length>200))throw Error('Choose between 1 and 50 companies.');
   await flush(); if(!isCurrent(s))throw Error('Account changed.');
@@ -69,5 +71,5 @@ export function useOutreach() {
   const s=session.current;if(!s)return;
   store.set('network.outreachBackup',latest.current);store.set('network.outreachDeletions',[]);s.pending.clear();await refresh(s);setReady(true);
  }
- return {loadSaved,contacts:contacts||[],setContacts,requests,status,ready,request,retry:async()=>{const s=session.current;if(!s)return;await flush();await refresh(s);if(isCurrent(s))setReady(true);},refresh:()=>{const s=session.current;return s?refresh(s):Promise.resolve();},signedIn:!!user};
+ return {demo,loadSaved,contacts:contacts||[],setContacts,requests,status,ready,request,retry:async()=>{const s=session.current;if(!s)return;await flush();await refresh(s);if(isCurrent(s))setReady(true);},refresh:()=>{const s=session.current;return s?refresh(s):Promise.resolve();},signedIn:!!user || demo};
 }

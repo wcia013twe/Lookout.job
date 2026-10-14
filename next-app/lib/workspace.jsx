@@ -1,6 +1,8 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { canUseDemo, createMemoryStore, demoFixtures } from "./demo.mjs";
+import { dayStamp } from "./progress.mjs";
 import { connectCloud } from "../../cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
 import catalog from "../../data/jobs.json";
@@ -42,6 +44,9 @@ export function WorkspaceProvider({ children }) {
     [locked, setLocked] = useState(false),
     [batch, setBatch] = useState(null),
     [error, setError] = useState("");
+  const [demoState,setDemoState]=useState(null);
+  const demoStore=useRef(null);
+  const [demoEpoch,setDemoEpoch]=useState(0);
   const [authReady, setAuthReady] = useState(false);
   const userRef = useRef(null),
     clientRef = useRef(null),
@@ -106,10 +111,12 @@ export function WorkspaceProvider({ children }) {
         function session(value) {
           if (!alive) return;
           const id = value?.user?.id || null;
+          const accountChanged=userRef.current!==id;
           userRef.current = id;
           store.switchAccount(id);
           setUser(value?.user || null);
           setAuthReady(true);
+          if(accountChanged){setDemoState(null);demoStore.current=null;}
           setState(store.get());
         }
         function seed() {
@@ -145,7 +152,7 @@ export function WorkspaceProvider({ children }) {
               "Sign-in is unavailable. Your browser workspace remains available.",
             );
             setAuthReady(true);
-          } else session(data.session);
+          } else { session(data.session); if(data.session) client.auth.getUser().then(({data})=>{if(alive && data.user?.id===userRef.current)setUser(data.user);}); }
         });
         navigator.serviceWorker?.register(asset("sw.js")).catch(() => {});
       })
@@ -173,23 +180,35 @@ export function WorkspaceProvider({ children }) {
     const { error } = await clientRef.current.auth.signOut({ scope: "local" });
     if (error) setError("Could not sign out. Try again.");
   }
+  function toggleDemo() {
+    if(demoState) {setDemoState(null);demoStore.current=null;return;}
+    if(!canUseDemo(user))return;
+    const fixtures=demoFixtures(dayStamp());
+    fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));
+    fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";
+    demoStore.current=createMemoryStore(fixtures.state,setDemoState);
+    setDemoState(demoStore.current.get());setDemoEpoch(n=>n+1);
+  }
+  function resetDemo() {setDemoEpoch(n=>n+1);const fixtures=demoFixtures(dayStamp());fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);setDemoState(demoStore.current.get());}
   const value = {
-    state,
-    store,
-    user,
-    locked,
-    status,
-    error,
+    state:demoState || state,
+    store:demoState ? demoStore.current : store,
+    user:demoState ? null : user,
+    accountUser:user,
+    demo:Boolean(demoState),demoEpoch,canDemo:canUseDemo(user),toggleDemo,resetDemo,
+    locked:demoState ? false : locked,
+    status:demoState ? "Demo changes stay in memory." : status,
+    error:demoState ? "" : error,
     authReady,
     signIn,
     signOut,
     retry: () => actions.current.retry?.(),
     reload: () => actions.current.reload?.(),
-    roles: batch?.roles || catalog.roles,
-    date: batch?.date || catalog.lastRun,
-    batchLabel: batch?.label,
+    roles:demoState ? demoFixtures(dayStamp()).roles : batch?.roles || catalog.roles,
+    date:demoState ? dayStamp() : batch?.date || catalog.lastRun,
+    batchLabel:demoState ? "Demo listings — fictional data for preview." : batch?.label,
     models: typeof window !== "undefined" ? window.JB : null,
-    client: clientRef.current,
+    client:demoState ? null : clientRef.current,
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

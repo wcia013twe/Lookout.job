@@ -4,6 +4,13 @@
 - Saves the chosen provider/name with the existing profile; selecting a character does not create an external connection. The supplied Grok reference bears Bleap branding and is not verified official artwork; source GIFs were not supplied.
 - Validation: 177 tests, catalog validation, production export, mobile/desktop visual checks, selection/pause/continue and setup-save checks passed. Existing Discover theme tokens are preserved.
 
+## 2026-10-13 — Admin demo workspace and company logos
+
+- Added an admin-gated in-memory demo workspace with representative roles, applications, profile, tiers and Robinhood/Stripe outreach. Reset/exit preserve real records; demo client access and real submission recovery are disabled.
+- Added company logos to referral groups and selected contacts, including Robinhood’s verified official public icon.
+- Saved the requirement to update demo fixtures and interactions after every completed feature in AGENTS.md.
+- Validation: 179 tests, database/data checks, production build and UI detector passed; Robinhood/Stripe logo loading verified in the browser. Server-managed demo access enabled only for the requested account.
+
 ## 2026-10-13 — Backend-hosted outreach preparation
 
 - Removed user-facing agent prompts and JSON import. Prepare with Muse queues company outreach on the backend; signed-in contacts and finished drafts sync automatically.

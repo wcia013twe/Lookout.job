@@ -43,6 +43,7 @@ test('published lookup contains backend URLs and hashes without local paths', as
   assert.ok(Object.keys(manifest).length > 0);
   for (const entry of Object.values(manifest)) {
     assert.equal('local' in entry, false);
+    if(entry.source==='official') {assert.equal(entry.url,'https://robinhood.com/us/en/rh_favicon_152.png?v=2024');continue;}
     assert.ok(entry.url.startsWith(`${PROJECT_URL}/storage/v1/object/public/company-logos/`));
     assert.match(entry.sha256, /^[a-f0-9]{64}$/);
   }

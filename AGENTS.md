@@ -34,3 +34,8 @@
 - Run `npm test`, `npm run test:db`, `npm run validate:data` and rebuild the auth bundle for auth/cloud/client changes.
 - Add new features with current-state documentation and honest verification limits; do not describe unconnected external services as live.
 - `supabase/functions/agent-gateway/instructions.json` owns the agent interaction contract and developer message defaults. Increment `developerVersion` whenever instructions, defaults, settings mappings or advertised capabilities change, and deploy the gateway with the config. Personal versions are server-controlled triggers; never reset or edit them from clients.
+
+## Demo coverage
+
+- After completing a feature, update the admin demo fixtures and demo interactions to cover its representative content and important states. Treat demo coverage as part of feature completion, not a separate follow-up.
+- Keep demo data clearly fictional, resettable and isolated from real account storage, backend writes, private files and external submissions. Include the relevant demo verification in the changelog.

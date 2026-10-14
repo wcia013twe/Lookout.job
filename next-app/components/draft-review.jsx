@@ -167,6 +167,7 @@ export default function DraftReview({ id, onClose }) {
           "Progress recorded as your update. This action does not submit an application.",
         );
       } else if (kind === "recover") {
+        if(w.demo) throw Error("This is a demo. No real submission attempt can be resolved.");
         if (!note.trim())
           throw Error(
             "Check the employer portal or confirmation email and add a verification note first.",
