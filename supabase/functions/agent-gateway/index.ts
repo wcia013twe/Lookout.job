@@ -71,7 +71,7 @@ Deno.serve(async request => {
       const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});
       return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
     }
-    if (['preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record'].includes(operation)) {
+    if (['preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action'].includes(operation)) {
       const credentialHash = await hashToken(bearer);
       const result = await museFeatureDispatch({operation,payload,
         rpc:(op: string, args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),
@@ -79,7 +79,7 @@ Deno.serve(async request => {
       });
       if(result.error) {
         const code=result.error.code;
-        return respond({error:code==='40001'?'Plan changed; reload before saving':code==='42501'?'Scope required':code==='P0002'?'Owned record not found':'Operation rejected'},code==='40001'?409:code==='42501'?403:code==='P0002'?404:400);
+        return respond({error:code==='28000'?'Credential expired, revoked, or invalid':code==='40001'?'Record or settings changed; reload before saving':code==='42501'?'Scope required':code==='P0002'?'Owned record not found':'Operation rejected'},code==='28000'?401:code==='40001'?409:code==='42501'?403:code==='P0002'?404:400);
       }
       return respond({data:result.data});
     }

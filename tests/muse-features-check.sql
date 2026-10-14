@@ -30,14 +30,13 @@ begin
  begin perform public.save_preparation_plan(app,1,'{}'); raise exception 'Stale plan overwrite allowed'; exception when serialization_failure then null; end;
  begin perform public.save_preparation_plan(other_app,1,'{}'); raise exception 'Foreign plan RPC allowed'; exception when no_data_found then null; end;
  begin update public.preparation_plans set user_id=other_u where application_id=app; raise exception 'Plan owner reassigned'; exception when insufficient_privilege then null; end;
- update public.selection_decisions set reconsidered_at=now() where id=decision;
- if not found then raise exception 'Owner reconsideration denied'; end if;
+ perform public.reconsider_selection(decision,'');
+ begin perform public.reconsider_selection(decision,''); raise exception 'Stale reconsideration accepted'; exception when serialization_failure then null; end;
  begin update public.selection_decisions set reason='Forged reason' where id=decision; raise exception 'Selection reason mutable'; exception when insufficient_privilege then null; end;
  begin insert into public.selection_decisions(user_id,job_id,event_key,reason,preference,evidence,certainty,personal_version) values(u,j,'forged','Forged','x','Forged','uncertain',1); raise exception 'Browser selection forgery allowed'; exception when insufficient_privilege then null; end;
  perform set_config('test.uid',other_u::text,true);
  if (select count(*) from public.selection_decisions)<>0 then raise exception 'Foreign selection visible'; end if;
- update public.selection_decisions set reconsidered_at=now() where id=decision;
- if found then raise exception 'Foreign reconsideration allowed'; end if;
+ begin perform public.reconsider_selection(decision,''); raise exception 'Foreign reconsideration allowed'; exception when no_data_found then null; end;
  execute 'reset role';
 
  result:=public.agent_dispatch(h,'preparation.read',jsonb_build_object('applicationId',app));

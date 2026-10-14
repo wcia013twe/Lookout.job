@@ -123,6 +123,7 @@ export default function Applications() {
                   <strong>{r.company}</strong>
                   <a
                     href={r.applicationUrl}
+                    onClick={(e) => { if (w.demo) e.preventDefault(); }}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-board-accent hover:underline"

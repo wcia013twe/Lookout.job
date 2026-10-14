@@ -29,7 +29,12 @@ export default function AppShell({ children }) {
     return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
   }
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6" onClickCapture={event=>{
+        if(!w.demo)return;
+        if(event.target.type==='file'){event.preventDefault();return;}
+        const anchor=event.target.closest?.('a');
+        if(anchor && new URL(anchor.href,location.href).origin!==location.origin)event.preventDefault();
+      }}>
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Link href="/" className="text-xl font-bold">

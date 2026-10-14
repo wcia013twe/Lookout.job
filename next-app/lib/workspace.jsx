@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { canUseDemo, createMemoryStore, demoFixtures } from "./demo.mjs";
+import { canUseDemo, createMemoryStore, demoFixtures, createDemoServices } from "./demo.mjs";
 import { dayStamp } from "./progress.mjs";
 import { connectCloud } from "../../cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
@@ -45,7 +45,7 @@ export function WorkspaceProvider({ children }) {
     [batch, setBatch] = useState(null),
     [error, setError] = useState("");
   const [demoState,setDemoState]=useState(null);
-  const demoStore=useRef(null);
+  const demoStore=useRef(null), demoServices=useRef(null);
   const [demoEpoch,setDemoEpoch]=useState(0);
   const [authReady, setAuthReady] = useState(false);
   const userRef = useRef(null),
@@ -181,15 +181,15 @@ export function WorkspaceProvider({ children }) {
     if (error) setError("Could not sign out. Try again.");
   }
   function toggleDemo() {
-    if(demoState) {setDemoState(null);demoStore.current=null;return;}
+    if(demoState) {setDemoState(null);demoStore.current=null;demoServices.current=null;return;}
     if(!canUseDemo(user))return;
     const fixtures=demoFixtures(dayStamp());
     fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));
     fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";
-    demoStore.current=createMemoryStore(fixtures.state,setDemoState);
+    demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);
     setDemoState(demoStore.current.get());setDemoEpoch(n=>n+1);
   }
-  function resetDemo() {setDemoEpoch(n=>n+1);const fixtures=demoFixtures(dayStamp());fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);setDemoState(demoStore.current.get());}
+  function resetDemo() {if(!canUseDemo(user))return;setDemoEpoch(n=>n+1);const fixtures=demoFixtures(dayStamp());fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
   const value = {
     state:demoState || state,
     store:demoState ? demoStore.current : store,
@@ -204,11 +204,12 @@ export function WorkspaceProvider({ children }) {
     signOut,
     retry: () => actions.current.retry?.(),
     reload: () => actions.current.reload?.(),
-    roles:demoState ? demoFixtures(dayStamp()).roles : batch?.roles || catalog.roles,
+    roles:demoState ? demoState.demo.roles : batch?.roles || catalog.roles,
     date:demoState ? dayStamp() : batch?.date || catalog.lastRun,
     batchLabel:demoState ? "Demo listings — fictional data for preview." : batch?.label,
     models: typeof window !== "undefined" ? window.JB : null,
     client:demoState ? null : clientRef.current,
+    services:demoState ? demoServices.current : null,
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

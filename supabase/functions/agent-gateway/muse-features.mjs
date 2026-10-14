@@ -59,5 +59,7 @@ export async function museFeatureDispatch({operation,payload,rpc,loadJob,now=new
   const read=await rpc(operation,{}); if(read.error) return read;
   return {data:notificationAdvice(read.data,now),error:null};
  }
+ // These narrow parity operations are validated by the gateway contract and
+ // dispatched through the same owned SQL mutations used by the website.
  return rpc(operation,payload);
 }

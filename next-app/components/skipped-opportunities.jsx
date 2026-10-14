@@ -26,19 +26,20 @@ function Decisions({ workspace: w }) {
     alive.current = true;
     let current = true;
     setLoading(true); setError("");
-    createBackend(w.client, w.user.id).readSelectionDecisions()
+    (w.services || createBackend(w.client, w.user.id)).readSelectionDecisions()
       .then((result) => { if (current) setRows(result); })
       .catch(() => { if (current) setError("Skipped roles could not be loaded. Try again."); })
       .finally(() => { if (current) setLoading(false); });
     return () => { current = false; alive.current = false; };
-  }, [w.client, w.user.id, attempt]);
+  }, [w.client, w.user?.id, w.services, attempt]);
   async function reconsider(id) {
     setPending((items) => [...items, id]); setFeedback("");
     try {
-      await createBackend(w.client, w.user.id).reconsiderSelection(id);
+      const selected=rows.find(row=>row.id===id);
+      const saved=await (w.services || createBackend(w.client, w.user.id)).reconsiderSelection(id,selected?.reconsidered_at||'');
       if (!alive.current) return;
-      setRows((items) => items.map((row) => row.id === id ? { ...row, reconsidered_at: new Date().toISOString() } : row));
-      setFeedback("Marked for Muse to reconsider on its next run.");
+      setRows((items) => items.map((row) => row.id === id ? { ...row, reconsidered_at: saved.reconsidered_at } : row));
+      setFeedback(w.demo ? "Demo role marked for reconsideration. Reset the demo to try again." : "Marked for Muse to reconsider on its next run.");
     } catch {
       if (alive.current) setFeedback("Could not request reconsideration. Try again.");
     } finally {
@@ -65,7 +66,7 @@ function Decisions({ workspace: w }) {
     </label>
     <Notice>{feedback}</Notice>
     {[...groups].map(([preference, decisions]) => <div key={preference} className="mt-6">
-      <h3 className="break-words font-semibold">{preference}</h3>
+      <h3 className="break-words font-semibold">{({excludedCompanies:'Excluded companies',employmentTypes:'Role types',locations:'Locations',categories:'Role categories',targetYear:'Graduation year',fit:'Fit assessment'})[preference] || preference}</h3>
       <ul className="mt-3 divide-y divide-board-line">
         {decisions.map((row) => {
           const role = w.roles.find((item) => item.id === row.job_id);
@@ -73,7 +74,7 @@ function Decisions({ workspace: w }) {
           return <li key={row.id} className="py-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <p className="break-words font-semibold">{row.jobs?.employer || role?.company || "Opportunity"}{role?.title ? ` · ${role.title}` : ""}</p>
+                <p className="break-words font-semibold">{(typeof row.jobs?.employer === "string" ? row.jobs.employer : row.jobs?.employer?.company) || role?.company || "Opportunity"}{role?.title ? ` · ${role.title}` : ""}</p>
                 <p className="mt-2 break-words text-sm text-board-muted">{text(row.reason)}</p>
               </div>
               <button className={secondary} disabled={Boolean(row.reconsidered_at) || pending.includes(row.id)} onClick={() => reconsider(row.id)}>
@@ -83,8 +84,8 @@ function Decisions({ workspace: w }) {
             <details className="mt-3 text-sm">
               <summary className="min-h-11 cursor-pointer py-3 text-board-accent">Why Muse skipped this role</summary>
               <p className="break-words text-board-muted">{text(row.evidence) || "No additional evidence recorded."}</p>
-              <p className="mt-2 text-board-muted">Certainty: {text(row.certainty) || "Not recorded"}. This reflects Muse’s assessment of the skip reason; check the posting if details are unclear.</p>
-              {url && <a className="mt-3 inline-flex min-h-11 items-center text-board-accent hover:underline" href={url} target="_blank" rel="noopener noreferrer">Source posting</a>}
+              <p className="mt-2 text-board-muted">{row.certainty === "exclusion" ? "Matched an explicit preference exclusion." : "An uncertain fit assessment; verify the posting before excluding it."}</p>
+              {url && <a className="mt-3 inline-flex min-h-11 items-center text-board-accent hover:underline" href={url} onClick={(e) => {if(w.demo)e.preventDefault();}} target="_blank" rel="noopener noreferrer">Source posting{w.demo ? " (demo)" : ""}</a>}
             </details>
           </li>;
         })}
@@ -99,13 +100,13 @@ function SkippedPanel({ workspace: w }) {
     <details open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
       <summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold text-board-accent">See what Muse skipped and why</summary>
       <p className="mt-2 max-w-prose text-sm text-board-muted">Review the preferences behind these decisions. Reconsider asks Muse to review a role again under your application policy.</p>
-      <Link href="/profile/" className="mt-2 inline-flex min-h-11 items-center text-sm text-board-accent hover:underline">Adjust search preferences</Link>
-      {open && (w.user && w.client ? <Decisions workspace={w} /> : <Notice>Sign in to review your private selection decisions.</Notice>)}
+      <Link href={w.demo ? "/profile/?demo=1" : "/profile/"} className="mt-2 inline-flex min-h-11 items-center text-sm text-board-accent hover:underline">Adjust search preferences</Link>
+      {open && (w.demo || (w.user && w.client) ? <Decisions workspace={w} /> : <Notice>Sign in to review your private selection decisions.</Notice>)}
     </details>
   </Section>;
 }
 
 export default function SkippedOpportunities() {
   const w = useWorkspace();
-  return <SkippedPanel key={w.user?.id || "guest"} workspace={w} />;
+  return <SkippedPanel key={w.demo ? "demo" : w.user?.id || "guest"} workspace={w} />;
 }
