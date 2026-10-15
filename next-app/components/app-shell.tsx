@@ -8,12 +8,13 @@ import { useWorkspace } from "../lib/workspace";
 import { secondary, Notice } from "./ui";
 import ColorModeControl from "./color-mode";
 import ProfileMenu from "./profile-menu";
+import { demoNeedsYouTasks } from "../lib/demo.mjs";
 export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/" && /^\/discover\/?$/.test(path));
   const apps = Object.values(w.state?.workflow?.applications || {}) as Array<{ status: string; submissionAttempts?: Array<{ state: string; startedAt: string }> }>;
-  const needs =
+  const needs = w.demo ? demoNeedsYouTasks.length :
     apps.filter(
       (a) =>
         a.status === "Blocked" ||

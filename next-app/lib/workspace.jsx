@@ -180,22 +180,23 @@ export function WorkspaceProvider({ children }) {
     const { error } = await clientRef.current.auth.signOut({ scope: "local" });
     if (error) setError("Could not sign out. Try again.");
   }
+  const canDemo = !user || user.is_anonymous === true || canUseDemo(user);
   function toggleDemo() {
     if(demoState) {setDemoState(null);demoStore.current=null;demoServices.current=null;return;}
-    if(!canUseDemo(user))return;
+    if(!canDemo)return;
     const fixtures=demoFixtures(dayStamp());
     fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));
     fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";
     demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);
     setDemoState(demoStore.current.get());setDemoEpoch(n=>n+1);
   }
-  function resetDemo() {if(!canUseDemo(user))return;setDemoEpoch(n=>n+1);const fixtures=demoFixtures(dayStamp());fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
+  function resetDemo() {if(!canDemo)return;setDemoEpoch(n=>n+1);const fixtures=demoFixtures(dayStamp());fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
   const value = {
     state:demoState || state,
     store:demoState ? demoStore.current : store,
     user:demoState ? null : user,
     accountUser:user,
-    demo:Boolean(demoState),demoEpoch,canDemo:canUseDemo(user),toggleDemo,resetDemo,
+    demo:Boolean(demoState),demoEpoch,canDemo,toggleDemo,resetDemo,
     locked:demoState ? false : locked,
     status:demoState ? "Demo changes stay in memory." : status,
     error:demoState ? "" : error,
