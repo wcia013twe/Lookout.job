@@ -155,7 +155,10 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
             <motion.div aria-hidden="true" className="seal-shard seal-shard-top" animate={phase === "tearing" ? { x: -35, y: -140, rotate: -12, opacity: 0 } : { x: 0, y: 0, opacity: 1 }} transition={sealMotion} />
             <motion.div aria-hidden="true" className="seal-shard seal-shard-bottom" animate={phase === "tearing" ? { x: 35, y: 140, rotate: 12, opacity: 0 } : { x: 0, y: 0, opacity: 1 }} transition={sealMotion} />
             <div className="seal-copy"><span className="seal-edition">ZERO2SUDO · DAILY EDITION</span><strong>Your next<br />big move.</strong><span>{drops.length} opportunities inside</span></div>
-            <button type="button" className="pack-tear-button" disabled={phase === "tearing"} onClick={openSeal} onPointerDown={event => { tearStart.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={dragTear} onPointerUp={() => { tearStart.current = null; if (!opening.current) setTearProgress(0); }} onPointerCancel={() => { tearStart.current = null; setTearProgress(0); }}>Slide across to tear · or tap</button>
+            <button type="button" className="pack-tear-button" disabled={phase === "tearing"} onClick={openSeal} onPointerDown={event => { tearStart.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={dragTear} onPointerUp={() => { tearStart.current = null; if (!opening.current) setTearProgress(0); }} onPointerCancel={() => { tearStart.current = null; setTearProgress(0); }}>
+              <span className="tear-grip" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><path d="m3.5 5.5 3.5 3.5-3.5 3.5M9 5.5l3.5 3.5L9 12.5" /></svg></span>
+              <span className="tear-copy"><strong>Slide to tear</strong><small>or tap to open</small></span>
+            </button>
           </div>
           <fieldset className="texture-picker">
             <legend>Pack texture</legend>
