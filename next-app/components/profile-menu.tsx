@@ -44,7 +44,7 @@ export default function ProfileMenu() {
         {w.state?.workflow?.profile?.name || w.accountUser ? initials : <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>}
       </button>
       {open && <nav id="profile-navigation" aria-label="Profile navigation"
-        className="absolute left-0 top-full mt-3 w-64 max-w-[calc(100vw-2rem)] rounded-xl bg-board-panel p-2 text-board-text shadow-[0_12px_32px_rgba(0,0,0,0.22)]">
+        className="absolute right-0 top-full mt-3 w-64 max-w-[calc(100vw-2rem)] rounded-xl bg-board-panel p-2 text-board-text shadow-[0_12px_32px_rgba(0,0,0,0.22)]">
         <div className="px-3 py-3">
           <p className="break-words text-sm font-semibold">{name}</p>
           <p className="mt-1 break-words text-xs text-board-muted">{w.demo ? "Fictional demo profile" : w.accountUser?.email || "Saved in this browser"}</p>

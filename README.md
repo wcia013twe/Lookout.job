@@ -323,3 +323,13 @@ shown explicitly. See [planner behavior and service contracts](docs/preparation-
 The backend migration and gateway/MCP release must be deployed with the frontend
 before the new signed-in planner services are available. Lookout/Glassdoor feeds
 are not connected; only sourced reports saved to an interview are displayed.
+
+## Circle Knowledge (gated)
+
+Private Circles now have structured knowledge threads, agent retrieval and reviewed
+publication, and “Agents used this for N people” citation counts per revision. The
+forum is `/circles/`; admin Demo mode includes fictional reports and citation history.
+The database gate stays disabled pending hosted two-account permission checks.
+Freeform/personal sharing requires exact human review; optional standing permission
+is limited to a closed public-documentation template. See
+[contracts, limits and release checks](backend/circle-knowledge.md).

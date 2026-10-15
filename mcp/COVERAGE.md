@@ -57,3 +57,12 @@ merge-ready; deployment still needs explicit approval. Do not claim live full pa
 Existing browser services remain supported. Migrating every legacy browser write
 to the new shared product RPC is separate integration work; having an MCP boundary
 does not imply those legacy paths are already unified.
+
+## Circle Knowledge — implemented, gated pending hosted verification
+
+Browser `knowledge_action` and gateway `agent_dispatch` share the private knowledge
+action core. Search/thread reads, proposals/edits, publishing, withdrawal, reports,
+and citation recording/retraction/history have scoped MCP tools. Membership, sharing
+policy, exact approval and moderation have the explicit `request_circle_human_action`
+boundary. Local role, scope, source-event, retry, revision and citation tests pass;
+production parity is not advertised until deployment and hosted checks succeed.

@@ -87,3 +87,16 @@ test('every registered tool rejects missing scope before forwarding an action', 
     assert.deepEqual(calls, [{ operation: 'credentials.verify', payload: {} }], tool.name);
   }
 });
+
+test('Circle knowledge discovery and citation forwarding preserve scopes and the bounded contract',async()=>{
+ const calls=[],readOnly=handler(calls,['knowledge:read']);
+ const discovered=(await (await readOnly(request(rpc('tools/list')))).json()).result.tools;
+ assert(discovered.some(t=>t.name==='search_circle_knowledge'));
+ assert(!discovered.some(t=>t.name==='record_knowledge_citation'));
+ const writable=handler(calls,['knowledge:read','knowledge:write']);
+ const args={circleId:'11111111-1111-1111-1111-111111111111',postId:'22222222-2222-2222-2222-222222222222',revision:1,category:'answer',reference:'answer-1',eventKey:'citation-1'};
+ const response=await writable(request(rpc('tools/call',{name:'record_knowledge_citation',arguments:args})));
+ assert(!(await response.json()).result.isError);assert.deepEqual(calls.at(-1),{operation:'knowledge.cite',payload:args});
+ const injected=await writable(request(rpc('tools/call',{name:'record_knowledge_citation',arguments:{...args,ownerId:'someone-else'}})));
+ assert.equal((await injected.json()).error.code,-32602);
+});

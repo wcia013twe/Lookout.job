@@ -272,3 +272,10 @@ Auto-apply/delivery validation tasks must report `needs_user` with missing
 prerequisites, not fabricate completion. Existing guarded Greenhouse submission
 remains separate and unchanged. A webhook acknowledgment would never constitute
 completion. No real notifications or applications are sent by onboarding.
+
+## Circle Knowledge (gated)
+
+See [Circle Knowledge](circle-knowledge.md) for the shared browser/gateway contract,
+knowledge scopes, immutable revisions, exact sharing approvals, conservative standing
+permission, private citation receipts and mandatory hosted release verification.
+Existing agent scopes are not expanded. No Circle content is enabled by this code alone.

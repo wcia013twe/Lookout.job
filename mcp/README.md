@@ -202,3 +202,12 @@ and evidence; no feed connection is implied. See
 [the planner contract](../docs/preparation-planner.md). These additions require
 the planner migration and gateway/remote MCP deployment; local tests alone do
 not establish deployed availability.
+
+## Circle Knowledge (gated)
+
+The fixed tool registry includes scoped Circle search/read, contribution proposals,
+approved publication, withdrawal/reporting and private citation use/receipts. Agents
+need `knowledge:read` and, for mutations, `knowledge:write`. Existing connections
+remain unchanged. `request_circle_human_action` returns a membership-checked link;
+it cannot manage members, approve revisions, moderate, or grant sharing permission.
+See [operation mapping and release gate](../backend/circle-knowledge.md).
