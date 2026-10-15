@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { connectCloud } from "./cloud.mjs";
+import { connectCloud } from "../lib/cloud.mjs";
 // Project URL and publishable key are public configuration, protected by RLS.
 const url = "https://umhqfqzpwmszhcknwtrs.supabase.co";
 const key = "sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5";

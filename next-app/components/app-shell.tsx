@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useWorkspace } from "../lib/workspace";
 import { secondary, Notice } from "./ui";
 import ColorModeControl from "./color-mode";
+import ProfileMenu from "./profile-menu";
 export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
@@ -41,12 +42,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
         if(anchor && new URL(anchor.href,location.href).origin!==location.origin)event.preventDefault();
       }}>
       <header className="workspace-header flex flex-wrap items-start justify-between gap-4">
-        <div>
+        <div className="flex min-w-0 items-start gap-3">
+          <ProfileMenu />
+          <div className="min-w-0">
           <Link href="/" className="workspace-brand inline-flex items-center gap-2.5 text-xl font-bold">
             <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3 24 9v10l-10 6-10-6V9L14 3Z" stroke="currentColor" strokeWidth="1.5"/><path d="m9 16 5-8 5 8H9Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><path d="M14 16v5" stroke="currentColor" strokeWidth="1.5"/></svg>Lookout
           </Link>
           <p className="mt-1 max-w-sm text-sm text-board-muted">Your personal job hunter. Your crew for what’s next.</p>
           <p className="mt-1 text-xs text-board-muted">Last scan: {w.date}</p>
+          </div>
         </div>
         <div className="flex flex-wrap items-start gap-2"><ColorModeControl /><details className="text-sm">
           <summary className={`${secondary} cursor-pointer`}>
@@ -59,20 +63,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link>
         </details></div>
       </header>
-      <div className="workspace-account mt-5 flex flex-wrap items-center justify-between gap-3 text-sm">
-        <p className="text-board-muted">
-          {w.accountUser
-            ? `Signed in as ${w.accountUser.email || "your Google account"}`
-            : "Browse jobs without an account. Your workspace is saved in this browser."}
-        </p>
-        <button
-          className={secondary}
-          disabled={!w.authReady}
-          onClick={w.accountUser ? w.signOut : w.signIn}
-        >
-          {w.accountUser ? "Sign out" : "Sign in with Google"}
-        </button>
-      </div>
       {w.canDemo && <div className="mt-4 flex flex-wrap items-center gap-3"><button type="button" className={secondary} aria-pressed={w.demo} onClick={w.toggleDemo}>{w.demo ? "Exit demo mode" : "Demo mode"}</button>{w.demo && <><p className="text-sm text-board-accent">Demo mode · mocked data · account records stay untouched</p><button type="button" className={secondary} onClick={w.resetDemo}>Reset demo</button></>}</div>}
       {w.status && (
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-board-muted">
@@ -100,14 +90,13 @@ export default function AppShell({ children }: { children: ReactNode }) {
       {w.error && <Notice>{w.error}</Notice>}
       <nav
         aria-label="Workspace pages"
-        className="workspace-nav glass-toolbar my-7 grid grid-cols-3 gap-1 rounded-xl bg-board-tag p-1.5 sm:grid-cols-5"
+        className="workspace-nav glass-toolbar my-7 grid grid-cols-2 gap-1 rounded-xl bg-board-tag p-1.5 sm:grid-cols-4"
       >
         {[
           ["/needs-you/", "Needs you"],
           ["/", "Discover"],
           ["/applications/", "Applications"],
           ["/referrals/", "Referrals"],
-          ["/profile/", "Profile"],
         ].map(([href, label]) => (
           <Link
             key={href}

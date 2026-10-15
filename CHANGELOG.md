@@ -1,3 +1,22 @@
+## Profile dropdown navigation — 2026-10-14
+
+- Added a top-left avatar dropdown for My Profile, Sharing & privacy, and existing sign-in/sign-out actions. Removed Profile from the main navigation; My Agent remains in My Profile. Sharing opens the existing opt-in leaderboard controls.
+- Includes keyboard focus, Escape, outside-click and focus-leave dismissal; demo uses the existing fictional profile with no new storage or backend operations. Demo verification steps are in the frontend README.
+- Validation against refreshed main: 275 tests, 16 database scenarios, 76-role catalog, changed TSX syntax compilation and whitespace checks passed; styling scan found no issues. Local Next.js build/compiler loading and typechecking stalled, so production build, browser/demo interaction and authenticated round trips remain unverified.
+
+## 2026-10-14 — Agent-first onboarding from PR #19
+
+- Replaced résumé-first setup with verified runtime → minimal search intent → one evidenced job → contextual recommend/prepare/auto-apply-request policy. Resume/fact review is conditional; web and plain-text MCP use the same persisted server state.
+- Added owner-isolated, revisioned, idempotent onboarding and a bounded polling task inbox with exclusive expiring claims, safe discovery retries and uncertain-outcome handling. No new submission, approval, fact-verification or notification authority.
+- Added progressive inactive delivery requests, private social defaults and isolated fictional admin demo coverage. Unsupported push, hosted Cappy, scheduler/channel activation and onboarding runner attestations remain explicit blockers.
+- Validation: 275 tests including database owner/scope/revocation, stale revisions, idempotence, first match before résumé, auto-apply safety and fictional demo checks; typecheck, catalog validation and production export. No live runtime hooks, notifications or employer submissions were exercised. Backend migration and both edge functions must deploy together after merge.
+
+## 2026-10-14 — Consolidated local source layout
+
+- Grouped live browser state, sync, domain models and shared shaders in root `lib/`; moved the retained static frontend, its styles and vendored assets into `legacy/`. Updated production imports, regression fixtures, reference assets, auth build command and current documentation; feature behavior, URLs, persistence and product vision are unchanged.
+- Removed duplicate dependencies and disposable generated output from the shared local directory into a recovery backup. Kept installed dependencies needed for development and backed up source before changing paths. Stopped the shared local dev server while moving its active cache; restart it with `npm run dev` after cleanup.
+- Validation: all 271 tests including database checks, strict typecheck, 76-role catalog, production static export, reference auth build, and retained static script/style path checks passed. Production output excludes `legacy/`; no authenticated account or employer submission was exercised.
+
 ## 2026-10-14 — Repository cleanup
 
 - Audited and archived 31 untracked numbered copies from the shared workspace, retaining every original version and verifying archive checksums. Canonical code and documents were preserved; older copies contain intermediate design and implementation states, not a second production frontend.

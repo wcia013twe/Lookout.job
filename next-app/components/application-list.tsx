@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '../lib/workspace';
-import { sortApplications } from '../../application-timeline.mjs';
-import { trackerProgress } from '../../tracker-display.mjs';
+import { sortApplications } from '../../lib/application-timeline.mjs';
+import { trackerProgress } from '../../legacy/tracker-display.mjs';
 import TrackerProgress,{CompanyMark} from './tracker-progress';
 import DraftReview from './draft-review';
 import type { Application } from './workflow-types';

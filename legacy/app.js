@@ -137,9 +137,9 @@ document.querySelector('#daily-board').addEventListener('click', (event) => {
 });
 
 JB.catalogReady = Promise.all([
-  fetch('./data/jobs.json').then((response) => response.json()),
-  fetch('./data/sudo-drops.json').then((response) => response.json()).catch(() => ({ drops: [] })),
-  fetch('./data/logo-manifest.json').then((response) => response.json()).catch(() => ({})),
+  fetch('../data/jobs.json').then((response) => response.json()),
+  fetch('../data/sudo-drops.json').then((response) => response.json()).catch(() => ({ drops: [] })),
+  fetch('../data/logo-manifest.json').then((response) => response.json()).catch(() => ({})),
 ]).then(([jobsData, dropsData, manifest]) => {
   // Mutate the shared object in place: components.js captured the original
   // logoManifest reference when it ran Object.assign(window.JB, JB), so

@@ -9,7 +9,7 @@ import SubmissionRecord from "./submission-record";
 import type { SubmissionRecordProps } from "./submission-record";
 import TrackerProgress, { CompanyMark } from "./tracker-progress";
 import ApplicationPreparation from "./application-preparation";
-import { timelineItems } from "../../application-timeline.mjs";
+import { timelineItems } from "../../lib/application-timeline.mjs";
 import "./tracker.css";
 import { dayStamp, awardStatus } from "../lib/progress.mjs";
 import type { Application, SavedResume } from "./workflow-types";

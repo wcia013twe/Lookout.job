@@ -6,7 +6,7 @@ function setup() {
   const classes = {}, state = { 'progress.streakDays': [] };
   const store = { get: k => state[k], set: (k,v) => state[k] = v, update: (k, fn) => state[k] = fn(state[k]), subscribe: () => {} };
   const context = { window: { JB: { store } }, HTMLElement: class {}, customElements: { define: (n,c) => classes[n] = c }, document: { addEventListener() {} }, setTimeout() {}, Date, console, clearTimeout() {}, matchMedia: () => ({matches:false}), CustomEvent: class {constructor(type, options) {this.type=type; this.detail=options?.detail;} } };
-  vm.runInNewContext(fs.readFileSync('components.js', 'utf8'), context);
+  vm.runInNewContext(fs.readFileSync('legacy/components.js', 'utf8'), context);
   return { Pack: classes['pack-opening'], Card: classes['drop-card'], compensationTag: context.window.JB.compensationTag, state };
 }
 test('incomplete packs cannot claim XP', () => {

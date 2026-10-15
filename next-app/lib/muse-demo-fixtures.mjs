@@ -1,5 +1,6 @@
-import { createPreparationPlan, setPreparationTaskCompletion } from '../../preparation-model.mjs';
-import { normalizeQuietMode, buildDeliveryPolicy } from '../../quiet-mode.mjs';
+import { demoOnboardingAction } from "./onboarding-demo.mjs";
+import { createPreparationPlan, setPreparationTaskCompletion } from '../../lib/preparation-model.mjs';
+import { normalizeQuietMode, buildDeliveryPolicy } from '../../lib/quiet-mode.mjs';
 
 const copy = value => value == null ? value : JSON.parse(JSON.stringify(value));
 const day = (date, offset) => new Date(Date.parse(`${date}T12:00:00Z`) + offset * 86400000).toISOString().slice(0, 10);
@@ -108,6 +109,7 @@ export function createDemoServices(store) {
     return value;
   }
   return {
+    async onboardingAction(operation, payload = {}) { return demoOnboardingAction(store, operation, payload); },
     async readApplicationTimeline(id) {
       const current = application(id);
       return { application: { ...copy(current), submitted_at: current.submittedAt || null }, milestones: copy(current.milestones || []) };

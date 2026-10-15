@@ -11,7 +11,7 @@ test('existing connection enables profile setup using human auth without issuing
   return {data:{data:[connection]}};
  }}}}};
  const document={querySelector:element,addEventListener(){}};
- vm.runInNewContext(fs.readFileSync('agent-connections.js','utf8'),{JB,document,navigator:{},setTimeout});
+ vm.runInNewContext(fs.readFileSync('legacy/agent-connections.js','utf8'),{JB,document,navigator:{},setTimeout});
  await new Promise(setImmediate);
  assert.match(element('#agent-connection-list').innerHTML,/Enable profile setup/);
  const button={disabled:false,dataset:{profileSetupAgent:connection.id,enabled:'true'}};

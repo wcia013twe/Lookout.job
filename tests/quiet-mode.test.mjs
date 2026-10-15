@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { normalizeQuietMode, buildDeliveryPolicy } from "../quiet-mode.mjs";
+import { normalizeQuietMode, buildDeliveryPolicy } from "../lib/quiet-mode.mjs";
 const events = [{ id: "routine", kind: "submission" }];
 test("invalid settings fall back to valid defaults", () => {
   assert.deepEqual(normalizeQuietMode({ timezone: "wrong", cadence: "never", digestHour: 24 }), { cadence: "immediate", timezone: "UTC", digestHour: 9, digestDay: 1, urgentDeadlineHours: 24 });

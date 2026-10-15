@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useWorkspace } from '../lib/workspace';
 import ApplicationList from './application-list';
 import SkippedOpportunities from './skipped-opportunities';
-import { trackerProgress } from '../../tracker-display.mjs';
+import { trackerProgress } from '../../legacy/tracker-display.mjs';
 import type { Application } from './workflow-types';
 import './tracker.css';
 export default function Applications() {

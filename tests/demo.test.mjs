@@ -2,9 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createDemoWorkspace, createDemoServices } from '../next-app/lib/muse-demo-fixtures.mjs';
 import { canUseDemo, createMemoryStore, demoFixtures } from '../next-app/lib/demo.mjs';
-import { buildSubmissionRecord } from '../submission-record.mjs';
+import { buildSubmissionRecord } from '../lib/submission-record.mjs';
 import { createDemoStore } from '../next-app/lib/demo-store.mjs';
-import { hasCallback, sortApplications, timelineItems } from '../application-timeline.mjs';
+import { hasCallback, sortApplications, timelineItems } from '../lib/application-timeline.mjs';
 const now = '2026-10-14T12:00:00Z';
 function memory(state) { return { get(path) { return path ? path.split('.').reduce((value, key) => value?.[key], state) : state; }, set(path, value) { const keys=path.split('.'),last=keys.pop(); const parent=keys.reduce((value,key)=>value[key] ||= {},state); parent[last]=value; } }; }
 test('demo fixtures reset deterministically and include confirmed and uncertain states', () => {

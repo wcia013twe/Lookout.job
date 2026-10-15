@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { canUseDemo, createMemoryStore, demoFixtures, createDemoServices } from "./demo.mjs";
 import { dayStamp } from "./progress.mjs";
-import { connectCloud } from "../../cloud.mjs";
+import { connectCloud } from "../../lib/cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
 import catalog from "../../data/jobs.json";
 const Context = createContext(null);
@@ -16,11 +16,11 @@ export function asset(path) {
 }
 async function initialize() {
   window.JB ||= {};
-  await import("../../store.js");
+  await import("../../lib/store.js");
   await Promise.all([
-    import("../../workflow-model.js"),
-    import("../../saved-answers-model.js"),
-    import("../../tierlist-model.js"),
+    import("../../lib/workflow-model.js"),
+    import("../../lib/saved-answers-model.js"),
+    import("../../lib/tierlist-model.js"),
   ]);
   window.JB.tierlistModel.configure(presets);
   const store = window.JB.store;

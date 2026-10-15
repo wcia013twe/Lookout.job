@@ -72,6 +72,16 @@ Upload new PNG/JPEG assets from an external directory with
 `node scripts/company-logo-cache.mjs --upload /path/to/logos`. This bucket is
 separate from private resume storage.
 
+## Repository layout
+
+- `next-app/`: production React/Next.js UI and frontend tooling.
+- `lib/`: shared browser state, sync, domain models, and pack shaders.
+- `legacy/`: retained static frontend, its styles and vendored assets; regression/reference only, excluded from production export.
+- `backend/`, `supabase/`, `mcp/`, `runner/`: existing service contracts and execution boundaries.
+- `data/`, `tests/`, `scripts/`, `docs/`: catalog, validation, tooling and focused documentation.
+
+Keep installed `node_modules/` for local development. `.next/`, `out/`, generated `next-app/public/` and TypeScript build metadata are disposable and rebuilt by the documented commands. Use a fresh feature checkout for development instead of mixing source changes with the shared cloud-synced directory.
+
 ## Run and validate
 
 Node 22+:
@@ -95,15 +105,15 @@ Open `http://localhost:3000`. Production is built and deployed by `.github/workf
 | --- | --- |
 | `next-app/app/`, `next-app/components/` | Production React routes, public discovery and interactive workspace UI |
 | `next-app/lib/workspace.jsx` | React store/account adapter, shared domain initialization and cloud status |
-| `store.js` | Guest/per-account browser cache; account switching preserves guest records |
-| `workflow-model.js`, `next-app/components/draft-review.jsx` | Versioned review/approval rules and React review controls; signed-in transitions use backend RPCs |
-| `auth.js`, `cloud.mjs`, `cloud-model.mjs`, `backend/client.mjs` | Google auth, serialized autosync, record mapping and owner-checked database requests |
-| `saved-answers-*`, `tierlist-*`, `tierlists.js`, `resume-files.js` | Profile features; standalone modules use the shared store |
-| `agent-connections.js` | Human credential management; keys shown once, never persisted in browser state |
+| `lib/store.js` | Guest/per-account browser cache; account switching preserves guest records |
+| `lib/workflow-model.js`, `next-app/components/draft-review.jsx` | Versioned review/approval rules and React review controls; signed-in transitions use backend RPCs |
+| `next-app/lib/workspace.jsx`, `lib/cloud.mjs`, `lib/cloud-model.mjs`, `backend/client.mjs` | Google auth, serialized autosync, record mapping and owner-checked database requests |
+| `saved-answers-*`, `tierlist-*`, `legacy/tierlists.js`, `legacy/resume-files.js` | Profile features; standalone modules use the shared store |
+| `legacy/agent-connections.js` | Human credential management; keys shown once, never persisted in browser state |
 | `supabase/migrations/` | **Single source of truth for the database schema**; use exact deployed migration versions |
 | `supabase/functions/agent-gateway/`, `agent-mcp/` | Scoped server tools; no general SQL/shell tool and no agent-created human approval; guarded submission transitions |
 | `runner/`, `scripts/runner-*` | Deterministic form inspection and approved prefill and guarded native Greenhouse submission |
-| `next-app/app/globals.css` and Tailwind utilities | Shared Discover theme and responsive presentation; root `styles/` is legacy reference |
+| `next-app/app/globals.css` and Tailwind utilities | Shared Discover theme and responsive presentation; `legacy/styles/` is static reference |
 | `data/jobs.json`, `data/tierlist-presets.json` | Public discovery feed and configurable ranking defaults |
 
 Keep verified personal facts, agent-generated drafts, and employer requirements distinct. Never share service-role keys. Derive ownership from the authenticated user/agent token, not a caller-supplied user ID. A runner must fetch the **current** execution authorization and verify job URL, draft, resume bytes and form fingerprint; adding metadata after approval requires reapproval. A status is not proof of submission.
@@ -198,7 +208,7 @@ Profile starts with candidate identity and editable personal details, then repea
 
 ## Applications and referrals layout
 
-Applications shows browser-tracked roles directly, with full-time/internship counts and status updates. Opening a role remains distinct from applying. Agent workspace contains prepared drafts and review actions; the duplicate legacy interview view is removed. Referrals is a separate navigation tab with referral targets, contacts/follow-ups, and a message-type picker showing one template at a time. Existing tracker and networking storage is preserved. Layout rules live in `styles/applications.css`; workspace color variables can change without changing the structural grid.
+Applications shows browser-tracked roles directly, with full-time/internship counts and status updates. Opening a role remains distinct from applying. Agent workspace contains prepared drafts and review actions; the duplicate legacy interview view is removed. Referrals is a separate navigation tab with referral targets, contacts/follow-ups, and a message-type picker showing one template at a time. Existing tracker and networking storage is preserved. Layout rules live in `legacy/styles/applications.css`; workspace color variables can change without changing the structural grid.
 
 ## Muse can save profile packages
 
@@ -284,3 +294,20 @@ quiet-mode management, reconsideration and owned review links.
 Applications uses a single light list with hiring-stage dots and a wide application detail dialog, based on the supplied Simplify reference. Workflow preparation states are labeled separately from hiring progress. Detail navigation contains Overview, Documents, Resume Match, Email, Questions, and Rounds. Existing question review, approval, submission records, preparation and milestone services retain their authorization rules; no resume score or connected inbox is fabricated.
 
 Round notes use the existing owned `record_application_milestone` RPC (`source.note`, up to 2000 characters), and are displayed with their recorded event. The scoped MCP milestone operation continues to require its existing evidence contract; there is no new generic write capability. Experience cards are editable local text drafts created from round labels and notes. Download is an explicit human action and does not publish to a community, transmit notes, or include resume files or email excerpts. Community publishing remains unconnected.
+
+## Agent-first onboarding
+
+The onboarding flow now implements the PR #19 handoff: connection verification →
+minimum search intent → one evidenced relevant employer posting → contextual
+policy choice. Recommend-only does not need a résumé. Preparation asks for
+verified facts and a résumé only after value; automatic-application requests stay
+subject to existing human/runner/answer safeguards. The website and agent tools
+share backend state, revision checks, idempotent transitions and an owned task
+inbox. The admin demo uses explicitly fictional memory-only results.
+
+See [onboarding and task contract](backend/agent-contract.md#agent-first-onboarding-and-task-inbox).
+There is no verified inbound Muse hook, hosted Cappy runtime or scheduler/channel
+activation service; these report blockers and use polling rather than claiming
+immediate execution. Deploy migration `20261014210000_agent_first_onboarding.sql`
+and the updated `agent-gateway` / `agent-mcp` functions together after merge.
+`developerVersion` is incremented so agents refresh their context and tool list.

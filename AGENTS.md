@@ -32,7 +32,7 @@
 - `supabase/migrations/` is the database schema source of truth. Do not maintain a duplicate schema dump.
 - Read the root README desired interaction and the gateway/MCP/runner contracts before extending behavior.
 - Keep human approval, user-reported progress, and validated submission receipts distinct.
-- Keep migrations, server functions, pure mapping/models, UI framing, and `styles/` in their existing locations.
+- Keep migrations and server functions in `supabase/`, shared browser/domain modules in root `lib/`, production UI in `next-app/`, and retained static reference code/styles in `legacy/`. Do not copy shared models between runtimes.
 - Run `npm test` (includes every database scenario) and `npm run validate:data`; use `npm run test:db` only for focused database debugging and rebuild the auth bundle for auth/cloud/client changes.
 - Add new features with current-state documentation and honest verification limits; do not describe unconnected external services as live.
 - `supabase/functions/agent-gateway/instructions.json` owns the agent interaction contract and developer message defaults. Increment `developerVersion` whenever instructions, defaults, settings mappings or advertised capabilities change, and deploy the gateway with the config through the production workflow after merge. Do not deploy feature branches directly to the shared production project. Personal versions are server-controlled triggers; never reset or edit them from clients.

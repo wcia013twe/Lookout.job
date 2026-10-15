@@ -5,7 +5,7 @@
   "scripts": {
     "test": "node --test",
     "validate:data": "node scripts/validate-data.mjs",
-    "build:auth": "esbuild auth.js --bundle --format=esm --platform=browser --target=es2022 --minify --outfile=assets/vendor/auth.bundle.js",
+    "build:auth": "esbuild legacy/auth.js --bundle --format=esm --platform=browser --target=es2022 --minify --outfile=legacy/assets/vendor/auth.bundle.js",
     "test:db": "node backend/check-schema.mjs",
     "dev": "npm --prefix next-app run dev",
     "build": "npm --prefix next-app run build",
