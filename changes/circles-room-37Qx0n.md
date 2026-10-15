@@ -45,3 +45,13 @@
   All 314 tests, catalog validation, typecheck and static build pass. Detector
   reports no findings; fresh design review disposition is ship.
 - No new imagery, persistence or backend service; existing unrelated edits remain.
+
+## Shared community theme correction
+
+- Keep the constellation and feed composition while replacing the wood, green
+  and paper palette with the app's shared glass panel and semantic theme tokens.
+- Use the shared primary button and theme-aware selection, border, text and
+  content surfaces in light and dark mode. Room artwork remains illustrative.
+- Validation: frontend typecheck, static build and catalog validation pass;
+  desktop light/dark and narrow-phone captures show no document overflow.
+  Detector reports no findings. No behavior or backend changes.

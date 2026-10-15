@@ -201,14 +201,18 @@ Only the loaded published post supplies their shared-activity description.
 
 ### Connected community noticeboard
 
-The lower feed continues the clubhouse with a warm wood edge, deep green felt
-and cream conversational notes. These local materials belong to
-`circle-views.module.css`, alongside the room's existing exception; preserve the
-navy workspace shell and global design tokens. The board retains sans-serif
-names, dates and message copy, with handwriting reserved for the featured
-milestone callout. A published offer reads “Offered!”. Generated room avatars
-and a full-body milestone character appear only for fictional demo members;
-real-account board identities use initials.
+The lower feed connects to the clubhouse through its constellation and recurring
+illustrated characters while retaining the standard workspace theme. Its outer
+surface uses the shared `glass-panel`; panels, text, dividers, accents and selected
+states use semantic board tokens. Celebration actions use the shared primary
+button. This applies in both light and dark mode: no wood border, green felt or
+cream paper palette is applied to the community UI. The illustration inside the
+room retains its own scene materials.
+
+The board retains sans-serif names, dates and message copy, with handwriting
+reserved for the featured milestone callout. A published offer reads “Offered!”.
+Generated room avatars and a full-body milestone character appear only for
+fictional demo members; real-account board identities use initials.
 
 The board's member constellation surrounds a central Everyone emblem. Selecting
 a person there or in the room updates the same member filter, and Everyone or
