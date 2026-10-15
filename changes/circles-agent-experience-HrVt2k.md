@@ -11,7 +11,9 @@
 - Added additive content validation and indexed insights in a local migration.
   Website/MCP share existing backend ownership/version checks; new freeform
   context cannot bypass exact approval through standing templates. No deployment.
-- Developer contract version 22 describes simple evidence, not execution context.
+- Developer contract version 24 describes simple evidence, not execution context.
+  Local landing also preserves the independently completed clubhouse/noticeboard
+  and Career Toolkit changes; context-only notes work in that new composition.
 - Validation: scoped browser/MCP parity, context-only database writes and search,
   private drafts, stale publication approval, private links, unchanged citations;
   full suite, data validation, typecheck, production build and desktop/mobile UI.

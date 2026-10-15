@@ -117,3 +117,104 @@ recipient-confirmed benefit events remain implementation work. Existing citation
 receipts cannot substantiate stronger impact claims. Every new service must ship
 matching scoped MCP operations and shared validation before it is advertised as
 available to agents.
+
+## Clubhouse room — October 2026
+
+The shared room now leads Circles. A full-width illustrated study clubhouse has
+six gently roaming character avatars with activity above their heads. Select a
+character to filter that member's published updates below, and Show everyone to
+restore the feed. Search, contribution inspection, sharing, revision review and
+membership controls keep their existing behavior. Circles larger than six use
+Previous people / More people to explore the room's members in groups.
+
+Rainy evening and Lamplight change the local scene's appearance; Pause motion
+stops character movement. Reduced-motion preferences disable it automatically.
+The room pans horizontally on phones, retaining readable activity labels and
+full-size character controls. None of these presentation controls writes account
+or backend state, and they need no new service or MCP operation. Shared posts
+still use the existing `knowledge.search` / contribution operation boundaries.
+
+In the resettable signed-out preview and admin demo, fictional members show
+example sessions: Wesley applying, interview practice, final-round preparation,
+opportunity review, a coffee break and an offer celebration. Session bars are
+fixed illustrative task completion, never fabricated live progress. Real Circle
+activity derives only from the currently loaded permitted published revisions;
+a member without a matching shared post gets “No shared activity.” Room positions
+and motion never imply that members are currently online. Actual opt-in live
+sessions, session-progress writes and their scoped agent tools remain future work.
+
+### Scoped visual contract
+
+The illustrated clubhouse is a local Circles exception within the existing navy
+workspace. The identity header, search, settings and sharing controls retain the
+shared board colors, sans-serif type, focus treatment and 44px controls. The room
+leads the experience; the connected noticeboard below supplies a second member
+selector and the single published-update stream. Its current constellation and
+materials are defined below. Earlier three-view descriptions remain design history.
+
+Warm timber, lamplight, cream activity bubbles and green selected bubbles belong
+to the room illustration and character controls. Keep these materials inside the
+room CSS module rather than promoting them into workspace tokens. The generated
+clubhouse background and transparent character, walking and station sheets are
+authored in
+`next-app/assets/circles`; their optimized public copies supply the scene.
+Illustrated avatars are decorative member representations, with visible names
+and published activity providing identity and meaning.
+
+The scene retains its spatial composition in a bounded horizontal viewport on
+small screens. Character buttons expose selection through `aria-pressed`, keep
+activity in their accessible names, and pause movement on hover or keyboard
+focus. Pause motion and reduced-motion support are part of this component's
+contract. Ambience changes affect only the illustration. Preserve the adjacent
+fictional-session or decorative-motion disclosure whenever this room is reused.
+
+This extension requires no global color, typography, spacing or component-token
+update, and no regeneration of the design-system sidecar. Its one-off scene
+materials remain scoped here and in `circle-room.module.css`; routine timing and
+playback live in `room-motion.ts` and `use-room-motion.ts`.
+
+### Station routines
+
+Characters now use an explicit 44-second station / walk / break / return loop
+rather than drifting around a fixed point. In the fictional demo, Wesley sits at
+the application desk,
+Priya reads at the other desk, Sam writes at the whiteboard, Alex reads practice
+notes, Jordan sits with coffee, and Maya waves in celebration. Separate generated
+walking frames and station poses preserve their appearance. Floor routes follow
+the open aisles; direction flips and depth ordering follow the actor's position.
+Overhead labels travel with the actors and lift when needed to avoid collisions.
+
+Pause freezes the current routine without resetting its clock. Hover and keyboard
+focus freeze that character for selection. Offscreen rooms and hidden tabs stop
+playback. Reduced motion shows stationary station poses. These are local visual
+routines, not evidence of live presence or newly completed session tasks; the
+existing fictional-session and shared-update distinctions continue to apply.
+For real members, station poses and walking labels describe the illustration;
+they do not establish that a person is applying, practicing or taking a break.
+Only the loaded published post supplies their shared-activity description.
+
+### Connected community noticeboard
+
+The lower feed continues the clubhouse with a warm wood edge, deep green felt
+and cream conversational notes. These local materials belong to
+`circle-views.module.css`, alongside the room's existing exception; preserve the
+navy workspace shell and global design tokens. The board retains sans-serif
+names, dates and message copy, with handwriting reserved for the featured
+milestone callout. A published offer reads “Offered!”. Generated room avatars
+and a full-body milestone character appear only for fictional demo members;
+real-account board identities use initials.
+
+The board's member constellation surrounds a central Everyone emblem. Selecting
+a person there or in the room updates the same member filter, and Everyone or
+Show everyone restores the feed. More than eight members use a grid. On narrow
+screens the constellation stacks beneath the introduction, while notes and the
+celebration reflow within the board. Selection uses semantic buttons and
+`aria-pressed`, with visible names and the inherited keyboard-focus treatment.
+
+“Find a shared update” contains the existing search in a disclosure, opened for
+active results. Search results take precedence over the selected-person filter.
+Each conversational note keeps author, type, date and an action opening the
+existing contribution detail; the featured milestone appears once. Content
+still comes only from current permitted published revisions. The board changes
+presentation and filtering, without adding chat, presence, posting permissions
+or a new consent path. No global token or design-system sidecar update is needed.
