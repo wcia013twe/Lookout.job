@@ -21,3 +21,18 @@ Generic website preference sync uses `save_preferences_preserving_quiet`; it can
 The human-action URL includes the owned application UUID. The website opens that application after account-scoped workspace hydration. A foreign UUID remains inaccessible.
 
 Milestones include submitted, recruiter calls, technical rounds, interviews and outcomes. Email excerpts remain untrusted source material. Date uncertainty is explicit; adding a milestone does not automatically replan preparation. Human corrections append a new event with a new key and a clear correction label, preserving the original observation.
+
+## Career Toolkit manuals
+
+- Website: `/career-toolkit/` and statically generated `/career-toolkit/<skill>/`.
+- Agent: existing read-only `read_guide({id: "career-<skill>"})`, workspace:read.
+- Same canonical catalog supplies the UI/manual examples and generated guide bundle;
+  `scripts/build-career-toolkit.mjs --check` verifies bundle and source hashes.
+- Search, categories, example selection and clipboard copy are local read-only UI
+  operations. They create no task, grant, approval, schedule or account write.
+- A saved application adds only company/title to a copied request; the agent must
+  resolve current owned context through existing tools. No file URLs or credentials.
+- Demo requests are explicitly fictional and prohibit real account/external actions.
+- Guide routing, scope checks, clone isolation and payload validation have local
+  tests. Hosted availability requires the normal gateway release and live verification;
+  no deployment or installed upstream executable is claimed by this feature.

@@ -1,0 +1,1427 @@
+{
+  "version": 2,
+  "categories": [
+    {
+      "id": "profile",
+      "title": "Profile",
+      "description": "Build a useful profile without starting from a blank page."
+    },
+    {
+      "id": "search",
+      "title": "Job search",
+      "description": "Find opportunities and decide which deserve your time."
+    },
+    {
+      "id": "documents",
+      "title": "Documents",
+      "description": "Turn your experience into clear, role-specific materials."
+    },
+    {
+      "id": "interviews",
+      "title": "Interviews",
+      "description": "Practice with purpose, then carry what you learn into the next round."
+    },
+    {
+      "id": "outreach",
+      "title": "Networking",
+      "description": "Find the right people and prepare a thoughtful message."
+    },
+    {
+      "id": "growth",
+      "title": "Growth",
+      "description": "Choose what to learn and what to build next."
+    },
+    {
+      "id": "offers",
+      "title": "Offers",
+      "description": "Understand the terms and prepare your next conversation."
+    },
+    {
+      "id": "automation",
+      "title": "Automation",
+      "description": "Make recurring work explicit, manageable and reliable."
+    }
+  ],
+  "skills": [
+    {
+      "id": "profile-interview",
+      "guideId": "career-profile-interview",
+      "version": 2,
+      "category": "profile",
+      "title": "Talk through your experience",
+      "summary": "Uncover the useful details that your resume leaves out.",
+      "whenToUse": "Uncover the useful details that your resume leaves out.",
+      "inputs": [
+        "Your existing Lookout profile or resume",
+        "The kind of work you want next"
+      ],
+      "steps": [
+        "Start with your goals and ask one question at a time.",
+        "Explore recent work, decisions you made and outcomes you can support.",
+        "Review proposed additions before saving them to your profile."
+      ],
+      "outputs": [
+        "A clearer career narrative",
+        "Proposed profile facts with unresolved details flagged"
+      ],
+      "examples": [
+        "Help me improve my Lookout profile. Ask one question at a time about my recent work and achievements.",
+        "Help me describe my most important project without inventing metrics."
+      ],
+      "requirements": "Your agent needs access to your profile. Unknown metrics should stay unknown; useful qualitative evidence is welcome.",
+      "sources": [
+        "modes/interview.md"
+      ],
+      "related": [
+        "import-background",
+        "expand-profile",
+        "add-experience"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview.md"
+    },
+    {
+      "id": "import-background",
+      "guideId": "career-import-background",
+      "version": 2,
+      "category": "profile",
+      "title": "Bring in existing documents",
+      "summary": "Use documents you already have to propose missing profile details.",
+      "whenToUse": "Use documents you already have to propose missing profile details.",
+      "inputs": [
+        "Your resume, LinkedIn PDF, transcripts or references",
+        "Permission to read the documents you choose"
+      ],
+      "steps": [
+        "Read your current profile before extracting new information.",
+        "Identify additions and conflicting dates or titles, with their document sources.",
+        "Review a consolidated proposal and save only accepted changes."
+      ],
+      "outputs": [
+        "Source-backed profile additions",
+        "A short list of conflicts to resolve"
+      ],
+      "examples": [
+        "Use the resume and LinkedIn PDF I provide to propose updates to my Lookout profile.",
+        "Compare my transcript with my education section and show what is missing."
+      ],
+      "requirements": "File reading comes from your agent. Some document readers cannot handle DOCX, images or scanned PDFs without text; ask your agent what it can actually read.",
+      "sources": [
+        "modes/intake.md"
+      ],
+      "related": [
+        "profile-interview",
+        "expand-profile",
+        "add-experience"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/intake.md"
+    },
+    {
+      "id": "expand-profile",
+      "guideId": "career-expand-profile",
+      "version": 2,
+      "category": "profile",
+      "title": "Find evidence in your portfolio",
+      "summary": "Find relevant experience in the portfolio and public projects you have linked.",
+      "whenToUse": "Find relevant experience in the portfolio and public projects you have linked.",
+      "inputs": [
+        "Your linked GitHub or portfolio",
+        "The experience already in your profile"
+      ],
+      "steps": [
+        "Read the sources you have explicitly provided or linked.",
+        "Extract supported technologies, responsibilities and outcomes; deduplicate existing entries.",
+        "Show proposed additions and their evidence before saving them."
+      ],
+      "outputs": [
+        "New evidence-backed project or experience proposals"
+      ],
+      "examples": [
+        "Look at the portfolio linked in my profile and suggest experience I have left out.",
+        "Find supported skills in my linked GitHub projects and show the evidence before updating anything."
+      ],
+      "requirements": "Browsing is required. Using a library is not evidence that you authored it; unstated dates and results remain blank.",
+      "sources": [
+        "modes/expand.md"
+      ],
+      "related": [
+        "profile-interview",
+        "import-background",
+        "add-experience"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/expand.md"
+    },
+    {
+      "id": "add-experience",
+      "guideId": "career-add-experience",
+      "version": 2,
+      "category": "profile",
+      "title": "Add a project or achievement",
+      "summary": "Turn completed work into an accurate, useful profile entry.",
+      "whenToUse": "Turn completed work into an accurate, useful profile entry.",
+      "inputs": [
+        "A project, paper or role description",
+        "Source evidence and your contribution"
+      ],
+      "steps": [
+        "Read the source and identify your actual contribution.",
+        "Draft a concise entry in the appropriate section and check for duplicates.",
+        "Let you review the facts before updating your profile."
+      ],
+      "outputs": [
+        "A proposed project, publication or work entry",
+        "Reusable resume proof points"
+      ],
+      "examples": [
+        "Help me add my finished project to my profile. Separate what I built from the tools I used.",
+        "Turn this internship description into accurate resume bullets and ask about missing evidence."
+      ],
+      "requirements": "Changes use Lookout's existing profile tools. Added facts still need your review and verification.",
+      "sources": [
+        "modes/add.md"
+      ],
+      "related": [
+        "profile-interview",
+        "import-background",
+        "expand-profile"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/add.md"
+    },
+    {
+      "id": "find-jobs",
+      "guideId": "career-find-jobs",
+      "version": 2,
+      "category": "search",
+      "title": "Find relevant jobs",
+      "summary": "Search your chosen sources for roles that fit your goals.",
+      "whenToUse": "Search your chosen sources for roles that fit your goals.",
+      "inputs": [
+        "Your search preferences and target sources",
+        "Any location or eligibility constraints"
+      ],
+      "steps": [
+        "Check which sources your agent can actually access.",
+        "Find relevant listings, deduplicate them and verify official employer postings.",
+        "Save supported opportunities in Lookout and explain material gaps or access failures."
+      ],
+      "outputs": [
+        "A verified shortlist",
+        "Source freshness and fit notes"
+      ],
+      "examples": [
+        "Search my saved sources for new backend roles that match my active preferences.",
+        "Find internships with strong systems work and explain what still needs verification."
+      ],
+      "requirements": "Browsing or a supported scanner is required. A saved source alone does not mean automatic scanning is active.",
+      "sources": [
+        "modes/scan.md"
+      ],
+      "related": [
+        "quick-triage",
+        "evaluate-job",
+        "compare-jobs"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/scan.md"
+    },
+    {
+      "id": "quick-triage",
+      "guideId": "career-quick-triage",
+      "version": 2,
+      "category": "search",
+      "title": "Quickly check a job",
+      "summary": "Get a first-pass fit check before spending time on a full evaluation.",
+      "whenToUse": "Get a first-pass fit check before spending time on a full evaluation.",
+      "inputs": [
+        "A job link or pasted description",
+        "Your profile and hard constraints"
+      ],
+      "steps": [
+        "Read the actual posting and check obvious blockers.",
+        "Compare the role with your goals and strongest evidence.",
+        "Return a concise proceed, investigate or skip recommendation."
+      ],
+      "outputs": [
+        "A quick fit verdict",
+        "Key reasons and unknowns"
+      ],
+      "examples": [
+        "Quickly triage this role against my profile. Is it worth a deeper look?",
+        "Check these three job descriptions for obvious blockers before evaluating them fully."
+      ],
+      "requirements": "Your agent needs real job text and profile context. A preliminary score is not a prediction of hiring success.",
+      "sources": [
+        "modes/triage.md"
+      ],
+      "related": [
+        "find-jobs",
+        "evaluate-job",
+        "compare-jobs"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/triage.md"
+    },
+    {
+      "id": "evaluate-job",
+      "guideId": "career-evaluate-job",
+      "version": 2,
+      "category": "search",
+      "title": "Evaluate a role in depth",
+      "summary": "Understand the role, your evidence, the gaps and a sensible application strategy.",
+      "whenToUse": "Understand the role, your evidence, the gaps and a sensible application strategy.",
+      "inputs": [
+        "A live job posting or complete JD",
+        "Your resume and search priorities"
+      ],
+      "steps": [
+        "Summarize the role and match important requirements to concrete evidence.",
+        "Assess level, compensation context, constraints and posting signals.",
+        "Explain the recommendation, document changes and preparation priorities."
+      ],
+      "outputs": [
+        "A structured role evaluation",
+        "Requirement-level strengths and gaps",
+        "A tailoring and interview plan"
+      ],
+      "examples": [
+        "Evaluate this role using my Lookout profile and resume. Show evidence for each important requirement.",
+        "Explain why this job is a strong or weak fit and what I should verify before applying."
+      ],
+      "requirements": "Browsing is needed for current posting and company facts. Use your own priorities rather than preset seniority defaults.",
+      "sources": [
+        "modes/oferta.md"
+      ],
+      "related": [
+        "find-jobs",
+        "quick-triage",
+        "compare-jobs"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/oferta.md"
+    },
+    {
+      "id": "compare-jobs",
+      "guideId": "career-compare-jobs",
+      "version": 2,
+      "category": "search",
+      "title": "Compare opportunities",
+      "summary": "Compare roles using the tradeoffs that matter to you.",
+      "whenToUse": "Compare roles using the tradeoffs that matter to you.",
+      "inputs": [
+        "Two or more postings or saved opportunities",
+        "Your priorities and non-negotiables"
+      ],
+      "steps": [
+        "Agree the dimensions that matter: work, growth, compensation, location and timing.",
+        "Compare each opportunity with evidence and explicit unknowns.",
+        "Show the tradeoffs and recommend what to investigate next."
+      ],
+      "outputs": [
+        "A comparison matrix",
+        "A reasoned shortlist"
+      ],
+      "examples": [
+        "Compare these two saved opportunities using my priorities, including learning and work-life balance.",
+        "Which of these internships deserves a conversation before I decide?"
+      ],
+      "requirements": "The comparison depends on available evidence; missing salary or team details should not be guessed.",
+      "sources": [
+        "modes/ofertas.md"
+      ],
+      "related": [
+        "find-jobs",
+        "quick-triage",
+        "evaluate-job"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/ofertas.md"
+    },
+    {
+      "id": "research-company",
+      "guideId": "career-research-company",
+      "version": 2,
+      "category": "search",
+      "title": "Research a company",
+      "summary": "Learn enough about the company and team to ask better questions.",
+      "whenToUse": "Learn enough about the company and team to ask better questions.",
+      "inputs": [
+        "Company name and role or team",
+        "A specific decision you want to inform"
+      ],
+      "steps": [
+        "Research current products, strategy, engineering work and recent developments.",
+        "Separate sourced observations from interpretations.",
+        "Connect the findings to your experience, application angle and questions."
+      ],
+      "outputs": [
+        "A sourced company brief",
+        "Conversation and preparation questions"
+      ],
+      "examples": [
+        "Research this company for my application. Focus on engineering culture and what the team is building.",
+        "Prepare a company brief before my recruiter call, with sources and useful questions."
+      ],
+      "requirements": "Requires browsing. Keep dates and uncertainty visible; public information may not establish a specific team's practices.",
+      "sources": [
+        "modes/deep.md"
+      ],
+      "related": [
+        "find-jobs",
+        "quick-triage",
+        "evaluate-job"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/deep.md"
+    },
+    {
+      "id": "adjacent-titles",
+      "guideId": "career-adjacent-titles",
+      "version": 2,
+      "category": "search",
+      "title": "Expand your job-title search",
+      "summary": "Find relevant role titles you may not know to search for.",
+      "whenToUse": "Find relevant role titles you may not know to search for.",
+      "inputs": [
+        "Your experience and career goals",
+        "Your current search titles"
+      ],
+      "steps": [
+        "Read the evidence behind your experience.",
+        "Suggest adjacent titles with a reason and likely fit tradeoffs.",
+        "Review additions or removals before changing search preferences."
+      ],
+      "outputs": [
+        "Suggested search titles",
+        "An explanation of which skills transfer"
+      ],
+      "examples": [
+        "Suggest adjacent job titles supported by my profile that my search may be missing.",
+        "Would platform engineering or developer infrastructure be a sensible expansion for me?"
+      ],
+      "requirements": "Suggestions do not automatically change your filters. Keep seniority and eligibility constraints explicit.",
+      "sources": [
+        "modes/titles.md"
+      ],
+      "related": [
+        "find-jobs",
+        "quick-triage",
+        "evaluate-job"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/titles.md"
+    },
+    {
+      "id": "regional-search",
+      "guideId": "career-regional-search",
+      "version": 2,
+      "category": "search",
+      "title": "Search in another language or market",
+      "summary": "Adapt a search to a market while keeping language and location separate.",
+      "whenToUse": "Adapt a search to a market while keeping language and location separate.",
+      "inputs": [
+        "Target country or region",
+        "Preferred output language and known work authorization"
+      ],
+      "steps": [
+        "Confirm the market, output language and your actual constraints.",
+        "Use relevant regional guidance to evaluate location, language, compensation and application conventions.",
+        "Verify current official rules when they affect the decision; do not infer eligibility."
+      ],
+      "outputs": [
+        "A market-aware search or evaluation",
+        "A list of facts to verify"
+      ],
+      "examples": [
+        "Search for software roles in Germany and explain the results in English. Check language and sponsorship requirements.",
+        "Help me search in Singapore and write my application materials in English.",
+        "Evaluate this French job posting and explain the result in French."
+      ],
+      "requirements": "Browsing is needed for current market facts. This guide supplies language and regional context, not a certified translation or immigration determination.",
+      "sources": [
+        "modes/regional/eu-swe.md",
+        "modes/ar/README.md",
+        "modes/da/README.md",
+        "modes/de/README.md",
+        "modes/es/README.md",
+        "modes/fr/README.md",
+        "modes/hi/README.md",
+        "modes/id/README.md",
+        "modes/it/README.md",
+        "modes/ja/README.md",
+        "modes/ko/README.md",
+        "modes/nl/README.md",
+        "modes/pl/README.md",
+        "modes/pt/README.md",
+        "modes/ru/README.md",
+        "modes/sg/README.md",
+        "modes/tr/README.md",
+        "modes/ua/README.md",
+        "modes/zh-TW/README.md",
+        "modes/zh/README.md"
+      ],
+      "locales": [
+        "Arabic",
+        "Danish",
+        "Dutch",
+        "French",
+        "German",
+        "Hindi",
+        "Indonesian",
+        "Italian",
+        "Japanese",
+        "Korean",
+        "Polish",
+        "Portuguese",
+        "Russian",
+        "Spanish",
+        "Turkish",
+        "Ukrainian",
+        "Simplified Chinese",
+        "Traditional Chinese",
+        "Singapore market (English)"
+      ],
+      "related": [
+        "find-jobs",
+        "quick-triage",
+        "evaluate-job"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/regional/eu-swe.md"
+    },
+    {
+      "id": "tailor-resume",
+      "guideId": "career-tailor-resume",
+      "version": 2,
+      "category": "documents",
+      "title": "Tailor your resume",
+      "summary": "Emphasize the experience most relevant to one role.",
+      "whenToUse": "Emphasize the experience most relevant to one role.",
+      "inputs": [
+        "Your resume or verified profile facts",
+        "A target job description"
+      ],
+      "steps": [
+        "Extract the role's important requirements and vocabulary.",
+        "Rewrite the summary and reorder supported bullets without adding experience.",
+        "Show the tailored draft and any missing evidence for your review."
+      ],
+      "outputs": [
+        "A tailored resume draft",
+        "An explanation of the changes"
+      ],
+      "examples": [
+        "Tailor my resume for this application using only experience I can support.",
+        "Rewrite my summary and reorder my bullets for this job. Show what changed."
+      ],
+      "requirements": "Text drafting works through your agent. Reading a PDF and producing a downloadable file depend on its tools.",
+      "sources": [
+        "modes/text.md"
+      ],
+      "related": [
+        "resume-pdf",
+        "ats-check",
+        "cover-letter"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/text.md"
+    },
+    {
+      "id": "resume-pdf",
+      "guideId": "career-resume-pdf",
+      "version": 2,
+      "category": "documents",
+      "title": "Create a resume PDF",
+      "summary": "Prepare a readable resume document tailored to a role.",
+      "whenToUse": "Prepare a readable resume document tailored to a role.",
+      "inputs": [
+        "Reviewed resume content",
+        "A target role and preferred document style"
+      ],
+      "steps": [
+        "Prepare evidence-backed content and review claims.",
+        "Use an available document renderer to produce selectable text and readable structure.",
+        "Inspect the final output, then register a new private version when upload tools are available."
+      ],
+      "outputs": [
+        "A resume PDF when rendering is available",
+        "A reviewed content draft otherwise"
+      ],
+      "examples": [
+        "Create a clean PDF resume for this application and check that its text is selectable.",
+        "Use my reviewed resume draft to create a new document version, keeping the original."
+      ],
+      "requirements": "Your agent needs a document renderer. An available renderer must be checked before promising a downloadable file.",
+      "sources": [
+        "modes/pdf.md"
+      ],
+      "related": [
+        "tailor-resume",
+        "ats-check",
+        "cover-letter"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/pdf.md"
+    },
+    {
+      "id": "ats-check",
+      "guideId": "career-ats-check",
+      "version": 2,
+      "category": "documents",
+      "title": "Check ATS readability",
+      "summary": "Check document structure and keyword coverage without pretending to predict an employer's ATS.",
+      "whenToUse": "Check document structure and keyword coverage without pretending to predict an employer's ATS.",
+      "inputs": [
+        "Your resume document or renderable source",
+        "A JD if you want keyword coverage"
+      ],
+      "steps": [
+        "Check text extraction, standard headings, columns and contact placement.",
+        "Compare supported keywords with the role when requested.",
+        "Explain issues and proposed fixes; keep structure and fit separate."
+      ],
+      "outputs": [
+        "Readability findings",
+        "Optional keyword coverage",
+        "Prioritized fixes"
+      ],
+      "examples": [
+        "Check this resume for ATS readability and explain each issue.",
+        "Compare keyword coverage with this role without adding skills I do not have."
+      ],
+      "requirements": "Automated structural scoring needs an available checker and compatible source. A clean structure is not an employer pass guarantee.",
+      "sources": [
+        "modes/ats.md"
+      ],
+      "related": [
+        "tailor-resume",
+        "resume-pdf",
+        "cover-letter"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/ats.md"
+    },
+    {
+      "id": "cover-letter",
+      "guideId": "career-cover-letter",
+      "version": 2,
+      "category": "documents",
+      "title": "Write a cover letter",
+      "summary": "Create a specific letter grounded in the role, company and your actual work.",
+      "whenToUse": "Create a specific letter grounded in the role, company and your actual work.",
+      "inputs": [
+        "A job posting and your resume",
+        "Your motivation and preferred tone"
+      ],
+      "steps": [
+        "Research the company when access is available.",
+        "Choose an angle: why this company, its problems, your approach and tone.",
+        "Review the draft before formatting or exporting it."
+      ],
+      "outputs": [
+        "An editable cover letter",
+        "A clear application angle"
+      ],
+      "examples": [
+        "Draft a concise cover letter for this role. Ask me about my motivation before finalizing it.",
+        "Make this cover letter more specific using my real projects and the company's work."
+      ],
+      "requirements": "Company research requires browsing. PDF export needs a renderer; drafting never submits an application.",
+      "sources": [
+        "modes/cover.md"
+      ],
+      "related": [
+        "tailor-resume",
+        "resume-pdf",
+        "ats-check"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/cover.md"
+    },
+    {
+      "id": "application-email",
+      "guideId": "career-application-email",
+      "version": 2,
+      "category": "documents",
+      "title": "Draft an application email",
+      "summary": "Prepare a clear application email with the right attachments.",
+      "whenToUse": "Prepare a clear application email with the right attachments.",
+      "inputs": [
+        "Role or application context",
+        "Recipient and the documents you plan to attach"
+      ],
+      "steps": [
+        "Identify the application purpose and supported fit points.",
+        "Draft a subject, concise body and appropriate contact block.",
+        "List required attachments and leave sending to you."
+      ],
+      "outputs": [
+        "A subject and email draft",
+        "An attachment checklist"
+      ],
+      "examples": [
+        "Draft an application email for this role with a subject and attachment checklist.",
+        "Help me send my resume to this recruiter: prepare the email, but do not send it."
+      ],
+      "requirements": "Recipient details must be supplied or verified. This skill prepares a draft; it does not connect an email service.",
+      "sources": [
+        "modes/email.md"
+      ],
+      "related": [
+        "tailor-resume",
+        "resume-pdf",
+        "ats-check"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/email.md"
+    },
+    {
+      "id": "latex-resume",
+      "guideId": "career-latex-resume",
+      "version": 2,
+      "category": "documents",
+      "title": "Export a LaTeX resume",
+      "summary": "Prepare a portable LaTeX resume for your preferred template or Overleaf.",
+      "whenToUse": "Prepare a portable LaTeX resume for your preferred template or Overleaf.",
+      "inputs": [
+        "Your reviewed resume content",
+        "Template preferences and the target role"
+      ],
+      "steps": [
+        "Prepare truthful tailored content.",
+        "Create compatible LaTeX source and preserve a clean structure.",
+        "Compile and inspect it only if an available tool supports that output."
+      ],
+      "outputs": [
+        "LaTeX source",
+        "A PDF when compilation is available"
+      ],
+      "examples": [
+        "Create an Overleaf-ready LaTeX version of my reviewed resume.",
+        "Adapt my resume content to a simple LaTeX layout and show me the source."
+      ],
+      "requirements": "Compilation depends on your agent's tools. Opening this manual does not install TeX or a rendering engine.",
+      "sources": [
+        "modes/latex.md"
+      ],
+      "related": [
+        "tailor-resume",
+        "resume-pdf",
+        "ats-check"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/latex.md"
+    },
+    {
+      "id": "interview-research",
+      "guideId": "career-interview-research",
+      "version": 2,
+      "category": "interviews",
+      "title": "Research an interview",
+      "summary": "Prepare for a company's actual process and the role you are discussing.",
+      "whenToUse": "Prepare for a company's actual process and the role you are discussing.",
+      "inputs": [
+        "Application and job description",
+        "Round type, interviewer and known process details"
+      ],
+      "steps": [
+        "Research the company and likely process, clearly labeling unverified reports.",
+        "Connect likely topics to your experience and gaps.",
+        "Prepare questions, talking points and a focused next step."
+      ],
+      "outputs": [
+        "A company-specific interview brief",
+        "Likely topics and questions to ask"
+      ],
+      "examples": [
+        "Research my upcoming interview for this application and distinguish official facts from candidate reports.",
+        "Help me prepare questions for the hiring manager based on this team's work."
+      ],
+      "requirements": "Requires browsing for fresh company intelligence. Public candidate reports are observations, not a guaranteed interview script.",
+      "sources": [
+        "modes/interview-prep.md"
+      ],
+      "related": [
+        "prep-plan",
+        "practice-interview",
+        "story-bank"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview-prep.md"
+    },
+    {
+      "id": "prep-plan",
+      "guideId": "career-prep-plan",
+      "version": 2,
+      "category": "interviews",
+      "title": "Build an interview preparation plan",
+      "summary": "Use the time you have to prepare the most important topics.",
+      "whenToUse": "Use the time you have to prepare the most important topics.",
+      "inputs": [
+        "Application, JD and known gaps",
+        "Confirmed interview date or deadline",
+        "Your available daily preparation time"
+      ],
+      "steps": [
+        "Confirm the deadline and current preparation budget.",
+        "Prioritize topics, stories and practice for this round.",
+        "Update the existing Lookout preparation plan while preserving completed tasks."
+      ],
+      "outputs": [
+        "A time-budgeted preparation plan",
+        "Tasks linked to your application"
+      ],
+      "examples": [
+        "Build a preparation plan for this application using my saved daily budget and confirmed interview date.",
+        "I have three evenings before my interview. Help me prioritize what to practice."
+      ],
+      "requirements": "Use existing Lookout planner tools when available. Uncertain dates stay unscheduled; planning is not task completion.",
+      "sources": [
+        "modes/interview/plan.md"
+      ],
+      "related": [
+        "interview-research",
+        "practice-interview",
+        "story-bank"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/plan.md"
+    },
+    {
+      "id": "practice-interview",
+      "guideId": "career-practice-interview",
+      "version": 2,
+      "category": "interviews",
+      "title": "Practice an interview",
+      "summary": "Practice one question at a time with feedback grounded in your experience.",
+      "whenToUse": "Practice one question at a time with feedback grounded in your experience.",
+      "inputs": [
+        "Target role and round type",
+        "Your resume and relevant stories",
+        "Optional practice questions"
+      ],
+      "steps": [
+        "Choose the round and practice style.",
+        "Ask one question, wait for your answer, then give specific feedback.",
+        "Keep track of weak areas and stronger evidence-backed answers."
+      ],
+      "outputs": [
+        "A practice conversation",
+        "Actionable feedback",
+        "Topics to revisit"
+      ],
+      "examples": [
+        "Run a mock backend interview. Ask one question at a time and give feedback after I answer.",
+        "Practice a recruiter screen using my profile. Challenge vague answers without inventing better facts."
+      ],
+      "requirements": "This is an interactive conversation with your agent. Saving a practice transcript depends on available storage tools and your permission.",
+      "sources": [
+        "modes/interview/practice.md"
+      ],
+      "related": [
+        "interview-research",
+        "prep-plan",
+        "story-bank"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/practice.md"
+    },
+    {
+      "id": "story-bank",
+      "guideId": "career-story-bank",
+      "version": 2,
+      "category": "interviews",
+      "title": "Build your interview story bank",
+      "summary": "Develop a small set of truthful stories you can adapt to behavioral questions.",
+      "whenToUse": "Develop a small set of truthful stories you can adapt to behavioral questions.",
+      "inputs": [
+        "Real projects and work experiences",
+        "Existing interview notes or stories"
+      ],
+      "steps": [
+        "Choose a concrete experience and clarify your role.",
+        "Describe situation, task, action, result and reflection using supported facts.",
+        "Identify the competencies it demonstrates and how to adapt it without embellishment."
+      ],
+      "outputs": [
+        "Reusable STAR plus reflection stories",
+        "Missing evidence to clarify"
+      ],
+      "examples": [
+        "Help me build five interview stories from my real work. Start with a technical challenge.",
+        "Turn this experience into a STAR story and flag any result I have not supported."
+      ],
+      "requirements": "Keep stories private unless you choose to share. Lookout's saved-answer library is not automatic permission to reuse every story in an application.",
+      "sources": [
+        "modes/interview/debrief.md"
+      ],
+      "related": [
+        "interview-research",
+        "prep-plan",
+        "practice-interview"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md"
+    },
+    {
+      "id": "interview-debrief",
+      "guideId": "career-interview-debrief",
+      "version": 2,
+      "category": "interviews",
+      "title": "Debrief an interview",
+      "summary": "Capture what happened while it is fresh and improve the next round.",
+      "whenToUse": "Capture what happened while it is fresh and improve the next round.",
+      "inputs": [
+        "Your account of the interview",
+        "Questions asked and your answers",
+        "Known outcome or next-round details"
+      ],
+      "steps": [
+        "Record your observations without guessing the interviewer's judgment.",
+        "Identify strong answers, gaps and better-supported examples.",
+        "Prepare next-round actions and add relevant notes through available Lookout tools."
+      ],
+      "outputs": [
+        "A private debrief",
+        "Practice priorities",
+        "Notes for the next round"
+      ],
+      "examples": [
+        "Debrief my interview with me. Ask what happened before deciding what I should improve.",
+        "Help me capture the questions I was asked and make a plan for the next round."
+      ],
+      "requirements": "Unknown outcomes remain unknown. A debrief does not publish an interview report to a Circle.",
+      "sources": [
+        "modes/interview/debrief.md"
+      ],
+      "related": [
+        "interview-research",
+        "prep-plan",
+        "practice-interview"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md"
+    },
+    {
+      "id": "interview-signals",
+      "guideId": "career-interview-signals",
+      "version": 2,
+      "category": "interviews",
+      "title": "Review interview warning signs",
+      "summary": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
+      "whenToUse": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
+      "inputs": [
+        "Your interview notes or transcript",
+        "The JD and relevant offer or scope details"
+      ],
+      "steps": [
+        "Identify concrete statements and events.",
+        "Separate isolated observations from repeated patterns or corroborated mismatches.",
+        "Prepare neutral follow-up questions and identify anything requiring current official guidance."
+      ],
+      "outputs": [
+        "A sourced observations list",
+        "Clarifying questions",
+        "Decision uncertainties"
+      ],
+      "examples": [
+        "Review my interview notes for scope or compensation mismatches. Separate facts from interpretations.",
+        "Help me decide what to clarify after these inconsistent answers from the interview panel."
+      ],
+      "requirements": "Your agent must not infer motives or issue legal conclusions. Sensitive jurisdiction-specific claims require current verification.",
+      "sources": [
+        "modes/interview-redflag.md"
+      ],
+      "related": [
+        "interview-research",
+        "prep-plan",
+        "practice-interview"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview-redflag.md"
+    },
+    {
+      "id": "find-contacts",
+      "guideId": "career-find-contacts",
+      "version": 2,
+      "category": "outreach",
+      "title": "Find people to contact",
+      "summary": "Identify a relevant recruiter, hiring manager or team peer and a suitable approach.",
+      "whenToUse": "Identify a relevant recruiter, hiring manager or team peer and a suitable approach.",
+      "inputs": [
+        "Target company and role",
+        "Your existing contacts and genuine shared context"
+      ],
+      "steps": [
+        "Check saved contacts before cold research.",
+        "Verify a person's relevance and choose a contact-appropriate angle.",
+        "Use Lookout's outreach guide to draft a specific message for your review."
+      ],
+      "outputs": [
+        "Researched contact suggestions",
+        "A personalized draft"
+      ],
+      "examples": [
+        "Check whether I already know someone at this company, then suggest who to contact.",
+        "Find a relevant team contact for this role and prepare a short LinkedIn note."
+      ],
+      "requirements": "Research requires browsing. A public profile does not establish a relationship, and this skill never sends a message.",
+      "sources": [
+        "modes/contacto.md"
+      ],
+      "related": [
+        "follow-up",
+        "understand-reply"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/contacto.md"
+    },
+    {
+      "id": "follow-up",
+      "guideId": "career-follow-up",
+      "version": 2,
+      "category": "outreach",
+      "title": "Prepare a follow-up",
+      "summary": "Choose a reasonable follow-up and prepare the message.",
+      "whenToUse": "Choose a reasonable follow-up and prepare the message.",
+      "inputs": [
+        "Application or actual sent-message history",
+        "Known recruiter and promised timelines"
+      ],
+      "steps": [
+        "Confirm what was sent, when and whether there has been a response.",
+        "Choose an appropriate follow-up using the real timeline.",
+        "Draft the message and distinguish a draft from a sent follow-up."
+      ],
+      "outputs": [
+        "A contextual follow-up draft",
+        "Suggested timing and next action"
+      ],
+      "examples": [
+        "Help me follow up on this application using the actual dates in my timeline.",
+        "Draft a follow-up to this recruiter based on our last message. Do not send it."
+      ],
+      "requirements": "A sent message or submission must be established before drafting a chase-up. A reminder does not mean delivery is configured.",
+      "sources": [
+        "modes/followup.md"
+      ],
+      "related": [
+        "find-contacts",
+        "understand-reply"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/followup.md"
+    },
+    {
+      "id": "understand-reply",
+      "guideId": "career-understand-reply",
+      "version": 2,
+      "category": "outreach",
+      "title": "Understand an employer reply",
+      "summary": "Separate a real process update from recruiting noise and decide what to do.",
+      "whenToUse": "Separate a real process update from recruiting noise and decide what to do.",
+      "inputs": [
+        "The reply you choose to provide",
+        "The matching application and timeline"
+      ],
+      "steps": [
+        "Read the message and match it to the correct application.",
+        "Classify the update and extract only supported dates and actions.",
+        "Propose or record an attributable milestone using available tools; keep submission evidence separate."
+      ],
+      "outputs": [
+        "A plain-language explanation",
+        "Next actions",
+        "A proposed timeline update"
+      ],
+      "examples": [
+        "Explain this recruiter email and identify the next action. Keep ambiguous dates unresolved.",
+        "Match this interview invitation to the correct application and propose a timeline update."
+      ],
+      "requirements": "Pasting a reply works without an inbox connection. Continuous monitoring needs authorized email access in your agent's runtime.",
+      "sources": [
+        "modes/reply-watch.md"
+      ],
+      "related": [
+        "find-contacts",
+        "follow-up"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/reply-watch.md"
+    },
+    {
+      "id": "skill-gaps",
+      "guideId": "career-skill-gaps",
+      "version": 2,
+      "category": "growth",
+      "title": "Identify recurring skill gaps",
+      "summary": "Find the gaps that repeatedly matter for your target roles.",
+      "whenToUse": "Find the gaps that repeatedly matter for your target roles.",
+      "inputs": [
+        "Past evaluations or a set of job descriptions",
+        "Your current evidence and target roles"
+      ],
+      "steps": [
+        "Collect missing and partial requirements across the available roles.",
+        "Separate genuinely missing skills from skills with weak evidence.",
+        "Prioritize the gaps and explain what data is too thin to judge."
+      ],
+      "outputs": [
+        "A prioritized gap map",
+        "Evidence-building opportunities"
+      ],
+      "examples": [
+        "Find recurring skill gaps across these job descriptions and my profile.",
+        "Which requirements keep blocking roles I want, and which could I prove with better examples?"
+      ],
+      "requirements": "Cross-role analysis needs actual evaluations or supplied JDs. Do not invent rejection reasons or claim unavailable history was analyzed.",
+      "sources": [
+        "modes/upskill.md"
+      ],
+      "related": [
+        "learning-plan",
+        "evaluate-course",
+        "portfolio-project"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/upskill.md"
+    },
+    {
+      "id": "learning-plan",
+      "guideId": "career-learning-plan",
+      "version": 2,
+      "category": "growth",
+      "title": "Plan what to learn next",
+      "summary": "Turn a meaningful skill gap into a manageable learning plan.",
+      "whenToUse": "Turn a meaningful skill gap into a manageable learning plan.",
+      "inputs": [
+        "A target skill or gap analysis",
+        "Your time budget and preferred resources"
+      ],
+      "steps": [
+        "Choose a concrete outcome that supports your target work.",
+        "Find current, preferably free resources and verify their relevance.",
+        "Propose an ordered plan with practice and a demonstrable result."
+      ],
+      "outputs": [
+        "A resource-backed learning plan",
+        "A practical deliverable"
+      ],
+      "examples": [
+        "Make a four-week learning plan for the most important gap in my target roles.",
+        "Find free resources and a small practice project to strengthen my database systems evidence."
+      ],
+      "requirements": "Current resource recommendations require browsing. Preparation time and completed work should reflect your actual schedule and reports.",
+      "sources": [
+        "modes/upskill.md"
+      ],
+      "related": [
+        "skill-gaps",
+        "evaluate-course",
+        "portfolio-project"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/upskill.md"
+    },
+    {
+      "id": "evaluate-course",
+      "guideId": "career-evaluate-course",
+      "version": 2,
+      "category": "growth",
+      "title": "Evaluate a course or certification",
+      "summary": "Decide whether a learning opportunity is worth your time.",
+      "whenToUse": "Decide whether a learning opportunity is worth your time.",
+      "inputs": [
+        "A course or certification link",
+        "Your goals, current knowledge and alternatives"
+      ],
+      "steps": [
+        "Review content, prerequisites, effort and cost.",
+        "Assess role alignment, hiring signal, risks and opportunity cost.",
+        "Recommend whether to pursue it and what artifact would make it useful."
+      ],
+      "outputs": [
+        "A reasoned course assessment",
+        "Alternatives and tradeoffs"
+      ],
+      "examples": [
+        "Evaluate this certification against my career goals and the time it would take.",
+        "Would this course help more than building a project for the roles I want?"
+      ],
+      "requirements": "Browsing is needed for current course details and prices. Recommendations should not assume a certificate guarantees employment.",
+      "sources": [
+        "modes/training.md"
+      ],
+      "related": [
+        "skill-gaps",
+        "learning-plan",
+        "portfolio-project"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/training.md"
+    },
+    {
+      "id": "portfolio-project",
+      "guideId": "career-portfolio-project",
+      "version": 2,
+      "category": "growth",
+      "title": "Evaluate a portfolio project",
+      "summary": "Choose a project that demonstrates skills your target roles need.",
+      "whenToUse": "Choose a project that demonstrates skills your target roles need.",
+      "inputs": [
+        "A project idea or existing repository",
+        "Target role requirements and your time budget"
+      ],
+      "steps": [
+        "Assess relevance, uniqueness, demo potential, metrics and effort.",
+        "Define a bounded MVP that demonstrates real technical decisions.",
+        "Explain how to turn the work into evidence and interview material."
+      ],
+      "outputs": [
+        "A project assessment",
+        "An MVP plan",
+        "A demonstration and evidence checklist"
+      ],
+      "examples": [
+        "Evaluate this project idea for backend roles and suggest a realistic MVP.",
+        "What should I build to demonstrate distributed systems skills with a two-week budget?"
+      ],
+      "requirements": "Estimates are planning assumptions. Proposed metrics and outcomes are not accomplishments until you measure them.",
+      "sources": [
+        "modes/project.md"
+      ],
+      "related": [
+        "skill-gaps",
+        "learning-plan",
+        "evaluate-course"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/project.md"
+    },
+    {
+      "id": "compare-compensation",
+      "guideId": "career-compare-compensation",
+      "version": 2,
+      "category": "offers",
+      "title": "Compare compensation",
+      "summary": "Understand desired, advertised and offered compensation without mixing unlike figures.",
+      "whenToUse": "Understand desired, advertised and offered compensation without mixing unlike figures.",
+      "inputs": [
+        "Your compensation goals",
+        "Actual JD, recruiter or offer figures",
+        "Currency, pay period and known components"
+      ],
+      "steps": [
+        "Separate base, bonus, equity and benefits, retaining sources and dates.",
+        "Compare desired, advertised and actual numbers on compatible terms.",
+        "Highlight unknowns, conflicting figures and useful clarification questions."
+      ],
+      "outputs": [
+        "A compensation comparison",
+        "Missing terms to clarify"
+      ],
+      "examples": [
+        "Compare my target compensation with these offer figures. Keep base, equity and bonus separate.",
+        "Compare these two offers without treating an uncertain equity value as guaranteed cash."
+      ],
+      "requirements": "Calculations need compatible currency and pay periods. Do not guess exchange rates or interpret a historical range as an offer.",
+      "sources": [
+        "docs/SCRIPTS.md"
+      ],
+      "related": [
+        "negotiation",
+        "review-offer"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/docs/SCRIPTS.md"
+    },
+    {
+      "id": "negotiation",
+      "guideId": "career-negotiation",
+      "version": 2,
+      "category": "offers",
+      "title": "Prepare a negotiation",
+      "summary": "Prepare a thoughtful compensation conversation grounded in your actual leverage.",
+      "whenToUse": "Prepare a thoughtful compensation conversation grounded in your actual leverage.",
+      "inputs": [
+        "Offer terms and your priorities",
+        "Supported achievements",
+        "Any real alternatives you choose to disclose"
+      ],
+      "steps": [
+        "Clarify the ask, fallback and terms that matter.",
+        "Connect the request to supported achievements and current evidence.",
+        "Draft talking points and practice responses to likely objections."
+      ],
+      "outputs": [
+        "A negotiation outline",
+        "An opening message and practice responses"
+      ],
+      "examples": [
+        "Help me prepare a negotiation using this offer and my actual achievements.",
+        "Practice a conversation about base salary and flexibility without inventing competing offers."
+      ],
+      "requirements": "Your agent prepares the conversation. It does not contact the employer or accept terms on your behalf.",
+      "sources": [
+        "modes/_profile.template.md"
+      ],
+      "related": [
+        "compare-compensation",
+        "review-offer"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/_profile.template.md"
+    },
+    {
+      "id": "review-offer",
+      "guideId": "career-review-offer",
+      "version": 2,
+      "category": "offers",
+      "title": "Understand an offer or contract",
+      "summary": "Prepare to discuss terms, gaps and questions with the employer or an adviser.",
+      "whenToUse": "Prepare to discuss terms, gaps and questions with the employer or an adviser.",
+      "inputs": [
+        "The offer or contract you choose to provide",
+        "Your location and earlier written promises"
+      ],
+      "steps": [
+        "Describe the terms and notable omissions in plain language.",
+        "Compare the document with what was actually promised.",
+        "Separate employer questions from questions for a qualified local adviser."
+      ],
+      "outputs": [
+        "A clause walkthrough",
+        "Promise-versus-document differences",
+        "An employer and adviser question list"
+      ],
+      "examples": [
+        "Walk me through this offer and list questions for the employer and a qualified adviser.",
+        "Compare this written offer with the recruiter notes I provide and flag differences."
+      ],
+      "requirements": "Private document access is required. This is reading and preparation, not a legal determination or acceptance of the offer.",
+      "sources": [
+        "modes/offer-prep.md"
+      ],
+      "related": [
+        "compare-compensation",
+        "negotiation"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/offer-prep.md"
+    },
+    {
+      "id": "recurring-search",
+      "guideId": "career-recurring-search",
+      "version": 2,
+      "category": "automation",
+      "title": "Plan a recurring search",
+      "summary": "Make a recurring job search explicit before turning it on.",
+      "whenToUse": "Make a recurring job search explicit before turning it on.",
+      "inputs": [
+        "Sources and search preferences",
+        "Cadence, local time and timezone",
+        "An agent runtime that can schedule work"
+      ],
+      "steps": [
+        "Agree what each run should search, save and report.",
+        "Check runtime scheduling capability and explain any missing setup.",
+        "Create a schedule only when authorized and supported, then confirm its actual state."
+      ],
+      "outputs": [
+        "A clear recurring-search plan",
+        "A verified schedule only if the runtime supports it"
+      ],
+      "examples": [
+        "Help me set up a weekday job search at 9am America/New_York. Check scheduling support before enabling it.",
+        "Plan a scan every three days and tell me exactly what still needs setup."
+      ],
+      "requirements": "Lookout settings do not activate a scheduler. Cron, launchd or another runtime may be used as appropriate; source recipes are reference material, not automatically installed jobs.",
+      "sources": [
+        "docs/AUTOMATION.md"
+      ],
+      "related": [
+        "follow-up-routine",
+        "review-search",
+        "calibrate-fit"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/docs/AUTOMATION.md"
+    },
+    {
+      "id": "follow-up-routine",
+      "guideId": "career-follow-up-routine",
+      "version": 2,
+      "category": "automation",
+      "title": "Plan recurring follow-up reviews",
+      "summary": "Review overdue applications regularly and prepare useful drafts.",
+      "whenToUse": "Review overdue applications regularly and prepare useful drafts.",
+      "inputs": [
+        "Your applications and sent-message history",
+        "A review cadence and notification preference"
+      ],
+      "steps": [
+        "Define which applications qualify for review.",
+        "Check whether the runtime can read the necessary history and schedule a sweep.",
+        "Prepare drafts on supported runs and report only meaningful changes."
+      ],
+      "outputs": [
+        "A follow-up review routine",
+        "Drafts based on real history"
+      ],
+      "examples": [
+        "Plan a weekly review of applications that need a follow-up. Draft messages, but never send them automatically.",
+        "Check what I need to enable a Friday follow-up sweep that respects quiet mode."
+      ],
+      "requirements": "Scheduling and delivery require working runtime capabilities. Recurring review never grants permission to send outreach.",
+      "sources": [
+        "docs/AUTOMATION.md"
+      ],
+      "related": [
+        "recurring-search",
+        "review-search",
+        "calibrate-fit"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/docs/AUTOMATION.md"
+    },
+    {
+      "id": "review-search",
+      "guideId": "career-review-search",
+      "version": 2,
+      "category": "automation",
+      "title": "Review what is working",
+      "summary": "Look for useful patterns in your own recorded search outcomes.",
+      "whenToUse": "Look for useful patterns in your own recorded search outcomes.",
+      "inputs": [
+        "Your actual applications and outcomes",
+        "Sufficient comparable history"
+      ],
+      "steps": [
+        "Summarize the funnel and the evidence available.",
+        "Compare outcomes by role, score or channel without assuming causation.",
+        "Suggest questions and preference changes for your review."
+      ],
+      "outputs": [
+        "An evidence-backed search review",
+        "Specific adjustments to consider"
+      ],
+      "examples": [
+        "Review my recorded search outcomes and identify patterns without guessing why I was rejected.",
+        "Which parts of my search deserve a closer look, given the data I actually have?"
+      ],
+      "requirements": "Small samples and pending outcomes must stay visible. Your agent needs access to the relevant history and calculation tools.",
+      "sources": [
+        "modes/patterns.md"
+      ],
+      "related": [
+        "recurring-search",
+        "follow-up-routine",
+        "calibrate-fit"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/patterns.md"
+    },
+    {
+      "id": "calibrate-fit",
+      "guideId": "career-calibrate-fit",
+      "version": 2,
+      "category": "automation",
+      "title": "Check your fit scoring",
+      "summary": "Check whether past fit scores have been useful in your own search.",
+      "whenToUse": "Check whether past fit scores have been useful in your own search.",
+      "inputs": [
+        "Recorded pre-application scores",
+        "Actual dated outcomes"
+      ],
+      "steps": [
+        "Check that scores and outcomes refer to the same applications.",
+        "Compare score bands while retaining pending cases and sample-size limits.",
+        "Explain whether evidence supports a pattern and leave scoring changes to you."
+      ],
+      "outputs": [
+        "An advisory score-versus-outcome review",
+        "Data limitations and next questions"
+      ],
+      "examples": [
+        "Do my recorded fit scores predict interviews in my search? Say if there is too little data.",
+        "Review high-scored rejections with me without automatically changing my scoring rules."
+      ],
+      "requirements": "Needs real recorded scores and outcomes. Do not fabricate statistics or silently tune global scoring from a small sample.",
+      "sources": [
+        "modes/calibrate.md"
+      ],
+      "related": [
+        "recurring-search",
+        "follow-up-routine",
+        "review-search"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/calibrate.md"
+    }
+  ]
+}

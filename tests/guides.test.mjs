@@ -5,7 +5,7 @@ import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 test('context advertises small versioned index; guide reads are isolated',()=>{
  const index=contextResponse('context.developer',{}).guides;
- assert.deepEqual(index,guideIndex());assert.equal(index.length,2);
+ assert.deepEqual(index,guideIndex());assert.ok(index.length > 2);assert.ok(index.some(g=>g.id==='career-evaluate-job'));
  assert.ok(index.every(g=>g.version>0&&!Object.hasOwn(g,'instructions')));
  const guide=readGuide('resume-parse');assert.match(guide.instructions,/unverified/);assert.ok(guide.expectedOutput);
  guide.instructions='mutated';assert.notEqual(readGuide('resume-parse').instructions,'mutated');

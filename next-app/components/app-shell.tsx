@@ -15,13 +15,14 @@ const navigation = [
   ["/", "Discover", "discover"],
   ["/applications/", "Applications", "applications"],
   ["/referrals/", "Referrals", "referrals"],
+  ["/career-toolkit/", "Career Toolkit", "toolkit"],
   ["/circles/", "Circles", "circles"],
 ] as const;
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
-  const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/" && /^\/discover\/?$/.test(path));
+  const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/career-toolkit/" && path.startsWith(href)) || (href === "/" && /^\/discover\/?$/.test(path));
   const apps = Object.values(w.state?.workflow?.applications || {}) as Array<{ status: string; submissionAttempts?: Array<{ state: string; startedAt: string }> }>;
   const needs = (w.demo ? demoNeedsYouTasks.length :
     apps.filter(
