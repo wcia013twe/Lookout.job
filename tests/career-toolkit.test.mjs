@@ -33,6 +33,7 @@ test('copy requests use only chosen display context and never secret file URLs o
   assert.match(prompt,/Rewrite my summary/);
   assert.match(prompt,/Example Systems — Backend Engineer/);
   assert.match(prompt,/career-tailor-resume/);
+  assert.doesNotMatch(prompt,/career[- ]ops|github\.com/i);
   assert.doesNotMatch(prompt,/private-id|private\.example|secret=|autoApply/);
   assert.match(prompt,/Match it in my owned workspace/);
   assert.throws(()=>buildToolkitRequest('../../secret'));

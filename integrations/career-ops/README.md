@@ -27,8 +27,8 @@ No upstream executable scripts, package dependencies, web UI, tracker, plugin
 installer, scheduler or renderer were installed. Guides referring to upstream
 commands do not make those executables available. The copied agent request tells
 the agent to check its actual capabilities. Copying never dispatches work; a
-missing or older deployed guide yields an explicit gateway-update instruction and
-pinned source fallback. Native output rendering, scheduling and new persistence
+missing or older deployed guide yields an explicit connection-update instruction. Source attribution remains here and in
+the manifest/license rather than in the product interface. Native output rendering, scheduling and new persistence
 services are outside this manual-library pass.
 
 ## Updating

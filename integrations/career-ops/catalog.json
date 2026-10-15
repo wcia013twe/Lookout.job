@@ -1,44 +1,44 @@
 {
-  "version": 1,
+  "version": 2,
   "categories": [
     {
       "id": "profile",
-      "title": "Your starting point",
+      "title": "Profile",
       "description": "Build a useful profile without starting from a blank page."
     },
     {
       "id": "search",
-      "title": "Career search",
+      "title": "Job search",
       "description": "Find opportunities and decide which deserve your time."
     },
     {
       "id": "documents",
-      "title": "Resumes & applications",
+      "title": "Documents",
       "description": "Turn your experience into clear, role-specific materials."
     },
     {
       "id": "interviews",
-      "title": "Interview preparation",
+      "title": "Interviews",
       "description": "Practice with purpose, then carry what you learn into the next round."
     },
     {
       "id": "outreach",
-      "title": "Networking & follow-ups",
+      "title": "Networking",
       "description": "Find the right people and prepare a thoughtful message."
     },
     {
       "id": "growth",
-      "title": "Career growth",
+      "title": "Growth",
       "description": "Choose what to learn and what to build next."
     },
     {
       "id": "offers",
-      "title": "Offers & negotiation",
+      "title": "Offers",
       "description": "Understand the terms and prepare your next conversation."
     },
     {
       "id": "automation",
-      "title": "Search automation",
+      "title": "Automation",
       "description": "Make recurring work explicit, manageable and reliable."
     }
   ],
@@ -46,7 +46,7 @@
     {
       "id": "profile-interview",
       "guideId": "career-profile-interview",
-      "version": 1,
+      "version": 2,
       "category": "profile",
       "title": "Talk through your experience",
       "summary": "Uncover the useful details that your resume leaves out.",
@@ -82,7 +82,7 @@
     {
       "id": "import-background",
       "guideId": "career-import-background",
-      "version": 1,
+      "version": 2,
       "category": "profile",
       "title": "Bring in existing documents",
       "summary": "Use documents you already have to propose missing profile details.",
@@ -104,7 +104,7 @@
         "Use the resume and LinkedIn PDF I provide to propose updates to my Lookout profile.",
         "Compare my transcript with my education section and show what is missing."
       ],
-      "requirements": "File reading comes from your agent. Upstream intake skips DOCX, images and scanned PDFs without text; ask your agent what it can actually read.",
+      "requirements": "File reading comes from your agent. Some document readers cannot handle DOCX, images or scanned PDFs without text; ask your agent what it can actually read.",
       "sources": [
         "modes/intake.md"
       ],
@@ -118,7 +118,7 @@
     {
       "id": "expand-profile",
       "guideId": "career-expand-profile",
-      "version": 1,
+      "version": 2,
       "category": "profile",
       "title": "Find evidence in your portfolio",
       "summary": "Find relevant experience in the portfolio and public projects you have linked.",
@@ -153,7 +153,7 @@
     {
       "id": "add-experience",
       "guideId": "career-add-experience",
-      "version": 1,
+      "version": 2,
       "category": "profile",
       "title": "Add a project or achievement",
       "summary": "Turn completed work into an accurate, useful profile entry.",
@@ -189,7 +189,7 @@
     {
       "id": "find-jobs",
       "guideId": "career-find-jobs",
-      "version": 1,
+      "version": 2,
       "category": "search",
       "title": "Find relevant jobs",
       "summary": "Search your chosen sources for roles that fit your goals.",
@@ -225,7 +225,7 @@
     {
       "id": "quick-triage",
       "guideId": "career-quick-triage",
-      "version": 1,
+      "version": 2,
       "category": "search",
       "title": "Quickly check a job",
       "summary": "Get a first-pass fit check before spending time on a full evaluation.",
@@ -261,7 +261,7 @@
     {
       "id": "evaluate-job",
       "guideId": "career-evaluate-job",
-      "version": 1,
+      "version": 2,
       "category": "search",
       "title": "Evaluate a role in depth",
       "summary": "Understand the role, your evidence, the gaps and a sensible application strategy.",
@@ -284,7 +284,7 @@
         "Evaluate this role using my Lookout profile and resume. Show evidence for each important requirement.",
         "Explain why this job is a strong or weak fit and what I should verify before applying."
       ],
-      "requirements": "Browsing is needed for current posting and company facts. Use your own priorities rather than upstream seniority defaults.",
+      "requirements": "Browsing is needed for current posting and company facts. Use your own priorities rather than preset seniority defaults.",
       "sources": [
         "modes/oferta.md"
       ],
@@ -298,7 +298,7 @@
     {
       "id": "compare-jobs",
       "guideId": "career-compare-jobs",
-      "version": 1,
+      "version": 2,
       "category": "search",
       "title": "Compare opportunities",
       "summary": "Compare roles using the tradeoffs that matter to you.",
@@ -334,7 +334,7 @@
     {
       "id": "research-company",
       "guideId": "career-research-company",
-      "version": 1,
+      "version": 2,
       "category": "search",
       "title": "Research a company",
       "summary": "Learn enough about the company and team to ask better questions.",
@@ -370,7 +370,7 @@
     {
       "id": "adjacent-titles",
       "guideId": "career-adjacent-titles",
-      "version": 1,
+      "version": 2,
       "category": "search",
       "title": "Expand your job-title search",
       "summary": "Find relevant role titles you may not know to search for.",
@@ -406,7 +406,7 @@
     {
       "id": "regional-search",
       "guideId": "career-regional-search",
-      "version": 1,
+      "version": 2,
       "category": "search",
       "title": "Search in another language or market",
       "summary": "Adapt a search to a market while keeping language and location separate.",
@@ -429,7 +429,7 @@
         "Help me search in Singapore and write my application materials in English.",
         "Evaluate this French job posting and explain the result in French."
       ],
-      "requirements": "Browsing is needed for current market facts. Upstream includes localized workflows; this guide supplies regional context, not a certified translation or immigration determination.",
+      "requirements": "Browsing is needed for current market facts. This guide supplies language and regional context, not a certified translation or immigration determination.",
       "sources": [
         "modes/regional/eu-swe.md",
         "modes/ar/README.md",
@@ -483,7 +483,7 @@
     {
       "id": "tailor-resume",
       "guideId": "career-tailor-resume",
-      "version": 1,
+      "version": 2,
       "category": "documents",
       "title": "Tailor your resume",
       "summary": "Emphasize the experience most relevant to one role.",
@@ -519,7 +519,7 @@
     {
       "id": "resume-pdf",
       "guideId": "career-resume-pdf",
-      "version": 1,
+      "version": 2,
       "category": "documents",
       "title": "Create a resume PDF",
       "summary": "Prepare a readable resume document tailored to a role.",
@@ -541,7 +541,7 @@
         "Create a clean PDF resume for this application and check that its text is selectable.",
         "Use my reviewed resume draft to create a new document version, keeping the original."
       ],
-      "requirements": "Your agent needs a document renderer. Career Ops' Playwright scripts are reference requirements, not installed Lookout tools.",
+      "requirements": "Your agent needs a document renderer. An available renderer must be checked before promising a downloadable file.",
       "sources": [
         "modes/pdf.md"
       ],
@@ -555,7 +555,7 @@
     {
       "id": "ats-check",
       "guideId": "career-ats-check",
-      "version": 1,
+      "version": 2,
       "category": "documents",
       "title": "Check ATS readability",
       "summary": "Check document structure and keyword coverage without pretending to predict an employer's ATS.",
@@ -592,7 +592,7 @@
     {
       "id": "cover-letter",
       "guideId": "career-cover-letter",
-      "version": 1,
+      "version": 2,
       "category": "documents",
       "title": "Write a cover letter",
       "summary": "Create a specific letter grounded in the role, company and your actual work.",
@@ -628,7 +628,7 @@
     {
       "id": "application-email",
       "guideId": "career-application-email",
-      "version": 1,
+      "version": 2,
       "category": "documents",
       "title": "Draft an application email",
       "summary": "Prepare a clear application email with the right attachments.",
@@ -664,7 +664,7 @@
     {
       "id": "latex-resume",
       "guideId": "career-latex-resume",
-      "version": 1,
+      "version": 2,
       "category": "documents",
       "title": "Export a LaTeX resume",
       "summary": "Prepare a portable LaTeX resume for your preferred template or Overleaf.",
@@ -700,7 +700,7 @@
     {
       "id": "interview-research",
       "guideId": "career-interview-research",
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "title": "Research an interview",
       "summary": "Prepare for a company's actual process and the role you are discussing.",
@@ -736,7 +736,7 @@
     {
       "id": "prep-plan",
       "guideId": "career-prep-plan",
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "title": "Build an interview preparation plan",
       "summary": "Use the time you have to prepare the most important topics.",
@@ -773,7 +773,7 @@
     {
       "id": "practice-interview",
       "guideId": "career-practice-interview",
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "title": "Practice an interview",
       "summary": "Practice one question at a time with feedback grounded in your experience.",
@@ -811,7 +811,7 @@
     {
       "id": "story-bank",
       "guideId": "career-story-bank",
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "title": "Build your interview story bank",
       "summary": "Develop a small set of truthful stories you can adapt to behavioral questions.",
@@ -847,7 +847,7 @@
     {
       "id": "interview-debrief",
       "guideId": "career-interview-debrief",
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "title": "Debrief an interview",
       "summary": "Capture what happened while it is fresh and improve the next round.",
@@ -885,7 +885,7 @@
     {
       "id": "interview-signals",
       "guideId": "career-interview-signals",
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "title": "Review interview warning signs",
       "summary": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
@@ -922,7 +922,7 @@
     {
       "id": "find-contacts",
       "guideId": "career-find-contacts",
-      "version": 1,
+      "version": 2,
       "category": "outreach",
       "title": "Find people to contact",
       "summary": "Identify a relevant recruiter, hiring manager or team peer and a suitable approach.",
@@ -957,7 +957,7 @@
     {
       "id": "follow-up",
       "guideId": "career-follow-up",
-      "version": 1,
+      "version": 2,
       "category": "outreach",
       "title": "Prepare a follow-up",
       "summary": "Choose a reasonable follow-up and prepare the message.",
@@ -992,7 +992,7 @@
     {
       "id": "understand-reply",
       "guideId": "career-understand-reply",
-      "version": 1,
+      "version": 2,
       "category": "outreach",
       "title": "Understand an employer reply",
       "summary": "Separate a real process update from recruiting noise and decide what to do.",
@@ -1028,7 +1028,7 @@
     {
       "id": "skill-gaps",
       "guideId": "career-skill-gaps",
-      "version": 1,
+      "version": 2,
       "category": "growth",
       "title": "Identify recurring skill gaps",
       "summary": "Find the gaps that repeatedly matter for your target roles.",
@@ -1064,7 +1064,7 @@
     {
       "id": "learning-plan",
       "guideId": "career-learning-plan",
-      "version": 1,
+      "version": 2,
       "category": "growth",
       "title": "Plan what to learn next",
       "summary": "Turn a meaningful skill gap into a manageable learning plan.",
@@ -1100,7 +1100,7 @@
     {
       "id": "evaluate-course",
       "guideId": "career-evaluate-course",
-      "version": 1,
+      "version": 2,
       "category": "growth",
       "title": "Evaluate a course or certification",
       "summary": "Decide whether a learning opportunity is worth your time.",
@@ -1136,7 +1136,7 @@
     {
       "id": "portfolio-project",
       "guideId": "career-portfolio-project",
-      "version": 1,
+      "version": 2,
       "category": "growth",
       "title": "Evaluate a portfolio project",
       "summary": "Choose a project that demonstrates skills your target roles need.",
@@ -1173,7 +1173,7 @@
     {
       "id": "compare-compensation",
       "guideId": "career-compare-compensation",
-      "version": 1,
+      "version": 2,
       "category": "offers",
       "title": "Compare compensation",
       "summary": "Understand desired, advertised and offered compensation without mixing unlike figures.",
@@ -1209,7 +1209,7 @@
     {
       "id": "negotiation",
       "guideId": "career-negotiation",
-      "version": 1,
+      "version": 2,
       "category": "offers",
       "title": "Prepare a negotiation",
       "summary": "Prepare a thoughtful compensation conversation grounded in your actual leverage.",
@@ -1245,7 +1245,7 @@
     {
       "id": "review-offer",
       "guideId": "career-review-offer",
-      "version": 1,
+      "version": 2,
       "category": "offers",
       "title": "Understand an offer or contract",
       "summary": "Prepare to discuss terms, gaps and questions with the employer or an adviser.",
@@ -1281,7 +1281,7 @@
     {
       "id": "recurring-search",
       "guideId": "career-recurring-search",
-      "version": 1,
+      "version": 2,
       "category": "automation",
       "title": "Plan a recurring search",
       "summary": "Make a recurring job search explicit before turning it on.",
@@ -1318,7 +1318,7 @@
     {
       "id": "follow-up-routine",
       "guideId": "career-follow-up-routine",
-      "version": 1,
+      "version": 2,
       "category": "automation",
       "title": "Plan recurring follow-up reviews",
       "summary": "Review overdue applications regularly and prepare useful drafts.",
@@ -1354,7 +1354,7 @@
     {
       "id": "review-search",
       "guideId": "career-review-search",
-      "version": 1,
+      "version": 2,
       "category": "automation",
       "title": "Review what is working",
       "summary": "Look for useful patterns in your own recorded search outcomes.",
@@ -1376,7 +1376,7 @@
         "Review my recorded search outcomes and identify patterns without guessing why I was rejected.",
         "Which parts of my search deserve a closer look, given the data I actually have?"
       ],
-      "requirements": "Small samples and pending outcomes must stay visible. Upstream file-based analytics scripts are not installed by this manual.",
+      "requirements": "Small samples and pending outcomes must stay visible. Your agent needs access to the relevant history and calculation tools.",
       "sources": [
         "modes/patterns.md"
       ],
@@ -1390,7 +1390,7 @@
     {
       "id": "calibrate-fit",
       "guideId": "career-calibrate-fit",
-      "version": 1,
+      "version": 2,
       "category": "automation",
       "title": "Check your fit scoring",
       "summary": "Check whether past fit scores have been useful in your own search.",

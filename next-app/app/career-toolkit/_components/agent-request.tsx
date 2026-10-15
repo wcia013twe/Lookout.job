@@ -29,7 +29,7 @@ export default function AgentRequest({skillId,examples}: {skillId:string;example
     {applications.length > 0 && <label className={styles.applicationPicker}>Use a saved application <span>(optional)</span><select value={application?.id || ''} onChange={event => {setApplicationId(event.target.value);setEditedRequest(null);setMessage('');}}><option value="">Choose in the conversation</option>{applications.map(app => <option key={app.id} value={app.id}>{app.company} — {app.title}</option>)}</select></label>}
     <label className={styles.promptLabel}>Your agent request<textarea ref={text} value={prompt} onChange={event => {setEditedRequest(event.target.value);setMessage('');}} rows={9} aria-describedby="request-help"/></label>
     <div className={styles.requestActions}><button type="button" onClick={copy}>Copy agent request</button><Link href="/profile/">Agent setup in Profile <span aria-hidden="true">↗</span></Link></div>
-    <p id="request-help" className={styles.smallNote}>Copying prepares a request; it does not run the skill. To check your connection, open Profile → My agent. If your agent cannot load the guide, ask it to refresh its Lookout connection. The request also includes the original source.</p>
+    <p id="request-help" className={styles.smallNote}>Copying prepares a request; it does not run the skill. To check your connection, open Profile → My agent. If your agent cannot load the guide, ask it to refresh its Lookout connection.</p>
     <p role="status" aria-live="polite" className={styles.copyStatus}>{message}</p>
   </div>;
 }

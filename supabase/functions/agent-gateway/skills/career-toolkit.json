@@ -1,10 +1,10 @@
 {
-  "version": 1,
+  "version": 2,
   "upstream": "c78e14cdfd52f18a92e4a67694efab7ddef59385",
   "guides": [
     {
       "id": "career-profile-interview",
-      "version": 1,
+      "version": 2,
       "name": "Talk through your experience",
       "description": "Uncover the useful details that your resume leaves out.",
       "whenToUse": "Uncover the useful details that your resume leaves out.",
@@ -16,7 +16,7 @@
       "manual": {
         "id": "profile-interview",
         "guideId": "career-profile-interview",
-        "version": 1,
+        "version": 2,
         "category": "profile",
         "title": "Talk through your experience",
         "summary": "Uncover the useful details that your resume leaves out.",
@@ -63,11 +63,11 @@
     },
     {
       "id": "career-import-background",
-      "version": 1,
+      "version": 2,
       "name": "Bring in existing documents",
       "description": "Use documents you already have to propose missing profile details.",
       "whenToUse": "Use documents you already have to propose missing profile details.",
-      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Bring in existing documents\nInputs:\n- Your resume, LinkedIn PDF, transcripts or references\n- Permission to read the documents you choose\nProcedure:\n1. Read your current profile before extracting new information.\n2. Identify additions and conflicting dates or titles, with their document sources.\n3. Review a consolidated proposal and save only accepted changes.\nRequirements: File reading comes from your agent. Upstream intake skips DOCX, images and scanned PDFs without text; ask your agent what it can actually read.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
+      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Bring in existing documents\nInputs:\n- Your resume, LinkedIn PDF, transcripts or references\n- Permission to read the documents you choose\nProcedure:\n1. Read your current profile before extracting new information.\n2. Identify additions and conflicting dates or titles, with their document sources.\n3. Review a consolidated proposal and save only accepted changes.\nRequirements: File reading comes from your agent. Some document readers cannot handle DOCX, images or scanned PDFs without text; ask your agent what it can actually read.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
       "expectedOutput": [
         "Source-backed profile additions",
         "A short list of conflicts to resolve"
@@ -75,7 +75,7 @@
       "manual": {
         "id": "import-background",
         "guideId": "career-import-background",
-        "version": 1,
+        "version": 2,
         "category": "profile",
         "title": "Bring in existing documents",
         "summary": "Use documents you already have to propose missing profile details.",
@@ -97,7 +97,7 @@
           "Use the resume and LinkedIn PDF I provide to propose updates to my Lookout profile.",
           "Compare my transcript with my education section and show what is missing."
         ],
-        "requirements": "File reading comes from your agent. Upstream intake skips DOCX, images and scanned PDFs without text; ask your agent what it can actually read.",
+        "requirements": "File reading comes from your agent. Some document readers cannot handle DOCX, images or scanned PDFs without text; ask your agent what it can actually read.",
         "sources": [
           "modes/intake.md"
         ],
@@ -122,7 +122,7 @@
     },
     {
       "id": "career-expand-profile",
-      "version": 1,
+      "version": 2,
       "name": "Find evidence in your portfolio",
       "description": "Find relevant experience in the portfolio and public projects you have linked.",
       "whenToUse": "Find relevant experience in the portfolio and public projects you have linked.",
@@ -133,7 +133,7 @@
       "manual": {
         "id": "expand-profile",
         "guideId": "career-expand-profile",
-        "version": 1,
+        "version": 2,
         "category": "profile",
         "title": "Find evidence in your portfolio",
         "summary": "Find relevant experience in the portfolio and public projects you have linked.",
@@ -179,7 +179,7 @@
     },
     {
       "id": "career-add-experience",
-      "version": 1,
+      "version": 2,
       "name": "Add a project or achievement",
       "description": "Turn completed work into an accurate, useful profile entry.",
       "whenToUse": "Turn completed work into an accurate, useful profile entry.",
@@ -191,7 +191,7 @@
       "manual": {
         "id": "add-experience",
         "guideId": "career-add-experience",
-        "version": 1,
+        "version": 2,
         "category": "profile",
         "title": "Add a project or achievement",
         "summary": "Turn completed work into an accurate, useful profile entry.",
@@ -238,7 +238,7 @@
     },
     {
       "id": "career-find-jobs",
-      "version": 1,
+      "version": 2,
       "name": "Find relevant jobs",
       "description": "Search your chosen sources for roles that fit your goals.",
       "whenToUse": "Search your chosen sources for roles that fit your goals.",
@@ -250,7 +250,7 @@
       "manual": {
         "id": "find-jobs",
         "guideId": "career-find-jobs",
-        "version": 1,
+        "version": 2,
         "category": "search",
         "title": "Find relevant jobs",
         "summary": "Search your chosen sources for roles that fit your goals.",
@@ -297,7 +297,7 @@
     },
     {
       "id": "career-quick-triage",
-      "version": 1,
+      "version": 2,
       "name": "Quickly check a job",
       "description": "Get a first-pass fit check before spending time on a full evaluation.",
       "whenToUse": "Get a first-pass fit check before spending time on a full evaluation.",
@@ -309,7 +309,7 @@
       "manual": {
         "id": "quick-triage",
         "guideId": "career-quick-triage",
-        "version": 1,
+        "version": 2,
         "category": "search",
         "title": "Quickly check a job",
         "summary": "Get a first-pass fit check before spending time on a full evaluation.",
@@ -360,11 +360,11 @@
     },
     {
       "id": "career-evaluate-job",
-      "version": 1,
+      "version": 2,
       "name": "Evaluate a role in depth",
       "description": "Understand the role, your evidence, the gaps and a sensible application strategy.",
       "whenToUse": "Understand the role, your evidence, the gaps and a sensible application strategy.",
-      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Evaluate a role in depth\nInputs:\n- A live job posting or complete JD\n- Your resume and search priorities\nProcedure:\n1. Summarize the role and match important requirements to concrete evidence.\n2. Assess level, compensation context, constraints and posting signals.\n3. Explain the recommendation, document changes and preparation priorities.\nRequirements: Browsing is needed for current posting and company facts. Use your own priorities rather than upstream seniority defaults.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
+      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Evaluate a role in depth\nInputs:\n- A live job posting or complete JD\n- Your resume and search priorities\nProcedure:\n1. Summarize the role and match important requirements to concrete evidence.\n2. Assess level, compensation context, constraints and posting signals.\n3. Explain the recommendation, document changes and preparation priorities.\nRequirements: Browsing is needed for current posting and company facts. Use your own priorities rather than preset seniority defaults.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
       "expectedOutput": [
         "A structured role evaluation",
         "Requirement-level strengths and gaps",
@@ -373,7 +373,7 @@
       "manual": {
         "id": "evaluate-job",
         "guideId": "career-evaluate-job",
-        "version": 1,
+        "version": 2,
         "category": "search",
         "title": "Evaluate a role in depth",
         "summary": "Understand the role, your evidence, the gaps and a sensible application strategy.",
@@ -396,7 +396,7 @@
           "Evaluate this role using my Lookout profile and resume. Show evidence for each important requirement.",
           "Explain why this job is a strong or weak fit and what I should verify before applying."
         ],
-        "requirements": "Browsing is needed for current posting and company facts. Use your own priorities rather than upstream seniority defaults.",
+        "requirements": "Browsing is needed for current posting and company facts. Use your own priorities rather than preset seniority defaults.",
         "sources": [
           "modes/oferta.md"
         ],
@@ -425,7 +425,7 @@
     },
     {
       "id": "career-compare-jobs",
-      "version": 1,
+      "version": 2,
       "name": "Compare opportunities",
       "description": "Compare roles using the tradeoffs that matter to you.",
       "whenToUse": "Compare roles using the tradeoffs that matter to you.",
@@ -437,7 +437,7 @@
       "manual": {
         "id": "compare-jobs",
         "guideId": "career-compare-jobs",
-        "version": 1,
+        "version": 2,
         "category": "search",
         "title": "Compare opportunities",
         "summary": "Compare roles using the tradeoffs that matter to you.",
@@ -488,7 +488,7 @@
     },
     {
       "id": "career-research-company",
-      "version": 1,
+      "version": 2,
       "name": "Research a company",
       "description": "Learn enough about the company and team to ask better questions.",
       "whenToUse": "Learn enough about the company and team to ask better questions.",
@@ -500,7 +500,7 @@
       "manual": {
         "id": "research-company",
         "guideId": "career-research-company",
-        "version": 1,
+        "version": 2,
         "category": "search",
         "title": "Research a company",
         "summary": "Learn enough about the company and team to ask better questions.",
@@ -547,7 +547,7 @@
     },
     {
       "id": "career-adjacent-titles",
-      "version": 1,
+      "version": 2,
       "name": "Expand your job-title search",
       "description": "Find relevant role titles you may not know to search for.",
       "whenToUse": "Find relevant role titles you may not know to search for.",
@@ -559,7 +559,7 @@
       "manual": {
         "id": "adjacent-titles",
         "guideId": "career-adjacent-titles",
-        "version": 1,
+        "version": 2,
         "category": "search",
         "title": "Expand your job-title search",
         "summary": "Find relevant role titles you may not know to search for.",
@@ -606,11 +606,11 @@
     },
     {
       "id": "career-regional-search",
-      "version": 1,
+      "version": 2,
       "name": "Search in another language or market",
       "description": "Adapt a search to a market while keeping language and location separate.",
       "whenToUse": "Adapt a search to a market while keeping language and location separate.",
-      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Search in another language or market\nInputs:\n- Target country or region\n- Preferred output language and known work authorization\nProcedure:\n1. Confirm the market, output language and your actual constraints.\n2. Use relevant regional guidance to evaluate location, language, compensation and application conventions.\n3. Verify current official rules when they affect the decision; do not infer eligibility.\nRequirements: Browsing is needed for current market facts. Upstream includes localized workflows; this guide supplies regional context, not a certified translation or immigration determination.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
+      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Search in another language or market\nInputs:\n- Target country or region\n- Preferred output language and known work authorization\nProcedure:\n1. Confirm the market, output language and your actual constraints.\n2. Use relevant regional guidance to evaluate location, language, compensation and application conventions.\n3. Verify current official rules when they affect the decision; do not infer eligibility.\nRequirements: Browsing is needed for current market facts. This guide supplies language and regional context, not a certified translation or immigration determination.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
       "expectedOutput": [
         "A market-aware search or evaluation",
         "A list of facts to verify"
@@ -618,7 +618,7 @@
       "manual": {
         "id": "regional-search",
         "guideId": "career-regional-search",
-        "version": 1,
+        "version": 2,
         "category": "search",
         "title": "Search in another language or market",
         "summary": "Adapt a search to a market while keeping language and location separate.",
@@ -641,7 +641,7 @@
           "Help me search in Singapore and write my application materials in English.",
           "Evaluate this French job posting and explain the result in French."
         ],
-        "requirements": "Browsing is needed for current market facts. Upstream includes localized workflows; this guide supplies regional context, not a certified translation or immigration determination.",
+        "requirements": "Browsing is needed for current market facts. This guide supplies language and regional context, not a certified translation or immigration determination.",
         "sources": [
           "modes/regional/eu-swe.md",
           "modes/ar/README.md",
@@ -782,7 +782,7 @@
     },
     {
       "id": "career-tailor-resume",
-      "version": 1,
+      "version": 2,
       "name": "Tailor your resume",
       "description": "Emphasize the experience most relevant to one role.",
       "whenToUse": "Emphasize the experience most relevant to one role.",
@@ -794,7 +794,7 @@
       "manual": {
         "id": "tailor-resume",
         "guideId": "career-tailor-resume",
-        "version": 1,
+        "version": 2,
         "category": "documents",
         "title": "Tailor your resume",
         "summary": "Emphasize the experience most relevant to one role.",
@@ -849,11 +849,11 @@
     },
     {
       "id": "career-resume-pdf",
-      "version": 1,
+      "version": 2,
       "name": "Create a resume PDF",
       "description": "Prepare a readable resume document tailored to a role.",
       "whenToUse": "Prepare a readable resume document tailored to a role.",
-      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Create a resume PDF\nInputs:\n- Reviewed resume content\n- A target role and preferred document style\nProcedure:\n1. Prepare evidence-backed content and review claims.\n2. Use an available document renderer to produce selectable text and readable structure.\n3. Inspect the final output, then register a new private version when upload tools are available.\nRequirements: Your agent needs a document renderer. Career Ops' Playwright scripts are reference requirements, not installed Lookout tools.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
+      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Create a resume PDF\nInputs:\n- Reviewed resume content\n- A target role and preferred document style\nProcedure:\n1. Prepare evidence-backed content and review claims.\n2. Use an available document renderer to produce selectable text and readable structure.\n3. Inspect the final output, then register a new private version when upload tools are available.\nRequirements: Your agent needs a document renderer. An available renderer must be checked before promising a downloadable file.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
       "expectedOutput": [
         "A resume PDF when rendering is available",
         "A reviewed content draft otherwise"
@@ -861,7 +861,7 @@
       "manual": {
         "id": "resume-pdf",
         "guideId": "career-resume-pdf",
-        "version": 1,
+        "version": 2,
         "category": "documents",
         "title": "Create a resume PDF",
         "summary": "Prepare a readable resume document tailored to a role.",
@@ -883,7 +883,7 @@
           "Create a clean PDF resume for this application and check that its text is selectable.",
           "Use my reviewed resume draft to create a new document version, keeping the original."
         ],
-        "requirements": "Your agent needs a document renderer. Career Ops' Playwright scripts are reference requirements, not installed Lookout tools.",
+        "requirements": "Your agent needs a document renderer. An available renderer must be checked before promising a downloadable file.",
         "sources": [
           "modes/pdf.md"
         ],
@@ -916,7 +916,7 @@
     },
     {
       "id": "career-ats-check",
-      "version": 1,
+      "version": 2,
       "name": "Check ATS readability",
       "description": "Check document structure and keyword coverage without pretending to predict an employer's ATS.",
       "whenToUse": "Check document structure and keyword coverage without pretending to predict an employer's ATS.",
@@ -929,7 +929,7 @@
       "manual": {
         "id": "ats-check",
         "guideId": "career-ats-check",
-        "version": 1,
+        "version": 2,
         "category": "documents",
         "title": "Check ATS readability",
         "summary": "Check document structure and keyword coverage without pretending to predict an employer's ATS.",
@@ -977,7 +977,7 @@
     },
     {
       "id": "career-cover-letter",
-      "version": 1,
+      "version": 2,
       "name": "Write a cover letter",
       "description": "Create a specific letter grounded in the role, company and your actual work.",
       "whenToUse": "Create a specific letter grounded in the role, company and your actual work.",
@@ -989,7 +989,7 @@
       "manual": {
         "id": "cover-letter",
         "guideId": "career-cover-letter",
-        "version": 1,
+        "version": 2,
         "category": "documents",
         "title": "Write a cover letter",
         "summary": "Create a specific letter grounded in the role, company and your actual work.",
@@ -1044,7 +1044,7 @@
     },
     {
       "id": "career-application-email",
-      "version": 1,
+      "version": 2,
       "name": "Draft an application email",
       "description": "Prepare a clear application email with the right attachments.",
       "whenToUse": "Prepare a clear application email with the right attachments.",
@@ -1056,7 +1056,7 @@
       "manual": {
         "id": "application-email",
         "guideId": "career-application-email",
-        "version": 1,
+        "version": 2,
         "category": "documents",
         "title": "Draft an application email",
         "summary": "Prepare a clear application email with the right attachments.",
@@ -1111,7 +1111,7 @@
     },
     {
       "id": "career-latex-resume",
-      "version": 1,
+      "version": 2,
       "name": "Export a LaTeX resume",
       "description": "Prepare a portable LaTeX resume for your preferred template or Overleaf.",
       "whenToUse": "Prepare a portable LaTeX resume for your preferred template or Overleaf.",
@@ -1123,7 +1123,7 @@
       "manual": {
         "id": "latex-resume",
         "guideId": "career-latex-resume",
-        "version": 1,
+        "version": 2,
         "category": "documents",
         "title": "Export a LaTeX resume",
         "summary": "Prepare a portable LaTeX resume for your preferred template or Overleaf.",
@@ -1170,7 +1170,7 @@
     },
     {
       "id": "career-interview-research",
-      "version": 1,
+      "version": 2,
       "name": "Research an interview",
       "description": "Prepare for a company's actual process and the role you are discussing.",
       "whenToUse": "Prepare for a company's actual process and the role you are discussing.",
@@ -1182,7 +1182,7 @@
       "manual": {
         "id": "interview-research",
         "guideId": "career-interview-research",
-        "version": 1,
+        "version": 2,
         "category": "interviews",
         "title": "Research an interview",
         "summary": "Prepare for a company's actual process and the role you are discussing.",
@@ -1229,7 +1229,7 @@
     },
     {
       "id": "career-prep-plan",
-      "version": 1,
+      "version": 2,
       "name": "Build an interview preparation plan",
       "description": "Use the time you have to prepare the most important topics.",
       "whenToUse": "Use the time you have to prepare the most important topics.",
@@ -1241,7 +1241,7 @@
       "manual": {
         "id": "prep-plan",
         "guideId": "career-prep-plan",
-        "version": 1,
+        "version": 2,
         "category": "interviews",
         "title": "Build an interview preparation plan",
         "summary": "Use the time you have to prepare the most important topics.",
@@ -1289,7 +1289,7 @@
     },
     {
       "id": "career-practice-interview",
-      "version": 1,
+      "version": 2,
       "name": "Practice an interview",
       "description": "Practice one question at a time with feedback grounded in your experience.",
       "whenToUse": "Practice one question at a time with feedback grounded in your experience.",
@@ -1302,7 +1302,7 @@
       "manual": {
         "id": "practice-interview",
         "guideId": "career-practice-interview",
-        "version": 1,
+        "version": 2,
         "category": "interviews",
         "title": "Practice an interview",
         "summary": "Practice one question at a time with feedback grounded in your experience.",
@@ -1351,7 +1351,7 @@
     },
     {
       "id": "career-story-bank",
-      "version": 1,
+      "version": 2,
       "name": "Build your interview story bank",
       "description": "Develop a small set of truthful stories you can adapt to behavioral questions.",
       "whenToUse": "Develop a small set of truthful stories you can adapt to behavioral questions.",
@@ -1363,7 +1363,7 @@
       "manual": {
         "id": "story-bank",
         "guideId": "career-story-bank",
-        "version": 1,
+        "version": 2,
         "category": "interviews",
         "title": "Build your interview story bank",
         "summary": "Develop a small set of truthful stories you can adapt to behavioral questions.",
@@ -1410,7 +1410,7 @@
     },
     {
       "id": "career-interview-debrief",
-      "version": 1,
+      "version": 2,
       "name": "Debrief an interview",
       "description": "Capture what happened while it is fresh and improve the next round.",
       "whenToUse": "Capture what happened while it is fresh and improve the next round.",
@@ -1423,7 +1423,7 @@
       "manual": {
         "id": "interview-debrief",
         "guideId": "career-interview-debrief",
-        "version": 1,
+        "version": 2,
         "category": "interviews",
         "title": "Debrief an interview",
         "summary": "Capture what happened while it is fresh and improve the next round.",
@@ -1472,7 +1472,7 @@
     },
     {
       "id": "career-interview-signals",
-      "version": 1,
+      "version": 2,
       "name": "Review interview warning signs",
       "description": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
       "whenToUse": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
@@ -1485,7 +1485,7 @@
       "manual": {
         "id": "interview-signals",
         "guideId": "career-interview-signals",
-        "version": 1,
+        "version": 2,
         "category": "interviews",
         "title": "Review interview warning signs",
         "summary": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
@@ -1533,7 +1533,7 @@
     },
     {
       "id": "career-find-contacts",
-      "version": 1,
+      "version": 2,
       "name": "Find people to contact",
       "description": "Identify a relevant recruiter, hiring manager or team peer and a suitable approach.",
       "whenToUse": "Identify a relevant recruiter, hiring manager or team peer and a suitable approach.",
@@ -1545,7 +1545,7 @@
       "manual": {
         "id": "find-contacts",
         "guideId": "career-find-contacts",
-        "version": 1,
+        "version": 2,
         "category": "outreach",
         "title": "Find people to contact",
         "summary": "Identify a relevant recruiter, hiring manager or team peer and a suitable approach.",
@@ -1599,7 +1599,7 @@
     },
     {
       "id": "career-follow-up",
-      "version": 1,
+      "version": 2,
       "name": "Prepare a follow-up",
       "description": "Choose a reasonable follow-up and prepare the message.",
       "whenToUse": "Choose a reasonable follow-up and prepare the message.",
@@ -1611,7 +1611,7 @@
       "manual": {
         "id": "follow-up",
         "guideId": "career-follow-up",
-        "version": 1,
+        "version": 2,
         "category": "outreach",
         "title": "Prepare a follow-up",
         "summary": "Choose a reasonable follow-up and prepare the message.",
@@ -1665,7 +1665,7 @@
     },
     {
       "id": "career-understand-reply",
-      "version": 1,
+      "version": 2,
       "name": "Understand an employer reply",
       "description": "Separate a real process update from recruiting noise and decide what to do.",
       "whenToUse": "Separate a real process update from recruiting noise and decide what to do.",
@@ -1678,7 +1678,7 @@
       "manual": {
         "id": "understand-reply",
         "guideId": "career-understand-reply",
-        "version": 1,
+        "version": 2,
         "category": "outreach",
         "title": "Understand an employer reply",
         "summary": "Separate a real process update from recruiting noise and decide what to do.",
@@ -1725,7 +1725,7 @@
     },
     {
       "id": "career-skill-gaps",
-      "version": 1,
+      "version": 2,
       "name": "Identify recurring skill gaps",
       "description": "Find the gaps that repeatedly matter for your target roles.",
       "whenToUse": "Find the gaps that repeatedly matter for your target roles.",
@@ -1737,7 +1737,7 @@
       "manual": {
         "id": "skill-gaps",
         "guideId": "career-skill-gaps",
-        "version": 1,
+        "version": 2,
         "category": "growth",
         "title": "Identify recurring skill gaps",
         "summary": "Find the gaps that repeatedly matter for your target roles.",
@@ -1784,7 +1784,7 @@
     },
     {
       "id": "career-learning-plan",
-      "version": 1,
+      "version": 2,
       "name": "Plan what to learn next",
       "description": "Turn a meaningful skill gap into a manageable learning plan.",
       "whenToUse": "Turn a meaningful skill gap into a manageable learning plan.",
@@ -1796,7 +1796,7 @@
       "manual": {
         "id": "learning-plan",
         "guideId": "career-learning-plan",
-        "version": 1,
+        "version": 2,
         "category": "growth",
         "title": "Plan what to learn next",
         "summary": "Turn a meaningful skill gap into a manageable learning plan.",
@@ -1843,7 +1843,7 @@
     },
     {
       "id": "career-evaluate-course",
-      "version": 1,
+      "version": 2,
       "name": "Evaluate a course or certification",
       "description": "Decide whether a learning opportunity is worth your time.",
       "whenToUse": "Decide whether a learning opportunity is worth your time.",
@@ -1855,7 +1855,7 @@
       "manual": {
         "id": "evaluate-course",
         "guideId": "career-evaluate-course",
-        "version": 1,
+        "version": 2,
         "category": "growth",
         "title": "Evaluate a course or certification",
         "summary": "Decide whether a learning opportunity is worth your time.",
@@ -1902,7 +1902,7 @@
     },
     {
       "id": "career-portfolio-project",
-      "version": 1,
+      "version": 2,
       "name": "Evaluate a portfolio project",
       "description": "Choose a project that demonstrates skills your target roles need.",
       "whenToUse": "Choose a project that demonstrates skills your target roles need.",
@@ -1915,7 +1915,7 @@
       "manual": {
         "id": "portfolio-project",
         "guideId": "career-portfolio-project",
-        "version": 1,
+        "version": 2,
         "category": "growth",
         "title": "Evaluate a portfolio project",
         "summary": "Choose a project that demonstrates skills your target roles need.",
@@ -1963,7 +1963,7 @@
     },
     {
       "id": "career-compare-compensation",
-      "version": 1,
+      "version": 2,
       "name": "Compare compensation",
       "description": "Understand desired, advertised and offered compensation without mixing unlike figures.",
       "whenToUse": "Understand desired, advertised and offered compensation without mixing unlike figures.",
@@ -1975,7 +1975,7 @@
       "manual": {
         "id": "compare-compensation",
         "guideId": "career-compare-compensation",
-        "version": 1,
+        "version": 2,
         "category": "offers",
         "title": "Compare compensation",
         "summary": "Understand desired, advertised and offered compensation without mixing unlike figures.",
@@ -2022,7 +2022,7 @@
     },
     {
       "id": "career-negotiation",
-      "version": 1,
+      "version": 2,
       "name": "Prepare a negotiation",
       "description": "Prepare a thoughtful compensation conversation grounded in your actual leverage.",
       "whenToUse": "Prepare a thoughtful compensation conversation grounded in your actual leverage.",
@@ -2034,7 +2034,7 @@
       "manual": {
         "id": "negotiation",
         "guideId": "career-negotiation",
-        "version": 1,
+        "version": 2,
         "category": "offers",
         "title": "Prepare a negotiation",
         "summary": "Prepare a thoughtful compensation conversation grounded in your actual leverage.",
@@ -2081,7 +2081,7 @@
     },
     {
       "id": "career-review-offer",
-      "version": 1,
+      "version": 2,
       "name": "Understand an offer or contract",
       "description": "Prepare to discuss terms, gaps and questions with the employer or an adviser.",
       "whenToUse": "Prepare to discuss terms, gaps and questions with the employer or an adviser.",
@@ -2094,7 +2094,7 @@
       "manual": {
         "id": "review-offer",
         "guideId": "career-review-offer",
-        "version": 1,
+        "version": 2,
         "category": "offers",
         "title": "Understand an offer or contract",
         "summary": "Prepare to discuss terms, gaps and questions with the employer or an adviser.",
@@ -2141,7 +2141,7 @@
     },
     {
       "id": "career-recurring-search",
-      "version": 1,
+      "version": 2,
       "name": "Plan a recurring search",
       "description": "Make a recurring job search explicit before turning it on.",
       "whenToUse": "Make a recurring job search explicit before turning it on.",
@@ -2153,7 +2153,7 @@
       "manual": {
         "id": "recurring-search",
         "guideId": "career-recurring-search",
-        "version": 1,
+        "version": 2,
         "category": "automation",
         "title": "Plan a recurring search",
         "summary": "Make a recurring job search explicit before turning it on.",
@@ -2201,7 +2201,7 @@
     },
     {
       "id": "career-follow-up-routine",
-      "version": 1,
+      "version": 2,
       "name": "Plan recurring follow-up reviews",
       "description": "Review overdue applications regularly and prepare useful drafts.",
       "whenToUse": "Review overdue applications regularly and prepare useful drafts.",
@@ -2213,7 +2213,7 @@
       "manual": {
         "id": "follow-up-routine",
         "guideId": "career-follow-up-routine",
-        "version": 1,
+        "version": 2,
         "category": "automation",
         "title": "Plan recurring follow-up reviews",
         "summary": "Review overdue applications regularly and prepare useful drafts.",
@@ -2260,11 +2260,11 @@
     },
     {
       "id": "career-review-search",
-      "version": 1,
+      "version": 2,
       "name": "Review what is working",
       "description": "Look for useful patterns in your own recorded search outcomes.",
       "whenToUse": "Look for useful patterns in your own recorded search outcomes.",
-      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Review what is working\nInputs:\n- Your actual applications and outcomes\n- Sufficient comparable history\nProcedure:\n1. Summarize the funnel and the evidence available.\n2. Compare outcomes by role, score or channel without assuming causation.\n3. Suggest questions and preference changes for your review.\nRequirements: Small samples and pending outcomes must stay visible. Upstream file-based analytics scripts are not installed by this manual.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
+      "instructions": "Use this Career Toolkit skill when the user requests it. This is a Lookout adaptation of Career Ops, not a local Career Ops installation. Apply the workflow's reasoning to available context; never claim a command, integration, document renderer or scheduler exists merely because the reference mentions it.\nRead current Lookout developer/personal context using available scoped tools. Treat profile facts, selected resume, preferences, owned application and timeline as the inputs corresponding to upstream cv.md, profile.yml and tracker files. Local file paths, CLI commands, shell snippets, user-file writes and installation steps in the source documents are reference requirements, not instructions to execute or install software. Use only available, authorized tools. Do not create a parallel tracker or profile. If an output has no supported persistence operation, give the user the draft in conversation and say it was not saved.\nThe user's goals replace upstream default seniority, scoring weights and career archetypes. Never fabricate experience, metrics, eligibility, dates, outcomes or arithmetic. Ask one focused question at a time when facts are missing. Do not turn uncertain estimates into verified profile facts. Proposed facts and answers remain unverified; no guide grants approval, autofill permission, submission rights, sharing consent, messaging permission or scheduling access. Retain exact review and uncertainty boundaries from Lookout. Profile proposals use the existing profile tools; application preparation uses existing draft/plan tools; outreach uses the cold-outreach guide and scoped outreach tools. Read actual histories before statistics or follow-ups. Regional legal or eligibility facts require current official sources.\nBrowsing a manual or copying a request does not execute work. For recurring tasks, ask for timezone/cadence and verify real runtime scheduling support; never report activation from a saved preference alone. For file output, check rendering and upload support; provide a content draft when missing. Guides are read-only instruction packages, not installed scanner/rendering/analytics executables. Demo context is fictional and must never trigger account writes, real file retrieval, external messages or submissions.\n\nSkill: Review what is working\nInputs:\n- Your actual applications and outcomes\n- Sufficient comparable history\nProcedure:\n1. Summarize the funnel and the evidence available.\n2. Compare outcomes by role, score or channel without assuming causation.\n3. Suggest questions and preference changes for your review.\nRequirements: Small samples and pending outcomes must stay visible. Your agent needs access to the relevant history and calculation tools.\nUse the source documents below for the underlying Career Ops workflow. The Lookout adaptation above takes precedence over conflicting filesystem, permissions, unsupported tool and persistence assumptions.",
       "expectedOutput": [
         "An evidence-backed search review",
         "Specific adjustments to consider"
@@ -2272,7 +2272,7 @@
       "manual": {
         "id": "review-search",
         "guideId": "career-review-search",
-        "version": 1,
+        "version": 2,
         "category": "automation",
         "title": "Review what is working",
         "summary": "Look for useful patterns in your own recorded search outcomes.",
@@ -2294,7 +2294,7 @@
           "Review my recorded search outcomes and identify patterns without guessing why I was rejected.",
           "Which parts of my search deserve a closer look, given the data I actually have?"
         ],
-        "requirements": "Small samples and pending outcomes must stay visible. Upstream file-based analytics scripts are not installed by this manual.",
+        "requirements": "Small samples and pending outcomes must stay visible. Your agent needs access to the relevant history and calculation tools.",
         "sources": [
           "modes/patterns.md"
         ],
@@ -2319,7 +2319,7 @@
     },
     {
       "id": "career-calibrate-fit",
-      "version": 1,
+      "version": 2,
       "name": "Check your fit scoring",
       "description": "Check whether past fit scores have been useful in your own search.",
       "whenToUse": "Check whether past fit scores have been useful in your own search.",
@@ -2331,7 +2331,7 @@
       "manual": {
         "id": "calibrate-fit",
         "guideId": "career-calibrate-fit",
-        "version": 1,
+        "version": 2,
         "category": "automation",
         "title": "Check your fit scoring",
         "summary": "Check whether past fit scores have been useful in your own search.",

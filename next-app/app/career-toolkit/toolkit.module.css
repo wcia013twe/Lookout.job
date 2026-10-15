@@ -33,10 +33,10 @@
 .group li { border-bottom: 1px solid var(--color-board-line); }
 .skillRow { display: flex; gap: 1rem; justify-content: space-between; align-items: center; padding: 1rem .75rem; margin-inline: -.75rem; border-radius: 6px; transition: background-color 150ms; }
 .skillRow:hover { background: var(--color-board-tag); }
-.skillRow h4 { font-size: .9375rem; font-weight: 600; }
+.skillRow h4, .skillRow h3 { font-size: .9375rem; font-weight: 600; }
 .skillRow p { color: var(--color-board-muted); font-size: .875rem; line-height: 1.6; margin-top: .25rem; max-width: 68ch; }
 .skillRow svg { flex-shrink: 0; color: var(--color-board-muted); }
-.skillRow:hover h4, .skillRow:hover svg { color: var(--color-board-accent); }
+.skillRow:hover h4, .skillRow:hover h3, .skillRow:hover svg { color: var(--color-board-accent); }
 .libraryFoot { padding-top: 1rem; color: var(--color-board-muted); font-size: .8125rem; line-height: 1.6; }
 .empty { padding: 2rem 0 3rem; }
 .empty h3 { font-size: 1.125rem; font-weight: 650; }
@@ -85,10 +85,6 @@
 .manual .copyStatus { font-size: .8125rem; line-height: 1.6; margin: .75rem 0 0; color: var(--color-board-accent); }
 .copyStatus:empty { display: none; }
 .manual .demoNotice { font-size: .8125rem; color: var(--color-board-accent); }
-.attribution { margin-top: 2.5rem; border-top: 1px solid var(--color-board-line); }
-.manual .attribution h2 { font-size: 1rem; }
-.attribution a { color: var(--color-board-accent); text-decoration: underline; font-size: .875rem; }
-.attribution p:last-child { font-size: .75rem; margin-top: .75rem; }
 @media (max-width: 850px) {
   .library { grid-template-columns: 12.5rem minmax(0,1fr); gap: 1.75rem; }
   .manualLayout { grid-template-columns: minmax(0,1fr); }
@@ -112,3 +108,42 @@
   .requestActions button { width: 100%; }
   .manualHeading { padding-bottom: 1.5rem; }
 }
+
+/* Category overview keeps the entry point compact; selecting a category reveals its full list. */
+.searchRow { justify-content: flex-start; }
+.search { width: min(100%, 40rem); }
+.sidebar nav a { justify-content: flex-start; gap: .75rem; }
+.sidebar nav a > svg { flex: 0 0 auto; }
+.sidebar nav a > span:last-child { margin-left: auto; }
+.overviewGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 2.25rem; row-gap: 2.25rem; }
+.overviewGroup { margin: 0; border-top: 1px solid var(--color-board-line); padding-top: 1.25rem; min-width: 0; }
+.groupHeading { display: flex; align-items: flex-start; gap: .875rem; }
+.categorySymbol { color: var(--color-board-accent); padding-top: .125rem; flex: 0 0 auto; }
+.groupHeading p { font-size: .8125rem; line-height: 1.65; }
+.skillRow { gap: .875rem; }
+.skillSymbol { color: var(--color-board-muted); align-self: flex-start; padding-top: .125rem; flex-shrink: 0; }
+.skillText { min-width: 0; flex: 1; }
+.compactRow { padding-block: .8rem; gap: .75rem; }
+.compactRow h4 { font-size: .875rem; line-height: 1.6; font-weight: 500; }
+.viewCategory { display: inline-flex; align-items: center; min-height: 44px; gap: .5rem; font-size: .8125rem; font-weight: 600; color: var(--color-board-accent); margin-top: .375rem; }
+.viewCategory:hover { text-decoration: underline; }
+.libraryFoot { display: flex; align-items: center; gap: .625rem; margin-top: 2rem; }
+.libraryFoot svg { flex-shrink: 0; }
+.resultHeading .categoryDescription { color: var(--color-board-muted); font-size: .875rem; font-weight: 400; white-space: normal; margin-top: .5rem; line-height: 1.7; }
+.manualTitle { display: flex; align-items: center; gap: .875rem; }
+.manualTitle > svg { color: var(--color-board-accent); flex-shrink: 0; }
+.mobileCategory { display: none; }
+@media (max-width: 1000px) {
+  .overviewGrid { grid-template-columns: minmax(0,1fr); row-gap: 1.75rem; }
+}
+@media (max-width: 620px) {
+  .sidebar .categoryNav { display: none; }
+  .mobileCategory { display: block; font-size: .8125rem; color: var(--color-board-muted); }
+  .mobileCategory select { display: block; margin-top: .5rem; width: 100%; min-height: 44px; padding: .625rem .75rem; border: 1px solid var(--color-board-line); border-radius: 8px; background: var(--color-board-panel); color: var(--color-board-text); font-size: 1rem; }
+  .resultHeading { align-items: flex-start; flex-wrap: wrap; gap: .5rem; }
+  .resultHeading h2 { font-size: 1.125rem; }
+  .manualTitle { align-items: flex-start; gap: .75rem; }
+  .manualTitle > svg { width: 24px; height: 24px; margin-top: .15rem; }
+}
+
+.resultHeading h2 { scroll-margin-top: 1.5rem; }

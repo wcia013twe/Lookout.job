@@ -353,15 +353,14 @@ Career Toolkit is a native categorized skill library at `/career-toolkit/` with
 37 static usage manuals and copyable agent examples. Categories cover profile
 conversations, career search and regional context, documents, interviews,
 networking, growth, offers, and recurring-search setup. Each manual explains
-inputs, steps, expected output, runtime requirements and its pinned Career Ops
-source. Opening a manual or copying a request does not start work or install tools.
+inputs, steps, expected output, runtime requirements. Opening a manual or copying a request does not start work or install tools.
 
 Examples can reference an existing saved application by its displayed company and
 role; no private file links, tokens or account identifiers are copied. The existing
 `read_guide` tool exposes the corresponding `career-*` guide under workspace read
 authorization, with source instructions adapted to Lookout's data/permission
 boundaries. Older deployed gateways need the normal release update before those
-guide IDs resolve; copied requests include the original source as a fallback.
+guide IDs resolve; copied requests explain when the Lookout connection needs updating.
 
 Demo mode uses fictional, non-executing requests and does not touch real account
 storage or services. See [source and maintenance notes](integrations/career-ops/README.md).
