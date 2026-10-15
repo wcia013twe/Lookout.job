@@ -10,21 +10,28 @@ export default function AgentContext({post}:{post:Post}) {
  const [copyState,setCopyState]=useState(''),[showPacket,setShowPacket]=useState(false);
  if(!context||post.content.type==='reply')return null;
  const packet=JSON.stringify(context,null,2);
+ const experienceDate=context.experienceDate?new Date(`${context.experienceDate}T12:00:00Z`).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}):null;
+ const facts=[['Company',context.company],['Role',context.role],['Stage',context.stage],[post.content.type==='interview_report'?'Interview date':'Experience date',experienceDate]].filter(([,value])=>value);
  async function copy(){
   try{await navigator.clipboard.writeText(packet);setCopyState('Context copied.');}
   catch{setShowPacket(true);setCopyState('Clipboard unavailable. Select and copy the context below.');}
  }
- const draft=post.revision!==post.publishedRevision;
- return <details className="mt-5 max-w-prose border-y border-board-line py-2" aria-label={draft?'Context to share':'Shared context'} open={draft||!post.content.body||undefined}>
-  <summary className="min-h-11 cursor-pointer py-3 text-xs font-semibold text-board-accent">{draft?'Context to share':'Shared context'}</summary>
-  <dl className="space-y-4 py-3 text-sm leading-7">
-   {context.jobUrl&&<div><dt className="text-xs text-board-muted">Job link</dt><dd><a href={context.jobUrl.startsWith('https://')?context.jobUrl:undefined} target="_blank" rel="noopener noreferrer" className="break-all text-board-accent underline underline-offset-4">{context.jobUrl}</a></dd></div>}
-   {context.stage&&<div><dt className="text-xs text-board-muted">Stage</dt><dd>{context.stage}</dd></div>}
-   <div><dt className="text-xs text-board-muted">Insight</dt><dd className="whitespace-pre-wrap break-words">{context.insight}</dd></div>
-   {(context.company||context.role||context.experienceDate)&&<div><dt className="text-xs text-board-muted">Context</dt><dd>{[context.company,context.role,context.experienceDate].filter(Boolean).join(' · ')}</dd></div>}
-   {context.uncertainty&&<div><dt className="text-xs text-board-muted">Note</dt><dd>{context.uncertainty}</dd></div>}
-  </dl>
-  <div className="pb-3"><button className={secondary} onClick={()=>void copy()}>Copy context</button><p role="status" className="mt-2 text-xs text-board-muted">{copyState}</p></div>
-  {showPacket&&<textarea aria-label="Context to copy" readOnly value={packet} onFocus={event=>event.currentTarget.select()} className="my-3 min-h-48 w-full rounded-lg border border-board-line bg-board-bg p-3 text-xs"/>}
- </details>;
+ return <section aria-label="Shared context">
+  {!!facts.length&&<dl className="grid grid-cols-2 gap-x-6 gap-y-5 border-y border-board-line py-6 sm:grid-cols-4">{facts.map(([label,value])=><div key={label} className="min-w-0"><dt className="mb-1 text-xs text-board-muted">{label}</dt><dd className="break-words text-sm font-medium leading-6">{value}</dd></div>)}</dl>}
+  <div className="py-7">
+   <h3 className="text-base font-semibold">{post.content.type==='interview_report'?'What came up':'Key insight'}</h3>
+   <p className="mt-3 max-w-[65ch] whitespace-pre-wrap break-words text-lg leading-8">{context.insight}</p>
+   {context.uncertainty&&<p className="mt-4 max-w-[70ch] text-sm leading-6 text-board-muted">{context.uncertainty}</p>}
+   {context.jobUrl&&<a href={context.jobUrl.startsWith('https://')?context.jobUrl:undefined} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-board-accent underline underline-offset-4">View job posting<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 18 18 6M6 6h12v12"/></svg></a>}
+  </div>
+  {post.content.insight&&post.content.body&&post.content.insight.trim()!==post.content.body.trim()&&<section className="border-t border-board-line py-6" aria-label="Personal note"><h3 className="text-sm font-semibold">{post.author.replace(' (demo)','')}’s note</h3><p className="mt-3 max-w-[65ch] whitespace-pre-wrap break-words text-base leading-7 text-board-muted">{post.content.body}</p></section>}
+  <details className="border-t border-board-line py-2">
+   <summary className="min-h-11 cursor-pointer py-3 text-xs text-board-muted">Source &amp; agent context</summary>
+   <p className="mb-4 text-xs leading-6 text-board-muted">Shared by {post.author} · revision {post.revision} · {context.provenance.replaceAll('_',' ')} (reported).{context.visibility==='private_draft'?' Private draft — not shared.':''}</p>
+   {context.jobUrl&&<p className="mb-4 break-all text-xs leading-6 text-board-muted">Job link: {context.jobUrl}</p>}
+   <button className={secondary} onClick={()=>void copy()}>Copy context</button>
+   <p role="status" className="mt-2 text-xs text-board-muted">{copyState}</p>
+   {showPacket&&<textarea aria-label="Context to copy" readOnly value={packet} onFocus={event=>event.currentTarget.select()} className="my-3 min-h-48 w-full rounded-lg border border-board-line bg-board-bg p-3 text-xs"/>}
+  </details>
+ </section>;
 }

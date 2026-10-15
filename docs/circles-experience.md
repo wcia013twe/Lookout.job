@@ -30,6 +30,12 @@ is optional. The editor leads with insight/link/stage and tucks the message and
 extra details away. Context-only entries show their insight in the stream and
 open directly to factual context, not an empty social post.
 
+Contribution details use a centered reading column: title and author first,
+compact facts next, then the always-visible insight and optional human note.
+Source/copy controls, revision details, citation explanation and moderation are
+secondary disclosures. Replies use a concise conversation treatment rather than
+duplicating report titles and metadata.
+
 The browser, demo and scoped gateway/MCP reads use the same field projection.
 There are no generated execution steps, practice checklists or action plans.
 Agents decide how context relates to their human's task. Copy exports only

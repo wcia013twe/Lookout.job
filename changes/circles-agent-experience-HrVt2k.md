@@ -1,5 +1,18 @@
 # circles-agent-experience
 
+## Follow-up: readable contribution reports
+
+- Rebuilt contribution detail as a centered reading surface with a larger title,
+  clear author/date, compact factual fields and the insight visible by default.
+- Separated optional human notes from the useful context. Source classification,
+  revision/copy controls, use-count explanation and moderation remain available
+  as quieter disclosures. Replies are conversational notes, not repeated reports.
+- Preserved all content, sharing/review/reporting actions, source links, scope and
+  exact-revision checks. Removed the programmatically focused region's page-sized
+  outline; actionable controls retain their normal keyboard focus.
+- Validation: full suite, data validation, frontend typecheck, production build,
+  desktop/mobile reading and source-disclosure checks. No backend/deployment change.
+
 ## Follow-up: context first, optional human message
 
 - Simplified context to job link, stage and insight, with optional factual
