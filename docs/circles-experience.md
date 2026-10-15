@@ -147,12 +147,11 @@ sessions, session-progress writes and their scoped agent tools remain future wor
 ### Scoped visual contract
 
 The illustrated clubhouse is a local Circles exception within the existing navy
-workspace. The identity header, search, settings, sharing controls and published
-activity stream retain the shared board colors, sans-serif type, focus treatment
-and 44px controls. The room replaces the constellation as the main member
-selector; the single shared-update stream and compact handwritten milestone
-feature continue beneath it. Earlier constellation and three-view descriptions
-above remain design history.
+workspace. The identity header, search, settings and sharing controls retain the
+shared board colors, sans-serif type, focus treatment and 44px controls. The room
+leads the experience; the connected noticeboard below supplies a second member
+selector and the single published-update stream. Its current constellation and
+materials are defined below. Earlier three-view descriptions remain design history.
 
 Warm timber, lamplight, cream activity bubbles and green selected bubbles belong
 to the room illustration and character controls. Keep these materials inside the
@@ -194,3 +193,29 @@ existing fictional-session and shared-update distinctions continue to apply.
 For real members, station poses and walking labels describe the illustration;
 they do not establish that a person is applying, practicing or taking a break.
 Only the loaded published post supplies their shared-activity description.
+
+### Connected community noticeboard
+
+The lower feed continues the clubhouse with a warm wood edge, deep green felt
+and cream conversational notes. These local materials belong to
+`circle-views.module.css`, alongside the room's existing exception; preserve the
+navy workspace shell and global design tokens. The board retains sans-serif
+names, dates and message copy, with handwriting reserved for the featured
+milestone callout. A published offer reads “Offered!”. Generated room avatars
+and a full-body milestone character appear only for fictional demo members;
+real-account board identities use initials.
+
+The board's member constellation surrounds a central Everyone emblem. Selecting
+a person there or in the room updates the same member filter, and Everyone or
+Show everyone restores the feed. More than eight members use a grid. On narrow
+screens the constellation stacks beneath the introduction, while notes and the
+celebration reflow within the board. Selection uses semantic buttons and
+`aria-pressed`, with visible names and the inherited keyboard-focus treatment.
+
+“Find a shared update” contains the existing search in a disclosure, opened for
+active results. Search results take precedence over the selected-person filter.
+Each conversational note keeps author, type, date and an action opening the
+existing contribution detail; the featured milestone appears once. Content
+still comes only from current permitted published revisions. The board changes
+presentation and filtering, without adding chat, presence, posting permissions
+or a new consent path. No global token or design-system sidecar update is needed.

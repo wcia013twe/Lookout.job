@@ -31,3 +31,17 @@
   roles validate. Browser verification covers travel, seated activity and pause.
 - Fresh motion design review: ship; documentation review confirms this remains
   scoped to the clubhouse. Rendered seated desk and walking states inspected.
+
+## Connected community noticeboard
+
+- Connect the lower feed to the clubhouse with a wood frame, deep green board,
+  warm paper notes, and the same illustrated demo characters.
+- Restore the user-preferred constellation around the Circle emblem. Its person
+  filters share selection with the room; larger groups use a wrapped grid.
+- Present celebrations as prominent shared notes and put existing search in a
+  disclosure. Existing contribution details and publishing boundaries remain.
+- Verification: desktop/390px phone review; constellation Maya/Everyone filtering,
+  search/Clear, keyboard focus, celebration opening and return all checked.
+  All 314 tests, catalog validation, typecheck and static build pass. Detector
+  reports no findings; fresh design review disposition is ship.
+- No new imagery, persistence or backend service; existing unrelated edits remain.
