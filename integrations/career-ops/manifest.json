@@ -1,0 +1,232 @@
+{
+  "repository": "https://github.com/career-ops-hq/career-ops",
+  "commit": "c78e14cdfd52f18a92e4a67694efab7ddef59385",
+  "version": "1.36.0",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "docs/AUTOMATION.md",
+      "sha256": "fab85cd2af23a9ce83eeecffa22ec4d288f8c82876e91477ddfe2587e3eec0ed"
+    },
+    {
+      "path": "docs/SCRIPTS.md",
+      "sha256": "00954bab6b00c2f5711668238ae675bd6349c64e5060a8b07fec0f495b9bfa22"
+    },
+    {
+      "path": "modes/_profile.template.md",
+      "sha256": "0c9acae49283db455e3a629576440bae5de1ede11e88654a9090b759cc4c052e"
+    },
+    {
+      "path": "modes/_shared.md",
+      "sha256": "dbdd145f0634ece0ed66442859d595aa3ea8196c2b0bd9068ddde2bc73c7beb3"
+    },
+    {
+      "path": "modes/_writing.md",
+      "sha256": "ec7549592feb604b9ef800169902a72232824eedfbde3020b5e6c72d399883f5"
+    },
+    {
+      "path": "modes/add.md",
+      "sha256": "1765fea8d0b63235487c8c20cfcdfdc429dc5795566d7654c654f800b6088429"
+    },
+    {
+      "path": "modes/ar/README.md",
+      "sha256": "4a043224ecaac616870524fdab38d0cecb71d1735d305fc7c8c3a188414efac3"
+    },
+    {
+      "path": "modes/ats.md",
+      "sha256": "0ad1f199f4b135121ff69f090f953cee7035fc17a0798d45ddd8f83b88d0d5b1"
+    },
+    {
+      "path": "modes/calibrate.md",
+      "sha256": "b9974f89e6260738bdceca617aa1f83590cbb6a539078d53572a4b3750a0ef04"
+    },
+    {
+      "path": "modes/contacto.md",
+      "sha256": "7e9a3a9914c368dab2df0b256e8316ddc7888bed3f295738c110902eaa17e940"
+    },
+    {
+      "path": "modes/cover.md",
+      "sha256": "cf6ab440e256fe1ee6107e398b0613bcdeb9f2e1aa277b24616071a4fb2c408c"
+    },
+    {
+      "path": "modes/da/README.md",
+      "sha256": "5767812080d8bab24e0e4ae82de9f619a3574ff6132b368bb84e04056d5d3256"
+    },
+    {
+      "path": "modes/de/README.md",
+      "sha256": "d631b1baf2fdd217950c9551c99ed72f6d47749c25796be70da64591fdded448"
+    },
+    {
+      "path": "modes/deep.md",
+      "sha256": "b6084e85a1f93f2c7cb4b8fddf075d0b03383ff4a635c6d1322d0ca9d1368430"
+    },
+    {
+      "path": "modes/email.md",
+      "sha256": "02d34440933b9cbd491ed08757f5778f94fcd973a7a8fc5247d5f8514680fb1e"
+    },
+    {
+      "path": "modes/es/README.md",
+      "sha256": "f3d0f788959185a990938490a41977e9a099776eb424af0b6ab95a0f63c969b2"
+    },
+    {
+      "path": "modes/expand.md",
+      "sha256": "72f03df56128f76f642804d2fbac99b980033f31a449f46782df2a3b1bf8871f"
+    },
+    {
+      "path": "modes/followup.md",
+      "sha256": "a40e9a599efadb85de181321d5526dbfab3de6571cce5de814ca141fa437fb52"
+    },
+    {
+      "path": "modes/fr/README.md",
+      "sha256": "312c5b1404964bfc951ed58079178faca213646ac4ec53c290ab55234e32c80d"
+    },
+    {
+      "path": "modes/heuristics/recruiter-side.md",
+      "sha256": "a22962edf419f9c63e39faf88367e3a95809f9319b23b69d6ce386de95125893"
+    },
+    {
+      "path": "modes/hi/README.md",
+      "sha256": "0e67474edec92e47af13f5f1a7200a5463d3b59fc3c44508c670e338c6c093ae"
+    },
+    {
+      "path": "modes/id/README.md",
+      "sha256": "90d5738b9797dfc03fab3376b5ec83552106fe0e3fcbc2bb2932d9853a0c2f1b"
+    },
+    {
+      "path": "modes/intake.md",
+      "sha256": "e01c12d756daf254c2a9b54e22c1c93898be3777345101941c39bde900f9dc04"
+    },
+    {
+      "path": "modes/interview-prep.md",
+      "sha256": "8b51536fe09d1d29e667ffd286b7a80979b92646304a2a96f1fae52be141bc05"
+    },
+    {
+      "path": "modes/interview-redflag.md",
+      "sha256": "5f3204ba566d4d0fbed27e6c5fbf236197a79362d2f7ed73c93a235796c6dd99"
+    },
+    {
+      "path": "modes/interview.md",
+      "sha256": "b8939ea94bc78f5822da3118a1f2df90b6b5069a319de7bafafcabbeb89eb673"
+    },
+    {
+      "path": "modes/interview/debrief.md",
+      "sha256": "b4c79579fe2b7e1443f02b45d6eae628f896fe9fd3e2328d28e6c4f8ec3d6b3e"
+    },
+    {
+      "path": "modes/interview/plan.md",
+      "sha256": "ed16f73d1234acae95e2f2fa835a1ec48207e052633855629899cc4b3e52139c"
+    },
+    {
+      "path": "modes/interview/practice.md",
+      "sha256": "2f84658bffafe7ce80f29a2f768943b3e4240bc605a216f10f4f5f53f459300f"
+    },
+    {
+      "path": "modes/it/README.md",
+      "sha256": "55f6992b4e1a0fe84b43be4d645b685a8f5922e2e7cd03ae7e619e5857917468"
+    },
+    {
+      "path": "modes/ja/README.md",
+      "sha256": "a182d330cd63ba4be3488a92b4abc612775fc20520d7a58c2fcdd3319b353977"
+    },
+    {
+      "path": "modes/ko/README.md",
+      "sha256": "ad52534b2e262d092c6e30e7d785df057d83f1cbe3866a74095e85af2b21160e"
+    },
+    {
+      "path": "modes/latex.md",
+      "sha256": "737928a776754e3cd2082899e95c10034698749391208e8e5390e91916100ac4"
+    },
+    {
+      "path": "modes/nl/README.md",
+      "sha256": "1f95c6db1f98b6dbcc5c0cfabcf0d778cfaac3b62fb9ae9cc3d4a1116ee8030b"
+    },
+    {
+      "path": "modes/oferta.md",
+      "sha256": "6ce91c48af4b91caef950d283bc734d01af322bfce0aa2c0f8ce7a4dc680f43b"
+    },
+    {
+      "path": "modes/ofertas.md",
+      "sha256": "98dc29b5d24cdb9337521bed517c78e3a225108780fd8e95717771749f7747a9"
+    },
+    {
+      "path": "modes/offer-prep.md",
+      "sha256": "017ef01db5db5b96e95c822d0191203e3b2a1c0d552bc786a42d37a8a1431d15"
+    },
+    {
+      "path": "modes/patterns.md",
+      "sha256": "3971ecfa5532a0219752e994bc7f166a945d270a9762fc8c06de990395044454"
+    },
+    {
+      "path": "modes/pdf.md",
+      "sha256": "d4a533e627b0626704ca9eb8f5d548941d6e0e45141a60dbc22e1f2ecacbe7ef"
+    },
+    {
+      "path": "modes/pl/README.md",
+      "sha256": "e5fcf504b26ba512388ed11a11a1a8c0eac7fd628576a40f40347006e99a9db2"
+    },
+    {
+      "path": "modes/project.md",
+      "sha256": "855e4a949a33675247e1cb8a34133f831d37bd8cdce437c264c317f4cc880b5b"
+    },
+    {
+      "path": "modes/pt/README.md",
+      "sha256": "c04b2cb98879b90d14c4ec1fa996ca54f86cf7da7051a2d4947a57e6c116764e"
+    },
+    {
+      "path": "modes/regional/eu-swe.md",
+      "sha256": "d7e9aa01fb1541579d4271c1766be36ba45fb2fe6552a0ebff3ffde18c11bc10"
+    },
+    {
+      "path": "modes/reply-watch.md",
+      "sha256": "ffba74bd952905c0d15d01744a7564dba88073de095651415595f28aa1b464f6"
+    },
+    {
+      "path": "modes/ru/README.md",
+      "sha256": "76dc09ad542975ebec22e5b27b6dc3ace8591a4ab9d7086f56e114a42013f9a7"
+    },
+    {
+      "path": "modes/scan.md",
+      "sha256": "4a2ba6beae899b26e0432859b16efa1605ec8d38f6a8bda7940f67579a67f2e8"
+    },
+    {
+      "path": "modes/sg/README.md",
+      "sha256": "0368e06544ef498c14ed62edc21d9e1035b210093829b148f86982c6c93d4f1c"
+    },
+    {
+      "path": "modes/text.md",
+      "sha256": "ef5de61fdecfdfa06038d65207a33a51726cd3088f37239ab60788b29d592805"
+    },
+    {
+      "path": "modes/titles.md",
+      "sha256": "4d427a5474024d85529894ae4b6818149dd6f6944d8f297c0c8ec8bb8b73c437"
+    },
+    {
+      "path": "modes/tr/README.md",
+      "sha256": "c39212cce2782c21583454f9ee4f0b573c6dee706de0ffb32d4b0a84a063323e"
+    },
+    {
+      "path": "modes/training.md",
+      "sha256": "e9bc40356cdb4afe97a5aa567d107e000c29db463368dc9bcbda25b694c8b9e7"
+    },
+    {
+      "path": "modes/triage.md",
+      "sha256": "37b928e9aa2941be4e85dd01adaa596a33f3963a9351b8d9d6a7ec69d05c9983"
+    },
+    {
+      "path": "modes/ua/README.md",
+      "sha256": "004c6436721d9f426bc15691baf6203ab9e313f7f26db7cd5d141a974d568dd9"
+    },
+    {
+      "path": "modes/upskill.md",
+      "sha256": "09b00ba85432edf0476b1500488adfef879828b08a7bc356962a299088b4d442"
+    },
+    {
+      "path": "modes/zh-TW/README.md",
+      "sha256": "3e954d6b3a800ea5e8cd9d085d30a3591f5265dd4a907866ebb0f6377d8622fb"
+    },
+    {
+      "path": "modes/zh/README.md",
+      "sha256": "43f6e54d73d07adc6137a60737ba386f1735126d69cff85f9f376fe39071f975"
+    }
+  ]
+}
