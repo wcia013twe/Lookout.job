@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { MotionConfig, motion } from "framer-motion";
+import { MotionConfig } from "framer-motion";
 import { streak } from "../lib/progress.mjs";
 import { usePathname } from "next/navigation";
 import { useWorkspace } from "../lib/workspace";
@@ -17,15 +17,6 @@ const navigation = [
   ["/referrals/", "Referrals", "referrals"],
 ] as const;
 
-function NavIcon({ name }: { name: (typeof navigation)[number][2] }) {
-  const paths = {
-    needs: <><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16 9"/></>,
-    discover: <><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4M11 8v6M8 11h6"/></>,
-    applications: <><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></>,
-    referrals: <><circle cx="8" cy="8" r="3"/><circle cx="17" cy="16" r="3"/><path d="M10.5 9.5 14.5 14M5 20c0-3 2-5 5-5"/></>,
-  };
-  return <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
-}
 export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
@@ -61,45 +52,42 @@ export default function AppShell({ children }: { children: ReactNode }) {
       }}>
       <div className="workspace-container mx-auto w-full max-w-6xl px-4 pb-8 pt-4 md:px-6">
       <header className="workspace-header workspace-topbar">
-        <div className="flex min-w-0 items-start gap-3">
-          <ProfileMenu />
+        <div className="workspace-identity min-w-0">
           <div className="min-w-0">
           <Link href="/" className="workspace-brand inline-flex min-h-11 items-center gap-2 text-lg font-bold md:gap-2.5 md:text-xl">
             <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3 24 9v10l-10 6-10-6V9L14 3Z" stroke="currentColor" strokeWidth="1.5"/><path d="m9 16 5-8 5 8H9Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><path d="M14 16v5" stroke="currentColor" strokeWidth="1.5"/></svg>Lookout
           </Link>
-          <p className="mt-1 hidden max-w-sm text-sm text-board-muted md:block">Your personal job hunter. Your crew for what’s next.</p>
-          <p className="text-xs text-board-muted md:mt-1">Last scan: {w.date}</p>
+          <p className="workspace-scan text-xs text-board-muted">Last scan: {w.date}</p>
           </div>
         </div>
       <nav
         aria-label="Workspace pages"
-        className="workspace-nav glass-toolbar grid grid-cols-4 gap-1 rounded-xl bg-board-tag p-1.5"
+        className="workspace-nav"
       >
-        {navigation.map(([href, label, icon]) => (
+        {navigation.map(([href, label]) => (
           <Link
             key={href}
             href={href}
             aria-current={
               isCurrent(href) ? "page" : undefined
             }
-            className={`relative isolate flex min-h-11 items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-xs md:gap-2 md:px-2 md:text-sm font-semibold ${isCurrent(href) ? "bg-board-panel text-board-accent" : "text-board-muted hover:text-board-text"}`}
+            className="workspace-nav-link"
           >
-            {isCurrent(href) && <motion.span layoutId="workspace-active-tab" className="workspace-active-tab absolute inset-0 -z-10 rounded-lg" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
-            <span className="md:hidden"><NavIcon name={icon} /></span><span>{label}</span>
+            <span>{label}</span>
             {href === "/needs-you/" && needs > 0 && <span className="workspace-count grid min-h-5 min-w-5 place-items-center rounded-md px-1 text-[11px] tabular-nums">{needs}</span>}
           </Link>
         ))}
       </nav>
-        <div className="hidden flex-wrap items-start gap-2 md:flex"><ColorModeControl /><details className="text-sm">
-          <summary className={`${secondary} cursor-pointer`}>
+        <div className="workspace-utilities"><div className="workspace-desktop-utilities"><ColorModeControl /><details className="workspace-progress text-sm">
+          <summary className="workspace-progress-trigger">
             {w.state?.progress?.xp || 0} XP ·{" "}
             {streak(w.state?.progress?.streakDays)}d streak
           </summary>
-          <p className="mt-3 max-w-xs text-sm text-board-muted">
+          <div className="workspace-progress-menu"><p className="text-sm text-board-muted">
             Browser progress is separate from account leaderboard metrics.
           </p>
-          <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link>
-        </details></div>
+          <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link></div>
+        </details></div><ProfileMenu /></div>
       </header>
       {w.status && !w.demo && (
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-board-muted">
