@@ -1,3 +1,4 @@
+import { ONBOARDING_TOOLS } from "../agent-gateway/onboarding.mjs";
 import { PLATFORM_TOOLS } from '../agent-gateway/platform-tools.mjs';
 // Stateless Streamable HTTP adapter. Gateway owns credential and payload policy;
 // this module owns only MCP framing. No browser, SQL, shell, or management tools.
@@ -6,6 +7,7 @@ const object = (properties = {}, required = []) => ({ type: 'object', properties
 const string = { type: 'string' };
 const json = { type: 'object' };
 export const TOOLS = [
+  ...ONBOARDING_TOOLS,
   {name:'save_search_targets',operation:'preferences.targets.save',scope:'preferences:write',description:'Replace your private source list after a user asks to add, edit or remove targets. Read preferences.search.targets and targetsVersion first; pass the complete list and current version (0 if absent). Each target has id, name, kind (board/careers/social), address (HTTPS URL or social @handle). Does not enable scanners or sharing.',inputSchema:object({expectedVersion:{type:'integer',minimum:0},targets:{type:'array',maxItems:100,items:object({id:string,name:string,kind:{type:'string',enum:['board','careers','social']},address:string},['id','name','kind','address'])}},['expectedVersion','targets'])},
   ...PLATFORM_TOOLS,
   {name:'save_search_profile',operation:'preferences.profile.save',scope:'preferences:write',description:'Create or update an owned search profile after a user asks to change preferences. Read personal context first. Pass current profile version, or 0 for a new profile. Profile contains id, name, active, filters, priorities, instructions. Does not change submission permission or human approvals.',inputSchema:object({expectedVersion:{type:'integer',minimum:0},profile:json},['expectedVersion','profile'])},
