@@ -2,7 +2,7 @@
 
 [`../product.md`](../product.md) records the product vision and roadmap; it is preserved unchanged. The root README describes current implementation. [`AGENTS.md`](AGENTS.md) records React/Next.js implementation rules. The root README owns operating contracts; `DESIGN.md` owns visual decisions; `CHANGELOG.md` owns change history. Keep one canonical copy of each document.
 
-The production frontend is Next.js App Router, React, and Tailwind. All workspace surfaces live here: Discover, Applications, Needs you, Referrals, Profile, onboarding, application review, resumes, rankings, saved answers, automation preferences, agent connections, and leaderboard.
+The production frontend is Next.js App Router, React, and Tailwind. All workspace surfaces live here: Discover, Applications, Action Board, Referrals, Profile, onboarding, application review, resumes, rankings, saved answers, automation preferences, agent connections, and leaderboard.
 
 ```sh
 npm ci
@@ -57,7 +57,7 @@ Validation: static production build, 144 domain/unit tests, database checks, bro
 
 ## Profile navigation
 
-The top-left profile avatar opens My Profile, Sharing & privacy, and sign-in/sign-out. My Agent stays inside My Profile. Sharing & privacy opens the existing Progress page and its opt-in leaderboard controls. Main navigation focuses on Needs you, Discover, Applications and Referrals.
+The top-left profile avatar opens My Profile, Sharing & privacy, and sign-in/sign-out. My Agent stays inside My Profile. Sharing & privacy opens the existing Progress page and its opt-in leaderboard controls. Main navigation focuses on Action Board, Discover, Applications and Referrals. The Action Board combines human handoffs with deadline-driven preparation reminders; completing a preparation task clears it from the active checklist through the same owned preparation service exposed to Muse.
 
 Demo check: open the avatar, visit My Profile and My Agent, return to Sharing & privacy, and reset the fictional profile. Check Escape, outside click and keyboard tab dismissal. The dropdown reads existing demo state and uses existing authentication actions; no new backend or MCP action is introduced.
 
