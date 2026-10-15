@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { mkdir, mkdtemp } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, basename } from 'node:path';
 import { parseArgs } from 'node:util';
@@ -8,11 +8,28 @@ import { pathToFileURL } from 'node:url';
 const exec = promisify(execFile);
 export const command = async (file, args, cwd = process.cwd()) => (await exec(file, args, { cwd, maxBuffer: 4 * 1024 * 1024 })).stdout.trim();
 
-export async function publishFeature({ run = command, title, bodyFile }) {
+export function fragmentName(branch) {
+  const name = branch.replace(/^codex\//, '');
+  return /^[A-Za-z0-9-]+$/.test(name) ? name + '.md' : null;
+}
+export async function validateFragment(branch, read = readFile) {
+  const name = fragmentName(branch);
+  if (!name) return; // Existing manually named branches keep their old contract.
+  let content;
+  try { content = await read(join('changes', name), 'utf8'); }
+  catch (error) { if (error.code === 'ENOENT') return; throw error; }
+  if (content.includes('<!-- change-fragment: draft -->') || content.trim().length < 20 || !/^#\s+\S/m.test(content)) throw Error('Complete and commit the generated change fragment before publishing.');
+}
+
+export async function publishFeature({ run = command, title, bodyFile, readFragment = readFile }) {
   if (!title?.trim() || !bodyFile) throw Error('Pass --title and --body-file for the reviewable feature.');
   const branch = await run('git', ['branch', '--show-current']);
   if (!branch.startsWith('codex/')) throw Error('Publish from a codex/ feature branch, never main.');
   if (await run('git', ['status', '--porcelain'])) throw Error('Commit only the intended feature files before publishing. The checkout must be clean.');
+  await validateFragment(branch, readFragment);
+  await run('git', ['fetch', 'origin', 'main']);
+  try { await run('git', ['merge', '--no-edit', 'origin/main']); }
+  catch { throw Error('Main could not be integrated. Resolve the branch conflict and rerun feature:publish.'); }
   const repo = await run('gh', ['repo', 'view', '--json', 'nameWithOwner', '--jq', '.nameWithOwner']);
   await run('git', ['push', '-u', 'origin', branch]);
   const existing = JSON.parse(await run('gh', ['pr', 'list', '--repo', repo, '--head', branch, '--base', 'main', '--state', 'open', '--json', 'number,url,isDraft']));
@@ -39,7 +56,10 @@ export async function startFeature(name, run = command) {
   // A fresh clone avoids the shared, cloud-offloaded checkout and its drafts.
   // Existing destinations fail safely rather than being reset or overwritten.
   await run('git', ['clone', '--depth', '1', '--single-branch', '--branch', 'main', remote, checkout]);
-  await run('git', ['switch', '-c', `codex/${basename(path)}`], checkout);
+  const branch = `codex/${basename(path)}`;
+  await run('git', ['switch', '-c', branch], checkout);
+  await mkdir(join(checkout, 'changes'), { recursive: true });
+  await writeFile(join(checkout, 'changes', fragmentName(branch)), `# ${name}\n\n<!-- change-fragment: draft -->\n\n- Describe the completed change.\n- Validation: record checks actually run.\n- Limits: record any unverified behavior.\n`);
   return checkout;
 }
 

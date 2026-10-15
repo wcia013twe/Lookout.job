@@ -24,6 +24,12 @@ with `npm ci` and `npm ci --prefix next-app`. Keep the shared cloud-synced check
 and other chats' edits out of the feature. Reuse the same feature directory for
 fixes; an existing destination is never overwritten.
 
+Complete the generated `changes/<unique-feature-branch>.md` note with the
+change, checks and verification limits; remove its draft marker. Keep one note
+per task and update it for follow-ups. `CHANGELOG.md` remains the historical
+archive, so parallel tasks no longer compete over its newest entry. Existing
+branches without generated notes remain supported during migration.
+
 Implement and review the feature, run relevant local checks, and commit only its
 files. `npm test` already includes the database suite. Write the PR description
 to a file, then publish and queue with one command:
@@ -33,7 +39,15 @@ npm run feature:publish -- --title "Improve search" --body-file /tmp/search-pr.m
 npm run feature:status
 ```
 
-Publishing refuses main and dirty checkouts. It pushes the feature branch,
+Publishing refuses main, dirty checkouts and unfinished generated change notes.
+It fetches and merges current published main in the isolated task checkout before
+pushing. A conflict stops before the push or PR mutation; resolve it in that same
+checkout, rerun relevant checks and commit before retrying. A concurrent main
+update can still happen after this refresh; required GitHub CI validates the
+final integrated head before merge. Separate checkouts protect local ownership,
+but overlapping edits to the same code can still require resolution.
+
+It then pushes the feature branch,
 creates or updates one non-draft PR, adds `merge-ready`, and immediately wakes the
 queue. Retries reuse the existing PR. It does not commit unrelated files or need
 an agent to sit waiting for CI. Agents must attach the returned PR URL in Codex.
