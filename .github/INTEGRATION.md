@@ -1,6 +1,19 @@
 # Feature delivery
 
-Start each feature in a fresh checkout of published main:
+Use four rules for parallel sessions:
+
+1. One writing task, one isolated checkout, one branch. Reuse it for follow-ups.
+2. Keep the shared `main` checkout clean; edit and install dependencies in the task checkout.
+3. One PR per task. Let the existing merge queue validate and integrate it.
+4. Commit and push intentional progress before handoff. Remove the task checkout after merge only when no uncommitted work needs preserving.
+
+These rules apply to documentation and catalog updates as well as code. Before
+editing, check the current path, branch and `git status --short`. Preserve edits
+you do not own. If sessions overlap, move the new task into its own checkout.
+Agents should flag an observed workflow problem briefly and suggest the smallest
+fix; routine isolated work needs no extra confirmation or tooling.
+
+Start each task in a fresh checkout of published main:
 
 ```sh
 npm run feature:start -- search-improvements
@@ -24,6 +37,10 @@ Publishing refuses main and dirty checkouts. It pushes the feature branch,
 creates or updates one non-draft PR, adds `merge-ready`, and immediately wakes the
 queue. Retries reuse the existing PR. It does not commit unrelated files or need
 an agent to sit waiting for CI. Agents must attach the returned PR URL in Codex.
+
+At handoff, include the checkout path, branch, PR URL, checks run and any
+uncommitted work. Keep unfinished checkouts for resuming the same task. A dirty
+checkout is work to preserve or review, not permission to reset or delete it.
 
 # Merge queue
 

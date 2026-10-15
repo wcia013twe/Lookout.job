@@ -1,3 +1,8 @@
+## Simple parallel-session workflow — 2026-10-14
+
+- Documented one task/checkout/branch/PR, a clean shared main checkout, concise handoffs and preservation of unfinished work. Agents should give brief nudges for observed workflow risks and use the smallest correction. No new tools or runtime behavior.
+- Validation: catalog validation and whitespace checks passed; documentation-only change, so runtime and demo tests were not needed.
+
 ## Work-life balance and benefits — 2026-10-14
 
 Added editable Work-life balance and Employer benefits criteria to each named search profile, with independent Required/Preferred/Flexible priorities. Both remain in the shared preference instructions and advanced prompt. Fictional demo and round-trip/MCP contract coverage include these fields. Validation: preference tests, typecheck and production build; live agent analysis remains unverified.
