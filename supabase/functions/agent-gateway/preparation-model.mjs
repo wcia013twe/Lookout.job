@@ -1,8 +1,8 @@
 const clean = value => typeof value === 'string' ? value.trim() : '';
 const DAY = 86400000;
 export const PREPARATION_GUIDES = [
-  { id: 'amazon-interview', title: 'Amazon software development interview preparation', url: 'https://amazon.jobs/content/en/how-we-hire/interview-prep/software-development-topics', companies: ['amazon', 'amazon web services', 'aws', 'amazon.com'], topics: [], minutes: 30 },
-  { id: 'microsoft-interview', title: 'Microsoft technical interview preparation', url: 'https://careers.microsoft.com/v2/global/en/hiring-tips/technical-interviewing.html', companies: ['microsoft'], topics: [], minutes: 30 },
+  { id: 'amazon-interview', source: 'official', title: 'Amazon software development interview preparation', url: 'https://amazon.jobs/content/en/how-we-hire/interview-prep/software-development-topics', companies: ['amazon', 'amazon web services', 'aws', 'amazon.com'], topics: [], minutes: 30 },
+  { id: 'microsoft-interview', source: 'official', title: 'Microsoft technical interview preparation', url: 'https://careers.microsoft.com/v2/global/en/hiring-tips/technical-interviewing.html', companies: ['microsoft'], topics: [], minutes: 30 },
   { id: 'javascript', title: 'JavaScript language guide', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide', topics: ['javascript', 'typescript', 'frontend', 'react'], minutes: 30 },
   { id: 'python', title: 'Python tutorial', url: 'https://docs.python.org/3/tutorial/', topics: ['python', 'machine learning', 'ml', 'ai'], minutes: 30 },
   { id: 'postgres', title: 'PostgreSQL tutorial', url: 'https://www.postgresql.org/docs/current/tutorial.html', topics: ['sql', 'database', 'postgres', 'backend'], minutes: 30 },

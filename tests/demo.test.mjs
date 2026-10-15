@@ -207,3 +207,21 @@ test('demo search profiles include active and paused searches and reset isolated
  assert.deepEqual(reset.workflow.searchPreferences.profiles, initial.workflow.searchPreferences.profiles);
  assert.notEqual(initial.workflow.searchPreferences.profiles[0].instructions, profiles[0].instructions);
 });
+
+test('aggregated planner demo saves budget and credits shared sessions in the production memory store', async()=>{
+ const fixture=demoFixtures('2026-10-15'), store=createMemoryStore(fixture.state), services=createDemoServices(store);
+ const initial=await services.readPreparationPlanner();
+ const saved=await services.savePreparationBudget(15,initial.settings.version);
+ assert.equal(saved.settings.dailyMinutes,15);
+ await assert.rejects(()=>services.savePreparationBudget(30,0),/changed/);
+ const targets=saved.plans.filter(row=>['demo-interview','demo-confirmed'].includes(row.application_id)).map(row=>({applicationId:row.application_id,expectedVersion:row.version,taskId:row.plan.tasks.find(t=>t.key==='practice').id}));
+ const input={sessionId:'demo-shared-session',minutes:15,targets};
+ const completed=await services.completePreparationSession(input);
+ assert.equal(completed.sessions.length,1);
+ assert.ok(targets.every(t=>completed.plans.find(row=>row.application_id===t.applicationId).version===2));
+ assert.equal((await services.completePreparationSession(input)).sessions.length,1);
+ assert.equal(store.get('demo.preparationSessions').length,1);
+ assert.equal(store.get('workflow.preparationPlans.demo-interview').tasks.find(t=>t.key==='practice').completed,false);
+ assert.equal(createDemoServices(createMemoryStore(demoFixtures('2026-10-15').state)).readPreparationPlanner instanceof Function,true);
+ assert.deepEqual((await createDemoServices(createMemoryStore(demoFixtures('2026-10-15').state)).readPreparationPlanner()).sessions,[]);
+});

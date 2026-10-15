@@ -70,3 +70,11 @@ test('notification acknowledgment delegates exact event IDs for database ownersh
  await museFeatureDispatch({ operation: 'notifications.ack', payload, rpc, now });
  assert.deepEqual(calls, [{ operation: 'notifications.ack', payload }]);
 });
+test('deadline replanning preserves sourced company reports unless explicitly replaced', async()=>{
+ const report={id:'company-report',title:'Company interview report',url:'https://example.com/report',companies:['Example'],topics:['backend'],minutes:15,source:'lookout',observedAt:'2026-10-13',evidence:'Saved interview report'};
+ const previous={...context,preparation:{...context.preparation,plan:{...context.preparation.plan,guides:[report]}}};
+ const {rpc,calls}=mock(previous);
+ await museFeatureDispatch({operation:'preparation.update',payload:{applicationId:'application',expectedVersion:2,deadline:{date:'2026-10-22',confirmed:true}},rpc,now});
+ const saved=calls[1].payload.plan.guides.find(g=>g.id===report.id);
+ assert.equal(saved.source,'lookout');assert.equal(saved.evidence,report.evidence);
+});

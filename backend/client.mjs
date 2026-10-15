@@ -203,6 +203,24 @@ function createBackend(client, expectedUserId = null) {
       await owner();
       return result(client.rpc("record_application_milestone", {app_id:applicationId,payload}));
     },
+    async readPreparationPlanner() {
+      await owner();
+      const data = await result(client.rpc("read_preparation_planner"));
+      await owner();
+      return data;
+    },
+    async savePreparationBudget(dailyMinutes, expectedVersion) {
+      await owner();
+      const data = await result(client.rpc("save_preparation_budget", {next_minutes:dailyMinutes,expected_version:expectedVersion}));
+      await owner();
+      return data;
+    },
+    async completePreparationSession({sessionId,minutes,targets}) {
+      await owner();
+      const data = await result(client.rpc("complete_preparation_session", {session_id:sessionId,session_minutes:minutes,session_targets:targets}));
+      await owner();
+      return data;
+    },
     async readPreparation(applicationId) {
       const userId = await owner();
       return result(client.from("preparation_plans").select("*").eq("application_id", applicationId).eq("user_id", userId).maybeSingle());

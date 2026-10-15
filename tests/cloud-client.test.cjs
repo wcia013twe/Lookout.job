@@ -16,3 +16,11 @@ test('autosync adopts an uploaded immutable resume and rejects reused IDs with d
  const backend=createBackend(client,'owner');const adopted=await backend.createResume({id:'resume',version:1,object_path:'owner/resume.pdf',content_hash:'hash'});assert.equal(adopted,row);assert.equal(inserts,0);
  await assert.rejects(backend.createResume({id:'resume',version:1,object_path:'owner/different.pdf',content_hash:'hash'}),/different version/);assert.equal(inserts,0);
 });
+test('planner adapters reject responses after account switches and use narrow owned RPCs',async()=>{
+ const {createBackend}=await import('../backend/client.mjs');
+ for(const [method,args,rpcName] of [['readPreparationPlanner',[],'read_preparation_planner'],['savePreparationBudget',[15,2],'save_preparation_budget'],['completePreparationSession',[{sessionId:'session',minutes:15,targets:[{applicationId:'application',taskId:'task',expectedVersion:1}]}],'complete_preparation_session']]){
+  let owner='one';const calls=[];
+  const backend=createBackend({auth:{getUser:async()=>({data:{user:{id:owner}}})},rpc:async(name,payload)=>{calls.push({name,payload});owner='two';return{data:{private:'one'}};}},'one');
+  await assert.rejects(backend[method](...args),/Account changed/);assert.equal(calls.length,1);assert.equal(calls[0].name,rpcName);assert.equal(JSON.stringify(calls).includes('user_id'),false);
+ }
+});

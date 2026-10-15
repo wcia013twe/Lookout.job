@@ -35,7 +35,8 @@ export default function DemoNeedsYou() {
  function finish(task:Task,message:string){setCompleted(current=>[...current,task.id]);setActive(null);setFeedback(message);}
  function reset(){setVersion(value=>value+1);setActive(null);setCompleted([]);setFeedback('');}
  return <><Heading title="Action Board">A working preview of decisions, manual steps, and Muse-organized reminders. Everything here is fictional.</Heading>
- <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(19rem,0.65fr)]">
+ <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,0.85fr)]">
+        <PreparationReminders />
   <section className="glass-panel action-widget min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="demo-checklist-heading">
    <div className="flex items-start justify-between gap-4"><div><h2 id="demo-checklist-heading" className="text-lg font-bold">Your checklist</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Select a box, finish the handoff, and the row clears.</p></div><span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{tasks.length}</span></div>
    {feedback&&<Notice>{feedback}</Notice>}
@@ -44,6 +45,5 @@ export default function DemoNeedsYou() {
    </NeedsYouRow>})}</ul>:<div className="py-12 text-center"><h3 className="font-bold">Checklist cleared</h3><p className="mt-2 text-sm text-board-muted">The fictional handoffs are complete.</p></div>}
    <button className={`${secondary} mt-5`} onClick={reset}>Reset task preview</button>
   </section>
-  <PreparationReminders />
  </div></>;
 }

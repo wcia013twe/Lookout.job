@@ -184,3 +184,21 @@ company tiers from the owned list identified by `Company priorities / Tier list 
 its name is descriptive. This association guides job analysis and does not change
 automation review thresholds or grant submission permission. Website and MCP writes
 retain the same ownership, stale-version, and policy-injection checks.
+
+## Aggregated preparation planner
+
+`read_preparation_planner` (`workspace:read`) returns the saved daily budget,
+source plan versions, completion ledger and seven-day agenda using the same
+coverage optimization as the website. `save_preparation_budget`
+(`preferences:write`) takes `dailyMinutes` 0–240 and `expectedVersion` from that
+read. `complete_preparation_session` (`drafts:write`) records user-reported work
+with `sessionId` UUID, `minutes`, and the agenda's targets reduced to
+`{applicationId, taskId, expectedVersion}`. Reuse the same UUID and payload for
+retries. All targets are checked and credited atomically; partial practice and
+the remaining daily budget carry forward. Scheduling is not completion.
+Company evidence stays in `read_preparation_plan` and sourced `resourceGuides`
+on `update_preparation_plan`. Lookout/Glassdoor reports require company, date
+and evidence; no feed connection is implied. See
+[the planner contract](../docs/preparation-planner.md). These additions require
+the planner migration and gateway/remote MCP deployment; local tests alone do
+not establish deployed availability.
