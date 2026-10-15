@@ -79,7 +79,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           </Link>
         ))}
       </nav>
-        <div className="workspace-utilities"><div className="workspace-desktop-utilities"><ColorModeControl /><details className="workspace-progress text-sm">
+        <div className="workspace-utilities"><div className="workspace-desktop-utilities"><ColorModeControl />{!/^\/circles(?:\/|$)/.test(path)&&<details className="workspace-progress text-sm">
           <summary className="workspace-progress-trigger">
             {w.state?.progress?.xp || 0} XP ·{" "}
             {streak(w.state?.progress?.streakDays)}d streak
@@ -88,7 +88,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             Browser progress is separate from account leaderboard metrics.
           </p>
           <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link></div>
-        </details></div><ProfileMenu /></div>
+        </details>}</div><ProfileMenu /></div>
       </header>
       {w.status && !w.demo && (
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-board-muted">

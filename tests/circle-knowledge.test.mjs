@@ -154,6 +154,10 @@ test('private Circles, exact sharing consent, retrieval and citation privacy',as
 test('Circle demo exercises forum review and private citation retraction without external state',async()=>{
  const {createCircleKnowledgeDemo}=await import('../lib/circle-knowledge-demo.mjs');
  const demo=createCircleKnowledgeDemo(),circleId='demo-circle';
+ const activity=demo.action('knowledge.search',{circleId}).items;
+ assert.deepEqual(new Set(activity.filter(post=>post.state==='published').map(post=>post.content.type)),new Set(['milestone','opportunity','interview_report','resource']));
+ assert(activity.find(post=>post.id==='demo-review-draft').publishedRevision===null);
+ assert(activity.find(post=>post.id==='demo-shared-opportunity').content.uncertainty.includes('not a verified or open job'));
  const read=()=>demo.action('knowledge.read',{circleId,postId:'demo-interview-report'});
  assert.equal(read().post.helpfulPeople,3);
  const receipts=demo.action('knowledge.citations',{circleId}).items;assert.equal(receipts.length,1);

@@ -328,7 +328,18 @@ are not connected; only sourced reports saved to an interview are displayed.
 
 Private Circles now have structured knowledge threads, agent retrieval and reviewed
 publication, and “Agents used this for N people” citation counts per revision. The
-forum is `/circles/`; admin Demo mode includes fictional reports and citation history.
+dashboard is `/circles/`; admin Demo mode includes fictional interview reports,
+an offer, a shared opportunity, a private draft and citation history. The dashboard
+separates private review from shared activity, and shows the destination and author
+before publishing. Optional metadata stays behind contribution details.
+
+A signed-out-accessible conversation preview demonstrates daily roundups,
+contextual interview tips, celebrations and honest impact acknowledgments. These
+are explicitly fictional interactions; preview actions do not update applications,
+publish posts, change preparation plans or send messages. Scheduled delivery and
+in-chat human authorization are not connected. See the implementation tasks and
+acceptance criteria in [daily experience](docs/circles-daily-design.md) and
+[contribution design](docs/circles-contribution-design.md).
 The database gate stays disabled pending hosted two-account permission checks.
 Freeform/personal sharing requires exact human review; optional standing permission
 is limited to a closed public-documentation template. See
