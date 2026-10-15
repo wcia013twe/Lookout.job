@@ -13,10 +13,10 @@
 .experience :global(.pack-head),.experience :global(.pack-tools),.experience :global(.pack-foot) { position:relative; z-index:5; flex-shrink:0; }
 .experience :global(.pack-seal) { display:flex; flex:1; min-height:0; align-items:center; justify-content:center; flex-direction:column; gap:18px; overflow:auto; padding:12px 20px 24px; }
 .experience :global(.pack-seal-art) { position:relative; flex-shrink:0; width:min(300px,74vw); height:min(410px,53dvh); min-height:260px; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid #54486d; border-radius:16px; background:#060810; box-shadow:0 24px 54px -18px #000d; }
-.experience :global(.seal-shard) { position:absolute; inset:0; border-radius:16px; background:radial-gradient(ellipse at 50% 16%,#25203a 0,transparent 48%),linear-gradient(145deg,#111321,#060810 58%,#171024); pointer-events:none; }
+.experience :global(.seal-shard) { position:absolute; inset:0; border-radius:16px; background:radial-gradient(ellipse at 16% 22%,#7edff84f,transparent 42%),radial-gradient(ellipse at 82% 74%,#ffd98f4a,transparent 44%),radial-gradient(ellipse at 64% 18%,#d9b7ff45,transparent 38%),linear-gradient(145deg,#111827,#080a12 64%,#171024); pointer-events:none; }
 .experience :global(.seal-shard-top) { clip-path:polygon(0 0,100% 0,100% 42%,92% 46%,85% 41%,77% 48%,70% 44%,62% 49%,55% 43%,47% 47%,39% 42%,31% 48%,23% 44%,15% 49%,8% 43%,0 47%); }
 .experience :global(.seal-shard-bottom) { clip-path:polygon(0 47%,8% 43%,15% 49%,23% 44%,31% 48%,39% 42%,47% 47%,55% 43%,62% 49%,70% 44%,77% 48%,85% 41%,92% 46%,100% 42%,100% 100%,0 100%); }
-.experience :global(.seal-copy) { position:relative; z-index:4; display:flex; flex-direction:column; text-align:center; align-items:center; gap:20px; padding:56px 18px 24px; pointer-events:none; }
+.experience :global(.seal-copy) { position:relative; z-index:4; display:flex; flex-direction:column; text-align:center; align-items:center; gap:20px; padding:56px 18px 24px; text-shadow:0 2px 20px #02030ae6,0 1px 3px #000; pointer-events:none; }
 .experience :global(.seal-copy strong) { font-size:clamp(34px,7vw,48px); letter-spacing:-.03em; line-height:1.06; font-weight:800; }
 .experience :global(.seal-copy > span:last-child) { font-size:14px; color:#f0e8ff; }
 .experience :global(.seal-edition) { font-size:11px; font-weight:750; letter-spacing:.09em; }

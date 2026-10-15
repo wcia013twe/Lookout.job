@@ -3,6 +3,7 @@
 - Centralized production pack CSS, shader material and typed motion/effect presets in `next-app/styles/templates/`; pack content now selects the restrained or high-tier template dynamically without changing factual tier colors.
 - Slowed the final-tier reveal, added a brighter outward flare and denser shader burst, removed Previous/Next controls, advanced completed cards forward automatically and added a final grid of every revealed role.
 - Replaced the sealed pack's purple horizontal ribbing with dark foil, one content-selected spectral seam and subtle shader grain. The final reveal now expands from a white-hot core into long tier-colored rays and a sharper star-particle corona.
+- Broadened the sealed foil's narrow diagonal seam into the selected smooth pearlescent treatment: cyan-gold-violet color travel, a pointer-responsive white reflection, edge sheen and minimal grain so it reads as card material instead of a laser.
 - Validation: 283/284 repository tests passed (the sole failure is the existing Windows CRLF/LF strict comparison in `platform-outreach.test.mjs`), 76-role catalog validation, frontend typecheck, production static export, whitespace checks, and a clean 390×844 browser inspection passed. The browser pass confirmed the longer final-tier burst, automatic forward progression, removal of Previous/Next, and the final revealed-card grid; physical mobile GPU performance remains unverified.
 
 ## Mobile workspace density — 2026-10-14

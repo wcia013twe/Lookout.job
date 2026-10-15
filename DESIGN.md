@@ -149,8 +149,10 @@ keyboard focus. Touch and reduced-motion users receive a static material.
 Zero2Sudo history uses compact native disclosures with separate skipped rows. The
 pack uses a native modal dialog and restores focus on close. Its visual and motion
 templates live in `next-app/styles/templates/` and are selected from pack content,
-while factual tier colors remain data-driven. The sealed face is near-black foil
-with one spectral seam and subtle grain, never a decorative grid or striped field.
+while factual tier colors remain data-driven. The sealed face uses smooth
+pearlescent foil: broad cyan-gold-violet color travel, a pointer-responsive white
+specular reflection and very low grain, never a decorative grid, stripe or
+laser-like line.
 Foil tearing, tier upgrades and bounded sparks run only while the pack is active;
 the final tier earns a slower white-hot core, long tier-colored rays and particle
 corona. Completed cards advance forward automatically and finish in a compact grid.
