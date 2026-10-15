@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { advanceStage, canClaimPack, demoDrops, dropKey, groupPack, packComplete, tierOf } from '../next-app/lib/drop-pack.ts';
-import { resolvePackStyle, selectPackStyle } from '../next-app/styles/templates/pack-styles.ts';
+import { PACK_TEXTURES, resolvePackStyle, resolvePackTexture, selectPackStyle } from '../next-app/styles/templates/pack-styles.ts';
 
 test('Next pack pairs tracks by company without losing extra roles or crossing companies', () => {
  const drops=demoDrops('2026-10-14').slice(0,4);
@@ -40,4 +40,9 @@ test('pack reveal styles select dynamically and unknown styles fail to the restr
  assert.equal(selectPackStyle(['mythic']),'supernova');
  assert.equal(resolvePackStyle('supernova').motion.finalRevealDuration,1.28);
  assert.equal(resolvePackStyle('unknown').id,'prismatic');
+});
+test('pack textures expose the original plus five named choices and reject unknown preferences', () => {
+ assert.deepEqual(PACK_TEXTURES.map(texture=>texture.id),['base','aurora','solar','ultraviolet','lagoon','spectrum']);
+ assert.equal(resolvePackTexture('lagoon').image,'textures/pack-lagoon.jpg');
+ assert.equal(resolvePackTexture('unknown').id,'base');
 });

@@ -1,6 +1,13 @@
 import type { Tier } from "../../lib/drop-pack";
 
 export type PackStyleId = "prismatic" | "supernova";
+export type PackTextureId = "base" | "aurora" | "solar" | "ultraviolet" | "lagoon" | "spectrum";
+
+export type PackTexture = {
+  id: PackTextureId;
+  label: string;
+  image: string | null;
+};
 
 export type PackEffectsTemplate = {
   foilTint: string;
@@ -31,6 +38,15 @@ export type PackStyleTemplate = {
   };
   effects: PackEffectsTemplate;
 };
+
+export const PACK_TEXTURES: readonly PackTexture[] = [
+  { id: "base", label: "Original", image: null },
+  { id: "aurora", label: "Aurora", image: "textures/pack-aurora.jpg" },
+  { id: "solar", label: "Solar", image: "textures/pack-solar.jpg" },
+  { id: "ultraviolet", label: "Ultraviolet", image: "textures/pack-ultraviolet.jpg" },
+  { id: "lagoon", label: "Lagoon", image: "textures/pack-lagoon.jpg" },
+  { id: "spectrum", label: "Spectrum", image: "textures/pack-spectrum.jpg" },
+];
 
 export const PACK_STYLE_TEMPLATES: Record<PackStyleId, PackStyleTemplate> = {
   prismatic: {
@@ -105,4 +121,8 @@ export function selectPackStyle(tiers: Tier[]): PackStyleId {
 
 export function resolvePackStyle(id?: string): PackStyleTemplate {
   return PACK_STYLE_TEMPLATES[id as PackStyleId] || PACK_STYLE_TEMPLATES.prismatic;
+}
+
+export function resolvePackTexture(id?: string): PackTexture {
+  return PACK_TEXTURES.find((texture) => texture.id === id) || PACK_TEXTURES[0];
 }
