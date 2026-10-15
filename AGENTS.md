@@ -18,7 +18,14 @@
 - When a current candidate resume or profile is available in the workspace, ground each top-priority recommendation in concrete matching evidence and one material gap. Never invent resume experience; otherwise state that the resume comparison is unavailable.
 - Run `npm run validate:data` before committing. Commit and push only the relevant dashboard/data changes.
 
-## UI development workflow
+## Simple session workflow
+
+- One writing task, one isolated checkout, one `codex/` branch and one PR. This applies to code, documentation, catalog updates and dependency changes. Reuse the same checkout and branch for follow-ups; do not let two sessions write in it concurrently.
+- Keep the shared `main` checkout for inspection and fast-forward updates. Make edits and install dependencies in the task checkout. Preserve unfamiliar edits; never reset, restore or stash another session's work to make a checkout clean.
+- Commit and push intentional progress before handing off or ending unfinished work. Report the checkout path, branch, PR, checks run and any remaining uncommitted work. After merge, remove the task checkout only when its work is committed or deliberately backed up.
+- Give a brief, specific nudge when work risks crossing these boundaries: name the observed issue and the smallest correction, then continue safe independent work. For example: "This checkout is already being edited by another session; I'll start an isolated checkout for this task." Do not add approval rituals, new workflow tooling or recurring reminders for hypothetical problems. When ownership is unclear and proceeding could overwrite work, ask a focused question.
+
+## Development and delivery
 
 - Start every feature with `npm run feature:start -- <name>` from this repository. Work only in the returned fresh checkout; run `npm ci` and `npm ci --prefix next-app` there. This prevents shared edits, stale main, Git index races, and cloud-offloaded dependencies. Reuse that checkout for follow-ups.
 - Commit the intended files, then run `npm run feature:publish -- --title "<feature>" --body-file <absolute-pr-description-file>`. This pushes, creates/updates a non-draft PR, labels it `merge-ready`, and immediately wakes the queue. Do not manually poll CI or merge each PR; inspect `npm run feature:status` when status is needed. Conflict or failed-check fixes stay on the same branch and use the same publish command.
