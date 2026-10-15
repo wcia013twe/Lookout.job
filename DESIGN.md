@@ -172,14 +172,23 @@ composition. Preference changes never alter account or demo records.
 
 Light workspace actions use one navy primary and blue-gray secondary system,
 including application-tracker actions and the pack dialog's surrounding chrome.
-Expressive objects inside the pack keep their tier and foil colors. Needs You is
-an intentional always-dark attention surface in either mode: tasks form a
-responsive two-column grid of solid navy, plum, oxblood and indigo cards with
-cyan or yellow accents, thin hue-aware borders and white copy. The grid becomes
-one column on small screens; an expanded task spans both desktop columns so its
-inline form remains comfortable. Card actions keep the shared 44px geometry,
-while their scoped colors inherit the card accent and dark form controls retain
-light text in both workspace themes.
+Expressive objects inside the pack keep their tier and foil colors. Needs You
+uses the shared workspace panel and compact divided-row treatment so its tasks
+match neighboring application surfaces in both color modes.
+
+#### Archived palette: Needs You solid cards (inactive)
+
+The solid-card exploration is retained for future use but is not applied to the
+current interface. Its four colorways were:
+
+| Colorway | Surface | Border | Accent | Button ink |
+| --- | --- | --- | --- | --- |
+| Navy | `#102033` | `#285f7d` | `#59c7f8` | `#071923` |
+| Plum | `#30133a` | `#765537` | `#ffd34d` | `#211804` |
+| Oxblood | `#3a1421` | `#8a572c` | `#ffc948` | `#211604` |
+| Indigo | `#14243a` | `#356b8d` | `#63c8f5` | `#071923` |
+
+All four used `#f8fbff` primary copy and `#cad7e5` muted copy.
 
 Onboarding uses the approved video-call-style companion setup room within the full-screen dark-glass setting: near-black navy backdrop, static curved illuminated upper band, and a translucent room with a centered selected companion in the focused speaker area and three participant tiles in a right sidebar on desktop or a bottom strip on mobile. Intact supplied images appear in the preview and participant tiles. A nameplate identifies the selected companion, while a status notice announces that it joined the setup room and explicitly labels the experience “Preview only.” Native radios select a companion, platform suggestions, or another agent. Room corners are 16px, participant corners 10px, and selected participants use pale cyan borders, a blue fill, and the label “Focused.” These `.call-*` patterns belong to onboarding within `.setup-experience`; shared workspace tokens remain unchanged. No live-call controls or motion are enabled. Character metadata reserves `animation: null` slots for future supplied media.
 
