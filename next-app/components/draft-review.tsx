@@ -227,7 +227,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     const link = document.createElement("a"); link.href=url; link.download="interview-experience-draft.txt"; link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
   return <dialog ref={dialog} onCancel={onClose} aria-labelledby="draft-review-heading" className="tracker-detail tracker-surface">
-    <header className="tracker-detail-header"><CompanyMark company={current.company}/><div><h2 id="draft-review-heading">{current.title}</h2><p>{current.company}</p></div><button className="tracker-button tracker-close" onClick={onClose} aria-label="Close application details"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <header className="tracker-detail-header"><CompanyMark company={current.company}/><div><h2 id="draft-review-heading">{current.title}</h2><p>{current.company}</p></div><button className="tracker-button tracker-close workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={onClose} aria-label="Close application details"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
     <div className="tracker-detail-grid"><div className="tracker-detail-main">
       <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Resume Match","Email","Questions","Rounds"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
       <div className="tracker-detail-content">
@@ -379,7 +379,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
         </fieldset>
       </form>
 </>}
-        {tab === "Rounds" && <><div className="tracker-section-heading"><h3>Interview rounds & history</h3><button className="tracker-button" onClick={createExperience}>Create experience card</button></div>      <Section title="Application timeline">
+        {tab === "Rounds" && <><div className="tracker-section-heading"><h3>Interview rounds & history</h3><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={createExperience}>Create experience card</button></div>      <Section title="Application timeline">
         <ApplicationTimeline application={current} demo={w.demo}/>
         {workflow && <TimelineEditor application={current}/>}
         <details className="mt-5"><summary className="min-h-11 cursor-pointer py-3 text-sm text-board-muted">Application activity</summary>
@@ -396,7 +396,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
         </ol>
         </details>
       </Section>
-{experience !== null && <section className="tracker-experience"><h3>Experience card preview</h3><p>Private draft. Edit what you want to share; nothing is published automatically.</p><label>Card content<textarea value={experience} maxLength={12000} onChange={e=>setExperience(e.target.value)}/></label><button className="tracker-button tracker-primary" onClick={downloadExperience}>Download draft</button><button className="tracker-button" onClick={()=>setExperience(null)}>Cancel</button></section>}</>}
+{experience !== null && <section className="tracker-experience"><h3>Experience card preview</h3><p>Private draft. Edit what you want to share; nothing is published automatically.</p><label>Card content<textarea value={experience} maxLength={12000} onChange={e=>setExperience(e.target.value)}/></label><button className="tracker-button tracker-primary workspace-primary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={downloadExperience}>Download draft</button><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>setExperience(null)}>Cancel</button></section>}</>}
       </div>
     </div><aside className="tracker-detail-sidebar"><section className="tracker-status-panel"><h3>Application Status</h3>{!workflow && <label>Hiring stage<select aria-label="Update hiring stage" disabled={w.locked} value={current.status} onChange={e=>{const status=e.target.value;awardStatus(w.store,id,status);w.store.update("tracker.items",(items:Record<string,unknown>)=>({...items,[id]:{...w.state.tracker.items[id],status,statusDate:dayStamp(),...(status!=="New"&&!w.state.tracker.items[id]?.appliedDate?{appliedDate:dayStamp()}:{})}}));}}>{["New","Applied","OA","Phone Screen","Interview","Onsite","Offer","Rejected","Withdrawn"].map(s=><option key={s} value={s}>{s==="New"?"Opened":s}</option>)}</select></label>}<TrackerProgress application={current} item={w.state.tracker.items[id] || {}} vertical/><details className="tracker-update"><summary>Update status</summary>      <Section title="Update application progress">
         <p className="mb-4 text-sm text-board-muted">
@@ -446,6 +446,6 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </div>
         )}
       </Section>
-</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button" onClick={()=>setTab("Rounds")}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
+</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>setTab("Rounds")}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
   </dialog>;
 }

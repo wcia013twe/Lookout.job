@@ -52,7 +52,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
   }
   return (
-    <MotionConfig reducedMotion="user"><main className={`workspace-shell ${/^\/applications\/?$/.test(path) ? "tracker-workspace" : ""} mx-auto min-h-dvh max-w-6xl px-4 pb-[calc(5.75rem+env(safe-area-inset-bottom))] pt-4 md:px-6 md:py-8`} onClickCapture={event=>{
+    <MotionConfig reducedMotion="user"><main className={`workspace-shell mx-auto min-h-dvh max-w-6xl px-4 pb-[calc(5.75rem+env(safe-area-inset-bottom))] pt-4 md:px-6 md:py-8`} onClickCapture={event=>{
         if(!w.demo)return;
         const target = event.target as HTMLElement;
         if(target instanceof HTMLInputElement && target.type==='file'){event.preventDefault();return;}

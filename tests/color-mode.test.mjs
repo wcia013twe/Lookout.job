@@ -36,9 +36,8 @@ test('first paint follows system without a valid saved preference', () => {
 test('blocked storage still renders the system palette', () => {
   assert.deepEqual(firstPaint(null,true,true),{colorMode:'system',theme:'dark'});
 });
-test('application tracker scopes its light palette instead of overriding dark mode', () => {
-  assert.match(trackerCss, /\.workspace-shell\.tracker-workspace\s*\{[^}]*--color-board-bg:#0b1422[^}]*background:var\(--color-board-bg\)/);
-  assert.match(trackerCss, /\[data-theme="light"\] \.workspace-shell\.tracker-workspace\s*\{[^}]*--color-board-bg:#fff/);
-  assert.doesNotMatch(trackerCss, /\.tracker-surface\s*\{[^}]*background:#fff/);
-  assert.match(trackerCss, /\.tracker-surface\s*\{[^}]*background:var\(--color-board-panel\)/);
+test('application tracker inherits the workspace palette in both themes', () => {
+  assert.doesNotMatch(trackerCss, /--(?:color-board|workspace-action)-[\w-]+\s*:/);
+  assert.doesNotMatch(trackerCss, /tracker-workspace/);
+  assert.match(trackerCss, /\.tracker-detail\s*\{[^}]*background:var\(--color-board-panel\)/);
 });
