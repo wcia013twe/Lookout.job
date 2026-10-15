@@ -7,17 +7,18 @@ import { useWorkspace } from "../lib/workspace";
 import { claimPack, dayStamp } from "../lib/progress.mjs";
 import { advanceStage, canClaimPack, dropKey, groupPack, packComplete, tierOf, tierOrder, type Drop, type Stage, type Tier } from "../lib/drop-pack";
 import { RARITY_LABEL, TIER_HEX } from "../lib/role-display";
+import { resolvePackStyle, selectPackStyle, type PackStyleId, type PackStyleTemplate } from "../styles/templates/pack-styles";
 import { CompanyLogo } from "./role-card";
 import PackEffects from "./pack-effects";
-import styles from "./pack-opening.module.css";
+import styles from "../styles/templates/pack-opening.module.css";
 
-type Props = { drops: Drop[]; day: string; onClose: () => void };
+type Props = { drops: Drop[]; day: string; onClose: () => void; styleId?: PackStyleId };
 
 function pulse(tier?: Tier) {
   if (typeof navigator.vibrate === "function") navigator.vibrate(tier && tierOrder.indexOf(tier) >= 3 ? [18, 30, 28] : 12);
 }
 
-export default function PackOpening({ drops, day, onClose }: Props) {
+export default function PackOpening({ drops, day, onClose, styleId }: Props) {
   const w = useWorkspace();
   const reduced = useReducedMotion();
   const root = useRef<HTMLDialogElement>(null);
@@ -27,6 +28,7 @@ export default function PackOpening({ drops, day, onClose }: Props) {
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
   const groups = useMemo(() => groupPack(drops), [drops]);
+  const template = useMemo(() => resolvePackStyle(styleId || selectPackStyle(drops.map(tierOf))), [drops, styleId]);
   const [mounted, setMounted] = useState(false);
   const [phase, setPhase] = useState<"sealed" | "tearing" | "open">("sealed");
   const [tearProgress, setTearProgress] = useState(0);
@@ -35,11 +37,13 @@ export default function PackOpening({ drops, day, onClose }: Props) {
   const [stages, setStages] = useState<Record<string, Stage>>(() => Object.fromEntries(drops.map(drop => [dropKey(drop), w.state.drops.seenDropIds?.includes(dropKey(drop)) ? "back" : "mystery"])));
   const [feedback, setFeedback] = useState("");
   const [claimed, setClaimed] = useState(false);
+  const [summary, setSummary] = useState(false);
   const complete = packComplete(drops, stages);
   const revealed = drops.filter(drop => stages[dropKey(drop)] === tierOf(drop)).length;
   const rewarded = Boolean(w.state.drops.packRewards?.[day]);
   const historical = day !== dayStamp();
   const active = groups[index];
+  const activeComplete = Boolean(active?.drops.every(drop => stages[dropKey(drop)] === tierOf(drop)));
 
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
@@ -58,6 +62,20 @@ export default function PackOpening({ drops, day, onClose }: Props) {
       previous?.isConnected && previous.focus({ preventScroll: true });
     };
   }, [mounted, w.store]);
+  useEffect(() => {
+    if (phase !== "open" || summary || !activeComplete) return;
+    const timer = window.setTimeout(() => {
+      const restoreFocus = Boolean(root.current?.contains(document.activeElement));
+      if (complete) {
+        setSummary(true);
+        if (restoreFocus) requestAnimationFrame(() => root.current?.querySelector<HTMLElement>(".pack-summary h3")?.focus({ preventScroll: true }));
+        return;
+      }
+      setIndex(value => Math.min(value + 1, groups.length - 1));
+      if (restoreFocus) requestAnimationFrame(() => root.current?.querySelector<HTMLButtonElement>(".pack-row button")?.focus({ preventScroll: true }));
+    }, reduced ? 0 : template.motion.finalHoldMs);
+    return () => window.clearTimeout(timer);
+  }, [active?.key, activeComplete, complete, groups.length, index, phase, reduced, summary, template.motion.finalHoldMs]);
 
   function emit(name: string) { root.current?.dispatchEvent(new CustomEvent(name, { bubbles: true })); }
   function seen(items: Drop[]) {
@@ -91,7 +109,7 @@ export default function PackOpening({ drops, day, onClose }: Props) {
     if (stages[key] === tier) return;
     setStages(previous => ({ ...previous, [key]: tier }));
     seen([drop]);
-    card.dispatchEvent(new CustomEvent("dropcard:stage", { bubbles: true, detail: { tier } }));
+    card.dispatchEvent(new CustomEvent("dropcard:stage", { bubbles: true, detail: { tier, final: tier === tierOf(drop) } }));
     pulse(tier);
   }
   function revealAll() {
@@ -100,9 +118,8 @@ export default function PackOpening({ drops, day, onClose }: Props) {
     seen(drops);
     const card = root.current?.querySelector<HTMLElement>(".dropcard");
     const tier = active ? tierOf(active.drops[0]) : "rare";
-    card?.dispatchEvent(new CustomEvent("dropcard:stage", { bubbles: true, detail: { tier } }));
+    card?.dispatchEvent(new CustomEvent("dropcard:stage", { bubbles: true, detail: { tier, final: true } }));
     pulse(tier);
-    requestAnimationFrame(() => root.current?.querySelector<HTMLButtonElement>(".pack-foot button")?.focus({ preventScroll: true }));
   }
   function claim() {
     if (!canClaimPack(drops, stages, day, dayStamp()) || claimed) return;
@@ -116,7 +133,7 @@ export default function PackOpening({ drops, day, onClose }: Props) {
   if (!mounted) return null;
   const sealMotion = { duration: reduced ? 0 : 0.6, ease: [0.16, 1, 0.3, 1] as const };
   return createPortal(
-    <dialog ref={root} className={styles.experience} data-sealed={phase !== "open"} data-phase={phase} aria-labelledby="drop-pack-title" onCancel={event => { event.preventDefault(); close(); }} onClick={event => { if (event.target === root.current) close(); }}>
+    <dialog ref={root} className={styles.experience} style={template.variables as CSSProperties} data-pack-style={template.id} data-sealed={phase !== "open"} data-phase={phase} aria-labelledby="drop-pack-title" onCancel={event => { event.preventDefault(); close(); }} onClick={event => { if (event.target === root.current) close(); }}>
       <div className="pack-modal">
         <header className="pack-head">
           <div><h2 id="drop-pack-title">Daily drop pack</h2><p>{day} · {drops.length} opportunities{w.demo ? " · Fictional demo" : ""}</p></div>
@@ -132,26 +149,30 @@ export default function PackOpening({ drops, day, onClose }: Props) {
           <p className="seal-instruction" role="status">{phase === "tearing" ? "Opening your pack…" : "Break the seal. See what’s inside."}</p>
           {historical && <p className="pack-history">Replay of {day} · daily XP is awarded only for today’s pack.</p>}
         </section> : <>
-          <div className="pack-tools"><p role="status">{revealed} / {drops.length} revealed</p><button type="button" onClick={revealAll} disabled={complete}>Reveal all</button></div>
-          <div className="pack-row">
-            <AnimatePresence initial={false} mode="wait">
-              <motion.div key={active?.key} className="pack-group" initial={reduced ? false : { opacity: 0.7, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={reduced ? undefined : { opacity: 0, x: -12 }} transition={{ duration: reduced ? 0 : 0.2 }}>
-                {active?.drops.length === 2 && !split[active.key] ? <button type="button" className="double-combo" onClick={() => { setSplit(previous => ({ ...previous, [active.key]: true })); seen(active.drops); emit("pack:charge"); requestAnimationFrame(() => root.current?.querySelector<HTMLButtonElement>(".pack-row button")?.focus({ preventScroll: true })); }}><span className="double-badge">2-in-1 drop</span><strong aria-hidden="true">2?</strong><span>Full-time + internship</span><span className="dropcard-hint">Tap to split your two drops</span></button> : <div className={active?.drops.length === 2 ? "double-split" : "single-drop"}>
-                  {active?.drops.map(drop => <RevealCard key={dropKey(drop)} drop={drop} stage={stages[dropKey(drop)]} reduced={Boolean(reduced)} demo={w.demo} onAdvance={advance} />)}
-                </div>}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-          <nav className="pack-nav" aria-label="Pack cards"><button type="button" disabled={index === 0} onClick={() => { setIndex(value => value - 1); emit("pack:charge"); }}>Previous</button><span>Card {index + 1} of {groups.length}</span><button type="button" disabled={index === groups.length - 1} onClick={() => { setIndex(value => value + 1); emit("pack:charge"); }}>Next</button></nav>
-          {complete && <footer className="pack-foot"><p role="status">{drops.length} drops fully revealed{historical ? " · Historical replay" : ""}</p>{historical ? <button type="button" onClick={close}>Done</button> : <button type="button" onClick={claim} disabled={claimed}>{claimed ? rewarded ? "Pack complete" : "+25 XP collected" : rewarded ? "Done · XP already claimed" : "Claim +25 XP"}</button>}{feedback && <p role="status">{feedback}</p>}</footer>}
+          {!summary ? <>
+            <div className="pack-tools"><p role="status">{revealed} / {drops.length} revealed · Drop {index + 1} of {groups.length}</p><button type="button" onClick={revealAll} disabled={complete}>Reveal all</button></div>
+            <div className="pack-row">
+              <AnimatePresence initial={false} mode="wait">
+                <motion.div key={active?.key} className="pack-group" initial={reduced ? false : { opacity: 0.55, x: template.motion.forwardDistance, filter: "blur(8px)" }} animate={{ opacity: 1, x: 0, filter: "blur(0px)" }} exit={reduced ? undefined : { opacity: 0, x: -template.motion.forwardDistance, scale: 0.96, filter: "blur(8px)" }} transition={{ duration: reduced ? 0 : template.motion.forwardDuration, ease: [0.16, 1, 0.3, 1] }}>
+                  {active?.drops.length === 2 && !split[active.key] ? <button type="button" className="double-combo" onClick={() => { setSplit(previous => ({ ...previous, [active.key]: true })); seen(active.drops); emit("pack:charge"); requestAnimationFrame(() => root.current?.querySelector<HTMLButtonElement>(".pack-row button")?.focus({ preventScroll: true })); }}><span className="double-badge">2-in-1 drop</span><strong aria-hidden="true">2?</strong><span>Full-time + internship</span><span className="dropcard-hint">Tap to split your two drops</span></button> : <div className={active?.drops.length === 2 ? "double-split" : "single-drop"}>
+                    {active?.drops.map(drop => <RevealCard key={dropKey(drop)} drop={drop} stage={stages[dropKey(drop)]} reduced={Boolean(reduced)} demo={w.demo} template={template} onAdvance={advance} />)}
+                  </div>}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </> : <motion.section className="pack-summary" aria-labelledby="pack-summary-title" initial={reduced ? false : { opacity: 0.5, scale: 0.97, filter: "blur(8px)" }} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ duration: reduced ? 0 : template.motion.forwardDuration, ease: [0.16, 1, 0.3, 1] }}>
+            <h3 id="pack-summary-title" tabIndex={-1}>Your revealed drops</h3>
+            <div className="summary-grid">{drops.map(drop => <SummaryCard key={dropKey(drop)} drop={drop} demo={w.demo} />)}</div>
+          </motion.section>}
+          {summary && complete && <footer className="pack-foot"><p role="status">{drops.length} drops fully revealed{historical ? " · Historical replay" : ""}</p>{historical ? <button type="button" onClick={close}>Done</button> : <button type="button" onClick={claim} disabled={claimed}>{claimed ? rewarded ? "Pack complete" : "+25 XP collected" : rewarded ? "Done · XP already claimed" : "Claim +25 XP"}</button>}{feedback && <p role="status">{feedback}</p>}</footer>}
         </>}
       </div>
-      <PackEffects rootRef={root} reducedMotion={Boolean(reduced)} />
+      <PackEffects rootRef={root} reducedMotion={Boolean(reduced)} template={template.effects} />
     </dialog>, document.body,
   );
 }
 
-function RevealCard({ drop, stage, reduced, demo, onAdvance }: { drop: Drop; stage: Stage; reduced: boolean; demo: boolean; onAdvance: (drop: Drop, element: HTMLElement) => void }) {
+function RevealCard({ drop, stage, reduced, demo, template, onAdvance }: { drop: Drop; stage: Stage; reduced: boolean; demo: boolean; template: PackStyleTemplate; onAdvance: (drop: Drop, element: HTMLElement) => void }) {
   const element = useRef<HTMLElement>(null);
   const swipe = useRef<number | null>(null);
   const swiped = useRef(false);
@@ -172,11 +193,12 @@ function RevealCard({ drop, stage, reduced, demo, onAdvance }: { drop: Drop; sta
     onAdvance(drop, element.current);
   };
   return <motion.article ref={element} tabIndex={-1} className={`dropcard t-${tier} ${stage === "back" || stage === "mystery" ? "unrevealed" : ""}`} data-revealed={complete} data-tier={tier} style={{ "--tier": TIER_HEX[tier], "--tier-ink": tier === "mythic" ? "#fff" : "#08101e", rotateX: reduced ? 0 : springX, rotateY: reduced ? 0 : springY } as MotionStyle} onPointerMove={event => { if (reduced || event.pointerType !== "mouse") return; const r = event.currentTarget.getBoundingClientRect(); tiltX.set(((event.clientY - r.top) / r.height - 0.5) * -8); tiltY.set(((event.clientX - r.left) / r.width - 0.5) * 10); }} onPointerLeave={() => { tiltX.set(0); tiltY.set(0); }}>
-    <motion.div key={stage} className="dropcard-stage" initial={reduced ? false : { opacity: 0.45, scale: complete ? 0.76 : 0.9, filter: `brightness(${complete ? 2.6 : 1.9}) saturate(1.8) blur(${complete ? 10 : 5}px)` }} animate={{ opacity: 1, scale: 1, filter: "brightness(1) saturate(1) blur(0px)" }} transition={{ duration: reduced ? 0 : complete ? 0.68 : 0.46, ease: [0.16, 1, 0.3, 1] }}>
+    {complete && !reduced && <motion.span aria-hidden="true" className="final-burst" initial={{ opacity: 0, scale: 0.2 }} animate={{ opacity: [0, 1, 0.82, 0], scale: [0.2, 0.52, 1.45, template.motion.flareScale] }} transition={{ duration: template.motion.flareDuration, times: [0, 0.16, 0.52, 1], ease: [0.16, 1, 0.3, 1] }} />}
+    <motion.div key={stage} className="dropcard-stage" initial={reduced ? false : { opacity: 0.45, scale: complete ? 0.7 : 0.9, filter: `brightness(${complete ? 3.2 : 1.9}) saturate(${complete ? 2.2 : 1.8}) blur(${complete ? 14 : 5}px)` }} animate={{ opacity: 1, scale: 1, filter: "brightness(1) saturate(1) blur(0px)" }} transition={{ duration: reduced ? 0 : complete ? template.motion.finalRevealDuration : template.motion.stageDuration, ease: [0.16, 1, 0.3, 1] }}>
       {stage === "back" || stage === "mystery" ? <button type="button" className="card-mystery" onClick={() => { if (swiped.current) { swiped.current = false; return; } doAdvance(); }} onPointerDown={event => { swipe.current = event.clientX; }} onPointerUp={event => { if (swipe.current !== null && Math.abs(event.clientX - swipe.current) > 60) { swiped.current = true; doAdvance(); } swipe.current = null; }}><span>{stage === "mystery" ? "A new opportunity awaits" : "Your next drop"}</span><strong aria-hidden="true">?</strong><span className="dropcard-hint">Tap or swipe to reveal</span></button> : <>
         {complete ? <div className="card-revealed">
           <span className="drop-tier">{RARITY_LABEL[tier]}</span>
-          <motion.div className="reveal-logo" initial={reduced ? false : { scale: 0.45 }} animate={{ scale: 1 }} transition={{ duration: reduced ? 0 : 0.72, ease: [0.16, 1, 0.3, 1] }}><CompanyLogo company={drop.company} /></motion.div>
+          <motion.div className="reveal-logo" initial={reduced ? false : { scale: 0.3, filter: "brightness(3) blur(6px)" }} animate={{ scale: 1, filter: "brightness(1) blur(0px)" }} transition={{ duration: reduced ? 0 : template.motion.finalRevealDuration, ease: [0.16, 1, 0.3, 1] }}><CompanyLogo company={drop.company} /></motion.div>
           <div className="reveal-copy"><p>{drop.company}</p><h3>{drop.title}</h3></div>
           <p className="reveal-meta">{[drop.type === "FT" ? "Full-time" : drop.type, drop.location, drop.comp].filter(Boolean).join(" · ")}</p>
           <div className="reveal-actions"><span className="drop-status">{drop.status}</span>{drop.url && !demo && <a className="dropcard-link" href={drop.url} target="_blank" rel="noopener noreferrer">Open posting</a>}</div>
@@ -190,4 +212,13 @@ function RevealCard({ drop, stage, reduced, demo, onAdvance }: { drop: Drop; sta
       </>}
     </motion.div>
   </motion.article>;
+}
+
+function SummaryCard({ drop, demo }: { drop: Drop; demo: boolean }) {
+  const tier = tierOf(drop);
+  return <article className={`summary-card t-${tier}`} style={{ "--tier": TIER_HEX[tier] } as CSSProperties}>
+    <div className="summary-card-head"><CompanyLogo company={drop.company} /><div className="summary-card-title"><p>{drop.company} · {RARITY_LABEL[tier]}</p><h4>{drop.title}</h4></div></div>
+    <p className="summary-meta">{[drop.type === "FT" ? "Full-time" : drop.type, drop.location].filter(Boolean).join(" · ")}</p>
+    <div className="summary-actions"><span className="drop-status">{drop.status}</span>{drop.url && !demo && <a className="dropcard-link" href={drop.url} target="_blank" rel="noopener noreferrer">Open posting</a>}</div>
+  </article>;
 }
