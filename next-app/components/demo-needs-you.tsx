@@ -35,15 +35,15 @@ export default function DemoNeedsYou() {
  function finish(task:Task,message:string){setCompleted(current=>[...current,task.id]);setActive(null);setFeedback(message);}
  function reset(){setVersion(value=>value+1);setActive(null);setCompleted([]);setFeedback('');}
  return <><Heading title="Action Board">A working preview of decisions, manual steps, and Muse-organized reminders. Everything here is fictional.</Heading>
- <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,0.85fr)]">
-        <PreparationReminders />
-  <section className="glass-panel action-widget min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="demo-checklist-heading">
-   <div className="flex items-start justify-between gap-4"><div><h2 id="demo-checklist-heading" className="text-lg font-bold">Your checklist</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Select a box, finish the handoff, and the row clears.</p></div><span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{tasks.length}</span></div>
+ <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+  <section className="glass-panel action-widget needs-you-priority min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="demo-checklist-heading">
+   <div className="flex items-start justify-between gap-4"><div><h2 id="demo-checklist-heading" className="text-xl font-bold md:text-2xl">Needs You</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Select a box, finish the handoff, and the row clears.</p></div><span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{tasks.length}</span></div>
    {feedback&&<Notice>{feedback}</Notice>}
    {tasks.length?<ul className="mt-3 divide-y divide-board-line">{tasks.map(task=>{const controlsId=`demo-task-controls-${task.id}`;return <NeedsYouRow key={`${version}:${task.id}`} title={task.title} context={task.context} reason={task.reason} role={(task as Task & {role?:DemoRole}).role} control={<ActionCheck label={`${active===task.id?'Close':'Open'} ${task.title}`} expanded={active===task.id} controls={controlsId} onClick={()=>setActive(current=>current===task.id?null:task.id)} />}>
     {active===task.id&&<div id={controlsId}><TaskControls task={task} onComplete={message=>finish(task,message)}/></div>}
-   </NeedsYouRow>})}</ul>:<div className="py-12 text-center"><h3 className="font-bold">Checklist cleared</h3><p className="mt-2 text-sm text-board-muted">The fictional handoffs are complete.</p></div>}
+   </NeedsYouRow>})}</ul>:<div className="py-12 text-center"><h3 className="font-bold">Nothing needs you right now</h3><p className="mt-2 text-sm text-board-muted">The fictional handoffs are complete.</p></div>}
    <button className={`${secondary} mt-5`} onClick={reset}>Reset task preview</button>
   </section>
+        <PreparationReminders />
  </div></>;
 }

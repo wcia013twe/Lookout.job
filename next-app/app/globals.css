@@ -503,3 +503,8 @@ button:not(:disabled) {
   .workspace-nav { gap: .25rem; flex-wrap: wrap; }
   .workspace-nav-link { font-size: 12px; gap: .25rem; }
 }
+
+/* Human handoffs lead the Action Board; preparation remains the supporting column. */
+.workspace-shell .needs-you-priority {
+  border-color: color-mix(in srgb, var(--color-board-accent) 55%, var(--color-board-line));
+}
