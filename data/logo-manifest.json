@@ -389,5 +389,10 @@
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/skydio.png",
   "sha256": "3bc113484846edb4fc28b0a1b8a1a68ef0b5a820358dec4eb75b805ba3532516",
   "contentType": "image/png"
+ },
+ "duolingo": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/duolingo.png",
+  "sha256": "03bd7f78b7a65fefe28e0d3b0ee8bd400761272d6097d6c4f5b4f5a783f2e9de",
+  "contentType": "image/png"
  }
 }
