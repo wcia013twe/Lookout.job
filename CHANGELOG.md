@@ -1,3 +1,21 @@
+## Work-life balance and benefits — 2026-10-14
+
+Added editable Work-life balance and Employer benefits criteria to each named search profile, with independent Required/Preferred/Flexible priorities. Both remain in the shared preference instructions and advanced prompt. Fictional demo and round-trip/MCP contract coverage include these fields. Validation: preference tests, typecheck and production build; live agent analysis remains unverified.
+
+## Organized preference profiles — 2026-10-14
+
+Grouped job preferences into familiar role, location, company, skills, compensation,
+exclusion and value sections. Added per-criterion Required/Preferred/Flexible guidance,
+per-profile career goals/tradeoffs, and tier-list associations. Retained advanced prose
+editing, multiple active/paused profiles, version checks and account/demo isolation.
+Moved update cadence, auto-apply and review thresholds into My agent. Shared tier-list
+edits remain distinct from per-profile selection and submission policy.
+
+Validation: 279 tests, 16 database scenarios, typecheck, production static build,
+catalog validation and mechanical UI check pass. Browser checks verified guest save,
+reload persistence, multiline goals, independent profiles/lists, moved agent controls,
+and narrow/desktop layout. Live signed-in agent analysis was not exercised. Demo has
+fictional resettable full-time/internship strategies and separate company rankings.
 ## 2026-10-14 — Consolidated frontend documentation
 
 - Removed three redundant standalone notes: Profile workspace, static reference frontend and character references. Preserved the Profile save/demo checklist, reference auth build/inspection instructions and character provenance in `next-app/README.md`.

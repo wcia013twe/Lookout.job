@@ -7,12 +7,12 @@ type Tier = { id: string; label: string };
 type TierList = { id: string; name: string; description?: string; rankingBasis?: string; tiers: Tier[]; companies: Company[]; placements: Record<string, string[]> };
 import { useWorkspace } from "../lib/workspace";
 import { Section, control, primary, secondary, Field, Notice } from "./ui";
-export default function TierLists() {
+export default function TierLists({ selectedListId, onSelectList }: { selectedListId?: string; onSelectList?: (id: string) => void } = {}) {
   const w = useWorkspace(),
     lists: TierList[] = w.state.workflow.tierLists,
     model = w.models.tierlistModel;
   const list =
-    lists.find((l) => l.id === w.state.workflow.activeTierListId) || lists[0];
+    lists.find((l) => l.id === (selectedListId || w.state.workflow.activeTierListId)) || lists[0];
   const [selected, setSelected] = useState(""),
     [feedback, setFeedback] = useState("");
   const reduceMotion = useReducedMotion();
@@ -39,9 +39,10 @@ export default function TierLists() {
     const next = model.create(name);
     w.store.set("workflow.tierLists", [...lists, next]);
     w.store.set("workflow.activeTierListId", next.id);
+    onSelectList?.(next.id);
     e.currentTarget.reset();
   }
-  if (!list) return <Notice>Company lists are loading.</Notice>;
+  if (!list) return <Section title="Company tier lists"><p className="mb-4 text-sm text-board-muted">Create a company list to associate with this search profile.</p><form onSubmit={addList} className="flex flex-wrap items-end gap-3"><Field label="New list name"><input name="name" className={control} required /></Field><button className={secondary}>Create list</button></form><Notice>{feedback}</Notice></Section>;
   return (
     <Section title="Company tier lists">
       <p className="mb-4 text-sm text-board-muted">
@@ -54,6 +55,7 @@ export default function TierLists() {
             value={list.id}
             onChange={(e) => {
               w.store.set("workflow.activeTierListId", e.target.value);
+              onSelectList?.(e.target.value);
               setSelected("");
             }}
           >
@@ -89,6 +91,7 @@ export default function TierLists() {
             const next = model.duplicate(list, `${list.name} copy`);
             w.store.set("workflow.tierLists", [...lists, next]);
             w.store.set("workflow.activeTierListId", next.id);
+            onSelectList?.(next.id);
           }}
         >
           Duplicate list

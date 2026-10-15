@@ -11,16 +11,15 @@ import Resumes from "./resumes";
 import SavedAnswers from "./saved-answers";
 import SearchTargets from "./search-targets";
 import Preferences from "./preferences";
-import TierLists from "./tierlists";
 import AgentConnections from "./agent-connections";
 
 type ProfileSection = "overview" | "about" | "kit" | "preferences" | "targets" | "agent";
 const sections: [ProfileSection, string, string][] = [
   ["about", "About me", "Contact details, experience, education, projects, and skills."],
   ["kit", "Application kit", "Resumes and saved answers for your applications."],
-  ["preferences", "Job preferences", "Search criteria and company tiers."],
+  ["preferences", "Job preferences", "Named search profiles, job criteria, career goals, and company priorities."],
   ["targets", "Search targets", "Job boards, company careers pages, and social accounts where Muse looks."],
-  ["agent", "My agent", "Your companion, connection, and permissions."],
+  ["agent", "My agent", "Your companion, connection, updates, and application permissions."],
 ];
 
 export default function ProfileWorkspace() {
@@ -67,9 +66,9 @@ export default function ProfileWorkspace() {
       </ProfilePanel>}
       {visited.includes("about") && <section className={profileStyles.panel} hidden={active !== "about"} aria-label="About me"><ProfileEditor /></section>}
       {visited.includes("kit") && <section className={profileStyles.panel} hidden={active !== "kit"} aria-label="Application kit"><Resumes /><Field label="Default private PDF resume"><select className={control} value={w.state.workflow.searchPreferences?.defaultResumeId || ""} onChange={(e) => w.store.update("workflow.searchPreferences", (previous: Record<string, unknown>) => ({ ...previous, defaultResumeId: e.target.value || null }))}><option value="">Choose a private uploaded PDF</option>{resumes.filter((resume) => /\.pdf$/i.test(resume.objectPath || "") && resume.contentHash).map((resume) => <option key={resume.id} value={resume.id}>{resume.name}</option>)}</select></Field><p className="mt-2 text-xs text-board-muted">Default resume selection saves automatically.</p><SavedAnswers /></section>}
-      {visited.includes("preferences") && <section className={profileStyles.panel} hidden={active !== "preferences"} aria-label="Job preferences"><Preferences showDefaultResume={false} /><TierLists /></section>}
+      {visited.includes("preferences") && <section className={profileStyles.panel} hidden={active !== "preferences"} aria-label="Job preferences"><Preferences mode="search" showDefaultResume={false} /></section>}
       {visited.includes("targets") && <section className={profileStyles.panel} hidden={active !== "targets"} aria-label="Search targets"><SearchTargets /></section>}
-      {visited.includes("agent") && <section className={profileStyles.panel} hidden={active !== "agent"} aria-label="My agent"><Heading title="My agent">Manage your connection and permissions.</Heading><Link href="/onboarding/" className={secondary}>Change companion</Link><AgentConnections /></section>}
+      {visited.includes("agent") && <section className={profileStyles.panel} hidden={active !== "agent"} aria-label="My agent"><Heading title="My agent">Manage your connection and permissions.</Heading><Link href="/onboarding/" className={secondary}>Change companion</Link><AgentConnections /><Preferences mode="agent" showDefaultResume={false} /></section>}
     </ProfileSurface>
   );
 }

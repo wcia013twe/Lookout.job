@@ -60,3 +60,34 @@ Validation: static production build, 144 domain/unit tests, database checks, bro
 The top-left profile avatar opens My Profile, Sharing & privacy, and sign-in/sign-out. My Agent stays inside My Profile. Sharing & privacy opens the existing Progress page and its opt-in leaderboard controls. Main navigation focuses on Needs you, Discover, Applications and Referrals.
 
 Demo check: open the avatar, visit My Profile and My Agent, return to Sharing & privacy, and reset the fictional profile. Check Escape, outside click and keyboard tab dismissal. The dropdown reads existing demo state and uses existing authentication actions; no new backend or MCP action is introduced.
+
+## Job preference profiles
+
+Job preferences groups roles/experience, locations/working style, companies/industries,
+skills/compensation, exclusions and values. Each criterion has an optional Required,
+Preferred or Flexible priority. Each named search profile independently maintains
+career goals, tradeoffs and an associated tier-list ID. Profile facts and employment
+answers stay shared. Multiple active profiles are supported; paused profiles remain
+editable. Unsaved drafts survive switching profiles and Profile sections, and reset
+when the account or demo epoch changes.
+
+The editor uses the existing versioned `save_search_profile` RPC and
+`save_search_profile` MCP tool (`preferences.profile.save`, preferences:write).
+The six established filters and seven evaluation priorities retain their existing
+structured fields. Additional criteria, flexibility, goals and tier-list references
+are labeled text in `instructions`, available in existing personal context. This
+is agent guidance, not a new deterministic filtering engine. Preserve these labeled
+lines during agent edits; tier-list ID is authoritative, with current list data in
+the workspace. Company priority does not override role/team evidence. Deleting a
+referenced list shows an unavailable selection until a replacement is chosen.
+
+Tier-list edits save through the established shared list boundary; changes affect
+all profiles referencing that list. Associating a list requires Save profile and
+does not alter automatic-submission review policy. Notification cadence, automation,
+and review thresholds now live in My agent. Existing values and permissions remain.
+
+Demo has fictional full-time and paused internship profiles with separate goals
+and company lists. Verify edit/save/reload, switch profiles with unsaved text, pause
+and resume, maintain/associate a tier list, and reset to restore demo defaults.
+
+Work-life balance and Employer benefits are editable criteria with individual flexibility settings, saved as labeled instructions. They support descriptive preferences about hours, on-call, boundaries, leave, insurance, retirement match and learning budgets; unknown listing details remain questions for verification.

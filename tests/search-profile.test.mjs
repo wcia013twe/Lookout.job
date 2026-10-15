@@ -42,3 +42,56 @@ test('MCP profile writes reject policy changes and invalid versions', async () =
   assert.throws(() => validateRequest({operation:'preferences.profile.save',payload:{expectedVersion:0,profile:{...profile,autoSubmitApproved:true}}}));
   assert.throws(() => validateRequest({operation:'preferences.profile.save',payload:{expectedVersion:-1,profile}}));
 });
+
+test('extended preferences and multiline career goals survive the existing profile contract', async () => {
+  const { profileFromPrompt, promptFromProfile } = await import('../lib/search-profile.mjs');
+  let prompt = 'Custom context must stay.\n\n## Avoid\nNo generic support work.';
+  for (const [heading, key, value] of [
+    ['Role preferences','Roles','Software engineering, ML engineering'],
+    ['Priority & flexibility','Roles','Preferred'],
+    ['Work-life balance & benefits','Work-life balance','Predictable hours; limited on-call'],
+    ['Work-life balance & benefits','Employer benefits','Health insurance, retirement match'],
+    ['Priority & flexibility','Employer benefits','Required'],
+    ['Career goals & tradeoffs','Career goals','Deepen systems experience.\nOwn reliability and performance.'],
+    ['Career goals & tradeoffs','Tradeoffs','Relocate for strong mentorship.'],
+    ['Company priorities','Tier list ID','owned-list'],
+  ]) prompt = updateField(prompt, heading, key, value);
+  const profile = profileFromPrompt(prompt, { id:'internships',name:'Internships',active:true });
+  const restored = promptFromProfile(profile);
+  assert.equal(readField(restored,'Career goals & tradeoffs','Career goals').value, 'Deepen systems experience.\nOwn reliability and performance.');
+  assert.equal(readField(restored,'Company priorities','Tier list ID').value,'owned-list');
+  assert.equal(readField(restored,'Work-life balance & benefits','Work-life balance').value,'Predictable hours; limited on-call');
+  assert.equal(readField(restored,'Work-life balance & benefits','Employer benefits').value,'Health insurance, retirement match');
+  assert.equal(readField(restored,'Priority & flexibility','Employer benefits').value,'Required');
+  assert.equal(readField(restored,'Priority & flexibility','Roles').value,'Preferred');
+  assert.ok(restored.includes('Custom context must stay.'));
+  assert.deepEqual(profileFromPrompt(restored, profile), profile);
+  const {validateRequest} = await import('../supabase/functions/agent-gateway/contract.mjs');
+  assert.equal(validateRequest({operation:'preferences.profile.save',payload:{expectedVersion:0,profile}}).payload.profile,profile);
+});
+test('multiline edits replace and clear the full field without losing neighboring prose', () => {
+  let prompt = updateField('Keep me', 'Career goals & tradeoffs', 'Tradeoffs', 'First line\nSecond line');
+  prompt = updateField(prompt, 'Career goals & tradeoffs', 'Tradeoffs', 'Replacement');
+  assert.ok(!prompt.includes('Second line'));
+  assert.ok(prompt.startsWith('Keep me'));
+  prompt = updateField(prompt, 'Career goals & tradeoffs', 'Tradeoffs', '');
+  assert.equal(readField(prompt,'Career goals & tradeoffs','Tradeoffs').value,'');
+});
+test('duplicate and invalid priority instructions require resolution', async () => {
+  const {profileFromPrompt} = await import('../lib/search-profile.mjs');
+  assert.throws(() => profileFromPrompt('## Priority & flexibility\n- Roles: Required\n- Roles: Flexible'), /Required, Preferred/);
+  assert.throws(() => profileFromPrompt('## Priority & flexibility\n- Roles: Definitely'), /Required, Preferred/);
+});
+test('demo search strategies have isolated, resettable goals and tier-list associations', async () => {
+  const {demoFixtures, createMemoryStore} = await import('../next-app/lib/demo.mjs');
+  const initial = demoFixtures('2026-10-14');
+  const store = createMemoryStore(initial.state);
+  const profiles = store.get('workflow.searchPreferences.profiles');
+  const {promptFromProfile} = await import('../lib/search-profile.mjs');
+  assert.equal(profiles.length,2);
+  const ids = profiles.map(profile => readField(promptFromProfile(profile),'Company priorities','Tier list ID').value);
+  assert.notEqual(ids[0],ids[1]);
+  assert.ok(ids.every(id => initial.state.workflow.tierLists.some(list => list.id === id)));
+  store.set('workflow.searchPreferences.profiles',[]);
+  assert.equal(demoFixtures('2026-10-14').state.workflow.searchPreferences.profiles.length,2);
+});
