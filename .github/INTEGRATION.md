@@ -3,9 +3,9 @@
 Use four rules for parallel sessions:
 
 1. One writing task, one isolated checkout, one branch. Reuse it for follow-ups.
-2. Keep the shared `main` checkout clean; edit and install dependencies in the task checkout.
-3. One PR per task. Let the existing merge queue validate and integrate it.
-4. Commit and push intentional progress before handoff. Remove the task checkout after merge only when no uncommitted work needs preserving.
+2. Keep edits and dependency installs in the task checkout; use shared `main` for inspection and local landing.
+3. Land completed routine work in local `main`. Use a PR only when GitHub review, protected CI or production publication is explicitly needed.
+4. Commit intentional progress before handoff. Remove the task checkout after landing only when no uncommitted work needs preserving.
 
 These rules apply to documentation and catalog updates as well as code. Before
 editing, check the current path, branch and `git status --short`. Preserve edits
@@ -19,17 +19,18 @@ On a new host, or after any setup failure, run the read-only environment check:
 npm run feature:doctor
 ```
 
-It verifies Node.js, npm, Git, GitHub CLI authentication and reports the checkout
-parent. This repository uses npm lockfiles; do not use pnpm as a fallback because
+It verifies Node.js, npm and Git and reports the checkout parent. GitHub CLI and
+authentication are needed only for optional PR publication. This repository uses npm lockfiles; do not use pnpm as a fallback because
 it can rewrite dependency metadata before the isolated checkout exists.
 
-Start each task in a fresh checkout of published main:
+Start each task in a fresh checkout of committed local main:
 
 ```sh
 npm run feature:start -- search-improvements
 ```
 
-Work in the returned temporary directory. Install its locked dependencies once
+Work in the returned temporary directory. The starter records the shared local
+main checkout and restores the repository's actual remote for optional publication. Install its locked dependencies once
 with `npm ci` and `npm ci --prefix next-app`. Keep the shared cloud-synced checkout
 and other chats' edits out of the feature. Reuse the same feature directory for
 fixes; an existing destination is never overwritten.
@@ -41,32 +42,42 @@ archive, so parallel tasks no longer compete over its newest entry. Existing
 branches without generated notes remain supported during migration.
 
 Implement and review the feature, run relevant local checks, and commit only its
-files. `npm test` already includes the database suite. Write the PR description
-to a file, then publish and queue with one command:
+files. `npm test` already includes the database suite. Land the finished branch
+into shared local main with one command:
+
+```sh
+npm run feature:land
+```
+
+Landing refuses main, dirty feature checkouts and unfinished generated change notes.
+It fetches and merges current local main in the isolated task checkout, then
+fast-forwards shared local main. It does not push, create a PR or discard unrelated
+dirty files in the shared checkout. A conflict or overlapping local edit stops the
+operation; preserve those edits, resolve in the feature checkout, rerun relevant
+checks, commit and retry. Separate checkouts protect local ownership, but overlapping
+edits to the same code can still require resolution.
+
+At handoff, include the checkout path, branch, local-main commit, checks run,
+whether anything was pushed or published, and any uncommitted work. Keep unfinished
+checkouts for resuming the same task. A dirty checkout is work to preserve or review,
+not permission to reset or delete it.
+
+## Optional GitHub publication
+
+When the user requests review, protected-branch CI or production publication,
+write the PR description to a file and run:
 
 ```sh
 npm run feature:publish -- --title "Improve search" --body-file /tmp/search-pr.md
 npm run feature:status
 ```
 
-Publishing refuses main, dirty checkouts and unfinished generated change notes.
-It fetches and merges current published main in the isolated task checkout before
-pushing. A conflict stops before the push or PR mutation; resolve it in that same
-checkout, rerun relevant checks and commit before retrying. A concurrent main
-update can still happen after this refresh; required GitHub CI validates the
-final integrated head before merge. Separate checkouts protect local ownership,
-but overlapping edits to the same code can still require resolution.
+Publishing fetches and merges current published main before pushing. It creates or
+updates one non-draft PR, adds `merge-ready`, and wakes the queue. Retries reuse the
+existing PR. A conflict stops before remote mutation; resolve it in the task checkout,
+rerun relevant checks and commit before retrying. Attach the returned PR URL in Codex.
 
-It then pushes the feature branch,
-creates or updates one non-draft PR, adds `merge-ready`, and immediately wakes the
-queue. Retries reuse the existing PR. It does not commit unrelated files or need
-an agent to sit waiting for CI. Agents must attach the returned PR URL in Codex.
-
-At handoff, include the checkout path, branch, PR URL, checks run and any
-uncommitted work. Keep unfinished checkouts for resuming the same task. A dirty
-checkout is work to preserve or review, not permission to reset or delete it.
-
-# Merge queue
+# Optional merge queue
 
 GitHub processes labelled PRs in creation order. The worker refreshes an outdated
 branch, explicitly starts CI for its new commit, and merges only the tested head

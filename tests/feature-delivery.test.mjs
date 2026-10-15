@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { publishFeature, startFeature, validateFragment, fragmentName, command } from '../scripts/feature-delivery.mjs';
+import { landFeature, publishFeature, startFeature, validateFragment, fragmentName, command } from '../scripts/feature-delivery.mjs';
 function fixture({branch='codex/feature',dirty='',existing=[]}={}) {
   const calls=[];
   const run=async(file,args)=>{
@@ -40,6 +40,14 @@ test('retry updates the existing draft and queues it without creating duplicate 
 
 test('feature names cannot escape the fresh-checkout directory',async()=>{let called=false;await assert.rejects(startFeature('../shared',async()=>{called=true;}));assert.equal(called,false);});
 
+test('local landing refuses main and mixed uncommitted feature files before integration',async()=>{
+  for(const options of [{branch:'main'},{dirty:' M unrelated.js'}]) {
+    const f=fixture(options);
+    await assert.rejects(landFeature({run:f.run,checkout:'/task'}));
+    assert.ok(f.calls.every(c=>c.file==='git'&&['branch','status'].includes(c.args[0])));
+  }
+});
+
 
 test('publisher refreshes main before pushing and refuses unresolved integration',async()=>{
   const f=fixture();await publishFeature({run:f.run,title:'Feature',bodyFile:'/tmp/body.md'});
@@ -65,7 +73,10 @@ test('new checkouts create unique change-note files and reject their draft templ
     for(let i=0;i<2;i++) {
       let branch;
       const checkout=await startFeature('fragment-fixture',async(file,args)=>{
-        if(args[0]==='remote')return 'https://github.com/owner/repo.git';
+        if(args[0]==='rev-parse'&&args[1]==='--show-toplevel')return '/shared/main';
+        if(args[0]==='rev-parse'&&args[1]==='HEAD')return 'a'.repeat(40);
+        if(args[0]==='branch')return 'main';
+        if(args[0]==='remote'&&args[1]==='get-url')return 'https://github.com/owner/repo.git';
         if(args[0]==='clone')await mkdir(args.at(-1),{recursive:true});
         if(args[0]==='switch')branch=args.at(-1);
         return '';
@@ -73,7 +84,7 @@ test('new checkouts create unique change-note files and reject their draft templ
       created.push(checkout);
       const note=await readFile(join(checkout,'changes',fragmentName(branch)),'utf8');
       assert.match(note,/change-fragment: draft/);
-      await assert.rejects(validateFragment(branch,(path)=>readFile(join(checkout,path),'utf8')),/Complete and commit/);
+      await assert.rejects(validateFragment(branch,(path)=>readFile(path,'utf8'),checkout),/Complete and commit/);
     }
     assert.notEqual(created[0],created[1]);
   } finally {for(const checkout of created)await rm(dirname(checkout),{recursive:true,force:true});}
@@ -120,4 +131,37 @@ test('real isolated checkouts integrate independent edits and preserve conflicti
       }
     } finally {await rm(root,{recursive:true,force:true});}
   }
+});
+
+test('local landing fast-forwards shared main and preserves unrelated dirty work',async()=>{
+  const {mkdtemp,mkdir,writeFile,readFile,rm}=await import('node:fs/promises');
+  const {tmpdir}=await import('node:os');
+  const {join}=await import('node:path');
+  const root=await mkdtemp(join(tmpdir(),'local-land-'));
+  const main=join(root,'main'), task=join(root,'task');
+  const git=(cwd,...args)=>command('git',args,cwd);
+  try {
+    await git(root,'init','--initial-branch=main',main);
+    await git(main,'config','user.name','Local landing test');
+    await git(main,'config','user.email','landing@example.invalid');
+    await writeFile(join(main,'shared.txt'),'initial\n');
+    await writeFile(join(main,'local.txt'),'committed\n');
+    await git(main,'add','.');await git(main,'commit','-m','Base');
+    await git(root,'clone',main,task);
+    await git(task,'config','user.name','Local landing test');
+    await git(task,'config','user.email','landing@example.invalid');
+    await git(task,'switch','-c','codex/integration');
+    await mkdir(join(task,'changes'),{recursive:true});
+    await writeFile(join(task,'changes','integration.md'),'# Integration\n\n- Land locally.\n- Validation: test.\n');
+    await writeFile(join(task,'task.txt'),'feature\n');
+    await git(task,'add','.');await git(task,'commit','-m','Feature');
+    await writeFile(join(task,'.git','codex-feature.json'),JSON.stringify({sourceCheckout:main}));
+    await writeFile(join(main,'local.txt'),'uncommitted user work\n');
+
+    assert.match(await landFeature({checkout:task}),/Landed codex\/integration in local main/);
+    assert.equal((await readFile(join(main,'task.txt'),'utf8')).replace(/\r\n/g,'\n'),'feature\n');
+    assert.equal((await readFile(join(main,'local.txt'),'utf8')).replace(/\r\n/g,'\n'),'uncommitted user work\n');
+    assert.match(await git(main,'status','--porcelain'),/M local.txt/);
+    assert.equal(await git(main,'rev-parse','HEAD'),await git(task,'rev-parse','HEAD'));
+  } finally {await rm(root,{recursive:true,force:true});}
 });
