@@ -1,9 +1,11 @@
 ## Mobile workspace density — 2026-10-14
 
 - Replaced the phone-sized 2×2 route toolbar with a safe-area-aware four-item bottom navigation and compacted the shared header without changing desktop navigation, routes, themes, or account behavior.
+- Folded demo mode, reset, and its brief state explanation into the profile menu so task content begins immediately below the mobile header.
+- Rebuilt drop reveals as one continuous hue-changing card instead of a folded banner/sheet composition, with shorter copy, stronger tier glow and a brighter final-tier bloom.
 - Reshaped Discover cards, filters and daily drops; added compact tracker metadata rows and application details; replaced Profile's mobile tab scroller and made Referrals a mobile list/detail flow.
 - Compacted onboarding's companion room into a shorter speaker stage and horizontally scrollable participant strip. Fictional demo data now includes a deliberately long role title for narrow-screen verification.
-- Validation: 279 tests, 76-role catalog validation, frontend typecheck, production static export, whitespace checks, and a clean narrow Chromium inspection passed. The browser pass confirmed the compact header, fixed four-item navigation, safe content clearance and no document-level horizontal overflow; authenticated hydrated states and real iOS/Android hardware remain outside local verification.
+- Validation: 283 tests, 76-role catalog validation, frontend typecheck, production static export, whitespace checks, and a clean 390×844 browser inspection passed. The browser pass confirmed the compact header, profile-menu demo controls, unobstructed content, progressive card hue changes and the final-tier glow; authenticated hydrated states and real iOS/Android hardware remain outside local verification.
 
 ## Needs you tasks and guest demo — 2026-10-14
 

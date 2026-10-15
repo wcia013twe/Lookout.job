@@ -51,6 +51,18 @@ export default function ProfileMenu() {
         </div>
         <Link className={item} href="/profile/" onClick={() => setOpen(false)}>My Profile</Link>
         <Link className={item} href="/progress/#sharing-privacy" onClick={() => setOpen(false)}>Sharing &amp; privacy</Link>
+        {w.canDemo && <div className="mt-2 border-t border-board-line pt-2">
+          <button type="button" className={item} aria-pressed={w.demo}
+            onClick={() => { setOpen(false); w.toggleDemo(); }}>
+            {w.demo ? "Exit demo mode" : "Demo mode"}
+          </button>
+          {w.demo && <>
+            <p className="px-3 pb-1 text-xs leading-5 text-board-muted">Fictional data. Changes stay in memory.</p>
+            <button type="button" className={item} onClick={() => { setOpen(false); w.resetDemo(); }}>
+              Reset demo data
+            </button>
+          </>}
+        </div>}
         <div className="mt-2 space-y-2 border-t border-board-line pt-2 md:hidden">
           <ColorModeControl compact />
           <Link className={item} href="/progress/" onClick={() => setOpen(false)}>

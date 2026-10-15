@@ -81,8 +81,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link>
         </details></div>
       </header>
-      {w.canDemo && <div className="mt-4 flex flex-wrap items-center gap-3"><button type="button" className={secondary} aria-pressed={w.demo} onClick={w.toggleDemo}>{w.demo ? "Exit demo mode" : "Demo mode"}</button>{w.demo && <><p className="text-sm text-board-accent">Demo mode · mocked data · account records stay untouched</p><button type="button" className={secondary} onClick={w.resetDemo}>Reset demo</button></>}</div>}
-      {w.status && (
+      {w.status && !w.demo && (
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-board-muted">
           <span role="status">{w.status}</span>
           {w.user && (
