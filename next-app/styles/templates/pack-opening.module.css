@@ -21,8 +21,15 @@
 .experience :global(.seal-copy strong) { font-size:clamp(34px,7vw,48px); letter-spacing:-.03em; line-height:1.06; font-weight:800; }
 .experience :global(.seal-copy > span:last-child) { font-size:14px; color:#f0e8ff; }
 .experience :global(.seal-edition) { font-size:11px; font-weight:750; letter-spacing:.09em; }
-.experience :global(.pack-tear-button) { position:absolute; z-index:5; top:0; inset-inline:0; min-height:52px; border-radius:16px 16px 0 0; border:0; background:#eadaff; color:#251936; touch-action:none; transform:translateX(calc(var(--tear-progress,0) * 32px)); }
-.experience :global(.pack-tear-button:hover:not(:disabled)) { background:#f5edff; }
+.experience :global(.pack-tear-button) { position:absolute; z-index:5; top:0; inset-inline:0; display:grid; grid-template-columns:32px minmax(0,1fr) 32px; align-items:center; min-height:58px; padding:7px 14px; border:0; border-bottom:1px solid #ffffff38; border-radius:15px 15px 0 0; background:linear-gradient(180deg,#07101ea6,#07101e73); color:#fff; box-shadow:inset 0 1px 0 #ffffff38,0 12px 30px -24px #000; text-shadow:0 1px 12px #02040be6; touch-action:none; backdrop-filter:blur(9px) saturate(1.2); transition:background-color .16s,border-color .16s; }
+.experience :global(.pack-tear-button::after) { content:""; width:32px; height:1px; }
+.experience :global(.pack-tear-button:hover:not(:disabled)) { border-bottom-color:#ffffff6b; background:linear-gradient(180deg,#13243bbd,#0913228c); }
+.experience :global(.tear-grip) { display:grid; place-items:center; width:30px; height:30px; border:1px solid #ffffff61; border-radius:9px; background:#050b16a6; box-shadow:inset 0 1px 0 #ffffff38,0 7px 16px -10px #000; transform:translateX(calc(var(--tear-progress,0) * 14px)); transition:transform .14s cubic-bezier(.16,1,.3,1),border-color .16s,background-color .16s; }
+.experience :global(.pack-tear-button:hover:not(:disabled) .tear-grip) { border-color:#fff9; background:#15253bcc; }
+.experience :global(.tear-grip svg) { width:18px; height:18px; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.experience :global(.tear-copy) { display:grid; min-width:0; gap:2px; justify-items:center; line-height:1; pointer-events:none; }
+.experience :global(.tear-copy strong) { font-size:12px; font-weight:800; letter-spacing:.01em; }
+.experience :global(.tear-copy small) { color:#eee7fa; font-size:10px; font-weight:650; letter-spacing:.015em; }
 .experience :global(.seal-instruction),.experience :global(.pack-history) { text-align:center; color:#d1c4e4; font-size:14px; margin:0; max-width:50ch; }
 .experience :global(.pack-history) { font-size:12px; }
 .experience :global(.texture-picker) { box-sizing:border-box; width:min(100%,560px); min-width:0; margin:0; padding:0; border:0; }
@@ -108,7 +115,7 @@
   .experience::backdrop { backdrop-filter:none; }
   .experience :global(.pack-effects-canvas),.experience :global(.reveal-flash) { display:none; }
   .experience :global(.dropcard),.experience :global(.dropcard::before) { transition:none; }
-  .experience :global(button),.experience :global(.pack-tear-button) { transition:none; transform:none; }
+  .experience :global(button),.experience :global(.pack-tear-button),.experience :global(.tear-grip) { transition:none; transform:none; }
 }
 
 .experience[data-phase="tearing"] :global(.seal-copy) { opacity:0; transition:opacity .15s; }
@@ -169,8 +176,8 @@
 :global([data-theme="light"]) .experience :global(.pack-foot button:hover:not(:disabled)) { background: #193f64; border-color: transparent; }
 /* These are dark objects inside the light dialog, so their text and focus stay light. */
 :global([data-theme="light"]) .experience :global(.seal-copy) { color: #f5efff; }
-:global([data-theme="light"]) .experience :global(.pack-tear-button) { background: #eadaff; color: #251936; border: 0; }
-:global([data-theme="light"]) .experience :global(.pack-tear-button:hover:not(:disabled)) { background: #f5edff; }
+:global([data-theme="light"]) .experience :global(.pack-tear-button) { border:0; border-bottom:1px solid #ffffff38; background:linear-gradient(180deg,#07101ea6,#07101e73); color:#fff; }
+:global([data-theme="light"]) .experience :global(.pack-tear-button:hover:not(:disabled)) { border-bottom-color:#ffffff6b; background:linear-gradient(180deg,#13243bbd,#0913228c); }
 :global([data-theme="light"]) .experience :global(.card-mystery),
 :global([data-theme="light"]) .experience :global(.double-combo) {
   border-color: #ac8cd5;
