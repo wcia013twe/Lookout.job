@@ -11,7 +11,7 @@ import ProfileMenu from "./profile-menu";
 import { demoNeedsYouTasks } from "../lib/demo.mjs";
 
 const navigation = [
-  ["/needs-you/", "Needs you", "needs"],
+  ["/needs-you/", "Action board", "needs"],
   ["/", "Discover", "discover"],
   ["/applications/", "Applications", "applications"],
   ["/referrals/", "Referrals", "referrals"],
@@ -19,7 +19,7 @@ const navigation = [
 
 function NavIcon({ name }: { name: (typeof navigation)[number][2] }) {
   const paths = {
-    needs: <><path d="M12 3a7 7 0 0 0-7 7c0 5-2 6-2 6h18s-2-1-2-6a7 7 0 0 0-7-7Z"/><path d="M10 20h4"/></>,
+    needs: <><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16 9"/></>,
     discover: <><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4M11 8v6M8 11h6"/></>,
     applications: <><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></>,
     referrals: <><circle cx="8" cy="8" r="3"/><circle cx="17" cy="16" r="3"/><path d="M10.5 9.5 14.5 14M5 20c0-3 2-5 5-5"/></>,
@@ -31,7 +31,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     path = usePathname();
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/" && /^\/discover\/?$/.test(path));
   const apps = Object.values(w.state?.workflow?.applications || {}) as Array<{ status: string; submissionAttempts?: Array<{ state: string; startedAt: string }> }>;
-  const needs = w.demo ? demoNeedsYouTasks.length :
+  const needs = (w.demo ? demoNeedsYouTasks.length :
     apps.filter(
       (a) =>
         a.status === "Blocked" ||
@@ -47,7 +47,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     (!w.state?.workflow?.profile?.verified ||
     !w.state?.workflow?.resumes?.length
       ? 1
-      : 0);
+      : 0));
   if (/\/onboarding\/?$/.test(path)) {
     return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
   }

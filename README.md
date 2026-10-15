@@ -37,8 +37,8 @@ This avoids repeated full prompt reads; permanent agent memory depends on its ru
 2. **Muse prepares the morning batch.** Your connected agent reads your preferences, searches for relevant jobs, verifies employer postings, and publishes a private batch. Personal fit notes stay separate from the shared job catalog.
 3. **Open the link.** Muse sends “Your morning jobs are ready” through its own notification channel. The link opens your batch on the shared website. Login identifies the owner; a batch ID alone does not grant access.
 4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Opening a posting is not applying.
-5. **Prepare under your policy.** Muse inspects the live form and selects your configured résumé. Routine matches can proceed using verified facts and permitted saved answers. Important matches, auto-apply-off, unfamiliar answers and missing choices go to **Needs you** for focused exact-version review. Agents never manufacture a human approval.
-Unresolved Playwright and agent recovery failures go to **Needs you** with a reason and next action. Uncertain submission outcomes pause for human verification.
+5. **Prepare under your policy.** Muse inspects the live form and selects your configured résumé. Routine matches can proceed using verified facts and permitted saved answers. Important matches, auto-apply-off, unfamiliar answers and missing choices go to the **Action Board** for focused exact-version review. Agents never manufacture a human approval.
+Unresolved Playwright and agent recovery failures go to the **Action Board** with a reason and next action. Uncertain submission outcomes pause for human verification.
 
 6. **Apply with evidence.** `submit_application` supports native Greenhouse forms: current server authorization → prefill/validation → atomic claim → one-use click permit → one Submit click → observed employer confirmation. Routine authorization is distinct from human approval. Unsupported forms/CAPTCHA/additional files pause. Uncertain outcomes block retry; verify in the board before allowing a new attempt. Manual submission notes remain user-reported.
 7. **Track outcomes.** Applications shows progress and a durable timeline. Muse can add observations; interviews, offers and rejections remain distinguishable from draft preparation. Progress is private by default; leaderboard participation shares only an alias and aggregate metrics.
@@ -55,7 +55,7 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 | Company rankings | Editable/drag-and-drop Full-time and Internship profiles; Oracle is the full-time C-tier baseline |
 | Saved answers | Reviewed exact-question autofill, company scope and Always ask me; no overwrite of existing draft text |
 | Private resumes | PDF/DOCX uploads, immutable file versions, checksums and short-lived private download links |
-| Needs you / Applications | Versioned approval, blockers, human progress reports, immutable submitted drafts and server timeline |
+| Action Board / Applications | Checklist-style handoffs and Muse-organized preparation reminders alongside versioned approval, blockers, human progress reports, immutable submitted drafts and server timeline |
 | Agent connection | Per-user expiring/revocable credentials; HTTP gateway and custom MCP endpoint |
 | Morning batch links | Owned `?batch=<uuid>` routes; latest private batch can load for a signed-in user |
 | Form inspection/prefill | Greenhouse public form inspector; adapted Greenhouse/Ashby browser tools, explicit resume rules, reviewed native radios/checkboxes and strict approval checks |
@@ -142,9 +142,9 @@ The local runner uses deterministic Playwright operations and makes no model cal
 
 ## Ask Muse to read this update
 
-Developer contract version **6** advertises the concrete local MCP adapter. Tell Muse:
+Developer contract version **17** advertises the current scoped platform and local runner capabilities. Tell Muse:
 
-> Check my Job Signal Board context versions. Load and retain the updated developer instructions, and reload my personal settings only if changed or missing. Follow my settings and message templates. Check whether inspect_application, fingerprint_resume, try_application and submit_application are available. If missing, report the one-time runner setup needed; never claim it is connected. Inspect and prepare drafts, ask me to review unfamiliar answers, and use submit_application for routine authorized matches or exact approved important matches. Never retry an uncertain submission. Update the local checkout to obtain the new tool. Report unresolved failures to Needs you and text me using my configured template. Prepared is not submitted.
+> Check my Job Signal Board context versions. Load and retain the updated developer instructions, and reload my personal settings only if changed or missing. Follow my settings and message templates. Check whether inspect_application, fingerprint_resume, try_application and submit_application are available. If missing, report the one-time runner setup needed; never claim it is connected. Inspect and prepare drafts, ask me to review unfamiliar answers, and use submit_application for routine authorized matches or exact approved important matches. Never retry an uncertain submission. Update the local checkout to obtain the new tool. Report unresolved failures to the Action Board and text me using my configured template. Prepared is not submitted.
 
 This refreshes instructions on an existing authenticated board connection. It
 does not create schedules, send a text, install a runner or submit a job by itself.
@@ -180,7 +180,7 @@ Receipts are labelled **runner-observed employer confirmation**, not a
 cryptographically authenticated employer API receipt. Agent credentials are
 trusted to report these observations; browser users cannot forge receipt columns.
 
-Unknown outcomes stay Needs you. The review dialog lets the user record where
+Unknown outcomes stay on the Action Board. The review dialog lets the user record where
 they verified an application was not sent and release the attempt for a fresh
 run; started attempts must age five minutes before this recovery. Pending result
 reports retry through `report_submission_result` without another click. An
