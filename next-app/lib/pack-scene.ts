@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { foilVertex, foilFragment, sparkVertex, sparkFragment } from "../../lib/pack-shaders.js";
+import { foilVertex, foilFragment, sparkVertex, sparkFragment } from "../styles/templates/pack-shaders";
+import type { PackEffectsTemplate } from "../styles/templates/pack-styles";
 import { TIER_HEX } from "./role-display";
 
 import { tierOrder as tiers, type Tier } from "./drop-pack";
@@ -12,7 +13,7 @@ type Burst = {
 };
 
 /** One short-lived scene per visible pack. There is no global event controller. */
-export function createPackScene(root: HTMLElement, onContextLost: () => void): () => void {
+export function createPackScene(root: HTMLElement, onContextLost: () => void, effects: PackEffectsTemplate): () => void {
   const modal = root.querySelector<HTMLElement>(".pack-modal") || root;
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "low-power" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
@@ -33,7 +34,7 @@ export function createPackScene(root: HTMLElement, onContextLost: () => void): (
     uniforms: {
       time: { value: 0 }, strength: { value: 1 }, opaque: { value: 0 }, fade: { value: 1 },
       touch: { value: new THREE.Vector2(0.5, 0.5) }, size: { value: new THREE.Vector2(300, 440) },
-      tint: { value: new THREE.Color("#aa85e3") },
+      tint: { value: new THREE.Color(effects.foilTint) },
     },
   });
   const foil = new THREE.Mesh(geometry, material);
@@ -143,16 +144,16 @@ export function createPackScene(root: HTMLElement, onContextLost: () => void): (
     burst = null;
   }
 
-  function explode(card: HTMLElement, requestedTier: unknown) {
+  function explode(card: HTMLElement, requestedTier: unknown, final: boolean) {
     clearBurst();
     const tier: Tier = tiers.includes(requestedTier as Tier) ? requestedTier as Tier : "common";
     const rank = tiers.indexOf(tier);
-    const count = 18 + rank * 18;
+    const count = Math.round((effects.baseParticles + rank * effects.particlesPerRank) * (final ? effects.finalParticleMultiplier : 1));
     const positions = new Float32Array(count * 3);
     const seeds = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       const angle = i / count * Math.PI * 2;
-      const speed = 0.4 + Math.random() * 0.8;
+      const speed = 0.35 + Math.random() * (final ? 1.15 : 0.75);
       positions[i * 3] = Math.cos(angle) * speed;
       positions[i * 3 + 1] = Math.sin(angle) * speed;
       seeds[i] = Math.random();
@@ -163,13 +164,18 @@ export function createPackScene(root: HTMLElement, onContextLost: () => void): (
     const sparkMaterial = new THREE.ShaderMaterial({
       vertexShader: sparkVertex, fragmentShader: sparkFragment,
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      uniforms: { age: { value: 0 }, pixelRatio: { value: renderer.getPixelRatio() }, tint: { value: new THREE.Color(TIER_HEX[tier]) } },
+      uniforms: {
+        age: { value: 0 }, pixelRatio: { value: renderer.getPixelRatio() }, tint: { value: new THREE.Color(TIER_HEX[tier]) },
+        spread: { value: effects.spread * (final ? effects.finalSpreadMultiplier : 1) },
+        pointScale: { value: final ? effects.finalPointScale : effects.pointScale },
+        gravity: { value: effects.gravity },
+      },
     });
     const points = new THREE.Points(sparkGeometry, sparkMaterial);
     const rect = card.getBoundingClientRect(), base = modal.getBoundingClientRect();
     points.position.set(rect.left - base.left + rect.width / 2 - width / 2, height / 2 - (rect.top - base.top + rect.height * 0.3), 10);
     scene.add(points);
-    burst = { points, material: sparkMaterial, started: performance.now(), duration: 700 + rank * 180 };
+    burst = { points, material: sparkMaterial, started: performance.now(), duration: (effects.baseBurstDuration + rank * effects.burstDurationPerRank) * (final ? effects.finalDurationMultiplier : 1) };
     wake(burst.duration);
   }
 
@@ -190,7 +196,8 @@ export function createPackScene(root: HTMLElement, onContextLost: () => void): (
   root.addEventListener("pack:charge", () => wake(650), opts);
   root.addEventListener("dropcard:stage", event => {
     const target = event.target instanceof Element ? event.target.closest<HTMLElement>(".dropcard") : null;
-    if (target && root.contains(target)) explode(target, (event as CustomEvent<{ tier?: unknown }>).detail?.tier);
+    const detail = (event as CustomEvent<{ tier?: unknown; final?: boolean }>).detail;
+    if (target && root.contains(target)) explode(target, detail?.tier, Boolean(detail?.final));
   }, opts);
   root.addEventListener("scroll", () => wake(500), { ...opts, passive: true, capture: true });
   canvas.addEventListener("webglcontextlost", event => { event.preventDefault(); dispose(); onContextLost(); }, opts);

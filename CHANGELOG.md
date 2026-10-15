@@ -1,3 +1,9 @@
+## Dynamic pack reveal templates — 2026-10-15
+
+- Centralized production pack CSS, shader material and typed motion/effect presets in `next-app/styles/templates/`; pack content now selects the restrained or high-tier template dynamically without changing factual tier colors.
+- Slowed the final-tier reveal, added a brighter outward flare and denser shader burst, removed Previous/Next controls, advanced completed cards forward automatically and added a final grid of every revealed role.
+- Validation: 283/284 repository tests passed (the sole failure is the existing Windows CRLF/LF strict comparison in `platform-outreach.test.mjs`), 76-role catalog validation, frontend typecheck, production static export, whitespace checks, and a clean 390×844 browser inspection passed. The browser pass confirmed the longer final-tier burst, automatic forward progression, removal of Previous/Next, and the final revealed-card grid; physical mobile GPU performance remains unverified.
+
 ## Mobile workspace density — 2026-10-14
 
 - Replaced the phone-sized 2×2 route toolbar with a safe-area-aware four-item bottom navigation and compacted the shared header without changing desktop navigation, routes, themes, or account behavior.

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import type { PackEffectsTemplate } from "../styles/templates/pack-styles";
 
 /** Decorative GPU effects stay outside the pack's semantic interaction tree. */
-export default function PackEffects({ rootRef, reducedMotion }: { rootRef: RefObject<HTMLElement | null>; reducedMotion: boolean }) {
+export default function PackEffects({ rootRef, reducedMotion, template }: { rootRef: RefObject<HTMLElement | null>; reducedMotion: boolean; template: PackEffectsTemplate }) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root || reducedMotion) return;
@@ -29,7 +30,7 @@ export default function PackEffects({ rootRef, reducedMotion }: { rootRef: RefOb
           contextLost = true;
           root.classList.add("effects-fallback");
           stop();
-        });
+        }, template);
       } catch {
         if (!cancelled && epoch === generation) root.classList.add("effects-fallback");
       }
@@ -48,6 +49,6 @@ export default function PackEffects({ rootRef, reducedMotion }: { rootRef: RefOb
       document.removeEventListener("visibilitychange", synchronize);
       root.classList.remove("effects-fallback");
     };
-  }, [rootRef, reducedMotion]);
+  }, [rootRef, reducedMotion, template]);
   return null;
 }

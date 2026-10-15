@@ -147,9 +147,13 @@ stay white over dark glass. Spring-smoothed sheen responds to mouse position and
 keyboard focus. Touch and reduced-motion users receive a static material.
 
 Zero2Sudo history uses compact native disclosures with separate skipped rows. The
-pack uses a native modal dialog and restores focus on close. Foil tearing, tier
-upgrades and bounded sparks run only while the pack is active; reduced motion
-removes the WebGL scene and motion. Paired drops stack in a scrollable phone view.
+pack uses a native modal dialog and restores focus on close. Its visual and motion
+templates live in `next-app/styles/templates/` and are selected from pack content,
+while factual tier colors remain data-driven. Foil tearing, tier upgrades and
+bounded sparks run only while the pack is active; the final tier earns a slower
+light burst. Completed cards advance forward automatically and finish in a compact
+grid. Reduced motion removes the WebGL scene and spatial effects. Paired drops
+stack in a scrollable phone view.
 
 ### Color modes
 

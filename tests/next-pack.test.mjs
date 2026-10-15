@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { advanceStage, canClaimPack, demoDrops, dropKey, groupPack, packComplete, tierOf } from '../next-app/lib/drop-pack.ts';
+import { resolvePackStyle, selectPackStyle } from '../next-app/styles/templates/pack-styles.ts';
 
 test('Next pack pairs tracks by company without losing extra roles or crossing companies', () => {
  const drops=demoDrops('2026-10-14').slice(0,4);
@@ -32,4 +33,11 @@ test('historical replay and partial reveal never become eligible for today’s X
  assert.equal(canClaimPack(drops,stages,'2026-10-13','2026-10-14'),false);
  assert.equal(canClaimPack(drops,{},'2026-10-13','2026-10-13'),false);
  assert.equal(canClaimPack(drops,stages,'2026-10-13','2026-10-13'),true);
+});
+test('pack reveal styles select dynamically and unknown styles fail to the restrained template', () => {
+ assert.equal(selectPackStyle(['rare','epic']),'prismatic');
+ assert.equal(selectPackStyle(['rare','legendary']),'supernova');
+ assert.equal(selectPackStyle(['mythic']),'supernova');
+ assert.equal(resolvePackStyle('supernova').motion.finalRevealDuration,1.28);
+ assert.equal(resolvePackStyle('unknown').id,'prismatic');
 });
