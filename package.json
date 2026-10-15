@@ -9,6 +9,7 @@
     "test:db": "node backend/check-schema.mjs",
     "dev": "npm --prefix next-app run dev",
     "build": "npm --prefix next-app run build",
+    "feature:doctor": "node scripts/feature-delivery.mjs doctor",
     "feature:start": "node scripts/feature-delivery.mjs start",
     "feature:publish": "node scripts/feature-delivery.mjs publish",
     "feature:status": "node scripts/feature-delivery.mjs status"
