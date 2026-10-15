@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:c4266fe5d1a37dc0abfe01c975771fde1264b9b1a6d55e6de653ad5d8419c72f",
+  "claims": [
+    {
+      "id": "claim_c3615f8b286c4020a261c1f4f7b3ba04",
+      "statement": "Every writing task uses a fresh isolated checkout and codex/ branch created from committed local main, while the shared main checkout is reserved for inspection and local landing.",
+      "evidence": [
+        {
+          "resource": "repo://.github/INTEGRATION.md#L26-L36",
+          "version": "repo-lines-v1:sha256:1b448eba4b8d9529031dd3da0a898ccea049cf5cb39754aa46c3a9236f3c5f68:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmODkyMDJjNDI0ZmRhY2Y1YTMyYzc3YjY3NGRiNDcxMTE0YjQyZjM0ODgwZGI3Yzg3NTc0ZDAxZDJkNmY3ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMWM2Mjg0NDMxMzJkODI4MzNiMTc3YjE3MjFkYTIyNTlkNWQ4YTE5NmJhNTA5ZDViNDE3OTk1ODU2YmM3ZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhMmZlNTg1YWZhMTQ1MGJmODQ5YzVjNDFhZTQ2NmJhNmIzMDFlMDhkZWI4MDU5YTA3OTJjNDdhM2NlNTNjMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1MzU2NDMwOGExM2VkNTM3MTQzY2NjZWZkZTNiMmFkNGJiM2ZiNmYyMzE4NmRlZTg1MjY0YTg0YjBiM2Q2YWQifQ"
+        },
+        {
+          "resource": "repo://.github/INTEGRATION.md#L3-L14",
+          "version": "repo-lines-v1:sha256:70a6ba0bcae549d86c752d22bb59bddb474aa2eaf993c5b6866748f4b2467084:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyNzRlOTYyNDQwYTEwNmI0Mzg2OWU1OWYzMGUzNGMyMjM1ZmYwN2I4NWE5N2QyOTEzYzIxM2M5YWJiYmZhN2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNmMwMGM5YTdmN2YyMjQ2YzZmYjdjZjZmNzc1MDNhYWMxMzM3MTNjYzliYWQ1NjhkMDdlZTc5ODFkNWUwMjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3NjkzN2QxNmRmYjJkZDQzZmY5MjVkZDYyYjRlZjBlZjM5NzhkODY2ZjVlYTBlZmEyNmI5YTE4N2FmYjhlNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyOGQ5NGZmMWVkMTVkZmRlMDA1OWYyMzUxOWRlZmQxNDU0ODk0MDMwNWVkYjAzYTkyZDhlMDEyYTA5ZjcxMWEifQ"
+        },
+        {
+          "resource": "repo://scripts/feature-delivery.mjs#L102-L124",
+          "version": "repo-lines-v1:sha256:c39ef7dad729abdc98334bde4a454ae290efa95f371ad804e160c07b573104d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NDBmOWJhNzQ0ZmJkNzdjNjVmMmEwZTUyNWEzYzg1N2VkYjcwNTc3ODY4NDFkMGIyZWMwNWM5MDYxZDlhYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MThmZjk4NzM5OWY0ZjkzNzkyODkzZWQ2YWRmZDgwMzZjNWJlODM5ZTZiN2Q4MDY2NjIwZTcxM2YxY2M3YmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkNDNlMjAzODMwY2Y0ZjRjZTI5MWRmNDExY2YzZmNiMDNkZTY1ZDUzNzAyNGNmYTg4ZDZlY2MwYTA4OTVkMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1NTNlZmViZmI5NDFiMTRkMzE4YTU3ZjFmNGU1NDBhZGEzOTBiZGVkMjcxOTY2M2E0ODhmOGE0NTJmN2ZmNzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_12b4b341a94e4afdb177495061c6906b",
+      "statement": "Each feature checkout has a unique generated change note that must record the change, validation, and limits and have its draft marker removed before publication or landing.",
+      "evidence": [
+        {
+          "resource": "repo://.github/INTEGRATION.md#L38-L45",
+          "version": "repo-lines-v1:sha256:51f9bd5461e33ae801eba173ca1bbddd79b7be805162a250a8df707fe110212e:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzY5ZGEzN2RjYTFjNzc1NWQyNmJkYzEwZTAyODkyOTdkNGZhZjE4NDU0NWU1ZTJhYjA0ZWQxNzI2Njc2ZmQ4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWRiYWUyYTM1YWU3MTVhYTQ5NDJhNWYzNWI0N2MwZTY3MjMyNGIyNWM1ODkwMWZmMTkxMTk2NDYwMTI4MGE3MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTY4MTUwM2M4Y2Q2ODQxMGU5MDFjMzg5NTIyMjEzMzdhYmVjNjA3YjMxYzYyZDEwNzI3YTkxNWYxZmRjYTZiYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTE5M2YwNzQwMjQ0MjljZTRlMjg3YTUzODdlNzE3Yzk4NzZkOGQ1YWMxMzVlMDIyMzAwMGE0NGQzNmE3NzU1NyJ9"
+        },
+        {
+          "resource": "repo://scripts/feature-delivery.mjs#L39-L50",
+          "version": "repo-lines-v1:sha256:656ac0eac3a2f8a1915ec0c174f3fc6847f230c8ee7ee6b2757347540c7d2075:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxNjBjMGY5YWMzZDZiOGRkNTBmYmYxNzc3MGQ4MGMzYzVhMzNkZDEyMjQwYzc5MjJiMTQ1OGY2ZmYxYWQyM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyNzhkNDI1ZDFjNWU3OGM2NTNmMGM5N2M4NzZjOTQ0M2E3ZDEzNGE2YTFkM2JmZmE5NGI1YjRmZDVjMTAzODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjZDg3ZGIwNjE3N2NkMDM2YTI0N2VhY2Q3ZjY2ZDUyY2U5YjFlY2ZmOTA0ZmVhZmZjZmJjM2Y4NTRjOTRjMjEifQ"
+        },
+        {
+          "resource": "repo://tests/feature-delivery.test.mjs#L61-L90",
+          "version": "repo-lines-v1:sha256:9a43013c4df3bd8c699c0b874544793392396a1cb1fc30dc5927df9b906a3990:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkNjQxNTAzYTY0OTNjMGRhMWYyN2M4MTk3MjVjZTNkNGQyYTVmYzlhMDc0YTdlMjhkN2Y2YmM1NTkzYjE3YTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3YWE1N2YyMjc1NjU0YmU2MmVhM2JkNTU1ZjRmNzUyNTY2YTNjZTgxOTNjNWYwZTJiNjFhMDM1MTM1MTU2MmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxNmVkZWExZjAyNmU4MGVjZGEzYWNjOWJjZTEzNjA3Y2UyNjcyZThmNTA4ZDgyYzkwZWQ4N2ZjMTViOTBlNTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhODA4NDVkMDAxMjFmN2M2Y2NhZjNiYmY4Yjg5N2Q5ZTRmZTBjNzU1YTkwMTU3NDhjNmNmZjZjMzY5ZjdlNmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6830fcf54d6476eb7376afffc16ecbd",
+      "statement": "The repository requires npm test and catalog validation for backend and agent work, keeps database schema history only in supabase/migrations, and validates job fields, enumerations, IDs, and canonical application URL uniqueness.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L41-L45",
+          "version": "repo-lines-v1:sha256:1629a93bce298c083b3938fb82c3e488fd5fa7ca843cfa3c98ef9c54d92f03a7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTNjMGJiZjg4MTIxYmE4OWRhM2M0YmIyNTIzZTRjZDU2OWRmOTQzOGQ5NGIwZjExNzk4NDczNDNmNTcyYmNkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjY2MTU4YjQ2NzRlOGVhM2VkNzhjMjU4NTJhOGNjNGQ4YjhhNGIxMmQ4NGY4ZDA2OTc1M2I5NjEwYzQ2MzIzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODc3MjE1ZmU4NmRiZjU1NmE2YjVmNGE0ZmQ0NWI2Yjc1NjI5NjBlNjk0MGI4ODJjMjRlMGIxYjU4MDdhMjZmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGZmMjIzNDEyOWRiZWY5MmFkOTBlOWE4YjE4YTBhNTA3YzRlMGU2YjE4N2VhYzZkNmNhMDdjN2E4ZDg4YjkzNSJ9"
+        },
+        {
+          "resource": "repo://package.json#L4-L12",
+          "version": "repo-lines-v1:sha256:3d31b25edaf2f33c22da48a12d85fa312ce9f6499b38d68c6aefb9e384b0ae07:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM5NzVhMDgwNjY5M2E2NTEzYWMzMWJhNThhYzUzNGM0MTFjN2Q5NjVhNjRmMDM0ZjYyMzg2YWNhNjFiODI0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTE4MzgwM2VjYzYyMDM2MzczMTBjMTk2Mjk0ZDczYmFiYjIwMjQ3MzlhYmM2NDExZmMzZTU4OGEzODZlZTUwZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODVhNWVhNTI0NjUzMzkxYTA1ZTcxYjc2YjQxNDJhZTk3NDI5MmNiM2JmZjFlMjYyZmFiZjU5MjNmYmM0YzI1MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTMzOTNiZTcwNWM5MjE3YWE4NGVkNWM2ZDk3MGRlMjRhM2E0MGJmZGU5OGFiZjNlMTRiOTFjNzU4MTE2OTc2MCJ9"
+        },
+        {
+          "resource": "repo://scripts/validate-data.mjs#L1-L17",
+          "version": "repo-lines-v1:sha256:d0168ce6de0d8ca463261a17f1d698e556ed61170023c4c29afd8b6e02ba2d98:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmZTM2YWMzMmNlODUzNzYxMDE0YWQ4OWY2NGJiZThlZjU2ODI3YWZjOGM0YzAyOTAxNjY5NGJjZGI4ZGVjMzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0NDM2OGIzNDg0MmY5Yzk5ZjZmMGRhOGFjZWM3NzJkOWEyZTQ3MjFlYTAwZDRjODUyNDI4OTFjNmRiMWE3NTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b47482808cd34b5da6cfe0c5ef2c350b",
+      "statement": "Routine feature landing requires a clean codex/ branch and completed change note, integrates current local main, and fast-forwards the shared checkout without pushing, creating a PR, or discarding unrelated dirty work.",
+      "evidence": [
+        {
+          "resource": "repo://.github/INTEGRATION.md#L44-L58",
+          "version": "repo-lines-v1:sha256:a608f3007a5bbab74c1f32097440b59b0a18e9d4564f6c73821a787a247dc81e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjZGFhMTI1MGU0MmE3NTk3M2U0MzllOTcwODhlMzAxYzg2ZGQ4YjNjZmEwZjVhM2YzOWQ3OGYxMDk3NGJkNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4YjU3NTk5MjZkYzA2ZDZhZGI2ZDJhMTVkODVlOWExY2IwYTZmZTc2Mjc2MTBlNGJmY2I5ODMyZWRkZDU4ZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzMGY1OTU0NWVkZmFkYThmYmNiZGE5YTI3NWJkNzE2MDM1MjM4YzMxM2MwYjlmODU5Nzc0YzRiYWE4Yzc0MWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxN2UwYmNlZjJhOWRjYzY0NzM0ZThlY2MwOGNiOTVmMjJlODg1MzMyODY1NTVjMDBjOTk0MDg3MzEyODVjNGMifQ"
+        },
+        {
+          "resource": "repo://scripts/feature-delivery.mjs#L77-L99",
+          "version": "repo-lines-v1:sha256:9068360afc87583f2911c5b11346ab5b8274459362e9ec5ae5d0ade63fbeede3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NTM0YmIwMmRiOGNlMWI3NzA2MjZlNGMzMjVlY2NkOGU3YTMxOTBkOWZhMjUyNGVkMTNlYmFjYjBlZTZiNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYjk2MDUyZDhjNzcyZDY4OWIwYWI2MDdmOGYxMWIyMzM3YzQ0ZmQ5ZTM5MjFhMmUzMWQxNzE2NDM3MTk0MTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkZTFjNmRhNzU3NjQ3MmNmNDc3NjllMzkzNDQwYjhlNWQyYmY0ODdkNzJmY2QwMzlhNTI5MjQ0ZTJlYWRkNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyYTU3NDBjMmQyMWIyOTc3YjY5ZmFmM2QwOWUwMGE1MzU2NjI2MjdhN2QwZjdjMDU5N2ZiZGRkMzM0MmRmZTQifQ"
+        },
+        {
+          "resource": "repo://tests/feature-delivery.test.mjs#L136-L161",
+          "version": "repo-lines-v1:sha256:2352e8562e251102df02e379ac8254559651d6494ac4427c9d3c95b993b0d55f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhZTk0NzlkZjljZWE5Yjc2ZThkYmIyODYzNmEzMWYwMjJkZjU2NmUyYzBjZDRiZTQ1OTVjOWYyNGY0MDU5M2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5YjMyMDQ2Yjc5NjRmNmRlMTIxZDJkOWQ4YzIzMmI1MzVjMjVmNjgxOGQ0ZTU1ZjhkYzBiODQyY2RlOTU0OGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NzhhOTU2ZmNmN2JjMmNhMGZjYWEwODhiNzA3MDMyMDMxNGU1MzQ3ZGU1ZGI1NzM1YzVjM2RhNzEwOGY2ZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3ZTcxNDllNzViOTlkZTFmZWY0ODBiNGVlMmFlNTM2ZTAwYWY2MWM0ZGU1NmQ3ZjEzMmM4MzYzZGEyYzU1NzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_77b3f23459e84a8a87c9a435e61439b5",
+      "statement": "PR publication is an explicit exception for review, protected CI, or production publication; production and gateway deployment occur through protected post-merge workflows rather than directly from a feature branch.",
+      "evidence": [
+        {
+          "resource": "repo://.github/INTEGRATION.md#L65-L78",
+          "version": "repo-lines-v1:sha256:7f17451d7222c64ab92bce24807dc6f3388baa9f4cc3c0ed1d7d7782e5db05c4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyYTczMGY1ODRlMDc2ZTAyOTIwOGIxNDA5ZDY1NmIxZDBhYzcwOGE4ZjFlMjM4ODJkYmYwYWY1YzM3NDc4ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGRmYzIzZDQzNGYyMzFmYTNkMzRiZjkwZTY3OGIyZTQ2YTQwYjViZmQ0NjQ5MjgxMTgxYjVhZmExMDBlNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1ZTQ0YjIzMGRhNmY1ZDk1MThjOGUwMmExNGQxODRlODZjOTQwOTk2OTMzYzA4NjllYzg0ZjlkZjhmMDQwYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4YThjMmJlNmI2YmM4NzE2ZTgxMWRhYTQ4NTJlYjIyZmE3NzI1OTVmMjBmOTUyNTg5ODcyYWY3ODRhMzVhNDYifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L32-L33",
+          "version": "repo-lines-v1:sha256:cca22d9d1c6545bf2dc3df4723bece5e57d4c50f35733982dc6b51be80b89de1:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWY2NjAxN2UxOGQ5ZTZhZTM3NjU0MTZjMjJlOTBlODEyOTU2YTBkYWQ5NmQwNWFhODE2N2YzNDBmMDc5ZmU1ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjNzZkZDRkMWQ0MmQzYjNhOTgxNzc5ZGY4ZDI4ZDM0MTIyNDY2ZjYzYmVmYjU4ZDhhODg2NDFjY2IwNWMzMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGM2MzgzNDJiZjBhZWI5MjAzNDhmODdhYWY2YjJiZmVkNDY3N2Q3ZGM4NTJhZGVkZmFlNDJiMDJiMWQ1NjljMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTAyZDM0OTBlMDIzYzQ0N2QxM2FiYjFhMDM4MDc4MjFkNDNkMTlkZTU4NmRlNzE5MjUxZTU0ZDQ3NGM3ZGZlZiJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L47-L47",
+          "version": "repo-lines-v1:sha256:e48b321c2363c26a48eb233f2d1f3714eba1e0b33b37a06b771f3f5f1bbe0e89:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQ4YjMyMWMyMzYzYzI2YTQ4ZWIyMzNmMmQxZjM3MTRlYmExZTBiMzNiMzdhMDZiNzcxZjNmNWYxYmJlMGU4OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQ4YjMyMWMyMzYzYzI2YTQ4ZWIyMzNmMmQxZjM3MTRlYmExZTBiMzNiMzdhMDZiNzcxZjNmNWYxYmJlMGU4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDc3NjA3ODdlNzNjNzFmMGFkMGEzYjAzMzkyYjFjZGM1MzE2N2I1OTRhM2QzZTIxZTcwNzE4ZTk0ZmM3Mzc5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTE4YWNlYzBmMmVjNGEyNDdkODM4ZWRlZjdmYTYyZDkxNzYwYTNiOWE5YmM3NTg3M2RlMmJhZWM3Zjk5YThmOCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-15T07:09:51.577Z"
+  }
+}
