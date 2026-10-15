@@ -38,7 +38,7 @@ function EventLink({post,openPost,demo}:{post:Post;openPost:(post:Post)=>void;de
  return <article className={styles.event}>
   <div className={styles.authorPortrait}><RoomPortrait name={post.author} demo={demo}/></div>
   <div className={styles.note}><div className={styles.noteMeta}><strong>{cleanName(post.author)}</strong><span>{postKind(post)}</span><time dateTime={post.createdAt}>{at}</time></div>
-   <button type="button" className={styles.noteLink} onClick={()=>openPost(post)}><h3>{post.content.title}</h3><p>{post.content.body}</p><span className={styles.eventAction}>{action}<Arrow/></span></button>
+   <button type="button" className={styles.noteLink} onClick={()=>openPost(post)}><h3>{post.content.title}</h3><p>{post.content.body||post.content.insight}</p><span className={styles.eventAction}>{!post.content.body?'View context':action}<Arrow/></span></button>
   </div>
  </article>;
 }
@@ -68,7 +68,7 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
      <div className={styles.boardContent}>
       {featured&&<article className={styles.celebration}>
        <div className={styles.celebrationFigure}><RoomPortrait name={featured.author} demo={demo} full/></div>
-       <div className={styles.celebrationCopy}><div className={styles.celebrationMeta}><span>{cleanName(featured.author)} shared a milestone</span><span className={styles.pin} aria-hidden="true"/></div><h3>{callout}</h3><h4>{featured.content.title}</h4><p>{featured.content.body}</p>{featured.content.company&&<span className={styles.company}>{featured.content.company}</span>}<button className={`${primary} ${styles.primary}`} type="button" onClick={()=>openPost(featured)}>Celebrate with {cleanName(featured.author).split(' ')[0]} <Arrow/></button></div>
+       <div className={styles.celebrationCopy}><div className={styles.celebrationMeta}><span>{cleanName(featured.author)} shared a milestone</span><span className={styles.pin} aria-hidden="true"/></div><h3>{callout}</h3><h4>{featured.content.title}</h4><p>{featured.content.body||featured.content.insight}</p>{featured.content.company&&<span className={styles.company}>{featured.content.company}</span>}<button className={`${primary} ${styles.primary}`} type="button" onClick={()=>openPost(featured)}>Celebrate with {cleanName(featured.author).split(' ')[0]} <Arrow/></button></div>
       </article>}
       <div className={styles.posts} aria-label="Shared Circle updates">{activity.length?activity.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):!featured&&<div className={styles.empty}><CircleEmblem/><h3>{searching?'Nothing on the board matches yet.':selected?'A little quiet in this corner.':'The board is ready for your first story.'}</h3><p>{searching?'Try a different search or clear your filters.':selected?'Their shared updates will appear here.':'Use Share above to add a milestone, resource, or opportunity for your people.'}</p></div>}</div>
      </div>
