@@ -11,6 +11,7 @@
     "build": "npm --prefix next-app run build",
     "feature:doctor": "node scripts/feature-delivery.mjs doctor",
     "feature:start": "node scripts/feature-delivery.mjs start",
+    "feature:land": "node scripts/feature-delivery.mjs land",
     "feature:publish": "node scripts/feature-delivery.mjs publish",
     "feature:status": "node scripts/feature-delivery.mjs status"
   },

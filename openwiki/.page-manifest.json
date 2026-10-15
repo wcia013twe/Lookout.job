@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "/openwiki/agents/gateway-and-mcp.md": {
+      "pageVersion": "sha256:afe1deefcb990d7049684d78c087bda9d63d51d39d2d08fe26c3c687bbc47fcc",
+      "completedBy": "codex",
+      "completedRunId": "f96237bb-6dd5-4fdc-a6e9-c58e425726f5",
+      "gitHead": "371983ef1b59dcd9d96c0961b9486311a919e22a",
+      "sourceFingerprint": "sha256:7f9df7a9b94a92f66bb0385c8c86cb9736054a33ce3618ee5ab1cdfffacaeee2"
+    },
+    "/openwiki/agents/submission-safety.md": {
+      "pageVersion": "sha256:949db35a022865e2fab911ff83a908bd3d3674a8aeda801aca006a36d2ad1225",
+      "completedBy": "codex",
+      "completedRunId": "f96237bb-6dd5-4fdc-a6e9-c58e425726f5",
+      "gitHead": "371983ef1b59dcd9d96c0961b9486311a919e22a",
+      "sourceFingerprint": "sha256:7f9df7a9b94a92f66bb0385c8c86cb9736054a33ce3618ee5ab1cdfffacaeee2"
+    },
+    "/openwiki/architecture/system-overview.md": {
+      "pageVersion": "sha256:69d5f9e66db5c97b33106e85cd0dd27793682cc7a4138a1987efd231552c1071",
+      "completedBy": "codex",
+      "completedRunId": "f96237bb-6dd5-4fdc-a6e9-c58e425726f5",
+      "gitHead": "371983ef1b59dcd9d96c0961b9486311a919e22a",
+      "sourceFingerprint": "sha256:7f9df7a9b94a92f66bb0385c8c86cb9736054a33ce3618ee5ab1cdfffacaeee2"
+    },
+    "/openwiki/operations/testing-and-delivery.md": {
+      "pageVersion": "sha256:c4266fe5d1a37dc0abfe01c975771fde1264b9b1a6d55e6de653ad5d8419c72f",
+      "completedBy": "codex",
+      "completedRunId": "f96237bb-6dd5-4fdc-a6e9-c58e425726f5",
+      "gitHead": "371983ef1b59dcd9d96c0961b9486311a919e22a",
+      "sourceFingerprint": "sha256:7f9df7a9b94a92f66bb0385c8c86cb9736054a33ce3618ee5ab1cdfffacaeee2"
+    },
+    "/openwiki/quickstart.md": {
+      "pageVersion": "sha256:363f4d365038699830a368e42d88c18cc61c84cda67f0f19b7827145fd48c062",
+      "completedBy": "codex",
+      "completedRunId": "f96237bb-6dd5-4fdc-a6e9-c58e425726f5",
+      "gitHead": "371983ef1b59dcd9d96c0961b9486311a919e22a",
+      "sourceFingerprint": "sha256:7f9df7a9b94a92f66bb0385c8c86cb9736054a33ce3618ee5ab1cdfffacaeee2"
+    },
+    "/openwiki/workflows/discovery-and-tracking.md": {
+      "pageVersion": "sha256:425d3055e9c1e62afaaed8a0c70bb90b642167e557d5c027fb83c2cf3ee32e4f",
+      "completedBy": "codex",
+      "completedRunId": "f96237bb-6dd5-4fdc-a6e9-c58e425726f5",
+      "gitHead": "371983ef1b59dcd9d96c0961b9486311a919e22a",
+      "sourceFingerprint": "sha256:7f9df7a9b94a92f66bb0385c8c86cb9736054a33ce3618ee5ab1cdfffacaeee2"
+    }
+  }
+}

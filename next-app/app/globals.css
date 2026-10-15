@@ -239,6 +239,35 @@ button:not(:disabled) {
 .workspace-shell .workspace-primary:active:not(:disabled),
 .workspace-shell .workspace-secondary:active:not(:disabled) { transform: translateY(1px); }
 .workspace-shell button:disabled { cursor: not-allowed; }
+.action-widget { min-width: 0; }
+.action-widget-count { color: var(--color-board-ink); background: var(--color-board-accent); }
+.action-check {
+  position: relative;
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: var(--color-board-accent);
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  text-decoration: none;
+}
+.action-check::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid var(--color-board-line);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-board-tag) 72%, transparent);
+  transition: border-color 160ms ease-out, background-color 160ms ease-out;
+}
+.action-check:hover::before { border-color: var(--color-board-accent); background: var(--color-board-tag); }
+.action-check:active:not(:disabled)::before { background: color-mix(in srgb, var(--color-board-accent) 18%, var(--color-board-tag)); }
+.action-check:disabled { opacity: .45; }
+.action-board-row { transition: opacity 180ms ease-out, background-color 180ms ease-out; }
+.action-board-row:focus-within { background: color-mix(in srgb, var(--color-board-tag) 34%, transparent); }
+.action-skeleton { background: color-mix(in srgb, var(--color-board-muted) 18%, transparent); }
 .workspace-shell :focus-visible { outline-color: #ace1ff; }
 .workspace-shell ::selection { background: #b9def5; color: #10223a; }
 .workspace-shell input, .workspace-shell textarea { caret-color: #ace1ff; }
