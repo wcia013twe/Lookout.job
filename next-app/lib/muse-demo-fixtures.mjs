@@ -3,6 +3,8 @@ import { demoOnboardingAction } from "./onboarding-demo.mjs";
 import { createPreparationPlan, setPreparationTaskCompletion } from '../../lib/preparation-model.mjs';
 import { normalizeQuietMode, buildDeliveryPolicy } from '../../lib/quiet-mode.mjs';
 
+import outreachLibrary from '../../supabase/functions/agent-gateway/skills/outreach-templates.json' with { type: 'json' };
+
 const copy = value => value == null ? value : JSON.parse(JSON.stringify(value));
 const day = (date, offset) => new Date(Date.parse(`${date}T12:00:00Z`) + offset * 86400000).toISOString().slice(0, 10);
 const identity = 'demo-person';
@@ -99,7 +101,7 @@ export function createDemoWorkspace(now = new Date()) {
       tierLists: [], activeTierListId: '',
     },
     ui: { packOpen: false },
-    demo: { fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, submissionRecords, selectionDecisions },
+    demo: { outreachLibrary: copy(outreachLibrary), fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, submissionRecords, selectionDecisions },
   };
 }
 

@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "defaultGuide": "cold-outreach",
+  "templates": [
+    {
+      "id": "recruiter-interview",
+      "name": "Recruiter — request an interview",
+      "whenToUse": "A recruiter covering the target role; prefer university recruiting for student opportunities.",
+      "requiredEvidence": [
+        "Verified recruiter and role",
+        "Candidate background",
+        "Relevant achievement and result",
+        "Specific company or team reason"
+      ],
+      "subject": "[Relevant background] — [Role] at [Company]",
+      "message": "Hi [First name],\n\nI’m [Name], a [brief background] interested in [Role, linked]. At [organization/project], I [specific achievement and result].\n\n[Specific company/team work] interests me because [connection to my experience or interests].\n\nCould we start the interview process for this role?\n\nThanks,\n[Name]"
+    },
+    {
+      "id": "warm-referral",
+      "name": "Existing connection — ask for a referral",
+      "whenToUse": "The candidate actually knows the recipient.",
+      "requiredEvidence": [
+        "Verified relationship",
+        "Target role and link",
+        "Relevant achievement",
+        "Specific team interest"
+      ],
+      "subject": "Referral for [Role] at [Company]",
+      "message": "Hi [First name],\n\n[Brief, genuine reference to your relationship.]\n\nI found [Role, linked] at [Company]. The focus on [requirement] matches my experience [specific achievement], and I’m interested in [specific team work].\n\nWould you feel comfortable referring me? I can send a short background summary to make it easy.\n\nThanks,\n[Name]"
+    },
+    {
+      "id": "shared-background",
+      "name": "Alumni or shared background — introduce yourself",
+      "whenToUse": "A verified school, former employer, or community connection provides a reason to approach.",
+      "requiredEvidence": [
+        "Verified shared background",
+        "Candidate introduction",
+        "Target role and link",
+        "Relevant achievement",
+        "Specific team interest"
+      ],
+      "subject": "Fellow [shared affiliation] — [Role] at [Company]",
+      "message": "Hi [First name],\n\nI noticed we both [verified shared background]. I’m [brief introduction], exploring [Role, linked] at [Company].\n\nI recently [relevant achievement]. Your team’s work on [specific area] caught my attention because [concrete reason].\n\nWould you be open to reviewing my background for a possible referral?\n\nThanks,\n[Name]"
+    },
+    {
+      "id": "technical-leader",
+      "name": "Founder or technical leader — demonstrate fit",
+      "whenToUse": "A small-company founder or technical leader directly influences hiring and there is a concrete technical connection.",
+      "requiredEvidence": [
+        "Verified hiring relevance",
+        "Specific technical source",
+        "Related contribution and result",
+        "Target role or engineering area"
+      ],
+      "subject": "[Relevant technical work] — interested in [Company]",
+      "message": "Hi [First name],\n\nI read [specific post, documentation, or announcement] about [Company’s technical problem].\n\nI worked on [related problem], where I [contribution and result]. That experience seems relevant to [specific challenge], especially [brief technical connection].\n\nWould you consider me for [Role or clearly defined engineering area]?\n\nThanks,\n[Name]"
+    },
+    {
+      "id": "follow-up",
+      "name": "Follow-up — return to the original ask",
+      "whenToUse": "An existing thread has no response after the user’s chosen interval of several days. Stop on replies or opt-outs.",
+      "requiredEvidence": [
+        "Original sent message and ask",
+        "Verified send date and no reply or opt-out",
+        "Relevant reminder or new fact"
+      ],
+      "subject": "Keep the existing thread",
+      "message": "Hi [First name],\n\nFollowing up on my note about [Role]. [One additional relevant fact or a concise reminder of fit.]\n\nI’m still interested in [specific team/work]. [Repeat the original ask in one sentence.]\n\nThanks,\n[Name]"
+    }
+  ]
+}

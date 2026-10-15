@@ -321,3 +321,7 @@ The database gate stays disabled pending hosted two-account permission checks.
 Freeform/personal sharing requires exact human review; optional standing permission
 is limited to a closed public-documentation template. See
 [contracts, limits and release checks](backend/circle-knowledge.md).
+
+### Outreach starter templates
+
+Referrals previews five built-in templates (recruiter interview, warm referral, shared background, technical leader, follow-up), including before contacts exist and in the admin demo. Agents read the same canonical library through `read_guide("cold-outreach")`. The Nick Singh-derived cold-outreach skill is the default for tailoring all templates to verified candidate, contact, role and channel details. Templates do not create contacts or send messages. The guide includes required evidence and applicability for each template.

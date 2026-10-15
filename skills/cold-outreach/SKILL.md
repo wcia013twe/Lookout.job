@@ -13,6 +13,12 @@ Recruiters handle interview-process questions. Engineers can discuss referrals o
 
 Use offers and timelines only when supplied and current. Keep follow-ups concise; suggest a configurable cadence of several days between nudges and stop on replies or opt-outs. Weekday/business-hour timing is an anecdotal suggestion, not a guarantee. Do not schedule or send without authorization.
 
+## Default tailoring skill and starter templates
+
+This Nick Singh-derived cold-outreach skill is the default for customizing all outreach templates. The five starter templates are scaffolds, not finished messages or overrides of this skill. Select the template whose whenToUse matches the actual relationship and hiring context; tailor its subject, wording, evidence and ask to the current candidate, recipient, role, channel and user preferences. Prefer relevant recruiters for cold interview requests; approach engineers or technical leaders when the relationship or technical reason supports it.
+
+The platform guide returned by read_guide("cold-outreach") includes templates with stable IDs, whenToUse, requiredEvidence, subject and message. Read those fields before drafting. Resolve every bracketed field using verified facts; if required evidence is missing, report it separately and do not save a supposedly copy-ready draft. Do not invent shared backgrounds or infer a sent message from a draft. Follow-ups require an actual sent message, elapsed time and no reply or opt-out. Save drafts only; templates do not authorize sending or scheduling.
+
 ## Platform execution
 
 At each connected run, call read_outreach_workspace to check pending requests and current contacts. Load this platform guide with read_guide("cold-outreach"); no local skill installation or user-pasted prompt is required. Read the current candidate profile and roles using existing authorized tools. Research contacts for each requested company and prepare complete messages.

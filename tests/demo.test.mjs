@@ -207,3 +207,14 @@ test('demo search profiles include active and paused searches and reset isolated
  assert.deepEqual(reset.workflow.searchPreferences.profiles, initial.workflow.searchPreferences.profiles);
  assert.notEqual(initial.workflow.searchPreferences.profiles[0].instructions, profiles[0].instructions);
 });
+
+
+test('demo exposes all five outreach previews without creating contacts or mutating defaults', () => {
+ const first = createDemoWorkspace(now), second = createDemoWorkspace(now);
+ assert.equal(first.demo.outreachLibrary.defaultGuide, 'cold-outreach');
+ assert.equal(first.demo.outreachLibrary.templates.length, 5);
+ assert.deepEqual(first.network.referrals, []);
+ first.demo.outreachLibrary.templates[0].message = 'Edited preview';
+ assert.notEqual(second.demo.outreachLibrary.templates[0].message, 'Edited preview');
+ assert.notEqual(createDemoWorkspace(now).demo.outreachLibrary.templates[0].message, 'Edited preview');
+});

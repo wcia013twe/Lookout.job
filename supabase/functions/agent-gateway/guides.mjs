@@ -1,6 +1,7 @@
 import outreach from './skills/cold-outreach.json' with { type: 'json' };
 import resume from './skills/resume-parse.json' with { type: 'json' };
-const guides = [resume, outreach];
+import outreachTemplates from './skills/outreach-templates.json' with { type: 'json' };
+const guides = [resume, { ...outreach, ...outreachTemplates, version: outreach.version, templateVersion: outreachTemplates.version }];
 export function guideIndex() {
   return guides.map(({id, version, name, description, whenToUse}) => ({id, version, name, description, whenToUse}));
 }
