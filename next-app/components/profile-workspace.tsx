@@ -21,6 +21,7 @@ const sections: [ProfileSection, string, string][] = [
   ["targets", "Search targets", "Job boards, company careers pages, and social accounts where Muse looks."],
   ["agent", "My agent", "Your companion, connection, updates, and application permissions."],
 ];
+const sectionOptions: [ProfileSection, string][] = [["overview", "Overview"], ...sections.map(([id, title]) => [id, title] as [ProfileSection, string])];
 
 export default function ProfileWorkspace() {
   const w = useWorkspace();
@@ -38,8 +39,14 @@ export default function ProfileWorkspace() {
   return (
     <ProfileSurface>
       <Heading title="My Profile">Your details, application kit, and job search settings.</Heading>
+      <label className={profileStyles.mobileSelect}>
+        <span>Profile section</span>
+        <select className={control} value={active} onChange={(event) => select(event.target.value as ProfileSection)}>
+          {sectionOptions.map(([id, title]) => <option key={id} value={id}>{title}</option>)}
+        </select>
+      </label>
       <nav aria-label="Profile sections" className={profileStyles.tabs}>
-        {([["overview", "Overview"], ...sections.map(([id, title]) => [id, title])] as [ProfileSection, string][]).map(([id, title]) => (
+        {sectionOptions.map(([id, title]) => (
           <button key={id} type="button"  aria-pressed={active === id} onClick={() => select(id)}>{active === id && <motion.span layoutId="profile-tab" className={profileStyles.tabHighlight} transition={{ duration: reducedMotion ? 0 : .24, ease: [0.16, 1, 0.3, 1] }} />}{title}</button>
         ))}
       </nav>

@@ -49,10 +49,15 @@
 .skipped[open] > summary { border-color: #65758d; }
 .skipped > .rows { margin-top: 8px; }
 @media (max-width: 640px) {
-  .header { flex-wrap: wrap; align-items: start; gap: 12px; padding-inline: 14px; }
-  .info { flex-basis: 100%; }
-  .packButton { min-width: 130px; }
-  .dropdownSummary, .full { padding-inline: 14px; }
+  .strip { margin-top: 14px; }
+  .header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 10px 12px 0; }
+  .info { flex-basis: auto; }
+  .title { margin-bottom: 2px; }
+  .banner { flex-wrap: nowrap; gap: 6px; overflow: hidden; white-space: nowrap; line-height: 1.35; }
+  .addedCount, .dots { display: none; }
+  .packButton { min-width: 0; padding-inline: 10px; }
+  .dropdownSummary { padding: 8px 12px; }
+  .full { padding-inline: 12px; }
   .rowSummary { flex-wrap: wrap; gap: 8px; }
   .rowTitle { order: 3; flex-basis: 100%; }
   .badges { flex: 1; justify-content: flex-end; }

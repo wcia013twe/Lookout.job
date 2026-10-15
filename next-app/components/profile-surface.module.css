@@ -17,8 +17,9 @@
 .surface textarea { line-height: 1.6; }
 .surface summary { display: list-item; min-height: 44px; padding-block: 10px; }
 .surface details[open] > summary { color: var(--profile-detail-accent); }
-.summary { overflow: hidden; padding: clamp(20px, 4vw, 32px); border-radius: 16px; }
-.tabs { display: flex; gap: 4px; padding: 5px; overflow-x: auto; scrollbar-width: none; margin-block: 0 24px; border-radius: 12px; background: var(--profile-tab-bg); border: 1px solid var(--profile-tab-line); }
+.summary { overflow: hidden; padding: 16px; border-radius: 16px; }
+.mobileSelect { display: grid; gap: 6px; margin-bottom: 16px; color: var(--color-board-muted); font-size: 13px; font-weight: 600; }
+.tabs { display: none; gap: 4px; padding: 5px; overflow-x: auto; scrollbar-width: none; margin-block: 0 24px; border-radius: 12px; background: var(--profile-tab-bg); border: 1px solid var(--profile-tab-line); }
 .tabs button { position: relative; isolation: isolate; white-space: nowrap; flex-shrink: 0; min-height: 44px; padding: 10px 14px; border-radius: 8px; color: var(--profile-tab-text); font-size: 13px; font-weight: 600; }
 .tabs button:hover { color: var(--profile-tab-hover-text); background: var(--profile-tab-hover-bg); }
 .tabs button[aria-pressed=true] { color: var(--profile-tab-selected-text); }
@@ -33,6 +34,8 @@
 .surface [role=status]:empty { display: none; }
 .message { border-radius: 16px; padding: clamp(18px, 3vw, 28px); }
 .contactList { padding: 18px; border-radius: 12px; }
+.contactGrid { display: grid; gap: 28px; margin-top: 20px; }
+.contactBack { display: none; }
 :global([data-theme="light"]) .surface {
   --profile-check-accent: #245775;
   --profile-detail-accent: #28587a;
@@ -46,5 +49,12 @@
   --profile-section-line: #c4d1dd;
   --profile-section-hover: #28587a;
 }
-@media (max-width: 639px) { .sectionRow { align-items: flex-start; gap: 12px; } .tabs { margin-inline: -4px; } .summary dl { gap: 20px; } .surface input[type=file] { font-size: 14px; } }
+@media (max-width: 639px) { .sectionRow { align-items: flex-start; gap: 12px; padding-block: 16px; } .summary dl { gap: 16px; } .surface input[type=file] { font-size: 16px; } .message { padding: 16px; } .contactList { padding: 14px; } }
+@media (max-width: 767px) {
+  .contactGrid:not(.contactSelected) .message { display: none; }
+  .contactSelected .contactList { display: none; }
+  .contactBack { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--color-board-accent); font-size: 14px; font-weight: 700; }
+}
+@media (min-width: 768px) { .summary { padding: clamp(20px, 4vw, 32px); } .mobileSelect { display: none; } .tabs { display: flex; } }
+@media (min-width: 1024px) { .contactGrid { grid-template-columns: 300px minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .surface *, .surface *::before { transition: none !important; } }
