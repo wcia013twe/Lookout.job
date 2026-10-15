@@ -54,7 +54,7 @@ export interface PreparationPlan {
   scheduleChanged?: boolean;
   previousDeadline?: string | null;
   tasks: { id: string; title: string; detail: string; minutes: number; completed: boolean; dueDate?: string | null }[];
-  guides: { id: string; title: string; url: string; matchedTopics: string[] }[];
+  guides: { id: string; title: string; url: string; matchedTopics: string[]; source?: string; observedAt?: string; evidence?: string }[];
 }
 
 export interface SavedResume {

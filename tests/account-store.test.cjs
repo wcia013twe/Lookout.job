@@ -19,3 +19,11 @@ test('account workspaces isolate profile, answers and drafts and preserve the gu
 test('invalid account namespace cannot overwrite guest state',()=>{
  const s=store();s.set('workflow.profile',{name:'Guest'});assert.throws(()=>s.switchAccount('../guest'),/Invalid account/);assert.equal(s.get('workflow.profile').name,'Guest');
 });
+test('weekly prep budgets and session history persist without crossing guest or account boundaries',()=>{
+ const s=store();s.set('workflow.preparationPlanner',{settings:{dailyMinutes:15,version:1},sessions:[{id:'guest-session',minutes:15}]});
+ s.switchAccount(one);assert.equal(s.get('workflow.preparationPlanner')?.sessions?.length||0,0);
+ s.set('workflow.preparationPlanner',{settings:{dailyMinutes:30,version:1},sessions:[{id:'one-session',minutes:30}]});
+ s.switchAccount(two);assert.equal(s.get('workflow.preparationPlanner')?.sessions?.length||0,0);
+ s.switchAccount(one);assert.equal(s.get('workflow.preparationPlanner').settings.dailyMinutes,30);assert.equal(s.get('workflow.preparationPlanner').sessions[0].id,'one-session');
+ s.switchAccount(null);assert.equal(s.get('workflow.preparationPlanner').settings.dailyMinutes,15);assert.equal(s.get('workflow.preparationPlanner').sessions[0].id,'guest-session');
+});

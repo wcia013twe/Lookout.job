@@ -1,3 +1,4 @@
+import { buildPreparationAgenda, plannerToday } from './preparation-planner.mjs';
 import { createPreparationPlan, setPreparationTaskCompletion, PREPARATION_GUIDES } from './preparation-model.mjs';
 import { buildDeliveryPolicy, normalizeQuietMode } from './quiet-mode.mjs';
 import { applicationPolicy } from './application-policy.mjs';
@@ -31,6 +32,12 @@ export function notificationAdvice(bundle, now=new Date()) {
  return {delivery,events:delivery.decision==='due'?events.filter(e=>ids.includes(e.id)):[],pendingCount:events.length,applications:bundle.applications||[],transport:'agent-runtime',acknowledgeOnlyAfterDelivery:true};
 }
 export async function museFeatureDispatch({operation,payload,rpc,loadJob,now=new Date()}) {
+ if (['preparation.planner.read','preparation.budget','preparation.session.complete'].includes(operation)) {
+  const bundle = await rpc(operation, payload);
+  if (bundle.error) return bundle;
+  const timeZone = bundle.data.timeZone || 'UTC';
+  return {data:{...bundle.data,agenda:buildPreparationAgenda({...bundle.data,today:plannerToday(now,timeZone),timeZone})},error:null};
+ }
  if(operation==='preparation.update'||operation==='preparation.complete') {
   const read=await rpc('preparation.read',{applicationId:payload.applicationId});
   if(read.error) return read;
@@ -45,7 +52,7 @@ export async function museFeatureDispatch({operation,payload,rpc,loadJob,now=new
    const zone=normalizeQuietMode({timezone:context.timeZone}).timezone;
    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now).map(p=>[p.type,p.value]));
    const today=`${parts.year}-${parts.month}-${parts.day}`;
-   const guides=[...new Map([...(payload.resourceGuides||[]),...PREPARATION_GUIDES].map(g=>[g.id,g])).values()];
+   const guides=[...new Map([...PREPARATION_GUIDES,...(previous?.plan?.guides||[]),...(payload.resourceGuides||[])].map(g=>[g.id,g])).values()];
    plan=createPreparationPlan({application:{...context.application.draft,...employer,id:context.application.job_id,resume:context.resume},deadline:payload.deadline,previousPlan:previous?.plan,now:today,dailyMinutes:payload.dailyMinutes,guides});
   }
   return rpc('preparation.save',{applicationId:payload.applicationId,expectedVersion:payload.expectedVersion,plan});

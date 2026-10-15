@@ -1,3 +1,5 @@
+import { recordLocalPreparationSession, validatePlannerMinutes } from '../../lib/preparation-planner.mjs';
+
 import { createCircleKnowledgeDemo } from '../../lib/circle-knowledge-demo.mjs';
 import { demoOnboardingAction } from "./onboarding-demo.mjs";
 import { createPreparationPlan, setPreparationTaskCompletion } from '../../lib/preparation-model.mjs';
@@ -38,7 +40,7 @@ export function createDemoWorkspace(now = new Date()) {
     activity: [{ at, text: 'Fictional application seeded for the demo.', actor: 'demo' }],
   }]));
   const guides = [{ id: 'demo-database-guide', title: 'Database interview guide (fictional demo resource)', url: 'https://example.com/demo/resources/database-interview', topics: ['database', 'backend', 'sql'], minutes: 30 }];
-  const confirmedDate = day(today, 8);
+  const confirmedDate = day(today, 3);
   let confirmedPlan = createPreparationPlan({ application: applications['demo-interview'], now: at, guides, deadline: {
     date: confirmedDate, stage: 'Technical interview', confirmed: true,
     source: { kind: 'email', messageId: 'demo-email-confirmed', subject: 'Demo: your technical interview', receivedAt: at, excerpt: `Fictional email: your technical interview is on ${confirmedDate} at 14:00 UTC. Prepare to discuss SQL and backend design.`, url: 'https://example.com/demo/email/confirmed' },
@@ -48,7 +50,10 @@ export function createDemoWorkspace(now = new Date()) {
     date: 'next Friday', stage: 'Phone screen', confirmed: false,
     source: { kind: 'email', messageId: 'demo-email-ambiguous', subject: 'Demo: finding a time', receivedAt: at, excerpt: 'Fictional email: can you speak next Friday? We will confirm the date and time shortly.', url: 'https://example.com/demo/email/ambiguous' },
   } });
-  const prepRows = Object.fromEntries([confirmedPlan, ambiguousPlan].map(plan => [plan.applicationId, { application_id: plan.applicationId, user_id: identity, plan: copy(plan), version: 1, updated_at: at }]));
+  const secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,guides,deadline:{date:day(today,5),stage:'Technical interview',confirmed:true,source:{kind:'manual'}}});
+  const companyGuide = {id:'cedar-lookout-report',title:'Cedar backend round report (fictional)',url:'https://example.com/demo/intelligence/cedar',companies:['Cedar Systems (demo)'],topics:['backend'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional report: a query-planning discussion followed by a backend design exercise.'};
+  confirmedPlan = createPreparationPlan({application:applications['demo-interview'],now:at,previousPlan:confirmedPlan,guides:[...guides,companyGuide],deadline:{...confirmedPlan.deadline,confirmed:true}});
+  const prepRows = Object.fromEntries([confirmedPlan, ambiguousPlan, secondPlan].map(plan => [plan.applicationId, { application_id: plan.applicationId, user_id: identity, plan: copy(plan), version: 1, updated_at: at }]));
   function attempt(id, state) {
     const application = applications[id];
     const receipt = state === 'confirmed' ? {
@@ -93,7 +98,7 @@ export function createDemoWorkspace(now = new Date()) {
     tracker: { ids: roles.slice(0, 4).map(role => role.id), items: Object.fromEntries(roles.slice(0, 4).map(role => [role.id, { status: role.status === 'Submitted' ? 'Applied' : role.status === 'Blocked' ? 'New' : role.status, statusDate: today, openedDate: day(today, -3), ...(role.id === 'demo-confirmed' ? { appliedDate: today } : {}) }])) },
     drops: { seenDropIds: [], packStamps: {} }, network: { referrals: [], people: [] },
     workflow: {
-      applications, preparationPlans: { 'demo-interview': confirmedPlan, 'demo-ambiguous': ambiguousPlan },
+      applications, preparationPlans: { 'demo-interview': confirmedPlan, 'demo-ambiguous': ambiguousPlan, 'demo-confirmed':secondPlan },
       profile: { name: 'Jordan Example (fictional demo)', email: 'jordan@example.com', phone: '', location: 'Fictional City', authorization: 'Demo only', verified: false },
       resumes: [resume], savedAnswers: [], deletedAnswerIds: [], cloudDirty: false,
       theme: { pack: 'base' },
@@ -112,7 +117,26 @@ export function createDemoServices(store) {
     if (!value || value.backendId !== id || !String(id).startsWith('demo-')) throw new Error('Fictional demo application not found.');
     return value;
   }
+  function plannerBundle() {
+    return {applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
+  }
   return {
+    async readPreparationPlanner() { return plannerBundle(); },
+    async savePreparationBudget(dailyMinutes, expectedVersion) {
+      validatePlannerMinutes(dailyMinutes);
+      if (expectedVersion !== plannerBundle().settings.version) throw Error('Budget changed. Reload before saving.');
+      store.set('demo.plannerSettings',{dailyMinutes,version:expectedVersion+1});
+      return plannerBundle();
+    },
+    async completePreparationSession(input) {
+      const next=recordLocalPreparationSession(plannerBundle(), input);
+      const workflow=store.get('workflow');
+      const demo=store.get('demo');
+      store.set('demo',{...demo,preparationSessions:next.sessions,preparationRows:Object.fromEntries(next.plans.map(row=>[row.application_id,row]))});
+      store.set('workflow',{...workflow,preparationPlans:{...workflow.preparationPlans,...Object.fromEntries(next.plans.map(row=>[row.plan.applicationId,row.plan]))}});
+      return plannerBundle();
+    },
+
     knowledge: createCircleKnowledgeDemo(),
     async onboardingAction(operation, payload = {}) { return demoOnboardingAction(store, operation, payload); },
     async readApplicationTimeline(id) {

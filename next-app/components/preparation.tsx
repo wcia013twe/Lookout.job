@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useId, useState } from "react";
-import { createPreparationPlan, setPreparationTaskCompletion } from "../../lib/preparation-model.mjs";
+import { createPreparationPlan, setPreparationTaskCompletion, PREPARATION_GUIDES } from "../../lib/preparation-model.mjs";
 import { control, Field, Notice, primary } from "./ui";
 import type { FormEvent } from "react";
 import type { Application, PreparationPlan } from "./workflow-types";
@@ -13,21 +13,19 @@ const buildPreparationPlan = createPreparationPlan as unknown as (input: {
   deadline: { date: string; stage: string; confirmed: boolean; source?: PreparationPlan["deadline"]["source"] };
   dailyMinutes: number;
   now: string;
-  guides?: PreparationPlan["guides"];
+  guides?: unknown[];
 }) => PreparationPlan;
 
 export default function Preparation({ application, plan = null, onSave, timeZone, demo = false }: { application: Application; plan?: PreparationPlan | null; onSave?: (plan: PreparationPlan) => Promise<void> | void; timeZone?: string; demo?: boolean }) {
   const formId = useId();
   const [date, setDate] = useState(plan?.deadline?.date || "");
   const [stage, setStage] = useState(plan?.deadline?.stage || "Interview");
-  const [minutes, setMinutes] = useState<number | string>(plan?.dailyMinutes || 45);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
   useEffect(() => {
     setDate(plan?.deadline?.date || "");
     setStage(plan?.deadline?.stage || "Interview");
-    setMinutes(plan?.dailyMinutes || 45);
     setError("");
     setFeedback("");
   }, [application?.id, plan?.deadline?.date, plan?.deadline?.stage, plan?.dailyMinutes]);
@@ -52,8 +50,8 @@ export default function Preparation({ application, plan = null, onSave, timeZone
       const part = (type: Intl.DateTimeFormatPartTypes) => localDate.find(value => value.type === type)?.value || "";
       const next = buildPreparationPlan({ application, previousPlan: current,
         deadline: { date, stage, confirmed: true, source: unchanged ? source : { kind: "manual" } },
-        ...(demo ? { guides: current?.guides || [] } : {}),
-        dailyMinutes: Number(minutes), now: `${part("year")}-${part("month")}-${part("day")}`,
+        guides: [...new Map([...(demo ? [] : PREPARATION_GUIDES), ...(current?.guides || [])].map(guide => [guide.id, guide])).values()],
+        dailyMinutes: current?.dailyMinutes || 45, now: `${part("year")}-${part("month")}-${part("day")}`,
       });
       if (next.deadline.status !== "confirmed") throw new Error(next.warnings.join(" "));
       save(next, "Preparation plan saved.");
@@ -62,7 +60,7 @@ export default function Preparation({ application, plan = null, onSave, timeZone
   return (
     <section aria-labelledby={`${formId}-heading`} className="mt-6 border-t border-board-line pt-6">
       <h3 id={`${formId}-heading`} className="text-lg font-bold">Prepare for {application.company || "your next interview"}</h3>
-      <p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">Use your saved application and a confirmed process deadline to plan the next steps. Resource suggestions follow the role’s requirements.</p>
+      <p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">Keep this round’s requirements, company research and source evidence together. Your Action Board combines shared practice into one weekly plan.</p>
       {source?.kind === "email" && <div className="mt-4 rounded-lg bg-board-tag p-4 text-sm">
         <p className="font-semibold">Deadline from email{source.subject ? `: ${source.subject}` : ""}</p>
         {source.excerpt && <blockquote className="mt-2 break-words text-board-muted">{source.excerpt}</blockquote>}
@@ -72,10 +70,9 @@ export default function Preparation({ application, plan = null, onSave, timeZone
       </div>}
       {current?.deadline?.status === "needs_confirmation" && <Notice>Confirm the exact deadline below. Preparation tasks remain unscheduled until the date is supported.</Notice>}
       <form onSubmit={build} className="glass-inset mt-5 space-y-4 rounded-xl p-4 sm:p-5">
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-2">
           <Field label="Interview or process deadline"><input required type="date" className={control} value={date} onChange={event => setDate(event.target.value)} /></Field>
           <Field label="Process stage"><input required maxLength={100} className={control} value={stage} onChange={event => setStage(event.target.value)} placeholder="Technical interview" /></Field>
-          <Field label="Minutes available per day"><input required type="number" min="15" max="240" className={control} value={minutes} onChange={event => setMinutes(event.target.value)} /></Field>
         </div>
         <p className="text-xs leading-relaxed text-board-muted">Saving confirms the date you entered. New email deadlines can update this plan when Muse supplies their source evidence.</p>
         <button type="submit" disabled={busy || !onSave} className={primary}>{busy ? "Saving…" : current ? "Update preparation plan" : "Build preparation plan"}</button>
@@ -86,7 +83,7 @@ export default function Preparation({ application, plan = null, onSave, timeZone
         {current.scheduleChanged && <Notice>Deadline updated from {current.previousDeadline || "unconfirmed"} to {current.deadline.date || "unconfirmed"}. Completed work is preserved.</Notice>}
         {current.warnings?.map((warning, index) => <Notice key={index}>{warning}</Notice>)}
         <div className="mt-7 flex flex-wrap items-baseline justify-between gap-2">
-          <h4 className="font-bold">Your preparation checklist</h4>
+          <h4 className="font-bold">Preparation for this interview</h4>
         <span className="text-sm tabular-nums text-board-muted">{current.tasks.filter(task => task.completed).length} of {current.tasks.length} complete</span>
         </div>
         <ul className="mt-3 divide-y divide-board-line">
@@ -95,15 +92,18 @@ export default function Preparation({ application, plan = null, onSave, timeZone
               <input type="checkbox" className="mt-1 size-5 shrink-0 accent-board-accent" checked={task.completed} disabled={busy || !onSave} onChange={event => save(setPreparationTaskCompletion(current, task.id, event.target.checked), "Task updated.")} />
               <span className="min-w-0"><span className={`block text-sm font-semibold ${task.completed ? "text-board-muted line-through" : ""}`}>{task.title}</span>
                 <span className="mt-1 block max-w-prose text-sm leading-relaxed text-board-muted">{task.detail}</span>
-                <span className="mt-2 block text-xs tabular-nums text-board-muted">{task.completed ? "Completed" : task.dueDate ? `Prepare by ${task.dueDate}` : "Awaiting confirmed deadline"} · {task.minutes} min</span>
+                <span className="mt-2 block text-xs tabular-nums text-board-muted">{task.completed ? "Completed" : current.deadline.status === "confirmed" ? `Round deadline ${current.deadline.date}` : "Awaiting confirmed deadline"} · {task.minutes} min</span>
               </span>
             </label>
           </li>)}
         </ul>
-        <h4 className="mt-6 font-bold">Resource guides</h4>
+        <h4 className="mt-6 font-bold">Company &amp; round intelligence</h4>
+        <p className="mt-2 text-sm leading-relaxed text-board-muted">Saved reports and resource guides for this interview. Lookout and Glassdoor reports appear here when sourced and saved; live feeds are not connected.</p>
         {current.guides.length ? <ul className="mt-2 divide-y divide-board-line">{current.guides.map(guide => <li key={guide.id} className="py-3">
           {demo ? <p className="inline-flex min-h-11 items-center text-sm font-semibold">{guide.title}</p> : <a className="inline-flex min-h-11 items-center text-sm font-semibold text-board-accent underline underline-offset-4" href={guide.url} target="_blank" rel="noopener noreferrer">{guide.title}</a>}
-          <p className="text-xs text-board-muted">Relevant to {guide.matchedTopics.join(", ")}. Use alongside any materials provided by the company.</p>
+          <p className="mt-1 text-xs font-semibold text-board-muted">{guide.source === "lookout" ? "Lookout report" : guide.source === "glassdoor" ? "Glassdoor report" : guide.source === "official" ? "Official company material" : "Resource guide"}{guide.observedAt ? ` · Recorded ${guide.observedAt}` : ""}</p>
+          {guide.evidence && <blockquote className="mt-2 text-sm leading-relaxed text-board-muted">{guide.evidence}</blockquote>}
+          <p className="mt-2 text-xs text-board-muted">Relevant to {guide.matchedTopics.join(", ")}. Use alongside any materials provided by the company.</p>
         </li>)}</ul> : <Notice>No matching guide in the current resource library. Start with the posting and the company’s supplied preparation materials.</Notice>}
       </>}
     </section>

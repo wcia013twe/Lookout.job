@@ -312,6 +312,18 @@ immediate execution. Deploy migration `20261014210000_agent_first_onboarding.sql
 and the updated `agent-gateway` / `agent-mcp` functions together after merge.
 `developerVersion` is incremented so agents refresh their context and tool list.
 
+### One weekly preparation plan
+
+The Action Board now presents a seven-day calendar and a shared prep plan within
+one daily time budget. Equivalent practice covers multiple interviews; each
+interview retains its own requirements, source evidence and company reports.
+The calendar opens on today, with day selection and Show all week. Longer tasks
+can span sessions, completion consumes time once, and tasks that cannot fit are
+shown explicitly. See [planner behavior and service contracts](docs/preparation-planner.md).
+The backend migration and gateway/MCP release must be deployed with the frontend
+before the new signed-in planner services are available. Lookout/Glassdoor feeds
+are not connected; only sourced reports saved to an interview are displayed.
+
 ## Circle Knowledge (gated)
 
 Private Circles now have structured knowledge threads, agent retrieval and reviewed

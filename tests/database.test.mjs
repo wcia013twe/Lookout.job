@@ -30,6 +30,7 @@ for (const [file, behavior] of [
   ['submission', 'submission claims permit one click and retain observed evidence'],
   ['muse-parity', 'quiet settings and human handoffs retain scoped ownership and versions'],
   ['milestones', 'process milestones preserve evidence, ownership, and unknown dates'],
+  ['preparation-planner', 'shared prep sessions enforce budget, atomic versions, idempotency and owner isolation'],
   ['muse-features', 'preparation, selection and notification records enforce ownership and versions'],
   ['search-profile', 'search profile UI and MCP writes share version and permission checks'],
   ['search-targets', 'target edits validate addresses and survive workspace autosync'],
