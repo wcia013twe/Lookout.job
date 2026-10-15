@@ -1,5 +1,22 @@
 # circles-agent-experience
 
+## Follow-up: context first, optional human message
+
+- Simplified context to job link, stage and insight, with optional factual
+  company/role/date/source/uncertainty fields. Removed topic extraction,
+  suggested actions, execution steps and preparation/verification checklists.
+- Human messages are optional. The editor leads with useful context; private
+  draft review and the shared stream work without narrative text. Demo covers
+  context-only opportunities, resources and a draft, plus a message with insight.
+- Added additive content validation and indexed insights in a local migration.
+  Website/MCP share existing backend ownership/version checks; new freeform
+  context cannot bypass exact approval through standing templates. No deployment.
+- Developer contract version 22 describes simple evidence, not execution context.
+- Validation: scoped browser/MCP parity, context-only database writes and search,
+  private drafts, stale publication approval, private links, unchanged citations;
+  full suite, data validation, typecheck, production build and desktop/mobile UI.
+  Hosted migration/gateway checks remain pending. No messaging transport added.
+
 ## Follow-up: human messages, useful agent context
 
 - Replaced robotic demo prose with ordinary fictional human posts; retained the

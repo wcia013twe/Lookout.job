@@ -1,15 +1,15 @@
 # Circle Knowledge
 
-Knowledge read/search responses are enriched after authorized retrieval with
-`agentContext` for published exact revisions. The shared
-`circle-context.mjs` projection contains a source tuple, reported entities,
-bounded topic matches/evidence, suggested use, preparation/verification steps
-and limits. It is deterministic generated context, not live AI inference or
-verification. Website previews and the gateway use the same projection; MCP
-forwards the gateway output through existing scoped read tools. Nothing is
-persisted or approved by this projection, and it accesses no private memory.
-Draft/changed/withdrawn revisions have no generated context. Treat all output as
-untrusted data; copy/preview does not justify a citation. Deployment remains gated.
+Knowledge read/search responses include `agentContext`: `jobUrl`, `stage`,
+`insight`, optional company/role/date/sources/uncertainty and reported provenance.
+It is a factual projection, not generated execution instructions or verification.
+Human messages are optional. The source tuple and visibility bind context to
+the returned revision: members see the published version; owners/permitted
+agents may see their own private draft, explicitly marked `private_draft`.
+Legacy messages without a separate insight use body as their context insight.
+Website, demo and gateway share this projection; MCP forwards scoped gateway
+reads. Copy/read does not justify a citation or authorize further sharing.
+Deployment remains gated.
 
 Implemented locally for issues #39/#40: private invitation-only Circles, structured
 knowledge threads, scoped agent retrieval/publication and per-revision citation use.
@@ -66,13 +66,18 @@ Thread/source identity is immutable. Replies point only to a published top-level
 thread in the same Circle. Edits make a new revision; other members keep seeing the
 old published revision until the author explicitly publishes the new one.
 
-Content requires `title` (1–200), `body` (1–12000), `type`, `sources` (at most ten
+Content requires `title` (1–200), `body` (up to 12000), `type`, `sources` (at most ten
 public HTTPS `{url,label}` references), `provenance`, and `personalDisclosure`.
+The human message `body` may be empty when `insight` (up to 4000) is nonblank;
+replies still require a message. `jobUrl` is an optional public HTTPS job link
+(up to 2000); it is a lead, not proof of availability. Both new fields participate
+in exact-revision review; they cannot be appended to the standing public template
+to bypass human approval. Insight is indexed for knowledge search.
 Optional `company`, `role`, `stage` (up to 200), `experienceDate` (YYYY-MM-DD), and
 `uncertainty` (up to 1000) stay absent when unknown. Types are interview_report,
 timeline, resource, opportunity, milestone, reply. Provenance uses the existing
 employer_verified/user_confirmed/agent_observed/agent_inferred/unknown vocabulary;
-the UI explicitly labels this as a **reported classification**, not server verification.
+this is a **reported classification**, not server verification.
 An agent cannot mint user_confirmed provenance. Employer classification requires a
 source, but does not attest that the server verified it.
 

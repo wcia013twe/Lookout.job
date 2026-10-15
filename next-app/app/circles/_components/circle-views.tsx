@@ -24,7 +24,7 @@ function Arrow() {
 function EventLink({post,openPost,demo}:{post:Post;openPost:(post:Post)=>void;demo:boolean}) {
  const action=post.content.type==='resource'?'View resource':post.content.type==='opportunity'?'View opportunity':post.content.type==='milestone'?'Celebrate':'Read more';
  const at=new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
- return <button type="button" className={styles.event} onClick={()=>openPost(post)}><Avatar name={post.author} demo={demo}/><span className={styles.eventCopy}><span className={styles.eventMeta}>{post.author.replace(' (demo)','')} · <time dateTime={post.createdAt}>{at}</time></span><strong>{post.content.title}</strong><span className={styles.excerpt}>{post.content.body}</span><span className={styles.eventAction}>{action} <Arrow/></span></span></button>;
+ return <button type="button" className={styles.event} onClick={()=>openPost(post)}><Avatar name={post.author} demo={demo}/><span className={styles.eventCopy}><span className={styles.eventMeta}>{post.author.replace(' (demo)','')} · <time dateTime={post.createdAt}>{at}</time></span><strong>{post.content.title}</strong><span className={styles.excerpt}>{post.content.body||post.content.insight}</span><span className={styles.eventAction}>{!post.content.body?'View context':action} <Arrow/></span></span></button>;
 }
 
 export default function CircleDashboard({detail,posts,demo,openPost,focused,controls,search,searching}:Props) {
