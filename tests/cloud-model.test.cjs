@@ -24,6 +24,12 @@ test('search preference hydration preserves custom agent keys alongside UI field
  const {fromCloud}=await import('../lib/cloud-model.mjs');const search={locations:['San Francisco'],employmentTypes:['FT'],targetYear:2027,agentFilters:{remoteOnly:true}};
  const rows={profiles:[],preferences:[{search}],resumes:[],answer_library:[],applications:[]};assert.deepEqual(fromCloud(rows).searchPreferences,search);
 });
+test('cloud hydration preserves the pack texture in the shared theme preference',async()=>{
+ const {fromCloud}=await import('../lib/cloud-model.mjs');
+ const base={profiles:[],resumes:[],answer_library:[],applications:[]};
+ assert.equal(fromCloud({...base,preferences:[{theme:{pack:'lagoon',messages:{batch_ready:'Ready'}}}]}).theme.pack,'lagoon');
+ assert.deepEqual(fromCloud({...base,preferences:[]}).theme,{pack:'base'});
+});
 test('sparse agent drafts use canonical employer identity before human approval',async()=>{
  const {fromCloud,draftPayload}=await import('../lib/cloud-model.mjs');
  const rows={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[{id:'app',job_id:'job',revision:1,status:'Draft',draft:{company:'Invented',resumeId:'resume',questions:[{fieldId:'why',question:'Why?',answer:'Fit'}]},jobs:{canonical_url:'https://jobs.example.com/job',employer:{company:'Canonical',title:'Engineer',employmentType:'FT',location:'Remote'}}}]};

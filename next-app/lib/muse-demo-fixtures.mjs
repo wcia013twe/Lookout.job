@@ -93,6 +93,7 @@ export function createDemoWorkspace(now = new Date()) {
       applications, preparationPlans: { 'demo-interview': confirmedPlan, 'demo-ambiguous': ambiguousPlan },
       profile: { name: 'Jordan Example (fictional demo)', email: 'jordan@example.com', phone: '', location: 'Fictional City', authorization: 'Demo only', verified: false },
       resumes: [resume], savedAnswers: [], deletedAnswerIds: [], cloudDirty: false,
+      theme: { pack: 'base' },
       searchPreferences: { autoSubmitApproved: false, excludedCompanies:['Pine Networks (demo)'], quietMode: { cadence: 'weekly', timezone: 'America/New_York', digestHour: 9, digestDay: 1, urgentDeadlineHours: 24 }, reviewPolicy: { fullTime: { mode: 'review' }, internship: { mode: 'review' } } },
       tierLists: [], activeTierListId: '',
     },

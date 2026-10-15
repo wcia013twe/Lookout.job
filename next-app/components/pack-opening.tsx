@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion, useMotionValue, useSpring, type MotionStyle } from "framer-motion";
-import { useWorkspace } from "../lib/workspace";
+import { asset, useWorkspace } from "../lib/workspace";
 import { claimPack, dayStamp } from "../lib/progress.mjs";
 import { advanceStage, canClaimPack, dropKey, groupPack, packComplete, tierOf, tierOrder, type Drop, type Stage, type Tier } from "../lib/drop-pack";
 import { RARITY_LABEL, TIER_HEX } from "../lib/role-display";
-import { resolvePackStyle, selectPackStyle, type PackStyleId, type PackStyleTemplate } from "../styles/templates/pack-styles";
+import { PACK_TEXTURES, resolvePackStyle, resolvePackTexture, selectPackStyle, type PackStyleId, type PackStyleTemplate, type PackTextureId } from "../styles/templates/pack-styles";
 import { CompanyLogo } from "./role-card";
 import PackEffects from "./pack-effects";
 import styles from "../styles/templates/pack-opening.module.css";
@@ -29,6 +29,7 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
   onCloseRef.current = onClose;
   const groups = useMemo(() => groupPack(drops), [drops]);
   const template = useMemo(() => resolvePackStyle(styleId || selectPackStyle(drops.map(tierOf))), [drops, styleId]);
+  const texture = resolvePackTexture(w.state.workflow.theme?.pack);
   const [mounted, setMounted] = useState(false);
   const [phase, setPhase] = useState<"sealed" | "tearing" | "open">("sealed");
   const [tearProgress, setTearProgress] = useState(0);
@@ -129,11 +130,21 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
     requestAnimationFrame(() => root.current?.querySelector<HTMLButtonElement>(".pack-close")?.focus({ preventScroll: true }));
     pulse();
   }
+  function applyTexture(id: PackTextureId) {
+    if (id === texture.id) return;
+    const theme = w.store.get("workflow.theme") || {};
+    w.store.set("workflow.theme", { ...theme, pack: id });
+  }
 
   if (!mounted) return null;
   const sealMotion = { duration: reduced ? 0 : 0.6, ease: [0.16, 1, 0.3, 1] as const };
+  const experienceStyle = {
+    ...template.variables,
+    "--pack-canvas-opacity": texture.id === "base" ? template.variables["--pack-canvas-opacity"] : ".2",
+    "--pack-texture-image": texture.image ? `url("${asset(texture.image)}")` : "none",
+  } as CSSProperties;
   return createPortal(
-    <dialog ref={root} className={styles.experience} style={template.variables as CSSProperties} data-pack-style={template.id} data-sealed={phase !== "open"} data-phase={phase} aria-labelledby="drop-pack-title" onCancel={event => { event.preventDefault(); close(); }} onClick={event => { if (event.target === root.current) close(); }}>
+    <dialog ref={root} className={styles.experience} style={experienceStyle} data-pack-style={template.id} data-pack-texture={texture.id} data-sealed={phase !== "open"} data-phase={phase} aria-labelledby="drop-pack-title" onCancel={event => { event.preventDefault(); close(); }} onClick={event => { if (event.target === root.current) close(); }}>
       <div className="pack-modal">
         <header className="pack-head">
           <div><h2 id="drop-pack-title">Daily drop pack</h2><p>{day} · {drops.length} opportunities{w.demo ? " · Fictional demo" : ""}</p></div>
@@ -146,6 +157,21 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
             <div className="seal-copy"><span className="seal-edition">ZERO2SUDO · DAILY EDITION</span><strong>Your next<br />big move.</strong><span>{drops.length} opportunities inside</span></div>
             <button type="button" className="pack-tear-button" disabled={phase === "tearing"} onClick={openSeal} onPointerDown={event => { tearStart.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={dragTear} onPointerUp={() => { tearStart.current = null; if (!opening.current) setTearProgress(0); }} onPointerCancel={() => { tearStart.current = null; setTearProgress(0); }}>Slide across to tear · or tap</button>
           </div>
+          <fieldset className="texture-picker">
+            <legend>Pack texture</legend>
+            <div className="texture-options">
+              {PACK_TEXTURES.map(option => {
+                const preview = option.image
+                  ? `linear-gradient(#07101e22,#07101e5c),url("${asset(option.image)}")`
+                  : "radial-gradient(ellipse at 18% 26%,#65d7f5,transparent 45%),radial-gradient(ellipse at 78% 72%,#ffd482,transparent 48%),linear-gradient(145deg,#1b2440,#141020 72%)";
+                return <label className="texture-option" key={option.id}>
+                  <input type="radio" name="pack-texture" value={option.id} checked={texture.id === option.id} onChange={() => applyTexture(option.id)} />
+                  <span className="texture-swatch" style={{ "--texture-preview": preview } as CSSProperties} aria-hidden="true" />
+                  <span>{option.label}</span>
+                </label>;
+              })}
+            </div>
+          </fieldset>
           <p className="seal-instruction" role="status">{phase === "tearing" ? "Opening your pack…" : "Break the seal. See what’s inside."}</p>
           {historical && <p className="pack-history">Replay of {day} · daily XP is awarded only for today’s pack.</p>}
         </section> : <>
