@@ -115,24 +115,24 @@
 :global([data-theme="light"]) .experience :global(.pack-history),
 :global([data-theme="light"]) .experience :global(.pack-tools p) { color: #625270; }
 :global([data-theme="light"]) .experience :global(button) {
-  background: #eee8f5;
-  border-color: #8b73a4;
-  color: #352344;
+  background: #e9eff7;
+  border-color: #a9bbcf;
+  color: #244866;
 }
 :global([data-theme="light"]) .experience :global(button:hover:not(:disabled)) {
-  background: #e3d8f2;
-  border-color: #6e4b91;
+  background: #dce8f4;
+  border-color: #55718e;
 }
 :global([data-theme="light"]) .experience :global(button:disabled) { opacity: .58; }
 :global([data-theme="light"]) .experience :global(:focus-visible) { outline-color: #6940a4; }
 :global([data-theme="light"]) .experience :global(.pack-tools button) {
   background: transparent;
   border-color: transparent;
-  color: #65438a;
+  color: #24517b;
 }
 :global([data-theme="light"]) .experience :global(.pack-tools button:hover:not(:disabled)) {
-  background: #e7def1;
-  border-color: #8b73a4;
+  background: #dce8f4;
+  border-color: #55718e;
 }
 :global([data-theme="light"]) .experience :global(.pack-row),
 :global([data-theme="light"]) .experience :global(.pack-summary) { scrollbar-color: #9580aa #f5f2fa; }
@@ -144,8 +144,8 @@
 :global([data-theme="light"]) .experience :global(.dropcard-link:hover) { text-decoration: underline; text-underline-offset: 3px; }
 :global([data-theme="light"]) .experience :global(.t-mythic .dropcard-link) { background: #c42f12; color: #fff; }
 :global([data-theme="light"]) .experience :global(.pack-foot) { background: #eae3f2; border-top-color: #b7a9c8; }
-:global([data-theme="light"]) .experience :global(.pack-foot button) { background: #65438a; border-color: transparent; color: #fff; }
-:global([data-theme="light"]) .experience :global(.pack-foot button:hover:not(:disabled)) { background: #4e306f; border-color: transparent; }
+:global([data-theme="light"]) .experience :global(.pack-foot button) { background: #24517b; border-color: transparent; color: #fff; }
+:global([data-theme="light"]) .experience :global(.pack-foot button:hover:not(:disabled)) { background: #193f64; border-color: transparent; }
 /* These are dark objects inside the light dialog, so their text and focus stay light. */
 :global([data-theme="light"]) .experience :global(.seal-copy) { color: #f5efff; }
 :global([data-theme="light"]) .experience :global(.pack-tear-button) { background: #eadaff; color: #251936; border: 0; }
