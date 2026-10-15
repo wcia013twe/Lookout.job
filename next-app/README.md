@@ -18,7 +18,19 @@ From the repository root, `npm run dev` and `npm run build` delegate here. `.git
 
 The build emits a versioned service worker for public offline assets. No private Supabase responses or private resume links are cached by that worker. Browser edits persist in the same existing store; they remain available while account sync is paused.
 
-The retained `legacy/index.html`, Web Components, and DOM controllers are retained as a historical rollback/reference. They are not included in the deployed React export. New UI work belongs here.
+The static frontend in `../legacy/` is retained for regression/reference and is excluded from the production export. New UI work belongs here. `npm run build:auth` from the repository root rebuilds its reference auth bundle; serve the repository root when inspecting `legacy/index.html` so shared modules and catalog URLs resolve.
+
+## Profile verification and demo checks
+
+Profile panels stay mounted after first use so switching sections preserves unsaved fields; leaving the route still requires saving. Default resume selection belongs to Application kit and uses `workflow.searchPreferences.defaultResumeId`. Progress and leaderboard settings are reached through the header XP menu.
+
+In admin Demo mode, edit an About me field, switch to Application kit and return to verify the unsaved edit remains. Save and check fact verification. Inspect the fictional resume, unverified saved answer, preferences, search targets and agent connection controls. Reset demo and confirm the original fixtures return without changing account records. Check Progress through the XP menu.
+
+Search targets describe where Muse looks, separately from fit profiles. They use `preferences.search.targets` and `targetsVersion`; website/MCP `save_search_targets` share owner/version checks. Autosync preserves targets, and guest changes remain local. Saving a target does not create a scanner, schedule or social connection; social content requires runtime access or a user handoff.
+
+## Character asset provenance
+
+The three PNGs in `assets/agents/` were supplied by the user on October 13, 2026. They are intact character references rather than source GIFs. The Grok Bot reference bears Bleap branding and its official identity remains unverified; replace it when a confirmed asset is supplied. Selecting a character does not establish an agent connection.
 
 ## Scaffold and migration status
 
@@ -48,3 +60,34 @@ Validation: static production build, 144 domain/unit tests, database checks, bro
 The top-left profile avatar opens My Profile, Sharing & privacy, and sign-in/sign-out. My Agent stays inside My Profile. Sharing & privacy opens the existing Progress page and its opt-in leaderboard controls. Main navigation focuses on Needs you, Discover, Applications and Referrals.
 
 Demo check: open the avatar, visit My Profile and My Agent, return to Sharing & privacy, and reset the fictional profile. Check Escape, outside click and keyboard tab dismissal. The dropdown reads existing demo state and uses existing authentication actions; no new backend or MCP action is introduced.
+
+## Job preference profiles
+
+Job preferences groups roles/experience, locations/working style, companies/industries,
+skills/compensation, exclusions and values. Each criterion has an optional Required,
+Preferred or Flexible priority. Each named search profile independently maintains
+career goals, tradeoffs and an associated tier-list ID. Profile facts and employment
+answers stay shared. Multiple active profiles are supported; paused profiles remain
+editable. Unsaved drafts survive switching profiles and Profile sections, and reset
+when the account or demo epoch changes.
+
+The editor uses the existing versioned `save_search_profile` RPC and
+`save_search_profile` MCP tool (`preferences.profile.save`, preferences:write).
+The six established filters and seven evaluation priorities retain their existing
+structured fields. Additional criteria, flexibility, goals and tier-list references
+are labeled text in `instructions`, available in existing personal context. This
+is agent guidance, not a new deterministic filtering engine. Preserve these labeled
+lines during agent edits; tier-list ID is authoritative, with current list data in
+the workspace. Company priority does not override role/team evidence. Deleting a
+referenced list shows an unavailable selection until a replacement is chosen.
+
+Tier-list edits save through the established shared list boundary; changes affect
+all profiles referencing that list. Associating a list requires Save profile and
+does not alter automatic-submission review policy. Notification cadence, automation,
+and review thresholds now live in My agent. Existing values and permissions remain.
+
+Demo has fictional full-time and paused internship profiles with separate goals
+and company lists. Verify edit/save/reload, switch profiles with unsaved text, pause
+and resume, maintain/associate a tier list, and reset to restore demo defaults.
+
+Work-life balance and Employer benefits are editable criteria with individual flexibility settings, saved as labeled instructions. They support descriptive preferences about hours, on-call, boundaries, leave, insurance, retirement match and learning budgets; unknown listing details remain questions for verification.

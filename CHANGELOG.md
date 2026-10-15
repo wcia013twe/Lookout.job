@@ -16,6 +16,11 @@ catalog validation and mechanical UI check pass. Browser checks verified guest s
 reload persistence, multiline goals, independent profiles/lists, moved agent controls,
 and narrow/desktop layout. Live signed-in agent analysis was not exercised. Demo has
 fictional resettable full-time/internship strategies and separate company rankings.
+## 2026-10-14 — Consolidated frontend documentation
+
+- Removed three redundant standalone notes: Profile workspace, static reference frontend and character references. Preserved the Profile save/demo checklist, reference auth build/inspection instructions and character provenance in `next-app/README.md`.
+- Kept product/design records, runtime/setup contracts, agent instructions, scoped MCP coverage and license notices. Product vision and runtime code are unchanged.
+- Validation: documentation links/reference audit, retained-content checks, whitespace checks and catalog validation passed; no runtime tests were needed for this documentation-only pass.
 ## Profile dropdown navigation — 2026-10-14
 
 - Added a top-left avatar dropdown for My Profile, Sharing & privacy, and existing sign-in/sign-out actions. Removed Profile from the main navigation; My Agent remains in My Profile. Sharing opens the existing opt-in leaderboard controls.
