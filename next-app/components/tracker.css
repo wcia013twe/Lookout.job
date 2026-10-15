@@ -1,5 +1,5 @@
 /* Application tracking follows the supplied Simplify reference. */
-.tracker-surface { --color-board-bg:#fff; --color-board-panel:#fff; --color-board-tag:#f8f9fa; --color-board-text:#202124; --color-board-muted:#626970; --color-board-line:#e0e3e6; --color-board-accent:#087f98; --color-board-accent-hover:#09677b; --color-board-ink:#fff; color:#202124; background:#fff; border-radius:12px; padding:24px; font-size:14px; line-height:1.5; }
+.tracker-surface { --color-board-bg:#fff; --color-board-panel:#fff; --color-board-tag:#f8f9fa; --color-board-text:#202124; --color-board-muted:#626970; --color-board-line:#e0e3e6; --color-board-accent:#087f98; --color-board-accent-hover:#09677b; --color-board-ink:#fff; --workspace-action-primary:#24517b; --workspace-action-primary-hover:#193f64; --workspace-action-primary-text:#fff; --workspace-action-secondary:#e9eff7; --workspace-action-secondary-hover:#dce8f4; --workspace-action-secondary-text:#244866; --workspace-action-secondary-border:#a9bbcf; --workspace-action-secondary-border-hover:#55718e; color:#202124; background:#fff; border-radius:12px; padding:24px; font-size:14px; line-height:1.5; }
 .tracker-surface * { min-width:0; }
 .tracker-surface h1 {font-size:28px;font-weight:750;letter-spacing:-.025em;line-height:1.25;}
 .tracker-surface h2 {font-size:23px;font-weight:700;line-height:1.35;}
@@ -14,10 +14,11 @@
 .tracker-surface ::selection {background:#c9f1fa;color:#202124;}
 .tracker-surface input,.tracker-surface textarea {caret-color:#087f98;}
 .tracker-surface button:disabled {opacity:.5;cursor:not-allowed;}
-.tracker-button {display:inline-flex;gap:10px;align-items:center;justify-content:center;min-height:44px;border:1px solid #d8dde1;border-radius:7px;padding:9px 15px;background:#fff;color:#087f98!important;font-weight:650;cursor:pointer;}
-.tracker-button:hover {background:#eef9fb;border-color:#087f98;}
-.tracker-primary {background:#119eb8;color:#fff!important;border-color:#119eb8;}
-.tracker-primary:hover {background:#087f98;color:#fff;}
+.tracker-button {display:inline-flex;gap:10px;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--workspace-action-secondary-border);border-radius:8px;padding:9px 15px;background:var(--workspace-action-secondary);color:var(--workspace-action-secondary-text)!important;font-weight:650;cursor:pointer;transition:background-color 160ms ease-out,border-color 160ms ease-out,transform 160ms ease-out;}
+.tracker-button:hover:not(:disabled) {background:var(--workspace-action-secondary-hover);border-color:var(--workspace-action-secondary-border-hover);}
+.tracker-button:active:not(:disabled) {transform:translateY(1px);}
+.tracker-primary {background:var(--workspace-action-primary);color:var(--workspace-action-primary-text)!important;border-color:transparent;}
+.tracker-primary:hover:not(:disabled) {background:var(--workspace-action-primary-hover);color:var(--workspace-action-primary-text);border-color:transparent;}
 .tracker-page-header {display:flex;justify-content:space-between;gap:20px;align-items:center;border-bottom:1px solid #e0e3e6;margin-bottom:20px;}
 .tracker-header-tabs {display:flex;gap:24px;align-items:center;margin-top:10px;flex-wrap:wrap;}
 .tracker-header-tabs>span {font-size:12px;font-weight:700;color:#626970;}
@@ -90,8 +91,8 @@
 .tracker-experience button {margin:8px 8px 0 0;}
 /* Keep existing controls readable inside the light application surface. */
 .workspace-shell .tracker-surface .workspace-control {background:#fff;color:#202124;border-color:#d8dde1;}
-.workspace-shell .tracker-surface .workspace-secondary {background:#fff;color:#087f98;border-color:#c4d5dc;}
-.workspace-shell .tracker-surface .workspace-primary {background:#119eb8;color:#fff;}
+.workspace-shell .tracker-surface .workspace-secondary {background:var(--workspace-action-secondary);color:var(--workspace-action-secondary-text);border-color:var(--workspace-action-secondary-border);}
+.workspace-shell .tracker-surface .workspace-primary {background:var(--workspace-action-primary);color:var(--workspace-action-primary-text);}
 .workspace-shell .tracker-surface .glass-inset,.workspace-shell .tracker-surface .glass-panel {background:#f8f9fa;border-color:#e0e3e6;backdrop-filter:none;box-shadow:none;}
 .workspace-shell .tracker-surface .glass-panel::before {display:none;}
 .workspace-shell .tracker-surface select option {background:white;color:#202124;}
@@ -107,7 +108,7 @@
 .workspace-shell.tracker-workspace::before {display:none;}
 .workspace-shell.tracker-workspace .glass-toolbar {background:#f8f9fa;border-color:#e0e3e6;backdrop-filter:none;}
 .workspace-shell.tracker-workspace .workspace-active-tab {background:#c9f3fa;border-color:#c9f3fa;}
-.workspace-shell.tracker-workspace .workspace-secondary {background:#fff;color:#087f98;border-color:#d8dde1;}
+.workspace-shell.tracker-workspace .workspace-secondary {background:var(--workspace-action-secondary);color:var(--workspace-action-secondary-text);border-color:var(--workspace-action-secondary-border);}
 .workspace-shell.tracker-workspace .workspace-count {background:#dcf3f8;color:#087f98;}
 .tracker-detail-tabs button {flex-shrink:0;}
 .workspace-shell.tracker-workspace .workspace-brand {color:#202124;}

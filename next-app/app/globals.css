@@ -158,6 +158,14 @@ button:not(:disabled) {
   --color-board-accent: #d8eaff;
   --color-board-accent-hover: #eef7ff;
   --color-board-ink: #10223a;
+  --workspace-action-primary: #d8eaff;
+  --workspace-action-primary-hover: #eef7ff;
+  --workspace-action-primary-text: #10223a;
+  --workspace-action-secondary: #1c2c43a6;
+  --workspace-action-secondary-hover: #2a3d56;
+  --workspace-action-secondary-text: #f5f4fa;
+  --workspace-action-secondary-border: #687e996b;
+  --workspace-action-secondary-border-hover: #b4d7f8;
   position: relative;
   isolation: isolate;
   background: radial-gradient(ellipse at 4% 0%, #167caa20, transparent 45%), radial-gradient(ellipse at 95% 15%, #b053bb16, transparent 40%);
@@ -223,8 +231,10 @@ button:not(:disabled) {
 .workspace-shell .workspace-control:focus { border-color: #b4d7f8; background: #132239; }
 .workspace-shell .workspace-primary,
 .workspace-shell .workspace-secondary { gap: 0.375rem; transition: background-color 160ms ease-out, border-color 160ms ease-out, transform 160ms ease-out; }
-.workspace-shell .workspace-secondary { background: #1c2c43a6; border-color: #687e996b; }
-.workspace-shell .workspace-secondary:hover:not(:disabled) { background: #2a3d56; border-color: #b4d7f8; }
+.workspace-shell .workspace-primary { border: 1px solid transparent; color: var(--workspace-action-primary-text); background: var(--workspace-action-primary); }
+.workspace-shell .workspace-primary:hover:not(:disabled) { background: var(--workspace-action-primary-hover); }
+.workspace-shell .workspace-secondary { color: var(--workspace-action-secondary-text); background: var(--workspace-action-secondary); border-color: var(--workspace-action-secondary-border); }
+.workspace-shell .workspace-secondary:hover:not(:disabled) { background: var(--workspace-action-secondary-hover); border-color: var(--workspace-action-secondary-border-hover); }
 .workspace-shell .workspace-primary:active:not(:disabled),
 .workspace-shell .workspace-secondary:active:not(:disabled) { transform: translateY(1px); }
 .workspace-shell button:disabled { cursor: not-allowed; }
@@ -273,6 +283,14 @@ button:not(:disabled) {
   --color-board-accent: #24517b;
   --color-board-accent-hover: #193f64;
   --color-board-ink: #ffffff;
+  --workspace-action-primary: #24517b;
+  --workspace-action-primary-hover: #193f64;
+  --workspace-action-primary-text: #ffffff;
+  --workspace-action-secondary: #e9eff7;
+  --workspace-action-secondary-hover: #dce8f4;
+  --workspace-action-secondary-text: #244866;
+  --workspace-action-secondary-border: #a9bbcf;
+  --workspace-action-secondary-border-hover: #55718e;
   background: radial-gradient(ellipse at 4% 0%, #bddced66, transparent 45%), radial-gradient(ellipse at 95% 15%, #ecd9f04d, transparent 40%);
 }
 [data-theme="light"] .workspace-shell .glass-panel {
@@ -292,8 +310,6 @@ button:not(:disabled) {
 [data-theme="light"] .workspace-shell .workspace-control { background: #ffffffd9; border-color: #a3b3c8; }
 [data-theme="light"] .workspace-shell .workspace-control:hover:not(:disabled) { border-color: #577390; }
 [data-theme="light"] .workspace-shell .workspace-control:focus { border-color: #24517b; background: #ffffff; }
-[data-theme="light"] .workspace-shell .workspace-secondary { background: #e9eff7d9; border-color: #a9bbcf; }
-[data-theme="light"] .workspace-shell .workspace-secondary:hover:not(:disabled) { background: #dce8f4; border-color: #55718e; }
 [data-theme="light"] :focus-visible { outline-color: #6741a4; }
 [data-theme="light"] .workspace-shell :focus-visible { outline-color: #24517b; }
 [data-theme="light"] .workspace-shell ::selection { background: #c0ddef; color: #152338; }

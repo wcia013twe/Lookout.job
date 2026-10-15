@@ -3,6 +3,7 @@ import { useState } from "react";
 import NeedsYouRow from "./needs-you-row";
 import { demoNeedsYouTasks } from "../lib/demo.mjs";
 import { Heading, Notice, Field, control, primary, secondary } from "./ui";
+import styles from "./needs-you.module.css";
 type Task = (typeof demoNeedsYouTasks)[number];
 function TaskControls({ task }: { task: Task }) {
  const [result,setResult]=useState("");
@@ -27,5 +28,5 @@ function TaskControls({ task }: { task: Task }) {
 }
 export default function DemoNeedsYou() {
  const [version,setVersion]=useState(0);
- return <><Heading title="Needs you">Decisions and manual steps that are holding up your search.</Heading><p className="mb-6 text-sm text-board-muted">Seven fictional examples. Actions affect this preview only.</p><ul className="divide-y divide-board-line">{demoNeedsYouTasks.map(task=><NeedsYouRow key={`${version}:${task.id}`} title={task.title} context={task.context} reason={task.reason}><details className="group"><summary className={`${secondary} cursor-pointer list-none`}>{task.action}</summary><div className="mt-4"><TaskControls task={task}/></div></details></NeedsYouRow>)}</ul><button className={`${secondary} mt-5`} onClick={()=>setVersion(v=>v+1)}>Reset task previews</button></>;
+ return <><Heading title="Needs you">Decisions and manual steps that are holding up your search.</Heading><p className="mb-6 text-sm text-board-muted">Seven fictional examples. Actions affect this preview only.</p><ul className={styles.grid}>{demoNeedsYouTasks.map((task,index)=><NeedsYouRow key={`${version}:${task.id}`} sequence={index+1} title={task.title} context={task.context} reason={task.reason}><details className="group"><summary className={`${secondary} cursor-pointer list-none`}>{task.action}</summary><div className="mt-4"><TaskControls task={task}/></div></details></NeedsYouRow>)}</ul><button className={`${secondary} mt-5`} onClick={()=>setVersion(v=>v+1)}>Reset task previews</button></>;
 }
