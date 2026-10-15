@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Est\u00e9e Lauder",
+   "company": "Estée Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -1197,6 +1197,32 @@
    "status": "skipped",
    "skipReason": "Solution engineering (pre-sales), not SWE",
    "note": "Salesforce asks applicants to apply for max 3 roles within 12 months."
+  },
+  {
+   "company": "Duolingo",
+   "title": "Product Manager, MBA Intern",
+   "location": "Pittsburgh, PA",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-15",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "PM role (MBA intern), not SWE",
+   "note": "Evening story 2026-10-15; link sticker labeled 'DUOLINGO PM MBA INTERN', no application domain visible."
+  },
+  {
+   "company": "Micron",
+   "title": "New College Grad - Computer Engineer, Central Engineering",
+   "location": "Boise, ID (Main Site)",
+   "type": "FT new grad",
+   "comp": null,
+   "url": "https://micron.wd1.myworkdayjobs.com",
+   "dateSeen": "2026-10-15",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Hardware/semiconductor central-engineering role, weak fit for backend/infra targets",
+   "note": "Story marked 'Posted Today'. Distinct from the skipped 'Intern - IT Software Engineer' drop."
   }
  ]
 }
