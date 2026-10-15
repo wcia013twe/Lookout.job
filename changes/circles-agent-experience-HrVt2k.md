@@ -1,5 +1,17 @@
 # circles-agent-experience
 
+## Follow-up: one Circle dashboard
+
+- Consolidated celebration, people, opportunities, shared resources and recent updates into one responsive dashboard. Removed Overview/People/Moments navigation and its view state; older view query links still open the same dashboard.
+- Kept the recovered visual language and interactive member constellation as a compact sidebar. Larger circles use a member grid. Selecting a person reveals their published posts in place.
+- Retained the relocated header utilities, inline search, private drafts and existing revision/consent services. No conversation templates or bottom utility stack returns.
+
+## Follow-up: place utilities where they belong
+
+- Moved conditional draft review, Circle switching, Settings and Share alongside the Circle identity. Members, invitations, refresh and private source history remain available through Settings.
+- Replaced the bottom search disclosure with an inline Overview search, optional filters, in-place results and Clear. Removed the footer stack from all three views while keeping existing contribution/review and permission services.
+- Validation: full tests, data validation, frontend typecheck and production export; browser verification covers search/clear, header settings and private draft review. No backend or delivery changes.
+
 ## Follow-up: simplify the dashboard
 
 - Removed the conversation scenario component and Circle brief disclosure from the dashboard. Kept the agent behavior specifications in documentation.

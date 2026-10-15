@@ -66,6 +66,16 @@ components:
 
 # Design System: Job signal board
 
+## Current Circles composition: one dashboard
+
+Circles is a single responsive dashboard with a photo-backed identity header,
+inline search, featured celebration, opportunities, shared resources and a compact
+interactive member constellation. It has no Overview/People/Moments navigation.
+Settings, Share, Circle switching and conditional draft review sit in the header.
+All content uses the same published data and existing contribution detail. The
+recovered comps supply the portrait, navy/lavender and handwritten visual language,
+not separate destinations. The historical three-view design below is superseded.
+
 ## Circles: approved three-view composition
 
 Circles uses the recovered member-constellation, achievement-wall and crew-lobby

@@ -22,6 +22,17 @@ The main problem was information hierarchy, rather than decoration:
 The scoped Impeccable scan returned no deterministic findings. That scan cannot
 establish contrast, keyboard usability or the usefulness of a conversation.
 
+## Current dashboard
+
+Circles is one dashboard, rather than three tabs. A featured celebration anchors
+the main column, followed by opportunities and preparation resources. People and
+recent shared updates occupy the supporting column. Selecting a person reveals
+their published posts in place. The dashboard stacks on phones; larger Circles
+use a member grid. Legacy view query parameters remain valid but select no tab.
+Search replaces the content with matching posts and Clear restores the dashboard.
+Header controls retain Settings, Share and conditional private draft review.
+The earlier three-view composition below records the design history.
+
 ## Implemented surface
 
 ### Three connected views
@@ -48,6 +59,12 @@ search, members, permissions and private citation history remain available below
 the three views.
 
 The dashboard focuses on people, opportunities, resources and celebrations.
+Circle switching, Settings and Share sit beside the Circle name. A draft-review
+action appears there only when the loaded results contain a private draft.
+Overview has an inline search with optional filters and in-place results; Clear
+restores the normal overview. Settings contains membership, invitations, agent
+permissions, refresh and private citation history. These utilities no longer form
+a separate stack at the bottom of every view.
 Drafts sit in a compact disclosure; review shows the posting identity, destination
 and exact message. Member management, permissions and private receipts remain
 in secondary controls. Shared activity honors the loaded search results; it is

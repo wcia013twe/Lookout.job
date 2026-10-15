@@ -333,7 +333,7 @@ an offer, a shared opportunity, a private draft and citation history. The dashbo
 separates private review from shared activity, and shows the destination and author
 before publishing. Optional metadata stays behind contribution details.
 
-A signed-out-accessible fictional Circle demonstrates the three connected views.
+A signed-out-accessible fictional Circle demonstrates the consolidated dashboard.
 Conversation scripts remain design documentation rather than dashboard controls.
 Scheduled delivery and in-chat human authorization are not connected. See the implementation tasks and
 acceptance criteria in [daily experience](docs/circles-daily-design.md) and
