@@ -65,3 +65,14 @@ export function demoFixtures(date) {
  };
  return {roles,state};
 }
+
+// Illustrative human handoffs only; these never authorize real account actions.
+export const demoNeedsYouTasks = [
+ {id:'application-review',title:'Review an application',context:'Example Systems · Backend Engineer',reason:'This company is above your review threshold.',action:'Review application',detail:'Review the backend resume and the answer: “I enjoy debugging reliability and performance problems.” Approval would allow this exact application version to proceed.'},
+ {id:'missing-answer',title:'Confirm a missing fact',context:'Example Compute · ML Systems Intern',reason:'The employer asks whether you can work onsite three days a week.',action:'Answer question',detail:'The fictional draft says “Yes.” Confirm or edit this answer before the application can proceed.'},
+ {id:'manual-step',title:'Complete employer verification',context:'Example Data · Infrastructure Engineer',reason:'The employer form requires a CAPTCHA.',action:'View manual step',detail:'In a real application, open the employer form and complete verification yourself. This demo opens no external form.'},
+ {id:'uncertain-submission',title:'Check whether an application submitted',context:'Example Search · Search Engineer',reason:'The submission timed out without an employer confirmation.',action:'Verify outcome',detail:'Check the employer portal and confirmation email first. Only a verified non-submission allows a fresh attempt; an observed submission should be recorded instead.'},
+ {id:'deadline-confirmation',title:'Confirm an interview deadline',context:'Example Cloud · Technical interview',reason:'The invitation says Friday, but the scheduling link says Thursday.',action:'Review deadline',detail:'Ask the recruiter which date is correct before scheduling preparation. The demo assumes you have confirmed Thursday.'},
+ {id:'outreach-review',title:'Review outreach before sending',context:'Example Platform · Alex Morgan (fictional contact)',reason:'A referral message is drafted and waiting for your permission.',action:'Review message',detail:'“Hi Alex, I’m exploring infrastructure engineering at Example Platform. Would you be open to pointing me toward the right recruiting contact?” Approval would permit sending; this demo sends nothing.'},
+ {id:'reconnect-service',title:'Reconnect a required service',context:'Email · Interview preparation',reason:'Email access expired while checking an interview invitation.',action:'Preview reconnection',detail:'Reconnect email to resume checking the invitation. This demo requests no credentials and grants no account access.'},
+];
