@@ -40,7 +40,10 @@ export default function NeedsYou() {
           const uncertain = (application.submissionAttempts || []).some(attempt => attempt.state === "uncertain" || (attempt.state === "started" && Date.parse(attempt.startedAt) < Date.now() - 300000));
           const title = uncertain ? "Check whether an application submitted" : application.status === "Blocked" ? "Resolve an application blocker" : "Review an application";
           const reason = uncertain ? "Verify the employer portal or confirmation email before allowing another attempt." : application.blocker || "Your approval is required before this application can proceed.";
-          return <NeedsYouRow key={application.id} sequence={index + (setup ? 2 : 1)} title={title} context={`${application.company} · ${application.title}`} reason={reason}>
+          const tracked = w.state.tracker.items[application.id] || {};
+          const date = tracked.appliedDate || tracked.openedDate;
+          const dateLabel = date ? `${tracked.appliedDate ? "Applied" : "Opened"} ${new Date(date).toLocaleDateString(undefined, { month: "short", day: "numeric", ...(date.length === 10 ? { timeZone: "UTC" } : {}) })}` : "Date not recorded";
+          return <NeedsYouRow key={application.id} sequence={index + (setup ? 2 : 1)} title={title} context={`${application.company} · ${application.title}`} reason={reason} role={{company:application.company,roleTitle:application.title,roleType:application.employmentType === "FT" ? "Full-time" : application.employmentType || "Type not recorded",date:dateLabel,status:tracked.status || "New",workflow:application.status}}>
             <button type="button" className={primary} onClick={() => setReview(application.id)}>{uncertain ? "Verify submission" : application.status === "Blocked" ? "Resolve blocker" : "Review application"}</button>
           </NeedsYouRow>;
         })}

@@ -114,6 +114,37 @@
   line-height: 1.65;
 }
 
+.roleDetails {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.roleChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.roleChips span,
+.workflow {
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  color: var(--needs-card-muted);
+  background: #ffffff0d;
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.workflow {
+  border: 1px solid color-mix(in srgb, var(--needs-card-accent) 45%, transparent);
+  color: var(--needs-card-accent);
+  font-weight: 700;
+}
+
 .actions {
   margin-top: auto;
   padding-top: 0.5rem;
