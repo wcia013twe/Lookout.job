@@ -68,6 +68,16 @@ components:
 
 ## Current Circles composition: one dashboard
 
+The active dashboard now centers on one activity stream plus the small member
+constellation. A compact featured milestone appears once above the stream, with
+a portrait, name, company and handwritten stage callout. A curved SVG arrow
+points toward the portrait; published offer stages use “Offered!”. Large generic
+headlines and excerpts are removed from this feature. Full shared text remains
+available in the existing contribution detail. The other event types share one
+author/date/title/preview/action row pattern. Selecting a member filters this
+same stream rather than adding a second list. Separate content collections in
+the earlier composition below are historical.
+
 Circles is a single responsive dashboard with a photo-backed identity header,
 inline search, featured celebration, opportunities, shared resources and a compact
 interactive member constellation. It has no Overview/People/Moments navigation.

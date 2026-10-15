@@ -24,6 +24,15 @@ establish contrast, keyboard usability or the usefulness of a conversation.
 
 ## Current dashboard
 
+The current refinement uses one people-first activity stream. A selected
+published milestone can receive a compact portrait feature with a handwritten
+stage annotation and curved arrow; offer stages read “Offered!”. The long story
+stays in contribution details. Remaining posts appear once in the same stream,
+with author, date, a short preview and contextual action. Selecting a member in
+the constellation filters the stream in place; Show everyone restores it.
+Separate opportunity/resource/recent-update collections below describe the
+superseded composition. Header utilities and existing consent remain unchanged.
+
 Circles is one dashboard, rather than three tabs. A featured celebration anchors
 the main column, followed by opportunities and preparation resources. People and
 recent shared updates occupy the supporting column. Selecting a person reveals

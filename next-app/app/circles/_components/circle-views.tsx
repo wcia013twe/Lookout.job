@@ -2,7 +2,6 @@
 
 import {useState, type CSSProperties, type ReactNode} from 'react';
 import type {Detail, Post} from '../_lib/types';
-import {types} from '../_lib/types';
 import styles from './circle-views.module.css';
 
 type Props = {detail:Detail; posts:Post[]; demo:boolean; openPost:(post:Post)=>void; focused:boolean; controls:ReactNode; search:ReactNode; searching:boolean};
@@ -23,18 +22,19 @@ function Arrow() {
 }
 
 function EventLink({post,openPost,demo}:{post:Post;openPost:(post:Post)=>void;demo:boolean}) {
- return <button type="button" className={styles.event} onClick={()=>openPost(post)}><Avatar name={post.author} demo={demo}/><span className={styles.eventCopy}><span className={styles.eventMeta}>{post.author.replace(' (demo)','')} · {types[post.content.type]}</span><strong>{post.content.title}</strong><span className={styles.excerpt}>{post.content.body}</span></span><Arrow/></button>;
+ const action=post.content.type==='resource'?'View resource':post.content.type==='opportunity'?'View opportunity':post.content.type==='milestone'?'Celebrate':'Read more';
+ const at=new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
+ return <button type="button" className={styles.event} onClick={()=>openPost(post)}><Avatar name={post.author} demo={demo}/><span className={styles.eventCopy}><span className={styles.eventMeta}>{post.author.replace(' (demo)','')} · <time dateTime={post.createdAt}>{at}</time></span><strong>{post.content.title}</strong><span className={styles.excerpt}>{post.content.body}</span><span className={styles.eventAction}>{action} <Arrow/></span></span></button>;
 }
 
 export default function CircleDashboard({detail,posts,demo,openPost,focused,controls,search,searching}:Props) {
  const [person,setPerson]=useState('');
  const published=posts.filter(post=>post.state==='published'&&post.revision===post.publishedRevision);
- const milestones=published.filter(post=>post.content.type==='milestone');
- const resources=published.filter(post=>post.content.type==='resource'||post.content.type==='interview_report');
- const opportunity=published.find(post=>post.content.type==='opportunity');
- const featured=milestones[0];
  const selected=detail.members.find(member=>member.id===person);
- const selectedPosts=selected?published.filter(post=>post.author===selected.alias):[];
+ const visible=selected&&!searching?published.filter(post=>post.author===selected.alias):published;
+ const featured=searching?undefined:visible.find(post=>post.content.type==='milestone');
+ const activity=visible.filter(post=>post.id!==featured?.id);
+ const callout=featured&&/^(offer|offer received|offer accepted)$/i.test(featured.content.stage||'')?'Offered!':featured?.content.stage||'A new milestone!';
  const title=detail.circle.name.replace(' (demo)','');
  return <section className={styles.circle} aria-label={`${title} Circle`}>
   <header className={styles.identity}>
@@ -43,21 +43,19 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
   </header>
   {!focused&&<>
    <div className={styles.search}>{search}</div>
-   {searching?<section aria-label="Search results">{published.length?published.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):<p className={styles.empty}>No matching shared posts. Try another search or fewer filters.</p>}</section>:<div className={styles.dashboard}>
+   <div className={styles.dashboard}>
     <div className={styles.mainColumn}>
-     <section aria-labelledby="circle-moments-title">
-      <div className={styles.sectionHeading}><h2 id="circle-moments-title">Good things are happening.</h2><p>One person’s win. Everyone’s momentum.</p></div>
-      {featured?<article className={styles.celebration}><div className={styles.celebrationPortrait}><Avatar name={featured.author} demo={demo} large/><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c1.5 6 5 9.5 11 11-6 1.5-9.5 5-11 11C10.5 17 7 13.5 1 12 7 10.5 10.5 7 12 1Z" fill="currentColor"/></svg></div><div><span className={styles.milestoneLabel}>{featured.content.stage||'Shared milestone'}</span><h3>{featured.content.title}</h3><p className={styles.company}>{featured.content.company}</p><blockquote className={styles.handwritten}>{featured.content.body}</blockquote><button className={styles.primary} type="button" onClick={()=>openPost(featured)}>Celebrate with {featured.author.split(' ')[0]} <Arrow/></button></div></article>:<p className={styles.empty}>There’s room for the next good moment, whenever someone is ready to share it.</p>}
-      {milestones.length>1&&<div className={styles.momentStrip}>{milestones.slice(1,4).map(post=><button type="button" key={post.id} onClick={()=>openPost(post)}><Avatar name={post.author} demo={demo}/><span><strong>{post.author.split(' ')[0]}</strong><span>{post.content.stage||post.content.title}</span></span><Arrow/></button>)}</div>}
-     </section>
-     {opportunity&&<section className={styles.opportunity}><span className={styles.label}>Shared opportunity</span><h2>{opportunity.content.title}</h2><p>{opportunity.content.body}</p><button className={styles.primary} type="button" onClick={()=>openPost(opportunity)}>Explore the opportunity <Arrow/></button></section>}
-     <section className={styles.resources} aria-labelledby="circle-resources-title"><div className={styles.sectionHeading}><h2 id="circle-resources-title">What’s helping us prepare</h2></div>{resources.length?resources.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):<p className={styles.empty}>Shared tips and useful resources will appear here.</p>}</section>
+     <div className={styles.streamHeading}><h2>{searching?'Search results':selected?selected.alias.replace(' (demo)','')+'’s updates':'Around the Circle'}</h2>{selected&&!searching&&<button type="button" onClick={()=>setPerson('')}>Show everyone</button>}</div>
+     {featured&&<article className={styles.celebration}>
+      <div className={styles.celebrationPortrait}><Avatar name={featured.author} demo={demo} large/></div>
+      <div className={styles.celebrationCopy}><h3 className={styles.offerCallout}><svg viewBox="0 0 72 44" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M67 5C48 0 51 37 6 31M15 23 5 31l11 6"/></svg>{callout}</h3><p className={styles.celebrationName}>{featured.author.replace(' (demo)','')}</p>{featured.content.company&&<p className={styles.company}>{featured.content.company}</p>}<button className={styles.primary} type="button" onClick={()=>openPost(featured)}>Celebrate <Arrow/></button></div>
+     </article>}
+     <section aria-label="Circle activity">{activity.length?activity.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):!featured&&<p className={styles.empty}>{searching?'No matching posts. Try another search.':selected?'No shared updates yet.':'It’s quiet here. New updates will appear when someone shares.'}</p>}</section>
     </div>
     <aside className={styles.sideColumn}>
-     <section className={styles.people} aria-labelledby="circle-people-title"><h2 id="circle-people-title">Your people</h2><div className={[styles.constellation,detail.members.length>8?styles.peopleGrid:''].join(' ')}><div className={styles.orbit} aria-hidden="true"/><div className={styles.centerEmblem} aria-hidden="true"><CircleEmblem/></div><div className={styles.peopleNodes}>{detail.members.map((member,index)=>{const angle=(index/Math.max(detail.members.length,1))*Math.PI*2-Math.PI/2;const position={'--node-x':`${50+Math.cos(angle)*35}%`,'--node-y':`${50+Math.sin(angle)*35}%`} as CSSProperties;return <button type="button" className={styles.personNode} style={position} key={member.id} aria-pressed={selected?.id===member.id} onClick={()=>setPerson(person===member.id?'':member.id)}><Avatar name={member.alias} demo={demo}/><strong>{member.alias.replace(' (demo)','')}</strong></button>;})}</div></div>{selected&&<div className={styles.personDetail}><div className={styles.personHeading}><h3>{selected.alias.replace(' (demo)','')}</h3><button type="button" onClick={()=>setPerson('')}>Show everyone</button></div>{selectedPosts.length?selectedPosts.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):<p className={styles.empty}>No shared updates yet.</p>}</div>}<p className={styles.handwritten}>Same ambition.<br/>Kinder company.</p></section>
-     {!selected&&<section className={styles.latest}><h2>Around the Circle</h2>{published.length?published.slice(0,4).map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):<p className={styles.empty}>It’s quiet here. New shared updates will appear when someone has something to share.</p>}</section>}
+     <section className={styles.people} aria-labelledby="circle-people-title"><h2 id="circle-people-title">Your people</h2><div className={[styles.constellation,detail.members.length>8?styles.peopleGrid:''].join(' ')}><div className={styles.orbit} aria-hidden="true"/><div className={styles.centerEmblem} aria-hidden="true"><CircleEmblem/></div><div className={styles.peopleNodes}>{detail.members.map((member,index)=>{const angle=(index/Math.max(detail.members.length,1))*Math.PI*2-Math.PI/2;const position={'--node-x':`${50+Math.cos(angle)*35}%`,'--node-y':`${50+Math.sin(angle)*35}%`} as CSSProperties;return <button type="button" className={styles.personNode} style={position} key={member.id} aria-pressed={selected?.id===member.id} onClick={()=>setPerson(person===member.id?'':member.id)}><Avatar name={member.alias} demo={demo}/><strong>{member.alias.replace(' (demo)','')}</strong></button>;})}</div></div></section>
     </aside>
-   </div>}
+   </div>
   </>}
  </section>;
 }

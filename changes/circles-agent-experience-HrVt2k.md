@@ -1,5 +1,12 @@
 # circles-agent-experience
 
+## Follow-up: people-first activity stream
+
+- Replaced the repeated celebration, opportunity, resource and recent-update sections with one activity stream. A featured milestone appears once above it; selecting a member filters that same stream.
+- Replaced the large generic celebration headline and quote with a compact portrait, handwritten stage callout and curved arrow. Only published offer stages use “Offered!”; other milestones retain their actual stage.
+- Kept full shared stories and existing sharing controls in contribution details. Removed the sidebar slogans and duplicate member-post list. Entries show author, date, a short preview and a contextual action.
+- Validation: all 307 tests, role-data validation, frontend typechecking and static production export passed. Browser checks covered the offer callout, member-filtered stream, non-offer stage labels, full-story access and 320px layout without horizontal overflow. No backend or delivery changes.
+
 ## Follow-up: one Circle dashboard
 
 - Consolidated celebration, people, opportunities, shared resources and recent updates into one responsive dashboard. Removed Overview/People/Moments navigation and its view state; older view query links still open the same dashboard.
