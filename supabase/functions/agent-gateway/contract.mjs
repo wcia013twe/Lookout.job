@@ -1,3 +1,4 @@
+import { KNOWLEDGE_TOOLS, validateKnowledge } from './knowledge.mjs';
 import { ONBOARDING_TOOLS, validateOnboarding } from "./onboarding.mjs";
 import { validateTargets } from './search-targets.mjs';
 import { PLATFORM_TOOLS, validatePlatformPayload } from './platform-tools.mjs';
@@ -6,8 +7,8 @@ import { validateOutreach } from './outreach.mjs';
 import { validateProfileSetup } from './profile-setup.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
-export const SCOPES = ['answers:write','resumes:write','network:write','tracking:write','preferences:write','workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = [...ONBOARDING_TOOLS.map(t=>t.operation),'preferences.targets.save',...PLATFORM_TOOLS.map(t=>t.operation), 'preferences.profile.save','guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
+export const SCOPES = ['knowledge:read','knowledge:write','answers:write','resumes:write','network:write','tracking:write','preferences:write','workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
+export const OPERATIONS = [...KNOWLEDGE_TOOLS.map(t=>t.operation),...ONBOARDING_TOOLS.map(t=>t.operation),'preferences.targets.save',...PLATFORM_TOOLS.map(t=>t.operation), 'preferences.profile.save','guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
@@ -17,6 +18,7 @@ export function validateRequest(input) {
     if (Object.keys(p).some(k => !['expectedVersion','targets'].includes(k)) || !Number.isSafeInteger(p.expectedVersion) || p.expectedVersion < 0) throw Error('Current targets version required');
     validateTargets(p.targets);
   }
+  validateKnowledge(input.operation,p);
   validateOnboarding(input.operation, p);
   validateProfileSetup(input.operation, p);
   if (input.operation.startsWith('outreach.')) validateOutreach(input.operation,p);
