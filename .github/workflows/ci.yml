@@ -34,8 +34,6 @@ jobs:
       - run: npm ci --prefix next-app
       - run: npm test
       - run: npm run validate:data
-      - name: Build reference auth module
-        run: npm run build:auth
       - name: Build production static export
         run: npm run build
         env:

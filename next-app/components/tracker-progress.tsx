@@ -1,4 +1,4 @@
-import { trackerProgress, trackerStages } from '../../legacy/tracker-display.mjs';
+import { trackerProgress, trackerStages } from '../../lib/tracker-display.mjs';
 import { CompanyLogo } from './role-card';
 import type { Application } from './workflow-types';
 export function CompanyMark({company}: {company:string}) { return <span className="tracker-company-mark"><CompanyLogo company={company}/></span>; }

@@ -18,7 +18,7 @@ From the repository root, `npm run dev` and `npm run build` delegate here. `.git
 
 The build emits a versioned service worker for public offline assets. No private Supabase responses or private resume links are cached by that worker. Browser edits persist in the same existing store; they remain available while account sync is paused.
 
-The static frontend in `../legacy/` is retained for regression/reference and is excluded from the production export. New UI work belongs here. `npm run build:auth` from the repository root rebuilds its reference auth bundle; serve the repository root when inspecting `legacy/index.html` so shared modules and catalog URLs resolve.
+The retired static frontend has been removed. React components own presentation and authentication lives in `lib/workspace.jsx`; shared tracker progress lives in `../lib/tracker-display.mjs`. Production and CI build the same Next.js static export.
 
 ## Profile verification and demo checks
 

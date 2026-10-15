@@ -1,6 +1,0 @@
-.saved-answer-row { display: grid; gap: 12px; padding: 16px 0; border-bottom: 1px solid #303947; }
-.saved-answer-row p { white-space: pre-wrap; overflow-wrap: anywhere; color: #bdc6d4; font-size: .875rem; line-height: 1.5; margin: 8px 0; }
-.saved-answer-row small { color: #a6b4c8; }
-.saved-answer-row button, #saved-answer-feedback button, .saved-answer-use { font: inherit; min-height: 44px; border: 1px solid #3f4a5e; background: #242d3a; color: #edf0f6; border-radius: 10px; padding: 10px 14px; cursor: pointer; }
-.saved-answer-suggestion { display: grid; gap: 8px; color: #a6b4c8; font-size: .875rem; }
-.saved-answer-row :focus-visible, #saved-answer-feedback :focus-visible { outline: 3px solid #a8ffe0; outline-offset: 3px; }

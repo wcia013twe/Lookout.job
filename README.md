@@ -76,7 +76,7 @@ separate from private resume storage.
 
 - `next-app/`: production React/Next.js UI and frontend tooling.
 - `lib/`: shared browser state, sync, domain models, and pack shaders.
-- `legacy/`: retained static frontend, its styles and vendored assets; regression/reference only, excluded from production export.
+- `lib/tracker-display.mjs`: shared application progress calculation, consumed by the React tracker.
 - `backend/`, `supabase/`, `mcp/`, `runner/`: existing service contracts and execution boundaries.
 - `data/`, `tests/`, `scripts/`, `docs/`: catalog, validation, tooling and focused documentation.
 
@@ -97,7 +97,7 @@ npm run dev
 
 `npm test` runs behavior checks and the consolidated database scenarios. The database suite applies migrations once in disposable PGlite; `npm run test:db` runs the same scenarios separately. Hosted checks remain separate.
 
-Open `http://localhost:3000`. Production is built and deployed by `.github/workflows/deploy.yml` from `next-app/out/`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The React export bundles the browser client at build time. The legacy auth bundle is retained only for the old static reference.
+Open `http://localhost:3000`. Production is built and deployed by `.github/workflows/deploy.yml` from `next-app/out/`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The React export bundles the browser client at build time.
 
 ## Code map and invariants for Muse/other agents
 
@@ -108,12 +108,12 @@ Open `http://localhost:3000`. Production is built and deployed by `.github/workf
 | `lib/store.js` | Guest/per-account browser cache; account switching preserves guest records |
 | `lib/workflow-model.js`, `next-app/components/draft-review.jsx` | Versioned review/approval rules and React review controls; signed-in transitions use backend RPCs |
 | `next-app/lib/workspace.jsx`, `lib/cloud.mjs`, `lib/cloud-model.mjs`, `backend/client.mjs` | Google auth, serialized autosync, record mapping and owner-checked database requests |
-| `saved-answers-*`, `tierlist-*`, `legacy/tierlists.js`, `legacy/resume-files.js` | Profile features; standalone modules use the shared store |
-| `legacy/agent-connections.js` | Human credential management; keys shown once, never persisted in browser state |
+| `next-app/components/saved-answers.tsx`, `next-app/components/resumes.tsx`, `lib/tierlist-model.js` | Profile features; standalone modules use the shared store |
+| `next-app/components/agent-connections.tsx` | Human credential management; keys shown once, never persisted in browser state |
 | `supabase/migrations/` | **Single source of truth for the database schema**; use exact deployed migration versions |
 | `supabase/functions/agent-gateway/`, `agent-mcp/` | Scoped server tools; no general SQL/shell tool and no agent-created human approval; guarded submission transitions |
 | `runner/`, `scripts/runner-*` | Deterministic form inspection and approved prefill and guarded native Greenhouse submission |
-| `next-app/app/globals.css` and Tailwind utilities | Shared Discover theme and responsive presentation; `legacy/styles/` is static reference |
+| `next-app/app/globals.css` and Tailwind utilities | Shared Discover theme and responsive presentation |
 | `data/jobs.json`, `data/tierlist-presets.json` | Public discovery feed and configurable ranking defaults |
 
 Keep verified personal facts, agent-generated drafts, and employer requirements distinct. Never share service-role keys. Derive ownership from the authenticated user/agent token, not a caller-supplied user ID. A runner must fetch the **current** execution authorization and verify job URL, draft, resume bytes and form fingerprint; adding metadata after approval requires reapproval. A status is not proof of submission.
@@ -208,7 +208,7 @@ Profile starts with candidate identity and editable personal details, then repea
 
 ## Applications and referrals layout
 
-Applications shows browser-tracked roles directly, with full-time/internship counts and status updates. Opening a role remains distinct from applying. Agent workspace contains prepared drafts and review actions; the duplicate legacy interview view is removed. Referrals is a separate navigation tab with referral targets, contacts/follow-ups, and a message-type picker showing one template at a time. Existing tracker and networking storage is preserved. Layout rules live in `legacy/styles/applications.css`; workspace color variables can change without changing the structural grid.
+Applications shows browser-tracked roles directly, with full-time/internship counts and status updates. Opening a role remains distinct from applying. Agent workspace contains prepared drafts and review actions; the duplicate legacy interview view is removed. Referrals is a separate navigation tab with referral targets, contacts/follow-ups, and a message-type picker showing one template at a time. Existing tracker and networking storage is preserved. Layout rules live in React components and `next-app/app/globals.css`; workspace color variables can change without changing the structural grid.
 
 ## Muse can save profile packages
 

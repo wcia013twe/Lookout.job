@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '../lib/workspace';
 import { sortApplications } from '../../lib/application-timeline.mjs';
-import { trackerProgress } from '../../legacy/tracker-display.mjs';
+import { trackerProgress } from '../../lib/tracker-display.mjs';
 import TrackerProgress,{CompanyMark} from './tracker-progress';
 import DraftReview from './draft-review';
 import type { Application } from './workflow-types';

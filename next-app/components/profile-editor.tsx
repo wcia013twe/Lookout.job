@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { createProfileReview } from "../../lib/profile-review.mjs";
 import rawSchema from "../../lib/profile-schema.js";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, primary, secondary, Notice, Section } from "./ui";
@@ -38,11 +39,14 @@ export default function ProfileEditor() {
   const [facts, setFacts] = useState(profile),
     [checked, setChecked] = useState(false),
     [feedback, setFeedback] = useState("");
+  const review = useRef(createProfileReview());
   useEffect(() => {
+    review.current.reset(profile, profile.verified);
     setFacts(profile);
     setChecked(profile.verified === true);
   }, [JSON.stringify(profile), w.user?.id]);
   function update(key: string, value: unknown) {
+    review.current.invalidate();
     setFacts({ ...facts, [key]: value });
     setChecked(false);
   }
@@ -63,12 +67,13 @@ export default function ProfileEditor() {
         : facts[key] || "";
       return values[key] !== String(current).trim();
     });
+    const verified = checked && !changed && review.current.isReviewed(facts);
     w.store.set("workflow.profile", {
       ...values,
-      verified: checked && !changed,
+      verified,
     });
     setFeedback(
-      checked && !changed
+      verified
         ? "Profile saved and checked by you."
         : "Profile saved as unverified. Review changed facts before checking them.",
     );
@@ -243,7 +248,7 @@ export default function ProfileEditor() {
             <input
               type="checkbox"
               checked={checked}
-              onChange={(e) => setChecked(e.target.checked)}
+              onChange={(e) => { review.current.check(facts, e.target.checked, e.nativeEvent.isTrusted); setChecked(e.target.checked && e.nativeEvent.isTrusted); }}
               className="h-5 w-5 accent-board-accent"
             />
             I have checked these facts.

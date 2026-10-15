@@ -33,7 +33,7 @@
 - PR publication is an explicit exception, not the routine completion path. When the user requests GitHub review, production publication or protected-branch CI, run `npm run feature:publish -- --title "<feature>" --body-file <absolute-pr-description-file>` from the same feature branch. That optional command pushes, creates/updates the PR, labels it `merge-ready` and wakes the queue. Do not create a PR merely to make localhost reflect completed work.
 - Keep a concise change note for each feature pass in `changes/<unique-feature-branch>.md`, including validation and verification limits. The feature starter generates this file; complete it and remove its draft marker before committing. Reuse it for follow-ups instead of editing the shared `CHANGELOG.md` insertion point. See `.github/INTEGRATION.md` and `changes/README.md`.
 - Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
-- The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. Legacy static modules are retained for regression/reference and shared models, not new UI work.
+- The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. The retired static frontend has been removed; shared domain behavior belongs in `lib/`.
 - Avoid computer-use or browser-UI automation for repository work unless the task is visual and requires iterative on-screen inspection. Prefer file, shell and purpose-built test tools for non-visual work.
 
 ## Backend and agent work
@@ -41,8 +41,8 @@
 - `supabase/migrations/` is the database schema source of truth. Do not maintain a duplicate schema dump.
 - Read the root README desired interaction and the gateway/MCP/runner contracts before extending behavior.
 - Keep human approval, user-reported progress, and validated submission receipts distinct.
-- Keep migrations and server functions in `supabase/`, shared browser/domain modules in root `lib/`, production UI in `next-app/`, and retained static reference code/styles in `legacy/`. Do not copy shared models between runtimes.
-- Run `npm test` (includes every database scenario) and `npm run validate:data`; use `npm run test:db` only for focused database debugging and rebuild the auth bundle for auth/cloud/client changes.
+- Keep migrations and server functions in `supabase/`, shared browser/domain modules in root `lib/`, production UI in `next-app/`, and production frontend adapters in `next-app/lib/`. Do not copy shared models between runtimes.
+- Run `npm test` (includes every database scenario) and `npm run validate:data`; use `npm run test:db` only for focused database debugging and build the production frontend for auth/cloud/client changes.
 - Add new features with current-state documentation and honest verification limits; do not describe unconnected external services as live.
 - `supabase/functions/agent-gateway/instructions.json` owns the agent interaction contract and developer message defaults. Increment `developerVersion` whenever instructions, defaults, settings mappings or advertised capabilities change, and deploy the gateway with the config through the production workflow after merge. Do not deploy feature branches directly to the shared production project. Personal versions are server-controlled triggers; never reset or edit them from clients.
 
