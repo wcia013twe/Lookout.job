@@ -91,11 +91,3 @@ and company lists. Verify edit/save/reload, switch profiles with unsaved text, p
 and resume, maintain/associate a tier list, and reset to restore demo defaults.
 
 Work-life balance and Employer benefits are editable criteria with individual flexibility settings, saved as labeled instructions. They support descriptive preferences about hours, on-call, boundaries, leave, insurance, retirement match and learning budgets; unknown listing details remain questions for verification.
-
-## Circles
-
-`app/circles/` owns the static route, client forum, typed adapter and route-local
-components. It loads authorized data through the existing account client; private
-posts are never exported or persisted into browser storage. The new admin demo
-service is fictional and resets with Reset demo. The production gate is documented
-in [the backend contract](../backend/circle-knowledge.md).
