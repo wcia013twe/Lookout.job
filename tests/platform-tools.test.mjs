@@ -6,6 +6,11 @@ import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
 test('every product action has one registered tool with an explicit scope',()=>{
  for(const tool of PLATFORM_TOOLS){assert.equal(TOOLS.filter(t=>t.operation===tool.operation).length,1);assert.ok(tool.scope);assert.equal(tool.inputSchema.additionalProperties,false);}
 });
+test('pack texture changes use the scoped theme-preference tool',()=>{
+ const tool=PLATFORM_TOOLS.find(item=>item.operation==='preferences.theme.save');
+ assert.match(tool.description,/pack texture/);
+ assert.equal(validatePlatformPayload(tool.operation,{theme:{pack:'aurora',messages:{batch_ready:'Ready'}},expectedUpdatedAt:null}),true);
+});
 test('writes reject owner injection and permission fields',()=>{
  assert.throws(()=>validateRequest({operation:'profile.save',payload:{facts:{},expectedUpdatedAt:null,userId:'other'}}));
  assert.throws(()=>validatePlatformPayload('preferences.notifications.save',{settings:{autoSubmitApproved:true},expectedUpdatedAt:null}));

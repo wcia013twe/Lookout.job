@@ -69,6 +69,13 @@ test('search preference edits autosync with the existing theme and tier configur
  assert.equal(env.db.preferences[0].active_tier_list_id,'custom');
  assert.equal(env.store.get('workflow.cloudDirty'),false);
 });
+test('pack texture edits sync through the existing theme preference service',async()=>{
+ const env=await environment(null,false,[{user_id:one,search:{},theme:{pack:'base',messages:{batch_ready:'Ready'}},tier_lists:[],active_tier_list_id:null}]);
+ env.store.set('workflow.theme',{...env.store.get('workflow.theme'),pack:'spectrum'});
+ await JB.cloud.save();
+ assert.deepEqual(env.db.preferences[0].theme,{pack:'spectrum',messages:{batch_ready:'Ready'}});
+ assert.equal(env.store.get('workflow.cloudDirty'),false);
+});
 
 test('React cloud adapter receives sync and lock state without static page controls',async()=>{
  const env=await environment(null,true);assert.equal(JB.cloud.ready,true);assert.deepEqual(env.ui.locks,[true,false]);env.store.set('workflow.profile.name','React profile');await JB.cloud.save();assert.equal(env.db.profiles[0].facts.name,'React profile');assert.equal(env.ui.feedback.textContent,'Synced');
