@@ -157,7 +157,8 @@ above remain design history.
 Warm timber, lamplight, cream activity bubbles and green selected bubbles belong
 to the room illustration and character controls. Keep these materials inside the
 room CSS module rather than promoting them into workspace tokens. The generated
-clubhouse background and transparent character sheet are authored in
+clubhouse background and transparent character, walking and station sheets are
+authored in
 `next-app/assets/circles`; their optimized public copies supply the scene.
 Illustrated avatars are decorative member representations, with visible names
 and published activity providing identity and meaning.
@@ -171,4 +172,25 @@ fictional-session or decorative-motion disclosure whenever this room is reused.
 
 This extension requires no global color, typography, spacing or component-token
 update, and no regeneration of the design-system sidecar. Its one-off scene
-materials and motion remain scoped here and in `circle-room.module.css`.
+materials remain scoped here and in `circle-room.module.css`; routine timing and
+playback live in `room-motion.ts` and `use-room-motion.ts`.
+
+### Station routines
+
+Characters now use an explicit 44-second station / walk / break / return loop
+rather than drifting around a fixed point. In the fictional demo, Wesley sits at
+the application desk,
+Priya reads at the other desk, Sam writes at the whiteboard, Alex reads practice
+notes, Jordan sits with coffee, and Maya waves in celebration. Separate generated
+walking frames and station poses preserve their appearance. Floor routes follow
+the open aisles; direction flips and depth ordering follow the actor's position.
+Overhead labels travel with the actors and lift when needed to avoid collisions.
+
+Pause freezes the current routine without resetting its clock. Hover and keyboard
+focus freeze that character for selection. Offscreen rooms and hidden tabs stop
+playback. Reduced motion shows stationary station poses. These are local visual
+routines, not evidence of live presence or newly completed session tasks; the
+existing fictional-session and shared-update distinctions continue to apply.
+For real members, station poses and walking labels describe the illustration;
+they do not establish that a person is applying, practicing or taking a break.
+Only the loaded published post supplies their shared-activity description.

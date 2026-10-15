@@ -44,3 +44,10 @@ Both were produced with the built-in image generator on 2026-10-15 and compresse
 with cwebp. The complete generation prompts are preserved in `room-prompts.json`.
 Room movement is decorative and does not indicate real online presence. Only the
 explicitly fictional demo has invented activity and session progress.
+
+`walking.webp` contains six identity columns and three gait rows. The renderer
+uses the authored 300px row pitch (the sheet includes bottom padding) and plays
+0–1–2–1 while the actor travels a floor route. `stations.webp` is a 3 × 2 sheet:
+Wesley seated at a desk, Maya waving, Sam writing, Alex reading, Jordan seated
+with coffee, and Priya seated at a desk. Both are generated with the built-in
+image tool; exact prompts live in the adjacent `.webp.json` provenance files.
