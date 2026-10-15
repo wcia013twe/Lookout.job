@@ -257,17 +257,17 @@ applications. Skipped-role explanations remain available to Muse on request or f
 occasional useful preference insight, rather than a permanent Applications section.
 Developer contract version **12** advertises these tools.
 
-## GitHub-owned integration
+## Local-first feature integration
 
 Start in a fresh checkout with `npm run feature:start -- <name>`. After committing
-and reviewing the feature, use `npm run feature:publish -- --title "<title>"
---body-file <absolute-description-path>` to push, create/update its PR, and queue
-it in one step. `npm run feature:status` shows pending work. The GitHub worker
-refreshes branches, waits for current-head CI, merges serially, and wakes the
-next pass immediately; production deployment runs independently and remains
-serialized. Failed checks, conflicts, or failed completed releases hold the queue.
-The worker continues while Codex is closed. Read
-[feature delivery and queue controls](.github/INTEGRATION.md).
+and reviewing the feature, run `npm run feature:land` there to integrate current
+local `main` and fast-forward the shared local `main` checkout. This routine path
+does not push or create a PR, so localhost receives completed work immediately.
+
+When GitHub review, protected-branch CI or production publication is explicitly
+needed, use `npm run feature:publish -- --title "<title>" --body-file
+<absolute-description-path>` from the feature branch. `npm run feature:status`
+shows pending PR work. Read [feature delivery and optional queue controls](.github/INTEGRATION.md).
 
 ## Admin demo mode
 
