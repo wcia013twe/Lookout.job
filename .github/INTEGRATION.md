@@ -13,6 +13,16 @@ you do not own. If sessions overlap, move the new task into its own checkout.
 Agents should flag an observed workflow problem briefly and suggest the smallest
 fix; routine isolated work needs no extra confirmation or tooling.
 
+On a new host, or after any setup failure, run the read-only environment check:
+
+```sh
+npm run feature:doctor
+```
+
+It verifies Node.js, npm, Git, GitHub CLI authentication and reports the checkout
+parent. This repository uses npm lockfiles; do not use pnpm as a fallback because
+it can rewrite dependency metadata before the isolated checkout exists.
+
 Start each task in a fresh checkout of published main:
 
 ```sh

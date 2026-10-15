@@ -27,12 +27,14 @@
 
 ## Development and delivery
 
+- Run `npm run feature:doctor` once on a new host or whenever feature setup fails. It checks Node.js, npm, Git, GitHub CLI authentication and the checkout destination without installing dependencies. This repository is npm-managed; never substitute pnpm for a missing or broken npm installation.
 - Start every feature with `npm run feature:start -- <name>` from this repository. Work only in the returned fresh checkout; run `npm ci` and `npm ci --prefix next-app` there. This prevents shared edits, stale main, Git index races, and cloud-offloaded dependencies. Reuse that checkout for follow-ups.
 - Commit the intended files, then run `npm run feature:publish -- --title "<feature>" --body-file <absolute-pr-description-file>`. This fetches and merges current main in the task checkout, then pushes, creates/updates a non-draft PR, labels it `merge-ready`, and immediately wakes the queue. A local conflict stops publication before pushing; resolve it in the same checkout, rerun relevant checks and commit before retrying. Do not manually poll CI or merge each PR; inspect `npm run feature:status` when status is needed. Conflict or failed-check fixes stay on the same branch and use the same publish command.
 - For feature work, refresh main and use a separate `codex/` branch/worktree for each parallel feature. Push the branch, open a PR and add `merge-ready` when implementation and local checks pass. GitHub validates current changes, merges ready PRs serially and deploys. The user authorized automatic PR creation, queueing, merges and deployment; do not ask for push/merge confirmation. Do not push feature changes directly to protected main. Address review findings on the feature branch; unresolved findings, failed CI or a failed completed production deployment pause the queue. Running deployments do not hold up validated merges.
 - Keep a concise change note for each feature pass in `changes/<unique-feature-branch>.md`, including validation and verification limits. The feature starter generates this file; complete it and remove its draft marker before committing. Reuse it for follow-ups instead of editing the shared `CHANGELOG.md` insertion point. See `.github/INTEGRATION.md` and `changes/README.md`.
 - Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
 - The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. Legacy static modules are retained for regression/reference and shared models, not new UI work.
+- Avoid computer-use or browser-UI automation for repository work unless the task is visual and requires iterative on-screen inspection. Prefer file, shell and purpose-built test tools for non-visual work.
 
 ## Backend and agent work
 
