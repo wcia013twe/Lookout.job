@@ -37,9 +37,9 @@ Views share the same permitted published post data, active Circle and search
 filters. View selection is recorded in the URL and supports browser history.
 People displays only voluntarily published updates, never private application
 statuses. Every event opens the existing revision-aware contribution detail and
-sharing controls. A common Circle brief disclosure retains the conversation
-walkthrough; it explicitly labels delivery as unconnected. No new social service
-or approval bypass was introduced.
+sharing controls. Conversation templates and delivery rules stay in design
+documentation, outside the dashboard. No new social service or approval bypass
+was introduced.
 
 Signed-out visitors can explore the isolated fictional Circle directly. Six
 generated fictional portraits are confined to demo data; real members use
@@ -47,16 +47,11 @@ initials. The original static preview route remains resettable. Drafts, source
 search, members, permissions and private citation history remain available below
 the three views.
 
-The signed-out introduction offers a fictional conversation walkthrough and an
-isolated Circle preview. The dashboard gives private drafts priority, followed by
-a short catch-up and searchable shared contributions. Shared activity is drawn
-from the loaded page and honors its filters; it is not a personalized daily digest.
-Member management, permissions and private receipts remain available.
-
-Conversation scenarios show a roundup, a contextual contribution, a celebration
-and real-use acknowledgment. All preview people, opportunities and interactions
-are fictional. Preview choices never publish, send, update an application or edit
-a real preparation plan. The Circle preview uses its own resettable memory store.
+The dashboard focuses on people, opportunities, resources and celebrations.
+Drafts sit in a compact disclosure; review shows the posting identity, destination
+and exact message. Member management, permissions and private receipts remain
+in secondary controls. Shared activity honors the loaded search results; it is
+not a scheduled digest. The fictional Circle uses resettable memory.
 
 ## Three implementation lanes
 

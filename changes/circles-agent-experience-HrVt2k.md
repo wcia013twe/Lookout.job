@@ -1,5 +1,11 @@
 # circles-agent-experience
 
+## Follow-up: simplify the dashboard
+
+- Removed the conversation scenario component and Circle brief disclosure from the dashboard. Kept the agent behavior specifications in documentation.
+- Removed repeated privacy/delivery explanations and milestone action footnotes. Drafts are now a compact disclosure; actual sharing review still identifies the author, destination and exact message. Agent permissions remain in Circle settings with shorter copy.
+- Preserved the three visual views, contributions, membership tools and backend consent checks. Validation: full test suite, data validation, frontend typecheck and production static export; no delivery activation or backend permission changes.
+
 ## Follow-up: recovered comp implementation
 
 - Built cohesive Overview, People and Moments views from the recovered crew-lobby, constellation and achievement-wall comps. Shared Circle identity, published content, navigation state, brief entry point and contribution review stay connected across views.

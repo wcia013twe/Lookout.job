@@ -4,7 +4,7 @@ Circles makes career progress feel supported by friends. The daily text experien
 
 ## Current implementation and honest limits
 
-The Circles page includes a self-contained interactive conversation concept. Daily roundup, Share a tip, Celebrate and Your impact illustrate the six desired behaviors: roundup, approved milestone pushes, contextual contributions, effortless sharing, real impact and actionable personalization. Every character, shared event, plan modification and activity count in this preview is fictional. State is local to the mounted component and resets without persistence. It imports no account service, sends no request and never writes to applications, plans or community records.
+The conversation scenarios are product design references, not dashboard controls. The dashboard contains no conversation walkthrough or simulated messaging flow. Daily roundups, contextual sharing, celebrations and impact acknowledgments remain specified below for future agent delivery.
 
 Private invitation-only knowledge threads, exact-revision review/publication, membership-aware retrieval and citation receipts are locally implemented and release-gated. See [Circle Knowledge](../backend/circle-knowledge.md). Hosted authorization checks remain required before enabling production. This release does not implement social event delivery, a scheduler, message transport, resource-save events or human-confirmed benefit. Existing agent citation receipts mean “agents used this for N people”; they do not prove saves or benefit. The impact scenario explicitly illustrates proposed future evidence and must never be populated from citation counts alone.
 
