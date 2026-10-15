@@ -280,13 +280,8 @@ button:not(:disabled) {
   .workspace-shell .workspace-heading { margin-bottom: 1.5rem; }
   .workspace-shell .workspace-section { margin-top: 2rem; }
 }
-.workspace-mobile-nav {
-  padding-bottom: max(4px, env(safe-area-inset-bottom));
-  background: color-mix(in srgb, var(--color-board-panel) 96%, transparent);
-}
 @media (max-width: 767px) {
-  .workspace-shell { padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
-  .workspace-mobile-nav { padding-left: max(4px, env(safe-area-inset-left)); padding-right: max(4px, env(safe-area-inset-right)); }
+  .workspace-container { padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
   .workspace-shell .glass-panel,
   .workspace-shell .glass-toolbar { backdrop-filter: none; -webkit-backdrop-filter: none; }
   .workspace-shell .workspace-heading { margin-bottom: 1rem; }
@@ -419,4 +414,14 @@ button:not(:disabled) {
 @media (max-width: 767px) {
   .setup-mobile-safe { padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
   .agent-waiting-room { inset: 0; width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+}
+
+/* Full-viewport background with one shared inset for header and page content. */
+.workspace-topbar {display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;align-items:start;margin-bottom:1.75rem;}
+.workspace-topbar .workspace-nav {min-width:0;}
+.workspace-nav a {flex-wrap:wrap;}
+@media (min-width:768px) {
+  .workspace-topbar {grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);align-items:start;gap:1rem;}
+  .workspace-topbar > :last-child {justify-content:flex-end;}
+  .workspace-topbar .workspace-brand + p {display:none;}
 }

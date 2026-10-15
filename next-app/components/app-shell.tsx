@@ -52,14 +52,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
     return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
   }
   return (
-    <MotionConfig reducedMotion="user"><main className={`workspace-shell mx-auto min-h-dvh max-w-6xl px-4 pb-[calc(5.75rem+env(safe-area-inset-bottom))] pt-4 md:px-6 md:py-8`} onClickCapture={event=>{
+    <MotionConfig reducedMotion="user"><main className={`workspace-shell min-h-dvh`} onClickCapture={event=>{
         if(!w.demo)return;
         const target = event.target as HTMLElement;
         if(target instanceof HTMLInputElement && target.type==='file'){event.preventDefault();return;}
         const anchor=target.closest<HTMLAnchorElement>('a');
         if(anchor && new URL(anchor.href,location.href).origin!==location.origin)event.preventDefault();
       }}>
-      <header className="workspace-header flex items-start justify-between gap-3 md:flex-wrap md:gap-4">
+      <div className="workspace-container mx-auto w-full max-w-6xl px-4 pb-8 pt-4 md:px-6">
+      <header className="workspace-header workspace-topbar">
         <div className="flex min-w-0 items-start gap-3">
           <ProfileMenu />
           <div className="min-w-0">
@@ -70,6 +71,25 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <p className="text-xs text-board-muted md:mt-1">Last scan: {w.date}</p>
           </div>
         </div>
+      <nav
+        aria-label="Workspace pages"
+        className="workspace-nav glass-toolbar grid grid-cols-4 gap-1 rounded-xl bg-board-tag p-1.5"
+      >
+        {navigation.map(([href, label, icon]) => (
+          <Link
+            key={href}
+            href={href}
+            aria-current={
+              isCurrent(href) ? "page" : undefined
+            }
+            className={`relative isolate flex min-h-11 items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-xs md:gap-2 md:px-2 md:text-sm font-semibold ${isCurrent(href) ? "bg-board-panel text-board-accent" : "text-board-muted hover:text-board-text"}`}
+          >
+            {isCurrent(href) && <motion.span layoutId="workspace-active-tab" className="workspace-active-tab absolute inset-0 -z-10 rounded-lg" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
+            <span className="md:hidden"><NavIcon name={icon} /></span><span>{label}</span>
+            {href === "/needs-you/" && needs > 0 && <span className="workspace-count grid min-h-5 min-w-5 place-items-center rounded-md px-1 text-[11px] tabular-nums">{needs}</span>}
+          </Link>
+        ))}
+      </nav>
         <div className="hidden flex-wrap items-start gap-2 md:flex"><ColorModeControl /><details className="text-sm">
           <summary className={`${secondary} cursor-pointer`}>
             {w.state?.progress?.xp || 0} XP ·{" "}
@@ -105,35 +125,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
       {w.error && <Notice>{w.error}</Notice>}
-      <nav
-        aria-label="Workspace pages"
-        className="workspace-nav glass-toolbar my-7 hidden grid-cols-4 gap-1 rounded-xl bg-board-tag p-1.5 md:grid"
-      >
-        {navigation.map(([href, label]) => (
-          <Link
-            key={href}
-            href={href}
-            aria-current={
-              isCurrent(href) ? "page" : undefined
-            }
-            className={`relative isolate flex min-h-11 items-center justify-center gap-2 rounded-lg px-2 py-2 text-center text-sm font-semibold ${isCurrent(href) ? "bg-board-panel text-board-accent" : "text-board-muted hover:text-board-text"}`}
-          >
-            {isCurrent(href) && <motion.span layoutId="workspace-active-tab" className="workspace-active-tab absolute inset-0 -z-10 rounded-lg" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
-            {label}
-            {href === "/needs-you/" && needs > 0 && <span className="workspace-count grid min-h-5 min-w-5 place-items-center rounded-md px-1 text-[11px] tabular-nums">{needs}</span>}
-          </Link>
-        ))}
-      </nav>
-      <nav aria-label="Workspace pages" className="workspace-mobile-nav glass-toolbar fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-board-line px-1 pt-1 md:hidden">
-        {navigation.map(([href, label, icon]) => (
-          <Link key={href} href={href} aria-current={isCurrent(href) ? "page" : undefined}
-            className={`relative isolate flex min-h-14 min-w-11 flex-col items-center justify-center gap-0.5 rounded-lg px-1 text-center text-[11px] font-semibold ${isCurrent(href) ? "text-board-accent" : "text-board-muted"}`}>
-            {isCurrent(href) && <motion.span layoutId="workspace-active-tab-mobile" className="workspace-active-tab absolute inset-0 -z-10 rounded-lg" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
-            <span className="relative"><NavIcon name={icon} />{href === "/needs-you/" && needs > 0 && <span className="workspace-count absolute -right-3 -top-2 grid min-h-4 min-w-4 place-items-center rounded-md px-1 text-[10px] tabular-nums">{needs}</span>}</span>
-            <span>{label}</span>
-          </Link>
-        ))}
-      </nav>
       {w.state ? (
         <div key={w.demo ? `demo-${w.demoEpoch}` : w.user?.id || "guest"} inert={w.locked || undefined}>
           {children}
@@ -141,6 +132,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       ) : (
         <div className="glass-panel rounded-2xl p-6" role="status"><p className="text-sm text-board-muted">Loading your workspace…</p><div aria-hidden="true" className="mt-5 grid gap-3 sm:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-28 rounded-xl bg-board-tag" />)}</div></div>
       )}
+      </div>
     </main></MotionConfig>
   );
 }
