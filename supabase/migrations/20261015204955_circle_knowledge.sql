@@ -3,9 +3,9 @@ begin;
 create table private.knowledge_config(singleton boolean primary key check(singleton), enabled boolean not null default false);
 insert into private.knowledge_config values(true,false);
 create table private.circles(id uuid primary key default gen_random_uuid(), name text not null check(length(trim(name)) between 1 and 100), owner_id uuid not null references auth.users, created_at timestamptz not null default now());
-create table private.circle_members(circle_id uuid references private.circles on delete cascade, user_id uuid references auth.users on delete cascade, alias text not null check(length(trim(alias)) between 1 and 80), active boolean not null default true, allowed_types text[] not null default '{}', primary key(circle_id,user_id));
+create table private.circle_members(circle_id uuid references private.circles on delete cascade, user_id uuid references auth.users on delete cascade, alias text not null check(length(trim(alias)) between 1 and 80), active boolean not null default true, access_revoked_at timestamptz, allowed_types text[] not null default '{}', primary key(circle_id,user_id));
 create index circle_members_user on private.circle_members(user_id,circle_id) where active;
-create table private.circle_invites(id uuid primary key default gen_random_uuid(),circle_id uuid not null references private.circles, token uuid unique not null default gen_random_uuid(), expires_at timestamptz not null default now()+interval '7 days', revoked_at timestamptz);
+create table private.circle_invites(id uuid primary key default gen_random_uuid(),circle_id uuid not null references private.circles, token uuid unique not null default gen_random_uuid(), created_at timestamptz not null default now(), expires_at timestamptz not null default now()+interval '7 days', revoked_at timestamptz);
 create index circle_invites_circle on private.circle_invites(circle_id);
 create table private.knowledge_posts(id uuid primary key default gen_random_uuid(), circle_id uuid not null references private.circles, author_id uuid not null references auth.users, parent_id uuid references private.knowledge_posts, current_revision integer not null default 1, published_revision integer, state text not null default 'draft' check(state in ('draft','published','withdrawn','hidden')), source_event_id uuid, created_at timestamptz not null default now());
 create unique index knowledge_milestone_once on private.knowledge_posts(circle_id,author_id,source_event_id) where source_event_id is not null;
@@ -26,6 +26,7 @@ do $$declare t text; begin foreach t in array array['knowledge_config','circles'
 create function private.validate_knowledge_content(content jsonb) returns void language plpgsql set search_path='' as $$
 begin
  if jsonb_typeof(content) is distinct from 'object' then raise exception 'Content object required' using errcode='22023'; end if;
+ if content::text ~* '(storage/v1/object/(sign|authenticated)/|[?&](token|access_token|apikey|api_key|signature|x-amz-signature)=|mail[.]google[.]com/|outlook[.]office[.]com/mail/)' then raise exception 'Private sources and signed file links cannot be shared' using errcode='22023'; end if;
  if exists(select 1 from jsonb_object_keys(content) k where k not in ('title','body','type','company','role','stage','experienceDate','sources','provenance','uncertainty','personalDisclosure'))
  or coalesce(content->>'type','') not in ('interview_report','timeline','resource','opportunity','milestone','reply')
  or coalesce(length(trim(content->>'title')),0) not between 1 and 200 or coalesce(length(trim(content->>'body')),0) not between 1 and 12000
@@ -44,7 +45,7 @@ begin
 end $$;
 
 create function private.knowledge_projection(p private.knowledge_posts, viewer uuid) returns jsonb language sql stable set search_path='' as $$
- select jsonb_build_object('id',p.id,'circleId',p.circle_id,'parentId',p.parent_id,'revision',r.revision,'publishedRevision',p.published_revision,'state',p.state,'owned',p.author_id=viewer,'author',m.alias,'createdAt',p.created_at,'content',r.content,'agentAuthored',r.connection_id is not null,'approved',p.author_id=viewer and exists(select 1 from private.knowledge_approvals where post_id=p.id and revision=r.revision),'helpfulPeople',(select count(*) from private.knowledge_citations c where c.post_id=p.id and c.revision=r.revision and c.retracted_at is null),'url','/circles/?circle='||p.circle_id||'&thread='||coalesce(p.parent_id,p.id),'untrusted',true)
+ select jsonb_build_object('id',p.id,'circleId',p.circle_id,'parentId',p.parent_id,'revision',r.revision,'publishedRevision',p.published_revision,'state',p.state,'owned',p.author_id=viewer,'author',m.alias,'createdAt',p.created_at,'content',r.content,'agentAuthored',r.connection_id is not null,'approved',p.author_id=viewer and exists(select 1 from private.knowledge_approvals where post_id=p.id and revision=r.revision),'helpfulPeople',(select count(*) from private.knowledge_citations c where c.post_id=p.id and c.revision=r.revision and c.retracted_at is null),'url','https://wcia013twe.github.io/codex-automated-job-board/circles/?circle='||p.circle_id||'&thread='||coalesce(p.parent_id,p.id),'untrusted',true)
  from private.knowledge_revisions r join private.circle_members m on m.circle_id=p.circle_id and m.user_id=p.author_id
  where r.post_id=p.id and r.revision=case when p.author_id=viewer then p.current_revision else p.published_revision end and p.state not in ('withdrawn','hidden')
 $$;
@@ -70,12 +71,12 @@ begin
  if not human and op in ('circles.create','circles.join','circles.invite','circles.revoke_invite','circles.leave','circles.remove','circles.policy','knowledge.approve','knowledge.hide') then raise exception 'Human action required' using errcode='42501'; end if;
  -- Actor lock covers idempotency/rate limits; Circle lock serializes permissions,
  -- membership changes, publication and counts against concurrent writes.
- perform pg_advisory_xact_lock(hashtextextended(actor::text,41));
  if not is_read then
+  perform pg_advisory_xact_lock(hashtextextended(actor::text,41));
   if coalesce(length(event_key),0) not between 1 and 100 then raise exception 'eventKey required' using errcode='22023'; end if;
   select * into req from private.knowledge_requests r where r.user_id=actor and r.event_key=event_key;
   if found and (req.operation<>op or req.payload<>payload) then raise exception 'Idempotency key changed' using errcode='40001'; end if;
-  if req.event_key is null and (select count(*) from private.knowledge_requests where user_id=actor and created_at>now()-interval '1 hour')>=200 then raise exception 'Circle write limit reached; retry later' using errcode='54000'; end if;
+  if req.event_key is null and not (human and op in ('circles.policy','circles.revoke_invite','circles.remove','circles.leave','knowledge.withdraw','knowledge.hide','knowledge.retract')) and (select count(*) from private.knowledge_requests where user_id=actor and created_at>now()-interval '1 hour')>=200 then raise exception 'Circle write limit reached; retry later' using errcode='54000'; end if;
  end if;
  if op='circles.list' then return jsonb_build_object('available',true,'circles',(select coalesce(jsonb_agg(jsonb_build_object('id',a.id,'name',a.name,'owner',a.owner_id=actor) order by a.created_at),'[]') from private.circles a join private.circle_members b on b.circle_id=a.id where b.user_id=actor and b.active)); end if;
  if op='circles.create' then
@@ -87,17 +88,19 @@ begin
   select * into inv from private.circle_invites where token=(payload->>'token')::uuid;
   if not found then raise exception 'Invite unavailable' using errcode='P0002'; end if; cid:=inv.circle_id;
  else cid:=(payload->>'circleId')::uuid; end if;
- select * into c from private.circles where id=cid for update;
+ if is_read then select * into c from private.circles where id=cid for share;
+ else select * into c from private.circles where id=cid for update; end if;
  if not found then raise exception 'Circle unavailable' using errcode='P0002'; end if;
  if op='circles.join' then
   select * into inv from private.circle_invites where id=inv.id for update;
   if inv.revoked_at is not null or inv.expires_at<=now() then raise exception 'Invite unavailable' using errcode='42501'; end if;
   if req.event_key is null then
-   if exists(select 1 from private.circle_members where circle_id=cid and user_id=actor and not active) then raise exception 'Membership removed; a new Circle is required to rejoin in this version' using errcode='42501'; end if;
-   insert into private.circle_members(circle_id,user_id,alias) values(cid,actor,trim(payload->>'alias')) on conflict(circle_id,user_id) do nothing;
+   if exists(select 1 from private.circle_members where circle_id=cid and user_id=actor and not active and access_revoked_at>=inv.created_at) then raise exception 'Membership removed; ask for an invite created after removal' using errcode='42501'; end if;
+   insert into private.circle_members(circle_id,user_id,alias) values(cid,actor,trim(payload->>'alias')) on conflict(circle_id,user_id) do update set active=true,access_revoked_at=null,alias=excluded.alias,allowed_types='{}';
   end if;
  end if;
- select * into m from private.circle_members where circle_id=cid and user_id=actor and active for update;
+ if is_read then select * into m from private.circle_members where circle_id=cid and user_id=actor and active for share;
+ else select * into m from private.circle_members where circle_id=cid and user_id=actor and active for update; end if;
  if not found then raise exception 'Circle unavailable' using errcode='42501'; end if;
  -- Recheck membership before replay; cached results contain only identifiers.
  if req.event_key is not null then
@@ -107,18 +110,20 @@ begin
  end if;
  if op in ('circles.create','circles.join') then output:=jsonb_build_object('circleId',cid);
  elsif op='circles.read' then
-  return jsonb_build_object('circle',jsonb_build_object('id',cid,'name',c.name,'owner',c.owner_id=actor),'policy',m.allowed_types,'members',(select coalesce(jsonb_agg(jsonb_build_object('id',user_id,'alias',alias)),'[]') from private.circle_members where circle_id=cid and active),'invites',case when human and c.owner_id=actor then (select coalesce(jsonb_agg(to_jsonb(i)-'circle_id'),'[]') from private.circle_invites i where circle_id=cid and revoked_at is null and expires_at>now()) else '[]' end,'reports',case when c.owner_id=actor then (select coalesce(jsonb_agg(jsonb_build_object('postId',r.post_id,'reason',r.reason,'id',r.id)),'[]') from private.knowledge_reports r join private.knowledge_posts a on a.id=r.post_id where a.circle_id=cid and a.state='published') else '[]' end);
+  return jsonb_build_object('circle',jsonb_build_object('id',cid,'name',c.name,'owner',c.owner_id=actor),'policy',m.allowed_types,'members',(select coalesce(jsonb_agg(jsonb_build_object('id',user_id,'alias',alias,'owner',user_id=c.owner_id,'self',user_id=actor)),'[]') from private.circle_members where circle_id=cid and active),'invites',case when human and c.owner_id=actor then (select coalesce(jsonb_agg(to_jsonb(i)-'circle_id'),'[]') from private.circle_invites i where circle_id=cid and revoked_at is null and expires_at>now()) else '[]' end,'reports',case when c.owner_id=actor then (select coalesce(jsonb_agg(jsonb_build_object('postId',r.post_id,'reason',r.reason,'id',r.id)),'[]') from private.knowledge_reports r join private.knowledge_posts a on a.id=r.post_id where a.circle_id=cid and a.state='published') else '[]' end);
  elsif op in ('circles.invite','circles.revoke_invite','circles.remove') then
   if c.owner_id<>actor then raise exception 'Circle owner required' using errcode='42501'; end if;
   if op='circles.invite' then insert into private.circle_invites(circle_id) values(cid) returning * into inv; output:=jsonb_build_object('inviteId',inv.id,'token',inv.token,'expiresAt',inv.expires_at);
   elsif op='circles.revoke_invite' then update private.circle_invites set revoked_at=now() where id=(payload->>'inviteId')::uuid and circle_id=cid; output:='{"revoked":true}';
   else
    if (payload->>'memberId')::uuid=c.owner_id then raise exception 'Owner cannot be removed' using errcode='22023'; end if;
-   update private.circle_members set active=false,allowed_types='{}' where circle_id=cid and user_id=(payload->>'memberId')::uuid; output:='{"removed":true}';
+   update private.circle_members set active=false,access_revoked_at=now(),allowed_types='{}' where circle_id=cid and user_id=(payload->>'memberId')::uuid;
+   delete from private.knowledge_approvals a using private.knowledge_posts b where a.post_id=b.id and b.circle_id=cid and a.user_id=(payload->>'memberId')::uuid; output:='{"removed":true}';
   end if;
  elsif op='circles.leave' then
   if c.owner_id=actor then raise exception 'Owner must keep Circle membership' using errcode='22023'; end if;
-  update private.circle_members set active=false,allowed_types='{}' where circle_id=cid and user_id=actor; output:='{"left":true}';
+  update private.circle_members set active=false,access_revoked_at=now(),allowed_types='{}' where circle_id=cid and user_id=actor;
+  delete from private.knowledge_approvals a using private.knowledge_posts b where a.post_id=b.id and b.circle_id=cid and a.user_id=actor; output:='{"left":true}';
  elsif op='circles.policy' then
   if jsonb_typeof(payload->'allowedTypes') is distinct from 'array' then raise exception 'Types required' using errcode='22023'; end if;
   allowed:=array(select jsonb_array_elements_text(payload->'allowedTypes'));
@@ -127,7 +132,7 @@ begin
  elsif op='knowledge.handoff' then
   if coalesce(payload->>'action','') not in ('manage','approve','sharing','moderate') then raise exception 'Invalid handoff' using errcode='22023'; end if;
   if payload->>'postId' is not null and not exists(select 1 from private.knowledge_posts where id=(payload->>'postId')::uuid and circle_id=cid and state not in ('hidden','withdrawn') and (state='published' or author_id=actor)) then raise exception 'Post unavailable' using errcode='P0002'; end if;
-  return jsonb_build_object('humanActionRequired',true,'action',payload->>'action','url','/circles/?circle='||cid||case when payload->>'postId' is null then '' else '&thread='||(payload->>'postId') end);
+  return jsonb_build_object('humanActionRequired',true,'action',payload->>'action','url','https://wcia013twe.github.io/codex-automated-job-board/circles/?circle='||cid||case when payload->>'postId' is null then '' else '&thread='||(payload->>'postId') end);
  elsif op='knowledge.search' then
   lim:=least(50,greatest(1,coalesce((payload->>'limit')::integer,20))); q:=websearch_to_tsquery('english',left(coalesce(payload->>'query',''),500));
   after_time:=(payload->'cursor'->>'createdAt')::timestamptz; after_id:=(payload->'cursor'->>'id')::uuid; after_rank:=(payload->'cursor'->>'rank')::real;
@@ -157,7 +162,8 @@ begin
     select * into parent from private.knowledge_posts where id=(payload->>'parentId')::uuid and circle_id=cid and parent_id is null and state='published' for update;
     if not found or content->>'type'<>'reply' then raise exception 'Published thread required' using errcode='42501'; end if;
    elsif content->>'type'='reply' then raise exception 'Reply parent required' using errcode='22023'; end if;
-   if payload->>'sourceEventId' is not null and (content->>'type'<>'milestone' or not exists(select 1 from public.activity_events where id=(payload->>'sourceEventId')::uuid and user_id=actor)) then raise exception 'Owned milestone source required' using errcode='42501'; end if;
+   if not human and content->>'type'='milestone' and payload->>'sourceEventId' is null then raise exception 'Owned milestone source required' using errcode='42501'; end if;
+   if payload->>'sourceEventId' is not null and (content->>'type'<>'milestone' or not exists(select 1 from public.application_milestones where id=(payload->>'sourceEventId')::uuid and user_id=actor)) then raise exception 'Owned milestone source required' using errcode='42501'; end if;
    insert into private.knowledge_posts(circle_id,author_id,parent_id,source_event_id) values(cid,actor,parent.id,(payload->>'sourceEventId')::uuid) returning * into p; v:=1;
   else
    if payload ? 'parentId' or payload ? 'sourceEventId' then raise exception 'Thread and source are immutable' using errcode='22023'; end if;

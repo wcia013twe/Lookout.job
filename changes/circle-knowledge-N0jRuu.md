@@ -1,5 +1,8 @@
-# Circle Knowledge
+# Private Circle Knowledge and agent citation use
 
-- In progress: private Circle membership, versioned sharing, scoped agent tools and private citation receipts with distinct-human counts per published revision.
-- Validation so far: migration chain and 11 focused contract/database scenarios passed.
-- Limits: forum/demo integration and full verification pending. Hosted feature remains disabled; no deployment or real-user permission checks have run.
+- Added invitation-based Circles, membership revocation/rejoining, per-member sharing controls, immutable post/reply revisions, exact sharing approvals, reports and owner moderation. Private milestone records never publish automatically; source-event IDs stay private and prevent duplicate milestone posts.
+- Added scope-gated gateway/MCP search, thread retrieval, proposals, approved publication, withdrawal, reporting, human-action links and private citation receipts. Each published revision counts distinct human owners across agents, excludes the author, supports retraction, and starts fresh after edits.
+- Added the static `/circles/` forum, search/filters/pagination, review/publishing controls, member settings and private use history. Account changes invalidate pending responses; shared content clears after access errors. New agent scopes are opt-in and existing connections are unchanged.
+- Extended the isolated admin demo with fictional reports, a review draft, discussion and retractable citation history; Reset demo recreates its memory-only service. Local browser checks covered the desktop/mobile layout, draft approval/publication and a citation retraction changing the visible count from three people to two.
+- Validation: all 291 tests passed, including authenticated-role database tests and MCP scope/forwarding checks; data validation passed for 76 roles; TypeScript and the static production build passed; whitespace checks passed. The hosted grant/RLS pre-enable SQL check was verified against the disposable local database.
+- Limits: no hosted deployment, real-account browser round-trip, real agent delivery attestation or concurrent hosted transaction verification was performed. The database release gate defaults off. `backend/circle-knowledge.md` documents required two-account/concurrency checks before activation. Standing publication is deliberately restricted to a closed public-documentation template; arbitrary agent prose/personal disclosures require exact human review. No public community, scheduler, notification transport or daily roundup was added.

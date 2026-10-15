@@ -311,3 +311,13 @@ activation service; these report blockers and use polling rather than claiming
 immediate execution. Deploy migration `20261014210000_agent_first_onboarding.sql`
 and the updated `agent-gateway` / `agent-mcp` functions together after merge.
 `developerVersion` is incremented so agents refresh their context and tool list.
+
+## Circle Knowledge (gated)
+
+Private Circles now have structured knowledge threads, agent retrieval and reviewed
+publication, and “Agents used this for N people” citation counts per revision. The
+forum is `/circles/`; admin Demo mode includes fictional reports and citation history.
+The database gate stays disabled pending hosted two-account permission checks.
+Freeform/personal sharing requires exact human review; optional standing permission
+is limited to a closed public-documentation template. See
+[contracts, limits and release checks](backend/circle-knowledge.md).

@@ -15,6 +15,7 @@ const navigation = [
   ["/", "Discover", "discover"],
   ["/applications/", "Applications", "applications"],
   ["/referrals/", "Referrals", "referrals"],
+  ["/circles/", "Circles", "circles"],
 ] as const;
 
 function NavIcon({ name }: { name: (typeof navigation)[number][2] }) {
@@ -22,6 +23,7 @@ function NavIcon({ name }: { name: (typeof navigation)[number][2] }) {
     needs: <><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16 9"/></>,
     discover: <><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4M11 8v6M8 11h6"/></>,
     applications: <><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></>,
+    circles: <><circle cx="8" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 21v-3a6 6 0 0 1 12 0v3m1-8a6 6 0 0 1 7 5v3"/></>,
     referrals: <><circle cx="8" cy="8" r="3"/><circle cx="17" cy="16" r="3"/><path d="M10.5 9.5 14.5 14M5 20c0-3 2-5 5-5"/></>,
   };
   return <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
@@ -73,7 +75,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
       <nav
         aria-label="Workspace pages"
-        className="workspace-nav glass-toolbar grid grid-cols-4 gap-1 rounded-xl bg-board-tag p-1.5"
+        className="workspace-nav glass-toolbar grid grid-cols-5 gap-1 rounded-xl bg-board-tag p-1.5"
       >
         {navigation.map(([href, label, icon]) => (
           <Link

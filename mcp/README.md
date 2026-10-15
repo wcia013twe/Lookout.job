@@ -184,3 +184,12 @@ company tiers from the owned list identified by `Company priorities / Tier list 
 its name is descriptive. This association guides job analysis and does not change
 automation review thresholds or grant submission permission. Website and MCP writes
 retain the same ownership, stale-version, and policy-injection checks.
+
+## Circle Knowledge (gated)
+
+The fixed tool registry includes scoped Circle search/read, contribution proposals,
+approved publication, withdrawal/reporting and private citation use/receipts. Agents
+need `knowledge:read` and, for mutations, `knowledge:write`. Existing connections
+remain unchanged. `request_circle_human_action` returns a membership-checked link;
+it cannot manage members, approve revisions, moderate, or grant sharing permission.
+See [operation mapping and release gate](../backend/circle-knowledge.md).

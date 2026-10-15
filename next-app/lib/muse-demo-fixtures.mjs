@@ -1,3 +1,4 @@
+import { createCircleKnowledgeDemo } from '../../lib/circle-knowledge-demo.mjs';
 import { demoOnboardingAction } from "./onboarding-demo.mjs";
 import { createPreparationPlan, setPreparationTaskCompletion } from '../../lib/preparation-model.mjs';
 import { normalizeQuietMode, buildDeliveryPolicy } from '../../lib/quiet-mode.mjs';
@@ -110,6 +111,7 @@ export function createDemoServices(store) {
     return value;
   }
   return {
+    knowledge: createCircleKnowledgeDemo(),
     async onboardingAction(operation, payload = {}) { return demoOnboardingAction(store, operation, payload); },
     async readApplicationTimeline(id) {
       const current = application(id);
