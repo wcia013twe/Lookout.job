@@ -34,3 +34,13 @@ glass reflections of late afternoon sky, no logos no signs no people no letters.
 Cohesive understated navy blue and warm dusk palette in both. No text, no UI,
 no decoration. Each half is independently usable as a very wide web banner
 cropped around its center.
+
+## Clubhouse room
+
+`clubhouse.webp` is the generated empty study clubhouse background (1536 × 1024).
+`characters.webp` is a generated transparent 3 × 2 sheet of six illustrated adult
+avatars (1374 × 1145). These are decorative game avatars, not member photographs.
+Both were produced with the built-in image generator on 2026-10-15 and compressed
+with cwebp. The complete generation prompts are preserved in `room-prompts.json`.
+Room movement is decorative and does not indicate real online presence. Only the
+explicitly fictional demo has invented activity and session progress.

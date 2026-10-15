@@ -103,3 +103,57 @@ recipient-confirmed benefit events remain implementation work. Existing citation
 receipts cannot substantiate stronger impact claims. Every new service must ship
 matching scoped MCP operations and shared validation before it is advertised as
 available to agents.
+
+## Clubhouse room — October 2026
+
+The shared room now leads Circles. A full-width illustrated study clubhouse has
+six gently roaming character avatars with activity above their heads. Select a
+character to filter that member's published updates below, and Show everyone to
+restore the feed. Search, contribution inspection, sharing, revision review and
+membership controls keep their existing behavior. Circles larger than six use
+Previous people / More people to explore the room's members in groups.
+
+Rainy evening and Lamplight change the local scene's appearance; Pause motion
+stops character movement. Reduced-motion preferences disable it automatically.
+The room pans horizontally on phones, retaining readable activity labels and
+full-size character controls. None of these presentation controls writes account
+or backend state, and they need no new service or MCP operation. Shared posts
+still use the existing `knowledge.search` / contribution operation boundaries.
+
+In the resettable signed-out preview and admin demo, fictional members show
+example sessions: Wesley applying, interview practice, final-round preparation,
+opportunity review, a coffee break and an offer celebration. Session bars are
+fixed illustrative task completion, never fabricated live progress. Real Circle
+activity derives only from the currently loaded permitted published revisions;
+a member without a matching shared post gets “No shared activity.” Room positions
+and motion never imply that members are currently online. Actual opt-in live
+sessions, session-progress writes and their scoped agent tools remain future work.
+
+### Scoped visual contract
+
+The illustrated clubhouse is a local Circles exception within the existing navy
+workspace. The identity header, search, settings, sharing controls and published
+activity stream retain the shared board colors, sans-serif type, focus treatment
+and 44px controls. The room replaces the constellation as the main member
+selector; the single shared-update stream and compact handwritten milestone
+feature continue beneath it. Earlier constellation and three-view descriptions
+above remain design history.
+
+Warm timber, lamplight, cream activity bubbles and green selected bubbles belong
+to the room illustration and character controls. Keep these materials inside the
+room CSS module rather than promoting them into workspace tokens. The generated
+clubhouse background and transparent character sheet are authored in
+`next-app/assets/circles`; their optimized public copies supply the scene.
+Illustrated avatars are decorative member representations, with visible names
+and published activity providing identity and meaning.
+
+The scene retains its spatial composition in a bounded horizontal viewport on
+small screens. Character buttons expose selection through `aria-pressed`, keep
+activity in their accessible names, and pause movement on hover or keyboard
+focus. Pause motion and reduced-motion support are part of this component's
+contract. Ambience changes affect only the illustration. Preserve the adjacent
+fictional-session or decorative-motion disclosure whenever this room is reused.
+
+This extension requires no global color, typography, spacing or component-token
+update, and no regeneration of the design-system sidecar. Its one-off scene
+materials and motion remain scoped here and in `circle-room.module.css`.

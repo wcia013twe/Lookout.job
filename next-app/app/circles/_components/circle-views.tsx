@@ -3,6 +3,7 @@
 import {useState, type CSSProperties, type ReactNode} from 'react';
 import type {Detail, Post} from '../_lib/types';
 import styles from './circle-views.module.css';
+import CircleRoom from './circle-room';
 
 type Props = {detail:Detail; posts:Post[]; demo:boolean; openPost:(post:Post)=>void; focused:boolean; controls:ReactNode; search:ReactNode; searching:boolean};
 const portraitNames = ['Maya','Sam','Alex','Jordan','Priya','Taylor'];
@@ -39,9 +40,10 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
  return <section className={styles.circle} aria-label={`${title} Circle`}>
   <header className={styles.identity}>
    <div className={styles.emblem}><CircleEmblem/></div>
-   <div className={styles.identityCopy}><div className={styles.titleRow}><h1>{title}</h1>{controls}</div><p>Different paths. A brighter next chapter — together.</p><div className={styles.memberLine}><span className={styles.avatarStack}>{detail.members.slice(0,5).map(member=><Avatar key={member.id} name={member.alias} demo={demo}/>)}</span><span>{detail.members.length} people in your corner · Private Circle</span></div></div>
+   <div className={styles.identityCopy}><div className={styles.titleRow}><h1>{title}</h1>{controls}</div><div className={styles.memberLine}><span className={styles.avatarStack}>{detail.members.slice(0,5).map(member=><Avatar key={member.id} name={member.alias} demo={demo}/>)}</span><span>{detail.members.length} people in your corner · Private Circle</span></div></div>
   </header>
   {!focused&&<>
+   <CircleRoom key={detail.circle.id} detail={detail} posts={published} demo={demo} person={person} selectPerson={setPerson}/>
    <div className={styles.search}>{search}</div>
    <div className={styles.dashboard}>
     <div className={styles.mainColumn}>
@@ -52,9 +54,7 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
      </article>}
      <section aria-label="Circle activity">{activity.length?activity.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):!featured&&<p className={styles.empty}>{searching?'No matching posts. Try another search.':selected?'No shared updates yet.':'It’s quiet here. New updates will appear when someone shares.'}</p>}</section>
     </div>
-    <aside className={styles.sideColumn}>
-     <section className={styles.people} aria-labelledby="circle-people-title"><h2 id="circle-people-title">Your people</h2><div className={[styles.constellation,detail.members.length>8?styles.peopleGrid:''].join(' ')}><div className={styles.orbit} aria-hidden="true"/><div className={styles.centerEmblem} aria-hidden="true"><CircleEmblem/></div><div className={styles.peopleNodes}>{detail.members.map((member,index)=>{const angle=(index/Math.max(detail.members.length,1))*Math.PI*2-Math.PI/2;const position={'--node-x':`${50+Math.cos(angle)*35}%`,'--node-y':`${50+Math.sin(angle)*35}%`} as CSSProperties;return <button type="button" className={styles.personNode} style={position} key={member.id} aria-pressed={selected?.id===member.id} onClick={()=>setPerson(person===member.id?'':member.id)}><Avatar name={member.alias} demo={demo}/><strong>{member.alias.replace(' (demo)','')}</strong></button>;})}</div></div></section>
-    </aside>
+
    </div>
   </>}
  </section>;
