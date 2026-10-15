@@ -39,7 +39,7 @@ export const PACK_STYLE_TEMPLATES: Record<PackStyleId, PackStyleTemplate> = {
       "--pack-glow-opacity": ".58",
       "--pack-final-glow-opacity": ".86",
       "--pack-canvas-opacity": ".76",
-      "--pack-flare-blur": "10px",
+      "--pack-flare-blur": "4px",
     },
     motion: {
       stageDuration: 0.44,
@@ -51,7 +51,7 @@ export const PACK_STYLE_TEMPLATES: Record<PackStyleId, PackStyleTemplate> = {
       flareScale: 2.35,
     },
     effects: {
-      foilTint: "#aa85e3",
+      foilTint: "#8bdcff",
       baseParticles: 22,
       particlesPerRank: 18,
       finalParticleMultiplier: 1.65,
@@ -71,7 +71,7 @@ export const PACK_STYLE_TEMPLATES: Record<PackStyleId, PackStyleTemplate> = {
       "--pack-glow-opacity": ".72",
       "--pack-final-glow-opacity": "1",
       "--pack-canvas-opacity": ".92",
-      "--pack-flare-blur": "6px",
+      "--pack-flare-blur": "2px",
     },
     motion: {
       stageDuration: 0.46,
@@ -83,7 +83,7 @@ export const PACK_STYLE_TEMPLATES: Record<PackStyleId, PackStyleTemplate> = {
       flareScale: 3.15,
     },
     effects: {
-      foilTint: "#c7a4ff",
+      foilTint: "#ffcf5a",
       baseParticles: 30,
       particlesPerRank: 24,
       finalParticleMultiplier: 2.45,
