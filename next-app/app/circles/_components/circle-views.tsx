@@ -4,6 +4,7 @@ import {useState, type CSSProperties, type ReactNode} from 'react';
 import type {Detail, Post} from '../_lib/types';
 import styles from './circle-views.module.css';
 import CircleRoom from './circle-room';
+import {primary} from '../../../components/ui';
 
 type Props = {detail:Detail; posts:Post[]; demo:boolean; openPost:(post:Post)=>void; focused:boolean; controls:ReactNode; search:ReactNode; searching:boolean};
 const portraitNames = ['Maya','Sam','Alex','Jordan','Priya','Wesley'];
@@ -58,7 +59,7 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
   </header>
   {!focused&&<>
    <CircleRoom key={detail.circle.id} detail={detail} posts={published} demo={demo} person={person} selectPerson={setPerson}/>
-   <section className={styles.noticeboard} aria-labelledby="community-feed-title">
+   <section className={`${styles.noticeboard} glass-panel`} aria-labelledby="community-feed-title">
     <header className={styles.boardHeading}><div className={styles.boardIntro}><h2 id="community-feed-title">Around the Circle</h2><p>The good news, useful finds, and little things worth sharing.</p><p className={styles.constellationHint}>Choose someone here or in the room to see what they’ve shared.</p></div>
      <nav className={styles.constellation} data-grid={detail.members.length>8} aria-label="Filter shared updates by person"><span className={styles.orbit} aria-hidden="true"/><button type="button" className={styles.everyone} aria-pressed={!selected} onClick={()=>setPerson('')}><CircleEmblem/><span>Everyone</span></button>{detail.members.map((member,index)=>{const angle=index/Math.max(detail.members.length,1)*Math.PI*2-Math.PI/2;return <button type="button" className={styles.personNode} key={member.id} style={{'--node-x':`${50+Math.cos(angle)*36}%`,'--node-y':`${50+Math.sin(angle)*36}%`} as CSSProperties} aria-pressed={selected?.id===member.id} onClick={()=>setPerson(person===member.id?'':member.id)}><RoomPortrait name={member.alias} demo={demo}/><span>{cleanName(member.alias)}</span></button>;})}</nav>
     </header>
@@ -67,7 +68,7 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
      <div className={styles.boardContent}>
       {featured&&<article className={styles.celebration}>
        <div className={styles.celebrationFigure}><RoomPortrait name={featured.author} demo={demo} full/></div>
-       <div className={styles.celebrationCopy}><div className={styles.celebrationMeta}><span>{cleanName(featured.author)} shared a milestone</span><span className={styles.pin} aria-hidden="true"/></div><h3>{callout}</h3><h4>{featured.content.title}</h4><p>{featured.content.body}</p>{featured.content.company&&<span className={styles.company}>{featured.content.company}</span>}<button className={styles.primary} type="button" onClick={()=>openPost(featured)}>Celebrate with {cleanName(featured.author).split(' ')[0]} <Arrow/></button></div>
+       <div className={styles.celebrationCopy}><div className={styles.celebrationMeta}><span>{cleanName(featured.author)} shared a milestone</span><span className={styles.pin} aria-hidden="true"/></div><h3>{callout}</h3><h4>{featured.content.title}</h4><p>{featured.content.body}</p>{featured.content.company&&<span className={styles.company}>{featured.content.company}</span>}<button className={`${primary} ${styles.primary}`} type="button" onClick={()=>openPost(featured)}>Celebrate with {cleanName(featured.author).split(' ')[0]} <Arrow/></button></div>
       </article>}
       <div className={styles.posts} aria-label="Shared Circle updates">{activity.length?activity.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):!featured&&<div className={styles.empty}><CircleEmblem/><h3>{searching?'Nothing on the board matches yet.':selected?'A little quiet in this corner.':'The board is ready for your first story.'}</h3><p>{searching?'Try a different search or clear your filters.':selected?'Their shared updates will appear here.':'Use Share above to add a milestone, resource, or opportunity for your people.'}</p></div>}</div>
      </div>
