@@ -27,11 +27,11 @@ export default function Discover() {
       <Heading title="Discover">
         {w.batchLabel || "Your latest roles, ready to explore."}
       </Heading>
-      <div className="glass-inset mb-4 grid items-end gap-3 rounded-xl p-3 sm:grid-cols-[minmax(0,1fr)_230px_160px] sm:p-4">
+      <div className="glass-inset mb-3 grid grid-cols-2 items-end gap-2 rounded-xl p-3 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3 md:p-4">
         <input
           aria-label="Search roles or companies"
           placeholder="Search roles or companies"
-          className={control}
+          className={`${control} col-span-2 md:col-span-1`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -53,8 +53,8 @@ export default function Discover() {
       </Notice>
       <DailyDrops />
       {roleGroups.map(({ key, label, roles: group }) => (
-        <section key={key} className="mt-9" aria-label={label}>
-          <div className="mb-4 flex items-center gap-3">
+        <section key={key} className="mt-6 md:mt-9" aria-label={label}>
+          <div className="mb-3 flex items-center gap-3 md:mb-4">
             <h2 className="text-xl font-semibold tracking-tight">{label}</h2>
             <span className="rounded-md bg-board-tag px-2 py-1 text-xs tabular-nums text-board-muted">{group.length}</span>
           </div>

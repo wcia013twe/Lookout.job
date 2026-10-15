@@ -108,7 +108,7 @@ export default function RoleCard({ role }: { role: Role }) {
         </span>
       </motion.div>
       <div className={styles.body}>
-        <h3 className="break-words text-xl font-semibold leading-snug tracking-tight">{role.title}</h3>
+        <h3 className="break-words text-lg font-semibold leading-snug tracking-tight md:text-xl">{role.title}</h3>
         <div className="flex flex-wrap gap-1.5 text-xs">
           {[
             role.employmentType === "FT" ? "Full-time" : role.employmentType,
@@ -122,7 +122,7 @@ export default function RoleCard({ role }: { role: Role }) {
               </span>
             ))}
         </div>
-        <p className="line-clamp-3 text-sm leading-relaxed text-board-muted">
+        <p className="line-clamp-2 text-sm leading-relaxed text-board-muted md:line-clamp-3">
           {role.whyItFits}
         </p>
         <details className="border-t border-board-line/60 pt-1 text-sm">
@@ -137,9 +137,9 @@ export default function RoleCard({ role }: { role: Role }) {
             {role.sourceFreshness}
           </p>
         </details>
-        <div className="role-card-actions mt-auto grid gap-2 pt-2 min-[420px]:grid-cols-2">
+        <div className="role-card-actions mt-auto grid gap-2 pt-1 min-[360px]:grid-cols-2 md:pt-2">
           <button onClick={queue} disabled={queued} className={`${secondary} w-full`}>
-            {queued ? "Queued" : "Queue application"}
+            {queued ? "Queued" : <><span className="md:hidden">Queue</span><span className="hidden md:inline">Queue application</span></>}
           </button>
           <a
             className={`${primary} w-full`}
@@ -148,7 +148,7 @@ export default function RoleCard({ role }: { role: Role }) {
             rel="noopener noreferrer"
             onClick={(event) => { if (w.demo) event.preventDefault(); open(); }}
           >
-            {w.demo ? "Simulate opening" : "Open application"}
+            <span className="md:hidden">{w.demo ? "Preview role" : "Open posting"}</span><span className="hidden md:inline">{w.demo ? "Simulate opening" : "Open application"}</span>
           </a>
         </div>
       </div>

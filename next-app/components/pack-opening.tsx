@@ -171,13 +171,22 @@ function RevealCard({ drop, stage, reduced, demo, onAdvance }: { drop: Drop; sta
     restoreFocus.current = element.current.contains(document.activeElement);
     onAdvance(drop, element.current);
   };
-  return <motion.article ref={element} tabIndex={-1} className={`dropcard t-${tier} ${stage === "back" || stage === "mystery" ? "unrevealed" : ""}`} data-revealed={complete} style={{ "--tier": TIER_HEX[tier], "--tier-ink": tier === "mythic" ? "#fff" : "#08101e", rotateX: reduced ? 0 : springX, rotateY: reduced ? 0 : springY } as MotionStyle} onPointerMove={event => { if (reduced || event.pointerType !== "mouse") return; const r = event.currentTarget.getBoundingClientRect(); tiltX.set(((event.clientY - r.top) / r.height - 0.5) * -8); tiltY.set(((event.clientX - r.left) / r.width - 0.5) * 10); }} onPointerLeave={() => { tiltX.set(0); tiltY.set(0); }}>
-    <motion.div key={stage} className="dropcard-stage" initial={reduced ? false : { scale: 0.93, rotate: -2, filter: "brightness(1.7)" }} animate={{ scale: 1, rotate: 0, filter: "brightness(1)" }} transition={{ duration: reduced ? 0 : 0.42, ease: [0.16, 1, 0.3, 1] }}>
+  return <motion.article ref={element} tabIndex={-1} className={`dropcard t-${tier} ${stage === "back" || stage === "mystery" ? "unrevealed" : ""}`} data-revealed={complete} data-tier={tier} style={{ "--tier": TIER_HEX[tier], "--tier-ink": tier === "mythic" ? "#fff" : "#08101e", rotateX: reduced ? 0 : springX, rotateY: reduced ? 0 : springY } as MotionStyle} onPointerMove={event => { if (reduced || event.pointerType !== "mouse") return; const r = event.currentTarget.getBoundingClientRect(); tiltX.set(((event.clientY - r.top) / r.height - 0.5) * -8); tiltY.set(((event.clientX - r.left) / r.width - 0.5) * 10); }} onPointerLeave={() => { tiltX.set(0); tiltY.set(0); }}>
+    <motion.div key={stage} className="dropcard-stage" initial={reduced ? false : { opacity: 0.45, scale: complete ? 0.76 : 0.9, filter: `brightness(${complete ? 2.6 : 1.9}) saturate(1.8) blur(${complete ? 10 : 5}px)` }} animate={{ opacity: 1, scale: 1, filter: "brightness(1) saturate(1) blur(0px)" }} transition={{ duration: reduced ? 0 : complete ? 0.68 : 0.46, ease: [0.16, 1, 0.3, 1] }}>
       {stage === "back" || stage === "mystery" ? <button type="button" className="card-mystery" onClick={() => { if (swiped.current) { swiped.current = false; return; } doAdvance(); }} onPointerDown={event => { swipe.current = event.clientX; }} onPointerUp={event => { if (swipe.current !== null && Math.abs(event.clientX - swipe.current) > 60) { swiped.current = true; doAdvance(); } swipe.current = null; }}><span>{stage === "mystery" ? "A new opportunity awaits" : "Your next drop"}</span><strong aria-hidden="true">?</strong><span className="dropcard-hint">Tap or swipe to reveal</span></button> : <>
-        <div className="dropcard-top"><span className="drop-tier">{RARITY_LABEL[tier]}</span><motion.div className="dropcard-art" initial={complete && !reduced ? { scale: 0.65, filter: "brightness(2)" } : false} animate={{ scale: 1, filter: "brightness(1)" }} transition={{ duration: reduced ? 0 : 0.6, ease: [0.16, 1, 0.3, 1] }}>{complete ? <CompanyLogo company={drop.company} /> : <span aria-hidden="true">?</span>}</motion.div></div>
-        <div className="dropcard-sheet"><h3>{complete ? drop.company : "Power building"}</h3><h4>{complete ? drop.title : "Something stronger is inside"}</h4>
-          {complete ? <><dl>{[["Location", drop.location], ["Track", drop.type === "FT" ? "Full-time" : drop.type], ["Comp", drop.comp]].filter(([, value]) => value).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="drop-status">{drop.status}</p>{drop.skipReason && <p className="drop-note">Skipped: {drop.skipReason}</p>}{drop.note && <details className="drop-note"><summary>View notes</summary><p>{drop.note}</p></details>}{drop.url && !demo && <a className="dropcard-link" href={drop.url} target="_blank" rel="noopener noreferrer">Open posting</a>}<p className="dropcard-hint done">Fully revealed</p></> : <button type="button" className="drop-power" onClick={doAdvance}>Tap to power up</button>}
-        </div>
+        {complete ? <div className="card-revealed">
+          <span className="drop-tier">{RARITY_LABEL[tier]}</span>
+          <motion.div className="reveal-logo" initial={reduced ? false : { scale: 0.45 }} animate={{ scale: 1 }} transition={{ duration: reduced ? 0 : 0.72, ease: [0.16, 1, 0.3, 1] }}><CompanyLogo company={drop.company} /></motion.div>
+          <div className="reveal-copy"><p>{drop.company}</p><h3>{drop.title}</h3></div>
+          <p className="reveal-meta">{[drop.type === "FT" ? "Full-time" : drop.type, drop.location, drop.comp].filter(Boolean).join(" · ")}</p>
+          <div className="reveal-actions"><span className="drop-status">{drop.status}</span>{drop.url && !demo && <a className="dropcard-link" href={drop.url} target="_blank" rel="noopener noreferrer">Open posting</a>}</div>
+          {(drop.skipReason || drop.note) && <details className="drop-note"><summary>Details</summary>{drop.skipReason && <p>Skipped: {drop.skipReason}</p>}{drop.note && <p>{drop.note}</p>}</details>}
+        </div> : <button type="button" className="card-upgrade" onClick={doAdvance}>
+          <span className="drop-tier">{RARITY_LABEL[tier]}</span>
+          <strong aria-hidden="true">?</strong>
+          <span>Tap to upgrade</span>
+          <span className="sr-only">Current reveal tier: {RARITY_LABEL[tier]}</span>
+        </button>}
       </>}
     </motion.div>
   </motion.article>;

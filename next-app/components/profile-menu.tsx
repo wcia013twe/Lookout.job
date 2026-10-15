@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
+import { streak } from "../lib/progress.mjs";
+import ColorModeControl from "./color-mode";
 
 export default function ProfileMenu() {
   const w = useWorkspace();
@@ -49,6 +51,24 @@ export default function ProfileMenu() {
         </div>
         <Link className={item} href="/profile/" onClick={() => setOpen(false)}>My Profile</Link>
         <Link className={item} href="/progress/#sharing-privacy" onClick={() => setOpen(false)}>Sharing &amp; privacy</Link>
+        {w.canDemo && <div className="mt-2 border-t border-board-line pt-2">
+          <button type="button" className={item} aria-pressed={w.demo}
+            onClick={() => { setOpen(false); w.toggleDemo(); }}>
+            {w.demo ? "Exit demo mode" : "Demo mode"}
+          </button>
+          {w.demo && <>
+            <p className="px-3 pb-1 text-xs leading-5 text-board-muted">Fictional data. Changes stay in memory.</p>
+            <button type="button" className={item} onClick={() => { setOpen(false); w.resetDemo(); }}>
+              Reset demo data
+            </button>
+          </>}
+        </div>}
+        <div className="mt-2 space-y-2 border-t border-board-line pt-2 md:hidden">
+          <ColorModeControl compact />
+          <Link className={item} href="/progress/" onClick={() => setOpen(false)}>
+            Progress · {w.state?.progress?.xp || 0} XP · {streak(w.state?.progress?.streakDays)}d streak
+          </Link>
+        </div>
         <div className="mt-2 border-t border-board-line pt-2">
           <button type="button" className={`${item} disabled:cursor-wait disabled:opacity-50`} disabled={!w.authReady}
             onClick={() => { setOpen(false); if (w.accountUser) w.signOut(); else w.signIn(); }}>
