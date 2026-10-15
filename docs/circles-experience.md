@@ -24,6 +24,29 @@ establish contrast, keyboard usability or the usefulness of a conversation.
 
 ## Implemented surface
 
+### Three connected views
+
+The recovered Impeccable comps now define a single Circle surface with
+Overview, People and Moments views. A shared identity header, mountain emblem,
+member portraits, lavender actions and locally hosted Caveat handwriting keep
+the compositions related. Overview adapts the crew lobby, People adapts the
+member constellation, and Moments adapts the achievement wall. The header and
+navigation persist while an existing contribution is opened for inspection.
+
+Views share the same permitted published post data, active Circle and search
+filters. View selection is recorded in the URL and supports browser history.
+People displays only voluntarily published updates, never private application
+statuses. Every event opens the existing revision-aware contribution detail and
+sharing controls. A common Circle brief disclosure retains the conversation
+walkthrough; it explicitly labels delivery as unconnected. No new social service
+or approval bypass was introduced.
+
+Signed-out visitors can explore the isolated fictional Circle directly. Six
+generated fictional portraits are confined to demo data; real members use
+initials. The original static preview route remains resettable. Drafts, source
+search, members, permissions and private citation history remain available below
+the three views.
+
 The signed-out introduction offers a fictional conversation walkthrough and an
 isolated Circle preview. The dashboard gives private drafts priority, followed by
 a short catch-up and searchable shared contributions. Shared activity is drawn

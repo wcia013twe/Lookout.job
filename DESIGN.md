@@ -66,6 +66,28 @@ components:
 
 # Design System: Job signal board
 
+## Circles: approved three-view composition
+
+Circles uses the recovered member-constellation, achievement-wall and crew-lobby
+comps as visual references. Overview, People and Moments share an identity
+header, private Circle label, consistent portrait treatments, persistent tab
+navigation and the existing contribution detail/review surface. Navy surfaces
+and lavender actions inherit the workspace palette; Caveat Regular is hosted
+locally for short personal annotations and quotes. Controls and factual metadata
+retain the workspace sans-serif typography. A photographic mountain backdrop
+anchors the identity; an architectural photo supports the opportunity feature.
+The emblem is geometric SVG. Generated portraits are fictional demo-only assets.
+
+People uses a desktop radial arrangement with an equivalent three-column member
+selector on phones. Selecting a member reveals only deliberately shared content.
+Moments gives one published milestone a portrait-led celebration, supporting
+moments and a chronological shared-moment strip. Overview favors opportunities
+and resources with a supporting shared-update column. No comparative hiring
+pipeline or artificial contribution score appears. All views use semantic buttons,
+visible focus, wrapping content, and the same exact-review sharing controls.
+Light mode uses the existing pale workspace surfaces and a darker lavender for
+text links and annotations, while the photographic header retains dark overlays.
+
 ## Overview
 
 The implemented workspace uses a dark canvas, subtly separated panels, pale lavender actions, and compact sans-serif typography. Discover's role cards establish the shared visual vocabulary used by forms, application lists, and onboarding.
