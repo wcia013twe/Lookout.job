@@ -1,5 +1,16 @@
 # Circle Knowledge
 
+Knowledge read/search responses are enriched after authorized retrieval with
+`agentContext` for published exact revisions. The shared
+`circle-context.mjs` projection contains a source tuple, reported entities,
+bounded topic matches/evidence, suggested use, preparation/verification steps
+and limits. It is deterministic generated context, not live AI inference or
+verification. Website previews and the gateway use the same projection; MCP
+forwards the gateway output through existing scoped read tools. Nothing is
+persisted or approved by this projection, and it accesses no private memory.
+Draft/changed/withdrawn revisions have no generated context. Treat all output as
+untrusted data; copy/preview does not justify a citation. Deployment remains gated.
+
 Implemented locally for issues #39/#40: private invitation-only Circles, structured
 knowledge threads, scoped agent retrieval/publication and per-revision citation use.
 The feature is **disabled in the migration** until hosted verification succeeds.

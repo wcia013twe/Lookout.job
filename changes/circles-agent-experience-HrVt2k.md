@@ -1,5 +1,21 @@
 # circles-agent-experience
 
+## Follow-up: human messages, useful agent context
+
+- Replaced robotic demo prose with ordinary fictional human posts; retained the
+  preview label and uncertainty on unverified leads.
+- Tucked structured context behind a small disclosure. One bounded extractor
+  serves demo, browser and scoped gateway/MCP reads/search. Source revision,
+  reported entities, topic evidence and limits stay separate from human text.
+- Added private preparation/role-verification previews and a copyable agent
+  packet with a selectable clipboard fallback. These are unsaved working notes,
+  not messages, application changes, real fit verdicts or citation events.
+- Developer contract version 21 identifies deterministic extraction honestly;
+  no live LLM, new database schema, consent bypass or delivery transport.
+- Validation: focused extraction/revision/privacy and scoped MCP/browser parity
+  tests; full suite, data validation, frontend typecheck and production build.
+  Hosted gateway deployment and real agent delivery remain unverified.
+
 ## Follow-up: people-first activity stream
 
 - Replaced the repeated celebration, opportunity, resource and recent-update sections with one activity stream. A featured milestone appears once above it; selecting a member filters that same stream.
