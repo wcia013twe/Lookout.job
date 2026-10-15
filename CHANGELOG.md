@@ -1,3 +1,9 @@
+## Needs you tasks and guest demo — 2026-10-14
+
+- Replaced application timeline rows in Needs you with simple task rows naming the decision, context, reason and next action. Real application review and recovery continue through existing validated controls.
+- Added seven fictional, resettable demo forms: application review, missing fact, manual verification, uncertain submission, deadline confirmation, outreach authorization and reconnection. Shared form controls open inline; all effects stay in component memory. Signed-out/anonymous visitors can enter the existing isolated demo without sign-in; signed-in eligibility is preserved.
+- Validation: 279 tests (including database scenarios), 76-role catalog, frontend typecheck, production static build and whitespace checks passed. Local browser verified all seven task rows, guest demo access, application review controls and approval disabled before required review. Authenticated database round trips for these illustrative task types are not implemented or claimed.
+
 ## Simple parallel-session workflow — 2026-10-14
 
 - Documented one task/checkout/branch/PR, a clean shared main checkout, concise handoffs and preservation of unfinished work. Agents should give brief nudges for observed workflow risks and use the smallest correction. No new tools or runtime behavior.
