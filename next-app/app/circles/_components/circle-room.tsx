@@ -1,16 +1,12 @@
 'use client';
 
-import {useState, type CSSProperties} from 'react';
+import {useState, useRef, type CSSProperties} from 'react';
 import type {Detail, Post} from '../_lib/types';
 import styles from './circle-room.module.css';
+import {routines} from './room-motion';
+import {useRoomMotion} from './use-room-motion';
 
 type Props = {detail:Detail; posts:Post[]; demo:boolean; person:string; selectPerson:(id:string)=>void};
-// Scene coordinates are decorative; they never represent online presence.
-const places = [
- {x:22,y:50,dx:10,dy:6}, {x:49,y:53,dx:-8,dy:7},
- {x:78,y:50,dx:-8,dy:9}, {x:79,y:88,dx:-9,dy:-4},
- {x:49,y:88,dx:8,dy:-5}, {x:20,y:88,dx:9,dy:-4},
-];
 const sessionMembers = ['demo-peer','demo-sam','demo-alex','demo-jordan','demo-priya','demo-self'];
 const sessions = [
  {action:'Celebrating an offer',detail:'A new chapter at Example Labs',value:null},
@@ -35,6 +31,8 @@ export default function CircleRoom({detail,posts,demo,person,selectPerson}:Props
  const currentPage=Math.min(page,pageCount-1);
  const visible=members.slice(currentPage*6,currentPage*6+6);
  const selected=members.find(member=>member.id===person);
+ const roomRef=useRef<HTMLDivElement>(null);
+ useRoomMotion(roomRef,paused,visible.map(member=>member.id).join('|'));
  return <section className={styles.roomSection} aria-labelledby="circle-room-title">
   <div className={styles.toolbar}>
    <div><h2 id="circle-room-title">The clubhouse</h2></div>
@@ -44,19 +42,19 @@ export default function CircleRoom({detail,posts,demo,person,selectPerson}:Props
    </div>
   </div>
   <div className={styles.viewport}>
-   <div className={styles.room} data-paused={paused} data-ambience={ambience}>
+   <div ref={roomRef} className={styles.room} data-paused={paused} data-ambience={ambience}>
     <div className={styles.backdrop} role="img" aria-label="Cozy clubhouse with rainy arched windows, warm study desks, a practice whiteboard, and a green sofa"/>
     <div className={styles.roomPlaque}><span className={styles.lamp}/><span>The clubhouse</span><span className={styles.plaqueNote}>{demo?'Fictional sessions':'Shared updates'}</span></div>
     {visible.map((member,index)=>{
-     const place=places[index];
      const sessionIndex=sessionMembers.indexOf(member.id);
      const activity=demo&&sessionIndex>=0?sessions[sessionIndex]:sharedActivity(posts.find(post=>post.author===member.alias));
      const name=nameOf(member.alias);
-     const sprite=demo&&member.self?0:(index+1)%6;
-     const style={'--x':`${place.x}%`,'--y':`${place.y}%`,'--dx':`${place.dx*3}px`,'--dy':`${place.dy*2}px`,'--delay':`${-index*4}s`,'--sprite-x':`${sprite%3*50}%`,'--sprite-y':`${Math.floor(sprite/3)*100}%`,'--order':Math.round(place.y)} as CSSProperties;
-     return <button key={member.id} type="button" className={styles.character} style={style} aria-pressed={person===member.id} onClick={()=>selectPerson(person===member.id?'':member.id)} aria-label={`${name}: ${activity.action}. ${activity.detail}. ${person===member.id?'Show everyone':'Show shared updates'}`}>
-      <span className={styles.bubble}><strong>{name}{member.self&&<small>you</small>}</strong><span className={styles.activity}>{activity.action}</span>{activity.value!==null&&<span className={styles.progress} role="progressbar" aria-label={`${name}'s fictional session tasks`} aria-valuenow={activity.value} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${activity.value}%`}}/></span>}<span className={styles.sessionDetail}>{activity.detail}</span></span>
-      <span className={styles.sprite} aria-hidden="true"/><span className={styles.shadow} aria-hidden="true"/>
+     const routineIndex=demo&&sessionIndex>=0?sessionIndex:index;
+     const routine=routines[routineIndex],sprite=routine.sprite;
+     const style={'--move-x':`${routine.station.x}cqw`,'--move-y':`${routine.station.y*2/3}cqw`,'--sprite-x':`${sprite%3*50}%`,'--sprite-y':`${Math.floor(sprite/3)*100}%`,'--walk-x':`${sprite*20}%`} as CSSProperties;
+     return <button key={member.id} type="button" className={styles.character} style={style} data-routine={routineIndex} data-task={routine.task} data-mode="working" aria-pressed={person===member.id} onClick={()=>selectPerson(person===member.id?'':member.id)} aria-label={`${name}: ${activity.action}. ${activity.detail}. ${person===member.id?'Show everyone':'Show shared updates'}`}>
+      <span className={styles.bubble}><strong>{name}{member.self&&<small>you</small>}</strong><span className={styles.activity}>{activity.action}</span><span className={styles.journey} data-journey/>{activity.value!==null&&<span className={styles.progress} role="progressbar" aria-label={`${name}'s fictional session tasks`} aria-valuenow={activity.value} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${activity.value}%`}}/></span>}<span className={styles.sessionDetail}>{activity.detail}</span></span>
+      <span className={styles.sprite} aria-hidden="true"><span className={styles.walkFrame}/></span><span className={styles.shadow} aria-hidden="true"/>
      </button>;
     })}
     {!members.length&&<div className={styles.empty}>The lights are on.<br/>Your people will make it home.<p>Invite friends from Circle settings.</p></div>}

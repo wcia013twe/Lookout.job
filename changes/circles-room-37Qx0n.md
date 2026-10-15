@@ -18,3 +18,16 @@
 - Fresh design review: ship; the activity-bubble overlap finding was fixed and
   scored resolved against recaptured desktop/mobile screenshots. Documentation
   review confirms the room is a scoped extension requiring no global token change.
+
+## Station routines follow-up
+
+- Replace subtle drifting with aisle-based walking, animated gait frames, and
+  distinct seated desk, whiteboard, reading, celebration and coffee poses.
+- Add position-based depth, traveling collision-adjusted labels, pause continuity,
+  hover/focus freezing, and offscreen/hidden-tab suspension. Reduced motion keeps
+  people at their stations. No real account presence or progress is inferred.
+- Added route continuity, seated-application destination and reduced-motion tests.
+- Validation: frontend typecheck/static build and all 314 tests pass; 76 catalog
+  roles validate. Browser verification covers travel, seated activity and pause.
+- Fresh motion design review: ship; documentation review confirms this remains
+  scoped to the clubhouse. Rendered seated desk and walking states inspected.
