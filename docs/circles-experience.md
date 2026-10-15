@@ -24,6 +24,21 @@ establish contrast, keyboard usability or the usefulness of a conversation.
 
 ## Current dashboard
 
+Posts use ordinary human messages. A small generated-context disclosure in
+details carries reported entities, topic matches, source revision and limits.
+The same bounded extractor serves the browser, fictional fixtures and scoped
+gateway/MCP knowledge reads. It is deterministic extraction, not a live LLM.
+It reads only already-authorized shared content, never private application data.
+
+Interview reports/resources can produce a private practice checklist; opportunity
+posts produce verification steps, not invented job availability or personal fit.
+These are unsaved working previews, not fake agent conversations. Copy context
+exports the human message plus structured metadata for an existing agent chat.
+Preview/copy/checking a box neither sends a message nor records a citation.
+Only actual agent use should call the existing citation tool. No new service,
+database schema, sharing permissions, scheduler or delivery transport is added.
+Hosted gateway parity still requires the normal deployment and verification.
+
 The current refinement uses one people-first activity stream. A selected
 published milestone can receive a compact portrait feature with a handwritten
 stage annotation and curved arrow; offer stages read “Offered!”. The long story
