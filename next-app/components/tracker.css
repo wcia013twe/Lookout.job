@@ -5,7 +5,7 @@
 .tracker-detail h3 {font-size:1.125rem;font-weight:700;margin-bottom:1rem;}
 .tracker-detail h4 {font-size:1rem;font-weight:600;}
 .tracker-surface * { min-width:0; }
-.tracker-surface input,.tracker-surface select,.tracker-surface textarea {color:var(--color-board-text);background:var(--color-board-tag);border:1px solid var(--color-board-line);border-radius:8px;min-height:44px;padding:8px 12px;font-size:1rem;width:100%;}
+.tracker-surface input:not([type="checkbox"]):not([type="radio"]),.tracker-surface select,.tracker-surface textarea {color:var(--color-board-text);background:var(--color-board-tag);border:1px solid var(--color-board-line);border-radius:8px;min-height:44px;padding:8px 12px;font-size:1rem;width:100%;}
 .tracker-surface textarea {min-height:110px;resize:vertical;}
 .tracker-surface input::placeholder,.tracker-surface textarea::placeholder {color:var(--color-board-muted);}
 .tracker-surface button:disabled {opacity:.5;cursor:not-allowed;}
