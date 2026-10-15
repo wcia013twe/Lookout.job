@@ -63,7 +63,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
       <nav
         aria-label="Workspace pages"
-        className="workspace-nav"
+        className="workspace-nav flex-wrap"
       >
         {navigation.map(([href, label]) => (
           <Link
