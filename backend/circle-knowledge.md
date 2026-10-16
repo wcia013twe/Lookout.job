@@ -195,6 +195,56 @@ Local tests cover authenticated browser RPCs and actual MCP dispatch, stale appr
 private draft visibility, search, invalid attachments and standing-template bypass.
 Hosted migration, grants and deployment remain unverified; do not enable the gate.
 
+## Clubhouse activity cards
+
+Companions represent Circle members. Their movement is decorative; cards read only
+loaded, published, current-revision posts for that member's exact Circle alias.
+They show up to three authored highlights, an optional weekly goal and an optional
+request for help. Missing updates remain empty; private tracker data, presence and
+application receipts are never inferred. Older activity details carry their own date.
+
+The website's **Share activity** fields serialize ordinary discussion body text:
+
+```text
+Recent activity:
+- Submitted 3 applications
+- Received 1 referral
+
+This week's goal:
+2 of 3 interview prep sessions complete
+
+Could use a hand with:
+A practice partner for my project deep dive
+```
+
+These are member reports, not verified submission counts. `lib/circle-activity.mjs`
+owns formatting and parsing. Agents can propose the same body with
+`propose_circle_contribution` (`knowledge.propose`), `type: discussion` and
+`personalDisclosure: true`; normal exact-revision review/publication rules apply.
+`search_circle_knowledge` / `read_circle_thread` read it, and replies use
+`propose_circle_contribution` with `parentId`. Cheer and help buttons open that
+existing shared thread; they do not send a message or invent a reaction service.
+Withdraw/edit use existing tools and visibility checks. No new backend operation,
+permission, schema, or deployment is needed for this presentation.
+
+Demo: Alex covers all sections; Sam covers highlights/goal with no request;
+Jordan and Maya cover ordinary shared posts; Wesley starts with no published updates.
+The in-memory demo resets these examples without accessing account storage.
+
+### Circle layout and general chat
+
+Left navigation contains only Clubhouse, Company Intel and Resources. Clubhouse
+opens the room immediately; Company Intel groups interview reports, timelines,
+shared opportunities, milestones and offer comparisons; Resources holds resources.
+Selecting a companion's shared updates opens that person's contributions. The
+right-hand Circle chat is available across these spaces and accepts freeform
+discussion messages. It replaces On our radar and Every round helps. Public job
+attachments and offer details remain accessible in Company Intel contributions.
+
+Chat uses the same `knowledge.propose` / `propose_circle_contribution` discussion
+contract with `personalDisclosure: true`, review/publication and thread replies.
+Review message saves a private draft; it does not imply a sent message or realtime
+transport. The existing periodic refresh supplies published messages.
 #### Explicit prompt context snapshots
 
 `content.contexts` accepts at most six objects. Each requires `kind` (`application`, `referral`, `resource`, `note`) and nonblank `label`; optional whitelisted strings are `company`, `role`, `jobId`, `jobUrl`, `stage`, `contact`, `url`, `note`. Metadata/labels have a 200-character maximum, notes 1000, public HTTPS URLs 2000. Fields are restricted by kind (application: company/role/jobId/jobUrl/stage; referral: company/role/contact/url; resource: url; note: note). Unknown fields and signed/private links are rejected in browser/domain validation and database RPC validation. Internal IDs and private correspondence are never part of the picker projection. Search indexes the snapshots. `agentContext.contexts` returns copies bound to the source revision. Context attachments cannot use the standing public-resource template exception: agents need exact human approval. Website human publication is the explicit review action. No new MCP scope or generic account access is granted.

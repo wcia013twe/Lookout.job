@@ -1,15 +1,11 @@
 "use client";
 import { useId, useLayoutEffect, useRef, useState } from "react";
-import { outreachSentences } from "../../lib/outreach-model.mjs";
+import { OUTREACH_TAGS, outreachSentences } from "../../lib/outreach-model.mjs";
 import styles from "./annotated-message.module.css";
 
 type Annotation = { text: string; kind: string | null; start: number; end: number };
 type Props = { contact: { message?: string; connection?: string; evidence?: string }; name: string; onChange: (message: string) => void };
-const notes: Record<string, string> = {
-  Relate: "Shared background gives this introduction a personal starting point.",
-  Value: "This connects your experience to the opportunity. Keep the concrete technical detail or result.",
-  Ask: "This gives the recipient a clear next step to respond to.",
-};
+const notes: Record<string, string> = Object.fromEntries(OUTREACH_TAGS.map(tag => [tag.kind, tag.note]));
 
 export default function AnnotatedMessage({ contact, name, onChange }: Props) {
   const value = contact.message || "";
@@ -37,7 +33,7 @@ export default function AnnotatedMessage({ contact, name, onChange }: Props) {
   }, [value]);
   function selectSentence() { if (input.current) setSelected(input.current.selectionStart); }
   return <div>
-    <div className={styles.legend} aria-label="Highlight colors">{Object.keys(notes).map(kind => <span key={kind} className={styles.category} data-kind={kind}><span className={styles.swatch} aria-hidden="true"/>{kind}</span>)}</div>
+    <div className={styles.legend} aria-label="Six-tag message key">{OUTREACH_TAGS.map(({ kind, description }) => <span key={kind} className={styles.category} data-kind={kind}><span className={styles.swatch} aria-hidden="true"/><span><strong>{kind}</strong><span className={styles.keyDescription}>{description}</span></span></span>)}</div>
     <div className={styles.layout}>
     <div className={styles.editor}>
       <div ref={backdrop} className={styles.highlights} aria-hidden="true">{sentences.map((sentence, index) => sentence.kind

@@ -191,7 +191,7 @@ Onboarding uses the user-approved rainbow glass reference: near-black navy backd
 
 ### Workspace refinement — October 2026
 
-Workspace pages use neutral charcoal surfaces in dark mode and white surfaces in light mode. `glass-panel` retains its shared class name but uses an opaque fill and a single quiet border, without gradients, luminous edges, blur or decorative shadows. `glass-inset` owns recessed editing areas; `glass-toolbar` groups controls. A muted blue accent is reserved for actions and selected states. Setup CSS and routes keep their existing visual authority. Typography retains the incumbent Inter/system stack, with responsive 26–32px page headings and 44px controls. Reduced-motion behavior remains unchanged. Profile and referrals retain their composition rules; controls and material tokens are shared.
+Workspace pages now use `.workspace-shell` scoped navy/cyan tokens and the setup card's restrained cyan, mint, lavender and pink edge spectrum. `glass-panel` owns the shared translucent fill and edge; `glass-inset` owns recessed editing areas; `glass-toolbar` groups controls. Setup CSS and routes keep their existing visual authority. Typography retains the incumbent Inter/system stack, with responsive 26–32px page headings and 44px controls. Tracking rows become a two-column metadata composition below the wide table breakpoint. Framer Motion is limited to pack reveals, tier placement, and preparation disclosures, respecting reduced-motion preferences. Reduced transparency switches glass surfaces to opaque navy. Profile and referrals retain only their composition rules in the profile CSS module; controls and material tokens are shared. The Action Board widgets use distinct blue and pink cloud surfaces as described below; that exception does not neutralize the shared workspace theme.
 
 ### Tier banners and daily pack
 
@@ -218,7 +218,7 @@ scrollable phone view.
 The header offers System, Light and Dark. Tailwind v4's dark variant is driven by
 `html[data-theme]`; semantic board colors and native color-scheme switch together.
 A small pre-paint script respects the saved device preference, with guarded storage
-and system fallback. Light mode pairs neutral white panels with dark navy
+and system fallback. Light mode pairs pale cyan/lavender pearl glass with dark navy
 ink and darker action/status colors. Dark mode keeps the existing navy spectrum.
 Tier banners and sealed foil remain deliberately dark in both modes; role sheets
 and pack dialog chrome adopt the chosen palette. Setup keeps its approved night
@@ -252,4 +252,4 @@ Delivery preferences appear after the first result and save an inactive request 
 
 ### Action Board priority
 
-The “Your next actions” widget leads the Action Board in both the workspace and demo, using the larger desktop column (2:1), a 20px heading with a clipboard icon, and a neutral border. Each row leads with the task, then company/role context, a short reason and an explicit labeled action button. Empty checkbox-shaped disclosure triggers are removed. The first fictional application review is expanded on demo entry and reset; approval still requires reviewing the version. The weekly preparation planner uses a calendar icon, a compact seven-day strip with one outlined selected day, full minute labels, interview dots, and today's sessions directly below. Daily budget controls follow the sessions. Completion uses a labeled “Mark practiced” button, with future sessions disabled. Preparation follows the actions on mobile.
+The “Your next actions” widget leads the Action Board in both the workspace and demo, using the larger desktop column (2:1), a 20px heading with a clipboard icon, and a neutral border. Each row leads with the task, then company/role context, a short reason and an explicit labeled action button. Empty checkbox-shaped disclosure triggers are removed. The first fictional application review is expanded on demo entry and reset; approval still requires reviewing the version. The next-actions widget uses a blue cloud hue and weekly prep uses pink, with soft cross-tinted gradients and readable hue-matched borders, secondary text and controls in both themes. The prep agenda shows all scheduled dates, session titles, durations and interview events together without a day picker. A compact date rail groups sessions; empty days are omitted. Longer reasons and interview links expand from individual task titles. Only today’s sessions show a labeled “Done” action. Daily budget controls and planner explanation live in an optional settings disclosure. Preparation follows the actions on mobile.
