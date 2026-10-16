@@ -4,7 +4,7 @@ import { useWorkspace } from "../lib/workspace";
 import { Heading } from "./ui";
 import { useState } from "react";
 import DraftReview from "./draft-review";
-import NeedsYouRow, { ActionCheck } from "./needs-you-row";
+import NeedsYouRow, { ActionButton, TaskIcon } from "./needs-you-row";
 import DemoNeedsYou from "./demo-needs-you";
 import PreparationReminders from "./preparation-reminders";
 import type { Application } from "./workflow-types";
@@ -35,11 +35,11 @@ export default function NeedsYou() {
       <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
         <section className="glass-panel action-widget needs-you-priority min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="checklist-heading">
           <div className="flex items-start justify-between gap-4">
-            <div><h2 id="checklist-heading" className="text-xl font-bold md:text-2xl">Needs You</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Items that need a human decision or handoff.</p></div>
+            <div><h2 id="checklist-heading" className="widget-heading text-xl font-semibold"><TaskIcon />Your next actions</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Review applications, answer questions, and keep things moving.</p></div>
             <span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{handoffCount}</span>
           </div>
           {handoffCount ? <ul className="mt-3 divide-y divide-board-line">
-            {setup && <NeedsYouRow title="Set up your application profile" context="Profile and résumé" reason="Verify your factual answers and add a résumé before Muse prepares applications." control={<Link href="/profile/" className="action-check" aria-label="Open profile setup" />} />}
+            {setup && <NeedsYouRow title="Set up your application profile" context="Profile and résumé" reason="Verify your factual answers and add a résumé before Muse prepares applications." control={<Link href="/profile/" className="handoff-action" aria-label="Set up profile">Set up profile</Link>} />}
             {apps.map(application => {
               const uncertain = (application.submissionAttempts || []).some(attempt => attempt.state === "uncertain" || (attempt.state === "started" && Date.parse(attempt.startedAt) < Date.now() - 300000));
               const title = uncertain ? "Check whether an application submitted" : application.status === "Blocked" ? "Resolve an application blocker" : "Review an application";
@@ -47,7 +47,7 @@ export default function NeedsYou() {
               const tracked = w.state.tracker.items[application.id] || {};
               const date = tracked.appliedDate || tracked.openedDate;
               const dateLabel = date ? `${tracked.appliedDate ? "Applied" : "Opened"} ${new Date(date).toLocaleDateString(undefined, { month: "short", day: "numeric", ...(date.length === 10 ? { timeZone: "UTC" } : {}) })}` : "Date not recorded";
-              return <NeedsYouRow key={application.id} title={title} context={`${application.company} · ${application.title}`} reason={reason} role={{company:application.company,roleTitle:application.title,roleType:application.employmentType === "FT" ? "Full-time" : application.employmentType || "Type not recorded",date:dateLabel,status:tracked.status || "New",workflow:application.status}} control={<ActionCheck label={uncertain ? `Verify submission for ${application.company}` : `${title} for ${application.company}`} onClick={() => setReview(application.id)} disabled={w.locked} />} />;
+              return <NeedsYouRow key={application.id} title={title} context={`${application.company} · ${application.title}`} reason={reason} role={{company:application.company,roleTitle:application.title,roleType:application.employmentType === "FT" ? "Full-time" : application.employmentType || "Type not recorded",date:dateLabel,status:tracked.status || "New",workflow:application.status}} control={<ActionButton label={uncertain ? `Verify submission for ${application.company}` : `${title} for ${application.company}`} onClick={() => setReview(application.id)} disabled={w.locked}>{uncertain ? "Check submission" : application.status === "Blocked" ? "Resolve blocker" : "Review application"}</ActionButton>} />;
             })}
           </ul> : <div className="py-12 text-center"><svg aria-hidden="true" className="mx-auto text-board-success" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M7 16.5 13 22l12-13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><rect x="3" y="3" width="26" height="26" rx="8" stroke="currentColor" strokeWidth="1.5"/></svg><h3 className="mt-4 font-bold">Human handoffs are clear</h3><p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-board-muted">Muse can keep working without a decision from you right now.</p></div>}
         </section>

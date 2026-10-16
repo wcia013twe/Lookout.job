@@ -57,7 +57,7 @@ export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:bool
     const bodies=samples.map(sample=>({left:sample.x-5.5,right:sample.x+5.5,top:sample.y-16.5,bottom:sample.y}));
     actors.forEach((actor,index)=>{
      const sample=samples[index];
-     const bubbleWidth=140/width*100,bubbleHeight=(sample.mode==='walking'?48:gatherRef.current?54:70)/width*150;
+     const bubbleWidth=(actor.querySelector<HTMLElement>('[data-bubble]')?.offsetWidth||140)/width*100,bubbleHeight=(sample.mode==='walking'?48:gatherRef.current?54:70)/width*150;
      const left=sample.x-bubbleWidth/2,right=sample.x+bubbleWidth/2;
      let bottom=sample.y-16.5,top=bottom-bubbleHeight,shift=0;
      const obstacles=[...boxes,...bodies.filter((_,bodyIndex)=>bodyIndex!==index)];

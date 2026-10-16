@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import NeedsYouRow, { ActionCheck } from "./needs-you-row";
+import NeedsYouRow, { ActionButton, TaskIcon } from "./needs-you-row";
 import PreparationReminders from "./preparation-reminders";
 import { demoNeedsYouTasks } from "../lib/demo.mjs";
 import { Heading, Notice, Field, control, primary, secondary } from "./ui";
@@ -30,16 +30,16 @@ function TaskControls({ task, onComplete }: { task: Task; onComplete: (message:s
 }
 
 export default function DemoNeedsYou() {
- const [version,setVersion]=useState(0), [active,setActive]=useState<string|null>(null), [completed,setCompleted]=useState<string[]>([]), [feedback,setFeedback]=useState('');
+ const [version,setVersion]=useState(0), [active,setActive]=useState<string|null>("application-review"), [completed,setCompleted]=useState<string[]>([]), [feedback,setFeedback]=useState('');
  const tasks=demoNeedsYouTasks.filter(task=>!completed.includes(task.id));
  function finish(task:Task,message:string){setCompleted(current=>[...current,task.id]);setActive(null);setFeedback(message);}
- function reset(){setVersion(value=>value+1);setActive(null);setCompleted([]);setFeedback('');}
+ function reset(){setVersion(value=>value+1);setActive('application-review');setCompleted([]);setFeedback('');}
  return <><Heading title="Action Board">A working preview of decisions, manual steps, and Muse-organized reminders. Everything here is fictional.</Heading>
  <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
   <section className="glass-panel action-widget needs-you-priority min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="demo-checklist-heading">
-   <div className="flex items-start justify-between gap-4"><div><h2 id="demo-checklist-heading" className="text-xl font-bold md:text-2xl">Needs You</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Select a box, finish the handoff, and the row clears.</p></div><span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{tasks.length}</span></div>
+   <div className="flex items-start justify-between gap-4"><div><h2 id="demo-checklist-heading" className="widget-heading text-xl font-semibold"><TaskIcon />Your next actions</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Review applications, answer questions, and keep things moving.</p></div><span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{tasks.length}</span></div>
    {feedback&&<Notice>{feedback}</Notice>}
-   {tasks.length?<ul className="mt-3 divide-y divide-board-line">{tasks.map(task=>{const controlsId=`demo-task-controls-${task.id}`;return <NeedsYouRow key={`${version}:${task.id}`} title={task.title} context={task.context} reason={task.reason} role={(task as Task & {role?:DemoRole}).role} control={<ActionCheck label={`${active===task.id?'Close':'Open'} ${task.title}`} expanded={active===task.id} controls={controlsId} onClick={()=>setActive(current=>current===task.id?null:task.id)} />}>
+   {tasks.length?<ul className="mt-3 divide-y divide-board-line">{tasks.map(task=>{const controlsId=`demo-task-controls-${task.id}`;return <NeedsYouRow key={`${version}:${task.id}`} title={task.title} context={task.context} reason={task.reason} role={(task as Task & {role?:DemoRole}).role} control={<ActionButton label={`${active===task.id?'Close':'Open'} ${task.title}`} expanded={active===task.id} controls={active===task.id?controlsId:undefined} onClick={()=>setActive(current=>current===task.id?null:task.id)}>{active===task.id?"Close action":({"application-review":"Review application","missing-answer":"Answer question","manual-step":"Verify with employer","uncertain-submission":"Check submission","deadline-confirmation":"Confirm deadline","outreach-review":"Review message","reconnect-service":"Reconnect email"} as Record<string,string>)[task.id] || "Open action"}</ActionButton>}>
     {active===task.id&&<div id={controlsId}><TaskControls task={task} onComplete={message=>finish(task,message)}/></div>}
    </NeedsYouRow>})}</ul>:<div className="py-12 text-center"><h3 className="font-bold">Nothing needs you right now</h3><p className="mt-2 text-sm text-board-muted">The fictional handoffs are complete.</p></div>}
    <button className={`${secondary} mt-5`} onClick={reset}>Reset task preview</button>

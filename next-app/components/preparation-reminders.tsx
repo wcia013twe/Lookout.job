@@ -4,6 +4,7 @@ import { createBackend } from "../../backend/client.mjs";
 import { buildPreparationAgenda, plannerToday, recordLocalPreparationSession, validatePlannerMinutes } from "../../lib/preparation-planner.mjs";
 import { useWorkspace } from "../lib/workspace";
 import DraftReview from "./draft-review";
+import { TaskIcon } from "./needs-you-row";
 import type { Application, PreparationPlan } from "./workflow-types";
 import { Notice, control, primary, secondary } from "./ui";
 
@@ -28,45 +29,45 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
   agenda: Agenda; minutes: string; onMinutes: (value: string) => void; onBudget: () => void;
   onComplete: (item: Item) => void; onOpen: (id: string) => void; busy?: boolean; locked?: boolean;
 }) {
-  const [selectedDate, setSelectedDate] = useState<string | null>(agenda.today);
-  const focusedDate = agenda.days.some(day => day.date === selectedDate) ? selectedDate : null;
-  const days = agenda.days.filter(day => !focusedDate || day.date === focusedDate);
+  const days = agenda.days.filter(day => day.items.length || day.interviews.length || day.completedMinutes);
   const scheduled = agenda.days.reduce((sum, day) => sum + day.plannedMinutes, 0);
   return <>
-    <div className="flex flex-wrap items-start justify-between gap-4">
-      <div><h2 id="prep-planner-heading" className="text-lg font-bold">This week’s prep</h2><p className="mt-1 max-w-prose text-sm leading-relaxed text-board-muted">One plan across your interviews. Shared practice counts once.</p></div>
-      <form className="flex flex-wrap items-end gap-2" onSubmit={event => { event.preventDefault(); onBudget(); }}>
-        <label className="block text-xs text-board-muted" htmlFor="prep-daily-budget">Minutes per day<input id="prep-daily-budget" type="number" min="0" max="240" step="1" required className={`${control} mt-1 max-w-32`} value={minutes} disabled={busy || locked} onChange={event => onMinutes(event.target.value)} /></label>
-        <button type="submit" className={secondary} disabled={busy || locked || minutes === String(agenda.dailyMinutes)}>Save budget</button>
-      </form>
+    <div className="flex items-start justify-between gap-3">
+      <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>
+      <span className="prep-total">{scheduled} min</span>
     </div>
-    <p className="mt-4 text-sm tabular-nums text-board-muted">{scheduled} min planned over the next 7 days · {agenda.dailyMinutes} min daily limit{agenda.dailyMinutes === 0 ? " · Paused" : ""}</p>
-    <div className="mt-4 grid grid-cols-7 gap-1 sm:gap-2" aria-label="Preparation calendar">
-      {agenda.days.map(day => <button key={day.date} type="button" aria-pressed={selectedDate === day.date} aria-label={`${calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}: ${day.plannedMinutes} minutes prep, ${day.interviews.length} interviews${day.completedMinutes ? `, ${day.completedMinutes} minutes completed` : ""}`} onClick={() => setSelectedDate(current => current === day.date ? null : day.date)} className={`flex min-h-24 min-w-0 flex-col items-center rounded-lg border px-1 py-3 text-center ${selectedDate === day.date ? "border-board-accent bg-board-tag" : "border-board-line"}`}>
-        <span className="text-xs text-board-muted">{calendarLabel(day.date, { weekday: "short" })}</span><span className={`mt-1 text-lg font-bold tabular-nums ${day.date === agenda.today ? "text-board-accent" : ""}`}>{calendarLabel(day.date, { day: "numeric" })}</span>
-        <span className="mt-1 text-xs tabular-nums text-board-muted">{day.plannedMinutes}m</span>
-        <span aria-hidden="true" className={`mt-2 size-1.5 rounded-full ${day.interviews.length ? "bg-board-accent" : "bg-transparent"}`} />
-      </button>)}
-    </div>
-    <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-board-muted"><span>A dot marks an interview · tap a day to focus</span>{selectedDate && <button type="button" className="min-h-11 font-semibold text-board-accent underline underline-offset-4" onClick={() => setSelectedDate(null)}>Show all week</button>}</div>
-    {!agenda.days.some(day => day.items.length || day.interviews.length || day.completedMinutes) && <p className="mt-3 text-sm text-board-muted">Confirm an upcoming round date inside Applications to build your week.</p>}
-    <div className="mt-3 divide-y divide-board-line">
-      {days.map(day => <section key={day.date} className="py-5" aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
-        <div className="flex flex-wrap items-baseline justify-between gap-2"><h3 className="text-sm font-bold">{day.date === agenda.today ? "Today" : calendarLabel(day.date, { weekday: "long" })} <span className="font-normal text-board-muted">· {calendarLabel(day.date, { month: "short", day: "numeric" })}</span></h3><span className="text-xs tabular-nums text-board-muted">{day.completedMinutes ? `${day.completedMinutes}m done · ` : ""}{day.plannedMinutes}m planned</span></div>
-        {day.interviews.map(interview => <button key={interview.applicationId} type="button" onClick={() => onOpen(interview.applicationId)} className="mt-2 flex min-h-11 w-full items-center gap-2 text-left text-sm font-semibold text-board-accent"><span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-board-accent" />{interview.company} · {interview.stage}</button>)}
-        {day.items.length ? <ul className="mt-2 space-y-5">{day.items.map(item => <li key={item.id} className="flex items-start gap-3">
-          <button type="button" className="action-check mt-1 shrink-0" aria-label={`Complete ${item.minutes} minute session: ${item.title}`} title={day.date === agenda.today ? "Record this practice session" : "Available on the scheduled day"} disabled={busy || locked || day.date !== agenda.today} onClick={() => onComplete(item)} />
-          <div className="min-w-0 flex-1"><div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1"><h4 className="text-sm font-semibold">{item.title}</h4><span className="text-xs font-semibold tabular-nums text-board-accent">{item.minutes} min</span></div>
-            <p className="mt-1 text-xs leading-relaxed text-board-muted">{item.shared ? item.detail : "Company-specific preparation. Open the interview for details and sources."}</p>
-            <p className="mt-2 text-xs text-board-muted">{item.reason}{item.remainingAfter ? ` · ${item.remainingAfter}m continues later` : ""}</p>
-            <div className="mt-1 flex flex-wrap gap-x-3">{item.targets.map(target => <button key={`${target.applicationId}:${target.taskId}`} type="button" className="inline-flex min-h-11 items-center text-left text-xs font-semibold text-board-accent underline decoration-board-line underline-offset-4" onClick={() => onOpen(target.jobId)}>{target.company}</button>)}</div>
-          </div>
-        </li>)}</ul> : <p className="mt-3 text-sm leading-relaxed text-board-muted">{agenda.dailyMinutes === 0 ? "Prep is paused. Set a daily budget when you’re ready." : day.completedMinutes >= agenda.dailyMinutes ? "Your time budget is used. You’re done for today." : "No prep scheduled. Keep this time free."}</p>}
+    <p className="mt-2 text-xs text-board-muted">{calendarLabel(agenda.today, { month: "short", day: "numeric" })}–{agenda.days.length ? calendarLabel(agenda.days[agenda.days.length - 1].date, { month: "short", day: "numeric" }) : ""} · {agenda.dailyMinutes === 0 ? "Paused" : `${agenda.dailyMinutes} min/day`}</p>
+    {!days.length && <p className="mt-5 text-sm text-board-muted">{agenda.dailyMinutes === 0 ? "Prep paused. Set daily minutes in Plan settings to resume." : "Add an interview date in Applications to plan your prep."}</p>}
+    <div className="prep-agenda mt-4" aria-label="Weekly preparation agenda">
+      {days.map(day => <section key={day.date} className="prep-agenda-day" aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
+        <h3 className={`prep-date ${day.date === agenda.today ? "prep-date-today" : ""}`}><span>{day.date === agenda.today ? "Today" : calendarLabel(day.date, { weekday: "short" })}</span><span className="prep-date-number">{calendarLabel(day.date, { day: "numeric" })}</span></h3>
+        <div className="min-w-0">
+          {day.interviews.map(interview => <button key={interview.applicationId} type="button" onClick={() => onOpen(interview.applicationId)} className="prep-interview"><span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-board-accent" /><span>{interview.company} · {interview.stage}</span></button>)}
+          {day.completedMinutes > 0 && <p className="mb-2 text-xs text-board-accent">{day.completedMinutes} min practiced</p>}
+          <ul className="space-y-2">{day.items.map(item => <li key={item.id} className="prep-session">
+            <details className="min-w-0 flex-1">
+              <summary className="prep-session-summary"><span className="min-w-0 flex-1">{item.title.replace(/\s*\(fictional demo resource\)/g, "")}</span><span className="prep-duration">{item.minutes} min</span></summary>
+              <div className="pb-2 pt-1 text-xs leading-relaxed text-board-muted">
+                <p>{item.shared ? item.detail : "Open the interview for details and sources."}</p>
+                <p className="mt-2">{item.reason}{item.remainingAfter ? ` · ${item.remainingAfter} min continues later` : ""}</p>
+                <div className="mt-1 flex flex-wrap gap-x-3">{item.targets.map(target => <button key={`${target.applicationId}:${target.taskId}`} type="button" className="inline-flex min-h-11 items-center text-left font-semibold text-board-accent underline underline-offset-4" onClick={() => onOpen(target.jobId)}>{target.company}</button>)}</div>
+              </div>
+            </details>
+            {day.date === agenda.today && <button type="button" className="prep-complete" aria-label={`Done: ${item.minutes} minute session, ${item.title}`} disabled={busy || locked} onClick={() => onComplete(item)}>Done<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 4 4L19 6" /></svg></button>}
+          </li>)}</ul>
+        </div>
       </section>)}
     </div>
-    {agenda.unscheduled > 0 && <Notice>{agenda.unscheduled} interview {agenda.unscheduled === 1 ? "task does" : "tasks do"} not fit before the rounds within this budget. Increase your time or focus on the most important sessions.</Notice>}
-    {!!(agenda.dormantCount || agenda.uncertainCount || agenda.expiredCount) && <p className="mt-3 text-xs leading-relaxed text-board-muted">Outside this week: {agenda.dormantCount} later interviews · {agenda.uncertainCount} dates to confirm · {agenda.expiredCount} past deadlines. Details remain in each interview.</p>}
-    <details className="mt-4 border-t border-board-line pt-3 text-xs text-board-muted"><summary className="min-h-11 cursor-pointer py-3 font-semibold">How this plan is chosen</summary><p className="max-w-prose leading-relaxed">The planner fits sessions within each day’s remaining time. It favors practice that covers more interviews and closer deadlines, with extra weight for roles marked Apply Now. Company-specific work stays separate. Completed sessions use your budget once, even when they help several interviews.</p></details>
+    {agenda.unscheduled > 0 && <Notice>{agenda.unscheduled} prep {agenda.unscheduled === 1 ? "task won’t" : "tasks won’t"} fit. Increase your daily budget.</Notice>}
+    <details className="prep-settings mt-3 border-t border-board-line text-xs text-board-muted">
+      <summary className="min-h-11 cursor-pointer py-3 font-semibold">Plan settings &amp; details</summary>
+      <form className="flex flex-wrap items-end gap-2" onSubmit={event => { event.preventDefault(); onBudget(); }}>
+        <label className="block" htmlFor="prep-daily-budget">Minutes per day<input id="prep-daily-budget" type="number" min="0" max="240" step="1" required className={`${control} mt-1 max-w-32`} value={minutes} disabled={busy || locked} onChange={event => onMinutes(event.target.value)} /></label>
+        <button type="submit" className={secondary} disabled={busy || locked || minutes === String(agenda.dailyMinutes)}>Save budget</button>
+      </form>
+      {!!(agenda.dormantCount || agenda.uncertainCount || agenda.expiredCount) && <p className="mt-4">Outside this week: {agenda.dormantCount} later interviews · {agenda.uncertainCount} dates to confirm · {agenda.expiredCount} past deadlines.</p>}
+      <p className="mt-3 leading-relaxed">Shared practice counts once. The plan prioritizes closer interviews and fits your daily budget.</p>
+    </details>
   </>;
 }
 
@@ -124,8 +125,8 @@ function Planner() {
     const input = sessionRequest.current.input;
     mutate(async () => services ? services.completePreparationSession(input) : saveLocal(localSession(bundle,input)), "Session recorded. Covered interviews and your remaining time are updated.");
   }
-  return <section className="glass-panel action-widget min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="prep-planner-heading" aria-busy={loading || busy}>
-    {loading ? <><h2 id="prep-planner-heading" className="text-lg font-bold">This week’s prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={setReview} busy={busy || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="text-lg font-bold">This week’s prep</h2>}
+  return <section className="glass-panel action-widget prep-widget min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="prep-planner-heading" aria-busy={loading || busy}>
+    {loading ? <><h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={setReview} busy={busy || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>}
     {error && <div role="alert"><Notice>{error}</Notice><button type="button" className={`${secondary} mt-3`} onClick={() => {setBusy(false);setRetry(n => n + 1);}}>Reload planner</button></div>}
     {feedback && <p role="status" className="mt-3 text-sm text-board-muted">{feedback}</p>}
     {review && <DraftReview key={review} id={review} onClose={() => {setReview(null);setRetry(n => n + 1);}} />}
