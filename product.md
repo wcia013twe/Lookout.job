@@ -42,7 +42,7 @@ Private, invite-based circles of friends and classmates, inspired by the **share
 - **Share only by choice:** member controls visibility, identity, company name, and details. Application records and agent memory remain private by default.
 - **Collective learning:** after a milestone, optionally share “what helped,” a preparation resource, or useful advice.
 - **Shared job intelligence:** a member shares an opportunity; other members' personal agents independently evaluate its fit.
-- **Existing community tools:** link to Discord/group chats and practice sessions; do not rebuild chat, video calls, or LeetCode meetings.
+- **Conversations with context:** private Circle chat and threads can attach a job, employer job ID, interview stage or offer comparison. Useful round experiences remain searchable. Discord and private texts remain useful ways to share thread links; use existing video and practice tools.
 - **Constructive urgency:** real peer progress can motivate action, but do not manipulate users with fake activity, public rejection counts, application-volume contests, pity awards, or hollow reassurance.
 - **Private improvement:** the agent can offer concrete next steps based on a user's own preparation gaps, without assuming their emotional state.
 - **Notification control:** immediate milestone updates, digests, or quiet mode. No automatic publication of interview or offer events.
@@ -140,7 +140,7 @@ Distribution begins with existing friend groups and Discord communities. Test wh
 
 **P0 — Reliable personal workflow.** Verify actual agent connection, daily scans, job-source quality, application state, submission evidence, and preparation usefulness. README.md remains the implementation authority.
 
-**P1 — Circle MVP.** Invite-only circles, explicit sharing controls, interview/offer milestone cards, reactions, shared opportunities, and notification preferences. No XP, leaderboards, or built-in chat.
+**P1 — Circle MVP.** Invite-only circles, explicit sharing controls, interview/offer milestone cards, reactions, shared opportunities, and notification preferences. No XP or leaderboards. Private conversation threads can carry structured context.
 
 **P2 — Collective preparation.** Voluntary “what helped” insights, resource sharing, personal-agent interpretation of shared opportunities, and links to existing Discord practice sessions.
 

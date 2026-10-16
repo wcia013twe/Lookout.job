@@ -1,0 +1,10 @@
+# Circles: conversations with attached context
+
+- Reworked the main Circle overview into familiar conversation collections, a central thread stream and message-first composer, a member filter, and a supporting shared-context rail. Preserved the cloud cottage behind Open clubhouse and kept existing thread reading/reply/review controls.
+- Job and round context supports company, role, employer job ID, public posting URL and stage, with drag/drop plus accessible attach controls. Attaching a shared job preserves an existing message. Round previews lead with the reported question/topics.
+- Added general discussion and offer comparison types. Comparisons retain two to four voluntarily entered offers with explicit text for pay/equity terms; no compensation totals are inferred. Existing thread detail adds only job ID and a comparison table.
+- Shared SQL validation, search, browser/gateway projection and scoped MCP operations cover attached context. Revision approval, private drafts, standing-template limits, ownership and existing feature gate remain intact. Gateway developerVersion is 25.
+- Demo covers casual conversation, job/stage round insights and two-offer comparison; fixtures remain fictional, resettable and isolated.
+- Validation: npm test (339 passing); validate:data (76 roles); frontend typecheck; production static export (50 pages); git diff --check. Focused post-review checks passed 19 tests. Browser checked attach/save/review/publish/reply and offer saving, desktop 1440/1280 and mobile 390 (no document overflow). Impeccable detector returned []; reviewer disposition ship for the scored insight-preview fix.
+- Setup: root npm ci succeeded; next-app npm ci failed with npm's exit-handler error. Reused the existing local dependency tree in the isolated checkout; typecheck and static builds passed.
+- Limits: production migration/gateway deployment, hosted account authorization, realtime chat delivery, notifications and private tracker drag/import are not verified or introduced. Preview uses the existing periodically refreshed thread service. No push or production publication.

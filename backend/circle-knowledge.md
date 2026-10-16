@@ -172,3 +172,25 @@ Admin Demo mode adds fictional posts, a review draft, replies and private citati
 history through the existing isolated demo service. Demo retraction updates the
 visible count; review/publish/edit/withdraw and Reset demo affect memory only. No real
 agents, accounts, credentials, files, applications or notifications are touched.
+
+### Context conversations
+
+The additive context-conversations migration accepts top-level `discussion` and
+`offer_comparison` alongside existing types. Optional `jobId` is the employer's
+reported job identifier (nonblank text, at most 200 characters), not a private
+application ID or proof of availability. `offer_comparison` requires `offers`, an
+array of two to four objects. Each requires nonblank `company`; optional `role`,
+`location`, `base`, `equity`, `signOn` are text up to 200 characters, and `notes`
+up to 1000. Unknown offer fields and non-text values reject. Offers are not allowed
+on other types. Existing private-link rejection covers all attached fields.
+
+All fields bind to the immutable revision and exact publication approval. A job ID
+cannot be added to the standing public-link template. Browser and gateway/MCP
+reads include jobId and a copied offers array in agentContext; schemaVersion 2
+remains additive. Full-text search includes job ID, stage and offer text. Tool
+mapping remains propose_circle_contribution / read_circle_thread /
+search_circle_knowledge / publish_circle_contribution; validation and consent live
+in the shared RPC. Gateway developerVersion increments for the advertised contract.
+Local tests cover authenticated browser RPCs and actual MCP dispatch, stale approval,
+private draft visibility, search, invalid attachments and standing-template bypass.
+Hosted migration, grants and deployment remain unverified; do not enable the gate.

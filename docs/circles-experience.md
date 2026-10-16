@@ -223,3 +223,26 @@ existing contribution detail; the featured milestone appears once. Content
 still comes only from current permitted published revisions. The board changes
 presentation and filtering, without adding chat, presence, posting permissions
 or a new consent path. No global token or design-system sidecar update is needed.
+
+## Conversations with attached context — October 15, 2026
+
+The current overview leads with Circle chat: a collection/member rail, a bounded
+conversation stream and a message-first composer. Round insights, offer comparisons
+and resources filter the same published threads; they are not independent chat
+channels. Job chips retain company, role, employer job ID and interview stage.
+The supporting rail exposes shared job contexts with drag/drop and keyboard-accessible
+attach controls. Attaching a job preserves the message already being written.
+The cloud cottage and its controls remain available through Open clubhouse.
+
+The existing thread reading/reply/review page is preserved, adding only job ID and
+an offer comparison table. New discussions may have no attachments. A comparison
+contains two to four offers, with company and optional role, location, base pay,
+equity, signing bonus and notes. Values are shown as entered, without inferred
+compensation totals. Saving a message remains a private draft followed by exact
+review/publication. Search includes job IDs, stages and offer details.
+
+These actions use knowledge.propose/read/search/publish and their existing scoped
+MCP equivalents. No new realtime transport, unread receipts, notifications, private
+tracker import or background agent execution is implied. Hosted schema/gateway
+verification and the existing production release gate still apply. The preview has
+fictional casual chat, a job/stage round insight and a two-offer discussion.

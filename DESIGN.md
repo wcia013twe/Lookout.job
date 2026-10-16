@@ -66,6 +66,18 @@ components:
 
 # Design System: Job signal board
 
+## Current Circles composition: conversations with context
+
+The active overview uses a collection/member rail, a central conversation stream
+and message-first composer, and a supporting context rail. It inherits all existing
+workspace tokens and both themes. Job/round attachments are compact factual chips;
+offer comparisons have a concise two-column preview and their existing thread detail
+shows the shared fields. Collections filter the same shared posts. The cloud cottage
+is retained behind Open clubhouse, with an illustration invitation in the context rail.
+The existing thread detail/reply/review layout remains the reading surface. See
+`.impeccable/surfaces/circles.md` for the surface contract. Earlier compositions below
+record design history.
+
 ## Current Circles composition: one dashboard
 
 The active dashboard now centers on one activity stream plus the small member

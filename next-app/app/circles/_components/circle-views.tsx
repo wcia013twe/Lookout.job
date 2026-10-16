@@ -1,77 +1,43 @@
 'use client';
 
-import {useState, type CSSProperties, type ReactNode} from 'react';
-import type {Detail, Post} from '../_lib/types';
-import styles from './circle-views.module.css';
+import {useRef,useState,type ReactNode} from 'react';
+import type {Content,Detail,Post} from '../_lib/types';
+import {types} from '../_lib/types';
+import identity from './circle-views.module.css';
+import styles from './conversation.module.css';
 import CircleRoom from './circle-room';
-import {primary} from '../../../components/ui';
+import Editor from './editor';
 import {companionForMember} from './companions';
 
-type Props = {detail:Detail; posts:Post[]; demo:boolean; openPost:(post:Post)=>void; focused:boolean; controls:ReactNode; search:ReactNode; searching:boolean};
-const cleanName=(name:string)=>name.replace(' (demo)','');
-const postKind=(post:Post)=>post.content.type==='milestone'?'Milestone':post.content.type==='resource'?'Resource':post.content.type==='opportunity'?'Opportunity':'Conversation';
-
-export function CircleEmblem() {
- return <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 5 89 19v31c0 21-16 36-39 45C27 86 11 71 11 50V19L50 5Z" fill="currentColor" fillOpacity=".08" stroke="currentColor" strokeWidth="2"/><path d="m22 65 22-30 12 17 8-10 16 23H22Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="m36 46 8 3 5-6m10 7 5 4 5-5" stroke="currentColor" strokeWidth="1.5"/></svg>;
-}
-
-function Avatar({name,demo,large=false}:{name:string;demo:boolean;large?:boolean}) {
- return <span className={`${styles.avatar} ${large?styles.avatarLarge:''}`} aria-hidden="true">{demo?<RoomPortrait name={name} demo/>:name.split(/\s+/).slice(0,2).map(part=>part[0]).join('')}</span>;
-}
-
-function Arrow() {
- return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg>;
-}
-
-function RoomPortrait({name,demo,full=false}:{name:string;demo:boolean;full?:boolean}) {
- if(!demo)return <Avatar name={name} demo={false}/>;
- const companion=companionForMember(name);
- return <span className={full?styles.characterFigure:styles.roomPortrait} aria-hidden="true"><span style={{backgroundImage:`url('/circles/${companion.id}.webp')`}}/></span>;
-}
-
-function EventLink({post,openPost,demo}:{post:Post;openPost:(post:Post)=>void;demo:boolean}) {
- const action=post.content.type==='resource'?'Open resource':post.content.type==='opportunity'?'Explore opportunity':post.content.type==='milestone'?'Celebrate together':'Read the conversation';
- const at=new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
- return <article className={styles.event}>
-  <div className={styles.authorPortrait}><RoomPortrait name={post.author} demo={demo}/></div>
-  <div className={styles.note}><div className={styles.noteMeta}><strong>{cleanName(post.author)}</strong><span>{postKind(post)}</span><time dateTime={post.createdAt}>{at}</time></div>
-   <button type="button" className={styles.noteLink} onClick={()=>openPost(post)}><h3>{post.content.title}</h3><p>{post.content.body||post.content.insight}</p><span className={styles.eventAction}>{!post.content.body?'View context':action}<Arrow/></span></button>
-  </div>
- </article>;
-}
-
-export default function CircleDashboard({detail,posts,demo,openPost,focused,controls,search,searching}:Props) {
- const [person,setPerson]=useState('');
- const published=posts.filter(post=>post.state==='published'&&post.revision===post.publishedRevision);
+type Props={detail:Detail;posts:Post[];demo:boolean;openPost:(post:Post)=>void;focused:boolean;controls:ReactNode;search:ReactNode;searching:boolean;busy:boolean;save:(content:Content)=>Promise<void>};
+const clean=(name:string)=>name.replace(' (demo)','');
+export function CircleEmblem(){return <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 5 89 19v31c0 21-16 36-39 45C27 86 11 71 11 50V19L50 5Z" fill="currentColor" fillOpacity=".08" stroke="currentColor" strokeWidth="2"/><path d="m22 65 22-30 12 17 8-10 16 23H22Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;}
+function Icon({kind}:{kind:string}){return <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==='chat'?<path d="M20 11a8 8 0 0 1-8 8H5l-4 3 2-7a8 8 0 1 1 17-4Z"/>:kind==='round'?<><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M8 12h8m-8 4h5"/></>:kind==='offers'?<><rect x="2" y="6" width="8" height="14" rx="2"/><rect x="14" y="3" width="8" height="17" rx="2"/><path d="M5 10h2m-2 4h2m10-7h2m-2 4h2"/></>:kind==='resource'?<><path d="M12 5c-3-2-7-2-10-1v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Zm0 0v15"/></>:<><path d="M8 12h8m-4-4v8"/><rect x="3" y="3" width="18" height="18" rx="4"/></>}</svg>;}
+function Avatar({name,demo}:{name:string;demo:boolean}){return <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(name).id}.webp')`}}/>:clean(name).split(/\s+/).slice(0,2).map(x=>x[0]).join('')}</span>;}
+export function ContextChips({content}:{content:Content}){if(!content.company&&!content.role&&!content.jobId&&!content.stage&&!content.offers)return null;return <div className={styles.chips} aria-label="Attached context">{(content.company||content.role||content.jobId)&&<span><Icon kind="context"/><span><strong>{clean(content.company||'Job context')}</strong>{content.role&&<span>{content.role}</span>}{content.jobId&&<small>Job ID {content.jobId}</small>}</span></span>}{content.stage&&<span className={styles.stage}><Icon kind="round"/>{content.stage}</span>}{content.offers&&<span><Icon kind="offers"/>{content.offers.map(o=>o.company).join(' / ')}</span>}</div>;}
+const channels=[{id:'all',label:'Circle chat',icon:'chat'},{id:'interview_report',label:'Round insights',icon:'round'},{id:'offer_comparison',label:'Offer comparisons',icon:'offers'},{id:'resource',label:'Resources',icon:'resource'}];
+export default function CircleDashboard({detail,posts,demo,openPost,focused,controls,search,searching,busy,save}:Props){
+ const [person,setPerson]=useState(''),[channel,setChannel]=useState('all'),[room,setRoom]=useState(false);
+ const composer=useRef<HTMLDivElement>(null),[seed,setSeed]=useState<Content|undefined>(undefined);
+ const published=posts.filter(post=>!post.parentId&&post.state==='published'&&post.revision===post.publishedRevision);
  const selected=detail.members.find(member=>member.id===person);
- const visible=selected&&!searching?published.filter(post=>post.author===selected.alias):published;
- const featured=searching?undefined:visible.find(post=>post.content.type==='milestone');
- const activity=visible.filter(post=>post.id!==featured?.id);
- const callout=featured&&/^(offer|offer received|offer accepted)$/i.test(featured.content.stage||'')?'Offered!':featured?.content.stage||'A new milestone!';
- const title=detail.circle.name.replace(' (demo)','');
- return <section className={styles.circle} aria-label={`${title} Circle`}>
-  <header className={styles.identity}>
-   <div className={styles.emblem}><CircleEmblem/></div>
-   <div className={styles.identityCopy}><div className={styles.titleRow}><h1>{title}</h1>{controls}</div><div className={styles.memberLine}><span className={styles.avatarStack}>{detail.members.slice(0,5).map(member=><Avatar key={member.id} name={member.alias} demo={demo}/>)}</span><span>{detail.members.length} people in your corner · Private Circle</span></div></div>
-  </header>
+ const visible=published.filter(post=>(!selected||post.author===selected.alias)&&(channel==='all'||post.content.type===channel));
+ const contexts=published.filter(post=>post.content.jobId||post.content.jobUrl).filter((post,index,array)=>array.findIndex(p=>(p.content.jobId||p.content.jobUrl||p.content.company)===(post.content.jobId||post.content.jobUrl||post.content.company))===index);
+ const title=clean(detail.circle.name);
+ function discuss(content?:Content){setSeed(content?{title:'',body:'',type:'interview_report',sources:[],provenance:'user_confirmed',personalDisclosure:false,...Object.fromEntries(['company','role','jobId','jobUrl','stage'].map(key=>[key,content[key as keyof Content]]))}:undefined);composer.current?.scrollIntoView({block:'center'});requestAnimationFrame(()=>composer.current?.querySelector('textarea')?.focus());}
+ return <section className={identity.circle} aria-label={`${title} Circle`}>
+  <header className={identity.identity}><div className={identity.emblem}><CircleEmblem/></div><div className={identity.identityCopy}><div className={identity.titleRow}><h1>{title}</h1>{controls}</div><div className={identity.memberLine}><span className={styles.miniMembers}>{detail.members.slice(0,5).map(member=><Avatar key={member.id} name={member.alias} demo={demo}/>)}</span><span>{detail.members.length} members · Private Circle</span></div></div></header>
   {!focused&&<>
-   <CircleRoom key={detail.circle.id} detail={detail} posts={published} demo={demo} person={person} selectPerson={setPerson}/>
-   <section className={`${styles.noticeboard} glass-panel`} aria-labelledby="community-feed-title">
-    <header className={styles.boardHeading}><div className={styles.boardIntro}><h2 id="community-feed-title">Around the Circle</h2><p>The good news, useful finds, and little things worth sharing.</p><p className={styles.constellationHint}>Choose someone in the constellation to see what they’ve shared.</p></div>
-     <nav className={styles.constellation} data-grid={detail.members.length>8} aria-label="Filter shared updates by person"><span className={styles.orbit} aria-hidden="true"/><button type="button" className={styles.everyone} aria-pressed={!selected} onClick={()=>setPerson('')}><CircleEmblem/><span>Everyone</span></button>{detail.members.map((member,index)=>{const angle=index/Math.max(detail.members.length,1)*Math.PI*2-Math.PI/2;return <button type="button" className={styles.personNode} key={member.id} style={{'--node-x':`${50+Math.cos(angle)*36}%`,'--node-y':`${50+Math.sin(angle)*36}%`} as CSSProperties} aria-pressed={selected?.id===member.id} onClick={()=>setPerson(person===member.id?'':member.id)}><RoomPortrait name={member.alias} demo={demo}/><span>{cleanName(member.alias)}</span></button>;})}</nav>
-    </header>
-    <div className={styles.boardBody}>
-     <div className={styles.boardTools}><div className={styles.streamHeading}><h3>{searching?'Search results':selected?cleanName(selected.alias)+'’s updates':'On the board'}</h3>{selected&&!searching&&<button type="button" onClick={()=>setPerson('')}>Show everyone</button>}</div><details key={searching?'results':'browse'} className={styles.search} open={searching||undefined}><summary>Find a shared update <Arrow/></summary><div>{search}</div></details></div>
-     <div className={styles.boardContent}>
-      {featured&&<article className={styles.celebration}>
-       <div className={styles.celebrationFigure}><RoomPortrait name={featured.author} demo={demo} full/></div>
-       <div className={styles.celebrationCopy}><div className={styles.celebrationMeta}><span>{cleanName(featured.author)} shared a milestone</span><span className={styles.pin} aria-hidden="true"/></div><h3>{callout}</h3><h4>{featured.content.title}</h4><p>{featured.content.body||featured.content.insight}</p>{featured.content.company&&<span className={styles.company}>{featured.content.company}</span>}<button className={`${primary} ${styles.primary}`} type="button" onClick={()=>openPost(featured)}>Celebrate with {cleanName(featured.author).split(' ')[0]} <Arrow/></button></div>
-      </article>}
-      <div className={styles.posts} aria-label="Shared Circle updates">{activity.length?activity.map(post=><EventLink key={post.id} post={post} openPost={openPost} demo={demo}/>):!featured&&<div className={styles.empty}><CircleEmblem/><h3>{searching?'Nothing on the board matches yet.':selected?'A little quiet in this corner.':'The board is ready for your first story.'}</h3><p>{searching?'Try a different search or clear your filters.':selected?'Their shared updates will appear here.':'Use Share above to add a milestone, resource, or opportunity for your people.'}</p></div>}</div>
-     </div>
-    </div>
-    <footer className={styles.boardFooter}><span>Shared with your Circle, by choice.</span><span>Different paths. Same corner.</span></footer>
-   </section>
+   <div className={styles.workspace}>
+    <aside className={styles.rail} aria-label="Circle navigation"><p className={styles.railTitle}>Your Circle</p><nav aria-label="Conversation collections">{channels.map(item=><button key={item.id} type="button" aria-pressed={channel===item.id} onClick={()=>setChannel(item.id)}><Icon kind={item.icon}/>{item.label}</button>)}</nav><div className={styles.peopleHeading}><h2>People</h2>{selected&&<button type="button" onClick={()=>setPerson('')}>Clear</button>}</div><nav className={styles.people} aria-label="Filter conversations by person">{detail.members.map(member=><button key={member.id} type="button" aria-pressed={member.id===person} onClick={()=>setPerson(person===member.id?'':member.id)}><Avatar name={member.alias} demo={demo}/><span>{clean(member.alias)}{member.self&&<small>you</small>}</span></button>)}</nav><p className={styles.privacy}>A little company.<br/>A shared way forward.</p></aside>
+    <section className={styles.conversations} aria-labelledby="circle-conversation-title"><header className={styles.chatHeader}><div><h2 id="circle-conversation-title">{searching?'Search results':channels.find(c=>c.id===channel)?.label}</h2><p>{selected?`Shared by ${clean(selected.alias)}`:channel==='all'?'Talk it through with your people.':channel==='interview_report'?'The round, the questions, the little things that helped.':channel==='offer_comparison'?'Different offers. A decision worth talking through.':'Useful finds, kept close.'}</p></div><details className={styles.search}><summary aria-label="Search conversations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></summary><div>{search}</div></details></header>
+     <div className={styles.streamHeading}><h3>{channel==='all'?'Latest conversations':channels.find(c=>c.id===channel)?.label}</h3><span>Shared by members{demo?' · Fictional examples':''}</span></div>
+     <div className={styles.messages} aria-label="Circle conversations">{visible.length?visible.map(post=><article key={post.id} className={styles.messageRow}><Avatar name={post.author} demo={demo}/><div className={styles.messageContent}><div className={styles.messageMeta}><strong>{clean(post.author)}</strong><span>{types[post.content.type]}</span><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'})}</time></div><button type="button" className={styles.threadTitle} onClick={()=>openPost(post)}>{post.content.title}</button><ContextChips content={post.content}/><p>{post.content.type==='interview_report'?(post.content.insight||post.content.body):(post.content.body||post.content.insight)}</p>{post.content.offers&&<div className={styles.offerPreview}>{post.content.offers.map((offer,index)=><div key={index}><strong>{offer.company}</strong><span>{offer.role||offer.location||'Shared offer'}</span>{offer.base&&<span>{offer.base} base</span>}</div>)}</div>}<button type="button" className={styles.threadAction} onClick={()=>openPost(post)}><Icon kind="chat"/>{post.content.type==='milestone'?'Celebrate & reply':'Open thread & reply'}<span aria-hidden="true">→</span></button></div></article>):<div className={styles.empty}><Icon kind={channel==='all'?'chat':channels.find(c=>c.id===channel)?.icon||'chat'}/><h3>{searching?'No conversations match yet.':'Start something here.'}</h3><p>{searching?'Clear or adjust your search, collection, or person filter.':'Ask a question, share a round, or compare an offer. Your people can take it from there.'}</p>{(selected||channel!=='all')&&<button type="button" onClick={()=>{setPerson('');setChannel('all');}}>Show all conversations</button>}</div>}</div>
+     <div ref={composer} className={styles.composerWrap}><Editor inline incomingContext={seed} contexts={published.map(p=>p.content)} busy={busy} save={save} cancel={()=>{}}/></div>
+    </section>
+    <aside className={styles.contextRail} aria-label="Shared context"><div className={styles.cottage}><img src="/circles/cloud-cottage.webp" alt="The Circle’s moonlit cloud cottage"/><div><h2>A place in your corner.</h2><button type="button" onClick={()=>setRoom(!room)} aria-expanded={room}>{room?'Close clubhouse':'Open clubhouse'} <span aria-hidden="true">↗</span></button></div></div><section className={styles.sharedJobs}><h2>On our radar</h2><p>Shared jobs. Real conversations.</p>{contexts.slice(0,4).map(post=><div className={styles.sharedJob} key={post.id} draggable onDragStart={event=>event.dataTransfer.setData('application/x-lookout-job',JSON.stringify(Object.fromEntries(['company','role','jobId','jobUrl','stage'].map(key=>[key,post.content[key as keyof Content]]))))}><button type="button" className={styles.jobTitle} onClick={()=>openPost(post)}><strong>{clean(post.content.company||'Shared job')}</strong><span>{post.content.role||post.content.title}</span>{post.content.jobId&&<small>{post.content.jobId}</small>}</button><button type="button" className={styles.discussJob} onClick={()=>discuss(post.content)} aria-label={`Discuss ${clean(post.content.company||'shared job')}`}><Icon kind="context"/></button></div>)}{!contexts.length&&<p>Jobs attached to shared conversations will appear here.</p>}<p className={styles.dragHint}>Drag a shared job into your message, or use its attach button.</p></section><section className={styles.circleNote}><h2>Every round helps.</h2><p>What came up, what surprised you, what helped. One experience can make a friend’s next round feel a little less unknown.</p><button type="button" onClick={()=>discuss()}>Start a conversation <span aria-hidden="true">→</span></button></section></aside>
+   </div>
+   {room&&<div className={styles.roomExpanded}><CircleRoom key={detail.circle.id} detail={detail} posts={published} demo={demo} person={person} selectPerson={setPerson}/></div>}
   </>}
  </section>;
 }
