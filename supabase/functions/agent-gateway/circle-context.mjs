@@ -1,3 +1,4 @@
+import {validateSharedContexts} from './context-attachments.mjs';
 export function circleAgentContext(post) {
  if(!post||['hidden','withdrawn'].includes(post.state)||(!post.owned&&(post.state!=='published'||post.revision!==post.publishedRevision)))return null;
  const content=post.content;
@@ -7,6 +8,7 @@ export function circleAgentContext(post) {
   jobUrl:content.jobUrl||null,
   jobId:content.jobId||null,
   offers:content.offers?.map(offer=>({...offer}))||null,
+  contexts:content.contexts?.map(item=>({...item}))||[],
   stage:content.stage||null,
   insight:content.insight||content.body,
   company:content.company||null,
@@ -19,6 +21,7 @@ export function circleAgentContext(post) {
 }
 
 export function validateCircleContextContent(content) {
+ if(content.contexts!==undefined)validateSharedContexts(content.contexts);
  if(content.jobId!==undefined&&content.jobId!==null&&(typeof content.jobId!=='string'||!content.jobId.trim()||content.jobId.length>200))throw Error('Job ID must be text, up to 200 characters.');
  if(content.offers!==undefined){
   if(content.type!=='offer_comparison'||!Array.isArray(content.offers)||content.offers.length<2||content.offers.length>4)throw Error('Attach two to four offers to an offer comparison.');

@@ -9,6 +9,7 @@ import CircleRoom from './circle-room';
 import CircleChat from './circle-chat';
 import Editor from './editor';
 import JobAttachment from './job-attachment';
+import SharedAttachments,{hasAttachedJob} from './shared-attachments';
 import {companionForMember} from './companions';
 import {CompanyLogo} from '../../../components/role-card';
 
@@ -18,8 +19,8 @@ export function CircleEmblem(){return <svg viewBox="0 0 100 100" fill="none" ari
 function Icon({kind}:{kind:string}){return <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==='clubhouse'?<><path d="m3 10 9-7 9 7v10H3V10Z"/><path d="M9 20v-7h6v7"/></>:kind==='chat'?<path d="M20 11a8 8 0 0 1-8 8H5l-4 3 2-7a8 8 0 1 1 17-4Z"/>:kind==='round'?<><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M8 12h8m-8 4h5"/></>:kind==='offers'?<><rect x="2" y="6" width="8" height="14" rx="2"/><rect x="14" y="3" width="8" height="17" rx="2"/><path d="M5 10h2m-2 4h2m10-7h2m-2 4h2"/></>:kind==='resource'?<><path d="M12 5c-3-2-7-2-10-1v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Zm0 0v15"/></>:<><path d="M8 12h8m-4-4v8"/><rect x="3" y="3" width="18" height="18" rx="4"/></>}</svg>;}
 function Avatar({name,demo}:{name:string;demo:boolean}){return <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(name).id}.webp')`}}/>:clean(name).split(/\s+/).slice(0,2).map(x=>x[0]).join('')}</span>;}
 export function ContextChips({content}:{content:Content}){
- const hasJob=!!(content.company||content.role||content.jobId||content.jobUrl);
- return <>{hasJob&&<JobAttachment content={content}/>}<div className={styles.chips} aria-label="Other attached context">{!hasJob&&content.stage&&<span className={styles.stage}><Icon kind="round"/>{content.stage}</span>}{content.offers&&<span><Icon kind="offers"/>{content.offers.map(o=>o.company).join(' / ')}</span>}</div></>;
+ const hasJob=!hasAttachedJob(content)&&!!(content.company||content.role||content.jobId||content.jobUrl);
+ return <>{hasJob&&<JobAttachment content={content}/>}{content.contexts&&<SharedAttachments contexts={content.contexts} primary={content}/>}<div className={styles.chips} aria-label="Other attached context">{!hasJob&&content.stage&&<span className={styles.stage}><Icon kind="round"/>{content.stage}</span>}{content.offers&&<span><Icon kind="offers"/>{content.offers.map(o=>o.company).join(' / ')}</span>}</div></>;
 }
 
 const channels=[{id:'clubhouse',label:'Clubhouse',icon:'clubhouse'},{id:'intel',label:'Company Intel',icon:'round'},{id:'resource',label:'Resources',icon:'resource'}];
@@ -42,15 +43,15 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
     {channel==='clubhouse'?<>
      <CircleRoom embedded key={detail.circle.id} detail={detail} posts={published} demo={demo} person={person} selectPerson={selectPerson} openPost={openPost}/>
      <div className={styles.sharePrompt}><div><h3>A small win is worth sharing.</h3><p>Add your recent progress, a goal, or something you could use a hand with.</p></div><button type="button" onClick={()=>setSharing(!sharing)} aria-expanded={sharing}>{sharing?'Close update':'Share an update'}</button></div>
-     {sharing&&<div ref={composer} className={styles.composerWrap}><Editor inline activityUpdate busy={busy} save={save} cancel={()=>setSharing(false)}/></div>}
+     {sharing&&<div ref={composer} className={styles.composerWrap}><Editor demo={demo} inline activityUpdate busy={busy} save={save} cancel={()=>setSharing(false)}/></div>}
     </>:<>
      <div className={styles.streamHeading}><h3>{channel==='intel'?'From inside the process':'The shared shelf'}</h3><span>{demo?'Fictional examples':'Shared by members'}</span></div>
      {selected&&<div className={styles.personFilter}><span>Shared by {clean(selected.alias)}</span><button type="button" onClick={()=>setPerson('')}>Show everyone</button></div>}
      <div className={styles.messages} aria-label={channel==='intel'?'Company experiences':'Shared resources'}>{visible.length?visible.map(post=><article key={post.id} className={styles.messageRow}><Avatar name={post.author} demo={demo}/><div className={styles.messageContent}><div className={styles.messageMeta}><strong>{clean(post.author)}</strong><span>{types[post.content.type]}</span><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'})}</time></div><button type="button" className={styles.threadTitle} onClick={()=>openPost(post)}>{post.content.title}</button><ContextChips content={post.content}/><p>{post.content.type==='interview_report'?(post.content.insight||post.content.body):(post.content.body||post.content.insight)}</p>{post.content.offers&&<div className={styles.offerPreview}>{post.content.offers.map((offer,index)=><div key={index}><div className={styles.offerCompany}><span className={styles.companyLogo}><CompanyLogo company={offer.company}/></span><strong>{offer.company}</strong></div><span>{offer.role||offer.location}</span>{offer.base&&<span>{offer.base} base</span>}</div>)}</div>}<button type="button" className={styles.threadAction} onClick={()=>openPost(post)}><Icon kind="chat"/>{post.content.type==='milestone'?'Celebrate & reply':'Open thread & reply'}<span aria-hidden="true">→</span></button></div></article>):<div className={styles.empty}><Icon kind={channel==='intel'?'round':'resource'}/><h3>{searching?'No matches yet.':channel==='intel'?'Your inside story starts here.':'A shelf worth building together.'}</h3><p>{searching?'Adjust your search or filters.':channel==='intel'?'Share an interview experience, compare offers, or ask about a company.':'Share a useful read, a preparation resource, or something that helped.'}</p>{selected&&<button type="button" onClick={()=>setPerson('')}>Show everyone</button>}</div>}</div>
-     <div ref={composer} className={styles.composerWrap}><Editor key={channel} inline initial={{type:channel==='resource'?'resource':'interview_report',title:'',body:'',sources:[],provenance:'user_confirmed',personalDisclosure:false}} contexts={published.map(p=>p.content)} busy={busy} save={save} cancel={()=>{}}/></div>
+     <div ref={composer} className={styles.composerWrap}><Editor demo={demo} key={channel} inline initial={{type:channel==='resource'?'resource':'interview_report',title:'',body:'',sources:[],provenance:'user_confirmed',personalDisclosure:false}} contexts={published.map(p=>p.content)} busy={busy} save={save} cancel={()=>{}}/></div>
     </>}
    </section>
-   <CircleChat posts={chat} demo={demo} busy={busy} save={save} openPost={openPost}/>
+   <CircleChat contexts={published.map(p=>p.content)} posts={chat} demo={demo} busy={busy} save={save} openPost={openPost}/>
   </div>}
  </section>;
 }

@@ -25,3 +25,4 @@ comparisons. Chat uses the existing periodic refresh and publication service.
 Companion movement remains decorative. Activity displays only authored published
 updates: three highlights, a weekly goal and an optional help request. No automatic
 private tracker sharing, live presence or inferred submission counts.
+Composer extension: User-pinned prompt-box reference. Keep the existing Circle layout and theme; compose naturally in a roomy rounded field with plus and review arrow. `@` or plus reveals searchable application/referral/Circle context; selected chips expand into explicit snapshots, reusing the compact application attachment. Drag/drop offers an equivalent attachment path. Additional post fields stay collapsed. Review saves privately before the separate sharing action. Desktop and mobile retain the same interaction hierarchy. No chat transport or agent fetching claim is introduced.

@@ -36,3 +36,10 @@
 
 - Attached job identity now renders `Company | ID: <employer ID>` on a single metadata line beneath the role, reusing an optional jobId prop in ApplicationIdentity. Other tracker rows retain their existing company label.
 - Validation: frontend typecheck, production static build and diff check. No backend or stored data changes.
+
+## Follow-up: prompt-style post creation
+
+- Replaced the top-level post form with a prompt composer, `@`/plus context search, Applications/Referrals/Circle categories, removable expandable context chips, and a review arrow. Drag shared jobs, context options, public links or notes into the prompt; no file upload. Preserve manual round metadata, insights and offer comparisons in expandable details.
+- Read only already-loaded workspace application/referral metadata; whitelist shared snapshots and isolate demo options. Reuse the compact application component in expanded chips and review/thread previews. Demo fixtures include a post with both application and referral context.
+- Added revision-bound `contexts` validation/search/projection in database and domain code, scoped MCP descriptions and developer version 26. Existing human review/approval boundaries and hosted release gate remain intact.
+- Validation: full unit/database suite (344 passing), TypeScript, production static export, data validation; browser @ selection, plus category search, keyboard selection, attachment preview/removal, accessible shared-job attachment, and private draft review checked in isolated preview. Production build initially hit disk exhaustion; retry after deleting only this task’s generated cache passed. Drop payload parsing/validation is covered by tests; native pointer dragging was not confirmed by the browser harness. Impeccable review: ship, no material fixes; documenter confirmed incumbent design unchanged. Hosted deployment and real-account sharing were not performed.
