@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState, useRef, type ReactNode, type CSSProperties} from 'react';
+import {useEffect, useLayoutEffect, useState, useRef, type ReactNode, type CSSProperties} from 'react';
 import type {Detail, Post} from '../_lib/types';
 import {activityGoalProgress,parseCircleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
 import styles from './circle-room.module.css';
@@ -17,13 +17,49 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
  const [selectedCompanion,setSelectedCompanion]=useState<string|null>(null);
  const [greeting,setGreeting]=useState<{id:string;at:number}|null>(null);
  const roomRef=useRef<HTMLDivElement>(null);
+ const sceneRef=useRef<HTMLDivElement>(null);
+ const [bubblePosition,setBubblePosition]=useState({left:16,top:16,tip:40,side:'left',maxHeight:520});
  const allOccupants=demo?[...companions.map(companion=>({companion,member:detail.members.find(member=>member.id===companion.member),key:companion.id})).filter(item=>item.member),...detail.members.filter(member=>!companions.some(companion=>companion.member===member.id)).map(member=>({companion:companions[0],member,key:member.id}))]:detail.members.map((member,index)=>({companion:companions[index%companions.length],member,key:member.id}));
  const page=Math.min(memberPage,Math.max(0,Math.ceil(allOccupants.length/5)-1));
  const occupants=allOccupants.slice(page*5,page*5+5);
  useRoomMotion(roomRef,paused||!!selectedCompanion,occupants.map(item=>item.key).join(','),gathered);
  const cardRef=useRef<HTMLElement>(null),triggerRef=useRef<HTMLButtonElement|null>(null);
- useEffect(()=>{if(selectedCompanion)cardRef.current?.focus();},[selectedCompanion]);
- function closeActivity(){setSelectedCompanion(null);triggerRef.current?.focus();}
+ useEffect(()=>{
+  if(!selectedCompanion)return;
+  cardRef.current?.focus({preventScroll:true});
+  cardRef.current?.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
+ },[selectedCompanion]);
+ useLayoutEffect(()=>{
+  if(!selectedCompanion)return;
+  const scene=sceneRef.current,card=cardRef.current,trigger=triggerRef.current;
+  if(!scene||!card||!trigger)return;
+  function placeBubble(){
+   const bounds=scene!.getBoundingClientRect(),actor=trigger!.getBoundingClientRect();
+   const width=card!.offsetWidth,height=card!.offsetHeight;
+   const x=actor.left-bounds.left+actor.width/2,y=actor.top-bounds.top+actor.height/2;
+   const side=x>bounds.width/2?'left':'right';
+   const left=Math.max(16,Math.min(bounds.width-width-16,side==='left'?x-actor.width/2-width-16:x+actor.width/2+16));
+   const top=Math.max(16,Math.min(bounds.height-height-16,y-height/2));
+   setBubblePosition({left,top,tip:Math.max(28,Math.min(height-28,y-top)),side,maxHeight:Math.max(180,bounds.height-32)});
+  }
+  placeBubble();
+  const observer=new ResizeObserver(placeBubble);observer.observe(scene);observer.observe(card);
+  return()=>observer.disconnect();
+ },[selectedCompanion]);
+ useEffect(()=>{
+  if(!selectedCompanion)return;
+  function dismiss(event:PointerEvent){
+   const target=event.target as Node;
+   if(cardRef.current?.contains(target)||target instanceof Element&&roomRef.current?.contains(target)&&target.closest('button'))return;
+   setSelectedCompanion(null);
+   if(!(target instanceof Element&&target.closest('button,a,input,select,textarea,[tabindex]')))triggerRef.current?.focus({preventScroll:true});
+  }
+  function escape(event:KeyboardEvent){if(event.key==='Escape'){setSelectedCompanion(null);triggerRef.current?.focus({preventScroll:true});}}
+  document.addEventListener('pointerdown',dismiss);
+  document.addEventListener('keydown',escape);
+  return()=>{document.removeEventListener('pointerdown',dismiss);document.removeEventListener('keydown',escape);};
+ },[selectedCompanion]);
+ function closeActivity(){setSelectedCompanion(null);triggerRef.current?.focus({preventScroll:true});}
  useEffect(()=>{if(!greeting)return;const timer=setTimeout(()=>setGreeting(null),4500);return()=>clearTimeout(timer);},[greeting]);
  const selected=detail.members.find(member=>member.id===person);
  const occupant=occupants.find(item=>item.key===selectedCompanion);
@@ -46,9 +82,9 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
     <button type="button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused?'Resume motion':'Pause motion'}</button>
    </div>
   </div>
-  <div className={styles.roomWithActivity}>
+  <div ref={sceneRef} className={styles.roomWithActivity}>
   <div className={styles.viewport}>
-   <div ref={roomRef} className={styles.room} data-paused={paused||!!selectedCompanion} data-gathered={gathered} data-ambience={ambience}>
+   <div ref={roomRef} className={styles.room} data-paused={paused||!!selectedCompanion} data-gathered={gathered} data-ambience={ambience} data-selected={!!selectedCompanion}>
     <div className={styles.backdrop} role="img" aria-label="Moonlit cloud cottage with a cloud-shaped window, tiny laptop desk, practice board, book table, star lamps and a lilac beanbag"/>
     <div className={styles.roomPlaque}><span className={styles.lamp}/><span>The cloud cottage</span><span className={styles.plaqueNote}>Circle clubhouse</span></div>
     {occupants.map(({companion,member,key},index)=>{
@@ -66,7 +102,8 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
    </div>
   </div>
 
-  {occupant&&<section ref={cardRef} tabIndex={-1} id="companion-activity" className={styles.activityCard} aria-labelledby="companion-activity-title" onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();closeActivity();}}}>
+  {occupant&&<section ref={cardRef} tabIndex={-1} id="companion-activity" className={styles.activityCard} data-side={bubblePosition.side} style={{'--bubble-left':`${bubblePosition.left}px`,'--bubble-top':`${bubblePosition.top}px`,'--bubble-tip':`${bubblePosition.tip}px`,'--bubble-max-height':`${bubblePosition.maxHeight}px` } as CSSProperties} aria-labelledby="companion-activity-title" onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();closeActivity();}}}>
+   <div className={styles.activityCardContent}>
    <header className={styles.activityHeader}><span className={styles.statusAvatar} style={{backgroundImage:`url('/circles/${greeted?.id}.webp')`}} aria-hidden="true"/><div><h3 id="companion-activity-title">{name}’s progress</h3><p>{demo?'Fictional shared updates': 'Shared with this Circle'}</p></div><button type="button" onClick={closeActivity} aria-label="Close activity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header>
    {latest?<>
     <p className={styles.activityHeadline}>{latest.content.title}</p>
@@ -88,6 +125,7 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
     <p className={styles.activityFootnote}>Opens the shared thread. Your reply stays a draft until you share it.</p>
    </>:<div className={styles.activityEmpty}><p>No recent shared updates.</p><p>{linkedMember?`${name}’s updates will appear here when they choose to share.`:'This companion has no linked Circle member.'}</p></div>}
    {linkedMember&&<button type="button" className={styles.allUpdates} onClick={()=>{selectPerson(linkedMember.id);closeActivity();}}>See {name}’s shared updates <span aria-hidden="true">→</span></button>}
+   </div>
   </section>}
   </div>
   <div className={styles.roomFooter}>{activityControl}</div>

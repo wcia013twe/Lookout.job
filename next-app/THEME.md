@@ -1,29 +1,17 @@
 # App theme
 
-Discover defines the shared visual language: layered navy surfaces, subtle facets
-and sheen, soft white text, and cotton candy pink accents. Keep component layouts
-and use color to communicate actions and selection consistently.
+Discover retains its original navy/glass surfaces, rainbow edge highlights and
+rarity colors. The cotton candy palette has been withdrawn.
 
-The canonical Tailwind v4 theme is `app/theme.css`, imported by `app/globals.css`.
-Use `bg-board-panel`, `bg-board-tag`, `text-board-text`, `text-board-muted`,
-`text-board-accent`, `border-board-line` and the existing shared UI buttons.
-CSS Modules use the corresponding `var(--color-board-*)` values.
+The extracted base Tailwind v4 palette remains in `app/theme.css`, imported at
+the original theme declaration position in `app/globals.css`. Workspace, light-mode,
+setup and action-widget overrides remain exactly as before the pink pass, in
+`globals.css`. This preserves their original cascade and appearance.
 
-- Background: `board-bg`; cards/dialogs: `board-panel`; nested controls: `board-tag`.
-- Primary actions and selection: `board-accent`; hover: `board-accent-hover`;
-  text on primary actions: `board-ink`; subtle selection: `board-accent-soft`.
-- Text: `board-text`; descriptions: `board-muted`; borders: `board-line`.
-- Status only: `board-success`, `board-warning`, `board-danger`.
-- Shared layered surface: `--board-surface-gradient`.
+Use the shared `bg-board-*`, `text-board-*`, `border-board-*` utilities and UI
+buttons. CSS Modules use their matching `var(--color-board-*)` values. A future
+palette change can build on this structure without starting over.
 
-The default dark accent is #f3b8d7. Light mode uses #96365f on pale surfaces;
-the same utilities automatically follow `data-theme`. Do not define per-widget
-accent palettes. Company logos, character/clubhouse imagery and user-selected
-pack textures are content, not interface color tokens. WebGL materials use a
-pink family in `lib/role-display.js`, where numeric color literals are required.
-
-For demo review, compare Discover cards, daily drops and pack controls; Action
-Board task/prep widgets; Profile tabs; Applications list and detail stages; and
-Circle controls/attachments. Inspect both themes and narrow/wide layouts. Filled
-versus outlined stages and the current-stage ring remain visible without relying
-on color alone. Demo fixtures inherit the production theme without data changes.
+The tracker retains the preceding high-contrast amber reached stages, blue
+upcoming outlines and current-stage ring. More recent Clubhouse layout and
+ivory-bubble changes are preserved independently of this palette rollback.

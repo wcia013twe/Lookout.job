@@ -1,47 +1,13 @@
-/* Tailwind v4 theme: use bg-board-*, text-board-* and border-board-* utilities.
-   Cotton candy pink is the only decorative accent. Status colors convey outcomes. */
+/* Canonical base Tailwind v4 palette. Existing workspace and light-mode roles
+   remain in globals.css to preserve the original Discover appearance. */
 @theme {
-  --color-board-bg: #0e141f;
-  --color-board-panel: #151e2c;
-  --color-board-tag: #202c3e;
-  --color-board-text: #f7f3f7;
-  --color-board-muted: #bdc5d3;
-  --color-board-line: #4b576c;
-  --color-board-accent: #f3b8d7;
-  --color-board-accent-hover: #ffd6e9;
-  --color-board-accent-soft: #382b3c;
-  --color-board-ink: #291525;
-  --color-board-success: #a2efd1;
-  --color-board-warning: #fcd68a;
-  --color-board-danger: #ffa6af;
-}
-:root {
-  color-scheme: dark;
-  --board-accent-wash: color-mix(in srgb, var(--color-board-accent) 7%, transparent);
-  --board-accent-edge: color-mix(in srgb, var(--color-board-accent) 35%, var(--color-board-line));
-  --board-surface-gradient: linear-gradient(130deg, var(--color-board-tag), var(--color-board-panel) 52%, var(--color-board-accent-soft));
-  --workspace-action-primary: var(--color-board-accent);
-  --workspace-action-primary-hover: var(--color-board-accent-hover);
-  --workspace-action-primary-text: var(--color-board-ink);
-  --workspace-action-secondary: var(--color-board-tag);
-  --workspace-action-secondary-hover: var(--color-board-accent-soft);
-  --workspace-action-secondary-text: var(--color-board-text);
-  --workspace-action-secondary-border: var(--color-board-line);
-  --workspace-action-secondary-border-hover: var(--color-board-accent);
-}
-:root[data-theme="light"] {
-  color-scheme: light;
-  --color-board-bg: #f7f5f8;
-  --color-board-panel: #ffffff;
-  --color-board-tag: #eee9f0;
-  --color-board-text: #241e2c;
-  --color-board-muted: #665c6d;
-  --color-board-line: #b4a8b9;
-  --color-board-accent: #96365f;
-  --color-board-accent-hover: #772747;
-  --color-board-accent-soft: #f6e4ee;
-  --color-board-ink: #ffffff;
-  --color-board-success: #146c4c;
-  --color-board-warning: #85500b;
-  --color-board-danger: #ad293e;
+  --color-board-bg: #0e1116;
+  --color-board-panel: #101016;
+  --color-board-text: #f5f4fa;
+  --color-board-muted: #bfc2cf;
+  --color-board-accent: #e9dcff;
+  --color-board-accent-hover: #f4ebff;
+  --color-board-ink: #211332;
+  --color-board-line: #343442;
+  --color-board-tag: #242430;
 }

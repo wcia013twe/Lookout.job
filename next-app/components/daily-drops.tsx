@@ -27,7 +27,7 @@ function DropRow({ drop, isNew, demo }: { drop: Drop; isNew: boolean; demo: bool
       <span className={styles.rowTitle}><strong>{drop.title}</strong><span>{drop.company}</span></span>
       <span className={styles.badges}>
         {isNew && <span className={styles.newMarker}>New</span>}
-        <span className={styles.tierBadge}>{RARITY_LABEL[tier]}</span>
+        <span className={styles.tierBadge} style={{ backgroundColor: `color-mix(in srgb, ${TIER_HEX[tier]} 23%, #172134)` }}>{RARITY_LABEL[tier]}</span>
         <span className={styles.status} data-status={drop.status}>{drop.status || "pending"}</span>
       </span>
       <Chevron />
