@@ -2,7 +2,7 @@
 
 import {useEffect, useState, useRef, type ReactNode, type CSSProperties} from 'react';
 import type {Detail, Post} from '../_lib/types';
-import {parseCircleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
+import {activityGoalProgress,parseCircleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
 import styles from './circle-room.module.css';
 import {routines} from './room-motion';
 import {companions} from './companions';
@@ -31,6 +31,7 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
  const updates:Post[]=linkedMember?sharedMemberActivity(posts,linkedMember.alias):[];
  const activityPost=updates.find(post=>{const activity=parseCircleActivity(post.content.body);return activity.highlights.length||activity.goal||activity.help;});
  const activity=parseCircleActivity(activityPost?.content.body);
+ const goalProgress=activityGoalProgress(activity.goal);
  const name=linkedMember?.alias.replace(' (demo)','')||greeted?.name||'';
  const latest=updates[0];
  const date=(value:string)=>new Date(value).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'});
@@ -67,13 +68,19 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
   </div>
   {embedded&&!occupant&&<aside className={styles.statusPlaceholder} aria-label="Companion status"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 9h10M7 13h7m-7 4h4"/></svg><h3>In their corner</h3><p>Click a companion to see their recent activity, this week’s goal, and how you can help.</p><span>Only updates they choose to share.</span></aside>}
   {occupant&&<section ref={cardRef} tabIndex={-1} id="companion-activity" className={styles.activityCard} aria-labelledby="companion-activity-title" onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();closeActivity();}}}>
-   <header className={styles.activityHeader}><div><h3 id="companion-activity-title">{name}’s recent activity</h3><p>{demo?'Fictional shared updates': 'Shared with this Circle'}</p></div><button type="button" onClick={closeActivity} aria-label="Close activity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header>
+   <header className={styles.activityHeader}><span className={styles.statusAvatar} style={{backgroundImage:`url('/circles/${greeted?.id}.webp')`}} aria-hidden="true"/><div><h3 id="companion-activity-title">{name}’s progress</h3><p>{demo?'Fictional shared updates': 'Shared with this Circle'}</p></div><button type="button" onClick={closeActivity} aria-label="Close activity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header>
    {latest?<>
     <p className={styles.activityHeadline}>{latest.content.title}</p>
     <p className={styles.activityDate}>Latest shared update · <time dateTime={latest.createdAt}>{date(latest.createdAt)}</time></p>
     {activityPost&&<>
-     {activity.highlights.length>0&&<ul className={styles.highlights}>{activity.highlights.map((highlight:string,index:number)=><li key={index}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>{highlight}</span></li>)}</ul>}
-     {activity.goal&&<div className={styles.goal}><h4>This week’s goal</h4><p>{activity.goal}</p></div>}
+     {activity.goal&&<div className={styles.goal}>
+      <div className={styles.goalHeading}><h4>This week’s goal</h4>{goalProgress&&<span>{goalProgress.percent}%</span>}</div>
+      {goalProgress?<><div className={styles.goalNumbers}><strong>{goalProgress.completed}<span> / {goalProgress.target}</span></strong><span>{goalProgress.label}</span></div><div className={styles.goalTrack} role="progressbar" aria-label={`${name}’s weekly goal`} aria-valuemin={0} aria-valuemax={goalProgress.target} aria-valuenow={goalProgress.completed} aria-valuetext={activity.goal}><span style={{width:`${goalProgress.completed/goalProgress.target*100}%`}}/>{goalProgress.target<=12&&<div className={styles.goalTicks} aria-hidden="true">{Array.from({length:goalProgress.target},(_,index)=><span key={index}/>)}</div>}</div><p className={styles.goalCaption}>{goalProgress.completed===goalProgress.target?'Goal complete. A moment worth celebrating.':`${goalProgress.target-goalProgress.completed} more to reach this goal`}</p></>:<p>{activity.goal}</p>}
+     </div>}
+     {activity.highlights.length>0&&<ul className={styles.highlights}>{activity.highlights.map((highlight:string,index:number)=>{
+      const count=highlight.match(/^([A-Za-z]+) (\d+) (.+)$/);
+      return <li key={index}><span className={styles.highlightMark}>{count?count[2]:<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>}</span><span>{count?`${count[1]} ${count[3]}`:highlight}</span></li>;
+     })}</ul>}
      {activity.help&&<div className={styles.help}><h4>Could use a hand with…</h4><p>{activity.help}</p></div>}
      {activityPost.id!==latest.id&&<p className={styles.activityDate}>Activity details shared {date(activityPost.createdAt)}</p>}
     </>}
