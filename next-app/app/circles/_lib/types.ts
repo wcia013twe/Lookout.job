@@ -1,4 +1,4 @@
-export type Content = { title: string; body: string; type: string; company?: string; role?: string; stage?: string; experienceDate?: string; sources: {url:string;label:string}[]; provenance: string; uncertainty?: string; personalDisclosure: boolean };
+export type Content = { title: string; body: string; type: string; insight?: string; jobUrl?: string; company?: string; role?: string; stage?: string; experienceDate?: string; sources: {url:string;label:string}[]; provenance: string; uncertainty?: string; personalDisclosure: boolean };
 export type Post = { id:string; circleId:string; parentId:string|null; revision:number; publishedRevision:number|null; state:string; owned:boolean; author:string; createdAt:string; content:Content; helpfulPeople:number; agentAuthored:boolean; approved:boolean; url:string; untrusted:true };
 export type Cursor = {id:string;createdAt?:string;rank?:number};
 export type Circle = {id:string;name:string;owner:boolean};

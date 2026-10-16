@@ -24,20 +24,25 @@ establish contrast, keyboard usability or the usefulness of a conversation.
 
 ## Current dashboard
 
-Posts use ordinary human messages. A small generated-context disclosure in
-details carries reported entities, topic matches, source revision and limits.
-The same bounded extractor serves the browser, fictional fixtures and scoped
-gateway/MCP knowledge reads. It is deterministic extraction, not a live LLM.
-It reads only already-authorized shared content, never private application data.
+The contribution is useful context: job link, stage and insight, with optional
+company, role, experience date, public sources and uncertainty. A human message
+is optional. The editor leads with insight/link/stage and tucks the message and
+extra details away. Context-only entries show their insight in the stream and
+open directly to factual context, not an empty social post.
 
-Interview reports/resources can produce a private practice checklist; opportunity
-posts produce verification steps, not invented job availability or personal fit.
-These are unsaved working previews, not fake agent conversations. Copy context
-exports the human message plus structured metadata for an existing agent chat.
-Preview/copy/checking a box neither sends a message nor records a citation.
-Only actual agent use should call the existing citation tool. No new service,
-database schema, sharing permissions, scheduler or delivery transport is added.
-Hosted gateway parity still requires the normal deployment and verification.
+Contribution details use a centered reading column: title and author first,
+compact facts next, then the always-visible insight and optional human note.
+Source/copy controls, revision details, citation explanation and moderation are
+secondary disclosures. Replies use a concise conversation treatment rather than
+duplicating report titles and metadata.
+
+The browser, demo and scoped gateway/MCP reads use the same field projection.
+There are no generated execution steps, practice checklists or action plans.
+Agents decide how context relates to their human's task. Copy exports only
+structured context; it does not send messages, publish content or record use.
+Draft context is visible only to its owner/permitted agent and marked private.
+New context fields are covered by exact-revision consent, private-link validation
+and the search index. Hosted migration/gateway deployment remains unverified.
 
 The current refinement uses one people-first activity stream. A selected
 published milestone can receive a compact portrait feature with a handwritten
@@ -147,12 +152,11 @@ sessions, session-progress writes and their scoped agent tools remain future wor
 ### Scoped visual contract
 
 The illustrated clubhouse is a local Circles exception within the existing navy
-workspace. The identity header, search, settings, sharing controls and published
-activity stream retain the shared board colors, sans-serif type, focus treatment
-and 44px controls. The room replaces the constellation as the main member
-selector; the single shared-update stream and compact handwritten milestone
-feature continue beneath it. Earlier constellation and three-view descriptions
-above remain design history.
+workspace. The identity header, search, settings and sharing controls retain the
+shared board colors, sans-serif type, focus treatment and 44px controls. The room
+leads the experience; the connected noticeboard below supplies a second member
+selector and the single published-update stream. Its current constellation and
+materials are defined below. Earlier three-view descriptions remain design history.
 
 Warm timber, lamplight, cream activity bubbles and green selected bubbles belong
 to the room illustration and character controls. Keep these materials inside the
@@ -194,3 +198,33 @@ existing fictional-session and shared-update distinctions continue to apply.
 For real members, station poses and walking labels describe the illustration;
 they do not establish that a person is applying, practicing or taking a break.
 Only the loaded published post supplies their shared-activity description.
+
+### Connected community noticeboard
+
+The lower feed connects to the clubhouse through its constellation and recurring
+illustrated characters while retaining the standard workspace theme. Its outer
+surface uses the shared `glass-panel`; panels, text, dividers, accents and selected
+states use semantic board tokens. Celebration actions use the shared primary
+button. This applies in both light and dark mode: no wood border, green felt or
+cream paper palette is applied to the community UI. The illustration inside the
+room retains its own scene materials.
+
+The board retains sans-serif names, dates and message copy, with handwriting
+reserved for the featured milestone callout. A published offer reads “Offered!”.
+Generated room avatars and a full-body milestone character appear only for
+fictional demo members; real-account board identities use initials.
+
+The board's member constellation surrounds a central Everyone emblem. Selecting
+a person there or in the room updates the same member filter, and Everyone or
+Show everyone restores the feed. More than eight members use a grid. On narrow
+screens the constellation stacks beneath the introduction, while notes and the
+celebration reflow within the board. Selection uses semantic buttons and
+`aria-pressed`, with visible names and the inherited keyboard-focus treatment.
+
+“Find a shared update” contains the existing search in a disclosure, opened for
+active results. Search results take precedence over the selected-person filter.
+Each conversational note keeps author, type, date and an action opening the
+existing contribution detail; the featured milestone appears once. Content
+still comes only from current permitted published revisions. The board changes
+presentation and filtering, without adding chat, presence, posting permissions
+or a new consent path. No global token or design-system sidecar update is needed.
