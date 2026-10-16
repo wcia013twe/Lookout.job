@@ -15,3 +15,8 @@
 - Added explicit preview interaction guidance for short and long fictional updates, dismissal and mobile behavior. Fixtures remain in memory; existing website/MCP thread and publication boundaries are unchanged.
 - Validation: TypeScript, all 357 tests, 76-role catalog validation and production static export pass. Desktop and 390px mobile visually checked; Escape, outside click, short/long updates, internal scrolling and Cheer opening the existing thread verified. Reduced-motion CSS disables the entrance animation. Mechanical detector only flags the existing functional goal tick separators.
 - No account writes, external messages, push or publication. Live authenticated account flows were not exercised for this presentation-only change.
+
+## Ivory status labels and purple actions
+
+- Match companion status labels and their pointers to the warm ivory activity bubble, including hover/focus states. Change bubble action/link/focus accents to a muted cottage purple, preserving green goal progress.
+- Validation: production static export passed; fictional preview visually verified. Existing mechanical detector finding remains the functional goal tick separators. Presentation-only color update; no data or action changes.
