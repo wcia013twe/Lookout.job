@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['toolkit-execution','toolkit outputs and document registration preserve ownership, scopes, replay and revocation'],
   ['onboarding', 'onboarding verifies first value, isolates owners, and never manufactures submission authority'],
   ['context-versions', 'settings versions advance only for the owner and remain scope-gated'],
   ['runner-failure', 'failure reports preserve drafts, reject stale writes and replay once'],

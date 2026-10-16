@@ -1,3 +1,4 @@
+import { toolkitFileResponse } from './toolkit.mjs';
 import { resumeUploadDispatch } from './resume-upload.mjs';
 import { resumeSetupResponse } from './profile-setup.mjs';
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
@@ -122,6 +123,9 @@ Deno.serve(async request => {
       try {
         return respond({data:await resumeSetupResponse({operation,data,storage:admin.storage.from('resumes'),rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
       } catch { return respond({error:'Resume upload or verification incomplete; retry the same upload'},400); }
+    }
+    if (['toolkit.file.begin','toolkit.file.complete','toolkit.file.read'].includes(operation)) {
+      return respond({data:await toolkitFileResponse({operation,data,storage:admin.storage.from('resumes'),rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
     }
     if (operation === 'resumes.read') {
       let url = data.reference_url;
