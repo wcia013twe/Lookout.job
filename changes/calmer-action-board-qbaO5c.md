@@ -9,3 +9,5 @@
 - Follow-up validation: 28 focused demo/planner tests, frontend typecheck and catalog validation passed; browser verified optional task details, completion updates and a 390px layout without overflow. Light and dark themes inspected. Existing full-build disk-space limitation remains.
 
 - Gray-theme rollback: reversed only the broad workspace palette/material changes from the first pass; preserved the explicit actions and compact weekly agenda. CSS diff check and frontend typecheck passed.
+
+- Cloud-hue follow-up: changed the Action Board widgets to soft blue and pink gradients, with matching controls and readable secondary text in both themes. Kept the agenda and interactions. Checked CSS whitespace and rendered the isolated demo preview.
