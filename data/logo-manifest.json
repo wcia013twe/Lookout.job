@@ -409,5 +409,10 @@
     "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/acadian-asset-management.png",
     "sha256": "627bb250b6a74228b1700de39d282940922980688303c33c7e613c9cb8e7a0c8",
     "contentType": "image/png"
+  },
+  "tiktok": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/tiktok.png",
+    "sha256": "3e37b1d51ead41bc3e9a3c2951994e0ecbcf090f09116a2055d27c547a12afa4",
+    "contentType": "image/png"
   }
 }
