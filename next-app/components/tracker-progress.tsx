@@ -1,4 +1,5 @@
 import type {ReactNode} from 'react';
+import { timelineItems } from '../../lib/application-timeline.mjs';
 import { trackerProgress, trackerStages, sharedTrackerStage } from '../../lib/tracker-display.mjs';
 import { CompanyLogo } from './role-card';
 import type { Application } from './workflow-types';
@@ -8,7 +9,8 @@ export function ApplicationIdentity({company,title,location,jobId,children}:{com
 }
 export default function TrackerProgress({application, item={}, vertical=false}: {application:Application; item?:{status?:string;openedDate?:string;appliedDate?:string};vertical?:boolean}) {
  const progress=trackerProgress(application,item);
- return <StageProgress progress={progress} vertical={vertical}/>;
+ const nextRound = vertical ? timelineItems(application).filter(event => event.phase === 'scheduled' && ['technical_round','recruiter_call','interview','onsite'].includes(event.kind)).sort((a,b)=>(a.occurred_at || '9999').localeCompare(b.occurred_at || '9999'))[0] : null;
+ return <><StageProgress progress={progress} vertical={vertical}/>{nextRound && <section className="tracker-next-round" aria-label="Next interview context"><h4>{nextRound.label}</h4>{nextRound.occurred_at && <time dateTime={nextRound.occurred_at}>{new Date(nextRound.occurred_at).toLocaleString(undefined,{month:'short',day:'numeric',...(nextRound.occurred_at.length===10?{timeZone:'UTC'}:{hour:'numeric',minute:'2-digit',timeZoneName:'short'})})}</time>}<p>{nextRound.source.note || nextRound.source.excerpt || 'Round focus not recorded yet. Add the recruiter’s requirements in Rounds & email.'}</p></section>}</>;
 }
 export function SharedApplicationStages({stage}:{stage:string}) {
  const progress=sharedTrackerStage(stage);

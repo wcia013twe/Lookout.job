@@ -42,7 +42,6 @@ function MessageEditor({ contact, update, remove }: { contact: ContactRecord; up
       <div className="flex flex-wrap gap-2">{linkedin && <a className={secondary} href={linkedin} target="_blank" rel="noreferrer">Open LinkedIn</a>}{link && <a className={secondary} href={link} target="_blank" rel="noreferrer">View role</a>}</div>
     </div>
     <h3 className="mt-6 text-lg font-bold">Your message</h3>
-    <p className="mt-2 text-xs text-board-muted">Edit directly. Select a highlighted sentence to see its note.</p>
     {contact.subject && <div className="mt-4"><Field label="Email subject"><input className={control} name="subject" value={contact.subject} onChange={e => update({ subject: e.target.value })}/></Field></div>}
     <AnnotatedMessage contact={contact} name={contact.contact || contact.name || "contact"} onChange={message => { update({ message }); setFeedback(""); }}/>
     <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>Copy message</button>{contact.subject && <button className={secondary} type="button" onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}</div>

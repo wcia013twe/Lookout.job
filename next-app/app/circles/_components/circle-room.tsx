@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState, useRef, type CSSProperties} from 'react';
+import {useEffect, useState, useRef, type ReactNode, type CSSProperties} from 'react';
 import type {Detail, Post} from '../_lib/types';
 import {parseCircleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
 import styles from './circle-room.module.css';
@@ -8,8 +8,8 @@ import {routines} from './room-motion';
 import {companions} from './companions';
 import {useRoomMotion} from './use-room-motion';
 
-type Props = {embedded?:boolean;detail:Detail; posts:Post[]; demo:boolean; person:string; selectPerson:(id:string)=>void;openPost:(post:Post)=>void};
-export default function CircleRoom({embedded=false,detail,posts,demo,person,selectPerson,openPost}:Props) {
+type Props = {embedded?:boolean;activityControl?:ReactNode;detail:Detail; posts:Post[]; demo:boolean; person:string; selectPerson:(id:string)=>void;openPost:(post:Post)=>void};
+export default function CircleRoom({embedded=false,activityControl,detail,posts,demo,person,selectPerson,openPost}:Props) {
  const [memberPage,setMemberPage]=useState(0);
  const [paused,setPaused]=useState(false);
  const [ambience,setAmbience]=useState('moon');
@@ -45,6 +45,7 @@ export default function CircleRoom({embedded=false,detail,posts,demo,person,sele
     <button type="button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused?'Resume motion':'Pause motion'}</button>
    </div>
   </div>
+  {activityControl}
   <div className={styles.roomWithActivity}>
   <div className={styles.viewport}>
    <div ref={roomRef} className={styles.room} data-paused={paused||!!selectedCompanion} data-gathered={gathered} data-ambience={ambience}>
@@ -64,6 +65,7 @@ export default function CircleRoom({embedded=false,detail,posts,demo,person,sele
     })}
    </div>
   </div>
+  {embedded&&!occupant&&<aside className={styles.statusPlaceholder} aria-label="Companion status"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 9h10M7 13h7m-7 4h4"/></svg><h3>In their corner</h3><p>Click a companion to see their recent activity, this week’s goal, and how you can help.</p><span>Only updates they choose to share.</span></aside>}
   {occupant&&<section ref={cardRef} tabIndex={-1} id="companion-activity" className={styles.activityCard} aria-labelledby="companion-activity-title" onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();closeActivity();}}}>
    <header className={styles.activityHeader}><div><h3 id="companion-activity-title">{name}’s recent activity</h3><p>{demo?'Fictional shared updates': 'Shared with this Circle'}</p></div><button type="button" onClick={closeActivity} aria-label="Close activity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header>
    {latest?<>
