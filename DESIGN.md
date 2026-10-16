@@ -191,7 +191,7 @@ Onboarding uses the user-approved rainbow glass reference: near-black navy backd
 
 ### Workspace refinement — October 2026
 
-Workspace pages use neutral charcoal surfaces in dark mode and white surfaces in light mode. `glass-panel` retains its shared class name but uses an opaque fill and a single quiet border, without gradients, luminous edges, blur or decorative shadows. `glass-inset` owns recessed editing areas; `glass-toolbar` groups controls. A muted blue accent is reserved for actions and selected states. Setup CSS and routes keep their existing visual authority. Typography retains the incumbent Inter/system stack, with responsive 26–32px page headings and 44px controls. Reduced-motion behavior remains unchanged. Profile and referrals retain their composition rules; controls and material tokens are shared.
+Workspace pages now use `.workspace-shell` scoped navy/cyan tokens and the setup card's restrained cyan, mint, lavender and pink edge spectrum. `glass-panel` owns the shared translucent fill and edge; `glass-inset` owns recessed editing areas; `glass-toolbar` groups controls. Setup CSS and routes keep their existing visual authority. Typography retains the incumbent Inter/system stack, with responsive 26–32px page headings and 44px controls. Tracking rows become a two-column metadata composition below the wide table breakpoint. Framer Motion is limited to pack reveals, tier placement, and preparation disclosures, respecting reduced-motion preferences. Reduced transparency switches glass surfaces to opaque navy. Profile and referrals retain only their composition rules in the profile CSS module; controls and material tokens are shared. The Action Board widgets use distinct violet and teal surfaces as described below; that exception does not neutralize the shared workspace theme.
 
 ### Tier banners and daily pack
 
@@ -218,7 +218,7 @@ scrollable phone view.
 The header offers System, Light and Dark. Tailwind v4's dark variant is driven by
 `html[data-theme]`; semantic board colors and native color-scheme switch together.
 A small pre-paint script respects the saved device preference, with guarded storage
-and system fallback. Light mode pairs neutral white panels with dark navy
+and system fallback. Light mode pairs pale cyan/lavender pearl glass with dark navy
 ink and darker action/status colors. Dark mode keeps the existing navy spectrum.
 Tier banners and sealed foil remain deliberately dark in both modes; role sheets
 and pack dialog chrome adopt the chosen palette. Setup keeps its approved night
