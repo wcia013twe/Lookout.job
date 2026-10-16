@@ -1,5 +1,37 @@
 # Circle visual assets
 
+## Active cloud cottage assets
+
+`cloud-cottage.webp` is the generated moonlit plush-room background. Five
+transparent horizontal three-pose strips supply the decorative NPCs:
+
+- `alfred.webp`: yellow Alfred, glasses and bow tie.
+- `iggy.webp`: pink Iggy, headphones.
+- `felipe.webp`: blue Felipe, beret.
+- `todd.webp`: green Todd, big eyes and **black bow tie**.
+- `jojo.webp`: magenta heart-shaped Jojo, sunglasses.
+
+These assets were generated from the five user-supplied character references.
+Exact prompts and generation provenance are preserved beside each asset in its
+`.webp.json` sidecar. Each companion strip contains three equal horizontal cells;
+CSS selects neutral, station and reaction poses and adds hopping, squash/stretch
+and station gestures. `companions.ts` is the canonical name and demo-member
+mapping; `room-motion.ts` owns the five station coordinates. Optimized public
+copies are served from `next-app/public/circles`.
+
+The room always shows five decorative companions independently of member count.
+Their routines, greetings and gathering do not indicate live agent or member
+activity. Progress appears only in explicitly fictional demo sessions. The same
+strips illustrate demo header avatars, constellation members and feed authors;
+real-account identities in those surfaces use initials. Scene materials stay
+local to the room; community chrome retains the shared workspace theme.
+
+## Historical people and scene assets
+
+The following portrait, photo and six-human clubhouse assets describe earlier
+Circles compositions and are not the current NPC room or demo-avatar source.
+The locally hosted handwriting font remains active for milestone callouts.
+
 `portraits.png` is a generated 3 × 2 sheet of six fictional people. CSS uses each
 cell as a portrait only in explicitly fictional demo mode. Real members use
 initials; these images must never imply verified identities or profile photos.
@@ -35,7 +67,7 @@ Cohesive understated navy blue and warm dusk palette in both. No text, no UI,
 no decoration. Each half is independently usable as a very wide web banner
 cropped around its center.
 
-## Clubhouse room
+## Historical clubhouse room
 
 `clubhouse.webp` is the generated empty study clubhouse background (1536 × 1024).
 `characters.webp` is a generated transparent 3 × 2 sheet of six illustrated adult
@@ -45,7 +77,7 @@ with cwebp. The complete generation prompts are preserved in `room-prompts.json`
 Room movement is decorative and does not indicate real online presence. Only the
 explicitly fictional demo has invented activity and session progress.
 
-`walking.webp` contains six identity columns and three gait rows. The renderer
+The superseded `walking.webp` contains six identity columns and three gait rows. The renderer
 uses the authored 300px row pitch (the sheet includes bottom padding) and plays
 0–1–2–1 while the actor travels a floor route. `stations.webp` is a 3 × 2 sheet:
 Wesley seated at a desk, Maya waving, Sam writing, Alex reading, Jordan seated

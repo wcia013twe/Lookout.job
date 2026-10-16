@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {routines,sampleRoutine} from '../next-app/app/circles/_components/room-motion.ts';
+import {routines,sampleRoutine,sampleTravel} from '../next-app/app/circles/_components/room-motion.ts';
 
-test('applying returns to a seated desk station after walking through the aisle',()=>{
- const routine=routines[5];
+test('Alfred returns to the application desk station after walking through the aisle',()=>{
+ const routine=routines[0];
  assert.equal(routine.task,'type');
  assert.deepEqual(sampleRoutine(routine,0),{...routine.station,mode:'working',direction:1,frame:0,journey:''});
  const outbound=sampleRoutine(routine,20);
@@ -24,4 +24,12 @@ test('reduced motion presents the station pose throughout the cycle',()=>{
   const pose=sampleRoutine(routine,time,true);
   assert.equal(pose.mode,'working');assert.equal(pose.x,routine.station.x);assert.equal(pose.y,routine.station.y);
  }
+});
+
+test('gather travel reaches its destination continuously and clamps at both ends',()=>{
+ const start={x:20,y:40},end={x:50,y:60};
+ assert.deepEqual(sampleTravel(start,end,-1),{...start,direction:1});
+ assert.deepEqual(sampleTravel(start,end,1),{...end,direction:1});
+ assert.deepEqual(sampleTravel(start,end,.5),{x:35,y:50,direction:1});
+ assert.equal(sampleTravel(end,start,.5).direction,-1);
 });

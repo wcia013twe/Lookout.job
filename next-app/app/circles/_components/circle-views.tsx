@@ -5,10 +5,9 @@ import type {Detail, Post} from '../_lib/types';
 import styles from './circle-views.module.css';
 import CircleRoom from './circle-room';
 import {primary} from '../../../components/ui';
+import {companionForMember} from './companions';
 
 type Props = {detail:Detail; posts:Post[]; demo:boolean; openPost:(post:Post)=>void; focused:boolean; controls:ReactNode; search:ReactNode; searching:boolean};
-const portraitNames = ['Maya','Sam','Alex','Jordan','Priya','Wesley'];
-const characterNames = ['Wesley','Maya','Sam','Alex','Jordan','Priya'];
 const cleanName=(name:string)=>name.replace(' (demo)','');
 const postKind=(post:Post)=>post.content.type==='milestone'?'Milestone':post.content.type==='resource'?'Resource':post.content.type==='opportunity'?'Opportunity':'Conversation';
 
@@ -17,9 +16,7 @@ export function CircleEmblem() {
 }
 
 function Avatar({name,demo,large=false}:{name:string;demo:boolean;large?:boolean}) {
- const index=demo?portraitNames.findIndex(person=>name.startsWith(person)):-1;
- const style=index>=0?{'--portrait-x':`${(index%3)*50}%`,'--portrait-y':`${Math.floor(index/3)*100}%`} as CSSProperties:undefined;
- return <span className={`${styles.avatar} ${large?styles.avatarLarge:''} ${index>=0?styles.portrait:''}`} style={style} aria-hidden="true">{index<0?name.split(/\s+/).slice(0,2).map(part=>part[0]).join(''):null}</span>;
+ return <span className={`${styles.avatar} ${large?styles.avatarLarge:''}`} aria-hidden="true">{demo?<RoomPortrait name={name} demo/>:name.split(/\s+/).slice(0,2).map(part=>part[0]).join('')}</span>;
 }
 
 function Arrow() {
@@ -27,9 +24,9 @@ function Arrow() {
 }
 
 function RoomPortrait({name,demo,full=false}:{name:string;demo:boolean;full?:boolean}) {
- const index=demo?characterNames.findIndex(person=>name.startsWith(person)):-1;
- if(index<0)return <Avatar name={name} demo={false}/>;
- return <span className={full?styles.characterFigure:styles.roomPortrait} aria-hidden="true"><span style={{'--character-x':`${index%3*50}%`,'--character-y':`${Math.floor(index/3)*100}%`} as CSSProperties}/></span>;
+ if(!demo)return <Avatar name={name} demo={false}/>;
+ const companion=companionForMember(name);
+ return <span className={full?styles.characterFigure:styles.roomPortrait} aria-hidden="true"><span style={{backgroundImage:`url('/circles/${companion.id}.webp')`}}/></span>;
 }
 
 function EventLink({post,openPost,demo}:{post:Post;openPost:(post:Post)=>void;demo:boolean}) {
@@ -60,7 +57,7 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
   {!focused&&<>
    <CircleRoom key={detail.circle.id} detail={detail} posts={published} demo={demo} person={person} selectPerson={setPerson}/>
    <section className={`${styles.noticeboard} glass-panel`} aria-labelledby="community-feed-title">
-    <header className={styles.boardHeading}><div className={styles.boardIntro}><h2 id="community-feed-title">Around the Circle</h2><p>The good news, useful finds, and little things worth sharing.</p><p className={styles.constellationHint}>Choose someone here or in the room to see what they’ve shared.</p></div>
+    <header className={styles.boardHeading}><div className={styles.boardIntro}><h2 id="community-feed-title">Around the Circle</h2><p>The good news, useful finds, and little things worth sharing.</p><p className={styles.constellationHint}>Choose someone in the constellation to see what they’ve shared.</p></div>
      <nav className={styles.constellation} data-grid={detail.members.length>8} aria-label="Filter shared updates by person"><span className={styles.orbit} aria-hidden="true"/><button type="button" className={styles.everyone} aria-pressed={!selected} onClick={()=>setPerson('')}><CircleEmblem/><span>Everyone</span></button>{detail.members.map((member,index)=>{const angle=index/Math.max(detail.members.length,1)*Math.PI*2-Math.PI/2;return <button type="button" className={styles.personNode} key={member.id} style={{'--node-x':`${50+Math.cos(angle)*36}%`,'--node-y':`${50+Math.sin(angle)*36}%`} as CSSProperties} aria-pressed={selected?.id===member.id} onClick={()=>setPerson(person===member.id?'':member.id)}><RoomPortrait name={member.alias} demo={demo}/><span>{cleanName(member.alias)}</span></button>;})}</nav>
     </header>
     <div className={styles.boardBody}>

@@ -46,6 +46,27 @@
   reports no findings; fresh design review disposition is ship.
 - No new imagery, persistence or backend service; existing unrelated edits remain.
 
+## Plush companions and cloud cottage
+
+- Replace the human NPCs with Alfred, Iggy, Felipe, Todd and Jojo, using generated
+  transparent three-pose WebP strips. Todd has a black bow tie in every pose;
+  Jojo is a magenta heart with round black sunglasses. Exact prompts are stored
+  beside the assets.
+- Generate a moonlit cloud cottage with a laptop desk, practice board, reading
+  table and music nook. Keep the surrounding feed and constellation on the
+  shared application theme.
+- Add companion greetings, hopping station routines, music and celebration
+  reactions, and continuous gather/return travel. Compact activity labels avoid
+  other labels and companion bodies. Preserve pause and reduced-motion support.
+- Keep decorative companions separate from actual Circle members. Demo progress
+  remains explicitly fictional; constellation filters actual shared updates.
+- Validation: all 322 tests, catalog validation, frontend typecheck and static
+  build pass. Desktop and 390px phone captures, greetings, member filtering,
+  gather/return travel and Todd's bow tie verified. Fresh design review: ship.
+- Limits: no live presence or background agent execution is implied. Phone room
+  uses the documented horizontal panorama. Hosted account authorization was not
+  re-tested.
+
 ## Shared community theme correction
 
 - Keep the constellation and feed composition while replacing the wood, green

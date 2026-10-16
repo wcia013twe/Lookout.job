@@ -1,10 +1,12 @@
 'use client';
 
 import {useEffect, useRef, type RefObject} from 'react';
-import {routines,sampleRoutine} from './room-motion';
+import {routines,sampleRoutine,sampleTravel,type Point} from './room-motion';
 
-export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:boolean,membersKey:string){
+export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:boolean,membersKey:string,gathered=false){
  const pauseRef=useRef(paused);
+ const gatherRef=useRef(gathered);
+ useEffect(()=>{gatherRef.current=gathered;},[gathered]);
  useEffect(()=>{pauseRef.current=paused;},[paused]);
  useEffect(()=>{
   const room=roomRef.current;if(!room)return;
@@ -16,13 +18,24 @@ export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:bool
   const observer=new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting??false;wake();});observer.observe(room);
   document.addEventListener('visibilitychange',wake);
   const resize=new ResizeObserver(()=>{width=room.clientWidth;});resize.observe(room);
+  let lastGathered=gatherRef.current;
+  const travel:(null|{start:Point;end:Point;elapsed:number})[]=actors.map(()=>null);
+  const previous:Point[]=actors.map((actor,index)=>sampleRoutine(routines[Number(actor.dataset.routine)],clocks[index]));
   function paint(actor:HTMLButtonElement,index:number){
    const routine=routines[Number(actor.dataset.routine)];
-   const sample=sampleRoutine(routine,clocks[index],preference.matches);
+   const base=sampleRoutine(routine,clocks[index],preference.matches);
+   let sample:{x:number;y:number;direction:number;mode:string;frame:number;journey:string}=base;
+   const trip=travel[index];
+   if(trip){
+    const arrived=preference.matches||trip.elapsed>=5;
+    sample=arrived?{...trip.end,direction:1,mode:gatherRef.current?'resting':'working',frame:0,journey:''}:{...sampleTravel(trip.start,trip.end,trip.elapsed/5),mode:'walking',frame:0,journey:gatherRef.current?'Joining the rug':'Back to their station'};
+    if(arrived&&!gatherRef.current){travel[index]=null;clocks[index]=0;}
+   }
+   previous[index]=sample;
    actor.style.setProperty('--move-x',`${sample.x}cqw`);
    actor.style.setProperty('--move-y',`${sample.y*2/3}cqw`);
    actor.style.setProperty('--direction',String(sample.direction));
-   actor.style.setProperty('--walk-y',`${[0,41.4365,82.873,41.4365][sample.frame]}%`);
+
    actor.style.zIndex=String(Math.round(sample.y));
    if(actor.dataset.mode!==sample.mode){actor.dataset.mode=sample.mode;const label=actor.querySelector('[data-journey]');if(label)label.textContent=sample.journey;}
    return sample;
@@ -32,15 +45,28 @@ export function useRoomMotion(roomRef:RefObject<HTMLDivElement|null>,paused:bool
    if(!visible||document.hidden){room!.dataset.sleeping='true';return;}
    const delta=last?Math.min((now-last)/1000,.1):0;last=now;
    if(visible&&!document.hidden){
+    if(gatherRef.current!==lastGathered){
+     lastGathered=gatherRef.current;
+     actors.forEach((actor,index)=>{const routine=routines[Number(actor.dataset.routine)];travel[index]={start:previous[index],end:lastGathered?routine.rest:routine.station,elapsed:0};});
+    }
     const boxes:{left:number;right:number;top:number;bottom:number}[]=[];
+    const samples=actors.map((actor,index)=>{
+     if(!pauseRef.current&&!actor.matches(':hover,:focus-visible')){if(travel[index])travel[index]!.elapsed+=delta;else if(!preference.matches)clocks[index]+=delta;}
+     return paint(actor,index);
+    });
+    const bodies=samples.map(sample=>({left:sample.x-5.5,right:sample.x+5.5,top:sample.y-16.5,bottom:sample.y}));
     actors.forEach((actor,index)=>{
-     if(!pauseRef.current&&!preference.matches&&!actor.matches(':hover,:focus-visible'))clocks[index]+=delta;
-     const sample=paint(actor,index);
-     // Pack only the labels; characters continue along their floor routes.
-     const bubbleWidth=154/width*100,bubbleHeight=(sample.mode==='walking'?48:90)/width*150;
+     const sample=samples[index];
+     const bubbleWidth=140/width*100,bubbleHeight=(sample.mode==='walking'?48:gatherRef.current?54:70)/width*150;
      const left=sample.x-bubbleWidth/2,right=sample.x+bubbleWidth/2;
-     let bottom=sample.y-18.75,top=bottom-bubbleHeight,shift=0;
-     for(const previous of boxes){if(left<previous.right+1&&right>previous.left-1&&top<previous.bottom+1&&bottom>previous.top-1){const amount=bottom-previous.top+2;shift+=amount;top-=amount;bottom-=amount;}}
+     let bottom=sample.y-16.5,top=bottom-bubbleHeight,shift=0;
+     const obstacles=[...boxes,...bodies.filter((_,bodyIndex)=>bodyIndex!==index)];
+     // Keep labels clear of both other labels and the companions themselves.
+     for(let pass=0;pass<10;pass++){
+      let moved=false;
+      for(const obstacle of obstacles){if(left<obstacle.right+.5&&right>obstacle.left-.5&&top<obstacle.bottom+.5&&bottom>obstacle.top-.5){const amount=bottom-obstacle.top+1;shift+=amount;top-=amount;bottom-=amount;moved=true;}}
+      if(!moved)break;
+     }
      boxes.push({left,right,top,bottom});
      actor.style.setProperty('--label-lift',`${Math.max(0,shift)*2/3}cqw`);
     });

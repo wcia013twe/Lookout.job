@@ -61,6 +61,13 @@ function createBackend(client, expectedUserId = null) {
     signOut() {
       return result(client.auth.signOut());
     },
+    async readToolkitResults({kind,applicationId}={}) {
+      const userId=await owner();
+      let query=client.from('career_toolkit_results').select('*').eq('user_id',userId).order('created_at',{ascending:false}).limit(100);
+      if(kind)query=query.eq('kind',kind);
+      if(applicationId)query=query.eq('application_id',applicationId);
+      return result(query);
+    },
     async loadWorkspace() {
       const userId = await owner();
       const tables = [

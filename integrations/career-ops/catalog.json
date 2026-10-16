@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "categories": [
     {
       "id": "profile",
@@ -46,7 +46,7 @@
     {
       "id": "profile-interview",
       "guideId": "career-profile-interview",
-      "version": 2,
+      "version": 3,
       "category": "profile",
       "title": "Talk through your experience",
       "summary": "Uncover the useful details that your resume leaves out.",
@@ -82,7 +82,7 @@
     {
       "id": "import-background",
       "guideId": "career-import-background",
-      "version": 2,
+      "version": 3,
       "category": "profile",
       "title": "Bring in existing documents",
       "summary": "Use documents you already have to propose missing profile details.",
@@ -118,7 +118,7 @@
     {
       "id": "expand-profile",
       "guideId": "career-expand-profile",
-      "version": 2,
+      "version": 3,
       "category": "profile",
       "title": "Find evidence in your portfolio",
       "summary": "Find relevant experience in the portfolio and public projects you have linked.",
@@ -153,7 +153,7 @@
     {
       "id": "add-experience",
       "guideId": "career-add-experience",
-      "version": 2,
+      "version": 3,
       "category": "profile",
       "title": "Add a project or achievement",
       "summary": "Turn completed work into an accurate, useful profile entry.",
@@ -189,7 +189,7 @@
     {
       "id": "find-jobs",
       "guideId": "career-find-jobs",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Find relevant jobs",
       "summary": "Search your chosen sources for roles that fit your goals.",
@@ -211,7 +211,7 @@
         "Search my saved sources for new backend roles that match my active preferences.",
         "Find internships with strong systems work and explain what still needs verification."
       ],
-      "requirements": "Browsing or a supported scanner is required. A saved source alone does not mean automatic scanning is active.",
+      "requirements": "Use list_job_providers, configure_job_provider, scan_job_sources, verify_job_posting when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/scan.md"
       ],
@@ -220,12 +220,18 @@
         "evaluate-job",
         "compare-jobs"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/scan.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/scan.md",
+      "tools": [
+        "list_job_providers",
+        "configure_job_provider",
+        "scan_job_sources",
+        "verify_job_posting"
+      ]
     },
     {
       "id": "quick-triage",
       "guideId": "career-quick-triage",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Quickly check a job",
       "summary": "Get a first-pass fit check before spending time on a full evaluation.",
@@ -247,7 +253,7 @@
         "Quickly triage this role against my profile. Is it worth a deeper look?",
         "Check these three job descriptions for obvious blockers before evaluating them fully."
       ],
-      "requirements": "Your agent needs real job text and profile context. A preliminary score is not a prediction of hiring success.",
+      "requirements": "Use verify_job_posting when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/triage.md"
       ],
@@ -256,12 +262,15 @@
         "evaluate-job",
         "compare-jobs"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/triage.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/triage.md",
+      "tools": [
+        "verify_job_posting"
+      ]
     },
     {
       "id": "evaluate-job",
       "guideId": "career-evaluate-job",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Evaluate a role in depth",
       "summary": "Understand the role, your evidence, the gaps and a sensible application strategy.",
@@ -284,7 +293,7 @@
         "Evaluate this role using my Lookout profile and resume. Show evidence for each important requirement.",
         "Explain why this job is a strong or weak fit and what I should verify before applying."
       ],
-      "requirements": "Browsing is needed for current posting and company facts. Use your own priorities rather than preset seniority defaults.",
+      "requirements": "Use verify_job_posting, record_toolkit_result when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/oferta.md"
       ],
@@ -293,12 +302,16 @@
         "quick-triage",
         "compare-jobs"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/oferta.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/oferta.md",
+      "tools": [
+        "verify_job_posting",
+        "record_toolkit_result"
+      ]
     },
     {
       "id": "compare-jobs",
       "guideId": "career-compare-jobs",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Compare opportunities",
       "summary": "Compare roles using the tradeoffs that matter to you.",
@@ -334,7 +347,7 @@
     {
       "id": "research-company",
       "guideId": "career-research-company",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Research a company",
       "summary": "Learn enough about the company and team to ask better questions.",
@@ -370,7 +383,7 @@
     {
       "id": "adjacent-titles",
       "guideId": "career-adjacent-titles",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Expand your job-title search",
       "summary": "Find relevant role titles you may not know to search for.",
@@ -406,7 +419,7 @@
     {
       "id": "regional-search",
       "guideId": "career-regional-search",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Search in another language or market",
       "summary": "Adapt a search to a market while keeping language and location separate.",
@@ -429,7 +442,7 @@
         "Help me search in Singapore and write my application materials in English.",
         "Evaluate this French job posting and explain the result in French."
       ],
-      "requirements": "Browsing is needed for current market facts. This guide supplies language and regional context, not a certified translation or immigration determination.",
+      "requirements": "Use scan_job_sources when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/regional/eu-swe.md",
         "modes/ar/README.md",
@@ -478,12 +491,15 @@
         "quick-triage",
         "evaluate-job"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/regional/eu-swe.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/regional/eu-swe.md",
+      "tools": [
+        "scan_job_sources"
+      ]
     },
     {
       "id": "tailor-resume",
       "guideId": "career-tailor-resume",
-      "version": 2,
+      "version": 3,
       "category": "documents",
       "title": "Tailor your resume",
       "summary": "Emphasize the experience most relevant to one role.",
@@ -505,7 +521,7 @@
         "Tailor my resume for this application using only experience I can support.",
         "Rewrite my summary and reorder my bullets for this job. Show what changed."
       ],
-      "requirements": "Text drafting works through your agent. Reading a PDF and producing a downloadable file depend on its tools.",
+      "requirements": "Use generate_career_document, check_resume_ats when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/text.md"
       ],
@@ -514,12 +530,16 @@
         "ats-check",
         "cover-letter"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/text.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/text.md",
+      "tools": [
+        "generate_career_document",
+        "check_resume_ats"
+      ]
     },
     {
       "id": "resume-pdf",
       "guideId": "career-resume-pdf",
-      "version": 2,
+      "version": 3,
       "category": "documents",
       "title": "Create a resume PDF",
       "summary": "Prepare a readable resume document tailored to a role.",
@@ -541,7 +561,7 @@
         "Create a clean PDF resume for this application and check that its text is selectable.",
         "Use my reviewed resume draft to create a new document version, keeping the original."
       ],
-      "requirements": "Your agent needs a document renderer. An available renderer must be checked before promising a downloadable file.",
+      "requirements": "Use generate_career_document when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/pdf.md"
       ],
@@ -550,12 +570,15 @@
         "ats-check",
         "cover-letter"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/pdf.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/pdf.md",
+      "tools": [
+        "generate_career_document"
+      ]
     },
     {
       "id": "ats-check",
       "guideId": "career-ats-check",
-      "version": 2,
+      "version": 3,
       "category": "documents",
       "title": "Check ATS readability",
       "summary": "Check document structure and keyword coverage without pretending to predict an employer's ATS.",
@@ -578,7 +601,7 @@
         "Check this resume for ATS readability and explain each issue.",
         "Compare keyword coverage with this role without adding skills I do not have."
       ],
-      "requirements": "Automated structural scoring needs an available checker and compatible source. A clean structure is not an employer pass guarantee.",
+      "requirements": "Use check_resume_ats when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/ats.md"
       ],
@@ -587,12 +610,15 @@
         "resume-pdf",
         "cover-letter"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/ats.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/ats.md",
+      "tools": [
+        "check_resume_ats"
+      ]
     },
     {
       "id": "cover-letter",
       "guideId": "career-cover-letter",
-      "version": 2,
+      "version": 3,
       "category": "documents",
       "title": "Write a cover letter",
       "summary": "Create a specific letter grounded in the role, company and your actual work.",
@@ -614,7 +640,7 @@
         "Draft a concise cover letter for this role. Ask me about my motivation before finalizing it.",
         "Make this cover letter more specific using my real projects and the company's work."
       ],
-      "requirements": "Company research requires browsing. PDF export needs a renderer; drafting never submits an application.",
+      "requirements": "Use generate_career_document when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/cover.md"
       ],
@@ -623,12 +649,15 @@
         "resume-pdf",
         "ats-check"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/cover.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/cover.md",
+      "tools": [
+        "generate_career_document"
+      ]
     },
     {
       "id": "application-email",
       "guideId": "career-application-email",
-      "version": 2,
+      "version": 3,
       "category": "documents",
       "title": "Draft an application email",
       "summary": "Prepare a clear application email with the right attachments.",
@@ -664,7 +693,7 @@
     {
       "id": "latex-resume",
       "guideId": "career-latex-resume",
-      "version": 2,
+      "version": 3,
       "category": "documents",
       "title": "Export a LaTeX resume",
       "summary": "Prepare a portable LaTeX resume for your preferred template or Overleaf.",
@@ -700,7 +729,7 @@
     {
       "id": "interview-research",
       "guideId": "career-interview-research",
-      "version": 2,
+      "version": 3,
       "category": "interviews",
       "title": "Research an interview",
       "summary": "Prepare for a company's actual process and the role you are discussing.",
@@ -736,7 +765,7 @@
     {
       "id": "prep-plan",
       "guideId": "career-prep-plan",
-      "version": 2,
+      "version": 3,
       "category": "interviews",
       "title": "Build an interview preparation plan",
       "summary": "Use the time you have to prepare the most important topics.",
@@ -773,7 +802,7 @@
     {
       "id": "practice-interview",
       "guideId": "career-practice-interview",
-      "version": 2,
+      "version": 3,
       "category": "interviews",
       "title": "Practice an interview",
       "summary": "Practice one question at a time with feedback grounded in your experience.",
@@ -811,7 +840,7 @@
     {
       "id": "story-bank",
       "guideId": "career-story-bank",
-      "version": 2,
+      "version": 3,
       "category": "interviews",
       "title": "Build your interview story bank",
       "summary": "Develop a small set of truthful stories you can adapt to behavioral questions.",
@@ -847,7 +876,7 @@
     {
       "id": "interview-debrief",
       "guideId": "career-interview-debrief",
-      "version": 2,
+      "version": 3,
       "category": "interviews",
       "title": "Debrief an interview",
       "summary": "Capture what happened while it is fresh and improve the next round.",
@@ -885,7 +914,7 @@
     {
       "id": "interview-signals",
       "guideId": "career-interview-signals",
-      "version": 2,
+      "version": 3,
       "category": "interviews",
       "title": "Review interview warning signs",
       "summary": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
@@ -922,7 +951,7 @@
     {
       "id": "find-contacts",
       "guideId": "career-find-contacts",
-      "version": 2,
+      "version": 3,
       "category": "outreach",
       "title": "Find people to contact",
       "summary": "Identify a relevant recruiter, hiring manager or team peer and a suitable approach.",
@@ -957,7 +986,7 @@
     {
       "id": "follow-up",
       "guideId": "career-follow-up",
-      "version": 2,
+      "version": 3,
       "category": "outreach",
       "title": "Prepare a follow-up",
       "summary": "Choose a reasonable follow-up and prepare the message.",
@@ -992,7 +1021,7 @@
     {
       "id": "understand-reply",
       "guideId": "career-understand-reply",
-      "version": 2,
+      "version": 3,
       "category": "outreach",
       "title": "Understand an employer reply",
       "summary": "Separate a real process update from recruiting noise and decide what to do.",
@@ -1028,7 +1057,7 @@
     {
       "id": "skill-gaps",
       "guideId": "career-skill-gaps",
-      "version": 2,
+      "version": 3,
       "category": "growth",
       "title": "Identify recurring skill gaps",
       "summary": "Find the gaps that repeatedly matter for your target roles.",
@@ -1050,7 +1079,7 @@
         "Find recurring skill gaps across these job descriptions and my profile.",
         "Which requirements keep blocking roles I want, and which could I prove with better examples?"
       ],
-      "requirements": "Cross-role analysis needs actual evaluations or supplied JDs. Do not invent rejection reasons or claim unavailable history was analyzed.",
+      "requirements": "Use analyze_career_history when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/upskill.md"
       ],
@@ -1059,12 +1088,15 @@
         "evaluate-course",
         "portfolio-project"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/upskill.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/upskill.md",
+      "tools": [
+        "analyze_career_history"
+      ]
     },
     {
       "id": "learning-plan",
       "guideId": "career-learning-plan",
-      "version": 2,
+      "version": 3,
       "category": "growth",
       "title": "Plan what to learn next",
       "summary": "Turn a meaningful skill gap into a manageable learning plan.",
@@ -1100,7 +1132,7 @@
     {
       "id": "evaluate-course",
       "guideId": "career-evaluate-course",
-      "version": 2,
+      "version": 3,
       "category": "growth",
       "title": "Evaluate a course or certification",
       "summary": "Decide whether a learning opportunity is worth your time.",
@@ -1136,7 +1168,7 @@
     {
       "id": "portfolio-project",
       "guideId": "career-portfolio-project",
-      "version": 2,
+      "version": 3,
       "category": "growth",
       "title": "Evaluate a portfolio project",
       "summary": "Choose a project that demonstrates skills your target roles need.",
@@ -1173,7 +1205,7 @@
     {
       "id": "compare-compensation",
       "guideId": "career-compare-compensation",
-      "version": 2,
+      "version": 3,
       "category": "offers",
       "title": "Compare compensation",
       "summary": "Understand desired, advertised and offered compensation without mixing unlike figures.",
@@ -1196,7 +1228,7 @@
         "Compare my target compensation with these offer figures. Keep base, equity and bonus separate.",
         "Compare these two offers without treating an uncertain equity value as guaranteed cash."
       ],
-      "requirements": "Calculations need compatible currency and pay periods. Do not guess exchange rates or interpret a historical range as an offer.",
+      "requirements": "Use record_toolkit_result, analyze_career_history when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "docs/SCRIPTS.md"
       ],
@@ -1204,12 +1236,16 @@
         "negotiation",
         "review-offer"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/docs/SCRIPTS.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/docs/SCRIPTS.md",
+      "tools": [
+        "record_toolkit_result",
+        "analyze_career_history"
+      ]
     },
     {
       "id": "negotiation",
       "guideId": "career-negotiation",
-      "version": 2,
+      "version": 3,
       "category": "offers",
       "title": "Prepare a negotiation",
       "summary": "Prepare a thoughtful compensation conversation grounded in your actual leverage.",
@@ -1245,7 +1281,7 @@
     {
       "id": "review-offer",
       "guideId": "career-review-offer",
-      "version": 2,
+      "version": 3,
       "category": "offers",
       "title": "Understand an offer or contract",
       "summary": "Prepare to discuss terms, gaps and questions with the employer or an adviser.",
@@ -1281,7 +1317,7 @@
     {
       "id": "recurring-search",
       "guideId": "career-recurring-search",
-      "version": 2,
+      "version": 3,
       "category": "automation",
       "title": "Plan a recurring search",
       "summary": "Make a recurring job search explicit before turning it on.",
@@ -1304,7 +1340,7 @@
         "Help me set up a weekday job search at 9am America/New_York. Check scheduling support before enabling it.",
         "Plan a scan every three days and tell me exactly what still needs setup."
       ],
-      "requirements": "Lookout settings do not activate a scheduler. Cron, launchd or another runtime may be used as appropriate; source recipes are reference material, not automatically installed jobs.",
+      "requirements": "Use scan_job_sources when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "docs/AUTOMATION.md"
       ],
@@ -1313,12 +1349,15 @@
         "review-search",
         "calibrate-fit"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/docs/AUTOMATION.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/docs/AUTOMATION.md",
+      "tools": [
+        "scan_job_sources"
+      ]
     },
     {
       "id": "follow-up-routine",
       "guideId": "career-follow-up-routine",
-      "version": 2,
+      "version": 3,
       "category": "automation",
       "title": "Plan recurring follow-up reviews",
       "summary": "Review overdue applications regularly and prepare useful drafts.",
@@ -1354,7 +1393,7 @@
     {
       "id": "review-search",
       "guideId": "career-review-search",
-      "version": 2,
+      "version": 3,
       "category": "automation",
       "title": "Review what is working",
       "summary": "Look for useful patterns in your own recorded search outcomes.",
@@ -1376,7 +1415,7 @@
         "Review my recorded search outcomes and identify patterns without guessing why I was rejected.",
         "Which parts of my search deserve a closer look, given the data I actually have?"
       ],
-      "requirements": "Small samples and pending outcomes must stay visible. Your agent needs access to the relevant history and calculation tools.",
+      "requirements": "Use analyze_career_history when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/patterns.md"
       ],
@@ -1385,12 +1424,15 @@
         "follow-up-routine",
         "calibrate-fit"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/patterns.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/patterns.md",
+      "tools": [
+        "analyze_career_history"
+      ]
     },
     {
       "id": "calibrate-fit",
       "guideId": "career-calibrate-fit",
-      "version": 2,
+      "version": 3,
       "category": "automation",
       "title": "Check your fit scoring",
       "summary": "Check whether past fit scores have been useful in your own search.",
@@ -1412,7 +1454,7 @@
         "Do my recorded fit scores predict interviews in my search? Say if there is too little data.",
         "Review high-scored rejections with me without automatically changing my scoring rules."
       ],
-      "requirements": "Needs real recorded scores and outcomes. Do not fabricate statistics or silently tune global scoring from a small sample.",
+      "requirements": "Use record_toolkit_result, analyze_career_history when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
       "sources": [
         "modes/calibrate.md"
       ],
@@ -1421,7 +1463,11 @@
         "follow-up-routine",
         "review-search"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/calibrate.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/calibrate.md",
+      "tools": [
+        "record_toolkit_result",
+        "analyze_career_history"
+      ]
     }
   ]
 }

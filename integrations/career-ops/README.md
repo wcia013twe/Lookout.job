@@ -23,13 +23,14 @@ The website imports only the catalog, not the large upstream instructions.
 `read_guide` returns one full adapted guide on demand under existing workspace
 read authorization. The developer index includes guide metadata, not full content.
 
-No upstream executable scripts, package dependencies, web UI, tracker, plugin
-installer, scheduler or renderer were installed. Guides referring to upstream
-commands do not make those executables available. The copied agent request tells
-the agent to check its actual capabilities. Copying never dispatches work; a
-missing or older deployed guide yields an explicit connection-update instruction. Source attribution remains here and in
-the manifest/license rather than in the product interface. Native output rendering, scheduling and new persistence
-services are outside this manual-library pass.
+The updated local runner now vendors actual provider, document, ATS and analytics
+code separately under `runner/vendor/career-ops/`. Its SHA-256 manifest pins the
+same commit. `scripts/import-career-tools.mjs <reviewed-source-checkout>` reproduces
+the dependency closure (207 files, including 108 network providers), templates,
+fonts and license. It excludes arbitrary local parsers, the parallel tracker/UI,
+installers, self-updaters, model wrappers and user data. See `runner/README.md` for
+executable MCP tools. No scheduler is activated. Local capabilities require a
+runner restart; hosted persistence requires the normal backend release.
 
 ## Updating
 
