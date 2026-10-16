@@ -166,7 +166,7 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
               {PACK_TEXTURES.map(option => {
                 const preview = option.image
                   ? `linear-gradient(#07101e22,#07101e5c),url("${asset(option.image)}")`
-                  : "radial-gradient(ellipse at 18% 26%,#65d7f5,transparent 45%),radial-gradient(ellipse at 78% 72%,#ffd482,transparent 48%),linear-gradient(145deg,#1b2440,#141020 72%)";
+                  : "radial-gradient(ellipse at 18% 26%,#f3b8d7,transparent 45%),radial-gradient(ellipse at 78% 72%,#ffd6e9,transparent 48%),linear-gradient(145deg,#1b2440,#141020 72%)";
                 return <label className="texture-option" key={option.id}>
                   <input type="radio" name="pack-texture" value={option.id} checked={texture.id === option.id} onChange={() => applyTexture(option.id)} />
                   <span className="texture-swatch" style={{ "--texture-preview": preview } as CSSProperties} aria-hidden="true" />

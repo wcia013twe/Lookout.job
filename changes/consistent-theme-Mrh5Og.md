@@ -1,0 +1,9 @@
+# Consistent cotton candy pink app theme
+
+- Discover is the visual reference: retain layered navy cards, shallow facets and sheen, using cotton candy pink (#f3b8d7) as the shared decorative accent. Light mode uses a readable deeper rose (#96365f).
+- Centralize Tailwind v4 color roles and action aliases in next-app/app/theme.css. Remove workspace/widget palette overrides; migrate Profile, tracker, Discover/drop feed, pack chrome, annotations and Circle overlays to shared tokens. Tier canvas materials use a pink family; labels, state shapes and artwork remain.
+- Document usage in next-app/THEME.md and the current DESIGN.md contract. Existing fictional demo fixtures inherit all styling; no account data, approvals or services change and no new MCP action is introduced.
+- Validation: 357/357 tests passed, data validation passed (76 roles), frontend typecheck and final static production build passed (50 routes), git diff --check passed. Browser checks covered Discover and Action Board in light/dark desktop and 390px mobile with no horizontal overflow. Computed primary-button contrast: 10.3:1 dark and 7.0:1 light; muted text at least 5.2:1 on the tinted surfaces.
+- Mechanical detector reported only incumbent Inter typography and the existing clubhouse goal-progress marker; both are outside this palette refinement. No new tests were added for reversible styling.
+- Limits: authenticated admin demo, all individual dialogs and all optional pack textures were not exercised interactively. Logos and authored/user-selected image textures retain their original colors.
+- Delivery checkout: /private/var/folders/rd/g5mh_z7s1g56b0dhk7_3xwv00000gn/T/lookout-features/consistent-theme-Mrh5Og/repo; branch codex/consistent-theme-Mrh5Og. Landed into local main only; nothing pushed or published. Preserve the pre-existing README, applications, draft-review, demo and sidebar-note edits in shared main.
