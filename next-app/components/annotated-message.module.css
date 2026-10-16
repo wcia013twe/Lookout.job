@@ -1,0 +1,21 @@
+.layout { display: grid; gap: 1rem; margin-top: .75rem; align-items: stretch; }
+.editor { position: relative; min-width: 0; border: 1px solid var(--color-board-line); border-radius: 12px; background: var(--color-board-panel); overflow: hidden; }
+.editor:focus-within { outline: 2px solid var(--color-board-accent); outline-offset: 2px; }
+.highlights, .editor .input { box-sizing: border-box; width: 100%; margin: 0; padding: 1.25rem; border: 0; font: inherit; font-size: 1rem; line-height: 1.75rem; letter-spacing: normal; white-space: pre-wrap; overflow-wrap: break-word; tab-size: 4; }
+.highlights { position: absolute; inset: 0; overflow: hidden; color: transparent; pointer-events: none; }
+.highlights mark { color: transparent; background: color-mix(in srgb, var(--annotation-color) 22%, transparent); border-radius: 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.highlights mark.active { background: color-mix(in srgb, var(--annotation-color) 36%, transparent); text-decoration: underline; text-decoration-color: var(--annotation-color); text-underline-offset: 4px; }
+.input { display: block; position: relative; min-height: 18rem; resize: none; background: transparent; color: var(--color-board-text); caret-color: var(--color-board-accent); outline: none; }
+.input::placeholder { color: var(--color-board-muted); opacity: 1; }
+.input::selection { background: color-mix(in srgb, var(--color-board-accent) 35%, transparent); }
+.note { display: flex; flex-direction: column; min-height: 7rem; min-width: 0; border: 1px solid var(--color-board-line); border-radius: 12px; background: var(--color-board-panel); padding: .75rem 1rem 1rem; }
+@media (min-width: 1280px) { .layout { grid-template-columns: minmax(0, 1fr) 13rem; } }
+
+.category[data-kind="Relate"] { --annotation-color: #e4bc45; }
+.category[data-kind="Value"] { --annotation-color: #60aef0; }
+.category[data-kind="Ask"] { --annotation-color: #57bd98; }
+.legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; margin-top: 1rem; color: var(--color-board-muted); font-size: .75rem; }
+.legend > span { display: inline-flex; align-items: center; gap: .4rem; }
+.swatch { display: inline-block; width: .625rem; height: .625rem; flex-shrink: 0; border-radius: 2px; background: var(--annotation-color); border: 1px solid color-mix(in srgb, var(--color-board-text) 20%, transparent); }
+
+.empty { margin: auto; max-width: 22ch; color: var(--color-board-muted); font-size: .875rem; line-height: 1.6; text-align: center; }
