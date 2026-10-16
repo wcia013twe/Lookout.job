@@ -1253,6 +1253,51 @@
       "applicationStatus": "New",
       "discoverySource": "zero2sudo stories",
       "verifiedDate": "2026-10-16"
+    },
+    {
+      "id": "mastercard-platform-engineering-intern-summer-2027",
+      "company": "Mastercard",
+      "title": "Platform Engineering Intern, Summer 2027",
+      "employmentType": "Internship",
+      "location": "O'Fallon, MO (St. Louis metro)",
+      "category": "Cloud & developer infrastructure",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-10-16",
+      "sourceFreshness": "today",
+      "whyItFits": "Platform engineering is a direct dev-infra/platform target: internal platform work at global payments scale in a 12-week program (June-Aug 2027, Job ID R-284880).",
+      "applicationUrl": "https://careers.mastercard.com/us/en/job/R-284880/Platform-Engineering-Intern-Summer-2027-St-Louis-MO-US",
+      "applicationStatus": "New"
+    },
+    {
+      "id": "tiktok-software-engineer-intern-recommendation-performance-efficiency-2027-summer",
+      "company": "TikTok",
+      "title": "Software Engineer Intern (Recommendation Performance Efficiency) - 2027 Summer",
+      "employmentType": "Internship",
+      "location": "San Jose, CA",
+      "category": "ML systems & AI infrastructure",
+      "priority": "Apply Now",
+      "postedDate": null,
+      "discoveredDate": "2026-10-16",
+      "sourceFreshness": "today",
+      "whyItFits": "Recommendation serving performance/efficiency is core ML-systems/inference work at massive scale; San Jose, Summer 2027, job code A254513.",
+      "applicationUrl": "https://lifeattiktok.com/search/7673636206961641781",
+      "applicationStatus": "New"
+    },
+    {
+      "id": "google-deepmind-student-researcher-program",
+      "company": "Google DeepMind",
+      "title": "Student Researcher Program (2026-2027 cycle)",
+      "employmentType": "Internship",
+      "location": "Google offices (in-person)",
+      "category": "AI/ML",
+      "priority": "Apply Now",
+      "postedDate": null,
+      "discoveredDate": "2026-10-16",
+      "sourceFreshness": "today",
+      "whyItFits": "Paid 12-24 week research stints inside Google DeepMind/Research engineering and science teams; Mythic-tier AI research credential, applications organized by degree level.",
+      "applicationUrl": "https://deepmind.google/student-researcher-program/",
+      "applicationStatus": "New"
     }
   ]
 }
