@@ -261,4 +261,4 @@ by side when space permits and stacked in narrow containers. Both the conversati
 stream and thread detail use JobAttachment. Only the reported stage is highlighted;
 private application dates or previous stages are not inferred. The exact stage and supplied experience date sit beneath the tracker within the same
 row; the posting link is a trailing icon, and employer job ID is secondary metadata
-under the company name. There is no separate attachment footer.
+alongside the company name as `Company | ID: <id>`. There is no separate attachment footer.

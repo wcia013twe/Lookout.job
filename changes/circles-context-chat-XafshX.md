@@ -31,3 +31,8 @@
 - Removed the separate footer: exact stage/date sit with the tracker, and the posting link is an accessible trailing icon in the same compact row. Employer job ID is secondary metadata beneath the company.
 - Mobile retains a stacked tracker while keeping the posting action beside the job identity.
 - Validation: frontend typecheck, production build, data validation (76 roles), diff check and desktop/mobile browser inspection (390px without document overflow). No domain/backend changes; no new tests needed.
+
+## Inline company and job ID
+
+- Attached job identity now renders `Company | ID: <employer ID>` on a single metadata line beneath the role, reusing an optional jobId prop in ApplicationIdentity. Other tracker rows retain their existing company label.
+- Validation: frontend typecheck, production static build and diff check. No backend or stored data changes.
