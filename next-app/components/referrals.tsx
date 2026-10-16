@@ -6,7 +6,7 @@ import { useOutreach } from "../lib/outreach";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { motion, useReducedMotion } from "framer-motion";
 import { Field, Heading, Notice, control, primary, secondary } from "./ui";
-import { CONTACT_TYPES, OUTREACH_STATUSES, contactType, draftOutreach, groupContacts, safeUrl } from "../../lib/outreach-model.mjs";
+import { OUTREACH_STATUSES, contactType, outreachBreakdown, groupContacts, safeUrl } from "../../lib/outreach-model.mjs";
 
 import OutreachTemplates from "./outreach-templates";
 
@@ -26,21 +26,14 @@ function ContactIcon({ type }: { type: string }) {
   };
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[type] || paths.other}</svg>;
 }
-function MessageEditor({ contact, profile, update, remove }: { contact: ContactRecord; profile: Record<string, unknown>; update: (fields: Partial<ContactRecord>) => void; remove: () => void }) {
+function MessageEditor({ contact, update, remove }: { contact: ContactRecord; update: (fields: Partial<ContactRecord>) => void; remove: () => void }) {
   const [feedback, setFeedback] = useState("");
-  const [editing, setEditing] = useState(!contact.message);
-  const [channel, setChannel] = useState("linkedin");
+  const breakdown = outreachBreakdown(contact);
   const kind = contactType(contact);
   const ready = !!contact.message?.trim() && !/\[[^\]]+\]/.test(contact.message!);
   async function copy(value: string | undefined, label: string) {
     try { await navigator.clipboard.writeText(value!); setFeedback(`${label} copied.`); }
     catch { setFeedback("Copy failed. Select the text below and copy it manually."); }
-  }
-  function generate() {
-    const result = draftOutreach(contact, profile);
-    if (result.missing.length) { setFeedback(`Add ${result.missing.join(", ").toLowerCase()} to prepare a complete message.`); setEditing(true); return; }
-    update({ subject: result.subject, message: result.message });
-    setFeedback("Draft prepared from your details. Review it before copying.");
   }
   const linkedin = safeUrl(contact.linkedin, true), link = safeUrl(contact.link);
   return <section className="min-w-0" aria-label={`Outreach for ${contact.contact || contact.name}`}>
@@ -48,29 +41,16 @@ function MessageEditor({ contact, profile, update, remove }: { contact: ContactR
       <div className="flex min-w-0 items-center gap-3"><CompanyLogo company={contact.company || ""}/><span className="text-board-accent"><ContactIcon type={kind}/></span><div className="min-w-0"><h2 className="break-words text-xl font-bold">{contact.contact || contact.name}</h2><p className="mt-1 text-sm text-board-muted">{typeLabels[kind]} at {contact.company}</p>{(contact.title || contact.role) && <p className="mt-2 text-sm text-board-muted">For {contact.title || contact.role}</p>}</div></div>
       <div className="flex flex-wrap gap-2">{linkedin && <a className={secondary} href={linkedin} target="_blank" rel="noreferrer">Open LinkedIn</a>}{link && <a className={secondary} href={link} target="_blank" rel="noreferrer">View role</a>}</div>
     </div>
-    <div className="mt-5 flex flex-wrap items-center justify-between gap-3"><h3 className="text-lg font-bold">Your message</h3><label className="flex items-center gap-2 text-sm text-board-muted">Format<select className={control} value={channel} onChange={e => setChannel(e.target.value)}><option value="linkedin">LinkedIn</option><option value="email">Email</option></select></label></div>
-    <p className="mt-2 text-sm text-board-muted">{ready ? "Ready to copy. Make any final edits here." : "Add your fit details or paste a finished draft from Muse."}</p>
-    {channel === "email" && <div className="mt-4"><Field label="Subject"><input className={control} name="subject" value={contact.subject || ""} onChange={e => update({ subject: e.target.value })}/></Field></div>}
+    <dl className="mt-5 grid gap-2 text-sm" aria-label="Message breakdown">
+      {Object.entries(breakdown).map(([label, value]) => <div key={label} className="grid grid-cols-[4rem_minmax(0,1fr)] gap-3"><dt className="font-semibold text-board-muted">{label}</dt><dd className="min-w-0 break-words">{value}</dd></div>)}
+    </dl>
+    <h3 className="mt-6 text-lg font-bold">Your message</h3>
+    {!contact.message && <p className="mt-2 text-sm text-board-muted">Paste a draft from Muse, then edit and copy it here.</p>}
+    {contact.subject && <div className="mt-4"><Field label="Email subject"><input className={control} name="subject" value={contact.subject} onChange={e => update({ subject: e.target.value })}/></Field></div>}
     <label className="mt-4 block"><span className="sr-only">Message for {contact.contact || contact.name}</span><textarea name="message" className={`${control} min-h-64 resize-y bg-board-panel leading-relaxed`} value={contact.message || ""} onChange={e => { update({ message: e.target.value }); setFeedback(""); }} placeholder="Your personalized message appears here."/></label>
-    <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>Copy message</button>{channel === "email" && <button className={secondary} type="button" disabled={!contact.subject?.trim()} onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}<button className={secondary} type="button" onClick={generate}>{contact.message ? "Regenerate from details" : "Draft from details"}</button></div>
+    <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>Copy message</button>{contact.subject && <button className={secondary} type="button" onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}</div>
     <Notice>{feedback}</Notice>
     {contact.message && !ready && <Notice>Replace the bracketed placeholders before copying.</Notice>}
-    <details className="mt-7 border-t border-board-line pt-5" open={editing} onToggle={e => setEditing(e.currentTarget.open)}><summary className="text-sm font-semibold">Contact &amp; fit details</summary>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <Field label="Contact name"><input className={control} name="contact" autoComplete="name" value={contact.contact || contact.name || ""} onChange={e => update({ contact: e.target.value })}/></Field>
-        <Field label="Company"><input className={control} name="company" value={contact.company || ""} onChange={e => update({ company: e.target.value })}/></Field>
-        <Field label="Contact type"><select name="contactType" className={control} value={kind} onChange={e => update({ contactType: e.target.value })}>{CONTACT_TYPES.map(type => <option key={type} value={type}>{typeLabels[type]}</option>)}</select></Field>
-        <Field label="Target role"><input className={control} name="title" value={contact.title || contact.role || ""} onChange={e => update({ title: e.target.value })}/></Field>
-        <Field label="LinkedIn profile"><input className={control} type="url" name="linkedin" value={contact.linkedin || ""} onChange={e => update({ linkedin: e.target.value })}/></Field>
-        <Field label="Job link"><input className={control} type="url" name="link" value={contact.link || ""} onChange={e => update({ link: e.target.value })}/></Field>
-        <Field label="Your relevant experience"><textarea className={control} rows={3} name="evidence" value={contact.evidence || ""} onChange={e => update({ evidence: e.target.value })} placeholder="One concrete achievement relevant to this role."/></Field>
-        <Field label="Why this company or team"><textarea className={control} rows={3} name="reason" value={contact.reason || ""} onChange={e => update({ reason: e.target.value })} placeholder="The specific work that interests you."/></Field>
-        <Field label="Shared connection (optional)"><input className={control} name="connection" value={contact.connection || ""} onChange={e => update({ connection: e.target.value })}/></Field>
-        <Field label="Contact source (optional)"><input className={control} type="url" name="sourceUrl" value={contact.sourceUrl || ""} onChange={e => update({ sourceUrl: e.target.value })}/></Field>
-        <Field label="Follow-up date"><input className={control} type="date" name="followUp" value={contact.followUp || contact.followup || ""} onChange={e => update({ followUp: e.target.value })}/></Field>
-        <Field label="Notes"><input className={control} name="notes" value={contact.notes || ""} onChange={e => update({ notes: e.target.value })}/></Field>
-      </div>
-    </details>
     <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-board-line pt-5"><label className="flex flex-wrap items-center gap-2 text-sm text-board-muted">Outreach status<select className={control} value={contact.status || "Not asked"} onChange={e => update({ status: e.target.value })}>{OUTREACH_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label><button className="min-h-11 px-3 text-sm text-board-muted hover:text-board-text" type="button" onClick={remove}>Remove contact</button></div>
     <p className="mt-3 text-xs text-board-muted">Update the status after you send. Copying a message doesn’t mark it sent.</p>
   </section>;
@@ -80,7 +60,6 @@ export default function Referrals() {
   const reducedMotion = useReducedMotion();
   const targets: ContactRecord[] = outreach.contacts, setTargets = outreach.setContacts;
   const [people, setPeople] = useSlice("network.people") as [ContactRecord[], ContactSetter];
-  const [profile] = useSlice("workflow.profile");
   const [selected, setSelected] = useState<string | null>(null);
   const messageRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -120,15 +99,15 @@ export default function Referrals() {
   }
   function openMuse() { setMuseOpen(!museOpen); setCompanyText((groupContacts(all) as ContactGroup[]).map(g=>g.company).join(", ")); setAddOpen(false); setFeedback(""); }
   return <ProfileSurface>
-    <div className="flex flex-wrap items-start justify-between gap-4"><Heading title="Referrals">Find the right person. Give them a reason to reply. Keep each company’s contacts and messages together.</Heading><div className="flex flex-wrap gap-2"><button type="button" className={primary} aria-expanded={museOpen} onClick={openMuse}>Prepare with Muse</button><button type="button" className={secondary} aria-expanded={addOpen} onClick={() => { setAddOpen(!addOpen); setMuseOpen(false); setFeedback(""); }}>Add manually</button></div></div>
+    <div className="flex flex-wrap items-start justify-between gap-4"><Heading title="Referrals">Review your message, make it yours, and copy it to send.</Heading><div className="flex flex-wrap gap-2"><button type="button" className={primary} aria-expanded={museOpen} onClick={openMuse}>Prepare with Muse</button><button type="button" className={secondary} aria-expanded={addOpen} onClick={() => { setAddOpen(!addOpen); setMuseOpen(false); setFeedback(""); }}>Add manually</button></div></div>
     {museOpen && <section className="mb-6 border-y border-board-line py-5" aria-labelledby="muse-outreach-heading"><h2 id="muse-outreach-heading" className="text-lg font-bold">Prepare company outreach</h2><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">{outreach.demo ? "Choose companies to preview prepared contacts and messages." : "Choose companies for Muse to research. It will save contacts and personal messages here on its next connected run."}</p><form onSubmit={requestOutreach} className="mt-4"><Field label="Companies"><textarea className={`${control} min-h-24`} value={companyText} onChange={e=>setCompanyText(e.target.value)} placeholder="Company names, separated by commas or new lines" required maxLength={10000}/></Field><button className={`${primary} mt-3`} disabled={busy || !outreach.ready}>{busy ? "Saving request…" : "Request outreach"}</button>{!outreach.signedIn && <p className="mt-3 text-sm text-board-muted">Sign in to save a request for Muse. You can still add contacts manually.</p>}</form></section>}
-    {addOpen && <section className="mb-6 border-y border-board-line py-5"><h2 className="text-lg font-bold">Add an outreach contact</h2><form onSubmit={add} className="mt-4 grid gap-4 sm:grid-cols-2"><Field label="Company"><input className={control} name="company" required/></Field><Field label="Contact name"><input className={control} name="contact" required autoComplete="name"/></Field><Field label="Contact type"><select className={control} name="contactType">{CONTACT_TYPES.map(type => <option key={type} value={type}>{typeLabels[type]}</option>)}</select></Field><Field label="Target role"><input className={control} name="title"/></Field><Field label="LinkedIn profile"><input className={control} name="linkedin" type="url"/></Field><div className="flex items-end"><button className={primary}>Add contact</button></div></form></section>}
+    {addOpen && <section className="mb-6 border-y border-board-line py-5"><h2 className="text-lg font-bold">Add an outreach contact</h2><form onSubmit={add} className="mt-4 grid gap-4 sm:grid-cols-2"><Field label="Company"><input className={control} name="company" required/></Field><Field label="Contact name"><input className={control} name="contact" required autoComplete="name"/></Field><Field label="LinkedIn profile (optional)"><input className={control} name="linkedin" type="url"/></Field><Field label="Target role (optional)"><input className={control} name="title"/></Field><div className="sm:col-span-2"><Field label="Message (optional)"><textarea className={control} name="message" rows={4} placeholder="Paste your message here, or add it later."/></Field></div><div className="flex items-end"><button className={primary}>Add contact</button></div></form></section>}
     <Notice>{feedback}</Notice>
     {outreach.requests.some((r: { status: string })=>r.status==='Queued') && <section className="mb-6 border-b border-board-line pb-4" aria-label="Pending outreach"><h2 className="text-sm font-semibold">Waiting for Muse</h2><ul className="mt-2 space-y-2 text-sm text-board-muted">{outreach.requests.filter((r: { status: string })=>r.status==='Queued').map((r: { id: string; companies: string[] })=><li key={r.id}>{r.companies.join(", ")} — queued for the next connected run</li>)}</ul><button type="button" className={`${secondary} mt-3`} onClick={()=>outreach.refresh().catch(()=>setFeedback("Could not refresh outreach. Try again."))}>Refresh outreach</button></section>}
 
     {all.length ? <div className={`${profileStyles.contactGrid} ${selected ? profileStyles.contactSelected : ""}`}>
       <aside className={`glass-inset min-w-0 ${profileStyles.contactList}`}><Field label="Find a company or contact"><input type="search" className={control} value={query} onChange={e => setQuery(e.target.value)}/></Field><div className="mt-5 overflow-y-auto pr-1 lg:max-h-[60vh]">{groups.map(group => <section className="mb-6" key={group.key}><div className="mb-2 flex items-center justify-between gap-3"><div className="flex min-w-0 items-center gap-3"><CompanyLogo company={group.company}/><h2 className="break-words text-sm font-bold">{group.company}</h2></div><span className="text-xs tabular-nums text-board-muted">{group.contacts.length}</span></div><ul className="space-y-1">{group.contacts.map(r => { const active = contact?.origin === r.origin && contact?.id === r.id; return <li key={`${r.origin}:${r.id}`}><button type="button" aria-pressed={active} onClick={() => setSelected(`${r.origin}:${r.id}`)} className={`flex min-h-16 w-full items-center gap-3 rounded-lg px-3 py-3 text-left ${active ? "bg-board-tag text-board-accent" : "text-board-muted hover:bg-board-panel hover:text-board-text"}`}><ContactIcon type={contactType(r)}/><span className="min-w-0"><span className="block break-words text-sm font-semibold">{r.contact || r.name}</span><span className="mt-1 block text-xs">{typeLabels[contactType(r)]} · {r.status || "Not asked"}</span></span></button></li>; })}</ul></section>)}{!groups.length && <p className="py-6 text-sm text-board-muted">No contacts match. Try another name.</p>}</div></aside>
-      {contact ? <motion.div layout={!reducedMotion} transition={{ duration: .24, ease: [0.16, 1, 0.3, 1] }} ref={messageRef} className={`glass-panel min-w-0 scroll-mt-6 ${profileStyles.message}`}><button type="button" className={profileStyles.contactBack} onClick={() => setSelected(null)} aria-label="Back to referral contacts"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m15 18-6-6 6-6"/></svg>Back to contacts</button><MessageEditor key={`${contact.origin}:${contact.id}`} contact={contact} profile={profile} update={update} remove={remove}/></motion.div> : <p className="text-sm text-board-muted">Select a contact to prepare their message.</p>}
+      {contact ? <motion.div layout={!reducedMotion} transition={{ duration: .24, ease: [0.16, 1, 0.3, 1] }} ref={messageRef} className={`glass-panel min-w-0 scroll-mt-6 ${profileStyles.message}`}><button type="button" className={profileStyles.contactBack} onClick={() => setSelected(null)} aria-label="Back to referral contacts"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m15 18-6-6 6-6"/></svg>Back to contacts</button><MessageEditor key={`${contact.origin}:${contact.id}`} contact={contact} update={update} remove={remove}/></motion.div> : <p className="text-sm text-board-muted">Select a contact to prepare their message.</p>}
     </div> : <section className="mt-6 border-y border-board-line py-12"><h2 className="text-xl font-bold">Start with a company you want to join</h2><p className="mt-3 max-w-lg text-sm leading-relaxed text-board-muted">Let Muse find the right contacts and draft a personal message, or add someone you already know. Each contact gets their own LinkedIn link and message.</p><div className="mt-6 flex flex-wrap gap-3"><button type="button" className={primary} onClick={openMuse}>Prepare with Muse</button><button type="button" className={secondary} onClick={() => { setAddOpen(true); setMuseOpen(false); }}>Add manually</button></div></section>}
     <OutreachTemplates initiallyOpen={!all.length}/>
     <Notice>{outreach.status}</Notice>

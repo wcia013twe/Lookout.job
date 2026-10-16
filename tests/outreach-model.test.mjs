@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType } from '../lib/outreach-model.mjs';
+import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType, outreachBreakdown } from '../lib/outreach-model.mjs';
 test('company grouping retains contacts and legacy role types', () => {
  const groups = groupContacts([{id:'1',company:' Google ',path:'Engineer (cold)'},{id:'2',company:'google',path:'Recruiter'}]);
  assert.equal(groups.length,1); assert.equal(groups[0].contacts.length,2);
@@ -23,4 +23,13 @@ test('import preserves existing history, updates duplicates and rejects invalid 
 test('unsafe and fabricated link shapes are rejected',()=> {
  for(const url of ['javascript:alert(1)','https://linkedin.com.evil/in/sam','https://www.linkedin.com/company/acme','https://user:pass@linkedin.com/in/sam']) assert.equal(safeUrl(url,true),'');
  assert.throws(()=>importOutreach(JSON.stringify([{company:'Acme',contact:'Sam',linkedin:'https://example.com'}]),[],()=> 'new'));
+});
+
+test('message breakdown uses saved connection and current ask without inventing facts', () => {
+ assert.deepEqual(outreachBreakdown({connection:'Example University alumni',title:'Backend Engineer',message:'Would you be comfortable referring me?'}), {Relate:'Example University alumni',Value:'Backend Engineer',Ask:'Referral'});
+ assert.equal(outreachBreakdown({contactType:'engineer',message:'What is the best next step to interview?'}).Ask,'Interview next step');
+ assert.equal(outreachBreakdown({contactType:'recruiter',message:'Would you refer me?'}).Ask,'Referral');
+ assert.equal(outreachBreakdown({contactType:'engineer'}).Relate,'No shared connection noted');
+ assert.equal(outreachBreakdown({message:'Thanks for your time.'}).Ask,'Not specified');
+ assert.equal(outreachBreakdown({message:'Could we chat?'}).Ask,'Could we chat?');
 });
