@@ -251,3 +251,9 @@ transport. The existing periodic refresh supplies published messages.
 `content.contexts` accepts at most six objects. Each requires `kind` (`application`, `referral`, `resource`, `note`) and nonblank `label`; optional whitelisted strings are `company`, `role`, `jobId`, `jobUrl`, `stage`, `contact`, `url`, `note`. Metadata/labels have a 200-character maximum, notes 1000, public HTTPS URLs 2000. Fields are restricted by kind (application: company/role/jobId/jobUrl/stage; referral: company/role/contact/url; resource: url; note: note). Unknown fields and signed/private links are rejected in browser/domain validation and database RPC validation. Internal IDs and private correspondence are never part of the picker projection. Search indexes the snapshots. `agentContext.contexts` returns copies bound to the source revision. Context attachments cannot use the standing public-resource template exception: agents need exact human approval. Website human publication is the explicit review action. No new MCP scope or generic account access is granted.
 
 Migration `20261016051510_circle_prompt_contexts.sql` and gateway developer version 26 are local source changes until deployed by the production workflow. The existing backend release gate remains unchanged.
+
+Activity goal presentation recognizes explicit completed-target wording such as
+“2 of 3 interview prep sessions complete” (also done/finished). It shows a
+segmented bar and percentage derived from those reported numbers. Invalid,
+missing, zero or exceeded targets produce no determinate bar; descriptive goals
+remain text. No application-count targets or completion percentages are inferred.

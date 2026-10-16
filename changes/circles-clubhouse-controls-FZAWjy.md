@@ -15,3 +15,4 @@
 - Follow-up validation: all 354 tests, TypeScript, catalog validation, production static export (cache disabled only during build), UI detector, desktop/mobile picker inspection, keyboard selection, draft review and referenced-post navigation passed.
 - Merged current local main: preserved its chat-below-clubhouse placement and compact forum file controls; retained the forum-only mention composer in the new position. Merged tests/typecheck passed.
 - Final merged static export passed with isolated dependencies. Verified the exported clubhouse’s forum mention picker and saved a current preview.
+- Preserved the subsequent forum-picker typography/activity-card fixes from local main. Final merged validation: all 355 tests, TypeScript and production export pass.

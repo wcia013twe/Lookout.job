@@ -57,3 +57,8 @@
 
 - Folded the standalone documents/images row into an “Add File” action immediately after Circle in the context category bar. The same file picker and local-preview behavior remain.
 - Validation: TypeScript, catalog validation and browser inspection. No backend changes.
+
+## Follow-up: readable, left-aligned context actions
+
+- Increased category/action labels from 10px to 13px and left-aligned the full control group. Removed Add File’s automatic right margin. Circle and Add File stay together when the bar wraps on narrow screens.
+- Validation: TypeScript, data validation and browser inspection of the picker.
