@@ -63,3 +63,34 @@
 }
 
 .roomSection[data-embedded=true] .activityCard>p,.roomSection[data-embedded=true] .activityCard>ul,.roomSection[data-embedded=true] .goal,.roomSection[data-embedded=true] .help{max-width:75ch}
+
+/* A warm speech bubble stays connected to its companion without resizing the room. */
+.roomSection .activityCard{
+ --color-board-text:#352e29;--color-board-muted:#716557;--color-board-bg:#f8f1e5;
+ --color-board-panel:#fffaf1;--color-board-tag:#eee4d4;--color-board-accent:#385b48;
+ --color-board-ink:#fffaf1;--color-board-line:#ddd0bc;--color-board-success:#3b6b4c;--color-board-warning:#835e20;
+ position:absolute;left:var(--bubble-left,16px);top:var(--bubble-top,16px);right:auto;bottom:auto;
+ width:340px;max-width:calc(100% - 32px);max-height:none;padding:0;border:0;border-radius:16px;
+ background:var(--color-board-bg);color:var(--color-board-text);box-shadow:0 12px 36px #251e3540;
+ overflow:visible;z-index:120;animation:activityAppear .18s ease-out;
+}
+.roomSection[data-embedded=true] .activityCard{position:absolute;width:340px;max-width:calc(100% - 32px);max-height:none;padding:0;border:0;border-radius:16px;background:var(--color-board-bg);box-shadow:0 12px 36px #251e3540;top:var(--bubble-top,16px);right:auto}
+.activityCard:before{content:'';position:absolute;top:var(--bubble-tip,40px);width:16px;height:16px;background:var(--color-board-bg);transform:translateY(-50%) rotate(45deg);z-index:-1}
+.activityCard[data-side=left]:before{right:-7px}
+.activityCard[data-side=right]:before{left:-7px}
+.activityCardContent{padding:22px;max-height:min(520px,var(--bubble-max-height,520px),calc(100dvh - 64px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b8a78e #f8f1e5;border-radius:inherit}
+.roomSection .activityHeader h3{font-size:18px}
+.roomSection .activityHeader p{font-size:11px}
+.roomSection .activityHeadline{font-size:15px;line-height:1.55;margin-top:16px}
+.roomSection .activityDate{font-size:11px}
+.roomSection .activityFootnote{font-size:11px;line-height:1.6}
+.roomSection .activityCard button:focus-visible,.roomSection .activityCard:focus-visible{outline-color:#385b48}
+.roomSection .activityCard ::selection{background:#d9e6ce;color:#253b2d}
+.room[data-selected=true] .character[aria-pressed=true] .bubble{visibility:hidden}
+@keyframes activityAppear{from{opacity:.6;translate:0 5px}to{opacity:1;translate:0 0}}
+@media(max-width:650px){
+ .roomSection .activityCard,.roomSection[data-embedded=true] .activityCard{position:fixed;left:12px;right:12px;top:auto;bottom:12px;width:auto;max-width:none;max-height:none;z-index:150;border-radius:16px}
+ .activityCard:before{display:none}
+ .activityCardContent{padding:22px;padding-bottom:max(22px,env(safe-area-inset-bottom));max-height:70dvh}
+}
+@media(prefers-reduced-motion:reduce){.roomSection .activityCard{animation:none}}
