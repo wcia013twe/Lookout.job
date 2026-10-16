@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {formatCircleActivity,parseCircleActivity,sharedMemberActivity} from '../lib/circle-activity.mjs';
+import {activityGoalProgress,formatCircleActivity,parseCircleActivity,sharedMemberActivity} from '../lib/circle-activity.mjs';
 import {createCircleKnowledgeDemo} from '../lib/circle-knowledge-demo.mjs';
 
 test('activity sections preserve member-authored facts without inventing progress',()=>{
@@ -40,4 +40,11 @@ test('demo activity uses existing scoped draft, review, publication and reply pa
  demo.action('knowledge.withdraw',{circleId,postId:draft.postId,expectedRevision:1});
  assert.deepEqual(sharedMemberActivity(demo.action('knowledge.search',{circleId}).items,'Wesley (demo)').map(post=>post.id),ownShared);
  assert.deepEqual(sharedMemberActivity(createCircleKnowledgeDemo().action('knowledge.search',{circleId}).items,'Wesley (demo)').map(post=>post.id),ownShared);
+});
+
+test('goal progress requires a valid explicit completed target',()=>{
+ assert.deepEqual(activityGoalProgress('2 of 3 interview prep sessions complete'),{completed:2,target:3,label:'interview prep sessions',percent:67});
+ assert.equal(activityGoalProgress('0 of 3 practice rounds done').percent,0);
+ assert.equal(activityGoalProgress('3 of 3 practice rounds complete').percent,100);
+ for(const goal of ['Finish my study plan','Sent 3 applications','2 of 3 interviews cancelled','4 of 3 rounds done','0 of 0 rounds done','-1 of 3 rounds done','99999999999999999 of 99999999999999999 rounds done']) assert.equal(activityGoalProgress(goal),null);
 });
