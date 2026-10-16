@@ -31,3 +31,13 @@
 - Validation: 342 tests, data validation, frontend typecheck and static build passed. UI detector reported no findings for the category-color change. Browser checked desktop/mobile colors, persisted message content, the empty note panel, and selecting/dismissing a note without resizing the editor.
 - Demo check: existing fictional message contains all three highlight categories; inspect the persistent placeholder, select a sentence, close its note, and reset.
 - Limits: authenticated cloud saves were not exercised; category matching retains its existing deterministic behavior.
+
+## Six-part outreach key and fictional examples
+
+- Expanded annotation categories to Background, Connection, Achievement, Why them, Timing and Ask, with distinct colors and a persistent key explaining each. Whole sentences remain editable/copyable; the note panel stays open.
+- Added editable recruiter and referral examples inside the existing Outreach templates section. The recruiter example demonstrates all six tags and a declarative interview ask; the referral example deliberately has no Timing tag. People, experience, benchmarks and timelines are explicitly fictional. Switching preserves preview edits, reset restores both examples, and copying includes only example text. No account contacts or backend writes are made by the preview.
+- Demo Prepare with Muse requests reuse the same examples. Existing saved contacts and admin fixtures remain intact. The existing outreach save/MCP contracts are unchanged; the examples are isolated local previews.
+- Annotation checks distinguish shared background from candidate introduction, achievements from company interest, real timeline wording from ordinary text, and direct requests from unrelated questions. Tags are reading aids rather than factual verification; unfamiliar wording can remain plain.
+- Validation: all 343 tests, data validation (76 roles), frontend typecheck and static production build passed. UI detector reported no findings. Browser verified all six recruiter tags, optional timing in the referral example, contextual notes, desktop/mobile key wrapping, isolated edits, switch retention, plain-text copy and reset.
+- Demo check: open Outreach templates, switch Recruiter example / Referral example, inspect all six key entries, click sentences, edit/copy/reset, and check desktop/mobile. Timing is optional.
+- Limits: authenticated cloud saves and admin-only request interaction were not exercised in the browser.
