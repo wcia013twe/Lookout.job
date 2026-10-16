@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createDemoWorkspace, createDemoServices } from '../next-app/lib/muse-demo-fixtures.mjs';
 import { canUseDemo, createMemoryStore, demoFixtures } from '../next-app/lib/demo.mjs';
+import { buildPreparationAgenda } from '../lib/preparation-planner.mjs';
 import { buildSubmissionRecord } from '../lib/submission-record.mjs';
 import { createDemoStore } from '../next-app/lib/demo-store.mjs';
 import { hasCallback, sortApplications, timelineItems } from '../lib/application-timeline.mjs';
@@ -235,4 +236,24 @@ test('aggregated planner demo saves budget and credits shared sessions in the pr
  assert.equal(store.get('workflow.preparationPlans.demo-interview').tasks.find(t=>t.key==='practice').completed,false);
  assert.equal(createDemoServices(createMemoryStore(demoFixtures('2026-10-15').state)).readPreparationPlanner instanceof Function,true);
  assert.deepEqual((await createDemoServices(createMemoryStore(demoFixtures('2026-10-15').state)).readPreparationPlanner()).sessions,[]);
+});
+
+test('weekly prep demo schedules company resources, mock interviews and research around highlighted rounds', async () => {
+ const today='2026-10-16';
+ const services=createDemoServices(createMemoryStore(demoFixtures(today).state));
+ const bundle=await services.readPreparationPlanner();
+ const agenda=buildPreparationAgenda({...bundle,today});
+ const titles=agenda.days.flatMap(day=>day.items.map(item=>item.title));
+ for(const title of ['Review Cedar engineering guide','Review Harbor query engine notes','Mock: job queues & retry safety','Mock: SQL plans & index selection','Research Cedar’s job platform','Research Harbor’s query engine']) assert.ok(titles.includes(title),title);
+ assert.equal(agenda.days[1].interviews[0].company,'Cedar Systems (demo)');
+ assert.equal(agenda.days[5].interviews[0].company,'Harbor Data (demo)');
+ assert.equal(agenda.unscheduled,0);
+ const cedar=bundle.plans.find(row=>row.application_id==='demo-interview').plan;
+ assert.match(cedar.tasks.find(task=>task.key==='mock-interview').detail,/Query Lab.*Cedar/);
+ assert.match(bundle.applications['demo-interview'].milestones.find(event=>event.kind==='technical_round').source.note,/Round focus:.*[\s\S]*Your evidence:.*Query Lab[\s\S]*Practice gap:/);
+ assert.match(bundle.applications['demo-interview'].whyItFits,/retry safety/);
+ assert.ok(agenda.days.every(day=>day.plannedMinutes<=45));
+ const companyResource=agenda.days.flatMap(day=>day.items).find(item=>item.title==='Review Harbor query engine notes');
+ assert.equal(companyResource.shared,false);
+ assert.deepEqual(companyResource.targets.map(target=>target.applicationId),['demo-confirmed']);
 });

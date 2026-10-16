@@ -6,6 +6,7 @@ import {applicationContext} from '../../../../lib/circle-attachments.mjs';
 import {validateCircleContextContent} from '../../../../lib/circle-context.mjs';
 import {formatCircleActivity,parseCircleActivity} from '../../../../lib/circle-activity.mjs';
 import styles from './conversation.module.css';
+import {useLocalCircleFiles} from './local-file-attachments';
 import PromptComposer from './prompt-composer';
 import promptStyles from './prompt-composer.module.css';
 
@@ -14,9 +15,10 @@ const jobKeys=['company','role','jobId','jobUrl','stage'] as const;
 const offerLabels:Record<keyof Offer,string>={company:'Company',role:'Role',location:'Location',base:'Base pay (currency / period)',equity:'Equity (amount / vesting)',signOn:'Signing bonus',notes:'Team, deadline & other details'};
 export default function Editor({initial,reply,inline,activityUpdate=false,demo=false,contexts=[],incomingContext,busy,save,cancel}:Props){
  const sharedActivity=parseCircleActivity(initial?.body);
- const [activity,setActivity]=useState(activityUpdate||!!(sharedActivity.highlights.length||sharedActivity.goal||sharedActivity.help));
+ const [activity]=useState(activityUpdate||!!(sharedActivity.highlights.length||sharedActivity.goal||sharedActivity.help));
  const [insight,setInsight]=useState(initial?.insight||'');
  const [message,setMessage]=useState(sharedActivity.message),[selectedContexts,setSelectedContexts]=useState<SharedContext[]>(initial?.contexts||[]);
+ const localFiles=useLocalCircleFiles(selectedContexts.length);
  const [error,setError]=useState(''),[kind,setKind]=useState(initial?.type||'discussion');
  const [attached,setAttached]=useState(!initial?.contexts?.some(item=>item.kind==='application')&&!!(initial?.company||initial?.jobId||initial?.jobUrl||initial?.stage));
  const [job,setJob]=useState<Partial<Content>>(()=>Object.fromEntries(jobKeys.map(k=>[k,initial?.[k]||''])));
@@ -30,6 +32,7 @@ export default function Editor({initial,reply,inline,activityUpdate=false,demo=f
   event.preventDefault();const form=new FormData(event.currentTarget),value=(key:string)=>String(form.get(key)||'').trim();
   const sources=value('sources').split('\n').filter(Boolean).map(line=>{const [url,...label]=line.trim().split(/\s+/);return {url,label:label.join(' ')||url};});
   try{
+   if(localFiles.files.length)throw Error('Files are local previews for now. Remove them before saving a post.');
    if(sources.length>10||sources.some(s=>{try{const u=new URL(s.url);return u.protocol!=='https:'||!!u.username||!!u.password;}catch{return true;}}))throw Error('Use up to 10 public HTTPS sources, one per line.');
    const activityText=activity&&!reply?formatCircleActivity({highlights:value('activityHighlights').split('\n'),goal:value('activityGoal'),help:value('activityHelp')}):'';
    const body=[value('body'),activityText].filter(Boolean).join('\n\n');
@@ -44,10 +47,9 @@ export default function Editor({initial,reply,inline,activityUpdate=false,demo=f
  const sourceDetails=<details className={styles.extra} open={!!initial?.sources.length||undefined}><summary>Sources &amp; sharing details</summary><div className="space-y-4 py-4"><Field label="Source classification (reported)"><select name="provenance" className={control} defaultValue={initial?.provenance||'user_confirmed'}><option value="user_confirmed">My confirmed experience</option><option value="employer_verified">Employer source provided</option><option value="agent_observed">Agent observed</option><option value="agent_inferred">Agent inference</option><option value="unknown">Unknown</option></select></Field><Field label="Public sources (HTTPS URL followed by a label, one per line)"><textarea name="sources" className={`${control} min-h-24`} defaultValue={initial?.sources.map(s=>`${s.url} ${s.label}`).join('\n')}/></Field><label className="flex min-h-11 items-center gap-3 text-sm"><input name="personalDisclosure" type="checkbox" defaultChecked={initial?.personalDisclosure??false}/>Contains personal details</label></div></details>;
  return <form ref={formRef} onSubmit={submit} className={inline?promptStyles.form:'space-y-5 border-y border-board-line py-6'} aria-label={reply?'Write a reply':inline?'Start a conversation':'Contribution editor'} data-dragging={dragging} onDragOver={event=>{if(event.dataTransfer.types.includes('application/x-lookout-job')){event.preventDefault();setDragging(true);}}} onDragLeave={()=>setDragging(false)} onDrop={drop}>
   {!inline&&<><h2 className="text-lg font-bold">{reply?'Write a reply':initial?'Edit contribution':'Start a conversation'}</h2><p className="text-sm text-board-muted">Your draft stays private until you review and share it.</p></>}
-  {reply?<Field label="Your reply"><textarea name="body" className={`${control} min-h-24`} defaultValue={initial?.body} required maxLength={12000}/></Field>:<><PromptComposer value={message} change={setMessage} contexts={selectedContexts} attach={context=>setSelectedContexts(old=>old.some(item=>JSON.stringify(item)===JSON.stringify(context))?old:[...old,context])} remove={index=>setSelectedContexts(old=>old.filter((_,i)=>i!==index))} legacyJob={attached?job:undefined} removeJob={()=>setAttached(false)} shared={contexts} demo={demo} busy={busy} hasInsight={!!insight.trim()||activity}/><div className={promptStyles.after}><span>Only your Circle · Review before sharing</span><span>Up to 6 context items</span></div></>}
+  {reply?<Field label="Your reply"><textarea name="body" className={`${control} min-h-24`} defaultValue={initial?.body} required maxLength={12000}/></Field>:<><PromptComposer value={message} change={setMessage} contexts={selectedContexts} attach={context=>setSelectedContexts(old=>old.some(item=>JSON.stringify(item)===JSON.stringify(context))?old:[...old,context])} remove={index=>setSelectedContexts(old=>old.filter((_,i)=>i!==index))} legacyJob={attached?job:undefined} removeJob={()=>setAttached(false)} shared={contexts} demo={demo} busy={busy} hasInsight={!!insight.trim()||activity} localFiles={localFiles}/><div className={promptStyles.after}><span>Only your Circle · Review before sharing</span><span>Up to 6 context items &amp; files</span></div></>}
   {!reply&&<>
    {activity&&<fieldset className={styles.attachment}><legend>Your shared activity</legend><p>Only share what you want your Circle to see. Counts are your own report.</p><Field label="Recent highlights (up to 3, one per line)"><textarea name="activityHighlights" className={`${control} min-h-24`} defaultValue={sharedActivity.highlights.join('\n')} maxLength={900} placeholder="Submitted 3 applications&#10;Received 1 referral&#10;Completed a mock interview"/></Field><Field label="This week's goal (optional)"><input name="activityGoal" className={control} defaultValue={sharedActivity.goal} maxLength={300} placeholder="2 of 3 interview prep sessions complete"/></Field><Field label="Could use a hand with… (optional)"><input name="activityHelp" className={control} defaultValue={sharedActivity.help} maxLength={300} placeholder="A practice partner for my project deep dive"/></Field><p>Friends can offer help by replying to this update.</p></fieldset>}
-  <button type="button" className={secondary} aria-expanded={activity} onClick={()=>setActivity(!activity)}>{activity?'Remove activity details':'Share activity'}</button>
   </>}
   {!reply&&<details className={promptStyles.details}><summary>Post details &amp; other attachments</summary><div><label className={styles.kind}>Conversation type<select aria-label="Conversation type" value={kind} onChange={event=>{setKind(event.target.value);if(event.target.value==='interview_report')setAttached(true);}} disabled={busy}>{Object.entries(types).filter(([key])=>key!=='reply').map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
   {!reply&&<>

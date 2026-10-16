@@ -14,9 +14,9 @@ States: General discussion, round insight, context-only legacy entry, offer comp
 
 ### Clubhouse and activity follow-up
 
-Left navigation is limited to Clubhouse, Company Intel and Resources. Clubhouse is
+Left navigation is limited to Clubhouse, Experiences and Resources. Clubhouse is
 the default central view, with member companions, opt-in shared activity cards and
-a shared update composer. Company Intel combines interview experiences, offers,
+a shared update composer. Experiences combines interview experiences, offers,
 company context and milestones; Resources keeps the shared shelf. The right rail
 is a freeform Circle chat and a simple message composer. On mobile, navigation
 becomes three horizontal choices and chat follows the main view. Preserve existing
@@ -26,3 +26,6 @@ Companion movement remains decorative. Activity displays only authored published
 updates: three highlights, a weekly goal and an optional help request. No automatic
 private tracker sharing, live presence or inferred submission counts.
 Composer extension: User-pinned prompt-box reference. Keep the existing Circle layout and theme; compose naturally in a roomy rounded field with plus and review arrow. `@` or plus reveals searchable application/referral/Circle context; selected chips expand into explicit snapshots, reusing the compact application attachment. Drag/drop offers an equivalent attachment path. Additional post fields stay collapsed. Review saves privately before the separate sharing action. Desktop and mobile retain the same interaction hierarchy. No chat transport or agent fetching claim is introduced.
+
+Clubhouse controls include a Share activity switch (off initially) that opens the authored activity composer. It does not publish or enable tracker broadcasting. Activity drafts keep the existing review boundary. Side chat uses text bubbles, with owned messages aligned right.
+File-preview extension: The same plus picker offers documents and images. Local chips show filename/type/size; image thumbnails expand in place. Keep file actions within the prompt and preserve the message-first visual hierarchy. The user explicitly deferred backend work; label local previews and prevent saving a post that would discard them. Store bytes nowhere persistently in this pass. The future database-key/object-storage design lives in docs/circles-file-attachments-plan.md.

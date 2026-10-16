@@ -152,21 +152,36 @@ button:not(:disabled) {
 
 /* Workspace glass inherits the setup card's spectrum without changing setup. */
 .workspace-shell {
-  --color-board-panel: #111b2a;
-  --color-board-tag: #172438;
-  --color-board-muted: #b8c8dc;
-  --color-board-line: #42516a;
-  --color-board-accent: #d8eaff;
-  --color-board-accent-hover: #eef7ff;
-  --color-board-ink: #10223a;
-  --workspace-action-primary: #d8eaff;
-  --workspace-action-primary-hover: #eef7ff;
-  --workspace-action-primary-text: #10223a;
-  --workspace-action-secondary: #1c2c43a6;
-  --workspace-action-secondary-hover: #2a3d56;
-  --workspace-action-secondary-text: #f5f4fa;
-  --workspace-action-secondary-border: #687e996b;
-  --workspace-action-secondary-border-hover: #b4d7f8;
+  --workspace-theme-color-board-panel: #111b2a;
+  --color-board-panel: var(--workspace-theme-color-board-panel);
+  --workspace-theme-color-board-tag: #172438;
+  --color-board-tag: var(--workspace-theme-color-board-tag);
+  --workspace-theme-color-board-muted: #b8c8dc;
+  --color-board-muted: var(--workspace-theme-color-board-muted);
+  --workspace-theme-color-board-line: #42516a;
+  --color-board-line: var(--workspace-theme-color-board-line);
+  --workspace-theme-color-board-accent: #d8eaff;
+  --color-board-accent: var(--workspace-theme-color-board-accent);
+  --workspace-theme-color-board-accent-hover: #eef7ff;
+  --color-board-accent-hover: var(--workspace-theme-color-board-accent-hover);
+  --workspace-theme-color-board-ink: #10223a;
+  --color-board-ink: var(--workspace-theme-color-board-ink);
+  --workspace-theme-workspace-action-primary: #d8eaff;
+  --workspace-action-primary: var(--workspace-theme-workspace-action-primary);
+  --workspace-theme-workspace-action-primary-hover: #eef7ff;
+  --workspace-action-primary-hover: var(--workspace-theme-workspace-action-primary-hover);
+  --workspace-theme-workspace-action-primary-text: #10223a;
+  --workspace-action-primary-text: var(--workspace-theme-workspace-action-primary-text);
+  --workspace-theme-workspace-action-secondary: #1c2c43a6;
+  --workspace-action-secondary: var(--workspace-theme-workspace-action-secondary);
+  --workspace-theme-workspace-action-secondary-hover: #2a3d56;
+  --workspace-action-secondary-hover: var(--workspace-theme-workspace-action-secondary-hover);
+  --workspace-theme-workspace-action-secondary-text: #f5f4fa;
+  --workspace-action-secondary-text: var(--workspace-theme-workspace-action-secondary-text);
+  --workspace-theme-workspace-action-secondary-border: #687e996b;
+  --workspace-action-secondary-border: var(--workspace-theme-workspace-action-secondary-border);
+  --workspace-theme-workspace-action-secondary-border-hover: #b4d7f8;
+  --workspace-action-secondary-border-hover: var(--workspace-theme-workspace-action-secondary-border-hover);
   position: relative;
   isolation: isolate;
   background: radial-gradient(ellipse at 4% 0%, #167caa20, transparent 45%), radial-gradient(ellipse at 95% 15%, #b053bb16, transparent 40%);
@@ -308,21 +323,36 @@ button:not(:disabled) {
   --color-board-success: #146c4c;
 }
 [data-theme="light"] .workspace-shell {
-  --color-board-panel: #ffffff;
-  --color-board-tag: #e7edf5;
-  --color-board-muted: #4b5b70;
-  --color-board-line: #adb9c9;
-  --color-board-accent: #24517b;
-  --color-board-accent-hover: #193f64;
-  --color-board-ink: #ffffff;
-  --workspace-action-primary: #24517b;
-  --workspace-action-primary-hover: #193f64;
-  --workspace-action-primary-text: #ffffff;
-  --workspace-action-secondary: #e9eff7;
-  --workspace-action-secondary-hover: #dce8f4;
-  --workspace-action-secondary-text: #244866;
-  --workspace-action-secondary-border: #a9bbcf;
-  --workspace-action-secondary-border-hover: #55718e;
+  --workspace-theme-color-board-panel: #ffffff;
+  --color-board-panel: var(--workspace-theme-color-board-panel);
+  --workspace-theme-color-board-tag: #e7edf5;
+  --color-board-tag: var(--workspace-theme-color-board-tag);
+  --workspace-theme-color-board-muted: #4b5b70;
+  --color-board-muted: var(--workspace-theme-color-board-muted);
+  --workspace-theme-color-board-line: #adb9c9;
+  --color-board-line: var(--workspace-theme-color-board-line);
+  --workspace-theme-color-board-accent: #24517b;
+  --color-board-accent: var(--workspace-theme-color-board-accent);
+  --workspace-theme-color-board-accent-hover: #193f64;
+  --color-board-accent-hover: var(--workspace-theme-color-board-accent-hover);
+  --workspace-theme-color-board-ink: #ffffff;
+  --color-board-ink: var(--workspace-theme-color-board-ink);
+  --workspace-theme-workspace-action-primary: #24517b;
+  --workspace-action-primary: var(--workspace-theme-workspace-action-primary);
+  --workspace-theme-workspace-action-primary-hover: #193f64;
+  --workspace-action-primary-hover: var(--workspace-theme-workspace-action-primary-hover);
+  --workspace-theme-workspace-action-primary-text: #ffffff;
+  --workspace-action-primary-text: var(--workspace-theme-workspace-action-primary-text);
+  --workspace-theme-workspace-action-secondary: #e9eff7;
+  --workspace-action-secondary: var(--workspace-theme-workspace-action-secondary);
+  --workspace-theme-workspace-action-secondary-hover: #dce8f4;
+  --workspace-action-secondary-hover: var(--workspace-theme-workspace-action-secondary-hover);
+  --workspace-theme-workspace-action-secondary-text: #244866;
+  --workspace-action-secondary-text: var(--workspace-theme-workspace-action-secondary-text);
+  --workspace-theme-workspace-action-secondary-border: #a9bbcf;
+  --workspace-action-secondary-border: var(--workspace-theme-workspace-action-secondary-border);
+  --workspace-theme-workspace-action-secondary-border-hover: #55718e;
+  --workspace-action-secondary-border-hover: var(--workspace-theme-workspace-action-secondary-border-hover);
   background: radial-gradient(ellipse at 4% 0%, #bddced66, transparent 45%), radial-gradient(ellipse at 95% 15%, #ecd9f04d, transparent 40%);
 }
 [data-theme="light"] .workspace-shell .glass-panel {
@@ -592,12 +622,12 @@ button:not(:disabled) {
 }
 .prep-total, .prep-duration { flex-shrink: 0; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-board-accent); }
 .prep-total { font-size: .8125rem; font-weight: 600; padding-top: .25rem; }
-.prep-agenda-day { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: .875rem; padding-block: .875rem; border-top: 1px solid var(--color-board-line); }
-.prep-date { display: flex; flex-direction: column; gap: .25rem; padding-top: .75rem; font-size: .6875rem; color: var(--color-board-muted); }
-.prep-date-number { font-size: 1.25rem; font-weight: 600; line-height: 1; }
+.prep-agenda-day { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: .875rem; padding-block: 1rem; }
+.prep-date { display: flex; flex-direction: column; gap: .25rem; padding-top: .75rem; font-size: .75rem; color: var(--color-board-muted); }
+.prep-date-number { font-size: 2rem; font-weight: 600; line-height: 1; }
 .prep-date-today { color: var(--color-board-accent); }
 .prep-session { display: flex; align-items: flex-start; gap: .5rem; }
-.prep-session-summary { display: flex; align-items: baseline; gap: .5rem; min-height: 44px; padding-block: .625rem; font-size: .8125rem; line-height: 1.45; cursor: pointer; list-style: none; }
+.prep-session-summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: .5rem; min-height: 44px; padding-block: .625rem; font-size: .8125rem; line-height: 1.45; cursor: pointer; list-style: none; }
 .prep-session-summary::-webkit-details-marker { display: none; }
 .prep-session-summary > span:first-child { text-decoration: underline; text-decoration-color: var(--color-board-line); text-underline-offset: 3px; }
 .prep-session-summary:hover > span:first-child { text-decoration-color: currentColor; }
@@ -607,3 +637,33 @@ button:not(:disabled) {
 .prep-complete:hover:not(:disabled) { border-color: var(--color-board-accent); }
 .prep-complete:disabled { opacity: .45; }
 .prep-interview { display: flex; align-items: center; gap: .5rem; min-height: 44px; text-align: left; color: var(--color-board-accent); font-size: .8125rem; font-weight: 600; }
+
+/* Dates and spacing group the agenda; interview events carry the emphasis. */
+.prep-agenda-day + .prep-agenda-day { margin-top: .5rem; }
+.prep-interview { width: 100%; margin-bottom: .75rem; padding: .75rem; border: 1px solid var(--color-board-accent); border-radius: 10px; background: var(--color-board-tag); }
+.prep-interview svg { flex-shrink: 0; }
+.prep-interview-label { display: block; margin-bottom: .25rem; font-size: .6875rem; font-weight: 500; }
+.prep-interview-day .prep-date-number { color: var(--color-board-accent); }
+.prep-settings { padding-top: .5rem; }
+.action-widget .divide-y > :not(:last-child) { border-bottom-color: color-mix(in srgb, var(--color-board-line) 28%, transparent); }
+
+.prep-session-context { grid-column: 1 / -1; font-size: .75rem; line-height: 1.5; color: var(--color-board-muted); }
+
+/* Application details always use the shared workspace palette, regardless of opener. */
+.workspace-shell .tracker-detail {
+  --color-board-panel: var(--workspace-theme-color-board-panel);
+  --color-board-tag: var(--workspace-theme-color-board-tag);
+  --color-board-muted: var(--workspace-theme-color-board-muted);
+  --color-board-line: var(--workspace-theme-color-board-line);
+  --color-board-accent: var(--workspace-theme-color-board-accent);
+  --color-board-accent-hover: var(--workspace-theme-color-board-accent-hover);
+  --color-board-ink: var(--workspace-theme-color-board-ink);
+  --workspace-action-primary: var(--workspace-theme-workspace-action-primary);
+  --workspace-action-primary-hover: var(--workspace-theme-workspace-action-primary-hover);
+  --workspace-action-primary-text: var(--workspace-theme-workspace-action-primary-text);
+  --workspace-action-secondary: var(--workspace-theme-workspace-action-secondary);
+  --workspace-action-secondary-hover: var(--workspace-theme-workspace-action-secondary-hover);
+  --workspace-action-secondary-text: var(--workspace-theme-workspace-action-secondary-text);
+  --workspace-action-secondary-border: var(--workspace-theme-workspace-action-secondary-border);
+  --workspace-action-secondary-border-hover: var(--workspace-theme-workspace-action-secondary-border-hover);
+}

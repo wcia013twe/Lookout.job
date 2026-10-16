@@ -27,8 +27,8 @@ export function createDemoWorkspace(now = new Date()) {
     { id: 'demo-uncertain', company: 'Lantern Compute (demo)', title: 'Infrastructure Engineer', description: 'Build reliable backend systems.', status: 'Blocked' },
     { id: 'demo-skip-location', company: 'Pine Networks (demo)', title: 'Backend Engineer', description: 'An office-only role outside the demo candidate’s preferred location.', status: 'New' },
     { id: 'demo-skip-level', company: 'Willow Software (demo)', title: 'Senior Platform Engineer', description: 'Experience requirements are unclear in this fictional posting.', status: 'New' },
-  ].map(role => ({ ...role, employmentType: 'FT', type: 'FT', location: 'Fictional City, Remote', priority: 'Strong Consider', applicationUrl: `https://example.com/demo/jobs/${role.id}`, url: `https://example.com/demo/jobs/${role.id}`, discoveredDate: today, postedDate: today, whyItFits: 'Fictional role for exercising Muse features. No real employer or opening.' }));
-  const resume = { id: resumeId, name: 'Jordan Example — backend résumé (demo)', version: 2, filename: 'demo-backend-resume.pdf', content_hash: hash, text: 'Fictional profile: built a sample SQL service and a university systems project. No real candidate information.' };
+  ].map(role => ({ ...role, employmentType: 'FT', type: 'FT', location: 'Fictional City, Remote', priority: 'Strong Consider', applicationUrl: `https://example.com/demo/jobs/${role.id}`, url: `https://example.com/demo/jobs/${role.id}`, discoveredDate: today, postedDate: today, whyItFits: role.id === 'demo-interview' ? 'Cedar builds multi-tenant job processing backed by PostgreSQL. This backend round focuses on retry safety, queue backpressure and SQL performance. Your fictional Query Lab project gives you a concrete latency-debugging example; rehearse how you would extend it to production failure handling.' : role.id === 'demo-confirmed' ? 'Harbor builds a SQL query engine. Your fictional SQL-service internship is relevant to query latency and index selection; prepare to explain an EXPLAIN plan and how you would validate a performance improvement.' : 'Fictional role for exercising Muse features. No real employer or opening.' }));
+  const resume = { id: resumeId, name: 'Jordan Example — backend résumé (demo)', version: 2, filename: 'demo-backend-resume.pdf', content_hash: hash, text: 'Fictional profile: instrumented p95 SQL query latency in a sample service during an internship. Built Query Lab, a university project comparing indexed lookups and query plans. Production queue backpressure is a learning goal. No real candidate information.' };
   const questions = [
     { id: 'demo-why', question: 'Why are you interested in this team?', answer: 'Demo answer: I enjoy understanding database reliability and would like to build dependable services.', fieldType: 'text' },
     { id: 'demo-project', question: 'Tell us about a relevant project.', answer: 'Demo answer: I built a fictional course project that measured SQL query latency.', fieldType: 'textarea' },
@@ -40,7 +40,7 @@ export function createDemoWorkspace(now = new Date()) {
     activity: [{ at, text: 'Fictional application seeded for the demo.', actor: 'demo' }],
   }]));
   const guides = [{ id: 'demo-database-guide', title: 'Database interview guide (fictional demo resource)', url: 'https://example.com/demo/resources/database-interview', topics: ['database', 'backend', 'sql'], minutes: 30 }];
-  const confirmedDate = day(today, 3);
+  const confirmedDate = day(today, 1);
   let confirmedPlan = createPreparationPlan({ application: applications['demo-interview'], now: at, guides, deadline: {
     date: confirmedDate, stage: 'Technical interview', confirmed: true,
     source: { kind: 'email', messageId: 'demo-email-confirmed', subject: 'Demo: your technical interview', receivedAt: at, excerpt: `Fictional email: your technical interview is on ${confirmedDate} at 14:00 UTC. Prepare to discuss SQL and backend design.`, url: 'https://example.com/demo/email/confirmed' },
@@ -50,9 +50,22 @@ export function createDemoWorkspace(now = new Date()) {
     date: 'next Friday', stage: 'Phone screen', confirmed: false,
     source: { kind: 'email', messageId: 'demo-email-ambiguous', subject: 'Demo: finding a time', receivedAt: at, excerpt: 'Fictional email: can you speak next Friday? We will confirm the date and time shortly.', url: 'https://example.com/demo/email/ambiguous' },
   } });
-  const secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,guides,deadline:{date:day(today,5),stage:'Technical interview',confirmed:true,source:{kind:'manual'}}});
-  const companyGuide = {id:'cedar-lookout-report',title:'Cedar backend round report (fictional)',url:'https://example.com/demo/intelligence/cedar',companies:['Cedar Systems (demo)'],topics:['backend'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional report: a query-planning discussion followed by a backend design exercise.'};
+  let secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,guides,deadline:{date:day(today,5),stage:'Technical interview',confirmed:true,source:{kind:'manual'}}});
+  const companyGuide = {id:'cedar-lookout-report',title:'Cedar engineering guide',url:'https://example.com/demo/intelligence/cedar',companies:['Cedar Systems (demo)'],topics:['backend'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional report: a query-planning discussion followed by a backend design exercise.'};
   confirmedPlan = createPreparationPlan({application:applications['demo-interview'],now:at,previousPlan:confirmedPlan,guides:[...guides,companyGuide],deadline:{...confirmedPlan.deadline,confirmed:true}});
+  const harborGuide = {id:'harbor-query-guide',title:'Harbor query engine notes',url:'https://example.com/demo/resources/harbor-query-engine',companies:['Harbor Data (demo)'],topics:['database'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional company resource covering query execution and index tradeoffs.'};
+  secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,previousPlan:secondPlan,guides:[...guides,harborGuide],deadline:{...secondPlan.deadline,confirmed:true}});
+  function variedPrep(plan, company, focus) {
+    // Fictional examples exercise the same planner/session paths as real tasks.
+    const tasks = plan.tasks.map(task => ['application','questions','logistics','guide-demo-database-guide'].includes(task.key) ? {...task,completed:true,completedAt:at} : task.key === 'practice' ? {...task,detail:company === 'Cedar' ? 'Query Lab → explain index tradeoffs for Cedar’s backend round. Focus on the production tradeoffs you have not practiced yet.' : 'SQL internship → explain index selectivity for Harbor’s round. Practice reading a query plan without relying on memorized answers.'} : task.guideId === 'cedar-lookout-report' ? {...task,detail:'Cedar’s queue notes → extend your Query Lab latency story. Fictional company resource.'} : task.guideId === 'harbor-query-guide' ? {...task,detail:'Harbor’s engine notes → revisit your SQL internship’s index choices. Fictional company resource.'} : task);
+    const extra = [
+      {key:'mock-interview',title:company === 'Cedar' ? 'Mock: job queues & retry safety' : 'Mock: SQL plans & index selection',detail:company === 'Cedar' ? 'Query Lab → rehearse Cedar’s queue retries and backpressure. Fictional mock: design a reliable queue and explain the failure modes aloud.' : 'SQL internship → practice Harbor’s query-plan analysis. Fictional mock: justify an index and measure its impact.',minutes:30},
+      {key:'company-research',title:company === 'Cedar' ? 'Research Cedar’s job platform' : 'Research Harbor’s query engine',detail:company === 'Cedar' ? 'Query Lab → ask Cedar about noisy-neighbor isolation. Fictional company research brief.' : 'SQL internship → ask Harbor about query-plan regressions. Fictional company research brief.',minutes:15},
+    ].map(task => ({...task,id:`${plan.applicationId}:${task.key}`,completed:false,completedAt:null,dueDate:plan.deadline.date}));
+    return {...plan,tasks:[...tasks,...extra],warnings:plan.warnings.filter(warning=>warning !== 'The remaining preparation exceeds your daily time budget. Prioritize tasks or increase available time.')};
+  }
+  confirmedPlan = variedPrep(confirmedPlan,'Cedar','design a reliable job queue and discuss retries');
+  secondPlan = variedPrep(secondPlan,'Harbor','explain SQL query plans and indexing choices');
   const prepRows = Object.fromEntries([confirmedPlan, ambiguousPlan, secondPlan].map(plan => [plan.applicationId, { application_id: plan.applicationId, user_id: identity, plan: copy(plan), version: 1, updated_at: at }]));
   function attempt(id, state) {
     const application = applications[id];
@@ -70,7 +83,7 @@ export function createDemoWorkspace(now = new Date()) {
   applications['demo-confirmed'].submittedResume = { ...copy(submittedResume), evidenceSource: 'observed_confirmation' };
   applications['demo-interview'].submittedResume = { ...copy(submittedResume), evidenceSource: 'email' };
   const email = (messageId, subject, excerpt) => ({ kind: 'email', messageId, subject, excerpt, receivedAt: at, url: `https://example.com/demo/email/${messageId}` });
-  const milestone = (applicationId, key, kind, label, occurredAt, phase, source) => ({ id: `${applicationId}-${key}`, user_id: identity, application_id: applicationId, event_key: key, kind, label, occurred_at: occurredAt, phase, source: { ...copy(source), ...(kind === 'technical_round' ? {note:'Fictional private note: review SQL query plans and distributed-system tradeoffs before this round.'} : {}), ...(occurredAt ? { timestampConfirmed: true } : {}) }, created_at: at });
+  const milestone = (applicationId, key, kind, label, occurredAt, phase, source) => ({ id: `${applicationId}-${key}`, user_id: identity, application_id: applicationId, event_key: key, kind, label, occurred_at: occurredAt, phase, source: { ...copy(source), ...(kind === 'technical_round' ? {note:'Round focus: PostgreSQL query plans, queue retries and backpressure.\nYour evidence: Query Lab latency measurements and the SQL-service internship.\nPractice gap: explaining production failure handling beyond the university project.\nFictional recruiter brief and candidate evidence.'} : {}), ...(occurredAt ? { timestampConfirmed: true } : {}) }, created_at: at });
   const cedarSubmitted = `${day(today, -3)}T14:00:00Z`;
   applications['demo-interview'].submittedAt = cedarSubmitted;
   applications['demo-interview'].milestones = [
