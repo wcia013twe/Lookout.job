@@ -37,3 +37,11 @@ test('sentence annotations preserve exact message text and highlight complete se
  assert.equal(outreachSentences({message:'Reduced latency by 30%.',evidence:'Reduced latency by 30%.'})[0].kind,'Value');
  assert.deepEqual(outreachSentences({}),[]);
 });
+
+test('shared employer sentence is annotated as a connection without changing the text', () => {
+ const message = 'I saw that you also worked at Oracle. I built a backend service.';
+ const spans = outreachSentences({message});
+ assert.equal(spans[0].kind,'Relate');
+ assert.equal(spans[1].kind,'Value');
+ assert.equal(spans.map(s=>s.text).join(''),message);
+});

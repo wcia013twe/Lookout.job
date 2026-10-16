@@ -1,0 +1,12 @@
+.layout { display: grid; gap: 1rem; margin-top: 1rem; align-items: start; }
+.editor { position: relative; min-width: 0; border: 1px solid var(--color-board-line); border-radius: 12px; background: var(--color-board-panel); overflow: hidden; }
+.editor:focus-within { outline: 2px solid var(--color-board-accent); outline-offset: 2px; }
+.highlights, .editor .input { box-sizing: border-box; width: 100%; margin: 0; padding: 1.25rem; border: 0; font: inherit; font-size: 1rem; line-height: 1.75rem; letter-spacing: normal; white-space: pre-wrap; overflow-wrap: break-word; tab-size: 4; }
+.highlights { position: absolute; inset: 0; overflow: hidden; color: transparent; pointer-events: none; }
+.highlights mark { color: transparent; background: color-mix(in srgb, var(--color-board-accent) 20%, transparent); border-radius: 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.highlights mark.active { background: color-mix(in srgb, var(--color-board-accent) 36%, transparent); text-decoration: underline; text-decoration-color: var(--color-board-accent); text-underline-offset: 4px; }
+.input { display: block; position: relative; min-height: 18rem; resize: none; background: transparent; color: var(--color-board-text); caret-color: var(--color-board-accent); outline: none; }
+.input::placeholder { color: var(--color-board-muted); opacity: 1; }
+.input::selection { background: color-mix(in srgb, var(--color-board-accent) 35%, transparent); }
+.note { min-width: 0; border: 1px solid var(--color-board-line); border-radius: 12px; background: var(--color-board-panel); padding: .75rem 1rem 1rem; }
+@media (min-width: 1280px) { .withNote { grid-template-columns: minmax(0, 1fr) 13rem; } }

@@ -14,3 +14,12 @@
 - Read view uses React text/mark wrappers. Edit message opens the original textarea; copying and persistence keep the original plain text and whitespace. The existing fictional alumni draft exercises all three annotation types.
 - Validation: 341 tests, data validation, frontend typecheck and static build passed. Sentence tests cover exact text reconstruction, full-sentence classification, unmatched/empty content and saved evidence. Browser checked desktop/mobile wrapping, editing and plain-text copying.
 - Limits: sentence labels use deterministic matching, so unfamiliar wording can remain unhighlighted. Authenticated cloud saves were not exercised.
+
+## Editable highlighted text box
+
+- Replaced the read/edit toggle and arrow gutter with one custom text box. A decorative, inaccessible highlight layer follows the native controlled textarea, preserving native cursor selection, undo, composition and plain-text editing. Highlight sentences open short Relate / Value / Ask notes on click/tap or keyboard cursor navigation.
+- Notes are hidden initially, appear alongside the editor on wide screens and below it on mobile, and close with Escape or their close button. Edits clear the active note. The editor grows with its contents and remeasures when its width changes; both layers share exact typography and wrapping.
+- Shared-employer wording from the user's example is recognized as Relate. No external profile claims or new stored fields are introduced; existing save and MCP boundaries are unchanged.
+- Demo check: prepare the fictional alumni message, click each highlighted sentence, type directly, use arrow keys and Escape, copy, and reset. Existing demo drafts cover all three annotation types.
+- Validation: 342 tests, data validation (76 roles), typecheck, static production build and UI detector passed. Browser verified desktop/mobile note placement, highlight alignment, keyboard navigation/dismissal, direct editing and plain-text copy.
+- Limits: unfamiliar phrasing can remain unhighlighted; notes are concise guidance based on sentence categories. Authenticated cloud saves were not exercised.
