@@ -24,6 +24,11 @@ establish contrast, keyboard usability or the usefulness of a conversation.
 
 ## Current dashboard
 
+The contribution behavior below remains current. Visual descriptions of the
+earlier portrait, constellation and three-view compositions are historical; the
+cloud cottage and connected community noticeboard sections define the current
+Circles surface.
+
 The contribution is useful context: job link, stage and insight, with optional
 company, role, experience date, public sources and uncertainty. A human message
 is optional. The editor leads with insight/link/stage and tucks the message and
@@ -56,7 +61,7 @@ Search replaces the content with matching posts and Clear restores the dashboard
 Header controls retain Settings, Share and conditional private draft review.
 The earlier three-view composition below records the design history.
 
-## Implemented surface
+## Earlier implemented surface (historical)
 
 ### Three connected views
 
@@ -118,84 +123,72 @@ receipts cannot substantiate stronger impact claims. Every new service must ship
 matching scoped MCP operations and shared validation before it is advertised as
 available to agents.
 
-## Clubhouse room — October 2026
+## Cloud cottage — October 2026
 
-The shared room now leads Circles. A full-width illustrated study clubhouse has
-six gently roaming character avatars with activity above their heads. Select a
-character to filter that member's published updates below, and Show everyone to
-restore the feed. Search, contribution inspection, sharing, revision review and
-membership controls keep their existing behavior. Circles larger than six use
-Previous people / More people to explore the room's members in groups.
+The room now leads Circles with five decorative NPC companions in a moonlit,
+plush cloud cottage. They are independent of Circle membership: the room always
+contains Alfred, Iggy, Felipe, Todd and Jojo, including an empty Circle. Actual
+members and their shared updates remain in the constellation below. This replaces
+the earlier six-human clubhouse, member pagination and seated-human station
+sheets; those assets remain historical references.
 
-Rainy evening and Lamplight change the local scene's appearance; Pause motion
-stops character movement. Reduced-motion preferences disable it automatically.
-The room pans horizontally on phones, retaining readable activity labels and
-full-size character controls. None of these presentation controls writes account
-or backend state, and they need no new service or MCP operation. Shared posts
-still use the existing `knowledge.search` / contribution operation boundaries.
+The companion identities follow the five user-supplied references: yellow Alfred
+with glasses and a bow tie; pink Iggy with headphones; blue Felipe with a beret;
+green Todd with big eyes and a **black bow tie**; and magenta heart-shaped Jojo
+with sunglasses. `companions.ts` owns canonical names, station descriptions,
+greetings and fictional-member mappings. Generated transparent three-pose strips
+and `cloud-cottage.webp` are authored in `next-app/assets/circles`, with exact
+generation prompts in their adjacent `.webp.json` files.
 
-In the resettable signed-out preview and admin demo, fictional members show
-example sessions: Wesley applying, interview practice, final-round preparation,
-opportunity review, a coffee break and an offer celebration. Session bars are
-fixed illustrative task completion, never fabricated live progress. Real Circle
-activity derives only from the currently loaded permitted published revisions;
-a member without a matching shared post gets “No shared activity.” Room positions
-and motion never imply that members are currently online. Actual opt-in live
-sessions, session-progress writes and their scoped agent tools remain future work.
+Choose a companion to hear its greeting and trigger a temporary reaction. This
+selects an NPC, rather than filtering real member posts. In demo mode only, the
+greeting offers a separate explicit action to see the linked fictional member's
+shared updates. The mapping is illustrative, not an identity or presence claim.
+The greeting is announced through a polite status region.
+
+Moonlight and Starlight lamps change the local scene appearance. Gather on the
+rug moves the companions together; Back to stations returns them. These controls
+and greetings write no account or backend state. Demonstration activity labels
+and fixed progress bars are explicitly fictional. Real accounts show decorative
+station labels, never invented agent tasks or member activity. Actual opt-in
+live sessions and their scoped agent tools remain future work.
 
 ### Scoped visual contract
 
-The illustrated clubhouse is a local Circles exception within the existing navy
-workspace. The identity header, search, settings and sharing controls retain the
-shared board colors, sans-serif type, focus treatment and 44px controls. The room
-leads the experience; the connected noticeboard below supplies a second member
-selector and the single published-update stream. Its current constellation and
-materials are defined below. Earlier three-view descriptions remain design history.
+The cloud cottage is an illustration exception within the existing workspace.
+Soft plush forms, moonlight, stars, lilac furnishings and warm activity bubbles
+belong inside the room. Header, toolbar, greeting, search, membership, sharing
+and the lower community UI keep the existing shared theme, sans-serif type,
+keyboard-focus treatment and 44px controls in both color modes. The room pans
+inside a bounded viewport on phones, retaining full-size companion controls.
 
-Warm timber, lamplight, cream activity bubbles and green selected bubbles belong
-to the room illustration and character controls. Keep these materials inside the
-room CSS module rather than promoting them into workspace tokens. The generated
-clubhouse background and transparent character, walking and station sheets are
-authored in
-`next-app/assets/circles`; their optimized public copies supply the scene.
-Illustrated avatars are decorative member representations, with visible names
-and published activity providing identity and meaning.
+NPC buttons expose the selected greeting companion through `aria-pressed` and
+announce their hello action by name. Preserve the adjacent fictional-session or
+decorative-companion disclosure whenever this room is reused. No global color,
+typography, spacing or component-token change, or design-system sidecar
+regeneration, is required. Scene styles remain in `circle-room.module.css`;
+routine coordinates and playback live in `room-motion.ts` and
+`use-room-motion.ts`.
 
-The scene retains its spatial composition in a bounded horizontal viewport on
-small screens. Character buttons expose selection through `aria-pressed`, keep
-activity in their accessible names, and pause movement on hover or keyboard
-focus. Pause motion and reduced-motion support are part of this component's
-contract. Ambience changes affect only the illustration. Preserve the adjacent
-fictional-session or decorative-motion disclosure whenever this room is reused.
+### Companion routines
 
-This extension requires no global color, typography, spacing or component-token
-update, and no regeneration of the design-system sidecar. Its one-off scene
-materials remain scoped here and in `circle-room.module.css`; routine timing and
-playback live in `room-motion.ts` and `use-room-motion.ts`.
+The five NPCs use a 44-second station / hop / break / return loop. Alfred works
+at the tiny laptop desk, Iggy grooves in the music nook, Felipe plans at the
+practice board, Todd reads at the table and Jojo cheers from the rug. The three
+poses combine with squash, stretch, hopping and station gestures. Floor position
+controls depth; overhead labels travel with companions and lift to avoid overlap.
+Gather and return use animated travel from the current position.
 
-### Station routines
-
-Characters now use an explicit 44-second station / walk / break / return loop
-rather than drifting around a fixed point. In the fictional demo, Wesley sits at
-the application desk,
-Priya reads at the other desk, Sam writes at the whiteboard, Alex reads practice
-notes, Jordan sits with coffee, and Maya waves in celebration. Separate generated
-walking frames and station poses preserve their appearance. Floor routes follow
-the open aisles; direction flips and depth ordering follow the actor's position.
-Overhead labels travel with the actors and lift when needed to avoid collisions.
-
-Pause freezes the current routine without resetting its clock. Hover and keyboard
-focus freeze that character for selection. Offscreen rooms and hidden tabs stop
-playback. Reduced motion shows stationary station poses. These are local visual
-routines, not evidence of live presence or newly completed session tasks; the
-existing fictional-session and shared-update distinctions continue to apply.
-For real members, station poses and walking labels describe the illustration;
-they do not establish that a person is applying, practicing or taking a break.
-Only the loaded published post supplies their shared-activity description.
+Pause freezes routine progress and decorative animation. Hover or keyboard focus
+freezes the targeted NPC for selection. Offscreen rooms and hidden tabs suspend
+playback. Reduced motion removes animation and shows stationary poses; gather
+and return select their destination without spatial animation. These routines,
+greetings and reactions establish no live presence, completed work, shared post
+or permission to publish.
 
 ### Connected community noticeboard
 
-The lower feed connects to the clubhouse through its constellation and recurring
+The lower feed connects to the cloud cottage through its constellation and recurring
 illustrated characters while retaining the standard workspace theme. Its outer
 surface uses the shared `glass-panel`; panels, text, dividers, accents and selected
 states use semantic board tokens. Celebration actions use the shared primary
@@ -205,12 +198,14 @@ room retains its own scene materials.
 
 The board retains sans-serif names, dates and message copy, with handwriting
 reserved for the featured milestone callout. A published offer reads “Offered!”.
-Generated room avatars and a full-body milestone character appear only for
-fictional demo members; real-account board identities use initials.
+The five companion strips supply header avatars, constellation illustrations,
+post avatars and a full-body milestone companion only in fictional demo mode.
+Real-account identities use initials. Demo companion mappings are decorative
+illustrations of fictional authors, not additional Circle members.
 
 The board's member constellation surrounds a central Everyone emblem. Selecting
-a person there or in the room updates the same member filter, and Everyone or
-Show everyone restores the feed. More than eight members use a grid. On narrow
+a person there updates the member filter, and Everyone or Show everyone restores
+the feed. Demo greeting links explicitly select their linked fictional member. More than eight members use a grid. On narrow
 screens the constellation stacks beneath the introduction, while notes and the
 celebration reflow within the board. Selection uses semantic buttons and
 `aria-pressed`, with visible names and the inherited keyboard-focus treatment.
