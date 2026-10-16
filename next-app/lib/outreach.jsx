@@ -1,4 +1,5 @@
 "use client";
+import { outreachDemoMessages } from './outreach-demo.mjs';
 import { useEffect, useRef, useState } from 'react';
 import { useSlice, useWorkspace } from './workspace';
 const recordOf = row => { const {id,_revision,_outreachDirty,origin,...record}=row; return record; };
@@ -60,7 +61,7 @@ export function useOutreach() {
   return()=>{clearInterval(timer);clearTimeout(s.timer);if(isCurrent(s))session.current=null;};
  },[user?.id,client,store,demo]);
  async function request(companies) {
-  if(demo){const next=companies.map((company,i)=>({id:crypto.randomUUID(),company:company.trim(),contact:`Sample contact ${i+1} (demo)`,contactType:'alumni',connection:'Example University alumni (demo)',title:'Backend Engineer',status:'Not asked',message:`Hi, we’re both Example University alumni. I’m exploring backend engineering at ${company.trim()} and built a sample distributed query service during my demo internship. Would you be comfortable referring me for this role?\n\nThanks,\nDemo Candidate`,source:'Demo'}));setContacts([...latest.current,...next]);setStatus('Demo outreach prepared. No backend request was sent.');return;}
+  if(demo){const next=companies.map((company,i)=>{const example=outreachDemoMessages[i%outreachDemoMessages.length];return {...example,id:crypto.randomUUID(),company:company.trim(),contact:example.name,message:example.message.replaceAll(example.company,company.trim()),title:i%2?'Infrastructure Engineer':'Backend Engineer',status:'Not asked',source:'Demo'};});setContacts([...latest.current,...next]);setStatus('Demo outreach prepared. No backend request was sent.');return;}
   const s=session.current;if(!s||!ready)throw Error('Sign in and wait for your outreach account to connect.');
   const names=[...new Set(companies.map(v=>v.trim()).filter(Boolean))];if(!names.length||names.length>50||names.some(n=>n.length>200))throw Error('Choose between 1 and 50 companies.');
   await flush(); if(!isCurrent(s))throw Error('Account changed.');
