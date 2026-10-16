@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType } from '../lib/outreach-model.mjs';
+import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType, outreachSentences } from '../lib/outreach-model.mjs';
 test('company grouping retains contacts and legacy role types', () => {
  const groups = groupContacts([{id:'1',company:' Google ',path:'Engineer (cold)'},{id:'2',company:'google',path:'Recruiter'}]);
  assert.equal(groups.length,1); assert.equal(groups[0].contacts.length,2);
@@ -23,4 +23,17 @@ test('import preserves existing history, updates duplicates and rejects invalid 
 test('unsafe and fabricated link shapes are rejected',()=> {
  for(const url of ['javascript:alert(1)','https://linkedin.com.evil/in/sam','https://www.linkedin.com/company/acme','https://user:pass@linkedin.com/in/sam']) assert.equal(safeUrl(url,true),'');
  assert.throws(()=>importOutreach(JSON.stringify([{company:'Acme',contact:'Sam',linkedin:'https://example.com'}]),[],()=> 'new'));
+});
+
+test('sentence annotations preserve exact message text and highlight complete sentences', () => {
+ const message = 'Hi Sam,\n\nWe are both Example University alumni. I built a backend service. Would you refer me?\n\nThanks,\nWes';
+ const spans = outreachSentences({message});
+ assert.equal(spans.map(s=>s.text).join(''),message);
+ assert.deepEqual(spans.filter(s=>s.kind).map(s=>[s.kind,s.text.trim()]),[
+  ['Relate','We are both Example University alumni.'],['Value','I built a backend service.'],['Ask','Would you refer me?']
+ ]);
+ assert.equal(outreachSentences({message:'Hi Sam, thank you.'})[0].kind,null);
+ assert.equal(outreachSentences({message:'Our robotics club connected us.',connection:'Our robotics club connected us.'})[0].kind,'Relate');
+ assert.equal(outreachSentences({message:'Reduced latency by 30%.',evidence:'Reduced latency by 30%.'})[0].kind,'Value');
+ assert.deepEqual(outreachSentences({}),[]);
 });
