@@ -67,7 +67,7 @@
 /* A warm speech bubble stays connected to its companion without resizing the room. */
 .roomSection .activityCard{
  --color-board-text:#352e29;--color-board-muted:#716557;--color-board-bg:#f8f1e5;
- --color-board-panel:#fffaf1;--color-board-tag:#eee4d4;--color-board-accent:#385b48;
+ --color-board-panel:#fffaf1;--color-board-tag:#eee4d4;--color-board-accent:#66518c;
  --color-board-ink:#fffaf1;--color-board-line:#ddd0bc;--color-board-success:#3b6b4c;--color-board-warning:#835e20;
  position:absolute;left:var(--bubble-left,16px);top:var(--bubble-top,16px);right:auto;bottom:auto;
  width:340px;max-width:calc(100% - 32px);max-height:none;padding:0;border:0;border-radius:16px;
@@ -84,8 +84,8 @@
 .roomSection .activityHeadline{font-size:15px;line-height:1.55;margin-top:16px}
 .roomSection .activityDate{font-size:11px}
 .roomSection .activityFootnote{font-size:11px;line-height:1.6}
-.roomSection .activityCard button:focus-visible,.roomSection .activityCard:focus-visible{outline-color:#385b48}
-.roomSection .activityCard ::selection{background:#d9e6ce;color:#253b2d}
+.roomSection .activityCard button:focus-visible,.roomSection .activityCard:focus-visible{outline-color:#66518c}
+.roomSection .activityCard ::selection{background:#e1d5ef;color:#392b50}
 .room[data-selected=true] .character[aria-pressed=true] .bubble{visibility:hidden}
 @keyframes activityAppear{from{opacity:.6;translate:0 5px}to{opacity:1;translate:0 0}}
 @media(max-width:650px){
@@ -94,3 +94,9 @@
  .activityCardContent{padding:22px;padding-bottom:max(22px,env(safe-area-inset-bottom));max-height:70dvh}
 }
 @media(prefers-reduced-motion:reduce){.roomSection .activityCard{animation:none}}
+
+/* Companion status labels share the activity bubble’s warm ivory palette. */
+.roomSection .bubble{background:#f8f1e5;color:#352e29}
+.roomSection .bubble:after{border-top-color:#f8f1e5}
+.roomSection .character:hover .bubble,.roomSection .character:focus-visible .bubble,.roomSection .character[aria-pressed=true] .bubble{background:#fffaf1;color:#352e29}
+.roomSection .character:hover .bubble:after,.roomSection .character:focus-visible .bubble:after,.roomSection .character[aria-pressed=true] .bubble:after{border-top-color:#fffaf1}
