@@ -21,3 +21,8 @@
 @media(max-width:650px){.workspace{display:block}.circleChat{padding:20px 0 4px}.chatRailHeader{display:block}.chatRailHeader p{margin-top:5px}.chatMessage{grid-template-columns:76px minmax(0,1fr);gap:6px 10px}.chatMessages{max-height:280px;padding:10px}.chatCompose textarea{font-size:16px}}
 .activityControl{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 16px;margin:0 0 14px;padding:0 0 4px}.activityControl>button{display:flex;align-items:center;gap:10px;min-height:44px;font-size:12px;font-weight:600;color:var(--color-board-text);border-radius:8px}.activityControl>p{font-size:11px;line-height:1.7;color:var(--color-board-muted)}.switchTrack{display:flex;align-items:center;width:36px;height:22px;padding:3px;border-radius:12px;background:var(--color-board-muted);flex-shrink:0}.switchTrack>span{width:16px;height:16px;border-radius:50%;background:var(--color-board-panel);transition:transform .15s ease-out}.activityControl [aria-checked=true] .switchTrack{background:var(--color-board-accent)}.activityControl [aria-checked=true] .switchTrack>span{transform:translateX(14px);background:var(--color-board-ink)}.switchState{font-size:11px;font-weight:400;color:var(--color-board-muted)}
 @media(prefers-reduced-motion:reduce){.switchTrack>span{transition:none}}
+
+/* Sharing sits beside the room caption, outside the scene and its controls. */
+.activityControl{justify-content:flex-start;gap:4px 20px;margin:0;padding:0}
+.activityControl>button{font-size:12px}
+.activityControl>p{font-size:12px}

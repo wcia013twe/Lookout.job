@@ -39,14 +39,13 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
  return <section className={styles.roomSection} data-embedded={embedded} aria-labelledby="circle-room-title">
   <div className={styles.toolbar}>
    <div><h2 id="circle-room-title">The cloud cottage</h2><p>Your people. A little progress. A whole lot of company.</p></div>
-   <div className={styles.controls}>
-    {allOccupants.length>5&&<><button type="button" disabled={page===0} onClick={()=>{setMemberPage(page-1);setSelectedCompanion(null);}}>Previous people</button><span className={styles.pageCount}>{page+1} / {Math.ceil(allOccupants.length/5)}</span><button type="button" disabled={(page+1)*5>=allOccupants.length} onClick={()=>{setMemberPage(page+1);setSelectedCompanion(null);}}>Next people</button></>}
+   <div className={styles.controls} role="group" aria-label="Room controls">
+    {allOccupants.length>5&&<><button type="button" disabled={page===0} onClick={()=>{setMemberPage(page-1);setSelectedCompanion(null);}} aria-label="Previous people"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12"/></svg></button><span className={styles.pageCount}>{page+1} / {Math.ceil(allOccupants.length/5)}</span><button type="button" disabled={(page+1)*5>=allOccupants.length} onClick={()=>{setMemberPage(page+1);setSelectedCompanion(null);}} aria-label="Next people"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="m10 6 6 6-6 6M4 12h12"/></svg></button></>}
     <label><span className={styles.srOnly}>Room ambience</span><select value={ambience} onChange={event=>setAmbience(event.target.value)}><option value="moon">Moonlight</option><option value="warm">Starlight lamps</option></select></label>
     <button type="button" aria-pressed={gathered} onClick={()=>setGathered(!gathered)}>{gathered?'Back to stations':'Gather on the rug'}</button>
     <button type="button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused?'Resume motion':'Pause motion'}</button>
    </div>
   </div>
-  {activityControl}
   <div className={styles.roomWithActivity}>
   <div className={styles.viewport}>
    <div ref={roomRef} className={styles.room} data-paused={paused||!!selectedCompanion} data-gathered={gathered} data-ambience={ambience}>
@@ -66,7 +65,7 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
     })}
    </div>
   </div>
-  {embedded&&!occupant&&<aside className={styles.statusPlaceholder} aria-label="Companion status"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 9h10M7 13h7m-7 4h4"/></svg><h3>In their corner</h3><p>Click a companion to see their recent activity, this week’s goal, and how you can help.</p><span>Only updates they choose to share.</span></aside>}
+
   {occupant&&<section ref={cardRef} tabIndex={-1} id="companion-activity" className={styles.activityCard} aria-labelledby="companion-activity-title" onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();closeActivity();}}}>
    <header className={styles.activityHeader}><span className={styles.statusAvatar} style={{backgroundImage:`url('/circles/${greeted?.id}.webp')`}} aria-hidden="true"/><div><h3 id="companion-activity-title">{name}’s progress</h3><p>{demo?'Fictional shared updates': 'Shared with this Circle'}</p></div><button type="button" onClick={closeActivity} aria-label="Close activity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header>
    {latest?<>
@@ -84,13 +83,14 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
      {activity.help&&<div className={styles.help}><h4>Could use a hand with…</h4><p>{activity.help}</p></div>}
      {activityPost.id!==latest.id&&<p className={styles.activityDate}>Activity details shared {date(activityPost.createdAt)}</p>}
     </>}
-    {!activity.highlights.length&&<ul className={styles.recentPosts}>{updates.slice(0,3).map(post=><li key={post.id}><button type="button" onClick={()=>openPost(post)}>{post.content.title}</button><time dateTime={post.createdAt}>{date(post.createdAt)}</time></li>)}</ul>}
+    {!activity.highlights.length&&<ul className={styles.recentPosts}>{updates.filter(post=>post.id!==latest.id).slice(0,2).map(post=><li key={post.id}><button type="button" onClick={()=>openPost(post)}>{post.content.title}</button><time dateTime={post.createdAt}>{date(post.createdAt)}</time></li>)}</ul>}
     <div className={styles.activityActions}><button type="button" onClick={()=>openPost(latest)}>{linkedMember?.self?'Open your update':`Cheer ${name} on`}</button>{activity.help&&activityPost&&!linkedMember?.self&&<button type="button" onClick={()=>openPost(activityPost)}>Offer to help</button>}</div>
     <p className={styles.activityFootnote}>Opens the shared thread. Your reply stays a draft until you share it.</p>
    </>:<div className={styles.activityEmpty}><p>No recent shared updates.</p><p>{linkedMember?`${name}’s updates will appear here when they choose to share.`:'This companion has no linked Circle member.'}</p></div>}
    {linkedMember&&<button type="button" className={styles.allUpdates} onClick={()=>{selectPerson(linkedMember.id);closeActivity();}}>See {name}’s shared updates <span aria-hidden="true">→</span></button>}
   </section>}
   </div>
+  <div className={styles.roomFooter}>{activityControl}</div>
   <div className={styles.caption}><p>{demo?'Fictional clubhouse · Example activity, not live account data.':'Companion movement is decorative. Activity cards show only updates members have shared.'} <span>Tap a companion to see their person’s recent activity.</span></p>{selected&&<button type="button" onClick={()=>selectPerson('')}>Show everyone</button>}</div>
  </section>;
 }
