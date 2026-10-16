@@ -9,8 +9,8 @@
   overflow: hidden;
   background:
     radial-gradient(ellipse at 0% -110%, color-mix(in srgb, var(--role-tier) 35%, transparent), transparent 72%),
-    var(--board-surface-gradient);
-  color: var(--color-board-text);
+    linear-gradient(120deg, color-mix(in srgb, var(--role-tier) 32%, #071421), #101b2d 68%, color-mix(in srgb, var(--role-tier) 21%, #101426));
+  color: #f6f8ff;
 }
 /* The two shallow facets carry the tier's color; the dark center protects type. */
 .banner::before {
@@ -20,7 +20,7 @@
   pointer-events: none;
   inset: 0;
   background:
-    linear-gradient(transparent, transparent),
+    linear-gradient(#07132373, #07132373),
     linear-gradient(165deg, transparent 38%, color-mix(in srgb, var(--role-tier) 20%, transparent) 39%, transparent 67%),
     radial-gradient(ellipse at 115% 120%, color-mix(in srgb, var(--role-refraction) 22%, transparent), transparent 58%);
 }
@@ -40,13 +40,13 @@
   background: radial-gradient(ellipse 65% 180% at var(--sheen-x, 50%) -35%, #eef9ff16, transparent 65%);
   opacity: var(--sheen-strength, .2);
 }
-.company { min-width: 0; flex: 1; overflow-wrap: anywhere; line-height: 1.4;  }
+.company { min-width: 0; flex: 1; overflow-wrap: anywhere; line-height: 1.4; text-shadow: 0 2px 8px #02081166; }
 .rarity {
   flex-shrink: 0;
   border-radius: 6px;
   padding: 5px 8px;
-  color: var(--color-board-text);
-  background: var(--color-board-panel);
+  color: #f6f8ff;
+  background: #091426c9;
   border: 1px solid color-mix(in srgb, var(--role-tier) 48%, #ffffff26);
   font-size: 12px;
   font-weight: 700;
@@ -60,7 +60,7 @@
   margin-top: -14px;
   padding: 22px 20px 20px;
   border-radius: 16px 16px 0 0;
-  background: var(--board-surface-gradient);
+  background: linear-gradient(145deg, #14283be8, #0e172bef 50%, #2c2035e8);
 }
 @media (max-width: 767px) {
   .banner { min-height: 82px; gap: 10px; padding: 14px 14px 24px; }
@@ -69,4 +69,15 @@
 }
 @media (min-width: 640px) { .banner { padding-inline: 24px; } .body { padding: 24px; } }
 @media (prefers-reduced-motion: reduce) { .sheen { opacity: .2; background-position: center; } }
-@media (prefers-reduced-transparency: reduce) { .body { background: var(--color-board-panel); } }
+@media (prefers-reduced-transparency: reduce) { .body { background: #111e30; } }
+
+/* Rarity remains a dark, readable glass header in both themes. */
+:global([data-theme="light"]) .banner { --color-board-tag: #172438; }
+:global([data-theme="light"]) .banner > :global(.bg-board-tag) { color: #f6f8ff; }
+:global([data-theme="light"]) .body {
+  color: var(--color-board-text);
+  background: linear-gradient(145deg, #f7fcff, #f3f6fe 52%, #faf2fb);
+}
+@media (prefers-reduced-transparency: reduce) {
+  :global([data-theme="light"]) .body { background: #f5f8fd; }
+}

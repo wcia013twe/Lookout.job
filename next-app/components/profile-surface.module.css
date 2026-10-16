@@ -1,16 +1,16 @@
 .surface {
   min-width: 0;
-  --profile-check-accent: var(--color-board-accent);
-  --profile-detail-accent: var(--color-board-accent);
-  --profile-tab-bg: var(--color-board-panel);
-  --profile-tab-line: var(--color-board-line);
-  --profile-tab-text: var(--color-board-muted);
-  --profile-tab-hover-text: var(--color-board-text);
-  --profile-tab-hover-bg: var(--color-board-accent-soft);
-  --profile-tab-selected-text: var(--color-board-ink);
-  --profile-tab-highlight: var(--color-board-accent);
-  --profile-section-line: var(--color-board-line);
-  --profile-section-hover: var(--color-board-accent);
+  --profile-check-accent: #cceaff;
+  --profile-detail-accent: #daeeff;
+  --profile-tab-bg: #1220339e;
+  --profile-tab-line: #647d984d;
+  --profile-tab-text: #c5d0e0;
+  --profile-tab-hover-text: #f1f6ff;
+  --profile-tab-hover-bg: #2b405653;
+  --profile-tab-selected-text: #122236;
+  --profile-tab-highlight: #d8edff;
+  --profile-section-line: #60759150;
+  --profile-section-hover: #d8edff;
 }
 .surface h2, .surface h3 { text-wrap: balance; }
 .surface input[type=checkbox] { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--profile-check-accent); }
@@ -36,6 +36,19 @@
 .contactList { padding: 18px; border-radius: 12px; }
 .contactGrid { display: grid; gap: 28px; margin-top: 20px; }
 .contactBack { display: none; }
+:global([data-theme="light"]) .surface {
+  --profile-check-accent: #245775;
+  --profile-detail-accent: #28587a;
+  --profile-tab-bg: #edf3f8;
+  --profile-tab-line: #b6c7d8;
+  --profile-tab-text: #41566d;
+  --profile-tab-hover-text: #143b59;
+  --profile-tab-hover-bg: #dbeaf4;
+  --profile-tab-selected-text: #173d58;
+  --profile-tab-highlight: #d8eaf8;
+  --profile-section-line: #c4d1dd;
+  --profile-section-hover: #28587a;
+}
 @media (max-width: 639px) { .sectionRow { align-items: flex-start; gap: 12px; padding-block: 16px; } .summary dl { gap: 16px; } .surface input[type=file] { font-size: 16px; } .message { padding: 16px; } .contactList { padding: 14px; } }
 @media (max-width: 767px) {
   .contactGrid:not(.contactSelected) .message { display: none; }

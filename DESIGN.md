@@ -2,15 +2,15 @@
 name: Job signal board
 description: Incumbent visual system of the Next.js workspace UI.
 colors:
-  board-bg: "#0e141f"
-  board-panel: "#151e2c"
-  board-text: "#f7f3f7"
-  board-muted: "#bdc5d3"
-  board-accent: "#f3b8d7"
-  board-accent-hover: "#ffd6e9"
-  board-ink: "#291525"
-  board-line: "#4b576c"
-  board-tag: "#202c3e"
+  board-bg: "#0e1116"
+  board-panel: "#101016"
+  board-text: "#f5f4fa"
+  board-muted: "#bfc2cf"
+  board-accent: "#e9dcff"
+  board-accent-hover: "#f4ebff"
+  board-ink: "#211332"
+  board-line: "#343442"
+  board-tag: "#242430"
 typography:
   headline:
     fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
@@ -65,28 +65,6 @@ components:
 ---
 
 # Design System: Job signal board
-
-## Current app palette: cotton candy pink
-
-Discover is the visual reference for the whole app: retain its dark navy base,
-layered card surfaces, shallow facets and subtle sheen. Use cotton candy pink
-(#f3b8d7, hover #ffd6e9) as the sole decorative accent for selected navigation,
-primary buttons, links, focus, progress and card highlights. Soft white and muted
-slate carry text. Action Board widgets share the same palette instead of separate
-blue and pink themes. Profile, tracker, referrals and Circle interface controls
-inherit the same roles. Preserve company logos, user-selected textures and
-clubhouse/character imagery as content.
-
-`next-app/app/theme.css` is the canonical Tailwind v4 `@theme` definition; use
-`bg-board-*`, `text-board-*`, `border-board-*` utilities or the matching CSS
-variables. Light mode remaps these roles to white/slate surfaces and a deeper
-rose (#96365f) for contrast. Success, warning and danger are semantic status
-colors, never decorative widget palettes. Reached tracker stages are filled;
-upcoming stages are outlined; the current stage has an extra ring. Rarity labels
-remain explicit, with a pink family for canvas material effects.
-
-The older sections below record previous compositions and color choices; this
-palette supersedes their rainbow, lavender, amber and per-widget color direction.
 
 ## Current Circles composition: conversations with context
 

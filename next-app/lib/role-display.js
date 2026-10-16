@@ -63,13 +63,12 @@ const rarityOf = (company, type, title) => {
   return "common";
 };
 const tierIndex = (t) => TIER_ORDER.indexOf(t);
-// Pink-family material colors for canvas effects; DOM controls use theme.css.
 const TIER_HEX = {
-  common: "#B8A7B7",
-  rare: "#D6ADC6",
-  epic: "#EAB0D1",
-  legendary: "#F3B8D7",
-  mythic: "#FFD6E9",
+  common: "#58B368",
+  rare: "#4EA8DE",
+  epic: "#9B5DE5",
+  legendary: "#FFC53D",
+  mythic: "#E3350D",
 };
 // Display only compensation explicitly present in the collected analysis.
 const compensationTag = (text) => {
