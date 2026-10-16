@@ -9,13 +9,10 @@
 .input::placeholder { color: var(--color-board-muted); opacity: 1; }
 .input::selection { background: color-mix(in srgb, var(--color-board-accent) 35%, transparent); }
 .note { display: flex; flex-direction: column; min-height: 7rem; min-width: 0; border: 1px solid var(--color-board-line); border-radius: 12px; background: var(--color-board-panel); padding: .75rem 1rem 1rem; }
-@media (min-width: 1280px) { .layout { grid-template-columns: minmax(0, 1fr) 13rem; } }
 
 .category[data-kind="Connection"] { --annotation-color: #e4bc45; }
 .category[data-kind="Achievement"] { --annotation-color: #60aef0; }
 .category[data-kind="Ask"] { --annotation-color: #57bd98; }
-.legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; margin-top: 1rem; color: var(--color-board-muted); font-size: .75rem; }
-.legend > span { display: inline-flex; align-items: center; gap: .4rem; }
 .swatch { display: inline-block; width: .625rem; height: .625rem; flex-shrink: 0; border-radius: 2px; background: var(--annotation-color); border: 1px solid color-mix(in srgb, var(--color-board-text) 20%, transparent); }
 
 .empty { margin: auto; max-width: 22ch; color: var(--color-board-muted); font-size: .875rem; line-height: 1.6; text-align: center; }
@@ -23,7 +20,12 @@
 .category[data-kind="Background"] { --annotation-color: #bd9cf4; }
 .category[data-kind="Why them"] { --annotation-color: #ed99bb; }
 .category[data-kind="Timing"] { --annotation-color: #f4a361; }
-.legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.legend > span { align-items: baseline; }
 .keyDescription { display: block; margin-top: .125rem; font-size: .75rem; }
+
+.legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: start; gap: .75rem 1rem; margin: 0; min-width: 0; color: var(--color-board-muted); font-size: .75rem; }
+.legend > span { display: inline-flex; align-items: baseline; gap: .4rem; }
 @media (min-width: 640px) { .legend { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1280px) {
+  .layout { grid-template-columns: minmax(0, 1fr) 11rem 8.5rem; }
+  .legend { grid-template-columns: minmax(0, 1fr); gap: 1rem; padding-top: .5rem; }
+}

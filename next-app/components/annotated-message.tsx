@@ -33,7 +33,7 @@ export default function AnnotatedMessage({ contact, name, onChange }: Props) {
   }, [value]);
   function selectSentence() { if (input.current) setSelected(input.current.selectionStart); }
   return <div>
-    <div className={styles.legend} aria-label="Six-tag message key">{OUTREACH_TAGS.map(({ kind, description }) => <span key={kind} className={styles.category} data-kind={kind}><span className={styles.swatch} aria-hidden="true"/><span><strong>{kind}</strong><span className={styles.keyDescription}>{description}</span></span></span>)}</div>
+
     <div className={styles.layout}>
     <div className={styles.editor}>
       <div ref={backdrop} className={styles.highlights} aria-hidden="true">{sentences.map((sentence, index) => sentence.kind
@@ -52,6 +52,7 @@ export default function AnnotatedMessage({ contact, name, onChange }: Props) {
       <p className="mt-2 text-sm leading-relaxed text-board-muted">{notes[active.kind!]}</p>
       </> : <p className={styles.empty}>Click a highlighted sentence to see its note.</p>}
     </aside>
+    <div className={styles.legend} aria-label="Six-tag message key">{OUTREACH_TAGS.map(({ kind, description }) => <span key={kind} className={styles.category} data-kind={kind}><span className={styles.swatch} aria-hidden="true"/><span><strong>{kind}</strong><span className={styles.keyDescription}>{description}</span></span></span>)}</div>
     </div>
   </div>;
 }
