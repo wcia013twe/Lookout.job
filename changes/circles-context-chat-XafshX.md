@@ -70,3 +70,5 @@
 - Validation: 354 tests pass, including rapid-click/active/expired/revoked/retry invite cases; TypeScript, production static export, catalog checks. Browser demo double click produced one code; revoke then create produced one replacement; close/cancel both restored settings. Desktop and mobile screenshots checked; mobile navigation overflow corrected. No Supabase/backend change or hosted deployment.
 
 - Finish review: ship after fixing the active-search edge case (settings retains its own heading; contribution pagination renders only in the feed). Browser verified the filtered-to-settings transition. Incumbent design documentation remains unchanged; final static build passed.
+
+- Local-main integration preserved the newer message-only side chat/forum mentions and tracker styling. Resolved the surface-note append conflict by retaining both scopes. Integrated checks: 357 tests, TypeScript and static export pass; no Supabase source change.

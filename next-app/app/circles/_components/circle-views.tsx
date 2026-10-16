@@ -50,7 +50,7 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
      {pagination}
      <div ref={composer} className={styles.composerWrap}><Editor demo={demo} key={channel} inline initial={{type:channel==='resource'?'resource':'interview_report',title:'',body:'',sources:[],provenance:'user_confirmed',personalDisclosure:false}} contexts={published.map(p=>p.content)} busy={busy} save={save} cancel={()=>{}}/></div>
     </>}
-    <div hidden={channel!=='clubhouse'}><CircleChat contexts={published.map(p=>p.content)} posts={chat} demo={demo} busy={busy} save={save} openPost={openPost}/></div>
+    <div hidden={channel!=='clubhouse'}><CircleChat forumPosts={published.filter(p=>p.content.type!=='discussion')} posts={chat} demo={demo} busy={busy} save={save} openPost={openPost}/></div>
    </section>
   </div>}
  </section>;
