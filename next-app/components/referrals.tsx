@@ -6,7 +6,7 @@ import { useOutreach } from "../lib/outreach";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { motion, useReducedMotion } from "framer-motion";
 import { Field, Heading, Notice, control, primary, secondary } from "./ui";
-import { OUTREACH_STATUSES, contactType, outreachBreakdown, groupContacts, safeUrl } from "../../lib/outreach-model.mjs";
+import { OUTREACH_STATUSES, contactType, outreachSentences, groupContacts, safeUrl } from "../../lib/outreach-model.mjs";
 
 import OutreachTemplates from "./outreach-templates";
 
@@ -28,7 +28,8 @@ function ContactIcon({ type }: { type: string }) {
 }
 function MessageEditor({ contact, update, remove }: { contact: ContactRecord; update: (fields: Partial<ContactRecord>) => void; remove: () => void }) {
   const [feedback, setFeedback] = useState("");
-  const breakdown = outreachBreakdown(contact);
+  const sentences = outreachSentences(contact);
+  const [editing, setEditing] = useState(!contact.message);
   const kind = contactType(contact);
   const ready = !!contact.message?.trim() && !/\[[^\]]+\]/.test(contact.message!);
   async function copy(value: string | undefined, label: string) {
@@ -41,13 +42,15 @@ function MessageEditor({ contact, update, remove }: { contact: ContactRecord; up
       <div className="flex min-w-0 items-center gap-3"><CompanyLogo company={contact.company || ""}/><span className="text-board-accent"><ContactIcon type={kind}/></span><div className="min-w-0"><h2 className="break-words text-xl font-bold">{contact.contact || contact.name}</h2><p className="mt-1 text-sm text-board-muted">{typeLabels[kind]} at {contact.company}</p>{(contact.title || contact.role) && <p className="mt-2 text-sm text-board-muted">For {contact.title || contact.role}</p>}</div></div>
       <div className="flex flex-wrap gap-2">{linkedin && <a className={secondary} href={linkedin} target="_blank" rel="noreferrer">Open LinkedIn</a>}{link && <a className={secondary} href={link} target="_blank" rel="noreferrer">View role</a>}</div>
     </div>
-    <dl className="mt-5 grid gap-2 text-sm" aria-label="Message breakdown">
-      {Object.entries(breakdown).map(([label, value]) => <div key={label} className="grid grid-cols-[4rem_minmax(0,1fr)] gap-3"><dt className="font-semibold text-board-muted">{label}</dt><dd className="min-w-0 break-words">{value}</dd></div>)}
-    </dl>
-    <h3 className="mt-6 text-lg font-bold">Your message</h3>
-    {!contact.message && <p className="mt-2 text-sm text-board-muted">Paste a draft from Muse, then edit and copy it here.</p>}
+    <div className="mt-6 flex items-center justify-between gap-3"><h3 className="text-lg font-bold">Your message</h3><button type="button" className="min-h-11 px-3 text-sm font-semibold text-board-accent hover:underline" aria-pressed={editing} onClick={() => setEditing(!editing)}>{editing ? "Done editing" : "Edit message"}</button></div>
     {contact.subject && <div className="mt-4"><Field label="Email subject"><input className={control} name="subject" value={contact.subject} onChange={e => update({ subject: e.target.value })}/></Field></div>}
-    <label className="mt-4 block"><span className="sr-only">Message for {contact.contact || contact.name}</span><textarea name="message" className={`${control} min-h-64 resize-y bg-board-panel leading-relaxed`} value={contact.message || ""} onChange={e => { update({ message: e.target.value }); setFeedback(""); }} placeholder="Your personalized message appears here."/></label>
+    {editing ? <label className="mt-4 block"><span className="sr-only">Message for {contact.contact || contact.name}</span><textarea autoFocus name="message" className={`${control} min-h-64 resize-y bg-board-panel leading-relaxed`} value={contact.message || ""} onChange={e => { update({ message: e.target.value }); setFeedback(""); }} placeholder="Paste your message from Muse here."/></label>
+      : <div className="mt-4 whitespace-pre-wrap break-words py-2 text-base leading-8" aria-label={`Message for ${contact.contact || contact.name}`}>
+        {sentences.map(({ text, kind }: { text: string; kind: string | null }, index: number) => /^\n+$/.test(text) ? (text.length > 1 ? <span key={index} aria-hidden="true" className="block h-4"/> : null) : <span key={index} className="relative block pl-20 sm:pl-24">
+          {kind && <span className="absolute left-0 top-0 inline-flex items-center gap-1 text-xs font-semibold leading-8 text-board-muted"><span>{kind}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M3 12h17m-5-5 5 5-5 5"/></svg></span>}
+          {kind ? <mark className="rounded-sm bg-board-accent/15 px-0.5 py-0.5 text-board-text decoration-board-accent/40 underline decoration-1 underline-offset-4 [box-decoration-break:clone]">{text}</mark> : text}
+        </span>)}
+      </div>}
     <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>Copy message</button>{contact.subject && <button className={secondary} type="button" onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}</div>
     <Notice>{feedback}</Notice>
     {contact.message && !ready && <Notice>Replace the bracketed placeholders before copying.</Notice>}

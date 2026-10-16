@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType, outreachBreakdown } from '../lib/outreach-model.mjs';
+import { groupContacts, draftOutreach, importOutreach, safeUrl, contactType, outreachSentences } from '../lib/outreach-model.mjs';
 test('company grouping retains contacts and legacy role types', () => {
  const groups = groupContacts([{id:'1',company:' Google ',path:'Engineer (cold)'},{id:'2',company:'google',path:'Recruiter'}]);
  assert.equal(groups.length,1); assert.equal(groups[0].contacts.length,2);
@@ -25,11 +25,15 @@ test('unsafe and fabricated link shapes are rejected',()=> {
  assert.throws(()=>importOutreach(JSON.stringify([{company:'Acme',contact:'Sam',linkedin:'https://example.com'}]),[],()=> 'new'));
 });
 
-test('message breakdown uses saved connection and current ask without inventing facts', () => {
- assert.deepEqual(outreachBreakdown({connection:'Example University alumni',title:'Backend Engineer',message:'Would you be comfortable referring me?'}), {Relate:'Example University alumni',Value:'Backend Engineer',Ask:'Referral'});
- assert.equal(outreachBreakdown({contactType:'engineer',message:'What is the best next step to interview?'}).Ask,'Interview next step');
- assert.equal(outreachBreakdown({contactType:'recruiter',message:'Would you refer me?'}).Ask,'Referral');
- assert.equal(outreachBreakdown({contactType:'engineer'}).Relate,'No shared connection noted');
- assert.equal(outreachBreakdown({message:'Thanks for your time.'}).Ask,'Not specified');
- assert.equal(outreachBreakdown({message:'Could we chat?'}).Ask,'Could we chat?');
+test('sentence annotations preserve exact message text and highlight complete sentences', () => {
+ const message = 'Hi Sam,\n\nWe are both Example University alumni. I built a backend service. Would you refer me?\n\nThanks,\nWes';
+ const spans = outreachSentences({message});
+ assert.equal(spans.map(s=>s.text).join(''),message);
+ assert.deepEqual(spans.filter(s=>s.kind).map(s=>[s.kind,s.text.trim()]),[
+  ['Relate','We are both Example University alumni.'],['Value','I built a backend service.'],['Ask','Would you refer me?']
+ ]);
+ assert.equal(outreachSentences({message:'Hi Sam, thank you.'})[0].kind,null);
+ assert.equal(outreachSentences({message:'Our robotics club connected us.',connection:'Our robotics club connected us.'})[0].kind,'Relate');
+ assert.equal(outreachSentences({message:'Reduced latency by 30%.',evidence:'Reduced latency by 30%.'})[0].kind,'Value');
+ assert.deepEqual(outreachSentences({}),[]);
 });
