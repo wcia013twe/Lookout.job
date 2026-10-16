@@ -48,3 +48,10 @@
 - Shared component change applies to saved contacts, fictional previews and demo requests. No storage/service/MCP behavior changed.
 - Validation: 349 tests, data validation (76 roles), frontend typecheck and static build passed. UI detector reported no findings. Browser verified desktop message/notes/key columns and mobile stacking in the shared component and fictional demo.
 - Demo check: open Outreach templates and inspect the recruiter/referral previews on desktop and mobile; select a sentence to verify notes still work.
+
+## Highlights on/off
+
+- Added an accessible Highlights: On/Off toggle to the shared message editor, including fictional demos. Highlights start on. Turning them off hides sentence colors and the key, clears the selected note, and keeps both the editable message and notes box visible with an explanatory prompt. Turning them on restores the six-color view.
+- This is local presentation state; it does not modify the message, contact storage, copy output or service/MCP contracts. The note is disabled while colors are off. Shared helper copy reflects the current state.
+- Validation: 349 tests, data validation (76 roles), frontend typecheck and static production build passed; UI detector reported no findings. Browser verified desktop/mobile off/on states, hidden colors/key, restored key, unchanged textarea value and copy success feedback.
+- Demo check: toggle either fictional example off/on, edit while off, copy, and check desktop/mobile. Existing demo messages cover all six colors.
