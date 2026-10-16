@@ -25,3 +25,9 @@
 - Shared stage mapping recognizes numbered Technical round / Interview labels. It still highlights only the reported stage and does not invent historical progress or dates.
 - Validation: all 340 tests, frontend typecheck, production static build, data validation (76 roles), diff check and scoped design detector ([]). Browser verified desktop/mobile attachment layout with no document overflow.
 - No backend fields or private application-history access added. Unrelated application-page work remains untouched.
+
+## Consolidate job attachment metadata
+
+- Removed the separate footer: exact stage/date sit with the tracker, and the posting link is an accessible trailing icon in the same compact row. Employer job ID is secondary metadata beneath the company.
+- Mobile retains a stacked tracker while keeping the posting action beside the job identity.
+- Validation: frontend typecheck, production build, data validation (76 roles), diff check and desktop/mobile browser inspection (390px without document overflow). No domain/backend changes; no new tests needed.
