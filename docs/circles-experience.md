@@ -278,3 +278,7 @@ Circle settings is a dedicated destination in the left Circle navigation, alongs
 Creating an invite is guarded against rapid repeated clicks. When the loaded Circle already has an unexpired, unrevoked invite, the UI presents that code and disables further creation; revoke active codes before creating another. Existing codes are not silently revoked or deleted. This is a frontend interaction guard; existing scoped backend/MCP actions and permission rules are unchanged.
 
 New conversation toggles to Close conversation while its fresh editor is open. Closing it or using Cancel restores the prior Circle tab. Opening a new conversation also removes a stale thread URL parameter so a reload cannot reopen the old thread by mistake. Demo verification uses only the isolated in-memory Circle.
+
+### Circles homepage
+
+Circles opens a directory of your private circles, with Open Circle and Manage actions plus create/join forms. Manage opens existing Circle settings. Circle and thread query links still open directly, and Back to your circles returns home. The resettable fictional preview uses the same homepage without writing account data. Navigation reuses existing scoped Circle operations.
