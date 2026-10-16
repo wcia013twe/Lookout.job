@@ -62,3 +62,11 @@
 
 - Increased category/action labels from 10px to 13px and left-aligned the full control group. Removed Add File’s automatic right margin. Circle and Add File stay together when the bar wraps on narrow screens.
 - Validation: TypeScript, data validation and browser inspection of the picker.
+
+## Follow-up: settings destination and repeat-action fixes
+
+- Moved Circle settings out of the header menu into the left navigation. Preserved all membership/invite/policy/refresh/private-history/create/join controls. Mobile destinations use two columns to avoid overflow.
+- Coalesced rapid invite clicks and disabled creation while an active code exists. Show existing codes without revoking them silently. New conversation now toggles to Close conversation; Cancel still works, returning to the prior tab. Clear stale thread URLs when starting a new conversation.
+- Validation: 354 tests pass, including rapid-click/active/expired/revoked/retry invite cases; TypeScript, production static export, catalog checks. Browser demo double click produced one code; revoke then create produced one replacement; close/cancel both restored settings. Desktop and mobile screenshots checked; mobile navigation overflow corrected. No Supabase/backend change or hosted deployment.
+
+- Finish review: ship after fixing the active-search edge case (settings retains its own heading; contribution pagination renders only in the feed). Browser verified the filtered-to-settings transition. Incumbent design documentation remains unchanged; final static build passed.
