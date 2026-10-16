@@ -44,7 +44,6 @@ export function CompanyLogo({ company }: { company: string }) {
     </span>
   );
 }
-const REFRACTION: Record<keyof typeof TIER_HEX, string> = { common: "#7ae9db", rare: "#aeb6ff", epic: "#efb0df", legendary: "#ffa577", mythic: "#ffbb73" };
 
 export default function RoleCard({ role }: { role: Role }) {
   const w = useWorkspace();
@@ -94,9 +93,9 @@ export default function RoleCard({ role }: { role: Role }) {
       transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
       className="glass-panel relative flex min-w-0 flex-col overflow-hidden rounded-2xl border"
       style={{
-        "--role-tier": TIER_HEX[rarity],
-        "--role-refraction": REFRACTION[rarity],
-        borderColor: `color-mix(in srgb, ${TIER_HEX[rarity]} 35%, var(--color-board-line))`,
+        "--role-tier": "var(--color-board-accent)",
+        "--role-refraction": "var(--color-board-accent-hover)",
+        borderColor: "var(--color-board-line)",
       } as CSSProperties}
     >
       <motion.div className={styles.banner} style={{ "--sheen-x": reduceMotion ? "50%" : sheenX, "--sheen-strength": reduceMotion ? .2 : smoothIntensity } as CSSProperties}>

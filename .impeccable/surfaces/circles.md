@@ -3,7 +3,7 @@
 Mode: Operate. Code-led composition inside the established Lookout visual system.
 
 THESIS: Friends talk in a private Circle; an optional job, employer job ID, interview stage or offer comparison makes the same conversation useful later.
-OWN-WORLD: Preserve the workspace typography, navy/lavender dark theme, existing light theme, Circle identity, companions and cloud cottage assets. No replacement brand or new token system.
+OWN-WORLD: Preserve the workspace typography, navy/cotton-candy-pink dark theme, existing light theme, Circle identity, companions and cloud cottage assets. No replacement brand or new token system.
 STORY: Open Circle chat, browse a round insight with a compact shared application row, open its existing thread, or attach a shared job to a new private draft. Review before publishing. Offer comparisons participate in the same conversation stream.
 FIRST VIEWPORT: Circle identity and controls; a compact collection/member rail; a prominent conversation column whose first example demonstrates job ID and stage; a supporting clubhouse invitation and shared job context. The composer follows the bounded conversation stream rather than obscuring its useful content.
 FORM: Collections filter existing published threads rather than creating separate channels. Search stays server-backed. Shared jobs support accessible attach buttons and drag/drop. The sidebar collapses below the main content on smaller screens. Thread detail retains its existing reading layout, replies and review controls, with the same compact job attachment and offer details.
