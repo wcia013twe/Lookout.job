@@ -27,5 +27,6 @@
 @media (min-width: 640px) { .legend { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1280px) {
   .layout { grid-template-columns: minmax(0, 1fr) 11rem 8.5rem; }
+  .plain { grid-template-columns: minmax(0, 1fr) 11rem; }
   .legend { grid-template-columns: minmax(0, 1fr); gap: 1rem; padding-top: .5rem; }
 }

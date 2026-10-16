@@ -52,3 +52,8 @@
 - Validation: local file validation test, full suite (346 passing), TypeScript, static production export and catalog validation. In isolated preview, selected a synthetic TXT document plus existing WebP fixture through the native multiple-file chooser; image preview loaded, mobile had no horizontal overflow, review remained disabled until both files were removed, and removing them cleared blob images and restored normal posting. Impeccable review: ship with no material fixes; documenter confirmed the incumbent system unchanged. Pointer file dragging is implemented but not confirmed by this browser harness. No hosted upload/deployment was attempted.
 
 - Integration follow-up: preserved the separately landed shared-activity editor and clubhouse layout; connected the same file preview/submit guard to its new Circle chat composer. Integrated suite: 350 passing; TypeScript/static export pass. Rechecked loaded image/document previews in the narrow desktop chat and mobile layout; scoped reviewer returned ship. No Supabase source diff. Cleared only this task’s generated build cache after disk exhaustion blocked the integration commit.
+
+## Follow-up: compact file action
+
+- Folded the standalone documents/images row into an “Add File” action immediately after Circle in the context category bar. The same file picker and local-preview behavior remain.
+- Validation: TypeScript, catalog validation and browser inspection. No backend changes.

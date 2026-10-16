@@ -13,3 +13,5 @@
 - @ searches published top-level forum posts by title/company/author. Keyboard or pointer selection inserts a durable post link in the message body, using existing website/MCP draft and review contracts. Links render in chat and thread details; no new backend fields or permission grants.
 - Added a fictional forum mention and focused tests for draft exclusion, reference parsing and reviewed save/publish/read persistence.
 - Follow-up validation: all 354 tests, TypeScript, catalog validation, production static export (cache disabled only during build), UI detector, desktop/mobile picker inspection, keyboard selection, draft review and referenced-post navigation passed.
+- Merged current local main: preserved its chat-below-clubhouse placement and compact forum file controls; retained the forum-only mention composer in the new position. Merged tests/typecheck passed.
+- Final merged static export passed with isolated dependencies. Verified the exported clubhouse’s forum mention picker and saved a current preview.

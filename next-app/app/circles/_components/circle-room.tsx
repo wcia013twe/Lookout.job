@@ -65,6 +65,7 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
     })}
    </div>
   </div>
+  {embedded&&!occupant&&<aside className={styles.statusPlaceholder} aria-label="Companion status"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 9h10M7 13h7m-7 4h4"/></svg><h3>In their corner</h3><p>Click a companion to see their recent activity, this week’s goal, and how you can help.</p><span>Only updates they choose to share.</span></aside>}
   {occupant&&<section ref={cardRef} tabIndex={-1} id="companion-activity" className={styles.activityCard} aria-labelledby="companion-activity-title" onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();closeActivity();}}}>
    <header className={styles.activityHeader}><div><h3 id="companion-activity-title">{name}’s recent activity</h3><p>{demo?'Fictional shared updates': 'Shared with this Circle'}</p></div><button type="button" onClick={closeActivity} aria-label="Close activity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header>
    {latest?<>

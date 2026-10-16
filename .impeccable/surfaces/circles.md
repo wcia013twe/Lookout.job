@@ -17,9 +17,11 @@ States: General discussion, round insight, context-only legacy entry, offer comp
 Left navigation is limited to Clubhouse, Experiences and Resources. Clubhouse is
 the default central view, with member companions, opt-in shared activity cards and
 a shared update composer. Experiences combines interview experiences, offers,
-company context and milestones; Resources keeps the shared shelf. The right rail
-is a freeform Circle chat and a simple message composer. On mobile, navigation
-becomes three horizontal choices and chat follows the main view. Preserve existing
+company context and milestones; Resources keeps the shared shelf. The right side
+of the Clubhouse room holds selected companion activity, with an instructional
+empty state before selection. Freeform Circle chat sits beneath the room as a
+compact chronological stream. Experiences and Resources have no chat sidebar.
+On mobile, navigation becomes three horizontal choices and status follows the room. Preserve existing
 thread detail, private draft review, explicit publication, job attachments and offer
 comparisons. Chat uses the existing periodic refresh and publication service.
 Companion movement remains decorative. Activity displays only authored published
