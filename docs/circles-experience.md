@@ -30,11 +30,14 @@ is optional. The editor leads with insight/link/stage and tucks the message and
 extra details away. Context-only entries show their insight in the stream and
 open directly to factual context, not an empty social post.
 
-Contribution details use a centered reading column: title and author first,
-compact facts next, then the always-visible insight and optional human note.
-Source/copy controls, revision details, citation explanation and moderation are
-secondary disclosures. Replies use a concise conversation treatment rather than
-duplicating report titles and metadata.
+Contribution details use a compact thread: author/date, usage and comment counts
+and an accessible report icon in the top bar; title and an attached application
+card follow. The card reuses Applications' stage renderer, highlighting only the
+shared stage without inventing prior completion, dates or private application
+history. Insight and the optional human message remain visible. Source/agent
+context and copy controls are removed from this UI, not from scoped agent reads.
+Comments use a flat thread rail with author/date and existing ownership actions.
+The report icon opens the existing report form; it does not submit automatically.
 
 The browser, demo and scoped gateway/MCP reads use the same field projection.
 There are no generated execution steps, practice checklists or action plans.
