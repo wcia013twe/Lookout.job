@@ -259,5 +259,6 @@ Job context is now rendered as a compact reuse of the application row: the same
 ApplicationIdentity/CompanyMark and shared StageProgress components, arranged side
 by side when space permits and stacked in narrow containers. Both the conversation
 stream and thread detail use JobAttachment. Only the reported stage is highlighted;
-private application dates or previous stages are not inferred. Supplied experience
-date, employer job ID and posting link remain in the attachment footer.
+private application dates or previous stages are not inferred. The exact stage and supplied experience date sit beneath the tracker within the same
+row; the posting link is a trailing icon, and employer job ID is secondary metadata
+under the company name. There is no separate attachment footer.
