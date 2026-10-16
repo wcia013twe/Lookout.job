@@ -29,3 +29,5 @@ Composer extension: User-pinned prompt-box reference. Keep the existing Circle l
 
 Clubhouse controls include a Share activity switch (off initially) that opens the authored activity composer. It does not publish or enable tracker broadcasting. Activity drafts keep the existing review boundary. Side chat uses text bubbles, with owned messages aligned right.
 File-preview extension: The same plus picker offers documents and images. Local chips show filename/type/size; image thumbnails expand in place. Keep file actions within the prompt and preserve the message-first visual hierarchy. The user explicitly deferred backend work; label local previews and prevent saving a post that would discard them. Store bytes nowhere persistently in this pass. The future database-key/object-storage design lives in docs/circles-file-attachments-plan.md.
+
+Side chat is message-only: no plus picker, file input, account-context picker or attachment drop. Typing @ searches published top-level forum posts and inserts a navigable reference in the message. Forum composers retain all file/context controls.
