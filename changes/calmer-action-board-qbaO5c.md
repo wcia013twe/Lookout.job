@@ -11,3 +11,6 @@
 - Gray-theme rollback: reversed only the broad workspace palette/material changes from the first pass; preserved the explicit actions and compact weekly agenda. CSS diff check and frontend typecheck passed.
 
 - Cloud-hue follow-up: changed the Action Board widgets to soft blue and pink gradients, with matching controls and readable secondary text in both themes. Kept the agenda and interactions. Checked CSS whitespace and rendered the isolated demo preview.
+
+- Prep readability follow-up: removed day dividers, softened action-row separators and enlarged date numerals to 32px. Highlighted interview blocks show company and stage. The isolated demo now schedules Cedar/Harbor company guides, mock interviews and research around upcoming interviews, with representative work fitting the daily budget. Added a planner/demo regression check for coverage and company-specific resource isolation.
+- Follow-up checks: all 349 repository tests, frontend typecheck, catalog validation and CSS diff checks passed. Desktop/mobile preview verified interview emphasis and mock-interview details, with no horizontal overflow at 390px. The existing production-build disk-space limitation remains.

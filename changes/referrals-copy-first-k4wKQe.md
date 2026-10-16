@@ -41,3 +41,10 @@
 - Validation: all 343 tests, data validation (76 roles), frontend typecheck and static production build passed. UI detector reported no findings. Browser verified all six recruiter tags, optional timing in the referral example, contextual notes, desktop/mobile key wrapping, isolated edits, switch retention, plain-text copy and reset.
 - Demo check: open Outreach templates, switch Recruiter example / Referral example, inspect all six key entries, click sentences, edit/copy/reset, and check desktop/mobile. Timing is optional.
 - Limits: authenticated cloud saves and admin-only request interaction were not exercised in the browser.
+
+## Move key beside sentence notes
+
+- Moved the six-tag key after the notes box in reading order. Wide layouts show message → notes → key in three columns; smaller layouts stack them in the same order. The key stays visible and both boxes retain their fixed layout while notes change.
+- Shared component change applies to saved contacts, fictional previews and demo requests. No storage/service/MCP behavior changed.
+- Validation: 349 tests, data validation (76 roles), frontend typecheck and static build passed. UI detector reported no findings. Browser verified desktop message/notes/key columns and mobile stacking in the shared component and fictional demo.
+- Demo check: open Outreach templates and inspect the recruiter/referral previews on desktop and mobile; select a sentence to verify notes still work.

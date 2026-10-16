@@ -40,7 +40,7 @@ export function createDemoWorkspace(now = new Date()) {
     activity: [{ at, text: 'Fictional application seeded for the demo.', actor: 'demo' }],
   }]));
   const guides = [{ id: 'demo-database-guide', title: 'Database interview guide (fictional demo resource)', url: 'https://example.com/demo/resources/database-interview', topics: ['database', 'backend', 'sql'], minutes: 30 }];
-  const confirmedDate = day(today, 3);
+  const confirmedDate = day(today, 1);
   let confirmedPlan = createPreparationPlan({ application: applications['demo-interview'], now: at, guides, deadline: {
     date: confirmedDate, stage: 'Technical interview', confirmed: true,
     source: { kind: 'email', messageId: 'demo-email-confirmed', subject: 'Demo: your technical interview', receivedAt: at, excerpt: `Fictional email: your technical interview is on ${confirmedDate} at 14:00 UTC. Prepare to discuss SQL and backend design.`, url: 'https://example.com/demo/email/confirmed' },
@@ -50,9 +50,22 @@ export function createDemoWorkspace(now = new Date()) {
     date: 'next Friday', stage: 'Phone screen', confirmed: false,
     source: { kind: 'email', messageId: 'demo-email-ambiguous', subject: 'Demo: finding a time', receivedAt: at, excerpt: 'Fictional email: can you speak next Friday? We will confirm the date and time shortly.', url: 'https://example.com/demo/email/ambiguous' },
   } });
-  const secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,guides,deadline:{date:day(today,5),stage:'Technical interview',confirmed:true,source:{kind:'manual'}}});
-  const companyGuide = {id:'cedar-lookout-report',title:'Cedar backend round report (fictional)',url:'https://example.com/demo/intelligence/cedar',companies:['Cedar Systems (demo)'],topics:['backend'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional report: a query-planning discussion followed by a backend design exercise.'};
+  let secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,guides,deadline:{date:day(today,5),stage:'Technical interview',confirmed:true,source:{kind:'manual'}}});
+  const companyGuide = {id:'cedar-lookout-report',title:'Cedar engineering guide',url:'https://example.com/demo/intelligence/cedar',companies:['Cedar Systems (demo)'],topics:['backend'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional report: a query-planning discussion followed by a backend design exercise.'};
   confirmedPlan = createPreparationPlan({application:applications['demo-interview'],now:at,previousPlan:confirmedPlan,guides:[...guides,companyGuide],deadline:{...confirmedPlan.deadline,confirmed:true}});
+  const harborGuide = {id:'harbor-query-guide',title:'Harbor query engine notes',url:'https://example.com/demo/resources/harbor-query-engine',companies:['Harbor Data (demo)'],topics:['database'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional company resource covering query execution and index tradeoffs.'};
+  secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,previousPlan:secondPlan,guides:[...guides,harborGuide],deadline:{...secondPlan.deadline,confirmed:true}});
+  function variedPrep(plan, company, focus) {
+    // Fictional examples exercise the same planner/session paths as real tasks.
+    const tasks = plan.tasks.map(task => ['application','questions','logistics','guide-demo-database-guide'].includes(task.key) ? {...task,completed:true,completedAt:at} : task);
+    const extra = [
+      {key:'mock-interview',title:`Mock interview · ${company}`,detail:`Fictional 30-minute practice: ${focus}. Play both candidate and interviewer, then review your explanation.`,minutes:30},
+      {key:'company-research',title:`Company research · ${company}`,detail:`Fictional research brief: review ${company}'s product, engineering challenges and team priorities. Write down two questions for the interviewer.`,minutes:15},
+    ].map(task => ({...task,id:`${plan.applicationId}:${task.key}`,completed:false,completedAt:null,dueDate:plan.deadline.date}));
+    return {...plan,tasks:[...tasks,...extra]};
+  }
+  confirmedPlan = variedPrep(confirmedPlan,'Cedar','design a reliable job queue and discuss retries');
+  secondPlan = variedPrep(secondPlan,'Harbor','explain SQL query plans and indexing choices');
   const prepRows = Object.fromEntries([confirmedPlan, ambiguousPlan, secondPlan].map(plan => [plan.applicationId, { application_id: plan.applicationId, user_id: identity, plan: copy(plan), version: 1, updated_at: at }]));
   function attempt(id, state) {
     const application = applications[id];
