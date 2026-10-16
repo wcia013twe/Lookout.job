@@ -1,7 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { trackerProgress } from '../lib/tracker-display.mjs';
+import { trackerProgress, sharedTrackerStage } from '../lib/tracker-display.mjs';
 import { timelineItems } from '../lib/application-timeline.mjs';
+test('shared stages reuse tracker steps without fabricating private history or dates',()=>{
+ for(const [stage,level] of [['Opened',0],['Applied',1],['Phone screen',2],['Technical round',3],['Final round',3],['Offer received',4]]){
+  assert.deepEqual(sharedTrackerStage(stage),{level,status:stage,dates:[]});
+ }
+ for(const stage of [undefined,'','Discovering','No offer','Possibly a final round','Rejected']){
+  assert.equal(sharedTrackerStage(stage).level,-1);
+ }
+});
 test('preparation state does not erase manually reported hiring progress',()=>{
  const p=trackerProgress({status:'Blocked'},{status:'Interview',openedDate:'2026-10-01'});
  assert.equal(p.status,'Interview');assert.equal(p.dates[1],undefined);

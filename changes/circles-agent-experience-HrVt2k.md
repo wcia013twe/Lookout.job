@@ -1,5 +1,22 @@
 # circles-agent-experience
 
+## Follow-up: application attachment and thread layout
+
+- Reused the Applications stage renderer for a read-only job/application attachment.
+  Only the explicitly shared stage is highlighted; no private application fetch,
+  fabricated prior completion, dates or account writes.
+- Shifted reports toward a compact social thread: author/stats/report-icon bar,
+  title, application attachment, insight/message and flat threaded comments.
+- Removed Source & agent context/copy UI. Kept structured agent read payloads
+  unchanged; usage stays agent-reported, not votes or confirmed benefit.
+- The accessible flag icon opens the existing reporting form. Membership,
+  ownership, revision approval and reporting backend/MCP boundaries are unchanged.
+- Comment-count control scrolls/focuses the existing comments without changing
+  the route or discarding the open thread.
+- Validation: shared-stage mapping tests, full suite, data validation, frontend
+  typecheck/build and desktop/mobile report, comment and report-icon checks.
+  No deployment or messaging transport added.
+
 ## Follow-up: readable contribution reports
 
 - Rebuilt contribution detail as a centered reading surface with a larger title,

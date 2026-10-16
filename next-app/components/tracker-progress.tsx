@@ -1,11 +1,18 @@
-import { trackerProgress, trackerStages } from '../../lib/tracker-display.mjs';
+import { trackerProgress, trackerStages, sharedTrackerStage } from '../../lib/tracker-display.mjs';
 import { CompanyLogo } from './role-card';
 import type { Application } from './workflow-types';
 export function CompanyMark({company}: {company:string}) { return <span className="tracker-company-mark"><CompanyLogo company={company}/></span>; }
 export default function TrackerProgress({application, item={}, vertical=false}: {application:Application; item?:{status?:string;openedDate?:string;appliedDate?:string};vertical?:boolean}) {
  const progress=trackerProgress(application,item);
- return <ol className={`tracker-progress ${vertical?'tracker-progress-vertical':''}`} aria-label={`Application progress: ${progress.status}`}>
- {trackerStages.map((label,index)=><li key={label} className={index<=progress.level?'reached':''} aria-current={index===progress.level?'step':undefined}>
+ return <StageProgress progress={progress} vertical={vertical}/>;
+}
+export function SharedApplicationStages({stage}:{stage:string}) {
+ const progress=sharedTrackerStage(stage);
+ return progress.level<0?null:<StageProgress progress={progress} currentOnly/>;
+}
+function StageProgress({progress,vertical=false,currentOnly=false}:{progress:{level:number;status:string;dates:(string|undefined)[]};vertical?:boolean;currentOnly?:boolean}) {
+ return <ol className={`tracker-progress ${vertical?'tracker-progress-vertical':''}`} aria-label={`${currentOnly?'Shared application stage':'Application progress'}: ${progress.status}`}>
+ {trackerStages.map((label,index)=><li key={label} className={(currentOnly?index===progress.level:index<=progress.level)?'reached':''} aria-current={index===progress.level?'step':undefined}>
  <span className="tracker-stage-label">{label}</span><span className="tracker-dot" aria-hidden="true"/>
  {progress.dates[index] && <time dateTime={progress.dates[index]}>{new Date(progress.dates[index]).toLocaleDateString(undefined,{month:'numeric',day:'numeric',year:'2-digit',...(progress.dates[index].length===10?{timeZone:'UTC'}:{})})}</time>}
  </li>)}
