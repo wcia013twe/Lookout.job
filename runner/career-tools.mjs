@@ -1,3 +1,6 @@
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { PROJECT_URL } from './gateway-client.mjs';
@@ -12,17 +15,19 @@ export const CAREER_TOOLS=[
  {name:'analyze_career_history',operation:'local.career.analytics',scope:'drafts:write',description:'Run funnel, score calibration, skill-gap and source-productivity analytics on owned Lookout applications, milestones and saved evaluations. Reports insufficient and partial data explicitly; saves result.',inputSchema:schema({eventKey:string},['eventKey'])},
  {name:'generate_career_document',operation:'local.career.document',scope:'drafts:write',description:'Render a real resume or cover-letter PDF with bundled templates/fonts, run ATS and claim checks, and save privately in Lookout. Resume returns resumeId and additionally requires profile:write. Does not approve facts, choose defaults or submit. Structured resume payload: candidate{name,email,...}, summary, experience[{company,role,dates,bullets}], education[{title,org,year}], skills[{category,items}]. Cover payload: candidate{name}, letter{role_title,opening,profile_intro,...}.',inputSchema:schema({kind:{type:'string',enum:['resume','cover_letter']},payload:{type:'object'},template:{type:'string',enum:['classic','compact','modern','jake']},variant:string,applicationId:string,eventKey:string},['kind','payload','eventKey'])},
 ];
-export function executeCareerTask(task,input,{timeout=120000}={}) {
- return new Promise((resolve,reject)=>{
+export async function executeCareerTask(task,input,{timeout=120000}={}) {
+ const workspace=await mkdtemp(path.join(tmpdir(),'lookout-toolkit-worker-'));
+ try {return await new Promise((resolve,reject)=>{
   // Deliberately do not inherit agent token, cloud credentials, proxy credentials or user config.
   const env=Object.fromEntries(['PATH','SYSTEMROOT','TMPDIR','LOOKOUT_CHROMIUM_EXECUTABLE'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
-  const child=spawn(process.execPath,['--max-old-space-size=384',new URL('./career-worker.mjs',import.meta.url).pathname],{env,stdio:['pipe','pipe','pipe']});
+  env.CAREER_OPS_ROOT=workspace;
+  const child=spawn(process.execPath,['--max-old-space-size=384',new URL('./career-worker.mjs',import.meta.url).pathname],{env,cwd:workspace,stdio:['pipe','pipe','pipe']});
   let stdout='',overflow=false;const timer=setTimeout(()=>{child.kill('SIGKILL');reject(Error('Toolkit task exceeded time budget'));},timeout);
   child.stdout.on('data',b=>{stdout+=b;if(Buffer.byteLength(stdout)>16000000){overflow=true;child.kill('SIGKILL');}});
   child.stderr.resume();child.on('error',e=>{clearTimeout(timer);reject(e);});
   child.on('close',()=>{clearTimeout(timer);if(overflow)return reject(Error('Toolkit output exceeds limit'));try{const out=JSON.parse(stdout);if(out.error)throw Error(out.error);resolve(out.result);}catch(e){reject(Error(e.message||'Toolkit worker failed'));}});
   child.stdin.on('error',()=>{});child.stdin.end(JSON.stringify({task,input}));
- });
+ });}finally{await rm(workspace,{recursive:true,force:true});}
 }
 const key=p=>{if(typeof p.eventKey!=='string'||!/^[\w:.-]{1,160}$/.test(p.eventKey))throw Error('Stable eventKey required (letters, numbers, colon, dot, dash)');return p.eventKey;};
 export async function runCareerTool(operation,p,{gateway,execute=executeCareerTask,fetchImpl=fetch}) {
