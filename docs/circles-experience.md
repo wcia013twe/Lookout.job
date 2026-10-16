@@ -262,3 +262,11 @@ stream and thread detail use JobAttachment. Only the reported stage is highlight
 private application dates or previous stages are not inferred. The exact stage and supplied experience date sit beneath the tracker within the same
 row; the posting link is a trailing icon, and employer job ID is secondary metadata
 alongside the company name as `Company | ID: <id>`. There is no separate attachment footer.
+
+### Prompt composer and attached context
+
+Post creation starts with a message box, plus control and review arrow. Type `@` to filter applications, referrals and the loaded Circle's shared context; use the same picker from plus. Keyboard arrows/Enter select a result, Escape dismisses it. Selected items are removable chips; expand one to inspect its full snapshot, including the reused compact application row. The inline and standalone editors both support the picker. Existing manual round details, insight-only contributions and offer comparisons remain under “Post details & other attachments.”
+
+The prompt accepts dragged shared jobs, picker context, public HTTPS links and text notes. Files are not accepted. Up to six snapshots can attach. Application snapshots contain only company, role, employer job ID/public posting URL and the displayed stage. Referral snapshots contain only contact name, company, role and public profile URL. The picker reads already-loaded workspace applications/referrals without invoking outreach synchronization or importing private correspondence. It never attaches internal record IDs, email addresses, résumés, answers or account history. Preview mode uses fixed fictional options, even if private local workspace data exists.
+
+The review arrow saves a private draft; sharing remains a separate explicit action on the full preview. Attached context is stored with that exact revision and is searchable/readable only through the existing Circle permission boundary. The same optional `content.contexts` array flows through scoped `propose_circle_contribution`, `read_circle_thread` and `search_circle_knowledge`; publication of agent drafts requires exact human approval. Adding or changing attachments invalidates that approval. Hosted availability still requires migration/gateway deployment and the existing release gate; local validation does not establish deployed parity.
