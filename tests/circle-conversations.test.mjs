@@ -44,11 +44,30 @@ test('website and scoped MCP share offer/job validation, search and exact-revisi
   await assert.rejects(()=>mcp('publish_circle_contribution',{circleId,postId:draft.postId,expectedRevision:2,eventKey:'offer-edit-denied'}),/rejected/i);
   assert.equal((await human(friend,'knowledge.read',{circleId,postId:draft.postId})).post.content.offers[0].company,'Company A');
   const chat=await human(owner,'knowledge.propose',{circleId,expectedRevision:0,content:{...base,type:'discussion',offers:undefined,jobId:undefined}});await human(owner,'knowledge.publish',{circleId,postId:chat.postId,expectedRevision:1});
+  const contexts=[{kind:'application',label:'Databricks backend',company:'Databricks',role:'Software engineer',jobId:'423423',stage:'Technical round 2'},{kind:'referral',label:'Jamie referral',company:'Stripe',contact:'Jamie',role:'Infrastructure engineer'},{kind:'note',label:'Practice plan',note:'Cardinality estimates'}];
+  const contextContent={title:'What should I prepare?',body:'How would you approach this round?',type:'discussion',contexts,sources:[],provenance:'agent_observed',personalDisclosure:true};
+  const contextDraft=await mcp('propose_circle_contribution',{circleId,expectedRevision:0,content:contextContent,eventKey:'context-draft'});
+  await assert.rejects(()=>human(friend,'knowledge.read',{circleId,postId:contextDraft.postId}),/unavailable/i);
+  await assert.rejects(()=>mcp('publish_circle_contribution',{circleId,postId:contextDraft.postId,expectedRevision:1,eventKey:'context-denied'}),/rejected/i);
+  await human(owner,'knowledge.approve',{circleId,postId:contextDraft.postId,expectedRevision:1});
+  await mcp('publish_circle_contribution',{circleId,postId:contextDraft.postId,expectedRevision:1,eventKey:'context-publish'});
+  assert.deepEqual((await human(friend,'knowledge.read',{circleId,postId:contextDraft.postId})).post.content.contexts,contexts);
+  assert.deepEqual((await mcp('read_circle_thread',{circleId,postId:contextDraft.postId})).post.agentContext.contexts,contexts);
+  assert.equal((await human(friend,'knowledge.search',{circleId,query:'Cardinality'})).items[0].id,contextDraft.postId);
+  await human(owner,'knowledge.propose',{circleId,postId:contextDraft.postId,expectedRevision:1,content:{...contextContent,contexts:[{kind:'note',label:'Changed context'}]}});
+  await assert.rejects(()=>mcp('publish_circle_contribution',{circleId,postId:contextDraft.postId,expectedRevision:2,eventKey:'context-edit-denied'}),/rejected/i);
+  assert.deepEqual((await human(friend,'knowledge.read',{circleId,postId:contextDraft.postId})).post.content.contexts,contexts);
+  for(const invalid of [null,{},[null],[{kind:'application',label:'x',note:'hidden'}],[{kind:'note',label:' '}],[{kind:'note',label:'x',note:'x'.repeat(1001)}],[{kind:'referral',label:'x',email:'private@example.com'}],[{kind:'resource',label:'x',url:'https://example.com?token=secret'}],[{kind:'resource',label:'x',url:'http://example.com'}],Array(7).fill(contexts[0])]){
+   await assert.rejects(()=>human(owner,'knowledge.propose',{circleId,expectedRevision:0,content:{...contextContent,contexts:invalid}}));
+   await assert.rejects(()=>mcp('propose_circle_contribution',{circleId,expectedRevision:0,content:{...contextContent,contexts:invalid},eventKey:`invalid-context-${++sequence}`}));
+  }
   for(const extra of [{offers:[]},{offers:null},{offers:[{company:'A',base:42},offers[1]]},{offers:[{company:'A',unknown:'x'},offers[1]]},{offers:[{company:'A',notes:'https://example.com?token=secret'},offers[1]]},{offers:[{company:''},offers[1]]},{offers:[...offers,...offers,offers[0]]},{type:'discussion'},{jobId:42},{jobId:' '},{jobId:'x'.repeat(201)}]){
    await assert.rejects(()=>human(owner,'knowledge.propose',{circleId,expectedRevision:0,content:{...base,...extra}}));
    await assert.rejects(()=>mcp('propose_circle_contribution',{circleId,expectedRevision:0,content:{...base,...extra},eventKey:`invalid-${++sequence}`}));
   }
   await human(owner,'circles.policy',{circleId,allowedTypes:['resource']});const template={title:'Shared public resource',body:'A public resource to evaluate independently.',type:'resource',jobId:'REQ-1234',sources:[{url:'https://www.postgresql.org/docs/current/using-explain.html',label:'Public source'}],provenance:'agent_observed',personalDisclosure:false};
+  const attachedResource=await mcp('propose_circle_contribution',{circleId,expectedRevision:0,content:{...template,jobId:undefined,contexts},eventKey:'context-template'});
+  await assert.rejects(()=>mcp('publish_circle_contribution',{circleId,postId:attachedResource.postId,expectedRevision:1,eventKey:'context-template-denied'}),/rejected/i);
   const resource=await mcp('propose_circle_contribution',{circleId,expectedRevision:0,content:template,eventKey:'attached-template'});await assert.rejects(()=>mcp('publish_circle_contribution',{circleId,postId:resource.postId,expectedRevision:1,eventKey:'attached-publish'}),/rejected/i);
  }finally{await db.close();}
 });
