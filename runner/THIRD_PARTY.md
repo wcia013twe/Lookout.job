@@ -17,3 +17,13 @@ Entry navigation allows only one safe control outside a form on the same ATS job
 No Jev client, models, general-purpose browser agent, submission retry loop,
 outreach, CAPTCHA solver or upstream dependency tree was copied. No claims of
 upstream compatibility or benchmark performance are inherited.
+
+## Career Toolkit executables
+
+`vendor/career-ops/` contains 207 verbatim files from
+https://github.com/career-ops-hq/career-ops at
+`c78e14cdfd52f18a92e4a67694efab7ddef59385`, MIT. The executable manifest records
+each SHA-256; LICENSE and font OFL notices are included. The separate Lookout
+adapters in `career-tools.mjs`/`career-worker.mjs` project existing account data
+into the imported functions and expose narrow MCP tools. Reimport with
+`scripts/import-career-tools.mjs` from the reviewed pinned checkout.

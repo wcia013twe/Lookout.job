@@ -32,3 +32,35 @@
   mobile selector, clipboard/editing, all 37 manuals and absence of product/source
   references in visible UI and copied requests. Fixed and verified View all focus
   and scroll transfer; finish reviewer scored the finding resolved, ship.
+
+### Executable toolkit follow-up
+
+Imported 207 MIT upstream files at pinned commit c78e14c, including 108 network
+providers, guarded HTTP/DNS helpers, document templates/fonts, HTML/PDF builders,
+ATS/keyword/fact checks and analytics primitives. SHA-256 manifest and reproducible
+import script preserve verbatim source. No parallel UI/tracker, local shell parsers,
+installer/updater/model wrappers or scheduler added.
+
+Seven narrow local MCP tools connect saved search targets, profile evidence and
+application history to these executables. Hosted scoped context/results and private
+PDF reservation/finalization/read tools share owned persistence; browser adapter
+reads the same RLS results. Generated resumes register in the existing library,
+without default selection, fact verification or approval. Leads are retained with
+provider diagnostics and require official verification before existing batch
+publication. Analytics preserves insufficient data, explicit submission evidence,
+completed milestones, currency/source quality and partial-window coverage.
+
+Guides now reference executable tools and require refreshed runner discovery.
+Developer contract version advanced. Fictional runner demo data exercises sourced
+analytics, scheduled-vs-completed interviews and failed-source history without real
+accounts/writes. The existing copy-only admin demo remains isolated.
+
+Validation: 334 Node/PGlite tests, data validation, frontend typecheck/static build.
+Live public Greenhouse smoke read 655 listings, returned a bounded two-lead sample,
+and verified one posting via the official ATS API. Actual headless Chromium generated
+a 49,848-byte, one-page fictional resume; rendered PNG inspected for layout. A real cover-letter PDF also rendered (26,438 bytes, one page). No real
+application submission. All 108 provider modules load; only Greenhouse was live-tested.
+Backend migration/functions are not deployed by this feature; normal release and
+local runner dependency/browser install + restart are required for connected Muse.
+ATS is a heuristic HTML-source audit, not a binary PDF parser. Interrupted PDF
+uploads may require inspection/fresh event key if rerendered bytes differ.

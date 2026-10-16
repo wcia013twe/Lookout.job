@@ -15,7 +15,9 @@
     "feature:status": "node scripts/feature-delivery.mjs status"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.117.3"
+    "@supabase/supabase-js": "2.117.3",
+    "js-yaml": "5.3.0",
+    "undici": "6.28.1"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",
