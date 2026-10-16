@@ -233,14 +233,14 @@ The in-memory demo resets these examples without accessing account storage.
 
 ### Circle layout and general chat
 
-Left navigation contains only Clubhouse, Company Intel and Resources. Clubhouse
-opens the room immediately; Company Intel groups interview reports, timelines,
+Left navigation contains only Clubhouse, Experiences and Resources. Clubhouse
+opens the room immediately; Experiences groups interview reports, timelines,
 shared opportunities, milestones and offer comparisons; Resources holds resources.
 Selecting a companion's shared updates opens that person's contributions. The
 Circle chat sits beneath the Clubhouse room and accepts freeform discussion
 messages. The right side of the room holds the selected companion’s shared status;
-Company Intel and Resources have neither chat nor a status sidebar. It replaces On our radar and Every round helps. Public job
-attachments and offer details remain accessible in Company Intel contributions.
+Experiences and Resources have neither chat nor a status sidebar. It replaces On our radar and Every round helps. Public job
+attachments and offer details remain accessible in Experiences contributions.
 
 Chat uses the same `knowledge.propose` / `propose_circle_contribution` discussion
 contract with `personalDisclosure: true`, review/publication and thread replies.

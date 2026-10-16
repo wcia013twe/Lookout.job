@@ -13,3 +13,4 @@
 
 - Layout follow-up: moved Circle chat beneath the Clubhouse room with compact chronological message rows and a shorter composer. The room’s right rail now holds the selected companion’s status/activity, with a click-to-load empty state. Company Intel and Resources use the full content column without chat. Small screens stack room, status and chat. Existing context/file attachment tools and review-before-sharing behavior remain intact.
 - Follow-up verification: frontend typecheck, static build and UI detector passed; browser checked the desktop status rail and compact chat layout, mobile stacking, and absence of chat on Company Intel/Resources. Hidden chat remains mounted across tab changes to retain unsent messages and local attachments.
+- Integrated concurrent Clubhouse controls and Experiences naming without restoring the side chat; preserved the activity switch, file preview controls and shared status behavior.

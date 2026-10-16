@@ -244,10 +244,14 @@ test('weekly prep demo schedules company resources, mock interviews and research
  const bundle=await services.readPreparationPlanner();
  const agenda=buildPreparationAgenda({...bundle,today});
  const titles=agenda.days.flatMap(day=>day.items.map(item=>item.title));
- for(const title of ['Review Cedar engineering guide','Review Harbor query engine notes','Mock interview · Cedar','Mock interview · Harbor','Company research · Cedar','Company research · Harbor']) assert.ok(titles.includes(title),title);
+ for(const title of ['Review Cedar engineering guide','Review Harbor query engine notes','Mock: job queues & retry safety','Mock: SQL plans & index selection','Research Cedar’s job platform','Research Harbor’s query engine']) assert.ok(titles.includes(title),title);
  assert.equal(agenda.days[1].interviews[0].company,'Cedar Systems (demo)');
  assert.equal(agenda.days[5].interviews[0].company,'Harbor Data (demo)');
  assert.equal(agenda.unscheduled,0);
+ const cedar=bundle.plans.find(row=>row.application_id==='demo-interview').plan;
+ assert.match(cedar.tasks.find(task=>task.key==='mock-interview').detail,/Query Lab.*Cedar/);
+ assert.match(bundle.applications['demo-interview'].milestones.find(event=>event.kind==='technical_round').source.note,/Round focus:.*[\s\S]*Your evidence:.*Query Lab[\s\S]*Practice gap:/);
+ assert.match(bundle.applications['demo-interview'].whyItFits,/retry safety/);
  assert.ok(agenda.days.every(day=>day.plannedMinutes<=45));
  const companyResource=agenda.days.flatMap(day=>day.items).find(item=>item.title==='Review Harbor query engine notes');
  assert.equal(companyResource.shared,false);

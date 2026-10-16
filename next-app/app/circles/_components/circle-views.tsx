@@ -23,7 +23,7 @@ export function ContextChips({content}:{content:Content}){
  return <>{hasJob&&<JobAttachment content={content}/>}{content.contexts&&<SharedAttachments contexts={content.contexts} primary={content}/>}<div className={styles.chips} aria-label="Other attached context">{!hasJob&&content.stage&&<span className={styles.stage}><Icon kind="round"/>{content.stage}</span>}{content.offers&&<span><Icon kind="offers"/>{content.offers.map(o=>o.company).join(' / ')}</span>}</div></>;
 }
 
-const channels=[{id:'clubhouse',label:'Clubhouse',icon:'clubhouse'},{id:'intel',label:'Company Intel',icon:'round'},{id:'resource',label:'Resources',icon:'resource'}];
+const channels=[{id:'clubhouse',label:'Clubhouse',icon:'clubhouse'},{id:'intel',label:'Experiences',icon:'round'},{id:'resource',label:'Resources',icon:'resource'}];
 export default function CircleDashboard({detail,posts,demo,openPost,focused,controls,search,searching,busy,save}:Props){
  const [person,setPerson]=useState(''),[channel,setChannel]=useState('clubhouse'),[sharing,setSharing]=useState(false);
  const composer=useRef<HTMLDivElement>(null);
@@ -41,9 +41,8 @@ export default function CircleDashboard({detail,posts,demo,openPost,focused,cont
    <section className={styles.conversations} aria-labelledby="circle-conversation-title">
     <header className={styles.chatHeader}><div><h2 id="circle-conversation-title">{channel==='clubhouse'?'Clubhouse':searching?'Search results':channels.find(c=>c.id===channel)?.label}</h2><p>{channel==='clubhouse'?'Your people, making progress together.':selected?`Shared by ${clean(selected.alias)}`:channel==='intel'?'Interview experiences, offers, and the inside story.':'Good finds. Useful reads. Shared by your people.'}</p></div>{channel!=='clubhouse'&&<details className={styles.search}><summary aria-label="Search contributions"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></summary><div>{search}</div></details>}</header>
     {channel==='clubhouse'?<>
-     <CircleRoom embedded key={detail.circle.id} detail={detail} posts={published} demo={demo} person={person} selectPerson={selectPerson} openPost={openPost}/>
-     <div className={styles.sharePrompt}><div><h3>A small win is worth sharing.</h3><p>Add your recent progress, a goal, or something you could use a hand with.</p></div><button type="button" onClick={()=>setSharing(!sharing)} aria-expanded={sharing}>{sharing?'Close update':'Share an update'}</button></div>
-     {sharing&&<div ref={composer} className={styles.composerWrap}><Editor demo={demo} inline activityUpdate busy={busy} save={save} cancel={()=>setSharing(false)}/></div>}
+     <CircleRoom embedded key={detail.circle.id} detail={detail} posts={published} demo={demo} activityControl={<div className={styles.activityControl}><button type="button" role="switch" aria-checked={sharing} aria-controls="clubhouse-activity-composer" aria-describedby="clubhouse-activity-hint" onClick={()=>setSharing(!sharing)}><span className={styles.switchTrack} aria-hidden="true"><span/></span><span>Share activity</span><span className={styles.switchState}>{sharing?'On':'Off'}</span></button><p id="clubhouse-activity-hint">{sharing?'Add an update below, then review before sharing.':'Off until you choose to add an update.'}</p></div>} person={person} selectPerson={selectPerson} openPost={openPost}/>
+     {sharing&&<div id="clubhouse-activity-composer" ref={composer} className={styles.composerWrap}><Editor demo={demo} inline activityUpdate busy={busy} save={save} cancel={()=>setSharing(false)}/></div>}
     </>:<>
      <div className={styles.streamHeading}><h3>{channel==='intel'?'From inside the process':'The shared shelf'}</h3><span>{demo?'Fictional examples':'Shared by members'}</span></div>
      {selected&&<div className={styles.personFilter}><span>Shared by {clean(selected.alias)}</span><button type="button" onClick={()=>setPerson('')}>Show everyone</button></div>}

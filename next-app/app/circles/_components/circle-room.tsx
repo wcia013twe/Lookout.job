@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState, useRef, type CSSProperties} from 'react';
+import {useEffect, useState, useRef, type ReactNode, type CSSProperties} from 'react';
 import type {Detail, Post} from '../_lib/types';
 import {parseCircleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
 import styles from './circle-room.module.css';
@@ -8,8 +8,8 @@ import {routines} from './room-motion';
 import {companions} from './companions';
 import {useRoomMotion} from './use-room-motion';
 
-type Props = {embedded?:boolean;detail:Detail; posts:Post[]; demo:boolean; person:string; selectPerson:(id:string)=>void;openPost:(post:Post)=>void};
-export default function CircleRoom({embedded=false,detail,posts,demo,person,selectPerson,openPost}:Props) {
+type Props = {embedded?:boolean;activityControl?:ReactNode;detail:Detail; posts:Post[]; demo:boolean; person:string; selectPerson:(id:string)=>void;openPost:(post:Post)=>void};
+export default function CircleRoom({embedded=false,activityControl,detail,posts,demo,person,selectPerson,openPost}:Props) {
  const [memberPage,setMemberPage]=useState(0);
  const [paused,setPaused]=useState(false);
  const [ambience,setAmbience]=useState('moon');
@@ -45,6 +45,7 @@ export default function CircleRoom({embedded=false,detail,posts,demo,person,sele
     <button type="button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused?'Resume motion':'Pause motion'}</button>
    </div>
   </div>
+  {activityControl}
   <div className={styles.roomWithActivity}>
   <div className={styles.viewport}>
    <div ref={roomRef} className={styles.room} data-paused={paused||!!selectedCompanion} data-gathered={gathered} data-ambience={ambience}>
