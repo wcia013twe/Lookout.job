@@ -36,21 +36,26 @@ export default function AnnotatedMessage({ contact, name, onChange }: Props) {
     return () => widthObserver.disconnect();
   }, [value]);
   function selectSentence() { if (input.current) setSelected(input.current.selectionStart); }
-  return <div className={`${styles.layout} ${active ? styles.withNote : ""}`}>
+  return <div>
+    <div className={styles.legend} aria-label="Highlight colors">{Object.keys(notes).map(kind => <span key={kind} className={styles.category} data-kind={kind}><span className={styles.swatch} aria-hidden="true"/>{kind}</span>)}</div>
+    <div className={styles.layout}>
     <div className={styles.editor}>
       <div ref={backdrop} className={styles.highlights} aria-hidden="true">{sentences.map((sentence, index) => sentence.kind
-        ? <mark key={index} className={active === sentence ? styles.active : undefined}>{sentence.text}</mark>
+        ? <mark key={index} data-kind={sentence.kind} className={`${styles.category} ${active === sentence ? styles.active : ""}`}>{sentence.text}</mark>
         : <span key={index}>{sentence.text}</span>)}{"\n"}</div>
-      <textarea ref={input} className={styles.input} name="message" aria-label={`Message for ${name}`} aria-describedby={active ? noteId : undefined} value={value}
+      <textarea ref={input} className={styles.input} name="message" aria-label={`Message for ${name}`} aria-describedby={noteId} value={value}
         placeholder="Paste your message from Muse here." spellCheck={false}
         onChange={event => { setSelected(null); onChange(event.target.value); }}
         onClick={selectSentence} onKeyUp={event => { if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) selectSentence(); }}
         onKeyDown={event => { if (event.key === "Escape") { setSelected(null); event.stopPropagation(); } }}
         onScroll={event => { if (backdrop.current) backdrop.current.scrollTop = event.currentTarget.scrollTop; }}/>
     </div>
-    {active && <aside id={noteId} className={styles.note} aria-label={`${active.kind} note`}>
-      <div className="flex items-center justify-between gap-3"><h4 className="text-sm font-bold">{active.kind}</h4><button type="button" className="min-h-11 min-w-11 rounded-md text-board-muted hover:bg-board-tag hover:text-board-text" aria-label="Close sentence note" onClick={() => { setSelected(null); input.current?.focus(); }}><svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+    <aside id={noteId} data-kind={active?.kind || undefined} className={`${styles.note} ${styles.category}`} aria-label={active ? `${active.kind} note` : "Sentence note"}>
+      {active ? <>
+      <div className="flex items-center justify-between gap-3"><h4 className="inline-flex items-center gap-2 text-sm font-bold"><span className={styles.swatch} aria-hidden="true"/>{active.kind}</h4><button type="button" className="min-h-11 min-w-11 rounded-md text-board-muted hover:bg-board-tag hover:text-board-text" aria-label="Close sentence note" onClick={() => { setSelected(null); input.current?.focus(); }}><svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
       <p className="mt-2 text-sm leading-relaxed text-board-muted">{notes[active.kind!]}</p>
-    </aside>}
+      </> : <p className={styles.empty}>Click a highlighted sentence to see its note.</p>}
+    </aside>
+    </div>
   </div>;
 }

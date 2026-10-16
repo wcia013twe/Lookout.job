@@ -23,3 +23,11 @@
 - Demo check: prepare the fictional alumni message, click each highlighted sentence, type directly, use arrow keys and Escape, copy, and reset. Existing demo drafts cover all three annotation types.
 - Validation: 342 tests, data validation (76 roles), typecheck, static production build and UI detector passed. Browser verified desktop/mobile note placement, highlight alignment, keyboard navigation/dismissal, direct editing and plain-text copy.
 - Limits: unfamiliar phrasing can remain unhighlighted; notes are concise guidance based on sentence categories. Authenticated cloud saves were not exercised.
+
+## Persistent note panel and category colors
+
+- Keep both the editable message box and sentence-note panel visible. The empty note panel prompts the user to click a highlighted sentence; dismissal restores that prompt. Desktop editor width stays fixed as notes change, and the note panel stays below the editor on mobile.
+- Added distinct Relate (yellow), Value (blue), and Ask (green) highlights, a small labeled key, and matching selected-note swatches. Active highlights retain their own color with stronger emphasis. Existing message values, editing and storage contracts are unchanged.
+- Validation: 342 tests, data validation, frontend typecheck and static build passed. UI detector reported no findings for the category-color change. Browser checked desktop/mobile colors, persisted message content, the empty note panel, and selecting/dismissing a note without resizing the editor.
+- Demo check: existing fictional message contains all three highlight categories; inspect the persistent placeholder, select a sentence, close its note, and reset.
+- Limits: authenticated cloud saves were not exercised; category matching retains its existing deterministic behavior.
