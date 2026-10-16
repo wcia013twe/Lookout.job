@@ -13,7 +13,7 @@ test('shared context contains useful facts, not execution plans or required soci
  assert.equal(context.schemaVersion,2);
  assert.equal(context.untrusted,true);
  assert.deepEqual(context.source,{circleId,postId:post.id,revision:1});
- assert.equal(context.stage,'Technical round');
+ assert.equal(context.stage,'Technical round 2');
  assert.equal(context.insight,post.content.insight);
  assert(!Object.hasOwn(context,'steps'));
  assert(!Object.hasOwn(context,'suggestedUse'));
@@ -25,7 +25,7 @@ test('shared context contains useful facts, not execution plans or required soci
 test('context-only demo contributions have insight, optional job link, stage and honest uncertainty',()=>{
  const post=read(createCircleKnowledgeDemo(),'demo-shared-opportunity').post,context=post.agentContext;
  assert.equal(post.content.body,'');
- assert.equal(context.jobUrl,'https://example.com/demo-job');
+ assert.equal(context.jobUrl,'https://job-boards.greenhouse.io/stripe/jobs/8128744');
  assert.equal(context.stage,'Discovering');
  assert.equal(context.insight,post.content.insight);
  assert.match(context.uncertainty,/not a verified or open job/);

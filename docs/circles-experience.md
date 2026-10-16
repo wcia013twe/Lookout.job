@@ -249,3 +249,8 @@ MCP equivalents. No new realtime transport, unread receipts, notifications, priv
 tracker import or background agent execution is implied. Hosted schema/gateway
 verification and the existing production release gate still apply. The preview has
 fictional casual chat, a job/stage round insight and a two-offer discussion.
+
+The preview now uses real company names and existing company-logo assets (Databricks,
+Stripe and NVIDIA), with substantive technical and career-decision discussion.
+Sample conversations and compensation packages remain illustrative; real company
+identity and a real posting link do not verify interview questions or personal offers.

@@ -11,7 +11,7 @@ const base={title:'Two paths',body:'What would you weigh here?',type:'offer_comp
 test('demo conversations preserve attached context, search job IDs and reset independently',()=>{
  const demo=createCircleKnowledgeDemo(),circleId='demo-circle';
  assert.equal(demo.action('knowledge.search',{circleId,type:'discussion'}).items[0].content.type,'discussion');
- assert.equal(demo.action('knowledge.search',{circleId,query:'EX-SYS-2048'}).items[0].id,'demo-interview-report');
+ assert.equal(demo.action('knowledge.search',{circleId,query:'6865687002'}).items[0].id,'demo-interview-report');
  const draft=demo.action('knowledge.propose',{circleId,expectedRevision:0,content:base});
  const read=demo.action('knowledge.read',{circleId,postId:draft.postId}).post;
  assert.equal(read.agentContext.visibility,'private_draft');assert.deepEqual(read.agentContext.offers,offers);

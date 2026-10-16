@@ -9,3 +9,11 @@
 - Setup: root npm ci succeeded; next-app npm ci failed with npm's exit-handler error. Reused the existing local dependency tree in the isolated checkout; typecheck and static builds passed.
 - Integration: retained local main’s newer compact thread presentation and shared application-stage component, adding only job ID and the offer table. Rechecked the linked round-insight thread in the browser.
 - Limits: production migration/gateway deployment, hosted account authorization, realtime chat delivery, notifications and private tracker drag/import are not verified or introduced. Preview uses the existing periodically refreshed thread service. No push or production publication.
+
+## Real-company discussion follow-up
+
+- Replaced Example Systems/Compute/Labs with Databricks, Stripe and NVIDIA; added existing manifest company logos to job chips, shared-job entries and offer previews.
+- Rewrote shallow celebration/practice copy into substantive discussions about query plans and cardinality, cache invalidation, technical storytelling, team placement and offer tradeoffs.
+- Used the real Databricks 2027 internship posting and employer posting ID 6865687002, checked on its official careers page. Interview discussion remains explicitly illustrative, not a verified account of its interview process. Offer packages remain hypothetical.
+- Validation: 19 Circle tests passed; frontend typecheck, data validation (76 roles), static production build, diff check; all ten visible/loaded logo image instances resolved; mobile width390 had no document overflow.
+- No backend changes or production publication; current thread layout and sharing controls preserved.

@@ -17,7 +17,7 @@ export default function CircleKnowledge(){
  const client=useKnowledgeClient();
  const [preview]=useState(()=>createCircleKnowledgeDemo());
  const previewRequest:Request=useCallback(async <Result,>(operation:string,payload:Record<string,unknown>={})=>preview.action(operation,payload) as Result,[preview]);
- if(!client.ready)return <><div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-board-line pb-4"><p className="max-w-prose text-xs leading-relaxed text-board-muted">Fictional Circle preview</p><button className={secondary} onClick={client.signIn}>Sign in to your Circle</button></div><KnowledgeSurface request={previewRequest} demo/></>;
+ if(!client.ready)return <><div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-board-line pb-4"><p className="max-w-prose text-xs leading-relaxed text-board-muted">Circle preview · Illustrative conversations, real companies</p><button className={secondary} onClick={client.signIn}>Sign in to your Circle</button></div><KnowledgeSurface request={previewRequest} demo/></>;
  return <KnowledgeSurface key={client.identity} request={client.request} demo={client.demo}/>;
 }
 export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
