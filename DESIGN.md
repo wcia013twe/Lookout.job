@@ -70,7 +70,7 @@ components:
 
 The active overview uses a collection/member rail, a central conversation stream
 and message-first composer, and a supporting context rail. It inherits all existing
-workspace tokens and both themes. Job/round attachments are compact factual chips;
+workspace tokens and both themes. Job/round attachments reuse the application identity and stage tracker as a compact row;
 offer comparisons have a concise two-column preview and their existing thread detail
 shows the shared fields. Collections filter the same shared posts. The cloud cottage
 is retained behind Open clubhouse, with an illustration invitation in the context rail.

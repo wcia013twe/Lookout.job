@@ -7,6 +7,7 @@ import identity from './circle-views.module.css';
 import styles from './conversation.module.css';
 import CircleRoom from './circle-room';
 import Editor from './editor';
+import JobAttachment from './job-attachment';
 import {companionForMember} from './companions';
 import {CompanyLogo} from '../../../components/role-card';
 
@@ -15,7 +16,11 @@ const clean=(name:string)=>name.replace(' (demo)','');
 export function CircleEmblem(){return <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 5 89 19v31c0 21-16 36-39 45C27 86 11 71 11 50V19L50 5Z" fill="currentColor" fillOpacity=".08" stroke="currentColor" strokeWidth="2"/><path d="m22 65 22-30 12 17 8-10 16 23H22Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;}
 function Icon({kind}:{kind:string}){return <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==='chat'?<path d="M20 11a8 8 0 0 1-8 8H5l-4 3 2-7a8 8 0 1 1 17-4Z"/>:kind==='round'?<><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M8 12h8m-8 4h5"/></>:kind==='offers'?<><rect x="2" y="6" width="8" height="14" rx="2"/><rect x="14" y="3" width="8" height="17" rx="2"/><path d="M5 10h2m-2 4h2m10-7h2m-2 4h2"/></>:kind==='resource'?<><path d="M12 5c-3-2-7-2-10-1v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Zm0 0v15"/></>:<><path d="M8 12h8m-4-4v8"/><rect x="3" y="3" width="18" height="18" rx="4"/></>}</svg>;}
 function Avatar({name,demo}:{name:string;demo:boolean}){return <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(name).id}.webp')`}}/>:clean(name).split(/\s+/).slice(0,2).map(x=>x[0]).join('')}</span>;}
-export function ContextChips({content}:{content:Content}){if(!content.company&&!content.role&&!content.jobId&&!content.stage&&!content.offers)return null;return <div className={styles.chips} aria-label="Attached context">{(content.company||content.role||content.jobId)&&<span>{content.company?<span className={styles.companyLogo}><CompanyLogo company={content.company}/></span>:<Icon kind="context"/>}<span><strong>{clean(content.company||'Job context')}</strong>{content.role&&<span>{content.role}</span>}{content.jobId&&<small>Job ID {content.jobId}</small>}</span></span>}{content.stage&&<span className={styles.stage}><Icon kind="round"/>{content.stage}</span>}{content.offers&&<span><Icon kind="offers"/>{content.offers.map(o=>o.company).join(' / ')}</span>}</div>;}
+export function ContextChips({content}:{content:Content}){
+ const hasJob=!!(content.company||content.role||content.jobId||content.jobUrl);
+ return <>{hasJob&&<JobAttachment content={content}/>}<div className={styles.chips} aria-label="Other attached context">{!hasJob&&content.stage&&<span className={styles.stage}><Icon kind="round"/>{content.stage}</span>}{content.offers&&<span><Icon kind="offers"/>{content.offers.map(o=>o.company).join(' / ')}</span>}</div></>;
+}
+
 const channels=[{id:'all',label:'Circle chat',icon:'chat'},{id:'interview_report',label:'Round insights',icon:'round'},{id:'offer_comparison',label:'Offer comparisons',icon:'offers'},{id:'resource',label:'Resources',icon:'resource'}];
 export default function CircleDashboard({detail,posts,demo,openPost,focused,controls,search,searching,busy,save}:Props){
  const [person,setPerson]=useState(''),[channel,setChannel]=useState('all'),[room,setRoom]=useState(false);

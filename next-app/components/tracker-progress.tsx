@@ -1,7 +1,11 @@
+import type {ReactNode} from 'react';
 import { trackerProgress, trackerStages, sharedTrackerStage } from '../../lib/tracker-display.mjs';
 import { CompanyLogo } from './role-card';
 import type { Application } from './workflow-types';
 export function CompanyMark({company}: {company:string}) { return <span className="tracker-company-mark"><CompanyLogo company={company}/></span>; }
+export function ApplicationIdentity({company,title,location,children}:{company:string;title:string;location?:string;children?:ReactNode}) {
+ return <><CompanyMark company={company}/><span><strong>{title}</strong><span>{company}</span>{location&&<small className="tracker-role-location">{location}</small>}{children}</span></>;
+}
 export default function TrackerProgress({application, item={}, vertical=false}: {application:Application; item?:{status?:string;openedDate?:string;appliedDate?:string};vertical?:boolean}) {
  const progress=trackerProgress(application,item);
  return <StageProgress progress={progress} vertical={vertical}/>;

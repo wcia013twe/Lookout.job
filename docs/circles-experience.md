@@ -254,3 +254,10 @@ The preview now uses real company names and existing company-logo assets (Databr
 Stripe and NVIDIA), with substantive technical and career-decision discussion.
 Sample conversations and compensation packages remain illustrative; real company
 identity and a real posting link do not verify interview questions or personal offers.
+
+Job context is now rendered as a compact reuse of the application row: the same
+ApplicationIdentity/CompanyMark and shared StageProgress components, arranged side
+by side when space permits and stacked in narrow containers. Both the conversation
+stream and thread detail use JobAttachment. Only the reported stage is highlighted;
+private application dates or previous stages are not inferred. Supplied experience
+date, employer job ID and posting link remain in the attachment footer.

@@ -17,3 +17,11 @@
 - Used the real Databricks 2027 internship posting and employer posting ID 6865687002, checked on its official careers page. Interview discussion remains explicitly illustrative, not a verified account of its interview process. Offer packages remain hypothetical.
 - Validation: 19 Circle tests passed; frontend typecheck, data validation (76 roles), static production build, diff check; all ten visible/loaded logo image instances resolved; mobile width390 had no document overflow.
 - No backend changes or production publication; current thread layout and sharing controls preserved.
+
+## Reuse the application row as attached context
+
+- Extracted ApplicationIdentity from the existing application list without changing its DOM, and reused it with the same CompanyMark and SharedApplicationStages/StageProgress in a compact job attachment.
+- Circle conversation previews and the existing thread detail now share this attachment. The job identity sits beside the existing tracker at desktop widths, then stacks above it inside narrow attachment containers. Job ID, exact stage, supplied experience date and public posting link remain visible.
+- Shared stage mapping recognizes numbered Technical round / Interview labels. It still highlights only the reported stage and does not invent historical progress or dates.
+- Validation: all 340 tests, frontend typecheck, production static build, data validation (76 roles), diff check and scoped design detector ([]). Browser verified desktop/mobile attachment layout with no document overflow.
+- No backend fields or private application-history access added. Unrelated application-page work remains untouched.
