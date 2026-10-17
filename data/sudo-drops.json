@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Est\u00e9e Lauder",
+   "company": "Estée Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -1662,6 +1662,110 @@
    "status": "skipped",
    "skipReason": "Part-time defense-consulting SWE intern (ends Jan 2027), weak fit for infra targets",
    "note": null
+  },
+  {
+   "company": "Tesla",
+   "title": "Internship, SoC Firmware Engineer, SI Hardware Infrastructure (Winter/Spring 2027)",
+   "location": "Austin, TX",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.tesla.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Hardware/firmware role (SoC firmware, SI hardware infrastructure), not SWE",
+   "note": "Req ID 287024. Story link sticker TESLA.COM."
+  },
+  {
+   "company": "Rivian",
+   "title": "Engineering Intern - Technical Program Management (Spring 2027 Co-op)",
+   "location": "Palo Alto, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://careers.rivian.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Program management (TPM) co-op, not SWE engineering",
+   "note": "Spring 2027 co-op. Story link sticker CAREERS.RIVIAN.COM."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Research Intern - Agentic Data Memory",
+   "location": "Redmond, WA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://apply.careers.microsoft.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "MSR research internship requires PhD enrollment; Wesley is in MS program",
+   "note": "Live per trackers (tealhq 2d ago, anitab.org <1d). Story link sticker APPLY.CAREERS.MICROSOFT.COM."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Research Intern - Machine Learning at MSR NYC",
+   "location": "New York, NY (+1 more)",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://apply.careers.microsoft.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "MSR research internship requires PhD enrollment; Wesley is in MS program",
+   "note": "Story link sticker APPLY.CAREERS.MICROSOFT.COM."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Research Intern - MSR AI Interaction and Learning",
+   "location": "Redmond, WA (+1 more)",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://apply.careers.microsoft.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "MSR research internship requires PhD enrollment; Wesley is in MS program",
+   "note": "Story link sticker APPLY.CAREERS.MICROSOFT.COM."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Research Intern - Gray Systems Lab (GSL)",
+   "location": "Redmond, WA (+1 more)",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://apply.careers.microsoft.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "MSR research internship requires PhD enrollment; Wesley is in MS program",
+   "note": "GSL is Microsoft's data-systems research lab (databases/big data, technically on-target). One third-party repost variant listed PhD-or-MS eligibility; re-mark pending if Wesley confirms MS eligibility. Story link sticker APPLY.CAREERS.MICROSOFT.COM."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Software Engineer - Forward Deployed Engineer",
+   "location": "Redmond, WA",
+   "type": "Full-time",
+   "comp": null,
+   "url": "https://apply.careers.microsoft.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Forward-deployed/customer-facing implementation role (Microsoft Frontier Co.), weak fit for backend/infra targets; no visa sponsorship",
+   "note": "Live per tealhq (posted ~20h ago). Story did not state type; description reads FT (Bachelor's required). Story link sticker APPLY.CAREERS.MICROSOFT.COM."
+  },
+  {
+   "company": "Northrop Grumman",
+   "title": "2027 Software Engineering Intern - Boulder CO",
+   "location": "Boulder, CO",
+   "type": "Internship",
+   "comp": "$26.75-$41/hr (iAgora)",
+   "url": "https://ngc.wd1.myworkdayjobs.com",
+   "dateSeen": "2026-10-17",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Live per iAgora (<1h crawl): 10-week paid Summer 2027. Requires US citizenship + ability to obtain Secret clearance (Wesley's citizenship unconfirmed); defense contractor, generalist SWE. Not board-added pending citizenship confirmation. Posted yesterday. Story link sticker NGC.WD1.MYWORKDAYJOBS.COM."
   }
  ]
 }
