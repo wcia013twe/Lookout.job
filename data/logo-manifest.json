@@ -454,5 +454,20 @@
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/booz-allen-hamilton.png",
   "sha256": "fcde9815bd5b56eb8fcb4c2489f37eac327f184faedfe78110f68383632ef41d",
   "contentType": "image/png"
+ },
+ "johnson-johnson": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/johnson-johnson.png",
+  "sha256": "929a68e150f11b8cc564d2aefabcaabbc49b034bad6d298384424e9dee0c770f",
+  "contentType": "image/png"
+ },
+ "schneider-electric": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/schneider-electric.png",
+  "sha256": "be74a4ec765ce5f7f53e55c731b45c2a55da88bdbe440799907360a9ad02cdd0",
+  "contentType": "image/png"
+ },
+ "northrop-grumman": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/northrop-grumman.png",
+  "sha256": "6d80ee8fcc610e52f1e49a9883b2bb5101b0632715d83df7624df25ff788150f",
+  "contentType": "image/png"
  }
 }
