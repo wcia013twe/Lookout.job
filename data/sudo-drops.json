@@ -1,5 +1,5 @@
 {
- "date": "2026-10-17",
+ "date": "2026-10-18",
  "source": "zero2sudo",
  "drops": [
   {
@@ -1766,6 +1766,32 @@
    "status": "pending",
    "skipReason": null,
    "note": "Live per iAgora (<1h crawl): 10-week paid Summer 2027. Requires US citizenship + ability to obtain Secret clearance (Wesley's citizenship unconfirmed); defense contractor, generalist SWE. Not board-added pending citizenship confirmation. Posted yesterday. Story link sticker NGC.WD1.MYWORKDAYJOBS.COM."
+  },
+  {
+   "company": "Northrop Grumman",
+   "title": "2027 Software Engineering Intern - Colorado Springs",
+   "location": "Colorado Springs, CO (Space sector)",
+   "type": "Internship",
+   "comp": "$26.75-$41.00/hr primary range; Master's $34.50-$37.25/hr",
+   "url": "https://jobs.northropgrumman.com/careers?query=2027+Software+Engineering+Intern&start=0&pid=1340074793190&sort_by=relevance",
+   "dateSeen": "2026-10-18",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Verified live 2026-10-18 (Job ID R10256259) on jobs.northropgrumman.com; old Workday URL ngc.wd1.myworkdayjobs.com is dead (board moved). Intern/Casual, posted ~3 days ago (~20-day apply window). No clearance required for start, but basic quals require ability to obtain a US government clearance + Program Special access (US citizenship pre-requisite; Wesley's citizenship unconfirmed). RELOCATION ASSISTANCE: No. Travel 10%. Not board-added pending citizenship confirmation."
+  },
+  {
+   "company": "Northrop Grumman",
+   "title": "2027 Software Engineering Intern - Aurora CO",
+   "location": "Aurora, CO (Space sector)",
+   "type": "Internship",
+   "comp": "$26.75-$41.00/hr primary range; Master's $38.00-$41.00/hr",
+   "url": "https://jobs.northropgrumman.com/careers?query=2027+Software+Engineering+Intern&start=0&pid=1340074810534&sort_by=relevance",
+   "dateSeen": "2026-10-18",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Verified live 2026-10-18 (Job ID R10256393) on jobs.northropgrumman.com. Intern/Casual, posted ~3 days ago (~20-day apply window). CLEARANCE REQUIRED FOR START: Yes - Top Secret; US citizenship pre-requisite (Wesley's citizenship unconfirmed; stricter gate than the Boulder/Colorado Springs postings). RELOCATION ASSISTANCE: No. Travel 10%. Not board-added pending citizenship confirmation."
   }
  ]
 }
