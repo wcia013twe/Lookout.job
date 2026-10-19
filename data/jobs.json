@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastRun": "2026-10-16",
+  "lastRun": "2026-10-19",
   "roles": [
     {
       "id": "doordash-software-engineer-storage-8024644",
@@ -1297,6 +1297,21 @@
       "sourceFreshness": "today",
       "whyItFits": "Paid 12-24 week research stints inside Google DeepMind/Research engineering and science teams; Mythic-tier AI research credential, applications organized by degree level.",
       "applicationUrl": "https://deepmind.google/student-researcher-program/",
+      "applicationStatus": "New"
+    },
+    {
+      "id": "adobe-2027-intern-data-ai-innovation-r172997",
+      "company": "Adobe",
+      "title": "2027 Intern - Data, AI & Innovation",
+      "employmentType": "Internship",
+      "location": "San Jose, CA",
+      "category": "Data & analytics infrastructure — placement dependent",
+      "priority": "Apply Now",
+      "postedDate": "2026-10-19",
+      "discoveredDate": "2026-10-19",
+      "sourceFreshness": "today",
+      "whyItFits": "Adobe (Epic tier) Data/AI intern in San Jose at $38-51/hr; data and AI-innovation scope sits in your data infra/AI targets. Caveat: Summer 2027 timing is post your ~May 2027 MS graduation unless you extend to Dec 2027, so confirm intern eligibility before applying.",
+      "applicationUrl": "https://careers.adobe.com/us/en/job/R172997/2027-Intern-Data-AI-Innovation",
       "applicationStatus": "New"
     }
   ]
