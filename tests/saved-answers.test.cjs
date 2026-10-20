@@ -21,3 +21,15 @@ test('saved answer edits require fresh verification and preserve version provena
  assert.throws(()=>m.save(fields,answer),/Review/);
  const next=m.save({...fields,verified:true},answer); assert.equal(next.id,answer.id); assert.equal(next.version,2); assert.equal(answer.answer,'Yes');
 });
+
+test('prior employment answers reuse only a unique confirmed answer for the exact company and question',()=>{
+ const m=model(),question='Have you worked for this company before?';
+ const yes=m.save({question,answer:'Yes',companyScope:'Example Systems',policy:'auto',verified:true});
+ assert.equal(m.automatic([yes],question,'Example Systems').answer,'Yes');
+ assert.equal(m.automatic([yes],question,'Other Company'),null);
+ assert.equal(m.automatic([yes],'Have you worked for our subsidiaries?', 'Example Systems'),null);
+ assert.equal(m.automatic([yes],'Were you previously employed here?', 'Example Systems'),null);
+ assert.equal(m.automatic([yes,{...yes,id:'duplicate'}],question,'Example Systems'),null);
+ const ask=m.save({question,answer:'Ask me',companyScope:'Example Systems',policy:'ask',verified:false});
+ assert.equal(m.automatic([ask],question,'Example Systems'),null);
+});

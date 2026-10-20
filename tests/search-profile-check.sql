@@ -7,7 +7,7 @@ begin
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Profile test',h,array['workspace:read'],now()+interval '1 hour');
  p:='{"id":"general","name":"General","active":true,"filters":{"Work arrangement":"Remote required"},"priorities":{"Pay":"Important"},"instructions":"Anything suitable"}';
  p:=p||jsonb_build_object('instructions',E'## Role preferences\n- Roles: Backend engineering\n## Priority & flexibility\n- Roles: Preferred\n## Career goals & tradeoffs\n- Career goals: Build systems depth\n  Own reliability\n- Tradeoffs: Relocate for mentorship\n## Company priorities\n- Tier list ID: sample-owned-list');
- p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## Application identity\n- Application email: candidate@example.com\n- Email account: Personal Gmail\n## Employer answer writing\n- Tone: Professional & direct\n## Outreach writing\n- Tone: Warm & conversational\n## Application materials\n- Default resume ID: owned-resume');
+ p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## Application identity\n- Application email: candidate@example.com\n- Email account: Personal Gmail\n## Employer answer writing\n- Tone: Professional & direct\n## Outreach writing\n- Tone: Warm & conversational\n## Application materials\n- Default resume ID: owned-resume\n## Eligibility & availability\n- Work authorization country: United States\n- Sponsorship required now: No\n- Expected graduation: 2027-05');
  begin
   perform public.agent_dispatch(h,'preferences.profile.save',jsonb_build_object('expectedVersion',0,'profile',p));
   raise exception 'Missing write scope accepted';
