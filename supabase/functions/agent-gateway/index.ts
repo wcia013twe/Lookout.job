@@ -1,9 +1,10 @@
+import {withGatewayCors} from './cors.mjs';
 import {prepareSearch,searchResponse} from './search.mjs';
 import { toolkitFileResponse } from './toolkit.mjs';
 import { resumeUploadDispatch } from './resume-upload.mjs';
 import { resumeSetupResponse } from './profile-setup.mjs';
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
-import { validateRequest, generateToken, hashToken } from './contract.mjs';
+import { SCOPES, validateRequest, generateToken, hashToken } from './contract.mjs';
 import { guideDispatch } from './guides.mjs';
 import { contextResponse } from './context.mjs';
 import { applicationPolicy } from './application-policy.mjs';
@@ -17,16 +18,12 @@ const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE
   auth: { persistSession: false, autoRefreshToken: false },
 });
 const headers = {
-  'Access-Control-Allow-Origin': 'https://wcia013twe.github.io',
-  'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Content-Type': 'application/json', 'Cache-Control': 'no-store',
 };
 function respond(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers });
 }
-Deno.serve(async request => {
-  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+Deno.serve(withGatewayCors(async request => {
   if (request.method !== 'POST') return respond({ error: 'Use POST' }, 405);
   const bearer = request.headers.get('Authorization')?.match(/^Bearer (.+)$/)?.[1];
   if (!bearer) return respond({ error: 'Authentication required' }, 401);
@@ -57,7 +54,7 @@ Deno.serve(async request => {
         },
       });
       if (dbError) return respond({ error: 'Connection request rejected' }, 400);
-      return respond(token ? { connection: data, token } : { data });
+      return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
     if (operation === 'guides.read') {
@@ -140,4 +137,4 @@ Deno.serve(async request => {
     }
     return respond({ data: operation.startsWith('search.') ? searchResponse(operation,data) : contextResponse(operation, data) });
   } catch { return respond({ error: 'Invalid request' }, 400); }
-});
+}));

@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['agent-connections','connections issue with current scopes, revoke durably, reject revoked tokens and isolate owners'],
   ['search-sweeps','document context and agent sweeps enforce versions, ownership, evidence and resumption'],
   ['toolkit-execution','toolkit outputs and document registration preserve ownership, scopes, replay and revocation'],
   ['onboarding', 'onboarding verifies first value, isolates owners, and never manufactures submission authority'],
