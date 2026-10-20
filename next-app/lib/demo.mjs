@@ -1,4 +1,3 @@
-import { demoOutreachContacts } from './outreach-demo.mjs';
 import { profileFromPrompt, initialPrompt, updateField } from '../../lib/search-profile.mjs';
 import { createPreparationPlan } from '../../lib/preparation-model.mjs';
 import { createDemoWorkspace } from './muse-demo-fixtures.mjs';
@@ -37,7 +36,8 @@ function demoTierLists() {
 
 function baseDemoFixtures(date) {
  const roles=[['robinhood','Robinhood','Backend Engineer, Distributed Systems and Reliability','FT'],['stripe','Stripe','Infrastructure Engineer','FT'],['nvidia','NVIDIA','ML Systems Intern','Internship'],['databricks','Databricks','Distributed Systems Engineer','FT']].map(([key,company,title,employmentType])=>({id:`demo-${key}`,company,title,employmentType,location:'Remote / San Francisco',category:'Infrastructure',applicationUrl:'#',discoveredDate:date,whyItFits:'Illustrative role for demo mode. Explore infrastructure, performance and reliable distributed systems.',sourceFreshness:'Mock listing'}));
- const referrals=demoOutreachContacts();
+ const referrals=[{id:'demo-rh-contact',company:'Robinhood',contact:'Alex Morgan (demo)',contactType:'recruiter',title:'Backend Engineer',status:'Not asked',subject:'Backend engineering at Robinhood',message:'Hi Alex,\n\nI’m interested in backend engineering at Robinhood and the infrastructure behind reliable financial products. What is the best next step to discuss opportunities on your team?\n\nThanks,\nDemo Candidate',notes:'Fictional contact for demo mode.'},{id:'demo-stripe-contact',company:'Stripe',contact:'Jamie Chen (demo)',contactType:'senior',title:'Infrastructure Engineer',status:'Asked',message:'Hi Jamie,\n\nI’m exploring infrastructure engineering at Stripe and would love to learn more about the systems behind reliable payments. Would you be open to pointing me toward the right team or recruiting contact?\n\nThanks,\nDemo Candidate',notes:'Fictional contact for demo mode.'}];
+ for(const contact of referrals){contact.evidence='I built a sample distributed query service during my demo internship.';contact.reason=`The infrastructure work at ${contact.company} interests me.`;}
  const applications=Object.fromEntries(roles.slice(0,2).map((role,i)=>[role.id,{...role,url:'#',status:i?'Blocked':'Awaiting approval',revision:0,resumeId:'demo-resume',questionsReviewed:false,questions:[{id:'demo-question',question:'Why this team?',answer:'I’m interested in the reliability and performance challenges of your infrastructure.'}],blocker:i?'Demo: review an unfamiliar application question.':'',activity:[],submissionAttempts:[]}]));
  const deadline=new Date(Date.parse(date+'T00:00:00Z')+7*86400000).toISOString().slice(0,10);
  const preparationPlans={'demo-robinhood':createPreparationPlan({application:applications['demo-robinhood'],deadline:{date:deadline,stage:'Technical interview (demo)',confirmed:true,source:{kind:'manual'}},dailyMinutes:45,now:date})};

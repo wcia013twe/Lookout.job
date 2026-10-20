@@ -5,7 +5,7 @@ import { MotionConfig } from "framer-motion";
 import { streak } from "../lib/progress.mjs";
 import { usePathname } from "next/navigation";
 import { useWorkspace } from "../lib/workspace";
-import { secondary, Notice } from "./ui";
+import { Notice } from "./ui";
 import ColorModeControl from "./color-mode";
 import ProfileMenu from "./profile-menu";
 import { demoNeedsYouTasks } from "../lib/demo.mjs";
@@ -91,29 +91,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <Link href="/progress/" className="mt-2 inline-flex min-h-11 items-center text-board-accent">View progress &amp; leaderboard</Link></div>
         </details>}</div><ProfileMenu /></div>
       </header>
-      {w.status && !w.demo && (
-        <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-board-muted">
-          <span role="status">{w.status}</span>
-          {w.user && (
-            <>
-              <button
-                className={secondary}
-                onClick={w.retry}
-                disabled={w.locked}
-              >
-                Retry sync
-              </button>
-              <button
-                className={secondary}
-                onClick={w.reload}
-                disabled={w.locked}
-              >
-                Load account
-              </button>
-            </>
-          )}
-        </div>
-      )}
+      {w.syncError && !w.demo && <Notice>{w.syncError}</Notice>}
       {w.error && <Notice>{w.error}</Notice>}
       {w.state ? (
         <div key={w.demo ? `demo-${w.demoEpoch}` : w.user?.id || "guest"} inert={w.locked || undefined}>

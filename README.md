@@ -218,7 +218,7 @@ Older connections have an **Enable profile setup** button; their existing token
 continues to work. Muse should save the package rather than asking for manual
 entry, then ask only about missing/conflicting facts. Imports remain unverified
 until reviewed; saved-answer autofill suggestions are distinct from permission.
-Use **Reload account** to load Muse's changes. HTTP/MCP setup and local-file upload
+Account changes refresh automatically every 15 seconds and when you return to the app. Local edits sync automatically; failed connections retry without a reload button. HTTP/MCP setup and local-file upload
 are documented in the gateway and runner contracts. Resume parsing itself runs
 in the user's agent, not in this backend. No real candidate package is imported
 as part of development validation.

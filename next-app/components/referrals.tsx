@@ -108,7 +108,7 @@ export default function Referrals() {
     </div> : null}
     <OutreachTemplates/>
     <Notice>{outreach.status}</Notice>
-    {outreach.status.includes("paused") && <div className="flex flex-wrap gap-2"><button type="button" className={secondary} onClick={()=>outreach.retry().catch(()=>{})}>Retry outreach sync</button><button type="button" className={secondary} onClick={()=>outreach.loadSaved().catch(()=>setFeedback("Could not load saved outreach. Try again."))}>Load saved outreach</button></div>}
+
     <p className="mt-8 text-xs leading-relaxed text-board-muted">You send the final message on LinkedIn or email.</p>
   </ProfileSurface>;
 }
