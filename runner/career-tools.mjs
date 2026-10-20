@@ -53,8 +53,10 @@ export async function runCareerTool(operation,p,{gateway,execute=executeCareerTa
  if(task==='scan') {
   if(!Array.isArray(p.targetIds)||p.targetIds.length<1||p.targetIds.length>5||new Set(p.targetIds).size!==p.targetIds.length||p.limit!==undefined&&(!Number.isInteger(p.limit)||p.limit<1||p.limit>50)||p.keywords!==undefined&&(!Array.isArray(p.keywords)||p.keywords.length>20||p.keywords.some(k=>typeof k!=='string'||!k.trim()||k.length>100)))throw Error('Choose 1–5 targets and bounded keywords/limit');
   const targets=p.targetIds.map(id=>{const target=c.preferences?.search?.targets?.find(t=>t.id===id);if(!target)throw Error('Unknown saved search target');return target;});
+  const search=await gateway.call('search.context',{});
+  const portals=search.documents?.find(d=>d.kind==='portals'&&d.id==='shared')?.projection;
   const sources=[];
-  for(const target of targets){const cfg=[...(c.results||[])].reverse().find(r=>r.kind==='source_config'&&r.result.targetId===target.id)?.result;try{sources.push(await execute('scan',{target,config:cfg?{provider:cfg.provider,...cfg.options}:{},keywords:p.keywords||[],limit:p.limit||30}));}catch(e){sources.push({targetId:target.id,status:'error',error:e.message,jobs:[]});}}
+  for(const target of targets){const cfg=portals?.tracked_companies?.find(s=>s.id===target.id)||[...(c.results||[])].reverse().find(r=>r.kind==='source_config'&&r.result.targetId===target.id)?.result;try{sources.push(await execute('scan',{target,config:cfg?{provider:cfg.provider,...(cfg.options||{}),...(cfg.api?{api:cfg.api}:{}),...(cfg.keywords?{keywords:cfg.keywords}:{})}:{},keywords:p.keywords||[],limit:p.limit||30}));}catch(e){sources.push({targetId:target.id,status:'error',error:e.message,jobs:[]});}}
   // Keep per-result storage bounded even for verbose descriptions across five sources.
   for(const s of sources)for(const j of s.jobs||[])j.description=j.description?.slice(0,400);
   return save('scan',{sources,scannedAt:new Date().toISOString(),nextAction:'Verify selected official postings with verify_job_posting before publishing a batch. No fit score or submission inferred.'});

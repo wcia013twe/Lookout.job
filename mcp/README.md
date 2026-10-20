@@ -219,3 +219,7 @@ instructions. Read only the relevant guide on demand. Original paths/commands ar
 reference requirements, not installed tools or authority to create a parallel local
 profile/tracker. Actual file, browser, renderer and scheduler support must be checked.
 Release the gateway normally before advertising hosted availability.
+
+## Document-backed career context and agent search memory
+
+Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](../docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.

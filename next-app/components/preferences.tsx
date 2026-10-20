@@ -1,5 +1,6 @@
 "use client";
 import type { ResumeRecord, TierListReference } from "./profile-types";
+import SearchContext from "./search-context";
 import SearchProfiles from "./search-profiles";
 import { useState } from "react";
 import QuietDemoPreview from "./quiet-demo-preview";
@@ -171,7 +172,7 @@ export default function Preferences({ showDefaultResume = true, mode = "all" }: 
         </div>
       </Section>
       </>}
-      {mode !== "agent" && <SearchProfiles />}
+      {mode !== "agent" && <><SearchProfiles /><SearchContext /></>}
     </>
   );
 }

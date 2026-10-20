@@ -29,7 +29,7 @@ function SearchProfileEditor() {
         }
         if (window.JB.auth.userId !== owner) throw Error('Account changed. Reload preferences.');
         stored = data;
-      } else stored = { ...next, version: profile.version || 0 };
+      } else stored = { ...next, version: (profile.version || 0) + 1 };
       const current = w.store.get('workflow.searchPreferences') || {};
       const existing: Omit<SearchProfile, "prompt">[] = current.profiles || [];
       w.store.set('workflow.searchPreferences', { ...current, profiles: existing.some(v => v.id === stored.id) ? existing.map(v => v.id === stored.id ? stored : v) : [...existing, stored] });

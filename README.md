@@ -366,3 +366,7 @@ Demo mode uses fictional, non-executing requests and does not touch real account
 storage or services. See [source and maintenance notes](integrations/career-ops/README.md).
 No upstream scanner, renderer, cron worker or external integration is installed by
 this library. Actual execution remains a capability of the connected agent.
+
+## Document-backed career context and agent search memory
+
+Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "categories": [
     {
       "id": "profile",
@@ -189,7 +189,7 @@
     {
       "id": "find-jobs",
       "guideId": "career-find-jobs",
-      "version": 3,
+      "version": 2,
       "category": "search",
       "title": "Find relevant jobs",
       "summary": "Search your chosen sources for roles that fit your goals.",
@@ -211,7 +211,7 @@
         "Search my saved sources for new backend roles that match my active preferences.",
         "Find internships with strong systems work and explain what still needs verification."
       ],
-      "requirements": "Use list_job_providers, configure_job_provider, scan_job_sources, verify_job_posting when exposed by the updated local Lookout MCP runner. Executables run locally and save owned results through Lookout; hosted MCP provides context, results and private document storage. Missing tools require updating/restarting the runner and refreshing discovery. Scheduling still requires a real runtime scheduler.",
+      "requirements": "A connected personal agent with browsing/search access and the scoped Lookout search-state tools. No local runner or Career Ops installation required.",
       "sources": [
         "modes/scan.md"
       ],
@@ -222,10 +222,15 @@
       ],
       "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/scan.md",
       "tools": [
-        "list_job_providers",
-        "configure_job_provider",
-        "scan_job_sources",
-        "verify_job_posting"
+        "read_search_context",
+        "start_search_run",
+        "read_search_run",
+        "record_search_progress",
+        "save_search_discoveries",
+        "read_search_discoveries",
+        "save_search_screening",
+        "finish_search_run",
+        "publish_batch"
       ]
     },
     {

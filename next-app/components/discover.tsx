@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, control, Notice } from "./ui";
 import RoleCard, { type Role } from "./role-card";
+import SearchSweeps from "./search-sweeps";
 import DailyDrops from "./daily-drops";
 import DayFilter from "./day-filter";
 export default function Discover() {
@@ -66,6 +67,7 @@ export default function Discover() {
           </div>}
         </section>
       ))}
+      <SearchSweeps />
       <details className="mt-9 border-t border-board-line pt-4 text-sm text-board-muted">
         <summary className="min-h-11">How tracking works</summary>
         <p className="max-w-prose leading-relaxed">

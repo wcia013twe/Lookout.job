@@ -1,3 +1,4 @@
+import {prepareSearch,searchResponse} from './search.mjs';
 import { toolkitFileResponse } from './toolkit.mjs';
 import { resumeUploadDispatch } from './resume-upload.mjs';
 import { resumeSetupResponse } from './profile-setup.mjs';
@@ -42,7 +43,8 @@ Deno.serve(async request => {
     }
     const body = new Uint8Array(size); let offset = 0;
     for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.length; }
-    const { operation, payload } = validateRequest(JSON.parse(new TextDecoder().decode(body)));
+    let { operation, payload } = validateRequest(JSON.parse(new TextDecoder().decode(body)));
+    if(operation.startsWith('search.')) payload=prepareSearch(operation,payload);
     if (operation.startsWith('connections.')) {
       if (bearer.startsWith('jb_agent_')) return respond({ error: 'Human sign-in required' }, 403);
       const { data: { user }, error } = await admin.auth.getUser(bearer);
@@ -136,6 +138,6 @@ Deno.serve(async request => {
       }
       return respond({ data: { resume: data, url } });
     }
-    return respond({ data: contextResponse(operation, data) });
+    return respond({ data: operation.startsWith('search.') ? searchResponse(operation,data) : contextResponse(operation, data) });
   } catch { return respond({ error: 'Invalid request' }, 400); }
 });
