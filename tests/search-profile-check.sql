@@ -7,6 +7,7 @@ begin
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Profile test',h,array['workspace:read'],now()+interval '1 hour');
  p:='{"id":"general","name":"General","active":true,"filters":{"Work arrangement":"Remote required"},"priorities":{"Pay":"Important"},"instructions":"Anything suitable"}';
  p:=p||jsonb_build_object('instructions',E'## Role preferences\n- Roles: Backend engineering\n## Priority & flexibility\n- Roles: Preferred\n## Career goals & tradeoffs\n- Career goals: Build systems depth\n  Own reliability\n- Tradeoffs: Relocate for mentorship\n## Company priorities\n- Tier list ID: sample-owned-list');
+ p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## Application identity\n- Application email: candidate@example.com\n- Email account: Personal Gmail\n## Employer answer writing\n- Tone: Professional & direct\n## Outreach writing\n- Tone: Warm & conversational\n## Application materials\n- Default resume ID: owned-resume');
  begin
   perform public.agent_dispatch(h,'preferences.profile.save',jsonb_build_object('expectedVersion',0,'profile',p));
   raise exception 'Missing write scope accepted';
@@ -29,6 +30,7 @@ begin
  execute 'set local role authenticated';
  r:=public.save_search_profile(1,p||jsonb_build_object('instructions',(p->>'instructions')||E'\nUpdated through UI'));
  if r->>'instructions' not like '%Build systems depth%' then raise exception 'UI lost career goals'; end if;
+ if r->>'instructions' not like '%candidate@example.com%' or r->>'instructions' not like '%Warm & conversational%' then raise exception 'UI lost application identity or writing style'; end if;
  if r->>'version'<>'2' then raise exception 'UI does not share version checks'; end if;
  perform public.save_workspace_preferences('{"autoSubmitApproved":false,"profiles":[]}','[]',null,'{}');
  if (select search#>>'{profiles,0,instructions}' from public.preferences where user_id=u) is distinct from r->>'instructions' then raise exception 'Autosync clobbered profile'; end if;

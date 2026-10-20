@@ -255,3 +255,15 @@ Delivery preferences appear after the first result and save an inactive request 
 The “Your next actions” widget leads the Action Board in both the workspace and demo, using the larger desktop column (2:1), a 20px heading with a clipboard icon, and a neutral border. Each row leads with the task, then company/role context, a short reason and an explicit labeled action button. Empty checkbox-shaped disclosure triggers are removed. The first fictional application review is expanded on demo entry and reset; approval still requires reviewing the version. The next-actions widget uses a blue cloud hue and weekly prep uses pink, with soft cross-tinted gradients and readable hue-matched borders, secondary text and controls in both themes. The prep agenda shows all scheduled dates, session titles, durations and interview events together without a day picker. A date rail with 32px day numbers groups sessions through spacing instead of horizontal divider lines; empty days are omitted. Confirmed interviews use a clearly outlined, tinted event block with a calendar icon, company and stage. Longer reasons and interview links expand from individual task titles. Only today’s sessions show a labeled “Done” action. Daily budget controls and planner explanation live in an optional settings disclosure. Preparation follows the actions on mobile.
 
 Application dialogs resolve their palette from the shared workspace theme, independently of the widget that opened them. The vertical status panel shows the recorded scheduled-round focus and source note beside its dates. Weekly prep displays a short reason from the saved task detail below its title; the demo connects concrete interview topics to its fictional Query Lab project and SQL-service internship. These are authored fixture facts, not a new inference engine for real-account skill gaps.
+
+## Application profile settings
+
+Profile uses an application-profile selector above four content tabs; My agent stays
+visually separated at the end of the tab row. Overview uses a compact shared
+identity header, three readiness rows, and account/writing summaries. About me
+labels shared background explicitly. Application kit presents selected materials
+and separate employer-answer/outreach writing settings before disclosed library
+creation forms. Preference groups use summaries and progressive disclosure.
+All colors inherit the shared theme tokens. A sticky desktop profile save bar
+becomes an ordinary footer on mobile; shared background keeps its distinct
+human verification and save action. No account assignment implies connectivity.

@@ -370,3 +370,48 @@ this library. Actual execution remains a capability of the connected agent.
 ## Document-backed career context and agent search memory
 
 Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
+
+## Application profiles and writing styles
+
+My Profile now selects an application profile above Overview, About me, Application
+kit and Job preferences. Existing named search profiles remain the same records and
+IDs; no account migration or duplicate profile store is introduced. New, duplicate,
+rename, active/paused, identity, material selection, writing and targeting edits use
+one explicit Save application profile action. Drafts survive switching profiles and
+sections until leaving the route. Account/demo changes remount the editor and clear
+drafts. Reload saved explicitly discards the selected draft.
+
+About me separates per-profile application email and agent-managed email/document/
+outreach account assignments from shared background. Assignments are descriptive
+agent guidance, never credentials, OAuth connections or proof of runtime access.
+Application email does not change the Lookout login. My agent is unchanged.
+
+Application kit keeps a shared resume/answer library, with independent per-profile
+resume and saved-answer selections. Employer questions and outreach each have Tone,
+Length and Guidance. Preview style brief shows the instructions, not generated text.
+A profile selection guides agent preparation; it does not change global default
+resume/submission policy, verify facts, authorize answer reuse or approve a draft.
+The existing account-wide private PDF default remains available under an explicit
+advanced disclosure. No external messages or applications are sent.
+
+Website RPC `save_search_profile` and MCP `save_search_profile` /
+`preferences.profile.save` retain the same owner/version/schema checks. The following
+labeled sections are preserved in the existing `instructions` narrative:
+
+- `Application identity`: Application email, Email account, Document account, Outreach identity.
+- `Application materials`: Default resume ID, Saved answer IDs (comma-separated owned IDs).
+- `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
+
+`workspace_read`, personal context and canonical profile documents expose the same
+saved records. Developer context version 28 explains their meaning; release the
+gateway through the normal production workflow before claiming deployed agent
+support. No migration or new permission is needed. Hosted round trips and actual
+agent account access remain unverified.
+
+Demo check: switch between fictional full-time and internship profiles to see
+separate application emails, account assignments and employer-answer tone. Edit tone,
+switch profiles/tabs and return; save/reload, duplicate/rename and pause searches.
+Edit shared background and verify the independent review/save boundary. Add/edit an
+employer answer and inspect retained reuse restrictions. Preview the style brief,
+visit unchanged My agent, then reset Demo to restore fixtures. Fixtures and changes
+remain in memory and never write real account records or fetch private files.

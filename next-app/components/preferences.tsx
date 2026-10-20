@@ -172,7 +172,7 @@ export default function Preferences({ showDefaultResume = true, mode = "all" }: 
         </div>
       </Section>
       </>}
-      {mode !== "agent" && <><SearchProfiles /><SearchContext /></>}
+      {mode !== "agent" && <><SearchProfiles /><details className="mt-8 border-t border-board-line py-4"><summary className="font-semibold">Advanced career context</summary><SearchContext /></details></>}
     </>
   );
 }
