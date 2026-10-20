@@ -29,6 +29,6 @@ test('the gateway exposes no approve or submit operation and requires object pay
 });
 
 test('batch publishing rejects candidate data in the shared employer catalog', () => {
-  assert.throws(() => validateRequest({operation:'batches.publish',payload:{jobs:[{canonicalUrl:'https://example.com/job',employer:{company:'Employer',profile:{name:'Private'}}}]}}));
-  assert.doesNotThrow(() => validateRequest({operation:'batches.publish',payload:{jobs:[{canonicalUrl:'https://example.com/job',employer:{company:'Employer',title:'Engineer'},recommendation:{whyItFits:'Private fit'}}]}}));
+  assert.throws(() => validateRequest({operation:'batches.publish',payload:{eventKey:'test',label:'Test',jobs:[{canonicalUrl:'https://example.com/job',employer:{company:'Employer',profile:{name:'Private'}}}]}}));
+  assert.doesNotThrow(() => validateRequest({operation:'batches.publish',payload:{eventKey:'test',label:'Test',jobs:[{canonicalUrl:'https://example.com/job',employer:{company:'Employer',title:'Engineer'},recommendation:{whyItFits:'Private fit'}}]}}));
 });
