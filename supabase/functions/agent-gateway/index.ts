@@ -1,4 +1,5 @@
 import {withGatewayCors} from './cors.mjs';
+import {validationMessage,databaseFailure} from './request-errors.mjs';
 import {prepareSearch,searchResponse} from './search.mjs';
 import { toolkitFileResponse } from './toolkit.mjs';
 import { resumeUploadDispatch } from './resume-upload.mjs';
@@ -40,8 +41,12 @@ Deno.serve(withGatewayCors(async request => {
     }
     const body = new Uint8Array(size); let offset = 0;
     for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.length; }
-    let { operation, payload } = validateRequest(JSON.parse(new TextDecoder().decode(body)));
-    if(operation.startsWith('search.')) payload=prepareSearch(operation,payload);
+    let parsed;
+    try {
+      parsed=validateRequest(JSON.parse(new TextDecoder().decode(body)));
+      if(parsed.operation.startsWith('search.')) parsed.payload=prepareSearch(parsed.operation,parsed.payload);
+    } catch(error) { return respond({error:validationMessage(error)},400); }
+    const {operation,payload}=parsed;
     if (operation.startsWith('connections.')) {
       if (bearer.startsWith('jb_agent_')) return respond({ error: 'Human sign-in required' }, 403);
       const { data: { user }, error } = await admin.auth.getUser(bearer);
@@ -100,15 +105,7 @@ Deno.serve(withGatewayCors(async request => {
       credential_hash: await hashToken(bearer), operation: policyRequest ? 'context.personal' : operation, payload: policyRequest ? {} : payload,
     });
     if (error) {
-      const messages: Record<string, [number, string]> = {
-        '28000': [401, 'Credential expired, revoked, or invalid'],
-        '42501': [403, 'Scope required'],
-        '40001': [409, 'Record or settings changed; reload current context'],
-        '40P01': [409, 'Concurrent edit; reload current context'],
-        'P0002': [404, 'Owned record not found'],
-        '22023': [400, 'Invalid payload'],
-      };
-      const [status, message] = messages[error.code] ?? [400, 'Operation rejected'];
+      const [status,message]=databaseFailure(error);
       return respond({ error: message }, status);
     }
     if (policyRequest) {
@@ -136,5 +133,5 @@ Deno.serve(withGatewayCors(async request => {
       return respond({ data: { resume: data, url } });
     }
     return respond({ data: operation.startsWith('search.') ? searchResponse(operation,data) : contextResponse(operation, data) });
-  } catch { return respond({ error: 'Invalid request' }, 400); }
+  } catch { return respond({ error: 'Lookout could not complete this operation. Read current state before retrying a write.' }, 500); }
 }));

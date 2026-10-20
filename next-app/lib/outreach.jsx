@@ -1,4 +1,5 @@
 "use client";
+import {isCompanyRecord} from '../../lib/network-model.mjs';
 import { outreachDemoMessages } from './outreach-demo.mjs';
 import { useEffect, useRef, useState } from 'react';
 import { useSlice, useWorkspace } from './workspace';
@@ -83,5 +84,5 @@ export function useOutreach() {
   const {error}=await client.from('outreach_requests').insert({companies:names,user_id:s.owner});if(error)throw Error('Could not save your request. Try again.');
   await refresh(s);
  }
- return {demo,contacts:contacts||[],setContacts,requests,status,ready,request,refresh:()=>{const s=session.current;return s?refresh(s):Promise.resolve();},signedIn:!!user || demo};
+ return {demo,records:contacts||[],setRecords:setContacts,flush,contacts:(contacts||[]).filter(r=>!isCompanyRecord(r)),setContacts:next=>setContacts([...latest.current.filter(isCompanyRecord),...next]),requests,status,ready,request,refresh:async()=>{const s=session.current;if(s){await flush();await refresh(s);if(isCurrent(s))setReady(true);}},signedIn:!!user || demo};
 }

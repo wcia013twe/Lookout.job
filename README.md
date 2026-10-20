@@ -371,6 +371,17 @@ this library. Actual execution remains a capability of the connected agent.
 
 Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
 
+## Private company Network
+
+Network (`/referrals/`) separates Targets from Active processes. Targets shows
+companies, teams/roles, research and relevant people in a compact list. Active
+processes groups targeted outreach by application and distinguishes role-specific
+drafts from other company contacts. Existing company sections retain private
+research, priorities, dated sources, contacts and linked applications. Due company follow-ups appear on the Action Board. This is a UI
+extension over existing private outreach storage and scoped contact tools; no new
+tables, gateway operations or company service are required. See the
+[Network UI and storage mapping](docs/private-network.md).
+
 ## Application profiles and writing styles
 
 My Profile now selects an application profile above Overview, About me, Application
@@ -486,7 +497,7 @@ website RPC/MCP boundary and canonical profile documents. Targets are serialized
 `{id,name,active,roles,timeline,resumeId,conditions}`, up to 30 per profile. Invalid
 imported text stays available in Advanced instructions instead of being discarded.
 The legacy document API remains for backward compatibility; its shared rules no
-longer act as configurable defaults under developer context 31 and search guide v3.
+longer act as configurable defaults under developer context 32 and search guide v3.
 Normal gateway release and hosted verification remain required. No scanner,
 scheduler, connection or submission router is activated by these preferences.
 

@@ -1,5 +1,3 @@
-import ReferralsPreview from "../../components/referrals";
-export const metadata = { title: "Referrals · Lookout" };
-export default function Page() {
-  return <ReferralsPreview />;
-}
+import Network from "../../components/network";
+export const metadata = {title:"Network · Lookout"};
+export default function Page(){return <Network/>;}

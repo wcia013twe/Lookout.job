@@ -113,9 +113,20 @@ export function validateRequest(input) {
     if (!Array.isArray(p.scopes) || !p.scopes.length || p.scopes.some(s => !SCOPES.includes(s))) throw new Error('Choose valid scopes');
     if (p.expiresInDays !== undefined && (!Number.isInteger(p.expiresInDays) || p.expiresInDays < 1 || p.expiresInDays > 90)) throw new Error('Expiry must be 1–90 days');
   }
-  if (input.operation === 'batches.publish' && Array.isArray(p.jobs)) {
+  if (input.operation === 'activity.append') {
+    if(Object.keys(p).some(k=>!['eventKey','kind','applicationId','data'].includes(k)) || typeof p.eventKey!=='string' || !p.eventKey.trim() || p.eventKey.length>200 || typeof p.kind!=='string' || !p.kind.trim() || p.kind.length>80) throw Error('Activity needs eventKey (1–200 characters) and kind (1–80 characters).');
+    if(p.applicationId!==undefined && !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(p.applicationId))throw Error('applicationId must be an owned application UUID; omit it for sweep-level activity.');
+    if(p.data!==undefined&&(!p.data||typeof p.data!=='object'||Array.isArray(p.data)))throw Error('Activity data must be an object.');
+  }
+  if (input.operation === 'batches.publish') {
+    if(Object.keys(p).some(k=>!['eventKey','label','date','jobs'].includes(k)) || typeof p.eventKey!=='string' || !p.eventKey.trim() || p.eventKey.length>200 || typeof p.label!=='string' || !p.label.trim() || p.label.length>200 || !Array.isArray(p.jobs) || p.jobs.length>100)throw Error('Batch needs eventKey, label and jobs (up to 100 items).');
+    if(p.date!==undefined&&!/^\d{4}-\d{2}-\d{2}$/.test(p.date))throw Error('Batch date must be YYYY-MM-DD; omit it to use today.');
     for (const job of p.jobs) {
-      if (!job.jobId && (!job.employer || Object.keys(job.employer).some(key => !EMPLOYER_FIELDS.includes(key)))) throw new Error('Only public employer facts may be published');
+      if(!job||typeof job!=='object'||Array.isArray(job)||Object.keys(job).some(k=>!['jobId','canonicalUrl','employer','recommendation'].includes(k)))throw Error('Each batch job must be {jobId,recommendation?} or {canonicalUrl,employer,recommendation?}.');
+      if(job.jobId!==undefined&&(typeof job.jobId!=='string'||!job.jobId.trim()))throw Error('jobId must be an existing catalog ID.');
+      if (!job.jobId && (!job.employer || typeof job.employer!=='object' || Array.isArray(job.employer) || Object.keys(job.employer).some(key => !EMPLOYER_FIELDS.includes(key)))) throw new Error('Only public employer facts may be published');
+      if(!job.jobId) {let url;try{url=new URL(job.canonicalUrl);}catch{throw Error('New batch jobs need canonicalUrl as a public HTTPS employer posting URL.');}if(url.protocol!=='https:'||url.username||url.password)throw Error('New batch jobs need a public HTTPS canonicalUrl.');}
+      if(job.recommendation!==undefined&&(!job.recommendation||typeof job.recommendation!=='object'||Array.isArray(job.recommendation)))throw Error('Private fit notes belong in the recommendation object.');
     }
   }
   return { operation: input.operation, payload: p };
