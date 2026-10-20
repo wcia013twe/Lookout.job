@@ -23,6 +23,61 @@ const labels: Record<string, string> = {
   preferredSkills: "Skills you prefer to use",
   languages: "Languages",
 };
+const pillFields = ["skills", "preferredSkills", "languages"];
+function pills(value: unknown): string[] {
+  const entries = (Array.isArray(value) ? value : [value]).flatMap((item) =>
+    typeof item === "string" ? item.split(/[,;\n]+/) : [],
+  );
+  const seen = new Set<string>();
+  return entries.map((item) => item.trim()).filter((item) => {
+    const key = item.toLocaleLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+function ProfilePills({ name, value, draft, onDraft, onChange }: {
+  name: string; value: unknown; draft: string;
+  onDraft: (value: string) => void; onChange: (value: string) => void;
+}) {
+  const items = pills(value);
+  function add(text = draft) {
+    onChange(pills([...items, text]).join("\n"));
+    onDraft("");
+  }
+  return (
+    <div className="min-w-0">
+      <label htmlFor={`profile-${name}`} className="mb-2 block text-sm text-board-muted">{labels[name]}</label>
+      {items.length > 0 && <ul aria-label={`${labels[name]} added`} className="mb-3 flex flex-wrap gap-2">
+        {items.map((item) => <li key={item} className="inline-flex max-w-full items-center rounded-full border border-board-line bg-board-tag pl-3 text-sm text-board-text">
+          <span className="min-w-0 break-words py-1">{item}</span>
+          <button type="button" aria-label={`Remove ${item} from ${labels[name]}`} className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full text-board-muted hover:text-board-text focus-visible:outline-2 focus-visible:outline-board-accent" onClick={() => onChange(items.filter((entry) => entry !== item).join("\n"))}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
+          </button>
+        </li>)}
+      </ul>}
+      <div className="flex items-start gap-2">
+        <input id={`profile-${name}`} className={control} value={draft} autoComplete="off" aria-describedby={`profile-${name}-hint`} placeholder={name === "languages" ? "Add a language" : "Add a skill"}
+          onChange={(event) => onDraft(event.target.value)}
+          onBlur={() => { if (draft.trim()) add(); }}
+          onKeyDown={(event) => {
+            if (!event.nativeEvent.isComposing && ["Enter", ",", ";"].includes(event.key)) { event.preventDefault(); if (draft.trim()) add(); }
+          }}
+          onPaste={(event) => {
+            const text = event.clipboardData.getData("text");
+            if (/[,;\n]/.test(text)) {
+              event.preventDefault();
+              const input = event.currentTarget;
+              add(draft.slice(0, input.selectionStart ?? draft.length) + text + draft.slice(input.selectionEnd ?? draft.length));
+            }
+          }}
+        />
+        <button type="button" className={secondary} aria-label={`Add to ${labels[name]}`} disabled={!draft.trim()} onClick={() => add()}>Add</button>
+      </div>
+      <p id={`profile-${name}-hint`} className="mt-2 text-sm text-board-muted">Press Enter or comma to add. You can also paste a list.</p>
+    </div>
+  );
+}
 type EntryKind = "workExperience" | "education" | "projects";
 type ProfileEntry = Record<string, string | boolean | undefined>;
 type ProfileFacts = Record<string, unknown> & { verified?: boolean } & Partial<Record<EntryKind, ProfileEntry[]>>;
@@ -39,10 +94,12 @@ export default function ProfileEditor() {
   const [facts, setFacts] = useState(profile),
     [checked, setChecked] = useState(false),
     [feedback, setFeedback] = useState("");
+  const [pillDrafts, setPillDrafts] = useState<Record<string, string>>({});
   const review = useRef(createProfileReview());
   useEffect(() => {
     review.current.reset(profile, profile.verified);
     setFacts(profile);
+    setPillDrafts({});
     setChecked(profile.verified === true);
   }, [JSON.stringify(profile), w.user?.id]);
   function update(key: string, value: unknown) {
@@ -54,6 +111,7 @@ export default function ProfileEditor() {
     e.preventDefault();
     const form = e.currentTarget;
     const values = { ...facts };
+    for (const key of pillFields) values[key] = pills([...(pills(facts[key])), pillDrafts[key] || ""]).join("\n");
     for (const key of schema.scalarFields) {
       const element = form.elements.namedItem(key) as HTMLInputElement | HTMLTextAreaElement | null;
       if (element) {
@@ -62,7 +120,7 @@ export default function ProfileEditor() {
       }
     }
     const changed = schema.scalarFields.some((key) => {
-      const current = Array.isArray(facts[key])
+      const current = pillFields.includes(key) ? pills(facts[key]).join("\n") : Array.isArray(facts[key])
         ? (facts[key] as string[]).join("\n")
         : facts[key] || "";
       return values[key] !== String(current).trim();
@@ -225,20 +283,11 @@ export default function ProfileEditor() {
         <details className="border-t border-board-line py-5"><summary className="text-lg font-bold">Skills &amp; languages</summary>
         <Section title="Edit skills & languages">
           <div className="grid gap-4 sm:grid-cols-2">
-            {["skills", "preferredSkills", "languages"].map((key) => (
-              <Field key={key} label={`${labels[key]} (one per line)`}>
-                <textarea
-                  name={key}
-                  className={control}
-                  rows={4}
-                  value={
-                    Array.isArray(facts[key])
-                      ? (facts[key] as string[]).join("\n")
-                      : (facts[key] as string) || ""
-                  }
-                  onChange={(e) => update(key, e.target.value)}
-                />
-              </Field>
+            {pillFields.map((key) => (
+              <ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key] || ""}
+                onDraft={(value) => { review.current.invalidate(); setChecked(false); setPillDrafts((current) => ({ ...current, [key]: value })); }}
+                onChange={(value) => update(key, value)}
+              />
             ))}
           </div>
         </Section>

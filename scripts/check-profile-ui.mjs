@@ -1,0 +1,56 @@
+// Optional visual/integration check. All cloud traffic is intercepted with fictional data.
+const {chromium} = await import(process.env.LOOKOUT_PLAYWRIGHT_MODULE || '../runner/node_modules/playwright/index.mjs');
+import assert from 'node:assert/strict';
+import {mkdir} from 'node:fs/promises';
+const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/private/tmp/lookout-profile-ui';await mkdir(dir,{recursive:true});
+const browser=await chromium.launch({executablePath:process.env.LOOKOUT_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+const errors=[];const cloud=[];
+try{
+ const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',serviceWorkers:'block'});
+ const user={id:'11111111-1111-1111-1111-111111111111',aud:'authenticated',role:'authenticated',email:'fictional@example.com',app_metadata:{demo_preview:true},user_metadata:{},is_anonymous:false};
+ const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url');
+ const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
+ await context.addInitScript(({user,token})=>localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user})),{user,token});
+ await context.route('https://umhqfqzpwmszhcknwtrs.supabase.co/**',async route=>{
+  cloud.push(route.request().url());const url=route.request().url();
+  const op=route.request().postDataJSON()?.operation;
+  const body=url.includes('/auth/v1/user')?user:url.includes('/rpc/search_action')&&op==='search.context'?{documents:[],profileId:null}:[];
+  await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*','Content-Range':'0-0/0'},body:JSON.stringify(body)});
+ });
+ const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+ await page.goto((process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3034') + '/profile/');
+ await page.getByRole('button',{name:'Open profile navigation'}).click();
+ await page.getByRole('button',{name:'Demo mode',exact:true}).click();
+ await page.getByRole('button',{name:'About me',exact:true}).click();
+ await page.locator('details').filter({has:page.locator('summary').filter({hasText:'Skills & languages'})}).first().evaluate(el=>el.open=true);
+ const before=cloud.length;
+ const skills=page.getByRole('list',{name:'Skills added',exact:true});
+ assert.equal(await skills.locator('li').count(),4);
+ assert.equal(await page.getByRole('list',{name:'Skills you prefer to use added',exact:true}).locator('li').count(),2);
+ assert.equal(await page.getByRole('list',{name:'Languages added',exact:true}).locator('li').count(),2);
+ const input=page.getByLabel('Skills',{exact:true});
+ await input.fill('Rust'); await input.press('Enter');
+ await page.getByRole('button',{name:'Remove Rust from Skills',exact:true}).waitFor();
+ await input.fill('rust');await input.press(','); assert.equal(await skills.locator('li').count(),5);
+ await input.fill('C++');await page.getByRole('button',{name:'Add to Skills',exact:true}).click();
+ await page.getByRole('button',{name:'Remove C++ from Skills',exact:true}).waitFor();
+ await input.fill('Redis');await page.getByRole('button',{name:'Save profile',exact:true}).click();
+ await page.getByRole('button',{name:'Remove Redis from Skills',exact:true}).waitFor();
+ await page.getByText('Profile saved as unverified.',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Remove Rust from Skills',exact:true}).click();
+ await page.getByLabel('Languages',{exact:true}).fill('French');await page.getByLabel('Languages',{exact:true}).press('Enter');
+ // Exercise the actual paste handler with mixed separators, blanks and a duplicate.
+ await input.evaluate(el=>{const data=new DataTransfer();data.setData('text','Java, Kotlin\nGo;  ');el.dispatchEvent(new ClipboardEvent('paste',{clipboardData:data,bubbles:true,cancelable:true}));});
+ await page.getByRole('button',{name:'Remove Kotlin from Skills',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Save profile',exact:true}).click();
+ await page.getByRole('button',{name:'Application kit',exact:true}).click();await page.getByRole('button',{name:'About me',exact:true}).click();
+ await page.locator('details').filter({has:page.locator('summary').filter({hasText:'Skills & languages'})}).first().evaluate(el=>el.open=true);
+ await page.getByRole('button',{name:'Remove Kotlin from Skills',exact:true}).waitFor();
+ assert.equal(await page.getByRole('button',{name:'Remove Rust from Skills',exact:true}).count(),0);
+ await page.screenshot({path:dir+'/profile-pills-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});await page.emulateMedia({colorScheme:'light'});
+ await page.screenshot({path:dir+'/profile-pills-mobile.png',fullPage:true});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile profile overflows');
+ assert.equal(cloud.length,before,'Demo edits must not call cloud');assert.equal(errors.length,0,errors.join('\n'));
+ console.log('PASS: existing string/array pills; Enter/comma/Add/blur/paste; dedupe; remove; save/revisit; desktop/mobile; demo isolation; no page errors');
+}finally{await browser.close();}
