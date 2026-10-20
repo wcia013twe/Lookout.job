@@ -1,5 +1,10 @@
 "use client";
 import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  parseRecruitingTargets,
+  recruitingTargetsHeading,
+  recruitingTargetsKey,
+} from "../../lib/recruiting-targets.mjs";
 import { useWorkspace } from "../lib/workspace";
 import {
   initialPrompt,
@@ -58,7 +63,7 @@ function useProfiles() {
       [id]: {
         id,
         name: name.trim().slice(0, 80),
-        active: true,
+        active: duplicate ? profile.active : true,
         version: 0,
         prompt: duplicate ? profile.prompt : initialPrompt(),
       },
@@ -72,6 +77,20 @@ function useProfiles() {
     const id = profile.id;
     setBusy(true);
     try {
+      const targets = readField(
+        profile.prompt,
+        recruitingTargetsHeading,
+        recruitingTargetsKey,
+      );
+      if (targets.conflict)
+        throw Error(
+          "Resolve duplicate Targets fields in Advanced instructions.",
+        );
+      parseRecruitingTargets(targets.value, { requireNames: true });
+      if (readField(profile.prompt, "Profile evaluation", "Rules").conflict)
+        throw Error(
+          "Resolve duplicate profile evaluation Rules in Advanced instructions.",
+        );
       const next = profileFromPrompt(profile.prompt, profile);
       let stored;
       if (owner) {
