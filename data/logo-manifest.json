@@ -499,5 +499,60 @@
     "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/applied-materials.png",
     "sha256": "4648884fa0f8e0775f5243aad702b60fdbf96476c8e51b2be4e5e045b48dc558",
     "contentType": "image/png"
+  },
+  "apple": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/apple.png",
+    "sha256": "db4f305ebecaddc7d36b567f625eb14277ff0fc41bb899d8111a294b0305fa6c",
+    "contentType": "image/png"
+  },
+  "nintendo": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/nintendo.png",
+    "sha256": "e4a52ed0cd8408b9fc330dc4afa492c9a34ec51f5de80b9a2cdad4fa05e40196",
+    "contentType": "image/png"
+  },
+  "fedex": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/fedex.png",
+    "sha256": "cafae307678ad5e66cc53c597df8d83a6f29c23dd9f3a2c569c30e80e00a3dd2",
+    "contentType": "image/png"
+  },
+  "netapp": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/netapp.png",
+    "sha256": "8c1c84b0916aaf524da73ded974a6904709fc031d5c4dab36f33ee47ac7920ed",
+    "contentType": "image/png"
+  },
+  "l3harris": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/l3harris.png",
+    "sha256": "e5cca63bf9d47bf276bfc31d0c7e40675a106d2f726e56e3b17bdc2d54b125bd",
+    "contentType": "image/png"
+  },
+  "patreon": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/patreon.png",
+    "sha256": "4d65b7021a66cf4d27267db2311130f9818867688a2942142db0dbe50b5925af",
+    "contentType": "image/png"
+  },
+  "amazon": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/amazon.png",
+    "sha256": "cf39ef4f70ada127ce40ab44e03d155e57826b6418c8c304314100cdc58d09b9",
+    "contentType": "image/png"
+  },
+  "ai2": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/ai2.png",
+    "sha256": "d36fd96eb11d8b32da743b8649819a160774fc5b7d7a188de53fb7b67a9e6498",
+    "contentType": "image/png"
+  },
+  "keysight": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/keysight.png",
+    "sha256": "19ac943d13c9713000d34d0d1d6923193e03cad58e764869f30fe429cbda115a",
+    "contentType": "image/png"
+  },
+  "bosch": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/bosch.png",
+    "sha256": "5c1d8b350b482f8c4815c209cb0566ade6e16b43407ff53fb3bf0cf7c80765f4",
+    "contentType": "image/png"
+  },
+  "marvell": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/marvell.png",
+    "sha256": "c0db8d9f089d39d8b64123111786055fb760b2b6db83cbfee3e7350bf9701f81",
+    "contentType": "image/png"
   }
 }
