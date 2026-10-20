@@ -42,7 +42,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
     try {
       const response = await call("connections.list");
       if (epoch === generation.current) {
-        setConnections(response.data || []);
+        setConnections((response.data || []).filter((connection: AgentConnection) => !connection.revoked_at));
         setSupportedScopes(response.supportedScopes || ["preferences:write"]);
       }
       return true;
@@ -119,7 +119,8 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
       if (epoch !== generation.current) return;
       setRevokeTarget(null);
       if (id === tokenConnectionId) { setToken(""); setTokenConnectionId(""); }
-      setConnections((items) => items.map((item) => item.id === id ? { ...item, revoked_at: new Date().toISOString() } : item));
+      setConnections((items) => items.filter((item) => item.id !== id));
+      setAction("refresh");
       setFeedback("Agent access revoked.");
       await refresh(true);
     } catch (e) {
@@ -265,7 +266,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
         {loading ? (
           <p role="status" className="py-5 text-sm text-board-muted">Loading your connections…</p>
         ) : connections.length === 0 ? (
-          <p className="py-5 text-sm leading-relaxed text-board-muted">No connections yet. Create one above to give your personal agent access.</p>
+          <p className="py-5 text-sm leading-relaxed text-board-muted">No connections to manage. Create one above to give your personal agent access.</p>
         ) : (
           <ul className="mt-2 divide-y divide-board-line">
             {connections.map((c) => {
