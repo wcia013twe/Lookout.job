@@ -5,6 +5,7 @@ import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, primary, secondary, control, Field } from "./ui";
 import ProfileEditor from "./profile-editor";
+import ProfileOverview from "./profile-overview";
 import Resumes from "./resumes";
 import SavedAnswers from "./saved-answers";
 import SearchTargets from "./search-targets";
@@ -30,44 +31,13 @@ const sections: [ProfileSection, string][] = [
 ];
 function ProfileContent() {
   const w = useWorkspace(),
-    a = useApplicationProfile(),
-    profile = w.state.workflow.profile;
+    a = useApplicationProfile();
   const [active, setActive] = useState<ProfileSection>("overview"),
     [visited, setVisited] = useState<ProfileSection[]>([]);
   function select(id: ProfileSection) {
     setActive(id);
     setVisited((prev) => (prev.includes(id) ? prev : [...prev, id]));
   }
-  const email = a.field("Application identity", "Application email").value;
-  const resume = w.state.workflow.resumes.find(
-    (r: { id: string }) =>
-      r.id === a.field("Application materials", "Default resume ID").value,
-  );
-  const summaries: [ProfileSection, string, string, string][] = [
-    [
-      "about",
-      "About me",
-      profile.verified
-        ? "Background checked by you"
-        : "Background needs your review",
-      email
-        ? `Application email: ${email}`
-        : "Set your application email and account assignments",
-    ],
-    [
-      "kit",
-      "Application kit",
-      resume ? resume.name : "Choose a resume for this profile",
-      `${w.state.workflow.savedAnswers.length} saved answers in your shared library`,
-    ],
-    [
-      "preferences",
-      "Job preferences",
-      a.profile.active ? "Included in job searches" : "Search paused",
-      a.field("Role preferences", "Roles").value ||
-        "Define the roles and tradeoffs that matter to you",
-    ],
-  ];
   return (
     <ProfileSurface>
       <Heading title="My Profile">
@@ -100,120 +70,7 @@ function ProfileContent() {
           </button>
         ))}
       </nav>
-      {active === "overview" && (
-        <div className={profileStyles.overview}>
-          <div className={profileStyles.identityHeader}>
-            <div className={profileStyles.initials} aria-hidden="true">
-              {(profile.name || "Your profile")
-                .split(" ")
-                .map((v: string) => v[0])
-                .slice(0, 2)
-                .join("")}
-            </div>
-            <div>
-              <p className="text-xs text-board-muted">SHARED BACKGROUND</p>
-              <h2 className="mt-1 text-xl font-bold">
-                {profile.name || "Your profile"}
-              </h2>
-              <p className="mt-1 text-sm text-board-muted">
-                {[profile.headline, profile.location]
-                  .filter(Boolean)
-                  .join(" · ") ||
-                  "Add your professional background in About me."}
-              </p>
-            </div>
-            <button
-              className={`${secondary} sm:ml-auto`}
-              onClick={() => select("about")}
-            >
-              Edit background
-            </button>
-          </div>
-          <div className="mt-8 mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold">
-              Ready for your next application?
-            </h2>
-            <span className="text-sm text-board-muted">{a.profile.name}</span>
-          </div>
-          <div className={profileStyles.readinessList}>
-            {summaries.map(([id, title, status, description]) => (
-              <button
-                type="button"
-                key={id}
-                className={profileStyles.readinessRow}
-                onClick={() => select(id)}
-              >
-                <span className="font-semibold">{title}</span>
-                <span className="min-w-0">
-                  <span className="block text-sm">{status}</span>
-                  <span className="mt-1 block text-xs text-board-muted">
-                    {description}
-                  </span>
-                </span>
-                <span aria-hidden="true">→</span>
-              </button>
-            ))}
-          </div>
-          <div className={profileStyles.overviewBottom}>
-            <section>
-              <h3 className="font-semibold">Assigned accounts</h3>
-              <p className="mt-2 text-sm text-board-muted">
-                Managed by your agent
-              </p>
-              <dl className="mt-4 space-y-3 text-sm">
-                {["Email account", "Document account", "Outreach identity"].map(
-                  (key) => (
-                    <div key={key}>
-                      <dt className="text-xs text-board-muted">{key}</dt>
-                      <dd className="mt-1 break-words">
-                        {a.field("Application identity", key).value ||
-                          "Not assigned"}
-                      </dd>
-                    </div>
-                  ),
-                )}
-              </dl>
-              <button
-                className={`${secondary} mt-5`}
-                onClick={() => select("about")}
-              >
-                View assignments
-              </button>
-            </section>
-            <section>
-              <h3 className="font-semibold">Your writing voice</h3>
-              {[
-                ["Employer questions", "Employer answer writing"],
-                ["Outreach", "Outreach writing"],
-              ].map(([title, heading]) => (
-                <div key={heading} className="mt-4">
-                  <p className="text-xs text-board-muted">{title}</p>
-                  <p className="mt-1 text-sm">
-                    {[
-                      a.field(heading, "Tone").value,
-                      a.field(heading, "Length").value,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ") || "No style configured"}
-                  </p>
-                </div>
-              ))}
-              <button
-                className={`${secondary} mt-5`}
-                onClick={() => select("kit")}
-              >
-                Edit writing styles
-              </button>
-            </section>
-          </div>
-          <Link
-            href="/onboarding/"
-            className="mt-6 inline-flex min-h-11 items-center text-sm text-board-muted underline underline-offset-4"
-          >
-            {profile.name ? "Revisit guided setup" : "Start guided setup"}
-          </Link>
-        </div>
-      )}
+      {active === "overview" && <ProfileOverview onSelect={select} />}
       {visited.includes("about") && (
         <section
           className={profileStyles.panel}

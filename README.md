@@ -415,3 +415,11 @@ Edit shared background and verify the independent review/save boundary. Add/edit
 employer answer and inspect retained reuse restrictions. Preview the style brief,
 visit unchanged My agent, then reset Demo to restore fixtures. Fixtures and changes
 remain in memory and never write real account records or fetch private files.
+
+Profile Overview shows account-wide tracked roles, recorded applications, active
+interviews and offers using the existing tracker stages. These totals span all
+application profiles; profile identity, account assignments and writing styles
+remain scoped to the selected profile. Counts include user/agent-reported progress
+and do not independently establish employer-confirmed submission. Demo uses its
+existing fictional application stages and resettable memory store. `workspace_read`
+exposes the underlying records; this read-only summary adds no service or permission.
