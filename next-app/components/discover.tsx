@@ -59,7 +59,7 @@ export default function Discover() {
             <h2 className="text-xl font-semibold tracking-tight">{label}</h2>
             <span className="rounded-md bg-board-tag px-2 py-1 text-xs tabular-nums text-board-muted">{group.length}</span>
           </div>
-          {group.length ? <div className="grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {group.length ? <div className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3">
             {group.map((role: Role) => <RoleCard key={role.id} role={role} />)}
           </div> : <div className="glass-inset rounded-xl px-5 py-7">
             <p className="text-sm text-board-muted">No new {label.toLowerCase()} roles for this view.</p>
