@@ -36,3 +36,14 @@ Milestones include submitted, recruiter calls, technical rounds, interviews and 
 - Guide routing, scope checks, clone isolation and payload validation have local
   tests. Hosted availability requires the normal gateway release and live verification;
   no deployment or installed upstream executable is claimed by this feature.
+
+Private company Network: website `network_action` and trusted
+`agent_network_dispatch` share owned validation and optimistic revisions.
+`read_network_companies` (`workspace:read`) pages private company records;
+`save_network_company` (`network:write`, with read) manages company fields, dated
+sources, owned contact/application links and archive state. Due-action display
+uses the same saved records. Research-request copying is a human handoff to
+`career-research-company`; it does not start an agent. See
+[private Network contract](../docs/private-network.md). Migration, gateway/config,
+remote MCP and frontend deployment plus hosted verification are still required
+before claiming deployed parity.

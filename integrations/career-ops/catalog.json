@@ -352,7 +352,7 @@
     {
       "id": "research-company",
       "guideId": "career-research-company",
-      "version": 3,
+      "version": 4,
       "category": "search",
       "title": "Research a company",
       "summary": "Learn enough about the company and team to ask better questions.",
@@ -362,13 +362,16 @@
         "A specific decision you want to inform"
       ],
       "steps": [
+        "Read current profile and read_network_companies with pagination. Reuse sourced findings before researching; check missing or stale information with real browsing.",
         "Research current products, strategy, engineering work and recent developments.",
         "Separate sourced observations from interpretations.",
-        "Connect the findings to your experience, application angle and questions."
+        "Connect the findings to your experience, application angle and questions.",
+        "Save the private company brief with save_network_company using network:write and the current revision (0 for a new UUID). Preserve human priorities and links; separate sourced research from interest, targetTeams and concerns. Include HTTPS source URLs, observation dates and evidence summaries. Link only owned contacts/applications; archive only on user request. If the tools or scope are unavailable, return an explicitly unsaved brief."
       ],
       "outputs": [
         "A sourced company brief",
-        "Conversation and preparation questions"
+        "Conversation and preparation questions",
+        "A private Network company record, or an explicitly unsaved brief when persistence is unavailable"
       ],
       "examples": [
         "Research this company for my application. Focus on engineering culture and what the team is building.",

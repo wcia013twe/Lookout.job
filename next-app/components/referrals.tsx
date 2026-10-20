@@ -51,7 +51,7 @@ function MessageEditor({ contact, update, remove }: { contact: ContactRecord; up
     <p className="mt-3 text-xs text-board-muted">Update the status after you send. Copying a message doesn’t mark it sent.</p>
   </section>;
 }
-export default function Referrals() {
+export default function Referrals({company,contactIds=[]}: {company?: string;contactIds?:string[]}) {
   const outreach = useOutreach();
   const reducedMotion = useReducedMotion();
   const targets: ContactRecord[] = outreach.contacts, setTargets = outreach.setContacts;
@@ -64,10 +64,11 @@ export default function Referrals() {
   const [query, setQuery] = useState("");
   const [addOpen, setAddOpen] = useState(false);
   const [museOpen, setMuseOpen] = useState(false);
-  const [companyText, setCompanyText] = useState("");
+  const [companyText, setCompanyText] = useState(company || "");
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState("");
-  const all: ContactRecord[] = [...(targets || []).map(r => ({ ...r, origin: "target" as const })), ...(people || []).map(r => ({ ...r, origin: "person" as const }))];
+  const allContacts: ContactRecord[] = [...(targets || []).map(r => ({ ...r, origin: "target" as const })), ...(people || []).map(r => ({ ...r, origin: "person" as const }))];
+  const all = company ? allContacts.filter(r=>contactIds.includes(r.id)||r.company?.trim().toLowerCase().replace(/\s+/g," ")===company.trim().toLowerCase().replace(/\s+/g," ")) : allContacts;
   const groups: ContactGroup[] = groupContacts(all.filter(r => `${r.company} ${r.contact || r.name} ${r.title || r.role || ""}`.toLowerCase().includes(query.toLowerCase())));
   const contact = all.find(r => `${r.origin}:${r.id}` === selected) || groups[0]?.contacts[0];
   function update(fields: Partial<ContactRecord>) {
@@ -95,9 +96,9 @@ export default function Referrals() {
   }
   function openMuse() { setMuseOpen(!museOpen); setCompanyText((groupContacts(all) as ContactGroup[]).map(g=>g.company).join(", ")); setAddOpen(false); setFeedback(""); }
   return <ProfileSurface>
-    <div className="flex flex-wrap items-start justify-between gap-4"><Heading title="Referrals">Review your message, make it yours, and copy it to send.</Heading><div className="flex flex-wrap gap-2">{!!all.length && <button type="button" className={primary} aria-expanded={museOpen} onClick={openMuse}>Prepare with Muse</button>}<button type="button" className={secondary} aria-expanded={addOpen} onClick={() => { setAddOpen(!addOpen); setMuseOpen(false); setFeedback(""); }}>Add manually</button></div></div>
+    <div className="flex flex-wrap items-start justify-between gap-4"><Heading title={company ? "People & outreach" : "Referrals"}>Review your message, make it yours, and copy it to send.</Heading><div className="flex flex-wrap gap-2">{!!all.length && <button type="button" className={primary} aria-expanded={museOpen} onClick={openMuse}>Prepare with Muse</button>}<button type="button" className={secondary} aria-expanded={addOpen} onClick={() => { setAddOpen(!addOpen); setMuseOpen(false); setFeedback(""); }}>Add manually</button></div></div>
     {(museOpen || (!all.length && !addOpen)) && <section className="mb-6 border-y border-board-line py-5" aria-labelledby="muse-outreach-heading"><h2 id="muse-outreach-heading" className="text-lg font-bold">Prepare company outreach</h2><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">{outreach.demo ? "Choose companies to preview prepared contacts and messages." : "Choose companies for Muse to research. It will save contacts and personal messages here on its next connected run."}</p><form onSubmit={requestOutreach} className="mt-4"><Field label="Companies"><textarea className={control} rows={2} value={companyText} onChange={e=>setCompanyText(e.target.value)} placeholder="e.g. Robinhood, Stripe" required maxLength={10000}/></Field><button className={`${primary} mt-3`} disabled={busy || !outreach.ready}>{busy ? "Saving request…" : outreach.demo ? "Preview drafts" : "Request outreach"}</button>{!outreach.signedIn && <p className="mt-3 text-sm text-board-muted">Sign in to save a request for Muse. You can still add contacts manually.</p>}</form></section>}
-    {addOpen && <section className="mb-6 border-y border-board-line py-5"><h2 className="text-lg font-bold">Add an outreach contact</h2><form onSubmit={add} className="mt-4 grid gap-4 sm:grid-cols-2"><Field label="Company"><input className={control} name="company" required/></Field><Field label="Contact name"><input className={control} name="contact" required autoComplete="name"/></Field><Field label="LinkedIn profile (optional)"><input className={control} name="linkedin" type="url"/></Field><Field label="Target role (optional)"><input className={control} name="title"/></Field><div className="sm:col-span-2"><Field label="Message (optional)"><textarea className={control} name="message" rows={4} placeholder="Paste your message here, or add it later."/></Field></div><div className="flex items-end"><button className={primary}>Add contact</button></div></form></section>}
+    {addOpen && <section className="mb-6 border-y border-board-line py-5"><h2 className="text-lg font-bold">Add an outreach contact</h2><form onSubmit={add} className="mt-4 grid gap-4 sm:grid-cols-2"><Field label="Company"><input className={control} name="company" defaultValue={company} required/></Field><Field label="Contact name"><input className={control} name="contact" required autoComplete="name"/></Field><Field label="LinkedIn profile (optional)"><input className={control} name="linkedin" type="url"/></Field><Field label="Target role (optional)"><input className={control} name="title"/></Field><div className="sm:col-span-2"><Field label="Message (optional)"><textarea className={control} name="message" rows={4} placeholder="Paste your message here, or add it later."/></Field></div><div className="flex items-end"><button className={primary}>Add contact</button></div></form></section>}
     <Notice>{feedback}</Notice>
     {outreach.demo && <p className="mb-5 text-sm text-board-muted">Fictional contacts and drafted messages. Edits stay in this demo; you send nothing here.</p>}
     {outreach.requests.some((r: { status: string })=>r.status==='Queued') && <section className="mb-6 border-b border-board-line pb-4" aria-label="Pending outreach"><h2 className="text-sm font-semibold">Waiting for Muse</h2><ul className="mt-2 space-y-2 text-sm text-board-muted">{outreach.requests.filter((r: { status: string })=>r.status==='Queued').map((r: { id: string; companies: string[] })=><li key={r.id}>{r.companies.join(", ")} — queued for the next connected run</li>)}</ul><button type="button" className={`${secondary} mt-3`} onClick={()=>outreach.refresh().catch(()=>setFeedback("Could not refresh outreach. Try again."))}>Refresh outreach</button></section>}

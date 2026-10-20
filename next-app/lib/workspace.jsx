@@ -1,7 +1,8 @@
 "use client";
+import {demoFixtures} from './network-demo.mjs';
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { canUseDemo, createMemoryStore, demoFixtures, createDemoServices } from "./demo.mjs";
+import { canUseDemo, createMemoryStore, createDemoServices } from "./demo.mjs";
 import { demoOutreachContacts } from './outreach-demo.mjs';
 import { dayStamp } from "./progress.mjs";
 import { connectCloud } from "../../lib/cloud.mjs";

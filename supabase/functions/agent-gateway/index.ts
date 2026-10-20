@@ -63,6 +63,11 @@ Deno.serve(withGatewayCors(async request => {
       if (result.error) return respond({error: 'Guide access rejected'}, result.error.code === '28000' ? 401 : result.error.code === '42501' ? 403 : result.error.code === 'P0002' ? 404 : 400);
       return respond({data: result.data});
     }
+    if (operation.startsWith('network.')) {
+      const {data,error}=await admin.rpc('agent_network_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
+      if(error)return respond({error:error.code==='40001'?'Company changed; reload before saving':'Company operation rejected'},error.code==='28000'?401:error.code==='42501'?403:error.code==='40001'?409:400);
+      return respond({data});
+    }
     if (operation.startsWith('outreach.')) {
       const {data,error} = await admin.rpc('agent_outreach_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
       if(error) return respond({error: error.code==='40001'?'Outreach changed; reload before retrying':'Outreach operation rejected'},error.code==='28000'?401:error.code==='42501'?403:error.code==='40001'?409:400);

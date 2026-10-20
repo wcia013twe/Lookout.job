@@ -370,3 +370,15 @@ this library. Actual execution remains a capability of the connected agent.
 ## Document-backed career context and agent search memory
 
 Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
+
+## Private company Network
+
+Network (`/referrals/`) now leads with a private company grid, including research-only
+targets and companies matched from existing contacts/applications. Each company has
+personal priorities, team interests, concerns, sourced research, next action and
+follow-up date, with People & outreach and Applications sections. The existing
+outreach editor and application dialogs are reused. Due company follow-ups appear
+on the Action Board. Career Toolkit research can be saved with scoped
+`read_network_companies` / `save_network_company` tools; copying a research request
+does not execute it. No shared company database or live recruiter inbox is added.
+See [storage, agent mapping, demo and release limits](docs/private-network.md).
