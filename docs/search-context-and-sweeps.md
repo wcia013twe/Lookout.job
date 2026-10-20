@@ -9,7 +9,7 @@ installation, required runner or automatic schedule is introduced.
 
 Search profiles are Markdown with YAML frontmatter: id, name, active, filters and
 priorities; the Markdown body owns narrative exceptions/goals and company-list
-references. Shared house rules are procedural Markdown, never candidate evidence.
+references. Rules belong to the selected profile under `Profile evaluation / Rules`. The legacy shared house-rules document is retained for reference and explicit one-time copying, never as a live global override or candidate evidence.
 Shared portals YAML owns tracked_companies, search_queries, title_filter and
 location_filter. Sources use id/name/kind/careers_url/enabled with optional provider,
 api and keywords. No arbitrary executable/parser configuration is accepted.
@@ -20,7 +20,7 @@ The database independently parses the canonical representation, validates fields
 and updates the document revision and existing settings projections atomically.
 It never trusts a caller-supplied projection. Existing profile/target controls route
 through that same writer; their versions remain compatible. Generic autosync cannot
-overwrite these projections. Export/revision history are available in Career context.
+overwrite these projections. The scoped document APIs retain exportable content and revision history; the profile UI uses its rules field and Advanced instructions instead of global configuration editors.
 
 Candidate facts, verified answers, company tier lists, resumes, applications,
 approvals and submission attempts remain their existing canonical records.

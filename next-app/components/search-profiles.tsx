@@ -12,16 +12,23 @@ import {
 } from "../../lib/search-profile.mjs";
 
 import TierLists from "./tierlists";
+import RecruitingTargets from "./recruiting-targets";
+import ProfileRuleCopy from "./profile-rule-copy";
 import { errorMessage } from "./profile-types";
 import { useApplicationProfile } from "./application-profile-context";
 function SearchProfileEditor() {
   const w = useWorkspace();
   const { profile, patch, busy, setFeedback } = useApplicationProfile();
-  const [undo, setUndo] = useState<{ id: string; prompt: string } | null>(null);
+  const [showLegacy, setShowLegacy] = useState(false);
+  const [undo, setUndo] = useState<{
+    id: string;
+    prompt: string;
+    after: string;
+  } | null>(null);
   function change(heading: string, key: string, value: string) {
     try {
       const prompt = updateField(profile.prompt, heading, key, value);
-      setUndo({ id: profile.id, prompt: profile.prompt });
+      setUndo({ id: profile.id, prompt: profile.prompt, after: prompt });
       patch({ prompt });
       setFeedback(`${key} updated. Save the application profile when ready.`);
     } catch (error) {
@@ -36,7 +43,12 @@ function SearchProfileEditor() {
   ) {
     const field = readField(profile.prompt, heading, key);
     return (
-      <Field label={key} key={key}>
+      <Field
+        label={
+          heading === "Profile evaluation" ? "Rules for this profile" : key
+        }
+        key={key}
+      >
         {multiline ? (
           <textarea
             className={control}
@@ -80,7 +92,7 @@ function SearchProfileEditor() {
         "Tier list name",
         list?.name || "",
       );
-      setUndo({ id: profile.id, prompt: profile.prompt });
+      setUndo({ id: profile.id, prompt: profile.prompt, after: prompt });
       patch({ prompt });
     } catch (error) {
       setFeedback(errorMessage(error));
@@ -109,6 +121,65 @@ function SearchProfileEditor() {
         />
         Include this profile in job searches
       </label>
+      <section
+        aria-labelledby="profile-evaluation-heading"
+        className="mb-7 border-t border-board-line pt-5"
+      >
+        <h3 id="profile-evaluation-heading" className="text-lg font-semibold">
+          Profile rules
+        </h3>
+        <p className="mt-2 mb-4 max-w-prose text-sm text-board-muted">
+          Only for {profile.name}. Describe how your agent should work and what
+          makes an opportunity worth pursuing. Other profiles have their own
+          rules.
+        </p>
+        {textField(
+          "Profile evaluation",
+          "Rules",
+          "For example: verify uncertain facts, prioritize strong systems teams, and explain any tradeoffs before recommending a role.",
+          true,
+        )}
+        {(w.user || w.demo) && (
+          <details
+            className="mt-3"
+            onToggle={(e) => setShowLegacy(e.currentTarget.open)}
+          >
+            <summary className="text-sm font-medium">
+              Copy previous rules
+            </summary>
+            {showLegacy && <ProfileRuleCopy />}
+          </details>
+        )}
+        <details className="border-t border-board-line py-3">
+          <summary className="text-base font-semibold">
+            Career goals &amp; tradeoffs
+          </summary>
+
+          <p className="mb-4 max-w-prose text-sm text-board-muted">
+            Explain why a role is worth pursuing and what upside would justify a
+            compromise.
+          </p>
+          <div className="space-y-4">
+            {careerFields.map((key) =>
+              textField(
+                "Career goals & tradeoffs",
+                key,
+                key === "Career goals"
+                  ? "What do you want this next role to help you achieve?"
+                  : "What would justify lower pay, relocation, or a change in timing?",
+                true,
+              ),
+            )}
+          </div>
+        </details>
+      </section>
+      <RecruitingTargets />
+      <h3 className="mt-8 mb-2 text-lg font-semibold">
+        Criteria for this profile
+      </h3>
+      <p className="mb-5 text-sm text-board-muted">
+        These apply to every recruiting target in {profile.name}.
+      </p>
       <section
         aria-labelledby="preference-priority-heading"
         className="mb-7 border-t border-board-line pt-5"
@@ -230,28 +301,6 @@ function SearchProfileEditor() {
         </details>
         <details className="border-t border-board-line py-3">
           <summary className="text-base font-semibold">
-            Career goals &amp; tradeoffs
-          </summary>
-
-          <p className="mb-4 max-w-prose text-sm text-board-muted">
-            Explain why a role is worth pursuing and what upside would justify a
-            compromise.
-          </p>
-          <div className="space-y-4">
-            {careerFields.map((key) =>
-              textField(
-                "Career goals & tradeoffs",
-                key,
-                key === "Career goals"
-                  ? "What do you want this next role to help you achieve?"
-                  : "What would justify lower pay, relocation, or a change in timing?",
-                true,
-              ),
-            )}
-          </div>
-        </details>
-        <details className="border-t border-board-line py-3">
-          <summary className="text-base font-semibold">
             Company priorities
           </summary>
 
@@ -319,7 +368,7 @@ function SearchProfileEditor() {
           />
         </details>
       </div>
-      {undo?.id === profile.id && (
+      {undo?.id === profile.id && undo.after === profile.prompt && (
         <button
           type="button"
           className={`${secondary} mt-4`}

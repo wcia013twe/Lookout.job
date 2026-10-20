@@ -477,3 +477,36 @@ Demo coverage: fictional country authorization, differing enrollment status, unk
 future sponsorship and an Ask me prior-employment answer. Change country, save,
 switch profiles, inspect the simple company answer, and reset to restore fixtures.
 All demo edits stay isolated in memory.
+
+## Independent profile rules and recruiting targets
+
+Job preferences starts with one Profile rules field for the selected application
+profile: how the agent works and how it evaluates opportunities. It is stored as
+`Profile evaluation / Rules`; existing Career goals & tradeoffs remain below it.
+There is no global rules editor or live global override. Duplicate profile copies
+rules and targets once; subsequent edits remain independent. Legacy shared rules
+are preserved as reference. Authenticated/demo users can expand Copy previous rules
+and explicitly copy the text into the current profile without replacing its rules.
+Later source edits do not change that copy. No automatic migration is attempted.
+
+Recruiting targets are optional profile rows: name, active/paused, roles, opportunity
+timing, preferred resume and conditions. Empty profiles retain their existing
+criteria. Multiple targets can use the same owned resume; a blank selection uses
+the profile preference. Criteria apply to all targets within that profile; conflicts
+require review. Timing describes opportunities, not scheduled execution.
+
+Profile rules and targets save through the existing versioned `save_search_profile`
+website RPC/MCP boundary and canonical profile documents. Targets are serialized in
+`Recruiting targets / Targets` as JSON objects with
+`{id,name,active,roles,timeline,resumeId,conditions}`, up to 30 per profile. Invalid
+imported text stays available in Advanced instructions instead of being discarded.
+The legacy document API remains for backward compatibility; its shared rules no
+longer act as configurable defaults under developer context 32 and search guide v3.
+Normal gateway release and hosted verification remain required. No scanner,
+scheduler, connection or submission router is activated by these preferences.
+
+Demo covers distinct full-time/internship rules, Backend SWE and paused ML-systems
+targets, a summer systems target and resume references. Check add/pause/remove,
+save/reload, switching profiles/sections, legacy copy and reset. Demo state remains
+fictional, resettable and isolated from real accounts and services. My agent stays
+unchanged.

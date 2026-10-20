@@ -189,7 +189,7 @@
     {
       "id": "find-jobs",
       "guideId": "career-find-jobs",
-      "version": 2,
+      "version": 3,
       "category": "search",
       "title": "Find relevant jobs",
       "summary": "Search your chosen sources for roles that fit your goals.",

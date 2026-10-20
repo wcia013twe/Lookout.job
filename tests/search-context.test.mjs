@@ -29,7 +29,7 @@ test('MCP discovers the hosted sweep workflow and dispatches an agent state oper
  const r=await call('tools/call',{name:'start_search_run',arguments:{profileId:'general',eventKey:'run'}});assert(!r.error);assert(calls.some(([op])=>op==='search.run.start'));
 });
 test('discovery guide resolves dependencies and explains interruption, uncertainty and vendor-independent execution',()=>{
- const g=readGuide('career-find-jobs');assert.equal(g.version,2);assert(g.dependencies.tools.includes('save_search_discoveries'));for(const text of ['No local runner','resume','preferred','partial','source age','searchListingId'])assert(g.instructions.includes(text),text);
+ const g=readGuide('career-find-jobs');assert.equal(g.version,3);assert(g.dependencies.tools.includes('save_search_discoveries'));for(const text of ['No local runner','resume','preferred','partial','source age','searchListingId'])assert(g.instructions.includes(text),text);
 });
 test('fictional search memory is resettable and contains no real accounts or execution',async()=>{
  const {searchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();a.documents[0].content='edited';assert.notEqual(b.documents[0].content,'edited');assert.equal(b.runs[0].state,'partial');assert.equal(b.listings[0].screening.decision,'review-needed');assert.equal(b.listings[0].observation.employer_posted_at,null);assert(b.runs[0].sources.some(s=>s.coverage==='inaccessible'));

@@ -262,3 +262,19 @@ with companyScope and Yes/No/Ask me. `save_saved_answer` proposes unverified ans
 Do not infer No, forge verification or treat reworded questions as exact matches.
 Developer context 30 documents these settings; production deployment and hosted
 verification remain separate.
+
+### Independent profile rules and recruiting targets
+
+`Profile evaluation / Rules` in each profile owns its configured behavior and
+opportunity evaluation. `Recruiting targets / Targets` is a JSON array of
+`{id,name,active,roles,timeline,resumeId,conditions}`. Read the complete selected
+profile; targets refine its rules and criteria. Only active targets in active
+profiles guide work, and blank resumeId uses that profile’s preference.
+Legacy rules/shared is reference-only, available for explicit one-time copying;
+it must not be applied as a global override. Use existing `save_search_profile` /
+canonical `save_search_document` with version/owner checks; preserve unknown prose.
+Duplicate profile copies values without live inheritance. None of these settings
+overrides verification, consent, immutable approval or submission policy. Targets
+are guidance, not scanners or automatic routing. Canonical job deduplication still
+applies across targets. Developer context 32 and search guide v3 require a normal
+gateway release and hosted verification before claiming deployed support.
