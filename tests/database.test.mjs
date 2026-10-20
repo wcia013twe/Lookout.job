@@ -24,7 +24,6 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
-  ['network','private company records share browser/agent validation, ownership and revisions'],
   ['agent-connections','connections issue with current scopes, revoke durably, reject revoked tokens and isolate owners'],
   ['search-sweeps','document context and agent sweeps enforce versions, ownership, evidence and resumption'],
   ['toolkit-execution','toolkit outputs and document registration preserve ownership, scopes, replay and revocation'],

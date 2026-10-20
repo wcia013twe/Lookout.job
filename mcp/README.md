@@ -233,7 +233,17 @@ labeled sections are preserved in the existing `instructions` narrative:
 - `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
 
 `workspace_read`, personal context and canonical profile documents expose the same
-saved records. Developer context version 29 explains their meaning; release the
+saved records. Developer context version 30 explains their meaning; release the
 gateway through the normal production workflow before claiming deployed agent
 support. No migration or new permission is needed. Hosted round trips and actual
 agent account access remain unverified.
+
+Eligibility fields live in `profile.instructions` under `Eligibility & availability`
+and use existing `save_search_profile` version/owner checks. Blank or Ask me is
+unknown. Authorization/sponsorship require the named country; preserve uncertainty.
+The canonical prior-employment question is `Have you worked for this company before?`
+with companyScope and Yes/No/Ask me. `save_saved_answer` proposes unverified answers;
+`request_human_action` with `verify-answer` requests the person's reuse review.
+Do not infer No, forge verification or treat reworded questions as exact matches.
+Developer context 30 documents these settings; production deployment and hosted
+verification remain separate.

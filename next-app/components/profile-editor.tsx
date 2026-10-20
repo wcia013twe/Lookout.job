@@ -15,7 +15,7 @@ const labels: Record<string, string> = {
   github: "GitHub URL",
   portfolio: "Portfolio URL",
   otherUrl: "Other URL",
-  authorization: "Work authorization",
+  authorization: "Shared authorization notes",
   headline: "Current title",
   currentEmployer: "Current employer",
   jobSearchStatus: "Job search status",
@@ -109,7 +109,7 @@ export default function ProfileEditor() {
             title: "Professional links",
             keys: ["linkedin", "github", "portfolio", "otherUrl"],
           },
-          { title: "Work eligibility", keys: ["authorization"] },
+          { title: "Shared authorization notes", keys: ["authorization"] },
         ].map((group, index) => (
           <details
             key={group.title}

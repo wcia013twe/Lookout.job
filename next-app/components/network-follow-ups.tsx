@@ -1,11 +1,12 @@
 "use client";
 import Link from 'next/link';
 import {useNetworkCompanies} from '../lib/network';
+import {useOutreach} from '../lib/outreach';
 import {useWorkspace} from '../lib/workspace';
 import {companyFollowUps} from '../../lib/network-model.mjs';
 import {secondary} from './ui';
 export default function NetworkFollowUps(){
- const network=useNetworkCompanies(),w=useWorkspace();
+ const outreach=useOutreach(),network=useNetworkCompanies(outreach),w=useWorkspace();
  const timezone=w.state.workflow.searchPreferences?.quietMode?.timezone||'UTC';
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const due=companyFollowUps(network.rows,today);

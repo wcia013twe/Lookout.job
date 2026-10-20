@@ -17,17 +17,13 @@ try{
   const payload=route.request().postDataJSON();
   const op=payload?.operation;
   if(route.request().method()!=='GET'&&url.includes('/rest/v1/')&&!['network.companies.read','search.context'].includes(op))mutations.push(url);
-  if(url.includes('/rpc/network_action')){
-   let data;
-   if(op==='network.companies.read')data={companies:companyRows,total:companyRows.length};
-   else {companySaves++;data={id:payload.payload.id,record:payload.payload.record,revision:payload.payload.expectedRevision+1,updated_at:new Date().toISOString()};companyRows=[...companyRows.filter(r=>r.id!==data.id),data];}
-   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(data)});return;
-  }
   if(url.includes('/rpc/save_outreach_contact')) {
-   contactSaves++;
-   if(contactSaves===1) {await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'Fictional temporary connection failure'})});return;}
-   contactRows=[{id:payload.p_id,record:payload.p_record,revision:0}];
-   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({revision:0})});return;
+   if(payload.p_record.collection==='companies')companySaves++;
+   else {contactSaves++;if(contactSaves===1){await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'Fictional temporary connection failure'})});return;}}
+   const old=contactRows.find(r=>r.id===payload.p_id);
+   const row={id:payload.p_id,record:payload.p_record,revision:old?old.revision+1:0};
+   contactRows=[...contactRows.filter(r=>r.id!==row.id),row];
+   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(row)});return;
   }
   const body=url.includes('/auth/v1/user')?user:url.includes('/rest/v1/outreach_contacts')?contactRows:url.includes('/rpc/search_action')&&op==='search.context'?{documents:[],profileId:null}:[];
   await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*','Content-Range':'0-0/0'},body:JSON.stringify(body)});

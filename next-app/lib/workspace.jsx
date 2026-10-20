@@ -180,13 +180,13 @@ export function WorkspaceProvider({ children }) {
     if(demoState) {setDemoState(null);demoStore.current=null;demoServices.current=null;return;}
     if(!canDemo)return;
     const fixtures=withApplicationProfileDemo(demoFixtures(dayStamp()));
-    fixtures.state.network.referrals=demoOutreachContacts();
+    fixtures.state.network.referrals=[...demoOutreachContacts(),...fixtures.state.network.referrals.filter(r=>r.collection==='companies')];
     fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));
     fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";
     demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);
     setDemoState(demoStore.current.get());setDemoEpoch(n=>n+1);
   }
-  function resetDemo() {if(!canDemo)return;setDemoEpoch(n=>n+1);const fixtures=withApplicationProfileDemo(demoFixtures(dayStamp()));fixtures.state.network.referrals=demoOutreachContacts();fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
+  function resetDemo() {if(!canDemo)return;setDemoEpoch(n=>n+1);const fixtures=withApplicationProfileDemo(demoFixtures(dayStamp()));fixtures.state.network.referrals=[...demoOutreachContacts(),...fixtures.state.network.referrals.filter(r=>r.collection==='companies')];fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
   const value = {
     state:demoState || state,
     store:demoState ? demoStore.current : store,

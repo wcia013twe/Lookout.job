@@ -373,15 +373,13 @@ Personal agents can load career-ops-style targeting, house rules and portal/quer
 
 ## Private company Network
 
-Network (`/referrals/`) now leads with a private company grid, including research-only
-targets and companies matched from existing contacts/applications. Each company has
-personal priorities, team interests, concerns, sourced research, next action and
-follow-up date, with People & outreach and Applications sections. The existing
-outreach editor and application dialogs are reused. Due company follow-ups appear
-on the Action Board. Career Toolkit research can be saved with scoped
-`read_network_companies` / `save_network_company` tools; copying a research request
-does not execute it. No shared company database or live recruiter inbox is added.
-See [storage, agent mapping, demo and release limits](docs/private-network.md).
+Network (`/referrals/`) leads with a company grid, including research-only targets
+and companies matched from existing contacts/applications. Company sections show
+private research, priorities, target teams, dated sources, contacts and linked
+applications. Due company follow-ups appear on the Action Board. This is a UI
+extension over existing private outreach storage and scoped contact tools; no new
+tables, gateway operations or company service are required. See the
+[Network UI and storage mapping](docs/private-network.md).
 
 ## Application profiles and writing styles
 
@@ -415,7 +413,7 @@ labeled sections are preserved in the existing `instructions` narrative:
 - `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
 
 `workspace_read`, personal context and canonical profile documents expose the same
-saved records. Developer context version 29 explains their meaning; release the
+saved records. Developer context version 30 explains their meaning; release the
 gateway through the normal production workflow before claiming deployed agent
 support. No migration or new permission is needed. Hosted round trips and actual
 agent account access remain unverified.
@@ -441,5 +439,36 @@ name per application profile. Overview uses those names for presentation, fallin
 back to existing shared name details. Shared factual names remain unchanged;
 preferred-name guidance never substitutes for a legal-name response or human
 verification. The existing versioned `save_search_profile` website/MCP boundary
-preserves these two labeled instructions. Developer context 29 documents this
+preserves these two labeled instructions. Developer context 30 documents this
 distinction and requires normal gateway release before claiming hosted support.
+
+## Eligibility and simple prior-employment answers
+
+About me includes per-application-profile Eligibility & availability: work
+authorization country, authorization, sponsorship now/future, earliest start date,
+notice period, relocation, enrollment, graduation month and optional notes. Blank
+choices mean Ask me. Changing country clears the three country-specific answers,
+so one country's eligibility does not silently carry to another. Existing shared
+authorization text remains preserved as Shared authorization notes.
+
+Application kit → Shared employer-answer library → Worked here before? opens only
+Company and Yes / No / Ask me. A separate explicit confirmation permits reuse of
+a Yes/No answer. Ask me always stays unverified and always-ask. Saving again for
+the same normalized company updates the unique existing canonical question record;
+ambiguous duplicates require editing the existing records. No employer history is
+inferred from an incomplete resume. Generic answers remain available.
+
+Eligibility uses the existing versioned save_search_profile website RPC/MCP
+narrative section `Eligibility & availability`. Prior employment uses the existing
+answer-library website service and `save_saved_answer` / `answers.save` MCP proposal
+service, with `request_human_action` / `verify-answer` for human-only reuse review.
+Agents cannot grant verification or autofill permission. Automatic reuse remains
+exact-question, same-company and unique-match only; equivalent wording needs review
+under the existing backend checks. Settings are preparation guidance, not verified
+facts or a submission authorization. Developer context 30 requires normal gateway
+release; hosted behavior has not been verified here.
+
+Demo coverage: fictional country authorization, differing enrollment status, unknown
+future sponsorship and an Ask me prior-employment answer. Change country, save,
+switch profiles, inspect the simple company answer, and reset to restore fixtures.
+All demo edits stay isolated in memory.

@@ -1,5 +1,10 @@
 "use client";
 import { useState } from "react";
+import {
+  eligibilityHeading,
+  countryEligibilityFields,
+  setEligibilityCountry,
+} from "../../lib/profile-eligibility.mjs";
 import { useApplicationProfile } from "./application-profile-context";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary, Section } from "./ui";
@@ -334,6 +339,121 @@ export function WritingStyles() {
           </div>
         ))}
       </div>
+    </Section>
+  );
+}
+
+export function EligibilitySettings() {
+  const a = useApplicationProfile();
+  const heading = eligibilityHeading;
+  const hasCountry = !!a
+    .field(heading, "Work authorization country")
+    .value.trim();
+  const yesNo = ["Yes", "No"];
+  const fields: {
+    key: string;
+    type?: string;
+    placeholder?: string;
+    options?: string[];
+  }[] = [
+    {
+      key: "Work authorization country",
+      placeholder: "United States, Canada…",
+    },
+    { key: "Authorized to work in this country", options: yesNo },
+    { key: "Sponsorship required now", options: yesNo },
+    { key: "Sponsorship required in the future", options: yesNo },
+    { key: "Earliest start date", type: "date" },
+    {
+      key: "Notice period",
+      placeholder: "Available now, two weeks, one month…",
+    },
+    { key: "Willing to relocate", options: yesNo },
+    {
+      key: "Enrollment status",
+      options: ["Currently enrolled", "Not currently enrolled"],
+    },
+    { key: "Expected graduation", type: "month" },
+  ];
+  return (
+    <Section title="Eligibility & availability">
+      <p className="mb-5 max-w-prose text-sm text-board-muted">
+        For {a.profile.name}. Authorization and sponsorship answers apply to the
+        country below. Leave anything uncertain as Ask me.
+      </p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        {fields.map((f) => {
+          const saved = a.field(heading, f.key);
+          return (
+            <Field key={f.key} label={f.key}>
+              {f.options ? (
+                <select
+                  className={control}
+                  value={saved.value}
+                  disabled={
+                    a.busy ||
+                    saved.conflict ||
+                    (countryEligibilityFields.includes(f.key) && !hasCountry)
+                  }
+                  onChange={(e) => a.change(heading, f.key, e.target.value)}
+                >
+                  <option value="">Ask me</option>
+                  {f.options.map((option) => (
+                    <option key={option}>{option}</option>
+                  ))}
+                  {saved.value && !f.options.includes(saved.value) && (
+                    <option value={saved.value}>{saved.value}</option>
+                  )}
+                </select>
+              ) : (
+                <input
+                  className={control}
+                  type={f.type || "text"}
+                  placeholder={f.placeholder}
+                  value={saved.value}
+                  disabled={a.busy || saved.conflict}
+                  onChange={(e) =>
+                    f.key === "Work authorization country"
+                      ? a.patch({
+                          prompt: setEligibilityCountry(
+                            a.profile.prompt,
+                            e.target.value,
+                          ),
+                        })
+                      : a.change(heading, f.key, e.target.value)
+                  }
+                />
+              )}
+              {saved.conflict && (
+                <span className="text-xs">
+                  Resolve duplicate {f.key} lines in Advanced instructions.
+                </span>
+              )}
+            </Field>
+          );
+        })}
+      </div>
+      {!hasCountry && (
+        <p className="mt-3 text-xs text-board-muted">
+          Choose a country before setting authorization or sponsorship.
+        </p>
+      )}
+      <div className="mt-5">
+        <Field label="Eligibility notes (optional)">
+          <textarea
+            className={control}
+            rows={3}
+            value={a.field(heading, "Notes").value}
+            disabled={a.busy || a.field(heading, "Notes").conflict}
+            onChange={(e) => a.change(heading, "Notes", e.target.value)}
+            placeholder="Country-specific exceptions or details your agent should ask about."
+          />
+        </Field>
+      </div>
+      <p className="mt-4 text-xs text-board-muted">
+        These settings guide preparation. Uncertain or unreviewed employer
+        answers still need your review.
+      </p>
     </Section>
   );
 }

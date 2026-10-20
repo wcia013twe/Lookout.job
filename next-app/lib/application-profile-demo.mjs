@@ -2,10 +2,16 @@ import {promptFromProfile, profileFromPrompt, updateField} from '../../lib/searc
 // Decorate the existing fictional profiles; never read or write real account data.
 export function withApplicationProfileDemo(fixtures) {
  const copy=structuredClone(fixtures);
+ copy.state.workflow.savedAnswers.push({id:"demo-worked-before",question:"Have you worked for this company before?",answer:"Ask me",companyScope:"Example Systems (demo)",policy:"ask",verifiedAt:null});
  copy.state.workflow.searchPreferences.profiles=copy.state.workflow.searchPreferences.profiles.map(profile=>{
   const employment=profile.id==='internships'?'Internship':'Full-time';
   let prompt=promptFromProfile(profile);
   for(const [heading,key,value] of [
+   ["Eligibility & availability","Work authorization country","United States"],
+   ["Eligibility & availability","Authorized to work in this country","Yes"],
+   ["Eligibility & availability","Sponsorship required now","No"],
+   ["Eligibility & availability","Notice period","Two weeks (fictional demo)"],
+   ["Eligibility & availability","Enrollment status",employment === "Internship" ? "Currently enrolled" : "Not currently enrolled"],
    ["Application identity","Preferred first name",employment === "Internship" ? "Demo" : "Dee"],
    ["Application identity","Preferred last name","Candidate"],
    ['Application identity','Application email',employment === 'Internship' ? 'candidate@example.edu' : 'candidate@example.com'],

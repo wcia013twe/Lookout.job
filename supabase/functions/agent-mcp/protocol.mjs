@@ -1,4 +1,3 @@
-import {NETWORK_TOOLS} from '../agent-gateway/network.mjs';
 import {SEARCH_TOOLS} from '../agent-gateway/search.mjs';
 import { KNOWLEDGE_TOOLS } from '../agent-gateway/knowledge.mjs';
 import { ONBOARDING_TOOLS } from "../agent-gateway/onboarding.mjs";
@@ -9,7 +8,7 @@ export const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 const object = (properties = {}, required = []) => ({ type: 'object', properties, required, additionalProperties: false });
 const string = { type: 'string' };
 const json = { type: 'object' };
-export const TOOLS = [...NETWORK_TOOLS,...SEARCH_TOOLS,
+export const TOOLS = [...SEARCH_TOOLS,
   {name:'read_toolkit_context',operation:'toolkit.context',scope:'workspace:read',readOnly:true,description:'Read owned profile, source preferences, applications with employer records, real milestones and toolkit history for executable scanners and analytics. Coverage limits are explicit; no signed file URLs.',inputSchema:object({applicationId:string})},
   {name:'read_toolkit_results',operation:'toolkit.results',scope:'workspace:read',readOnly:true,description:'Read the latest 100 owned toolkit results, optionally for an application/kind. Outputs are agent observations, never approvals or submission proof.',inputSchema:object({applicationId:string,kind:string})},
   {name:'record_toolkit_result',operation:'toolkit.record',scope:'drafts:write',description:'Save an owned scan/evaluation/analytics/ATS/document/source_config/compensation result with a stable eventKey. Exact retries replay; changed payload rejects. Evaluation requires owned application, score 1-5 and requirements [{requirement,match:met/partial/missing/unknown,evidence}]. Outputs never establish human verification or submission.',inputSchema:object({applicationId:string,kind:string,eventKey:string,result:json},['kind','eventKey','result'])},
