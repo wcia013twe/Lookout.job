@@ -51,6 +51,11 @@ function client(credential) {
 }
 const agent=client(fixture.primary.token),reader=client(fixture.reader.token),other=client(fixture.other.token);
 if(phase==='write-probes') {
+  const tools=await agent.tools();
+  assert(tools.find(t=>t.name==='save_profile_package').inputSchema.properties.facts.properties.education);
+  assert((await agent.call('read_developer_context')).developerVersion>=15);
+  await reader.denied('begin_resume_upload',{eventKey:'denied',fileName:'resume.pdf',variant:'Master',sha256:'a'.repeat(64),bytes:100});
+  console.log('PASS refreshed write schemas, developer context and scope isolation.');
   const checks=[
     ['begin_resume_upload',{eventKey:'probe-resume',fileName:'resume.pdf',variant:'Master',sha256:hash('%PDF-1.7\nfictional fixture\n%%EOF'),bytes:Buffer.byteLength('%PDF-1.7\nfictional fixture\n%%EOF')}],
     ['save_search_document',{kind:'profile',id:'probe-profile',expectedVersion:0,eventKey:'probe-profile',content:'---\n'+JSON.stringify({id:'probe-profile',name:'Fictional write probe',active:true,filters:{Employment:'Full-time',Location:'United States'},priorities:{Growth:'Important'}})+'\n---\nFictional test targeting.'}],
@@ -63,8 +68,8 @@ if(phase==='write-probes') {
   checks.push(['save_profile_package',{eventKey:'probe-history',expectedPersonalVersion:personal.personalVersion,facts:{education:[{school:'Fictional University',degree:'Fictional degree',endDate:'2027-05'}],workExperience:[{company:'Fictional Employer',title:'Fictional role',current:false}],linkedin:'https://example.com/fictional-profile'},answers:[{question:'Fictional question?',answer:'Fictional proposed answer.',requestedPolicy:'auto'}],source:'Disposable fictional write probe'}]);
   let failures=0;
   for(const [name,args]of checks) {
-    if(name==='save_profile_package')args.expectedPersonalVersion=(await agent.call('read_personal_context')).personalVersion;
-    try {const result=await agent.call(name,args);if(name==='append_activity')assert.deepEqual(await agent.call(name,args),result);console.log(`PASS ${name}${args.kind ? ' '+args.kind : ''}`);}
+    if(name==='save_profile_package'){args.expectedPersonalVersion=(await agent.call('read_personal_context')).personalVersion;args.eventKey='probe-history-'+args.expectedPersonalVersion;}
+    try {const result=await agent.call(name,args);if(['append_activity','save_profile_package'].includes(name))assert.deepEqual(await agent.call(name,args),result);console.log(`PASS ${name}${args.kind ? ' '+args.kind : ''}`);}
     catch(error){failures++;console.log(`FAIL ${name}${args.kind ? ' '+args.kind : ''}: ${error.message}`);}
   }
   process.exit(failures?1:0);
