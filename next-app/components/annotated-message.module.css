@@ -15,7 +15,7 @@
 .category[data-kind="Ask"] { --annotation-color: #57bd98; }
 .swatch { display: inline-block; width: .625rem; height: .625rem; flex-shrink: 0; border-radius: 2px; background: var(--annotation-color); border: 1px solid color-mix(in srgb, var(--color-board-text) 20%, transparent); }
 
-.empty { margin: auto; max-width: 22ch; color: var(--color-board-muted); font-size: .875rem; line-height: 1.6; text-align: center; }
+
 
 .category[data-kind="Background"] { --annotation-color: #bd9cf4; }
 .category[data-kind="Why them"] { --annotation-color: #ed99bb; }
@@ -25,8 +25,3 @@
 .legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: start; gap: .75rem 1rem; margin: 0; min-width: 0; color: var(--color-board-muted); font-size: .75rem; }
 .legend > span { display: inline-flex; align-items: baseline; gap: .4rem; }
 @media (min-width: 640px) { .legend { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 1280px) {
-  .layout { grid-template-columns: minmax(0, 1fr) 11rem 8.5rem; }
-  .plain { grid-template-columns: minmax(0, 1fr) 11rem; }
-  .legend { grid-template-columns: minmax(0, 1fr); gap: 1rem; padding-top: .5rem; }
-}

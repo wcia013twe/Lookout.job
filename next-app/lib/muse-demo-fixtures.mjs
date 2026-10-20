@@ -1,3 +1,4 @@
+import { demoOutreachContacts } from './outreach-demo.mjs';
 import { recordLocalPreparationSession, validatePlannerMinutes } from '../../lib/preparation-planner.mjs';
 
 import { createCircleKnowledgeDemo } from '../../lib/circle-knowledge-demo.mjs';
@@ -109,7 +110,7 @@ export function createDemoWorkspace(now = new Date()) {
   return {
     progress: { xp: 0, xpAwards: {}, streakDays: [] },
     tracker: { ids: roles.slice(0, 4).map(role => role.id), items: Object.fromEntries(roles.slice(0, 4).map(role => [role.id, { status: role.status === 'Submitted' ? 'Applied' : role.status === 'Blocked' ? 'New' : role.status, statusDate: today, openedDate: day(today, -3), ...(role.id === 'demo-confirmed' ? { appliedDate: today } : {}) }])) },
-    drops: { seenDropIds: [], packStamps: {} }, network: { referrals: [], people: [] },
+    drops: { seenDropIds: [], packStamps: {} }, network: { referrals: demoOutreachContacts(), people: [] },
     workflow: {
       applications, preparationPlans: { 'demo-interview': confirmedPlan, 'demo-ambiguous': ambiguousPlan, 'demo-confirmed':secondPlan },
       profile: { name: 'Jordan Example (fictional demo)', email: 'jordan@example.com', phone: '', location: 'Fictional City', authorization: 'Demo only', verified: false },
