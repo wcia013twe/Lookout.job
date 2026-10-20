@@ -36,3 +36,10 @@ Milestones include submitted, recruiter calls, technical rounds, interviews and 
 - Guide routing, scope checks, clone isolation and payload validation have local
   tests. Hosted availability requires the normal gateway release and live verification;
   no deployment or installed upstream executable is claimed by this feature.
+
+Private Network is a presentation layer over the existing contact collection.
+Company targets have collection `companies`, company, followUpDate and JSON notes.
+The website reuses `save_outreach_contact` and the outreach sync service; agents use
+existing `list_contacts`/`save_contact` under existing ownership, revision and scope
+checks. No new MCP tool or backend service is advertised. See
+[Network UI mapping](../docs/private-network.md).

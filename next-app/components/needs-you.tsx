@@ -7,6 +7,7 @@ import DraftReview from "./draft-review";
 import NeedsYouRow, { ActionButton, TaskIcon } from "./needs-you-row";
 import DemoNeedsYou from "./demo-needs-you";
 import PreparationReminders from "./preparation-reminders";
+import NetworkFollowUps from "./network-follow-ups";
 import type { Application } from "./workflow-types";
 export default function NeedsYou() {
   const w = useWorkspace();
@@ -51,7 +52,7 @@ export default function NeedsYou() {
             })}
           </ul> : <div className="py-12 text-center"><svg aria-hidden="true" className="mx-auto text-board-success" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M7 16.5 13 22l12-13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><rect x="3" y="3" width="26" height="26" rx="8" stroke="currentColor" strokeWidth="1.5"/></svg><h3 className="mt-4 font-bold">Human handoffs are clear</h3><p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-board-muted">Muse can keep working without a decision from you right now.</p></div>}
         </section>
-        <PreparationReminders />
+        <div><PreparationReminders /><NetworkFollowUps /></div>
       </div>
       {review && <DraftReview key={review} id={review} onClose={() => setReview(null)} />}
     </>

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import NeedsYouRow, { ActionButton, TaskIcon } from "./needs-you-row";
 import PreparationReminders from "./preparation-reminders";
+import NetworkFollowUps from "./network-follow-ups";
 import { demoNeedsYouTasks } from "../lib/demo.mjs";
 import { Heading, Notice, Field, control, primary, secondary } from "./ui";
 type Task = (typeof demoNeedsYouTasks)[number];
@@ -44,6 +45,6 @@ export default function DemoNeedsYou() {
    </NeedsYouRow>})}</ul>:<div className="py-12 text-center"><h3 className="font-bold">Nothing needs you right now</h3><p className="mt-2 text-sm text-board-muted">The fictional handoffs are complete.</p></div>}
    <button className={`${secondary} mt-5`} onClick={reset}>Reset task preview</button>
   </section>
-        <PreparationReminders />
+        <div><PreparationReminders /><NetworkFollowUps /></div>
  </div></>;
 }

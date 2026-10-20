@@ -371,6 +371,16 @@ this library. Actual execution remains a capability of the connected agent.
 
 Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
 
+## Private company Network
+
+Network (`/referrals/`) leads with a company grid, including research-only targets
+and companies matched from existing contacts/applications. Company sections show
+private research, priorities, target teams, dated sources, contacts and linked
+applications. Due company follow-ups appear on the Action Board. This is a UI
+extension over existing private outreach storage and scoped contact tools; no new
+tables, gateway operations or company service are required. See the
+[Network UI and storage mapping](docs/private-network.md).
+
 ## Application profiles and writing styles
 
 My Profile now selects an application profile above Overview, About me, Application
