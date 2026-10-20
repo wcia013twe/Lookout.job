@@ -46,6 +46,7 @@ Google is enabled. Keep its client secret in Supabase, not git or chat.
 - Google callback: `https://umhqfqzpwmszhcknwtrs.supabase.co/auth/v1/callback`.
 - Supabase Auth Site URL / allowed redirect: `https://wcia013twe.github.io/codex-automated-job-board/`.
 - Allow batch-link redirects on that exact app path, for example `https://wcia013twe.github.io/codex-automated-job-board/?batch=*`.
+- For local testing, retain the production Site URL and add `http://localhost:3000/**` and `http://127.0.0.1:3000/**` to Supabase Auth’s allowed redirect URLs. The gateway permits those exact browser origins for token management; native MCP calls use the same token authentication without a browser Origin.
 - Use only OpenID, email and basic profile scopes. Google testing audiences need explicit test users.
 
 The auth bundle uses pinned Supabase JS and PKCE. A complete real-user Google sign-in and iPhone round-trip still need verification.

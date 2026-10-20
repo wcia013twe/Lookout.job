@@ -1,3 +1,4 @@
+import {withGatewayCors} from './cors.mjs';
 import {prepareSearch,searchResponse} from './search.mjs';
 import { toolkitFileResponse } from './toolkit.mjs';
 import { resumeUploadDispatch } from './resume-upload.mjs';
@@ -17,16 +18,12 @@ const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE
   auth: { persistSession: false, autoRefreshToken: false },
 });
 const headers = {
-  'Access-Control-Allow-Origin': 'https://wcia013twe.github.io',
-  'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Content-Type': 'application/json', 'Cache-Control': 'no-store',
 };
 function respond(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers });
 }
-Deno.serve(async request => {
-  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+Deno.serve(withGatewayCors(async request => {
   if (request.method !== 'POST') return respond({ error: 'Use POST' }, 405);
   const bearer = request.headers.get('Authorization')?.match(/^Bearer (.+)$/)?.[1];
   if (!bearer) return respond({ error: 'Authentication required' }, 401);
@@ -140,4 +137,4 @@ Deno.serve(async request => {
     }
     return respond({ data: operation.startsWith('search.') ? searchResponse(operation,data) : contextResponse(operation, data) });
   } catch { return respond({ error: 'Invalid request' }, 400); }
-});
+}));
