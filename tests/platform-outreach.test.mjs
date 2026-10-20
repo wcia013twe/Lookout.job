@@ -1,3 +1,4 @@
+import {logInteraction,readConversation} from '../lib/outreach-conversation.mjs';
 import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -47,5 +48,26 @@ test('outreach enforces ownership, revisions, scope and idempotent preparation',
  await assert.rejects(db.query("select public.agent_outreach_dispatch('writerhash','outreach.prepare',$1)",[{requestId:q2,eventKey:'stale',contacts:[{id:'manual',expectedRevision:0,company:'Acme',contact:'Pat',message:'Override'}]}]));
  await db.query("select public.agent_outreach_dispatch('writerhash','outreach.prepare',$1)",[{requestId:q2,eventKey:'fresh',contacts:[{id:'manual',expectedRevision:1,company:'Acme',contact:'Pat',message:'Prepared'}]}]);
  assert.equal((await db.query("select record->>'status' status from public.outreach_contacts where id='manual'")).rows[0].status,'Referred');
+ // Website and MCP persist the same assisted log with existing owner/revision checks.
+ const base={company:'Acme',contact:'Pat',status:'Referred',notes:'Preserve this note',message:'Next unsent draft'};
+ const logged={...base,...logInteraction(base,{id:'sent-1',direction:'sent',channel:'LinkedIn',date:'2026-10-20',body:'Reported sent message'})};
+ await db.exec(`set role authenticated;set test.uid='${one}';`);
+ saved=(await db.query('select public.save_outreach_contact($1,2,$2,$3) data',['manual',logged,one])).rows[0].data;
+ assert.equal(saved.record.notes,logged.notes);assert.equal(saved.revision,3);
+ await assert.rejects(db.query('select public.save_outreach_contact($1,2,$2,$3)',['manual',base,one]));
+ await db.exec('reset role');
+ await db.query("update private.agent_connections set scopes=array['workspace:read','network:write'] where token_hash='writerhash'");
+ const replied={...logged,...logInteraction(logged,{id:'reply-1',direction:'received',channel:'Email',date:'2026-10-20',body:'Reported reply'})};
+ const save={id:'manual',record:replied,expectedRevision:3};
+ await assert.rejects(db.query("select public.agent_dispatch('readerhash','contacts.save',$1)",[save]));
+ await assert.rejects(db.query("select public.agent_dispatch('otherhash','contacts.save',$1)",[save]));
+ saved=(await db.query("select public.agent_dispatch('writerhash','contacts.save',$1) data",[save])).rows[0].data;
+ assert.equal(saved.revision,4);assert.equal(saved.record.status,'Referred');assert.equal(readConversation(saved.record).messages.length,2);
+ await assert.rejects(db.query("select public.agent_dispatch('writerhash','contacts.save',$1)",[save]));
+ await db.exec(`set role authenticated;set test.uid='${two}';`);
+ assert.equal((await db.query("select * from public.outreach_contacts where id='manual'")).rows.length,0);
+ await db.exec(`set test.uid='${one}';`);
+ assert.equal((await db.query("select record from public.outreach_contacts where id='manual'")).rows[0].record.notes,replied.notes);
+
  }finally{await db.close();}
 });

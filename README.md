@@ -225,6 +225,10 @@ as part of development validation.
 
 ## Company outreach
 
+Network → People & outreach separates **Proposed outreach** from **Ongoing conversations**. Draft copying and external links never mark a message sent. **Log sent message** and **Log reply** save user-reported text or summaries, dates, channels and an optional HTTPS conversation link. Ongoing conversations include unanswered outreach, a chronological history, whose turn it is and an editable next follow-up date. Legacy progressed statuses appear without invented history. The demo includes an unsent Example Systems draft and a fictional Example Compute exchange with a follow-up. No email/LinkedIn inbox synchronization or sending service is connected.
+
+Assisted logging reuses `list_contacts` / `save_contact` (`workspace:read` / `network:write`); website saves retain `save_outreach_contact` ownership and revision checks. Conversation presentation uses a `lookout-conversation-v1` JSON envelope in existing private contact notes, preserving legacy notes; `lib/outreach-conversation.mjs` defines the format. See [the conversation contract](docs/outreach-conversations.md). Hosted MCP verification and the production gateway workflow are still required before advertising the updated agent instructions as deployed.
+
 Referrals groups contacts by company and shows editable, copy-ready messages and LinkedIn links. Signed-in contacts, drafts and requests are owner-scoped backend records; guest contacts stay in the browser and existing signed-in local contacts migrate on the next visit.
 
 **Prepare with Muse** saves the chosen companies as a queued request. Muse checks `read_outreach_workspace` on each connected run and uses the platform-hosted `cold-outreach` guide loaded through `read_guide` with id `cold-outreach`. `save_outreach_package` writes researched contacts and finished messages directly to the backend; the page refreshes them automatically. Users do not copy agent prompts or import JSON. Requests wait for the next agent run; the backend does not start or wake an external Muse process. Copying/opening links never sends a message.

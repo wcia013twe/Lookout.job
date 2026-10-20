@@ -1,3 +1,4 @@
+import {localDate,logInteraction} from '../../lib/outreach-conversation.mjs';
 // Fictional examples only; never merge these into account contacts or requests.
 export const outreachDemoMessages = [
   {
@@ -19,10 +20,18 @@ export const outreachDemoMessages = [
 ];
 
 // Fresh records for each demo/reset; never used to seed a real account.
-export function demoOutreachContacts() {
-  return [...outreachDemoMessages].reverse().map(example => ({
+export function demoOutreachContacts(date = localDate()) {
+  return [...outreachDemoMessages].reverse().map(example => {
+    const contact = {
     ...example, id: `demo-${example.id}`, contact: example.name,
     title: example.id === 'referral' ? 'Infrastructure Engineer' : 'Backend Engineer',
     status: 'Not asked', source: 'Demo',
-  }));
+    };
+    if(example.id === 'referral') {
+      Object.assign(contact,logInteraction(contact,{id:'demo-sent',direction:'sent',channel:'LinkedIn',date,body:contact.message}));
+      Object.assign(contact,logInteraction(contact,{id:'demo-reply',direction:'received',channel:'LinkedIn',date,body:'Hi! Happy to help. Are you more interested in storage systems or developer infrastructure? Send me the role link and a short summary of your backend work.'}));
+      contact.followUpDate=date;
+    }
+    return contact;
+  });
 }

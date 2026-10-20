@@ -38,7 +38,7 @@ try{
  await page.getByRole('button',{name:'Save company',exact:true}).click();
  await page.getByText('Company saved.',{exact:true}).waitFor();
  assert.equal(companySaves,1);console.log('Signed-in company save passed');
- await page.getByRole('button',{name:'People & outreach',exact:true}).click();
+ await page.getByRole('button',{name:'People & outreach',exact:true}).last().click();
  await page.getByRole('button',{name:'Add manually',exact:true}).click();
  await page.getByLabel('Contact name',{exact:true}).fill('Fictional Retry Contact');
  await page.getByLabel('Message (optional)',{exact:true}).fill('Hi, this is a fictional auto-sync check.');
@@ -82,7 +82,9 @@ try{
  await page.getByRole('button',{name:'Close application details',exact:true}).click();
  await page.getByRole('button',{name:'Back to targets',exact:true}).click();
  await page.getByRole('button',{name:/Example Compute/}).click();
- await page.getByRole('button',{name:'People & outreach',exact:true}).click();
+ await page.getByRole('button',{name:'People & outreach',exact:true}).last().click();
+ await page.getByRole('button',{name:/^Ongoing conversations/}).click();
+ await page.getByText('Prepare another message',{exact:true}).click();
  const message=page.getByRole('textbox',{name:'Message for Jamie (fictional)'});
  await message.waitFor();assert.match(await message.inputValue(),/Would you feel comfortable referring me/);
  await message.fill((await message.inputValue()).replace('Hi Jamie,','Hello Jamie,'));
@@ -91,6 +93,7 @@ try{
  // Process view scopes drafts to the application, even for two roles at one company.
  await page.getByRole('button',{name:'Active processes',exact:true}).click();
  await page.getByRole('button',{name:/Cedar Systems.*Backend Engineer/}).click();
+ if(!await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).isVisible())await page.getByText('Prepare another message',{exact:true}).click();
  await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).waitFor();
  assert.equal(await page.getByRole('textbox',{name:'Message for Taylor (fictional)'}).count(),0);
  await page.screenshot({path:dir+'/process-desktop.png',fullPage:false,animations:'disabled'});
@@ -103,6 +106,7 @@ try{
  const targeted=page.getByRole('textbox',{name:'Message for Taylor (fictional)'});await targeted.waitFor();assert.equal(await targeted.inputValue(),'');
  await targeted.fill('Hi Taylor, I am preparing for the fictional platform role and would appreciate your perspective on the team.');
  await page.getByRole('button',{name:/Cedar Systems.*Backend Engineer/}).click();
+ if(!await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).isVisible())await page.getByText('Prepare another message',{exact:true}).click();
  await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).waitFor();
  assert.equal(await page.getByRole('textbox',{name:'Message for Taylor (fictional)'}).count(),0);
  await page.setViewportSize({width:390,height:844});
