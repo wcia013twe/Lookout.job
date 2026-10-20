@@ -1,11 +1,17 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {invokeConnection} from '../lib/agent-connections.mjs';
+import {invokeConnection,connectionScopes} from '../lib/agent-connections.mjs';
 import {createDemoServices, createDemoWorkspace} from '../next-app/lib/muse-demo-fixtures.mjs';
 import {createMemoryStore} from '../next-app/lib/demo.mjs';
 function client(result, {sessionOwner='owner', afterInvoke=()=>{}}={}) {
   return {auth:{getSession:async()=>({data:{session:{user:{id:sessionOwner},access_token:'fictional-session'}},error:null})},functions:{invoke:async(name,input)=>{assert.equal(name,'agent-gateway');assert.equal(input.headers.Authorization,'Bearer fictional-session');afterInvoke();return result;}}};
 }
+test('access choices grant their described permissions without application authority leaking into context access',()=>{
+  assert.deepEqual(connectionScopes('read',['profile:write']),['workspace:read']);
+  const context=connectionScopes('context');assert(context.includes('profile:write'));assert(context.includes('preferences:write'));assert(!context.includes('drafts:write'));assert(!context.includes('batches:write'));
+  const work=connectionScopes('work',['preferences:write']);assert(work.includes('drafts:write'));assert(work.includes('batches:write'));assert.equal(work.length,new Set(work).size);
+  assert.throws(()=>connectionScopes('admin'),/Choose an access/);
+});
 test('connection client preserves issue token and revoke response shapes',async()=>{
   for (const [operation,data] of [['connections.issue',{connection:{id:'fixture'},token:'demo-only'}],['connections.revoke',{data:{id:'fixture',revoked_at:'2026-10-20'}}]])
     assert.deepEqual(await invokeConnection(client({data}),operation,{},()=> 'owner','owner'),data);

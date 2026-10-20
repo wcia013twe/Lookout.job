@@ -3,21 +3,12 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, secondary } from "./ui";
 import { errorMessage } from "./profile-types";
-import { invokeConnection } from "../../lib/agent-connections.mjs";
+import { CONNECTION_ACCESS, connectionScopes, invokeConnection } from "../../lib/agent-connections.mjs";
 type AgentConnection = { id: string; name: string; scopes: string[]; expires_at: string; revoked_at?: string };
 const gateway =
     "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-gateway",
   mcp = "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp";
 const optionalScopes = [["knowledge:read","Read permitted Circle knowledge"],["knowledge:write","Propose contributions and record citation use (also enable knowledge read)"],["preferences:write","Edit search profiles and preferences"],["answers:write","Edit saved answers"],["resumes:write","Upload and add résumés"],["network:write","Edit contacts and outreach drafts"],["tracking:write","Record user-reported progress"]];
-const scopes = [
-  "workspace:read",
-  "profile:write",
-  "batches:write",
-  "drafts:write",
-  "activity:write",
-  "approvals:read",
-  "resumes:read",
-];
 export default function AgentConnections({onboarding=false}:{onboarding?:boolean}) {
   const w = useWorkspace();
   const [connections, setConnections] = useState<AgentConnection[]>([]),
@@ -32,6 +23,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
     [loading, setLoading] = useState(true),
     [revokeTarget, setRevokeTarget] = useState<string | null>(null);
   const generation = useRef(0);
+  const additionalPermissions = optionalScopes.filter(([scope]) => supportedScopes.includes(scope) && !connectionScopes(access).includes(scope));
   async function call(operation: string, payload: Record<string, unknown> = {}) {
     if (w.demo) return w.services.connections(operation, payload);
     return invokeConnection(w.client, operation, payload, () => window.JB.auth.userId, w.user?.id);
@@ -82,9 +74,9 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
       return;
     }
     setNameError("");
-    if (onboarding && !formData.has("preferences:write")) {
+    if (onboarding && access === "read") {
       setAction("create");
-      setFeedback("Select search-preference editing under Onboarding permissions to continue.");
+      setFeedback("Choose career context or application preparation access to continue setup.");
       return;
     }
     setBusy(true);
@@ -95,8 +87,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
       const result = await call("connections.issue", {
         name,
         expiresInDays: 30,
-        scopes:
-          formData.get("access") === "read" ? ["workspace:read"] : [...scopes,...optionalScopes.filter(([scope]) => supportedScopes.includes(scope) && formData.has(scope)).map(([scope]) => scope)],
+        scopes: connectionScopes(access, additionalPermissions.filter(([scope]) => formData.has(scope)).map(([scope]) => scope)),
       });
       if (epoch !== generation.current) return;
       setToken(result.token);
@@ -195,30 +186,29 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
             <input className={control} name="name" placeholder="e.g. Muse on my laptop" required maxLength={80} aria-invalid={Boolean(nameError)} aria-describedby={nameError ? "agent-name-error" : undefined} onChange={() => setNameError("")} disabled={(!w.user && !w.demo) || busy} />
           </Field>
           {nameError && <p id="agent-name-error" role="alert" className="-mt-3 text-sm leading-relaxed">{nameError}</p>}
-          <Field label="What can this agent do?">
-            <select className={control} name="access" value={access} onChange={(e) => setAccess(e.target.value)} disabled={(!w.user && !w.demo) || busy} aria-describedby="agent-access-description">
-              <option value="read" disabled={onboarding}>Read workspace</option>
-              <option value="work">Set up profile and prepare applications</option>
-            </select>
-          </Field>
-          <p id="agent-access-description" className="-mt-3 text-sm leading-relaxed text-board-muted">
-            {access === "read"
-              ? "Read your saved career context and workspace without making changes."
-              : "Read your workspace, import profile facts, upload private résumés, and prepare job batches and drafts. You review proposed facts and application approvals."}
-          </p>
-          {access === "work" && (
-            <details className="border-y border-board-line py-3" open={onboarding || undefined}>
-              <summary className="min-h-11 py-2 text-sm font-semibold">{onboarding ? "Onboarding permissions" : "Additional permissions"}</summary>
+          <fieldset disabled={(!w.user && !w.demo) || busy} className="space-y-2">
+            <legend className="mb-3 text-sm font-semibold">Choose your agent’s access</legend>
+            {CONNECTION_ACCESS.map((option) => (
+              <label key={option.id} className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-board-accent ${access === option.id ? "border-board-accent bg-board-tag" : "border-board-line hover:border-board-accent"} ${onboarding && option.id === "read" ? "cursor-not-allowed opacity-50" : ""}`}>
+                <input type="radio" name="access" value={option.id} checked={access === option.id} onChange={() => setAccess(option.id)} disabled={onboarding && option.id === "read"} className="mt-1 size-4 shrink-0 accent-board-accent" aria-describedby={`agent-access-${option.id}`} />
+                <span className="min-w-0"><span className="block text-sm font-semibold">{option.title}</span><span id={`agent-access-${option.id}`} className="mt-1 block text-sm leading-relaxed text-board-muted">{option.description}</span></span>
+              </label>
+            ))}
+            <p className="pt-1 text-xs leading-relaxed text-board-muted">You keep control of verified facts and application approvals.</p>
+          </fieldset>
+          {access !== "read" && additionalPermissions.length > 0 && (
+            <details className="border-y border-board-line py-3">
+              <summary className="min-h-11 py-2 text-sm font-semibold">Additional permissions</summary>
               <fieldset className="mt-2 space-y-1" disabled={(!w.user && !w.demo) || busy}>
                 <legend className="sr-only">Additional agent permissions</legend>
-                {optionalScopes.filter(([scope]) => supportedScopes.includes(scope)).map(([scope,label]) => (
+                {additionalPermissions.map(([scope,label]) => (
                   <label key={scope} className="flex min-h-11 items-start gap-3 py-2 text-sm leading-relaxed">
-                    <input className="mt-1 size-4 shrink-0 accent-board-accent" type="checkbox" name={scope} required={onboarding && scope === "preferences:write"} />
+                    <input className="mt-1 size-4 shrink-0 accent-board-accent" type="checkbox" name={scope} />
                     <span>{label}</span>
                   </label>
                 ))}
                 <p className="pb-2 text-xs leading-relaxed text-board-muted">
-                  {onboarding ? "Select search-preference editing to let your agent record onboarding choices." : "Grant only what your agent needs. These permissions do not approve applications or verify answers."}
+                  Grant only what your agent needs. These permissions do not approve applications or verify answers.
                 </p>
               </fieldset>
             </details>
