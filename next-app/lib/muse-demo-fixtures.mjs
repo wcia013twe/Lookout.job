@@ -1,4 +1,5 @@
 import { recordLocalPreparationSession, validatePlannerMinutes } from '../../lib/preparation-planner.mjs';
+import { createConnectionDemo } from '../../lib/agent-connections-demo.mjs';
 
 import { createCircleKnowledgeDemo } from '../../lib/circle-knowledge-demo.mjs';
 import { demoOnboardingAction } from "./onboarding-demo.mjs";
@@ -135,6 +136,7 @@ export function createDemoServices(store) {
   }
   return {
     async readPreparationPlanner() { return plannerBundle(); },
+    connections: createConnectionDemo(store),
     async savePreparationBudget(dailyMinutes, expectedVersion) {
       validatePlannerMinutes(dailyMinutes);
       if (expectedVersion !== plannerBundle().settings.version) throw Error('Budget changed. Reload before saving.');

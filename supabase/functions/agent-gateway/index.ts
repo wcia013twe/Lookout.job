@@ -4,7 +4,7 @@ import { toolkitFileResponse } from './toolkit.mjs';
 import { resumeUploadDispatch } from './resume-upload.mjs';
 import { resumeSetupResponse } from './profile-setup.mjs';
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
-import { validateRequest, generateToken, hashToken } from './contract.mjs';
+import { SCOPES, validateRequest, generateToken, hashToken } from './contract.mjs';
 import { guideDispatch } from './guides.mjs';
 import { contextResponse } from './context.mjs';
 import { applicationPolicy } from './application-policy.mjs';
@@ -54,7 +54,7 @@ Deno.serve(withGatewayCors(async request => {
         },
       });
       if (dbError) return respond({ error: 'Connection request rejected' }, 400);
-      return respond(token ? { connection: data, token } : { data });
+      return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
     if (operation === 'guides.read') {
