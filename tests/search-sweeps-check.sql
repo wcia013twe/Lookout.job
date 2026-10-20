@@ -73,5 +73,7 @@ begin
  begin perform public.agent_dispatch(k,'search.document.save',p);raise exception 'Scope bypass';exception when insufficient_privilege then null;end;
  update private.agent_connections set revoked_at=now() where token_hash=k;
  begin perform public.agent_dispatch(k,'search.context','{}');raise exception 'Revoked search';exception when invalid_authorization_specification then null;end;
+ delete from auth.users where id=u;
+ if exists(select 1 from public.preferences where user_id=u) or exists(select 1 from public.search_documents where user_id=u) or exists(select 1 from public.search_runs where user_id=u) then raise exception 'Account deletion left search or preference data';end if;
 end $$;
 rollback;

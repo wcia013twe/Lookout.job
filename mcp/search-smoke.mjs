@@ -25,7 +25,9 @@ const fixture=JSON.parse(await readFile(file,'utf8'));
 assert.equal(fixture.kind,'lookout-search-release-fixture');
 for(const c of [fixture.primary,fixture.reader,fixture.other])assert.match(c.id,/^[a-f0-9-]{36}$/);
 if(phase==='cleanup-sql') {
-  console.log(`begin; delete from auth.users u where u.id in (${[fixture.primary,fixture.reader,fixture.other].map(c=>`'${c.id}'`).join(',')}) and exists(select 1 from private.agent_connections c where c.user_id=u.id and c.name='Lookout search release smoke'); commit;`);
+  const ids=[fixture.primary,fixture.reader,fixture.other].map(c=>`'${c.id}'`).join(',');
+  // Older hosted schemas do not cascade preferences from auth.users.
+  console.log(`begin; delete from public.preferences p where p.user_id in (${ids}) and (not exists(select 1 from auth.users u where u.id=p.user_id) or exists(select 1 from private.agent_connections c where c.user_id=p.user_id and c.name='Lookout search release smoke')); delete from auth.users u where u.id in (${ids}) and exists(select 1 from private.agent_connections c where c.user_id=u.id and c.name='Lookout search release smoke'); commit;`);
   process.exit(0);
 }
 if(phase==='revoke-sql') {
