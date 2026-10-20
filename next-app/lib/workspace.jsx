@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { canUseDemo, createMemoryStore, demoFixtures, createDemoServices } from "./demo.mjs";
+import { demoOutreachContacts } from './outreach-demo.mjs';
 import { dayStamp } from "./progress.mjs";
 import { connectCloud } from "../../lib/cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
@@ -44,13 +45,13 @@ export function WorkspaceProvider({ children }) {
     [locked, setLocked] = useState(false),
     [batch, setBatch] = useState(null),
     [error, setError] = useState("");
+  const [syncError, setSyncError] = useState("");
   const [demoState,setDemoState]=useState(null);
   const demoStore=useRef(null), demoServices=useRef(null);
   const [demoEpoch,setDemoEpoch]=useState(0);
   const [authReady, setAuthReady] = useState(false);
   const userRef = useRef(null),
-    clientRef = useRef(null),
-    actions = useRef({});
+    clientRef = useRef(null);
   useEffect(() => {
     let alive = true;
     const unsub = [];
@@ -88,16 +89,8 @@ export function WorkspaceProvider({ children }) {
         window.JB.setBatch = (value) => {
           if (alive) setBatch(value);
         };
-        function bridge(name) {
-          return {
-            addEventListener(type, handler) {
-              actions.current[name] = handler;
-            },
-          };
-        }
         const ui = {
-          retry: bridge("retry"),
-          reload: bridge("reload"),
+          error: { set textContent(value) { if (alive) setSyncError(value); } },
           feedback: {
             set textContent(value) {
               if (alive) setStatus(value);
@@ -185,12 +178,13 @@ export function WorkspaceProvider({ children }) {
     if(demoState) {setDemoState(null);demoStore.current=null;demoServices.current=null;return;}
     if(!canDemo)return;
     const fixtures=demoFixtures(dayStamp());
+    fixtures.state.network.referrals=demoOutreachContacts();
     fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));
     fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";
     demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);
     setDemoState(demoStore.current.get());setDemoEpoch(n=>n+1);
   }
-  function resetDemo() {if(!canDemo)return;setDemoEpoch(n=>n+1);const fixtures=demoFixtures(dayStamp());fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
+  function resetDemo() {if(!canDemo)return;setDemoEpoch(n=>n+1);const fixtures=demoFixtures(dayStamp());fixtures.state.network.referrals=demoOutreachContacts();fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
   const value = {
     state:demoState || state,
     store:demoState ? demoStore.current : store,
@@ -203,8 +197,7 @@ export function WorkspaceProvider({ children }) {
     authReady,
     signIn,
     signOut,
-    retry: () => actions.current.retry?.(),
-    reload: () => actions.current.reload?.(),
+    syncError: demoState ? "" : syncError,
     roles:demoState ? demoState.demo.roles : batch?.roles || catalog.roles,
     date:demoState ? dayStamp() : batch?.date || catalog.lastRun,
     batchLabel:demoState ? "Demo listings — fictional data for preview." : batch?.label,

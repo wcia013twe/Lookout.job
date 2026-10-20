@@ -210,11 +210,16 @@ test('demo search profiles include active and paused searches and reset isolated
 });
 
 
-test('demo exposes all five outreach previews without creating contacts or mutating defaults', () => {
+test('demo opens with fictional referral drafts and independent resettable templates', () => {
  const first = createDemoWorkspace(now), second = createDemoWorkspace(now);
  assert.equal(first.demo.outreachLibrary.defaultGuide, 'cold-outreach');
  assert.equal(first.demo.outreachLibrary.templates.length, 5);
- assert.deepEqual(first.network.referrals, []);
+ assert.equal(first.network.referrals[0].id, 'demo-referral');
+ assert.match(first.network.referrals[0].message, /Would you feel comfortable referring me/);
+ assert.equal(first.network.referrals[0].source, 'Demo');
+ first.network.referrals[0].message = 'Edited draft';
+ assert.notEqual(second.network.referrals[0].message, 'Edited draft');
+ assert.notEqual(createDemoWorkspace(now).network.referrals[0].message, 'Edited draft');
  first.demo.outreachLibrary.templates[0].message = 'Edited preview';
  assert.notEqual(second.demo.outreachLibrary.templates[0].message, 'Edited preview');
  assert.notEqual(createDemoWorkspace(now).demo.outreachLibrary.templates[0].message, 'Edited preview');

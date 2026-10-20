@@ -17,3 +17,12 @@ export const outreachDemoMessages = [
     message: 'Hi Jamie,\n\nI’m Demo Candidate, a final-year computer science student. We met at the Example University systems club.\n\nI recently built a distributed query service that sustained 2,000 requests per second in a demo benchmark. Your team’s work on query scheduling caught my attention because I want to work on predictable performance under load.\n\nWould you feel comfortable referring me for the Infrastructure Engineer role at Example Compute?\n\nThanks,\nDemo Candidate',
   },
 ];
+
+// Fresh records for each demo/reset; never used to seed a real account.
+export function demoOutreachContacts() {
+  return [...outreachDemoMessages].reverse().map(example => ({
+    ...example, id: `demo-${example.id}`, contact: example.name,
+    title: example.id === 'referral' ? 'Infrastructure Engineer' : 'Backend Engineer',
+    status: 'Not asked', source: 'Demo',
+  }));
+}
