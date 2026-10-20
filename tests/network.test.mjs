@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {emptyCompany,validateCompany,companyIndex,companyFollowUps,encodeCompany,decodeCompany,isCompanyRecord} from '../lib/network-model.mjs';
+import {emptyCompany,validateCompany,companyIndex,companyFollowUps,encodeCompany,decodeCompany,isCompanyRecord,contactsForProcess,processContactDraft} from '../lib/network-model.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
 import {demoFixtures} from '../next-app/lib/network-demo.mjs';
@@ -36,3 +36,17 @@ test('demo company notes are private, resettable and distinct from people',()=>{
  assert.equal(companyFollowUps(companies,'2026-10-20').length,1);
 });
 test('legacy contacts without a company remain accessible',()=>{const rows=companyIndex([],[{id:'unassigned',name:'Example Contact'}],[]);assert.equal(rows[0].record.name,'Other contacts');assert.equal(rows[0].contacts[0].id,'unassigned');});
+
+test('process outreach keeps requisitions and explicit process references separate',()=>{
+ const a={id:'a',backendId:'owned-a',company:'Example',title:'Backend',applicationUrl:'https://example.com/jobs?gh_jid=1'};
+ const b={...a,id:'b',backendId:'owned-b',applicationUrl:'https://example.com/jobs?gh_jid=2'};
+ const contacts=[{id:'general',company:'Example',title:'Backend'},{id:'url',jobUrl:'https://example.com/jobs?utm_source=test&gh_jid=1'},{id:'tag',tags:['application:owned-b'],jobUrl:a.applicationUrl}];
+ assert.deepEqual(contactsForProcess(contacts,a).map(c=>c.id),['url']);
+ assert.equal(contactsForProcess([{id:'local-draft',tags:['application:a']}],a).length,1,'Local process references survive backend hydration');
+ assert.deepEqual(contactsForProcess(contacts,b).map(c=>c.id),['tag']);
+ const old={id:'person',company:'Example',contact:'Morgan',contactType:'engineer',message:'Existing message',status:'Referred',connection:'Shared club'};
+ const draft=processContactDraft(old,a,'new-draft');
+ assert.equal(draft.message,'');assert.equal(draft.status,'Not asked');assert.equal(old.message,'Existing message');
+ assert.deepEqual(contactsForProcess([draft],a),[draft]);assert.deepEqual(contactsForProcess([draft],b),[]);
+ const {id,...record}=draft;assert.doesNotThrow(()=>validateRequest({operation:'contacts.save',payload:{id,expectedRevision:0,record}}));
+});

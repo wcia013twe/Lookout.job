@@ -8,3 +8,12 @@
 - Visual review: dark 1440px desktop and 390px mobile captures; mechanical detector empty; independent finish reviewer and documenter reported ship with no material findings. Incumbent tokens preserved; current-state DESIGN.md composition prose updated. Existing design-tool schema/sidecar drift was left unchanged.
 - Limits: no real account round trip or light-theme visual pass. Existing backend ownership/revision checks are reused; structured company notes are a UI convention over freeform notes, not a new server-enforced company schema. No shared company database, connected recruiter inbox, intelligence feed, background researcher or notification scheduler is added.
 - Integrated concurrent local-main application-profile, preferred-name and eligibility changes in the isolated checkout and reran the relevant checks.
+
+
+## Targets and Active processes redesign
+
+- Reorganized Network into two primary views. Targets replaces the company grid with divided company/team/role rows and retains existing research detail. Active processes starts from applied/interview/offer roles and shows targeted outreach beside a desktop process list or mobile selector.
+- Reuses the established message editor, contact persistence and MCP contact tools. Explicit application tags or exact posting URLs associate role-specific drafts; company/title similarity alone does not establish involvement. Preparing an existing company contact for a role creates a fresh blank draft and preserves prior messages/status. No schema, gateway or deployment changes.
+- Added fictional recruiter outreach, a general company contact and a second simultaneous Cedar role to the isolated demo. Verified process separation, draft creation, switching back to research, application opening, guest legacy contacts and local-reference hydration behavior.
+- Validation: 404 tests passed, catalog validation (76 roles), production build and TypeScript passed. Intercepted browser check passed desktop/mobile/light, both views, role-specific draft persistence and isolation, application dialog, research editing, contact-sync recovery, follow-up/archive and reset. Mechanical detector returned no findings. Visual/documentation review found no material layout blocker; a browser screenshot compositing artifact in desktop target detail was recaptured with a single-shell assertion.
+- Limits: actual account/MCP round trip remains unverified; no connected inbox or message sending is claimed. Existing shared-main application-page edits are outside this feature and preserved.

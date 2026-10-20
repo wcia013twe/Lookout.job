@@ -373,10 +373,11 @@ Personal agents can load career-ops-style targeting, house rules and portal/quer
 
 ## Private company Network
 
-Network (`/referrals/`) leads with a company grid, including research-only targets
-and companies matched from existing contacts/applications. Company sections show
-private research, priorities, target teams, dated sources, contacts and linked
-applications. Due company follow-ups appear on the Action Board. This is a UI
+Network (`/referrals/`) separates Targets from Active processes. Targets shows
+companies, teams/roles, research and relevant people in a compact list. Active
+processes groups targeted outreach by application and distinguishes role-specific
+drafts from other company contacts. Existing company sections retain private
+research, priorities, dated sources, contacts and linked applications. Due company follow-ups appear on the Action Board. This is a UI
 extension over existing private outreach storage and scoped contact tools; no new
 tables, gateway operations or company service are required. See the
 [Network UI and storage mapping](docs/private-network.md).

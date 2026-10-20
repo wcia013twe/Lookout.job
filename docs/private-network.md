@@ -1,18 +1,33 @@
 # Private Network UI
 
-Network keeps the existing `/referrals/` URL and presents a company grid. Each
-company opens into Overview, People & outreach and Applications. Research-only
-targets need neither a contact nor an application. Existing contacts and tracked
-applications appear through normalized company-name matches. Explicit links
-support aliases and people helping several processes. Unassigned legacy people
-remain accessible under Other contacts.
+Network keeps the existing `/referrals/` URL with two working views:
 
-Overview contains personal interest, priority, target teams, concerns, company
-research, dated HTTPS sources and a next action/follow-up date. Company priorities
-do not overwrite application statuses, tier lists or the weekly practice budget.
-People & outreach reuses the existing editor; Applications reuses the existing
-list/dialog, materials, preparation and timeline. Recruiter inbox synchronization
-and shared intelligence feeds are not connected.
+- **Targets:** a compact company list showing target teams/roles, next steps and
+  relevant people. Company details retain private research, source dates and the
+  existing outreach editor. Targets can exist before a job or contact is known.
+- **Active processes:** applied roles, recruiter screens, interviews and offers,
+  each opening its targeted outreach workspace. The application remains the unit
+  of navigation; Open application uses the existing materials/prep/timeline dialog.
+
+Role-specific contacts are matched only by an explicit application reference in
+existing contact tags (`application:<backendId-or-local-id>`) or an exact employer
+posting URL in jobUrl/link. Matching preserves requisition query parameters.
+Company/title similarity alone never establishes process involvement. Other
+company contacts appear separately, labelled as unconfirmed for this process.
+Prepare for this role creates a separate contact draft with a fresh ID, blank
+message and Not asked status, preserving the person's previous message/status.
+The role-specific copy request reuses the cold-outreach guide and existing
+list_contacts/save_contact operations. No recruiter inbox or message sending is
+connected. Company research opens the corresponding Target without a page reload.
+
+The desktop process list sits beside its outreach; mobile uses a labelled process
+selector. Process-specific drafts, empty outreach, general company contacts and
+multiple simultaneous roles at one company are covered by fictional demo data.
+
+Existing contacts and tracked applications appear in Targets through normalized
+company-name matches. Explicit company links support aliases; unassigned legacy
+people remain accessible under Other contacts. Company priorities do not overwrite
+application statuses, tier lists or the weekly preparation budget.
 
 ## Existing storage and tool boundary
 
@@ -62,5 +77,6 @@ signed-in company-note persistence, contact retry recovery, desktop/mobile UI,
 research editing, sources, application opening, outreach, archive/follow-ups and
 reset. Demo uses the existing disposable memory store; no real account writes.
 
-Live account persistence and light-theme visual inspection are not verified.
+Browser verification covers desktop, mobile, light theme and role-specific outreach
+isolation using fictional data. Live account persistence remains unverified.
 No backend deployment or data migration is introduced by this UI change.

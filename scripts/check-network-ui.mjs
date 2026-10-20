@@ -2,9 +2,9 @@
 import {chromium} from '../runner/node_modules/playwright/index.mjs';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
-const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/private/tmp/lookout-network-ui';await mkdir(dir,{recursive:true});
+const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/private/tmp/lookout-network-redesign';await mkdir(dir,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.LOOKOUT_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
-const errors=[];const cloud=[],mutations=[];let contactRows=[],contactSaves=0,companyRows=[],companySaves=0;
+const errors=[];const cloud=[],mutations=[];let contactRows=[],contactSaves=0,companySaves=0;
 let context;
 try{
  context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block'});
@@ -32,7 +32,7 @@ try{
  await page.goto(`${process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3047'}/referrals/`);
  await page.waitForFunction(()=>window.JB?.cloud?.ready);
  await page.getByRole('heading',{name:'Network',exact:true}).waitFor();
- await page.getByRole('button',{name:'Add company',exact:true}).click();
+ await page.getByRole('button',{name:'Add target',exact:true}).click();
  await page.getByLabel('Company name',{exact:true}).fill('Fictional Retry Company');
  await page.getByLabel('Why I’m interested',{exact:true}).fill('Private interest in database systems.');
  await page.getByRole('button',{name:'Save company',exact:true}).click();
@@ -49,7 +49,7 @@ try{
  assert.equal(contactSaves,2,'Contact saves must retain automatic recovery');console.log('Contact sync recovery passed');
  await page.getByRole('button',{name:'Open profile navigation'}).click();
  await page.getByRole('button',{name:'Demo mode',exact:true}).click();
- await page.getByRole('button',{name:'Back to companies',exact:true}).click().catch(()=>{});
+ await page.getByRole('button',{name:'Back to targets',exact:true}).click().catch(()=>{});
  await page.getByRole('button',{name:/Cedar Systems/}).waitFor();
  assert.equal(await page.getByRole('button',{name:/Archived Example/}).count(),0);
  await page.getByLabel('Show archived',{exact:true}).check();
@@ -62,7 +62,9 @@ try{
  await page.getByRole('button',{name:/Cedar Systems/}).click();
  await page.screenshot({path:dir+'/detail-mobile.png',fullPage:true,animations:'disabled'});
  await page.setViewportSize({width:1440,height:1000});
- await page.screenshot({path:dir+'/detail-desktop.png',fullPage:true,animations:'disabled'});
+ assert.equal(await page.getByRole('heading',{name:'Network',exact:true}).count(),1,'Only one Network shell should be mounted');
+ await page.evaluate(()=>window.scrollTo(0,0));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ await page.screenshot({path:dir+'/detail-desktop.png',fullPage:false,animations:'disabled'});
  console.log('Grid/detail captures finished');const before=mutations.length,companyReads=cloud.filter(u=>u.includes('/rpc/network_action')).length;
  await page.getByRole('button',{name:'Edit company',exact:true}).click();
  await page.getByLabel('Why I’m interested',{exact:true}).fill('Updated fictional research interest.');
@@ -78,7 +80,7 @@ try{
  await page.getByRole('button',{name:/Open Backend Engineer at Cedar Systems/}).click();
  await page.getByRole('dialog').waitFor();
  await page.getByRole('button',{name:'Close application details',exact:true}).click();
- await page.getByRole('button',{name:'Back to companies',exact:true}).click();
+ await page.getByRole('button',{name:'Back to targets',exact:true}).click();
  await page.getByRole('button',{name:/Example Compute/}).click();
  await page.getByRole('button',{name:'People & outreach',exact:true}).click();
  const message=page.getByRole('textbox',{name:'Message for Jamie (fictional)'});
@@ -86,6 +88,41 @@ try{
  await message.fill((await message.inputValue()).replace('Hi Jamie,','Hello Jamie,'));
  assert.equal(mutations.length,before,'Demo actions must not write account data: '+JSON.stringify(mutations.slice(before)));
  assert.equal(cloud.filter(u=>u.includes('/rpc/network_action')).length,companyReads,'Demo company reads must use memory');
+ // Process view scopes drafts to the application, even for two roles at one company.
+ await page.getByRole('button',{name:'Active processes',exact:true}).click();
+ await page.getByRole('button',{name:/Cedar Systems.*Backend Engineer/}).click();
+ await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).waitFor();
+ assert.equal(await page.getByRole('textbox',{name:'Message for Taylor (fictional)'}).count(),0);
+ await page.screenshot({path:dir+'/process-desktop.png',fullPage:false,animations:'disabled'});
+ await page.getByRole('button',{name:'Open application',exact:true}).click();
+ await page.getByRole('dialog').waitFor();await page.getByRole('button',{name:'Close application details',exact:true}).click();
+ await page.getByRole('button',{name:/Cedar Systems.*Platform Engineer/}).click();
+ await page.getByRole('heading',{name:'No outreach linked to this role yet',exact:true}).waitFor();
+ assert.equal(await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).count(),0);
+ await page.locator('li').filter({hasText:'Taylor (fictional)'}).getByRole('button',{name:'Prepare for this role',exact:true}).click();
+ const targeted=page.getByRole('textbox',{name:'Message for Taylor (fictional)'});await targeted.waitFor();assert.equal(await targeted.inputValue(),'');
+ await targeted.fill('Hi Taylor, I am preparing for the fictional platform role and would appreciate your perspective on the team.');
+ await page.getByRole('button',{name:/Cedar Systems.*Backend Engineer/}).click();
+ await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).waitFor();
+ assert.equal(await page.getByRole('textbox',{name:'Message for Taylor (fictional)'}).count(),0);
+ await page.setViewportSize({width:390,height:844});
+ await page.evaluate(()=>window.scrollTo(0,0));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ await page.screenshot({path:dir+'/process-mobile.png',fullPage:false,animations:'disabled'});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Process view overflows mobile');
+ await page.getByLabel('Active process',{exact:true}).selectOption('demo-cedar-platform');
+ await page.getByRole('textbox',{name:'Message for Taylor (fictional)'}).waitFor();
+ assert.match(await page.getByRole('textbox',{name:'Message for Taylor (fictional)'}).inputValue(),/platform role/);
+ await page.setViewportSize({width:1440,height:1000});
+ await page.getByRole('button',{name:'Company research',exact:true}).click();
+ await page.getByRole('heading',{name:'Cedar Systems (demo)',exact:true}).waitFor();
+ assert.equal(await page.getByRole('button',{name:'Targets',exact:true}).getAttribute('aria-pressed'),'true');
+ await page.getByRole('button',{name:'Back to targets',exact:true}).click();
+ // Verify the light palette through the existing header theme control.
+ await page.getByLabel('Color theme',{exact:true}).filter({visible:true}).selectOption('light');
+ await page.screenshot({path:dir+'/targets-light.png',fullPage:false,animations:'disabled'});
+ await page.getByRole('button',{name:'Active processes',exact:true}).click();
+ await page.screenshot({path:dir+'/process-light.png',fullPage:false,animations:'disabled'});
+ await page.getByLabel('Color theme',{exact:true}).filter({visible:true}).selectOption('dark');
  await page.getByRole('link',{name:/^Action board/i}).click();
  await page.getByRole('heading',{name:'Company follow-ups',exact:true}).waitFor();
  await page.getByRole('link',{name:'Open company',exact:true}).click();
@@ -99,5 +136,5 @@ try{
  await page.getByRole('button',{name:'Reset demo data',exact:true}).click();
  await page.getByRole('heading',{name:'Company follow-ups',exact:true}).waitFor();
  assert.deepEqual(errors,[]);
- console.log(JSON.stringify({status:'passed',artifacts:dir,checks:['signed-in company save','contact sync recovery','company grid desktop/mobile','research edit/source provenance','linked application dialog','existing outreach editor','due follow-ups/archive','reset','demo cloud isolation']}));
+ console.log(JSON.stringify({status:'passed',artifacts:dir,checks:['signed-in company save','contact sync recovery','Targets desktop/mobile/light','Active processes desktop/mobile/light','same-company process isolation','role-specific drafts','process-to-research navigation','research edit/source provenance','linked application dialog','existing outreach editor','due follow-ups/archive','reset','demo cloud isolation']}));
 }catch(e){const pages=context.pages();if(pages[0]){await pages[0].screenshot({path:dir+'/failure.png',fullPage:false});console.error((await pages[0].locator('body').innerText()).slice(0,6000));}throw e;}finally{await browser.close();}
