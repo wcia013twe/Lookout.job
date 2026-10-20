@@ -2,7 +2,13 @@
 import { useState, type FormEvent } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, secondary, Notice } from "./ui";
-type AnswerFields = { question: string; answer: string; companyScope: string; policy: string; verified: boolean };
+type AnswerFields = {
+  question: string;
+  answer: string;
+  companyScope: string;
+  policy: string;
+  verified: boolean;
+};
 import { errorMessage, type AnswerRecord } from "./profile-types";
 const empty: AnswerFields = {
   question: "",
@@ -15,9 +21,13 @@ export default function SavedAnswers() {
   const w = useWorkspace();
   const [fields, setFields] = useState(empty),
     [editing, setEditing] = useState<string | null>(null),
-    [feedback, setFeedback] = useState("");
+    [feedback, setFeedback] = useState(""),
+    [showEditor, setShowEditor] = useState(false);
   const answers: AnswerRecord[] = w.state.workflow.savedAnswers || [];
-  function change<K extends keyof AnswerFields>(key: K, value: AnswerFields[K]) {
+  function change<K extends keyof AnswerFields>(
+    key: K,
+    value: AnswerFields[K],
+  ) {
     setFields({
       ...fields,
       [key]: value,
@@ -39,6 +49,7 @@ export default function SavedAnswers() {
       ]);
       setFields(empty);
       setEditing(null);
+      setShowEditor(false);
       setFeedback("Answer saved.");
     } catch (e) {
       setFeedback(errorMessage(e));
@@ -63,69 +74,11 @@ export default function SavedAnswers() {
         Exact-question answers, with optional company scope. Automatic reuse
         requires your review.
       </p>
-      <form onSubmit={save} className="space-y-4">
-        <Field label="Employer question">
-          <textarea
-            className={control}
-            required
-            value={fields.question}
-            onChange={(e) => change("question", e.target.value)}
-          />
-        </Field>
-        <Field label="Your answer">
-          <textarea
-            className={control}
-            required
-            rows={4}
-            value={fields.answer}
-            onChange={(e) => change("answer", e.target.value)}
-          />
-        </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Company scope (optional)">
-            <input
-              className={control}
-              value={fields.companyScope}
-              onChange={(e) => change("companyScope", e.target.value)}
-            />
-          </Field>
-          <Field label="Autofill policy">
-            <select
-              className={control}
-              value={fields.policy}
-              onChange={(e) => change("policy", e.target.value)}
-            >
-              <option value="ask">Always ask me</option>
-              <option value="auto">Allow reviewed autofill</option>
-            </select>
-          </Field>
-        </div>
-        <label className="flex min-h-11 items-center gap-3 text-sm">
-          <input
-            type="checkbox"
-            checked={fields.verified}
-            onChange={(e) => change("verified", e.target.checked)}
-          />
-          I reviewed this answer.
-        </label>
-        <button className={primary}>
-          {editing ? "Save answer changes" : "Add answer"}
-        </button>
-        {editing && (
-          <button
-            className={`${secondary} ml-3`}
-            type="button"
-            onClick={() => {
-              setEditing(null);
-              setFields(empty);
-            }}
-          >
-            Cancel
-          </button>
-        )}
-      </form>
-      <Notice>{feedback}</Notice>
-      {!answers.length && <p className="mt-6 border-t border-board-line pt-5 text-sm text-board-muted">No saved answers yet.</p>}
+      {!answers.length && (
+        <p className="mt-6 border-t border-board-line pt-5 text-sm text-board-muted">
+          No saved answers yet.
+        </p>
+      )}
       <ul className="mt-5 divide-y divide-board-line">
         {answers.map((a) => (
           <li key={a.id} className="py-4">
@@ -146,6 +99,7 @@ export default function SavedAnswers() {
                 className={secondary}
                 onClick={() => {
                   setEditing(a.id);
+                  setShowEditor(true);
                   setFields({
                     ...a,
                     policy: a.imported ? a.requestedPolicy || "ask" : a.policy,
@@ -162,6 +116,80 @@ export default function SavedAnswers() {
           </li>
         ))}
       </ul>
+      <button
+        type="button"
+        className={`${secondary} mt-4`}
+        onClick={() => setShowEditor(!showEditor)}
+      >
+        {showEditor ? "Close answer editor" : "Add employer answer"}
+      </button>
+      {showEditor && (
+        <div className="mt-5">
+          {" "}
+          <form onSubmit={save} className="space-y-4">
+            <Field label="Employer question">
+              <textarea
+                className={control}
+                required
+                value={fields.question}
+                onChange={(e) => change("question", e.target.value)}
+              />
+            </Field>
+            <Field label="Your answer">
+              <textarea
+                className={control}
+                required
+                rows={4}
+                value={fields.answer}
+                onChange={(e) => change("answer", e.target.value)}
+              />
+            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Company scope (optional)">
+                <input
+                  className={control}
+                  value={fields.companyScope}
+                  onChange={(e) => change("companyScope", e.target.value)}
+                />
+              </Field>
+              <Field label="Autofill policy">
+                <select
+                  className={control}
+                  value={fields.policy}
+                  onChange={(e) => change("policy", e.target.value)}
+                >
+                  <option value="ask">Always ask me</option>
+                  <option value="auto">Allow reviewed autofill</option>
+                </select>
+              </Field>
+            </div>
+            <label className="flex min-h-11 items-center gap-3 text-sm">
+              <input
+                type="checkbox"
+                checked={fields.verified}
+                onChange={(e) => change("verified", e.target.checked)}
+              />
+              I reviewed this answer.
+            </label>
+            <button className={primary}>
+              {editing ? "Save answer changes" : "Add answer"}
+            </button>
+            {editing && (
+              <button
+                className={`${secondary} ml-3`}
+                type="button"
+                onClick={() => {
+                  setEditing(null);
+                  setFields(empty);
+                }}
+              >
+                Cancel
+              </button>
+            )}
+          </form>
+        </div>
+      )}
+      <Notice>{feedback}</Notice>
     </Section>
   );
 }

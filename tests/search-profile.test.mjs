@@ -95,3 +95,47 @@ test('demo search strategies have isolated, resettable goals and tier-list assoc
   store.set('workflow.searchPreferences.profiles',[]);
   assert.equal(demoFixtures('2026-10-14').state.workflow.searchPreferences.profiles.length,2);
 });
+
+test('application profile identity, material selections and writing styles round trip independently', async () => {
+ const {profileFromPrompt,promptFromProfile} = await import('../lib/search-profile.mjs');
+ let prompt = initialPrompt();
+ const fields = [
+ ['Application identity','Preferred first name','Wes'],
+ ['Application identity','Preferred last name','Example'],
+ ['Application identity','Application email','personal@example.com'],
+ ['Application identity','Email account','Personal Gmail'],
+ ['Application identity','Document account','Personal Drive'],
+ ['Application identity','Outreach identity','University Outlook'],
+ ['Application materials','Default resume ID','resume-owned'],
+ ['Application materials','Saved answer IDs','answer-a, answer-b'],
+ ['Employer answer writing','Tone','Professional & direct'],
+ ['Employer answer writing','Length','Detailed'],
+ ['Employer answer writing','Guidance','Use evidence.\nAvoid exaggeration.'],
+ ['Outreach writing','Tone','Warm & conversational'],
+ ['Outreach writing','Length','Brief'],
+ ];
+ for (const [heading,key,value] of fields) prompt=updateField(prompt,heading,key,value);
+ const first=profileFromPrompt(prompt,{id:'full-time',name:'Full-time'});
+ const second=profileFromPrompt(updateField(prompt,'Application identity','Application email','school@example.edu'),{id:'internships',name:'Internships'});
+ for(const [heading,key,value] of fields) assert.equal(readField(promptFromProfile(first),heading,key).value,value);
+ assert.equal(readField(promptFromProfile(first),'Application identity','Application email').value,'personal@example.com');
+ assert.equal(readField(promptFromProfile(second),'Application identity','Application email').value,'school@example.edu');
+ assert.equal(readField(promptFromProfile(second),'Employer answer writing','Length').value,'Detailed');
+ assert.equal(readField(promptFromProfile(second),'Outreach writing','Length').value,'Brief');
+ assert.equal(first.autoSubmitApproved,undefined);
+});
+
+test('application profile demo is fictional, isolated and resettable', async () => {
+ const {withApplicationProfileDemo} = await import('../next-app/lib/application-profile-demo.mjs');
+ const {demoFixtures,createMemoryStore} = await import('../next-app/lib/demo.mjs');
+ const {promptFromProfile} = await import('../lib/search-profile.mjs');
+ const base=demoFixtures('2026-10-20');
+ const enhanced=withApplicationProfileDemo(base);
+ const profiles=enhanced.state.workflow.searchPreferences.profiles;
+ const emails=profiles.map(p=>readField(promptFromProfile(p),'Application identity','Application email').value);
+ assert.deepEqual(emails,['candidate@example.com','candidate@example.edu']);
+ assert.equal(readField(promptFromProfile(base.state.workflow.searchPreferences.profiles[0]),'Application identity','Application email').value,'');
+ const store=createMemoryStore(enhanced.state);
+ store.set('workflow.searchPreferences.profiles',[]);
+ assert.equal(withApplicationProfileDemo(base).state.workflow.searchPreferences.profiles.length,2);
+});

@@ -20,9 +20,9 @@ export function validateCompany(record) {
 }
 export function companyIndex(records,contacts,applications) {
  const entries=new Map(records.map(row=>[companyKey(row.record.name),{...row,contacts:[],applications:[],suggested:false}]));
- for(const item of [...contacts,...applications]){const key=companyKey(item.company);if(key&&!entries.has(key)&&!records.some(r=>r.record.contactIds.includes(item.id)||r.record.applicationIds.includes(item.backendId||item.id)))entries.set(key,{id:'suggested:'+key,revision:0,record:emptyCompany(item.company),contacts:[],applications:[],suggested:true});}
+ for(const item of [...contacts,...applications]){const name=item.company||'Other contacts',key=companyKey(name);if(key&&!entries.has(key)&&!records.some(r=>r.record.contactIds.includes(item.id)||r.record.applicationIds.includes(item.backendId||item.id)))entries.set(key,{id:'suggested:'+key,revision:0,record:emptyCompany(name),contacts:[],applications:[],suggested:true});}
  for(const row of entries.values()){
-  row.contacts=contacts.filter(c=>row.record.contactIds.includes(c.id)||companyKey(c.company)===companyKey(row.record.name));
+  row.contacts=contacts.filter(c=>row.record.contactIds.includes(c.id)||companyKey(c.company||'Other contacts')===companyKey(row.record.name));
   row.applications=applications.filter(a=>row.record.applicationIds.includes(a.backendId||a.id)||companyKey(a.company)===companyKey(row.record.name));
  }
  return [...entries.values()].sort((a,b)=>COMPANY_PRIORITIES.indexOf(a.record.priority)-COMPANY_PRIORITIES.indexOf(b.record.priority)||a.record.name.localeCompare(b.record.name));

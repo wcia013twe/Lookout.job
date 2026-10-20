@@ -382,3 +382,64 @@ on the Action Board. Career Toolkit research can be saved with scoped
 `read_network_companies` / `save_network_company` tools; copying a research request
 does not execute it. No shared company database or live recruiter inbox is added.
 See [storage, agent mapping, demo and release limits](docs/private-network.md).
+
+## Application profiles and writing styles
+
+My Profile now selects an application profile above Overview, About me, Application
+kit and Job preferences. Existing named search profiles remain the same records and
+IDs; no account migration or duplicate profile store is introduced. New, duplicate,
+rename, active/paused, identity, material selection, writing and targeting edits use
+one explicit Save application profile action. Drafts survive switching profiles and
+sections until leaving the route. Account/demo changes remount the editor and clear
+drafts. Reload saved explicitly discards the selected draft.
+
+About me separates per-profile application email and agent-managed email/document/
+outreach account assignments from shared background. Assignments are descriptive
+agent guidance, never credentials, OAuth connections or proof of runtime access.
+Application email does not change the Lookout login. My agent is unchanged.
+
+Application kit keeps a shared resume/answer library, with independent per-profile
+resume and saved-answer selections. Employer questions and outreach each have Tone,
+Length and Guidance. Preview style brief shows the instructions, not generated text.
+A profile selection guides agent preparation; it does not change global default
+resume/submission policy, verify facts, authorize answer reuse or approve a draft.
+The existing account-wide private PDF default remains available under an explicit
+advanced disclosure. No external messages or applications are sent.
+
+Website RPC `save_search_profile` and MCP `save_search_profile` /
+`preferences.profile.save` retain the same owner/version/schema checks. The following
+labeled sections are preserved in the existing `instructions` narrative:
+
+- `Application identity`: Preferred first name, Preferred last name, Application email, Email account, Document account, Outreach identity.
+- `Application materials`: Default resume ID, Saved answer IDs (comma-separated owned IDs).
+- `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
+
+`workspace_read`, personal context and canonical profile documents expose the same
+saved records. Developer context version 29 explains their meaning; release the
+gateway through the normal production workflow before claiming deployed agent
+support. No migration or new permission is needed. Hosted round trips and actual
+agent account access remain unverified.
+
+Demo check: switch between fictional full-time and internship profiles to see
+separate application emails, account assignments and employer-answer tone. Edit tone,
+switch profiles/tabs and return; save/reload, duplicate/rename and pause searches.
+Edit shared background and verify the independent review/save boundary. Add/edit an
+employer answer and inspect retained reuse restrictions. Preview the style brief,
+visit unchanged My agent, then reset Demo to restore fixtures. Fixtures and changes
+remain in memory and never write real account records or fetch private files.
+
+Profile Overview shows account-wide tracked roles, recorded applications, active
+interviews and offers using the existing tracker stages. These totals span all
+application profiles; profile identity, account assignments and writing styles
+remain scoped to the selected profile. Counts include user/agent-reported progress
+and do not independently establish employer-confirmed submission. Demo uses its
+existing fictional application stages and resettable memory store. `workspace_read`
+exposes the underlying records; this read-only summary adds no service or permission.
+
+Application identity also includes optional Preferred first name and Preferred last
+name per application profile. Overview uses those names for presentation, falling
+back to existing shared name details. Shared factual names remain unchanged;
+preferred-name guidance never substitutes for a legal-name response or human
+verification. The existing versioned `save_search_profile` website/MCP boundary
+preserves these two labeled instructions. Developer context 29 documents this
+distinction and requires normal gateway release before claiming hosted support.

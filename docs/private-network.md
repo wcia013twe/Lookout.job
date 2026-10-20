@@ -58,7 +58,7 @@ Copy research request gives the agent an explicit instruction to load the Career
 Toolkit company-research guide, retrieve saved findings before browsing, verify
 missing/stale facts and save private research with real source dates. It does not
 queue research, wake an agent, install tools or send messages. Gateway developer
-version 28 documents this workflow. Older connections need network:write enabled
+version 30 documents this workflow. Older connections need network:write enabled
 by the human before company maintenance is available.
 
 Due and overdue dated company actions appear on the Action Board in the account's

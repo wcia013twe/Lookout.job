@@ -259,3 +259,15 @@ Application dialogs resolve their palette from the shared workspace theme, indep
 ### Private company Network
 
 Company cards reuse shared company identity, panel surfaces, borders, priority text, and compact contact/application counts. Company editing uses shared fields for private research, source provenance, priorities, target teams, and dated next actions. Due follow-ups use compact divided rows with explicit Open company actions.
+
+## Application profile settings
+
+Profile uses an application-profile selector above four content tabs; My agent stays
+visually separated at the end of the tab row. Overview uses a compact shared
+identity header, three readiness rows, and account/writing summaries. About me
+labels shared background explicitly. Application kit presents selected materials
+and separate employer-answer/outreach writing settings before disclosed library
+creation forms. Preference groups use summaries and progressive disclosure.
+All colors inherit the shared theme tokens. A sticky desktop profile save bar
+becomes an ordinary footer on mobile; shared background keeps its distinct
+human verification and save action. No account assignment implies connectivity.

@@ -4,7 +4,14 @@ import { useWorkspace } from "../lib/workspace";
 import { uploadResume, resumeDownloadUrl } from "../../lib/resume-model.mjs";
 import { control, primary, secondary, Field, Section, Notice } from "./ui";
 import { errorMessage, type ResumeRecord } from "./profile-types";
-type ResumeForm = HTMLFormElement & { elements: HTMLFormControlsCollection & { variant: HTMLSelectElement; name: HTMLSelectElement; file: HTMLInputElement; url: HTMLInputElement } };
+type ResumeForm = HTMLFormElement & {
+  elements: HTMLFormControlsCollection & {
+    variant: HTMLSelectElement;
+    name: HTMLSelectElement;
+    file: HTMLInputElement;
+    url: HTMLInputElement;
+  };
+};
 const variants = [
   "Backend",
   "Distributed Systems",
@@ -83,7 +90,10 @@ export default function Resumes() {
     setFeedback("Resume reference saved.");
   }
   async function open(r: ResumeRecord) {
-    if(w.demo){setFeedback("Private files are unavailable in demo mode.");return;}
+    if (w.demo) {
+      setFeedback("Private files are unavailable in demo mode.");
+      return;
+    }
     const popup = window.open("about:blank", "_blank");
     try {
       if (popup) popup.opener = null;
@@ -101,54 +111,11 @@ export default function Resumes() {
   }
   return (
     <Section title="Resume variants">
-      <form onSubmit={reference} className="grid items-end gap-4 sm:grid-cols-2">
-        <Field label="Variant">
-          <select name="name" className={control}>
-            {variants.map((v) => (
-              <option key={v}>{v}</option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Resume link">
-          <input
-            name="url"
-            className={control}
-            type="url"
-            placeholder="https://…"
-            required
-          />
-        </Field>
-        <button className={secondary}>Add reference</button>
-      </form>
-      <form onSubmit={upload} className="mt-7 grid items-end gap-4 border-t border-board-line pt-6 sm:grid-cols-2">
-        <Field label="Private resume file (PDF or DOCX, up to 10 MB)">
-          <input
-            className={control}
-            type="file"
-            name="file"
-            accept=".pdf,.docx"
-            required
-            disabled={!w.user || busy}
-          />
-        </Field>
-        <Field label="File variant">
-          <select className={control} name="variant">
-            {variants.map((v) => (
-              <option key={v}>{v}</option>
-            ))}
-          </select>
-        </Field>
-        <button className={primary} disabled={!w.user || busy}>
-          {busy ? "Uploading…" : "Upload private resume"}
-        </button>
-      </form>
-      {!w.user && (
-        <Notice>
-          Sign in to upload private resume files. You can save references in
-          this browser.
-        </Notice>
+      {!resumes.length && (
+        <p className="mt-6 border-t border-board-line pt-5 text-sm text-board-muted">
+          No resume variants saved yet.
+        </p>
       )}
-      {!resumes.length && <p className="mt-6 border-t border-board-line pt-5 text-sm text-board-muted">No resume variants saved yet.</p>}
       <ul className="mt-5 divide-y divide-board-line">
         {resumes.map((r) => (
           <li
@@ -176,6 +143,62 @@ export default function Resumes() {
           </li>
         ))}
       </ul>
+      <details className="mt-4 border-t border-board-line py-3">
+        <summary className="font-semibold">Add a resume</summary>
+        <form
+          onSubmit={reference}
+          className="grid items-end gap-4 sm:grid-cols-2"
+        >
+          <Field label="Variant">
+            <select name="name" className={control}>
+              {variants.map((v) => (
+                <option key={v}>{v}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Resume link">
+            <input
+              name="url"
+              className={control}
+              type="url"
+              placeholder="https://…"
+              required
+            />
+          </Field>
+          <button className={secondary}>Add reference</button>
+        </form>
+        <form
+          onSubmit={upload}
+          className="mt-7 grid items-end gap-4 border-t border-board-line pt-6 sm:grid-cols-2"
+        >
+          <Field label="Private resume file (PDF or DOCX, up to 10 MB)">
+            <input
+              className={control}
+              type="file"
+              name="file"
+              accept=".pdf,.docx"
+              required
+              disabled={!w.user || busy}
+            />
+          </Field>
+          <Field label="File variant">
+            <select className={control} name="variant">
+              {variants.map((v) => (
+                <option key={v}>{v}</option>
+              ))}
+            </select>
+          </Field>
+          <button className={primary} disabled={!w.user || busy}>
+            {busy ? "Uploading…" : "Upload private resume"}
+          </button>
+        </form>
+        {!w.user && (
+          <Notice>
+            Sign in to upload private resume files. You can save references in
+            this browser.
+          </Notice>
+        )}
+      </details>
       <Notice>{feedback}</Notice>
     </Section>
   );

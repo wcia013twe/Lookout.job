@@ -68,7 +68,7 @@ export default function Referrals({company,contactIds=[]}: {company?: string;con
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState("");
   const allContacts: ContactRecord[] = [...(targets || []).map(r => ({ ...r, origin: "target" as const })), ...(people || []).map(r => ({ ...r, origin: "person" as const }))];
-  const all = company ? allContacts.filter(r=>contactIds.includes(r.id)||r.company?.trim().toLowerCase().replace(/\s+/g," ")===company.trim().toLowerCase().replace(/\s+/g," ")) : allContacts;
+  const all = company ? allContacts.filter(r=>contactIds.includes(r.id)||(r.company||'Other contacts').trim().toLowerCase().replace(/\s+/g," ")===company.trim().toLowerCase().replace(/\s+/g," ")) : allContacts;
   const groups: ContactGroup[] = groupContacts(all.filter(r => `${r.company} ${r.contact || r.name} ${r.title || r.role || ""}`.toLowerCase().includes(query.toLowerCase())));
   const contact = all.find(r => `${r.origin}:${r.id}` === selected) || groups[0]?.contacts[0];
   function update(fields: Partial<ContactRecord>) {

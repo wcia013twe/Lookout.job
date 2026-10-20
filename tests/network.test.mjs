@@ -35,3 +35,5 @@ test('demo has private company research, a research-only target, and archived fo
  assert.notEqual(b.state.network.companies[0].record.interest,'Edited');
  assert.equal(companyFollowUps(b.state.network.companies,'2026-10-20').length,1);
 });
+
+test('legacy contacts without a company remain accessible',()=>{const rows=companyIndex([],[{id:'unassigned',name:'Example Contact'}],[]);assert.equal(rows[0].record.name,'Other contacts');assert.equal(rows[0].contacts[0].id,'unassigned');});
