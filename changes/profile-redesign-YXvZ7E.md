@@ -13,3 +13,9 @@
 - Refined the account header, flat metric strip, readiness rows and account/style panels with consistent authored SVG icons, wrapping text and a two-column mobile metric layout. My agent remains unchanged.
 - Read mapping: stats derive from existing workspace state / `workspace_read`, with no new service, write action, schema or permission. Existing admin demo fixtures cover prepared, submitted, interviewing, offered and uncertain states; reset continues to use the isolated fixture store.
 - Validation: 389 tests including database scenarios, focused stats tests, typecheck, production export, data validation, scoped detector (no findings), desktop and 390px browser inspection. No hosted account activity or external services were exercised for this display-only follow-up.
+
+## Preferred names per application profile
+
+- Added optional Preferred first name and Preferred last name in About me → Accounts & identity. They save with the selected application profile and are used in its Overview heading/avatar; existing shared factual name fields remain unchanged. Legal-name questions retain their separate verified-fact/review requirements.
+- Existing versioned `save_search_profile` RPC/MCP narrative mapping includes both fields; developer context 29 documents presentation versus factual identity. No schema, permission or submission change. Demo profiles use fictional distinct preferred names and reset through the existing fixture decorator.
+- Validation: full unit/database suite, frontend typecheck, production export, data validation, display-name and profile round-trip tests; browser inspected the identity fields. Hosted MCP/account access and legal-form autofill were not exercised. Nothing published.

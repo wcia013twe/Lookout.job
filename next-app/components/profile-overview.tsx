@@ -5,7 +5,10 @@ import { useApplicationProfile } from "./application-profile-context";
 import ProfileIcon, { type ProfileIconName } from "./profile-icon";
 import { profileStyles as styles } from "./profile-surface";
 import { secondary } from "./ui";
-import { profileOverviewStats } from "../../lib/profile-overview.mjs";
+import {
+  profileOverviewStats,
+  profileDisplayName,
+} from "../../lib/profile-overview.mjs";
 export default function ProfileOverview({
   onSelect,
 }: {
@@ -14,6 +17,11 @@ export default function ProfileOverview({
   const w = useWorkspace(),
     a = useApplicationProfile(),
     profile = w.state.workflow.profile;
+  const displayName = profileDisplayName(
+    profile,
+    a.field("Application identity", "Preferred first name").value,
+    a.field("Application identity", "Preferred last name").value,
+  );
   const stats = profileOverviewStats(w.state);
   const email = a.field("Application identity", "Application email").value;
   const resume = w.state.workflow.resumes.find(
@@ -72,8 +80,8 @@ export default function ProfileOverview({
     <div className={styles.overview}>
       <section className={styles.accountHeader} aria-label="Account overview">
         <div className={styles.accountAvatar} aria-hidden="true">
-          {profile.name ? (
-            profile.name
+          {displayName ? (
+            displayName
               .split(" ")
               .map((v: string) => v[0])
               .slice(0, 2)
@@ -84,7 +92,7 @@ export default function ProfileOverview({
         </div>
         <div className="min-w-0 flex-1">
           <h2 className="text-2xl font-semibold tracking-tight">
-            {profile.name || "Your account overview"}
+            {displayName || "Your account overview"}
           </h2>
           <p className="mt-1 text-sm text-board-muted">
             {profile.headline || "Your job search, at a glance."}

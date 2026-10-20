@@ -100,6 +100,8 @@ test('application profile identity, material selections and writing styles round
  const {profileFromPrompt,promptFromProfile} = await import('../lib/search-profile.mjs');
  let prompt = initialPrompt();
  const fields = [
+ ['Application identity','Preferred first name','Wes'],
+ ['Application identity','Preferred last name','Example'],
  ['Application identity','Application email','personal@example.com'],
  ['Application identity','Email account','Personal Gmail'],
  ['Application identity','Document account','Personal Drive'],

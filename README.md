@@ -398,12 +398,12 @@ Website RPC `save_search_profile` and MCP `save_search_profile` /
 `preferences.profile.save` retain the same owner/version/schema checks. The following
 labeled sections are preserved in the existing `instructions` narrative:
 
-- `Application identity`: Application email, Email account, Document account, Outreach identity.
+- `Application identity`: Preferred first name, Preferred last name, Application email, Email account, Document account, Outreach identity.
 - `Application materials`: Default resume ID, Saved answer IDs (comma-separated owned IDs).
 - `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
 
 `workspace_read`, personal context and canonical profile documents expose the same
-saved records. Developer context version 28 explains their meaning; release the
+saved records. Developer context version 29 explains their meaning; release the
 gateway through the normal production workflow before claiming deployed agent
 support. No migration or new permission is needed. Hosted round trips and actual
 agent account access remain unverified.
@@ -423,3 +423,11 @@ remain scoped to the selected profile. Counts include user/agent-reported progre
 and do not independently establish employer-confirmed submission. Demo uses its
 existing fictional application stages and resettable memory store. `workspace_read`
 exposes the underlying records; this read-only summary adds no service or permission.
+
+Application identity also includes optional Preferred first name and Preferred last
+name per application profile. Overview uses those names for presentation, falling
+back to existing shared name details. Shared factual names remain unchanged;
+preferred-name guidance never substitutes for a legal-name response or human
+verification. The existing versioned `save_search_profile` website/MCP boundary
+preserves these two labeled instructions. Developer context 29 documents this
+distinction and requires normal gateway release before claiming hosted support.

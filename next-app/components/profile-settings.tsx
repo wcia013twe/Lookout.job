@@ -81,6 +81,8 @@ export function ProfileSwitcher() {
 export function AccountAssignments() {
   const a = useApplicationProfile();
   const fields = [
+    ["Preferred first name", "text", "The first name you go by"],
+    ["Preferred last name", "text", "The last name you prefer to use"],
     ["Application email", "email", "The email employers should use"],
     ["Email account", "text", "Personal Gmail · candidate@example.com"],
     ["Document account", "text", "Personal Google Drive"],
@@ -119,6 +121,10 @@ export function AccountAssignments() {
           </Field>
         ))}
       </div>
+      <p className="mt-4 text-xs text-board-muted">
+        Preferred names apply to this application profile. They do not replace
+        your shared name details when a form asks for your legal name.
+      </p>
       <p className="mt-4 text-xs text-board-muted">
         Assignments are instructions for your agent, not verified connections.
         Application email does not change your Lookout sign-in.

@@ -6,6 +6,8 @@ export function withApplicationProfileDemo(fixtures) {
   const employment=profile.id==='internships'?'Internship':'Full-time';
   let prompt=promptFromProfile(profile);
   for(const [heading,key,value] of [
+   ["Application identity","Preferred first name",employment === "Internship" ? "Demo" : "Dee"],
+   ["Application identity","Preferred last name","Candidate"],
    ['Application identity','Application email',employment === 'Internship' ? 'candidate@example.edu' : 'candidate@example.com'],
    ['Application identity','Email account',employment === 'Internship' ? 'University Outlook (demo)' : 'Personal Gmail (demo)'],
    ['Application identity','Document account','Personal Drive (demo)'],

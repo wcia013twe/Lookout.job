@@ -228,12 +228,12 @@ Website RPC `save_search_profile` and MCP `save_search_profile` /
 `preferences.profile.save` retain the same owner/version/schema checks. The following
 labeled sections are preserved in the existing `instructions` narrative:
 
-- `Application identity`: Application email, Email account, Document account, Outreach identity.
+- `Application identity`: Preferred first name, Preferred last name, Application email, Email account, Document account, Outreach identity.
 - `Application materials`: Default resume ID, Saved answer IDs (comma-separated owned IDs).
 - `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
 
 `workspace_read`, personal context and canonical profile documents expose the same
-saved records. Developer context version 28 explains their meaning; release the
+saved records. Developer context version 29 explains their meaning; release the
 gateway through the normal production workflow before claiming deployed agent
 support. No migration or new permission is needed. Hosted round trips and actual
 agent account access remain unverified.
