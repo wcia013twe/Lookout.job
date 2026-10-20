@@ -10,6 +10,9 @@ type AnswerFields = {
   verified: boolean;
 };
 import { errorMessage, type AnswerRecord } from "./profile-types";
+const previousEmploymentQuestion = "Have you worked for this company before?";
+const normalize = (value: string) =>
+  value.trim().replace(/\s+/g, " ").toLowerCase();
 const empty: AnswerFields = {
   question: "",
   answer: "",
@@ -24,6 +27,7 @@ export default function SavedAnswers() {
     [feedback, setFeedback] = useState(""),
     [showEditor, setShowEditor] = useState(false);
   const answers: AnswerRecord[] = w.state.workflow.savedAnswers || [];
+  const companyQuestion = fields.question === previousEmploymentQuestion;
   function change<K extends keyof AnswerFields>(
     key: K,
     value: AnswerFields[K],
@@ -39,10 +43,32 @@ export default function SavedAnswers() {
   function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      const record = w.models.savedAnswerModel.save(
-        fields,
-        answers.find((a) => a.id === editing),
-      );
+      let previous = answers.find((a) => a.id === editing);
+      if (companyQuestion) {
+        if (!fields.companyScope.trim())
+          throw Error("Enter the company this answer applies to.");
+        if (!["Yes", "No", "Ask me"].includes(fields.answer))
+          throw Error("Choose Yes, No, or Ask me.");
+        const matches = answers.filter(
+          (a) =>
+            normalize(a.question) === normalize(previousEmploymentQuestion) &&
+            normalize(a.companyScope || "") === normalize(fields.companyScope),
+        );
+        if (!editing && matches.length > 1)
+          throw Error(
+            "More than one answer exists for this company. Edit the saved answer you want to keep.",
+          );
+        if (!editing) previous = matches[0];
+      }
+      const prepared = companyQuestion
+        ? {
+            ...fields,
+            verified: fields.answer !== "Ask me" && fields.verified,
+            policy:
+              fields.answer !== "Ask me" && fields.verified ? "auto" : "ask",
+          }
+        : fields;
+      const record = w.models.savedAnswerModel.save(prepared, previous);
       w.store.set("workflow.savedAnswers", [
         ...answers.filter((a) => a.id !== record.id),
         record,
@@ -119,60 +145,119 @@ export default function SavedAnswers() {
       <button
         type="button"
         className={`${secondary} mt-4`}
-        onClick={() => setShowEditor(!showEditor)}
+        onClick={() => {
+          if (!showEditor && companyQuestion) {
+            setFields(empty);
+            setEditing(null);
+          }
+          setShowEditor(!showEditor);
+        }}
       >
         {showEditor ? "Close answer editor" : "Add employer answer"}
+      </button>
+      <button
+        type="button"
+        className={`${secondary} mt-4 ml-3`}
+        onClick={() => {
+          setEditing(null);
+          setFields({
+            ...empty,
+            question: previousEmploymentQuestion,
+            answer: "Ask me",
+          });
+          setShowEditor(true);
+        }}
+      >
+        Worked here before?
       </button>
       {showEditor && (
         <div className="mt-5">
           {" "}
           <form onSubmit={save} className="space-y-4">
-            <Field label="Employer question">
-              <textarea
-                className={control}
-                required
-                value={fields.question}
-                onChange={(e) => change("question", e.target.value)}
-              />
-            </Field>
-            <Field label="Your answer">
-              <textarea
-                className={control}
-                required
-                rows={4}
-                value={fields.answer}
-                onChange={(e) => change("answer", e.target.value)}
-              />
-            </Field>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Company scope (optional)">
+            {companyQuestion ? (
+              <>
+                <h3 className="font-semibold">{previousEmploymentQuestion}</h3>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Company">
+                    <input
+                      className={control}
+                      required
+                      value={fields.companyScope}
+                      onChange={(e) => change("companyScope", e.target.value)}
+                      placeholder="Company name"
+                    />
+                  </Field>
+                  <Field label="Your answer">
+                    <select
+                      className={control}
+                      value={fields.answer}
+                      onChange={(e) => change("answer", e.target.value)}
+                    >
+                      <option>Ask me</option>
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  </Field>
+                </div>
+              </>
+            ) : (
+              <>
+                <Field label="Employer question">
+                  <textarea
+                    className={control}
+                    required
+                    value={fields.question}
+                    onChange={(e) => change("question", e.target.value)}
+                  />
+                </Field>
+                <Field label="Your answer">
+                  <textarea
+                    className={control}
+                    required
+                    rows={4}
+                    value={fields.answer}
+                    onChange={(e) => change("answer", e.target.value)}
+                  />
+                </Field>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Company scope (optional)">
+                    <input
+                      className={control}
+                      value={fields.companyScope}
+                      onChange={(e) => change("companyScope", e.target.value)}
+                    />
+                  </Field>
+                  <Field label="Autofill policy">
+                    <select
+                      className={control}
+                      value={fields.policy}
+                      onChange={(e) => change("policy", e.target.value)}
+                    >
+                      <option value="ask">Always ask me</option>
+                      <option value="auto">Allow reviewed autofill</option>
+                    </select>
+                  </Field>
+                </div>
+              </>
+            )}
+            {(!companyQuestion || fields.answer !== "Ask me") && (
+              <label className="flex min-h-11 items-center gap-3 text-sm">
                 <input
-                  className={control}
-                  value={fields.companyScope}
-                  onChange={(e) => change("companyScope", e.target.value)}
+                  type="checkbox"
+                  checked={fields.verified}
+                  onChange={(e) => change("verified", e.target.checked)}
                 />
-              </Field>
-              <Field label="Autofill policy">
-                <select
-                  className={control}
-                  value={fields.policy}
-                  onChange={(e) => change("policy", e.target.value)}
-                >
-                  <option value="ask">Always ask me</option>
-                  <option value="auto">Allow reviewed autofill</option>
-                </select>
-              </Field>
-            </div>
-            <label className="flex min-h-11 items-center gap-3 text-sm">
-              <input
-                type="checkbox"
-                checked={fields.verified}
-                onChange={(e) => change("verified", e.target.checked)}
-              />
-              I reviewed this answer.
-            </label>
+                {companyQuestion
+                  ? "I confirm this answer and allow reuse for this company."
+                  : "I reviewed this answer."}
+              </label>
+            )}
             <button className={primary}>
-              {editing ? "Save answer changes" : "Add answer"}
+              {companyQuestion
+                ? "Save company answer"
+                : editing
+                  ? "Save answer changes"
+                  : "Add answer"}
             </button>
             {editing && (
               <button

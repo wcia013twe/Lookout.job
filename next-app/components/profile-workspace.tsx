@@ -18,6 +18,7 @@ import {
 import {
   ProfileSwitcher,
   AccountAssignments,
+  EligibilitySettings,
   ApplicationMaterials,
   WritingStyles,
 } from "./profile-settings";
@@ -85,6 +86,7 @@ function ProfileContent() {
             </p>
           </div>
           <AccountAssignments />
+          <EligibilitySettings />
           <div className={profileStyles.sharedHeading}>
             <span>Shared across application profiles</span>
             <p>Changes below update your background everywhere.</p>
