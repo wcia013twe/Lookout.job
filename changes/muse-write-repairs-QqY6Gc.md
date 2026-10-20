@@ -1,0 +1,6 @@
+# muse-write-repairs
+
+- Fix the ambiguous SQL argument in activity recording/replay. Add exact MCP schemas for résumé metadata, profile history, proposed answers, publishing and activity; expose document examples and safe, actionable validation errors. Preserve ownership, versions, human verification and connection permissions.
+- Validation: 394 tests including database activity replay/ownership regression; 76 catalog roles validated; production frontend build; bounded 50-tool hosted packages bundle successfully. Existing fictional demo state remains covered by the test suite; no UI or demo behavior changes.
+- Hosted probes before release: valid résumé-upload reservation, profile and portals documents, and empty private batch accepted. Activity SQL ambiguity reproduced. Rich-profile retry and post-release checks recorded in a follow-up to this note.
+- Limits: Muse's exact failing JSON has not been provided, so the other reported 400s are not attributed to a reproduced backend defect. No actual résumé bytes uploaded, employer applications submitted, schedules created, or real account data changed. Deployment is limited to the existing live 50-tool surface; unrelated pending backend features stay undeployed.

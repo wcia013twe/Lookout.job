@@ -1,11 +1,10 @@
 // Candidate setup is preparation, never a human verification or application approval.
+import {PROFILE_SCALARS,PROFILE_RECORDS,RESUME_VARIANTS} from './write-schemas.mjs';
 const uuid = value => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
 const text = (value, max, empty = false) => typeof value === 'string' && value.length <= max && (empty || value.trim().length > 0);
 const keys = (value, allowed) => object(value) && Object.keys(value).every(key => allowed.includes(key));
-const variants = ['Backend','Distributed Systems','ML Infrastructure','Master'];
-const scalars = ['name','firstName','lastName','email','phone','location','linkedin','github','portfolio','otherUrl','authorization','headline','currentEmployer','jobSearchStatus','skills','preferredSkills','languages','introduction'];
-const records = {workExperience:['title','company','location','employmentType','startDate','endDate','current','description'],education:['school','degree','fieldOfStudy','gpa','startDate','endDate','description'],projects:['name','role','url','startDate','endDate','description']};
+const variants=RESUME_VARIANTS,scalars=PROFILE_SCALARS,records=PROFILE_RECORDS;
 export function validateProfileSetup(operation, p) {
   if (operation === 'connections.profile_setup') {
     if (!keys(p,['id','enabled']) || !uuid(p.id) || typeof p.enabled !== 'boolean') throw Error('Connection ID and enabled boolean required');

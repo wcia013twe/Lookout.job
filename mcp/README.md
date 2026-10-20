@@ -12,6 +12,21 @@ single authority for ownership, expiry/revocation, write validation and revision
 
 ## Connect an agent
 
+Write arguments are defined in each discovered tool's `inputSchema`. Refresh
+discovery after a backend update; do not infer fields from website labels.
+`save_profile_package` accepts `workExperience`, `education`, `projects` and
+separate `linkedin`/`github`/`portfolio` strings. Unknown facts stay omitted.
+Saved answers use `requestedPolicy` for proposals; imports remain unverified.
+Résumé setup uses `profile:write`; `resumes:read` only permits downloads.
+`save_search_document` includes complete profile and portals examples in its
+content schema. Read current versions before editing. `publish_batch` requires
+`eventKey`, `label`, and `jobs`; private fit belongs in `recommendation`.
+For sweep-level `append_activity`, omit `applicationId`.
+
+Validation failures return correction guidance. A conflict requires a fresh
+read; a server failure requires reading current state before retrying the same
+event key. Never broaden scopes or change verification policy to repair arguments.
+
 1. Sign in to the board; in Profile, create an agent connection with the required
    scopes. Copy the token once into your agent's private credential store.
 2. Add the remote MCP endpoint in a client supporting Streamable HTTP **and a

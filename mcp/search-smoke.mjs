@@ -50,6 +50,25 @@ function client(credential) {
   };
 }
 const agent=client(fixture.primary.token),reader=client(fixture.reader.token),other=client(fixture.other.token);
+if(phase==='write-probes') {
+  const checks=[
+    ['begin_resume_upload',{eventKey:'probe-resume',fileName:'resume.pdf',variant:'Master',sha256:hash('%PDF-1.7\nfictional fixture\n%%EOF'),bytes:Buffer.byteLength('%PDF-1.7\nfictional fixture\n%%EOF')}],
+    ['save_search_document',{kind:'profile',id:'probe-profile',expectedVersion:0,eventKey:'probe-profile',content:'---\n'+JSON.stringify({id:'probe-profile',name:'Fictional write probe',active:true,filters:{Employment:'Full-time',Location:'United States'},priorities:{Growth:'Important'}})+'\n---\nFictional test targeting.'}],
+    ['save_search_document',{kind:'portals',id:'shared',expectedVersion:0,eventKey:'probe-portals',content:JSON.stringify({tracked_companies:[{id:'fixture',name:'Fictional board',kind:'board',careers_url:'https://example.com/jobs',enabled:true},{id:'social',name:'Fictional social',kind:'social',careers_url:'@example_fixture',enabled:true}],search_queries:['Fictional write test']})}],
+    ['publish_batch',{eventKey:'probe-empty-batch',label:'Fictional empty write probe',jobs:[]}],
+    ['append_activity',{eventKey:'probe-activity',kind:'search_scan',data:{note:'Fictional release verification; no external work claimed.'}}],
+  ];
+  if(process.env.LOOKOUT_SMOKE_JOB_ID)checks.push(['publish_batch',{eventKey:'probe-existing-job',label:'Fictional private existing-job probe',jobs:[{jobId:process.env.LOOKOUT_SMOKE_JOB_ID,recommendation:{whyItFits:'Fictional isolated verification, not a recommendation.'}}]}]);
+  const personal=await agent.call('read_personal_context');
+  checks.push(['save_profile_package',{eventKey:'probe-history',expectedPersonalVersion:personal.personalVersion,facts:{education:[{school:'Fictional University',degree:'Fictional degree',endDate:'2027-05'}],workExperience:[{company:'Fictional Employer',title:'Fictional role',current:false}],linkedin:'https://example.com/fictional-profile'},answers:[{question:'Fictional question?',answer:'Fictional proposed answer.',requestedPolicy:'auto'}],source:'Disposable fictional write probe'}]);
+  let failures=0;
+  for(const [name,args]of checks) {
+    if(name==='save_profile_package')args.expectedPersonalVersion=(await agent.call('read_personal_context')).personalVersion;
+    try {const result=await agent.call(name,args);if(name==='append_activity')assert.deepEqual(await agent.call(name,args),result);console.log(`PASS ${name}${args.kind ? ' '+args.kind : ''}`);}
+    catch(error){failures++;console.log(`FAIL ${name}${args.kind ? ' '+args.kind : ''}: ${error.message}`);}
+  }
+  process.exit(failures?1:0);
+}
 if(phase==='revoked') {
   assert.equal((await agent.request('tools/list',{})).status,401);
   console.log('PASS revoked credential cannot discover tools.');
