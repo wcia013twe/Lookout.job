@@ -589,5 +589,90 @@
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ziprecruiter/ccb1fabdca821395.png",
   "sha256": "ccb1fabdca8213956494869e02e84d454035cd90cbe4e98bdcc87edf12b495ec",
   "contentType": "image/png"
+ },
+ "rhoda-ai": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rhoda-ai.png",
+  "sha256": "28ccaeb4398ccf740d8f8762ad4611ab3cbd5a7d877e97138891e81557ba6b30",
+  "contentType": "image/png"
+ },
+ "hpe": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/hpe.png",
+  "sha256": "45d224112173152f9b87e9885911bd9b7e51bc96508a9e69a5c22e1571678d70",
+  "contentType": "image/png"
+ },
+ "smith-nephew": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/smith-nephew.png",
+  "sha256": "3f581a7611269177809168ec76dd9c6ca5c03eb526d3d109849aca64ff9b058d",
+  "contentType": "image/png"
+ },
+ "siemens": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/siemens.png",
+  "sha256": "b1bb0adafd5bd8233b6b76a8274a012dbc8d37086559de792fdf82681fec4e13",
+  "contentType": "image/png"
+ },
+ "wisdomtree": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/wisdomtree.png",
+  "sha256": "ef425e075a8175391a75f269ec30107116816d2e82cd118db00775d8a411659c",
+  "contentType": "image/png"
+ },
+ "illumio": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/illumio.png",
+  "sha256": "5928277865e175589cf5c4801dd3ddb7ce8d6962c101390306df0095d29b7111",
+  "contentType": "image/png"
+ },
+ "point72": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/point72.png",
+  "sha256": "2b34b42ee7083ed4f24e8b70b3cf369741e61e7d89e38d44b48c503ea7ce4026",
+  "contentType": "image/png"
+ },
+ "rothschild-co": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rothschild-co.png",
+  "sha256": "092166088b0d5f6d3a4336dbbe18a456836336860090ad1e3f93f0a6db894d3f",
+  "contentType": "image/png"
+ },
+ "texas-instruments": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/texas-instruments.png",
+  "sha256": "5fc9c4e62c57871c656ab628acd86c275b6a8ddc7186749be614215e49ebdebb",
+  "contentType": "image/png"
+ },
+ "rakuten": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rakuten.png",
+  "sha256": "01dff93438a73e691534046d7494d90068d555cacedc6604f3c987f93daf5871",
+  "contentType": "image/png"
+ },
+ "uber": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/uber.png",
+  "sha256": "e2c3c9c458d0a3c02eb31437b7f7ac84e5762a1a506bf7ca581a21ec9e45c58d",
+  "contentType": "image/png"
+ },
+ "insomniac-games": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/insomniac-games.png",
+  "sha256": "e79d7f49415f919857376c704643ef73b229f72647103b74f5676b87169f9510",
+  "contentType": "image/png"
+ },
+ "jmp": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/jmp.png",
+  "sha256": "3c07a82039dcedd643e31d6cf77fcd60ef1f866bcf55034f1af10cd83f31913c",
+  "contentType": "image/png"
+ },
+ "nba": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/nba.png",
+  "sha256": "0cea64746d6d29ccc400af795cbe6e5857e168f9c61a7bbaa55cbbfe84724493",
+  "contentType": "image/png"
+ },
+ "sony": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/sony.png",
+  "sha256": "026dfcd87de397755f9fb67c205f38d891b4a0d48778d5cdff21dbbba205ebb6",
+  "contentType": "image/png"
+ },
+ "humble-robotics": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/humble-robotics.png",
+  "sha256": "6493926720c327e2e63223f819fecfdf144276048a8c524c0f70d4334be131fe",
+  "contentType": "image/png"
+ },
+ "johns-hopkins-apl": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/johns-hopkins-apl.png",
+  "sha256": "b0d5cb457cb215377bba986ca5d54c37e6178794bc85772711dffef781a757a9",
+  "contentType": "image/png"
  }
 }
