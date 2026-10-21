@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Est\u00e9e Lauder",
+   "company": "Estée Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -2663,6 +2663,45 @@
    "status": "skipped",
    "skipReason": "6-month term-time onsite internship at a below-tier company; fails the school-disruption bar for internships.",
    "note": null
+  },
+  {
+   "company": "Brain Co.",
+   "title": "AI Platform Engineer, 2027 New Grad",
+   "location": "San Francisco Bay Area (Hybrid)",
+   "type": "FT",
+   "comp": null,
+   "url": "https://jobs.ashbyhq.com/brainco/4d39773e-f4c3-49c1-87c3-812a9804fb15",
+   "dateSeen": "2026-10-21",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live 2026-10-21 via Ashby posting API (brainco board, job 4d39773e, published 2026-10-01, isListed). Team from Palantir/Google/Meta/Nvidia; AI-native operating systems for regulated institutions (Atlas platform). Scope: backend services, data pipelines, ML experiment tracking, artifact management, automated training/evaluation pipelines, REST/gRPC APIs, distributed services. GATE: eligibility states 'completing a bachelor's degree in Spring 2027' - same graduation-date ambiguity as Databricks/Netflix/Scale AI (his MS ~May 2027, possibly Dec 2027)."
+  },
+  {
+   "company": "Humble Robotics",
+   "title": "Embedded Software Engineer, 2027 Internship",
+   "location": "US (via Lever; no location shown on story)",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-21",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Embedded software for an autonomous zero-emissions hauler (vision-based AI); hardware/embedded-adjacent, below the selective internship bar (consistent with the Humble Robotics electrical engineer intern skip).",
+   "note": "Evening story check 2026-10-21. Link sticker domain JOBS.LEVER.CO. Distinct title from the electrical engineer intern seen 2026-10-15."
+  },
+  {
+   "company": "Meta",
+   "title": "Security Engineer Posture Management, Intern (Summer 2027)",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.metacareers.com/",
+   "dateSeen": "2026-10-21",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Security engineering (Technical Security), not on Wesley's backend/infra/ML targets (consistent with Meta product security and detection & response intern skips).",
+   "note": "Evening story check 2026-10-21. Link sticker domain METACAREERS.COM. Story teased more Meta security internships coming."
   }
  ]
 }
