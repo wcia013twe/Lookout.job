@@ -89,6 +89,11 @@
   "sha256": "794e979dc2042a0e78dc77b1a66b94332b1192a8dfab29934adefbe98472fd5d",
   "contentType": "image/png"
  },
+ "brain-co": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/brain-co.png",
+  "sha256": "5b70e8d20dedf0a05b6b2949c3e6fb7d6beca4397e7a21035bebf589b09b67b6",
+  "contentType": "image/png"
+ },
  "braze": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/braze.png",
   "sha256": "491f7d36196aa85a69aebf9f094c04ff46c1edc5a3ee85acb8227175cb3ea607",
@@ -279,14 +284,29 @@
   "sha256": "483065176aa56d08364742c03b2c1f444460d34b7d7f85bd31cf59eb8d1d0278",
   "contentType": "image/png"
  },
+ "hpe": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/hpe.png",
+  "sha256": "45d224112173152f9b87e9885911bd9b7e51bc96508a9e69a5c22e1571678d70",
+  "contentType": "image/png"
+ },
  "humana": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/humana.png",
   "sha256": "54157372ed28ce6184b73908ddf07bd2fcf51cc306ddfc4c5b9e02ace13774d1",
   "contentType": "image/png"
  },
+ "humble-robotics": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/humble-robotics.png",
+  "sha256": "6493926720c327e2e63223f819fecfdf144276048a8c524c0f70d4334be131fe",
+  "contentType": "image/png"
+ },
  "ibm": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/ibm.png",
   "sha256": "c966191a4649af6c20820a41e61a9ed3a6907f61533aec346775e87a8a863e65",
+  "contentType": "image/png"
+ },
+ "illumio": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/illumio.png",
+  "sha256": "5928277865e175589cf5c4801dd3ddb7ce8d6962c101390306df0095d29b7111",
   "contentType": "image/png"
  },
  "imc": {
@@ -297,6 +317,11 @@
  "impulse-space": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/impulse-space.png",
   "sha256": "21a9a4bd556c9643b4e8f7a9e3dc6aaa9e42a171b8630844d6e26fbe1be948b8",
+  "contentType": "image/png"
+ },
+ "insomniac-games": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/insomniac-games.png",
+  "sha256": "e79d7f49415f919857376c704643ef73b229f72647103b74f5676b87169f9510",
   "contentType": "image/png"
  },
  "intuit": {
@@ -312,6 +337,16 @@
  "ixl-learning": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ixl-learning/3c726c04b2c49d56.png",
   "sha256": "3c726c04b2c49d567e6bb5cb1cc080083ef37f7a6db98c2a5f95e202c83e4b21",
+  "contentType": "image/png"
+ },
+ "jmp": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/jmp.png",
+  "sha256": "3c07a82039dcedd643e31d6cf77fcd60ef1f866bcf55034f1af10cd83f31913c",
+  "contentType": "image/png"
+ },
+ "johns-hopkins-apl": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/johns-hopkins-apl.png",
+  "sha256": "b0d5cb457cb215377bba986ca5d54c37e6178794bc85772711dffef781a757a9",
   "contentType": "image/png"
  },
  "johnson-johnson": {
@@ -374,6 +409,11 @@
   "sha256": "453ac5bee49770b36b17bd1dbfdc312a220a0417fea3087e04fc996f83d9bd4d",
   "contentType": "image/png"
  },
+ "nba": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/nba.png",
+  "sha256": "0cea64746d6d29ccc400af795cbe6e5857e168f9c61a7bbaa55cbbfe84724493",
+  "contentType": "image/png"
+ },
  "netapp": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/netapp.png",
   "sha256": "8c1c84b0916aaf524da73ded974a6904709fc031d5c4dab36f33ee47ac7920ed",
@@ -419,6 +459,11 @@
   "sha256": "4b20e4401c38a61ae629a026f0ee81a5607ab066e3d007fac465b46447fbe615",
   "contentType": "image/png"
  },
+ "point72": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/point72.png",
+  "sha256": "2b34b42ee7083ed4f24e8b70b3cf369741e61e7d89e38d44b48c503ea7ce4026",
+  "contentType": "image/png"
+ },
  "powertown": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/powertown/2c71b720d0677493.png",
   "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
@@ -427,6 +472,11 @@
  "qumulo": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/qumulo/2c71b720d0677493.png",
   "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "rakuten": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rakuten.png",
+  "sha256": "01dff93438a73e691534046d7494d90068d555cacedc6604f3c987f93daf5871",
   "contentType": "image/png"
  },
  "render": {
@@ -442,6 +492,11 @@
  "rexroth": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rexroth.png",
   "sha256": "37d3b2c7fd4058b7a0deb36ab06af296963572123d26133f54db5210cd4765e7",
+  "contentType": "image/png"
+ },
+ "rhoda-ai": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rhoda-ai.png",
+  "sha256": "28ccaeb4398ccf740d8f8762ad4611ab3cbd5a7d877e97138891e81557ba6b30",
   "contentType": "image/png"
  },
  "ricoh": {
@@ -463,6 +518,11 @@
  "rocket": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/rocket/b84fc34425bdbace.png",
   "sha256": "b84fc34425bdbacee4bad1449d7790c3fc3f40a4bfb425001460688477d8cc94",
+  "contentType": "image/png"
+ },
+ "rothschild-co": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rothschild-co.png",
+  "sha256": "092166088b0d5f6d3a4336dbbe18a456836336860090ad1e3f93f0a6db894d3f",
   "contentType": "image/png"
  },
  "rtx": {
@@ -500,6 +560,11 @@
   "sha256": "27e98ff37d321748bb451527d2c4b364bedbccbd4593aa90b8741274efa110d2",
   "contentType": "image/png"
  },
+ "siemens": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/siemens.png",
+  "sha256": "b1bb0adafd5bd8233b6b76a8274a012dbc8d37086559de792fdf82681fec4e13",
+  "contentType": "image/png"
+ },
  "sigma-computing": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/sigma-computing/a8a1ce68afeb882f.png",
   "sha256": "a8a1ce68afeb882f7b1a236831bb5c6fdb8e8b87cb760ce94f64d8eb6af0fdce",
@@ -515,9 +580,19 @@
   "sha256": "3bc113484846edb4fc28b0a1b8a1a68ef0b5a820358dec4eb75b805ba3532516",
   "contentType": "image/png"
  },
+ "smith-nephew": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/smith-nephew.png",
+  "sha256": "3f581a7611269177809168ec76dd9c6ca5c03eb526d3d109849aca64ff9b058d",
+  "contentType": "image/png"
+ },
  "snowflake": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/snowflake/115ae1bc11df9169.png",
   "sha256": "115ae1bc11df91693363b79c951c280152b27e0a583b81f19f4f57b2a0aad6ba",
+  "contentType": "image/png"
+ },
+ "sony": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/sony.png",
+  "sha256": "026dfcd87de397755f9fb67c205f38d891b4a0d48778d5cdff21dbbba205ebb6",
   "contentType": "image/png"
  },
  "stripe": {
@@ -550,6 +625,11 @@
   "sha256": "76c37981eb03832ecb3d32fe782f43171a98da0144f5b0950fbeabfc95a67e4c",
   "contentType": "image/png"
  },
+ "texas-instruments": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/texas-instruments.png",
+  "sha256": "5fc9c4e62c57871c656ab628acd86c275b6a8ddc7186749be614215e49ebdebb",
+  "contentType": "image/png"
+ },
  "tiktok": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/tiktok.png",
   "sha256": "3e37b1d51ead41bc3e9a3c2951994e0ecbcf090f09116a2055d27c547a12afa4",
@@ -563,6 +643,11 @@
  "two-sigma": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/two-sigma/a2d38d77bf364ddd.png",
   "sha256": "a2d38d77bf364dddf06d45ffa0a3225fbb173fd3fcfe3cf59815cc62fe39a3c3",
+  "contentType": "image/png"
+ },
+ "uber": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/uber.png",
+  "sha256": "e2c3c9c458d0a3c02eb31437b7f7ac84e5762a1a506bf7ca581a21ec9e45c58d",
   "contentType": "image/png"
  },
  "verizon": {
@@ -580,6 +665,11 @@
   "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
   "contentType": "image/png"
  },
+ "wisdomtree": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/wisdomtree.png",
+  "sha256": "ef425e075a8175391a75f269ec30107116816d2e82cd118db00775d8a411659c",
+  "contentType": "image/png"
+ },
  "zebra": {
   "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/zebra.png",
   "sha256": "b9d82db99b7860efec2aea7e9ecd5a3d610c505c70bd13dd01276dbb2adf2bba",
@@ -588,91 +678,6 @@
  "ziprecruiter": {
   "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ziprecruiter/ccb1fabdca821395.png",
   "sha256": "ccb1fabdca8213956494869e02e84d454035cd90cbe4e98bdcc87edf12b495ec",
-  "contentType": "image/png"
- },
- "rhoda-ai": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rhoda-ai.png",
-  "sha256": "28ccaeb4398ccf740d8f8762ad4611ab3cbd5a7d877e97138891e81557ba6b30",
-  "contentType": "image/png"
- },
- "hpe": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/hpe.png",
-  "sha256": "45d224112173152f9b87e9885911bd9b7e51bc96508a9e69a5c22e1571678d70",
-  "contentType": "image/png"
- },
- "smith-nephew": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/smith-nephew.png",
-  "sha256": "3f581a7611269177809168ec76dd9c6ca5c03eb526d3d109849aca64ff9b058d",
-  "contentType": "image/png"
- },
- "siemens": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/siemens.png",
-  "sha256": "b1bb0adafd5bd8233b6b76a8274a012dbc8d37086559de792fdf82681fec4e13",
-  "contentType": "image/png"
- },
- "wisdomtree": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/wisdomtree.png",
-  "sha256": "ef425e075a8175391a75f269ec30107116816d2e82cd118db00775d8a411659c",
-  "contentType": "image/png"
- },
- "illumio": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/illumio.png",
-  "sha256": "5928277865e175589cf5c4801dd3ddb7ce8d6962c101390306df0095d29b7111",
-  "contentType": "image/png"
- },
- "point72": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/point72.png",
-  "sha256": "2b34b42ee7083ed4f24e8b70b3cf369741e61e7d89e38d44b48c503ea7ce4026",
-  "contentType": "image/png"
- },
- "rothschild-co": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rothschild-co.png",
-  "sha256": "092166088b0d5f6d3a4336dbbe18a456836336860090ad1e3f93f0a6db894d3f",
-  "contentType": "image/png"
- },
- "texas-instruments": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/texas-instruments.png",
-  "sha256": "5fc9c4e62c57871c656ab628acd86c275b6a8ddc7186749be614215e49ebdebb",
-  "contentType": "image/png"
- },
- "rakuten": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rakuten.png",
-  "sha256": "01dff93438a73e691534046d7494d90068d555cacedc6604f3c987f93daf5871",
-  "contentType": "image/png"
- },
- "uber": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/uber.png",
-  "sha256": "e2c3c9c458d0a3c02eb31437b7f7ac84e5762a1a506bf7ca581a21ec9e45c58d",
-  "contentType": "image/png"
- },
- "insomniac-games": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/insomniac-games.png",
-  "sha256": "e79d7f49415f919857376c704643ef73b229f72647103b74f5676b87169f9510",
-  "contentType": "image/png"
- },
- "jmp": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/jmp.png",
-  "sha256": "3c07a82039dcedd643e31d6cf77fcd60ef1f866bcf55034f1af10cd83f31913c",
-  "contentType": "image/png"
- },
- "nba": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/nba.png",
-  "sha256": "0cea64746d6d29ccc400af795cbe6e5857e168f9c61a7bbaa55cbbfe84724493",
-  "contentType": "image/png"
- },
- "sony": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/sony.png",
-  "sha256": "026dfcd87de397755f9fb67c205f38d891b4a0d48778d5cdff21dbbba205ebb6",
-  "contentType": "image/png"
- },
- "humble-robotics": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/humble-robotics.png",
-  "sha256": "6493926720c327e2e63223f819fecfdf144276048a8c524c0f70d4334be131fe",
-  "contentType": "image/png"
- },
- "johns-hopkins-apl": {
-  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/johns-hopkins-apl.png",
-  "sha256": "b0d5cb457cb215377bba986ca5d54c37e6178794bc85772711dffef781a757a9",
   "contentType": "image/png"
  }
 }
