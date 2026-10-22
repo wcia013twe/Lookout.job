@@ -29,6 +29,9 @@ try{
  await page.getByRole('button',{name:'Cancel new profile',exact:true}).click();
  await page.getByRole('button',{name:'About me',exact:true}).click();
  assert.equal(await page.getByRole('heading',{name:'Accounts & identity',exact:true}).count(),0);
+ assert.equal(await page.getByRole('region',{name:'Work experience',exact:true}).locator('img[src="/profile-icons/work.svg"]').count(),2);
+ assert.equal(await page.getByRole('region',{name:'Education',exact:true}).locator('img[src="/profile-icons/education.svg"]').count(),1);
+ assert.equal(await page.getByRole('region',{name:'Projects & outside experience',exact:true}).locator('img[src="/profile-icons/project.svg"]').count(),1);
  assert.equal(await page.locator('section[aria-label="About me"] details').count(),0,'About me sections stay expanded');
  assert.equal(await page.getByRole('textbox',{name:'First name',exact:true}).count(),0,'Background starts read-only');
  await page.getByText('Compared cache strategies and documented reliability tradeoffs',{exact:false}).waitFor();
