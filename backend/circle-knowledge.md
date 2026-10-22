@@ -257,3 +257,17 @@ Activity goal presentation recognizes explicit completed-target wording such as
 segmented bar and percentage derived from those reported numbers. Invalid,
 missing, zero or exceeded targets produce no determinate bar; descriptive goals
 remain text. No application-count targets or completion percentages are inferred.
+
+### Personal Circle controls in My Profile
+
+My Profile → My agent → Circle sharing owns each member's standing public-link
+permissions and private source-use receipts. Its circle selector lists only current
+memberships. The browser reuses `circles.list`, `circles.read`, human-only
+`circles.policy`, `knowledge.citations` and `knowledge.retract` through the existing
+scoped request adapter. MCP equivalents remain `list_circles`, `read_circle`,
+`read_knowledge_citations` and `retract_knowledge_citation`. Agents must request
+`request_circle_human_action` for standing permission changes; they cannot call
+`circles.policy` or forge human consent. Existing Circle handoff links still lead
+to the Circle, whose settings link to `/profile/?section=agent&circle=<id>`.
+Membership, invite management and moderation stay in Circle settings. No backend
+operation, authorization check, gateway contract or release gate changed.
