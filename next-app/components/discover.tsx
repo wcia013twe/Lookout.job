@@ -3,11 +3,16 @@ import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, control, Notice, InsetBox } from "./ui";
 import RoleCard, { type Role } from "./role-card";
+import DiscoverRolePanel from "./discover-role-panel";
 import SearchSweeps from "./search-sweeps";
 import DailyDrops from "./daily-drops";
 import DayFilter from "./day-filter";
 export default function Discover() {
   const w = useWorkspace();
+  const previewOwner = `${w.accountUser?.id || "guest"}:${w.demo}:${w.demoEpoch}`;
+  const [selection, setSelection] = useState<{ role: Role; owner: string } | null>(null);
+  const preview = selection?.owner === previewOwner ? selection.role : null;
+  function setPreview(role: Role | null) { setSelection(role ? { role, owner: previewOwner } : null); }
   const [search, setSearch] = useState(""),
     [type, setType] = useState(""),
     [day, setDay] = useState("latest");
@@ -60,18 +65,19 @@ export default function Discover() {
             <span className="rounded-md bg-board-tag px-2 py-1 text-xs tabular-nums text-board-muted">{group.length}</span>
           </div>
           {group.length ? <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {group.map((role: Role) => <RoleCard key={role.id} role={role} />)}
+            {group.map((role: Role) => <RoleCard key={role.id} role={role} onPreview={setPreview} />)}
           </div> : <div className="glass-inset rounded-xl px-5 py-7">
             <p className="text-sm text-board-muted">No new {label.toLowerCase()} roles for this view.</p>
             {(search || type) && <button className="mt-3 min-h-11 text-sm font-semibold text-board-accent hover:underline" onClick={() => { setSearch(""); setType(""); }}>Clear filters</button>}
           </div>}
         </section>
       ))}
+      {preview && <DiscoverRolePanel key={preview.id} role={preview} onClose={() => setPreview(null)} />}
       <SearchSweeps />
       <details className="mt-9 border-t border-board-line pt-4 text-sm text-board-muted">
         <summary className="min-h-11">How tracking works</summary>
         <p className="max-w-prose leading-relaxed">
-          Opening a posting adds it to Applications. Update the status after
+          Previewing a job does not track it. Opening the employer posting adds it to Applications. Update the status after
           applying. Queuing creates a draft for your agent; it does not submit
           an application.
         </p>

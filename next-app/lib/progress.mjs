@@ -48,3 +48,13 @@ export function streak(days, date = new Date()) {
   }
   return count;
 }
+
+// Inspecting a role is read-only; call only when its external posting is opened.
+export function recordRoleOpened(store, roleId) {
+  recordDay(store);
+  store.update("tracker.ids", ids => [...new Set([...(ids || []), roleId])]);
+  store.update("tracker.items", items => ({
+    ...items,
+    [roleId]: { ...items?.[roleId], openedDate: items?.[roleId]?.openedDate || dayStamp(), status: items?.[roleId]?.status || "New" },
+  }));
+}

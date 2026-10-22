@@ -1,3 +1,4 @@
+import { discoverPreviewRoles } from './discover-preview-demo.mjs';
 import {defaultDailySchedule} from '../../lib/daily-schedule.mjs';
 import { profileFromPrompt, initialPrompt, updateField } from '../../lib/search-profile.mjs';
 import { createPreparationPlan } from '../../lib/preparation-model.mjs';
@@ -49,7 +50,7 @@ function baseDemoFixtures(date) {
 // fixtures remain the starting point. Feature scenarios share its memory store.
 export function demoFixtures(date) {
  const base=baseDemoFixtures(date),muse=createDemoWorkspace(date);
- const roles=[...base.roles,...muse.demo.roles];
+ const roles=[...discoverPreviewRoles(date),...base.roles,...muse.demo.roles];
  const baseApplications=Object.fromEntries(Object.entries(base.state.workflow.applications).map(([id,value])=>[id,{...value,backendId:id,backendRevision:value.revision||0}]));
  const preparationPlans={...base.state.workflow.preparationPlans,...muse.workflow.preparationPlans};
  const basePreparationRows=Object.fromEntries(Object.entries(base.state.workflow.preparationPlans).map(([id,plan])=>[id,{application_id:id,user_id:muse.demo.identity,plan,version:1,updated_at:muse.demo.createdAt}]));
