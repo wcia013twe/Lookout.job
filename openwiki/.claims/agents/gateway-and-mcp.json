@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:afe1deefcb990d7049684d78c087bda9d63d51d39d2d08fe26c3c687bbc47fcc",
+  "pageVersion": "sha256:787f0e597acdd1aa315abc20480e5e928e34cc8d22447a7771d9731c76572996",
   "claims": [
     {
       "id": "claim_449d069cafd149d6a2635968fd4856ae",
       "statement": "The hosted MCP function is a stateless protocol and tool-registry layer that forwards authenticated fixed operations to agent-gateway without holding service-role credentials or providing browser, SQL, or submission execution.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L3-L11",
-          "version": "repo-lines-v1:sha256:4c70ad93180ffc9e5a2e60d5af2f2ac95c373601ddac068b2ea8955fb44350fb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjRmM2UyMDZhYWEzZmFmNGNmZjkxOWMyMDFjNTI5MDAwMDRmNTk3NThkZGIwMGEyMjFiNjg1Y2EwNWYwNzkwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk1ODM1NDAzYzEzMTc3NjBkNGNmZGU4OThiYWVkNjI2ZGJiZTg5ZTM3NjQ4Njg1ZGQ1YjE3MGE2MmE5M2IzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjMzMzcyZDA0MTRjOGE0Y2IzYzkxYjkxYWVhYTE5YTk3M2JkYjU4MmUwZGVlMTMyNzZiZjUwYmI1ZDU3ZWUwMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyZTQ0Y2FkZDE1NmI1ZTEzMDFmNjczOWIzYTkwNTk1MTNmMjczMWUyNWE2NDI3YzQ4OTJlMjA4MDU4YjAwYiJ9"
+          "resource": "repo://mcp/README.md",
+          "version": "repo-file-v1:sha256:045567f7e50ea4b72a3877c9aab012ac902f716a457e0d836e1df41fdb1135bb"
         },
         {
-          "resource": "repo://supabase/functions/agent-mcp/index.ts#L1-L14",
-          "version": "repo-lines-v1:sha256:051718345a591b1a3137618b943c969f43a41356c7910cbcf54243c691eed7d6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMmRiOTBlNzFmNDkwY2Y1Yzc0YWFiNDZiOTY0M2RkMzQ0MmM0NDQxNGIwMjI0MGZlZDk5MGVlYjM4MzYzYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3ZjE1NzI3YTgzZTIzZWNlNzdhNDhmYmUwZGMzYWQ3ZDkyMjU5ZDBkYTFlN2E3NzkyNWJjMWUzYjI5NDVhYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/functions/agent-mcp/index.ts",
+          "version": "repo-file-v1:sha256:92fc1fca134b94dc99c164a823abf2e74a464e662165729a53857910ba9af9c2"
         }
       ]
     },
@@ -21,8 +21,8 @@
       "statement": "Human owners issue expiring, scoped agent connections through an authenticated session; the one-time opaque token cannot manage connections and must remain out of URLs, messages, job data, and logs.",
       "evidence": [
         {
-          "resource": "repo://backend/agent-contract.md#L5-L27",
-          "version": "repo-lines-v1:sha256:ed3f41cdccc92842ea108c7a53dff53950b3242bd34f392e1d5fb04f4aea8aba:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjYTc0ODVkYjEyMGNlZDE2ZDU5ZTFlY2EyNzBkNjU4ZGQ0NGJjNDE5YWY1ZTljNmMxZTcxNWIzODIwZmY2ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMWNkZGU1OTdlZjdmZjAwNTE4ZGRlYmQxMTg1YmVmZGE0MTE1YjRhNzAxNGZlMWJhYjQ2ODE4MzhjN2Q3NWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlZjkzZGExYzI0NjlkYzkwOTQ1NzE3MDc5ZWIzNGVhOTI4ZmI0YWU4YzJiMzAxYWI2MmUzZWU4MTQ2MDU0NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiZWUzOWNlM2M5OTY1ZmJiMGM3NTUyODI5MWYxNzUyNTAzZmFmNzQ1ZjI4Y2FmYTE4YTBiNjk4MzNmMDIxMDMifQ"
+          "resource": "repo://backend/agent-contract.md",
+          "version": "repo-file-v1:sha256:c1d640779f019273f8ea537499a8d3ba92cb314746c865692c7071cb937c0637"
         }
       ]
     },
@@ -31,12 +31,12 @@
       "statement": "MCP validates the credential even for discovery, exposes tools only when their scope is granted, validates arguments against the registry schema, and delegates ownership and write enforcement to the gateway.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L5-L11",
-          "version": "repo-lines-v1:sha256:ab367d785e7710ca4f1d972e18a87acbd3d5121b0948ac50e8ae9dd6ce5683c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTNmMmJkY2U3NzMxN2NiYTNkN2FjMjgzZDAyOWUyZmMwZGVlN2EyOTUyNTE0ZmM5OGZmNTIxNjhhZTg3NzI2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk1ODM1NDAzYzEzMTc3NjBkNGNmZGU4OThiYWVkNjI2ZGJiZTg5ZTM3NjQ4Njg1ZGQ1YjE3MGE2MmE5M2IzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2MzY2RjZWM2YmEyZjEwNTA4MGI3ZGQwZWQ0NWU5ZjA4M2ZjNDllMmJlYTMxZmI4ZTZmYmM0M2JkZWRlZjA5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyZTQ0Y2FkZDE1NmI1ZTEzMDFmNjczOWIzYTkwNTk1MTNmMjczMWUyNWE2NDI3YzQ4OTJlMjA4MDU4YjAwYiJ9"
+          "resource": "repo://mcp/README.md",
+          "version": "repo-file-v1:sha256:045567f7e50ea4b72a3877c9aab012ac902f716a457e0d836e1df41fdb1135bb"
         },
         {
-          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L78-L122",
-          "version": "repo-lines-v1:sha256:b5489fd534f38d1e360fc48cf3bad6485f6161a2cbc1468599c22f2feeb1e9e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1NTllMmQzYjMyZmVmYzZhYjI0YjE3ZmU3Nzk0YjY5YTUwNWZlMzllNjQ1ZmIzZmY5ODM1NDM2NTQ3MTMyMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiMWUyNWZiNzdmYjM2YjQ1OWFiOTcxN2YyYjI1NTIwZWUwOWFkZGZmMjkyNmNhNmFjNjlmMTI4OWY0YTM2NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5NGZmNDUwZTZiOTBlNDMyNzRkZWU3ZDY0MTgwMzgyZTg5MzJmOTkwMjQ1NWM0NDJhM2ViMTkxM2IxM2EzY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhZTkyMjExZmRlMTM3YjkxMmRhMTliZmY3OWNlODdkMTMyMjliNGI1NWE0NGNiN2M5NTAzMGZkZDk4YWI5ODgifQ"
+          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs",
+          "version": "repo-file-v1:sha256:682cce988347b17edefeebf81fb1f304866df60376dca4dcf7c0f6643a0e3aa1"
         }
       ]
     },
@@ -45,8 +45,8 @@
       "statement": "Connected agents use independent personal and developer version counters to reload only changed context, while bootstrap or lost memory requires both sections and failed fetches must not advance the retained cache.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L81-L116",
-          "version": "repo-lines-v1:sha256:82136f626800099a89d404d90922e2a34a639e42369af0c8da2c7176e2d2daaa:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2ZjM3MjJlYTkwMmMyNzYwY2U2MDdhNzlhNjg2MTgzMGNkNzdhNTY0OTY3ZjhlZTY5NWE0MjkwYjBkZmJiNzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0NDc4MGFkZjZlODFlNmMyM2QyMWJiYWEyNDY1NjY0ZDEwZWE5M2FjNmZlNGFhZjEyOTAwOTc3Y2MyZTUwMTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1YzE3ZjJmMmI2NTNhZTg1MjgwMGU3YmY4ZDE2Zjg0NDYzMzJiMjQyNzQ0YmM2ZDJlZGQwMDA1ZDI3NmE1YWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxYmM1ZWEzM2E0OTcwMjQwYWVmOTJiZjAxN2Y1NGQxYjVkODcyNTY1MTY1MTNjNGUwZDY4MzMxYTI5ZWE4ZmMifQ"
+          "resource": "repo://mcp/README.md",
+          "version": "repo-file-v1:sha256:045567f7e50ea4b72a3877c9aab012ac902f716a457e0d836e1df41fdb1135bb"
         }
       ]
     },
@@ -55,12 +55,12 @@
       "statement": "Agent tools preserve human and evidence boundaries: draft preparation does not approve or submit, approval reads do not mint approval, activity is not submission proof, and browser automation belongs to the separate local runner.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L41-L58",
-          "version": "repo-lines-v1:sha256:5340940435594c93edd8ff7c51101f42f7324a07e04ca0b4fd4a202174714ce7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZjFiNWE1NTQ2YmM2MWFmMjNmNDMxYzIzZWRhYmViZjJlZmJjYzZiOGZlZTJkNDMzODcwZDFmNTMxNDI4YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZTliYWM5NTllMmYwN2ExOWIzMzRiZjY4ODA4MjRiNGI5NWQ0NGUwODNlM2MyMzUxYTY2NTA3NTA1NTE4YjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NjFkNjk1YzBiMDgwNTk1ZGUwODU0ZTg1NjkwNWE3ODdmOGViZGQxMjEzZTY2NzZkZThhNjk5YjlmOGUyZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiZTQ1NTg5MDI5OGIxN2NmYWI0N2JkMjk5MDNjZjAwYTVkMDBjYmVlODc5ZGQ2OTk1MzlkNjhiZTNjNGEyZjMifQ"
+          "resource": "repo://mcp/README.md",
+          "version": "repo-file-v1:sha256:045567f7e50ea4b72a3877c9aab012ac902f716a457e0d836e1df41fdb1135bb"
         },
         {
-          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L34-L45",
-          "version": "repo-lines-v1:sha256:2e8a4e65720c4300718c435fdb3ce7611aa3c456787af4cf2f22f1b4f99d43a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5NjUyMDc0NDllNmFlNzUyMmI1NDRkZDhiZWQ0Nzk3NmE2YjhiMWFjNmMzMzJmZTM4ZmMyZGViOWQxYWM1YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MWVhZTgyZmZlNzc3NGJiMWQ3NWQxZjIzZjc5NzBhYWJkNmIyMjcwMGNlNmFmOWY1YTc2YTRmNTZiYTYyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwMjZlODgyMmUyMTllYTZkNmUxNzJiYWJhMWM2NjBiNGY0YmM5NmU4ZDZmNDVlMDA5MjIwNjlhMDIxNGQ3ZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlN2Y0NGUxOGEwYmZhZGE4MjUyN2VlNGUxYTliYjg3N2Q2MzliYTYyN2U0ZTk3NjdmMjJjYmMzNDNmYjNlY2UifQ"
+          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs",
+          "version": "repo-file-v1:sha256:682cce988347b17edefeebf81fb1f304866df60376dca4dcf7c0f6643a0e3aa1"
         }
       ]
     },
@@ -69,18 +69,36 @@
       "statement": "Gateway and MCP behavior is verified by focused protocol and contract tests plus transactional SQL checks, while hosted smoke tests require a private token and avoid printing private data.",
       "evidence": [
         {
-          "resource": "repo://backend/agent-contract.md#L75-L81",
-          "version": "repo-lines-v1:sha256:033e793f00f0b89234c6389870cdfaa1204e654014054aee514bb4bb7ae0f432:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2Y1ZDFkMjY3MzQ3MTBmNDhhYzZiZmUzMjFkZWU3ODQ3YTY2NmZlMmZiOGExN2Q0NzQwN2E5MDJiMWY0ZTRhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFkNzE0MDZjNTU3NzE5OTFlMWI1YzUxYWY3YjVhYjlkZWJmMTlmOWM2OGViNzFiOTg0ODkyODhmOTIxZmE1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjhlOGE2YjQwODFmNTA2M2M4ZDI2MmI2OWQ4NzJlMzY2MDM4YWExNGFjZjdkMDFkOGNhNjMwMmNlOThmNDNkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWQ0MzQ3MDlkOTcxNGM2MGJkZTg2ZDJmM2FjZDVkNTYwMzg5YWE1Y2M3MmE3YTk5MDlmZWJiNDgxMDY3OTJjMSJ9"
+          "resource": "repo://backend/agent-contract.md",
+          "version": "repo-file-v1:sha256:c1d640779f019273f8ea537499a8d3ba92cb314746c865692c7071cb937c0637"
         },
         {
-          "resource": "repo://mcp/README.md#L60-L76",
-          "version": "repo-lines-v1:sha256:d04e6eae88b0eeca4e2829ac29947055d3bbc24ae5c22878e394e2ca29c11501:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYjUzZWVlMzJhNWM0NWU1NDRmZjlkNDdiYWY2NmIyM2E4MjdmMzQ3NzRjYzY5ODhkYWZmODM5Y2I4ZjljYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiZjI3ZTBjOTlkYWIzZjRlMTlkYjY3MDFmMDIzN2U2MTIyMWNiMjhjMDdjMWQzN2JhMDVjOGUwZjZhYTcxOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkwMGI1MjI5Njg4ZDBlOTZjNGFjNDM3ZGU5ZWIwYTc0MjBlMzVmOTgzYTM1ZWVjZTllNmJmYmU4NTNlYTc2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzOTEyNWMyZWZhNTEwMTAyNTE3OGI4YzQ2OGQ4YzVkZTM4ODExMDUxYTY2ODYxYTY3MzU5NzQ0NGM5ZjYwODUifQ"
+          "resource": "repo://mcp/README.md",
+          "version": "repo-file-v1:sha256:045567f7e50ea4b72a3877c9aab012ac902f716a457e0d836e1df41fdb1135bb"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e294216127d412780b2ea96aa76d98c",
+      "statement": "Company workspace tools share website owner, revision, and record validation, while cross-Circle knowledge search is scoped to the viewer's current memberships and published content.",
+      "evidence": [
+        {
+          "resource": "repo://backend/agent-contract.md",
+          "version": "repo-file-v1:sha256:c1d640779f019273f8ea537499a8d3ba92cb314746c865692c7071cb937c0637"
+        },
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
+        },
+        {
+          "resource": "repo://mcp/README.md",
+          "version": "repo-file-v1:sha256:045567f7e50ea4b72a3877c9aab012ac902f716a457e0d836e1df41fdb1135bb"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-15T07:09:51.577Z"
+    "at": "2026-10-22T07:08:18.987Z"
   }
 }

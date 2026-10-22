@@ -3,9 +3,6 @@ type: workflow
 title: Application Preparation and Submission Safety
 description: The guarded path from a revisioned application draft to one browser submission attempt, including authorization, duplicate prevention, confirmation evidence, and human recovery.
 tags: [applications, approval, runner, submission, safety]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-15T07:09:51.577Z
 sources:
   - id: openwiki-source-d1a22cc381bbd73a73205d18
     resource: repo://runner/README.md
@@ -14,6 +11,9 @@ sources:
   - id: openwiki-source-7bb9b00c83ad9bf024ec6b07
     resource: repo://supabase/functions/agent-gateway/submission-authorization.mjs
 generated: { by: "codex", at: "2026-10-15T07:09:51.577Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-22T07:08:18.987Z
 ---
 
 # Application Preparation and Submission Safety

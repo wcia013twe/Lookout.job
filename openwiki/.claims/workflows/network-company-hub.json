@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:ee0c0bcc3a3ca91edc3b1adcc84cc55a19dc1d993d2779e66e53e4d3a1d00a55",
+  "claims": [
+    {
+      "id": "claim_6b57f478508a40d0ba7f112320c3961e",
+      "statement": "A maintainer-owned company registry resolves only unambiguous explicit names and aliases, while owner-scoped company workspaces retain text target IDs, private research, links, archive state and revisions.",
+      "evidence": [
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261022060633_durable_company_hub.sql",
+          "version": "repo-file-v1:sha256:ef16780c95c6844c859568e7a925f443b1a2b26e65ab0aa940b060dbd4e82b9d"
+        }
+      ]
+    },
+    {
+      "id": "claim_dab9bfbd6605417ca40086ad43bea291",
+      "statement": "The company migration retains legacy target data and notes as evidence, while browser migration keeps guest and owner-local data separate and preserves dirty revisions and conflicts.",
+      "evidence": [
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
+        },
+        {
+          "resource": "repo://lib/company-sync.mjs",
+          "version": "repo-file-v1:sha256:e943421dc4c179adfc0a2aee1a1f55c09632d6987abe0837f59d8a10aad00d41"
+        },
+        {
+          "resource": "repo://tests/company-hub.test.mjs",
+          "version": "repo-file-v1:sha256:60bb55a2a4315473479b518cb4fd25c3c0a292a39f8397dbe97e972f5c4f2ead"
+        }
+      ]
+    },
+    {
+      "id": "claim_c36f0d5e6a7b4548b40c58cb6990b7ee",
+      "statement": "Website and MCP company saves share private owner and expected-revision validation, and legacy contact writes are routed or rejected rather than creating a second active company record.",
+      "evidence": [
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261022060633_durable_company_hub.sql",
+          "version": "repo-file-v1:sha256:ef16780c95c6844c859568e7a925f443b1a2b26e65ab0aa940b060dbd4e82b9d"
+        }
+      ]
+    },
+    {
+      "id": "claim_5fe1058f8e264c289188084636218098",
+      "statement": "Network shows permitted current-membership Circle sources in the Overview, while the Stripe takeaways are fictional authored demo content and real accounts have no generated summary.",
+      "evidence": [
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
+        },
+        {
+          "resource": "repo://next-app/components/company-intelligence.tsx",
+          "version": "repo-file-v1:sha256:097f2ffd2f8cb18299399e8d19f6d205a7b735a1a5d64053946ce0cbeb3c7354"
+        },
+        {
+          "resource": "repo://next-app/components/network-targets.tsx",
+          "version": "repo-file-v1:sha256:3467fa90894a991af63fadff6d83142e0503d6273b182775714374a5a787f05c"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-22T07:08:18.987Z"
+  }
+}

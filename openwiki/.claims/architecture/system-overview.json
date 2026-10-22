@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:69d5f9e66db5c97b33106e85cd0dd27793682cc7a4138a1987efd231552c1071",
+  "pageVersion": "sha256:b88c9dd8a2ae002c9622ab3e38b15132474b1bf291a49452e743df06122b45b0",
   "claims": [
     {
       "id": "claim_ab9d870ed6574dfeb59605c10877bbdf",
       "statement": "The production UI is a Next.js App Router/React/Tailwind static export deployed from out/ to GitHub Pages, with private responses and resume links excluded from generated public and offline assets.",
       "evidence": [
         {
-          "resource": "repo://next-app/README.md#L5-L19",
-          "version": "repo-lines-v1:sha256:ae3fb2f42498b9ba673b2e76b112b83e8d7c002e8aceedcb62833cba2175adc7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0ZDY1ZjkwMjA2ZTBkNDE2M2FiMDQ1NTFjMWJmMDNmMGJkNjkxYjNiYmRmMzAxMWYzZmM3ZjRjYWU2NDViNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMjMwYTdlN2UyNzFkNjgwYzBjZDBkZmY1MDU0MDI1YjZjMTg4ZmI3M2RhNzQzZDZiMTc2YTg4MzAzOWE4ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNmNiYWU4YjFjODA5ZDlmYTc3ZDEyNTA5Y2U4MzlhMzg1OTBkNzg0MzU0ZmZjODVmYTE2Y2RhYTBiMWYwOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmNWRjMDU1YTAzMTZhMWUyNGJkNGE3MWM0MjIzN2U2ZjQzYjkyNjM0YTRjYTA1MDhhODQ0Njk1ZjA4MzdjN2QifQ"
+          "resource": "repo://next-app/README.md",
+          "version": "repo-file-v1:sha256:7cb37a5e8523533d024dbdd8d89ffd2535a91fdacc15bcf3e5b96903d3379c09"
         },
         {
-          "resource": "repo://next-app/next.config.mjs#L1-L3",
-          "version": "repo-lines-v1:sha256:db3b75da209c08d83394cdced4980ee92c17ee2b3a682a0ab332530ecd76a697:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ5MmUwM2IwNmJjMjVjODQ3YmVkZTE5NmZmYjFlOGEyMzM5NzA1NGIwZmVlYWQ2YTgxNjE0MzRhMTFiNWJkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFjOGM5NWJiMDcxNzQxMjAyZjA3ODk4YzMyYWI2MmYwZThhOGFhZjhlYzVlZGRkYWEwOGE4ZjI3MDM1OTkwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://next-app/next.config.mjs",
+          "version": "repo-file-v1:sha256:6d9c97d36c7c7da9f035e223ce8c6334c7c7f70a81f52e30b2595bcef151a430"
         }
       ]
     },
@@ -21,12 +21,8 @@
       "statement": "React uses the repository-level store and cloud controller, while shared root domain modules remain active cross-runtime dependencies and the Playwright runner stays outside the frontend bundle.",
       "evidence": [
         {
-          "resource": "repo://next-app/README.md#L15-L17",
-          "version": "repo-lines-v1:sha256:5b589930b31fec5a07d5270f3dd6b4d8de3b9964a49d2ce952bf36b864798b6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTY5MmYwMWY3ZjNmNTk3N2IzZjQ0NjE2YzJmYjE1MGI3MTdmYTI3ZTkzNGRhODVhYTQwMGZkZmI4YzY3ZmFlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDM4YTNlNGE3OThiNTBkNjFlYWVlNTI4NzU1YWJmZGZlOTBlZTMzZGU1NTVmNDg5NDI4MDQ1NWUxZGYyMmYxZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmZjMTI2ZGJkNzE5Y2MzZGU4NjEzOWU0NWEyNGJhMGNkZDlkMTEyZGY5ZGY5N2U0NzBiNjRhZDUxMTE1YWE0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmEwY2FjMTk0N2VjNjE1ZWIwYmQxYTEwODBlMmM1MGIxNTcwNmY3NGIwMjA1YTgxN2RlYmMzNmM0N2FjMTBmNSJ9"
-        },
-        {
-          "resource": "repo://next-app/README.md#L35-L46",
-          "version": "repo-lines-v1:sha256:7681f7885a1dc09d8073040fe33453d95ebc273ff424b2a2f5aa6d19e1a60d62:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1MTkyNDZmMGM5MDBkZTJjZmY3Mjk0NzU0NjZhN2M1NWViNDlmOTFiNTExNGE4NmNjYWFhYzlmOTA5ODc1NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3ODA4ZTkzMjY0MTAxODVkNjM2N2JiY2Q5NjEzNjk1YjJlMTdlZTI0OWM4NGNkOGQ3MzE4OGQ3MzczYmFjMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhNDUzMzBiMTJlMjIwZmVkMzZjMGE4ZjBiN2I0M2Y5MjIyZWIyZDFkYWJiNGI0ZGJkYzY4MTk1MzE2MDNiMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3OGNmNGEyMGEzZmM0OWM2OGE4OWNhNGNhOGFhNDU4MGY2NDcxYmZjZTMyMjg1OGQwMjJmYzgxNGJkMDAzZGUifQ"
+          "resource": "repo://next-app/README.md",
+          "version": "repo-file-v1:sha256:7cb37a5e8523533d024dbdd8d89ffd2535a91fdacc15bcf3e5b96903d3379c09"
         }
       ]
     },
@@ -35,16 +31,8 @@
       "statement": "Account synchronization serializes browser writes, retains unsynced local changes on failure, validates owned batch links, and falls back to public jobs when a private batch is unavailable.",
       "evidence": [
         {
-          "resource": "repo://lib/cloud.mjs#L1-L4",
-          "version": "repo-lines-v1:sha256:672baa42f96112d215026a375f098dcf25cfad645b8b12cfccb92953bb513453:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MzZDMxZmZjMWMxMTNjNDYwMDRkZmVlNzhiNmJiYjkzMjliNjBlZTkzNTFlOTcxMTc2MWMxM2RmMDQxZWZmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZiYTFlZWE0NzM1MmU5ZDhmNTkwMzA1MTZmMGVlZGNlNGY4YjNlNzU2ZmE4ZTFmNGQxYzQ3NzAxZGM2ZTQyZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjdjYWExMGUyODMyODRkZWJjZWIwOGMzZDdkYjAzMGFiYjZkMjRlNzk3MzY1MDM4YmY2MWExZTViNmQ4Yjc3ZSJ9"
-        },
-        {
-          "resource": "repo://lib/cloud.mjs#L192-L211",
-          "version": "repo-lines-v1:sha256:3352bc80534fdc3987b9ddbb4649795a5ec5f8d95288b32a843a5df190f8732e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5M2ZlYTM4ZDg5N2YwZTNiZTNkYTBjNmM3N2EyOTg4N2M3ZjdhYWY4YzUwYTZkMGU0MmMyYzRhNzQ4MjVmYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ODBlZDg2ZjJhZDdmMzhhMzA1YzNkMThmYzYzMGFhNDM1MDBjNTJlMGY1ZDViY2FkYTg5YTg4N2ZlOTc5MjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YTFkMDc1M2I2MzFlNTdhNTY5N2EwOTExMzI4ZGYxZjJiYzdhMzA2ZWZmZWExNThjODZmMjE4MzY5N2Q5NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3MGYwOTNlZGVlNTcyYjQwMDhiNWU5NGEzMjIxMzMwNTgyN2U2MjA4OGM5ZTIyMmI1ZWNiNWEzZjI3MDQzOTAifQ"
-        },
-        {
-          "resource": "repo://lib/cloud.mjs#L35-L88",
-          "version": "repo-lines-v1:sha256:90fd2e3bcbb02611561a146f040aa01b774c26a522053343183bf94636a46e18:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYWUyYThkODc5NjI0MWVkZmNiNzI2MGU5NTkyZTA1NzVhZjNmOGMzOWQ4NjJmMzUzMjZkZjBmMGI2YmYwOTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNTM5NmE2N2RhZDE4ZmJmMGYyNDA3YzQ1M2FjYjUyZjAwYmZiOGY2OTE4Yzk4MDQ0ODY0MTlkZDAyYTBhMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0MjkzN2FiY2RhMjg3MmRkOGNiYTNhMTlkMTUwZTc4NTEzNGIzZDMwNTU4NmRjNGQyNTU0YjM3YzQxNGZjNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzk0NjM3MmU5NWFmOGM2M2M2NjE1YTYxNmYyYTVhZmQ3N2M5MzdkOTk2NjA2YmEzZTE3ZDI4NmJlM2Y0OTQifQ"
+          "resource": "repo://lib/cloud.mjs",
+          "version": "repo-file-v1:sha256:27428411e0668acbf8e20c0c2550b662b5ddfee42679e67b48bbdf8e4e7b4be5"
         }
       ]
     },
@@ -53,12 +41,8 @@
       "statement": "The Supabase agent gateway is the privileged boundary that distinguishes human Supabase sessions from scoped opaque agent credentials and applies bounded parsing, database dispatch, revision checks, and short-lived resume signing.",
       "evidence": [
         {
-          "resource": "repo://supabase/functions/agent-gateway/index.ts#L11-L59",
-          "version": "repo-lines-v1:sha256:756a51ba2169fa5141539791d568479b607addb07882e44b61ebde85e7d79da3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NTJiM2UxOWU2NzhjNzAxYzM1YTMzNDgxNWE0OTdmMzVjNWRkZTA0OTY5ZjgzZmY3N2RmYmY2MTYyMjYzMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhM2ZmOGE0MWM1OTBiOWVlODlmOWJkZWY4ZmVhZGQxMTg3MWU1NWZkMmUzOGQxOTM1MjBkZTQ1MTZlZWQxNzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmODk3OTEyYzk3NDQwNmZlMWZlODYyNDNlY2M2YzU1MTQ5YjM0NmE2ODkxZjBmZTUwNGU1ZmE3ZTVkMGI1MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0OTZjMGIxYjFlZTFmMTk0OTgxOTRjMjY0NDJhM2VmOTAzMzllZmEyNzM5MGI1ZTczZTc5NGE1ZjNmZGEwOGYifQ"
-        },
-        {
-          "resource": "repo://supabase/functions/agent-gateway/index.ts#L82-L135",
-          "version": "repo-lines-v1:sha256:334bfef3f9f0b35f30ac6761ecb4cc436a08b1c12caf945e9d5dbb0f50508fb2:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3OTAzNTliZTIxOTk4MTIyZTQxNTM1OGIyYmExZGIwZjA2MWEyNDA0Y2U0MjcyODQ0N2E5Nzk5MDJkZTM5NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3ZmM4NjdjMGQ2MzljMzIyZjNhNDRkYjIyY2RiOWY5Y2RjZDU3NjJlYzIwM2E1YzdlNjBlY2NlN2NkZDA2ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1Y2VlNzVhNGJlYWIyNjFjYzkxYjU4ODNlOWNlZTE0ODJhNGVhYWJkYjBkZGYzYzY1ZTJlZDE3Nzg2Zjc1M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlMjcwY2NlYjQ2YjJmMjAyZjMwODI1NzRiYjJhMzNjMTVjYTc2YTk4NzhhYzRhYTU5ZDg3OGJlMDk3N2ZhYTYifQ"
+          "resource": "repo://supabase/functions/agent-gateway/index.ts",
+          "version": "repo-file-v1:sha256:f4b1f10c2d01f9d7271179cad8b6cf2f425fb9e98c73dfa3f6a980d5815060fb"
         }
       ]
     },
@@ -67,22 +51,28 @@
       "statement": "The local runner forwards hosted data operations and adds only narrow form/resume/submission tools on one dedicated Playwright page, with per-call scope checks and no general browser or shell capability.",
       "evidence": [
         {
-          "resource": "repo://runner/runtime.mjs#L10-L18",
-          "version": "repo-lines-v1:sha256:14016a79aa46837536cf05ce82c56d4a76eb7597eed9b004ae4c4adfd38ddb5d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQyZjBiNmUxODJhN2VkMGM1ODY2NTE2OTE5YzcxMGM0NjI1ZGFiOTYyODQxYTZhODc0NWE4Zjk5MDQ3ZmNkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDQ2Zjc2NDFiMzA4ZWY4ZDNhMWM1NzgzZWNiNTIxNWYwNzViMzBkMjFmMmJlNjgwMmViOTdjM2NiMTg1NmIyMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzFmYWE3ZTkwMDBmY2UwZmNlZDNkM2ViM2NhZWVlMTQ0NWE0Y2I4ZGVkYWE3Zjg4ODA1MGRhZmY5OTRhYTk5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjYyODI2ODdjZjQwMDVjODc3YmUyOTNkMDI3ODE2OGEzNzdjODhhZGQzMDljZjk3NWIyYWVmNzY4Y2RhYWUyYSJ9"
+          "resource": "repo://runner/runtime.mjs",
+          "version": "repo-file-v1:sha256:f3cf820d96768f49b0c6c2ddb48ddedf75447fe160e13b1276cb2422b85cf658"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8887259c45d47e1985d4e42399b5c45",
+      "statement": "Network persists owner-scoped company workspaces separately from shared company identity, contacts, applications, and Circle revisions; its Circle view reads permitted current-membership sources.",
+      "evidence": [
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
         },
         {
-          "resource": "repo://runner/runtime.mjs#L28-L65",
-          "version": "repo-lines-v1:sha256:890d956b261287bea35cb2dd97821437e8d25dd193bf222b1e6cab97a01c5c4b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljN2Q0NTlkZDExNTI0MzBhZWNiYWZkN2UwNTBmYjFhYzk1NmNhY2ZiYmY3NTE1ZmEwODdiZTgzODc5NmY2MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZDUwYmQzNGI3NWM4NmYwNDVhMzYxYzgwMTY0OGMxYzIxNGY4NDJhNDU1YTNhNWRmM2E2NzI0NTA0OTQ2OGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1MzUzMjQzYWNhYWM4MDMzYzRjNWQ4ZDVlZjYxODMxNzFlNTU4MTAyOTcyZTg1N2UzNWE4ZmYxMmRjZWRmMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2OWY0NmZiMDE3NjYwYjM2ZGY4ODI5OWI4OTI3NDg5OWE5Y2FhYTcwM2Q5ZDAzZWM5NWNlNTAxMjk3NjUwNjEifQ"
-        },
-        {
-          "resource": "repo://runner/runtime.mjs#L68-L81",
-          "version": "repo-lines-v1:sha256:29d5f14451ba2825b82d4848d3aa4e1de549130a4ea028f935b324743fbbfe1a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkODg3MDNlN2U4MmZmOTQwZjY3MGQ0NDgzMWY4NTAwYTM2NzE4YWE2NGU4YTVkM2E4ZjQyNmE4OTI1YWI2NWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzZmI5M2VjY2ZhYzExNmZjN2Q4OGQ3OTk1ZGRkOTJiOTdiMmEyZDQ5YjMxZDM5NmU2ZWEyYjFhZmFlOGQ4MGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkMGZlZGM0ODA2ZGNlN2I2ZmZhMWVhZGUxYmZiYmY4ZWU1YjU5YTBiYzg5NDA5YjI4YWMwMDAwYjYwODQ5ODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://supabase/migrations/20261022060633_durable_company_hub.sql",
+          "version": "repo-file-v1:sha256:ef16780c95c6844c859568e7a925f443b1a2b26e65ab0aa940b060dbd4e82b9d"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-15T07:09:51.577Z"
+    "at": "2026-10-22T07:08:18.987Z"
   }
 }

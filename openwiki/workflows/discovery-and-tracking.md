@@ -3,12 +3,13 @@ type: workflow
 title: Discovery and Application Tracking
 description: How public catalog roles move through Discover, browser tracking, owned agent batches, private application records, and evidence-aware timelines.
 tags: [discovery, catalog, tracking, applications, timeline]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-15T07:09:51.577Z
 sources:
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
+  - id: openwiki-source-5bd02f3d5dbed48e36fcb5ab
+    resource: repo://backend/agent-contract.md
+  - id: openwiki-source-bbf1af92c885d4090c46fedd
+    resource: repo://docs/private-network.md
   - id: openwiki-source-d15addbecb7d058f078b8413
     resource: repo://lib/application-timeline.mjs
   - id: openwiki-source-76afc9721711ec0c4fade891
@@ -19,7 +20,10 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-1e0988be4eaa8a50e225c41d
     resource: repo://scripts/validate-data.mjs
-generated: { by: "codex", at: "2026-10-15T07:09:51.577Z" }
+generated: { by: "codex", at: "2026-10-22T07:08:18.987Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-22T07:08:18.987Z
 ---
 
 # Discovery and Application Tracking
@@ -36,7 +40,7 @@ Discover selects the latest catalog date by default, excludes IDs already opened
 
 Opening an application link adds the role ID to the client-side tracker and removes it from the latest Discover view. It does not submit, approve, or prove an application. Queuing a role creates preparation state for the agent; it also does not submit.
 
-Applications merges tracker IDs with private workflow application IDs. When both exist, private workflow fields take precedence; otherwise the tracker status starts at `New`. The compact list exposes search, full-time/internship filters and counters, active versus rejected/withdrawn views, and hiring-stage filters. A user updates the status after applying or as the process changes.
+Applications merges tracker IDs with private workflow application IDs. When both exist, private workflow fields take precedence; otherwise the tracker status starts at `New`. The compact list exposes search, full-time/internship filters and counters, **Active**, **Saved jobs**, and **Closed** views, plus hiring-stage filters. A user updates the status after applying or as the process changes.
 
 ## Private batches and cloud applications
 
@@ -50,4 +54,4 @@ The timeline normalizes dated milestones and durable activity without manufactur
 
 A status or milestone is not submission evidence. The timeline marks observed confirmation only when the application's receipt passes the confirmation validator and matches the application URL. Otherwise a submitted status or user-reported activity remains a tracking claim. Scheduled interviews are also distinct from completed interviews, and terminal outcomes prevent callback prioritization.
 
-See [System Architecture](../architecture/system-overview.md) and [Submission Safety](../agents/submission-safety.md).
+Network can link an owned application to a company workspace without taking over the application's status or submission evidence. See [Network Company Hub](network-company-hub.md), [System Architecture](../architecture/system-overview.md), and [Submission Safety](../agents/submission-safety.md).

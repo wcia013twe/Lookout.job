@@ -3,9 +3,6 @@ type: operations
 title: Testing, Data Validation, and Feature Delivery
 description: The repository's validation layers and isolated feature workflow from a fresh checkout through local landing, with optional publication and production boundaries.
 tags: [testing, delivery, git, validation, deployment]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-15T07:09:51.577Z
 sources:
   - id: openwiki-source-daf31e1da3487fbfbe26e703
     resource: repo://.github/INTEGRATION.md
@@ -17,9 +14,10 @@ sources:
     resource: repo://scripts/feature-delivery.mjs
   - id: openwiki-source-1e0988be4eaa8a50e225c41d
     resource: repo://scripts/validate-data.mjs
-  - id: openwiki-source-97b055383ec9bb893da69323
-    resource: repo://tests/feature-delivery.test.mjs
 generated: { by: "codex", at: "2026-10-15T07:09:51.577Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-22T07:08:18.987Z
 ---
 
 # Testing, Data Validation, and Feature Delivery

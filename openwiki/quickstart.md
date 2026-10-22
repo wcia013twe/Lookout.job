@@ -3,21 +3,25 @@ type: guide
 title: Quickstart and Task Routing
 description: A concise contributor entry point for running Job Signal Board locally, choosing the correct subsystem, validating changes, and delivering them safely.
 tags: [quickstart, contributors, development, testing]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-15T07:09:51.577Z
 sources:
   - id: openwiki-source-daf31e1da3487fbfbe26e703
     resource: repo://.github/INTEGRATION.md
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
+  - id: openwiki-source-81c5adab9ce20a401e545d9a
+    resource: repo://backend/circle-knowledge.md
+  - id: openwiki-source-bbf1af92c885d4090c46fedd
+    resource: repo://docs/private-network.md
   - id: openwiki-source-dc9ae5ef6910469df9693341
     resource: repo://next-app/README.md
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "codex", at: "2026-10-15T07:09:51.577Z" }
+generated: { by: "codex", at: "2026-10-22T07:08:18.987Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-22T07:08:18.987Z
 ---
 
 # Quickstart and Task Routing
@@ -53,6 +57,8 @@ Use `npm run test:db` only for focused database debugging. Real Google sign-in, 
 
 - **Understand runtime and ownership boundaries:** read [System Architecture](architecture/system-overview.md). It explains the static client, shared domain modules, cloud controller, Supabase services, agent adapters, and runner.
 - **Change catalog discovery or the tracker:** read [Discovery and Application Tracking](workflows/discovery-and-tracking.md). Update `data/jobs.json` before catalog UI, preserve statuses, and remember that opening or queueing is not applying.
+- **Change company research, contacts, or Network:** read [Network Company Hub](workflows/network-company-hub.md). It separates shared company identity from private workspaces and keeps application/contact ownership intact.
+- **Change Circle contributions or company intelligence:** read [Circle Knowledge and Sharing](workflows/circle-knowledge.md). Published revisions, membership, review and source context govern what Network can show.
 - **Add or change an agent-facing action:** read [Agent Gateway and MCP Contract](agents/gateway-and-mcp.md). The website and MCP must share backend ownership, validation, scopes, and versions; do not add generic database tools.
 - **Touch preparation, approval, or execution:** read [Application Preparation and Submission Safety](agents/submission-safety.md). Human approval, automatic policy authorization, browser execution, user-reported progress, and observed confirmation are distinct.
 - **Validate, commit, land, or publish:** read [Testing, Data Validation, and Feature Delivery](operations/testing-and-delivery.md). Routine completion lands locally; a PR is only for requested review, protected CI, or production publication.

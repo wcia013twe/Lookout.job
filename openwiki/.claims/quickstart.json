@@ -1,22 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:363f4d365038699830a368e42d88c18cc61c84cda67f0f19b7827145fd48c062",
+  "pageVersion": "sha256:7b3f6161e4a31c40d913b909f0a39f9827d17bd9b3374d2cf364305a3800fbae",
   "claims": [
     {
       "id": "claim_938f13e673ab4316b7809307b2decce5",
       "statement": "Job Signal Board combines a public static Next.js/React/Tailwind catalog with Supabase-owned identity and private state plus a separate local browser runner.",
       "evidence": [
         {
-          "resource": "repo://README.md#L1-L3",
-          "version": "repo-lines-v1:sha256:194213a68407c76af74ec0eaf5c87a0c1f142b910f7e2a900cd49e16a9b96d35:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGI1MzNhMWYwZDkxZDIxM2U5NzcyYTI2NTRhZWUxNDEzZTZlYjg5MDlhMTEwN2U2NWU0MjZkYTlmMDNlOTRhMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWI5NTRlMzUwM2FmY2RmNDFiNDg0OTRlZjE1NDZiYmNmZmI5ZmQ0NWFkYmYyOTdmNDc3ZjNiNGUzZTU5ZjFjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg0M2E2NTFhZTNhZDZjZmI0ODU2M2Y1OGM3MDk4NzQzMmNmM2NhNmUzZmMwZmM5M2NlN2YxMWNkNDBlZWI5YSJ9"
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:44a233265bbf9dd79761ef962e4c3d756f3421903ee7f37693b92e617be5f175"
         },
         {
-          "resource": "repo://next-app/README.md#L45-L50",
-          "version": "repo-lines-v1:sha256:35e55fbea631ccdcfd0b65e87cd06979bb7e39b6d619237c02452aca8ccd13c8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU0NjhhNWY4YmUyYzJkNzU3YmE5NTY3YjQ1N2NjMGRiOTA5MDk0NTQxMzIyZDdiMjc0MTI2NzZmZDBhMGM2NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODJmOGVhOTUzMzE1NGFiODgwYmI4MjNjZjgzYzcxMTJjMDRjYTllMTI1M2Y5MmYwM2UxNThiM2QxOTk4MjkyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjUwMWExODlmMzkwNDMyNmY0MGRhZGI2ZjUyOTkwZTVhMjAzMDk1ODc3MTdlZmQ4YjA3OTBjMGU3MDUzN2ZiOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTYxY2UxNzlkMDU2MDdlMmEyMTFhMTI1NjM5YTQyMGU0M2JkNmI3YzdkNDRhMjFiYWM5ZTc0ZWU0MDAyOWIzMSJ9"
-        },
-        {
-          "resource": "repo://next-app/README.md#L5-L19",
-          "version": "repo-lines-v1:sha256:ae3fb2f42498b9ba673b2e76b112b83e8d7c002e8aceedcb62833cba2175adc7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0ZDY1ZjkwMjA2ZTBkNDE2M2FiMDQ1NTFjMWJmMDNmMGJkNjkxYjNiYmRmMzAxMWYzZmM3ZjRjYWU2NDViNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMjMwYTdlN2UyNzFkNjgwYzBjZDBkZmY1MDU0MDI1YjZjMTg4ZmI3M2RhNzQzZDZiMTc2YTg4MzAzOWE4ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNmNiYWU4YjFjODA5ZDlmYTc3ZDEyNTA5Y2U4MzlhMzg1OTBkNzg0MzU0ZmZjODVmYTE2Y2RhYTBiMWYwOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmNWRjMDU1YTAzMTZhMWUyNGJkNGE3MWM0MjIzN2U2ZjQzYjkyNjM0YTRjYTA1MDhhODQ0Njk1ZjA4MzdjN2QifQ"
+          "resource": "repo://next-app/README.md",
+          "version": "repo-file-v1:sha256:7cb37a5e8523533d024dbdd8d89ffd2535a91fdacc15bcf3e5b96903d3379c09"
         }
       ]
     },
@@ -25,12 +21,12 @@
       "statement": "All writing tasks start from shared local main in a fresh isolated codex/ checkout, install locked root and Next.js dependencies there, and maintain a generated task-specific change note.",
       "evidence": [
         {
-          "resource": "repo://.github/INTEGRATION.md#L16-L42",
-          "version": "repo-lines-v1:sha256:e098c2a03dc8f9d71a5b749210244079cb0b53e424de2b95f36d7c55d0d4943e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzN2Q4YmQyZjAxZjBkNDllMTYwOThlZGExNTJjZTgyYmY4ZjcxODE2ZmMzYzhhNmUyMGNhNGJlZTM5OGMxNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMWZiYWM0NzRlNzljZDJiZTg3YmYyMDA0OWRkZTgzMzQ0OGRlMTc0MThiMDM2ZGJhM2QxYmNhMjQwZmVjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMGM2MGYxYjA1NDc5NTMzZmM4MGViZTk3N2ZkOTExOGJjNjZlYWE2NjU0YjM1ODNlMGI3NjVhMDgwNzgxNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhZDg5ZjQwYmM5NWFlYmU3YjBmOGM2ZGM0ZGY3ZTllMDk5NGM3ZTFlZDA4ZTlmMGRlZTRlYjA4NDBkZTRjOWUifQ"
+          "resource": "repo://.github/INTEGRATION.md",
+          "version": "repo-file-v1:sha256:f3996ae6b56ce4c127f03563af1a20de1292aeed34008d29c74b447daf668b94"
         },
         {
-          "resource": "repo://AGENTS.md#L23-L34",
-          "version": "repo-lines-v1:sha256:4d0337b17e7726162d0ae52aecd630f5304587d14c1a56306f28dbde01d66571:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjMzIyZTk2YzNiMjFlYzEyYjMzYzNjNDg3YWI4ZGZlODFlMTlkYTQxYmNmYmZiNDBiMDk1MWZiYmYzMzAzY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMmZjMjIyNjFmZGRhZmUxMDNiOWI4YWQ2ZWNmYjdlZDRkNDE1M2U5ZjgwNjRjNDE0ZGJiMGZhZDdjZjMzZmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYWI0YjdhZWU3MjYzZGZkMjBjNjk5M2RjZWZlYzkxMTE1N2EzMDNjZWYwMDY3ZDE3NWM2ZDJhMTgzOGMyOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhMzJhZDgwYWQ0YTJlZGFmMTUwZWMwZTk4Zjk0M2VkMWY2NjI4ODI2ZmViMzE1NzhmZTY0ZDFjNjhmM2IyNWIifQ"
+          "resource": "repo://AGENTS.md",
+          "version": "repo-file-v1:sha256:dcc1edd8bb2c01af9c723de70a66254bb89628ee90cf1f59103014a3d13c4490"
         }
       ]
     },
@@ -39,12 +35,8 @@
       "statement": "The root scripts provide the standard test, catalog validation, development, static build, database-debugging, and feature delivery commands.",
       "evidence": [
         {
-          "resource": "repo://README.md#L85-L98",
-          "version": "repo-lines-v1:sha256:f5bb1d90e86963ae7f7511f1acea2527419f0d267a67209c8f8e008fccc05aaa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2YTJkOWFjNjdkMjQ0NzU3MTEwZTAyZTg5MjU4YmQ3MjZkNThkYzJhODk4NDBiMjI1M2M3YTc0OTdiY2MzYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MzhiYzdiYzk2YmE0YTcwNjJhZThmODc4OGE5ZDEzMmZlYzg1Y2YxMTc2NTNiZjdiZWFlYjE1YWY5MWUzOTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmM2I1YjhmZGI1YjNjNGU2Y2VlMjQzODQxYTNiZTJmNzVmMWU1ZDIxOGE1YTYxYWFlNWVkMjljMDhhNjEwYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1YzdlMzk2NjYwMTYyY2ZhMzZjOTYxOTc4MmNlYmRkZTMzM2JjMTkxN2Q0ODA4NDFlNDYxOTQ1Zjc3NzdjOGQifQ"
-        },
-        {
-          "resource": "repo://package.json#L5-L16",
-          "version": "repo-lines-v1:sha256:8ebf8b97e4ede5428992564006bb3a60be9e2dbda6a0a10480504b523ffe07e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4NDA2OTg0YmRlZmNhMzRkZDZiYzkwMDI3ZjFkMTFhYmNiMTcwMzRjNTI1YzlhNWNlZmExZDg0ZmNjZDgxZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhOTczOWI1YjAwMzYzNjFkYzA4ZTZhNjgwOGFmNDI1MzQwYmMyODc4OTk3ZmI1MjcyM2I3ZjUzNmQyMjEyNjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0OGY4ODg1ZDRjYTg1YmFlNmFmMmI4ZTZjMjFkODlmZWIwZDkzNmExZmZlNzhkZDU1ZDVjYjcyMDU3YWUyMGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3MWQxZWEyOWNhN2Q1MzJlODFkZGFlNTNmMGY4MzQ4MWRhZWMxMWY2NzdhNWFiMThhZmQ0Y2FkYTMwYWZlNTQifQ"
+          "resource": "repo://package.json",
+          "version": "repo-file-v1:sha256:288a8f127ab8f27fc3e11eb8251babfeb9e0c1c23864013720184e80ef9fb585"
         }
       ]
     },
@@ -53,16 +45,12 @@
       "statement": "The public catalog, database schema, developer interaction contract, production UI, shared domain modules, and retained legacy presentation each have distinct repository sources of truth.",
       "evidence": [
         {
-          "resource": "repo://AGENTS.md#L1-L19",
-          "version": "repo-lines-v1:sha256:c7899d97eaed3ee2b1306f712202b0462b94d888c3b53a07abf7dccc6f490d11:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MGViMjAwOTU2MWI1MWM5YWVmMGNhZTRhZTJkYzNkMjViYjI2N2RlODNmNzAzOGE2NDhhYTdkNGZiNjY5YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzMjhjZmFlNzkwZDdmZGZiODk1ODkxYzg3NmZmOGVmNjJlZWU3NzlmOGI4ZDJjYmZhMDQ3NWQ1MDA4NDlkYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlYWI0YjdhZWU3MjYzZGZkMjBjNjk5M2RjZWZlYzkxMTE1N2EzMDNjZWYwMDY3ZDE3NWM2ZDJhMTgzOGMyOGYifQ"
+          "resource": "repo://AGENTS.md",
+          "version": "repo-file-v1:sha256:dcc1edd8bb2c01af9c723de70a66254bb89628ee90cf1f59103014a3d13c4490"
         },
         {
-          "resource": "repo://AGENTS.md#L36-L47",
-          "version": "repo-lines-v1:sha256:ff4f20241b1b206e7595dc480ddc1d17d9f66db3e30889292fd5e0145a584ff9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1ZDkxODk0NzI1NTcwMGUyYTFkMzk0ZWM3OGJhNWNhZmYwNzY3N2FhMzY2ZjJhZGRmZjRhMTI3ZWU2ZjAxYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0OGIzMjFjMjM2M2MyNmE0OGViMjMzZjJkMWYzNzE0ZWJhMWUwYjMzYjM3YTA2Yjc3MWYzZjVmMWJiZTBlODkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4NjQzMjdmODk4MTEzYzk3NDIxYTYzMDhmOTA3NzJiMjYwOWVmYjYzNzllYTIyZjJjNTA2N2QxYjQ0YzcyMzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxOGFjZWMwZjJlYzRhMjQ3ZDgzOGVkZWY3ZmE2MmQ5MTc2MGEzYjlhOWJjNzU4NzNkZTJiYWVjN2Y5OWE4ZjgifQ"
-        },
-        {
-          "resource": "repo://README.md#L75-L83",
-          "version": "repo-lines-v1:sha256:6ea86e767f2ef61d609f9bba93e7045c3cbba8650bbc33dffc2c0712b7e2ed5d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzM3NjQ0YjRkNGQ5MWEzMTZkNWRlNGIzZDZmYzE1ZjFmOTQxNzc4ZWNhYmQwOTkzZWVkY2MzODMyMWI5ZWI4OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzY2NjU0MzFmYmViOWQzYjcwYTBhZWQ2MTQyODYxOTQyYjdjOWY3NTYzY2UwYWFkZGMwMzlmNzczNTUxMTBmNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWU1NjE4MjVhYzdjYjIxMGE3N2MxYjRlNGY3MjYzNzJhNjg0MzFiMzkyMGQ0M2ZiZjlhYmQ4MDJlNGNlNDBiOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzYxZDc3ZDRjZDU2MGExMWQwMzY5NDEyZGVlODVmM2U3MGFmNDdmMmIzNGE5NDBiZjhkZTM5Y2E5NDZhYjIyNCJ9"
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:44a233265bbf9dd79761ef962e4c3d756f3421903ee7f37693b92e617be5f175"
         }
       ]
     },
@@ -71,18 +59,32 @@
       "statement": "Completed routine work is committed and landed into local main, while pull requests are reserved for requested review, protected CI, or production publication.",
       "evidence": [
         {
-          "resource": "repo://.github/INTEGRATION.md#L44-L78",
-          "version": "repo-lines-v1:sha256:34ee400249713940465856b72e25582de69b66cca89eb7c000cf89281628535c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjZGFhMTI1MGU0MmE3NTk3M2U0MzllOTcwODhlMzAxYzg2ZGQ4YjNjZmEwZjVhM2YzOWQ3OGYxMDk3NGJkNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGRmYzIzZDQzNGYyMzFmYTNkMzRiZjkwZTY3OGIyZTQ2YTQwYjViZmQ0NjQ5MjgxMTgxYjVhZmExMDBlNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzMGY1OTU0NWVkZmFkYThmYmNiZGE5YTI3NWJkNzE2MDM1MjM4YzMxM2MwYjlmODU5Nzc0YzRiYWE4Yzc0MWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4YThjMmJlNmI2YmM4NzE2ZTgxMWRhYTQ4NTJlYjIyZmE3NzI1OTVmMjBmOTUyNTg5ODcyYWY3ODRhMzVhNDYifQ"
+          "resource": "repo://.github/INTEGRATION.md",
+          "version": "repo-file-v1:sha256:f3996ae6b56ce4c127f03563af1a20de1292aeed34008d29c74b447daf668b94"
         },
         {
-          "resource": "repo://AGENTS.md#L23-L34",
-          "version": "repo-lines-v1:sha256:4d0337b17e7726162d0ae52aecd630f5304587d14c1a56306f28dbde01d66571:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjMzIyZTk2YzNiMjFlYzEyYjMzYzNjNDg3YWI4ZGZlODFlMTlkYTQxYmNmYmZiNDBiMDk1MWZiYmYzMzAzY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMmZjMjIyNjFmZGRhZmUxMDNiOWI4YWQ2ZWNmYjdlZDRkNDE1M2U5ZjgwNjRjNDE0ZGJiMGZhZDdjZjMzZmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYWI0YjdhZWU3MjYzZGZkMjBjNjk5M2RjZWZlYzkxMTE1N2EzMDNjZWYwMDY3ZDE3NWM2ZDJhMTgzOGMyOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhMzJhZDgwYWQ0YTJlZGFmMTUwZWMwZTk4Zjk0M2VkMWY2NjI4ODI2ZmViMzE1NzhmZTY0ZDFjNjhmM2IyNWIifQ"
+          "resource": "repo://AGENTS.md",
+          "version": "repo-file-v1:sha256:dcc1edd8bb2c01af9c723de70a66254bb89628ee90cf1f59103014a3d13c4490"
+        }
+      ]
+    },
+    {
+      "id": "claim_fff75de634594b048a2577d7cdf67eff",
+      "statement": "Network company workspaces and Circle knowledge are distinct systems with source-backed routing pages in the repository OpenWiki.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md",
+          "version": "repo-file-v1:sha256:4a5112fc75f20a62ba329c1ef14b149c25e150ed1b0f84682a8029f8bb502e8e"
+        },
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-15T07:09:51.577Z"
+    "at": "2026-10-22T07:08:18.987Z"
   }
 }

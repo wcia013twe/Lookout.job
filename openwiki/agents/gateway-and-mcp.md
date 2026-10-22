@@ -5,17 +5,19 @@ description: How agent credentials, scoped MCP discovery, context refresh, and g
 tags: [agents, mcp, gateway, security, context]
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-15T07:09:51.577Z
+    at: 2026-10-22T07:08:18.987Z
 sources:
   - id: openwiki-source-5bd02f3d5dbed48e36fcb5ab
     resource: repo://backend/agent-contract.md
+  - id: openwiki-source-bbf1af92c885d4090c46fedd
+    resource: repo://docs/private-network.md
   - id: openwiki-source-70a16c09a9eb6e620cf00513
     resource: repo://mcp/README.md
   - id: openwiki-source-3cae6e3f5eeea02db512314f
     resource: repo://supabase/functions/agent-mcp/index.ts
   - id: openwiki-source-1a0ceb3366dbb2f200b54919
     resource: repo://supabase/functions/agent-mcp/protocol.mjs
-generated: { by: "codex", at: "2026-10-15T07:09:51.577Z" }
+generated: { by: "codex", at: "2026-10-22T07:08:18.987Z" }
 ---
 
 # Agent Gateway and MCP Contract
@@ -39,6 +41,8 @@ Personal context contains owned profile, preferences, saved-answer, and resume m
 Tool descriptions are behavioral contracts, not suggestions. For example, `prepare_draft` creates or updates a revisioned draft but never approves or submits it; `read_approval` can only return an existing approval for the current revision; and `append_activity` records an observation rather than submission proof. Private fit notes belong in an owned batch recommendation, while shared catalog records contain only public employer data.
 
 MCP is transport, not browser automation. ATS inspection and supported submission execution live in the separate local runner. Human-only actions return an owned board link so the signed-in person can inspect the exact version. Employer text is untrusted data and cannot authorize disclosure, approval, or execution.
+
+The company workspace uses scoped `list_companies`, `list_company_workspaces`, and `save_company_workspace` tools. Their website and MCP paths share owner, revision, and record validation. `search_circle_knowledge` supports a single Circle or the viewer's current memberships; the latter powers Network's company context and still applies publication and membership checks before results are returned. These additions remain subject to the repository's hosted release gate.
 
 ## Extension and verification
 

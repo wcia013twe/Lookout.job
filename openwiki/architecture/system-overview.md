@@ -3,10 +3,9 @@ type: architecture
 title: System Architecture
 description: Runtime and ownership boundaries across the static React client, shared domain layer, Supabase services, agent interfaces, and local browser runner.
 tags: [architecture, nextjs, supabase, agents, data-flow]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-15T07:09:51.577Z
 sources:
+  - id: openwiki-source-bbf1af92c885d4090c46fedd
+    resource: repo://docs/private-network.md
   - id: openwiki-source-a8bb617ebaa9fdedae69cc1d
     resource: repo://lib/cloud.mjs
   - id: openwiki-source-5c5dc57d5c7c840354826599
@@ -17,7 +16,12 @@ sources:
     resource: repo://runner/runtime.mjs
   - id: openwiki-source-491126b88c8fadf4e4211275
     resource: repo://supabase/functions/agent-gateway/index.ts
-generated: { by: "codex", at: "2026-10-15T07:09:51.577Z" }
+  - id: openwiki-source-e9706719c14c4ee8d36442ff
+    resource: repo://supabase/migrations/20261022060633_durable_company_hub.sql
+generated: { by: "codex", at: "2026-10-22T07:08:18.987Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-22T07:08:18.987Z
 ---
 
 # System Architecture
@@ -38,6 +42,8 @@ Guests use browser-local state. Signed-in users keep a separate account workspac
 
 Supabase supplies identity, private relational state, private resume storage, and Edge Functions. `supabase/migrations/` is the schema source of truth. Browser calls and agent calls converge on backend ownership, revision, and state-transition checks instead of trusting client state.
 
+Network has its own owner-scoped company workspaces linked, when unambiguous, to maintained shared company identities. Contacts and applications remain separate owned records. Circle posts and published revisions remain the source for shared experience; Network requests permitted current-membership results instead of copying intelligence into company records. The client displays prepared demo takeaways only inside its isolated fictional demo state.
+
 `agent-gateway` is the privileged service boundary. Human connection management verifies a Supabase access token; agent operations require an opaque `jb_agent_…` credential whose hash, expiry, revocation, and scopes are checked through database functions. The gateway bounds request size, maps database errors to stable HTTP status codes, and signs owned resume URLs for only 60 seconds.
 
 ## Agent and runner layers
@@ -50,4 +56,4 @@ One runner process owns one dedicated Playwright page. It exposes no general cli
 
 Public discovery reads the generated catalog without login. A connected agent can publish an owned private batch containing public job references plus private recommendations. The browser loads that batch for its authenticated owner, prepares revisioned application state, and synchronizes it to Supabase. Submission execution then loads fresh gateway context and private files into the local runner; results return through validated gateway transitions and appear in the private application timeline.
 
-See [Discovery and Tracking](../workflows/discovery-and-tracking.md), [Gateway and MCP](../agents/gateway-and-mcp.md), and [Submission Safety](../agents/submission-safety.md).
+See [Discovery and Tracking](../workflows/discovery-and-tracking.md), [Network Company Hub](../workflows/network-company-hub.md), [Circle Knowledge](../workflows/circle-knowledge.md), [Gateway and MCP](../agents/gateway-and-mcp.md), and [Submission Safety](../agents/submission-safety.md).

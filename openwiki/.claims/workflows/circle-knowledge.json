@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:c7532b66c019ae8093a371106c5920f5275b28730793b920cee7db855a4b2d48",
+  "claims": [
+    {
+      "id": "claim_ed7012fbf6434dfeb6c31eb400a1d72b",
+      "statement": "Circle contributions have private revisions and an explicitly published revision; freeform or personal agent contributions require exact human review before publication.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md",
+          "version": "repo-file-v1:sha256:4a5112fc75f20a62ba329c1ef14b149c25e150ed1b0f84682a8029f8bb502e8e"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs",
+          "version": "repo-file-v1:sha256:a2787e877458db62a06e2277559fa07e58701a6af165d039caa977fd4a76ac9e"
+        }
+      ]
+    },
+    {
+      "id": "claim_034837f0c12f4eda9825dd34551fd043",
+      "statement": "Circle search across current memberships applies permissions and context filters before pagination and returns each permitted root post once with source-thread context.",
+      "evidence": [
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/knowledge.mjs",
+          "version": "repo-file-v1:sha256:91f542ac1fd55114bc6c201d6c4a69087ada0c0881cce592b321ab683b1e146d"
+        }
+      ]
+    },
+    {
+      "id": "claim_fddfe7f71ca34cbaa96a77444dcb9ce0",
+      "statement": "Network reads Circle source experiences; authored Stripe takeaways are isolated fictional demo content rather than live generated summaries.",
+      "evidence": [
+        {
+          "resource": "repo://docs/private-network.md",
+          "version": "repo-file-v1:sha256:4daa7f356a8c3043c7267add7a91ada44db74e4ed7e272b5719596a04b8ce1f8"
+        },
+        {
+          "resource": "repo://next-app/components/company-intelligence.tsx",
+          "version": "repo-file-v1:sha256:097f2ffd2f8cb18299399e8d19f6d205a7b735a1a5d64053946ce0cbeb3c7354"
+        },
+        {
+          "resource": "repo://next-app/lib/network-demo.mjs",
+          "version": "repo-file-v1:sha256:cb968f6530a534a2fad551c00bd7f555a2a78bfa99244c7afed9bd147f64d3b7"
+        }
+      ]
+    },
+    {
+      "id": "claim_4684139fa0354cdb9ab142f31b11c6ab",
+      "statement": "Circle citation receipts require agent-reported actual use of a published revision and are distinct from merely reading or searching knowledge.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md",
+          "version": "repo-file-v1:sha256:4a5112fc75f20a62ba329c1ef14b149c25e150ed1b0f84682a8029f8bb502e8e"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/knowledge.mjs",
+          "version": "repo-file-v1:sha256:91f542ac1fd55114bc6c201d6c4a69087ada0c0881cce592b321ab683b1e146d"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-22T07:08:18.987Z"
+  }
+}
