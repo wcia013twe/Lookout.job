@@ -35,3 +35,10 @@ Wrapped Toolkit category headings in Discover’s shared `glass-inset` box styli
 including the selected category header. Removed the old overview top rule.
 Validation: frontend typecheck, static production build, data validation and desktop/mobile browser checks pass. Detector reports no findings.
 No new actions or backend contract changes.
+
+## Shared box component
+
+Extracted Discover’s existing inset box into `InsetBox` in shared UI. Discover
+and Toolkit category headers now render that same component, with no duplicated
+box classes. Appearance and behavior are unchanged. Validation: typecheck, static
+build, data validation and diff checks.

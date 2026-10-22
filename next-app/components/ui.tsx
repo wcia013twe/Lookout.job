@@ -8,6 +8,9 @@ export const primary =
   "workspace-primary inline-flex min-h-11 items-center justify-center rounded-lg bg-board-accent px-4 py-2 text-sm font-bold text-board-ink hover:bg-board-accent-hover disabled:opacity-50 disabled:cursor-not-allowed";
 export const secondary =
   "workspace-secondary inline-flex min-h-11 items-center justify-center rounded-lg border border-board-line bg-board-tag px-4 py-2 text-sm font-semibold hover:border-board-accent disabled:opacity-50";
+export function InsetBox({ children, className = "" }: ContentProps & { className?: string }) {
+  return <div className={`glass-inset rounded-xl p-3 md:p-4 ${className}`}>{children}</div>;
+}
 export function Field({ label, children }: ContentProps & { label: string }) {
   return (
     <label className="block text-sm text-board-muted">
