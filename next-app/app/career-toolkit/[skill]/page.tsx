@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { skillDocument } from '../_lib/skill-document';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { categories, skills, skillById } from '../_lib/catalog';
@@ -15,7 +14,7 @@ export async function generateMetadata({params}: {params:Promise<{skill:string}>
 export default async function SkillManual({params}: {params:Promise<{skill:string}>}) {
   const skill = skillById((await params).skill);
   if (!skill) notFound();
-  const document = await readFile(join(process.cwd(), 'public', 'skill-documents', `${skill.id}.html`), 'utf8');
+  const document = skillDocument(skill);
   const category = categories.find(item => item.id === skill.category)!;
   return <div className={styles.surface}>
     <nav className={styles.breadcrumbs} aria-label="Breadcrumb"><Link href="/career-toolkit/">Career Toolkit</Link></nav>

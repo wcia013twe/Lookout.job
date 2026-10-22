@@ -50,3 +50,13 @@ with an empty sandbox. They no longer fetch a document URL that can fall back
 to the app shell on a development server or missing-file host. Documents remain
 script-free and contain no account data. Validation: static build, typecheck,
 data checks and browser assertions for embedded content with no iframe URL.
+
+## Skill document runtime correction
+
+Removed the runtime read of generated public HTML. Skill pages now compile their
+canonical Markdown directly with a server-compatible Markdown compiler and embed
+the result using srcDoc. This works when public/skill-documents does not exist,
+including an already-running development server after local landing. Removed the
+public document generator; added explicit Markdown compiler dependencies.
+Validation: all 37 documents tested from source, typecheck, production static
+build, data validation and browser iframe checks.

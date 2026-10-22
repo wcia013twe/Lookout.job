@@ -19,7 +19,7 @@ Run `node scripts/build-career-toolkit.mjs` after changing the catalog. It verif
 source hashes and compiles the deployed guide bundle at
 `supabase/functions/agent-gateway/skills/career-toolkit.json`.
 `node scripts/build-career-toolkit.mjs --check` detects drift; tests exercise it.
-The skill page shows an overview, a sandboxed Skill.md iframe and one copy-invocation button. The static build renders each canonical adapted guide and its pinned source documents into public, script-free HTML; account context is never embedded. Each skill page embeds its selected document directly in the iframe using `srcDoc`, so a missing document URL cannot fall back to the application shell.
+The skill page shows an overview, a sandboxed Skill.md iframe and one copy-invocation button. The page renders its canonical adapted guide and pinned source documents into script-free HTML directly from committed sources; no generated public files or account context are needed. Each skill page embeds its selected document directly in the iframe using `srcDoc`, so a missing document URL cannot fall back to the application shell.
 `read_guide` returns one full adapted guide on demand under existing workspace
 read authorization. The developer index includes guide metadata, not full content.
 
