@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { categories, skills, skillById } from '../_lib/catalog';
@@ -13,11 +15,12 @@ export async function generateMetadata({params}: {params:Promise<{skill:string}>
 export default async function SkillManual({params}: {params:Promise<{skill:string}>}) {
   const skill = skillById((await params).skill);
   if (!skill) notFound();
+  const document = await readFile(join(process.cwd(), 'public', 'skill-documents', `${skill.id}.html`), 'utf8');
   const category = categories.find(item => item.id === skill.category)!;
   return <div className={styles.surface}>
     <nav className={styles.breadcrumbs} aria-label="Breadcrumb"><Link href="/career-toolkit/">Career Toolkit</Link></nav>
     <header className={styles.skillOverview}><div className={styles.manualTitle}><ToolkitIcon name={category.id} size={28}/><h1>{skill.title}</h1></div><p>{skill.summary}</p></header>
-    <section className={styles.skillDocument} aria-label="Skill document"><h2>Skill.md</h2><iframe title={`${skill.title} — Skill.md`} src={`/skill-documents/${skill.id}.html`} sandbox="allow-same-origin" /></section>
+    <section className={styles.skillDocument} aria-label="Skill document"><h2>Skill.md</h2><iframe title={`${skill.title} — Skill.md`} srcDoc={document} sandbox="" /></section>
     <AgentRequest key={skill.id} skillId={skill.id}/>
   </div>;
 }

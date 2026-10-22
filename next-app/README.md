@@ -133,3 +133,12 @@ Read `/privacy/` as a guest and at mobile width; these interactions never submit
 applications or write real account records.
 
 `components/surface-panel.tsx` shares the Sharing & privacy material with Action Board panels, including the fictional admin demo. Use `as="form"` for a native form; otherwise it renders a section. Supply accessible labels and content at the caller. Existing primary/secondary controls inherit its theme tokens; the styling lives in `app/globals.css`. Demo verification covers the expanded application review, disabled approval gate, reset, weekly prep pause/resume, company follow-ups, and desktop/mobile/light presentation. This visual component adds no service or user action; existing MCP mappings remain unchanged.
+
+My agent includes a simple daily schedule: four routine switches and local times,
+one time zone and a master pause. It saves through the existing preferences store;
+agent runtime setup remains separate. In admin Demo, midday starts off: edit a
+time, pause one/all routines, save, switch sections and return, then reset to
+restore the fictional schedule. No demo interaction creates automations or writes
+to account storage. The existing save_notification_preferences MCP boundary can
+edit preferences.search.schedule with its current preferences timestamp; no new
+backend tool or scheduling service is introduced by this UI change.
