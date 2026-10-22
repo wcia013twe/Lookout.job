@@ -150,7 +150,20 @@ try{
  await page.screenshot({path:dir+'/job-preferences-desktop.png',fullPage:true});
  await nav.getByRole('button',{name:'My Agent',exact:true}).click();
  const agent=page.getByRole('region',{name:'My agent',exact:true});
+ const bank=agent.locator('details').filter({has:page.locator('summary',{hasText:'Shared question bank'})});
+ assert.equal(await bank.getAttribute('open'),null,'Question bank starts collapsed');
+ await bank.locator('summary').click();
  await agent.getByRole('region',{name:'Shared employer-answer library',exact:true}).waitFor();
+ await bank.locator('summary').click();
+ const carousel=agent.getByRole('region',{name:'Outreach template preview',exact:true});
+ for(const title of ['Recruiter','Existing connection','Alumni','Founder','Followup']) {
+   await carousel.getByRole('heading',{name:title,exact:true}).waitFor();
+   await carousel.getByRole('button',{name:'Next outreach template',exact:true}).click();
+ }
+ await carousel.getByRole('heading',{name:'Recruiter',exact:true}).waitFor();
+ await carousel.getByRole('button',{name:'Previous outreach template',exact:true}).click();
+ await carousel.getByRole('heading',{name:'Followup',exact:true}).waitFor();
+ await carousel.getByRole('button',{name:'Next outreach template',exact:true}).click();
  await agent.getByRole('region',{name:'Templates',exact:true}).waitFor();
  assert.equal(await agent.getByRole('region',{name:'Outreach examples and library',exact:true}).count(),1);
  await agent.getByRole('button',{name:'Edit Employer questions',exact:true}).click();

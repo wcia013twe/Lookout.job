@@ -13,5 +13,8 @@ export default function WritingPreview({text}: {text:string}) {
     }, 24);
     return () => window.clearInterval(timer);
   }, [text]);
-  return <p className="min-h-24 whitespace-pre-wrap break-words text-sm leading-relaxed" aria-label={text}><span aria-hidden="true">{shown}</span></p>;
+  return <div className="grid whitespace-pre-wrap break-words text-sm leading-relaxed">
+    <p className="invisible col-start-1 row-start-1" aria-hidden="true">{text}</p>
+    <p className="col-start-1 row-start-1"><span className="sr-only">{text}</span><span aria-hidden="true">{shown}</span></p>
+  </div>;
 }
