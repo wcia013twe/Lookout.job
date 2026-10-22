@@ -1,16 +1,24 @@
 "use client";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createProfileReview } from "../../lib/profile-review.mjs";
 import rawSchema from "../../lib/profile-schema.js";
 import { useWorkspace } from "../lib/workspace";
-import { Field, control, primary, secondary, Notice, Section } from "./ui";
+import { Field, control, primary, secondary, Notice } from "./ui";
+import ProfileSection, {ProfileValues,profileSectionStyles as styles} from "./profile-section";
 const labels: Record<string, string> = {
   name: "Full name",
   firstName: "First name",
   lastName: "Last name",
-  email: "Shared contact email",
+  preferredName: "Preferred name",
+  suffix: "Suffix name",
+  birthday: "Birthday",
+  address: "Address",
+  address2: "Address 2",
+  address3: "Address 3",
+  postalCode: "Postal code",
+  email: "Email address",
   phone: "Phone number",
-  location: "City / location",
+  location: "Location",
   linkedin: "LinkedIn URL",
   github: "GitHub URL",
   portfolio: "Portfolio URL",
@@ -57,7 +65,7 @@ function ProfilePills({ name, value, draft, onDraft, onChange }: {
         </li>)}
       </ul>}
       <div className="flex items-start gap-2">
-        <input id={`profile-${name}`} className={control} value={draft} autoComplete="off" aria-describedby={`profile-${name}-hint`} placeholder={name === "languages" ? "Add a language" : "Add a skill"}
+        <input id={`profile-${name}`} className={control} value={draft} autoComplete="off" title="Press Enter or comma to add, or paste a list" placeholder={name === "languages" ? "Add a language" : "Add a skill"}
           onChange={(event) => onDraft(event.target.value)}
           onBlur={() => { if (draft.trim()) add(); }}
           onKeyDown={(event) => {
@@ -74,7 +82,6 @@ function ProfilePills({ name, value, draft, onDraft, onChange }: {
         />
         <button type="button" className={secondary} aria-label={`Add to ${labels[name]}`} disabled={!draft.trim()} onClick={() => add()}>Add</button>
       </div>
-      <p id={`profile-${name}-hint`} className="mt-2 text-sm text-board-muted">Press Enter or comma to add. You can also paste a list.</p>
     </div>
   );
 }
@@ -93,8 +100,9 @@ const sections: Record<string, string> = {
   education: "Education",
   projects: "Projects & outside experience",
 };
-export default function ProfileEditor() {
+export default function ProfileEditor({children}:{children?:ReactNode}) {
   const w = useWorkspace();
+  const formId = useId();
   const profile: ProfileFacts = w.state.workflow.profile;
   const [facts, setFacts] = useState(profile),
     [checked, setChecked] = useState(false),
@@ -109,7 +117,9 @@ export default function ProfileEditor() {
   }, [JSON.stringify(profile), w.user?.id]);
   function update(key: string, value: unknown) {
     review.current.invalidate();
-    setFacts({ ...facts, [key]: value });
+    const next = { ...facts, [key]: value };
+    if(key==="firstName"||key==="lastName")next.name=[next.firstName,next.lastName].filter(Boolean).join(" ");
+    setFacts(next);
     setChecked(false);
   }
   function save(e: FormEvent<HTMLFormElement>) {
@@ -142,235 +152,32 @@ export default function ProfileEditor() {
         : "Profile saved as unverified. Review changed facts before checking them.",
     );
   }
-  return (
-    <>
-      <h2 className="mb-3 text-lg font-bold">Career background</h2>
-      <p className="mb-4 text-sm text-board-muted">
-        Review imported facts before checking them. Changes remain unverified
-        until you review and save them.
-      </p>
-      <form autoComplete="on" onSubmit={save}>
-        {[
-          {
-            title: "Personal details",
-            keys: ["name", "email", "phone", "location"],
-          },
-          {
-            title: "Name details",
-            keys: ["firstName", "lastName"],
-          },
-          {
-            title: "Professional summary",
-            keys: ["headline", "currentEmployer", "jobSearchStatus"],
-          },
-          {
-            title: "Professional links",
-            keys: ["linkedin", "github", "portfolio", "otherUrl"],
-          },
-          { title: "Shared authorization notes", keys: ["authorization"] },
-        ].map((group, index) => (
-          <details
-            key={group.title}
-            open={index === 0}
-            className="border-t border-board-line py-4"
-          >
-            <summary className="text-base font-semibold">{group.title}</summary>
-            <fieldset>
-              <legend className="sr-only">{group.title}</legend>
-              <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                {schema.scalarFields
-                  .filter((k) => group.keys.includes(k))
-                  .map((key) => (
-                    <Field label={labels[key]} key={key}>
-                      <input
-                        id={`profile-${key}`}
-                        name={key}
-                        className={control}
-                        value={(facts[key] as string) || ""}
-                        type={
-                          key === "email"
-                            ? "email"
-                            : key === "phone"
-                              ? "tel"
-                              : [
-                                    "linkedin",
-                                    "github",
-                                    "portfolio",
-                                    "otherUrl",
-                                  ].includes(key)
-                                ? "url"
-                                : "text"
-                        }
-                        autoComplete={
-                          (
-                            {
-                              name: "name",
-                              firstName: "given-name",
-                              lastName: "family-name",
-                              email: "email",
-                              phone: "tel",
-                              location: "address-level2",
-                            } as Record<string, string>
-                          )[key] || "off"
-                        }
-                        onChange={(e) => update(key, e.target.value)}
-                      />
-                    </Field>
-                  ))}
-              </div>
-            </fieldset>
-          </details>
-        ))}
-        {(
-          Object.entries(schema.schemas) as [
-            EntryKind,
-            ProfileSchema["schemas"][EntryKind],
-          ][]
-        ).map(([kind, fields]) => (
-          <details className="border-t border-board-line py-5" key={kind}>
-            <summary className="text-lg font-bold">
-              {sections[kind]}{" "}
-              <span className="text-sm font-normal text-board-muted">
-                ({facts[kind]?.length || 0})
-              </span>
-            </summary>
-            <fieldset>
-              <legend className="sr-only">{sections[kind]}</legend>
-              {(facts[kind] || []).map((entry, index) => (
-                <details
-                  className="border-b border-board-line py-4"
-                  key={index}
-                >
-                  <summary className="min-h-11 text-sm font-semibold">
-                    {entry.title || entry.degree || entry.name || "New entry"} ·{" "}
-                    {entry.company ||
-                      entry.school ||
-                      entry.institution ||
-                      "Edit details"}
-                  </summary>
-                  <div className="pt-3">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {fields.map(
-                        ([key, label, type = "text", autocomplete = "off"]) => (
-                          <Field label={label} key={key}>
-                            {type === "textarea" ? (
-                              <textarea
-                                className={control}
-                                value={(entry[key] as string) || ""}
-                                onChange={(e) =>
-                                  update(
-                                    kind,
-                                    facts[kind]!.map((v, i) =>
-                                      i === index
-                                        ? { ...v, [key]: e.target.value }
-                                        : v,
-                                    ),
-                                  )
-                                }
-                              />
-                            ) : (
-                              <input
-                                className={
-                                  type === "checkbox"
-                                    ? "h-5 w-5 accent-board-accent"
-                                    : control
-                                }
-                                type={type}
-                                autoComplete={autocomplete}
-                                checked={
-                                  type === "checkbox"
-                                    ? entry[key] === true
-                                    : undefined
-                                }
-                                value={
-                                  type === "checkbox"
-                                    ? undefined
-                                    : (entry[key] as string) || ""
-                                }
-                                onChange={(e) =>
-                                  update(
-                                    kind,
-                                    facts[kind]!.map((v, i) =>
-                                      i === index
-                                        ? {
-                                            ...v,
-                                            [key]:
-                                              type === "checkbox"
-                                                ? e.target.checked
-                                                : e.target.value,
-                                          }
-                                        : v,
-                                    ),
-                                  )
-                                }
-                              />
-                            )}
-                          </Field>
-                        ),
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      className={`${secondary} mt-4`}
-                      onClick={() =>
-                        update(
-                          kind,
-                          facts[kind]!.filter((_, i) => i !== index),
-                        )
-                      }
-                    >
-                      Remove entry
-                    </button>
-                  </div>
-                </details>
-              ))}
-              {!facts[kind]?.length && <Notice>No entries added yet.</Notice>}
-              <button
-                type="button"
-                className={`${secondary} mt-3`}
-                onClick={() => update(kind, [...(facts[kind] || []), {}])}
-              >
-                Add {sections[kind].toLowerCase()}
-              </button>
-            </fieldset>
-          </details>
-        ))}
-        <details className="border-t border-board-line py-5">
-          <summary className="text-lg font-bold">
-            Skills &amp; languages
-          </summary>
-          <Section title="Edit skills & languages">
-            <div className="grid gap-4 sm:grid-cols-2">
-              {pillFields.map((key) => (
-              <ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key] || ""}
-                onDraft={(value) => { review.current.invalidate(); setChecked(false); setPillDrafts((current) => ({ ...current, [key]: value })); }}
-                onChange={(value) => update(key, value)}
-              />
-            ))}
-            </div>
-          </Section>
-        </details>
-        <div className="mt-7 space-y-3 border-t border-board-line py-5">
-          <label className="flex min-h-11 items-center gap-3 text-sm">
-            <input
-              type="checkbox"
-              checked={checked}
-              onChange={(e) => {
-                review.current.check(
-                  facts,
-                  e.target.checked,
-                  e.nativeEvent.isTrusted,
-                );
-                setChecked(e.target.checked && e.nativeEvent.isTrusted);
-              }}
-              className="h-5 w-5 accent-board-accent"
-            />
-            I have checked these facts.
-          </label>
-          <button className={primary}>Save shared background</button>
-          <Notice>{feedback}</Notice>
-        </div>
-      </form>
-    </>
-  );
+  const groups = [
+    {title:"Personal Info",keys:["firstName","lastName","preferredName","suffix","email","phone","birthday","location","address","address2","address3","postalCode",...(!facts.firstName&&!facts.lastName?["name"]:[])]},
+    {title:"Professional summary",keys:["headline","currentEmployer","jobSearchStatus"]},
+    {title:"Professional links",keys:["linkedin","github","portfolio","otherUrl"]},
+    {title:"Shared authorization notes",keys:["authorization"]},
+  ];
+  const renderGroup=(group:typeof groups[number])=>(<ProfileSection key={group.title} title={group.title} resetKey={profile}>{editing=>editing?<fieldset><legend className="sr-only">{group.title}</legend><div className="grid gap-5 sm:grid-cols-2">{group.keys.map(key=><Field label={labels[key]} key={key}><input form={formId} id={`profile-${key}`} name={key} className={control} value={(facts[key] as string)||""} type={key==='email'?'email':key==='phone'?'tel':key==='birthday'?'date':['linkedin','github','portfolio','otherUrl'].includes(key)?'url':'text'} autoComplete={({name:'name',firstName:'given-name',lastName:'family-name',preferredName:'nickname',suffix:'honorific-suffix',email:'email',phone:'tel',birthday:'bday',location:'address-level2',address:'address-line1',address2:'address-line2',address3:'address-line3',postalCode:'postal-code'} as Record<string,string>)[key]||'off'} onChange={e=>update(key,e.target.value)}/></Field>)}</div></fieldset>:<ProfileValues items={group.keys.map(key=>({label:labels[key],value:facts[key],wide:key==='authorization'}))}/>}</ProfileSection>);
+  return <>
+    {renderGroup(groups[0])}
+    {children}
+    <h2 className="mb-3 mt-8 text-lg font-bold">Career background</h2>
+    <form id={formId} autoComplete="on" onSubmit={save}>
+      {groups.slice(1).map(renderGroup)}
+      {(Object.entries(schema.schemas) as [EntryKind,ProfileSchema["schemas"][EntryKind]][]).map(([kind,fields])=><ProfileSection key={kind} title={sections[kind]} resetKey={profile}>{editing=><>
+        {(facts[kind]||[]).map((entry,index)=><div className={styles.entry} key={index}>
+          <h4>{entry.title||entry.degree||entry.name||"New entry"}{(entry.company||entry.school)&&<> · {entry.company||entry.school}</>}</h4>
+          {editing?<><div className="grid gap-4 sm:grid-cols-2">{fields.map(([key,label,type='text',autocomplete='off'])=><div className={type==='textarea'?'sm:col-span-2':undefined} key={key}><Field label={label}>{type==='textarea'?<textarea className={control} value={(entry[key] as string)||""} onChange={e=>update(kind,facts[kind]!.map((v,i)=>i===index?{...v,[key]:e.target.value}:v))}/>:<input className={type==='checkbox'?'h-5 w-5 accent-board-accent':control} type={type} autoComplete={autocomplete} checked={type==='checkbox'?entry[key]===true:undefined} value={type==='checkbox'?undefined:(entry[key] as string)||""} onChange={e=>update(kind,facts[kind]!.map((v,i)=>i===index?{...v,[key]:type==='checkbox'?e.target.checked:e.target.value}:v))}/>}</Field></div>)}</div><button type="button" className={`${secondary} mt-4`} onClick={()=>update(kind,facts[kind]!.filter((_,i)=>i!==index))}>Remove entry</button></>:<ProfileValues items={fields.map(([key,label,type])=>({label,value:type==='checkbox'?entry[key]===true:entry[key],wide:type==='textarea'}))}/>}
+        </div>)}
+        {!facts[kind]?.length&&<p className="text-sm text-board-muted">No entries added yet.</p>}
+        {editing&&<button type="button" className={`${secondary} mt-5`} onClick={()=>update(kind,[...(facts[kind]||[]),{}])}>Add {sections[kind].toLowerCase()}</button>}
+      </>}</ProfileSection>)}
+      <ProfileSection title="Skills & languages" resetKey={profile}>{editing=>editing?<div className="grid gap-5 sm:grid-cols-2">{pillFields.map(key=><ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key]||""} onDraft={value=>{review.current.invalidate();setChecked(false);setPillDrafts(current=>({...current,[key]:value}));}} onChange={value=>update(key,value)}/>)}</div>:<>{pillFields.map(key=><div key={key} className={styles.skillGroup}><h4>{labels[key]}</h4>{pills([...(pills(facts[key])),pillDrafts[key]||""]).length?<ul className={styles.tags} aria-label={labels[key]}>{pills([...(pills(facts[key])),pillDrafts[key]||""]).map(item=><li key={item}>{item}</li>)}</ul>:<p className="text-sm text-board-muted">Not provided</p>}</div>)}</>}</ProfileSection>
+      <div className="mt-7 space-y-3 border-t border-board-line py-5">
+        <label className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={checked} onChange={e=>{review.current.check(facts,e.target.checked,e.nativeEvent.isTrusted);setChecked(e.target.checked&&e.nativeEvent.isTrusted);}} className="h-5 w-5 accent-board-accent"/>I have checked these facts.</label>
+        <button className={primary}>Save shared background</button><Notice>{feedback}</Notice>
+      </div>
+    </form>
+  </>;
 }

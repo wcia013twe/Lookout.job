@@ -104,3 +104,30 @@ and company lists. Verify edit/save/reload, switch profiles with unsaved text, p
 and resume, maintain/associate a tier list, and reset to restore demo defaults.
 
 Work-life balance and Employer benefits are editable criteria with individual flexibility settings, saved as labeled instructions. They support descriptive preferences about hours, on-call, boundaries, leave, insurance, retirement match and learning budgets; unknown listing details remain questions for verification.
+
+## Privacy and sharing
+
+`/privacy/` is a public, static policy page linked from the footer (including
+onboarding) and the existing Sharing & privacy destination. It remains readable
+before workspace initialization, while account sync is locked, and without
+JavaScript. It describes current storage, employer/agent/Circle sharing, external
+AI-provider practices, and the lack of self-service account export/deletion or a
+fixed deletion/backup-expiry timeline. Set `NEXT_PUBLIC_PRIVACY_EMAIL` locally or
+as a GitHub Actions repository variable to show a direct email contact; without
+it, requests use the user's existing channel to the person who provided access.
+No mailbox, automated privacy-request handler, or deletion service is added.
+
+Existing connection rows disclose their actual permissions; the connection and
+revocation notices explain external AI processing and already-received copies.
+Resume forms distinguish private uploads from externally hosted links. Circle
+review identifies the audience and copying limits. Write an update opens the
+existing private-draft composer; it is not an automatic tracker-sharing setting.
+All actions keep their existing gateway/MCP boundaries; no new service, scope,
+agent instruction, or deployed-parity claim is introduced.
+
+Demo check: in admin Demo mode, open My Profile → My agent, inspect the fictional
+connection's resume/Circle-read permissions and revoke it; Reset restores it.
+Visit `/circles/preview/`, open a Circle, use Write an update, save a private draft,
+review its audience, choose Keep private or share, then withdraw and reset.
+Read `/privacy/` as a guest and at mobile width; these interactions never submit
+applications or write real account records.

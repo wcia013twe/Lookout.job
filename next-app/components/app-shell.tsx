@@ -22,6 +22,8 @@ const navigation = [
 export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
+  const isPrivacy = /^\/privacy\/?$/.test(path);
+  const footer = <footer className="mt-10 border-t border-board-line pt-4 text-sm text-board-muted"><Link href="/privacy/" className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-board-text">Privacy &amp; sharing</Link></footer>;
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/career-toolkit/" && path.startsWith(href)) || (href === "/" && /^\/discover\/?$/.test(path));
   const apps = Object.values(w.state?.workflow?.applications || {}) as Array<{ status: string; submissionAttempts?: Array<{ state: string; startedAt: string }> }>;
   const needs = (w.demo ? demoNeedsYouTasks.length :
@@ -42,7 +44,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       ? 1
       : 0));
   if (/\/onboarding\/?$/.test(path)) {
-    return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
+    return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}<div className="mx-auto max-w-6xl px-4 pb-6 md:px-6">{footer}</div></main>;
   }
   return (
     <MotionConfig reducedMotion="user"><main className={`workspace-shell min-h-dvh`} onClickCapture={event=>{
@@ -93,13 +95,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
       </header>
       {w.syncError && !w.demo && <Notice>{w.syncError}</Notice>}
       {w.error && <Notice>{w.error}</Notice>}
-      {w.state ? (
-        <div key={w.demo ? `demo-${w.demoEpoch}` : w.user?.id || "guest"} inert={w.locked || undefined}>
+      {w.state || isPrivacy ? (
+        <div key={w.demo ? `demo-${w.demoEpoch}` : w.user?.id || "guest"} inert={(!isPrivacy && w.locked) || undefined}>
           {children}
         </div>
       ) : (
         <div className="glass-panel rounded-2xl p-6" role="status"><p className="text-sm text-board-muted">Loading your workspace…</p><div aria-hidden="true" className="mt-5 grid gap-3 sm:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-28 rounded-xl bg-board-tag" />)}</div></div>
       )}
+      {footer}
       </div>
     </main></MotionConfig>
   );

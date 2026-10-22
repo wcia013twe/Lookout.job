@@ -396,8 +396,9 @@ tables, gateway operations or company service are required. See the
 
 ## Application profiles and writing styles
 
-My Profile now selects an application profile above Overview, About me, Application
-kit and Job preferences. Existing named search profiles remain the same records and
+My Profile switches application profiles with a compact button-styled dropdown
+beside the page heading, above Overview, About me, Application kit and Job preferences. A plus icon
+opens the inline create form; the copy icon duplicates the selected profile. Existing named search profiles remain the same records and
 IDs; no account migration or duplicate profile store is introduced. New, duplicate,
 rename, active/paused, identity, material selection, writing and targeting edits use
 one explicit Save application profile action. Drafts survive switching profiles and
@@ -407,7 +408,15 @@ drafts. Reload saved explicitly discards the selected draft.
 About me separates per-profile application email and agent-managed email/document/
 outreach account assignments from shared background. Assignments are descriptive
 agent guidance, never credentials, OAuth connections or proof of runtime access.
-Application email does not change the Lookout login. My agent is unchanged.
+Application email does not change the Lookout login. About me presents every section
+as an expanded, read-only box, including complete experience/education/project
+details and skills. A section’s pen enables only its own fields; the checkmark
+returns to reading mode without saving. Save application profile persists identity
+and eligibility settings; Save shared background persists career facts and retains
+its separate human-review boundary. Personal Info is the first About me box: first/last
+name, preferred name/suffix, email/phone, birthday/location, address lines and postal
+code. Desktop follows a two-column reading order; mobile stacks the same fields.
+My agent is unchanged.
 
 Application kit keeps a shared resume/answer library, with independent per-profile
 resume and saved-answer selections. Employer questions and outreach each have Tone,

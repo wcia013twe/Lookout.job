@@ -38,6 +38,7 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /codex-automated-job-board
+          NEXT_PUBLIC_PRIVACY_EMAIL: ${{ vars.NEXT_PUBLIC_PRIVACY_EMAIL }}
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         if: ${{ inputs.upload_pages == true }}
         with:

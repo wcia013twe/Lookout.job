@@ -9,79 +9,27 @@ import { useApplicationProfile } from "./application-profile-context";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary, Section } from "./ui";
 import { profileStyles as styles } from "./profile-surface";
+import ProfileSection, {ProfileValues} from "./profile-section";
 export function ProfileSwitcher() {
-  const a = useApplicationProfile();
-  const [creating, setCreating] = useState(false),
-    [name, setName] = useState("");
-  return (
-    <section
-      className={styles.profilePicker}
-      aria-label="Application profile selection"
-    >
-      <div className={styles.pickerMain}>
-        <Field label="Application profile">
-          <select
-            className={control}
-            value={a.profile.id}
-            disabled={a.busy}
-            onChange={(e) => a.select(e.target.value)}
-          >
-            {a.profiles.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-                {p.active ? "" : " · Paused"}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <button
-          type="button"
-          className={secondary}
-          disabled={a.busy}
-          onClick={() => setCreating(!creating)}
-        >
-          {creating ? "Cancel" : "New profile"}
-        </button>
-        <button
-          type="button"
-          className={secondary}
-          disabled={a.busy}
-          onClick={() => a.create(`${a.profile.name} copy`, true)}
-        >
-          Duplicate
-        </button>
-      </div>
-      <p className="mt-3 text-xs text-board-muted">
-        One Lookout account. Separate application identities, materials, and job
-        preferences.
-      </p>
-      {creating && (
-        <form
-          className="mt-4 flex flex-wrap items-end gap-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            a.create(name);
-            setName("");
-            setCreating(false);
-          }}
-        >
-          <Field label="New application profile name">
-            <input
-              className={control}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={80}
-              required
-              placeholder="Full-time engineering, internships…"
-            />
-          </Field>
-          <button className={secondary} disabled={!name.trim()}>
-            Create profile
-          </button>
-        </form>
-      )}
-    </section>
-  );
+  const a=useApplicationProfile();
+  const [creating,setCreating]=useState(false),[name,setName]=useState("");
+  return <section className={styles.profilePicker} aria-label="Application profile selection">
+    <div className={styles.pickerMain}>
+      <label className={styles.profileSelect}>
+        <span className="sr-only">Application profile</span>
+        <select className={styles.profileChoice} value={a.profile.id} disabled={a.busy} onChange={event=>a.select(event.target.value)}>
+          {a.profiles.map(profile=><option key={profile.id} value={profile.id}>{profile.name}{profile.active?'':' · Paused'}</option>)}
+        </select>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </label>
+      <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label={creating?'Cancel new profile':'New profile'} title={creating?'Cancel':'New profile'} aria-expanded={creating} aria-controls="new-application-profile" onClick={()=>setCreating(!creating)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">{creating?<path d="m6 6 12 12M6 18 18 6"/>:<path d="M12 5v14M5 12h14"/>}</svg></button>
+      <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label="Duplicate profile" title="Duplicate profile" onClick={()=>a.create(`${a.profile.name} copy`,true)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button>
+    </div>
+    {creating&&<form id="new-application-profile" className={styles.profileCreate} onSubmit={event=>{event.preventDefault();a.create(name);setName("");setCreating(false);}}>
+      <Field label="New profile name"><input className={control} value={name} onChange={event=>setName(event.target.value)} maxLength={80} required autoFocus/></Field>
+      <button type="submit" className={styles.profileIcon} disabled={a.busy||!name.trim()} aria-label="Create profile" title="Create profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+    </form>}
+  </section>;
 }
 export function AccountAssignments() {
   const a = useApplicationProfile();
@@ -94,11 +42,8 @@ export function AccountAssignments() {
     ["Outreach identity", "text", "University Outlook · candidate@example.edu"],
   ];
   return (
-    <Section title="Accounts & identity">
-      <p className="mb-5 max-w-prose text-sm text-board-muted">
-        Assigned to {a.profile.name}. Your agent manages access to these
-        accounts; Lookout records which ones to use.
-      </p>
+    <ProfileSection title="Accounts & identity" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
+      {editing?<>
       <div className="mb-5">
         <Field label="Application profile name">
           <input
@@ -126,15 +71,8 @@ export function AccountAssignments() {
           </Field>
         ))}
       </div>
-      <p className="mt-4 text-xs text-board-muted">
-        Preferred names apply to this application profile. They do not replace
-        your shared name details when a form asks for your legal name.
-      </p>
-      <p className="mt-4 text-xs text-board-muted">
-        Assignments are instructions for your agent, not verified connections.
-        Application email does not change your Lookout sign-in.
-      </p>
-    </Section>
+      </>:<ProfileValues items={[{label:"Application profile name",value:a.profile.name},...fields.map(([key])=>({label:key,value:a.field("Application identity",key).conflict?"Conflicting values — review in Advanced instructions":a.field("Application identity",key).value}))]}/>}
+    </>}</ProfileSection>
   );
 }
 export function ApplicationMaterials() {
@@ -376,11 +314,8 @@ export function EligibilitySettings() {
     { key: "Expected graduation", type: "month" },
   ];
   return (
-    <Section title="Eligibility & availability">
-      <p className="mb-5 max-w-prose text-sm text-board-muted">
-        For {a.profile.name}. Authorization and sponsorship answers apply to the
-        country below. Leave anything uncertain as Ask me.
-      </p>
+    <ProfileSection title="Eligibility & availability" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
+      {editing?<>
       <div className="grid gap-5 sm:grid-cols-2">
         {fields.map((f) => {
           const saved = a.field(heading, f.key);
@@ -433,11 +368,6 @@ export function EligibilitySettings() {
           );
         })}
       </div>
-      {!hasCountry && (
-        <p className="mt-3 text-xs text-board-muted">
-          Choose a country before setting authorization or sponsorship.
-        </p>
-      )}
       <div className="mt-5">
         <Field label="Eligibility notes (optional)">
           <textarea
@@ -450,10 +380,7 @@ export function EligibilitySettings() {
           />
         </Field>
       </div>
-      <p className="mt-4 text-xs text-board-muted">
-        These settings guide preparation. Uncertain or unreviewed employer
-        answers still need your review.
-      </p>
-    </Section>
+      </>:<ProfileValues items={[...fields.map(f=>({label:f.key,value:a.field(heading,f.key).conflict?"Conflicting values — review in Advanced instructions":a.field(heading,f.key).value||(f.options?"Ask me":"")})),{label:"Eligibility notes",value:a.field(heading,"Notes").value,wide:true}]}/>}
+    </>}</ProfileSection>
   );
 }
