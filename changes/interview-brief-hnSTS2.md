@@ -49,3 +49,10 @@
 - Kept readable message history visible, with small status labels and quieter empty-state copy. Follow-up date edits, contact management and secondary process actions are collapsed by default. Existing logging/drafting/sending distinctions and scoped contact persistence/MCP mappings are unchanged.
 - Added focused resettable demo UI coverage and updated the existing outreach check for explicit follow-up expansion. No domain, schema, Supabase, agent instruction or service changes.
 - Validation: frontend typecheck, data validation (147 roles), 11 focused Network/conversation tests, production static build, whitespace check, fictional desktop-dark/mobile-light Network checks, and signed-in mocked outreach persistence checks passed. Covered collapsed defaults, single/multiple process contacts, role isolation, message/reply logging, follow-up persistence, application navigation, demo reset and no demo account mutations. No live inbox or message sending was exercised.
+
+## Follow-up: inline company target editing
+
+- Reused the existing ProfileSection/ProfileValues pencil/checkmark interface on company target Overview; removed Edit company. About Me and its shared components are unchanged. New targets keep the full initial form.
+- Kept existing company revision/save validation, stable retry IDs, sources and linked records/archive controls. Pending company edits survive tab switches; save/discard remains explicit.
+- Removed the extra card and repeated company/role context in company-specific People & outreach, reusing the compact shared editor. No backend, domain, MCP or Supabase changes.
+- Validation: frontend typecheck, data validation (147 roles), 11 focused Network/conversation tests, static production build, whitespace check and fictional desktop/mobile browser checks passed. Covered section saves, required source validation, discard, preservation across company tabs and the company contact panel. About Me and the shared section component have no changes. No live account saves or hosted MCP round trip were exercised.

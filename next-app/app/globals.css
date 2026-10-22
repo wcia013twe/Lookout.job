@@ -837,3 +837,8 @@ button:not(:disabled) {
 .workspace-shell .network-message-event { padding: 16px 0; border-bottom: 1px solid var(--color-board-line); }
 .workspace-shell .network-message-event:first-child { padding-top: 0; }
 @media(max-width:639px) { .workspace-shell .network-more-actions { margin-left: 0; } }
+
+.workspace-shell .company-section-copy { margin-top: 8px; max-width: 70ch; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.8; color: var(--color-board-muted); }
+.workspace-shell .company-save-actions { display: grid; gap: 12px; padding: 20px 0; border-top: 1px solid var(--color-board-line); }
+.workspace-shell .company-contact-panel { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.workspace-shell .company-outreach > div:first-child h1 { font-size: 20px; }

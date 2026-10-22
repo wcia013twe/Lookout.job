@@ -29,7 +29,7 @@ try{
   await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*','Content-Range':'0-0/0'},body:JSON.stringify(body)});
  });
  const page=await context.newPage();page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.message));
- await page.goto(`${process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3047'}/referrals/`);
+ await page.goto(`${process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3047'}/referrals/?view=targets`);
  await page.waitForFunction(()=>window.JB?.cloud?.ready);
  await page.getByRole('heading',{name:'Network',exact:true}).waitFor();
  await page.getByRole('button',{name:'Add target',exact:true}).click();
@@ -66,8 +66,9 @@ try{
  await page.evaluate(()=>window.scrollTo(0,0));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  await page.screenshot({path:dir+'/detail-desktop.png',fullPage:false,animations:'disabled'});
  console.log('Grid/detail captures finished');const before=mutations.length,companyReads=cloud.filter(u=>u.includes('/rpc/network_action')).length;
- await page.getByRole('button',{name:'Edit company',exact:true}).click();
+ await page.getByRole('button',{name:'Edit Why I’m interested',exact:true}).click();
  await page.getByLabel('Why I’m interested',{exact:true}).fill('Updated fictional research interest.');
+ await page.getByRole('button',{name:'Edit Research sources',exact:true}).click();
  await page.getByRole('button',{name:'Add source',exact:true}).click();
  await page.getByLabel('Source 2 title',{exact:true}).fill('Fictional team guide');
  await page.getByLabel('Source 2 URL',{exact:true}).fill('https://example.com/team');
@@ -91,7 +92,7 @@ try{
  assert.equal(mutations.length,before,'Demo actions must not write account data: '+JSON.stringify(mutations.slice(before)));
  assert.equal(cloud.filter(u=>u.includes('/rpc/network_action')).length,companyReads,'Demo company reads must use memory');
  // Process view scopes drafts to the application, even for two roles at one company.
- await page.getByRole('button',{name:'Active processes',exact:true}).click();
+ await page.getByRole('button',{name:'Active Processes',exact:true}).click();
  await page.getByRole('button',{name:/Cedar Systems.*Backend Engineer/}).click();
  if(!await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).isVisible())await page.getByText('Prepare another message',{exact:true}).click();
  await page.getByRole('textbox',{name:'Message for Morgan (fictional)'}).waitFor();
@@ -124,14 +125,14 @@ try{
  // Verify the light palette through the existing header theme control.
  await page.getByLabel('Color theme',{exact:true}).filter({visible:true}).selectOption('light');
  await page.screenshot({path:dir+'/targets-light.png',fullPage:false,animations:'disabled'});
- await page.getByRole('button',{name:'Active processes',exact:true}).click();
+ await page.getByRole('button',{name:'Active Processes',exact:true}).click();
  await page.screenshot({path:dir+'/process-light.png',fullPage:false,animations:'disabled'});
  await page.getByLabel('Color theme',{exact:true}).filter({visible:true}).selectOption('dark');
  await page.getByRole('link',{name:/^Action board/i}).click();
  await page.getByRole('heading',{name:'Company follow-ups',exact:true}).waitFor();
  await page.getByRole('link',{name:'Open company',exact:true}).click();
  await page.getByRole('heading',{name:'Cedar Systems (demo)',exact:true}).waitFor();
- await page.getByRole('button',{name:'Edit company',exact:true}).click();
+ await page.getByText('Linked records & archive',{exact:true}).click();
  await page.getByLabel('Archive company and pause its follow-up reminders',{exact:true}).check();
  await page.getByRole('button',{name:'Save company',exact:true}).click();
  await page.getByRole('link',{name:/^Action board/i}).click();

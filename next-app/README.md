@@ -304,3 +304,11 @@ behind explicit controls. Logging still records user/agent-reported history,
 never sends a message, and preserves the existing contact/MCP envelope.
 `scripts/check-network-compact-ui.mjs` covers fictional process isolation, compact
 defaults, logging and shared-history presentation on desktop/mobile.
+
+Company target Overview now uses the existing About Me `ProfileSection` pencil/checkmark
+pattern for company details, interests, teams, questions, research, next action and
+sources. This does not change About Me or that shared component. The global Edit
+company button is removed; inline saves retain company revision checks. Unsaved
+company edits survive company tab switches, and a save footer can save/discard all
+pending edits. Linked records/archive remain in a disclosure. Company People &
+outreach uses the shared compact contact editor without another enclosing card.
