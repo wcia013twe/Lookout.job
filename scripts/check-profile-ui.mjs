@@ -135,6 +135,16 @@ try{
  await page.getByRole('combobox',{name:/Profile section/}).selectOption('about');
  await page.getByRole('combobox',{name:/Profile section/}).selectOption('kit');
  assert.equal(await personalization.getByRole('textbox',{name:/^Outreach custom guidance/}).inputValue(),'Fictional mobile draft');
+ await page.getByRole('combobox',{name:/Profile section/}).selectOption('agent');
+ await page.getByRole('combobox',{name:/^Circle/}).waitFor();
+ await page.getByText('Allow limited public links',{exact:true}).click();
+ await page.getByRole('checkbox',{name:'Preparation resource links',exact:true}).check();
+ await page.getByRole('button',{name:'Save link permissions',exact:true}).click();
+ await page.getByText('Sharing permissions saved.',{exact:true}).waitFor();
+ await page.getByText('My agent’s sources',{exact:true}).click();
+ await page.getByText('demo-plan-1',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Retract receipt',exact:true}).click();
+ await page.getByText('Receipt retracted.',{exact:true}).waitFor();
  assert.equal(cloud.length,before,'Demo edits must not call cloud');assert.equal(errors.length,0,errors.join('\n'));
  console.log('PASS: About me pills; Personalization reading/editing/preview; draft preservation; save/reload; profile switching/unset states; demo reset; desktop dark/mobile light; no overflow; demo cloud isolation; no page errors');
 }finally{await browser.close();}

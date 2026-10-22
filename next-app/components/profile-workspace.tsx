@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
@@ -11,6 +11,7 @@ import Resumes from "./resumes";
 import SavedAnswers from "./saved-answers";
 import SearchTargets from "./search-targets";
 import DailySchedule from "./daily-schedule";
+import CircleAgentSettings from "./circle-agent-settings";
 import Preferences from "./preferences";
 import AgentConnections from "./agent-connections";
 import {
@@ -36,6 +37,13 @@ function ProfileContent() {
     a = useApplicationProfile();
   const [active, setActive] = useState<ProfileSectionId>("overview"),
     [visited, setVisited] = useState<ProfileSectionId[]>([]);
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("section");
+    if (sections.some(([id]) => id === requested)) {
+      setActive(requested as ProfileSectionId);
+      setVisited([requested as ProfileSectionId]);
+    }
+  }, []);
   function select(id: ProfileSectionId) {
     setActive(id);
     setVisited((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -168,6 +176,7 @@ function ProfileContent() {
             Change companion
           </Link>
           <AgentConnections />
+          <CircleAgentSettings />
           <DailySchedule />
           <SearchTargets />
           <Preferences mode="agent" showDefaultResume={false} />

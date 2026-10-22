@@ -11,3 +11,4 @@
 
 - Local landing integration: preserved concurrent About me section-save behavior, removed footer/authorization notes and entry icons, plus My agent daily schedule and other main updates. Resolved shared README and profile-check conflicts; Personalization keeps its existing explicit profile save while About me saves from its section checkmarks.
 - Integration verification: all 425 tests, data validation, production export and the complete profile browser check passed after conflict resolution. The first integration build hit a transient host ENOSPC error; retry passed. Source-only integration review confirmed the ship verdict and resolved tooltip minor.
+- A second concurrent-main integration preserved custom daily tasks, Profile section deep links and Circle agent settings; both sets of demo checks are retained.

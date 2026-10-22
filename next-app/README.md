@@ -136,10 +136,13 @@ applications or write real account records.
 
 Personalization matches About me: materials, Employer questions, Outreach and the account-wide PDF default use readable profile sections with scoped pencil editing. Shared libraries remain expanded. Demo Full-time has selected materials and writing guidance; Internship demonstrates no selections and an unset writing length. Verify section edits, preview, unsaved tab switching, save/reload, profile switching, mobile/light mode and reset with `scripts/check-profile-ui.mjs`; all cloud traffic is intercepted. Existing website/MCP profile-save contracts are unchanged.
 
-My agent includes a simple daily schedule: four routine switches and local times,
+My agent includes a simple daily schedule: editable daily tasks with switches and local times,
 one time zone and a master pause. It saves through the existing preferences store;
-agent runtime setup remains separate. In admin Demo, midday starts off: edit a
-time, pause one/all routines, save, switch sections and return, then reset to
+agent runtime setup remains separate. The four Lookout routines are defaults. Add custom tasks with a name, time and
+optional instructions, or remove any task (including every default). An empty
+saved schedule stays empty. In admin Demo, midday starts off and a fictional
+custom practice task is included: add/remove tasks, edit a time, pause one/all
+tasks, save, switch sections and return, then reset to
 restore the fictional schedule. No demo interaction creates automations or writes
 to account storage. The existing save_notification_preferences MCP boundary can
 edit preferences.search.schedule with its current preferences timestamp; no new
