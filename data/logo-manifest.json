@@ -1,338 +1,683 @@
 {
-  "adobe": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/adobe/1445607997f5ced5.png",
-    "sha256": "1445607997f5ced576424cb981801336d6a13f09b214d1f26a32fe6d5d623321",
-    "contentType": "image/png"
-  },
-  "affirm": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/affirm/6b644db9916ec3e9.png",
-    "sha256": "6b644db9916ec3e9601810099d738e909ce26d02e9e493b7c8608a081034b5c6",
-    "contentType": "image/png"
-  },
-  "akuna-capital": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/akuna-capital/d22ed9d3295edce0.png",
-    "sha256": "d22ed9d3295edce017d57843d9d3634ee0ce19e47ed4b2de534579cd25a81450",
-    "contentType": "image/png"
-  },
-  "amazonaws": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/amazonaws/e24c587bcd7fbebc.png",
-    "sha256": "e24c587bcd7fbebc8f0f51d21319c38f7cf8380894eb619aba8eccfbd2626af6",
-    "contentType": "image/png"
-  },
-  "arcesium": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/arcesium/adedb3ef99f33c6e.png",
-    "sha256": "adedb3ef99f33c6e780ae4546f913bee18924143759753c10175e630710343cc",
-    "contentType": "image/png"
-  },
-  "astera-labs": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/astera-labs/9bff92cae91f0c57.png",
-    "sha256": "9bff92cae91f0c57340a4fd979fcdae57802960d7a9a3dea0d5a776e7d5f0bd9",
-    "contentType": "image/png"
-  },
-  "aurelian": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/aurelian/1571a65bc31e4840.png",
-    "sha256": "1571a65bc31e4840991bc21e3c40e8ada0e87c15b33a400f46a9b71efa798c91",
-    "contentType": "image/png"
-  },
-  "bytedance": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/bytedance/edfcd80db6ad4a43.png",
-    "sha256": "edfcd80db6ad4a4303bd301161376fa14805208c69c72cf92a2aa50f72be9e5e",
-    "contentType": "image/png"
-  },
-  "chalk": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/chalk/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "citi": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/citi/359bd099e14a821b.png",
-    "sha256": "359bd099e14a821b4631a491d6038bf82936328ea84744c0e5141ac95caa4238",
-    "contentType": "image/png"
-  },
-  "clay": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/clay/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "cloudflare": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/cloudflare/8a4be238a53b051f.png",
-    "sha256": "8a4be238a53b051f19748182f3217559f65c6110c6b8f672852c34d78016bd31",
-    "contentType": "image/png"
-  },
-  "cohere": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/cohere/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "coinbase": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/coinbase/abc2513b057ee511.png",
-    "sha256": "abc2513b057ee5113664df266d698a4c2445e7008f7a782245ecba1218873eb4",
-    "contentType": "image/png"
-  },
-  "cook-medical": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/cook-medical/c92cb39163593b0f.png",
-    "sha256": "c92cb39163593b0f0fe597c4161ac88b3629efc425d0bde98acfb5a923ec629e",
-    "contentType": "image/png"
-  },
-  "databricks": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/databricks/dd57386421609dd9.png",
-    "sha256": "dd57386421609dd9cb34480a62ccfd8f91fcd9eece6629ec5d703c47d20f0b8b",
-    "contentType": "image/png"
-  },
-  "datadog": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/datadog/f0a070d286ed47ac.png",
-    "sha256": "f0a070d286ed47ace1a1f60f3f935e3a0595694929496458f3886973b831db1b",
-    "contentType": "image/png"
-  },
-  "decagon": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/decagon/5c8f2c06d0ece4e7.png",
-    "sha256": "5c8f2c06d0ece4e798d033f7a0025d4e773c057c9ed35437f4f62ecbdf771c75",
-    "contentType": "image/png"
-  },
-  "docusign": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/docusign/6dda7d4285e24e50.png",
-    "sha256": "6dda7d4285e24e50c0e0405ff6697508421f4515fc2c20b384dce610444e5dcd",
-    "contentType": "image/png"
-  },
-  "doordash": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/doordash/b7897cde1cd64556.png",
-    "sha256": "b7897cde1cd645563bd4b9407c7a30d13e0456f15b2e785efe394f5abe0c9342",
-    "contentType": "image/png"
-  },
-  "dropbox": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/dropbox/8c076b75767facad.png",
-    "sha256": "8c076b75767facad7089e04650738797cadbfb465d5f6b66cdc2b11107d4b908",
-    "contentType": "image/png"
-  },
-  "electronic-arts": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/electronic-arts/be85637031e8f49a.png",
-    "sha256": "be85637031e8f49aac895fc1bc7351153f9a5f413eb282a16da38ef918101bc1",
-    "contentType": "image/png"
-  },
-  "evenup": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/evenup/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "everpure-formerly-pure-storage": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/everpure-formerly-pure-storage/6f0ffc8d858373dd.png",
-    "sha256": "6f0ffc8d858373ddd3cb7f1f950a69953d78c2f3607556c3f8c104347da360af",
-    "contentType": "image/png"
-  },
-  "expedia-group": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/expedia-group/7e4e5ea34c6551c4.png",
-    "sha256": "7e4e5ea34c6551c4c74714c745f3014170e14aefd262d68de7f3a266fac7e6c4",
-    "contentType": "image/png"
-  },
-  "figma": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/figma/e20741e23e52c358.png",
-    "sha256": "e20741e23e52c358b758ab00564141ce0ba104e42d087466addf6a4aca7206e1",
-    "contentType": "image/png"
-  },
-  "figure-ai": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/figure-ai/c79691c69dbf766f.jpg",
-    "sha256": "c79691c69dbf766f915781714f55e438cd8759fb0cd5db9a7f7eacc7108a2f10",
-    "contentType": "image/jpeg"
-  },
-  "first-citizens-bank": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/first-citizens-bank/5887ff1308d32d73.png",
-    "sha256": "5887ff1308d32d73d11a7a12c395faf6dbd6a12a9c1cda8de4b16a79f73d44cc",
-    "contentType": "image/png"
-  },
-  "freeform": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/freeform/3dcaa41b553c2b82.png",
-    "sha256": "3dcaa41b553c2b8287b710e2b71d2d42f7433367b3338d53809fcdb5772d1642",
-    "contentType": "image/png"
-  },
-  "ge-vernova": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ge-vernova/d792e31fc0028070.png",
-    "sha256": "d792e31fc0028070ed2f4157eb64bd31981513dbb7ef91324cbab2fb402c3be9",
-    "contentType": "image/png"
-  },
-  "general-motors": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/general-motors/af3ce2dce6a29f79.png",
-    "sha256": "af3ce2dce6a29f79e4fe97ea5cced4cbb0936fbf3003917238ebbbff337ba218",
-    "contentType": "image/png"
-  },
-  "google": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/google/8720df457a93b97d.png",
-    "sha256": "8720df457a93b97d3cdd7c05714c8e255a1969085844eb247756b869dbea636a",
-    "contentType": "image/png"
-  },
-  "harvey": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/harvey/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "headlands-technologies-llc": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/headlands-technologies-llc/bf0008bdcbf21463.png",
-    "sha256": "bf0008bdcbf21463026bdb972b7bd858848a7c295f7bf319eb20d2cd77b3498f",
-    "contentType": "image/png"
-  },
-  "hp": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/hp/483065176aa56d08.png",
-    "sha256": "483065176aa56d08364742c03b2c1f444460d34b7d7f85bd31cf59eb8d1d0278",
-    "contentType": "image/png"
-  },
-  "imc": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/imc/052100c90c6933bd.png",
-    "sha256": "052100c90c6933bd329a07ffd72cfc5d677b557fc1f8789a4cc111881cae40b4",
-    "contentType": "image/png"
-  },
-  "ixl-learning": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ixl-learning/3c726c04b2c49d56.png",
-    "sha256": "3c726c04b2c49d567e6bb5cb1cc080083ef37f7a6db98c2a5f95e202c83e4b21",
-    "contentType": "image/png"
-  },
-  "klaviyo": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/klaviyo/a3a1928900a00a8f.png",
-    "sha256": "a3a1928900a00a8fdd36420dd68e455c5f8bc8f62210ad229bedf0f7ee1dbb66",
-    "contentType": "image/png"
-  },
-  "kled-ai": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/kled-ai/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "micron": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/micron/e96106692b8fed58.png",
-    "sha256": "e96106692b8fed5817d77981898e73b821410050ececb486b914d2bbd610e477",
-    "contentType": "image/png"
-  },
-  "microsoft": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/microsoft/112fec798b78aa02.png",
-    "sha256": "112fec798b78aa02e102a724b5cb1990c0f909bc1d8b7b1fa256eab41bbc0960",
-    "contentType": "image/png"
-  },
-  "monolithic-power-systems": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/monolithic-power-systems/453ac5bee49770b3.png",
-    "sha256": "453ac5bee49770b36b17bd1dbfdc312a220a0417fea3087e04fc996f83d9bd4d",
-    "contentType": "image/png"
-  },
-  "nuro": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/nuro/df080fe8d63f7493.png",
-    "sha256": "df080fe8d63f7493d86472533f1883ef2eb8e4683cd8b1e4adac6512dd0c8d9a",
-    "contentType": "image/png"
-  },
-  "nvidia": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/nvidia/ef933b3647125f8c.png",
-    "sha256": "ef933b3647125f8c6635f327eb4814b541a61bc0be66917e9c226c84a240e56e",
-    "contentType": "image/png"
-  },
-  "pinterest": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/pinterest/4b20e4401c38a61a.png",
-    "sha256": "4b20e4401c38a61ae629a026f0ee81a5607ab066e3d007fac465b46447fbe615",
-    "contentType": "image/png"
-  },
-  "powertown": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/powertown/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "qumulo": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/qumulo/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "render": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/render/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "replit": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/replit/853f8fb0ccefa7e1.png",
-    "sha256": "853f8fb0ccefa7e1276e9553baad8beaef1e467cac63d0c540dace9b18f4c779",
-    "contentType": "image/png"
-  },
-  "rivian": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/rivian/14cc2869a8805bf2.png",
-    "sha256": "14cc2869a8805bf2522bf306e21d2641e26681ecc57689ca071fb37278f6804a",
-    "contentType": "image/png"
-  },
-  "robinhood": {
-    "url": "https://robinhood.com/us/en/rh_favicon_152.png?v=2024",
-    "contentType": "image/png",
-    "source": "official",
-    "sha256": "274ddce8e6fcec2a48dc88b290b91f79e178cb34b1b3d0360b33db882399fd69"
-  },
-  "rocket": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/rocket/b84fc34425bdbace.png",
-    "sha256": "b84fc34425bdbacee4bad1449d7790c3fc3f40a4bfb425001460688477d8cc94",
-    "contentType": "image/png"
-  },
-  "seatgeek": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/seatgeek/1cfd88512b479c7d.png",
-    "sha256": "1cfd88512b479c7debe1d18e8e7fb42ac70f16a6059af4dda9e53fc9a0840000",
-    "contentType": "image/png"
-  },
-  "sephora": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/sephora/a51ee37964fae57e.png",
-    "sha256": "a51ee37964fae57ea4fd581b8bf2632c809ded72783092ce6fbaca416e65bacc",
-    "contentType": "image/png"
-  },
-  "shield-ai": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/shield-ai/27e98ff37d321748.png",
-    "sha256": "27e98ff37d321748bb451527d2c4b364bedbccbd4593aa90b8741274efa110d2",
-    "contentType": "image/png"
-  },
-  "sigma-computing": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/sigma-computing/a8a1ce68afeb882f.png",
-    "sha256": "a8a1ce68afeb882f7b1a236831bb5c6fdb8e8b87cb760ce94f64d8eb6af0fdce",
-    "contentType": "image/png"
-  },
-  "singlestore": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/singlestore/d666d27be150dcc7.png",
-    "sha256": "d666d27be150dcc74164fa0948447aa1dbe16fa27655a5de0820e46b2c7c8d84",
-    "contentType": "image/png"
-  },
-  "snowflake": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/snowflake/115ae1bc11df9169.png",
-    "sha256": "115ae1bc11df91693363b79c951c280152b27e0a583b81f19f4f57b2a0aad6ba",
-    "contentType": "image/png"
-  },
-  "stripe": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/stripe/b5fd2440dccb0406.png",
-    "sha256": "b5fd2440dccb04065abb43911dff51beb857a709529be69ff25cd8dcf708c9fc",
-    "contentType": "image/png"
-  },
-  "tencent": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/tencent/f465c609bbddf9e8.png",
-    "sha256": "f465c609bbddf9e87d2fa35573dcc29bb4e5ec31078b30539c85da1632bbf04f",
-    "contentType": "image/png"
-  },
-  "tenstorrent": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/tenstorrent/68edbfb3a302d625.png",
-    "sha256": "68edbfb3a302d6250fb4a94aabefb77b738a99d17c824c6dff416a0ea37b4e61",
-    "contentType": "image/png"
-  },
-  "tesla": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/tesla/76c37981eb03832e.png",
-    "sha256": "76c37981eb03832ecb3d32fe782f43171a98da0144f5b0950fbeabfc95a67e4c",
-    "contentType": "image/png"
-  },
-  "together-ai": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/together-ai/7c15339537a27b86.png",
-    "sha256": "7c15339537a27b864a8a0e523bb23dfc2f173593c6ff0967a4f03de59ec63a0b",
-    "contentType": "image/png"
-  },
-  "two-sigma": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/two-sigma/a2d38d77bf364ddd.png",
-    "sha256": "a2d38d77bf364dddf06d45ffa0a3225fbb173fd3fcfe3cf59815cc62fe39a3c3",
-    "contentType": "image/png"
-  },
-  "versant": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/versant/589f5803e9cb6fd8.jpg",
-    "sha256": "589f5803e9cb6fd8b080f8b57ff5a781e2ebf030d5b139f3b2b319a9099781eb",
-    "contentType": "image/jpeg"
-  },
-  "whoop": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/whoop/2c71b720d0677493.png",
-    "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
-    "contentType": "image/png"
-  },
-  "ziprecruiter": {
-    "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ziprecruiter/ccb1fabdca821395.png",
-    "sha256": "ccb1fabdca8213956494869e02e84d454035cd90cbe4e98bdcc87edf12b495ec",
-    "contentType": "image/png"
-  }
+ "acadian-asset-management": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/acadian-asset-management.png",
+  "sha256": "627bb250b6a74228b1700de39d282940922980688303c33c7e613c9cb8e7a0c8",
+  "contentType": "image/png"
+ },
+ "adobe": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/adobe/1445607997f5ced5.png",
+  "sha256": "1445607997f5ced576424cb981801336d6a13f09b214d1f26a32fe6d5d623321",
+  "contentType": "image/png"
+ },
+ "affirm": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/affirm/6b644db9916ec3e9.png",
+  "sha256": "6b644db9916ec3e9601810099d738e909ce26d02e9e493b7c8608a081034b5c6",
+  "contentType": "image/png"
+ },
+ "ai2": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/ai2.png",
+  "sha256": "d36fd96eb11d8b32da743b8649819a160774fc5b7d7a188de53fb7b67a9e6498",
+  "contentType": "image/png"
+ },
+ "akuna-capital": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/akuna-capital/d22ed9d3295edce0.png",
+  "sha256": "d22ed9d3295edce017d57843d9d3634ee0ce19e47ed4b2de534579cd25a81450",
+  "contentType": "image/png"
+ },
+ "amazon": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/amazon.png",
+  "sha256": "cf39ef4f70ada127ce40ab44e03d155e57826b6418c8c304314100cdc58d09b9",
+  "contentType": "image/png"
+ },
+ "amazonaws": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/amazonaws/e24c587bcd7fbebc.png",
+  "sha256": "e24c587bcd7fbebc8f0f51d21319c38f7cf8380894eb619aba8eccfbd2626af6",
+  "contentType": "image/png"
+ },
+ "anduril": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/anduril.png",
+  "sha256": "93bab5f3bcc86b666657dbc4ee2b35edbcec6be7523b76b59e1af3a7b21942a9",
+  "contentType": "image/png"
+ },
+ "angel-city-fc": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/angel-city-fc.png",
+  "sha256": "3100819d57cfd70aa1bcd4711fd3425b0868ca0a381d17dabcd202237971c5cf",
+  "contentType": "image/png"
+ },
+ "apple": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/apple.png",
+  "sha256": "db4f305ebecaddc7d36b567f625eb14277ff0fc41bb899d8111a294b0305fa6c",
+  "contentType": "image/png"
+ },
+ "applied-materials": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/applied-materials.png",
+  "sha256": "4648884fa0f8e0775f5243aad702b60fdbf96476c8e51b2be4e5e045b48dc558",
+  "contentType": "image/png"
+ },
+ "arcesium": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/arcesium/adedb3ef99f33c6e.png",
+  "sha256": "adedb3ef99f33c6e780ae4546f913bee18924143759753c10175e630710343cc",
+  "contentType": "image/png"
+ },
+ "astera-labs": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/astera-labs/9bff92cae91f0c57.png",
+  "sha256": "9bff92cae91f0c57340a4fd979fcdae57802960d7a9a3dea0d5a776e7d5f0bd9",
+  "contentType": "image/png"
+ },
+ "aurelian": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/aurelian/1571a65bc31e4840.png",
+  "sha256": "1571a65bc31e4840991bc21e3c40e8ada0e87c15b33a400f46a9b71efa798c91",
+  "contentType": "image/png"
+ },
+ "boeing": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/boeing.png",
+  "sha256": "fe0c3e31aa69e45dbf106fc23eaf2fdd0e1b3d8e4887c9fe126ec91101d688a8",
+  "contentType": "image/png"
+ },
+ "booz-allen-hamilton": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/booz-allen-hamilton.png",
+  "sha256": "fcde9815bd5b56eb8fcb4c2489f37eac327f184faedfe78110f68383632ef41d",
+  "contentType": "image/png"
+ },
+ "bosch": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/bosch.png",
+  "sha256": "5c1d8b350b482f8c4815c209cb0566ade6e16b43407ff53fb3bf0cf7c80765f4",
+  "contentType": "image/png"
+ },
+ "boston-scientific": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/boston-scientific.png",
+  "sha256": "794e979dc2042a0e78dc77b1a66b94332b1192a8dfab29934adefbe98472fd5d",
+  "contentType": "image/png"
+ },
+ "brain-co": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/brain-co.png",
+  "sha256": "5b70e8d20dedf0a05b6b2949c3e6fb7d6beca4397e7a21035bebf589b09b67b6",
+  "contentType": "image/png"
+ },
+ "braze": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/braze.png",
+  "sha256": "491f7d36196aa85a69aebf9f094c04ff46c1edc5a3ee85acb8227175cb3ea607",
+  "contentType": "image/png"
+ },
+ "brookfield": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/brookfield.png",
+  "sha256": "b0551093663642d4f7b0401f176821e620716958625bac81f808e16297b40119",
+  "contentType": "image/png"
+ },
+ "bytedance": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/bytedance/edfcd80db6ad4a43.png",
+  "sha256": "edfcd80db6ad4a4303bd301161376fa14805208c69c72cf92a2aa50f72be9e5e",
+  "contentType": "image/png"
+ },
+ "cboe": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/cboe.png",
+  "sha256": "b61b28bbfa60b27e8bc086924bab8438ae65a41e76e70957ab8423d3e7cf04f9",
+  "contentType": "image/png"
+ },
+ "centalion": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/centalion.png",
+  "sha256": "3359f3f850f5d2843b311219878bce7876c2a5a647e6a74079bff295edcd7d03",
+  "contentType": "image/png"
+ },
+ "chalk": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/chalk/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "citi": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/citi/359bd099e14a821b.png",
+  "sha256": "359bd099e14a821b4631a491d6038bf82936328ea84744c0e5141ac95caa4238",
+  "contentType": "image/png"
+ },
+ "clay": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/clay/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "cloudflare": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/cloudflare/8a4be238a53b051f.png",
+  "sha256": "8a4be238a53b051f19748182f3217559f65c6110c6b8f672852c34d78016bd31",
+  "contentType": "image/png"
+ },
+ "cohere": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/cohere/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "coinbase": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/coinbase/abc2513b057ee511.png",
+  "sha256": "abc2513b057ee5113664df266d698a4c2445e7008f7a782245ecba1218873eb4",
+  "contentType": "image/png"
+ },
+ "cook-medical": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/cook-medical/c92cb39163593b0f.png",
+  "sha256": "c92cb39163593b0f0fe597c4161ac88b3629efc425d0bde98acfb5a923ec629e",
+  "contentType": "image/png"
+ },
+ "databricks": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/databricks/dd57386421609dd9.png",
+  "sha256": "dd57386421609dd9cb34480a62ccfd8f91fcd9eece6629ec5d703c47d20f0b8b",
+  "contentType": "image/png"
+ },
+ "datadog": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/datadog/f0a070d286ed47ac.png",
+  "sha256": "f0a070d286ed47ace1a1f60f3f935e3a0595694929496458f3886973b831db1b",
+  "contentType": "image/png"
+ },
+ "decagon": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/decagon/5c8f2c06d0ece4e7.png",
+  "sha256": "5c8f2c06d0ece4e798d033f7a0025d4e773c057c9ed35437f4f62ecbdf771c75",
+  "contentType": "image/png"
+ },
+ "docusign": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/docusign/6dda7d4285e24e50.png",
+  "sha256": "6dda7d4285e24e50c0e0405ff6697508421f4515fc2c20b384dce610444e5dcd",
+  "contentType": "image/png"
+ },
+ "doordash": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/doordash/b7897cde1cd64556.png",
+  "sha256": "b7897cde1cd645563bd4b9407c7a30d13e0456f15b2e785efe394f5abe0c9342",
+  "contentType": "image/png"
+ },
+ "dropbox": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/dropbox/8c076b75767facad.png",
+  "sha256": "8c076b75767facad7089e04650738797cadbfb465d5f6b66cdc2b11107d4b908",
+  "contentType": "image/png"
+ },
+ "duolingo": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/duolingo.png",
+  "sha256": "03bd7f78b7a65fefe28e0d3b0ee8bd400761272d6097d6c4f5b4f5a783f2e9de",
+  "contentType": "image/png"
+ },
+ "electronic-arts": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/electronic-arts/be85637031e8f49a.png",
+  "sha256": "be85637031e8f49aac895fc1bc7351153f9a5f413eb282a16da38ef918101bc1",
+  "contentType": "image/png"
+ },
+ "evenup": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/evenup/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "everpure-formerly-pure-storage": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/everpure-formerly-pure-storage/6f0ffc8d858373dd.png",
+  "sha256": "6f0ffc8d858373ddd3cb7f1f950a69953d78c2f3607556c3f8c104347da360af",
+  "contentType": "image/png"
+ },
+ "expedia-group": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/expedia-group/7e4e5ea34c6551c4.png",
+  "sha256": "7e4e5ea34c6551c4c74714c745f3014170e14aefd262d68de7f3a266fac7e6c4",
+  "contentType": "image/png"
+ },
+ "fedex": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/fedex.png",
+  "sha256": "cafae307678ad5e66cc53c597df8d83a6f29c23dd9f3a2c569c30e80e00a3dd2",
+  "contentType": "image/png"
+ },
+ "figma": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/figma/e20741e23e52c358.png",
+  "sha256": "e20741e23e52c358b758ab00564141ce0ba104e42d087466addf6a4aca7206e1",
+  "contentType": "image/png"
+ },
+ "figure-ai": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/figure-ai/c79691c69dbf766f.jpg",
+  "sha256": "c79691c69dbf766f915781714f55e438cd8759fb0cd5db9a7f7eacc7108a2f10",
+  "contentType": "image/jpeg"
+ },
+ "first-citizens-bank": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/first-citizens-bank/5887ff1308d32d73.png",
+  "sha256": "5887ff1308d32d73d11a7a12c395faf6dbd6a12a9c1cda8de4b16a79f73d44cc",
+  "contentType": "image/png"
+ },
+ "freeform": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/freeform/3dcaa41b553c2b82.png",
+  "sha256": "3dcaa41b553c2b8287b710e2b71d2d42f7433367b3338d53809fcdb5772d1642",
+  "contentType": "image/png"
+ },
+ "garmin": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/garmin.png",
+  "sha256": "a2d0ee4417cb179a62c8592eff1f36941bcccfe73d19af39a0e1e7bb7a6be97c",
+  "contentType": "image/png"
+ },
+ "ge-vernova": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ge-vernova/d792e31fc0028070.png",
+  "sha256": "d792e31fc0028070ed2f4157eb64bd31981513dbb7ef91324cbab2fb402c3be9",
+  "contentType": "image/png"
+ },
+ "general-motors": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/general-motors/af3ce2dce6a29f79.png",
+  "sha256": "af3ce2dce6a29f79e4fe97ea5cced4cbb0936fbf3003917238ebbbff337ba218",
+  "contentType": "image/png"
+ },
+ "golden-analytics": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/golden-analytics.png",
+  "sha256": "055f16f8f57115c5d5b7c970f9289dfc608b595105eb22db0b9446281626ce83",
+  "contentType": "image/png"
+ },
+ "google": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/google/8720df457a93b97d.png",
+  "sha256": "8720df457a93b97d3cdd7c05714c8e255a1969085844eb247756b869dbea636a",
+  "contentType": "image/png"
+ },
+ "grande": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/grande.png",
+  "sha256": "9b81f8a59a25aac42d6bbfabe917059f278a59e7bf7c4d233254e17bf598d471",
+  "contentType": "image/png"
+ },
+ "harvey": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/harvey/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "headlands-technologies-llc": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/headlands-technologies-llc/bf0008bdcbf21463.png",
+  "sha256": "bf0008bdcbf21463026bdb972b7bd858848a7c295f7bf319eb20d2cd77b3498f",
+  "contentType": "image/png"
+ },
+ "hitachi": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/hitachi.png",
+  "sha256": "bb46e26edba1e7ef196349c309c55ebee47aba135b40e5a9544bcd0a1b926cd5",
+  "contentType": "image/png"
+ },
+ "hp": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/hp/483065176aa56d08.png",
+  "sha256": "483065176aa56d08364742c03b2c1f444460d34b7d7f85bd31cf59eb8d1d0278",
+  "contentType": "image/png"
+ },
+ "hpe": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/hpe.png",
+  "sha256": "45d224112173152f9b87e9885911bd9b7e51bc96508a9e69a5c22e1571678d70",
+  "contentType": "image/png"
+ },
+ "humana": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/humana.png",
+  "sha256": "54157372ed28ce6184b73908ddf07bd2fcf51cc306ddfc4c5b9e02ace13774d1",
+  "contentType": "image/png"
+ },
+ "humble-robotics": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/humble-robotics.png",
+  "sha256": "6493926720c327e2e63223f819fecfdf144276048a8c524c0f70d4334be131fe",
+  "contentType": "image/png"
+ },
+ "ibm": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/ibm.png",
+  "sha256": "c966191a4649af6c20820a41e61a9ed3a6907f61533aec346775e87a8a863e65",
+  "contentType": "image/png"
+ },
+ "illumio": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/illumio.png",
+  "sha256": "5928277865e175589cf5c4801dd3ddb7ce8d6962c101390306df0095d29b7111",
+  "contentType": "image/png"
+ },
+ "imc": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/imc/052100c90c6933bd.png",
+  "sha256": "052100c90c6933bd329a07ffd72cfc5d677b557fc1f8789a4cc111881cae40b4",
+  "contentType": "image/png"
+ },
+ "impulse-space": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/impulse-space.png",
+  "sha256": "21a9a4bd556c9643b4e8f7a9e3dc6aaa9e42a171b8630844d6e26fbe1be948b8",
+  "contentType": "image/png"
+ },
+ "insomniac-games": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/insomniac-games.png",
+  "sha256": "e79d7f49415f919857376c704643ef73b229f72647103b74f5676b87169f9510",
+  "contentType": "image/png"
+ },
+ "intuit": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/intuit.png",
+  "sha256": "11fd02d1d68bf3dc6b311b9e296d65900fb3e068ef5e924381a22aef410d05b6",
+  "contentType": "image/png"
+ },
+ "invesco": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/invesco.png",
+  "sha256": "de901fdca7b8895995d43bf34141c92cb50b35a50ce243f06fa6a87da35ce0d9",
+  "contentType": "image/png"
+ },
+ "ixl-learning": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ixl-learning/3c726c04b2c49d56.png",
+  "sha256": "3c726c04b2c49d567e6bb5cb1cc080083ef37f7a6db98c2a5f95e202c83e4b21",
+  "contentType": "image/png"
+ },
+ "jmp": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/jmp.png",
+  "sha256": "3c07a82039dcedd643e31d6cf77fcd60ef1f866bcf55034f1af10cd83f31913c",
+  "contentType": "image/png"
+ },
+ "johns-hopkins-apl": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/johns-hopkins-apl.png",
+  "sha256": "b0d5cb457cb215377bba986ca5d54c37e6178794bc85772711dffef781a757a9",
+  "contentType": "image/png"
+ },
+ "johnson-johnson": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/johnson-johnson.png",
+  "sha256": "929a68e150f11b8cc564d2aefabcaabbc49b034bad6d298384424e9dee0c770f",
+  "contentType": "image/png"
+ },
+ "jpmorganchase": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/jpmorganchase.png",
+  "sha256": "39b2d128b98b1e65ee87a0f7db74ff20c8edee38f84ea2845cfe78f126d5a143",
+  "contentType": "image/png"
+ },
+ "keysight": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/keysight.png",
+  "sha256": "19ac943d13c9713000d34d0d1d6923193e03cad58e764869f30fe429cbda115a",
+  "contentType": "image/png"
+ },
+ "klaviyo": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/klaviyo/a3a1928900a00a8f.png",
+  "sha256": "a3a1928900a00a8fdd36420dd68e455c5f8bc8f62210ad229bedf0f7ee1dbb66",
+  "contentType": "image/png"
+ },
+ "kled-ai": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/kled-ai/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "l3harris": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/l3harris.png",
+  "sha256": "e5cca63bf9d47bf276bfc31d0c7e40675a106d2f726e56e3b17bdc2d54b125bd",
+  "contentType": "image/png"
+ },
+ "linkedin": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/linkedin.png",
+  "sha256": "5dc1bff560817bd85aca32945e569e9f601e88165e2f2d44c2278ed07526c369",
+  "contentType": "image/png"
+ },
+ "marvell": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/marvell.png",
+  "sha256": "c0db8d9f089d39d8b64123111786055fb760b2b6db83cbfee3e7350bf9701f81",
+  "contentType": "image/png"
+ },
+ "meta": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/meta.png",
+  "sha256": "fe8d6e5b93225cc170202b8cc9d85cc8dc006c3ff497f425741b1cba13c6d188",
+  "contentType": "image/png"
+ },
+ "micron": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/micron/e96106692b8fed58.png",
+  "sha256": "e96106692b8fed5817d77981898e73b821410050ececb486b914d2bbd610e477",
+  "contentType": "image/png"
+ },
+ "microsoft": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/microsoft/112fec798b78aa02.png",
+  "sha256": "112fec798b78aa02e102a724b5cb1990c0f909bc1d8b7b1fa256eab41bbc0960",
+  "contentType": "image/png"
+ },
+ "monolithic-power-systems": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/monolithic-power-systems/453ac5bee49770b3.png",
+  "sha256": "453ac5bee49770b36b17bd1dbfdc312a220a0417fea3087e04fc996f83d9bd4d",
+  "contentType": "image/png"
+ },
+ "nba": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/nba.png",
+  "sha256": "0cea64746d6d29ccc400af795cbe6e5857e168f9c61a7bbaa55cbbfe84724493",
+  "contentType": "image/png"
+ },
+ "netapp": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/netapp.png",
+  "sha256": "8c1c84b0916aaf524da73ded974a6904709fc031d5c4dab36f33ee47ac7920ed",
+  "contentType": "image/png"
+ },
+ "nintendo": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/nintendo.png",
+  "sha256": "e4a52ed0cd8408b9fc330dc4afa492c9a34ec51f5de80b9a2cdad4fa05e40196",
+  "contentType": "image/png"
+ },
+ "northrop-grumman": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/northrop-grumman.png",
+  "sha256": "6d80ee8fcc610e52f1e49a9883b2bb5101b0632715d83df7624df25ff788150f",
+  "contentType": "image/png"
+ },
+ "nuro": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/nuro/df080fe8d63f7493.png",
+  "sha256": "df080fe8d63f7493d86472533f1883ef2eb8e4683cd8b1e4adac6512dd0c8d9a",
+  "contentType": "image/png"
+ },
+ "nvidia": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/nvidia/ef933b3647125f8c.png",
+  "sha256": "ef933b3647125f8c6635f327eb4814b541a61bc0be66917e9c226c84a240e56e",
+  "contentType": "image/png"
+ },
+ "otter-ai": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/otter-ai.png",
+  "sha256": "cae396260b95edacf0fa29aed7c266f5ec9ed0226a88eafde21693459e130187",
+  "contentType": "image/png"
+ },
+ "palantir": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/palantir.png",
+  "sha256": "efd93d3ca372f657fa8ce3935c9dfc6cd340735905d24580d4949d359c293ce7",
+  "contentType": "image/png"
+ },
+ "patreon": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/patreon.png",
+  "sha256": "4d65b7021a66cf4d27267db2311130f9818867688a2942142db0dbe50b5925af",
+  "contentType": "image/png"
+ },
+ "pinterest": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/pinterest/4b20e4401c38a61a.png",
+  "sha256": "4b20e4401c38a61ae629a026f0ee81a5607ab066e3d007fac465b46447fbe615",
+  "contentType": "image/png"
+ },
+ "point72": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/point72.png",
+  "sha256": "2b34b42ee7083ed4f24e8b70b3cf369741e61e7d89e38d44b48c503ea7ce4026",
+  "contentType": "image/png"
+ },
+ "powertown": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/powertown/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "qumulo": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/qumulo/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "rakuten": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rakuten.png",
+  "sha256": "01dff93438a73e691534046d7494d90068d555cacedc6604f3c987f93daf5871",
+  "contentType": "image/png"
+ },
+ "render": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/render/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "replit": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/replit/853f8fb0ccefa7e1.png",
+  "sha256": "853f8fb0ccefa7e1276e9553baad8beaef1e467cac63d0c540dace9b18f4c779",
+  "contentType": "image/png"
+ },
+ "rexroth": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rexroth.png",
+  "sha256": "37d3b2c7fd4058b7a0deb36ab06af296963572123d26133f54db5210cd4765e7",
+  "contentType": "image/png"
+ },
+ "rhoda-ai": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rhoda-ai.png",
+  "sha256": "28ccaeb4398ccf740d8f8762ad4611ab3cbd5a7d877e97138891e81557ba6b30",
+  "contentType": "image/png"
+ },
+ "ricoh": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/ricoh.png",
+  "sha256": "b5a2e5eaae59036068d96a881f9169a0fc43a30e72a30b4c60c83fa4e57d709f",
+  "contentType": "image/png"
+ },
+ "rivian": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/rivian/14cc2869a8805bf2.png",
+  "sha256": "14cc2869a8805bf2522bf306e21d2641e26681ecc57689ca071fb37278f6804a",
+  "contentType": "image/png"
+ },
+ "robinhood": {
+  "url": "https://robinhood.com/us/en/rh_favicon_152.png?v=2024",
+  "contentType": "image/png",
+  "source": "official",
+  "sha256": "274ddce8e6fcec2a48dc88b290b91f79e178cb34b1b3d0360b33db882399fd69"
+ },
+ "rocket": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/rocket/b84fc34425bdbace.png",
+  "sha256": "b84fc34425bdbacee4bad1449d7790c3fc3f40a4bfb425001460688477d8cc94",
+  "contentType": "image/png"
+ },
+ "rothschild-co": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rothschild-co.png",
+  "sha256": "092166088b0d5f6d3a4336dbbe18a456836336860090ad1e3f93f0a6db894d3f",
+  "contentType": "image/png"
+ },
+ "rtx": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/rtx.png",
+  "sha256": "2eecfb569b6a09cec350d11e6976eaf03e101913d02a09db5b79b9a943f27dec",
+  "contentType": "image/png"
+ },
+ "salesforce": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/salesforce.png",
+  "sha256": "81fb2ba271683f95d47e6ed06f824f03cd90d21e15e94210d0994fd3b3904745",
+  "contentType": "image/png"
+ },
+ "scale-ai": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/scale-ai.png",
+  "sha256": "8a782e19b79e5dfb6c8e3033b0cfb27deb523081774714394679e53797d495cd",
+  "contentType": "image/png"
+ },
+ "schneider-electric": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/schneider-electric.png",
+  "sha256": "be74a4ec765ce5f7f53e55c731b45c2a55da88bdbe440799907360a9ad02cdd0",
+  "contentType": "image/png"
+ },
+ "seatgeek": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/seatgeek/1cfd88512b479c7d.png",
+  "sha256": "1cfd88512b479c7debe1d18e8e7fb42ac70f16a6059af4dda9e53fc9a0840000",
+  "contentType": "image/png"
+ },
+ "sephora": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/sephora/a51ee37964fae57e.png",
+  "sha256": "a51ee37964fae57ea4fd581b8bf2632c809ded72783092ce6fbaca416e65bacc",
+  "contentType": "image/png"
+ },
+ "shield-ai": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/shield-ai/27e98ff37d321748.png",
+  "sha256": "27e98ff37d321748bb451527d2c4b364bedbccbd4593aa90b8741274efa110d2",
+  "contentType": "image/png"
+ },
+ "siemens": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/siemens.png",
+  "sha256": "b1bb0adafd5bd8233b6b76a8274a012dbc8d37086559de792fdf82681fec4e13",
+  "contentType": "image/png"
+ },
+ "sigma-computing": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/sigma-computing/a8a1ce68afeb882f.png",
+  "sha256": "a8a1ce68afeb882f7b1a236831bb5c6fdb8e8b87cb760ce94f64d8eb6af0fdce",
+  "contentType": "image/png"
+ },
+ "singlestore": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/singlestore/d666d27be150dcc7.png",
+  "sha256": "d666d27be150dcc74164fa0948447aa1dbe16fa27655a5de0820e46b2c7c8d84",
+  "contentType": "image/png"
+ },
+ "skydio": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/skydio.png",
+  "sha256": "3bc113484846edb4fc28b0a1b8a1a68ef0b5a820358dec4eb75b805ba3532516",
+  "contentType": "image/png"
+ },
+ "smith-nephew": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/smith-nephew.png",
+  "sha256": "3f581a7611269177809168ec76dd9c6ca5c03eb526d3d109849aca64ff9b058d",
+  "contentType": "image/png"
+ },
+ "snowflake": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/snowflake/115ae1bc11df9169.png",
+  "sha256": "115ae1bc11df91693363b79c951c280152b27e0a583b81f19f4f57b2a0aad6ba",
+  "contentType": "image/png"
+ },
+ "sony": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/sony.png",
+  "sha256": "026dfcd87de397755f9fb67c205f38d891b4a0d48778d5cdff21dbbba205ebb6",
+  "contentType": "image/png"
+ },
+ "stripe": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/stripe/b5fd2440dccb0406.png",
+  "sha256": "b5fd2440dccb04065abb43911dff51beb857a709529be69ff25cd8dcf708c9fc",
+  "contentType": "image/png"
+ },
+ "stryker": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/stryker.png",
+  "sha256": "bc76fb21d9029859fea4e0e9a2e71ea99357fff43a5c597157ee9aa272698878",
+  "contentType": "image/png"
+ },
+ "t-mobile": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/t-mobile.png",
+  "sha256": "c93240d030b50bfd593321cee794033e7f1d38cce93916a44f181d59e1d04c84",
+  "contentType": "image/png"
+ },
+ "tencent": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/tencent/f465c609bbddf9e8.png",
+  "sha256": "f465c609bbddf9e87d2fa35573dcc29bb4e5ec31078b30539c85da1632bbf04f",
+  "contentType": "image/png"
+ },
+ "tenstorrent": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/tenstorrent/68edbfb3a302d625.png",
+  "sha256": "68edbfb3a302d6250fb4a94aabefb77b738a99d17c824c6dff416a0ea37b4e61",
+  "contentType": "image/png"
+ },
+ "tesla": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/tesla/76c37981eb03832e.png",
+  "sha256": "76c37981eb03832ecb3d32fe782f43171a98da0144f5b0950fbeabfc95a67e4c",
+  "contentType": "image/png"
+ },
+ "texas-instruments": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/texas-instruments.png",
+  "sha256": "5fc9c4e62c57871c656ab628acd86c275b6a8ddc7186749be614215e49ebdebb",
+  "contentType": "image/png"
+ },
+ "tiktok": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/tiktok.png",
+  "sha256": "3e37b1d51ead41bc3e9a3c2951994e0ecbcf090f09116a2055d27c547a12afa4",
+  "contentType": "image/png"
+ },
+ "together-ai": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/together-ai/7c15339537a27b86.png",
+  "sha256": "7c15339537a27b864a8a0e523bb23dfc2f173593c6ff0967a4f03de59ec63a0b",
+  "contentType": "image/png"
+ },
+ "two-sigma": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/two-sigma/a2d38d77bf364ddd.png",
+  "sha256": "a2d38d77bf364dddf06d45ffa0a3225fbb173fd3fcfe3cf59815cc62fe39a3c3",
+  "contentType": "image/png"
+ },
+ "uber": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/uber.png",
+  "sha256": "e2c3c9c458d0a3c02eb31437b7f7ac84e5762a1a506bf7ca581a21ec9e45c58d",
+  "contentType": "image/png"
+ },
+ "verizon": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/verizon.png",
+  "sha256": "3b20e54dbe1b815912156092fe977831b41bd962331cbe8bec2d8a641dd6230a",
+  "contentType": "image/png"
+ },
+ "versant": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/versant/589f5803e9cb6fd8.jpg",
+  "sha256": "589f5803e9cb6fd8b080f8b57ff5a781e2ebf030d5b139f3b2b319a9099781eb",
+  "contentType": "image/jpeg"
+ },
+ "whoop": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/whoop/2c71b720d0677493.png",
+  "sha256": "2c71b720d06774934cce99d6729530435066578934c679add1e091210cdbcf82",
+  "contentType": "image/png"
+ },
+ "wisdomtree": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/wisdomtree.png",
+  "sha256": "ef425e075a8175391a75f269ec30107116816d2e82cd118db00775d8a411659c",
+  "contentType": "image/png"
+ },
+ "zebra": {
+  "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/zebra.png",
+  "sha256": "b9d82db99b7860efec2aea7e9ecd5a3d610c505c70bd13dd01276dbb2adf2bba",
+  "contentType": "image/png"
+ },
+ "ziprecruiter": {
+  "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ziprecruiter/ccb1fabdca821395.png",
+  "sha256": "ccb1fabdca8213956494869e02e84d454035cd90cbe4e98bdcc87edf12b495ec",
+  "contentType": "image/png"
+ }
 }
