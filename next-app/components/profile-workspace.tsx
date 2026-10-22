@@ -179,7 +179,7 @@ function ProfileContent() {
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}
-      {active !== "agent" && (active !== "overview" || a.dirty) && (
+      {active !== "agent" && active !== "about" && (active !== "overview" || a.dirty) && (
         <div className={profileStyles.saveBar}>
           <div className="min-w-0 flex-1">
             <span className="text-sm font-semibold">
@@ -188,7 +188,7 @@ function ProfileContent() {
                 : "Application profile settings"}
             </span>
             <p role="status" className="mt-1 text-xs text-board-muted">
-              {a.feedback || (active!=="about"?"Identity, material selections, writing style, and job preferences save together.":"")}
+              {a.feedback || "Identity, material selections, writing style, and job preferences save together."}
             </p>
           </div>
           <button

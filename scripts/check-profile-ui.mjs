@@ -29,6 +29,9 @@ try{
  await page.getByRole('button',{name:'Cancel new profile',exact:true}).click();
  await page.getByRole('button',{name:'About me',exact:true}).click();
  assert.equal(await page.getByRole('heading',{name:'Accounts & identity',exact:true}).count(),0);
+ assert.equal(await page.getByRole('button',{name:'Save shared background',exact:true}).count(),0);
+ assert.equal(await page.getByRole('button',{name:'Save application profile',exact:true}).count(),0);
+ assert.equal(await page.getByRole('checkbox',{name:'I have checked these facts.',exact:true}).count(),0);
  assert.equal(await page.getByRole('region',{name:'Work experience',exact:true}).locator('svg[aria-hidden="true"][width="28"]').count(),2);
  assert.equal(await page.getByRole('region',{name:'Education',exact:true}).locator('svg[aria-hidden="true"][width="28"]').count(),1);
  assert.equal(await page.getByRole('region',{name:'Projects & outside experience',exact:true}).locator('svg[aria-hidden="true"][width="28"]').count(),1);
@@ -51,16 +54,16 @@ try{
  await input.fill('rust');await input.press(','); assert.equal(await skills.locator('li').count(),5);
  await input.fill('C++');await page.getByRole('button',{name:'Add to Skills',exact:true}).click();
  await page.getByRole('button',{name:'Remove C++ from Skills',exact:true}).waitFor();
- await input.fill('Redis');await page.getByRole('button',{name:'Save shared background',exact:true}).click();
+ await input.fill('Redis');await page.getByRole('button',{name:'Finish editing Skills & languages',exact:true}).click();
  await page.getByRole('button',{name:'Edit Skills & languages',exact:true}).click();
  await page.getByRole('button',{name:'Remove Redis from Skills',exact:true}).waitFor();
- await page.getByText('Profile saved as unverified.',{exact:false}).waitFor();
+ await page.getByText('Saved',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Remove Rust from Skills',exact:true}).click();
  await page.getByLabel('Languages',{exact:true}).fill('French');await page.getByLabel('Languages',{exact:true}).press('Enter');
  // Exercise the actual paste handler with mixed separators, blanks and a duplicate.
  await input.evaluate(el=>{const data=new DataTransfer();data.setData('text','Java, Kotlin\nGo;  ');el.dispatchEvent(new ClipboardEvent('paste',{clipboardData:data,bubbles:true,cancelable:true}));});
  await page.getByRole('button',{name:'Remove Kotlin from Skills',exact:true}).waitFor();
- await page.getByRole('button',{name:'Save shared background',exact:true}).click();
+ await page.getByRole('button',{name:'Finish editing Skills & languages',exact:true}).click();
  await page.getByRole('button',{name:'Application kit',exact:true}).click();await page.getByRole('button',{name:'About me',exact:true}).click();
  await page.getByRole('button',{name:'Edit Skills & languages',exact:true}).click();
  await page.getByRole('button',{name:'Remove Kotlin from Skills',exact:true}).waitFor();

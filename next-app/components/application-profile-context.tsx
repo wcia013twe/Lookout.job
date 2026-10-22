@@ -72,7 +72,7 @@ function useProfiles() {
     setFeedback("New application profile. Save when ready.");
   }
   async function saveProfile() {
-    if (busy || w.locked) return;
+    if (busy || w.locked) return false;
     const owner = w.demo ? null : w.user?.id;
     const id = profile.id;
     setBusy(true);
@@ -104,7 +104,7 @@ function useProfiles() {
               ? "This profile changed elsewhere. Reload before retrying; your draft is kept."
               : "Could not save. Your draft is kept; retry when connected.",
           );
-        if (window.JB.auth.userId !== owner) return;
+        if (window.JB.auth.userId !== owner) return false;
         stored = data;
       } else stored = { ...next, version: (profile.version || 0) + 1 };
       w.store.update(
@@ -132,8 +132,10 @@ function useProfiles() {
             ? "Demo application profile saved in memory."
             : "Saved in this browser. Sign in to sync with your agent.",
       );
+      return true;
     } catch (e) {
       setFeedback(e instanceof Error ? e.message : "Could not save.");
+      return false;
     } finally {
       setBusy(false);
     }

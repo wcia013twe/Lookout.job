@@ -294,13 +294,14 @@ writing summaries remain in their editing sections. About me
 labels shared background explicitly. Its sections are expanded bordered boxes with
 readable labels and full values; experience, education and project descriptions
 never collapse or truncate in reading mode. Each section has a 44px pen control
-to enable editing, then a checkmark to return to reading mode. These controls do
-not save or mark facts verified. Application kit presents selected materials
+to enable editing, then a checkmark to save changes and return to reading mode.
+Saving changed facts does not mark them verified. Application kit presents selected materials
 and separate employer-answer/outreach writing settings before disclosed library
 creation forms. Preference groups use summaries and progressive disclosure.
-All colors inherit the shared theme tokens. A sticky desktop profile save bar
-becomes an ordinary footer on mobile; shared background keeps its distinct
-human verification and save action. No account assignment implies connectivity.
+All colors inherit the shared theme tokens. About me has no bottom verification
+or save controls; background and eligibility edits save from their section checkmark.
+Other application settings retain a sticky desktop save bar that becomes an ordinary
+footer on mobile. No account assignment implies connectivity.
 
 ### Career Toolkit skill pages
 
