@@ -39,3 +39,8 @@
 - Added a four-second green pulse contained inside only the current progress marker, keeping its blue outline and the completed timeline blue. Light mode uses deeper green; reduced motion shows a steady green center.
 - Validation: production build including TypeScript, data validation (76 roles), whitespace check and design detector (no findings). Browser verification on the existing fictional demo covered dark/light desktop/mobile, exact pulse colors and duration, no animation on completed markers, a steady reduced-motion fallback, matching vertical detail markers, and no overflow/page errors. Screenshots and temporary verification remain in `/tmp/lookout-theme-preview/`.
 - CSS-only presentation change; existing demo fixtures, controls and MCP boundaries remain in use. No backend writes or deployment were performed.
+
+## Steady current-stage marker
+
+- Simplified the current tracker stage to one steady solid green dot. Completed stages, connectors and upcoming markers retain the shared blue palette; the pulse and extra current-stage ring were removed.
+- Existing tracker fixtures and MCP boundaries remain unchanged. Verification covers the production build, public data validation, design detector, and dark/light responsive browser rendering.
