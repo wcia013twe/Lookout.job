@@ -235,7 +235,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
       <div className="tracker-detail-content">
         {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={w.state.tracker.items[id] || {}} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} />}
         {tab === "Prep" && <><h3>Interview preparation</h3>{workflow ? <ApplicationPreparation application={{...role,...current}}/> : <p className="tracker-prose">Queue this role from Discover to create its preparation plan.</p>}</>}
-        {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />      <details className="mt-5 border-t border-board-line pt-3">
+        {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />{downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}      <details className="mt-5 border-t border-board-line pt-3">
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
         {(!w.demo && !w.user) || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
           : recordOpen && <>
@@ -247,7 +247,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
               onDownloadResume={w.demo ? undefined : downloadRecordResume}
             />
             {recordState?.key === recordKey && recordState.error && <button className={`${secondary} mt-3`} onClick={() => setRecordRetry(value => value + 1)}>Retry loading record</button>}
-            {downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}
+
           </>}
       </details>
 {editable && <p className="tracker-prose">Change the selected resume below before approving the draft.</p>}</>}

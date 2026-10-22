@@ -83,6 +83,7 @@ export function createDemoWorkspace(now = new Date()) {
   confirmedAttempt.context_snapshot.application.draft.questions.push(
     { fieldId:'full_name', fieldType:'text', question:'Full name', answer:'Jordan Example (demo)' },
     { fieldId:'email', fieldType:'email', question:'Email', answer:'jordan@example.com' },
+    { fieldId:'resume', fieldType:'file', question:'Resume attachment', answer:resumeId },
   );
   applications['demo-uncertain'].submissionAttempts = [{ id: uncertainAttempt.id, state: uncertainAttempt.state, startedAt: uncertainAttempt.started_at }];
   applications['demo-confirmed'].receipt = copy(confirmedAttempt.receipt);

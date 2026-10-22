@@ -26,7 +26,8 @@ try{
  await panel.getByRole('button',{name:'Documents',exact:true}).click();
  const preview=panel.getByRole('region',{name:'Complete application preview',exact:true});
  await preview.getByText('jordan@example.com',{exact:true}).waitFor();
- await preview.getByText('4/4 filled',{exact:true}).waitFor();
+ await preview.getByText('5/5 filled',{exact:true}).waitFor();
+ assert.equal(await preview.locator('dd').filter({hasText:'Jordan Example — backend résumé (demo)'}).count(),1,'Attachment IDs display their pinned filename');
  assert.equal(await preview.getByText('candidate@example.com',{exact:true}).count(),0,'Saved attempt must not borrow current profile');
  assert.equal(await panel.getByRole('button',{name:'Approve this version',exact:true}).count(),0,'Editor starts collapsed');
  await panel.evaluate(el=>el.scrollTop=0);

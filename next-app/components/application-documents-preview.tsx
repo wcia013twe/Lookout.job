@@ -20,6 +20,7 @@ export default function ApplicationDocumentsPreview({ application, draft, profil
   const snapshot = snapshots.find(attempt => attempt.id === source);
   const questions: PreviewQuestion[] = snapshot ? snapshot.questions : draft.questions || [];
   const chosenResume = snapshot ? snapshot.resume : resume || application.submittedResume;
+  const attachmentId = snapshot?.resume?.id || resume?.id;
   const answered = questions.filter(question => question.answer != null && String(question.answer).trim()).length;
   const contacts = [
     ["Full name", profile.name || [profile.firstName, profile.lastName].filter(Boolean).join(" ")],
@@ -42,7 +43,7 @@ export default function ApplicationDocumentsPreview({ application, draft, profil
       })}
     </section>}
     <section className="application-form-section" aria-labelledby="application-answers"><div className="application-form-heading"><h4 id="application-answers"><ProfileIcon name="conversation" />{snapshot ? "Captured application fields" : "Employer questions & answers"}</h4><span className={`application-form-badge ${questions.length > 0 && answered === questions.length ? "is-complete" : ""}`}>{questions.length ? `${answered}/${questions.length} filled` : "No fields recorded"}</span></div>
-      {questions.length ? <dl className="application-form-answers">{questions.map((question, index) => <div key={index}><dt><span>{question.question || "Untitled employer question"}</span>{!String(question.answer ?? "").trim() && <span className="text-xs text-board-warning">Answer needed</span>}</dt><dd className={!String(question.answer ?? "").trim() ? "is-missing" : ""}>{("fieldType" in question && question.fieldType === "file" && question.answer === snapshot?.resume?.id) ? snapshot?.resume?.name || "Saved resume" : question.answer == null || !String(question.answer).trim() ? "No answer recorded" : display(question.answer)}</dd></div>)}</dl> : <p className="application-form-notice">{snapshot ? "No field answers were captured in this attempt snapshot." : "No employer questions have been recorded. This does not establish that the employer form has no questions."}</p>}
+      {questions.length ? <dl className="application-form-answers">{questions.map((question, index) => <div key={index}><dt><span>{question.question || "Untitled employer question"}</span>{!String(question.answer ?? "").trim() && <span className="text-xs text-board-warning">Answer needed</span>}</dt><dd className={!String(question.answer ?? "").trim() ? "is-missing" : ""}>{("fieldType" in question && question.fieldType === "file" && Boolean(attachmentId) && question.answer === attachmentId) ? chosenResume?.name || "Recorded attachment" : question.answer == null || !String(question.answer).trim() ? "No answer recorded" : display(question.answer)}</dd></div>)}</dl> : <p className="application-form-notice">{snapshot ? "No field answers were captured in this attempt snapshot." : "No employer questions have been recorded. This does not establish that the employer form has no questions."}</p>}
       {!snapshot && <p className="application-form-caption">{draft.questionsReviewed ? "Question-list review recorded for this draft." : "The employer question list still needs review."} Saving or viewing this preview does not submit an application.</p>}
     </section>
   </section>;
