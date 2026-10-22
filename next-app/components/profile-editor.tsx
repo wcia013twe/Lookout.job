@@ -15,7 +15,7 @@ const labels: Record<string, string> = {
   github: "GitHub URL",
   portfolio: "Portfolio URL",
   otherUrl: "Other URL",
-  authorization: "Shared authorization notes",
+  authorization: "Work authorization notes",
   headline: "Current title",
   currentEmployer: "Current employer",
   jobSearchStatus: "Job search status",
@@ -105,10 +105,10 @@ export default function ProfileEditor() {
             title: "Professional links",
             keys: ["linkedin", "github", "portfolio", "otherUrl"],
           },
-          { title: "Shared authorization notes", keys: ["authorization"] },
         ].map((group) => (
           <details
             key={group.title}
+            open={w.demo}
             className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6"
           >
             <summary className="min-h-11 cursor-pointer text-base font-semibold">{group.title}<span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
@@ -180,6 +180,7 @@ export default function ProfileEditor() {
                 <details
                   className="border-b border-board-line py-4"
                   key={index}
+                  open={w.demo}
                 >
                   <summary className="min-h-11 cursor-pointer text-sm font-semibold">
                     {entry.title || entry.degree || entry.name || "New entry"} ·{" "}
@@ -278,7 +279,7 @@ export default function ProfileEditor() {
             </fieldset>
           </section>
         ))}
-        <details className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
+        <details open={w.demo} className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
           <summary className="text-lg font-bold">
             Skills &amp; languages <span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
             <span className="mt-3 flex flex-wrap gap-2">{(["skills", "languages"] as const).flatMap(key => Array.isArray(facts[key]) ? facts[key] as string[] : String(facts[key] || "").split(/[,\n]/)).map(value => value.trim()).filter(Boolean).map((skill, index) => <span key={index} className="rounded-full border border-board-line px-3 py-1 text-sm font-normal">{skill}</span>)}{!String(facts.skills || facts.languages || "").trim() && <span className="text-sm font-normal text-board-muted">No skills or languages added</span>}</span>
@@ -302,6 +303,28 @@ export default function ProfileEditor() {
               ))}
             </div>
           </Section>
+        </details>
+        <details open={w.demo} className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
+          <summary className="min-h-11 cursor-pointer text-base font-semibold">
+            Work authorization notes
+          </summary>
+          <p id="authorization-help" className="mt-2 text-sm text-board-muted">
+            Optional background about your eligibility to work, reused across application profiles.
+            Set country-specific authorization and sponsorship answers in Application identity &amp; eligibility below.
+          </p>
+          <div className="mt-5">
+            <Field label={labels.authorization}>
+              <textarea
+                id="profile-authorization"
+                name="authorization"
+                aria-describedby="authorization-help"
+                className={control}
+                rows={3}
+                value={(facts.authorization as string) || ""}
+                onChange={(e) => update("authorization", e.target.value)}
+              />
+            </Field>
+          </div>
         </details>
         <div className="mt-7 space-y-3 border-t border-board-line py-5">
           <label className="flex min-h-11 items-center gap-3 text-sm">
