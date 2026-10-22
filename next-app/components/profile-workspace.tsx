@@ -7,7 +7,7 @@ import { Heading, primary, secondary, control, Field } from "./ui";
 import ProfileEditor from "./profile-editor";
 import ProfileSection, { ProfileValues } from "./profile-section";
 import ProfileOverview from "./profile-overview";
-import Resumes from "./resumes";
+import ProfileDocuments from "./profile-documents";
 import SavedAnswers from "./saved-answers";
 import SearchTargets from "./search-targets";
 import DailySchedule from "./daily-schedule";
@@ -92,10 +92,9 @@ function ProfileContent() {
           </div>
           <ProfileEditor>
             <EligibilitySettings />
+            <ProfileDocuments/>
           </ProfileEditor>
-          <h2 className="mb-3 mt-8 text-lg font-bold">Documents &amp; saved answers</h2>
-          <p className="text-sm text-board-muted">Shared across application profiles. Assign resumes to roles in Job preferences.</p>
-          <Resumes />
+          <h2 className="mb-3 mt-8 text-lg font-bold">Saved application answers</h2>
           <ApplicationMaterials mode="answers" />
           <SavedAnswers />
         </section>

@@ -54,6 +54,25 @@ begin
  perform set_config('test.uid',v::text,true);
  begin perform public.artifact_action('artifacts.read',jsonb_build_object('id',a));raise exception 'Browser owner bypass';exception when no_data_found then null;end;
 end $$;
+do $$
+declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();a uuid;kind text;p jsonb;r jsonb;k text:=repeat('a',64);bad text:=repeat('b',64);
+begin
+ insert into auth.users(id) values(u),(v);
+ insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Document test',k,array['workspace:read','drafts:write'],now()+interval '1 hour'),(v,'Foreign document test',bad,array['workspace:read','drafts:write'],now()+interval '1 hour');
+ perform set_config('test.uid',u::text,true);
+ foreach kind in array array['cover_letter','application_template'] loop
+  a:=gen_random_uuid();
+  p:=jsonb_build_object('id',a,'expectedVersion',0,'title','Application document','purpose','Private reusable material','kind',kind,'format','markdown','body','Review this text before use.','sources','[]'::jsonb,'links','[]'::jsonb);
+  r:=public.artifact_action('artifacts.save',p);
+  if public.agent_dispatch(k,'artifacts.save',p)<>r then raise exception 'Document cross-transport mismatch';end if;
+  if jsonb_array_length(public.agent_dispatch(k,'artifacts.list',jsonb_build_object('kind',kind))->'items')<>1 then raise exception 'Document kind filter failed';end if;
+  begin perform public.agent_dispatch(bad,'artifacts.read',jsonb_build_object('id',a));raise exception 'Foreign document read';exception when no_data_found then null;end;
+  begin perform public.artifact_action('artifacts.save',p||'{"title":"Stale copy"}');raise exception 'Stale document overwrite';exception when serialization_failure then null;end;
+  r:=public.agent_dispatch(k,'artifacts.save',p||'{"expectedVersion":1,"body":"Revised text"}');
+  if r->>'version'<>'2' then raise exception 'Document version missing';end if;
+  if public.artifact_action('artifacts.read',jsonb_build_object('id',a,'version',1))->'content'->>'body'<>'Review this text before use.' then raise exception 'Document history lost';end if;
+ end loop;
+end $$;
 set local role authenticated;
 select set_config('test.uid','22222222-2222-2222-2222-222222222222',true);
 do $$ begin

@@ -159,3 +159,5 @@ prepare_draft(draft.searchProfileId); website and execution read the same saved
 rules. Unbound drafts require review once explicit profile rules exist. Existing
 role-type policies remain a legacy fallback. Gateway/config release and hosted
 verification are required before claiming the new execution policy is deployed.
+
+About me / Documents appears before Career background and includes the shared resume library, direct Assign roles/Add role assignment, cover letters and reusable application templates. Resume files remain private PDF/DOCX uploads; cover letters/templates accept text or document links and use the versioned artifact service with cover_letter/application_template kinds. Add, read/edit, archive and pagination use existing backend validation. The same role assignments remain in Job preferences. Demo supports metadata-only resume upload and versioned in-memory document editing. `scripts/check-profile-ui.mjs` verifies placement, adding a resume and assignment, cover-letter/template revision, mobile layout and zero demo cloud writes. Deploy the migration and gateway context 37 via the normal production workflow before claiming live support.

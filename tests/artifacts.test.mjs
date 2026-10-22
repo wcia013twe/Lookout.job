@@ -58,14 +58,14 @@ test('learning-only weeks fit the shared budget, reveal missing material and pre
 });
 test('fictional demo saves, revisions, archiving and retrieval never need real storage or services',async()=>{
  const store=createMemoryStore({demo:{fictional:true}}),demo=createArtifactDemo(store);
- const page=await demo.artifactAction('artifacts.list');assert.equal(page.items.length,3);assert.ok(!('body' in page.items[0].content));
+ const page=await demo.artifactAction('artifacts.list');assert.equal(page.items.length,5);assert.ok(!('body' in page.items[0].content));
  const original=await demo.artifactAction('artifacts.read',{id:demoArtifactIds.interactive});assert.match(original.content.body,/type="range"/);
  const saved=await demo.artifactAction('artifacts.save',doc);assert.equal(saved.version,1);assert.equal((await demo.artifactAction('artifacts.save',doc)).version,1);
  const revised=await demo.artifactAction('artifacts.save',{...doc,expectedVersion:1,body:'Revised'});assert.equal(revised.version,2);
  assert.equal((await demo.artifactAction('artifacts.read',{id,version:1})).content.body,doc.body);
  await demo.artifactAction('artifacts.archive',{id,expectedVersion:2,archived:true});assert.equal((await demo.artifactAction('artifacts.list',{query:'A sourced brief'})).items.length,0);assert.equal((await demo.artifactAction('artifacts.read',{id})).archived,true);
  assert.ok(demo.artifactSnapshot().learningGoals.some(g=>g.id===demoGoalId));
- const reset=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));assert.equal((await reset.artifactAction('artifacts.list')).items.length,3);
+ const reset=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));assert.equal((await reset.artifactAction('artifacts.list')).items.length,5);
  assert.throws(()=>createArtifactDemo(createMemoryStore({demo:{fictional:false}})));
 });
 test('HTML previews receive a first-position restrictive CSP and the host blocks external frame navigation',async()=>{
@@ -74,4 +74,20 @@ test('HTML previews receive a first-position restrictive CSP and the host blocks
  for(const directive of ["default-src 'none'","connect-src 'none'","frame-src 'none'","form-action 'none'","worker-src 'none'"])assert.ok(html.includes(directive));
  const viewer=await readFile(new URL('../next-app/app/career-toolkit/_components/artifact-viewer.tsx',import.meta.url),'utf8');assert.match(viewer,/sandbox="allow-scripts"/);assert.doesNotMatch(viewer,/allow-same-origin/);
  const layout=await readFile(new URL('../next-app/app/layout.tsx',import.meta.url),'utf8');assert.match(layout,/frame-src 'self'/);
+});
+
+test('application document kinds share the website/MCP contract and isolated versioned demo storage',async()=>{
+ const demo=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));
+ for(const kind of ['cover_letter','application_template']){
+  const payload={...doc,id:crypto.randomUUID(),kind,sources:[],links:[]};
+  valid('artifacts.save',payload);
+  const calls=[];const client={auth:{getUser:async()=>({data:{user:{id}}})},rpc:async(name,args)=>{calls.push([name,args]);return {data:{saved:true}};}};
+  await createBackend(client,id).artifactAction('artifacts.save',payload);
+  assert.equal(calls[0][1].payload.kind,kind);
+  assert.ok(TOOLS.find(t=>t.name==='save_artifact').inputSchema.properties.kind.enum.includes(kind));
+  const row=await demo.artifactAction('artifacts.save',payload);assert.equal(row.version,1);
+  const listed=await demo.artifactAction('artifacts.list',{kind});assert.ok(listed.items.some(r=>r.id===payload.id));
+  await assert.rejects(demo.artifactAction('artifacts.save',{...payload,title:'Changed stale copy'}),/changed/);
+  const revised=await demo.artifactAction('artifacts.save',{...payload,expectedVersion:1,body:'Updated application text'});assert.equal(revised.version,2);
+ }
 });

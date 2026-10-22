@@ -39,6 +39,45 @@ try{
  assert.equal(await page.getByRole('region',{name:'Work experience',exact:true}).locator('details').count(),0,'Background sections stay expanded');
  assert.equal(await page.getByRole('textbox',{name:'First name',exact:true}).count(),0,'Background starts read-only');
  await page.getByText('Compared cache strategies and documented reliability tradeoffs',{exact:false}).waitFor();
+ const documentsCloudBefore=cloud.length;
+ const documents=page.getByRole('region',{name:'Documents',exact:true});
+ const docBox=await documents.boundingBox(),careerBox=await page.getByRole('heading',{name:'Career background',exact:true}).boundingBox();
+ assert(docBox.y<careerBox.y,'Documents must appear before Career background');
+ await documents.getByText('Add a resume',{exact:true}).click();
+ await documents.getByLabel('Private resume file (PDF or DOCX, up to 10 MB)',{exact:true}).setInputFiles({name:'Demo systems resume.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\nFictional demo resume\n%%EOF')});
+ await documents.getByRole('button',{name:'Upload private resume',exact:true}).click();
+ await documents.getByText('Demo resume added in memory. File bytes were not uploaded or saved.',{exact:true}).waitFor();
+ const resumeRow=documents.locator('li').filter({hasText:'Demo systems resume.pdf'});
+ await resumeRow.getByRole('button',{name:'Assign roles',exact:true}).click();
+ await documents.getByRole('textbox',{name:'Assignment job titles',exact:true}).fill('Demo storage engineer');
+ await documents.getByRole('combobox',{name:'Assignment job type',exact:true}).selectOption('Full-time');
+ await documents.getByRole('button',{name:'Save role assignment',exact:true}).click();
+ await documents.getByRole('heading',{name:'Demo storage engineer',exact:true}).waitFor();
+ for(const [label,title,content] of [['cover letter','Cover letter','Fictional systems cover letter'],['template','Template','Reusable application starting point']]){
+  const library=documents.getByRole('region',{name:label==='template'?'Templates':'Cover letters',exact:true});
+  await library.getByRole('button',{name:`Add ${label}`,exact:true}).click();
+  await library.getByRole('textbox',{name:`${title} title`,exact:true}).fill(content);
+  await library.getByRole('textbox',{name:`${title} content`,exact:true}).fill('Fictional document content. Review [company] before use.');
+  await library.getByRole('button',{name:`Save ${label}`,exact:true}).click();
+  await library.getByText(`${title} saved in demo memory.`,{exact:true}).waitFor();
+  const row=library.locator('li').filter({hasText:content});
+  await row.getByRole('button',{name:`Open / edit ${label}`,exact:true}).click();
+  assert.equal(await library.getByRole('textbox',{name:`${title} content`,exact:true}).inputValue(),'Fictional document content. Review [company] before use.');
+  await library.getByRole('textbox',{name:`${title} content`,exact:true}).fill('Revised fictional document text.');
+  if(label==='template'){
+   const profilePicker=page.getByRole('combobox',{name:'Application profile',exact:true});
+   await profilePicker.selectOption('internships');await profilePicker.selectOption('general');
+   assert.equal(await library.getByRole('textbox',{name:`${title} content`,exact:true}).inputValue(),'Revised fictional document text.','Shared document draft must survive profile switching');
+  }
+  await library.getByRole('button',{name:`Save ${label}`,exact:true}).click();
+  await row.getByText('Version 2 · Private',{exact:true}).waitFor();
+ }
+ await page.screenshot({path:dir+'/documents-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:dir+'/documents-mobile.png',fullPage:true});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Documents mobile overflows');
+ await page.setViewportSize({width:1440,height:1000});
+ assert.equal(cloud.length,documentsCloudBefore,'Document demo actions must not call cloud');
  await page.getByRole('button',{name:'Edit Personal Info',exact:true}).click();
  assert(await page.getByRole('textbox',{name:'First name',exact:true}).isEditable());
  assert.equal(await page.getByRole('textbox',{name:'Application profile name',exact:true}).count(),0,'Editing is scoped to one section');
@@ -135,6 +174,10 @@ try{
  await page.getByRole('button',{name:'Reset demo data',exact:true}).click();
  await page.getByRole('combobox',{name:'Profile section',exact:true}).selectOption('preferences');
  await prefs.getByText('Demo backend résumé',{exact:true}).first().waitFor();
+ await page.getByRole('combobox',{name:'Profile section',exact:true}).selectOption('about');
+ await page.getByText('Infrastructure cover letter (demo)',{exact:true}).waitFor();
+ assert.equal(await page.getByText('Fictional systems cover letter',{exact:true}).count(),0,'Reset removes new application documents');
+ assert.equal(await page.getByText('Demo systems resume.pdf',{exact:false}).count(),0,'Reset removes demo upload metadata');
  assert.equal(cloud.length,before,'Demo edits must not call cloud');assert.equal(errors.length,0,errors.join('\n'));
  console.log('PASS: background editing; profile navigation; resume/type assignments; save/reload; My Agent style drafts and profile switching; shared libraries; demo reset; desktop/mobile; no overflow or cloud writes');
 }catch(error){const p=browser.contexts()[0]?.pages()[0];if(p){await p.screenshot({path:dir+'/failure.png'});console.error((await p.locator('body').innerText()).slice(-4500));}throw error;}finally{await browser.close();}

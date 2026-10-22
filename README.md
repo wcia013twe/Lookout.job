@@ -419,7 +419,11 @@ unverified; saving never implies human review. About me has no bottom save foote
 name, preferred name/suffix, email/phone, birthday/location, address lines and postal
 code. Desktop follows a two-column reading order; mobile stacks the same fields.
 
-About me owns the shared resume and employer-answer libraries, plus per-profile saved-answer selections. Job preferences owns the fallback resume and role/type-to-resume assignments, alongside roles, specializations, employment, seniority, locations, work arrangement, company size, industries, desired/avoided skills, compensation, clearance, values and exclusions. Each criterion retains Required / Preferred / Flexible priority. Search status uses the existing active/paused profile switch.
+About me presents Documents immediately above Career background. Documents owns the shared resume library (private PDF/DOCX uploads or references), cover letters and reusable application templates. Assign roles on a resume or Add role assignment creates a title/type-to-resume assignment in the selected profile, through the same existing profile narrative and version checks as Job preferences. This explicit action saves the profile, including other profile drafts. Existing assignments are readable/editable in both locations.
+
+Cover letters and templates accept pasted text or document links; this pass does not add binary uploads for them. They use the existing versioned artifact service with kinds `cover_letter` and `application_template`, listed separately with Add, Open/edit and Archive actions. Editing retains document metadata, sources and task links. Current versions are required; conflicts keep the editor draft. Documents are private and shared across application profiles; agent-proposed content does not become verified facts, answer-reuse permission or submission approval. Signed-in saves require the application-document migration and normal gateway release; neither is deployed by local landing. Shared library operations save independently from the application-profile footer. Demo uploads retain fictional metadata only, never file bytes; cover letters/templates use resettable memory services.
+
+About me also owns the shared employer-answer library, plus per-profile saved-answer selections below Career background. Job preferences owns the fallback resume and role/type-to-resume assignments, alongside roles, specializations, employment, seniority, locations, work arrangement, company size, industries, desired/avoided skills, compensation, clearance, values and exclusions. Each criterion retains Required / Preferred / Flexible priority. Search status uses the existing active/paused profile switch.
 
 Resume assignments extend the existing Recruiting targets / Targets narrative: each target may include `employment` (Full-time, Internship, Part-time, Contract, Temporary, or blank). Legacy targets without that field inherit profile job types. Each assignment holds one or more role titles, a preferred resume, timing and conditions; blank resume uses the profile fallback. Conflicting applicable resumes require user selection. These are personal-agent preparation guidance, not new automatic submission routing or approval. Unknown or deleted resume references remain visible for repair.
 
@@ -434,7 +438,7 @@ labeled sections are preserved in the existing `instructions` narrative:
 - `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
 
 `workspace_read`, personal context and canonical profile documents expose the same
-saved records. Developer context version 36 explains their meaning; release the
+saved records. Developer context version 37 explains their meaning; release the
 gateway through the normal production workflow before claiming deployed agent
 support. No migration or new permission is needed. Hosted round trips and actual
 agent account access remain unverified.

@@ -2,7 +2,7 @@
 import { useState, type FormEvent } from "react";
 import { ProfileCard } from "./profile-section";
 import { useWorkspace } from "../lib/workspace";
-import { uploadResume, resumeDownloadUrl } from "../../lib/resume-model.mjs";
+import { uploadResume, resumeDownloadUrl, validateResume } from "../../lib/resume-model.mjs";
 import { control, primary, secondary, Field, Notice } from "./ui";
 import { errorMessage, type ResumeRecord } from "./profile-types";
 type ResumeForm = HTMLFormElement & {
@@ -19,7 +19,7 @@ const variants = [
   "ML Infrastructure",
   "Master",
 ];
-export default function Resumes() {
+export default function Resumes({onAssign}:{onAssign?:(resumeId:string)=>void}) {
   const w = useWorkspace(),
     resumes: ResumeRecord[] = w.state.workflow.resumes || [];
   const [feedback, setFeedback] = useState(""),
@@ -29,6 +29,13 @@ export default function Resumes() {
     const form = e.currentTarget as ResumeForm;
     setBusy(true);
     try {
+      if(w.demo){
+        const file=form.elements.file.files?.[0],variant=form.elements.variant.value;
+        const {extension}=validateResume(file,variant);
+        const id=crypto.randomUUID();
+        w.store.update("workflow.resumes",(items:ResumeRecord[])=>[...items,{id,name:file!.name,variant,version:1,objectPath:`demo/${id}.${extension}`}]);
+        form.reset();setFeedback("Demo resume added in memory. File bytes were not uploaded or saved.");return;
+      }
       if (!w.user || !window.JB.cloud.ready)
         throw Error("Sign in and wait for your account to connect first.");
       const variant = form.elements.variant.value;
@@ -127,6 +134,8 @@ export default function Resumes() {
               {r.name}{" "}
               <small className="text-board-muted">v{r.version || 1}</small>
             </strong>
+            <div className="flex flex-wrap gap-2">
+            {onAssign&&<button type="button" className={secondary} disabled={w.locked} onClick={()=>onAssign(r.id)}>Assign roles</button>}
             {r.objectPath ? (
               <button className={secondary} onClick={() => open(r)}>
                 Open private resume
@@ -141,6 +150,7 @@ export default function Resumes() {
                 Open reference
               </a>
             )}
+            </div>
           </li>
         ))}
       </ul>
@@ -180,7 +190,7 @@ export default function Resumes() {
               name="file"
               accept=".pdf,.docx"
               required
-              disabled={!w.user || busy}
+              disabled={(!w.user && !w.demo) || busy}
             />
           </Field>
           <Field label="File variant">
@@ -190,11 +200,11 @@ export default function Resumes() {
               ))}
             </select>
           </Field>
-          <button className={primary} disabled={!w.user || busy}>
+          <button className={primary} disabled={(!w.user && !w.demo) || busy}>
             {busy ? "Uploading…" : "Upload private resume"}
           </button>
         </form>
-        {!w.user && (
+        {!w.user && !w.demo && (
           <Notice>
             Sign in to upload private resume files. You can save references in
             this browser.
