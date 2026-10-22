@@ -153,7 +153,7 @@ export default function RecruitingTargets() {
                             Selected resume unavailable
                           </option>
                         )}
-                      {w.state.workflow.resumes.map(
+                      {w.state.workflow.resumes.filter((r:{supersededBy?:string})=>!r.supersededBy).map(
                         (r: { id: string; name: string }) => (
                           <option key={r.id} value={r.id}>
                             {r.name}

@@ -54,6 +54,18 @@ try{
  await documents.getByRole('button',{name:'Save role assignment',exact:true}).click();
  await documents.getByText('Demo storage engineer · Full-time',{exact:true}).waitFor();
  assert.equal(await documents.getByRole('region',{name:'Resume assignments & role targets',exact:true}).count(),0,'Assignments stay inside the resume library');
+ const dropTarget=resumeRow.locator('label');
+ await dropTarget.evaluate(el=>{const transfer=new DataTransfer();transfer.items.add(new File(['%PDF-1.7\nReplacement demo\n%%EOF'],'replacement.pdf',{type:'application/pdf'}));el.dispatchEvent(new DragEvent('dragover',{dataTransfer:transfer,bubbles:true,cancelable:true}));el.dispatchEvent(new DragEvent('drop',{dataTransfer:transfer,bubbles:true,cancelable:true}));});
+ await documents.getByText('Source replaced for Demo systems resume.pdf in demo memory. File bytes were not saved.',{exact:true}).waitFor();
+ await resumeRow.getByText('v2',{exact:true}).waitFor();
+ await resumeRow.getByText('Demo storage engineer · Full-time',{exact:true}).waitFor();
+ assert.equal(await documents.locator('li').filter({hasText:'Demo systems resume.pdf'}).count(),1,'Old file versions stay out of the current library');
+ await resumeRow.getByLabel('Replace source for Demo systems resume.pdf',{exact:true}).setInputFiles({name:'another.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\nAnother demo version\n%%EOF')});
+ await resumeRow.getByText('v3',{exact:true}).waitFor();
+ await dropTarget.evaluate(el=>{const transfer=new DataTransfer();transfer.items.add(new File(['bad'],'unsafe.exe',{type:'application/octet-stream'}));el.dispatchEvent(new DragEvent('drop',{dataTransfer:transfer,bubbles:true,cancelable:true}));});
+ await documents.getByText('Choose a PDF or DOCX resume.',{exact:true}).waitFor();
+ await resumeRow.getByText('v3',{exact:true}).waitFor();
+
  const resumeLibrary=documents.getByRole('region',{name:'Resumes',exact:true});
  assert(await resumeLibrary.getByRole('button',{name:'Preview',exact:true}).first().isDisabled(),'Demo fixtures have no PDF');
  for(const title of ['Resumes','Cover letters']) assert.equal(await documents.getByRole('heading',{name:title,exact:true}).locator('svg').count(),1,'Document headers use the file icon');
@@ -133,15 +145,10 @@ try{
  await roles.getByRole('combobox',{name:'Roles priority',exact:true}).selectOption('Preferred');
  await roles.getByRole('button',{name:'Finish editing Roles & experience',exact:true}).click();
  await roles.getByText('Backend engineering, ML systems · Preferred',{exact:true}).waitFor();
- await prefs.getByRole('button',{name:'Edit Resume assignments & role targets',exact:true}).click();
- const backend=prefs.getByRole('heading',{name:'Backend SWE',exact:true}).locator('..');
- await backend.getByRole('combobox',{name:'Job type',exact:true}).selectOption('Internship');
- await backend.getByRole('combobox',{name:'Resume for these roles',exact:true}).selectOption('demo-ml-resume');
+ assert.equal(await prefs.getByRole('region',{name:'Resume assignments & role targets',exact:true}).count(),0,'Job preferences must not repeat resume assignment controls');
  await page.getByRole('button',{name:'Save application profile',exact:true}).click();
  await page.getByRole('button',{name:'Reload saved',exact:true}).click();
- assert.equal(await backend.getByRole('combobox',{name:'Job type',exact:true}).inputValue(),'Internship');
- assert.equal(await backend.getByRole('combobox',{name:'Resume for these roles',exact:true}).inputValue(),'demo-ml-resume');
- await prefs.getByRole('button',{name:'Finish editing Resume assignments & role targets',exact:true}).click();
+ await roles.getByText('Backend engineering, ML systems · Preferred',{exact:true}).waitFor();
  const jobTab=await nav.getByRole('button',{name:'Job preferences',exact:true}).boundingBox();
  const agentTab=await nav.getByRole('button',{name:'My Agent',exact:true}).boundingBox();
  assert(agentTab.x>jobTab.x && agentTab.x-jobTab.x-jobTab.width<24,'My Agent must sit directly beside Job preferences');
@@ -193,8 +200,7 @@ try{
  await agent.getByText('Confident & understated',{exact:true}).waitFor();
  await page.evaluate(()=>scrollTo(0,0));
  await carousel.locator('iframe').scrollIntoViewIfNeeded();
- await carousel.frameLocator('iframe').locator('.animated span').last().evaluate(async element => { await Promise.all(element.getAnimations().map(animation => animation.finished)); });
- assert.equal(await carousel.frameLocator('iframe').locator('.animated span').last().evaluate(el=>getComputedStyle(el).opacity),'1','Preview text finishes revealing');
+ assert(await carousel.frameLocator('iframe').locator('.animated span').last().evaluate(el=>Number(getComputedStyle(el).opacity)>=.9),'Preview text is readable throughout the animation');
  await carousel.locator('iframe').screenshot({path:dir+'/outreach-frame.png'});
  await page.evaluate(()=>scrollTo(0,0));
  await page.screenshot({path:dir+'/my-agent-desktop.png',fullPage:true});

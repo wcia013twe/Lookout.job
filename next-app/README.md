@@ -22,7 +22,7 @@ The retired static frontend has been removed. React components own presentation 
 
 ## Profile verification and demo checks
 
-Profile panels stay mounted after first use so switching sections preserves unsaved fields; leaving the route still requires saving. The profile fallback resume and role/type assignments live in Job preferences. The account-wide submission default (`workflow.searchPreferences.defaultResumeId`) lives in My Agent. Progress and leaderboard settings are reached through the header XP menu.
+Profile panels stay mounted after first use so switching sections preserves unsaved fields; leaving the route still requires saving. The profile fallback resume lives in Job preferences; role/type assignments are managed only in About me / Documents. The account-wide submission default (`workflow.searchPreferences.defaultResumeId`) lives in My Agent. Progress and leaderboard settings are reached through the header XP menu.
 
 In admin Demo mode, edit an About me field and use its section checkmark to save. Switch to Job preferences and return to verify the saved field remains; changed facts remain unverified. Profile drafts persist across section switches until Save application profile. Inspect the fictional resume, unverified saved answer and preferences. Open My agent to inspect the six fictional search sources in a compact source list (including long names/URLs, all three source types, and expandable access details). Check a narrow screen, edit/add/remove a source, remove all sources to check the empty state, and inspect agent connection controls; switch sections and return to check draft preservation. Reset demo and confirm the original fixtures return without changing account records. Check Progress through the XP menu.
 
@@ -134,7 +134,7 @@ applications or write real account records.
 
 `components/surface-panel.tsx` shares the Sharing & privacy material with Action Board panels, including the fictional admin demo. Use `as="form"` for a native form; otherwise it renders a section. Supply accessible labels and content at the caller. Existing primary/secondary controls inherit its theme tokens; the styling lives in `app/globals.css`. Demo verification covers the expanded application review, disabled approval gate, reset, weekly prep pause/resume, company follow-ups, and desktop/mobile/light presentation. This visual component adds no service or user action; existing MCP mappings remain unchanged.
 
-About me owns shared resumes and employer answers. Job preferences owns per-profile fallback resumes and role/type-to-resume assignments (existing recruiting targets with optional employment type), plus the existing matching criteria and priorities. My Agent owns per-profile employer-answer and outreach writing style and the separately labeled account-wide submission resume. The profile selector remains visible in My Agent and its writing changes use Save application profile. Legacy `section=kit` opens Job preferences. Demo fixtures include backend and ML systems resume variants, typed FT/internship assignments and an unset internship fallback. `scripts/check-profile-ui.mjs` covers revised navigation, saved assignments, writing drafts, profile switching, reset and desktop/mobile layout with intercepted cloud traffic. Existing website/MCP versioned profile-save contracts remain unchanged; developer context 36 needs the normal gateway release before deployed support can be claimed.
+About me owns shared resumes and employer answers. Job preferences owns per-profile fallback resumes, plus the existing matching criteria and priorities. My Agent owns per-profile employer-answer and outreach writing style and the separately labeled account-wide submission resume. The profile selector remains visible in My Agent and its writing changes use Save application profile. Legacy `section=kit` opens Job preferences. Demo fixtures include backend and ML systems resume variants, typed FT/internship assignments and an unset internship fallback. `scripts/check-profile-ui.mjs` covers revised navigation, saved assignments, writing drafts, profile switching, reset and desktop/mobile layout with intercepted cloud traffic. Existing website/MCP versioned profile-save contracts remain unchanged; developer context 36 needs the normal gateway release before deployed support can be claimed.
 
 My agent includes a simple daily schedule: editable daily tasks with switches and local times,
 one time zone and a master pause. It saves through the existing preferences store;
@@ -160,7 +160,7 @@ rules. Unbound drafts require review once explicit profile rules exist. Existing
 role-type policies remain a legacy fallback. Gateway/config release and hosted
 verification are required before claiming the new execution policy is deployed.
 
-About me / Documents appears before Career background and includes the shared resume library, direct Assign roles/Add role assignment, cover letters and reusable application templates. Resume files remain private PDF/DOCX uploads; cover letters/templates accept text or document links and use the versioned artifact service with cover_letter/application_template kinds. Add, read/edit, archive and pagination use existing backend validation. The same role assignments remain in Job preferences. Demo supports metadata-only resume upload and versioned in-memory document editing. `scripts/check-profile-ui.mjs` verifies placement, adding a resume and assignment, cover-letter/template revision, mobile layout and zero demo cloud writes. Deploy the migration and gateway context 37 via the normal production workflow before claiming live support.
+About me / Documents appears before Career background and includes the shared resume library, direct Assign roles/Add role assignment, cover letters and reusable application templates. Resume files remain private PDF/DOCX uploads; cover letters/templates accept text or document links and use the versioned artifact service with cover_letter/application_template kinds. Add, read/edit, archive and pagination use existing backend validation. The duplicate assignment section is removed from Job preferences; the existing stored targeting records remain intact. Demo supports metadata-only resume upload and versioned in-memory document editing. `scripts/check-profile-ui.mjs` verifies placement, adding a resume and assignment, cover-letter/template revision, mobile layout and zero demo cloud writes. Deploy the migration and gateway context 37 via the normal production workflow before claiming live support.
 
 My Agent uses left-aligned writing settings with employer and outreach previews on the right (stacked on mobile). Outreach uses previous/next arrows to cycle Recruiter, Existing connection, Alumni, Founder and Followup. Shared employer answers and profile answer selection are in a collapsed Shared question bank beneath Writing style; reusable application templates also live here. Style previews reveal text progressively and respect reduced motion; these are illustrative previews, not live AI generation. Demo mode uses the existing fictional answer and outreach fixtures; verify editing, profile switching, library scrolling and reset through the same scoped services. No backend action or MCP contract changed.
 
@@ -193,6 +193,7 @@ static export, `LOOKOUT_PLAYWRIGHT_MODULE` to an installed Playwright module and
 edits, Escape/focus restoration, no preview service calls, no demo external links,
 unknown scores, and desktop-dark/mobile-light layouts. No real account is used.
 
+Resume rows support dropping one PDF/DOCX on the name or choosing a replacement file through the accessible picker. Saved names/role assignments survive, versions advance and old versions are hidden from new selections while retained for application history. Source changes use the scoped resume-source RPC and need saved profile drafts first. The demo stores replacement metadata only, remaps its own preferences, and rejects invalid files without changing the source. Profile UI verification covers both replacement paths, preserved name/roles, v2/v3 progression, hidden prior rows and invalid-file rejection. Hosted schema/gateway release remains pending.
 
 Discover refinement: icon-led facts on cards and in the panel expose pay,
 location, work setting, focus, sponsorship and source recency without inventing
@@ -207,3 +208,54 @@ can introduce further questions. Fictional demo questions illustrate one- and
 two-question handoffs; no live employer form or saved-answer reuse policy changes.
 
 Outreach carousel previews are contained in one gradient panel. The sandboxed iframe highlights sentence purpose using the existing six-tag message key; Highlights toggles both marks and key. The iframe renders escaped local templates, runs no scripts, makes no external requests and respects reduced motion. This is presentation-only; scoped backend/MCP actions are unchanged.
+
+## Application Overview
+
+Application details open to a scoped Overview: a recorded stage/preparation
+snapshot, icon-led job facts, an amber attention area for recorded blockers,
+uncertain attempts or incomplete draft preparation, green fit/context research
+notes and an expandable employer description. Unknown facts stay explicit.
+Saved application fields remain useful when the role is absent from the current
+catalog. Completed preparation states do not show stale question/resume prompts.
+The Documents handoff only switches the existing tab. Other tabs, sidebar,
+status updates, approvals and submission behavior are unchanged.
+
+The admin demo adds fictional interview facts and exposes its already-existing
+uncertain attempt in the application's UI snapshot. `scripts/check-application-overview-ui.mjs`
+uses intercepted account traffic to check interview, submitted, uncertain and
+saved-without-draft states, Documents navigation, desktop dark/mobile light,
+Escape, overflow and zero Overview cloud calls. Use LOOKOUT_UI_URL,
+LOOKOUT_PLAYWRIGHT_MODULE and LOOKOUT_UI_ARTIFACTS like the Discover check.
+This is read-only presentation of existing application/job/context fields;
+existing scoped MCP application/context tools and backend validation are unchanged.
+No new AI assessment, scoring, approval or service is introduced.
+
+
+## Application Documents preview
+
+Documents now opens a readable application form with every recorded answer,
+filled/missing counts, recorded resume metadata and a source selector when saved
+attempts exist. Historical application states default to the latest captured
+attempt, preserving confirmed/uncertain labels from the shared submission-record
+model. A captured view never fills missing historical fields from the current
+profile. The draft view includes current profile/contact/background reference
+and marks it as separate from employer-form evidence. Missing fields and absent
+form coverage stay explicit; no live employer form is fetched or reconstructed.
+
+Documents automatically loads its existing owner-scoped submission record, with
+loading, error/retry and no-snapshot states. The full Submission record remains
+available. A recorded resume with a private object path uses the existing
+owner-checked download handler. Edit draft & review contains the original editor,
+Save draft, reviewed-question checkbox and exact-version approval controls;
+viewing a preview creates no approval or submission. The duplicate resume-match
+placeholder is replaced by the form; collected fit context remains in Overview.
+
+Existing scoped MCP `read_application_record` and draft/approval boundaries remain
+unchanged. No new service, database schema, gateway capability or generic edit
+tool is introduced. `scripts/check-application-documents-ui.mjs` verifies filled
+attempt fields, current-profile separation, source switching, missing answers,
+uncertain/no-draft cases, collapsed editing, disabled demo actions, navigation,
+Escape and desktop-dark/mobile-light layout using fictional intercepted accounts.
+Demo fixtures include a captured fictional name/email distinct from the current
+profile plus an unanswered scheduling question. No real private file download,
+form fill or submission was performed during verification.
