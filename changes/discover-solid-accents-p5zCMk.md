@@ -14,3 +14,8 @@
 - Task actions align beside summaries on wider panels and stack on mobile. Workflow state stays with the role metadata; expanded review controls have a clear divider and active action styling. The existing demo covers expanded, disabled, completed, reset and uncertain states without new fixtures.
 - Validation: production build including TypeScript; data validation (76 roles); diff whitespace check. Browser captures at dark/light 1440px and 390px plus dark 320px/1024px showed no document overflow. Exercised explicit approval gating, completion/reset, missing-answer confirmation, uncertain outcome retention, prep pause/resume and session recording. No page errors or non-auth backend requests during demo actions; one intercepted background auth-user read occurred. Temporary browser verification is in `/tmp/lookout-theme-preview/action-board.mjs`; screenshots are alongside it.
 - Detector retained only the existing Inter warning. No backend contracts, service behavior, or new user actions changed; existing MCP mappings remain the boundary. Real-account backend operations and production deployment were not verified or performed.
+
+## Local main integration
+
+- Preserved and committed the existing shared-checkout Action Board subtitle removal before landing, leaving unrelated profile edits untouched.
+- Integrated current local main and rebuilt successfully. Data validation passed (76 roles). The full suite passed 71 of 74 test files inside the sandbox; all 26 tests in the three subprocess-dependent files passed when rerun outside the sandbox. No product fixes were required.
