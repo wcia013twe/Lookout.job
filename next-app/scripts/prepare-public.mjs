@@ -12,7 +12,7 @@ for (const name of ["data", "icon.svg", "manifest.webmanifest"]) {
     if (e.code !== "ENOENT") throw e;
   }
 }
-for (const directory of ["agents", "textures", "circles", "profile-icons"]) {
+for (const directory of ["agents", "textures", "circles"]) {
   await cp(fileURLToPath(new URL(`../assets/${directory}/`, import.meta.url)), dest + directory, { recursive: true });
 }
 // Replace the old worker at the same scope and discard stale static UI caches.
