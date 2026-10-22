@@ -7,7 +7,7 @@ import {
 } from "../../lib/profile-eligibility.mjs";
 import { useApplicationProfile } from "./application-profile-context";
 import { useWorkspace } from "../lib/workspace";
-import { Field, control, secondary, Section } from "./ui";
+import { Field, control, secondary } from "./ui";
 import { profileStyles as styles } from "./profile-surface";
 import ProfileSection, {ProfileValues} from "./profile-section";
 export function ProfileSwitcher() {
@@ -35,8 +35,14 @@ export function ApplicationMaterials() {
   const a = useApplicationProfile(),
     w = useWorkspace();
   const id = a.field("Application materials", "Default resume ID").value;
+  const selected = a.field("Application materials", "Saved answer IDs").value.split(",").map(value => value.trim()).filter(Boolean);
+  const resume = w.state.workflow.resumes.find((r: {id:string;name:string}) => r.id === id);
+  const selectedAnswers = selected.map(answerId => {
+    const answer = w.state.workflow.savedAnswers.find((item:{id:string}) => item.id === answerId);
+    return answer ? `${answer.question}${answer.companyScope ? ` · ${answer.companyScope}` : ""}` : "Previously selected answer unavailable";
+  });
   return (
-    <Section title="Materials for this profile">
+    <ProfileSection title="Materials for this profile" resetKey={a.profile.id} disabled={a.busy}>{editing => editing ? <>
       <p className="mb-5 text-sm text-board-muted">
         Choose from your shared library. Each application profile keeps its own
         selections.
@@ -119,7 +125,11 @@ export function ApplicationMaterials() {
           </p>
         )}
       </fieldset>
-    </Section>
+    </> : <ProfileValues items={[
+      {label:"Preferred resume",value:resume?.name || (id ? "Previously selected resume unavailable" : "No profile resume selected")},
+      {label:"Saved answers to use",value:selectedAnswers.length ? selectedAnswers.join("\n") : "No saved answers selected"},
+    ]}/>}
+    </ProfileSection>
   );
 }
 const channels = [
@@ -139,102 +149,38 @@ const channels = [
 export function WritingStyles() {
   const a = useApplicationProfile();
   const [preview, setPreview] = useState<string | null>(null);
-  return (
-    <Section title="Writing style">
-      <p className="mb-6 text-sm text-board-muted">
-        A separate voice for each kind of writing, saved with {a.profile.name}.
-      </p>
-      <div className={styles.writingGrid}>
-        {channels.map((c) => (
-          <div key={c.heading} className={styles.writingBlock}>
-            <h3 className="text-base font-semibold">{c.title}</h3>
-            <p className="mt-2 mb-5 text-sm text-board-muted">
-              {c.description}
-            </p>
-            <div className="space-y-4">
-              {[
-                [
-                  "Tone",
-                  [
-                    "Professional & direct",
-                    "Warm & conversational",
-                    "Confident & understated",
-                    "Formal",
-                  ],
-                ],
-                ["Length", ["Brief", "Balanced", "Detailed"]],
-              ].map(([key, values]) => (
-                <Field
-                  key={key as string}
-                  label={`${c.title} ${String(key).toLowerCase()}`}
-                >
-                  <select
-                    className={control}
-                    value={a.field(c.heading, key as string).value}
-                    disabled={a.busy}
-                    onChange={(e) =>
-                      a.change(c.heading, key as string, e.target.value)
-                    }
-                  >
-                    <option value="">No preference</option>
-                    {(values as string[]).map((v) => (
-                      <option key={v}>{v}</option>
-                    ))}
-                  </select>
-                </Field>
-              ))}
-              <Field label={`${c.title} custom guidance`}>
-                <textarea
-                  rows={3}
-                  className={control}
-                  value={a.field(c.heading, "Guidance").value}
-                  disabled={a.busy}
-                  onChange={(e) =>
-                    a.change(c.heading, "Guidance", e.target.value)
-                  }
-                  placeholder={
-                    c.heading === "Outreach writing"
-                      ? "Lead with why I’m contacting them. Avoid flattery."
-                      : "Use concrete evidence. Avoid exaggerated enthusiasm."
-                  }
-                />
-              </Field>
-              <button
-                type="button"
-                className={secondary}
-                onClick={() =>
-                  setPreview(preview === c.heading ? null : c.heading)
-                }
-              >
-                Preview style brief
-              </button>
-              {preview === c.heading && (
-                <div className="border-t border-board-line pt-4 text-sm leading-relaxed">
-                  <p className="font-semibold">
-                    Instructions your agent will receive
-                  </p>
-                  <p className="mt-2">
-                    {a.field(c.heading, "Tone").value || "Use a natural tone"}.{" "}
-                    {a.field(c.heading, "Length").value ||
-                      "Choose a suitable length"}
-                    .
-                  </p>
-                  <p className="mt-2 whitespace-pre-wrap">
-                    {a.field(c.heading, "Guidance").value ||
-                      "No additional writing guidance."}
-                  </p>
-                  <p className="mt-3 text-xs text-board-muted">
-                    This previews saved guidance, not generated writing. Facts
-                    and answer-review requirements still apply.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
+  return <>
+    <h2 className="mb-3 mt-8 text-lg font-bold">Writing style</h2>
+    <p className="text-sm text-board-muted">A separate voice for each kind of writing, saved with {a.profile.name}.</p>
+    {channels.map(c => <ProfileSection key={c.heading} title={c.title} resetKey={a.profile.id} disabled={a.busy}>{editing => <>
+      <p className="mb-5 text-sm text-board-muted">{c.description}</p>
+      {editing ? <div className="grid gap-5 sm:grid-cols-2">
+        {([
+          ["Tone", ["Professional & direct", "Warm & conversational", "Confident & understated", "Formal"]],
+          ["Length", ["Brief", "Balanced", "Detailed"]],
+        ] as [string, string[]][]).map(([key, values]) => <Field key={key} label={`${c.title} ${key.toLowerCase()}`}>
+          <select className={control} value={a.field(c.heading,key).value} disabled={a.busy || a.field(c.heading,key).conflict} onChange={e=>a.change(c.heading,key,e.target.value)}>
+            <option value="">No preference</option>
+            {values.map(value=><option key={value}>{value}</option>)}
+          </select>
+        </Field>)}
+        <div className="sm:col-span-2"><Field label={`${c.title} custom guidance`}>
+          <textarea rows={3} className={control} value={a.field(c.heading,"Guidance").value} disabled={a.busy || a.field(c.heading,"Guidance").conflict} onChange={e=>a.change(c.heading,"Guidance",e.target.value)} placeholder={c.heading==="Outreach writing"?"Lead with why I’m contacting them. Avoid flattery.":"Use concrete evidence. Avoid exaggerated enthusiasm."}/>
+        </Field></div>
+      </div> : <ProfileValues items={[
+        {label:"Tone",value:a.field(c.heading,"Tone").value || "No preference"},
+        {label:"Length",value:a.field(c.heading,"Length").value || "No preference"},
+        {label:"Custom guidance",value:a.field(c.heading,"Guidance").value,wide:true},
+      ]}/>}
+      <button type="button" className={`${secondary} mt-5`} aria-expanded={preview===c.heading} onClick={()=>setPreview(preview===c.heading?null:c.heading)}>{preview===c.heading?"Hide style brief":"Preview style brief"}</button>
+      {preview===c.heading && <div className="mt-4 border-t border-board-line pt-4 text-sm leading-relaxed">
+        <p className="font-semibold">Instructions your agent will receive</p>
+        <p className="mt-2">{a.field(c.heading,"Tone").value || "Use a natural tone"}. {a.field(c.heading,"Length").value || "Choose a suitable length"}.</p>
+        <p className="mt-2 whitespace-pre-wrap break-words">{a.field(c.heading,"Guidance").value || "No additional writing guidance."}</p>
+        <p className="mt-3 text-xs text-board-muted">This previews your current guidance. Save application profile to keep changes. Facts and answer-review requirements still apply.</p>
+      </div>}
+    </>}</ProfileSection>)}
+  </>;
 }
 
 export function EligibilitySettings() {

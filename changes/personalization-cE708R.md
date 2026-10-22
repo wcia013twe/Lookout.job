@@ -1,0 +1,10 @@
+# Personalization follows About me
+
+- Renamed Application kit to Personalization in profile navigation, overview shortcuts, accessible labels and current documentation.
+- Reused About me’s bordered sections, two-column values and scoped pencil/checkmark editing for materials, employer-question style, outreach style and the account-wide resume default. Shared resume and employer-answer libraries remain expanded in matching sections; existing creation, review and reuse controls remain available.
+- Per-profile material/style changes still use Save application profile. The account-wide PDF default still saves automatically; finishing section editing does not save a profile. Style preview describes current draft guidance honestly.
+- Demo fixtures show selected full-time materials and unset internship choices. The profile UI check exercises read/edit/preview, unsaved section switching, save/reload, separate profiles, demo reset, desktop dark/mobile light layouts and cloud isolation.
+- MCP mapping: existing `save_search_profile` / `preferences.profile.save` for profile selections and writing fields; resume/answer actions and account-wide preferences keep their existing scoped contracts. No service, payload, permission or backend validation changes.
+- Validation: npm test (425 passed), npm run validate:data (147 roles), frontend typecheck, production static build, profile UI integration check against both dev and built static output, git diff --check; Impeccable detector reported no findings.
+- Finish review: ship, with no material findings. Documentation matches the implemented UI; existing shared design tokens and components are preserved. The inherited finish-editing tooltip is generic for the automatically saved account-wide setting; visible copy correctly explains autosave.
+- Verification limits: local fictional demo with intercepted cloud traffic; no production deployment, real private-file upload/download, external message, submission or hosted MCP verification in this presentation-only pass.

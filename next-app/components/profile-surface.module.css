@@ -299,14 +299,6 @@
   font-size: 13px;
   color: var(--color-board-muted);
 }
-.writingGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
-}
-.writingBlock {
-  min-width: 0;
-}
 .saveBar {
   position: sticky;
   bottom: 12px;
@@ -331,8 +323,7 @@
   .profileHeader{flex-direction:column;align-items:stretch;gap:8px;margin-bottom:20px}
   .profilePicker{max-width:100%;width:100%}
   .profileChoice{padding-left:12px}
-  .overviewBottom,
-  .writingGrid {
+  .overviewBottom {
     grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }

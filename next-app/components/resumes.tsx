@@ -1,8 +1,9 @@
 "use client";
 import { useState, type FormEvent } from "react";
+import { ProfileCard } from "./profile-section";
 import { useWorkspace } from "../lib/workspace";
 import { uploadResume, resumeDownloadUrl } from "../../lib/resume-model.mjs";
-import { control, primary, secondary, Field, Section, Notice } from "./ui";
+import { control, primary, secondary, Field, Notice } from "./ui";
 import { errorMessage, type ResumeRecord } from "./profile-types";
 type ResumeForm = HTMLFormElement & {
   elements: HTMLFormControlsCollection & {
@@ -110,7 +111,7 @@ export default function Resumes() {
     }
   }
   return (
-    <Section title="Resume variants">
+    <ProfileCard title="Shared resume library">
       {!resumes.length && (
         <p className="mt-6 border-t border-board-line pt-5 text-sm text-board-muted">
           No resume variants saved yet.
@@ -201,6 +202,6 @@ export default function Resumes() {
         )}
       </details>
       <Notice>{feedback}</Notice>
-    </Section>
+    </ProfileCard>
   );
 }

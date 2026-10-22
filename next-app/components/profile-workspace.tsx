@@ -5,6 +5,7 @@ import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, primary, secondary, control, Field } from "./ui";
 import ProfileEditor from "./profile-editor";
+import ProfileSection, { ProfileValues } from "./profile-section";
 import ProfileOverview from "./profile-overview";
 import Resumes from "./resumes";
 import SavedAnswers from "./saved-answers";
@@ -21,20 +22,20 @@ import {
   ApplicationMaterials,
   WritingStyles,
 } from "./profile-settings";
-type ProfileSection = "overview" | "about" | "kit" | "preferences" | "agent";
-const sections: [ProfileSection, string][] = [
+type ProfileSectionId = "overview" | "about" | "kit" | "preferences" | "agent";
+const sections: [ProfileSectionId, string][] = [
   ["overview", "Overview"],
   ["about", "About me"],
-  ["kit", "Application kit"],
+  ["kit", "Personalization"],
   ["preferences", "Job preferences"],
   ["agent", "My agent"],
 ];
 function ProfileContent() {
   const w = useWorkspace(),
     a = useApplicationProfile();
-  const [active, setActive] = useState<ProfileSection>("overview"),
-    [visited, setVisited] = useState<ProfileSection[]>([]);
-  function select(id: ProfileSection) {
+  const [active, setActive] = useState<ProfileSectionId>("overview"),
+    [visited, setVisited] = useState<ProfileSectionId[]>([]);
+  function select(id: ProfileSectionId) {
     setActive(id);
     setVisited((prev) => (prev.includes(id) ? prev : [...prev, id]));
   }
@@ -49,7 +50,7 @@ function ProfileContent() {
         <select
           className={control}
           value={active}
-          onChange={(e) => select(e.target.value as ProfileSection)}
+          onChange={(e) => select(e.target.value as ProfileSectionId)}
         >
           {sections.map(([id, title]) => (
             <option key={id} value={id}>
@@ -89,30 +90,20 @@ function ProfileContent() {
         <section
           className={profileStyles.panel}
           hidden={active !== "kit"}
-          aria-label="Application kit"
+          aria-label="Personalization"
         >
           <div className={profileStyles.sectionIntro}>
-            <h2>Application kit</h2>
+            <h2>Personalization</h2>
             <p>The right materials and voice for {a.profile.name}.</p>
           </div>
           <ApplicationMaterials />
           <WritingStyles />
-          <details className="mt-8 border-t border-board-line py-4" open>
-            <summary className="text-lg font-semibold">
-              Shared resume library
-            </summary>
-            <Resumes />
-          </details>
-          <details className="mt-6 border-t border-board-line py-4" open>
-            <summary className="text-lg font-semibold">
-              Shared employer-answer library
-            </summary>
-            <SavedAnswers />
-          </details>
-          <details className="mt-6 border-t border-board-line py-4">
-            <summary className="font-semibold">
-              Account-wide submission resume
-            </summary>
+          <h2 className="mb-3 mt-8 text-lg font-bold">Shared libraries</h2>
+          <p className="text-sm text-board-muted">Resumes and employer answers available across your application profiles.</p>
+          <Resumes />
+          <SavedAnswers />
+          <ProfileSection title="Account-wide submission resume" resetKey={a.profile.id} disabled={w.locked}>
+            {editing => editing ? <>
             <p className="my-4 text-sm text-board-muted">
               Existing automatic submission uses this private PDF default.
               Profile selections guide preparation and do not change submission
@@ -150,7 +141,8 @@ function ProfileContent() {
             <p className="mt-2 text-xs text-board-muted">
               This account-wide setting saves automatically.
             </p>
-          </details>
+            </> : <ProfileValues items={[{label:"Default private PDF resume",value:w.state.workflow.resumes.find((r:{id:string;name:string})=>r.id===w.state.workflow.searchPreferences?.defaultResumeId)?.name||"No private PDF selected"}]}/>}
+          </ProfileSection>
         </section>
       )}
       {visited.includes("preferences") && (

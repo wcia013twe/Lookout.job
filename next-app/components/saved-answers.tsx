@@ -1,7 +1,8 @@
 "use client";
 import { useState, type FormEvent } from "react";
+import { ProfileCard } from "./profile-section";
 import { useWorkspace } from "../lib/workspace";
-import { Section, Field, control, primary, secondary, Notice } from "./ui";
+import { Field, control, primary, secondary, Notice } from "./ui";
 type AnswerFields = {
   question: string;
   answer: string;
@@ -95,7 +96,7 @@ export default function SavedAnswers() {
     }
   }
   return (
-    <Section title="Saved answers">
+    <ProfileCard title="Shared employer-answer library">
       <p className="mb-4 text-sm text-board-muted">
         Exact-question answers, with optional company scope. Automatic reuse
         requires your review.
@@ -275,6 +276,6 @@ export default function SavedAnswers() {
         </div>
       )}
       <Notice>{feedback}</Notice>
-    </Section>
+    </ProfileCard>
   );
 }
