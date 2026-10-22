@@ -20,3 +20,11 @@
 - Added a resettable fictional demo schedule with midday off and documented edit/pause/save/reset interactions. Guest changes stay local and demo writes remain memory-only.
 - Validation: production build, TypeScript, data validation (147 roles), full existing test suite, and `git diff --check`. Desktop dark and phone light fixture inspection found no overflow; exercised time editing, individual/master toggles, invalid timezone recovery and saving in demo.
 - Limits: actual external automations were not created; agent runtime setup remains separate. Live account autosync and a hosted MCP round trip were not exercised for this UI pass.
+
+## Follow-up: add and remove scheduled tasks
+
+- The four Lookout routines are editable defaults. Add a task with a name, local time and optional agent instructions; remove any default or custom task, including all tasks. Rows display in time order.
+- Saved empty/partial schedules remain as chosen. Older saved default IDs retain their times and enabled flags while receiving display labels. Uses the existing preferences store and notification-preference MCP boundary; no backend or automation setup changes.
+- Demo includes a fictional custom practice task alongside the defaults; the documented walkthrough covers adding/removing, saving an empty list, and resetting to fixtures.
+- Validation: 425 existing tests passed, production build, TypeScript, data validation (147 roles), diff check and UI detector. Targeted checks covered legacy records, custom tasks and empty schedules. Desktop/phone demo interactions verified adding a task, removing a default, saving, removing all tasks and saving the empty state; no phone row overflow.
+- Limits: real account sync and external runtime scheduling were not exercised; the change remains in the settings UI and existing persistence path.
