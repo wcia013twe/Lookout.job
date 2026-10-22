@@ -50,6 +50,7 @@ export function validateCircleContextContent(content) {
 export function circleKnowledgeResponse(operation,data) {
  if(!data||data.available===false)return data;
  const project=post=>({...post,agentContext:circleAgentContext(post)});
+ if(operation==='knowledge.feed')return {...data,items:data.items.map(event=>({...event,post:event.post?project(event.post):null}))};
  if(operation==='knowledge.search')return {...data,items:data.items.map(project)};
  if(operation==='knowledge.read')return {...data,post:project(data.post),replies:data.replies.map(project)};
  return data;

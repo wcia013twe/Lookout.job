@@ -19,3 +19,11 @@
 
 - Preserved and committed the existing shared-checkout Action Board subtitle removal before landing, leaving unrelated profile edits untouched.
 - Integrated current local main and rebuilt successfully. Data validation passed (76 roles). The full suite passed 71 of 74 test files inside the sandbox; all 26 tests in the three subprocess-dependent files passed when rerun outside the sandbox. No product fixes were required.
+
+## Applications follow-up
+
+- Matched the tracker to the shared solid navy/ice-blue theme: aurora tab and column headers, opaque filters, actual view counts, and separate full-time/internship counts.
+- Applications opts into compact grouped rows with company/role, type, date and labeled status actions. Preparation state stays separate from hiring progress. The existing details dialog retains its timeline and controls, and Network retains its existing timeline row presentation.
+- Added resettable, fictional tracker examples for an internship offer and a withdrawn role with missing dates. Browser verification exercised search/empty/clear, type/stage filters, view switching, unknown-date labeling, saved-role status editing, demo reset and details/timeline tabs. Demo actions made no non-auth backend requests; no page errors occurred.
+- Validation: production build including TypeScript; tracker-display, application-timeline, demo and demo-mode test files; `npm run validate:data` (76 public roles); whitespace check; design detector (no findings). Dark/light desktop (1440px) and phone (390px), plus dark 320px/768px captures had no document overflow. Temporary verification and screenshots: `/tmp/lookout-theme-preview/applications.mjs` and adjacent PNGs.
+- Existing status/filter/detail services and scoped MCP boundaries are reused; no new backend capability or action was added. Real-account writes and production deployment were not tested or performed.

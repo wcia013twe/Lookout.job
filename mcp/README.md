@@ -294,3 +294,15 @@ IDs and employer requisition IDs remain distinct.
 See [the complete contract and release gates](../docs/private-network.md).
 These additions require backend/gateway/MCP release and hosted verification before
 claiming deployed parity.
+
+## Circle publication feed (local, gated)
+
+`read_circle_feed({circleId,after?,limit?})` requires `knowledge:read`. Read an
+ascending bounded page, drain `nextCursor`, then retain `checkpoint` as `after`
+for the next scan. Positions are strings; cursors bind to the Circle and scan
+boundary. Only current shared revisions include a post; unavailable revisions
+return `sourceAvailable:false` and no body. Invalidate cached older revisions on
+later events, including cached replies when `invalidateThread` is true. Private
+drafts never enter the feed. Reads do not record citations, publish, send messages
+or acknowledge delivery. Production migration/gateway release and hosted
+verification remain outstanding. See [feed contract](../backend/circle-knowledge.md#circle-publication-feed-local-release-gated).
