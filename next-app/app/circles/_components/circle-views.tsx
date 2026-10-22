@@ -1,19 +1,20 @@
 'use client';
 
 import {useRef,useState,type ReactNode} from 'react';
-import type {Content,Detail,Post} from '../_lib/types';
+import type {Content,Detail,Post,Request} from '../_lib/types';
 import {types} from '../_lib/types';
 import identity from './circle-views.module.css';
 import styles from './conversation.module.css';
 import CircleRoom from './circle-room';
 import CircleChat from './circle-chat';
+import CircleFeed from './circle-feed';
 import Editor from './editor';
 import JobAttachment from './job-attachment';
 import SharedAttachments,{hasAttachedJob} from './shared-attachments';
 import {companionForMember} from './companions';
 import {CompanyLogo} from '../../../components/role-card';
 
-type Props={initialChannel?:'clubhouse'|'settings';detail:Detail;posts:Post[];demo:boolean;openPost:(post:Post)=>void;focused:boolean;controls:ReactNode;settings:ReactNode;pagination:ReactNode;search:ReactNode;searching:boolean;busy:boolean;save:(content:Content)=>Promise<void>};
+type Props={request:Request;initialChannel?:'clubhouse'|'settings';detail:Detail;posts:Post[];demo:boolean;openPost:(post:Post)=>void;focused:boolean;controls:ReactNode;settings:ReactNode;pagination:ReactNode;search:ReactNode;searching:boolean;busy:boolean;save:(content:Content)=>Promise<void>};
 const clean=(name:string)=>name.replace(' (demo)','');
 export function CircleEmblem(){return <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 5 89 19v31c0 21-16 36-39 45C27 86 11 71 11 50V19L50 5Z" fill="currentColor" fillOpacity=".08" stroke="currentColor" strokeWidth="2"/><path d="m22 65 22-30 12 17 8-10 16 23H22Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;}
 function Icon({kind}:{kind:string}){return <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==='settings'?<><path d="m10 3-.5 2a7 7 0 0 0-2 1L5.5 5.5l-2 3.5L5 10.5a7 7 0 0 0 0 3L3.5 15l2 3.5L7.5 18a7 7 0 0 0 2 1L10 21h4l.5-2a7 7 0 0 0 2-1l2 .5 2-3.5-1.5-1.5a7 7 0 0 0 0-3L20.5 9l-2-3.5-2 .5a7 7 0 0 0-2-1L14 3h-4Z"/><circle cx="12" cy="12" r="3"/></>:kind==='clubhouse'?<><path d="m3 10 9-7 9 7v10H3V10Z"/><path d="M9 20v-7h6v7"/></>:kind==='chat'?<path d="M20 11a8 8 0 0 1-8 8H5l-4 3 2-7a8 8 0 1 1 17-4Z"/>:kind==='round'?<><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M8 12h8m-8 4h5"/></>:kind==='offers'?<><rect x="2" y="6" width="8" height="14" rx="2"/><rect x="14" y="3" width="8" height="17" rx="2"/><path d="M5 10h2m-2 4h2m10-7h2m-2 4h2"/></>:kind==='resource'?<><path d="M12 5c-3-2-7-2-10-1v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Zm0 0v15"/></>:<><path d="M8 12h8m-4-4v8"/><rect x="3" y="3" width="18" height="18" rx="4"/></>}</svg>;}
@@ -24,7 +25,7 @@ export function ContextChips({content}:{content:Content}){
 }
 
 const channels=[{id:'clubhouse',label:'Clubhouse',icon:'clubhouse'},{id:'intel',label:'Experiences',icon:'round'},{id:'resource',label:'Resources',icon:'resource'},{id:'settings',label:'Circle settings',icon:'settings'}];
-export default function CircleDashboard({initialChannel='clubhouse',detail,posts,demo,openPost,focused,controls,settings,pagination,search,searching,busy,save}:Props){
+export default function CircleDashboard({initialChannel='clubhouse',request,detail,posts,demo,openPost,focused,controls,settings,pagination,search,searching,busy,save}:Props){
  const [person,setPerson]=useState(''),[channel,setChannel]=useState(initialChannel as string),[sharing,setSharing]=useState(false);
  const composer=useRef<HTMLDivElement>(null);
  const published=posts.filter(post=>!post.parentId&&post.state==='published'&&post.revision===post.publishedRevision);
@@ -50,6 +51,7 @@ export default function CircleDashboard({initialChannel='clubhouse',detail,posts
      {pagination}
      <div ref={composer} className={styles.composerWrap}><Editor demo={demo} key={channel} inline initial={{type:channel==='resource'?'resource':'interview_report',title:'',body:'',sources:[],provenance:'user_confirmed',personalDisclosure:false}} contexts={published.map(p=>p.content)} busy={busy} save={save} cancel={()=>{}}/></div>
     </>}
+    {channel==='clubhouse'&&<CircleFeed key={detail.circle.id} circleId={detail.circle.id} request={request} openPost={openPost} demo={demo}/>}
     <div hidden={channel!=='clubhouse'}><CircleChat forumPosts={published.filter(p=>p.content.type!=='discussion')} posts={chat} demo={demo} busy={busy} save={save} openPost={openPost}/></div>
    </section>
   </div>}
