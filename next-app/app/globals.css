@@ -550,65 +550,60 @@ button:not(:disabled) {
 .widget-heading { display: flex; align-items: center; gap: .625rem; }
 .widget-heading svg { flex-shrink: 0; color: var(--color-board-muted); }
 .action-widget-count { background: var(--color-board-tag); color: var(--color-board-text); }
-/* Blue and pink cloud hues identify the two kinds of work. */
-.workspace-shell .action-widget { background: var(--widget-cloud-surface, var(--color-board-panel)); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-.workspace-shell .action-widget::before { content: none; }
-.workspace-shell .needs-you-priority {
-  --color-board-panel: #1b2c46;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #73557e35, transparent 60%), linear-gradient(145deg, #203b58, #1b2943 70%);
-  --color-board-tag: #2b435f;
-  --color-board-line: #506e90;
-  --color-board-muted: #bed1e7;
-  --color-board-accent: #b8ddff;
-  --workspace-action-secondary: #2c4768;
-  --workspace-action-secondary-hover: #385a80;
-  --workspace-action-secondary-border: #6a90b7;
-  --workspace-action-secondary-border-hover: #b8ddff;
-  --workspace-action-secondary-text: #eaf5ff;
+/* Shared reference material: Sharing & privacy and Action Board panels. */
+.workspace-shell .surface-panel {
+  --color-board-panel: #141b29;
+  --color-board-tag: #202b3c;
+  --color-board-line: #465366;
+  --color-board-muted: #bdc7d8;
+  --color-board-accent: #dbe9ff;
+  --workspace-action-primary: #dbe9ff;
+  --workspace-action-primary-hover: #edf4ff;
+  --workspace-action-primary-text: #19283e;
+  --workspace-action-secondary: #202b3c;
+  --workspace-action-secondary-hover: #2a384d;
+  --workspace-action-secondary-border: #687991;
+  --workspace-action-secondary-border-hover: #b5cee9;
+  --workspace-action-secondary-text: #f5f4fa;
+  --panel-control-background: #0f1625;
+  --panel-control-border: #65768e;
+  --panel-control-focus-background: #152033;
+  --panel-control-focus-border: #b5cee9;
+  border-color: #586979;
+  background: linear-gradient(125deg, #1a2837, #111827 52%, #1c1923);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
-.workspace-shell .prep-widget {
-  --color-board-panel: #382738;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #688fca35, transparent 65%), linear-gradient(145deg, #442c42, #30283f 75%);
-  --color-board-tag: #513a50;
-  --color-board-line: #8b6686;
-  --color-board-muted: #e2c3d9;
-  --color-board-accent: #ffd0e8;
-  --workspace-action-secondary: #553b52;
-  --workspace-action-secondary-hover: #694962;
-  --workspace-action-secondary-border: #a27c99;
-  --workspace-action-secondary-border-hover: #ffd0e8;
-  --workspace-action-secondary-text: #ffecf6;
+.workspace-shell .surface-panel::before {
+  content: "";
+  background: linear-gradient(120deg, #648fa8, #526c70 40%, #7a6279);
 }
-.action-widget .widget-heading svg { color: var(--color-board-accent); }
-[data-theme="light"] .workspace-shell .needs-you-priority {
-  --color-board-panel: #edf5ff;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #f8dfee88, transparent 60%), linear-gradient(145deg, #e0f0ff, #f0f4ff 70%);
-  --color-board-tag: #d5e7fa;
-  --color-board-line: #9ab9d9;
-  --color-board-muted: #3d5b7c;
-  --color-board-accent: #245c91;
-  --workspace-action-secondary: #d5e7fa;
-  --workspace-action-secondary-hover: #c2dcf5;
-  --workspace-action-secondary-border: #7d9fc2;
-  --workspace-action-secondary-border-hover: #245c91;
-  --workspace-action-secondary-text: #214f79;
-  background: var(--widget-cloud-surface);
-  border-color: var(--color-board-line);
-}
-[data-theme="light"] .workspace-shell .prep-widget {
-  --color-board-panel: #fff0f7;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #d4eaff88, transparent 65%), linear-gradient(145deg, #ffe6f2, #fbf0fa 75%);
-  --color-board-tag: #f5d6e7;
-  --color-board-line: #c99ab7;
-  --color-board-muted: #784960;
-  --color-board-accent: #933c69;
-  --workspace-action-secondary: #f5d6e7;
-  --workspace-action-secondary-hover: #ecc1d9;
-  --workspace-action-secondary-border: #b980a0;
-  --workspace-action-secondary-border-hover: #933c69;
-  --workspace-action-secondary-text: #733452;
-  background: var(--widget-cloud-surface);
-  border-color: var(--color-board-line);
+.workspace-shell .surface-panel .workspace-control { background: var(--panel-control-background); border-color: var(--panel-control-border); }
+.workspace-shell .surface-panel .workspace-control:focus { background: var(--panel-control-focus-background); border-color: var(--panel-control-focus-border); }
+.surface-panel .handoff-action { background: var(--workspace-action-primary); border-color: transparent; color: var(--workspace-action-primary-text); }
+.surface-panel .handoff-action:hover:not(:disabled) { background: var(--workspace-action-primary-hover); border-color: transparent; }
+.surface-panel .widget-heading svg { color: var(--color-board-accent); }
+[data-theme="light"] .workspace-shell .surface-panel {
+  --color-board-panel: #f5f7fc;
+  --color-board-tag: #e3eaf4;
+  --color-board-line: #9daec2;
+  --color-board-muted: #485c74;
+  --color-board-accent: #244f7b;
+  --workspace-action-primary: #244f7b;
+  --workspace-action-primary-hover: #193e65;
+  --workspace-action-primary-text: #ffffff;
+  --workspace-action-secondary: #e3eaf4;
+  --workspace-action-secondary-hover: #d4e0ef;
+  --workspace-action-secondary-border: #8196b0;
+  --workspace-action-secondary-border-hover: #244f7b;
+  --workspace-action-secondary-text: #244564;
+  --panel-control-background: #f8faff;
+  --panel-control-border: #7b90aa;
+  --panel-control-focus-background: #ffffff;
+  --panel-control-focus-border: #244f7b;
+  border-color: #9daec2;
+  background: linear-gradient(125deg, #eaf1f9, #f8f9fc 52%, #f4eef5);
 }
 .prep-total, .prep-duration { flex-shrink: 0; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-board-accent); }
 .prep-total { font-size: .8125rem; font-weight: 600; padding-top: .25rem; }
@@ -641,6 +636,10 @@ button:not(:disabled) {
 
 /* Application details always use the shared workspace palette, regardless of opener. */
 .workspace-shell .tracker-detail {
+  --panel-control-background: var(--workspace-theme-color-board-panel);
+  --panel-control-border: var(--workspace-theme-color-board-line);
+  --panel-control-focus-background: var(--workspace-theme-color-board-panel);
+  --panel-control-focus-border: var(--workspace-theme-color-board-accent);
   --color-board-panel: var(--workspace-theme-color-board-panel);
   --color-board-tag: var(--workspace-theme-color-board-tag);
   --color-board-muted: var(--workspace-theme-color-board-muted);

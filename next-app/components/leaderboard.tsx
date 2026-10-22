@@ -1,4 +1,5 @@
 "use client";
+import SurfacePanel from "./surface-panel";
 import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, secondary, Notice } from "./ui";
@@ -97,11 +98,12 @@ export default function Leaderboard() {
                 {own.xp} account XP · {own.streak} day streak ·{" "}
                 {own.applications_count} applications tracked
               </Notice>
-              <form
+              <SurfacePanel
+                as="form"
                 aria-label="Sharing and privacy"
                 onSubmit={save}
                 key={JSON.stringify(own)}
-                className="glass-panel mt-5 max-w-xl space-y-4 rounded-2xl p-5"
+                className="mt-5 max-w-xl space-y-4"
               >
                 <h3 className="text-base font-semibold">Sharing &amp; privacy</h3>
                 <Field label="Leaderboard alias">
@@ -125,7 +127,7 @@ export default function Leaderboard() {
                 <button className={primary} disabled={busy}>
                   {busy ? "Saving sharing…" : "Update sharing"}
                 </button>
-              </form>
+              </SurfacePanel>
             </>
           )}
           <button className={`${secondary} mt-4`} disabled={loading || busy} onClick={refresh}>

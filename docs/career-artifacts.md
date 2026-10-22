@@ -6,6 +6,12 @@ an authorized weekly plan. The website stores and renders that work; it does not
 run generation or activate a scheduler. Existing authorized recurring agent runs
 can use the workflow once the new tools are deployed and discovered.
 
+The workspace presents saved materials as covers with category-specific colors
+and type symbols. Weekly prep can occupy a featured cover; regular materials show
+their title and concise metadata rather than full descriptions. The reader keeps
+revision, archive and source controls under Material details, with discussion and
+the material itself prominent. Both themes use the same content and controls.
+
 ## Text-first workflow
 
 1. Read candidate/profile evidence, target roles, `read_preparation_planner`,

@@ -176,6 +176,27 @@ Role cards combine a company logo or initials, bold company name, tier badge, ro
 
 Header navigation items use compact text with 44px targets. Inactive items are muted, hover uses primary text, and the current page uses bold primary text without a filled background. Empty states use a bordered panel, centered heading and copy, and a primary action when supplied.
 
+### Career Toolkit material shelf and reader
+
+Career Toolkit uses local cover tones: slate blue for weekly preparation, mint for
+interactive activities, lavender for company research and interview briefs, and a
+neutral blue-gray for other documents. Interactive format takes precedence over
+document kind. Each tone has light and dark variants; these category colors do
+not replace shared workspace tokens or action styles.
+
+The shelf uses two columns, becoming one below 480px. An unfiltered leading weekly
+pack spans both columns and includes its purpose; other covers show a title, format
+icon and kind, with compact context, week and source metadata beneath. Covers use
+tonal fills and rounded corners (12px) with a subtle hover fill change rather than
+outlined card frames. Cover titles are larger than metadata (24px versus 12px on
+desktop); the featured title is larger again (28px).
+
+The reader leads with one title, purpose and the agent discussion action, followed
+by compact metadata and the material itself. Markdown sits on a quiet reading
+surface; interactive content fills a borderless embedded stage. Versions, archive
+controls and sources live under the native “Material details” disclosure. Discussion
+and planning requests retain their explicit copy-to-agent interaction.
+
 ## Do's and Don'ts
 
 - Do reuse the shared color tokens and `ui.jsx` controls.
@@ -191,7 +212,7 @@ Onboarding uses the user-approved rainbow glass reference: near-black navy backd
 
 ### Workspace refinement — October 2026
 
-Workspace pages now use `.workspace-shell` scoped navy/cyan tokens and the setup card's restrained cyan, mint, lavender and pink edge spectrum. `glass-panel` owns the shared translucent fill and edge; `glass-inset` owns recessed editing areas; `glass-toolbar` groups controls. Setup CSS and routes keep their existing visual authority. Typography retains the incumbent Inter/system stack, with responsive 26–32px page headings and 44px controls. Tracking rows become a two-column metadata composition below the wide table breakpoint. Framer Motion is limited to pack reveals, tier placement, and preparation disclosures, respecting reduced-motion preferences. Reduced transparency switches glass surfaces to opaque navy. Profile and referrals retain only their composition rules in the profile CSS module; controls and material tokens are shared. The Action Board widgets use distinct blue and pink cloud surfaces as described below; that exception does not neutralize the shared workspace theme.
+Workspace pages now use `.workspace-shell` scoped navy/cyan tokens and the setup card's restrained cyan, mint, lavender and pink edge spectrum. `glass-panel` owns the shared translucent fill and edge; `glass-inset` owns recessed editing areas; `glass-toolbar` groups controls. Setup CSS and routes keep their existing visual authority. Typography retains the incumbent Inter/system stack, with responsive 26–32px page headings and 44px controls. Tracking rows become a two-column metadata composition below the wide table breakpoint. Framer Motion is limited to pack reveals, tier placement, and preparation disclosures, respecting reduced-motion preferences. Reduced transparency switches glass surfaces to opaque navy. Profile and referrals retain only their composition rules in the profile CSS module; controls and material tokens are shared. The Action Board and Sharing & privacy reuse `SurfacePanel`, with the restrained navy material described below.
 
 ### Tier banners and daily pack
 
@@ -252,7 +273,7 @@ Delivery preferences appear after the first result and save an inactive request 
 
 ### Action Board priority
 
-The “Your next actions” widget leads the Action Board in both the workspace and demo, using the larger desktop column (2:1), a 20px heading with a clipboard icon, and a neutral border. Each row leads with the task, then company/role context, a short reason and an explicit labeled action button. Empty checkbox-shaped disclosure triggers are removed. The first fictional application review is expanded on demo entry and reset; approval still requires reviewing the version. The next-actions widget uses a blue cloud hue and weekly prep uses pink, with soft cross-tinted gradients and readable hue-matched borders, secondary text and controls in both themes. The prep agenda shows all scheduled dates, session titles, durations and interview events together without a day picker. A date rail with 32px day numbers groups sessions through spacing instead of horizontal divider lines; empty days are omitted. Confirmed interviews use a clearly outlined, tinted event block with a calendar icon, company and stage. Longer reasons and interview links expand from individual task titles. Only today’s sessions show a labeled “Done” action. Daily budget controls and planner explanation live in an optional settings disclosure. Preparation follows the actions on mobile.
+The “Your next actions” widget leads the Action Board in both the workspace and demo, using the larger desktop column (2:1), a 20px heading with a clipboard icon, and a fine blue-to-mauve edge. Each row leads with the task, then company/role context, a short reason and an explicit labeled action button. Empty checkbox-shaped disclosure triggers are removed. The first fictional application review is expanded on demo entry and reset; approval still requires reviewing the version. Sharing & privacy, next actions, weekly prep and company follow-ups share the reusable `SurfacePanel` component. It owns the padded rounded surface and native section/form semantics; content and interaction state stay with each caller. The reference material is a low-contrast navy-to-charcoal/plum fill, a fine desaturated blue-to-mauve edge, cool gray secondary text, recessed navy fields and pale blue primary actions. Both widgets use the same palette. Light mode translates the material to pearl blue-gray with navy actions. Application dialogs retain their shared workspace palette. The prep agenda shows all scheduled dates, session titles, durations and interview events together without a day picker. A date rail with 32px day numbers groups sessions through spacing instead of horizontal divider lines; empty days are omitted. Confirmed interviews use a clearly outlined, tinted event block with a calendar icon, company and stage. Longer reasons and interview links expand from individual task titles. Only today’s sessions show a labeled “Done” action. Daily budget controls and planner explanation live in an optional settings disclosure. Preparation follows the actions on mobile.
 
 Application dialogs resolve their palette from the shared workspace theme, independently of the widget that opened them. The vertical status panel shows the recorded scheduled-round focus and source note beside its dates. Weekly prep displays a short reason from the saved task detail below its title; the demo connects concrete interview topics to its fictional Query Lab project and SQL-service internship. These are authored fixture facts, not a new inference engine for real-account skill gaps.
 
