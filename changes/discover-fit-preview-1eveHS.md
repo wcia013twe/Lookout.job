@@ -1,0 +1,10 @@
+# Discover match previews and job detail panel
+
+- Discover cards now show four fit dimensions and open a right-side job preview instead of simulating an external open. Mobile uses the full viewport width.
+- The panel includes available job details, collected AI/research reasoning, explicit verification gaps and Common-or-above contact-field prefill from saved profile facts. Edits are temporary; no employer form is fetched or filled and no approval or submission occurs.
+- Previewing does not track a role. Opening the actual employer posting retains the existing tracker behavior, including prior dates/statuses. Account/demo/reset changes invalidate the preview selection.
+- Admin demo fixtures add fictional strong, partial and unassessed scenarios, including missing compensation evidence. Demo previews make no external posting action and remain resettable and isolated.
+- Read-only UI composition uses existing context boundaries; no backend or MCP tool contract changed. Live score generation, employer form mapping and actual application prefill remain unconnected.
+- Moved this isolated checkout, frontend dependencies, npm cache and browser artifacts to the external SSD. Fixed an existing worker URL-to-path conversion so the runner works in paths containing spaces.
+- Validation: frontend typecheck, data validation (147 roles), all 433 tests, static production build, diff whitespace check, and mocked browser checks at desktop/dark and mobile/light. Browser checks cover panel content, missing scores, prefill, discarded edits, Escape/focus restoration, no preview service calls, no demo external links and horizontal overflow.
+- Limits: no real account, employer form or live AI assessment was exercised. Sample percentages are labeled fictional, and real catalog roles show unassessed scores. The installed Next.js version emitted a dependency security advisory before a successful build retry; no dependency upgrade was included.

@@ -159,3 +159,33 @@ prepare_draft(draft.searchProfileId); website and execution read the same saved
 rules. Unbound drafts require review once explicit profile rules exist. Existing
 role-type policies remain a legacy fallback. Gateway/config release and hosted
 verification are required before claiming the new execution policy is deployed.
+
+
+## Discover match and job preview
+
+Discover cards show four fit dimensions: skills and experience, compensation,
+wellbeing and culture, and location and work setting. Real catalog roles remain
+unassessed, without an invented percentage. The admin demo adds resettable,
+fictional strong, partial and unknown match examples with labeled sample scores.
+These are UI fixtures, not Glassdoor or Simplify ratings or a live AI evaluator.
+
+Preview job opens a right-side dialog (full width on mobile) with the available
+job description, collected fit notes, verification gaps and a Common-or-above
+application preview. Missing descriptions are explicit. The preview uses saved
+profile contact fields; edits are temporary and discarded on close. Account,
+demo-mode and demo-reset changes invalidate the selection. It does not fetch or
+fill an employer form, select a resume, grant approval or submit anything.
+Only opening the real employer posting updates Auto Tracker; demo previews never
+open an external posting. Existing Queue application behavior is unchanged.
+
+This is a read-only presentation of existing catalog/profile state. Existing MCP
+context boundaries (`read_search_context`, `read_search_discoveries`) and
+application draft/review tools remain authoritative; this pass adds no backend
+service, tool, scoring capability or live form-prefill parity claim.
+
+Verification: `scripts/check-discover-ui.mjs` uses a fictional authenticated
+admin and intercepts backend traffic. Set `LOOKOUT_UI_URL` to a locally served
+static export, `LOOKOUT_PLAYWRIGHT_MODULE` to an installed Playwright module and
+`LOOKOUT_UI_ARTIFACTS` for captures. It covers the panel, contact prefill, ephemeral
+edits, Escape/focus restoration, no preview service calls, no demo external links,
+unknown scores, and desktop-dark/mobile-light layouts. No real account is used.

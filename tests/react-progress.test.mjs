@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { awardStatus, claimPack, dayStamp, streak } from '../next-app/lib/progress.mjs';
+import { awardStatus, claimPack, dayStamp, streak, recordRoleOpened } from '../next-app/lib/progress.mjs';
 
 function store() {
   const state = { progress: { xp: 0, xpAwards: {}, streakDays: [] }, drops: { packRewards: {}, packStamps: {} } };
@@ -61,4 +61,19 @@ test('streak counts consecutive local days once and stops at gaps', () => {
     [['2026-10-10', '2026-10-12'], 1],
     [['2026-10-11'], 0],
   ]) assert.equal(streak(days, now), expected, JSON.stringify(days));
+});
+
+
+test('opening a posting preserves prior tracker dates and statuses across repeated opens', t => {
+  t.mock.timers.enable({ apis: ['Date'], now: new Date(2026, 9, 22, 12) });
+  const s = store();
+  s.set('tracker.ids', ['existing']);
+  s.set('tracker.items', { existing: { openedDate: '2026-10-01', appliedDate: '2026-10-02', status: 'Interview' } });
+  recordRoleOpened(s, 'existing');
+  recordRoleOpened(s, 'new');
+  recordRoleOpened(s, 'new');
+  assert.deepEqual(s.get('tracker.ids'), ['existing', 'new']);
+  assert.deepEqual(s.get('tracker.items.existing'), { openedDate: '2026-10-01', appliedDate: '2026-10-02', status: 'Interview' });
+  assert.deepEqual(s.get('tracker.items.new'), { openedDate: '2026-10-22', status: 'New' });
+  assert.equal(s.get('progress.xp'), 0);
 });

@@ -6,10 +6,12 @@ import { motion, useReducedMotion, useMotionValue, useSpring, useTransform } fro
 export type Role = {
   id: string; company: string; title: string; employmentType: string;
   location: string; category: string; priority: string; postedDate?: string | null;
+  description?: string; matchPreview?: MatchPreview;
   discoveredDate: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;
 };
 import { useWorkspace } from "../lib/workspace";
-import { dayStamp, recordDay } from "../lib/progress.mjs";
+import { recordRoleOpened } from "../lib/progress.mjs";
+import RoleMatchPreview, { type MatchPreview } from "./role-match-preview";
 import { primary, secondary } from "./ui";
 import logos from "../../data/logo-manifest.json";
 import {
@@ -46,7 +48,7 @@ export function CompanyLogo({ company }: { company: string }) {
 }
 const REFRACTION: Record<keyof typeof TIER_HEX, string> = { common: "#7ae9db", rare: "#aeb6ff", epic: "#efb0df", legendary: "#ffa577", mythic: "#ffbb73" };
 
-export default function RoleCard({ role }: { role: Role }) {
+export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: (role: Role) => void }) {
   const w = useWorkspace();
   const reduceMotion = useReducedMotion();
   const sheenPosition = useMotionValue(.5);
@@ -64,18 +66,7 @@ export default function RoleCard({ role }: { role: Role }) {
   const queued = Boolean(w.state.workflow.applications[role.id]);
   const rarity = rarityOf(role.company, role.employmentType, role.title) as keyof typeof TIER_HEX;
   function open() {
-    recordDay(w.store);
-    w.store.update("tracker.ids", (ids: string[]) => [
-      ...new Set([...(ids || []), role.id]),
-    ]);
-    w.store.update("tracker.items", (items: Record<string, { openedDate?: string; status?: string }>) => ({
-      ...items,
-      [role.id]: {
-        ...items?.[role.id],
-        openedDate: items?.[role.id]?.openedDate || dayStamp(),
-        status: items?.[role.id]?.status || "New",
-      },
-    }));
+    recordRoleOpened(w.store, role.id);
   }
   function queue() {
     if (!queued)
@@ -125,7 +116,8 @@ export default function RoleCard({ role }: { role: Role }) {
         <p className="line-clamp-2 text-sm leading-relaxed text-board-muted md:line-clamp-3">
           {role.whyItFits}
         </p>
-        <details className="border-t border-board-line/60 pt-1 text-sm">
+        {onPreview && <RoleMatchPreview sample={w.demo ? role.matchPreview : undefined} />}
+        {!onPreview && <details className="border-t border-board-line/60 pt-1 text-sm">
           <summary className="flex min-h-11 items-center text-board-accent">
             View analysis
           </summary>
@@ -136,12 +128,12 @@ export default function RoleCard({ role }: { role: Role }) {
             {role.category} · Posted {role.postedDate || "Not listed"} ·{" "}
             {role.sourceFreshness}
           </p>
-        </details>
+        </details>}
         <div className="role-card-actions mt-auto grid gap-2 pt-1 min-[360px]:grid-cols-2 md:pt-2">
           <button onClick={queue} disabled={queued} className={`${secondary} w-full`}>
             {queued ? "Queued" : <><span className="md:hidden">Queue</span><span className="hidden md:inline">Queue application</span></>}
           </button>
-          <a
+          {onPreview ? <button className={`${primary} w-full`} onClick={() => onPreview(role)}>Preview job</button> : <a
             className={`${primary} w-full`}
             href={role.applicationUrl}
             target="_blank"
@@ -149,7 +141,7 @@ export default function RoleCard({ role }: { role: Role }) {
             onClick={(event) => { if (w.demo) event.preventDefault(); open(); }}
           >
             <span className="md:hidden">{w.demo ? "Preview role" : "Open posting"}</span><span className="hidden md:inline">{w.demo ? "Simulate opening" : "Open application"}</span>
-          </a>
+          </a>}
         </div>
       </div>
     </motion.article>
