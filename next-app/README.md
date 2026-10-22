@@ -191,3 +191,5 @@ static export, `LOOKOUT_PLAYWRIGHT_MODULE` to an installed Playwright module and
 `LOOKOUT_UI_ARTIFACTS` for captures. It covers the panel, contact prefill, ephemeral
 edits, Escape/focus restoration, no preview service calls, no demo external links,
 unknown scores, and desktop-dark/mobile-light layouts. No real account is used.
+
+Resume rows support dropping one PDF/DOCX on the name or choosing a replacement file through the accessible picker. Saved names/role assignments survive, versions advance and old versions are hidden from new selections while retained for application history. Source changes use the scoped resume-source RPC and need saved profile drafts first. The demo stores replacement metadata only, remaps its own preferences, and rejects invalid files without changing the source. Profile UI verification covers both replacement paths, preserved name/roles, v2/v3 progression, hidden prior rows and invalid-file rejection. Hosted schema/gateway release remains pending.

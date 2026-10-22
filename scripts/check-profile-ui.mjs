@@ -54,6 +54,18 @@ try{
  await documents.getByRole('button',{name:'Save role assignment',exact:true}).click();
  await documents.getByText('Demo storage engineer · Full-time',{exact:true}).waitFor();
  assert.equal(await documents.getByRole('region',{name:'Resume assignments & role targets',exact:true}).count(),0,'Assignments stay inside the resume library');
+ const dropTarget=resumeRow.locator('label');
+ await dropTarget.evaluate(el=>{const transfer=new DataTransfer();transfer.items.add(new File(['%PDF-1.7\nReplacement demo\n%%EOF'],'replacement.pdf',{type:'application/pdf'}));el.dispatchEvent(new DragEvent('dragover',{dataTransfer:transfer,bubbles:true,cancelable:true}));el.dispatchEvent(new DragEvent('drop',{dataTransfer:transfer,bubbles:true,cancelable:true}));});
+ await documents.getByText('Source replaced for Demo systems resume.pdf in demo memory. File bytes were not saved.',{exact:true}).waitFor();
+ await resumeRow.getByText('v2',{exact:true}).waitFor();
+ await resumeRow.getByText('Demo storage engineer · Full-time',{exact:true}).waitFor();
+ assert.equal(await documents.locator('li').filter({hasText:'Demo systems resume.pdf'}).count(),1,'Old file versions stay out of the current library');
+ await resumeRow.getByLabel('Replace source for Demo systems resume.pdf',{exact:true}).setInputFiles({name:'another.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\nAnother demo version\n%%EOF')});
+ await resumeRow.getByText('v3',{exact:true}).waitFor();
+ await dropTarget.evaluate(el=>{const transfer=new DataTransfer();transfer.items.add(new File(['bad'],'unsafe.exe',{type:'application/octet-stream'}));el.dispatchEvent(new DragEvent('drop',{dataTransfer:transfer,bubbles:true,cancelable:true}));});
+ await documents.getByText('Choose a PDF or DOCX resume.',{exact:true}).waitFor();
+ await resumeRow.getByText('v3',{exact:true}).waitFor();
+
  const resumeLibrary=documents.getByRole('region',{name:'Resumes',exact:true});
  assert(await resumeLibrary.getByRole('button',{name:'Preview',exact:true}).first().isDisabled(),'Demo fixtures have no PDF');
  for(const title of ['Resumes','Cover letters','Templates']) assert.equal(await documents.getByRole('heading',{name:title,exact:true}).locator('svg').count(),1,'Document headers use the file icon');

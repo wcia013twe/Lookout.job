@@ -4,6 +4,7 @@ const timestamp = {type:['string','null'],description:'Exact updated_at from the
 const object = properties => ({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const json = {type:'object'};
 export const PLATFORM_TOOLS = [
+ ['replace_resume_source','resumes.source.replace','resumes:write','Replace a resume source with a newly uploaded owned immutable file ID. Requires resumes:write AND preferences:write. Preserves the display name, advances version, remaps saved defaults/role assignments, and keeps old application files intact. Upload/finalize the replacement first; pass the current old version. Does not approve or submit anything.',{resumeId:string,replacementId:string,expectedVersion:{type:'integer',minimum:1}}],
  ['add_resume_reference','resumes.reference.add','resumes:write','Save an owned HTTPS resume reference. This does not download a file or make it eligible for automatic submission.',{id:string,name:string,variant:string,version:{type:'integer',minimum:1},url:string}],
  ['create_resume_upload','resumes.upload.begin','resumes:write','Create an owned immutable PDF/DOCX upload intent and a short-lived signed upload URL. Upload bytes outside MCP, then finalize. Never log the URL.',{id:string,name:string,variant:string,version:{type:'integer',minimum:1},fileType:{type:'string',enum:['pdf','docx']},sizeBytes:{type:'integer',minimum:1,maximum:10485760},sha256:{type:'string',maxLength:64}}],
  ['finalize_resume_upload','resumes.upload.complete','resumes:write','Verify uploaded size, file signature and SHA-256 before registering the immutable owned resume.',{id:string}],
@@ -37,6 +38,7 @@ export function validatePlatformPayload(operation,payload) {
  }
  if(JSON.stringify(payload).length>100000)throw Error('Product payload too large');
  if(payload.expectedUpdatedAt!==undefined&&payload.expectedUpdatedAt!==null&&!Number.isFinite(Date.parse(payload.expectedUpdatedAt)))throw Error('Current timestamp required');
+ if(operation==='resumes.source.replace' && (!['resumeId','replacementId'].every(k=>/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(payload[k]))||payload.resumeId===payload.replacementId))throw Error('Distinct owned resume IDs required');
  if(operation==='resumes.reference.add') { const url=new URL(payload.url); if(url.protocol!=='https:'||url.username||url.password)throw Error('HTTPS resume reference required'); }
  if(operation==='contacts.save' && (typeof payload.record.company!=='string'||!payload.record.company.trim()||payload.record.company.length>200))throw Error('Contact company required');
  if(operation==='resumes.upload.begin' && (!/^[a-f0-9]{64}$/i.test(payload.sha256) || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(payload.id)))throw Error('Resume ID and SHA-256 required');

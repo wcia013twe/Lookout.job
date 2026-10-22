@@ -147,8 +147,8 @@ function ProfileContent() {
                 <option value="">Choose a private uploaded PDF</option>
                 {w.state.workflow.resumes
                   .filter(
-                    (r: { objectPath?: string; contentHash?: string }) =>
-                      /\.pdf$/i.test(r.objectPath || "") && r.contentHash,
+                    (r: { objectPath?: string; contentHash?: string; supersededBy?: string }) =>
+                      !r.supersededBy && /\.pdf$/i.test(r.objectPath || "") && r.contentHash,
                   )
                   .map((r: { id: string; name: string }) => (
                     <option key={r.id} value={r.id}>
