@@ -765,8 +765,7 @@ button:not(:disabled) {
 .workspace-shell .interview-brief-sources small, .workspace-shell .interview-brief-sources a { display: block; margin-top: 8px; }
 .workspace-shell .interview-brief-sources a { color: var(--color-board-accent); text-decoration: underline; }
 
-.workspace-shell .tracker-detail-brief { max-width: 900px; }
-.workspace-shell .tracker-detail-grid-brief { grid-template-columns: minmax(0,1fr); }
-.workspace-shell .tracker-detail-grid-brief > .tracker-detail-sidebar { display: none; }
-.workspace-shell .tracker-detail-grid-brief .tracker-detail-content { max-width: 728px; width: 100%; margin-inline: auto; }
 .workspace-shell .interview-brief-focus p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.workspace-shell .interview-support { margin-top: 24px; border-top: 1px solid var(--board-line); padding-top: 12px; }
+.workspace-shell .interview-support > summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-weight: 600; }

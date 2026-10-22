@@ -22,6 +22,13 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
   const role = w.roles.find((r: Application) => r.id === id);
   const current: Application | undefined = workflow || (role ? {...role, status: w.state.tracker.items[id]?.status || "New", questions: []} : undefined);
   const [tab, setTab] = useState("Overview");
+  const [roundsOpen, setRoundsOpen] = useState(false);
+  const rounds = useRef<HTMLDetailsElement | null>(null);
+  function openRounds() {
+    setTab("Interview");
+    setRoundsOpen(true);
+    requestAnimationFrame(() => { rounds.current?.scrollIntoView({ block: "nearest" }); rounds.current?.querySelector("summary")?.focus(); });
+  }
   const [experience, setExperience] = useState<string | null>(null);
   const initial: Application = {
     id,
@@ -228,13 +235,13 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     const url = URL.createObjectURL(new Blob([experience || ""], {type:"text/plain"}));
     const link = document.createElement("a"); link.href=url; link.download="interview-experience-draft.txt"; link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
-  return <dialog ref={dialog} onCancel={onClose} aria-labelledby="draft-review-heading" className={`tracker-detail tracker-surface ${tab === "Interview" ? "tracker-detail-brief" : ""}`}>
+  return <dialog ref={dialog} onCancel={onClose} aria-labelledby="draft-review-heading" className="tracker-detail tracker-surface">
     <header className="tracker-detail-header"><CompanyMark company={current.company}/><div><h2 id="draft-review-heading">{current.title}</h2><p>{current.company}</p></div><button className="tracker-button tracker-close workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={onClose} aria-label="Close application details"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
-    <div className={`tracker-detail-grid ${tab === "Interview" ? "tracker-detail-grid-brief" : ""}`}><div className="tracker-detail-main">
-      <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Interview","Rounds & email"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
+    <div className="tracker-detail-grid"><div className="tracker-detail-main">
+      <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Interview"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
       <div className="tracker-detail-content">
         {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={w.state.tracker.items[id] || {}} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} />}
-        {tab === "Interview" && <ApplicationPreparation application={{...role,...current}} onRounds={() => setTab("Rounds & email")} />}
+        {tab === "Interview" && <ApplicationPreparation application={{...role,...current}} onRounds={openRounds} />}
         {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />{downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}      <details className="mt-5 border-t border-board-line pt-3">
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
         {(!w.demo && !w.user) || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
@@ -252,7 +259,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
       </details>
 {editable && <p className="tracker-prose">Change the selected resume below before approving the draft.</p>}</>}
 
-        {tab === "Rounds & email" && <><h3>Recruiting emails</h3>{events.filter(e=>e.source.kind === "email").length ? events.filter(e=>e.source.kind === "email").map(e=><article className="tracker-question" key={e.id}><h4>{e.source.subject || e.label}</h4><p>{e.source.excerpt || "No excerpt recorded."}</p><small>{e.source.receivedAt || "Received date not recorded"}</small>{!w.demo && e.source.url && <a href={e.source.url} target="_blank" rel="noopener noreferrer">Open source email</a>}</article>) : <p className="tracker-prose">No recruiting emails are linked to this application yet. Authorized inbox updates appear here when recorded.</p>}</>}
+
         {tab === "Documents" && <details className="application-documents-editor"><summary>Edit draft & review</summary><h3 className="mt-5">Draft editor</h3>{!workflow && <p>Queue this role from Discover to prepare application answers.</p>}{!draft.questions.length && <p className="tracker-prose">No employer questions recorded yet.</p>}      <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -382,7 +389,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
         </fieldset>
       </form>
 </details>}
-        {tab === "Rounds & email" && <><div className="tracker-section-heading mt-8"><h3>Interview rounds & history</h3><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={createExperience}>Create experience card</button></div>      <Section title="Application timeline">
+        {tab === "Interview" && <><details ref={rounds} open={roundsOpen} onToggle={e => setRoundsOpen(e.currentTarget.open)} className="interview-support"><summary>Round details</summary><div className="tracker-section-heading mt-8"><h3>Interview rounds & history</h3><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={createExperience}>Create experience card</button></div>      <Section title="Application timeline">
         <ApplicationTimeline application={current} demo={w.demo}/>
         {workflow && <TimelineEditor application={current}/>}
         <details className="mt-5"><summary className="min-h-11 cursor-pointer py-3 text-sm text-board-muted">Application activity</summary>
@@ -399,6 +406,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
         </ol>
         </details>
       </Section>
+</details>        <details className="interview-support"><summary>History &amp; emails</summary><h3>Recruiting emails</h3>{events.filter(e=>e.source.kind === "email").length ? events.filter(e=>e.source.kind === "email").map(e=><article className="tracker-question" key={e.id}><h4>{e.source.subject || e.label}</h4><p>{e.source.excerpt || "No excerpt recorded."}</p><small>{e.source.receivedAt || "Received date not recorded"}</small>{!w.demo && e.source.url && <a href={e.source.url} target="_blank" rel="noopener noreferrer">Open source email</a>}</article>) : <p className="tracker-prose">No recruiting emails are linked to this application yet. Authorized inbox updates appear here when recorded.</p>}</details>
 {experience !== null && <section className="tracker-experience"><h3>Experience card preview</h3><p>Private draft. Edit what you want to share; nothing is published automatically.</p><label>Card content<textarea value={experience} maxLength={12000} onChange={e=>setExperience(e.target.value)}/></label><button className="tracker-button tracker-primary workspace-primary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={downloadExperience}>Download draft</button><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>setExperience(null)}>Cancel</button></section>}</>}
       </div>
     </div><aside className="tracker-detail-sidebar"><section className="tracker-status-panel"><h3>Application Status</h3>{!workflow && <label>Hiring stage<select aria-label="Update hiring stage" disabled={w.locked} value={current.status} onChange={e=>{const status=e.target.value;awardStatus(w.store,id,status);w.store.update("tracker.items",(items:Record<string,unknown>)=>({...items,[id]:{...w.state.tracker.items[id],status,statusDate:dayStamp(),...(status!=="New"&&!w.state.tracker.items[id]?.appliedDate?{appliedDate:dayStamp()}:{})}}));}}>{["New","Applied","OA","Phone Screen","Interview","Onsite","Offer","Rejected","Withdrawn"].map(s=><option key={s} value={s}>{s==="New"?"Opened":s}</option>)}</select></label>}<TrackerProgress application={current} item={w.state.tracker.items[id] || {}} vertical/><details className="tracker-update"><summary>Update status</summary>      <Section title="Update application progress">
@@ -449,6 +457,6 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </div>
         )}
       </Section>
-</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>setTab("Rounds & email")}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
+</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={openRounds}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
   </dialog>;
 }

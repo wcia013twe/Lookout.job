@@ -7,3 +7,10 @@
 - Updated the fictional unconfirmed-round priority and added admin-demo browser coverage for dated, uncertain and empty states. No real account writes, source email navigation or external resource navigation occurs in demo mode.
 - Validation: 438 tests, frontend typecheck, data validation (147 roles), static production build, whitespace check and mocked desktop-dark/mobile-light browser checks. Browser checks cover content caps, no setup/checklist, source collapse, uncertainty, sidebar scoping, navigation, no overflow, Escape and no demo cloud calls.
 - Limits: no live email sync, AI generation or external interview resource was exercised. The pre-existing Next.js dependency advisory remains outside this UI change. No gateway instructions, schema or deployment capability changed.
+
+## Follow-up: unify Interview and rounds
+
+- Combined the brief, round management and recruiting emails in Interview. Round details and History & emails start collapsed; existing brief/sidebar shortcuts open and focus round details. Existing scoped timeline actions remain unchanged.
+- Removed tab-dependent dialog/grid sizing so the shell, content column and sidebar stay stable across tabs.
+- Updated fictional demo browser coverage for stable geometry, collapsed sections and round/email access.
+- Follow-up validation: frontend typecheck, data validation (147 roles), production static build, whitespace check, and mocked desktop/mobile browser checks passed. Existing round save validation and MCP boundaries are unchanged; no backend changes or live email access.
