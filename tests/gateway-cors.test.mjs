@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {withGatewayCors} from '../supabase/functions/agent-gateway/cors.mjs';
-const origins=['https://wcia013twe.github.io','http://localhost:3000','http://127.0.0.1:3000'];
+const origins=['https://wcia013twe.github.io','https://lookout-job-signal-board.tenderibex16.chatgpt.site','http://localhost:3000','http://127.0.0.1:3000'];
 const request=(method,origin,extra={})=>new Request('https://example.com/agent-gateway',{method,headers:{...(origin?{Origin:origin}:{}),...extra}});
 test('localhost token-management preflights match the browser origin without invoking auth',async()=>{
  const handle=withGatewayCors(()=>assert.fail('Preflight must not create a token'));
@@ -15,11 +15,11 @@ test('localhost can read authenticated management responses; Origin never replac
   const rejected=await handle(request('POST',origin));assert.equal(rejected.status,401);assert.equal(rejected.headers.get('Access-Control-Allow-Origin'),origin);
   const accepted=await handle(request('POST',origin,{Authorization:'Bearer fictional-fixture'}));assert.equal(accepted.status,200);assert.deepEqual(await accepted.json(),{data:{accepted:true}});assert.equal(accepted.headers.get('Access-Control-Allow-Origin'),origin);assert.equal(accepted.headers.get('Cache-Control'),'no-store');
  }
- assert.equal(called,6);
+ assert.equal(called,origins.length*2);
 });
 test('unapproved and lookalike origins cannot execute token operations',async()=>{
  const handle=withGatewayCors(()=>assert.fail('Forbidden origin must not reach management'));
- for(const origin of ['null','https://evil.example','http://localhost.evil.example:3000','http://127.0.0.1.evil.example:3000','http://localhost:3001','https://localhost:3000'])for(const method of ['POST','OPTIONS']){const r=await handle(request(method,origin));assert.equal(r.status,403);assert.equal(r.headers.get('Access-Control-Allow-Origin'),null);}
+ for(const origin of ['null','https://evil.example','https://lookout-job-signal-board.tenderibex16.chatgpt.site.evil.example','https://another-site.tenderibex16.chatgpt.site','http://localhost.evil.example:3000','http://127.0.0.1.evil.example:3000','http://localhost:3001','https://localhost:3000'])for(const method of ['POST','OPTIONS']){const r=await handle(request(method,origin));assert.equal(r.status,403);assert.equal(r.headers.get('Access-Control-Allow-Origin'),null);}
 });
 test('native MCP/gateway requests without Origin still reach the same authenticated handler',async()=>{
  let called=false;const handle=withGatewayCors(req=>{called=true;assert.equal(req.headers.get('Authorization'),'Bearer fixture');return new Response('{"error":"Credential expired"}',{status:401});});
