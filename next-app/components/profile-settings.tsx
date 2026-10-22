@@ -70,7 +70,7 @@ export function ApplicationMaterials({mode = "resume"}: {mode?: "resume" | "answ
             ) && (
               <option value={id}>Previously selected resume unavailable</option>
             )}
-          {w.state.workflow.resumes.map((r: { id: string; name: string }) => (
+          {w.state.workflow.resumes.filter((r:{supersededBy?:string})=>!r.supersededBy).map((r: { id: string; name: string }) => (
             <option key={r.id} value={r.id}>
               {r.name}
             </option>

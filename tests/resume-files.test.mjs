@@ -62,3 +62,19 @@ test('download refuses foreign paths and generates only short lived private URLs
   assert.equal(url, 'https://example.test/private');
   assert.equal(client.log[0][2], 60);
 });
+
+
+test('source replacement validates scoped payload, keeps owner checks and remaps only resume references',async()=>{
+ const {replaceResumeSource,remapResumePreferences}=await import('../lib/resume-model.mjs');
+ const replacementId='22222222-2222-4222-8222-222222222222';
+ const calls=[];let current=owner;
+ const client={rpc:async(name,p)=>{calls.push([name,p]);return {data:{saved:true}};}};
+ assert.deepEqual(await replaceResumeSource({client,getOwner:()=>current,resumeId:owner,replacementId,expectedVersion:1}),{saved:true});
+ assert.equal(calls[0][0],'replace_resume_source');
+ await assert.rejects(replaceResumeSource({client,getOwner:()=>current,resumeId:owner,replacementId:owner,expectedVersion:1}),/Distinct/);
+ const prefs={defaultResumeId:owner,resumeRules:[{resumeId:owner,keywords:['systems']}],unrelated:owner,profiles:[{id:'ft',version:2,instructions:`Keep this prose.\n## Application materials\n- Default resume ID: ${owner}\n## Recruiting targets\n- Targets: [{"resumeId":"${owner}"}]`}]};
+ const moved=remapResumePreferences(prefs,owner,replacementId);
+ assert.equal(moved.defaultResumeId,replacementId);assert.equal(moved.unrelated,owner);assert.equal(moved.profiles[0].version,3);assert.ok(!moved.profiles[0].instructions.includes(owner));assert.equal(prefs.defaultResumeId,owner);
+ const switching={rpc:async()=>{current='another';return {data:{}};}};
+ await assert.rejects(replaceResumeSource({client:switching,getOwner:()=>current,resumeId:owner,replacementId,expectedVersion:1}),/Account changed/);
+});

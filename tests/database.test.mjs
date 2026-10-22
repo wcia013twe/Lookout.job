@@ -27,6 +27,7 @@ for (const [file, behavior] of [
   ['agent-activity','agent activity appends and replays without SQL argument ambiguity'],
   ['agent-connections','connections issue with current scopes, revoke durably, reject revoked tokens and isolate owners'],
   ['search-sweeps','document context and agent sweeps enforce versions, ownership, evidence and resumption'],
+  ['resume-source','resume source replacement preserves files and remaps preferences with scoped transport parity'],
   ['artifacts','artifacts and learning prep enforce owner isolation, revisions, retries, shared budgets and scoped parity'],
   ['toolkit-execution','toolkit outputs and document registration preserve ownership, scopes, replay and revocation'],
   ['onboarding', 'onboarding verifies first value, isolates owners, and never manufactures submission authority'],
