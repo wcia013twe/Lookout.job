@@ -196,11 +196,7 @@ export function WritingStyles() {
           </>}
         </section>
       </div>)}
-      <footer className={writing.footer}>
-        <div className="min-w-0 flex-1"><p role="status">{a.feedback||"Writing settings save with this application profile."}</p><p className="mt-1 text-xs text-board-muted">Includes any other pending application-profile changes.</p></div>
-        <button type="button" className={secondary} disabled={a.busy||w.locked} onClick={a.reload}>Reload saved</button>
-        <button type="button" className={primary} disabled={a.busy||w.locked||!a.dirty||!a.profile.name.trim()} onClick={a.saveProfile}>{a.busy?"Saving…":"Save writing settings"}</button>
-      </footer>
+
     </section>
     <details className={writing.bank}>
       <summary>Shared question bank &amp; saved answers</summary>

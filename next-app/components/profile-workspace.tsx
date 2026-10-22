@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
-import { Heading, primary, secondary, control } from "./ui";
+import { Heading, secondary, control } from "./ui";
 import ProfileEditor from "./profile-editor";
 import ProfileOverview from "./profile-overview";
 import ProfileDocuments from "./profile-documents";
@@ -30,8 +30,7 @@ const sections: [ProfileSectionId, string][] = [
   ["agent", "My Agent"],
 ];
 function ProfileContent() {
-  const w = useWorkspace(),
-    a = useApplicationProfile();
+  const a = useApplicationProfile();
   const [active, setActive] = useState<ProfileSectionId>("overview"),
     [visited, setVisited] = useState<ProfileSectionId[]>([]);
   useEffect(() => {
@@ -123,34 +122,10 @@ function ProfileContent() {
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}
-      {active !== "agent" && (a.dirty || active === "preferences") && (
-        <div className={profileStyles.saveBar}>
-          <div className="min-w-0 flex-1">
-            <span className="text-sm font-semibold">
-              {a.dirty
-                ? "Unsaved profile changes"
-                : "Application profile settings"}
-            </span>
-            <p role="status" className="mt-1 text-xs text-board-muted">
-              {a.feedback || "Resume assignments, writing style, and job preferences save together."}
-            </p>
-          </div>
-          <button
-            className={secondary}
-            disabled={a.busy || w.locked}
-            onClick={a.reload}
-          >
-            Reload saved
-          </button>
-          <button
-            className={primary}
-            disabled={a.busy || w.locked || !a.dirty || !a.profile.name.trim()}
-            onClick={a.saveProfile}
-          >
-            {a.busy ? "Saving…" : "Save application profile"}
-          </button>
-        </div>
-      )}
+      {a.saveError && <p role="alert" className="text-sm text-board-muted">
+        {a.feedback} <button type="button" className={secondary} disabled={a.busy} onClick={a.retrySave}>Retry saving</button>
+      </p>}
+
     </ProfileSurface>
   );
 }
