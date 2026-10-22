@@ -5,3 +5,9 @@
 - Added an isolated, resettable fictional answer pack demonstrating incomplete STAR and common answers. Demo tests cover retrieval, visible gaps and reset; existing interaction uses Discuss with my agent.
 - Validation: 440 tests passed, including database scenarios, website guide rendering, both new MCP guide calls, and demo isolation/reset. Data validation passed (147 roles); frontend typecheck and production static build passed; both new skill routes exist in export; git diff --check passed.
 - Limits: No live hosted MCP round trip or browser visual inspection. No onboarding background generation, scheduler, question aggregation service or new tools introduced. Hosted guides require the normal production gateway release. The first build stopped on an existing Next.js security advisory; retry passed. Dependency upgrade remains separate work.
+
+## Resume coverage follow-up
+
+- Both writer guides now explicitly apply their cited coaching methods as constructive interviewers, inventory every substantive resume item during a comprehensive pass, probe claims and preserve a coverage table. Interactive mode waits for real candidate replies; unattended drafts retain unanswered questions. Single-answer requests remain scoped. Ready for practice never means practiced or independently verified.
+- Updated the fictional demo with item coverage and needs-clarification state; extended MCP and demo checks. Incremented guide, catalog and developer versions.
+- Validation: 440 tests passed, including both scoped MCP guide reads and fictional coverage retrieval; data validation (147 roles), frontend typecheck, generated bundle check and production build passed. Build required retry after the same existing Next.js security advisory. No live hosted verification; release limits above remain.
