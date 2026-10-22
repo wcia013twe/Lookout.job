@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { COLOR_MODE_KEY, parseColorMode, resolveColorMode, type ColorMode } from "../lib/color-mode";
@@ -49,7 +50,6 @@ export default function ColorModeControl({ compact = false }: { compact?: boolea
     } catch { /* Keep this tab usable when browser storage is disabled. */ }
   }
   const choices = [
-    { id: "none", label: "None", description: "No color. Keep fonts and layout." },
     { id: "system", label: "System", description: "Follow your device." },
     { id: "light", label: "Light", description: "A light color palette." },
     { id: "dark", label: "Dark", description: "A dark color palette." },
@@ -60,7 +60,7 @@ export default function ColorModeControl({ compact = false }: { compact?: boolea
     </summary>
     <fieldset className={`rounded-xl bg-board-panel p-3 ${compact ? "" : "absolute right-0 top-full z-50 mt-2 w-72 shadow-xl"}`}>
       <legend className="sr-only">Choose a theme</legend>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         {choices.map(choice => <label key={choice.id} className="relative cursor-pointer rounded-lg border border-board-line p-2 has-checked:border-board-accent has-checked:bg-board-tag focus-within:outline-2 focus-within:outline-board-accent">
           <input className="sr-only" type="radio" name={compact ? "profile-theme" : "header-theme"} value={choice.id} checked={mode === choice.id} disabled={!ready} onChange={() => change(choice.id)} />
           <span aria-hidden="true" className={`theme-preview theme-preview-${choice.id}`}><span /><span /><span /></span>
@@ -68,6 +68,7 @@ export default function ColorModeControl({ compact = false }: { compact?: boolea
           <span className="mt-1 block text-xs leading-4 text-board-muted">{choice.description}</span>
         </label>)}
       </div>
+      <Link href="/themes/" onClick={() => setExpanded(false)} className="mt-3 flex min-h-11 items-center justify-between rounded-lg px-2 text-sm font-semibold text-board-accent hover:bg-board-tag">Browse theme marketplace <span aria-hidden="true">→</span></Link>
     </fieldset>
   </details>;
 }

@@ -15,3 +15,5 @@ palette change can build on this structure without starting over.
 The tracker retains the preceding high-contrast amber reached stages, blue
 upcoming outlines and current-stage ring. More recent Clubhouse layout and
 ivory-bubble changes are preserved independently of this palette rollback.
+
+The `/themes/` marketplace previews six bundled palette concepts for Dashboard and Circles using scoped CSS custom properties. Preview palettes do not override the app theme. Its sample content is fictional in both regular and demo modes; favorites last only for the mounted page. See `docs/theme-picker.md` for the human action boundary and demo walkthrough.

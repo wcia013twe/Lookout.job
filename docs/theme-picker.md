@@ -1,13 +1,13 @@
-# Theme picker
+# Theme picker and marketplace
 
-Profile navigation → Theme opens a two-column grid: None, System, Light, Dark. The desktop header uses the same control. None replaces workspace colors with neutral tokens and removes remaining chroma from component colors and artwork. Fonts, layout, interaction states and controls remain styled. System follows the device; None stays neutral regardless of device appearance.
+Profile navigation → Theme and the desktop header offer System, Light, and Dark. The retired None preference falls back to System, including before first paint. The selection is browser-local (`lookout.color-mode`); demo changes remain temporary.
 
-The selection is a browser-local presentation preference (`lookout.color-mode`), applied before first paint and shared between controls and browser tabs. It does not change account theme/pack preferences or job data.
+Profile navigation → Theme marketplace, or Theme → Browse theme marketplace, opens `/themes/`. The Better Canvas-inspired layout places a large fictional workspace preview beside a searchable gallery. Dashboard and Circles select the preview surface; category filters, name sorting, and Saved narrow the gallery. Six bundled theme concepts reuse the same preview renderer for thumbnails and the stage. Save for this visit is in-memory only and resets when the page unmounts. These are preview concepts, not installed themes or community listings; there are no purchases, downloads, publishing, or account mutations.
 
-Agent boundary: this browser-local preference is a human action. Direct the user to Profile → Theme → None; do not claim that `save_theme_preferences` changes the browser appearance. That scoped MCP tool continues to manage account theme/pack preferences only. No remote appearance control or deployed MCP parity is advertised.
+Agent boundary: browser appearance and marketplace preview controls are human actions. Direct users to Profile → Theme or Theme marketplace to compare and select a preview. `save_theme_preferences` continues to manage account pack preferences only; it cannot install marketplace concepts or change browser appearance. No remote appearance parity is advertised.
 
 ## Demo interactions
 
-Use the existing fictional admin demo profile and open Profile → Theme. Select None, then Light/Dark/System to compare the same fictional roles and statuses. Theme selection in demo does not write browser storage or backend preferences; exiting demo restores the saved browser preference. Existing fictional catalog/profile fixtures are reused, so no real account data or external submissions are involved.
+The same marketplace works in fictional admin demo mode and uses authored sample content in both modes, with no account data, private files, backend writes, or external submissions. Switch Dashboard/Circles, preview Botanical, save it, open Saved, search for a missing name to exercise the empty state, and return with Browse all themes. Navigate away and back to reset marketplace state. In the theme picker compare System/Light/Dark; exiting demo restores the saved browser preference.
 
-Verify keyboard disclosure and radio navigation, header/profile synchronization, first-paint persistence, and desktop/mobile grid layout. Unit tests cover parsing, device resolution, first paint and unavailable storage.
+Verification should cover keyboard selection, narrow-screen stacking, search/category/sort combinations, favorites removal, first-paint fallback, and synchronization between header/profile appearance controls.
