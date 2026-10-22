@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode, type FormEvent } from "react";
 import { createProfileReview } from "../../lib/profile-review.mjs";
 import rawSchema from "../../lib/profile-schema.js";
 import { useWorkspace } from "../lib/workspace";
+import ProfileIcon from "./profile-icon";
 import { Field, control, primary, secondary, Notice, Section } from "./ui";
 const labels: Record<string, string> = {
   name: "Full name",
@@ -15,7 +16,7 @@ const labels: Record<string, string> = {
   github: "GitHub URL",
   portfolio: "Portfolio URL",
   otherUrl: "Other URL",
-  authorization: "Shared authorization notes",
+  authorization: "Work authorization notes",
   headline: "Current title",
   currentEmployer: "Current employer",
   jobSearchStatus: "Job search status",
@@ -38,6 +39,47 @@ const sections: Record<string, string> = {
   education: "Education",
   projects: "Projects & outside experience",
 };
+function EditableSection({ title, preview, children, initiallyEditing = false }: {
+  title: string;
+  preview: ReactNode;
+  children: ReactNode;
+  initiallyEditing?: boolean;
+}) {
+  const [editing, setEditing] = useState(initiallyEditing);
+  const editorId = useId();
+  return (
+    <div>
+      <div className="flex items-start justify-between gap-4">
+        <h4 className="min-w-0 break-words text-base font-semibold">{title}</h4>
+        <button
+          type="button"
+          aria-label={editing ? `Close editor for ${title}` : `Edit ${title}`}
+          aria-expanded={editing}
+          aria-controls={editorId}
+          className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-board-muted hover:bg-board-tag hover:text-board-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-board-accent"
+          onClick={() => setEditing(!editing)}
+        >
+          <ProfileIcon name={editing ? "check" : "pen"} />
+        </button>
+      </div>
+      <div hidden={editing}>{preview}</div>
+      <div id={editorId} hidden={!editing}>{children}</div>
+    </div>
+  );
+}
+function ProfileValues({ values }: { values: [string, unknown][] }) {
+  const filled = values.filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== "" && value !== false);
+  return filled.length ? (
+    <dl className="mt-3 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+      {filled.map(([label, value]) => (
+        <div key={label} className="min-w-0">
+          <dt className="text-sm text-board-muted">{label}</dt>
+          <dd className="mt-1 whitespace-pre-line break-words text-sm leading-relaxed">{Array.isArray(value) ? value.join(", ") : value === true ? "Yes" : String(value)}</dd>
+        </div>
+      ))}
+    </dl>
+  ) : <p className="mt-2 text-sm text-board-muted">No details added yet.</p>;
+}
 export default function ProfileEditor() {
   const w = useWorkspace();
   const profile: ProfileFacts = w.state.workflow.profile;
@@ -105,16 +147,11 @@ export default function ProfileEditor() {
             title: "Professional links",
             keys: ["linkedin", "github", "portfolio", "otherUrl"],
           },
-          { title: "Shared authorization notes", keys: ["authorization"] },
         ].map((group) => (
-          <details
-            key={group.title}
-            className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6"
-          >
-            <summary className="min-h-11 cursor-pointer text-base font-semibold">{group.title}<span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
-            <span className="mt-2 block whitespace-pre-line break-words text-sm font-normal text-board-muted">
-              {group.keys.filter(key => key !== "firstName" && key !== "lastName").map(key => String(facts[key] || "")).filter(Boolean).join(" · ") || "No details added"}
-            </span></summary>
+          <section key={group.title} className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
+            <EditableSection title={group.title} preview={
+              <ProfileValues values={group.keys.map(key => [labels[key], facts[key]])} />
+            }>
             <fieldset>
               <legend className="sr-only">{group.title}</legend>
               <div className="mt-5 grid gap-5 sm:grid-cols-2">
@@ -159,7 +196,8 @@ export default function ProfileEditor() {
                   ))}
               </div>
             </fieldset>
-          </details>
+            </EditableSection>
+          </section>
         ))}
         {(
           Object.entries(schema.schemas) as [
@@ -177,20 +215,12 @@ export default function ProfileEditor() {
             <fieldset>
               <legend className="sr-only">{sections[kind]}</legend>
               {(facts[kind] || []).map((entry, index) => (
-                <details
-                  className="border-b border-board-line py-4"
-                  key={index}
-                >
-                  <summary className="min-h-11 cursor-pointer text-sm font-semibold">
-                    {entry.title || entry.degree || entry.name || "New entry"} ·{" "}
-                    {entry.company ||
-                      entry.school ||
-                      entry.institution || entry.role ||
-                      "Details"}
-                    <span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
-                    <span className="mt-2 block text-sm font-normal text-board-muted">{[entry.fieldOfStudy, entry.location, entry.employmentType, entry.startDate, entry.current ? "Present" : entry.endDate].filter(Boolean).join(" · ")}</span>
-                    {entry.description && <span className="mt-3 block whitespace-pre-line text-sm font-normal leading-relaxed">{entry.description}</span>}
-                  </summary>
+                <div className="border-b border-board-line py-4" key={index}>
+                  <EditableSection
+                    title={`${entry.title || entry.degree || entry.name || "New entry"} · ${entry.company || entry.school || entry.institution || entry.role || "Details"}`}
+                    initiallyEditing={Object.keys(entry).length === 0}
+                    preview={<ProfileValues values={fields.map(([key, label]) => [label, entry[key]])} />}
+                  >
                   <div className="pt-3">
                     <div className="grid gap-4 sm:grid-cols-2">
                       {fields.map(
@@ -265,7 +295,8 @@ export default function ProfileEditor() {
                       Remove entry
                     </button>
                   </div>
-                </details>
+                  </EditableSection>
+                </div>
               ))}
               {!facts[kind]?.length && <Notice>No entries added yet.</Notice>}
               <button
@@ -278,11 +309,10 @@ export default function ProfileEditor() {
             </fieldset>
           </section>
         ))}
-        <details className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
-          <summary className="text-lg font-bold">
-            Skills &amp; languages <span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
-            <span className="mt-3 flex flex-wrap gap-2">{(["skills", "languages"] as const).flatMap(key => Array.isArray(facts[key]) ? facts[key] as string[] : String(facts[key] || "").split(/[,\n]/)).map(value => value.trim()).filter(Boolean).map((skill, index) => <span key={index} className="rounded-full border border-board-line px-3 py-1 text-sm font-normal">{skill}</span>)}{!String(facts.skills || facts.languages || "").trim() && <span className="text-sm font-normal text-board-muted">No skills or languages added</span>}</span>
-          </summary>
+        <section className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
+          <EditableSection title="Skills & languages" preview={
+            <ProfileValues values={["skills", "preferredSkills", "languages"].map(key => [labels[key], facts[key]])} />
+          }>
           <Section title="Edit skills & languages">
             <div className="grid gap-4 sm:grid-cols-2">
               {["skills", "preferredSkills", "languages"].map((key) => (
@@ -302,7 +332,31 @@ export default function ProfileEditor() {
               ))}
             </div>
           </Section>
-        </details>
+          </EditableSection>
+        </section>
+        <section className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
+          <EditableSection title="Work authorization notes" preview={
+            <ProfileValues values={[[labels.authorization, facts.authorization]]} />
+          }>
+          <p id="authorization-help" className="mt-2 text-sm text-board-muted">
+            Optional background about your eligibility to work, reused across application profiles.
+            Set country-specific authorization and sponsorship answers in Application identity &amp; eligibility below.
+          </p>
+          <div className="mt-5">
+            <Field label={labels.authorization}>
+              <textarea
+                id="profile-authorization"
+                name="authorization"
+                aria-describedby="authorization-help"
+                className={control}
+                rows={3}
+                value={(facts.authorization as string) || ""}
+                onChange={(e) => update("authorization", e.target.value)}
+              />
+            </Field>
+          </div>
+          </EditableSection>
+        </section>
         <div className="mt-7 space-y-3 border-t border-board-line py-5">
           <label className="flex min-h-11 items-center gap-3 text-sm">
             <input
