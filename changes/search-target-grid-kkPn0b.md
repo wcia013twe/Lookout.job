@@ -12,3 +12,11 @@
 - Replaced the card grid with one divided list: source name/type and full address lead each row, access details remain expandable, and Edit/Remove align on the right on desktop and wrap below on phones. Kept the six-source demo fixtures and updated the demo walkthrough for the list.
 - Validation: `npm test` (423 passing), `npm run validate:data` (147 roles), `npm --prefix next-app run typecheck`, `npm run build`, `git diff --check`, Impeccable detector (no findings). Visual fixture check at 880px dark and 375px light confirmed six list rows and no phone overflow, including long names/URLs.
 - Shared website/MCP save validation and version checks remain unchanged. Scheduling was discussed only; no schedule or backend action was added. Live account writes were not exercised by the rendered fixture preview.
+
+## Follow-up: simple daily schedule UI
+
+- Added four compact daily routine rows above Search targets in My agent, with local times, individual switches, one time zone, a master switch, and Save schedule. Workflow/setup prompts stay out of the settings page.
+- Uses the existing preferences store/autosync and `preferences.search.schedule`, already covered by the scoped `save_notification_preferences` MCP boundary. No backend service, migration, scheduler, activation receipt or developer-contract change is included.
+- Added a resettable fictional demo schedule with midday off and documented edit/pause/save/reset interactions. Guest changes stay local and demo writes remain memory-only.
+- Validation: production build, TypeScript, data validation (147 roles), full existing test suite, and `git diff --check`. Desktop dark and phone light fixture inspection found no overflow; exercised time editing, individual/master toggles, invalid timezone recovery and saving in demo.
+- Limits: actual external automations were not created; agent runtime setup remains separate. Live account autosync and a hosted MCP round trip were not exercised for this UI pass.

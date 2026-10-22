@@ -9,6 +9,7 @@ import ProfileOverview from "./profile-overview";
 import Resumes from "./resumes";
 import SavedAnswers from "./saved-answers";
 import SearchTargets from "./search-targets";
+import DailySchedule from "./daily-schedule";
 import Preferences from "./preferences";
 import AgentConnections from "./agent-connections";
 import {
@@ -175,6 +176,7 @@ function ProfileContent() {
             Change companion
           </Link>
           <AgentConnections />
+          <DailySchedule />
           <SearchTargets />
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
