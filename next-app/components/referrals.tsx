@@ -29,7 +29,7 @@ function ContactIcon({ type }: { type: string }) {
   };
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[type] || paths.other}</svg>;
 }
-export function MessageEditor({ contact, update, remove }: { contact: ContactRecord; update: (fields: Partial<ContactRecord>) => void; remove: () => void }) {
+export function MessageEditor({ contact, update, remove, processContext = false }: { contact: ContactRecord; update: (fields: Partial<ContactRecord>) => void; remove: () => void; processContext?: boolean }) {
   const [feedback, setFeedback] = useState("");
   const kind = contactType(contact);
   const ongoing = conversationStage(contact) === "ongoing";
@@ -47,16 +47,16 @@ export function MessageEditor({ contact, update, remove }: { contact: ContactRec
     {contact.message && !ready && <Notice>Replace the bracketed placeholders before copying.</Notice>}
   </>; }
   const linkedin = safeUrl(contact.linkedin, true), link = safeUrl((contact.jobUrl as string)||contact.link);
-  return <section className="min-w-0" aria-label={`Outreach for ${contact.contact || contact.name}`}>
+  return <section className="network-contact-editor min-w-0" aria-label={`Outreach for ${contact.contact || contact.name}`}>
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-board-line pb-5">
-      <div className="flex min-w-0 items-center gap-3"><CompanyLogo company={contact.company || ""}/><span className="text-board-accent"><ContactIcon type={kind}/></span><div className="min-w-0"><h2 className="break-words text-xl font-bold">{contact.contact || contact.name}</h2><p className="mt-1 text-sm text-board-muted">{typeLabels[kind]} at {contact.company}</p>{(contact.title || contact.role) && <p className="mt-2 text-sm text-board-muted">For {contact.title || contact.role}</p>}</div></div>
+      <div className="flex min-w-0 items-center gap-3">{!processContext && <CompanyLogo company={contact.company || ""}/>}<span className="text-board-accent"><ContactIcon type={kind}/></span><div className="min-w-0"><h2 className="break-words text-lg font-semibold">{contact.contact || contact.name}</h2><p className="mt-1 text-sm text-board-muted">{typeLabels[kind]}{!processContext && ` at ${contact.company}`}</p>{!processContext && (contact.title || contact.role) && <p className="mt-2 text-sm text-board-muted">For {contact.title || contact.role}</p>}</div><span className="network-status-badge">{contact.status || "Not asked"}</span></div>
       <div className="flex flex-wrap gap-2">{linkedin && <a className={secondary} href={linkedin} target="_blank" rel="noreferrer">Open LinkedIn</a>}{link && <a className={secondary} href={link} target="_blank" rel="noreferrer">View role</a>}</div>
     </div>
     {ongoing && <OutreachConversation contact={contact} update={update} ongoing/>}
     {ongoing ? <details className="mt-7 border-t border-board-line pt-5"><summary className="cursor-pointer text-sm font-semibold">Prepare another message</summary>{draftMessage()}</details> : draftMessage()}
     {!ongoing && <OutreachConversation contact={contact} update={update} ongoing={false}/>}
-    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-board-line pt-5"><label className="flex flex-wrap items-center gap-2 text-sm text-board-muted">Outreach status<select className={control} value={contact.status || "Not asked"} onChange={e => update({ status: e.target.value })}>{OUTREACH_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label><button className="min-h-11 px-3 text-sm text-board-muted hover:text-board-text" type="button" onClick={remove}>Remove contact</button></div>
-    <p className="mt-3 text-xs text-board-muted">Update the status after you send. Copying a message doesn’t mark it sent.</p>
+    <details className="network-contact-management"><summary>Manage contact</summary><div className="mt-3 flex flex-wrap items-center justify-between gap-3"><label className="flex flex-wrap items-center gap-2 text-sm text-board-muted">Outreach status<select className={control} value={contact.status || "Not asked"} onChange={e => update({ status: e.target.value })}>{OUTREACH_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label><button className="min-h-11 px-3 text-sm text-board-muted hover:text-board-text" type="button" onClick={remove}>Remove contact</button></div>
+    <p className="mt-3 text-xs text-board-muted">Update the status after you send. Copying a message doesn’t mark it sent.</p></details>
   </section>;
 }
 export default function Referrals({company,contactIds=[]}: {company?: string;contactIds?:string[]}) {
