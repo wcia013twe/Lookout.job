@@ -288,3 +288,29 @@ IDs and employer requisition IDs remain distinct.
 See [the complete contract and release gates](../docs/private-network.md).
 These additions require backend/gateway/MCP release and hosted verification before
 claiming deployed parity.
+
+## Circle publication feed (local, release-gated)
+
+`knowledge.feed` / `read_circle_feed` accepts `{circleId,after?,limit?}` with
+`knowledge:read` alone. Browser RPC and MCP use the same membership, release gate
+and cursor validation. Default 20 events, maximum 50. Drain `nextCursor` before
+retaining `checkpoint`; pass either as `after`. Both bind to the Circle, with
+decimal-string positions and a fixed `through` boundary while paging.
+
+`private.circle_events` records publication, newly published revisions, withdrawal
+and hiding transactionally. `circles.feed_sequence` allocates commit-safe positions
+under the Circle lock. Rollback leaves neither an event nor a cursor gap. No
+historical publication dates are invented; old knowledge remains searchable.
+Events contain source references rather than duplicate bodies. A source post is
+returned only while its exact revision is currently published and its parent is
+visible. Authors receive the shared revision even with a newer private draft.
+Other events return `sourceAvailable:false,post:null`. On later events, discard
+cached older post revisions; `invalidateThread` also clears cached replies.
+
+The Clubhouse Shared updates section uses this RPC, with empty/loading/error,
+refresh and pagination states. Feed reads are read-only: no citation, delivery
+acknowledgment, scheduler or publication. The fictional demo has a resettable
+publication history; production starts with future publication events. Migration
+`20261022060723_circle_member_feed.sql` and gateway developerVersion 36 must be
+released through the production workflow. Hosted permission/concurrency checks
+remain outstanding; the existing feature gate is unchanged.

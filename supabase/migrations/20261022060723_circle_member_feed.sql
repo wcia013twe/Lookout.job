@@ -37,14 +37,6 @@ revoke all on function private.record_circle_event() from public,anon,authentica
 create trigger circle_publication_event after update of published_revision,state on private.knowledge_posts
  for each row execute function private.record_circle_event();
 
--- Feed reads must never substitute an author's newer private draft.
-create function private.circle_feed_post(p private.knowledge_posts,actor uuid) returns jsonb language plpgsql stable set search_path='' as $$
-begin
- p.current_revision:=p.published_revision;
- return private.knowledge_projection(p,actor);
-end $$;
-revoke all on function private.circle_feed_post(private.knowledge_posts,uuid) from public,anon,authenticated;
-
 alter function private.knowledge_action(uuid,text,jsonb,uuid) rename to knowledge_before_feed;
 create function private.knowledge_action(actor uuid,op text,payload jsonb,connection uuid default null) returns jsonb language plpgsql set search_path='' as $$
 declare permission jsonb; cid uuid; boundary bigint; start_position bigint:=0; lim integer:=20; items jsonb; cursor jsonb;
@@ -85,7 +77,7 @@ begin
     (p.parent_id is null or exists(select 1 from private.knowledge_posts parent where parent.id=p.parent_id and parent.state='published')),
    'post',case when e.kind in ('published','revision_published') and p.state='published' and p.published_revision=e.revision and
     (p.parent_id is null or exists(select 1 from private.knowledge_posts parent where parent.id=p.parent_id and parent.state='published'))
-    then private.circle_feed_post(p,actor) else null end) item
+    then private.company_search_projection(p,actor,true) else null end) item
   from private.circle_events e join private.knowledge_posts p on p.id=e.post_id
   where e.circle_id=cid and e.position>start_position and e.position<=boundary order by e.position limit lim+1
  ) page;
