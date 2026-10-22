@@ -41,7 +41,7 @@ export default function ApplicationDocumentLibrary({kind}:{kind:Kind}){
   try{await services.artifactAction("artifacts.archive",{id:row.id,expectedVersion:row.version,archived:true});if(stillOwner()){setItems(old=>old.filter(r=>r.id!==row.id));setFeedback("Document archived. Earlier versions remain in Career Toolkit.");}}
   catch(e){if(stillOwner())setFeedback(errorMessage(e));}finally{if(stillOwner())setBusy(false);}
  }
- return <ProfileCard title={title}>
+ return <ProfileCard title={title} icon="file">
   <p className="mb-4 text-sm text-board-muted">{kind==="cover_letter"?"Save letters for specific applications or a starting point for your next draft.":"Keep reusable resume, cover letter, or outreach text. Replace placeholders before using it."} Shared across profiles.</p>
   {loading?<Notice>Loading {title.toLowerCase()}…</Notice>:!items.length&&!feedback&&<p className="text-sm text-board-muted">No {title.toLowerCase()} added yet.</p>}
   <ul className="divide-y divide-board-line">{items.map(row=><li key={row.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div className="min-w-0 flex-1"><p className="break-words font-semibold">{row.content.title}</p><p className="mt-1 text-xs text-board-muted">Version {row.version} · Private</p></div><div className="flex flex-wrap gap-2"><button type="button" className={secondary} disabled={busy||!!editor} onClick={()=>edit(row)}>Open / edit {label}</button><button type="button" className={secondary} disabled={busy||!!editor||w.locked} onClick={()=>archive(row)}>Archive {label}</button></div></li>)}</ul>
