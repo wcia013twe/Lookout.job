@@ -93,6 +93,19 @@ try{
  await brief.getByRole('button',{name:'View round details',exact:true}).click();
  await panel.getByRole('heading',{name:'Interview rounds & history',exact:true}).waitFor();
  await page.keyboard.press('Escape');assert.equal(await panel.count(),0);
+ await page.getByRole('button',{name:'Active',exact:true}).click();
+ await page.getByRole('button',{name:'Open Backend Engineer at Cedar Systems (demo)',exact:true}).click();
+ await panel.getByRole('button',{name:'Interview',exact:true}).click();
+ assert.equal(await panel.getByRole('button',{name:'Create experience card',exact:true}).count(),0);
+ await panel.getByRole('link',{name:'Debrief this round',exact:true}).click();
+ await page.getByRole('heading',{name:'My agent',exact:true}).waitFor();
+ assert.equal(await page.getByLabel('Task name',{exact:true}).inputValue(),'Interview debrief · Cedar Systems (demo)');
+ assert.match(await page.getByLabel(/^Task instructions \(optional\)/).inputValue(),/How did it go/);
+ await page.getByRole('button',{name:'Add to schedule',exact:true}).click();
+ await page.getByRole('button',{name:'Save schedule',exact:true}).click();
+ await page.getByText('Demo schedule saved. Changes stay in this preview.',{exact:true}).waitFor();
+ await page.getByRole('switch',{name:'Interview debrief · Cedar Systems (demo)',exact:true}).waitFor();
+ await page.screenshot({path:dir+'/debrief-schedule.png'});
  assert.equal(errors.length,0,errors.join('\n'));
  console.log(JSON.stringify({result:'passed',checks:['three priorities maximum','three materials maximum','no setup form or checklist','sources collapsed','uncertain dates remain unconfirmed','no-plan empty state','open-by-default round and email sections','grouped round form','Round details navigation','Action Board link','no demo cloud calls','desktop dark/mobile light','no overflow','Escape'],artifacts:dir},null,2));
 } finally {await browser.close();}

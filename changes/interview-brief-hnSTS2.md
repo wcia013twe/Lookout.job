@@ -28,3 +28,10 @@
 - Added a bounded, responsive editor with grouped fields, full-width notes, clear Save/Close actions and a privacy hint. Closing preserves unsaved input and restores focus to the toggle. Existing save validation, ownership and MCP boundary remain unchanged.
 - Demo browser coverage verifies collapsed defaults, expansion, draft preservation, close controls and desktop/mobile layout.
 - Validation: frontend typecheck, data validation (147 roles), production static build, whitespace check and mocked desktop/mobile browser checks passed. Reviewed expanded editor captures in both themes. No live submission or backend write was exercised.
+
+## Follow-up: agent-led interview debrief
+
+- Replaced the blank Create experience card template with Debrief this round. It opens My Agent's existing Add task editor with application context and instructions to ask “How did it go?”, follow up conversationally, then draft a private experience card for review.
+- Reuses the existing schedule store/save and agent preference read boundary; the person chooses time and saves, and global enabled state is preserved. No embedded chat, copied prompts, agent activation claim, backend, gateway, MCP or Supabase changes. The empty exploratory migration was removed.
+- Fictional demo coverage includes the debrief handoff, prefilled instructions and saving the task through existing schedule controls.
+- Validation: frontend typecheck, data validation (147 roles), production static build, whitespace check and fictional desktop/mobile browser checks passed, including the My Agent prefill → Add to schedule → Save schedule flow. No real agent run or delivery was exercised.
