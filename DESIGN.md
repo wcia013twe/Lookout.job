@@ -267,7 +267,9 @@ button beside the page heading, with 44px plus/copy icon actions. The dropdown
 keeps paused labels and native keyboard selection. It shrinks beside the icon
 actions on mobile. No outer selector panel or helper paragraph is used. My agent stays
 visually separated at the end of the tab row. Overview uses a compact shared
-identity header, three readiness rows, and account/writing summaries. About me
+identity row, three small unboxed totals, and three divided navigation rows.
+Only incomplete readiness or a paused search adds supporting text; account and
+writing summaries remain in their editing sections. About me
 labels shared background explicitly. Its sections are expanded bordered boxes with
 readable labels and full values; experience, education and project descriptions
 never collapse or truncate in reading mode. Each section has a 44px pen control
