@@ -408,7 +408,7 @@ Personal agents can load career-ops-style targeting, house rules and portal/quer
 ## Private company Network
 
 Network (`/referrals/`) is the company hub: Targets opens Overview, People & outreach,
-Applications and Circle intelligence. Dedicated owner-scoped company workspaces
+and Applications, with Circle context included in the Overview. Dedicated owner-scoped company workspaces
 preserve text target IDs, research, dated sources, priorities and follow-ups;
 a maintained registry supplies shared identities and aliases. Contacts,
 applications and reviewed Circle revisions retain their own authority.
