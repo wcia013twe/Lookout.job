@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-10-22",
+ "lastRun": "2026-10-22 evening zero2sudo check",
  "roles": [
   {
    "id": "doordash-software-engineer-storage-8024644",
@@ -2444,6 +2444,51 @@
    "sourceFreshness": "today",
    "whyItFits": "Inference infrastructure intern at Rhoda AI (generalist robotics, $450M+ raised): optimize foundation world-model inference for real-time robot control with infra and research engineers. BS/MS/PhD-eligible; Python/C++, PyTorch, latency/throughput/memory tradeoffs, GPU profiling. Direct hit on his ML systems/inference target, posted today.",
    "applicationUrl": "https://jobs.ashbyhq.com/rhoda-ai/2de33083-782f-489e-9b91-f40761a36bf4",
+   "applicationStatus": "New"
+  },
+  {
+   "id": "nvidia-high-performance-llm-training-engineer-new-college-grad-2027-jr2028237",
+   "company": "NVIDIA",
+   "title": "High-Performance LLM Training Engineer - New College Grad 2027",
+   "employmentType": "FT",
+   "location": "Santa Clara, CA",
+   "category": "ML systems & LLM infrastructure",
+   "priority": "Apply Now",
+   "postedDate": "2026-10-21",
+   "discoveredDate": "2026-10-22",
+   "sourceFreshness": "1 day ago",
+   "whyItFits": "LLM training performance engineering at NVIDIA: profile and optimize PyTorch/JAX training across thousands of GPUs, MLPerf submissions, and shape next-gen GPU hardware roadmaps. Direct hit on his ML systems/inference target at a Legendary-tier company. M.S./PhD-gated, a clean fit for his M.S. track. Posted Oct 21; applications open at least through Oct 25.",
+   "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/details/High-Performance-LLM-Training-Engineer---New-College-Grad-2027_JR2028237",
+   "applicationStatus": "New"
+  },
+  {
+   "id": "tiktok-machine-learning-engineer-intern-brand-ads-2027-summer-a164576",
+   "company": "TikTok",
+   "title": "Machine Learning Engineer Intern (Brand Ads) - 2027 Summer",
+   "employmentType": "Internship",
+   "location": "San Jose, CA",
+   "category": "ML systems & ranking",
+   "priority": "Strong Consider",
+   "postedDate": "2026-08-04",
+   "discoveredDate": "2026-10-22",
+   "sourceFreshness": "1 day ago",
+   "whyItFits": "MLE intern on TikTok's Brand Innovation Team: end-to-end ad delivery stack with ad bidding, ranking, and forecasting, retrieval/ranking at scale adjacent to his targets. $45-60/hr campus rate; Undergrad/Master 2027-start eligible. Precedent: the board already carries the sibling TikTok MLE (Monetization) add. Selective internship bar applies: must beat starting at Oracle.",
+   "applicationUrl": "https://lifeattiktok.com/search/7668654528822954245",
+   "applicationStatus": "New"
+  },
+  {
+   "id": "globalfoundries-ai-software-engineer-2027-new-college-graduate-jr-2604055",
+   "company": "GlobalFoundries",
+   "title": "AI Software Engineer (2027 New College Graduate)",
+   "employmentType": "FT",
+   "location": "Santa Clara, CA; Richardson, TX",
+   "category": "GPU, systems & AI infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": "2026-10-20",
+   "discoveredDate": "2026-10-22",
+   "sourceFreshness": "1 day ago",
+   "whyItFits": "New-college-grad AI software role at a semiconductor company enabling AI at scale: workload-facing software adjacent to architecture and systems. $72K-141.7K; Bachelor's/Master's/PhD eligible. FT wide-net keeps it as interview reps vs the Oracle return path; team fit decides upside.",
+   "applicationUrl": "https://careers.gf.com/careers?query=AI+Software+Engineer+%282027+New+College+Graduate%29&start=0&pid=563980770505821&sort_by=relevance",
    "applicationStatus": "New"
   }
  ]
