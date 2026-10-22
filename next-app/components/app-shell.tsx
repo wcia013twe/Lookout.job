@@ -100,6 +100,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       ) : (
         <div className="glass-panel rounded-2xl p-6" role="status"><p className="text-sm text-board-muted">Loading your workspace…</p><div aria-hidden="true" className="mt-5 grid gap-3 sm:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-28 rounded-xl bg-board-tag" />)}</div></div>
       )}
+      {process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN && <footer className="mt-8 text-xs text-board-muted"><a href="https://logo.dev" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Logos provided by Logo.dev</a></footer>}
       </div>
     </main></MotionConfig>
   );

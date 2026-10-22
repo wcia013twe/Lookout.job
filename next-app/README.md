@@ -10,7 +10,7 @@ npm run dev
 npm run build
 ```
 
-From the repository root, `npm run dev` and `npm run build` delegate here. `.github/workflows/deploy.yml` builds and deploys `out/` to GitHub Pages with the configured project base path. It runs the domain tests, database checks, and catalog validation first. `public/` is generated from public catalog/branding assets; do not put candidate documents or credentials there.
+From the repository root, `npm run dev` and `npm run build` delegate here. `.github/workflows/deploy.yml` builds and deploys `out/` to GitHub Pages with the configured project base path. It runs the domain tests, database checks, and catalog validation first. `public/` is generated from public catalog assets; do not put candidate documents or credentials there.
 
 `lib/workspace.jsx` connects React to the repository-level `../lib/store.js` namespaces and the serialized `../lib/cloud.mjs` controller. The controller accepts a React UI adapter rather than writing into the old static DOM. Guest and signed-in data remain separate. Backend ownership checks, revision checks, approval rules, immutable submission records, and exact saved-answer matching remain in the shared domain modules. Google OAuth continues to return to the board root, preserving owned batch locators.
 
@@ -104,3 +104,8 @@ and company lists. Verify edit/save/reload, switch profiles with unsaved text, p
 and resume, maintain/associate a tier list, and reset to restore demo defaults.
 
 Work-life balance and Employer benefits are editable criteria with individual flexibility settings, saved as labeled instructions. They support descriptive preferences about hours, on-call, boundaries, leave, insurance, retirement match and learning budgets; unknown listing details remain questions for verification.
+
+Company marks load through Logo.dev. Copy `.env.example` to `.env.local` and set
+`NEXT_PUBLIC_LOGO_DEV_TOKEN` to the publishable CDN key; restart the dev server.
+GitHub Pages reads the same repository Actions variable during the CI build.
+No token means initials. See the root README for domain overrides and matching limits.
