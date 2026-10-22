@@ -145,3 +145,15 @@ restore the fictional schedule. No demo interaction creates automations or write
 to account storage. The existing save_notification_preferences MCP boundary can
 edit preferences.search.schedule with its current preferences timestamp; no new
 backend tool or scheduling service is introduced by this UI change.
+
+Application automation selects an application profile and saves its auto-apply
+choice and review threshold in that profile’s existing versioned instructions;
+the company tier list is its Company priorities selection. The tier-list editor
+is directly visible below automation and in the expanded Job preferences company
+priorities section. Demo profiles have different toggles/thresholds: switch,
+change one, save, switch back, inspect/move a fictional company and reset.
+MCP uses save_search_profile, read_application_policy(profileId) and
+prepare_draft(draft.searchProfileId); website and execution read the same saved
+rules. Unbound drafts require review once explicit profile rules exist. Existing
+role-type policies remain a legacy fallback. Gateway/config release and hosted
+verification are required before claiming the new execution policy is deployed.

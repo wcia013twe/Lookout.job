@@ -153,3 +153,13 @@ test('additional documents cannot receive the résumé file even with human appr
   assert.throws(()=>assertSubmitFormScope({questions:[resume,{question:'Undergraduate transcript',fields:[{type:'file'}]}]}));
   assert.throws(()=>assertSubmitFormScope({questions:[{question:'Cover letter',fields:[{type:'file'}]}]}));
 });
+
+test('automatic submission rechecks the saved profile bound to the draft',()=>{
+ const f=fixture();
+ const makeProfile=(id,enabled)=>({id,name:id,active:true,filters:{Employment:'Full-time'},instructions:`## Application automation\n- Auto-apply routine matches: ${enabled}\n- Review threshold: A\n## Company priorities\n- Tier list ID: ft`});
+ f.context.preferences.search.profiles=[makeProfile('backend','Yes'),makeProfile('research','No')];
+ assert.equal(authorizeSubmission(f.context).allowed,false);
+ f.context.application.draft.searchProfileId='backend';assert.equal(authorizeSubmission(f.context).allowed,true);
+ f.context.application.draft.searchProfileId='research';assert.equal(authorizeSubmission(f.context).allowed,false);
+ f.context.application.draft.searchProfileId='foreign';assert.equal(authorizeSubmission(f.context).allowed,false);
+});

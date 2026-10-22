@@ -47,3 +47,7 @@ test('agent-imported saved answers retain their proposed policy without becoming
  const rows={profiles:[],preferences:[],resumes:[],applications:[],answer_library:[{id:'proposal',question:'Q',answer:'A',provenance:'agent',autofill_policy:'ask',verified_at:null,context:{version:1,requestedPolicy:'auto'}}]};
  const answer=fromCloud(rows).savedAnswers[0];assert.equal(answer.imported,true);assert.equal(answer.requestedPolicy,'auto');assert.equal(answer.policy,'ask');assert.equal(answer.verifiedAt,null);
 });
+test('cloud draft sync preserves the application profile used for policy checks',async()=>{
+ const {draftPayload}=await import('../lib/cloud-model.mjs');
+ assert.equal(draftPayload({searchProfileId:'backend',resumeId:'r',questions:[],questionsReviewed:false}).searchProfileId,'backend');
+});

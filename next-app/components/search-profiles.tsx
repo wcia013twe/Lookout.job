@@ -299,7 +299,7 @@ function SearchProfileEditor() {
             })}
           </div>
         </details>
-        <details className="border-t border-board-line py-3">
+        <details className="border-t border-board-line py-3" open>
           <summary className="text-base font-semibold">
             Company priorities
           </summary>
@@ -336,15 +336,12 @@ function SearchProfileEditor() {
               </span>
             )}
           </Field>
-          <details className="mt-4">
-            <summary className="min-h-11 py-3 font-semibold">
-              Maintain company tier lists
-            </summary>
+          <div className="mt-4">
             <TierLists
               selectedListId={tierExists ? tierField.value : undefined}
               onSelectList={selectTierList}
             />
-          </details>
+          </div>
         </details>
         <details className="border-t border-board-line pt-5">
           <summary className="min-h-11 text-base font-semibold">

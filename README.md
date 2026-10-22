@@ -149,18 +149,21 @@ Developer contract version **17** advertises the current scoped platform and loc
 This refreshes instructions on an existing authenticated board connection. It
 does not create schedules, send a text, install a runner or submit a job by itself.
 
-Profile → Application automation saves **Auto-apply routine matches** and separate
-full-time/internship review policies immediately. Both thresholds default to
-**A tier and above**. Choose a company list per role type, or let Muse use the
-single matching list. Unknown companies, conflicting placements or ambiguous
-list selections require review. Company-tier IDs stay independent of theme labels.
+My Profile → My agent → Application automation selects an application profile,
+with its own auto-apply choice, company tier list and review threshold. Save profile
+rules uses the existing versioned profile boundary; company tier lists are directly
+editable below it and in Job preferences → Company priorities. Unknown companies,
+conflicting placements, missing lists or ambiguous profile selection require review.
 
-Muse reads `preferences.search.autoSubmitApproved` and
-`preferences.search.reviewPolicy.{fullTime,internship}` (`tierListId`, `threshold`).
-`read_application_policy({jobId})` checks current owned settings and canonical
-employer data; returns `auto-apply`, `review` or `skip`, with the personal version
-and honest execution limits. This is a read-only policy decision, not approval or
-a submission receipt. No agent can inject its own company tier or owner ID.
+Profile instructions store Application automation / Auto-apply routine matches
+(Yes/No) and Review threshold (S/A/B/C/D/all), alongside Company priorities / Tier
+list ID. `read_application_policy({jobId,profileId})` reads current owned settings
+and canonical employer data. Drafts carry `searchProfileId` so submission rechecks
+the selected active profile. Unbound drafts require review once profile rules
+exist. Existing `autoSubmitApproved` and fullTime/internship policies remain a
+compatibility fallback. These local changes require the updated gateway/MCP/config
+release and hosted verification before claiming profile-based execution is live.
+Policy advice is not approval, execution authorization or a submission receipt.
 
 Desired interaction: routine matches use verified facts, résumé rules and
 permitted saved answers; important matches get fully prepared and Muse texts a

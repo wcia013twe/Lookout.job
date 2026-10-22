@@ -296,3 +296,18 @@ See [Circle Knowledge](circle-knowledge.md) for the shared browser/gateway contr
 knowledge scopes, immutable revisions, exact sharing approvals, conservative standing
 permission, private citation receipts and mandatory hosted release verification.
 Existing agent scopes are not expanded. No Circle content is enabled by this code alone.
+
+### Profile-specific application automation
+
+The selected profile’s `Application automation` fields are `Auto-apply routine
+matches: Yes/No` and `Review threshold: S/A/B/C/D/all`; its existing `Company
+priorities / Tier list ID` binds the list. Save through `save_search_profile` at
+the current profile version. `read_application_policy` accepts optional profileId;
+`prepare_draft` carries `draft.searchProfileId`. The submission authorization
+helper rechecks the saved active owned profile and blocks missing/unknown,
+conflicting, paused, wrong-role or unbound profiles when explicit rules exist.
+Legacy policies remain the fallback for unconfigured profiles/accounts. Global
+exclusions and all existing verification, answer, resume and human approval checks
+remain authoritative. This local implementation requires gateway/MCP/config
+release through the production workflow and hosted verification; no new database
+migration or live employer submission was part of this change.

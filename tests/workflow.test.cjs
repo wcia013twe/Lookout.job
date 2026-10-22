@@ -93,3 +93,8 @@ test('agent questions keep stable review identifiers even when only employer fie
   assert.notEqual(m.questionId({},0),m.questionId({},1));
   assert.equal(m.questionId({id:123,fieldId:'employer'}),'123');
 });
+test('changing an application profile invalidates approval and advances the draft revision',()=>{
+ const m=model(),approved=m.approve(ready(m),resume,profile);
+ const updated=m.edit(approved,{searchProfileId:'another-profile'});
+ assert.equal(updated.approved,null);assert.equal(updated.revision,approved.revision+1);
+});

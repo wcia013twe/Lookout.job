@@ -28,3 +28,11 @@
 - Demo includes a fictional custom practice task alongside the defaults; the documented walkthrough covers adding/removing, saving an empty list, and resetting to fixtures.
 - Validation: 425 existing tests passed, production build, TypeScript, data validation (147 roles), diff check and UI detector. Targeted checks covered legacy records, custom tasks and empty schedules. Desktop/phone demo interactions verified adding a task, removing a default, saving, removing all tasks and saving the empty state; no phone row overflow.
 - Limits: real account sync and external runtime scheduling were not exercised; the change remains in the settings UI and existing persistence path.
+
+## Follow-up: profile-specific automation and visible tier-list editor
+
+- Replaced the fixed full-time/internship controls with an application-profile selector and independent auto-apply/list/review rules saved through existing versioned search profiles. The tier-list widget is directly visible below these rules and in the expanded Job preferences company-priorities section.
+- The existing scoped save_search_profile and save_company_tiers tools remain the write boundaries. read_application_policy accepts profileId; prepare_draft preserves searchProfileId, and automatic authorization rechecks that saved profile. Unknown/paused/conflicting profiles and unbound drafts with explicit profile rules require review; existing legacy rules remain a compatibility fallback. Developer contract version increments for the new binding.
+- Demo profiles have distinct automation flags and thresholds, with visible fictional tier lists; switching/editing/saving/reset are covered in the demo walkthrough.
+- Validation: full test suite (432 tests), TypeScript, data validation (147 roles), production build (cache disabled to fit limited disk), diff check and UI detector. Desktop dark/phone light rendered demo verified profile selection, independent saved thresholds/toggles, and the directly visible tier-list widget.
+- Limits: hosted RPC/MCP and real employer/runtime checks remain unverified. This local landing does not deploy the updated gateway/config; use the production workflow after merge.

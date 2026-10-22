@@ -7,6 +7,8 @@ export function withApplicationProfileDemo(fixtures) {
   const employment=profile.id==='internships'?'Internship':'Full-time';
   let prompt=promptFromProfile(profile);
   for(const [heading,key,value] of [
+   ["Application automation","Auto-apply routine matches",employment === "Internship" ? "No" : "Yes"],
+   ["Application automation","Review threshold",employment === "Internship" ? "S" : "A"],
    ["Profile evaluation","Rules",employment === "Internship" ? "Fictional demo: weigh learning, mentorship, conversion potential, and whether a graduation delay is justified. Surface uncertain team details for review." : "Fictional demo: prioritize long-term team fit, systems ownership, compensation, and career growth."],
    ["Recruiting targets","Targets",JSON.stringify(employment === "Internship" ? [{id:"demo-summer-systems",name:"Summer systems",active:true,roles:"Systems engineering",timeline:"Summer 2027 (demo)",resumeId:"demo-resume",conditions:"Fictional demo: verify enrollment eligibility and mentorship."}] : [{id:"demo-backend",name:"Backend SWE",active:true,roles:"Backend, distributed systems",timeline:"After graduation (demo)",resumeId:"demo-resume",conditions:"Fictional demo: ownership of production systems."},{id:"demo-mle",name:"ML infrastructure",active:false,roles:"ML systems",timeline:"After graduation (demo)",resumeId:"demo-resume",conditions:"Fictional demo: substantial model-serving or training systems scope."}])],
    ["Eligibility & availability","Work authorization country","United States"],

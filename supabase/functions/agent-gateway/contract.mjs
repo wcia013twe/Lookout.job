@@ -97,7 +97,8 @@ export function validateRequest(input) {
       } else if(p.receipt!==undefined) throw new Error('Receipt not allowed without confirmation');
     }
   }
-  if (input.operation === 'applications.policy' && (Object.keys(p).length !== 1 || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(p.jobId || ''))) throw new Error('Job ID required');
+  if (input.operation === 'applications.policy' && (Object.keys(p).some(k=>!['jobId','profileId'].includes(k)) || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(p.jobId || '') || (p.profileId!==undefined&&(typeof p.profileId!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.profileId))))) throw new Error('Job ID and optional application profile ID required');
+  if(input.operation==='drafts.prepare'&&p.draft?.searchProfileId!==undefined&&(typeof p.draft.searchProfileId!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.draft.searchProfileId)))throw Error('Valid searchProfileId required in the draft.');
   if (input.operation.startsWith('context.') && Object.keys(p).length) throw new Error('No context arguments allowed');
   if (input.operation === 'runner.report_failure') {
     const keys = ['applicationId','eventKey','expectedRevision','stage','outcome','reason','nextAction','attempts'];
