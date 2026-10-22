@@ -43,10 +43,25 @@ function Editor() {
   return <Section title="Search targets">
     <p className="mb-5 max-w-prose text-sm leading-relaxed text-board-muted">Choose where Muse looks. Job preferences define which opportunities fit. Your target list is private.</p>
     {!targets.length && <p className="mb-5 text-sm text-board-muted">No search targets yet. Add a job board, company careers page, or social account.</p>}
-    <ul className="divide-y divide-board-line">{targets.map(target => { const status = scanningStatus(target); return <li key={target.id} className="flex flex-col items-start justify-between gap-4 py-5 sm:flex-row">
-      <div className="min-w-0 flex-1"><h3 className="[overflow-wrap:anywhere] font-semibold">{target.name}</h3><p className="mt-1 text-sm text-board-muted">{targetKinds[target.kind]}</p><p className="mt-2 break-all text-sm">{target.address}</p><p className="mt-3 text-sm font-medium">{status.label}</p><p className="mt-1 max-w-prose text-sm text-board-muted">{status.detail}</p></div>
-      <div className="flex flex-wrap gap-2"><button type="button" className={secondary} disabled={busy || w.locked} onClick={() => { setDraft({ ...target }); setFeedback(''); }} aria-label={`Edit ${target.name}`}>Edit</button><button type="button" className={secondary} disabled={busy || w.locked} onClick={() => persist(targets.filter(t => t.id !== target.id))} aria-label={`Remove ${target.name}`}>Remove</button></div>
-    </li>; })}</ul>
+    {targets.length > 0 && <p className="mb-3 text-sm text-board-muted">{targets.length} {targets.length === 1 ? 'source' : 'sources'}</p>}
+    <ul aria-label="Search sources" className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,17rem),1fr))] gap-4">{targets.map(target => {
+      const status = scanningStatus(target);
+      return <li key={target.id} className="flex min-w-0 flex-col rounded-xl border border-board-line bg-board-panel p-4">
+        <div className="min-w-0 flex-1">
+          <h3 className="[overflow-wrap:anywhere] font-semibold">{target.name}</h3>
+          <p className="mt-1 text-xs text-board-muted">{targetKinds[target.kind]}</p>
+          <p className="mt-3 [overflow-wrap:anywhere] text-sm">{target.address}</p>
+        </div>
+        <details className="mt-3 text-sm">
+          <summary className="cursor-pointer font-medium" aria-label={`${status.label} for ${target.name}`}>{status.label}</summary>
+          <p className="pb-3 leading-relaxed text-board-muted">{status.detail}</p>
+        </details>
+        <div className="mt-3 flex flex-wrap gap-2 border-t border-board-line pt-3">
+          <button type="button" className={secondary} disabled={busy || w.locked} onClick={() => { setDraft({ ...target }); setFeedback(''); }} aria-label={`Edit ${target.name}`}>Edit</button>
+          <button type="button" className={secondary} disabled={busy || w.locked} onClick={() => persist(targets.filter(t => t.id !== target.id))} aria-label={`Remove ${target.name}`}>Remove</button>
+        </div>
+      </li>;
+    })}</ul>
     {draft ? <form className="glass-inset mt-5 space-y-4 rounded-xl p-5" onSubmit={e => { e.preventDefault(); const target = { ...draft, id: draft.id || crypto.randomUUID(), name: draft.name.trim(), address: draft.address.trim() }; persist(draft.id ? targets.map(t => t.id === draft.id ? target : t) : [...targets,target]); }}>
       <h3 className="font-semibold">{draft.id ? 'Edit target' : 'Add target'}</h3>
       <fieldset disabled={busy || w.locked} className="space-y-4"><div className="grid gap-4 sm:grid-cols-2"><Field label="Name"><input autoFocus required maxLength={120} className={control} value={draft.name} placeholder="HiringCafe, company name, or account name" onChange={e => setDraft({ ...draft,name:e.target.value })} /></Field><Field label="Source type"><select className={control} value={draft.kind} onChange={e => setDraft({ ...draft,kind:e.target.value as TargetKind })}>{Object.entries(targetKinds).map(([kind,label]) => <option key={kind} value={kind}>{label}</option>)}</select></Field></div>

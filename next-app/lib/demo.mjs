@@ -59,7 +59,7 @@ export function demoFixtures(date) {
    ...base.state.workflow,
    applications:{...baseApplications,...muse.workflow.applications},preparationPlans,
    resumes:[...base.state.workflow.resumes,...muse.workflow.resumes],
-   searchPreferences:{...muse.workflow.searchPreferences,...base.state.workflow.searchPreferences,targetsVersion:1,targets:[{id:"demo-board",name:"Example Jobs (demo)",kind:"board",address:"https://example.com/jobs"},{id:"demo-careers",name:"Example Systems careers (demo)",kind:"careers",address:"https://example.com/careers"},{id:"demo-social",name:"Example community (demo)",kind:"social",address:"@example_demo"}]},
+   searchPreferences:{...muse.workflow.searchPreferences,...base.state.workflow.searchPreferences,targetsVersion:1,targets:[{id:"demo-board",name:"Example Jobs (demo)",kind:"board",address:"https://example.com/jobs"},{id:"demo-careers",name:"Example Systems careers (demo)",kind:"careers",address:"https://example.com/careers"},{id:"demo-social",name:"Example community (demo)",kind:"social",address:"@example_demo"},{id:"demo-data-careers",name:"Example Data infrastructure and developer platform careers (demo)",kind:"careers",address:"https://example.com/teams/infrastructure-and-developer-platform/careers"},{id:"demo-compute-board",name:"Example Compute Jobs (demo)",kind:"board",address:"https://example.com/compute-jobs"},{id:"demo-systems-social",name:"Example Systems community (demo)",kind:"social",address:"@example_systems_demo"}]},
   },
   demo:{...muse.demo,roles,preparationRows:{...basePreparationRows,...muse.demo.preparationRows}},
  };

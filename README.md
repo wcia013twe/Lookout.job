@@ -448,10 +448,12 @@ employer answer and inspect retained reuse restrictions. Preview the style brief
 visit unchanged My agent, then reset Demo to restore fixtures. Fixtures and changes
 remain in memory and never write real account records or fetch private files.
 
-Profile Overview shows account-wide tracked roles, recorded applications, active
-interviews and offers using the existing tracker stages. These totals span all
-application profiles; profile identity, account assignments and writing styles
-remain scoped to the selected profile. Counts include user/agent-reported progress
+Profile Overview shows a compact identity row, three account-wide totals
+(applications, active interviews and offers), and shortcuts to About me, Application
+kit and Job preferences. Readiness text appears only for missing/incomplete items
+or a paused search. Assigned-account and writing-style details live in their
+editing sections. Totals use existing tracker stages and span all application
+profiles; identity and settings remain scoped to the selected profile. Counts include user/agent-reported progress
 and do not independently establish employer-confirmed submission. Demo uses its
 existing fictional application stages and resettable memory store. `workspace_read`
 exposes the underlying records; this read-only summary adds no service or permission.

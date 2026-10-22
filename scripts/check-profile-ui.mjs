@@ -21,6 +21,9 @@ try{
  await page.goto((process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3034') + '/profile/');
  await page.getByRole('button',{name:'Open profile navigation'}).click();
  await page.getByRole('button',{name:'Demo mode',exact:true}).click();
+ assert.equal(await page.getByRole('navigation',{name:'Profile shortcuts',exact:true}).getByRole('button').count(),3);
+ assert.equal(await page.getByRole('heading',{name:'Assigned accounts',exact:true}).count(),0);
+ assert.equal(await page.getByRole('heading',{name:'Your writing voice',exact:true}).count(),0);
  await page.getByRole('button',{name:'New profile',exact:true}).click();
  await page.getByRole('textbox',{name:'New profile name',exact:true}).waitFor();
  await page.getByRole('button',{name:'Cancel new profile',exact:true}).click();
