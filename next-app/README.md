@@ -192,3 +192,16 @@ static export, `LOOKOUT_PLAYWRIGHT_MODULE` to an installed Playwright module and
 `LOOKOUT_UI_ARTIFACTS` for captures. It covers the panel, contact prefill, ephemeral
 edits, Escape/focus restoration, no preview service calls, no demo external links,
 unknown scores, and desktop-dark/mobile-light layouts. No real account is used.
+
+
+Discover refinement: icon-led facts on cards and in the panel expose pay,
+location, work setting, focus, sponsorship and source recency without inventing
+unknown values. Soft semantic surfaces distinguish fit evidence and uncertainty;
+About the job is expandable. Application review surfaces missing contact facts
+and recorded, unreviewed employer questions. Existing populated contact details
+start collapsed, with an unverified warning when appropriate. The review count
+includes a single saved-contact confirmation group, not four redundant fields.
+Reviewed draft questions are hidden; no new review authorization is minted.
+The form is still UI-only: edits are discarded, and an unloaded employer form
+can introduce further questions. Fictional demo questions illustrate one- and
+two-question handoffs; no live employer form or saved-answer reuse policy changes.

@@ -7,10 +7,13 @@ export type Role = {
   id: string; company: string; title: string; employmentType: string;
   location: string; category: string; priority: string; postedDate?: string | null;
   description?: string; matchPreview?: MatchPreview;
+  compensation?: string; workSetting?: string; sponsorship?: string;
+  reviewPreview?: { question: string; answer: string; reason: string }[];
   discoveredDate: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;
 };
 import { useWorkspace } from "../lib/workspace";
 import { recordRoleOpened } from "../lib/progress.mjs";
+import RoleJobFacts from "./role-job-facts";
 import RoleMatchPreview, { type MatchPreview } from "./role-match-preview";
 import { primary, secondary } from "./ui";
 import logos from "../../data/logo-manifest.json";
@@ -19,7 +22,6 @@ import {
   rarityOf,
   RARITY_LABEL,
   TIER_HEX,
-  compensationTag,
 } from "../lib/role-display";
 export function CompanyLogo({ company }: { company: string }) {
   const [failed, setFailed] = useState(false);
@@ -100,19 +102,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
       </motion.div>
       <div className={styles.body}>
         <h3 className="break-words text-lg font-semibold leading-snug tracking-tight md:text-xl">{role.title}</h3>
-        <div className="flex flex-wrap gap-1.5 text-xs">
-          {[
-            role.employmentType === "FT" ? "Full-time" : role.employmentType,
-            role.location,
-            compensationTag(role.whyItFits),
-          ]
-            .filter(Boolean)
-            .map((tag, i) => (
-              <span key={i} className="rounded-md bg-board-tag px-2 py-1">
-                {tag}
-              </span>
-            ))}
-        </div>
+        <RoleJobFacts role={role} compact />
         <p className="line-clamp-2 text-sm leading-relaxed text-board-muted md:line-clamp-3">
           {role.whyItFits}
         </p>

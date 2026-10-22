@@ -1,5 +1,11 @@
 import type { SVGProps } from "react";
 const paths = {
+  money: "M3 6h18v12H3V6ZM3 10a4 4 0 0 0 4-4M17 6a4 4 0 0 0 4 4M3 14a4 4 0 0 1 4 4M17 18a4 4 0 0 1 4-4M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z",
+  clock: "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 7v5l3 2",
+  building: "M5 22V3h14v19M3 22h18M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 22v-4h4v4",
+  shield: "M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6l-9-4ZM12 8v5M12 16h.01",
+  chevron: "m6 9 6 6 6-6",
+
   user: "M20 21v-2a7 7 0 0 0-14 0v2M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
   briefcase:
     "M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 11l7 4h4l7-4M10 13v4h4v-4M5 7h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z",

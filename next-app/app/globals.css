@@ -673,3 +673,11 @@ button:not(:disabled) {
 .artifact-document table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: .875rem; }
 .artifact-document th, .artifact-document td { border-bottom: 1px solid var(--color-board-line); padding: .75rem; text-align: left; }
 .artifact-document hr { margin-block: 2rem; border-color: var(--color-board-line); }
+
+
+/* Discover detail surfaces share the current light/dark semantic palette. */
+.workspace-shell {
+  --role-preview-match: color-mix(in srgb, var(--color-board-accent) 8%, var(--color-board-panel));
+  --role-preview-strength: color-mix(in srgb, var(--color-board-success) 7%, var(--color-board-panel));
+  --role-preview-caution: color-mix(in srgb, var(--color-board-warning) 8%, var(--color-board-panel));
+}
