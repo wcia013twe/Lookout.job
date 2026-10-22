@@ -58,14 +58,15 @@ test('learning-only weeks fit the shared budget, reveal missing material and pre
 });
 test('fictional demo saves, revisions, archiving and retrieval never need real storage or services',async()=>{
  const store=createMemoryStore({demo:{fictional:true}}),demo=createArtifactDemo(store);
- const page=await demo.artifactAction('artifacts.list');assert.equal(page.items.length,5);assert.ok(!('body' in page.items[0].content));
+ const page=await demo.artifactAction('artifacts.list');assert.equal(page.items.length,6);assert.ok(!('body' in page.items[0].content));
+ const answers=await demo.artifactAction('artifacts.read',{id:'99999999-aaaa-4000-8000-999999999999'});assert.match(answers.content.body,/Candidate detail needed/);assert.match(answers.content.body,/Tell me about yourself/);
  const original=await demo.artifactAction('artifacts.read',{id:demoArtifactIds.interactive});assert.match(original.content.body,/type="range"/);
  const saved=await demo.artifactAction('artifacts.save',doc);assert.equal(saved.version,1);assert.equal((await demo.artifactAction('artifacts.save',doc)).version,1);
  const revised=await demo.artifactAction('artifacts.save',{...doc,expectedVersion:1,body:'Revised'});assert.equal(revised.version,2);
  assert.equal((await demo.artifactAction('artifacts.read',{id,version:1})).content.body,doc.body);
  await demo.artifactAction('artifacts.archive',{id,expectedVersion:2,archived:true});assert.equal((await demo.artifactAction('artifacts.list',{query:'A sourced brief'})).items.length,0);assert.equal((await demo.artifactAction('artifacts.read',{id})).archived,true);
  assert.ok(demo.artifactSnapshot().learningGoals.some(g=>g.id===demoGoalId));
- const reset=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));assert.equal((await reset.artifactAction('artifacts.list')).items.length,5);
+ const reset=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));assert.equal((await reset.artifactAction('artifacts.list')).items.length,6);
  assert.throws(()=>createArtifactDemo(createMemoryStore({demo:{fictional:false}})));
 });
 test('HTML previews receive a first-position restrictive CSP and the host blocks external frame navigation',async()=>{

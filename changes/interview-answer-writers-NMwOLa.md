@@ -1,0 +1,7 @@
+# Interview answer writers
+
+- Added STAR Answer Writer and Interview Answer Builder to Toolkit's interview category, available through the existing scoped read_guide MCP boundary and website manuals. Both use candidate evidence, flag missing details, support reusable and company-specific drafts, and save private notes through existing versioned artifact tools for later mock interviews.
+- Researched Harvard MCS Interviewing and The Muse's common-question and introduction articles; linked references with review date in each guide. Wrote original coaching procedures without copying article answers. Rebuilt the 39-guide bundle and incremented developerVersion to 39.
+- Added an isolated, resettable fictional answer pack demonstrating incomplete STAR and common answers. Demo tests cover retrieval, visible gaps and reset; existing interaction uses Discuss with my agent.
+- Validation: 440 tests passed, including database scenarios, website guide rendering, both new MCP guide calls, and demo isolation/reset. Data validation passed (147 roles); frontend typecheck and production static build passed; both new skill routes exist in export; git diff --check passed.
+- Limits: No live hosted MCP round trip or browser visual inspection. No onboarding background generation, scheduler, question aggregation service or new tools introduced. Hosted guides require the normal production gateway release. The first build stopped on an existing Next.js security advisory; retry passed. Dependency upgrade remains separate work.

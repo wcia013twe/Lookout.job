@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "categories": [
     {
       "id": "profile",
@@ -841,6 +841,96 @@
         "story-bank"
       ],
       "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/practice.md"
+    },
+    {
+      "version": 1,
+      "category": "interviews",
+      "sources": [
+        "modes/interview/debrief.md",
+        "modes/interview/practice.md"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md",
+      "id": "star-answer-writer",
+      "guideId": "career-star-answer-writer",
+      "title": "STAR Answer Writer",
+      "summary": "Turn real experience into clear behavioral answers, with evidence gaps and follow-up prompts.",
+      "whenToUse": "Write or revise one STAR answer, or prepare a reusable behavioral answer pack from a resume.",
+      "inputs": [
+        "Current resume, profile and candidate-supplied experience notes",
+        "A behavioral question or requested story themes",
+        "Optional target company, role, round and existing prep artifact"
+      ],
+      "steps": [
+        "Read the current candidate profile, selected resume and relevant saved artifacts using available scoped tools. Use only the user's evidence; never fabricate experience, ownership, metrics, motives or outcomes. If the resume is unavailable, say so and work from supplied notes.",
+        "Choose concrete episodes that answer the question. For a pack, cover teamwork, disagreement, failure, ownership, ambiguity and a technical challenge only where real evidence supports them; do not manufacture a story to fill a category. Map each story to question variants and candidate evidence.",
+        "Clarify the candidate's responsibility, constraints, decisions, alternatives, individual actions and observed outcome. Ask one focused question at a time for a material gap. When drafting ahead of a reply, label [candidate detail needed] and keep the answer explicitly incomplete. Distinguish team outcomes from personal contribution; qualitative outcomes are acceptable when numbers are unavailable.",
+        "Write labeled Situation, Task, Action and Result sections plus a short reflection. Keep context brief and give most detail to the candidate's actions and reasoning. Include a conversational spoken version, a short cue outline, supporting evidence, unresolved details and two probing follow-up questions. Failed outcomes should include accountability and what changed afterward; never rewrite failure into success.",
+        "Keep a reusable base separate from optional company adaptations. For company claims, use current official sources; record title, URL and observation date. Treat public candidate reports and Lookout Intelligence, when actually available, as attributed observations with role, round, date and uncertainty, never a guaranteed interview script.",
+        "Check relevance to the actual prompt, individual ownership, causal claims, supported results and natural delivery. Aim for a flexible roughly one-to-two-minute spoken answer rather than a memorized script; adapt to the interviewer. Preserve the original facts when changing emphasis for a company.",
+        "Before saving, call list_artifacts and read_artifact for matching material. Save a private Markdown artifact with save_artifact, kind notes, sources and existing task links when applicable. Use a new UUID with expectedVersion 0 for new work; revise using the current version. Return the saved URL only after success. If tools or scope are unavailable, return an explicitly unsaved draft. Do not put private answers in shared company intelligence or mark practice completed.",
+        "For later mock interviews, read the saved artifact and use career-practice-interview one question at a time. Saving a draft does not verify its claims or authorize automatic reuse in applications. No background generation, onboarding trigger, scheduling or messages are activated by this skill."
+      ],
+      "outputs": [
+        "Reusable STAR drafts and conversational versions",
+        "Question-to-story mappings, evidence notes and missing details",
+        "Follow-up questions and a saved Toolkit link when persistence succeeds"
+      ],
+      "examples": [
+        "Use my resume to draft a reusable STAR answer pack. Flag missing actions or results instead of filling them in.",
+        "Turn my project notes into a STAR answer about disagreement, then adapt the emphasis to my target role."
+      ],
+      "requirements": "Reading references (reviewed 2026-10-22; original Lookout instructions, not copied sample answers): Harvard MCS, Interviewing — https://careerservices.fas.harvard.edu/resources/interviewing/ ; The Muse, common interview questions — https://www.themuse.com/advice/interview-questions-and-answers ; The Muse, Tell Me About Yourself — https://www.themuse.com/advice/tell-me-about-yourself-interview-question-answer-examples . These are coaching references, not evidence of any particular company's questions.",
+      "related": [
+        "story-bank",
+        "interview-answer-builder",
+        "practice-interview",
+        "interview-research"
+      ]
+    },
+    {
+      "version": 1,
+      "category": "interviews",
+      "sources": [
+        "modes/interview/debrief.md",
+        "modes/interview/practice.md"
+      ],
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md",
+      "id": "interview-answer-builder",
+      "guideId": "career-interview-answer-builder",
+      "title": "Interview Answer Builder",
+      "summary": "Draft personal answers to common interview questions and adapt them to a company and role.",
+      "whenToUse": "Prepare common interview answers from a candidate's evidence, with or without a target company.",
+      "inputs": [
+        "Current resume, profile and candidate motivations",
+        "Requested questions or a starter answer pack",
+        "Optional company, job description, round and existing prep"
+      ],
+      "steps": [
+        "Read the current candidate profile, selected resume and relevant saved artifacts using available scoped tools. Use only the user's evidence; never fabricate experience, ownership, metrics, motives or outcomes. If the resume is unavailable, say so and work from supplied notes.",
+        "For a starter pack, address introduction, resume walkthrough, why this role, why this company, strengths, a development area, career direction and questions for the interviewer. Add conflict, failure, teamwork and achievement by reusing supported stories or career-star-answer-writer. Do not imply these are confirmed company questions.",
+        "Choose a structure suited to each question: a selective present/past/future narrative for introductions; relevant transitions for resume walkthroughs; a specific company or role fact connected to a genuine candidate interest and matching evidence for motivation; evidence for strengths; a real development area with concrete improvement steps for weaknesses. Use STAR for behavioral episodes rather than forcing every answer into STAR.",
+        "For each question explain the intent briefly, give a concise first-person draft and cue outline, cite the candidate evidence used, flag unknowns and suggest a follow-up probe. Ask about genuine motivations or development areas when unknown; never invent passion, personal history, a flattering weakness or an improvement result.",
+        "Keep a reusable base separate from optional company adaptations. For company claims, use current official sources; record title, URL and observation date. Treat public candidate reports and Lookout Intelligence, when actually available, as attributed observations with role, round, date and uncertainty, never a guaranteed interview script.",
+        "When company context is absent, produce a reusable base and clearly marked company-specific blanks. When present, show what changed and why, preserve facts, avoid generic praise and unsupported cultural claims, and adjust technical depth to the round. Include thoughtful questions the candidate can ask. Review for directness, credibility and a natural speaking voice; coach flexible practice rather than verbatim memorization.",
+        "Before saving, call list_artifacts and read_artifact for matching material. Save a private Markdown artifact with save_artifact, kind notes, sources and existing task links when applicable. Use a new UUID with expectedVersion 0 for new work; revise using the current version. Return the saved URL only after success. If tools or scope are unavailable, return an explicitly unsaved draft. Do not put private answers in shared company intelligence or mark practice completed.",
+        "For later mock interviews, read the saved artifact and use career-practice-interview one question at a time. Saving a draft does not verify its claims or authorize automatic reuse in applications. No background generation, onboarding trigger, scheduling or messages are activated by this skill."
+      ],
+      "outputs": [
+        "Common-question answer pack with cue outlines and evidence",
+        "Optional sourced company adaptations and candidate questions",
+        "Missing-fact prompts, mock interview probes and saved Toolkit link when available"
+      ],
+      "examples": [
+        "Build my common interview answers from my resume. Keep company-specific sections reusable and mark missing motivations.",
+        "Adapt my saved answer pack for Bloomberg and this job description. Source company facts and keep my experience unchanged."
+      ],
+      "requirements": "Reading references (reviewed 2026-10-22; original Lookout instructions, not copied sample answers): Harvard MCS, Interviewing — https://careerservices.fas.harvard.edu/resources/interviewing/ ; The Muse, common interview questions — https://www.themuse.com/advice/interview-questions-and-answers ; The Muse, Tell Me About Yourself — https://www.themuse.com/advice/tell-me-about-yourself-interview-question-answer-examples . These are coaching references, not evidence of any particular company's questions.",
+      "related": [
+        "star-answer-writer",
+        "story-bank",
+        "interview-research",
+        "practice-interview"
+      ]
     },
     {
       "id": "story-bank",
