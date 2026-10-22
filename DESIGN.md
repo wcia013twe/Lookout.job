@@ -265,7 +265,11 @@ Target rows reuse shared company identity, borders, priority text, and compact p
 Profile uses an application-profile selector above four content tabs; My agent stays
 visually separated at the end of the tab row. Overview uses a compact shared
 identity header, three readiness rows, and account/writing summaries. About me
-labels shared background explicitly. Application kit presents selected materials
+labels shared background explicitly. Its sections are expanded bordered boxes with
+readable labels and full values; experience, education and project descriptions
+never collapse or truncate in reading mode. Each section has a 44px pen control
+to enable editing, then a checkmark to return to reading mode. These controls do
+not save or mark facts verified. Application kit presents selected materials
 and separate employer-answer/outreach writing settings before disclosed library
 creation forms. Preference groups use summaries and progressive disclosure.
 All colors inherit the shared theme tokens. A sticky desktop profile save bar

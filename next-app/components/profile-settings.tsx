@@ -9,6 +9,7 @@ import { useApplicationProfile } from "./application-profile-context";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary, Section } from "./ui";
 import { profileStyles as styles } from "./profile-surface";
+import ProfileSection, {ProfileValues} from "./profile-section";
 export function ProfileSwitcher() {
   const a = useApplicationProfile();
   const [creating, setCreating] = useState(false),
@@ -94,11 +95,12 @@ export function AccountAssignments() {
     ["Outreach identity", "text", "University Outlook · candidate@example.edu"],
   ];
   return (
-    <Section title="Accounts & identity">
+    <ProfileSection title="Accounts & identity" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
       <p className="mb-5 max-w-prose text-sm text-board-muted">
         Assigned to {a.profile.name}. Your agent manages access to these
         accounts; Lookout records which ones to use.
       </p>
+      {editing?<>
       <div className="mb-5">
         <Field label="Application profile name">
           <input
@@ -126,6 +128,7 @@ export function AccountAssignments() {
           </Field>
         ))}
       </div>
+      </>:<ProfileValues items={[{label:"Application profile name",value:a.profile.name},...fields.map(([key])=>({label:key,value:a.field("Application identity",key).conflict?"Conflicting values — review in Advanced instructions":a.field("Application identity",key).value}))]}/>}
       <p className="mt-4 text-xs text-board-muted">
         Preferred names apply to this application profile. They do not replace
         your shared name details when a form asks for your legal name.
@@ -134,7 +137,7 @@ export function AccountAssignments() {
         Assignments are instructions for your agent, not verified connections.
         Application email does not change your Lookout sign-in.
       </p>
-    </Section>
+    </>}</ProfileSection>
   );
 }
 export function ApplicationMaterials() {
@@ -376,11 +379,12 @@ export function EligibilitySettings() {
     { key: "Expected graduation", type: "month" },
   ];
   return (
-    <Section title="Eligibility & availability">
+    <ProfileSection title="Eligibility & availability" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
       <p className="mb-5 max-w-prose text-sm text-board-muted">
         For {a.profile.name}. Authorization and sponsorship answers apply to the
         country below. Leave anything uncertain as Ask me.
       </p>
+      {editing?<>
       <div className="grid gap-5 sm:grid-cols-2">
         {fields.map((f) => {
           const saved = a.field(heading, f.key);
@@ -450,10 +454,11 @@ export function EligibilitySettings() {
           />
         </Field>
       </div>
+      </>:<ProfileValues items={[...fields.map(f=>({label:f.key,value:a.field(heading,f.key).conflict?"Conflicting values — review in Advanced instructions":a.field(heading,f.key).value||(f.options?"Ask me":"")})),{label:"Eligibility notes",value:a.field(heading,"Notes").value,wide:true}]}/>}
       <p className="mt-4 text-xs text-board-muted">
         These settings guide preparation. Uncertain or unreviewed employer
         answers still need your review.
       </p>
-    </Section>
+    </>}</ProfileSection>
   );
 }

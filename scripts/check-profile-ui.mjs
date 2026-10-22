@@ -22,7 +22,14 @@ try{
  await page.getByRole('button',{name:'Open profile navigation'}).click();
  await page.getByRole('button',{name:'Demo mode',exact:true}).click();
  await page.getByRole('button',{name:'About me',exact:true}).click();
- await page.locator('details').filter({has:page.locator('summary').filter({hasText:'Skills & languages'})}).first().evaluate(el=>el.open=true);
+ assert.equal(await page.locator('section[aria-label="About me"] details').count(),0,'About me sections stay expanded');
+ assert.equal(await page.getByRole('textbox',{name:'Full name',exact:true}).count(),0,'Background starts read-only');
+ await page.getByText('Compared cache strategies and documented reliability tradeoffs',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Edit Personal details',exact:true}).click();
+ assert(await page.getByRole('textbox',{name:'Full name',exact:true}).isEditable());
+ assert.equal(await page.getByRole('textbox',{name:'Application profile name',exact:true}).count(),0,'Editing is scoped to one section');
+ await page.getByRole('button',{name:'Finish editing Personal details',exact:true}).click();
+ await page.getByRole('button',{name:'Edit Skills & languages',exact:true}).click();
  const before=cloud.length;
  const skills=page.getByRole('list',{name:'Skills added',exact:true});
  assert.equal(await skills.locator('li').count(),4);
@@ -34,7 +41,8 @@ try{
  await input.fill('rust');await input.press(','); assert.equal(await skills.locator('li').count(),5);
  await input.fill('C++');await page.getByRole('button',{name:'Add to Skills',exact:true}).click();
  await page.getByRole('button',{name:'Remove C++ from Skills',exact:true}).waitFor();
- await input.fill('Redis');await page.getByRole('button',{name:'Save profile',exact:true}).click();
+ await input.fill('Redis');await page.getByRole('button',{name:'Save shared background',exact:true}).click();
+ await page.getByRole('button',{name:'Edit Skills & languages',exact:true}).click();
  await page.getByRole('button',{name:'Remove Redis from Skills',exact:true}).waitFor();
  await page.getByText('Profile saved as unverified.',{exact:false}).waitFor();
  await page.getByRole('button',{name:'Remove Rust from Skills',exact:true}).click();
@@ -42,9 +50,9 @@ try{
  // Exercise the actual paste handler with mixed separators, blanks and a duplicate.
  await input.evaluate(el=>{const data=new DataTransfer();data.setData('text','Java, Kotlin\nGo;  ');el.dispatchEvent(new ClipboardEvent('paste',{clipboardData:data,bubbles:true,cancelable:true}));});
  await page.getByRole('button',{name:'Remove Kotlin from Skills',exact:true}).waitFor();
- await page.getByRole('button',{name:'Save profile',exact:true}).click();
+ await page.getByRole('button',{name:'Save shared background',exact:true}).click();
  await page.getByRole('button',{name:'Application kit',exact:true}).click();await page.getByRole('button',{name:'About me',exact:true}).click();
- await page.locator('details').filter({has:page.locator('summary').filter({hasText:'Skills & languages'})}).first().evaluate(el=>el.open=true);
+ await page.getByRole('button',{name:'Edit Skills & languages',exact:true}).click();
  await page.getByRole('button',{name:'Remove Kotlin from Skills',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'Remove Rust from Skills',exact:true}).count(),0);
  await page.screenshot({path:dir+'/profile-pills-desktop.png',fullPage:true});
