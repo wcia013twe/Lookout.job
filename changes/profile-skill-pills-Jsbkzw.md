@@ -6,4 +6,4 @@
 - Validation: production static build (including TypeScript), `npm test` (380 passed initially; 385 passed after integrating latest local main, including database scenarios), `npm run validate:data` (76 roles), Impeccable detector (no findings), and headless Chrome desktop/mobile interaction and screenshot checks passed.
 - Limits: authenticated cloud persistence and live MCP round trips were not reverified; demo edits remain in memory. Browser check requires Playwright (default runner installation or LOOKOUT_PLAYWRIGHT_MODULE), Chrome, and a local export server (LOOKOUT_UI_URL, default port 3034).
 
-- Landing is currently blocked by an existing uncommitted change to `next-app/lib/demo.mjs` in shared main. The feature checkout is committed and retained; nothing was pushed or published.
+- The original landing blocker was resolved during `codex/converge-main-cU4865`: skill pills were integrated into the current profile layout and the demo tracker changes were preserved. See the convergence note for current validation.
