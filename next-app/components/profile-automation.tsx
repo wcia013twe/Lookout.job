@@ -23,7 +23,7 @@ export default function ProfileAutomation() {
   function change(fields:Partial<typeof settings>){const prompt=nextPrompt(fields);if(prompt!==undefined)a.patch({prompt});}
   function save(){const prompt=nextPrompt({});if(prompt!==undefined){a.patch({prompt});void a.saveProfilePrompt(prompt);}}
   return <Section title="Application automation">
-    <div className="mb-5 max-w-md"><Field label="Application profile"><select className={control} value={a.profile.id} disabled={a.busy||w.locked} onChange={e=>a.select(e.target.value)}>{a.profiles.map(profile=><option key={profile.id} value={profile.id}>{profile.name}{profile.active?'':' (paused)'}</option>)}</select></Field></div>
+    <p className="mb-5 text-sm text-board-muted">Automation rules for {a.profile.name}. Switch profiles using the selector above.</p>
     <fieldset disabled={a.busy||w.locked||settings.conflict}>
       <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm"><input type="checkbox" className="h-5 w-5 accent-board-accent" checked={settings.enabled} onChange={e=>change({enabled:e.target.checked})}/>Auto-apply routine matches for this profile</label>
       <p className="mb-5 mt-2 text-sm leading-relaxed text-board-muted">Important matches, missing facts, unfamiliar answers, and uncertain outcomes require review. Submission needs a connected supported runner.</p>

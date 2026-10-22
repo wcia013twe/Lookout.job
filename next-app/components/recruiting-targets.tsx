@@ -14,6 +14,7 @@ type Target = {
   active: boolean;
   roles: string;
   timeline: string;
+  employment?: string;
   resumeId: string;
   conditions: string;
 };
@@ -49,7 +50,7 @@ export default function RecruitingTargets() {
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 id="recruiting-targets-heading" className="text-lg font-semibold">
-          Recruiting targets
+          Resume assignments &amp; role targets
         </h3>
         <button
           type="button"
@@ -65,6 +66,7 @@ export default function RecruitingTargets() {
                 active: true,
                 roles: "",
                 timeline: "",
+                employment: "",
                 resumeId: "",
                 conditions: "",
               },
@@ -72,13 +74,13 @@ export default function RecruitingTargets() {
             setOpened(id);
           }}
         >
-          Add target
+          Add assignment
         </button>
       </div>
       <p className="mt-2 mb-4 max-w-prose text-sm text-board-muted">
-        Use targets when roles, timelines, resumes, or conditions differ within{" "}
-        {a.profile.name}. This profile’s rules and criteria apply to every
-        target.
+        Connect one or more job titles and a job type to a resume for {a.profile.name}.
+        A blank resume uses your fallback. If different resumes match, your agent should ask you to choose.
+        These assignments guide preparation; they do not authorize submission.
       </p>
       {error ? (
         <p role="alert" className="text-sm">
@@ -86,8 +88,7 @@ export default function RecruitingTargets() {
         </p>
       ) : !targets.length ? (
         <p className="text-sm text-board-muted">
-          Your current criteria cover this profile. Add a target only when you
-          need a separate focus.
+          No role-specific resumes yet. Your fallback applies until you add an assignment.
         </p>
       ) : (
         <div className="divide-y divide-board-line">
@@ -107,6 +108,7 @@ export default function RecruitingTargets() {
                   {[
                     t.active ? "Active" : "Paused",
                     t.roles,
+                    t.employment || "Any job type",
                     t.timeline,
                     w.state.workflow.resumes.find(
                       (r: { id: string; name: string }) => r.id === t.resumeId,
@@ -135,7 +137,7 @@ export default function RecruitingTargets() {
                   />
                   Include this target in searches
                 </label>
-                <Field label="Roles & specializations">
+                <Field label="Job titles & specializations">
                   <input
                     className={control}
                     value={t.roles}
@@ -143,6 +145,12 @@ export default function RecruitingTargets() {
                     placeholder="Backend SWE, ML infrastructure…"
                     onChange={(e) => patch(t.id, { roles: e.target.value })}
                   />
+                </Field>
+                <Field label="Job type">
+                  <select className={control} value={t.employment || ""} disabled={a.busy} onChange={e => patch(t.id, {employment:e.target.value})}>
+                    <option value="">Use profile job types</option>
+                    {["Full-time", "Internship", "Part-time", "Contract", "Temporary"].map(type => <option key={type}>{type}</option>)}
+                  </select>
                 </Field>
                 <Field label="Target timing">
                   <input
@@ -154,7 +162,7 @@ export default function RecruitingTargets() {
                   />
                 </Field>
                 <div className="sm:col-span-2">
-                  <Field label="Preferred resume for this target">
+                  <Field label="Resume for these roles">
                     <select
                       className={control}
                       value={t.resumeId}
@@ -205,7 +213,7 @@ export default function RecruitingTargets() {
                 disabled={a.busy}
                 onClick={() => save(targets.filter((v) => v.id !== t.id))}
               >
-                Remove target
+                Remove assignment
               </button>
             </details>
           ))}

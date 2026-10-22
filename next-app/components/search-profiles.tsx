@@ -13,6 +13,7 @@ import {
 
 import TierLists from "./tierlists";
 import RecruitingTargets from "./recruiting-targets";
+import { ApplicationMaterials } from "./profile-settings";
 import ProfileRuleCopy from "./profile-rule-copy";
 import { errorMessage } from "./profile-types";
 import { useApplicationProfile } from "./application-profile-context";
@@ -121,59 +122,7 @@ function SearchProfileEditor() {
         />
         Include this profile in job searches
       </label>
-      <section
-        aria-labelledby="profile-evaluation-heading"
-        className="mb-7 border-t border-board-line pt-5"
-      >
-        <h3 id="profile-evaluation-heading" className="text-lg font-semibold">
-          Profile rules
-        </h3>
-        <p className="mt-2 mb-4 max-w-prose text-sm text-board-muted">
-          Only for {profile.name}. Describe how your agent should work and what
-          makes an opportunity worth pursuing. Other profiles have their own
-          rules.
-        </p>
-        {textField(
-          "Profile evaluation",
-          "Rules",
-          "For example: verify uncertain facts, prioritize strong systems teams, and explain any tradeoffs before recommending a role.",
-          true,
-        )}
-        {(w.user || w.demo) && (
-          <details
-            className="mt-3"
-            onToggle={(e) => setShowLegacy(e.currentTarget.open)}
-          >
-            <summary className="text-sm font-medium">
-              Copy previous rules
-            </summary>
-            {showLegacy && <ProfileRuleCopy />}
-          </details>
-        )}
-        <details className="border-t border-board-line py-3">
-          <summary className="text-base font-semibold">
-            Career goals &amp; tradeoffs
-          </summary>
-
-          <p className="mb-4 max-w-prose text-sm text-board-muted">
-            Explain why a role is worth pursuing and what upside would justify a
-            compromise.
-          </p>
-          <div className="space-y-4">
-            {careerFields.map((key) =>
-              textField(
-                "Career goals & tradeoffs",
-                key,
-                key === "Career goals"
-                  ? "What do you want this next role to help you achieve?"
-                  : "What would justify lower pay, relocation, or a change in timing?",
-                true,
-              ),
-            )}
-          </div>
-        </details>
-      </section>
-      <RecruitingTargets />
+      <ApplicationMaterials />
       <h3 className="mt-8 mb-2 text-lg font-semibold">
         Criteria for this profile
       </h3>
@@ -195,6 +144,7 @@ function SearchProfileEditor() {
         </p>
       </section>
       <div className="space-y-7">
+        <RecruitingTargets />
         {preferenceGroups.map((group) => (
           <details
             key={group.title}
@@ -343,6 +293,58 @@ function SearchProfileEditor() {
             />
           </div>
         </details>
+      <section
+        aria-labelledby="profile-evaluation-heading"
+        className="mb-7 border-t border-board-line pt-5"
+      >
+        <h3 id="profile-evaluation-heading" className="text-lg font-semibold">
+          Profile rules
+        </h3>
+        <p className="mt-2 mb-4 max-w-prose text-sm text-board-muted">
+          Only for {profile.name}. Describe how your agent should work and what
+          makes an opportunity worth pursuing. Other profiles have their own
+          rules.
+        </p>
+        {textField(
+          "Profile evaluation",
+          "Rules",
+          "For example: verify uncertain facts, prioritize strong systems teams, and explain any tradeoffs before recommending a role.",
+          true,
+        )}
+        {(w.user || w.demo) && (
+          <details
+            className="mt-3"
+            onToggle={(e) => setShowLegacy(e.currentTarget.open)}
+          >
+            <summary className="text-sm font-medium">
+              Copy previous rules
+            </summary>
+            {showLegacy && <ProfileRuleCopy />}
+          </details>
+        )}
+        <details className="border-t border-board-line py-3">
+          <summary className="text-base font-semibold">
+            Career goals &amp; tradeoffs
+          </summary>
+
+          <p className="mb-4 max-w-prose text-sm text-board-muted">
+            Explain why a role is worth pursuing and what upside would justify a
+            compromise.
+          </p>
+          <div className="space-y-4">
+            {careerFields.map((key) =>
+              textField(
+                "Career goals & tradeoffs",
+                key,
+                key === "Career goals"
+                  ? "What do you want this next role to help you achieve?"
+                  : "What would justify lower pay, relocation, or a change in timing?",
+                true,
+              ),
+            )}
+          </div>
+        </details>
+      </section>
         <details className="border-t border-board-line pt-5">
           <summary className="min-h-11 text-base font-semibold">
             Advanced instructions
