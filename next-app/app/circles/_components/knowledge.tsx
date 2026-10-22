@@ -4,6 +4,8 @@ import {Field,Heading,Notice,control,primary,secondary} from '../../../component
 import {useKnowledgeClient} from '../_lib/client';
 import {types,type Content,type Post,type Circle,type Detail,type Receipt,type Cursor,type Request} from '../_lib/types';
 import Editor from './editor';
+import CircleListItem from './circle-list-item';
+import listStyles from './circle-list.module.css';
 import Settings from './settings';
 import AgentContext from './agent-context';
 import CircleSearch from './search';
@@ -99,7 +101,7 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
   {available&&!circleId&&!loading&&<>
    <section className="mb-8" aria-labelledby="your-circles-title">
     <h2 id="your-circles-title" className="mb-3 text-xl font-semibold">Your circles</h2>
-    {circles.length?<ul className="divide-y divide-board-line border-y border-board-line">{circles.map(circle=><li key={circle.id} className="flex flex-wrap items-center justify-between gap-4 py-5"><div className="min-w-0"><h3 className="break-words text-lg font-semibold">{circle.name.replace(' (demo)','')}</h3><p className="mt-1 text-sm text-board-muted">Private Circle · {circle.owner?'Owner':'Member'}</p></div><div className="flex flex-wrap gap-2"><button className={primary} disabled={busy} onClick={()=>{setCircleView('clubhouse');locate(circle.id);}}>Open Circle</button><button className={secondary} disabled={busy} aria-label={`Manage ${circle.name}`} onClick={()=>{setCircleView('settings');locate(circle.id);}}>Manage</button></div></li>)}</ul>:<p className="py-4 text-board-muted">No circles yet. Create one for your people, or join with an invite code.</p>}
+    {circles.length?<ul className={listStyles.list}>{circles.map(circle=><CircleListItem key={circle.id} circle={circle} request={request} busy={busy} open={()=>{setCircleView('clubhouse');locate(circle.id);}} manage={()=>{setCircleView('settings');locate(circle.id);}}/>)}</ul>:<p className="py-4 text-board-muted">No circles yet. Create one for your people, or join with an invite code.</p>}
    </section>
    <details className="border-b border-board-line py-2" open={!circles.length}><summary className="min-h-11 py-2 font-semibold">Create or join a Circle</summary><div className="grid gap-8 py-5 sm:grid-cols-2"><form onSubmit={e=>void createOrJoin(e,false)} className="space-y-4"><h2 className="font-bold">Start with your people</h2><Field label="Circle name"><input name="name" className={control} required maxLength={100}/></Field><Field label="Your name in this Circle"><input name="alias" className={control} required maxLength={80}/></Field><button className={primary} disabled={busy}>Create private Circle</button></form><form onSubmit={e=>void createOrJoin(e,true)} className="space-y-4"><h2 className="font-bold">Have an invitation?</h2><Field label="Invite code"><input name="token" className={control} required maxLength={100} placeholder={demo?'demo-invite':undefined}/></Field><Field label="Your name in this Circle"><input name="alias" className={control} required maxLength={80}/></Field><button className={secondary} disabled={busy}>Join Circle</button></form></div></details>
   </>}
