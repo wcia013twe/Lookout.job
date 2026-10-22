@@ -378,14 +378,18 @@ Referrals previews five built-in templates (recruiter interview, warm referral, 
 
 ## Career Toolkit
 
-Career Toolkit is a native categorized skill library at `/career-toolkit/` with
-37 static usage manuals and copyable agent examples. Categories cover profile
+Career Toolkit is a native categorized workflow library at `/career-toolkit/` with
+37 static usage manuals and optional copyable examples. Categories cover profile
 conversations, career search and regional context, documents, interviews,
 networking, growth, offers, and recurring-search setup. Each manual explains
-inputs, steps, expected output, runtime requirements. Opening a manual or copying a request does not start work or install tools.
+inputs, steps, expected output and runtime requirements. One authenticated Lookout
+connection advertises every workflow through `discover_toolkit`; connected agents
+match normal career requests to the catalog and load the selected `career-*` guide
+with `read_guide`. Users do not need to name or install the individual skills.
+Opening a manual or copying a request does not start work or install tools.
 
 Examples can reference an existing saved application by its displayed company and
-role; no private file links, tokens or account identifiers are copied. The existing
+role; no private file links, tokens or account identifiers are copied. The
 `read_guide` tool exposes the corresponding `career-*` guide under workspace read
 authorization, with source instructions adapted to Lookout's data/permission
 boundaries. Older deployed gateways need the normal release update before those
@@ -394,7 +398,8 @@ guide IDs resolve; copied requests explain when the Lookout connection needs upd
 Demo mode uses fictional, non-executing requests and does not touch real account
 storage or services. See [source and maintenance notes](integrations/career-ops/README.md).
 No upstream scanner, renderer, cron worker or external integration is installed by
-this library. Actual execution remains a capability of the connected agent.
+this library. Actual execution and reliable natural-language routing remain
+capabilities of the connected agent and must be verified on each supported host.
 
 ## Document-backed career context and agent search memory
 

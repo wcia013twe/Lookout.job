@@ -17,7 +17,9 @@ test('initialize negotiates supported versions and initialized notification retu
   const handle = handler();
   const response = await handle(request(rpc('initialize', { protocolVersion: '2025-11-25' })));
   assert.equal(response.status, 200);
-  assert.equal((await response.json()).result.protocolVersion, '2025-11-25');
+  const initialized=await response.json();
+  assert.equal(initialized.result.protocolVersion, '2025-11-25');
+  assert.match(initialized.result.instructions,/automatically select relevant Lookout workflows/);
   const notification = await handle(request({ jsonrpc: '2.0', method: 'notifications/initialized' }));
   assert.equal(notification.status, 202); assert.equal(await notification.text(), '');
 });
@@ -76,6 +78,8 @@ test('product and compatibility tools register once with distinct variant operat
   assert.equal(TOOLS.find(t => t.name === 'reconsider_skipped_opportunity').operation, 'selection.reconsider');
   assert.equal(TOOLS.find(t => t.name === 'reconsider_opportunity').operation, 'selection.reconsider.simple');
   assert.equal(validateRequest({ operation: 'guides.read', payload: { id: 'cold-outreach' } }).operation, 'guides.read');
+  assert.equal(validateRequest({ operation: 'guides.discover', payload: {} }).operation, 'guides.discover');
+  assert.throws(() => validateRequest({ operation: 'guides.discover', payload: { query: 'resume' } }));
   assert.throws(() => validateRequest({ operation: 'guides.read', payload: { id: 'cold-outreach', userId: 'foreign' } }));
 });
 

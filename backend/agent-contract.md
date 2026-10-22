@@ -92,6 +92,13 @@ on explicit personal-context reads, not on the two-number check. Personal theme
 messages take precedence over the developer defaults; neither can alter approval
 or submission semantics. See `mcp/README.md` for cache/reset behavior.
 
+`guides.discover` returns the authenticated Career Toolkit routing catalog and
+`guides.read` returns one selected workflow. Connected agents should infer the
+workflow from ordinary user intent and load it without requiring a skill name or
+separate installation. Both operations authorize through current developer-context
+access and accept no owner identity. Discovery does not execute a workflow, grant a
+permission, schedule work or guarantee host-level routing.
+
 Failure reports preserve the draft, set Blocked and invalidate prior approval.
 `stage` is approval/playwright/agent/submission; `outcome` is blocked/uncertain.
 `attempts` contains at most three `{stage,status}` summaries; no raw browser

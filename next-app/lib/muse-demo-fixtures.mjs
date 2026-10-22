@@ -121,7 +121,11 @@ export function createDemoWorkspace(now = new Date()) {
       tierLists: [], activeTierListId: '',
     },
     ui: { packOpen: false },
-    demo: { outreachLibrary: copy(outreachLibrary), fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, plannerSettings: { dailyMinutes: 45, version: 0 }, preparationSessions: [], submissionRecords, selectionDecisions },
+    demo: { outreachLibrary: copy(outreachLibrary), fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, plannerSettings: { dailyMinutes: 45, version: 0 }, preparationSessions: [], submissionRecords, selectionDecisions, toolkitDiscovery: [
+      { goal: 'Help me describe my most important project without inventing metrics.', guideId: 'career-profile-interview' },
+      { goal: 'Rewrite my summary for this fictional job.', guideId: 'career-tailor-resume' },
+      { goal: 'Help me prepare for my fictional interview.', guideId: 'career-prep-plan' },
+    ] },
   };
 }
 
@@ -136,6 +140,7 @@ export function createDemoServices(store) {
     return {applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
+    async discoverToolkit() { return copy(store.get('demo.toolkitDiscovery') || []); },
     async readPreparationPlanner() { return plannerBundle(); },
     connections: createConnectionDemo(store),
     async savePreparationBudget(dailyMinutes, expectedVersion) {

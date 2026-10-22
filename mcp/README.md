@@ -227,13 +227,21 @@ remain unchanged. `request_circle_human_action` returns a membership-checked lin
 it cannot manage members, approve revisions, moderate, or grant sharing permission.
 See [operation mapping and release gate](../backend/circle-knowledge.md).
 
-Career Toolkit adds versioned `career-*` guides to the existing guide index and
-`read_guide` operation. No new scope or write tool is introduced. Each guide includes
+Career Toolkit adds versioned `career-*` guides to the existing guide index,
+`discover_toolkit` and `read_guide`. One authenticated Lookout connection exposes
+the whole library: the agent matches ordinary career requests against the discovery
+metadata and loads only the relevant guide, without asking the user for a skill name,
+download or copied prompt. Both tools are read-only and use `workspace:read`; no new
+write authority is introduced. Each guide includes
 the native usage manual, a Lookout adaptation and pinned Career Ops reference
 instructions. Read only the relevant guide on demand. Original paths/commands are
 reference requirements, not installed tools or authority to create a parallel local
 profile/tracker. Actual file, browser, renderer and scheduler support must be checked.
 Release the gateway normally before advertising hosted availability.
+
+Automatic selection occurs while the connected host is handling a request or queued
+task. Lookout cannot force a host to route every career request to the connection or
+wake an external agent. Verify natural-language routing on each supported host.
 
 ## Document-backed career context and agent search memory
 
