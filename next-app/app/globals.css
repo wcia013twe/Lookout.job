@@ -657,3 +657,20 @@ button:not(:disabled) {
   --workspace-action-secondary-border: var(--workspace-theme-workspace-action-secondary-border);
   --workspace-action-secondary-border-hover: var(--workspace-theme-workspace-action-secondary-border-hover);
 }
+
+/* Saved artifact reading uses the workspace typography and palette. */
+.artifact-document > * + * { margin-top: 1rem; }
+.artifact-document h1, .artifact-document h2, .artifact-document h3 { font-weight: 650; line-height: 1.35; margin-top: 2rem; margin-bottom: .75rem; }
+.artifact-document h1 { font-size: 1.75rem; }
+.artifact-document h2 { font-size: 1.35rem; }
+.artifact-document h3 { font-size: 1.125rem; }
+.artifact-document ul { list-style: disc; padding-left: 1.5rem; }
+.artifact-document ol { list-style: decimal; padding-left: 1.5rem; }
+.artifact-document li + li { margin-top: .5rem; }
+.artifact-document a { color: var(--color-board-accent); text-decoration: underline; text-underline-offset: 4px; }
+.artifact-document pre { overflow-x: auto; padding: 1rem; border: 1px solid var(--color-board-line); border-radius: .75rem; background: var(--color-board-panel); font-size: .875rem; }
+.artifact-document code { overflow-wrap: anywhere; }
+.artifact-document blockquote { border-left: 1px solid var(--color-board-line); padding-left: 1.25rem; color: var(--color-board-muted); }
+.artifact-document table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: .875rem; }
+.artifact-document th, .artifact-document td { border-bottom: 1px solid var(--color-board-line); padding: .75rem; text-align: left; }
+.artifact-document hr { margin-block: 2rem; border-color: var(--color-board-line); }

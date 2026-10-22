@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createBackend } from "../../backend/client.mjs";
 import { buildPreparationAgenda, plannerToday, recordLocalPreparationSession, validatePlannerMinutes } from "../../lib/preparation-planner.mjs";
@@ -8,16 +9,18 @@ import { TaskIcon } from "./needs-you-row";
 import type { Application, PreparationPlan } from "./workflow-types";
 import { Notice, control, primary, secondary } from "./ui";
 
-type Target = { applicationId: string; jobId: string; taskId: string; expectedVersion: number; company: string; deadline: string };
-type SessionInput = { sessionId: string; minutes: number; targets: { applicationId: string; taskId: string; expectedVersion: number }[] };
+type Target = { goalId?: string; applicationId?: string; jobId: string; taskId: string; expectedVersion: number; company: string; deadline: string };
+type SessionInput = { sessionId: string; minutes: number; targets: { applicationId?: string; goalId?: string; taskId: string; expectedVersion: number }[] };
 type Bundle = {
   applications?: Record<string, Application>;
   settings: { dailyMinutes: number; version: number };
   plans: { application_id: string; version: number; plan: PreparationPlan }[];
   sessions: { id: string; minutes: number; completed_at: string; targets: SessionInput["targets"] }[];
+  learningGoals?: unknown[];
+  artifacts?: unknown[];
   timeZone: string;
 };
-type Item = { context?: string; id: string; title: string; detail: string; minutes: number; remainingAfter: number; shared: boolean; reason: string; targets: Target[] };
+type Item = { learning?: boolean; needsMaterial?: boolean; artifacts?: {id:string;title:string;path:string}[]; context?: string; id: string; title: string; detail: string; minutes: number; remainingAfter: number; shared: boolean; reason: string; targets: Target[] };
 type Day = { date: string; plannedMinutes: number; completedMinutes: number; items: Item[]; interviews: { applicationId: string; company: string; stage: string }[] };
 export type Agenda = { today: string; dailyMinutes: number; days: Day[]; unscheduled: number; dormantCount: number; uncertainCount: number; expiredCount: number };
 const agendaFor = buildPreparationAgenda as unknown as (input: Bundle & { applications: Record<string, Application>; today: string }) => Agenda;
@@ -37,7 +40,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
       <span className="prep-total">{scheduled} min</span>
     </div>
     <p className="mt-2 text-xs text-board-muted">{calendarLabel(agenda.today, { month: "short", day: "numeric" })}–{agenda.days.length ? calendarLabel(agenda.days[agenda.days.length - 1].date, { month: "short", day: "numeric" }) : ""} · {agenda.dailyMinutes === 0 ? "Paused" : `${agenda.dailyMinutes} min/day`}</p>
-    {!days.length && <p className="mt-5 text-sm text-board-muted">{agenda.dailyMinutes === 0 ? "Prep paused. Set daily minutes in Plan settings to resume." : "Add an interview date in Applications to plan your prep."}</p>}
+    {!days.length && <p className="mt-5 text-sm text-board-muted">{agenda.dailyMinutes === 0 ? "Prep paused. Set daily minutes in Plan settings to resume." : "Ask your agent to prepare your week from your interviews and learning goals."}</p>}
     <div className="prep-agenda mt-4" aria-label="Weekly preparation agenda">
       {days.map(day => <section key={day.date} className={`prep-agenda-day ${day.interviews.length ? "prep-interview-day" : ""}`} aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
         <h3 className={`prep-date ${day.date === agenda.today ? "prep-date-today" : ""}`}><span>{day.date === agenda.today ? "Today" : calendarLabel(day.date, { weekday: "short" })}</span><span className="prep-date-number">{calendarLabel(day.date, { day: "numeric" })}</span></h3>
@@ -50,7 +53,10 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
               <div className="pb-2 pt-1 text-xs leading-relaxed text-board-muted">
                 <p>{item.detail}</p>
                 <p className="mt-2">{item.reason}{item.remainingAfter ? ` · ${item.remainingAfter} min continues later` : ""}</p>
-                <div className="mt-1 flex flex-wrap gap-x-3">{item.targets.map(target => <button key={`${target.applicationId}:${target.taskId}`} type="button" className="inline-flex min-h-11 items-center text-left font-semibold text-board-accent underline underline-offset-4" onClick={() => onOpen(target.jobId)}>{target.company}</button>)}</div>
+                <div className="mt-1 flex flex-wrap gap-x-3">{item.targets.filter(target=>target.applicationId).map(target => <button key={`${target.applicationId}:${target.taskId}`} type="button" className="inline-flex min-h-11 items-center text-left font-semibold text-board-accent underline underline-offset-4" onClick={() => onOpen(target.jobId)}>{target.company}</button>)}</div>
+                {!!item.artifacts?.length && <ul className="mt-2">{item.artifacts.map(a=><li key={a.id}><Link className="inline-flex min-h-11 items-center font-semibold text-board-accent underline underline-offset-4" href={a.path}>Open {a.title}</Link></li>)}</ul>}
+                {item.needsMaterial&&!item.artifacts?.length&&<p className="mt-2">Supporting material hasn’t been prepared yet.</p>}
+                {item.learning&&<p className="mt-2">Learning goal · {item.targets[0]?.company}</p>}
               </div>
             </details>
             {day.date === agenda.today && <button type="button" className="prep-complete" aria-label={`Done: ${item.minutes} minute session, ${item.title}`} disabled={busy || locked} onClick={() => onComplete(item)}>Done<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 4 4L19 6" /></svg></button>}
@@ -66,7 +72,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
         <button type="submit" className={secondary} disabled={busy || locked || minutes === String(agenda.dailyMinutes)}>Save budget</button>
       </form>
       {!!(agenda.dormantCount || agenda.uncertainCount || agenda.expiredCount) && <p className="mt-4">Outside this week: {agenda.dormantCount} later interviews · {agenda.uncertainCount} dates to confirm · {agenda.expiredCount} past deadlines.</p>}
-      <p className="mt-3 leading-relaxed">Shared practice counts once. The plan prioritizes closer interviews and fits your daily budget.</p>
+      <p className="mt-3 leading-relaxed">Shared practice counts once. The plan prioritizes interviews, then learning goals, within your daily budget.</p>
     </details>
   </>;
 }
@@ -123,11 +129,11 @@ function Planner() {
   }
   function complete(item: Item) {
     if (!bundle) return;
-    const targets = item.targets.map(({applicationId,taskId,expectedVersion}) => ({applicationId,taskId,expectedVersion}));
+    const targets = item.targets.map(({applicationId,goalId,taskId,expectedVersion}) => ({...(goalId?{goalId}:{applicationId}),taskId,expectedVersion}));
     const key = JSON.stringify({id:item.id,targets,minutes:item.minutes});
     if (sessionRequest.current?.key !== key) sessionRequest.current = {key,input:{sessionId:crypto.randomUUID(),minutes:item.minutes,targets}};
     const input = sessionRequest.current.input;
-    mutate(async () => services ? services.completePreparationSession(input) : saveLocal(localSession(bundle,input)), "Session recorded. Covered interviews and your remaining time are updated.");
+    mutate(async () => services ? services.completePreparationSession(input) : saveLocal(localSession(bundle,input)), "Session recorded. Your practice and remaining time are updated.");
   }
   return <section className="glass-panel action-widget prep-widget min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="prep-planner-heading" aria-busy={loading || busy}>
     {loading ? <><h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={setReview} busy={busy || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>}

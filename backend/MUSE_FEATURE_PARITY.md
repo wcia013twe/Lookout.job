@@ -43,3 +43,13 @@ The website reuses `save_outreach_contact` and the outreach sync service; agents
 existing `list_contacts`/`save_contact` under existing ownership, revision and scope
 checks. No new MCP tool or backend service is advertised. See
 [Network UI mapping](../docs/private-network.md).
+
+## Career artifacts and learning goals
+
+The artifact workspace adds scoped list/read/save/archive operations and learning
+goal read/save operations. Browser and MCP share the same owned database service
+and optimistic versions. Existing planner reads and session completion now include
+learning tasks and saved artifact references under one daily budget. See the
+[full mapping and release limits](../docs/career-artifacts.md). Local parity tests
+do not establish deployed availability; release the migration, gateway/config,
+MCP and frontend together and verify the hosted round trip.

@@ -1,3 +1,4 @@
+import {ARTIFACT_TOOLS,validateArtifact} from './artifacts.mjs';
 import {SEARCH_TOOLS,validateSearch} from './search.mjs';
 import { validateToolkit } from './toolkit.mjs';
 import { KNOWLEDGE_TOOLS, validateKnowledge } from './knowledge.mjs';
@@ -10,11 +11,12 @@ import { validateProfileSetup } from './profile-setup.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['knowledge:read','knowledge:write','answers:write','resumes:write','network:write','tracking:write','preferences:write','workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = [...SEARCH_TOOLS.map(t=>t.operation),'toolkit.context','toolkit.results','toolkit.record','toolkit.file.begin','toolkit.file.complete','toolkit.file.read',...KNOWLEDGE_TOOLS.map(t=>t.operation),...ONBOARDING_TOOLS.map(t=>t.operation),'preferences.targets.save',...PLATFORM_TOOLS.map(t=>t.operation), 'preferences.profile.save','guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.planner.read','preparation.budget','preparation.session.complete','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
+export const OPERATIONS = [...ARTIFACT_TOOLS.map(t=>t.operation),...SEARCH_TOOLS.map(t=>t.operation),'toolkit.context','toolkit.results','toolkit.record','toolkit.file.begin','toolkit.file.complete','toolkit.file.read',...KNOWLEDGE_TOOLS.map(t=>t.operation),...ONBOARDING_TOOLS.map(t=>t.operation),'preferences.targets.save',...PLATFORM_TOOLS.map(t=>t.operation), 'preferences.profile.save','guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.planner.read','preparation.budget','preparation.session.complete','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
   validateSearch(input.operation,p);
+  validateArtifact(input.operation,p);
   if(input.operation.startsWith('toolkit.')) validateToolkit(input.operation,p);
   if (!p || typeof p !== 'object' || Array.isArray(p)) throw new Error('Payload must be an object');
   if (input.operation === 'guides.read' && (Object.keys(p).length !== 1 || typeof p.id !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/.test(p.id))) throw new Error('Guide ID required');
@@ -28,8 +30,8 @@ export function validateRequest(input) {
     if (input.operation==='preparation.budget' && (!Number.isInteger(p.dailyMinutes)||p.dailyMinutes<0||p.dailyMinutes>240||!Number.isSafeInteger(p.expectedVersion)||p.expectedVersion<0)) throw Error('Bounded daily budget and current version required');
     if (input.operation==='preparation.session.complete') {
       const uuid = v => typeof v==='string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
-      if (!uuid(p.sessionId)||!Number.isInteger(p.minutes)||p.minutes<1||p.minutes>240||!Array.isArray(p.targets)||!p.targets.length||p.targets.length>100||p.targets.some(t=>!t||Object.keys(t).some(k=>!['applicationId','taskId','expectedVersion'].includes(k))||!uuid(t.applicationId)||!Number.isSafeInteger(t.expectedVersion)||t.expectedVersion<0||typeof t.taskId!=='string'||!t.taskId.length||t.taskId.length>200)) throw Error('Versioned preparation targets required');
-      if (new Set(p.targets.map(t=>`${t.applicationId}:${t.taskId}`)).size!==p.targets.length) throw Error('Duplicate preparation target');
+      if (!uuid(p.sessionId)||!Number.isInteger(p.minutes)||p.minutes<1||p.minutes>240||!Array.isArray(p.targets)||!p.targets.length||p.targets.length>100||p.targets.some(t=>!t||Object.keys(t).some(k=>!['applicationId','goalId','taskId','expectedVersion'].includes(k))||(!!t.applicationId===!!t.goalId)||!uuid(t.goalId||t.applicationId)||!Number.isSafeInteger(t.expectedVersion)||t.expectedVersion<0||typeof t.taskId!=='string'||!t.taskId.length||t.taskId.length>200)) throw Error('Versioned preparation targets required');
+      if (new Set(p.targets.map(t=>`${t.goalId ? `goal:${t.goalId}` : t.applicationId}:${t.taskId}`)).size!==p.targets.length) throw Error('Duplicate preparation target');
     }
   }
   validateKnowledge(input.operation,p);

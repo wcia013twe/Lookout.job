@@ -1,5 +1,7 @@
+import {validateArtifact} from '../lib/artifacts.mjs';
 // Data access for an authenticated browser client. Never use a service-role client.
 // expectedUserId catches account changes before requests; database RLS is authoritative.
+/** @param {any} client @param {string|null} [expectedUserId] */
 function createBackend(client, expectedUserId = null) {
   async function result(request) {
     const { data, error } = await request;
@@ -60,6 +62,13 @@ function createBackend(client, expectedUserId = null) {
     },
     signOut() {
       return result(client.auth.signOut());
+    },
+    async artifactAction(operation, payload = {}) {
+      validateArtifact(operation,payload);
+      await owner();
+      const data = await result(client.rpc('artifact_action',{operation,payload}));
+      await owner();
+      return data;
     },
     async readToolkitResults({kind,applicationId}={}) {
       const userId=await owner();
