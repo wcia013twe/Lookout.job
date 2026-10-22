@@ -767,5 +767,30 @@ button:not(:disabled) {
 
 .workspace-shell .interview-brief-focus p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-.workspace-shell .interview-support { margin-top: 24px; border-top: 1px solid var(--board-line); padding-top: 12px; }
-.workspace-shell .interview-support > summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-weight: 600; }
+.workspace-shell .interview-support { margin-top: 28px; border-top: 1px solid var(--color-board-line); }
+.workspace-shell .interview-support > summary { display: flex; gap: 12px; align-items: center; cursor: pointer; min-height: 84px; padding: 18px 0; list-style: none; }
+.workspace-shell .interview-support > summary::-webkit-details-marker { display: none; }
+.workspace-shell .interview-support > summary > svg { color: var(--color-board-accent); flex-shrink: 0; }
+.workspace-shell .interview-support summary span { flex: 1; }
+.workspace-shell .interview-support summary strong { display: block; font-size: 16px; }
+.workspace-shell .interview-support summary small { display: block; margin-top: 4px; color: var(--color-board-muted); font-size: 12px; }
+.workspace-shell .interview-support .support-chevron { width: 18px; height: 18px; }
+.workspace-shell .interview-support[open] > summary .support-chevron { transform: rotate(180deg); }
+.workspace-shell .interview-support-body { padding: 8px 0 12px; }
+.workspace-shell .support-heading { font-size: 14px; font-weight: 600; margin-bottom: 20px; }
+.workspace-shell .interview-round-editor { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-board-line); display: grid; gap: 20px; }
+.workspace-shell .interview-round-editor header h4 { font-size: 15px; font-weight: 600; }
+.workspace-shell .interview-round-editor header p { font-size: 13px; color: var(--color-board-muted); line-height: 1.6; margin-top: 6px; }
+.workspace-shell .interview-round-editor > button { justify-self: start; }
+.workspace-shell .interview-round-editor textarea { min-height: 108px; }
+.workspace-shell .interview-email-list article { display: flex; gap: 14px; padding: 22px 0; border-bottom: 1px solid var(--color-board-line); }
+.workspace-shell .interview-email-list article:first-child { padding-top: 0; }
+.workspace-shell .email-icon { flex-shrink: 0; margin-top: 3px; color: var(--color-board-accent); }
+.workspace-shell .interview-email-list article > div { min-width: 0; }
+.workspace-shell .interview-email-list h4 { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.workspace-shell .interview-email-list small, .workspace-shell .interview-activity small { display: block; margin-top: 6px; color: var(--color-board-muted); font-size: 12px; }
+.workspace-shell .interview-email-list p { margin-top: 14px; font-size: 14px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+.workspace-shell .interview-email-list a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; color: var(--color-board-accent); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+.workspace-shell .support-activity-heading { margin-top: 32px; }
+.workspace-shell .interview-activity li { padding: 14px 0; border-bottom: 1px solid var(--color-board-line); font-size: 13px; overflow-wrap: anywhere; }
+.workspace-shell .interview-support-empty { padding: 16px 0; font-size: 13px; line-height: 1.7; color: var(--color-board-muted); }

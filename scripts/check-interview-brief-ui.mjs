@@ -34,7 +34,13 @@ try{
  assert.equal(await panel.locator('.tracker-detail-sidebar').isVisible(),true);
  assert.deepEqual(await panel.boundingBox(),initialBox,'Tab switching keeps dialog geometry stable');
  assert.equal(await panel.getByRole('button',{name:'Rounds & email',exact:true}).count(),0);
- assert.equal(await panel.locator('.interview-support[open]').count(),0);
+ assert.equal(await panel.locator('.interview-support[open]').count(),2);
+ await panel.locator('.interview-support > summary').first().scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/round-details-desktop.png'});
+ assert.equal(await panel.getByRole('button',{name:'Save round update',exact:true}).count(),1);
+ assert.equal(await panel.getByLabel('Round notes (private)',{exact:true}).count(),1);
+ await panel.locator('.interview-support > summary').last().scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/history-desktop.png'});
  assert.equal(await brief.getByRole('textbox').count(),0);
  assert.equal(await brief.getByText('Message reference:',{exact:false}).isVisible(),false,'Sources start collapsed');
  assert.equal(await brief.getByRole('link',{name:'Open Action Board',exact:true}).getAttribute('href'),'/');
@@ -46,12 +52,16 @@ try{
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({colorScheme:'light'});
  await panel.evaluate(el=>el.scrollTop=0);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  await page.screenshot({path:dir+'/brief-mobile.png'});
+ await panel.locator('.interview-support > summary').first().scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/round-details-mobile.png'});
+ await panel.locator('.interview-support > summary').last().scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/history-mobile.png'});
  assert(await panel.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Brief overflows on mobile');
  assert.equal(cloud.length,before,'Reading the demo brief does not write or fetch cloud data');
  await brief.getByRole('button',{name:'Round details',exact:true}).click();
  assert.equal(await panel.getByRole('button',{name:'Interview',exact:true}).getAttribute('aria-pressed'),'true');
  assert.equal(await panel.locator('details.interview-support').first().getAttribute('open'),'');
- await panel.locator('.interview-support > summary').filter({hasText:'History & emails'}).click();
+
  await panel.getByRole('heading',{name:'Recruiting emails',exact:true}).waitFor();
  await panel.getByRole('button',{name:'Close application details'}).click();
  await page.setViewportSize({width:1440,height:1000});await page.emulateMedia({colorScheme:'dark'});
@@ -70,5 +80,5 @@ try{
  await panel.getByRole('heading',{name:'Interview rounds & history',exact:true}).waitFor();
  await page.keyboard.press('Escape');assert.equal(await panel.count(),0);
  assert.equal(errors.length,0,errors.join('\n'));
- console.log(JSON.stringify({result:'passed',checks:['three priorities maximum','three materials maximum','no setup form or checklist','sources collapsed','uncertain dates remain unconfirmed','no-plan empty state','Rounds navigation','Action Board link','no demo cloud calls','desktop dark/mobile light','no overflow','Escape'],artifacts:dir},null,2));
+ console.log(JSON.stringify({result:'passed',checks:['three priorities maximum','three materials maximum','no setup form or checklist','sources collapsed','uncertain dates remain unconfirmed','no-plan empty state','open-by-default round and email sections','grouped round form','Round details navigation','Action Board link','no demo cloud calls','desktop dark/mobile light','no overflow','Escape'],artifacts:dir},null,2));
 } finally {await browser.close();}

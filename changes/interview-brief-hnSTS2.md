@@ -14,3 +14,10 @@
 - Removed tab-dependent dialog/grid sizing so the shell, content column and sidebar stay stable across tabs.
 - Updated fictional demo browser coverage for stable geometry, collapsed sections and round/email access.
 - Follow-up validation: frontend typecheck, data validation (147 roles), production static build, whitespace check, and mocked desktop/mobile browser checks passed. Existing round save validation and MCP boundaries are unchanged; no backend changes or live email access.
+
+## Follow-up: round and email presentation
+
+- Both sections now open by default as requested. Added icon disclosure headers with short descriptions and email counts.
+- Reorganized round entry into clearly labeled paired fields and full-width private notes, with a separate save action. Kept the existing timeline and scoped save/ownership checks.
+- Presented emails as separated subject/date/excerpt rows and moved application activity into History & emails. Demo email links remain disabled. No new services or MCP contracts.
+- Validation: frontend typecheck, data validation (147 roles), static production build, whitespace check, and desktop-dark/mobile-light demo browser checks passed. Checked expanded defaults, stable shell, labeled round controls, email/activity access, empty/uncertain states, no overflow and demo isolation. Live inbox sync and production writes were not exercised.

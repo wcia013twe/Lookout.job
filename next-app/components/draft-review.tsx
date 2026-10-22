@@ -5,6 +5,7 @@ import { control, primary, secondary, Field, Notice, Section } from "./ui";
 import { createBackend } from "../../backend/client.mjs";
 import ApplicationDocumentsPreview from "./application-documents-preview";
 import ApplicationOverview from "./application-overview";
+import ProfileIcon from "./profile-icon";
 import ApplicationTimeline from "./application-timeline";
 import TimelineEditor from "./timeline-editor";
 import SubmissionRecord from "./submission-record";
@@ -22,7 +23,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
   const role = w.roles.find((r: Application) => r.id === id);
   const current: Application | undefined = workflow || (role ? {...role, status: w.state.tracker.items[id]?.status || "New", questions: []} : undefined);
   const [tab, setTab] = useState("Overview");
-  const [roundsOpen, setRoundsOpen] = useState(false);
+  const [roundsOpen, setRoundsOpen] = useState(true);
   const rounds = useRef<HTMLDetailsElement | null>(null);
   function openRounds() {
     setTab("Interview");
@@ -389,24 +390,27 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
         </fieldset>
       </form>
 </details>}
-        {tab === "Interview" && <><details ref={rounds} open={roundsOpen} onToggle={e => setRoundsOpen(e.currentTarget.open)} className="interview-support"><summary>Round details</summary><div className="tracker-section-heading mt-8"><h3>Interview rounds & history</h3><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={createExperience}>Create experience card</button></div>      <Section title="Application timeline">
-        <ApplicationTimeline application={current} demo={w.demo}/>
-        {workflow && <TimelineEditor application={current}/>}
-        <details className="mt-5"><summary className="min-h-11 cursor-pointer py-3 text-sm text-board-muted">Application activity</summary>
-        <ol className="divide-y divide-board-line text-sm">
-          {(current.activity || []).map((a, i) => (
-            <li key={i} className="py-3 first:pt-0">
-              {a.text}
-              <small className="mt-1 block text-board-muted">
-                {a.actor === "user" ? "You" : a.actor} ·{" "}
-                {new Date(a.at).toLocaleString()}
-              </small>
-            </li>
-          ))}
-        </ol>
-        </details>
-      </Section>
-</details>        <details className="interview-support"><summary>History &amp; emails</summary><h3>Recruiting emails</h3>{events.filter(e=>e.source.kind === "email").length ? events.filter(e=>e.source.kind === "email").map(e=><article className="tracker-question" key={e.id}><h4>{e.source.subject || e.label}</h4><p>{e.source.excerpt || "No excerpt recorded."}</p><small>{e.source.receivedAt || "Received date not recorded"}</small>{!w.demo && e.source.url && <a href={e.source.url} target="_blank" rel="noopener noreferrer">Open source email</a>}</article>) : <p className="tracker-prose">No recruiting emails are linked to this application yet. Authorized inbox updates appear here when recorded.</p>}</details>
+        {tab === "Interview" && <>
+          <details ref={rounds} open={roundsOpen} onToggle={e => setRoundsOpen(e.currentTarget.open)} className="interview-support">
+            <summary><ProfileIcon name="clock"/><span><strong>Round details</strong><small>Schedule, round notes and progress</small></span><ProfileIcon name="chevron" className="support-chevron"/></summary>
+            <div className="interview-support-body">
+              <h3 className="support-heading">Interview rounds &amp; history</h3>
+              <ApplicationTimeline application={current} demo={w.demo}/>
+              {workflow && <TimelineEditor application={current}/>}
+              <button className={`${secondary} mt-5 gap-2`} onClick={createExperience}><ProfileIcon name="file" width={17} height={17}/>Create experience card</button>
+            </div>
+          </details>
+          <details open className="interview-support">
+            <summary><ProfileIcon name="mail"/><span><strong>History &amp; emails</strong><small>{events.filter(e=>e.source.kind === "email").length} linked emails · application activity</small></span><ProfileIcon name="chevron" className="support-chevron"/></summary>
+            <div className="interview-support-body">
+              <h3 className="support-heading">Recruiting emails</h3>
+              {events.filter(e=>e.source.kind === "email").length ? <div className="interview-email-list">{events.filter(e=>e.source.kind === "email").map(e=><article key={e.id}>
+                <ProfileIcon name="mail" className="email-icon" width={19} height={19}/><div><h4>{e.source.subject || e.label}</h4><small>{e.label} · {e.source.receivedAt ? new Date(e.source.receivedAt).toLocaleString() : "Received date not recorded"}</small><p>{e.source.excerpt || "No excerpt recorded."}</p>{!w.demo && e.source.url && <a href={e.source.url} target="_blank" rel="noopener noreferrer">Open source email<ProfileIcon name="arrow" width={15} height={15}/></a>}{w.demo && <small>Fictional demo email</small>}</div>
+              </article>)}</div> : <p className="interview-support-empty">No emails linked yet. Recorded inbox updates will appear here.</p>}
+              <h3 className="support-heading support-activity-heading">Application activity</h3>
+              {(current.activity || []).length ? <ol className="interview-activity">{(current.activity || []).map((a,i)=><li key={i}><span>{a.text}</span><small>{a.actor === "user" ? "You" : a.actor} · {new Date(a.at).toLocaleString()}</small></li>)}</ol> : <p className="interview-support-empty">No additional activity recorded.</p>}
+            </div>
+          </details>
 {experience !== null && <section className="tracker-experience"><h3>Experience card preview</h3><p>Private draft. Edit what you want to share; nothing is published automatically.</p><label>Card content<textarea value={experience} maxLength={12000} onChange={e=>setExperience(e.target.value)}/></label><button className="tracker-button tracker-primary workspace-primary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={downloadExperience}>Download draft</button><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>setExperience(null)}>Cancel</button></section>}</>}
       </div>
     </div><aside className="tracker-detail-sidebar"><section className="tracker-status-panel"><h3>Application Status</h3>{!workflow && <label>Hiring stage<select aria-label="Update hiring stage" disabled={w.locked} value={current.status} onChange={e=>{const status=e.target.value;awardStatus(w.store,id,status);w.store.update("tracker.items",(items:Record<string,unknown>)=>({...items,[id]:{...w.state.tracker.items[id],status,statusDate:dayStamp(),...(status!=="New"&&!w.state.tracker.items[id]?.appliedDate?{appliedDate:dayStamp()}:{})}}));}}>{["New","Applied","OA","Phone Screen","Interview","Onsite","Offer","Rejected","Withdrawn"].map(s=><option key={s} value={s}>{s==="New"?"Opened":s}</option>)}</select></label>}<TrackerProgress application={current} item={w.state.tracker.items[id] || {}} vertical/><details className="tracker-update"><summary>Update status</summary>      <Section title="Update application progress">

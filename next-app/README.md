@@ -266,7 +266,7 @@ form fill or submission was performed during verification.
 The former Prep tab is now Interview: a focused, read-only round brief with the
 next recorded round, up to three outstanding non-resource priorities from its
 saved preparation plan and up to three saved relevant materials. Long priority
-detail and provenance live under Sources & context. The dialog and sidebar retain the same dimensions across tabs. Round details and History & emails are collapsed beneath the brief.
+detail and provenance live under Sources & context. The dialog and sidebar retain the same dimensions across tabs. Round details and History & emails are expanded beneath the brief by default, with optional collapse controls. Round updates use grouped fields and full-width private notes; emails show subject, recorded date and readable excerpts, followed by application activity.
 
 Actual scheduled round timestamps are distinct from preparation deadlines.
 Unconfirmed or missing dates remain unconfirmed, past deadlines and mismatched
@@ -284,5 +284,5 @@ retains loading/error retry, account-change and demo isolation guards.
 Demo coverage includes a dated technical round, a useful but unconfirmed phone
 screen and a saved role with no interview. `scripts/check-interview-brief-ui.mjs`
 checks content caps, no form/checklist, collapsed provenance, uncertainty, empty
-state, stable dialog geometry and collapsed round/email sections, navigation, Escape and desktop-dark/mobile-light
+state, stable dialog geometry and expanded round/email sections, navigation, Escape and desktop-dark/mobile-light
 layout with fictional intercepted accounts and no demo cloud calls.
