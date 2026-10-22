@@ -58,3 +58,8 @@
 
 - Standardized all profile entry placeholders on a clearer square workbag icon, including education and projects. Removed unused category images and updated the demo assertions. No external fetching or behavior changes.
 - Validation: data validation, static-asset preparation and diff whitespace checks passed. This small SVG/presentation follow-up did not repeat the production build or browser checks. Nothing pushed or published.
+
+## Fix broken entry fallback images
+
+- Replaced file-based fallback images with the shared inline briefcase SVG inside the same square tile. This removes public-asset request and startup-copy dependencies, including on already-running development servers and deployments under a URL prefix. Removed the unused SVG asset/export copy and updated demo assertions for inline icons. No service or persistence changes.
+- Validation: data validation, production build/TypeScript and diff whitespace checks. The export was checked for inline briefcase code and absence of the former image URL; desktop browser inspection confirmed the square workbag renders beside the fictional experience heading. Full suite and optional browser interaction script were not repeated. Nothing pushed or published.
