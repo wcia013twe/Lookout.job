@@ -145,15 +145,10 @@ try{
  await roles.getByRole('combobox',{name:'Roles priority',exact:true}).selectOption('Preferred');
  await roles.getByRole('button',{name:'Finish editing Roles & experience',exact:true}).click();
  await roles.getByText('Backend engineering, ML systems · Preferred',{exact:true}).waitFor();
- await prefs.getByRole('button',{name:'Edit Resume assignments & role targets',exact:true}).click();
- const backend=prefs.getByRole('heading',{name:'Backend SWE',exact:true}).locator('..');
- await backend.getByRole('combobox',{name:'Job type',exact:true}).selectOption('Internship');
- await backend.getByRole('combobox',{name:'Resume for these roles',exact:true}).selectOption('demo-ml-resume');
+ assert.equal(await prefs.getByRole('region',{name:'Resume assignments & role targets',exact:true}).count(),0,'Job preferences must not repeat resume assignment controls');
  await page.getByRole('button',{name:'Save application profile',exact:true}).click();
  await page.getByRole('button',{name:'Reload saved',exact:true}).click();
- assert.equal(await backend.getByRole('combobox',{name:'Job type',exact:true}).inputValue(),'Internship');
- assert.equal(await backend.getByRole('combobox',{name:'Resume for these roles',exact:true}).inputValue(),'demo-ml-resume');
- await prefs.getByRole('button',{name:'Finish editing Resume assignments & role targets',exact:true}).click();
+ await roles.getByText('Backend engineering, ML systems · Preferred',{exact:true}).waitFor();
  const jobTab=await nav.getByRole('button',{name:'Job preferences',exact:true}).boundingBox();
  const agentTab=await nav.getByRole('button',{name:'My Agent',exact:true}).boundingBox();
  assert(agentTab.x>jobTab.x && agentTab.x-jobTab.x-jobTab.width<24,'My Agent must sit directly beside Job preferences');

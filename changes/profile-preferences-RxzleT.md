@@ -44,3 +44,9 @@
 - Integration note: extended the existing top-level dispatcher instead of adding another legacy wrapper after the extra wrapper exceeded PGlite’s legacy dispatch stack in the initial test run. The final full suite passes without adding a dispatch layer.
 
 - Local landing integration preserved the concurrently landed My Agent writing layout, question-bank/template relocation and independent application/Discover changes. Resolved only the overlapping Documents intro/control and appended documentation. Reran the full integrated test suite (438 passing), build and profile browser checks.
+
+## Remove duplicate resume assignment section
+
+- Removed the repeated Resume assignments & role targets section from Job preferences. About me / Documents is the single assignment editor. Kept the distinct fallback-resume preference and all saved targets, conditions, timing and MCP contracts unchanged; Advanced instructions retains access to the stored narrative.
+- Updated demo/browser coverage to assert the duplicate section is absent while checking preferences still save/reload. Existing Documents assignment/source-replacement coverage remains in the same check.
+- Validation: production build/typecheck, data validation, profile desktop/mobile browser check and git diff --check (recorded on completion). No backend/schema/service changes.

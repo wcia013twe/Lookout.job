@@ -13,7 +13,6 @@ import {
 
 import TierLists from "./tierlists";
 import ProfileSection, { ProfileValues } from "./profile-section";
-import RecruitingTargets from "./recruiting-targets";
 import { ApplicationMaterials } from "./profile-settings";
 import ProfileRuleCopy from "./profile-rule-copy";
 import { errorMessage } from "./profile-types";
@@ -125,7 +124,6 @@ function SearchProfileEditor() {
         </label> : <ProfileValues items={[{label:"Status",value:profile.active ? "Actively looking" : "Paused"}]}/>}
       </ProfileSection>
       <ApplicationMaterials />
-      <RecruitingTargets />
       {preferenceGroups.map(group => <ProfileSection key={group.title} title={group.title} resetKey={profile.id} disabled={busy}>
         {editing => editing ? <>
           <p className="mb-5 text-sm text-board-muted">Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification.</p>
