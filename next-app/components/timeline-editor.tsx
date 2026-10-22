@@ -30,16 +30,16 @@ export default function TimelineEditor({application}: { application: Application
   }catch(error){if(ownerRef.current===owner)setMessage(error instanceof Error ? error.message : 'Timeline could not save. Try again.');}
   finally{if(ownerRef.current===owner)setBusy(false);}
  }
- return <form onSubmit={save} className="glass-inset mt-4 space-y-4 rounded-xl p-4">
-  <p className="text-sm text-board-muted">Record a stage yourself. Leave the date blank if it has not been confirmed.</p>
+ return <form onSubmit={save} className="interview-round-editor">
+  <header><h4>Add a round or update</h4><p>Keep dates and private notes together. Leave unconfirmed dates blank.</p></header>
   <fieldset disabled={busy||w.locked} className="grid gap-4 sm:grid-cols-2">
-   <Field label="Timeline stage"><select className={control} value={kind} onChange={e=>{setKind(e.target.value);setLabel(labels[e.target.value]);}}>{Object.entries(labels).map(([key,value])=><option key={key} value={key}>{value}</option>)}</select></Field>
-   <Field label="Stage name"><input className={control} required maxLength={300} value={label} onChange={e=>setLabel(e.target.value)}/></Field>
-   <Field label="Stage progress"><select className={control} value={phase} onChange={e=>setPhase(e.target.value as ApplicationMilestone['phase'])}><option value="completed">Completed</option><option value="scheduled">Scheduled</option><option value="received">Update received</option></select></Field>
+   <Field label="Round type"><select className={control} value={kind} onChange={e=>{setKind(e.target.value);setLabel(labels[e.target.value]);}}>{Object.entries(labels).map(([key,value])=><option key={key} value={key}>{value}</option>)}</select></Field>
+   <Field label="Round name"><input className={control} required maxLength={300} value={label} onChange={e=>setLabel(e.target.value)}/></Field>
+   <Field label="Progress"><select className={control} value={phase} onChange={e=>setPhase(e.target.value as ApplicationMilestone['phase'])}><option value="completed">Completed</option><option value="scheduled">Scheduled</option><option value="received">Update received</option></select></Field>
    <Field label="Confirmed date and time (optional)"><input type="datetime-local" className={control} value={date} onChange={e=>setDate(e.target.value)}/></Field>
-   <Field label="Round notes (private)"><textarea className={control} placeholder="Topics covered, reminders, contacts, or your interview experience" maxLength={2000} value={note} onChange={e=>setNote(e.target.value)}/></Field>
+   <div className="sm:col-span-2"><Field label="Round notes (private)"><textarea className={control} placeholder="Topics covered, reminders, contacts, or your interview experience" maxLength={2000} value={note} onChange={e=>setNote(e.target.value)}/></Field></div>
   </fieldset>
-  <button className={primary} disabled={busy||w.locked}>{busy?'Saving…':'Record timeline update'}</button>
+  <button className={primary} disabled={busy||w.locked}>{busy?'Saving…':'Save round update'}</button>
   <Notice>{message}</Notice>
  </form>;
 }
