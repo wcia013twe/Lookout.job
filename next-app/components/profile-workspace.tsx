@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
-import { Heading, primary, secondary, control, Field } from "./ui";
+import { Heading, primary, secondary, control } from "./ui";
 import ProfileEditor from "./profile-editor";
-import ProfileSection, { ProfileValues } from "./profile-section";
 import ProfileOverview from "./profile-overview";
 import ProfileDocuments from "./profile-documents";
 
@@ -21,7 +20,6 @@ import {
 import {
   ProfileSwitcher,
   EligibilitySettings,
-  ApplicationMaterials,
   WritingStyles,
 } from "./profile-settings";
 type ProfileSectionId = "overview" | "about" | "preferences" | "agent";
@@ -118,47 +116,6 @@ function ProfileContent() {
             Change companion
           </Link>
           <WritingStyles />
-          <ProfileSection title="Account-wide submission resume" resetKey={a.profile.id} disabled={w.locked}>
-            {editing => editing ? <>
-            <p className="my-4 text-sm text-board-muted">
-              Existing automatic submission uses this private PDF default.
-              Profile selections guide preparation and do not change submission
-              authorization.
-            </p>
-            <Field label="Default private PDF resume">
-              <select
-                className={control}
-                value={
-                  w.state.workflow.searchPreferences?.defaultResumeId || ""
-                }
-                onChange={(e) =>
-                  w.store.update(
-                    "workflow.searchPreferences",
-                    (p: Record<string, unknown>) => ({
-                      ...p,
-                      defaultResumeId: e.target.value || null,
-                    }),
-                  )
-                }
-              >
-                <option value="">Choose a private uploaded PDF</option>
-                {w.state.workflow.resumes
-                  .filter(
-                    (r: { objectPath?: string; contentHash?: string; supersededBy?: string }) =>
-                      !r.supersededBy && /\.pdf$/i.test(r.objectPath || "") && r.contentHash,
-                  )
-                  .map((r: { id: string; name: string }) => (
-                    <option key={r.id} value={r.id}>
-                      {r.name}
-                    </option>
-                  ))}
-              </select>
-            </Field>
-            <p className="mt-2 text-xs text-board-muted">
-              This account-wide setting saves automatically.
-            </p>
-            </> : <ProfileValues items={[{label:"Default private PDF resume",value:w.state.workflow.resumes.find((r:{id:string;name:string})=>r.id===w.state.workflow.searchPreferences?.defaultResumeId)?.name||"No private PDF selected"}]}/>}
-          </ProfileSection>
           <AgentConnections />
           <CircleAgentSettings />
           <DailySchedule />
