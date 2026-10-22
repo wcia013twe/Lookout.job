@@ -1,22 +1,29 @@
+"use client";
+import {useState} from "react";
+import WritingPreview from "./writing-preview";
 import OutreachExamples from "./outreach-examples";
+import {secondary} from "./ui";
 import library from "../../supabase/functions/agent-gateway/skills/outreach-templates.json";
+const labels = ["Recruiter", "Existing connection", "Alumni", "Founder", "Followup"];
 
-export default function OutreachTemplates({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+export default function OutreachTemplates({ initiallyOpen = false, carouselOnly = false }: { initiallyOpen?: boolean; carouselOnly?: boolean }) {
+  const [selected, setSelected] = useState(0);
+  const template = library.templates[selected];
+  const carousel = <section aria-label="Outreach template preview" aria-roledescription="carousel">
+    <header className="mb-5 flex items-center justify-between gap-3">
+      <button type="button" className={secondary} aria-label="Previous outreach template" onClick={() => setSelected(index => (index + labels.length - 1) % labels.length)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+      <div className="min-w-0 text-center" aria-live="polite" aria-atomic="true"><h3 className="text-lg font-semibold">{labels[selected]}</h3><p className="mt-1 text-xs text-board-muted">{selected + 1} of {labels.length}</p></div>
+      <button type="button" className={secondary} aria-label="Next outreach template" onClick={() => setSelected(index => (index + 1) % labels.length)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+    </header>
+    <p className="mb-4 text-sm leading-relaxed text-board-muted">{template.whenToUse}</p>
+    <p className="mb-4 text-sm"><span className="font-semibold">Subject: </span>{template.subject}</p>
+    <WritingPreview key={template.id} text={template.message}/>
+    <p className="mt-5 text-xs leading-relaxed text-board-muted">Template preview. Replace bracketed fields with verified details before sending. Writing settings guide your agent’s personalized draft.</p>
+  </section>;
+  if (carouselOnly) return carousel;
   return <details className="mt-8 border-y border-board-line py-5" open={initiallyOpen}>
     <summary className="cursor-pointer text-lg font-bold">Outreach templates · {library.templates.length}</summary>
-    <p className="mt-3 max-w-prose text-sm leading-relaxed text-board-muted">Your agent uses the Nick Singh outreach skill to tailor these starting points to your experience, the person, and the role. Bracketed fields are filled before a draft is ready.</p>
+    <div className="mt-5">{carousel}</div>
     <OutreachExamples/>
-    <div className="mt-5 divide-y divide-board-line">
-      {library.templates.map(template => <details key={template.id} className="py-4">
-        <summary className="cursor-pointer text-sm font-semibold">{template.name}</summary>
-        <div className="mt-3 max-w-prose space-y-4 text-sm leading-relaxed">
-          <p className="text-board-muted">{template.whenToUse}</p>
-          <p><span className="font-semibold">Details needed: </span>{template.requiredEvidence.join("; ")}.</p>
-          <p><span className="font-semibold">Email subject: </span>{template.subject}</p>
-          <p className="whitespace-pre-line rounded-lg bg-board-panel p-4">{template.message}</p>
-        </div>
-      </details>)}
-    </div>
-    <p className="mt-4 text-xs leading-relaxed text-board-muted">Use Prepare with Muse to request personalized drafts. You review and send the final message.</p>
   </details>;
 }

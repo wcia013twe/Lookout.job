@@ -80,6 +80,7 @@ export function createDemoWorkspace(now = new Date()) {
       context_snapshot: { application: { id, draft: { resumeId, resumeSha256: hash, questions: copy(questions) } }, job: { canonical_url: application.url }, resume: copy(resume) } };
   }
   const confirmedAttempt = attempt('demo-confirmed', 'confirmed'), uncertainAttempt = attempt('demo-uncertain', 'uncertain');
+  applications['demo-uncertain'].submissionAttempts = [{ id: uncertainAttempt.id, state: uncertainAttempt.state, startedAt: uncertainAttempt.started_at }];
   applications['demo-confirmed'].receipt = copy(confirmedAttempt.receipt);
   applications['demo-confirmed'].submittedAt = at;
   const submittedResume = { id: resumeId, name: resume.name, version: 2, variant: 'Backend', contentHash: hash };

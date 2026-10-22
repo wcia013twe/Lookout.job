@@ -68,8 +68,8 @@ try{
 
  const resumeLibrary=documents.getByRole('region',{name:'Resumes',exact:true});
  assert(await resumeLibrary.getByRole('button',{name:'Preview',exact:true}).first().isDisabled(),'Demo fixtures have no PDF');
- for(const title of ['Resumes','Cover letters','Templates']) assert.equal(await documents.getByRole('heading',{name:title,exact:true}).locator('svg').count(),1,'Document headers use the file icon');
- for(const [label,title,content] of [['cover letter','Cover letter','Fictional systems cover letter'],['template','Template','Reusable application starting point']]){
+ for(const title of ['Resumes','Cover letters']) assert.equal(await documents.getByRole('heading',{name:title,exact:true}).locator('svg').count(),1,'Document headers use the file icon');
+ for(const [label,title,content] of [['cover letter','Cover letter','Fictional systems cover letter']]){
   const library=documents.getByRole('region',{name:label==='template'?'Templates':'Cover letters',exact:true});
   await library.getByRole('button',{name:`Add ${label}`,exact:true}).click();
   await library.getByRole('textbox',{name:`${title} title`,exact:true}).fill(content);
@@ -162,11 +162,27 @@ try{
  await page.screenshot({path:dir+'/job-preferences-desktop.png',fullPage:true});
  await nav.getByRole('button',{name:'My Agent',exact:true}).click();
  const agent=page.getByRole('region',{name:'My agent',exact:true});
+ const bank=agent.locator('details').filter({has:page.locator('summary',{hasText:'Shared question bank'})});
+ assert.equal(await bank.getAttribute('open'),null,'Question bank starts collapsed');
+ await bank.locator('summary').click();
+ await agent.getByRole('region',{name:'Shared employer-answer library',exact:true}).waitFor();
+ await bank.locator('summary').click();
+ const carousel=agent.getByRole('region',{name:'Outreach template preview',exact:true});
+ for(const title of ['Recruiter','Existing connection','Alumni','Founder','Followup']) {
+   await carousel.getByRole('heading',{name:title,exact:true}).waitFor();
+   await carousel.getByRole('button',{name:'Next outreach template',exact:true}).click();
+ }
+ await carousel.getByRole('heading',{name:'Recruiter',exact:true}).waitFor();
+ await carousel.getByRole('button',{name:'Previous outreach template',exact:true}).click();
+ await carousel.getByRole('heading',{name:'Followup',exact:true}).waitFor();
+ await carousel.getByRole('button',{name:'Next outreach template',exact:true}).click();
+ await agent.getByRole('region',{name:'Templates',exact:true}).waitFor();
+ assert.equal(await agent.getByRole('region',{name:'Outreach examples and library',exact:true}).count(),1);
  await agent.getByRole('button',{name:'Edit Employer questions',exact:true}).click();
  await agent.getByRole('combobox',{name:'Employer questions tone',exact:true}).selectOption('Confident & understated');
  await agent.getByRole('textbox',{name:'Employer questions custom guidance',exact:true}).fill('Fictional draft: use concrete systems examples.');
  await nav.getByRole('button',{name:'About me',exact:true}).click();
- await page.getByRole('heading',{name:'Shared employer-answer library',exact:true}).waitFor();
+ await page.getByRole('heading',{name:'Career background',exact:true}).waitFor();
  await nav.getByRole('button',{name:'My Agent',exact:true}).click();
  assert.equal(await agent.getByRole('textbox',{name:'Employer questions custom guidance',exact:true}).inputValue(),'Fictional draft: use concrete systems examples.');
  await agent.getByRole('button',{name:'Finish editing Employer questions',exact:true}).click();

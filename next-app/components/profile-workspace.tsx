@@ -8,7 +8,7 @@ import ProfileEditor from "./profile-editor";
 import ProfileSection, { ProfileValues } from "./profile-section";
 import ProfileOverview from "./profile-overview";
 import ProfileDocuments from "./profile-documents";
-import SavedAnswers from "./saved-answers";
+
 import SearchTargets from "./search-targets";
 import DailySchedule from "./daily-schedule";
 import CircleAgentSettings from "./circle-agent-settings";
@@ -94,9 +94,6 @@ function ProfileContent() {
             <EligibilitySettings />
             <ProfileDocuments/>
           </ProfileEditor>
-          <h2 className="mb-3 mt-8 text-lg font-bold">Saved application answers</h2>
-          <ApplicationMaterials mode="answers" />
-          <SavedAnswers />
         </section>
       )}
       {visited.includes("preferences") && (
@@ -110,7 +107,7 @@ function ProfileContent() {
       )}
       {visited.includes("agent") && (
         <section
-          className={profileStyles.panel}
+          className={`${profileStyles.panel} ${profileStyles.agentPanel}`}
           hidden={active !== "agent"}
           aria-label="My agent"
         >

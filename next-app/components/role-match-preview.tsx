@@ -1,4 +1,5 @@
 "use client";
+import ProfileIcon from "./profile-icon";
 export type MatchPreview = { percent: number; factors: { label: string; value: number | null; rating: string; reason: string }[] };
 const factors = ["Skills & experience", "Compensation", "Wellbeing & culture", "Location & work setting"];
 export default function RoleMatchPreview({ sample, expanded = false }: { sample?: MatchPreview; expanded?: boolean }) {
@@ -9,10 +10,10 @@ export default function RoleMatchPreview({ sample, expanded = false }: { sample?
     </div>
     <div className="space-y-3">
       {(sample?.factors || factors.map(label => ({ label, value: null, rating: "Unknown", reason: "No verified assessment yet. A score needs current job requirements, your profile and stated preferences." }))).map(factor => {
-        const content = <><div className="flex justify-between gap-3 text-xs leading-5"><span>{factor.label}</span><span className={factor.rating === "Limited" ? "text-board-warning" : "text-board-muted"}>{factor.rating}</span></div><div className="mt-1 h-1 overflow-hidden rounded-full bg-board-line">{factor.value !== null && <div className={`h-full rounded-full ${factor.rating === "Limited" ? "bg-board-warning" : "bg-board-success"}`} style={{ width: `${factor.value}%` }} />}</div></>;
-        return expanded ? <details key={factor.label}><summary className="min-h-11 cursor-pointer list-none rounded-md py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-board-accent">{content}<span className="mt-1 block text-[11px] text-board-muted">Show reasoning</span></summary><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">{factor.reason}</p></details> : <div key={factor.label}>{content}</div>;
+        const content = <><div className="flex justify-between gap-3 text-xs leading-5"><span className="inline-flex items-center gap-1.5">{factor.label}{expanded && <ProfileIcon name="chevron" width={13} height={13} />}</span><span className={["Limited", "Partial"].includes(factor.rating) ? "text-board-warning" : factor.value !== null ? "text-board-success" : "text-board-muted"}>{factor.rating}</span></div><div className="mt-1 h-1 overflow-hidden rounded-full bg-board-line">{factor.value !== null && <div className={`h-full rounded-full ${["Limited", "Partial"].includes(factor.rating) ? "bg-board-warning" : "bg-board-success"}`} style={{ width: `${factor.value}%` }} />}</div></>;
+        return expanded ? <details key={factor.label}><summary className="min-h-11 cursor-pointer list-none rounded-md py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-board-accent">{content}</summary><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">{factor.reason}</p></details> : <div key={factor.label}>{content}</div>;
       })}
     </div>
-    {expanded && <p className="mt-4 text-xs leading-relaxed text-board-muted">{sample ? "These fixed example scores demonstrate the interface. They are not calculated from your profile, supplied by Glassdoor or Simplify, or a prediction of hiring success." : "No percentage is shown until an evidence-backed assessment is available. Missing information stays unknown."}</p>}
+    {expanded && <p className="mt-4 text-xs leading-relaxed text-board-muted">{sample ? "Illustrative scores only; not a live assessment or hiring prediction." : "A percentage needs verified job requirements and profile evidence."}</p>}
   </section>;
 }

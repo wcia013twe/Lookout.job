@@ -29,14 +29,13 @@
 .tracker-role span span,.tracker-role small {color:var(--color-board-muted);}
 .tracker-mobile-meta {display:none!important;}
 .tracker-company-mark {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:52px;height:52px;border-radius:9px;background:var(--color-board-tag);color:var(--color-board-accent);font-size:22px;font-weight:750;}
-.tracker-progress {--tracker-reached:#ffc166;--tracker-upcoming:#8aa7c9;display:flex;justify-content:space-between;list-style:none;padding:0;margin:0;}
+.tracker-progress {--tracker-reached:var(--color-board-accent);--tracker-upcoming:var(--color-board-muted);--tracker-gradient-end:color-mix(in srgb,var(--tracker-reached) 65%,#a78bcb);--tracker-gradient-direction:90deg;display:flex;justify-content:space-between;list-style:none;padding:0;margin:0;}
 .tracker-progress li {position:relative;display:flex;flex:1;flex-direction:column;align-items:center;gap:9px;text-align:center;font-size:11px;}
 .tracker-progress li:not(:last-child)::after {content:"";position:absolute;top:33px;height:3px;background:var(--color-board-line);left:50%;width:100%;}
-.tracker-progress li.reached:not(:last-child):has(+li.reached)::after {background:var(--tracker-reached);}
+.tracker-progress li.reached:not(:last-child):has(+li.reached)::after {background:linear-gradient(var(--tracker-gradient-direction),var(--tracker-reached),var(--tracker-gradient-end));}
 .tracker-dot {position:relative;z-index:1;border:2px solid var(--tracker-upcoming);background:var(--color-board-panel);border-radius:50%;width:19px;height:19px;}
-.tracker-progress .reached .tracker-dot {border-color:var(--tracker-reached);background:var(--tracker-reached);}
+.tracker-progress .reached .tracker-dot {border-color:transparent;background:linear-gradient(135deg,var(--tracker-reached),var(--tracker-gradient-end)) border-box;}
 .tracker-progress [aria-current="step"] .tracker-dot {outline:2px solid var(--tracker-reached);outline-offset:3px;}
-[data-theme="light"] .tracker-progress {--tracker-reached:#a65300;--tracker-upcoming:#526d91;}
 .tracker-progress time {font-size:10px;min-height:15px;font-variant-numeric:tabular-nums;}
 .tracker-row-progress>small {display:block;text-align:center;font-size:11px;color:var(--color-board-muted);margin-top:8px;}
 .tracker-stage-label {font-weight:600;white-space:nowrap;}
@@ -59,7 +58,7 @@
 .tracker-detail-content {padding:24px;}
 .tracker-detail-sidebar {padding:24px;border-left:1px solid var(--color-board-line);}
 .tracker-status-panel {background:var(--color-board-tag);border:1px solid var(--color-board-line);border-radius:16px;padding:24px;}
-.tracker-progress-vertical {display:flex;flex-direction:column;margin-top:18px;}
+.tracker-progress-vertical {--tracker-gradient-direction:180deg;display:flex;flex-direction:column;margin-top:18px;}
 .tracker-progress-vertical li {display:grid;grid-template-columns:20px auto 1fr;gap:12px;text-align:left;align-items:start;min-height:62px;flex:none;font-size:16px;}
 .tracker-progress-vertical .tracker-dot {grid-column:1;grid-row:1;margin-top:3px;width:20px;height:20px;}
 .tracker-progress-vertical .tracker-stage-label {grid-column:2;grid-row:1;}

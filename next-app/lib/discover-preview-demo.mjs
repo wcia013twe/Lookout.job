@@ -5,7 +5,11 @@ export function discoverPreviewRoles(date) {
     { id: 'demo-discover-tradeoff', company: 'Example Compute (demo)', title: 'ML Systems Intern', employmentType: 'Internship', percent: 54, limited: true },
     { id: 'demo-discover-unknown', company: 'Example Search (demo)', title: 'Search Infrastructure Engineer', employmentType: 'FT' },
   ].map(({ percent, limited, ...role }) => ({
-    ...role, location: 'Remote · United States (demo)', category: 'Systems infrastructure',
+    ...role,
+    compensation: percent === 76 ? '$55–$65/hr (fictional demo)' : undefined,
+    workSetting: 'Remote (demo)', sponsorship: 'Not recorded (demo)',
+    reviewPreview: percent === undefined ? [] : [{ question: 'Can you work onsite three days per week?', answer: '', reason: 'The work-setting exception needs your decision.' }, ...(limited ? [{ question: 'What is your earliest available start date?', answer: '', reason: 'Confirm your school schedule before answering.' }] : [])],
+    location: 'Remote · United States (demo)', category: 'Systems infrastructure',
     priority: 'Strong Consider', applicationUrl: 'https://example.com/demo-only',
     discoveredDate: date, postedDate: null, sourceFreshness: 'Fictional demo listing · not a real opening',
     description: 'Fictional posting for interface review. Build and profile a distributed query service, investigate latency regressions, and document reliability tradeoffs.\n\nWork with engineers on query execution and operational tooling. Production systems experience is preferred; internship eligibility and work setting require confirmation.',

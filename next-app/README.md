@@ -162,6 +162,7 @@ verification are required before claiming the new execution policy is deployed.
 
 About me / Documents appears before Career background and includes the shared resume library, direct Assign roles/Add role assignment, cover letters and reusable application templates. Resume files remain private PDF/DOCX uploads; cover letters/templates accept text or document links and use the versioned artifact service with cover_letter/application_template kinds. Add, read/edit, archive and pagination use existing backend validation. The same role assignments remain in Job preferences. Demo supports metadata-only resume upload and versioned in-memory document editing. `scripts/check-profile-ui.mjs` verifies placement, adding a resume and assignment, cover-letter/template revision, mobile layout and zero demo cloud writes. Deploy the migration and gateway context 37 via the normal production workflow before claiming live support.
 
+My Agent uses left-aligned writing settings with employer and outreach previews on the right (stacked on mobile). Outreach uses previous/next arrows to cycle Recruiter, Existing connection, Alumni, Founder and Followup. Shared employer answers and profile answer selection are in a collapsed Shared question bank beneath Writing style; reusable application templates also live here. Style previews reveal text progressively and respect reduced motion; these are illustrative previews, not live AI generation. Demo mode uses the existing fictional answer and outreach fixtures; verify editing, profile switching, library scrolling and reset through the same scoped services. No backend action or MCP contract changed.
 
 ## Discover match and job preview
 
@@ -193,3 +194,37 @@ edits, Escape/focus restoration, no preview service calls, no demo external link
 unknown scores, and desktop-dark/mobile-light layouts. No real account is used.
 
 Resume rows support dropping one PDF/DOCX on the name or choosing a replacement file through the accessible picker. Saved names/role assignments survive, versions advance and old versions are hidden from new selections while retained for application history. Source changes use the scoped resume-source RPC and need saved profile drafts first. The demo stores replacement metadata only, remaps its own preferences, and rejects invalid files without changing the source. Profile UI verification covers both replacement paths, preserved name/roles, v2/v3 progression, hidden prior rows and invalid-file rejection. Hosted schema/gateway release remains pending.
+
+Discover refinement: icon-led facts on cards and in the panel expose pay,
+location, work setting, focus, sponsorship and source recency without inventing
+unknown values. Soft semantic surfaces distinguish fit evidence and uncertainty;
+About the job is expandable. Application review surfaces missing contact facts
+and recorded, unreviewed employer questions. Existing populated contact details
+start collapsed, with an unverified warning when appropriate. The review count
+includes a single saved-contact confirmation group, not four redundant fields.
+Reviewed draft questions are hidden; no new review authorization is minted.
+The form is still UI-only: edits are discarded, and an unloaded employer form
+can introduce further questions. Fictional demo questions illustrate one- and
+two-question handoffs; no live employer form or saved-answer reuse policy changes.
+
+
+## Application Overview
+
+Application details open to a scoped Overview: a recorded stage/preparation
+snapshot, icon-led job facts, an amber attention area for recorded blockers,
+uncertain attempts or incomplete draft preparation, green fit/context research
+notes and an expandable employer description. Unknown facts stay explicit.
+Saved application fields remain useful when the role is absent from the current
+catalog. Completed preparation states do not show stale question/resume prompts.
+The Documents handoff only switches the existing tab. Other tabs, sidebar,
+status updates, approvals and submission behavior are unchanged.
+
+The admin demo adds fictional interview facts and exposes its already-existing
+uncertain attempt in the application's UI snapshot. `scripts/check-application-overview-ui.mjs`
+uses intercepted account traffic to check interview, submitted, uncertain and
+saved-without-draft states, Documents navigation, desktop dark/mobile light,
+Escape, overflow and zero Overview cloud calls. Use LOOKOUT_UI_URL,
+LOOKOUT_PLAYWRIGHT_MODULE and LOOKOUT_UI_ARTIFACTS like the Discover check.
+This is read-only presentation of existing application/job/context fields;
+existing scoped MCP application/context tools and backend validation are unchanged.
+No new AI assessment, scoring, approval or service is introduced.

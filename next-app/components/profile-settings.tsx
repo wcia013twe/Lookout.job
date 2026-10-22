@@ -9,6 +9,10 @@ import { useApplicationProfile } from "./application-profile-context";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary } from "./ui";
 import { profileStyles as styles } from "./profile-surface";
+import WritingPreview from "./writing-preview";
+import SavedAnswers from "./saved-answers";
+import OutreachTemplates from "./outreach-templates";
+import ApplicationDocumentLibrary from "./application-document-library";
 import ProfileSection, {ProfileValues} from "./profile-section";
 export function ProfileSwitcher() {
   const a=useApplicationProfile();
@@ -153,7 +157,7 @@ export function WritingStyles() {
   return <>
     <h2 className="mb-3 mt-8 text-lg font-bold">Writing style</h2>
     <p className="text-sm text-board-muted">A separate voice for each kind of writing, saved with {a.profile.name}.</p>
-    {channels.map(c => <ProfileSection key={c.heading} title={c.title} resetKey={a.profile.id} disabled={a.busy}>{editing => <>
+    {channels.map(c => <div key={c.heading} className={styles.writingLayout}><div className={styles.writingSettings}><ProfileSection key={c.heading} title={c.title} resetKey={a.profile.id} disabled={a.busy}>{editing => <>
       <p className="mb-5 text-sm text-board-muted">{c.description}</p>
       {editing ? <div className="grid gap-5 sm:grid-cols-2">
         {([
@@ -180,7 +184,23 @@ export function WritingStyles() {
         <p className="mt-2 whitespace-pre-wrap break-words">{a.field(c.heading,"Guidance").value || "No additional writing guidance."}</p>
         <p className="mt-3 text-xs text-board-muted">This previews your current guidance. Save application profile to keep changes. Facts and answer-review requirements still apply.</p>
       </div>}
-    </>}</ProfileSection>)}
+    </>}</ProfileSection></div>
+      <section className={styles.writingLibrary} tabIndex={0} aria-label={`${c.title} examples and library`}>
+        {c.title === "Outreach" ? <OutreachTemplates carouselOnly/> : <>
+          <h3 className="text-lg font-semibold">Employer answer preview</h3>
+          <p className="my-3 text-xs text-board-muted">Fictional example · Why are you interested in this role?</p>
+          <WritingPreview key={a.profile.id} text="I’m interested in this role because it combines distributed systems with practical performance work. In a fictional university project, I built a query service and compared caching strategies under load. I’d like to bring that approach to your infrastructure team and learn how you handle reliability at production scale."/>
+          <p className="mt-4 text-xs text-board-muted">Illustrative example. Your agent uses your saved writing settings and verified experience for real answers.</p>
+        </>}
+      </section>
+    </div>)}
+    <details className="mt-6 border-y border-board-line py-4">
+      <summary className="cursor-pointer text-base font-semibold">Shared question bank</summary>
+      <p className="mt-3 text-sm text-board-muted">Manage shared employer answers and choose which answers this profile can use.</p>
+      <ApplicationMaterials mode="answers"/>
+      <SavedAnswers/>
+    </details>
+    <ApplicationDocumentLibrary kind="application_template"/>
   </>;
 }
 
