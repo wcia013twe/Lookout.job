@@ -23,7 +23,7 @@ try{
  assert.match(await page.locator('iframe').getAttribute('srcdoc'),/Lookout skill instructions/);
  await page.frameLocator('iframe').getByRole('heading',{name:'Lookout skill instructions'}).waitFor();
  assert.equal(await page.locator('iframe').locator('..').locator('..').locator('fieldset,select,textarea').count(),0);
- await page.getByRole('button',{name:'Copy skill invocation'}).click();
+ await page.getByRole('button',{name:'Use Skill'}).click();
  assert.match(await page.evaluate(()=>window.__copied),/read_guide\(\{"id":"career-profile-interview"\}\)/);
  await page.getByText('Copied. Paste it into your agent to invoke this skill.').waitFor();
  for(const [name,width,height,theme] of [['desktop',1440,1100,'dark'],['mobile',390,844,'light']]){
@@ -33,8 +33,8 @@ try{
   await page.screenshot({path:dir+'/skill-'+name+'.png',fullPage:true});
  }
  await page.getByRole('button',{name:'Open profile navigation'}).click();await page.getByRole('button',{name:'Demo mode',exact:true}).click();
- await page.getByRole('button',{name:'Copy skill invocation'}).click();assert.match(await page.evaluate(()=>window.__copied),/Fictional practice only/);
+ await page.getByRole('button',{name:'Use Skill'}).click();assert.match(await page.evaluate(()=>window.__copied),/Fictional practice only/);
  await page.evaluate(()=>{navigator.clipboard.writeText=async()=>{throw Error('Clipboard denied');};});
- await page.getByRole('button',{name:'Copy skill invocation'}).click();assert.match(await page.getByRole('textbox').inputValue(),/Fictional practice only/);
+ await page.getByRole('button',{name:'Use Skill'}).click();assert.match(await page.getByRole('textbox').inputValue(),/Fictional practice only/);
  assert.equal(errors.length,0,errors.join('\n'));console.log('Skill page desktop/mobile, canonical document, copy invocation and no overflow passed');
 }finally{await browser.close();}

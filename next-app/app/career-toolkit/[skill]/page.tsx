@@ -18,8 +18,7 @@ export default async function SkillManual({params}: {params:Promise<{skill:strin
   const category = categories.find(item => item.id === skill.category)!;
   return <div className={styles.surface}>
     <nav className={styles.breadcrumbs} aria-label="Breadcrumb"><Link href="/career-toolkit/">Career Toolkit</Link></nav>
-    <header className={styles.skillOverview}><div className={styles.manualTitle}><ToolkitIcon name={category.id} size={28}/><h1>{skill.title}</h1></div><p>{skill.summary}</p></header>
+    <header className={styles.skillOverview}><div className={styles.skillIntro}><div className={styles.manualTitle}><ToolkitIcon name={category.id} size={28}/><h1>{skill.title}</h1></div><p>{skill.summary}</p></div><AgentRequest key={skill.id} skillId={skill.id}/></header>
     <section className={styles.skillDocument} aria-label="Skill document"><h2>Skill.md</h2><iframe title={`${skill.title} — Skill.md`} srcDoc={document} sandbox="" /></section>
-    <AgentRequest key={skill.id} skillId={skill.id}/>
   </div>;
 }

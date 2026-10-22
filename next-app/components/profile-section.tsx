@@ -10,6 +10,13 @@ export default function ProfileSection({title,children,resetKey,disabled=false,o
   {children(editing)}
  </section>;
 }
+export function ProfileCard({title,children}:{title:string;children:ReactNode}){
+ const id=useId();
+ return <section className={styles.section} aria-labelledby={id}>
+  <header className={styles.header}><h3 id={id}>{title}</h3></header>
+  {children}
+ </section>;
+}
 export function ProfileValues({items}:{items:{label:string;value:unknown;wide?:boolean}[]}){
  return <dl className={styles.values}>{items.map(({label,value,wide})=><div key={label} className={wide?styles.wide:undefined}><dt>{label}</dt><dd>{typeof value==='boolean'?(value?'Yes':'No'):Array.isArray(value)?value.join(', '):String(value||'').trim()||<span className={styles.empty}>Not provided</span>}</dd></div>)}</dl>;
 }

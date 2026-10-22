@@ -307,8 +307,8 @@ footer on mobile. No account assignment implies connectivity.
 
 ### Career Toolkit skill pages
 
-Skill detail pages use Read mode: one overview, a framed Skill.md document and one
-copy-invocation button. Keep examples, application pickers, setup panels and related
+Skill detail pages use Read mode: one overview with a top-right “Use Skill”
+copy-invocation button, followed by a framed Skill.md document. Keep examples, application pickers, setup panels and related
 manual navigation out of this surface. The document uses a 76ch outer measure,
 17px text, generous paragraph rhythm and matching light/dark reading surfaces.
 Clipboard failure reveals a selectable read-only request; normal use shows no form.

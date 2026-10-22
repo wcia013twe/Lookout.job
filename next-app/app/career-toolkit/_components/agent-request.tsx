@@ -14,7 +14,7 @@ export default function AgentRequest({skillId}: {skillId:string}) {
     catch { setFallback(true); setMessage('Copying is unavailable. Select and copy the request below.'); }
   }
   return <div className={styles.skillInvocation}>
-    <div className={styles.requestActions}><button type="button" onClick={copy}>Copy skill invocation</button></div>
+    <div className={styles.requestActions}><button type="button" onClick={copy} title="Copy the invocation to paste into your agent">Use Skill</button></div>
     <p role="status" aria-live="polite" className={styles.copyStatus}>{message}</p>
     {fallback && <label className={styles.promptLabel}>Skill invocation<textarea ref={text} readOnly value={prompt} rows={6} onFocus={event => event.target.select()} autoFocus /></label>}
   </div>;

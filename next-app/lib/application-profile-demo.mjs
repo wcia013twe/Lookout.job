@@ -22,13 +22,13 @@ export function withApplicationProfileDemo(fixtures) {
    ['Application identity','Email account',employment === 'Internship' ? 'University Outlook (demo)' : 'Personal Gmail (demo)'],
    ['Application identity','Document account','Personal Drive (demo)'],
    ['Application identity','Outreach identity',employment === 'Internship' ? 'University Outlook (demo)' : 'Personal Gmail (demo)'],
-   ['Application materials','Default resume ID','demo-resume'],
-   ['Application materials','Saved answer IDs','demo-answer'],
+   ['Application materials','Default resume ID',employment === 'Internship' ? '' : 'demo-resume'],
+   ['Application materials','Saved answer IDs',employment === 'Internship' ? '' : 'demo-answer'],
    ['Employer answer writing','Tone',employment === 'Internship' ? 'Warm & conversational' : 'Professional & direct'],
    ['Employer answer writing','Length','Balanced'],
    ['Employer answer writing','Guidance','Use concrete examples from my verified background (demo).'],
    ['Outreach writing','Tone','Warm & conversational'],
-   ['Outreach writing','Length','Brief'],
+   ['Outreach writing','Length',employment === 'Internship' ? '' : 'Brief'],
    ['Outreach writing','Guidance','Lead with the reason for contacting them; avoid flattery (demo).'],
 
   ]) prompt=updateField(prompt,heading,key,value);
