@@ -74,7 +74,7 @@ test('simple skill invocations load the canonical scoped guide and preserve demo
  assert.throws(()=>buildSkillInvocation('missing'));
 });
 test('all skill iframe documents render the same adapted guide and pinned reference sources', async () => {
- const {skillDocument}=await import('../next-app/scripts/skill-documents.mjs');
+ const {skillDocument}=await import('../next-app/app/career-toolkit/_lib/skill-document.ts');
  for(const skill of toolkitSkills) {
   const html=skillDocument(skill);
   assert.ok(html.includes('Lookout skill instructions'));

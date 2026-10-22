@@ -1,18 +1,11 @@
-import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { readGuide } from '../../supabase/functions/agent-gateway/guides.mjs';
-import { toolkitSkills } from '../../lib/career-toolkit.mjs';
+import { micromark } from 'micromark';
+import { gfm, gfmHtml } from 'micromark-extension-gfm';
+import { readGuide } from '../../../../supabase/functions/agent-gateway/guides.mjs';
 const css = `html{color-scheme:light dark;background:#fbfcfe;color:#223248}body{box-sizing:border-box;max-width:76ch;margin:auto;padding:clamp(20px,4vw,48px);font:17px/1.8 system-ui,sans-serif;overflow-wrap:anywhere}h1,h2,h3{line-height:1.25;text-wrap:balance;letter-spacing:-.02em}h1{font-size:2rem;margin:0 0 1.5rem}h2{font-size:1.4rem;margin:2.5rem 0 1rem}h3{margin:2rem 0 .75rem}p,ul,ol{margin:0 0 1.25rem}li+li{margin-top:.5rem}a{color:#285b79;text-underline-offset:3px}a:focus-visible{outline:2px solid currentColor;outline-offset:4px}pre{padding:1rem;background:#edf2f7;overflow:auto;border-radius:8px;font-size:.875rem;line-height:1.6}code{font-size:.9em}blockquote{margin:1.5rem 0;padding:0 1rem;border-left:1px solid #8194aa;color:#50617a}table{display:block;overflow:auto;border-collapse:collapse}th,td{padding:.75rem;text-align:left;border-bottom:1px solid #bcc8d6}hr{border:0;border-top:1px solid #bcc8d6;margin:2.5rem 0}::selection{background:#c3d7ee;color:#152b42}@media(prefers-color-scheme:dark){html{background:#142331;color:#edf3fa}a{color:#b5d5f5}pre{background:#203547}blockquote{color:#bccbdc}}`;
-export function skillDocument(skill) {
+export function skillDocument(skill: {id:string;guideId:string;sourceUrl:string}) {
  const guide = readGuide(skill.guideId);
- if (!guide) throw Error(`Missing guide: ${skill.guideId}`);
- const markdown = `# ${guide.name}\n\n${guide.description}\n\n## Lookout skill instructions\n\n${guide.instructions}\n\n## Expected output\n\n${typeof guide.expectedOutput === 'string' ? guide.expectedOutput : JSON.stringify(guide.expectedOutput,null,2)}\n\n${guide.sourceDocuments.map(doc => `---\n\n## Reference: ${doc.path}\n\n${doc.content}`).join('\n\n')}\n\n---\n\nAdapted from [Career Ops](${skill.sourceUrl}). Pinned source and MIT license are included in Lookout’s Career Ops integration.`;
- const content = renderToStaticMarkup(React.createElement(Markdown,{remarkPlugins:[remarkGfm]},markdown));
+ if (!guide || !('sourceDocuments' in guide)) throw Error(`Missing guide: ${skill.guideId}`);
+ const markdown = `# ${guide.name}\n\n${guide.description}\n\n## Lookout skill instructions\n\n${guide.instructions}\n\n## Expected output\n\n${typeof guide.expectedOutput === 'string' ? guide.expectedOutput : JSON.stringify(guide.expectedOutput,null,2)}\n\n${guide.sourceDocuments.map((doc: {path:string;content:string}) => `---\n\n## Reference: ${doc.path}\n\n${doc.content}`).join('\n\n')}\n\n---\n\nAdapted from [Career Ops](${skill.sourceUrl}). Pinned source and MIT license are included in Lookout’s Career Ops integration.`;
+ const content = micromark(markdown, {extensions:[gfm()], htmlExtensions:[gfmHtml()]});
  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><title>${skill.id} · Skill.md</title><style>${css}</style></head><body>${content}</body></html>`;
-}
-export async function writeSkillDocuments(dest, {mkdir,writeFile}) {
- await mkdir(dest+'skill-documents/',{recursive:true});
- for (const skill of toolkitSkills) await writeFile(dest+`skill-documents/${skill.id}.html`,skillDocument(skill));
 }
