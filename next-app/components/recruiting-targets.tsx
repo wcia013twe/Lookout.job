@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { useApplicationProfile } from "./application-profile-context";
 import {
@@ -8,6 +7,7 @@ import {
   parseRecruitingTargets,
 } from "../../lib/recruiting-targets.mjs";
 import { Field, control, secondary } from "./ui";
+import ProfileSection, { ProfileValues } from "./profile-section";
 type Target = {
   id: string;
   name: string;
@@ -21,7 +21,6 @@ type Target = {
 export default function RecruitingTargets() {
   const w = useWorkspace(),
     a = useApplicationProfile();
-  const [opened, setOpened] = useState<string | null>(null);
   const field = a.field(recruitingTargetsHeading, recruitingTargetsKey);
   let targets: Target[] = [],
     error = "";
@@ -44,14 +43,9 @@ export default function RecruitingTargets() {
     save(targets.map((t) => (t.id === id ? { ...t, ...fields } : t)));
   }
   return (
-    <section
-      className="mt-7 border-t border-board-line pt-6"
-      aria-labelledby="recruiting-targets-heading"
-    >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 id="recruiting-targets-heading" className="text-lg font-semibold">
-          Resume assignments &amp; role targets
-        </h3>
+    <ProfileSection title="Resume assignments & role targets" resetKey={a.profile.id} disabled={a.busy || !!error}>
+      {editing => <>
+      {editing && <div className="mb-5 flex justify-end">
         <button
           type="button"
           className={secondary}
@@ -71,12 +65,11 @@ export default function RecruitingTargets() {
                 conditions: "",
               },
             ]);
-            setOpened(id);
           }}
         >
           Add assignment
         </button>
-      </div>
+      </div>}
       <p className="mt-2 mb-4 max-w-prose text-sm text-board-muted">
         Connect one or more job titles and a job type to a resume for {a.profile.name}.
         A blank resume uses your fallback. If different resumes match, your agent should ask you to choose.
@@ -93,31 +86,9 @@ export default function RecruitingTargets() {
       ) : (
         <div className="divide-y divide-board-line">
           {targets.map((t) => (
-            <details
-              key={t.id}
-              open={opened === t.id}
-              onToggle={(e) => {
-                if (e.currentTarget.open) setOpened(t.id);
-                else if (opened === t.id) setOpened(null);
-              }}
-              className="py-3"
-            >
-              <summary className="font-semibold">
-                {t.name || "Unnamed target"}
-                <span className="ml-3 text-xs font-normal text-board-muted">
-                  {[
-                    t.active ? "Active" : "Paused",
-                    t.roles,
-                    t.employment || "Any job type",
-                    t.timeline,
-                    w.state.workflow.resumes.find(
-                      (r: { id: string; name: string }) => r.id === t.resumeId,
-                    )?.name,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </span>
-              </summary>
+            <div key={t.id} className="py-5 first:pt-0 last:pb-0">
+              <h4 className="mb-4 text-base font-semibold">{t.name || "Unnamed target"}</h4>
+              {editing ? <>
               <div className="mt-3 grid gap-5 sm:grid-cols-2">
                 <Field label="Target name">
                   <input
@@ -215,10 +186,19 @@ export default function RecruitingTargets() {
               >
                 Remove assignment
               </button>
-            </details>
+              </> : <ProfileValues items={[
+                {label:"Job titles & specializations",value:t.roles},
+                {label:"Job type",value:t.employment || "Use profile job types"},
+                {label:"Resume",value:t.resumeId ? w.state.workflow.resumes.find((r:{id:string;name:string})=>r.id===t.resumeId)?.name || "Selected resume unavailable" : "Use profile fallback"},
+                {label:"Search status",value:t.active ? "Active" : "Paused"},
+                {label:"Timing",value:t.timeline},
+                {label:"Additional conditions",value:t.conditions,wide:true},
+              ]}/>}
+            </div>
           ))}
         </div>
       )}
-    </section>
+      </>}
+    </ProfileSection>
   );
 }
