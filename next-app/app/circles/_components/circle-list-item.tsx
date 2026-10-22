@@ -26,9 +26,7 @@ export default function CircleListItem({circle,request,busy,open,manage}:Props){
  },[circle.id,request]);
  const name=circle.name.replace(' (demo)','');
  return <li className={styles.circle}>
-  <button type="button" className={styles.banner} aria-label={`Open ${name}`} disabled={busy} onClick={open}>
-   <img src="/circles/cloud-cottage.webp" alt="" width="1536" height="1024"/>
-  </button>
+  <img className={styles.banner} src="/circles/cloud-cottage.webp" alt="" width="1536" height="1024"/>
   <div className={styles.details}>
    <div className={styles.heading}><div><h3>{name}</h3><p>Private Circle · {circle.owner?'Owner':'Member'}</p></div><div className={styles.actions}><button className={primary} disabled={busy} onClick={open}>Open Circle</button><button className={secondary} disabled={busy} aria-label={`Manage ${name}`} onClick={manage}>Manage</button></div></div>
    <div className={styles.companies}>
