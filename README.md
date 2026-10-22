@@ -67,16 +67,35 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 | Form inspection/prefill | Greenhouse public form inspector; adapted Greenhouse/Ashby browser tools, explicit resume rules, reviewed native radios/checkboxes and strict approval checks |
 | Progress/leaderboard | Opt-in alias and server-derived aggregate metrics; self-reported submissions remain tracking claims |
 
-## Company logo cache
+## Company logos
 
-Company logos are public branding assets in the Supabase `company-logos` Storage
-bucket. The website resolves normalized company names through
-`data/logo-manifest.json`; agents do not search for or download logos during job
-scans. Content-hashed URLs keep browser/CDN caches stable. Missing or unavailable company logos show initials; no company images are bundled.
-Verify stored assets with `node scripts/company-logo-cache.mjs --verify`.
-Upload new PNG/JPEG assets from an external directory with
-`node scripts/company-logo-cache.mjs --upload /path/to/logos`. This bucket is
-separate from private resume storage.
+All company marks use the shared `CompanyLogo` component and load directly from
+Logo.dev. Logo.dev and the browser cache the images; no Supabase upload, logo
+manifest, backend secret, or MCP lookup is needed. Existing job/company tools
+continue to return company names: this is display enrichment, with no new user
+action or backend contract.
+
+- Local setup: copy `next-app/.env.example` to `next-app/.env.local`, set
+  `NEXT_PUBLIC_LOGO_DEV_TOKEN` to your Logo.dev **publishable** key, and restart
+  `npm run dev`. Never put a secret (`sk_`) key in a frontend environment variable.
+- GitHub Pages: repository Settings → Secrets and variables → Actions → Variables →
+  add `NEXT_PUBLIC_LOGO_DEV_TOKEN`. CI passes it into the static export at build
+  time. Rebuild/redeploy after changing it. Other hosting targets must supply the
+  same variable when building.
+- Known names and aliases resolve through `data/company-domains.json`. Add a
+  normalized company name/domain there to correct an ambiguous match. Other
+  names use Logo.dev's best-match name endpoint; application/ATS URLs are never
+  treated as the employer's domain. Name matching can select the wrong brand.
+- Missing tokens, failed images, and fictional `(demo)` companies show initials.
+  Company name/domain image requests go to Logo.dev; no candidate documents,
+  contact details or application state are included. Set the provider's allowed
+  domains to your deployed host and `localhost` if you enable domain restrictions.
+- A visible Logo.dev attribution link is included when configured. See the
+  [provider's attribution requirements](https://www.logo.dev/docs/platform/attribution).
+
+The old Supabase bucket and historical migrations are left intact for existing
+links, but the website no longer reads them. The retired seed endpoint still
+returns 410. There are no new database changes or backend deployments in this pass.
 
 ## Repository layout
 
@@ -281,7 +300,7 @@ shows pending PR work. Read [feature delivery and optional queue controls](.gith
 
 ## Admin demo mode
 
-Accounts with server-managed `app_metadata.demo_preview=true` can toggle Demo mode in the header. Mock jobs, applications, profile, tier lists and Robinhood/Stripe outreach live in a separate in-memory store. Demo mode disconnects the view from the authenticated client, prevents real submissions/uploads and supports Reset demo/Exit demo mode. Real account data remains in its original store. Company logos scaffold referral groups and the selected contact; Robinhood uses its official public icon URL when no cached asset exists.
+Accounts with server-managed `app_metadata.demo_preview=true` can toggle Demo mode in the header. Mock jobs, applications, profile, tier lists and Robinhood/Stripe outreach live in a separate in-memory store. Demo mode disconnects the view from the authenticated client, prevents real submissions/uploads and supports Reset demo/Exit demo mode. Real account data remains in its original store. Company logos scaffold referral groups and the selected contact; Company marks use Logo.dev when configured and initials otherwise.
 
 ## Internal Muse guides
 

@@ -11,23 +11,28 @@ export type Role = {
 import { useWorkspace } from "../lib/workspace";
 import { dayStamp, recordDay } from "../lib/progress.mjs";
 import { primary, secondary } from "./ui";
-import logos from "../../data/logo-manifest.json";
+import { companyLogoUrl } from "../lib/company-logo";
 import {
-  normCompany,
   rarityOf,
   RARITY_LABEL,
   TIER_HEX,
   compensationTag,
 } from "../lib/role-display";
 export function CompanyLogo({ company }: { company: string }) {
+  const url = companyLogoUrl(company, process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN);
+  return <CompanyLogoImage key={url || company} company={company} url={url} />;
+}
+function CompanyLogoImage({ company, url }: { company: string; url: string | null }) {
   const [failed, setFailed] = useState(false);
-  const entry = (logos as Record<string, { url: string }>)[normCompany(company)];
-  return entry && !failed ? (
+  return url && !failed ? (
     <img
-      src={entry.url}
+      src={url}
       alt={`${company} logo`}
       width="38"
       height="38"
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="strict-origin-when-cross-origin"
       onError={() => setFailed(true)}
       className="h-10 w-10 shrink-0 rounded-lg bg-white object-contain p-1"
     />
@@ -36,11 +41,7 @@ export function CompanyLogo({ company }: { company: string }) {
       aria-hidden="true"
       className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-board-tag text-sm font-bold"
     >
-      {company
-        .split(/\s+/)
-        .map((w) => w[0])
-        .slice(0, 2)
-        .join("")}
+      {company.trim().split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join("").toUpperCase() || "?"}
     </span>
   );
 }
