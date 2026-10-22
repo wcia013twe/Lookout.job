@@ -61,12 +61,12 @@ Applications groups tracked roles into Active, Saved jobs and Closed. Saved jobs
 contains opened roles and preparation drafts without recorded application progress;
 submitted roles move to Active, and rejected or withdrawn roles appear in Closed.
 The detail panel has Overview, Documents (resume, submission evidence, resume match
-and employer questions), Prep, and Rounds & email. Existing scoped services and
+and employer questions), Interview, and Rounds & email. Existing scoped services and
 approval rules are unchanged; this pass adds navigation over existing data only.
 
 Demo check: Saved jobs includes the fictional NVIDIA opened role and any draft
-without later progress. Open it to inspect the empty Prep state. Open a prepared
-application to inspect Documents, the separate Prep plan, and recruiting emails
+without later progress. Open it to inspect the empty Interview state. Open a prepared
+application to inspect Documents, the compact Interview brief, and recruiting emails
 alongside the round timeline. Add round & note opens Rounds & email. Reset restores
 the fixtures without touching account records.
 
@@ -258,3 +258,33 @@ Escape and desktop-dark/mobile-light layout using fictional intercepted accounts
 Demo fixtures include a captured fictional name/email distinct from the current
 profile plus an unanswered scheduling question. No real private file download,
 form fill or submission was performed during verification.
+
+
+## Interview brief
+
+The former Prep tab is now Interview: a focused, read-only round brief with the
+next recorded round, up to three outstanding non-resource priorities from its
+saved preparation plan and up to three saved relevant materials. Long priority
+detail and provenance live under Sources & context. This tab uses a narrower
+reading layout and hides the repeated application-status sidebar; the sidebar
+remains available in the other application tabs.
+
+Actual scheduled round timestamps are distinct from preparation deadlines.
+Unconfirmed or missing dates remain unconfirmed, past deadlines and mismatched
+round dates are flagged, and date-only records never acquire an invented time.
+No interview or saved plan yields a small empty state without a setup form.
+Round details opens Rounds & email; Open Action Board opens shared practice.
+The app does not generate fresh priorities or an AI assessment on view.
+
+The old per-application date form, plan builder, task checkboxes and minutes are
+removed from this tab. Existing plans, task progress, backend validation and
+scoped preparation read/save tools remain intact. Planning and completion stay
+in the existing Action Board/agent workflow; round metadata stays in Rounds &
+email. The application loader now only uses the existing owner-scoped read and
+retains loading/error retry, account-change and demo isolation guards.
+
+Demo coverage includes a dated technical round, a useful but unconfirmed phone
+screen and a saved role with no interview. `scripts/check-interview-brief-ui.mjs`
+checks content caps, no form/checklist, collapsed provenance, uncertainty, empty
+state, scoped sidebar hiding, navigation, Escape and desktop-dark/mobile-light
+layout with fictional intercepted accounts and no demo cloud calls.

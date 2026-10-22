@@ -49,10 +49,13 @@ export function createDemoWorkspace(now = new Date()) {
     source: { kind: 'email', messageId: 'demo-email-confirmed', subject: 'Demo: your technical interview', receivedAt: at, excerpt: `Fictional email: your technical interview is on ${confirmedDate} at 14:00 UTC. Prepare to discuss SQL and backend design.`, url: 'https://example.com/demo/email/confirmed' },
   } });
   confirmedPlan = setPreparationTaskCompletion(confirmedPlan, confirmedPlan.tasks[0].id, true, at);
+  // The compact interview brief keeps an undated round visibly unconfirmed.
   const ambiguousPlan = createPreparationPlan({ application: applications['demo-ambiguous'], now: at, guides, deadline: {
     date: 'next Friday', stage: 'Phone screen', confirmed: false,
     source: { kind: 'email', messageId: 'demo-email-ambiguous', subject: 'Demo: finding a time', receivedAt: at, excerpt: 'Fictional email: can you speak next Friday? We will confirm the date and time shortly.', url: 'https://example.com/demo/email/ambiguous' },
   } });
+  const ambiguousPractice = ambiguousPlan.tasks.find(task => task.key === 'practice');
+  if (ambiguousPractice) ambiguousPractice.detail = 'Fictional phone screen: explain your query-service project and ask which platform team is hiring. The date and interview format still need confirmation.';
   let secondPlan = createPreparationPlan({application:applications['demo-confirmed'],now:at,guides,deadline:{date:day(today,5),stage:'Technical interview',confirmed:true,source:{kind:'manual'}}});
   const companyGuide = {id:'cedar-lookout-report',title:'Cedar engineering guide',url:'https://example.com/demo/intelligence/cedar',companies:['Cedar Systems (demo)'],topics:['backend'],minutes:15,source:'lookout',observedAt:today,evidence:'Fictional report: a query-planning discussion followed by a backend design exercise.'};
   confirmedPlan = createPreparationPlan({application:applications['demo-interview'],now:at,previousPlan:confirmedPlan,guides:[...guides,companyGuide],deadline:{...confirmedPlan.deadline,confirmed:true}});

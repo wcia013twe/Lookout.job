@@ -735,3 +735,38 @@ button:not(:disabled) {
 .workspace-shell .application-documents-editor { margin-top: 28px; border-top: 1px solid var(--color-board-line); padding-top: 14px; }
 .workspace-shell .application-documents-editor > summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font-size: 16px; font-weight: 650; }
 @media (max-width: 479px) { .workspace-shell .application-form-fields { grid-template-columns: minmax(0,1fr); gap: 16px; } }
+
+/* A round brief, not a second practice planner. */
+.workspace-shell .interview-brief { display: grid; gap: 26px; min-width: 0; }
+.workspace-shell .interview-brief h3, .workspace-shell .interview-brief h4, .workspace-shell .interview-brief h5 { margin: 0; }
+.workspace-shell .interview-brief-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.workspace-shell .interview-brief-header h3 { font-size: 22px; }
+.workspace-shell .interview-brief-header p { margin-top: 7px; color: var(--color-board-muted); font-size: 14px; }
+.workspace-shell .interview-brief-round { display: flex; align-items: start; gap: 12px; flex-wrap: wrap; padding: 18px; border-radius: 12px; background: color-mix(in srgb, var(--color-board-accent) 8%, var(--color-board-panel)); }
+.workspace-shell .interview-brief-round h4 { font-size: 12px; color: var(--color-board-muted); font-weight: 500; }
+.workspace-shell .interview-brief-round p { margin-top: 5px; font-size: 16px; font-weight: 600; }
+.workspace-shell .interview-brief-round small { display: block; margin-top: 5px; color: var(--color-board-muted); font-size: 12px; }
+.workspace-shell .interview-brief-warning { margin-left: auto; padding: 5px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-board-warning) 10%, var(--color-board-panel)); color: var(--color-board-warning); font-size: 12px; }
+.workspace-shell .interview-brief-expectation { color: var(--color-board-muted); font-size: 14px; line-height: 1.75; margin-top: -10px; }
+.workspace-shell .interview-brief-focus h4, .workspace-shell .interview-brief-materials h4, .workspace-shell .interview-brief-empty h4 { font-size: 17px; }
+.workspace-shell .interview-brief-focus ul { margin-top: 10px; }
+.workspace-shell .interview-brief-focus li { display: flex; align-items: start; gap: 10px; padding: 15px 0; }
+.workspace-shell .interview-brief-focus li + li { border-top: 1px solid var(--color-board-line); }
+.workspace-shell .interview-brief-focus h5 { font-size: 14px; line-height: 1.6; }
+.workspace-shell .interview-brief-focus p, .workspace-shell .interview-brief-muted, .workspace-shell .interview-brief-empty p { margin-top: 6px; max-width: 65ch; font-size: 14px; line-height: 1.75; color: var(--color-board-muted); overflow-wrap: anywhere; }
+.workspace-shell .interview-brief-materials ul { margin-top: 12px; }
+.workspace-shell .interview-brief-materials li { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 7px 0; font-size: 14px; }
+.workspace-shell .interview-brief-materials a { color: var(--color-board-accent); text-decoration: underline; text-underline-offset: 4px; }
+.workspace-shell .interview-brief-actions { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+.workspace-shell .interview-brief-sources { border-top: 1px solid var(--color-board-line); padding-top: 10px; }
+.workspace-shell .interview-brief-sources summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; font-size: 13px; color: var(--color-board-muted); cursor: pointer; }
+.workspace-shell .interview-brief-sources div, .workspace-shell .interview-brief-sources > p, .workspace-shell .interview-brief-sources ul { margin-top: 16px; font-size: 12px; line-height: 1.75; color: var(--color-board-muted); overflow-wrap: anywhere; }
+.workspace-shell .interview-brief-sources h5 { color: var(--color-board-text); font-size: 13px; }
+.workspace-shell .interview-brief-sources small, .workspace-shell .interview-brief-sources a { display: block; margin-top: 8px; }
+.workspace-shell .interview-brief-sources a { color: var(--color-board-accent); text-decoration: underline; }
+
+.workspace-shell .tracker-detail-brief { max-width: 900px; }
+.workspace-shell .tracker-detail-grid-brief { grid-template-columns: minmax(0,1fr); }
+.workspace-shell .tracker-detail-grid-brief > .tracker-detail-sidebar { display: none; }
+.workspace-shell .tracker-detail-grid-brief .tracker-detail-content { max-width: 728px; width: 100%; margin-inline: auto; }
+.workspace-shell .interview-brief-focus p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
