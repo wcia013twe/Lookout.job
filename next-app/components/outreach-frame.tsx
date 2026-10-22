@@ -1,9 +1,12 @@
 "use client";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {outreachSentences} from "../../lib/outreach-model.mjs";
 const colors: Record<string,string> = {Background:"#bd9cf4",Connection:"#e4bc45",Achievement:"#60aef0","Why them":"#ed99bb",Timing:"#f4a361",Ask:"#57bd98"};
 const escape = (value:string) => value.replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]!));
 export default function OutreachFrame({message, name, highlights}: {message:string;name:string;highlights:boolean}) {
+  const [height,setHeight]=useState(280);
+  const resizeObserver=useRef<ResizeObserver|null>(null);
+  useEffect(()=>()=>resizeObserver.current?.disconnect(),[]);
   const [theme,setTheme]=useState("");
   useEffect(()=>{
     const update=()=>setTheme(document.documentElement.dataset.theme || "");
@@ -28,5 +31,13 @@ export default function OutreachFrame({message, name, highlights}: {message:stri
     .animated span{animation:reveal 180ms ease-out var(--delay)}@keyframes reveal{from{opacity:.9}to{opacity:1}}@media(prefers-reduced-motion:reduce){.animated span{animation:none}}
     .sr{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}::selection{background:#79b8e65c}html{scrollbar-width:thin;scrollbar-color:#7e90a6 transparent}
   </style></head><body><article aria-label="Message template"><span class="sr">${escape(message)}</span><span class="animated" aria-hidden="true">${content}</span></article></body></html>`;
-  return <iframe key={`${name}-${theme}`} title={`${name} highlighted message preview`} sandbox="" srcDoc={doc} className="block h-[360px] w-full border-0 sm:h-[400px]"/>;
+  return <iframe key={`${name}-${theme}`} title={`${name} highlighted message preview`} sandbox="allow-same-origin" srcDoc={doc} className="block w-full border-0" style={{height}} onLoad={event=>{
+    resizeObserver.current?.disconnect();
+    const body=event.currentTarget.contentDocument?.body;
+    if(!body)return;
+    const resize=()=>setHeight(Math.max(120,Math.ceil(body.getBoundingClientRect().height)+2));
+    resize();
+    resizeObserver.current=new ResizeObserver(resize);
+    resizeObserver.current.observe(body);
+  }}/>;
 }

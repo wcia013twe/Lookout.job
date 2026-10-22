@@ -166,7 +166,7 @@ function ProfileContent() {
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}
-      {(a.dirty || active === "preferences" || active === "agent") && (
+      {active !== "agent" && (a.dirty || active === "preferences") && (
         <div className={profileStyles.saveBar}>
           <div className="min-w-0 flex-1">
             <span className="text-sm font-semibold">

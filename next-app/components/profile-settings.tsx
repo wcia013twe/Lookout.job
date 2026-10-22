@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   eligibilityHeading,
   countryEligibilityFields,
@@ -7,8 +7,9 @@ import {
 } from "../../lib/profile-eligibility.mjs";
 import { useApplicationProfile } from "./application-profile-context";
 import { useWorkspace } from "../lib/workspace";
-import { Field, control, secondary } from "./ui";
+import { Field, control, primary, secondary } from "./ui";
 import { profileStyles as styles } from "./profile-surface";
+import writing from "./writing-workspace.module.css";
 import WritingPreview from "./writing-preview";
 import SavedAnswers from "./saved-answers";
 import OutreachTemplates from "./outreach-templates";
@@ -152,53 +153,60 @@ const channels = [
   },
 ];
 export function WritingStyles() {
-  const a = useApplicationProfile();
-  const [preview, setPreview] = useState<string | null>(null);
+  const a = useApplicationProfile(), w = useWorkspace(), id = useId();
+  const [channel, setChannel] = useState(1);
   return <>
-    <h2 className="mb-3 mt-8 text-lg font-bold">Writing style</h2>
-    <p className="text-sm text-board-muted">A separate voice for each kind of writing, saved with {a.profile.name}.</p>
-    {channels.map(c => <div key={c.heading} className={styles.writingLayout}><div className={styles.writingSettings}><ProfileSection key={c.heading} title={c.title} resetKey={a.profile.id} disabled={a.busy}>{editing => <>
-      <p className="mb-5 text-sm text-board-muted">{c.description}</p>
-      {editing ? <div className="grid gap-5 sm:grid-cols-2">
-        {([
-          ["Tone", ["Professional & direct", "Warm & conversational", "Confident & understated", "Formal"]],
-          ["Length", ["Brief", "Balanced", "Detailed"]],
-        ] as [string, string[]][]).map(([key, values]) => <Field key={key} label={`${c.title} ${key.toLowerCase()}`}>
-          <select className={control} value={a.field(c.heading,key).value} disabled={a.busy || a.field(c.heading,key).conflict} onChange={e=>a.change(c.heading,key,e.target.value)}>
-            <option value="">No preference</option>
-            {values.map(value=><option key={value}>{value}</option>)}
-          </select>
-        </Field>)}
-        <div className="sm:col-span-2"><Field label={`${c.title} custom guidance`}>
-          <textarea rows={3} className={control} value={a.field(c.heading,"Guidance").value} disabled={a.busy || a.field(c.heading,"Guidance").conflict} onChange={e=>a.change(c.heading,"Guidance",e.target.value)} placeholder={c.heading==="Outreach writing"?"Lead with why I’m contacting them. Avoid flattery.":"Use concrete evidence. Avoid exaggerated enthusiasm."}/>
-        </Field></div>
-      </div> : <ProfileValues items={[
-        {label:"Tone",value:a.field(c.heading,"Tone").value || "No preference"},
-        {label:"Length",value:a.field(c.heading,"Length").value || "No preference"},
-        {label:"Custom guidance",value:a.field(c.heading,"Guidance").value,wide:true},
-      ]}/>}
-      <button type="button" className={`${secondary} mt-5`} aria-expanded={preview===c.heading} onClick={()=>setPreview(preview===c.heading?null:c.heading)}>{preview===c.heading?"Hide style brief":"Preview style brief"}</button>
-      {preview===c.heading && <div className="mt-4 border-t border-board-line pt-4 text-sm leading-relaxed">
-        <p className="font-semibold">Instructions your agent will receive</p>
-        <p className="mt-2">{a.field(c.heading,"Tone").value || "Use a natural tone"}. {a.field(c.heading,"Length").value || "Choose a suitable length"}.</p>
-        <p className="mt-2 whitespace-pre-wrap break-words">{a.field(c.heading,"Guidance").value || "No additional writing guidance."}</p>
-        <p className="mt-3 text-xs text-board-muted">This previews your current guidance. Save application profile to keep changes. Facts and answer-review requirements still apply.</p>
-      </div>}
-    </>}</ProfileSection></div>
-      <section className={`${styles.writingLibrary} ${c.title === "Outreach" ? styles.writingPreviewPanel : ""}`} tabIndex={0} aria-label={`${c.title} examples and library`}>
-        {c.title === "Outreach" ? <OutreachTemplates carouselOnly/> : <>
-          <h3 className="text-lg font-semibold">Employer answer preview</h3>
-          <p className="my-3 text-xs text-board-muted">Fictional example · Why are you interested in this role?</p>
-          <WritingPreview key={a.profile.id} text="I’m interested in this role because it combines distributed systems with practical performance work. In a fictional university project, I built a query service and compared caching strategies under load. I’d like to bring that approach to your infrastructure team and learn how you handle reliability at production scale."/>
-          <p className="mt-4 text-xs text-board-muted">Illustrative example. Your agent uses your saved writing settings and verified experience for real answers.</p>
-        </>}
-      </section>
-    </div>)}
-    <details className="mt-6 border-y border-board-line py-4">
-      <summary className="cursor-pointer text-base font-semibold">Shared question bank</summary>
+    <section className={writing.studio} aria-label="Writing workspace">
+      <header className={writing.header}>
+        <h2>Writing style</h2>
+        <p>A separate voice for each kind of writing, saved with {a.profile.name}.</p>
+      </header>
+      <div className={writing.tabs} role="tablist" aria-label="Writing channel">
+        {channels.map((c,index)=><button key={c.heading} type="button" role="tab" id={`${id}-tab-${index}`} aria-controls={`${id}-panel-${index}`} aria-selected={channel===index} tabIndex={channel===index?0:-1} onClick={()=>setChannel(index)} onKeyDown={event=>{
+          const next=event.key==="Home"?0:event.key==="End"?channels.length-1:event.key==="ArrowRight"?(index+1)%channels.length:event.key==="ArrowLeft"?(index+channels.length-1)%channels.length:null;
+          if(next!==null){event.preventDefault();setChannel(next);document.getElementById(`${id}-tab-${next}`)?.focus();}
+        }}>{index===0?"Employer answers":c.title}</button>)}
+      </div>
+      {channels.map((c,index)=><div key={c.heading} className={writing.body} role="tabpanel" id={`${id}-panel-${index}`} aria-labelledby={`${id}-tab-${index}`} hidden={channel!==index}>
+        <div className={writing.settings}>
+          {([
+            ["Tone", ["Professional & direct", "Warm & conversational", "Confident & understated", "Formal"]],
+            ["Length", ["Brief", "Balanced", "Detailed"]],
+          ] as [string,string[]][]).map(([key,values])=>{
+            const field=a.field(c.heading,key);
+            return <Field key={key} label={`${c.title} ${key.toLowerCase()}`}>
+              <select className={control} value={field.value} disabled={a.busy||w.locked||field.conflict} onChange={event=>a.change(c.heading,key,event.target.value)}>
+                <option value="">No preference</option>{values.map(value=><option key={value}>{value}</option>)}
+                {field.value&&!values.includes(field.value)&&<option value={field.value}>{field.value}</option>}
+              </select>
+              {field.conflict&&<span className="text-xs">Resolve duplicate {key} lines in Advanced instructions.</span>}
+            </Field>;
+          })}
+          <Field label={`${c.title} custom guidance`}>
+            <textarea rows={4} className={control} value={a.field(c.heading,"Guidance").value} disabled={a.busy||w.locked||a.field(c.heading,"Guidance").conflict} onChange={event=>a.change(c.heading,"Guidance",event.target.value)} placeholder={index===1?"Lead with why I’m contacting them. Avoid flattery.":"Use concrete evidence. Avoid exaggerated enthusiasm."}/>
+            {a.field(c.heading,"Guidance").conflict&&<span className="text-xs">Resolve duplicate Guidance lines in Advanced instructions.</span>}
+          </Field>
+          <p className={writing.help}>Your agent uses these settings when preparing drafts.</p>
+        </div>
+        <section className={writing.preview} aria-label={`${c.title} examples and library`}>
+          {index===1?<OutreachTemplates carouselOnly embedded/>:<>
+            <h3 className="text-sm font-semibold">Answer preview</h3>
+            <p className="mb-5 mt-5 border-t border-board-line pt-5 text-sm">Why are you interested in this role?</p>
+            <WritingPreview key={a.profile.id} text="I’m interested in this role because it combines distributed systems with practical performance work. In a fictional university project, I built a query service and compared caching strategies under load. I’d like to bring that approach to your infrastructure team and learn how you handle reliability at production scale."/>
+            <p className="mt-6 text-xs leading-relaxed text-board-muted">Fictional example. Writing settings guide your agent’s drafts; this preview does not generate a personalized answer.</p>
+          </>}
+        </section>
+      </div>)}
+      <footer className={writing.footer}>
+        <div className="min-w-0 flex-1"><p role="status">{a.feedback||"Writing settings save with this application profile."}</p><p className="mt-1 text-xs text-board-muted">Includes any other pending application-profile changes.</p></div>
+        <button type="button" className={secondary} disabled={a.busy||w.locked} onClick={a.reload}>Reload saved</button>
+        <button type="button" className={primary} disabled={a.busy||w.locked||!a.dirty||!a.profile.name.trim()} onClick={a.saveProfile}>{a.busy?"Saving…":"Save writing settings"}</button>
+      </footer>
+    </section>
+    <details className={writing.bank}>
+      <summary>Shared question bank &amp; saved answers</summary>
       <p className="mt-3 text-sm text-board-muted">Manage shared employer answers and choose which answers this profile can use.</p>
-      <ApplicationMaterials mode="answers"/>
-      <SavedAnswers/>
+      <ApplicationMaterials mode="answers"/><SavedAnswers/>
     </details>
     <ApplicationDocumentLibrary kind="application_template"/>
   </>;

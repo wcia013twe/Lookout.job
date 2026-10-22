@@ -353,11 +353,3 @@
 @media(max-width:639px){.overviewIdentity{gap:12px}.overviewIdentityText h2{font-size:18px}.overviewIdentityText p{font-size:12px}.overviewMetrics{gap:16px}.overviewNav>button{gap:12px}}
 
 .agentPanel { text-align: left; width: 100%; margin-inline: 0; }
-.writingLayout { display: grid; grid-template-columns: minmax(260px, .85fr) minmax(0, 1.15fr); gap: 28px; align-items: start; margin-top: 24px; }
-.writingSettings { min-width: 0; }
-.writingSettings > section { margin-top: 0; }
-.writingLibrary { min-width: 0; max-height: 680px; overflow-y: auto; overscroll-behavior: contain; padding: 8px 16px 16px 0; scrollbar-color: var(--color-board-muted) transparent; scrollbar-width: thin; }
-.writingLibrary:focus-visible { outline: 2px solid var(--color-board-accent); outline-offset: 4px; }
-@media(max-width: 900px) { .writingLayout { grid-template-columns: minmax(0, 1fr); gap: 20px; } .writingLibrary { max-height: 560px; padding-right: 8px; } }
-
-.writingPreviewPanel { max-height: none; overflow: visible; padding: 0; }
