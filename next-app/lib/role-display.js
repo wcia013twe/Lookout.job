@@ -97,4 +97,4 @@ const compensationTag = (text) => {
   return `${kind} ${hit[0].trim()}`;
 };
 
-export { normCompany, rarityOf, RARITY_LABEL, TIER_HEX, compensationTag };
+export { normCompany, rarityOf, RARITY_LABEL, TIER_HEX, compensationTag, tierIndex };

@@ -161,3 +161,33 @@ role-type policies remain a legacy fallback. Gateway/config release and hosted
 verification are required before claiming the new execution policy is deployed.
 
 About me / Documents appears before Career background and includes the shared resume library, direct Assign roles/Add role assignment, cover letters and reusable application templates. Resume files remain private PDF/DOCX uploads; cover letters/templates accept text or document links and use the versioned artifact service with cover_letter/application_template kinds. Add, read/edit, archive and pagination use existing backend validation. The same role assignments remain in Job preferences. Demo supports metadata-only resume upload and versioned in-memory document editing. `scripts/check-profile-ui.mjs` verifies placement, adding a resume and assignment, cover-letter/template revision, mobile layout and zero demo cloud writes. Deploy the migration and gateway context 37 via the normal production workflow before claiming live support.
+
+
+## Discover match and job preview
+
+Discover cards show four fit dimensions: skills and experience, compensation,
+wellbeing and culture, and location and work setting. Real catalog roles remain
+unassessed, without an invented percentage. The admin demo adds resettable,
+fictional strong, partial and unknown match examples with labeled sample scores.
+These are UI fixtures, not Glassdoor or Simplify ratings or a live AI evaluator.
+
+Preview job opens a right-side dialog (full width on mobile) with the available
+job description, collected fit notes, verification gaps and a Common-or-above
+application preview. Missing descriptions are explicit. The preview uses saved
+profile contact fields; edits are temporary and discarded on close. Account,
+demo-mode and demo-reset changes invalidate the selection. It does not fetch or
+fill an employer form, select a resume, grant approval or submit anything.
+Only opening the real employer posting updates Auto Tracker; demo previews never
+open an external posting. Existing Queue application behavior is unchanged.
+
+This is a read-only presentation of existing catalog/profile state. Existing MCP
+context boundaries (`read_search_context`, `read_search_discoveries`) and
+application draft/review tools remain authoritative; this pass adds no backend
+service, tool, scoring capability or live form-prefill parity claim.
+
+Verification: `scripts/check-discover-ui.mjs` uses a fictional authenticated
+admin and intercepts backend traffic. Set `LOOKOUT_UI_URL` to a locally served
+static export, `LOOKOUT_PLAYWRIGHT_MODULE` to an installed Playwright module and
+`LOOKOUT_UI_ARTIFACTS` for captures. It covers the panel, contact prefill, ephemeral
+edits, Escape/focus restoration, no preview service calls, no demo external links,
+unknown scores, and desktop-dark/mobile-light layouts. No real account is used.

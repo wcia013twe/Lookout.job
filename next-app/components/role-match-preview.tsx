@@ -1,0 +1,18 @@
+"use client";
+export type MatchPreview = { percent: number; factors: { label: string; value: number | null; rating: string; reason: string }[] };
+const factors = ["Skills & experience", "Compensation", "Wellbeing & culture", "Location & work setting"];
+export default function RoleMatchPreview({ sample, expanded = false }: { sample?: MatchPreview; expanded?: boolean }) {
+  return <section aria-label="Job match preview" className="border-t border-board-line/60 pt-4">
+    <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+      <h4 className="text-base font-semibold tabular-nums">{sample ? `${sample.percent}% job match` : "Job match pending"}</h4>
+      <span className="text-xs text-board-muted">{sample ? "Illustrative demo" : "Not assessed"}</span>
+    </div>
+    <div className="space-y-3">
+      {(sample?.factors || factors.map(label => ({ label, value: null, rating: "Unknown", reason: "No verified assessment yet. A score needs current job requirements, your profile and stated preferences." }))).map(factor => {
+        const content = <><div className="flex justify-between gap-3 text-xs leading-5"><span>{factor.label}</span><span className={factor.rating === "Limited" ? "text-board-warning" : "text-board-muted"}>{factor.rating}</span></div><div className="mt-1 h-1 overflow-hidden rounded-full bg-board-line">{factor.value !== null && <div className={`h-full rounded-full ${factor.rating === "Limited" ? "bg-board-warning" : "bg-board-success"}`} style={{ width: `${factor.value}%` }} />}</div></>;
+        return expanded ? <details key={factor.label}><summary className="min-h-11 cursor-pointer list-none rounded-md py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-board-accent">{content}<span className="mt-1 block text-[11px] text-board-muted">Show reasoning</span></summary><p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">{factor.reason}</p></details> : <div key={factor.label}>{content}</div>;
+      })}
+    </div>
+    {expanded && <p className="mt-4 text-xs leading-relaxed text-board-muted">{sample ? "These fixed example scores demonstrate the interface. They are not calculated from your profile, supplied by Glassdoor or Simplify, or a prediction of hiring success." : "No percentage is shown until an evidence-backed assessment is available. Missing information stays unknown."}</p>}
+  </section>;
+}

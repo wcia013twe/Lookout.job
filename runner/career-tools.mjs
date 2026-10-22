@@ -1,6 +1,7 @@
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { PROJECT_URL } from './gateway-client.mjs';
@@ -21,7 +22,7 @@ export async function executeCareerTask(task,input,{timeout=120000}={}) {
   // Deliberately do not inherit agent token, cloud credentials, proxy credentials or user config.
   const env=Object.fromEntries(['PATH','SYSTEMROOT','TMPDIR','LOOKOUT_CHROMIUM_EXECUTABLE'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
   env.CAREER_OPS_ROOT=workspace;
-  const child=spawn(process.execPath,['--max-old-space-size=384',new URL('./career-worker.mjs',import.meta.url).pathname],{env,cwd:workspace,stdio:['pipe','pipe','pipe']});
+  const child=spawn(process.execPath,['--max-old-space-size=384',fileURLToPath(new URL('./career-worker.mjs',import.meta.url))],{env,cwd:workspace,stdio:['pipe','pipe','pipe']});
   let stdout='',overflow=false;const timer=setTimeout(()=>{child.kill('SIGKILL');reject(Error('Toolkit task exceeded time budget'));},timeout);
   child.stdout.on('data',b=>{stdout+=b;if(Buffer.byteLength(stdout)>16000000){overflow=true;child.kill('SIGKILL');}});
   child.stderr.resume();child.on('error',e=>{clearTimeout(timer);reject(e);});
