@@ -21,3 +21,10 @@
 - Reorganized round entry into clearly labeled paired fields and full-width private notes, with a separate save action. Kept the existing timeline and scoped save/ownership checks.
 - Presented emails as separated subject/date/excerpt rows and moved application activity into History & emails. Demo email links remain disabled. No new services or MCP contracts.
 - Validation: frontend typecheck, data validation (147 roles), static production build, whitespace check, and desktop-dark/mobile-light demo browser checks passed. Checked expanded defaults, stable shell, labeled round controls, email/activity access, empty/uncertain states, no overflow and demo isolation. Live inbox sync and production writes were not exercised.
+
+## Follow-up: compact round entry
+
+- Collapsed round entry behind an accessible + Add round button, while recorded rounds and email history remain expanded. Sidebar Add round & note opens the editor.
+- Added a bounded, responsive editor with grouped fields, full-width notes, clear Save/Close actions and a privacy hint. Closing preserves unsaved input and restores focus to the toggle. Existing save validation, ownership and MCP boundary remain unchanged.
+- Demo browser coverage verifies collapsed defaults, expansion, draft preservation, close controls and desktop/mobile layout.
+- Validation: frontend typecheck, data validation (147 roles), production static build, whitespace check and mocked desktop/mobile browser checks passed. Reviewed expanded editor captures in both themes. No live submission or backend write was exercised.

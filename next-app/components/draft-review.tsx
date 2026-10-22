@@ -23,6 +23,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
   const role = w.roles.find((r: Application) => r.id === id);
   const current: Application | undefined = workflow || (role ? {...role, status: w.state.tracker.items[id]?.status || "New", questions: []} : undefined);
   const [tab, setTab] = useState("Overview");
+  const [roundEditorOpen, setRoundEditorOpen] = useState(false);
   const [roundsOpen, setRoundsOpen] = useState(true);
   const rounds = useRef<HTMLDetailsElement | null>(null);
   function openRounds() {
@@ -396,7 +397,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
             <div className="interview-support-body">
               <h3 className="support-heading">Interview rounds &amp; history</h3>
               <ApplicationTimeline application={current} demo={w.demo}/>
-              {workflow && <TimelineEditor application={current}/>}
+              {workflow && <TimelineEditor application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}
               <button className={`${secondary} mt-5 gap-2`} onClick={createExperience}><ProfileIcon name="file" width={17} height={17}/>Create experience card</button>
             </div>
           </details>
@@ -461,6 +462,6 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </div>
         )}
       </Section>
-</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={openRounds}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
+</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>{ setRoundEditorOpen(true); openRounds(); }}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
   </dialog>;
 }

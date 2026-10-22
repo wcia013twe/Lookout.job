@@ -266,7 +266,7 @@ form fill or submission was performed during verification.
 The former Prep tab is now Interview: a focused, read-only round brief with the
 next recorded round, up to three outstanding non-resource priorities from its
 saved preparation plan and up to three saved relevant materials. Long priority
-detail and provenance live under Sources & context. The dialog and sidebar retain the same dimensions across tabs. Round details and History & emails are expanded beneath the brief by default, with optional collapse controls. Round updates use grouped fields and full-width private notes; emails show subject, recorded date and readable excerpts, followed by application activity.
+detail and provenance live under Sources & context. The dialog and sidebar retain the same dimensions across tabs. Round details and History & emails are expanded beneath the brief by default, with optional collapse controls. Round entry starts collapsed behind + Add round, then shows grouped fields, full-width private notes and Save/Close actions. Closing preserves the draft; the sidebar Add round & note shortcut opens the editor. emails show subject, recorded date and readable excerpts, followed by application activity.
 
 Actual scheduled round timestamps are distinct from preparation deadlines.
 Unconfirmed or missing dates remain unconfirmed, past deadlines and mismatched
