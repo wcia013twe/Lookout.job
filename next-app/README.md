@@ -131,3 +131,5 @@ Visit `/circles/preview/`, open a Circle, use Write an update, save a private dr
 review its audience, choose Keep private or share, then withdraw and reset.
 Read `/privacy/` as a guest and at mobile width; these interactions never submit
 applications or write real account records.
+
+`components/surface-panel.tsx` shares the Sharing & privacy material with Action Board panels, including the fictional admin demo. Use `as="form"` for a native form; otherwise it renders a section. Supply accessible labels and content at the caller. Existing primary/secondary controls inherit its theme tokens; the styling lives in `app/globals.css`. Demo verification covers the expanded application review, disabled approval gate, reset, weekly prep pause/resume, company follow-ups, and desktop/mobile/light presentation. This visual component adds no service or user action; existing MCP mappings remain unchanged.
