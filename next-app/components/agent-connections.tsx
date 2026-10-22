@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, secondary } from "./ui";
@@ -9,6 +10,16 @@ const gateway =
     "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-gateway",
   mcp = "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp";
 const optionalScopes = [["knowledge:read","Read permitted Circle knowledge"],["knowledge:write","Propose contributions and record citation use (also enable knowledge read)"],["preferences:write","Edit search profiles and preferences"],["answers:write","Edit saved answers"],["resumes:write","Upload and add résumés"],["network:write","Edit contacts and outreach drafts"],["tracking:write","Record user-reported progress"]];
+const scopeLabels: Record<string, string> = {
+  ...Object.fromEntries(optionalScopes),
+  "workspace:read": "Read your profile, preferences and job-search records",
+  "profile:write": "Update profile facts for your review",
+  "resumes:read": "Read private resume files",
+  "batches:write": "Save private job batches",
+  "drafts:write": "Prepare application drafts",
+  "activity:write": "Record search activity",
+  "approvals:read": "Read application review decisions",
+};
 export default function AgentConnections({onboarding=false}:{onboarding?:boolean}) {
   const w = useWorkspace();
   const [connections, setConnections] = useState<AgentConnection[]>([]),
@@ -169,7 +180,8 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
     <Section title="Connect your personal agent">
       <p className="max-w-prose text-sm leading-relaxed text-board-muted">
         Give Muse or another personal agent access to your Lookout workspace.
-        Your agent does the work; your results and career context stay here.
+        Your agent can read or change information within the permissions you grant.
+        Its AI provider’s policies apply to information it receives. <Link href="/privacy/#agents" className="underline underline-offset-4">Privacy details</Link>.
       </p>
       {!w.user && !w.demo && (
         <p role="status" className="mt-4 rounded-lg border border-board-line bg-board-tag p-4 text-sm">
@@ -284,10 +296,14 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
                       </div>
                     )}
                   </div>
+                  <details className="mt-2 text-sm text-board-muted">
+                    <summary className="min-h-11 py-2">View permissions</summary>
+                    <ul className="list-disc space-y-1 pl-5 text-xs leading-relaxed">{c.scopes.map(scope => <li key={scope}>{scopeLabels[scope] || scope}</li>)}</ul>
+                  </details>
                   {feedback && (action === `revoke:${c.id}` || action === `profile:${c.id}`) && <p role="status" className="mt-3 text-sm leading-relaxed">{feedback}</p>}
                   {revokeTarget === c.id && (
                     <div className="mt-4 rounded-lg bg-board-tag p-4">
-                      <p className="text-sm leading-relaxed">Revoke access for <strong>{c.name}</strong>? Its token will stop working. Your saved workspace stays here.</p>
+                      <p className="text-sm leading-relaxed">Revoke access for <strong>{c.name}</strong>? Its token will stop working. This does not delete information the agent already received. Your saved workspace stays here.</p>
                       <div className="mt-3 flex flex-wrap gap-2">
                         <button className={primary} disabled={busy} onClick={() => revoke(c.id)}>{busy && action === `revoke:${c.id}` ? "Revoking…" : "Confirm revoke"}</button>
                         <button className={secondary} disabled={busy} onClick={() => setRevokeTarget(null)}>Keep connection</button>
