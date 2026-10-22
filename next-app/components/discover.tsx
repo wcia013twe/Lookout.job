@@ -28,7 +28,7 @@ export default function Discover() {
       <Heading title="Discover">
         {w.batchLabel || "Your latest roles, ready to explore."}
       </Heading>
-      <div className="glass-inset mb-3 grid grid-cols-2 items-end gap-2 rounded-xl p-3 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3 md:p-4">
+      <div className="discover-filters mb-3 grid grid-cols-2 items-end gap-2 rounded-xl p-3 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3 md:p-4">
         <input
           aria-label="Search roles or companies"
           placeholder="Search roles or companies"
