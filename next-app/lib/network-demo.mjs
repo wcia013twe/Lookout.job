@@ -1,5 +1,5 @@
 import {demoFixtures as baseFixtures} from './demo.mjs';
-import {emptyCompany,encodeCompany,processTag} from '../../lib/network-model.mjs';
+import {emptyCompany,processTag} from '../../lib/network-model.mjs';
 // Extend the established demo without coupling company fixtures to application fixtures.
 export function demoFixtures(date){
  const fixtures=baseFixtures(date);
@@ -9,9 +9,16 @@ export function demoFixtures(date){
  {id:'dddddddd-3333-4333-8333-333333333333',revision:1,record:{...emptyCompany('Archived Example (demo)'),archived:true,nextAction:'Paused follow-up',followUpDate:date}}
  ];
  // Keep the Network story focused on two targets and two Cedar contacts.
- fixtures.state.network.referrals=companies.map(encodeCompany);
+ fixtures.state.network.companies=companies;
+ fixtures.state.network.referrals=[];
+ // Archived migration evidence exercises duplicate IDs and malformed legacy notes.
+ fixtures.state.network.companies.push({id:'demo-legacy-duplicate',revision:4,companyId:null,needsReview:true,legacyNotes:'{unparsed legacy notes',record:{...emptyCompany('Cedar Systems (demo)'),research:'{unparsed legacy notes',archived:true}});
  const cedar=Object.values(fixtures.state.workflow.applications).find(a=>a.company==='Cedar Systems (demo)');
  if(cedar){
+  const platform={...structuredClone(cedar),id:'demo-cedar-platform',backendId:'demo-cedar-platform',title:'Platform Engineer',status:'Submitted',url:'https://example.com/demo/jobs/cedar-platform',applicationUrl:'https://example.com/demo/jobs/cedar-platform',milestones:[],activity:[],questions:[]};
+  fixtures.state.workflow.applications[platform.id]=platform;
+  fixtures.state.tracker.ids.push(platform.id);fixtures.state.tracker.items[platform.id]={status:'Submitted',openedDate:date,appliedDate:date};
+  fixtures.roles.push(platform);fixtures.state.demo.roles.push(structuredClone(platform));
   fixtures.state.network.referrals.push(
    {id:'demo-process-recruiter',collection:'network-demo',company:cedar.company,contact:'Morgan (fictional)',contactType:'recruiter',title:cedar.title,tags:[processTag(cedar)],status:'Asked',subject:'Backend round at Cedar',message:'Hi Morgan, thanks for confirming the backend round. Is there any additional preparation material for the PostgreSQL and queue-reliability discussion?',source:'Demo'},
    {id:'demo-company-engineer',collection:'network-demo',company:cedar.company,contact:'Taylor (fictional)',contactType:'engineer',title:'Storage Engineer',status:'Replied',message:'Hi Taylor, thank you for sharing the engineering overview. I appreciate your advice about the storage team.',source:'Demo'}

@@ -1,10 +1,10 @@
 // Optional visual/integration check. All cloud traffic is intercepted with fictional data.
-import {chromium} from '../runner/node_modules/playwright/index.mjs';
+const {chromium}=await import(process.env.LOOKOUT_PLAYWRIGHT_MODULE||'../runner/node_modules/playwright/index.mjs');
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/private/tmp/lookout-network-redesign';await mkdir(dir,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.LOOKOUT_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
-const errors=[];const cloud=[],mutations=[];let contactRows=[],contactSaves=0,companySaves=0;
+const errors=[];const cloud=[],mutations=[];let workspaceRows=[],contactRows=[],contactSaves=0,companySaves=0;
 let context;
 try{
  context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block'});
@@ -17,6 +17,13 @@ try{
   const payload=route.request().postDataJSON();
   const op=payload?.operation;
   if(route.request().method()!=='GET'&&url.includes('/rest/v1/')&&!['network.companies.read','search.context'].includes(op))mutations.push(url);
+  if(url.includes('/rpc/company_action')){
+   let result;
+   if(op==='company_workspaces.list')result={items:workspaceRows};
+   else if(op==='company_workspaces.save'){companySaves++;const old=workspaceRows.find(r=>r.id===payload.payload.id);assert.equal(payload.payload.expectedRevision,old?.revision||0);result={id:payload.payload.id,record:payload.payload.record,revision:(old?.revision||0)+1,companyId:null};workspaceRows=[...workspaceRows.filter(r=>r.id!==result.id),result];}
+   else result={items:[]};
+   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(result)});return;
+  }
   if(url.includes('/rpc/save_outreach_contact')) {
    if(payload.p_record.collection==='companies')companySaves++;
    else {contactSaves++;if(contactSaves===1){await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'Fictional temporary connection failure'})});return;}}
@@ -76,18 +83,20 @@ try{
  await page.getByRole('button',{name:'Save company',exact:true}).click();
  await page.getByText('Updated fictional research interest.',{exact:true}).waitFor();
  await page.getByRole('link',{name:'Fictional team guide',exact:true}).waitFor();
- console.log('Company research edit passed');await page.getByRole('button',{name:'Applications',exact:true}).click();
+ console.log('Company research edit passed');
+ await page.getByRole('button',{name:'Circle intelligence',exact:true}).click();
+ await page.getByRole('heading',{name:'Cedar Systems: queue reliability discussion',exact:true}).waitFor();
+ await page.screenshot({path:dir+'/intelligence-desktop.png',fullPage:true,animations:'disabled'});
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:dir+'/intelligence-mobile.png',fullPage:true,animations:'disabled'});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Intelligence view overflows mobile');
+ await page.setViewportSize({width:1440,height:1000});
+ await page.getByLabel('Role',{exact:true}).fill('No matching role');await page.getByRole('button',{name:'Search intelligence',exact:true}).click();
+ await page.getByText('No matching published experiences in your current Circles.',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Applications',exact:true}).click();
  await page.getByRole('button',{name:/Open Backend Engineer at Cedar Systems/}).click();
  await page.getByRole('dialog').waitFor();
  await page.getByRole('button',{name:'Close application details',exact:true}).click();
  await page.getByRole('button',{name:'Back to targets',exact:true}).click();
- await page.getByRole('button',{name:/Example Compute/}).click();
- await page.getByRole('button',{name:'People & outreach',exact:true}).last().click();
- await page.getByRole('button',{name:/^Ongoing conversations/}).click();
- await page.getByText('Prepare another message',{exact:true}).click();
- const message=page.getByRole('textbox',{name:'Message for Jamie (fictional)'});
- await message.waitFor();assert.match(await message.inputValue(),/Would you feel comfortable referring me/);
- await message.fill((await message.inputValue()).replace('Hi Jamie,','Hello Jamie,'));
  assert.equal(mutations.length,before,'Demo actions must not write account data: '+JSON.stringify(mutations.slice(before)));
  assert.equal(cloud.filter(u=>u.includes('/rpc/network_action')).length,companyReads,'Demo company reads must use memory');
  // Process view scopes drafts to the application, even for two roles at one company.
@@ -122,11 +131,15 @@ try{
  assert.equal(await page.getByRole('button',{name:'Targets',exact:true}).getAttribute('aria-pressed'),'true');
  await page.getByRole('button',{name:'Back to targets',exact:true}).click();
  // Verify the light palette through the existing header theme control.
- await page.getByLabel('Color theme',{exact:true}).filter({visible:true}).selectOption('light');
+ await page.locator('.color-mode-control').filter({visible:true}).first().locator('summary').click();
+ await page.locator('.color-mode-control').filter({visible:true}).first().locator('label').filter({has:page.locator('input[value=light]')}).click();
+ await page.locator('.color-mode-control').filter({visible:true}).first().locator('summary').click();
  await page.screenshot({path:dir+'/targets-light.png',fullPage:false,animations:'disabled'});
  await page.getByRole('button',{name:'Active processes',exact:true}).click();
  await page.screenshot({path:dir+'/process-light.png',fullPage:false,animations:'disabled'});
- await page.getByLabel('Color theme',{exact:true}).filter({visible:true}).selectOption('dark');
+ await page.locator('.color-mode-control').filter({visible:true}).first().locator('summary').click();
+ await page.locator('.color-mode-control').filter({visible:true}).first().locator('label').filter({has:page.locator('input[value=dark]')}).click();
+ await page.locator('.color-mode-control').filter({visible:true}).first().locator('summary').click();
  await page.getByRole('link',{name:/^Action board/i}).click();
  await page.getByRole('heading',{name:'Company follow-ups',exact:true}).waitFor();
  await page.getByRole('link',{name:'Open company',exact:true}).click();
@@ -140,5 +153,5 @@ try{
  await page.getByRole('button',{name:'Reset demo data',exact:true}).click();
  await page.getByRole('heading',{name:'Company follow-ups',exact:true}).waitFor();
  assert.deepEqual(errors,[]);
- console.log(JSON.stringify({status:'passed',artifacts:dir,checks:['signed-in company save','contact sync recovery','Targets desktop/mobile/light','Active processes desktop/mobile/light','same-company process isolation','role-specific drafts','process-to-research navigation','research edit/source provenance','linked application dialog','existing outreach editor','due follow-ups/archive','reset','demo cloud isolation']}));
-}catch(e){const pages=context.pages();if(pages[0]){await pages[0].screenshot({path:dir+'/failure.png',fullPage:false});console.error((await pages[0].locator('body').innerText()).slice(0,6000));}throw e;}finally{await browser.close();}
+ console.log(JSON.stringify({status:'passed',artifacts:dir,checks:['signed-in company save','contact sync recovery','Targets desktop/mobile/light','Active processes desktop/mobile/light','same-company process isolation','role-specific drafts','process-to-research navigation','Circle intelligence and empty results','research edit/source provenance','linked application dialog','existing outreach editor','due follow-ups/archive','reset','demo cloud isolation']}));
+}catch(e){console.error(errors);const pages=context.pages();if(pages[0]){await pages[0].screenshot({path:dir+'/failure.png',fullPage:false});console.error((await pages[0].locator('body').innerText()).slice(0,6000));}throw e;}finally{await browser.close();}

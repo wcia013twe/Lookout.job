@@ -29,7 +29,7 @@ export default function CircleDashboard({initialChannel='clubhouse',detail,posts
  const composer=useRef<HTMLDivElement>(null);
  const published=posts.filter(post=>!post.parentId&&post.state==='published'&&post.revision===post.publishedRevision);
  const selected=detail.members.find(member=>member.id===person);
- const visible=published.filter(post=>(!selected||post.author===selected.alias)&&(!!selected||(channel==='resource'?post.content.type==='resource':post.content.type!=='resource'&&post.content.type!=='discussion')));
+ const visible=published.filter(post=>(!selected||post.authorId===selected.id)&&(!!selected||(channel==='resource'?post.content.type==='resource':post.content.type!=='resource'&&post.content.type!=='discussion')));
  const chat=published.filter(post=>post.content.type==='discussion');
  const title=clean(detail.circle.name);
  function selectPerson(id:string){setPerson(id);if(id)setChannel('intel');requestAnimationFrame(()=>document.getElementById('circle-conversation-title')?.scrollIntoView({block:'start'}));}

@@ -1,8 +1,8 @@
-export type SharedContext={kind:'application'|'referral'|'resource'|'note';label:string;company?:string;role?:string;jobId?:string;jobUrl?:string;stage?:string;contact?:string;url?:string;note?:string};
-export type Offer = {company:string;role?:string;location?:string;base?:string;equity?:string;signOn?:string;notes?:string};
+export type SharedContext={kind:'application'|'referral'|'resource'|'note';label:string;company?:string;companyId?:string;role?:string;jobId?:string;jobUrl?:string;stage?:string;contact?:string;url?:string;note?:string};
+export type Offer = {company:string;companyId?:string;role?:string;location?:string;base?:string;equity?:string;signOn?:string;notes?:string};
 export type Activity = {highlights:string[];goal:string;help:string};
 export type Content = { activity?:Activity; title: string; body: string; type: string; insight?: string; jobUrl?: string; jobId?: string; offers?: Offer[]; contexts?: SharedContext[]; company?: string; role?: string; stage?: string; experienceDate?: string; sources: {url:string;label:string}[]; provenance: string; uncertainty?: string; personalDisclosure: boolean };
-export type Post = { id:string; circleId:string; parentId:string|null; revision:number; publishedRevision:number|null; state:string; owned:boolean; author:string; createdAt:string; content:Content; helpfulPeople:number; agentAuthored:boolean; approved:boolean; url:string; untrusted:true };
+export type Post = { id:string; circleId:string; parentId:string|null; revision:number; publishedRevision:number|null; state:string; owned:boolean; author:string;authorId?:string;circleName?:string;companyContexts?:{company:string;companyId:string|null;role?:string;stage?:string}[]; createdAt:string; content:Content; helpfulPeople:number; agentAuthored:boolean; approved:boolean; url:string; untrusted:true };
 export type Cursor = {id:string;createdAt?:string;rank?:number};
 export type Circle = {id:string;name:string;owner:boolean};
 export type Detail = {circle:Circle;members:{id:string;alias:string;owner:boolean;self:boolean}[];policy:string[];invites:{id:string;token:string;expires_at:string}[];reports:{id:string;postId:string;reason:string}[]};
