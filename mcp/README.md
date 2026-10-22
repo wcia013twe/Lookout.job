@@ -278,3 +278,7 @@ overrides verification, consent, immutable approval or submission policy. Target
 are guidance, not scanners or automatic routing. Canonical job deduplication still
 applies across targets. Developer context 32 and search guide v3 require a normal
 gateway release and hosted verification before claiming deployed support.
+
+### About me document library
+
+About me / Documents reuses `list_artifacts`, `read_artifact`, `save_artifact` and `archive_artifact` for cover letters (`kind: cover_letter`) and reusable application text (`kind: application_template`). Website `artifact_action` and these MCP tools share backend ownership, bounded content validation, current-version checks and revision history. Reads require workspace:read; writes also require drafts:write. Text/Markdown and document links are supported here; binary resume files keep the existing scoped resume-upload tools. Per-resume role/title/type assignments use `save_search_profile` and Recruiting targets / Targets, not artifact records. No document save verifies facts, grants answer reuse, sends outreach or authorizes submission. Context 37 and the application-document migration require the normal production release; local tests do not establish deployed parity.
