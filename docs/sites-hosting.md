@@ -60,6 +60,16 @@ For the source helper's ordered commands, use `npm run build:sites`; if it alrea
 passed with unchanged inputs, no remaining build command is needed. Keep
 credentials in memory/stdin; never commit them or copy them into this document.
 
+### Logo.dev configuration
+
+`NEXT_PUBLIC_LOGO_DEV_TOKEN` is a publishable frontend key saved in the connected
+Site's environment settings. For this static export, retrieve that value through
+Sites and pass it as an environment variable when running `npm run build:sites`.
+Runtime environment updates alone do not modify the already-built JavaScript;
+rebuild, save and deploy a new version after changing the key. Keep the key out
+of tracked source and pass it through memory/stdin when preparing a release.
+Logos load directly from Logo.dev; the old Supabase logo bucket is unused.
+
 Sites maintains its own managed source repository. A push to GitHub alone does
 not publish this Site. Automatic public publishing is not configured. Changes
 made through Sites must be reconciled back into this repository before the next
