@@ -57,6 +57,19 @@ Validation: static production build, 144 domain/unit tests, database checks, bro
 
 ## Profile navigation
 
+Applications groups tracked roles into Active, Saved jobs and Closed. Saved jobs
+contains opened roles and preparation drafts without recorded application progress;
+submitted roles move to Active, and rejected or withdrawn roles appear in Closed.
+The detail panel has Overview, Documents (resume, submission evidence, resume match
+and employer questions), Prep, and Rounds & email. Existing scoped services and
+approval rules are unchanged; this pass adds navigation over existing data only.
+
+Demo check: Saved jobs includes the fictional NVIDIA opened role and any draft
+without later progress. Open it to inspect the empty Prep state. Open a prepared
+application to inspect Documents, the separate Prep plan, and recruiting emails
+alongside the round timeline. Add round & note opens Rounds & email. Reset restores
+the fixtures without touching account records.
+
 The top-left profile avatar opens My Profile, Sharing & privacy, and sign-in/sign-out. My Agent stays inside My Profile. Sharing & privacy opens the existing Progress page and its opt-in leaderboard controls. Main navigation focuses on Action Board, Discover, Applications and Referrals. The Action Board combines human handoffs with deadline-driven preparation reminders; completing a preparation task clears it from the active checklist through the same owned preparation service exposed to Muse.
 
 Demo check: open the avatar, visit My Profile and My Agent, return to Sharing & privacy, and reset the fictional profile. Check Escape, outside click and keyboard tab dismissal. The dropdown reads existing demo state and uses existing authentication actions; no new backend or MCP action is introduced.
