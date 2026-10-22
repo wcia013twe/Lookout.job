@@ -56,3 +56,10 @@
 - Kept existing company revision/save validation, stable retry IDs, sources and linked records/archive controls. Pending company edits survive tab switches; save/discard remains explicit.
 - Removed the extra card and repeated company/role context in company-specific People & outreach, reusing the compact shared editor. No backend, domain, MCP or Supabase changes.
 - Validation: frontend typecheck, data validation (147 roles), 11 focused Network/conversation tests, static production build, whitespace check and fictional desktop/mobile browser checks passed. Covered section saves, required source validation, discard, preservation across company tabs and the company contact panel. About Me and the shared section component have no changes. No live account saves or hosted MCP round trip were exercised.
+
+## Follow-up: focused Network demo conversations
+
+- Reduced Network demo targets, active process views and contacts to Robinhood and Stripe. Removed the additional fictional Network company/contact scenarios; other product feature demos retain their own fixtures.
+- Added one developed fictional thread per company: six recruiter messages for Robinhood with an unanswered preparation question, and eight cross-channel referral messages for Stripe ending in an actionable introduction request. Neither is a claim about a real company or conversation.
+- Demo opens on ongoing conversations. Threads reuse existing contact notes, process tags, history and follow-up controls, remain resettable and isolated, and never seed real accounts. Updated fixture assertions and demo UI coverage.
+- Validation: all 440 tests, frontend typecheck, data validation (147 roles), production static build, whitespace check, focused desktop/mobile demo checks and mocked signed-in outreach persistence checks passed. Confirmed two targets/processes/contacts, 6/8-message threads, cross-channel continuity, distinct reply ownership, shared history and reset isolation. Consolidated the old Network browser entry point onto the focused scenario. No live messages, account changes or agent actions were performed.

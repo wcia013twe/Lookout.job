@@ -70,7 +70,7 @@ export default function Referrals({company,contactIds=[]}: {company?: string;con
     if (selected && window.matchMedia("(max-width: 1023px)").matches) messageRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
   }, [selected]);
   const [query, setQuery] = useState("");
-  const [view, setView] = useState<"proposed" | "ongoing">("proposed");
+  const [view, setView] = useState<"proposed" | "ongoing">(outreach.demo ? "ongoing" : "proposed");
   const [addOpen, setAddOpen] = useState(false);
   const [museOpen, setMuseOpen] = useState(false);
   const [companyText, setCompanyText] = useState(company || "");

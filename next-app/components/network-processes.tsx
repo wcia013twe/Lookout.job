@@ -18,7 +18,7 @@ import type {Application} from './workflow-types';
 export default function NetworkProcesses({onOpenTarget}:{onOpenTarget:(id:string)=>void}){
  const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies(outreach);
  const [selected,setSelected]=useState(''),[person,setPerson]=useState(''),[adding,setAdding]=useState(false),[feedback,setFeedback]=useState(''),[review,setReview]=useState<string|null>(null),[query,setQuery]=useState('');
- const all:Application[]=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])].map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status||w.state.tracker.items[id]?.status||'New',questions:w.state.workflow.applications[id]?.questions||[]})).filter(a=>a.company&&a.title);
+ const all:Application[]=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])].map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status||w.state.tracker.items[id]?.status||'New',questions:w.state.workflow.applications[id]?.questions||[]})).filter(a=>a.company&&a.title&&(!w.demo||['robinhood','stripe'].includes(companyKey(a.company))));
  const active:Application[]=sortApplications(all).filter((a:Application)=>{const stage=trackerProgress(a,w.state.tracker.items[a.id]);return stage.level>=1&&!['Rejected','Withdrawn'].includes(stage.status);});
  const visible=active.filter(a=>`${a.company} ${a.title}`.toLowerCase().includes(query.toLowerCase()));
  const application=visible.find(a=>a.id===selected)||visible[0];

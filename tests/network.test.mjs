@@ -30,7 +30,7 @@ test('company briefs round-trip through existing scoped contact notes without ne
 test('demo company notes are private, resettable and distinct from people',()=>{
  const a=demoFixtures('2026-10-20'),b=demoFixtures('2026-10-20');
  const companies=a.state.network.referrals.filter(isCompanyRecord).map(decodeCompany);
- assert.equal(companies.length,3);assert.ok(companies.some(r=>r.record.sources.length));
+ assert.equal(companies.length,2);assert.ok(companies.every(r=>r.record.sources.length));assert.deepEqual(companies.map(r=>r.record.name).sort(),['Robinhood','Stripe']);
  a.state.network.referrals.find(isCompanyRecord).notes='Edited';
  assert.notEqual(b.state.network.referrals.find(isCompanyRecord).notes,'Edited');
  assert.equal(companyFollowUps(companies,'2026-10-20').length,1);

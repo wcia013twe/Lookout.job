@@ -312,3 +312,11 @@ company button is removed; inline saves retain company revision checks. Unsaved
 company edits survive company tab switches, and a save footer can save/discard all
 pending edits. Linked records/archive remain in a disclosure. Company People &
 outreach uses the shared compact contact editor without another enclosing card.
+
+The Network admin demo is focused on Robinhood and Stripe only: two targets, two
+active process views and one developed fictional contact conversation for each.
+Robinhood's six-message recruiter exchange is waiting for a reply; Stripe's
+eight-message referral exchange spans LinkedIn/email and needs the user's next
+reply. Demo opens on ongoing conversations. Company names are illustrative;
+messages, referrals, people and outcomes are fictional. Other product demos retain
+their feature scenarios; real account data is unchanged.
