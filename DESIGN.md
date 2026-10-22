@@ -275,3 +275,7 @@ human verification and save action. No account assignment implies connectivity.
 ### Solid anchors in the aurora workspace
 
 Discover groups its filters on an opaque navy surface with darker opaque controls. Light mode uses a pale blue surface and white controls. Active workspace navigation reuses the primary action colors, with compact desktop spacing to keep all six destinations on one row. Aurora backgrounds and role-card materials retain their existing treatment. The admin demo renders these same components with its existing fictional listings; no new data or service action is introduced.
+
+### Applications solid-surface tracker
+
+Applications uses the shared navy/ice-blue palette, with an aurora header over solid filters and filled Active, Saved jobs and Closed selections. Counts show actual view membership; separate full-time and internship counts describe the current filtered list. The main list groups compact rows on one opaque surface with Company & role, Type, Opened / applied and Status columns. Mobile puts role identity above type/date metadata and a labeled status action. Interview/screen uses lilac, offers use mint, and closed outcomes stay muted. Preparation state remains separate from hiring status. Missing dates say “Date not recorded.” Detailed progress timelines remain inside the existing application dialog, and the Network list retains its existing timeline layout. The resettable demo includes a fictional internship offer and a withdrawn role with missing dates.
