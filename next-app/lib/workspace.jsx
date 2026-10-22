@@ -4,7 +4,6 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { canUseDemo, createMemoryStore, createDemoServices } from "./demo.mjs";
 import { withApplicationProfileDemo } from "./application-profile-demo.mjs";
-import { demoOutreachContacts } from './outreach-demo.mjs';
 import { dayStamp } from "./progress.mjs";
 import { connectCloud } from "../../lib/cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
@@ -180,13 +179,12 @@ export function WorkspaceProvider({ children }) {
     if(demoState) {setDemoState(null);demoStore.current=null;demoServices.current=null;return;}
     if(!canDemo)return;
     const fixtures=withApplicationProfileDemo(demoFixtures(dayStamp()));
-    fixtures.state.network.referrals=[...demoOutreachContacts(),...fixtures.state.network.referrals.filter(r=>r.collection==='companies'||r.collection==='network-demo')];
     fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));
     fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";
     demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);
     setDemoState(demoStore.current.get());setDemoEpoch(n=>n+1);
   }
-  function resetDemo() {if(!canDemo)return;setDemoEpoch(n=>n+1);const fixtures=withApplicationProfileDemo(demoFixtures(dayStamp()));fixtures.state.network.referrals=[...demoOutreachContacts(),...fixtures.state.network.referrals.filter(r=>r.collection==='companies'||r.collection==='network-demo')];fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
+  function resetDemo() {if(!canDemo)return;setDemoEpoch(n=>n+1);const fixtures=withApplicationProfileDemo(demoFixtures(dayStamp()));fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id || "";demoStore.current=createMemoryStore(fixtures.state,setDemoState);demoServices.current=createDemoServices(demoStore.current);setDemoState(demoStore.current.get());}
   const value = {
     state:demoState || state,
     store:demoState ? demoStore.current : store,

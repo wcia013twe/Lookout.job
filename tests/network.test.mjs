@@ -31,6 +31,11 @@ test('demo company notes are private, resettable and distinct from people',()=>{
  const a=demoFixtures('2026-10-20'),b=demoFixtures('2026-10-20');
  const companies=a.state.network.referrals.filter(isCompanyRecord).map(decodeCompany);
  assert.equal(companies.length,3);assert.ok(companies.some(r=>r.record.sources.length));
+ const contacts=a.state.network.referrals.filter(r=>!isCompanyRecord(r));
+ assert.equal(contacts.length,2);
+ assert.ok(contacts.every(r=>r.company==='Cedar Systems (demo)'));
+ assert.equal(companies.filter(r=>!r.record.archived).length,2);
+ assert.equal(a.roles.some(r=>r.id==='demo-cedar-platform'),false);
  a.state.network.referrals.find(isCompanyRecord).notes='Edited';
  assert.notEqual(b.state.network.referrals.find(isCompanyRecord).notes,'Edited');
  assert.equal(companyFollowUps(companies,'2026-10-20').length,1);
