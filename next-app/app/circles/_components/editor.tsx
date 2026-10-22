@@ -4,7 +4,7 @@ import {Field,Notice,control,primary,secondary} from '../../../components/ui';
 import {types,type Content,type Offer,type SharedContext} from '../_lib/types';
 import {applicationContext} from '../../../../lib/circle-attachments.mjs';
 import {validateCircleContextContent} from '../../../../lib/circle-context.mjs';
-import {formatCircleActivity,parseCircleActivity} from '../../../../lib/circle-activity.mjs';
+import {formatCircleActivity,circleActivity} from '../../../../lib/circle-activity.mjs';
 import styles from './conversation.module.css';
 import {useLocalCircleFiles} from './local-file-attachments';
 import PromptComposer from './prompt-composer';
@@ -14,7 +14,7 @@ type Props={initial?:Content;reply?:boolean;inline?:boolean;activityUpdate?:bool
 const jobKeys=['company','role','jobId','jobUrl','stage'] as const;
 const offerLabels:Record<keyof Offer,string>={company:'Company',role:'Role',location:'Location',base:'Base pay (currency / period)',equity:'Equity (amount / vesting)',signOn:'Signing bonus',notes:'Team, deadline & other details'};
 export default function Editor({initial,reply,inline,activityUpdate=false,demo=false,contexts=[],incomingContext,busy,save,cancel}:Props){
- const sharedActivity=parseCircleActivity(initial?.body);
+ const sharedActivity=circleActivity(initial);
  const [activity]=useState(activityUpdate||!!(sharedActivity.highlights.length||sharedActivity.goal||sharedActivity.help));
  const [insight,setInsight]=useState(initial?.insight||'');
  const [message,setMessage]=useState(sharedActivity.message),[selectedContexts,setSelectedContexts]=useState<SharedContext[]>(initial?.contexts||[]);
@@ -34,9 +34,11 @@ export default function Editor({initial,reply,inline,activityUpdate=false,demo=f
   try{
    if(localFiles.files.length)throw Error('Files are local previews for now. Remove them before saving a post.');
    if(sources.length>10||sources.some(s=>{try{const u=new URL(s.url);return u.protocol!=='https:'||!!u.username||!!u.password;}catch{return true;}}))throw Error('Use up to 10 public HTTPS sources, one per line.');
-   const activityText=activity&&!reply?formatCircleActivity({highlights:value('activityHighlights').split('\n'),goal:value('activityGoal'),help:value('activityHelp')}):'';
+   const activityData={highlights:value('activityHighlights').split('\n').map(text=>text.trim()).filter(Boolean),goal:value('activityGoal'),help:value('activityHelp')};
+   const activityText=activity&&!reply?formatCircleActivity(activityData):'';
    const body=[value('body'),activityText].filter(Boolean).join('\n\n');
    const content:Content={title:reply?'Reply':value('title')||(activityText?'A little progress this week':'')||body.slice(0,100)||value('insight').slice(0,100),body,type:reply?'reply':kind,sources,provenance:value('provenance')||'user_confirmed',personalDisclosure:!!activityText||form.has('personalDisclosure')};
+   if(activityText){content.activity=activityData;content.type='discussion';}
    for(const key of ['experienceDate','uncertainty','insight'] as const)if(value(key))content[key]=value(key);
    if(!reply&&attached)for(const key of jobKeys)if(job[key]?.trim())content[key]=job[key]!.trim();
    if(!reply&&selectedContexts.length){content.contexts=selectedContexts;const first=selectedContexts.find(item=>item.kind==='application');if(!attached&&first)for(const key of jobKeys)if(first[key])content[key]=first[key];if(selectedContexts.some(item=>['application','referral'].includes(item.kind)))content.personalDisclosure=true;}
