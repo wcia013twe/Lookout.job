@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { control, primary, secondary, Field, Notice, Section } from "./ui";
 import { createBackend } from "../../backend/client.mjs";
+import ApplicationOverview from "./application-overview";
 import ApplicationTimeline from "./application-timeline";
 import TimelineEditor from "./timeline-editor";
 import SubmissionRecord from "./submission-record";
@@ -231,7 +232,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     <div className="tracker-detail-grid"><div className="tracker-detail-main">
       <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Prep","Rounds & email"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
       <div className="tracker-detail-content">
-        {tab === "Overview" && <><h3>Job Posting</h3><dl className="tracker-facts"><div><dt>Location</dt><dd>{role?.location || "Not recorded"}</dd></div><div><dt>Job type</dt><dd>{current.employmentType === "FT" ? "Full-time" : current.employmentType || "Not recorded"}</dd></div><div><dt>Application</dt><dd>{!w.demo && (current.url || current.applicationUrl) ? <a href={current.url || current.applicationUrl} target="_blank" rel="noopener noreferrer">View Job Posting</a> : "Demo listing"}</dd></div><div><dt>Preparation status</dt><dd>{workflow?.status || "Opened — not queued"}</dd></div></dl><h3>Job Summary</h3><p className="tracker-prose">{role?.whyItFits || "No job summary has been recorded for this application."}</p>{current.blocker && <p className="tracker-alert">{current.blocker}</p>}</>}
+        {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={w.state.tracker.items[id] || {}} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} />}
         {tab === "Prep" && <><h3>Interview preparation</h3>{workflow ? <ApplicationPreparation application={{...role,...current}}/> : <p className="tracker-prose">Queue this role from Discover to create its preparation plan.</p>}</>}
         {tab === "Documents" && <><h3>Documents</h3><p className="tracker-prose">Resume used for this application</p><div className="tracker-document"><h4>{current.submittedResume?.name || selectedResume?.name || "No resume selected"}</h4><p>{current.submittedResume?.version || selectedResume?.version ? `Version ${current.submittedResume?.version || selectedResume?.version}` : "Version not recorded"}</p><p>{current.submittedResume?.evidenceSource === "email" ? "Recorded from email" : current.submittedResume ? "Submitted resume" : "Draft resume"}</p></div>      <details className="mt-5 border-t border-board-line pt-3" onToggle={e => setRecordOpen(e.currentTarget.open)}>
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>

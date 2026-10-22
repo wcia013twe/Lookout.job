@@ -50,7 +50,7 @@ function baseDemoFixtures(date) {
 // fixtures remain the starting point. Feature scenarios share its memory store.
 export function demoFixtures(date) {
  const base=baseDemoFixtures(date),muse=createDemoWorkspace(date);
- const roles=[...discoverPreviewRoles(date),...base.roles,...muse.demo.roles];
+ const roles=[...discoverPreviewRoles(date),...base.roles,...muse.demo.roles].map(role => role.id === 'demo-interview' ? {...role, workSetting:'Remote (fictional demo)', sponsorship:'Not confirmed (demo)', description:'Fictional posting: build and debug PostgreSQL-backed job processing. Investigate retry safety, query latency and queue backpressure with a systems team.'} : role);
  const baseApplications=Object.fromEntries(Object.entries(base.state.workflow.applications).map(([id,value])=>[id,{...value,backendId:id,backendRevision:value.revision||0}]));
  const preparationPlans={...base.state.workflow.preparationPlans,...muse.workflow.preparationPlans};
  const basePreparationRows=Object.fromEntries(Object.entries(base.state.workflow.preparationPlans).map(([id,plan])=>[id,{application_id:id,user_id:muse.demo.identity,plan,version:1,updated_at:muse.demo.createdAt}]));

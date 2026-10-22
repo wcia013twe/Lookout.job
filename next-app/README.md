@@ -205,3 +205,25 @@ Reviewed draft questions are hidden; no new review authorization is minted.
 The form is still UI-only: edits are discarded, and an unloaded employer form
 can introduce further questions. Fictional demo questions illustrate one- and
 two-question handoffs; no live employer form or saved-answer reuse policy changes.
+
+
+## Application Overview
+
+Application details open to a scoped Overview: a recorded stage/preparation
+snapshot, icon-led job facts, an amber attention area for recorded blockers,
+uncertain attempts or incomplete draft preparation, green fit/context research
+notes and an expandable employer description. Unknown facts stay explicit.
+Saved application fields remain useful when the role is absent from the current
+catalog. Completed preparation states do not show stale question/resume prompts.
+The Documents handoff only switches the existing tab. Other tabs, sidebar,
+status updates, approvals and submission behavior are unchanged.
+
+The admin demo adds fictional interview facts and exposes its already-existing
+uncertain attempt in the application's UI snapshot. `scripts/check-application-overview-ui.mjs`
+uses intercepted account traffic to check interview, submitted, uncertain and
+saved-without-draft states, Documents navigation, desktop dark/mobile light,
+Escape, overflow and zero Overview cloud calls. Use LOOKOUT_UI_URL,
+LOOKOUT_PLAYWRIGHT_MODULE and LOOKOUT_UI_ARTIFACTS like the Discover check.
+This is read-only presentation of existing application/job/context fields;
+existing scoped MCP application/context tools and backend validation are unchanged.
+No new AI assessment, scoring, approval or service is introduced.

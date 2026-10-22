@@ -681,3 +681,30 @@ button:not(:disabled) {
   --role-preview-strength: color-mix(in srgb, var(--color-board-success) 7%, var(--color-board-panel));
   --role-preview-caution: color-mix(in srgb, var(--color-board-warning) 8%, var(--color-board-panel));
 }
+
+/* Scoped to Overview: the other application tabs and sidebar keep their layouts. */
+.workspace-shell .application-overview { display: grid; gap: 28px; min-width: 0; }
+.workspace-shell .application-overview h3 { margin: 0; font-size: 18px; line-height: 1.4; }
+.workspace-shell .application-overview-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.workspace-shell .application-overview-stage { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 6px 12px; color: var(--color-board-accent); background: color-mix(in srgb, var(--color-board-accent) 12%, var(--color-board-panel)); font-size: 13px; font-weight: 650; }
+.workspace-shell .application-overview-caption { color: var(--color-board-muted); font-size: 12px; line-height: 1.6; margin-top: 10px; }
+.workspace-shell .application-overview-records { display: flex; flex-wrap: wrap; gap: 18px 32px; margin-top: 20px; }
+.workspace-shell .application-overview-records dt { display: flex; align-items: center; gap: 7px; color: var(--color-board-muted); font-size: 12px; }
+.workspace-shell .application-overview-records dd { margin-top: 6px; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.workspace-shell .application-overview-facts { border-top: 1px solid var(--color-board-line); padding-top: 24px; }
+.workspace-shell .application-overview-facts > h3 { margin-bottom: 16px; }
+.workspace-shell .application-overview-posting { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; margin-top: 12px; color: var(--color-board-accent); font-size: 14px; font-weight: 600; }
+.workspace-shell .application-overview-posting:hover { text-decoration: underline; text-underline-offset: 4px; }
+.workspace-shell .application-overview-attention, .workspace-shell .application-overview-context { padding: 20px; border-radius: 14px; background: color-mix(in srgb, var(--color-board-success) 7%, var(--color-board-panel)); }
+.workspace-shell .application-overview-attention.has-attention { background: color-mix(in srgb, var(--color-board-warning) 9%, var(--color-board-panel)); }
+.workspace-shell .application-overview-attention h3, .workspace-shell .application-overview-context h3 { display: flex; align-items: center; gap: 9px; color: var(--color-board-success); }
+.workspace-shell .application-overview-attention.has-attention h3 { color: var(--color-board-warning); }
+.workspace-shell .application-overview p, .workspace-shell .application-overview li { overflow-wrap: anywhere; }
+.workspace-shell .application-overview-attention p, .workspace-shell .application-overview-attention ul, .workspace-shell .application-overview-context p { margin-top: 12px; max-width: 68ch; font-size: 14px; line-height: 1.75; white-space: pre-wrap; }
+.workspace-shell .application-overview-attention ul { list-style: disc; padding-left: 20px; }
+.workspace-shell .application-overview-attention li + li { margin-top: 6px; }
+.workspace-shell .application-overview-context small { display: block; margin-top: 14px; color: var(--color-board-muted); font-size: 12px; line-height: 1.5; }
+.workspace-shell .application-overview-description { border-top: 1px solid var(--color-board-line); padding-top: 12px; }
+.workspace-shell .application-overview-description summary { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+.workspace-shell .application-overview-description p { margin-top: 12px; color: var(--color-board-muted); font-size: 14px; line-height: 1.75; white-space: pre-wrap; }
+@media (max-width: 639px) { .workspace-shell .application-overview { gap: 24px; } .workspace-shell .application-overview-attention, .workspace-shell .application-overview-context { padding: 16px; } }
