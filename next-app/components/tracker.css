@@ -35,7 +35,11 @@
 .tracker-progress li.reached:not(:last-child):has(+li.reached)::after {background:var(--tracker-reached);}
 .tracker-dot {position:relative;z-index:1;border:2px solid var(--tracker-upcoming);background:var(--color-board-panel);border-radius:50%;width:19px;height:19px;}
 .tracker-progress .reached .tracker-dot {border-color:var(--tracker-reached);background:var(--tracker-reached);}
-.tracker-progress [aria-current="step"] .tracker-dot {outline:2px solid var(--tracker-reached);outline-offset:3px;}
+.tracker-progress [aria-current="step"] .tracker-dot {outline:2px solid var(--tracker-reached);outline-offset:3px;background:var(--color-board-panel);overflow:hidden;}
+.tracker-progress [aria-current="step"] .tracker-dot::after {content:"";position:absolute;inset:1px;border-radius:50%;background:var(--tracker-current,#59e3a8);animation:tracker-current-pulse 4s ease-in-out infinite;}
+@keyframes tracker-current-pulse {0%,100% {opacity:.45;transform:scale(.72);}50% {opacity:1;transform:scale(1);}}
+[data-theme="light"] .tracker-progress {--tracker-current:#16734c;}
+@media (prefers-reduced-motion:reduce) {.tracker-progress [aria-current="step"] .tracker-dot::after {animation:none;opacity:1;transform:none;}}
 [data-theme="light"] .tracker-progress {--tracker-reached:#a65300;--tracker-upcoming:#526d91;}
 .tracker-progress time {font-size:10px;min-height:15px;font-variant-numeric:tabular-nums;}
 .tracker-row-progress>small {display:block;text-align:center;font-size:11px;color:var(--color-board-muted);margin-top:8px;}
@@ -129,3 +133,79 @@
 .tracker-next-round h4 { margin-bottom: 4px; }
 .tracker-next-round time { display: block; margin-bottom: 10px; font-size: 13px; color: var(--color-board-accent); }
 .tracker-next-round p { font-size: 13px; white-space: pre-line; color: var(--color-board-muted); }
+
+/* Applications shares Discover's solid controls and the Action Board's aurora headers. */
+.applications-page {
+ --applications-header: linear-gradient(115deg, #203d59, #232b43 75%, #2c2942);
+}
+[data-theme="light"] .applications-page {
+ --applications-header: linear-gradient(115deg, #dfedfa, #e9eafa);
+}
+/* One shared blue palette for reached stages in lists, details and Network. */
+.workspace-shell .tracker-progress {
+ --tracker-reached: var(--color-board-accent);
+ --tracker-upcoming: #829bb8;
+}
+[data-theme="light"] .workspace-shell .tracker-progress { --tracker-upcoming: #627c99; }
+.applications-page .tracker-page-header {border:0;margin-bottom:24px;align-items:center;}
+.applications-total {margin-top:8px;font-size:13px;color:var(--color-board-muted);font-variant-numeric:tabular-nums;}
+.applications-toolbar {border:1px solid var(--color-board-line);border-radius:16px;background:var(--workspace-solid-surface);}
+.applications-page .tracker-header-tabs {margin:0;padding:12px;gap:8px;border-bottom:1px solid var(--color-board-line);background:var(--applications-header);border-radius:15px 15px 0 0;}
+.applications-page .tracker-header-tabs button {display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:8px 14px;border:0;border-radius:8px;font-size:14px;transition:background-color 160ms ease-out,color 160ms ease-out;}
+.applications-page .tracker-header-tabs button:hover {background:var(--color-board-tag);color:var(--color-board-text);}
+.applications-page .tracker-header-tabs button[aria-pressed="true"] {background:var(--workspace-action-primary);color:var(--workspace-action-primary-text);}
+.application-view-count {font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;opacity:.85;}
+.applications-page .tracker-filters {padding:16px;}
+.applications-toolbar .tracker-filters input:not([type="checkbox"]):not([type="radio"]),.applications-toolbar .tracker-filters select {background:var(--workspace-solid-control);border-color:var(--color-board-line);}
+.applications-toolbar .tracker-filters input:focus-visible,.applications-toolbar .tracker-filters select:focus-visible {border-color:var(--color-board-accent);}
+.applications-page .tracker-list-meta {margin:20px 0 12px;justify-content:space-between;min-height:32px;}
+.applications-page .tracker-list-meta strong {color:var(--color-board-text);}
+.applications-page .tracker-counter {border:0;background:var(--color-board-tag);padding:4px 8px;}
+.applications-list-frame {border:1px solid var(--color-board-line);border-radius:16px;background:var(--color-board-panel);overflow:hidden;}
+.applications-column-headings,.application-compact-row {display:grid;grid-template-columns:minmax(0,1fr) 90px 100px minmax(330px,1.25fr);column-gap:24px;align-items:center;padding:18px 24px;}
+.applications-column-headings {background:var(--applications-header);font-size:12px;font-weight:600;color:var(--color-board-muted);border-bottom:1px solid var(--color-board-line);}
+.applications-column-headings>span:last-child {text-align:center;}
+.applications-compact-list {list-style:none;padding:0;margin:0;}
+.application-compact-row {min-height:104px;transition:background-color 160ms ease-out;}
+.application-compact-row+.application-compact-row {border-top:1px solid color-mix(in srgb,var(--color-board-line) 60%,transparent);}
+.application-compact-row:hover,.application-compact-row:focus-within {background:var(--workspace-solid-surface);}
+.application-compact-row .tracker-role {gap:14px;min-height:44px;width:100%;}
+.application-compact-row .tracker-company-mark {width:40px;height:40px;border-radius:8px;}
+.application-compact-row .tracker-role strong {font-size:14px;font-weight:600;}
+.application-compact-row .tracker-role>span:last-child>span {font-size:13px;}
+.application-preparation {display:block;margin:6px 0 0 54px;color:var(--color-board-warning);font-size:11px;}
+.application-type {color:var(--color-board-muted);font-size:13px;}
+.application-date {display:flex;flex-direction:column;gap:2px;color:var(--color-board-muted);font-size:12px;font-variant-numeric:tabular-nums;}
+.application-date time {font-size:13px;color:var(--color-board-text);}
+.application-progress-cell {min-width:0;text-align:center;}
+.application-progress-cell .tracker-progress li {gap:8px;font-size:11px;}
+.application-progress-cell .tracker-stage-label {line-height:16px;}
+.application-progress-cell .tracker-dot {width:12px;height:12px;}
+.application-progress-cell .tracker-progress li:not(:last-child)::after {top:29px;height:2px;}
+.application-progress-details {display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:2px;padding:4px 8px;color:var(--color-board-muted);font-size:11px;}
+.application-progress-details:hover {color:var(--color-board-accent);text-decoration:underline;text-underline-offset:3px;}
+.applications-page .tracker-empty {background:var(--color-board-panel);border-radius:16px;}
+.applications-page .tracker-empty h2 {font-size:18px;font-weight:600;}
+@media (max-width:1000px) and (min-width:701px) {
+ .applications-column-headings,.application-compact-row {grid-template-columns:minmax(0,1fr) 100px 120px;column-gap:16px;padding-inline:16px;}
+ .applications-column-headings>span:last-child {display:none;}
+ .application-progress-cell {grid-column:1/-1;margin-top:18px;}
+}
+@media (max-width:700px) {
+ .applications-page .tracker-page-header {margin-bottom:20px;}
+ .applications-page .tracker-header-tabs {gap:4px;padding:8px;flex-wrap:nowrap;}
+ .applications-page .tracker-header-tabs button {flex:1;padding:8px 6px;font-size:13px;gap:6px;}
+ .applications-page .tracker-filters {padding:12px;}
+ .applications-column-headings {display:none;}
+ .application-compact-row {grid-template-columns:minmax(0,1fr) auto;gap:10px 12px;padding:18px 16px;}
+ .application-compact-identity {grid-column:1/-1;}
+ .application-type {grid-column:1;grid-row:2;padding-left:54px;font-size:12px;}
+ .application-date {grid-column:2;grid-row:2;flex-direction:row;flex-wrap:wrap;gap:4px;font-size:11px;}
+ .application-date time {font-size:11px;}
+ .application-progress-cell {grid-column:1/-1;margin-top:12px;}
+ .application-progress-cell .tracker-progress li {font-size:10px;}
+ .application-preparation {line-height:1.5;}
+}
+@media (prefers-reduced-motion:reduce) {
+ .application-compact-row,.applications-page .tracker-header-tabs button {transition:none;}
+}

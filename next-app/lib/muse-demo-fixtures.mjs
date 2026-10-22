@@ -121,7 +121,7 @@ export function createDemoWorkspace(now = new Date()) {
       tierLists: [], activeTierListId: '',
     },
     ui: { packOpen: false },
-    demo: { outreachLibrary: copy(outreachLibrary), fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, submissionRecords, selectionDecisions },
+    demo: { outreachLibrary: copy(outreachLibrary), fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, plannerSettings: { dailyMinutes: 45, version: 0 }, preparationSessions: [], submissionRecords, selectionDecisions },
   };
 }
 

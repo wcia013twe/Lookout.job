@@ -48,13 +48,18 @@ function baseDemoFixtures(date) {
 // fixtures remain the starting point. Feature scenarios share its memory store.
 export function demoFixtures(date) {
  const base=baseDemoFixtures(date),muse=createDemoWorkspace(date);
- const roles=[...base.roles,...muse.demo.roles];
+ // Tracker-only scenarios stay fictional and reset with the shared in-memory demo.
+ const trackerRoles=[
+  {id:'demo-tracker-offer',company:'Example Compute (demo)',title:'Inference Systems Intern',employmentType:'Internship'},
+  {id:'demo-tracker-closed',company:'Example Storage (demo)',title:'Storage Engineer',employmentType:'FT'},
+ ].map(role=>({...role,location:'Fictional City, Remote',category:'Infrastructure',applicationUrl:'https://example.com/demo/jobs/'+role.id,discoveredDate:date,postedDate:null,whyItFits:'Fictional tracker example for preview only.',sourceFreshness:'Demo fixture'}));
+ const roles=[...base.roles,...muse.demo.roles,...trackerRoles];
  const baseApplications=Object.fromEntries(Object.entries(base.state.workflow.applications).map(([id,value])=>[id,{...value,backendId:id,backendRevision:value.revision||0}]));
  const preparationPlans={...base.state.workflow.preparationPlans,...muse.workflow.preparationPlans};
  const basePreparationRows=Object.fromEntries(Object.entries(base.state.workflow.preparationPlans).map(([id,plan])=>[id,{application_id:id,user_id:muse.demo.identity,plan,version:1,updated_at:muse.demo.createdAt}]));
  const state={
   ...base.state,
-  tracker:{...base.state.tracker,ids:[...new Set([...base.state.tracker.ids,...muse.tracker.ids])],items:{...base.state.tracker.items,...muse.tracker.items}},
+  tracker:{...base.state.tracker,ids:[...new Set([...base.state.tracker.ids,...muse.tracker.ids,...trackerRoles.map(role=>role.id)])],items:{...base.state.tracker.items,...muse.tracker.items,'demo-tracker-offer':{status:'Offer',openedDate:date,appliedDate:date},'demo-tracker-closed':{status:'Withdrawn'}}},
   workflow:{
    ...base.state.workflow,
    applications:{...baseApplications,...muse.workflow.applications},preparationPlans,

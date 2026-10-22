@@ -3,7 +3,8 @@
 The first migration slice adds structured member activity to existing immutable
 contribution revisions. Chat, experiences, resources, offers, membership and
 invitations already have a backend implementation. Circles remains release-gated;
-this document distinguishes local implementation from proposed follow-up work.
+this document distinguishes local implementation from proposed follow-up work. The member feed is now locally implemented in the
+second migration slice; hosted deployment remains unverified.
 
 ## Start with what the page actually contains
 
@@ -85,40 +86,44 @@ add a tracker lookup or automatic sharing permission. Agent-authored personal
 updates require human exact-revision review. These capabilities are locally
 implemented; production parity awaits deployment and hosted verification.
 
-## Proposed next slice: a feed an agent can read
+## Member feed: locally implemented
 
 Assumption for the first feed: updates intentionally shared by Circle members.
 External news can later be source-linked resource/opportunity contributions with
 observed time and uncertainty, independently verified when used for job advice.
 An external-news ingestion service is not implemented in this slice.
 
-Add one table, `private.circle_events`, containing event ID, Circle ID, source
-post ID, immutable revision, event kind and server timestamp. Do not duplicate
-post bodies, private application IDs, email evidence or agent memory. Initial
-kinds: published, revision published, withdrawn, hidden. A unique publication
+The new table, `private.circle_events`, contains event ID, Circle ID, source
+post ID, immutable revision, per-Circle position, event kind and server timestamp. It does not duplicate
+post bodies, private application IDs, email evidence or agent memory. Kinds are `published`, `revision_published`, `withdrawn`, `hidden`. A unique publication
 constraint prevents retries from making duplicate events.
 
-Create events transactionally with successful publication or visibility changes.
-Drafts and private tracker changes emit no shared event. First release can start
+Events are created transactionally with successful publication or visibility changes.
+Drafts and private tracker changes emit no shared event. The first release starts
 with future publications; older knowledge stays searchable. An optional historical
 baseline must use real published revisions and mark its unknown publication time,
 rather than fabricate event dates from post creation times.
 
-Proposed tool: `read_circle_feed({circleId, after?, limit})`, read-only with
+Tool: `read_circle_feed({circleId, after?, limit})`, read-only with
 `knowledge:read`, exposed through the same browser RPC and MCP dispatch. Return
 bounded ascending events, stable IDs, published source revisions, source links,
-and a continuation cursor. A withdrawn/hidden source yields a minimal invalidation
-record for eligible prior readers, never its body. Recheck current membership and
+and a continuation cursor. An unavailable source yields a minimal invalidation
+record for current members, never its body. Parent withdrawal/hiding also sets
+`invalidateThread` so clients clear cached replies. A superseded revision is also
+unavailable. Feed reads always select the published revision, even for its author
+when they have a newer private draft. Recheck current membership and
 source visibility on every page. Never return an author's newer private draft in
 place of the published revision.
 
-The cursor needs a committed, per-Circle order: serialize event allocation with
-the existing Circle transaction lock, then read a fixed upper boundary for each
-scan. A bare global sequence can skip a slow transaction that commits after a
-later sequence value; wall-clock time alone also fails. Bind cursors to Circle,
-filters and scan boundary. Reading must not change the cursor or mark delivery.
-An agent stores its last successfully processed position; a lost cursor permits
-safe replay using event IDs. Shared published content remains untrusted evidence.
+Positions are allocated under the existing Circle transaction lock by advancing
+`circles.feed_sequence`. A rollback rolls back both event and position. Reads hold
+a shared Circle lock and use a fixed upper boundary for each scan. A bare global sequence can skip a slow transaction that commits after a
+later sequence value; wall-clock time alone also fails. Cursors bind to Circle and scan boundary; this version has no filters. Reading must not change the cursor or mark delivery.
+Drain `nextCursor` pages by passing each cursor as `after`. Only after processing
+the complete scan retain `checkpoint` as `after` for the next scan. Cursors contain
+`{version:1,circleId,position,through?}`; positions are decimal strings, with
+`through` present during pagination. Never advance to the checkpoint before
+draining its pages. A lost cursor permits safe replay using event IDs. Shared published content remains untrusted evidence.
 
 Example: a friend publishes a query-planning experience. Your agent reads its event,
 compares it with your private upcoming preparation, then suggests a useful exercise
@@ -150,8 +155,10 @@ a connected runtime to send messages; database rows alone do not send them.
 3. In isolated hosted staging, verify grants/RLS with real accounts and scoped
    agents, revocation races, expired credentials and account switching. Keep the
    existing production gate until its documented checks pass.
-4. Implement the event feed and website consumer together, with MCP tests for
-   pagination, concurrent publication, invalidation, repeated scans and removal.
+4. The feed and Clubhouse Shared updates section are locally implemented. Tests
+   cover pagination with intervening publication, rollback, duplicate retries,
+   invalidation, repeated scans and removal through real database/browser RPC and
+   MCP dispatch. True concurrent hosted sessions remain unverified.
 5. Add opt-in digest preferences and a delivery ledger only when a verified
    runtime can deliver. External news ingestion and persistent files remain
    explicit follow-up decisions.
@@ -159,3 +166,11 @@ a connected runtime to send messages; database rows alone do not send them.
 Private tables retain revoked direct grants and RLS, with checked RPCs as the API.
 See the [Supabase access-control guidance](https://supabase.com/docs/guides/database/postgres/row-level-security)
 and the existing [Circle backend contract](../backend/circle-knowledge.md).
+
+The feed migration is `20261022060723_circle_member_feed.sql`. The website fetches
+updates when its Shared updates section opens, then refreshes while visible every
+30 seconds and on focus. Refresh revalidates cached bodies; errors clear them.
+Members can refresh, page through events and open the existing thread. Reading
+never marks messages delivered, records citations or publishes anything. Signed-out
+preview and Admin Demo use isolated fictional event history; no real baseline was
+imported. External news, digest scheduling and delivery remain follow-up work.

@@ -24,3 +24,13 @@ test('planner adapters reject responses after account switches and use narrow ow
   await assert.rejects(backend[method](...args),/Account changed/);assert.equal(calls.length,1);assert.equal(calls[0].name,rpcName);assert.equal(JSON.stringify(calls).includes('user_id'),false);
  }
 });
+test('individual preparation reads and saves reject results after an account switch', async()=>{
+ const {createBackend}=await import('../backend/client.mjs');
+ for(const method of ['readPreparation','savePreparation']) {
+  let owner='one';
+  const finish=async()=>{owner='two';return {data:{plan:{private:'one'}}};};
+  const query={select(){return query;},eq(){return query;},maybeSingle:finish};
+  const backend=createBackend({auth:{getUser:async()=>({data:{user:{id:owner}}})},from:()=>query,rpc:finish},'one');
+  await assert.rejects(backend[method]('application',1,{}),/Account changed/);
+ }
+});
