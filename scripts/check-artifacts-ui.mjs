@@ -21,10 +21,15 @@ try{
  await page.waitForLoadState('networkidle');
  const initialCloud=cloud.length;
  await page.screenshot({path:dir+'/workspace-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});await page.waitForTimeout(350);await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:dir+'/workspace-mobile-dark.png',fullPage:true});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ await page.emulateMedia({colorScheme:'light'});await page.waitForTimeout(350);await page.screenshot({path:dir+'/workspace-mobile-light.png',fullPage:true});
+ await page.setViewportSize({width:1440,height:1400});await page.waitForTimeout(350);await page.evaluate(()=>scrollTo(0,0));assert(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+1));await page.screenshot({path:dir+'/workspace-desktop-light.png'});await page.setViewportSize({width:1440,height:1000});
+ await page.emulateMedia({colorScheme:'dark'});await page.waitForTimeout(350);
+
  await page.getByRole('link').filter({has:page.getByRole('heading',{name:'When does an index help?',exact:true})}).click();
  const frame=page.frameLocator('iframe');await frame.getByRole('heading',{name:'When does an index help?'}).waitFor();
  await frame.getByLabel('Matching rows:').evaluate(el=>{el.value='80';el.dispatchEvent(new Event('input',{bubbles:true}));});
- await frame.getByText('165 units',{exact:true}).waitFor();await frame.getByRole('button',{name:'Reveal explanation'}).click();assert(await frame.locator('#answer').isVisible());
+ await frame.getByText('165 units',{exact:true}).waitFor();await page.waitForTimeout(250);await frame.getByRole('button',{name:'Reveal explanation'}).click();assert(await frame.locator('#answer').isVisible());
  await page.screenshot({path:dir+'/interactive-desktop.png',fullPage:true});
  await page.getByRole('button',{name:'Discuss with my agent'}).click();const reference=await page.getByLabel('Artifact reference').inputValue();assert.match(reference,/22222222-aaaa-4000-8000-222222222222/);assert.match(reference,/version 1/);
  const contentFrame=page.frames().find(f=>f.parentFrame());
@@ -33,7 +38,7 @@ try{
  await contentFrame.evaluate(()=>{location.href='https://artifact-exfil.example/navigation';});
  await page.waitForTimeout(250);assert.deepEqual(leaks,[],'Generated HTML made an external request');
  await page.getByRole('button',{name:'Restart activity'}).click();await frame.getByText('25 units',{exact:true}).waitFor();
- await page.getByRole('button',{name:'Archive',exact:true}).click();await page.getByText('Archived · still readable',{exact:true}).waitFor();await page.getByRole('button',{name:'Restore to workspace'}).click();await page.locator('span').filter({hasText:/^Version 3$/}).waitFor();
+ await page.getByText('Material details',{exact:true}).click();await page.getByRole('button',{name:'Archive',exact:true}).click();await page.getByText('Archived · still readable',{exact:true}).waitFor();await page.getByText('Material details',{exact:true}).click();await page.getByRole('button',{name:'Restore to workspace'}).click();await page.getByText('Material details',{exact:true}).click();await page.locator('span').filter({hasText:/^Version 3$/}).waitFor();
  await page.getByLabel('Artifact revision').selectOption('1');await page.getByText('Saved revision',{exact:true}).waitFor();await frame.getByRole('heading',{name:'When does an index help?'}).waitFor();
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({colorScheme:'light'});await page.locator('iframe').scrollIntoViewIfNeeded();await page.waitForTimeout(350);await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(100);await page.locator('iframe').screenshot({path:dir+'/interactive-mobile.png'});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await page.getByRole('link',{name:'Back to workspace'}).click();await page.getByLabel('Search artifacts').fill('Cedar');await page.getByRole('heading',{name:'Cedar Systems: interview research brief',exact:true}).waitFor();await page.getByRole('link').filter({has:page.getByRole('heading',{name:'Cedar Systems: interview research brief',exact:true})}).click();await page.getByRole('heading',{name:'Your matching evidence',exact:true}).waitFor();await page.screenshot({path:dir+'/research-mobile.png',fullPage:true});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));

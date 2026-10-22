@@ -176,6 +176,27 @@ Role cards combine a company logo or initials, bold company name, tier badge, ro
 
 Header navigation items use compact text with 44px targets. Inactive items are muted, hover uses primary text, and the current page uses bold primary text without a filled background. Empty states use a bordered panel, centered heading and copy, and a primary action when supplied.
 
+### Career Toolkit material shelf and reader
+
+Career Toolkit uses local cover tones: slate blue for weekly preparation, mint for
+interactive activities, lavender for company research and interview briefs, and a
+neutral blue-gray for other documents. Interactive format takes precedence over
+document kind. Each tone has light and dark variants; these category colors do
+not replace shared workspace tokens or action styles.
+
+The shelf uses two columns, becoming one below 480px. An unfiltered leading weekly
+pack spans both columns and includes its purpose; other covers show a title, format
+icon and kind, with compact context, week and source metadata beneath. Covers use
+tonal fills and rounded corners (12px) with a subtle hover fill change rather than
+outlined card frames. Cover titles are larger than metadata (24px versus 12px on
+desktop); the featured title is larger again (28px).
+
+The reader leads with one title, purpose and the agent discussion action, followed
+by compact metadata and the material itself. Markdown sits on a quiet reading
+surface; interactive content fills a borderless embedded stage. Versions, archive
+controls and sources live under the native “Material details” disclosure. Discussion
+and planning requests retain their explicit copy-to-agent interaction.
+
 ## Do's and Don'ts
 
 - Do reuse the shared color tokens and `ui.jsx` controls.

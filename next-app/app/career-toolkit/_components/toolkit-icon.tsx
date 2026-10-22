@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 const paths: Record<string, ReactNode> = {
+  play: <><path d="m9 5 11 7-11 7Z"/></>,
+  arrow: <><path d="M5 12h14M13 6l6 6-6 6"/></>,
   all: <><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></>,
   profile: <><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></>,
   search: <><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></>,
