@@ -405,10 +405,9 @@ one explicit Save application profile action. Drafts survive switching profiles 
 sections until leaving the route. Account/demo changes remount the editor and clear
 drafts. Reload saved explicitly discards the selected draft.
 
-About me separates per-profile application email and agent-managed email/document/
-outreach account assignments from shared background. Assignments are descriptive
-agent guidance, never credentials, OAuth connections or proof of runtime access.
-Application email does not change the Lookout login. About me presents every section
+About me presents Personal Info, eligibility and shared career background.
+The Accounts & identity box is not shown; existing per-profile identity metadata
+is preserved. About me presents every section
 as an expanded, read-only box, including complete experience/education/project
 details and skills. A section’s pen enables only its own fields; the checkmark
 returns to reading mode without saving. Save application profile persists identity
@@ -451,8 +450,8 @@ remain in memory and never write real account records or fetch private files.
 Profile Overview shows a compact identity row, three account-wide totals
 (applications, active interviews and offers), and shortcuts to About me, Application
 kit and Job preferences. Readiness text appears only for missing/incomplete items
-or a paused search. Assigned-account and writing-style details live in their
-editing sections. Totals use existing tracker stages and span all application
+or a paused search. Writing-style details live in Application kit; Accounts &
+identity is not displayed. Totals use existing tracker stages and span all application
 profiles; identity and settings remain scoped to the selected profile. Counts include user/agent-reported progress
 and do not independently establish employer-confirmed submission. Demo uses its
 existing fictional application stages and resettable memory store. `workspace_read`

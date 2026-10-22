@@ -41,3 +41,9 @@
 - Demo coverage: existing guest state demonstrates missing items; fictional full-time profile demonstrates ready rows and nonzero stats; paused internship demonstrates Search paused. Updated the optional browser script to assert three shortcuts and absence of duplicate summary headings. No real account records were edited.
 - Validation: focused profile overview tests (3 passed), data validation (147 roles), production static build/TypeScript, diff whitespace and scoped layout detector passed. Desktop and 390px browser checks confirmed substantially shorter content, three totals, incomplete-only detail, shortcut navigation, paused state and no horizontal overflow. The optional browser script was not rerun. After integrating concurrently landed Career Toolkit/search-source work from local main, installed its updated locked frontend dependencies and reran the full suite (423 passed, including database scenarios) and production build/TypeScript successfully.
 - Disk maintenance removed only reinstallable node_modules from two completed task checkouts; source and commits were preserved. Nothing pushed or published.
+
+## Remove Accounts & identity
+
+- Removed the Accounts & identity box and its unused UI component from About me. Personal Info, eligibility and career background remain; existing stored per-profile identity metadata and backend/MCP tools are preserved. Overview’s missing-email prompt now checks the editable Personal Info email and says Add email address.
+- Updated the optional demo interaction check to assert the box is absent. No stored values, save/verification behavior, permissions, gateway instructions or tool contracts changed.
+- Validation: data validation, production build/TypeScript and diff whitespace checks; visual removal follows the existing expanded section layout. Full suite and optional browser script were not repeated for this removal. Nothing pushed or published.

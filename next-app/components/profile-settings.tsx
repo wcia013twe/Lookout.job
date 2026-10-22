@@ -31,50 +31,6 @@ export function ProfileSwitcher() {
     </form>}
   </section>;
 }
-export function AccountAssignments() {
-  const a = useApplicationProfile();
-  const fields = [
-    ["Preferred first name", "text", "The first name you go by"],
-    ["Preferred last name", "text", "The last name you prefer to use"],
-    ["Application email", "email", "The email employers should use"],
-    ["Email account", "text", "Personal Gmail · candidate@example.com"],
-    ["Document account", "text", "Personal Google Drive"],
-    ["Outreach identity", "text", "University Outlook · candidate@example.edu"],
-  ];
-  return (
-    <ProfileSection title="Accounts & identity" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
-      {editing?<>
-      <div className="mb-5">
-        <Field label="Application profile name">
-          <input
-            className={control}
-            value={a.profile.name}
-            maxLength={80}
-            disabled={a.busy}
-            onChange={(e) => a.patch({ name: e.target.value })}
-          />
-        </Field>
-      </div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        {fields.map(([key, type, placeholder]) => (
-          <Field key={key} label={key}>
-            <input
-              className={control}
-              type={type}
-              placeholder={placeholder}
-              value={a.field("Application identity", key).value}
-              disabled={a.busy || a.field("Application identity", key).conflict}
-              onChange={(e) =>
-                a.change("Application identity", key, e.target.value)
-              }
-            />
-          </Field>
-        ))}
-      </div>
-      </>:<ProfileValues items={[{label:"Application profile name",value:a.profile.name},...fields.map(([key])=>({label:key,value:a.field("Application identity",key).conflict?"Conflicting values — review in Advanced instructions":a.field("Application identity",key).value}))]}/>}
-    </>}</ProfileSection>
-  );
-}
 export function ApplicationMaterials() {
   const a = useApplicationProfile(),
     w = useWorkspace();

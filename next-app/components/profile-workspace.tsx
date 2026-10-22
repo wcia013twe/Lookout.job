@@ -17,7 +17,6 @@ import {
 } from "./application-profile-context";
 import {
   ProfileSwitcher,
-  AccountAssignments,
   EligibilitySettings,
   ApplicationMaterials,
   WritingStyles,
@@ -82,7 +81,6 @@ function ProfileContent() {
             <h2>About me</h2>
           </div>
           <ProfileEditor>
-            <AccountAssignments />
             <EligibilitySettings />
           </ProfileEditor>
         </section>

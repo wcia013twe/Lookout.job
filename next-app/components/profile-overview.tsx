@@ -10,10 +10,10 @@ export default function ProfileOverview({onSelect}:{onSelect:(section:Section)=>
  const w=useWorkspace(),a=useApplicationProfile(),profile=w.state.workflow.profile;
  const displayName=profileDisplayName(profile,a.field("Application identity","Preferred first name").value,a.field("Application identity","Preferred last name").value);
  const stats=profileOverviewStats(w.state);
- const email=a.field("Application identity","Application email").value;
+ const email=profile.email;
  const resume=w.state.workflow.resumes.find((item:{id:string})=>item.id===a.field("Application materials","Default resume ID").value);
  const rows:{section:Section;icon:ProfileIconName;title:string;attention:string}[]=[
-  {section:"about",icon:"user",title:"About me",attention:[!profile.verified&&"Review background",!email&&"Add application email"].filter(Boolean).join(" · ")},
+  {section:"about",icon:"user",title:"About me",attention:[!profile.verified&&"Review background",!email&&"Add email address"].filter(Boolean).join(" · ")},
   {section:"kit",icon:"file",title:"Application kit",attention:resume?"":"Choose a resume"},
   {section:"preferences",icon:"sliders",title:"Job preferences",attention:!a.profile.active?"Search paused":!a.field("Role preferences","Roles").value?"Set target roles":""},
  ];
