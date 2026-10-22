@@ -167,6 +167,7 @@ export default function Resumes() {
           </Field>
           <button className={secondary}>Add reference</button>
         </form>
+        <p className="mt-6 max-w-prose text-sm leading-relaxed text-board-muted">Uploaded files stay private to your account and permitted agents until used in an application you authorize. Resume links keep the sharing settings of their host.</p>
         <form
           onSubmit={upload}
           className="mt-7 grid items-end gap-4 border-t border-board-line pt-6 sm:grid-cols-2"
