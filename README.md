@@ -358,7 +358,9 @@ Referrals previews five built-in templates (recruiter interview, warm referral, 
 
 Career Toolkit opens on a private artifact workspace at `/career-toolkit/`.
 Connected agents can prepare and save documents, company research and interactive
-HTML while planning the week. Materials link directly from preparation tasks;
+HTML while planning the week. Upcoming dated prep appears under Prepared for you; reusable and past work stays
+in Saved materials. Agents can assemble ordered saved revisions into an interview
+collection that reads as one scrollable pack. Materials link directly from preparation tasks;
 learning goals share the interview planner’s daily budget even without upcoming
 interviews. Text remains the request/revision interface, and the workspace renders
 the results. Generation runs through the connected agent, not a website scheduler.

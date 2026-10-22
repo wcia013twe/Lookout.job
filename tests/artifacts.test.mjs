@@ -25,15 +25,16 @@ test('all artifact and learning actions have narrowly scoped MCP boundaries',()=
  assert.equal(TOOLS.find(t=>t.name==='read_artifact').readOnly,true);
 });
 test('browser adapter and MCP forward identical artifact writes, and stop account changes',async()=>{
+ const collection={...doc,kind:'interview_brief',preparedFor:'2026-10-23',materials:[{id:'22222222-2222-4222-8222-222222222222',version:1}]};
  const calls=[];let user=id;
  const client={auth:{getUser:async()=>({data:{user:{id:user}},error:null})},rpc:async(name,args)=>{calls.push([name,args]);return {data:{saved:true},error:null};}};
- const backend=createBackend(client,id);assert.deepEqual(await backend.artifactAction('artifacts.save',doc),{saved:true});
- assert.deepEqual(calls[0],['artifact_action',{operation:'artifacts.save',payload:doc}]);
- user='other';await assert.rejects(backend.artifactAction('artifacts.save',doc),/Account changed/);assert.equal(calls.length,1);
+ const backend=createBackend(client,id);assert.deepEqual(await backend.artifactAction('artifacts.save',collection),{saved:true});
+ assert.deepEqual(calls[0],['artifact_action',{operation:'artifacts.save',payload:collection}]);
+ user='other';await assert.rejects(backend.artifactAction('artifacts.save',collection),/Account changed/);assert.equal(calls.length,1);
  const forwarded=[];let scopes=['workspace:read','drafts:write'];
  const handler=createHandler(async(token,operation,payload)=>{if(operation==='credentials.verify')return {status:200,data:{scopes}};forwarded.push([operation,payload]);return {status:200,data:{saved:true}};});
- const call=()=>handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:`Bearer jb_agent_${'a'.repeat(64)}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'save_artifact',arguments:doc}})}));
- const response=await(await call()).json();assert.equal(response.result.isError,undefined);assert.deepEqual(forwarded,[['artifacts.save',doc]]);
+ const call=()=>handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:`Bearer jb_agent_${'a'.repeat(64)}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'save_artifact',arguments:collection}})}));
+ const response=await(await call()).json();assert.equal(response.result.isError,undefined);assert.deepEqual(forwarded,[['artifacts.save',collection]]);
  scopes=['workspace:read'];assert.equal((await(await call()).json()).result.isError,true);assert.equal(forwarded.length,1);
 });
 test('learning-only weeks fit the shared budget, reveal missing material and preserve partial completion',()=>{
@@ -91,4 +92,25 @@ test('application document kinds share the website/MCP contract and isolated ver
   await assert.rejects(demo.artifactAction('artifacts.save',{...payload,title:'Changed stale copy'}),/changed/);
   const revised=await demo.artifactAction('artifacts.save',{...payload,expectedVersion:1,body:'Updated application text'});assert.equal(revised.version,2);
  }
+});
+
+test('prep collection arguments reject invalid dates, self references, duplicate IDs and wrong formats',()=>{
+ const child='22222222-2222-4222-8222-222222222222';
+ const pack={...doc,kind:'interview_brief',preparedFor:'2026-10-23',materials:[{id:child,version:1}]};
+ valid('artifacts.save',pack);valid('artifacts.list',{shelf:'prepared',asOf:'2026-10-22'});
+ for(const patch of [{preparedFor:'2026-02-30'},{kind:'notes'},{format:'html'},{materials:[{id,version:1}]},{materials:[{id:child,version:0}]},{materials:[{id:child,version:1},{id:child.toUpperCase(),version:2}]},{materials:Array.from({length:21},()=>({id:child,version:1}))}])assert.throws(()=>valid('artifacts.save',{...pack,...patch}));
+ assert.throws(()=>valid('artifacts.list',{asOf:'2026-10-22'}));
+});
+test('demo collections reuse saved revisions and move dated prep to saved after its need date',async()=>{
+ const demo=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));
+ const pack=await demo.artifactAction('artifacts.read',{id:demoArtifactIds.pack});
+ const featured=await demo.artifactAction('artifacts.list',{shelf:'prepared',asOf:pack.content.preparedFor});assert.equal(featured.items.length,1);
+ assert.deepEqual(featured.items[0].content.materials.map(m=>m.id),[demoArtifactIds.company,'99999999-aaaa-4000-8000-999999999999',demoArtifactIds.interactive]);
+ const later=new Date(pack.content.preparedFor+'T12:00:00Z');later.setUTCDate(later.getUTCDate()+1);
+ assert.equal((await demo.artifactAction('artifacts.list',{shelf:'prepared',asOf:later.toISOString().slice(0,10)})).items.length,0);
+ assert.ok((await demo.artifactAction('artifacts.list',{shelf:'saved',asOf:later.toISOString().slice(0,10)})).items.some(r=>r.id===pack.id));
+ const child=await demo.artifactAction('artifacts.read',{id:demoArtifactIds.company});
+ await demo.artifactAction('artifacts.save',{id:child.id,expectedVersion:child.version,...child.content,body:'Updated research'});
+ const pinned=await demo.artifactAction('artifacts.read',pack.content.materials[0]);assert.equal(pinned.content.body,child.content.body);
+ await assert.rejects(demo.artifactAction('artifacts.save',{...doc,kind:'interview_brief',materials:[{id:pack.id,version:1}]}),/non-collection/);
 });

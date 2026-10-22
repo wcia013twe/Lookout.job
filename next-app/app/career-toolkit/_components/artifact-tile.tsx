@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {artifactLabels,artifactPath} from '../../../../lib/artifacts.mjs';
+import {artifactLabels,artifactPath,artifactPurpose} from '../../../../lib/artifacts.mjs';
 import {ToolkitIcon} from './toolkit-icon';
 import type {Artifact} from './artifact-viewer';
 import styles from '../toolkit.module.css';
@@ -8,17 +8,26 @@ export default function ArtifactTile({artifact,featured=false}:{artifact:Artifac
  const c=artifact.content;
  const interactive=c.format==='html';
  const tone=interactive?'interactive':c.kind==='weekly_prep'?'prep':c.kind==='company_research'||c.kind==='interview_brief'?'research':'document';
- const icon=interactive?'play':tone==='prep'?'calendar':tone==='research'?'globe':'documents';
+ const icon=c.materials?.length?'folder':interactive?'play':tone==='prep'?'calendar':tone==='research'?'globe':'documents';
  const date=c.weekOf?new Date(`${c.weekOf}T12:00:00Z`).toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'}):null;
  return <li className={featured?styles.featuredMaterial:undefined}>
   <Link href={artifact.path||artifactPath(artifact.id)} className={`${styles.materialTile} ${styles[tone]} ${featured?styles.featuredTile:''}`}>
    <div className={styles.materialCover}>
     <span className={styles.materialSymbol}><ToolkitIcon name={icon} size={featured?40:30}/></span>
     <h3>{c.title}</h3>
-    {featured&&<p>{c.purpose}</p>}
+    {featured&&<p>{artifactPurpose(c)}</p>}
     <div className={styles.coverFooter}><span>{artifactLabels[c.kind as keyof typeof artifactLabels]||c.kind}</span><span className={styles.openSymbol}><ToolkitIcon name="arrow" size={20}/></span></div>
    </div>
-   <div className={styles.materialCaption}><span>{interactive?'Interactive':c.company||'Document'}</span>{date&&<span>Week of {date}</span>}{!!c.sources.length&&<span>{c.sources.length} {c.sources.length===1?'source':'sources'}</span>}</div>
+   <div className={styles.materialCaption}><span>{interactive?'Interactive':c.company||'Document'}</span>{c.materials?.length?<span>{c.materials.length} materials</span>:null}{c.preparedFor?<span>For {new Date(`${c.preparedFor}T12:00:00Z`).toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'})}</span>:date&&<span>Week of {date}</span>}{!!c.sources.length&&<span>{c.sources.length} {c.sources.length===1?'source':'sources'}</span>}</div>
   </Link>
  </li>;
+}
+
+export function SavedMaterialRow({artifact}:{artifact:ArtifactSummary}){
+ const c=artifact.content;
+ return <li><Link href={artifact.path||artifactPath(artifact.id)} className={styles.savedMaterialRow}>
+  <span className={styles.savedMaterialIcon}><ToolkitIcon name={c.materials?.length?'folder':c.format==='html'?'play':'documents'} size={20}/></span>
+  <div><h3>{c.title}</h3><p>{artifactPurpose(c)}</p><span>{artifactLabels[c.kind as keyof typeof artifactLabels]||c.kind}{c.company?` · ${c.company}`:''}{c.materials?.length?` · ${c.materials.length} materials`:''}</span></div>
+  <ToolkitIcon name="arrow" size={18}/>
+ </Link></li>;
 }

@@ -28,6 +28,7 @@ for (const [file, behavior] of [
   ['agent-connections','connections issue with current scopes, revoke durably, reject revoked tokens and isolate owners'],
   ['search-sweeps','document context and agent sweeps enforce versions, ownership, evidence and resumption'],
   ['resume-source','resume source replacement preserves files and remaps preferences with scoped transport parity'],
+  ['artifact-collections','prep collections enforce owned revisions, shelf expiry, pagination and website/MCP parity'],
   ['artifacts','artifacts and learning prep enforce owner isolation, revisions, retries, shared budgets and scoped parity'],
   ['toolkit-execution','toolkit outputs and document registration preserve ownership, scopes, replay and revocation'],
   ['onboarding', 'onboarding verifies first value, isolates owners, and never manufactures submission authority'],
