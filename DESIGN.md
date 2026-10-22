@@ -300,6 +300,8 @@ and separate employer-answer/outreach writing settings before disclosed library
 creation forms. Preference groups use summaries and progressive disclosure.
 All colors inherit the shared theme tokens. About me has no bottom verification
 or save controls; background and eligibility edits save from their section checkmark.
+Personal Circle sharing permissions and private agent source-use history live under
+My agent, with a Circle selector; membership and moderation stay in Circles.
 Other application settings retain a sticky desktop save bar that becomes an ordinary
 footer on mobile. No account assignment implies connectivity.
 

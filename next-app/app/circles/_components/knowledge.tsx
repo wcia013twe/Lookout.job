@@ -2,7 +2,7 @@
 import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import {Field,Heading,Notice,control,primary,secondary} from '../../../components/ui';
 import {useKnowledgeClient} from '../_lib/client';
-import {types,type Content,type Post,type Circle,type Detail,type Receipt,type Cursor,type Request} from '../_lib/types';
+import {types,type Content,type Post,type Circle,type Detail,type Cursor,type Request} from '../_lib/types';
 import Editor from './editor';
 import CircleListItem from './circle-list-item';
 import listStyles from './circle-list.module.css';
@@ -28,13 +28,13 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  const [detail,setDetail]=useState<Detail|null>(null),[page,setPage]=useState<Page<Post>>({items:[],nextCursor:null}),[thread,setThread]=useState<Thread|null>(null);
  const [filters,setFilters]=useState<Record<string,string>>({sort:'newest'}),[editor,setEditor]=useState<{post?:Post;reply?:boolean}|null>(null);
  const [draftPosts,setDraftPosts]=useState<Post[]>([]);
- const [receipts,setReceipts]=useState<Page<Receipt>|null>(null),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[available,setAvailable]=useState(false);
+ const [error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[available,setAvailable]=useState(false);
  const mounted=useRef(true),version=useRef(0),pending=useRef<{operation:string;payload:Record<string,unknown>;key:string}|null>(null);
  const detailRegion=useRef<HTMLDivElement>(null);
- useEffect(()=>{if(thread||editor||receipts){detailRegion.current?.scrollIntoView({block:'start',behavior:'auto'});detailRegion.current?.focus({preventScroll:true});}},[thread?.post.id,!!editor,!!receipts]);
+ useEffect(()=>{if(thread||editor){detailRegion.current?.scrollIntoView({block:'start',behavior:'auto'});detailRegion.current?.focus({preventScroll:true});}},[thread?.post.id,!!editor]);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
  const locate=useCallback((cid:string,tid='')=>{
-  setEditor(null);setReceipts(null);setThread(null);setDetail(null);setDraftPosts([]);setPage({items:[],nextCursor:null});setCircleId(cid);setThreadId(tid);setError('');setNotice('');
+  setEditor(null);setThread(null);setDetail(null);setDraftPosts([]);setPage({items:[],nextCursor:null});setCircleId(cid);setThreadId(tid);setError('');setNotice('');
   const url=new URL(location.href);url.searchParams.delete('circle');url.searchParams.delete('thread');if(cid)url.searchParams.set('circle',cid);if(tid)url.searchParams.set('thread',tid);history.pushState(null,'',url);
  },[]);
  const list=useCallback(async()=>{
@@ -44,7 +44,7 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  useEffect(()=>{
   let current=true;setLoading(true);
   list().then(rows=>{if(!current||!rows)return;const params=new URL(location.href).searchParams;setCircleId(params.get('circle')||'');setThreadId(params.get('thread')||'');}).catch(e=>{if(current)setError(errorText(e));}).finally(()=>{if(current)setLoading(false);});
-  const pop=()=>{version.current++;const p=new URL(location.href).searchParams;setDetail(null);setPage({items:[],nextCursor:null});setDraftPosts([]);setEditor(null);setReceipts(null);setThread(null);setThreadId(p.get('thread')||'');setCircleId(p.get('circle')||'');setCircleView('clubhouse');};window.addEventListener('popstate',pop);
+  const pop=()=>{version.current++;const p=new URL(location.href).searchParams;setDetail(null);setPage({items:[],nextCursor:null});setDraftPosts([]);setEditor(null);setThread(null);setThreadId(p.get('thread')||'');setCircleId(p.get('circle')||'');setCircleView('clubhouse');};window.addEventListener('popstate',pop);
   return()=>{current=false;window.removeEventListener('popstate',pop);};
  },[list]);
  const refresh=useCallback(async()=>{
@@ -52,7 +52,7 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
   try{
    const [d,p,t,drafts]=await Promise.all([request<Detail>('circles.read',{circleId}),request<Page<Post>>('knowledge.search',{circleId,...filters}),threadId?request<Thread>('knowledge.read',{circleId,postId:threadId}):Promise.resolve(null),Object.keys(filters).some(key=>key!=='sort')?request<Page<Post>>('knowledge.search',{circleId,sort:'newest'}):Promise.resolve(null)]);
    if(!mounted.current||generation!==version.current)return;setDetail(d);setPage(p);setDraftPosts((drafts||p).items);setThread(t);setError('');
-  }catch(e){if(mounted.current&&generation===version.current){setDetail(null);setDraftPosts([]);setPage({items:[],nextCursor:null});setThread(null);setReceipts(null);setError(errorText(e));}throw e;}
+  }catch(e){if(mounted.current&&generation===version.current){setDetail(null);setDraftPosts([]);setPage({items:[],nextCursor:null});setThread(null);setError(errorText(e));}throw e;}
  },[circleId,threadId,filters,request]);
  useEffect(()=>{
   if(!circleId)return;setLoading(true);refresh().catch(()=>{}).finally(()=>{if(mounted.current)setLoading(false);});
@@ -69,7 +69,7 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
   try{await write(operation,{circleId,...payload});if(!mounted.current||generation!==version.current)return;
    if(operation==='circles.leave'){await list();locate('');}
    else if(operation==='knowledge.withdraw'||operation==='knowledge.hide'){locate(circleId);}
-   else {await refresh();if(receipts){const r=await request<Page<Receipt>>('knowledge.citations',{circleId});if(mounted.current)setReceipts(r);}}
+   else {await refresh();}
    if(mounted.current)setNotice(operation==='knowledge.withdraw'?'Contribution withdrawn from your Circle.':operation==='knowledge.publish'?'Shared with your Circle.':operation==='knowledge.approve'?'This exact version is approved for your agent to share.':operation==='circles.leave'?'You left the Circle.':'Saved.');
   }catch(e){if(mounted.current)setError(errorText(e));}finally{if(mounted.current)setBusy(false);}
  }
@@ -83,14 +83,14 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
   try{const result=await write<{postId:string;revision:number}>('knowledge.propose',{circleId,expectedRevision:editor?.post?.revision||0,content,...(editor?.post?{postId:editor.post.id}:editor?.reply?{parentId:thread!.post.id}:{})});if(!mounted.current)return;setEditor(null);const target=editor?.post?.parentId||(editor?.reply?thread!.post.id:result.postId);if(threadId===target)await refresh();else locate(circleId,target);setNotice('Private draft saved. Review it before publishing.');}
   finally{if(mounted.current)setBusy(false);}
  }
- async function more(kind:'posts'|'replies'|'receipts'){
+ async function more(kind:'posts'|'replies'){
   const generation=version.current;setBusy(true);try{
    if(kind==='posts'){const next=await request<Page<Post>>('knowledge.search',{circleId,...filters,cursor:page.nextCursor});if(mounted.current&&generation===version.current)setPage(old=>({items:[...old.items,...next.items],nextCursor:next.nextCursor}));}
    else if(kind==='replies'){const next=await request<Thread>('knowledge.read',{circleId,postId:threadId,cursor:thread!.nextCursor});if(mounted.current&&generation===version.current)setThread(old=>old?{...next,replies:[...old.replies,...next.replies]}:next);}
-   else {const next=await request<Page<Receipt>>('knowledge.citations',{circleId,cursor:receipts!.nextCursor});if(mounted.current&&generation===version.current)setReceipts(old=>({items:[...(old?.items||[]),...next.items],nextCursor:next.nextCursor}));}
-  }catch(e){if(mounted.current&&generation===version.current){setError(errorText(e));setThread(null);setReceipts(null);setPage({items:[],nextCursor:null});}}finally{if(mounted.current&&generation===version.current)setBusy(false);}
+
+  }catch(e){if(mounted.current&&generation===version.current){setError(errorText(e));setThread(null);setPage({items:[],nextCursor:null});}}finally{if(mounted.current&&generation===version.current)setBusy(false);}
  }
- const settingsPanel=detail?<><Settings detail={detail} busy={busy} act={act} embedded/><div className="flex flex-wrap gap-3 border-t border-board-line py-4"><button className={secondary} disabled={busy||loading} onClick={()=>void (async()=>{await list();await refresh();})().catch(error=>setError(errorText(error)))}>Refresh Circle</button><button className={secondary} disabled={busy} onClick={()=>{setBusy(true);request<Page<Receipt>>('knowledge.citations',{circleId}).then(r=>{if(mounted.current)setReceipts(r);}).catch(e=>setError(errorText(e))).finally(()=>{if(mounted.current)setBusy(false);});}}>My agent’s sources</button></div></>:null;
+ const settingsPanel=detail?<><Settings detail={detail} busy={busy} act={act} embedded/><div className="flex flex-wrap gap-3 border-t border-board-line py-4"><button className={secondary} disabled={busy||loading} onClick={()=>void (async()=>{await list();await refresh();})().catch(error=>setError(errorText(error)))}>Refresh Circle</button></div></>:null;
  const composing=!!editor&&!editor.post&&!editor.reply;
  const privateDrafts=[...new Map([...draftPosts,...page.items].map(post=>[post.id,post])).values()].filter(post=>post.owned&&post.revision!==post.publishedRevision);
  return <div className="min-w-0">
@@ -107,13 +107,13 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
   </>}
 
   {detail&&<>
-   <CircleDashboard initialChannel={circleView} pagination={page.nextCursor?<button className={secondary} disabled={busy} onClick={()=>void more('posts')}>More contributions</button>:null} settings={settingsPanel} key={circleId} busy={busy} save={save} detail={detail} posts={page.items} demo={demo} openPost={post=>locate(circleId,post.id)} focused={!!editor||!!thread||!!receipts} searching={Object.keys(filters).some(key=>key!=='sort')} search={<CircleSearch key={circleId} filters={filters} busy={busy||loading} search={setFilters}/>} controls={<div className="circle-header-controls">
+   <CircleDashboard initialChannel={circleView} pagination={page.nextCursor?<button className={secondary} disabled={busy} onClick={()=>void more('posts')}>More contributions</button>:null} settings={settingsPanel} key={circleId} busy={busy} save={save} detail={detail} posts={page.items} demo={demo} openPost={post=>locate(circleId,post.id)} focused={!!editor||!!thread} searching={Object.keys(filters).some(key=>key!=='sort')} search={<CircleSearch key={circleId} filters={filters} busy={busy||loading} search={setFilters}/>} controls={<div className="circle-header-controls">
     {circles.length>1&&<select aria-label="Switch Circle" className={control} value={circleId} disabled={busy} onChange={event=>locate(event.target.value)}>{circles.map(circle=><option key={circle.id} value={circle.id}>{circle.name}</option>)}</select>}
     {privateDrafts.length===1?<button className={secondary} disabled={busy} onClick={()=>locate(circleId,privateDrafts[0].id)}>1 draft to review</button>:privateDrafts.length>1?<details className="circle-header-menu"><summary>{privateDrafts.length} drafts to review</summary><ul className="circle-header-panel">{privateDrafts.map(post=><li key={post.id}><button className="min-h-11 w-full py-3 text-left text-sm" disabled={busy} onClick={()=>locate(circleId,post.id)}>{post.content.title}</button></li>)}</ul></details>:null}
-    <button type="button" className={composing?secondary:primary} disabled={busy} aria-expanded={composing} onClick={()=>{if(composing){setEditor(null);return;}setThreadId('');setThread(null);setEditor({});setReceipts(null);const url=new URL(location.href);url.searchParams.delete('thread');history.replaceState(null,'',url);}}>{composing?'Close conversation':'New conversation'}</button>
+    <button type="button" className={composing?secondary:primary} disabled={busy} aria-expanded={composing} onClick={()=>{if(composing){setEditor(null);return;}setThreadId('');setThread(null);setEditor({});const url=new URL(location.href);url.searchParams.delete('thread');history.replaceState(null,'',url);}}>{composing?'Close conversation':'New conversation'}</button>
    </div>}/>
-   {(!!editor||!!thread||!!receipts)&&<div ref={detailRegion} tabIndex={-1} className="py-6" style={{outline:'none'}}>
-    {receipts&&<section className="mb-6 border-y border-board-line py-5" aria-label="Private citation history"><div className="flex items-center justify-between gap-3"><h3 className="font-bold">Your agent’s use receipts</h3><button className={secondary} onClick={()=>setReceipts(null)}>Close history</button></div><p className="mt-2 text-sm text-board-muted">Only you and your permitted agents can see these references. Private answers are never included.</p>{!receipts.items.length&&<Notice>No citations recorded for you in this Circle yet.</Notice>}<ul className="divide-y divide-board-line">{receipts.items.map(r=><li key={r.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div className="min-w-0 text-sm"><p>{r.category==='answer'?'Answer':'Preparation plan'} · revision {r.revision} · {date(r.created_at)}</p><p className="break-all text-board-muted">{r.reference}</p><p>{!r.source_available?'Source withdrawn or hidden':r.retracted_at?'Receipt retracted':'Agent-reported use'}</p></div>{!r.retracted_at&&<button className={secondary} disabled={busy} onClick={()=>void act('knowledge.retract',{postId:r.post_id,revision:r.revision})}>Retract receipt</button>}</li>)}</ul>{receipts.nextCursor&&<button className={secondary} disabled={busy} onClick={()=>void more('receipts')}>More receipts</button>}</section>}
+   {(!!editor||!!thread)&&<div ref={detailRegion} tabIndex={-1} className="py-6" style={{outline:'none'}}>
+
 
     {editor?<><p className="mb-4 text-sm leading-relaxed text-board-muted">Sharing with <strong className="text-board-text">{detail.circle.name}</strong>. Saving a draft does not publish it.</p><Editor demo={demo} contexts={[...page.items,...(thread?[thread.post]:[])].filter(post=>post.state==='published'&&post.revision===post.publishedRevision).map(post=>post.content)} key={editor.post?.id||String(editor.reply)} initial={editor.post?.content} reply={editor.reply||editor.post?.content.type==='reply'} busy={busy} save={save} cancel={()=>setEditor(null)}/></>:thread?<section aria-label="Shared experience" className="mx-auto max-w-[840px]">
      <button className={`${secondary} mb-6`} onClick={()=>locate(circleId)}>Back to Circle</button>

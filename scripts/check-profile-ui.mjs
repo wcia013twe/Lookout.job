@@ -73,6 +73,16 @@ try{
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({colorScheme:'light'});
  await page.screenshot({path:dir+'/profile-pills-mobile.png',fullPage:true});
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile profile overflows');
+ await page.getByRole('button',{name:'My agent',exact:true}).click();
+ await page.getByRole('combobox',{name:'Circle',exact:true}).waitFor();
+ await page.getByText('Allow limited public links',{exact:true}).click();
+ await page.getByRole('checkbox',{name:'Preparation resource links',exact:true}).check();
+ await page.getByRole('button',{name:'Save link permissions',exact:true}).click();
+ await page.getByText('Sharing permissions saved.',{exact:true}).waitFor();
+ await page.getByText('My agent’s sources',{exact:true}).click();
+ await page.getByText('demo-plan-1',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Retract receipt',exact:true}).click();
+ await page.getByText('Receipt retracted.',{exact:true}).waitFor();
  assert.equal(cloud.length,before,'Demo edits must not call cloud');assert.equal(errors.length,0,errors.join('\n'));
  console.log('PASS: existing string/array pills; Enter/comma/Add/blur/paste; dedupe; remove; save/revisit; desktop/mobile; demo isolation; no page errors');
 }finally{await browser.close();}

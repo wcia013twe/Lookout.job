@@ -1,21 +1,17 @@
 'use client';
-import {useState,type FormEvent} from 'react';
+import {useState} from 'react';
 import Link from 'next/link';
 import {Field,control,primary,secondary} from '../../../components/ui';
 import {activeCircleInvites,createCircleInviteOnce} from '../../../lib/circle-invites.mjs';
 import type {Detail} from '../_lib/types';
 type Props={detail:Detail;busy:boolean;act:(operation:string,payload:Record<string,unknown>)=>Promise<void>;embedded?:boolean};
 export default function Settings({detail,busy,act,embedded=false}:Props){
- const {circle,policy,members,invites,reports}=detail;
+ const {circle,members,invites,reports}=detail;
  const [createOnce]=useState(createCircleInviteOnce),[creating,setCreating]=useState(false);
  const hasInvite=activeCircleInvites(invites).length>0;
  async function createInvite(){if(busy||hasInvite)return;setCreating(true);try{await createOnce(invites,()=>act('circles.invite',{}));}finally{setCreating(false);}}
- async function savePolicy(e:FormEvent<HTMLFormElement>){e.preventDefault();const form=new FormData(e.currentTarget);await act('circles.policy',{allowedTypes:['resource','opportunity'].filter(type=>form.has(type))});}
  const content=<div className="space-y-8 py-5">
-  <section><h2 className="text-lg font-bold">Agent permissions</h2><p className="my-3 max-w-prose text-sm leading-relaxed text-board-muted">Ask me before sharing.</p>
-   <details className="mb-4"><summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold">Allow limited public links</summary><p className="max-w-prose pb-3 text-sm leading-relaxed text-board-muted">Allow fixed public-link templates only; personal posts still need review.</p>
-   <form onSubmit={savePolicy} key={policy.join(',')}><fieldset disabled={busy} className="space-y-2"><legend className="sr-only">Permitted agent contribution types</legend>{['resource','opportunity'].map(type=><label key={type} className="flex min-h-11 items-center gap-3 text-sm"><input name={type} type="checkbox" defaultChecked={policy.includes(type)}/>{type==='resource'?'Preparation resource links':'Opportunity links'} (fixed template)</label>)}<button className={`${primary} mt-2`}>Save link permissions</button></fieldset></form></details>
-  </section>
+  <Link className="inline-flex min-h-11 items-center text-sm text-board-accent underline underline-offset-4" href={`/profile/?section=agent&circle=${encodeURIComponent(circle.id)}`}>My agent sharing settings</Link>
   <section><h2 className="text-lg font-bold">Circle members</h2><ul className="mt-3 divide-y divide-board-line">{members.map(member=><li key={member.id} className="flex min-h-14 items-center justify-between gap-4 py-2"><span className="break-words text-sm">{member.alias}</span>{circle.owner&&!member.owner&&<button className={secondary} disabled={busy} onClick={()=>void act('circles.remove',{memberId:member.id})}>Remove</button>}</li>)}</ul>{!circle.owner&&<><p className="mt-3 text-sm text-board-muted">Leaving stops access. Previously published contributions remain in the Circle.</p><button className={`${secondary} mt-4`} disabled={busy} onClick={()=>void act('circles.leave',{})}>Leave Circle</button></>}
    {circle.owner&&<><button type="button" className={`${primary} mt-4`} disabled={busy||creating||hasInvite} onClick={()=>void createInvite()}>{creating?'Creating invite…':hasInvite?'Invite ready to share':'Create a 7-day invite'}</button>{hasInvite&&<p className="mt-3 text-sm leading-relaxed text-board-muted">Use an existing invite below. Revoke active invites before creating another.</p>}<p className="my-3 text-sm text-board-muted">Share an invite code privately. Anyone with an active code can join. Removed members need an invite created after their removal.</p><ul className="space-y-4">{invites.map(invite=><li key={invite.id} className="space-y-2"><Field label={`Invite code · expires ${invite.expires_at.slice(0,10)}`}><input readOnly className={control} value={invite.token} onFocus={e=>e.target.select()}/></Field><button className={secondary} disabled={busy} onClick={()=>void act('circles.revoke_invite',{inviteId:invite.id})}>Revoke invite</button></li>)}</ul></>}
   </section>
