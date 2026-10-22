@@ -224,9 +224,6 @@
   border-bottom-color: var(--color-board-accent);
   background: transparent;
 }
-.tabs button:last-child {
-  margin-left: auto;
-}
 .overview {
   padding-top: 8px;
 }
