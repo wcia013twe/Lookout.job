@@ -365,7 +365,7 @@ the results. Generation runs through the connected agent, not a website schedule
 See [artifact behavior, tool mapping and release limits](docs/career-artifacts.md).
 
 The **Tools & skills** tab retains the native categorized skill library with
-37 static usage manuals and copyable agent examples. Categories cover profile
+39 static usage manuals and copyable agent examples. The interview category includes STAR Answer Writer and Interview Answer Builder for evidence-backed drafts, company adaptations and saved Toolkit materials. Categories cover profile
 conversations, career search and regional context, documents, interviews,
 networking, growth, offers, and recurring-search setup. Each manual explains
 inputs, steps, expected output, runtime requirements. Opening a manual or copying a request does not start work or install tools.

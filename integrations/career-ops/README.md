@@ -6,7 +6,7 @@ from [Career Ops](https://github.com/career-ops-hq/career-ops) at commit
 included MIT license. `upstream/` contains the verbatim selected source files;
 `manifest.json` records their hashes. Keep the source attribution and license.
 
-`catalog.json` is the canonical user-facing catalog: eight categories, 37 manuals,
+`catalog.json` is the canonical user-facing catalog: eight categories, 39 manuals,
 inputs, procedure, outputs, requirements, examples and pinned source links. It is
 public instructional content and must never contain account data. Manuals preserve
 the upstream workflow intent and explicitly adapt local-filesystem assumptions to
@@ -40,3 +40,7 @@ against Lookout's permission boundaries. Bump changed guide versions and the
 catalog version, then increment developerVersion. Run relevant tests, the full
 suite, data validation, typecheck and static build. Deploy the gateway only through
 normal production release; do not update the shared backend from a feature branch.
+
+## Interview answer writers
+
+STAR Answer Writer and Interview Answer Builder are original Lookout coaching procedures informed by the linked Harvard MCS and The Muse articles (reviewed 2026-10-22), with pinned Career Ops interview references. Article text and sample answers are not vendored. Both resolve through the existing workspace-read `read_guide` boundary; private outputs use `list_artifacts`, `read_artifact` and `save_artifact` (drafts:write). They reuse the existing artifact validation and ownership/version checks. No new action, automatic onboarding generation or scheduler is introduced. Hosted guide availability requires the normal gateway release.
