@@ -60,3 +60,10 @@ including an already-running development server after local landing. Removed the
 public document generator; added explicit Markdown compiler dependencies.
 Validation: all 37 documents tested from source, typecheck, production static
 build, data validation and browser iframe checks.
+
+## Use Skill placement
+
+Moved the copy-invocation action to the top right of the skill overview and renamed
+it “Use Skill”. On phones it stays right-aligned above the overview. Copy feedback
+and selectable clipboard fallback remain available. Validation: typecheck, static
+build, data validation and desktop/mobile invocation browser checks.

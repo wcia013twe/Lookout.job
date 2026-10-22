@@ -247,10 +247,17 @@
  .workspaceFoot > span { flex-basis: 100%; }
 }
 
-.skillOverview { margin: 0 0 2rem; }
+.skillOverview { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: start; gap: 1rem 2rem; margin: 0 0 2rem; }
+.skillIntro { min-width: 0; }
 .skillOverview h1 { margin: 0; font-size: clamp(1.625rem, 3vw, 2rem); line-height: 1.2; letter-spacing: -.025em; }
-.skillOverview p { max-width: 65ch; margin-top: .75rem; color: var(--color-board-muted); line-height: 1.7; }
+.skillIntro > p { max-width: 65ch; margin-top: .75rem; color: var(--color-board-muted); line-height: 1.7; }
 .skillDocument { overflow: hidden; border: 1px solid var(--color-board-line); border-radius: 12px; background: var(--color-board-panel); }
 .skillDocument h2 { margin: 0; padding: .875rem 1.25rem; font-size: .875rem; color: var(--color-board-muted); }
 .skillDocument iframe { display: block; width: 100%; height: 65vh; min-height: 24rem; border: 0; }
-.skillInvocation { margin-top: 1.5rem; }
+.skillInvocation { justify-self: end; max-width: 20rem; }
+.skillInvocation .requestActions { margin-top: 0; }
+.skillInvocation .copyStatus:empty { display: none; }
+@media (max-width: 600px) {
+ .skillOverview { grid-template-columns: minmax(0,1fr); }
+ .skillInvocation { grid-row: 1; }
+}
