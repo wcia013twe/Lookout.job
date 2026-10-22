@@ -43,7 +43,7 @@ try{
  const documents=page.getByRole('region',{name:'Documents',exact:true});
  const docBox=await documents.boundingBox(),careerBox=await page.getByRole('heading',{name:'Career background',exact:true}).boundingBox();
  assert(docBox.y<careerBox.y,'Documents must appear before Career background');
- await documents.getByText('Add a resume',{exact:true}).click();
+ await documents.getByRole('button',{name:'Add resume',exact:true}).click();
  await documents.getByLabel('Private resume file (PDF or DOCX, up to 10 MB)',{exact:true}).setInputFiles({name:'Demo systems resume.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\nFictional demo resume\n%%EOF')});
  await documents.getByRole('button',{name:'Upload private resume',exact:true}).click();
  await documents.getByText('Demo resume added in memory. File bytes were not uploaded or saved.',{exact:true}).waitFor();
@@ -52,7 +52,11 @@ try{
  await documents.getByRole('textbox',{name:'Assignment job titles',exact:true}).fill('Demo storage engineer');
  await documents.getByRole('combobox',{name:'Assignment job type',exact:true}).selectOption('Full-time');
  await documents.getByRole('button',{name:'Save role assignment',exact:true}).click();
- await documents.getByRole('heading',{name:'Demo storage engineer',exact:true}).waitFor();
+ await documents.getByText('Demo storage engineer · Full-time',{exact:true}).waitFor();
+ assert.equal(await documents.getByRole('region',{name:'Resume assignments & role targets',exact:true}).count(),0,'Assignments stay inside the resume library');
+ const resumeLibrary=documents.getByRole('region',{name:'Resumes',exact:true});
+ assert(await resumeLibrary.getByRole('button',{name:'Preview',exact:true}).first().isDisabled(),'Demo fixtures have no PDF');
+ for(const title of ['Resumes','Cover letters','Templates']) assert.equal(await documents.getByRole('heading',{name:title,exact:true}).locator('svg').count(),1,'Document headers use the file icon');
  for(const [label,title,content] of [['cover letter','Cover letter','Fictional systems cover letter'],['template','Template','Reusable application starting point']]){
   const library=documents.getByRole('region',{name:label==='template'?'Templates':'Cover letters',exact:true});
   await library.getByRole('button',{name:`Add ${label}`,exact:true}).click();
