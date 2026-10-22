@@ -5,6 +5,24 @@ origin is https://lookout-job-signal-board.tenderibex16.chatgpt.site.
 The tracked `.openai/hosting.json` preserves that identity. Reuse it; do not
 create another project for subsequent releases.
 
+## Verified release state (2026-10-22)
+
+The Site is publicly deployed. Anonymous HTTP requests to the homepage,
+`/discover/` and `/manifest.webmanifest` returned 200. No browser interaction,
+authenticated account or iPhone login round trip has been verified.
+
+Gateway version 23 includes the merged Sites origin addition. To avoid releasing
+unrelated differences between repository main and the older deployed gateway,
+the native Supabase deployment retained all 26 deployed files and changed only
+the CORS allowlist. A read-back confirmed the exact intended contents. Live
+preflights return 204 for Sites and Pages, lookalike/other Sites return 403, and
+unauthenticated operations return 401 with or without a browser Origin. Existing
+gateway instructions and developerVersion were preserved.
+
+The Auth redirect allowlist still requires owner configuration and confirmation.
+Do not treat the public frontend checks as proof that Google login works on the
+new origin. This migration does not release unrelated newer gateway capabilities.
+
 ## Architecture
 
 Sites hosts the static React frontend. Supabase remains authoritative for Google
