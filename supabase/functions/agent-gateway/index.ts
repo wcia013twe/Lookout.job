@@ -112,7 +112,7 @@ Deno.serve(withGatewayCors(async request => {
       const { data: job, error: jobError } = await admin.from('jobs').select('id,employer').eq('id', payload.jobId).maybeSingle();
       if (jobError || !job) return respond({ error: 'Job not found' }, 404);
       return respond({ data: { jobId: job.id, personalVersion: data.personalVersion,
-        ...applicationPolicy({ preferences: data.settings.preferences, job: job.employer }),
+        ...applicationPolicy({ preferences: data.settings.preferences, job: job.employer, profileId:payload.profileId }),
         execution: { automaticSubmission: 'supported-greenhouse-native-forms', bundledRunnerRequiresApproval: false, importantMatchesRequireApproval: true } } });
     }
     if (['resumes.begin_upload','resumes.complete_upload'].includes(operation)) {

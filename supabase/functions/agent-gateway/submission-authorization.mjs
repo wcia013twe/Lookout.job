@@ -23,7 +23,7 @@ export function authorizeSubmission(context) {
   try { target = new URL(job.canonical_url); } catch { return reject('Canonical employer URL required.'); }
   if (!['boards.greenhouse.io','job-boards.greenhouse.io'].includes(target.hostname) || target.protocol !== 'https:' || target.port || target.username || target.password || target.search || target.hash || !/^\/[^/]+\/jobs\/\d+$/.test(target.pathname)) return reject('Automatic submission currently supports canonical Greenhouse forms only.');
   if (!resume || resume.id !== draft.resumeId || resume.user_id !== a.user_id || !resume.object_path || resume.content_hash !== draft.resumeSha256) return reject('Use an owned private uploaded résumé with a matching file hash.');
-  const policy = applicationPolicy({ preferences, job:job.employer });
+  const policy = applicationPolicy({ preferences, job:job.employer, profileId:draft.searchProfileId });
   if (policy.mode === 'skip') return reject(policy.reason);
   const humanApproval = a.status === 'Approved' && approval && approval.application_id === a.id
     && approval.user_id === a.user_id && approval.revision === a.revision && draft.questionsReviewed

@@ -71,14 +71,14 @@ function useProfiles() {
     setSelected(id);
     setFeedback("New application profile. Save when ready.");
   }
-  async function saveProfile() {
+  async function saveProfileRecord(savingProfile: ApplicationProfile) {
     if (busy || w.locked) return false;
     const owner = w.demo ? null : w.user?.id;
-    const id = profile.id;
+    const id = savingProfile.id;
     setBusy(true);
     try {
       const targets = readField(
-        profile.prompt,
+        savingProfile.prompt,
         recruitingTargetsHeading,
         recruitingTargetsKey,
       );
@@ -87,15 +87,15 @@ function useProfiles() {
           "Resolve duplicate Targets fields in Advanced instructions.",
         );
       parseRecruitingTargets(targets.value, { requireNames: true });
-      if (readField(profile.prompt, "Profile evaluation", "Rules").conflict)
+      if (readField(savingProfile.prompt, "Profile evaluation", "Rules").conflict)
         throw Error(
           "Resolve duplicate profile evaluation Rules in Advanced instructions.",
         );
-      const next = profileFromPrompt(profile.prompt, profile);
+      const next = profileFromPrompt(savingProfile.prompt, savingProfile);
       let stored;
       if (owner) {
         const { data, error } = await w.client.rpc("save_search_profile", {
-          expected_version: profile.version || 0,
+          expected_version: savingProfile.version || 0,
           next_profile: next,
         });
         if (error)
@@ -106,7 +106,7 @@ function useProfiles() {
           );
         if (window.JB.auth.userId !== owner) return false;
         stored = data;
-      } else stored = { ...next, version: (profile.version || 0) + 1 };
+      } else stored = { ...next, version: (savingProfile.version || 0) + 1 };
       w.store.update(
         "workflow.searchPreferences",
         (current: Record<string, any>) => ({
@@ -140,6 +140,8 @@ function useProfiles() {
       setBusy(false);
     }
   }
+  function saveProfile(){return saveProfileRecord(profile);}
+  function saveProfilePrompt(prompt:string){return saveProfileRecord({...profile,prompt});}
   async function reload() {
     if (busy) return;
     setBusy(true);
@@ -185,6 +187,7 @@ function useProfiles() {
     change,
     create,
     saveProfile,
+    saveProfilePrompt,
     reload,
     busy,
     feedback,

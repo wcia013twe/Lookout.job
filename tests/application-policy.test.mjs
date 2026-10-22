@@ -51,3 +51,31 @@ test('custom untyped lists work only when explicitly selected', () => {
   own.search.reviewPolicy = {fullTime:{tierListId:'custom',threshold:'A'}};
   assert.equal(decide('Oracle','FT',own).mode,'auto-apply');
 });
+
+const automationProfile=(id,threshold='A',enabled='Yes',tierListId='FT')=>({id,name:id,active:true,filters:{Employment:'Full-time'},instructions:`## Application automation\n- Auto-apply routine matches: ${enabled}\n- Review threshold: ${threshold}\n## Company priorities\n- Tier list ID: ${tierListId}`});
+test('two profiles for the same role type retain independent review thresholds and toggles',()=>{
+ const own=structuredClone(preferences);own.search.profiles=[automationProfile('backend','A'),automationProfile('systems','C')];
+ const decideProfile=profileId=>applicationPolicy({preferences:own,job:{company:'Oracle',employmentType:'FT'},profileId});
+ assert.equal(decideProfile('backend').mode,'auto-apply');assert.equal(decideProfile('systems').mode,'review');
+ own.search.profiles[0]=automationProfile('backend','A','No');assert.equal(decideProfile('backend').mode,'review');
+ assert.equal(applicationPolicy({preferences:own,job:{company:'Oracle',employmentType:'FT'}}).mode,'review');
+ for(const id of ['foreign',''])assert.equal(decideProfile(id).mode,'review');
+ own.search.profiles[1].active=false;assert.equal(decideProfile('systems').mode,'review');
+});
+test('profile rules use explicit lists and reject conflicts, role mismatch and missing lists',()=>{
+ const own=structuredClone(preferences);own.tier_lists.push({...list('FT'),id:'profile-list'});own.search.profiles=[automationProfile('backend','A','Yes','profile-list')];
+ const decideProfile=(employmentType='FT')=>applicationPolicy({preferences:own,job:{company:'Oracle',employmentType},profileId:'backend'});
+ assert.equal(decideProfile().tierListId,'profile-list');assert.equal(decideProfile('Internship').mode,'review');
+ own.search.profiles[0]=automationProfile('backend','A','Yes','');assert.equal(decideProfile().mode,'review');
+ own.search.profiles[0]=automationProfile('backend') ;own.search.profiles[0].instructions+='\n## Application automation\n- Auto-apply routine matches: Yes';assert.equal(decideProfile().mode,'review');
+});
+test('MCP policy reads accept a bounded profile ID and drafts reject malformed binding IDs',()=>{
+ assert.doesNotThrow(()=>validateRequest({operation:'applications.policy',payload:{jobId:'00000000-0000-4000-8000-000000000001',profileId:'backend'}}));
+ assert.throws(()=>validateRequest({operation:'applications.policy',payload:{jobId:'00000000-0000-4000-8000-000000000001',profileId:'../other'}}));
+ assert.throws(()=>validateRequest({operation:'drafts.prepare',payload:{draft:{searchProfileId:42}}}));
+});
+
+test('unconfigured profiles retain the legacy master opt-out and ignore unrelated legacy keys',()=>{
+ const own=structuredClone(preferences);own.search.autoSubmitApproved=false;own.search.profiles=[{id:'backend',active:true,filters:{Employment:'Full-time'},instructions:''}];own.search.reviewPolicy={fullTime:{threshold:'A',tierListId:'FT',enabled:true,configured:true}};
+ assert.equal(applicationPolicy({preferences:own,job:{company:'Oracle',employmentType:'FT'},profileId:'backend'}).mode,'review');
+});
