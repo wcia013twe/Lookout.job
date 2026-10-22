@@ -32,11 +32,13 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
   const days = agenda.days.filter(day => day.items.length || day.interviews.length || day.completedMinutes);
   const scheduled = agenda.days.reduce((sum, day) => sum + day.plannedMinutes, 0);
   return <>
+    <div className="action-widget-header">
     <div className="flex items-start justify-between gap-3">
       <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>
       <span className="prep-total">{scheduled} min</span>
     </div>
     <p className="mt-2 text-xs text-board-muted">{calendarLabel(agenda.today, { month: "short", day: "numeric" })}–{agenda.days.length ? calendarLabel(agenda.days[agenda.days.length - 1].date, { month: "short", day: "numeric" }) : ""} · {agenda.dailyMinutes === 0 ? "Paused" : `${agenda.dailyMinutes} min/day`}</p>
+    </div>
     {!days.length && <p className="mt-5 text-sm text-board-muted">{agenda.dailyMinutes === 0 ? "Prep paused. Set daily minutes in Plan settings to resume." : "Add an interview date in Applications to plan your prep."}</p>}
     <div className="prep-agenda mt-4" aria-label="Weekly preparation agenda">
       {days.map(day => <section key={day.date} className={`prep-agenda-day ${day.interviews.length ? "prep-interview-day" : ""}`} aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
