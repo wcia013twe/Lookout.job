@@ -27,19 +27,27 @@ try{
  await card.getByRole('button',{name:'Preview job',exact:true}).click();
  const panel=page.getByRole('dialog');
  await panel.getByRole('heading',{name:'About the job',exact:true}).waitFor();
+ await panel.getByRole('region',{name:'Job facts',exact:true}).waitFor();
  await panel.getByRole('heading',{name:'AI fit analysis',exact:true}).waitFor();
- await panel.getByRole('heading',{name:'Prefilled application',exact:true}).waitFor();
+ await panel.getByRole('heading',{name:'Application review',exact:true}).waitFor();
+ assert.equal(await panel.getByLabel('Email',{exact:true}).isVisible(),false,'Saved details start collapsed');
+ await panel.getByText('Can you work onsite three days per week?',{exact:true}).waitFor();
+ await panel.getByLabel('Can you work onsite three days per week?',{exact:true}).fill('Temporary review answer');
+ await panel.getByText('Confirm saved contact details',{exact:true}).click();
  assert.equal(await panel.getByLabel('Email',{exact:true}).inputValue(),'candidate@example.com');
  await panel.getByLabel('Name',{exact:true}).fill('Temporary UI edit');
- await panel.getByText('Show reasoning',{exact:true}).first().click();
+ await panel.locator('summary').filter({hasText:'Skills & experience'}).first().click();
  await page.screenshot({path:dir+'/discover-panel-desktop.png',fullPage:false});
  assert.equal(cloud.length,before,'Preview should not call a service');
  await page.keyboard.press('Escape');
  assert.equal(await panel.count(),0);
  assert(await card.getByRole('button',{name:'Preview job',exact:true}).evaluate(el=>document.activeElement===el),'Focus returns to the preview button');
  await card.getByRole('button',{name:'Preview job',exact:true}).click();
+ await panel.getByText('Confirm saved contact details',{exact:true}).click();
  assert.notEqual(await panel.getByLabel('Name',{exact:true}).inputValue(),'Temporary UI edit');
- await panel.getByLabel('Email',{exact:true}).scrollIntoViewIfNeeded();
+ assert.equal(await panel.getByLabel('Can you work onsite three days per week?',{exact:true}).inputValue(),'');
+ await panel.getByText('Confirm saved contact details',{exact:true}).click();
+ await panel.getByRole('heading',{name:'Application review',exact:true}).scrollIntoViewIfNeeded();
  await page.screenshot({path:dir+'/discover-application-desktop.png'});
  await page.setViewportSize({width:390,height:844});
  await page.emulateMedia({colorScheme:'light'});
@@ -62,5 +70,5 @@ try{
  await panel.getByText('Unknown',{exact:true}).waitFor();
  await page.keyboard.press('Escape');
  assert.equal(errors.length,0,errors.join('\n'));
- console.log(JSON.stringify({result:'passed',viewports:['1440x1000 dark','390x844 light'],checks:['demo scores and unknowns','panel sections','ephemeral prefill edits','Escape and focus restoration','no preview service calls','no demo external posting','horizontal overflow'],artifacts:dir},null,2));
+ console.log(JSON.stringify({result:'passed',viewports:['1440x1000 dark','390x844 light'],checks:['demo scores and unknowns','panel sections','ephemeral prefill edits','Escape and focus restoration','collapsed saved details and visible review questions','icon job facts','no preview service calls','no demo external posting','horizontal overflow'],artifacts:dir},null,2));
 } finally { await browser.close(); }

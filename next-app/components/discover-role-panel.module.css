@@ -19,3 +19,12 @@
 .panel[open] { animation: reveal 220ms cubic-bezier(.16, 1, .3, 1); }
 @keyframes reveal { from { transform: translateX(32px); opacity: .7; } to { transform: translateX(0); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .panel[open] { animation: none; } }
+
+.match { background: var(--role-preview-match); border-radius: 16px; padding: 20px; }
+.match > section { border-top: 0; padding-top: 0; }
+.reasoning { padding: 16px 18px; background: var(--role-preview-strength); border-radius: 12px; }
+.uncertainty { margin-top: 12px; padding: 16px 18px; background: var(--role-preview-caution); border-radius: 12px; }
+.application { padding-top: 24px; border-top: 1px solid var(--color-board-line); }
+.reviewCount { flex-shrink: 0; border-radius: 999px; padding: 5px 10px; background: var(--role-preview-caution); color: var(--color-board-warning); font-size: 12px; font-weight: 600; }
+.reviewQuestion { margin-top: 12px; padding: 16px; border-radius: 12px; background: var(--role-preview-caution); }
+@media (max-width: 420px) { .match { padding: 16px; } .reasoning, .uncertainty { padding: 14px; } }
