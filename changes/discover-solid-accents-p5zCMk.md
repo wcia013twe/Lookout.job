@@ -33,3 +33,9 @@
 - Replaced the compact status controls with the existing five-stage timelines and a quiet status/details action. Kept type/date metadata, filters and the solid aurora surfaces. Timelines remain visible below role metadata on phones.
 - Unified reached stages, connectors and current-stage rings around the shared ice-blue/deep-blue theme accent across the tracker list, details and Network. Removed the separate stage-colored button palette.
 - Validation: production build including TypeScript, tracker-display/application-timeline tests, data validation (76 roles), whitespace check and design detector (no findings). Existing fictional demo scenarios and reset were exercised by the browser check, including filters, unknown dates, saved-role status changes and details. Dark/light desktop/mobile plus 320px/768px checks verified visible timelines, exact theme colors, no overflow/page errors and no demo backend writes. Real-account backend writes and production deployment remain unverified.
+
+## Current-stage green pulse
+
+- Added a four-second green pulse contained inside only the current progress marker, keeping its blue outline and the completed timeline blue. Light mode uses deeper green; reduced motion shows a steady green center.
+- Validation: production build including TypeScript, data validation (76 roles), whitespace check and design detector (no findings). Browser verification on the existing fictional demo covered dark/light desktop/mobile, exact pulse colors and duration, no animation on completed markers, a steady reduced-motion fallback, matching vertical detail markers, and no overflow/page errors. Screenshots and temporary verification remain in `/tmp/lookout-theme-preview/`.
+- CSS-only presentation change; existing demo fixtures, controls and MCP boundaries remain in use. No backend writes or deployment were performed.
