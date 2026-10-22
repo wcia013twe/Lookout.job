@@ -44,19 +44,21 @@ function Editor() {
     <p className="mb-5 max-w-prose text-sm leading-relaxed text-board-muted">Choose where Muse looks. Job preferences define which opportunities fit. Your target list is private.</p>
     {!targets.length && <p className="mb-5 text-sm text-board-muted">No search targets yet. Add a job board, company careers page, or social account.</p>}
     {targets.length > 0 && <p className="mb-3 text-sm text-board-muted">{targets.length} {targets.length === 1 ? 'source' : 'sources'}</p>}
-    <ul aria-label="Search sources" className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,17rem),1fr))] gap-4">{targets.map(target => {
+    <ul aria-label="Search sources" className="divide-y divide-board-line border-y border-board-line">{targets.map(target => {
       const status = scanningStatus(target);
-      return <li key={target.id} className="flex min-w-0 flex-col rounded-xl border border-board-line bg-board-panel p-4">
+      return <li key={target.id} className="flex min-w-0 flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
         <div className="min-w-0 flex-1">
-          <h3 className="[overflow-wrap:anywhere] font-semibold">{target.name}</h3>
-          <p className="mt-1 text-xs text-board-muted">{targetKinds[target.kind]}</p>
-          <p className="mt-3 [overflow-wrap:anywhere] text-sm">{target.address}</p>
-        </div>
-        <details className="mt-3 text-sm">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h3 className="[overflow-wrap:anywhere] font-semibold">{target.name}</h3>
+            <span className="text-xs text-board-muted">{targetKinds[target.kind]}</span>
+          </div>
+          <p className="mt-1 [overflow-wrap:anywhere] text-sm text-board-muted">{target.address}</p>
+          <details className="mt-1 text-sm">
           <summary className="cursor-pointer font-medium" aria-label={`${status.label} for ${target.name}`}>{status.label}</summary>
           <p className="pb-3 leading-relaxed text-board-muted">{status.detail}</p>
-        </details>
-        <div className="mt-3 flex flex-wrap gap-2 border-t border-board-line pt-3">
+          </details>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
           <button type="button" className={secondary} disabled={busy || w.locked} onClick={() => { setDraft({ ...target }); setFeedback(''); }} aria-label={`Edit ${target.name}`}>Edit</button>
           <button type="button" className={secondary} disabled={busy || w.locked} onClick={() => persist(targets.filter(t => t.id !== target.id))} aria-label={`Remove ${target.name}`}>Remove</button>
         </div>
