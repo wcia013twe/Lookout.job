@@ -258,7 +258,7 @@ Application dialogs resolve their palette from the shared workspace theme, indep
 
 ### Private company Network
 
-Target rows reuse shared company identity, borders, priority text, and compact people counts. Process outreach reuses the existing message editor and application dialog. Company editing uses shared fields for private research, source provenance, priorities, target teams, and dated next actions. Due follow-ups use compact divided rows with explicit Open company actions.
+Network opens a compact Companies list with role focus, people/application counts and the next step. Company Overview leads with a next step and readable brief; Circle context occupies the second desktop column and follows the brief on mobile. Personal focus and verification questions stay readable; people/outreach and applications retain counted tabs. Small inline editors handle focus, next step, brief or settings; sources, explicit links and archive use disclosure. The Stripe new-grad demo pairs an authored sample brief with clearly labeled example takeaways and source-conversation links. No live generation or notification service is implied. Process outreach reuses the existing message editor and application dialog. Due follow-ups retain compact divided rows and Open company navigation.
 
 ## Application profile settings
 

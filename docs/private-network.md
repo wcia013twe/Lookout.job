@@ -1,7 +1,7 @@
 # Durable company Network
 
 Network keeps `/referrals/`, Targets → company detail → Overview, People & outreach,
-Applications, and Circle intelligence. Active processes stays application-scoped.
+and Applications. Circle experiences appear in the Overview, with source conversations and optional search disclosed below. Active processes stays application-scoped.
 Company research is private; opening a suggestion or reading intelligence writes no
 company, workspace, contact or application record. Opening application links is not applying.
 
@@ -75,7 +75,7 @@ responses reconcile against the saved content/revision without another write.
 
 ## Circle intelligence
 
-The tab calls `search_circle_knowledge` / `knowledge.search` with
+The Overview’s Circle section calls `search_circle_knowledge` / `knowledge.search` with
 `scope: current_memberships` and either `companyId` or unresolved `company` text.
 `circleId` remains supported for a single Circle; its company filter uses the same
 resolver/search. Scope and circleId are mutually exclusive; company ID and text
@@ -122,3 +122,28 @@ release process before applying this migration. Do not blindly replay all local
 migrations over a divergent hosted history. Until that is done, hosted Network
 workspace persistence and intelligence parity are unverified and the dependent
 Sites frontend must not be released. Existing hosted frontend stays available.
+
+## Simpler Network and Stripe example
+
+Companies is the main Network view. Adding a company asks only for its name and
+optional role/team interest. Its Overview leads with the next step, a readable
+brief, personal focus and Circle context. On desktop the Circle section sits beside
+the brief; mobile stacks it after the brief. People/outreach and Applications retain
+their own tabs and counts. The previous intelligence tab is removed.
+
+Adjust focus, Change next step, Edit brief and Company settings open small inline
+editors instead of one large company form. Each preserves the complete current
+record and uses the existing revision-checked company-workspace save boundary.
+Source editing, explicit record links and archive settings remain available through
+disclosure. Cancel keeps saved content unchanged. Copy brief request still only
+copies an agent handoff; it does not start a researcher. No new service/MCP action,
+notification delivery or generation engine is added in this UI pass.
+
+Demo mode includes an authored Stripe new-grad scenario: a fictional candidate’s
+Go/PostgreSQL and Query Lab evidence, the production-payments gap to verify, a
+concrete alumni outreach next step, a linked application and fictional Circle
+conversations about retry safety and team placement. The demo takeaways link to
+those conversations and are explicitly labeled examples, not live AI-generated
+intelligence, verified interview questions, current hiring policy or an open-role
+recommendation. They exist only in resettable demo memory. Real accounts show
+permitted source experiences without fabricated summaries.
