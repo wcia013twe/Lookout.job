@@ -10,12 +10,13 @@ is not automatically imported on sign-in. Demo uses disposable fictional memory.
 | Application handoffs, blockers and draft answers | `applications`, revision-checked draft/failure mutations | `workspace_read` (`workspace:read`), `prepare_draft`, `report_application_failure` (`drafts:write`) |
 | Interview dates, source evidence, resources and task completion | `preparation_plans`, `save_preparation_plan` | `read_preparation_plan` (`workspace:read`), `update_preparation_plan`, `complete_preparation_task` (`drafts:write`) |
 | Shared weekly plan and completion history | `preparation_planner_settings`, `preparation_sessions`; `read_preparation_planner`, `save_preparation_budget`, `complete_preparation_session` | Same three tool names; `workspace:read`, `preferences:write`, `drafts:write`, respectively |
-| Company research and dated next actions | Existing private outreach contacts; `save_outreach_contact` | `list_contacts` (`workspace:read`), `save_contact` (`network:write`) |
+| Company research and dated next actions | `company_workspaces`, maintained `companies` identities; `company_action` | `list_companies`, `list_company_workspaces` (`workspace:read`), `save_company_workspace` (`network:write`) |
 | Profile setup and approval/submission verification | Existing human-only verification and application mutations | `request_human_action`, `open_human_application_action` (`workspace:read`) return handoffs; they cannot grant approval |
 
-Company targets use `collection: "companies"` and the structured notes format in
-[`private-network.md`](private-network.md). Agents must preserve unrelated record
-fields and pass the current `expectedRevision`. Plan edits require the current
+Company targets use the complete typed record described in
+[`private-network.md`](private-network.md). Legacy `list_contacts`/`save_contact`
+company projections route through the same company workspace service. Agents must
+preserve unrelated record fields and pass the current `expectedRevision`. Plan edits require the current
 `expectedVersion`; session completion copies targets/versions from the planner.
 Only record actual user-reported preparation progress. Editing dates or scheduling
 work does not complete it. Opening an application link does not apply.
@@ -38,11 +39,13 @@ Read-only checks of project `umhqfqzpwmszhcknwtrs` found:
 
 - `applications` and `preparation_plans` exist with RLS enabled.
 - `save_preparation_plan` and `save_outreach_contact` exist.
+- The current `companies` registry and `company_workspaces` tables and
+  `company_action` RPC are absent.
 - `preparation_planner_settings`, `preparation_sessions`,
   `read_preparation_planner`, `save_preparation_budget`,
   `complete_preparation_session` and `perform_platform_action` are absent.
 - Hosted `agent-mcp` version 19's source does not include
-  `read_preparation_planner` or `save_contact`.
+  `read_preparation_planner`, `save_contact` or the new company workspace tools.
 
 The repository supports these operations, but the hosted deployment is **not
 ready** for the full current Action Board. In particular, an authenticated weekly
@@ -53,7 +56,8 @@ Release the reconciled migration chain and matching gateway/MCP from integrated
 main before claiming hosted parity. Relevant repository migrations include
 `20261014030000_platform_mcp_actions.sql`,
 `20261014031000_mcp_contacts_uploads_progress.sql` and
-`20261015205745_aggregated_preparation_planner.sql`. Do not blindly apply a list of
+`20261015205745_aggregated_preparation_planner.sql` and
+`20261022060633_durable_company_hub.sql`. Do not blindly apply a list of
 missing version numbers: the hosted migration history has some same-purpose
 migrations under different timestamps. Check dependencies and actual definitions.
 The existing Pages deployment does not deploy the backend; this repository has no
