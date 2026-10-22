@@ -146,8 +146,8 @@ try{
  await roles.getByRole('button',{name:'Finish editing Roles & experience',exact:true}).click();
  await roles.getByText('Backend engineering, ML systems · Preferred',{exact:true}).waitFor();
  assert.equal(await prefs.getByRole('region',{name:'Resume assignments & role targets',exact:true}).count(),0,'Job preferences must not repeat resume assignment controls');
- await page.getByRole('button',{name:'Save application profile',exact:true}).click();
- await page.getByRole('button',{name:'Reload saved',exact:true}).click();
+ assert.equal(await page.getByRole('button',{name:'Save application profile',exact:true}).count(),0);
+ await page.waitForTimeout(900);
  await roles.getByText('Backend engineering, ML systems · Preferred',{exact:true}).waitFor();
  const jobTab=await nav.getByRole('button',{name:'Job preferences',exact:true}).boundingBox();
  const agentTab=await nav.getByRole('button',{name:'My Agent',exact:true}).boundingBox();
@@ -198,9 +198,19 @@ try{
  assert.equal(await agent.getByRole('tab',{name:'Outreach',exact:true}).getAttribute('aria-selected'),'true');
  await agent.getByRole('tab',{name:'Outreach',exact:true}).press('ArrowLeft');
  assert.equal(await agent.getByRole('textbox',{name:'Employer questions custom guidance',exact:true}).inputValue(),'Fictional draft: use concrete systems examples.');
- await page.getByRole('button',{name:'Save writing settings',exact:true}).click();
- await page.getByRole('button',{name:'Reload saved',exact:true}).click();
+ assert.equal(await page.getByRole('button',{name:'Save writing settings',exact:true}).count(),0);
+ await page.waitForTimeout(900);
  assert.equal(await agent.getByRole('combobox',{name:'Employer questions tone',exact:true}).inputValue(),'Confident & understated');
+ // Leaving the page remounts the profile provider: these values must come from
+ // saved demo state, not its local draft map.
+ await page.getByRole('link',{name:'Career Toolkit',exact:true}).click();
+ await page.waitForURL('**/career-toolkit/');
+ await page.getByRole('button',{name:'Open profile navigation'}).click();
+ await page.getByRole('link',{name:'My Profile',exact:true}).click();
+ await nav.getByRole('button',{name:'My Agent',exact:true}).click();
+ await agent.getByRole('tab',{name:'Employer answers',exact:true}).click();
+ assert.equal(await agent.getByRole('combobox',{name:'Employer questions tone',exact:true}).inputValue(),'Confident & understated');
+ assert.equal(await agent.getByRole('textbox',{name:'Employer questions custom guidance',exact:true}).inputValue(),'Fictional draft: use concrete systems examples.');
  const picker=page.getByRole('combobox',{name:'Application profile',exact:true});
  await picker.selectOption('internships');
  assert.equal(await agent.getByRole('combobox',{name:'Employer questions tone',exact:true}).inputValue(),'Warm & conversational');
@@ -231,5 +241,5 @@ try{
  assert.equal(await page.getByText('Fictional systems cover letter',{exact:true}).count(),0,'Reset removes new application documents');
  assert.equal(await page.getByText('Demo systems resume.pdf',{exact:false}).count(),0,'Reset removes demo upload metadata');
  assert.equal(cloud.length,before,'Demo edits must not call cloud');assert.equal(errors.length,0,errors.join('\n'));
- console.log('PASS: background editing; profile navigation; resume/type assignments; save/reload; My Agent style drafts and profile switching; shared libraries; demo reset; desktop/mobile; no overflow or cloud writes');
+ console.log('PASS: background editing; profile navigation; resume/type assignments; autosave across page remount; My Agent style drafts and profile switching; shared libraries; demo reset; desktop/mobile; no overflow or cloud writes');
 }catch(error){const p=browser.contexts()[0]?.pages()[0];if(p){await p.screenshot({path:dir+'/failure.png'});console.error((await p.locator('body').innerText()).slice(-4500));}throw error;}finally{await browser.close();}

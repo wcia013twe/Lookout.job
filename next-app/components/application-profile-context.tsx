@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   parseRecruitingTargets,
   recruitingTargetsHeading,
@@ -26,8 +26,14 @@ export type ApplicationProfile = {
 };
 function useProfiles() {
   const w = useWorkspace();
+  const inFlight = useRef(false);
+  const attempted = useRef(new Map<string, string>());
+  const latestDrafts = useRef<Record<string, ApplicationProfile>>({});
+  const [saveError, setSaveError] = useState(false);
+  const failedProfile = useRef<string | null>(null);
   const p = w.state.workflow.searchPreferences || {};
   const [drafts, setDrafts] = useState<Record<string, ApplicationProfile>>({});
+  latestDrafts.current = drafts;
   const [selected, setSelected] = useState("general"),
     [busy, setBusy] = useState(false),
     [feedback, setFeedback] = useState("");
@@ -43,7 +49,8 @@ function useProfiles() {
   const profile = profiles.find((v) => v.id === selected) || profiles[0];
   function patch(fields: Partial<ApplicationProfile>) {
     setDrafts((prev) => ({ ...prev, [profile.id]: { ...profile, ...fields } }));
-    setFeedback("Unsaved changes to this application profile.");
+    setFeedback("Changes save automatically.");
+    setSaveError(false);
   }
   function field(heading: string, key: string) {
     return readField(profile.prompt, heading, key);
@@ -69,10 +76,14 @@ function useProfiles() {
       },
     }));
     setSelected(id);
-    setFeedback("New application profile. Save when ready.");
+    setFeedback("New application profile saves automatically.");
   }
   async function saveProfileRecord(savingProfile: ApplicationProfile) {
-    if (busy || w.locked) return false;
+    if (inFlight.current || w.locked) return false;
+    inFlight.current = true;
+    attempted.current.set(savingProfile.id, JSON.stringify(savingProfile));
+    const draftAtStart = latestDrafts.current[savingProfile.id];
+    setSaveError(false);
     const owner = w.demo ? null : w.user?.id;
     const id = savingProfile.id;
     setBusy(true);
@@ -122,7 +133,8 @@ function useProfiles() {
       );
       setDrafts((prev) => {
         const copy = { ...prev };
-        delete copy[id];
+        if (copy[id] === draftAtStart) delete copy[id];
+        else if (copy[id]) copy[id] = { ...copy[id], version: stored.version };
         return copy;
       });
       setFeedback(
@@ -134,12 +146,26 @@ function useProfiles() {
       );
       return true;
     } catch (e) {
+      failedProfile.current = id;
+      setSaveError(true);
       setFeedback(e instanceof Error ? e.message : "Could not save.");
       return false;
     } finally {
+      inFlight.current = false;
       setBusy(false);
     }
   }
+  // Save every pending profile, including one the user has just switched away from.
+  // Failed snapshots wait for an edit or explicit retry rather than looping requests.
+  const pendingKey = JSON.stringify(drafts);
+  useEffect(() => {
+    if (busy || w.locked) return;
+    const pending = Object.values(drafts).find(value =>
+      value.name.trim() && attempted.current.get(value.id) !== JSON.stringify(value));
+    if (!pending) return;
+    const timer = setTimeout(() => { void saveProfileRecord(pending); }, 600);
+    return () => clearTimeout(timer);
+  }, [pendingKey, busy, w.locked]);
   function saveProfile(){return saveProfileRecord(profile);}
   function saveProfilePrompt(prompt:string){return saveProfileRecord({...profile,prompt});}
   async function reload() {
@@ -187,10 +213,15 @@ function useProfiles() {
     change,
     create,
     saveProfile,
+    retrySave: () => {
+      const pending = drafts[failedProfile.current || profile.id];
+      return pending ? saveProfileRecord(pending) : Promise.resolve(false);
+    },
     saveProfilePrompt,
     reload,
     busy,
     feedback,
+    saveError,
     setFeedback,
     dirty: !!drafts[profile.id],
   };
