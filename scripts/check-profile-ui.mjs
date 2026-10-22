@@ -21,6 +21,9 @@ try{
  await page.goto((process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3034') + '/profile/');
  await page.getByRole('button',{name:'Open profile navigation'}).click();
  await page.getByRole('button',{name:'Demo mode',exact:true}).click();
+ await page.getByRole('button',{name:'New profile',exact:true}).click();
+ await page.getByRole('textbox',{name:'New profile name',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Cancel new profile',exact:true}).click();
  await page.getByRole('button',{name:'About me',exact:true}).click();
  assert.equal(await page.locator('section[aria-label="About me"] details').count(),0,'About me sections stay expanded');
  assert.equal(await page.getByRole('textbox',{name:'First name',exact:true}).count(),0,'Background starts read-only');

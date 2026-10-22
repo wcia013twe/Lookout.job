@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   eligibilityHeading,
   countryEligibilityFields,
@@ -10,79 +10,28 @@ import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary, Section } from "./ui";
 import { profileStyles as styles } from "./profile-surface";
 import ProfileSection, {ProfileValues} from "./profile-section";
-export function ProfileSwitcher({showDescription=true}:{showDescription?:boolean}) {
-  const a = useApplicationProfile();
-  const [creating, setCreating] = useState(false),
-    [name, setName] = useState("");
-  return (
-    <section
-      className={styles.profilePicker}
-      aria-label="Application profile selection"
-    >
-      <div className={styles.pickerMain}>
-        <Field label="Application profile">
-          <select
-            className={control}
-            value={a.profile.id}
-            disabled={a.busy}
-            onChange={(e) => a.select(e.target.value)}
-          >
-            {a.profiles.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-                {p.active ? "" : " · Paused"}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <button
-          type="button"
-          className={secondary}
-          disabled={a.busy}
-          onClick={() => setCreating(!creating)}
-        >
-          {creating ? "Cancel" : "New profile"}
-        </button>
-        <button
-          type="button"
-          className={secondary}
-          disabled={a.busy}
-          onClick={() => a.create(`${a.profile.name} copy`, true)}
-        >
-          Duplicate
-        </button>
+export function ProfileSwitcher() {
+  const a=useApplicationProfile();
+  const [creating,setCreating]=useState(false),[name,setName]=useState("");
+  const choices=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    const list=choices.current;if(!list)return;
+    const reveal=()=>{const selected=list.querySelector('[aria-pressed="true"]');if(!selected)return;const bounds=list.getBoundingClientRect(),button=selected.getBoundingClientRect();if(button.right>bounds.right-4)list.scrollLeft+=button.right-bounds.right+4;else if(button.left<bounds.left+4)list.scrollLeft-=bounds.left-button.left+4;};
+    reveal();const observer=new ResizeObserver(reveal);observer.observe(list);return()=>observer.disconnect();
+  },[a.profile.id,a.profile.name]);
+  return <section className={styles.profilePicker} aria-label="Application profile selection">
+    <div className={styles.pickerMain}>
+      <div ref={choices} className={styles.profileChoices} role="group" aria-label="Application profiles">
+        {a.profiles.map(profile=><button type="button" key={profile.id} className={styles.profileChoice} aria-pressed={a.profile.id===profile.id} disabled={a.busy} onClick={()=>a.select(profile.id)}>{profile.name}{!profile.active&&<span> · Paused</span>}</button>)}
       </div>
-      {showDescription&&<p className="mt-3 text-xs text-board-muted">
-        One Lookout account. Separate application identities, materials, and job
-        preferences.
-      </p>}
-      {creating && (
-        <form
-          className="mt-4 flex flex-wrap items-end gap-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            a.create(name);
-            setName("");
-            setCreating(false);
-          }}
-        >
-          <Field label="New application profile name">
-            <input
-              className={control}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={80}
-              required
-              placeholder="Full-time engineering, internships…"
-            />
-          </Field>
-          <button className={secondary} disabled={!name.trim()}>
-            Create profile
-          </button>
-        </form>
-      )}
-    </section>
-  );
+      <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label={creating?'Cancel new profile':'New profile'} title={creating?'Cancel':'New profile'} aria-expanded={creating} aria-controls="new-application-profile" onClick={()=>setCreating(!creating)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">{creating?<path d="m6 6 12 12M6 18 18 6"/>:<path d="M12 5v14M5 12h14"/>}</svg></button>
+      <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label="Duplicate profile" title="Duplicate profile" onClick={()=>a.create(`${a.profile.name} copy`,true)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button>
+    </div>
+    {creating&&<form id="new-application-profile" className={styles.profileCreate} onSubmit={event=>{event.preventDefault();a.create(name);setName("");setCreating(false);}}>
+      <Field label="New profile name"><input className={control} value={name} onChange={event=>setName(event.target.value)} maxLength={80} required autoFocus/></Field>
+      <button type="submit" className={styles.profileIcon} disabled={a.busy||!name.trim()} aria-label="Create profile" title="Create profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+    </form>}
+  </section>;
 }
 export function AccountAssignments() {
   const a = useApplicationProfile();

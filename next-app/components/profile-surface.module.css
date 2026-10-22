@@ -203,23 +203,8 @@
   }
 }
 
-.profilePicker {
-  padding: 20px;
-  margin-bottom: 24px;
-  background: var(--color-board-panel);
-  border: 1px solid var(--color-board-line);
-  border-radius: 12px;
-}
-.pickerMain {
-  display: flex;
-  align-items: end;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.pickerMain > label {
-  flex: 1 1 280px;
-  max-width: 460px;
-}
+.profileHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}.profileHeader>h1{flex-shrink:0;line-height:44px}.profilePicker{min-width:0;max-width:800px}.pickerMain{display:flex;align-items:center;gap:8px;min-width:0}.profileChoices{display:flex;gap:8px;min-width:0;overflow-x:auto;padding:4px;scrollbar-width:thin;scrollbar-color:var(--color-board-muted) var(--color-board-bg)}.profileChoice{flex-shrink:0;min-height:44px;padding:8px 16px;border:1px solid var(--color-board-line);border-radius:8px;background:var(--color-board-tag);color:var(--color-board-muted);font-size:14px;font-weight:600;white-space:nowrap}.profileChoice[aria-pressed=true]{background:var(--color-board-accent);border-color:var(--color-board-accent);color:var(--color-board-ink)}.profileChoice:hover:not(:disabled){border-color:var(--color-board-accent)}.profileIcon{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border:1px solid var(--color-board-line);border-radius:8px;color:var(--color-board-muted);background:var(--color-board-tag)}.profileIcon:hover:not(:disabled){color:var(--color-board-text);border-color:var(--color-board-accent)}.profileChoice:focus-visible,.profileIcon:focus-visible{outline:2px solid var(--color-board-accent);outline-offset:2px}.profileChoice:disabled,.profileIcon:disabled{opacity:.5;cursor:not-allowed}.profileCreate{display:flex;align-items:flex-end;gap:8px;margin-top:12px}.profileCreate>label{flex:1;min-width:0}
+
 .tabs {
   background: transparent;
   border: 0;
@@ -343,13 +328,10 @@
   overflow-wrap: anywhere;
 }
 @media (max-width: 639px) {
-  .profilePicker {
-    padding: 16px;
-  }
-  .pickerMain > label {
-    max-width: none;
-    flex-basis: 100%;
-  }
+  .profileHeader{flex-direction:column;align-items:stretch;gap:8px;margin-bottom:20px}
+  .profilePicker{max-width:100%;width:100%}
+  .profileChoices{flex:1}
+  .profileChoice{padding-inline:12px}
   .overviewBottom,
   .writingGrid {
     grid-template-columns: minmax(0, 1fr);

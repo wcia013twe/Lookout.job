@@ -41,10 +41,10 @@ function ProfileContent() {
   }
   return (
     <ProfileSurface>
-      <Heading title="My Profile">
-        {active!=="about"&&"Your background, your materials, your next move."}
-      </Heading>
-      {active !== "agent" && <ProfileSwitcher showDescription={active!=="about"}/>}
+      <div className={profileStyles.profileHeader}>
+        <h1 className="text-2xl font-bold tracking-tight">My Profile</h1>
+        {active!=="agent"&&<ProfileSwitcher/>}
+      </div>
       <label className={profileStyles.mobileSelect}>
         <span>Profile section</span>
         <select
