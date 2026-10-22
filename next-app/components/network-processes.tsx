@@ -23,9 +23,9 @@ export default function NetworkProcesses({onOpenTarget}:{onOpenTarget:(id:string
  const application=visible.find(a=>a.id===selected)||visible[0];
  const linked:ContactRecord[]=application?contactsForProcess(outreach.contacts,application):[];
  const contact=linked.find(c=>c.id===person)||linked[0];
- const candidates:ContactRecord[]=application?[...outreach.contacts,...(w.state.network.people||[]).map((c:ContactRecord)=>({...c,contact:c.contact||c.name}))].filter((c:ContactRecord)=>companyKey(c.company)===companyKey(application.company)&&!linked.some(l=>l.id===c.id)):[];
+ const candidates:ContactRecord[]=application?[...outreach.contacts,...(w.state.network.people||[]).map((c:ContactRecord)=>({...c,contact:c.contact||c.name}))].filter((c:ContactRecord)=>(c.companyId&&application.companyId?c.companyId===application.companyId:companyKey(c.company)===companyKey(application.company))&&!linked.some(l=>l.id===c.id)):[];
  const targets=companyIndex(network.rows,outreach.contacts,all);
- const target=application?targets.find(t=>companyKey(t.record.name)===companyKey(application.company)):null;
+ const target=application?targets.find(t=>t.applications.some((a:Application)=>a.id===application.id)):null;
  useEffect(()=>{const id=new URL(location.href).searchParams.get('process');if(id)setSelected(id);},[]);
  function open(id:string){setSelected(id);setPerson('');setAdding(false);setFeedback('');history.replaceState(null,'',`?view=processes&process=${encodeURIComponent(id)}`);}
  function prepare(person:ContactRecord){

@@ -31,7 +31,6 @@ export default function NeedsYou() {
   return (
     <>
       <Heading title="Action Board">
-        Your decisions, manual steps, and deadline-driven preparation in one place. Finish an item and it clears from the board.
       </Heading>
       <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
         <section className="glass-panel action-widget needs-you-priority min-w-0 rounded-2xl p-5 md:p-6" aria-labelledby="checklist-heading">

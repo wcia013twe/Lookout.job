@@ -14,6 +14,8 @@ export function circleAgentContext(post) {
   stage:content.stage||null,
   insight:content.insight||content.body,
   company:content.company||null,
+  companyId:content.companyId||null,
+  companyContexts:post.companyContexts||[],
   role:content.role||null,
   experienceDate:content.experienceDate||null,
   provenance:content.provenance,
@@ -23,6 +25,7 @@ export function circleAgentContext(post) {
 }
 
 export function validateCircleContextContent(content) {
+ for(const part of [content,...(Array.isArray(content.contexts)?content.contexts:[]),...(Array.isArray(content.offers)?content.offers:[])])if(part.companyId!==undefined&&(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(part.companyId)||!part.company?.trim()))throw Error('Company ID requires a registered company name.');
  if(content.activity!==undefined){
   validateCircleActivity(content.activity);
   if(content.type!=='discussion'||content.personalDisclosure!==true)throw Error('Activity requires a discussion with personal disclosure.');
@@ -33,7 +36,7 @@ export function validateCircleContextContent(content) {
   if(content.type!=='offer_comparison'||!Array.isArray(content.offers)||content.offers.length<2||content.offers.length>4)throw Error('Attach two to four offers to an offer comparison.');
   for(const offer of content.offers){
    if(!offer||typeof offer!=='object'||Array.isArray(offer)||typeof offer.company!=='string'||!offer.company.trim())throw Error('Each offer needs a company.');
-   for(const [key,value] of Object.entries(offer))if(!['company','role','location','base','equity','signOn','notes'].includes(key)||typeof value!=='string'||value.length>(key==='notes'?1000:200))throw Error('Invalid offer details.');
+   for(const [key,value] of Object.entries(offer))if(!['company','companyId','role','location','base','equity','signOn','notes'].includes(key)||typeof value!=='string'||value.length>(key==='notes'?1000:200))throw Error('Invalid offer details.');
   }
  }
  if(content.type==='offer_comparison'&&!content.offers)throw Error('Attach at least two offers.');
