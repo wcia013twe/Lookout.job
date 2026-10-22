@@ -48,3 +48,26 @@ test('legacy rule copy preserves profile rules and becomes an independent one-ti
  const changedSource='A different rule later.';
  assert.ok(!copied.includes(changedSource));
 });
+
+test('resume assignments support explicit job types while legacy targets inherit the profile',async()=>{
+ assert.equal(parseRecruitingTargets(JSON.stringify([target]))[0].employment,undefined);
+ for (const employment of ['', 'Full-time','Internship','Part-time','Contract','Temporary']) {
+  const assigned={...target,employment};
+  const prompt=updateField(initialPrompt(),recruitingTargetsHeading,recruitingTargetsKey,JSON.stringify([assigned]));
+  const profile=profileFromPrompt(prompt);
+  const {validateRequest}=await import('../supabase/functions/agent-gateway/contract.mjs');
+  validateRequest({operation:'preferences.profile.save',payload:{profile,expectedVersion:0}});
+  assert.deepEqual(parseRecruitingTargets(readField(promptFromProfile(profile),recruitingTargetsHeading,recruitingTargetsKey).value),[assigned]);
+ }
+ for(const employment of ['Anything',null,true,{}]) assert.throws(()=>parseRecruitingTargets(JSON.stringify([{...target,employment}])));
+});
+test('demo assignments cover distinct resume variants and explicit full-time/internship types',async()=>{
+ const {demoFixtures}=await import('../next-app/lib/demo.mjs');
+ const {withApplicationProfileDemo}=await import('../next-app/lib/application-profile-demo.mjs');
+ const state=withApplicationProfileDemo(demoFixtures('2026-10-22')).state;
+ const lists=state.workflow.searchPreferences.profiles.map(p=>parseRecruitingTargets(readField(promptFromProfile(p),recruitingTargetsHeading,recruitingTargetsKey).value));
+ assert.equal(new Set(lists[0].map(t=>t.resumeId)).size,2);
+ assert.ok(lists[0].every(t=>t.employment==='Full-time'));
+ assert.ok(lists[1].every(t=>t.employment==='Internship'));
+ assert.ok(lists.flat().every(t=>state.workflow.resumes.some(r=>r.id===t.resumeId)));
+});

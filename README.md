@@ -400,7 +400,7 @@ tables, gateway operations or company service are required. See the
 ## Application profiles and writing styles
 
 My Profile switches application profiles with a compact button-styled dropdown
-beside the page heading, above Overview, About me, Personalization and Job preferences. A plus icon
+beside the page heading, above Overview, About me, Job preferences and My Agent. A plus icon
 opens the inline create form; the copy icon duplicates the selected profile. Existing named search profiles remain the same records and
 IDs; no account migration or duplicate profile store is introduced. New, duplicate,
 rename, active/paused, identity, material selection, writing and targeting edits use
@@ -419,17 +419,11 @@ unverified; saving never implies human review. About me has no bottom save foote
 name, preferred name/suffix, email/phone, birthday/location, address lines and postal
 code. Desktop follows a two-column reading order; mobile stacks the same fields.
 
-Personalization keeps a shared resume/answer library, with independent per-profile
-resume and saved-answer selections. Employer questions and outreach each have Tone,
-Length and Guidance. Materials and both writing channels use the same expanded,
-read-only boxes and section-level pencil editing as About me. The checkmark returns
-to reading mode; Save application profile persists those changes. Shared libraries
-remain visible below, with their existing add/edit actions. Preview style brief
-shows current instructions, not generated text.
-A profile selection guides agent preparation; it does not change global default
-resume/submission policy, verify facts, authorize answer reuse or approve a draft.
-The existing account-wide private PDF default remains available under an explicit
-editable section. That account-wide setting saves automatically. No external messages or applications are sent.
+About me owns the shared resume and employer-answer libraries, plus per-profile saved-answer selections. Job preferences owns the fallback resume and role/type-to-resume assignments, alongside roles, specializations, employment, seniority, locations, work arrangement, company size, industries, desired/avoided skills, compensation, clearance, values and exclusions. Each criterion retains Required / Preferred / Flexible priority. Search status uses the existing active/paused profile switch.
+
+Resume assignments extend the existing Recruiting targets / Targets narrative: each target may include `employment` (Full-time, Internship, Part-time, Contract, Temporary, or blank). Legacy targets without that field inherit profile job types. Each assignment holds one or more role titles, a preferred resume, timing and conditions; blank resume uses the profile fallback. Conflicting applicable resumes require user selection. These are personal-agent preparation guidance, not new automatic submission routing or approval. Unknown or deleted resume references remain visible for repair.
+
+My Agent owns separate employer-answer and outreach writing styles (Tone, Length, Guidance), scoped by the visible application-profile selector. Its account-wide submission-resume setting remains explicitly labeled and saves automatically. Profile writing changes use Save application profile, as do resume assignments and preferences. Preview style brief shows instructions, not generated text. About me background and shared-library saves retain their existing independent behavior. Old `section=kit` links open Job preferences. The Personalization tab is removed. Job preferences uses the same expanded read-only sections, two-column detail layout and section-level pencil/checkmark editing as About me, including matching criteria, values, company priorities, career goals and resume assignments. Checkmarks finish section editing; Save application profile persists the draft. Advanced instructions is an explicit editable section. My Agent sits directly after Job preferences in the left-aligned tab row.
 
 Website RPC `save_search_profile` and MCP `save_search_profile` /
 `preferences.profile.save` retain the same owner/version/schema checks. The following
@@ -440,7 +434,7 @@ labeled sections are preserved in the existing `instructions` narrative:
 - `Employer answer writing` and `Outreach writing`: Tone, Length, Guidance.
 
 `workspace_read`, personal context and canonical profile documents expose the same
-saved records. Developer context version 30 explains their meaning; release the
+saved records. Developer context version 36 explains their meaning; release the
 gateway through the normal production workflow before claiming deployed agent
 support. No migration or new permission is needed. Hosted round trips and actual
 agent account access remain unverified.
@@ -450,12 +444,12 @@ separate application emails, account assignments and employer-answer tone. Edit 
 switch profiles/tabs and return; save/reload, duplicate/rename and pause searches.
 Edit shared background and verify the independent review/save boundary. Add/edit an
 employer answer and inspect retained reuse restrictions. Preview the style brief,
-visit unchanged My agent, then reset Demo to restore fixtures. Fixtures and changes
+visit My Agent, then reset Demo to restore fixtures. Fixtures and changes
 remain in memory and never write real account records or fetch private files.
 
 Profile Overview shows a compact identity row, three account-wide totals
-(applications, active interviews and offers), and shortcuts to About me, Personalization and Job preferences. Readiness text appears only for missing/incomplete items
-or a paused search. Writing-style details live in Personalization; Accounts &
+(applications, active interviews and offers), and shortcuts to About me, Job preferences and My Agent. Readiness text appears only for missing/incomplete items
+or a paused search. Writing-style details live in My Agent; Accounts &
 identity is not displayed. Totals use existing tracker stages and span all application
 profiles; identity and settings remain scoped to the selected profile. Counts include user/agent-reported progress
 and do not independently establish employer-confirmed submission. Demo uses its
@@ -479,7 +473,7 @@ choices mean Ask me. Changing country clears the three country-specific answers,
 so one country's eligibility does not silently carry to another. Existing shared
 authorization text remains preserved as Shared authorization notes.
 
-Personalization → Shared employer-answer library → Worked here before? opens only
+About me → Shared employer-answer library → Worked here before? opens only
 Company and Yes / No / Ask me. A separate explicit confirmation permits reuse of
 a Yes/No answer. Ask me always stays unverified and always-ask. Saving again for
 the same normalized company updates the unique existing canonical question record;

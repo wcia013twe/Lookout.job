@@ -4,7 +4,7 @@ import {useWorkspace} from './workspace';
 import {prepareSearch,searchResponse} from '../../supabase/functions/agent-gateway/search.mjs';
 import {searchDemo,synchronizeSearchDemo} from '../../lib/search/demo.mjs';
 export type SearchDocument={kind:string;id:string;version:number;content:string;projection:Record<string,any>};
-export type SearchRun={id:string;profile_id:string;state:string;version:number;mode:string;days:number;summary:string;contextChanged?:boolean;sources?:Record<string,any>[]};
+export type SearchRun={id:string;profile_id:string;state:string;version:number;mode:string;days:number;summary:string;created_at?:string;contextChanged?:boolean;sources?:Record<string,any>[]};
 export function useSearchHarness(profileId?:string){
  const w=useWorkspace(),[context,setContext]=useState<any>(null),[runs,setRuns]=useState<SearchRun[]>([]),[listings,setListings]=useState<any[]>([]),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const generation=useRef(0);const owner=w.demo?`demo-${w.demoEpoch}`:w.user?.id||'guest';const currentOwner=useRef(owner);currentOwner.current=owner;

@@ -24,13 +24,12 @@ import {
   ApplicationMaterials,
   WritingStyles,
 } from "./profile-settings";
-type ProfileSectionId = "overview" | "about" | "kit" | "preferences" | "agent";
+type ProfileSectionId = "overview" | "about" | "preferences" | "agent";
 const sections: [ProfileSectionId, string][] = [
   ["overview", "Overview"],
   ["about", "About me"],
-  ["kit", "Personalization"],
   ["preferences", "Job preferences"],
-  ["agent", "My agent"],
+  ["agent", "My Agent"],
 ];
 function ProfileContent() {
   const w = useWorkspace(),
@@ -38,7 +37,8 @@ function ProfileContent() {
   const [active, setActive] = useState<ProfileSectionId>("overview"),
     [visited, setVisited] = useState<ProfileSectionId[]>([]);
   useEffect(() => {
-    const requested = new URLSearchParams(window.location.search).get("section");
+    const section = new URLSearchParams(window.location.search).get("section");
+    const requested = section === "kit" ? "preferences" : section;
     if (sections.some(([id]) => id === requested)) {
       setActive(requested as ProfileSectionId);
       setVisited([requested as ProfileSectionId]);
@@ -52,7 +52,7 @@ function ProfileContent() {
     <ProfileSurface>
       <div className={profileStyles.profileHeader}>
         <h1 className="text-2xl font-bold tracking-tight">My Profile</h1>
-        {active!=="agent"&&<ProfileSwitcher/>}
+        <ProfileSwitcher/>
       </div>
       <label className={profileStyles.mobileSelect}>
         <span>Profile section</span>
@@ -93,24 +93,35 @@ function ProfileContent() {
           <ProfileEditor>
             <EligibilitySettings />
           </ProfileEditor>
+          <h2 className="mb-3 mt-8 text-lg font-bold">Documents &amp; saved answers</h2>
+          <p className="text-sm text-board-muted">Shared across application profiles. Assign resumes to roles in Job preferences.</p>
+          <Resumes />
+          <ApplicationMaterials mode="answers" />
+          <SavedAnswers />
         </section>
       )}
-      {visited.includes("kit") && (
+      {visited.includes("preferences") && (
         <section
           className={profileStyles.panel}
-          hidden={active !== "kit"}
-          aria-label="Personalization"
+          hidden={active !== "preferences"}
+          aria-label="Job preferences"
         >
-          <div className={profileStyles.sectionIntro}>
-            <h2>Personalization</h2>
-            <p>The right materials and voice for {a.profile.name}.</p>
-          </div>
-          <ApplicationMaterials />
+          <Preferences mode="search" showDefaultResume={false} />
+        </section>
+      )}
+      {visited.includes("agent") && (
+        <section
+          className={profileStyles.panel}
+          hidden={active !== "agent"}
+          aria-label="My agent"
+        >
+          <Heading title="My agent">
+            Set your writing style, connection, search schedule, and permissions.
+          </Heading>
+          <Link href="/onboarding/" className={secondary}>
+            Change companion
+          </Link>
           <WritingStyles />
-          <h2 className="mb-3 mt-8 text-lg font-bold">Shared libraries</h2>
-          <p className="text-sm text-board-muted">Resumes and employer answers available across your application profiles.</p>
-          <Resumes />
-          <SavedAnswers />
           <ProfileSection title="Account-wide submission resume" resetKey={a.profile.id} disabled={w.locked}>
             {editing => editing ? <>
             <p className="my-4 text-sm text-board-muted">
@@ -152,29 +163,6 @@ function ProfileContent() {
             </p>
             </> : <ProfileValues items={[{label:"Default private PDF resume",value:w.state.workflow.resumes.find((r:{id:string;name:string})=>r.id===w.state.workflow.searchPreferences?.defaultResumeId)?.name||"No private PDF selected"}]}/>}
           </ProfileSection>
-        </section>
-      )}
-      {visited.includes("preferences") && (
-        <section
-          className={profileStyles.panel}
-          hidden={active !== "preferences"}
-          aria-label="Job preferences"
-        >
-          <Preferences mode="search" showDefaultResume={false} />
-        </section>
-      )}
-      {visited.includes("agent") && (
-        <section
-          className={profileStyles.panel}
-          hidden={active !== "agent"}
-          aria-label="My agent"
-        >
-          <Heading title="My agent">
-            Manage your connection, search targets, and permissions.
-          </Heading>
-          <Link href="/onboarding/" className={secondary}>
-            Change companion
-          </Link>
           <AgentConnections />
           <CircleAgentSettings />
           <DailySchedule />
@@ -182,7 +170,7 @@ function ProfileContent() {
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}
-      {active !== "agent" && active !== "about" && (active !== "overview" || a.dirty) && (
+      {(a.dirty || active === "preferences" || active === "agent") && (
         <div className={profileStyles.saveBar}>
           <div className="min-w-0 flex-1">
             <span className="text-sm font-semibold">
@@ -191,7 +179,7 @@ function ProfileContent() {
                 : "Application profile settings"}
             </span>
             <p role="status" className="mt-1 text-xs text-board-muted">
-              {a.feedback || "Identity, material selections, writing style, and job preferences save together."}
+              {a.feedback || "Resume assignments, writing style, and job preferences save together."}
             </p>
           </div>
           <button

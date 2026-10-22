@@ -31,7 +31,7 @@ export function ProfileSwitcher() {
     </form>}
   </section>;
 }
-export function ApplicationMaterials() {
+export function ApplicationMaterials({mode = "resume"}: {mode?: "resume" | "answers"}) {
   const a = useApplicationProfile(),
     w = useWorkspace();
   const id = a.field("Application materials", "Default resume ID").value;
@@ -42,12 +42,11 @@ export function ApplicationMaterials() {
     return answer ? `${answer.question}${answer.companyScope ? ` · ${answer.companyScope}` : ""}` : "Previously selected answer unavailable";
   });
   return (
-    <ProfileSection title="Materials for this profile" resetKey={a.profile.id} disabled={a.busy}>{editing => editing ? <>
+    <ProfileSection title={mode === "resume" ? "Fallback resume" : "Saved answers for this profile"} resetKey={a.profile.id} disabled={a.busy}>{editing => editing ? <>
       <p className="mb-5 text-sm text-board-muted">
-        Choose from your shared library. Each application profile keeps its own
-        selections.
+        {mode === "resume" ? "Choose a fallback when no role assignment matches. Manage shared resumes in About me." : "Select shared answers for this application profile. Their individual review and reuse policies still apply."}
       </p>
-      <Field label="Preferred resume">
+      {mode === "resume" && <><Field label="Fallback resume">
         <select
           className={control}
           disabled={a.busy}
@@ -78,7 +77,8 @@ export function ApplicationMaterials() {
         A profile selection guides preparation. Existing application review and
         submission permissions still apply.
       </p>
-      <fieldset className="mt-6">
+      </>}
+      {mode === "answers" && <fieldset className="mt-6">
         <legend className="mb-3 text-sm font-semibold">
           Saved answers to use
         </legend>
@@ -124,9 +124,10 @@ export function ApplicationMaterials() {
             Add an employer answer below to select it here.
           </p>
         )}
-      </fieldset>
-    </> : <ProfileValues items={[
-      {label:"Preferred resume",value:resume?.name || (id ? "Previously selected resume unavailable" : "No profile resume selected")},
+      </fieldset>}
+    </> : <ProfileValues items={mode === "resume" ? [
+      {label:"Fallback resume",value:resume?.name || (id ? "Previously selected resume unavailable" : "No profile resume selected")},
+    ] : [
       {label:"Saved answers to use",value:selectedAnswers.length ? selectedAnswers.join("\n") : "No saved answers selected"},
     ]}/>}
     </ProfileSection>

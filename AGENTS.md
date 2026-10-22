@@ -20,6 +20,8 @@
 
 ## Simple session workflow
 
+- Use the external SSD for task checkouts, dependencies, build artifacts and caches to avoid internal-disk exhaustion. Start features with `TMPDIR="/Volumes/External SSD/Lookout/tmp" npm run feature:start -- <name>` and set `npm_config_cache="/Volumes/External SSD/Lookout/npm-cache"` for installs. Keep the shared main checkout in its existing location. If the SSD is unavailable, ask before using internal storage for a large install or build.
+
 - One writing task, one isolated checkout and one `codex/` branch. This applies to code, documentation, catalog updates and dependency changes. Reuse the same checkout and branch for follow-ups; do not let two sessions write in it concurrently. A PR is optional and should be created only when the user requests GitHub review/publication or the change needs protected-branch CI before release.
 - Keep the shared `main` checkout for inspection and local landing. Make edits and install dependencies in the task checkout. Preserve unfamiliar edits; never reset, restore or stash another session's work to make a checkout clean.
 - Commit intentional progress before handing off or ending unfinished work. Completed routine work must be landed into local `main` so the user's local app sees it immediately. Report the checkout path, branch, local-main commit, checks run, whether anything was pushed or published, and any remaining uncommitted work. Remove the task checkout only when its work is committed and landed or deliberately backed up.

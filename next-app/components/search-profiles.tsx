@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
-import { Section, Field, control, secondary } from "./ui";
+import { Field, control, secondary } from "./ui";
 import {
   priorities,
   preferenceGroups,
@@ -12,7 +12,9 @@ import {
 } from "../../lib/search-profile.mjs";
 
 import TierLists from "./tierlists";
+import ProfileSection, { ProfileValues } from "./profile-section";
 import RecruitingTargets from "./recruiting-targets";
+import { ApplicationMaterials } from "./profile-settings";
 import ProfileRuleCopy from "./profile-rule-copy";
 import { errorMessage } from "./profile-types";
 import { useApplicationProfile } from "./application-profile-context";
@@ -106,265 +108,84 @@ function SearchProfileEditor() {
   const tierExists = w.state.workflow.tierLists.some(
     (list: { id: string }) => list.id === tierField.value,
   );
+  function value(heading: string, key: string) {
+    const field = readField(profile.prompt, heading, key);
+    return field.conflict ? "Conflicting values — review Advanced instructions" : field.value;
+  }
   return (
-    <Section title="Job preferences">
-      <p className="mb-5 max-w-prose text-sm text-board-muted">
-        What makes a role right for {profile.name}? These preferences belong to
-        this application profile.
-      </p>
-      <label className="mb-6 flex min-h-11 items-center gap-3 text-sm">
-        <input
-          type="checkbox"
-          disabled={busy}
-          checked={profile.active}
-          onChange={(e) => patch({ active: e.target.checked })}
-        />
-        Include this profile in job searches
-      </label>
-      <section
-        aria-labelledby="profile-evaluation-heading"
-        className="mb-7 border-t border-board-line pt-5"
-      >
-        <h3 id="profile-evaluation-heading" className="text-lg font-semibold">
-          Profile rules
-        </h3>
-        <p className="mt-2 mb-4 max-w-prose text-sm text-board-muted">
-          Only for {profile.name}. Describe how your agent should work and what
-          makes an opportunity worth pursuing. Other profiles have their own
-          rules.
-        </p>
-        {textField(
-          "Profile evaluation",
-          "Rules",
-          "For example: verify uncertain facts, prioritize strong systems teams, and explain any tradeoffs before recommending a role.",
-          true,
-        )}
-        {(w.user || w.demo) && (
-          <details
-            className="mt-3"
-            onToggle={(e) => setShowLegacy(e.currentTarget.open)}
-          >
-            <summary className="text-sm font-medium">
-              Copy previous rules
-            </summary>
-            {showLegacy && <ProfileRuleCopy />}
-          </details>
-        )}
-        <details className="border-t border-board-line py-3">
-          <summary className="text-base font-semibold">
-            Career goals &amp; tradeoffs
-          </summary>
-
-          <p className="mb-4 max-w-prose text-sm text-board-muted">
-            Explain why a role is worth pursuing and what upside would justify a
-            compromise.
-          </p>
-          <div className="space-y-4">
-            {careerFields.map((key) =>
-              textField(
-                "Career goals & tradeoffs",
-                key,
-                key === "Career goals"
-                  ? "What do you want this next role to help you achieve?"
-                  : "What would justify lower pay, relocation, or a change in timing?",
-                true,
-              ),
-            )}
-          </div>
-        </details>
-      </section>
+    <>
+      <div className="mb-6">
+        <h2 className="text-xl font-bold">Job preferences</h2>
+        <p className="mt-2 text-sm text-board-muted">What makes a role right for {profile.name}.</p>
+      </div>
+      <ProfileSection title="Search status" resetKey={profile.id} disabled={busy}>
+        {editing => editing ? <label className="flex min-h-11 items-center gap-3 text-sm">
+          <input type="checkbox" checked={profile.active} disabled={busy} onChange={e => patch({active:e.target.checked})}/>
+          Include this profile in job searches
+        </label> : <ProfileValues items={[{label:"Status",value:profile.active ? "Actively looking" : "Paused"}]}/>}
+      </ProfileSection>
+      <ApplicationMaterials />
       <RecruitingTargets />
-      <h3 className="mt-8 mb-2 text-lg font-semibold">
-        Criteria for this profile
-      </h3>
-      <p className="mb-5 text-sm text-board-muted">
-        These apply to every recruiting target in {profile.name}.
-      </p>
-      <section
-        aria-labelledby="preference-priority-heading"
-        className="mb-7 border-t border-board-line pt-5"
-      >
-        <h3 id="preference-priority-heading" className="text-lg font-semibold">
-          Priority &amp; flexibility
-        </h3>
-        <p className="mt-2 max-w-prose text-sm text-board-muted">
-          Set a priority beside each criterion. Required means a must-have;
-          Preferred favors a match; Flexible allows a tradeoff. Blank means you
-          have not specified a priority. Missing evidence in a listing still
-          needs verification.
-        </p>
-      </section>
-      <div className="space-y-7">
-        {preferenceGroups.map((group) => (
-          <details
-            key={group.title}
-            className="border-t border-board-line py-3"
-            open={group.title === "Roles & experience"}
-          >
-            <summary className="text-base font-semibold">
-              {group.title}
-              <span className="ml-3 text-sm font-normal text-board-muted">
-                {group.fields
-                  .map(
-                    ([key, , heading]) =>
-                      readField(profile.prompt, heading || group.heading, key)
-                        .value,
-                  )
-                  .filter(Boolean)
-                  .join(" · ") || "Not specified"}
-              </span>
-            </summary>
-            <p className="mb-4 text-xs text-board-muted">
-              List multiple choices separated by commas, or describe your
-              preference.
-            </p>
-            <div className="space-y-5">
-              {group.fields.map(([key, placeholder, heading]) => {
-                const strength = readField(
-                  profile.prompt,
-                  "Priority & flexibility",
-                  key,
-                );
-                return (
-                  <div
-                    key={key}
-                    className="grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"
-                  >
-                    {textField(heading || group.heading, key, placeholder)}
-                    <Field label={`${key} priority`}>
-                      <select
-                        className={control}
-                        disabled={strength.conflict || busy}
-                        value={strength.value}
-                        onChange={(e) =>
-                          change("Priority & flexibility", key, e.target.value)
-                        }
-                      >
-                        <option value="">Not specified</option>
-                        {flexibilityOptions.map((option) => (
-                          <option key={option}>{option}</option>
-                        ))}
-                      </select>
-                      {strength.conflict && (
-                        <span className="text-sm text-board-muted">
-                          Resolve duplicate priority lines in Advanced
-                          instructions.
-                        </span>
-                      )}
-                    </Field>
-                  </div>
-                );
-              })}
-            </div>
-          </details>
-        ))}
-        <details className="border-t border-board-line py-3">
-          <summary className="text-base font-semibold">What you value</summary>
-
-          <p className="mb-4 max-w-prose text-sm text-board-muted">
-            These guide how your agent weighs opportunities.
-          </p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {priorities.map((key) => {
-              const field = readField(
-                profile.prompt,
-                "How to Evaluate Opportunities",
-                key,
-              );
-              return (
-                <Field label={key} key={key}>
-                  <select
-                    className={control}
-                    value={field.value}
-                    disabled={field.conflict || busy}
-                    onChange={(e) =>
-                      change(
-                        "How to Evaluate Opportunities",
-                        key,
-                        e.target.value,
-                      )
-                    }
-                  >
-                    <option value="">No preference</option>
-                    <option>Important</option>
-                    <option>Very important</option>
+      {preferenceGroups.map(group => <ProfileSection key={group.title} title={group.title} resetKey={profile.id} disabled={busy}>
+        {editing => editing ? <>
+          <p className="mb-5 text-sm text-board-muted">Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification.</p>
+          <div className="space-y-5">
+            {group.fields.map(([key, placeholder, heading]) => {
+              const strength = readField(profile.prompt, "Priority & flexibility", key);
+              return <div key={key} className="grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]">
+                {textField(heading || group.heading, key, placeholder)}
+                <Field label={`${key} priority`}>
+                  <select className={control} disabled={strength.conflict || busy} value={strength.value} onChange={e => change("Priority & flexibility",key,e.target.value)}>
+                    <option value="">Not specified</option>
+                    {flexibilityOptions.map(option => <option key={option}>{option}</option>)}
                   </select>
-                  {field.conflict && (
-                    <span className="text-sm text-board-muted">
-                      Resolve duplicate lines in Advanced instructions.
-                    </span>
-                  )}
+                  {strength.conflict && <span className="text-xs text-board-muted">Resolve duplicate priority lines in Advanced instructions.</span>}
                 </Field>
-              );
+              </div>;
             })}
           </div>
-        </details>
-        <details className="border-t border-board-line py-3" open>
-          <summary className="text-base font-semibold">
-            Company priorities
-          </summary>
-
-          <p className="mb-4 max-w-prose text-sm text-board-muted">
-            Associate a tier list with this search profile. Tiers guide company
-            priority; the specific role and team still determine fit. Editing a
-            list affects every profile that uses it.
-          </p>
-          <Field label="Tier list for this profile">
-            <select
-              className={control}
-              disabled={busy || tierField.conflict}
-              value={tierField.value}
-              onChange={(e) => selectTierList(e.target.value)}
-            >
+        </> : <ProfileValues items={group.fields.map(([key,,heading]) => {
+          const preference=value(heading || group.heading,key);
+          const priority=value("Priority & flexibility",key);
+          return {label:key,value:preference ? [preference,priority].filter(Boolean).join(" · ") : priority ? `Not specified · ${priority}` : "Not specified"};
+        })}/>}
+      </ProfileSection>)}
+      <ProfileSection title="What you value" resetKey={profile.id} disabled={busy}>
+        {editing => editing ? <div className="grid gap-5 sm:grid-cols-2">{priorities.map(key => {
+          const field=readField(profile.prompt,"How to Evaluate Opportunities",key);
+          return <Field label={key} key={key}><select className={control} disabled={busy || field.conflict} value={field.value} onChange={e => change("How to Evaluate Opportunities",key,e.target.value)}>
+            <option value="">No preference</option><option>Important</option><option>Very important</option>
+          </select>{field.conflict && <span className="text-xs text-board-muted">Resolve duplicate lines in Advanced instructions.</span>}</Field>;
+        })}</div> : <ProfileValues items={priorities.map(key => ({label:key,value:value("How to Evaluate Opportunities",key) || "No preference"}))}/>}
+      </ProfileSection>
+      <ProfileSection title="Company priorities" resetKey={profile.id} disabled={busy}>
+        {editing => <>
+          <p className="mb-5 text-sm text-board-muted">Tiers guide company priority; the role and team still determine fit.</p>
+          {editing ? <>
+            <Field label="Tier list for this profile"><select className={control} disabled={busy || tierField.conflict} value={tierField.value} onChange={e => selectTierList(e.target.value)}>
               <option value="">No tier list selected</option>
-              {tierField.value && !tierExists && (
-                <option value={tierField.value}>
-                  Previously selected list unavailable
-                </option>
-              )}
-              {w.state.workflow.tierLists.map(
-                (list: { id: string; name: string }) => (
-                  <option key={list.id} value={list.id}>
-                    {list.name}
-                  </option>
-                ),
-              )}
-            </select>
-            {tierField.conflict && (
-              <span className="text-sm text-board-muted">
-                Resolve duplicate tier-list lines in Advanced instructions.
-              </span>
-            )}
-          </Field>
-          <div className="mt-4">
-            <TierLists
-              selectedListId={tierExists ? tierField.value : undefined}
-              onSelectList={selectTierList}
-            />
-          </div>
-        </details>
-        <details className="border-t border-board-line pt-5">
-          <summary className="min-h-11 text-base font-semibold">
-            Advanced instructions
-          </summary>
-          <p className="mb-3 mt-3 max-w-prose text-sm text-board-muted">
-            These fields edit the same instructions your agent reads. Additional
-            prose and existing preferences are preserved. Submission permission
-            is managed in My agent.
-          </p>
-          <textarea
-            aria-label={`${profile.name} preference prompt`}
-            spellCheck
-            className={`${control} min-h-[22rem] resize-y leading-relaxed`}
-            disabled={busy}
-            value={profile.prompt}
-            onChange={(e) => {
-              setUndo(null);
-              patch({ prompt: e.target.value });
-            }}
-          />
-        </details>
-      </div>
+              {tierField.value && !tierExists && <option value={tierField.value}>Previously selected list unavailable</option>}
+              {w.state.workflow.tierLists.map((list:{id:string;name:string}) => <option key={list.id} value={list.id}>{list.name}</option>)}
+            </select>{tierField.conflict && <span className="text-xs text-board-muted">Resolve duplicate tier-list lines in Advanced instructions.</span>}</Field>
+            <div className="mt-5"><TierLists selectedListId={tierExists ? tierField.value : undefined} onSelectList={selectTierList}/></div>
+          </> : <ProfileValues items={[{label:"Company tier list",value:tierField.conflict ? "Conflicting selections — review Advanced instructions" : tierField.value ? w.state.workflow.tierLists.find((list:{id:string}) => list.id === tierField.value)?.name || "Previously selected list unavailable" : "No tier list selected"}]}/>}
+        </>}
+      </ProfileSection>
+      <ProfileSection title="Career goals & tradeoffs" resetKey={profile.id} disabled={busy}>
+        {editing => editing ? <div className="space-y-5">{careerFields.map(key => textField("Career goals & tradeoffs",key,key === "Career goals" ? "What should your next role help you achieve?" : "What would justify lower pay, relocation, or a change in timing?",true))}</div> : <ProfileValues items={careerFields.map(key => ({label:key,value:value("Career goals & tradeoffs",key),wide:true}))}/>}
+      </ProfileSection>
+      <ProfileSection title="Profile rules" resetKey={profile.id} disabled={busy}>
+        {editing => editing ? <>
+          {textField("Profile evaluation","Rules","How should your agent evaluate opportunities for this profile?",true)}
+          {(w.user || w.demo) && <details className="mt-4" onToggle={e=>setShowLegacy(e.currentTarget.open)}><summary className="text-sm font-medium">Copy previous rules</summary>{showLegacy && <ProfileRuleCopy/>}</details>}
+        </> : <ProfileValues items={[{label:"Rules for this profile",value:value("Profile evaluation","Rules"),wide:true}]}/>}
+      </ProfileSection>
+      <ProfileSection title="Advanced instructions" resetKey={profile.id} disabled={busy}>
+        {editing => editing ? <>
+          <p className="mb-4 text-sm text-board-muted">These are the same instructions your agent reads. Existing prose is preserved. Submission permissions live in My Agent.</p>
+          <textarea aria-label={`${profile.name} preference prompt`} spellCheck className={`${control} min-h-[22rem] resize-y leading-relaxed`} disabled={busy} value={profile.prompt} onChange={e=>{setUndo(null);patch({prompt:e.target.value});}}/>
+        </> : <p className="text-sm text-board-muted">Edit the full instructions for {profile.name}. Your selections above are included.</p>}
+      </ProfileSection>
       {undo?.id === profile.id && undo.after === profile.prompt && (
         <button
           type="button"
@@ -378,7 +199,7 @@ function SearchProfileEditor() {
           Undo last adjustment
         </button>
       )}
-    </Section>
+    </>
   );
 }
 export default function SearchProfiles() {

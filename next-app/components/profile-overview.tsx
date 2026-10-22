@@ -5,7 +5,7 @@ import ProfileIcon,{type ProfileIconName} from "./profile-icon";
 import {profileStyles as styles} from "./profile-surface";
 import {profileOverviewStats,profileDisplayName} from "../../lib/profile-overview.mjs";
 
-type Section="about"|"kit"|"preferences";
+type Section="about"|"agent"|"preferences";
 export default function ProfileOverview({onSelect}:{onSelect:(section:Section)=>void}){
  const w=useWorkspace(),a=useApplicationProfile(),profile=w.state.workflow.profile;
  const displayName=profileDisplayName(profile,a.field("Application identity","Preferred first name").value,a.field("Application identity","Preferred last name").value);
@@ -14,8 +14,8 @@ export default function ProfileOverview({onSelect}:{onSelect:(section:Section)=>
  const resume=w.state.workflow.resumes.find((item:{id:string})=>item.id===a.field("Application materials","Default resume ID").value);
  const rows:{section:Section;icon:ProfileIconName;title:string;attention:string}[]=[
   {section:"about",icon:"user",title:"About me",attention:[!profile.verified&&"Review background",!email&&"Add email address"].filter(Boolean).join(" · ")},
-  {section:"kit",icon:"file",title:"Personalization",attention:resume?"":"Choose a resume"},
-  {section:"preferences",icon:"sliders",title:"Job preferences",attention:!a.profile.active?"Search paused":!a.field("Role preferences","Roles").value?"Set target roles":""},
+  {section:"agent",icon:"file",title:"My Agent",attention:""},
+  {section:"preferences",icon:"sliders",title:"Job preferences",attention:[!a.profile.active&&"Search paused",!a.field("Role preferences","Roles").value&&"Set target roles",!resume&&"Choose a fallback resume"].filter(Boolean).join(" · ")},
  ];
  return <div className={styles.overview}>
   <section className={styles.overviewIdentity} aria-label="Account overview">
