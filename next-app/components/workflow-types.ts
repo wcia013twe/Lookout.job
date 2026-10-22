@@ -8,7 +8,7 @@ export interface ApplicationQuestion {
 
 export interface Application {
   id: string;
-  company: string;
+  company: string; companyId?:string|null;
   title: string;
   status: string;
   employmentType?: string;

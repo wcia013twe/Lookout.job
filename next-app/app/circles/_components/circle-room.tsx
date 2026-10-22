@@ -64,7 +64,7 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
  const selected=detail.members.find(member=>member.id===person);
  const occupant=occupants.find(item=>item.key===selectedCompanion);
  const greeted=occupant?.companion,linkedMember=occupant?.member;
- const updates:Post[]=linkedMember?sharedMemberActivity(posts,linkedMember.alias):[];
+ const updates:Post[]=linkedMember?sharedMemberActivity(posts,linkedMember.id):[];
  const activityPost=updates.find(post=>{const activity=circleActivity(post.content);return activity.highlights.length||activity.goal||activity.help;});
  const activity=circleActivity(activityPost?.content);
  const goalProgress=activityGoalProgress(activity.goal);

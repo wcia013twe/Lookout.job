@@ -279,3 +279,19 @@ See [Circle Knowledge](circle-knowledge.md) for the shared browser/gateway contr
 knowledge scopes, immutable revisions, exact sharing approvals, conservative standing
 permission, private citation receipts and mandatory hosted release verification.
 Existing agent scopes are not expanded. No Circle content is enabled by this code alone.
+
+## Company Network integration
+
+The durable company hub adds `list_companies`, `list_company_workspaces` and
+`save_company_workspace`, sharing the website's owner/revision validation.
+Legacy company `list_contacts`/`save_contact` records are compatibility projections.
+`search_circle_knowledge` accepts one `circleId` or `scope: current_memberships`;
+use `companyId` or unresolved `company` text, never both. Company/role/stage
+criteria match a single primary, attached application/referral or offer context.
+Cross-Circle results are permitted published root posts, with stable `authorId`,
+Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
+Optional explicit company references retain exact-review rules. Internal posting
+IDs and employer requisition IDs remain distinct.
+See [the complete contract and release gates](../docs/private-network.md).
+These additions require backend/gateway/MCP release and hosted verification before
+claiming deployed parity.
