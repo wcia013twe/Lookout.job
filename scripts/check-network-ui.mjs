@@ -81,7 +81,9 @@ try{
  await page.getByLabel('Source 2 observed date',{exact:true}).fill('2026-10-20');
  await page.getByLabel('Source 2 findings',{exact:true}).fill('Unconfirmed team scope.');
  await page.getByRole('button',{name:'Save company',exact:true}).click();
+ await page.getByText('Personal notes',{exact:true}).click();
  await page.getByText('Updated fictional research interest.',{exact:true}).waitFor();
+ await page.getByText(/^Research sources /).click();
  await page.getByRole('link',{name:'Fictional team guide',exact:true}).waitFor();
  console.log('Company research edit passed');
  await page.getByRole('button',{name:'Circle intelligence',exact:true}).click();

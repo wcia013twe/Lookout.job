@@ -22,7 +22,7 @@ test('identity resolution and saved list preserve ambiguity, aliases and duplica
 });
 test('offline queue retains edits, recovers lost responses and isolates account changes',async()=>{
  let rows=[{id:'c',record:emptyCompany('Unknown'),revision:0,dirty:true}],remote=[],active=true,calls=0;
- const sync=createCompanySync({owner,get:()=>rows,set:value=>rows=value,isCurrent:()=>active,read:async()=>remote,write:async row=>{calls++;remote=[{...row,revision:row.revision+1,dirty:false}];throw Error('lost response');}});
+ const sync=createCompanySync({owner,get:()=>rows,set:value=>rows=value,isCurrent:()=>active,read:async()=>remote,write:async row=>{calls++;remote=[{...row,record:Object.fromEntries(Object.entries(row.record).reverse()),revision:row.revision+1,dirty:false}];throw Error('lost response');}});
  await assert.rejects(sync.synchronize());assert.equal(rows[0].dirty,true);
  await sync.synchronize();assert.equal(rows[0].revision,1);assert.equal(rows[0].dirty,false);assert.equal(calls,1);
  rows=[{...rows[0],record:{...rows[0].record,research:'local'},dirty:true}];remote=[{...remote[0],revision:3}];await sync.synchronize();assert.equal(rows[0].conflict,true);assert.equal(rows[0].record.research,'local');
@@ -70,6 +70,17 @@ test('migration, website and MCP preserve research, revisions, ownership and Cir
   const content={title:'Two contexts',body:'Published evidence',type:'interview_report',company:'Oracle',role:'Frontend',stage:'Screen',contexts:[{kind:'application',label:'Database round',company:'Databricks Inc.',role:'Backend',stage:'Technical',jobId:'REQ-73',jobUrl:'https://example.com/jobs?gh_jid=73'}],sources:[],provenance:'user_confirmed',personalDisclosure:true};
   const posts=[];
   for(const [user,cid] of [[owner,c1],[friend,c2]]){const p=await circle(user,'knowledge.propose',{circleId:cid,expectedRevision:0,content});await circle(user,'knowledge.publish',{circleId:cid,postId:p.postId,expectedRevision:1});posts.push(p.postId);}
+  // One multi-company source stays one source, and new IDs do not bypass approval.
+  const offers={title:'Compare teams',body:'Illustrative packages',type:'offer_comparison',sources:[],provenance:'agent_observed',personalDisclosure:true,offers:[{company:'Databricks',companyId,role:'Backend'},{company:'Databricks Inc.',companyId,role:'Backend'}]};
+  const offerPost=await agent('knowledge.propose',{circleId:c1,expectedRevision:0,content:offers,eventKey:'hub-offers'});
+  await assert.rejects(()=>agent('knowledge.publish',{circleId:c1,postId:offerPost.postId,expectedRevision:1,eventKey:'hub-offers-no-approval'}));
+  await circle(owner,'knowledge.publish',{circleId:c1,postId:offerPost.postId,expectedRevision:1});
+  const offerResults=await agent('knowledge.search',{scope:'current_memberships',companyId,type:'offer_comparison'});
+  assert.equal(offerResults.items.length,1);assert.equal(offerResults.items[0].id,offerPost.postId);
+  await circle(owner,'knowledge.withdraw',{circleId:c1,postId:offerPost.postId,expectedRevision:1});
+  const reply=await circle(owner,'knowledge.propose',{circleId:c1,parentId:posts[0],expectedRevision:0,content:{...content,type:'reply',body:'Reply context is not an independent interview report'}});
+  await circle(owner,'knowledge.publish',{circleId:c1,postId:reply.postId,expectedRevision:1});
+  assert.equal((await agent('knowledge.search',{scope:'current_memberships',companyId})).items.length,2);
   let results=await agent('knowledge.search',{scope:'current_memberships',companyId,role:'Backend',stage:'Technical',limit:1});assert.equal(results.items.length,1);assert.ok(results.nextCursor);
   const next=await agent('knowledge.search',{scope:'current_memberships',companyId,role:'Backend',stage:'Technical',limit:1,cursor:results.nextCursor});assert.equal(next.items.length,1);assert.notEqual(next.items[0].id,results.items[0].id);
   assert.equal((await agent('knowledge.search',{scope:'current_memberships',companyId,role:'Frontend'})).items.length,0);
