@@ -295,3 +295,12 @@ no scheduler handoff or embedded agent chat. See [the debrief mapping](../docs/i
 for the note retrieval convention, tool boundaries and verification limits.
 
 My Agent no longer displays the reusable Templates library or Account-wide submission resume control. This is a page-only removal: stored documents and existing submission defaults are retained, and scoped backend/MCP contracts are unchanged. The shared question bank, writing workspace and outreach template previews remain. Demo profile verification asserts both removed controls are absent.
+
+Network reuses the same compact contact/conversation editor in Outreach and Active
+Processes. The process view omits repeated company/role context and single-person
+tabs; multiple contacts use a selector. Logged message history stays visible.
+Follow-up date editing, contact status/removal and secondary process actions sit
+behind explicit controls. Logging still records user/agent-reported history,
+never sends a message, and preserves the existing contact/MCP envelope.
+`scripts/check-network-compact-ui.mjs` covers fictional process isolation, compact
+defaults, logging and shared-history presentation on desktop/mobile.

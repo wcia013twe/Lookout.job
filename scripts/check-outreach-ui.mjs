@@ -1,5 +1,5 @@
 // Optional visual/integration check. All cloud traffic is intercepted with fictional data.
-import {chromium} from '../runner/node_modules/playwright/index.mjs';
+const {chromium}=await import(process.env.LOOKOUT_PLAYWRIGHT_MODULE || '../runner/node_modules/playwright/index.mjs');
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/private/tmp/lookout-outreach-conversations';await mkdir(dir,{recursive:true});
@@ -60,6 +60,7 @@ try{
  await page.getByLabel('Message or summary',{exact:true}).fill('Happy to chat about the role.');
  await page.getByRole('button',{name:'Save logged message',exact:true}).click();
  await page.getByText('Your turn to reply',{exact:true}).first().waitFor();
+ await page.getByRole('button',{name:'Set follow-up',exact:true}).click();
  await page.getByLabel('Next follow-up',{exact:true}).fill('2026-10-21');
  await page.getByText('Saved to your account.',{exact:true}).waitFor();
  assert.equal(contactRows[0].record.followUpDate,'2026-10-21');

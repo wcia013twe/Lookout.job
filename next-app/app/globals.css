@@ -812,3 +812,28 @@ button:not(:disabled) {
 .workspace-shell .debrief-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
 .workspace-shell .debrief-editor { display: grid; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--color-board-line); }
 .workspace-shell .debrief-editor > button, .workspace-shell .debrief-editor > a { justify-self: start; }
+
+.workspace-shell .network-process-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--color-board-line); }
+.workspace-shell .network-process-facts { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+.workspace-shell .network-process-facts > span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-board-muted); }
+.workspace-shell .network-status-badge { display: inline-flex; padding: 4px 9px; border-radius: 6px; background: var(--color-board-tag); color: var(--color-board-accent); font-size: 12px; line-height: 1.5; white-space: normal; }
+.workspace-shell .network-process-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-block: 16px 24px; }
+.workspace-shell .network-process-actions > button { display: inline-flex; align-items: center; gap: 8px; }
+.workspace-shell .network-quiet-action { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 4px; color: var(--color-board-accent); font-size: 13px; font-weight: 600; }
+.workspace-shell .network-more-actions { margin-left: auto; font-size: 13px; color: var(--color-board-muted); }
+.workspace-shell .network-more-actions summary { min-height: 44px; padding-block: 12px; cursor: pointer; }
+.workspace-shell .network-more-actions button { margin-block: 8px; }
+.workspace-shell .network-contact-picker { display: grid; gap: 8px; margin-bottom: 20px; font-size: 13px; color: var(--color-board-muted); }
+.workspace-shell .network-process-contact { padding-top: 20px; border-top: 1px solid var(--color-board-line); }
+.workspace-shell .network-contact-editor > div:first-child { padding-bottom: 16px; }
+.workspace-shell .network-contact-editor > div:first-child > div:first-child { align-items: start; }
+.workspace-shell .network-contact-management { margin-top: 20px; border-top: 1px solid var(--color-board-line); padding-top: 8px; }
+.workspace-shell .network-contact-management summary { min-height: 44px; padding-block: 12px; font-size: 13px; color: var(--color-board-muted); cursor: pointer; }
+.workspace-shell .network-conversation { margin-top: 24px; }
+.workspace-shell .network-history-empty { padding-block: 20px 8px; max-width: 55ch; font-size: 13px; line-height: 1.7; color: var(--color-board-muted); }
+.workspace-shell .network-log-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px; }
+.workspace-shell .network-follow-up { max-width: 280px; margin-top: 16px; }
+.workspace-shell .network-message-history { margin-top: 20px; }
+.workspace-shell .network-message-event { padding: 16px 0; border-bottom: 1px solid var(--color-board-line); }
+.workspace-shell .network-message-event:first-child { padding-top: 0; }
+@media(max-width:639px) { .workspace-shell .network-more-actions { margin-left: 0; } }
