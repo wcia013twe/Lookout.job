@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: colorModeScript }} /></head>
+      <head><meta httpEquiv="Content-Security-Policy" content="frame-src 'self'" /><script dangerouslySetInnerHTML={{ __html: colorModeScript }} /></head>
       <body>
         <WorkspaceProvider>
           <AppShell>{children}</AppShell>

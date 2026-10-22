@@ -12,7 +12,7 @@ export function validatePlannerMinutes(value) {
   if (!Number.isInteger(value) || value < 0 || value > 240) throw Error('Choose a daily budget between 0 and 240 minutes.');
   return value;
 }
-const targetKey = target => `${target.applicationId}:${target.taskId}`;
+const targetKey = target => `${target.goalId ? `goal:${target.goalId}` : target.applicationId}:${target.taskId}`;
 function taskGroup(task, plan, application) {
   const key = task.key || task.id?.slice(`${plan.applicationId}:`.length);
   if (key?.startsWith('guide-')) {
@@ -60,7 +60,7 @@ function allocate(groups, available, date, planned) {
   }
   return [...states.values()].reduce((best, value) => value.score > best.score ? value : best, { score: -1, picks: [] }).picks;
 }
-export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, today = plannerToday(), timeZone = 'UTC' } = {}) {
+export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, learningGoals = [], artifacts = [], today = plannerToday(), timeZone = 'UTC' } = {}) {
   if (!preparationDate(today)) throw Error('Choose a valid planner date.');
   const dailyMinutes = validatePlannerMinutes(settings.dailyMinutes ?? 45);
   const end = plannerDay(today, 6), progress = new Map(), spent = new Map();
@@ -90,19 +90,32 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
       group.targets.push(target); groups.set(definition.key, group);
     }
   }
+  const learning = [];
+  for (const row of learningGoals) {
+    if (!row.goal?.active) continue;
+    for (const task of row.goal.tasks || []) {
+      if (task.completed || !Number.isFinite(task.minutes) || task.minutes <= 0 || !preparationDate(task.targetDate) || task.targetDate > end) continue;
+      const target = {goalId:row.id,taskId:task.id,expectedVersion:row.version,company:row.goal.title,deadline:task.targetDate < today ? today : task.targetDate,minutes:task.minutes,priority:1};
+      target.remaining=Math.max(0,task.minutes-(progress.get(targetKey(target))||0));
+      if(target.remaining)learning.push({key:`learning:${row.id}:${task.id}`,title:task.title,detail:task.detail,shared:false,learning:true,targets:[target]});
+    }
+  }
+  const references = target => artifacts.filter(a => (a.links || []).some(l => l.taskId === target.taskId && (target.goalId ? l.goalId === target.goalId : l.applicationId === target.applicationId))).map(({id,version,title,path}) => ({id,version,title,path}));
   const ordered = [...groups.values()].sort((a, b) => a.key.localeCompare(b.key));
   const planned = new Map();
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = plannerDay(today, i), completedMinutes = spent.get(date) || 0;
-    const picks = allocate(ordered, Math.max(0, dailyMinutes - completedMinutes), date, planned);
+    const available = Math.max(0, dailyMinutes - completedMinutes);
+    const interviewPicks = allocate(ordered, available, date, planned);
+    const picks = [...interviewPicks,...allocate(learning,available-interviewPicks.reduce((sum,p)=>sum+p.minutes,0),date,planned)];
     const items = picks.map(({ group, targets, minutes }) => {
       const remaining = Math.max(...targets.map(t => t.remaining - (planned.get(targetKey(t)) || 0)));
       for (const target of targets) planned.set(targetKey(target), Math.min(target.remaining, (planned.get(targetKey(target)) || 0) + minutes));
-      return { id: `${date}:${group.key}`, title: group.title, detail: group.detail, shared: group.shared, minutes, remainingAfter: Math.max(0, remaining - minutes), targets, reason: `${targets.length > 1 ? `Covers ${targets.length} interviews` : `For ${targets[0].company}`} · earliest round ${targets.map(t => t.deadline).sort()[0]}` };
+      return { learning:Boolean(group.learning), artifacts:[...new Map(targets.flatMap(references).map(a=>[a.id,a])).values()], needsMaterial:group.learning || group.key.startsWith('practice:'), id: `${date}:${group.key}`, title: group.title, detail: group.detail, shared: group.shared, minutes, remainingAfter: Math.max(0, remaining - minutes), targets, reason: group.learning ? `Learning goal: ${targets[0].company} · target ${targets[0].deadline}` : `${targets.length > 1 ? `Covers ${targets.length} interviews` : `For ${targets[0].company}`} · earliest round ${targets.map(t => t.deadline).sort()[0]}` };
     });
     return { date, completedMinutes, plannedMinutes: items.reduce((sum, item) => sum + item.minutes, 0), items, interviews: interviews.filter(i => i.date === date) };
   });
-  const unscheduled = ordered.flatMap(g => g.targets).filter(t => (planned.get(targetKey(t)) || 0) < t.remaining).length;
+  const unscheduled = [...ordered,...learning].flatMap(g => g.targets).filter(t => (planned.get(targetKey(t)) || 0) < t.remaining).length;
   return { today, dailyMinutes, days, interviews, unscheduled, dormantCount: dormant.length, uncertainCount: uncertain.length, expiredCount: expired.length };
 }
 
@@ -110,7 +123,7 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
 export function recordLocalPreparationSession(bundle, { sessionId, minutes, targets }, now = new Date().toISOString()) {
   if (!Number.isInteger(minutes) || minutes < 1 || minutes > 240 || !Array.isArray(targets) || !targets.length || targets.length > 100) throw Error('Choose a valid preparation session.');
   const prior = (bundle.sessions || []).find(s => s.id === sessionId);
-  const cleanTargets = targets.map(({ applicationId, taskId, expectedVersion }) => ({ applicationId, taskId, expectedVersion }));
+  const cleanTargets = targets.map(({ applicationId, goalId, taskId, expectedVersion }) => ({ ...(goalId ? {goalId} : {applicationId}), taskId, expectedVersion }));
   if (prior) {
     if (prior.minutes !== minutes || JSON.stringify(prior.targets) !== JSON.stringify(cleanTargets)) throw Error('Session ID already used.');
     return bundle;
@@ -124,9 +137,11 @@ export function recordLocalPreparationSession(bundle, { sessionId, minutes, targ
   for (const target of cleanTargets) {
     if (unique.has(targetKey(target))) throw Error('Duplicate session task.');
     unique.add(targetKey(target));
-    const row = next.plans.find(r => r.application_id === target.applicationId);
+    if (!!target.goalId === !!target.applicationId) throw Error('Choose one owned target.');
+    const row = target.goalId ? (next.learningGoals || []).find(r=>r.id===target.goalId) : next.plans.find(r => r.application_id === target.applicationId);
     if (!row || row.version !== target.expectedVersion) throw Error('Preparation changed. Reload before saving.');
-    const task = row.plan.tasks.find(t => t.id === target.taskId);
+    if (target.goalId && !row.goal.active) throw Error('Preparation changed. Reload before saving.');
+    const task = (target.goalId ? row.goal : row.plan).tasks.find(t => t.id === target.taskId);
     if (!task || task.completed) throw Error('Preparation task changed. Reload before saving.');
     const credit = (bundle.sessions || []).filter(s => s.targets.some(t => targetKey(t) === targetKey(target))).reduce((sum, s) => sum + s.minutes, 0);
     if (credit + minutes >= task.minutes) { task.completed = true; task.completedAt = now; }

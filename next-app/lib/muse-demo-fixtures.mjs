@@ -1,3 +1,4 @@
+import {createArtifactDemo} from './artifact-demo.mjs';
 import { demoOutreachContacts } from './outreach-demo.mjs';
 import { recordLocalPreparationSession, validatePlannerMinutes } from '../../lib/preparation-planner.mjs';
 import { createConnectionDemo } from '../../lib/agent-connections-demo.mjs';
@@ -132,10 +133,12 @@ export function createDemoServices(store) {
     if (!value || value.backendId !== id || !String(id).startsWith('demo-')) throw new Error('Fictional demo application not found.');
     return value;
   }
+  const artifactDemo = createArtifactDemo(store);
   function plannerBundle() {
-    return {applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
+    return {...artifactDemo.artifactSnapshot(),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
+    ...artifactDemo,
     async readPreparationPlanner() { return plannerBundle(); },
     connections: createConnectionDemo(store),
     async savePreparationBudget(dailyMinutes, expectedVersion) {
@@ -148,7 +151,7 @@ export function createDemoServices(store) {
       const next=recordLocalPreparationSession(plannerBundle(), input);
       const workflow=store.get('workflow');
       const demo=store.get('demo');
-      store.set('demo',{...demo,preparationSessions:next.sessions,preparationRows:Object.fromEntries(next.plans.map(row=>[row.application_id,row]))});
+      store.set('demo',{...demo,learningGoals:next.learningGoals,preparationSessions:next.sessions,preparationRows:Object.fromEntries(next.plans.map(row=>[row.application_id,row]))});
       store.set('workflow',{...workflow,preparationPlans:{...workflow.preparationPlans,...Object.fromEntries(next.plans.map(row=>[row.plan.applicationId,row.plan]))}});
       return plannerBundle();
     },

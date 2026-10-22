@@ -88,3 +88,12 @@ Deploy migration `20261015205745_aggregated_preparation_planner.sql`, the gatewa
 (including its incremented developer context), remote MCP and frontend together
 through the established production workflow after integration. Repository tests
 and local demo do not establish deployed MCP parity or connected intelligence feeds.
+
+## Learning goals and prepared artifacts
+
+The planner also includes owned learning goals without requiring an interview.
+Interview work takes priority; learning tasks fill remaining daily capacity.
+Saved artifact references open documents or interactive HTML in Career Toolkit.
+Tasks can explicitly lack prepared material. Both kinds of practice use the
+same completion ledger and budget, with exactly one applicationId or goalId per
+target. See [artifact contracts and release requirements](career-artifacts.md).

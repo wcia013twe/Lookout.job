@@ -353,7 +353,15 @@ Referrals previews five built-in templates (recruiter interview, warm referral, 
 
 ## Career Toolkit
 
-Career Toolkit is a native categorized skill library at `/career-toolkit/` with
+Career Toolkit opens on a private artifact workspace at `/career-toolkit/`.
+Connected agents can prepare and save documents, company research and interactive
+HTML while planning the week. Materials link directly from preparation tasks;
+learning goals share the interview planner’s daily budget even without upcoming
+interviews. Text remains the request/revision interface, and the workspace renders
+the results. Generation runs through the connected agent, not a website scheduler.
+See [artifact behavior, tool mapping and release limits](docs/career-artifacts.md).
+
+The **Tools & skills** tab retains the native categorized skill library with
 37 static usage manuals and copyable agent examples. Categories cover profile
 conversations, career search and regional context, documents, interviews,
 networking, growth, offers, and recurring-search setup. Each manual explains
