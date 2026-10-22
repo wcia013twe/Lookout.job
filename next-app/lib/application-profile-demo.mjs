@@ -2,6 +2,18 @@ import {promptFromProfile, profileFromPrompt, updateField} from '../../lib/searc
 // Decorate the existing fictional profiles; never read or write real account data.
 export function withApplicationProfileDemo(fixtures) {
  const copy=structuredClone(fixtures);
+ // Exercise populated summaries, timeline metadata, skill chips, and an empty language block.
+ Object.assign(copy.state.workflow.profile, {
+  jobSearchStatus: 'Exploring backend roles (fictional demo)',
+  linkedin: 'https://example.com/demo-linkedin',
+  github: 'https://example.com/demo-code',
+  skills: ['Go', 'Python', 'PostgreSQL', 'Distributed systems'],
+  languages: [],
+ });
+ Object.assign(copy.state.workflow.profile.workExperience[0], {
+  location: 'New York, NY', employmentType: 'Internship', startDate: '2026-06', endDate: '2026-08',
+ });
+ Object.assign(copy.state.workflow.profile.education[0], {startDate:'2022-08',endDate:'2026-05'});
  copy.state.workflow.savedAnswers.push({id:"demo-worked-before",question:"Have you worked for this company before?",answer:"Ask me",companyScope:"Example Systems (demo)",policy:"ask",verifiedAt:null});
  copy.state.workflow.searchPreferences.profiles=copy.state.workflow.searchPreferences.profiles.map(profile=>{
   const employment=profile.id==='internships'?'Internship':'Full-time';

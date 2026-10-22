@@ -86,20 +86,16 @@ export default function ProfileEditor() {
   }
   return (
     <>
-      <h2 className="mb-3 text-lg font-bold">Career background</h2>
-      <p className="mb-4 text-sm text-board-muted">
-        Review imported facts before checking them. Changes remain unverified
-        until you review and save them.
-      </p>
-      <form autoComplete="on" onSubmit={save}>
+      <div className="mb-6">
+        <h3 className="text-2xl font-semibold break-words">{String(facts.name || "Your background")}</h3>
+        {!!(facts.headline || facts.currentEmployer) && <p className="mt-2 text-sm text-board-muted">{[facts.headline, facts.currentEmployer].filter(Boolean).join(" · ")}</p>}
+        <p className="mt-2 text-sm text-board-muted">{String(facts.jobSearchStatus || "Job search status not specified")}</p>
+      </div>
+      <form autoComplete="on" onSubmit={save} className="space-y-5">
         {[
           {
-            title: "Personal details",
-            keys: ["name", "email", "phone", "location"],
-          },
-          {
-            title: "Name details",
-            keys: ["firstName", "lastName"],
+            title: "Contact & name",
+            keys: ["name", "firstName", "lastName", "email", "phone", "location"],
           },
           {
             title: "Professional summary",
@@ -110,13 +106,15 @@ export default function ProfileEditor() {
             keys: ["linkedin", "github", "portfolio", "otherUrl"],
           },
           { title: "Shared authorization notes", keys: ["authorization"] },
-        ].map((group, index) => (
+        ].map((group) => (
           <details
             key={group.title}
-            open={index === 0}
-            className="border-t border-board-line py-4"
+            className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6"
           >
-            <summary className="text-base font-semibold">{group.title}</summary>
+            <summary className="min-h-11 cursor-pointer text-base font-semibold">{group.title}<span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
+            <span className="mt-2 block whitespace-pre-line break-words text-sm font-normal text-board-muted">
+              {group.keys.filter(key => key !== "firstName" && key !== "lastName").map(key => String(facts[key] || "")).filter(Boolean).join(" · ") || "No details added"}
+            </span></summary>
             <fieldset>
               <legend className="sr-only">{group.title}</legend>
               <div className="mt-5 grid gap-5 sm:grid-cols-2">
@@ -169,13 +167,13 @@ export default function ProfileEditor() {
             ProfileSchema["schemas"][EntryKind],
           ][]
         ).map(([kind, fields]) => (
-          <details className="border-t border-board-line py-5" key={kind}>
-            <summary className="text-lg font-bold">
+          <section className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6" key={kind}>
+            <h3 className="text-lg font-semibold">
               {sections[kind]}{" "}
               <span className="text-sm font-normal text-board-muted">
                 ({facts[kind]?.length || 0})
               </span>
-            </summary>
+            </h3>
             <fieldset>
               <legend className="sr-only">{sections[kind]}</legend>
               {(facts[kind] || []).map((entry, index) => (
@@ -183,12 +181,15 @@ export default function ProfileEditor() {
                   className="border-b border-board-line py-4"
                   key={index}
                 >
-                  <summary className="min-h-11 text-sm font-semibold">
+                  <summary className="min-h-11 cursor-pointer text-sm font-semibold">
                     {entry.title || entry.degree || entry.name || "New entry"} ·{" "}
                     {entry.company ||
                       entry.school ||
-                      entry.institution ||
-                      "Edit details"}
+                      entry.institution || entry.role ||
+                      "Details"}
+                    <span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
+                    <span className="mt-2 block text-sm font-normal text-board-muted">{[entry.fieldOfStudy, entry.location, entry.employmentType, entry.startDate, entry.current ? "Present" : entry.endDate].filter(Boolean).join(" · ")}</span>
+                    {entry.description && <span className="mt-3 block whitespace-pre-line text-sm font-normal leading-relaxed">{entry.description}</span>}
                   </summary>
                   <div className="pt-3">
                     <div className="grid gap-4 sm:grid-cols-2">
@@ -275,11 +276,12 @@ export default function ProfileEditor() {
                 Add {sections[kind].toLowerCase()}
               </button>
             </fieldset>
-          </details>
+          </section>
         ))}
-        <details className="border-t border-board-line py-5">
+        <details className="rounded-xl border border-board-line bg-board-panel p-5 sm:p-6">
           <summary className="text-lg font-bold">
-            Skills &amp; languages
+            Skills &amp; languages <span className="ml-3 text-sm font-normal text-board-muted">Edit</span>
+            <span className="mt-3 flex flex-wrap gap-2">{(["skills", "languages"] as const).flatMap(key => Array.isArray(facts[key]) ? facts[key] as string[] : String(facts[key] || "").split(/[,\n]/)).map(value => value.trim()).filter(Boolean).map((skill, index) => <span key={index} className="rounded-full border border-board-line px-3 py-1 text-sm font-normal">{skill}</span>)}{!String(facts.skills || facts.languages || "").trim() && <span className="text-sm font-normal text-board-muted">No skills or languages added</span>}</span>
           </summary>
           <Section title="Edit skills & languages">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -318,6 +320,7 @@ export default function ProfileEditor() {
             />
             I have checked these facts.
           </label>
+          <p className="text-sm text-board-muted">Review imported facts before checking them. Changes remain unverified until you review and save.</p>
           <button className={primary}>Save shared background</button>
           <Notice>{feedback}</Notice>
         </div>

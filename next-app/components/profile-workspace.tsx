@@ -81,17 +81,16 @@ function ProfileContent() {
           <div className={profileStyles.sectionIntro}>
             <h2>About me</h2>
             <p>
-              Your application identity here. Your career background shared
-              across profiles.
+              Your experience, education, and skills. Shared across application profiles.
             </p>
           </div>
-          <AccountAssignments />
-          <EligibilitySettings />
-          <div className={profileStyles.sharedHeading}>
-            <span>Shared across application profiles</span>
-            <p>Changes below update your background everywhere.</p>
-          </div>
           <ProfileEditor />
+          <details className="mt-8 border-t border-board-line py-5">
+            <summary className="min-h-11 font-semibold">Application identity &amp; eligibility</summary>
+            <p className="mt-2 text-sm text-board-muted">Names, accounts, and work authorization for {a.profile.name}.</p>
+            <AccountAssignments />
+            <EligibilitySettings />
+          </details>
         </section>
       )}
       {visited.includes("kit") && (
@@ -188,7 +187,7 @@ function ProfileContent() {
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}
-      {active !== "agent" && (active !== "overview" || a.dirty) && (
+      {active !== "agent" && ((active !== "overview" && active !== "about") || a.dirty) && (
         <div className={profileStyles.saveBar}>
           <div className="min-w-0 flex-1">
             <span className="text-sm font-semibold">
