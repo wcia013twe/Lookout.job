@@ -43,7 +43,7 @@ try{
  const documents=page.getByRole('region',{name:'Documents',exact:true});
  const docBox=await documents.boundingBox(),careerBox=await page.getByRole('heading',{name:'Career background',exact:true}).boundingBox();
  assert(docBox.y<careerBox.y,'Documents must appear before Career background');
- await documents.getByText('Add a resume',{exact:true}).click();
+ await documents.getByRole('button',{name:'Add resume',exact:true}).click();
  await documents.getByLabel('Private resume file (PDF or DOCX, up to 10 MB)',{exact:true}).setInputFiles({name:'Demo systems resume.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\nFictional demo resume\n%%EOF')});
  await documents.getByRole('button',{name:'Upload private resume',exact:true}).click();
  await documents.getByText('Demo resume added in memory. File bytes were not uploaded or saved.',{exact:true}).waitFor();
@@ -52,8 +52,12 @@ try{
  await documents.getByRole('textbox',{name:'Assignment job titles',exact:true}).fill('Demo storage engineer');
  await documents.getByRole('combobox',{name:'Assignment job type',exact:true}).selectOption('Full-time');
  await documents.getByRole('button',{name:'Save role assignment',exact:true}).click();
- await documents.getByRole('heading',{name:'Demo storage engineer',exact:true}).waitFor();
- for(const [label,title,content] of [['cover letter','Cover letter','Fictional systems cover letter'],['template','Template','Reusable application starting point']]){
+ await documents.getByText('Demo storage engineer · Full-time',{exact:true}).waitFor();
+ assert.equal(await documents.getByRole('region',{name:'Resume assignments & role targets',exact:true}).count(),0,'Assignments stay inside the resume library');
+ const resumeLibrary=documents.getByRole('region',{name:'Resumes',exact:true});
+ assert(await resumeLibrary.getByRole('button',{name:'Preview',exact:true}).first().isDisabled(),'Demo fixtures have no PDF');
+ for(const title of ['Resumes','Cover letters']) assert.equal(await documents.getByRole('heading',{name:title,exact:true}).locator('svg').count(),1,'Document headers use the file icon');
+ for(const [label,title,content] of [['cover letter','Cover letter','Fictional systems cover letter']]){
   const library=documents.getByRole('region',{name:label==='template'?'Templates':'Cover letters',exact:true});
   await library.getByRole('button',{name:`Add ${label}`,exact:true}).click();
   await library.getByRole('textbox',{name:`${title} title`,exact:true}).fill(content);
@@ -146,11 +150,14 @@ try{
  await page.screenshot({path:dir+'/job-preferences-desktop.png',fullPage:true});
  await nav.getByRole('button',{name:'My Agent',exact:true}).click();
  const agent=page.getByRole('region',{name:'My agent',exact:true});
+ await agent.getByRole('region',{name:'Shared employer-answer library',exact:true}).waitFor();
+ await agent.getByRole('region',{name:'Templates',exact:true}).waitFor();
+ assert.equal(await agent.getByRole('region',{name:'Outreach examples and library',exact:true}).count(),1);
  await agent.getByRole('button',{name:'Edit Employer questions',exact:true}).click();
  await agent.getByRole('combobox',{name:'Employer questions tone',exact:true}).selectOption('Confident & understated');
  await agent.getByRole('textbox',{name:'Employer questions custom guidance',exact:true}).fill('Fictional draft: use concrete systems examples.');
  await nav.getByRole('button',{name:'About me',exact:true}).click();
- await page.getByRole('heading',{name:'Shared employer-answer library',exact:true}).waitFor();
+ await page.getByRole('heading',{name:'Career background',exact:true}).waitFor();
  await nav.getByRole('button',{name:'My Agent',exact:true}).click();
  assert.equal(await agent.getByRole('textbox',{name:'Employer questions custom guidance',exact:true}).inputValue(),'Fictional draft: use concrete systems examples.');
  await agent.getByRole('button',{name:'Finish editing Employer questions',exact:true}).click();

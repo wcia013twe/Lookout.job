@@ -162,6 +162,7 @@ verification are required before claiming the new execution policy is deployed.
 
 About me / Documents appears before Career background and includes the shared resume library, direct Assign roles/Add role assignment, cover letters and reusable application templates. Resume files remain private PDF/DOCX uploads; cover letters/templates accept text or document links and use the versioned artifact service with cover_letter/application_template kinds. Add, read/edit, archive and pagination use existing backend validation. The same role assignments remain in Job preferences. Demo supports metadata-only resume upload and versioned in-memory document editing. `scripts/check-profile-ui.mjs` verifies placement, adding a resume and assignment, cover-letter/template revision, mobile layout and zero demo cloud writes. Deploy the migration and gateway context 37 via the normal production workflow before claiming live support.
 
+My Agent uses left-aligned writing settings with independently scrollable employer-answer and outreach libraries on the right (stacked on mobile). Shared employer answers, profile answer selection, and reusable application templates now live here. Style previews reveal text progressively and respect reduced motion; these are illustrative previews, not live AI generation. Demo mode uses the existing fictional answer and outreach fixtures; verify editing, profile switching, library scrolling and reset through the same scoped services. No backend action or MCP contract changed.
 
 ## Discover match and job preview
 

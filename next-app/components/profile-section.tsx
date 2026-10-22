@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useId,useState,type ReactNode} from "react";
+import ProfileIcon, {type ProfileIconName} from "./profile-icon";
 import styles from "./profile-section.module.css";
 
 export default function ProfileSection({title,children,resetKey,disabled=false,onFinish}:{title:string;onFinish?:()=>boolean|void|Promise<boolean|void>;children:(editing:boolean)=>ReactNode;resetKey?:unknown;disabled?:boolean}){
@@ -10,10 +11,10 @@ export default function ProfileSection({title,children,resetKey,disabled=false,o
   {children(editing)}
  </section>;
 }
-export function ProfileCard({title,children}:{title:string;children:ReactNode}){
+export function ProfileCard({title,children,icon,actions}:{title:string;children:ReactNode;icon?:ProfileIconName;actions?:ReactNode}){
  const id=useId();
  return <section className={styles.section} aria-labelledby={id}>
-  <header className={styles.header}><h3 id={id}>{title}</h3></header>
+  <header className={styles.header}><h3 id={id} className="flex min-w-0 items-center gap-3">{icon&&<ProfileIcon name={icon} width={22} height={22} className="shrink-0"/>}{title}</h3>{actions}</header>
   {children}
  </section>;
 }
