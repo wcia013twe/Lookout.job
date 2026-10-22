@@ -3,7 +3,7 @@ import {useEffect,useState,type FormEvent} from 'react';
 import {useWorkspace} from '../lib/workspace';
 import {useOutreach} from '../lib/outreach';
 import {useNetworkCompanies} from '../lib/network';
-import {companyIndex,emptyCompany,COMPANY_PRIORITIES} from '../../lib/network-model.mjs';
+import {companyIndex,companyKey,emptyCompany,COMPANY_PRIORITIES} from '../../lib/network-model.mjs';
 import ProfileSurface from './profile-surface';
 import {CompanyLogo} from './role-card';
 import {Field,Notice,control,primary,secondary} from './ui';
@@ -31,7 +31,7 @@ function CompanyEditor({row,contacts,applications,onSave,onCancel,onReload,disab
 export default function NetworkTargets(){
  const w=useWorkspace(),outreach=useOutreach(),network=useNetworkCompanies(outreach);
  const [selected,setSelected]=useState<string|null>(null),[editing,setEditing]=useState(false),[tab,setTab]=useState('Overview'),[query,setQuery]=useState(''),[archived,setArchived]=useState(false),[draft,setDraft]=useState<Row|null>(null),[feedback,setFeedback]=useState('');
- const applications:Application[]=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])].map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status||w.state.tracker.items[id]?.status||'New',questions:w.state.workflow.applications[id]?.questions||[]})).filter(a=>a.company&&a.title);
+ const applications:Application[]=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])].map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status||w.state.tracker.items[id]?.status||'New',questions:w.state.workflow.applications[id]?.questions||[]})).filter(a=>a.company&&a.title&&(!w.demo||network.rows.some((row:{record:{name:string}})=>companyKey(row.record.name)===companyKey(a.company))));
  const contacts=[...outreach.contacts,...(w.state.network.people||[])];
  const companies: (Row & {contacts: {id:string;contact?:string;name?:string}[];applications:Application[]})[]=companyIndex(network.rows,contacts,applications);
  const company=companies.find(c=>c.id===selected),row:Row|undefined=draft||company;
