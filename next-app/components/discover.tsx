@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
-import { Heading, control, Notice } from "./ui";
+import { Heading, control, Notice, InsetBox } from "./ui";
 import RoleCard, { type Role } from "./role-card";
 import SearchSweeps from "./search-sweeps";
 import DailyDrops from "./daily-drops";
@@ -28,7 +28,7 @@ export default function Discover() {
       <Heading title="Discover">
         {w.batchLabel || "Your latest roles, ready to explore."}
       </Heading>
-      <div className="glass-inset mb-3 grid grid-cols-2 items-end gap-2 rounded-xl p-3 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3 md:p-4">
+      <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3">
         <input
           aria-label="Search roles or companies"
           placeholder="Search roles or companies"
@@ -47,7 +47,7 @@ export default function Discover() {
           <option value="FT">Full-time</option>
           <option>Internship</option>
         </select>
-      </div>
+      </InsetBox>
       <Notice>
         {roles.length} to review ·{" "}
         {roles.filter((r: Role) => r.priority === "Apply Now").length} apply now
