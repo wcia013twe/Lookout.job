@@ -18,10 +18,11 @@ test('follow-ups require a due action and exclude archived records',()=>{
  const rows=[{id:'due',record:{...emptyCompany('A'),nextAction:'Reply',followUpDate:'2026-10-19'}},{id:'later',record:{...emptyCompany('B'),nextAction:'Research',followUpDate:'2026-10-22'}},{id:'archived',record:{...emptyCompany('C'),nextAction:'Paused',followUpDate:'2026-10-19',archived:true}}];
  assert.deepEqual(companyFollowUps(rows,'2026-10-20').map(r=>r.id),['due']);
 });
-test('company briefs round-trip through existing scoped contact notes without new product tools',()=>{
+test('company briefs round-trip through existing scoped contact notes as compatibility projections',()=>{
  const row={id:'company-example',revision:4,record:{...emptyCompany('Example'),research:'Sourced research',nextAction:'Ask about team'}};
  const encoded=encodeCompany(row);assert.equal(isCompanyRecord(encoded),true);assert.equal(encoded.contact,undefined);
- assert.deepEqual(decodeCompany({...encoded,_revision:4}),row);
+ assert.deepEqual(decodeCompany({...encoded,_revision:4}).record,row.record);
+ assert.equal(decodeCompany({...encoded,_revision:4}).revision,4);
  assert.doesNotThrow(()=>validateRequest({operation:'contacts.save',payload:{id:row.id,expectedRevision:4,record:Object.fromEntries(Object.entries(encoded).filter(([k])=>k!=='id'))}}));
  assert.equal(TOOLS.find(t=>t.name==='save_contact').scope,'network:write');
  assert.equal(TOOLS.some(t=>t.name==='save_network_company'),false);
@@ -29,15 +30,15 @@ test('company briefs round-trip through existing scoped contact notes without ne
 });
 test('demo company notes are private, resettable and distinct from people',()=>{
  const a=demoFixtures('2026-10-20'),b=demoFixtures('2026-10-20');
- const companies=a.state.network.referrals.filter(isCompanyRecord).map(decodeCompany);
- assert.equal(companies.length,3);assert.ok(companies.some(r=>r.record.sources.length));
+ const companies=a.state.network.companies;
+ assert.equal(companies.length,4);assert.ok(companies.some(r=>r.record.sources.length));
  const contacts=a.state.network.referrals.filter(r=>!isCompanyRecord(r));
  assert.equal(contacts.length,2);
  assert.ok(contacts.every(r=>r.company==='Cedar Systems (demo)'));
  assert.equal(companies.filter(r=>!r.record.archived).length,2);
- assert.equal(a.roles.some(r=>r.id==='demo-cedar-platform'),false);
- a.state.network.referrals.find(isCompanyRecord).notes='Edited';
- assert.notEqual(b.state.network.referrals.find(isCompanyRecord).notes,'Edited');
+ assert.equal(a.roles.some(r=>r.id==='demo-cedar-platform'),true);
+ a.state.network.companies[0].record.research='Edited';
+ assert.notEqual(b.state.network.companies[0].record.research,'Edited');
  assert.equal(companyFollowUps(companies,'2026-10-20').length,1);
 });
 test('legacy contacts without a company remain accessible',()=>{const rows=companyIndex([],[{id:'unassigned',name:'Example Contact'}],[]);assert.equal(rows[0].record.name,'Other contacts');assert.equal(rows[0].contacts[0].id,'unassigned');});

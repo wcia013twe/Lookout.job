@@ -16,7 +16,7 @@ export function useOutreach() {
   if(!isCurrent(s) || s.pending.size || s.running) return;
   if(a.error||b.error) throw Error('Outreach could not load. Try again.');
   s.revisions=new Map(a.data.map(r=>[r.id,r.revision]));
-  apply(a.data.filter(r=>!r.deleted_at).map(r=>({...r.record,id:r.id,_revision:r.revision}))); setRequests(b.data); setStatus('Saved to your account.');
+  apply(a.data.filter(r=>!r.deleted_at&&r.record.collection!=='companies').map(r=>({...r.record,id:r.id,companyId:r.company_id||r.record.companyId,_revision:r.revision}))); setRequests(b.data); setStatus('Saved to your account.');
  }
  async function flush() {
   const s=session.current; if(!s) return;
@@ -41,7 +41,7 @@ export function useOutreach() {
  }
  function setContacts(next) {
   const previous=latest.current; const s=session.current; if(!s) {apply(next);return;}
-  next=next.map(r=>{const old=previous.find(p=>p.id===r.id);return !old || JSON.stringify(recordOf(old))!==JSON.stringify(recordOf(r)) ? {...r,_outreachDirty:true}:r;});apply(next);
+  next=next.map(r=>{const old=previous.find(p=>p.id===r.id);if(old&&old.company!==r.company)r={...r,companyId:undefined};return !old || JSON.stringify(recordOf(old))!==JSON.stringify(recordOf(r)) ? {...r,_outreachDirty:true}:r;});apply(next);
   for(const row of next) { const old=previous.find(r=>r.id===row.id); if(!old || JSON.stringify(recordOf(old))!==JSON.stringify(recordOf(row))) s.pending.set(row.id,row); }
   for(const row of previous) if(!next.some(r=>r.id===row.id)) {if(!s.revisions.has(row.id) && s.inFlight!==row.id){s.pending.delete(row.id);continue;}s.pending.set(row.id,null);store.set('network.outreachDeletions',[...(store.get('network.outreachDeletions')||[]).filter(r=>r.id!==row.id),{id:row.id,revision:s.revisions.get(row.id)??-1}]);}
   clearTimeout(s.timer); s.timer=setTimeout(()=>flush().catch(()=>{}),500); setStatus('Saving outreach…');
@@ -59,7 +59,7 @@ export function useOutreach() {
     const {data,error}=await client.from('outreach_contacts').select('*').eq('user_id',owner);
    if(error) throw error; if(!isCurrent(s))return;
    s.revisions=new Map(data.map(r=>[r.id,r.revision]));
-   const local=[...(store.get('network.referrals')||[]),...(store.get('network.people')||[]).map(r=>({...r,id:`network:${r.id}`,contact:r.name}))];
+   const local=[...(store.get('network.referrals')||[]).filter(r=>!isCompanyRecord(r)),...(store.get('network.people')||[]).map(r=>({...r,id:`network:${r.id}`,contact:r.name}))];
    for(const r of local) if(!s.revisions.has(r.id) || r._outreachDirty) {s.pending.set(r.id,r);if(r._outreachDirty && r._revision!==undefined)s.revisions.set(r.id,r._revision);}
    for(const r of store.get('network.outreachDeletions')||[]) if(s.revisions.has(r.id)) {s.revisions.set(r.id,r.revision);s.pending.set(r.id,null);}
    s.initialized=true;

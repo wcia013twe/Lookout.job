@@ -402,14 +402,15 @@ Personal agents can load career-ops-style targeting, house rules and portal/quer
 
 ## Private company Network
 
-Network (`/referrals/`) separates Targets from Active processes. Targets shows
-companies, teams/roles, research and relevant people in a compact list. Active
-processes groups targeted outreach by application and distinguishes role-specific
-drafts from other company contacts. Existing company sections retain private
-research, priorities, dated sources, contacts and linked applications. Due company follow-ups appear on the Action Board. This is a UI
-extension over existing private outreach storage and scoped contact tools; no new
-tables, gateway operations or company service are required. See the
-[Network UI and storage mapping](docs/private-network.md).
+Network (`/referrals/`) is the company hub: Targets opens Overview, People & outreach,
+Applications and Circle intelligence. Dedicated owner-scoped company workspaces
+preserve text target IDs, research, dated sources, priorities and follow-ups;
+a maintained registry supplies shared identities and aliases. Contacts,
+applications and reviewed Circle revisions retain their own authority.
+Scoped company tools and legacy contact projections share backend validation.
+See [storage, migration, tools and release prerequisites](docs/private-network.md).
+The hosted backend release and two-account verification remain prerequisites for
+deploying this dependent frontend; local implementation does not establish live parity.
 
 ## Application profiles and writing styles
 

@@ -278,3 +278,19 @@ overrides verification, consent, immutable approval or submission policy. Target
 are guidance, not scanners or automatic routing. Canonical job deduplication still
 applies across targets. Developer context 32 and search guide v3 require a normal
 gateway release and hosted verification before claiming deployed support.
+
+## Company Network integration
+
+The durable company hub adds `list_companies`, `list_company_workspaces` and
+`save_company_workspace`, sharing the website's owner/revision validation.
+Legacy company `list_contacts`/`save_contact` records are compatibility projections.
+`search_circle_knowledge` accepts one `circleId` or `scope: current_memberships`;
+use `companyId` or unresolved `company` text, never both. Company/role/stage
+criteria match a single primary, attached application/referral or offer context.
+Cross-Circle results are permitted published root posts, with stable `authorId`,
+Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
+Optional explicit company references retain exact-review rules. Internal posting
+IDs and employer requisition IDs remain distinct.
+See [the complete contract and release gates](../docs/private-network.md).
+These additions require backend/gateway/MCP release and hosted verification before
+claiming deployed parity.

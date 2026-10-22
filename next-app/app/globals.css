@@ -569,44 +569,47 @@ button:not(:disabled) {
 .widget-heading { display: flex; align-items: center; gap: .625rem; }
 .widget-heading svg { flex-shrink: 0; color: var(--color-board-muted); }
 .action-widget-count { background: var(--color-board-tag); color: var(--color-board-text); }
-/* Blue and pink cloud hues identify the two kinds of work. */
+/* Solid working surfaces anchor the blue and pink aurora headers. */
 .workspace-shell .action-widget { background: var(--widget-cloud-surface, var(--color-board-panel)); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 .workspace-shell .action-widget::before { content: none; }
 .workspace-shell .needs-you-priority {
-  --color-board-panel: #1b2c46;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #73557e35, transparent 60%), linear-gradient(145deg, #203b58, #1b2943 70%);
-  --color-board-tag: #2b435f;
-  --color-board-line: #506e90;
-  --color-board-muted: #bed1e7;
-  --color-board-accent: #b8ddff;
-  --workspace-action-secondary: #2c4768;
-  --workspace-action-secondary-hover: #385a80;
-  --workspace-action-secondary-border: #6a90b7;
+  --color-board-panel: #122135;
+  --widget-cloud-surface: #122135;
+  --widget-header-surface: linear-gradient(115deg, #203d59, #232b43 75%, #2c2942);
+  --color-board-tag: #243b54;
+  --color-board-line: #405872;
+  --color-board-muted: #b9cee4;
+  --color-board-accent: #c4e3ff;
+  --workspace-action-secondary: #263f5b;
+  --workspace-action-secondary-hover: #345777;
+  --workspace-action-secondary-border: #597c9c;
   --workspace-action-secondary-border-hover: #b8ddff;
   --workspace-action-secondary-text: #eaf5ff;
 }
 .workspace-shell .prep-widget {
-  --color-board-panel: #382738;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #688fca35, transparent 65%), linear-gradient(145deg, #442c42, #30283f 75%);
-  --color-board-tag: #513a50;
-  --color-board-line: #8b6686;
-  --color-board-muted: #e2c3d9;
-  --color-board-accent: #ffd0e8;
-  --workspace-action-secondary: #553b52;
-  --workspace-action-secondary-hover: #694962;
-  --workspace-action-secondary-border: #a27c99;
+  --color-board-panel: #1d2030;
+  --widget-cloud-surface: #1d2030;
+  --widget-header-surface: linear-gradient(115deg, #362b41, #282a40);
+  --color-board-tag: #373047;
+  --color-board-line: #55516b;
+  --color-board-muted: #c9c2d9;
+  --color-board-accent: #f0c5e0;
+  --workspace-action-secondary: #393248;
+  --workspace-action-secondary-hover: #50425c;
+  --workspace-action-secondary-border: #85718f;
   --workspace-action-secondary-border-hover: #ffd0e8;
   --workspace-action-secondary-text: #ffecf6;
 }
 .action-widget .widget-heading svg { color: var(--color-board-accent); }
 [data-theme="light"] .workspace-shell .needs-you-priority {
-  --color-board-panel: #edf5ff;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #f8dfee88, transparent 60%), linear-gradient(145deg, #e0f0ff, #f0f4ff 70%);
-  --color-board-tag: #d5e7fa;
-  --color-board-line: #9ab9d9;
-  --color-board-muted: #3d5b7c;
+  --color-board-panel: #f5f9fe;
+  --widget-cloud-surface: #f5f9fe;
+  --widget-header-surface: linear-gradient(115deg, #dfedfa, #e9eafa);
+  --color-board-tag: #dceaf7;
+  --color-board-line: #acc2d9;
+  --color-board-muted: #405c79;
   --color-board-accent: #245c91;
-  --workspace-action-secondary: #d5e7fa;
+  --workspace-action-secondary: #dceaf7;
   --workspace-action-secondary-hover: #c2dcf5;
   --workspace-action-secondary-border: #7d9fc2;
   --workspace-action-secondary-border-hover: #245c91;
@@ -615,19 +618,46 @@ button:not(:disabled) {
   border-color: var(--color-board-line);
 }
 [data-theme="light"] .workspace-shell .prep-widget {
-  --color-board-panel: #fff0f7;
-  --widget-cloud-surface: radial-gradient(ellipse at 100% 0%, #d4eaff88, transparent 65%), linear-gradient(145deg, #ffe6f2, #fbf0fa 75%);
-  --color-board-tag: #f5d6e7;
-  --color-board-line: #c99ab7;
-  --color-board-muted: #784960;
-  --color-board-accent: #933c69;
-  --workspace-action-secondary: #f5d6e7;
-  --workspace-action-secondary-hover: #ecc1d9;
-  --workspace-action-secondary-border: #b980a0;
-  --workspace-action-secondary-border-hover: #933c69;
+  --color-board-panel: #f8f5fc;
+  --widget-cloud-surface: #f8f5fc;
+  --widget-header-surface: linear-gradient(115deg, #f8e5f0, #eae7f9);
+  --color-board-tag: #eee2f0;
+  --color-board-line: #c5afcc;
+  --color-board-muted: #665472;
+  --color-board-accent: #883d69;
+  --workspace-action-secondary: #eee2f0;
+  --workspace-action-secondary-hover: #e4d2e8;
+  --workspace-action-secondary-border: #a782ad;
+  --workspace-action-secondary-border-hover: #883d69;
   --workspace-action-secondary-text: #733452;
   background: var(--widget-cloud-surface);
   border-color: var(--color-board-line);
+}
+.workspace-shell .action-widget { --widget-padding: 1.25rem; }
+.action-widget-header {
+  margin: calc(-1 * var(--widget-padding)) calc(-1 * var(--widget-padding)) 0;
+  padding: var(--widget-padding);
+  border-radius: 15px 15px 0 0;
+  border-bottom: 1px solid var(--color-board-line);
+  background: var(--widget-header-surface);
+}
+.needs-you-priority { container: action-tasks / inline-size; }
+.needs-you-priority > ul { margin-top: 0; }
+.needs-you-priority .action-widget-count { padding: .375rem .625rem; background: var(--color-board-accent); color: var(--color-board-ink); }
+.action-row-top { display: grid; gap: .875rem; align-items: start; }
+.action-row-control { padding-top: .125rem; }
+.action-row-control .handoff-action { white-space: nowrap; }
+.action-row-control .handoff-action[aria-expanded="true"] { background: var(--workspace-action-primary); color: var(--workspace-action-primary-text); border-color: transparent; }
+.action-row-reason { font-size: .8125rem; }
+.action-workflow-status { color: var(--color-board-accent); font-weight: 500; }
+.action-row-detail { border-top: 1px solid var(--color-board-line); }
+.action-row-detail fieldset { width: 100%; }
+.action-row-detail input[type="checkbox"] { width: 1rem; height: 1rem; flex-shrink: 0; accent-color: var(--color-board-accent); }
+@container action-tasks (min-width: 520px) {
+  .action-row-top { grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; }
+}
+@media (min-width: 768px) {
+  .workspace-shell .action-widget { --widget-padding: 1.5rem; }
 }
 .prep-total, .prep-duration { flex-shrink: 0; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-board-accent); }
 .prep-total { font-size: .8125rem; font-weight: 600; padding-top: .25rem; }

@@ -1,4 +1,4 @@
-const fields = ['id','expectedRevision','company','contact','contactType','title','linkedin','link','connection','evidence','reason','subject','message','sourceUrl'];
+const fields = ['id','expectedRevision','company','companyId','contact','contactType','title','linkedin','link','connection','evidence','reason','subject','message','sourceUrl'];
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
 const text = (value,max=10000) => typeof value === 'string' && value.trim().length && value.length<=max;
 export function validateOutreach(operation,payload) {
@@ -12,6 +12,7 @@ export function validateOutreach(operation,payload) {
     if(!['recruiter','engineer','senior','manager','alumni','other'].includes(r.contactType)) throw Error('Contact type required');
     for(const field of fields.filter(f=>!['id','expectedRevision'].includes(f))) if(r[field]!==undefined && (typeof r[field]!=='string' || r[field].length>10000)) throw Error('Invalid contact field');
     for(const field of ['linkedin','link','sourceUrl']) if(r[field]) { const u=new URL(r[field]); if(u.protocol!=='https:' || u.username || u.password || (field==='linkedin' && (!['linkedin.com','www.linkedin.com'].includes(u.hostname) || !/^\/in\/[\w%-]+\/?$/.test(u.pathname)))) throw Error('Valid HTTPS contact URLs required'); }
+    if(r.companyId!==undefined&&!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(r.companyId))throw Error('Valid company reference required');
     const key=r.company.trim().toLowerCase()+'|'+r.contact.trim().toLowerCase(); if(keys.has(key)) throw Error('Duplicate contact'); keys.add(key);
   }
 }
