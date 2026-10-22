@@ -16,16 +16,21 @@ export default function DiscoverRolePanel({ role, onClose }: { role: Role; onClo
   const sample = w.demo ? role.matchPreview : undefined;
   useEffect(() => {
     const node = dialog.current;
+    const opener = document.activeElement;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     node?.showModal();
-    return () => { node?.close(); document.body.style.overflow = overflow; };
+    return () => {
+      node?.close();
+      document.body.style.overflow = overflow;
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true });
+    };
   }, []);
   return <dialog ref={dialog} className={styles.panel} aria-labelledby="discover-role-heading" onCancel={onClose} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
     <header className="sticky top-0 z-10 border-b border-board-line bg-board-panel px-5 py-4 sm:px-8">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3"><CompanyLogo company={role.company} /><div><p className="text-sm text-board-muted">{role.company} · {RARITY_LABEL[rarity]}</p><h2 id="discover-role-heading" className="mt-1 break-words text-xl font-semibold tracking-tight">{role.title}</h2></div></div>
-        <button autoFocus className={`${secondary} shrink-0`} onClick={onClose} aria-label="Close job preview">Close</button>
+        <button className={`${secondary} shrink-0`} onClick={onClose} aria-label="Close job preview">Close</button>
       </div>
       <p className="mt-3 text-sm text-board-muted">{role.employmentType === "FT" ? "Full-time" : role.employmentType} · {role.location}</p>
     </header>
