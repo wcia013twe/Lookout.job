@@ -27,3 +27,9 @@
 - Mobile puts the controls below the title and scrolls the profile buttons inside their row. The selected item is revealed on selection or row resize without scrolling the page. Existing per-profile drafts, save/version behavior, ownership and MCP mappings remain unchanged.
 - Demo coverage: used existing fictional full-time/paused internship profiles and verified switching, duplicate and inline creation in memory; updated the optional browser check to open/cancel the create control. No real profile changes or backend calls were made during browser checks.
 - Validation: production static build/TypeScript, data validation (147 roles), diff whitespace and scoped layout detector passed. Desktop/390px browser checks verified the compact header, profile switching, creation, duplication, selected button visibility and no page overflow. Full unit/database suite was not repeated for this presentation-only change; its most recent 414-test run remains recorded above. Nothing pushed or published.
+
+## Selected-profile dropdown
+
+- Changed the profile-button row to one compact, button-styled native dropdown with a chevron. Selecting another option loads that profile for editing through the existing context; paused labels, per-profile drafts, busy/disabled behavior and add/duplicate icon actions are preserved. Removed the now-unused horizontal-scroll tracking code.
+- Demo verification used the existing fictional full-time and paused internship options, confirmed selecting the internship changes the account-identity values, and inspected desktop/390px layouts with no horizontal overflow. No real account data was edited. Existing service/MCP and save/version boundaries are unchanged.
+- Validation: production build/static export and TypeScript, data validation (147 roles), diff whitespace check and scoped layout detector passed. Full unit/database suite was not repeated for this UI-only adjustment. Nothing pushed or published.

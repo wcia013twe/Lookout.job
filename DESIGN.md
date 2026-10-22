@@ -262,10 +262,10 @@ Target rows reuse shared company identity, borders, priority text, and compact p
 
 ## Application profile settings
 
-Profile uses compact application-profile buttons beside the page heading, with
-44px plus/copy icon actions. The selected profile is highlighted; the button row
-scrolls within its own width on mobile and keeps the selected item visible. No
-outer selector panel or helper paragraph is used. My agent stays
+Profile uses a compact native profile dropdown styled as the selected-profile
+button beside the page heading, with 44px plus/copy icon actions. The dropdown
+keeps paused labels and native keyboard selection. It shrinks beside the icon
+actions on mobile. No outer selector panel or helper paragraph is used. My agent stays
 visually separated at the end of the tab row. Overview uses a compact shared
 identity header, three readiness rows, and account/writing summaries. About me
 labels shared background explicitly. Its sections are expanded bordered boxes with

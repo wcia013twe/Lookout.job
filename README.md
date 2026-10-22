@@ -388,8 +388,8 @@ tables, gateway operations or company service are required. See the
 
 ## Application profiles and writing styles
 
-My Profile switches application profiles with compact buttons beside the page
-heading, above Overview, About me, Application kit and Job preferences. A plus icon
+My Profile switches application profiles with a compact button-styled dropdown
+beside the page heading, above Overview, About me, Application kit and Job preferences. A plus icon
 opens the inline create form; the copy icon duplicates the selected profile. Existing named search profiles remain the same records and
 IDs; no account migration or duplicate profile store is introduced. New, duplicate,
 rename, active/paused, identity, material selection, writing and targeting edits use
