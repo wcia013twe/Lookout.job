@@ -47,3 +47,14 @@
 - Removed the Accounts & identity box and its unused UI component from About me. Personal Info, eligibility and career background remain; existing stored per-profile identity metadata and backend/MCP tools are preserved. Overview’s missing-email prompt now checks the editable Personal Info email and says Add email address.
 - Updated the optional demo interaction check to assert the box is absent. No stored values, save/verification behavior, permissions, gateway instructions or tool contracts changed.
 - Validation: data validation, production build/TypeScript and diff whitespace checks; visual removal follows the existing expanded section layout. Full suite and optional browser script were not repeated for this removal. Nothing pushed or published.
+
+## Square entry fallback images
+
+- Added local square briefcase, graduation-cap and folder fallback images to work experience, education and project headings. Images remain visible while editing, use 48px desktop/40px mobile sizing, and are decorative beside the entry text. No company logo fetching or external image requests were added.
+- Included the SVG assets in static export. Existing fictional demo entries cover all three types; updated the optional browser interaction script to assert their presence. No backend, schema, persistence, service or MCP boundaries changed.
+- Validation: production build/static export and TypeScript, data validation (147 roles), SVG parsing/export-copy checks, diff whitespace and scoped layout detector passed. Desktop and 390px mobile demo checks confirmed all four entry images loaded, aligned with headings, remained during pen editing, and caused no horizontal overflow. The full unit/database suite and optional browser script were not rerun for this visual change. Nothing pushed or published.
+
+## Workbag fallback
+
+- Standardized all profile entry placeholders on a clearer square workbag icon, including education and projects. Removed unused category images and updated the demo assertions. No external fetching or behavior changes.
+- Validation: data validation, static-asset preparation and diff whitespace checks passed. This small SVG/presentation follow-up did not repeat the production build or browser checks. Nothing pushed or published.
