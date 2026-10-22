@@ -29,6 +29,7 @@ try{
  await page.getByRole('button',{name:'Cancel new profile',exact:true}).click();
  await page.getByRole('button',{name:'About me',exact:true}).click();
  assert.equal(await page.getByRole('heading',{name:'Accounts & identity',exact:true}).count(),0);
+ assert.equal(await page.getByRole('region',{name:'Shared authorization notes',exact:true}).count(),0);
  assert.equal(await page.getByRole('button',{name:'Save shared background',exact:true}).count(),0);
  assert.equal(await page.getByRole('button',{name:'Save application profile',exact:true}).count(),0);
  assert.equal(await page.getByRole('checkbox',{name:'I have checked these facts.',exact:true}).count(),0);
