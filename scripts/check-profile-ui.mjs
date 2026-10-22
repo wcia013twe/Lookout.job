@@ -180,7 +180,8 @@ try{
  await carousel.getByRole('button',{name:'Previous outreach template',exact:true}).click();
  assert.equal(await carousel.getByRole('combobox',{name:'Outreach template',exact:true}).inputValue(),'4');
  await carousel.getByRole('button',{name:'Next outreach template',exact:true}).click();
- await agent.getByRole('region',{name:'Templates',exact:true}).waitFor();
+ assert.equal(await agent.getByRole('region',{name:'Templates',exact:true}).count(),0);
+ assert.equal(await agent.getByRole('region',{name:'Account-wide submission resume',exact:true}).count(),0);
  assert.equal(await agent.getByRole('region',{name:'Outreach examples and library',exact:true}).count(),1);
  await carousel.getByRole('button',{name:'Background',exact:true}).click();
  await carousel.getByText('Background: Who you are',{exact:true}).waitFor();

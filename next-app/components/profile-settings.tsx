@@ -13,7 +13,6 @@ import writing from "./writing-workspace.module.css";
 import WritingPreview from "./writing-preview";
 import SavedAnswers from "./saved-answers";
 import OutreachTemplates from "./outreach-templates";
-import ApplicationDocumentLibrary from "./application-document-library";
 import ProfileSection, {ProfileValues} from "./profile-section";
 export function ProfileSwitcher() {
   const a=useApplicationProfile();
@@ -208,7 +207,6 @@ export function WritingStyles() {
       <p className="mt-3 text-sm text-board-muted">Manage shared employer answers and choose which answers this profile can use.</p>
       <ApplicationMaterials mode="answers"/><SavedAnswers/>
     </details>
-    <ApplicationDocumentLibrary kind="application_template"/>
   </>;
 }
 
