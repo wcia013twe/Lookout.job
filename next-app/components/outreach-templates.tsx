@@ -1,19 +1,23 @@
+"use client";
+import {useState} from "react";
+import WritingPreview from "./writing-preview";
 import OutreachExamples from "./outreach-examples";
 import library from "../../supabase/functions/agent-gateway/skills/outreach-templates.json";
 
 export default function OutreachTemplates({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+  const [opened, setOpened] = useState<string | null>(null);
   return <details className="mt-8 border-y border-board-line py-5" open={initiallyOpen}>
     <summary className="cursor-pointer text-lg font-bold">Outreach templates · {library.templates.length}</summary>
     <p className="mt-3 max-w-prose text-sm leading-relaxed text-board-muted">Your agent uses the Nick Singh outreach skill to tailor these starting points to your experience, the person, and the role. Bracketed fields are filled before a draft is ready.</p>
     <OutreachExamples/>
     <div className="mt-5 divide-y divide-board-line">
-      {library.templates.map(template => <details key={template.id} className="py-4">
+      {library.templates.map(template => <details key={template.id} className="py-4" onToggle={event => {if (event.currentTarget.open) setOpened(template.id);}}>
         <summary className="cursor-pointer text-sm font-semibold">{template.name}</summary>
         <div className="mt-3 max-w-prose space-y-4 text-sm leading-relaxed">
           <p className="text-board-muted">{template.whenToUse}</p>
           <p><span className="font-semibold">Details needed: </span>{template.requiredEvidence.join("; ")}.</p>
           <p><span className="font-semibold">Email subject: </span>{template.subject}</p>
-          <p className="whitespace-pre-line rounded-lg bg-board-panel p-4">{template.message}</p>
+          <div className="whitespace-pre-line rounded-lg bg-board-panel p-4">{opened === template.id ? <WritingPreview text={template.message}/> : template.message}</div>
         </div>
       </details>)}
     </div>

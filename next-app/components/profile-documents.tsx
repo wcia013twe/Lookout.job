@@ -29,12 +29,12 @@ export default function ProfileDocuments(){
  }
  return <section aria-label="Documents" className="mt-8">
   <h2 className="text-lg font-bold">Documents</h2>
-  <p className="mt-2 text-sm text-board-muted">Your resumes, cover letters, and reusable templates. Documents are shared; role assignments belong to {a.profile.name}.</p>
+  <p className="mt-2 text-sm text-board-muted">Your resumes and cover letters. Reusable templates live in My Agent. Documents are shared; role assignments belong to {a.profile.name}.</p>
   <Resumes onAssign={addAssignment}/>
   <div className="mt-4"><button type="button" className={secondary} disabled={a.busy||w.locked||!w.state.workflow.resumes.length||!!assignment} onClick={()=>addAssignment()}>Add role assignment</button></div>
   {assignment&&<ProfileCard title="New role assignment"><form onSubmit={saveAssignment} className="space-y-5"><Field label="Assignment resume"><select className={control} value={assignment.resumeId} required disabled={a.busy} onChange={e=>setAssignment({...assignment,resumeId:e.target.value})}><option value="">Choose a resume</option>{w.state.workflow.resumes.map((r:{id:string;name:string})=><option key={r.id} value={r.id}>{r.name}</option>)}</select></Field><Field label="Assignment job titles"><input className={control} value={assignment.roles} required maxLength={500} disabled={a.busy} placeholder="Backend Engineer, Software Engineer" onChange={e=>setAssignment({...assignment,roles:e.target.value})}/></Field><Field label="Assignment job type"><select className={control} value={assignment.employment} disabled={a.busy} onChange={e=>setAssignment({...assignment,employment:e.target.value})}><option value="">Use profile job types</option>{["Full-time","Internship","Part-time","Contract","Temporary"].map(t=><option key={t}>{t}</option>)}</select></Field><p className="text-xs text-board-muted">Saves the application profile, including any other profile changes. This guides preparation; it does not authorize submission.</p><div className="flex flex-wrap gap-3"><button className={primary} disabled={a.busy||!assignment.roles.trim()||!assignment.resumeId}>{a.busy?"Saving…":"Save role assignment"}</button><button type="button" className={secondary} disabled={a.busy} onClick={()=>setAssignment(null)}>Cancel assignment</button></div></form><p role="status" className="mt-3 text-sm text-board-muted">{a.feedback}</p></ProfileCard>}
   <RecruitingTargets/>
   <ApplicationDocumentLibrary kind="cover_letter"/>
-  <ApplicationDocumentLibrary kind="application_template"/>
+
  </section>;
 }
