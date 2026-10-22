@@ -1,6 +1,6 @@
 // Browser access for the deployed UI and the documented local development URLs.
 // Native MCP clients omit Origin; authentication remains the handler's job.
-const origins=new Set(['https://wcia013twe.github.io','http://localhost:3000','http://127.0.0.1:3000']);
+const origins=new Set(['https://wcia013twe.github.io','https://lookout-job-signal-board.tenderibex16.chatgpt.site','http://localhost:3000','http://127.0.0.1:3000']);
 export function withGatewayCors(handle){
  return async request=>{
   const origin=request.headers.get('Origin');

@@ -2,6 +2,12 @@
 
 A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. Next.js, React, and Tailwind provide the UI; GitHub Pages serves its static export; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
 
+ChatGPT Sites is an additional frontend deployment target. See [Sites hosting and
+release prerequisites](docs/sites-hosting.md) for the shared-backend architecture,
+build command, source synchronization, login setup and cutover checks. Pages
+remains available during verification; Sites publication alone does not verify
+Google login, backend release or a personal-agent connection.
+
 ## Copy into Muse
 
 ```text

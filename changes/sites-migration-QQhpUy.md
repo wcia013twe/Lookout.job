@@ -1,0 +1,8 @@
+# sites-migration
+
+- Register the existing Lookout frontend with ChatGPT Sites, preserving Supabase accounts/private data and existing scoped HTTP/MCP tools. Keep GitHub Pages available.
+- Add a Sites build that clears the Pages prefix and stages the static export in root `out/`; document deliberate source synchronization, backend prerequisites, iPhone cutover and rollback.
+- Allow only the assigned Sites origin in gateway CORS and cover authentication denial, native-client continuity and lookalike/other-Site rejection.
+- Validation: `npm test` passed all 412 tests outside the sandbox (the sandbox run failed three test-file workers; full logs retained in `/tmp/sites-migration-tests.log`); `npm run build`, `npm run build:sites`, targeted gateway CORS checks, `git diff --check` and `npm run validate:data` passed (76 roles). Export inspection confirmed root asset paths, nested routes, manifest, service worker and catalog. Hosted publication is performed after this source commit; the deployment result is reported in the task handoff.
+- Demo/MCP: existing fictional demo fixtures and demo tests pass; no product action, backend data contract or tool scope changes. Existing scoped tools remain the mapping; no newly connected agent or hosted parity is claimed.
+- Limits: real Google/iPhone login and authenticated workspace/agent round trips remain unverified. Supabase redirect settings require owner configuration; live gateway initially rejects the Sites origin and needs the merged CORS release through the production backend process. No backend deploy workflow exists in this checkout.
