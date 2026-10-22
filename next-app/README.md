@@ -227,3 +227,33 @@ LOOKOUT_PLAYWRIGHT_MODULE and LOOKOUT_UI_ARTIFACTS like the Discover check.
 This is read-only presentation of existing application/job/context fields;
 existing scoped MCP application/context tools and backend validation are unchanged.
 No new AI assessment, scoring, approval or service is introduced.
+
+
+## Application Documents preview
+
+Documents now opens a readable application form with every recorded answer,
+filled/missing counts, recorded resume metadata and a source selector when saved
+attempts exist. Historical application states default to the latest captured
+attempt, preserving confirmed/uncertain labels from the shared submission-record
+model. A captured view never fills missing historical fields from the current
+profile. The draft view includes current profile/contact/background reference
+and marks it as separate from employer-form evidence. Missing fields and absent
+form coverage stay explicit; no live employer form is fetched or reconstructed.
+
+Documents automatically loads its existing owner-scoped submission record, with
+loading, error/retry and no-snapshot states. The full Submission record remains
+available. A recorded resume with a private object path uses the existing
+owner-checked download handler. Edit draft & review contains the original editor,
+Save draft, reviewed-question checkbox and exact-version approval controls;
+viewing a preview creates no approval or submission. The duplicate resume-match
+placeholder is replaced by the form; collected fit context remains in Overview.
+
+Existing scoped MCP `read_application_record` and draft/approval boundaries remain
+unchanged. No new service, database schema, gateway capability or generic edit
+tool is introduced. `scripts/check-application-documents-ui.mjs` verifies filled
+attempt fields, current-profile separation, source switching, missing answers,
+uncertain/no-draft cases, collapsed editing, disabled demo actions, navigation,
+Escape and desktop-dark/mobile-light layout using fictional intercepted accounts.
+Demo fixtures include a captured fictional name/email distinct from the current
+profile plus an unanswered scheduling question. No real private file download,
+form fill or submission was performed during verification.

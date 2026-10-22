@@ -708,3 +708,30 @@ button:not(:disabled) {
 .workspace-shell .application-overview-description summary { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
 .workspace-shell .application-overview-description p { margin-top: 12px; color: var(--color-board-muted); font-size: 14px; line-height: 1.75; white-space: pre-wrap; }
 @media (max-width: 639px) { .workspace-shell .application-overview { gap: 24px; } .workspace-shell .application-overview-attention, .workspace-shell .application-overview-context { padding: 16px; } }
+
+/* Application Documents uses a readable form view before its existing editor. */
+.workspace-shell .application-form-preview { min-width: 0; }
+.workspace-shell .application-form-heading { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+.workspace-shell .application-form-heading h3 { margin: 0; font-size: 22px; }
+.workspace-shell .application-form-heading p, .workspace-shell .application-form-caption { margin: 8px 0 0; color: var(--color-board-muted); font-size: 12px; line-height: 1.65; }
+.workspace-shell .application-form-badge { display: inline-flex; flex-shrink: 0; border-radius: 999px; padding: 6px 10px; color: var(--color-board-warning); background: color-mix(in srgb, var(--color-board-warning) 10%, var(--color-board-panel)); font-size: 12px; font-weight: 600; }
+.workspace-shell .application-form-badge.is-confirmed, .workspace-shell .application-form-badge.is-complete { color: var(--color-board-success); background: color-mix(in srgb, var(--color-board-success) 9%, var(--color-board-panel)); }
+.workspace-shell .application-form-notice { margin: 14px 0; padding: 14px 16px; border-radius: 12px; color: var(--color-board-muted); background: color-mix(in srgb, var(--color-board-accent) 7%, var(--color-board-panel)); font-size: 12px; line-height: 1.7; }
+.workspace-shell .application-form-material { display: flex; align-items: start; gap: 12px; padding: 18px; margin: 20px 0; border-radius: 12px; background: color-mix(in srgb, var(--color-board-success) 7%, var(--color-board-panel)); }
+.workspace-shell .application-form-material h4 { margin: 0; font-size: 15px; }
+.workspace-shell .application-form-material p { color: var(--color-board-muted); font-size: 12px; line-height: 1.6; margin-top: 5px; }
+.workspace-shell .application-form-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-board-line); }
+.workspace-shell .application-form-section h4 { display: flex; align-items: center; gap: 9px; margin: 0; font-size: 17px; color: var(--color-board-accent); }
+.workspace-shell .application-form-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px 24px; margin-top: 18px; }
+.workspace-shell .application-form-fields dt { color: var(--color-board-muted); font-size: 12px; margin-bottom: 6px; }
+.workspace-shell .application-form-fields dd { font-size: 14px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.workspace-shell .application-form-background { margin-top: 26px; }
+.workspace-shell .application-form-background h5 { font-size: 14px; font-weight: 650; }
+.workspace-shell .application-form-background dl + dl { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--color-board-line); }
+.workspace-shell .application-form-answers > div { padding: 20px 0; border-bottom: 1px solid var(--color-board-line); }
+.workspace-shell .application-form-answers dt { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 14px; font-weight: 650; }
+.workspace-shell .application-form-answers dd { margin-top: 12px; padding: 16px; border-radius: 10px; background: color-mix(in srgb, var(--color-board-success) 6%, var(--color-board-panel)); font-size: 14px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; }
+.workspace-shell .application-form-preview .is-missing { color: var(--color-board-warning); }
+.workspace-shell .application-documents-editor { margin-top: 28px; border-top: 1px solid var(--color-board-line); padding-top: 14px; }
+.workspace-shell .application-documents-editor > summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font-size: 16px; font-weight: 650; }
+@media (max-width: 479px) { .workspace-shell .application-form-fields { grid-template-columns: minmax(0,1fr); gap: 16px; } }

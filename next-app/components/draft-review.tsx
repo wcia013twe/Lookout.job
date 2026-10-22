@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { control, primary, secondary, Field, Notice, Section } from "./ui";
 import { createBackend } from "../../backend/client.mjs";
+import ApplicationDocumentsPreview from "./application-documents-preview";
 import ApplicationOverview from "./application-overview";
 import ApplicationTimeline from "./application-timeline";
 import TimelineEditor from "./timeline-editor";
@@ -58,6 +59,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
   const [recordState, setRecordState] = useState<{ key: string; loading: boolean; error: string; data: Pick<SubmissionRecordProps, "application" | "attempts"> | null } | null>(null);
   const [downloadFeedback, setDownloadFeedback] = useState("");
   const recordKey = `${w.demo ? "demo" : w.user?.id || "local"}:${current?.backendId || ""}`;
+  useEffect(() => { if (tab === "Documents") setRecordOpen(true); }, [tab]);
   const recordOwner = useRef(recordKey);
   recordOwner.current = recordKey;
   const recordMounted = useRef(false);
@@ -219,7 +221,6 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     });
   }
   const events = timelineItems(current);
-  const selectedResume = w.state.workflow.resumes.find((r: SavedResume) => r.id === current.resumeId);
   function createExperience() {
     setExperience([`${current!.company} — ${current!.title}`, "Interview experience (draft)", ...events.filter(e => ["recruiter_call","technical_round","interview","onsite"].includes(e.kind)).map(e => `${e.label} · ${e.phase} · ${e.occurred_at || "Date not recorded"}\n${e.source.note || ""}`), "\nTopics covered:\n\nWhat helped:\n\nAdvice for other candidates:"].join("\n\n"));
   }
@@ -234,7 +235,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
       <div className="tracker-detail-content">
         {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={w.state.tracker.items[id] || {}} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} />}
         {tab === "Prep" && <><h3>Interview preparation</h3>{workflow ? <ApplicationPreparation application={{...role,...current}}/> : <p className="tracker-prose">Queue this role from Discover to create its preparation plan.</p>}</>}
-        {tab === "Documents" && <><h3>Documents</h3><p className="tracker-prose">Resume used for this application</p><div className="tracker-document"><h4>{current.submittedResume?.name || selectedResume?.name || "No resume selected"}</h4><p>{current.submittedResume?.version || selectedResume?.version ? `Version ${current.submittedResume?.version || selectedResume?.version}` : "Version not recorded"}</p><p>{current.submittedResume?.evidenceSource === "email" ? "Recorded from email" : current.submittedResume ? "Submitted resume" : "Draft resume"}</p></div>      <details className="mt-5 border-t border-board-line pt-3" onToggle={e => setRecordOpen(e.currentTarget.open)}>
+        {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />      <details className="mt-5 border-t border-board-line pt-3">
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
         {(!w.demo && !w.user) || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
           : recordOpen && <>
@@ -250,9 +251,9 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </>}
       </details>
 {editable && <p className="tracker-prose">Change the selected resume below before approving the draft.</p>}</>}
-        {tab === "Documents" && <><h3 className="mt-8">Resume match</h3><p className="tracker-prose">{role?.whyItFits || "No role-fit analysis has been recorded."}</p><div className="tracker-document"><h4>{selectedResume?.name || current.submittedResume?.name || "Resume not selected"}</h4><p>No numeric resume score is available for this application.</p></div></>}
+
         {tab === "Rounds & email" && <><h3>Recruiting emails</h3>{events.filter(e=>e.source.kind === "email").length ? events.filter(e=>e.source.kind === "email").map(e=><article className="tracker-question" key={e.id}><h4>{e.source.subject || e.label}</h4><p>{e.source.excerpt || "No excerpt recorded."}</p><small>{e.source.receivedAt || "Received date not recorded"}</small>{!w.demo && e.source.url && <a href={e.source.url} target="_blank" rel="noopener noreferrer">Open source email</a>}</article>) : <p className="tracker-prose">No recruiting emails are linked to this application yet. Authorized inbox updates appear here when recorded.</p>}</>}
-        {tab === "Documents" && <><h3 className="mt-8">Application questions</h3>{!workflow && <p>Queue this role from Discover to prepare application answers.</p>}{!draft.questions.length && <p className="tracker-prose">No employer questions recorded yet.</p>}      <form
+        {tab === "Documents" && <details className="application-documents-editor"><summary>Edit draft & review</summary><h3 className="mt-5">Draft editor</h3>{!workflow && <p>Queue this role from Discover to prepare application answers.</p>}{!draft.questions.length && <p className="tracker-prose">No employer questions recorded yet.</p>}      <form
         onSubmit={(e) => {
           e.preventDefault();
           action("save");
@@ -380,7 +381,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </div>
         </fieldset>
       </form>
-</>}
+</details>}
         {tab === "Rounds & email" && <><div className="tracker-section-heading mt-8"><h3>Interview rounds & history</h3><button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={createExperience}>Create experience card</button></div>      <Section title="Application timeline">
         <ApplicationTimeline application={current} demo={w.demo}/>
         {workflow && <TimelineEditor application={current}/>}
