@@ -19,6 +19,8 @@ try{
  await context.addInitScript(()=>{if(window.parent===window)Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copied=text;}}});});
  await page.goto(base+'/career-toolkit/profile-interview/');await page.waitForLoadState('networkidle');
  await page.getByRole('heading',{name:'Talk through your experience',exact:true}).waitFor();
+ assert.equal(await page.locator('iframe').getAttribute('src'),null);
+ assert.match(await page.locator('iframe').getAttribute('srcdoc'),/Lookout skill instructions/);
  await page.frameLocator('iframe').getByRole('heading',{name:'Lookout skill instructions'}).waitFor();
  assert.equal(await page.locator('iframe').locator('..').locator('..').locator('fieldset,select,textarea').count(),0);
  await page.getByRole('button',{name:'Copy skill invocation'}).click();
