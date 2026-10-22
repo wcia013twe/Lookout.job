@@ -24,3 +24,17 @@ Limits: migration and gateway are not deployed. Hosted grants, live accounts,
 concurrent revocation and real agent-client behavior remain unverified; the Circle
 release gate remains unchanged. No real data import, external-news ingestion,
 feed delivery or persistent file uploads occurred. Fictional fixtures stay local.
+
+## Member feed follow-up
+
+Added a Circle publication-event table, committed per-Circle positions and fixed
+scan cursors; scoped `read_circle_feed` shares browser RPC validation and current
+membership/visibility checks. Private edits stay out; unavailable source revisions
+return invalidations, and parent withdrawal/hiding invalidates cached replies.
+The Clubhouse contains a collapsible Shared updates section. Fictional demo
+fixtures cover feed reads, publication, revisions, pagination and withdrawal/reset.
+
+Validation before integrating newer local main: all 420 tests, frontend typecheck,
+static build, data validation and whitespace checks pass. UI detector reports no
+findings. Visual verification and merged-state checks are in progress. No hosted
+deployment or production gate change.
