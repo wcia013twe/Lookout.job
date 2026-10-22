@@ -1,3 +1,4 @@
+import { TOOLKIT_ROUTING } from './toolkit-routing.mjs';
 import outreach from './skills/cold-outreach.json' with { type: 'json' };
 import resume from './skills/resume-parse.json' with { type: 'json' };
 import outreachTemplates from './skills/outreach-templates.json' with { type: 'json' };
@@ -16,4 +17,18 @@ export async function guideDispatch(id, authorize) {
   if (result.error) return result;
   const guide = readGuide(id);
   return guide ? {data: guide} : {error: {code: 'P0002'}};
+}
+
+export function discoverGuides() {
+  return {instructions: TOOLKIT_ROUTING, guides: toolkit.guides.map(({id, version, name, description, whenToUse, manual}) => ({
+    id, version, name, description, whenToUse,
+    category: manual.category,
+    examples: [...manual.examples],
+    tools: [...(manual.tools || [])],
+    requirements: manual.requirements,
+  }))};
+}
+export async function guideDiscoveryDispatch(authorize) {
+  const result = await authorize('context.developer', {});
+  return result.error ? result : {data: discoverGuides()};
 }

@@ -169,7 +169,8 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
     <Section title="Connect your personal agent">
       <p className="max-w-prose text-sm leading-relaxed text-board-muted">
         Give Muse or another personal agent access to your Lookout workspace.
-        Your agent does the work; your results and career context stay here.
+        Your agent does the work; your results and career context stay here. One
+        connection lets it discover and use the Career Toolkit automatically.
       </p>
       {!w.user && !w.demo && (
         <p role="status" className="mt-4 rounded-lg border border-board-line bg-board-tag p-4 text-sm">
@@ -223,7 +224,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
           <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-board-muted marker:text-board-text">
             <li>Create a connection with the access you need.</li>
             <li>Copy the MCP setup into your agent’s connection settings.</li>
-            <li>Ask your agent to read your Lookout workspace to check access.</li>
+            <li>Ask your agent to read your Lookout workspace to check access. After that, describe your career goal normally; you do not need to name or install Toolkit skills.</li>
           </ol>
           <p className="mt-5 text-xs leading-relaxed text-board-muted">Your token is shown once. Store it in your agent’s secure settings, like a password.</p>
           <details className="mt-4 text-sm">
