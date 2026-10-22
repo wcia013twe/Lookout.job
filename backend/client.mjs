@@ -230,11 +230,15 @@ function createBackend(client, expectedUserId = null) {
     },
     async readPreparation(applicationId) {
       const userId = await owner();
-      return result(client.from("preparation_plans").select("*").eq("application_id", applicationId).eq("user_id", userId).maybeSingle());
+      const data = await result(client.from("preparation_plans").select("*").eq("application_id", applicationId).eq("user_id", userId).maybeSingle());
+      await owner();
+      return data;
     },
     async savePreparation(applicationId, expectedVersion, plan) {
       await owner();
-      return result(client.rpc("save_preparation_plan", {app_id:applicationId,expected_version:expectedVersion,next_plan:plan}));
+      const data = await result(client.rpc("save_preparation_plan", {app_id:applicationId,expected_version:expectedVersion,next_plan:plan}));
+      await owner();
+      return data;
     },
     async readSelectionDecisions() {
       const userId = await owner();
