@@ -42,9 +42,9 @@ function ProfileContent() {
   return (
     <ProfileSurface>
       <Heading title="My Profile">
-        Your background, your materials, your next move.
+        {active!=="about"&&"Your background, your materials, your next move."}
       </Heading>
-      {active !== "agent" && <ProfileSwitcher />}
+      {active !== "agent" && <ProfileSwitcher showDescription={active!=="about"}/>}
       <label className={profileStyles.mobileSelect}>
         <span>Profile section</span>
         <select
@@ -80,16 +80,11 @@ function ProfileContent() {
         >
           <div className={profileStyles.sectionIntro}>
             <h2>About me</h2>
-            <p>
-              Your application identity here. Your career background shared
-              across profiles.
-            </p>
           </div>
           <AccountAssignments />
           <EligibilitySettings />
           <div className={profileStyles.sharedHeading}>
             <span>Shared across application profiles</span>
-            <p>Changes below update your background everywhere.</p>
           </div>
           <ProfileEditor />
         </section>
@@ -197,8 +192,7 @@ function ProfileContent() {
                 : "Application profile settings"}
             </span>
             <p role="status" className="mt-1 text-xs text-board-muted">
-              {a.feedback ||
-                "Identity, material selections, writing style, and job preferences save together."}
+              {a.feedback || (active!=="about"?"Identity, material selections, writing style, and job preferences save together.":"")}
             </p>
           </div>
           <button

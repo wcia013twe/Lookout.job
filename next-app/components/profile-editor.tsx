@@ -58,7 +58,7 @@ function ProfilePills({ name, value, draft, onDraft, onChange }: {
         </li>)}
       </ul>}
       <div className="flex items-start gap-2">
-        <input id={`profile-${name}`} className={control} value={draft} autoComplete="off" aria-describedby={`profile-${name}-hint`} placeholder={name === "languages" ? "Add a language" : "Add a skill"}
+        <input id={`profile-${name}`} className={control} value={draft} autoComplete="off" title="Press Enter or comma to add, or paste a list" placeholder={name === "languages" ? "Add a language" : "Add a skill"}
           onChange={(event) => onDraft(event.target.value)}
           onBlur={() => { if (draft.trim()) add(); }}
           onKeyDown={(event) => {
@@ -75,7 +75,6 @@ function ProfilePills({ name, value, draft, onDraft, onChange }: {
         />
         <button type="button" className={secondary} aria-label={`Add to ${labels[name]}`} disabled={!draft.trim()} onClick={() => add()}>Add</button>
       </div>
-      <p id={`profile-${name}-hint`} className="mt-2 text-sm text-board-muted">Press Enter or comma to add. You can also paste a list.</p>
     </div>
   );
 }
@@ -152,7 +151,6 @@ export default function ProfileEditor() {
   ];
   return <>
     <h2 className="mb-3 text-lg font-bold">Career background</h2>
-    <p className="mb-4 text-sm text-board-muted">Review your details below. Use a section’s pen to edit, then save your shared background. Changes remain unverified until you review and save them.</p>
     <form autoComplete="on" onSubmit={save}>
       {groups.map(group=><ProfileSection key={group.title} title={group.title} resetKey={profile}>{editing=>editing?<fieldset><legend className="sr-only">{group.title}</legend><div className="grid gap-5 sm:grid-cols-2">{group.keys.map(key=><Field label={labels[key]} key={key}><input id={`profile-${key}`} name={key} className={control} value={(facts[key] as string)||""} type={key==='email'?'email':key==='phone'?'tel':['linkedin','github','portfolio','otherUrl'].includes(key)?'url':'text'} autoComplete={({name:'name',firstName:'given-name',lastName:'family-name',email:'email',phone:'tel',location:'address-level2'} as Record<string,string>)[key]||'off'} onChange={e=>update(key,e.target.value)}/></Field>)}</div></fieldset>:<ProfileValues items={group.keys.map(key=>({label:labels[key],value:facts[key],wide:key==='authorization'}))}/>}</ProfileSection>)}
       {(Object.entries(schema.schemas) as [EntryKind,ProfileSchema["schemas"][EntryKind]][]).map(([kind,fields])=><ProfileSection key={kind} title={sections[kind]} resetKey={profile}>{editing=><>

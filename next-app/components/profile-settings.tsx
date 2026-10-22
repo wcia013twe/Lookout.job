@@ -10,7 +10,7 @@ import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary, Section } from "./ui";
 import { profileStyles as styles } from "./profile-surface";
 import ProfileSection, {ProfileValues} from "./profile-section";
-export function ProfileSwitcher() {
+export function ProfileSwitcher({showDescription=true}:{showDescription?:boolean}) {
   const a = useApplicationProfile();
   const [creating, setCreating] = useState(false),
     [name, setName] = useState("");
@@ -52,10 +52,10 @@ export function ProfileSwitcher() {
           Duplicate
         </button>
       </div>
-      <p className="mt-3 text-xs text-board-muted">
+      {showDescription&&<p className="mt-3 text-xs text-board-muted">
         One Lookout account. Separate application identities, materials, and job
         preferences.
-      </p>
+      </p>}
       {creating && (
         <form
           className="mt-4 flex flex-wrap items-end gap-3"
@@ -96,10 +96,6 @@ export function AccountAssignments() {
   ];
   return (
     <ProfileSection title="Accounts & identity" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
-      <p className="mb-5 max-w-prose text-sm text-board-muted">
-        Assigned to {a.profile.name}. Your agent manages access to these
-        accounts; Lookout records which ones to use.
-      </p>
       {editing?<>
       <div className="mb-5">
         <Field label="Application profile name">
@@ -129,14 +125,6 @@ export function AccountAssignments() {
         ))}
       </div>
       </>:<ProfileValues items={[{label:"Application profile name",value:a.profile.name},...fields.map(([key])=>({label:key,value:a.field("Application identity",key).conflict?"Conflicting values — review in Advanced instructions":a.field("Application identity",key).value}))]}/>}
-      <p className="mt-4 text-xs text-board-muted">
-        Preferred names apply to this application profile. They do not replace
-        your shared name details when a form asks for your legal name.
-      </p>
-      <p className="mt-4 text-xs text-board-muted">
-        Assignments are instructions for your agent, not verified connections.
-        Application email does not change your Lookout sign-in.
-      </p>
     </>}</ProfileSection>
   );
 }
@@ -380,10 +368,6 @@ export function EligibilitySettings() {
   ];
   return (
     <ProfileSection title="Eligibility & availability" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
-      <p className="mb-5 max-w-prose text-sm text-board-muted">
-        For {a.profile.name}. Authorization and sponsorship answers apply to the
-        country below. Leave anything uncertain as Ask me.
-      </p>
       {editing?<>
       <div className="grid gap-5 sm:grid-cols-2">
         {fields.map((f) => {
@@ -437,11 +421,6 @@ export function EligibilitySettings() {
           );
         })}
       </div>
-      {!hasCountry && (
-        <p className="mt-3 text-xs text-board-muted">
-          Choose a country before setting authorization or sponsorship.
-        </p>
-      )}
       <div className="mt-5">
         <Field label="Eligibility notes (optional)">
           <textarea
@@ -455,10 +434,6 @@ export function EligibilitySettings() {
         </Field>
       </div>
       </>:<ProfileValues items={[...fields.map(f=>({label:f.key,value:a.field(heading,f.key).conflict?"Conflicting values — review in Advanced instructions":a.field(heading,f.key).value||(f.options?"Ask me":"")})),{label:"Eligibility notes",value:a.field(heading,"Notes").value,wide:true}]}/>}
-      <p className="mt-4 text-xs text-board-muted">
-        These settings guide preparation. Uncertain or unreviewed employer
-        answers still need your review.
-      </p>
     </>}</ProfileSection>
   );
 }
