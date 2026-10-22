@@ -185,7 +185,7 @@ export function WritingStyles() {
         <p className="mt-3 text-xs text-board-muted">This previews your current guidance. Save application profile to keep changes. Facts and answer-review requirements still apply.</p>
       </div>}
     </>}</ProfileSection></div>
-      <section className={styles.writingLibrary} tabIndex={0} aria-label={`${c.title} examples and library`}>
+      <section className={`${styles.writingLibrary} ${c.title === "Outreach" ? styles.writingPreviewPanel : ""}`} tabIndex={0} aria-label={`${c.title} examples and library`}>
         {c.title === "Outreach" ? <OutreachTemplates carouselOnly/> : <>
           <h3 className="text-lg font-semibold">Employer answer preview</h3>
           <p className="my-3 text-xs text-board-muted">Fictional example · Why are you interested in this role?</p>

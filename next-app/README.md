@@ -207,6 +207,7 @@ The form is still UI-only: edits are discarded, and an unloaded employer form
 can introduce further questions. Fictional demo questions illustrate one- and
 two-question handoffs; no live employer form or saved-answer reuse policy changes.
 
+Outreach carousel previews are contained in one gradient panel. The sandboxed iframe highlights sentence purpose using the existing six-tag message key; Highlights toggles both marks and key. The iframe renders escaped local templates, runs no scripts, makes no external requests and respects reduced motion. This is presentation-only; scoped backend/MCP actions are unchanged.
 
 ## Application Overview
 

@@ -9,3 +9,11 @@ Validation: `npm run validate:data` (147 roles), `npm run build`, `git diff --ch
 ## Preview follow-up
 
 Shared question bank is collapsed beneath Writing style, retaining shared-answer editing and profile selection. Outreach previews now show one of Recruiter, Existing connection, Alumni, Founder and Followup, with wrapping previous/next arrows. Employer preview shows a labeled fictional answer rather than repeating instructions. Text reveal reserves its full height and exposes complete text to assistive technology. Demo checks exercise all five slides, wraparound and the collapsed bank.
+
+## Highlighted preview follow-up
+
+Outreach carousel, arrows, subject, message and six-category key now share one subtle gradient box. Sandboxed iframe uses escaped template text, no scripts or network access, theme-aware colors and reduced-motion text reveal. Highlight toggle hides both the sentence marks and key. All six existing category labels/descriptions are preserved; unavailable timeline context is not invented. Demo checks inspect iframe marks and the toggle.
+
+Verification: production build, data validation, design scan, and desktop/mobile profile checks passed. Inspected the dedicated iframe screenshot to verify colored text rendering. The full key remains visible in the expanded gradient panel. Existing Next.js dependency security advisory remains unresolved.
+
+Iframe text stays visible by default and uses progressive emphasis rather than initially transparent characters, avoiding a blank preview when the browser defers iframe animation. The demo check asserts readable text throughout.

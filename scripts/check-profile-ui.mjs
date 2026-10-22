@@ -10,7 +10,7 @@ try{
  const user={id:'11111111-1111-1111-1111-111111111111',aud:'authenticated',role:'authenticated',email:'fictional@example.com',app_metadata:{demo_preview:true},user_metadata:{},is_anonymous:false};
  const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url');
  const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
- await context.addInitScript(({user,token})=>localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user})),{user,token});
+ await context.addInitScript(({user,token})=>{if(window.top!==window)return;localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user}));},{user,token});
  await context.route('https://umhqfqzpwmszhcknwtrs.supabase.co/**',async route=>{
   cloud.push(route.request().url());const url=route.request().url();
   const op=route.request().postDataJSON()?.operation;
@@ -167,6 +167,15 @@ try{
    await carousel.getByRole('heading',{name:title,exact:true}).waitFor();
    await carousel.getByRole('button',{name:'Next outreach template',exact:true}).click();
  }
+ const iframe=carousel.frameLocator('iframe');
+ await iframe.locator('mark').first().waitFor();
+ assert.equal(await carousel.getByLabel('Six-tag message key').locator('strong').count(),6);
+ await carousel.getByRole('button',{name:'Highlights: On',exact:true}).click();
+ await iframe.locator('mark').first().waitFor({state:'detached'});
+ assert.equal(await iframe.locator('mark').count(),0);
+ assert.equal(await carousel.getByLabel('Six-tag message key').count(),0);
+ await carousel.getByRole('button',{name:'Highlights: Off',exact:true}).click();
+ await iframe.locator('mark').first().waitFor();
  await carousel.getByRole('heading',{name:'Recruiter',exact:true}).waitFor();
  await carousel.getByRole('button',{name:'Previous outreach template',exact:true}).click();
  await carousel.getByRole('heading',{name:'Followup',exact:true}).waitFor();
@@ -189,6 +198,10 @@ try{
  await agent.getByText('Warm & conversational',{exact:true}).first().waitFor();
  await picker.selectOption('general');
  await agent.getByText('Confident & understated',{exact:true}).waitFor();
+ await page.evaluate(()=>scrollTo(0,0));
+ await carousel.locator('iframe').scrollIntoViewIfNeeded();
+ assert(await carousel.frameLocator('iframe').locator('.animated span').last().evaluate(el=>Number(getComputedStyle(el).opacity)>=.9),'Preview text is readable throughout the animation');
+ await carousel.locator('iframe').screenshot({path:dir+'/outreach-frame.png'});
  await page.evaluate(()=>scrollTo(0,0));
  await page.screenshot({path:dir+'/my-agent-desktop.png',fullPage:true});
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({colorScheme:'light'});
