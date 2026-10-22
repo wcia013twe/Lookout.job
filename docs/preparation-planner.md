@@ -1,5 +1,8 @@
 # Weekly preparation planner
 
+For the complete Action Board storage/tool mapping and the hosted deployment
+audit, see [Action Board persistence and agent editing](action-board-sync.md).
+
 The Action Board has a rolling seven-day calendar and one preparation plan. It
 opens on today's sessions; choose a calendar day or Show all week. Calendar dots
 mark confirmed interview dates. Each session links to the covered interviews.
