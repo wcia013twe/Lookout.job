@@ -31,12 +31,15 @@ test('company briefs round-trip through existing scoped contact notes as compati
 test('demo company notes are private, resettable and distinct from people',()=>{
  const a=demoFixtures('2026-10-20'),b=demoFixtures('2026-10-20');
  const companies=a.state.network.companies;
- assert.equal(companies.length,4);assert.ok(companies.some(r=>r.record.sources.length));
+ assert.equal(companies.length,5);assert.ok(companies.some(r=>r.record.sources.length));
  const contacts=a.state.network.referrals.filter(r=>!isCompanyRecord(r));
- assert.equal(contacts.length,2);
- assert.ok(contacts.every(r=>r.company==='Cedar Systems (demo)'));
- assert.equal(companies.filter(r=>!r.record.archived).length,2);
+ assert.equal(contacts.length,3);
+ assert.ok(contacts.some(r=>r.company==='Stripe'&&r.contact.includes('Jamie')));
+ assert.equal(companies.filter(r=>!r.record.archived).length,3);
  assert.equal(a.roles.some(r=>r.id==='demo-cedar-platform'),true);
+ const stripe=companies.find(r=>r.id==='demo-stripe-target');assert.match(stripe.record.targetTeams,/New Grad/);assert.match(stripe.record.interest,/Query Lab/);assert.match(stripe.record.concerns,/Verify/);
+ assert.equal(a.state.demo.networkTakeaways[stripe.id].length,2);
+ assert.ok(a.state.demo.networkTakeaways[stripe.id].every(t=>t.postId.startsWith('demo-stripe-')));
  a.state.network.companies[0].record.research='Edited';
  assert.notEqual(b.state.network.companies[0].record.research,'Edited');
  assert.equal(companyFollowUps(companies,'2026-10-20').length,1);
