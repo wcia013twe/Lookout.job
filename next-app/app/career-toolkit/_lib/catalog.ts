@@ -7,5 +7,9 @@ export type ToolkitSkill = {
   related: string[]; locales?: string[];
 };
 export const categories: ToolkitCategory[] = data.categories;
-export const skills: ToolkitSkill[] = data.skills;
+// Profile background is maintained directly on My Profile.
+// Keep the agent guide available without publishing a separate manual page.
+export const skills: ToolkitSkill[] = data.skills
+  .filter(skill => skill.id !== 'profile-interview')
+  .map(skill => ({ ...skill, related: skill.related.filter(id => id !== 'profile-interview') }));
 export const skillById = (id: string) => skills.find(skill => skill.id === id);
