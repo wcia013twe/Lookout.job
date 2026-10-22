@@ -62,7 +62,7 @@ test('manual access over MCP retains workspace authorization and remains read-on
   for(const id of ['career-star-answer-writer','career-interview-answer-builder']){
     const response=await (await invoke({id})).json();
     const guide=JSON.parse(response.result.content[0].text);assert.equal(guide.id,id);
-    assert.match(guide.instructions,/save_artifact/);assert.match(guide.instructions,/candidate detail needed|missing motivations|motivations or development/i);
+    assert.match(guide.instructions,/save_artifact/);assert.match(guide.instructions,/inventory every substantive/);assert.match(guide.instructions,/Never simulate candidate replies/);assert.match(guide.instructions,/candidate detail needed|missing motivations|motivations or development/i);
   }
   allow=false;assert.equal((await (await invoke()).json()).result.isError,true);
   allow=true;assert.ok((await (await invoke({id:'career-evaluate-job',ownerId:'foreign'})).json()).error);

@@ -59,7 +59,7 @@ test('learning-only weeks fit the shared budget, reveal missing material and pre
 test('fictional demo saves, revisions, archiving and retrieval never need real storage or services',async()=>{
  const store=createMemoryStore({demo:{fictional:true}}),demo=createArtifactDemo(store);
  const page=await demo.artifactAction('artifacts.list');assert.equal(page.items.length,6);assert.ok(!('body' in page.items[0].content));
- const answers=await demo.artifactAction('artifacts.read',{id:'99999999-aaaa-4000-8000-999999999999'});assert.match(answers.content.body,/Candidate detail needed/);assert.match(answers.content.body,/Tell me about yourself/);
+ const answers=await demo.artifactAction('artifacts.read',{id:'99999999-aaaa-4000-8000-999999999999'});assert.match(answers.content.body,/Candidate detail needed/);assert.match(answers.content.body,/Tell me about yourself/);assert.match(answers.content.body,/Resume coverage/);assert.match(answers.content.body,/Needs clarification/);
  const original=await demo.artifactAction('artifacts.read',{id:demoArtifactIds.interactive});assert.match(original.content.body,/type="range"/);
  const saved=await demo.artifactAction('artifacts.save',doc);assert.equal(saved.version,1);assert.equal((await demo.artifactAction('artifacts.save',doc)).version,1);
  const revised=await demo.artifactAction('artifacts.save',{...doc,expectedVersion:1,body:'Revised'});assert.equal(revised.version,2);

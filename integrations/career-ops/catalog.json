@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "categories": [
     {
       "id": "profile",
@@ -843,7 +843,7 @@
       "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/practice.md"
     },
     {
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "sources": [
         "modes/interview/debrief.md",
@@ -862,6 +862,10 @@
       ],
       "steps": [
         "Read the current candidate profile, selected resume and relevant saved artifacts using available scoped tools. Use only the user's evidence; never fabricate experience, ownership, metrics, motives or outcomes. If the resume is unavailable, say so and work from supplied notes.",
+        "Use the linked Harvard MCS guidance to act as a prepared, constructive interviewer: assess concrete competencies through specific experiences, the candidate's own contribution, outcomes and learning. Use The Muse's question-specific structures for introductions and motivation answers. These references guide the method; do not copy their sample answers or treat coaching advice as company interview evidence.",
+        "For a comprehensive resume pass, inventory every substantive experience bullet, project, listed skill and material claim, retaining its resume wording or a clear reference. Build a coverage table with item, competency, likely opening question, follow-up probes, supporting evidence, answer or linked story, unresolved gaps and state (not reviewed, needs clarification, needs practice, or ready for practice). Cover all items rather than selecting only strong stories; consolidate repeated claims only with explicit links to every covered item. A request for one answer stays scoped to that answer; do not claim full coverage.",
+        "Question each inventoried item like an interviewer. Probe what the candidate personally owned versus the team, how the system or work functioned, why an approach was chosen, alternatives and tradeoffs, constraints, failures and lessons. For metrics, ask about baseline, measurement method, sample or time window and attribution; for scale and listed skills, ask for concrete usage and depth. Select relevant probes rather than asking a mechanical checklist. Follow vague answers with a focused request for a specific example or evidence.",
+        "In interactive mode, ask one opening question, wait for the candidate, then probe the answer before drafting it. In an unattended drafting pass, generate the questions and evidence-supported draft only; mark unanswered probes and [candidate detail needed] explicitly. Never simulate candidate replies or label unresolved items ready. Ready for practice means a supported draft exists, not that the candidate has practiced or the claim has been independently verified. Persist coverage and resume from outstanding items on later sessions.",
         "Choose concrete episodes that answer the question. For a pack, cover teamwork, disagreement, failure, ownership, ambiguity and a technical challenge only where real evidence supports them; do not manufacture a story to fill a category. Map each story to question variants and candidate evidence.",
         "Clarify the candidate's responsibility, constraints, decisions, alternatives, individual actions and observed outcome. Ask one focused question at a time for a material gap. When drafting ahead of a reply, label [candidate detail needed] and keep the answer explicitly incomplete. Distinguish team outcomes from personal contribution; qualitative outcomes are acceptable when numbers are unavailable.",
         "Write labeled Situation, Task, Action and Result sections plus a short reflection. Keep context brief and give most detail to the candidate's actions and reasoning. Include a conversational spoken version, a short cue outline, supporting evidence, unresolved details and two probing follow-up questions. Failed outcomes should include accountability and what changed afterward; never rewrite failure into success.",
@@ -873,11 +877,13 @@
       "outputs": [
         "Reusable STAR drafts and conversational versions",
         "Question-to-story mappings, evidence notes and missing details",
-        "Follow-up questions and a saved Toolkit link when persistence succeeds"
+        "Follow-up questions and a saved Toolkit link when persistence succeeds",
+        "Resume-item coverage table, interviewer probes and unresolved gaps for a comprehensive pass"
       ],
       "examples": [
         "Use my resume to draft a reusable STAR answer pack. Flag missing actions or results instead of filling them in.",
-        "Turn my project notes into a STAR answer about disagreement, then adapt the emphasis to my target role."
+        "Turn my project notes into a STAR answer about disagreement, then adapt the emphasis to my target role.",
+        "Act as an interviewer and work through every substantive resume item. Ask one question at a time, probe my evidence, then save answers and a coverage table for later practice."
       ],
       "requirements": "Reading references (reviewed 2026-10-22; original Lookout instructions, not copied sample answers): Harvard MCS, Interviewing — https://careerservices.fas.harvard.edu/resources/interviewing/ ; The Muse, common interview questions — https://www.themuse.com/advice/interview-questions-and-answers ; The Muse, Tell Me About Yourself — https://www.themuse.com/advice/tell-me-about-yourself-interview-question-answer-examples . These are coaching references, not evidence of any particular company's questions.",
       "related": [
@@ -888,7 +894,7 @@
       ]
     },
     {
-      "version": 1,
+      "version": 2,
       "category": "interviews",
       "sources": [
         "modes/interview/debrief.md",
@@ -907,6 +913,10 @@
       ],
       "steps": [
         "Read the current candidate profile, selected resume and relevant saved artifacts using available scoped tools. Use only the user's evidence; never fabricate experience, ownership, metrics, motives or outcomes. If the resume is unavailable, say so and work from supplied notes.",
+        "Use the linked Harvard MCS guidance to act as a prepared, constructive interviewer: assess concrete competencies through specific experiences, the candidate's own contribution, outcomes and learning. Use The Muse's question-specific structures for introductions and motivation answers. These references guide the method; do not copy their sample answers or treat coaching advice as company interview evidence.",
+        "For a comprehensive resume pass, inventory every substantive experience bullet, project, listed skill and material claim, retaining its resume wording or a clear reference. Build a coverage table with item, competency, likely opening question, follow-up probes, supporting evidence, answer or linked story, unresolved gaps and state (not reviewed, needs clarification, needs practice, or ready for practice). Cover all items rather than selecting only strong stories; consolidate repeated claims only with explicit links to every covered item. A request for one answer stays scoped to that answer; do not claim full coverage.",
+        "Question each inventoried item like an interviewer. Probe what the candidate personally owned versus the team, how the system or work functioned, why an approach was chosen, alternatives and tradeoffs, constraints, failures and lessons. For metrics, ask about baseline, measurement method, sample or time window and attribution; for scale and listed skills, ask for concrete usage and depth. Select relevant probes rather than asking a mechanical checklist. Follow vague answers with a focused request for a specific example or evidence.",
+        "In interactive mode, ask one opening question, wait for the candidate, then probe the answer before drafting it. In an unattended drafting pass, generate the questions and evidence-supported draft only; mark unanswered probes and [candidate detail needed] explicitly. Never simulate candidate replies or label unresolved items ready. Ready for practice means a supported draft exists, not that the candidate has practiced or the claim has been independently verified. Persist coverage and resume from outstanding items on later sessions.",
         "For a starter pack, address introduction, resume walkthrough, why this role, why this company, strengths, a development area, career direction and questions for the interviewer. Add conflict, failure, teamwork and achievement by reusing supported stories or career-star-answer-writer. Do not imply these are confirmed company questions.",
         "Choose a structure suited to each question: a selective present/past/future narrative for introductions; relevant transitions for resume walkthroughs; a specific company or role fact connected to a genuine candidate interest and matching evidence for motivation; evidence for strengths; a real development area with concrete improvement steps for weaknesses. Use STAR for behavioral episodes rather than forcing every answer into STAR.",
         "For each question explain the intent briefly, give a concise first-person draft and cue outline, cite the candidate evidence used, flag unknowns and suggest a follow-up probe. Ask about genuine motivations or development areas when unknown; never invent passion, personal history, a flattering weakness or an improvement result.",
@@ -918,11 +928,13 @@
       "outputs": [
         "Common-question answer pack with cue outlines and evidence",
         "Optional sourced company adaptations and candidate questions",
-        "Missing-fact prompts, mock interview probes and saved Toolkit link when available"
+        "Missing-fact prompts, mock interview probes and saved Toolkit link when available",
+        "Resume-item coverage table, interviewer probes and unresolved gaps for a comprehensive pass"
       ],
       "examples": [
         "Build my common interview answers from my resume. Keep company-specific sections reusable and mark missing motivations.",
-        "Adapt my saved answer pack for Bloomberg and this job description. Source company facts and keep my experience unchanged."
+        "Adapt my saved answer pack for Bloomberg and this job description. Source company facts and keep my experience unchanged.",
+        "Act as an interviewer and work through every substantive resume item. Ask one question at a time, probe my evidence, then save answers and a coverage table for later practice."
       ],
       "requirements": "Reading references (reviewed 2026-10-22; original Lookout instructions, not copied sample answers): Harvard MCS, Interviewing — https://careerservices.fas.harvard.edu/resources/interviewing/ ; The Muse, common interview questions — https://www.themuse.com/advice/interview-questions-and-answers ; The Muse, Tell Me About Yourself — https://www.themuse.com/advice/tell-me-about-yourself-interview-question-answer-examples . These are coaching references, not evidence of any particular company's questions.",
       "related": [
