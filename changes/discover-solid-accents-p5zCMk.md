@@ -8,6 +8,8 @@
 
 ## Action Board follow-up
 
+- Local integration preserves the existing subtitle removal from the shared checkout, as requested when authorizing the merge.
+
 - Applied the same solid-surface direction to the real Action Board and admin demo: navy tasks, a quieter slate-plum prep surface, and restrained blue/pink aurora headers. Light mode uses pale blue/lilac headers and near-white working surfaces.
 - Task actions align beside summaries on wider panels and stack on mobile. Workflow state stays with the role metadata; expanded review controls have a clear divider and active action styling. The existing demo covers expanded, disabled, completed, reset and uncertain states without new fixtures.
 - Validation: production build including TypeScript; data validation (76 roles); diff whitespace check. Browser captures at dark/light 1440px and 390px plus dark 320px/1024px showed no document overflow. Exercised explicit approval gating, completion/reset, missing-answer confirmation, uncertain outcome retention, prep pause/resume and session recording. No page errors or non-auth backend requests during demo actions; one intercepted background auth-user read occurred. Temporary browser verification is in `/tmp/lookout-theme-preview/action-board.mjs`; screenshots are alongside it.
