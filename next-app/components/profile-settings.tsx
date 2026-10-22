@@ -186,12 +186,20 @@ export function WritingStyles() {
       </div>}
     </>}</ProfileSection></div>
       <section className={styles.writingLibrary} tabIndex={0} aria-label={`${c.title} examples and library`}>
-        <h3 className="text-lg font-semibold">{c.title === "Outreach" ? "Outreach templates" : "Employer answer preview"}</h3>
-        <p className="my-3 text-xs text-board-muted">Illustrative style preview · no AI request is running. Save your profile to keep writing settings.</p>
-        <WritingPreview key={`${a.profile.id}-${c.heading}`} text={`${a.field(c.heading,"Tone").value || "Natural tone"}. ${a.field(c.heading,"Length").value || "Suitable length"}.\n${a.field(c.heading,"Guidance").value || "Use verified experience and tailor the writing to the role."}`}/>
-        {c.title === "Outreach" ? <OutreachTemplates initiallyOpen/> : <><ApplicationMaterials mode="answers"/><SavedAnswers/></>}
+        {c.title === "Outreach" ? <OutreachTemplates carouselOnly/> : <>
+          <h3 className="text-lg font-semibold">Employer answer preview</h3>
+          <p className="my-3 text-xs text-board-muted">Fictional example · Why are you interested in this role?</p>
+          <WritingPreview key={a.profile.id} text="I’m interested in this role because it combines distributed systems with practical performance work. In a fictional university project, I built a query service and compared caching strategies under load. I’d like to bring that approach to your infrastructure team and learn how you handle reliability at production scale."/>
+          <p className="mt-4 text-xs text-board-muted">Illustrative example. Your agent uses your saved writing settings and verified experience for real answers.</p>
+        </>}
       </section>
     </div>)}
+    <details className="mt-6 border-y border-board-line py-4">
+      <summary className="cursor-pointer text-base font-semibold">Shared question bank</summary>
+      <p className="mt-3 text-sm text-board-muted">Manage shared employer answers and choose which answers this profile can use.</p>
+      <ApplicationMaterials mode="answers"/>
+      <SavedAnswers/>
+    </details>
     <ApplicationDocumentLibrary kind="application_template"/>
   </>;
 }
