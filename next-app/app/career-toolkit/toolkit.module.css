@@ -255,7 +255,8 @@
 .skillDocument h2 { margin: 0; padding: .875rem 1.25rem; font-size: .875rem; color: var(--color-board-muted); }
 .skillDocument iframe { display: block; width: 100%; height: 65vh; min-height: 24rem; border: 0; }
 .skillInvocation { justify-self: end; max-width: 20rem; }
-.skillInvocation .requestActions { margin-top: 0; }
+.skillInvocation .requestActions { margin-top: 0; justify-content: flex-end; align-items: flex-end; }
+.skillInvocation .requestActions button { width: auto; }
 .skillInvocation .copyStatus:empty { display: none; }
 @media (max-width: 600px) {
  .skillOverview { grid-template-columns: minmax(0,1fr); }

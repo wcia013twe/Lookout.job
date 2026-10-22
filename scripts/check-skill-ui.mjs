@@ -29,6 +29,7 @@ try{
  for(const [name,width,height,theme] of [['desktop',1440,1100,'dark'],['mobile',390,844,'light']]){
   await page.setViewportSize({width,height});await page.emulateMedia({colorScheme:theme});await page.waitForTimeout(350);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  const buttonBox=await page.getByRole('button',{name:'Use Skill'}).boundingBox();const documentBox=await page.locator('iframe').boundingBox();assert(Math.abs(buttonBox.x+buttonBox.width-documentBox.x-documentBox.width)<3,'Use Skill must align to the document right edge');
   const frame=page.frames().find(f=>f.parentFrame());assert(await frame.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await page.screenshot({path:dir+'/skill-'+name+'.png',fullPage:true});
  }
