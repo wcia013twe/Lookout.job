@@ -81,12 +81,10 @@ function ProfileContent() {
           <div className={profileStyles.sectionIntro}>
             <h2>About me</h2>
           </div>
-          <AccountAssignments />
-          <EligibilitySettings />
-          <div className={profileStyles.sharedHeading}>
-            <span>Shared across application profiles</span>
-          </div>
-          <ProfileEditor />
+          <ProfileEditor>
+            <AccountAssignments />
+            <EligibilitySettings />
+          </ProfileEditor>
         </section>
       )}
       {visited.includes("kit") && (

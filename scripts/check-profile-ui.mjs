@@ -23,12 +23,12 @@ try{
  await page.getByRole('button',{name:'Demo mode',exact:true}).click();
  await page.getByRole('button',{name:'About me',exact:true}).click();
  assert.equal(await page.locator('section[aria-label="About me"] details').count(),0,'About me sections stay expanded');
- assert.equal(await page.getByRole('textbox',{name:'Full name',exact:true}).count(),0,'Background starts read-only');
+ assert.equal(await page.getByRole('textbox',{name:'First name',exact:true}).count(),0,'Background starts read-only');
  await page.getByText('Compared cache strategies and documented reliability tradeoffs',{exact:false}).waitFor();
- await page.getByRole('button',{name:'Edit Personal details',exact:true}).click();
- assert(await page.getByRole('textbox',{name:'Full name',exact:true}).isEditable());
+ await page.getByRole('button',{name:'Edit Personal Info',exact:true}).click();
+ assert(await page.getByRole('textbox',{name:'First name',exact:true}).isEditable());
  assert.equal(await page.getByRole('textbox',{name:'Application profile name',exact:true}).count(),0,'Editing is scoped to one section');
- await page.getByRole('button',{name:'Finish editing Personal details',exact:true}).click();
+ await page.getByRole('button',{name:'Finish editing Personal Info',exact:true}).click();
  await page.getByRole('button',{name:'Edit Skills & languages',exact:true}).click();
  const before=cloud.length;
  const skills=page.getByRole('list',{name:'Skills added',exact:true});

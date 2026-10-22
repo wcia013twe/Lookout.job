@@ -126,3 +126,14 @@ test('a delayed background response cannot reveal the previous account',async()=
  env.switch(two);await env.flush();hold.resolve();await refresh;
  assert.equal(env.store.get('workflow.profile.name'),'');
 });
+
+test('personal contact fields survive cloud save and hydration without becoming verified',async()=>{
+ const env=await environment();
+ const contact={firstName:'Demo',lastName:'Candidate',preferredName:'Demo',suffix:'Jr.',email:'demo@example.com',phone:'+1 202-555-0142',birthday:'2000-06-15',location:'Example City',address:'123 Example Street',address2:'Apt 4',address3:'Building A',postalCode:'00123'};
+ env.store.set('workflow.profile',{...env.store.get('workflow.profile'),...contact,verified:false});
+ await JB.cloud.save();
+ const {fromCloud}=await import('../lib/cloud-model.mjs');
+ const restored=fromCloud(env.db).profile;
+ for(const [key,value] of Object.entries(contact)){assert.equal(env.db.profiles[0].facts[key],value);assert.equal(restored[key],value);}
+ assert.equal(restored.verified,false);
+});

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createProfileReview } from "../../lib/profile-review.mjs";
 import rawSchema from "../../lib/profile-schema.js";
 import { useWorkspace } from "../lib/workspace";
@@ -9,9 +9,16 @@ const labels: Record<string, string> = {
   name: "Full name",
   firstName: "First name",
   lastName: "Last name",
-  email: "Shared contact email",
+  preferredName: "Preferred name",
+  suffix: "Suffix name",
+  birthday: "Birthday",
+  address: "Address",
+  address2: "Address 2",
+  address3: "Address 3",
+  postalCode: "Postal code",
+  email: "Email address",
   phone: "Phone number",
-  location: "City / location",
+  location: "Location",
   linkedin: "LinkedIn URL",
   github: "GitHub URL",
   portfolio: "Portfolio URL",
@@ -93,8 +100,9 @@ const sections: Record<string, string> = {
   education: "Education",
   projects: "Projects & outside experience",
 };
-export default function ProfileEditor() {
+export default function ProfileEditor({children}:{children?:ReactNode}) {
   const w = useWorkspace();
+  const formId = useId();
   const profile: ProfileFacts = w.state.workflow.profile;
   const [facts, setFacts] = useState(profile),
     [checked, setChecked] = useState(false),
@@ -109,7 +117,9 @@ export default function ProfileEditor() {
   }, [JSON.stringify(profile), w.user?.id]);
   function update(key: string, value: unknown) {
     review.current.invalidate();
-    setFacts({ ...facts, [key]: value });
+    const next = { ...facts, [key]: value };
+    if(key==="firstName"||key==="lastName")next.name=[next.firstName,next.lastName].filter(Boolean).join(" ");
+    setFacts(next);
     setChecked(false);
   }
   function save(e: FormEvent<HTMLFormElement>) {
@@ -143,16 +153,18 @@ export default function ProfileEditor() {
     );
   }
   const groups = [
-    {title:"Personal details",keys:["name","email","phone","location"]},
-    {title:"Name details",keys:["firstName","lastName"]},
+    {title:"Personal Info",keys:["firstName","lastName","preferredName","suffix","email","phone","birthday","location","address","address2","address3","postalCode",...(!facts.firstName&&!facts.lastName?["name"]:[])]},
     {title:"Professional summary",keys:["headline","currentEmployer","jobSearchStatus"]},
     {title:"Professional links",keys:["linkedin","github","portfolio","otherUrl"]},
     {title:"Shared authorization notes",keys:["authorization"]},
   ];
+  const renderGroup=(group:typeof groups[number])=>(<ProfileSection key={group.title} title={group.title} resetKey={profile}>{editing=>editing?<fieldset><legend className="sr-only">{group.title}</legend><div className="grid gap-5 sm:grid-cols-2">{group.keys.map(key=><Field label={labels[key]} key={key}><input form={formId} id={`profile-${key}`} name={key} className={control} value={(facts[key] as string)||""} type={key==='email'?'email':key==='phone'?'tel':key==='birthday'?'date':['linkedin','github','portfolio','otherUrl'].includes(key)?'url':'text'} autoComplete={({name:'name',firstName:'given-name',lastName:'family-name',preferredName:'nickname',suffix:'honorific-suffix',email:'email',phone:'tel',birthday:'bday',location:'address-level2',address:'address-line1',address2:'address-line2',address3:'address-line3',postalCode:'postal-code'} as Record<string,string>)[key]||'off'} onChange={e=>update(key,e.target.value)}/></Field>)}</div></fieldset>:<ProfileValues items={group.keys.map(key=>({label:labels[key],value:facts[key],wide:key==='authorization'}))}/>}</ProfileSection>);
   return <>
-    <h2 className="mb-3 text-lg font-bold">Career background</h2>
-    <form autoComplete="on" onSubmit={save}>
-      {groups.map(group=><ProfileSection key={group.title} title={group.title} resetKey={profile}>{editing=>editing?<fieldset><legend className="sr-only">{group.title}</legend><div className="grid gap-5 sm:grid-cols-2">{group.keys.map(key=><Field label={labels[key]} key={key}><input id={`profile-${key}`} name={key} className={control} value={(facts[key] as string)||""} type={key==='email'?'email':key==='phone'?'tel':['linkedin','github','portfolio','otherUrl'].includes(key)?'url':'text'} autoComplete={({name:'name',firstName:'given-name',lastName:'family-name',email:'email',phone:'tel',location:'address-level2'} as Record<string,string>)[key]||'off'} onChange={e=>update(key,e.target.value)}/></Field>)}</div></fieldset>:<ProfileValues items={group.keys.map(key=>({label:labels[key],value:facts[key],wide:key==='authorization'}))}/>}</ProfileSection>)}
+    {renderGroup(groups[0])}
+    {children}
+    <h2 className="mb-3 mt-8 text-lg font-bold">Career background</h2>
+    <form id={formId} autoComplete="on" onSubmit={save}>
+      {groups.slice(1).map(renderGroup)}
       {(Object.entries(schema.schemas) as [EntryKind,ProfileSchema["schemas"][EntryKind]][]).map(([kind,fields])=><ProfileSection key={kind} title={sections[kind]} resetKey={profile}>{editing=><>
         {(facts[kind]||[]).map((entry,index)=><div className={styles.entry} key={index}>
           <h4>{entry.title||entry.degree||entry.name||"New entry"}{(entry.company||entry.school)&&<> · {entry.company||entry.school}</>}</h4>

@@ -9,7 +9,8 @@ begin
   raise exception 'Missing scope allowed';
  exception when insufficient_privilege then null; end;
  update private.agent_connections set scopes=array['workspace:read','profile:write','answers:write','preferences:write','activity:write'] where token_hash=h;
- r:=public.agent_dispatch(h,'profile.save','{"facts":{"name":"Test"},"expectedUpdatedAt":null}');
+ r:=public.agent_dispatch(h,'profile.save','{"facts":{"name":"Test","firstName":"Demo","lastName":"Candidate","phone":"+1 202-555-0142","address":"123 Example Street","address2":"Apt 4","address3":"Building A","postalCode":"00123","birthday":"2000-06-15","preferredName":"Demo","suffix":"Jr."},"expectedUpdatedAt":null}');
+ if r#>>'{facts,address}'<>'123 Example Street' or r#>>'{facts,postalCode}'<>'00123' or r#>>'{facts,phone}'<>'+1 202-555-0142' then raise exception 'Contact facts lost through scoped tool'; end if;
  if r->>'verified_at' is not null or r->>'user_id'<>u::text then raise exception 'Facts verified or foreign'; end if;
  begin
   perform public.agent_dispatch(h,'profile.save','{"facts":{},"expectedUpdatedAt":null}');

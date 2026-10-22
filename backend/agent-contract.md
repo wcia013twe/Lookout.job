@@ -132,6 +132,23 @@ no credentials or file bytes are stored there. No real application was sent in
 development testing; official browser confirmations are observations, not signed
 employer API receipts.
 
+## Shared personal contact facts
+
+The website’s Personal Info box saves shared `firstName`, `lastName`,
+`preferredName`, `suffix`, `email`, `phone`, `birthday`, `location`, `address`,
+`address2`, `address3`, and `postalCode` through the existing profile JSON store.
+Postal codes remain strings to preserve leading zeros. Name-part edits update the
+shared display `name`; existing full-name-only records retain a Full name field
+until name parts are supplied. Per-application preferred-name overrides remain
+separate account-identity settings.
+
+The existing scoped `save_profile_facts` / `profile.save` tool can save these facts
+with `profile:write` and the current `expectedUpdatedAt`. Read the latest profile
+and preserve unrelated facts because this action replaces the supplied facts
+object. This is not an extension of the narrower `profile.import` /
+`save_profile_package` allowlist. Existing ownership/version checks and unverified
+agent writes remain unchanged; no new tool or schema deployment is introduced.
+
 ## Profile setup (developer version 7)
 
 The `profile:write` grant lets an agent save a prepared package without asking the

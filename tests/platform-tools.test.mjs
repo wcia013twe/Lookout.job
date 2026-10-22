@@ -33,3 +33,9 @@ test('resume references use HTTPS and cannot embed credentials',()=>{
  assert.throws(()=>validatePlatformPayload('resumes.reference.add',{...base,url:'https://secret@example.com/resume.pdf'}));
  assert.equal(validatePlatformPayload('resumes.reference.add',{...base,url:'https://example.com/resume.pdf'}),true);
 });
+
+test('existing scoped profile fact tool accepts contact facts without ownership or verification claims',()=>{
+ const facts={firstName:'Demo',lastName:'Candidate',phone:'+1 202-555-0142',address:'123 Example Street',postalCode:'00123'};
+ assert.doesNotThrow(()=>validateRequest({operation:'profile.save',payload:{facts,expectedUpdatedAt:null}}));
+ assert.equal(TOOLS.find(tool=>tool.name==='save_profile_facts').operation,'profile.save');
+});
