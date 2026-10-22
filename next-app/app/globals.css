@@ -657,3 +657,40 @@ button:not(:disabled) {
   --workspace-action-secondary-border: var(--workspace-theme-workspace-action-secondary-border);
   --workspace-action-secondary-border-hover: var(--workspace-theme-workspace-action-secondary-border-hover);
 }
+
+/* Theme previews keep their geometry when the neutral option removes color. */
+.theme-preview { display: flex; gap: 4px; height: 48px; padding: 8px; border-radius: 6px; background: #e9eff7; }
+.theme-preview span { flex: 1; border-radius: 3px; background: #24517b; }
+.theme-preview span:nth-child(2) { opacity: .55; }
+.theme-preview span:nth-child(3) { opacity: .25; }
+.theme-preview-dark { background: #111b2a; }
+.theme-preview-dark span { background: #d8eaff; }
+.theme-preview-system { background: linear-gradient(90deg, #e9eff7 50%, #111b2a 50%); }
+.theme-preview-none { background: #eeeeee; }
+.theme-preview-none span { background: #444444; }
+/* Neutral tokens detach the workspace palette; grayscale also covers artwork,
+   status colors and legacy component-local palettes without stripping styling. */
+:root[data-color-mode="none"] { filter: grayscale(1); color-scheme: light; }
+:root[data-color-mode="none"],
+:root[data-color-mode="none"] .workspace-shell {
+  --color-board-bg: #fafafa;
+  --color-board-panel: #ffffff;
+  --color-board-text: #171717;
+  --color-board-muted: #525252;
+  --color-board-accent: #262626;
+  --color-board-accent-hover: #404040;
+  --color-board-ink: #ffffff;
+  --color-board-line: #b5b5b5;
+  --color-board-tag: #ededed;
+  --workspace-action-primary: #262626;
+  --workspace-action-primary-hover: #404040;
+  --workspace-action-primary-text: #ffffff;
+  --workspace-action-secondary: #eeeeee;
+  --workspace-action-secondary-hover: #dddddd;
+  --workspace-action-secondary-text: #262626;
+  --workspace-action-secondary-border: #aaaaaa;
+  --workspace-action-secondary-border-hover: #525252;
+}
+:root[data-color-mode="none"] .workspace-shell,
+:root[data-color-mode="none"] .workspace-shell .glass-panel,
+:root[data-color-mode="none"] .workspace-shell .glass-toolbar { background: var(--color-board-panel); background-image: none; }

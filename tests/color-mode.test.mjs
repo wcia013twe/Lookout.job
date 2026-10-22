@@ -8,7 +8,7 @@ const trackerCss = readFileSync(new URL('../next-app/components/tracker.css', im
 
 test('theme preferences reject invalid or missing stored values', () => {
   for (const value of [null, undefined, '', 'sepia', {}, '<script>']) assert.equal(parseColorMode(value), 'system');
-  for (const value of ['light', 'dark']) assert.equal(parseColorMode(value), value);
+  for (const value of ['light', 'dark', 'none']) assert.equal(parseColorMode(value), value);
 });
 test('explicit themes override the system while system follows it', () => {
   assert.equal(resolveColorMode('light', true), 'light');
@@ -40,4 +40,10 @@ test('application tracker inherits the workspace palette in both themes', () => 
   assert.doesNotMatch(trackerCss, /--(?:color-board|workspace-action)-[\w-]+\s*:/);
   assert.doesNotMatch(trackerCss, /tracker-workspace/);
   assert.match(trackerCss, /\.tracker-detail\s*\{[^}]*background:var\(--color-board-panel\)/);
+});
+
+test('None keeps the neutral base through first paint and system changes', () => {
+  assert.equal(resolveColorMode('none', true), 'light');
+  assert.equal(resolveColorMode('none', false), 'light');
+  assert.deepEqual(firstPaint('none', true), {colorMode: 'none', theme: 'light'});
 });

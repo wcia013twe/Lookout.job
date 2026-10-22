@@ -1,0 +1,7 @@
+# Profile theme grid and neutral appearance
+
+- Added an always-visible Theme disclosure to profile navigation with a responsive 2×2 grid for None, System, Light and Dark. Desktop header uses the same picker and stays synchronized.
+- None replaces workspace palette tokens with neutral values and removes all remaining chroma, retaining typography, spacing, layout and controls. Selection persists before first paint and remains neutral across device appearance changes.
+- Demo uses the existing fictional role/profile fixtures; theme interactions stay temporary and exiting restores the saved preference. Added a demo walkthrough and explicit human action boundary in docs/theme-picker.md; account theme MCP preferences are unchanged and remote appearance parity is not claimed.
+- Validation: all 413 tests passed outside the sandbox (restricted run had three subprocess-related file failures); data validation passed for 76 roles; production static export passed. Desktop 1440×1000 and mobile 390×844 Chromium inspection confirmed the two-column grid, no horizontal overflow, grayscale styling and reload persistence. Browser demo check confirmed temporary Dark selection kept saved None untouched and exiting restored None. Mechanical design scan flagged only the existing Inter font, preserved per scope.
+- Limits: no deployment or production account/MCP verification; final SVG checkmark, short-screen menu scrolling and demo storage-event guard additionally checked by final production build.
