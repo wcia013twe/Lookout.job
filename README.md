@@ -353,7 +353,15 @@ Referrals previews five built-in templates (recruiter interview, warm referral, 
 
 ## Career Toolkit
 
-Career Toolkit is a native categorized skill library at `/career-toolkit/` with
+Career Toolkit opens on a private artifact workspace at `/career-toolkit/`.
+Connected agents can prepare and save documents, company research and interactive
+HTML while planning the week. Materials link directly from preparation tasks;
+learning goals share the interview planner’s daily budget even without upcoming
+interviews. Text remains the request/revision interface, and the workspace renders
+the results. Generation runs through the connected agent, not a website scheduler.
+See [artifact behavior, tool mapping and release limits](docs/career-artifacts.md).
+
+The **Tools & skills** tab retains the native categorized skill library with
 37 static usage manuals and copyable agent examples. Categories cover profile
 conversations, career search and regional context, documents, interviews,
 networking, growth, offers, and recurring-search setup. Each manual explains
@@ -388,8 +396,8 @@ tables, gateway operations or company service are required. See the
 
 ## Application profiles and writing styles
 
-My Profile switches application profiles with compact buttons beside the page
-heading, above Overview, About me, Application kit and Job preferences. A plus icon
+My Profile switches application profiles with a compact button-styled dropdown
+beside the page heading, above Overview, About me, Application kit and Job preferences. A plus icon
 opens the inline create form; the copy icon duplicates the selected profile. Existing named search profiles remain the same records and
 IDs; no account migration or duplicate profile store is introduced. New, duplicate,
 rename, active/paused, identity, material selection, writing and targeting edits use

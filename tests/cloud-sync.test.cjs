@@ -127,6 +127,28 @@ test('a delayed background response cannot reveal the previous account',async()=
  assert.equal(env.store.get('workflow.profile.name'),'');
 });
 
+test('demo suspension blocks account reads/writes and resumes retained account edits afterward',async()=>{
+ const env=await environment();
+ env.store.set('workflow.profile.name','Retained account edit');
+ JB.cloud.suspendForDemo(true);assert.equal(JB.cloud.ready,false);
+ const writes=env.writes;
+ await env.event('focus');await env.flush();
+ assert.equal(env.writes,writes);
+ await assert.rejects(JB.cloud.save(),/paused for demo/);
+ await assert.rejects(JB.cloud.setStage('job','Applied'),/paused for demo/);
+ await JB.cloud.suspendForDemo(false);await env.flush();
+ await JB.cloud.save();assert.equal(env.db.profiles[0].facts.name,'Retained account edit');
+ assert.equal(JB.cloud.ready,true);
+});
+
+test('demo suspension invalidates an in-flight account refresh before it can hydrate the store',async()=>{
+ const env=await environment(null,true),gate=env.blockRead();
+ const refresh=env.event('focus');for(let i=0;i<10;i++)await Promise.resolve();
+ JB.cloud.suspendForDemo(true);env.db.profiles=[{user_id:one,facts:{name:'Late account read'}}];
+ gate.resolve();await refresh;
+ assert.equal(env.store.get('workflow.profile.name'),'');assert.equal(JB.cloud.ready,false);
+});
+
 test('personal contact fields survive cloud save and hydration without becoming verified',async()=>{
  const env=await environment();
  const contact={firstName:'Demo',lastName:'Candidate',preferredName:'Demo',suffix:'Jr.',email:'demo@example.com',phone:'+1 202-555-0142',birthday:'2000-06-15',location:'Example City',address:'123 Example Street',address2:'Apt 4',address3:'Building A',postalCode:'00123'};

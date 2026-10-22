@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   eligibilityHeading,
   countryEligibilityFields,
@@ -13,17 +13,15 @@ import ProfileSection, {ProfileValues} from "./profile-section";
 export function ProfileSwitcher() {
   const a=useApplicationProfile();
   const [creating,setCreating]=useState(false),[name,setName]=useState("");
-  const choices=useRef<HTMLDivElement>(null);
-  useEffect(()=>{
-    const list=choices.current;if(!list)return;
-    const reveal=()=>{const selected=list.querySelector('[aria-pressed="true"]');if(!selected)return;const bounds=list.getBoundingClientRect(),button=selected.getBoundingClientRect();if(button.right>bounds.right-4)list.scrollLeft+=button.right-bounds.right+4;else if(button.left<bounds.left+4)list.scrollLeft-=bounds.left-button.left+4;};
-    reveal();const observer=new ResizeObserver(reveal);observer.observe(list);return()=>observer.disconnect();
-  },[a.profile.id,a.profile.name]);
   return <section className={styles.profilePicker} aria-label="Application profile selection">
     <div className={styles.pickerMain}>
-      <div ref={choices} className={styles.profileChoices} role="group" aria-label="Application profiles">
-        {a.profiles.map(profile=><button type="button" key={profile.id} className={styles.profileChoice} aria-pressed={a.profile.id===profile.id} disabled={a.busy} onClick={()=>a.select(profile.id)}>{profile.name}{!profile.active&&<span> · Paused</span>}</button>)}
-      </div>
+      <label className={styles.profileSelect}>
+        <span className="sr-only">Application profile</span>
+        <select className={styles.profileChoice} value={a.profile.id} disabled={a.busy} onChange={event=>a.select(event.target.value)}>
+          {a.profiles.map(profile=><option key={profile.id} value={profile.id}>{profile.name}{profile.active?'':' · Paused'}</option>)}
+        </select>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </label>
       <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label={creating?'Cancel new profile':'New profile'} title={creating?'Cancel':'New profile'} aria-expanded={creating} aria-controls="new-application-profile" onClick={()=>setCreating(!creating)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">{creating?<path d="m6 6 12 12M6 18 18 6"/>:<path d="M12 5v14M5 12h14"/>}</svg></button>
       <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label="Duplicate profile" title="Duplicate profile" onClick={()=>a.create(`${a.profile.name} copy`,true)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button>
     </div>

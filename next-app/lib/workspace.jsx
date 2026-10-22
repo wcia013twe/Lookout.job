@@ -111,7 +111,7 @@ export function WorkspaceProvider({ children }) {
           store.switchAccount(id);
           setUser(value?.user || null);
           setAuthReady(true);
-          if(accountChanged){setDemoState(null);demoStore.current=null;}
+          if(accountChanged){setDemoState(null);demoStore.current=null;demoServices.current=null;window.JB.cloud?.suspendForDemo(false);}
           setState(store.get());
         }
         function seed() {
@@ -177,8 +177,9 @@ export function WorkspaceProvider({ children }) {
   }
   const canDemo = !user || user.is_anonymous === true || canUseDemo(user);
   function toggleDemo() {
-    if(demoState) {setDemoState(null);demoStore.current=null;demoServices.current=null;return;}
+    if(demoState) {setDemoState(null);demoStore.current=null;demoServices.current=null;window.JB.cloud?.suspendForDemo(false);return;}
     if(!canDemo)return;
+    window.JB.cloud?.suspendForDemo(true);
     const fixtures=withApplicationProfileDemo(demoFixtures(dayStamp()));
     fixtures.state.network.referrals=[...demoOutreachContacts(),...fixtures.state.network.referrals.filter(r=>r.collection==='companies'||r.collection==='network-demo')];
     fixtures.state.workflow.tierLists=presets.presets.map(p=>window.JB.tierlistModel.seed(p));
