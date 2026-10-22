@@ -1,4 +1,5 @@
 import {validateSharedContexts} from './context-attachments.mjs';
+import {validateCircleActivity} from './circle-activity.mjs';
 export function circleAgentContext(post) {
  if(!post||['hidden','withdrawn'].includes(post.state)||(!post.owned&&(post.state!=='published'||post.revision!==post.publishedRevision)))return null;
  const content=post.content;
@@ -9,6 +10,7 @@ export function circleAgentContext(post) {
   jobId:content.jobId||null,
   offers:content.offers?.map(offer=>({...offer}))||null,
   contexts:content.contexts?.map(item=>({...item}))||[],
+  activity:content.activity?{...content.activity,highlights:[...content.activity.highlights]}:null,
   stage:content.stage||null,
   insight:content.insight||content.body,
   company:content.company||null,
@@ -21,6 +23,10 @@ export function circleAgentContext(post) {
 }
 
 export function validateCircleContextContent(content) {
+ if(content.activity!==undefined){
+  validateCircleActivity(content.activity);
+  if(content.type!=='discussion'||content.personalDisclosure!==true)throw Error('Activity requires a discussion with personal disclosure.');
+ }
  if(content.contexts!==undefined)validateSharedContexts(content.contexts);
  if(content.jobId!==undefined&&content.jobId!==null&&(typeof content.jobId!=='string'||!content.jobId.trim()||content.jobId.length>200))throw Error('Job ID must be text, up to 200 characters.');
  if(content.offers!==undefined){

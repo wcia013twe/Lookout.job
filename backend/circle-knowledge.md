@@ -1,5 +1,20 @@
 # Circle Knowledge
 
+Structured member activity now lives in optional `content.activity` on the same
+immutable contribution revision: `{highlights:string[],goal:string,help:string}`.
+See [Circles storage and agent design](../docs/circles-data-design.md) for the
+page-to-table map and proposed event-feed tools. Activity requires discussion
+type and `personalDisclosure:true`; up to three nonblank highlights and goal/help
+are each capped at 300 characters. At least one field must be nonempty. Unknown
+fields and private links reject. Website and scoped MCP use the same RPC checks;
+`agentContext.activity` copies only the permitted revision. Exact human review is
+required before agent publication. Older approved text is not rewritten; new
+website saves include structured fields and a compatibility text rendering.
+The review surface shows every structured activity value. Demo Alex exercises
+structured activity and Sam retains legacy text. Migration
+`20261022055842_circle_structured_activity.sql` is local until deployed through
+the production workflow. This slice does not implement the event feed or delivery.
+
 Knowledge read/search responses include `agentContext`: `jobUrl`, `stage`,
 `insight`, optional company/role/date/sources/uncertainty and reported provenance.
 It is a factual projection, not generated execution instructions or verification.
