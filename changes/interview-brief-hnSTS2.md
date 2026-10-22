@@ -35,3 +35,10 @@
 - Reuses the existing schedule store/save and agent preference read boundary; the person chooses time and saves, and global enabled state is preserved. No embedded chat, copied prompts, agent activation claim, backend, gateway, MCP or Supabase changes. The empty exploratory migration was removed.
 - Fictional demo coverage includes the debrief handoff, prefilled instructions and saving the task through existing schedule controls.
 - Validation: frontend typecheck, data validation (147 roles), production static build, whitespace check and fictional desktop/mobile browser checks passed, including the My Agent prefill → Add to schedule → Save schedule flow. No real agent run or delivery was exercised.
+
+## Follow-up: basic debrief controls and forum mapping
+
+- Removed the scheduler handoff. Added basic private Add/Update debrief controls beneath recorded rounds. Notes use existing versioned artifact services and a documented retrieval convention shared with personal agents through current MCP tools.
+- Share to Circle starts from the saved summary, allows a separate forum edit and Circle choice, and saves an interview_report private draft. The existing Circle thread supplies review/publication; no automatic sharing, approval or private email/context copying.
+- Added fictional debrief fixtures, shared-model/MCP-contract tests and demo create/edit/forum-draft coverage. No Supabase, migration, gateway-instruction or tool changes.
+- Validation: all 440 tests (including existing database scenarios and shared website/MCP payload checks), frontend typecheck, data validation (147 roles), static production build, whitespace check and mocked desktop/mobile UI checks passed. Browser coverage creates and updates a debrief, maps it to a private Circle draft, and verifies the existing publication control without publishing. Public logo images are allowed; demo account-data writes stay isolated. No live agent chat, hosted MCP round trip or production save/publish was exercised.

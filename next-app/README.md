@@ -287,15 +287,11 @@ checks content caps, no form/checklist, collapsed provenance, uncertainty, empty
 state, stable dialog geometry and expanded round/email sections, navigation, Escape and desktop-dark/mobile-light
 layout with fictional intercepted accounts and no demo cloud calls.
 
-Interview experience capture uses **Debrief this round** → My Agent → existing
-Daily schedule Add task. The selected application is resolved from the current
-workspace; its context and one-question-at-a-time debrief instructions are
-prefilled. The person chooses a local time, adds the task, then saves the schedule.
-The existing schedule switch and task controls remain authoritative; this does
-not wake an agent or create an embedded chat. The agent starts with “How did it
-go?”, gathers the user's account and drafts a private experience card for review.
-The old blank experience-card template/download is removed. These are ordinary
-existing schedule preferences; no backend/MCP/schema changes. Agent reads use
-`workspace_read` / preferences, and reviewed private material can use existing
-artifact tools. A schedule remains daily until disabled or removed.
+Interview debriefs appear beneath the round timeline. Basic Add/Update controls
+save private versioned notes through existing artifact tools; personal agents
+can save the same representation through MCP. Share to Circle prefills a
+reviewable Round insight forum draft, with no automatic publication. There is
+no scheduler handoff or embedded agent chat. See [the debrief mapping](../docs/interview-debriefs.md)
+for the note retrieval convention, tool boundaries and verification limits.
+
 My Agent no longer displays the reusable Templates library or Account-wide submission resume control. This is a page-only removal: stored documents and existing submission defaults are retained, and scoped backend/MCP contracts are unchanged. The shared question bank, writing workspace and outreach template previews remain. Demo profile verification asserts both removed controls are absent.

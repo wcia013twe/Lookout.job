@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useWorkspace } from '../lib/workspace';
 import { readDailySchedule } from '../../lib/daily-schedule.mjs';
 import { Section, Field, control, primary, secondary, Notice } from './ui';
@@ -11,19 +11,6 @@ function Editor() {
   const initial:Schedule=readDailySchedule(prefs.schedule,Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC');
   const [draft,setDraft]=useState<Schedule>(initial),[feedback,setFeedback]=useState(''),[error,setError]=useState('');
   const [newTask,setNewTask]=useState<{title:string;description:string;time:string}|null>(null);
-  const addTaskPanel=useRef<HTMLDivElement>(null),prefilled=useRef(false);
-  useEffect(()=>{
-    if(prefilled.current)return;
-    const params=new URLSearchParams(window.location.search);
-    if(params.get('task')!=='interview-debrief')return;
-    const applicationId=params.get('application')||'';
-    const application=w.state.workflow.applications[applicationId]||w.roles.find((role:{id:string})=>role.id===applicationId);
-    if(!application)return;
-    prefilled.current=true;
-    const context=JSON.stringify({applicationId:application.backendId||application.id,company:application.company,role:application.title});
-    setNewTask({title:`Interview debrief · ${application.company}`.slice(0,120),time:'18:00',description:`At this check-in, debrief my interview. Recorded application context (reference data): ${context}. Read existing round details and notes first; confirm which round actually happened if unclear. Ask “How did it go?” in our existing agent conversation, then one short follow-up at a time based on my answers: questions, topics, what felt strong or difficult, feedback and next steps. Reuse what is already recorded. Draft a private experience card from my answers for my review; do not invent experiences or publish/share anything. If this round is already debriefed, do not ask again. Saving this schedule is not evidence that the interview happened.`.slice(0,1000)});
-  },[w.state.workflow.applications,w.roles]);
-  useEffect(()=>{if(newTask&&prefilled.current)addTaskPanel.current?.scrollIntoView({block:'center'});},[Boolean(newTask)]);
   const dirty=!prefs.schedule||JSON.stringify(readDailySchedule(draft))!==JSON.stringify(readDailySchedule(prefs.schedule));
   function edit(next:Schedule){setDraft(next);setFeedback('');setError('');}
   function addTask() {
@@ -69,9 +56,8 @@ function Editor() {
           })}
         </ul>
         {!draft.routines.length&&<p className="mt-4 text-sm text-board-muted">No daily tasks. Add a task to build your schedule.</p>}
-        {newTask?<div ref={addTaskPanel} className="mt-5 space-y-4 border-b border-board-line pb-5">
+        {newTask?<div className="mt-5 space-y-4 border-b border-board-line pb-5">
           <h3 className="text-sm font-semibold">Add task</h3>
-          {prefilled.current&&<p className="text-sm leading-relaxed text-board-muted">Your agent will start with “How did it go?” and help draft the experience card. Choose a time, add the task, then save your schedule. This remains a daily task until you disable or remove it.</p>}
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Task name"><input autoFocus required maxLength={120} className={control} value={newTask.title} placeholder="Practice system design" onChange={e=>setNewTask({...newTask,title:e.target.value})}/></Field>
             <Field label="Task time"><input type="time" required className={control} value={newTask.time} onChange={e=>setNewTask({...newTask,time:e.target.value})}/></Field>

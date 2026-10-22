@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { control, primary, secondary, Field, Notice, Section } from "./ui";
@@ -12,6 +11,7 @@ import TimelineEditor from "./timeline-editor";
 import SubmissionRecord from "./submission-record";
 import type { SubmissionRecordProps } from "./submission-record";
 import TrackerProgress, { CompanyMark } from "./tracker-progress";
+import InterviewDebriefs from "./interview-debriefs";
 import ApplicationPreparation from "./application-preparation";
 import { timelineItems } from "../../lib/application-timeline.mjs";
 import "./tracker.css";
@@ -391,7 +391,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
               <h3 className="support-heading">Interview rounds &amp; history</h3>
               <ApplicationTimeline application={current} demo={w.demo}/>
               {workflow && <TimelineEditor application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}
-              <div className="mt-5"><Link className={`${secondary} gap-2`} href={`/profile/?section=agent&task=interview-debrief&application=${encodeURIComponent(id)}`}><ProfileIcon name="conversation" width={17} height={17}/>Debrief this round</Link><p className="mt-2 text-xs leading-relaxed text-board-muted">Schedule your agent to ask how it went and draft an experience card with you.</p></div>
+              <InterviewDebriefs application={current}/>
             </div>
           </details>
           <details open className="interview-support">

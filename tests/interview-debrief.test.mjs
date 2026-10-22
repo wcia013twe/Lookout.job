@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {debriefMarker,debriefPayload,debriefForumContent} from '../lib/interview-debrief.mjs';
+import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
+import {createMemoryStore,demoFixtures} from '../next-app/lib/demo.mjs';
+import {createDemoServices} from '../next-app/lib/muse-demo-fixtures.mjs';
+const app={id:'local-app',backendId:'11111111-1111-4111-8111-111111111111',company:'Example',title:'Backend Engineer'};
+const draft={id:'22222222-2222-4222-8222-222222222222',round:'Technical round 1',summary:'Discussed indexes. I want more practice explaining retries.'};
+test('website debrief payloads fit existing MCP notes and private forum-draft contracts',()=>{
+ const payload=debriefPayload(app,draft);
+ validateRequest({operation:'artifacts.save',payload});
+ assert.equal(payload.expectedVersion,0);assert.equal(payload.purpose,debriefMarker(app.backendId)+' Technical round 1');
+ const content=debriefForumContent(app,{content:payload});
+ validateRequest({operation:'knowledge.propose',payload:{circleId:app.backendId,expectedRevision:0,content,eventKey:'debrief-post'}});
+ assert.equal(content.type,'interview_report');assert.equal(content.provenance,'unknown');assert.equal(content.body,draft.summary);
+ assert(!JSON.stringify(content).includes(app.backendId));assert(!JSON.stringify(content).includes(draft.id));
+ assert.deepEqual(content.sources,[]);assert(!('jobUrl' in content));
+ assert.throws(()=>debriefPayload(app,{...draft,summary:' '}));assert.throws(()=>debriefForumContent(app,{content:payload},'x'.repeat(12001)));
+});
+test('agent-style artifact saves are readable and versioned by the website, and forum mapping stays private',async()=>{
+ const store=createMemoryStore(demoFixtures('2026-10-22').state),api=createDemoServices(store);
+ const row=await api.artifactAction('artifacts.save',debriefPayload(app,draft));
+ const list=await api.artifactAction('artifacts.list',{kind:'notes',query:debriefMarker(app.backendId)});
+ assert.equal(list.items[0].id,row.id);
+ const read=await api.artifactAction('artifacts.read',{id:row.id});assert.equal(read.content.body,draft.summary);
+ await api.artifactAction('artifacts.save',debriefPayload(app,{...draft,version:read.version,summary:'Updated from my account.'}));
+ await assert.rejects(api.artifactAction('artifacts.save',debriefPayload(app,{...draft,summary:'Stale edit.'})),/changed/);
+ const result=await api.knowledge.action('knowledge.propose',{circleId:'demo-circle',expectedRevision:0,eventKey:'private-debrief',content:debriefForumContent(app,read)});
+ const thread=await api.knowledge.action('knowledge.read',{circleId:'demo-circle',postId:result.postId});
+ assert.equal(thread.post.state,'draft');assert.notEqual(thread.post.publishedRevision,thread.post.revision);assert.equal(thread.post.content.type,'interview_report');
+});

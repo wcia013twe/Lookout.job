@@ -1,3 +1,4 @@
+import {debriefMarker} from '../../lib/interview-debrief.mjs';
 import {validateArtifact,artifactResponse,artifactMetadata} from '../../lib/artifacts.mjs';
 const clone=value=>structuredClone(value);
 export const demoGoalId='33333333-aaaa-4000-8000-333333333333';
@@ -19,6 +20,7 @@ export function createArtifactDemo(store){
  {id:'66666666-aaaa-4000-8000-666666666666',version:1,archived:false,updated_at:today,content:{title:'Infrastructure cover letter (demo)',purpose:'Fictional application letter; review before use.',kind:'cover_letter',format:'markdown',sources:[],links:[],body:'Dear Example Systems team,\n\nMy fictional Query Lab work gave me practice investigating database performance. I would like to learn more about your infrastructure team.\n\nDemo Candidate'}},
  {id:'77777777-aaaa-4000-8000-777777777777',version:1,archived:false,updated_at:today,content:{title:'Cover letter starting point (demo)',purpose:'Fictional reusable template; replace placeholders before use.',kind:'application_template',format:'markdown',sources:[],links:[],body:'Dear [team],\n\nI am interested in [role] because [specific reason]. My work on [verified project] involved [concrete contribution].\n\n[Your name]'}}
  );
+ if(interview)seed.push({id:'88888888-aaaa-4000-8000-888888888888',version:1,archived:false,updated_at:today,content:{title:'Cedar Systems (demo) · Recruiter call',purpose:debriefMarker('demo-interview')+' Recruiter call',kind:'notes',format:'markdown',company:'Cedar Systems (demo)',sources:[],links:[],body:'Fictional debrief: we discussed backend ownership and the interview process. I explained my Query Lab project clearly. I want more practice describing failure modes. The recruiter said a technical conversation would follow; no offer or outcome was promised.'}});
  const rows=()=>store.get('demo.artifacts')??seed;
  const history=()=>store.get('demo.artifactHistory')??Object.fromEntries(seed.map(r=>[r.id,[r]]));
  function saveRows(row){store.set('demo.artifacts',[row,...rows().filter(r=>r.id!==row.id)]);store.set('demo.artifactHistory',{...history(),[row.id]:[row,...(history()[row.id]||[])]});return artifactResponse(clone(row));}
