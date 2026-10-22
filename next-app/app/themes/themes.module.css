@@ -32,13 +32,6 @@
 .selection p { max-width:42ch; font-size:.875rem; color:var(--color-board-muted); margin-top:.4rem; }
 .selection button,.empty button { min-height:44px; padding:.65rem 1rem; border-radius:9px; background:var(--color-board-accent); color:var(--color-board-ink); font-size:.8rem; font-weight:600; }
 .gallery { background:var(--color-board-panel); padding:1rem; border-radius:16px; }
-.searchRow { display:flex; gap:.5rem; margin-top:1rem; }
-.searchRow label:first-child { flex:1; min-width:0; }
-.searchRow input,.searchRow select { width:100%; min-height:44px; border:1px solid var(--color-board-line); border-radius:9px; padding:.5rem .65rem; background:var(--color-board-bg); color:var(--color-board-text); font-size:.8rem; }
-.searchRow input::placeholder { color:var(--color-board-muted); }
-.filters { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.85rem; }
-.filters button { min-height:36px; padding:.35rem .7rem; border-radius:8px; font-size:.75rem; border:1px solid var(--color-board-line); }
-.filters button[aria-pressed=true] { background:var(--color-board-accent); color:var(--color-board-ink); border-color:transparent; }
 .resultCount { margin-block:1rem .75rem; }
 .themeGrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
 .themeCard { text-align:left; border:1px solid var(--color-board-line); border-radius:12px; overflow:hidden; min-width:0; }

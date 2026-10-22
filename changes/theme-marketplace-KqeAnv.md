@@ -7,3 +7,8 @@
 - Limits: marketplace is browse/preview only. No community submission, installed themes, persistence of favorites, deployment, or production MCP parity. Browser screenshots and interactive viewport verification were unavailable in this session; responsive behavior reviewed from source. Full-suite result recorded below.
 - Full suite: 413/413 passed outside sandbox subprocess restrictions. The initial restricted run reported three file-level failures; complete outputs preserved at `/tmp/theme-marketplace-tests.log` and `/tmp/theme-marketplace-tests-unrestricted.log`.
 - Delivery: `/tmp/lookout-features/theme-marketplace-KqeAnv/repo`, branch `codex/theme-marketplace-KqeAnv`; local main only, nothing pushed or published. Shared-main `.serena/` and `docs/research/` remain untouched.
+
+## Follow-up: simplified browsing
+
+- Removed search, category filters, sorting controls, and their unused state/styles. Browse/Saved, preview selection, and Dashboard/Circles remain. Updated demo walkthrough to exercise the empty Saved state.
+- Validation: data validation, frontend typecheck, and diff whitespace checks passed. No backend or MCP behavior changed; browser visual inspection was not performed.
