@@ -7,3 +7,8 @@
 - MCP mapping: existing job and company tools continue to return the company name; this is frontend display enrichment, with no new write action, tool or agent contract change.
 - Validation: `npm run feature:doctor`; root/frontend `npm ci`; `npm test` (414 tests pass, including database and demo scenarios); `node tests/company-logo.test.mjs` (4 tests pass); `npm run validate:data` (76 roles); production static builds without a token and with the placeholder `pk_test_only` (TypeScript included); Impeccable detector on changed components (no findings); `git diff --check`.
 - Limits: no real provider token was supplied or fetched, so successful live image delivery and allowed-domain configuration remain unverified. No browser visual review or remote deployment. Unmapped names are best matches and may require a domain override. Initial sandboxed test execution hit child-process EPERM in three unrelated suites; the complete suite passes with normal child-process access. Failure output is retained in `/tmp/logo-dev-tests.log`, `/tmp/logo-dev-failures.log`, and `/tmp/logo-dev-search-direct.log` for this session.
+
+## Connected Sites follow-up
+
+- Saved the user-supplied publishable token in the existing connected Site's environment configuration. The release build receives it through stdin/in-memory environment setup; no key is committed. Documented the distinction between saved Sites environment configuration and static build-time substitution.
+- The existing public Site identity and audience are retained. The source workflow opens the managed repository before reconciling committed local main, packaging and native version/deployment operations. Deployment IDs and terminal outcome are reported in the task handoff.
