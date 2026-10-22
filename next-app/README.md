@@ -109,3 +109,9 @@ Company marks load through Logo.dev. Copy `.env.example` to `.env.local` and set
 `NEXT_PUBLIC_LOGO_DEV_TOKEN` to the publishable CDN key; restart the dev server.
 GitHub Pages reads the same repository Actions variable during the CI build.
 No token means initials. See the root README for domain overrides and matching limits.
+
+## Company overview
+
+Network target overviews show the company summary, target team and next step in a compact column. Personal notes and dated research sources use native disclosures; empty fields are omitted. Editing and the existing `list_contacts` / `save_contact` MCP boundary are unchanged.
+
+Demo check: open Cedar Systems to expand Personal notes and Research sources, check the source link/date, and switch through People & outreach and Applications. Northstar Compute demonstrates a sparse overview with no empty notes/source sections. Show archived targets and open Archived Example to verify reminders say paused. Edit/save, reopen and Reset demo to verify the fictional records restore without account writes.
