@@ -1,3 +1,4 @@
+import { writeSkillDocuments } from './skill-documents.mjs';
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../../", import.meta.url));
@@ -20,3 +21,5 @@ await writeFile(
   `self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('job-signal-')).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));`,
 );
 await writeFile(dest + ".nojekyll", "");
+
+await writeSkillDocuments(dest, {mkdir,writeFile});

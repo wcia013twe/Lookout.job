@@ -62,3 +62,24 @@ test('manual access over MCP retains workspace authorization and remains read-on
   allow=false;assert.equal((await (await invoke()).json()).result.isError,true);
   allow=true;assert.ok((await (await invoke({id:'career-evaluate-job',ownerId:'foreign'})).json()).error);
 });
+
+test('simple skill invocations load the canonical scoped guide and preserve demo boundaries', async () => {
+ const {buildSkillInvocation}=await import('../lib/career-toolkit.mjs');
+ for(const skill of toolkitSkills) {
+  const prompt=buildSkillInvocation(skill.id);
+  assert.ok(prompt.includes(`read_guide({"id":"${skill.guideId}"})`));
+  assert.ok(readGuide(skill.guideId));
+  assert.match(buildSkillInvocation(skill.id,true),/Fictional practice only/);
+ }
+ assert.throws(()=>buildSkillInvocation('missing'));
+});
+test('all skill iframe documents render the same adapted guide and pinned reference sources', async () => {
+ const {skillDocument}=await import('../next-app/scripts/skill-documents.mjs');
+ for(const skill of toolkitSkills) {
+  const html=skillDocument(skill);
+  assert.ok(html.includes('Lookout skill instructions'));
+  for(const doc of readGuide(skill.guideId).sourceDocuments) assert.ok(html.includes(doc.path));
+  assert.match(html,/default-src &#x27;none&#x27;|default-src 'none'/);
+  assert.doesNotMatch(html,/<script[ >]/i);
+ }
+});

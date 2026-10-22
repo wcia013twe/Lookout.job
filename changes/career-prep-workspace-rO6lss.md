@@ -14,3 +14,17 @@
 - Reused real artifact metadata and fictional demo fixtures; no generated preview screenshots or new backend actions. Existing MCP mappings and artifact isolation remain unchanged.
 - Validation: frontend typecheck/build, 147-role data validation, 11 targeted artifact/toolkit tests and the full browser artifact flow passed. Dark/light desktop and mobile captures inspected; cover secondary-text contrast is at least 5.57:1. Detector reports no findings. Independent visual review returned ship with no material fixes after a malformed Chrome capture was replaced. Scoped design documentation records the implemented palette and reading layout.
 - Limits: this pass refines Career Toolkit and its reader; the shared app theme and agent-generated HTML designs are not rewritten. Hosted release requirements from the original pass still apply.
+
+## Simplified skill pages
+
+Replaced the repeated inputs/procedure/outputs/setup sections, example chooser,
+application picker and manual sidebar with the requested overview, Skill.md iframe
+and single copy-invocation button. Script-free static documents render the same
+adapted guide and pinned source documents returned by `read_guide`; no account data
+is embedded. The copy request uses that existing scoped MCP boundary and preserves
+fictional demo restrictions. Clipboard failure offers a selectable request.
+
+Validation: seven Career Toolkit tests pass, including all 37 document/guide
+mappings and demo invocation boundaries; production static build and data validation
+pass. Desktop/mobile browser checks cover document loading, copy text, fictional demo boundaries, clipboard fallback and overflow. Typecheck and diff checks pass; detector found no issues and independent finish review returned ship.
+Public instructions only; no backend release or live connected-agent execution tested.

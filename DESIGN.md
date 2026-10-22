@@ -301,3 +301,11 @@ creation forms. Preference groups use summaries and progressive disclosure.
 All colors inherit the shared theme tokens. A sticky desktop profile save bar
 becomes an ordinary footer on mobile; shared background keeps its distinct
 human verification and save action. No account assignment implies connectivity.
+
+### Career Toolkit skill pages
+
+Skill detail pages use Read mode: one overview, a framed Skill.md document and one
+copy-invocation button. Keep examples, application pickers, setup panels and related
+manual navigation out of this surface. The document uses a 76ch outer measure,
+17px text, generous paragraph rhythm and matching light/dark reading surfaces.
+Clipboard failure reveals a selectable read-only request; normal use shows no form.
