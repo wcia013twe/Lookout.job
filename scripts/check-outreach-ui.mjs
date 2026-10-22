@@ -82,7 +82,7 @@ try{
  await page.getByRole('button',{name:/^Ongoing conversations \(/}).click();
  await page.getByRole('button',{name:/Jamie \(fictional\)/}).click();
  await page.getByRole('heading',{name:'Conversation',exact:true}).waitFor();
- assert.equal(await page.getByRole('list',{name:'Logged messages'}).locator('li').count(),8);
+ assert.equal(await page.getByRole('list',{name:'Conversation timeline'}).locator('li.network-message-event').count(),8);
  await page.getByText('Prepare another message',{exact:true}).click();
  await page.getByRole('heading',{name:'Draft message',exact:true}).waitFor();
  await page.getByText('Prepare another message',{exact:true}).click();
@@ -94,12 +94,12 @@ try{
  await page.getByRole('button',{name:'Log reply',exact:true}).click();
  await page.getByLabel('Message or summary',{exact:true}).fill('Fictional additional reply for reset.');
  await page.getByRole('button',{name:'Save logged message',exact:true}).click();
- assert.equal(await page.getByRole('list',{name:'Logged messages'}).locator('li').count(),9);
+ assert.equal(await page.getByRole('list',{name:'Conversation timeline'}).locator('li.network-message-event').count(),9);
  await page.getByRole('button',{name:'Open profile navigation'}).click();
  await page.getByRole('button',{name:'Reset demo data',exact:true}).click();
  await page.getByRole('button',{name:/^Ongoing conversations \(/}).click();
  await page.getByRole('button',{name:/Jamie \(fictional\)/}).click();
- assert.equal(await page.getByRole('list',{name:'Logged messages'}).locator('li').count(),8);
+ assert.equal(await page.getByRole('list',{name:'Conversation timeline'}).locator('li.network-message-event').count(),8);
  assert.equal(mutations.length,baseline,'Demo wrote to cloud: '+JSON.stringify(mutations.slice(baseline)));
  assert.deepEqual(errors,[]);
  console.log(JSON.stringify({status:'passed',artifacts:dir,checks:['copy remains proposed','explicit sent logging','reply logging','follow-up persistence','signed-in reload','demo proposal and replied history','desktop/mobile','demo reset','no demo backend mutations','no page errors']}));

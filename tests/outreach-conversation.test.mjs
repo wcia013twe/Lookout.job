@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {conversationStage,conversationMessages,logInteraction,readConversation,waitingOn,validDate} from '../lib/outreach-conversation.mjs';
+import {conversationMeetings,conversationTimeline,recordMeeting,conversationStage,conversationMessages,logInteraction,readConversation,waitingOn,validDate} from '../lib/outreach-conversation.mjs';
 import {demoOutreachContacts} from '../next-app/lib/outreach-demo.mjs';
 import {processContactDraft} from '../lib/network-model.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
@@ -49,4 +49,18 @@ test('demo has two resettable company conversations with distinct next actions',
   assert.equal(waitingOn(robinhood),'Waiting for reply');
   assert.deepEqual(a.map(r=>r.company).sort(),['Robinhood','Stripe']);
   stripe.notes='Changed';assert.equal(conversationMessages(b.find(r=>r.id===stripe.id)).length,8);
+});
+
+test('meetings are separate optional notes, preserve message turn and status, and never imply completion',()=>{
+ const contact={id:'meeting-contact',company:'Example',contact:'A',status:'Referred',...logInteraction({},message)};contact.status='Referred';
+ const meeting={id:'coffee',kind:'coffee_chat',status:'scheduled',date:'2026-10-19',notes:'',location:''};
+ const logged={...contact,...recordMeeting(contact,meeting)};
+ assert.equal(logged.status,'Referred');assert.equal(waitingOn(logged),waitingOn(contact));assert.equal(conversationMessages(logged).length,1);
+ assert.equal(conversationMeetings(logged)[0].status,'scheduled','Past dates do not auto-complete meetings');
+ assert.deepEqual(conversationTimeline(logged).map(e=>e.kind),['coffee_chat','message']);
+ const updated={...logged,...recordMeeting(logged,{...meeting,status:'completed',notes:'Discussed mentorship. Send a thank-you.'})};
+ assert.equal(conversationMeetings(updated).length,1);assert.equal(conversationMeetings(updated)[0].notes,'Discussed mentorship. Send a thank-you.');
+ assert.equal(conversationStage(recordMeeting({},meeting)),'ongoing');
+ const {id,...record}=updated;assert.doesNotThrow(()=>validateRequest({operation:'contacts.save',payload:{id,record,expectedRevision:2}}));
+ for(const invalid of [{...meeting,date:'2026-02-30'},{...meeting,status:'assumed-complete'},{...meeting,kind:'message'},{...meeting,notes:'x'.repeat(4001)},{...meeting,id:message.id},{...meeting,send:true}])assert.throws(()=>recordMeeting(contact,invalid));
 });

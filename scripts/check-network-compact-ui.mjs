@@ -24,11 +24,31 @@ try{
  await page.getByRole('button',{name:'Ongoing conversations (2)',exact:true}).waitFor();
  await page.getByRole('button',{name:/Jamie \(fictional\)/}).click();
  const conversation=page.getByRole('region',{name:'Conversation history',exact:true});
- assert.equal(await conversation.getByRole('list',{name:'Logged messages'}).locator('li').count(),8);
+ assert.equal(await conversation.getByRole('list',{name:'Conversation timeline'}).locator('li.network-message-event').count(),8);
  await conversation.getByText(/two questions you most want answered/).waitFor();
+ assert.equal(await conversation.locator('.network-meeting-event').count(),1);
+ await conversation.getByText('Coffee chat',{exact:true}).waitFor();
+ await conversation.getByRole('button',{name:'Update',exact:true}).click();
+ await conversation.getByLabel('Meeting status',{exact:true}).selectOption('completed');
+ await conversation.getByLabel('Meeting notes (optional)',{exact:true}).fill('Fictional coffee chat: clarified onboarding support. Follow up with two questions.');
+ await conversation.getByRole('button',{name:'Save meeting',exact:true}).click();
+ await conversation.locator('.network-meeting-event').getByText('Completed',{exact:true}).waitFor();
+ await conversation.getByRole('button',{name:'Log meeting',exact:true}).click();
+ await conversation.getByLabel('Interaction type',{exact:true}).selectOption('meeting');
+ await conversation.getByLabel('Meeting date',{exact:true}).fill('2026-11-05');
+ await conversation.getByRole('button',{name:'Save meeting',exact:true}).click();
+ assert.equal(await conversation.locator('.network-meeting-event').count(),2);
+ assert.equal(await conversation.getByRole('list',{name:'Conversation timeline'}).locator('.network-message-event').count(),8);
+ await conversation.locator('.network-meeting-event').last().scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/meeting-events-desktop.png'});
+ await page.setViewportSize({width:390,height:844});
+ await conversation.locator('.network-meeting-event').last().scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/meeting-events-mobile.png'});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ await page.setViewportSize({width:1440,height:1000});
  await page.screenshot({path:dir+'/stripe-conversation-desktop.png'});
  await page.getByRole('button',{name:/Alex \(fictional\)/}).click();
- assert.equal(await conversation.getByRole('list',{name:'Logged messages'}).locator('li').count(),6);
+ assert.equal(await conversation.getByRole('list',{name:'Conversation timeline'}).locator('li.network-message-event').count(),6);
  await conversation.getByText('Waiting for reply',{exact:true}).waitFor();
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({colorScheme:'light'});
  await conversation.getByRole('heading',{name:'Conversation',exact:true}).scrollIntoViewIfNeeded();
@@ -45,7 +65,7 @@ try{
  await selectedProcess.getByRole('button',{name:'Log reply',exact:true}).click();
  await selectedProcess.getByLabel('Message or summary',{exact:true}).fill('Fictional extra reply for reset verification.');
  await selectedProcess.getByRole('button',{name:'Save logged message',exact:true}).click();
- assert.equal(await selectedProcess.getByRole('list',{name:'Logged messages'}).locator('li').count(),7);
+ assert.equal(await selectedProcess.getByRole('list',{name:'Conversation timeline'}).locator('li.network-message-event').count(),7);
  await page.getByRole('navigation',{name:'Network views'}).getByRole('button',{name:'Targets',exact:true}).click();
  await page.getByRole('heading',{name:'Target companies',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:/Open target/}).count(),2);
@@ -69,9 +89,10 @@ try{
  await page.getByRole('button',{name:'Reset demo data',exact:true}).click();
  await page.getByRole('navigation',{name:'Network views'}).getByRole('button',{name:'Outreach',exact:true}).click();
  await page.getByRole('button',{name:/Alex \(fictional\)/}).click();
- assert.equal(await page.getByRole('list',{name:'Logged messages'}).locator('li').count(),6);
+ assert.equal(await page.getByRole('list',{name:'Conversation timeline'}).locator('li.network-message-event').count(),6);
+ assert.equal(await page.locator('.network-meeting-event').count(),1,'Reset restores the original meeting fixture');
  assert.equal(await page.getByRole('button',{name:/^Ongoing conversations/}).innerText(),'Ongoing conversations (2)');
  assert.deepEqual(errors,[]);
- console.log(JSON.stringify({result:'passed',checks:['two company targets','two active processes','two developed ongoing conversations','LinkedIn and email referral continuity','distinct next actions','demo logging and reset','shared process and company history','inline company save and tab preservation','desktop dark/mobile light','no overflow'],artifacts:dir}));
+ console.log(JSON.stringify({result:'passed',checks:['coffee chat and meeting events','scheduled/completed updates','optional notes','message preservation','two company targets','two active processes','two developed ongoing conversations','LinkedIn and email referral continuity','distinct next actions','demo logging and reset','shared process and company history','inline company save and tab preservation','desktop dark/mobile light','no overflow'],artifacts:dir}));
 
 } finally {await browser.close();}

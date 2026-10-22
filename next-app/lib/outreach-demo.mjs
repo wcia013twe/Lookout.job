@@ -1,4 +1,4 @@
-import {localDate,logInteraction} from '../../lib/outreach-conversation.mjs';
+import {localDate,logInteraction,recordMeeting} from '../../lib/outreach-conversation.mjs';
 // Fictional examples only; never merge these into account contacts or requests.
 export const outreachDemoMessages = [
   {
@@ -60,6 +60,8 @@ export function demoOutreachContacts(date = localDate()) {
         [0,'sent','Email','Thanks, Alex. I will prepare the project tradeoffs and distinguish the benchmark from production experience. Is there any additional preparation material, and can the hiring team address mentorship and on-call expectations after the round?'],
       ]);
     }
+    const meetingDay=new Date(`${date}T12:00:00Z`);meetingDay.setUTCDate(meetingDay.getUTCDate()+(example.id==='referral'?2:-2));
+    Object.assign(contact,recordMeeting(contact,{id:`${contact.id}-meeting`,kind:example.id==='referral'?'coffee_chat':'meeting',status:example.id==='referral'?'scheduled':'completed',date:meetingDay.toISOString().slice(0,10),location:example.id==='referral'?'Video call · fictional demo':'Recruiter call · fictional demo',notes:example.id==='referral'?'':'Fictional meeting notes: discussed team scope and the interview sequence. Follow up on mentorship and on-call expectations; no outcome was promised.'}));
     return contact;
   });
 }

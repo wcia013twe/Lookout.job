@@ -65,3 +65,25 @@ draft independence, follow-ups, reset and mobile/desktop layout.
 No email reader, LinkedIn connector, message transport or scheduler is added.
 Production gateway instructions require the normal production workflow after
 merge; local tests do not prove a live hosted-MCP round trip.
+
+## Coffee chats and meetings
+
+The same `lookout-conversation-v1` private notes envelope now accepts an optional
+`meetings` array, separate from messages. Each record contains `id`, `kind`
+(`coffee_chat` or `meeting`), `status` (`scheduled`, `completed`, `cancelled`),
+`date` (YYYY-MM-DD), `notes` (optional text stored as an empty string when omitted
+in the UI, up to 4,000 characters), and `location` (optional text stored as an
+empty string, up to 500 characters). Store all fields; do not infer a time or
+completion from the date. Limit 30 meetings; existing total envelope size limits
+and unique IDs apply across messages/meetings. Existing notes and messages remain
+intact. Shared validation and `recordMeeting` live in `lib/outreach-conversation.mjs`.
+
+Website and agents reuse `list_contacts` / `save_contact` with current revisions
+and the same serialized private notes. A meeting save changes neither contact
+outcome nor application status, sends no invitation, and creates no calendar event.
+Updates reuse the meeting ID. No database or Supabase changes are needed.
+
+The UI merges meetings and messages chronologically, gives meetings a distinct
+icon/type/status treatment, shows a next scheduled meeting separately, and offers
+optional Add notes/Update controls. Message reply ownership remains independent
+of meetings. A past scheduled meeting stays scheduled until explicitly updated.

@@ -320,3 +320,10 @@ eight-message referral exchange spans LinkedIn/email and needs the user's next
 reply. Demo opens on ongoing conversations. Company names are illustrative;
 messages, referrals, people and outcomes are fictional. Other product demos retain
 their feature scenarios; real account data is unchanged.
+
+Network conversation timelines distinguish Coffee chat and Meeting records from
+messages, with explicit scheduled/completed/cancelled status and optional notes.
+Log meeting and Add notes/Update reuse the contact's existing versioned private
+notes/MCP save path. They send no invites and do not change application status.
+The focused Robinhood/Stripe demo includes a completed recruiter meeting and an
+upcoming coffee chat. See [the record format](../docs/outreach-conversations.md).
