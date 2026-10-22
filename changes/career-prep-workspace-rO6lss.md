@@ -28,3 +28,10 @@ Validation: seven Career Toolkit tests pass, including all 37 document/guide
 mappings and demo invocation boundaries; production static build and data validation
 pass. Desktop/mobile browser checks cover document loading, copy text, fictional demo boundaries, clipboard fallback and overflow. Typecheck and diff checks pass; detector found no issues and independent finish review returned ship.
 Public instructions only; no backend release or live connected-agent execution tested.
+
+## Category heading boxes
+
+Wrapped Toolkit category headings in Discover’s shared `glass-inset` box styling,
+including the selected category header. Removed the old overview top rule.
+Validation: frontend typecheck, static production build, data validation and desktop/mobile browser checks pass. Detector reports no findings.
+No new actions or backend contract changes.
