@@ -12,3 +12,8 @@
 
 - Removed search, category filters, sorting controls, and their unused state/styles. Browse/Saved, preview selection, and Dashboard/Circles remain. Updated demo walkthrough to exercise the empty Saved state.
 - Validation: data validation, frontend typecheck, and diff whitespace checks passed. No backend or MCP behavior changed; browser visual inspection was not performed.
+
+## Follow-up: profile navigation label
+
+- Renamed the profile dropdown link to Browse Marketplace, preserving its destination and behavior.
+- Validation: data validation and diff whitespace checks passed; copy-only change.
