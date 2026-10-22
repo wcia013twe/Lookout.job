@@ -24,7 +24,7 @@ The retired static frontend has been removed. React components own presentation 
 
 Profile panels stay mounted after first use so switching sections preserves unsaved fields; leaving the route still requires saving. Default resume selection belongs to Personalization and uses `workflow.searchPreferences.defaultResumeId`. Progress and leaderboard settings are reached through the header XP menu.
 
-In admin Demo mode, edit an About me field, switch to Personalization and return to verify the unsaved edit remains. Save and check fact verification. Inspect the fictional resume, unverified saved answer and preferences. Open My agent to inspect the six fictional search sources in a compact source list (including long names/URLs, all three source types, and expandable access details). Check a narrow screen, edit/add/remove a source, remove all sources to check the empty state, and inspect agent connection controls; switch sections and return to check draft preservation. Reset demo and confirm the original fixtures return without changing account records. Check Progress through the XP menu.
+In admin Demo mode, edit an About me field and use its section checkmark to save. Switch to Personalization and return to verify the saved field remains; changed facts remain unverified. Personalization drafts persist across section switches until Save application profile. Inspect the fictional resume, unverified saved answer and preferences. Open My agent to inspect the six fictional search sources in a compact source list (including long names/URLs, all three source types, and expandable access details). Check a narrow screen, edit/add/remove a source, remove all sources to check the empty state, and inspect agent connection controls; switch sections and return to check draft preservation. Reset demo and confirm the original fixtures return without changing account records. Check Progress through the XP menu.
 
 Search targets live inside My Profile → My agent and describe where Muse looks, separately from fit profiles. They use `preferences.search.targets` and `targetsVersion`; website/MCP `save_search_targets` share owner/version checks. Autosync preserves targets, and guest changes remain local. Saving a target does not create a scanner, schedule or social connection; social content requires runtime access or a user handoff.
 
@@ -135,3 +135,12 @@ applications or write real account records.
 `components/surface-panel.tsx` shares the Sharing & privacy material with Action Board panels, including the fictional admin demo. Use `as="form"` for a native form; otherwise it renders a section. Supply accessible labels and content at the caller. Existing primary/secondary controls inherit its theme tokens; the styling lives in `app/globals.css`. Demo verification covers the expanded application review, disabled approval gate, reset, weekly prep pause/resume, company follow-ups, and desktop/mobile/light presentation. This visual component adds no service or user action; existing MCP mappings remain unchanged.
 
 Personalization matches About me: materials, Employer questions, Outreach and the account-wide PDF default use readable profile sections with scoped pencil editing. Shared libraries remain expanded. Demo Full-time has selected materials and writing guidance; Internship demonstrates no selections and an unset writing length. Verify section edits, preview, unsaved tab switching, save/reload, profile switching, mobile/light mode and reset with `scripts/check-profile-ui.mjs`; all cloud traffic is intercepted. Existing website/MCP profile-save contracts are unchanged.
+
+My agent includes a simple daily schedule: four routine switches and local times,
+one time zone and a master pause. It saves through the existing preferences store;
+agent runtime setup remains separate. In admin Demo, midday starts off: edit a
+time, pause one/all routines, save, switch sections and return, then reset to
+restore the fictional schedule. No demo interaction creates automations or writes
+to account storage. The existing save_notification_preferences MCP boundary can
+edit preferences.search.schedule with its current preferences timestamp; no new
+backend tool or scheduling service is introduced by this UI change.

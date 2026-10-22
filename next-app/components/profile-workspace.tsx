@@ -10,6 +10,7 @@ import ProfileOverview from "./profile-overview";
 import Resumes from "./resumes";
 import SavedAnswers from "./saved-answers";
 import SearchTargets from "./search-targets";
+import DailySchedule from "./daily-schedule";
 import Preferences from "./preferences";
 import AgentConnections from "./agent-connections";
 import {
@@ -167,11 +168,12 @@ function ProfileContent() {
             Change companion
           </Link>
           <AgentConnections />
+          <DailySchedule />
           <SearchTargets />
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}
-      {active !== "agent" && (active !== "overview" || a.dirty) && (
+      {active !== "agent" && active !== "about" && (active !== "overview" || a.dirty) && (
         <div className={profileStyles.saveBar}>
           <div className="min-w-0 flex-1">
             <span className="text-sm font-semibold">
@@ -180,7 +182,7 @@ function ProfileContent() {
                 : "Application profile settings"}
             </span>
             <p role="status" className="mt-1 text-xs text-board-muted">
-              {a.feedback || (active!=="about"?"Identity, material selections, writing style, and job preferences save together.":"")}
+              {a.feedback || "Identity, material selections, writing style, and job preferences save together."}
             </p>
           </div>
           <button

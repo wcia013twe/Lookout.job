@@ -409,13 +409,12 @@ About me presents Personal Info, eligibility and shared career background.
 The Accounts & identity box is not shown; existing per-profile identity metadata
 is preserved. About me presents every section
 as an expanded, read-only box, including complete experience/education/project
-details and skills. A section’s pen enables only its own fields; the checkmark
-returns to reading mode without saving. Save application profile persists identity
-and eligibility settings; Save shared background persists career facts and retains
-its separate human-review boundary. Personal Info is the first About me box: first/last
+details and skills. A section’s pen enables only its own fields; its checkmark saves
+through the existing background or application-profile path before returning to
+reading mode. Failed saves keep the section open. Changed background facts remain
+unverified; saving never implies human review. About me has no bottom save footer. Personal Info is the first About me box: first/last
 name, preferred name/suffix, email/phone, birthday/location, address lines and postal
 code. Desktop follows a two-column reading order; mobile stacks the same fields.
-My agent is unchanged.
 
 Personalization keeps a shared resume/answer library, with independent per-profile
 resume and saved-answer selections. Employer questions and outreach each have Tone,

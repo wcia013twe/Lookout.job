@@ -2,11 +2,11 @@
 import {useEffect,useId,useState,type ReactNode} from "react";
 import styles from "./profile-section.module.css";
 
-export default function ProfileSection({title,children,resetKey,disabled=false}:{title:string;children:(editing:boolean)=>ReactNode;resetKey?:unknown;disabled?:boolean}){
+export default function ProfileSection({title,children,resetKey,disabled=false,onFinish}:{title:string;onFinish?:()=>boolean|void|Promise<boolean|void>;children:(editing:boolean)=>ReactNode;resetKey?:unknown;disabled?:boolean}){
  const [editing,setEditing]=useState(false),id=useId();
  useEffect(()=>setEditing(false),[resetKey]);
  return <section className={styles.section} aria-labelledby={id}>
-  <header className={styles.header}><h3 id={id}>{title}</h3><button type="button" className={styles.edit} disabled={disabled} aria-label={`${editing?'Finish editing':'Edit'} ${title}`} aria-pressed={editing} title={editing?'Finish editing · save changes below':`Edit ${title}`} onClick={()=>setEditing(!editing)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{editing?<path d="m5 12 4 4L19 6"/>:<><path d="m16 3 5 5L8 21H3v-5L16 3Z"/><path d="m13 6 5 5"/></>}</svg></button></header>
+  <header className={styles.header}><h3 id={id}>{title}</h3><button type="button" className={styles.edit} disabled={disabled} aria-label={`${editing?'Finish editing':'Edit'} ${title}`} aria-pressed={editing} title={editing?(onFinish?'Save changes':'Finish editing'):`Edit ${title}`} onClick={async()=>{if(editing&&await onFinish?.()===false)return;setEditing(!editing);}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{editing?<path d="m5 12 4 4L19 6"/>:<><path d="m16 3 5 5L8 21H3v-5L16 3Z"/><path d="m13 6 5 5"/></>}</svg></button></header>
   {children(editing)}
  </section>;
 }

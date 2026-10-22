@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { categories, skills } from '../_lib/catalog';
 import { ToolkitIcon, skillIcon } from './toolkit-icon';
 import styles from '../toolkit.module.css';
+import { InsetBox } from '../../../components/ui';
 export default function ToolkitLibrary() {
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
@@ -28,6 +29,7 @@ export default function ToolkitLibrary() {
     (!search || [skill.title,skill.summary,...skill.examples,...skill.inputs,...(skill.locales || [])].join(' ').toLocaleLowerCase().includes(search)));
   const visibleCategories = categories.filter(item => matching.some(skill => skill.category === item.id));
   const selected = categories.find(item => item.id === category);
+  const ResultBox = selected ? InsetBox : 'div';
   const overview = category === 'all' && !search;
   const SkillHeading = overview || !selected ? 'h4' : 'h3';
   return <>
@@ -39,13 +41,13 @@ export default function ToolkitLibrary() {
         <div className={styles.sidebarNote}><h2>New here?</h2><p>Start with your experience. Your agent can help you find the details worth keeping.</p><Link href="/career-toolkit/profile-interview/">Build your profile <span aria-hidden="true">→</span></Link></div>
       </aside>
       <div className={styles.results}>
-        <div className={`${styles.resultHeading} ${selected ? 'glass-inset rounded-xl p-3 md:p-4' : ''}`}><div><h2 ref={resultHeading} tabIndex={-1}>{selected?.title || (search ? 'Search results' : 'Browse by category')}</h2>{selected && <p className={styles.categoryDescription}>{selected.description}</p>}</div><p role="status" aria-live="polite">{overview ? `${categories.length} categories · ${skills.length} skills` : `${matching.length} ${matching.length === 1 ? 'skill' : 'skills'}${search ? ' found' : ''}`}</p></div>
+        <ResultBox className={styles.resultHeading}><div><h2 ref={resultHeading} tabIndex={-1}>{selected?.title || (search ? 'Search results' : 'Browse by category')}</h2>{selected && <p className={styles.categoryDescription}>{selected.description}</p>}</div><p role="status" aria-live="polite">{overview ? `${categories.length} categories · ${skills.length} skills` : `${matching.length} ${matching.length === 1 ? 'skill' : 'skills'}${search ? ' found' : ''}`}</p></ResultBox>
         {!matching.length && <div className={styles.empty}><h3>No skills match this search</h3><p>Try a task like “resume,” “interview,” or “schedule,” or explore all categories.</p><button type="button" onClick={() => { setQuery(''); selectCategory('all'); }}>Clear search &amp; filters</button></div>}
         <div className={overview ? styles.overviewGrid : undefined}>{visibleCategories.map(item => {
           const groupSkills = matching.filter(skill => skill.category === item.id);
           const shown = overview ? groupSkills.slice(0,2) : groupSkills;
           return <section key={item.id} className={`${styles.group} ${overview ? styles.overviewGroup : ''}`} aria-label={item.title}>
-            {(overview || !selected) && <div className={`${styles.groupHeading} glass-inset rounded-xl p-3 md:p-4`}><span className={styles.categorySymbol}><ToolkitIcon name={item.id} size={22}/></span><div><h3>{item.title}</h3><p>{item.description}</p></div></div>}
+            {(overview || !selected) && <InsetBox className={styles.groupHeading}><span className={styles.categorySymbol}><ToolkitIcon name={item.id} size={22}/></span><div><h3>{item.title}</h3><p>{item.description}</p></div></InsetBox>}
             <ul>{shown.map(skill => <li key={skill.id}><Link href={`/career-toolkit/${skill.id}/`} className={`${styles.skillRow} ${overview ? styles.compactRow : ''}`} prefetch={false}><span className={styles.skillSymbol}><ToolkitIcon name={skillIcon(skill.id,skill.category)} size={18}/></span><div className={styles.skillText}><SkillHeading>{skill.title}</SkillHeading>{!overview && <p>{skill.summary}</p>}</div><ToolkitIcon name="chevron" size={16}/></Link></li>)}</ul>
             {overview && <a className={styles.viewCategory} href={`#${item.id}`} aria-label={`View all ${item.title.toLowerCase()} skills`} onClick={event => {event.preventDefault();selectCategory(item.id,true);}}>View all {groupSkills.length} skills <span aria-hidden="true">→</span></a>}
           </section>;

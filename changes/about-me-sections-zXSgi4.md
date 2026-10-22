@@ -47,3 +47,31 @@
 - Removed the Accounts & identity box and its unused UI component from About me. Personal Info, eligibility and career background remain; existing stored per-profile identity metadata and backend/MCP tools are preserved. Overview’s missing-email prompt now checks the editable Personal Info email and says Add email address.
 - Updated the optional demo interaction check to assert the box is absent. No stored values, save/verification behavior, permissions, gateway instructions or tool contracts changed.
 - Validation: data validation, production build/TypeScript and diff whitespace checks; visual removal follows the existing expanded section layout. Full suite and optional browser script were not repeated for this removal. Nothing pushed or published.
+
+## Square entry fallback images
+
+- Added local square briefcase, graduation-cap and folder fallback images to work experience, education and project headings. Images remain visible while editing, use 48px desktop/40px mobile sizing, and are decorative beside the entry text. No company logo fetching or external image requests were added.
+- Included the SVG assets in static export. Existing fictional demo entries cover all three types; updated the optional browser interaction script to assert their presence. No backend, schema, persistence, service or MCP boundaries changed.
+- Validation: production build/static export and TypeScript, data validation (147 roles), SVG parsing/export-copy checks, diff whitespace and scoped layout detector passed. Desktop and 390px mobile demo checks confirmed all four entry images loaded, aligned with headings, remained during pen editing, and caused no horizontal overflow. The full unit/database suite and optional browser script were not rerun for this visual change. Nothing pushed or published.
+
+## Workbag fallback
+
+- Standardized all profile entry placeholders on a clearer square workbag icon, including education and projects. Removed unused category images and updated the demo assertions. No external fetching or behavior changes.
+- Validation: data validation, static-asset preparation and diff whitespace checks passed. This small SVG/presentation follow-up did not repeat the production build or browser checks. Nothing pushed or published.
+
+## Fix broken entry fallback images
+
+- Replaced file-based fallback images with the shared inline briefcase SVG inside the same square tile. This removes public-asset request and startup-copy dependencies, including on already-running development servers and deployments under a URL prefix. Removed the unused SVG asset/export copy and updated demo assertions for inline icons. No service or persistence changes.
+- Validation: data validation, production build/TypeScript and diff whitespace checks. The export was checked for inline briefcase code and absence of the former image URL; desktop browser inspection confirmed the square workbag renders beside the fictional experience heading. Full suite and optional browser interaction script were not repeated. Nothing pushed or published.
+
+## Remove About Me bottom controls
+
+- Removed the shared-background review checkbox/save button and application-profile reload/save footer from About Me. Section checkmarks now save background changes before returning to reading mode; pending skill text is included and native field validation keeps invalid edits open. Existing verification is preserved only for unchanged facts, and changed facts remain unverified without claiming human review.
+- Eligibility's checkmark uses the existing application-profile save path, with inline status and save failures retaining edit mode. The shared save helper now reports success/failure to the section without changing backend ownership, version validation, or the scoped profile.save/save_profile_facts and preferences.profile.save/save_search_profile mappings. Other tabs retain their existing save footer. No new backend actions or gateway instructions; hosted saves/MCP were not reverified.
+- Demo coverage: updated optional interaction assertions for absent footer/review controls and section-based saving. Browser verification edited fictional phone, eligibility notice period and a pending skill; saved values remained after tab switching. Desktop and 390px mobile inspection confirmed the clean page ending and no overflow. Real account data was not edited; demo changes remained in memory. The optional standalone browser script was not rerun.
+- Validation: npm test (425 passed, including database scenarios), data validation (147 roles), production build/static export and TypeScript, and diff whitespace checks passed. An initial build caught an obsolete About Me conditional in the excluded footer; it was removed before the successful build. Nothing pushed or published.
+
+## Remove duplicate authorization notes
+
+- Removed the Shared authorization notes section from About Me. Eligibility & availability remains the place to edit authorization details and notes. Existing stored shared authorization values remain intact; no persistence, schema, verification or service/MCP contracts changed.
+- Demo coverage: the same section removal applies to fictional profiles; added an absence assertion to the optional browser script. Data validation, production build/TypeScript and diff whitespace checks passed. Full tests and browser checks were not repeated for this section removal. Nothing pushed or published.

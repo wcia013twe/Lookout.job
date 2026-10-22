@@ -216,7 +216,7 @@ export function EligibilitySettings() {
     { key: "Expected graduation", type: "month" },
   ];
   return (
-    <ProfileSection title="Eligibility & availability" resetKey={a.profile.id} disabled={a.busy}>{editing=><>
+    <ProfileSection title="Eligibility & availability" resetKey={a.profile.id} disabled={a.busy} onFinish={a.saveProfile}>{editing=><>
       {editing?<>
       <div className="grid gap-5 sm:grid-cols-2">
         {fields.map((f) => {
@@ -283,6 +283,7 @@ export function EligibilitySettings() {
         </Field>
       </div>
       </>:<ProfileValues items={[...fields.map(f=>({label:f.key,value:a.field(heading,f.key).conflict?"Conflicting values — review in Advanced instructions":a.field(heading,f.key).value||(f.options?"Ask me":"")})),{label:"Eligibility notes",value:a.field(heading,"Notes").value,wide:true}]}/>}
+      {a.feedback&&<p role="status" className="mt-3 text-sm text-board-muted">{a.feedback}</p>}
     </>}</ProfileSection>
   );
 }
