@@ -13,8 +13,7 @@ try{
  await page.getByRole('heading',{name:'My discovery pack (demo)',exact:true}).waitFor();
  await page.getByRole('link',{name:'Set up packs & connection',exact:true}).click();
  await page.getByRole('heading',{name:'My Agent',exact:true}).waitFor();
- await page.getByRole('button',{name:'Preview cards',exact:true}).click();
- await page.getByText('Example Compute',{exact:true}).waitFor();
+ assert.equal(await page.getByRole('button',{name:'Preview cards',exact:true}).count(),0,'Pack setup has no preview panel');
  await page.getByLabel('Connection name (required)',{exact:true}).fill('New pack agent');
  await page.getByRole('button',{name:'Create connection',exact:true}).click();
  await page.getByText('Connection created. Copy the token into your agent’s secure settings; it is shown only once.',{exact:true}).waitFor();
@@ -54,7 +53,6 @@ try{
  assert.match(await packForm.getByLabel('Task instructions',{exact:true}).inputValue(),/active search profile/);
  await packForm.getByLabel('Task instructions',{exact:true}).fill('Find verified infrastructure roles and explain fit and one gap.');
  await packForm.getByLabel('Daily at',{exact:true}).fill('10:30');
- await page.getByRole('heading',{name:'My second pack',exact:true}).waitFor();
  assert.equal(await page.getByLabel('Pack name',{exact:true}).inputValue(),'My second pack','Tab switches retain unsaved pack edits');
  assert.equal(await page.locator('#agent-panel-packs').getByRole('heading',{name:'Writing style',exact:true}).count(),0,'Other settings are hidden from pack editing');
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
@@ -114,5 +112,5 @@ try{
  fail=true;await real.reload();await real.locator('#agent-panel-packs').getByRole('alert',{name:'API request failed'}).filter({hasText:'card_packs.settings.read'}).waitFor();
  assert.doesNotMatch(await real.locator('body').innerText(),/private details/);
  assert.equal(await real.getByRole('button',{name:'Add card pack',exact:true}).count(),0);
- assert.deepEqual(errors,[]);console.log('Verified same-page connection/source/task/pack setup, live preview, demo reset, demo isolation, desktop/mobile layout, empty real account and explicit API failure.');
+ assert.deepEqual(errors,[]);console.log('Verified same-page connection/source/task/pack setup, no preview panel, demo reset, demo isolation, desktop/mobile layout, empty real account and explicit API failure.');
 }finally{await browser.close();}

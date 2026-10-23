@@ -10,7 +10,6 @@ import {demoDrops,dropKey,type Drop} from '../lib/drop-pack';
 import {dayStamp} from '../lib/progress.mjs';
 import DailyDrops from './daily-drops';
 import { PackSetupSuggestion } from './discovery-setup-link';
-import PackSetupPreview from './pack-setup-preview';
 import ApiError from './api-error';
 import TierLists from './tierlists';
 import {Field,Notice,control,primary,secondary} from './ui';
@@ -104,7 +103,7 @@ export default function CardPackWidgets({onOpened,configure=false,onEditSearch,c
   {loading?<Notice>Loading your pack setup…</Notice>:setup&&<>
    {!configure&&packs.filter(p=>p.enabled).map(pack=>{const task=tasks.find((t:{id:string;title:string;enabled?:boolean;sourceIds?:string[]})=>t.id===pack.taskId);return <div key={`${owner}:${pack.id}:${w.demoEpoch}`}><p className="mb-2 text-sm text-board-muted">{task?`${task.title}${task.enabled?'':' · paused'}`:'Linked task removed. Configure this pack to select another task.'}</p><Feed pack={pack} api={api} demo={w.demo} onOpened={onOpened}/></div>;})}
    {!packs.some(p=>p.enabled)&&!configure&&<PackSetupSuggestion/>}
-   {configure&&<div className="grid items-start gap-6 lg:grid-cols-2"><div className="min-w-0 space-y-4">
+   {configure&&<div className="min-w-0"><div className="min-w-0 space-y-4">
     <ul className="divide-y divide-board-line">{packs.map(pack=><li className="flex items-center justify-between gap-3 py-3" key={pack.id}>
       <div className="min-w-0"><h3 className="break-words font-semibold">{pack.title}</h3><p className="mt-1 text-xs text-board-muted">{pack.enabled?'Enabled':'Disabled'} · {tasks.find((t:Task)=>t.id===pack.taskId)?.title||'Choose a search task'}</p></div>
       <div className="flex shrink-0 gap-2">
@@ -143,7 +142,7 @@ export default function CardPackWidgets({onOpened,configure=false,onEditSearch,c
         <TierLists/>
       </div>
     </details>
-    </div><PackSetupPreview title={draft?.title||packs[0]?.title||"My discovery pack"}/>
+    </div>
    </div>}
   </>}
  </section>;
