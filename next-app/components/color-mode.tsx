@@ -21,9 +21,12 @@ export default function ColorModeControl({ compact = false }: { compact?: boolea
     const storageChanged = (event: StorageEvent) => {
       if (event.key === COLOR_MODE_KEY || event.key === null) apply(parseColorMode(event.newValue));
     };
+    const modeChanged = () => apply(parseColorMode(root.dataset.colorMode));
+    window.addEventListener("lookout:color-mode", modeChanged);
     media.addEventListener("change", systemChanged);
     window.addEventListener("storage", storageChanged);
     return () => {
+      window.removeEventListener("lookout:color-mode", modeChanged);
       media.removeEventListener("change", systemChanged);
       window.removeEventListener("storage", storageChanged);
     };
@@ -33,6 +36,7 @@ export default function ColorModeControl({ compact = false }: { compact?: boolea
     setMode(next);
     document.documentElement.dataset.colorMode = next;
     document.documentElement.dataset.theme = resolveColorMode(next, window.matchMedia("(prefers-color-scheme: dark)").matches);
+    window.dispatchEvent(new Event("lookout:color-mode"));
     try {
       if (next === "system") localStorage.removeItem(COLOR_MODE_KEY);
       else localStorage.setItem(COLOR_MODE_KEY, next);

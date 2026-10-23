@@ -7,6 +7,7 @@ import { Heading, secondary, control } from "./ui";
 import ProfileEditor from "./profile-editor";
 import ProfileOverview from "./profile-overview";
 import ProfileDocuments from "./profile-documents";
+import AppearanceSettings from "./appearance-settings";
 
 import SearchTargets from "./search-targets";
 import DailySchedule from "./daily-schedule";
@@ -22,12 +23,13 @@ import {
   EligibilitySettings,
   WritingStyles,
 } from "./profile-settings";
-type ProfileSectionId = "overview" | "about" | "preferences" | "agent";
+type ProfileSectionId = "overview" | "about" | "preferences" | "agent" | "appearance";
 const sections: [ProfileSectionId, string][] = [
   ["overview", "Overview"],
   ["about", "About me"],
   ["preferences", "Job preferences"],
   ["agent", "My Agent"],
+  ["appearance", "Appearance"],
 ];
 function ProfileContent() {
   const a = useApplicationProfile();
@@ -122,6 +124,7 @@ function ProfileContent() {
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}
+      {visited.includes("appearance") && <section className={profileStyles.panel} hidden={active !== "appearance"} aria-label="Appearance"><AppearanceSettings /></section>}
       {a.saveError && <p role="alert" className="text-sm text-board-muted">
         {a.feedback} <button type="button" className={secondary} disabled={a.busy} onClick={a.retrySave}>Retry saving</button>
       </p>}
