@@ -51,10 +51,16 @@ for (const [file, behavior] of [
   ['platform-coverage', 'batch, resume, selection and browser actions enforce their contracts'],
 ]) {
   test(behavior, async () => {
+    // The destructive reset scenario also changes session authorization inside
+    // exception blocks. Give it its own engine so PGlite role/GUC state cannot
+    // leak into later scenarios on the Linux CI runtime. Run every SQL assertion.
+    const isolated = file === 'workspace-reset';
+    const scenarioDb = isolated ? await createTestDatabase() : db;
     try {
-      await db.exec(await readFile(new URL(`./${file}-check.sql`, import.meta.url), 'utf8'));
+      await scenarioDb.exec(await readFile(new URL(`./${file}-check.sql`, import.meta.url), 'utf8'));
     } finally {
-      await db.exec('rollback; reset role');
+      try { await scenarioDb.exec('rollback; reset role'); }
+      finally { if (isolated) await scenarioDb.close(); }
     }
   });
 }

@@ -9,3 +9,10 @@
 - Limits: real Google login, real private-account round trips and hosted deployment are not established by these local checks. No external submission or account write was performed. Existing moderate root dependency advisory is outside this fix.
 
 Final integration also retained concurrently landed onboarding sign-in and application-question fixes. The combined 537-test suite and production export passed after those merges.
+
+Release repair: GitHub Actions failed before frontend build on the existing
+PGlite `is_superuser` Boolean error immediately after the destructive reset SQL
+scenario. Run that scenario against a separate fully migrated engine so its
+session/role state cannot affect later scenarios. All original SQL assertions
+and production migrations remain unchanged; local Node 22 database checks also
+pass. This is test isolation, with no production authorization change.
