@@ -412,3 +412,7 @@ never construct the reserved `card-pack:` event prefix. Read results through exi
 `read_batch`; the optional UI renders the same private records. Paused/deleted tasks
 cannot publish. See [the data model](../docs/schema.md#my-agent-tasks-and-card-packs).
 The expanded discovery descriptions require the normal production gateway release.
+
+## Workspace reset handoff
+
+`open_workspace_reset` (`workspace:read`) opens the human-only reset screen; it does not delete data or accept agent confirmation. See [scope, retries and release limits](../docs/workspace-reset.md). Hosted deployment and parity verification are pending.

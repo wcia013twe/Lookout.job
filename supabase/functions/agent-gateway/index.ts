@@ -1,3 +1,4 @@
+import {resetHandoff} from './workspace-reset.mjs';
 import {readUserBrief} from './user-brief.mjs';
 import {withGatewayCors} from './cors.mjs';
 import {validationMessage,databaseFailure} from './request-errors.mjs';
@@ -63,6 +64,11 @@ Deno.serve(withGatewayCors(async request => {
       return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
+    if(operation==='workspace.reset_handoff') {
+      const {data,error}=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'context.versions',payload:{}});
+      if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
+      return respond({data:{...resetHandoff,personalVersion:data.personalVersion}});
+    }
     if (operation === 'guides.read' || operation === 'guides.discover') {
       const awaitHash = await hashToken(bearer);
       const authorize = (op: string, args: unknown) => admin.rpc('agent_dispatch', {credential_hash: awaitHash, operation: op, payload: args});
