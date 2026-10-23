@@ -14,6 +14,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
  const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],job_batches:[]};
  const client={async rpc(name,args){
+  if(name==='workspace_reset_state')return {data:db.resetState||{}};
   if(name!=='save_preferences_preserving_quiet')throw Error('Unexpected RPC');
   const previous=db.preferences[0]||{};
   const search={...args.search_next};
@@ -49,6 +50,9 @@ afterEach(() => {
 });
 test('sync serializes concurrent callers and drains edits made during a request',async()=>{
  const env=await environment();const hold=env.block();env.store.set('workflow.profile.name','First');const first=JB.cloud.save();env.store.set('workflow.profile.name','Latest');assert.equal(JB.cloud.save(),first);hold.resolve();await first;assert.equal(env.db.profiles[0].facts.name,'Latest');assert.equal(env.store.get('workflow.cloudDirty'),false);assert.equal(env.writes,2);
+});
+test('a completed remote reset discards stale dirty cache before autosync',async()=>{
+ const env=await environment();env.store.set('workflow.profile.name','Old private data');env.db.resetState={state:'completed',id:'remote-reset'};await JB.cloud.save();assert.equal(env.writes,0);assert.equal(env.store.get('workflow.profile.name'),'');assert.equal(env.store.get('resetEpoch'),'remote-reset');
 });
 test('failed sync preserves edits and retries in the background',async()=>{
  const env=await environment();env.fail();env.store.set('workflow.profile.name','Retained');await assert.rejects(JB.cloud.save(),/Offline/);assert.equal(env.store.get('workflow.cloudDirty'),true);await env.flush();assert.equal(env.db.profiles[0].facts.name,'Retained');assert.equal(env.store.get('workflow.cloudDirty'),false);

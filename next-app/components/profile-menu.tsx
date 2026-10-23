@@ -52,6 +52,7 @@ export default function ProfileMenu() {
         <Link className={item} href="/profile/" onClick={() => setOpen(false)}>My Profile</Link>
         <Link className={item} href="/themes/" onClick={() => setOpen(false)}>Browse Marketplace</Link>
         <a className={item} href="/profile/?section=appearance" onClick={() => setOpen(false)}>Appearance</a>
+        {(w.accountUser||w.demo)&&<Link className={item} href="/workspace-reset/" onClick={()=>setOpen(false)}>Reset workspace</Link>}
         <Link className={item} href="/progress/#sharing-privacy" onClick={() => setOpen(false)}>Sharing &amp; privacy</Link>
         {w.canDemo && <div className="mt-2 border-t border-board-line pt-2">
           <button type="button" className={item} aria-pressed={w.demo}
