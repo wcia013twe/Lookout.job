@@ -286,3 +286,7 @@ Circles opens a directory of your private circles, with Open Circle and Manage a
 ### Experience authoring origin
 
 Experience/resource rows and contribution details show AI-drafted or Human-posted using the existing agentAuthored field. Missing metadata shows Origin unknown. This is recorded authoring origin, not AI detection, evidence provenance, or a verified-experience claim: a human-interface submission may still contain AI-assisted writing. The accessible description and tooltip explain that limit. The isolated demo includes an approved AI-drafted round insight alongside human-posted experiences; sharing and approval behavior are unchanged. No service, MCP, schema or Supabase changes.
+
+### Clubhouse progress and wins
+
+The Clubhouse now opens with Progress & wins before the companion room. It shows the three latest loaded published milestones or structured activity updates, with View all for the remaining loaded updates. Members can read highlights, stated goals, requests for help and milestone previews, then open the existing thread to celebrate or reply without selecting a companion. Goal bars appear only for explicit completed/target statements using the existing parser. Origin labels and fictional-demo disclosure remain visible. Empty Circles invite an update without inferring tracker activity; drafts, replies and withdrawn contributions are excluded. Existing fictional goals, help requests and milestone wins cover the section without new fixtures or backend/MCP changes.

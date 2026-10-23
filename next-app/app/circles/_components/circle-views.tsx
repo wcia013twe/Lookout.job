@@ -7,6 +7,7 @@ import {types} from '../_lib/types';
 import identity from './circle-views.module.css';
 import styles from './conversation.module.css';
 import CircleRoom from './circle-room';
+import ClubhouseProgress from './clubhouse-progress';
 import CircleChat from './circle-chat';
 import Editor from './editor';
 import JobAttachment from './job-attachment';
@@ -43,6 +44,7 @@ export default function CircleDashboard({initialChannel='clubhouse',detail,posts
    <section className={styles.conversations} aria-labelledby="circle-conversation-title">
     <header className={styles.chatHeader}><div><h2 id="circle-conversation-title">{channel==='clubhouse'?'Clubhouse':channel==='settings'?'Circle settings':searching?'Search results':channels.find(c=>c.id===channel)?.label}</h2><p>{channel==='clubhouse'?'Your people, making progress together.':channel==='settings'?'Manage your people and invites.':selected?`Shared by ${clean(selected.alias)}`:channel==='intel'?'Interview experiences, offers, and the inside story.':'Good finds. Useful reads. Shared by your people.'}</p></div>{channel!=='clubhouse'&&channel!=='settings'&&<details className={styles.search}><summary aria-label="Search contributions"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></summary><div>{search}</div></details>}</header>
     {channel==='settings'?settings:channel==='clubhouse'?<>
+     <ClubhouseProgress key={detail.circle.id} posts={published} demo={demo} openPost={openPost}/>
      <CircleRoom embedded key={detail.circle.id} detail={detail} posts={published} demo={demo} activityControl={<div className={styles.activityControl}><button type="button" className={secondary} aria-expanded={sharing} aria-controls="clubhouse-activity-composer" aria-describedby="clubhouse-activity-hint" onClick={()=>setSharing(!sharing)}>{sharing?'Close update':'Write an update'}</button><p id="clubhouse-activity-hint">Your tracker stays private. Review each update before sharing.</p></div>} person={person} selectPerson={selectPerson} openPost={openPost}/>
      {sharing&&<div id="clubhouse-activity-composer" ref={composer} className={styles.composerWrap}><Editor demo={demo} inline activityUpdate busy={busy} save={save} cancel={()=>setSharing(false)}/></div>}
     </>:<>
