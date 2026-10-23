@@ -9,7 +9,7 @@ import { CONNECTION_ACCESS, connectionScopes, invokeConnection } from "../../lib
 import {AGENT_MCP_URL,AGENT_GATEWAY_URL,connectionClipboardText} from "../lib/agent-connection-handoff.mjs";
 export type AgentConnection = { id: string; name: string; scopes: string[]; expires_at: string; revoked_at?: string };
 const gateway=AGENT_GATEWAY_URL,mcp=AGENT_MCP_URL;
-const optionalScopes = [["knowledge:read","Read permitted Circle knowledge"],["knowledge:write","Propose contributions and record citation use (also enable knowledge read)"],["preferences:write","Edit search profiles and preferences"],["answers:write","Edit saved answers"],["resumes:write","Upload and add résumés"],["network:write","Edit contacts and outreach drafts"],["tracking:write","Record user-reported progress"]];
+const optionalScopes = [["knowledge:read","Read permitted Circle knowledge"],["knowledge:write","Propose contributions and record citation use (also enable knowledge read)"],["preferences:write","Edit search profiles and preferences"],["answers:write","Edit saved answers"],["resumes:write","Upload and add résumés"],["network:write","Edit contacts and outreach drafts"],["tracking:write","Import application history and record user-reported progress"]];
 const scopeLabels: Record<string, string> = {
   ...Object.fromEntries(optionalScopes),
   "workspace:read": "Read your profile, preferences and job-search records",
@@ -177,7 +177,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
   if (onboarding) return (
     <div className="agent-connect">
       <AgentPluginSteps/>
-      <p className="agent-connect-permissions">Prepare jobs and applications · you approve applications.</p>
+      <p className="agent-connect-permissions">Prepare jobs, import application history and record progress · you approve applications.</p>
       {token ? <div aria-label="Your new agent connection">
         <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
         <div className="actions"><OnboardingButton onClick={()=>void copy(true)}>Copy instructions for chat</OnboardingButton><OnboardingButton secondary onClick={()=>void copy(false)}>Copy token for secure entry</OnboardingButton></div>

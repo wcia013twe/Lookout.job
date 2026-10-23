@@ -645,6 +645,11 @@ imports appear under Closed. Imported records currently have an expandable histo
 view, not the preparation/submission workflow of a verified canonical application.
 
 The website RPC `simplify_import(action,payload)` and scoped MCP tools
+The default **Prepare jobs and applications** connection includes `tracking:write`
+for importing application history and recording user-reported progress. Read-only
+and career-context connections do not include it. Existing tokens retain their
+granted scopes unless explicitly updated.
+
 `preview_simplify_import`, `import_simplify_jobs` (`tracking:write`) and
 `list_imported_jobs` (`workspace:read`) share the same backend implementation.
 Previews return a version; saves require that version and an exact-retry event key.
