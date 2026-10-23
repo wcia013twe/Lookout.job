@@ -64,7 +64,7 @@ export default function Discover() {
   return (
     <>
       <Heading title="Discover">
-        {publicView ? "Explore the public catalog." : w.batchLabel || "Your latest roles, ready to explore."}
+        {publicView ? "Explore the public catalog." : w.batchLabel}
       </Heading>
       {newArrival&&publicView&&<button type="button" className="mb-4 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={()=>setPublicView(false)}>Back to my agent’s finds</button>}
       <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3">
