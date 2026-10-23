@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion, useReducedMotion, useMotionValue, useSpring, type MotionStyle } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { asset, useWorkspace } from "../lib/workspace";
 import { claimPack, dayStamp } from "../lib/progress.mjs";
 import { advanceStage, canClaimPack, dropKey, groupPack, packComplete, tierOf, tierOrder, type Drop, type Stage, type Tier } from "../lib/drop-pack";
@@ -216,9 +216,6 @@ function RevealCard({ disabled = false, drop, stage, reduced, demo, template, on
   const restoreFocus = useRef(false);
   const tier = stage === "back" || stage === "mystery" ? "epic" : stage;
   const complete = stage === tierOf(drop);
-  const tiltX = useMotionValue(0), tiltY = useMotionValue(0);
-  const springX = useSpring(tiltX, { stiffness: 260, damping: 24 });
-  const springY = useSpring(tiltY, { stiffness: 260, damping: 24 });
   useEffect(() => {
     if (!restoreFocus.current || !element.current) return;
     restoreFocus.current = false;
@@ -230,7 +227,7 @@ function RevealCard({ disabled = false, drop, stage, reduced, demo, template, on
     onAdvance(drop, element.current);
   };
   const CardSurface = complete ? motion.article : motion.button;
-  return <CardSurface type={complete ? undefined : "button"} ref={node => { element.current = node; }} role={complete ? undefined : "button"} tabIndex={complete || disabled ? -1 : 0} aria-disabled={disabled || undefined} aria-label={complete ? undefined : stage === "mystery" || stage === "back" ? "Reveal opportunity card" : `Upgrade ${RARITY_LABEL[tier]} card`} onClick={() => { if (swiped.current) { swiped.current = false; return; } doAdvance(); }} onKeyDown={event => { if (!complete && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); doAdvance(); } }} onPointerDown={event => { if (complete || disabled) return; swipe.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerCancel={() => { swipe.current = null; swiped.current = false; }} onPointerUp={event => { if (swipe.current !== null && Math.abs(event.clientX - swipe.current) > 60) { swiped.current = true; doAdvance(); } swipe.current = null; }} className={`dropcard t-${tier} ${stage === "back" || stage === "mystery" ? "unrevealed" : ""}`} data-revealed={complete} data-tier={tier} style={{ "--tier": TIER_HEX[tier], "--tier-ink": tier === "mythic" ? "#fff" : "#08101e", rotateX: reduced ? 0 : springX, rotateY: reduced ? 0 : springY } as MotionStyle} onPointerMove={event => { if (reduced || event.pointerType !== "mouse") return; const r = event.currentTarget.getBoundingClientRect(); tiltX.set(((event.clientY - r.top) / r.height - 0.5) * -8); tiltY.set(((event.clientX - r.left) / r.width - 0.5) * 10); }} onPointerLeave={() => { tiltX.set(0); tiltY.set(0); }}>
+  return <CardSurface type={complete ? undefined : "button"} ref={node => { element.current = node; }} role={complete ? undefined : "button"} tabIndex={complete || disabled ? -1 : 0} aria-disabled={disabled || undefined} aria-label={complete ? undefined : stage === "mystery" || stage === "back" ? "Reveal opportunity card" : `Upgrade ${RARITY_LABEL[tier]} card`} onClick={() => { if (swiped.current) { swiped.current = false; return; } doAdvance(); }} onKeyDown={event => { if (!complete && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); doAdvance(); } }} onPointerDown={event => { if (complete || disabled) return; swipe.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerCancel={() => { swipe.current = null; swiped.current = false; }} onPointerUp={event => { if (swipe.current !== null && Math.abs(event.clientX - swipe.current) > 60) { swiped.current = true; doAdvance(); } swipe.current = null; }} className={`dropcard t-${tier} ${stage === "back" || stage === "mystery" ? "unrevealed" : ""}`} data-revealed={complete} data-tier={tier} style={{ "--tier": TIER_HEX[tier], "--tier-ink": tier === "mythic" ? "#fff" : "#08101e" } as CSSProperties}>
     <motion.div key={stage} className="dropcard-stage" initial={reduced ? false : { opacity: 0.45, scale: complete ? 0.7 : 0.9, filter: `brightness(${complete ? 3.2 : 1.9}) saturate(${complete ? 2.2 : 1.8}) blur(${complete ? 14 : 5}px)` }} animate={{ opacity: 1, scale: 1, filter: "brightness(1) saturate(1) blur(0px)" }} transition={{ duration: reduced ? 0 : complete ? template.motion.finalRevealDuration : template.motion.stageDuration, ease: [0.16, 1, 0.3, 1] }}>
       {stage === "back" || stage === "mystery" ? <div className="card-mystery"><span>{stage === "mystery" ? "A new opportunity awaits" : "Your next drop"}</span><strong aria-hidden="true">?</strong><span className="dropcard-hint">{disabled ? "Dealing cards…" : "Tap or swipe to reveal"}</span></div> : <>
         {complete ? <div className="card-revealed">
