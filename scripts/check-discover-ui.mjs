@@ -68,6 +68,7 @@ try{
  await panel.getByText('Not assessed',{exact:true}).waitFor();
  assert.equal(await panel.getByRole('link',{name:'Open employer posting'}).count(),0,'Demo must not open external postings');
  await panel.getByRole('button',{name:'Back to Discover'}).click();
+ await page.getByRole('combobox',{name:'Application profile',exact:true}).selectOption('internships');
  await page.locator('article').filter({hasText:'Example Compute (demo)'}).getByRole('button',{name:'Preview job',exact:true}).click();
  await panel.getByText('54% job match',{exact:true}).waitFor();
  await panel.getByText('Unknown',{exact:true}).waitFor();
