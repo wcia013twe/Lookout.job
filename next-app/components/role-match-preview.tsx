@@ -5,6 +5,10 @@ export type MatchPreview = { percent: number; factors: { label: string; value: n
 const factors = ["Skills & experience", "Compensation", "Wellbeing & culture", "Location & work setting"];
 export default function RoleMatchPreview({ sample, expanded = false, animate = false, active = true }: { sample?: MatchPreview; expanded?: boolean; animate?: boolean; active?: boolean }) {
   const reduced=useReducedMotion();
+  if (!sample && !expanded) return <section aria-label="Job match preview" className="border-t border-board-line/60 pt-4">
+    <h4 className="text-sm font-semibold">Match not assessed</h4>
+    <p className="mt-1 text-xs leading-relaxed text-board-muted">Needs a comparison with your profile and preferences.</p>
+  </section>;
   return <section aria-label="Job match preview" className="border-t border-board-line/60 pt-4">
     <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
       <h4 className="text-base font-semibold tabular-nums">{sample ? `${sample.percent}% job match` : "Job match pending"}</h4>
