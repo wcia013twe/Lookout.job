@@ -24,7 +24,7 @@ export function AgentPluginSteps() {
   return (<ul className="agent-plugin-steps">
         <li>Copy the connection instructions into your agent’s chat.</li>
         <li>Enter the token only in its secure credential form or plugin/MCP settings.</li>
-        <li>Ask your agent: “Connect to Lookout and start my search.”</li>
+        <li>Your agent adds your saved schedules, reports setup status, then stops.</li>
       </ul>);
 }
 export default function AgentConnections({onboarding=false,onSetupCopied,onConnectionsChange}:{onboarding?:boolean;onSetupCopied?:()=>void;onConnectionsChange?:(connections:AgentConnection[])=>void}) {

@@ -4,15 +4,15 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { createBackend } from "../../backend/client.mjs";
 import { useWorkspace } from "../lib/workspace";
-import { handoffOnboardingSearch } from "../lib/onboarding-search-handoff.mjs";
+import { checkOnboardingConnection } from "../lib/onboarding-search-handoff.mjs";
 import { onboardingConnectionReady } from "../lib/onboarding-connection.mjs";
 import { Iphone } from "./iphone";
 import AgentConnections, { AgentPluginSteps } from "./agent-connections";
 import { Button, Dots, Icon, Quiet, Title } from "./onboarding-ui";
 
-type Props = { intent: string; room: ReactNode; onFinish: () => void; onLater: () => void };
+type Props = { room: ReactNode; onFinish: () => void; onLater: () => void };
 
-export default function OnboardingAgentConnection({ intent, room, onFinish, onLater }: Props) {
+export default function OnboardingAgentConnection({ room, onFinish, onLater }: Props) {
   const w = useWorkspace();
   const reduced = useReducedMotion();
   const api = useMemo(() => w.demo ? w.services : w.client && w.user ? createBackend(w.client, w.user.id) : null, [w.demo, w.services, w.client, w.user?.id]);
@@ -21,7 +21,7 @@ export default function OnboardingAgentConnection({ intent, room, onFinish, onLa
   const [copied, setCopied] = useState(false);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState("");
-  const [handoff,setHandoff]=useState("");
+  const [timedOut,setTimedOut]=useState(false);
   const [retry,setRetry]=useState(0);
 
   useEffect(() => {
@@ -31,10 +31,13 @@ export default function OnboardingAgentConnection({ intent, room, onFinish, onLa
   useEffect(() => {
     if (!checking || !api) return;
     let alive = true;
+    let attempts=0;
+    setTimedOut(false);
     let timer: ReturnType<typeof setTimeout>;
     async function check() {
       try {
-        let state = await api.onboardingAction("onboarding.get_state");
+        attempts++;
+        let state = (await checkOnboardingConnection(api,()=>alive)).session;
         // Demo uses only the isolated fixture; real runtime confirmation is agent-only.
         if (w.demo && state.step === "connection_pending") {
           await api.onboardingAction("onboarding.submit_step", { expectedRevision: state.revision, eventKey: crypto.randomUUID(), event: "runtime", data: { browsing: true } });
@@ -44,22 +47,17 @@ export default function OnboardingAgentConnection({ intent, room, onFinish, onLa
         setError("");
         if (onboardingConnectionReady(state)) {
           setConnected(true);
-          try {
-            const result=await handoffOnboardingSearch(api,intent,()=>alive);
-            if(alive)setHandoff(result.status);
-          } catch {
-            if(alive){setHandoff("error");setError("Your agent is connected, but your search wasn’t handed off. Retry below.");}
-          }
           return;
         }
       } catch {
         if (alive) setError("We couldn’t check yet. We’ll try again shortly.");
       }
+      if(alive&&attempts>=12){setTimedOut(true);setError("No connection confirmation yet. Ask your agent for its last connection error, or retry the check.");return;}
       if (alive) timer = setTimeout(check, 2500);
     }
     timer = setTimeout(check, w.demo ? 1200 : 0);
     return () => { alive = false; clearTimeout(timer); };
-  }, [checking, api, w.demo, intent, retry]);
+  }, [checking, api, w.demo, retry]);
 
   async function copyDemo() {
     try {
@@ -78,11 +76,11 @@ export default function OnboardingAgentConnection({ intent, room, onFinish, onLa
         {connected ? <Icon kind="check" /> : <Dots />}
       </motion.div>
       <strong>{connected ? "Your agent is here." : "Waiting for your agent…"}</strong>
-      <p>{connected ? handoff==="queued"?"Your search is queued for your agent.":handoff==="result_ready"?"Your agent has a result ready.":handoff==="needs_attention"?"Your search needs a quick check in your agent’s chat.":"Your agent can read your saved search." : "This updates when your agent checks in."}</p>
+      <p>{connected ? "Your saved automations are available to your agent. Check its chat for setup confirmation; searches do not run during connection setup." : "This updates after your agent completes its connection test."}</p>
       {w.demo && <span className="hint">Demo connection · simulated</span>}
     </div></Iphone>
     {error && <p className="hint" role="status">{error}</p>}
-    {handoff==="error"&&<Button secondary onClick={()=>{setError("");setRetry(value=>value+1);}}>Retry search handoff</Button>}
+    {timedOut&&<Button secondary onClick={()=>{setError("");setRetry(value=>value+1);}}>Retry connection check</Button>}
     {connected && <div className="actions"><Button onClick={onFinish}>Continue</Button></div>}
     <Quiet onClick={onLater}>I’ll do this later</Quiet>
   </div>;

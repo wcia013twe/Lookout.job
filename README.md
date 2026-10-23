@@ -725,3 +725,11 @@ This is a frontend visibility change; public static catalog files remain public
 and backend authorization and scoped MCP tools are unchanged.
 
 Agent connection handoff copies credential-free instructions by default, in onboarding and connection settings. **Copy instructions for chat** never includes a token or bearer configuration; **Copy token for secure entry** is the separate explicit secret-copy action. Onboarding also provides a current-token revoke/start-over action through the existing human-only connections API. No chat-generated secure link is invented by Lookout; use the agent’s actual secure credential form or plugin/MCP settings.
+
+## Lightweight connection and automation setup
+
+Connect/reconnect is not a job-search run. The agent reads onboarding state and submits `connection_test` through `update_onboarding_step` with current revision, stable event key and empty data. The server records a credential-backed connection check and returns only the owning account’s saved `automationSetup.schedule` plus connection ID. This neither attests browsing nor advances agent/website completion, changes intent, creates tasks or enables submission. The website polls read-only and stops with retry feedback after twelve checks rather than queueing discovery.
+
+The setup request instructs the runtime to add/update enabled scheduled tasks assigned to this connection in its own automation settings, preserve saved time/timezone, deduplicate by Lookout task ID and leave unrelated automations intact. Disabled/manual/unassigned tasks are not run. Actual scheduler receipts are required before reporting success; missing settings/capabilities are a blocker, not a reason to launch work or install infrastructure. The agent then gives a short report and stops. Searches/imports execute only under a separate work request or actual scheduled invocation. Lookout stores definitions; it does not supply Muse’s scheduler.
+
+MCP mapping: `read_onboarding_state` → `update_onboarding_step(event=connection_test)`; the browser observes `data.connectionTest`. Existing runtime browsing attestation remains separate. Developer contract 52 defines this bounded setup sequence. Muse’s actual automation-settings support must still be verified in that runtime.

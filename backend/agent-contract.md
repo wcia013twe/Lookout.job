@@ -375,3 +375,7 @@ key requiring a public job URL. Read it explicitly with `list_imported_jobs`; it
 not a canonical application ID for preparation, milestone or submission tools.
 No capability is advertised as deployed until the migration and gateway/MCP
 release has passed a hosted round trip. See README for bounds and supported format.
+
+### Lightweight connection setup
+
+`onboarding.submit_step(event=connection_test)` is an authenticated agent check-in, with the same revision/event replay boundary. It returns the owning account’s schedule definitions and connection ID and records `data.connectionTest`; it does not attest browsing, advance onboarding, create/claim tasks or authorize a submission. Human callers, revoked credentials, foreign owners, stale revisions and nonempty event data are rejected. `update_onboarding_step` advertises this boundary; the website reads it through `onboarding.get_state`. External runtime automation registration is requested only for saved enabled scheduled tasks assigned to this connection. Actual runtime scheduler receipts remain necessary; Lookout itself does not execute a scheduler.
