@@ -9,6 +9,8 @@ import { useWorkspace } from "../lib/workspace";
 import { Notice } from "./ui";
 import ColorModeControl from "./color-mode";
 import ProfileMenu from "./profile-menu";
+import GoogleSignInButton from "./google-sign-in-button";
+import { canViewWorkspace, isPublicReferencePage } from "../lib/workspace-access";
 import DashboardTour from "./dashboard-tour";
 import { demoNeedsYouTasks } from "../lib/demo.mjs";
 
@@ -25,10 +27,28 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
   const router=useRouter();
-  const destination=websiteOnboardingDestination({path,demo:w.demo,authReady:w.authReady,signedIn:!!w.user,status:w.websiteOnboarding?.status});
+  const destination=websiteOnboardingDestination({path,demo:w.demo,authReady:w.authReady,signedIn:canViewWorkspace(w),status:w.websiteOnboarding?.status});
   useEffect(()=>{if(destination)router.replace(destination);},[destination,router]);
   const isPrivacy = /^\/privacy\/?$/.test(path);
   const footer = <footer className="mt-10 border-t border-board-line pt-4 text-sm text-board-muted"><Link href="/privacy/" className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-board-text">Privacy &amp; sharing</Link></footer>;
+  const hasAccess = canViewWorkspace(w);
+  const isOnboarding = /\/onboarding\/?$/.test(path);
+  if (!hasAccess && !isOnboarding) {
+    return <main className="min-h-dvh bg-board-bg">
+      <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-4 md:px-6">
+        <header className="mb-8"><Link href="/" className="inline-flex min-h-11 items-center text-xl font-bold">Lookout</Link></header>
+        {isPublicReferencePage(path) ? children : <section className="mx-auto max-w-md py-16" aria-labelledby="workspace-sign-in-title">
+          <h1 id="workspace-sign-in-title" className="text-2xl font-bold tracking-tight">Sign in to your workspace</h1>
+          <p className="mt-3 text-base leading-relaxed text-board-muted">Your jobs, applications, and activity will appear after you sign in.</p>
+          {!w.authReady ? <Notice>{w.error || "Checking your sign-in…"}</Notice> : <>
+            {w.error && <Notice>{w.error}</Notice>}
+            <GoogleSignInButton className="mt-6" onClick={w.signIn}/>
+          </>}
+        </section>}
+        {footer}
+      </div>
+    </main>;
+  }
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/career-toolkit/" && path.startsWith(href)) || (href === "/" && /^\/discover\/?$/.test(path));
   const apps = Object.values(w.state?.workflow?.applications || {}) as Array<{ status: string; submissionAttempts?: Array<{ state: string; startedAt: string }> }>;
   const needs = (w.demo ? demoNeedsYouTasks.length :
@@ -48,7 +68,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     !w.state?.workflow?.resumes?.length
       ? 1
       : 0));
-  if(!w.demo&&!isPrivacy&&!/^\/workspace-reset\/?$/.test(path)&&(destination||(w.user&&w.websiteOnboarding?.status!=='complete'&&w.websiteOnboarding?.status!=='incomplete'))){
+  if(!w.demo&&!isPublicReferencePage(path)&&!/^\/workspace-reset\/?$/.test(path)&&(destination||(hasAccess&&w.websiteOnboarding?.status!=='complete'&&w.websiteOnboarding?.status!=='incomplete'))){
     return <main className="grid min-h-dvh place-items-center bg-board-bg p-6"><div role="status"><Notice>{w.websiteOnboarding?.status==='error'?'Could not check your setup. Retry to continue.':'Checking your setup…'}</Notice>{w.websiteOnboarding?.status==='error'&&<button className="mt-4 underline underline-offset-4" onClick={w.websiteOnboarding.retry}>Retry setup check</button>}</div></main>;
   }
   if (/\/onboarding\/?$/.test(path)) {

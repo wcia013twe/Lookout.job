@@ -404,3 +404,16 @@ Task run timing and requested time remain visible in each My Agent task row,
 including when task details are collapsed. Recurring runs still require the
 explicit request switch; editing timing does not start an automation. The detached
 demo walkthrough checks schedule editing before expanding task details.
+
+## Signed-out board verification
+
+With an empty session or a populated guest cache, workspace routes must show
+“Sign in to your workspace” without job cards, scan dates, XP or account counts.
+No workspace children mount while authentication is pending. Sign in without a
+private batch to see the empty agent board, sign out to hide it immediately, and
+switch accounts to verify that an earlier batch never flashes. Explicit demo
+mode retains fictional boards, isolated from guest/account storage. Privacy and
+individual guide pages remain readable without signing in.
+
+`scripts/check-signed-out-ui.mjs` checks these boundaries using fictional sessions
+and intercepted API responses; no real account or external write is required.

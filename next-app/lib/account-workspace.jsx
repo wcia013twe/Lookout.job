@@ -9,6 +9,7 @@ import presets from "../../data/tierlist-presets.json";
 import {rememberOnboardingReturn,takeOnboardingReturn} from "./onboarding-auth.mjs";
 import catalog from "../../data/jobs.json";
 import {useWebsiteOnboarding} from "./use-website-onboarding";
+import {canViewWorkspace} from "./workspace-access";
 let boot;
 const URL = "https://umhqfqzpwmszhcknwtrs.supabase.co";
 const KEY = "sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5";
@@ -101,6 +102,7 @@ export default function AccountWorkspaceProvider({ children }) {
           if (!alive) return;
           const id = value?.user?.id || null;
           const accountChanged=userRef.current!==id;
+          if(accountChanged) setBatch(null);
           userRef.current = id;
           const guestCompanies=id&&accountChanged&&window.JB.lastCompanyOwner===null?(store.get("network.companies")||[]):[];
           store.switchAccount(id);
@@ -141,7 +143,7 @@ export default function AccountWorkspaceProvider({ children }) {
         client.auth.getSession().then(({ data, error }) => {
           if (error) {
             setError(
-              "Sign-in is unavailable. Your browser workspace remains available.",
+              "Sign-in is unavailable. Reload to try again.",
             );
             setAuthReady(true);
           } else { session(data.session); if(data.session) client.auth.getUser().then(({data})=>{if(alive && data.user?.id===userRef.current)setUser(data.user);}); }
@@ -178,14 +180,15 @@ export default function AccountWorkspaceProvider({ children }) {
     const { error } = await clientRef.current.auth.signOut({ scope: "local" });
     if (error) setError("Could not sign out. Try again.");
   }
-  const websiteOnboarding=useWebsiteOnboarding(clientRef.current,user);
+  const hasAccess = canViewWorkspace({authReady,user});
+  const websiteOnboarding=useWebsiteOnboarding(clientRef.current,hasAccess?user:null);
   const value = {
     websiteOnboarding,
     state,store,user,accountUser:user,demo:false,demoEpoch:0,canDemo:true,
     toggleDemo:()=>navigateWorkspaceMode(window.location,true),resetDemo:()=>{},
     locked,status,error,authReady,signIn,signOut,syncError,
-    hasPrivateBatch:Boolean(batch),publicRoles:catalog.roles,publicDate:catalog.lastRun,
-    roles:batch?.roles || catalog.roles,date:batch?.date || catalog.lastRun,batchLabel:batch?.label,
+    hasPrivateBatch:hasAccess&&Boolean(batch),publicRoles:hasAccess?catalog.roles:[],publicDate:hasAccess?catalog.lastRun:"",
+    roles:hasAccess?(batch?.roles || []):[],date:hasAccess?(batch?.date || ""):"",batchLabel:hasAccess?batch?.label:undefined,
     models:typeof window!=="undefined"?window.JB:null,
     client:clientRef.current,services:null,
   };

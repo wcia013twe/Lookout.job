@@ -6,10 +6,10 @@ const completed={revision:3,step:'connection_pending',data:{websiteCompletedAt:'
 test('routing waits for auth and server completion, preserves privacy/reset and skips returning-user setup',()=>{
  const base={path:'/',demo:false,authReady:true,signedIn:true,status:'incomplete'};
  const route=extra=>websiteOnboardingDestination({...base,...extra});
- assert.equal(route({}),'/onboarding/');assert.equal(route({signedIn:false}),'/onboarding/');
+ assert.equal(route({}),'/onboarding/');assert.equal(route({signedIn:false}),null);
  assert.equal(route({path:'/onboarding/'}),null);assert.equal(route({path:'/onboarding/',status:'complete'}),'/?tour=dashboard');
  for(const status of ['loading','error','complete'])assert.equal(route({status}),null);
- for(const extra of [{demo:true},{authReady:false},{path:'/privacy/'},{path:'/workspace-reset/'}])assert.equal(route(extra),null);
+ for(const extra of [{demo:true},{authReady:false},{path:'/privacy/'},{path:'/workspace-reset/'},{path:'/career-toolkit/prepare-resume/'}])assert.equal(route(extra),null);
  assert.equal(websiteOnboardingComplete(completed),true);
  for(const state of [null,{step:'ready',data:{}},{data:{websiteCompletedAt:'fake'}}])assert.equal(websiteOnboardingComplete(state),false);
 });
