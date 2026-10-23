@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, secondary } from "./ui";
+import { Button as OnboardingButton } from "./onboarding-ui";
 import { errorMessage } from "./profile-types";
 import { CONNECTION_ACCESS, connectionScopes, invokeConnection } from "../../lib/agent-connections.mjs";
 type AgentConnection = { id: string; name: string; scopes: string[]; expires_at: string; revoked_at?: string };
@@ -195,11 +196,11 @@ export default function AgentConnections({onboarding=false,onSetupCopied}:{onboa
       <p className="agent-connect-permissions">Prepare jobs and applications · you approve applications.</p>
       {token ? <div aria-label="Your new agent connection">
         <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
-        {!setupCopied&&<button className={primary} onClick={()=>copy(true)}>Copy connection setup</button>}
+        {!setupCopied&&<OnboardingButton onClick={()=>void copy(true)}>Copy connection setup</OnboardingButton>}
         <p className="hint">Keep this setup safe. The token is shown once.</p>
       </div> : <form onSubmit={issue} aria-label="Create an agent connection">
         <input type="hidden" name="name" value="My personal agent"/>
-        <button className={primary} disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating setup…":"Get connection setup"}</button>
+        <OnboardingButton type="submit" disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating setup…":"Get connection setup"}</OnboardingButton>
       </form>}
       {feedback&&<p role="status" className="hint">{feedback}</p>}
       <p className="hint">Access lasts 30 days. Your agent’s AI provider handles the information it receives. <Link href="/privacy/#agents">Privacy details</Link></p>
