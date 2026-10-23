@@ -20,6 +20,13 @@ const scopeLabels: Record<string, string> = {
   "activity:write": "Record search activity",
   "approvals:read": "Read application review decisions",
 };
+export function AgentPluginSteps() {
+  return (<ul className="agent-plugin-steps">
+        <li>Add Lookout in your agent’s plugin or MCP settings.</li>
+        <li>Paste the connection setup below.</li>
+        <li>Ask your agent: “Connect to Lookout and start my search.”</li>
+      </ul>);
+}
 export default function AgentConnections({onboarding=false}:{onboarding?:boolean}) {
   const w = useWorkspace();
   const [connections, setConnections] = useState<AgentConnection[]>([]),
@@ -177,36 +184,49 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
       if (epoch === generation.current) setFeedback("Copy failed. Select and copy the token manually.");
     }
   }
-  const Options = onboarding ? "details" : "div";
+  if (onboarding) return (
+    <div className="agent-connect">
+      <AgentPluginSteps/>
+      <p className="agent-connect-permissions">Prepare jobs and applications · you approve applications.</p>
+      {token ? <div aria-label="Your new agent connection">
+        <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
+        <button className={primary} onClick={()=>copy(true)}>Copy connection setup</button>
+        <p className="hint">Keep this setup safe. The token is shown once.</p>
+      </div> : <form onSubmit={issue} aria-label="Create an agent connection">
+        <input type="hidden" name="name" value="My personal agent"/>
+        <button className={primary} disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating setup…":"Get connection setup"}</button>
+      </form>}
+      {feedback&&<p role="status" className="hint">{feedback}</p>}
+      <p className="hint">Access lasts 30 days. Your agent’s AI provider handles the information it receives. <Link href="/privacy/#agents">Privacy details</Link></p>
+    </div>
+  );
   const content = (
     <>
-      {!onboarding && <p className="max-w-prose text-sm leading-relaxed text-board-muted">
+      <p className="max-w-prose text-sm leading-relaxed text-board-muted">
         Give Muse or another personal agent access to your Lookout workspace.
         Your agent can read or change information within the permissions you grant.
         Its AI provider’s policies apply to information it receives. <Link href="/privacy/#agents" className="underline underline-offset-4">Privacy details</Link>.
-      </p>}
+      </p>
       {!w.user && !w.demo && (
         <p role="status" className="mt-4 rounded-lg border border-board-line bg-board-tag p-4 text-sm">
           Sign in to create and manage your connections.
         </p>
       )}
-      <div className={onboarding ? "agent-connect-panel" : "mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]"}>
+      <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <form onSubmit={issue} noValidate className="min-w-0 space-y-5" aria-label="Create an agent connection">
-          {!onboarding && <div>
+          <div>
             <h3 className="font-semibold">Create a connection</h3>
             <p className="mt-1 text-sm text-board-muted">Use a separate connection for each agent. Access expires after 30 days.</p>
-          </div>}
-          <Options className={onboarding ? "agent-connect-options" : undefined}>
-            {onboarding && <summary>Connection settings</summary>}
+          </div>
           <Field label="Connection name (required)">
-            <input className={control} name="name" defaultValue={onboarding ? "My personal agent" : undefined} placeholder="e.g. Muse on my laptop" required maxLength={80} aria-invalid={Boolean(nameError)} aria-describedby={nameError ? "agent-name-error" : undefined} onChange={() => setNameError("")} disabled={(!w.user && !w.demo) || busy} />
+            <input className={control} name="name" placeholder="e.g. Muse on my laptop" required maxLength={80} aria-invalid={Boolean(nameError)} aria-describedby={nameError ? "agent-name-error" : undefined} onChange={() => setNameError("")} disabled={(!w.user && !w.demo) || busy} />
           </Field>
           {nameError && <p id="agent-name-error" role="alert" className="-mt-3 text-sm leading-relaxed">{nameError}</p>}
           <fieldset disabled={(!w.user && !w.demo) || busy} className="space-y-2">
             <legend className="mb-3 text-sm font-semibold">Choose your agent’s access</legend>
             {CONNECTION_ACCESS.map((option) => (
-              <label key={option.id} className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-board-accent ${access === option.id ? "border-board-accent bg-board-tag" : "border-board-line hover:border-board-accent"} ${onboarding && option.id === "read" ? "cursor-not-allowed opacity-50" : ""}`}>
-                <input type="radio" name="access" value={option.id} checked={access === option.id} onChange={() => setAccess(option.id)} disabled={onboarding && option.id === "read"} className="mt-1 size-4 shrink-0 accent-board-accent" aria-describedby={`agent-access-${option.id}`} />
+              <label key={option.id} className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-board-accent ${access === option.id ? "border-board-accent bg-board-tag" : "border-board-line hover:border-board-accent"}`}>
+                <input type="radio" name="access" value={option.id} checked={access === option.id} onChange={() => setAccess(option.id)} className="mt-1 size-4 shrink-0 accent-board-accent" aria-describedby={`agent-access-${option.id}`} />
                 <span className="min-w-0"><span className="block text-sm font-semibold">{option.title}</span><span id={`agent-access-${option.id}`} className="mt-1 block text-sm leading-relaxed text-board-muted">{option.description}</span></span>
               </label>
             ))}
@@ -229,14 +249,12 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
               </fieldset>
             </details>
           )}
-          </Options>
-          {onboarding && <p className="agent-connect-permissions">Your agent can {access === "context" ? "update your profile and preferences" : "find roles and prepare applications"}. You review profile facts and approve applications. Access lasts 30 days. <Link href="/privacy/#agents">Privacy details</Link></p>}
           <button className={`${primary} w-full sm:w-auto`} disabled={(!w.user && !w.demo) || busy}>
-            {busy && action === "create" ? "Creating connection…" : onboarding ? "Create secure connection" : "Create connection"}
+            {busy && action === "create" ? "Creating connection…" : "Create connection"}
           </button>
           {feedback && action === "create" && <p role="status" className="text-sm leading-relaxed text-board-text">{feedback}</p>}
         </form>
-        {!onboarding && <aside className="min-w-0 border-t border-board-line pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0" aria-label="Connect your agent instructions">
+        <aside className="min-w-0 border-t border-board-line pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0" aria-label="Connect your agent instructions">
           <h3 className="font-semibold">Then add it to your agent</h3>
           <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-board-muted marker:text-board-text">
             <li>Create a connection with the access you need.</li>
@@ -248,7 +266,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
             <summary className="min-h-11 py-2 font-medium">MCP server address</summary>
             <code className="mt-1 block break-all text-xs leading-relaxed text-board-muted">{mcp}</code>
           </details>
-        </aside>}
+        </aside>
       </div>
       {token && (
         <div className="mt-7 rounded-xl border border-board-accent bg-board-tag p-5" aria-label="Your new agent connection">
@@ -265,8 +283,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
           {feedback && action === "copy" && <p role="status" className="mt-3 text-sm leading-relaxed">{feedback}</p>}
         </div>
       )}
-      <Options className="mt-8 border-t border-board-line pt-6">
-        {onboarding && <summary>Manage connections{connections.length > 0 ? ` (${connections.length})` : ""}</summary>}
+      <div className="mt-8 border-t border-board-line pt-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-semibold">Your connections</h3>
           {(w.user || w.demo) && <button className={secondary} disabled={busy || loading} onClick={() => { setAction("refresh"); setFeedback(""); setLoading(true); void refresh(); }}>{loading ? "Loading…" : "Refresh connections"}</button>}
@@ -322,8 +339,8 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
             })}
           </ul>
         )}
-      </Options>
+      </div>
     </>
   );
-  return onboarding ? <div className="agent-connect">{content}</div> : <Section title="Connect your personal agent">{content}</Section>;
+  return <Section title="Connect your personal agent">{content}</Section>;
 }

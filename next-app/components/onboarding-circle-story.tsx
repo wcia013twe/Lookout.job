@@ -18,11 +18,11 @@ export default function OnboardingCircleStory({ onLater }: { onLater: () => void
 
   useEffect(() => {
     if (reduced) {
-      setBeat(6);
+      setBeat(2);
       return;
     }
     setBeat(0);
-    const timers = [500, 2200, 4100, 6200, 8300, 10400].map((delay, index) =>
+    const timers = [150, 1200].map((delay, index) =>
       window.setTimeout(() => setBeat(index + 1), delay)
     );
     return () => timers.forEach(window.clearTimeout);
@@ -42,7 +42,7 @@ export default function OnboardingCircleStory({ onLater }: { onLater: () => void
 
   return <>
     <Dots />
-    <Title sub="One shared experience. A better next step.">An edge, from your people.</Title>
+    <Title>An edge, from your people.</Title>
     <div className="circle-story">
       <div className="circle-story-header">
         <CirclePeople />
@@ -53,39 +53,20 @@ export default function OnboardingCircleStory({ onLater }: { onLater: () => void
           <span className="message-author">Maya · shared with your Circle</span>
           <p>Just interviewed at ExampleCo. They asked: “How would you debug a service that gets slower as traffic grows?”</p>
         </motion.div>}
-        {beat >= 2 && <motion.div {...enter} className="circle-message from-you">
-          <span className="message-author">You</span><p>I’m applying there. This is so helpful.</p>
-        </motion.div>}
-        {beat >= 3 && <motion.div {...enter} className="circle-agent-note">
-          <Dots /><span>Found a practice question for your ExampleCo interview.</span>
-        </motion.div>}
-        {beat >= 4 && <motion.div {...enter} className="circle-message from-agent">
+        {beat >= 2 && <motion.div {...enter} className="circle-message from-agent">
           <span className="message-author">Your agent</span>
-          <p>Let’s practice Maya’s question. How about a 20-minute mock interview tomorrow at 6?</p>
-          <span className="message-source">From Maya’s shared interview tip</span>
-        </motion.div>}
-        {beat >= 5 && <motion.div {...enter} className="circle-message from-you">
-          <span className="message-author">You</span><p>Yes, book it.</p>
-        </motion.div>}
-        {beat >= 6 && <motion.div {...enter} className="mock-booking">
-          <span className="booking-check"><Icon kind="check" /></span>
-          <div>
-            <strong>Mock interview scheduled</strong>
-            <span>Tomorrow · 6:00 PM · 20 minutes</span>
-            <p>Debugging a slow service, with your agent.</p>
-            <span className="booking-demo">Demo booking · nothing added to your calendar</span>
-          </div>
+          <p>Maya’s tip could help with your interview. Want to practice that question together?</p>
         </motion.div>}
       </div>
     </div>
     <div className="circle-story-end">
-      {beat >= 6 && <motion.div {...enter}>
+      <motion.div {...enter}>
         <Link href="/circles/" className="circle-invitation">
           <CirclePeople />
           <span><strong>Better with company.</strong><span>Find your Circle</span></span>
           <Icon />
         </Link>
-      </motion.div>}
+      </motion.div>
     </div>
     <Quiet onClick={onLater}>I’ll do this later</Quiet>
   </>;
