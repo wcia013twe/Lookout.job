@@ -33,3 +33,5 @@
 
 - Always show the card-opening interaction after preferences. When no catalog role matches, reuse the gold reveal with an explicit fictional sample, illustrative bars and typed explanation; its action leads to Meet my agent. Samples have no application URL and are never seeded as a real selected role. Real catalog matches retain their existing context.
 - Always-reveal validation: 487 tests, TypeScript, data validation and diff check pass. Browser verified unmatched Design/Remote preferences still show the purple card, flip, animated gold bars, typed sample context and Meet my agent action. No external search or account action was performed.
+
+- Moved Join Circle beside the invite-code field with aligned controls; stacks below at narrow mobile widths. Join behavior and demo service remain unchanged. Validation: TypeScript, data validation and diff check.

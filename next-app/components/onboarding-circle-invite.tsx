@@ -40,10 +40,12 @@ function InviteForm({ client, onContinue }: { client: ReturnType<typeof useKnowl
     {joined ? <><h2>You’re in.</h2><div className="actions"><Button onClick={onContinue}>Continue</Button></div></> : <>
       <h2>Already have a Circle?</h2>
       <form onSubmit={join}>
+        <div className="circle-invite-code-row">
         <Field label="Invite code"><input value={token} onChange={e=>{setToken(e.target.value);setError("");}} placeholder="Paste your code" required maxLength={100} autoCapitalize="none" autoCorrect="off" spellCheck={false} disabled={busy}/></Field>
+        {client.ready ? <Button type="submit" disabled={busy || !token.trim() || !alias.trim()}>{busy ? "Joining…" : "Join Circle"}</Button> : <Button disabled={client.connectionState!=="signed_out"} onClick={client.signIn}>Sign in to join</Button>}
+        </div>
         {!savedName && <Field label="Your name in the Circle"><input value={alias} onChange={e=>setAlias(e.target.value)} required maxLength={80} autoComplete="given-name" disabled={busy}/></Field>}
         {savedName && <p className="hint">Joining as {savedName}.</p>}
-        {client.ready ? <Button type="submit" disabled={busy || !token.trim() || !alias.trim()}>{busy ? "Joining…" : "Join Circle"}</Button> : <Button disabled={client.connectionState!=="signed_out"} onClick={client.signIn}>Sign in to join</Button>}
         {error && <p className="error" role="alert">{error}</p>}
         {client.demo && <p className="hint">Demo only · use demo-invite.</p>}
       </form>
