@@ -23,6 +23,11 @@ try{
  await page.getByLabel('Source URL',{exact:true}).fill('https://example.com/careers');
  await page.getByRole('button',{name:'Save target',exact:true}).click();
  await page.getByText('Demo target list updated. Changes stay in this preview.',{exact:true}).waitFor();
+ const demoTask=page.getByRole('list',{name:'My Agent automation tasks',exact:true}).locator('li').filter({hasText:'Discovery task (demo)'});
+ assert.equal(await demoTask.getByLabel('Run timing',{exact:true}).inputValue(),'manual');
+ await demoTask.getByLabel('Run timing',{exact:true}).selectOption('scheduled');
+ await demoTask.getByLabel('Requested time',{exact:true}).fill('08:30');
+ assert.equal(await demoTask.getByLabel('Requested time',{exact:true}).inputValue(),'08:30','Schedule stays editable without expanding task details');
  await page.getByRole('button',{name:'Add task',exact:true}).click();
  await page.getByLabel('Task name',{exact:true}).fill('My new search');
  await page.getByLabel('Task instructions',{exact:true}).fill('Find roles and explain one tradeoff per card.');
@@ -30,7 +35,7 @@ try{
  await page.getByRole('checkbox',{name:'New pack agent',exact:true}).check();
  await page.getByRole('button',{name:'Save tasks',exact:true}).click();
  await page.getByText('Demo tasks saved. Changes stay in this preview.',{exact:true}).waitFor();
- assert.equal(await page.getByLabel('Run timing',{exact:true}).inputValue(),'manual');
+ assert.equal(await page.getByLabel('Run timing',{exact:true}).last().inputValue(),'manual');
  assert.equal(await page.getByRole('navigation',{name:'Agent settings',exact:true}).count(),0,'My Agent uses one scrollable page');
  const ranking=page.locator('#agent-panel-packs details').filter({has:page.locator('summary').filter({hasText:'Company ranking'})});
  await ranking.locator('summary').click();
