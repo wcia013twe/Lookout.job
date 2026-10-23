@@ -68,21 +68,25 @@
       "fields": [
         "PK id: uuid",
         "FK owner_id: uuid?",
-        "FK profile_id: uuid?",
+        "FK profile_document_id: uuid?",
+        "FK profile_version_no: int?",
+        "FK source_document_id: uuid?",
+        "FK source_version_no: int?",
         "FK connection_id: uuid?",
         "scope: public / private",
         "mode: enum",
         "state: enum",
-        "profile_snapshot: json?",
+        "context_snapshot: json?",
         "checkpoints: json[]",
         "started_at: timestamp?",
         "completed_at: timestamp?",
         "event_key: text",
         "summary: text?",
+        "text_provenance: json?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
-      "note": "Public catalog runs have no owner/profile; private runs require owner. Bounded per-source checkpoints include coverage, counts and blockers. Pin source settings/profile revision."
+      "note": "Pin immutable profile + source-config document versions. Snapshot mutable candidate/answer/tier inputs once, without copying document bodies. Public runs use public source checkpoints, not private documents."
     },
     "SourceObservation": {
       "group": "01 Catalog and discovery",
@@ -109,7 +113,8 @@
       "fields": [
         "PK id: uuid",
         "FK owner_id: uuid",
-        "FK profile_id: uuid",
+        "FK profile_document_id: uuid",
+        "FK profile_version_no: int",
         "FK observation_id: uuid",
         "FK job_id: uuid?",
         "decision: enum",
@@ -120,13 +125,14 @@
         "upside_tier: enum?",
         "exclusion_preference: json?",
         "certainty: enum?",
-        "profile_revision: int",
+        "context_snapshot: json",
+        "text_provenance: json?",
         "reconsidered_at: timestamp?",
         "revision: int",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
-      "note": "Private assessment, not public job fact. One current decision per owner/profile/observation; retain previous decision in run evidence when revised."
+      "note": "Private assessment, not job fact. Pins profile version; context_snapshot captures candidate/tier/answer revisions and evidence used. Short rationale stays here; longer analysis links through DocumentLink."
     },
     "Batch": {
       "group": "01 Catalog and discovery",
@@ -164,10 +170,12 @@
         "settings: json",
         "personal_version: int",
         "settings_revision: int",
+        "execution_policy: json",
+        "policy_revision: int",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
-      "note": "Settings hold companion, notifications, timezone, routines, quiet sharing, prep budget, leaderboard opt-in/alias. Device appearance can remain local."
+      "note": "Settings are bounded preferences. execution_policy holds separately revisioned, profile-keyed human-controlled permissions. Profile prose may request a policy but cannot grant it."
     },
     "CandidateProfile": {
       "group": "02 Candidate and preferences",
@@ -190,31 +198,6 @@
         "updated_at: timestamp"
       ],
       "note": "One shared profile. Stable IDs inside ordered background entries. Verification is tied to values/revision; login email differs from application contact email."
-    },
-    "SearchProfile": {
-      "group": "02 Candidate and preferences",
-      "fields": [
-        "PK id: uuid",
-        "FK owner_id: uuid",
-        "FK tier_list_id: uuid?",
-        "FK fallback_document_id: uuid?",
-        "name: text",
-        "active: bool",
-        "criteria: json",
-        "strengths: json",
-        "values: json",
-        "goals: text",
-        "tradeoffs: text",
-        "evaluation_rules: json[]",
-        "availability: json",
-        "writing: json",
-        "policy: json",
-        "custom_instructions: text",
-        "revision: int",
-        "created_at: timestamp",
-        "updated_at: timestamp"
-      ],
-      "note": "Many strategies share candidate facts. Structured criteria are canonical; render agent instructions. Snapshots in run/draft preserve historical settings."
     },
     "SavedAnswer": {
       "group": "02 Candidate and preferences",
@@ -239,16 +222,6 @@
         "updated_at: timestamp"
       ],
       "note": "UQ(owner, exact normalized question, scope_key). Explicit global/resolved_company/unresolved_company scope; null company never implies global. Edit invalidates review. Draft snapshots preserve old answer text and revision."
-    },
-    "ProfileAnswer": {
-      "group": "02 Candidate and preferences",
-      "fields": [
-        "PK/FK profile_id: uuid",
-        "PK/FK answer_id: uuid",
-        "created_at: timestamp",
-        "updated_at: timestamp"
-      ],
-      "note": "FK profile_id \u2192 SearchProfile; answer_id \u2192 SavedAnswer. Explicit same-owner selection; no copied question bank."
     },
     "TierList": {
       "group": "02 Candidate and preferences",
@@ -276,35 +249,26 @@
       ],
       "note": "FK list_id \u2192 TierList; company_id \u2192 Company. One company in one tier per list. Validate tier_key against that list."
     },
-    "SearchSource": {
-      "group": "02 Candidate and preferences",
-      "fields": [
-        "PK id: uuid",
-        "FK owner_id: uuid",
-        "kind: enum",
-        "label: text",
-        "canonical_address: text",
-        "enabled: bool",
-        "revision: int",
-        "created_at: timestamp",
-        "updated_at: timestamp"
-      ],
-      "note": "UQ(owner, kind, canonical_address). Source subscription is a search preference, not a live integration or source observation."
-    },
     "Document": {
       "group": "03 Documents and materials",
       "fields": [
         "PK id: uuid",
         "FK owner_id: uuid",
         "kind: enum",
+        "key: text?",
         "title: text (head projection)",
         "variant: text?",
         "current_version_no: int",
+        "projection: json (derived)",
+        "projection_version_no: int",
+        "reviewed_version_no: int?",
+        "FK reviewed_by: uuid?",
+        "reviewed_at: timestamp?",
         "archived_at: timestamp?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
-      "note": "Stable identity for resume, cover letter, template, toolkit material, debrief or collection. Title is a current-version projection. Kind-specific validation; document ownership is always private."
+      "note": "Stable private identity for profile, source_config, analysis, resume, letter, template, toolkit material, debrief or collection. Projection is rebuilt from the current version; no second writable profile/source system. Review is editorial, not permission or fact verification."
     },
     "DocumentVersion": {
       "group": "03 Documents and materials",
@@ -312,7 +276,7 @@
         "PK/FK document_id: uuid",
         "PK version_no: int",
         "title: text",
-        "payload_kind: body / blob / url",
+        "payload_kind: body / blob / url / manifest",
         "format: enum",
         "body: text?",
         "blob_key: text?",
@@ -322,32 +286,18 @@
         "bytes: bigint?",
         "purpose: text",
         "sources: json[]",
-        "metadata: json",
+        "schema_version: int",
+        "attributes: json",
         "week_of: date?",
         "prepared_for: date?",
         "company_context: json?",
         "author: json",
+        "input_refs: json[]",
+        "generation: json?",
+        "uncertainty: text?",
         "created_at: timestamp"
       ],
-      "note": "FK document_id \u2192 Document. Immutable. Exactly one body/blob/source URL representation per kind. Blob unique within owner+hash; distinct named documents may share bytes."
-    },
-    "ProfileMaterial": {
-      "group": "03 Documents and materials",
-      "fields": [
-        "PK id: uuid",
-        "FK profile_id: uuid",
-        "FK document_id: uuid",
-        "role_titles: text[]",
-        "type: FT / Internship",
-        "target: text?",
-        "timeline: text?",
-        "conditions: json",
-        "active: bool",
-        "position: int",
-        "created_at: timestamp",
-        "updated_at: timestamp"
-      ],
-      "note": "Assignments follow stable Document; draft creation pins a concrete DocumentVersion. Resume replacement keeps assignments."
+      "note": "Immutable content. Body OR blob OR URL OR collection manifest by kind; attributes only allow enumerated kind-specific fields. AI prose carries inputs, sources, author and optional generation info. Collection children are bounded pinned references in attributes."
     },
     "DocumentLink": {
       "group": "03 Documents and materials",
@@ -359,24 +309,18 @@
         "FK plan_id: uuid?",
         "FK task_id: uuid?",
         "FK company_target_id: uuid?",
+        "FK job_id: uuid?",
+        "FK decision_id: uuid?",
+        "FK contact_id: uuid?",
+        "FK conversation_id: uuid?",
+        "FK run_id: uuid?",
+        "FK profile_document_id: uuid?",
+        "FK profile_version_no: int?",
         "relation: enum",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
-      "note": "Exactly one target FK. Same-owner links; real constraints rather than purpose-string parsing or polymorphic unvalidated IDs."
-    },
-    "CollectionItem": {
-      "group": "03 Documents and materials",
-      "fields": [
-        "PK/FK collection_id: uuid",
-        "PK/FK collection_version: int",
-        "PK position: int",
-        "FK child_document_id: uuid",
-        "FK child_version: int",
-        "section_title: text?",
-        "created_at: timestamp"
-      ],
-      "note": "Both composite FKs point to DocumentVersion. Collection must be collection kind; owner match; no recursive cycles. Children are pinned, not copied."
+      "note": "Exactly one typed subject; same owner for private targets. job_id may reference public Job. Many analyses can attach to one subject. Links locate content; input_refs records exactly what informed a revision."
     },
     "Application": {
       "group": "04 Applications and evidence",
@@ -384,7 +328,7 @@
         "PK id: uuid",
         "FK owner_id: uuid",
         "FK job_id: uuid",
-        "FK search_profile_id: uuid?",
+        "FK profile_document_id: uuid?",
         "opened_at: timestamp?",
         "queued_at: timestamp?",
         "recruiting_stage: enum",
@@ -491,6 +435,7 @@
         "source: json",
         "notes: text",
         "revision: int",
+        "text_provenance: json?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
@@ -527,6 +472,7 @@
         "position: int",
         "state: enum",
         "revision: int",
+        "text_provenance: json?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
@@ -567,16 +513,15 @@
         "interest: text",
         "teams: text[]",
         "questions: text[]",
-        "research: text",
-        "sources: json[]",
         "next_action: text?",
         "follow_up_date: date?",
         "archived_at: timestamp?",
         "revision: int",
+        "text_provenance: json?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
-      "note": "UQ(owner, company) when resolved. Unresolved targets retain private name/website until registry resolution. Private research and action plan separate from public company facts. Contacts/apps derive by company ID; no duplicated ID arrays."
+      "note": "UQ(owner, company) when resolved. Unresolved targets retain private label/website. Short interest/questions stay inline; long Research text is a linked analysis document, not a copied second body."
     },
     "Contact": {
       "group": "05 Preparation and network",
@@ -598,6 +543,7 @@
         "notes: text",
         "archived_at: timestamp?",
         "revision: int",
+        "text_provenance: json?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
@@ -620,6 +566,7 @@
         "url: text?",
         "notes: text",
         "revision: int",
+        "text_provenance: json?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
@@ -850,6 +797,7 @@
         "result_refs: json",
         "result_summary: text?",
         "evidence: json",
+        "text_provenance: json?",
         "created_at: timestamp",
         "updated_at: timestamp"
       ],
@@ -880,8 +828,8 @@
     },
     {
       "child": "SearchRun",
-      "field": "profile_id",
-      "parent": "SearchProfile",
+      "field": "profile_document_id",
+      "parent": "DocumentVersion",
       "optional": true,
       "many": true
     },
@@ -915,8 +863,8 @@
     },
     {
       "child": "SelectionDecision",
-      "field": "profile_id",
-      "parent": "SearchProfile",
+      "field": "profile_document_id",
+      "parent": "DocumentVersion",
       "optional": false,
       "many": true
     },
@@ -970,38 +918,10 @@
       "many": false
     },
     {
-      "child": "SearchProfile",
-      "field": "tier_list_id",
-      "parent": "TierList",
-      "optional": true,
-      "many": true
-    },
-    {
-      "child": "SearchProfile",
-      "field": "fallback_document_id",
-      "parent": "Document",
-      "optional": true,
-      "many": true
-    },
-    {
       "child": "SavedAnswer",
       "field": "company_id",
       "parent": "Company",
       "optional": true,
-      "many": true
-    },
-    {
-      "child": "ProfileAnswer",
-      "field": "profile_id",
-      "parent": "SearchProfile",
-      "optional": false,
-      "many": true
-    },
-    {
-      "child": "ProfileAnswer",
-      "field": "answer_id",
-      "parent": "SavedAnswer",
-      "optional": false,
       "many": true
     },
     {
@@ -1020,20 +940,6 @@
     },
     {
       "child": "DocumentVersion",
-      "field": "document_id",
-      "parent": "Document",
-      "optional": false,
-      "many": true
-    },
-    {
-      "child": "ProfileMaterial",
-      "field": "profile_id",
-      "parent": "SearchProfile",
-      "optional": false,
-      "many": true
-    },
-    {
-      "child": "ProfileMaterial",
       "field": "document_id",
       "parent": "Document",
       "optional": false,
@@ -1082,20 +988,6 @@
       "many": true
     },
     {
-      "child": "CollectionItem",
-      "field": "collection_id",
-      "parent": "DocumentVersion",
-      "optional": false,
-      "many": true
-    },
-    {
-      "child": "CollectionItem",
-      "field": "child_document_id",
-      "parent": "DocumentVersion",
-      "optional": false,
-      "many": true
-    },
-    {
       "child": "Application",
       "field": "job_id",
       "parent": "Job",
@@ -1104,8 +996,8 @@
     },
     {
       "child": "Application",
-      "field": "search_profile_id",
-      "parent": "SearchProfile",
+      "field": "profile_document_id",
+      "parent": "Document",
       "optional": true,
       "many": true
     },
@@ -1344,6 +1236,55 @@
       "child": "AgentTask",
       "field": "job_id",
       "parent": "Job",
+      "optional": true,
+      "many": true
+    },
+    {
+      "child": "SearchRun",
+      "field": "source_document_id",
+      "parent": "DocumentVersion",
+      "optional": true,
+      "many": true
+    },
+    {
+      "child": "DocumentLink",
+      "field": "job_id",
+      "parent": "Job",
+      "optional": true,
+      "many": true
+    },
+    {
+      "child": "DocumentLink",
+      "field": "decision_id",
+      "parent": "SelectionDecision",
+      "optional": true,
+      "many": true
+    },
+    {
+      "child": "DocumentLink",
+      "field": "contact_id",
+      "parent": "Contact",
+      "optional": true,
+      "many": true
+    },
+    {
+      "child": "DocumentLink",
+      "field": "conversation_id",
+      "parent": "Conversation",
+      "optional": true,
+      "many": true
+    },
+    {
+      "child": "DocumentLink",
+      "field": "run_id",
+      "parent": "SearchRun",
+      "optional": true,
+      "many": true
+    },
+    {
+      "child": "DocumentLink",
+      "field": "profile_document_id",
+      "parent": "DocumentVersion",
       "optional": true,
       "many": true
     }

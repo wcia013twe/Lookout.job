@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 const root = process.env.DRAWIO_MCP_ROOT;
 if (!root) throw new Error('Set DRAWIO_MCP_ROOT to the installed @drawio/mcp package directory.');
 const { routeXml } = await import(pathToFileURL(join(root, 'src/libavoid-pass.js')));
-const file = join(dirname(fileURLToPath(import.meta.url)), 'lookout-schema.drawio');
+const file = join(dirname(fileURLToPath(import.meta.url)), 'lookout-data-layer.drawio');
 const before = await readFile(file, 'utf8');
 const after = await routeXml(before);
 if (after === before) throw new Error('Routing made no changes; inspect the diagram before delivery.');

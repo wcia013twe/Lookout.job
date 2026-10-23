@@ -6,7 +6,25 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "59b9d3a41620beb2d7c56feee70902d001eddd45e7be8361caca166259478cdf"
+    "returned_xml_sha256": "8d98fdb2bf4c6cf2d643640d633b52507a0d43fd4ef6d97da51c9c602183d980"
+  },
+  {
+    "sheet": "00a UI and AI content flow",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "449ec71c52e144c400ec3611fda21568d265f9c97e6eabefb2089e58d7cc9e30"
+  },
+  {
+    "sheet": "00b Document and AI fields",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "a9ead8ba5c233b585db269f6f49e80fd7da1b71784883fa1972b5129b1a8c0ba"
   },
   {
     "sheet": "01 Catalog and discovery",
@@ -15,7 +33,7 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "5af5f04be403212da2849aed6611c140b6c6ce6ec1ef1615f2e299b3f73907b3"
+    "returned_xml_sha256": "3a874f62396237c2434c280237f13ac9899f3ae85850169a19baca0423ed1dc4"
   },
   {
     "sheet": "02 Candidate and preferences",
@@ -24,7 +42,7 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "e2910cdca1f02d4ec60be391a74d75ddef443780f78a340c01893d5d0d6b51f2"
+    "returned_xml_sha256": "e39e42219e18e171a4ab774d99f31cc953c93eb1d2e0fc2974106d05b515a293"
   },
   {
     "sheet": "03 Documents and materials",
@@ -33,7 +51,7 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "bb7c08bd75e85f9f7174e4020a20c134dba39e7602e58976efcb19508b3ea452"
+    "returned_xml_sha256": "a8dc720cb9d11cca693c8217b9120d7e55ac2354bb95a820cf741f02cf8c6c0f"
   },
   {
     "sheet": "04 Applications and evidence",
@@ -42,7 +60,7 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "e6129ae434e225ea332776dc998dfe8118ec0072232a45acfd255236e41450fa"
+    "returned_xml_sha256": "3c798059a959879a948a92f531541bcafd05fbb78e0f78f10902369601bb2a54"
   },
   {
     "sheet": "05 Preparation and network",
@@ -51,7 +69,7 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "4d9b0ea92f157f58c6acdd8e8bb68304ab18737c4c4da42e1bc770cbba10e769"
+    "returned_xml_sha256": "05d5bd3a6943fc7bb88b2b0831289ae8dd2c577b30d4d85a7dcd23ed9a08c6f6"
   },
   {
     "sheet": "06 Circles and publication",
@@ -60,7 +78,7 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "3bf33054007fddbf6c649cd225071199f82c87f3d11240a20b6a54eb37ae713b"
+    "returned_xml_sha256": "b6ec076ed601c327d56c7ba82f8c04f12b90544b794ec1a28a1d0f2543170362"
   },
   {
     "sheet": "07 Agent execution and onboarding",
@@ -69,6 +87,6 @@
     "server": "drawio-mcp-app/1.4.1",
     "build": "a05d36b@2026-10-19T09:40:13.986Z",
     "native_routing": "official @drawio/mcp@1.10.0 libavoid",
-    "returned_xml_sha256": "ba82cb851b2a5612cd3dc750e9317f49d58d56b6c758dc14afffb1f3fd4f1654"
+    "returned_xml_sha256": "0a8664c015fe3674b035d41858cf58c8193131e5ed1e372b1182f9d49e15327d"
   }
 ]

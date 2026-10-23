@@ -1,6 +1,6 @@
 # Proposed logical field dictionary
 
-This is a design review, not a migration or a dump of the current database. UUID is the default identity; timestamps are UTC, dates retain their precision. Each top-level field is listed individually; JSON subfields are defined in README.md. All mutable private aggregates carry an owner and optimistic revision; append-only rows inherit the owner through a constrained parent. Created/updated timestamps are shown explicitly; immutable history has no updated_at.
+This is a design review, not a migration or a dump of the current database. UUID is the default identity; timestamps are UTC, dates retain their precision. Each top-level field is listed individually; Document subfields are defined in document-contracts.md and drawn on sheet 00b; other JSON subfields are defined in README.md. All mutable private aggregates carry an owner and optimistic revision; append-only rows inherit the owner through a constrained parent. Created/updated timestamps are shown explicitly; immutable history has no updated_at.
 
 ## 01 Catalog and discovery
 
@@ -79,28 +79,33 @@ updated_at: timestamp
 
 ### SearchRun
 
-Public catalog runs have no owner/profile; private runs require owner. Bounded per-source checkpoints include coverage, counts and blockers. Pin source settings/profile revision.
+Pin immutable profile + source-config document versions. Snapshot mutable candidate/answer/tier inputs once, without copying document bodies. Public runs use public source checkpoints, not private documents.
 
 ```text
 PK id: uuid
 FK owner_id: uuid?
-FK profile_id: uuid?
+FK profile_document_id: uuid?
+FK profile_version_no: int?
+FK source_document_id: uuid?
+FK source_version_no: int?
 FK connection_id: uuid?
 scope: public / private
 mode: enum
 state: enum
-profile_snapshot: json?
+context_snapshot: json?
 checkpoints: json[]
 started_at: timestamp?
 completed_at: timestamp?
 event_key: text
 summary: text?
+text_provenance: json?
 created_at: timestamp
 updated_at: timestamp
 ```
 
-- `profile_id` → `SearchProfile` (optional parent; many children per parent).
+- `profile_document_id` → `DocumentVersion` (optional parent; many children per parent).
 - `connection_id` → `AgentConnection` (optional parent; many children per parent).
+- `source_document_id` → `DocumentVersion` (optional parent; many children per parent).
 
 ### SourceObservation
 
@@ -129,12 +134,13 @@ created_at: timestamp
 
 ### SelectionDecision
 
-Private assessment, not public job fact. One current decision per owner/profile/observation; retain previous decision in run evidence when revised.
+Private assessment, not job fact. Pins profile version; context_snapshot captures candidate/tier/answer revisions and evidence used. Short rationale stays here; longer analysis links through DocumentLink.
 
 ```text
 PK id: uuid
 FK owner_id: uuid
-FK profile_id: uuid
+FK profile_document_id: uuid
+FK profile_version_no: int
 FK observation_id: uuid
 FK job_id: uuid?
 decision: enum
@@ -145,7 +151,8 @@ gaps: json[]
 upside_tier: enum?
 exclusion_preference: json?
 certainty: enum?
-profile_revision: int
+context_snapshot: json
+text_provenance: json?
 reconsidered_at: timestamp?
 revision: int
 created_at: timestamp
@@ -153,7 +160,7 @@ updated_at: timestamp
 ```
 
 - `observation_id` → `SourceObservation` (required parent; many children per parent).
-- `profile_id` → `SearchProfile` (required parent; many children per parent).
+- `profile_document_id` → `DocumentVersion` (required parent; many children per parent).
 - `job_id` → `Job` (optional parent; many children per parent).
 
 ### Batch
@@ -195,7 +202,7 @@ created_at: timestamp
 
 ### Account
 
-Settings hold companion, notifications, timezone, routines, quiet sharing, prep budget, leaderboard opt-in/alias. Device appearance can remain local.
+Settings are bounded preferences. execution_policy holds separately revisioned, profile-keyed human-controlled permissions. Profile prose may request a policy but cannot grant it.
 
 ```text
 PK id: uuid
@@ -204,6 +211,8 @@ login_email: text
 settings: json
 personal_version: int
 settings_revision: int
+execution_policy: json
+policy_revision: int
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -234,35 +243,6 @@ updated_at: timestamp
 
 - `owner_id` → `Account` (required parent; at most one children per parent).
 
-### SearchProfile
-
-Many strategies share candidate facts. Structured criteria are canonical; render agent instructions. Snapshots in run/draft preserve historical settings.
-
-```text
-PK id: uuid
-FK owner_id: uuid
-FK tier_list_id: uuid?
-FK fallback_document_id: uuid?
-name: text
-active: bool
-criteria: json
-strengths: json
-values: json
-goals: text
-tradeoffs: text
-evaluation_rules: json[]
-availability: json
-writing: json
-policy: json
-custom_instructions: text
-revision: int
-created_at: timestamp
-updated_at: timestamp
-```
-
-- `tier_list_id` → `TierList` (optional parent; many children per parent).
-- `fallback_document_id` → `Document` (optional parent; many children per parent).
-
 ### SavedAnswer
 
 UQ(owner, exact normalized question, scope_key). Explicit global/resolved_company/unresolved_company scope; null company never implies global. Edit invalidates review. Draft snapshots preserve old answer text and revision.
@@ -289,20 +269,6 @@ updated_at: timestamp
 ```
 
 - `company_id` → `Company` (optional parent; many children per parent).
-
-### ProfileAnswer
-
-FK profile_id → SearchProfile; answer_id → SavedAnswer. Explicit same-owner selection; no copied question bank.
-
-```text
-PK/FK profile_id: uuid
-PK/FK answer_id: uuid
-created_at: timestamp
-updated_at: timestamp
-```
-
-- `profile_id` → `SearchProfile` (required parent; many children per parent).
-- `answer_id` → `SavedAnswer` (required parent; many children per parent).
 
 ### TierList
 
@@ -336,36 +302,25 @@ updated_at: timestamp
 - `list_id` → `TierList` (required parent; many children per parent).
 - `company_id` → `Company` (required parent; many children per parent).
 
-### SearchSource
-
-UQ(owner, kind, canonical_address). Source subscription is a search preference, not a live integration or source observation.
-
-```text
-PK id: uuid
-FK owner_id: uuid
-kind: enum
-label: text
-canonical_address: text
-enabled: bool
-revision: int
-created_at: timestamp
-updated_at: timestamp
-```
-
-
 ## 03 Documents and materials
 
 ### Document
 
-Stable identity for resume, cover letter, template, toolkit material, debrief or collection. Title is a current-version projection. Kind-specific validation; document ownership is always private.
+Stable private identity for profile, source_config, analysis, resume, letter, template, toolkit material, debrief or collection. Projection is rebuilt from the current version; no second writable profile/source system. Review is editorial, not permission or fact verification.
 
 ```text
 PK id: uuid
 FK owner_id: uuid
 kind: enum
+key: text?
 title: text (head projection)
 variant: text?
 current_version_no: int
+projection: json (derived)
+projection_version_no: int
+reviewed_version_no: int?
+FK reviewed_by: uuid?
+reviewed_at: timestamp?
 archived_at: timestamp?
 created_at: timestamp
 updated_at: timestamp
@@ -374,13 +329,13 @@ updated_at: timestamp
 
 ### DocumentVersion
 
-FK document_id → Document. Immutable. Exactly one body/blob/source URL representation per kind. Blob unique within owner+hash; distinct named documents may share bytes.
+Immutable content. Body OR blob OR URL OR collection manifest by kind; attributes only allow enumerated kind-specific fields. AI prose carries inputs, sources, author and optional generation info. Collection children are bounded pinned references in attributes.
 
 ```text
 PK/FK document_id: uuid
 PK version_no: int
 title: text
-payload_kind: body / blob / url
+payload_kind: body / blob / url / manifest
 format: enum
 body: text?
 blob_key: text?
@@ -390,41 +345,23 @@ mime: text?
 bytes: bigint?
 purpose: text
 sources: json[]
-metadata: json
+schema_version: int
+attributes: json
 week_of: date?
 prepared_for: date?
 company_context: json?
 author: json
+input_refs: json[]
+generation: json?
+uncertainty: text?
 created_at: timestamp
 ```
 
-- `document_id` → `Document` (required parent; many children per parent).
-
-### ProfileMaterial
-
-Assignments follow stable Document; draft creation pins a concrete DocumentVersion. Resume replacement keeps assignments.
-
-```text
-PK id: uuid
-FK profile_id: uuid
-FK document_id: uuid
-role_titles: text[]
-type: FT / Internship
-target: text?
-timeline: text?
-conditions: json
-active: bool
-position: int
-created_at: timestamp
-updated_at: timestamp
-```
-
-- `profile_id` → `SearchProfile` (required parent; many children per parent).
 - `document_id` → `Document` (required parent; many children per parent).
 
 ### DocumentLink
 
-Exactly one target FK. Same-owner links; real constraints rather than purpose-string parsing or polymorphic unvalidated IDs.
+Exactly one typed subject; same owner for private targets. job_id may reference public Job. Many analyses can attach to one subject. Links locate content; input_refs records exactly what informed a revision.
 
 ```text
 PK id: uuid
@@ -434,6 +371,13 @@ FK round_id: uuid?
 FK plan_id: uuid?
 FK task_id: uuid?
 FK company_target_id: uuid?
+FK job_id: uuid?
+FK decision_id: uuid?
+FK contact_id: uuid?
+FK conversation_id: uuid?
+FK run_id: uuid?
+FK profile_document_id: uuid?
+FK profile_version_no: int?
 relation: enum
 created_at: timestamp
 updated_at: timestamp
@@ -445,23 +389,12 @@ updated_at: timestamp
 - `plan_id` → `PrepPlan` (optional parent; many children per parent).
 - `task_id` → `PrepTask` (optional parent; many children per parent).
 - `company_target_id` → `CompanyTarget` (optional parent; many children per parent).
-
-### CollectionItem
-
-Both composite FKs point to DocumentVersion. Collection must be collection kind; owner match; no recursive cycles. Children are pinned, not copied.
-
-```text
-PK/FK collection_id: uuid
-PK/FK collection_version: int
-PK position: int
-FK child_document_id: uuid
-FK child_version: int
-section_title: text?
-created_at: timestamp
-```
-
-- `collection_id` → `DocumentVersion` (required parent; many children per parent).
-- `child_document_id` → `DocumentVersion` (required parent; many children per parent).
+- `job_id` → `Job` (optional parent; many children per parent).
+- `decision_id` → `SelectionDecision` (optional parent; many children per parent).
+- `contact_id` → `Contact` (optional parent; many children per parent).
+- `conversation_id` → `Conversation` (optional parent; many children per parent).
+- `run_id` → `SearchRun` (optional parent; many children per parent).
+- `profile_document_id` → `DocumentVersion` (optional parent; many children per parent).
 
 ## 04 Applications and evidence
 
@@ -473,7 +406,7 @@ UQ(owner, job). Tracker and queued work are views over one relationship. Opening
 PK id: uuid
 FK owner_id: uuid
 FK job_id: uuid
-FK search_profile_id: uuid?
+FK profile_document_id: uuid?
 opened_at: timestamp?
 queued_at: timestamp?
 recruiting_stage: enum
@@ -487,7 +420,7 @@ updated_at: timestamp
 ```
 
 - `job_id` → `Job` (required parent; many children per parent).
-- `search_profile_id` → `SearchProfile` (optional parent; many children per parent).
+- `profile_document_id` → `Document` (optional parent; many children per parent).
 
 ### DraftRevision
 
@@ -599,6 +532,7 @@ precision: unknown / day / time
 source: json
 notes: text
 revision: int
+text_provenance: json?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -643,6 +577,7 @@ due_date: date?
 position: int
 state: enum
 revision: int
+text_provenance: json?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -680,7 +615,7 @@ created_at: timestamp
 
 ### CompanyTarget
 
-UQ(owner, company) when resolved. Unresolved targets retain private name/website until registry resolution. Private research and action plan separate from public company facts. Contacts/apps derive by company ID; no duplicated ID arrays.
+UQ(owner, company) when resolved. Unresolved targets retain private label/website. Short interest/questions stay inline; long Research text is a linked analysis document, not a copied second body.
 
 ```text
 PK id: uuid
@@ -692,12 +627,11 @@ priority: enum
 interest: text
 teams: text[]
 questions: text[]
-research: text
-sources: json[]
 next_action: text?
 follow_up_date: date?
 archived_at: timestamp?
 revision: int
+text_provenance: json?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -726,6 +660,7 @@ reason: text?
 notes: text
 archived_at: timestamp?
 revision: int
+text_provenance: json?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -751,6 +686,7 @@ follow_up_date: date?
 url: text?
 notes: text
 revision: int
+text_provenance: json?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -1030,6 +966,7 @@ target_companies: json[]
 result_refs: json
 result_summary: text?
 evidence: json
+text_provenance: json?
 created_at: timestamp
 updated_at: timestamp
 ```
