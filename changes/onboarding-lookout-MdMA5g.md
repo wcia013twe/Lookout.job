@@ -8,3 +8,5 @@
 - Validation: 474 tests passed; data validation (147 roles), TypeScript, diff whitespace check, static design scan, and production export. Browser verified demo onboarding, card reveal, existing connector, country reset, Circle navigation, mobile overflow, and profile verification/invalidation; no browser errors observed.
 - Limits: real authenticated upload, live agent search/analysis, external notifications, and real submissions were not exercised. Existing Next.js 16.4.0 security advisory requires a separate dependency update; build retry completes.
 - Lavish review session ended; design work was committed and landed before implementation. No production deployment or remote publication.
+
+- Contrast follow-up: selected employment pills now keep light text against their existing dark gradient, resolving a conflicting light-fill style. Applies to the same controls in demo and real onboarding. Validation: CSS cascade inspection, diff check and catalog validation; no behavior changes.
