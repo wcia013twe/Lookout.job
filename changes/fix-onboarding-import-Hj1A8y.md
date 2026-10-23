@@ -28,3 +28,18 @@
 - Limits: no live OAuth or interactive-browser verification; no hosted migration, gateway deploy or production parity verification. Apply the timestamped migration and deploy gateway developer version 50 through the normal production workflow before advertising hosted support.
 
 - Integration: preserved concurrent signed-out empty-board/access controls and dynamic application-question changes. Anonymous/guest sessions keep their sign-in screen, and public toolkit guides stay public; only authenticated real accounts run the completion check. All 540 tests passed after integration, including the concurrent access/application checks; data validation passed (158 roles). Production build rerun after integration.
+
+## Production backend release — 2026-10-23
+
+- Source: merged/published main `b85aafb`; GitHub frontend deployment 40016969736 already passed. Reinstalled the current lockfile after integration; all 540 tests and data validation (158 roles) passed.
+- Applied the three missing committed migrations in order: workspace_reset (20261023061223), simplify_tracker_import (20261023160738), website_onboarding_completion (20261023195137). The managed migration tool generated execution timestamps; repaired only those three ledger versions to the canonical committed versions. Read-back comparison found all 52 local/hosted versions and names identical, with no missing or extra migrations.
+- Deployed merged-main agent-gateway v26 (developerVersion 50), agent-mcp v22 and workspace-reset v1 through the authenticated production CLI. All are ACTIVE; explicit in-function authentication remains enabled with platform verify_jwt=false. No feature-only source was deployed. Existing GitHub deploy.yml remains frontend-only.
+- Live HTTP checks with disposable accounts passed: fresh token issuance/credential read, human website completion, persistent read, identical-request replay, MCP read parity, human-only completion denial through MCP (403), cross-account isolation, developer contract 50, import list, reset preview and invalid-token rejection (401). Both temporary accounts were deleted; no real user's records or credentials were changed. A first verification-script pass misread the developer response envelope; corrected the test and reran the full pass successfully. Credentials stayed in process memory and were never printed or saved.
+- Security advisor reviewed before/after. New private reset/import tables intentionally have RLS and no direct client policies; reset-state definer access remains authenticated and owner-scoped. Existing advisory categories remain; no broad auth/config changes made.
+- Limits: no browser Google OAuth, real user import, external application submission or destructive reset was performed. No claim of unrelated feature parity. This release supersedes the earlier pending-backend limitation for onboarding completion.
+
+## Remove credentials from copied chat handoff
+
+- Replace bearer-token JSON setup copying with credential-free chat instructions in onboarding and settings. Copy token for secure entry is separate and explicitly returns only the raw token. Add revoke/start-over for the current onboarding token through the existing human-only connections.revoke boundary. No backend contract changes or credential deployment required.
+- Share safe instructions first, then enter the token only in the agent’s actual secure form or plugin/MCP settings. Waiting/copy feedback and shared demo instructions follow the same distinction. No secure URL is fabricated.
+- Verification: all 550 tests passed, including new credential-leak regression tests and existing fictional connection/revoke scenarios; data validation passed (158 roles); production build passed. No live user token was copied or revoked.
