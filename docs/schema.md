@@ -507,3 +507,44 @@ without the UI. Opening/revealing a pack remains local presentation state.
 
 Migration: `20261023060931_account_card_pack_widgets.sql`. Gateway instruction
 version 46 describes this contract. The task/widget database migration was applied and ownership/version checks were verified on the hosted project on 2026-10-23. Frontend/gateway discovery deployment and external-agent execution remain pending; the broader local schema is not deployed by this change.
+
+## Prepared hosted rollout (2026-10-23)
+
+Seventeen committed migrations plus `20261023062141_reconcile_hosted_schema.sql`
+are prepared to bring hosted storage from 35 to 54 application tables. They cover
+platform/MCP actions, Circle records and feeds, shared preparation, company
+workspaces, artifacts and revisions, resume replacement, canonical discovery links,
+and partial field updates. The reconciliation restores the current dispatcher,
+connection validation and protected preference handling after older missing work.
+
+The rollout copies legacy company-contact records into owned company workspaces,
+retains original notes, flags ambiguous/invalid records for review and archives the
+old company-contact entries. Existing jobs gain optional company links, discoveries
+gain exact-URL job links, and resumes gain replacement links. Existing application
+statuses, approvals and submission evidence are preserved. No inference engine,
+automation scheduler, new credentials, application submission or external messaging
+is activated. Circle availability remains gated until hosted permission checks pass.
+
+Applied-history SQL was compared with local sources; only comments/whitespace
+varied for equivalent names. Nine timestamp aliases are normalized without replaying
+those migrations. All 487 tests pass, including equality of fresh/upgraded function
+definitions and permissions. The exact atomic rollout was rehearsed with migration
+history guards and checksums of existing records (excluding the fields intentionally
+migrated). It uses a five-second lock timeout and rolls back on failed assertions.
+
+**Not deployed:** the user explicitly approved the complete production scope after
+the first automatic-review rejection. Automatic approval review rejected execution
+again despite that approval, citing the production-wide schema, permission, dispatcher
+and legacy-data changes. Hosted was rechecked unchanged: 31 recorded migrations and
+35 application tables. The tested SQL is prepared; execution remains blocked by the
+automatic review gate, not by missing user authorization. Frontend/Edge Function release
+is separate from this database migration.
+
+A follow-up live-impact audit found 77 catalog jobs (12 matching the initial company
+registry), and zero applications, approvals, submission attempts, resumes, private
+listings, legacy company records or active agent connections. A stricter deployment
+preflight was added to the prepared transaction: it takes write-conflicting locks
+and refuses deployment if those empty-state assumptions no longer hold. Both the
+successful upgrade and rejection/rollback paths were rehearsed. Automatic approval
+review still rejected that guarded rollout because of its schema/permission/dispatcher
+breadth. This attempt applied nothing; further user approval is not the missing input.
