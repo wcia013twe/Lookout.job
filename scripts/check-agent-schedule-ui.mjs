@@ -21,7 +21,7 @@ try {
   }),scenario);
   if(width<600)await page.getByRole('combobox',{name:'Profile section',exact:true}).selectOption('agent');
   else await page.getByRole('navigation',{name:'Profile sections',exact:true}).getByRole('button',{name:'My Agent',exact:true}).click();
-  await page.getByRole('tablist',{name:'Agent settings',exact:true}).getByRole('tab',{name:'Search',exact:true}).click();
+  await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Search',exact:true}).click();
   const tasks=page.getByRole('list',{name:'My Agent automation tasks',exact:true});await tasks.waitFor();
   const section=tasks.locator('xpath=ancestor::section[1]');
   if(scenario==='custom') {

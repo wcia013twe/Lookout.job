@@ -1,7 +1,7 @@
-# My Agent settings UI pass
+# My Agent boxed settings sections
 
-- Added accessible inner tabs with labeled panels, roving focus and arrow/Home/End navigation. Narrow layouts scroll the tab row rather than wrapping it.
-- Stacked pack actions below titles on mobile and allowed long titles to wrap. Task editors now expose expanded state and a Done editing label. Drafts and existing save contracts remain unchanged.
-- Demo coverage: reused fictional pack, long-source and connection fixtures; manually verified desktop and 390px mobile layouts, all settings sections, keyboard navigation, task draft preservation across tabs and successful demo task save. Added the walkthrough to next-app/README.md.
-- Validation: TypeScript, data validation (147 roles), diff whitespace check and Impeccable detector (no findings). Repository test suite: 520 passed, 0 failed.
-- Limits: no real-account permissions, connections or saves were changed; live backend operations and production deployment were not exercised. No service or MCP capability changed.
+- Replaced the earlier navigation/mobile-control pass at the user's request: restored the original navigation, pack rows and task-edit controls. Preserved newer automatic pack-task behavior.
+- Added themed, rounded borders and padding around Packs, Search, Sources and Connections; matched the separate sections under Other settings to the existing boxed Writing style.
+- Demo coverage: existing fictional fixtures cover packs, tasks, long source names and connections. Walkthrough updated in next-app/README.md.
+- Validation: TypeScript and data validation (147 roles) passed; desktop and 390px demo inspection confirmed boxes, with no page overflow for Sources or Connections. Updated existing demo script selectors for restored navigation. Detector reported only the pre-existing Inter font warning; the established font remains unchanged.
+- Limits: presentation only; no backend, MCP, permission or live-account changes.

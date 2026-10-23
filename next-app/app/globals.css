@@ -854,3 +854,23 @@ button:not(:disabled) {
 .workspace-shell .network-meeting-event p { overflow-wrap: anywhere; }
 .workspace-shell .network-meeting-editor { display: grid; gap: 18px; margin-top: 20px; padding-block: 24px; border-block: 1px solid var(--color-board-line); }
 .workspace-shell .network-meeting-editor h4 { font-size: 16px; font-weight: 600; }
+
+/* My Agent: give each settings section a clear, shared boundary. */
+.workspace-shell .agent-settings-box,
+.workspace-shell .agent-settings-other > .workspace-section {
+  margin-top: 0;
+  border: 1px solid var(--color-board-line);
+  border-radius: 12px;
+  background: var(--color-board-panel);
+  padding: 20px;
+}
+.workspace-shell .agent-settings-box > .workspace-section {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+.workspace-shell .agent-settings-other > .workspace-section { margin-top: 24px; }
+@media (max-width: 639px) {
+  .workspace-shell .agent-settings-box,
+  .workspace-shell .agent-settings-other > .workspace-section { padding: 16px; }
+}

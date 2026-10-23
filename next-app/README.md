@@ -392,12 +392,9 @@ IDs satisfy task validation. Reload/reset restores the fixtures.
 reset, responsive layout, an empty mocked account and explicit API failure with no
 production account writes.
 
-My Agent UI pass: the inner settings navigation uses labeled tab panels with roving
-keyboard focus (Left/Right, Home/End) and horizontal scrolling on narrow screens.
-Pack actions stack below titles on mobile. Task editors expose their expanded state
-and a Done editing control; Save tasks still commits the draft separately.
-Demo verification: at desktop and 390px width, visit all five tabs, use keyboard
-navigation, edit a task name, switch to Packs and back, close the editor and save.
-Confirm the saved demo message and disabled Save tasks button. Existing fictional
-long source names and active/expired connections cover the adjacent settings states.
-These presentation changes retain the existing scoped save services and MCP boundaries.
+My Agent keeps its existing section navigation and controls. Packs, Search, Sources
+and Connections each have a bordered, rounded settings box. In Other settings,
+Writing style retains its existing box; Circle sharing, Muse updates and Application
+automation each have a matching boundary. Demo check: visit all five sections on
+desktop and mobile, confirm each box encloses its content and edit/save a fictional
+task. Existing save services and MCP boundaries are unchanged.
