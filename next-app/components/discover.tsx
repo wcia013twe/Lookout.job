@@ -55,10 +55,11 @@ export default function Discover() {
   const roleGroups = [["FT", "Full-time"], ["Internship", "Internships"]].map(([key, label]) => ({ key, label, roles: roles.filter((role: Role) => role.employmentType === key) }));
   if(newArrival&&!publicView)return <>
     <Heading title="Discover">Your agent’s finds will appear here.</Heading>
-    {firstRole ? <section className="mx-auto max-w-lg py-8" aria-label="Your first role to explore">
+    {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">
       <p className="mb-3 text-sm text-board-muted">Saved from onboarding · awaiting your agent’s review</p>
-      <article className="rounded-2xl border border-board-line bg-board-panel p-6"><p className="text-sm text-board-muted">{firstRole.company}</p><h2 className="mt-2 text-xl font-semibold">{firstRole.title}</h2><p className="mt-3 text-sm text-board-muted">{firstRole.location} · {firstRole.employmentType==='FT'?'Full-time':firstRole.employmentType}</p><button type="button" className="mt-5 min-h-11 text-sm font-semibold text-board-accent" onClick={()=>setPreview(firstRole)}>Preview role</button></article>
-      <p className="mt-4 text-sm text-board-muted">Your agent will check availability and compare it with your profile.</p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <RoleCard role={{...firstRole,whyItFits:"Saved from onboarding. Your agent will check availability and compare this role with your profile and résumé."}} onPreview={setPreview}/>
+      </div>
       <button type="button" className="mt-4 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={()=>setPublicView(true)}>Explore public roles</button>
     </section> : <div className="mx-auto flex max-w-md flex-col items-center px-5 py-16 text-center">
       <div className="mb-5 grid size-14 place-items-center rounded-2xl border border-board-line bg-board-panel text-board-accent"><ProfileIcon name="briefcase" width={26} height={26}/></div>
