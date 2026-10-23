@@ -28,3 +28,19 @@
 .lookout-onboarding .gold-body [aria-label="Job match preview"] .origin-left{background:linear-gradient(90deg,#c19743,#ffdc81)}
 
 .lookout-onboarding .gold-body h2{font-weight:650}
+
+/* Keep connection setup in the same quiet rhythm as the preceding steps. */
+.lookout-onboarding .agent-connect-heading{margin:8px 0 18px;max-width:560px}
+.lookout-onboarding .agent-connect-heading h2{font-size:21px}
+.lookout-onboarding .agent-connect-heading p,.lookout-onboarding .agent-connect-permissions{font-size:13px;color:var(--muted);line-height:1.65}
+.lookout-onboarding .agent-connect{max-width:600px}
+.lookout-onboarding .agent-connect-options{margin:0 0 14px;border-bottom:1px solid var(--line)}
+.lookout-onboarding .agent-connect-options>summary{font-size:13px;min-height:44px;display:list-item;align-content:center}
+.lookout-onboarding .agent-connect-permissions a{text-decoration:underline;text-underline-offset:3px}
+.lookout-onboarding .agent-connect .agent-connect-permissions{margin:0 0 18px}
+.lookout-onboarding .agent-connect-later{display:block;margin-top:24px}
+.lookout-onboarding .agent-demo-continue{margin-top:18px}
+.lookout-onboarding .agent-invite-button{color:var(--muted);background:none;border:0;padding:0}
+
+.lookout-onboarding .call-sidebar>h2{font-size:14px;line-height:1.4;letter-spacing:normal}
+@media(min-width:768px){.lookout-onboarding .call-focus .call-speaker,.lookout-onboarding .call-focus .call-speaker-media{min-height:280px;height:280px}.lookout-onboarding .call-sidebar{height:329px}}

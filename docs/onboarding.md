@@ -16,3 +16,5 @@ The catalog preview deterministically filters existing roles by the supplied pre
 - Circle storytelling is a labeled, fictional animation and navigation to the existing Circles page. It creates no message, membership, calendar event or submission and adds no service capability.
 
 The `?demo=1` path exercises the same UI with isolated in-memory fixtures, including a simulated runtime connection and preparation completion. Real connected-agent search, model analysis, upload, notification delivery and external execution require their existing authenticated services; this pass does not claim new deployed MCP capabilities.
+
+The connection scene keeps the call-room preview and one secure-connection action. Connection naming, access presets and optional scopes remain available under Connection settings; existing credentials are managed under Manage connections. The visible summary discloses application preparation access, human review and the 30-day expiry. Cappy remains a preview. Choosing a character never proves runtime connectivity. Existing scoped connection tools and onboarding state transitions remain unchanged.
