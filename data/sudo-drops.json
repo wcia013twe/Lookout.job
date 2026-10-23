@@ -1,5 +1,5 @@
 {
- "date": "2026-10-22",
+ "date": "2026-10-23",
  "source": "zero2sudo",
  "drops": [
   {
@@ -2923,6 +2923,149 @@
    "status": "added",
    "skipReason": null,
    "note": "Verified live 2026-10-22 evening on careers.gf.com (Req JR-2604055, posted 10/20/2026, Eightfold-hosted; URL captured from the job-detail panel, requisition ID is the stable identifier). Bachelor's/Master's/PhD in CS/CE eligible, 3.0 GPA minimum. GF's Workday URL guess was invalid; official search is careers.gf.com."
+  },
+  {
+   "company": "Skydio",
+   "title": "Frontend Software Engineer Intern - Summer 2027",
+   "location": "San Mateo, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://jobs.ashbyhq.com",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Frontend-only role, off backend/infra targets",
+   "note": "Story-verified 2026-10-23 midday. R&D department frontend intern."
+  },
+  {
+   "company": "Patreon",
+   "title": "Product Manager Intern - Summer 2027",
+   "location": "New York, NY; San Francisco, CA",
+   "type": "Internship",
+   "comp": "$50/hr",
+   "url": "https://jobs.ashbyhq.com",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "PM role (Design and Research dept), not SWE",
+   "note": "Story-verified 2026-10-23 midday. Product Manager Intern, Design and Research."
+  },
+  {
+   "company": "Qualcomm",
+   "title": "FY27 Intern - AI and DSP Applications Engineering Internship",
+   "location": "Markham, Ontario, Canada",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://careers.qualcomm.com",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Non-US (Canada, 16-month term) + DSP applications engineering = hardware-adjacent, off targets",
+   "note": "Story-verified 2026-10-23 midday. 16-month intern term, Markham Ontario."
+  },
+  {
+   "company": "Man Group",
+   "title": "Systematic Quant Intern",
+   "location": "Boston, MA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://job-boards.eu.greenhouse.io",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Quant finance internship, not SWE; off targets",
+   "note": "Story-verified 2026-10-23 midday."
+  },
+  {
+   "company": "KLA",
+   "title": "Software Engineering Intern",
+   "location": "Milpitas, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://kla.wd1.myworkdayjobs.com",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Weak fit: generic SWE at semiconductor equipment maker, off backend/infra targets",
+   "note": "Story-verified 2026-10-23 midday; posted 'Today'."
+  },
+  {
+   "company": "Cisco",
+   "title": "Machine Learning Engineer I (Intern)",
+   "location": "United States (4 locations; Hybrid)",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://careers.cisco.com",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Undergrad-gated (requires current undergrad enrollment; MS student ineligible)",
+   "note": "Verified live 2026-10-23 midday (careers.cisco.com, published 2026-10-21, req CISCISGLOBAL2026803EXTERNALENGLOBAL). Story said 4 locations/hybrid; posting page lists San Jose, CA only. Cisco text notes 'this exact role may not be open today' (evergreen pipeline). Skip: eligibility gate."
+  },
+  {
+   "company": "Etsy",
+   "title": "Software Engineer I, Marketplace Makers",
+   "location": "Brooklyn, NY (Hybrid)",
+   "type": "FT",
+   "comp": "$120,000-$162,000 (Geo-1) + equity + bonus",
+   "url": "https://careers.etsy.com/jobs/software-engineer-i-marketplace-makers-brooklyn-new-york-united-states",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live 2026-10-23 midday (careers.etsy.com, published 2026-10-21). Brooklyn, NY hybrid (1-2x/week in office; remote considered). Early-career, no degree gate or grad-year window. Marketplace Makers team: Star Seller program, Shop Manager seller tooling, A/B experiments."
+  },
+  {
+   "company": "Amazon",
+   "title": "Jr. Software Development Engineer (Jr. Developer Program)",
+   "location": "Detroit, MI",
+   "type": "FT",
+   "comp": null,
+   "url": "https://www.amazon.jobs",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "No live amazon.jobs req found; only a stale June-2026-cohort version (published 2026-01-23, grad gate 'June 2028 and beyond') — weak fit regardless",
+   "note": "Story-verified 2026-10-23 midday. No canonical amazon.jobs URL locatable via text search. Skip: unverifiable and off-track."
+  },
+  {
+   "company": "Amazon",
+   "title": "2027 Frontier AI & Robotics Internship (Undergraduate)",
+   "location": "United States",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.amazon.jobs",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Story-verified 2026-10-23 midday (Job ID 10564599, Amazon.com Services LLC, United States). Exact req 10564599 not locatable via text search; a live 2027 Robotics SDE intern req exists on amazon.jobs (job 10535280, 'Software Development Engineer Intern, ROBOTICS - 2027'), likely the same program. Published eligibility window: degree conferral Oct 2027 - Sep 2029 + one term remaining after the internship; hinges on his May vs Dec 2027 grad-date answer. Kept pending."
+  },
+  {
+   "company": "MongoDB",
+   "title": "2027 Software Engineering Intern, AMER",
+   "location": "Austin, TX; New York City, NY; Palo Alto, CA; San Francisco, CA; Seattle, WA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.mongodb.com",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Story-verified 2026-10-23 midday (Austin/NYC/Palo Alto/SF/Seattle, mongodb.com). The 2027 AMER req was not locatable via text search (only stale 2026 AMER req 425371 and a live 2027 Dublin req, Ireland = non-US). Kept pending; likely real but JS-heavy careers site evaded text verification."
+  },
+  {
+   "company": "Bosch",
+   "title": "Agentic AI R&D Intern",
+   "location": "Sunnyvale, CA; Pittsburgh, PA; Cambridge, MA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://jobs.smartrecruiters.com",
+   "dateSeen": "2026-10-23",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA — Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
   }
  ]
 }
