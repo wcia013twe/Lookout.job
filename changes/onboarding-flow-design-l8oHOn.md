@@ -9,3 +9,10 @@
 - Demo: isolated local fictional data only. Files are selected locally but not parsed/uploaded; LinkedIn is not imported; no live messages, connections, applications or Circle memberships are created. Production UI/backend/demo fixtures remain unchanged.
 - Limits: the complete secure sign-in/token/permissions form remains an implementation seam for reusing AgentConnections, not a live connector in this prototype. Production notification/submission paths and LinkedIn import are not implemented or verified. No production app build or database tests needed for this design-only change.
 - Rebuild after normal dependency installation: NODE_PATH=./next-app/node_modules npx esbuild .lavish/onboarding-flow.tsx --bundle --jsx=automatic --minify --define:process.env.NODE_ENV='"production"' --outfile=.lavish/onboarding-preview.js
+
+
+## Gold-card follow-up
+- Matched Discover’s legendary gold banner, faceted surface and dark card body. The same card opens, moves left and reveals the analysis; fit bars fill before the text types. Reduced motion shows the result immediately.
+- Replaced work and location text fields with accessible radio pills plus custom entries. Removed the alternate-role and duplicate exploration actions; kept the primary action and one “I’ll do this later.”
+- Validation: rebuilt React bundle, node syntax check, data validation and diff check. Browser verified selected work/location appear on the card and the continuous reveal reaches the analysis. Desktop inspected; mobile card/analysis stack fits a 390px viewport without horizontal overflow.
+- Live résumé/search request remains pending runtime choice and résumé input. Existing upload still selects a filename only. Fit bars, role and analysis remain explicitly illustrative; no live-search integration or inference was claimed or enabled.
