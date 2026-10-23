@@ -9,7 +9,9 @@ canonical documents, AI-written content, ownership and the local/hosted distinct
 
 ## Schema and deployment
 
-**`supabase/migrations/` is the only schema source.** Hosted history currently differs from the local chain; reconcile names, SQL and dependencies before release. Do not reapply the initial schema to the live project or keep a second schema dump. `backend/check-schema.mjs` applies the migration chain to disposable PostgreSQL with Auth/Storage test doubles; hosted checks cover real permissions as well.
+**`supabase/migrations/` is the only schema source.** The prepared hosted rollout is applied; the separate workspace-reset migration remains local. See the schema reference for the current release receipt. Reconcile names, SQL and dependencies before subsequent releases. Do not reapply the initial schema to the live project or keep a second schema dump. `backend/check-schema.mjs` applies the migration chain to disposable PostgreSQL with Auth/Storage test doubles; hosted checks cover real permissions as well.
+
+Gateway deployment 24 and MCP deployment 20 were released from merged local main `25f8160` on 2026-10-23, with developer instructions 47. Source read-back and live authentication-denial checks passed; authenticated external-agent round trips remain unverified. GitHub Actions currently deploys only the frontend; this backend release used the Supabase connector.
 
 The two Edge Functions are deployed with platform `verify_jwt=false` because they implement custom authentication: human sessions are verified with `getUser`; opaque agent tokens are verified for hash, expiry, revocation and scope. Their server-only RPCs are not executable by anonymous or browser-authenticated roles. Never expose service-role credentials or add a general SQL tool.
 

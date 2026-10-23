@@ -77,8 +77,9 @@ consent must be recorded by the actual human boundary. Client names, an agent's
 `approved: true`, a chat assertion or tool permission are not approval evidence.
 Consequently routine work is headless, but complete UI independence is not yet
 implemented. Do not advertise it until a secure human-confirmation path is built
-and tested. These new tools also require the pending migration and gateway/MCP
-rollout; local checks do not establish hosted or client support.
+and tested. The database rollout and gateway/MCP code are deployed as of 2026-10-23; see
+[the release receipt](../docs/schema.md#edge-function-release-2026-10-23). Authenticated
+MCP discovery/read/write and individual client support remain unverified.
 
 ## Connect an agent
 

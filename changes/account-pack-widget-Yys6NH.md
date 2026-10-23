@@ -20,3 +20,9 @@
 - Security advisors: authenticated owner-checking SECURITY DEFINER facades and private RLS tables without direct policies are intentional; existing leaked-password-protection warning remains. No external messaging, credential issuance, account reset or scheduler activation occurred.
 - Release limits: Circle availability remains disabled pending hosted consent/access release checks. Frontend and Edge Functions were not deployed and GitHub was not pushed. The independently developed workspace-reset migration is present locally but was not included in the prepared rollout.
 - Post-rollout checkout validation: all 498 current tests pass, catalog validation passes (147 roles), and `git diff --check` is clean. This pass changes documentation only; prior UI/demo coverage remains applicable.
+
+## Edge Function release
+
+- Released merged local-main commit `25f8160` using the Supabase connector: gateway deployment 24, MCP deployment 20, developer instructions 47. Existing GitHub Actions deploys the frontend only; no automatic backend deployment job exists.
+- Read back deployed source: all 43 gateway and 22 MCP bundled files match committed source. Both functions are ACTIVE. Missing/invalid credential HTTP probes return 401 through both endpoints, including the gateway database credential check.
+- Reused the preceding 498-test pass and 147-role catalog validation; this release adds no application code or demo behavior. Authenticated MCP discovery and write/read round trips still require a human-created personal-agent connection. No credential was issued, account reset, or Circle gate enabled. Separate workspace-reset migration/function and frontend remain undeployed by this pass; no GitHub push.
