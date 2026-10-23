@@ -184,18 +184,22 @@ neutral blue-gray for other documents. Interactive format takes precedence over
 document kind. Each tone has light and dark variants; these category colors do
 not replace shared workspace tokens or action styles.
 
-The shelf uses two columns, becoming one below 480px. An unfiltered leading weekly
-pack spans both columns and includes its purpose; other covers show a title, format
-icon and kind, with compact context, week and source metadata beneath. Covers use
-tonal fills and rounded corners (12px) with a subtle hover fill change rather than
-outlined card frames. Cover titles are larger than metadata (24px versus 12px on
-desktop); the featured title is larger again (28px).
+Prepared for you leads with full-width colored covers for explicitly dated upcoming
+weekly/interview prep. Other saved material uses compact divided rows beneath a
+separate Saved materials heading, with a title, purpose, type and context. Search
+and archive filters sit with the saved list and cover all Toolkit material. Past
+prep moves into that list; undated notes do not become featured based on recency.
+Cover titles remain larger than metadata (28px versus 12px on desktop).
 
 The reader leads with one title, purpose and the agent discussion action, followed
 by compact metadata and the material itself. Markdown sits on a quiet reading
 surface; interactive content fills a borderless embedded stage. Versions, archive
 controls and sources live under the native “Material details” disclosure. Discussion
-and planning requests retain their explicit copy-to-agent interaction.
+and planning requests retain their explicit copy-to-agent interaction. Prep
+collections show an overview followed by the referenced saved revisions in reading
+order, with sticky contents beside them on desktop and a static contents list above
+on mobile. Reuse the same safe Markdown and sandboxed HTML stages. Separate materials
+with generous space and fine rules rather than nested cards.
 
 ## Do's and Don'ts
 

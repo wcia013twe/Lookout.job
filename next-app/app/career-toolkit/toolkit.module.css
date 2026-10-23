@@ -262,3 +262,52 @@
  .skillOverview { grid-template-columns: minmax(0,1fr); }
  .skillInvocation { grid-row: 1; }
 }
+
+/* Upcoming prep leads; reusable material stays on a quiet, compact shelf. */
+.shelfDescription { margin-top: .375rem; max-width: 65ch; color: var(--color-board-muted); font-size: .875rem; line-height: 1.7; }
+.savedShelf { margin-top: 3rem; }
+.prepEmpty { display: flex; align-items: flex-start; gap: 1rem; margin-top: 1.5rem; padding: 1.5rem; border: 1px dashed var(--color-board-line); border-radius: 12px; color: var(--color-board-muted); }
+.prepEmpty h3 { color: var(--color-board-text); font-size: .9375rem; font-weight: 600; }
+.prepEmpty p { margin-top: .5rem; font-size: .875rem; line-height: 1.7; }
+.prepEmpty > svg { flex-shrink: 0; }
+.savedMaterialList { list-style: none; margin-top: 1.25rem; padding: 0; }
+.savedMaterialList > li { border-bottom: 1px solid var(--color-board-line); }
+.savedMaterialRow { display: flex; align-items: flex-start; gap: 1rem; min-height: 88px; padding: 1.25rem .25rem; border-radius: 8px; }
+.savedMaterialRow:hover { background: var(--color-board-tag); }
+.savedMaterialIcon { display: inline-flex; padding-top: .125rem; color: var(--color-board-muted); flex-shrink: 0; }
+.savedMaterialRow > div { flex: 1; min-width: 0; }
+.savedMaterialRow h3 { font-size: .9375rem; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.savedMaterialRow p { color: var(--color-board-muted); font-size: .8125rem; line-height: 1.7; margin-top: .375rem; max-width: 75ch; }
+.savedMaterialRow div > span { display: block; margin-top: .375rem; color: var(--color-board-muted); font-size: .75rem; line-height: 1.7; }
+.savedMaterialRow > svg { flex-shrink: 0; margin-top: .125rem; color: var(--color-board-muted); }
+.collectionReader { display: grid; grid-template-columns: 13rem minmax(0,1fr); gap: 2rem; border-top: 1px solid var(--color-board-line); margin-top: 2.5rem; padding-top: 2rem; align-items: start; }
+.collectionContents { position: sticky; top: 1.5rem; }
+.collectionContents h2 { font-size: .875rem; font-weight: 600; }
+.collectionContents ol { list-style: decimal; padding-left: 1.25rem; margin-top: .75rem; color: var(--color-board-muted); }
+.collectionContents a { display: block; padding: .625rem .25rem; font-size: .8125rem; line-height: 1.7; overflow-wrap: anywhere; }
+.collectionContents a:hover { color: var(--color-board-accent); text-decoration: underline; text-underline-offset: 4px; }
+.collectionContents > p { font-size: .75rem; line-height: 1.7; color: var(--color-board-muted); margin-top: 1rem; }
+.collectionSections { min-width: 0; }
+.collectionSection { scroll-margin-top: 1.5rem; }
+.collectionSection + .collectionSection { border-top: 1px solid var(--color-board-line); padding-top: 2rem; margin-top: 3rem; }
+.collectionSection > header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: .75rem 1rem; margin-bottom: 1.5rem; }
+.collectionSection > header > div { flex: 1 1 20rem; min-width: 0; }
+.collectionSection h2 { font-size: 1.5rem; line-height: 1.3; font-weight: 650; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.collectionSection > header p, .collectionSection > p { font-size: .875rem; line-height: 1.7; color: var(--color-board-muted); margin-top: .625rem; max-width: 70ch; }
+.collectionSection .documentStage { padding: 1.5rem; }
+.collectionSources { padding: .75rem 0; }
+.collectionSources li + li { margin-top: .75rem; }
+.collectionSources a { color: var(--color-board-accent); text-decoration: underline; text-underline-offset: 4px; overflow-wrap: anywhere; }
+.collectionSources span { display: block; font-size: .75rem; margin-top: .25rem; }
+@media (max-width: 800px) {
+ .collectionReader { grid-template-columns: minmax(0,1fr); gap: 2rem; }
+ .collectionContents { position: static; }
+ .collectionContents ol { columns: 2; column-gap: 2rem; }
+ .collectionContents li { break-inside: avoid; }
+}
+@media (max-width: 480px) {
+ .savedShelf { margin-top: 2.5rem; }
+ .savedMaterialRow { gap: .75rem; }
+ .collectionContents ol { columns: 1; }
+ .collectionSection .documentStage { padding: 1.25rem; }
+}
