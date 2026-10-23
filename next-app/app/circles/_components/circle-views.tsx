@@ -8,6 +8,8 @@ import identity from './circle-views.module.css';
 import styles from './conversation.module.css';
 import CircleRoom from './circle-room';
 import ClubhouseProgress from './clubhouse-progress';
+import ClubhouseFeed,{isActivityUpdate} from './clubhouse-feed';
+import layout from './clubhouse-layout.module.css';
 import CircleChat from './circle-chat';
 import Editor from './editor';
 import JobAttachment from './job-attachment';
@@ -28,23 +30,22 @@ export function ContextChips({content}:{content:Content}){
 
 const channels=[{id:'clubhouse',label:'Clubhouse',icon:'clubhouse'},{id:'intel',label:'Experiences',icon:'round'},{id:'resource',label:'Resources',icon:'resource'},{id:'settings',label:'Circle settings',icon:'settings'}];
 export default function CircleDashboard({initialChannel='clubhouse',detail,posts,demo,openPost,focused,controls,settings,pagination,search,searching,busy,save}:Props){
- const [person,setPerson]=useState(''),[channel,setChannel]=useState(initialChannel as string),[sharing,setSharing]=useState(false);
+ const [person,setPerson]=useState(''),[channel,setChannel]=useState(initialChannel as string),[sharing,setSharing]=useState(false),[trophies,setTrophies]=useState(false);
  const composer=useRef<HTMLDivElement>(null);
  const published=posts.filter(post=>!post.parentId&&post.state==='published'&&post.revision===post.publishedRevision);
  const selected=detail.members.find(member=>member.id===person);
  const visible=published.filter(post=>(!selected||post.author===selected.alias)&&(!!selected||(channel==='resource'?post.content.type==='resource':post.content.type!=='resource'&&post.content.type!=='discussion')));
- const chat=published.filter(post=>post.content.type==='discussion');
+ const chat=published.filter(post=>post.content.type==='discussion'&&!isActivityUpdate(post));
  const title=clean(detail.circle.name);
  function selectPerson(id:string){setPerson(id);if(id)setChannel('intel');requestAnimationFrame(()=>document.getElementById('circle-conversation-title')?.scrollIntoView({block:'start'}));}
  function navigate(id:string){setChannel(id);setPerson('');setSharing(false);}
  return <section className={identity.circle} aria-label={`${title} Circle`}>
   <header className={identity.identity}><div className={identity.emblem}><CircleEmblem/></div><div className={identity.identityCopy}><div className={identity.titleRow}><h1>{title}</h1>{controls}</div><div className={identity.memberLine}><span className={styles.miniMembers}>{detail.members.slice(0,5).map(member=><Avatar key={member.id} name={member.alias} demo={demo}/>)}</span><span>{detail.members.length} members · Private Circle</span></div></div></header>
-  {!focused&&<div className={styles.workspace}>
-   <aside className={styles.rail} aria-label="Circle navigation"><p className={styles.railTitle}>Your Circle</p><nav aria-label="Circle spaces">{channels.map(item=><button key={item.id} type="button" aria-pressed={channel===item.id} onClick={()=>navigate(item.id)}><Icon kind={item.icon}/>{item.label}</button>)}</nav></aside>
-   <section className={styles.conversations} aria-labelledby="circle-conversation-title">
+  {!focused&&<div className={`${styles.workspace} ${layout.workspace}`}>
+   <aside className={`${styles.rail} ${layout.navigation}`} aria-label="Circle navigation"><p className={styles.railTitle}>Your Circle</p><nav aria-label="Circle spaces">{channels.map(item=><button key={item.id} type="button" aria-pressed={channel===item.id} onClick={()=>navigate(item.id)}><Icon kind={item.icon}/>{item.label}</button>)}</nav></aside>
+   <section className={`${styles.conversations} ${layout.body}`} aria-labelledby="circle-conversation-title">
     <header className={styles.chatHeader}><div><h2 id="circle-conversation-title">{channel==='clubhouse'?'Clubhouse':channel==='settings'?'Circle settings':searching?'Search results':channels.find(c=>c.id===channel)?.label}</h2><p>{channel==='clubhouse'?'Your people, making progress together.':channel==='settings'?'Manage your people and invites.':selected?`Shared by ${clean(selected.alias)}`:channel==='intel'?'Interview experiences, offers, and the inside story.':'Good finds. Useful reads. Shared by your people.'}</p></div>{channel!=='clubhouse'&&channel!=='settings'&&<details className={styles.search}><summary aria-label="Search contributions"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></summary><div>{search}</div></details>}</header>
     {channel==='settings'?settings:channel==='clubhouse'?<>
-     <ClubhouseProgress key={`progress:${detail.circle.id}`} posts={published} demo={demo} openPost={openPost}/>
      <CircleRoom embedded key={`room:${detail.circle.id}`} detail={detail} posts={published} demo={demo} activityControl={<div className={styles.activityControl}><button type="button" className={secondary} aria-expanded={sharing} aria-controls="clubhouse-activity-composer" aria-describedby="clubhouse-activity-hint" onClick={()=>setSharing(!sharing)}>{sharing?'Close update':'Write an update'}</button><p id="clubhouse-activity-hint">Your tracker stays private. Review each update before sharing.</p></div>} person={person} selectPerson={selectPerson} openPost={openPost}/>
      {sharing&&<div id="clubhouse-activity-composer" ref={composer} className={styles.composerWrap}><Editor demo={demo} inline activityUpdate busy={busy} save={save} cancel={()=>setSharing(false)}/></div>}
     </>:<>
@@ -54,7 +55,14 @@ export default function CircleDashboard({initialChannel='clubhouse',detail,posts
      {pagination}
      <div ref={composer} className={styles.composerWrap}><Editor demo={demo} key={channel} inline initial={{type:channel==='resource'?'resource':'interview_report',title:'',body:'',sources:[],provenance:'user_confirmed',personalDisclosure:false}} contexts={published.map(p=>p.content)} busy={busy} save={save} cancel={()=>{}}/></div>
     </>}
-    <div hidden={channel!=='clubhouse'}><CircleChat forumPosts={published.filter(p=>p.content.type!=='discussion')} posts={chat} demo={demo} busy={busy} save={save} openPost={openPost}/></div>
+    <div hidden={channel!=='clubhouse'} className={layout.lower}>
+     <div className={layout.updatesColumn}>
+      <header className={layout.updatesHeader}><div><h3>{trophies?'Trophy room':'Updates'}</h3><p>{trophies?'Milestones worth celebrating.':'The latest from your Circle.'}</p></div><button type="button" className={secondary} aria-pressed={trophies} onClick={()=>setTrophies(!trophies)}>{trophies?'Back to updates':'Trophy room'}</button><a className={layout.jump} href="#clubhouse-chat">Jump to chat</a></header>
+      {trophies?<ClubhouseProgress key={`progress:${detail.circle.id}`} posts={published} demo={demo} openPost={openPost} milestonesOnly/>:<ClubhouseFeed posts={published} demo={demo} openPost={openPost}/>}
+      {pagination}
+     </div>
+     <div id="clubhouse-chat" className={layout.chatColumn}><CircleChat forumPosts={published.filter(p=>p.content.type!=='discussion')} posts={chat} demo={demo} busy={busy} save={save} openPost={openPost}/></div>
+    </div>
    </section>
   </div>}
  </section>;

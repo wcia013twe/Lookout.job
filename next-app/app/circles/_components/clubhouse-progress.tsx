@@ -6,15 +6,15 @@ import {companionForMember} from './companions';
 import styles from './clubhouse-progress.module.css';
 
 function Trophy(){return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 3h8m-6-3h4v3"/></svg>;}
-export default function ClubhouseProgress({posts,demo,openPost}:{posts:Post[];demo:boolean;openPost:(post:Post)=>void}) {
+export default function ClubhouseProgress({posts,demo,openPost,milestonesOnly=false}:{posts:Post[];demo:boolean;openPost:(post:Post)=>void;milestonesOnly?:boolean}) {
  const [expanded,setExpanded]=useState(false);
  const updates=posts.filter(post=>{
   const activity=parseCircleActivity(post.content.body);
-  return !post.parentId&&post.state==='published'&&post.revision===post.publishedRevision&&(post.content.type==='milestone'||activity.highlights.length>0||!!activity.goal||!!activity.help);
+  return !post.parentId&&post.state==='published'&&post.revision===post.publishedRevision&&(post.content.type==='milestone'||(!milestonesOnly&&(activity.highlights.length>0||!!activity.goal||!!activity.help)));
  }).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||b.id.localeCompare(a.id));
  const visible=expanded?updates:updates.slice(0,3);
  return <section className={styles.room} aria-labelledby="clubhouse-progress-title">
-  <header className={styles.header}><span className={styles.trophy}><Trophy/></span><div><h3 id="clubhouse-progress-title">Trophy room</h3><p>Small steps. Big moments. Your people.</p></div><span className={styles.disclosure}>{demo?'Fictional updates':'Shared with your Circle'}</span></header>
+  <header className={styles.header}><span className={styles.trophy}><Trophy/></span><div><h3 id="clubhouse-progress-title">Trophy room</h3><p>Big moments. Your people.</p></div><span className={styles.disclosure}>{demo?'Fictional updates':'Shared with your Circle'}</span></header>
   {visible.length?<ul id="clubhouse-progress-updates" className={styles.updates}>{visible.map(post=>{
    const activity=parseCircleActivity(post.content.body),goal=activityGoalProgress(activity.goal),name=post.author.replace(' (demo)','');
    return <li key={post.id} className={styles.update}>
@@ -29,7 +29,7 @@ export default function ClubhouseProgress({posts,demo,openPost}:{posts:Post[];de
      <footer className={styles.footer}>{post.content.stage&&<span className={styles.stage}>{post.content.stage}</span>}<button type="button" onClick={()=>openPost(post)}>{post.content.type==='milestone'?'Celebrate & reply':'Open update & reply'}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button></footer>
     </div>
    </li>;
-  })}</ul>:<div className={styles.empty}><Trophy/><h4>Make room for your first win.</h4><p>Write an update to share a milestone, a goal, or a little progress. Your private tracker stays private.</p></div>}
+  })}</ul>:<div className={styles.empty}><Trophy/><h4>Make room for your first win.</h4><p>Share a milestone with your Circle when you have something to celebrate. Your private tracker stays private.</p></div>}
   {updates.length>3&&<button type="button" className={styles.more} aria-expanded={expanded} aria-controls="clubhouse-progress-updates" onClick={()=>setExpanded(!expanded)}>{expanded?'Show latest updates':`View all ${updates.length} updates`}</button>}
  </section>;
 }

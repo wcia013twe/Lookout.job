@@ -296,3 +296,9 @@ The Clubhouse now opens with Trophy room before the companion room. It shows the
 Directory banners display up to five actual Circle members and the full member count, matching the inner Circle header. They load membership through existing circles.read rather than inferring people from shared companies or posts. Fictional previews use the same companion mapping as the Circle header; real members use initials. Loading and unavailable states do not invent members or counts. No backend or MCP changes.
 
 Trophy room uses a compact member-led update list with companion avatars in the fictional demo, real-member initials, checked highlights, themed goal tracks and quiet reply actions. The visual treatment changes no contribution or visibility rules.
+
+### Clubhouse-first layout and optional Trophy room
+
+The current Clubhouse leads with the companion scene beneath horizontal Circle navigation. Published shared updates appear below it, with Circle chat to their right on wide screens and beneath on narrow screens. Structured progress updates appear in the feed; casual discussions remain in chat, avoiding duplicate activity posts. The feed shows authored summaries, goal/help text, type/company context and existing thread actions. It never imports private tracker activity.
+
+Trophy room is a secondary button beside Updates, replacing that column with published milestone posts only; Back to updates restores the feed. It is not a mandatory section or another navigation destination. Mobile includes Jump to chat. Room controls, draft review, sharing authorization and scoped website/MCP actions are unchanged. Fictional fixtures cover feed, casual chat, agent/human origins and milestones. The optional scripts/check-circle-layout-ui.mjs verifies the arrangement and interactions against the isolated preview.

@@ -116,3 +116,10 @@
 
 - Fixed duplicate React keys between the Trophy room and companion room by giving each component a distinct identity within the Circle. No data deduplication or account behavior changes.
 - Validation: frontend typecheck, data validation (147 roles), whitespace check and a development-mode Chrome console check passed. Initial render and repeated Experiences/Clubhouse navigation produced no duplicate-key warnings or page errors. No production backend changes or live account operations.
+
+## Follow-up: clubhouse-first feed and optional Trophy room
+
+- Put the companion scene first, moved Circle navigation horizontally, and placed a published-update feed beside chat on desktop, stacked on mobile with Jump to chat. Structured activity appears in the feed rather than being repeated in casual chat.
+- Made Trophy room a secondary button that opens milestone-only content in the feed column, with Back to updates. Existing room, sharing, draft, authorship and thread behavior is preserved.
+- Added resettable demo browser coverage for layout, origin labels, chat/feed distinction, Trophy room, composer and thread navigation. No Supabase, backend, MCP or About Me changes.
+- Validation: frontend typecheck, 6 existing Circle activity/conversation tests, data validation (147 roles), whitespace check, production static build (passed after existing advisory retry) and desktop-dark/mobile-light browser checks passed. Verified room-before-feed, side-by-side versus stacked chat, no duplicate structured chat updates, optional milestone-only Trophy room and return, composer toggle, authoring labels, direct thread opening, console and no page overflow. No hosted account or MCP round trip was exercised.
