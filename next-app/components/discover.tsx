@@ -109,7 +109,7 @@ export default function Discover() {
             <h2 className="text-xl font-semibold tracking-tight">{label}</h2>
             <span className="rounded-md bg-board-tag px-2 py-1 text-xs tabular-nums text-board-muted">{group.length}</span>
           </div>
-          {group.length ? <div className={cardStyles.catalogGrid}>
+          {group.length ? <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {group.map((role: Role) => {
               const index = arriving?.ids.indexOf(role.id) ?? -1;
               return <motion.div className={cardStyles.gridItem} key={`${role.id}:${index >= 0 ? arriving?.run : 0}`}

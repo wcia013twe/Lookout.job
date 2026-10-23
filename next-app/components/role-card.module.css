@@ -83,12 +83,6 @@
 }
 
 /* Share content tracks within each visible row; long titles stay readable. */
-.catalogGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
-  gap: 16px;
-  align-items: stretch;
-}
 .gridItem { display: grid; min-width: 0; }
 @supports (grid-template-rows: subgrid) {
   .gridItem { grid-row: span 6; grid-template-rows: subgrid; }
