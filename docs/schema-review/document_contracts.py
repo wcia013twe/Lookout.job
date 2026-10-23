@@ -89,44 +89,37 @@ CONTRACTS = [
  '  team questions, recommendations, tradeoffs',
  'No table per heading or analysis subtype.',
  'DocumentLink gives one or more typed subjects.',
- 'input_refs pins evidence actually used.',
- 'sources records citations; uncertainty is text.',
+ 'Optional input_refs identify context used.',
+ 'Sources are optional; caveats stay in the body.',
  'Document.reviewed_version_no: editorial only',
  'New content never overwrites reviewed revision.',
 ]),
-('Version: author, evidence, generation', [
+('Version: minimal authorship and sources', [
  'author.kind: human / agent / import',
  'author.account_id or connection_id: typed ID',
- 'input_refs[]: closed, validated union',
+ 'created_at: timestamp (version creation)',
+ 'sources[]: title, URL, observed_at (optional)',
+ 'input_refs[]: optional typed references',
  '  document: id + version_no',
- '  candidate: owner + revision + value snapshot',
- '  saved_answer: id + revision + value snapshot',
- '  tier_list: id + revision + used placements',
- '  observation: immutable SourceObservation ID',
- '  decision: id + revision + used value snapshot',
- 'sources[]: title, URL, observed_at',
- 'generation?: provider?, model?, recipe_version?',
- '  generated_at, edited_from_version_no?',
- 'uncertainty: optional text',
- 'Staleness: compare pins to current inputs.',
- 'Unknown model/source is null, never invented.',
- 'No hidden reasoning or full prompt archive.',
+ '  observation: SourceObservation ID',
+ '  candidate: owner + revision',
+ '  saved_answer / tier_list / decision: id + revision',
+ 'Mutable revision refs identify context only.',
+ 'Historical values stay in run/draft evidence.',
+ 'Caveats and uncertainty stay in the body.',
+ 'Personal agents perform reasoning externally.',
 ]),
-('Short AI text: inline attribution', [
- 'text_provenance?: field name → attribution',
- 'Allowed fields are enumerated per entity.',
- 'attribution.origin: human / agent / import',
- 'attribution.actor: typed account/connection',
- 'attribution.content_hash: server SHA-256',
- 'attribution.input_refs[]: version contract',
- 'attribution.sources[]: title, URL, observed_at',
- 'attribution.generation?: version contract',
- 'attribution.uncertainty: text?',
- 'attribution.authored_at: timestamp',
- 'No copied text in the attribution object.',
- 'Text edit invalidates old attribution hash.',
- 'Missing attribution = unknown, not human.',
- 'Long, reusable content → linked document.',
+('Short text: ordinary record edits', [
+ 'Text stays on its existing domain record.',
+ 'updated_by?: typed actor (last record editor)',
+ 'updated_at: existing record timestamp',
+ 'Actor: human account / agent connection / import',
+ 'Last editor does not imply all-field authorship.',
+ 'Missing actor = unknown, never assume human.',
+ 'Use existing domain evidence/source links.',
+ 'No per-field hashes or attribution maps.',
+ 'No model, provider or recipe metadata.',
+ 'Reusable/reviewable output → versioned document.',
 ]),
 ('Collection: version-owned manifest', [
  'Document.kind = collection',
@@ -159,19 +152,20 @@ CONTRACTS = [
 ]
 
 def add_content_sheets(sheets, model, vertex, edge):
- m,root=model('Lookout · From UI input to stored content','DESIGN PROPOSAL · The UI edits named document sections or typed records. AI text uses the same ownership and version checks. No Markdown editing required.')
+ m,root=model('Lookout · From UI input to stored content','DESIGN PROPOSAL · Personal agents reason outside Lookout. Lookout stores context, validates scoped writes and displays results. No internal inference pipeline.')
  blocks=[
  ('input','1 · You use the existing UI','Filters / Career goals / Rules / Sources<br>Example goal: “I want systems depth.”',30,170,'#dae8fc'),
  ('patch','2 · One validated save boundary','Patch only the edited section + expected version.<br>Preserve unknown prose and source properties.<br>Reject duplicate headings, bad references, conflicts.',520,170,'#d5e8d4'),
  ('doc','3 · Canonical versioned document','Document → immutable DocumentVersion<br>YAML fields + Markdown narrative<br>Same write boundary for website and scoped MCP.',1010,170,'#e1d5e7'),
  ('projection','4 · Rebuildable UI / query projection','Known filters / active profiles / source list<br>Read exact version; never separately editable.<br>Agent reads complete prose and exceptions too.',1010,470,'#dae8fc'),
- ('analysis','5 · AI analysis and short explanations','Long analysis → DocumentVersion.body<br>Short “why it fits” → SelectionDecision.rationale<br>Pin source/profile versions; record attribution.',520,470,'#fff2cc'),
- ('review','6 · User reads, edits or reviews','Analysis panel loads the linked version.<br>Editing creates a new revision.<br>“AI draft” / “edited” / “newer inputs available”.',30,470,'#ffe6cc'),
+ ('analysis','5 · Your personal agent (external)','Reads full context through scoped MCP.<br>Researches and reasons in its own runtime.<br>Inference stays outside Lookout.',520,470,'#fff2cc'),
+ ('review','7 · User reads, edits or reviews','Analysis panel loads the linked version.<br>Editing creates a new revision.<br>“AI draft” / “edited” / “newer inputs available”.',30,470,'#ffe6cc'),
+ ('result','6 · Lookout validates + saves output','Body + subject link + author/time.<br>Optional sources and input versions.<br>Same version-checked document/record save.',30,790,'#e1d5e7'),
  ('facts','Structured facts and workflow','CandidateProfile · Job · Application · events<br>Verified answers · permissions · exact approval<br>SubmissionAttempt + actual receipt',520,790,'#f8cecc'),
  ]
  for id,title,desc,x,y,color in blocks:
-  vertex(root,id,'<b>'+title+'</b><br><br>'+desc,x,y,430,190,'rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor='+color+';strokeColor=#64748b;spacing=16;')
- for i,(a,b,label) in enumerate([('input','patch',''),('patch','doc',''),('doc','projection','parse / validate'),('projection','analysis',''),('analysis','review',''),('facts','analysis','evidence inputs'),('review','patch','edit content')]):
+  vertex(root,id,'<b>'+title+'</b><br><br>'+desc,x,y,430,190,('dashed=1;strokeWidth=2;' if id=='analysis' else '')+'rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor='+color+';strokeColor=#64748b;spacing=16;')
+ for i,(a,b,label) in enumerate([('input','patch',''),('patch','doc',''),('doc','projection','parse / validate'),('projection','analysis',''),('analysis','result','scoped MCP write'),('result','review','saved output'),('facts','analysis','evidence inputs'),('review','patch','edit content')]):
   edge(root,'flow'+str(i),a,b,label=label,graph=True)
  vertex(root,'boundary','<b>Explicit boundary:</b> an AI interpretation is not a verified fact, a reviewed document is not submission approval, and a profile rule is not execution permission.<br>Candidate facts and policy require their own validated action. Sharing creates a separate approved disclosure snapshot.',30,1060,1410,110,'rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#f5f5f5;strokeColor=#94a3b8;spacing=16;')
  m.set('pageWidth','1500');m.set('pageHeight','1250');sheets.append(('00a UI and AI content flow',m))

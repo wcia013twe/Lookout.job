@@ -31,7 +31,7 @@
         <mxCell id="community" value="&lt;b&gt;Circle publication&lt;/b&gt;&lt;br&gt;Membership · approved snapshots · feed · receipts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#d5e8d4;strokeColor=#64748b;spacing=12;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="480" y="1030" width="350" height="110" />
         </mxCell>
-        <mxCell id="automation" value="&lt;b&gt;Agent work&lt;/b&gt;&lt;br&gt;Scoped connection · onboarding · leased tasks" style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#e1d5e7;strokeColor=#64748b;spacing=12;" vertex="1" parent="1">
+        <mxCell id="automation" value="&lt;b&gt;Personal-agent handoffs&lt;/b&gt;&lt;br&gt;Connections · requests · context cursors" style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#e1d5e7;strokeColor=#64748b;spacing=12;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="480" y="360" width="350" height="110" />
         </mxCell>
         <mxCell id="g0" source="documents" target="catalog" edge="1" parent="1" value="profile + source versions guide search" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
@@ -73,7 +73,7 @@
         <mxCell id="g12" source="documents" target="network" edge="1" parent="1" value="research + writing" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
         <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="868" y="415" /><mxPoint x="868" y="855" /></Array></mxGeometry></mxCell>
-        <mxCell id="legend" value="&lt;b&gt;Keep distinct&lt;/b&gt; · public facts / private fit / shared disclosure&lt;br&gt;Opening ≠ applying · approval ≠ submission · user report ≠ employer receipt&lt;br&gt;&lt;b&gt;Derived views&lt;/b&gt; · Discover, Auto Tracker, Action Board, leaderboard, channels and weekly agenda&lt;br&gt;&lt;b&gt;Documents, not extra tables&lt;/b&gt; · profiles, source config, AI analysis, material selections and collections&lt;br&gt;&lt;b&gt;Projections&lt;/b&gt; · parsed filters are rebuildable; prose never grants execution permission" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#f5f5f5;strokeColor=#94a3b8;spacing=14;align=left;" vertex="1" parent="1">
+        <mxCell id="legend" value="&lt;b&gt;Keep distinct&lt;/b&gt; · public facts / private fit / shared disclosure&lt;br&gt;Opening ≠ applying · approval ≠ submission · user report ≠ employer receipt&lt;br&gt;&lt;b&gt;Derived views&lt;/b&gt; · Discover, Auto Tracker, Action Board, leaderboard, channels and weekly agenda&lt;br&gt;&lt;b&gt;Documents, not extra tables&lt;/b&gt; · profiles, source config, AI analysis, material selections and collections&lt;br&gt;&lt;b&gt;Personal agents reason externally&lt;/b&gt; · Lookout stores context, results and workflow evidence; prose never grants permission" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#f5f5f5;strokeColor=#94a3b8;spacing=14;align=left;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="30" y="1230" width="1360" height="130" />
         </mxCell>
       </root>
@@ -87,7 +87,7 @@
         <mxCell id="title" value="Lookout · From UI input to stored content" style="text;html=1;fontSize=26;fontStyle=1;align=left;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="30" y="20" width="1360" height="45" />
         </mxCell>
-        <mxCell id="subtitle" value="DESIGN PROPOSAL · The UI edits named document sections or typed records. AI text uses the same ownership and version checks. No Markdown editing required." style="text;html=1;fontSize=14;align=left;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="DESIGN PROPOSAL · Personal agents reason outside Lookout. Lookout stores context, validates scoped writes and displays results. No internal inference pipeline." style="text;html=1;fontSize=14;align=left;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="30" y="70" width="1360" height="60" />
         </mxCell>
         <mxCell id="input" value="&lt;b&gt;1 · You use the existing UI&lt;/b&gt;&lt;br&gt;&lt;br&gt;Filters / Career goals / Rules / Sources&lt;br&gt;Example goal: “I want systems depth.”" style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#dae8fc;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
@@ -102,11 +102,14 @@
         <mxCell id="projection" value="&lt;b&gt;4 · Rebuildable UI / query projection&lt;/b&gt;&lt;br&gt;&lt;br&gt;Known filters / active profiles / source list&lt;br&gt;Read exact version; never separately editable.&lt;br&gt;Agent reads complete prose and exceptions too." style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#dae8fc;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="1010" y="470" width="430" height="190" />
         </mxCell>
-        <mxCell id="analysis" value="&lt;b&gt;5 · AI analysis and short explanations&lt;/b&gt;&lt;br&gt;&lt;br&gt;Long analysis → DocumentVersion.body&lt;br&gt;Short “why it fits” → SelectionDecision.rationale&lt;br&gt;Pin source/profile versions; record attribution." style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#fff2cc;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
+        <mxCell id="analysis" value="&lt;b&gt;5 · Your personal agent (external)&lt;/b&gt;&lt;br&gt;&lt;br&gt;Reads full context through scoped MCP.&lt;br&gt;Researches and reasons in its own runtime.&lt;br&gt;Inference stays outside Lookout." style="dashed=1;strokeWidth=2;rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#fff2cc;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="520" y="470" width="430" height="190" />
         </mxCell>
-        <mxCell id="review" value="&lt;b&gt;6 · User reads, edits or reviews&lt;/b&gt;&lt;br&gt;&lt;br&gt;Analysis panel loads the linked version.&lt;br&gt;Editing creates a new revision.&lt;br&gt;“AI draft” / “edited” / “newer inputs available”." style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#ffe6cc;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
+        <mxCell id="review" value="&lt;b&gt;7 · User reads, edits or reviews&lt;/b&gt;&lt;br&gt;&lt;br&gt;Analysis panel loads the linked version.&lt;br&gt;Editing creates a new revision.&lt;br&gt;“AI draft” / “edited” / “newer inputs available”." style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#ffe6cc;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="30" y="470" width="430" height="190" />
+        </mxCell>
+        <mxCell id="result" value="&lt;b&gt;6 · Lookout validates + saves output&lt;/b&gt;&lt;br&gt;&lt;br&gt;Body + subject link + author/time.&lt;br&gt;Optional sources and input versions.&lt;br&gt;Same version-checked document/record save." style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#e1d5e7;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="30" y="790" width="430" height="190" />
         </mxCell>
         <mxCell id="facts" value="&lt;b&gt;Structured facts and workflow&lt;/b&gt;&lt;br&gt;&lt;br&gt;CandidateProfile · Job · Application · events&lt;br&gt;Verified answers · permissions · exact approval&lt;br&gt;SubmissionAttempt + actual receipt" style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#f8cecc;strokeColor=#64748b;spacing=16;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="520" y="790" width="430" height="190" />
@@ -123,13 +126,16 @@
         <mxCell id="flow3" source="projection" target="analysis" edge="1" parent="1" value="" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="flow4" source="analysis" target="review" edge="1" parent="1" value="" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
+        <mxCell id="flow4" source="analysis" target="result" edge="1" parent="1" value="scoped MCP write" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
+
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="490" y="565" /><mxPoint x="490" y="885" /></Array></mxGeometry></mxCell>
+        <mxCell id="flow5" source="result" target="review" edge="1" parent="1" value="saved output" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="flow5" source="facts" target="analysis" edge="1" parent="1" value="evidence inputs" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
+        <mxCell id="flow6" source="facts" target="analysis" edge="1" parent="1" value="evidence inputs" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="flow6" source="review" target="patch" edge="1" parent="1" value="edit content" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
+        <mxCell id="flow7" source="review" target="patch" edge="1" parent="1" value="edit content" style="endArrow=classic;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
         <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="245" y="415" /><mxPoint x="735" y="415" /></Array></mxGeometry></mxCell>
         <mxCell id="boundary" value="&lt;b&gt;Explicit boundary:&lt;/b&gt; an AI interpretation is not a verified fact, a reviewed document is not submission approval, and a profile rule is not execution permission.&lt;br&gt;Candidate facts and policy require their own validated action. Sharing creates a separate approved disclosure snapshot." style="rounded=1;whiteSpace=wrap;html=1;fontSize=17;fillColor=#f5f5f5;strokeColor=#94a3b8;spacing=16;" vertex="1" parent="1">
@@ -398,10 +404,10 @@
         <mxCell id="contract4_9" value="DocumentLink gives one or more typed subjects." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract4">
           <mxGeometry as="geometry" x="0" y="319" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract4_10" value="input_refs pins evidence actually used." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract4">
+        <mxCell id="contract4_10" value="Optional input_refs identify context used." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract4">
           <mxGeometry as="geometry" x="0" y="348" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract4_11" value="sources records citations; uncertainty is text." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract4">
+        <mxCell id="contract4_11" value="Sources are optional; caveats stay in the body." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract4">
           <mxGeometry as="geometry" x="0" y="377" width="440" height="29" />
         </mxCell>
         <mxCell id="contract4_12" value="Document.reviewed_version_no: editorial only" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract4">
@@ -410,8 +416,8 @@
         <mxCell id="contract4_13" value="New content never overwrites reviewed revision." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract4">
           <mxGeometry as="geometry" x="0" y="435" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5" value="Version: author, evidence, generation" style="swimlane;html=1;startSize=58;fontSize=17;fontStyle=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#64748b;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1010" y="849" width="440" height="522" />
+        <mxCell id="contract5" value="Version: minimal authorship and sources" style="swimlane;html=1;startSize=58;fontSize=17;fontStyle=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#64748b;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1010" y="849" width="440" height="435" />
         </mxCell>
         <mxCell id="contract5_0" value="author.kind: human / agent / import" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="58" width="440" height="29" />
@@ -419,92 +425,71 @@
         <mxCell id="contract5_1" value="author.account_id or connection_id: typed ID" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="87" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_2" value="input_refs[]: closed, validated union" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_2" value="created_at: timestamp (version creation)" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="116" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_3" value="  document: id + version_no" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_3" value="sources[]: title, URL, observed_at (optional)" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="145" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_4" value="  candidate: owner + revision + value snapshot" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_4" value="input_refs[]: optional typed references" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="174" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_5" value="  saved_answer: id + revision + value snapshot" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_5" value="  document: id + version_no" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="203" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_6" value="  tier_list: id + revision + used placements" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_6" value="  observation: SourceObservation ID" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="232" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_7" value="  observation: immutable SourceObservation ID" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_7" value="  candidate: owner + revision" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="261" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_8" value="  decision: id + revision + used value snapshot" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_8" value="  saved_answer / tier_list / decision: id + revision" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="290" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_9" value="sources[]: title, URL, observed_at" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_9" value="Mutable revision refs identify context only." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="319" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_10" value="generation?: provider?, model?, recipe_version?" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_10" value="Historical values stay in run/draft evidence." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="348" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_11" value="  generated_at, edited_from_version_no?" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_11" value="Caveats and uncertainty stay in the body." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="377" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_12" value="uncertainty: optional text" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
+        <mxCell id="contract5_12" value="Personal agents perform reasoning externally." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
           <mxGeometry as="geometry" x="0" y="406" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract5_13" value="Staleness: compare pins to current inputs." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
-          <mxGeometry as="geometry" x="0" y="435" width="440" height="29" />
+        <mxCell id="contract6" value="Short text: ordinary record edits" style="swimlane;html=1;startSize=58;fontSize=17;fontStyle=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#64748b;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="30" y="1490" width="440" height="348" />
         </mxCell>
-        <mxCell id="contract5_14" value="Unknown model/source is null, never invented." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
-          <mxGeometry as="geometry" x="0" y="464" width="440" height="29" />
-        </mxCell>
-        <mxCell id="contract5_15" value="No hidden reasoning or full prompt archive." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract5">
-          <mxGeometry as="geometry" x="0" y="493" width="440" height="29" />
-        </mxCell>
-        <mxCell id="contract6" value="Short AI text: inline attribution" style="swimlane;html=1;startSize=58;fontSize=17;fontStyle=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#64748b;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="1490" width="440" height="464" />
-        </mxCell>
-        <mxCell id="contract6_0" value="text_provenance?: field name → attribution" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_0" value="Text stays on its existing domain record." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="58" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_1" value="Allowed fields are enumerated per entity." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_1" value="updated_by?: typed actor (last record editor)" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="87" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_2" value="attribution.origin: human / agent / import" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_2" value="updated_at: existing record timestamp" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="116" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_3" value="attribution.actor: typed account/connection" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_3" value="Actor: human account / agent connection / import" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="145" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_4" value="attribution.content_hash: server SHA-256" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_4" value="Last editor does not imply all-field authorship." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="174" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_5" value="attribution.input_refs[]: version contract" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_5" value="Missing actor = unknown, never assume human." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="203" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_6" value="attribution.sources[]: title, URL, observed_at" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_6" value="Use existing domain evidence/source links." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="232" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_7" value="attribution.generation?: version contract" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_7" value="No per-field hashes or attribution maps." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="261" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_8" value="attribution.uncertainty: text?" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_8" value="No model, provider or recipe metadata." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="290" width="440" height="29" />
         </mxCell>
-        <mxCell id="contract6_9" value="attribution.authored_at: timestamp" style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
+        <mxCell id="contract6_9" value="Reusable/reviewable output → versioned document." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
           <mxGeometry as="geometry" x="0" y="319" width="440" height="29" />
-        </mxCell>
-        <mxCell id="contract6_10" value="No copied text in the attribution object." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
-          <mxGeometry as="geometry" x="0" y="348" width="440" height="29" />
-        </mxCell>
-        <mxCell id="contract6_11" value="Text edit invalidates old attribution hash." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
-          <mxGeometry as="geometry" x="0" y="377" width="440" height="29" />
-        </mxCell>
-        <mxCell id="contract6_12" value="Missing attribution = unknown, not human." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
-          <mxGeometry as="geometry" x="0" y="406" width="440" height="29" />
-        </mxCell>
-        <mxCell id="contract6_13" value="Long, reusable content → linked document." style="text;html=1;fontSize=14;align=left;spacingLeft=10;whiteSpace=wrap;" vertex="1" parent="contract6">
-          <mxGeometry as="geometry" x="0" y="435" width="440" height="29" />
         </mxCell>
         <mxCell id="contract7" value="Collection: version-owned manifest" style="swimlane;html=1;startSize=58;fontSize=17;fontStyle=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#64748b;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="520" y="1490" width="440" height="348" />
@@ -775,7 +760,7 @@
         <mxCell id="SearchRun__15" value="summary: text?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SearchRun">
           <mxGeometry as="geometry" x="0" y="520" width="330" height="32" />
         </mxCell>
-        <mxCell id="SearchRun__16" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SearchRun">
+        <mxCell id="SearchRun__16" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SearchRun">
           <mxGeometry as="geometry" x="0" y="552" width="330" height="32" />
         </mxCell>
         <mxCell id="SearchRun__17" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SearchRun">
@@ -877,7 +862,7 @@
         <mxCell id="SelectionDecision__14" value="context_snapshot: json" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SelectionDecision">
           <mxGeometry as="geometry" x="0" y="488" width="330" height="32" />
         </mxCell>
-        <mxCell id="SelectionDecision__15" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SelectionDecision">
+        <mxCell id="SelectionDecision__15" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SelectionDecision">
           <mxGeometry as="geometry" x="0" y="520" width="330" height="32" />
         </mxCell>
         <mxCell id="SelectionDecision__16" value="reconsidered_at: timestamp?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="SelectionDecision">
@@ -1284,7 +1269,7 @@
           <mxGeometry as="geometry" x="0" y="488" width="330" height="32" />
         </mxCell>
         <mxCell id="DocumentVersion" value="DocumentVersion" style="swimlane;html=1;startSize=40;horizontal=1;collapsible=0;fontSize=17;fontStyle=1;fillColor=#e1d5e7;strokeColor=#64748b;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="500" y="150" width="330" height="776" />
+          <mxGeometry as="geometry" x="500" y="150" width="330" height="712" />
         </mxCell>
         <mxCell id="DocumentVersion__0" value="PK/FK document_id: uuid" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="DocumentVersion">
           <mxGeometry as="geometry" x="0" y="40" width="330" height="32" />
@@ -1346,14 +1331,8 @@
         <mxCell id="DocumentVersion__19" value="input_refs: json[]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="DocumentVersion">
           <mxGeometry as="geometry" x="0" y="648" width="330" height="32" />
         </mxCell>
-        <mxCell id="DocumentVersion__20" value="generation: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="DocumentVersion">
+        <mxCell id="DocumentVersion__20" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="DocumentVersion">
           <mxGeometry as="geometry" x="0" y="680" width="330" height="32" />
-        </mxCell>
-        <mxCell id="DocumentVersion__21" value="uncertainty: text?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="DocumentVersion">
-          <mxGeometry as="geometry" x="0" y="712" width="330" height="32" />
-        </mxCell>
-        <mxCell id="DocumentVersion__22" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="DocumentVersion">
-          <mxGeometry as="geometry" x="0" y="744" width="330" height="32" />
         </mxCell>
         <mxCell id="DocumentLink" value="DocumentLink" style="swimlane;html=1;startSize=40;horizontal=1;collapsible=0;fontSize=17;fontStyle=1;fillColor=#e1d5e7;strokeColor=#64748b;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="970" y="150" width="330" height="584" />
@@ -1410,34 +1389,34 @@
           <mxGeometry as="geometry" x="0" y="552" width="330" height="32" />
         </mxCell>
         <mxCell id="ref_Application" value="↗ Application" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="1056" width="330" height="55" />
+          <mxGeometry as="geometry" x="30" y="992" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_CompanyTarget" value="↗ CompanyTarget" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="500" y="1056" width="330" height="55" />
+          <mxGeometry as="geometry" x="500" y="992" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_Contact" value="↗ Contact" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="970" y="1056" width="330" height="55" />
+          <mxGeometry as="geometry" x="970" y="992" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_Conversation" value="↗ Conversation" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="1141" width="330" height="55" />
+          <mxGeometry as="geometry" x="30" y="1077" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_InterviewRound" value="↗ InterviewRound" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="500" y="1141" width="330" height="55" />
+          <mxGeometry as="geometry" x="500" y="1077" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_Job" value="↗ Job" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="970" y="1141" width="330" height="55" />
+          <mxGeometry as="geometry" x="970" y="1077" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_PrepPlan" value="↗ PrepPlan" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="1226" width="330" height="55" />
+          <mxGeometry as="geometry" x="30" y="1162" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_PrepTask" value="↗ PrepTask" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="500" y="1226" width="330" height="55" />
+          <mxGeometry as="geometry" x="500" y="1162" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_SearchRun" value="↗ SearchRun" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="970" y="1226" width="330" height="55" />
+          <mxGeometry as="geometry" x="970" y="1162" width="330" height="55" />
         </mxCell>
         <mxCell id="ref_SelectionDecision" value="↗ SelectionDecision" style="rounded=1;html=1;whiteSpace=wrap;fontSize=16;dashed=1;fillColor=#ffffff;strokeColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="1311" width="330" height="55" />
+          <mxGeometry as="geometry" x="30" y="1247" width="330" height="55" />
         </mxCell>
         <mxCell id="rel_0" source="Document__0" target="DocumentVersion__0" edge="1" parent="1" value="" style="startArrow=ERmandOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
           <mxGeometry as="geometry" relative="1" />
@@ -1447,39 +1426,39 @@
         <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="195" y="174" /><mxPoint x="950" y="174" /><mxPoint x="950" y="238" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_2" source="ref_Application" target="DocumentLink__2" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="195" y="977" /><mxPoint x="850" y="977" /><mxPoint x="850" y="270" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="195" y="913" /><mxPoint x="850" y="913" /><mxPoint x="850" y="270" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_3" source="ref_InterviewRound" target="DocumentLink__3" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="862" y="1169" /><mxPoint x="862" y="302" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="862" y="1105" /><mxPoint x="862" y="302" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_4" source="ref_PrepPlan" target="DocumentLink__4" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="423" y="1254" /><mxPoint x="423" y="991" /><mxPoint x="875" y="991" /><mxPoint x="875" y="334" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="423" y="1190" /><mxPoint x="423" y="927" /><mxPoint x="875" y="927" /><mxPoint x="875" y="334" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_5" source="ref_PrepTask" target="DocumentLink__5" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="887" y="1254" /><mxPoint x="887" y="366" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="887" y="1190" /><mxPoint x="887" y="366" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_6" source="ref_CompanyTarget" target="DocumentLink__6" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="900" y="1084" /><mxPoint x="900" y="398" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="900" y="1020" /><mxPoint x="900" y="398" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_7" source="ref_Job" target="DocumentLink__7" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1344" y="1169" /><mxPoint x="1344" y="430" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1344" y="1105" /><mxPoint x="1344" y="430" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_8" source="ref_SelectionDecision" target="DocumentLink__8" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="913" y="1339" /><mxPoint x="913" y="462" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="913" y="1275" /><mxPoint x="913" y="462" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_9" source="ref_Contact" target="DocumentLink__9" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1330" y="1084" /><mxPoint x="1330" y="494" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1330" y="1020" /><mxPoint x="1330" y="494" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_10" source="ref_Conversation" target="DocumentLink__10" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="437" y="1169" /><mxPoint x="437" y="1005" /><mxPoint x="925" y="1005" /><mxPoint x="925" y="526" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="437" y="1105" /><mxPoint x="437" y="941" /><mxPoint x="925" y="941" /><mxPoint x="925" y="526" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_11" source="ref_SearchRun" target="DocumentLink__11" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
-        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1316" y="1254" /><mxPoint x="1316" y="558" /></Array></mxGeometry></mxCell>
+        <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1316" y="1190" /><mxPoint x="1316" y="558" /></Array></mxGeometry></mxCell>
         <mxCell id="rel_12" source="DocumentVersion__0" target="DocumentLink__12" edge="1" parent="1" value="" style="startArrow=ERzeroToOne;endArrow=ERzeroToMany;strokeColor=#64748b;fontSize=13;defaultLabelBackgroundColor=gap;edgeStyle=orthogonalEdgeStyle;rounded=0;libavoidRouting=1;orthogonalLoop=1;jettySize=auto;html=1;">
 
         <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="938" y="206" /><mxPoint x="938" y="590" /></Array></mxGeometry></mxCell>
         <mxCell id="footnote" value="Proposed logical design · repeated reference boxes are not extra tables · bounded JSON / document fields have typed contracts in README and sheet 00b · foreign keys require same-owner / same-circle checks." style="text;html=1;fontSize=14;whiteSpace=wrap;align=left;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="1416" width="1370" height="60" />
+          <mxGeometry as="geometry" x="30" y="1352" width="1370" height="60" />
         </mxCell>
       </root>
     </mxGraphModel>
@@ -1753,7 +1732,7 @@
         <mxCell id="InterviewRound__12" value="revision: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="InterviewRound">
           <mxGeometry as="geometry" x="0" y="424" width="330" height="32" />
         </mxCell>
-        <mxCell id="InterviewRound__13" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="InterviewRound">
+        <mxCell id="InterviewRound__13" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="InterviewRound">
           <mxGeometry as="geometry" x="0" y="456" width="330" height="32" />
         </mxCell>
         <mxCell id="InterviewRound__14" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="InterviewRound">
@@ -1890,7 +1869,7 @@
         <mxCell id="PrepTask__9" value="revision: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="PrepTask">
           <mxGeometry as="geometry" x="0" y="328" width="330" height="32" />
         </mxCell>
-        <mxCell id="PrepTask__10" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="PrepTask">
+        <mxCell id="PrepTask__10" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="PrepTask">
           <mxGeometry as="geometry" x="0" y="360" width="330" height="32" />
         </mxCell>
         <mxCell id="PrepTask__11" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="PrepTask">
@@ -1980,7 +1959,7 @@
         <mxCell id="CompanyTarget__12" value="revision: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="CompanyTarget">
           <mxGeometry as="geometry" x="0" y="424" width="330" height="32" />
         </mxCell>
-        <mxCell id="CompanyTarget__13" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="CompanyTarget">
+        <mxCell id="CompanyTarget__13" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="CompanyTarget">
           <mxGeometry as="geometry" x="0" y="456" width="330" height="32" />
         </mxCell>
         <mxCell id="CompanyTarget__14" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="CompanyTarget">
@@ -2043,7 +2022,7 @@
         <mxCell id="Contact__16" value="revision: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Contact">
           <mxGeometry as="geometry" x="0" y="552" width="330" height="32" />
         </mxCell>
-        <mxCell id="Contact__17" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Contact">
+        <mxCell id="Contact__17" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Contact">
           <mxGeometry as="geometry" x="0" y="584" width="330" height="32" />
         </mxCell>
         <mxCell id="Contact__18" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Contact">
@@ -2097,7 +2076,7 @@
         <mxCell id="Conversation__13" value="revision: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Conversation">
           <mxGeometry as="geometry" x="0" y="456" width="330" height="32" />
         </mxCell>
-        <mxCell id="Conversation__14" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Conversation">
+        <mxCell id="Conversation__14" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Conversation">
           <mxGeometry as="geometry" x="0" y="488" width="330" height="32" />
         </mxCell>
         <mxCell id="Conversation__15" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="Conversation">
@@ -2686,7 +2665,7 @@
         <mxCell id="AgentTask__13" value="evidence: json" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="AgentTask">
           <mxGeometry as="geometry" x="0" y="456" width="330" height="32" />
         </mxCell>
-        <mxCell id="AgentTask__14" value="text_provenance: json?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="AgentTask">
+        <mxCell id="AgentTask__14" value="updated_by: actor?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="AgentTask">
           <mxGeometry as="geometry" x="0" y="488" width="330" height="32" />
         </mxCell>
         <mxCell id="AgentTask__15" value="created_at: timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontSize=13;whiteSpace=wrap;" vertex="1" parent="AgentTask">

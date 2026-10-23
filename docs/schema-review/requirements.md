@@ -38,7 +38,7 @@ Source-based inspection by three subagents, then cross-review of the proposed en
 - Circles attachment files are local previews and must be removed before saving. Do not claim durable Circle file uploads. Shared context is a disclosed snapshot, not permission to query a private contact/application.
 - Toolkit HTML practice answers reset on reopen. Persisted practice credit comes from Action Board, not the sandboxed artifact reader.
 - Theme marketplace “saved” state lasts for the visit; it does not establish purchases or an installed theme service.
-- Agent credentials, queued requests, routines and delivery preferences do not prove runtime/scheduler/channel capabilities. Demo CAPTCHA, email reconnect and outreach approval handoffs are not evidence those integrations are live.
+- Inference/reasoning belongs to users’ personal agents. The app exposes context and validated output writes; AgentTask is a handoff inbox and AgentCheckpoint is a sync cursor. No hosted inference engine or model metadata is required. Agent credentials, queued requests, routines and delivery preferences do not prove runtime/scheduler/channel capabilities. Demo CAPTCHA, email reconnect and outreach approval handoffs are not evidence those integrations are live.
 - The static privacy page does not establish retention deadlines or a working self-service export/erasure workflow.
 
 ## Review scenarios

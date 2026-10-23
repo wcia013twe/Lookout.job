@@ -98,7 +98,7 @@ started_at: timestamp?
 completed_at: timestamp?
 event_key: text
 summary: text?
-text_provenance: json?
+updated_by: actor?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -152,7 +152,7 @@ upside_tier: enum?
 exclusion_preference: json?
 certainty: enum?
 context_snapshot: json
-text_provenance: json?
+updated_by: actor?
 reconsidered_at: timestamp?
 revision: int
 created_at: timestamp
@@ -329,7 +329,7 @@ updated_at: timestamp
 
 ### DocumentVersion
 
-Immutable content. Body OR blob OR URL OR collection manifest by kind; attributes only allow enumerated kind-specific fields. AI prose carries inputs, sources, author and optional generation info. Collection children are bounded pinned references in attributes.
+Immutable content. Body OR blob OR URL OR collection manifest by kind; attributes only allow enumerated kind-specific fields. Personal-agent output carries author/time and optional sources/input versions. Caveats remain in the body; no inference metadata. Collection children are bounded pinned references in attributes.
 
 ```text
 PK/FK document_id: uuid
@@ -352,8 +352,6 @@ prepared_for: date?
 company_context: json?
 author: json
 input_refs: json[]
-generation: json?
-uncertainty: text?
 created_at: timestamp
 ```
 
@@ -532,7 +530,7 @@ precision: unknown / day / time
 source: json
 notes: text
 revision: int
-text_provenance: json?
+updated_by: actor?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -577,7 +575,7 @@ due_date: date?
 position: int
 state: enum
 revision: int
-text_provenance: json?
+updated_by: actor?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -631,7 +629,7 @@ next_action: text?
 follow_up_date: date?
 archived_at: timestamp?
 revision: int
-text_provenance: json?
+updated_by: actor?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -660,7 +658,7 @@ reason: text?
 notes: text
 archived_at: timestamp?
 revision: int
-text_provenance: json?
+updated_by: actor?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -686,7 +684,7 @@ follow_up_date: date?
 url: text?
 notes: text
 revision: int
-text_provenance: json?
+updated_by: actor?
 created_at: timestamp
 updated_at: timestamp
 ```
@@ -949,7 +947,7 @@ updated_at: timestamp
 
 ### AgentTask
 
-Task inbox for discover/prepare/execute and outreach requests; optional onboarding session. Bounded requested companies (up to 50); typed result references. Idempotent create, leased claim, uncertain reconciliation. References outcome IDs; no duplicated run/application snapshots.
+Handoff inbox for personal agents to discover/prepare/execute and draft outreach; reasoning runs externally, not in Lookout; optional onboarding session. Bounded requested companies (up to 50); typed result references. Idempotent create, leased claim, uncertain reconciliation. References outcome IDs; no duplicated run/application snapshots.
 
 ```text
 PK id: uuid
@@ -966,7 +964,7 @@ target_companies: json[]
 result_refs: json
 result_summary: text?
 evidence: json
-text_provenance: json?
+updated_by: actor?
 created_at: timestamp
 updated_at: timestamp
 ```
