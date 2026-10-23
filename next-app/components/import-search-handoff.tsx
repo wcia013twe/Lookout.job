@@ -27,11 +27,15 @@ export default function ImportSearchHandoff({imports}:{imports:any}){
   }catch(e:any){if(turn===generation.current)setError(e.message);}finally{if(turn===generation.current)setBusy(false);}
  }
  return <details className={styles.handoff}>
-  <summary>Import from Simplify</summary>
+  <summary>
+   <span className={styles.summaryTitle}><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14"/></svg>Import from Simplify</span>
+   <span className={styles.summaryHint}>Saved jobs &amp; history</span>
+   <svg className={styles.chevron} aria-hidden="true" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>
+  </summary>
   <div className={styles.content}>
-   <p>Bring your saved jobs and application history into Lookout. Export tracked jobs from Simplify, then choose the CSV.</p>
-   <p>Existing statuses stay unchanged. Imported applications are user-reported; notes and jobs without links stay private.</p>
-   {w.demo?<button className={secondary} disabled={busy} onClick={()=>void inspect()}>Preview fictional Simplify CSV</button>:<label className="block text-sm">Simplify tracked-jobs CSV<input className="mt-2 block w-full min-h-11" type="file" accept=".csv,text/csv" disabled={busy||!w.user||w.locked} onChange={e=>{const file=e.target.files?.[0];if(file)void inspect(file);e.target.value='';}}/></label>}
+   <p className={styles.intro}>Export tracked jobs from Simplify, then add the CSV to bring its saved roles and history into your private tracker.</p>
+   {w.demo?<button className={secondary} disabled={busy} onClick={()=>void inspect()}>Preview fictional Simplify CSV</button>:<label className={styles.filePicker}><input className={styles.fileInput} type="file" accept=".csv,text/csv" disabled={busy||!w.user||w.locked} onChange={e=>{const file=e.target.files?.[0];if(file)void inspect(file);e.target.value='';}}/><span className={styles.fileAction}>Choose CSV</span><span className={styles.fileCopy}><strong>Simplify tracked-jobs CSV</strong><small>CSV files only · 200 KB max</small></span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 16V4m0 0-4 4m4-4 4 4M5 20h14"/></svg></label>}
+   <p className={styles.note}>Existing statuses stay unchanged. Imported applications are user-reported; notes and jobs without links stay private.</p>
    {!w.demo&&!w.user&&<p>Sign in to import into your private tracker.</p>}
    {busy&&<p role="status">{preview?'Saving imported history…':'Checking your CSV…'}</p>}
    {error&&<p role="alert">{error}</p>}
