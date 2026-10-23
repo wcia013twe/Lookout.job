@@ -57,3 +57,16 @@ test('connection check requires a runtime check-in, not issued credentials or a 
  assert.equal(onboardingConnectionReady({data:{runtime:{connectionId:'c',browsingReportedAt:'invalid'}}}),false);
  assert.equal(onboardingConnectionReady({data:{runtime:{connectionId:'c',browsingReportedAt:'2026-10-23T12:00:00Z'}}}),true);
 });
+
+
+test('onboarding always provides a reveal, with a labeled sample only when no role matches', async()=>{
+ const {onboardingReveal}=await import('../next-app/lib/onboarding-catalog.mjs');
+ const preferences={work:'Designer',employment:'Full-time',location:'Remote'};
+ const fallback=onboardingReveal([],preferences);
+ assert.equal(fallback.sample,true);
+ assert.equal(fallback.role.company,'ExampleCo');
+ assert.equal(fallback.role.applicationUrl,'');
+ assert.ok(fallback.role.matchPreview.factors.length);
+ const role={id:'design',company:'A',title:'Designer',employmentType:'FT',location:'Remote'};
+ assert.deepEqual(onboardingReveal([role],preferences),{role,sample:false});
+});

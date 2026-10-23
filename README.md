@@ -599,3 +599,7 @@ access require actual connected services. A persistent worker is a separate futu
 hosting need for unattended browser/long-running work, not a prerequisite for
 saving profiles, batches or artifacts. Repository implementation does not establish
 that the connected production project has the same deployment.
+
+## Workspace reset
+
+The local reset flow is described in [workspace reset](docs/workspace-reset.md). It includes a human-only preview and confirmation screen, private Storage deletion, retryable finalization, and an MCP human handoff. Hosted deployment and disposable-account verification remain pending; existing accounts are not reset by adding this feature.

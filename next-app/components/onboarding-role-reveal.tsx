@@ -40,18 +40,20 @@ function TypedAnalysis({ active, text }: { active: boolean; text: string }) {
 type OnboardingRoleRevealProps = {
   role: Role;
   demo: boolean;
+  sample?: boolean;
   onPrepare: () => void;
   onLater: () => void;
 };
 
-export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }: OnboardingRoleRevealProps) {
+export default function OnboardingRoleReveal({ role, demo, sample = false, onPrepare, onLater }: OnboardingRoleRevealProps) {
+  const illustrative = demo || sample;
   const reduced = useReducedMotion();
   const [opened, setOpened] = useState(false);
   const [spread, setSpread] = useState(false);
   const [analysis, setAnalysis] = useState(false);
   const swipe = useRef<number | null>(null);
   const analysisHeading = useRef<HTMLHeadingElement>(null);
-  const text = demo
+  const text = illustrative
     ? role.whyItFits || "This fictional example shows how experience can connect to a role. Any sample fit scores are illustrative, not a personalized assessment."
     : role.whyItFits || "No catalog context has been recorded for this role.";
 
@@ -100,25 +102,25 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
           <strong>Tap or swipe to reveal</strong>
         </button>
         <article className="gold-card card-front" aria-hidden={!opened} inert={!opened}>
-          <div className="gold-banner"><Dots /><span className="gold-tier">Your first opportunity</span></div>
+          <div className="gold-banner"><Dots /><span className="gold-tier">{sample ? "Sample opportunity" : "Your first opportunity"}</span></div>
           <div className="gold-body">
             <div className="gold-company"><CompanyLogo company={role.company} /><span>{role.company}</span></div>
             <h2>{role.title}</h2>
             <p className="meta">{role.employmentType==="FT"?"Full-time":role.employmentType} · {role.location || "Location not recorded"}</p>
-            <RoleMatchPreview sample={demo ? role.matchPreview : undefined} animate active={spread} />
-            <p className="hint">{demo ? "Fictional role · illustrative fit preview" : "Public catalog role · no personalized assessment yet"}</p>
+            <RoleMatchPreview sample={illustrative ? role.matchPreview : undefined} animate active={spread} />
+            <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Public catalog role · no personalized assessment yet"}</p>
           </div>
         </article>
       </motion.div>
     </motion.div>
     {spread && <motion.div className="reveal-copy" initial={reduced ? false : { opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduced ? 0 : 0.6, ease }}>
       <Dots />
-      <Title>Worth a closer look.</Title>
-      <h3 ref={analysisHeading} tabIndex={-1}>{demo ? "Illustrative fit analysis" : "Catalog context"}</h3>
+      <Title>{sample ? "A glimpse of what’s next." : "Worth a closer look."}</Title>
+      <h3 ref={analysisHeading} tabIndex={-1}>{illustrative ? "Illustrative fit analysis" : "Catalog context"}</h3>
       <TypedAnalysis active={analysis} text={text} />
-      <p className="hint">{demo ? "Fictional example. This is not live résumé analysis." : "This catalog context is not personalized to your profile or résumé."}</p>
+      <p className="hint">{illustrative ? "Fictional example. This is not live résumé analysis." : "This catalog context is not personalized to your profile or résumé."}</p>
       <div className="actions">
-        <Button onClick={onPrepare}>Prepare my application</Button>
+        <Button onClick={onPrepare}>{sample ? "Meet my agent" : "Prepare my application"}</Button>
         <Quiet onClick={onLater}>I’ll do this later</Quiet>
       </div>
     </motion.div>}

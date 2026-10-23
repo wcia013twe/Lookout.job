@@ -32,6 +32,7 @@ const sections: [ProfileSectionId, string][] = [
   ["appearance", "Appearance"],
 ];
 function ProfileContent() {
+  const { demo } = useWorkspace();
   const a = useApplicationProfile();
   const [active, setActive] = useState<ProfileSectionId>("overview"),
     [visited, setVisited] = useState<ProfileSectionId[]>([]);
@@ -113,9 +114,6 @@ function ProfileContent() {
           <Heading title="My agent">
             Set your writing style, connection, search schedule, and permissions.
           </Heading>
-          <Link href="/onboarding/" className={secondary}>
-            Change companion
-          </Link>
           <WritingStyles />
           <AgentConnections />
           <CircleAgentSettings />
@@ -129,6 +127,12 @@ function ProfileContent() {
         {a.feedback} <button type="button" className={secondary} disabled={a.busy} onClick={a.retrySave}>Retry saving</button>
       </p>}
 
+      <Link
+        href={demo ? "/onboarding/?demo=1" : "/onboarding/"}
+        className="mt-6 inline-flex min-h-11 items-center text-xs text-board-muted underline underline-offset-4 hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent"
+      >
+        Open onboarding
+      </Link>
     </ProfileSurface>
   );
 }

@@ -6,7 +6,7 @@ import {useWorkspace} from "../lib/workspace";
 import {ApplicationProfileProvider,useApplicationProfile} from "./application-profile-context";
 import {readField,updateField} from "../../lib/search-profile.mjs";
 import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
-import {selectOnboardingRole} from "../lib/onboarding-catalog.mjs";
+import {onboardingReveal} from "../lib/onboarding-catalog.mjs";
 import AgentSelector from "./agent-selector";
 import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
@@ -26,7 +26,7 @@ function OnboardingFlow(){
  const [location,setLocation]=useState(readField(a.profile.prompt,"Search Filters","Location").value);
  const [employment,setEmployment]=useState(readField(a.profile.prompt,"Search Filters","Employment").value||"Full-time");
  const [resumeId,setResumeId]=useState(readField(a.profile.prompt,"Application materials","Default resume ID").value);
- const [role,setRole]=useState(null),[error,setError]=useState(""),[feedback,setFeedback]=useState(""),[uploading,setUploading]=useState(false);
+ const [sample,setSample]=useState(false),[role,setRole]=useState(null),[error,setError]=useState(""),[feedback,setFeedback]=useState(""),[uploading,setUploading]=useState(false);
  const [provider,setProvider]=useState(profile.setupAgentProvider||"muse"),[agentName,setAgentName]=useState(profile.setupAgentName||"Muse");
  const file=useRef(null),heading=useRef(null),joinedOnce=useRef(false),uploadLock=useRef(false);
  const reduce=useReducedMotion();
@@ -66,8 +66,8 @@ function OnboardingFlow(){
    prompt=updateField(prompt,"Search Filters","Location",location.trim());
    if(resumeId)prompt=updateField(prompt,"Application materials","Default resume ID",resumeId);
    if(!await a.saveProfilePrompt(prompt))return;
-   const match=selectOnboardingRole(w.roles,{work,employment,location});
-   setRole(match);go(match?"reveal":"connect");
+   const preview=onboardingReveal(w.roles,{work,employment,location});
+   setRole(preview.role);setSample(preview.sample);go("reveal");
   }catch(e){setError(e.message||"Could not save your search. Try again.");}
  }
  function selectAgent(value,label){
@@ -97,7 +97,7 @@ function OnboardingFlow(){
   <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Find my first role"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div>
   {a.feedback&&<p className={a.saveError?"error":"hint"} role="status">{a.feedback}</p>}
  </form></>;
- if(scene==="reveal"&&role)content=<OnboardingRoleReveal role={role} demo={w.demo} onPrepare={()=>{if(w.demo)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
+ if(scene==="reveal"&&role)content=<OnboardingRoleReveal role={role} demo={w.demo} sample={sample} onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
  if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("circles")} onLater={later}/>;
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Link className="primary" href="/">Open my workspace<Icon/></Link><BrowserAppInstructions/></>;

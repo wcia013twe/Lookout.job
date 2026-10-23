@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 const { PGlite } = await import(process.env.PGLITE_MODULE_PATH || "@electric-sql/pglite");
 
-export async function createTestDatabase({beforeMigration}={}) {
+export async function createTestDatabase({beforeMigration,migrationFiles,migrationDir=new URL("../../supabase/migrations/", import.meta.url)}={}) {
   const db = new PGlite();
   try {
     await db.exec(`create role anon; create role authenticated; create role service_role;
@@ -14,8 +14,7 @@ export async function createTestDatabase({beforeMigration}={}) {
       create function storage.foldername(text) returns text[] language sql as $$ select string_to_array($1,'/') $$;
       grant usage on schema storage to authenticated; grant all on storage.objects to authenticated;
       insert into auth.users values('11111111-1111-1111-1111-111111111111'),('22222222-2222-2222-2222-222222222222');`);
-    const migrationDir = new URL("../../supabase/migrations/", import.meta.url);
-    for (const name of (await readdir(migrationDir))
+    for (const name of migrationFiles || (await readdir(migrationDir))
       .filter((name) => name.endsWith(".sql"))
       .sort())
       {
