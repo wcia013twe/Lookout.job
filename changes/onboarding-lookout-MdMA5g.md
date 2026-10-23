@@ -62,3 +62,4 @@
 
 - Styled Google authentication with a shared white button and Google’s official multicolor G asset, reused in onboarding, the signed-out Profile menu and reset sign-in prompt. Preserved auth handlers and disabled/loading behavior. No auth flow or permissions change.
 - Google button verification: TypeScript, data validation and diff checks pass; browser inspected the white onboarding button with the official colored G on port 3000. Sign-in was not initiated.
+- Stored the Google icon in next-app/assets/brand and included it in public-asset generation so fresh starts and exports retain it.
