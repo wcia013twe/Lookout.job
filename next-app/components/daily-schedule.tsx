@@ -2,7 +2,7 @@
 import {useEffect,useMemo,useState,useRef} from 'react';
 import {useWorkspace} from '../lib/workspace';
 import {createBackend} from '../../backend/client.mjs';
-import {readDailySchedule} from '../../lib/daily-schedule.mjs';
+import {readDailySchedule,defaultDailySchedule} from '../../lib/daily-schedule.mjs';
 import {validateAutomationSchedule} from '../../lib/card-packs.mjs';
 import {invokeConnection} from '../../lib/agent-connections.mjs';
 import {apiErrorText} from '../../lib/api-failure.mjs';
@@ -26,7 +26,7 @@ function Editor({connections:liveConnections}:{connections?:Connection[]}){
    const [settings,result]=await Promise.all([api!.readCardPackSettings(),invokeConnection(w.client,'connections.list',{},()=>window.JB.auth.userId,w.user.id)]);
    return {settings,connections:result.data||[]};
   })().then(({settings,connections})=>{if(!current)return;setSources(settings.sources);setConnections(connections);setBase({version:settings.schedule?.configVersion||0,updatedAt:settings.updatedAt});
-   setDraft(settings.schedule?readDailySchedule(settings.schedule):{enabled:false,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',routines:[]});setDirty(false);setEditing(null);
+   setDraft(readDailySchedule(settings.schedule,Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'));setDirty(!settings.schedule);setEditing(null);
   }).catch(e=>{if(current)setError(apiErrorText('automation.settings.read',e));}).finally(()=>{if(current)setLoading(false);});return()=>{current=false;};
  },[api,w.demo,w.demoEpoch,reload]);
  const sources=w.state.workflow.searchPreferences?.targets||loadedSources;
@@ -45,8 +45,7 @@ function Editor({connections:liveConnections}:{connections?:Connection[]}){
    setFeedback(w.demo?'Demo tasks saved. Changes stay in this preview.':w.user?'Tasks saved. Ask your personal agent to run them or arrange their schedule.':'Tasks saved in this browser. Sign in to connect agents.');
   }catch(e){setError(e instanceof Error&&e.name!=='ApiFailure'?e.message:apiErrorText('preferences.notifications.save',e));}finally{setSaving(false);}
  }
- return <Section title="My Agent tasks">
-  <p className="mb-5 max-w-prose text-sm leading-relaxed text-board-muted">Set instructions, sources and agent connections here. A card pack in Discover displays a task’s results. Your personal agent runs the work.</p>
+ return <Section title="My Agent tasks" help={<>Set instructions, sources and agent connections here. A card pack in Discover displays a task’s results. Your personal agent runs the work.<br/><br/>Saving requests timing; it does not create a running automation. On-demand tasks remain available when recurring runs are off. Pause a task to stop new cards; saved cards stay available.</>}>
   <ApiError message={error} onRetry={()=>{if(!dirty)setReload(v=>v+1);else setFeedback('Your edits are still here. Retry Save tasks, or reload saved settings to resolve a conflict.');}}/>
   {loading?<Notice>Loading your tasks…</Notice>:<form onSubmit={e=>{e.preventDefault();void save();}}><fieldset disabled={w.locked||saving||Boolean(error&&!dirty)}>
    <div className="mb-4 flex flex-wrap items-center justify-between gap-4"><label className="flex min-h-11 items-center gap-3 text-sm font-semibold"><input type="checkbox" role="switch" className="h-5 w-5 accent-board-accent" checked={draft.enabled} onChange={e=>edit({...draft,enabled:e.target.checked})}/>Request recurring runs</label><div className="w-full sm:w-64"><Field label="Time zone"><input required maxLength={100} className={control} value={draft.timezone} onChange={e=>edit({...draft,timezone:e.target.value})}/></Field></div></div>
@@ -57,11 +56,11 @@ function Editor({connections:liveConnections}:{connections?:Connection[]}){
      <fieldset><legend className="text-sm font-semibold">Connected agents</legend>{availableConnections.map(c=>{const usable=!c.revoked_at&&Date.parse(c.expires_at)>Date.now()&&c.scopes.includes('batches:write');return <label key={c.id} className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={task.connectionIds?.includes(c.id)||false} disabled={!usable&&!task.connectionIds?.includes(c.id)} onChange={()=>toggle(task,'connectionIds',c.id)}/>{c.name}{!usable?' · unavailable for pack publishing':''}</label>;})}{!availableConnections.length&&<p className="py-2 text-sm text-board-muted">Connect your personal agent above to publish cards.</p>}</fieldset>
     </div>:<p className="mt-2 whitespace-pre-wrap pl-8 text-sm text-board-muted">{task.description}</p>}
    </li>)}</ul>
-   {!draft.routines.length&&<p className="mt-4 text-sm text-board-muted">No tasks yet. Add one, then link it to a card pack below.</p>}
+   {!draft.routines.length&&<div className="mt-4 flex flex-wrap items-center gap-3"><p className="text-sm text-board-muted">No tasks yet.</p><button type="button" className={secondary} onClick={()=>{edit({...defaultDailySchedule(draft.timezone),configVersion:draft.configVersion});setEditing(null);}}>Use default schedule</button></div>}
    <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={secondary} disabled={draft.routines.length>=30} onClick={()=>{const id=crypto.randomUUID();edit({...draft,routines:[...draft.routines,{id,title:'New task',description:'',enabled:true,mode:'manual',time:'',sourceIds:[],connectionIds:[]}]});setEditing(id);}}>Add task</button><button type="submit" className={primary} disabled={!dirty}>{saving?'Saving…':'Save tasks'}</button></div>
   </fieldset></form>}
   {dirty&&<button type="button" className={`${secondary} mt-3`} disabled={saving} onClick={()=>setReload(v=>v+1)}>Discard edits and reload saved settings</button>}
-  <p className="mt-3 text-sm text-board-muted">Saving requests timing; it does not create a running automation. On-demand tasks remain available when recurring runs are off. Pause a task to stop new cards; saved cards stay available.</p><Notice>{feedback}</Notice>
+  <Notice>{feedback}</Notice>
  </Section>;
 }
 export default function DailySchedule({connections}:{connections?:Connection[]}){const w=useWorkspace();return <Editor connections={connections} key={w.demo?`demo-${w.demoEpoch}`:w.user?.id||'guest'}/>;}

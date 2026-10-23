@@ -40,8 +40,7 @@ function Editor() {
     } catch (error) { setFeedback(errorMessage(error)); }
     finally { setBusy(false); }
   }
-  return <Section title="Search targets">
-    <p className="mb-5 max-w-prose text-sm leading-relaxed text-board-muted">Choose where Muse looks. Job preferences define which opportunities fit. Your target list is private.</p>
+  return <Section title="Search targets" help="Choose where Muse looks. Job preferences define which opportunities fit. Your target list is private.">
     {!targets.length && <p className="mb-5 text-sm text-board-muted">No search targets yet. Add a job board, company careers page, or social account.</p>}
     {targets.length > 0 && <p className="mb-3 text-sm text-board-muted">{targets.length} {targets.length === 1 ? 'source' : 'sources'}</p>}
     <ul aria-label="Search sources" className="divide-y divide-board-line border-y border-board-line">{targets.map(target => {

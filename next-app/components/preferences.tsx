@@ -36,12 +36,7 @@ export default function Preferences({
     <>
       {mode !== "search" && (
         <>
-          <Section title="Muse updates">
-            <p className="mb-5 max-w-prose text-sm text-board-muted">
-              Keep applying under your application policy. Choose when Muse
-              should share routine progress; decisions with an approaching
-              deadline can interrupt a digest.
-            </p>
+          <Section title="Muse updates" help="Keep applying under your application policy. Choose when Muse should share routine progress. Decisions with an approaching deadline can interrupt a digest. These settings guide your connected agent; delivery and timing depend on its notification channel and scheduled runs. Use a region/city time zone, such as America/New_York.">
             <fieldset
               disabled={quietBusy}
               className="grid gap-4 sm:grid-cols-2"
@@ -62,7 +57,6 @@ export default function Preferences({
               <Field label="Time zone">
                 <input
                   className={control}
-                  aria-describedby="quiet-timezone-help"
                   key={quiet.timezone}
                   defaultValue={quiet.timezone}
                   placeholder="America/New_York"
@@ -87,12 +81,7 @@ export default function Preferences({
                     saveQuiet({ ...quiet, timezone });
                   }}
                 />
-                <span
-                  id="quiet-timezone-help"
-                  className="text-xs text-board-muted"
-                >
-                  Use a region/city time zone.
-                </span>
+
               </Field>
               {quiet.cadence !== "immediate" && (
                 <Field label="Digest time">
@@ -167,10 +156,7 @@ export default function Preferences({
                 </button>
               </div>
             )}
-            <p className="mt-4 max-w-prose text-sm text-board-muted">
-              These settings guide your connected agent. Delivery and timing
-              depend on its notification channel and scheduled runs.
-            </p>
+
             <Notice>{feedback}</Notice>
             {w.demo && <QuietDemoPreview />}
           </Section>

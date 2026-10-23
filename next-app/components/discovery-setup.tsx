@@ -5,6 +5,7 @@ import SearchTargets from "./search-targets";
 import DailySchedule from "./daily-schedule";
 import CardPackWidgets from "./card-pack-widgets";
 import Link from "next/link";
+import InfoPopover from "./info-popover";
 import { useWorkspace } from "../lib/workspace";
 
 export default function DiscoverySetup() {
@@ -18,15 +19,14 @@ export default function DiscoverySetup() {
   return <div id="pack-setup" className="scroll-mt-6">
     <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
       <div className="max-w-prose">
-        <h2 className="text-xl font-semibold">Your discovery setup</h2>
-        <p className="mt-2 text-sm leading-relaxed text-board-muted">Connect an agent, choose its search, and collect the results in a card pack. Everything is managed here.</p>
+        <div className="flex items-center gap-1"><h2 className="text-xl font-semibold">Your discovery setup</h2><InfoPopover label="Your discovery setup">Connect an agent, choose its search, and collect the results in a card pack. Everything is managed here.</InfoPopover></div>
       </div>
       <Link className="inline-flex min-h-11 items-center text-sm font-semibold text-board-accent underline underline-offset-4" href={w.demo?"/discover/?demo=1":"/discover/"}>Back to Discover</Link>
     </div>
     <div className="divide-y divide-board-line border-y border-board-line">
-      {steps.map(([id,title,description,content])=><details key={id} id={id} className="scroll-mt-6 py-2">
+      {steps.map(([id,title,description,content])=><details key={id} id={id} open={id==="discovery-tasks"} className="scroll-mt-6 py-2">
         <summary className="min-h-11 cursor-pointer py-3 font-semibold">
-          {title}<span className="mt-1 block pl-4 text-sm font-normal leading-relaxed text-board-muted">{description}</span>
+          {title}<span className="sr-only">. {description}</span>
         </summary>
         <div className="pb-6">{content}</div>
       </details>)}
