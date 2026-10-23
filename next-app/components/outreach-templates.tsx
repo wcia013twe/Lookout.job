@@ -9,7 +9,7 @@ import {control, secondary} from "./ui";
 import library from "../../supabase/functions/agent-gateway/skills/outreach-templates.json";
 const labels = ["Recruiter", "Existing connection", "Alumni", "Founder", "Followup"];
 
-export default function OutreachTemplates({ initiallyOpen = false, carouselOnly = false, embedded = false }: { initiallyOpen?: boolean; carouselOnly?: boolean; embedded?: boolean }) {
+export default function OutreachTemplates({ initiallyOpen = false, carouselOnly = false, embedded = false, compact = false }: { initiallyOpen?: boolean; carouselOnly?: boolean; embedded?: boolean; compact?: boolean }) {
   const noteId=useId();
   const [activeTag,setActiveTag]=useState<string|null>(null);
   const [selected, setSelected] = useState(0);
@@ -35,8 +35,8 @@ export default function OutreachTemplates({ initiallyOpen = false, carouselOnly 
 
   </section>;
   if (carouselOnly) return carousel;
-  return <details className="mt-8 border-y border-board-line py-5" open={initiallyOpen}>
-    <summary className="cursor-pointer text-lg font-bold">Outreach templates · {library.templates.length}</summary>
+  return <details className={compact ? "border-t border-board-line py-4" : "mt-8 border-y border-board-line py-5"} open={initiallyOpen}>
+    <summary className={compact ? "cursor-pointer py-2 text-sm font-medium text-board-muted hover:text-board-text" : "cursor-pointer text-lg font-bold"}>{compact ? "Browse outreach templates" : `Outreach templates · ${library.templates.length}`}</summary>
     <div className="mt-5">{carousel}</div>
     <OutreachExamples/>
   </details>;
