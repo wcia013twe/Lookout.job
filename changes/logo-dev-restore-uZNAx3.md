@@ -1,0 +1,7 @@
+# Restore Logo.dev public-token delivery
+
+- Restored the earlier domain map and shared URL builder. Every CompanyLogo surface uses NEXT_PUBLIC_LOGO_DEV_TOKEN, with cached logos then initials on failure. Company changes reset image failure state. Fictional demo names skip provider requests.
+- Added the publishable-token environment example, repository Actions variable mapping for the existing GitHub Pages build and provider attribution. Retained the cache and existing deployment workflow.
+- Demo coverage: existing real-brand roles and fictional tier-list companies exercise the display choices; test verifies real-brand URLs, fictional fallback and fixture reset. Existing job/company MCP tools return company identity; display enrichment needs no new backend action or write permission.
+- Validation: locked root/frontend installs; npm test (531 passing); npm run validate:data (147 roles); production static export and TypeScript with placeholder pk_test_only; git diff --check. Build initially interrupted by the existing Next.js security advisory; retry passed without dependency changes. Logs: /Volumes/External SSD/Lookout/tmp/logo-dev-restore-{tests,build,build-retry}.log.
+- Limits: no real publishable key supplied, live provider request, browser visual check, authenticated write or production deployment. Configure the token locally or as a repository variable and rebuild to enable provider delivery. No push or publication.

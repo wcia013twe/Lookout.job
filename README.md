@@ -90,7 +90,20 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 | Form inspection/prefill | Greenhouse public form inspector; adapted Greenhouse/Ashby browser tools, explicit resume rules, reviewed native radios/checkboxes and strict approval checks |
 | Progress/leaderboard | Opt-in alias and server-derived aggregate metrics; self-reported submissions remain tracking claims |
 
-## Company logo cache
+## Company logos
+
+The shared company mark uses Logo.dev when `NEXT_PUBLIC_LOGO_DEV_TOKEN` is set.
+Locally, set a publishable `pk_` key in `next-app/.env.local`. For GitHub Pages,
+set the repository Actions variable `NEXT_PUBLIC_LOGO_DEV_TOKEN` and rebuild.
+The token is embedded at build time; never supply a secret `sk_` key.
+Known aliases use `data/company-domains.json`; others use provider name lookup.
+Failed requests fall back to cached logos, then initials. Fictional `(demo)`
+companies skip Logo.dev. Demo roles and tier lists cover real and fictional names.
+This is display enrichment: existing scoped job/company tools return company names;
+there is no new write action, backend contract or permission.
+Provider reference: https://github.com/logo-dev/logo-api
+
+### Legacy cache fallback
 
 Company logos are public branding assets in the Supabase `company-logos` Storage
 bucket. The website resolves normalized company names through
