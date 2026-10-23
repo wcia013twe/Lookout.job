@@ -5,9 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useWorkspace } from "../lib/workspace";
 import { dashboardTourKey, dashboardTourSteps, dashboardTourVersion, shouldStartDashboardTour } from "../lib/dashboard-tour.mjs";
 import styles from "./dashboard-tour.module.css";
-import ProfileIcon, { type ProfileIconName } from "./profile-icon";
-
-const illustrations: Record<string,ProfileIconName[]> = {workspace:["conversation","file","check"],discover:["briefcase","sliders","check"],review:["file","check"],tools:["file","pen","conversation"],circles:["user","conversation","user"]};
+import DashboardTourIllustration from "./dashboard-tour-illustration";
 
 type Rect = { top:number; left:number; width:number; height:number };
 
@@ -89,7 +87,7 @@ export default function DashboardTour() {
       <div ref={card} className={styles.card} style={position}>
         <motion.div key={step} initial={reduced?false:{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:.18}}>
           <div className={styles.progress}><span className={styles.dots} aria-hidden="true"><i/><i/><i/><i/></span><span>{step+1} of {dashboardTourSteps.length}</span></div>
-          <div className={styles.illustration} aria-hidden="true">{illustrations[current.illustration].map((icon,index)=><motion.span key={`${step}-${index}`} initial={reduced?false:{opacity:0,x:-8,scale:.9}} animate={{opacity:1,x:0,scale:1}} transition={{duration:.35,delay:reduced?0:index*.12}}><ProfileIcon name={icon} width={24} height={24}/></motion.span>)}</div>
+          <DashboardTourIllustration variant={current.illustration}/>
           <h2 id="dashboard-tour-title">{current.title}</h2>
           <p id="dashboard-tour-description">{current.text}</p>
         </motion.div>

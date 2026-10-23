@@ -12,7 +12,7 @@ test('dashboard tour is opt-in at onboarding handoff, once automatically, and al
 test('tour completion keys isolate account and guest state',()=>{
  assert.notEqual(dashboardTourKey('user-a'),dashboardTourKey('user-b'));
  assert.notEqual(dashboardTourKey('user-a'),dashboardTourKey(null));
- assert.equal(dashboardTourSteps.length,5);
+ assert.equal(dashboardTourSteps.length,7);
  assert.match(dashboardTourSteps[0].text,/don’t need this dashboard open/);
 });
 
@@ -26,4 +26,10 @@ test('new personal workspaces wait for a private batch while public browsing and
  assert.equal(dashboardTourSteps.at(-1).illustration,'circles');
  assert.ok(dashboardTourSteps.some(step=>step.illustration==='tools'));
  assert.equal(dashboardTourSteps.some(step=>step.targets.includes('[data-dashboard-tour="profile"]')),false);
+});
+
+test('tour introduces the workspace then each navigation tab separately, with the Network illustration',()=>{
+ assert.deepEqual(dashboardTourSteps.slice(1).map(step=>step.targets.length),[1,1,1,1,1,1]);
+ assert.deepEqual(dashboardTourSteps.slice(1).map(step=>step.title),['Action board','Discover','Applications','Network','Career Toolkit','Circles']);
+ assert.equal(dashboardTourSteps.find(step=>step.title==='Network').illustration,'network');
 });
