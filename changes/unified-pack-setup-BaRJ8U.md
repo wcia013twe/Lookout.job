@@ -24,3 +24,4 @@
 - Prefills bounded existing sources and active publishing connections; users can complete missing assignments in Search. Preserves existing schedule pauses, time zone, tasks and theme preferences.
 - Composes the existing notification/theme save actions with stable IDs, version checks and partial-save reconciliation. Task/pack writes are not atomic; retry and conflicting-task cases remain explicit. No scheduler, new permission or backend/MCP capability is introduced.
 - Search reflects the saved task without discarding user-edited drafts. Demo follows the same composed save flow and remains memory-only.
+- Verification: 527 tests (including new retry/lost-response/conflict/default-task and scoped MCP composition checks), 147-role data validation, production build/typecheck, and both browser suites passed. Reviewed desktop/mobile screenshots; detector clean. No live account writes or deployment. Integrated the concurrent accessible-tab/mobile-control polish.
