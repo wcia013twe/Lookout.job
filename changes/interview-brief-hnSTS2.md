@@ -82,3 +82,9 @@
 - Saved the X/Reddit engagement lessons, personal relevance, reciprocity, contextual prompts, and distinct utility/human loops in product.md with research links and evidence limits.
 - Clarified small Circles versus future Hubs, agent contributions from existing application history and memory, and the proposed opt-in reciprocal access model. No shipped feature or open third-party discussion API is implied.
 - Validation: documentation review, whitespace check and data validation passed. Documentation only; no UI, demo, backend, MCP or Supabase changes. Engagement and access hypotheses remain untested.
+
+## Follow-up: experience authoring labels
+
+- Added shared AI-drafted / Human-posted labels to experience/resource rows and thread details using existing agentAuthored metadata, with Origin unknown fallback and accessible explanations. Labels do not imply AI detection or verified experience.
+- Added an approved AI-authored fictional experience alongside human-posted demo examples. No service, MCP, approval, Supabase or About Me changes.
+- Validation: frontend typecheck, 7 focused Circle context/conversation tests, data validation (147 roles), static production build, whitespace check and desktop/mobile fictional Circle checks passed. Both origin labels appear in Experiences and AI origin remains visible in thread detail, with no page overflow. No hosted account or MCP round trip was exercised.
