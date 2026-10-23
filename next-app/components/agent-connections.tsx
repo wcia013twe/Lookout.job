@@ -6,10 +6,9 @@ import { Section, Field, control, primary, secondary } from "./ui";
 import { Button as OnboardingButton } from "./onboarding-ui";
 import { errorMessage } from "./profile-types";
 import { CONNECTION_ACCESS, connectionScopes, invokeConnection } from "../../lib/agent-connections.mjs";
+import {AGENT_MCP_URL,AGENT_GATEWAY_URL,connectionClipboardText} from "../lib/agent-connection-handoff.mjs";
 export type AgentConnection = { id: string; name: string; scopes: string[]; expires_at: string; revoked_at?: string };
-const gateway =
-    "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-gateway",
-  mcp = "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp";
+const gateway=AGENT_GATEWAY_URL,mcp=AGENT_MCP_URL;
 const optionalScopes = [["knowledge:read","Read permitted Circle knowledge"],["knowledge:write","Propose contributions and record citation use (also enable knowledge read)"],["preferences:write","Edit search profiles and preferences"],["answers:write","Edit saved answers"],["resumes:write","Upload and add résumés"],["network:write","Edit contacts and outreach drafts"],["tracking:write","Record user-reported progress"]];
 const scopeLabels: Record<string, string> = {
   ...Object.fromEntries(optionalScopes),
@@ -23,8 +22,8 @@ const scopeLabels: Record<string, string> = {
 };
 export function AgentPluginSteps() {
   return (<ul className="agent-plugin-steps">
-        <li>Add Lookout in your agent’s plugin or MCP settings.</li>
-        <li>Paste the copied setup into those secure connection settings, never into chat.</li>
+        <li>Copy the connection instructions into your agent’s chat.</li>
+        <li>Enter the token only in its secure credential form or plugin/MCP settings.</li>
         <li>Ask your agent: “Connect to Lookout and start my search.”</li>
       </ul>);
 }
@@ -166,29 +165,13 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
     const epoch = generation.current;
     setAction("copy");
     try {
-      await navigator.clipboard.writeText(
-        setup
-          ? JSON.stringify(
-              {
-                mcpServers: {
-                  "job-board": {
-                    url: mcp,
-                    headers: { Authorization: `Bearer ${token}` },
-                  },
-                },
-                httpGateway: gateway,
-              },
-              null,
-              2,
-            )
-          : token,
-      );
+      await navigator.clipboard.writeText(connectionClipboardText(token,!setup));
       if (epoch === generation.current) {
-        setFeedback("Copied. Paste only into secure connection settings, never into chat.");
+        setFeedback(setup?"Instructions copied. These contain no token and can be pasted into chat.":"Token copied. Enter it only in the secure credential form, never in chat.");
         if(setup) { setSetupCopied(true); onSetupCopied?.(); }
       }
     } catch {
-      if (epoch === generation.current) setFeedback("Copy failed. Select and copy the token manually.");
+      if (epoch === generation.current) setFeedback(setup?"Could not copy the instructions. Try again.":"Could not copy the token. Select its field and copy it into the secure credential form.");
     }
   }
   if (onboarding) return (
@@ -197,8 +180,9 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
       <p className="agent-connect-permissions">Prepare jobs and applications · you approve applications.</p>
       {token ? <div aria-label="Your new agent connection">
         <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
-        {!setupCopied&&<OnboardingButton onClick={()=>void copy(true)}>Copy setup for connection settings</OnboardingButton>}
-        <p className="hint">This setup contains your secret token, shown once. Enter it only in secure plugin or MCP connection settings. If your agent provides a secure connection form, enter it there.</p>
+        <div className="actions"><OnboardingButton onClick={()=>void copy(true)}>Copy instructions for chat</OnboardingButton><OnboardingButton secondary onClick={()=>void copy(false)}>Copy token for secure entry</OnboardingButton></div>
+        <p className="hint">The chat instructions contain no credentials. Your token is shown once; enter it only in the secure credential form or connection settings.</p>
+        {tokenConnectionId&&<OnboardingButton secondary disabled={busy} onClick={()=>void revoke(tokenConnectionId)}>Revoke this token and start over</OnboardingButton>}
       </div> : <form onSubmit={issue} aria-label="Create an agent connection">
         <input type="hidden" name="name" value="My personal agent"/>
         <OnboardingButton type="submit" disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating setup…":"Get connection setup"}</OnboardingButton>
@@ -263,7 +247,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
           <h3 className="font-semibold">Then add it to your agent</h3>
           <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-board-muted marker:text-board-text">
             <li>Create a connection with the access you need.</li>
-            <li>Copy the MCP setup into your agent’s connection settings.</li>
+            <li>Share the credential-free instructions in chat, then enter your token only in secure connection settings.</li>
             <li>Ask your agent to read your Lookout workspace to check access.</li>
           </ol>
           <p className="mt-5 text-xs leading-relaxed text-board-muted">Your token is shown once. Store it in your agent’s secure settings, like a password.</p>
@@ -276,13 +260,13 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
       {token && (
         <div className="mt-7 rounded-xl border border-board-accent bg-board-tag p-5" aria-label="Your new agent connection">
           <h3 className="font-semibold">{w.demo ? "Demo connection preview" : "Your connection is ready to add"}</h3>
-          <p className="mb-4 mt-1 text-sm leading-relaxed text-board-muted">Copy this setup before leaving. Lookout cannot show this token again.</p>
+          <p className="mb-4 mt-1 text-sm leading-relaxed text-board-muted">Save the token in your agent’s secure credential form before leaving. Lookout cannot show it again.</p>
           <Field label="One-time connection token">
             <input className={`${control} font-mono text-sm`} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={(e) => e.currentTarget.select()} />
           </Field>
           <div className="mt-4 flex flex-wrap gap-2">
-            <button className={primary} onClick={() => copy(true)}>Copy MCP setup</button>
-            <button className={secondary} onClick={() => copy(false)}>Copy token</button>
+            <button className={primary} onClick={() => copy(true)}>Copy instructions for chat</button>
+            <button className={secondary} onClick={() => copy(false)}>Copy token for secure entry</button>
             <button className={secondary} onClick={() => setToken("")}>Dismiss token</button>
           </div>
           {feedback && action === "copy" && <p role="status" className="mt-3 text-sm leading-relaxed">{feedback}</p>}
