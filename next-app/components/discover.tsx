@@ -56,7 +56,6 @@ export default function Discover() {
   if(newArrival&&!publicView)return <>
     <Heading title="Discover">Your agent’s finds will appear here.</Heading>
     {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">
-      <p className="mb-3 text-sm text-board-muted">Saved from onboarding · awaiting your agent’s review</p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         <RoleCard role={{...firstRole,whyItFits:"Saved from onboarding. Your agent will check availability and compare this role with your profile and résumé."}} onPreview={setPreview}/>
       </div>
