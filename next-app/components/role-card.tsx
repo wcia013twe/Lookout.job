@@ -6,7 +6,8 @@ import { motion, useReducedMotion, useMotionValue, useSpring, useTransform } fro
 export type Role = {
   id: string; company: string; title: string; employmentType: string;
   location: string; category: string; priority: string; postedDate?: string | null;
-  description?: string; matchPreview?: MatchPreview;
+  description?: string; matchPreview?: MatchPreview; matchAssessment?: MatchPreview;
+  materialGap?: string; rankingProfile?: any; searchProfileId?: string;
   compensation?: string; workSetting?: string; sponsorship?: string;
   reviewPreview?: { question: string; answer: string; reason: string }[];
   discoveredDate: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;
@@ -20,8 +21,7 @@ import { companyLogoUrl } from "../lib/company-logo";
 import logos from "../../data/logo-manifest.json";
 import {
   normCompany,
-  rarityOf,
-  RARITY_LABEL,
+  rarityOf, companyRanking,
   TIER_HEX,
 } from "../lib/role-display";
 export function CompanyLogo({ company }: { company: string }) {
@@ -72,7 +72,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
   }
   function restSheen() { sheenPosition.set(.5); sheenIntensity.set(.2); }
   const queued = Boolean(w.state.workflow.applications[role.id]);
-  const rarity = rarityOf(role.company, role.employmentType, role.title) as keyof typeof TIER_HEX;
+  const rarity = rarityOf(role.company, role.employmentType, role.title, w.state.workflow, role.rankingProfile || role.searchProfileId) as keyof typeof TIER_HEX;
   function open() {
     recordRoleOpened(w.store, role.id);
   }
@@ -103,7 +103,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
         <CompanyLogo company={role.company} />
         <strong className={styles.company}>{role.company}</strong>
         <span className={styles.rarity}>
-          {RARITY_LABEL[rarity]}
+          {companyRanking(role.company, role.employmentType, w.state.workflow, role.rankingProfile || role.searchProfileId).label}
         </span>
       </motion.div>
       <div className={styles.body}>
@@ -112,7 +112,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
         <p className="line-clamp-2 text-sm leading-relaxed text-board-muted md:line-clamp-3">
           {role.whyItFits}
         </p>
-        {onPreview && <RoleMatchPreview sample={w.demo ? role.matchPreview : undefined} />}
+        {onPreview && <RoleMatchPreview sample={w.demo ? role.matchPreview : role.matchAssessment} demo={w.demo} />}
         {!onPreview && <details className="border-t border-board-line/60 pt-1 text-sm">
           <summary className="flex min-h-11 items-center text-board-accent">
             View analysis
