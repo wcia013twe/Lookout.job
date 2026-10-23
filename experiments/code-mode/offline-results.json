@@ -1,0 +1,119 @@
+{
+  "experiment": "offline-orchestration-v1",
+  "checks": 14,
+  "repetitions": 10,
+  "toolCatalogCount": 104,
+  "limits": [
+    "No model calls or real email access",
+    "Handwritten identical decisions in all arms",
+    "Real MCP framing and request validation; mock persistence and identity",
+    "Code arm is a trusted local program, not a production sandbox",
+    "Model-bound bytes and handoffs are modeled, not token or latency measurements",
+    "No hosted gateway, database authorization, semantic accuracy, or runtime compatibility claims",
+    "Direct-parallel assumes mail and workspace reads in one round and independent writes in a second",
+    "Code estimates two rounds: gather evidence for model interpretation, then write and summarize",
+    "Synthetic emails contain 2800 bytes of removable footer; direct projections could remove it too",
+    "Email connector network calls, schema tokens, generated code tokens, and model reasoning are not measured"
+  ],
+  "rows": [
+    {
+      "mode": "direct",
+      "size": 1,
+      "calls": 2,
+      "credentialChecks": 2,
+      "writes": 1,
+      "toolResultBytes": 390,
+      "localHarnessMs": 0.07970899999999403,
+      "modeledModelBoundBytes": 3536,
+      "modeledResultHandoffs": 3
+    },
+    {
+      "mode": "direct-parallel",
+      "size": 1,
+      "calls": 2,
+      "credentialChecks": 2,
+      "writes": 1,
+      "toolResultBytes": 390,
+      "localHarnessMs": 0.11479099999999676,
+      "modeledModelBoundBytes": 3536,
+      "modeledResultHandoffs": 2
+    },
+    {
+      "mode": "code",
+      "size": 1,
+      "calls": 2,
+      "credentialChecks": 2,
+      "writes": 1,
+      "toolResultBytes": 390,
+      "localHarnessMs": 0.0794169999999994,
+      "modeledModelBoundBytes": 299,
+      "modeledResultHandoffs": 2
+    },
+    {
+      "mode": "direct",
+      "size": 10,
+      "calls": 11,
+      "credentialChecks": 11,
+      "writes": 10,
+      "toolResultBytes": 3060,
+      "localHarnessMs": 0.46675000000000466,
+      "modeledModelBoundBytes": 34511,
+      "modeledResultHandoffs": 12
+    },
+    {
+      "mode": "direct-parallel",
+      "size": 10,
+      "calls": 11,
+      "credentialChecks": 11,
+      "writes": 10,
+      "toolResultBytes": 3060,
+      "localHarnessMs": 0.37129099999999937,
+      "modeledModelBoundBytes": 34511,
+      "modeledResultHandoffs": 2
+    },
+    {
+      "mode": "code",
+      "size": 10,
+      "calls": 11,
+      "credentialChecks": 11,
+      "writes": 10,
+      "toolResultBytes": 3060,
+      "localHarnessMs": 0.3150420000000054,
+      "modeledModelBoundBytes": 2450,
+      "modeledResultHandoffs": 2
+    },
+    {
+      "mode": "direct",
+      "size": 50,
+      "calls": 51,
+      "credentialChecks": 51,
+      "writes": 50,
+      "toolResultBytes": 15120,
+      "localHarnessMs": 1.429083999999989,
+      "modeledModelBoundBytes": 172451,
+      "modeledResultHandoffs": 52
+    },
+    {
+      "mode": "direct-parallel",
+      "size": 50,
+      "calls": 51,
+      "credentialChecks": 51,
+      "writes": 50,
+      "toolResultBytes": 15120,
+      "localHarnessMs": 1.115832999999995,
+      "modeledModelBoundBytes": 172451,
+      "modeledResultHandoffs": 2
+    },
+    {
+      "mode": "code",
+      "size": 50,
+      "calls": 51,
+      "credentialChecks": 51,
+      "writes": 50,
+      "toolResultBytes": 15120,
+      "localHarnessMs": 1.0169170000000065,
+      "modeledModelBoundBytes": 12210,
+      "modeledResultHandoffs": 2
+    }
+  ]
+}
