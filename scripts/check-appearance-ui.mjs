@@ -37,6 +37,7 @@ try{
   await market.screenshot({path:`${dir}/${name}-marketplace.png`});
   await page.getByRole('button',{name:'Open profile navigation'}).click();
   assert.equal(await page.getByRole('link',{name:'Browse Marketplace',exact:true}).count(),0);
+  assert.equal(await page.getByRole('navigation',{name:'Profile navigation'}).getByRole('link',{name:'Appearance',exact:true}).count(),0);
   await page.keyboard.press('Escape');
  }
  assert.equal(cloud.length,before,'Preview interactions must not write to the account');
