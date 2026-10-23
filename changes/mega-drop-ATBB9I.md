@@ -13,3 +13,10 @@
 - Demo uses the same picker against its isolated memory store. Verified switching Original to Lagoon in demo and desktop/mobile layout; existing demo reset remains available.
 - Existing contract retained: `save_theme_preferences` edits `preferences.theme.pack`; browser changes retain the existing store/cloud preference path and validation. No backend or gateway contract changed. Existing theme tool tests pass in the full suite.
 - Validation: 444 tests and 147-role data validation passed; production static export passed. Visual verification used Chrome. Live cloud persistence and the deployed MCP endpoint were not exercised.
+
+## Sequential Mega reveal follow-up
+
+- First activation begins a count-only deal: one face-down card lands per beat, pushing earlier cards left. No role advances during this sequence; cards unlock only after the last landing. On narrow screens the row scrolls toward each arriving card.
+- Every unopened/upgrading card is now one native full-surface button with Enter/Space support. Revealed cards retain ordinary posting links and details. Timers clean up on close/group changes, reduced motion keeps the sequential count with shorter, non-spatial steps, and Reveal all is unavailable during dealing.
+- Demo retains the five-card fictional fixture. Chrome verification confirmed the initial deal lock, final five face-down cards, and pointer/keyboard opening of individual cards.
+- Validation: 444 tests, typecheck, data validation and production export passed. This remains client presentation using the existing feed/preferences contracts; no new backend or MCP action. Mobile horizontal card layout verified; mobile deal animation and reduced-motion timing not visually exercised.
