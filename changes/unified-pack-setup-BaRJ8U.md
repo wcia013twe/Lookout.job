@@ -16,3 +16,4 @@
 - Updated demo browser coverage for section switching, draft retention and disabling/removing packs. Existing backend/MCP mappings are unchanged; no new service capabilities.
 - Follow-up validation: 517 tests, catalog validation (147 roles), production build/typecheck, desktop/mobile browser workflow and visual review; detector clean. Existing dependency advisory remains.
 - Integrated concurrent default-schedule/help-popover work; retained default restoration and updated its browser check for the Search tab.
+- Final integrated verification: 520 tests, data validation, production build/typecheck and both pack/schedule browser suites passed, including missing/empty/custom schedules, keyboard help, retained drafts and desktop/mobile screenshots.
