@@ -391,3 +391,13 @@ IDs satisfy task validation. Reload/reset restores the fixtures.
 `scripts/check-card-packs-ui.mjs` covers that sequence, draft-name preview, removal,
 reset, responsive layout, an empty mocked account and explicit API failure with no
 production account writes.
+
+My Agent UI pass: the inner settings navigation uses labeled tab panels with roving
+keyboard focus (Left/Right, Home/End) and horizontal scrolling on narrow screens.
+Pack actions stack below titles on mobile. Task editors expose their expanded state
+and a Done editing control; Save tasks still commits the draft separately.
+Demo verification: at desktop and 390px width, visit all five tabs, use keyboard
+navigation, edit a task name, switch to Packs and back, close the editor and save.
+Confirm the saved demo message and disabled Save tasks button. Existing fictional
+long source names and active/expired connections cover the adjacent settings states.
+These presentation changes retain the existing scoped save services and MCP boundaries.
