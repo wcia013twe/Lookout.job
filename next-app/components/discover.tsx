@@ -8,6 +8,7 @@ import SearchSweeps from "./search-sweeps";
 import CardPackWidgets from "./card-pack-widgets";
 import DayFilter from "./day-filter";
 import ProfileIcon from "./profile-icon";
+import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
 import {showAgentEmptyState} from "../lib/discover-view.mjs";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Drop } from "../lib/drop-pack";
@@ -17,6 +18,7 @@ export default function Discover() {
   const newArrival=showAgentEmptyState({signedIn:!!w.user,hasPrivateBatch:w.hasPrivateBatch,demo:w.demo,demoArrival:w.state.ui?.dashboardArrival});
   const sourceRoles=publicView?(w.publicRoles||w.roles):w.roles;
   const sourceDate=publicView?(w.publicDate||w.date):w.date;
+  const firstRole=!w.demo?savedOnboardingRole(w.state.workflow.searchPreferences?.profiles,w.publicRoles||w.roles):null;
   const reduced = useReducedMotion();
   const board = useRef<HTMLElement>(null);
   const [arrival, setArrival] = useState<{owner:string;ids:string[];run:number}|null>(null);
@@ -53,13 +55,19 @@ export default function Discover() {
   const roleGroups = [["FT", "Full-time"], ["Internship", "Internships"]].map(([key, label]) => ({ key, label, roles: roles.filter((role: Role) => role.employmentType === key) }));
   if(newArrival&&!publicView)return <>
     <Heading title="Discover">Your agent’s finds will appear here.</Heading>
-    <div className="mx-auto flex max-w-md flex-col items-center px-5 py-16 text-center">
+    {firstRole ? <section className="mx-auto max-w-lg py-8" aria-label="Your first role to explore">
+      <p className="mb-3 text-sm text-board-muted">Saved from onboarding · awaiting your agent’s review</p>
+      <article className="rounded-2xl border border-board-line bg-board-panel p-6"><p className="text-sm text-board-muted">{firstRole.company}</p><h2 className="mt-2 text-xl font-semibold">{firstRole.title}</h2><p className="mt-3 text-sm text-board-muted">{firstRole.location} · {firstRole.employmentType==='FT'?'Full-time':firstRole.employmentType}</p><button type="button" className="mt-5 min-h-11 text-sm font-semibold text-board-accent" onClick={()=>setPreview(firstRole)}>Preview role</button></article>
+      <p className="mt-4 text-sm text-board-muted">Your agent will check availability and compare it with your profile.</p>
+      <button type="button" className="mt-4 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={()=>setPublicView(true)}>Explore public roles</button>
+    </section> : <div className="mx-auto flex max-w-md flex-col items-center px-5 py-16 text-center">
       <div className="mb-5 grid size-14 place-items-center rounded-2xl border border-board-line bg-board-panel text-board-accent"><ProfileIcon name="briefcase" width={26} height={26}/></div>
       <h2 className="text-xl font-semibold">Room for your next move.</h2>
       <p className="mt-3 text-sm leading-relaxed text-board-muted">Ask your connected agent to find your first roles. Come back here to review them.</p>
       <button type="button" className="mt-6 min-h-11 text-sm text-board-muted underline underline-offset-4 hover:text-board-text" onClick={()=>setPublicView(true)}>Explore public roles</button>
       {w.demo&&<p className="mt-3 text-xs text-board-muted">Demo · a new workspace preview</p>}
-    </div>
+    </div>}
+    {preview&&<DiscoverRolePanel key={preview.id} role={preview} assessmentPending onClose={()=>setPreview(null)}/>}
   </>;
   return (
     <>

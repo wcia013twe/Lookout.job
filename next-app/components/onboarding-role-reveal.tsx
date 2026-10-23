@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { CompanyLogo, type Role } from "./role-card";
 import RoleMatchPreview from "./role-match-preview";
+import { useWorkspace } from "../lib/workspace";
+import { recordRoleOpened } from "../lib/progress.mjs";
 import { Button, Dots, Quiet, Title } from "./onboarding-ui";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -38,24 +40,27 @@ function TypedAnalysis({ active, text }: { active: boolean; text: string }) {
 }
 
 type OnboardingRoleRevealProps = {
-  role: Role;
+  role: Role | null;
   demo: boolean;
-  sample?: boolean;
   onPrepare: () => void;
   onLater: () => void;
 };
 
-export default function OnboardingRoleReveal({ role, demo, sample = false, onPrepare, onLater }: OnboardingRoleRevealProps) {
-  const illustrative = demo || sample;
+export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }: OnboardingRoleRevealProps) {
+  const w=useWorkspace();
+  const pending=!role;
+  const illustrative = demo;
   const reduced = useReducedMotion();
   const [opened, setOpened] = useState(false);
   const [spread, setSpread] = useState(false);
   const [analysis, setAnalysis] = useState(false);
   const swipe = useRef<number | null>(null);
   const analysisHeading = useRef<HTMLHeadingElement>(null);
-  const text = illustrative
-    ? role.whyItFits || "This fictional example shows how experience can connect to a role. Any sample fit scores are illustrative, not a personalized assessment."
-    : role.whyItFits || "No catalog context has been recorded for this role.";
+  const text = pending
+    ? "Your preferences are saved. Connect your agent to find a current employer posting and compare it with your saved profile and résumé. Your first result will appear in your workspace."
+    : illustrative
+      ? role.whyItFits || "This fictional example demonstrates the reveal. Sample fit scores are illustrative."
+      : "This catalog role matches the work type and location you chose. Your agent will check that the posting is still open and compare it with your saved profile and résumé before recommending a next step.";
 
   useEffect(() => {
     setSpread(false);
@@ -102,25 +107,27 @@ export default function OnboardingRoleReveal({ role, demo, sample = false, onPre
           <strong>Tap or swipe to reveal</strong>
         </button>
         <article className="gold-card card-front" aria-hidden={!opened} inert={!opened}>
-          <div className="gold-banner"><Dots /><span className="gold-tier">{sample ? "Sample opportunity" : "Your first opportunity"}</span></div>
+          <div className="gold-banner"><Dots /><span className="gold-tier">{pending ? "Your first search" : illustrative ? "Sample opportunity" : "A role to explore"}</span></div>
           <div className="gold-body">
-            <div className="gold-company"><CompanyLogo company={role.company} /><span>{role.company}</span></div>
-            <h2>{role.title}</h2>
-            <p className="meta">{role.employmentType==="FT"?"Full-time":role.employmentType} · {role.location || "Location not recorded"}</p>
-            <RoleMatchPreview sample={illustrative ? role.matchPreview : undefined} animate active={spread} />
-            <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Public catalog role · no personalized assessment yet"}</p>
+            {role ? <>
+              <div className="gold-company"><CompanyLogo company={role.company} /><span>{role.company}</span></div>
+              <h2>{role.title}</h2>
+              <p className="meta">{role.employmentType==="FT"?"Full-time":role.employmentType} · {role.location || "Location not recorded"}</p>
+              {illustrative ? <RoleMatchPreview sample={role.matchPreview} animate active={spread}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer" onClick={()=>recordRoleOpened(w.store,role.id)}>View employer posting ↗</a></div>}
+              <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Catalog shortlist · no personalized assessment yet"}</p>
+            </> : <div className="onboarding-first-find"><Dots/><h2>Your first find is on its way.</h2><p>Connect your agent to look beyond the catalog.</p></div>}
           </div>
         </article>
       </motion.div>
     </motion.div>
     {spread && <motion.div className="reveal-copy" initial={reduced ? false : { opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduced ? 0 : 0.6, ease }}>
       <Dots />
-      <Title>{sample ? "A glimpse of what’s next." : "Worth a closer look."}</Title>
-      <h3 ref={analysisHeading} tabIndex={-1}>{illustrative ? "Illustrative fit analysis" : "Catalog context"}</h3>
+      <Title>{pending ? "Let’s find your first role." : illustrative ? "A glimpse of what’s next." : "A role to explore."}</Title>
+      <h3 ref={analysisHeading} tabIndex={-1}>{pending ? "Your search, ready to go" : illustrative ? "Illustrative fit analysis" : "Why it’s here"}</h3>
       <TypedAnalysis active={analysis} text={text} />
-      <p className="hint">{illustrative ? "Fictional example. This is not live résumé analysis." : "This catalog context is not personalized to your profile or résumé."}</p>
+      <p className="hint">{illustrative ? "Fictional example. This is not live résumé analysis." : pending ? "Your agent runs the search after connecting." : "Shortlisted from your preferences. The agent review is still to come."}</p>
       <div className="actions">
-        <Button onClick={onPrepare}>{sample ? "Meet my agent" : "Prepare my application"}</Button>
+        <Button onClick={onPrepare}>{pending ? "Connect my agent" : illustrative ? "Meet my agent" : "Check this with my agent"}</Button>
         <Quiet onClick={onLater}>I’ll do this later</Quiet>
       </div>
     </motion.div>}

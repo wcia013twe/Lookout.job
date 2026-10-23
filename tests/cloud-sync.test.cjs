@@ -163,3 +163,18 @@ test('personal contact fields survive cloud save and hydration without becoming 
  for(const [key,value] of Object.entries(contact)){assert.equal(env.db.profiles[0].facts[key],value);assert.equal(restored[key],value);}
  assert.equal(restored.verified,false);
 });
+
+test('new private job batches arrive on background sync without reloading the workspace',async()=>{
+ const env=await environment(null,true),seen=[];
+ JB.setBatch=value=>seen.push(value);
+ const batch='33333333-3333-4333-8333-333333333333';
+ env.db.job_batches=[{id:batch,user_id:one,batch_date:'2026-10-23',label:'My first roles'}];
+ env.db.batch_items=[{user_id:one,batch_id:batch,job_id:'first-owned-role',position:0,recommendation:{whyItFits:'Private agent context'},jobs:{canonical_url:'https://employer.test/jobs/first',employer:{company:'Employer',title:'Backend Engineer',employmentType:'FT',location:'Remote'}}}];
+ await env.event('focus');
+ assert.equal(seen.at(-1).label,'My first roles');
+ assert.equal(seen.at(-1).roles[0].id,'first-owned-role');
+ assert.equal(seen.at(-1).roles[0].whyItFits,'Private agent context');
+ env.db.job_batches=[];
+ await env.event('focus');
+ assert.equal(seen.at(-1),null);
+});

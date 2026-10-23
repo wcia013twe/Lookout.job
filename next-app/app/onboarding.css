@@ -72,3 +72,10 @@
 .lookout-onboarding .circle-invite-code-row .field{min-width:0}
 .lookout-onboarding .circle-invite-code-row>button{margin-bottom:10px;white-space:nowrap}
 @media(max-width:420px){.lookout-onboarding .circle-invite-code-row{grid-template-columns:minmax(0,1fr);gap:0}.lookout-onboarding .circle-invite-code-row>button{width:100%}}
+
+.lookout-onboarding .onboarding-role-check{margin:24px 0;border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:var(--muted)}
+.lookout-onboarding .onboarding-role-check h3{font-size:14px;color:var(--text)}
+.lookout-onboarding .onboarding-role-check p{margin:10px 0}
+.lookout-onboarding .onboarding-role-check a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.lookout-onboarding .onboarding-first-find{min-height:310px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:18px}
+.lookout-onboarding .onboarding-first-find p{color:var(--muted);font-size:14px}

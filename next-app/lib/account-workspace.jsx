@@ -6,6 +6,7 @@ import {navigateWorkspaceMode} from "./workspace-mode.mjs";
 import { createClient } from "@supabase/supabase-js";
 import { connectCloud } from "../../lib/cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
+import {rememberOnboardingReturn,takeOnboardingReturn} from "./onboarding-auth.mjs";
 import catalog from "../../data/jobs.json";
 let boot;
 const URL = "https://umhqfqzpwmszhcknwtrs.supabase.co";
@@ -154,10 +155,16 @@ export default function AccountWorkspaceProvider({ children }) {
       unsub.forEach((fn) => fn());
     };
   }, []);
+  useEffect(()=>{
+    if(!authReady||!user)return;
+    try {if(takeOnboardingReturn(window.sessionStorage,{signedIn:true,path:location.pathname}))location.replace(asset("onboarding/"));}catch{ /* Direct OAuth return still works if tab storage is blocked. */ }
+  },[authReady,user?.id]);
   const store = typeof window !== "undefined" ? window.JB?.store : null;
   async function signIn() {
     setError("");
-    const redirect = new globalThis.URL(asset(""), location.origin);
+    try {rememberOnboardingReturn(window.sessionStorage,location.pathname);}catch{ /* No private data is stored here. */ }
+    const returnToOnboarding = /\/onboarding\/?$/.test(location.pathname);
+    const redirect = new globalThis.URL(asset(returnToOnboarding ? "onboarding/" : ""), location.origin);
     const id = new globalThis.URL(location.href).searchParams.get("batch");
     if (id) redirect.searchParams.set("batch", id);
     const { error } = await clientRef.current.auth.signInWithOAuth({
