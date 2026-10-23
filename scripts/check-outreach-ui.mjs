@@ -37,6 +37,14 @@ try{
  await page.goto(`${process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3053'}/referrals/?view=people`);
  await page.waitForFunction(()=>window.JB?.cloud?.ready);
  await page.getByRole('heading',{name:'Referrals',exact:true}).waitFor();
+ await page.getByRole('heading',{name:'Start your first conversation',exact:true}).waitFor();
+ assert.equal(await page.getByRole('group',{name:'Outreach view'}).count(),0);
+ for (const [name,width,height] of [['desktop',1440,1000],['mobile',390,844]]) {
+  await page.setViewportSize({width,height});
+  await page.screenshot({path:dir+'/empty-'+name+'.png',fullPage:true,animations:'disabled'});
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Empty state overflow');
+ }
+ await page.setViewportSize({width:1440,height:1000});
  await page.getByRole('button',{name:'Add manually',exact:true}).click();
  await page.getByLabel('Company',{exact:true}).fill('Fictional Company');
  await page.getByLabel('Contact name',{exact:true}).fill('Fictional Contact');
