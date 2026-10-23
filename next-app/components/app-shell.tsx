@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import {useEffect, type ReactNode} from "react";
 import { MotionConfig } from "framer-motion";
 import { streak } from "../lib/progress.mjs";
-import { usePathname } from "next/navigation";
+import { usePathname,useRouter } from "next/navigation";
+import {websiteOnboardingDestination} from "../lib/website-onboarding.mjs";
 import { useWorkspace } from "../lib/workspace";
 import { Notice } from "./ui";
 import ColorModeControl from "./color-mode";
@@ -23,6 +24,9 @@ const navigation = [
 export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
+  const router=useRouter();
+  const destination=websiteOnboardingDestination({path,demo:w.demo,authReady:w.authReady,signedIn:!!w.user,status:w.websiteOnboarding?.status});
+  useEffect(()=>{if(destination)router.replace(destination);},[destination,router]);
   const isPrivacy = /^\/privacy\/?$/.test(path);
   const footer = <footer className="mt-10 border-t border-board-line pt-4 text-sm text-board-muted"><Link href="/privacy/" className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-board-text">Privacy &amp; sharing</Link></footer>;
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/career-toolkit/" && path.startsWith(href)) || (href === "/" && /^\/discover\/?$/.test(path));
@@ -44,6 +48,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
     !w.state?.workflow?.resumes?.length
       ? 1
       : 0));
+  if(!w.demo&&!isPrivacy&&!/^\/workspace-reset\/?$/.test(path)&&(destination||(w.user&&w.websiteOnboarding?.status!=='complete'&&w.websiteOnboarding?.status!=='incomplete'))){
+    return <main className="grid min-h-dvh place-items-center bg-board-bg p-6"><div role="status"><Notice>{w.websiteOnboarding?.status==='error'?'Could not check your setup. Retry to continue.':'Checking your setup…'}</Notice>{w.websiteOnboarding?.status==='error'&&<button className="mt-4 underline underline-offset-4" onClick={w.websiteOnboarding.retry}>Retry setup check</button>}</div></main>;
+  }
   if (/\/onboarding\/?$/.test(path)) {
     return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}<div className="mx-auto max-w-6xl px-4 pb-6 md:px-6">{footer}</div></main>;
   }

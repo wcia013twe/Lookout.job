@@ -8,6 +8,7 @@ import { connectCloud } from "../../lib/cloud.mjs";
 import presets from "../../data/tierlist-presets.json";
 import {rememberOnboardingReturn,takeOnboardingReturn} from "./onboarding-auth.mjs";
 import catalog from "../../data/jobs.json";
+import {useWebsiteOnboarding} from "./use-website-onboarding";
 let boot;
 const URL = "https://umhqfqzpwmszhcknwtrs.supabase.co";
 const KEY = "sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5";
@@ -177,7 +178,9 @@ export default function AccountWorkspaceProvider({ children }) {
     const { error } = await clientRef.current.auth.signOut({ scope: "local" });
     if (error) setError("Could not sign out. Try again.");
   }
+  const websiteOnboarding=useWebsiteOnboarding(clientRef.current,user);
   const value = {
+    websiteOnboarding,
     state,store,user,accountUser:user,demo:false,demoEpoch:0,canDemo:true,
     toggleDemo:()=>navigateWorkspaceMode(window.location,true),resetDemo:()=>{},
     locked,status,error,authReady,signIn,signOut,syncError,
