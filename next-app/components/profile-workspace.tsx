@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
-import { Heading, secondary, control } from "./ui";
+import { secondary, control } from "./ui";
 import ProfileEditor from "./profile-editor";
 import ProfileOverview from "./profile-overview";
 import ProfileDocuments from "./profile-documents";
@@ -109,11 +109,11 @@ function ProfileContent() {
           hidden={active !== "agent"}
           aria-label="My agent"
         >
-          <Heading title="My agent" />
-          <DiscoverySetup />
+          <DiscoverySetup>
           <WritingStyles />
           <CircleAgentSettings />
           <Preferences mode="agent" showDefaultResume={false} />
+          </DiscoverySetup>
         </section>
       )}
       {visited.includes("appearance") && <section className={profileStyles.panel} hidden={active !== "appearance"} aria-label="Appearance"><AppearanceSettings /></section>}

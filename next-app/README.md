@@ -345,12 +345,15 @@ Detached demo checks: open `/career-toolkit/?demo=1&demoApi=empty` or `/circles/
 ### Task-linked card packs
 
 My Profile → My Agent now contains the complete discovery setup: connection management,
-search sources, task instructions/timing and card-pack configuration. The first three
-groups expand in place and preserve unsaved edits. Newly saved sources, connections
+search sources, task instructions/timing and card-pack configuration. A compact
+Packs / Search / Sources / Connections / Other settings navigation shows one editor
+at a time while preserving unsaved edits and one-time connection setup. Newly saved sources, connections
 and tasks are available to the next step without navigation or reload. Discover keeps
 the feeds and a compact setup link; empty/new workspaces receive a setup suggestion.
 
-The pack editor includes an interactive, explicitly fictional preview that follows
+Pack rows keep only Edit and Copy request visible; enable/disable and removal live
+in the editor. Other agent preferences are in Other settings. The pack editor
+includes an interactive, explicitly fictional preview that follows
 the draft name. Preview state is component-local: no feed reads, account writes,
 reveal stamps, application links or XP. Saved packs continue using the real feed.
 Task and pack saves refresh the shared preferences timestamp while checking their

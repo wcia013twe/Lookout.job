@@ -210,9 +210,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
   const content = (
     <>
       <p className="max-w-prose text-sm leading-relaxed text-board-muted">
-        Give Muse or another personal agent access to your Lookout workspace.
-        Your agent can read or change information within the permissions you grant.
-        Its AI provider’s policies apply to information it receives. <Link href="/privacy/#agents" className="underline underline-offset-4">Privacy details</Link>.
+        Connect your agent with the permissions you choose. Its AI provider’s policies apply. <Link href="/privacy/#agents" className="underline underline-offset-4">Privacy details</Link>.
       </p>
       {!w.user && !w.demo && (
         <p role="status" className="mt-4 rounded-lg border border-board-line bg-board-tag p-4 text-sm">
