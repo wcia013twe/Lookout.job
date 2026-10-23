@@ -1,3 +1,4 @@
+import {demoPack,demoPackTask} from './card-pack-demo.mjs';
 import {demoApiScenario} from './demo-api-scenarios.mjs';
 import {demoFixtures} from './network-demo.mjs';
 import {withApplicationProfileDemo} from './application-profile-demo.mjs';
@@ -10,6 +11,8 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
  fixtures.state.network.referrals=[...demoOutreachContacts(),...fixtures.state.network.referrals.filter(r=>r.collection==='companies'||r.collection==='network-demo')];
  fixtures.state.workflow.tierLists=presets.presets.map(p=>models.tierlistModel.seed(p));
  fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id||'';
+ fixtures.state.workflow.theme={...fixtures.state.workflow.theme,cardPacks:[structuredClone(demoPack)],cardPacksVersion:1};
+ fixtures.state.workflow.searchPreferences.schedule={enabled:false,timezone:'UTC',routines:[structuredClone(demoPackTask)],configVersion:1};
  const store=createDemoStore(fixtures.state);
  return {store,services:demoApiScenario(createDemoServices(store),apiScenario)};
 }

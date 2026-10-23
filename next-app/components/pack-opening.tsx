@@ -12,13 +12,13 @@ import { CompanyLogo } from "./role-card";
 import PackEffects from "./pack-effects";
 import styles from "../styles/templates/pack-opening.module.css";
 
-type Props = { drops: Drop[]; day: string; onClose: () => void; styleId?: PackStyleId };
+type Props = { packId?: string; title?: string; drops: Drop[]; day: string; onClose: () => void; styleId?: PackStyleId };
 
 function pulse(tier?: Tier) {
   if (typeof navigator.vibrate === "function") navigator.vibrate(tier && tierOrder.indexOf(tier) >= 3 ? [18, 30, 28] : 12);
 }
 
-export default function PackOpening({ drops, day, onClose, styleId }: Props) {
+export default function PackOpening({ drops, day, onClose, styleId, packId, title = "Daily drop pack" }: Props) {
   const w = useWorkspace();
   const reduced = useReducedMotion();
   const root = useRef<HTMLDialogElement>(null);
@@ -99,7 +99,7 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
     w.store.update("drops.seenDropIds", (ids: string[]) => [...new Set([...(ids || []), ...items.map(dropKey)])]);
   }
   function close() {
-    w.store.set(`drops.packStamps.${day}`, true);
+    w.store.set(`drops.packStamps.${packId?`${packId}:`:""}${day}`, true);
     onCloseRef.current();
   }
   function openSeal() {
@@ -160,14 +160,14 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
     <dialog ref={root} className={styles.experience} style={experienceStyle} data-pack-style={template.id} data-pack-texture={texture.id} data-sealed={phase !== "open"} data-phase={phase} aria-labelledby="drop-pack-title" onCancel={event => { event.preventDefault(); close(); }} onClick={event => { if (event.target === root.current) close(); }}>
       <div className="pack-modal">
         <header className="pack-head">
-          <div><h2 id="drop-pack-title">Daily drop pack</h2><p>{day} · {drops.length} opportunities{w.demo ? " · Fictional demo" : ""}</p></div>
+          <div><h2 id="drop-pack-title">{title}</h2><p>{day} · {drops.length} opportunities{w.demo ? " · Fictional demo" : ""}</p></div>
           <button type="button" className="pack-close" aria-label="Close pack" onClick={close}><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
         </header>
         {phase !== "open" ? <section className="pack-seal" aria-label="Sealed opportunity pack">
           <div className="pack-seal-art" style={{ "--tear-progress": tearProgress } as CSSProperties}>
             <motion.div aria-hidden="true" className="seal-shard seal-shard-top" animate={phase === "tearing" ? { x: -35, y: -140, rotate: -12, opacity: 0 } : { x: 0, y: 0, opacity: 1 }} transition={sealMotion} />
             <motion.div aria-hidden="true" className="seal-shard seal-shard-bottom" animate={phase === "tearing" ? { x: 35, y: 140, rotate: 12, opacity: 0 } : { x: 0, y: 0, opacity: 1 }} transition={sealMotion} />
-            <div className="seal-copy"><span className="seal-edition">ZERO2SUDO · DAILY EDITION</span><strong>Your next<br />big move.</strong><span>{drops.length} opportunities inside</span></div>
+            <div className="seal-copy"><span className="seal-edition">{title.toUpperCase()} · DAILY EDITION</span><strong>Your next<br />big move.</strong><span>{drops.length} opportunities inside</span></div>
             <button type="button" className="pack-tear-button" disabled={phase === "tearing"} onClick={openSeal} onPointerDown={event => { tearStart.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={dragTear} onPointerUp={() => { tearStart.current = null; if (!opening.current) setTearProgress(0); }} onPointerCancel={() => { tearStart.current = null; setTearProgress(0); }}>
               <span className="tear-grip" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><path d="m3.5 5.5 3.5 3.5-3.5 3.5M9 5.5l3.5 3.5L9 12.5" /></svg></span>
               <span className="tear-copy"><strong>Slide to tear</strong><small>or tap to open</small></span>

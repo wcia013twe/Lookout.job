@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
-import { asset, useWorkspace } from "../lib/workspace";
+import { useState } from "react";
+import { useWorkspace } from "../lib/workspace";
 import { dayStamp } from "../lib/progress.mjs";
-import { demoDrops, dropKey, tierOf, tierOrder as canonicalTiers, type Drop } from "../lib/drop-pack";
+import { dropKey, tierOf, tierOrder as canonicalTiers, type Drop } from "../lib/drop-pack";
 import { RARITY_LABEL, TIER_HEX } from "../lib/role-display";
-import { secondary, Notice } from "./ui";
+import { secondary } from "./ui";
 import { CompanyLogo } from "./role-card";
 import DayFilter from "./day-filter";
 import PackOpening from "./pack-opening";
@@ -40,33 +40,17 @@ function DropRow({ drop, isNew, demo }: { drop: Drop; isNew: boolean; demo: bool
     </div>
   </details>;
 }
-export default function DailyDrops() {
-  const [fetched, setFetched] = useState<Drop[]>([]);
-  const [loadError, setLoadError] = useState(false);
-  const [attempt, setAttempt] = useState(0);
-  const [day, setDay] = useState("latest");
-  const [packOpen, setPackOpen] = useState(false);
-  const w = useWorkspace();
-  useEffect(() => {
-    if (w.demo) return;
-    let current = true;
-    setLoadError(false);
-    fetch(asset("data/sudo-drops.json"))
-      .then((response) => { if (!response.ok) throw new Error("Drop feed unavailable"); return response.json(); })
-      .then((feed) => { if (current) setFetched(feed?.drops || []); })
-      .catch(() => { if (current) setLoadError(true); });
-    return () => { current = false; };
-  }, [w.demo, attempt]);
-  const drops: Drop[] = w.demo ? demoDrops(dayStamp()) : fetched;
-  if (loadError && !w.demo) return <div className={styles.strip}><Notice>Story drops could not be loaded.</Notice><button className={`${secondary} mt-3`} onClick={() => setAttempt((value) => value + 1)}>Retry drops</button></div>;
-  if (!drops.length) return null;
+export default function DailyDrops({id,title,drops}:{id:string;title:string;drops:Drop[]}) {
+  const [day,setDay]=useState('latest'),[packOpen,setPackOpen]=useState(false);
+  const w=useWorkspace();
+  if(!drops.length)return <section className={styles.strip} aria-label={title}><h2 className={styles.title}>{title}</h2><p className="mt-3 text-sm text-board-muted">No cards yet. Ask a connected agent to publish discoveries into this pack.</p></section>;
   const latest = [...drops].sort((a, b) => b.dateSeen.localeCompare(a.dateSeen));
   const dates = [...new Set(latest.map((drop) => drop.dateSeen))];
   const selectedDay = day === "latest" ? dates[0] : day;
   const visible = latest.filter((drop) => selectedDay === "all" || drop.dateSeen === selectedDay);
   const packDay = selectedDay === "all" ? dates.find((date) => latest.some((drop) => drop.dateSeen === date && tierOf(drop) !== "common")) || dates[0] : selectedDay;
   const pack = latest.filter((drop) => drop.dateSeen === packDay && tierOf(drop) !== "common");
-  const packAction = packDay === dayStamp() && !w.state.drops?.packStamps?.[packDay] ? "Open" : "Replay";
+  const packAction = packDay === dayStamp() && !w.state.drops?.packStamps?.[`${id}:${packDay}`] ? "Open" : "Replay";
   const seen = new Set<string>(w.state.drops?.seenDropIds || []);
   const newCount = visible.filter((drop) => !seen.has(dropKey(drop))).length;
   const tiers = tierOrder.filter((tier) => visible.some((drop) => tierOf(drop) === tier));
@@ -76,12 +60,12 @@ export default function DailyDrops() {
   function closePack() {
     setPackOpen(false);
     markSeen(pack);
-    w.store.set(`drops.packStamps.${packDay}`, true);
+    w.store.set(`drops.packStamps.${id}:${packDay}`, true);
   }
-  return <section className={styles.strip} aria-label="Zero2Sudo daily drops">
+  return <section className={styles.strip} aria-label={title}>
     <div className={styles.header}>
       <div className={styles.info}>
-        <h2 className={styles.title}>Zero2Sudo drops</h2>
+        <h2 className={styles.title}>{title}</h2>
         <div className={styles.banner}>
           <strong>{selectedDay === "all" ? "All history" : formatDay(selectedDay)}</strong>
           <span>{visible.length} drops</span><span className={styles.addedCount}>{visible.filter((drop) => drop.status === "added").length} added</span>
@@ -108,6 +92,6 @@ export default function DailyDrops() {
         })}
       </div>
     </details>
-    {packOpen && <PackOpening drops={pack} day={packDay} onClose={closePack} />}
+    {packOpen && <PackOpening packId={id} title={title} drops={pack} day={packDay} onClose={closePack} />}
   </section>;
 }

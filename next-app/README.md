@@ -341,3 +341,18 @@ Network, Career Toolkit and Circles render an accessible alert with the failed o
 Detached demo checks: open `/career-toolkit/?demo=1&demoApi=empty` or `/circles/?demo=1&demoApi=empty` for successful empty lists. Change `demoApi` to `unavailable` for a simulated missing API; **Check again** recovers to the normal fictional fixtures. These scenarios only wrap in-memory demo services. Reset demo data repeats the selected scenario, and removing `demoApi` restores normal fixtures. Account mode never reads this parameter.
 
 `scripts/check-api-errors-ui.mjs` checks mobile demo empty/error/recovery, account-mode failures and empty responses, preserved Circle input, explicit guest demo entry and absence of account writes, using intercepted fictional API responses. Serve `next-app/out` and set `LOOKOUT_UI_URL`, `LOOKOUT_PLAYWRIGHT_MODULE`, and `LOOKOUT_UI_ARTIFACTS` as needed; defaults use localhost:3047 and the runner's Playwright installation. No production credentials are needed.
+
+### Task-linked card packs
+
+In My Profile → My Agent, add/edit an on-demand task, choose existing search sources
+and personal-agent connections, then Save tasks. In Discover → Configure packs,
+choose that task and save the widget. No automatic scan or runtime schedule starts.
+The task owns instructions and connections; the widget owns its title and task link.
+Only explicit Zero2Sudo archive opt-in loads the public historical feed. Other users
+start with no packs. Feed and setup API failures remain explicit and retryable.
+
+Detached demo coverage: `?demo=1` has one fictional on-demand discovery task, source,
+connection and linked pack. Edit/save a task, create/rename/disable/remove a widget,
+and reset the demo. All changes stay in memory; newly created demo packs start empty.
+Optional browser check: `scripts/check-card-packs-ui.mjs` uses intercepted fictional
+accounts and the detached demo, never real account writes.

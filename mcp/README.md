@@ -394,3 +394,21 @@ later events, including cached replies when `invalidateThread` is true. Private
 drafts never enter the feed. Reads do not record citations, publish, send messages
 or acknowledge delivery. Production migration/gateway release and hosted
 verification remain outstanding. See [feed contract](../backend/circle-knowledge.md#circle-publication-feed-local-release-gated).
+
+### Task-driven card packs
+
+Read `read_personal_context` first. A pack in `preferences.theme.cardPacks` selects
+`taskId` from `preferences.search.schedule.routines`. Configure task instructions,
+sources, assigned connections and requested timing with `save_notification_preferences`;
+configure the widget name/link with `save_theme_preferences`. Preserve unrelated
+settings, use exact `expectedUpdatedAt`, and increment `schedule.configVersion` or
+`theme.cardPacksVersion`. This never grants connection scopes or starts a scheduler.
+
+An assigned active connection can run an enabled task on demand and `publish_batch`
+with one pack per batch. Each item includes `recommendation: {cardPackId, sourceId,
+note?, skipReason?, dropStatus?}` alongside canonical job identity. The server checks
+assignments and records task/publisher provenance. Use a stable `eventKey` per run;
+never construct the reserved `card-pack:` event prefix. Read results through existing
+`read_batch`; the optional UI renders the same private records. Paused/deleted tasks
+cannot publish. See [the data model](../docs/schema.md#my-agent-tasks-and-card-packs).
+The expanded discovery descriptions require the normal production gateway release.

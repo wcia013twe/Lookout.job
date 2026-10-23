@@ -1,3 +1,4 @@
+import {validateCardPacks,validateAutomationSchedule} from './card-packs.mjs';
 // Closed product actions. Shared by gateway validation and MCP discovery.
 const string = {type:'string', maxLength:2000};
 const timestamp = {type:['string','null'],description:'Exact updated_at from the current record, or null when creating.'};
@@ -19,8 +20,8 @@ export const PLATFORM_TOOLS = [
  ['save_saved_answer','answers.save','answers:write','Create/update an owned answer as unverified and always-ask. Cannot grant autofill consent.',{id:string,question:string,answer:string,companyScope:{type:['string','null']},expectedUpdatedAt:timestamp}],
  ['delete_saved_answer','answers.delete','answers:write','Delete an owned saved answer only after the user requests deletion; stale records reject.',{id:string,expectedUpdatedAt:timestamp}],
  ['save_company_tiers','preferences.tiers.save','preferences:write','Update company rankings under the user’s instructions, preserving other settings.',{tierLists:{type:'array',items:json,maxItems:20},activeTierListId:{type:['string','null']},expectedUpdatedAt:timestamp}],
- ['save_notification_preferences','preferences.notifications.save','preferences:write','Save delivery/schedule preferences. Does not create runtime schedules or send notifications.',{settings:json,expectedUpdatedAt:timestamp}],
- ['save_theme_preferences','preferences.theme.save','preferences:write','Save theme preferences, including pack texture and message templates, while preserving unrelated theme fields. Never alters application semantics.',{theme:json,expectedUpdatedAt:timestamp}],
+ ['save_notification_preferences','preferences.notifications.save','preferences:write','Save My Agent task definitions in settings.schedule: enabled, timezone, routines [{id,title,description,enabled,mode:manual|scheduled,time,sourceIds,connectionIds}], configVersion (increment saved value). Read personal context first and preserve unrelated tasks. Sources and connections must belong to the user. Manual tasks have no recurring time; personal agents run them. Does not create runtime schedules or send notifications.',{settings:json,expectedUpdatedAt:timestamp}],
+ ['save_theme_preferences','preferences.theme.save','preferences:write','Save theme preferences, including pack texture and message templates, while preserving unrelated theme fields. Card-pack setup uses theme.cardPacks [{id,title,enabled,taskId,archive?}] and an incremented cardPacksVersion. Read personal context first, preserve unrelated fields and link an existing My Agent task. Never grants scopes or activates scans. Never alters application semantics.',{theme:json,expectedUpdatedAt:timestamp}],
  ['save_resume_preferences','preferences.resumes.save','preferences:write','Set owned resume defaults/rules. Does not upload or modify resume files.',{defaultResumeId:{type:['string','null']},resumeRules:{type:'array',items:json,maxItems:50},expectedUpdatedAt:timestamp}],
  ['list_jobs','jobs.list','workspace:read','Browse the shared catalog with bounded pagination. These are catalog records, not a live employer verification.',{limit:{type:'integer',minimum:1,maximum:100},offset:{type:'integer',minimum:0}}],
  ['read_batch','batches.read','workspace:read','Read an owned batch and its jobs. Null batchId reads the latest owned batch.',{batchId:{type:['string','null']}}],
@@ -46,6 +47,8 @@ export function validatePlatformPayload(operation,payload) {
  if(operation==='resumes.reference.add') { const url=new URL(payload.url); if(url.protocol!=='https:'||url.username||url.password)throw Error('HTTPS resume reference required'); }
  if(operation==='contacts.save' && (typeof payload.record.company!=='string'||!payload.record.company.trim()||payload.record.company.length>200))throw Error('Contact company required');
  if(operation==='resumes.upload.begin' && (!/^[a-f0-9]{64}$/i.test(payload.sha256) || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(payload.id)))throw Error('Resume ID and SHA-256 required');
+ if(operation==='preferences.theme.save'&&payload.theme.cardPacks!==undefined){validateCardPacks(payload.theme.cardPacks);if(!Number.isSafeInteger(payload.theme.cardPacksVersion)||payload.theme.cardPacksVersion<1)throw Error('Increment cardPacksVersion from the saved theme.');}
+ if(operation==='preferences.notifications.save'&&payload.settings.schedule!==undefined)validateAutomationSchedule(payload.settings.schedule);
  if(operation==='preferences.notifications.save'&&Object.keys(payload.settings).some(k=>!['quietMode','schedule'].includes(k)))throw Error('Only notification settings may be edited');
  return true;
 }
