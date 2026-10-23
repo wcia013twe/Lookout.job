@@ -25,3 +25,11 @@ repository directory. Derive the static base path from the event repository name
 so deployment assets follow the configured Pages project URL after renames.
 
 Final local suite with scenario clones: 540 tests passed. The signed-out browser regression also passed under the actual `/Lookout.job/` Pages subpath on desktop and mobile.
+
+Release verified: GitHub Actions run 40016457897 succeeded and deployed
+03faafc to https://wcia013twe.github.io/Lookout.job/. The full desktop/mobile
+signed-out regression passed against that live deployment, including guest-cache
+mutation monitoring, public privacy, explicit demo, empty returning account and
+sign-out. Backend requests used intercepted fictional responses; real Google
+login and real private-account round trips remain untested. Updated the browser
+fixture to mark website onboarding complete for the returning-account check.

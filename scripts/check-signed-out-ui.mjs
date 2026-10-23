@@ -44,7 +44,7 @@ try {
  await context.addInitScript(({user,token})=>localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,token_type:'bearer',user})),{user,token});
  await context.route('https://*.supabase.co/**',route=>{
   const path=new URL(route.request().url()).pathname;
-  return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(path.endsWith('/user')?user:[])});
+  return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(path.endsWith('/user')?user:path.endsWith('/onboarding_action')?{data:{websiteCompletedAt:'2026-10-23T00:00:00Z'}}:[])});
  });
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(12000);
  await page.goto(`${base}/`);await page.getByRole('heading',{name:'Room for your next move.'}).waitFor();
