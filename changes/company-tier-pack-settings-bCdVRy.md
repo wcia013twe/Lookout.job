@@ -11,3 +11,10 @@
 
 - Removed the right-side pack preview from creation/settings; the controls and company ranking editor now use the full available width. Updated the existing demo interaction check to assert that the preview is absent.
 - Validation: frontend typecheck and demo browser check at localhost:3000 (desktop/mobile/light, ranking edits, pack save/edit/remove, reset/isolation and account errors). No backend or service behavior changed.
+
+## Follow-up: rarity-colored company tier board
+
+- Replaced separated inset rows with a contiguous tier board: fixed colored label column, wrapping logo tiles with company names, neutral Unranked row. S/A/B/C/D use the existing Mythic/Legendary/Epic/Rare/Common palette. Rank IDs, saved placements and ranking policy are unchanged; this mapping is visual.
+- Reuses CompanyLogo and its existing cache/initials fallback, including in the resettable demo. Drag/reorder, editable tier labels and click-to-move remain available.
+- Validation: frontend typecheck, data validation (147 roles), full pack/demo browser workflow, computed five rarity colors and desktop/mobile board captures with no horizontal overflow. Mechanical design detector: no findings.
+- Limit: requested Logo.dev fetching is blocked because no Logo.dev tool/connection or matching directory plugin is exposed in this session. No Logo.dev fetch or provider migration is claimed. Asked user to enable/identify the connection; cached logos used meanwhile.

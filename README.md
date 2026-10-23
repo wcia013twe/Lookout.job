@@ -670,3 +670,9 @@ MCP mapping reuses `read_personal_context` and `save_company_tiers`
 `save_search_profile` for explicit profile list selection. New task text travels
 through `save_notification_preferences`; pack metadata still uses
 `save_theme_preferences`. No new service, schema or deployed capability is introduced.
+
+Company ranking uses a contiguous logo-tile board. The visual palette maps S to
+Mythic, A to Legendary, B to Epic, C to Rare, and D to Common; Unranked remains
+neutral. Colors do not change saved rankings or the separate opportunity-card
+rarity calculation. Logos reuse the existing cached manifest with initials when
+missing; Logo.dev is not connected by this change.

@@ -1,6 +1,10 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { CompanyLogo } from "./role-card";
+import { TIER_HEX } from "../lib/role-display";
+import styles from "./tierlists.module.css";
+const rarityByTier: Record<string, keyof typeof TIER_HEX> = {S:"mythic", A:"legendary", B:"epic", C:"rare", D:"common"};
 
 type Company = { id: string; name: string };
 type Tier = { id: string; label: string };
@@ -94,11 +98,14 @@ export default function TierLists({ selectedListId, onSelectList }: { selectedLi
           Duplicate list
         </button>
       </div>
-      <div className="mt-5 space-y-3">
+      <p className="mt-5 text-xs text-board-muted">Drag companies between tiers, or select a company and choose its destination below.</p>
+      <div className={styles.board} aria-label="Company ranking board">
         {tiers.map((t) => (
           <div
             key={t.id}
-            className="glass-inset grid gap-3 rounded-xl p-4 sm:grid-cols-[110px_1fr]"
+            className={styles.row}
+            data-tier={t.id}
+            style={{"--rank-color": rarityByTier[t.id] ? TIER_HEX[rarityByTier[t.id]] : "var(--color-board-muted)", "--rank-ink": t.id === "S" ? "#fff" : "#080808"} as CSSProperties}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault();
@@ -106,12 +113,13 @@ export default function TierLists({ selectedListId, onSelectList }: { selectedLi
               if (id) move(id, t.id);
             }}
           >
-            <div>
+            <div className={`${styles.label} ${t.id === "unranked" ? styles.unranked : ""}`}>
               {t.id === "unranked" ? (
-                <strong className="text-sm">Unranked</strong>
+                <strong className={styles.unrankedText}>Unranked</strong>
               ) : (
+                <>
                 <input
-                  className={`${control} text-sm`}
+                  className={styles.rankInput}
                   aria-label={`Rename ${t.id} tier`}
                   maxLength={24}
                   value={t.label}
@@ -126,14 +134,16 @@ export default function TierLists({ selectedListId, onSelectList }: { selectedLi
                     })
                   }
                 />
+                {rarityByTier[t.id] && <span className={styles.rarity}>{rarityByTier[t.id]}</span>}
+                </>
               )}
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className={styles.companies}>
               {(list.placements[t.id] || []).map((id) => {
                 const c = list.companies.find((c) => c.id === id);
                 return (
                   c && (
-                    <motion.div className="max-w-full" key={id} layout={!reduceMotion} transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}>
+                    <motion.div className={styles.tile} key={id} layout={!reduceMotion} transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}>
                     <button
                       draggable
                       onDragStart={(e) => {
@@ -147,10 +157,13 @@ export default function TierLists({ selectedListId, onSelectList }: { selectedLi
                         move(e.dataTransfer.getData("text/plain"), t.id, id);
                       }}
                       aria-pressed={selected === id}
-                      className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-sm ${selected === id ? "border-board-accent bg-board-tag" : "border-board-line bg-board-panel"}`}
+                      className={styles.company}
+                      title={c.name}
+                      aria-label={c.name}
                       onClick={() => setSelected(id)}
                     >
-                      {c.name}
+                      <CompanyLogo company={c.name}/>
+                      <span className={styles.companyName}>{c.name}</span>
                     </button>
                     </motion.div>
                   )

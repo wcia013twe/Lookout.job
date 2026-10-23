@@ -316,3 +316,10 @@ copy-invocation button, followed by a framed Skill.md document. Keep examples, a
 manual navigation out of this surface. The document uses a 76ch outer measure,
 17px text, generous paragraph rhythm and matching light/dark reading surfaces.
 Clipboard failure reveals a selectable read-only request; normal use shows no form.
+
+Company tier board: use contiguous divided rows with a fixed colored rank label
+and a wrapping field of company-logo tiles. S/A/B/C/D reuse Mythic/Legendary/Epic/
+Rare/Common colors from role-display; Unranked uses neutral theme tokens. Keep
+company names visible, initials for unavailable cached logos, editable rank labels,
+drag/reorder and select-then-move controls. Theme tokens own the row surfaces;
+this visual mapping does not change rankings or card-rarity calculations.
