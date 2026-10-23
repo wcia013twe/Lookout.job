@@ -53,9 +53,10 @@ try{
  await page.getByRole('button',{name:'Remove My second pack',exact:true}).click();
  assert.equal(await page.getByRole('button',{name:'Edit My second pack',exact:true}).count(),0);
  await page.getByRole('link',{name:'Back to Discover',exact:true}).click();
- assert.match(page.url(),/\/discover\//);
+ await page.waitForURL(/\/discover\//);
  await page.getByRole('heading',{name:'My discovery pack (demo)',exact:true}).waitFor();
  await page.getByRole('link',{name:'Set up packs & connection',exact:true}).click();
+ await page.getByRole('heading',{name:'Your discovery setup',exact:true}).waitFor();
  await page.reload();
  await page.locator('#discovery-tasks > summary').click();
  await page.getByText('Find fictional roles for my discovery pack.',{exact:true}).waitFor();
