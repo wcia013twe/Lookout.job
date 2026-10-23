@@ -66,9 +66,9 @@ export default function CardPackWidgets({onOpened,configure=false,onEditSearch}:
    {!configure&&packs.filter(p=>p.enabled).map(pack=>{const task=tasks.find((t:{id:string;title:string;enabled?:boolean;sourceIds?:string[]})=>t.id===pack.taskId);return <div key={`${owner}:${pack.id}:${w.demoEpoch}`}><p className="mb-2 text-sm text-board-muted">{task?`${task.title}${task.enabled?'':' · paused'}`:'Linked task removed. Configure this pack to select another task.'}</p><Feed pack={pack} api={api} demo={w.demo} onOpened={onOpened}/></div>;})}
    {!packs.some(p=>p.enabled)&&!configure&&<PackSetupSuggestion/>}
    {configure&&<div className="grid items-start gap-6 lg:grid-cols-2"><div className="min-w-0 space-y-4">
-    <ul className="divide-y divide-board-line">{packs.map(pack=><li className="flex items-center justify-between gap-3 py-3" key={pack.id}>
-      <div className="min-w-0"><h3 className="break-words font-semibold">{pack.title}</h3><p className="mt-1 text-xs text-board-muted">{pack.enabled?'Enabled':'Disabled'} · {tasks.find((t:Task)=>t.id===pack.taskId)?.title||'Choose a search task'}</p></div>
-      <div className="flex shrink-0 gap-2">
+    <ul className="divide-y divide-board-line">{packs.map(pack=><li className="flex flex-col items-stretch gap-3 py-3 sm:flex-row sm:items-center sm:justify-between" key={pack.id}>
+      <div className="min-w-0"><h3 className="[overflow-wrap:anywhere] font-semibold">{pack.title}</h3><p className="mt-1 text-xs text-board-muted">{pack.enabled?'Enabled':'Disabled'} · {tasks.find((t:Task)=>t.id===pack.taskId)?.title||'Choose a search task'}</p></div>
+      <div className="flex shrink-0 flex-wrap gap-2">
         <button className="min-h-11 px-2 text-sm font-semibold text-board-accent hover:underline" aria-label={`Copy agent request for ${pack.title}`} onClick={async()=>{try{await navigator.clipboard.writeText(packAgentRequest(pack));setNotice('Request copied. Send it to your agent.');}catch{setNotice('Copy failed. Enable clipboard access and retry.');}}}>Copy request</button>
         <button className={secondary} aria-label={`Edit ${pack.title}`} disabled={busy} onClick={()=>edit(pack)}>Edit</button>
       </div>
