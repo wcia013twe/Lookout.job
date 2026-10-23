@@ -51,7 +51,6 @@ export default function ProfileMenu() {
           <p className="mt-1 break-words text-xs text-board-muted">{w.demo ? "Fictional demo profile" : w.accountUser?.email || "Saved in this browser"}</p>
         </div>
         <Link className={item} href="/profile/" onClick={() => setOpen(false)}>My Profile</Link>
-        <a className={item} href="/profile/?section=appearance" onClick={() => setOpen(false)}>Appearance</a>
         <Link className={item} href="/progress/#sharing-privacy" onClick={() => setOpen(false)}>Sharing &amp; privacy</Link>
         {w.canDemo && <div className="mt-2 border-t border-board-line pt-2">
           <button type="button" className={item} aria-pressed={w.demo}
