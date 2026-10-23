@@ -31,13 +31,11 @@ export default function NeedsYou() {
   const handoffCount = apps.length + (setup ? 1 : 0);
   return (
     <>
-      <Heading title="Action Board">
-        Your decisions, manual steps, and deadline-driven preparation in one place. Finish an item and it clears from the board.
-      </Heading>
+      <Heading title="Action Board" />
       <div className="action-board-layout grid items-start gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
         <SurfacePanel className="action-widget needs-you-priority" aria-labelledby="checklist-heading">
           <div className="flex items-start justify-between gap-4">
-            <div><h2 id="checklist-heading" className="widget-heading text-xl font-semibold"><TaskIcon />Your next actions</h2><p className="mt-1 text-sm leading-relaxed text-board-muted">Review applications, answer questions, and keep things moving.</p></div>
+            <div><h2 id="checklist-heading" className="widget-heading text-xl font-semibold"><TaskIcon />Your next actions</h2></div>
             <span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{handoffCount}</span>
           </div>
           {handoffCount ? <ul className="mt-3 divide-y divide-board-line">

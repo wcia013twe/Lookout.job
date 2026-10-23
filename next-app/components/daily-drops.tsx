@@ -40,7 +40,7 @@ function DropRow({ drop, isNew, demo }: { drop: Drop; isNew: boolean; demo: bool
     </div>
   </details>;
 }
-export default function DailyDrops({id,title,drops}:{id:string;title:string;drops:Drop[]}) {
+export default function DailyDrops({id,title,drops,onOpened}:{id:string;title:string;drops:Drop[];onOpened?:(drops:Drop[])=>void}) {
   const [day,setDay]=useState('latest'),[packOpen,setPackOpen]=useState(false);
   const w=useWorkspace();
   if(!drops.length)return <section className={styles.strip} aria-label={title}><h2 className={styles.title}>{title}</h2><p className="mt-3 text-sm text-board-muted">No cards yet. Ask a connected agent to publish discoveries into this pack.</p></section>;
@@ -57,8 +57,9 @@ export default function DailyDrops({id,title,drops}:{id:string;title:string;drop
   function markSeen(items: Drop[]) {
     w.store.update("drops.seenDropIds", (previous: string[] = []) => [...new Set([...previous, ...items.map(dropKey)])]);
   }
-  function closePack() {
+  function closePack(opened: boolean) {
     setPackOpen(false);
+    if (opened) onOpened?.(pack.filter(drop => drop.status !== "skipped"));
     markSeen(pack);
     w.store.set(`drops.packStamps.${id}:${packDay}`, true);
   }

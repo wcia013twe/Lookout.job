@@ -15,7 +15,7 @@ type Pack={id:string;title:string;enabled:boolean;taskId:string;archive?:string}
 type Source={id:string;name:string;address:string};
 type Task={id:string;title:string;enabled:boolean;sourceIds?:string[];connectionIds?:string[]};
 type Setup={theme:Record<string,any>;sources:Source[];schedule:{routines:Task[]}|null;updatedAt:string|null};
-function Feed({pack,api,demo}:{pack:Pack;api:ReturnType<typeof createBackend>|null;demo:boolean}){
+function Feed({pack,api,demo,onOpened}:{pack:Pack;api:ReturnType<typeof createBackend>|null;demo:boolean;onOpened?:(drops:Drop[])=>void}){
  const [drops,setDrops]=useState<Drop[]>([]),[error,setError]=useState(''),[loading,setLoading]=useState(true),[retry,setRetry]=useState(0),[next,setNext]=useState<number|null>(null),[offset,setOffset]=useState(0);
  useEffect(()=>{let active=true;setLoading(true);setError('');
   (async()=>{
@@ -26,9 +26,9 @@ function Feed({pack,api,demo}:{pack:Pack;api:ReturnType<typeof createBackend>|nu
   })().then(result=>{if(active){setDrops(previous=>{const rows=[...(offset?previous:[]),...result.drops].map(drop=>({...drop,packId:pack.id}));return [...new Map(rows.slice().reverse().map(drop=>[dropKey(drop),drop])).values()].reverse();});setNext(result.nextOffset);}}).catch(failure=>{if(active)setError(apiErrorText('card_packs.feed.read',failure));}).finally(()=>{if(active)setLoading(false);});
   return()=>{active=false;};
  },[api,pack.id,pack.archive,demo,retry,offset]);
- return <><ApiError message={error} cached={drops.length>0} onRetry={()=>setRetry(v=>v+1)}/>{loading?<Notice>Loading {pack.title}…</Notice>:!error&&<DailyDrops id={pack.id} title={pack.title} drops={drops}/>} {pack.archive==='zero2sudo'&&<p className="mb-4 text-xs text-board-muted">Includes the dated Zero2Sudo archive. Historical cards are not freshly verified openings.</p>}{!error&&next!==null&&<button className={secondary} disabled={loading} onClick={()=>setOffset(next)}>Load older packs</button>}</>;
+ return <><ApiError message={error} cached={drops.length>0} onRetry={()=>setRetry(v=>v+1)}/>{loading?<Notice>Loading {pack.title}…</Notice>:!error&&<DailyDrops id={pack.id} title={pack.title} drops={drops} onOpened={onOpened}/>} {pack.archive==='zero2sudo'&&<p className="mb-4 text-xs text-board-muted">Includes the dated Zero2Sudo archive. Historical cards are not freshly verified openings.</p>}{!error&&next!==null&&<button className={secondary} disabled={loading} onClick={()=>setOffset(next)}>Load older packs</button>}</>;
 }
-export default function CardPackWidgets(){
+export default function CardPackWidgets({onOpened}:{onOpened?:(drops:Drop[])=>void}){
  const w=useWorkspace(),owner=w.demo?'demo':w.user?.id;
  const api=useMemo(()=>w.user&&w.client?createBackend(w.client,w.user.id):null,[w.user?.id,w.client]);
  const [setup,setSetup]=useState<Setup|null>(null),[manage,setManage]=useState(false),[draft,setDraft]=useState<Pack|null>(null),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[reload,setReload]=useState(0);
@@ -56,7 +56,7 @@ export default function CardPackWidgets(){
   <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">Your card packs</h2><button className={secondary} disabled={loading||busy} onClick={()=>{setManage(!manage);setDraft(null);}}>Configure packs</button></div>
   <ApiError message={error} onRetry={()=>setReload(v=>v+1)}/><Notice>{notice}</Notice>
   {loading?<Notice>Loading your pack setup…</Notice>:setup&&<>
-   {packs.filter(p=>p.enabled).map(pack=>{const task=setup.schedule?.routines.find(t=>t.id===pack.taskId);return <div key={`${owner}:${pack.id}:${w.demoEpoch}`}><p className="mb-2 text-sm text-board-muted">{task?`${task.title}${task.enabled?'':' · paused'}`:'Linked task removed. Configure this pack to select another task.'}</p><Feed pack={pack} api={api} demo={w.demo}/></div>;})}
+   {packs.filter(p=>p.enabled).map(pack=>{const task=setup.schedule?.routines.find(t=>t.id===pack.taskId);return <div key={`${owner}:${pack.id}:${w.demoEpoch}`}><p className="mb-2 text-sm text-board-muted">{task?`${task.title}${task.enabled?'':' · paused'}`:'Linked task removed. Configure this pack to select another task.'}</p><Feed pack={pack} api={api} demo={w.demo} onOpened={onOpened}/></div>;})}
    {!packs.some(p=>p.enabled)&&!manage&&<p className="py-3 text-sm text-board-muted">No card packs enabled. Configure a pack to collect discoveries from a My Agent task.</p>}
    {manage&&<div className="space-y-5 border-y border-board-line py-5">
     <p className="max-w-prose text-sm leading-relaxed text-board-muted">Link each pack to a My Agent task. The task owns the instructions, sources, connections and requested timing. Removing a widget keeps its saved batches.</p>

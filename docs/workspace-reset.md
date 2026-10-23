@@ -2,7 +2,7 @@
 
 Local implementation; not deployed or verified against a hosted account. No live account reset is part of developing or deploying this feature.
 
-The profile menu opens `/workspace-reset/`. A signed-in human requests a read-only preview, then types `RESET MY WORKSPACE`. The browser calls the `workspace-reset` Edge Function using its Supabase session. The handler verifies the user with `auth.getUser`; owner IDs, object paths and deletion targets never come from the request. Anonymous users and opaque agent credentials are rejected. The function deletes private files through `storage.from('resumes').remove`, never by deleting Storage metadata with SQL.
+The Reset workspace link at the bottom of My Profile → Overview opens `/workspace-reset/`. A signed-in human requests a read-only preview, then types `RESET MY WORKSPACE`. The browser calls the `workspace-reset` Edge Function using its Supabase session. The handler verifies the user with `auth.getUser`; owner IDs, object paths and deletion targets never come from the request. Anonymous users and opaque agent credentials are rejected. The function deletes private files through `storage.from('resumes').remove`, never by deleting Storage metadata with SQL.
 
 ## Scope
 

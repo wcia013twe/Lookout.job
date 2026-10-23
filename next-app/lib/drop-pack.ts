@@ -46,6 +46,8 @@ export function canClaimPack(drops: Drop[], stages: Record<string, Stage>, day: 
 export function demoDrops(day: string): Drop[] {
   return [
     ["NVIDIA", "ML Systems Engineer (demo)", "FT", "added"],
+    ["NVIDIA", "ML Systems Intern", "Internship", "added"],
+    ["Databricks", "Distributed Systems Engineer", "FT", "added"],
     ["NVIDIA", "ML Systems Internship (demo)", "Internship", "added"],
     ["NVIDIA", "Inference Infrastructure Engineer (demo)", "FT", "pending"],
     ["NVIDIA", "GPU Compiler Internship (demo)", "Internship", "added"],
@@ -54,7 +56,7 @@ export function demoDrops(day: string): Drop[] {
     ["Oracle", "Database Engineer (demo)", "FT", "added"],
     ["Example Company (demo)", "Unverified role (demo)", "FT", "skipped"],
   ].map(([company, title, type, status]) => ({
-    company, title, type, status, dateSeen: day, location: "Fictional location",
+    company, title, type, status, dateSeen: day, location: title === "ML Systems Intern" || company === "Databricks" ? "Remote / San Francisco" : "Fictional location",
     note: "Fictional pack fixture. No real opening or submission.", url: null,
     skipReason: status === "skipped" ? "Fictional example awaiting source verification." : null,
   }));

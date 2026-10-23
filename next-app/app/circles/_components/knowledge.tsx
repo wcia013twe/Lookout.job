@@ -96,7 +96,7 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  const privateDrafts=[...new Map([...draftPosts,...page.items].map(post=>[post.id,post])).values()].filter(post=>post.owned&&post.revision!==post.publishedRevision);
  return <div className="min-w-0">
   {circleId&&<button type="button" className={`${secondary} mb-4`} disabled={busy} onClick={()=>{setCircleView('clubhouse');locate('');}}>Back to your circles</button>}
-  {!circleId&&<Heading title="Circles">Your people, making progress together.</Heading>}
+  {!circleId&&<Heading title="Circles" />}
   <ApiError message={error} onRetry={()=>void (async()=>{setLoading(true);try{await list();await refresh();}catch(failure){setError(errorText(failure));}finally{if(mounted.current)setLoading(false);}})()}/><div role="status"><Notice>{notice||(loading?'Loading Circle…':'')}</Notice></div>
   {available&&!circleId&&!loading&&<>
    {!error&&<section className="mb-8" aria-labelledby="your-circles-title">

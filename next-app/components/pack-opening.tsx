@@ -12,7 +12,7 @@ import { CompanyLogo } from "./role-card";
 import PackEffects from "./pack-effects";
 import styles from "../styles/templates/pack-opening.module.css";
 
-type Props = { packId?: string; title?: string; drops: Drop[]; day: string; onClose: () => void; styleId?: PackStyleId };
+type Props = { packId?: string; title?: string; drops: Drop[]; day: string; onClose: (opened: boolean) => void; styleId?: PackStyleId };
 
 function pulse(tier?: Tier) {
   if (typeof navigator.vibrate === "function") navigator.vibrate(tier && tierOrder.indexOf(tier) >= 3 ? [18, 30, 28] : 12);
@@ -100,7 +100,7 @@ export default function PackOpening({ drops, day, onClose, styleId, packId, titl
   }
   function close() {
     w.store.set(`drops.packStamps.${packId?`${packId}:`:""}${day}`, true);
-    onCloseRef.current();
+    onCloseRef.current(phase === "open");
   }
   function openSeal() {
     if (opening.current) return;
