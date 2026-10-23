@@ -11,3 +11,8 @@
 - Removed inner section navigation and hidden panels. Packs, search tasks, sources, connections and all remaining settings now appear together as boxed sections. Edit search scrolls to its task section.
 - Updated demo scripts to use the continuous page rather than switching sections.
 - Validation: TypeScript, data validation and whitespace checks passed. Desktop/mobile demo inspection confirmed all sections are visible in document order, with no horizontal page overflow at 390px. No backend or MCP contracts changed.
+
+## Remove preset description
+
+- Removed the Oracle-baseline Full-time preset description and the descriptive paragraph from the tier-list UI, including existing saved/demo lists. Company placements and preferences remain unchanged.
+- Validation: TypeScript and catalog validation passed. No backend or MCP behavior changes.

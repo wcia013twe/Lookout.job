@@ -137,7 +137,6 @@
       "key": "full-time",
       "name": "Full-time",
       "employmentType": "FT",
-      "description": "Full-time preferences. Oracle is the C-tier baseline; higher tiers represent potential trade-ups. Team fit still matters.",
       "placements": {
         "S": [
           "databricks",

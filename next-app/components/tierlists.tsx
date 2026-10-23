@@ -45,9 +45,6 @@ export default function TierLists({ selectedListId, onSelectList }: { selectedLi
   if (!list) return <Section title="Company tier lists"><p className="mb-4 text-sm text-board-muted">Create a company list to associate with this search profile.</p><form onSubmit={addList} className="flex flex-wrap items-end gap-3"><Field label="New list name"><input name="name" className={control} required /></Field><button className={secondary}>Create list</button></form><Notice>{feedback}</Notice></Section>;
   return (
     <Section title="Company tier lists">
-      <p className="mb-4 text-sm text-board-muted">
-        {list.description || list.rankingBasis}
-      </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="Active company list">
           <select
