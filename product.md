@@ -103,6 +103,20 @@ Private, invite-based circles of friends and classmates, inspired by the **share
 
 A user connects Lookout to Muse, receives a ranked job batch and a tailored preparation plan, then joins a private circle. A friend voluntarily shares that they advanced to a technical interview; the circle sees a milestone card. Later another friend gets an offer and receives a celebratory reveal. The recipient may share lessons learned. Others can privately ask their own agents to assess a shared opening or adapt their preparation. No private histories are exposed.
 
+## Personalization and privacy
+
+**Principle:** Personalize the outcome while collecting as little personal information as possible. Relevance does not require knowing everything about someone. These are product requirements, not claims that the controls are already implemented.
+
+- **Ask before inferring sensitive traits.** Prefer explicit goals, technical interests, and constraints over guesses from browsing history or private conversations. Keep inferred preferences tentative and user-confirmable.
+- **Use context before identity.** The current task, selected filters, and recent session activity can improve relevance without creating a permanent profile. Preserve durable history only when it serves a clear candidate workflow; avoid indiscriminate tracking.
+- **Separate temporary context from lasting memory.** Let users choose what is remembered and inspect, correct, and delete saved personalization data. Keep personal-agent memory private; Lookout needs only the career-specific information required for the task.
+- **Explain the exchange when requesting data.** State what the information improves and provide a useful experience when optional data is declined. Request additional context as its benefit becomes clear.
+- **Provide specific permission boundaries.** Controls such as “Use my resume for job matching” and “Do not use my activity outside this app” are clearer than one broad consent toggle. Permission to personalize does not authorize Circle sharing, public contributions, applications, or secondary commercial use.
+- **Minimize exposure behind the scenes.** Keep data on-device where practical, limit retention and access, and send external services only what the task requires. Apply deletion and retention controls to stored personalization data and derived profiles.
+- **Make recommendations explainable.** Show which user-provided preferences or permitted observations informed a recommendation. For example: “Recommended because you selected distributed systems.” Matching can use preferred technical areas and location constraints without requiring the user's entire application history or inferred personal circumstances.
+
+**Review test:** Would the user understand and welcome this recommendation if shown exactly which information produced it? If the explanation feels surprising or intrusive, narrow the data use or ask for specific permission before using that information.
+
 ## Longitudinal candidate intelligence — supporting data strategy
 
 **Thesis:** Lookout's durable data advantage is not access to personal-agent memory or private conversations. It is the structured history of opportunities, decisions, and evolving preferences generated through normal job-search workflows. Muse owns personal reasoning; Lookout preserves career-specific observations and provenance.

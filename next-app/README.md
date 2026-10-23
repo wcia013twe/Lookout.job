@@ -28,6 +28,10 @@ In admin Demo mode, edit an About me field and use its section checkmark to save
 
 Search targets live inside My Profile → My agent and describe where Muse looks, separately from fit profiles. They use `preferences.search.targets` and `targetsVersion`; website/MCP `save_search_targets` share owner/version checks. Autosync preserves targets, and guest changes remain local. Saving a target does not create a scanner, schedule or social connection; social content requires runtime access or a user handoff.
 
+### Shared profile and preview rendering
+
+For the consolidated components, use admin Demo mode to check an About me section both before and during editing, its disabled/save state, and cards with icons and actions. In an application preview, compare populated and missing contact fields, headline/skills, and background entries; missing contacts retain their existing treatment. In Circles, the chat, feed, room, and forum should show the same post date. Existing fictional fixtures cover these surfaces; reset the demo afterward.
+
 ## Character asset provenance
 
 The three PNGs in `assets/agents/` were supplied by the user on October 13, 2026. They are intact character references rather than source GIFs. The Grok Bot reference bears Bleap branding and its official identity remains unverified; replace it when a confirmed asset is supplied. Selecting a character does not establish an agent connection.
