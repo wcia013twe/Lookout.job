@@ -43,7 +43,7 @@ Connect a shared experience to the owner's preparation without exposing private 
 
 - All four preview scenarios are reachable using keyboard and touch; selected scenario is exposed with `aria-pressed`. Scenario changes clear previous transient outcomes and edited drafts.
 - The tip and offer flows start with completion of the fictional original task, then ask to share. Decline, edit, exact preview, simulated sharing, return to task and restart are functional and clearly local.
-- Preview state is isolated from guest persistence, signed-in accounts, admin demo service, network transport and all backend writes. It must behave identically for signed-out and signed-in viewers.
+- Preview state is isolated from guest persistence, signed-in accounts, detached demo service, network transport and all backend writes. It must behave identically for signed-out and signed-in viewers.
 - Text remains readable without horizontal overflow at 320 CSS pixels and at 200% zoom; controls wrap, have visible focus and meet the existing 44-pixel minimum touch target. Status changes are announced without moving keyboard focus.
 - A real roundup is understandable without opening the dashboard. No new authorized activity produces no message.
 - A private new draft never appears in delivery. Withdrawal, hiding, Circle removal or policy revocation before dispatch excludes an event even when previously selected.
@@ -55,6 +55,6 @@ Connect a shared experience to the owner's preparation without exposing private 
 
 ## Verification and rollout
 
-Frontend review covers desktop/mobile conversation layout, every scenario, both decline paths, edit-and-review, whitespace-only draft rejection, simulated publication, return-to-task and restart. Account review confirms no preview writes across sign-in/sign-out or admin demo changes. Frontend typechecking and static build verify integration; they do not establish real channel delivery or hosted permissions.
+Frontend review covers desktop/mobile conversation layout, every scenario, both decline paths, edit-and-review, whitespace-only draft rejection, simulated publication, return-to-task and restart. Account review confirms no preview writes across sign-in/sign-out or detached demo changes. Frontend typechecking and static build verify integration; they do not establish real channel delivery or hosted permissions.
 
 Future rollout begins in isolated hosted staging with two genuine accounts and scoped agents. Exercise revocation races, approval edits, removed membership, hidden content, duplicate workers, timezone boundaries, daylight-saving changes, failed/uncertain transport outcomes and expired tokens. Only after production authorization and verified delivery tests pass should social delivery be enabled. Measure voluntary contribution, actual resource use, relevant next actions, delivery reliability, mutes and repeated declines. Avoid optimizing raw notification or posting volume.

@@ -71,12 +71,12 @@ export default function ProfileMenu() {
             Progress · {w.state?.progress?.xp || 0} XP · {streak(w.state?.progress?.streakDays)}d streak
           </Link>
         </div>
-        <div className="mt-2 border-t border-board-line pt-2">
+        {!w.demo && <div className="mt-2 border-t border-board-line pt-2">
           <button type="button" className={`${item} disabled:cursor-wait disabled:opacity-50`} disabled={!w.authReady}
             onClick={() => { setOpen(false); if (w.accountUser) w.signOut(); else w.signIn(); }}>
             {w.accountUser ? "Sign out" : "Sign in with Google"}
           </button>
-        </div>
+        </div>}
       </nav>}
     </div>
   );

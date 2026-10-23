@@ -8,6 +8,6 @@ Agent boundary: browser appearance and marketplace preview controls are human ac
 
 ## Demo interactions
 
-The same marketplace works in fictional admin demo mode and uses authored sample content in both modes, with no account data, private files, backend writes, or external submissions. Switch Dashboard/Circles, preview Botanical, save it, open Saved, remove it from Saved to exercise the empty state, and return with Browse all themes. Navigate away and back to reset marketplace state. The existing theme picker remains unchanged.
+The same marketplace works in fictional detached demo mode and uses authored sample content in both modes, with no account data, private files, backend writes, or external submissions. Switch Dashboard/Circles, preview Botanical, save it, open Saved, remove it from Saved to exercise the empty state, and return with Browse all themes. Navigate away and back to reset marketplace state. The existing theme picker remains unchanged.
 
 Verification should cover keyboard selection, narrow-screen stacking, Browse/Saved navigation, favorites removal, first-paint fallback, and synchronization between header/profile appearance controls.

@@ -21,6 +21,27 @@ text interface; the website is available for opening packs, detailed review and
 tracking. Scheduling and Instagram access depend on the connected agent’s
 capabilities; this README entry does not activate automations.
 
+## Standalone mock workspace
+
+Open any workspace page with `?demo=1`, or choose **Demo mode** from the profile
+menu. No sign-in, admin flag or Supabase account is required. The demo starts in a
+separate runtime that does not load the persistent account store, auth client or
+cloud sync. Its profile, jobs, documents, tasks and Circle interactions are fictional
+and use disposable memory stores. No demo capability calls the production MCP.
+
+A tab-scoped `lookout:detached-demo` session-storage flag preserves the mode across
+navigation/reloads; it contains no records or account identifiers. Mock edits are
+not persisted and refresh restores fixtures. **Reset demo data** rebuilds only the
+fictional workspace. **Exit demo mode** performs a full navigation to `?demo=0`,
+where normal account startup resumes. It does not sign out or delete an existing
+account. Sign-in/out controls are absent inside the demo. If session storage is
+blocked, use an explicit `?demo=1` URL to reopen the preview.
+
+The in-memory factory is `next-app/lib/demo-runtime.mjs`; demo and account startup
+are separate modules. Keep new demo interactions behind fictional services. Never
+import the production store or backend client into the demo runtime. Appearance
+preferences remain ordinary browser UI settings; they are not candidate records.
+
 ## Agent context updates
 
 Each run checks just `personalVersion` and `developerVersion`. The agent reloads
@@ -280,10 +301,6 @@ needed, use `npm run feature:publish -- --title "<title>" --body-file
 <absolute-description-path>` from the feature branch. `npm run feature:status`
 shows pending PR work. Read [feature delivery and optional queue controls](.github/INTEGRATION.md).
 
-## Admin demo mode
-
-Accounts with server-managed `app_metadata.demo_preview=true` can toggle Demo mode in the header. Mock jobs, applications, profile, tier lists and Robinhood/Stripe outreach live in a separate in-memory store. Demo mode disconnects the view from the authenticated client, prevents real submissions/uploads and supports Reset demo/Exit demo mode. Real account data remains in its original store. Company logos scaffold referral groups and the selected contact; Robinhood uses its official public icon URL when no cached asset exists.
-
 ## Internal Muse guides
 
 Developer context carries only a versioned guide index. The authenticated, read-only `read_guide(id)` tool loads `resume-parse` or `cold-outreach` on demand using existing workspace:read authorization. Guides are deployed backend configuration, never user-editable prompts. Each includes when-to-use guidance, instructions and expected output. Cache by id/version and refresh when the index changes. No new user interface or local skill installation is required. Demo profile and company-grouped referral drafts remain the representative outputs; demo mode makes no guide/backend calls.
@@ -314,7 +331,7 @@ policy choice. Recommend-only does not need a résumé. Preparation asks for
 verified facts and a résumé only after value; automatic-application requests stay
 subject to existing human/runner/answer safeguards. The website and agent tools
 share backend state, revision checks, idempotent transitions and an owned task
-inbox. The admin demo uses explicitly fictional memory-only results.
+inbox. The detached demo uses explicitly fictional memory-only results.
 
 See [onboarding and task contract](backend/agent-contract.md#agent-first-onboarding-and-task-inbox).
 There is no verified inbound Muse hook, hosted Cappy runtime or scheduler/channel
@@ -356,7 +373,7 @@ is limited to a closed public-documentation template. See
 
 ### Outreach starter templates
 
-Referrals previews five built-in templates (recruiter interview, warm referral, shared background, technical leader, follow-up), including before contacts exist and in the admin demo. Agents read the same canonical library through `read_guide("cold-outreach")`. The Nick Singh-derived cold-outreach skill is the default for tailoring all templates to verified candidate, contact, role and channel details. Templates do not create contacts or send messages. The guide includes required evidence and applicability for each template.
+Referrals previews five built-in templates (recruiter interview, warm referral, shared background, technical leader, follow-up), including before contacts exist and in the detached demo. Agents read the same canonical library through `read_guide("cold-outreach")`. The Nick Singh-derived cold-outreach skill is the default for tailoring all templates to verified candidate, contact, role and channel details. Templates do not create contacts or send messages. The guide includes required evidence and applicability for each template.
 
 ## Career Toolkit
 
