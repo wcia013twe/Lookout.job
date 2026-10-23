@@ -1,3 +1,4 @@
+import {createWorkflowDemo} from './agent-workflows-demo.mjs';
 import {createArtifactDemo} from './artifact-demo.mjs';
 import { demoOutreachContacts } from './outreach-demo.mjs';
 import { recordLocalPreparationSession, validatePlannerMinutes } from '../../lib/preparation-planner.mjs';
@@ -152,6 +153,7 @@ export function createDemoServices(store) {
   }
   return {
     ...artifactDemo,
+    ...createWorkflowDemo(store),
     async discoverToolkit() { return copy(store.get('demo.toolkitDiscovery') || []); },
     async readPreparationPlanner() { return plannerBundle(); },
     connections: createConnectionDemo(store),

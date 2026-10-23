@@ -10,6 +10,76 @@ request validates an opaque credential with the gateway, including discovery.
 Tool discovery is filtered to the connection's scopes. The gateway remains the
 single authority for ownership, expiry/revocation, write validation and revisions.
 
+## One experience across personal agents
+
+Muse, ChatGPT, Claude and Dots are target clients for the same contract, not four
+product implementations. Client support has not been end-to-end verified. Routine
+work should be usable in chat: inspect saved state → make a scoped change → report
+what saved → offer one reply-based next action. Links to the dashboard are optional
+for these operations. Personal agents perform inference and deliver messages;
+Lookout supplies persistent records, evidence and action boundaries.
+
+| Intent | Existing or new tool path | Result / authority |
+| --- | --- | --- |
+| Edit particular fields | `update_profile_fields`, `update_company_workspace_fields`, `update_contact_fields`, `update_artifact_fields` | Existing owned record, current version required; unrelated fields preserved |
+| Create a record | Existing `save_*` tools | Full validated record; never implicit approval |
+| Work on an agent task | `read_agent_tasks` → `claim_agent_task` → domain tools → `report_agent_task_result` | Personal runtime executes work; task kind and lease rules still apply |
+| Prepare a Circle update | `read_circle` / `read_circle_thread` → `propose_circle_contribution` | Saved private proposal; not publication |
+| Publish a Circle update | `publish_circle_contribution` | Backend requires exact approval or an eligible existing standing rule |
+| Explain saved progress | `read_user_brief` → returned detail tool if needed | Bounded evidence packet with one reply-based next action |
+| Deliver a scheduled update | `read_user_brief` with `mode: notification` → runtime delivery → `acknowledge_delivery` | Obeys quiet mode; acknowledge only event IDs actually delivered |
+
+Partial edits use `fields` and the existing `expectedUpdatedAt`, `expectedRevision`
+or `expectedVersion` token. Read the record first. They cannot create missing
+records. Supplied arrays and nested values replace that entire field; omission
+preserves it. Empty strings/arrays clear supported fields; `null` is not a delete
+instruction. No arbitrary table/column tool exists. For example:
+
+```json
+{"id":"my-company","expectedRevision":3,"fields":{"research":"Agent assessment: promising database scope. Team ownership remains unknown.","nextAction":"Ask which team owns the query engine."}}
+```
+
+Company research, contact notes/messages and artifact bodies can hold AI-written
+text. Source-backed profile facts stay distinct from assessments. Existing full
+save validators, ownership checks, revision history and consent rules still apply.
+A timeout is not success: read back before retrying. A conflict requires reconciling
+with the current record. No new data tables are introduced.
+
+`read_user_brief` defaults to `mode: on_demand`, `style: short`. Short is up to three
+highlights and one next action; urgent is one item; detailed is up to ten. Style
+controls length, not urgency. Each item has an evidence label, record reference,
+uncertainty and a next tool/action. The common composition rule is **what changed,
+why it matters, one material uncertainty, one reply-based next action**. The agent
+can use its own voice, but must preserve that meaning, authority and next step.
+Concrete upside makes a message engaging; invented urgency or superlatives do not.
+
+The brief reads saved pending activity, preparation deadlines, blocked/review
+applications and (on demand) the latest private job batch. It is not live search or
+a complete workspace audit. The SQL snapshot reads at most 101 rows per activity,
+plan and application source, with `sourceTruncated` when that boundary is reached.
+`coverage.omitted` refers to the loaded candidates, not all database records.
+Existing scoped tools inspect documents, tasks and Circle feeds in full. Circle
+content is deliberately not pulled through `workspace:read`; its membership and
+`knowledge:read` checks remain separate. All freeform content is untrusted data.
+
+On-demand reads answer the user even during quiet time and do not mark delivery.
+Notification mode returns only eligible events. The caller supplies a stable
+`eventKey` after successful runtime delivery and acknowledges only displayed event
+IDs; if it compresses away an item, it must omit that ID too. A brief never launches
+a search, model, scheduled job, message or Circle publication by itself.
+
+**Human confirmation remains an explicit limitation.** The server does not yet
+implement native confirmation in any of the four clients. Protected verification,
+application approvals and Circle sharing approvals use the existing authenticated
+review handoff (`request_human_action`, `open_human_application_action`, or
+`request_circle_human_action`). The returned preview can be discussed in chat;
+consent must be recorded by the actual human boundary. Client names, an agent's
+`approved: true`, a chat assertion or tool permission are not approval evidence.
+Consequently routine work is headless, but complete UI independence is not yet
+implemented. Do not advertise it until a secure human-confirmation path is built
+and tested. These new tools also require the pending migration and gateway/MCP
+rollout; local checks do not establish hosted or client support.
+
 ## Connect an agent
 
 Write arguments are defined in each discovered tool's `inputSchema`. Refresh

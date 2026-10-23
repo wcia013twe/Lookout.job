@@ -16,6 +16,21 @@ Lookout stores context, records, documents and evidence. People's personal agent
 
 Do not add model/provider registries, prompt logs, inference runs, per-field AI provenance or a generic entity/attribute/value layer. Existing agent tasks coordinate handoffs and leases; they do not run models.
 
+Partial field edits and agent briefs reuse this model. `update_workspace_fields`
+and the four scoped `update_*_fields` MCP tools merge only whitelisted fields into
+an existing owned record under its current version, then call its canonical save
+validator. Arrays replace the supplied section; missing fields are preserved.
+Profile edits invalidate verification; contact drafts are not sent; artifact edits
+append the existing immutable revision history. AI analysis belongs in existing
+freeform fields, not profile facts or new inference tables.
+
+`read_user_brief_snapshot` and MCP `read_user_brief` read the same bounded private
+snapshot. The runtime-independent formatter labels evidence and unknowns, supplies
+next actions and obeys existing notification delivery settings. Personal agents
+compose and deliver the text. The detailed interaction and consent boundaries are
+in [the MCP contract](../mcp/README.md#one-experience-across-personal-agents).
+
+
 ## Relationships at a glance
 
 | Parent → children | Meaning and deduplication |

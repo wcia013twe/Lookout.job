@@ -1,3 +1,4 @@
+import {validateFieldUpdate,readUserBrief} from '../lib/agent-workflows.mjs';
 import {validateArtifact} from '../lib/artifacts.mjs';
 // Data access for an authenticated browser client. Never use a service-role client.
 // expectedUserId catches account changes before requests; database RLS is authoritative.
@@ -47,6 +48,20 @@ function createBackend(client, expectedUserId = null) {
     async onboardingAction(operation, payload = {}) {
       await owner();
       return result(client.rpc("onboarding_action", { operation, payload }));
+    },
+    async readUserBrief(options={}) {
+      const userId=await owner();
+      const response=await readUserBrief((_operation,payload)=>client.rpc('read_user_brief_snapshot',{payload,expected_owner:userId}),options);
+      if(response.error)throw response.error;
+      if(await owner()!==userId)throw Error('Account changed');
+      return response.data;
+    },
+    async updateFields(operation, payload) {
+      if(!validateFieldUpdate(operation,payload))throw Error('Unknown field update');
+      const userId=await owner();
+      const data=await result(client.rpc('update_workspace_fields',{operation,payload,expected_owner:userId}));
+      if(await owner()!==userId)throw Error('Account changed');
+      return data;
     },
     async performPlatformAction(operation, payload) {
       await owner();
