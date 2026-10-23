@@ -206,7 +206,7 @@ export function WritingStyles() {
   </>;
 }
 
-export function EligibilitySettings() {
+export function EligibilitySettings({compact=false}:{compact?:boolean}={}) {
   const a = useApplicationProfile();
   const heading = eligibilityHeading;
   const hasCountry = !!a
@@ -242,7 +242,7 @@ export function EligibilitySettings() {
     <ProfileSection title="Eligibility & availability" resetKey={a.profile.id} disabled={a.busy} onFinish={a.saveProfile}>{editing=><>
       {editing?<>
       <div className="grid gap-5 sm:grid-cols-2">
-        {fields.map((f) => {
+        {(compact?fields.slice(0,4):fields).map((f) => {
           const saved = a.field(heading, f.key);
           return (
             <Field key={f.key} label={f.key}>
@@ -293,7 +293,7 @@ export function EligibilitySettings() {
           );
         })}
       </div>
-      <div className="mt-5">
+      {!compact&&<div className="mt-5">
         <Field label="Eligibility notes (optional)">
           <textarea
             className={control}
@@ -304,8 +304,8 @@ export function EligibilitySettings() {
             placeholder="Country-specific exceptions or details your agent should ask about."
           />
         </Field>
-      </div>
-      </>:<ProfileValues items={[...fields.map(f=>({label:f.key,value:a.field(heading,f.key).conflict?"Conflicting values — review in Advanced instructions":a.field(heading,f.key).value||(f.options?"Ask me":"")})),{label:"Eligibility notes",value:a.field(heading,"Notes").value,wide:true}]}/>}
+      </div>}
+      </>:<ProfileValues items={[...(compact?fields.slice(0,4):fields).map(f=>({label:f.key,value:a.field(heading,f.key).conflict?"Conflicting values — review in Advanced instructions":a.field(heading,f.key).value||(f.options?"Ask me":"")})),...(!compact?[{label:"Eligibility notes",value:a.field(heading,"Notes").value,wide:true}]:[])]}/>}
       {a.feedback&&<p role="status" className="mt-3 text-sm text-board-muted">{a.feedback}</p>}
     </>}</ProfileSection>
   );

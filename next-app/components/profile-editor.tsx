@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import rawSchema from "../../lib/profile-schema.js";
+import { createProfileReview } from "../../lib/profile-review.mjs";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary, Notice } from "./ui";
 import ProfileIcon from "./profile-icon";
@@ -107,10 +108,13 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
   const [facts, setFacts] = useState(profile),
     [feedback, setFeedback] = useState("");
   const [pillDrafts, setPillDrafts] = useState<Record<string, string>>({});
+  const [review] = useState(createProfileReview);
+  const hasUnsavedFacts = JSON.stringify(facts) !== JSON.stringify(profile) || Object.values(pillDrafts).some(value => value.length > 0);
   useEffect(() => {
     setFacts(profile);
     setPillDrafts({});
-  }, [JSON.stringify(profile), w.user?.id]);
+    review.reset(profile, profile.verified);
+  }, [JSON.stringify(profile), w.user?.id, w.demoEpoch, review]);
   function update(key: string, value: unknown) {
     const next = { ...facts, [key]: value };
     if(key==="firstName"||key==="lastName")next.name=[next.firstName,next.lastName].filter(Boolean).join(" ");
@@ -136,6 +140,20 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
     return true;
   }
 
+  function confirmReview(event: ChangeEvent<HTMLInputElement>) {
+    if (!event.nativeEvent.isTrusted || w.locked || hasUnsavedFacts) return;
+    const saved: ProfileFacts = w.store.get("workflow.profile");
+    // A refreshed account or imported profile must be reviewed before confirmation.
+    if (JSON.stringify(saved) !== JSON.stringify(profile)) {
+      setFeedback("Your saved details changed. Review the updated profile before confirming.");
+      return;
+    }
+    review.check(saved, event.currentTarget.checked, event.nativeEvent.isTrusted);
+    const verified = review.isReviewed(saved);
+    w.store.set("workflow.profile", { ...saved, verified });
+    setFeedback(verified ? "Saved profile details confirmed. This does not approve an application." : "Profile confirmation removed.");
+  }
+
   const groups = [
     {title:"Personal Info",keys:["firstName","lastName","preferredName","suffix","email","phone","birthday","location","address","address2","address3","postalCode",...(!facts.firstName&&!facts.lastName?["name"]:[])]},
     {title:"Professional summary",keys:["headline","currentEmployer","jobSearchStatus"]},
@@ -157,6 +175,13 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
         {editing&&<button type="button" className={`${secondary} mt-5`} onClick={()=>update(kind,[...(facts[kind]||[]),{}])}>Add {sections[kind].toLowerCase()}</button>}
       </>}</ProfileSection>)}
       <ProfileSection title="Skills & languages" resetKey={profile} onFinish={save}>{editing=>editing?<div className="grid gap-5 sm:grid-cols-2">{pillFields.map(key=><ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key]||""} onDraft={value=>setPillDrafts(current=>({...current,[key]:value}))} onChange={value=>update(key,value)}/>)}</div>:<>{pillFields.map(key=><div key={key} className={styles.skillGroup}><h4>{labels[key]}</h4>{pills([...(pills(facts[key])),pillDrafts[key]||""]).length?<ul className={styles.tags} aria-label={labels[key]}>{pills([...(pills(facts[key])),pillDrafts[key]||""]).map(item=><li key={item}>{item}</li>)}</ul>:<p className="text-sm text-board-muted">Not provided</p>}</div>)}</>}</ProfileSection>
+      <div className="mt-6 border-t border-board-line pt-5">
+        <label className="flex min-h-11 items-start gap-3 text-sm leading-relaxed">
+          <input type="checkbox" className="mt-1 h-5 w-5 shrink-0 accent-board-accent" checked={profile.verified === true && !hasUnsavedFacts} disabled={w.locked || hasUnsavedFacts} onChange={confirmReview} />
+          <span>I have reviewed my saved profile details and confirm they are accurate.</span>
+        </label>
+        <p className="mt-2 text-xs text-board-muted">{hasUnsavedFacts ? "Save your edits before confirming the updated details." : "This confirms your profile details only. It does not approve or submit an application."}</p>
+      </div>
       <Notice>{feedback}</Notice>
     </form>
   </>;

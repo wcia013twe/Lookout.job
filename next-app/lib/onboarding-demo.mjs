@@ -9,11 +9,13 @@ export function demoOnboardingAction(store, operation, payload={}) {
   const {event,data={}}=payload;
   if(event==='pause'){s.data.resumeStep=s.step;s.step='paused';s.prompt='Fictional onboarding paused.';}
   else if(event==='resume'&&s.step==='paused'){s.step=s.data.resumeStep;s.prompt='Resume the fictional scenario.';}
+  else if(event==='runtime'&&s.step==='connection_pending'){s.step='intent_pending';s.prompt='Your fictional agent is connected.';}
   else if(event==='intent'&&s.step==='intent_pending'){
    if(typeof data.text!=='string'||data.text.trim().length<3)throw Error('Describe a search intent.');
    s.data.intent={text:data.text};s.step='action_policy_pending';s.prompt='Fictional first result: recommend, prepare for review, or request routine auto-apply setup?';
-   s.matchJob={id:'demo-onboarding-job',url:'#',employer:{company:'ExampleCo (fictional)',title:'Backend Engineering Intern (demo)'}};
-   s.data.match={fit:'Illustrative backend internship matching the demo intent. This is not a real opening.',fitPreliminary:true,evidence:'Fictional evidence for UI preview only',checkedAt:'Demo fixture'};
+   const role=store.get('demo.onboardingRole');
+   s.matchJob=role?{id:role.id,url:'#',employer:{company:role.company,title:role.title}}:{id:'demo-onboarding-job',url:'#',employer:{company:'ExampleCo (fictional)',title:'Backend Engineering Intern (demo)'}};
+   s.data.match={fit:'Illustrative role from the demo search. This is not a real opening.',fitPreliminary:true,evidence:'Fictional evidence for UI preview only',checkedAt:'Demo fixture'};
   } else if(event==='policy'&&s.step==='action_policy_pending'){
    if(!['recommend','prepare','auto_apply_requested'].includes(data.choice))throw Error('Choose a policy.');
    s.data.policy=data.choice;s.step=data.choice==='recommend'?'execution_ready':'profile_verification_pending';s.prompt=data.choice==='recommend'?'Queue a fictional discovery result.':'Fictional profile setup: review essential facts before preparation.';
