@@ -13,6 +13,7 @@ import { contextResponse } from './context.mjs';
 import { applicationPolicy } from './application-policy.mjs';
 import { submissionDispatch } from './submission-dispatch.mjs';
 import { museFeatureDispatch } from './muse-features.mjs';
+import { reportBug } from './bug-report.mjs';
 
 // Platform JWT verification is disabled because agents use opaque credentials.
 // Every request is verified here: Supabase getUser for people; hash + expiry +
@@ -49,6 +50,23 @@ Deno.serve(withGatewayCors(async request => {
       if(parsed.operation.startsWith('search.')) parsed.payload=prepareSearch(parsed.operation,parsed.payload);
     } catch(error) { return respond({error:validationMessage(error)},400); }
     const {operation,payload}=parsed;
+    if(operation==='bugs.report') {
+      const credentialHash=await hashToken(bearer);
+      const result=await reportBug({payload,
+        token:Deno.env.get('LOOKOUT_BUG_GITHUB_TOKEN'),
+        connectionId:Deno.env.get('LOOKOUT_BUG_CONNECTION_ID'),
+        authorize:async()=>{
+          const {data,error}=await admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:'credentials.verify',payload:{}});
+          return error ? {status:databaseFailure(error)[0]} : {status:200,data};
+        },
+        ledger:async(action:string,args:unknown)=>{
+          const {data,error}=await admin.rpc('bug_report_receipt',{action,args});
+          if(error)throw Error('Receipt unavailable');
+          return data;
+        },
+      });
+      return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
+    }
     if (operation.startsWith('connections.')) {
       if (bearer.startsWith('jb_agent_')) return respond({ error: 'Human sign-in required' }, 403);
       const { data: { user }, error } = await admin.auth.getUser(bearer);

@@ -2,6 +2,12 @@
 
 Endpoint: `https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp`
 
+`report_bug(title, description)` is scaffolded for the owner-configured Muse
+connection with `activity:write`. It publishes fictional reproduction steps to
+GitHub with `auto-fix`, or returns a matching unresolved issue. It requires the
+new migration, function release and Supabase configuration before availability.
+An issue does not mean Codex started. See [setup, cloud activation and test flow](../docs/auto-fix.md).
+
 This is a small stateless Streamable HTTP server using JSON responses. It has no
 SDK/runtime dependency, browser tools, shell, SQL, connection management, or
 submission endpoint. Supported protocol versions: 2025-11-25, 2025-06-18,
