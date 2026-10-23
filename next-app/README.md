@@ -394,7 +394,8 @@ production account writes.
 
 My Agent is one scrollable page without inner tabs. Packs, Search, Sources
 and Connections each have a bordered, rounded settings box. In Other settings,
-Writing style retains its existing box; Circle sharing, Muse updates and Application
-automation each have a matching boundary. Demo check: scroll through all settings sections on
+Writing style retains its existing box; Circle sharing and Application automation
+each have a matching boundary. The Muse updates panel and fictional update preview
+have been removed from both signed-in and demo preferences. Demo check: scroll through all settings sections on
 desktop and mobile, confirm each box encloses its content and edit/save a fictional
 task. Existing save services and MCP boundaries are unchanged.
