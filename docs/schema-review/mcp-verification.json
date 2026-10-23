@@ -1,0 +1,74 @@
+[
+  {
+    "sheet": "00 Relationship graph",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "59b9d3a41620beb2d7c56feee70902d001eddd45e7be8361caca166259478cdf"
+  },
+  {
+    "sheet": "01 Catalog and discovery",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "5af5f04be403212da2849aed6611c140b6c6ce6ec1ef1615f2e299b3f73907b3"
+  },
+  {
+    "sheet": "02 Candidate and preferences",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "e2910cdca1f02d4ec60be391a74d75ddef443780f78a340c01893d5d0d6b51f2"
+  },
+  {
+    "sheet": "03 Documents and materials",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "bb7c08bd75e85f9f7174e4020a20c134dba39e7602e58976efcb19508b3ea452"
+  },
+  {
+    "sheet": "04 Applications and evidence",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "e6129ae434e225ea332776dc998dfe8118ec0072232a45acfd255236e41450fa"
+  },
+  {
+    "sheet": "05 Preparation and network",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "4d9b0ea92f157f58c6acdd8e8bb68304ab18737c4c4da42e1bc770cbba10e769"
+  },
+  {
+    "sheet": "06 Circles and publication",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "3bf33054007fddbf6c649cd225071199f82c87f3d11240a20b6a54eb37ae713b"
+  },
+  {
+    "sheet": "07 Agent execution and onboarding",
+    "method": "tools/call:create_diagram",
+    "status": "success",
+    "server": "drawio-mcp-app/1.4.1",
+    "build": "a05d36b@2026-10-19T09:40:13.986Z",
+    "native_routing": "official @drawio/mcp@1.10.0 libavoid",
+    "returned_xml_sha256": "ba82cb851b2a5612cd3dc750e9317f49d58d56b6c758dc14afffb1f3fd4f1654"
+  }
+]
