@@ -7,7 +7,7 @@ import { asset, useWorkspace } from "../lib/workspace";
 import { claimPack, dayStamp } from "../lib/progress.mjs";
 import { advanceStage, canClaimPack, dropKey, groupPack, packComplete, tierOf, tierOrder, type Drop, type Stage, type Tier } from "../lib/drop-pack";
 import { RARITY_LABEL, TIER_HEX } from "../lib/role-display";
-import { PACK_TEXTURES, resolvePackStyle, resolvePackTexture, selectPackStyle, type PackStyleId, type PackStyleTemplate, type PackTextureId } from "../styles/templates/pack-styles";
+import { resolvePackStyle, resolvePackTexture, selectPackStyle, type PackStyleId, type PackStyleTemplate } from "../styles/templates/pack-styles";
 import { CompanyLogo } from "./role-card";
 import PackEffects from "./pack-effects";
 import styles from "../styles/templates/pack-opening.module.css";
@@ -130,11 +130,7 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
     requestAnimationFrame(() => root.current?.querySelector<HTMLButtonElement>(".pack-close")?.focus({ preventScroll: true }));
     pulse();
   }
-  function applyTexture(id: PackTextureId) {
-    if (id === texture.id) return;
-    const theme = w.store.get("workflow.theme") || {};
-    w.store.set("workflow.theme", { ...theme, pack: id });
-  }
+
 
   if (!mounted) return null;
   const sealMotion = { duration: reduced ? 0 : 0.6, ease: [0.16, 1, 0.3, 1] as const };
@@ -160,21 +156,6 @@ export default function PackOpening({ drops, day, onClose, styleId }: Props) {
               <span className="tear-copy"><strong>Slide to tear</strong><small>or tap to open</small></span>
             </button>
           </div>
-          <fieldset className="texture-picker">
-            <legend>Pack texture</legend>
-            <div className="texture-options">
-              {PACK_TEXTURES.map(option => {
-                const preview = option.image
-                  ? `linear-gradient(#07101e22,#07101e5c),url("${asset(option.image)}")`
-                  : "radial-gradient(ellipse at 18% 26%,#65d7f5,transparent 45%),radial-gradient(ellipse at 78% 72%,#ffd482,transparent 48%),linear-gradient(145deg,#1b2440,#141020 72%)";
-                return <label className="texture-option" key={option.id}>
-                  <input type="radio" name="pack-texture" value={option.id} checked={texture.id === option.id} onChange={() => applyTexture(option.id)} />
-                  <span className="texture-swatch" style={{ "--texture-preview": preview } as CSSProperties} aria-hidden="true" />
-                  <span>{option.label}</span>
-                </label>;
-              })}
-            </div>
-          </fieldset>
           <p className="seal-instruction" role="status">{phase === "tearing" ? "Opening your pack…" : "Break the seal. See what’s inside."}</p>
           {historical && <p className="pack-history">Replay of {day} · daily XP is awarded only for today’s pack.</p>}
         </section> : <>
