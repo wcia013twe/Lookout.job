@@ -2,7 +2,7 @@
 
 This is the single maintained reference for the implemented schema, relationships and design. The executable source of truth is [`supabase/migrations/`](../supabase/migrations/); this document is not a second SQL schema or a deployment claim.
 
-**Local:** 54 application tables after `20261023041310_evolve_existing_data_model.sql`. **Hosted inspection, 2026-10-23:** 35 tables; company workspaces, career artifacts, shared practice sessions and Circle tables are among the 19 local tables not yet deployed. This pass changes local code only. The old UI-first 44-entity proposal is retired; its hypothetical tables are not implementation requirements. An older editor-modified draw.io file is preserved pending its owner's cleanup.
+**Local:** 54 application tables after `20261023041310_evolve_existing_data_model.sql`. **Hosted inspection, 2026-10-23:** 35 tables; company workspaces, career artifacts, shared practice sessions and Circle tables are among the 19 local tables not yet deployed. The larger schema evolution remains local; the task/widget settings migration below was deployed separately. The old UI-first 44-entity proposal is retired; its hypothetical tables are not implementation requirements. An older editor-modified draw.io file is preserved pending its owner's cleanup.
 
 ## Design
 
@@ -505,5 +505,5 @@ routes the batch to its widget and preserves retry idempotency. Ordinary batches
 cannot spoof that route. `read_batch` and personal-context reads remain available
 without the UI. Opening/revealing a pack remains local presentation state.
 
-Migration: `20261023054007_account_card_pack_widgets.sql`. Gateway instruction
-version 46 describes this contract; local verification is not a hosted release claim.
+Migration: `20261023060931_account_card_pack_widgets.sql`. Gateway instruction
+version 46 describes this contract. The task/widget database migration was applied and ownership/version checks were verified on the hosted project on 2026-10-23. Frontend/gateway discovery deployment and external-agent execution remain pending; the broader local schema is not deployed by this change.
