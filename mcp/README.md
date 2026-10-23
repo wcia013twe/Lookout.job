@@ -8,6 +8,13 @@ GitHub with `auto-fix`, or returns a matching unresolved issue. It requires the
 new migration, function release and Supabase configuration before availability.
 An issue does not mean Codex started. See [setup, cloud activation and test flow](../docs/auto-fix.md).
 
+`get_bug_status(issueNumber)` lets that same Muse connection check the release
+signal on subsequent runs. It returns `readyToRetry: true` only after verifying
+that a successful main release contains the linked merged fix. Muse retries once
+per new `releaseId`, after refreshing the app. A closed issue or merged PR is not
+enough. This is a durable polling signal, not a push notification that wakes Muse.
+The owner has authorized CI-gated automatic merge/release for validated fixes.
+
 This is a small stateless Streamable HTTP server using JSON responses. It has no
 SDK/runtime dependency, browser tools, shell, SQL, connection management, or
 submission endpoint. Supported protocol versions: 2025-11-25, 2025-06-18,

@@ -1,0 +1,11 @@
+project_id = "lookout"
+
+# These functions enforce Lookout credentials or getUser themselves.
+[functions.agent-gateway]
+verify_jwt = false
+
+[functions.agent-mcp]
+verify_jwt = false
+
+[functions.workspace-reset]
+verify_jwt = false

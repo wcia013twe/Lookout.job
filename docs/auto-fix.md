@@ -11,7 +11,9 @@ this cloud environment is not a reliable replacement: tasks can stop.
 
 There is no API model usage, new inference provider, VM, dashboard, queue service,
 or Sentry dependency. GitHub Actions usage remains subject to the account's
-included minutes and billing controls. Nothing is automatically merged or deployed.
+included minutes and billing controls. The owner now authorizes automatic merge
+and release of validated fixes through the existing queue. That policy is
+scaffolded here, but is not live until this branch and its configuration are released.
 
 ## Layout
 
@@ -27,10 +29,27 @@ included minutes and billing controls. Nothing is automatically merged or deploy
    repository owner, posting one comment that mentions `@wcia013twe`.
 5. A **separately configured cloud Codex automation** periodically examines the
    same GitHub issues. Its prompt is [auto-fix-worker.md](auto-fix-worker.md).
-   It opens a draft PR, comments with the diagnosis and PR link, and mentions the
-   owner. GitHub delivers notifications according to the owner's settings.
-6. The human reviews, merges and deploys. The worker must not apply `merge-ready`
-   or use `feature:publish`, because Lookout's existing queue can merge such PRs.
+   It opens a linked PR with `<!-- lookout-auto-fix-issue:NUMBER -->` in the body,
+   comments with the diagnosis and PR link, and mentions the owner. After its
+   tests pass it marks the PR ready and adds `auto-fix` and `merge-ready`.
+6. The existing merge queue requires passing CI and GitHub protections, pins the
+   tested head, merges, and dispatches release. There is no separate approval bot
+   and no bypass of required reviews: additional live protections can still block.
+7. The release workflow applies changed Supabase migrations/functions before
+   publishing the frontend. It compares against the last successful complete
+   release, so multiple queued merges cannot skip a pending backend change.
+   A missing credential, stale deployment, or backend failure stops the release.
+8. After release completes, `.github/workflows/auto-fix-release.yml` records a
+   bot-authored receipt on each affected issue and mentions the owner. PR bodies
+   use `Refs #NUMBER` rather than a closing keyword, so unresolved issues remain
+   open for duplicate detection until release succeeds; only then does the signal
+   workflow close them. It signals
+   failures too. Already-released PRs do not get a new comment on every release.
+9. Muse calls `get_bug_status(issueNumber)` on its next run. The gateway verifies
+   the PR, deployment workflow, same-repository main run, source commit ancestry
+   and outcome before returning `readyToRetry: true`. Issue closure alone does
+   not grant retry permission. Muse refreshes and retries fictional reproduction
+   steps once per new `releaseId`, then reports the observed result.
 
 ## Enable reporting and the GitHub trigger
 
@@ -43,8 +62,9 @@ deploy its functions directly from a feature branch.
    issues write; it cannot push, create PRs, merge or deploy.
 2. Create an expiring **fine-grained GitHub personal access token** owned by
    `wcia013twe`, restricted to this one repository, with **Issues: read/write**
-   and implicit Metadata read. No Contents write or model API key is needed for
-   reporting. An owner-authored issue is required by the intake workflow. Token
+   plus **Actions: read**, **Pull requests: read**, **Contents: read** and implicit
+   Metadata read for release verification. No Contents write or model API key is
+   needed for the reporting/status tools. An owner-authored issue is required by the intake workflow. Token
    expiry/rotation must be maintained; this scaffold has no OAuth refresh service.
 3. In **Supabase Edge Function secrets**, set `LOOKOUT_BUG_GITHUB_TOKEN` securely.
    Never commit it, paste it into a chat, put it in an MCP argument, or expose it
@@ -58,10 +78,21 @@ deploy its functions directly from a feature branch.
 5. Apply `20261024000000_bug_report_dedup.sql` through the normal migration
    process, then deploy `agent-gateway` and `agent-mcp` through the normal backend
    release process. Preserve their current custom-auth/`verify_jwt=false` setup.
-   Gateway instructions advance to developer version 53; existing agents must
+   Gateway instructions advance to developer version 54; existing agents must
    refresh discovery/context. No frontend build or production candidate access is
    required for the reporting tool itself.
-6. Verify the Supabase runtime permits HTTPS to `api.github.com`. Keep TLS
+6. In GitHub Actions repository secrets, configure `SUPABASE_ACCESS_TOKEN` and
+   `SUPABASE_DB_PASSWORD` for the existing project `umhqfqzpwmszhcknwtrs`. Use a
+   project-scoped token with Edge Function write/read and the database/pooling
+   permissions required by `supabase db push --project-ref`; use the project's
+   database password for the migration connection. Never put these secrets in
+   Muse, the worker prompt, PRs or issue comments. The pinned Supabase CLI uses
+   server-side function bundling; no Docker service or persistent machine is
+   needed. `supabase/config.toml` preserves the functions' existing custom auth.
+   Reconcile hosted migration history through the normal release process before
+   first activation; do not repair history, replay initial migrations or disable
+   TLS to force a release. If secrets are missing, backend changes fail closed.
+7. Verify the Supabase runtime permits HTTPS to `api.github.com`. Keep TLS
    verification enabled. The coding environment separately needs its own
    supported GitHub API connection for reading issues and opening PRs. The Git
    checkout proxy alone does not establish those API permissions.
@@ -76,7 +107,11 @@ In the subscription product that offers **cloud-hosted recurring Codex tasks**,
 create one task scoped to this repository, paste `auto-fix-worker.md`, and select
 a periodic trigger (for example every 15 minutes if supported). Allow only one
 active run at a time. Authorize repository reads, branch pushes, draft PR creation
-and issue comments. Verify execution occurs while the desktop is off. Do not use
+and issue comments. For automatic release the worker also needs to mark its PR
+ready and apply the existing queue labels. Keep `MERGE_QUEUE_ENABLED` enabled;
+additional required-review or deployment-environment approvals must be satisfied
+or reported as blockers, never silently bypassed. Verify execution occurs while
+the desktop is off. Do not use
 a desktop-only automation or copy a ChatGPT login/session file into Actions.
 
 **This availability is unverified.** A subscription does not by itself establish
@@ -160,8 +195,18 @@ After deployment **and cloud automation registration**, run the actual test:
    data. If no defect exists, request a clearly identified draft validation PR
    documenting the exercise; do not invent an application defect. Verify the
    linked draft PR, issue diagnosis/comment, owner mention and GitHub notification.
-5. Verify no `merge-ready` label, auto-merge, main push or deployment occurred.
-   Close the synthetic issue and draft PR after recording the result.
+5. The synthetic validation PR stays draft and must not receive `merge-ready`.
+   Test automatic release using a genuine small fix with the required regression
+   test: mark it ready and apply both labels. Verify CI, queue merge, backend step
+   if changed, GitHub Pages success and the release receipt on the original issue.
+6. From Muse, call `get_bug_status`. A successful release containing that PR must
+   return `readyToRetry: true` with a stable `releaseId`. Failed/in-progress
+   releases, an unrelated CI run, or issue closure alone must not authorize retry.
+   Muse refreshes and retries once for that ID. Confirm its observed result.
+7. Close the fictional exercise artifacts after recording the result. Do not
+   manufacture or automatically ship an application defect merely to test this.
 
+`tests/bug-release.test.mjs` also exercises release receipts, failed/stale/fork
+runs, reopening, duplicate signals, authorization, and backend release planning.
 Local tests passed during implementation; live publication, trigger execution,
-cloud registration, PR creation and notification receipt remain unverified.
+cloud registration, automatic release and notification receipt remain unverified.

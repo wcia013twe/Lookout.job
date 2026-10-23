@@ -14,6 +14,7 @@ import { applicationPolicy } from './application-policy.mjs';
 import { submissionDispatch } from './submission-dispatch.mjs';
 import { museFeatureDispatch } from './muse-features.mjs';
 import { reportBug } from './bug-report.mjs';
+import { getBugStatus } from './bug-status.mjs';
 
 // Platform JWT verification is disabled because agents use opaque credentials.
 // Every request is verified here: Supabase getUser for people; hash + expiry +
@@ -50,9 +51,10 @@ Deno.serve(withGatewayCors(async request => {
       if(parsed.operation.startsWith('search.')) parsed.payload=prepareSearch(parsed.operation,parsed.payload);
     } catch(error) { return respond({error:validationMessage(error)},400); }
     const {operation,payload}=parsed;
-    if(operation==='bugs.report') {
+    if(operation==='bugs.report'||operation==='bugs.status') {
       const credentialHash=await hashToken(bearer);
-      const result=await reportBug({payload,
+      const execute=operation==='bugs.report' ? reportBug : getBugStatus;
+      const result=await execute({payload,
         token:Deno.env.get('LOOKOUT_BUG_GITHUB_TOKEN'),
         connectionId:Deno.env.get('LOOKOUT_BUG_CONNECTION_ID'),
         authorize:async()=>{

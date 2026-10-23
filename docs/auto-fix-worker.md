@@ -35,17 +35,32 @@ auth, client or frontend changes. Distinguish passes, failures and unrun checks.
 If the problem is deployment/configuration rather than source code, explain the
 specific required action; do not fabricate a code fix or redeploy production.
 
-Open a **draft** PR targeting main with `Fixes #ISSUE`, the diagnosis, smallest
-fix, reproduction, tests and limitations. Check for a linked PR again immediately
-before creation. Never call `feature:publish`: it applies `merge-ready` and wakes
-the existing merge queue. Never apply `merge-ready`, enable auto-merge, run
-`feature:land`, push main, approve workflows, merge or deploy. Do not modify
-merge/deployment permissions or protections to bypass these rules.
+Open a PR targeting main with `Refs #ISSUE`, the diagnosis, smallest fix,
+reproduction, tests and limitations. Include the exact machine marker
+`<!-- lookout-auto-fix-issue:ISSUE -->` in the PR body, substituting the numeric
+issue number. Use Refs, not a closing keyword: the issue must stay open until
+deployment succeeds. Check for a linked PR again immediately before creation.
+
+The owner explicitly authorizes automatic release for these fixes. After tests
+pass, mark the PR ready for review and apply both `auto-fix` and `merge-ready`.
+The existing merge queue checks CI and GitHub protections, merges the exact tested
+head, and dispatches the existing release workflow. Do not push main or merge
+manually. Do not forge review approvals, disable checks/protections, or weaken
+permissions to make a merge pass. A protection or secret requirement that cannot
+be satisfied is a blocker to report. Backend changes release through the Supabase
+step before GitHub Pages; never report a backend fix as deployed from a frontend
+build alone. Explicit synthetic validation PRs stay draft and must NOT be queued.
 
 Post one issue comment with the diagnosis, fix summary, exact checks and PR link;
 mention `@wcia013twe` to generate a GitHub notification. If blocked, post a concise
 sanitized blocker instead, and do not repeatedly post the same blocker. Never
-claim notification receipt; the human must verify delivery. Leave final review,
-merge and deployment to the human. In explicit synthetic-test mode, open a draft
-validation PR documenting the exercise if the fixture reveals no actual defect;
+claim notification receipt; the human must verify delivery. The owner can inspect
+the PR and GitHub notifications; eligible fixes release automatically after checks.
+In explicit synthetic-test mode, open a draft validation PR documenting the
+exercise if the fixture reveals no actual defect;
 do not manufacture an application bug merely to produce a PR.
+
+After the release, GitHub posts a machine-readable receipt to the issue. Muse
+uses `get_bug_status(issueNumber)` on its next run; it retries only a new verified
+successful release. The coding worker does not impersonate Muse or invent a
+successful user retry. A release receipt is not proof that the behavioral bug is fixed.
