@@ -10,9 +10,14 @@
 
 Final integration also retained concurrently landed onboarding sign-in and application-question fixes. The combined 537-test suite and production export passed after those merges.
 
-Release repair: GitHub Actions failed before frontend build on the existing
-PGlite `is_superuser` Boolean error immediately after the destructive reset SQL
-scenario. Run that scenario against a separate fully migrated engine so its
-session/role state cannot affect later scenarios. All original SQL assertions
-and production migrations remain unchanged; local Node 22 database checks also
-pass. This is test isolation, with no production authorization change.
+Release repair: CI's Node 22 Linux runtime produces PGlite internal errors
+(`is_superuser` Boolean/GUC and malformed plan nodes) while the original suite
+passes locally under Node 22 and Node 24. Isolating the preceding reset scenario
+did not resolve CI and was reverted. Align CI with the locally verified Node 24
+major, retaining every database scenario and the existing npm package policies.
+No production SQL, assertions or authorization checks are weakened or changed.
+
+Pages path repair: the repository is now `Lookout.job` and the Pages API reports
+`https://wcia013twe.github.io/Lookout.job/`, while CI still hardcoded the old
+repository directory. Derive the static base path from the event repository name
+so deployment assets follow the configured Pages project URL after renames.
