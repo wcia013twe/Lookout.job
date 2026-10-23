@@ -17,20 +17,19 @@ export function advanceStage(stage: Stage, tier: Tier): Tier {
   return tierOrder[Math.min(tierOrder.indexOf(stage) + 1, tierOrder.indexOf(tier))];
 }
 
+// A Mega drop groups at most five relevant roles from one company on one day.
+export const MEGA_DROP_MAX = 5;
 export function groupPack(drops: Drop[]): PackGroup[] {
   const companies = new Map<string, Drop[]>();
   for (const drop of drops) {
-    const key = normCompany(drop.company);
+    const key = drop.status === "skipped" ? dropKey(drop) : `${drop.dateSeen}|${normCompany(drop.company)}`;
     companies.set(key, [...(companies.get(key) || []), drop]);
   }
   const groups: PackGroup[] = [];
   for (const company of companies.values()) {
-    const ft = company.find(drop => drop.type === "FT");
-    const intern = company.find(drop => drop.type === "Internship");
-    if (ft && intern) groups.push({ key: `${dropKey(ft)}+${dropKey(intern)}`, drops: [ft, intern] });
-    for (const drop of company) {
-      if (ft && intern && (drop === ft || drop === intern)) continue;
-      groups.push({ key: dropKey(drop), drops: [drop] });
+    for (let i = 0; i < company.length; i += MEGA_DROP_MAX) {
+      const batch = company.slice(i, i + MEGA_DROP_MAX);
+      groups.push({ key: batch.map(dropKey).join("+"), drops: batch });
     }
   }
   return groups;
@@ -48,6 +47,9 @@ export function demoDrops(day: string): Drop[] {
   return [
     ["NVIDIA", "ML Systems Engineer (demo)", "FT", "added"],
     ["NVIDIA", "ML Systems Internship (demo)", "Internship", "added"],
+    ["NVIDIA", "Inference Infrastructure Engineer (demo)", "FT", "pending"],
+    ["NVIDIA", "GPU Compiler Internship (demo)", "Internship", "added"],
+    ["NVIDIA", "Distributed Training Engineer (demo)", "FT", "pending"],
     ["Google", "Distributed Systems Engineer (demo)", "FT", "pending"],
     ["Oracle", "Database Engineer (demo)", "FT", "added"],
     ["Example Company (demo)", "Unverified role (demo)", "FT", "skipped"],
