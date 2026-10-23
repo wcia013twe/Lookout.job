@@ -545,6 +545,28 @@ should be reviewed alongside their owner checks rather than suppressed.
 
 Earlier automatic-review rejections were resolved when the user requested another
 retry; `supabase_apply_migration` succeeded. This completes the prepared database
-rollout, not a frontend or Edge Function release. Circle availability remains disabled
+rollout. A subsequent Edge Function release is recorded below. Circle availability remains disabled
 pending its hosted consent/access release verification. The separately developed
 `20261023061223_workspace_reset.sql` is still local and was not part of this rollout.
+
+
+## Edge Function release (2026-10-23)
+
+Released committed local-main source `25f8160` through the Supabase connector after
+local integration and validation: `agent-gateway` deployment 24, `agent-mcp`
+deployment 20, developer instructions 47. Both are ACTIVE. Downloaded deployment
+source matches all 43 gateway and 22 MCP bundled files exactly, including shared
+validators, card-pack settings, partial field edits, user briefs and guide content.
+Both retain custom authentication (`verify_jwt=false`): the gateway validates human
+sessions or scoped opaque agent credentials; MCP delegates credential checks to it.
+Live HTTP probes reject missing and invalid credentials with 401 on both endpoints.
+
+The existing GitHub workflow publishes only the frontend; no automatic Edge Function
+release job exists. This was an explicit connector release from merged local main,
+not a feature-branch deployment or GitHub push. Previous validation passed 498 tests
+and catalog validation (147 roles); no application source was edited for this release.
+Authenticated MCP discovery/read/write remains unverified because no active personal
+agent connection exists. Connect an agent through the human account flow, then refresh
+tool discovery. No connection or credential was manufactured for release testing.
+Circle activation, the separate workspace-reset migration/function, and frontend
+publication remain outside this release. The reset MCP tool is only a human handoff.
