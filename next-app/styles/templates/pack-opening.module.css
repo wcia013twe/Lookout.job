@@ -188,3 +188,10 @@
 :global([data-theme="light"]) .experience :global(.double-combo:hover:not(:disabled)) { background: radial-gradient(ellipse at 50% 25%, #574076, #141321 75%); border-color: #bfa5e0; }
 :global([data-theme="light"]) .experience :global(.card-mystery:focus-visible),
 :global([data-theme="light"]) .experience :global(.double-combo:focus-visible) { outline-color: #ffda77; }
+
+/* The ordinary card becomes the left anchor as the hidden company cards land. */
+.experience :global(.mega-split) { display:grid; width:min(100%,1080px); grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; align-items:start; perspective:1200px; }
+.experience :global(.mega-message) { grid-column:1/-1; margin:0; text-align:center; color:#ffda77; font-weight:700; }
+.experience :global(.mega-card) { min-width:0; transform-style:preserve-3d; }
+@media (max-width:900px) { .experience :global(.mega-split) { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:560px) { .experience :global(.mega-split) { grid-template-columns:minmax(0,1fr); max-width:350px; gap:18px; } }
