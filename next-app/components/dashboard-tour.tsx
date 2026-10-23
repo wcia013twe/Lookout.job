@@ -29,7 +29,9 @@ export default function DashboardTour() {
     try { dismissed = w.demo ? w.store.get("ui.dashboardTour") === dashboardTourVersion : localStorage.getItem(key) === "dismissed"; } catch { /* Private browsing can disable storage. */ }
     url.searchParams.delete("tour");
     history.replaceState(history.state, "", url);
-    setVisible(shouldStartDashboardTour(request, dismissed));
+    const start=shouldStartDashboardTour(request, dismissed);
+    if(start&&w.demo)w.store.set("ui.dashboardArrival",true);
+    setVisible(start);
   }, [key, w.demo, w.store]);
 
   useEffect(() => {
