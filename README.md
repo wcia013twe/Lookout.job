@@ -723,3 +723,5 @@ its explicit sign-in/setup flow. Explicit `?demo=1` still opens only fictional,
 resettable memory data and remains separate from account authentication.
 This is a frontend visibility change; public static catalog files remain public
 and backend authorization and scoped MCP tools are unchanged.
+
+Agent connection handoff copies credential-free instructions by default, in onboarding and connection settings. **Copy instructions for chat** never includes a token or bearer configuration; **Copy token for secure entry** is the separate explicit secret-copy action. Onboarding also provides a current-token revoke/start-over action through the existing human-only connections API. No chat-generated secure link is invented by Lookout; use the agent’s actual secure credential form or plugin/MCP settings.
