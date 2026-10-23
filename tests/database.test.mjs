@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['website-onboarding','website completion persists separately from agent readiness, rejects agents, isolates owners and replays safely'],
   ['simplify-import','Simplify imports retain missing URLs and source reports, preserve status, isolate owners, reject stale writes and replay safely'],
   ['workspace-reset','workspace reset preserves Auth and other owners, revokes agents, retries storage failures, blocks writes and protects replay'],
   ['card-packs','card pack settings and publication enforce ownership, versions, assigned connections, source routing and replay'],
