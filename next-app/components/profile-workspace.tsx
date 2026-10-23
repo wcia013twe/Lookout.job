@@ -32,7 +32,7 @@ const sections: [ProfileSectionId, string][] = [
   ["appearance", "Appearance"],
 ];
 function ProfileContent() {
-  const { demo } = useWorkspace();
+  const { demo, accountUser } = useWorkspace();
   const a = useApplicationProfile();
   const [active, setActive] = useState<ProfileSectionId>("overview"),
     [visited, setVisited] = useState<ProfileSectionId[]>([]);
@@ -132,6 +132,9 @@ function ProfileContent() {
         Open onboarding
       </Link>
       <Link href={demo ? "/?demo=1&tour=replay" : "/?tour=replay"} className="ml-5 inline-flex min-h-11 items-center text-xs text-board-muted underline underline-offset-4 hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent">Dashboard tour</Link>
+      {active === "overview" && (accountUser || demo) && <div className="mt-8 border-t border-board-line pt-4">
+        <Link href={demo ? "/workspace-reset/?demo=1" : "/workspace-reset/"} className="inline-flex min-h-11 items-center text-sm text-board-muted underline underline-offset-4 hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent">Reset workspace</Link>
+      </div>}
     </ProfileSurface>
   );
 }
