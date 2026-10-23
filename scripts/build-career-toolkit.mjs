@@ -52,6 +52,10 @@ Finish completed only when all sources are completed with exhaustive coverage. O
 // The company research handoff uses the durable workspace boundary.
 for(const guide of guides)if(guide.id==='career-research-company')guide.instructions+='\n\nLookout Network storage: read list_company_workspaces and save_company_workspace with the existing target ID and current expectedRevision (0 for new). Preserve private priorities, target teams, concerns, next action, follow-up date, dated sources, explicit contact/application links and archive state. Complete record fields are name,website,priority,interest,targetTeams,concerns,research,nextAction,followUpDate,sources [{title,url,observedAt,summary}],contactIds,applicationIds,archived. Use list_companies for maintained canonical names/aliases; unknown companies remain valid private workspaces. Do not edit the shared registry or merge duplicate research automatically. Legacy list_contacts/save_contact projections are compatibility only. Circle evidence may be read through search_circle_knowledge with scope current_memberships and companyId or unresolved company text. Reading evidence does not authorize sharing private research or copying replies into interview reports.';
 
+const researchGuidance = JSON.parse(await read('supabase/functions/agent-gateway/instructions.json')).instructions.find(text => text.startsWith('Publish dynamic job research'));
+if (!researchGuidance) throw Error('Dynamic research guidance is missing');
+discovery.instructions += '\n' + researchGuidance;
+
 const output = JSON.stringify({version:catalog.version,upstream:manifest.commit,guides},null,2)+'\n';
 const target = new URL('supabase/functions/agent-gateway/skills/career-toolkit.json', root);
 if (process.argv.includes('--check')) {

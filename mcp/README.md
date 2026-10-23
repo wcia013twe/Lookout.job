@@ -443,3 +443,21 @@ The expanded discovery descriptions require the normal production gateway releas
 ## Workspace reset handoff
 
 `open_workspace_reset` (`workspace:read`) opens the human-only reset screen; it does not delete data or accept agent confirmation. See [scope, retries and release limits](../docs/workspace-reset.md). Hosted deployment and parity verification are pending.
+
+### Dynamic research shown on job cards
+
+When publishing discoveries, use the existing `publish_batch` private
+`recommendation` object for `whyItFits`, `materialGap`, `sourceFreshness`,
+`searchProfileId` and optional `matchAssessment`. See the exact payload and bounds
+in [the backend contract](../backend/agent-contract.md#dynamic-job-research-and-previews).
+Load the current `career-find-jobs` guide for the full workflow. Missing evidence
+means omit the score; use role-specific factors and preserve unknown values.
+Public employer facts must never contain personal research. Keep historical
+batches immutable and publish new research under a new event key.
+
+Use `prepare_draft` for recorded employer questions and draft answers; include
+profile/saved-answer provenance and file types where applicable. The UI renders
+only questions needing input or custom-answer review. Agents cannot mark the
+questions human-reviewed or approve submission. Saved tier lists supply display
+rankings; unranked companies remain visible. These changes require the database
+migration and gateway configuration release before hosted validation is current.
