@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['card-packs','card pack settings and publication enforce ownership, versions, assigned connections, source routing and replay'],
   ['agent-workflows','partial edits and brief snapshots preserve ownership, versions, authority and website/MCP parity'],
   ['schema-evolution','typed document subjects and private discovery links preserve ownership and transport parity'],
   ['agent-activity','agent activity appends and replays without SQL argument ambiguity'],

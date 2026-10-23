@@ -467,3 +467,43 @@ Use the normal isolated feature workflow. Run `npm test`, `npm run validate:data
 Before release: reconcile hosted migration names/definitions and dependencies, apply the missing changes from integrated main in order, deploy gateway/MCP with developer contract **43**, then verify real website/MCP access and two-account isolation before exposing dependent features. The current GitHub `deploy.yml` publishes the frontend only; it is not evidence that database migrations or Edge Functions were released. Do not blindly replay a baseline, reset production or advertise hosted parity based on local tests.
 
 Deferred rather than silently implemented: normalized person/conversation history, separate recruitment/preparation status columns, universal draft revision history, and migration squashing. Add each only with its service/UI migration and demonstrated need. Separate alias, tier-placement, preparation-task, practice-credit and universal document tables are not required by this implementation.
+
+## My Agent tasks and card packs
+
+No new tables. `preferences.search.schedule` owns reusable task definitions:
+`{enabled, timezone, configVersion, routines:[{id,title,description,enabled,mode,time,sourceIds,connectionIds}]}`.
+`description` is freeform task instructions (up to 4,000 characters); sources reference
+existing `search.targets`, and connection IDs reference the owner's existing agent
+connections. Up to 30 tasks, eight sources and four connections per task. Old daily
+routines remain valid; missing `mode` means scheduled. `mode: manual` requests work
+on demand. Global `enabled` requests recurring runs; a task's `enabled: false` pauses
+publishing even for manual runs. Personal agents perform the work and arrange runtime
+scheduling. Saving settings does not create a scheduler or grant source access.
+
+`preferences.theme.cardPacks` is an optional list (up to eight) of
+`{id,title,enabled,taskId,archive?}`. It links a widget to a task by stable ID, with no
+copy of instructions, sources or agent connections. `archive: zero2sudo` explicitly
+includes the existing dated public archive; it requires a linked Zero2Sudo source
+at configuration time. The archive is not fresh verification. Other accounts start
+without widgets. Removing a widget or task retains prior batches; a missing task is
+shown as disconnected, and publishing is rejected until the widget is relinked.
+
+Browser `configure_card_pack_preferences` and MCP `agent_dispatch` call the same
+private settings writer and database validation:
+`save_notification_preferences` saves task definitions, `save_theme_preferences`
+saves widgets, both using the exact preferences `updated_at`. Increment the respective
+`schedule.configVersion` or `theme.cardPacksVersion`. Database guards preserve those
+versioned sections against stale legacy whole-workspace autosync.
+
+`publish_batch` stores cards in existing `job_batches` → `batch_items` → canonical
+`jobs`. Every item in a pack batch supplies `recommendation.cardPackId` and a selected
+`sourceId`; bounded `note`, `skipReason` and `dropStatus` hold private analysis and
+presentation status, not application progress. The server verifies owned, enabled
+task/widget, active assigned connection and `batches:write`; it records the actual
+`publisherConnectionId` and `automationTaskId`. A reserved, server-generated event key
+routes the batch to its widget and preserves retry idempotency. Ordinary batches
+cannot spoof that route. `read_batch` and personal-context reads remain available
+without the UI. Opening/revealing a pack remains local presentation state.
+
+Migration: `20261023054007_account_card_pack_widgets.sql`. Gateway instruction
+version 45 describes this contract; local verification is not a hosted release claim.

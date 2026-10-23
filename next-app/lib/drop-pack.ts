@@ -4,12 +4,12 @@ export const tierOrder = ["common", "rare", "epic", "legendary", "mythic"] as co
 export type Tier = typeof tierOrder[number];
 export type Stage = "mystery" | "back" | Tier;
 export type Drop = {
-  company: string; title: string; dateSeen: string; type: string;
+  packId?: string; company: string; title: string; dateSeen: string; type: string;
   location?: string | null; comp?: string | null; status: string;
   note?: string | null; skipReason?: string | null; url?: string | null;
 };
 export type PackGroup = { key: string; drops: Drop[] };
-export const dropKey = (drop: Drop) => `${drop.dateSeen}|${drop.company}|${drop.title}`;
+export const dropKey = (drop: Drop) => `${drop.packId?`${drop.packId}|`:""}${drop.dateSeen}|${drop.company}|${drop.title}`;
 export const tierOf = (drop: Drop): Tier => rarityOf(drop.company, drop.type, drop.title) as Tier;
 
 export function advanceStage(stage: Stage, tier: Tier): Tier {

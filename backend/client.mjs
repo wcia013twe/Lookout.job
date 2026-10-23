@@ -1,6 +1,8 @@
+import {validateCardPacks,batchPackDrops} from '../lib/card-packs.mjs';
+import {validatePlatformPayload} from '../supabase/functions/agent-gateway/platform-tools.mjs';
 import {callApi} from '../lib/api-failure.mjs';
 import {validateFieldUpdate,readUserBrief} from '../lib/agent-workflows.mjs';
-import {validateArtifact} from '../lib/artifacts.mjs';
+import {validateArtifact,uuid} from '../lib/artifacts.mjs';
 // Data access for an authenticated browser client. Never use a service-role client.
 // expectedUserId catches account changes before requests; database RLS is authoritative.
 /** @param {any} client @param {string|null} [expectedUserId] */
@@ -64,9 +66,27 @@ function createBackend(client, expectedUserId = null) {
       if(await owner()!==userId)throw Error('Account changed');
       return data;
     },
+    async readCardPackSettings() {
+      const id=await owner();
+      const data=await callApi('card_packs.settings.read',()=>client.from('preferences').select('theme,search,updated_at').eq('user_id',id).maybeSingle(),()=>true);
+      if(await owner()!==id)throw Error('Account changed');
+      validateCardPacks(data?.theme?.cardPacks||[]);
+      return {theme:data?.theme||{},sources:data?.search?.targets||[],schedule:data?.search?.schedule||null,updatedAt:data?.updated_at||null};
+    },
+    async readCardPackFeed(packId,offset=0) {
+      if(!uuid(packId)||!Number.isInteger(offset)||offset<0)throw Error('Pack ID and offset required');
+      const id=await owner();
+      const batches=await callApi('card_packs.batches.read',()=>client.from('job_batches').select('id,batch_date,created_at').eq('user_id',id).like('source_event_id',`card-pack:${packId}:%`).order('batch_date',{ascending:false}).order('created_at',{ascending:false}).order('id').range(offset,offset+9),Array.isArray);
+      const items=batches.length?await callApi('card_packs.items.read',()=>client.from('batch_items').select('batch_id,position,recommendation,jobs(id,canonical_url,employer)').eq('user_id',id).in('batch_id',batches.map(b=>b.id)).order('position').limit(1000),Array.isArray):[];
+      if(await owner()!==id)throw Error('Account changed');
+      return {drops:batchPackDrops(batches,items),nextOffset:batches.length===10?offset+10:null};
+    },
     async performPlatformAction(operation, payload) {
-      await owner();
-      return result(client.rpc("perform_platform_action", { operation, payload }));
+      validatePlatformPayload(operation,payload);
+      const id=await owner();
+      const data=await callApi(operation,()=>client.rpc(['preferences.theme.save','preferences.notifications.save'].includes(operation)?'configure_card_pack_preferences':'perform_platform_action',{operation,payload}));
+      if(await owner()!==id)throw Error('Account changed');
+      return data;
     },
     signIn(email, redirectTo) {
       return result(

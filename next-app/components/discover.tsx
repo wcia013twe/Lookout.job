@@ -5,7 +5,7 @@ import { Heading, control, Notice, InsetBox } from "./ui";
 import RoleCard, { type Role } from "./role-card";
 import DiscoverRolePanel from "./discover-role-panel";
 import SearchSweeps from "./search-sweeps";
-import DailyDrops from "./daily-drops";
+import CardPackWidgets from "./card-pack-widgets";
 import DayFilter from "./day-filter";
 export default function Discover() {
   const w = useWorkspace();
@@ -57,7 +57,7 @@ export default function Discover() {
         {roles.length} to review ·{" "}
         {roles.filter((r: Role) => r.priority === "Apply Now").length} apply now
       </Notice>
-      <DailyDrops />
+      <CardPackWidgets key={previewOwner}/>
       {roleGroups.map(({ key, label, roles: group }) => (
         <section key={key} className="mt-6 md:mt-9" aria-label={label}>
           <div className="mb-3 flex items-center gap-3 md:mb-4">
