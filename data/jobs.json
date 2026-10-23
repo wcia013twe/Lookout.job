@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-10-22 evening zero2sudo check",
+ "lastRun": "2026-10-23",
  "roles": [
   {
    "id": "doordash-software-engineer-storage-8024644",
@@ -2489,6 +2489,21 @@
    "sourceFreshness": "1 day ago",
    "whyItFits": "New-college-grad AI software role at a semiconductor company enabling AI at scale: workload-facing software adjacent to architecture and systems. $72K-141.7K; Bachelor's/Master's/PhD eligible. FT wide-net keeps it as interview reps vs the Oracle return path; team fit decides upside.",
    "applicationUrl": "https://careers.gf.com/careers?query=AI+Software+Engineer+%282027+New+College+Graduate%29&start=0&pid=563980770505821&sort_by=relevance",
+   "applicationStatus": "New"
+  },
+  {
+   "id": "etsy-software-engineer-i-marketplace-makers",
+   "company": "Etsy",
+   "title": "Software Engineer I, Marketplace Makers",
+   "employmentType": "FT",
+   "location": "Brooklyn, NY (Hybrid)",
+   "category": "General software engineering",
+   "priority": "Strong Consider",
+   "postedDate": "2026-10-21",
+   "discoveredDate": "2026-10-23",
+   "sourceFreshness": "2 days ago",
+   "whyItFits": "Entry-level FT on Etsy's Marketplace Makers team: Star Seller program, Shop Manager seller tooling, A/B experimentation on seller-facing features. $120-162K (Geo-1) + equity + bonus; no grad-year gate; Brooklyn hybrid. Full-stack web scope (PHP/React/TS) sits off his backend/infra targets, but FT wide net keeps it for interview reps and Etsy is solid credential capital.",
+   "applicationUrl": "https://careers.etsy.com/jobs/software-engineer-i-marketplace-makers-brooklyn-new-york-united-states",
    "applicationStatus": "New"
   }
  ]
