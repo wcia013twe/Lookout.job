@@ -1,0 +1,8 @@
+# Agent-neutral workflows and field updates
+
+- Added four scoped partial-edit tools for existing profile facts, company workspaces, contacts and artifacts. They preserve unspecified data, check current versions and reuse owned save validators; artifact revisions and human-consent boundaries remain intact.
+- Added `read_user_brief` and matching browser adapter over one bounded SQL snapshot. Returns evidence labels, uncertainties, coverage, reply-based next actions and delivery advice. Personal agents compose and deliver text; only displayed notification event IDs may be acknowledged after successful delivery.
+- Standardized the interaction contract for Muse, ChatGPT, Claude and Dots: inspect, edit, report saved state, offer one next action. Reused task and Circle tools; removed UI-required wording from routine message defaults. Developer version 44. No new tables or inference service.
+- Added an isolated, resettable fictional demo interaction: edit profile headline, preserve other fields, read a brief from saved state, reject stale writes and respect quiet mode.
+- Validation: all 470 tests passed (including database ownership/version/consent scenarios and browser/MCP contracts); `npm run validate:data` validated 147 roles; production static build passed on retry; `git diff --check` passed.
+- Limits: new migration/tools are local only; no push, publication or hosted deployment. No end-to-end client integrations verified. Native human confirmation is not implemented; protected approvals still use authenticated secure review, so complete UI independence is not yet available. Initial build stopped on the existing Next.js security advisory; the prescribed build retry succeeded. No dependency upgrade included.

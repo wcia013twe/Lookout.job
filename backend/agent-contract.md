@@ -334,3 +334,19 @@ IDs and employer requisition IDs remain distinct.
 See [the complete contract and release gates](../docs/schema.md#companies-and-network).
 These additions require backend/gateway/MCP release and hosted verification before
 claiming deployed parity.
+
+
+## Agent-neutral field edits and briefing
+
+All personal-agent clients use the same scoped operations and developer contract.
+`profile.fields.update`, `company_workspaces.fields.update`, `contacts.fields.update`
+and `artifacts.fields.update` edit existing owned records under their current token;
+they delegate to the canonical save validator and preserve unspecified fields.
+`brief.read` returns a bounded private snapshot formatted into evidence, uncertainty,
+coverage and a reply-based next action. The browser adapter uses the same owned SQL
+functions and shared formatter. No new entity or inference service is introduced.
+See [the MCP workflow contract](../mcp/README.md#one-experience-across-personal-agents)
+for payload semantics, task/Circle mappings, message compression and delivery rules.
+Native client confirmation is not implemented; protected human actions retain the
+existing authenticated review boundary. These additions are locally tested only
+until migrations and gateway/MCP deployment are completed and verified.

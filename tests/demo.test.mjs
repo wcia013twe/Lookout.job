@@ -262,3 +262,15 @@ test('weekly prep demo schedules company resources, mock interviews and research
  assert.equal(companyResource.shared,false);
  assert.deepEqual(companyResource.targets.map(target=>target.applicationId),['demo-confirmed']);
 });
+
+test('agent-neutral demo updates a field then briefs from saved state without backend writes',async()=>{
+ const state=createDemoWorkspace(now),service=createDemoServices(memory(state));
+ const name=state.workflow.profile.name;
+ const updated=await service.updateFields('profile.fields.update',{expectedUpdatedAt:state.demo.createdAt,fields:{headline:'Systems builder (fictional)'}});
+ assert.equal(updated.facts.name,name);assert.equal(updated.verified_at,null);
+ const brief=await service.readUserBrief();assert.equal(brief.fictional,true);assert.match(brief.items[0].summary,/Systems builder/);
+ assert.equal(brief.nextAction.tool,'read_delivery_policy');assert.equal(brief.authority.clientSpecificBehavior,false);
+ await assert.rejects(service.updateFields('profile.fields.update',{expectedUpdatedAt:state.demo.createdAt,fields:{headline:'Stale'}}),/changed/);
+ assert.equal((await service.readUserBrief({mode:'notification'})).status,'deferred');
+ assert.notEqual(createDemoWorkspace(now).workflow.profile.headline,'Systems builder (fictional)');
+});

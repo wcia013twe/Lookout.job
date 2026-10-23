@@ -12,7 +12,7 @@ export function selectionExplanation({preferences,job,payload}) {
  if (!allowedPreferences.includes(payload.preference) || payload.certainty!=='uncertain') throw Error('Only current explicit policy exclusions can be recorded as firm exclusions. Other fit assessments must be uncertain.');
  return payload;
 }
-export function notificationAdvice(bundle, now=new Date()) {
+export function notificationEvents(bundle) {
  const acknowledged=new Set((bundle.deliveries||[]).flatMap(n=>n.event_ids||[]));
  const events=(bundle.events||[]).map(e=>({id:e.id,kind:e.payload?.kind||e.kind,actionRequired:e.payload?.actionRequired===true,deadlineAt:e.payload?.deadlineAt,summary:e.payload?.text||e.kind,applicationId:e.application_id}));
  for (const row of bundle.plans||[]) {
@@ -27,6 +27,10 @@ export function notificationAdvice(bundle, now=new Date()) {
   const id=`decision:${app.id}:${app.revision}`;
   if(!acknowledged.has(id)) events.push({id,kind:'review',actionRequired:true,interrupt:true,applicationId:app.id,summary:app.blocker?'Your application needs an answer or blocker resolved.':'Your application is ready for review.'});
  }
+ return events;
+}
+export function notificationAdvice(bundle, now=new Date()) {
+ const events=notificationEvents(bundle);
  const delivery=buildDeliveryPolicy({settings:bundle.settings,now,lastDigestAt:bundle.lastDigestAt,events});
  const ids=delivery.reason==='urgent_action'?delivery.urgentEventIds:events.map(e=>e.id);
  return {delivery,events:delivery.decision==='due'?events.filter(e=>ids.includes(e.id)):[],pendingCount:events.length,applications:bundle.applications||[],transport:'agent-runtime',acknowledgeOnlyAfterDelivery:true};

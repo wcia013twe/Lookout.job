@@ -1,3 +1,4 @@
+import {readUserBrief} from './user-brief.mjs';
 import {withGatewayCors} from './cors.mjs';
 import {validationMessage,databaseFailure} from './request-errors.mjs';
 import {prepareSearch,searchResponse} from './search.mjs';
@@ -100,6 +101,12 @@ Deno.serve(withGatewayCors(async request => {
         return respond({error:code==='28000'?'Credential expired, revoked, or invalid':code==='40001'?'Record or settings changed; reload before saving':code==='42501'?'Scope required':code==='P0002'?'Owned record not found':'Operation rejected'},code==='28000'?401:code==='40001'?409:code==='42501'?403:code==='P0002'?404:400);
       }
       return respond({data:result.data});
+    }
+    if(operation==='brief.read') {
+      const credentialHash=await hashToken(bearer);
+      const response=await readUserBrief((op: string,args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),payload);
+      if(response.error){const [status,message]=databaseFailure(response.error);return respond({error:message},status);}
+      return respond({data:response.data});
     }
     const policyRequest = operation === 'applications.policy';
     const { data, error } = await admin.rpc('agent_dispatch', {
