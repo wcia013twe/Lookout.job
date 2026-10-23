@@ -2,6 +2,14 @@
 
 A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. Next.js, React, and Tailwind provide the UI; GitHub Pages serves its static export; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
 
+## Personal agents: start here
+
+Read the compact [agent quickstart](mcp/README.md#agent-quickstart) for connection,
+onboarding, data imports, verified writes and approval boundaries. Connected agents
+receive the same startup sequence automatically from MCP `initialize` and can refresh
+it through `read_developer_context`; full workflow guides are loaded only when needed.
+`AGENTS.md` is for repository maintenance, not personal career-agent onboarding.
+
 ## Copy into Muse
 
 ```text
@@ -631,7 +639,7 @@ CSV applied reports never create a receipt, approval, submission attempt or publ
 contribution. Workspace reset removes import history and retry metadata too.
 
 Release migration `20261023160738_simplify_tracker_import.sql`, `agent-gateway`
-(including developerVersion 48) and `agent-mcp` together through the production
+(including developerVersion 49) and `agent-mcp` together through the production
 release process after landing. Hosted availability and real-account round trips
 remain unverified until that release; the UI explains a missing backend API.
 The detached demo uses a fictional CSV and memory-only service, covers missing

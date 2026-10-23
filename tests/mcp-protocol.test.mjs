@@ -20,6 +20,9 @@ test('initialize negotiates supported versions and initialized notification retu
   const initialized=await response.json();
   assert.equal(initialized.result.protocolVersion, '2025-11-25');
   assert.match(initialized.result.instructions,/automatically select relevant Lookout workflows/);
+  assert.match(initialized.result.instructions,/check_context_versions[\s\S]*read_onboarding_state/);
+  assert.match(initialized.result.instructions,/Read back every saved result/);
+  assert.match(initialized.result.instructions,/Never forge human verification/);
   const notification = await handle(request({ jsonrpc: '2.0', method: 'notifications/initialized' }));
   assert.equal(notification.status, 202); assert.equal(await notification.text(), '');
 });

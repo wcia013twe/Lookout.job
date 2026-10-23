@@ -10,6 +10,31 @@ request validates an opaque credential with the gateway, including discovery.
 Tool discovery is filtered to the connection's scopes. The gateway remains the
 single authority for ownership, expiry/revocation, write validation and revisions.
 
+## Agent quickstart
+
+Use the existing MCP connection with its token in secure settings. The server returns
+this startup sequence during `initialize`; `read_developer_context` returns it as
+`quickstart`. The canonical runtime text is
+[`instructions.json`](../supabase/functions/agent-gateway/instructions.json).
+
+1. Discover tools and current argument schemas. Report missing scopes; do not guess.
+2. Call `check_context_versions`; load developer and personal context on first use,
+   account change or lost context, then reload only changed sections.
+3. Call `read_onboarding_state` before a questionnaire. Follow its next prompt;
+   honor explicit imports from supplied evidence. Load relevant guides on demand.
+4. Read owned records and versions, then use the appropriate scoped save/update tool.
+   Candidate facts, AI analysis, private fit notes and shared employer data stay distinct.
+5. Read back writes before reporting success. Reuse event keys; reconcile conflicts;
+   distinguish empty data from API failures. Report saved IDs and the next action.
+6. The personal agent supplies reasoning, browsing and delivery. Human verification,
+   approval and Circle sharing consent cannot be invented by an agent. Claim queued
+   tasks before execution; report actual outcomes, not requested automation as active.
+
+For connection compatibility and secure token setup, see [Connect an agent](#connect-an-agent).
+The website is optional for routine work; protected human-review actions retain their
+explicit handoff. Client support and successful authenticated round trips must be
+verified in the actual agent runtime.
+
 ## One experience across personal agents
 
 Muse, ChatGPT, Claude and Dots are target clients for the same contract, not four
@@ -102,8 +127,9 @@ event key. Never broaden scopes or change verification policy to repair argument
    scopes. Copy the token once into your agent's private credential store.
 2. Add the remote MCP endpoint in a client supporting Streamable HTTP **and a
    custom Authorization header**. Set `Authorization: Bearer <agent-token>`.
-3. Start with `workspace_read`, then publish a batch or prepare a draft. Approval
-   stays in the website; `read_approval` only reads an existing exact approval.
+3. Follow the [Agent quickstart](#agent-quickstart), beginning with context versions
+   and onboarding state. Approval stays in the authenticated human-review flow;
+   `read_approval` only reads an existing exact approval.
 
 Generic configuration example (actual field names depend on the agent client):
 

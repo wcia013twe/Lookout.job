@@ -26,3 +26,17 @@
 - Released merged local-main commit `25f8160` using the Supabase connector: gateway deployment 24, MCP deployment 20, developer instructions 47. Existing GitHub Actions deploys the frontend only; no automatic backend deployment job exists.
 - Read back deployed source: all 43 gateway and 22 MCP bundled files match committed source. Both functions are ACTIVE. Missing/invalid credential HTTP probes return 401 through both endpoints, including the gateway database credential check.
 - Reused the preceding 498-test pass and 147-role catalog validation; this release adds no application code or demo behavior. Authenticated MCP discovery and write/read round trips still require a human-created personal-agent connection. No credential was issued, account reset, or Circle gate enabled. Separate workspace-reset migration/function and frontend remain undeployed by this pass; no GitHub push.
+
+## Circle activation
+
+- Enabled the production Circle runtime flag at the user's explicit request, without creating a staging branch or introducing costs.
+- Hosted pre-enable RLS/grant assertions passed. Post-enable authenticated-role `circles.list` returned `available: true` and an empty Circle list for the requested account. No account data, membership, content or credential was created.
+- Two-real-account staging/concurrency and browser/agent end-to-end checks remain unverified. This configuration-only change does not change demo behavior or application code.
+
+## Compact agent entry points
+
+- Updated existing root README and MCP guide entry points instead of creating another onboarding document. Added one canonical six-step quickstart to the existing developer instructions; MCP initialization now returns that same text automatically.
+- Covers scoped discovery, context versions, authoritative onboarding, evidence-based imports, owned/versioned writes, read-back verification, failures, task execution and human approval boundaries. Developer version advances to 48. Removed the stale statement that Circle activation still awaited deployment.
+- Extended the existing MCP handshake test to cover onboarding order, persistence verification and approval boundaries. No UI or demo behavior changed.
+- Validation: all 502 tests pass, including MCP startup instructions and existing demo isolation; catalog validation passes (147 roles), and `git diff --check` is clean. Production instruction release follows local landing.
+- Deployed merged local-main `5a222b9`: gateway 25 and MCP 21, developer instructions 48. All 43 gateway and 23 MCP deployed source files match committed release input; both endpoints return 401 without credentials. Authenticated Muse initialization remains unverified until a human connects an agent. No GitHub push or frontend deployment.
