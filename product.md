@@ -38,15 +38,36 @@ Packs reveal value; opening a pack must not be required to capture an opportunit
 
 Reinforce staying informed and delegating effectively. Users should not need to remain constantly vigilant or chat daily for Lookout to be useful. The strongest proof is opening Lookout for the excitement and discovering that the important work has already happened.
 
-### Circles and personal-agent activation
+### Circles, Hubs, and personal-agent activation
 
-Circles extend the insider feeling beyond openings: who is hearing back, what an interview involved, and what peers are learning. Timeliness, firsthand evidence, clear sourcing, and personal relevance supply the value; distinguish individual reports from verified employer facts.
+**Circles are small communities:** familiar people, shared journeys, milestones, encouragement, and mutual help. **Hubs are a later broader intelligence exchange:** relevant recruiting cohorts, questions, and permitted firsthand reports. Keep the two distinct. Personal agents connect their humans to this career network, handling background coordination and surfacing useful insights privately; users need not monitor conversations between agents.
 
-The activation hypothesis is that users may follow a Circle before developing a personal-agent habit. A relevant update prompts a personal question; the agent helps interpret it; a contextual question captures the user's own experience; the user can approve a useful summary for others. Agents help request, organize, and interpret real experiences rather than generating synthetic community activity.
+If users delegate applications, the workflow already produces useful firsthand observations such as confirmed submission dates and role identifiers. OA arrivals, later stages, and outcomes require an accessible source or user confirmation. Agents can prepare useful contributions from this history and existing conversations rather than requiring people to write forum posts or repeat their experiences.
 
-Ask for information when it helps the user's next decision or answers a genuine peer question. For example, after an interview, asking whether to prioritize similar teams can improve the private search and optionally produce a shareable report. Keep sharing permission separate from private assistance.
+**Reciprocal access hypothesis:** users opt into sharing defined recruiting updates through their agents to receive the network's live intelligence. Access depends on participation being enabled, not posting quotas or receiving interviews. Clearly scoped permission can authorize routine event sharing; interview narratives and private memory need their own sharing scope. Users must understand what leaves their account and be able to stop future sharing. This is a proposal, not a shipped access policy.
 
-Reliable discovery and application workflows must provide standalone value before a Circle becomes active. Verified public opportunities can seed useful coverage, clearly distinguished from firsthand reports. Agents cannot substitute for the initial people willing to contribute. Test whether relevant prompts lead to useful conversations and approved contributions; do not assume daily agent use or spontaneous journaling.
+Reliable discovery and application workflows must provide standalone value before the network becomes active. Verified public opportunities can seed useful coverage, clearly distinguished from firsthand reports; do not assume Glassdoor or Blind discussions are available through an open API. Agents cannot manufacture community activity or replace the initial contributors. Concentrating on a recruiting cohort may produce more relevant intelligence than spreading early users across unrelated employers.
+
+### Engagement lessons from X and Reddit
+
+Opting into sharing solves permission; it does not explain why users keep supplying their agents with useful experiences. Study X and Reddit for the reasons people contribute and return, rather than copying their feed mechanics.
+
+- **X lesson: follow people whose next update matters.** Relevant recruiting creators and candidate journeys create anticipation; replies and mentions make participation reciprocal. [X replies and mentions](https://help.x.com/en/using-x/mentions-and-replies).
+- **Reddit lesson: find people who understand the exact situation.** Questions such as “Has anyone received this OA?” create a relevant cohort, and a short reply can contribute without becoming a polished review. Research associates reciprocal conversations and prosocial language with stronger community experiences; this is not proof that adding replies creates belonging. [Conversational structure and community research](https://arxiv.org/abs/2508.08596).
+
+Test three engagement mechanisms:
+
+- **Personal relevance:** a new, sourced report concerns a role the user applied to; the agent explains its relevance and uncertainty.
+- **Reciprocity:** tell a user when their permitted contribution actually helped answer another candidate's question. Do not invent impact or reveal private recipient activity.
+- **An unfinished story:** a contextual question such as “Did yesterday's recruiter call change whether you want this role?” helps the user's own search and may yield shareable knowledge.
+
+**Utility loop:** apply → observe confirmed progress → share permitted events → receive relevant intelligence.
+
+**Human loop:** encounter uncertainty → talk to the agent → receive help → optionally contribute experience → see that contribution matter.
+
+Circles support the human loop through relationships and shared journeys. Hubs can support the utility loop across a broader recruiting cohort. Neither loop requires every person to post publicly or chat daily. Structured activity supplies basic observations; human conversations supply richer interpretation. Keep sharing permission separate from private assistance and distinguish reports from agent inferences or employer-verified facts.
+
+Study actual recruiting threads and creator communities: what prompted the first contribution, what response rewarded it, and what brought the person back? Validate those moments and the usefulness of resulting insights before adopting karma, follower counts, or an infinite feed. Permission, contribution quality, cohort density, and continued engagement remain separate hypotheses to test.
 
 ### Core workflow
 

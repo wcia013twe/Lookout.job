@@ -76,3 +76,9 @@
 - Documented the inside-track promise, practical automation value, optional pack excitement, and the behavior loop in product.md.
 - Added the Circle-to-agent activation hypothesis, contextual contribution prompts, and standalone-value cold-start strategy. Kept these as product intent, with application authority, evidence and sharing boundaries intact.
 - Validation: documentation diff review, whitespace check and data validation passed. Documentation only; no UI, demo, service, MCP or Supabase changes, and no behavioral hypothesis was experimentally verified.
+
+## Follow-up: network participation and engagement hypotheses
+
+- Saved the X/Reddit engagement lessons, personal relevance, reciprocity, contextual prompts, and distinct utility/human loops in product.md with research links and evidence limits.
+- Clarified small Circles versus future Hubs, agent contributions from existing application history and memory, and the proposed opt-in reciprocal access model. No shipped feature or open third-party discussion API is implied.
+- Validation: documentation review, whitespace check and data validation passed. Documentation only; no UI, demo, backend, MCP or Supabase changes. Engagement and access hypotheses remain untested.
