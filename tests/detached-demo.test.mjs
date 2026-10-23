@@ -53,3 +53,13 @@ test('detached runtime edits, Circle reads, reset and briefs work without any ac
  assert.notEqual(reset.store.get('workflow.profile.headline'),'Detached fictional analysis');
  assert.equal(reset.store.get('demo.fictional'),true);off();
 });
+
+test('onboarding exits demo mode for direct links and clears only the tab mode flag',()=>{
+ for(const path of ['/onboarding','/onboarding/','/lookout/onboarding/']){
+  const s=storage();s.setItem(DEMO_MODE_KEY,'1');s.setItem('unrelated','preserve');
+  assert.equal(resolveDemoMode(`https://example.com${path}?demo=1`,()=>s),false);
+  assert.equal(s.getItem(DEMO_MODE_KEY),null);assert.equal(s.getItem('unrelated'),'preserve');
+  assert.equal(resolveDemoMode('https://example.com/',()=>s),false);
+  assert.equal(resolveDemoMode(`https://example.com${path}?demo=1`,()=>{throw Error('Storage blocked');}),false);
+ }
+});
