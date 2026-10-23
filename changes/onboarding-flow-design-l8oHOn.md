@@ -16,3 +16,8 @@
 - Replaced work and location text fields with accessible radio pills plus custom entries. Removed the alternate-role and duplicate exploration actions; kept the primary action and one “I’ll do this later.”
 - Validation: rebuilt React bundle, node syntax check, data validation and diff check. Browser verified selected work/location appear on the card and the continuous reveal reaches the analysis. Desktop inspected; mobile card/analysis stack fits a 390px viewport without horizontal overflow.
 - Live résumé/search request remains pending runtime choice and résumé input. Existing upload still selects a filename only. Fit bars, role and analysis remain explicitly illustrative; no live-search integration or inference was claimed or enabled.
+
+
+## Editable preference suggestions
+- Work and location now always show a text input, with suggestion pills below. Choosing a suggestion fills the input; users can edit it directly without selecting Other. The same value flows through the reveal and later screens.
+- Verified in the browser: selected Design/Remote, typed Product designer/Boston or remote, and confirmed both custom values on the revealed card. Bundle syntax, data validation and diff checks passed.
