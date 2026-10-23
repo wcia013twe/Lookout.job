@@ -4,7 +4,6 @@ import { profileFromPrompt, initialPrompt, updateField } from '../../lib/search-
 import { createPreparationPlan } from '../../lib/preparation-model.mjs';
 import { createDemoWorkspace } from './muse-demo-fixtures.mjs';
 export { createDemoServices } from './muse-demo-fixtures.mjs';
-export function canUseDemo(user) {return Boolean(user?.id && !user.is_anonymous && user.app_metadata?.demo_preview === true);}
 export function createMemoryStore(initial,onChange=()=>{}) {
  let state=structuredClone(initial);
  const get=path=>structuredClone(path?path.split('.').reduce((v,k)=>v?.[k],state):state);
@@ -46,7 +45,7 @@ function baseDemoFixtures(date) {
  return {roles,state:{progress:{xp:275,xpAwards:{},streakDays:[date]},tracker:{ids:['demo-robinhood','demo-stripe','demo-nvidia'],items:{'demo-nvidia':{status:'New',openedDate:date},'demo-robinhood':{status:'Applied',openedDate:date,appliedDate:date},'demo-stripe':{status:'Interview',openedDate:date}}},drops:{seenDropIds:[],packStamps:{},packRewards:{}},network:{referrals,people:[]},workflow:{applications,preparationPlans,profile:{name:'Demo Candidate',firstName:'Demo',lastName:'Candidate',email:'candidate@example.com',phone:'+1 202-555-0142',birthday:'2000-06-15',address:'123 Example Street',address2:'Apt 4',postalCode:'10001',preferredName:'Demo',location:'New York, NY',headline:'Software engineer',skills:'Go, Python, PostgreSQL, distributed systems',preferredSkills:['Go','PostgreSQL'],languages:'English\nSpanish',workExperience:[{company:'Example Systems',title:'Software Engineering Intern',location:'New York, NY',employmentType:'Internship',startDate:'2026-06',endDate:'2026-08',current:false,description:'Built and profiled a sample distributed query service.\nCompared cache strategies and documented reliability tradeoffs with a fictional infrastructure team.'},{company:'Example Compute Lab',title:'Student Developer',location:'Remote',employmentType:'Part-time',startDate:'2025-09',current:true,description:'Maintains an illustrative query-planning benchmark and shares reproducible results.'}],education:[{school:"Example University",degree:"BS",fieldOfStudy:"Computer Science",startDate:"2023-08",endDate:"2027-05",description:"Fictional systems and databases coursework."}],projects:[{name:"Query Lab (demo)",role:"Developer",description:"Fictional distributed query project."}],setupAgent:"own",setupAgentName:"Muse",verified:false},resumes:[{id:'demo-resume',name:'Demo backend résumé',variant:'Backend',version:1}],savedAnswers:[{id:"demo-answer",question:"Why infrastructure?",answer:"I enjoy debugging reliability and performance problems.",companyScope:"",policy:"ask",verified:false}],deletedAnswerIds:[],cloudDirty:false,theme:{pack:'base'},searchPreferences:{profiles:demoSearchProfiles(),quietMode:{cadence:"daily",timezone:"America/New_York",digestHour:18,digestDay:1,urgentDeadlineHours:24}},tierLists:demoTierLists(),activeTierListId:'demo-ft-tiers'},ui:{packOpen:false}}};
 }
 
-// Extend the established admin demo; its profile, referrals, progress and tier
+// Extend the detached fictional demo; its profile, referrals, progress and tier
 // fixtures remain the starting point. Feature scenarios share its memory store.
 export function demoFixtures(date) {
  const base=baseDemoFixtures(date),muse=createDemoWorkspace(date);

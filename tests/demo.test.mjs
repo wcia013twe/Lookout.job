@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createDemoWorkspace, createDemoServices } from '../next-app/lib/muse-demo-fixtures.mjs';
-import { canUseDemo, createMemoryStore, demoFixtures } from '../next-app/lib/demo.mjs';
+import { createMemoryStore, demoFixtures } from '../next-app/lib/demo.mjs';
 import { buildPreparationAgenda } from '../lib/preparation-planner.mjs';
 import { buildSubmissionRecord } from '../lib/submission-record.mjs';
 import { createDemoStore } from '../next-app/lib/demo-store.mjs';
@@ -115,8 +115,6 @@ test('combined admin fixtures preserve established demo and add Muse states with
  assert.equal((await service.readPreparation('demo-robinhood')).plan.applicationId,'demo-robinhood');
  assert.deepEqual((await service.readSubmissionRecord('demo-stripe')).attempts,[]);
  assert.equal((await service.readSubmissionRecord('demo-confirmed')).attempts[0].state,'confirmed');
- assert.equal(canUseDemo({id:'admin',app_metadata:{demo_preview:true}}),true);
- assert.equal(canUseDemo({id:'other',user_metadata:{demo_preview:true}}),false);
 });
 
 test('admin fixture calendar dates remain exact across local timezone conversion',()=>{
