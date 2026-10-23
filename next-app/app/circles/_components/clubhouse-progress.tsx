@@ -2,7 +2,10 @@ import {useState} from 'react';
 import type {Post} from '../_lib/types';
 import {activityGoalProgress,parseCircleActivity} from '../../../../lib/circle-activity.mjs';
 import AuthorshipLabel from './authorship-label';
+import {companionForMember} from './companions';
+import styles from './clubhouse-progress.module.css';
 
+function Trophy(){return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 3h8m-6-3h4v3"/></svg>;}
 export default function ClubhouseProgress({posts,demo,openPost}:{posts:Post[];demo:boolean;openPost:(post:Post)=>void}) {
  const [expanded,setExpanded]=useState(false);
  const updates=posts.filter(post=>{
@@ -10,20 +13,23 @@ export default function ClubhouseProgress({posts,demo,openPost}:{posts:Post[];de
   return !post.parentId&&post.state==='published'&&post.revision===post.publishedRevision&&(post.content.type==='milestone'||activity.highlights.length>0||!!activity.goal||!!activity.help);
  }).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||b.id.localeCompare(a.id));
  const visible=expanded?updates:updates.slice(0,3);
- return <section className="mb-6 border-b border-board-line pb-5" aria-labelledby="clubhouse-progress-title">
-  <header className="mb-1 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"><h3 id="clubhouse-progress-title" className="text-base font-semibold">Trophy room</h3><p className="text-xs text-board-muted">{demo?'Fictional shared updates':'Shared with this Circle'}</p></header>
-  {visible.length?<ul id="clubhouse-progress-updates" className="divide-y divide-board-line">{visible.map(post=>{
-   const activity=parseCircleActivity(post.content.body),goal=activityGoalProgress(activity.goal);
-   return <li key={post.id} className="py-4">
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-board-muted"><strong className="text-sm text-board-text">{post.author.replace(' (demo)','')}</strong><AuthorshipLabel post={post}/><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'})}</time>{post.content.stage&&<span className="font-medium text-board-accent">{post.content.stage}</span>}</div>
-    <button type="button" onClick={()=>openPost(post)} className="min-h-11 py-2 text-left text-sm font-semibold leading-relaxed hover:underline underline-offset-4">{post.content.title}</button>
-    {!!activity.highlights.length&&<ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed text-board-text">{activity.highlights.map((highlight:string,index:number)=><li key={index}>{highlight}</li>)}</ul>}
-    {activity.goal&&<div className="mt-2 max-w-md"><p className="text-sm leading-relaxed text-board-muted"><span className="font-medium text-board-text">Goal: </span>{activity.goal}</p>{goal&&<progress className="mt-2 block h-2 w-full accent-board-accent" max={goal.target} value={goal.completed} aria-label={`${post.author.replace(' (demo)','')}’s shared goal`} aria-valuetext={activity.goal}/>}</div>}
-    {activity.help&&<p className="mt-2 text-sm leading-relaxed text-board-muted"><span className="font-medium text-board-text">Could use a hand: </span>{activity.help}</p>}
-    {!activity.highlights.length&&!activity.goal&&!activity.help&&(post.content.insight||post.content.body)&&<p className="line-clamp-2 max-w-prose text-sm leading-relaxed text-board-muted">{post.content.insight||post.content.body}</p>}
-    <button type="button" onClick={()=>openPost(post)} className="mt-1 min-h-11 text-xs font-medium text-board-accent hover:underline underline-offset-4">{post.content.type==='milestone'?'Celebrate & reply':'Open update & reply'}</button>
+ return <section className={styles.room} aria-labelledby="clubhouse-progress-title">
+  <header className={styles.header}><span className={styles.trophy}><Trophy/></span><div><h3 id="clubhouse-progress-title">Trophy room</h3><p>Small steps. Big moments. Your people.</p></div><span className={styles.disclosure}>{demo?'Fictional updates':'Shared with your Circle'}</span></header>
+  {visible.length?<ul id="clubhouse-progress-updates" className={styles.updates}>{visible.map(post=>{
+   const activity=parseCircleActivity(post.content.body),goal=activityGoalProgress(activity.goal),name=post.author.replace(' (demo)','');
+   return <li key={post.id} className={styles.update}>
+    <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(post.author).id}.webp')`}}/>:name.trim().split(/\s+/).slice(0,2).map(part=>part[0]).join('')}</span>
+    <div className={styles.content}>
+     <div className={styles.meta}><strong>{name}</strong><AuthorshipLabel post={post}/><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'})}</time></div>
+     <button type="button" onClick={()=>openPost(post)} className={styles.title}>{post.content.title}</button>
+     {!!activity.highlights.length&&<ul className={styles.highlights}>{activity.highlights.map((highlight:string,index:number)=><li key={index}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>{highlight}</li>)}</ul>}
+     {activity.goal&&<div className={styles.goal}><div><span>Shared goal</span>{goal&&<strong>{goal.completed}<span> / {goal.target}</span></strong>}</div><p>{goal?goal.label:activity.goal}</p>{goal&&<div className={styles.track} role="progressbar" aria-label={`${name}’s shared goal`} aria-valuemin={0} aria-valuemax={goal.target} aria-valuenow={goal.completed} aria-valuetext={activity.goal}><span style={{width:`${goal.percent}%`}}/></div>}</div>}
+     {activity.help&&<p className={styles.help}><strong>Could use a hand</strong>{activity.help}</p>}
+     {!activity.highlights.length&&!activity.goal&&!activity.help&&(post.content.insight||post.content.body)&&<p className={styles.summary}>{post.content.insight||post.content.body}</p>}
+     <footer className={styles.footer}>{post.content.stage&&<span className={styles.stage}>{post.content.stage}</span>}<button type="button" onClick={()=>openPost(post)}>{post.content.type==='milestone'?'Celebrate & reply':'Open update & reply'}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button></footer>
+    </div>
    </li>;
-  })}</ul>:<p className="py-5 text-sm leading-relaxed text-board-muted">No progress shared yet. Write an update to share a win, a goal, or something you could use a hand with. Private tracker activity stays private.</p>}
-  {updates.length>3&&<button type="button" className="min-h-11 text-sm font-medium text-board-accent hover:underline underline-offset-4" aria-expanded={expanded} aria-controls="clubhouse-progress-updates" onClick={()=>setExpanded(!expanded)}>{expanded?'Show latest updates':`View all ${updates.length} updates`}</button>}
+  })}</ul>:<div className={styles.empty}><Trophy/><h4>Make room for your first win.</h4><p>Write an update to share a milestone, a goal, or a little progress. Your private tracker stays private.</p></div>}
+  {updates.length>3&&<button type="button" className={styles.more} aria-expanded={expanded} aria-controls="clubhouse-progress-updates" onClick={()=>setExpanded(!expanded)}>{expanded?'Show latest updates':`View all ${updates.length} updates`}</button>}
  </section>;
 }

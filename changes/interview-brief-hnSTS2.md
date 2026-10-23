@@ -99,3 +99,15 @@
 
 - Renamed the Clubhouse progress section to Trophy room and updated its current-state documentation. Behavior and demo content are unchanged.
 - Validation: data validation and whitespace check passed; text-only change.
+
+## Follow-up: member avatars on Circle banners
+
+- Replaced shared-company logos with actual member avatars and total membership, matching the inner Circle header. Existing scoped circles.read supplies membership; real accounts use initials and isolated demos use the existing companion mapping.
+- Updated preview guidance and documented loading/error behavior. No Supabase, MCP, permissions or About Me changes.
+- Validation: frontend typecheck, data validation (147 roles), whitespace check, production static build (passed after existing advisory retry), and desktop/mobile fictional banner checks passed. Verified five membership-derived avatars, full member count, navigation and no page overflow. No hosted account or MCP round trip was exercised.
+
+## Follow-up: Trophy room polish
+
+- Refined Trophy room with member avatars, a restrained trophy heading, compact checked highlights, themed goal progress, and quiet stage/reply actions. Empty state and mobile layouts preserve the shared theme and existing authoring disclosures.
+- Existing contribution, visibility and goal-validation behavior remains unchanged; demo content reuses the same fixtures.
+- Validation: frontend typecheck, 4 existing activity tests, data validation, whitespace check, production static build and desktop-dark/mobile-light visual checks passed. Covered initial updates, highlights, goal progress, help text, expand/collapse and direct thread navigation. No backend behavior changed.
