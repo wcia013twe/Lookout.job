@@ -9,3 +9,27 @@
 - Limits: real Google login, real private-account round trips and hosted deployment are not established by these local checks. No external submission or account write was performed. Existing moderate root dependency advisory is outside this fix.
 
 Final integration also retained concurrently landed onboarding sign-in and application-question fixes. The combined 537-test suite and production export passed after those merges.
+
+Release repair: the development-only PGlite 0.3.14 engine repeatedly produced
+internal role/GUC, malformed-plan and WASM abort errors on Linux CI. Update it
+to the newer PostgreSQL 17 engine line (0.4.6), retain exact npm pin/lockfile
+policy, and isolate independent SQL scenarios with disposable clones of the
+fully migrated baseline. CI uses the verified Node 24 major. Every original
+SQL assertion remains; no production migration or permission check changes.
+The full local 540-test suite passes with the updated engine, and root npm ci
+reinstalls the new lock successfully.
+
+Pages path repair: the repository is now `Lookout.job` and the Pages API reports
+`https://wcia013twe.github.io/Lookout.job/`, while CI still hardcoded the old
+repository directory. Derive the static base path from the event repository name
+so deployment assets follow the configured Pages project URL after renames.
+
+Final local suite with scenario clones: 540 tests passed. The signed-out browser regression also passed under the actual `/Lookout.job/` Pages subpath on desktop and mobile.
+
+Release verified: GitHub Actions run 40016457897 succeeded and deployed
+03faafc to https://wcia013twe.github.io/Lookout.job/. The full desktop/mobile
+signed-out regression passed against that live deployment, including guest-cache
+mutation monitoring, public privacy, explicit demo, empty returning account and
+sign-out. Backend requests used intercepted fictional responses; real Google
+login and real private-account round trips remain untested. Updated the browser
+fixture to mark website onboarding complete for the returning-account check.

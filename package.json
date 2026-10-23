@@ -21,7 +21,7 @@
     "undici": "6.28.1"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "0.3.14",
+    "@electric-sql/pglite": "0.4.6",
     "esbuild": "0.25.12"
   }
 }

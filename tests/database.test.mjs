@@ -6,8 +6,8 @@ import { checkSchema } from './helpers/schema-check.mjs';
 import { checkLeaderboard } from './helpers/leaderboard-check.mjs';
 import { checkApplicationPipeline } from './pipeline-check.mjs';
 
-// Apply migrations once. SQL scenarios roll back their fixtures; reset role and
-// owner before every scenario so a previous check cannot lend its privileges.
+// Apply migrations once. SQL scenarios use disposable clones of the migrated
+// baseline; session roles, cached plans and fixtures cannot leak between checks.
 let db;
 before(async () => { db = await createTestDatabase(); });
 after(async () => { await db?.close(); });
@@ -25,6 +25,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 
 for (const [file, behavior] of [
   ['job-assessment','dynamic private assessments validate scores, preserve retries and isolate owners'],
+  ['website-onboarding','website completion persists separately from agent readiness, rejects agents, isolates owners and replays safely'],
   ['simplify-import','Simplify imports retain missing URLs and source reports, preserve status, isolate owners, reject stale writes and replay safely'],
   ['workspace-reset','workspace reset preserves Auth and other owners, revokes agents, retries storage failures, blocks writes and protects replay'],
   ['card-packs','card pack settings and publication enforce ownership, versions, assigned connections, source routing and replay'],
@@ -52,10 +53,11 @@ for (const [file, behavior] of [
   ['platform-coverage', 'batch, resume, selection and browser actions enforce their contracts'],
 ]) {
   test(behavior, async () => {
+    const scenarioDb = await db.clone();
     try {
-      await db.exec(await readFile(new URL(`./${file}-check.sql`, import.meta.url), 'utf8'));
+      await scenarioDb.exec(await readFile(new URL(`./${file}-check.sql`, import.meta.url), 'utf8'));
     } finally {
-      await db.exec('rollback; reset role');
+      await scenarioDb.close();
     }
   });
 }

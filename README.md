@@ -703,6 +703,13 @@ Sites deployment, and live auth/MCP parity still requires release verification.
 The public catalog combines the morning/midday discoveries with canonical URL
 deduplication and preserved application statuses.
 
+## Website onboarding completion
+
+Real onboarding starts with Google sign-up/sign-in and has no fictional demo mode. The LinkedIn entry is disabled until its connector is implemented. Signed-in users without `onboarding.get_state.data.websiteCompletedAt` are sent to `/onboarding/`; completed users visiting that route return to the workspace. Privacy, public toolkit guides and account-reset routes are exempt from completion routing. Read failures show a retry instead of assuming completion.
+
+The final **Open my workspace** action submits `onboarding.submit_step` with `event: website_complete`, the current revision, a stable event key and empty data. The database writes its own timestamp in the owning user's onboarding session. This is separate from the agent's `step: ready`, verified facts, runtime check-in and all application approvals. Reloads and other devices read the same server marker; account switches cannot inherit it. No historical sessions are automatically marked complete.
+
+MCP mapping: `read_onboarding_state` reads the marker; `update_onboarding_step` documents the human-only `website_complete` boundary and the database rejects agent attempts. Agents should request that the user finish setup in the signed-in website. Existing fictional demo onboarding fixtures are retained for backend isolation tests, but the onboarding route never mounts demo mode. Migration `website_onboarding_completion` and gateway developer version 50 require the normal production workflow before hosted parity is advertised.
 ## Signed-out workspace
 
 Workspace routes show a sign-in prompt until authentication resolves to a

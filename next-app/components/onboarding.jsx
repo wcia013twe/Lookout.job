@@ -24,6 +24,8 @@ export default function Onboarding(){
 }
 function OnboardingFlow(){
  const w=useWorkspace(),a=useApplicationProfile(),profile=w.state.workflow.profile;
+ const [finishing,setFinishing]=useState(false);
+ async function finish(){setFinishing(true);setError("");try{await w.websiteOnboarding.complete();}catch(e){setError(e.message||"Could not save setup. Please retry.");setFinishing(false);}}
  const [scene,setScene]=useState("start"),[method,setMethod]=useState(""),[linkedin,setLinkedin]=useState(profile.linkedin||"");
  const [work,setWork]=useState(readField(a.profile.prompt,"Role preferences","Roles").value);
  const [location,setLocation]=useState(readField(a.profile.prompt,"Search Filters","Location").value);
@@ -81,10 +83,12 @@ function OnboardingFlow(){
  }
  const room=<div className="mb-6"><AgentSelector joinedOnce={joinedOnce} agent={provider==="platform"?"platform":"own"} provider={provider} onSelect={selectAgent}/>{provider==="platform"&&<p className="hint">Cappy is a preview. To start now, connect your own agent below.</p>}{provider==="custom"&&<Field label="Agent name"><input maxLength={100} value={agentName} onChange={e=>selectAgent("custom",e.target.value)}/></Field>}</div>;
  let content;
- if(scene==="start")content=<><Dots/><Title sub="Bring your experience. We’ll help with what’s next.">Let’s start with you.</Title><form onSubmit={continueBackground}>
-  <div className="entry-choices"><button type="button" className={"entry-choice"+(method==="linkedin"?" selected":"")} onClick={()=>setMethod("linkedin")}><span className="linkedin-mark" aria-hidden="true">in</span><strong>Add LinkedIn profile</strong><Icon/></button><button type="button" className={"entry-choice"+(method==="resume"?" selected":"")} onClick={()=>{setMethod("resume");if(w.user&&!w.demo)file.current?.click();}}><Icon kind="file"/><strong>{w.demo?"Use a demo résumé":"Upload résumé"}</strong><Icon/></button></div>
+ if(scene==="start")content=<><Dots/><Title sub="Add your résumé when you’re ready. We’ll help with what’s next.">Let’s start with you.</Title><form onSubmit={continueBackground}>
+  <div className="entry-choices">{/* LinkedIn connector is not available yet.
+   <button type="button" className={"entry-choice"+(method==="linkedin"?" selected":"")} onClick={()=>setMethod("linkedin")}><span className="linkedin-mark" aria-hidden="true">in</span><strong>Add LinkedIn profile</strong><Icon/></button>
+  */}<button type="button" className={"entry-choice"+(method==="resume"?" selected":"")} onClick={()=>{setMethod("resume");if(w.user&&!w.demo)file.current?.click();}}><Icon kind="file"/><strong>{w.demo?"Use a demo résumé":"Upload résumé"}</strong><Icon/></button></div>
   {!w.demo&&<input ref={file} className="sr-only" type="file" accept=".pdf,.docx" aria-label="Upload résumé file" disabled={!w.user||uploading||w.locked} onChange={e=>void chooseFile(e.target.files?.[0])}/>}
-  {method==="linkedin"&&<><Field label="Your profile link"><input type="url" required value={linkedin} onChange={e=>setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/you" maxLength={500}/></Field><p className="hint">A profile reference. This does not connect or import LinkedIn.</p></>}
+  {/* LinkedIn profile entry is disabled until its connector is implemented. */}
   {method==="resume"&&<div className="space-y-4">
    {!w.user&&!w.demo?<><p className="hint">Sign in to save your résumé privately.</p><Button secondary disabled={!w.authReady} onClick={w.signIn}>Sign in</Button></>:
    <>{resumes.length>0&&<Field label={w.demo?"Demo résumé":"Choose a saved résumé"}><select value={resumeId} onChange={e=>setResumeId(e.target.value)}><option value="">Choose a résumé</option>{resumes.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></Field>}
@@ -104,7 +108,7 @@ function OnboardingFlow(){
  if(scene==="reveal")content=<OnboardingRoleReveal role={role} demo={w.demo} onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
  if(scene==="connect")content=<OnboardingAgentConnection intent={onboardingIntent({work,employment,location},!sample?role:null)} room={room} onFinish={()=>go("circles")} onLater={later}/>;
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
- if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Link className="primary" onClick={()=>{if(w.demo)w.store.set("ui.dashboardArrival",true);}} href={w.demo?"/?demo=1&tour=dashboard":"/?tour=dashboard"}>Open my workspace<Icon/></Link><BrowserAppInstructions/></>;
+ if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Button disabled={finishing||w.locked} onClick={()=>void finish()}>{finishing?"Saving setup…":"Open my workspace"}</Button><BrowserAppInstructions/></>;
  if(!w.demo&&!w.user)content=<><Dots/><Title sub="Create your Lookout account or return to your workspace before setting up your search and agent.">Sign up or sign in.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Checking sign-in…"}/></div><p className="hint">New here? Continuing with Google creates your account. Already joined? Use the same Google account to sign in.</p></>;
  return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><Dots/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
 }
