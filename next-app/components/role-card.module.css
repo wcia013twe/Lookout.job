@@ -81,3 +81,21 @@
 @media (prefers-reduced-transparency: reduce) {
   :global([data-theme="light"]) .body { background: #f5f8fd; }
 }
+
+/* Share content tracks within each visible row; long titles stay readable. */
+.gridItem { display: grid; min-width: 0; }
+@supports (grid-template-rows: subgrid) {
+  .gridItem { grid-row: span 6; grid-template-rows: subgrid; }
+  .gridItem > .card {
+    display: grid;
+    grid-row: span 6;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+  .gridItem .body {
+    display: grid;
+    grid-row: span 5;
+    grid-template-rows: subgrid;
+    row-gap: 16px;
+  }
+}

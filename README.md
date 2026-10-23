@@ -645,3 +645,5 @@ remain unverified until that release; the UI explains a missing backend API.
 The detached demo uses a fictional CSV and memory-only service, covers missing
 links, archived/applied/saved jobs, duplicate reports and reimport, and resets on
 reload or Reset demo data. It never opens a real file or accesses account storage.
+
+Profile access: the profile-menu link and `/profile/` editor require a signed-in, non-anonymous account. Signed-out direct visits return to Discover after auth initialization; the editor and profile providers do not mount during that check. Detached fictional demo mode retains its resettable in-memory profile. This is a frontend navigation gate; existing owned backend/MCP validation remains the data-access boundary.

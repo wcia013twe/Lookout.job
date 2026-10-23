@@ -6,7 +6,7 @@ import { Section, Field, control, primary, secondary } from "./ui";
 import { Button as OnboardingButton } from "./onboarding-ui";
 import { errorMessage } from "./profile-types";
 import { CONNECTION_ACCESS, connectionScopes, invokeConnection } from "../../lib/agent-connections.mjs";
-type AgentConnection = { id: string; name: string; scopes: string[]; expires_at: string; revoked_at?: string };
+export type AgentConnection = { id: string; name: string; scopes: string[]; expires_at: string; revoked_at?: string };
 const gateway =
     "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-gateway",
   mcp = "https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp";
@@ -28,7 +28,7 @@ export function AgentPluginSteps() {
         <li>Ask your agent: “Connect to Lookout and start my search.”</li>
       </ul>);
 }
-export default function AgentConnections({onboarding=false,onSetupCopied}:{onboarding?:boolean;onSetupCopied?:()=>void}) {
+export default function AgentConnections({onboarding=false,onSetupCopied,onConnectionsChange}:{onboarding?:boolean;onSetupCopied?:()=>void;onConnectionsChange?:(connections:AgentConnection[])=>void}) {
   const w = useWorkspace();
   const [connections, setConnections] = useState<AgentConnection[]>([]),
     [supportedScopes, setSupportedScopes] = useState<string[]>([]),
@@ -55,6 +55,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied}:{onboa
       const response = await call("connections.list");
       if (epoch === generation.current) {
         setConnections((response.data || []).filter((connection: AgentConnection) => !connection.revoked_at));
+        onConnectionsChange?.(response.data || []);
         setSupportedScopes(response.supportedScopes || ["preferences:write"]);
       }
       return true;

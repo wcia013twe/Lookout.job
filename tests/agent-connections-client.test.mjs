@@ -29,13 +29,15 @@ test('connection account guards reject signed out, stale sessions and late respo
 test('fictional connection creation, setup access and revocation remain isolated and resettable',async()=>{
   const store=createMemoryStore(createDemoWorkspace('2026-10-20'));
   const demo=createDemoServices(store);
-  const initial=await demo.connections('connections.list');assert.equal(initial.data.length,3);
+  const initial=await demo.connections('connections.list');assert.equal(initial.data.length,4);
   const issued=await demo.connections('connections.issue',{name:'Demo laptop',scopes:['workspace:read']});
   assert.equal(issued.token,'demo_only_not_a_real_agent_token');assert(!JSON.stringify(store.get()).includes(issued.token));
   const id=issued.connection.id;
+  assert.match(id,/^[a-f0-9-]{36}$/i,'Demo connections can be assigned to validated tasks');
+  assert(initial.data.some(c=>c.scopes.includes('batches:write')),'A fictional publishing connection is available');
   const setup=await demo.connections('connections.profile_setup',{id,enabled:true});assert(setup.data.scopes.includes('profile:write'));
   const revoked=await demo.connections('connections.revoke',{id});assert(revoked.data.revoked_at);
   assert((await demo.connections('connections.list')).data.find(c=>c.id===id).revoked_at);
   await assert.rejects(demo.connections('connections.profile_setup',{id,enabled:true}),/Active demo/);
-  assert.equal((await createDemoServices(createMemoryStore(createDemoWorkspace('2026-10-20'))).connections('connections.list')).data.length,3);
+  assert.equal((await createDemoServices(createMemoryStore(createDemoWorkspace('2026-10-20'))).connections('connections.list')).data.length,4);
 });

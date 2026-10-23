@@ -85,7 +85,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
       onFocusCapture={() => { if (!reduceMotion) { sheenPosition.set(.5); sheenIntensity.set(.8); } }}
       onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) restSheen(); }}
       transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-      className="glass-panel relative flex min-w-0 flex-col overflow-hidden rounded-2xl border"
+      className={`${styles.card} glass-panel relative flex min-w-0 flex-col overflow-hidden rounded-2xl border`}
       style={{
         "--role-tier": TIER_HEX[rarity],
         "--role-refraction": REFRACTION[rarity],

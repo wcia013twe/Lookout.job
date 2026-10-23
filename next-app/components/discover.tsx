@@ -6,6 +6,7 @@ import RoleCard, { type Role } from "./role-card";
 import DiscoverRolePanel from "./discover-role-panel";
 import SearchSweeps from "./search-sweeps";
 import CardPackWidgets from "./card-pack-widgets";
+import { PackSetupSuggestion } from "./discovery-setup-link";
 import DayFilter from "./day-filter";
 import ProfileIcon from "./profile-icon";
 import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
@@ -13,6 +14,7 @@ import {ApplicationProfileProvider, useApplicationProfile} from "./application-p
 import {ProfileSwitcher} from "./profile-settings";
 import {matchesProfileEmployment, showAgentEmptyState} from "../lib/discover-view.mjs";
 import { motion, useReducedMotion } from "framer-motion";
+import cardStyles from "./role-card.module.css";
 import type { Drop } from "../lib/drop-pack";
 export default function Discover() {
   const w = useWorkspace();
@@ -66,6 +68,7 @@ function DiscoverBoard() {
   const header=<div className="mb-6 flex flex-wrap items-start justify-between gap-4 [&>.workspace-heading]:mb-0"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
   if(newArrival&&!publicView)return <>
     {header}
+    <PackSetupSuggestion/>
     {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         <RoleCard role={{...firstRole,whyItFits:"Saved from onboarding. Your agent will check availability and compare this role with your profile and résumé."}} onPreview={setPreview}/>
@@ -108,10 +111,10 @@ function DiscoverBoard() {
             <h2 className="text-xl font-semibold tracking-tight">{label}</h2>
             <span className="rounded-md bg-board-tag px-2 py-1 text-xs tabular-nums text-board-muted">{group.length}</span>
           </div>
-          {group.length ? <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {group.length ? <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {group.map((role: Role) => {
               const index = arriving?.ids.indexOf(role.id) ?? -1;
-              return <motion.div className="grid" key={`${role.id}:${index >= 0 ? arriving?.run : 0}`}
+              return <motion.div className={cardStyles.gridItem} key={`${role.id}:${index >= 0 ? arriving?.run : 0}`}
                 initial={index < 0 ? false : {opacity: reduced ? 0.75 : 0.35, y: reduced ? 0 : -48, rotate: reduced ? 0 : -3, scale: reduced ? 1 : 0.96}}
                 animate={{opacity:1,y:0,rotate:0,scale:1}}
                 transition={{duration:reduced ? 0.12 : 0.5,delay:reduced ? 0 : Math.min(index * 0.075,0.45),ease:[0.16,1,0.3,1]}}>
