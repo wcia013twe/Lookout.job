@@ -18,7 +18,7 @@ export default function DemoWorkspaceProvider({children}) {
  const runtime=useRef(null),subscription=useRef(null);
  function reset(models=window.JB) {
   subscription.current?.();
-  const next=createDetachedDemo({date:dayStamp(),models,presets});
+  const next=createDetachedDemo({date:dayStamp(),models,presets,apiScenario:new URL(window.location.href).searchParams.get('demoApi')});
   runtime.current=next;
   // Legacy domain consumers see only the fictional store, never account handles.
   models.store=next.store;models.auth={client:null,userId:null};models.cloud=null;

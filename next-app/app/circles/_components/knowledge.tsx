@@ -11,16 +11,16 @@ import Settings from './settings';
 import AgentContext from './agent-context';
 import CircleSearch from './search';
 import CircleDashboard from './circle-views';
-import {createCircleKnowledgeDemo} from '../../../../lib/circle-knowledge-demo.mjs';
+import ApiError from '../../../components/api-error';
 type Page<T>={items:T[];nextCursor:Cursor|null};
 type Thread={post:Post;replies:Post[];nextCursor:Cursor|null};
 const errorText=(e:unknown)=>e instanceof Error?e.message:'Something went wrong. Try again.';
 const date=(at:string)=>new Date(at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
 export default function CircleKnowledge(){
  const client=useKnowledgeClient();
- const [preview]=useState(()=>createCircleKnowledgeDemo());
- const previewRequest:Request=useCallback(async <Result,>(operation:string,payload:Record<string,unknown>={})=>preview.action(operation,payload) as Result,[preview]);
- if(!client.ready)return <><div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-board-line pb-4"><p className="max-w-prose text-xs leading-relaxed text-board-muted">Circle preview · Illustrative conversations, real companies</p><button className={secondary} onClick={client.signIn}>Sign in to your Circle</button></div><KnowledgeSurface request={previewRequest} demo/></>;
+ if(client.connectionState==='loading')return <Notice>Connecting to your Circle account…</Notice>;
+ if(client.connectionState==='signed_out')return <><Heading title="Circles">Sign in to open your private Circles.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={client.signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div></>;
+ if(!client.ready)return <ApiError message="Circle client initialization failed [CLIENT_UNAVAILABLE]. Reload the page to reconnect." onRetry={()=>location.reload()}/>;
  return <KnowledgeSurface key={client.identity} request={client.request} demo={client.demo}/>;
 }
 export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
@@ -40,7 +40,7 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  },[]);
  const list=useCallback(async()=>{
   const result=await request<{available:boolean;circles:Circle[]}>('circles.list');
-  if(!mounted.current)return;setCircles(result.circles);setAvailable(true);return result.circles;
+  if(!mounted.current)return;setCircles(result.circles);setAvailable(true);setError('');return result.circles;
  },[request]);
  useEffect(()=>{
   let current=true;setLoading(true);
@@ -97,13 +97,12 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  return <div className="min-w-0">
   {circleId&&<button type="button" className={`${secondary} mb-4`} disabled={busy} onClick={()=>{setCircleView('clubhouse');locate('');}}>Back to your circles</button>}
   {!circleId&&<Heading title="Circles">Your people, making progress together.</Heading>}
-  <div role="alert"><Notice>{error}</Notice></div><div role="status"><Notice>{notice||(loading?'Loading Circle…':'')}</Notice></div>
-  {!available&&!loading&&<button className={secondary} onClick={()=>void list().catch(error=>setError(errorText(error)))}>Retry connection</button>}
+  <ApiError message={error} onRetry={()=>void (async()=>{setLoading(true);try{await list();await refresh();}catch(failure){setError(errorText(failure));}finally{if(mounted.current)setLoading(false);}})()}/><div role="status"><Notice>{notice||(loading?'Loading Circle…':'')}</Notice></div>
   {available&&!circleId&&!loading&&<>
-   <section className="mb-8" aria-labelledby="your-circles-title">
+   {!error&&<section className="mb-8" aria-labelledby="your-circles-title">
     <h2 id="your-circles-title" className="mb-3 text-xl font-semibold">Your circles</h2>
     {circles.length?<ul className={listStyles.list}>{circles.map(circle=><CircleListItem key={circle.id} circle={circle} request={request} demo={demo} busy={busy} open={()=>{setCircleView('clubhouse');locate(circle.id);}} manage={()=>{setCircleView('settings');locate(circle.id);}}/>)}</ul>:<p className="py-4 text-board-muted">No circles yet. Create one for your people, or join with an invite code.</p>}
-   </section>
+   </section>}
    <details className="border-b border-board-line py-2" open={!circles.length}><summary className="min-h-11 py-2 font-semibold">Create or join a Circle</summary><div className="grid gap-8 py-5 sm:grid-cols-2"><form onSubmit={e=>void createOrJoin(e,false)} className="space-y-4"><h2 className="font-bold">Start with your people</h2><Field label="Circle name"><input name="name" className={control} required maxLength={100}/></Field><Field label="Your name in this Circle"><input name="alias" className={control} required maxLength={80}/></Field><button className={primary} disabled={busy}>Create private Circle</button></form><form onSubmit={e=>void createOrJoin(e,true)} className="space-y-4"><h2 className="font-bold">Have an invitation?</h2><Field label="Invite code"><input name="token" className={control} required maxLength={100} placeholder={demo?'demo-invite':undefined}/></Field><Field label="Your name in this Circle"><input name="alias" className={control} required maxLength={80}/></Field><button className={secondary} disabled={busy}>Join Circle</button></form></div></details>
   </>}
 
