@@ -4,6 +4,7 @@ import {Field,Heading,Notice,control,primary,secondary} from '../../../component
 import {useKnowledgeClient} from '../_lib/client';
 import {types,type Content,type Post,type Circle,type Detail,type Cursor,type Request} from '../_lib/types';
 import Editor from './editor';
+import AuthorshipLabel from './authorship-label';
 import CircleListItem from './circle-list-item';
 import listStyles from './circle-list.module.css';
 import Settings from './settings';
@@ -139,6 +140,7 @@ function Contribution({post,circleName,busy,edit,keepPrivate,act,commentsLabel}:
   <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
    <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-board-tag text-xs font-semibold text-board-accent">{name.split(/\s+/).slice(0,2).map(part=>part[0]).join('')}</span>
    <div className="text-xs leading-6"><span className="font-semibold">{name}</span><span className="mx-2 text-board-muted" aria-hidden="true">·</span><time className="text-board-muted" dateTime={post.createdAt}>{date(post.createdAt)}</time></div>
+   <AuthorshipLabel post={post}/>
    {draft&&<strong className="text-xs text-board-accent">Private draft</strong>}
    <div className="ml-auto flex min-h-11 items-center gap-3 text-xs text-board-muted" aria-label="Thread stats and actions">
     {!draft&&post.helpfulPeople>0&&<span className="inline-flex items-center gap-1.5" title="Agent-reported use in an answer or preparation plan, not confirmed benefit." aria-label={`Used by agents for ${post.helpfulPeople} people; agent-reported use`}><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 4v3"/></svg>Used by {post.helpfulPeople}</span>}

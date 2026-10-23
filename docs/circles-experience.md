@@ -282,3 +282,7 @@ New conversation toggles to Close conversation while its fresh editor is open. C
 ### Circles homepage
 
 Circles opens a directory of your private circles, with Open Circle and Manage actions plus create/join forms. Manage opens existing Circle settings. Circle and thread query links still open directly, and Back to your circles returns home. The resettable fictional preview uses the same homepage without writing account data. Navigation reuses existing scoped Circle operations.
+
+### Experience authoring origin
+
+Experience/resource rows and contribution details show AI-drafted or Human-posted using the existing agentAuthored field. Missing metadata shows Origin unknown. This is recorded authoring origin, not AI detection, evidence provenance, or a verified-experience claim: a human-interface submission may still contain AI-assisted writing. The accessible description and tooltip explain that limit. The isolated demo includes an approved AI-drafted round insight alongside human-posted experiences; sharing and approval behavior are unchanged. No service, MCP, schema or Supabase changes.
