@@ -48,7 +48,7 @@ export default function Discover() {
   return (
     <>
       <Heading title="Discover">
-        {w.batchLabel || "Your latest roles, ready to explore."}
+        {w.batchLabel}
       </Heading>
       <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3">
         <input

@@ -111,9 +111,7 @@ function ProfileContent() {
           hidden={active !== "agent"}
           aria-label="My agent"
         >
-          <Heading title="My agent">
-            Set your writing style, connection, search schedule, and permissions.
-          </Heading>
+          <Heading title="My agent" />
           <WritingStyles />
           <AgentConnections />
           <CircleAgentSettings />

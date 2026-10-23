@@ -11,7 +11,7 @@ export default function Network(){
  useEffect(()=>{const requested=new URL(location.href).searchParams.get('view');setView(requested==='processes'||requested==='targets'?requested:'people');},[]);
  function change(next:string){setView(next);history.replaceState(null,'',`?view=${next}`);}
  return <>
-  <Heading title="Network">Build connections at your target companies and move active opportunities forward.</Heading>
+  <Heading title="Network" />
   <nav className="mb-7 flex flex-wrap gap-x-6 gap-y-2 border-b border-board-line" aria-label="Network views">
    {[['people','Outreach'],['processes','Active Processes'],['targets','Targets']].map(([key,label])=><button type="button" key={key} aria-pressed={view===key} className={`min-h-12 border-b-2 px-1 pb-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-board-accent ${view===key?'border-board-accent text-board-text':'border-transparent text-board-muted hover:text-board-text'}`} onClick={()=>change(key)}>{label}</button>)}
   </nav>
