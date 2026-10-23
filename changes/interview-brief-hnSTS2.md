@@ -88,3 +88,9 @@
 - Added shared AI-drafted / Human-posted labels to experience/resource rows and thread details using existing agentAuthored metadata, with Origin unknown fallback and accessible explanations. Labels do not imply AI detection or verified experience.
 - Added an approved AI-authored fictional experience alongside human-posted demo examples. No service, MCP, approval, Supabase or About Me changes.
 - Validation: frontend typecheck, 7 focused Circle context/conversation tests, data validation (147 roles), static production build, whitespace check and desktop/mobile fictional Circle checks passed. Both origin labels appear in Experiences and AI origin remains visible in thread detail, with no page overflow. No hosted account or MCP round trip was exercised.
+
+## Follow-up: visible Clubhouse progress and wins
+
+- Added an open-by-default Progress & wins section before the companion room, showing recent shared activity and milestones with expandable loaded history and direct thread/reply actions. Existing companion interactions remain available.
+- Reused published contributions, activity parsing, goal ratios and authoring labels. No private tracker inference, service, MCP, Supabase or About Me changes. Existing isolated demo content covers goals, help requests and milestone wins.
+- Validation: frontend typecheck, 4 existing activity tests, data validation (147 roles), static production build (passed on retry after the existing advisory pause), whitespace check and desktop/mobile fictional Circle checks passed. Verified default visibility, highlights, explicit goal progress, help requests, expand/collapse, direct thread opening and no page overflow. No hosted account or MCP round trip was exercised.
