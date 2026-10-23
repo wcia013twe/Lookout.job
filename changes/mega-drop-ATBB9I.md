@@ -20,3 +20,9 @@
 - Every unopened/upgrading card is now one native full-surface button with Enter/Space support. Revealed cards retain ordinary posting links and details. Timers clean up on close/group changes, reduced motion keeps the sequential count with shorter, non-spatial steps, and Reveal all is unavailable during dealing.
 - Demo retains the five-card fictional fixture. Chrome verification confirmed the initial deal lock, final five face-down cards, and pointer/keyboard opening of individual cards.
 - Validation: 444 tests, typecheck, data validation and production export passed. This remains client presentation using the existing feed/preferences contracts; no new backend or MCP action. Mobile horizontal card layout verified; mobile deal animation and reduced-motion timing not visually exercised.
+
+## Stable card pointer follow-up
+
+- Removed mouse-following rotation from the clickable card surface. Measuring and rotating the same hit target could shift its boundary beneath the pointer. Deal/reveal animations remain intact.
+- Unopened card faces delegate pointer hit testing to the native full-card button; their text cannot be selected accidentally. Revealed posting links/details retain native interactions. Dealing uses a normal cursor rather than a wait spinner.
+- Verification: six focused pack tests, typecheck, data validation and production build passed; existing fictional demo fixture covers the same card states. No backend or MCP contract changed. Physical cursor behavior requires user confirmation on the affected device.

@@ -179,6 +179,9 @@
 .experience :global(.mega-split .mega-card) { flex:0 0 clamp(190px,22vw,280px); }
 .experience :global(.dropcard[role="button"]) { cursor:pointer; }
 .experience :global(.dropcard[role="button"]:focus-visible) { outline:3px solid #ffda77; outline-offset:4px; }
-.experience :global(.dropcard[aria-disabled="true"]) { cursor:wait; }
+.experience :global(.dropcard[aria-disabled="true"]) { cursor:default; }
 .experience :global(.card-mystery), .experience :global(.card-upgrade) { box-sizing:border-box; }
 .experience :global(button.dropcard) { display:block; width:100%; padding:0; text-align:inherit; border-radius:16px; }
+
+/* The native button owns pointer hit testing, including animated face content. */
+.experience :global(button.dropcard .dropcard-stage) { pointer-events:none; user-select:none; }
