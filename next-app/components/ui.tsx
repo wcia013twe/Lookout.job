@@ -1,4 +1,5 @@
 import Link from "next/link";
+import InfoPopover from "./info-popover";
 import type { ReactNode } from "react";
 type ContentProps = { children?: ReactNode };
 type TitleProps = ContentProps & { title: string };
@@ -31,10 +32,10 @@ export function Heading({ title, children }: TitleProps) {
     </div>
   );
 }
-export function Section({ title, children }: TitleProps) {
+export function Section({ title, children, help }: TitleProps & {help?:ReactNode}) {
   return (
     <section className="workspace-section mt-8 border-t border-board-line pt-6">
-      <h2 className="mb-4 text-lg font-bold">{title}</h2>
+      <div className="mb-4 flex items-center gap-1"><h2 className="text-lg font-bold">{title}</h2>{help && <InfoPopover label={title}>{help}</InfoPopover>}</div>
       {children}
     </section>
   );
