@@ -133,6 +133,7 @@ function ProfileContent() {
       >
         Open onboarding
       </Link>
+      <Link href={demo ? "/?demo=1&tour=replay" : "/?tour=replay"} className="ml-5 inline-flex min-h-11 items-center text-xs text-board-muted underline underline-offset-4 hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent">Dashboard tour</Link>
     </ProfileSurface>
   );
 }

@@ -59,7 +59,7 @@ export default function Discover() {
       </Notice>
       <CardPackWidgets key={previewOwner}/>
       {roleGroups.map(({ key, label, roles: group }) => (
-        <section key={key} className="mt-6 md:mt-9" aria-label={label}>
+        <section key={key} data-dashboard-tour="roles" className="mt-6 md:mt-9" aria-label={label}>
           <div className="mb-3 flex items-center gap-3 md:mb-4">
             <h2 className="text-xl font-semibold tracking-tight">{label}</h2>
             <span className="rounded-md bg-board-tag px-2 py-1 text-xs tabular-nums text-board-muted">{group.length}</span>

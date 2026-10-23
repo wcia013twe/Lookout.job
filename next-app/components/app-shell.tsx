@@ -8,6 +8,7 @@ import { useWorkspace } from "../lib/workspace";
 import { Notice } from "./ui";
 import ColorModeControl from "./color-mode";
 import ProfileMenu from "./profile-menu";
+import DashboardTour from "./dashboard-tour";
 import { demoNeedsYouTasks } from "../lib/demo.mjs";
 
 const navigation = [
@@ -71,6 +72,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         {navigation.map(([href, label]) => (
           <Link
             key={href}
+            data-dashboard-tour={href==="/applications/"?"applications":href==="/needs-you/"?"needs":undefined}
             href={href}
             aria-current={
               isCurrent(href) ? "page" : undefined
@@ -103,6 +105,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <div className="glass-panel rounded-2xl p-6" role="status"><p className="text-sm text-board-muted">Loading your workspace…</p><div aria-hidden="true" className="mt-5 grid gap-3 sm:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-28 rounded-xl bg-board-tag" />)}</div></div>
       )}
       {footer}
+      {w.state&&!w.locked&&(w.demo||w.authReady)&&(path==="/"||path==="/discover/")&&<DashboardTour key={w.demo?`tour-demo-${w.demoEpoch}`:`tour-${w.accountUser?.id||w.user?.id||"guest"}`}/>}
       </div>
     </main></MotionConfig>
   );
