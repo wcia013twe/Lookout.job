@@ -111,3 +111,8 @@
 - Refined Trophy room with member avatars, a restrained trophy heading, compact checked highlights, themed goal progress, and quiet stage/reply actions. Empty state and mobile layouts preserve the shared theme and existing authoring disclosures.
 - Existing contribution, visibility and goal-validation behavior remains unchanged; demo content reuses the same fixtures.
 - Validation: frontend typecheck, 4 existing activity tests, data validation, whitespace check, production static build and desktop-dark/mobile-light visual checks passed. Covered initial updates, highlights, goal progress, help text, expand/collapse and direct thread navigation. No backend behavior changed.
+
+## Follow-up: Clubhouse sibling keys
+
+- Fixed duplicate React keys between the Trophy room and companion room by giving each component a distinct identity within the Circle. No data deduplication or account behavior changes.
+- Validation: frontend typecheck, data validation (147 roles), whitespace check and a development-mode Chrome console check passed. Initial render and repeated Experiences/Clubhouse navigation produced no duplicate-key warnings or page errors. No production backend changes or live account operations.
