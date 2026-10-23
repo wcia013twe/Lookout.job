@@ -2267,14 +2267,14 @@
     {
       "id": "adobe-2027-intern-data-ai-innovation-r172997",
       "company": "Adobe",
-      "title": "2027 Intern - Data, AI & Innovation",
+      "title": "2027 Intern - Emerging Technology & Innovation",
       "employmentType": "Internship",
       "location": "San Jose, CA",
       "category": "Data & analytics infrastructure — placement dependent",
       "priority": "Apply Now",
       "postedDate": "2026-10-19",
       "discoveredDate": "2026-10-19",
-      "sourceFreshness": "today",
+      "sourceFreshness": "Verified live 2026-10-23; posting retitled by employer",
       "whyItFits": "Adobe (Epic tier) Data/AI intern in San Jose at $38-51/hr; data and AI-innovation scope sits in your data infra/AI targets. Caveat: Summer 2027 timing is post your ~May 2027 MS graduation unless you extend to Dec 2027, so confirm intern eligibility before applying.",
       "applicationUrl": "https://careers.adobe.com/us/en/job/R172997/2027-Intern-Data-AI-Innovation",
       "applicationStatus": "New"
@@ -2447,21 +2447,6 @@
       "applicationStatus": "New"
     },
     {
-      "id": "tiktok-software-engineer-intern-recommendation-performance-efficiency-2027-summer",
-      "company": "TikTok",
-      "title": "Software Engineer Intern (Recommendation Performance Efficiency) - 2027 Summer",
-      "employmentType": "Internship",
-      "location": "San Jose, CA",
-      "category": "ML systems & AI infrastructure",
-      "priority": "Apply Now",
-      "postedDate": null,
-      "discoveredDate": "2026-10-16",
-      "sourceFreshness": "today",
-      "whyItFits": "Recommendation serving performance/efficiency is core ML-systems/inference work at massive scale; San Jose, Summer 2027, job code A254513.",
-      "applicationUrl": "https://lifeattiktok.com/search/7673636206961641781",
-      "applicationStatus": "New"
-    },
-    {
       "id": "nvidia-high-performance-llm-training-engineer-new-college-grad-2027-jr2028237",
       "company": "NVIDIA",
       "title": "High-Performance LLM Training Engineer - New College Grad 2027",
@@ -2534,6 +2519,21 @@
       "sourceFreshness": "Recency unverified (GH id 8795029002; surfaced via web search 2026-10-23). Posting is verified live today.",
       "whyItFits": "Backend/Distributed Systems and AI/LLM Engineering tracks map directly to Wesley's targets (distributed systems, data infra, AI infra). Censys operates internet-wide scanning infrastructure at scale, a legitimately strong team-over-brand case despite the Common company tier.",
       "applicationUrl": "https://job-boards.greenhouse.io/censysinternships/jobs/8795029002",
+      "applicationStatus": "New"
+    },
+    {
+      "id": "etsy-software-engineer-i-marketplace-makers",
+      "company": "Etsy",
+      "title": "Software Engineer I, Marketplace Makers",
+      "employmentType": "FT",
+      "location": "Brooklyn, NY (Hybrid)",
+      "category": "General software engineering",
+      "priority": "Strong Consider",
+      "postedDate": "2026-10-21",
+      "discoveredDate": "2026-10-23",
+      "sourceFreshness": "2 days ago",
+      "whyItFits": "Entry-level FT on Etsy's Marketplace Makers team: Star Seller program, Shop Manager seller tooling, A/B experimentation on seller-facing features. $120-162K (Geo-1) + equity + bonus; no grad-year gate; Brooklyn hybrid. Full-stack web scope (PHP/React/TS) sits off his backend/infra targets, but FT wide net keeps it for interview reps and Etsy is solid credential capital.",
+      "applicationUrl": "https://careers.etsy.com/jobs/software-engineer-i-marketplace-makers-brooklyn-new-york-united-states",
       "applicationStatus": "New"
     }
   ]
