@@ -71,7 +71,7 @@ export default function OnboardingAgentConnection({ intent, room, onFinish, onLa
   if (checking) return <div className="connection-check" ref={checkPage} tabIndex={-1} style={{outline:"none"}}>
     <Dots />
     <Title>{connected ? "You’re connected." : "Let’s check your connection."}</Title>
-    <p className="lead">{connected ? "Your agent has checked in with Lookout." : "Paste the setup into your agent and ask it to connect."}</p>
+    <p className="lead">{connected ? "Your agent has checked in with Lookout." : "Add the setup in your agent’s secure plugin or MCP connection settings. Then send only “Connect to Lookout and start my search” in chat."}</p>
     <Iphone className="connection-device"><div className="connection-phone" role="status" aria-live="polite">
       <div className="connection-phone-brand"><Dots /><strong>lookout</strong></div>
       <motion.div className={"connection-phone-indicator" + (connected ? " is-connected" : "")} animate={connected || reduced ? { scale: 1, opacity: 1 } : { scale: [1, 1.06, 1], opacity: [.55, 1, .55] }} transition={{ duration: 2, repeat: connected || reduced ? 0 : Infinity }}>

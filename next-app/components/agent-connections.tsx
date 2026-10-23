@@ -24,7 +24,7 @@ const scopeLabels: Record<string, string> = {
 export function AgentPluginSteps() {
   return (<ul className="agent-plugin-steps">
         <li>Add Lookout in your agent’s plugin or MCP settings.</li>
-        <li>Paste the connection setup below.</li>
+        <li>Paste the copied setup into those secure connection settings, never into chat.</li>
         <li>Ask your agent: “Connect to Lookout and start my search.”</li>
       </ul>);
 }
@@ -184,7 +184,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
           : token,
       );
       if (epoch === generation.current) {
-        setFeedback("Copied. Treat the token like a password.");
+        setFeedback("Copied. Paste only into secure connection settings, never into chat.");
         if(setup) { setSetupCopied(true); onSetupCopied?.(); }
       }
     } catch {
@@ -197,8 +197,8 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
       <p className="agent-connect-permissions">Prepare jobs and applications · you approve applications.</p>
       {token ? <div aria-label="Your new agent connection">
         <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
-        {!setupCopied&&<OnboardingButton onClick={()=>void copy(true)}>Copy connection setup</OnboardingButton>}
-        <p className="hint">Keep this setup safe. The token is shown once.</p>
+        {!setupCopied&&<OnboardingButton onClick={()=>void copy(true)}>Copy setup for connection settings</OnboardingButton>}
+        <p className="hint">This setup contains your secret token, shown once. Enter it only in secure plugin or MCP connection settings. If your agent provides a secure connection form, enter it there.</p>
       </div> : <form onSubmit={issue} aria-label="Create an agent connection">
         <input type="hidden" name="name" value="My personal agent"/>
         <OnboardingButton type="submit" disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating setup…":"Get connection setup"}</OnboardingButton>
