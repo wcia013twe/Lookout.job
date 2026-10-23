@@ -174,6 +174,7 @@ export default function AccountWorkspaceProvider({ children }) {
     state,store,user,accountUser:user,demo:false,demoEpoch:0,canDemo:true,
     toggleDemo:()=>navigateWorkspaceMode(window.location,true),resetDemo:()=>{},
     locked,status,error,authReady,signIn,signOut,syncError,
+    hasPrivateBatch:Boolean(batch),publicRoles:catalog.roles,publicDate:catalog.lastRun,
     roles:batch?.roles || catalog.roles,date:batch?.date || catalog.lastRun,batchLabel:batch?.label,
     models:typeof window!=="undefined"?window.JB:null,
     client:clientRef.current,services:null,

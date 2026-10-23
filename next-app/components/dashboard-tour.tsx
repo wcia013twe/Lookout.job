@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useWorkspace } from "../lib/workspace";
-import { dashboardTourKey, dashboardTourSteps, shouldStartDashboardTour } from "../lib/dashboard-tour.mjs";
+import { dashboardTourKey, dashboardTourSteps, dashboardTourVersion, shouldStartDashboardTour } from "../lib/dashboard-tour.mjs";
 import styles from "./dashboard-tour.module.css";
+import DashboardTourIllustration from "./dashboard-tour-illustration";
 
 type Rect = { top:number; left:number; width:number; height:number };
 
@@ -25,10 +26,12 @@ export default function DashboardTour() {
     const request = url.searchParams.get("tour");
     if (!request) return;
     let dismissed = false;
-    try { dismissed = w.demo ? Boolean(w.store.get("ui.dashboardTour")) : localStorage.getItem(key) === "dismissed"; } catch { /* Private browsing can disable storage. */ }
+    try { dismissed = w.demo ? w.store.get("ui.dashboardTour") === dashboardTourVersion : localStorage.getItem(key) === "dismissed"; } catch { /* Private browsing can disable storage. */ }
     url.searchParams.delete("tour");
     history.replaceState(history.state, "", url);
-    setVisible(shouldStartDashboardTour(request, dismissed));
+    const start=shouldStartDashboardTour(request, dismissed);
+    if(start&&w.demo)w.store.set("ui.dashboardArrival",true);
+    setVisible(start);
   }, [key, w.demo, w.store]);
 
   useEffect(() => {
@@ -52,10 +55,10 @@ export default function DashboardTour() {
     targets[0]?.scrollIntoView({block:"nearest",behavior:"instant"});
     function positionCard() {
       const boxes = targets.map((target:HTMLElement)=>target.getBoundingClientRect()).filter((rect:DOMRect)=>rect.width>0 && rect.height>0 && rect.bottom>0 && rect.top<innerHeight);
-      const top = boxes.length ? Math.max(8,Math.min(...boxes.map((r:DOMRect)=>r.top))-6) : 0;
-      const left = boxes.length ? Math.max(8,Math.min(...boxes.map((r:DOMRect)=>r.left))-6) : 0;
-      const right = boxes.length ? Math.min(innerWidth-8,Math.max(...boxes.map((r:DOMRect)=>r.right))+6) : 0;
-      const bottom = boxes.length ? Math.min(innerHeight-8,Math.max(...boxes.map((r:DOMRect)=>r.bottom))+6) : 0;
+      const top = boxes.length ? Math.max(8,Math.min(...boxes.map((r:DOMRect)=>r.top))-14) : 0;
+      const left = boxes.length ? Math.max(8,Math.min(...boxes.map((r:DOMRect)=>r.left))-14) : 0;
+      const right = boxes.length ? Math.min(innerWidth-8,Math.max(...boxes.map((r:DOMRect)=>r.right))+14) : 0;
+      const bottom = boxes.length ? Math.min(innerHeight-8,Math.max(...boxes.map((r:DOMRect)=>r.bottom))+14) : 0;
       const rect = boxes.length ? {top,left,width:right-left,height:bottom-top} : null;
       setSpotlight(rect);
       const width = Math.min(360,innerWidth-32);
@@ -74,7 +77,7 @@ export default function DashboardTour() {
 
   function finish() {
     try {
-      if(w.demo) w.store.set("ui.dashboardTour",true);
+      if(w.demo) w.store.set("ui.dashboardTour",dashboardTourVersion);
       else localStorage.setItem(key,"dismissed");
     } catch { /* Dismissing remains usable without storage. */ }
     setVisible(false);
@@ -86,9 +89,9 @@ export default function DashboardTour() {
       <div ref={card} className={styles.card} style={position}>
         <motion.div key={step} initial={reduced?false:{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:.18}}>
           <div className={styles.progress}><span className={styles.dots} aria-hidden="true"><i/><i/><i/><i/></span><span>{step+1} of {dashboardTourSteps.length}</span></div>
+          <DashboardTourIllustration variant={current.illustration}/>
           <h2 id="dashboard-tour-title">{current.title}</h2>
           <p id="dashboard-tour-description">{current.text}</p>
-          {current.hint && <p className={styles.hint}>{current.hint}</p>}
         </motion.div>
         <div className={styles.actions}>
           <button type="button" className={styles.skip} onClick={finish}>Skip tour</button>

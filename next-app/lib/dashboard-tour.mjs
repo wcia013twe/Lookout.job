@@ -1,8 +1,12 @@
-export const dashboardTourVersion = 1;
+export const dashboardTourVersion = 2;
 export const dashboardTourSteps = [
- { title:'Discover your next move', text:'Open a card to explore the role and see why it’s worth a look.', targets:['[data-dashboard-tour="roles"] article'] },
- { title:'Know where things stand', text:'Track your applications here. Check Action board when something needs your review.', targets:['[data-dashboard-tour="applications"]','[data-dashboard-tour="needs"]'] },
- { title:'Your agent goes with you', text:'Search, prepare drafts and track progress through your connected agent. You don’t need this dashboard open.', hint:'Manage your connection in Profile → My Agent.', targets:['[data-dashboard-tour="profile"]'] },
+ { title:'This is your agent’s workspace.', text:'Review their work here, or keep going in your agent’s chat. You don’t need this dashboard open.', illustration:'workspace', targets:[] },
+ { title:'Action board', text:'Start here when your agent needs your review or a decision.', illustration:'review', targets:['[data-dashboard-tour="needs"]'] },
+ { title:'Discover', text:'Your agent’s finds appear here. Open a role when you want a closer look.', illustration:'discover', targets:['[data-dashboard-tour="discover"]'] },
+ { title:'Applications', text:'Follow your applications and keep your progress up to date.', illustration:'applications', targets:['[data-dashboard-tour="applications"]'] },
+ { title:'Network', text:'Keep your people, introductions and outreach together.', illustration:'network', targets:['[data-dashboard-tour="network"]'] },
+ { title:'Career Toolkit', text:'Prepare your résumé, answers and interview practice in one place.', illustration:'tools', targets:['[data-dashboard-tour="toolkit"]'] },
+ { title:'Circles', text:'Share useful experiences with your people. Your agent can help you put those insights to work.', illustration:'circles', targets:['[data-dashboard-tour="circles"]'] },
 ];
 export function dashboardTourKey(owner) { return `lookout:dashboard-tour:v${dashboardTourVersion}:${owner||'guest'}`; }
 export function shouldStartDashboardTour(request, dismissed) {

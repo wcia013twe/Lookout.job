@@ -38,7 +38,7 @@ export default function ProfileMenu() {
     <div ref={container} className="relative z-40 shrink-0" onBlur={event => {
       if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
     }}>
-      <button data-dashboard-tour="profile" ref={trigger} type="button" aria-label="Open profile navigation" aria-expanded={open}
+      <button ref={trigger} type="button" aria-label="Open profile navigation" aria-expanded={open}
         aria-controls="profile-navigation" onClick={() => setOpen(!open)}
         className="grid size-11 place-items-center rounded-full border border-board-line bg-board-panel text-sm font-semibold text-board-accent hover:bg-board-tag focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent">
         {w.state?.workflow?.profile?.name || w.accountUser ? initials : <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>}
