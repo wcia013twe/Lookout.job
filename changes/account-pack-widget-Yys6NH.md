@@ -26,3 +26,9 @@
 - Released merged local-main commit `25f8160` using the Supabase connector: gateway deployment 24, MCP deployment 20, developer instructions 47. Existing GitHub Actions deploys the frontend only; no automatic backend deployment job exists.
 - Read back deployed source: all 43 gateway and 22 MCP bundled files match committed source. Both functions are ACTIVE. Missing/invalid credential HTTP probes return 401 through both endpoints, including the gateway database credential check.
 - Reused the preceding 498-test pass and 147-role catalog validation; this release adds no application code or demo behavior. Authenticated MCP discovery and write/read round trips still require a human-created personal-agent connection. No credential was issued, account reset, or Circle gate enabled. Separate workspace-reset migration/function and frontend remain undeployed by this pass; no GitHub push.
+
+## Circle activation
+
+- Enabled the production Circle runtime flag at the user's explicit request, without creating a staging branch or introducing costs.
+- Hosted pre-enable RLS/grant assertions passed. Post-enable authenticated-role `circles.list` returned `available: true` and an empty Circle list for the requested account. No account data, membership, content or credential was created.
+- Two-real-account staging/concurrency and browser/agent end-to-end checks remain unverified. This configuration-only change does not change demo behavior or application code.

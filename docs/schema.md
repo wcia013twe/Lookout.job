@@ -545,8 +545,7 @@ should be reviewed alongside their owner checks rather than suppressed.
 
 Earlier automatic-review rejections were resolved when the user requested another
 retry; `supabase_apply_migration` succeeded. This completes the prepared database
-rollout. A subsequent Edge Function release is recorded below. Circle availability remains disabled
-pending its hosted consent/access release verification. The separately developed
+rollout. A subsequent Edge Function release is recorded below. Circle availability was subsequently enabled at the user's explicit request; see the activation receipt below. The separately developed
 `20261023061223_workspace_reset.sql` is still local and was not part of this rollout.
 
 
@@ -568,5 +567,18 @@ and catalog validation (147 roles); no application source was edited for this re
 Authenticated MCP discovery/read/write remains unverified because no active personal
 agent connection exists. Connect an agent through the human account flow, then refresh
 tool discovery. No connection or credential was manufactured for release testing.
-Circle activation, the separate workspace-reset migration/function, and frontend
+Circle activation was handled separately below. The workspace-reset migration/function and frontend
 publication remain outside this release. The reset MCP tool is only a human handoff.
+
+
+## Circle activation (2026-10-23)
+
+At the user's explicit direction, enabled the production runtime flag
+`private.knowledge_config.enabled`. Hosted pre-enable RLS/function-grant checks
+passed. A post-enable authenticated-role RPC check for the requested account returned
+`{"available":true,"circles":[]}`. No Circle, membership, post or credential was created.
+The user chose activation without the proposed staging branch; no branch was created
+and no staging costs were incurred. Two-real-account staging, concurrent publication
+and browser/agent end-to-end checks remain unverified; activation does not claim
+those checks passed. Existing ownership, membership and sharing-consent rules remain
+in force. Disabling the same runtime flag reverses availability without deleting data.
