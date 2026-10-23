@@ -7,6 +7,8 @@ begin
  insert into public.resumes(id,user_id,name,variant,version,object_path,content_hash) values(new_id,u,'replacement.pdf','Backend',4,u::text||'/replacement.pdf',repeat('a',64)),(other_id,v,'other.pdf','Backend',1,v::text||'/other.pdf',repeat('b',64));
  before_search:=jsonb_build_object('defaultResumeId',old_id::text,'unrelated','Preserve me','resumeRules',jsonb_build_array(jsonb_build_object('resumeId',old_id::text,'keywords',jsonb_build_array('backend'))),'profiles',jsonb_build_array(jsonb_build_object('id','ft','name','Full-time','active',true,'version',2,'filters','{}'::jsonb,'priorities','{}'::jsonb,'instructions',E'Keep this prose.\n## Application materials\n- Default resume ID: '||old_id::text||E'\n## Recruiting targets\n- Targets: [{"resumeId":"'||old_id::text||E'","roles":"Backend"}]')));
  insert into public.preferences(user_id,search) values(u,before_search);
+ insert into public.search_documents(user_id,kind,id,version,content,projection) values(u,'profile','ft',2,E'---\n'||((before_search->'profiles'->0)-array['version','instructions'])::text||E'\n---\n'||(before_search->'profiles'->0->>'instructions'),(before_search->'profiles'->0)-'version');
+ insert into public.search_document_revisions(user_id,kind,id,version,content,projection) select user_id,kind,id,version,content,projection from public.search_documents where user_id=u;
  insert into public.jobs(id,canonical_url,employer) values('resume-source-fixture','https://example.com/resume-source-fixture','{}');
  insert into public.applications(user_id,job_id,draft,revision) values(u,'resume-source-fixture',jsonb_build_object('resumeId',old_id),5) returning id into application_id;
  select to_jsonb(a) into application_before from public.applications a where id=application_id;
@@ -25,6 +27,8 @@ begin
  if r->'resume'->>'name'<>'My named resume' or r->'resume'->>'version'<>'4' then raise exception 'Name/version lost';end if;
  if r->'search'->>'defaultResumeId'<>new_id::text or r->'search'->'resumeRules'->0->>'resumeId'<>new_id::text then raise exception 'Defaults not moved';end if;
  if r->'search'->'profiles'->0->>'version'<>'3' or r->'search'->'profiles'->0->>'instructions' not like '%'||new_id::text||'%' or r->'search'->'profiles'->0->>'instructions' like '%'||old_id::text||'%' then raise exception 'Profile assignment not moved';end if;
+ if not exists(select 1 from public.search_documents where user_id=u and kind='profile' and id='ft' and version=3 and content like '%'||new_id::text||'%' and content not like '%'||old_id::text||'%') then raise exception 'Canonical document not updated';end if;
+ if not exists(select 1 from public.search_document_revisions where user_id=u and version=2 and content like '%'||old_id::text||'%') then raise exception 'Historical resume reference changed';end if;
  if r->'search'->>'unrelated'<>'Preserve me' or r->'search'->'profiles'->0->>'instructions' not like 'Keep this prose.%' then raise exception 'Unrelated preferences changed';end if;
  if (select reference_url from public.resumes where id=old_id)<>'https://example.com/old.pdf' or (select superseded_by from public.resumes where id=old_id)<>new_id then raise exception 'Original source lost';end if;
  if (select to_jsonb(a) from public.applications a where id=application_id) is distinct from application_before then raise exception 'Existing application file changed';end if;

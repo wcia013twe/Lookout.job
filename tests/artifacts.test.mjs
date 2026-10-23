@@ -114,3 +114,15 @@ test('demo collections reuse saved revisions and move dated prep to saved after 
  const pinned=await demo.artifactAction('artifacts.read',pack.content.materials[0]);assert.equal(pinned.content.body,child.content.body);
  await assert.rejects(demo.artifactAction('artifacts.save',{...doc,kind:'interview_brief',materials:[{id:pack.id,version:1}]}),/non-collection/);
 });
+
+test('freeform documents link to typed subjects without fabricated tasks', async()=>{
+ for(const links of [[{applicationId:id}],[{goalId:id}],[{companyWorkspaceId:'target-1'}],[{contactId:'person-1'}],[{jobId:'shared-role'}]])valid('artifacts.save',{...doc,links});
+ for(const links of [[{}],[{jobId:'role',taskId:'fake'}],[{contactId:'person',companyWorkspaceId:'target'}],[{contactId:' '}],[{applicationId:id},{applicationId:id.toUpperCase()}]])assert.throws(()=>valid('artifacts.save',{...doc,links}));
+ const store=createMemoryStore({demo:{fictional:true},network:{companies:[{id:'company-1'}],referrals:[{id:'person-1'}]}}),demo=createArtifactDemo(store);
+ const request={...doc,links:[{companyWorkspaceId:'company-1'},{contactId:'person-1'},{goalId:demoGoalId}]};
+ const saved=await demo.artifactAction('artifacts.save',request);
+ assert.equal(saved.version,1);
+ assert.equal((await demo.artifactAction('artifacts.list',{companyWorkspaceId:'company-1'})).items[0].id,id);
+ await assert.rejects(async()=>demo.artifactAction('artifacts.save',{...request,id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',links:[{contactId:'missing'}]}));
+ assert.equal((await demo.artifactAction('artifacts.read',{id})).content.body,doc.body);
+});

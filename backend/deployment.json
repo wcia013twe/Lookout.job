@@ -3,7 +3,7 @@
   "projectName": "job-board",
   "organization": "personal-projects",
   "region": "us-east-1",
-  "schemaDeployed": true,
+  "schemaDeployed": false,
   "catalogSeedCount": 75,
   "frontendConnected": true,
   "agentGatewayDeployed": true,
@@ -21,5 +21,6 @@
   "companyLogoCacheCount": 66,
   "localRunnerMcp": true,
   "applicationReviewPolicy": true,
-  "submissionAttempts": true
+  "submissionAttempts": true,
+  "schemaDeploymentStatus": "Partial: hosted inspection 2026-10-23 found 35 application tables; local migrations define 54. See docs/schema.md."
 }

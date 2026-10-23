@@ -2,7 +2,7 @@
 
 Structured member activity now lives in optional `content.activity` on the same
 immutable contribution revision: `{highlights:string[],goal:string,help:string}`.
-See [Circles storage and agent design](../docs/circles-data-design.md) for the
+See [Circles storage and agent design](../docs/schema.md#circles) for the
 page-to-table map and proposed event-feed tools. Activity requires discussion
 type and `personalDisclosure:true`; up to three nonblank highlights and goal/help
 are each capped at 300 characters. At least one field must be nonempty. Unknown
@@ -299,7 +299,7 @@ Cross-Circle results are permitted published root posts, with stable `authorId`,
 Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
 Optional explicit company references retain exact-review rules. Internal posting
 IDs and employer requisition IDs remain distinct.
-See [the complete contract and release gates](../docs/private-network.md).
+See [the complete contract and release gates](../docs/schema.md#companies-and-network).
 These additions require backend/gateway/MCP release and hosted verification before
 claiming deployed parity.
 

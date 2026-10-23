@@ -4,24 +4,12 @@ Supabase project **job-board**, ref `umhqfqzpwmszhcknwtrs`, organization `person
 
 ## Data and ownership
 
-| Records | Purpose | Access |
-| --- | --- | --- |
-| Auth users | Google identity and sessions | Supabase Auth |
-| profiles / preferences | Verified facts, search criteria, rankings and theme preference | Owner |
-| resumes / private bucket | Immutable PDF/DOCX versions, references and SHA-256 | Owner; scoped agent temporary file links |
-| answer_library | Reviewed reusable answers and autofill controls | Owner |
-| jobs | Canonical employer facts | Shared read; trusted gateway publication |
-| job_batches / batch_items | Morning inbox, order and private fit reasoning | Owner |
-| applications / approvals | Current version, blocker, exact human approval and optional receipt | Owner; checked RPC transitions |
-| activity_events | Durable user/agent/system timeline | Owner; canonical events produced by triggers |
-| leaderboard_entries | Opt-in alias and derived XP/streak/counts | Safe opted-in projection; owner preferences via RPC |
-| private.agent_connections | Hashes, scoped expiry and revocation | Server only |
-
-RLS is enabled on exposed tables. Public clients use only the publishable key. Agent management derives the user from a verified Supabase session; tool operations derive ownership from the credential hash. A caller-supplied user ID is never authoritative.
+See [the single schema reference](../docs/schema.md) for all fields, relationships,
+canonical documents, AI-written content, ownership and the local/hosted distinction.
 
 ## Schema and deployment
 
-**`supabase/migrations/` is the only schema source.** Versions match hosted migration history. Do not reapply the initial schema to the live project or keep a second schema dump. `backend/check-schema.mjs` applies the migration chain to disposable PostgreSQL with Auth/Storage test doubles; hosted checks cover real permissions as well.
+**`supabase/migrations/` is the only schema source.** Hosted history currently differs from the local chain; reconcile names, SQL and dependencies before release. Do not reapply the initial schema to the live project or keep a second schema dump. `backend/check-schema.mjs` applies the migration chain to disposable PostgreSQL with Auth/Storage test doubles; hosted checks cover real permissions as well.
 
 The two Edge Functions are deployed with platform `verify_jwt=false` because they implement custom authentication: human sessions are verified with `getUser`; opaque agent tokens are verified for hash, expiry, revocation and scope. Their server-only RPCs are not executable by anonymous or browser-authenticated roles. Never expose service-role credentials or add a general SQL tool.
 

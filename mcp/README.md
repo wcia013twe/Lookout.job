@@ -214,7 +214,7 @@ the remaining daily budget carry forward. Scheduling is not completion.
 Company evidence stays in `read_preparation_plan` and sourced `resourceGuides`
 on `update_preparation_plan`. Lookout/Glassdoor reports require company, date
 and evidence; no feed connection is implied. See
-[the planner contract](../docs/preparation-planner.md). These additions require
+[the planner contract](../docs/schema.md#preparation). These additions require
 the planner migration and gateway/remote MCP deployment; local tests alone do
 not establish deployed availability.
 
@@ -245,7 +245,7 @@ wake an external agent. Verify natural-language routing on each supported host.
 
 ## Document-backed career context and agent search memory
 
-Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](../docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
+Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](../docs/schema.md#search) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
 
 Website RPC `save_search_profile` and MCP `save_search_profile` /
 `preferences.profile.save` retain the same owner/version/schema checks. The following
@@ -309,7 +309,7 @@ Cross-Circle results are permitted published root posts, with stable `authorId`,
 Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
 Optional explicit company references retain exact-review rules. Internal posting
 IDs and employer requisition IDs remain distinct.
-See [the complete contract and release gates](../docs/private-network.md).
+See [the complete contract and release gates](../docs/schema.md#companies-and-network).
 These additions require backend/gateway/MCP release and hosted verification before
 claiming deployed parity.
 

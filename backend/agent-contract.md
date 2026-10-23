@@ -331,6 +331,6 @@ Cross-Circle results are permitted published root posts, with stable `authorId`,
 Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
 Optional explicit company references retain exact-review rules. Internal posting
 IDs and employer requisition IDs remain distinct.
-See [the complete contract and release gates](../docs/private-network.md).
+See [the complete contract and release gates](../docs/schema.md#companies-and-network).
 These additions require backend/gateway/MCP release and hosted verification before
 claiming deployed parity.

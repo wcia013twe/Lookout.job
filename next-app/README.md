@@ -291,7 +291,7 @@ Interview debriefs appear beneath the round timeline. Basic Add/Update controls
 save private versioned notes through existing artifact tools; personal agents
 can save the same representation through MCP. Share to Circle prefills a
 reviewable Round insight forum draft, with no automatic publication. There is
-no scheduler handoff or embedded agent chat. See [the debrief mapping](../docs/interview-debriefs.md)
+no scheduler handoff or embedded agent chat. See [the debrief mapping](../docs/schema.md#documents-and-ai-text)
 for the note retrieval convention, tool boundaries and verification limits.
 
 My Agent no longer displays the reusable Templates library or Account-wide submission resume control. This is a page-only removal: stored documents and existing submission defaults are retained, and scoped backend/MCP contracts are unchanged. The shared question bank, writing workspace and outreach template previews remain. Demo profile verification asserts both removed controls are absent.
@@ -326,4 +326,4 @@ messages, with explicit scheduled/completed/cancelled status and optional notes.
 Log meeting and Add notes/Update reuse the contact's existing versioned private
 notes/MCP save path. They send no invites and do not change application status.
 The focused Robinhood/Stripe demo includes a completed recruiter meeting and an
-upcoming coffee chat. See [the record format](../docs/outreach-conversations.md).
+upcoming coffee chat. See [the record format](../docs/schema.md#companies-and-network).

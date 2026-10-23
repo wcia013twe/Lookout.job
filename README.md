@@ -72,6 +72,10 @@ Upload new PNG/JPEG assets from an external directory with
 `node scripts/company-logo-cache.mjs --upload /path/to/logos`. This bucket is
 separate from private resume storage.
 
+## Data model
+
+See [the schema, fields and relationships](docs/schema.md) for the implemented design and the distinction between local migrations and deployed features.
+
 ## Repository layout
 
 - `next-app/`: production React/Next.js UI and frontend tooling.
@@ -230,7 +234,7 @@ as part of development validation.
 
 Network → People & outreach separates **Proposed outreach** from **Ongoing conversations**. Draft copying and external links never mark a message sent. **Log sent message** and **Log reply** save user-reported text or summaries, dates, channels and an optional HTTPS conversation link. Ongoing conversations include unanswered outreach, a chronological history, whose turn it is and an editable next follow-up date. Legacy progressed statuses appear without invented history. The demo includes an unsent Example Systems draft and a fictional Example Compute exchange with a follow-up. No email/LinkedIn inbox synchronization or sending service is connected.
 
-Assisted logging reuses `list_contacts` / `save_contact` (`workspace:read` / `network:write`); website saves retain `save_outreach_contact` ownership and revision checks. Conversation presentation uses a `lookout-conversation-v1` JSON envelope in existing private contact notes, preserving legacy notes; `lib/outreach-conversation.mjs` defines the format. See [the conversation contract](docs/outreach-conversations.md). Hosted MCP verification and the production gateway workflow are still required before advertising the updated agent instructions as deployed.
+Assisted logging reuses `list_contacts` / `save_contact` (`workspace:read` / `network:write`); website saves retain `save_outreach_contact` ownership and revision checks. Conversation presentation uses a `lookout-conversation-v1` JSON envelope in existing private contact notes, preserving legacy notes; `lib/outreach-conversation.mjs` defines the format. See [the conversation contract](docs/schema.md#companies-and-network). Hosted MCP verification and the production gateway workflow are still required before advertising the updated agent instructions as deployed.
 
 Referrals groups contacts by company and shows editable, copy-ready messages and LinkedIn links. Signed-in contacts, drafts and requests are owner-scoped backend records; guest contacts stay in the browser and existing signed-in local contacts migrate on the next visit.
 
@@ -326,7 +330,7 @@ one daily time budget. Equivalent practice covers multiple interviews; each
 interview retains its own requirements, source evidence and company reports.
 The calendar opens on today, with day selection and Show all week. Longer tasks
 can span sessions, completion consumes time once, and tasks that cannot fit are
-shown explicitly. See [planner behavior and service contracts](docs/preparation-planner.md).
+shown explicitly. See [planner behavior and service contracts](docs/schema.md#preparation).
 The backend migration and gateway/MCP release must be deployed with the frontend
 before the new signed-in planner services are available. Lookout/Glassdoor feeds
 are not connected; only sourced reports saved to an interview are displayed.
@@ -364,7 +368,7 @@ collection that reads as one scrollable pack. Materials link directly from prepa
 learning goals share the interview planner’s daily budget even without upcoming
 interviews. Text remains the request/revision interface, and the workspace renders
 the results. Generation runs through the connected agent, not a website scheduler.
-See [artifact behavior, tool mapping and release limits](docs/career-artifacts.md).
+See [artifact behavior, tool mapping and release limits](docs/schema.md#documents-and-ai-text).
 
 The **Tools & skills** tab retains the native categorized skill library with
 39 static usage manuals and copyable agent examples. The interview category includes STAR Answer Writer and Interview Answer Builder for evidence-backed drafts, company adaptations and saved Toolkit materials. Categories cover profile
@@ -386,7 +390,7 @@ this library. Actual execution remains a capability of the connected agent.
 
 ## Document-backed career context and agent search memory
 
-Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/search-context-and-sweeps.md) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
+Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/schema.md#search) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
 
 ## Private company Network
 
@@ -397,7 +401,7 @@ drafts from other company contacts. Existing company sections retain private
 research, priorities, dated sources, contacts and linked applications. Due company follow-ups appear on the Action Board. This is a UI
 extension over existing private outreach storage and scoped contact tools; no new
 tables, gateway operations or company service are required. See the
-[Network UI and storage mapping](docs/private-network.md).
+[Network UI and storage mapping](docs/schema.md#companies-and-network).
 
 ## Application profiles and writing styles
 
@@ -539,7 +543,7 @@ unchanged.
 Current main retains its UI, Clubhouse layout, profile features, artifact tools,
 logo cache and GitHub Pages deployment. The PC branch contributes a preview-only
 [theme marketplace](docs/theme-picker.md), [durable company workspaces and scoped
-Circle intelligence](docs/private-network.md), structured Circle activity and a
+Circle intelligence](docs/schema.md#companies-and-network), structured Circle activity and a
 agent publication feed, automatic Career Toolkit discovery, and preparation refresh fixes.
 The marketplace is available from Profile → Browse Marketplace. Network keeps the
 current editors and adds Circle source conversations below the company overview.
