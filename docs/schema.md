@@ -582,3 +582,14 @@ and no staging costs were incurred. Two-real-account staging, concurrent publica
 and browser/agent end-to-end checks remain unverified; activation does not claim
 those checks passed. Existing ownership, membership and sharing-consent rules remain
 in force. Disabling the same runtime flag reverses availability without deleting data.
+
+
+## Agent quickstart release (2026-10-23)
+
+Existing README/MCP entry points now lead with a compact startup sequence. Developer
+instructions 48 own the canonical `quickstart`, returned by both MCP initialization
+and `read_developer_context`. Released merged local-main `5a222b9` as gateway 25 and
+MCP 21. All 43 gateway and 23 MCP deployed files match source; both endpoints reject
+unauthenticated HTTP requests with 401. Local validation passed 502 tests and the
+147-role catalog check. Authenticated Muse handshake remains unverified. This release
+adds no tables, credentials, UI behavior or external scheduling capability.
