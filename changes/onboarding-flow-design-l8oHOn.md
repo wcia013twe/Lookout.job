@@ -21,3 +21,10 @@
 ## Editable preference suggestions
 - Work and location now always show a text input, with suggestion pills below. Choosing a suggestion fills the input; users can edit it directly without selecting Other. The same value flows through the reveal and later screens.
 - Verified in the browser: selected Design/Remote, typed Product designer/Boston or remote, and confirmed both custom values on the revealed card. Bundle syntax, data validation and diff checks passed.
+
+
+## Circle story and two-sided card
+- Added an optional animated Circle message chain: a member shares an interview question, the agent identifies a practice opportunity, proposes a time, the fictional user agrees, and a clearly marked demo mock-interview booking appears. The supplied Better with company / Find your Circle invitation follows and opens the existing join/create preview.
+- Kept the dashboard theme, compact scrollable conversation, attribution to the shared tip, and immediate reduced-motion presentation. Messages, booking and membership remain isolated fictional state; no messaging or calendar integration was invoked.
+- Replaced the sealed gold face with the requested purple card back and a white four-point star. Tap or horizontal swipe rotates the two-sided card to the gold Discover front, then moves it left for animated fit bars and typed analysis. The hidden face is excluded from accessibility navigation.
+- Validation: esbuild, node syntax, catalog validation (147 roles), diff check. Browser inspected purple back and settled gold front; verified the Circle chain and booking completion, the invitation-to-join navigation, and the 390px mobile story with no horizontal overflow. Swipe handler and reduced-motion branch inspected in source; device swipe and OS reduced-motion setting were not separately exercised.
