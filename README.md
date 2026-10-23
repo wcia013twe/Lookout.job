@@ -567,3 +567,35 @@ current editors and adds Circle source conversations below the company overview.
 Backend additions remain local until the migrations and gateway/MCP are deployed
 through the production workflow and hosted access is verified; existing Circle
 release gates remain unchanged. No Sites or Logo.dev migration is included.
+
+## Organize a real account with Muse
+
+Copy this into an already authenticated Muse connection:
+
+```text
+Refresh my Lookout developer instructions and personal context. Organize my existing
+information into my account using the scoped tools: profile and proposed answers,
+resumes, application profiles and search documents, verified job batches, reusable
+career writing, and company/contact context. Read existing records first, preserve
+my edits and statuses, and use real facts and sourced observations only. Do not add
+sample data. Read back each saved record and report its destination and ID.
+If a tool fails, show the operation, safe error code/status, what was saved versus
+unconfirmed, and the concrete next repair. Continue independent work. This request
+does not authorize submissions, messages, sharing or enabling automation.
+```
+
+Developer version 45 adds these organization and read-back instructions. The prompt
+can be used immediately; automatic context refresh needs the updated gateway config
+to be deployed. A successful empty read is an empty account; missing RPC/table errors
+are deployment/schema problems and cannot be repaired by populating account data.
+
+The current backend is Supabase Auth, Postgres RPCs, private Storage and the
+`agent-gateway` / `agent-mcp` Edge Functions. The static Next.js export does not
+serve Next.js API routes. The Edge Functions are sufficient for current scoped
+account operations when the migrations, functions and credentials are deployed.
+The connected agent supplies search/reasoning; browser execution and local document
+tools require an available runner. Scheduling, text delivery and external account
+access require actual connected services. A persistent worker is a separate future
+hosting need for unattended browser/long-running work, not a prerequisite for
+saving profiles, batches or artifacts. Repository implementation does not establish
+that the connected production project has the same deployment.
