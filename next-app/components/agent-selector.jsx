@@ -6,6 +6,9 @@ const characters = [
   { id: "dot", name: "Dot", company: "OpenAI", image: "dot.png", animation: null },
   { id: "grok", name: "Grok Bot", company: "xAI", image: "grok.png", animation: null },
   { id: "muse", name: "Muse", company: "Meta", image: "muse.png", animation: null },
+  { id: "chatgpt", name: "ChatGPT", company: "OpenAI", image: null, animation: null },
+  { id: "claude", name: "Claude", company: "Anthropic", image: null, animation: null },
+  { id: "gemini", name: "Gemini", company: "Google", image: null, animation: null },
   { id: "platform", name: "Cappy", company: "Platform agent", image: null, animation: null },
 ];
 const invitedAgents = [{ id: "hermes", name: "Hermes", company: "Your own agent" }, { id: "openclaw", name: "OpenClaw", company: "Your own agent" }];

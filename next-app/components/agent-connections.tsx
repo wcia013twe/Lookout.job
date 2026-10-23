@@ -27,11 +27,12 @@ export function AgentPluginSteps() {
         <li>Ask your agent: “Connect to Lookout and start my search.”</li>
       </ul>);
 }
-export default function AgentConnections({onboarding=false}:{onboarding?:boolean}) {
+export default function AgentConnections({onboarding=false,onSetupCopied}:{onboarding?:boolean;onSetupCopied?:()=>void}) {
   const w = useWorkspace();
   const [connections, setConnections] = useState<AgentConnection[]>([]),
     [supportedScopes, setSupportedScopes] = useState<string[]>([]),
     [token, setToken] = useState(""),
+    [setupCopied, setSetupCopied] = useState(false),
     [tokenConnectionId, setTokenConnectionId] = useState(""),
     [nameError, setNameError] = useState(""),
     [feedback, setFeedback] = useState(""),
@@ -67,6 +68,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
     generation.current++;
     setToken("");
     setTokenConnectionId("");
+    setSetupCopied(false);
     setBusy(false);
     setAction("");
     setNameError("");
@@ -179,7 +181,10 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
             )
           : token,
       );
-      if (epoch === generation.current) setFeedback("Copied. Treat the token like a password.");
+      if (epoch === generation.current) {
+        setFeedback("Copied. Treat the token like a password.");
+        if(setup) { setSetupCopied(true); onSetupCopied?.(); }
+      }
     } catch {
       if (epoch === generation.current) setFeedback("Copy failed. Select and copy the token manually.");
     }
@@ -190,7 +195,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
       <p className="agent-connect-permissions">Prepare jobs and applications · you approve applications.</p>
       {token ? <div aria-label="Your new agent connection">
         <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
-        <button className={primary} onClick={()=>copy(true)}>Copy connection setup</button>
+        {!setupCopied&&<button className={primary} onClick={()=>copy(true)}>Copy connection setup</button>}
         <p className="hint">Keep this setup safe. The token is shown once.</p>
       </div> : <form onSubmit={issue} aria-label="Create an agent connection">
         <input type="hidden" name="name" value="My personal agent"/>
