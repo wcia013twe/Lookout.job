@@ -9,11 +9,9 @@ import ProfileOverview from "./profile-overview";
 import ProfileDocuments from "./profile-documents";
 import AppearanceSettings from "./appearance-settings";
 
-import SearchTargets from "./search-targets";
-import DailySchedule from "./daily-schedule";
+import DiscoverySetup from "./discovery-setup";
 import CircleAgentSettings from "./circle-agent-settings";
 import Preferences from "./preferences";
-import AgentConnections from "./agent-connections";
 import {
   ApplicationProfileProvider,
   useApplicationProfile,
@@ -112,11 +110,9 @@ function ProfileContent() {
           aria-label="My agent"
         >
           <Heading title="My agent" />
+          <DiscoverySetup />
           <WritingStyles />
-          <AgentConnections />
           <CircleAgentSettings />
-          <DailySchedule />
-          <SearchTargets />
           <Preferences mode="agent" showDefaultResume={false} />
         </section>
       )}

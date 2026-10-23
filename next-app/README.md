@@ -344,15 +344,33 @@ Detached demo checks: open `/career-toolkit/?demo=1&demoApi=empty` or `/circles/
 
 ### Task-linked card packs
 
-In My Profile → My Agent, add/edit an on-demand task, choose existing search sources
-and personal-agent connections, then Save tasks. In Discover → Configure packs,
-choose that task and save the widget. No automatic scan or runtime schedule starts.
-The task owns instructions and connections; the widget owns its title and task link.
-Only explicit Zero2Sudo archive opt-in loads the public historical feed. Other users
-start with no packs. Feed and setup API failures remain explicit and retryable.
+My Profile → My Agent now contains the complete discovery setup: connection management,
+search sources, task instructions/timing and card-pack configuration. The first three
+groups expand in place and preserve unsaved edits. Newly saved sources, connections
+and tasks are available to the next step without navigation or reload. Discover keeps
+the feeds and a compact setup link; empty/new workspaces receive a setup suggestion.
 
-Detached demo coverage: `?demo=1` has one fictional on-demand discovery task, source,
-connection and linked pack. Edit/save a task, create/rename/disable/remove a widget,
-and reset the demo. All changes stay in memory; newly created demo packs start empty.
-Optional browser check: `scripts/check-card-packs-ui.mjs` uses intercepted fictional
-accounts and the detached demo, never real account writes.
+The pack editor includes an interactive, explicitly fictional preview that follows
+the draft name. Preview state is component-local: no feed reads, account writes,
+reveal stamps, application links or XP. Saved packs continue using the real feed.
+Task and pack saves refresh the shared preferences timestamp while checking their
+own configuration version, preserving unrelated preferences and rejecting stale edits.
+
+Saving timing does not start a runtime schedule. Users copy the agent request from
+the pack list and arrange execution with their agent. Only explicit Zero2Sudo archive
+opt-in loads historical cards. Disable/remove and existing API errors remain available.
+
+MCP mapping is unchanged: sources use `save_search_targets`, tasks use
+`save_notification_preferences`, packs use `save_theme_preferences`, and discoveries
+use `publish_batch`. The browser retains the existing scoped backend actions, ownership,
+version and validation checks. Connection creation/revocation stays in the existing
+human-controlled connection boundary; the local preview adds no service capability.
+This UI pass does not claim new deployed parity or change gateway instructions.
+
+Detached demo: `/discover/?demo=1` → **Set up packs & connection**. Create a fictional
+connection, add a source, save a task and link a pack on one page. The demo connection
+service and sample task share the same publishing connection; new fictional connection
+IDs satisfy task validation. Reload/reset restores the fixtures.
+`scripts/check-card-packs-ui.mjs` covers that sequence, draft-name preview, removal,
+reset, responsive layout, an empty mocked account and explicit API failure with no
+production account writes.

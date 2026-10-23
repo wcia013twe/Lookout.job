@@ -18,11 +18,11 @@ test('card packs validate bounded configuration without executable code or new p
 test('agents configure and publish packs using existing scoped tools and structured recommendation data',async()=>{
  assert.equal(TOOLS.find(t=>t.name==='save_theme_preferences').scope,'preferences:write');assert.equal(TOOLS.find(t=>t.name==='publish_batch').scope,'batches:write');
  const calls=[];const handler=createHandler(async(_token,operation,payload)=>{calls.push(operation);if(operation==='credentials.verify')return {status:200,data:{scopes:['preferences:write','batches:write']}};validateRequest({operation,payload});return {status:200,data:{saved:true}};});
- for(const [name,args] of [['save_theme_preferences',{theme:{cardPacks:[demoPack],cardPacksVersion:1},expectedUpdatedAt:null}],['publish_batch',{eventKey:'pack-day',label:'Pack',jobs:[{jobId:'existing',recommendation:{cardPackId:demoPack.id,sourceId:'demo-social',note:'Agent assessment'}}]}]]){
+ for(const [name,args] of [['save_theme_preferences',{theme:{cardPacks:[demoPack],cardPacksVersion:1},expectedUpdatedAt:null}],['save_notification_preferences',{settings:{schedule:{enabled:false,timezone:'UTC',routines:[demoPackTask],configVersion:1}},expectedUpdatedAt:null}],['publish_batch',{eventKey:'pack-day',label:'Pack',jobs:[{jobId:'existing',recommendation:{cardPackId:demoPack.id,sourceId:'demo-social',note:'Agent assessment'}}]}]]){
   const response=await handler(new Request('http://local/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+ 'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})}));
   const body=await response.json();assert.ok(body.result&&!body.result.isError,JSON.stringify(body));
  }
- assert.ok(calls.includes('preferences.theme.save'));assert.ok(calls.includes('batches.publish'));
+ assert.ok(calls.includes('preferences.theme.save'));assert.ok(calls.includes('batches.publish'));assert.ok(calls.includes('preferences.notifications.save'));
  assert.throws(()=>validatePackRecommendation({cardPackId:demoPack.id}));
  assert.throws(()=>validatePackRecommendation({cardPackId:demoPack.id,sourceId:'demo-social',dropStatus:'applied'}));
  assert.match(packAgentRequest(demoPack),/does not activate a schedule/);

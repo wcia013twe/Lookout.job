@@ -6,6 +6,7 @@ import RoleCard, { type Role } from "./role-card";
 import DiscoverRolePanel from "./discover-role-panel";
 import SearchSweeps from "./search-sweeps";
 import CardPackWidgets from "./card-pack-widgets";
+import { PackSetupSuggestion } from "./discovery-setup-link";
 import DayFilter from "./day-filter";
 import ProfileIcon from "./profile-icon";
 import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
@@ -55,6 +56,7 @@ export default function Discover() {
   const roleGroups = [["FT", "Full-time"], ["Internship", "Internships"]].map(([key, label]) => ({ key, label, roles: roles.filter((role: Role) => role.employmentType === key) }));
   if(newArrival&&!publicView)return <>
     <Heading title="Discover">Your agent’s finds will appear here.</Heading>
+    <PackSetupSuggestion/>
     {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         <RoleCard role={{...firstRole,whyItFits:"Saved from onboarding. Your agent will check availability and compare this role with your profile and résumé."}} onPreview={setPreview}/>
