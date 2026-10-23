@@ -9,7 +9,7 @@ export function demoOnboardingAction(store, operation, payload={}) {
   const {event,data={}}=payload;
   if(event==='pause'){s.data.resumeStep=s.step;s.step='paused';s.prompt='Fictional onboarding paused.';}
   else if(event==='resume'&&s.step==='paused'){s.step=s.data.resumeStep;s.prompt='Resume the fictional scenario.';}
-  else if(event==='runtime'&&s.step==='connection_pending'){s.step='intent_pending';s.prompt='Your fictional agent is connected.';}
+  else if(event==='runtime'&&s.step==='connection_pending'){s.data.runtime={connectionId:'demo-connection',browsingReportedAt:'2026-01-01T00:00:00Z',name:'Demo agent'};s.step='intent_pending';s.prompt='Your fictional agent is connected.';}
   else if(event==='intent'&&s.step==='intent_pending'){
    if(typeof data.text!=='string'||data.text.trim().length<3)throw Error('Describe a search intent.');
    s.data.intent={text:data.text};s.step='action_policy_pending';s.prompt='Fictional first result: recommend, prepare for review, or request routine auto-apply setup?';
