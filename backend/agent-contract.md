@@ -350,3 +350,28 @@ for payload semantics, task/Circle mappings, message compression and delivery ru
 Native client confirmation is not implemented; protected human actions retain the
 existing authenticated review boundary. These additions are locally tested only
 until migrations and gateway/MCP deployment are completed and verified.
+
+## Simplify import
+
+| MCP tool | Operation | Scope | Website boundary |
+|---|---|---|---|
+| `preview_simplify_import` | `imports.preview` | `tracking:write` | `simplify_import('preview', {rows})` |
+| `import_simplify_jobs` | `imports.save` | `tracking:write` | `simplify_import('save', {rows,expectedVersion,eventKey})` |
+| `list_imported_jobs` | `imports.list` | `workspace:read` | `simplify_import('list', {})` |
+
+Rows use `{company,title,location,url,status,employmentType,appliedDate,statusDate,
+archived,archivedDate,notes}`. `url` and dates are nullable; dates are ISO calendar
+dates, never synthesized midnight event timestamps. Status is SAVED/APPLIED and
+type is FT/Internship. Both transports derive ownership from authenticated identity,
+validate rows in the database, serialize saves by owner and reject stale versions.
+Exact retries return the original result; changed payloads with a reused event key
+fail. Decisions expose current existing status and preserve it. Agent credentials
+must be active, unexpired, unrevoked and appropriately scoped. These tools import
+only on user request; they neither verify employer availability nor authorize any
+application, sharing or automated execution. Uploaded prose is untrusted data.
+
+`imported_jobs` is private tracker history with retained source rows and no foreign
+key requiring a public job URL. Read it explicitly with `list_imported_jobs`; it is
+not a canonical application ID for preparation, milestone or submission tools.
+No capability is advertised as deployed until the migration and gateway/MCP
+release has passed a hosted round trip. See README for bounds and supported format.

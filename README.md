@@ -603,3 +603,37 @@ that the connected production project has the same deployment.
 ## Workspace reset
 
 The local reset flow is described in [workspace reset](docs/workspace-reset.md). It includes a human-only preview and confirmation screen, private Storage deletion, retryable finalization, and an MCP human handoff. Hosted deployment and disposable-account verification remain pending; existing accounts are not reset by adding this feature.
+
+## Simplify tracker CSV import
+
+Applications → **Import from Simplify** accepts the tracked-jobs export directly.
+Parsing happens in the browser; it requires no model, Muse process or parsing API.
+Review every proposed job before saving. The initial format supports `SAVED` and
+`APPLIED`, Full-time and Internship, ISO dates, archive flags and multiline notes;
+unsupported statuses or malformed rows stop the import with an actionable error.
+Files are limited to 200 KB / 500 source rows, with 5,000 private imported jobs per account.
+
+Imports are owned private history in `imported_jobs`, including records without
+URLs. They do not enter `data/jobs.json` or the shared canonical jobs table.
+Tracking parameters are removed without dropping role identifiers. Duplicate URLs,
+then normalized company/title/location matches, combine original source reports;
+an explicit applied report takes precedence over saved. Notes are combined and
+original dates/reports remain available in the expanded tracker row. Already owned
+applications and prior imports retain their existing status and content. Archived
+imports appear under Closed. Imported records currently have an expandable history
+view, not the preparation/submission workflow of a verified canonical application.
+
+The website RPC `simplify_import(action,payload)` and scoped MCP tools
+`preview_simplify_import`, `import_simplify_jobs` (`tracking:write`) and
+`list_imported_jobs` (`workspace:read`) share the same backend implementation.
+Previews return a version; saves require that version and an exact-retry event key.
+CSV applied reports never create a receipt, approval, submission attempt or public
+contribution. Workspace reset removes import history and retry metadata too.
+
+Release migration `20261023160738_simplify_tracker_import.sql`, `agent-gateway`
+(including developerVersion 48) and `agent-mcp` together through the production
+release process after landing. Hosted availability and real-account round trips
+remain unverified until that release; the UI explains a missing backend API.
+The detached demo uses a fictional CSV and memory-only service, covers missing
+links, archived/applied/saved jobs, duplicate reports and reimport, and resets on
+reload or Reset demo data. It never opens a real file or accesses account storage.

@@ -7,6 +7,9 @@ export interface ApplicationQuestion {
 }
 
 export interface Application {
+  imported?: {id:string;record:any;source_rows?:any[]};
+  trackerItem?: {appliedDate?:string|null;openedDate?:string|null};
+  archived?: boolean;
   id: string;
   company: string; companyId?:string|null;
   title: string;
