@@ -10,7 +10,7 @@ import ProfileIcon from "./profile-icon";
 import { rarityOf, RARITY_LABEL, tierIndex } from "../lib/role-display";
 import { recordRoleOpened } from "../lib/progress.mjs";
 import styles from "./discover-role-panel.module.css";
-export default function DiscoverRolePanel({ role, onClose }: { role: Role; onClose: () => void }) {
+export default function DiscoverRolePanel({ role, onClose, assessmentPending=false }: { role: Role; onClose: () => void; assessmentPending?:boolean }) {
   const w = useWorkspace();
   const dialog = useRef<HTMLDialogElement>(null);
   const rarity = rarityOf(role.company, role.employmentType, role.title) as keyof typeof RARITY_LABEL;
@@ -42,10 +42,10 @@ export default function DiscoverRolePanel({ role, onClose }: { role: Role; onClo
       <RoleJobFacts role={role} />
       <div className={styles.match}><RoleMatchPreview sample={sample} expanded /></div>
       <section aria-labelledby="fit-reasoning">
-        <div className="mb-4 flex items-center gap-2 text-board-accent"><ProfileIcon name="sliders" /><h3 id="fit-reasoning" className="text-lg font-semibold">AI fit analysis</h3></div>
+        <div className="mb-4 flex items-center gap-2 text-board-accent"><ProfileIcon name="sliders" /><h3 id="fit-reasoning" className="text-lg font-semibold">{assessmentPending?"Agent review pending":"AI fit analysis"}</h3></div>
         <div className={styles.reasoning}>
-          <h4 className="mb-2 flex items-center gap-2 text-sm font-semibold text-board-success"><ProfileIcon name="check" width={18} height={18} />Why it could fit</h4>
-          <p className="max-w-prose text-sm leading-relaxed">{role.whyItFits || "No fit research collected yet."}</p>
+          <h4 className="mb-2 flex items-center gap-2 text-sm font-semibold text-board-success"><ProfileIcon name="check" width={18} height={18} />Why it’s here</h4>
+          <p className="max-w-prose text-sm leading-relaxed">{assessmentPending?"Saved from your onboarding preferences. Your agent still needs to verify the employer posting and compare it with your profile and résumé.":role.whyItFits || "No fit research collected yet."}</p>
         </div>
         <div className={styles.uncertainty}>
           <h4 className="mb-2 flex items-center gap-2 text-sm font-semibold text-board-warning"><ProfileIcon name="shield" width={18} height={18} />What needs a closer look</h4>

@@ -59,14 +59,33 @@ test('connection check requires a runtime check-in, not issued credentials or a 
 });
 
 
-test('onboarding always provides a reveal, with a labeled sample only when no role matches', async()=>{
+test('real onboarding reveals a catalog role or pending search; fictional fallback stays demo-only', async()=>{
  const {onboardingReveal}=await import('../next-app/lib/onboarding-catalog.mjs');
  const preferences={work:'Designer',employment:'Full-time',location:'Remote'};
- const fallback=onboardingReveal([],preferences);
- assert.equal(fallback.sample,true);
- assert.equal(fallback.role.company,'ExampleCo');
- assert.equal(fallback.role.applicationUrl,'');
- assert.ok(fallback.role.matchPreview.factors.length);
- const role={id:'design',company:'A',title:'Designer',employmentType:'FT',location:'Remote'};
- assert.deepEqual(onboardingReveal([role],preferences),{role,sample:false});
+ assert.deepEqual(onboardingReveal([],preferences),{role:null,sample:false,pending:true});
+ const demo=onboardingReveal([],preferences,{demo:true});
+ assert.equal(demo.sample,true);assert.equal(demo.role.company,'ExampleCo');
+ const role={id:'design',company:'A',title:'Designer',employmentType:'FT',location:'Remote',applicationUrl:'https://careers.actual-employer.test/design'};
+ assert.deepEqual(onboardingReveal([role],preferences),{role,sample:false,pending:false});
+ assert.equal(onboardingReveal([{...role,applicationUrl:'javascript:bad'}],preferences).pending,true);
+ assert.equal(onboardingReveal([{...role,id:'demo-design'}],preferences).pending,true);
+});
+
+test('catalog matching handles backend/software aliases without ignoring employment and location',()=>{
+ const role={id:'infra',title:'Software Engineer, Infrastructure',category:'Distributed systems',employmentType:'FT',location:'Remote, US'};
+ assert.equal(selectOnboardingRole([role],{work:'Backend engineering',employment:'Full-time',location:'United States'}),role);
+ assert.equal(selectOnboardingRole([role],{work:'Backend engineering',employment:'Internship',location:'Remote'}),null);
+ assert.equal(selectOnboardingRole([role],{work:'Designer',employment:'Full-time',location:'Remote'}),null);
+});
+
+test('selected first role survives a versioned search profile round trip without tracking or approvals',async()=>{
+ const {saveOnboardingSelection,savedOnboardingRole}=await import('../next-app/lib/onboarding-catalog.mjs');
+ const {profileFromPrompt}=await import('../lib/search-profile.mjs');
+ const role={id:'real',company:'A',title:'Engineer',applicationUrl:'https://careers.actual-employer.test/real'};
+ const prompt=saveOnboardingSelection('## My instructions\nKeep my own notes.',role);
+ const profile=profileFromPrompt(prompt,{id:'general',name:'General',active:true,version:2});
+ assert.equal(savedOnboardingRole([profile],[role]),role);
+ assert.equal(savedOnboardingRole([profile],[{...role,applicationUrl:'https://other.test/changed'}]),null);
+ assert.equal(savedOnboardingRole([profileFromPrompt(saveOnboardingSelection(prompt,null),profile)],[role]),null);
+ assert.match(profile.instructions,/Keep my own notes/);
 });

@@ -4,14 +4,15 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { createBackend } from "../../backend/client.mjs";
 import { useWorkspace } from "../lib/workspace";
+import { handoffOnboardingSearch } from "../lib/onboarding-search-handoff.mjs";
 import { onboardingConnectionReady } from "../lib/onboarding-connection.mjs";
 import { Iphone } from "./iphone";
 import AgentConnections, { AgentPluginSteps } from "./agent-connections";
 import { Button, Dots, Icon, Quiet, Title } from "./onboarding-ui";
 
-type Props = { room: ReactNode; onFinish: () => void; onLater: () => void };
+type Props = { intent: string; room: ReactNode; onFinish: () => void; onLater: () => void };
 
-export default function OnboardingAgentConnection({ room, onFinish, onLater }: Props) {
+export default function OnboardingAgentConnection({ intent, room, onFinish, onLater }: Props) {
   const w = useWorkspace();
   const reduced = useReducedMotion();
   const api = useMemo(() => w.demo ? w.services : w.client && w.user ? createBackend(w.client, w.user.id) : null, [w.demo, w.services, w.client, w.user?.id]);
@@ -20,6 +21,8 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
   const [copied, setCopied] = useState(false);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState("");
+  const [handoff,setHandoff]=useState("");
+  const [retry,setRetry]=useState(0);
 
   useEffect(() => {
     if(checking) { checkPage.current?.focus({preventScroll:true}); window.scrollTo({top:0,behavior:"instant"}); }
@@ -39,7 +42,16 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
         }
         if (!alive) return;
         setError("");
-        if (onboardingConnectionReady(state)) { setConnected(true); return; }
+        if (onboardingConnectionReady(state)) {
+          setConnected(true);
+          try {
+            const result=await handoffOnboardingSearch(api,intent,()=>alive);
+            if(alive)setHandoff(result.status);
+          } catch {
+            if(alive){setHandoff("error");setError("Your agent is connected, but your search wasn’t handed off. Retry below.");}
+          }
+          return;
+        }
       } catch {
         if (alive) setError("We couldn’t check yet. We’ll try again shortly.");
       }
@@ -47,7 +59,7 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
     }
     timer = setTimeout(check, w.demo ? 1200 : 0);
     return () => { alive = false; clearTimeout(timer); };
-  }, [checking, api, w.demo]);
+  }, [checking, api, w.demo, intent, retry]);
 
   async function copyDemo() {
     try {
@@ -66,10 +78,11 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
         {connected ? <Icon kind="check" /> : <Dots />}
       </motion.div>
       <strong>{connected ? "Your agent is here." : "Waiting for your agent…"}</strong>
-      <p>{connected ? "Ready for your next move." : "This updates when your agent checks in."}</p>
+      <p>{connected ? handoff==="queued"?"Your search is queued for your agent.":handoff==="result_ready"?"Your agent has a result ready.":handoff==="needs_attention"?"Your search needs a quick check in your agent’s chat.":"Your agent can read your saved search." : "This updates when your agent checks in."}</p>
       {w.demo && <span className="hint">Demo connection · simulated</span>}
     </div></Iphone>
     {error && <p className="hint" role="status">{error}</p>}
+    {handoff==="error"&&<Button secondary onClick={()=>{setError("");setRetry(value=>value+1);}}>Retry search handoff</Button>}
     {connected && <div className="actions"><Button onClick={onFinish}>Continue</Button></div>}
     <Quiet onClick={onLater}>I’ll do this later</Quiet>
   </div>;

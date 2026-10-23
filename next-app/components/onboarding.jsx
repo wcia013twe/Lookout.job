@@ -6,7 +6,7 @@ import {useWorkspace} from "../lib/workspace";
 import {ApplicationProfileProvider,useApplicationProfile} from "./application-profile-context";
 import {readField,updateField} from "../../lib/search-profile.mjs";
 import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
-import {onboardingReveal} from "../lib/onboarding-catalog.mjs";
+import {onboardingReveal,onboardingIntent,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
 import AgentSelector from "./agent-selector";
 import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
@@ -66,8 +66,9 @@ function OnboardingFlow(){
    prompt=updateField(prompt,"Search Filters","Employment",employment);
    prompt=updateField(prompt,"Search Filters","Location",location.trim());
    if(resumeId)prompt=updateField(prompt,"Application materials","Default resume ID",resumeId);
+   const preview=onboardingReveal(w.demo?w.roles:(w.publicRoles||w.roles),{work,employment,location},{demo:w.demo});
+   prompt=saveOnboardingSelection(prompt,!w.demo&&preview.role?preview.role:null);
    if(!await a.saveProfilePrompt(prompt))return;
-   const preview=onboardingReveal(w.roles,{work,employment,location});
    setRole(preview.role);setSample(preview.sample);go("reveal");
   }catch(e){setError(e.message||"Could not save your search. Try again.");}
  }
@@ -98,9 +99,10 @@ function OnboardingFlow(){
   <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Find my first role"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div>
   {a.feedback&&<p className={a.saveError?"error":"hint"} role="status">{a.feedback}</p>}
  </form></>;
- if(scene==="reveal"&&role)content=<OnboardingRoleReveal role={role} demo={w.demo} sample={sample} onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
- if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("circles")} onLater={later}/>;
+ if(scene==="reveal")content=<OnboardingRoleReveal role={role} demo={w.demo} onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
+ if(scene==="connect")content=<OnboardingAgentConnection intent={onboardingIntent({work,employment,location},!sample?role:null)} room={room} onFinish={()=>go("circles")} onLater={later}/>;
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Link className="primary" onClick={()=>{if(w.demo)w.store.set("ui.dashboardArrival",true);}} href={w.demo?"/?demo=1&tour=dashboard":"/?tour=dashboard"}>Open my workspace<Icon/></Link><BrowserAppInstructions/></>;
- return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><Dots/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{error&&<p className="error" role="alert">{error}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
+ if(!w.demo&&!w.user&&!["circles","done"].includes(scene))content=<><Dots/><Title sub="Keep your search, résumé and agent connection together.">Let’s start with you.</Title><div className="actions"><Button disabled={!w.authReady} onClick={w.signIn}>{w.authReady?"Continue with Google":"Connecting…"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div></>;
+ return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><Dots/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
 }
