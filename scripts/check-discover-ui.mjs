@@ -6,7 +6,7 @@ const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/private/tmp/lookout-discover-ui';a
 const browser=await chromium.launch({executablePath:process.env.LOOKOUT_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
 const errors=[];const cloud=[];
 try{
- const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',serviceWorkers:'block'});
+ const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block'});
  const user={id:'11111111-1111-1111-1111-111111111111',aud:'authenticated',role:'authenticated',email:'fictional@example.com',app_metadata:{demo_preview:true},user_metadata:{},is_anonymous:false};
  const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url');
  const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
@@ -18,11 +18,9 @@ try{
   await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*','Content-Range':'0-0/0'},body:JSON.stringify(body)});
  });
  const page=await context.newPage();page.setDefaultTimeout(12000);page.on('pageerror',e=>errors.push(e.message));
- await page.goto((process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3048') + '/discover/');
- await page.getByRole('button',{name:'Open profile navigation'}).click();
- await page.getByRole('button',{name:'Demo mode',exact:true}).click();
+ await page.goto((process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3048') + '/discover/?demo=1');
  const card=page.locator('article').filter({hasText:'Example Query Labs (demo)'});
- await card.getByText('76% job match',{exact:true}).waitFor();
+ await card.getByText('76% job match',{exact:true}).waitFor().catch(async error=>{await page.screenshot({path:dir+'/entry-failure.png',fullPage:true});console.error(await page.locator('body').innerText());throw error;});
  const before=cloud.length;
  await card.getByRole('button',{name:'Preview job',exact:true}).click();
  const panel=page.getByRole('dialog');
@@ -54,13 +52,18 @@ try{
  await page.screenshot({path:dir+'/discover-panel-mobile.png',fullPage:false});
  assert(await panel.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Panel must not overflow');
  await panel.getByRole('button',{name:'Close job preview'}).click();
- await page.screenshot({path:dir+'/discover-cards-mobile.png',fullPage:true});
+ await card.scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/discover-cards-mobile.png'});
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Discover must not overflow');
  await page.setViewportSize({width:1440,height:1000});
  await page.emulateMedia({colorScheme:'dark'});
- await page.screenshot({path:dir+'/discover-cards-desktop.png',fullPage:true});
+ await card.scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/discover-cards-desktop.png'});
  const unknown=page.locator('article').filter({hasText:'Example Search (demo)'});
- await unknown.getByText('Job match pending',{exact:true}).waitFor();
+ await unknown.getByText('Match not assessed',{exact:true}).waitFor();
+ assert.equal(await unknown.getByText('Unknown',{exact:true}).count(),0,'Unassessed cards omit empty factor bars');
+ const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('h3').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.getByRole('region',{name:'Job match preview',exact:true}).boundingBox(),action:await item.getByRole('button',{name:'Preview job',exact:true}).boundingBox()})));
+ for(const key of ['title','facts','match','action']) assert(Math.abs(bounds[0][key].y-bounds[1][key].y)<2,`${key} rows align despite title length and assessment differences`);
  await unknown.getByRole('button',{name:'Preview job',exact:true}).click();
  await panel.getByText('Not assessed',{exact:true}).waitFor();
  assert.equal(await panel.getByRole('link',{name:'Open employer posting'}).count(),0,'Demo must not open external postings');
@@ -70,5 +73,5 @@ try{
  await panel.getByText('Unknown',{exact:true}).waitFor();
  await page.keyboard.press('Escape');
  assert.equal(errors.length,0,errors.join('\n'));
- console.log(JSON.stringify({result:'passed',viewports:['1440x1000 dark','390x844 light'],checks:['demo scores and unknowns','panel sections','ephemeral prefill edits','Escape and focus restoration','collapsed saved details and visible review questions','icon job facts','no preview service calls','no demo external posting','horizontal overflow'],artifacts:dir},null,2));
+ console.log(JSON.stringify({result:'passed',viewports:['1440x1000 dark','390x844 light'],checks:['demo scores and unknowns','panel sections','ephemeral prefill edits','Escape and focus restoration','collapsed saved details and visible review questions','icon job facts','no preview service calls','no demo external posting','horizontal overflow','shared card row alignment','compact unassessed state'],artifacts:dir},null,2));
 } finally { await browser.close(); }

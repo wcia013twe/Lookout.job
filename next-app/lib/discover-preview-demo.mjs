@@ -3,7 +3,7 @@ export function discoverPreviewRoles(date) {
   return [
     { id: 'demo-discover-good', company: 'Example Query Labs (demo)', title: 'Backend Engineer, Query Systems', employmentType: 'FT', percent: 76, limited: false },
     { id: 'demo-discover-tradeoff', company: 'Example Compute (demo)', title: 'ML Systems Intern', employmentType: 'Internship', percent: 54, limited: true },
-    { id: 'demo-discover-unknown', company: 'Example Search (demo)', title: 'Search Infrastructure Engineer', employmentType: 'FT' },
+    { id: 'demo-discover-unknown', company: 'Example Search (demo)', title: 'Software Engineer, Distributed Search Infrastructure and Query Performance', employmentType: 'FT' },
   ].map(({ percent, limited, ...role }) => ({
     ...role,
     compensation: percent === 76 ? '$55–$65/hr (fictional demo)' : undefined,
