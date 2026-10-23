@@ -532,8 +532,10 @@ definitions and permissions. The exact atomic rollout was rehearsed with migrati
 history guards and checksums of existing records (excluding the fields intentionally
 migrated). It uses a five-second lock timeout and rolls back on failed assertions.
 
-**Not deployed:** automatic approval review rejected the broad production rollout
-and requested explicit scope approval. Hosted was rechecked unchanged: 31 recorded
-migrations and 35 application tables. The tested SQL is prepared; production
-application and hosted verification remain pending. Frontend/Edge Function release
+**Not deployed:** the user explicitly approved the complete production scope after
+the first automatic-review rejection. Automatic approval review rejected execution
+again despite that approval, citing the production-wide schema, permission, dispatcher
+and legacy-data changes. Hosted was rechecked unchanged: 31 recorded migrations and
+35 application tables. The tested SQL is prepared; execution remains blocked by the
+automatic review gate, not by missing user authorization. Frontend/Edge Function release
 is separate from this database migration.
