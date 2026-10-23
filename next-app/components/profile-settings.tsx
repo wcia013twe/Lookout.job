@@ -14,7 +14,7 @@ import WritingPreview from "./writing-preview";
 import SavedAnswers from "./saved-answers";
 import OutreachTemplates from "./outreach-templates";
 import ProfileSection, {ProfileValues} from "./profile-section";
-export function ProfileSwitcher() {
+export function ProfileSwitcher({manage=true}: {manage?:boolean}) {
   const a=useApplicationProfile();
   const [creating,setCreating]=useState(false),[name,setName]=useState("");
   return <section className={styles.profilePicker} aria-label="Application profile selection">
@@ -26,8 +26,8 @@ export function ProfileSwitcher() {
         </select>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
       </label>
-      <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label={creating?'Cancel new profile':'New profile'} title={creating?'Cancel':'New profile'} aria-expanded={creating} aria-controls="new-application-profile" onClick={()=>setCreating(!creating)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">{creating?<path d="m6 6 12 12M6 18 18 6"/>:<path d="M12 5v14M5 12h14"/>}</svg></button>
-      <button type="button" className={styles.profileIcon} disabled={a.busy} aria-label="Duplicate profile" title="Duplicate profile" onClick={()=>a.create(`${a.profile.name} copy`,true)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button>
+      {manage&&<button type="button" className={styles.profileIcon} disabled={a.busy} aria-label={creating?'Cancel new profile':'New profile'} title={creating?'Cancel':'New profile'} aria-expanded={creating} aria-controls="new-application-profile" onClick={()=>setCreating(!creating)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">{creating?<path d="m6 6 12 12M6 18 18 6"/>:<path d="M12 5v14M5 12h14"/>}</svg></button>}
+      {manage&&<button type="button" className={styles.profileIcon} disabled={a.busy} aria-label="Duplicate profile" title="Duplicate profile" onClick={()=>a.create(`${a.profile.name} copy`,true)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button>}
     </div>
     {creating&&<form id="new-application-profile" className={styles.profileCreate} onSubmit={event=>{event.preventDefault();a.create(name);setName("");setCreating(false);}}>
       <Field label="New profile name"><input className={control} value={name} onChange={event=>setName(event.target.value)} maxLength={80} required autoFocus/></Field>

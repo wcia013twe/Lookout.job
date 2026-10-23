@@ -9,16 +9,28 @@ import CardPackWidgets from "./card-pack-widgets";
 import DayFilter from "./day-filter";
 import ProfileIcon from "./profile-icon";
 import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
-import {showAgentEmptyState} from "../lib/discover-view.mjs";
+import {ApplicationProfileProvider, useApplicationProfile} from "./application-profile-context";
+import {ProfileSwitcher} from "./profile-settings";
+import {matchesProfileEmployment, showAgentEmptyState} from "../lib/discover-view.mjs";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Drop } from "../lib/drop-pack";
 export default function Discover() {
   const w = useWorkspace();
+  return <ApplicationProfileProvider key={`${w.accountUser?.id || "guest"}:${w.demo}:${w.demoEpoch}`}><SelectedBoard/></ApplicationProfileProvider>;
+}
+function SelectedBoard() {
+  const a = useApplicationProfile();
+  return <DiscoverBoard key={a.profile.id}/>;
+}
+function DiscoverBoard() {
+  const w = useWorkspace();
+  const a = useApplicationProfile();
   const [publicView,setPublicView]=useState(false);
   const newArrival=showAgentEmptyState({signedIn:!!w.user,hasPrivateBatch:w.hasPrivateBatch,demo:w.demo,demoArrival:w.state.ui?.dashboardArrival});
-  const sourceRoles=publicView?(w.publicRoles||w.roles):w.roles;
+  const sourceRoles=(publicView?(w.publicRoles||w.roles):w.roles).filter((role:Role)=>matchesProfileEmployment(role,a.profile));
   const sourceDate=publicView?(w.publicDate||w.date):w.date;
-  const firstRole=!w.demo?savedOnboardingRole(w.state.workflow.searchPreferences?.profiles,w.publicRoles||w.roles):null;
+  const savedRole=!w.demo?savedOnboardingRole([a.profile],w.publicRoles||w.roles):null;
+  const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)?savedRole:null;
   const reduced = useReducedMotion();
   const board = useRef<HTMLElement>(null);
   const [arrival, setArrival] = useState<{owner:string;ids:string[];run:number}|null>(null);
@@ -27,7 +39,6 @@ export default function Discover() {
   const preview = selection?.owner === previewOwner ? selection.role : null;
   function setPreview(role: Role | null) { setSelection(role ? { role, owner: previewOwner } : null); }
   const [search, setSearch] = useState(""),
-    [type, setType] = useState(""),
     [day, setDay] = useState("latest");
   const dates = [...new Set([sourceDate, ...sourceRoles.map((r: Role) => r.discoveredDate)].filter(Boolean))].sort().reverse();
   const selectedDay = day === "latest" ? sourceDate : day;
@@ -35,26 +46,26 @@ export default function Discover() {
     (r: Role) =>
       (selectedDay === "all" || r.discoveredDate === selectedDay) &&
       (day !== "latest" || !w.state.tracker.ids.includes(r.id)) &&
-      (!type || r.employmentType === type) &&
       `${r.company} ${r.title} ${r.location} ${r.category}`
         .toLowerCase()
         .includes(search.toLowerCase()),
   );
   function populateBoard(drops: Drop[]) {
     const normalize = (value: string) => value.trim().toLowerCase().replace(/\s+/g, " ");
-    const matches = w.roles.filter((role: Role) => drops.some(drop =>
+    const matches = sourceRoles.filter((role: Role) => drops.some(drop =>
       (drop.url && drop.url === role.applicationUrl) ||
       (normalize(drop.company) === normalize(role.company) && normalize(drop.title) === normalize(role.title) &&
        (!drop.location || normalize(drop.location) === normalize(role.location)))));
     if (!matches.length) return;
-    setSearch(""); setType(""); setDay("all");
+    setSearch(""); setDay("all");
     setArrival(previous => ({owner:previewOwner,ids:matches.map((role:Role)=>role.id),run:(previous?.run||0)+1}));
     requestAnimationFrame(() => board.current?.scrollIntoView({behavior: reduced ? "instant" : "smooth", block:"start"}));
   }
   const arriving = arrival?.owner === previewOwner ? arrival : null;
-  const roleGroups = [["FT", "Full-time"], ["Internship", "Internships"]].map(([key, label]) => ({ key, label, roles: roles.filter((role: Role) => role.employmentType === key) }));
+  const roleGroups = [{key:a.profile.id,label:a.profile.name,roles}];
+  const header=<div className="mb-6 flex flex-wrap items-start justify-between gap-4 [&>.workspace-heading]:mb-0"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
   if(newArrival&&!publicView)return <>
-    <Heading title="Discover">Your agent’s finds will appear here.</Heading>
+    {header}
     {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         <RoleCard role={{...firstRole,whyItFits:"Saved from onboarding. Your agent will check availability and compare this role with your profile and résumé."}} onPreview={setPreview}/>
@@ -71,11 +82,9 @@ export default function Discover() {
   </>;
   return (
     <>
-      <Heading title="Discover">
-        {publicView ? "Explore the public catalog." : w.batchLabel}
-      </Heading>
+      {header}
       {newArrival&&publicView&&<button type="button" className="mb-4 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={()=>setPublicView(false)}>Back to my agent’s finds</button>}
-      <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_230px_160px] md:gap-3">
+      <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_230px] md:gap-3">
         <input
           aria-label="Search roles or companies"
           placeholder="Search roles or companies"
@@ -84,16 +93,7 @@ export default function Discover() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <DayFilter label="Discover day" dates={dates} latest={sourceDate} value={day} onChange={setDay} />
-        <select
-          aria-label="Employment type"
-          className={control}
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="">All roles</option>
-          <option value="FT">Full-time</option>
-          <option>Internship</option>
-        </select>
+
       </InsetBox>
       <Notice>
         {roles.length} to review ·{" "}
@@ -119,8 +119,8 @@ export default function Discover() {
               </motion.div>;
             })}
           </div> : <div className="glass-inset rounded-xl px-5 py-7">
-            <p className="text-sm text-board-muted">No new {label.toLowerCase()} roles for this view.</p>
-            {(search || type) && <button className="mt-3 min-h-11 text-sm font-semibold text-board-accent hover:underline" onClick={() => { setSearch(""); setType(""); }}>Clear filters</button>}
+            <p className="text-sm text-board-muted">No new roles for this profile in this view.</p>
+            {search && <button className="mt-3 min-h-11 text-sm font-semibold text-board-accent hover:underline" onClick={() => { setSearch(""); }}>Clear filters</button>}
           </div>}
         </section>
       ))}

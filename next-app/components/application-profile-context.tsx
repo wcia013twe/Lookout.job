@@ -34,7 +34,7 @@ function useProfiles() {
   const p = w.state.workflow.searchPreferences || {};
   const [drafts, setDrafts] = useState<Record<string, ApplicationProfile>>({});
   latestDrafts.current = drafts;
-  const [selected, setSelected] = useState("general"),
+  const [selected, setSelected] = useState(() => w.store.get("ui.applicationProfileId") || "general"),
     [busy, setBusy] = useState(false),
     [feedback, setFeedback] = useState("");
   const saved: ApplicationProfile[] = (
@@ -76,6 +76,7 @@ function useProfiles() {
       },
     }));
     setSelected(id);
+    w.store.set("ui.applicationProfileId", id);
     setFeedback("New application profile saves automatically.");
   }
   async function saveProfileRecord(savingProfile: ApplicationProfile) {
@@ -206,6 +207,7 @@ function useProfiles() {
     profile,
     select: (id: string) => {
       setSelected(id);
+      w.store.set("ui.applicationProfileId", id);
       setFeedback("");
     },
     patch,
