@@ -1,3 +1,4 @@
+import {formatPostDate} from "../_lib/post-date";
 import type {Post} from '../_lib/types';
 import {types} from '../_lib/types';
 import {circleActivity} from '../../../../lib/circle-activity.mjs';
@@ -15,7 +16,7 @@ export default function ClubhouseFeed({posts,demo,openPost}:{posts:Post[];demo:b
    return <li key={post.id} className={styles.feedItem}>
     <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(name).id}.webp')`}}/>:name.trim().split(/\s+/).slice(0,2).map(p=>p[0]).join('')}</span>
     <div className={styles.feedContent}>
-     <div className={styles.meta}><strong>{name}</strong><AuthorshipLabel post={post}/><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'})}</time></div>
+     <div className={styles.meta}><strong>{name}</strong><AuthorshipLabel post={post}/><time dateTime={post.createdAt}>{formatPostDate(post.createdAt)}</time></div>
      <button type="button" className={styles.postTitle} onClick={()=>openPost(post)}>{post.content.title}</button>
      {activity.highlights.length?<ul className={styles.highlights}>{activity.highlights.map((text:string,index:number)=><li key={index}>{text}</li>)}</ul>:<p className={styles.excerpt}>{post.content.insight||activity.message}</p>}
      {activity.goal&&<p className={styles.note}><strong>Goal</strong> {activity.goal}</p>}

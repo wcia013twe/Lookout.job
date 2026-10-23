@@ -1,5 +1,6 @@
 'use client';
 
+import {formatPostDate} from "../_lib/post-date";
 import {useEffect, useLayoutEffect, useState, useRef, type ReactNode, type CSSProperties} from 'react';
 import type {Detail, Post} from '../_lib/types';
 import {activityGoalProgress,circleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
@@ -70,7 +71,6 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
  const goalProgress=activityGoalProgress(activity.goal);
  const name=linkedMember?.alias.replace(' (demo)','')||greeted?.name||'';
  const latest=updates[0];
- const date=(value:string)=>new Date(value).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'});
 
  return <section className={styles.roomSection} data-embedded={embedded} aria-labelledby="circle-room-title">
   <div className={styles.toolbar}>
@@ -107,7 +107,7 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
    <header className={styles.activityHeader}><span className={styles.statusAvatar} style={{backgroundImage:`url('/circles/${greeted?.id}.webp')`}} aria-hidden="true"/><div><h3 id="companion-activity-title">{name}’s progress</h3><p>{demo?'Fictional shared updates': 'Shared with this Circle'}</p></div><button type="button" onClick={closeActivity} aria-label="Close activity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header>
    {latest?<>
     <p className={styles.activityHeadline}>{latest.content.title}</p>
-    <p className={styles.activityDate}>Latest shared update · <time dateTime={latest.createdAt}>{date(latest.createdAt)}</time></p>
+    <p className={styles.activityDate}>Latest shared update · <time dateTime={latest.createdAt}>{formatPostDate(latest.createdAt)}</time></p>
     {activityPost&&<>
      {activity.goal&&<div className={styles.goal}>
       <div className={styles.goalHeading}><h4>This week’s goal</h4>{goalProgress&&<span>{goalProgress.percent}%</span>}</div>
@@ -118,9 +118,9 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
       return <li key={index}><span className={styles.highlightMark}>{count?count[2]:<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>}</span><span>{count?`${count[1]} ${count[3]}`:highlight}</span></li>;
      })}</ul>}
      {activity.help&&<div className={styles.help}><h4>Could use a hand with…</h4><p>{activity.help}</p></div>}
-     {activityPost.id!==latest.id&&<p className={styles.activityDate}>Activity details shared {date(activityPost.createdAt)}</p>}
+     {activityPost.id!==latest.id&&<p className={styles.activityDate}>Activity details shared {formatPostDate(activityPost.createdAt)}</p>}
     </>}
-    {!activity.highlights.length&&<ul className={styles.recentPosts}>{updates.filter(post=>post.id!==latest.id).slice(0,2).map(post=><li key={post.id}><button type="button" onClick={()=>openPost(post)}>{post.content.title}</button><time dateTime={post.createdAt}>{date(post.createdAt)}</time></li>)}</ul>}
+    {!activity.highlights.length&&<ul className={styles.recentPosts}>{updates.filter(post=>post.id!==latest.id).slice(0,2).map(post=><li key={post.id}><button type="button" onClick={()=>openPost(post)}>{post.content.title}</button><time dateTime={post.createdAt}>{formatPostDate(post.createdAt)}</time></li>)}</ul>}
     <div className={styles.activityActions}><button type="button" onClick={()=>openPost(latest)}>{linkedMember?.self?'Open your update':`Cheer ${name} on`}</button>{activity.help&&activityPost&&!linkedMember?.self&&<button type="button" onClick={()=>openPost(activityPost)}>Offer to help</button>}</div>
     <p className={styles.activityFootnote}>Opens the shared thread. Your reply stays a draft until you share it.</p>
    </>:<div className={styles.activityEmpty}><p>No recent shared updates.</p><p>{linkedMember?`${name}’s updates will appear here when they choose to share.`:'This companion has no linked Circle member.'}</p></div>}

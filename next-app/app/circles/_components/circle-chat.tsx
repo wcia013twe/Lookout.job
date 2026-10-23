@@ -1,5 +1,6 @@
 'use client';
 
+import {formatPostDate} from "../_lib/post-date";
 import {useEffect,useRef,useState,type FormEvent} from 'react';
 import type {Content,Post} from '../_lib/types';
 import {parseForumMentions} from '../../../../lib/circle-forum-mentions.mjs';
@@ -26,7 +27,7 @@ export default function CircleChat({forumPosts,posts,demo,busy,save,openPost}:Pr
    {posts.length?[...posts].reverse().map(post=>{
     const activity=circleActivity(post.content);
     const body=activity.message||((activity.highlights.length||activity.goal||activity.help)?post.content.title:post.content.body||post.content.insight);
-    return <article key={post.id} className={styles.chatMessage} data-own={post.owned}><div><strong>{post.author.replace(' (demo)','')}</strong><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'})}</time></div><div className={styles.chatBubble}><p><ForumMentionText text={body||post.content.title} posts={forumPosts} openPost={openPost}/></p><button type="button" className={styles.chatReply} onClick={()=>openPost(post)} aria-label={`Open message from ${post.author.replace(' (demo)','')}: ${post.content.title}`}>Reply in thread <span aria-hidden="true">↗</span></button></div>{!!post.content.contexts?.length&&<details className={styles.chatAttachments}><summary>{post.content.contexts.length} attached context items</summary><SharedAttachments contexts={post.content.contexts} primary={post.content}/></details>}</article>;
+    return <article key={post.id} className={styles.chatMessage} data-own={post.owned}><div><strong>{post.author.replace(' (demo)','')}</strong><time dateTime={post.createdAt}>{formatPostDate(post.createdAt)}</time></div><div className={styles.chatBubble}><p><ForumMentionText text={body||post.content.title} posts={forumPosts} openPost={openPost}/></p><button type="button" className={styles.chatReply} onClick={()=>openPost(post)} aria-label={`Open message from ${post.author.replace(' (demo)','')}: ${post.content.title}`}>Reply in thread <span aria-hidden="true">↗</span></button></div>{!!post.content.contexts?.length&&<details className={styles.chatAttachments}><summary>{post.content.contexts.length} attached context items</summary><SharedAttachments contexts={post.content.contexts} primary={post.content}/></details>}</article>;
    }):<p className={styles.chatQuiet}>Your Circle’s chat starts here. Say hello, share a thought, or ask your people something.</p>}
   </div>
   <form onSubmit={submit} className={styles.chatCompose} aria-label="Circle chat composer"><ChatComposer value={message} change={setMessage} posts={forumPosts} busy={busy}/><p>{demo?'Fictional chat · ':''}Review before sharing with your Circle.</p>{error&&<p role="alert">{error}</p>}</form>

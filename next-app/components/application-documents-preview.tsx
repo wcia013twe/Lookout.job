@@ -7,6 +7,23 @@ import { control, secondary } from "./ui";
 type Profile = Record<string, unknown>;
 type PreviewQuestion = { question: string; answer: unknown; fieldType?: string | null };
 const display = (value: unknown): string => value == null || value === "" ? "Not recorded" : typeof value === "boolean" ? value ? "Yes" : "No" : Array.isArray(value) ? value.map(display).join(", ") : typeof value === "object" ? JSON.stringify(value, null, 2) : String(value);
+
+type PreviewField = readonly [label: string, value: unknown];
+
+function ProfileFields({ fields, className = "application-form-fields", markMissing = false, formatLabel }: {
+  fields: readonly PreviewField[];
+  className?: string;
+  markMissing?: boolean;
+  formatLabel?: (label: string) => string;
+}) {
+  return <dl className={className}>
+    {fields.map(([label, value]) => <div key={label}>
+      <dt>{formatLabel ? formatLabel(label) : label}</dt>
+      <dd className={markMissing ? (!value ? "is-missing" : "") : undefined}>{display(value)}</dd>
+    </div>)}
+  </dl>;
+}
+
 export default function ApplicationDocumentsPreview({ application, draft, profile, resume, hasDraft, recordApplication, attempts, loading, error, onRetry, onDownloadResume }: {
   application: Application; draft: Application; profile: Profile; resume?: SavedResume; hasDraft: boolean;
   recordApplication?: Partial<Application>; attempts: Record<string, unknown>[]; loading: boolean; error: string; onRetry: () => void; onDownloadResume?: (resume: SavedResume) => void | Promise<void>;
@@ -22,10 +39,10 @@ export default function ApplicationDocumentsPreview({ application, draft, profil
   const chosenResume = snapshot ? snapshot.resume : resume || application.submittedResume;
   const attachmentId = snapshot?.resume?.id || resume?.id;
   const answered = questions.filter(question => question.answer != null && String(question.answer).trim()).length;
-  const contacts = [
+  const contacts: PreviewField[] = [
     ["Full name", profile.name || [profile.firstName, profile.lastName].filter(Boolean).join(" ")],
     ["Email", profile.email], ["Phone", profile.phone], ["Location", profile.location],
-    ...[ ["LinkedIn", profile.linkedin], ["GitHub", profile.github], ["Portfolio", profile.portfolio], ["Work authorization", profile.authorization] ].filter(([, value]) => Boolean(value)),
+    ...([ ["LinkedIn", profile.linkedin], ["GitHub", profile.github], ["Portfolio", profile.portfolio], ["Work authorization", profile.authorization] ] as PreviewField[]).filter(([, value]) => Boolean(value)),
   ];
   return <section className="application-form-preview" aria-label="Complete application preview">
     <div className="application-form-heading"><div><h3>Application preview</h3><p>{snapshot ? "Saved materials for this attempt" : hasDraft ? "Current draft and profile reference" : "Application has not been prepared"}</p></div><span className={`application-form-badge ${snapshot?.confirmed ? "is-confirmed" : ""}`}>{snapshot ? snapshot.label : "Draft view"}</span></div>
@@ -35,11 +52,11 @@ export default function ApplicationDocumentsPreview({ application, draft, profil
     {historical && !snapshot && !loading && !error && <p className="application-form-caption">No saved attempt snapshot is available here. Showing the current draft reference.</p>}
     <div className="application-form-notice">{snapshot ? "Exact fields saved for this attempt. Employer confirmation does not independently verify every answer." : "Recorded draft answers plus your current profile reference. These details do not prove what was sent."}</div>
     <div className="application-form-material"><ProfileIcon name="file" className="shrink-0 text-board-accent" /><div><h4>{chosenResume?.name || "No resume recorded"}</h4><p>{chosenResume?.version ? `Version ${chosenResume.version}` : "Version not recorded"}{snapshot ? " · Pinned to this attempt" : resume ? " · Selected for this draft" : application.submittedResume ? " · Recorded submitted resume metadata" : ""}</p>{snapshot?.resume?.objectPath && onDownloadResume && <button className={`${secondary} mt-3`} onClick={() => onDownloadResume(snapshot.resume!)}>Download recorded resume</button>}</div></div>
-    {!snapshot && <section className="application-form-section" aria-labelledby="application-contact"><h4 id="application-contact"><ProfileIcon name="user" />Profile reference</h4><p className="application-form-caption">Current account details · not mapped employer fields{profile.verified !== true ? " · not verified" : ""}</p><dl className="application-form-fields">{contacts.map(([label, value]) => <div key={String(label)}><dt>{String(label)}</dt><dd className={!value ? "is-missing" : ""}>{display(value)}</dd></div>)}</dl>
-      {Boolean(profile.headline || profile.skills) && <dl className="application-form-fields mt-5">{Boolean(profile.headline) && <div><dt>Professional headline</dt><dd>{display(profile.headline)}</dd></div>}{Boolean(profile.skills) && <div><dt>Skills</dt><dd>{display(profile.skills)}</dd></div>}</dl>}
+    {!snapshot && <section className="application-form-section" aria-labelledby="application-contact"><h4 id="application-contact"><ProfileIcon name="user" />Profile reference</h4><p className="application-form-caption">Current account details · not mapped employer fields{profile.verified !== true ? " · not verified" : ""}</p><ProfileFields fields={contacts} markMissing />
+      {Boolean(profile.headline || profile.skills) && <ProfileFields className="application-form-fields mt-5" fields={([ ["Professional headline", profile.headline], ["Skills", profile.skills] ] as PreviewField[]).filter(([, value]) => Boolean(value))} />}
       {([ ["Work experience", "workExperience"], ["Education", "education"], ["Projects", "projects"] ] as const).map(([label, key]) => {
         const entries = Array.isArray(profile[key]) ? profile[key] as Record<string, unknown>[] : [];
-        return entries.length > 0 && <section key={key} className="application-form-background"><h5>{label}</h5>{entries.map((entry, index) => <dl className="application-form-fields" key={index}>{Object.entries(entry).filter(([, value]) => value !== undefined && value !== null && value !== "").map(([field, value]) => <div key={field}><dt>{field.replace(/([A-Z])/g, " $1").replace(/^./, letter => letter.toUpperCase())}</dt><dd>{display(value)}</dd></div>)}</dl>)}</section>;
+        return entries.length > 0 && <section key={key} className="application-form-background"><h5>{label}</h5>{entries.map((entry, index) => <ProfileFields key={index} fields={Object.entries(entry).filter(([, value]) => value !== undefined && value !== null && value !== "")} formatLabel={field => field.replace(/([A-Z])/g, " $1").replace(/^./, letter => letter.toUpperCase())} />)}</section>;
       })}
     </section>}
     <section className="application-form-section" aria-labelledby="application-answers"><div className="application-form-heading"><h4 id="application-answers"><ProfileIcon name="conversation" />{snapshot ? "Captured application fields" : "Employer questions & answers"}</h4><span className={`application-form-badge ${questions.length > 0 && answered === questions.length ? "is-complete" : ""}`}>{questions.length ? `${answered}/${questions.length} filled` : "No fields recorded"}</span></div>
