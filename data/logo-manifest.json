@@ -679,5 +679,10 @@
     "url": "https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/public/company-logos/ziprecruiter/ccb1fabdca821395.png",
     "sha256": "ccb1fabdca8213956494869e02e84d454035cd90cbe4e98bdcc87edf12b495ec",
     "contentType": "image/png"
+  },
+  "cactus-max-planck": {
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/cactus-max-planck.png",
+    "sha256": "28f3f01bce75d1cd9269632dde09a630a7137a775dec06bcb9121d2abe7f8dd6",
+    "contentType": "image/png"
   }
 }
