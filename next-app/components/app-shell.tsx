@@ -84,7 +84,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           </Link>
         ))}
       </nav>
-        <div className="workspace-utilities">{w.demo&&<Link href="/onboarding/?demo=1" className="inline-flex min-h-11 items-center rounded-lg border border-board-line px-3 text-xs font-medium text-board-muted hover:border-board-accent hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent">Preview onboarding</Link>}<div className="workspace-desktop-utilities"><ColorModeControl />{!/^\/circles(?:\/|$)/.test(path)&&<details className="workspace-progress text-sm">
+        <div className="workspace-utilities"><div className="workspace-desktop-utilities"><ColorModeControl />{!/^\/circles(?:\/|$)/.test(path)&&<details className="workspace-progress text-sm">
           <summary className="workspace-progress-trigger">
             {w.state?.progress?.xp || 0} XP ·{" "}
             {streak(w.state?.progress?.streakDays)}d streak
