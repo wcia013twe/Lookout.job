@@ -52,10 +52,10 @@ export default function ProfileMenu() {
         </div>
         {(w.demo || (w.user && !w.user.is_anonymous)) && <Link className={item} href="/profile/" onClick={() => setOpen(false)}>My Profile</Link>}
         <Link className={item} href="/progress/#sharing-privacy" onClick={() => setOpen(false)}>Sharing &amp; privacy</Link>
-        {w.canDemo && <div className="mt-2 border-t border-board-line pt-2">
+        {w.demo && <div className="mt-2 border-t border-board-line pt-2">
           <button type="button" className={item} aria-pressed={w.demo}
             onClick={() => { setOpen(false); w.toggleDemo(); }}>
-            {w.demo ? "Exit demo mode" : "Demo mode"}
+            Exit demo mode
           </button>
           {w.demo && <>
             <p className="px-3 pb-1 text-xs leading-5 text-board-muted">Fictional data. Changes stay in memory.</p>

@@ -34,6 +34,8 @@ try {
   } else await page.getByRole('navigation',{name:'Profile sections',exact:true}).waitFor();
   await page.getByRole('button',{name:'Open profile navigation',exact:true}).click();
   const menu=page.getByRole('navigation',{name:'Profile navigation',exact:true});
+  assert.equal(await menu.getByRole('button',{name:'Demo mode',exact:true}).count(),0);
+  assert.equal(await menu.getByRole('button',{name:'Exit demo mode',exact:true}).count(),mode==='demo'?1:0);
   assert.equal(await menu.getByRole('link',{name:'My Profile',exact:true}).count(),mode==='guest'||mode==='anonymous'?0:1);
   await page.screenshot({path:`${dir}/${mode}.png`});
   if(mode==='signed-in') {
