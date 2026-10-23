@@ -24,3 +24,5 @@ Next opens a phone-style status screen polling `onboarding.get_state`; only a ru
 When catalog matching returns no role, onboarding goes directly to connection setup. The Circle introduction stays two short messages with its invitation immediately available; no booking or message is created. Existing scoped tools, permissions and backend state transitions remain unchanged.
 
 The final screen includes device-specific instructions for saving Lookout as a browser app, also covered by demo mode. This is a human browser-menu action, not an agent install capability. The guide is hidden in standalone mode and links to the browser vendor’s help.
+
+Onboarding Circle invites stay inline: the user pastes a code and submits Join Circle through the existing circles.join action and shared authenticated Circle client. The saved preferred/first name is disclosed as their Circle alias; missing names require entry. Retries reuse the same event key for unchanged inputs. Demo membership remains fictional. This replaces navigation to full Circle management during onboarding and adds no backend capability or new MCP scope.

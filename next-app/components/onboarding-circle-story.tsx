@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import OnboardingCircleInvite from "./onboarding-circle-invite";
 import { motion, useReducedMotion } from "framer-motion";
-import { Dots, Icon, Quiet, Title } from "./onboarding-ui";
+import { Dots, Quiet, Title } from "./onboarding-ui";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -59,15 +59,7 @@ export default function OnboardingCircleStory({ onLater }: { onLater: () => void
         </motion.div>}
       </div>
     </div>
-    <div className="circle-story-end">
-      <motion.div {...enter}>
-        <Link href="/circles/" className="circle-invitation">
-          <CirclePeople />
-          <span><strong>Better with company.</strong><span>Find your Circle</span></span>
-          <Icon />
-        </Link>
-      </motion.div>
-    </div>
+    <OnboardingCircleInvite onContinue={onLater}/>
     <Quiet onClick={onLater}>I’ll do this later</Quiet>
   </>;
 }

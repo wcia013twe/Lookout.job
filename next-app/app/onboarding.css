@@ -63,3 +63,7 @@
 .lookout-onboarding .browser-app-instructions p{font-size:13px;color:var(--muted);margin-bottom:12px}
 .lookout-onboarding .browser-app-instructions strong{color:var(--text);font-weight:550}
 .lookout-onboarding .browser-app-instructions a{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+
+.lookout-onboarding .onboarding-circle-invite{margin:28px 0 24px;padding-top:24px;border-top:1px solid var(--line)}
+.lookout-onboarding .onboarding-circle-invite h2{font-size:20px}
+.lookout-onboarding .onboarding-circle-invite .field{margin:16px 0 10px}

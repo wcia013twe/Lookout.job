@@ -25,3 +25,8 @@
 
 - Added optional browser-app save instructions to the final onboarding screen, including demo. The single visible guide adapts to Chrome desktop, Chrome Android, Edge, Safari Mac or iPhone/iPad; unsupported browsers get Chrome guidance. Instructions link to official browser help and hide when already opened as a standalone app. Installation stays a human action in browser menus; no new backend or MCP capability.
 - Save-as-app validation: TypeScript, 147-role data validation and diff checks pass. Desktop Chrome demo final screen visually verified; other device guidance checked against official vendor instructions. Actual app installation was not performed.
+
+- Circle invitation follow-up: onboarding no longer opens the Circles dashboard or its create/join management UI. Added inline “Already have a Circle?” code entry using the existing circles.join service, owner-guarded client and retry idempotency. Reuses the saved name with a visible alias disclosure; only asks for a name when none is saved. Demo uses demo-invite with isolated membership. The full Circles dashboard remains available outside onboarding.
+- Inline invite validation: 486 tests, TypeScript, data validation, diff check and production static export pass (existing Next.js advisory required a build retry). Browser verified blank-code disabling, isolated demo-invite success and remaining inside onboarding. Real account joins were not performed.
+
+- Added a small Open onboarding link below Profile settings, visible from every Profile section. Replaces the hidden Change companion entry in My Agent. Demo links preserve demo mode explicitly. Validation: TypeScript, catalog validation and diff check. Navigation-only UI; no backend or MCP service change.

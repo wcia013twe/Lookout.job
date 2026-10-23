@@ -27,3 +27,9 @@ test('weekly prep budgets and session history persist without crossing guest or 
  s.switchAccount(one);assert.equal(s.get('workflow.preparationPlanner').settings.dailyMinutes,30);assert.equal(s.get('workflow.preparationPlanner').sessions[0].id,'one-session');
  s.switchAccount(null);assert.equal(s.get('workflow.preparationPlanner').settings.dailyMinutes,15);assert.equal(s.get('workflow.preparationPlanner').sessions[0].id,'guest-session');
 });
+
+test('workspace reset clears only the current account cache, preserves guest and other accounts, and persists its reset epoch',()=>{
+ const s=store();s.set('workflow.profile.name','Guest');s.switchAccount(two);s.set('workflow.profile.name','Two');s.switchAccount(one);s.set('workflow.profile.name','One');s.set('network.companies',[{name:'Private'}]);
+ assert.throws(()=>s.clearAccountCache(two,'reset'),/Account changed/);s.clearAccountCache(one,'reset');assert.equal(s.get('workflow.profile.name'),'');assert.equal(s.get('network.companies').length,0);assert.equal(s.get('resetEpoch'),'reset');
+ s.switchAccount(two);assert.equal(s.get('workflow.profile.name'),'Two');s.switchAccount(null);assert.equal(s.get('workflow.profile.name'),'Guest');s.switchAccount(one);assert.equal(s.get('resetEpoch'),'reset');
+});

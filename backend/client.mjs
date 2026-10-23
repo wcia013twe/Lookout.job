@@ -47,7 +47,25 @@ function createBackend(client, expectedUserId = null) {
         .single(),
     );
   }
+  async function resetRequest(body) {
+    const id=await owner();
+    const data=await result(client.functions.invoke('workspace-reset',{body}));
+    if(await owner()!==id)throw Error('Account changed');
+    if(!data?.data)throw Error('Reset returned no receipt');
+    return data.data;
+  }
   return {
+    async readResetState() {
+      const id=await owner();
+      const {data,error}=await client.rpc('workspace_reset_state');
+      if(await owner()!==id)throw Error('Account changed');
+      // Older deployments cannot reset workspaces yet; keep their normal sync.
+      if(error && ['PGRST202','42883'].includes(error.code))return {};
+      if(error)throw error;
+      return data;
+    },
+    previewWorkspaceReset() { return resetRequest({action:'preview'}); },
+    resetWorkspace(payload) { return resetRequest({action:'reset',...payload}); },
     async onboardingAction(operation, payload = {}) {
       await owner();
       return result(client.rpc("onboarding_action", { operation, payload }));
