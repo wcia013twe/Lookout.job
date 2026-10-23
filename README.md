@@ -81,7 +81,7 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 | Public Discover | Browse without login; shared static JSON catalog remains available |
 | Google account | Optional sign-in, remembered session and sign-out; real user round-trip still needs verification |
 | Cloud workspace | Signed-in profile, rankings, answers, resumes and drafts sync automatically; offline changes are retained; conflicting drafts pause for review |
-| Company rankings | Editable/drag-and-drop Full-time and Internship profiles; Oracle is the full-time C-tier baseline |
+| Company rankings | Editable/drag-and-drop Full-time and Internship lists, available in card pack settings under Company ranking; Oracle is the full-time C-tier baseline |
 | Saved answers | Reviewed exact-question autofill, company scope and Always ask me; no overwrite of existing draft text |
 | Private resumes | PDF/DOCX uploads, immutable file versions, checksums and short-lived private download links |
 | Action Board / Applications | Checklist-style handoffs and Muse-organized preparation reminders alongside versioned approval, blockers, human progress reports, immutable submitted drafts and server timeline |
@@ -649,3 +649,24 @@ reload or Reset demo data. It never opens a real file or accesses account storag
 Profile access: the profile-menu link and `/profile/` editor require a signed-in, non-anonymous account. Signed-out direct visits return to Discover after auth initialization; the editor and profile providers do not mount during that check. Detached fictional demo mode retains its resettable in-memory profile. This is a frontend navigation gate; existing owned backend/MCP validation remains the data-access boundary.
 
 My Agent schedule defaults: when no schedule has been saved, Set the search opens with Morning sweep (08:00), Midday check-in (12:00), Afternoon focus (15:00), and Evening networking (20:00) in the browser’s time zone. Defaults are an unsaved draft until Save tasks. An intentionally empty saved schedule stays empty and offers Use default schedule as an explicit draft action. Existing timings, paused tasks and assignments remain intact. General discovery/task/source/update explanations are available from info buttons; open with click or keyboard, dismiss with Escape or outside click. Saving preferences requests timing and does not activate an agent scheduler.
+
+### Company ranking in pack settings
+
+My Agent → Card packs → Company ranking opens the existing shared tier-list editor,
+including list creation, duplication, company moves and an Unranked row. These edits
+save through the existing preference sync independently of the pack form; cancelling
+a pack does not undo ranking edits. Application/search profiles continue to select
+the relevant list. Choosing a list in the editor changes the account’s active list,
+not an existing profile’s explicit list selection.
+
+New pack tasks ask the agent to read the active profile’s selected list, use company
+tiers as a baseline alongside role/team scope and personal fit, and investigate
+unranked companies. Existing task instructions and published cards are preserved.
+Ranking is agent reasoning, not a new deterministic server scoring engine. The demo
+uses the same editor with disposable in-memory preferences and fictional task text.
+
+MCP mapping reuses `read_personal_context` and `save_company_tiers`
+(`preferences.tiers.save`, `preferences:write`, with `expectedUpdatedAt`), plus
+`save_search_profile` for explicit profile list selection. New task text travels
+through `save_notification_preferences`; pack metadata still uses
+`save_theme_preferences`. No new service, schema or deployed capability is introduced.

@@ -32,6 +32,17 @@ try{
  await page.getByText('Demo tasks saved. Changes stay in this preview.',{exact:true}).waitFor();
  assert.equal(await page.getByLabel('Run timing',{exact:true}).inputValue(),'manual');
  assert.equal(await page.getByRole('navigation',{name:'Agent settings',exact:true}).count(),0,'My Agent uses one scrollable page');
+ const ranking=page.locator('#agent-panel-packs details').filter({has:page.locator('summary').filter({hasText:'Company ranking'})});
+ await ranking.locator('summary').click();
+ const rankingEditor=ranking.locator('section').filter({has:page.getByRole('heading',{name:'Company tier lists',exact:true})});
+ await rankingEditor.locator('select').waitFor();
+ await rankingEditor.getByLabel('Custom company name',{exact:true}).fill('Fictional Pack Compute');
+ await rankingEditor.getByRole('button',{name:'Add company',exact:true}).click();
+ await rankingEditor.getByRole('button',{name:'Fictional Pack Compute',exact:true}).click();
+ await rankingEditor.getByRole('button',{name:'S',exact:true}).click();
+ assert.equal(await rankingEditor.getByRole('button',{name:'Fictional Pack Compute',exact:true}).count(),1);
+ await rankingEditor.getByRole('button',{name:'Duplicate list',exact:true}).click();
+ assert.match(await rankingEditor.getByLabel('List name',{exact:true}).inputValue(),/copy$/);
  await page.getByRole('button',{name:'Add card pack',exact:true}).click();
  await page.getByLabel('Pack name',{exact:true}).fill('My second pack');
  const packForm=page.getByRole('form',{name:'Card pack setup',exact:true});
@@ -40,7 +51,7 @@ try{
  await packForm.getByLabel('Daily at',{exact:true}).fill('10:30');
  await page.getByRole('heading',{name:'My second pack',exact:true}).waitFor();
  assert.equal(await page.getByLabel('Pack name',{exact:true}).inputValue(),'My second pack','Tab switches retain unsaved pack edits');
- assert.equal(await page.getByRole('heading',{name:'Writing style',exact:true}).count(),0,'Other settings are hidden from pack editing');
+ assert.equal(await page.locator('#agent-panel-packs').getByRole('heading',{name:'Writing style',exact:true}).count(),0,'Other settings are hidden from pack editing');
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  await page.locator('#pack-setup').screenshot({path:`${dir}/packs-mobile.png`});
  await page.setViewportSize({width:1440,height:1000});
@@ -68,7 +79,7 @@ try{
  await page.getByRole('link',{name:'Set up packs & connection',exact:true}).click();
  await page.getByRole('heading',{name:'My Agent',exact:true}).waitFor();
  await page.reload();
- await page.getByText('Find fictional roles for my discovery pack.',{exact:true}).waitFor();
+ await page.getByText(/Find fictional roles for my discovery pack\. Use the fictional search profile/).waitFor();
  assert.equal(await page.getByText('My new search',{exact:true}).count(),0);
  assert.deepEqual(calls,[],'Demo must not contact account storage');await demo.close();
  const account=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',serviceWorkers:'block'});
@@ -95,7 +106,7 @@ try{
  await real.getByRole('button',{name:'Cancel',exact:true}).click();
  assert.equal(await real.getByRole('heading',{name:/Zero2Sudo/}).count(),0);assert.deepEqual(archiveCalls,[]);
  await real.screenshot({path:`${dir}/fresh-account-desktop.png`,fullPage:true});
- fail=true;await real.reload();await real.getByRole('alert',{name:'API request failed'}).filter({hasText:'card_packs.settings.read'}).waitFor();
+ fail=true;await real.reload();await real.locator('#agent-panel-packs').getByRole('alert',{name:'API request failed'}).filter({hasText:'card_packs.settings.read'}).waitFor();
  assert.doesNotMatch(await real.locator('body').innerText(),/private details/);
  assert.equal(await real.getByRole('button',{name:'Add card pack',exact:true}).count(),0);
  assert.deepEqual(errors,[]);console.log('Verified same-page connection/source/task/pack setup, live preview, demo reset, demo isolation, desktop/mobile layout, empty real account and explicit API failure.');

@@ -12,6 +12,7 @@ import DailyDrops from './daily-drops';
 import { PackSetupSuggestion } from './discovery-setup-link';
 import PackSetupPreview from './pack-setup-preview';
 import ApiError from './api-error';
+import TierLists from './tierlists';
 import {Field,Notice,control,primary,secondary} from './ui';
 import {createPackTask,savePackWithTask} from '../../lib/card-pack-setup.mjs';
 import type {AgentConnection} from './agent-connections';
@@ -133,6 +134,15 @@ export default function CardPackWidgets({onOpened,configure=false,onEditSearch,c
         {packs.some(p=>p.id===draft.id)&&<button type="button" className="ml-auto min-h-11 px-2 text-sm text-board-muted underline underline-offset-4" aria-label={`Remove ${draft.title}`} disabled={busy} onClick={()=>void save(packs.filter(p=>p.id!==draft.id))}>Remove pack</button>}
       </div>
     </fieldset></form>}
+    <details className="border-t border-board-line pt-4">
+      <summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold">Company ranking</summary>
+      <div className="space-y-4 pt-2">
+        <p className="text-sm text-board-muted">Tune the company tiers your agent uses when ranking pack discoveries. Keep separate lists for full-time roles and internships. These are shared account preferences. Selecting a list here changes the account’s active list; it does not replace a list explicitly selected in your search profile. Choose the discovery list in your profile’s Company priorities settings.</p>
+        <p className="text-sm text-board-muted">Company tier is a baseline. Team, technical scope and personal fit can outweigh it. Unranked companies need investigation rather than automatic exclusion.</p>
+        <p className="text-xs text-board-muted">Ranking edits save separately from this pack. Existing cards stay as published; your agent uses saved preferences on its next discovery run.</p>
+        <TierLists/>
+      </div>
+    </details>
     </div><PackSetupPreview title={draft?.title||packs[0]?.title||"My discovery pack"}/>
    </div>}
   </>}
