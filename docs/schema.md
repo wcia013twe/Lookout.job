@@ -506,4 +506,4 @@ cannot spoof that route. `read_batch` and personal-context reads remain availabl
 without the UI. Opening/revealing a pack remains local presentation state.
 
 Migration: `20261023054007_account_card_pack_widgets.sql`. Gateway instruction
-version 45 describes this contract; local verification is not a hosted release claim.
+version 46 describes this contract; local verification is not a hosted release claim.
