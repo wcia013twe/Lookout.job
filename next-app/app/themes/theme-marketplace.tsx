@@ -24,14 +24,14 @@ function Preview({ theme, surface, small = false }: { theme: Theme; surface: str
     </div>
   </div>;
 }
-export default function ThemeMarketplace() {
+export default function ThemeMarketplace({embedded = false}: {embedded?: boolean}) {
   const [surface, setSurface] = useState('Dashboard');
   const [selected, setSelected] = useState(themes[0]);
   const [collection, setCollection] = useState('Browse');
   const [saved, setSaved] = useState<string[]>([]);
   const results = themes.filter(t => collection === 'Browse' || saved.includes(t.id));
-  return <section className={styles.marketplace}>
-    <header className={styles.heading}><div><h1>Make yourself at home.</h1><p>Explore a new look for your Dashboard and Circles.</p></div><div className={styles.switcher} aria-label="Preview surface">{['Dashboard', 'Circles'].map(s => <button key={s} type="button" aria-pressed={surface === s} onClick={() => setSurface(s)}>{s}</button>)}</div></header>
+  return <section className={`${styles.marketplace} ${embedded ? styles.embedded : ""}`} aria-label={embedded ? "Marketplace" : undefined}>
+    <header className={styles.heading}><div>{embedded ? <h2 className={styles.sectionTitle}>Marketplace</h2> : <h1>Make yourself at home.</h1>}<p>Explore a new look for your Dashboard and Circles.</p></div><div className={styles.switcher} aria-label="Preview surface">{['Dashboard', 'Circles'].map(s => <button key={s} type="button" aria-pressed={surface === s} onClick={() => setSurface(s)}>{s}</button>)}</div></header>
     <div className={styles.layout}>
       <section className={styles.stage} aria-label={`${surface} theme preview`}><div className={styles.stageHeading}><h2>{surface} preview</h2><span>Fictional sample content</span></div><Preview theme={selected} surface={surface}/><div className={styles.selection}><div><h2>{selected.name}</h2><p>{selected.description}</p></div><button type="button" aria-pressed={saved.includes(selected.id)} onClick={() => setSaved(current => current.includes(selected.id) ? current.filter(id => id !== selected.id) : [...current, selected.id])}>{saved.includes(selected.id) ? 'Saved for this visit' : 'Save for this visit'}</button></div><p className={styles.previewHelp}>Theme concepts · Preview only. Your workspace appearance stays as it is.</p></section>
       <aside className={styles.gallery} aria-label="Theme marketplace"><div className={styles.switcher}>{['Browse', 'Saved'].map(tab => <button type="button" key={tab} aria-pressed={collection === tab} onClick={() => setCollection(tab)}>{tab}{tab === 'Saved' ? ` (${saved.length})` : ''}</button>)}</div><p className={styles.resultCount} aria-live="polite">{results.length} theme concepts for {surface}</p><div className={styles.themeGrid}>{results.map(theme => <button type="button" key={theme.id} className={styles.themeCard} aria-pressed={selected.id === theme.id} onClick={() => setSelected(theme)}><Preview theme={theme} surface={surface} small/><span className={styles.cardCaption}><strong>{theme.name}</strong><span>{selected.id === theme.id ? 'Previewing' : theme.category}</span></span></button>)}</div>{!results.length && <div className={styles.empty}><h2>Keep a few favorites.</h2><p>Save a theme from the preview to compare it here during this visit.</p><button type="button" onClick={() => setCollection('Browse')}>Browse all themes</button></div>}</aside>
