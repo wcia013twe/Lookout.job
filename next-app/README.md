@@ -352,7 +352,21 @@ and tasks are available to the next step without navigation or reload. Discover 
 the feeds and a compact setup link; empty/new workspaces receive a setup suggestion.
 
 Pack rows keep only Edit and Copy request visible; enable/disable and removal live
-in the editor. Other agent preferences are in Other settings. The pack editor
+in the editor. Other agent preferences are in Other settings. **Add card pack** drafts a dedicated scheduled search task automatically, with an
+editable discovery prompt, a 09:00 requested time, up to eight configured sources
+and four active publishing connections. No existing task is required. Saving creates
+the task and then its linked pack through the existing scoped actions. Existing
+recurring-run pauses, time zone, tasks and unrelated theme settings are preserved.
+Missing sources/connections can be assigned in Search after saving; no permissions
+or running scheduler are created.
+
+The two saves are not atomic. Stable task/pack IDs reconcile retries, including
+lost success responses; if only the task saves, the form reports that and retries
+the pack without creating another task. Conflicting task content is never silently
+overwritten. Search receives saved tasks immediately while preserving user-edited
+drafts for explicit conflict resolution.
+
+The pack editor
 includes an interactive, explicitly fictional preview that follows
 the draft name. Preview state is component-local: no feed reads, account writes,
 reveal stamps, application links or XP. Saved packs continue using the real feed.

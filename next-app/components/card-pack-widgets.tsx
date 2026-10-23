@@ -13,6 +13,8 @@ import { PackSetupSuggestion } from './discovery-setup-link';
 import PackSetupPreview from './pack-setup-preview';
 import ApiError from './api-error';
 import {Field,Notice,control,primary,secondary} from './ui';
+import {createPackTask,savePackWithTask} from '../../lib/card-pack-setup.mjs';
+import type {AgentConnection} from './agent-connections';
 type Pack={id:string;title:string;enabled:boolean;taskId:string;archive?:string};
 type Source={id:string;name:string;address:string};
 type Task={id:string;title:string;enabled:boolean;sourceIds?:string[];connectionIds?:string[]};
@@ -30,10 +32,12 @@ function Feed({pack,api,demo,onOpened}:{pack:Pack;api:ReturnType<typeof createBa
  },[api,pack.id,pack.archive,demo,retry,offset]);
  return <><ApiError message={error} cached={drops.length>0} onRetry={()=>setRetry(v=>v+1)}/>{loading?<Notice>Loading {pack.title}…</Notice>:!error&&<DailyDrops id={pack.id} title={pack.title} drops={drops} onOpened={onOpened}/>} {pack.archive==='zero2sudo'&&<p className="mb-4 text-xs text-board-muted">Includes the dated Zero2Sudo archive. Historical cards are not freshly verified openings.</p>}{!error&&next!==null&&<button className={secondary} disabled={loading} onClick={()=>setOffset(next)}>Load older packs</button>}</>;
 }
-export default function CardPackWidgets({onOpened,configure=false,onEditSearch}:{onOpened?:(drops:Drop[])=>void;configure?:boolean;onEditSearch?:()=>void}){
+export default function CardPackWidgets({onOpened,configure=false,onEditSearch,connections=[]}:{onOpened?:(drops:Drop[])=>void;configure?:boolean;onEditSearch?:()=>void;connections?:AgentConnection[]}){
  const w=useWorkspace(),owner=w.demo?'demo':w.user?.id;
  const api=useMemo(()=>w.user&&w.client?createBackend(w.client,w.user.id):null,[w.user?.id,w.client]);
  const [setup,setSetup]=useState<Setup|null>(null),[draft,setDraft]=useState<Pack|null>(null),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[reload,setReload]=useState(0);
+ const [newTask,setNewTask]=useState<ReturnType<typeof createPackTask>|null>(null);
+ const [committedTask,setCommittedTask]=useState<ReturnType<typeof createPackTask>|null>(null);
  const active=useRef(true);useEffect(()=>{active.current=true;return()=>{active.current=false;};},[]);
  const packs:Pack[]=setup?.theme.cardPacks||[];
  const savedSchedule=w.state.workflow.searchPreferences?.schedule;
@@ -43,7 +47,41 @@ export default function CardPackWidgets({onOpened,configure=false,onEditSearch}:
   const read=w.demo?Promise.resolve({theme:w.store.get('workflow.theme'),sources:w.store.get('workflow.searchPreferences.targets')||[],schedule:w.store.get('workflow.searchPreferences.schedule')||null,updatedAt:null}):api!.readCardPackSettings();
   read.then(value=>{if(current)setSetup(value);}).catch(failure=>{if(current)setError(apiErrorText('card_packs.settings.read',failure));}).finally(()=>{if(current)setLoading(false);});return()=>{current=false;};
  },[api,owner,w.demo,w.demoEpoch,reload]);
- function edit(pack?:Pack){setError('');setNotice('');setDraft(pack?structuredClone(pack):{id:crypto.randomUUID(),title:'My card pack',enabled:true,taskId:tasks[0]?.id||'',archive:'none'});}
+ function edit(pack?:Pack){
+  setError('');setNotice('');setCommittedTask(null);
+  if(pack){setNewTask(null);setDraft(structuredClone(pack));return;}
+  const id=crypto.randomUUID(),title='My card pack';
+  const task=createPackTask({packId:id,title,sources:w.state.workflow.searchPreferences?.targets||setup?.sources||[],connections});
+  setNewTask(task);setDraft({id,title,enabled:true,taskId:task.id,archive:'none'});
+ }
+ async function saveNewPack(){
+  if(!draft||!newTask||!setup)return;
+  setBusy(true);setError('');setNotice('');let taskSaved=false;
+  try {
+   const readSettings=async()=>w.demo?{theme:w.store.get('workflow.theme')||{},sources:w.store.get('workflow.searchPreferences.targets')||[],schedule:w.store.get('workflow.searchPreferences.schedule')||null,updatedAt:null}:api!.readCardPackSettings();
+   const performAction=async(operation:string,payload:any)=>{
+    if(!w.demo)return api!.performPlatformAction(operation,payload);
+    if(operation==='preferences.notifications.save'){
+     w.store.update('workflow.searchPreferences',(previous:Record<string,unknown>)=>({...previous,schedule:payload.settings.schedule}));
+     return {search:{schedule:payload.settings.schedule},updated_at:null};
+    }
+    w.store.update('workflow.theme',(previous:Record<string,unknown>)=>({...previous,...payload.theme}));
+    return {theme:payload.theme,updated_at:null};
+   };
+   const saved=await savePackWithTask({readSettings,performAction,pack:draft,task:committedTask||{...newTask,title:`${draft.title} discovery`},expectedPackVersion:setup.theme.cardPacksVersion||0,
+    timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',
+    onTaskSaved:(schedule:any,updatedAt:string|null)=>{
+     taskSaved=true;if(!active.current)return;
+     w.store.update('workflow.searchPreferences',(previous:Record<string,unknown>)=>({...previous,schedule}));
+     setSetup(previous=>previous?{...previous,schedule,updatedAt}:previous);setCommittedTask(schedule.routines.find((task:Task)=>task.id===draft.taskId));
+    }});
+   if(!active.current)return;
+   setSetup(previous=>previous?{...previous,theme:saved.theme,updatedAt:saved.updated_at}:previous);
+   w.store.update('workflow.theme',(previous:Record<string,unknown>)=>({...previous,cardPacks:saved.theme.cardPacks,cardPacksVersion:saved.theme.cardPacksVersion}));
+   setDraft(null);setNewTask(null);setCommittedTask(null);setNotice(w.demo?'Pack and task saved in demo memory.':'Pack and task saved. Copy the request to your agent.');
+  }catch(failure){if(active.current)setError(`${taskSaved?'Task saved. Retry Save card pack to finish. ':''}${failure instanceof Error&&failure.name!=='ApiFailure'?failure.message:apiErrorText('preferences.theme.save',failure)}`);}
+  finally{if(active.current)setBusy(false);}
+ }
  async function save(next:Pack[]){
   if(!setup)return;setBusy(true);setError('');setNotice('');
   try{validateCardPacks(next);
@@ -57,7 +95,7 @@ export default function CardPackWidgets({onOpened,configure=false,onEditSearch}:
    setDraft(null);setNotice(w.demo?'Pack setup saved in demo memory.':'Card pack setup saved to your account.');
   }catch(failure){if(active.current)setError(failure instanceof Error&&failure.name!=='ApiFailure'?failure.message:apiErrorText('preferences.theme.save',failure));}finally{if(active.current)setBusy(false);}
  }
- function submit(event:FormEvent){event.preventDefault();if(draft)void save([...packs.filter(p=>p.id!==draft.id),draft]);}
+ function submit(event:FormEvent){event.preventDefault();if(draft)void (newTask?saveNewPack():save([...packs.filter(p=>p.id!==draft.id),draft]));}
  if(!owner)return configure?<p className="py-4 text-sm text-board-muted">Sign in to save card packs to your account.</p>:<PackSetupSuggestion/>;
  return <section className={configure?"my-2":"my-6"} aria-label="Your card packs">
   <div className={configure?"sr-only":"mb-4 flex flex-wrap items-center justify-between gap-3"}><h2 className="text-lg font-semibold">{configure?'Card packs':'Your card packs'}</h2>{!configure&&packs.some(p=>p.enabled)&&<Link className={secondary} href={w.demo?"/profile/?section=agent&demo=1#pack-setup":"/profile/?section=agent#pack-setup"}>Set up packs &amp; connection</Link>}</div>
@@ -73,22 +111,28 @@ export default function CardPackWidgets({onOpened,configure=false,onEditSearch}:
         <button className={secondary} aria-label={`Edit ${pack.title}`} disabled={busy} onClick={()=>edit(pack)}>Edit</button>
       </div>
     </li>)}</ul>
-    {!tasks.length&&<p className="text-sm text-board-muted">Create a search task to fill your pack. <button type="button" className="min-h-11 px-1 font-semibold text-board-accent underline" onClick={onEditSearch}>Set up a task</button></p>}
-    {!draft&&<button className={primary} disabled={busy||packs.length>=8||!tasks.length} onClick={()=>edit()}>Add card pack</button>}
-    {draft&&<form onSubmit={submit} className="space-y-4 border-t border-board-line pt-4" aria-label="Card pack setup">
+
+    {!draft&&<button className={primary} disabled={busy||packs.length>=8} onClick={()=>edit()}>Add card pack</button>}
+    {draft&&<form onSubmit={submit} className="space-y-4 border-t border-board-line pt-4" aria-label="Card pack setup"><fieldset disabled={busy} className="space-y-4">
       <Field label="Pack name"><input className={control} required maxLength={80} value={draft.title} onChange={e=>setDraft({...draft,title:e.target.value})}/></Field>
-      <Field label="My Agent task"><select aria-label="My Agent task" className={control} required disabled={busy} value={draft.taskId} onChange={e=>setDraft({...draft,taskId:e.target.value,archive:'none'})}><option value="">Choose a task</option>{tasks.map((task:Task)=><option key={task.id} value={task.id}>{task.title}{task.enabled?'':' (paused)'}</option>)}</select></Field>
+      {newTask?<div className="space-y-3">
+        <Field label="Task instructions"><textarea aria-label="Task instructions" className={control} rows={5} required disabled={Boolean(committedTask)} maxLength={4000} value={newTask.description} onChange={e=>setNewTask({...newTask,description:e.target.value})}/></Field>
+        <div className="grid grid-cols-2 items-end gap-3"><Field label="Daily at"><input className={control} type="time" required disabled={Boolean(committedTask)} value={newTask.time} onChange={e=>setNewTask({...newTask,time:e.target.value})}/></Field><p className="pb-3 text-xs text-board-muted">{savedSchedule?.timezone||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'}</p></div>
+        <p className="text-xs text-board-muted">{newTask.sourceIds.length} {newTask.sourceIds.length===1?'source':'sources'} · {newTask.connectionIds.length} {newTask.connectionIds.length===1?'agent':'agents'} selected. {(!newTask.sourceIds.length||!newTask.connectionIds.length)&&'Assign missing sources or an agent in Search after saving.'}</p>
+        <p className="text-xs text-board-muted">Creates a linked task. Your agent arranges recurring runs.{savedSchedule?.enabled===false?' Recurring runs are currently off.':''}</p>
+      </div>:<><Field label="My Agent task"><select aria-label="My Agent task" className={control} required disabled={busy} value={draft.taskId} onChange={e=>setDraft({...draft,taskId:e.target.value,archive:'none'})}><option value="">Choose a task</option>{tasks.map((task:Task)=><option key={task.id} value={task.id}>{task.title}{task.enabled?'':' (paused)'}</option>)}</select></Field></>}
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" checked={draft.enabled} onChange={e=>setDraft({...draft,enabled:e.target.checked})}/>Enabled</label>
-        <button type="button" onClick={onEditSearch} className="min-h-11 text-sm text-board-accent underline underline-offset-4">Edit search</button>
+        {!newTask&&<button type="button" onClick={onEditSearch} className="min-h-11 text-sm text-board-accent underline underline-offset-4">Edit search</button>}
       </div>
       {tasks.find((t:Task)=>t.id===draft.taskId)?.sourceIds?.includes('zero2sudo')&&<label className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={draft.archive==='zero2sudo'} onChange={e=>setDraft({...draft,archive:e.target.checked?'zero2sudo':'none'})}/>Include historical Zero2Sudo cards</label>}
       <div className="flex flex-wrap items-center gap-2">
         <button className={primary} disabled={busy}>{busy?'Saving…':'Save card pack'}</button>
-        <button type="button" className={secondary} disabled={busy} onClick={()=>setDraft(null)}>Cancel</button>
+        <button type="button" className={secondary} disabled={busy} onClick={()=>{setDraft(null);setNewTask(null);setCommittedTask(null);}}>Cancel</button>
         {packs.some(p=>p.id===draft.id)&&<button type="button" className="ml-auto min-h-11 px-2 text-sm text-board-muted underline underline-offset-4" aria-label={`Remove ${draft.title}`} disabled={busy} onClick={()=>void save(packs.filter(p=>p.id!==draft.id))}>Remove pack</button>}
       </div>
-    </form>}
+    </fieldset></form>}
     </div><PackSetupPreview title={draft?.title||packs[0]?.title||"My discovery pack"}/>
    </div>}
   </>}

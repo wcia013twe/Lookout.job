@@ -17,3 +17,10 @@
 - Follow-up validation: 517 tests, catalog validation (147 roles), production build/typecheck, desktop/mobile browser workflow and visual review; detector clean. Existing dependency advisory remains.
 - Integrated concurrent default-schedule/help-popover work; retained default restoration and updated its browser check for the Search tab.
 - Final integrated verification: 520 tests, data validation, production build/typecheck and both pack/schedule browser suites passed, including missing/empty/custom schedules, keyboard help, retained drafts and desktop/mobile screenshots.
+
+## Automatic task setup follow-up
+
+- Add card pack now drafts a dedicated scheduled task with editable, prewritten discovery instructions and a 09:00 requested time. No separate task creation or selection is required for a new pack.
+- Prefills bounded existing sources and active publishing connections; users can complete missing assignments in Search. Preserves existing schedule pauses, time zone, tasks and theme preferences.
+- Composes the existing notification/theme save actions with stable IDs, version checks and partial-save reconciliation. Task/pack writes are not atomic; retry and conflicting-task cases remain explicit. No scheduler, new permission or backend/MCP capability is introduced.
+- Search reflects the saved task without discarding user-edited drafts. Demo follows the same composed save flow and remains memory-only.

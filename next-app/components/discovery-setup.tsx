@@ -24,7 +24,7 @@ export default function DiscoverySetup({children}:{children?:ReactNode}) {
       {sections.map(([id,label])=><button key={id} type="button" aria-pressed={active===id} aria-controls={`agent-panel-${id}`} onClick={()=>setActive(id)}
         className={`min-h-11 border-b-2 px-1 text-sm font-semibold transition-colors hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-board-accent ${active===id?"border-board-accent text-board-text":"border-transparent text-board-muted"}`}>{label}</button>)}
     </nav>
-    <div id="agent-panel-packs" hidden={active!=="packs"}><CardPackWidgets configure onEditSearch={()=>setActive("search")}/></div>
+    <div id="agent-panel-packs" hidden={active!=="packs"}><CardPackWidgets configure connections={connections} onEditSearch={()=>setActive("search")}/></div>
     <div className="[&>.workspace-section]:mt-0 [&>.workspace-section]:border-t-0 [&>.workspace-section]:pt-0" id="agent-panel-search" hidden={active!=="search"}><DailySchedule connections={connections}/></div>
     <div className="[&>.workspace-section]:mt-0 [&>.workspace-section]:border-t-0 [&>.workspace-section]:pt-0" id="agent-panel-sources" hidden={active!=="sources"}><SearchTargets/></div>
     <div className="[&>.workspace-section]:mt-0 [&>.workspace-section]:border-t-0 [&>.workspace-section]:pt-0" id="agent-panel-connections" hidden={active!=="connections"}><AgentConnections onConnectionsChange={setConnections}/></div>
