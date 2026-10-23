@@ -29,7 +29,7 @@ function DiscoverBoard() {
   const a = useApplicationProfile();
   const [publicView,setPublicView]=useState(false);
   const newArrival=showAgentEmptyState({signedIn:!!w.user,hasPrivateBatch:w.hasPrivateBatch,demo:w.demo,demoArrival:w.state.ui?.dashboardArrival});
-  const sourceRoles=(publicView?(w.publicRoles||w.roles):w.roles).filter((role:Role)=>matchesProfileEmployment(role,a.profile));
+  const sourceRoles=(publicView?(w.publicRoles||w.roles):w.roles).filter((role:Role)=>matchesProfileEmployment(role,a.profile)).map((role:Role)=>({...role,rankingProfile:a.profile}));
   const sourceDate=publicView?(w.publicDate||w.date):w.date;
   const savedRole=!w.demo?savedOnboardingRole([a.profile],w.publicRoles||w.roles):null;
   const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)?savedRole:null;

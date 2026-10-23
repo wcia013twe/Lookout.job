@@ -30,5 +30,5 @@ export function packAgentRequest(pack){
 }
 export function batchPackDrops(batches,items){
  const dates=new Map(batches.map(b=>[b.id,b.batch_date]));
- return items.map(item=>{const job=item.jobs,rec=item.recommendation||{},employer=job?.employer||{};return {company:employer.company||'Unknown company',title:employer.title||'Untitled role',dateSeen:dates.get(item.batch_id),type:employer.employmentType||'FT',location:employer.location||null,comp:typeof employer.compensation==='string'?employer.compensation:null,status:rec.dropStatus||'pending',note:typeof rec.note==='string'?rec.note:typeof rec.whyItFits==='string'?rec.whyItFits:null,skipReason:rec.skipReason||null,url:job?.canonical_url||null};}).filter(d=>d.dateSeen);
+ return items.map(item=>{const job=item.jobs,rec=item.recommendation||{},employer=job?.employer||{};return {searchProfileId:rec.searchProfileId,company:employer.company||'Unknown company',title:employer.title||'Untitled role',dateSeen:dates.get(item.batch_id),type:employer.employmentType||'',location:employer.location||null,comp:typeof employer.compensation==='string'?employer.compensation:null,status:rec.dropStatus||'pending',note:typeof rec.note==='string'?rec.note:typeof rec.whyItFits==='string'?rec.whyItFits:null,skipReason:rec.skipReason||null,url:job?.canonical_url||null};}).filter(d=>d.dateSeen);
 }

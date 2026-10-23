@@ -32,7 +32,14 @@ function demoSearchProfiles() {
  });
 }
 function demoTierLists() {
- return ['FT', 'Internship'].map((employmentType, index) => ({ id: index ? 'demo-intern-tiers' : 'demo-ft-tiers', name: (index ? 'Internship' : 'Full-time') + ' company priorities (demo)', employmentType, description: 'Fictional companies and rankings for demo mode.', tiers: [{id:'S',label:'S'},{id:'A',label:'A'},{id:'B',label:'B'}], companies: [{id:'demo-example-systems',name:'Example Systems (demo)'},{id:'demo-example-compute',name:'Example Compute (demo)'}], placements: {S:[index ? 'demo-example-compute' : 'demo-example-systems'], A:[], B:[index ? 'demo-example-systems' : 'demo-example-compute'], unranked:[]} }));
+ const brands=['NVIDIA','Databricks','Google','Oracle','Stripe','Robinhood'];
+ return ['FT', 'Internship'].map((employmentType, index) => ({
+  id:index?'demo-intern-tiers':'demo-ft-tiers',name:(index?'Internship':'Full-time')+' company priorities (demo)',employmentType,
+  description:'Illustrative demo rankings only; includes fictional employers and real brand names, not a personal assessment.',
+  tiers:['S','A','B','C','D'].map(id=>({id,label:id})),
+  companies:[{id:'demo-example-systems',name:'Example Systems (demo)'},{id:'demo-example-compute',name:'Example Compute (demo)'},...brands.map((name,i)=>({id:`demo-brand-${i}`,name}))],
+  placements:{S:[index?'demo-example-compute':'demo-example-systems','demo-brand-1','demo-brand-2'],A:['demo-brand-0','demo-brand-4'],B:[index?'demo-example-systems':'demo-example-compute','demo-brand-5'],C:[],D:['demo-brand-3'],unranked:[]}
+ }));
 }
 
 function baseDemoFixtures(date) {
