@@ -12,6 +12,7 @@ import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
 import OnboardingCircleStory from "./onboarding-circle-story";
 import BrowserAppInstructions from "./browser-app-instructions";
+import ImportSearchHandoff from "./import-search-handoff";
 import {Dots,Icon,Button,Quiet,Title,Field,SuggestedField,Pills} from "./onboarding-ui";
 
 export default function Onboarding(){
@@ -89,7 +90,7 @@ function OnboardingFlow(){
   </div>}
   {feedback&&<p className="hint" role="status">{feedback}</p>}
   <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
- </form></>;
+ </form><ImportSearchHandoff/></>;
  if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={findRole}>
   <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Backend engineering","Frontend engineering","Design","Product","Data & AI"]}/>
   <Pills label="Job type" value={employment} onChange={setEmployment} options={["Full-time","Internship","Contract","Open to options"]}/>
