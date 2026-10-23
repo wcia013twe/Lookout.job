@@ -20,6 +20,34 @@ Lookout is a plug-and-play **career skill and workflow harness for personal agen
 
 The long-term bet is that personal agents become a common interface and users prefer installing maintained capabilities to assembling brittle recurring automations. Prioritize portability and user-controlled data over dependency on a single agent runtime.
 
+### The inside track, without the constant watch
+
+**Experience promise:** Using Lookout should feel like being an insider without sitting around waiting for a job to drop. Users can occasionally open a pack for the excitement of discovery; the practical value keeps accumulating while they are away.
+
+The motivating tension is real: “If I stop watching, I might miss my chance.” Lookout answers with delegation: “Your agent is watching and acting within your preferences and application authority.” Timely opportunities and firsthand recruiting updates make the inside track valuable. Automation addresses the work and vigilance that access would otherwise demand.
+
+Packs reveal value; opening a pack must not be required to capture an opportunity. A pack can surface a relevant opening, a useful Circle insight, or evidenced progress the agent already made. Never hold back an authorized application or time-sensitive information to manufacture a reveal. “Never miss an opportunity” is the aspiration, not a guarantee of complete coverage or successful submission; show monitoring gaps, pending decisions, and uncertain outcomes honestly.
+
+**Behavior loop:**
+
+1. Concern about missing opportunities brings the user in.
+2. Delegating discovery and authorized applications provides practical relief.
+3. Visible, evidenced results build trust: what was found, why it fit, what happened, and what still needs the human.
+4. Packs and relevant Circle updates create anticipation and a reason to return.
+5. Occasional decisions and conversations improve preferences, preparation, and shared knowledge.
+
+Reinforce staying informed and delegating effectively. Users should not need to remain constantly vigilant or chat daily for Lookout to be useful. The strongest proof is opening Lookout for the excitement and discovering that the important work has already happened.
+
+### Circles and personal-agent activation
+
+Circles extend the insider feeling beyond openings: who is hearing back, what an interview involved, and what peers are learning. Timeliness, firsthand evidence, clear sourcing, and personal relevance supply the value; distinguish individual reports from verified employer facts.
+
+The activation hypothesis is that users may follow a Circle before developing a personal-agent habit. A relevant update prompts a personal question; the agent helps interpret it; a contextual question captures the user's own experience; the user can approve a useful summary for others. Agents help request, organize, and interpret real experiences rather than generating synthetic community activity.
+
+Ask for information when it helps the user's next decision or answers a genuine peer question. For example, after an interview, asking whether to prioritize similar teams can improve the private search and optionally produce a shareable report. Keep sharing permission separate from private assistance.
+
+Reliable discovery and application workflows must provide standalone value before a Circle becomes active. Verified public opportunities can seed useful coverage, clearly distinguished from firsthand reports. Agents cannot substitute for the initial people willing to contribute. Test whether relevant prompts lead to useful conversations and approved contributions; do not assume daily agent use or spontaneous journaling.
+
 ### Core workflow
 
 Discover → verify and deduplicate → rank by personal fit → prepare/apply under user policy → record evidenced outcomes → update the preparation roadmap → send meaningful updates.

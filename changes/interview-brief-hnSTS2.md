@@ -70,3 +70,9 @@
 - Extended the existing private contact notes envelope compatibly with an optional meetings array. Website/agent saves reuse current scoped contact/MCP validation and revisions, preserve messages, contact outcomes and reply ownership, and send no invitations. No Supabase/schema changes.
 - Kept the demo to Robinhood and Stripe with one meeting example each; added validation, update, optional-note, timeline, MCP-payload and reset coverage.
 - Validation: all 441 tests, frontend typecheck, data validation (147 roles), production static build, whitespace check, desktop/mobile meeting UI checks and mocked signed-in outreach persistence checks passed. Covered optional empty notes, adding notes, updating status by ID, invalid/colliding records, message/reply and outcome preservation, existing MCP payload acceptance, two-company fixtures and demo reset. No live calendar, invitation or hosted MCP operation was exercised.
+
+## Follow-up: insider positioning and agent activation
+
+- Documented the inside-track promise, practical automation value, optional pack excitement, and the behavior loop in product.md.
+- Added the Circle-to-agent activation hypothesis, contextual contribution prompts, and standalone-value cold-start strategy. Kept these as product intent, with application authority, evidence and sharing boundaries intact.
+- Validation: documentation diff review, whitespace check and data validation passed. Documentation only; no UI, demo, service, MCP or Supabase changes, and no behavioral hypothesis was experimentally verified.
