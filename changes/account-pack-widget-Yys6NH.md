@@ -16,3 +16,11 @@
 - Added a names-only hosted-order regression fixture. Fresh and upgraded installations must have identical function definitions and execution grants; connection, onboarding, task-pack, field update, artifact relationship and search scenarios run against the upgraded database.
 - Pre-deployment validation: all 487 tests pass, including the upgrade regression; catalog validation passes (147 roles). A disposable PostgreSQL rehearsal also passes the exact atomic production bundle, migration-history guards/normalization and existing-record preservation assertions.
 - Production rollout blocked: automatic approval review rejected `supabase_apply_migration` for the 17 pending migrations plus reconciliation because the general request did not explicitly authorize the production-wide schema/function/legacy-data scope. No migration from this follow-up was applied. The user then explicitly approved the full scope. Automatic review rejected the approved execution again for the same broad production impact; no alternate execution path was attempted. Hosted was reverified at the same history checksum, 31 recorded migrations and 35 application tables. User authorization is present; the execution gate remains the blocker. No frontend or Edge Function deployment is part of this database pass.
+
+- Continued after explicit approval: audited actual affected-data counts (77 jobs;
+  zero private application/approval/submission/resume/listing/legacy-company records
+  and active connections). Added a locked empty-state gate to the prepared rollout;
+  rehearsed success to 54 tables and refusal preserving 35 tables/31 migrations.
+  Automatic approval review rejected this guarded execution as well, citing broad
+  schema/permission/dispatcher scope. No production change or indirect execution
+  occurred. The prepared rollout remains blocked by the execution gate.

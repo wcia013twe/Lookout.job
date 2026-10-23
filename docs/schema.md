@@ -539,3 +539,12 @@ and legacy-data changes. Hosted was rechecked unchanged: 31 recorded migrations 
 35 application tables. The tested SQL is prepared; execution remains blocked by the
 automatic review gate, not by missing user authorization. Frontend/Edge Function release
 is separate from this database migration.
+
+A follow-up live-impact audit found 77 catalog jobs (12 matching the initial company
+registry), and zero applications, approvals, submission attempts, resumes, private
+listings, legacy company records or active agent connections. A stricter deployment
+preflight was added to the prepared transaction: it takes write-conflicting locks
+and refuses deployment if those empty-state assumptions no longer hold. Both the
+successful upgrade and rejection/rollback paths were rehearsed. Automatic approval
+review still rejected that guarded rollout because of its schema/permission/dispatcher
+breadth. This attempt applied nothing; further user approval is not the missing input.
