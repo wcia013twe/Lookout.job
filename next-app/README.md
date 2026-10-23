@@ -392,9 +392,9 @@ IDs satisfy task validation. Reload/reset restores the fixtures.
 reset, responsive layout, an empty mocked account and explicit API failure with no
 production account writes.
 
-My Agent keeps its existing section navigation and controls. Packs, Search, Sources
+My Agent is one scrollable page without inner tabs. Packs, Search, Sources
 and Connections each have a bordered, rounded settings box. In Other settings,
 Writing style retains its existing box; Circle sharing, Muse updates and Application
-automation each have a matching boundary. Demo check: visit all five sections on
+automation each have a matching boundary. Demo check: scroll through all settings sections on
 desktop and mobile, confirm each box encloses its content and edit/save a fictional
 task. Existing save services and MCP boundaries are unchanged.

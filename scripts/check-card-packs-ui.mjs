@@ -15,17 +15,14 @@ try{
  await page.getByRole('heading',{name:'My Agent',exact:true}).waitFor();
  await page.getByRole('button',{name:'Preview cards',exact:true}).click();
  await page.getByText('Example Compute',{exact:true}).waitFor();
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Connections',exact:true}).click();
  await page.getByLabel('Connection name (required)',{exact:true}).fill('New pack agent');
  await page.getByRole('button',{name:'Create connection',exact:true}).click();
  await page.getByText('Connection created. Copy the token into your agent’s secure settings; it is shown only once.',{exact:true}).waitFor();
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Sources',exact:true}).click();
  await page.getByRole('button',{name:'Add target',exact:true}).click();
  await page.getByLabel('Name',{exact:true}).fill('Example careers');
  await page.getByLabel('Source URL',{exact:true}).fill('https://example.com/careers');
  await page.getByRole('button',{name:'Save target',exact:true}).click();
  await page.getByText('Demo target list updated. Changes stay in this preview.',{exact:true}).waitFor();
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Search',exact:true}).click();
  await page.getByRole('button',{name:'Add task',exact:true}).click();
  await page.getByLabel('Task name',{exact:true}).fill('My new search');
  await page.getByLabel('Task instructions',{exact:true}).fill('Find roles and explain one tradeoff per card.');
@@ -34,7 +31,7 @@ try{
  await page.getByRole('button',{name:'Save tasks',exact:true}).click();
  await page.getByText('Demo tasks saved. Changes stay in this preview.',{exact:true}).waitFor();
  assert.equal(await page.getByLabel('Run timing',{exact:true}).inputValue(),'manual');
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Packs',exact:true}).click();
+ assert.equal(await page.getByRole('navigation',{name:'Agent settings',exact:true}).count(),0,'My Agent uses one scrollable page');
  await page.getByRole('button',{name:'Add card pack',exact:true}).click();
  await page.getByLabel('Pack name',{exact:true}).fill('My second pack');
  const packForm=page.getByRole('form',{name:'Card pack setup',exact:true});
@@ -42,8 +39,6 @@ try{
  await packForm.getByLabel('Task instructions',{exact:true}).fill('Find verified infrastructure roles and explain fit and one gap.');
  await packForm.getByLabel('Daily at',{exact:true}).fill('10:30');
  await page.getByRole('heading',{name:'My second pack',exact:true}).waitFor();
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Search',exact:true}).click();
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Packs',exact:true}).click();
  assert.equal(await page.getByLabel('Pack name',{exact:true}).inputValue(),'My second pack','Tab switches retain unsaved pack edits');
  assert.equal(await page.getByRole('heading',{name:'Writing style',exact:true}).count(),0,'Other settings are hidden from pack editing');
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
@@ -55,13 +50,11 @@ try{
  await page.evaluate(()=>document.documentElement.dataset.theme='dark');
  await page.getByRole('button',{name:'Save card pack',exact:true}).click();
  await page.getByText('Pack and task saved in demo memory.',{exact:true}).waitFor();
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Search',exact:true}).click();
  await page.getByText('My second pack discovery',{exact:true}).waitFor();
  const autoTask=page.getByRole('list',{name:'My Agent automation tasks',exact:true}).locator('li').filter({hasText:'My second pack discovery'});
  await autoTask.getByRole('button',{name:'Edit task',exact:true}).click();
  assert.equal(await autoTask.getByLabel('Task instructions',{exact:true}).inputValue(),'Find verified infrastructure roles and explain fit and one gap.');
  assert.equal(await autoTask.getByLabel('Requested time',{exact:true}).inputValue(),'10:30');
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Packs',exact:true}).click();
  await page.getByRole('button',{name:'Edit My second pack',exact:true}).click();
  await page.getByRole('checkbox',{name:'Enabled',exact:true}).uncheck();
  await page.getByRole('button',{name:'Save card pack',exact:true}).click();
@@ -75,7 +68,6 @@ try{
  await page.getByRole('link',{name:'Set up packs & connection',exact:true}).click();
  await page.getByRole('heading',{name:'My Agent',exact:true}).waitFor();
  await page.reload();
- await page.getByRole('navigation',{name:'Agent settings',exact:true}).getByRole('button',{name:'Search',exact:true}).click();
  await page.getByText('Find fictional roles for my discovery pack.',{exact:true}).waitFor();
  assert.equal(await page.getByText('My new search',{exact:true}).count(),0);
  assert.deepEqual(calls,[],'Demo must not contact account storage');await demo.close();
