@@ -48,3 +48,6 @@
 
 - Added the shared Bring your existing search option in onboarding and Applications. It guides users to export CSV from Simplify or Excel and share it with their connected agent, with a copyable request and manual-copy fallback. Copy asks for supported imports, deduplication, preservation/clarification of statuses and an actual-save report; no direct CSV parser, upload, direct integration or unverified import capability is claimed. Uses existing scoped job/progress boundaries only through the agent; no backend change.
 - CSV handoff validation: TypeScript, 147-role data validation and diff checks pass. Browser verified the disclosure in onboarding and Applications and successful clipboard feedback. No file was uploaded, parsed or imported; real import capabilities remain dependent on the connected runtime and supported scoped tools.
+
+- Added a small, visible Preview onboarding button in the dashboard header only during demo mode. It links directly to /onboarding/?demo=1 without resetting demo data. Validation: TypeScript, data validation and diff checks. Navigation only; no backend/MCP action.
+- Browser verified the demo header link points to the explicit demo route and opens the first onboarding screen.
