@@ -1,6 +1,6 @@
 # Code Mode evaluation
 
-Status: offline orchestration replay complete; live model/client benchmark pending.
+Status: offline orchestration and database-backed replays complete; live model/client benchmark pending.
 This experiment changes no production tools, developer instructions or defaults.
 
 ## Question and decision
@@ -112,6 +112,46 @@ direct calls, and a material latency or token reduction (initial target: 20% on
 Treat these as pilot gates, not proof of safety. If the benefit disappears with
 compact direct tools, improve those tools rather than require Code Mode.
 
-Remaining: live model/client trials, actual token/latency/cost results, real
-gateway/database end-to-end integration under both interfaces, and a resulting
-adoption recommendation. No Code Mode capability is deployed or advertised.
+Remaining: live model/client trials, actual token/latency/cost results, hosted
+gateway end-to-end integration under both interfaces, and a resulting adoption
+recommendation. No Code Mode capability is deployed or advertised.
+
+
+## Database-backed follow-up
+
+Run `node experiments/code-mode/database-replay.mjs` after `npm ci`.
+`database-results.json` records three repetitions per arm for 1/10/50 emails,
+plus 18 adverse-case runs (nine cases in each of direct and code orchestration).
+Each trial rolls back its fictional fixtures; nothing reaches a real account.
+
+This follow-up uses the real email-evidence boundary,
+`record_application_milestone`, rather than user-reported status changes. It calls
+the production MCP handler, request validator, milestone dispatcher and
+`public.agent_dispatch` in a PGlite database initialized from all production
+migrations. Credentials are synthetic and hashed normally. The HTTP function,
+Supabase network/auth service and mailbox connector are not involved. Database
+auth/storage scaffolding is the same as the repository's database tests.
+
+All three paths produce identical persisted application/milestone snapshots.
+Every 50-email trial makes 51 MCP tool calls and 102 SQL dispatches (51 credential
+checks and 51 operations). Milestones preserve email evidence and null unknown
+dates. No path changes application status or creates a receipt or approval.
+
+Direct and code paths both pass: identical retry, changed-evidence conflict,
+foreign-owner rejection, missing scope, expired credential, mid-run revocation,
+unconfirmed timestamp, missing provenance and response loss after a committed
+write followed by an exact retry. The latter commit is within an outer rollback
+transaction used for fixture isolation; it models an independently completed SQL
+mutation whose response is lost, not a network fault against production.
+
+The PGlite connection serializes SQL calls and uses savepoints to recover rejected
+operations. Local replay times cannot compare distributed parallel execution or
+predict user latency. Code is handwritten; passing these cases demonstrates that
+composition through the same operations retains local database safeguards, not
+that generated code or any personal-agent client will behave correctly.
+
+Endpoint availability was rechecked: no API-key environment variable, Claude Code
+not authenticated (`claude auth status`), and no API key in the Codex auth record.
+A subscription login is not repurposed as an API credential. Live trials remain
+pending an authorized model endpoint/client. No live-model performance claim has
+been made.

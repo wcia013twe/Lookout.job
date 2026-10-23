@@ -1,0 +1,177 @@
+{
+  "experiment": "database-replay-v1",
+  "modelCalls": 0,
+  "cases": [
+    {
+      "mode": "direct",
+      "name": "retry",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "changed-evidence",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "foreign-owner",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "missing-scope",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "expired",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "revoked-mid-run",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "unconfirmed-date",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "missing-provenance",
+      "passed": true
+    },
+    {
+      "mode": "direct",
+      "name": "lost-response",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "retry",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "changed-evidence",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "foreign-owner",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "missing-scope",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "expired",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "revoked-mid-run",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "unconfirmed-date",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "missing-provenance",
+      "passed": true
+    },
+    {
+      "mode": "code",
+      "name": "lost-response",
+      "passed": true
+    }
+  ],
+  "rows": [
+    {
+      "mode": "direct",
+      "size": 1,
+      "toolCalls": 2,
+      "sqlCalls": 4,
+      "credentialChecks": 2,
+      "localDatabaseReplayMs": 3.438792000000035
+    },
+    {
+      "mode": "direct-parallel",
+      "size": 1,
+      "toolCalls": 2,
+      "sqlCalls": 4,
+      "credentialChecks": 2,
+      "localDatabaseReplayMs": 2.418875000000071
+    },
+    {
+      "mode": "code",
+      "size": 1,
+      "toolCalls": 2,
+      "sqlCalls": 4,
+      "credentialChecks": 2,
+      "localDatabaseReplayMs": 1.9505419999999276
+    },
+    {
+      "mode": "direct",
+      "size": 10,
+      "toolCalls": 11,
+      "sqlCalls": 22,
+      "credentialChecks": 11,
+      "localDatabaseReplayMs": 9.88962499999991
+    },
+    {
+      "mode": "direct-parallel",
+      "size": 10,
+      "toolCalls": 11,
+      "sqlCalls": 22,
+      "credentialChecks": 11,
+      "localDatabaseReplayMs": 9.718000000000075
+    },
+    {
+      "mode": "code",
+      "size": 10,
+      "toolCalls": 11,
+      "sqlCalls": 22,
+      "credentialChecks": 11,
+      "localDatabaseReplayMs": 9.454417000000035
+    },
+    {
+      "mode": "direct",
+      "size": 50,
+      "toolCalls": 51,
+      "sqlCalls": 102,
+      "credentialChecks": 51,
+      "localDatabaseReplayMs": 39.76100000000008
+    },
+    {
+      "mode": "direct-parallel",
+      "size": 50,
+      "toolCalls": 51,
+      "sqlCalls": 102,
+      "credentialChecks": 51,
+      "localDatabaseReplayMs": 37.42279200000007
+    },
+    {
+      "mode": "code",
+      "size": 50,
+      "toolCalls": 51,
+      "sqlCalls": 102,
+      "credentialChecks": 51,
+      "localDatabaseReplayMs": 38.57633299999998
+    }
+  ],
+  "limits": [
+    "Local PGlite with production migrations; auth/storage scaffolding from repository tests",
+    "Real MCP handler, request validator, milestone dispatcher and agent_dispatch SQL",
+    "Handwritten operations shared by both paths; no model inference or generated-code sandbox",
+    "No hosted HTTP gateway, real mailbox, model tokens, user latency or cost measurement"
+  ],
+  "repetitions": 3
+}

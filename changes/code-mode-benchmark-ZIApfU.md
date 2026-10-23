@@ -12,3 +12,12 @@
 - Limits: no live model endpoint was configured. No measured model token, latency,
   cost or semantic accuracy improvement; no production sandbox, hosted MCP or
   email integration verification. The replay uses mock persistence and identity.
+
+
+Follow-up: added a database-backed replay through the production email milestone
+operation, request/MCP validation, dispatcher and migrated local PGlite database.
+All 27 size/arm/repetition runs and 18 adverse-case runs passed. Snapshots prove
+identical milestones, no cross-owner writes, unchanged statuses and no forged
+receipts or approvals. Synthetic response-loss retry remains idempotent. This
+closes the mock-persistence gap locally; hosted gateway/client and model metrics
+remain unverified. Authentication availability was rechecked without exposing keys.
