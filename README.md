@@ -533,3 +533,16 @@ targets, a summer systems target and resume references. Check add/pause/remove,
 save/reload, switching profiles/sections, legacy copy and reset. Demo state remains
 fictional, resettable and isolated from real accounts and services. My agent stays
 unchanged.
+
+## Selective PC branch integration
+
+Current main retains its UI, Clubhouse layout, profile features, artifact tools,
+logo cache and GitHub Pages deployment. The PC branch contributes a preview-only
+[theme marketplace](docs/theme-picker.md), [durable company workspaces and scoped
+Circle intelligence](docs/private-network.md), structured Circle activity and a
+agent publication feed, automatic Career Toolkit discovery, and preparation refresh fixes.
+The marketplace is available from Profile → Browse Marketplace. Network keeps the
+current editors and adds Circle source conversations below the company overview.
+Backend additions remain local until the migrations and gateway/MCP are deployed
+through the production workflow and hosted access is verified; existing Circle
+release gates remain unchanged. No Sites or Logo.dev migration is included.

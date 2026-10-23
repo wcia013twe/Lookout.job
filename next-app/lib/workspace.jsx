@@ -1,4 +1,5 @@
 "use client";
+import {importLegacyCompanies} from "../../lib/network-model.mjs";
 import {demoFixtures} from './network-demo.mjs';
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -38,6 +39,7 @@ async function initialize() {
       "workflow.activeTierListId",
       store.get("workflow.tierLists")[0]?.id || "",
     );
+  store.set("network",importLegacyCompanies(store.get()));
   return store;
 }
 export function WorkspaceProvider({ children }) {
@@ -103,12 +105,17 @@ export function WorkspaceProvider({ children }) {
           },
         };
         window.JB.cloud = connectCloud(client, ui);
+        window.JB.lastCompanyOwner=null;
         function session(value) {
           if (!alive) return;
           const id = value?.user?.id || null;
           const accountChanged=userRef.current!==id;
           userRef.current = id;
+          const guestCompanies=id&&accountChanged&&window.JB.lastCompanyOwner===null?(store.get("network.companies")||[]):[];
           store.switchAccount(id);
+          store.set("network",importLegacyCompanies(store.get()));
+          if(id&&guestCompanies.length){const own=store.get("network.companies")||[];store.set("network.companies",[...own,...guestCompanies.filter(row=>!own.some(saved=>saved.id===row.id)).map(row=>({...row,revision:0,dirty:true,legacyImport:true}))]);}
+          window.JB.lastCompanyOwner=id;
           setUser(value?.user || null);
           setAuthReady(true);
           if(accountChanged){setDemoState(null);demoStore.current=null;demoServices.current=null;window.JB.cloud?.suspendForDemo(false);}

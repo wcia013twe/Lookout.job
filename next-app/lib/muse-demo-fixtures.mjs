@@ -131,7 +131,11 @@ export function createDemoWorkspace(now = new Date()) {
       tierLists: [], activeTierListId: '',
     },
     ui: { packOpen: false },
-    demo: { outreachLibrary: copy(outreachLibrary), fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, submissionRecords, selectionDecisions },
+    demo: { outreachLibrary: copy(outreachLibrary), fictional: true, identity, date: today, createdAt: at, personalVersion: 1, roles, preparationRows: prepRows, plannerSettings: { dailyMinutes: 45, version: 0 }, preparationSessions: [], submissionRecords, selectionDecisions, toolkitDiscovery: [
+      { goal: 'Help me describe my most important project without inventing metrics.', guideId: 'career-profile-interview' },
+      { goal: 'Rewrite my summary for this fictional job.', guideId: 'career-tailor-resume' },
+      { goal: 'Help me prepare for my fictional interview.', guideId: 'career-prep-plan' },
+    ] },
   };
 }
 
@@ -148,6 +152,7 @@ export function createDemoServices(store) {
   }
   return {
     ...artifactDemo,
+    async discoverToolkit() { return copy(store.get('demo.toolkitDiscovery') || []); },
     async readPreparationPlanner() { return plannerBundle(); },
     connections: createConnectionDemo(store),
     async savePreparationBudget(dailyMinutes, expectedVersion) {

@@ -227,13 +227,21 @@ remain unchanged. `request_circle_human_action` returns a membership-checked lin
 it cannot manage members, approve revisions, moderate, or grant sharing permission.
 See [operation mapping and release gate](../backend/circle-knowledge.md).
 
-Career Toolkit adds versioned `career-*` guides to the existing guide index and
-`read_guide` operation. No new scope or write tool is introduced. Each guide includes
+Career Toolkit adds versioned `career-*` guides to the existing guide index,
+`discover_toolkit` and `read_guide`. One authenticated Lookout connection exposes
+the whole library: the agent matches ordinary career requests against the discovery
+metadata and loads only the relevant guide, without asking the user for a skill name,
+download or copied prompt. Both tools are read-only and use `workspace:read`; no new
+write authority is introduced. Each guide includes
 the native usage manual, a Lookout adaptation and pinned Career Ops reference
 instructions. Read only the relevant guide on demand. Original paths/commands are
 reference requirements, not installed tools or authority to create a parallel local
 profile/tracker. Actual file, browser, renderer and scheduler support must be checked.
 Release the gateway normally before advertising hosted availability.
+
+Automatic selection occurs while the connected host is handling a request or queued
+task. Lookout cannot force a host to route every career request to the connection or
+wake an external agent. Verify natural-language routing on each supported host.
 
 ## Document-backed career context and agent search memory
 
@@ -288,3 +296,31 @@ About me / Documents reuses `list_artifacts`, `read_artifact`, `save_artifact` a
 `replace_resume_source` (`resumes.source.replace`) takes `resumeId`, newly uploaded/finalized `replacementId`, and the old row’s `expectedVersion`. Both resumes:write and preferences:write are required. Browser RPC `replace_resume_source` and MCP share one owned, transactional validation path. The display name/variant are preserved; version advances and saved defaults/rules/profile role assignments move to the new ID. Old file rows and existing application/approval references remain intact. Ignore rows with `superseded_by` for new selections. Exact same-pair retries replay; foreign IDs, stale versions and competing replacements reject. Upload bytes through existing immutable upload tools before switching the source. Context 38 and the source-replacement migration require the normal production release; this capability has only local verification.
 
 Application profile edits in the website autosave after a short pause through the existing `save_search_profile` RPC. MCP `save_search_profile` / `preferences.profile.save` retain the same explicit write boundary, ownership, validation and expected-version checks; no new tool or deployed capability is introduced. Failed website writes keep drafts for retry.
+
+## Company Network integration
+
+The durable company hub adds `list_companies`, `list_company_workspaces` and
+`save_company_workspace`, sharing the website's owner/revision validation.
+Legacy company `list_contacts`/`save_contact` records are compatibility projections.
+`search_circle_knowledge` accepts one `circleId` or `scope: current_memberships`;
+use `companyId` or unresolved `company` text, never both. Company/role/stage
+criteria match a single primary, attached application/referral or offer context.
+Cross-Circle results are permitted published root posts, with stable `authorId`,
+Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
+Optional explicit company references retain exact-review rules. Internal posting
+IDs and employer requisition IDs remain distinct.
+See [the complete contract and release gates](../docs/private-network.md).
+These additions require backend/gateway/MCP release and hosted verification before
+claiming deployed parity.
+
+## Circle publication feed (local, gated)
+
+`read_circle_feed({circleId,after?,limit?})` requires `knowledge:read`. Read an
+ascending bounded page, drain `nextCursor`, then retain `checkpoint` as `after`
+for the next scan. Positions are strings; cursors bind to the Circle and scan
+boundary. Only current shared revisions include a post; unavailable revisions
+return `sourceAvailable:false` and no body. Invalidate cached older revisions on
+later events, including cached replies when `invalidateThread` is true. Private
+drafts never enter the feed. Reads do not record citations, publish, send messages
+or acknowledge delivery. Production migration/gateway release and hosted
+verification remain outstanding. See [feed contract](../backend/circle-knowledge.md#circle-publication-feed-local-release-gated).

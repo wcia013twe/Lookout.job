@@ -2,7 +2,7 @@
 
 import {useEffect, useLayoutEffect, useState, useRef, type ReactNode, type CSSProperties} from 'react';
 import type {Detail, Post} from '../_lib/types';
-import {activityGoalProgress,parseCircleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
+import {activityGoalProgress,circleActivity,sharedMemberActivity} from '../../../../lib/circle-activity.mjs';
 import styles from './circle-room.module.css';
 import {routines} from './room-motion';
 import {companions} from './companions';
@@ -64,9 +64,9 @@ export default function CircleRoom({embedded=false,activityControl,detail,posts,
  const selected=detail.members.find(member=>member.id===person);
  const occupant=occupants.find(item=>item.key===selectedCompanion);
  const greeted=occupant?.companion,linkedMember=occupant?.member;
- const updates:Post[]=linkedMember?sharedMemberActivity(posts,linkedMember.alias):[];
- const activityPost=updates.find(post=>{const activity=parseCircleActivity(post.content.body);return activity.highlights.length||activity.goal||activity.help;});
- const activity=parseCircleActivity(activityPost?.content.body);
+ const updates:Post[]=linkedMember?sharedMemberActivity(posts,linkedMember.id):[];
+ const activityPost=updates.find(post=>{const activity=circleActivity(post.content);return activity.highlights.length||activity.goal||activity.help;});
+ const activity=circleActivity(activityPost?.content);
  const goalProgress=activityGoalProgress(activity.goal);
  const name=linkedMember?.alias.replace(' (demo)','')||greeted?.name||'';
  const latest=updates[0];

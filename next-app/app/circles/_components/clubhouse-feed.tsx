@@ -1,17 +1,17 @@
 import type {Post} from '../_lib/types';
 import {types} from '../_lib/types';
-import {parseCircleActivity} from '../../../../lib/circle-activity.mjs';
+import {circleActivity} from '../../../../lib/circle-activity.mjs';
 import AuthorshipLabel from './authorship-label';
 import {companionForMember} from './companions';
 import styles from './clubhouse-layout.module.css';
 
-export function isActivityUpdate(post:Post){const a=parseCircleActivity(post.content.body);return !!(a.highlights.length||a.goal||a.help);}
+export function isActivityUpdate(post:Post){const a=circleActivity(post.content);return !!(a.highlights.length||a.goal||a.help);}
 export default function ClubhouseFeed({posts,demo,openPost}:{posts:Post[];demo:boolean;openPost:(post:Post)=>void}){
  const updates=posts.filter(p=>!p.parentId&&p.state==='published'&&p.revision===p.publishedRevision&&(p.content.type!=='discussion'||isActivityUpdate(p))).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||b.id.localeCompare(a.id));
  return <section aria-label="Shared Circle updates" className={styles.feed}>
   <p className={styles.feedIntro}>{demo?'Fictional shared updates':'What your people chose to share.'}</p>
   {updates.length?<ul className={styles.feedList}>{updates.map(post=>{
-   const activity=parseCircleActivity(post.content.body),name=post.author.replace(' (demo)','');
+   const activity=circleActivity(post.content),name=post.author.replace(' (demo)','');
    return <li key={post.id} className={styles.feedItem}>
     <span className={styles.avatar} aria-hidden="true">{demo?<span style={{backgroundImage:`url('/circles/${companionForMember(name).id}.webp')`}}/>:name.trim().split(/\s+/).slice(0,2).map(p=>p[0]).join('')}</span>
     <div className={styles.feedContent}>

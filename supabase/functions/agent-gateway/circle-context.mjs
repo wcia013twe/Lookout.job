@@ -1,4 +1,5 @@
 import {validateSharedContexts} from './context-attachments.mjs';
+import {validateCircleActivity} from './circle-activity.mjs';
 export function circleAgentContext(post) {
  if(!post||['hidden','withdrawn'].includes(post.state)||(!post.owned&&(post.state!=='published'||post.revision!==post.publishedRevision)))return null;
  const content=post.content;
@@ -9,9 +10,12 @@ export function circleAgentContext(post) {
   jobId:content.jobId||null,
   offers:content.offers?.map(offer=>({...offer}))||null,
   contexts:content.contexts?.map(item=>({...item}))||[],
+  activity:content.activity?{...content.activity,highlights:[...content.activity.highlights]}:null,
   stage:content.stage||null,
   insight:content.insight||content.body,
   company:content.company||null,
+  companyId:content.companyId||null,
+  companyContexts:post.companyContexts||[],
   role:content.role||null,
   experienceDate:content.experienceDate||null,
   provenance:content.provenance,
@@ -21,13 +25,18 @@ export function circleAgentContext(post) {
 }
 
 export function validateCircleContextContent(content) {
+ for(const part of [content,...(Array.isArray(content.contexts)?content.contexts:[]),...(Array.isArray(content.offers)?content.offers:[])])if(part.companyId!==undefined&&(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(part.companyId)||!part.company?.trim()))throw Error('Company ID requires a registered company name.');
+ if(content.activity!==undefined){
+  validateCircleActivity(content.activity);
+  if(content.type!=='discussion'||content.personalDisclosure!==true)throw Error('Activity requires a discussion with personal disclosure.');
+ }
  if(content.contexts!==undefined)validateSharedContexts(content.contexts);
  if(content.jobId!==undefined&&content.jobId!==null&&(typeof content.jobId!=='string'||!content.jobId.trim()||content.jobId.length>200))throw Error('Job ID must be text, up to 200 characters.');
  if(content.offers!==undefined){
   if(content.type!=='offer_comparison'||!Array.isArray(content.offers)||content.offers.length<2||content.offers.length>4)throw Error('Attach two to four offers to an offer comparison.');
   for(const offer of content.offers){
    if(!offer||typeof offer!=='object'||Array.isArray(offer)||typeof offer.company!=='string'||!offer.company.trim())throw Error('Each offer needs a company.');
-   for(const [key,value] of Object.entries(offer))if(!['company','role','location','base','equity','signOn','notes'].includes(key)||typeof value!=='string'||value.length>(key==='notes'?1000:200))throw Error('Invalid offer details.');
+   for(const [key,value] of Object.entries(offer))if(!['company','companyId','role','location','base','equity','signOn','notes'].includes(key)||typeof value!=='string'||value.length>(key==='notes'?1000:200))throw Error('Invalid offer details.');
   }
  }
  if(content.type==='offer_comparison'&&!content.offers)throw Error('Attach at least two offers.');
@@ -41,6 +50,7 @@ export function validateCircleContextContent(content) {
 export function circleKnowledgeResponse(operation,data) {
  if(!data||data.available===false)return data;
  const project=post=>({...post,agentContext:circleAgentContext(post)});
+ if(operation==='knowledge.feed')return {...data,items:data.items.map(event=>({...event,post:event.post?project(event.post):null}))};
  if(operation==='knowledge.search')return {...data,items:data.items.map(project)};
  if(operation==='knowledge.read')return {...data,post:project(data.post),replies:data.replies.map(project)};
  return data;

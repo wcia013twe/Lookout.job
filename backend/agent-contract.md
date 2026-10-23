@@ -92,6 +92,13 @@ on explicit personal-context reads, not on the two-number check. Personal theme
 messages take precedence over the developer defaults; neither can alter approval
 or submission semantics. See `mcp/README.md` for cache/reset behavior.
 
+`guides.discover` returns the authenticated Career Toolkit routing catalog and
+`guides.read` returns one selected workflow. Connected agents should infer the
+workflow from ordinary user intent and load it without requiring a skill name or
+separate installation. Both operations authorize through current developer-context
+access and accept no owner identity. Discovery does not execute a workflow, grant a
+permission, schedule work or guarantee host-level routing.
+
 Failure reports preserve the draft, set Blocked and invalidate prior approval.
 `stage` is approval/playwright/agent/submission; `outcome` is blocked/uncertain.
 `attempts` contains at most three `{stage,status}` summaries; no raw browser
@@ -311,3 +318,19 @@ exclusions and all existing verification, answer, resume and human approval chec
 remain authoritative. This local implementation requires gateway/MCP/config
 release through the production workflow and hosted verification; no new database
 migration or live employer submission was part of this change.
+
+## Company Network integration
+
+The durable company hub adds `list_companies`, `list_company_workspaces` and
+`save_company_workspace`, sharing the website's owner/revision validation.
+Legacy company `list_contacts`/`save_contact` records are compatibility projections.
+`search_circle_knowledge` accepts one `circleId` or `scope: current_memberships`;
+use `companyId` or unresolved `company` text, never both. Company/role/stage
+criteria match a single primary, attached application/referral or offer context.
+Cross-Circle results are permitted published root posts, with stable `authorId`,
+Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
+Optional explicit company references retain exact-review rules. Internal posting
+IDs and employer requisition IDs remain distinct.
+See [the complete contract and release gates](../docs/private-network.md).
+These additions require backend/gateway/MCP release and hosted verification before
+claiming deployed parity.

@@ -1,5 +1,20 @@
 # Circle Knowledge
 
+Structured member activity now lives in optional `content.activity` on the same
+immutable contribution revision: `{highlights:string[],goal:string,help:string}`.
+See [Circles storage and agent design](../docs/circles-data-design.md) for the
+page-to-table map and proposed event-feed tools. Activity requires discussion
+type and `personalDisclosure:true`; up to three nonblank highlights and goal/help
+are each capped at 300 characters. At least one field must be nonempty. Unknown
+fields and private links reject. Website and scoped MCP use the same RPC checks;
+`agentContext.activity` copies only the permitted revision. Exact human review is
+required before agent publication. Older approved text is not rewritten; new
+website saves include structured fields and a compatibility text rendering.
+The review surface shows every structured activity value. Demo Alex exercises
+structured activity and Sam retains legacy text. Migration
+`20261022055842_circle_structured_activity.sql` is local until deployed through
+the production workflow. This slice does not implement the event feed or delivery.
+
 Knowledge read/search responses include `agentContext`: `jobUrl`, `stage`,
 `insight`, optional company/role/date/sources/uncertainty and reported provenance.
 It is a factual projection, not generated execution instructions or verification.
@@ -271,3 +286,45 @@ scoped request adapter. MCP equivalents remain `list_circles`, `read_circle`,
 to the Circle, whose settings link to `/profile/?section=agent&circle=<id>`.
 Membership, invite management and moderation stay in Circle settings. No backend
 operation, authorization check, gateway contract or release gate changed.
+
+## Company Network integration
+
+The durable company hub adds `list_companies`, `list_company_workspaces` and
+`save_company_workspace`, sharing the website's owner/revision validation.
+Legacy company `list_contacts`/`save_contact` records are compatibility projections.
+`search_circle_knowledge` accepts one `circleId` or `scope: current_memberships`;
+use `companyId` or unresolved `company` text, never both. Company/role/stage
+criteria match a single primary, attached application/referral or offer context.
+Cross-Circle results are permitted published root posts, with stable `authorId`,
+Circle labels and derived `companyContexts`; approved revision JSON stays untouched.
+Optional explicit company references retain exact-review rules. Internal posting
+IDs and employer requisition IDs remain distinct.
+See [the complete contract and release gates](../docs/private-network.md).
+These additions require backend/gateway/MCP release and hosted verification before
+claiming deployed parity.
+
+## Circle publication feed (local, release-gated)
+
+`knowledge.feed` / `read_circle_feed` accepts `{circleId,after?,limit?}` with
+`knowledge:read` alone. Browser RPC and MCP use the same membership, release gate
+and cursor validation. Default 20 events, maximum 50. Drain `nextCursor` before
+retaining `checkpoint`; pass either as `after`. Both bind to the Circle, with
+decimal-string positions and a fixed `through` boundary while paging.
+
+`private.circle_events` records publication, newly published revisions, withdrawal
+and hiding transactionally. `circles.feed_sequence` allocates commit-safe positions
+under the Circle lock. Rollback leaves neither an event nor a cursor gap. No
+historical publication dates are invented; old knowledge remains searchable.
+Events contain source references rather than duplicate bodies. A source post is
+returned only while its exact revision is currently published and its parent is
+visible. Authors receive the shared revision even with a newer private draft.
+Other events return `sourceAvailable:false,post:null`. On later events, discard
+cached older post revisions; `invalidateThread` also clears cached replies.
+
+Main’s existing Clubhouse Updates view is retained. Connected agents can read
+publication events through the scoped feed; no duplicate website feed is added. Feed reads are read-only: no citation, delivery
+acknowledgment, scheduler or publication. The fictional demo has a resettable
+publication history; production starts with future publication events. Migration
+`20261022060723_circle_member_feed.sql` and gateway developerVersion 42 must be
+released through the production workflow. Hosted permission/concurrency checks
+remain outstanding; the existing feature gate is unchanged.

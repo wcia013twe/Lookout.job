@@ -1,4 +1,4 @@
-const fields={application:['kind','label','company','role','jobId','jobUrl','stage'],referral:['kind','label','company','role','contact','url'],resource:['kind','label','url'],note:['kind','label','note']};
+const fields={application:['kind','label','company','companyId','role','jobId','jobUrl','stage'],referral:['kind','label','company','companyId','role','contact','url'],resource:['kind','label','url'],note:['kind','label','note']};
 const privateLink=/storage\/v1\/object\/(sign|authenticated)\/|[?&](token|access_token|apikey|api_key|signature|x-amz-signature)=|mail\.google\.com\/|outlook\.office\.com\/mail\//i;
 export function publicContextUrl(value){
  if(typeof value!=='string'||value.length>2000||privateLink.test(value))return undefined;
@@ -18,7 +18,7 @@ const text=(value,max=200)=>typeof value==='string'?value.trim().slice(0,max):''
 const compact=item=>Object.fromEntries(Object.entries(item).filter(([,value])=>value!==undefined&&value!==''));
 export function applicationContext(application,stage){
  const company=text(application.company),role=text(application.title||application.role),jobUrl=publicContextUrl(application.applicationUrl||application.url||application.jobUrl);
- let jobId=text(application.employerJobId||application.jobId);
+ let jobId=text(application.employerJobId);
  if(!jobId&&jobUrl){const u=new URL(jobUrl);jobId=text(u.searchParams.get('gh_jid')||u.searchParams.get('job_id')||u.pathname.match(/(?:\/|-)(\d{5,})\/?$/)?.[1]);}
  return compact({kind:'application',label:text(`${company} · ${role}`),company,role,jobId,jobUrl,stage:text(stage||application.stage)});
 }
@@ -32,7 +32,7 @@ export function contextFromDrop({context,job,text}) {
  if(context)item=JSON.parse(context);
  else if(job){
   const source=JSON.parse(job);item={kind:'application',label:textLabel(source.company||source.role||'Shared job')};
-  for(const key of ['company','role','jobId','jobUrl','stage'])if(typeof source[key]==='string')item[key]=source[key];
+  for(const key of ['company','companyId','role','jobId','jobUrl','stage'])if(typeof source[key]==='string')item[key]=source[key];
  }else if(text?.trim()){
   const value=text.trim(),url=publicContextUrl(value);
   item=url?{kind:'resource',label:new URL(url).hostname,url}:{kind:'note',label:'Attached note',note:value.slice(0,1000)};

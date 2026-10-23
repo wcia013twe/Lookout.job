@@ -2,8 +2,9 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {toolkitSkills,toolkitCategories,buildToolkitRequest} from '../lib/career-toolkit.mjs';
-import {guideIndex,readGuide,guideDispatch} from '../supabase/functions/agent-gateway/guides.mjs';
+import {discoverGuides,guideIndex,readGuide,guideDispatch,guideDiscoveryDispatch} from '../supabase/functions/agent-gateway/guides.mjs';
 import {createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
+import {createDemoWorkspace,createDemoServices} from '../next-app/lib/muse-demo-fixtures.mjs';
 
 test('every manual resolves to an isolated, sourced agent guide with the same examples', () => {
   assert.equal(toolkitCategories.length,8);
@@ -47,6 +48,29 @@ test('demo examples are explicitly fictional and do not change the catalog or ac
   assert.match(prompt,/Example Systems \(demo\)/);
   assert.equal(JSON.stringify(toolkitSkills),before);
 });
+test('one connection advertises every toolkit workflow for automatic intent matching', async () => {
+  const discovery=discoverGuides();
+  assert.equal(discovery.guides.length,toolkitSkills.length);
+  assert.match(discovery.instructions,/does not need to name a skill/);
+  assert.match(discovery.instructions,/automatically select/);
+  for(const skill of toolkitSkills) {
+    const route=discovery.guides.find(guide=>guide.id===skill.guideId);
+    assert.equal(route.category,skill.category);
+    assert.deepEqual(route.examples,skill.examples);
+    assert.ok(route.description&&route.whenToUse&&route.requirements);
+  }
+  const authorized=await guideDiscoveryDispatch(async(op,args)=>{assert.equal(op,'context.developer');assert.deepEqual(args,{});return {data:{}};});
+  assert.equal(authorized.data.guides.length,toolkitSkills.length);
+  assert.deepEqual(await guideDiscoveryDispatch(async()=>({error:{code:'42501'}})),{error:{code:'42501'}});
+});
+test('demo discovery scenarios stay fictional and isolated from account writes', async () => {
+  const state=createDemoWorkspace(new Date('2026-10-22T12:00:00Z'));
+  const services=createDemoServices({get:path=>path.split('.').reduce((value,key)=>value?.[key],state),set(){throw Error('Discovery must not write');}});
+  const scenarios=await services.discoverToolkit();
+  assert.deepEqual(scenarios.map(row=>row.guideId),['career-profile-interview','career-tailor-resume','career-prep-plan']);
+  scenarios[0].goal='mutated';
+  assert.notEqual((await services.discoverToolkit())[0].goal,'mutated');
+});
 test('manual access over MCP retains workspace authorization and remains read-only', async () => {
   const credential='jb_agent_'+'a'.repeat(64);
   let allow=true;const calls=[];
@@ -87,4 +111,18 @@ test('all skill iframe documents render the same adapted guide and pinned refere
   assert.match(html,/default-src &#x27;none&#x27;|default-src 'none'/);
   assert.doesNotMatch(html,/<script[ >]/i);
  }
+});
+test('MCP discovery returns the full routing catalog through one scoped call', async () => {
+  const credential='jb_agent_'+'b'.repeat(64);
+  const calls=[];
+  const handle=createHandler(async (token,operation,payload)=>{
+    assert.equal(token,credential);calls.push({operation,payload});
+    if(operation==='credentials.verify')return {status:200,data:{scopes:['workspace:read']}};
+    return {status:200,...await guideDiscoveryDispatch(async()=>({data:{}}))};
+  });
+  const response=await handle(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:`Bearer ${credential}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'discover_toolkit',arguments:{}}})}));
+  const body=await response.json();
+  const discovery=JSON.parse(body.result.content[0].text);
+  assert.equal(discovery.guides.length,toolkitSkills.length);
+  assert.deepEqual(calls.map(call=>call.operation),['credentials.verify','guides.discover']);
 });

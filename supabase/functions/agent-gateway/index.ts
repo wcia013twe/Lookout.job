@@ -6,7 +6,7 @@ import { resumeUploadDispatch } from './resume-upload.mjs';
 import { resumeSetupResponse } from './profile-setup.mjs';
 import { createClient } from 'npm:@supabase/supabase-js@2.117.3';
 import { SCOPES, validateRequest, generateToken, hashToken } from './contract.mjs';
-import { guideDispatch } from './guides.mjs';
+import { guideDispatch, guideDiscoveryDispatch } from './guides.mjs';
 import { contextResponse } from './context.mjs';
 import { applicationPolicy } from './application-policy.mjs';
 import { submissionDispatch } from './submission-dispatch.mjs';
@@ -62,9 +62,10 @@ Deno.serve(withGatewayCors(async request => {
       return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
-    if (operation === 'guides.read') {
+    if (operation === 'guides.read' || operation === 'guides.discover') {
       const awaitHash = await hashToken(bearer);
-      const result = await guideDispatch(payload.id, (op, args) => admin.rpc('agent_dispatch', {credential_hash: awaitHash, operation: op, payload: args}));
+      const authorize = (op: string, args: unknown) => admin.rpc('agent_dispatch', {credential_hash: awaitHash, operation: op, payload: args});
+      const result = operation === 'guides.discover' ? await guideDiscoveryDispatch(authorize) : await guideDispatch(payload.id, authorize);
       if (result.error) return respond({error: 'Guide access rejected'}, result.error.code === '28000' ? 401 : result.error.code === '42501' ? 403 : result.error.code === 'P0002' ? 404 : 400);
       return respond({data: result.data});
     }

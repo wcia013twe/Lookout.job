@@ -1,82 +1,131 @@
-# Private Network UI
+# Durable company Network
 
-Network keeps the existing `/referrals/` URL with two working views:
+Network keeps `/referrals/`, Targets → company detail → Overview, People & outreach,
+and Applications. Circle experiences appear in the Overview, with source conversations and optional search disclosed below. Active processes stays application-scoped.
+Company research is private; opening a suggestion or reading intelligence writes no
+company, workspace, contact or application record. Opening application links is not applying.
 
-- **Targets:** a compact company list showing target teams/roles, next steps and
-  relevant people. Company details retain private research, source dates and the
-  existing outreach editor. Targets can exist before a job or contact is known.
-- **Active processes:** applied roles, recruiter screens, interviews and offers,
-  each opening its targeted outreach workspace. The application remains the unit
-  of navigation; Open application uses the existing materials/prep/timeline dialog.
+## Authoritative records
 
-Role-specific contacts are matched only by an explicit application reference in
-existing contact tags (`application:<backendId-or-local-id>`) or an exact employer
-posting URL in jobUrl/link. Matching preserves requisition query parameters.
-Company/title similarity alone never establishes process involvement. Other
-company contacts appear separately, labelled as unconfirmed for this process.
-Prepare for this role creates a separate contact draft with a fresh ID, blank
-message and Not asked status, preserving the person's previous message/status.
-The role-specific copy request reuses the cold-outreach guide and existing
-list_contacts/save_contact operations. No recruiter inbox or message sending is
-connected. Company research opens the corresponding Target without a page reload.
+`public.companies` is the maintained identity registry: UUID, canonical name,
+optional domain, explicit aliases. Only maintainers/service role can write it;
+website and agent tools cannot. The initial registry includes Databricks, NVIDIA,
+Together AI, Oracle, Stripe and Snowflake. Add other companies through reviewed
+migrations. Parents, subsidiaries and brands are separate unless explicitly aliased.
+Ambiguous names remain unresolved, even when a domain might narrow them.
 
-The desktop process list sits beside its outreach; mobile uses a labelled process
-selector. Process-specific drafts, empty outreach, general company contacts and
-multiple simultaneous roles at one company are covered by fictional demo data.
+`public.company_workspaces` owns a person's target: owner + existing **text** target
+ID, optional registry ID, typed research/priority/team/concern/action/follow-up/archive
+columns, dated source objects, bounded explicit contact/application IDs and revision.
+One linked workspace per owner/company is enforced. Unknown companies are valid
+private targets. Duplicate legacy targets remain separate, unresolved, review-marked
+records. The list keys saved rows by workspace ID, so neither duplicate disappears.
+Private name/website edits re-resolve identity and never change the registry.
 
-Existing contacts and tracked applications appear in Targets through normalized
-company-name matches. Explicit company links support aliases; unassigned legacy
-people remain accessible under Other contacts. Company priorities do not overwrite
-application statuses, tier lists or the weekly preparation budget.
+Contacts, applications, shared postings and Circle revisions retain their own
+records and permission boundaries. Posting `company_id` and contact `company_id`
+are derived from the registry at write time. Explicit links associate already-owned
+records; they cannot fetch another person's private data. Matching uses explicit
+links and known identities, with normalized names for unresolved legacy records.
+A process contact still requires an explicit application tag or exact posting URL;
+company/role similarity does not prove process involvement. Requisition `jobId` in
+Circle context is an employer ID, never the internal posting or application ID.
+Canonical URLs retain requisition query parameters.
 
-## Existing storage and tool boundary
+## Website and MCP boundary
 
-This is a UI-focused extension, without a new company table, RPC or gateway tool.
-Company targets live in the existing private outreach collection with:
+Browser `company_action` and scoped agent dispatch call `private.company_actions`:
 
-- `collection: "companies"` (distinct from people)
-- `company`: company display name
-- `followUpDate`: optional date
-- `notes`: JSON company brief, encoded/decoded by `lib/network-model.mjs`
+| MCP tool | Operation | Scope / arguments |
+| --- | --- | --- |
+| `list_companies` | `companies.list` | `workspace:read`; optional exact name/alias `query`, `limit` 1–100, nonnegative `offset` |
+| `list_company_workspaces` | `company_workspaces.list` | `workspace:read`; optional `limit` 1–1000 and `offset` |
+| `save_company_workspace` | `company_workspaces.save` | `network:write`; `id`, complete `record`, current `expectedRevision`; optional matching `companyId` |
 
-The notes contain name, website, priority, interest, targetTeams, concerns,
-research, nextAction, followUpDate, sources [{title,url,observedAt,summary}],
-contactIds, applicationIds and archived. Source dates are observations, not a
-claim of current availability. Legacy plain notes remain readable. The UI validates
-this presentation format and bounds it to fit existing outreach-record limits.
-The backend treats notes as freeform data under its existing validation boundary.
+A new target uses expectedRevision 0. Complete record fields remain
+`name, website, priority, interest, targetTeams, concerns, research, nextAction,
+followUpDate, sources, contactIds, applicationIds, archived`.
+Sources are `{title,url,observedAt,summary}`; dates are actual observations, not
+invented employer dates. Archive is a revision-checked save. Follow-ups retain
+existing Action Board navigation, timezone and due-action behavior.
 
-Website writes reuse `save_outreach_contact` and its existing owner/revision guards,
-automatic syncing/retry and account namespaces. Agents use existing `list_contacts`
-and `save_contact` (`network:write`) with the current expectedRevision, preserving
-company-target collection and notes. There are no new advertised capabilities.
-Links display only records already present in the user's owned workspace; they
-never grant access or fetch arbitrary IDs. Guest data stays in its browser namespace.
-No automatic guest-to-account company migration is added beyond existing outreach
-behavior. Malformed structured notes are shown as legacy research text for review.
+Legacy `list_contacts` exposes company-shaped compatibility projections, including
+current revisions. `save_contact` with `collection: companies` routes into the
+workspace service; `delete_contact` archives that workspace. Neither writes an
+active company contact. Obsolete direct company-contact saves fail with a
+reload-required response. People and company browser caches are separate.
 
-## Research and follow-ups
+## Migration and browser sync
 
-Copy research request is an explicit handoff to the personal agent: load the
-existing Career Toolkit company-research guide, read existing company-target
-notes, verify missing/stale public information and save via existing contact tools.
-It does not queue/start research, send messages, or change any permissions.
+The additive migration imports all company-contact targets transactionally,
+preserving IDs, owners, available timestamps, revisions, archive flags, fields,
+links and URLs. Original notes stay verbatim in `legacy_notes`; retired outreach
+rows remain recovery evidence and cannot be resurrected. Malformed notes remain
+verbatim research with a review marker and any valid legacy follow-up date.
+The old contact schema has only `updated_at`, so it supplies the imported initial
+timestamp; an unavailable earlier creation timestamp is not invented.
 
-Due and overdue next actions appear on the Action Board using the account's
-quiet-mode timezone (UTC fallback). Open company returns to its workspace. Clear
-or change the date, or archive the company, to change reminders. These rows do not
-allocate interview-practice time, complete tasks or activate notification schedules.
+`importLegacyCompanies` moves guest and owner-local legacy company records out of
+people storage idempotently. Sign-in imports guest targets by ID into the owner
+namespace while retaining the guest copy. Account switching never copies one
+owner's targets into another account. Dirty local revisions survive hydration,
+offline writes and retries. Conflicts preserve local research and pause writes;
+**Discard draft & reload saved company** explicitly resolves them. Lost successful
+responses reconcile against the saved content/revision without another write.
 
-## Verification
+## Circle intelligence
 
-Unit tests cover company-note encoding, existing tool compatibility, provenance,
-aliases, unassigned contacts, follow-ups and isolated demo fixtures. Existing
-backend tests continue to cover outreach ownership, scopes and revisions.
-`scripts/check-network-ui.mjs` uses intercepted fictional account traffic to check
-signed-in company-note persistence, contact retry recovery, desktop/mobile UI,
-research editing, sources, application opening, outreach, archive/follow-ups and
-reset. Demo uses the existing disposable memory store; no real account writes.
+The Overview’s Circle section calls `search_circle_knowledge` / `knowledge.search` with
+`scope: current_memberships` and either `companyId` or unresolved `company` text.
+`circleId` remains supported for a single Circle; its company filter uses the same
+resolver/search. Scope and circleId are mutually exclusive; company ID and text
+are mutually exclusive. Optional `authorId` uses server-derived IDs. Aliases are
+presentation only, including member activity grouping.
 
-Browser verification covers desktop, mobile, light theme and role-specific outreach
-isolation using fictional data. Live account persistence remains unverified.
-No backend deployment or data migration is introduced by this UI change.
+Cross-Circle retrieval selects permitted **published revisions**, including for
+one's own posts with newer private drafts. Primary company, application/referral
+contexts and individual offers are searched. Combined company/role/stage filters
+must match one entry. Membership, visibility, author and context filters run before
+cursor pagination. Each root post appears once; replies remain in the source
+thread, and distinct people's reports are retained. Results include Circle labels,
+experience dates (or unknown), context and source-thread navigation.
+
+Company identity backfill is derived metadata (`companyContexts`), never a rewrite
+of approved revision JSON. New optional company references must match registry
+names. Attached references do not grant private-record access or bypass existing
+exact-revision publication review. The existing Circle release flag remains intact.
+
+## Validation and rollout
+
+`tests/company-hub.test.mjs` covers transactional imports, malformed notes,
+duplicates, unknown companies, aliases, canonical URLs, revision conflicts,
+compatibility projections, offline/lost-response recovery and owner isolation.
+The Circle suite exercises browser RPC and MCP paths, consent, unpublished edits,
+visibility, membership removal and pagination. Database tests use disposable
+PGlite instances, not the hosted project.
+
+Local implementation is not a hosted release. Release additive backend support
+from reviewed main through the production backend release process first. Inspect
+migration history and dependencies, verify hosted two-account permissions, and
+deploy gateway/MCP plus developerVersion before publishing the dependent frontend.
+Keep Circle release gates closed until hosted verification passes. No hosted
+migration history was inspected or changed during this integration. Do not blindly
+replay local migrations over a divergent hosted history.
+
+## Integration with current main
+
+Network retains Outreach, Active Processes and Targets. The current company
+Overview, pencil-controlled editors and Robinhood/Stripe demo scenarios remain in
+place. Circle source conversations appear below the Overview, rather than in a
+replacement layout or separate primary tab. Copy research request uses
+list_company_workspaces/save_company_workspace. Revision conflicts expose an
+explicit discard-local-draft/load-saved recovery action.
+
+The isolated demo keeps its two current company targets, contacts and application
+examples, using dedicated company rows. Shared fictional conversations exercise
+company intelligence; database fixtures separately cover malformed legacy records,
+permissions and conflict handling. Demo reset restores memory without account
+writes, external submissions or messages.
+
+Current logo caching and GitHub Pages hosting remain unchanged. No Sites migration,
+hosted backend deployment or production parity claim is included.
