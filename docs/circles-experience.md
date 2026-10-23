@@ -290,3 +290,9 @@ Experience/resource rows and contribution details show AI-drafted or Human-poste
 ### Clubhouse progress and wins
 
 The Clubhouse now opens with Trophy room before the companion room. It shows the three latest loaded published milestones or structured activity updates, with View all for the remaining loaded updates. Members can read highlights, stated goals, requests for help and milestone previews, then open the existing thread to celebrate or reply without selecting a companion. Goal bars appear only for explicit completed/target statements using the existing parser. Origin labels and fictional-demo disclosure remain visible. Empty Circles invite an update without inferring tracker activity; drafts, replies and withdrawn contributions are excluded. Existing fictional goals, help requests and milestone wins cover the section without new fixtures or backend/MCP changes.
+
+### Circle directory member banners
+
+Directory banners display up to five actual Circle members and the full member count, matching the inner Circle header. They load membership through existing circles.read rather than inferring people from shared companies or posts. Fictional previews use the same companion mapping as the Circle header; real members use initials. Loading and unavailable states do not invent members or counts. No backend or MCP changes.
+
+Trophy room uses a compact member-led update list with companion avatars in the fictional demo, real-member initials, checked highlights, themed goal tracks and quiet reply actions. The visual treatment changes no contribution or visibility rules.
