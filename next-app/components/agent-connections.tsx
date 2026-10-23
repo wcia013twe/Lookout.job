@@ -20,6 +20,13 @@ const scopeLabels: Record<string, string> = {
   "activity:write": "Record search activity",
   "approvals:read": "Read application review decisions",
 };
+export function AgentPluginSteps() {
+  return (<ul className="agent-plugin-steps">
+        <li>Add Lookout in your agent’s plugin or MCP settings.</li>
+        <li>Paste the connection setup below.</li>
+        <li>Ask your agent: “Connect to Lookout and start my search.”</li>
+      </ul>);
+}
 export default function AgentConnections({onboarding=false}:{onboarding?:boolean}) {
   const w = useWorkspace();
   const [connections, setConnections] = useState<AgentConnection[]>([]),
@@ -81,6 +88,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
     const name = String(formData.get("name") || "").trim();
     if (!name) {
       setNameError("Enter a name so you can recognize this agent later.");
+      form.querySelector("details")?.setAttribute("open", "");
       form.querySelector<HTMLInputElement>('[name="name"]')?.focus();
       return;
     }
@@ -176,8 +184,24 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
       if (epoch === generation.current) setFeedback("Copy failed. Select and copy the token manually.");
     }
   }
-  return (
-    <Section title="Connect your personal agent">
+  if (onboarding) return (
+    <div className="agent-connect">
+      <AgentPluginSteps/>
+      <p className="agent-connect-permissions">Prepare jobs and applications · you approve applications.</p>
+      {token ? <div aria-label="Your new agent connection">
+        <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
+        <button className={primary} onClick={()=>copy(true)}>Copy connection setup</button>
+        <p className="hint">Keep this setup safe. The token is shown once.</p>
+      </div> : <form onSubmit={issue} aria-label="Create an agent connection">
+        <input type="hidden" name="name" value="My personal agent"/>
+        <button className={primary} disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating setup…":"Get connection setup"}</button>
+      </form>}
+      {feedback&&<p role="status" className="hint">{feedback}</p>}
+      <p className="hint">Access lasts 30 days. Your agent’s AI provider handles the information it receives. <Link href="/privacy/#agents">Privacy details</Link></p>
+    </div>
+  );
+  const content = (
+    <>
       <p className="max-w-prose text-sm leading-relaxed text-board-muted">
         Give Muse or another personal agent access to your Lookout workspace.
         Your agent can read or change information within the permissions you grant.
@@ -201,8 +225,8 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
           <fieldset disabled={(!w.user && !w.demo) || busy} className="space-y-2">
             <legend className="mb-3 text-sm font-semibold">Choose your agent’s access</legend>
             {CONNECTION_ACCESS.map((option) => (
-              <label key={option.id} className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-board-accent ${access === option.id ? "border-board-accent bg-board-tag" : "border-board-line hover:border-board-accent"} ${onboarding && option.id === "read" ? "cursor-not-allowed opacity-50" : ""}`}>
-                <input type="radio" name="access" value={option.id} checked={access === option.id} onChange={() => setAccess(option.id)} disabled={onboarding && option.id === "read"} className="mt-1 size-4 shrink-0 accent-board-accent" aria-describedby={`agent-access-${option.id}`} />
+              <label key={option.id} className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-board-accent ${access === option.id ? "border-board-accent bg-board-tag" : "border-board-line hover:border-board-accent"}`}>
+                <input type="radio" name="access" value={option.id} checked={access === option.id} onChange={() => setAccess(option.id)} className="mt-1 size-4 shrink-0 accent-board-accent" aria-describedby={`agent-access-${option.id}`} />
                 <span className="min-w-0"><span className="block text-sm font-semibold">{option.title}</span><span id={`agent-access-${option.id}`} className="mt-1 block text-sm leading-relaxed text-board-muted">{option.description}</span></span>
               </label>
             ))}
@@ -316,6 +340,7 @@ export default function AgentConnections({onboarding=false}:{onboarding?:boolean
           </ul>
         )}
       </div>
-    </Section>
+    </>
   );
+  return <Section title="Connect your personal agent">{content}</Section>;
 }
