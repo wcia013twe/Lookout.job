@@ -689,3 +689,16 @@ Mythic, A to Legendary, B to Epic, C to Rare, and D to Common; Unranked remains
 neutral. Colors do not change saved rankings or the separate opportunity-card
 rarity calculation. Logos reuse the existing cached manifest with initials when
 missing; Logo.dev is not connected by this change.
+
+## Branch convergence (2026-10-23)
+
+All outstanding branch histories are reconciled into current main. Newer profile,
+timeline, Network, Circle, toolkit, agent and deployment decisions take precedence
+over superseded PC implementations; historical change notes describe their own
+passes. The optional `npm run build:sites` target and existing Sites project
+identity are retained (see [Sites hosting](docs/sites-hosting.md)), alongside the
+GitHub Pages production workflow and logo-cache fallback. The gateway allowlist
+contains the exact existing Sites origin; this source merge is not a backend or
+Sites deployment, and live auth/MCP parity still requires release verification.
+The public catalog combines the morning/midday discoveries with canonical URL
+deduplication and preserved application statuses.

@@ -681,37 +681,37 @@
     "contentType": "image/png"
   },
   "cactus-max-planck": {
-    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/cactus-max-planck.png",
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/c86bab730c4781dc56bdbbb709d0fab9322fdc81/assets/logos/cactus-max-planck.png",
     "sha256": "28f3f01bce75d1cd9269632dde09a630a7137a775dec06bcb9121d2abe7f8dd6",
     "contentType": "image/png"
   },
   "cisco": {
-    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/cisco.png",
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/c86bab730c4781dc56bdbbb709d0fab9322fdc81/assets/logos/cisco.png",
     "sha256": "9cbd397398b2a922716453d15bc699616839559170321ea0ffb78c6912661875",
     "contentType": "image/png"
   },
   "etsy": {
-    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/etsy.png",
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/c86bab730c4781dc56bdbbb709d0fab9322fdc81/assets/logos/etsy.png",
     "sha256": "7045a5b3ad159e108d7bf9c5ccef9050e422579af4b63b6408e962a57f7f61d8",
     "contentType": "image/png"
   },
   "mongodb": {
-    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/mongodb.png",
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/c86bab730c4781dc56bdbbb709d0fab9322fdc81/assets/logos/mongodb.png",
     "sha256": "f98a9afc881fd8d843ae775524f281b899083f4ff7f96d4b62e205a5f8d44abc",
     "contentType": "image/png"
   },
   "qualcomm": {
-    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/qualcomm.png",
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/c86bab730c4781dc56bdbbb709d0fab9322fdc81/assets/logos/qualcomm.png",
     "sha256": "d85cea1954ebd8ecaa4242a8adf03a0084b80bcf8829cda9b95907de5a625767",
     "contentType": "image/png"
   },
   "man-group": {
-    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/man-group.png",
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/c86bab730c4781dc56bdbbb709d0fab9322fdc81/assets/logos/man-group.png",
     "sha256": "03b5f206d1871c9ef4cbf1d1637e4a23297a596c99313f5b025f2c5b93935298",
     "contentType": "image/png"
   },
   "kla": {
-    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/main/assets/logos/kla.png",
+    "url": "https://raw.githubusercontent.com/wcia013twe/codex-automated-job-board/c86bab730c4781dc56bdbbb709d0fab9322fdc81/assets/logos/kla.png",
     "sha256": "6fa64f28fce0e40ebe5a39e2f01c264e501f08aae9918ac765fb443d7b34bac7",
     "contentType": "image/png"
   }
