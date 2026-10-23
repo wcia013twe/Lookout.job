@@ -32,3 +32,10 @@
 - Enabled the production Circle runtime flag at the user's explicit request, without creating a staging branch or introducing costs.
 - Hosted pre-enable RLS/grant assertions passed. Post-enable authenticated-role `circles.list` returned `available: true` and an empty Circle list for the requested account. No account data, membership, content or credential was created.
 - Two-real-account staging/concurrency and browser/agent end-to-end checks remain unverified. This configuration-only change does not change demo behavior or application code.
+
+## Compact agent entry points
+
+- Updated existing root README and MCP guide entry points instead of creating another onboarding document. Added one canonical six-step quickstart to the existing developer instructions; MCP initialization now returns that same text automatically.
+- Covers scoped discovery, context versions, authoritative onboarding, evidence-based imports, owned/versioned writes, read-back verification, failures, task execution and human approval boundaries. Developer version advances to 48. Removed the stale statement that Circle activation still awaited deployment.
+- Extended the existing MCP handshake test to cover onboarding order, persistence verification and approval boundaries. No UI or demo behavior changed.
+- Validation: all 502 tests pass, including MCP startup instructions and existing demo isolation; catalog validation passes (147 roles), and `git diff --check` is clean. Production instruction release follows local landing.

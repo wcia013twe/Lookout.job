@@ -2,6 +2,14 @@
 
 A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. Next.js, React, and Tailwind provide the UI; GitHub Pages serves its static export; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
 
+## Personal agents: start here
+
+Read the compact [agent quickstart](mcp/README.md#agent-quickstart) for connection,
+onboarding, data imports, verified writes and approval boundaries. Connected agents
+receive the same startup sequence automatically from MCP `initialize` and can refresh
+it through `read_developer_context`; full workflow guides are loaded only when needed.
+`AGENTS.md` is for repository maintenance, not personal career-agent onboarding.
+
 ## Copy into Muse
 
 ```text
