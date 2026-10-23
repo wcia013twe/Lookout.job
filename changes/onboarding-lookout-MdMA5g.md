@@ -30,3 +30,8 @@
 - Inline invite validation: 486 tests, TypeScript, data validation, diff check and production static export pass (existing Next.js advisory required a build retry). Browser verified blank-code disabling, isolated demo-invite success and remaining inside onboarding. Real account joins were not performed.
 
 - Added a small Open onboarding link below Profile settings, visible from every Profile section. Replaces the hidden Change companion entry in My Agent. Demo links preserve demo mode explicitly. Validation: TypeScript, catalog validation and diff check. Navigation-only UI; no backend or MCP service change.
+
+- Always show the card-opening interaction after preferences. When no catalog role matches, reuse the gold reveal with an explicit fictional sample, illustrative bars and typed explanation; its action leads to Meet my agent. Samples have no application URL and are never seeded as a real selected role. Real catalog matches retain their existing context.
+- Always-reveal validation: 487 tests, TypeScript, data validation and diff check pass. Browser verified unmatched Design/Remote preferences still show the purple card, flip, animated gold bars, typed sample context and Meet my agent action. No external search or account action was performed.
+
+- Moved Join Circle beside the invite-code field with aligned controls; stacks below at narrow mobile widths. Join behavior and demo service remain unchanged. Validation: TypeScript, data validation and diff check.

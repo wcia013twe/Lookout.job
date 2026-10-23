@@ -67,3 +67,8 @@
 .lookout-onboarding .onboarding-circle-invite{margin:28px 0 24px;padding-top:24px;border-top:1px solid var(--line)}
 .lookout-onboarding .onboarding-circle-invite h2{font-size:20px}
 .lookout-onboarding .onboarding-circle-invite .field{margin:16px 0 10px}
+
+.lookout-onboarding .circle-invite-code-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}
+.lookout-onboarding .circle-invite-code-row .field{min-width:0}
+.lookout-onboarding .circle-invite-code-row>button{margin-bottom:10px;white-space:nowrap}
+@media(max-width:420px){.lookout-onboarding .circle-invite-code-row{grid-template-columns:minmax(0,1fr);gap:0}.lookout-onboarding .circle-invite-code-row>button{width:100%}}

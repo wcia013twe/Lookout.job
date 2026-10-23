@@ -26,3 +26,5 @@ When catalog matching returns no role, onboarding goes directly to connection se
 The final screen includes device-specific instructions for saving Lookout as a browser app, also covered by demo mode. This is a human browser-menu action, not an agent install capability. The guide is hidden in standalone mode and links to the browser vendor’s help.
 
 Onboarding Circle invites stay inline: the user pastes a code and submits Join Circle through the existing circles.join action and shared authenticated Circle client. The saved preferred/first name is disclosed as their Circle alias; missing names require entry. Retries reuse the same event key for unchanged inputs. Demo membership remains fictional. This replaces navigation to full Circle management during onboarding and adds no backend capability or new MCP scope.
+
+The preferences step always opens the card reveal. If catalog selection returns nothing, the reveal uses a labeled fictional ExampleCo sample with illustrative scores and no application URL; it is not passed as a real opportunity to the agent or submission flow. The next action connects the agent. This replaces the direct no-match bypass.
