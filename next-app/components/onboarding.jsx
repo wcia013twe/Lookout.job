@@ -6,7 +6,7 @@ import {useWorkspace} from "../lib/workspace";
 import {ApplicationProfileProvider,useApplicationProfile} from "./application-profile-context";
 import {readField,updateField} from "../../lib/search-profile.mjs";
 import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
-import {onboardingReveal,onboardingIntent,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
+import {onboardingReveal,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
 import AgentSelector from "./agent-selector";
 import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
@@ -106,7 +106,7 @@ function OnboardingFlow(){
   {a.feedback&&<p className={a.saveError?"error":"hint"} role="status">{a.feedback}</p>}
  </form></>;
  if(scene==="reveal")content=<OnboardingRoleReveal role={role} demo={w.demo} onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
- if(scene==="connect")content=<OnboardingAgentConnection intent={onboardingIntent({work,employment,location},!sample?role:null)} room={room} onFinish={()=>go("circles")} onLater={later}/>;
+ if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("circles")} onLater={later}/>;
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Button disabled={finishing||w.locked} onClick={()=>void finish()}>{finishing?"Saving setup…":"Open my workspace"}</Button><BrowserAppInstructions/></>;
  if(!w.demo&&!w.user)content=<><Dots/><Title sub="Create your Lookout account or return to your workspace before setting up your search and agent.">Sign up or sign in.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Checking sign-in…"}/></div><p className="hint">New here? Continuing with Google creates your account. Already joined? Use the same Google account to sign in.</p></>;

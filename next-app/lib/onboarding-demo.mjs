@@ -7,7 +7,8 @@ export function demoOnboardingAction(store, operation, payload={}) {
  if(payload.expectedRevision!==s.revision)throw Error('Demo state changed. Refresh.');
  if(operation==='onboarding.submit_step') {
   const {event,data={}}=payload;
-  if(event==='pause'){s.data.resumeStep=s.step;s.step='paused';s.prompt='Fictional onboarding paused.';}
+  if(event==='connection_test'){s.data.connectionTest={connectionId:'demo-connection',checkedAt:'2026-10-23T12:00:00Z'};s.automationSetup={connectionId:'demo-connection',schedule:store.get('workflow.searchPreferences.schedule')||null};s.prompt='Fictional connection confirmed; no tasks executed.';}
+  else if(event==='pause'){s.data.resumeStep=s.step;s.step='paused';s.prompt='Fictional onboarding paused.';}
   else if(event==='resume'&&s.step==='paused'){s.step=s.data.resumeStep;s.prompt='Resume the fictional scenario.';}
   else if(event==='runtime'&&s.step==='connection_pending'){s.data.runtime={connectionId:'demo-connection',browsingReportedAt:'2026-01-01T00:00:00Z',name:'Demo agent'};s.step='intent_pending';s.prompt='Your fictional agent is connected.';}
   else if(event==='intent'&&s.step==='intent_pending'){

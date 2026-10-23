@@ -17,6 +17,7 @@ this startup sequence during `initialize`; `read_developer_context` returns it a
 `quickstart`. The canonical runtime text is
 [`instructions.json`](../supabase/functions/agent-gateway/instructions.json).
 
+0. For connection setup only, read onboarding state and submit `update_onboarding_step` with `event: connection_test`, its current revision, stable event key and empty data. Use the returned `automationSetup.schedule` and connection ID to configure enabled assigned scheduled tasks in the runtime’s actual automation settings. Verify receipts or report the blocker, then stop; do not execute tasks, load career guides or claim queued work during setup.
 1. Discover tools and current argument schemas. Report missing scopes; do not guess.
 2. Call `check_context_versions`; load developer and personal context on first use,
    account change or lost context, then reload only changed sections.
