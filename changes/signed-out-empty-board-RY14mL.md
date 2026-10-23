@@ -10,13 +10,14 @@
 
 Final integration also retained concurrently landed onboarding sign-in and application-question fixes. The combined 537-test suite and production export passed after those merges.
 
-Release repair: CI exposed PGlite internal/session-role errors cascading between
-otherwise independent SQL scenarios. Each SQL scenario now uses a disposable
-clone of the fully migrated baseline, with a fresh session and plan cache.
-Migrations still apply once; every original SQL assertion remains in place.
-CI uses the locally verified Node 24 major. No production SQL or authorization
-checks are changed. The single-scenario isolation attempt was insufficient and
-is superseded by uniform isolation.
+Release repair: the development-only PGlite 0.3.14 engine repeatedly produced
+internal role/GUC, malformed-plan and WASM abort errors on Linux CI. Update it
+to the newer PostgreSQL 17 engine line (0.4.6), retain exact npm pin/lockfile
+policy, and isolate independent SQL scenarios with disposable clones of the
+fully migrated baseline. CI uses the verified Node 24 major. Every original
+SQL assertion remains; no production migration or permission check changes.
+The full local 540-test suite passes with the updated engine, and root npm ci
+reinstalls the new lock successfully.
 
 Pages path repair: the repository is now `Lookout.job` and the Pages API reports
 `https://wcia013twe.github.io/Lookout.job/`, while CI still hardcoded the old
