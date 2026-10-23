@@ -59,3 +59,6 @@
 
 - Replaced the bespoke saved-onboarding job summary with the shared Discover RoleCard in the standard responsive grid. It now has the same company logo, rarity styling, job facts, pending match preview, queue and preview actions as other jobs. Retained the saved/pending-review context without displaying candidate-specific catalog fit notes. Validation: TypeScript, data validation and diff checks.
 - Removed the Saved from onboarding / awaiting review caption above the normal job card. Validation: diff check.
+
+- Styled Google authentication with a shared white button and Google’s official multicolor G asset, reused in onboarding, the signed-out Profile menu and reset sign-in prompt. Preserved auth handlers and disabled/loading behavior. No auth flow or permissions change.
+- Google button verification: TypeScript, data validation and diff checks pass; browser inspected the white onboarding button with the official colored G on port 3000. Sign-in was not initiated.

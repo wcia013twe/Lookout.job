@@ -13,6 +13,7 @@ import OnboardingRoleReveal from "./onboarding-role-reveal";
 import OnboardingCircleStory from "./onboarding-circle-story";
 import BrowserAppInstructions from "./browser-app-instructions";
 import ImportSearchHandoff from "./import-search-handoff";
+import GoogleSignInButton from "./google-sign-in-button";
 import {Dots,Icon,Button,Quiet,Title,Field,SuggestedField,Pills} from "./onboarding-ui";
 
 export default function Onboarding(){
@@ -103,6 +104,6 @@ function OnboardingFlow(){
  if(scene==="connect")content=<OnboardingAgentConnection intent={onboardingIntent({work,employment,location},!sample?role:null)} room={room} onFinish={()=>go("circles")} onLater={later}/>;
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Link className="primary" onClick={()=>{if(w.demo)w.store.set("ui.dashboardArrival",true);}} href={w.demo?"/?demo=1&tour=dashboard":"/?tour=dashboard"}>Open my workspace<Icon/></Link><BrowserAppInstructions/></>;
- if(!w.demo&&!w.user&&!["circles","done"].includes(scene))content=<><Dots/><Title sub="Keep your search, résumé and agent connection together.">Let’s start with you.</Title><div className="actions"><Button disabled={!w.authReady} onClick={w.signIn}>{w.authReady?"Continue with Google":"Connecting…"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div></>;
+ if(!w.demo&&!w.user&&!["circles","done"].includes(scene))content=<><Dots/><Title sub="Keep your search, résumé and agent connection together.">Let’s start with you.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Connecting…"}/><Quiet onClick={later}>I’ll do this later</Quiet></div></>;
  return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><Dots/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
 }

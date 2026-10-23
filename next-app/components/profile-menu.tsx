@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { streak } from "../lib/progress.mjs";
 import ColorModeControl from "./color-mode";
+import GoogleSignInButton from "./google-sign-in-button";
 
 export default function ProfileMenu() {
   const w = useWorkspace();
@@ -72,10 +73,7 @@ export default function ProfileMenu() {
           </Link>
         </div>
         {!w.demo && <div className="mt-2 border-t border-board-line pt-2">
-          <button type="button" className={`${item} disabled:cursor-wait disabled:opacity-50`} disabled={!w.authReady}
-            onClick={() => { setOpen(false); if (w.accountUser) w.signOut(); else w.signIn(); }}>
-            {w.accountUser ? "Sign out" : "Sign in with Google"}
-          </button>
+          {w.accountUser ? <button type="button" className={item} disabled={!w.authReady} onClick={()=>{setOpen(false);w.signOut();}}>Sign out</button> : <GoogleSignInButton className="w-full" disabled={!w.authReady} onClick={()=>{setOpen(false);w.signIn();}}/>}
         </div>}
       </nav>}
     </div>

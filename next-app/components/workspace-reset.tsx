@@ -1,4 +1,5 @@
 "use client";
+import GoogleSignInButton from "./google-sign-in-button";
 import {useEffect,useState} from "react";
 import Link from "next/link";
 import {useWorkspace,asset} from "../lib/workspace-context";
@@ -46,7 +47,7 @@ export default function WorkspaceReset(){
    <p>Reset permanently deletes your profile, resumes and other private files, saved answers, preferences, searches, applications, preparation, outreach, and private history. All agent connections are revoked.</p>
    <p>Your login, Circle content and memberships, and internal version counters remain. Reset does not withdraw employer applications or stop automations hosted by your agent. Pause those automations before continuing.</p>
    {done?<p role="status">{w.demo?'Fictional workspace reset. Use Reset demo data in the profile menu to restore it.':'Workspace reset completed. Sign in again to onboard.'}</p>:<>
-    {!w.demo&&!w.accountUser?<div><p className="mb-4">Sign in to preview and reset your own workspace.</p><button className={primary} disabled={!w.authReady} onClick={w.signIn}>Sign in with Google</button></div>:<>
+    {!w.demo&&!w.accountUser?<div><p className="mb-4">Sign in to preview and reset your own workspace.</p><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn}/></div>:<>
      {!w.demo&&<p>Signed in as <strong className="break-all">{w.accountUser.email}</strong></p>}
      <button type="button" className={secondary} disabled={busy} onClick={inspect}>{busy?'Working…':preview?'Refresh reset preview':'Preview reset'}</button>
      {preview&&<form className="space-y-5 border-t border-board-line pt-5" onSubmit={reset}>
