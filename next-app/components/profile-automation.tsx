@@ -4,7 +4,6 @@ import { useApplicationProfile } from './application-profile-context';
 import { profileAutomationSettings } from '../../lib/application-policy.mjs';
 import { updateField } from '../../lib/search-profile.mjs';
 import { Section, Field, control, primary, Notice } from './ui';
-import TierLists from './tierlists';
 
 export default function ProfileAutomation() {
   const w=useWorkspace(),a=useApplicationProfile();
@@ -35,6 +34,5 @@ export default function ProfileAutomation() {
     {settings.conflict&&<Notice>Resolve duplicate automation or company-list fields in this profile’s Advanced instructions before editing.</Notice>}
     <div className="mt-5 flex flex-wrap items-center gap-3"><button type="button" className={primary} disabled={a.busy||w.locked||settings.conflict||!a.profile.name.trim()} onClick={save}>{a.busy?'Saving…':'Save profile rules'}</button><p className="text-xs text-board-muted">Changes save with this application profile.</p></div>
     <Notice>{a.feedback}</Notice>
-    <TierLists selectedListId={settings.tierListId||undefined} onSelectList={id=>change({tierListId:id})}/>
   </Section>;
 }
