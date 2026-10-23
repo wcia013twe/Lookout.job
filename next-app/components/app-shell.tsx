@@ -72,7 +72,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         {navigation.map(([href, label]) => (
           <Link
             key={href}
-            data-dashboard-tour={href==="/applications/"?"applications":href==="/needs-you/"?"needs":undefined}
+            data-dashboard-tour={href==="/"?"discover":href==="/applications/"?"applications":href==="/needs-you/"?"needs":href==="/career-toolkit/"?"toolkit":href==="/referrals/"?"network":href==="/circles/"?"circles":undefined}
             href={href}
             aria-current={
               isCurrent(href) ? "page" : undefined

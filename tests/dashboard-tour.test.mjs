@@ -12,6 +12,18 @@ test('dashboard tour is opt-in at onboarding handoff, once automatically, and al
 test('tour completion keys isolate account and guest state',()=>{
  assert.notEqual(dashboardTourKey('user-a'),dashboardTourKey('user-b'));
  assert.notEqual(dashboardTourKey('user-a'),dashboardTourKey(null));
- assert.equal(dashboardTourSteps.length,3);
- assert.match(dashboardTourSteps[2].text,/don’t need this dashboard open/);
+ assert.equal(dashboardTourSteps.length,5);
+ assert.match(dashboardTourSteps[0].text,/don’t need this dashboard open/);
+});
+
+import {showAgentEmptyState} from '../next-app/lib/discover-view.mjs';
+test('new personal workspaces wait for a private batch while public browsing and regular demos remain available',()=>{
+ assert.equal(showAgentEmptyState({signedIn:true,hasPrivateBatch:false}),true);
+ assert.equal(showAgentEmptyState({signedIn:true,hasPrivateBatch:true}),false);
+ assert.equal(showAgentEmptyState({signedIn:false,hasPrivateBatch:false}),false);
+ assert.equal(showAgentEmptyState({demo:true,demoArrival:true}),true);
+ assert.equal(showAgentEmptyState({demo:true,demoArrival:false}),false);
+ assert.equal(dashboardTourSteps.at(-1).illustration,'circles');
+ assert.ok(dashboardTourSteps.some(step=>step.illustration==='tools'));
+ assert.equal(dashboardTourSteps.some(step=>step.targets.includes('[data-dashboard-tour="profile"]')),false);
 });

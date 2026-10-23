@@ -1,8 +1,10 @@
-export const dashboardTourVersion = 1;
+export const dashboardTourVersion = 2;
 export const dashboardTourSteps = [
- { title:'Discover your next move', text:'Open a card to explore the role and see why it’s worth a look.', targets:['[data-dashboard-tour="roles"] article'] },
- { title:'Know where things stand', text:'Track your applications here. Check Action board when something needs your review.', targets:['[data-dashboard-tour="applications"]','[data-dashboard-tour="needs"]'] },
- { title:'Your agent goes with you', text:'Search, prepare drafts and track progress through your connected agent. You don’t need this dashboard open.', hint:'Manage your connection in Profile → My Agent.', targets:['[data-dashboard-tour="profile"]'] },
+ { title:'This is your agent’s workspace.', text:'Review their work here, or keep going in your agent’s chat. You don’t need this dashboard open.', illustration:'workspace', targets:[] },
+ { title:'Discover what’s next.', text:'Your agent’s finds appear here. Open a role when you want to take a closer look.', illustration:'discover', targets:['[data-dashboard-tour="discover"]'] },
+ { title:'Review, then keep moving.', text:'Applications keeps track of your progress. Action board shows what needs your attention.', illustration:'review', targets:['[data-dashboard-tour="applications"]','[data-dashboard-tour="needs"]'] },
+ { title:'Build your next opportunity.', text:'Prepare your materials in Career Toolkit. Keep contacts and outreach together in Network.', illustration:'tools', targets:['[data-dashboard-tour="toolkit"]','[data-dashboard-tour="network"]'] },
+ { title:'Better with your people.', text:'Share useful experiences in Circles. Your agent can turn a shared tip into your next step.', illustration:'circles', targets:['[data-dashboard-tour="circles"]'] },
 ];
 export function dashboardTourKey(owner) { return `lookout:dashboard-tour:v${dashboardTourVersion}:${owner||'guest'}`; }
 export function shouldStartDashboardTour(request, dismissed) {
