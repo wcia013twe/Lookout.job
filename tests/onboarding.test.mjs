@@ -49,3 +49,11 @@ test('onboarding catalog preview respects work, employment and location without 
  assert.equal(selectOnboardingRole(roles,{work:'',employment:'Full-time',location:'Remote'}),null);
  assert.match(onboardingIntent({work:'Backend engineering',employment:'Full-time',location:'Remote'},roles[0]),/Verify that it is open/);
 });
+
+test('connection check requires a runtime check-in, not issued credentials or a later UI step', async()=>{
+ const {onboardingConnectionReady}=await import('../next-app/lib/onboarding-connection.mjs');
+ assert.equal(onboardingConnectionReady({step:'intent_pending',data:{}}),false);
+ assert.equal(onboardingConnectionReady({data:{runtime:{connectionId:'issued-token'}}}),false);
+ assert.equal(onboardingConnectionReady({data:{runtime:{connectionId:'c',browsingReportedAt:'invalid'}}}),false);
+ assert.equal(onboardingConnectionReady({data:{runtime:{connectionId:'c',browsingReportedAt:'2026-10-23T12:00:00Z'}}}),true);
+});

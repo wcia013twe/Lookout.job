@@ -6,11 +6,12 @@ import {useWorkspace} from "../lib/workspace";
 import {ApplicationProfileProvider,useApplicationProfile} from "./application-profile-context";
 import {readField,updateField} from "../../lib/search-profile.mjs";
 import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
-import {onboardingIntent,selectOnboardingRole} from "../lib/onboarding-catalog.mjs";
+import {selectOnboardingRole} from "../lib/onboarding-catalog.mjs";
 import AgentSelector from "./agent-selector";
-import AgentFirstSetup from "./agent-first-setup";
+import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
 import OnboardingCircleStory from "./onboarding-circle-story";
+import BrowserAppInstructions from "./browser-app-instructions";
 import {Dots,Icon,Button,Quiet,Title,Field,SuggestedField,Pills} from "./onboarding-ui";
 
 export default function Onboarding(){
@@ -65,7 +66,8 @@ function OnboardingFlow(){
    prompt=updateField(prompt,"Search Filters","Location",location.trim());
    if(resumeId)prompt=updateField(prompt,"Application materials","Default resume ID",resumeId);
    if(!await a.saveProfilePrompt(prompt))return;
-   setRole(selectOnboardingRole(w.roles,{work,employment,location}));go("reveal");
+   const match=selectOnboardingRole(w.roles,{work,employment,location});
+   setRole(match);go(match?"reveal":"connect");
   }catch(e){setError(e.message||"Could not save your search. Try again.");}
  }
  function selectAgent(value,label){
@@ -95,9 +97,9 @@ function OnboardingFlow(){
   <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Find my first role"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div>
   {a.feedback&&<p className={a.saveError?"error":"hint"} role="status">{a.feedback}</p>}
  </form></>;
- if(scene==="reveal")content=role?<OnboardingRoleReveal role={role} demo={w.demo} onPrepare={()=>{if(w.demo)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>:<><Dots/><Title sub="There isn’t a close match in today’s catalog. Your agent can search beyond it.">Let’s look a little further.</Title><Button onClick={()=>go("connect")}>Connect my agent</Button><div className="actions"><Quiet onClick={()=>go("preferences")}>Edit my search</Quiet><Quiet onClick={later}>I’ll do this later</Quiet></div></>;
- if(scene==="connect")content=<AgentFirstSetup initialIntent={onboardingIntent({work,employment,location},role)} connectionHeader={room} onFinish={()=>go("circles")} onLater={later}/>;
+ if(scene==="reveal"&&role)content=<OnboardingRoleReveal role={role} demo={w.demo} onPrepare={()=>{if(w.demo)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
+ if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("circles")} onLater={later}/>;
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
- if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Link className="primary" href="/">Open my workspace<Icon/></Link></>;
+ if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Link className="primary" href="/">Open my workspace<Icon/></Link><BrowserAppInstructions/></>;
  return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><Dots/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{error&&<p className="error" role="alert">{error}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
 }

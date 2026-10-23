@@ -27,7 +27,7 @@ social access and message sending are capability handoffs, never claimed backend
 | Public leaderboard read | read_leaderboard | implemented locally; integration audit pending |
 | Leaderboard alias/sharing | human action handoff | implemented locally; integration audit pending |
 | Connection issue/revoke and sign-in/out | human action handoff | implemented locally; integration audit pending |
-| My Agent task definitions and linked card widgets | save_notification_preferences, save_theme_preferences; read_personal_context; publish_batch/read_batch | locally verified with shared database ownership/version checks; hosted gateway discovery release pending |
+| My Agent task definitions and linked card widgets | save_notification_preferences, save_theme_preferences; read_personal_context; publish_batch/read_batch | shared database ownership/version checks verified locally and hosted; gateway discovery/frontend release and external-agent execution pending |
 | Pack reveal/open state | local-only presentation; batch-item state through MCP | implemented locally; integration audit pending |
 
 Human handoffs must give a specific link and requested action; they never approve,
