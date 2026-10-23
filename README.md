@@ -78,7 +78,7 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 
 | Feature | Current behavior |
 | --- | --- |
-| Public Discover | Browse without login; shared static JSON catalog remains available |
+| Discover | Sign-in required for the workspace; starts with owned agent batches. Signed-in users can explicitly explore the shared catalog. |
 | Google account | Optional sign-in, remembered session and sign-out; real user round-trip still needs verification |
 | Cloud workspace | Signed-in profile, rankings, answers, resumes and drafts sync automatically; offline changes are retained; conflicting drafts pause for review |
 | Company rankings | Editable/drag-and-drop Full-time and Internship lists, available in card pack settings under Company ranking; Oracle is the full-time C-tier baseline |
@@ -702,3 +702,17 @@ contains the exact existing Sites origin; this source merge is not a backend or
 Sites deployment, and live auth/MCP parity still requires release verification.
 The public catalog combines the morning/midday discoveries with canonical URL
 deduplication and preserved application statuses.
+
+## Signed-out workspace
+
+Workspace routes show a sign-in prompt until authentication resolves to a
+non-anonymous account. Signed-out sessions do not mount the board, account
+pages, counters or dashboard tour, and the account provider exposes no catalog
+or batch roles until sign-in. Accounts without a private batch start empty;
+shared catalog browsing is an explicit signed-in choice. Guest browser caches
+remain preserved in their existing namespace, without appearing on the board.
+Privacy and individual Career Toolkit guides remain public; onboarding retains
+its explicit sign-in/setup flow. Explicit `?demo=1` still opens only fictional,
+resettable memory data and remains separate from account authentication.
+This is a frontend visibility change; public static catalog files remain public
+and backend authorization and scoped MCP tools are unchanged.
