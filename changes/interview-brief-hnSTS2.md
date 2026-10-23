@@ -94,3 +94,8 @@
 - Added an open-by-default Progress & wins section before the companion room, showing recent shared activity and milestones with expandable loaded history and direct thread/reply actions. Existing companion interactions remain available.
 - Reused published contributions, activity parsing, goal ratios and authoring labels. No private tracker inference, service, MCP, Supabase or About Me changes. Existing isolated demo content covers goals, help requests and milestone wins.
 - Validation: frontend typecheck, 4 existing activity tests, data validation (147 roles), static production build (passed on retry after the existing advisory pause), whitespace check and desktop/mobile fictional Circle checks passed. Verified default visibility, highlights, explicit goal progress, help requests, expand/collapse, direct thread opening and no page overflow. No hosted account or MCP round trip was exercised.
+
+## Follow-up: Trophy room naming
+
+- Renamed the Clubhouse progress section to Trophy room and updated its current-state documentation. Behavior and demo content are unchanged.
+- Validation: data validation and whitespace check passed; text-only change.

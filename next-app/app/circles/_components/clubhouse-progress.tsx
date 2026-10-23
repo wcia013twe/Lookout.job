@@ -11,7 +11,7 @@ export default function ClubhouseProgress({posts,demo,openPost}:{posts:Post[];de
  }).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||b.id.localeCompare(a.id));
  const visible=expanded?updates:updates.slice(0,3);
  return <section className="mb-6 border-b border-board-line pb-5" aria-labelledby="clubhouse-progress-title">
-  <header className="mb-1 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"><h3 id="clubhouse-progress-title" className="text-base font-semibold">Progress & wins</h3><p className="text-xs text-board-muted">{demo?'Fictional shared updates':'Shared with this Circle'}</p></header>
+  <header className="mb-1 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"><h3 id="clubhouse-progress-title" className="text-base font-semibold">Trophy room</h3><p className="text-xs text-board-muted">{demo?'Fictional shared updates':'Shared with this Circle'}</p></header>
   {visible.length?<ul id="clubhouse-progress-updates" className="divide-y divide-board-line">{visible.map(post=>{
    const activity=parseCircleActivity(post.content.body),goal=activityGoalProgress(activity.goal);
    return <li key={post.id} className="py-4">
