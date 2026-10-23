@@ -1,5 +1,7 @@
 'use client';
 import Link from 'next/link';
+import {apiErrorText} from '../../../../lib/api-failure.mjs';
+import ApiError from '../../../components/api-error';
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {useRouter,useSearchParams} from 'next/navigation';
 import {createBackend} from '../../../../backend/client.mjs';
@@ -46,18 +48,19 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
    services.artifactAction('artifacts.list',{...(search?{query:search}:{}),...(kind?{kind}:{}),archived,offset,shelf:filtered?'all':'saved',asOf:today}),
    filtered?Promise.resolve({items:[],nextOffset:null}):services.artifactAction('artifacts.list',{shelf:'prepared',asOf:today,offset:preparedOffset})
   ]);
-  request.then((value:Artifact|[Page,Page])=>{if(epoch!==generation.current||!stillOwner())return;if(artifactId)setArtifact(value as Artifact);else{const [page,prep]=value as [Page,Page];setItems(old=>offset?[...old.filter(r=>!page.items.some(n=>n.id===r.id)),...page.items]:page.items);setNext(page.nextOffset);setPrepared(old=>preparedOffset?[...old.filter(r=>!prep.items.some(n=>n.id===r.id)),...prep.items]:prep.items);setPreparedNext(prep.nextOffset);}}).catch(()=>{if(epoch===generation.current)setError(artifactId?'This artifact could not load. Check your connection and account, then retry.':'Your workspace could not load. Check your connection, then retry. The artifact backend may need updating.');}).finally(()=>{if(epoch===generation.current)setLoading(false);});
+  request.then((value:Artifact|[Page,Page])=>{if(epoch!==generation.current||!stillOwner())return;if(artifactId)setArtifact(value as Artifact);else{const [page,prep]=value as [Page,Page];setItems(old=>offset?[...old.filter(r=>!page.items.some(n=>n.id===r.id)),...page.items]:page.items);setNext(page.nextOffset);setPrepared(old=>preparedOffset?[...old.filter(r=>!prep.items.some(n=>n.id===r.id)),...prep.items]:prep.items);setPreparedNext(prep.nextOffset);}}).catch((failure:unknown)=>{if(epoch===generation.current&&stillOwner())setError(apiErrorText(artifactId?'artifacts.read':'artifacts.list',failure));}).finally(()=>{if(epoch===generation.current)setLoading(false);});
   return()=>{generation.current++;};
  },[services,artifactId,revision,search,kind,archived,offset,preparedOffset,today,filtered,reload]);
  async function archive(){
   if(!artifact||!services||busy||w.locked)return;const epoch=generation.current;setBusy(true);setFeedback('');
   try{await services.artifactAction('artifacts.archive',{id:artifact.id,expectedVersion:artifact.version,archived:!artifact.archived});if(epoch===generation.current&&stillOwner())setReload(n=>n+1);}
-  catch{if(epoch===generation.current)setFeedback('Artifact changed or could not save. Reload before trying again.');}
+  catch(failure){if(epoch===generation.current&&stillOwner())setError(apiErrorText('artifacts.archive',failure));}
   finally{if(stillOwner())setBusy(false);}
  }
  const readMaterial=useCallback((id:string,version:number)=>services!.artifactAction('artifacts.read',{id,version}),[services]);
  const prompt=weeklyPrepRequest(!!w.demo);
  return <div className="min-w-0">
+  <ApiError message={error} onRetry={()=>setReload(n=>n+1)}/>
   {w.demo&&<p className={styles.demoLabel}>Demo materials · changes reset with demo mode</p>}
   {!owner&&<Notice><Link className="text-board-accent underline" href="/profile/">Sign in through Profile</Link> to see the materials your agent has prepared.</Notice>}
   {artifactId?<><Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>{artifact&&!loading&&<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onVersion={v=>router.push(artifactPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} busy={busy}/>} {artifact&&!loading&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
@@ -70,7 +73,6 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
    </section>
   </>}
   {loading&&<Notice>Loading your materials…</Notice>}
-  {error&&<div role="alert"><p className="mt-5 text-sm leading-relaxed">{error}</p><button className={`${secondary} mt-3`} onClick={()=>setReload(n=>n+1)}>Retry loading</button></div>}
   <p role="status" className="mt-3 text-sm leading-relaxed text-board-muted">{feedback}</p>
   {!artifactId&&<p className={styles.workspaceFoot}><ToolkitIcon name="calendar" size={16}/><Link href="/needs-you/">Open your weekly plan</Link><span>Materials stay saved after the week ends.</span></p>}
  </div>;

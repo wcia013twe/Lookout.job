@@ -1,4 +1,5 @@
 "use client";
+import {callApi,apiFailure,apiErrorText} from '../../lib/api-failure.mjs';
 import {isCompanyRecord} from '../../lib/network-model.mjs';
 import { outreachDemoMessages } from './outreach-demo.mjs';
 import { useEffect, useRef, useState } from 'react';
@@ -6,17 +7,16 @@ import { useSlice, useWorkspace } from './workspace';
 const recordOf = row => { const {id,_revision,_outreachDirty,origin,...record}=row; return record; };
 export function useOutreach() {
  const {client,user,store,demo}=useWorkspace(); const [contacts,setLocal]=useSlice('network.referrals');
- const [requests,setRequests]=useState([]),[status,setStatus]=useState(''),[ready,setReady]=useState(false);
+ const [requests,setRequests]=useState([]),[status,setStatus]=useState(''),[error,setError]=useState(''),[ready,setReady]=useState(false);
  const session=useRef(null),latest=useRef(contacts||[]); latest.current=contacts||[];
  function isCurrent(s) {return session.current===s && window.JB?.auth?.userId===s.owner;}
  function apply(rows) { latest.current=rows; setLocal(rows); }
  async function refresh(s) {
   if(!isCurrent(s) || s.pending.size || s.running) return;
-  const [a,b]=await Promise.all([client.from('outreach_contacts').select('*').eq('user_id',s.owner).order('updated_at'),client.from('outreach_requests').select('*').eq('user_id',s.owner).order('created_at',{ascending:false}).limit(30)]);
+  const [a,b]=await Promise.all([callApi('outreach_contacts.read',()=>client.from('outreach_contacts').select('*').eq('user_id',s.owner).order('updated_at'),Array.isArray),callApi('outreach_requests.read',()=>client.from('outreach_requests').select('*').eq('user_id',s.owner).order('created_at',{ascending:false}).limit(30),Array.isArray)]);
   if(!isCurrent(s) || s.pending.size || s.running) return;
-  if(a.error||b.error) throw Error('Outreach could not load. Try again.');
-  s.revisions=new Map(a.data.map(r=>[r.id,r.revision]));
-  apply(a.data.filter(r=>!r.deleted_at&&r.record.collection!=='companies').map(r=>({...r.record,id:r.id,companyId:r.company_id||r.record.companyId,_revision:r.revision}))); setRequests(b.data); setStatus('Saved to your account.');
+  s.revisions=new Map(a.map(r=>[r.id,r.revision]));
+  apply(a.filter(r=>!r.deleted_at&&r.record.collection!=='companies').map(r=>({...r.record,id:r.id,companyId:r.company_id||r.record.companyId,_revision:r.revision}))); setRequests(b);setError('');setStatus('Saved to your account.');
  }
  async function flush() {
   const s=session.current; if(!s) return;
@@ -25,12 +25,12 @@ export function useOutreach() {
    while(s.pending.size && isCurrent(s)) {
     const [id,value]=s.pending.entries().next().value; s.pending.delete(id); s.inFlight=id;
     let result;
-    try { result=await client.rpc('save_outreach_contact',{p_id:id,p_expected_revision:s.revisions.get(id)??-1,p_record:recordOf(value||{id}),p_expected_owner:s.owner,p_deleted:!value}); }
+    try { result={data:await callApi('contacts.save',()=>client.rpc('save_outreach_contact',{p_id:id,p_expected_revision:s.revisions.get(id)??-1,p_record:recordOf(value||{id}),p_expected_owner:s.owner,p_deleted:!value}),data=>!!data&&Number.isInteger(data.revision))}; }
     catch(error) {result={error};}
     const {data,error}=result;
     if(!isCurrent(s)) return;
     s.inFlight=null;
-    if(error) { if(!s.pending.has(id)) s.pending.set(id,value); setStatus('Your outreach edits are kept here. Sync will retry automatically.'); throw Error('Outreach sync paused.'); }
+    if(error) { if(!s.pending.has(id)) s.pending.set(id,value); const failure=apiFailure('contacts.save',error,result.status);setError(failure.message+' Your local edits are preserved; the save is not confirmed.');throw failure; }
     s.revisions.set(id,data.revision);
     if(value) apply(latest.current.map(r=>r.id===id && JSON.stringify(recordOf(r))===JSON.stringify(recordOf(value)) ? {...r,_revision:data.revision,_outreachDirty:false} : r));
     else store.set('network.outreachDeletions',(store.get('network.outreachDeletions')||[]).filter(r=>r.id!==id));
@@ -47,7 +47,7 @@ export function useOutreach() {
   clearTimeout(s.timer); s.timer=setTimeout(()=>flush().catch(()=>{}),500); setStatus('Saving outreach…');
  }
  useEffect(()=>{
-  setReady(false);setRequests([]); const owner=user?.id;
+  setReady(false);setRequests([]);setError('');const owner=user?.id;
   if(demo){session.current=null;setReady(true);setStatus('Demo contacts — changes stay in memory.');return;}
   if(!owner || !client || !store) {session.current=null;setStatus('Saved in this browser. Sign in to ask Muse to prepare outreach.');return;}
   const s={owner,pending:new Map(),revisions:new Map(),running:null,timer:null};session.current=s;
@@ -56,8 +56,8 @@ export function useOutreach() {
    s.syncing=true;
    try {
    if(!s.initialized) {
-    const {data,error}=await client.from('outreach_contacts').select('*').eq('user_id',owner);
-   if(error) throw error; if(!isCurrent(s))return;
+    const data=await callApi('outreach_contacts.read',()=>client.from('outreach_contacts').select('*').eq('user_id',owner),Array.isArray);
+   if(!isCurrent(s))return;
    s.revisions=new Map(data.map(r=>[r.id,r.revision]));
    const local=[...(store.get('network.referrals')||[]).filter(r=>!isCompanyRecord(r)),...(store.get('network.people')||[]).map(r=>({...r,id:`network:${r.id}`,contact:r.name}))];
    for(const r of local) if(!s.revisions.has(r.id) || r._outreachDirty) {s.pending.set(r.id,r);if(r._outreachDirty && r._revision!==undefined)s.revisions.set(r.id,r._revision);}
@@ -67,10 +67,10 @@ export function useOutreach() {
    await flush(); if(!isCurrent(s))return;
    if(!s.peopleImported) {store.set('network.people',[]);s.peopleImported=true;}
    await refresh(s); if(isCurrent(s))setReady(true);
-  } catch { if(isCurrent(s))setStatus('Your outreach edits are kept here. Sync will retry automatically.'); }
+  } catch(failure) { if(isCurrent(s)){setReady(false);setError(apiErrorText('outreach.sync',failure));setStatus('Local edits are preserved. Account sync has not completed.');} }
    finally {s.syncing=false;}
   }
-  sync();
+  s.sync=sync;sync();
   const timer=setInterval(sync,15000);
   window.addEventListener('online',sync);
   window.addEventListener('focus',sync);
@@ -81,8 +81,8 @@ export function useOutreach() {
   const s=session.current;if(!s||!ready)throw Error('Sign in and wait for your outreach account to connect.');
   const names=[...new Set(companies.map(v=>v.trim()).filter(Boolean))];if(!names.length||names.length>50||names.some(n=>n.length>200))throw Error('Choose between 1 and 50 companies.');
   await flush(); if(!isCurrent(s))throw Error('Account changed.');
-  const {error}=await client.from('outreach_requests').insert({companies:names,user_id:s.owner});if(error)throw Error('Could not save your request. Try again.');
+  await callApi('outreach_requests.create',()=>client.from('outreach_requests').insert({companies:names,user_id:s.owner}),()=>true);
   await refresh(s);
  }
- return {demo,records:contacts||[],setRecords:setContacts,flush,contacts:(contacts||[]).filter(r=>!isCompanyRecord(r)),setContacts:next=>setContacts([...latest.current.filter(isCompanyRecord),...next]),requests,status,ready,request,refresh:async()=>{const s=session.current;if(s){await flush();await refresh(s);if(isCurrent(s))setReady(true);}},signedIn:!!user || demo};
+ return {demo,records:contacts||[],setRecords:setContacts,flush,contacts:(contacts||[]).filter(r=>!isCompanyRecord(r)),setContacts:next=>setContacts([...latest.current.filter(isCompanyRecord),...next]),requests,status,error,ready,request,refresh:async()=>{const s=session.current;if(s)await s.sync();},signedIn:!!user || demo};
 }

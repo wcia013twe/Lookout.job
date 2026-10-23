@@ -1,3 +1,4 @@
+import {callApi} from '../lib/api-failure.mjs';
 import {validateFieldUpdate,readUserBrief} from '../lib/agent-workflows.mjs';
 import {validateArtifact} from '../lib/artifacts.mjs';
 // Data access for an authenticated browser client. Never use a service-role client.
@@ -81,7 +82,7 @@ function createBackend(client, expectedUserId = null) {
     async artifactAction(operation, payload = {}) {
       validateArtifact(operation,payload);
       await owner();
-      const data = await result(client.rpc('artifact_action',{operation,payload}));
+      const data = await callApi(operation,()=>client.rpc('artifact_action',{operation,payload}),data=>!!data&&typeof data==='object'&&(operation!=='artifacts.list'||Array.isArray(data.items)));
       await owner();
       return data;
     },

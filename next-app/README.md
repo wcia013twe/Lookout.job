@@ -331,3 +331,13 @@ Log meeting and Add notes/Update reuse the contact's existing versioned private
 notes/MCP save path. They send no invites and do not change application status.
 The focused Robinhood/Stripe demo includes a completed recruiter meeting and an
 upcoming coffee chat. See [the record format](../docs/schema.md#companies-and-network).
+
+## API failures and empty workspaces
+
+Network, Career Toolkit and Circles render an accessible alert with the failed operation, safe error code and HTTP status. Successful empty lists show their empty states. Missing endpoints (`PGRST202`/`PGRST205`), malformed responses, expired sessions, denied access and connection failures stay distinct; private server messages, SQL and request payloads are not rendered. Network drafts remain local until a save succeeds, and a failed Circle save preserves form input. Circles requires sign-in or explicit demo entry; initialization failures never substitute fictional conversations.
+
+`lib/api-failure.mjs` supplies the shared response/error handling. Existing scoped MCP tools and backend ownership, validation and revision checks are unchanged; this is frontend error presentation, not a new data-edit capability. Hosted inspection on 2026-10-23 confirmed that `artifact_action`, `company_action` and `knowledge_action` are absent. These pages need the pending backend release to work on that project; refreshing an empty account cannot repair missing APIs.
+
+Detached demo checks: open `/career-toolkit/?demo=1&demoApi=empty` or `/circles/?demo=1&demoApi=empty` for successful empty lists. Change `demoApi` to `unavailable` for a simulated missing API; **Check again** recovers to the normal fictional fixtures. These scenarios only wrap in-memory demo services. Reset demo data repeats the selected scenario, and removing `demoApi` restores normal fixtures. Account mode never reads this parameter.
+
+`scripts/check-api-errors-ui.mjs` checks mobile demo empty/error/recovery, account-mode failures and empty responses, preserved Circle input, explicit guest demo entry and absence of account writes, using intercepted fictional API responses. Serve `next-app/out` and set `LOOKOUT_UI_URL`, `LOOKOUT_PLAYWRIGHT_MODULE`, and `LOOKOUT_UI_ARTIFACTS` as needed; defaults use localhost:3047 and the runner's Playwright installation. No production credentials are needed.
