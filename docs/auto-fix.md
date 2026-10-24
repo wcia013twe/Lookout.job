@@ -77,3 +77,22 @@ manufacture a defect or ship a dummy change to test release. For a genuine fix,
 verify CI → merge → Pages → issue receipt → Muse status → one behavioral retry.
 Queue tests use mocked GitHub reads and create no task or issue. Live scheduled
 pickup, release and notification delivery remain unverified by repository tests.
+
+## Reporting failure diagnosis
+
+The report description is one string containing actual newlines: each of the
+three lines begins at column one with `Attempted:`, `Happened:`, or `Expected:`
+and nonempty fictional reproduction text. Bullets and Markdown headings do not
+match the schema. JSON encodes these newlines as `\n`; do not double-escape them.
+
+Version 58 reports a fixed failure stage and, for rejected GitHub HTTP requests,
+the numeric status only. It never returns raw upstream errors or headers. A
+precheck failure means that request did not attempt issue creation. Stop retries
+until repaired; a label-check 404 can mean a missing label or inaccessible repo,
+not proof of either. An issue-create or receipt-finish failure is uncertain:
+check GitHub and receipt reservations before retrying the same title at most once.
+Never clear reservations automatically. The existing ledger permits five report
+reservations per day; this change does not raise that limit.
+
+This diagnostic update requires the gateway and MCP release after review. It
+does not repair or rotate credentials, create labels, or prove a live submission.
