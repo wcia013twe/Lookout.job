@@ -1,4 +1,5 @@
 "use client";
+import BrandMark from "./brand-mark";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
@@ -71,7 +72,7 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
     <Title>{connected ? "You’re connected." : "Let’s check your connection."}</Title>
     <p className="lead">{connected ? "Your agent has checked in with Lookout." : "Paste the copied instructions into your agent’s chat. Enter your token only in its secure credential form or plugin/MCP settings."}</p>
     <Iphone className="connection-device"><div className="connection-phone" role="status" aria-live="polite">
-      <div className="connection-phone-brand"><Dots /><strong>lookout</strong></div>
+      <div className="connection-phone-brand"><BrandMark /><strong>lookout</strong></div>
       <motion.div className={"connection-phone-indicator" + (connected ? " is-connected" : "")} animate={connected || reduced ? { scale: 1, opacity: 1 } : { scale: [1, 1.06, 1], opacity: [.55, 1, .55] }} transition={{ duration: 2, repeat: connected || reduced ? 0 : Infinity }}>
         {connected ? <Icon kind="check" /> : <Dots />}
       </motion.div>

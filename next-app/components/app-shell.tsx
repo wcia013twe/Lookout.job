@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import BrandMark from "./brand-mark";
 import {useEffect, type ReactNode} from "react";
 import { MotionConfig } from "framer-motion";
 import { streak } from "../lib/progress.mjs";
@@ -36,7 +37,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   if (!hasAccess && !isOnboarding) {
     return <main className="min-h-dvh bg-board-bg">
       <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-4 md:px-6">
-        <header className="mb-8"><Link href="/" className="inline-flex min-h-11 items-center text-xl font-bold">Lookout</Link></header>
+        <header className="mb-8"><Link href="/" className="inline-flex min-h-11 items-center gap-2 text-xl font-bold"><BrandMark />Lookout</Link></header>
         {isPublicReferencePage(path) ? children : <section className="mx-auto max-w-md py-16" aria-labelledby="workspace-sign-in-title">
           <h1 id="workspace-sign-in-title" className="text-2xl font-bold tracking-tight">Sign in to your workspace</h1>
           <p className="mt-3 text-base leading-relaxed text-board-muted">Your jobs, applications, and activity will appear after you sign in.</p>
@@ -87,7 +88,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <div className="workspace-identity min-w-0">
           <div className="min-w-0">
           <Link href="/" className="workspace-brand inline-flex min-h-11 items-center gap-2 text-lg font-bold md:gap-2.5 md:text-xl">
-            <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3 24 9v10l-10 6-10-6V9L14 3Z" stroke="currentColor" strokeWidth="1.5"/><path d="m9 16 5-8 5 8H9Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><path d="M14 16v5" stroke="currentColor" strokeWidth="1.5"/></svg>Lookout
+            <BrandMark />Lookout
           </Link>
           <p className="workspace-scan text-xs text-board-muted">Last scan: {w.date}</p>
           </div>
