@@ -2535,6 +2535,23 @@
       "whyItFits": "Driver Refinement Foundations team builds the common framework for post-training and heuristic hill climbing across the Planner org: dataset curation from large driving corpora, LLM/world foundation models, data generation pipelines and experiment design for model training. Direct ML systems/platform fit at $70/hr masters pay, MS-eligible (currently enrolled in a graduate program). Follows the board's existing Waymo intern precedent; note the Summer 2027 timing vs May 2027 graduation is an open question to confirm with the employer.",
       "applicationUrl": "https://careers.withwaymo.com/jobs?gh_jid=8304574",
       "applicationStatus": "New"
+    },
+    {
+      "id": "two-sigma-software-engineering-campus-hire-nyc",
+      "company": "Two Sigma",
+      "title": "Software Engineering Full-Time Campus Hire (NYC)",
+      "employmentType": "FT",
+      "location": "New York, NY (hybrid)",
+      "category": "Distributed systems and infrastructure",
+      "priority": "Apply Now",
+      "postedDate": "2026-09-09",
+      "discoveredDate": "2026-10-24",
+      "sourceFreshness": "Employer careers listing verified 2026-10-24; direct req link pending, careers site in maintenance at check time",
+      "whyItFits": "Separate NYC requisition on Two Sigma's own careers page, listed as its own role alongside Houston and London; the Oct 23 story check skipped it as a Houston duplicate, which was the wrong call. Same infra-heavy scope: distributed storage, mission-critical trading systems, and data ingestion from 10,000+ sources daily, with team matching before start. Base $165K-$190K plus discretionary bonus per the posting. Quant-fund SWE carries top-tier credential capital and the full-time wide net applies.",
+      "applicationUrl": "https://careers.twosigma.com/careers/InternshipsAndEarlyCareers",
+      "applicationStatus": "New",
+      "discoverySource": "@zero2sudo Instagram stories (Oct 24 recap)",
+      "verifiedDate": "2026-10-24"
     }
   ]
 }
