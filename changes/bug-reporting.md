@@ -7,10 +7,15 @@
 - Reused existing CI, merge queue and Pages. One release-result workflow lets
   Muse check frontend release status on its next run.
 - Removed the redundant intake notification workflow, Supabase deployment
-  pipeline/config, backend release planner and their unused tests. No new Actions
+  pipeline/config, backend release planner and their unused tests. No Supabase deployment
   secrets or model API key are required. Backend fixes use the existing process.
-- Shortened setup and worker documentation. Automatic Codex startup still needs
-  a supported cloud scheduler; this scaffold does not register one.
-- Validation after cleanup: all 555 tests passed (none skipped), all 158 roles
-  validated, and the production build passed (388 offline assets). No live issue,
-  release or account write.
+- Added an owner-only issue trigger using official experimental `codex cloud
+  exec`, with a pinned CLI, access-token login, issue-specific prompt and duplicate
+  launch reservations. It needs one Codex Actions secret and one environment-ID
+  variable; authentication expiry requires renewal. No refresh service was added.
+- Updated the worker/setup documentation. Live cloud submission still requires
+  account configuration and verification; local tests mock it.
+- Validation: all 568 tests passed (none skipped), all 158 roles validated, and
+  the production build passed (388 offline assets). Launcher YAML and the pinned
+  CLI version were checked. Five launcher tests cover authorization, duplicates,
+  missing/expired auth and ambiguous submission. No live cloud task was created.

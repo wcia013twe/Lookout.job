@@ -6,7 +6,8 @@
   `get_bug_status(issueNumber)`, restricted to one configured Muse connection.
 - GitHub Issues stores reports. Stable normalized titles and private hash receipts
   prevent duplicate publication, including concurrent requests and uncertain retries.
-- A Codex cloud task follows [the worker prompt](auto-fix-worker.md).
+- The issue-triggered `auto-fix-launch.yml` uses the official experimental
+  `codex cloud exec` CLI to submit [the worker prompt](auto-fix-worker.md).
 - Existing CI, `merge-ready` queue and GitHub Pages handle frontend releases.
 - One release-signal workflow posts the release result to the issue and mentions
   the owner. Muse checks status on its next run and retries once per new releaseId.
@@ -25,7 +26,7 @@ In **Supabase Edge Function secrets**:
 | `LOOKOUT_BUG_CONNECTION_ID` | ID of the authorized existing Muse connection, not its credential. Retain `activity:write` on that connection. |
 
 The token is the only new credential. Never paste it in chat, source or MCP
-arguments. No new GitHub Actions secrets are needed. Codex must have working
+arguments. The cloud launcher additionally needs its own Codex authentication (below). Codex must have working
 GitHub issue/PR access through its own existing connection; Git clone access alone
 is not proof of that access.
 
@@ -36,14 +37,63 @@ is not proof of that access.
 2. Set the two Supabase settings. Apply the bug-report receipt migration and
    release `agent-gateway` and `agent-mcp` through the existing backend process,
    preserving custom authentication. Refresh Muse's tool discovery/context.
-3. Register a **cloud-hosted** Codex task using `auto-fix-worker.md`, if the account
-   supports recurring cloud tasks. Prevent overlapping runs. This session has no
-   scheduler-registration tool: automatic Codex startup is still unconfigured.
-   Do not substitute a desktop automation or copy login files into Actions.
+3. Configure the cloud launcher below. Once the workflow is on main, owner-authored
+   open `auto-fix` issues trigger it on creation, labelling and reopening. It
+   rechecks author/state/label, serializes launches per issue and records a
+   reservation before submission. Workflow retries do not launch duplicate tasks.
 
-Saving secrets or publishing the cloud environment does not register that task.
-There is no separately billed inference configured. Existing GitHub Actions usage
-is subject to the account's normal quota/billing.
+## Codex cloud launcher authentication
+
+In **GitHub → Lookout.job → Settings → Secrets and variables → Actions** set:
+
+- **Variable `CODEX_CLOUD_ENV_ID`**: your published Codex Cloud environment ID,
+  with this repository and working GitHub issue/PR access. This is not this chat's
+  `ccarenv_...` runtime instance ID. Use your Codex Cloud environment selection.
+- **Secret `CODEX_CLOUD_ACCESS_TOKEN`**: a ChatGPT/Codex access token from your own
+  authorized CLI login. Not an OpenAI API key or the Muse GitHub token.
+
+For a one-time bootstrap from your own computer, authenticate Codex using its
+supported device flow and file credential store (do not run these commands in
+public/shared CI logs):
+
+```sh
+codex -c 'cli_auth_credentials_store="file"' login --device-auth
+```
+
+Using an authenticated GitHub CLI with permission to manage repository secrets,
+transfer only the access token directly to the Actions secret without displaying
+it or copying the refresh token:
+
+```sh
+python3 - <<'PYTOKEN'
+import json, pathlib, subprocess
+credentials = json.loads((pathlib.Path.home()/".codex"/"auth.json").read_text())
+token = (credentials.get("tokens") or {}).get("access_token")
+if not isinstance(token, str) or not token:
+    raise SystemExit("No file-based ChatGPT access token found; finish Codex login first.")
+subprocess.run(["gh", "secret", "set", "CODEX_CLOUD_ACCESS_TOKEN",
+                "--repo", "wcia013twe/Lookout.job"], input=token, text=True, check=True)
+PYTOKEN
+```
+
+Never paste the token or auth file in chat, an issue or the repository. The
+workflow imports it through `codex login --with-access-token`, uses one attempt
+with pinned CLI 0.163.0, and removes its temporary credential file. It does not
+run the model locally or fall back to API billing.
+
+**This is an experimental CLI wrapper, not a documented turnkey Actions OAuth
+integration.** The command and access-token login exist, but live unattended
+account access must still be verified. Access tokens expire; this scaffold does
+not store refresh tokens or add a refresh service. When authentication fails,
+refresh this secret from a valid CLI login and rerun the workflow. It is not a
+maintenance-free permanent credential.
+
+To validate, create an owner-authored fictional `auto-fix` issue and use Actions →
+Launch Codex cloud fix → Run workflow with its issue number. Verify a real Codex
+Cloud task link and session. If submission is uncertain, inspect Cloud tasks
+before removing the reservation comment and rerunning. Never automatically clear
+it. Missing/expired credentials post a sanitized blocker instead of claiming work
+started. GitHub-hosted runner quota and normal subscription limits still apply.
 
 ## Reporting and feedback
 
@@ -77,4 +127,5 @@ After activation, submit the fictional report twice through Muse and confirm one
 issue. Verify actual cloud pickup. Synthetic validation PRs stay draft; do not
 manufacture a defect or ship a dummy change to test release. For a genuine fix,
 verify CI → merge → Pages → issue receipt → Muse status → one behavioral retry.
-Live cloud pickup, release and notification delivery remain unverified.
+The local launcher tests mock authentication/submission; they create no cloud
+task. Live cloud pickup, release and notification delivery remain unverified.
