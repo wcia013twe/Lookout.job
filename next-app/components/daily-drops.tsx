@@ -1,4 +1,5 @@
 "use client";
+import {rarityOf} from "../lib/role-display";
 import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { dayStamp } from "../lib/progress.mjs";
@@ -44,12 +45,12 @@ export default function DailyDrops({id,title,drops,onOpened}:{id:string;title:st
   const [day,setDay]=useState('latest'),[packOpen,setPackOpen]=useState(false);
   const w=useWorkspace();
   if(!drops.length)return <section className={styles.strip} aria-label={title}><h2 className={styles.title}>{title}</h2><p className="mt-3 text-sm text-board-muted">No cards yet. Ask a connected agent to publish discoveries into this pack.</p></section>;
-  const latest = [...drops].sort((a, b) => b.dateSeen.localeCompare(a.dateSeen));
+  const latest = drops.map(drop=>({...drop,displayTier:rarityOf(drop.company,drop.type,drop.title,w.state.workflow,drop.searchProfileId) as Drop["displayTier"]})).sort((a, b) => b.dateSeen.localeCompare(a.dateSeen));
   const dates = [...new Set(latest.map((drop) => drop.dateSeen))];
   const selectedDay = day === "latest" ? dates[0] : day;
   const visible = latest.filter((drop) => selectedDay === "all" || drop.dateSeen === selectedDay);
-  const packDay = selectedDay === "all" ? dates.find((date) => latest.some((drop) => drop.dateSeen === date && tierOf(drop) !== "common")) || dates[0] : selectedDay;
-  const pack = latest.filter((drop) => drop.dateSeen === packDay && tierOf(drop) !== "common");
+  const packDay = selectedDay === "all" ? dates.find((date) => latest.some((drop) => drop.dateSeen === date && drop.status !== "skipped")) || dates[0] : selectedDay;
+  const pack = latest.filter((drop) => drop.dateSeen === packDay && drop.status !== "skipped");
   const packAction = packDay === dayStamp() && !w.state.drops?.packStamps?.[`${id}:${packDay}`] ? "Open" : "Replay";
   const seen = new Set<string>(w.state.drops?.seenDropIds || []);
   const newCount = visible.filter((drop) => !seen.has(dropKey(drop))).length;

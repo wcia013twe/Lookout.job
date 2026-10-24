@@ -645,6 +645,11 @@ imports appear under Closed. Imported records currently have an expandable histo
 view, not the preparation/submission workflow of a verified canonical application.
 
 The website RPC `simplify_import(action,payload)` and scoped MCP tools
+The default **Prepare jobs and applications** connection includes `tracking:write`
+for importing application history and recording user-reported progress. Read-only
+and career-context connections do not include it. Existing tokens retain their
+granted scopes unless explicitly updated.
+
 `preview_simplify_import`, `import_simplify_jobs` (`tracking:write`) and
 `list_imported_jobs` (`workspace:read`) share the same backend implementation.
 Previews return a version; saves require that version and an exact-retry event key.
@@ -709,7 +714,7 @@ Real onboarding starts with Google sign-up/sign-in and has no fictional demo mod
 
 The final **Open my workspace** action submits `onboarding.submit_step` with `event: website_complete`, the current revision, a stable event key and empty data. The database writes its own timestamp in the owning user's onboarding session. This is separate from the agent's `step: ready`, verified facts, runtime check-in and all application approvals. Reloads and other devices read the same server marker; account switches cannot inherit it. No historical sessions are automatically marked complete.
 
-MCP mapping: `read_onboarding_state` reads the marker; `update_onboarding_step` documents the human-only `website_complete` boundary and the database rejects agent attempts. Agents should request that the user finish setup in the signed-in website. Existing fictional demo onboarding fixtures are retained for backend isolation tests, but the onboarding route never mounts demo mode. Migration `website_onboarding_completion` and gateway developer version 50 require the normal production workflow before hosted parity is advertised.
+MCP mapping: `read_onboarding_state` reads the marker; `update_onboarding_step` documents the human-only `website_complete` boundary and the database rejects agent attempts. Agents should request that the user finish setup in the signed-in website. Existing fictional demo onboarding fixtures are retained for backend isolation tests, but the onboarding route never mounts demo mode. Released on 2026-10-23 from merged main `b85aafb`: all 52 hosted migration versions match the repository; gateway version 26 serves developer contract 50 and MCP version 22 exposes the completion boundary. Live disposable-account checks verified human completion, persistent reads/replay, MCP read parity, account isolation, rejection of agent completion, fresh-token authentication, import reads and reset preview. Test accounts were removed. Browser Google OAuth and destructive reset were not exercised in this release.
 ## Signed-out workspace
 
 Workspace routes show a sign-in prompt until authentication resolves to a

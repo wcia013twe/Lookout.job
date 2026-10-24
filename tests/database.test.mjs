@@ -25,6 +25,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 
 for (const [file, behavior] of [
   ['agent-connection-test','lightweight agent check-in exposes owned automation settings without advancing onboarding or creating tasks'],
+  ['job-assessment','dynamic private assessments validate scores, preserve retries and isolate owners'],
   ['website-onboarding','website completion persists separately from agent readiness, rejects agents, isolates owners and replays safely'],
   ['simplify-import','Simplify imports retain missing URLs and source reports, preserve status, isolate owners, reject stale writes and replay safely'],
   ['workspace-reset','workspace reset preserves Auth and other owners, revokes agents, retries storage failures, blocks writes and protects replay'],

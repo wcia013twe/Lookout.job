@@ -1,5 +1,6 @@
 import {IMPORT_TOOLS,validateImport} from './simplify-import.mjs';
 import {RESET_HANDOFF_TOOL} from './workspace-reset.mjs';
+import {validateJobRecommendation} from './job-assessment.mjs';
 import {validatePackRecommendation} from './card-packs.mjs';
 import {BRIEF_TOOL,validateBrief} from './user-brief.mjs';
 import {FIELD_UPDATE_TOOLS,validateFieldUpdate} from './field-updates.mjs';
@@ -143,6 +144,7 @@ export function validateRequest(input) {
       if(job.jobId!==undefined&&(typeof job.jobId!=='string'||!job.jobId.trim()))throw Error('jobId must be an existing catalog ID.');
       if (!job.jobId && (!job.employer || typeof job.employer!=='object' || Array.isArray(job.employer) || Object.keys(job.employer).some(key => !EMPLOYER_FIELDS.includes(key)))) throw new Error('Only public employer facts may be published');
       if(!job.jobId) {let url;try{url=new URL(job.canonicalUrl);}catch{throw Error('New batch jobs need canonicalUrl as a public HTTPS employer posting URL.');}if(url.protocol!=='https:'||url.username||url.password)throw Error('New batch jobs need a public HTTPS canonicalUrl.');}
+      validateJobRecommendation(job.recommendation);
       validatePackRecommendation(job.recommendation);
       if(job.recommendation!==undefined&&(!job.recommendation||typeof job.recommendation!=='object'||Array.isArray(job.recommendation)))throw Error('Private fit notes belong in the recommendation object.');
     }

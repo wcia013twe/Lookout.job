@@ -4,6 +4,7 @@ import {parseSimplifyCsv,parseCsv,canonicalImportUrl,importedApplication} from '
 import {simplifyDemoCsv,createDemoSimplifyImport} from '../next-app/lib/simplify-import-demo.mjs';
 import {createSimplifyImporter} from '../backend/simplify-import.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
+import {connectionScopes} from '../lib/agent-connections.mjs';
 import {createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
 test('Simplify export maps dates, saved/applied, missing URLs and archived rows without guessing',()=>{
  const parsed=parseSimplifyCsv('\uFEFF'+simplifyDemoCsv.replaceAll('\n','\r\n'));
@@ -36,7 +37,7 @@ test('browser adapter guards both sides of account changes and never hides a mis
 });
 test('MCP imports expose only scoped actions and share exact payload validation',async()=>{
  const token='jb_agent_'+ 'a'.repeat(64),calls=[];
- const handler=createHandler(async(t,operation,payload)=>{assert.equal(t,token);if(operation==='credentials.verify')return {status:200,data:{scopes:['workspace:read','tracking:write']}};validateRequest({operation,payload});calls.push({operation,payload});return {status:200,data:{version:0,decisions:[]}};});
+ const handler=createHandler(async(t,operation,payload)=>{assert.equal(t,token);if(operation==='credentials.verify')return {status:200,data:{scopes:connectionScopes('work')}};validateRequest({operation,payload});calls.push({operation,payload});return {status:200,data:{version:0,decisions:[]}};});
  const send=async(method,params)=>await (await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}))).json();
  const discovery=await send('tools/list',{});assert.ok(discovery.result.tools.some(t=>t.name==='import_simplify_jobs'));
  const payload={rows:parseSimplifyCsv(simplifyDemoCsv).rows};const result=await send('tools/call',{name:'preview_simplify_import',arguments:payload});assert.ok(!result.result.isError);assert.deepEqual(calls,[{operation:'imports.preview',payload}]);

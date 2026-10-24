@@ -379,3 +379,49 @@ release has passed a hosted round trip. See README for bounds and supported form
 ### Lightweight connection setup
 
 `onboarding.submit_step(event=connection_test)` is an authenticated agent check-in, with the same revision/event replay boundary. It returns the owning account’s schedule definitions and connection ID and records `data.connectionTest`; it does not attest browsing, advance onboarding, create/claim tasks or authorize a submission. Human callers, revoked credentials, foreign owners, stale revisions and nonempty event data are rejected. `update_onboarding_step` advertises this boundary; the website reads it through `onboarding.get_state`. External runtime automation registration is requested only for saved enabled scheduled tasks assigned to this connection. Actual runtime scheduler receipts remain necessary; Lookout itself does not execute a scheduler.
+### Dynamic job research and previews
+
+`publish_batch` / `batches.publish` remains the scoped `batches:write` boundary.
+Keep personal research in the existing private `batch_items.recommendation`:
+
+```json
+{
+  "whyItFits": "Concrete job requirement matched to a supported profile fact.",
+  "materialGap": "One material gap or uncertainty to verify.",
+  "sourceFreshness": "Observed on 2026-10-23; employer posting date undisclosed.",
+  "searchProfileId": "selected-owned-profile-id",
+  "matchAssessment": {
+    "percent": 73,
+    "assessedAt": "2026-10-23T19:00:00Z",
+    "evidence": "Current profile evidence compared with the official posting.",
+    "factors": [
+      {"label":"Role-specific requirement","value":73,"rating":"Good","reason":"Supporting evidence."},
+      {"label":"Team scope","value":null,"rating":"Unknown","reason":"Not disclosed."}
+    ]
+  }
+}
+```
+
+All fields are optional; omit unsupported scores and gaps rather than inventing
+them. `matchAssessment` requires evidence, an ISO timestamp and 1–12 bounded,
+evidenced factors. Percent and non-null factor values range from 0 to 100.
+Gateway validation and a database trigger enforce this for new writes. The web
+reads these same owned private records through existing RLS; no new generic write
+or approval tool exists. Historical batches are not rewritten or given synthetic
+assessments. Existing retries return original evidence; publish updated research
+with a new event key. Source freshness falls back to recorded public employer
+freshness, then “Not recorded.” Missing recommendation priority stays unset.
+
+Company badges and pack reveal colors use owned tier placements, with an explicit
+profile Company priorities / Tier list ID taking precedence. Ambiguous or absent
+rankings remain unranked; all non-skipped roles remain eligible for pack display.
+Tier display has no effect on backend application authority.
+
+`prepare_draft` / `drafts.prepare` saves the actual employer question/answer list.
+Unanswered questions and custom answers awaiting review render dynamically.
+Completed profile/library bindings and attached file fields stay outside this
+preview's decision list. No generic contact questions are added. Preview typing
+is temporary; persistent edits and human approval use Applications. Neither a
+saved assessment nor a preview interaction grants reuse consent or submission
+permission. Outreach requests are queued for a connected agent; queue creation
+does not prove execution or scheduling.

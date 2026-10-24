@@ -1,3 +1,4 @@
+import {readField} from "../../lib/search-profile.mjs";
 const normCompany = (name) =>
   String(name)
     .toLowerCase()
@@ -8,42 +9,8 @@ const normCompany = (name) =>
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
 
-/* ---------- Rarity (display badges only, derived from company name) ---------- */
+/* ---------- Rarity (display colors derived from owned tier placements) ---------- */
 const TIER_ORDER = ["common", "rare", "epic", "legendary", "mythic"];
-/* Two track-specific tier lists: FT ranks career signal, Intern ranks conversion + program strength.
-     Legendary = asymmetric upside. DoorDash Labs is legendary via the labs-title rule below. */
-const RARITY_FT = {
-  mythic: ["databricks", "snowflake", "google", "akuna-capital"],
-  legendary: [
-    "nvidia",
-    "amd",
-    "jane-street",
-    "citadel-securities",
-    "hrt",
-    "anthropic",
-    "openai",
-  ],
-  epic: [
-    "meta",
-    "apple",
-    "netflix",
-    "tesla",
-    "stripe",
-    "doordash",
-    "uber",
-    "bloomberg",
-    "chalk",
-    "tenstorrent",
-    "singlestore",
-  ],
-  rare: ["oracle", "microsoft", "amazon", "cisco", "ibm", "intel"],
-};
-const RARITY_INTERN = {
-  mythic: ["databricks", "snowflake", "google", "akuna-capital"],
-  legendary: ["jane-street", "citadel-securities", "hrt", "nvidia"],
-  epic: ["bloomberg", "doordash", "uber", "meta", "stripe"],
-  rare: ["oracle", "microsoft", "amazon"],
-};
 const RARITY_LABEL = {
   common: "Common",
   rare: "Rare",
@@ -51,17 +18,28 @@ const RARITY_LABEL = {
   legendary: "Legendary",
   mythic: "Mythic",
 };
-const rarityOf = (company, type, title) => {
-  const n = normCompany(company);
-  const hay = (String(company) + " " + String(title || "")).toLowerCase();
-  if (n === "doordash" && hay.includes("labs")) return "legendary";
-  const map = /intern/i.test(String(type || "")) ? RARITY_INTERN : RARITY_FT;
-  for (let i = TIER_ORDER.length - 1; i >= 0; i--) {
-    const t = TIER_ORDER[i];
-    if (map[t] && map[t].includes(n)) return t;
+export function companyRanking(company, type, workflow = {}, profile) {
+  const search=workflow.searchPreferences || {};
+  if (typeof profile === 'string') {
+    const matches=(search.profiles || []).filter(p=>p.id===profile && p.active!==false);
+    if(matches.length!==1)return {rarity:'common',label:'Unranked'};
+    profile=matches[0];
   }
-  return "common";
-};
+  const lists=workflow.tierLists || [];
+  const explicit=profile ? readField(profile.prompt ?? profile.instructions ?? '', 'Company priorities', 'Tier list ID') : {value:''};
+  if (explicit.conflict) return {rarity:'common',label:'Unranked'};
+  const legacy=search.reviewPolicy?.[/intern/i.test(type)?'internship':'fullTime']?.tierListId;
+  const id=explicit.value || legacy;
+  const candidates=id?lists.filter(list=>list.id===id):lists.filter(list=>list.employmentType===type);
+  const list=candidates.length===1?candidates[0]:undefined;
+  const companies=list?.companies?.filter(c=>normCompany(c.name)===normCompany(company)) || [];
+  if (companies.length!==1) return {rarity:'common',label:'Unranked'};
+  const placements=Object.entries(list.placements || {}).filter(([tier,ids])=>tier!=='unranked' && ids.includes(companies[0].id));
+  const palette={S:'mythic',A:'legendary',B:'epic',C:'rare',D:'common'};
+  const tier=placements.length===1?placements[0][0]:'';
+  return palette[tier]?{rarity:palette[tier],label:`${tier} tier`}:{rarity:'common',label:'Unranked'};
+}
+const rarityOf = (company, type, title, workflow = {}, profile) => companyRanking(company,type,workflow,profile).rarity;
 const tierIndex = (t) => TIER_ORDER.indexOf(t);
 const TIER_HEX = {
   common: "#58B368",
