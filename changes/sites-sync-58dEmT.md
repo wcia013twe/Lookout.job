@@ -1,0 +1,7 @@
+# Sites release synchronization
+
+- Prepare the existing public Lookout Site from committed local main `7d5a8e8fe4193c310209677e4952959a45595bc7`, bringing the Sites frontend up to the integrated onboarding, job-assessment, toolkit, and reporting release. Preserve the same project ID, public audience, Supabase endpoints, and existing Logo.dev build setting.
+- The last saved Sites version was version 3 at `ac599c9da7e0b59b37eb97a1fce2b77b99eeb104`; its history is already included in main. No application code or backend/schema changes are needed for this frontend synchronization.
+- Validation: Node 25.1.0 feature doctor; locked root/frontend npm installs; all 563 tests passed with none skipped, including database, MCP and fictional demo isolation; 158 catalog roles validated; `npm run build:sites` passed with TypeScript, 55 static pages and 388 offline assets; `git diff --check` passed. Use the existing Sites source workflow for exact source push and archive publication.
+- Storage: the external SSD was unavailable; the user authorized WSL storage for this isolated release checkout, dependencies and build.
+- Limits: no authenticated Google/iPhone login or private-account round trip was performed. Existing npm audit findings in root dependencies are outside this hosting synchronization; frontend dependency installation reported zero vulnerabilities. No new product action or demo fixture is introduced. GitHub publication and automatic future GitHub-to-Sites deployment are not part of this pass.
