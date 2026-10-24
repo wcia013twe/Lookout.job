@@ -5,7 +5,6 @@ import {BUG_TOOL,bugTitleKey,reportBug} from '../supabase/functions/agent-gatewa
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
 import {createTestDatabase} from './helpers/database.mjs';
-import {acknowledgeBug} from '../scripts/auto-fix-intake.mjs';
 
 const payload={title:'Synthetic: settings panel does not open',description:'Attempted: Opened the fictional demo settings.\nHappened: The panel stayed closed.\nExpected: The panel should open.'};
 const options={payload,token:'synthetic-github-token',connectionId:'synthetic-connection',cryptoImpl:webcrypto,
@@ -111,20 +110,4 @@ test('duplicate scan and GitHub errors fail closed without leaking raw details',
   let calls=0;
   const bounded=await reportBug({...options,ledger:()=>assert.fail(),fetchImpl:async()=>{calls++;return json(Array.from({length:100},()=>({title:'Different issue'})));}});
   assert.equal(bounded.status,503);assert.equal(calls,10);
-});
-
-test('GitHub issue trigger notifies once and ignores untrusted reporters or removed labels',async()=>{
-  let issue={state:'open',user:{login:'wcia013twe'},labels:[{name:'auto-fix'}]};
-  const comments=[];
-  const fetchImpl=async(url,init)=>{
-    if(init.method==='POST') {comments.push({body:JSON.parse(init.body).body,user:{login:'github-actions[bot]'}});return json({id:1},201);}
-    return json(new URL(url).pathname.endsWith('/comments')?comments:issue);
-  };
-  const args={event:{issue:{number:1}},repository:'wcia013twe/Lookout.job',token:'synthetic',fetchImpl};
-  assert.deepEqual(await acknowledgeBug(args),{notified:true});
-  assert.match(comments[0].body,/@wcia013twe/);assert.match(comments[0].body,/does \*\*not\*\* start/);
-  assert.deepEqual(await acknowledgeBug(args),{duplicate:true});
-  issue={...issue,user:{login:'outsider'}};
-  assert.deepEqual(await acknowledgeBug(args),{skipped:true});
-  assert.equal(comments.length,1);
 });

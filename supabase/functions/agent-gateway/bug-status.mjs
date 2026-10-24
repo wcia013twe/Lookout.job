@@ -21,6 +21,7 @@ export const validFix=(pr,number)=>pr?.merged===true&&pr.base?.ref==='main'&&pr.
 export const validReleaseRun=run=>run?.path==='.github/workflows/deploy.yml'&&run.head_branch==='main'&&
   run.head_repository?.full_name===BUG_REPOSITORY&&['push','workflow_dispatch'].includes(run.event)&&
   run.status==='completed'&&Number.isSafeInteger(run.run_attempt)&&run.run_attempt>0&&/^[a-f0-9]{40}$/.test(run.head_sha||'');
+export const needsBackendRelease=files=>files.some(f=>[f.filename,f.previous_filename].some(p=>p?.startsWith('supabase/')));
 
 /** @returns {Promise<{status:number,data?:object,error?:string}>} */
 export async function getBugStatus({payload,authorize,token,connectionId,fetchImpl=fetch}) {
@@ -54,6 +55,8 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
     if(!signal)return {status:200,data:{...base,state:issue.state==='closed'?'closed_unverified':'awaiting_release'}};
     const receipt=parseReleaseMarker(signal.body);
     const pr=await api(`/pulls/${receipt.pr}`);
+    const files=await all(`/pulls/${receipt.pr}/files`);
+    if(needsBackendRelease(files))return {status:200,data:{...base,state:'backend_release_unverified'}};
     const run=await api(`/actions/runs/${receipt.run}`);
     if(!validFix(pr,number)||!validReleaseRun(run)||run.run_attempt!==receipt.attempt)throw Error('Unverified release signal');
     const comparison=await api(`/compare/${pr.merge_commit_sha}...${run.head_sha}`);

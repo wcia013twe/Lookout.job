@@ -13,14 +13,6 @@ canonical documents, AI-written content, ownership and the local/hosted distinct
 
 Gateway deployment 24 and MCP deployment 20 were released from merged local main `25f8160` on 2026-10-23, with developer instructions 47. Source read-back and live authentication-denial checks passed; authenticated external-agent round trips remain unverified. GitHub Actions currently deploys only the frontend; this backend release used the Supabase connector.
 
-The auto-fix branch scaffolds a Supabase step in the existing release workflow:
-changed migrations and Edge Functions release before GitHub Pages, using the
-pinned CLI and `supabase/config.toml` to preserve custom authentication. It needs
-GitHub Actions `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD` secrets and
-reconciled migration history. This path has not been activated or tested against
-production. Release receipts feed Muse's `get_bug_status`; see
-[activation and automatic-release policy](../docs/auto-fix.md).
-
 The two Edge Functions are deployed with platform `verify_jwt=false` because they implement custom authentication: human sessions are verified with `getUser`; opaque agent tokens are verified for hash, expiry, revocation and scope. Their server-only RPCs are not executable by anonymous or browser-authenticated roles. Never expose service-role credentials or add a general SQL tool.
 
 - [Gateway HTTP contract](agent-contract.md)

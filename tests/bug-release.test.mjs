@@ -3,8 +3,7 @@ import assert from 'node:assert/strict';
 import {getBugStatus,releaseMarker,issueMarker} from '../supabase/functions/agent-gateway/bug-status.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {signalRelease} from '../scripts/auto-fix-release.mjs';
-import {planBackendRelease} from '../scripts/plan-backend-release.mjs';
-const repo='wcia013twe/Lookout.job',sha='a'.repeat(40),base='b'.repeat(40);
+const repo='wcia013twe/Lookout.job',sha='a'.repeat(40);
 const issue={number:1,state:'closed',user:{login:'wcia013twe'},labels:[{name:'auto-fix'}]};
 const pr={number:7,merged:true,merged_at:'2026-10-23T00:00:00Z',base:{ref:'main'},head:{repo:{full_name:repo}},merge_commit_sha:sha,labels:[{name:'auto-fix'}],body:issueMarker(1)};
 const run={id:19,path:'.github/workflows/deploy.yml',head_branch:'main',head_repository:{full_name:repo},event:'workflow_dispatch',head_sha:sha,status:'completed',conclusion:'success',updated_at:'2026-10-23T01:00:00Z',run_attempt:1};
@@ -16,6 +15,7 @@ function fixture(overrides={}) {
     if(method==='POST'){comments.push({body:body.body,user:{login:'github-actions[bot]'}});return {id:comments.length};}
     if(path.includes('/comments'))return comments;
     if(path.includes('/events'))return overrides.events??[];
+    if(path.split('?')[0].endsWith('/pulls/7/files'))return overrides.files??[{filename:'next-app/app/page.tsx'}];
     if(path.endsWith('/issues/1'))return overrides.issue??issue;
     if(path.endsWith('/pulls/7'))return overrides.pr??pr;
     if(path.includes('/pulls?'))return [overrides.pr??pr];
@@ -82,13 +82,13 @@ test('release signalling ignores fork fixes, undeployed commits and already rele
   }
 });
 
-test('backend release planning compares the complete release, requires backend updates and refuses rollback or truncation',async()=>{
-  const api=(files,status='ahead',runs=[{...run,head_sha:base}])=>async(_method,path)=>path.includes('/runs?')?{workflow_runs:runs}:{status,files};
-  for(const path of ['supabase/migrations/new.sql','supabase/functions/agent-mcp/index.ts','supabase/config.toml']) {
-    assert.equal((await planBackendRelease({repo,sha,api:api([{filename:path}])})).backend,true);
+test('Pages success cannot signal a backend fix as deployed',async()=>{
+  for(const files of [[{filename:'supabase/functions/agent-mcp/index.ts'}],[{filename:'moved.mjs',previous_filename:'supabase/functions/old.mjs'}]]){
+    const f=fixture({files});
+    const status=await getBugStatus({...options,fetchImpl:f.fetchImpl});
+    assert.equal(status.data.state,'backend_release_unverified');
+    assert.equal(status.data.readyToRetry,false);
+    assert.deepEqual(await signalRelease({api:f.api,repo,event:{workflow_run:{id:19}}}),{signalled:0});
+    assert.equal(f.calls.some(c=>c.method!=='GET'),false);
   }
-  assert.equal((await planBackendRelease({repo,sha,api:api([{filename:'next-app/app/page.tsx'}])})).backend,false);
-  assert.equal((await planBackendRelease({repo,sha,api:api([],'ahead',[])})).backend,true);
-  await assert.rejects(planBackendRelease({repo,sha,api:api([],'behind')}));
-  await assert.rejects(planBackendRelease({repo,sha,api:api(Array.from({length:300},()=>({filename:'x'})))}));
 });

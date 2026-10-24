@@ -14,38 +14,8 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       upload_pages: true
-  backend:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: '24'
-      - name: Determine backend changes since the last complete release
-        id: scope
-        run: node scripts/plan-backend-release.mjs
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-      - name: Release changed Supabase schema and functions
-        if: steps.scope.outputs.backend == 'true'
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-          SUPABASE_PROJECT_REF: umhqfqzpwmszhcknwtrs
-        run: |
-          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ]; then
-            echo 'Backend changes require Supabase release secrets; stopping before the frontend release.'
-            exit 1
-          fi
-          npm exec --yes --package=supabase@2.122.0 -- supabase db push --project-ref "$SUPABASE_PROJECT_REF" --yes
-          npm exec --yes --package=supabase@2.122.0 -- supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF" --use-api
   deploy:
-    needs: [build, backend]
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

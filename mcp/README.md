@@ -13,7 +13,8 @@ signal on subsequent runs. It returns `readyToRetry: true` only after verifying
 that a successful main release contains the linked merged fix. Muse retries once
 per new `releaseId`, after refreshing the app. A closed issue or merged PR is not
 enough. This is a durable polling signal, not a push notification that wakes Muse.
-The owner has authorized CI-gated automatic merge/release for validated fixes.
+The owner has authorized CI-gated automatic frontend release. Backend fixes use
+the existing backend release process and are not verified by Pages success.
 
 This is a small stateless Streamable HTTP server using JSON responses. It has no
 SDK/runtime dependency, browser tools, shell, SQL, connection management, or

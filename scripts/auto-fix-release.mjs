@@ -2,7 +2,7 @@ import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import {githubApi,paginate} from './github-api.mjs';
 import {BUG_REPOSITORY} from '../supabase/functions/agent-gateway/bug-report.mjs';
-import {parseReleaseMarker,releaseMarker,validFix,validReleaseRun} from '../supabase/functions/agent-gateway/bug-status.mjs';
+import {parseReleaseMarker,releaseMarker,validFix,validReleaseRun,needsBackendRelease} from '../supabase/functions/agent-gateway/bug-status.mjs';
 
 // This workflow runs trusted default-branch code after the full release. The
 // receipt identifies the actual deployment run, not a PR check or issue comment.
@@ -23,6 +23,7 @@ export async function signalRelease({api,repo,event}) {
     if(!Number.isSafeInteger(number))continue;
     const pr=await api('GET',`${root}/pulls/${candidate.number}`);
     if(!validFix(pr,number))continue;
+    if(needsBackendRelease(await paginate(api,`${root}/pulls/${pr.number}/files`)))continue;
     const issue=await api('GET',`${root}/issues/${number}`);
     if(issue.user?.login!=='wcia013twe'||!issue.labels?.some(l=>l.name==='auto-fix'))continue;
     const events=await paginate(api,`${root}/issues/${number}/events`);
