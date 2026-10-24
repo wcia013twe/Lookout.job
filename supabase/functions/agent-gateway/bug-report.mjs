@@ -2,7 +2,7 @@
 export const BUG_REPOSITORY = 'wcia013twe/Lookout.job';
 export const BUG_TOOL = {
   name: 'report_bug', operation: 'bugs.report', scope: 'activity:write',
-  description: 'Report broken Lookout behavior to GitHub (external publication). Use a stable, generic title for the same problem. Description must contain Attempted:, Happened:, Expected:. Use fictional examples only: no names, candidate/application data, credentials, URLs, IDs, logs, screenshots or attachments. No technical diagnosis required. Only the owner-configured Muse connection may report. Returns an existing unresolved issue for repeated titles; does not mean a coding session started.',
+  description: 'Report broken Lookout behavior to GitHub (external publication). Use a stable, generic title for the same problem. Description must contain Attempted:, Happened:, Expected:. Use fictional examples only: no names, candidate/application data, credentials, URLs, IDs, logs, screenshots or attachments. No technical diagnosis required. Only the owner-configured Muse connection may report. Returns an existing unresolved issue for repeated titles; does not mean a coding session started. Follow read_developer_context.repairWorkflow: Muse reports; triple t picks up eligible issues on its separate schedule and produces a linked draft fix PR. No patch or report PR is required from Muse.',
   inputSchema: {type:'object', additionalProperties:false, required:['title','description'], properties:{
     title:{type:'string',minLength:8,maxLength:120}, description:{type:'string',minLength:30,maxLength:2000},
   }},
