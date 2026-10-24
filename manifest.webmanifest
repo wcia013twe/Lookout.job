@@ -4,8 +4,8 @@
   "description": "Your personal job hunter. Your crew for what\u2019s next.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#FFF5DF",
-  "theme_color": "#234B3A",
+  "background_color": "#EEEFFA",
+  "theme_color": "#293553",
   "icons": [
     {
       "src": "brand/lookout-192.png",
