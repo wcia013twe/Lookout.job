@@ -1,49 +1,47 @@
-# Muse → GitHub → Codex → Muse
+# Muse → GitHub → triple t → Muse
 
-## What remains
+Muse's existing `report_bug` creates an `auto-fix` issue. A separately configured
+cloud-hosted triple t schedule checks the queue and follows
+[the worker contract](auto-fix-worker.md), investigates, tests and opens a linked
+**draft** PR. This repository does not register or prove activation of a schedule.
+The supported GitHub automation event is pull_request, not issues; no issue
+webhook or authenticated direct dot endpoint is assumed. Do not create placeholder
+PRs to manufacture a trigger. Scheduled pickup is not instant delivery.
 
-- Existing hosted MCP: `report_bug(title, description)` and
-  `get_bug_status(issueNumber)`, restricted to one configured Muse connection.
-- GitHub Issues stores reports. Stable normalized titles and private hash receipts
-  prevent duplicate publication, including concurrent requests and uncertain retries.
-- A Codex cloud task follows [the worker prompt](auto-fix-worker.md).
-- Existing CI, `merge-ready` queue and GitHub Pages handle frontend releases.
-- One release-signal workflow posts the release result to the issue and mentions
-  the owner. Muse checks status on its next run and retries once per new releaseId.
+## Existing reporting configuration
 
-There is no separate intake workflow, backend deployment pipeline, model API key,
-VM, dashboard or additional queue service. Backend fixes still use Lookout's
-existing backend release process; Pages success never verifies a backend release.
+The existing backend uses `LOOKOUT_BUG_GITHUB_TOKEN` (owner's repository-scoped
+GitHub token) and `LOOKOUT_BUG_CONNECTION_ID` (authorized Muse connection with
+`activity:write`). No new credential, access grant or backend deployment is needed
+for this handoff change. Never copy Codex login files into Actions. The removed
+launcher no longer uses `CODEX_CLOUD_ENV_ID` or `CODEX_CLOUD_ACCESS_TOKEN`; this
+change does not modify stored secrets or variables.
 
-## Only these settings
+## Queue and activation contract
 
-In **Supabase Edge Function secrets**:
+Configure a supported triple t cloud schedule separately, at most hourly, using
+the worker contract and existing GitHub connection. Confirm read access before
+activation. Serialize runs and preserve active issue/session ownership across
+runs. A schedule must not start a second repair for an uncertain or active task.
+Verify real pickup before describing the integration as live.
 
-| Setting | Value |
-| --- | --- |
-| `LOOKOUT_BUG_GITHUB_TOKEN` | One expiring fine-grained token restricted to `wcia013twe/Lookout.job`: Issues read/write; Actions, Pull requests and Contents read; Metadata read is implicit. |
-| `LOOKOUT_BUG_CONNECTION_ID` | ID of the authorized existing Muse connection, not its credential. Retain `activity:write` on that connection. |
+Only open, non-PR issues authored by `wcia013twe` with the exact `auto-fix` label
+are authorized. Muse uses that owner's token; its identity is not a separate
+GitHub login. Recheck these fields after search and before any work. The optional
+`GH_TOKEN=... node scripts/auto-fix-queue.mjs` is a read-only metadata helper,
+not a dispatcher, scheduler or lock. Use existing credentials without printing
+them. It excludes other authors and returns queued, linked_pr, or
+needs_reconciliation. Inspect old github-actions[bot] launch reservations before
+starting work, even if the old CLI submission lacked a confirmed task URL.
 
-The token is the only new credential. Never paste it in chat, source or MCP
-arguments. No new GitHub Actions secrets are needed. Codex must have working
-GitHub issue/PR access through its own existing connection; Git clone access alone
-is not proof of that access.
-
-## Activation
-
-1. Merge this scaffold through the existing review/CI process. Create `auto-fix`
-   if absent. Keep the existing merge queue and Pages permissions enabled.
-2. Set the two Supabase settings. Apply the bug-report receipt migration and
-   release `agent-gateway` and `agent-mcp` through the existing backend process,
-   preserving custom authentication. Refresh Muse's tool discovery/context.
-3. Register a **cloud-hosted** Codex task using `auto-fix-worker.md`, if the account
-   supports recurring cloud tasks. Prevent overlapping runs. This session has no
-   scheduler-registration tool: automatic Codex startup is still unconfigured.
-   Do not substitute a desktop automation or copy login files into Actions.
-
-Saving secrets or publishing the cloud environment does not register that task.
-There is no separately billed inference configured. Existing GitHub Actions usage
-is subject to the account's normal quota/billing.
+Producer dedupe uses an NFKC-normalized, lowercased, punctuation-collapsed title,
+SHA-256 fingerprint, private reservation ledger and
+`<!-- lookout-bug:FINGERPRINT -->` issue marker. Issue creation still returns
+`agentStarted: false`: publication never proves pickup. An existing same-title
+issue may lack the required author/label; do not silently authorize or relabel it.
+Consumer identity is repository plus issue number; PR identity is the exact
+`<!-- lookout-auto-fix-issue:NUMBER -->` marker. Reuse open PRs and wait for
+release of merged PRs. Closed unmerged PRs require diagnosis before retry.
 
 ## Reporting and feedback
 
@@ -59,9 +57,9 @@ If a timed-out report remains pending, retry the same title rather than bypassin
 its reservation. Administrators must reconcile uncertain receipts before clearing.
 
 The worker links its PR using `Refs #NUMBER` and
-`<!-- lookout-auto-fix-issue:NUMBER -->`. After tests pass, frontend fixes get
-`auto-fix` and `merge-ready`. The existing queue preserves CI and branch protections.
-Backend fixes remain draft for the existing release process.
+`<!-- lookout-auto-fix-issue:NUMBER -->`. All fixes get `auto-fix` and remain draft for human review. The worker must not
+add `merge-ready`, merge, or deploy. Existing release workflows run only after
+separate human release authorization.
 
 The release workflow records frontend deployment evidence and closes the issue
 only after success. `get_bug_status` verifies the run, linked merged PR and commit
@@ -77,4 +75,5 @@ After activation, submit the fictional report twice through Muse and confirm one
 issue. Verify actual cloud pickup. Synthetic validation PRs stay draft; do not
 manufacture a defect or ship a dummy change to test release. For a genuine fix,
 verify CI → merge → Pages → issue receipt → Muse status → one behavioral retry.
-Live cloud pickup, release and notification delivery remain unverified.
+Queue tests use mocked GitHub reads and create no task or issue. Live scheduled
+pickup, release and notification delivery remain unverified by repository tests.
