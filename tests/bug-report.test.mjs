@@ -111,3 +111,45 @@ test('duplicate scan and GitHub errors fail closed without leaking raw details',
   const bounded=await reportBug({...options,ledger:()=>assert.fail(),fetchImpl:async()=>{calls++;return json(Array.from({length:100},()=>({title:'Different issue'})));}});
   assert.equal(bounded.status,503);assert.equal(calls,10);
 });
+
+test('format discovery explains actual newlines and rejects bullets, headings and escaped newline text',()=>{
+  assert.match(BUG_TOOL.inputSchema.properties.description.description,/column one/);
+  for(const description of [payload.description.replaceAll('\n','\\n'),payload.description.split('\n').map(s=>'- '+s).join('\n'),payload.description.split('\n').map(s=>'## '+s).join('\n')]){
+    assert.throws(()=>validateRequest({operation:'bugs.report',payload:{...payload,description}}),/newline-separated/);
+  }
+  assert.doesNotThrow(()=>validateRequest({operation:'bugs.report',payload}));
+});
+
+test('precheck diagnostics distinguish GitHub stages and HTTP statuses without leaking upstream data',async()=>{
+ for(const stage of ['duplicate_scan','label_check'])for(const status of [401,403,404,429,500]){
+  let posts=0;
+  const r=await reportBug({...options,ledger:()=>assert.fail('No receipt access'),fetchImpl:async(url,init)=>{
+   if(init.method==='POST')posts++;
+   if(stage==='duplicate_scan'||url.endsWith('/labels/auto-fix'))return json({message:'PRIVATE upstream response'},status);
+   return json([]);
+  }});
+  assert.equal(r.status,503);assert.match(r.error,new RegExp(`stage=${stage}; githubStatus=${status}`));
+  assert.match(r.error,/No new issue was attempted/);assert.match(r.error,/Stop automatic retries/);
+  assert.ok(!r.error.includes('PRIVATE'));assert.equal(posts,0);
+ }
+ const timeout=await reportBug({...options,fetchImpl:async()=>{throw Object.assign(Error('PRIVATE token'),{status:418});}});
+ assert.match(timeout.error,/stage=duplicate_scan/);assert.ok(!timeout.error.includes('418'));assert.ok(!timeout.error.includes('PRIVATE'));
+});
+
+test('receipt and uncertain creation failures preserve their distinct stages and never retry writes',async()=>{
+ for(const failed of ['read','reserve','create','finish']){
+  let posts=0;
+  const r=await reportBug({...options,ledger:async action=>{
+   if(action===failed)throw Error('PRIVATE receipt data');
+   return action==='reserve'?{claim_id:'synthetic'}:{};
+  },fetchImpl:async(url,init)=>{
+   if(init.method==='POST'){posts++;if(failed==='create')throw Error('PRIVATE timeout');return json({number:17});}
+   return url.includes('/labels/')?json({name:'auto-fix'}):json([]);
+  }});
+  assert.equal(r.status,503);
+  const stage=failed==='create'?'issue_create':`receipt_${failed}`;
+  assert.match(r.error,new RegExp(`stage=${stage}`));assert.ok(!r.error.includes('PRIVATE'));
+  if(['create','finish'].includes(failed)){assert.equal(posts,1);assert.match(r.error,/An issue may exist/);assert.match(r.error,/at most once/);}
+  else {assert.equal(posts,0);assert.match(r.error,/No new issue was attempted/);}
+ }
+});
