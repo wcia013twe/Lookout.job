@@ -126,3 +126,41 @@ test('freeform documents link to typed subjects without fabricated tasks', async
  await assert.rejects(async()=>demo.artifactAction('artifacts.save',{...request,id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',links:[{contactId:'missing'}]}));
  assert.equal((await demo.artifactAction('artifacts.read',{id})).content.body,doc.body);
 });
+
+test('artifact validation identifies missing and malformed fields without echoing private input',()=>{
+ const cases=[
+  [{title:'Fictional private title',purpose:'Practice',body:'# Notes'},/arguments.id is required/],
+  [{...doc,id:'private-invalid-id'},/arguments.id must be a UUID/],
+  [{...doc,expectedVersion:-1},/arguments.expectedVersion must be an integer/],
+  [{...doc,kind:'invalid'},/arguments.kind must be one of/],
+  [{...doc,sources:[{title:'Source',url:'https://example.com'}]},/arguments.sources\[0\].observedAt is required/],
+  [{...doc,'private-unknown-field':'private-value'},/arguments contains an unsupported field/],
+ ];
+ for(const [payload,expected] of cases)assert.throws(()=>valid('artifacts.save',payload),error=>{
+  assert.match(error.message,expected);assert.doesNotMatch(error.message,/private-|Fictional private/);return true;
+ });
+});
+
+test('dated practice keeps its restriction and explains the supported field and kinds',()=>{
+ valid('artifacts.save',{...doc,kind:'practice'});
+ for(const kind of ['weekly_prep','interview_brief'])valid('artifacts.save',{...doc,kind,preparedFor:'2026-10-26'});
+ assert.throws(()=>valid('artifacts.save',{...doc,kind:'practice',preparedFor:'2026-10-26'}),/preparedFor is supported only for kind weekly_prep or interview_brief; omit preparedFor for practice/);
+ for(const preparedFor of ['2026-02-30','tomorrow','2026-10-26T00:00:00Z'])assert.throws(()=>valid('artifacts.save',{...doc,kind:'interview_brief',preparedFor}),/preparedFor must be a real calendar date in YYYY-MM-DD format/);
+});
+
+test('MCP and browser surface the shared artifact diagnostics before writes; scope denial still wins',async()=>{
+ const payload={...doc,kind:'practice',preparedFor:'2026-10-26'};
+ let scope=['drafts:write'];const writes=[];
+ const handler=createHandler(async(_token,operation,args)=>{
+  if(operation==='credentials.verify')return {status:200,data:{scopes:scope}};
+  writes.push(args);return {status:200,data:{saved:true}};
+ });
+ const call=async arguments_=>(await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:`Bearer jb_agent_${'a'.repeat(64)}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'save_artifact',arguments:arguments_}})}))).json();
+ const response=await call(payload);assert.equal(response.error.code,-32602);assert.match(response.error.message,/preparedFor.*weekly_prep or interview_brief/);
+ const missing=await call({title:'Fictional',purpose:'Practice',body:'# Notes'});assert.match(missing.error.message,/arguments.id is required/);
+ const client={auth:{getUser:async()=>({data:{user:{id}},error:null})},rpc:async()=>{throw Error('must not write');}};
+ await assert.rejects(createBackend(client,id).artifactAction('artifacts.save',payload),{message:response.error.message});
+ assert.equal(writes.length,0);
+ scope=[];assert.match((await call(payload)).result.content[0].text,/Missing required scope/);assert.equal(writes.length,0);
+ scope=['drafts:write'];assert.equal((await call({...doc,kind:'practice'})).result.isError,undefined);assert.equal(writes.length,1);
+});

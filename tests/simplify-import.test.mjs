@@ -4,6 +4,7 @@ import {parseSimplifyCsv,parseCsv,canonicalImportUrl,importedApplication} from '
 import {simplifyDemoCsv,createDemoSimplifyImport} from '../next-app/lib/simplify-import-demo.mjs';
 import {createSimplifyImporter} from '../backend/simplify-import.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
+import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
 import {connectionScopes} from '../lib/agent-connections.mjs';
 import {createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
 test('Simplify export maps dates, saved/applied, missing URLs and archived rows without guessing',()=>{
@@ -43,4 +44,33 @@ test('MCP imports expose only scoped actions and share exact payload validation'
  const payload={rows:parseSimplifyCsv(simplifyDemoCsv).rows};const result=await send('tools/call',{name:'preview_simplify_import',arguments:payload});assert.ok(!result.result.isError);assert.deepEqual(calls,[{operation:'imports.preview',payload}]);
  assert.throws(()=>validateRequest({operation:'imports.save',payload:{...payload,expectedVersion:0,eventKey:'ok',userId:'other'}}));
  assert.throws(()=>validateRequest({operation:'imports.save',payload:{...payload,expectedVersion:-1,eventKey:'ok'}}));
+});
+
+test('CSV import discovery and direct calls preserve each connection scope boundary',async()=>{
+ const payload={rows:parseSimplifyCsv(simplifyDemoCsv).rows};
+ for(const scopes of [connectionScopes('read'),connectionScopes('context'),connectionScopes('work').filter(s=>s!=='tracking:write'),connectionScopes('work')]){
+  const calls=[];
+  const handler=createHandler(async(_token,operation,args)=>{
+   if(operation==='credentials.verify')return {status:200,data:{scopes}};
+   validateRequest({operation,payload:args});calls.push(operation);
+   return {status:200,data:operation==='context.developer'?contextResponse(operation,{}):{version:0,records:[]}};
+  });
+  const send=async(method,params={})=>(await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}))).json();
+  const names=(await send('tools/list')).result.tools.map(t=>t.name);
+  const canImport=scopes.includes('tracking:write');
+  assert.ok(names.includes('list_imported_jobs'));
+  for(const [name,args,operation] of [['preview_simplify_import',payload,'imports.preview'],['import_simplify_jobs',{...payload,expectedVersion:0,eventKey:'scope-test'},'imports.save']]){
+   assert.equal(names.includes(name),canImport);
+   const result=(await send('tools/call',{name,arguments:args})).result;
+   assert.equal(!!result.isError,!canImport);
+   assert.equal(calls.includes(operation),canImport);
+   if(!canImport)assert.match(result.content[0].text,/Missing required scope: tracking:write/);
+  }
+  const context=JSON.parse((await send('tools/call',{name:'read_developer_context'})).result.content[0].text);
+  const guidance=context.instructions.find(s=>s.startsWith('Simplify CSV imports'));
+  assert.match(guidance,/tracking:write/);
+  assert.match(guidance,/workspace:read/);
+  assert.match(guidance,/If either tool is absent/);
+  assert.match(guidance,/never self-grant/);
+ }
 });
