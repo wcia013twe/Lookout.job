@@ -446,35 +446,26 @@ omit `preparedFor` to save it. A dated preparation collection may reference a
 saved practice artifact through its existing `materials` field. Saving material
 does not schedule execution or record completed practice.
 
-### Backend repair release evidence
+### Backend repair runtime readiness
 
-Developer context 63 distinguishes frontend deployment from backend observation.
-`backend/releases/current.json` is a reviewed, point-in-time operator attestation
-from authenticated Supabase source readback. It is not an automated live probe or
-proof that the reported reproduction now passes. Issue prose, PR prose and comments
-cannot supply this authority; bot comments only identify receipts for revalidation.
+Developer context64 removes separate deployment-evidence records. Deployments
+bundle their exact reviewed source commit in `runtime-version.json`; the tracked
+placeholder is null and therefore fails closed until stamped by the deployment
+helper. `scripts/runtime-version.mjs` checks every supplied source byte against
+the pinned commit before stamping. No credential or user data enters this file.
 
-Deploy reviewed main first. Re-fetch both active function bundles, compare every
-file byte against the exact deployment source commit, and generate SHA-256/Git blob
-hashes with `scripts/backend-evidence.mjs`. Record the project, immutable function
-IDs, actual versions, preserved authentication setting, observation time and operator.
-Publish that record in a separate reviewed PR; its evidence commit is intentionally
-later than its source commit. CI recomputes source hashes and dependency closure.
-No production credentials are added to GitHub. Only gateway/MCP source releases are
-supported; migration changes remain unverified by this contract.
+`get_bug_status` keeps owner authorization. It reads its own running gateway
+version and uses the same credential for the existing authenticated MCP initialize
+call, which reports MCP's running source version in `serverInfo.version`. Both
+commits must contain the linked merged fix. Backend-only fixes need no frontend
+release or bot receipt. Mixed frontend changes still need their frontend release.
+Unknown/older versions and unsupported schema/service changes remain unready.
+Readiness proves deployed code, not a successful reproduction. Runtime source
+identities form a stable releaseId; never automatically retry the same identity
+or an uncertain write. Backend readiness leaves reports open for the retry outcome.
 
-A successful frontend release must contain both the fix and the evidence record.
-The record must still be current on main; source ancestry, bundle Git blob hashes,
-function identities and timestamps are rechecked. Any newer gateway/MCP runtime
-change, removed/replaced record, failed/pending observation or mismatch blocks
-readiness. The immutable evidence blob identity is part of `releaseId`. Reusing an
-old releaseId never authorizes another automatic retry. A backend receipt leaves
-the issue open for the actual retry outcome. All exact issue linkage markers are
-processed independently.
-
-Before a later out-of-band deployment, invalidate the current record through a
-reviewed change (set status to pending), then replace it only after a fresh readback.
-Unrecorded out-of-band production changes cannot be detected by repository-only
-checks; this is an explicit limit of operator attestation. Do not describe it as
-continuous verification. Do not publish source content, tokens or private data in
-the record; it contains public repository paths and hashes only.
+Always use the stamping helper when packaging gateway/MCP deployment payloads and
+read back deployed files afterward. Preserve existing authentication and scopes.
+This reports loaded build identity; it does not independently inspect all source
+on every status call. GitHub access failure or MCP authentication failure cannot
+produce a ready result. No new public endpoint or access grant is introduced.

@@ -1,4 +1,3 @@
-import {verifyBackendRelease} from './backend-release.mjs';
 import {BUG_REPOSITORY} from './bug-report.mjs';
 
 export const BUG_STATUS_TOOL={name:'get_bug_status',operation:'bugs.status',scope:'activity:write',readOnly:true,
@@ -25,7 +24,7 @@ export const validReleaseRun=run=>run?.path==='.github/workflows/deploy.yml'&&ru
 export const needsBackendRelease=files=>files.some(f=>[f.filename,f.previous_filename].some(p=>(p?.startsWith('supabase/')||p==='lib/search-profile.mjs')));
 
 /** @returns {Promise<{status:number,data?:object,error?:string}>} */
-export async function getBugStatus({payload,authorize,token,connectionId,fetchImpl=fetch}) {
+export async function getBugStatus({payload,authorize,token,connectionId,fetchImpl=fetch,runtimeVersion,readMcpVersion}) {
   const auth=await authorize();
   if(auth.status!==200)return {status:auth.status,error:'Credential invalid, expired, or revoked'};
   if(!connectionId||auth.data?.id!==connectionId||!auth.data?.scopes?.includes(BUG_STATUS_TOOL.scope))return {status:403,error:'Bug reporting is restricted to the configured Muse connection.'};
@@ -40,7 +39,7 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
   const all=async path=>{
     const result=[];
     for(let page=1;page<=10;page++){
-      const rows=await api(path+`?per_page=100&page=${page}`);
+      const rows=await api(path+`${path.includes('?')?'&':'?'}per_page=100&page=${page}`);
       if(!Array.isArray(rows))throw Error('Invalid response');
       result.push(...rows);if(rows.length<100)return result;
     }
@@ -50,6 +49,33 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
     const issue=await api(`/issues/${number}`);
     if(issue.pull_request||issue.user?.login!=='wcia013twe'||!issue.labels?.some(l=>l.name==='auto-fix'))return {status:404,error:'Owned auto-fix report not found.'};
     const base={issueNumber:number,url:`https://github.com/${BUG_REPOSITORY}/issues/${number}`,issueState:issue.state,readyToRetry:false};
+    // Find the actual linked fix; prose is never an execution instruction.
+    let confirmedRuntime;
+    const candidates=await all('/pulls?state=closed&base=main&sort=updated&direction=desc');
+    const candidate=candidates.filter(p=>p.merged_at&&p.labels?.some(l=>l.name==='auto-fix')&&p.body?.includes(issueMarker(number)))
+      .sort((a,b)=>Date.parse(b.merged_at)-Date.parse(a.merged_at))[0];
+    if(candidate){
+      const fix=await api(`/pulls/${candidate.number}`);
+      const changed=await all(`/pulls/${candidate.number}/files`);
+      if(validFix(fix,number)&&needsBackendRelease(changed)){
+        if(changed.some(f=>[f.filename,f.previous_filename].some(p=>p?.startsWith('supabase/')&&!p.startsWith('supabase/functions/agent-gateway/')&&!p.startsWith('supabase/functions/agent-mcp/'))))return {status:200,data:{...base,state:'backend_release_unverified'}};
+        const gateway=runtimeVersion?.sourceCommit;
+        const mcp=await readMcpVersion?.();
+        if(!/^[a-f0-9]{40}$/.test(gateway??'')||!/^[a-f0-9]{40}$/.test(mcp??''))return {status:200,data:{...base,state:'backend_release_unverified'}};
+        for(const commit of new Set([gateway,mcp])){
+          const contains=await api(`/compare/${fix.merge_commit_sha}...${commit}`);
+          if(!['ahead','identical'].includes(contains.status))return {status:200,data:{...base,state:'awaiting_deployment'}};
+        }
+        confirmedRuntime={gateway,mcp};
+        // Backend-only fixes use the running services directly. Mixed frontend
+        // changes still need their existing successful frontend receipt below.
+        if(!changed.some(f=>[f.filename,f.previous_filename].some(p=>p&&/^(next-app\/|data\/|lib\/|\.github\/workflows\/deploy\.yml$)/.test(p)))){
+          return {status:200,data:{...base,state:'ready_to_retry',readyToRetry:true,
+            releaseId:`runtime:${fix.number}:${gateway}:${mcp}`,pullRequest:`https://github.com/${BUG_REPOSITORY}/pull/${fix.number}`,
+            runtimeVersions:{gateway,mcp}}};
+        }
+      }
+    }
     const comments=await all(`/issues/${number}/comments`);
     const signal=comments.filter(c=>c.user?.login==='github-actions[bot]'&&parseReleaseMarker(c.body))
       .sort((a,b)=>{const x=parseReleaseMarker(a.body),y=parseReleaseMarker(b.body);return y.run-x.run||y.attempt-x.attempt;})[0];
@@ -59,11 +85,7 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
     const files=await all(`/pulls/${receipt.pr}/files`);
     const run=await api(`/actions/runs/${receipt.run}`);
     if(!validFix(pr,number)||!validReleaseRun(run)||run.run_attempt!==receipt.attempt)throw Error('Unverified release signal');
-    let backend;
-    if(needsBackendRelease(files)){
-      backend=receipt.backend&&await verifyBackendRelease({api,run,pr,files,evidenceId:receipt.backend});
-      if(!backend)return {status:200,data:{...base,state:'backend_release_unverified'}};
-    }
+    if(needsBackendRelease(files)&&(!confirmedRuntime||!candidate||candidate.number!==pr.number))return {status:200,data:{...base,state:'backend_release_unverified'}};
     const comparison=await api(`/compare/${pr.merge_commit_sha}...${run.head_sha}`);
     if(!['ahead','identical'].includes(comparison.status))throw Error('Fix absent from release');
     const events=await all(`/issues/${number}/events`);
@@ -72,8 +94,7 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
     if(events.some(e=>e.event==='reopened'&&Date.parse(e.created_at)>releasedAt))return {status:200,data:{...base,state:'awaiting_release'}};
     const ready=run.conclusion==='success';
     return {status:200,data:{...base,state:ready?'ready_to_retry':'release_failed',readyToRetry:ready,
-      ...(backend?{backendEvidence:backend}:{}),
-      releaseId:`${receipt.run}:${receipt.attempt}:${receipt.pr}${backend?`:${backend.id}`:''}`,pullRequest:`https://github.com/${BUG_REPOSITORY}/pull/${receipt.pr}`,
+      releaseId:`${receipt.run}:${receipt.attempt}:${receipt.pr}${needsBackendRelease(files)?`:${confirmedRuntime.gateway}:${confirmedRuntime.mcp}`:''}`,pullRequest:`https://github.com/${BUG_REPOSITORY}/pull/${receipt.pr}`,
       releaseRun:`https://github.com/${BUG_REPOSITORY}/actions/runs/${receipt.run}`,releasedCommit:run.head_sha}};
   } catch {return {status:503,error:'Release status could not be verified. Do not assume the fix is deployed.'};}
 }

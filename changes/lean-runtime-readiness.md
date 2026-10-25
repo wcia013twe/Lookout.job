@@ -1,0 +1,7 @@
+# Direct runtime repair readiness
+
+Replace the separate operator-evidence record/checker with the running gateway's build identity and MCP's existing authenticated initialize response. Both reviewed source commits must contain the latest linked fix. Backend-only fixes need no bot receipt or frontend release; mixed frontend fixes retain release verification. Unsupported schema/services, missing/older versions and auth/API failures stay unready. Keep multi-issue recognition, owner authorization and reporting deduplication. Source versions form a stable retry identity; a source change permits a new identity, not blind retry of uncertain writes. Issue59 has no linked fix and remains unready.
+
+The deployment helper compares bundled source bytes to the exact reviewed commit before stamping runtime-version.json. No separate evidence publication, new endpoint, credential or scope is introduced. Developer context64 explains the simpler contract. Gateway34 was freshly read back: all49 files match PR64 merge93fba52; MCP has not received PR64. The previous Supabase call succeeded after delayed tool delivery; there is no observed permission rejection on that deployment.
+
+Validation: full suite,13 focused release/runtime tests,158-role validation, production build/TypeScript/static export and diff checks before publication. Authenticated production Muse testing still required; new runtime code is not live until both serial deployments complete.
