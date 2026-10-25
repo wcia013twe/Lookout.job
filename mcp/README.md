@@ -502,3 +502,24 @@ only questions needing input or custom-answer review. Agents cannot mark the
 questions human-reviewed or approve submission. Saved tier lists supply display
 rankings; unranked companies remain visible. These changes require the database
 migration and gateway configuration release before hosted validation is current.
+
+### Search observation and progress payloads
+
+`save_search_discoveries` uses its own observation vocabulary, separate from
+`publish_batch` employer fields. Its nested schema lists required fields and
+nullable unknowns: `location`, `employerPostedAt`, and `sourceListAgeDays` must
+be present, with `null` when unknown. Supply the actual `checkedAt`, evidence,
+liveness and archived `description`; do not send catalog `postedDate` or
+`discoveredDate` fields. Use the exact source ID returned by `read_search_run`.
+
+`record_search_progress` takes an object checkpoint and named integer counts,
+e.g. `{"found":1,"checked":2}` (each 0–999999999). Coverage is `unknown`,
+`exhaustive`, `truncated`, or `inaccessible`; source state `completed` does not
+itself mean exhaustive. Read the current source version before updating.
+Gateway errors identify listing index/field or progress field without echoing
+private values. Database ownership, source membership, version and replay checks
+remain authoritative. Changed retry payloads need a new event key.
+
+Developer version 60 refreshes these schemas through `tools/list`. They require
+separate reviewed release of both gateway and MCP functions; a frontend release
+alone does not publish the contract.
