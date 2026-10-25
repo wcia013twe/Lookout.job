@@ -1,0 +1,8 @@
+# Remove the daily bug-report reservation quota
+
+- Replace only the receipt RPC's five-new-reservations-per-day check. Preserve advisory locking, same-title dedupe, claim validation, uncertain creation reconciliation, existing rows, SECURITY DEFINER/search_path and existing execute grants. This is an application quota removal, not a permission change.
+- Remove stale quota advice from reporting errors/docs and publish dailyReportReservationQuota=null in developer context version 59. No unrelated limits or authorization changes.
+- Regression coverage seeds pending/confirmed receipts before migration, verifies preservation and denied anon/authenticated access, accepts seven distinct concurrent reservation calls, and retains duplicate/finish behavior. Existing report callers and uncertain retry tests still pass. No UI changes; fictional database/report fixtures cover the states.
+- Validation: npm test passed 574 tests; 17 focused report/release/shared-context tests passed; data validation passed (158 roles); frontend typecheck and whitespace checks passed. Production build passed; no lint script is defined.
+- Migration file was generated using the actual UTC timestamp via Python after the Supabase CLI could not initialize its config directory on the read-only home filesystem; its older npm CLI installer also failed. No home/credential files were changed. Historical migrations remain untouched.
+- Production verification must inspect the new RPC definition and unchanged grants/receipt count without creating synthetic live reports. Removing this quota does not fix the separate GitHub auto-fix label precheck failure.

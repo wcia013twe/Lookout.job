@@ -100,7 +100,7 @@ test('synthetic MCP backend creates one issue, suppresses unresolved duplicates 
     assert.equal((await reportBug({...options,payload:other,ledger,fetchImpl:timeoutFetch})).status,409);
     assert.equal(attempts,1);
     await ledger('reserve',{fingerprint:'b'.repeat(64)});
-    await assert.rejects(ledger('reserve',{fingerprint:'c'.repeat(64)}));
+    assert.ok((await ledger('reserve',{fingerprint:'c'.repeat(64)})).claim_id);
   } finally {await db.close();}
 });
 
@@ -152,4 +152,35 @@ test('receipt and uncertain creation failures preserve their distinct stages and
   if(['create','finish'].includes(failed)){assert.equal(posts,1);assert.match(r.error,/An issue may exist/);assert.match(r.error,/at most once/);}
   else {assert.equal(posts,0);assert.match(r.error,/No new issue was attempted/);}
  }
+});
+
+test('quota migration preserves receipts and permissions while allowing more than five distinct concurrent reservations',async()=>{
+ let saved;
+ const db=await createTestDatabase({beforeMigration:async(db,name)=>{
+  if(!name.endsWith('_remove_bug_report_daily_quota.sql'))return;
+  await db.exec("insert into private.bug_report_receipts(fingerprint,issue_number) values(repeat('d',64),71),(repeat('e',64),null)");
+  saved=(await db.query('select * from private.bug_report_receipts order by fingerprint')).rows;
+ }});
+ try {
+  assert.deepEqual((await db.query('select * from private.bug_report_receipts order by fingerprint')).rows,saved);
+  const ledger=async(action,args)=>(await db.query('select public.bug_report_receipt($1,$2) result',[action,JSON.stringify(args)])).rows[0].result;
+  const fingerprints=Array.from({length:7},(_,i)=>String(i+1).repeat(64));
+  const claims=await Promise.all(fingerprints.map(fingerprint=>ledger('reserve',{fingerprint})));
+  assert.equal(claims.filter(c=>c.claim_id).length,7);
+  const duplicates=await Promise.all(Array.from({length:4},()=>ledger('reserve',{fingerprint:fingerprints[0]})));
+  assert.ok(duplicates.every(c=>!c.claim_id));
+  assert.equal((await db.query('select count(*)::int as n from private.bug_report_receipts')).rows[0].n,9);
+  assert.equal((await ledger('reserve',{fingerprint:'d'.repeat(64)})).issue_number,71);
+  assert.ok(!(await ledger('reserve',{fingerprint:'e'.repeat(64)})).claim_id);
+  await ledger('finish',{fingerprint:fingerprints[0],claimId:claims[0].claim_id,issueNumber:72});
+  assert.equal((await ledger('reserve',{fingerprint:fingerprints[0]})).issue_number,72);
+  for(const role of ['anon','authenticated']){
+   await db.exec('set role '+role);
+   await assert.rejects(ledger('reserve',{fingerprint:'f'.repeat(64)}));
+   await db.exec('reset role');
+  }
+  await db.exec('set role service_role');
+  assert.ok((await ledger('reserve',{fingerprint:'f'.repeat(64)})).claim_id);
+  await db.exec('reset role');
+ } finally {await db.close();}
 });

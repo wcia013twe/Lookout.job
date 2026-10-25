@@ -91,8 +91,8 @@ precheck failure means that request did not attempt issue creation. Stop retries
 until repaired; a label-check 404 can mean a missing label or inaccessible repo,
 not proof of either. An issue-create or receipt-finish failure is uncertain:
 check GitHub and receipt reservations before retrying the same title at most once.
-Never clear reservations automatically. The existing ledger permits five report
-reservations per day; this change does not raise that limit.
+Never clear reservations automatically. The application imposes no daily report-reservation quota. Owner authorization,
+deduplication, uncertain-creation reservations and upstream GitHub limits remain.
 
 This diagnostic update requires the gateway and MCP release after review. It
 does not repair or rotate credentials, create labels, or prove a live submission.

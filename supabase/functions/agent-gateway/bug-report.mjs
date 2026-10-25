@@ -100,7 +100,7 @@ export async function reportBug({payload,authorize,ledger,token,connectionId,fet
       : status===401||status===403
       ? 'The owner must verify the existing reporting credential, repository permissions and GitHub rate limits.'
       : stage.startsWith('receipt_')
-      ? 'The owner must inspect the receipt service and its existing daily report limit.'
+      ? 'The owner must inspect the receipt service.'
       : 'The owner must inspect the GitHub reporting precheck.';
     return failure(503,`Bug reporting stopped before issue creation (${diagnostic}). No new issue was attempted by this request. ${next} Stop automatic retries until repaired; retain the same title. Never send credentials or private diagnostics.`);
   }
