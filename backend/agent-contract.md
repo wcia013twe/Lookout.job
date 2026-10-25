@@ -425,3 +425,17 @@ is temporary; persistent edits and human approval use Applications. Neither a
 saved assessment nor a preview interaction grants reuse consent or submission
 permission. Outreach requests are queued for a connected agent; queue creation
 does not prove execution or scheduling.
+
+### Artifact validation diagnostics
+
+`artifacts.save` / MCP `save_artifact` use the same field validation as the
+browser adapter. Schema errors identify a field path (for example,
+`arguments.id` or `arguments.sources[0].observedAt`) without echoing supplied
+values or unknown field names. MCP checks the connection and required scope
+before returning these diagnostics; rejected input is not forwarded for saving.
+
+`preparedFor` must be a real `YYYY-MM-DD` calendar date and is supported only
+for `weekly_prep` and `interview_brief`. A `practice` artifact stays undated;
+omit `preparedFor` to save it. A dated preparation collection may reference a
+saved practice artifact through its existing `materials` field. Saving material
+does not schedule execution or record completed practice.
