@@ -1,3 +1,4 @@
+import {verifyBackendRelease} from './backend-release.mjs';
 import {BUG_REPOSITORY} from './bug-report.mjs';
 
 export const BUG_STATUS_TOOL={name:'get_bug_status',operation:'bugs.status',scope:'activity:write',readOnly:true,
@@ -8,12 +9,12 @@ export function validateBugStatus(p) {
   if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).length!==1||!Number.isSafeInteger(p.issueNumber)||p.issueNumber<=0)throw Error('Use a positive issueNumber.');
 }
 
-export const releaseMarker=(pr,run,outcome='success',attempt=1)=>`<!-- lookout-release-v1 pr=${pr} run=${run} outcome=${outcome} attempt=${attempt} -->`;
+export const releaseMarker=(pr,run,outcome='success',attempt=1,backend)=>`<!-- lookout-release-v1 pr=${pr} run=${run} outcome=${outcome} attempt=${attempt}${backend?` backend=${backend}`:''} -->`;
 export function parseReleaseMarker(body) {
-  const m=body?.match(/<!-- lookout-release-v1 pr=([1-9]\d*) run=([1-9]\d*) outcome=(success|failure) attempt=([1-9]\d*) -->/);
+  const m=body?.match(/<!-- lookout-release-v1 pr=([1-9]\d*) run=([1-9]\d*) outcome=(success|failure) attempt=([1-9]\d*)(?: backend=([a-f0-9]{40}))? -->/);
   if(!m)return null;
   const pr=Number(m[1]),run=Number(m[2]),attempt=Number(m[4]);
-  return [pr,run,attempt].every(Number.isSafeInteger)?{pr,run,outcome:m[3],attempt}:null;
+  return [pr,run,attempt].every(Number.isSafeInteger)?{pr,run,outcome:m[3],attempt,...(m[5]?{backend:m[5]}:{})}:null;
 }
 export const issueMarker=number=>`<!-- lookout-auto-fix-issue:${number} -->`;
 export const validFix=(pr,number)=>pr?.merged===true&&pr.base?.ref==='main'&&pr.head?.repo?.full_name===BUG_REPOSITORY&&
@@ -21,7 +22,7 @@ export const validFix=(pr,number)=>pr?.merged===true&&pr.base?.ref==='main'&&pr.
 export const validReleaseRun=run=>run?.path==='.github/workflows/deploy.yml'&&run.head_branch==='main'&&
   run.head_repository?.full_name===BUG_REPOSITORY&&['push','workflow_dispatch'].includes(run.event)&&
   run.status==='completed'&&Number.isSafeInteger(run.run_attempt)&&run.run_attempt>0&&/^[a-f0-9]{40}$/.test(run.head_sha||'');
-export const needsBackendRelease=files=>files.some(f=>[f.filename,f.previous_filename].some(p=>p?.startsWith('supabase/')));
+export const needsBackendRelease=files=>files.some(f=>[f.filename,f.previous_filename].some(p=>(p?.startsWith('supabase/')||p==='lib/search-profile.mjs')));
 
 /** @returns {Promise<{status:number,data?:object,error?:string}>} */
 export async function getBugStatus({payload,authorize,token,connectionId,fetchImpl=fetch}) {
@@ -56,9 +57,13 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
     const receipt=parseReleaseMarker(signal.body);
     const pr=await api(`/pulls/${receipt.pr}`);
     const files=await all(`/pulls/${receipt.pr}/files`);
-    if(needsBackendRelease(files))return {status:200,data:{...base,state:'backend_release_unverified'}};
     const run=await api(`/actions/runs/${receipt.run}`);
     if(!validFix(pr,number)||!validReleaseRun(run)||run.run_attempt!==receipt.attempt)throw Error('Unverified release signal');
+    let backend;
+    if(needsBackendRelease(files)){
+      backend=receipt.backend&&await verifyBackendRelease({api,run,pr,files,evidenceId:receipt.backend});
+      if(!backend)return {status:200,data:{...base,state:'backend_release_unverified'}};
+    }
     const comparison=await api(`/compare/${pr.merge_commit_sha}...${run.head_sha}`);
     if(!['ahead','identical'].includes(comparison.status))throw Error('Fix absent from release');
     const events=await all(`/issues/${number}/events`);
@@ -67,7 +72,8 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
     if(events.some(e=>e.event==='reopened'&&Date.parse(e.created_at)>releasedAt))return {status:200,data:{...base,state:'awaiting_release'}};
     const ready=run.conclusion==='success';
     return {status:200,data:{...base,state:ready?'ready_to_retry':'release_failed',readyToRetry:ready,
-      releaseId:`${receipt.run}:${receipt.attempt}:${receipt.pr}`,pullRequest:`https://github.com/${BUG_REPOSITORY}/pull/${receipt.pr}`,
+      ...(backend?{backendEvidence:backend}:{}),
+      releaseId:`${receipt.run}:${receipt.attempt}:${receipt.pr}${backend?`:${backend.id}`:''}`,pullRequest:`https://github.com/${BUG_REPOSITORY}/pull/${receipt.pr}`,
       releaseRun:`https://github.com/${BUG_REPOSITORY}/actions/runs/${receipt.run}`,releasedCommit:run.head_sha}};
   } catch {return {status:503,error:'Release status could not be verified. Do not assume the fix is deployed.'};}
 }

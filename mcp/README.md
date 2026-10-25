@@ -535,3 +535,14 @@ capability and stop; do not grant scopes or substitute other write tools.
 Restricted scopes, stale runner code and backend release gaps are distinct
 possible causes and require evidence to distinguish. This contract update needs
 the existing backend release process; it does not change existing connections.
+
+### Backend repair status (developer version 63)
+
+`get_bug_status` retains its owner-only `activity:write` boundary. Backend fixes
+require current reviewed operator-attested source evidence plus a successful
+frontend release. `backendEvidence` reports provenance, observation time, source
+commit and function versions; it is a point-in-time observation, not continuous
+verification or proof that the bug is fixed. Refresh context and tools/list after
+version changes. Retry only with `readyToRetry:true` and a new `releaseId`; retain
+the full identity, including the evidence suffix. Missing/superseded evidence,
+unreleased runtime changes and migration changes fail closed.
