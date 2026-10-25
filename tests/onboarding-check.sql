@@ -1,6 +1,6 @@
 begin;
 do $$
-declare u uuid:=gen_random_uuid(); v uuid:=gen_random_uuid(); c uuid; c2 uuid; h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); h2 text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); j text:='onboard-'||gen_random_uuid(); b uuid; t jsonb; replay jsonb; s jsonb; req jsonb; seen_revision bigint;
+declare u uuid:=gen_random_uuid(); v uuid:=gen_random_uuid(); c uuid; c2 uuid; h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); h2 text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); j text:='onboard-'||gen_random_uuid(); b uuid; t jsonb; replay jsonb; s jsonb; req jsonb; seen_revision bigint; bad jsonb;
 begin
  insert into auth.users values(u),(v);
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Muse',h,array['workspace:read','preferences:write','batches:write','drafts:write'],now()+interval '1 day') returning id into c;
@@ -34,6 +34,21 @@ begin
  if t<>public.agent_dispatch(h,'tasks.report_result',req) then raise exception 'Report replay changed'; end if;
  req:=jsonb_build_object('expectedRevision',2,'eventKey','first','event','first_match','data',jsonb_build_object('jobId',j,'sourceUrl','https://careers.example.com/'||j,'available',true,'checkedAt',now(),'evidence','Employer posting is open and accepts applications','fit','Backend internship matches explicit intent'));
  begin perform public.agent_dispatch(h,'onboarding.submit_step',jsonb_set(req,'{data,checkedAt}',to_jsonb(now()-interval '2 days'))); raise exception 'Stale evidence accepted'; exception when invalid_parameter_value then null; end;
+ -- Publication alone and misspelled evidence fields do not satisfy first_match.
+ for bad in select value from jsonb_array_elements(jsonb_build_array(
+  jsonb_build_object('jobId',j),
+  ((req->'data')-'available')||'{"availability":true}',
+  (req->'data')||'{"available":"true"}',
+  (req->'data')||'{"sourceUrl":"https://other.example.com/job"}',
+  (req->'data')||jsonb_build_object('checkedAt',now()+interval '2 minutes'),
+  (req->'data')||'{"evidence":"short"}',
+  (req->'data')||'{"fit":"tiny"}'
+ )) loop
+  begin
+   perform public.agent_dispatch(h,'onboarding.submit_step',jsonb_set(req,'{data}',bad));
+   raise exception 'Incomplete first_match evidence accepted';
+  exception when invalid_parameter_value then null; end;
+ end loop;
  s:=public.agent_dispatch(h,'onboarding.submit_step',req);
  if s->>'step'<>'action_policy_pending' or s->'data'->'match'->'fitPreliminary'<>'true' then raise exception 'Resume was required before first value'; end if;
  s:=public.onboarding_action('onboarding.submit_step','{"expectedRevision":3,"eventKey":"policy","event":"policy","data":{"choice":"recommend"}}');
@@ -49,6 +64,10 @@ begin
  -- Auto-apply request is conditional setup, never an approval, verification, or permission toggle.
  perform public.agent_dispatch(h2,'onboarding.submit_step','{"expectedRevision":0,"eventKey":"runtime","event":"runtime","data":{"browsing":true}}');
  perform public.agent_dispatch(h2,'onboarding.submit_step','{"expectedRevision":1,"eventKey":"intent","event":"intent","data":{"text":"Infrastructure roles"}}');
+ begin
+  perform public.agent_dispatch(h2,'onboarding.submit_step',req);
+  raise exception 'Cross-owner first_match accepted';
+ exception when invalid_parameter_value then null; end;
  insert into public.job_batches(user_id,label,source_event_id) values(v,'Other first match','other-first') returning id into b;
  insert into public.batch_items(user_id,batch_id,job_id,position) values(v,b,j,0);
  perform public.agent_dispatch(h2,'onboarding.submit_step',req||'{"eventKey":"first"}');
