@@ -1,19 +1,19 @@
 import {BUG_REPOSITORY} from './bug-report.mjs';
 
 export const BUG_STATUS_TOOL={name:'get_bug_status',operation:'bugs.status',scope:'activity:write',readOnly:true,
-  description:'Check a reported Lookout issue for a verified release signal. Only the configured Muse connection can call. Retry the original fictional steps only when state=ready_to_retry and releaseId differs from the last attempted release. A closed issue or merged PR alone does not prove deployment. Returns metadata only, never issue prose or private diagnostics.',
+  description:'Check running source versions for backend fixes or a verified frontend release. Only the configured Muse connection can call. Retry the original fictional steps only when state=ready_to_retry and releaseId differs from the last attempted release. A closed issue or merged PR alone does not prove deployment. Returns metadata only, never issue prose or private diagnostics.',
   inputSchema:{type:'object',additionalProperties:false,required:['issueNumber'],properties:{issueNumber:{type:'integer',minimum:1}}}};
 
 export function validateBugStatus(p) {
   if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).length!==1||!Number.isSafeInteger(p.issueNumber)||p.issueNumber<=0)throw Error('Use a positive issueNumber.');
 }
 
-export const releaseMarker=(pr,run,outcome='success',attempt=1,backend)=>`<!-- lookout-release-v1 pr=${pr} run=${run} outcome=${outcome} attempt=${attempt}${backend?` backend=${backend}`:''} -->`;
+export const releaseMarker=(pr,run,outcome='success',attempt=1)=>`<!-- lookout-release-v1 pr=${pr} run=${run} outcome=${outcome} attempt=${attempt} -->`;
 export function parseReleaseMarker(body) {
-  const m=body?.match(/<!-- lookout-release-v1 pr=([1-9]\d*) run=([1-9]\d*) outcome=(success|failure) attempt=([1-9]\d*)(?: backend=([a-f0-9]{40}))? -->/);
+  const m=body?.match(/<!-- lookout-release-v1 pr=([1-9]\d*) run=([1-9]\d*) outcome=(success|failure) attempt=([1-9]\d*) -->/);
   if(!m)return null;
   const pr=Number(m[1]),run=Number(m[2]),attempt=Number(m[4]);
-  return [pr,run,attempt].every(Number.isSafeInteger)?{pr,run,outcome:m[3],attempt,...(m[5]?{backend:m[5]}:{})}:null;
+  return [pr,run,attempt].every(Number.isSafeInteger)?{pr,run,outcome:m[3],attempt}:null;
 }
 export const issueMarker=number=>`<!-- lookout-auto-fix-issue:${number} -->`;
 export const validFix=(pr,number)=>pr?.merged===true&&pr.base?.ref==='main'&&pr.head?.repo?.full_name===BUG_REPOSITORY&&
@@ -81,6 +81,7 @@ export async function getBugStatus({payload,authorize,token,connectionId,fetchIm
       .sort((a,b)=>{const x=parseReleaseMarker(a.body),y=parseReleaseMarker(b.body);return y.run-x.run||y.attempt-x.attempt;})[0];
     if(!signal)return {status:200,data:{...base,state:issue.state==='closed'?'closed_unverified':'awaiting_release'}};
     const receipt=parseReleaseMarker(signal.body);
+    if(candidate&&candidate.number!==receipt.pr)return {status:200,data:{...base,state:'awaiting_release'}};
     const pr=await api(`/pulls/${receipt.pr}`);
     const files=await all(`/pulls/${receipt.pr}/files`);
     const run=await api(`/actions/runs/${receipt.run}`);
