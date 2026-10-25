@@ -3,7 +3,7 @@ import agentInstructions from '../agent-gateway/instructions.json' with { type: 
 import {RESET_HANDOFF_TOOL} from '../agent-gateway/workspace-reset.mjs';
 import {BRIEF_TOOL} from '../agent-gateway/user-brief.mjs';
 import {FIELD_UPDATE_TOOLS} from '../agent-gateway/field-updates.mjs';
-import {ARTIFACT_TOOLS} from '../agent-gateway/artifacts.mjs';
+import {ARTIFACT_TOOLS,validateArtifact} from '../agent-gateway/artifacts.mjs';
 import { TOOLKIT_ROUTING } from '../agent-gateway/toolkit-routing.mjs';
 import {SEARCH_TOOLS} from '../agent-gateway/search.mjs';
 import {profileFactsSchema,proposedAnswersSchema,resumeUploadSchema,batchSchema,activitySchema} from '../agent-gateway/write-schemas.mjs';
@@ -138,6 +138,10 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
     if (!tool) return error(id, -32602, 'Unknown tool');
     if (!scopes.includes(tool.scope)) return result(id, { content: [{ type: 'text', text: 'Missing required scope: ' + tool.scope }], isError: true });
     const args = message.params?.arguments ?? {};
+    if (tool.operation.startsWith('artifacts.') || tool.operation.startsWith('learning.')) {
+      try { validateArtifact(tool.operation, args); }
+      catch (e) { return error(id, -32602, e.message); }
+    }
     if (!validArgs(tool, args)) return error(id, -32602, 'Invalid tool arguments');
     try {
       const response = await forward(token, tool.operation, args);

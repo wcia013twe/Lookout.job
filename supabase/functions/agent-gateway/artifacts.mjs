@@ -25,15 +25,35 @@ function check(schema,value){
  if(schema.type==='boolean')return typeof value==='boolean';
  return typeof value==='string'&&value.length<=(schema.maxLength??2048)&&(!schema.enum||schema.enum.includes(value))&&(schema.format!=='uuid'||uuid(value));
 }
+// Paths use schema-owned field names and array indexes, never caller values or unknown keys.
+function schemaIssue(schema,value,path='arguments'){
+ if(schema.type==='object'){
+  if(value===null||typeof value!=='object'||Array.isArray(value))return `${path} must be an object`;
+  for(const key of schema.required||[])if(value[key]===undefined)return `${path}.${key} is required`;
+  if(Object.keys(value).some(key=>!Object.hasOwn(schema.properties,key)))return `${path} contains an unsupported field; use only fields in the tool schema`;
+  for(const [key,child] of Object.entries(schema.properties))if(value[key]!==undefined){const issue=schemaIssue(child,value[key],`${path}.${key}`);if(issue)return issue;}
+ }else if(schema.type==='array'){
+  if(!Array.isArray(value)||value.length>schema.maxItems)return `${path} must be an array with at most ${schema.maxItems} items`;
+  for(let i=0;i<value.length;i++){const issue=schemaIssue(schema.items,value[i],`${path}[${i}]`);if(issue)return issue;}
+ }else if(!check(schema,value)){
+  if(schema.enum)return `${path} must be one of: ${schema.enum.join(', ')}`;
+  if(schema.format==='uuid')return `${path} must be a UUID`;
+  if(schema.type==='integer')return `${path} must be an integer between ${schema.minimum} and ${schema.maximum??2147483646}`;
+  if(schema.type==='string')return `${path} must be a string of at most ${schema.maxLength??2048} characters`;
+  return `${path} must be a ${schema.type}`;
+ }
+}
 export function validateArtifact(operation,p){
  if(!operation.startsWith('artifacts.')&&!operation.startsWith('learning.'))return;
  const tool=ARTIFACT_TOOLS.find(t=>t.operation===operation);
- if(!tool||!check(tool.inputSchema,p))throw Error('Invalid artifact or learning goal arguments');
+ if(!tool)throw Error('Invalid artifact or learning goal operation');
+ if(!check(tool.inputSchema,p))throw Error(schemaIssue(tool.inputSchema,p)||'Invalid artifact or learning goal arguments');
  if(p.asOf!==undefined&&(!p.shelf||!calendarDate(p.asOf)))throw Error('Shelf and valid local date required');
  if(artifactSubjectKeys.some(k=>p[k]!==undefined&&!p[k].trim()))throw Error('Subject ID required');
  if(p.weekOf!==undefined&&!calendarDate(p.weekOf))throw Error('Valid week date required');
  if(operation==='artifacts.save'){
-  if(p.preparedFor!==undefined&&(!calendarDate(p.preparedFor)||!['weekly_prep','interview_brief'].includes(p.kind)))throw Error('Dated preparation required');
+  if(p.preparedFor!==undefined&&!calendarDate(p.preparedFor))throw Error('preparedFor must be a real calendar date in YYYY-MM-DD format');
+  if(p.preparedFor!==undefined&&!['weekly_prep','interview_brief'].includes(p.kind))throw Error('preparedFor is supported only for kind weekly_prep or interview_brief; omit preparedFor for practice and other saved materials');
   if(p.materials!==undefined&&(!['weekly_prep','interview_brief'].includes(p.kind)||p.format!=='markdown'||new Set(p.materials.map(m=>m.id.toLowerCase())).size!==p.materials.length||p.materials.some(m=>m.id.toLowerCase()===p.id.toLowerCase())))throw Error('Unique non-self material references require a Markdown prep collection');
   if(!p.title.trim()||!p.purpose.trim()||!p.body.trim())throw Error('Title, purpose and content required');
   if(p.sources.some(s=>!s.title.trim()||!httpsSource(s.url)||!calendarDate(s.observedAt)))throw Error('Dated HTTPS sources required');

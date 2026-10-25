@@ -252,6 +252,12 @@ state after a stale-revision error. The backend supports:
   owned published batch item. Freshness is limited to 24 hours and the source must
   match the canonical employer URL. The agent must actually browse and verify;
   this endpoint validates the evidence contract, not arbitrary live websites.
+  `jobId` is the published job ID, not a search listing/screening ID. Put all six
+  fields directly in `data`; `available` must be boolean `true` (not
+  `availability`). `sourceUrl` must exactly equal the job's HTTPS `canonical_url`.
+  `checkedAt` may be at most one minute ahead of server time. Trimmed `evidence`
+  must be 10–2000 characters; trimmed `fit` must be 5–2000 characters. Publication,
+  archival and screening records alone do not substitute for fresh evidence.
   Fit stays preliminary without profile verification and a résumé record.
 - `no_match`: `{reason}` preserves first-match pending and records a concrete
   blocker. Refine `intent` after asking a focused question; never publish a demo
@@ -425,3 +431,17 @@ is temporary; persistent edits and human approval use Applications. Neither a
 saved assessment nor a preview interaction grants reuse consent or submission
 permission. Outreach requests are queued for a connected agent; queue creation
 does not prove execution or scheduling.
+
+### Artifact validation diagnostics
+
+`artifacts.save` / MCP `save_artifact` use the same field validation as the
+browser adapter. Schema errors identify a field path (for example,
+`arguments.id` or `arguments.sources[0].observedAt`) without echoing supplied
+values or unknown field names. MCP checks the connection and required scope
+before returning these diagnostics; rejected input is not forwarded for saving.
+
+`preparedFor` must be a real `YYYY-MM-DD` calendar date and is supported only
+for `weekly_prep` and `interview_brief`. A `practice` artifact stays undated;
+omit `preparedFor` to save it. A dated preparation collection may reference a
+saved practice artifact through its existing `materials` field. Saving material
+does not schedule execution or record completed practice.

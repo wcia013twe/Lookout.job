@@ -20,3 +20,5 @@ The shared checkout is on a non-main branch, so feature:start refused without
 changing it. Work uses an isolated clone of current origin/main and a codex branch,
 with existing dependencies reused; no large installation or build was needed.
 No local landing: the parent serializes integration and only a draft PR is authorized.
+
+Integration preserves the combined artifact, CSV, first-match and search guidance; shared developer context advances to version 62.
