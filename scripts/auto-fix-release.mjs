@@ -1,8 +1,13 @@
+import {verifyBackendRelease} from '../supabase/functions/agent-gateway/backend-release.mjs';
 import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import {githubApi,paginate} from './github-api.mjs';
 import {BUG_REPOSITORY} from '../supabase/functions/agent-gateway/bug-report.mjs';
 import {parseReleaseMarker,releaseMarker,validFix,validReleaseRun,needsBackendRelease} from '../supabase/functions/agent-gateway/bug-status.mjs';
+
+// Parse linkage only; issue/PR prose never supplies execution instructions.
+export const linkedIssues=body=>[...new Set([...String(body??'').matchAll(/<!-- lookout-auto-fix-issue:([1-9]\d*) -->/g)]
+  .map(match=>Number(match[1])).filter(Number.isSafeInteger))];
 
 // This workflow runs trusted default-branch code after the full release. The
 // receipt identifies the actual deployment run, not a PR check or issue comment.
@@ -18,35 +23,37 @@ export async function signalRelease({api,repo,event}) {
   let signalled=0;
   for(const candidate of pulls) {
     if(!candidate.merged_at||!candidate.labels?.some(l=>l.name==='auto-fix'))continue;
-    const match=candidate.body?.match(/<!-- lookout-auto-fix-issue:([1-9]\d*) -->/);
-    const number=Number(match?.[1]);
-    if(!Number.isSafeInteger(number))continue;
     const pr=await api('GET',`${root}/pulls/${candidate.number}`);
-    if(!validFix(pr,number))continue;
-    if(needsBackendRelease(await paginate(api,`${root}/pulls/${pr.number}/files`)))continue;
-    const issue=await api('GET',`${root}/issues/${number}`);
-    if(issue.user?.login!=='wcia013twe'||!issue.labels?.some(l=>l.name==='auto-fix'))continue;
-    const events=await paginate(api,`${root}/issues/${number}/events`);
-    const releasedAt=Date.parse(run.updated_at);
-    if(!Number.isFinite(releasedAt)||events.some(e=>e.event==='reopened'&&Date.parse(e.created_at)>releasedAt))continue;
-    const comments=await paginate(api,`${root}/issues/${number}/comments`);
-    const delivered=comments.find(c=>{const r=parseReleaseMarker(c.body);return c.user?.login==='github-actions[bot]'&&r?.pr===pr.number&&r.outcome==='success';});
-    if(delivered){
-      const previous=parseReleaseMarker(delivered.body);
-      // Recover if posting succeeded but the following close request failed.
-      if(previous.run===run.id&&previous.attempt===run.run_attempt&&issue.state==='open')await api('PATCH',`${root}/issues/${number}`,{state:'closed',state_reason:'completed'});
-      continue;
+    const files=await paginate(api,`${root}/pulls/${pr.number}/files`);
+    const backendRequired=needsBackendRelease(files);
+    const backend=backendRequired?await verifyBackendRelease({api:path=>api('GET',root+path),run,pr,files}):null;
+    if(backendRequired&&!backend)continue;
+    for(const number of linkedIssues(pr.body)) {
+      if(!validFix(pr,number))continue;
+      const issue=await api('GET',`${root}/issues/${number}`);
+      if(issue.pull_request||issue.user?.login!=='wcia013twe'||!issue.labels?.some(l=>l.name==='auto-fix'))continue;
+      const events=await paginate(api,`${root}/issues/${number}/events`);
+      const releasedAt=Date.parse(run.updated_at);
+      if(!Number.isFinite(releasedAt)||events.some(e=>e.event==='reopened'&&Date.parse(e.created_at)>releasedAt))continue;
+      const comments=await paginate(api,`${root}/issues/${number}/comments`);
+      const delivered=comments.find(c=>{const r=parseReleaseMarker(c.body);return c.user?.login==='github-actions[bot]'&&r?.pr===pr.number&&r.outcome==='success'&&(!backend||r.backend===backend.id);});
+      if(delivered){
+        const previous=parseReleaseMarker(delivered.body);
+        // Recover if posting succeeded but the following close request failed.
+        if(!backend&&previous.run===run.id&&previous.attempt===run.run_attempt&&issue.state==='open')await api('PATCH',`${root}/issues/${number}`,{state:'closed',state_reason:'completed'});
+        continue;
+      }
+      const comparison=await api('GET',`${root}/compare/${pr.merge_commit_sha}...${run.head_sha}`);
+      if(!['ahead','identical'].includes(comparison.status))continue;
+      const marker=releaseMarker(pr.number,run.id,run.conclusion==='success'?'success':'failure',run.run_attempt,backend?.id);
+      if(comments.some(c=>c.user?.login==='github-actions[bot]'&&c.body?.includes(marker)))continue;
+      const ready=run.conclusion==='success';
+      await api('POST',`${root}/issues/${number}/comments`,{body:
+        `${marker}\n${backend?'Backend evidence is a reviewed point-in-time operator attestation of source readback, not continuous verification or proof that the bug is fixed.\n':''}@wcia013twe — ${ready?'The fix was released. Muse can retry the fictional reproduction steps.':'The release did not succeed. Muse must wait; the fix is not confirmed deployed.'}\n\nPR: https://github.com/${repo}/pull/${pr.number}\nRelease: https://github.com/${repo}/actions/runs/${run.id}\n\nMuse: call get_bug_status with issueNumber ${number}; retry only when readyToRetry is true and releaseId is new.`});
+      // Refs (not Fixes) in the PR keeps deduplication active until deployment.
+      if(ready&&!backend&&issue.state==='open')await api('PATCH',`${root}/issues/${number}`,{state:'closed',state_reason:'completed'});
+      signalled++;
     }
-    const comparison=await api('GET',`${root}/compare/${pr.merge_commit_sha}...${run.head_sha}`);
-    if(!['ahead','identical'].includes(comparison.status))continue;
-    const marker=releaseMarker(pr.number,run.id,run.conclusion==='success'?'success':'failure',run.run_attempt);
-    if(comments.some(c=>c.user?.login==='github-actions[bot]'&&c.body?.includes(marker)))continue;
-    const ready=run.conclusion==='success';
-    await api('POST',`${root}/issues/${number}/comments`,{body:
-      `${marker}\n@wcia013twe — ${ready?'The fix was released. Muse can retry the fictional reproduction steps.':'The release did not succeed. Muse must wait; the fix is not confirmed deployed.'}\n\nPR: https://github.com/${repo}/pull/${pr.number}\nRelease: https://github.com/${repo}/actions/runs/${run.id}\n\nMuse: call get_bug_status with issueNumber ${number}; retry only when readyToRetry is true and releaseId is new.`});
-    // Refs (not Fixes) in the PR keeps deduplication active until deployment.
-    if(ready&&issue.state==='open')await api('PATCH',`${root}/issues/${number}`,{state:'closed',state_reason:'completed'});
-    signalled++;
   }
   return {signalled};
 }

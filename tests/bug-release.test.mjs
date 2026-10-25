@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {getBugStatus,releaseMarker,issueMarker} from '../supabase/functions/agent-gateway/bug-status.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
-import {signalRelease} from '../scripts/auto-fix-release.mjs';
+import {signalRelease,linkedIssues} from '../scripts/auto-fix-release.mjs';
 const repo='wcia013twe/Lookout.job',sha='a'.repeat(40);
 const issue={number:1,state:'closed',user:{login:'wcia013twe'},labels:[{name:'auto-fix'}]};
 const pr={number:7,merged:true,merged_at:'2026-10-23T00:00:00Z',base:{ref:'main'},head:{repo:{full_name:repo}},merge_commit_sha:sha,labels:[{name:'auto-fix'}],body:issueMarker(1)};
@@ -91,4 +91,80 @@ test('Pages success cannot signal a backend fix as deployed',async()=>{
     assert.deepEqual(await signalRelease({api:f.api,repo,event:{workflow_run:{id:19}}}),{signalled:0});
     assert.equal(f.calls.some(c=>c.method!=='GET'),false);
   }
+});
+
+
+test('linkage recognizes all exact markers once and rejects malformed or unsafe numbers',()=>{
+  assert.deepEqual(linkedIssues(`${issueMarker(1)} ${issueMarker(2)} ${issueMarker(1)}
+    <!-- lookout-auto-fix-issue:0 --> <!-- lookout-auto-fix-issue:01 -->
+    <!-- lookout-auto-fix-issue:9007199254740992 --> Refs #3`),[1,2]);
+  assert.deepEqual(linkedIssues(null),[]);
+});
+
+test('multiple linked issues are validated and delivered independently; backend still fails closed',async()=>{
+  for(const backend of [false,true]) {
+    const issues=new Map([1,2,3,4].map(n=>[n,{...issue,number:n,state:'open',
+      user:{login:n===3?'outsider':'wcia013twe'},labels:n===4?[]:issue.labels}]));
+    const comments=new Map([...issues.keys()].map(n=>[n,[]]));
+    const writes=[];
+    const f=fixture({pr:{...pr,body:[1,2,3,4,2].map(issueMarker).join('\n')},
+      files:[{filename:backend?'supabase/functions/agent-mcp/index.ts':'next-app/app/page.tsx'}]});
+    const api=async(method,path,body)=>{
+      const match=path.match(/\/issues\/(\d+)(?:\/(comments|events))?(?:\?|$)/);
+      if(!match)return f.api(method,path,body);
+      const n=Number(match[1]);
+      if(method==='POST'){writes.push({n,method});comments.get(n).push({body:body.body,user:{login:'github-actions[bot]'}});return {};}
+      if(method==='PATCH'){writes.push({n,method});issues.get(n).state=body.state;return {};}
+      return match[2]==='comments'?comments.get(n):match[2]==='events'?[]:issues.get(n);
+    };
+    assert.deepEqual(await signalRelease({api,repo,event:{workflow_run:{id:19}}}),{signalled:backend?0:2});
+    assert.deepEqual(writes.filter(w=>w.method==='POST').map(w=>w.n),backend?[]:[1,2]);
+    assert.equal(writes.some(w=>w.n===3||w.n===4),false);
+    assert.deepEqual(await signalRelease({api,repo,event:{workflow_run:{id:19}}}),{signalled:0});
+    assert.equal(comments.get(1).length,backend?0:1);
+    assert.equal(comments.get(2).length,backend?0:1);
+  }
+});
+
+const backendPath='supabase/functions/agent-gateway/bug-status.mjs';
+const evidenceSha='b'.repeat(40);
+function backendFixture(overrides={}) {
+  const files=[{filename:backendPath}];
+  const functions=['agent-gateway','agent-mcp'].map((name,i)=>({name,
+    id:i?'fe2b7a80-96bb-475d-b281-e05bb1d7fa50':'dfc5f49c-280e-48f5-ad2b-8c013050a1da',version:i?29:33,status:'ACTIVE',verifyJwt:false,
+    files:[`supabase/functions/${name}/index.ts`,`supabase/functions/${name}/deno.json`,backendPath].map(path=>({path,gitBlobSha:sha,sha256:'c'.repeat(64)}))}));
+  const evidence={schemaVersion:1,status:'verified',provenance:'operator-attested-supabase-source-readback',verification:'point-in-time',operator:'authorized test operator',projectId:'umhqfqzpwmszhcknwtrs',sourceCommit:sha,observedAt:'2026-10-23T00:30:00Z',functions,...overrides.evidence};
+  const tree={truncated:false,tree:[...new Set(functions.flatMap(f=>f.files.map(x=>x.path)))].map(path=>({path,type:'blob',sha}))};
+  const f=fixture({files,comments:[{user:{login:'github-actions[bot]'},body:releaseMarker(7,19,'success',1,overrides.markerId??evidenceSha)}],...overrides});
+  const api=async(method,path,body)=>{
+    if(path.includes('/contents/backend/releases/current.json'))return {sha:path.endsWith('ref=main')?(overrides.currentId??evidenceSha):evidenceSha,encoding:'base64',content:Buffer.from(JSON.stringify(evidence)).toString('base64')};
+    if(path.includes('/git/trees/'))return path.includes('/trees/main')?(overrides.latestTree??tree):(overrides.tree??tree);
+    return f.api(method,path,body);
+  };
+  return {...f,api,evidence,fetchImpl:async url=>new Response(JSON.stringify(await api('GET',new URL(url).pathname+new URL(url).search)))};
+}
+
+test('exact reviewed backend observation plus successful frontend permits a new evidence-bound retry, not closure',async()=>{
+  const f=backendFixture();const r=await getBugStatus({...options,fetchImpl:f.fetchImpl});
+  assert.equal(r.data.readyToRetry,true);assert.equal(r.data.releaseId,`19:1:7:${evidenceSha}`);
+  assert.equal(r.data.backendEvidence.provenance,'operator-attested-supabase-source-readback');
+  const again=await getBugStatus({...options,fetchImpl:f.fetchImpl});assert.equal(again.data.releaseId,r.data.releaseId);
+  const unsignalled=backendFixture({comments:[],issue:{...issue,state:'open'}});
+  assert.deepEqual(await signalRelease({api:unsignalled.api,repo,event:{workflow_run:{id:19}}}),{signalled:1});
+  assert.equal(unsignalled.calls.some(c=>c.method==='PATCH'),false);
+  assert.match(unsignalled.comments[0].body,/point-in-time operator attestation/);
+});
+
+test('backend evidence fails closed for pending/failed, wrong identity/source/hash, superseded and stale release IDs',async()=>{
+  for(const o of [
+    {evidence:{status:'pending'}},{evidence:{status:'failed'}},{evidence:{provenance:'issue-comment'}},
+    {evidence:{projectId:'other'}},{evidence:{functions:[]}},{evidence:{observedAt:'2099-01-01T00:00:00Z'}},
+    {currentId:'d'.repeat(40)},{markerId:'d'.repeat(40)},{comparison:'behind'},
+    {tree:{truncated:true,tree:[]}},{tree:{tree:[],truncated:false}},{latestTree:{tree:[],truncated:false}},
+    {files:[{filename:'supabase/migrations/schema.sql'}]},
+  ]){const f=backendFixture(o);const r=await getBugStatus({...options,fetchImpl:f.fetchImpl});assert.equal(r.data?.readyToRetry,false,JSON.stringify(o));assert.equal(r.data?.state,'backend_release_unverified');}
+  for(const conclusion of ['failure','cancelled']){
+    const f=backendFixture({run:{...run,conclusion}});const r=await getBugStatus({...options,fetchImpl:f.fetchImpl});assert.equal(r.data.readyToRetry,false);assert.equal(r.data.state,'release_failed');
+  }
+  const f=backendFixture({run:{...run,status:'in_progress'}});assert.equal((await getBugStatus({...options,fetchImpl:f.fetchImpl})).status,503);
 });

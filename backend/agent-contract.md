@@ -445,3 +445,36 @@ for `weekly_prep` and `interview_brief`. A `practice` artifact stays undated;
 omit `preparedFor` to save it. A dated preparation collection may reference a
 saved practice artifact through its existing `materials` field. Saving material
 does not schedule execution or record completed practice.
+
+### Backend repair release evidence
+
+Developer context 63 distinguishes frontend deployment from backend observation.
+`backend/releases/current.json` is a reviewed, point-in-time operator attestation
+from authenticated Supabase source readback. It is not an automated live probe or
+proof that the reported reproduction now passes. Issue prose, PR prose and comments
+cannot supply this authority; bot comments only identify receipts for revalidation.
+
+Deploy reviewed main first. Re-fetch both active function bundles, compare every
+file byte against the exact deployment source commit, and generate SHA-256/Git blob
+hashes with `scripts/backend-evidence.mjs`. Record the project, immutable function
+IDs, actual versions, preserved authentication setting, observation time and operator.
+Publish that record in a separate reviewed PR; its evidence commit is intentionally
+later than its source commit. CI recomputes source hashes and dependency closure.
+No production credentials are added to GitHub. Only gateway/MCP source releases are
+supported; migration changes remain unverified by this contract.
+
+A successful frontend release must contain both the fix and the evidence record.
+The record must still be current on main; source ancestry, bundle Git blob hashes,
+function identities and timestamps are rechecked. Any newer gateway/MCP runtime
+change, removed/replaced record, failed/pending observation or mismatch blocks
+readiness. The immutable evidence blob identity is part of `releaseId`. Reusing an
+old releaseId never authorizes another automatic retry. A backend receipt leaves
+the issue open for the actual retry outcome. All exact issue linkage markers are
+processed independently.
+
+Before a later out-of-band deployment, invalidate the current record through a
+reviewed change (set status to pending), then replace it only after a fresh readback.
+Unrecorded out-of-band production changes cannot be detected by repository-only
+checks; this is an explicit limit of operator attestation. Do not describe it as
+continuous verification. Do not publish source content, tokens or private data in
+the record; it contains public repository paths and hashes only.
