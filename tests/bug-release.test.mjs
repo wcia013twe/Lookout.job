@@ -18,7 +18,7 @@ function fixture(overrides={}) {
     if(path.split('?')[0].endsWith('/pulls/7/files'))return overrides.files??[{filename:'next-app/app/page.tsx'}];
     if(path.endsWith('/issues/1'))return overrides.issue??issue;
     if(path.endsWith('/pulls/7'))return overrides.pr??pr;
-    if(path.includes('/pulls?'))return [overrides.pr??pr];
+    if(path.includes('/pulls?'))return overrides.candidates??[overrides.pr??pr];
     if(path.endsWith('/actions/runs/19'))return overrides.run??run;
     if(path.includes('/compare/'))return {status:overrides.comparison??'identical'};
     throw Error('Unexpected request '+path);
@@ -126,45 +126,37 @@ test('multiple linked issues are validated and delivered independently; backend 
   }
 });
 
-const backendPath='supabase/functions/agent-gateway/bug-status.mjs';
-const evidenceSha='b'.repeat(40);
-function backendFixture(overrides={}) {
-  const files=[{filename:backendPath}];
-  const functions=['agent-gateway','agent-mcp'].map((name,i)=>({name,
-    id:i?'fe2b7a80-96bb-475d-b281-e05bb1d7fa50':'dfc5f49c-280e-48f5-ad2b-8c013050a1da',version:i?29:33,status:'ACTIVE',verifyJwt:false,
-    files:[`supabase/functions/${name}/index.ts`,`supabase/functions/${name}/deno.json`,backendPath].map(path=>({path,gitBlobSha:sha,sha256:'c'.repeat(64)}))}));
-  const evidence={schemaVersion:1,status:'verified',provenance:'operator-attested-supabase-source-readback',verification:'point-in-time',operator:'authorized test operator',projectId:'umhqfqzpwmszhcknwtrs',sourceCommit:sha,observedAt:'2026-10-23T00:30:00Z',functions,...overrides.evidence};
-  const tree={truncated:false,tree:[...new Set(functions.flatMap(f=>f.files.map(x=>x.path)))].map(path=>({path,type:'blob',sha}))};
-  const f=fixture({files,comments:[{user:{login:'github-actions[bot]'},body:releaseMarker(7,19,'success',1,overrides.markerId??evidenceSha)}],...overrides});
-  const api=async(method,path,body)=>{
-    if(path.includes('/contents/backend/releases/current.json'))return {sha:path.endsWith('ref=main')?(overrides.currentId??evidenceSha):evidenceSha,encoding:'base64',content:Buffer.from(JSON.stringify(evidence)).toString('base64')};
-    if(path.includes('/git/trees/'))return path.includes('/trees/main')?(overrides.latestTree??tree):(overrides.tree??tree);
-    return f.api(method,path,body);
-  };
-  return {...f,api,evidence,fetchImpl:async url=>new Response(JSON.stringify(await api('GET',new URL(url).pathname+new URL(url).search)))};
-}
-
-test('exact reviewed backend observation plus successful frontend permits a new evidence-bound retry, not closure',async()=>{
-  const f=backendFixture();const r=await getBugStatus({...options,fetchImpl:f.fetchImpl});
-  assert.equal(r.data.readyToRetry,true);assert.equal(r.data.releaseId,`19:1:7:${evidenceSha}`);
-  assert.equal(r.data.backendEvidence.provenance,'operator-attested-supabase-source-readback');
-  const again=await getBugStatus({...options,fetchImpl:f.fetchImpl});assert.equal(again.data.releaseId,r.data.releaseId);
-  const unsignalled=backendFixture({comments:[],issue:{...issue,state:'open'}});
-  assert.deepEqual(await signalRelease({api:unsignalled.api,repo,event:{workflow_run:{id:19}}}),{signalled:1});
-  assert.equal(unsignalled.calls.some(c=>c.method==='PATCH'),false);
-  assert.match(unsignalled.comments[0].body,/point-in-time operator attestation/);
+const runtime={runtimeVersion:{sourceCommit:sha},readMcpVersion:async()=>sha};
+test('backend-only fixes use authenticated running versions without receipts or frontend gating',async()=>{
+ const f=fixture({comments:[],files:[{filename:'supabase/functions/agent-mcp/protocol.mjs'}]});
+ const r=await getBugStatus({...options,...runtime,fetchImpl:f.fetchImpl});
+ assert.equal(r.data.readyToRetry,true);assert.equal(r.data.releaseId,`runtime:7:${sha}:${sha}`);
+ assert.equal(f.calls.some(c=>c.path.includes('/actions/runs/')||c.path.includes('/comments')),false);
+ assert.equal(f.calls.some(c=>c.method!=='GET'),false);
+ const again=await getBugStatus({...options,...runtime,fetchImpl:f.fetchImpl});assert.equal(again.data.releaseId,r.data.releaseId);
+});
+test('unknown/older runtimes, unsupported migrations, missing fixes and mixed frontend failures stay unready',async()=>{
+ for(const [overrides,versions] of [
+  [{},{}],[{}, {...runtime,readMcpVersion:async()=> '1.1.0'}],
+  [{comparison:'behind'},runtime],[{files:[{filename:'supabase/migrations/change.sql'}]},runtime],
+  [{candidates:[],comments:[]},runtime],
+  [{files:[{filename:'supabase/functions/agent-mcp/index.ts'},{filename:'next-app/app/page.tsx'}],comments:[]},runtime],
+  [{files:[{filename:'supabase/functions/agent-mcp/index.ts'},{filename:'next-app/app/page.tsx'}],run:{...run,conclusion:'failure'}},runtime],
+ ]){
+  const f=fixture({files:[{filename:'supabase/functions/agent-mcp/index.ts'}],...overrides});
+  const r=await getBugStatus({...options,...versions,fetchImpl:f.fetchImpl});assert.equal(r.data?.readyToRetry,false);
+ }
+ const f=fixture({files:[{filename:'supabase/functions/agent-mcp/index.ts'}]});
+ assert.equal((await getBugStatus({...options,...runtime,readMcpVersion:async()=>{throw Error('private');},fetchImpl:f.fetchImpl})).status,503);
 });
 
-test('backend evidence fails closed for pending/failed, wrong identity/source/hash, superseded and stale release IDs',async()=>{
-  for(const o of [
-    {evidence:{status:'pending'}},{evidence:{status:'failed'}},{evidence:{provenance:'issue-comment'}},
-    {evidence:{projectId:'other'}},{evidence:{functions:[]}},{evidence:{observedAt:'2099-01-01T00:00:00Z'}},
-    {currentId:'d'.repeat(40)},{markerId:'d'.repeat(40)},{comparison:'behind'},
-    {tree:{truncated:true,tree:[]}},{tree:{tree:[],truncated:false}},{latestTree:{tree:[],truncated:false}},
-    {files:[{filename:'supabase/migrations/schema.sql'}]},
-  ]){const f=backendFixture(o);const r=await getBugStatus({...options,fetchImpl:f.fetchImpl});assert.equal(r.data?.readyToRetry,false,JSON.stringify(o));assert.equal(r.data?.state,'backend_release_unverified');}
-  for(const conclusion of ['failure','cancelled']){
-    const f=backendFixture({run:{...run,conclusion}});const r=await getBugStatus({...options,fetchImpl:f.fetchImpl});assert.equal(r.data.readyToRetry,false);assert.equal(r.data.state,'release_failed');
-  }
-  const f=backendFixture({run:{...run,status:'in_progress'}});assert.equal((await getBugStatus({...options,fetchImpl:f.fetchImpl})).status,503);
+test('a newly running source creates a different retry identity; unlinked issue59 stays unready',async()=>{
+ const f=fixture({comments:[],files:[{filename:'supabase/functions/agent-gateway/instructions.json'}]});
+ const old=await getBugStatus({...options,...runtime,fetchImpl:f.fetchImpl});
+ const next=await getBugStatus({...options,...runtime,readMcpVersion:async()=> 'b'.repeat(40),fetchImpl:f.fetchImpl});
+ assert.equal(next.data.readyToRetry,true);assert.notEqual(next.data.releaseId,old.data.releaseId);
+ const absent=fixture({comments:[],candidates:[],issue:{...issue,number:59,state:'open'}});
+ const fetchImpl=async url=>absent.fetchImpl(String(url).replace('/issues/59','/issues/1'));
+ const result=await getBugStatus({...options,payload:{issueNumber:59},...runtime,fetchImpl});
+ assert.equal(result.data.readyToRetry,false);assert.equal(result.data.releaseId,undefined);
 });
