@@ -523,6 +523,7 @@ remain authoritative. Changed retry payloads need a new event key.
 Developer version 62 refreshes these schemas through `tools/list`. They require
 separate reviewed release of both gateway and MCP functions; a frontend release
 alone does not publish the contract.
+
 ## CSV import discovery
 
 `list_imported_jobs` requires `workspace:read`. Both `preview_simplify_import`
