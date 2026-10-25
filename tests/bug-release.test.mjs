@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {getBugStatus,releaseMarker,issueMarker} from '../supabase/functions/agent-gateway/bug-status.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
-import {signalRelease} from '../scripts/auto-fix-release.mjs';
+import {signalRelease,linkedIssues} from '../scripts/auto-fix-release.mjs';
 const repo='wcia013twe/Lookout.job',sha='a'.repeat(40);
 const issue={number:1,state:'closed',user:{login:'wcia013twe'},labels:[{name:'auto-fix'}]};
 const pr={number:7,merged:true,merged_at:'2026-10-23T00:00:00Z',base:{ref:'main'},head:{repo:{full_name:repo}},merge_commit_sha:sha,labels:[{name:'auto-fix'}],body:issueMarker(1)};
@@ -90,5 +90,38 @@ test('Pages success cannot signal a backend fix as deployed',async()=>{
     assert.equal(status.data.readyToRetry,false);
     assert.deepEqual(await signalRelease({api:f.api,repo,event:{workflow_run:{id:19}}}),{signalled:0});
     assert.equal(f.calls.some(c=>c.method!=='GET'),false);
+  }
+});
+
+
+test('linkage recognizes all exact markers once and rejects malformed or unsafe numbers',()=>{
+  assert.deepEqual(linkedIssues(`${issueMarker(1)} ${issueMarker(2)} ${issueMarker(1)}
+    <!-- lookout-auto-fix-issue:0 --> <!-- lookout-auto-fix-issue:01 -->
+    <!-- lookout-auto-fix-issue:9007199254740992 --> Refs #3`),[1,2]);
+  assert.deepEqual(linkedIssues(null),[]);
+});
+
+test('multiple linked issues are validated and delivered independently; backend still fails closed',async()=>{
+  for(const backend of [false,true]) {
+    const issues=new Map([1,2,3,4].map(n=>[n,{...issue,number:n,state:'open',
+      user:{login:n===3?'outsider':'wcia013twe'},labels:n===4?[]:issue.labels}]));
+    const comments=new Map([...issues.keys()].map(n=>[n,[]]));
+    const writes=[];
+    const f=fixture({pr:{...pr,body:[1,2,3,4,2].map(issueMarker).join('\n')},
+      files:[{filename:backend?'supabase/functions/agent-mcp/index.ts':'next-app/app/page.tsx'}]});
+    const api=async(method,path,body)=>{
+      const match=path.match(/\/issues\/(\d+)(?:\/(comments|events))?(?:\?|$)/);
+      if(!match)return f.api(method,path,body);
+      const n=Number(match[1]);
+      if(method==='POST'){writes.push({n,method});comments.get(n).push({body:body.body,user:{login:'github-actions[bot]'}});return {};}
+      if(method==='PATCH'){writes.push({n,method});issues.get(n).state=body.state;return {};}
+      return match[2]==='comments'?comments.get(n):match[2]==='events'?[]:issues.get(n);
+    };
+    assert.deepEqual(await signalRelease({api,repo,event:{workflow_run:{id:19}}}),{signalled:backend?0:2});
+    assert.deepEqual(writes.filter(w=>w.method==='POST').map(w=>w.n),backend?[]:[1,2]);
+    assert.equal(writes.some(w=>w.n===3||w.n===4),false);
+    assert.deepEqual(await signalRelease({api,repo,event:{workflow_run:{id:19}}}),{signalled:0});
+    assert.equal(comments.get(1).length,backend?0:1);
+    assert.equal(comments.get(2).length,backend?0:1);
   }
 });
