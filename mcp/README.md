@@ -502,3 +502,15 @@ only questions needing input or custom-answer review. Agents cannot mark the
 questions human-reviewed or approve submission. Saved tier lists supply display
 rankings; unranked companies remain visible. These changes require the database
 migration and gateway configuration release before hosted validation is current.
+
+## CSV import discovery
+
+`list_imported_jobs` requires `workspace:read`. Both `preview_simplify_import`
+and `import_simplify_jobs` require `tracking:write`, including the read-only
+preview. A connection can therefore read history without permission to import.
+Developer version 60 makes the import workflow conditional on current discovery.
+If either import tool is absent, refresh discovery once, report the unavailable
+capability and stop; do not grant scopes or substitute other write tools.
+Restricted scopes, stale runner code and backend release gaps are distinct
+possible causes and require evidence to distinguish. This contract update needs
+the existing backend release process; it does not change existing connections.
