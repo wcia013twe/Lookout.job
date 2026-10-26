@@ -1,12 +1,39 @@
+import {createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {fetchSource,deduplicate} from './ats.ts';
 import type {Rpc,Payload,Claim,Dispatch} from './types.ts';
 
+export function listingBatches(rows:Payload[],maxBytes=48000){
+  const batches:{offset:number;listings:Payload[]}[]=[];let batch:Payload[]=[];let offset=0;
+  for(const row of rows){
+    const candidate=[...batch,row];
+    if(candidate.length>25||Buffer.byteLength(JSON.stringify(candidate),'utf8')>maxBytes){
+      if(!batch.length)throw Error('Discovery observation exceeds bounded transaction size');
+      batches.push({offset,listings:batch});offset+=batch.length;batch=[row];
+      if(Buffer.byteLength(JSON.stringify(batch),'utf8')>maxBytes)throw Error('Discovery observation exceeds bounded transaction size');
+    }else batch=candidate;
+  }
+  if(batch.length)batches.push({offset,listings:batch});
+  return batches;
+}
 export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{request=fetch}: {request?:typeof fetch}={}) {
   const prefix=`job:${job.id}:`;
   const run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):await dispatch('search.run.start',{profileId:job.input.profileId,eventKey:prefix+'start'});
   if(run.state!=='active')return {status:run.state==='completed'?'completed':'partial',result:{runId:run.id,summary:'Previously persisted search result recovered.',screening:'review-needed'}};
-  const seen=new Set<string>();let saved=0;let blocked=0;let scanned=0;
+  const seen=new Set<string>();
+  if(job.search_run_id){
+    let offset=0;
+    // At most ten sources x 500 observations. Refuse an incomplete identity
+    // history instead of silently weakening durable deduplication on retry.
+    for(let page=0;page<=50;page++){
+      const prior=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100});
+      deduplicate(prior.listings,seen);
+      if(prior.nextOffset===null)break;
+      if(!Number.isSafeInteger(prior.nextOffset)||prior.nextOffset<=offset||prior.nextOffset>5000||page===50)throw Error('Discovery identity history exceeded bounded pagination');
+      offset=prior.nextOffset;
+    }
+  }
+  let saved=0;let blocked=0;let scanned=0;
   const sources=run.sources||[];
   for(const [index,source] of sources.entries()){
     if(source.state==='completed'){continue;}
@@ -17,14 +44,13 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
     // safely through canonical database deduplication.
     const checkpoint=source.checkpoint||{};
     let offset=Number.isSafeInteger(checkpoint.savedOffset)?checkpoint.savedOffset:0;
-    const sourceKey=source.source_id.replace(/[^\w.-]/g,'_');
+    const sourceKey=createHash('sha256').update(source.source_id).digest('hex');
     // Fetch snapshots may change across retries. Save a source atomically under
     // attempt-specific keys; DB canonical identity prevents duplicate listings.
     const attempt=`${source.version}a${job.attempts}`;
-    for(let start=0;start<rows.length;start+=25){
-      const batch=rows.slice(start,start+25);
-      await dispatch('search.discoveries.save',{runId:run.id,listings:batch,eventKey:`${prefix}${sourceKey}:v${attempt}:batch:${start}`});
-      saved+=batch.length;
+    for(const batch of listingBatches(rows)){
+      await dispatch('search.discoveries.save',{runId:run.id,listings:batch.listings,eventKey:`${prefix}${sourceKey}:v${attempt}:batch:${batch.offset}`});
+      saved+=batch.listings.length;
     }
     const complete=observation.coverage==='exhaustive';
     if(!complete)blocked++;

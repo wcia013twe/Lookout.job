@@ -34,6 +34,13 @@ begin
  run:=public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.run.start','payload',jsonb_build_object('profileId','test-profile','eventKey','job:'||id||':start')));
  again:=public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.run.start','payload',jsonb_build_object('profileId','test-profile','eventKey','job:'||id||':start')));if again<>run then raise exception 'Start replay changed';end if;
  begin perform public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.run.read','payload',jsonb_build_object('runId',gen_random_uuid())));raise exception 'Unrelated run dispatched';exception when insufficient_privilege then null;end;
+ -- Resume identity reads are bounded and pinned to this job's own run.
+ again:=public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.discoveries.read','payload',jsonb_build_object('runId',run->>'id','offset',0,'limit',100)));
+ if again<>'{"listings":[],"nextOffset":null}'::jsonb then raise exception 'Unexpected resume identity projection';end if;
+ begin perform public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.discoveries.read','payload',jsonb_build_object('runId',gen_random_uuid(),'offset',0,'limit',100)));raise exception 'Unrelated resume identities read';exception when insufficient_privilege then null;end;
+ begin perform public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.discoveries.read','payload',jsonb_build_object('runId',run->>'id','offset',0,'limit',101)));raise exception 'Unbounded resume identities read';exception when invalid_parameter_value then null;end;
+ begin perform public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.discoveries.read','payload',jsonb_build_object('runId',run->>'id','offset',0,'limit',100,'decision','eligible')));raise exception 'Arbitrary resume filter accepted';exception when invalid_parameter_value then null;end;
+
  begin perform public.backend_worker('dispatch',finish||jsonb_build_object('operation','profile.update','payload','{}'::jsonb));raise exception 'Arbitrary dispatcher exposed';exception when invalid_parameter_value then null;end;
  update private.agent_connections set revoked_at=now() where agent_connections.id=c;
  begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Revoked finish accepted';exception when insufficient_privilege then null;end;

@@ -1,3 +1,4 @@
+import {setTimeout as delay} from 'node:timers/promises';
 import type {Payload} from './types.ts';
 
 export interface Listing {sourceId:string;url:string;company:string;title:string;location:string|null;checkedAt:string;liveness:'active';evidence:string;employerPostedAt:string|null;sourceListAgeDays:null;description:string;atsIdentity:string;requisitionId?:string;employmentType?:string}
@@ -29,7 +30,17 @@ export function deduplicate(listings:Listing[],seen=new Set<string>()):Listing[]
   });
 }
 async function fetchJson(url:URL,request:typeof fetch){
-  const response=await request(url,{redirect:'error',signal:AbortSignal.timeout(10000),headers:{Accept:'application/json','User-Agent':'Lookout-Discovery/1.0'}});
+  let response:Response|undefined;
+  // Public GET retries are bounded and never repeat a submission or DB write.
+  for(let attempt=0;attempt<2;attempt++){
+    try{
+      response=await request(url,{redirect:'error',signal:AbortSignal.timeout(10000),headers:{Accept:'application/json','User-Agent':'Lookout-Discovery/1.0'}});
+      if(![429,500,502,503,504].includes(response.status)||attempt===1)break;
+      await response.body?.cancel();
+    }catch(error){if(attempt===1)throw error;}
+    await delay(100);
+  }
+  if(!response)throw Error('ATS source unavailable');
   if(!response.ok)throw Error('ATS source unavailable');
   const reader=response.body?.getReader();if(!reader)throw Error('Empty ATS response');
   let total=0;const chunks:Uint8Array[]=[];
@@ -40,7 +51,7 @@ export async function fetchSource(sourceId:string,source:Payload,{request=fetch,
   const endpoint=sourceEndpoint(source);
   if(!endpoint)return {listings:[],coverage:'inaccessible',blocker:'This source needs an agent or an unsupported source connector.',total:0};
   try{
-    const listings:Listing[]=[];let total=0;let coverage:SourceResult['coverage']='exhaustive';
+    const listings:Listing[]=[];let total=0;let invalid=0;let coverage:SourceResult['coverage']='exhaustive';
     for(let page=0;page<(endpoint.provider==='lever'?3:1);page++){
       if(endpoint.provider==='lever')endpoint.url.searchParams.set('skip',String(page*100));
       const data=await fetchJson(endpoint.url,request);
@@ -51,15 +62,16 @@ export async function fetchSource(sourceId:string,source:Payload,{request=fetch,
         try{
           const url=canonicalUrl(endpoint.provider==='greenhouse'?row.absolute_url:row.hostedUrl);
           const title=text(endpoint.provider==='greenhouse'?row.title:row.text,500);
-          if(!title||row.id===undefined)continue;
-          listings.push({sourceId,url,company:text(source.name,200)||endpoint.slug,title,location:text(endpoint.provider==='greenhouse'?row.location?.name:row.categories?.location,500)||null,checkedAt:now().toISOString(),liveness:'active',evidence:`Published posting ${row.id} returned by the employer's ${endpoint.provider} job board API.`,employerPostedAt:date(row.first_published),sourceListAgeDays:null,description:text(endpoint.provider==='greenhouse'?row.content:row.descriptionPlain||row.description,4500),atsIdentity:`${endpoint.provider}:${endpoint.slug}:${row.id}`,...(row.requisition_id?{requisitionId:String(row.requisition_id).slice(0,200)}:{})});
-        }catch{/* Invalid individual listings never become verified discoveries. */}
+          if(!title||!['string','number'].includes(typeof row.id)||!String(row.id).trim()){invalid++;continue;}
+          listings.push({sourceId,url,company:text(row.company_name,200)||text(source.name,200)||endpoint.slug,title,location:text(endpoint.provider==='greenhouse'?row.location?.name:row.categories?.location,500)||null,checkedAt:now().toISOString(),liveness:'active',evidence:`Published posting ${row.id} returned by the employer's ${endpoint.provider} job board API. Archived description is a bounded excerpt.`,employerPostedAt:date(row.first_published),sourceListAgeDays:null,description:text(endpoint.provider==='greenhouse'?row.content:row.descriptionPlain||row.description,4500),atsIdentity:`${endpoint.provider}:${endpoint.slug}:${row.id}`,...(row.requisition_id?{requisitionId:String(row.requisition_id).slice(0,200)}:{})});
+        }catch{invalid++;/* Invalid individual listings never become verified discoveries. */}
       }
-      if(endpoint.provider==='greenhouse'){if(rows.length>500 || listings.length<rows.length)coverage='truncated';break;}
+      if(endpoint.provider==='greenhouse'){if(rows.length>500 || listings.length<rows.length || Number.isInteger(data.meta?.total)&&data.meta.total>rows.length)coverage='truncated';break;}
       if(rows.length<100)break;
       if(page===2)coverage='truncated';
     }
     if(total && !listings.length)throw Error('No usable canonical postings');
+    if(invalid)coverage='truncated';
     return {listings,coverage,blocker:coverage==='truncated'?'Source exceeds the bounded fetch or contains malformed postings.':'',total};
   }catch{return {listings:[],coverage:'inaccessible',blocker:'Source fetch failed or exceeded the bounded response; retry or use an agent.',total:0};}
 }
