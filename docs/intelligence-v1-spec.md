@@ -143,3 +143,5 @@ Raw forum-link query parameters are removed from text before embedding; the visi
 Circle file attachments remain local previews and are not persisted/indexed. Real document IDs and version references require the upload/storage boundary before they can join this model. Live source polling and global-sharing policy remain deferred.
 
 Validation: 15 focused tests and all 567 repository tests passed, plus backend type checking and 158-role catalog validation. Tests cover existing UI chat mentions, metadata validation, unknown target revisions, no target body copying, general discussions and a unified three-kind projection. Actual stdio MCP -> Docker -> PostgreSQL inserted the tagged example, refreshed eight rows for clean-v3 and then skipped all nine on repeat. Reviewable input/output: `/private/tmp/intelligence-tagged-post.json`.
+
+Post-integration verification: the landing integrated the separately completed local backend work. All 595 tests passed on merged commit b55bd03, along with intelligence type checking and 158-role catalog validation. The earlier 567 count describes the pre-integration feature checks.
