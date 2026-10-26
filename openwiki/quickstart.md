@@ -47,6 +47,17 @@ npm run validate:data   # canonical catalog shape and uniqueness
 npm run build           # static production export
 ```
 
+For local Docker-backed development, start Docker and install the Supabase CLI,
+then use `make dev` (or `make up`) from the task checkout. This starts local
+Supabase first and the frontend at `http://localhost:3000` using the local API
+and anonymous key. Use `make install` for initial locked dependency setup,
+`make services` / `make frontend` for separate startup, and `make status` for
+service details. Ctrl-C stops the frontend; `make down` stops the containers
+and preserves data. Check ownership before operating a stack bound to another
+checkout. Keep Docker storage, dependencies and build output on the external
+SSD. See [local startup details](operations/testing-and-delivery.md#local-docker-services-and-frontend)
+and the root [Makefile](../Makefile). `npm run dev` retains the hosted default.
+
 Use `npm run test:db` only for focused database debugging. Real Google sign-in, private file round trips, live MCP clients, and employer forms still require explicit live verification; tests do not submit real applications.
 
 ## Route work by behavior

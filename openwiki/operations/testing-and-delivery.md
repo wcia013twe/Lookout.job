@@ -36,6 +36,41 @@ npm run feature:start -- <short-name>
 
 The starter validates the name, clones committed local `main` into a unique temporary checkout, creates a `codex/…` branch, records the source checkout, and generates a task-specific change note. Install locked dependencies there with `npm ci` and `npm ci --prefix next-app`. Reuse that checkout for follow-ups and preserve unfamiliar edits rather than resetting or stashing them.
 
+## Local Docker services and frontend
+
+The root `Makefile` provides the local development entry point. Start your Docker
+engine and install the Supabase CLI, then run these commands in the task checkout:
+
+```sh
+make install   # npm ci for the root and next-app; first setup only
+make dev       # also make up, or simply make
+```
+
+`make dev` waits for `supabase start` to succeed before launching Next.js on
+`http://localhost:3000`. `supabase/config.toml` configures the Docker stack and
+first-start migrations come from `supabase/migrations/`. The frontend stays on
+the host. `scripts/local-frontend.mjs` reads the running local stack's API URL
+and anonymous key, checks for a loopback API host, and passes those browser-safe
+values to Next.js. Account sync and displayed gateway/MCP connection URLs use
+the selected backend. The service-role key is not selected for browser settings.
+`npm run dev` keeps the hosted backend default.
+
+`make services` and `make frontend` run the two steps separately. Ctrl-C stops
+the foreground frontend; `make down` stops the local stack while retaining its
+data. `make status` shows local service connection details. The frontend uses
+port 3000 explicitly and fails if it is occupied. Studio uses port 54323, email
+preview uses 54324, and the API uses 54321. Local Google sign-in needs its own
+provider configuration; production secrets and hosted data are not copied.
+A local MCP URL is reachable only by runtimes with access to that machine.
+
+Keep dependencies, build output, caches and Docker's disk image on the external
+SSD. Check stack ownership before starting or stopping containers: a running
+stack can still be bound to a different active checkout. Demo behavior and
+fixtures remain unchanged and isolated from real accounts.
+
+Evidence: [Makefile](../../Makefile), [local frontend launcher](../../scripts/local-frontend.mjs),
+[local configuration](../../supabase/config.toml), and [startup instructions](../../AGENTS.md).
+
 ## Record and validate the change
 
 Complete `changes/<unique-feature-branch>.md` with the outcome, checks actually run, and verification limits; remove its draft marker. Commit only files owned by the task.

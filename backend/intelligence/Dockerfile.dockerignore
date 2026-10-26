@@ -1,0 +1,12 @@
+**
+!package.json
+!package-lock.json
+!backend/
+!backend/intelligence/
+!backend/intelligence/**
+!lib/
+!lib/network-model.mjs
+!lib/outreach-conversation.mjs
+!tests/
+!tests/fixtures/
+!tests/fixtures/intelligence.mts

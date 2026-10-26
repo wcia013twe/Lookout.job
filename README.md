@@ -141,6 +141,32 @@ npm run validate:data
 npm run dev
 ```
 
+For the local Docker-backed stack, install the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started), start Docker Desktop (or another Docker engine), then run:
+
+```sh
+# One-time dependency setup; keep installs/caches on the external SSD.
+npm_config_cache="/Volumes/External SSD/Lookout/npm-cache" make install
+make dev
+```
+
+`make dev` (also `make up`, or just `make`) starts local Supabase containers,
+applies `supabase/migrations/` on first startup, and runs Next.js at
+`http://localhost:3000` with the local API URL and anonymous key. The frontend
+runs on the host; Supabase runs in Docker. The local stack uses separate data
+from the hosted project. Studio is at `http://localhost:54323`, email preview
+at `http://localhost:54324`, and the API at `http://127.0.0.1:54321`.
+
+Ctrl-C stops the frontend; `make down` stops this project's containers and
+preserves data. Use `make services`, `make frontend`, and `make status` separately
+as needed. Port 3000 must be free; Next.js will fail instead of choosing another
+port. The first services startup may download Docker images; keep Docker's disk
+image on the external SSD. Local Google OAuth requires separate provider secrets
+and callback setup; hosted Google configuration is not copied. Local agent
+endpoints require a runtime that can reach your localhost. `npm run dev` retains
+the hosted backend default for the existing workflow. Demo fixtures remain
+fictional and isolated; this startup tooling does not change product actions or
+MCP contracts.
+
 `npm test` runs behavior checks and the consolidated database scenarios. The database suite applies migrations once in disposable PGlite; `npm run test:db` runs the same scenarios separately. Hosted checks remain separate.
 
 Open `http://localhost:3000`. Production is built and deployed by `.github/workflows/deploy.yml` from `next-app/out/`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The React export bundles the browser client at build time.
