@@ -50,6 +50,14 @@ begin
  if not exists(select 1 from public.search_documents d where d.user_id=owner_id and d.kind='profile' and d.id=input->>'profileId' and d.projection->>'active'='true') then
  raise exception 'Active owned search profile required' using errcode='22023';end if;
 end $$;
+-- A terminal backend job cannot leave its own sweep active and block the next job.
+create function private.backend_close_run(j private.backend_jobs,next_state text,summary text) returns void language plpgsql set search_path='' as $$
+begin
+ if j.search_run_id is null then return;end if;
+ perform pg_advisory_xact_lock(hashtextextended(j.user_id::text,71));
+ update public.search_runs set state=next_state,summary=backend_close_run.summary,version=version+1,finished_at=now()
+ where id=j.search_run_id and user_id=j.user_id and state='active';
+end $$;
 create function private.backend_action(owner_id uuid,bound_connection uuid,operation text,payload jsonb) returns jsonb
 language plpgsql security definer set search_path='' as $$
 #variable_conflict use_variable
@@ -72,6 +80,7 @@ begin
   if not found then raise exception 'Owned backend job not found' using errcode='P0002';end if;
   if j.version<>(payload->>'expectedVersion')::integer then raise exception 'Backend job changed' using errcode='40001';end if;
   if j.status not in ('queued','running') then raise exception 'Backend job is already finished' using errcode='22023';end if;
+  perform private.backend_close_run(j,'cancelled','Backend job cancelled; previously saved evidence is retained.');
   update private.backend_jobs set status='cancelled',version=version+1,lease_token=null,lease_expires_at=null,updated_at=now(),finished_at=now() where id=j.id returning * into j;
   return private.backend_public_job(j);
  elsif operation not in ('backend.jobs.submit','backend.schedules.save') then raise exception 'Unknown backend operation' using errcode='22023';end if;
@@ -141,10 +150,12 @@ begin
     c:=private.backend_connection(j.user_id,j.connection_id,true);
     perform private.backend_input(j.user_id,j.kind,j.input);
    exception when sqlstate '42501' or sqlstate '22023' then
+    perform private.backend_close_run(j,'cancelled','Execution permission or profile unavailable; previously saved evidence is retained.');
     update private.backend_jobs set status='cancelled',version=version+1,lease_token=null,lease_expires_at=null,finished_at=now(),updated_at=now(),result='{"error":"Execution permission or profile unavailable"}' where id=j.id;
     continue;
    end;
    if j.attempts>=3 then
+    perform private.backend_close_run(j,'partial','Backend retry limit reached; previously saved evidence is retained.');
     update private.backend_jobs set status='failed',version=version+1,lease_token=null,lease_expires_at=null,finished_at=now(),updated_at=now(),result='{"error":"Execution retry limit reached"}' where id=j.id;
     continue;
    end if;
@@ -178,6 +189,8 @@ begin
   if not found then raise exception 'Backend job not found' using errcode='P0002';end if;
   if j.status<>'running' or j.lease_token is distinct from (payload->>'leaseToken')::uuid or j.lease_expires_at<=now() or j.version is distinct from (payload->>'expectedVersion')::integer then raise exception 'Backend lease changed' using errcode='40001';end if;
   perform private.backend_connection(j.user_id,j.connection_id,true);
+  if payload->>'status' in ('failed','partial') then perform private.backend_close_run(j,'partial','Backend execution ended without exhaustive coverage; previously saved evidence is retained.');end if;
+  if payload->>'status'='completed' and exists(select 1 from public.search_runs where id=j.search_run_id and user_id=j.user_id and state='active') then raise exception 'Finish search run before completing backend job' using errcode='22023';end if;
   update private.backend_jobs set status=payload->>'status',result=payload->'result',version=version+1,lease_token=null,lease_expires_at=null,updated_at=now(),finished_at=now() where id=j.id returning * into j;
   return private.backend_public_job(j);
  elsif operation='enqueue_due' then
@@ -202,7 +215,7 @@ begin
  raise exception 'Unknown worker operation' using errcode='22023';
 end $$;
 
-revoke all on function private.backend_public_job(private.backend_jobs),private.backend_connection(uuid,uuid,boolean),private.backend_input(uuid,text,jsonb),private.backend_action(uuid,uuid,text,jsonb),private.backend_job_authenticated(text,jsonb) from public,anon,authenticated;
+revoke all on function private.backend_public_job(private.backend_jobs),private.backend_connection(uuid,uuid,boolean),private.backend_input(uuid,text,jsonb),private.backend_close_run(private.backend_jobs,text,text),private.backend_action(uuid,uuid,text,jsonb),private.backend_job_authenticated(text,jsonb) from public,anon,authenticated;
 grant execute on function private.backend_job_authenticated(text,jsonb) to authenticated;
 revoke all on function public.backend_job_action(text,jsonb) from public,anon;
 grant execute on function public.backend_job_action(text,jsonb) to authenticated;
