@@ -1,8 +1,10 @@
 import { readFile, readdir } from "node:fs/promises";
 const { PGlite } = await import(process.env.PGLITE_MODULE_PATH || "@electric-sql/pglite");
 
+const {vector} = await import("@electric-sql/pglite/vector");
+
 export async function createTestDatabase({beforeMigration,migrationFiles,migrationDir=new URL("../../supabase/migrations/", import.meta.url)}={}) {
-  const db = new PGlite();
+  const db = new PGlite({extensions:{vector}});
   try {
     await db.exec(`create role anon; create role authenticated; create role service_role;
       create schema auth; create table auth.users(id uuid primary key);
