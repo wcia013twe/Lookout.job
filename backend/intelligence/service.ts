@@ -2,6 +2,7 @@ import {createServer} from 'node:http';
 import type pg from 'pg';
 import type {EmbeddingProvider, SourceLoader,StoreTarget} from './types.ts';
 import {databaseStore, lockedIngest} from './store.ts';
+import {clean} from './clean.ts';
 import {ingest} from './pipeline.ts';
 import {INGEST_TOOL, validateDemoCall, type DemoCall} from './contract.ts';
 export {INGEST_TOOL, LIST_TOOL} from './contract.ts';
@@ -13,7 +14,11 @@ export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider
       embeddingModel: provider?.model ?? null,
       ...await ingest(store, provider, await loadSources()),
     }), target),
-    list: (limit=20) => databaseStore((sql, values) => pool.query(sql, values),target).list(limit),
+    list: async (limit=20) => {
+      const current=target.kind==='account'
+        ? (await loadSources()).map(c=>clean(c.observation,null,c.identities)) : undefined;
+      return databaseStore((sql, values) => pool.query(sql, values),target).list(limit,current);
+    },
   };
 }
 

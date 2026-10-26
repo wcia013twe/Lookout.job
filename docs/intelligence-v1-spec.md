@@ -175,3 +175,9 @@ This session selected the existing local `@example.test` account and verified ac
 These are real persistence/source-code paths exercised with intentionally fictional contributions in a local account. Actual OpenAI responses, hosted production authorization, deletion/withdrawal propagation into derived drafts, global-sharing policy and semantic/graph retrieval remain separate gates.
 
 Final account-path verification: 598 repository tests and 18 focused intelligence tests passed, along with TypeScript checking and 158-role catalog validation. Actual MCP -> rebuilt Docker -> account tables -> private staging returned three private records with embeddings pending, zero failures and idempotent repeat behavior.
+
+### Gate 2: current account results
+
+Account processor reads reload the existing owner-scoped source loader and match cleaned content hashes and processing versions in SQL before applying the result limit. Published edits hide old reports until ingestion succeeds; unshared drafts do not replace the published revision. Withdrawn posts, inactive membership, disabled Circle knowledge, deleted milestones and deleted/unlinked communications no longer appear on the next read, without waiting for the ingestion timer. Source-loading failures fail the read closed.
+
+Provider failure preserves the previous metadata/vector atomically in private staging, but stale content is excluded from results. Staging retention is not deletion or global publication. This recheck applies to the existing local list_demo_intelligence_reports MCP/HTTP operation through the shared processor; authenticated hosted routing and semantic search remain later gates. Source loading and report selection are separate queries, not a single transactional authorization snapshot.

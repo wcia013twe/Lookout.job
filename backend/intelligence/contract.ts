@@ -9,7 +9,7 @@ export const DEMO_TOOLS = [
   },
   {
     name: LIST_TOOL,
-    description: 'Inspect the configured local evaluation store: cleaned reports, references and embedding state. Owner selection is server-controlled. Never returns raw source text or embedding values.',
+    description: 'Inspect the configured local evaluation store: cleaned reports, references and embedding state. Account results are rechecked against current permitted source content before listing. Owner selection is server-controlled. Never returns raw source text or embedding values.',
     inputSchema: {
       type: 'object',
       properties: {limit: {type: 'integer', minimum: 1, maximum: 50}},
