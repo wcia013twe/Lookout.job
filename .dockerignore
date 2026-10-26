@@ -1,0 +1,13 @@
+.git
+node_modules
+next-app
+runner
+openwiki
+data
+assets
+tests
+.env*
+**/.env*
+**/node_modules
+supabase/.temp
+supabase/.branches

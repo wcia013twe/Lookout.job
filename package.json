@@ -29,7 +29,9 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.4.6",
+    "@types/node": "26.6.5",
     "esbuild": "0.25.12",
-    "supabase": "2.122.0"
+    "supabase": "2.122.0",
+    "typescript": "7.0.2"
   }
 }
