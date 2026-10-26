@@ -93,7 +93,7 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 ## Company logos
 
 The shared company mark uses Logo.dev when `NEXT_PUBLIC_LOGO_DEV_TOKEN` is set.
-Locally, set a publishable `pk_` key in `next-app/.env.local`. For GitHub Pages,
+Locally, set a publishable `pk_` key in `.env.local`. For GitHub Pages,
 set the repository Actions variable `NEXT_PUBLIC_LOGO_DEV_TOKEN` and rebuild.
 The token is embedded at build time; never supply a secret `sk_` key.
 Known aliases use `data/company-domains.json`; others use provider name lookup.
@@ -789,7 +789,7 @@ inventing start/end months. Scanned-resume OCR support is unverified; use text-b
 PDF/DOCX documents and review all extracted values. Unknown/unsupported schemas fail closed.
 
 Configure `APILAYER_API_KEY` in `backend/runtime/.env.local`,
-then `NEXT_PUBLIC_LOOKOUT_API_URL` in `next-app/.env.local`. See
+then `NEXT_PUBLIC_LOOKOUT_API_URL` in `.env.local`. See
 [local parser setup](backend/runtime/README.md#resume-parser-setup). No schema
 migration is needed. This is committed integration code and local verification,
 not a hosted deployment or proof of a live APILayer request.

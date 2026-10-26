@@ -3,7 +3,7 @@ import {writeFileSync, existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
-const paths=['next-app/.env.local','supabase/functions/.env.local'];
+const paths=['.env.local','supabase/functions/.env.local'];
 if(paths.some(path=>existsSync(resolve(root,path)))) throw Error('Local env file exists. Review it before replacing; no files were changed.');
 const cli=resolve(root,'node_modules/.bin/supabase');
 const status=JSON.parse(execFileSync(cli,['status','-o','json'],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}));

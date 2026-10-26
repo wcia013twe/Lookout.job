@@ -164,8 +164,8 @@ supabase migration up --local --include-all
 # Supply the UUID of your existing local test account.
 INTELLIGENCE_ACCOUNT_ID=YOUR_LOCAL_TEST_ACCOUNT node tests/fixtures/seed-intelligence-account.mts --enable-local-circles
 INTELLIGENCE_ACCOUNT_ID=YOUR_LOCAL_TEST_ACCOUNT npm run intelligence:account -- --once
-# Set the ignored backend/intelligence/.env.local from .env.example before Docker use.
-docker compose --env-file backend/intelligence/.env.local -f backend/intelligence/compose.yaml up --build -d
+# Set the ignored .env.local from the root .env.example before Docker use.
+docker compose --env-file .env.local -f backend/intelligence/compose.yaml up --build -d
 ```
 
 The idempotent seed creates a clearly fictional `[DEMO] Intelligence ingestion` Circle with two posts and one labeled milestone attached to an existing application. It verifies application IDs/statuses/revisions are unchanged within its transaction. It does not alter agent scopes, mint credentials or write approval records. Optional local Circle enablement changes availability only; ownership and normal publication checks remain enforced for subsequent UI/MCP actions. Withdraw the generated Circle posts through normal owner controls when finished; the seed will not overwrite withdrawn/edited posts. The labeled milestone remains part of the test account’s history. No reset of unrelated account records is performed.

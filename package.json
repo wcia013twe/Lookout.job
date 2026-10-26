@@ -14,9 +14,9 @@
     "feature:land": "node scripts/feature-delivery.mjs land",
     "feature:publish": "node scripts/feature-delivery.mjs publish",
     "feature:status": "node scripts/feature-delivery.mjs status",
-    "intelligence:demo": "node backend/intelligence/demo.ts",
-    "intelligence:mcp": "node backend/intelligence/mcp.ts",
-    "intelligence:once": "node backend/intelligence/demo.ts --once",
+    "intelligence:demo": "node --env-file-if-exists=.env.local backend/intelligence/demo.ts",
+    "intelligence:mcp": "node --env-file-if-exists=.env.local backend/intelligence/mcp.ts",
+    "intelligence:once": "node --env-file-if-exists=.env.local backend/intelligence/demo.ts --once",
     "intelligence:typecheck": "next-app/node_modules/.bin/tsc -p backend/intelligence/tsconfig.json",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
@@ -25,7 +25,7 @@
     "supabase:functions": "supabase functions serve --env-file supabase/functions/.env.local",
     "validate:local-db": "node backend/local/check-schema.mjs",
     "validate:local-edge": "node scripts/check-local-edge.mjs",
-    "intelligence:account": "node backend/intelligence/account.ts"
+    "intelligence:account": "node --env-file-if-exists=.env.local backend/intelligence/account.ts"
   },
   "dependencies": {
     "@google/generative-ai": "0.24.1",
