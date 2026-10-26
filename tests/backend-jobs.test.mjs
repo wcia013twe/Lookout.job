@@ -106,3 +106,12 @@ test('detached demo service includes isolated backend fixtures and versioned gui
   assert.equal(instructions.capabilities.backendJobs.hostedDeploymentVerified,false);
   assert.match(readGuide('career-find-jobs').instructions,/configured Node API and running worker/);
 });
+
+test('fictional terminal demo jobs expose the single-job shortlist while pending jobs do not',async()=>{
+ const demo=createBackendJobsDemo(),{jobs}=await demo.read();
+ for(const job of jobs){
+  if(['completed','partial'].includes(job.status)){assert.equal(job.result.pipelineVersion,1);assert.equal(job.result.shortlist.reporting,'pending-muse');assert.equal(job.result.shortlist.applicantEligibility,'not-evaluated');assert.equal(job.result.shortlist.retainedListingIds.length,1);}
+  else assert.equal(job.result?.shortlist,undefined);
+ }
+ demo.reset();assert.equal((await demo.read()).jobs.length,jobs.length);
+});

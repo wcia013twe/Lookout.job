@@ -1,4 +1,3 @@
-import {deduplicateSearchDiscoveries} from '../../lib/search-dedup.mjs';
 import {submitSearchLeads,readSearchSourceLeads} from './search-intake.ts';
 import {screenSearchDiscoveries} from '../../lib/search-screening.mjs';
 import {ResumeParseError} from './resume-parser.ts';
@@ -32,7 +31,6 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
       else if(service.handler==='credential-rpc')result=await authorize(operation,payload);
       else if(operation==='search.source.leads')result=await readSearchSourceLeads(authorize,payload);
       else if(operation==='search.leads.submit')result=await submitSearchLeads(authorize,payload);
-      else if(operation==='search.discoveries.deduplicate')result=await deduplicateSearchDiscoveries(authorize,payload);
       else if(operation==='search.discoveries.screen')result=await screenSearchDiscoveries(authorize,payload);
       else if(operation==='guides.read')result=await guideDispatch(payload.id,authorize);
       else if(operation==='guides.discover')result=await guideDiscoveryDispatch(authorize);

@@ -136,7 +136,8 @@ export async function scanDiscovery(input) {
  const greenhouse=(await import('./vendor/career-ops/providers/greenhouse.mjs')).default;
  const lever=(await import('./vendor/career-ops/providers/lever.mjs')).default;
  const providers=new Map([[greenhouse.id,greenhouse],[lever.id,lever]]);
- const scan=await scanSource({target:input.target,config:input.config||{},limit:500},{providers});
+ const limit=input.limit??500;if(!Number.isInteger(limit)||limit<1||limit>500)throw Error('Bounded discovery limit required');
+ const scan=await scanSource({target:input.target,config:input.config||{},limit},{providers});
  if(scan.status!=='ok')return {...scan,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',scanner:'runner/career-worker.mjs scanSource',dedup:'scan.mjs + dedup-tracker.mjs'},jobs:[]};
  const jobs=await deduplicateDiscovery(scan.jobs,input.previous||[]);
  return {...scan,jobs,duplicates:scan.jobs.length-jobs.length,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',provider:'providers/'+scan.provider+'.mjs',scanner:'runner/career-worker.mjs scanSource',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};
