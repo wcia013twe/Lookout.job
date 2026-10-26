@@ -16,6 +16,7 @@ export function validateJobRecommendation(value = {}) {
  if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Recommendation must be an object.');
  for (const key of ['materialGap','sourceFreshness']) if (value[key] !== undefined && (typeof value[key] !== 'string' || !value[key].trim() || value[key].length > 4000)) throw Error(`${key} must be nonempty text up to 4000 characters.`);
  if (value.priority !== undefined && !['Apply Now','Strong Consider','Skip Unless Team Fit'].includes(value.priority)) throw Error('Invalid recommendation priority.');
+ if(value.evaluatedProfileVersion!==undefined&&(!Number.isSafeInteger(value.evaluatedProfileVersion)||value.evaluatedProfileVersion<1))throw Error('Analysis profile version must be a positive integer.');
  const facts=value.jobFacts;
  if(facts!==undefined){
   if(!facts || typeof facts!=='object' || Array.isArray(facts) || Object.keys(facts).some(k=>!['sourceUrl','checkedAt','workSetting','sponsorship'].includes(k)) || !['sourceUrl','checkedAt','workSetting','sponsorship'].every(k=>typeof facts[k]==='string' && facts[k].trim() && facts[k].length<=2000) || !/^https:\/\//.test(facts.sourceUrl) || !Number.isFinite(Date.parse(facts.checkedAt)))throw Error('Job facts need sourceUrl, checkedAt, workSetting and sponsorship; undisclosed values must be explicit.');
@@ -41,4 +42,9 @@ export function validateJobRecommendation(value = {}) {
 export function savedJobAssessment(value) {
  if (!value) return undefined;
  try {validateJobRecommendation({matchAssessment:value});return value;} catch {return undefined;}
+}
+
+export function recommendationNeedsRefresh(role,profiles=[]) {
+ const current=profiles.find(p=>p.id===role.searchProfileId);
+ return Number.isSafeInteger(role.evaluatedProfileVersion) && Number.isSafeInteger(current?.version) && role.evaluatedProfileVersion!==current.version;
 }

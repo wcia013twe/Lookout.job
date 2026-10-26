@@ -28,16 +28,18 @@
     "intelligence:account": "node backend/intelligence/account.ts"
   },
   "dependencies": {
+    "@google/generative-ai": "0.24.1",
     "@supabase/supabase-js": "2.117.3",
     "js-yaml": "5.3.0",
     "pg": "8.16.3",
+    "playwright": "1.64.0",
     "undici": "6.28.1"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.4.6",
+    "@types/node": "26.6.5",
     "@types/pg": "8.15.5",
     "esbuild": "0.25.12",
-    "@types/node": "26.6.5",
     "supabase": "2.122.0",
     "typescript": "7.0.2"
   }

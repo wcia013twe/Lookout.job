@@ -123,3 +123,90 @@ The recorded proof is local only. Hosted users, private files, sessions and data
 have not been recovered; no hosted deployment, publication or real application
 submission was performed. Real Google OAuth and an externally reachable MCP
 endpoint remain outside this local proof.
+
+
+## Resume parser setup
+
+The API process now owns immediate bounded resume extraction alongside queued ATS
+searches. No worker or `LOOKOUT_EXECUTION_ENABLED` change is required for parsing.
+Keep existing local Supabase values in `backend/runtime/.env.local` and add:
+
+```dotenv
+APILAYER_API_KEY=<server-only APILayer key>
+```
+
+Create a personal [APILayer account](https://marketplace.apilayer.com/signup),
+subscribe to its [Resume Parser API](https://marketplace.apilayer.com/resume_parser-api),
+and copy the key to the local Node env. The endpoint is pinned to
+`https://api.apilayer.com/resume_parser/upload`, with raw file bytes and the `apikey`
+header; there is no caller-controlled provider URL and no public resume link.
+The former AFFINDA_API_KEY/AFFINDA_BASE_URL/AFFINDA_ORGANIZATION settings are unused.
+APILayer's Resume Parser listing says uploaded files are deleted after 15 seconds
+and parsed results are not stored. This is the vendor's claim, not an independently
+verified retention guarantee, and does not establish zero retention of account,
+billing or technical metadata. Lookout still keeps its private resume and accepted
+profile data in Supabase. No browser OCR is added; scanned-resume OCR is unverified.
+
+In `next-app/.env.local`, set the public API origin (never a secret):
+
+```dotenv
+NEXT_PUBLIC_LOOKOUT_API_URL=http://127.0.0.1:8080
+```
+
+After landing, build the API image from the checkout containing this change and
+recreate **only the API** after resolving ownership of the current Compose stack:
+
+```sh
+docker compose -f backend/runtime/compose.yaml build api
+docker compose -f backend/runtime/compose.yaml up -d --no-deps api
+```
+
+Restart the Next.js frontend to pick up its env value. Existing Docker containers
+do not receive new env values until recreated; do not restart Supabase or the
+worker for this feature. No database migration is required. Missing configuration
+returns a useful error while preserving uploaded files.
+
+Authenticated browser `POST /v1/resume-import` accepts only `{resumeId}`. Node MCP
+`parse_profile_resume` / `resumes.parse` takes the same payload and requires all of
+`workspace:read`, `resumes:read`, `profile:write`. The Node-only tool is absent from
+Edge MCP discovery. Both entries derive identity from validated credentials,
+look up the owned current private resume, verify its bytes/hash, and call the same
+mapper. Reference URLs, user IDs and object paths are never accepted as input.
+APILayer failures are sanitized; keys, file contents and raw responses are not logged.
+
+The proposal contains sanitized supported facts, fixed quality warnings, current
+owned profile facts and `profileUpdatedAt`. It writes no profile. Website saves use
+`update_workspace_fields` (`profile.fields.update`) with the exact timestamp;
+Node MCP `update_profile_fields` routes to existing `agent_dispatch` SQL directly,
+so both use the same owner/version/schema validator without an Edge dependency.
+A missing profile uses the existing versioned `profile.save` creation boundary.
+Imported facts remain unverified. The cloud adapter adopts the save receipt into
+its serial sync baseline, preventing an old whole-profile autosave from replacing
+accepted imports. Background drafts must be saved before importing.
+
+Successful sanitized extractions are coalesced/cached per owner and checksum in
+API memory for 15 minutes, at most 20 entries. Auth and ownership are rechecked even
+on cache hits. There is no durable billing deduplication across process restarts
+or multiple replicas; uncertain retries can consume another credit. No automatic
+retry is made. Only documented APILayer name, email, skills, experience and education fields are
+mapped. Free-text dates are retained in descriptions and month fields stay absent.
+Name parts, degree details, projects and other unsupported fields are not invented.
+Malformed responses fail closed. Existing profile fields remain untouched unless
+the user selects replacement. OCR support is unverified and the review says so.
+
+Verification:
+
+```sh
+node --test tests/resume-import.test.mjs tests/cloud-sync.test.cjs
+SUPABASE_CLI=/opt/homebrew/bin/supabase node scripts/check-local-resume-import.mjs
+LOOKOUT_PLAYWRIGHT_MODULE=<absolute-playwright-index.mjs> LOOKOUT_UI_URL=http://127.0.0.1:3047 node scripts/check-resume-import-ui.mjs
+```
+
+The local verifier refuses hosted Supabase, creates/removes fictional accounts
+and a private fixture, and proves human/MCP extraction and versioned saves against
+real local Auth/Storage/SQL with the APILayer response stubbed. It creates its own
+Node listener on a random port and changes no running containers. Demo browser
+verification uses memory-only fictional proposals and no APILayer/network calls.
+A real API key and a deliberately chosen test document are still needed for a
+live APILayer round trip; mocked/local checks do not establish vendor extraction
+accuracy or hosted availability.

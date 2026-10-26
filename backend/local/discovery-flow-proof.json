@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-10-26T20:00:19.663Z",
+  "localOnly": true,
+  "runIds": {
+    "systems-ft": "e41a704e-165f-4a2a-a112-38a465a83f0b",
+    "systems-intern": "cb67656b-1028-485f-8712-608c0148b9c7"
+  },
+  "intakeCount": 6,
+  "leverTest": {
+    "sameRun": true,
+    "requiredRemoteExcludedOfficeRole": true
+  },
+  "status": "verified-local-flow; source coverage remains partial",
+  "batchId": "a61aedc3-1072-4d66-b69f-a33055a8d025",
+  "publishedCards": 5,
+  "fullTimeCards": 2,
+  "internshipCards": 3,
+  "companies": [
+    "SingleStore",
+    "Cloudflare",
+    "Scale AI"
+  ],
+  "resumeBasedSkillsScores": true,
+  "otherDimensionsUnknownWherePreferencesMissing": true,
+  "filledFactualOrResumeFields": 38,
+  "personalizedWrittenStarters": 1,
+  "submittedApplications": 0,
+  "aggregateSourcePagingVerified": true,
+  "preParseEmploymentFilterVerified": true,
+  "totalActiveSourceLeads": {
+    "newgrad": 2891,
+    "summer": 2158
+  },
+  "sourceCoverage": "partial-bounded-sample",
+  "sourceRunsClosed": true,
+  "browserVerified": true,
+  "browserFullTimeCards": 2,
+  "browserInternshipCards": 3,
+  "resumeAnalysisRendered": true,
+  "personalizedStarterRendered": true,
+  "currentProfileVersionsRendered": true,
+  "mobileOverflow": false,
+  "apiAndJsFailures": [],
+  "worker": {
+    "jobId": "11773184-3077-40b8-8d55-b13507a614f2",
+    "runId": "08fdf1cd-9e7c-4c64-bdb5-c948ea8b1f7e",
+    "status": "partial",
+    "result": {
+      "runId": "08fdf1cd-9e7c-4c64-bdb5-c948ea8b1f7e",
+      "saved": 2,
+      "summary": "Read 5046 source listings and saved 2 canonical discovery observations. 3 sources need review. Eligibility and narrative profile fit require agent review.",
+      "observed": 5046,
+      "screening": "review-needed",
+      "provenance": [
+        {
+          "commit": "c78e14cdfd52f18a92e4a67694efab7ddef59385",
+          "parser": "browser-extract.mjs normalizeGreenhouseJob",
+          "transport": "providers/_http.mjs",
+          "verification": "liveness-api.mjs checkLivenessViaApi"
+        },
+        {
+          "commit": "c78e14cdfd52f18a92e4a67694efab7ddef59385",
+          "parser": "browser-extract.mjs normalizeGreenhouseJob",
+          "transport": "providers/_http.mjs",
+          "verification": "liveness-api.mjs checkLivenessViaApi"
+        }
+      ],
+      "blockedSources": 3
+    }
+  },
+  "developerVersion": 62,
+  "upstreamFilesHashVerified": 249,
+  "upstreamSearchEntrypoints": 15,
+  "fullSuitePassed": 642,
+  "edgeAuthScopeOwnershipChecksPassed": true,
+  "canonicalIntakeCoverage": "Greenhouse; unsupported ATS leads return explicit diagnostics",
+  "textApproval": "not implemented; separate from search/analysis flow"
+}

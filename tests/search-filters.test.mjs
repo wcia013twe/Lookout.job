@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {executeCareerTask} from '../runner/career-tools.mjs';
+const profile={filters:{Employment:'Internship','Work arrangement':'Remote required'},instructions:'## Priority & flexibility\n- Work arrangement: Required'};
+test('original filter predicates enforce required work model and employment without classifying technical prose',async()=>{
+ const result=await executeCareerTask('filter-discovery',{profile,listings:[{id:'office',title:'Software Engineer Intern',location:'In-Office',description:'Build a hybrid cloud control plane.'},{id:'unknown',title:'Software Engineer Intern',location:'United States',description:'Build a hybrid cloud control plane.'},{id:'remote',title:'Software Engineer Intern - Remote',location:'Remote'},{id:'ft',title:'Software Engineer New Grad',location:'Remote'}]});
+ const hybrid=await executeCareerTask('filter-discovery',{profile:{filters:{Employment:'Internship','Work arrangement':'Hybrid'},instructions:'## Priority & flexibility\n- Work arrangement: Required'},listings:[{id:'office',title:'Software Engineer Intern',location:'In-Office'}]});assert.equal(hybrid.results[0].decision,'ineligible');
+ assert.equal(result.results.find(x=>x.listingId==='office').decision,'ineligible');assert.equal(result.results.find(x=>x.listingId==='unknown').decision,'review-needed');assert.equal(result.results.find(x=>x.listingId==='remote').decision,'review-needed');assert.equal(result.results.find(x=>x.listingId==='ft').decision,'ineligible');assert.ok(result.results.every(x=>x.checks.find(c=>c.requirement==='authorization').status==='unknown'));assert.equal(result.provenance.personalScoresProduced,false);
+});
+test('preferred work conflicts retain leads and freeform salary mapping gaps remain explicit',async()=>{
+ const result=await executeCareerTask('filter-discovery',{profile:{filters:{'Work arrangement':'Hybrid','Minimum base pay':'USD 200k'},instructions:''},listings:[{id:'onsite',title:'Engineer',location:'On-site'}]});assert.equal(result.results[0].decision,'review-needed');assert.ok(result.diagnostics.some(x=>x.includes('Minimum base pay')));
+});

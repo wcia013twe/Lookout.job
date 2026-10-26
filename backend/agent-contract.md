@@ -458,3 +458,17 @@ leases, so their metadata does not advertise read-only behavior. Those effects
 do not execute work or grant approval. Developer contract 55 documents these
 existing boundaries; it does not establish deployment or consent to migrate any
 service group.
+
+## Node search pipeline
+
+The configured Node MCP endpoint adds `read_search_source_leads`,
+`submit_search_leads` and `screen_search_discoveries`. The lead read requires
+workspace:read; intake/screening additionally require drafts:write. They derive
+ownership from the credential, reuse existing search records and enforce current
+versions and exact-request replay. Source paging/filtering and copied ATS full
+parsing are bounded; unsupported and closed URLs remain explicit diagnostics.
+These operations return 501 from the Edge-only endpoint with a Node handoff; they
+do not silently run a different implementation there. Web search itself and
+personal analysis remain the connected agent's work. See
+[the source-to-publication sequence](discovery-flow.md). Hosted availability has
+not been verified by the local proof.

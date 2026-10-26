@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {sourceTemplates} from '../lib/search/documents.mjs';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {writeFile,stat} from 'node:fs/promises';
@@ -33,7 +34,7 @@ async function main(){
   const content='---\nid: '+id+'\nname: '+name+'\nactive: true\nfilters: {Employment: '+employment+'}\npriorities: {Growth: Very important}\n---\n'+narrative+'\nNo candidate resume evidence is attached to this local review identity. Resume comparison is unavailable. Preserve unknown eligibility and compensation. Discovery remains unscored until a connected agent supplies evidence-backed recommendations.\n';
   await gateway('search.document.save',{kind:'profile',id,content,expectedVersion:0,eventKey:'review:profile:'+id});
  }
- await gateway('search.document.save',{kind:'portals',id:'shared',content:JSON.stringify({tracked_companies:[{id:'togetherai',name:'Together AI',kind:'board',careers_url:'https://job-boards.greenhouse.io/togetherai',enabled:true}],search_queries:[]}),expectedVersion:0,eventKey:'review:portals'});
+ await gateway('search.document.save',{kind:'portals',id:'shared',content:JSON.stringify({tracked_companies:sourceTemplates.filter(source=>['simplify-summer','simplify-newgrad'].includes(source.id)),search_queries:[]}),expectedVersion:0,eventKey:'review:portals'});
  const mcp=async(name,args={})=>{
   const response=await fetch(api+'/mcp',{method:'POST',redirect:'error',signal:AbortSignal.timeout(30000),headers:{Authorization:'Bearer '+receipt.agentToken,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})});
   const body=await response.json();assert.ok(response.ok&&!body.error&&!body.result?.isError,'Local Node MCP request failed: '+name);

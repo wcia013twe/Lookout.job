@@ -1,3 +1,6 @@
+import {SEARCH_INTAKE_TOOLS,validateSearchIntake} from './search-intake.mjs';
+import {SCREENING_TOOLS,validateScreening} from './search-screening.mjs';
+import {validateResumeParse} from './resume-parse.mjs';
 import {BACKEND_TOOLS,validateBackendJob} from './backend-jobs.mjs';
 import {IMPORT_TOOLS,validateImport} from './simplify-import.mjs';
 import {RESET_HANDOFF_TOOL} from './workspace-reset.mjs';
@@ -15,14 +18,19 @@ import { PLATFORM_TOOLS, validatePlatformPayload } from './platform-tools.mjs';
 import { validateMilestone } from './milestones.mjs';
 import { validateOutreach } from './outreach.mjs';
 import { validateProfileSetup } from './profile-setup.mjs';
+import { BUG_TOOL, validateBugReport } from './bug-report.mjs';
+import { BUG_STATUS_TOOL, validateBugStatus } from './bug-status.mjs';
 export const EMPLOYER_FIELDS = ['company','title','employmentType','location','locations','category','postedDate','discoveredDate','description','compensation','source','sourceFreshness','applicationUrl','eligibility','deadline'];
 // Shared validation is runtime-independent so Node tests cover the deployed contract.
 export const SCOPES = ['knowledge:read','knowledge:write','answers:write','resumes:write','network:write','tracking:write','preferences:write','workspace:read', 'profile:write', 'resumes:read', 'batches:write', 'drafts:write', 'activity:write', 'approvals:read'];
-export const OPERATIONS = [...BACKEND_TOOLS.map(t=>t.operation),...IMPORT_TOOLS.map(t=>t.operation),RESET_HANDOFF_TOOL.operation,BRIEF_TOOL.operation,...FIELD_UPDATE_TOOLS.map(t=>t.operation),...ARTIFACT_TOOLS.map(t=>t.operation),...SEARCH_TOOLS.map(t=>t.operation),'toolkit.context','toolkit.results','toolkit.record','toolkit.file.begin','toolkit.file.complete','toolkit.file.read',...KNOWLEDGE_TOOLS.map(t=>t.operation),...ONBOARDING_TOOLS.map(t=>t.operation),'preferences.targets.save',...PLATFORM_TOOLS.map(t=>t.operation), 'preferences.profile.save','guides.discover','guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.planner.read','preparation.budget','preparation.session.complete','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
+export const OPERATIONS = ['resumes.parse',BUG_TOOL.operation,BUG_STATUS_TOOL.operation,...SEARCH_INTAKE_TOOLS.map(t=>t.operation),...SCREENING_TOOLS.map(t=>t.operation),...BACKEND_TOOLS.map(t=>t.operation),...IMPORT_TOOLS.map(t=>t.operation),RESET_HANDOFF_TOOL.operation,BRIEF_TOOL.operation,...FIELD_UPDATE_TOOLS.map(t=>t.operation),...ARTIFACT_TOOLS.map(t=>t.operation),...SEARCH_TOOLS.map(t=>t.operation),'toolkit.context','toolkit.results','toolkit.record','toolkit.file.begin','toolkit.file.complete','toolkit.file.read',...KNOWLEDGE_TOOLS.map(t=>t.operation),...ONBOARDING_TOOLS.map(t=>t.operation),'preferences.targets.save',...PLATFORM_TOOLS.map(t=>t.operation), 'preferences.profile.save','guides.discover','guides.read','outreach.read','outreach.prepare','connections.profile_setup','profile.import','resumes.begin_upload','resumes.complete_upload','connections.issue','connections.list','connections.revoke','workspace.read','credentials.verify','resumes.read','batches.publish','drafts.prepare','activity.append','approvals.read','context.versions','context.personal','context.developer','runner.report_failure','applications.policy','submission.context','submission.claim','submission.start','submission.finish','preparation.planner.read','preparation.budget','preparation.session.complete','preparation.read','preparation.update','preparation.complete','selection.record','selection.read','notifications.read','notifications.ack','applications.record','selection.reconsider','quiet.read','quiet.update','applications.human_action','applications.timeline','applications.milestone'];
 export function validateRequest(input) {
   if (!input || !OPERATIONS.includes(input.operation)) throw new Error('Unknown operation');
   const p = input.payload ?? {};
+  if(input.operation===BUG_TOOL.operation)validateBugReport(p);
+  if(input.operation===BUG_STATUS_TOOL.operation)validateBugStatus(p);
   if(input.operation===RESET_HANDOFF_TOOL.operation && (!p || typeof p!=='object' || Array.isArray(p) || Object.keys(p).length))throw Error('Reset handoff accepts no arguments');
+  if(input.operation==='resumes.parse')validateResumeParse(p);
   validateBackendJob(input.operation,p);
   validateImport(input.operation,p);
   validateFieldUpdate(input.operation,p);
@@ -50,6 +58,8 @@ export function validateRequest(input) {
   validateKnowledge(input.operation,p);
   validateOnboarding(input.operation, p);
   validateProfileSetup(input.operation, p);
+  validateSearchIntake(input.operation,p);
+  validateScreening(input.operation,p);
   if (input.operation.startsWith('outreach.')) validateOutreach(input.operation,p);
   if (input.operation === 'preferences.profile.save') {
     if (Object.keys(p).some(k => !['expectedVersion','profile'].includes(k)) || !Number.isSafeInteger(p.expectedVersion) || p.expectedVersion < 0) throw Error('Current profile version required');

@@ -4,7 +4,7 @@ const root = fileURLToPath(new URL("../../", import.meta.url));
 const dest = fileURLToPath(new URL("../public/", import.meta.url));
 await rm(dest, { recursive: true, force: true });
 await mkdir(dest, { recursive: true });
-for (const name of ["data", "icon.svg", "manifest.webmanifest"]) {
+for (const name of ["data", "manifest.webmanifest"]) {
   try {
     await cp(root + name, dest + name, { recursive: true });
   } catch (e) {

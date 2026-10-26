@@ -2,6 +2,46 @@
 
 Endpoint: `https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp`
 
+`report_bug(title, description)` is scaffolded for the owner-configured Muse
+connection with `activity:write`. It publishes fictional reproduction steps to
+GitHub with `auto-fix`, or returns a matching unresolved issue. It requires the
+new migration, function release and Supabase configuration before availability.
+An issue does not mean triple t started. See [setup, cloud activation and test flow](../docs/auto-fix.md).
+
+`get_bug_status(issueNumber)` lets that same Muse connection check the release
+signal on subsequent runs. It returns `readyToRetry: true` only after verifying
+that a successful main release contains the linked merged fix. Muse retries once
+per new `releaseId`, after refreshing the app. A closed issue or merged PR is not
+enough. This is a durable polling signal, not a push notification that wakes Muse.
+triple t opens linked draft fix PRs; separate human review and release authorization
+are required. Backend fixes use the existing backend release process and are not
+verified by Pages success.
+
+## Shared orchestration discovery
+
+`supabase/functions/agent-gateway/instructions.json` is the shared contract source.
+Developer version 57 adds `repairWorkflow`: Muse reports an issue; scheduled
+triple t consumption produces a linked draft fix PR; separate human authorization
+controls release; Muse retries only a new verified frontend release. These
+instructions describe the interface globally, but reporting/status remain gated
+to the configured owner connection with `activity:write`. Tool visibility alone
+never grants access. Other users report the limitation in their conversation.
+
+MCP `initialize` returns `quickstart`; `tools/list` advertises scope-filtered
+`check_context_versions` and `read_developer_context` (`workspace:read`). Each
+work run checks versions. A changed developerVersion causes a developer-context
+read and fresh tool discovery; unchanged personal context need not be reloaded.
+First run, lost context or account changes require both context sections. The
+existing local context-cache helper also reloads changed sections; runtime
+clients must follow discovery-refresh instructions. There is no resource
+subscription, SSE push, `tools/list_changed` notification or agent wake-up.
+Offline/idle clients learn changes only on their next successful refresh.
+
+This update must be merged and deployed with both `agent-gateway` and `agent-mcp`
+through the existing backend release process before production clients see version
+57. Frontend Pages deployment alone does not update this contract. No custom
+prompt per Muse is needed, and this contract does not register a schedule.
+
 This is a small stateless Streamable HTTP server using JSON responses. It has no
 SDK/runtime dependency, browser tools, shell, SQL, connection management, or
 submission endpoint. Supported protocol versions: 2025-11-25, 2025-06-18,

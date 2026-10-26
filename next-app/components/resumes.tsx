@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import ResumeImport from "./resume-import";
 import ProfileIcon from "./profile-icon";
 import { ProfileCard } from "./profile-section";
 import { useWorkspace } from "../lib/workspace";
@@ -26,6 +27,7 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
   const [feedback, setFeedback] = useState(""),
     [busy, setBusy] = useState(false);
   const [adding,setAdding]=useState(false),[source,setSource]=useState("file");
+  const [importId,setImportId]=useState<string|null>(null);
   const replacing=useRef(false);
   const [hovered,setHovered]=useState<string|null>(null);
   async function replace(r:ResumeRecord,files:File[]){
@@ -42,14 +44,14 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
         const row={id,name:r.name,variant,version:(r.version||1)+1,objectPath:`demo/${id}.${extension}`};
         w.store.update("workflow.resumes",(items:ResumeRecord[])=>[...items.map(item=>item.id===r.id?{...item,supersededBy:id}:item),row]);
         w.store.update("workflow.searchPreferences",(prefs:Record<string,unknown>)=>remapResumePreferences(prefs,r.id,id));
-        setFeedback(`Source replaced for ${r.name} in demo memory. File bytes were not saved.`);return;
+        setImportId(id);setFeedback(`Source replaced for ${r.name} in demo memory. File bytes were not saved.`);return;
       }
       if(!w.user||!window.JB.cloud.ready)throw Error("Sign in and wait for your account to connect first.");
       const row=await uploadResume({client:w.client,getOwner:()=>window.JB.auth.userId,file,variant,version:(r.version||1)+1});
       uploaded=true;
       w.store.update("workflow.resumes",(items:ResumeRecord[])=>[...items,{id:row.id,name:row.name,variant:row.variant,version:row.version,objectPath:row.object_path,contentHash:row.content_hash}]);
       const result=await replaceResumeSource({client:w.client,getOwner:()=>window.JB.auth.userId,resumeId:r.id,replacementId:row.id,expectedVersion:r.version||1});
-      const fresh=result.resume;
+      const fresh=result.resume;setImportId(fresh.id);
       w.store.update("workflow.resumes",(items:ResumeRecord[])=>items.map(item=>item.id===r.id?{...item,supersededBy:fresh.id}:item.id===fresh.id?{id:fresh.id,name:fresh.name,variant:fresh.variant,version:fresh.version,objectPath:fresh.object_path,contentHash:fresh.content_hash}:item));
       w.store.set("workflow.searchPreferences",result.search);
       setFeedback(`Source replaced for ${r.name}. Role assignments retained; existing applications keep their original file.`);
@@ -66,7 +68,7 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
         const {extension}=validateResume(file,variant);
         const id=crypto.randomUUID();
         w.store.update("workflow.resumes",(items:ResumeRecord[])=>[...items,{id,name:file!.name,variant,version:1,objectPath:`demo/${id}.${extension}`}]);
-        form.reset();setAdding(false);onAssign?.(id);setFeedback("Demo resume added in memory. File bytes were not uploaded or saved.");return;
+        form.reset();setAdding(false);setImportId(id);onAssign?.(id);setFeedback("Demo resume added in memory. File bytes were not uploaded or saved.");return;
       }
       if (!w.user || !window.JB.cloud.ready)
         throw Error("Sign in and wait for your account to connect first.");
@@ -99,7 +101,7 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
         },
       ]);
       form.reset();
-      setAdding(false);onAssign?.(row.id);
+      setAdding(false);setImportId(row.id);onAssign?.(row.id);
       setFeedback(
         "Private resume uploaded. Select it when reviewing an application.",
       );
@@ -176,6 +178,7 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
               <small className="text-board-muted">v{r.version || 1}</small>
             </strong><p className="mt-1 text-xs text-board-muted">{assignments[r.id]?.join(" · ") || "No roles assigned in this profile"}</p><span className="mt-1 block text-xs text-board-muted">{busy?"Uploading…":"Choose replacement file"}</span></div></label>
             <div className="flex flex-wrap gap-2">
+            {(w.demo||r.objectPath)&&<button type="button" className={secondary} disabled={busy||w.locked||replaceBlocked} onClick={()=>setImportId(r.id)}>Autofill profile</button>}
             {onAssign&&<button type="button" className={secondary} disabled={w.locked} onClick={()=>onAssign(r.id)}>Assign roles</button>}
             {w.demo ? <button type="button" className={secondary} disabled title="Demo files have no PDF attached">Preview</button> : r.objectPath ? (
               <button className={secondary} onClick={() => open(r)}>
@@ -255,6 +258,7 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
           </Notice>
         )}
       </div>}
+      {importId&&<ResumeImport key={`${w.demo?w.demoEpoch:w.user?.id}-${importId}`} resumeId={importId} onClose={()=>setImportId(null)}/>}
       {children}
       <Notice>{feedback}</Notice>
     </ProfileCard>

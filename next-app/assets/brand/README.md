@@ -4,3 +4,16 @@
 https://developers.google.com/static/identity/images/g-logo.png.
 Used only with Google sign-in text on a white button; no recoloring.
 Brand guidance: https://developers.google.com/identity/branding-guidelines.
+
+# Lookout Buddy assets
+
+Active original artwork: root assets/brand/lookout-buddy-master.png.
+The active indigo/lavender Buddy has transparent outer pixels and pastel rainbow rays.
+Website headers use the transparent 192x128 mark at 48x32, without a tile.
+Browser favicon retains transparency. Installed app icons use a pale lavender
+square background; the maskable variant has extra safe-area padding.
+
+Archived matcha logo: assets/brand/lookout-buddy-matcha-master.png at repo root.
+Archived approved style sheet: assets/brand/lookout-buddy-matcha-style-sheet.png.
+The original lookout-buddy-style-sheet.png is also retained as a character reference.
+PNG derivatives are generated with the installed Sharp package.

@@ -1,0 +1,28 @@
+name: Signal auto-fix releases
+on:
+  workflow_run:
+    workflows: [Deploy React board]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+  issues: write
+concurrency:
+  group: auto-fix-release-signals
+  cancel-in-progress: false
+jobs:
+  signal:
+    if: github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Record verified release receipts for Muse
+        run: node scripts/auto-fix-release.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}

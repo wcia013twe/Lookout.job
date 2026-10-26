@@ -17,12 +17,12 @@ async function main(){
   if(!['queued','running'].includes(current.status)){finished=current;break;}
   await delay(1000);
  }
- assert.equal(finished?.status,'completed','Copied CareerOps search must finish exhaustively');
+ assert.ok(['completed','partial'].includes(finished?.status),'Copied CareerOps search must finish with an explicit coverage result');
  const provenance=finished.result.provenance;
- assert.ok(provenance.some(item=>item.provider==='providers/greenhouse.mjs'&&item.dedup==='dedup-tracker.mjs'&&item.identity==='scan.mjs isOfferSeen/markOfferSeen'));
+ assert.ok(provenance.some(item=>(item.provider==='providers/greenhouse.mjs'||item.verification==='liveness-api.mjs checkLivenessViaApi')&&item.dedup==='dedup-tracker.mjs'&&item.identity==='scan.mjs isOfferSeen/markOfferSeen'));
  const search=await fetch(new URL('/rest/v1/search_runs?id=eq.'+finished.search_run_id+'&select=id,state,profile_id',supabase),{headers:{apikey:access.anonKey,Authorization:'Bearer '+access.session.access_token}});
  assert.ok(search.ok,'Search run read-back failed HTTP '+search.status+'; worker completion is not verified. Refresh the testing-account session before retrying reads.');
- const runs=await search.json();assert.ok(Array.isArray(runs)&&runs.length===1,'Owned search run unavailable');assert.equal(runs[0].state,'completed');
+ const runs=await search.json();assert.ok(Array.isArray(runs)&&runs.length===1,'Owned search run unavailable');assert.equal(runs[0].state,finished.status);
  const observations=await fetch(new URL('/rest/v1/search_observations?run_id=eq.'+finished.search_run_id+'&select=id,listing_id',supabase),{headers:{apikey:access.anonKey,Authorization:'Bearer '+access.session.access_token}});
  assert.ok(observations.ok,'Observation read-back failed HTTP '+observations.status);
  const rows=await observations.json();assert.ok(Array.isArray(rows)&&rows.length>0);assert.equal(new Set(rows.map(row=>row.listing_id)).size,rows.length);
