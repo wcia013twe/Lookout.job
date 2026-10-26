@@ -90,7 +90,7 @@ Deno.serve(withGatewayCors(async request => {
       return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
-    if(['search.leads.submit','search.source.leads','search.discoveries.screen'].includes(operation)) {
+    if(['search.leads.submit','search.source.leads','search.discoveries.screen','search.discoveries.deduplicate'].includes(operation)) {
       const auth=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'credentials.verify',payload:{}});
       if(auth.error){const [status,message]=databaseFailure(auth.error);return respond({error:message},status);}
       return respond({error:'Search pipeline operations require the configured Node MCP endpoint. This Edge endpoint has not saved or screened any records.'},501);

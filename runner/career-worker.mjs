@@ -102,10 +102,11 @@ export async function deduplicateDiscovery(jobs,previous=[],workspace=process.en
  const scanner=await import('./vendor/career-ops/scan.mjs');
  const {postingUrlRelation}=await import('./vendor/career-ops/url-key.mjs');
  const {resolveColumns,parseTrackerRow}=await import('./vendor/career-ops/tracker-parse.mjs');
- previous=previous.map(row=>{
+ const identityRow=row=>{
   const parts=String(row.identity||row.atsIdentity||'').replace(/^ats:/,'').split(':');
-  return {...row,...(!row.listingIdentity&&parts.length===3&&['greenhouse','lever'].includes(parts[0])?{listingIdentity:{ats_provider:parts[0],board_slug:parts[1],posting_id:parts[2]}}:{})};
- });
+  return {...row,url:row.canonical_url||row.url,requisitionId:row.requisition_id??row.requisitionId,...(!row.listingIdentity&&parts.length===3&&['greenhouse','lever'].includes(parts[0])?{listingIdentity:{ats_provider:parts[0],board_slug:parts[1],posting_id:parts[2]}}:{})};
+ };
+ previous=previous.map(identityRow);jobs=jobs.map(identityRow);
  const seen=new Set();
  for(const row of previous)scanner.markOfferSeen(row,seen);
  const candidates=[];
