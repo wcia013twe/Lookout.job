@@ -16,6 +16,11 @@ export function validateJobRecommendation(value = {}) {
  if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Recommendation must be an object.');
  for (const key of ['materialGap','sourceFreshness']) if (value[key] !== undefined && (typeof value[key] !== 'string' || !value[key].trim() || value[key].length > 4000)) throw Error(`${key} must be nonempty text up to 4000 characters.`);
  if (value.priority !== undefined && !['Apply Now','Strong Consider','Skip Unless Team Fit'].includes(value.priority)) throw Error('Invalid recommendation priority.');
+ const facts=value.jobFacts;
+ if(facts!==undefined){
+  if(!facts || typeof facts!=='object' || Array.isArray(facts) || Object.keys(facts).some(k=>!['sourceUrl','checkedAt','workSetting','sponsorship'].includes(k)) || !['sourceUrl','checkedAt','workSetting','sponsorship'].every(k=>typeof facts[k]==='string' && facts[k].trim() && facts[k].length<=2000) || !/^https:\/\//.test(facts.sourceUrl) || !Number.isFinite(Date.parse(facts.checkedAt)))throw Error('Job facts need sourceUrl, checkedAt, workSetting and sponsorship; undisclosed values must be explicit.');
+  let source;try{source=new URL(facts.sourceUrl);}catch{throw Error('Job facts need a public HTTPS source.');}if(source.protocol!=='https:'||source.username||source.password)throw Error('Job facts need a public HTTPS source.');
+ }
  const assessment=value.matchAssessment;
  if (assessment === undefined) return value;
  const text=(v,n)=>typeof v==='string' && Boolean(v.trim()) && v.length<=n;

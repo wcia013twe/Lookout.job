@@ -21,8 +21,10 @@ async function main(){
  const provenance=finished.result.provenance;
  assert.ok(provenance.some(item=>item.provider==='providers/greenhouse.mjs'&&item.dedup==='dedup-tracker.mjs'&&item.identity==='scan.mjs isOfferSeen/markOfferSeen'));
  const search=await fetch(new URL('/rest/v1/search_runs?id=eq.'+finished.search_run_id+'&select=id,state,profile_id',supabase),{headers:{apikey:access.anonKey,Authorization:'Bearer '+access.session.access_token}});
- const runs=await search.json();assert.equal(runs[0].state,'completed');
+ assert.ok(search.ok,'Search run read-back failed HTTP '+search.status+'; worker completion is not verified. Refresh the testing-account session before retrying reads.');
+ const runs=await search.json();assert.ok(Array.isArray(runs)&&runs.length===1,'Owned search run unavailable');assert.equal(runs[0].state,'completed');
  const observations=await fetch(new URL('/rest/v1/search_observations?run_id=eq.'+finished.search_run_id+'&select=id,listing_id',supabase),{headers:{apikey:access.anonKey,Authorization:'Bearer '+access.session.access_token}});
+ assert.ok(observations.ok,'Observation read-back failed HTTP '+observations.status);
  const rows=await observations.json();assert.ok(Array.isArray(rows)&&rows.length>0);assert.equal(new Set(rows.map(row=>row.listing_id)).size,rows.length);
  const receipt={checkedAt:new Date().toISOString(),localOnly:true,accountRetained:true,nodeApi:api,supabase:supabase.origin,jobId:queued.id,runId:finished.search_run_id,jobState:finished.status,runState:runs[0].state,observations:rows.length,uniqueListings:rows.length,workerAttempts:finished.attempts,provenance,execution:'existing executeCareerTask sanitized child -> scanSource -> copied provider/scanner/dedup-tracker -> fenced Supabase RPC',scoresProduced:false,publishedBatchUntouched:true};
  const latest=JSON.parse(await readFile(privateFile,'utf8'));Object.assign(latest,{careerOpsJobId:queued.id,careerOpsRunId:finished.search_run_id});await writeFile(privateFile,JSON.stringify(latest,null,2)+'\n',{mode:0o600});

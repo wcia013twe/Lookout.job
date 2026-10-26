@@ -60,3 +60,11 @@ test('compact four-score agent JSON survives the existing batch/card path withou
  for(const bad of bads)assert.throws(()=>validateJobRecommendation({matchAssessment:bad}));
  assert.equal(savedJobAssessment({...compact,compensation:{score:null,reasoning:''}}),undefined);
 });
+
+test('fresh private batch observations fill displayed facts without overwriting shared catalog',()=>{
+ const facts={sourceUrl:'https://jobs.example.com/123',checkedAt:'2026-10-26T19:00:00Z',workSetting:'Three days per week in office',sponsorship:'Not disclosed by employer'};
+ assert.doesNotThrow(()=>validateJobRecommendation({jobFacts:facts}));
+ const item={job_id:'role',jobs:{employer:{workSetting:'Old',category:'GPU systems'},canonical_url:facts.sourceUrl},recommendation:{jobFacts:facts}};
+ const role=batchRoles([item],'2026-10-26')[0];assert.equal(role.category,'GPU systems');assert.equal(role.workSetting,facts.workSetting);assert.equal(role.sponsorship,facts.sponsorship);assert.equal(item.jobs.employer.workSetting,'Old');
+ for(const patch of [{checkedAt:'bad'},{sourceUrl:'http://example.com'},{sponsorship:''},{extra:'bad'}])assert.throws(()=>validateJobRecommendation({jobFacts:{...facts,...patch}}));
+});
