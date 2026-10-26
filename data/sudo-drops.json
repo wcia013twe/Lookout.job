@@ -3534,6 +3534,71 @@
    "status": "skipped",
    "skipReason": "Vague digital-engineering posting with no SWE/infra team signal",
    "note": "Story link sticker JOB-BOARDS.GREENHOUSE.IO."
+  },
+  {
+   "company": "ICE",
+   "title": "Summer Internship Program 2027 - Software Engineering Intern",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://careers.ice.com/jobs/14105?lang=en-us",
+   "dateSeen": "2026-10-26",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live 2026-10-26 on ICE careers (published 2026-10-23). Story noted ~17 ICE internships across SWE/Data/PM/quant/trading; only the SWE Intern frame was recorded, per the story's own pointer to the careers page. Added as Strong Consider; fetched excerpt showed no team scope or eligibility wording, so confirm before applying."
+  },
+  {
+   "company": "Simbe",
+   "title": "Computer Vision / Applied AI Intern - Summer 2027",
+   "location": "Burlingame, CA",
+   "type": "Internship",
+   "comp": "$48/hr",
+   "url": "https://jobs.lever.co/SimbeRobotics/d8e862ca-212d-4a88-af74-de400b0c6bf8",
+   "dateSeen": "2026-10-26",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live 2026-10-26 on Simbe Lever board (published 2026-10-14). Story said San Francisco Bay Area; posting says the cohort works from Burlingame HQ. Added as Strong Consider; currently-pursuing/final-year wording flagged against a May 2027 graduation."
+  },
+  {
+   "company": "Skydio",
+   "title": "Autonomy Engineer Intern, 2027",
+   "location": "San Mateo, CA",
+   "type": "Internship",
+   "comp": "$53/hr (Masters); $47/hr undergrad; $70/hr PhD",
+   "url": "https://www.skydio.com/jobs/d39c46ce-a4e9-45d2-99bf-17e3b7dac34b?gh_jid=d39c46ce-a4e9-45d2-99bf-17e3b7dac34b&ashby_jid=d39c46ce-a4e9-45d2-99bf-17e3b7dac34b",
+   "dateSeen": "2026-10-26",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live 2026-10-26 on Skydio careers. Not a duplicate of the board's Skydio SWE Intern Summer 2027 (different title and posting URL). Added as Strong Consider."
+  },
+  {
+   "company": "Man Group",
+   "title": "Systematic Fast Trading Intern",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://job-boards.eu.greenhouse.io",
+   "dateSeen": "2026-10-26",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Quant finance internship, not SWE; off targets",
+   "note": "Possibly a location/title variant of the seen Systematic Quant Intern (Boston, 2026-10-23); quant either way, so skipped without further verification."
+  },
+  {
+   "company": "Direct Consideration",
+   "title": "GTM Intern / GTM Engineering",
+   "location": "Seattle, WA / San Francisco, CA (preferred)",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-26",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "No formal posting; interest-gauging frame only, hybrid product-marketing/GTM role off-target",
+   "note": "Story frame said the role is still being explored and no formal applications exist yet."
   }
  ]
 }
