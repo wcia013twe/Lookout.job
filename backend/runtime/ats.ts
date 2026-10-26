@@ -14,7 +14,7 @@ export async function fetchSource(sourceId:string,source:Payload,{execute=execut
    const checked=await verifyLeadSource(sourceId,unique.map((lead:Payload)=>({url:lead.url})),{execute});
    const active=unique.filter((_lead:Payload,index:number)=>checked.diagnostics?.[index]?.status==='active');
    checked.listings=checked.listings.map((row:Listing,index:number)=>({...row,sourceListAgeDays:active[index]?.sourceListAgeDays??null,employmentType:active[index]?.employmentType||row.employmentType}));
-   return {...checked,total:page.total,coverage:page.nextOffset!==null?'truncated':checked.coverage,blocker:page.nextOffset!==null?`Bounded aggregate sample; ${page.total} active source leads, next source offset ${page.nextOffset}. Agent can page remaining leads through read_search_source_leads. ${checked.blocker}`:checked.blocker};
+   return {...checked,provenance:{...checked.provenance,aggregate:'official Simplify structured JSON',dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'},total:page.total,coverage:page.nextOffset!==null?'truncated':checked.coverage,blocker:page.nextOffset!==null?`Bounded aggregate sample; ${page.total} active source leads, next source offset ${page.nextOffset}. Agent can page remaining leads through read_search_source_leads. ${checked.blocker}`:checked.blocker};
   }
   const result=await execute('discovery',{target:{id:sourceId,name:source.name||sourceId,address:source.careers_url},config:{...(source.provider?{provider:source.provider}:{}),...(source.api?{api:source.api}:{})},previous});
   if(result.status!=='ok')return {listings:[],coverage:'inaccessible',blocker:'Source needs agent research or a supported copied CareerOps connector.',total:0,provenance:result.provenance};
