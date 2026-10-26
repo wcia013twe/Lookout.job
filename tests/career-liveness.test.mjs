@@ -4,7 +4,6 @@ import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {checkDiscoveryLiveness} from '../runner/career-liveness.mjs';
 import {verifyDiscoveryLeads} from '../runner/career-search-intake.mjs';
-import {checkLivenessViaApi} from '../runner/vendor/career-ops/liveness-api.mjs';
 import {classifyLiveness} from '../runner/vendor/career-ops/liveness-core.mjs';
 import {assertPostingLiveness} from '../lib/discovery-liveness-contract.mjs';
 import {verifyLeadSource} from '../backend/runtime/ats.ts';
