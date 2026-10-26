@@ -462,3 +462,18 @@ only questions needing input or custom-answer review. Agents cannot mark the
 questions human-reviewed or approve submission. Saved tier lists supply display
 rankings; unranked companies remain visible. These changes require the database
 migration and gateway configuration release before hosted validation is current.
+
+
+## Bounded backend execution
+
+A configured Node API/worker can expose submit_backend_job, read_backend_jobs,
+cancel_backend_job, save_backend_schedule and read_backend_schedules. The only
+job kind is search_ats for a saved owned active profile; it does not execute
+arbitrary guides, browsers, messages or applications. Read actual job states and
+coverage diagnostics before claiming completion. Writes require workspace:read,
+preferences:write and drafts:write; caller-supplied connectionId is forbidden.
+Save backend interval schedules only on an explicit user request; they are
+separate from personal-agent routines and need a running worker. Tool discovery
+or saved enabled state does not prove execution. See [the shared website/MCP
+contract](../backend/backend-jobs.md). Contract 54, migration and configured runtime
+require release and live verification before hosted support can be claimed.

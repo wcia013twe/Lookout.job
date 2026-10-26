@@ -1,3 +1,4 @@
+import {createBackendJobsDemo} from '../../lib/backend-jobs-demo.mjs';
 import {createWorkflowDemo} from './agent-workflows-demo.mjs';
 import {createArtifactDemo} from './artifact-demo.mjs';
 import { demoOutreachContacts } from './outreach-demo.mjs';
@@ -152,6 +153,7 @@ export function createDemoServices(store) {
     return {...artifactDemo.artifactSnapshot(),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
+    backendJobs:createBackendJobsDemo(),
     ...artifactDemo,
     ...createWorkflowDemo(store),
     async discoverToolkit() { return copy(store.get('demo.toolkitDiscovery') || []); },
