@@ -14,3 +14,4 @@
 !supabase/functions/
 !supabase/functions/agent-gateway/
 !supabase/functions/agent-gateway/context-attachments.mjs
+!lib/circle-forum-mentions.mjs

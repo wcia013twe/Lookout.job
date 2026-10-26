@@ -12,7 +12,7 @@ export function demoCandidates(){
  {id:'sent-001',direction:'sent',channel:'Email',date:'2026-10-12',body:'Private candidate introduction excluded'},
  {id:'received-001',direction:'received',channel:'Email',date:'2026-10-14',body:'Taylor Example, the technical round will discuss backend reliability. Morgan Example, morgan@example.com.'},
  {id:'received-002',direction:'received',channel:'Email',date:'2026-10-16',body:'The next round includes a project deep dive. Thread https://example.com/thread?token=fake'}]})};
- return [...posts.map(circleObservation),...applicationObservations(application,milestones,[contact]),...resourceCandidates()];
+ return [...posts.map(circleObservation),...applicationObservations(application,milestones,[contact]),...resourceCandidates(),...taggedCandidates()];
 }
 
 // Synthetic vectors prove storage mechanics only. They are not semantic embeddings.
@@ -32,4 +32,14 @@ export function resourceCandidates(){
    contexts:[{kind:'application',label:'Cedar Systems (demo) backend process',company:'Cedar Systems (demo)',role:'Backend Engineer',stage:'technical',jobId:'DEMO-BACKEND-2027',jobUrl:'https://example.com/jobs/cedar-backend'}]
   }})
  ];
+}
+
+export function taggedCandidates(){
+ return [circleObservation({id:'demo-circle-tagged',state:'published',revision:1,published_revision:1,content:{
+  type:'discussion',title:'Resources for my backend round',provenance:'unknown',
+  insight:'Fictional preparation discussion.',
+  body:'I am using [@Concurrency study guide](?circle=demo-circle&thread=demo-resource-general) before this round. This reference does not share my private application history.',
+  contexts:[{kind:'application',label:'Cedar Systems (demo) backend process',company:'Cedar Systems (demo)',role:'Backend Engineer',stage:'technical',jobId:'DEMO-BACKEND-2027'},
+   {kind:'resource',label:'Reliability preparation guide',url:'https://example.com/prep/reliability'}]
+ }})];
 }

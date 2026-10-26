@@ -1,10 +1,11 @@
 import {createHash} from 'node:crypto';
+import {parseForumMentions} from '../../lib/circle-forum-mentions.mjs';
 import {isIP} from 'node:net';
 import {publicContextUrl} from '../../supabase/functions/agent-gateway/context-attachments.mjs';
-import type {Observation,Report,ResourceLink,MatchingContext} from './types.ts';
-export const PROCESSING_VERSION='clean-v2';
+import type {Observation,Report,ResourceLink,MatchingContext,PostReference} from './types.ts';
+export const PROCESSING_VERSION='clean-v3';
 export function redact(text:string,identities:string[]=[]):string {
- let value=text.normalize('NFKC');
+ let value=parseForumMentions(text.normalize('NFKC')).map(part=>part.text).join('');
  for(const identity of identities.filter(Boolean).sort((a,b)=>b.length-a.length))value=value.replace(new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'[person]');
  return value.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,'[email]')
  .replace(/https?:\/\/[^\s<>]+/gi,'[link]')
@@ -41,7 +42,7 @@ export function clean(input:Observation,model:string,identities:string[]=[]):Rep
  const title=text(input.title,200,true);
  if(resource&&!title)throw Error('RESOURCE_TITLE_REQUIRED');
  const rawLinks=input.resourceLinks??[];
- if(!Array.isArray(rawLinks)||rawLinks.length>16||(!resource&&rawLinks.length))throw Error('INVALID_RESOURCE_LINKS');
+ if(!Array.isArray(rawLinks)||rawLinks.length>16)throw Error('INVALID_RESOURCE_LINKS');
  const links=new Map<string,ResourceLink>();
  for(const link of rawLinks){
   if(!link||typeof link!=='object'||Object.keys(link).some(key=>!['url','label'].includes(key)))throw Error('INVALID_RESOURCE_LINKS');
@@ -58,12 +59,25 @@ export function clean(input:Observation,model:string,identities:string[]=[]):Rep
   if(context.jobUrl!==undefined)item.jobUrl=publicResourceUrl(context.jobUrl);
   return item;
  });
- const insight=resource&&typeof input.insight==='string'&&!input.insight.trim()?'':text(input.insight,resource?16000:4000)!;
- const r={sourceType:input.sourceType,sourceId:input.sourceId,sourceRevision:input.sourceRevision,contentKind,title,resourceLinks,contexts,
-  company:text(input.company,200,resource),role:text(input.role,200,true),stage:text(input.stage,200,true),insight,experienceDate:date,
+ const rawReferences=input.postReferences??[];
+ if(!Array.isArray(rawReferences)||rawReferences.length>32)throw Error('INVALID_POST_REFERENCES');
+ const referenced=new Map<string,PostReference>();
+ for(const reference of rawReferences){
+  if(!reference||typeof reference!=='object'||Object.keys(reference).some(key=>!['circleId','postId','revision','label'].includes(key))||
+   typeof reference.circleId!=='string'||typeof reference.postId!=='string'||
+   !/^[a-zA-Z0-9_-]{1,200}$/.test(reference.circleId)||!/^[a-zA-Z0-9_-]{1,200}$/.test(reference.postId)||
+   !(reference.revision===null||Number.isSafeInteger(reference.revision)&&reference.revision>0))throw Error('INVALID_POST_REFERENCES');
+  const item={circleId:reference.circleId,postId:reference.postId,revision:reference.revision,label:text(reference.label,200)!};
+  const key=JSON.stringify([item.circleId,item.postId,item.revision]);
+  if(!referenced.has(key))referenced.set(key,item);
+ }
+ const postReferences=[...referenced.values()];
+ const insight=resource&&typeof input.insight==='string'&&!input.insight.trim()?'':text(input.insight,input.sourceType==='circle_post'?16000:4000)!;
+ const r={sourceType:input.sourceType,sourceId:input.sourceId,sourceRevision:input.sourceRevision,contentKind,title,resourceLinks,contexts,postReferences,
+  company:text(input.company,200,input.sourceType==='circle_post'),role:text(input.role,200,true),stage:text(input.stage,200,true),insight,experienceDate:date,
   provenance:input.provenance,uncertainty:text(input.uncertainty,1000,true)};
  if(!r.insight.replace(/\[(?:person|email|phone|link)\]/g,'').trim()&&!(resource&&resourceLinks.length))throw Error('EMPTY_INSIGHT');
  const contextText=contexts.map(context=>[context.label,context.company,context.role,context.stage,context.jobId].filter(Boolean).join(' / '));
- const embeddingText=[r.title,r.company,r.role,r.stage,r.insight,...resourceLinks.map(link=>link.label),...contextText,r.uncertainty].filter(Boolean).join(' | ');
+ const embeddingText=[r.title,r.company,r.role,r.stage,r.insight,...resourceLinks.map(link=>link.label),...contextText,...postReferences.map(reference=>reference.label),r.uncertainty].filter(Boolean).join(' | ');
  return {...r,contentHash:createHash('sha256').update(JSON.stringify(r)).digest('hex'),processingVersion:PROCESSING_VERSION,embeddingText,embeddingModel:model};
 }

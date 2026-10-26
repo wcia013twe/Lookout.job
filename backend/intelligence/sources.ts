@@ -1,3 +1,4 @@
+import {parseForumMentions} from '../../lib/circle-forum-mentions.mjs';
 import {contactsForProcess} from '../../lib/network-model.mjs';
 import {readConversation} from '../../lib/outreach-conversation.mjs';
 import type {Candidate, MatchingContext, ResourceLink} from './types.ts';
@@ -21,13 +22,15 @@ export function circleObservation(post:CircleSource):Candidate {
  }));
  // A single attached application is usable context; never combine fields from unrelated attachments.
  const primary=!c.company&&contexts.length===1?contexts[0]:null;
- const resourceLinks=resource?[...(c.sources??[]),...(c.contexts??[]).filter(item=>item.kind==='resource'&&item.url).map(item=>({url:item.url!,label:item.label}))]:[];
+ const resourceLinks=[...(c.sources??[]),...(c.contexts??[]).filter(item=>item.kind==='resource'&&item.url).map(item=>({url:item.url!,label:item.label}))];
+ const parts=parseForumMentions([...new Set([c.insight,c.body].filter(Boolean))].join('\n\n'));
+ const postReferences=parts.filter(part=>part.postId&&part.circleId).map(part=>({circleId:part.circleId!,postId:part.postId!,revision:null,label:part.text.replace(/^@/,'')}));
  return {
   identities:identities(post.authorName,...(c.contexts??[]).filter(item=>item.kind==='referral').map(item=>item.contact)),
   observation:{sourceType:'circle_post',sourceId:post.id,sourceRevision:post.revision,
-   contentKind:resource?'resource':'observation',title:c.title??null,resourceLinks,contexts,
+   contentKind:resource?'resource':'observation',title:c.title??null,resourceLinks,contexts,postReferences,
    company:c.company??primary?.company??null,role:primary?.role??c.role??null,stage:primary?.stage??c.stage??null,
-   insight:resource?[...new Set([c.insight,c.body].filter(Boolean))].join('\n\n'):c.insight||c.body||'',experienceDate:c.experienceDate??null,provenance:c.provenance,uncertainty:c.uncertainty??null},
+   insight:parts.map(part=>part.text).join(''),experienceDate:c.experienceDate??null,provenance:c.provenance,uncertainty:c.uncertainty??null},
  };
 }
 export function applicationObservations(application:ApplicationSource,milestones:MilestoneSource[],contacts:ContactSource[]):Candidate[] {

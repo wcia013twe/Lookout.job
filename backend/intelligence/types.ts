@@ -1,12 +1,14 @@
 export type ResourceLink = {url:string; label:string};
 export type MatchingContext = {label:string; company?:string; role?:string; stage?:string; jobId?:string; jobUrl?:string};
+// Existing forum mentions are unpinned pointers, not permission or proof of target contents.
+export type PostReference = {circleId:string; postId:string; revision:number|null; label:string};
 export type Observation = {
  sourceType:'circle_post'|'application_update'; sourceId:string; sourceRevision:number;
- contentKind?:'observation'|'resource'; title?:string|null; resourceLinks?:ResourceLink[]; contexts?:MatchingContext[];
+ contentKind?:'observation'|'resource'; title?:string|null; resourceLinks?:ResourceLink[]; contexts?:MatchingContext[]; postReferences?:PostReference[];
  company:string|null; role:string|null; stage:string|null; insight:string; experienceDate:string|null; provenance:string; uncertainty:string|null;
 };
 export type Report = Observation & {
- contentKind:'observation'|'resource'; title:string|null; resourceLinks:ResourceLink[]; contexts:MatchingContext[];
+ contentKind:'observation'|'resource'; title:string|null; resourceLinks:ResourceLink[]; contexts:MatchingContext[]; postReferences:PostReference[];
  contentHash:string; processingVersion:string; embeddingText:string; embeddingModel:string;
 };
 export type Query = (sql:string, values?:any[])=>Promise<{rows:any[]}>;
