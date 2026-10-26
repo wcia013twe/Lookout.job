@@ -11,8 +11,8 @@ import catalog from "../../data/jobs.json";
 import {useWebsiteOnboarding} from "./use-website-onboarding";
 import {canViewWorkspace} from "./workspace-access";
 let boot;
-const URL = "https://umhqfqzpwmszhcknwtrs.supabase.co";
-const KEY = "sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5";
+const URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://umhqfqzpwmszhcknwtrs.supabase.co";
+const KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5";
 async function initialize() {
   window.JB ||= {};
   await import("../../lib/store.js");

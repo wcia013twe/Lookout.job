@@ -1,0 +1,58 @@
+# Local Docker stack, managed by the Supabase CLI. Never links to hosted data.
+project_id = "lookout-local"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[db.migrations]
+enabled = true
+schema_paths = []
+
+[db.seed]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/**", "http://127.0.0.1:3000/**"]
+
+[edge_runtime]
+enabled = true
+policy = "per_worker"
+inspector_port = 8083
+deno_version = 2
+
+# These functions implement their own human-session / scoped-agent authentication.
+[functions.agent-gateway]
+verify_jwt = false
+
+[functions.agent-mcp]
+verify_jwt = false
+
+[functions.workspace-reset]
+verify_jwt = false
+
+[analytics]
+enabled = false

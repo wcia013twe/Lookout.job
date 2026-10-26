@@ -38,6 +38,14 @@
 - The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. The retired static frontend has been removed; shared domain behavior belongs in `lib/`.
 - Avoid computer-use or browser-UI automation for repository work unless the task is visual and requires iterative on-screen inspection. Prefer file, shell and purpose-built test tools for non-visual work.
 
+## Local startup
+
+- Use `make dev` (or `make up`) from the active task checkout to start local Supabase Docker services, then the frontend at `http://localhost:3000`. `make` defaults to the same action.
+- Start Docker Desktop or another Docker engine first and install the Supabase CLI. Use `make install` for locked npm dependencies; keep the task checkout, npm cache, build artifacts and Docker disk image on the external SSD.
+- `make services` starts only the backend; `make frontend` connects to the running local stack. The frontend receives only the local API URL and anonymous key from `supabase status`; never inject a service-role key into browser configuration.
+- Ctrl-C stops the frontend. `make down` stops the project's containers while preserving local data; `make status` shows service connection details. Do not stop or rebind a stack owned by another active checkout without resolving ownership.
+- `supabase/config.toml` owns local service configuration, and `supabase/migrations/` remains the schema source. Local data and OAuth setup are separate from hosted production. `npm run dev` retains the hosted default.
+
 ## Backend and agent work
 
 - `supabase/migrations/` is the database schema source of truth. Do not maintain a duplicate schema dump.

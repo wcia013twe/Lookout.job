@@ -1,5 +1,6 @@
-export const AGENT_MCP_URL='https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-mcp';
-export const AGENT_GATEWAY_URL='https://umhqfqzpwmszhcknwtrs.supabase.co/functions/v1/agent-gateway';
+const backendUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://umhqfqzpwmszhcknwtrs.supabase.co';
+export const AGENT_MCP_URL=`${backendUrl}/functions/v1/agent-mcp`;
+export const AGENT_GATEWAY_URL=`${backendUrl}/functions/v1/agent-gateway`;
 
 // Sharing instructions must never copy credentials. Secret copy is explicit.
 export function connectionClipboardText(token,secureToken=false){
