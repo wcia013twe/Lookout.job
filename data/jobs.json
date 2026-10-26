@@ -2552,6 +2552,54 @@
    "title": "AI/ML Engineering Intern",
    "verification": "Verified live on the Amperesand Greenhouse board 2026-10-25: AI/ML Engineering Intern listed as New, Sunnyvale, onsite 5 days/week; job page 4465899009 confirms the role description.",
    "whyItFits": "AI infra scope that matches the internship brief: AI frameworks, agentic workflows, knowledge assistants, LLM fine-tuning and evaluation, RAG applications, data pipelines, and experimentation/evaluation frameworks, with production-facing work. Flags for his call: the posting states no term or start date, so confirm timing before applying; onsite 5 days/week in Sunnyvale; early-stage power-infrastructure startup, so team quality is unverified."
+  },
+  {
+   "id": "ice-summer-internship-program-2027-software-engineering-intern-14105",
+   "company": "ICE",
+   "title": "Summer Internship Program 2027 - Software Engineering Intern",
+   "employmentType": "Internship",
+   "location": "New York, NY",
+   "category": "Software engineering",
+   "priority": "Strong Consider",
+   "postedDate": "2026-10-23",
+   "discoveredDate": "2026-10-26",
+   "sourceFreshness": "verified live 2026-10-26",
+   "whyItFits": "Summer 2027 SWE internship at a major exchange operator (Intercontinental Exchange). Flag: the fetched posting excerpt did not show team scope or enrollment/graduation wording, so confirm team fit and eligibility before applying.",
+   "applicationUrl": "https://careers.ice.com/jobs/14105?lang=en-us",
+   "applicationStatus": "New",
+   "verification": "Verified live 2026-10-26: ICE careers posting page title confirms Summer Internship Program 2027 - Software Engineering Intern, New York, NY, published 2026-10-23."
+  },
+  {
+   "id": "simbe-computer-vision-applied-ai-intern-summer-2027-d8e862ca",
+   "company": "Simbe",
+   "title": "Computer Vision / Applied AI Intern - Summer 2027",
+   "employmentType": "Internship",
+   "location": "Burlingame, CA",
+   "category": "ML systems & AI infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": "2026-10-14",
+   "discoveredDate": "2026-10-26",
+   "sourceFreshness": "verified live 2026-10-26",
+   "whyItFits": "Production CV/ML internship: datasets, experimentation, evaluation, and production deployment of vision systems on real robot-collected retail data, $48/hr, up to 12 weeks. Flag: posting requires currently pursuing a BS/MS/PhD and primarily targets final-year students, which sits uneasily with a May 2027 graduation ahead of a Summer 2027 term.",
+   "applicationUrl": "https://jobs.lever.co/SimbeRobotics/d8e862ca-212d-4a88-af74-de400b0c6bf8",
+   "applicationStatus": "New",
+   "verification": "Verified live 2026-10-26 on Simbe Lever board: Computer Vision / Applied AI Intern - Summer 2027, published 2026-10-14, $48/hr, full-time cohort based at Burlingame HQ."
+  },
+  {
+   "id": "skydio-autonomy-engineer-intern-2027-d39c46ce",
+   "company": "Skydio",
+   "title": "Autonomy Engineer Intern, 2027",
+   "employmentType": "Internship",
+   "location": "San Mateo, CA",
+   "category": "Computer vision & autonomy",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-10-26",
+   "sourceFreshness": "verified live 2026-10-26",
+   "whyItFits": "Autonomy algorithms internship on Skydio's core computer vision team: research, prototype, and ship autonomy features, C++/Python, with distributed systems and tools/infrastructure among the listed interest areas; $53/hr at Masters level. Distinct from the board's existing Skydio SWE Intern Summer 2027 (different title and posting URL).",
+   "applicationUrl": "https://www.skydio.com/jobs/d39c46ce-a4e9-45d2-99bf-17e3b7dac34b?gh_jid=d39c46ce-a4e9-45d2-99bf-17e3b7dac34b&ashby_jid=d39c46ce-a4e9-45d2-99bf-17e3b7dac34b",
+   "applicationStatus": "New",
+   "verification": "Verified live 2026-10-26 on Skydio careers: Autonomy Engineer Intern, 2027 posting page live, $47/hr undergrad / $53/hr Masters / $70/hr PhD."
   }
  ]
 }
