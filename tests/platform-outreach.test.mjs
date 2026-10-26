@@ -7,6 +7,7 @@ import { contextResponse } from '../supabase/functions/agent-gateway/context.mjs
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
 import { PGlite } from '@electric-sql/pglite';
+import {vector} from '@electric-sql/pglite/vector';
 test('platform exposes full versioned skill and scoped tools without local installation',async()=>{
  const context=contextResponse('context.developer',{});const skill=readGuide('cold-outreach');assert.match(skill.instructions,/save_outreach_package/);assert.equal(skill.instructions,(await readFile('skills/cold-outreach/SKILL.md','utf8')).split('---',3)[2].trim());
  const copy=contextResponse('context.developer',{});copy.guides[0].name='changed';assert.notEqual(contextResponse('context.developer',{}).guides[0].name,'changed');
@@ -17,7 +18,7 @@ test('platform exposes full versioned skill and scoped tools without local insta
  assert.throws(()=>validateRequest({operation:'outreach.prepare',payload:{...valid,contacts:[{...valid.contacts[0],linkedin:'https://linkedin.com.evil/in/sam'}]}}));
 });
 test('outreach enforces ownership, revisions, scope and idempotent preparation',async()=>{
- const db=new PGlite(); const one='11111111-1111-1111-1111-111111111111',two='22222222-2222-2222-2222-222222222222';
+ const db=new PGlite({extensions:{vector}}); const one='11111111-1111-1111-1111-111111111111',two='22222222-2222-2222-2222-222222222222';
  try {
  await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('test.uid',true),'')::uuid$$;grant usage on schema auth to authenticated,anon;grant execute on function auth.uid() to authenticated,anon;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text);alter table storage.objects enable row level security;create function storage.foldername(text) returns text[] language sql as $$select string_to_array($1,'/')$$;grant usage on schema storage to authenticated;grant all on storage.objects to authenticated;insert into auth.users values('${one}'),('${two}');`);
  for(const name of (await readdir('supabase/migrations')).filter(n=>n.endsWith('.sql')).sort())await db.exec(await readFile('supabase/migrations/'+name,'utf8'));

@@ -1,0 +1,8 @@
+# Local intelligence ingestion
+
+- Inspected the actual local Docker source tables before creating fixtures; Circle posts, milestones, applications, artifacts and contacts were empty. Fixtures follow real published-revision, milestone and logged-contact conversation shapes.
+- Added one local-only pgvector table, two source adapters, deterministic cleaning, OpenAI/synthetic vector providers, idempotent atomic writes, session-lock overlap protection, a Node API and four-hour UTC scheduler.
+- Application input includes explicitly process-linked received networking messages. Raw evidence excerpts, sent introductions, thread URLs and known identities are excluded/redacted. No real-account ingestion or global publication is enabled.
+- Added a separate Docker demo and local stdio MCP ingest/inspect tools. Existing Node API, worker, hosted MCP and production permissions are unchanged. Demo fixtures cover unknown dates, linked correspondence and privacy redactions.
+- Validation: 559 repository tests passed; focused ingestion tests, backend TypeScript check and catalog validation (158 roles) passed. Actual stdio MCP -> Docker Node -> PostgreSQL inserted six rows (two Circle, four application observations), a retry skipped all six, and independent SQL confirmed 1,536 dimensions. Real Docker advisory locking and an actual short timer invocation passed.
+- Limits: local Docker runs explicitly labeled fixture-vector-v1 synthetic vectors. No OpenAI key was available, so real semantic embeddings remain unverified. Default four-hour timer is running, but a four-hour wait was not performed. No external Muse handshake, semantic search, real-data authorization or production deployment is claimed. Basic deterministic redaction is not full anonymization.

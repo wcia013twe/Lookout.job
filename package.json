@@ -13,15 +13,21 @@
     "feature:start": "node scripts/feature-delivery.mjs start",
     "feature:land": "node scripts/feature-delivery.mjs land",
     "feature:publish": "node scripts/feature-delivery.mjs publish",
-    "feature:status": "node scripts/feature-delivery.mjs status"
+    "feature:status": "node scripts/feature-delivery.mjs status",
+    "intelligence:demo": "node backend/intelligence/service.ts",
+    "intelligence:mcp": "node backend/intelligence/mcp.ts",
+    "intelligence:once": "node backend/intelligence/service.ts --once",
+    "intelligence:typecheck": "next-app/node_modules/.bin/tsc -p backend/intelligence/tsconfig.json"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",
     "js-yaml": "5.3.0",
+    "pg": "8.16.3",
     "undici": "6.28.1"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.4.6",
+    "@types/pg": "8.15.5",
     "esbuild": "0.25.12"
   }
 }
