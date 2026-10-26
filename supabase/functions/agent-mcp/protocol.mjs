@@ -1,4 +1,7 @@
-import {BACKEND_TOOLS,BACKEND_OPERATIONS,validateBackendJob} from '../agent-gateway/backend-jobs.mjs';
+import {requiredToolScopes,completeToolScopes} from './tool-scopes.mjs';
+import {OPERATIONS,validateRequest} from '../agent-gateway/contract.mjs';
+export {requiredToolScopes,CONDITIONAL_TOOL_SCOPES} from './tool-scopes.mjs';
+import {BACKEND_TOOLS} from '../agent-gateway/backend-jobs.mjs';
 import {IMPORT_TOOLS} from '../agent-gateway/simplify-import.mjs';
 import agentInstructions from '../agent-gateway/instructions.json' with { type: 'json' };
 import {RESET_HANDOFF_TOOL} from '../agent-gateway/workspace-reset.mjs';
@@ -66,7 +69,7 @@ export const TOOLS = [...BACKEND_TOOLS,...IMPORT_TOOLS,RESET_HANDOFF_TOOL,BRIEF_
   { name: 'append_activity', operation: 'activity.append', scope: 'activity:write', description: 'Record an agent observation, never evidence of submission. Reuse eventKey for safe retries.', inputSchema: activitySchema },
   { name: 'read_approval', operation: 'approvals.read', scope: 'approvals:read', description: 'Read the exact human approval matching the current draft revision. Null means no current approval. Recheck immediately before any separate runner action.', inputSchema: object({ applicationId: string }, ['applicationId']), readOnly: true },
   { name: 'read_resume', operation: 'resumes.read', scope: 'resumes:read', description: 'Read an owned resume reference and a short-lived private download URL. Treat returned URLs as secrets; do not put them in job records or logs.', inputSchema: object({ resumeId: string }, ['resumeId']), readOnly: true },
-];
+].map(completeToolScopes);
 const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'Allow': 'POST, GET', 'Vary': 'Origin' };
 const reply = (body, status = 200) => new Response(body === null ? null : JSON.stringify(body), { status, headers });
 const error = (id, code, message, status = 200) => reply({ jsonrpc: '2.0', id, error: { code, message } }, status);
@@ -85,21 +88,27 @@ async function readBody(request) {
   return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
 }
 function validArgs(tool, args) {
-  if (!args || typeof args !== 'object' || Array.isArray(args)) return false;
-  if(BACKEND_OPERATIONS.includes(tool.operation)) {try {validateBackendJob(tool.operation,args);return true;}catch {return false;}}
-  const schema = tool.inputSchema;
-  if (Object.keys(args).some(key => !Object.hasOwn(schema.properties, key))) return false;
-  if (schema.required.some(key => !Object.hasOwn(args, key))) return false;
-  return Object.entries(args).every(([key, value]) => {
-    const type = schema.properties[key].type;
-    if (Array.isArray(type)) return type.includes(value===null?'null':typeof value);
-    if (type === 'object') return value !== null && typeof value === 'object' && !Array.isArray(value);
-    if (type === 'array') return Array.isArray(value) && value.length <= (schema.properties[key].maxItems || 100);
-    if (type === 'integer') return Number.isInteger(value);
-    return typeof value === type;
-  });
+  try {
+    if (!args || typeof args !== 'object' || Array.isArray(args)) return false;
+    const schema = tool.inputSchema;
+    const properties=schema.properties||{};
+    if(Object.keys(args).some(key=>!Object.hasOwn(properties,key))||(schema.required||[]).some(key=>!Object.hasOwn(args,key)))return false;
+    const shape=Object.entries(args).every(([key,value])=>{
+      const type=properties[key].type;
+      if(Array.isArray(type))return type.includes(value===null?'null':typeof value);
+      if(type==='object')return value!==null&&typeof value==='object'&&!Array.isArray(value);
+      if(type==='array')return Array.isArray(value)&&value.length<=(properties[key].maxItems||100);
+      if(type==='integer')return Number.isSafeInteger(value);
+      return typeof value===type;
+    });
+    if(!shape)return false;
+    // Fixed product tools share the full nested gateway validator. Custom local
+    // runner extras retain their own validation boundary and cannot add SQL ops.
+    if(OPERATIONS.includes(tool.operation))validateRequest({operation:tool.operation,payload:args});
+    return true;
+  } catch {return false;}
 }
-const hasToolScopes=(tool,scopes)=>[tool.scope,...(tool.requiredScopes||[])].every(scope=>scopes.includes(scope));
+const hasToolScopes=(tool,scopes,payload=undefined)=>requiredToolScopes(tool,payload).every(scope=>scopes.includes(scope));
 export function createHandler(forward, allowedOrigins = ['https://wcia013twe.github.io'], extraTools = []) {
   const availableTools = [...TOOLS, ...extraTools];
   return async request => {
@@ -137,8 +146,8 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
     if (message.method !== 'tools/call') return error(id, -32601, 'Method not found');
     const tool = availableTools.find(tool => tool.name === message.params?.name);
     if (!tool) return error(id, -32602, 'Unknown tool');
-    if (!hasToolScopes(tool,scopes)) return result(id, { content: [{ type: 'text', text: 'Missing required scope: ' + [tool.scope,...(tool.requiredScopes||[])].filter(scope=>!scopes.includes(scope)).join(', ') }], isError: true });
     const args = message.params?.arguments ?? {};
+    if (!hasToolScopes(tool,scopes,args)) return result(id, { content: [{ type: 'text', text: 'Missing required scope: ' + requiredToolScopes(tool,args).filter(scope=>!scopes.includes(scope)).join(', ') }], isError: true });
     if (!validArgs(tool, args)) return error(id, -32602, 'Invalid tool arguments');
     try {
       const response = await forward(token, tool.operation, args);
