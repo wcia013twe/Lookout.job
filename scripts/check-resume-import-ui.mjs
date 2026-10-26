@@ -16,11 +16,11 @@ try{
  const history=importer.getByRole('checkbox',{name:'Work experience',exact:true});assert.equal(await history.isChecked(),false,'Existing history must default unchecked');
  await importer.screenshot({path:dir+'/review-desktop.png'});await page.setViewportSize({width:390,height:844});await importer.screenshot({path:dir+'/review-mobile.png'});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile review overflows');
  await history.check();await importer.getByRole('button',{name:'Save selected details',exact:true}).click();await importer.getByText('Demo profile updated in memory. Reset the demo to restore it.',{exact:true}).waitFor();
- await page.getByRole('region',{name:'Work experience',exact:true}).getByText('Dates listed on resume: June–August 2026',{exact:true}).waitFor();
+ await page.getByRole('region',{name:'Work experience',exact:true}).getByText('Dates returned by parser: June–August 2026',{exact:true}).waitFor();
  await importer.getByRole('button',{name:'Close',exact:true}).click();
  await page.getByRole('button',{name:'Edit Personal Info',exact:true}).click();await page.getByRole('textbox',{name:'First name',exact:true}).fill('Unsaved');
  await page.getByRole('button',{name:'Autofill profile',exact:true}).first().click();assert.ok(await importer.getByRole('button',{name:'Preview autofill',exact:true}).isDisabled(),'Import must not discard unsaved background drafts');
- await page.setViewportSize({width:1440,height:1000});await page.reload();await page.getByRole('button',{name:'About me',exact:true}).click();assert.equal(await page.getByText('Dates listed on resume: June–August 2026',{exact:true}).count(),0,'Demo changes persisted outside memory');
+ await page.setViewportSize({width:1440,height:1000});await page.reload();await page.getByRole('button',{name:'About me',exact:true}).click();assert.equal(await page.getByText('Dates returned by parser: June–August 2026',{exact:true}).count(),0,'Demo changes persisted outside memory');
  // The real tutorial reuses the same component for selected uploaded resumes.
  const tutorial=await context.newPage();await tutorial.goto(base+'/onboarding/');await tutorial.getByRole('heading',{name:'Sign up or sign in.',exact:true}).waitFor();
  const authenticated=await browser.newContext({viewport:{width:1440,height:1000},serviceWorkers:'block'});

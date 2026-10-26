@@ -7,21 +7,24 @@ export class ResumeParseError extends Error {status:number;constructor(status:nu
 const text=(value:any)=>typeof value==='string'?value.trim().slice(0,20000):'';
 const clean=(record:Payload)=>Object.fromEntries(Object.entries(record).filter(([,v])=>v!==undefined&&v!==''));
 const list=(value:any)=>Array.isArray(value)?value.slice(0,50):[];
-// APILayer's documented response uses a flat object, with free-text dates.
+// APILayer returns a flat object; live date fields may be strings or string arrays.
 // Preserve those dates as source text rather than inventing month precision or ranges.
 export function mapApilayerResponse(body:Payload){
  const object=(v:any)=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+ const validDates=(v:any)=>v==null||typeof v==='string'||Array.isArray(v)&&v.every(d=>typeof d==='string');
  if(!object(body)||!['name','email','skills','education','experience'].some(k=>Object.hasOwn(body,k))||
   ['name','email'].some(k=>body[k]!=null&&typeof body[k]!=='string')||
   (body.skills!=null&&(!Array.isArray(body.skills)||body.skills.some((v:any)=>typeof v!=='string')))||
-  ['education','experience'].some(k=>body[k]!=null&&(!Array.isArray(body[k])||body[k].some((r:any)=>!object(r)||Object.entries(r).some(([field,v])=>['name','dates','title','location','organization'].includes(field)&&v!=null&&typeof v!=='string')))))throw new ResumeParseError(502,'The parser returned an unsupported response. Your file is saved.');
+  ['education','experience'].some(k=>body[k]!=null&&(!Array.isArray(body[k])||body[k].some((r:any)=>!object(r)||Object.entries(r).some(([field,v])=>field==='dates'?!validDates(v):['name','title','location','organization','date_start','date_end'].includes(field)&&v!=null&&typeof v!=='string')))))throw new ResumeParseError(502,'The parser returned an unsupported response. Your file is saved.');
  const warnings=new Set<string>(['Scanned-resume OCR support is unverified. Check the extracted details against your original document.']);
- const dates=(value:any)=>{const raw=text(value);if(!raw)return '';warnings.add('Resume dates were returned as free text. They are preserved in descriptions; fill the date fields after checking them.');return 'Dates listed on resume: '+raw;};
+ const dates=(row:Payload)=>{const raw=(Array.isArray(row.dates)?list(row.dates).map(text).filter(Boolean).join('; '):text(row.dates))||[text(row.date_start)&&'Start: '+text(row.date_start),text(row.date_end)&&'End: '+text(row.date_end)].filter(Boolean).join('; ');if(!raw)return '';warnings.add('Dates returned by the parser may be normalized or incomplete. They are preserved in descriptions; check the original resume before filling date fields.');return 'Dates returned by parser: '+raw;};
+ if(!text(body.name))warnings.add('No name was extracted. Keep your saved name or enter it manually.');
+ if(!text(body.email))warnings.add('No email was extracted. Keep your saved email or enter it manually.');
  for(const key of ['skills','education','experience'])if(Array.isArray(body[key])&&body[key].length>50)warnings.add('Some extracted entries exceed the 50-entry limit and were omitted.');
  const facts=clean({
   name:text(body.name),email:text(body.email),skills:list(body.skills).map(text).filter(Boolean).join('\n'),
-  workExperience:list(body.experience).map(r=>clean({title:text(r.title),company:text(r.organization),location:text(r.location),description:dates(r.dates)})).filter(r=>Object.keys(r).length),
-  education:list(body.education).map(r=>clean({school:text(r.name),description:dates(r.dates)})).filter(r=>Object.keys(r).length),
+  workExperience:list(body.experience).map(r=>clean({title:text(r.title),company:text(r.organization),location:text(r.location),description:dates(r)})).filter(r=>Object.keys(r).length),
+  education:list(body.education).map(r=>clean({school:text(r.name),description:dates(r)})).filter(r=>Object.keys(r).length),
  });
  const output=Object.fromEntries(Object.entries(facts).filter(([,v])=>Array.isArray(v)?v.length:!!v));
  if(!Object.keys(output).length)throw new ResumeParseError(422,'No supported profile details were found. Try a text-based PDF or DOCX resume, or enter your details manually.');
