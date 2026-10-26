@@ -24,7 +24,8 @@
     "supabase:env": "node scripts/configure-local-supabase.mjs",
     "supabase:functions": "supabase functions serve --env-file supabase/functions/.env.local",
     "validate:local-db": "node backend/local/check-schema.mjs",
-    "validate:local-edge": "node scripts/check-local-edge.mjs"
+    "validate:local-edge": "node scripts/check-local-edge.mjs",
+    "intelligence:account": "node backend/intelligence/account.ts"
   },
   "dependencies": {
     "@google/generative-ai": "0.24.1",

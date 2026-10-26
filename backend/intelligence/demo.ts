@@ -11,7 +11,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const pool = localPool(process.env.INTELLIGENCE_DATABASE_URL || 'postgresql://postgres:postgres@127.0.0.1:54322/lookout_intelligence_demo');
   const fixtureMode = process.argv.includes('--fixture-vectors') || process.env.INTELLIGENCE_VECTOR_MODE === 'fixture';
   const provider = fixtureMode ? fixtureProvider() : openAIProvider(process.env.OPENAI_API_KEY);
-  const call = ingestionService(pool, provider, demoCandidates);
+  const call = ingestionService(pool, provider, demoCandidates,{kind:'demo'});
 
   if (process.argv.includes('--schedule')) {
     const stop = scheduleIngestion(() => call(INGEST_TOOL), result => console.log(JSON.stringify({trigger: 'scheduled', ...result})));

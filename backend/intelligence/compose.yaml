@@ -8,13 +8,16 @@ x-common: &common
     INTELLIGENCE_DATABASE_URL: ${INTELLIGENCE_DATABASE_URL:-postgresql://postgres:postgres@host.docker.internal:54322/lookout_intelligence_demo}
     INTELLIGENCE_VECTOR_MODE: ${INTELLIGENCE_VECTOR_MODE:-fixture}
     OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    INTELLIGENCE_ACCOUNT_ID: ${INTELLIGENCE_ACCOUNT_ID:-}
+    INTELLIGENCE_SOURCE_DATABASE_URL: ${INTELLIGENCE_SOURCE_DATABASE_URL:-postgresql://postgres:postgres@host.docker.internal:54322/postgres}
   extra_hosts:
     - host.docker.internal:host-gateway
 services:
   api:
     <<: *common
+    command: ['node', '${INTELLIGENCE_ENTRYPOINT:-backend/intelligence/demo.ts}']
     ports:
       - '127.0.0.1:8091:8091'
   scheduler:
     <<: *common
-    command: ['node', 'backend/intelligence/demo.ts', '--schedule']
+    command: ['node', '${INTELLIGENCE_ENTRYPOINT:-backend/intelligence/demo.ts}', '--schedule']
