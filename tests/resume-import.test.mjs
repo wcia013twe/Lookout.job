@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -18,8 +19,8 @@ function harness(){
  return {state,parser};
 }
 test('APILayer mapping uses documented fields and preserves ambiguous dates as source text',()=>{
- const result=mapApilayerResponse(response());assert.equal(result.provider,'apilayer');assert.equal(result.facts.name,'Jordan Example');assert.equal(result.facts.skills,'JS\nPostgreSQL');assert.equal(result.facts.workExperience[0].company,'Example Systems');assert.equal(result.facts.workExperience[0].description,'Dates listed on resume: 2022 - Present');assert.equal(result.facts.education[0].description,'Dates listed on resume: 2019');
- for(const field of ['startDate','endDate','current'])assert.ok(!(field in result.facts.workExperience[0]));assert.ok(result.warnings.some(w=>w.includes('free text')));assert.ok(result.warnings.some(w=>w.includes('OCR support is unverified')));
+ const result=mapApilayerResponse(response());assert.equal(result.provider,'apilayer');assert.equal(result.facts.name,'Jordan Example');assert.equal(result.facts.skills,'JS\nPostgreSQL');assert.equal(result.facts.workExperience[0].company,'Example Systems');assert.equal(result.facts.workExperience[0].description,'Dates returned by parser: 2022 - Present');assert.equal(result.facts.education[0].description,'Dates returned by parser: 2019');
+ for(const field of ['startDate','endDate','current'])assert.ok(!(field in result.facts.workExperience[0]));assert.ok(result.warnings.some(w=>w.includes('normalized or incomplete')));assert.ok(result.warnings.some(w=>w.includes('OCR support is unverified')));
  for(const field of ['authorization','firstName','lastName','projects','rawText','verified'])assert.ok(!(field in result.facts));
 });
 test('unexpected wrappers, malformed records, HTTP-200 errors and empty extraction fail closed',()=>{
@@ -76,4 +77,11 @@ test('APILayer authentication, quotas and unreadable-document errors have safe r
 });
 test('large history is bounded without silently dropping the source-date caveat',()=>{
  const result=mapApilayerResponse({experience:Array.from({length:51},()=>({title:'Engineer',dates:'2020'}))});assert.equal(result.facts.workExperience.length,50);assert.ok(result.warnings.some(w=>w.includes('omitted')));
+});
+
+test('observed live response accepts date arrays and partial facts without importing the misparsed phone',()=>{
+ const fixture=JSON.parse(readFileSync(new URL('./fixtures/apilayer-fictional-live.json',import.meta.url),'utf8'));
+ const result=mapApilayerResponse(fixture);assert.equal(result.facts.email,'jordan.example@example.com');assert.ok(!('name' in result.facts));assert.ok(!('phone' in result.facts));assert.ok(result.warnings.some(w=>w.includes('No name')));
+ assert.equal(result.facts.education[0].description,'Dates returned by parser: January 2020; January 2024');assert.ok(!('startDate' in result.facts.education[0]));assert.equal(result.reviewRequired,true);
+ assert.throws(()=>mapApilayerResponse({education:[{name:'School',dates:[{}]}]}),/unsupported/);
 });

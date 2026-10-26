@@ -210,3 +210,23 @@ verification uses memory-only fictional proposals and no APILayer/network calls.
 A real API key and a deliberately chosen test document are still needed for a
 live APILayer round trip; mocked/local checks do not establish vendor extraction
 accuracy or hosted availability.
+
+
+### Explicit live parser smoke test
+
+`SUPABASE_CLI=/opt/homebrew/bin/supabase LOOKOUT_RESUME_API_URL=http://127.0.0.1:8081 node scripts/check-live-resume-import.mjs`
+uses the running local API and its server-only key. It sends a generated fictional
+PDF to APILayer, then verifies the versioned website save and scoped MCP cached
+proposal. Only loopback local services are accepted. Test accounts/files are
+removed even after a failed assertion. This is an explicit live test and may
+consume an API request; it is not part of `npm test`. `--write-fixture` writes only
+the fictional PDF to `/private/tmp/lookout-live-resume-fixture.pdf` for inspection.
+
+Live response validation found that `dates` may be string arrays and `name` can be
+null. The adapter accepts these forms, leaves missing facts absent, and labels
+returned dates as parser output rather than asserting they appeared verbatim in
+the source. The fictional fixture missed the name, misidentified employers, and
+misread a date range as a phone number (that phone field is not imported). This
+proves connectivity and workflow operation, not extraction quality. Manual review
+of names/employers/dates remains necessary. Tiny hand-generated PDFs were rejected
+as too small; the smoke fixture is a valid, locally text-verified 36 KB document.

@@ -1,0 +1,36 @@
+{
+  "name": null,
+  "email": "jordan.example@example.com",
+  "phone": "2020 - 2024",
+  "skills": [
+    "Apis",
+    "Postgresql",
+    "Python",
+    "Computer science",
+    "Docker"
+  ],
+  "education": [
+    {
+      "name": "Example University",
+      "dates": [
+        "January 2020",
+        "January 2024"
+      ],
+      "date_start": "January 2020",
+      "date_end": "January 2024"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Software Engineer",
+      "dates": [
+        "June 2024"
+      ],
+      "organization": "EXPERIENCE"
+    },
+    {
+      "title": "Software Engineer",
+      "organization": "Jordan"
+    }
+  ]
+}
