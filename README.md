@@ -792,3 +792,24 @@ then `NEXT_PUBLIC_LOOKOUT_API_URL` in `next-app/.env.local`. See
 [local parser setup](backend/runtime/README.md#resume-parser-setup). No schema
 migration is needed. This is committed integration code and local verification,
 not a hosted deployment or proof of a paid Affinda request.
+
+### Local test-account auto sign-in
+
+For a loopback preview backed by local Docker Supabase, set these in ignored
+`next-app/.env.local`, then rebuild the static preview or restart Next.js:
+
+```
+NEXT_PUBLIC_LOCAL_TEST_AUTO_SIGNIN=1
+NEXT_PUBLIC_LOCAL_TEST_EMAIL=<existing local test account email>
+NEXT_PUBLIC_LOCAL_TEST_PASSWORD=<existing local test account password>
+```
+
+Use the existing private `backend/runtime/.review-session.local.json` account when
+available; do not create a replacement or copy a hosted account. These values are
+included in the local browser build, so keep this export local. Both the website
+and Supabase must use HTTP loopback origins for this mode to activate. Existing
+sessions are preserved. An empty session signs in through local Supabase password
+auth; the Sign in action retries that same account. Sign out remains effective
+until reload. With this mode disabled, normal Google sign-in is unchanged.
+Detached fictional demo mode remains separate and does not load account auth.
+This is a development bootstrap using existing Auth, with no new product/MCP action.
