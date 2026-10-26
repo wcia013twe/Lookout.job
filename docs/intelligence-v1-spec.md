@@ -6,10 +6,10 @@ Status: local demo only. Two sources, one deterministic cleaner, one vector tabl
 
 Before authoring fixtures, inspected the running `supabase_db_lookout-local` Docker database. `private.knowledge_posts`, `public.application_milestones`, `public.career_artifacts`, `public.outreach_contacts`, applications and company workspaces were empty. The fixtures therefore follow actual table/contract shapes; they do not reproduce real candidate experiences. No source rows were inserted or changed.
 
-1. **Circle source:** published root posts joined to their exact published revision in `private.knowledge_revisions`. Use `content.insight`, falling back to body; preserve content company, role, stage, experience date, provenance and uncertainty.
+1. **Circle source:** published root posts joined to their exact published revision in `private.knowledge_revisions`. Preserve distinct `content.insight` and body text; preserve content company, role, stage, experience date, provenance and uncertainty.
 2. **Application source:** application milestones plus application-linked logged networking replies. Milestones have kind, phase, label, optional `occurred_at` and private evidence JSON. Communications live in `outreach_contacts.record.notes` using `lookout-conversation-v1`. Existing `contactsForProcess` matches explicit application tags or exact job URLs; company name alone does not establish linkage. Only logged received messages enter this demonstration. Sent introductions, contact notes, thread URLs and milestone evidence excerpts are excluded.
 
-Eight fictional observations: two Circle experiences, two Circle resources, two milestones and two received messages in one application-linked conversation. The Circle UI demo also includes a general resource with source and resource attachments. All company names and experiences are fictional. These adapters are used on fixed fixtures, not live account records. A future real-data adapter must enforce ownership and processing/sharing permission before invoking them.
+Nine fictional observations: two Circle experiences, two Circle resources, one tagged Circle discussion, two milestones and two received messages in one application-linked conversation. The Circle UI demo also includes a general resource with source and resource attachments. All company names and experiences are fictional. These adapters are used on fixed fixtures, not live account records. A future real-data adapter must enforce ownership and processing/sharing permission before invoking them.
 
 Application message dates mean logged communication dates; milestone dates mean reported event dates. Never substitute record creation, email arrival or ingestion time for a missing event date. Received statements have unknown provenance with explicit uncertainty, not employer verification. Contact revision versions the message-derived observations in this first demonstration; fine-grained immutable message versioning is deferred.
 
@@ -23,7 +23,7 @@ The Node API is separately runnable and can later be imported into the user's Do
 
 ## Database schema
 
-Migrations: `supabase/migrations/20261026174035_intelligence_demo_store.sql`, then `supabase/migrations/20261026184924_intelligence_resource_metadata.sql`. One table: `intelligence_demo.intelligence_reports` in the separate local database `lookout_intelligence_demo`. No duplicate schema dump.
+Migrations: `supabase/migrations/20261026174035_intelligence_demo_store.sql`, then `supabase/migrations/20261026184924_intelligence_resource_metadata.sql`, then `supabase/migrations/20261026191243_intelligence_post_references.sql`. One table: `intelligence_demo.intelligence_reports` in the separate local database `lookout_intelligence_demo`. No duplicate schema dump.
 
 | Column | SQL type | Meaning |
 | --- | --- | --- |
@@ -35,10 +35,11 @@ Migrations: `supabase/migrations/20261026174035_intelligence_demo_store.sql`, th
 | title | nullable text | Cleaned title; required for resources |
 | resource_links | jsonb array | Up to 16 deduplicated public HTTPS references with cleaned labels |
 | contexts | jsonb array | Up to six reviewed application context snapshots; no referral identity or private notes |
-| company | nullable text | Optional for resources; required for other observations |
+| post_references | jsonb array | Up to 32 authored post pointers with label and nullable revision; target contents are not resolved |
+| company | nullable text | Optional for Circle contributions; required for application updates |
 | role | nullable text | Reported role |
 | stage | nullable text | Reported stage or milestone kind; unknown for unclassified replies |
-| insight | text | Cleaned observation, maximum 4,000 characters; resources allow 16,000 characters for combined insight/body |
+| insight | text | Cleaned observation, maximum 16,000 characters for combined Circle insight/body, 4,000 for application updates |
 | experience_date | nullable date | Source-supplied event or communication date |
 | provenance | text | employer_verified, user_confirmed, agent_observed, agent_inferred or unknown |
 | uncertainty | nullable text | Source limitations |
@@ -57,7 +58,7 @@ Unique `(source_type, source_id)`; one latest successful row per source observat
 
 The resource adapter recognizes published `content.type=resource` posts. It preserves title, source links and resource-context links; combines distinct insight and body text without truncation; and retains reviewed application context without private referral details. One attached application can supply a missing company/role/stage tuple. Multiple applications stay separate and do not produce a guessed primary company.
 
-The cleaner uses version `clean-v2`, so old successful rows are reprocessed once. Public link metadata is validated with the existing Circle URL helper plus decoded credential-query and local-address checks. Tracking parameters are stripped and references are deduplicated. Labels and titles undergo the same redaction as descriptions. URLs themselves stay out of embedding text; structured links remain available for citations. No external page is fetched or attested as publicly accessible. Local file previews are not indexed.
+The cleaner uses version `clean-v3`, so old successful rows are reprocessed once. Public link metadata is validated with the existing Circle URL helper plus decoded credential-query and local-address checks. Tracking parameters are stripped and references are deduplicated. Labels and titles undergo the same redaction as descriptions. URLs themselves stay out of embedding text; structured links remain available for citations. No external page is fetched or attested as publicly accessible. Local file previews are not indexed.
 
 Normalize Unicode/whitespace; remove supplied known names literally; redact emails, phone numbers and all HTTP(S) URLs. Whitelisting drops source metadata. Freeform text is not summarized, verified or executed. Unknown names, contextual identifiers and confidential content can remain; therefore only fictional fixtures are accepted by the exposed tools.
 
@@ -75,6 +76,7 @@ npm ci --prefix next-app
 docker exec supabase_db_lookout-local createdb -U postgres lookout_intelligence_demo
 docker exec -i supabase_db_lookout-local psql -U postgres -d lookout_intelligence_demo -v ON_ERROR_STOP=1 < supabase/migrations/20261026174035_intelligence_demo_store.sql
 docker exec -i supabase_db_lookout-local psql -U postgres -d lookout_intelligence_demo -v ON_ERROR_STOP=1 < supabase/migrations/20261026184924_intelligence_resource_metadata.sql
+docker exec -i supabase_db_lookout-local psql -U postgres -d lookout_intelligence_demo -v ON_ERROR_STOP=1 < supabase/migrations/20261026191243_intelligence_post_references.sql
 docker compose -f backend/intelligence/compose.yaml up --build -d
 ```
 
@@ -106,7 +108,7 @@ The scheduler container calls the identical ingestion function at UTC 00:00, 04:
 | Gate | Evidence | Status |
 | --- | --- | --- |
 | 1. Input and cleaning | Real source schema inspection; fixture/adapters, invalid inputs, exact process linkage and redaction tests | Passed |
-| 2. Local vector writes | PGlite vector tests and Docker Postgres independently report eight rows and 1,536 dimensions; repeat skips eight; failed writes preserve prior row | Passed with synthetic vectors |
+| 2. Local vector writes | PGlite vector tests and Docker Postgres independently report nine rows and 1,536 dimensions; repeat skips nine; failed writes preserve prior row | Passed with synthetic vectors |
 | 2b. Real embeddings | Actual OpenAI response produces vectors from sanitized text | Pending: no API key configured; mocked API contract tests are not live proof |
 | 3. MCP and timer | Actual stdio MCP → Docker HTTP API → Postgres; real session-lock exclusion; actual short timer invocation in Docker | Passed |
 
@@ -125,3 +127,19 @@ Moved fixtures out of reusable backend modules; added explicit source record typ
 Twelve focused tests and all 564 repository tests passed, plus backend type checking and catalog validation (158 roles). Resource-specific checks cover a missing company, title redaction, source and context links, URL deduplication, credential/private URL rejection, link-only posts, full descriptions, multiple application contexts, revision conflicts and reuse of the existing Circle UI demo content.
 
 Actual stdio MCP -> Docker API -> PostgreSQL: two new resources inserted, six old observations refreshed under clean-v2, zero failures; repeat skipped all eight. The general resource retained two public references with null company and date. The process resource retained company/role/stage and employer requisition context. The source and output comparison was saved for review at `/private/tmp/intelligence-resource-cleaning.json`. Synthetic fixture-vector-v1 remains explicit. Global sharing, live Circle polling, external page fetching and graph traversal remain deferred.
+
+## Typed attachments and references
+
+The Circle composer remains the intake interface. The backend does not create a second attachment system. Existing `contexts` supply reviewed application snapshots and resource links; existing forum-mention syntax supplies authored post pointers. These attachments are preserved on all Circle contribution types, not only resource posts. General Circle discussions can omit a company.
+
+The local read service derives a common `references` list from stored metadata:
+
+- `application_context`: reviewed company/role/stage/employer requisition snapshot. It is not a private application ID or permission to inspect application history.
+- `resource`: cleaned label and validated public URL. It does not attest to a fetched page or its contents.
+- `post`: circleId, postId, authored label, nullable revision and `resolved:false`. Existing mentions do not include a target version, so the adapter stores null. A pointer is not evidence of target availability, current membership or target content.
+
+Raw forum-link query parameters are removed from text before embedding; the visible authored label remains. No recursive dereferencing, graph traversal, target body copying or expanded permissions is introduced. Labels may be stale or inaccurate user-authored text. A future resolver must use existing scoped reads, recheck target availability/membership at read time, and return a permitted exact published revision without treating this pointer as sharing approval. Internal target IDs must not be copied into a future public/global projection.
+
+Circle file attachments remain local previews and are not persisted/indexed. Real document IDs and version references require the upload/storage boundary before they can join this model. Live source polling and global-sharing policy remain deferred.
+
+Validation: 15 focused tests and all 567 repository tests passed, plus backend type checking and 158-role catalog validation. Tests cover existing UI chat mentions, metadata validation, unknown target revisions, no target body copying, general discussions and a unified three-kind projection. Actual stdio MCP -> Docker -> PostgreSQL inserted the tagged example, refreshed eight rows for clean-v3 and then skipped all nine on repeat. Reviewable input/output: `/private/tmp/intelligence-tagged-post.json`.

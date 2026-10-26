@@ -6,7 +6,7 @@ import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite/vector';
 import {createCircleKnowledgeDemo} from '../lib/circle-knowledge-demo.mjs';
 import {clean,redact} from '../backend/intelligence/clean.ts';
-import {demoCandidates,resourceCandidates,fixtureProvider} from './fixtures/intelligence.mts';
+import {demoCandidates,resourceCandidates,taggedCandidates,fixtureProvider} from './fixtures/intelligence.mts';
 import {circleObservation,applicationObservations} from '../backend/intelligence/sources.ts';
 import {ingest,openAIProvider} from '../backend/intelligence/pipeline.ts';
 import {databaseStore,localPool,lockedIngest} from '../backend/intelligence/store.ts';
@@ -15,9 +15,9 @@ import {backendClient,mcpHandler} from '../backend/intelligence/mcp.ts';
 import {scheduleIngestion,nextFourHourDelay} from '../backend/intelligence/schedule.ts';
 const fixture=()=>structuredClone(demoCandidates());
 const v=()=>Array.from({length:1536},(_,i)=>i===0?1:0);
-async function database(){const db=new PGlite({extensions:{vector}});await db.exec('create role anon;create role authenticated;');await db.exec(await readFile(new URL('../supabase/migrations/20261026174035_intelligence_demo_store.sql',import.meta.url),'utf8'));await db.exec(await readFile(new URL('../supabase/migrations/20261026184924_intelligence_resource_metadata.sql',import.meta.url),'utf8'));return db;}
+async function database(){const db=new PGlite({extensions:{vector}});await db.exec('create role anon;create role authenticated;');await db.exec(await readFile(new URL('../supabase/migrations/20261026174035_intelligence_demo_store.sql',import.meta.url),'utf8'));await db.exec(await readFile(new URL('../supabase/migrations/20261026184924_intelligence_resource_metadata.sql',import.meta.url),'utf8'));await db.exec(await readFile(new URL('../supabase/migrations/20261026191243_intelligence_post_references.sql',import.meta.url),'utf8'));return db;}
 test('source adapters retain permitted observations, exact process links and unknown dates',()=>{
- const rows=fixture();assert.equal(rows.length,8);assert.equal(rows.filter(c=>c.observation.sourceType==='circle_post').length,4);
+ const rows=fixture();assert.equal(rows.length,9);assert.equal(rows.filter(c=>c.observation.sourceType==='circle_post').length,5);
  const cleaned=rows.map(c=>clean(c.observation,'fixture',c.identities));
  const text=JSON.stringify(cleaned);
  for(const privateText of ['Alex Example','Morgan Example','Taylor Example','alex@example','private-email-id','Private subject','Private notes excluded','private-thread','Private candidate introduction'])assert(!text.includes(privateText),privateText);
@@ -30,24 +30,24 @@ test('source adapters retain permitted observations, exact process links and unk
  assert.deepEqual(applicationObservations(application,[],[contact]),[]);
 });
 test('cleaner rejects malformed input and redacts known names literally',()=>{
- const c=fixture()[0];for(const change of [{experienceDate:'2026-02-30'},{sourceRevision:0},{sourceId:'bad/path'},{sourceId:undefined},{provenance:'verified_by_ai'},{insight:''},{insight:'x'.repeat(4001)}])assert.throws(()=>clean({...c.observation,...change},'fixture'));
+ const c=fixture()[0];for(const change of [{experienceDate:'2026-02-30'},{sourceRevision:0},{sourceId:'bad/path'},{sourceId:undefined},{provenance:'verified_by_ai'},{insight:''},{insight:'x'.repeat(16001)}])assert.throws(()=>clean({...c.observation,...change},'fixture'));
  assert.equal(redact('Dr. A+B says hi',['Dr. A+B']),'[person] says hi');
  assert.throws(()=>clean({...c.observation,insight:'alex@example.com'},'fixture'),/EMPTY_INSIGHT/);
 });
 test('pgvector store inserts atomically, skips exact retries, updates revisions and preserves rows on failures',async()=>{
  const db=await database();try{
  const store=databaseStore((sql,args)=>db.query(sql,args));let calls=0;const provider={model:'fixture-vector-v1',async embed(){calls++;return v();}};
- assert.equal((await ingest(store,provider,fixture())).inserted,8);assert.equal(calls,8);
- assert.equal((await ingest(store,provider,fixture())).skipped,8);assert.equal(calls,8);
+ assert.equal((await ingest(store,provider,fixture())).inserted,9);assert.equal(calls,9);
+ assert.equal((await ingest(store,provider,fixture())).skipped,9);assert.equal(calls,9);
  const row=fixture()[0];row.observation.sourceRevision=2;row.observation.insight='Changed concurrency discussion';
  assert.equal((await ingest(store,provider,[row])).updated,1);
- assert.equal((await ingest(store,provider,fixture())).skipped,8);
+ assert.equal((await ingest(store,provider,fixture())).skipped,9);
  row.observation.insight='Different content at same revision';assert.equal((await ingest(store,provider,[row])).errors[0].code,'SOURCE_REVISION_CONFLICT');
  row.observation.sourceRevision=3;
  assert.equal((await ingest(store,{model:provider.model,async embed(){throw Error('PROVIDER_FAILED');}},[row])).failed,1);
  assert.equal((await store.list(20)).find(r=>r.source_id===row.observation.sourceId).source_revision,2);
  assert.equal((await ingest(store,{model:'broken',async embed(){return [0];}},[row])).errors[0].code,'INVALID_VECTOR');
- const listed=await store.list(20);assert.equal(listed.length,8);assert.equal(listed[0].embedding_dimensions,1536);assert(!('embedding' in listed[0]));assert(!('embedding_text' in listed[0]));
+ const listed=await store.list(20);assert.equal(listed.length,9);assert.equal(listed[0].embedding_dimensions,1536);assert(!('embedding' in listed[0]));assert(!('embedding_text' in listed[0]));
  await db.exec('set role authenticated');await assert.rejects(()=>db.query('select * from intelligence_demo.intelligence_reports'),/permission denied/);await db.exec('reset role');
  const ranks=await db.query('select source_id from intelligence_demo.intelligence_reports order by embedding OPERATOR(extensions.<=>) $1::extensions.vector limit 1',[JSON.stringify(v())]);assert.equal(ranks.rows.length,1);
  }finally{await db.close();}
@@ -73,7 +73,7 @@ test('MCP calls the Node HTTP backend and validates tools without SQL or raw-vec
  const address=server.address(),client=backendClient(`http://127.0.0.1:${address.port}`),handle=mcpHandler(client);
  const rpc=(method,params)=>handle({jsonrpc:'2.0',id:1,method,params});
  const discovery=await rpc('tools/list');assert.equal(discovery.result.tools.length,2);
- const result=await rpc('tools/call',{name:'ingest_demo_intelligence'});assert.equal(JSON.parse(result.result.content[0].text).inserted,8);
+ const result=await rpc('tools/call',{name:'ingest_demo_intelligence'});assert.equal(JSON.parse(result.result.content[0].text).inserted,9);
  const inspected=await rpc('tools/call',{name:'list_demo_intelligence_reports',arguments:{limit:2}});assert.equal(JSON.parse(inspected.result.content[0].text).items.length,2);
  assert((await rpc('tools/call',{name:'ingest_demo_intelligence',arguments:{sql:'select 1'}})).result.isError);
  assert((await rpc('tools/call',{name:'list_demo_intelligence_reports',arguments:{limit:100}})).result.isError);
@@ -132,7 +132,8 @@ test('resource cleaning rejects credential links and private attachments; link-o
  assert.throws(()=>clean({...input,insight:'',resourceLinks:[]},'fixture'),/EMPTY_INSIGHT/);
  assert.equal(clean({...input,insight:'x'.repeat(16000)},'fixture').insight.length,16000);
  assert.throws(()=>clean({...input,insight:'x'.repeat(16001)},'fixture'),/INVALID_TEXT/);
- assert.throws(()=>clean({...fixture()[0].observation,company:null},'fixture'),/INVALID_TEXT/);
+ assert.equal(clean({...fixture()[0].observation,company:null},'fixture').company,null);
+ assert.throws(()=>clean({...fixture()[0].observation,sourceType:'application_update',company:null},'fixture'),/INVALID_TEXT/);
 });
 
 test('resource rows persist and metadata edits update only with a new source revision',async()=>{
@@ -153,4 +154,33 @@ test('existing Circle demo Resources content uses the same resource adapter',()=
  const candidate=circleObservation({id:post.id,state:post.state,revision:post.revision,published_revision:post.publishedRevision,authorName:post.author,content:post.content});
  const report=clean(candidate.observation,'fixture',candidate.identities);
  assert.equal(report.company,null);assert.equal(report.contentKind,'resource');assert.equal(report.resourceLinks.length,2);assert.match(report.title,/Concurrency/);
+});
+
+test('tagged posts retain typed pointers without resolving or copying target content',async()=>{
+ const candidate=taggedCandidates()[0],report=clean(candidate.observation,'fixture',candidate.identities);
+ assert.deepEqual(report.postReferences,[{circleId:'demo-circle',postId:'demo-resource-general',revision:null,label:'Concurrency study guide'}]);
+ assert(!report.insight.includes('?circle='));assert(!report.embeddingText.includes('demo-resource-general'));assert.match(report.insight,/Fictional preparation discussion/);assert.match(report.insight,/@Concurrency study guide/);
+ assert.equal(report.resourceLinks.length,1);assert.equal(report.contexts.length,1);
+ assert(!report.insight.includes('Alex Example')); // Referenced resource body is not traversed/copied.
+ const db=await database();try{
+  const store=databaseStore((sql,args)=>db.query(sql,args));assert.equal((await ingest(store,fixtureProvider(),[candidate])).inserted,1);
+  const savedRows=await store.list(20);assert.equal(savedRows.length,1);const [saved]=savedRows;assert.deepEqual(saved.references.map(reference=>reference.kind),['application_context','resource','post']);
+  assert.equal(saved.references[2].revision,null);assert.equal(saved.references[2].resolved,false);assert(!JSON.stringify(saved.references).includes('applicationId'));
+ }finally{await db.close();}
+});
+
+test('unversioned pointers deduplicate; invalid pointers reject before persistence',()=>{
+ const candidate=taggedCandidates()[0],input=candidate.observation;
+ const duplicate=clean({...input,postReferences:[...input.postReferences,...input.postReferences]},'fixture');assert.equal(duplicate.postReferences.length,1);
+ for(const reference of [{...input.postReferences[0],revision:0},{...input.postReferences[0],postId:'../private'},{...input.postReferences[0],body:'private target content'}])assert.throws(()=>clean({...input,postReferences:[reference]},'fixture'),/INVALID_POST_REFERENCES/);
+ assert.equal(redact('See [@a post](?circle=private-circle&thread=private-post)'),'See @a post');
+ const noContext=circleObservation({id:'general-discussion',state:'published',revision:1,published_revision:1,content:{type:'discussion',title:'General preparation',body:'Practice explaining tradeoffs.',provenance:'unknown'}});
+ assert.equal(clean(noContext.observation,'fixture').company,null);
+});
+
+test('the existing Circle chat post mention is preserved as an unpinned reference',()=>{
+ const demo=createCircleKnowledgeDemo(),post=demo.action('knowledge.read',{circleId:'demo-circle',postId:'demo-own-chat'}).post;
+ const candidate=circleObservation({id:post.id,state:post.state,revision:post.revision,published_revision:post.publishedRevision,content:post.content,authorName:post.author});
+ const report=clean(candidate.observation,'fixture',candidate.identities);
+ assert.equal(report.company,null);assert.equal(report.postReferences[0].postId,'demo-final-round');assert.equal(report.postReferences[0].revision,null);assert(!report.embeddingText.includes('?circle='));
 });

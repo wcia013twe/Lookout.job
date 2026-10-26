@@ -21,3 +21,10 @@
 - Demo coverage includes generic and process-specific resource fixtures and a general resource in the existing Circle Resources UI demo.
 - Validation: 564 full-suite tests, 12 focused tests, backend type checking and 158-role catalog validation passed. Actual stdio MCP -> Docker Node -> PostgreSQL inserted two resources, refreshed six old rows and had zero failures; repeat skipped all eight. Input/output example is /private/tmp/intelligence-resource-cleaning.json.
 - Limits: synthetic vectors only; deterministic redaction does not guarantee anonymity. Source authorization, global-sharing policy, actual Circle polling, external page extraction and graph relationships remain unconnected.
+
+## Typed post attachments
+
+- Adopted the existing Circle composer as the intake model: preserve authored post references, reviewed application context and resource links on all Circle contribution types. The local read service derives one typed references list without duplicating application/resource storage.
+- Added post_references metadata with unknown target revisions explicitly null. Post pointers are unresolved; they do not fetch/copy target bodies, prove target availability, widen permissions or index linked documents. Raw Circle/thread query parameters are removed from searchable text. General Circle posts can omit a company, and distinct body/insight text is preserved within existing field limits. Cleaning advances to clean-v3.
+- Validation: 567 repository tests, 15 focused tests, backend type checking and 158-role catalog validation passed. Actual MCP -> Docker -> Postgres saved a three-reference example; first run inserted one/refreshed eight, repeat skipped all nine. Snapshot: /private/tmp/intelligence-tagged-post.json. Existing fictional Circle chat @mentions are included in adapter coverage.
+- Limits: local fictional data and synthetic vectors only. Live source reads, scoped target resolution, global sharing and persisted document attachments are not connected.
