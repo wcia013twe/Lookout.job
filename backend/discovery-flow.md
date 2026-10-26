@@ -16,8 +16,9 @@ this pipeline ran. Failed jobs do not return a completed shortlist.
 
 The shortlist is deduplicated within this run, up to 250 observed discoveries
 (ten sources × up to 25 collected leads each). Source totals are availability,
-not counts actually verified. Unsupported verification (currently non-Greenhouse
-lead parsing), blocked sources or truncated pages keep the job partial; a partial
+not counts actually verified. Liveness checks use the copied API/browser ladder for every supplied link.
+Unsupported extraction (currently full-description parsing outside Greenhouse),
+uncertain links, blocked sources or truncated pages keep the job partial; a partial
 job may still return a useful shortlist. These bounds do not establish a complete
 daily source sweep or a 50-report quota. Automatic historical-report reuse and
 full applicant eligibility remain separate gaps.
@@ -75,3 +76,25 @@ one shared identity adapter. `npm run test:dedup` verifies the original files an
 matching decisions. `node --test tests/search-job-pipeline.test.mjs` tests the
 single leased job against actual migrated SQL plus copied filter/dedup children.
 There is no separate dedup MCP endpoint or destructive cleanup operation.
+
+## Per-link liveness and extraction
+
+The existing verification stage now calls copied `liveness-api.mjs` first and
+`liveness-browser.mjs`/`liveness-core.mjs` when API results are inconclusive. No
+classifier is rewritten. API checks use the upstream concurrency of ten;
+browser checks are sequential. Browser runtime is installed in the Node image.
+
+Each submitted URL returns `status: active | expired | uncertain`, `code`, `reason`,
+`checkedAt`, `method` and a separate `extraction` outcome (`parsed`, `unsupported`,
+`failed`, `not-attempted`). An active link with unsupported extraction remains
+active; no fictional job record is created. The current Greenhouse extractor is
+unchanged. Only confirmed-active, parsed records proceed to screening/analysis.
+Diagnostics are returned by manual intake and saved in existing source checkpoints
+by the single backend job, including expired/uncertain links. No new log table.
+
+Guard failures, unavailable browsers and bot walls remain uncertain. Browser work
+has a 30-second soft batch budget within the existing isolated task/job limits;
+remaining fallback checks return `browser_budget_exhausted`, never an invented
+live/dead verdict. An in-flight copied check may complete beyond the soft budget.
+The API preserves provider-specific exceptions, including Lever's non-authoritative
+API 404. `npm run test:liveness` exercises the copied classifiers and adapter.

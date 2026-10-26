@@ -152,7 +152,7 @@ export async function runTask({task,input}) {
  if(task==='audit')return auditDocument(input);
  if(task==='analytics')return analyzeCareer(input);
  if(task==='document')return generateDocument(input);
- if(task==='verify') {publicUrl(input.url);const {checkLivenessViaApi}=await import('./vendor/career-ops/liveness-api.mjs');const result=await checkLivenessViaApi(input.url);return {...(result||{result:'uncertain',code:'unsupported_or_inconclusive',reason:'No conclusive public ATS verification; inspect the official employer page.'}),url:input.url,checkedAt:new Date().toISOString()};}
+ if(task==='verify')return (await import('./career-liveness.mjs')).checkDiscoveryLiveness([{url:input.url}]).then(results=>results[0]);
  throw Error('Unknown toolkit task');
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)) {

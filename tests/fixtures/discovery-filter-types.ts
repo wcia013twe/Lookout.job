@@ -10,3 +10,10 @@ const invalid:FilterCheck={requirement:'employment',status:'probably',evidence:'
 // @ts-expect-error Work arrangements use normalized enum values.
 c.workArrangement.values.push('sometimes');
 void [c,type,check,bad,invalid];
+
+import type {PostingLiveness} from '../../lib/discovery-liveness-contract.mjs';
+const liveness: PostingLiveness = 'uncertain';
+// @ts-expect-error use the exact upstream liveness vocabulary
+const inventedLiveness: PostingLiveness = 'alive';
+void liveness;
+void inventedLiveness;

@@ -11,9 +11,10 @@ versioned screening checks, applies copied Career Ops deduplication and stores
 shortlist IDs in its existing job result (`pipelineVersion: 1`). Muse reads that
 shortlist, writes candidate-specific reports and four ratings, publishes a batch
 and prepares drafts. Normal jobs need no separate screening/dedup MCP calls.
-Collection supports Greenhouse/Lever; exact lead verification currently supports
-Greenhouse. Unsupported verification stays partial rather than recording invented
-active evidence. Up to ten configured sources and 250 observations are bounded.
+Collection supports Greenhouse/Lever; liveness for each link uses the copied
+ATS API/browser ladder across upstream-supported sources. Full-description
+extraction currently supports Greenhouse. Active unsupported extraction remains
+explicit and partial; it does not become a fictional parsed record. Up to ten configured sources and 250 observations are bounded.
 The worker never generates LLM reports, messages or applications. Source coverage,
 unknown applicant eligibility and pending Muse reporting remain explicit.
 
@@ -247,3 +248,10 @@ applications are added to discovery pages.
 `node --test tests/search-job-pipeline.test.mjs` covers the real SQL lease boundary,
 persisted checks/shortlist, partial coverage, recovery and settings conflicts with
 fictional provider fixtures and actual copied filtering/dedup children.
+
+The existing liveness stage uses `runner/career-liveness.mjs` as orchestration for
+unchanged copied API/browser classifiers. Docker installs system Chromium and
+passes only its executable path to the existing credential-free child. Browser
+checks stay sequential and retain the upstream URL/route guards. A soft 30-second
+fallback budget returns explicit uncertainty for remaining links. Liveness and
+extraction outcomes are separate source diagnostics, not a new service or table.
