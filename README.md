@@ -294,8 +294,7 @@ continues to work. Muse should save the package rather than asking for manual
 entry, then ask only about missing/conflicting facts. Imports remain unverified
 until reviewed; saved-answer autofill suggestions are distinct from permission.
 Account changes refresh automatically every 15 seconds and when you return to the app. Local edits sync automatically; failed connections retry without a reload button. HTTP/MCP setup and local-file upload
-are documented in the gateway and runner contracts. Resume parsing itself runs
-in the user's agent, not in this backend. No real candidate package is imported
+are documented in the gateway and runner contracts. When configured, the Node API can extract an uploaded resume through Affinda and return a reviewable profile proposal. The website tutorial and resume library share the import review; connected agents can use the scoped Node-only `parse_profile_resume` tool. Personal-agent extraction remains a fallback. No real candidate package is imported
 as part of development validation.
 
 ## Company outreach
@@ -768,3 +767,28 @@ MCP mapping: `read_onboarding_state` → `update_onboarding_step(event=connectio
 ## Local Supabase recovery workspace
 
 For an independent Docker-backed database, Auth, Storage and agent-gateway/MCP setup, see [the local setup and validation guide](backend/local/README.md). Local startup does not require Supabase CLI login and does not recover or switch the hosted account.
+
+
+## Resume autofill with Affinda (local integration)
+
+Tutorial resume selection/upload and My Profile → About me → Documents offer
+**Autofill with Affinda**. New uploads and successful source replacements open
+that offer; existing private uploaded resumes have **Autofill profile**. A link
+reference, cover letter or template is not sent to the resume parser. Upload alone
+never sends a document to Affinda. The extraction button discloses the transfer.
+The API key remains in the server-only Node env; no browser OCR is needed.
+
+The review shows saved and extracted values side by side. Missing fields default
+selected; existing fields and whole history sections default unchecked. Selecting
+a history section replaces all entries in that section. Discard leaves the profile
+unchanged; saving preserves unrelated fields and clears verification. Unsaved
+background edits block import, and account changes or stale profile versions stop
+saving. Neither extraction nor saving grants autofill permission or submission
+approval. Year-only dates leave month fields blank; OCR truncation and low-quality
+extraction produce visible warnings. Unknown/unsupported schemas fail closed.
+
+Configure `AFFINDA_API_KEY` and `AFFINDA_BASE_URL` in `backend/runtime/.env.local`,
+then `NEXT_PUBLIC_LOOKOUT_API_URL` in `next-app/.env.local`. See
+[local parser setup](backend/runtime/README.md#resume-parser-setup). No schema
+migration is needed. This is committed integration code and local verification,
+not a hosted deployment or proof of a paid Affinda request.

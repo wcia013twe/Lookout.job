@@ -8,6 +8,7 @@ import {ApplicationProfileProvider,useApplicationProfile} from "./application-pr
 import {readField,updateField} from "../../lib/search-profile.mjs";
 import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
 import {onboardingReveal,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
+import ResumeImport from "./resume-import";
 import AgentSelector from "./agent-selector";
 import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
@@ -94,8 +95,9 @@ function OnboardingFlow(){
    {!w.user&&!w.demo?<><p className="hint">Sign in to save your résumé privately.</p><Button secondary disabled={!w.authReady} onClick={w.signIn}>Sign in</Button></>:
    <>{resumes.length>0&&<Field label={w.demo?"Demo résumé":"Choose a saved résumé"}><select value={resumeId} onChange={e=>setResumeId(e.target.value)}><option value="">Choose a résumé</option>{resumes.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></Field>}
     {!w.demo&&<Button secondary disabled={uploading} onClick={()=>file.current?.click()}>{uploading?"Uploading…":resume?"Choose another file":"Choose a PDF or DOCX"}</Button>}
-    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. Uploading saves the file; your agent can review its contents after connecting."}</p></>}
+    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. After upload, you can autofill your profile and review the extracted details."}</p></>}
   </div>}
+  {resume&&method==="resume"&&(w.demo||resume.objectPath)&&<ResumeImport key={`${w.demo?w.demoEpoch:w.user?.id}-${resume.id}`} resumeId={resume.id}/>}
   {feedback&&<p className="hint" role="status">{feedback}</p>}
   <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
  </form><OnboardingSimplifyImport/></>;
