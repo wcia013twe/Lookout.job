@@ -36,7 +36,7 @@ test('cleaner rejects malformed input and redacts known names literally',()=>{
 });
 test('pgvector store inserts atomically, skips exact retries, updates revisions and preserves rows on failures',async()=>{
  const db=await database();try{
- const store=databaseStore((sql,args)=>db.query(sql,args));let calls=0;const provider={model:'fixture-vector-v1',async embed(){calls++;return v();}};
+ const store=databaseStore((sql,args)=>db.query(sql,args),{kind:'demo'});let calls=0;const provider={model:'fixture-vector-v1',async embed(){calls++;return v();}};
  assert.equal((await ingest(store,provider,fixture())).inserted,9);assert.equal(calls,9);
  assert.equal((await ingest(store,provider,fixture())).skipped,9);assert.equal(calls,9);
  const row=fixture()[0];row.observation.sourceRevision=2;row.observation.insight='Changed concurrency discussion';
@@ -60,14 +60,14 @@ test('provider contracts keep real embeddings separate from synthetic fixtures',
  await assert.rejects(()=>openAIProvider('test',async()=>new Response('{}',{status:429})).embed('test'),/EMBEDDING_PROVIDER_FAILED/);
 });
 test('MCP calls the Node HTTP backend and validates tools without SQL or raw-vector access',async()=>{
- const db=await database(),store=databaseStore((sql,args)=>db.query(sql,args));
+ const db=await database(),store=databaseStore((sql,args)=>db.query(sql,args),{kind:'demo'});
  const pool={
   query:(sql,args)=>db.query(sql,args),
   async connect(){
    return {async query(sql,args){if(sql.includes('advisory'))return {rows:[{locked:true}]};return db.query(sql,args);},release(){}};
   }
  };
- const server=httpServer(ingestionService(pool,fixtureProvider(),fixture));
+ const server=httpServer(ingestionService(pool,fixtureProvider(),fixture,{kind:'demo'}));
  server.listen(0,'127.0.0.1');await once(server,'listening');
  try{
  const address=server.address(),client=backendClient(`http://127.0.0.1:${address.port}`),handle=mcpHandler(client);
@@ -85,9 +85,9 @@ test('MCP calls the Node HTTP backend and validates tools without SQL or raw-vec
 });
 test('advisory lock excludes overlapping ingestion and releases after failure',async()=>{
  let locked=false,releases=0;const pool={async connect(){return {async query(sql){if(sql.includes('try_advisory')){const available=!locked;if(available)locked=true;return {rows:[{locked:available}]};}if(sql.includes('advisory_unlock'))locked=false;return {rows:[]};},release(){releases++;}};}};
- let finish;const first=lockedIngest(pool,()=>new Promise(resolve=>{finish=resolve;}));await new Promise(resolve=>setImmediate(resolve));
- assert.deepEqual(await lockedIngest(pool,async()=>assert.fail('overlap')),{status:'already_running'});finish('done');assert.equal(await first,'done');
- await assert.rejects(()=>lockedIngest(pool,async()=>{throw Error('failed');}));assert.equal(locked,false);assert.equal(releases,3);
+ let finish;const first=lockedIngest(pool,()=>new Promise(resolve=>{finish=resolve;}),{kind:'demo'});await new Promise(resolve=>setImmediate(resolve));
+ assert.deepEqual(await lockedIngest(pool,async()=>assert.fail('overlap'),{kind:'demo'}),{status:'already_running'});finish('done');assert.equal(await first,'done');
+ await assert.rejects(()=>lockedIngest(pool,async()=>{throw Error('failed');},{kind:'demo'}));assert.equal(locked,false);assert.equal(releases,3);
  assert.throws(()=>localPool('postgresql://localhost/production'),/LOCAL_DEMO_DATABASE_REQUIRED/);
 });
 test('four-hour UTC scheduler actually fires and stops',async()=>{
@@ -102,7 +102,7 @@ test('service processes an injected source rather than loading built-in demo rec
   const pool={query:(sql,args)=>db.query(sql,args),async connect(){return {async query(sql,args){if(sql.includes('advisory'))return {rows:[{locked:true}]};return db.query(sql,args);},release(){}};}};
   let loaded=0;
   const source=circleObservation({id:'injected-circle-post',state:'published',revision:2,published_revision:2,content:{company:'Injected source company',insight:'A source supplied independently of the demo dataset.',provenance:'unknown'}});
-  const call=ingestionService(pool,fixtureProvider(),async()=>{loaded++;return [source];});
+  const call=ingestionService(pool,fixtureProvider(),async()=>{loaded++;return [source];},{kind:'demo'});
   assert.equal((await call('ingest_demo_intelligence')).inserted,1);
   const result=await call('list_demo_intelligence_reports');
   assert.equal(loaded,1);assert.equal(result.items.length,1);assert.equal(result.items[0].source_id,'injected-circle-post');assert.equal(result.items[0].company,'Injected source company');
@@ -138,7 +138,7 @@ test('resource cleaning rejects credential links and private attachments; link-o
 
 test('resource rows persist and metadata edits update only with a new source revision',async()=>{
  const db=await database();try{
-  const store=databaseStore((sql,args)=>db.query(sql,args)),provider=fixtureProvider(),candidates=resourceCandidates();
+  const store=databaseStore((sql,args)=>db.query(sql,args),{kind:'demo'}),provider=fixtureProvider(),candidates=resourceCandidates();
   assert.equal((await ingest(store,provider,candidates)).inserted,2);
   const rows=await store.list(20),general=rows.find(r=>r.source_id==='demo-resource-general');
   assert.equal(general.company,null);assert.equal(general.content_kind,'resource');assert.equal(general.resource_links.length,2);assert.equal(general.title,"[person]'s concurrency study guide");assert.equal(general.sharing_status,'demo_only');
@@ -163,7 +163,7 @@ test('tagged posts retain typed pointers without resolving or copying target con
  assert.equal(report.resourceLinks.length,1);assert.equal(report.contexts.length,1);
  assert(!report.insight.includes('Alex Example')); // Referenced resource body is not traversed/copied.
  const db=await database();try{
-  const store=databaseStore((sql,args)=>db.query(sql,args));assert.equal((await ingest(store,fixtureProvider(),[candidate])).inserted,1);
+  const store=databaseStore((sql,args)=>db.query(sql,args),{kind:'demo'});assert.equal((await ingest(store,fixtureProvider(),[candidate])).inserted,1);
   const savedRows=await store.list(20);assert.equal(savedRows.length,1);const [saved]=savedRows;assert.deepEqual(saved.references.map(reference=>reference.kind),['application_context','resource','post']);
   assert.equal(saved.references[2].revision,null);assert.equal(saved.references[2].resolved,false);assert(!JSON.stringify(saved.references).includes('applicationId'));
  }finally{await db.close();}

@@ -1,34 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {mapAffindaResponse,createResumeParser,affindaConfig,ResumeParseError} from '../backend/runtime/resume-parser.ts';
+import {mapApilayerResponse,createResumeParser,apilayerConfig,ResumeParseError} from '../backend/runtime/resume-parser.ts';
 import {profileImportChoices,selectedProfileFields,requestResumeParse,validateResumeParse} from '../lib/resume-import.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {createApi} from '../backend/runtime/api.ts';
 import {createDispatch} from '../backend/runtime/service.ts';
 const owner='11111111-1111-4111-8111-111111111111',id='22222222-2222-4222-8222-222222222222',token='jb_agent_'+'a'.repeat(64);
-const response=()=>({data:{person:{name:{given:'Jordan',family:'Example'},nationalities:['Must not import']},contact:{emails:['jordan@example.com'],websites:[{url:'linkedin.com/in/jordan'},{url:'javascript:alert(1)'}]},skills:[{text:'JS',name:'JavaScript'}],workExperience:[{organization:'Example Systems',jobTitle:'Engineer',dateRange:{start:{date:'2022-01-01',precision:'year'},end:{current:true}}}],education:[],projects:[],workAuthorization:'Must not import',expectedSalary:'Must not import'},meta:{schemaVersion:'1.0',document:{classification:{label:'resume'},extractionQuality:{band:'high'}},ocr:{truncated:true}}});
+const response=()=>({name:'Jordan Example',email:'jordan@example.com',skills:['JS','PostgreSQL'],experience:[{organization:'Example Systems',title:'Engineer',location:'New York',dates:'2022 - Present'}],education:[{name:'Example University',dates:'2019'}],authorization:'Must not import',rawText:'Must not import',firstName:'Do not invent name parts',projects:[{name:'Undocumented'}]});
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json'}});
 function harness(){
  const state={owner,revoked:false,scopes:['workspace:read','resumes:read','profile:write'],superseded:false,hashMismatch:false,noProfile:false,profileTime:'2026-10-26T12:00:00Z',providerStatus:200,calls:0,downloads:0};
  const blob=new Blob(['%PDF-1.4 fictional fixture']);const hash=createHash('sha256').update(Buffer.from('%PDF-1.4 fictional fixture')).digest('hex');
  const row=()=>({id,user_id:owner,object_path:owner+'/'+id+'.pdf',content_hash:state.hashMismatch?'f'.repeat(64):hash,superseded_by:state.superseded?id:null});
  const client={auth:{getUser:async()=>({data:{user:state.revoked?null:{id:state.owner}},error:state.revoked?{}:null})},rpc:async(_name,args)=>args.operation==='credentials.verify'?{data:{scopes:state.scopes},error:state.revoked?{}:null}:{data:state.revoked?null:row(),error:state.revoked?{}:null},from(table){const filters={};const query={select(){return query;},eq(k,v){filters[k]=v;return query;},async maybeSingle(){return {data:table==='profiles'?(state.noProfile?null:{updated_at:state.profileTime,facts:{name:'Saved name'}}):filters.user_id===owner&&filters.id===id?row():null};}};return query;},storage:{from:()=>({download:async()=>{state.downloads++;return {data:blob};}})}};
- const parser=createResumeParser({client,config:()=>({url:'https://resume-parser.us1.affinda.com/v1/resumes/parse',key:'secret-test-key'}),request:async(url,init)=>{state.calls++;assert.equal(url,'https://resume-parser.us1.affinda.com/v1/resumes/parse');assert.equal(init.headers.Authorization,'Bearer secret-test-key');assert.equal(init.redirect,'error');assert.equal(init.body,blob);return json(response(),state.providerStatus);}});
+ const parser=createResumeParser({client,config:()=>({url:'https://api.apilayer.com/resume_parser/upload',key:'secret-test-key'}),request:async(url,init)=>{state.calls++;assert.equal(url,'https://api.apilayer.com/resume_parser/upload');assert.equal(init.headers.apikey,'secret-test-key');assert.equal(init.headers['Content-Type'],'application/octet-stream');assert.ok(!init.headers.Authorization);assert.equal(init.redirect,'error');assert.equal(init.body,blob);return json(response(),state.providerStatus);}});
  return {state,parser};
 }
-test('mapping keeps source wording, precision and warnings while dropping sensitive/derived values',()=>{
- const result=mapAffindaResponse(response());assert.equal(result.facts.skills,'JS');assert.equal(result.facts.linkedin,'https://linkedin.com/in/jordan');assert.equal(result.facts.workExperience[0].current,true);assert.ok(!('startDate' in result.facts.workExperience[0]));assert.ok(result.warnings.some(w=>w.includes('year')));assert.ok(result.warnings.some(w=>w.includes('three')));
- for(const field of ['authorization','expectedSalary','nationalities','verified','rawText','headshot'])assert.ok(!(field in result.facts));assert.ok(!('education' in result.facts));
+test('APILayer mapping uses documented fields and preserves ambiguous dates as source text',()=>{
+ const result=mapApilayerResponse(response());assert.equal(result.provider,'apilayer');assert.equal(result.facts.name,'Jordan Example');assert.equal(result.facts.skills,'JS\nPostgreSQL');assert.equal(result.facts.workExperience[0].company,'Example Systems');assert.equal(result.facts.workExperience[0].description,'Dates listed on resume: 2022 - Present');assert.equal(result.facts.education[0].description,'Dates listed on resume: 2019');
+ for(const field of ['startDate','endDate','current'])assert.ok(!(field in result.facts.workExperience[0]));assert.ok(result.warnings.some(w=>w.includes('free text')));assert.ok(result.warnings.some(w=>w.includes('OCR support is unverified')));
+ for(const field of ['authorization','firstName','lastName','projects','rawText','verified'])assert.ok(!(field in result.facts));
 });
-test('unknown schemas, non-resumes and empty extraction fail closed',()=>{
- const value=response();value.meta.schemaVersion='2.0';assert.throws(()=>mapAffindaResponse(value),/unsupported/);value.meta.schemaVersion='1.0';value.meta.document.classification.label='not_resume';assert.throws(()=>mapAffindaResponse(value),/not recognized/);assert.throws(()=>mapAffindaResponse({data:{},meta:{schemaVersion:'1.0'}}),/No supported/);
+test('unexpected wrappers, malformed records, HTTP-200 errors and empty extraction fail closed',()=>{
+ for(const body of [{data:{name:'Old schema'},meta:{schemaVersion:'1.0'}},{message:'provider error'},{name:42},{skills:[{}]},{experience:[null]},{education:[{name:{bad:true}}]}])assert.throws(()=>mapApilayerResponse(body),/unsupported/);
+ assert.throws(()=>mapApilayerResponse({name:'',skills:[],education:[],experience:[]}),/No supported/);
 });
 test('only selected changes replace sections; existing histories default unchecked',()=>{
  const current={name:'Saved',workExperience:[{company:'Existing'}]};const choices=profileImportChoices(current,{name:'New',email:'new@example.com',workExperience:[{company:'New'}],education:[]});assert.deepEqual(choices.filter(c=>c.selected).map(c=>c.key),['email']);assert.deepEqual(selectedProfileFields(choices,['email']),{email:'new@example.com'});assert.deepEqual(current.workExperience,[{company:'Existing'}]);
 });
-test('parser config pins known HTTPS regions and requires a server key',()=>{
- assert.throws(()=>affindaConfig({}),/not configured/);assert.throws(()=>affindaConfig({AFFINDA_API_KEY:'secret',AFFINDA_BASE_URL:'https://evil.example'}),/region/);assert.match(affindaConfig({AFFINDA_API_KEY:'secret',AFFINDA_ORGANIZATION:'org'}).url,/organization=org/);
+test('parser config requires only APILayer server key and pins the upload endpoint',()=>{
+ assert.throws(()=>apilayerConfig({}),/not configured/);assert.throws(()=>apilayerConfig({AFFINDA_API_KEY:'obsolete'}),/not configured/);
+ assert.deepEqual(apilayerConfig({APILAYER_API_KEY:' secret ',APILAYER_BASE_URL:'https://evil.example'}),{url:'https://api.apilayer.com/resume_parser/upload',key:'secret'});
 });
 test('closed payload rejects identities, arbitrary URLs and paths on every entry point',()=>{
  for(const payload of [{},{resumeId:id,userId:owner},{resumeId:id,url:'https://evil.example'},{resumeId:'../../secret'},null])assert.throws(()=>validateResumeParse(payload));assert.doesNotThrow(()=>validateRequest({operation:'resumes.parse',payload:{resumeId:id}}));
@@ -45,7 +48,7 @@ test('cache hits still recheck access; checksum failures never send bytes extern
  const next=harness();next.state.hashMismatch=true;await assert.rejects(next.parser.human('human-token',{resumeId:id}),/contents/);assert.equal(next.state.calls,0);
 });
 test('provider errors are sanitized and failed calls do not become successful cached results',async()=>{
- const {state,parser}=harness();state.providerStatus=402;await assert.rejects(parser.human('human-token',{resumeId:id}),/no credits/);state.providerStatus=200;await parser.human('human-token',{resumeId:id});assert.equal(state.calls,2);
+ const {state,parser}=harness();state.providerStatus=402;await assert.rejects(parser.human('human-token',{resumeId:id}),/request allowance/);state.providerStatus=200;await parser.human('human-token',{resumeId:id});assert.equal(state.calls,2);
 });
 test('browser adapter rejects account changes while parsing',async()=>{
  let current=owner;const client={auth:{getSession:async()=>({data:{session:{access_token:'private-token'}}})}};
@@ -66,4 +69,11 @@ test('Node MCP discovers scoped parser only with all scopes; human route uses sa
 });
 test('Node operation maps parser errors without leaking provider messages',async()=>{
  const dispatch=createDispatch({rpc:async()=>{throw Error('should not forward');},supabaseUrl:'http://localhost:54321',parseResume:async()=>{throw new ResumeParseError(503,'Not configured');}});assert.deepEqual(await dispatch(token,'resumes.parse',{resumeId:id}),{status:503,error:'Not configured'});
+});
+
+test('APILayer authentication, quotas and unreadable-document errors have safe recovery messages',async()=>{
+ for(const [status,pattern]of [[401,/key and Resume Parser subscription/],[403,/key and Resume Parser subscription/],[429,/request allowance/],[400,/text-based PDF/],[415,/text-based PDF/],[500,/unavailable/]]){const {state,parser}=harness();state.providerStatus=status;await assert.rejects(parser.human('human-token',{resumeId:id}),pattern);}
+});
+test('large history is bounded without silently dropping the source-date caveat',()=>{
+ const result=mapApilayerResponse({experience:Array.from({length:51},()=>({title:'Engineer',dates:'2020'}))});assert.equal(result.facts.workExperience.length,50);assert.ok(result.warnings.some(w=>w.includes('omitted')));
 });

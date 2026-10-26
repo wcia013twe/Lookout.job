@@ -1,6 +1,6 @@
-# Local global intelligence ingestion
+# Intelligence ingestion: fixtures and account staging
 
-Status: local demo only. Two sources, one deterministic cleaner, one vector table, two local MCP tools. No production ingestion or graph retrieval.
+Status: local fixtures and account-backed ingestion both work. The reusable processor, source adapters and owner-scoped staging accept real source records without fixture imports or synthetic vectors. Hosted production ingress, global publication and graph retrieval are not deployed.
 
 ## Inspected sources
 
@@ -9,7 +9,7 @@ Before authoring fixtures, inspected the running `supabase_db_lookout-local` Doc
 1. **Circle source:** published root posts joined to their exact published revision in `private.knowledge_revisions`. Preserve distinct `content.insight` and body text; preserve content company, role, stage, experience date, provenance and uncertainty.
 2. **Application source:** application milestones plus application-linked logged networking replies. Milestones have kind, phase, label, optional `occurred_at` and private evidence JSON. Communications live in `outreach_contacts.record.notes` using `lookout-conversation-v1`. Existing `contactsForProcess` matches explicit application tags or exact job URLs; company name alone does not establish linkage. Only logged received messages enter this demonstration. Sent introductions, contact notes, thread URLs and milestone evidence excerpts are excluded.
 
-Nine fictional observations: two Circle experiences, two Circle resources, one tagged Circle discussion, two milestones and two received messages in one application-linked conversation. The Circle UI demo also includes a general resource with source and resource attachments. All company names and experiences are fictional. These adapters are used on fixed fixtures, not live account records. A future real-data adapter must enforce ownership and processing/sharing permission before invoking them.
+Nine fictional observations: two Circle experiences, two Circle resources, one tagged Circle discussion, two milestones and two received messages in one application-linked conversation. The Circle UI demo also includes a general resource with source and resource attachments. All company names and experiences are fictional. The fixed fixtures remain isolated tests. The account source loader additionally reads actual local source-table rows for a server-selected owner. It loads only that owner’s published Circle revisions with active membership, owned milestones and explicitly linked received communications. Production callers must authenticate and authorize the owner before selecting this loader; private processing does not authorize global publication.
 
 Application message dates mean logged communication dates; milestone dates mean reported event dates. Never substitute record creation, email arrival or ingestion time for a missing event date. Received statements have unknown provenance with explicit uncertainty, not employer verification. Contact revision versions the message-derived observations in this first demonstration; fine-grained immutable message versioning is deferred.
 
@@ -17,7 +17,7 @@ Application message dates mean logged communication dates; milestone dates mean 
 
 MCP or timer → Node function → source adapters → validation/redaction → unchanged check → embedding provider → atomic upsert.
 
-The reusable service receives a typed source-loader callback and an embedding provider. Fictional source records and synthetic vectors live in `tests/fixtures/intelligence.mts` and are wired only by `backend/intelligence/demo.ts`. Processing/service code has no fixture imports. Real source loaders can provide the same observations through this boundary without rewriting cleaning or embedding; ownership, sharing permission and a real-data storage boundary still need integration before using live accounts.
+The reusable service receives a typed source-loader callback and an embedding provider. Fictional source records and synthetic vectors live in `tests/fixtures/intelligence.mts` and are wired only by `backend/intelligence/demo.ts`. Processing/service code has no fixture imports. The internal intelligenceProcessor exposes run/list independently of demo tool names. Storage targets are explicit: demo or owner-scoped private staging. The account entrypoint imports no test fixtures and uses the database-backed loader. Hosted authenticated routing and a global-sharing policy still need integration.
 
 The Node API is separately runnable and can later be imported into the user's Dockerized backend. Existing Node API/worker and hosted MCP are unchanged. The local demo adapter forwards requests to this Node HTTP API; it never accesses PostgreSQL directly. MCP owns protocol framing and discovery; HTTP owns request parsing. Both use the same operation contract, with the service enforcing allowed arguments and limits. Malformed HTTP JSON returns INVALID_REQUEST (400), not a backend outage.
 
@@ -60,7 +60,7 @@ The resource adapter recognizes published `content.type=resource` posts. It pres
 
 The cleaner uses version `clean-v3`, so old successful rows are reprocessed once. Public link metadata is validated with the existing Circle URL helper plus decoded credential-query and local-address checks. Tracking parameters are stripped and references are deduplicated. Labels and titles undergo the same redaction as descriptions. URLs themselves stay out of embedding text; structured links remain available for citations. No external page is fetched or attested as publicly accessible. Local file previews are not indexed.
 
-Normalize Unicode/whitespace; remove supplied known names literally; redact emails, phone numbers and all HTTP(S) URLs. Whitelisting drops source metadata. Freeform text is not summarized, verified or executed. Unknown names, contextual identifiers and confidential content can remain; therefore only fictional fixtures are accepted by the exposed tools.
+Normalize Unicode/whitespace; remove supplied known names literally; redact emails, phone numbers and all HTTP(S) URLs. Whitelisting drops source metadata. Freeform text is not summarized, verified or executed. Unknown names, contextual identifiers and confidential content can remain; therefore public/global publication remains disabled. The local evaluation tools run either fixed fixtures or a selected local test account; they are not public production endpoints.
 
 Same source revision with a different cleaned hash is a conflict. Older versions skip. Unchanged observations with the same processing/model version skip without a provider call. Higher source revisions or changed processing/model versions regenerate. Saving fields and vector is one SQL statement; provider failure leaves the previous good row intact. Each record's failure is independent and returns only its fixture index and bounded code.
 
@@ -145,3 +145,33 @@ Circle file attachments remain local previews and are not persisted/indexed. Rea
 Validation: 15 focused tests and all 567 repository tests passed, plus backend type checking and 158-role catalog validation. Tests cover existing UI chat mentions, metadata validation, unknown target revisions, no target body copying, general discussions and a unified three-kind projection. Actual stdio MCP -> Docker -> PostgreSQL inserted the tagged example, refreshed eight rows for clean-v3 and then skipped all nine on repeat. Reviewable input/output: `/private/tmp/intelligence-tagged-post.json`.
 
 Post-integration verification: the landing integrated the separately completed local backend work. All 595 tests passed on merged commit b55bd03, along with intelligence type checking and 158-role catalog validation. The earlier 567 count describes the pre-integration feature checks.
+
+## Account-backed input and production-data readiness
+
+`intelligenceProcessor(pool, provider, sourceLoader, target)` has no fixture dependency or default fake storage target. Production backend code can provide an authenticated owner, real source loader and real repository/provider. The local evaluation entrypoint deliberately accepts only localhost/Postgres and an existing `@example.test` account; that restriction belongs to the harness, not the reusable processor. Do not expose the local evaluation HTTP server as a production authenticated API.
+
+The account source loader reads real `knowledge_posts`/`knowledge_revisions`, `application_milestones`, application/job context and logged `outreach_contacts` records. Every query filters the selected owner; Circle input additionally requires active membership, source authorship and the published revision. Private drafts and other authors’ contributions are excluded. The Circle feature gate is respected. Contacts are matched using the existing process-link rules. Contact storage revisions are translated from zero-based to one-based observation versions. Unusual/long communication IDs are deterministically hashed into stable report keys. Each input query is capped at 200 records; larger batches fail explicitly until pagination is added.
+
+Migration `20261026193933_intelligence_account_staging.sql` creates `private.intelligence_reports` independently of the demo tables. It stores the same cleaned knowledge/reference fields plus `owner_id`; uniqueness includes owner. Reads, writes and upserts are owner-filtered. All records are constrained to `private_draft`; anonymous/browser roles have no direct access. It cannot publish globally.
+
+Account staging supports nullable `embedding` and `embedding_model`; read responses derive `embedding_status=pending|ready`. Pending mode makes no model call, even if a key exists. A real provider can backfill unchanged pending records later. Removing provider configuration does not erase a valid unchanged embedding; changed text correctly resets it to pending. Known synthetic fixture models are rejected in account storage.
+
+Local commands, from the task checkout:
+
+```sh
+# Apply reviewed pending migrations to the local stack only.
+supabase migration up --local --include-all
+# Supply the UUID of your existing local test account.
+INTELLIGENCE_ACCOUNT_ID=YOUR_LOCAL_TEST_ACCOUNT node tests/fixtures/seed-intelligence-account.mts --enable-local-circles
+INTELLIGENCE_ACCOUNT_ID=YOUR_LOCAL_TEST_ACCOUNT npm run intelligence:account -- --once
+# Set the ignored backend/intelligence/.env.local from .env.example before Docker use.
+docker compose --env-file backend/intelligence/.env.local -f backend/intelligence/compose.yaml up --build -d
+```
+
+The idempotent seed creates a clearly fictional `[DEMO] Intelligence ingestion` Circle with two posts and one labeled milestone attached to an existing application. It verifies application IDs/statuses/revisions are unchanged within its transaction. It does not alter agent scopes, mint credentials or write approval records. Optional local Circle enablement changes availability only; ownership and normal publication checks remain enforced for subsequent UI/MCP actions. Withdraw the generated Circle posts through normal owner controls when finished; the seed will not overwrite withdrawn/edited posts. The labeled milestone remains part of the test account’s history. No reset of unrelated account records is performed.
+
+This session selected the existing local `@example.test` account and verified actual MCP -> Node -> source database -> private staging: three records saved, three pending embeddings, zero failures; repeat skipped all three. No synthetic vectors were used. The isolated nine-record fixture database remains separate. Evidence: `/private/tmp/intelligence-account-proof.json`. The ignored local configuration stays in the retained task checkout.
+
+These are real persistence/source-code paths exercised with intentionally fictional contributions in a local account. Actual OpenAI responses, hosted production authorization, deletion/withdrawal propagation into derived drafts, global-sharing policy and semantic/graph retrieval remain separate gates.
+
+Final account-path verification: 598 repository tests and 18 focused intelligence tests passed, along with TypeScript checking and 158-role catalog validation. Actual MCP -> rebuilt Docker -> account tables -> private staging returned three private records with embeddings pending, zero failures and idempotent repeat behavior.

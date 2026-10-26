@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {parseForumMentions} from '../../lib/circle-forum-mentions.mjs';
 import {contactsForProcess} from '../../lib/network-model.mjs';
 import {readConversation} from '../../lib/outreach-conversation.mjs';
@@ -12,6 +13,11 @@ export type MilestoneSource = {id:string; application_id:string; kind:string; ph
 export type ContactSource = {id:string; revision?:number; contact?:string; name?:string; tags?:string[]; notes:string; jobUrl?:string; link?:string};
 type LoggedMessage = {id:string; direction:string; channel:string; date:string; body:string};
 const identities = (...values:(string|undefined)[]) => values.filter((value):value is string => Boolean(value));
+function communicationId(contactId:string,messageId:string){
+ const combined=`${contactId}:${messageId}`;
+ // Provider IDs can contain slashes, email-like text or exceed the report key limit.
+ return /^[a-zA-Z0-9:_-]{1,200}$/.test(combined)?combined:`communication:${createHash('sha256').update(JSON.stringify([contactId,messageId])).digest('hex')}`;
+}
 
 export function circleObservation(post:CircleSource):Candidate {
  if(post.state!=='published'||post.parent_id||post.revision!==post.published_revision)throw Error('SOURCE_NOT_PUBLISHED');
@@ -37,7 +43,7 @@ export function applicationObservations(application:ApplicationSource,milestones
  const base={sourceType:'application_update' as const,company:application.company,role:application.title??null};
  const rows:Candidate[]=milestones.filter(m=>m.application_id===application.id).map(m=>({identities:identities(application.candidateName),observation:{...base,sourceId:m.id,sourceRevision:1,stage:m.kind,insight:`${m.phase}: ${m.label}`,experienceDate:m.occurred_at?.slice(0,10)??null,provenance:'unknown',uncertainty:'Recorded application milestone; not independent employer verification.'}}));
  for(const contact of contactsForProcess(contacts,application)) {
-  for(const message of (readConversation(contact).messages as LoggedMessage[]).filter(m=>m.direction==='received'))rows.push({identities:identities(contact.contact,contact.name,application.candidateName),observation:{...base,sourceId:`${contact.id}:${message.id}`,sourceRevision:contact.revision??1,stage:null,insight:`Logged ${message.channel} reply: ${message.body}`,experienceDate:message.date,provenance:'unknown',uncertainty:'Logged correspondence; sender statements are not independently verified.'}});
+  for(const message of (readConversation(contact).messages as LoggedMessage[]).filter(m=>m.direction==='received'))rows.push({identities:identities(contact.contact,contact.name,application.candidateName),observation:{...base,sourceId:communicationId(contact.id,message.id),sourceRevision:contact.revision??1,stage:null,insight:`Logged ${message.channel} reply: ${message.body}`,experienceDate:message.date,provenance:'unknown',uncertainty:'Logged correspondence; sender statements are not independently verified.'}});
  }
  return rows;
 }

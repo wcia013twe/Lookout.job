@@ -1,22 +1,28 @@
 import {createServer} from 'node:http';
 import type pg from 'pg';
-import type {EmbeddingProvider, SourceLoader} from './types.ts';
+import type {EmbeddingProvider, SourceLoader,StoreTarget} from './types.ts';
 import {databaseStore, lockedIngest} from './store.ts';
 import {ingest} from './pipeline.ts';
 import {INGEST_TOOL, validateDemoCall, type DemoCall} from './contract.ts';
 export {INGEST_TOOL, LIST_TOOL} from './contract.ts';
 
-export function ingestionService(pool: pg.Pool, provider: EmbeddingProvider, loadSources: SourceLoader): DemoCall {
+// Internal backend API: no fixture imports, MCP names or demo storage defaults.
+export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader, target:StoreTarget) {
+  return {
+    run: () => lockedIngest(pool, async store => ({
+      embeddingModel: provider?.model ?? null,
+      ...await ingest(store, provider, await loadSources()),
+    }), target),
+    list: (limit=20) => databaseStore((sql, values) => pool.query(sql, values),target).list(limit),
+  };
+}
+
+// Local evaluation transport only. Production callers must authenticate and select owner server-side.
+export function ingestionService(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader,target:StoreTarget): DemoCall {
+  const processor=intelligenceProcessor(pool,provider,loadSources,target);
   return async (operation, args = {}) => {
     const call = validateDemoCall(operation, args);
-    if (call.operation === INGEST_TOOL) {
-      return lockedIngest(pool, async store => ({
-        embeddingModel: provider.model,
-        ...await ingest(store, provider, await loadSources()),
-      }));
-    }
-    const store = databaseStore((sql, values) => pool.query(sql, values));
-    return {items: await store.list(call.limit ?? 20)};
+    return call.operation === INGEST_TOOL ? processor.run() : {items:await processor.list(call.limit??20)};
   };
 }
 

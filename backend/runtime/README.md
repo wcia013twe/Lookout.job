@@ -132,19 +132,20 @@ searches. No worker or `LOOKOUT_EXECUTION_ENABLED` change is required for parsin
 Keep existing local Supabase values in `backend/runtime/.env.local` and add:
 
 ```dotenv
-AFFINDA_API_KEY=<server-only Resume Parser API key>
-AFFINDA_BASE_URL=https://resume-parser.us1.affinda.com
-# AFFINDA_ORGANIZATION=<only if the account has multiple parser organizations>
+APILAYER_API_KEY=<server-only APILayer key>
 ```
 
-Create the key on the matching Affinda region host. Allowed hosts are the US
-`resume-parser.us1.affinda.com`, EU `resume-parser.eu1.affinda.com` and APAC
-`resume-parser.affinda.com`, all HTTPS. The integration uses the stateless
-`POST /v1/resumes/parse` API, not the separate v3 document-storage platform.
-[Affinda API contract](https://resume-parser.us1.affinda.com/docs/api-reference)
-states that files and results are not stored; this does not establish zero
-retention of account/billing/operational metadata. Your private Supabase resume
-and accepted profile data remain stored by Lookout.
+Create a personal [APILayer account](https://marketplace.apilayer.com/signup),
+subscribe to its [Resume Parser API](https://marketplace.apilayer.com/resume_parser-api),
+and copy the key to the local Node env. The endpoint is pinned to
+`https://api.apilayer.com/resume_parser/upload`, with raw file bytes and the `apikey`
+header; there is no caller-controlled provider URL and no public resume link.
+The former AFFINDA_API_KEY/AFFINDA_BASE_URL/AFFINDA_ORGANIZATION settings are unused.
+APILayer's Resume Parser listing says uploaded files are deleted after 15 seconds
+and parsed results are not stored. This is the vendor's claim, not an independently
+verified retention guarantee, and does not establish zero retention of account,
+billing or technical metadata. Lookout still keeps its private resume and accepted
+profile data in Supabase. No browser OCR is added; scanned-resume OCR is unverified.
 
 In `next-app/.env.local`, set the public API origin (never a secret):
 
@@ -171,7 +172,7 @@ Authenticated browser `POST /v1/resume-import` accepts only `{resumeId}`. Node M
 Edge MCP discovery. Both entries derive identity from validated credentials,
 look up the owned current private resume, verify its bytes/hash, and call the same
 mapper. Reference URLs, user IDs and object paths are never accepted as input.
-Affinda failures are sanitized; keys, file contents and raw responses are not logged.
+APILayer failures are sanitized; keys, file contents and raw responses are not logged.
 
 The proposal contains sanitized supported facts, fixed quality warnings, current
 owned profile facts and `profileUpdatedAt`. It writes no profile. Website saves use
@@ -187,8 +188,11 @@ Successful sanitized extractions are coalesced/cached per owner and checksum in
 API memory for 15 minutes, at most 20 entries. Auth and ownership are rechecked even
 on cache hits. There is no durable billing deduplication across process restarts
 or multiple replicas; uncertain retries can consume another credit. No automatic
-retry is made. Raw provider text/photos and unsupported sensitive/derived fields
-are discarded. OCR belongs to Affinda, and truncation/quality warnings are shown.
+retry is made. Only documented APILayer name, email, skills, experience and education fields are
+mapped. Free-text dates are retained in descriptions and month fields stay absent.
+Name parts, degree details, projects and other unsupported fields are not invented.
+Malformed responses fail closed. Existing profile fields remain untouched unless
+the user selects replacement. OCR support is unverified and the review says so.
 
 Verification:
 
@@ -200,9 +204,9 @@ LOOKOUT_PLAYWRIGHT_MODULE=<absolute-playwright-index.mjs> LOOKOUT_UI_URL=http://
 
 The local verifier refuses hosted Supabase, creates/removes fictional accounts
 and a private fixture, and proves human/MCP extraction and versioned saves against
-real local Auth/Storage/SQL with the Affinda response stubbed. It creates its own
+real local Auth/Storage/SQL with the APILayer response stubbed. It creates its own
 Node listener on a random port and changes no running containers. Demo browser
-verification uses memory-only fictional proposals and no Affinda/network calls.
+verification uses memory-only fictional proposals and no APILayer/network calls.
 A real API key and a deliberately chosen test document are still needed for a
-live Affinda round trip; mocked/local checks do not establish vendor extraction
+live APILayer round trip; mocked/local checks do not establish vendor extraction
 accuracy or hosted availability.

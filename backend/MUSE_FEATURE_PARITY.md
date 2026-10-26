@@ -58,7 +58,7 @@ MCP and frontend together and verify the hosted round trip.
 ### Resume extraction and profile import
 
 Local integration: tutorial resume uploads/selection and Documents uploads/source
-replacement share the reviewable Affinda proposal. Node MCP `parse_profile_resume`
+replacement share the reviewable APILayer proposal. Node MCP `parse_profile_resume`
 (`resumes.parse`, workspace:read + resumes:read + profile:write) uses the same
 closed resume-ID input, owned immutable file validation and mapper as browser
 `POST /v1/resume-import`. It never saves or verifies profile facts. Review precedes
@@ -68,4 +68,4 @@ use versioned `save_profile_facts` / website `profile.save` creation. Node profi
 field updates use existing `agent_dispatch` SQL directly. Edge-only MCP does not
 advertise extraction. Scope discovery, cache rechecks, account isolation, stale
 saves and fictional demo isolation have local tests; no hosted release or real
-Affinda call is implied.
+APILayer call is implied.

@@ -7,46 +7,34 @@ export class ResumeParseError extends Error {status:number;constructor(status:nu
 const text=(value:any)=>typeof value==='string'?value.trim().slice(0,20000):'';
 const clean=(record:Payload)=>Object.fromEntries(Object.entries(record).filter(([,v])=>v!==undefined&&v!==''));
 const list=(value:any)=>Array.isArray(value)?value.slice(0,50):[];
-const location=(value:any)=>text(value?.raw)||text(value?.formatted);
-function month(value:any,warnings:Set<string>){
- if(!value?.date)return '';
- if(value.precision==='year'){warnings.add('Some dates specify only a year. Their month fields were left blank; check them in My Profile.');return '';}
- return ['month','day'].includes(value.precision)&&/^\d{4}-(0[1-9]|1[0-2])-\d{2}$/.test(value.date)?value.date.slice(0,7):'';
-}
-function website(value:any){try{const raw=text(value);if(!raw)return '';const url=new URL(/^[a-z][a-z0-9+.-]*:/i.test(raw)?raw:'https://'+raw);return url.protocol==='https:'&&!url.username&&!url.password?url.href:'';}catch{return '';}}
-export function mapAffindaResponse(body:Payload){
- if(body?.meta?.schemaVersion!=='1.0'||!body?.data||typeof body.data!=='object'||Array.isArray(body.data))throw new ResumeParseError(502,'The parser returned an unsupported response. Your file is saved.');
- const d=body.data,warnings=new Set<string>();const facts:Payload={};
- if(body.meta.document?.classification?.label==='not_resume')throw new ResumeParseError(422,'This document was not recognized as a resume. Choose a resume or fill your profile manually.');
- if(body.meta.document?.classification?.label==='uncertain')warnings.add('The parser was unsure whether this document is a resume. Review every proposed value.');
- if(body.meta.document?.extractionQuality?.band==='low')warnings.add('The document was difficult to read. Some details may be missing or incorrect.');
- if(body.meta.ocr?.truncated||body.meta.document?.warnings?.some((w:Payload)=>w.code==='ocr_truncated'))warnings.add('Only the first three scanned pages were read. Later pages may be missing.');
- if(body.meta.document?.warnings?.some((w:Payload)=>['low_text_quality','degenerate_ocr'].includes(w.code)))warnings.add('Text extraction reported a quality warning. Compare the result with your resume.');
- facts.firstName=text(d.person?.name?.given);facts.lastName=text(d.person?.name?.family);
- facts.name=[text(d.person?.name?.given),text(d.person?.name?.middle),text(d.person?.name?.family)].filter(Boolean).join(' ');
- facts.email=text(d.contact?.emails?.[0]);const phone=d.contact?.phoneNumbers?.[0];facts.phone=text(phone?.raw)||text(phone?.formatted);
- facts.location=location(d.person?.location);facts.introduction=text(d.summary);
- for(const link of list(d.contact?.websites)){const url=website(link?.url);if(!url)continue;const host=new URL(url).hostname.toLowerCase();const key=host==='linkedin.com'||host==='www.linkedin.com'?'linkedin':host==='github.com'||host==='www.github.com'?'github':'portfolio';if(!facts[key])facts[key]=url;}
- facts.skills=list(d.skills).map(s=>text(s.text)||text(s.name)).filter(Boolean).join('\n');facts.languages=list(d.languages).map(s=>text(s.name)).filter(Boolean).join('\n');
- for(const key of ['workExperience','education','projects'])if(Array.isArray(d[key])&&d[key].length>50)warnings.add('Some history exceeds the 50-entry profile limit and was omitted.');
- facts.workExperience=list(d.workExperience).map(r=>clean({title:text(r.jobTitle),company:text(r.organization),location:location(r.location),employmentType:text(r.employmentType),startDate:month(r.dateRange?.start,warnings),endDate:month(r.dateRange?.end,warnings),current:r.dateRange?.end?.current===true?true:undefined,description:text(r.description)})).filter(r=>Object.keys(r).length);
- facts.education=list(d.education).map(r=>clean({school:text(r.institution),degree:text(r.qualification),fieldOfStudy:list(r.fieldsOfStudy).map(text).filter(Boolean).join(', '),gpa:text(r.grade?.value),startDate:month(r.dateRange?.start,warnings),endDate:month(r.dateRange?.end,warnings)})).filter(r=>Object.keys(r).length);
- facts.projects=list(d.projects).map(r=>clean({name:text(r.name),role:text(r.role),url:website(r.url),startDate:month(r.dateRange?.start,warnings),endDate:month(r.dateRange?.end,warnings),description:text(r.description)})).filter(r=>Object.keys(r).length);
+// APILayer's documented response uses a flat object, with free-text dates.
+// Preserve those dates as source text rather than inventing month precision or ranges.
+export function mapApilayerResponse(body:Payload){
+ const object=(v:any)=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+ if(!object(body)||!['name','email','skills','education','experience'].some(k=>Object.hasOwn(body,k))||
+  ['name','email'].some(k=>body[k]!=null&&typeof body[k]!=='string')||
+  (body.skills!=null&&(!Array.isArray(body.skills)||body.skills.some((v:any)=>typeof v!=='string')))||
+  ['education','experience'].some(k=>body[k]!=null&&(!Array.isArray(body[k])||body[k].some((r:any)=>!object(r)||Object.entries(r).some(([field,v])=>['name','dates','title','location','organization'].includes(field)&&v!=null&&typeof v!=='string')))))throw new ResumeParseError(502,'The parser returned an unsupported response. Your file is saved.');
+ const warnings=new Set<string>(['Scanned-resume OCR support is unverified. Check the extracted details against your original document.']);
+ const dates=(value:any)=>{const raw=text(value);if(!raw)return '';warnings.add('Resume dates were returned as free text. They are preserved in descriptions; fill the date fields after checking them.');return 'Dates listed on resume: '+raw;};
+ for(const key of ['skills','education','experience'])if(Array.isArray(body[key])&&body[key].length>50)warnings.add('Some extracted entries exceed the 50-entry limit and were omitted.');
+ const facts=clean({
+  name:text(body.name),email:text(body.email),skills:list(body.skills).map(text).filter(Boolean).join('\n'),
+  workExperience:list(body.experience).map(r=>clean({title:text(r.title),company:text(r.organization),location:text(r.location),description:dates(r.dates)})).filter(r=>Object.keys(r).length),
+  education:list(body.education).map(r=>clean({school:text(r.name),description:dates(r.dates)})).filter(r=>Object.keys(r).length),
+ });
  const output=Object.fromEntries(Object.entries(facts).filter(([,v])=>Array.isArray(v)?v.length:!!v));
- if(!Object.keys(output).length)throw new ResumeParseError(422,'No supported profile details were found. Try another resume or enter your details manually.');
+ if(!Object.keys(output).length)throw new ResumeParseError(422,'No supported profile details were found. Try a text-based PDF or DOCX resume, or enter your details manually.');
  try{validateFieldUpdate('profile.fields.update',{fields:output,expectedUpdatedAt:'2026-01-01T00:00:00Z'});}catch{throw new ResumeParseError(422,'The extracted profile exceeds supported limits. Try a shorter resume.');}
- return {facts:output,warnings:[...warnings],provider:'affinda',reviewRequired:true};
+ return {facts:output,warnings:[...warnings],provider:'apilayer',reviewRequired:true};
 }
-export function affindaConfig(env:NodeJS.ProcessEnv=process.env){
- const base=env.AFFINDA_BASE_URL||'https://resume-parser.us1.affinda.com';
- if(!['https://resume-parser.affinda.com','https://resume-parser.us1.affinda.com','https://resume-parser.eu1.affinda.com'].includes(base))throw new ResumeParseError(503,'Resume parser region is not configured correctly.');
- if(!env.AFFINDA_API_KEY?.trim())throw new ResumeParseError(503,'Resume autofill is not configured yet. Your uploaded file is saved.');
- const url=new URL('/v1/resumes/parse',base);if(env.AFFINDA_ORGANIZATION)url.searchParams.set('organization',env.AFFINDA_ORGANIZATION);
- return {url:url.href,key:env.AFFINDA_API_KEY};
+export function apilayerConfig(env:NodeJS.ProcessEnv=process.env){
+ if(!env.APILAYER_API_KEY?.trim())throw new ResumeParseError(503,'Resume autofill is not configured yet. Your uploaded file is saved.');
+ return {url:'https://api.apilayer.com/resume_parser/upload',key:env.APILAYER_API_KEY.trim()};
 }
 // Only sanitized proposals are cached, privately per owner/checksum, for 15 minutes.
 // This is process-local cost suppression, not durable exactly-once billing.
-export function createResumeParser({client,request=fetch,config=()=>affindaConfig(),now=Date.now}: {client:any;request?:typeof fetch;config?:()=>{url:string;key:string};now?:()=>number}){
+export function createResumeParser({client,request=fetch,config=()=>apilayerConfig(),now=Date.now}: {client:any;request?:typeof fetch;config?:()=>{url:string;key:string};now?:()=>number}){
  const cache=new Map<string,{expires:number;promise:Promise<any>}>();
  async function owned(owner:string,resumeId:string){
   const {data:resume,error}=await client.from('resumes').select('id,user_id,object_path,content_hash,superseded_by').eq('id',resumeId).eq('user_id',owner).maybeSingle();
@@ -69,11 +57,18 @@ export function createResumeParser({client,request=fetch,config=()=>affindaConfi
     try{await verifyResumeBytes(blob,{extension,bytes:blob.size,sha256:before.resume.content_hash});}catch{throw new ResumeParseError(422,'Resume contents do not match the saved file. Upload the resume again.');}
     await recheck();
     let response;
-    try{response=await request(settings.url,{method:'POST',redirect:'error',signal:AbortSignal.timeout(35000),headers:{Authorization:'Bearer '+settings.key,'Content-Type':extension==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.wordprocessingml.document','Content-Disposition':`attachment; filename="resume.${extension}"`},body:blob});}catch{throw new ResumeParseError(502,'Resume parsing was interrupted. Your file is saved. Retrying may use another parse credit.');}
-    if(!response.ok){await response.body?.cancel();throw new ResumeParseError(response.status===429?429:response.status===422?422:502,response.status===402?'Resume autofill has no credits available. Your file is saved.':response.status===422?'The resume could not be read. Remove any password or try a clearer file.':'Resume parsing is unavailable. Your file is saved; try again later.');}
+    try{response=await request(settings.url,{method:'POST',redirect:'error',signal:AbortSignal.timeout(35000),headers:{apikey:settings.key,'Content-Type':'application/octet-stream'},body:blob});}catch{throw new ResumeParseError(502,'Resume parsing was interrupted. Your file is saved. Retrying may use another API request.');}
+    if(!response.ok){
+     await response.body?.cancel();
+     const status=response.status;
+     throw new ResumeParseError(status===429?429:[400,415,422].includes(status)?422:[401,403].includes(status)?503:502,
+      status===429||status===402?'Resume autofill has reached its API request allowance. Your file is saved; check your APILayer subscription.':
+      [401,403].includes(status)?'Resume autofill is not configured correctly. Check the APILayer key and Resume Parser subscription.':
+      [400,415,422].includes(status)?'The resume could not be read. Try a text-based PDF or DOCX without a password.':'Resume parsing is unavailable. Your file is saved; try again later.');
+    }
     const reader=response.body?.getReader();if(!reader)throw new ResumeParseError(502,'Empty parser response.');let size=0;const parts:Uint8Array[]=[];
     while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>8*1024*1024){await reader.cancel();throw new ResumeParseError(502,'Parser response exceeded supported limits.');}parts.push(value);}
-    try{return mapAffindaResponse(JSON.parse(Buffer.concat(parts).toString('utf8')));}catch(e){if(e instanceof ResumeParseError)throw e;throw new ResumeParseError(502,'Invalid parser response. Your file is saved.');}
+    try{return mapApilayerResponse(JSON.parse(Buffer.concat(parts).toString('utf8')));}catch(e){if(e instanceof ResumeParseError)throw e;throw new ResumeParseError(502,'Invalid parser response. Your file is saved.');}
    })();
    hit={expires:now()+15*60*1000,promise};cache.set(key,hit);promise.catch(()=>{if(cache.get(key)?.promise===promise)cache.delete(key);});
   }
