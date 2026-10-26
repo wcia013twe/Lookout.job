@@ -1,3 +1,4 @@
+import {assertDiscoveryResults} from '../../lib/discovery-filter-contract.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
 import {readSimplifyLeads,simplifyFeed} from './simplify.ts';
 import {verifyLeadSource} from './ats.ts';
@@ -26,6 +27,7 @@ export async function readSearchSourceLeads(call:Call,payload:Payload){
   if(!profile)return {error:{code:'P0002'}};
   const page=await readSimplifyLeads(address,{offset:payload.offset,limit:payload.limit});
   const filtered:any=await executeCareerTask('filter-discovery',{profile:profile.projection,listings:page.leads,portals:context.data.documents.find((d:Payload)=>d.kind==='portals')?.projection||{}});
+  assertDiscoveryResults(filtered.results,page.leads);
   const nextContext=await call('search.context',{profileId:result.data.profile_id});if(nextContext.error)return nextContext;
   if(nextContext.data.personalVersion!==context.data.personalVersion)return {error:{code:'40001'}};
   return {data:{...page,sourceId:payload.sourceId,evaluatedProfileVersion:profile.version,unfilteredPageCount:page.leads.length,leads:page.leads.filter((_lead:Payload,index:number)=>filtered.results[index].passed),excluded:page.leads.flatMap((lead:Payload,index:number)=>filtered.results[index].passed?[]:[{url:lead.url,rejectedBy:filtered.results[index].rejectedBy}]),diagnostics:filtered.diagnostics,filterProvenance:filtered.provenance},error:null};
