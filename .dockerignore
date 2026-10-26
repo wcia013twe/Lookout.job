@@ -4,6 +4,9 @@ next-app
 runner/*
 !runner/career-tools.mjs
 !runner/career-worker.mjs
+!runner/public-source.mjs
+!runner/career-search-intake.mjs
+!runner/career-search-filters.mjs
 !runner/gateway-client.mjs
 !runner/vendor
 openwiki

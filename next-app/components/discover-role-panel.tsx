@@ -1,4 +1,5 @@
 "use client";
+import {recommendationNeedsRefresh} from "../../lib/job-assessment.mjs";
 import { useEffect, useRef } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { primary, secondary } from "./ui";
@@ -37,6 +38,7 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
       </div>
     </header>
     <div className="space-y-7 px-5 py-6 sm:px-8">
+      {recommendationNeedsRefresh(role,w.state.workflow.searchPreferences.profiles || []) && <p role="status" className="rounded-lg border border-board-warning/40 p-3 text-sm text-board-warning">Your preferences changed since this analysis. Ask Muse to refresh these recommendations.</p>}
       <RoleJobFacts role={role} />
       <div className={styles.match}><RoleMatchPreview sample={sample} demo={w.demo} expanded /></div>
       <section aria-labelledby="fit-reasoning">

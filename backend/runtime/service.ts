@@ -1,3 +1,5 @@
+import {submitSearchLeads,readSearchSourceLeads} from './search-intake.ts';
+import {screenSearchDiscoveries} from '../../lib/search-screening.mjs';
 import {createHash} from 'node:crypto';
 import {validateRequest} from '../../supabase/functions/agent-gateway/contract.mjs';
 import {guideDispatch,guideDiscoveryDispatch} from '../../supabase/functions/agent-gateway/guides.mjs';
@@ -22,6 +24,9 @@ export function createDispatch({rpc,supabaseUrl,request=fetch}: {rpc: Rpc; supab
       let result;
       if(service.handler==='queue-rpc')result=await rpc('backend_job_dispatch',{credential_hash:hash,operation,payload});
       else if(service.handler==='credential-rpc')result=await authorize(operation,payload);
+      else if(operation==='search.source.leads')result=await readSearchSourceLeads(authorize,payload);
+      else if(operation==='search.leads.submit')result=await submitSearchLeads(authorize,payload);
+      else if(operation==='search.discoveries.screen')result=await screenSearchDiscoveries(authorize,payload);
       else if(operation==='guides.read')result=await guideDispatch(payload.id,authorize);
       else if(operation==='guides.discover')result=await guideDiscoveryDispatch(authorize);
       else {

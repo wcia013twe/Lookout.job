@@ -59,7 +59,7 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   }
   const latest=await dispatch('search.run.read',{runId:run.id});
   const partial=blocked>0 || !latest.sources.every((s:Payload)=>s.state==='completed'&&s.coverage==='exhaustive');
-  const summary=`Fetched ${scanned} postings and saved ${saved} canonical discovery observations. ${blocked} sources need review. Eligibility and narrative profile fit require agent review.`;
+  const summary=`Read ${scanned} source listings and saved ${saved} canonical discovery observations. ${blocked} sources need review. Eligibility and narrative profile fit require agent review.`;
   await dispatch('search.run.finish',{runId:run.id,expectedVersion:latest.version,state:partial?'partial':'completed',summary,eventKey:prefix+'finish'});
   return {status:partial?'partial':'completed',result:{runId:run.id,observed:scanned,saved,blockedSources:blocked,summary,screening:'review-needed',provenance}};
 }

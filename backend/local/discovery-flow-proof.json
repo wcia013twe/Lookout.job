@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-26T20:00:19.663Z",
+  "localOnly": true,
+  "runIds": {
+    "systems-ft": "e41a704e-165f-4a2a-a112-38a465a83f0b",
+    "systems-intern": "cb67656b-1028-485f-8712-608c0148b9c7"
+  },
+  "intakeCount": 6,
+  "leverTest": {
+    "sameRun": true,
+    "requiredRemoteExcludedOfficeRole": true
+  },
+  "status": "published; browser verification pending",
+  "batchId": "a61aedc3-1072-4d66-b69f-a33055a8d025",
+  "publishedCards": 5,
+  "fullTimeCards": 2,
+  "internshipCards": 3,
+  "companies": [
+    "SingleStore",
+    "Cloudflare",
+    "Scale AI"
+  ],
+  "resumeBasedSkillsScores": true,
+  "otherDimensionsUnknownWherePreferencesMissing": true,
+  "filledFactualOrResumeFields": 38,
+  "personalizedWrittenStarters": 1,
+  "submittedApplications": 0,
+  "aggregateSourcePagingVerified": true,
+  "preParseEmploymentFilterVerified": true,
+  "totalActiveSourceLeads": {
+    "newgrad": 2891,
+    "summer": 2158
+  },
+  "sourceCoverage": "partial-bounded-sample",
+  "sourceRunsClosed": true
+}

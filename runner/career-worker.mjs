@@ -1,6 +1,7 @@
 // Allowlisted executable adapter. No credential or canonical user workspace is passed here.
 import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
-import { isIP } from 'node:net';
+import {publicUrl} from './public-source.mjs';
+export {publicUrl} from './public-source.mjs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,9 +10,7 @@ import { promisify } from 'node:util';
 const exec = promisify(execFile);
 const vendor = fileURLToPath(new URL('./vendor/career-ops/', import.meta.url));
 const text = value => typeof value === 'string' ? value : '';
-export function publicUrl(value) {
- const u=new URL(value);if(u.protocol!=='https:'||u.username||u.password||u.port&&u.port!=='443'||u.hostname==='localhost'||u.hostname.endsWith('.local')||u.hostname.endsWith('.internal')||isIP(u.hostname.replace(/^\[|\]$/g,'')))throw Error('Public HTTPS source required');return u.href;
-}
+
 export async function providerCatalog() {
  const {loadProviders}=await import('./vendor/career-ops/providers/_registry.mjs');
  return [...(await loadProviders(path.join(vendor,'providers'))).values()].map(p=>({id:p.id,automaticDetection:typeof p.detect==='function'}));
@@ -142,6 +141,8 @@ export async function scanDiscovery(input) {
  return {...scan,jobs,duplicates:scan.jobs.length-jobs.length,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',provider:'providers/'+scan.provider+'.mjs',scanner:'runner/career-worker.mjs scanSource',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};
 }
 export async function runTask({task,input}) {
+ if(task==='verify-discovery-leads')return (await import('./career-search-intake.mjs')).verifyDiscoveryLeads(input.leads);
+ if(task==='filter-discovery')return (await import('./career-search-filters.mjs')).filterDiscovery(input);
  if(task==='discovery')return scanDiscovery(input);
  if(task==='dedup-discovery')return deduplicateDiscovery(input.jobs,input.previous);
  if(task==='catalog')return providerCatalog();

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateJobRecommendation,savedJobAssessment} from '../lib/job-assessment.mjs';
+import {validateJobRecommendation,savedJobAssessment,recommendationNeedsRefresh} from '../lib/job-assessment.mjs';
 import {batchRoles} from '../lib/cloud-model.mjs';
 import {companyRanking} from '../next-app/lib/role-display.js';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
@@ -67,4 +67,13 @@ test('fresh private batch observations fill displayed facts without overwriting 
  const item={job_id:'role',jobs:{employer:{workSetting:'Old',category:'GPU systems'},canonical_url:facts.sourceUrl},recommendation:{jobFacts:facts}};
  const role=batchRoles([item],'2026-10-26')[0];assert.equal(role.category,'GPU systems');assert.equal(role.workSetting,facts.workSetting);assert.equal(role.sponsorship,facts.sponsorship);assert.equal(item.jobs.employer.workSetting,'Old');
  for(const patch of [{checkedAt:'bad'},{sourceUrl:'http://example.com'},{sponsorship:''},{extra:'bad'}])assert.throws(()=>validateJobRecommendation({jobFacts:{...facts,...patch}}));
+});
+
+test('saved analysis is marked outdated after a profile lever changes',()=>{
+ const role={searchProfileId:'ft',evaluatedProfileVersion:2};
+ assert.equal(recommendationNeedsRefresh(role,[{id:'ft',version:2}]),false);
+ assert.equal(recommendationNeedsRefresh(role,[{id:'ft',version:3}]),true);
+ assert.equal(recommendationNeedsRefresh(role,[{id:'intern',version:3}]),false);
+ assert.equal(recommendationNeedsRefresh({searchProfileId:'ft'},[{id:'ft',version:3}]),false);
+ assert.throws(()=>validateJobRecommendation({evaluatedProfileVersion:'3'}));
 });
