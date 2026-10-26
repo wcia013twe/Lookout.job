@@ -4,12 +4,12 @@ export const LIST_TOOL = 'list_demo_intelligence_reports';
 export const DEMO_TOOLS = [
   {
     name: INGEST_TOOL,
-    description: 'Clean and embed the two fictional source datasets into the local demo store. Counts describe actual saves, not approvals.',
+    description: 'Run the configured local evaluation source: fixed fixtures or a server-selected local test account. Cleaned account records remain private with pending embeddings unless a real provider is configured. Counts describe saves, not publication approval.',
     inputSchema: {type: 'object', properties: {}, additionalProperties: false},
   },
   {
     name: LIST_TOOL,
-    description: 'Inspect cleaned local fictional reports and vector dimensions; never returns raw source text or embedding values.',
+    description: 'Inspect the configured local evaluation store: cleaned reports, references and embedding state. Owner selection is server-controlled. Never returns raw source text or embedding values.',
     inputSchema: {
       type: 'object',
       properties: {limit: {type: 'integer', minimum: 1, maximum: 50}},

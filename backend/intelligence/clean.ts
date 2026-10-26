@@ -25,7 +25,7 @@ function publicResourceUrl(value:unknown):string {
  return url.href;
 }
 
-export function clean(input:Observation,model:string,identities:string[]=[]):Report {
+export function clean(input:Observation,model:string|null,identities:string[]=[]):Report {
  const text=(value:unknown,max:number,nullable=false):string|null=>{
   if(nullable&&(value===null||value===undefined))return null;
   if(typeof value!=='string'||!value.trim()||value.length>max)throw Error('INVALID_TEXT');
