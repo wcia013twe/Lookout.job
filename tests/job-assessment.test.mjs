@@ -50,3 +50,13 @@ test('detached demo covers ranked and unranked cards through saved fictional pla
  assert.equal(companyRanking('Oracle','FT',workflow).label,'D tier');
  assert.equal(companyRanking('Unlisted demo company','FT',workflow).label,'Unranked');
 });
+
+test('compact four-score agent JSON survives the existing batch/card path without generating an overall score',()=>{
+ const compact={assessedAt:'2026-10-26T18:00:00Z',skillsExperience:{score:82,reasoning:'Database project aligns; ownership needs verification.'},compensation:{score:null,reasoning:'Compensation is undisclosed.'},wellbeingCulture:{score:null,reasoning:'No reliable culture evidence.'},locationWorkSetting:{score:0,reasoning:'Does not match the recorded location preference.'}};
+ assert.doesNotThrow(()=>validateRequest({operation:'batches.publish',payload:{...batch,jobs:[{jobId:'role',recommendation:{matchAssessment:compact}}]}}));
+ const mapped=batchRoles([{job_id:'role',jobs:{employer:{company:'Example'}},recommendation:{matchAssessment:compact}}],'2026-10-26')[0];
+ assert.deepEqual(mapped.matchAssessment,compact);assert.equal(mapped.matchAssessment.percent,undefined);
+ const bads=[{...compact,skillsExperience:{score:101,reasoning:'Outside bounds.'}},{...compact,compensation:{score:'82',reasoning:'String score.'}},{...compact,compensation:{score:null,reasoning:'x'.repeat(241)}},{...compact,locationWorkSetting:undefined},{...compact,extra:{score:80,reasoning:'Unapproved dimension.'}},{...compact,assessedAt:'yesterday'},{...compact,compensation:{score:null,reasoning:'Missing evidence',rating:'Good'}}];
+ for(const bad of bads)assert.throws(()=>validateJobRecommendation({matchAssessment:bad}));
+ assert.equal(savedJobAssessment({...compact,compensation:{score:null,reasoning:''}}),undefined);
+});

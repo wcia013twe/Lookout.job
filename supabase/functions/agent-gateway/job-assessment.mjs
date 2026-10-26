@@ -1,3 +1,16 @@
+export const ASSESSMENT_DIMENSIONS = Object.freeze([
+ ['skillsExperience','Skills & experience'],
+ ['compensation','Compensation'],
+ ['wellbeingCulture','Wellbeing & culture'],
+ ['locationWorkSetting','Location & work setting'],
+]);
+const dimensionKeys=ASSESSMENT_DIMENSIONS.map(([key])=>key);
+const compact=value=>value && dimensionKeys.some(key=>Object.hasOwn(value,key));
+// Render metadata only after the complete stored record passes validation.
+export function assessmentFactors(value) {
+ if(!savedJobAssessment(value))return [];
+ return compact(value)?ASSESSMENT_DIMENSIONS.map(([key,label])=>({label,value:value[key].score,reason:value[key].reasoning})):value.factors;
+}
 // Private recommendation display data; never grants approval or submission permission.
 export function validateJobRecommendation(value = {}) {
  if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Recommendation must be an object.');
@@ -7,6 +20,15 @@ export function validateJobRecommendation(value = {}) {
  if (assessment === undefined) return value;
  const text=(v,n)=>typeof v==='string' && Boolean(v.trim()) && v.length<=n;
  const score=v=>typeof v==='number' && Number.isFinite(v) && v>=0 && v<=100;
+ if (compact(assessment)) {
+  const allowed=[...dimensionKeys,'assessedAt','percent','evidence'];
+  if(Array.isArray(assessment) || Object.keys(assessment).some(key=>!allowed.includes(key)) || !dimensionKeys.every(key=>Object.hasOwn(assessment,key)) || !text(assessment.assessedAt,40) || !/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(assessment.assessedAt) || !Number.isFinite(Date.parse(assessment.assessedAt)) || (assessment.percent!==undefined&&!score(assessment.percent)) || (assessment.evidence!==undefined&&!text(assessment.evidence,1000))) throw Error('Assessment needs exactly four dimensions, an assessedAt timestamp and optional percent/evidence metadata.');
+  for(const key of dimensionKeys){
+   const factor=assessment[key];
+   if(!factor || typeof factor!=='object' || Array.isArray(factor) || Object.keys(factor).length!==2 || !Object.hasOwn(factor,'score') || !Object.hasOwn(factor,'reasoning') || !(factor.score===null || score(factor.score)) || !text(factor.reasoning,240))throw Error('Each dimension needs score 0–100 or null and short reasoning up to 240 characters.');
+  }
+  return value;
+ }
  if (!assessment || typeof assessment!=='object' || Array.isArray(assessment) || !score(assessment.percent) || !text(assessment.evidence,4000) || !text(assessment.assessedAt,40) || !/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(assessment.assessedAt) || !Number.isFinite(Date.parse(assessment.assessedAt)) || !Array.isArray(assessment.factors) || !assessment.factors.length || assessment.factors.length>12) throw Error('Assessment needs percent 0–100, evidence, assessedAt timestamp and 1–12 factors.');
  for (const f of assessment.factors) if (!f || !text(f.label,120) || !(f.value===null || score(f.value)) || !text(f.rating,80) || !text(f.reason,4000)) throw Error('Each assessment factor needs label, value (0–100 or null), rating and evidence reason.');
  return value;
