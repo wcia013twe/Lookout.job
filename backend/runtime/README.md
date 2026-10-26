@@ -30,7 +30,7 @@ Only copied Greenhouse and Lever providers are available to this backend path;
 the installed catalog of 108 providers is not broadly activated. The verbatim
 scanner, tracker deduplication and merge dependency closure is copied by
 `scripts/import-career-tools.mjs` from CareerOps VERSION 1.36.0, commit
-`c78e14cdfd52f18a92e4a67694efab7ddef59385`. All 225 copied files retain their
+`c78e14cdfd52f18a92e4a67694efab7ddef59385`. All 249 copied files retain their
 SHA-256 manifest and MIT license, including `data-static/aggregator-domains.txt`.
 No copied source file was hand-edited.
 
@@ -47,18 +47,18 @@ workspace and never becomes a second user application store.
 
 The child receives no Supabase/agent credentials, has a 384 MiB JavaScript heap,
 a 120-second task timeout and 16 MiB output cap. Existing `scanSource` bounds a
-source to 20 HTTP requests and the raw scanner to 500 returned jobs (the normal job requests 25 per source); the worker
-uses at most ten configured sources. Save transactions are capped at 25 rows and
-48,000 encoded UTF-8 bytes. Description excerpts follow the copied provider's
-limits (normally 4,000 characters for Greenhouse); the full card/modal uses the
-copied uncapped `browser-extract.mjs jdHtmlToText` path when explicitly fetched.
+source to 20 HTTP requests and the raw scanner to 500 returned jobs; the normal
+job requests 25 per source and uses at most ten configured sources. Save transactions are capped at 25 rows and
+48,000 encoded UTF-8 bytes. Provider discovery excerpts are not treated as full verified records: the job
+verifies supported exact employer URLs and parses the description through copied
+`normalizeGreenhouseJob`, bounded at 60,000 characters, before saving observations.
 Unknown publication dates remain null; Lever creation times are not promoted to
 publication dates. Unsupported sources stay agent research work. Coverage does
 not establish fit, eligibility, exhaustive research or full-description archival.
 
 On expired-lease retry, a worker resumes its pinned run and reads bounded identity
-pages from that run before fetching pending sources. Only canonical URL, company,
-title and location are returned to this internal deduplication path. Already
+pages from that run before fetching pending sources. Only public posting identity, company, title, location and requisition fields
+are returned to this internal deduplication path. Already
 completed sources remain completed; previously saved observations are retained.
 Attempt-specific retry keys prevent a changed fetched snapshot from reusing an
 older write key. All subsequent writes still require the current lease. The
