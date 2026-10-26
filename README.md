@@ -738,3 +738,7 @@ Connect/reconnect is not a job-search run. The agent reads onboarding state and 
 The setup request instructs the runtime to add/update enabled scheduled tasks assigned to this connection in its own automation settings, preserve saved time/timezone, deduplicate by Lookout task ID and leave unrelated automations intact. Disabled/manual/unassigned tasks are not run. Actual scheduler receipts are required before reporting success; missing settings/capabilities are a blocker, not a reason to launch work or install infrastructure. The agent then gives a short report and stops. Searches/imports execute only under a separate work request or actual scheduled invocation. Lookout stores definitions; it does not supply Muse’s scheduler.
 
 MCP mapping: `read_onboarding_state` → `update_onboarding_step(event=connection_test)`; the browser observes `data.connectionTest`. Existing runtime browsing attestation remains separate. Developer contract 52 defines this bounded setup sequence. Muse’s actual automation-settings support must still be verified in that runtime.
+
+## Local Supabase recovery workspace
+
+For an independent Docker-backed database, Auth, Storage and agent-gateway/MCP setup, see [the local setup and validation guide](backend/local/README.md). Local startup does not require Supabase CLI login and does not recover or switch the hosted account.

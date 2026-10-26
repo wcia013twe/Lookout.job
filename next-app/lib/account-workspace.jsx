@@ -10,9 +10,8 @@ import {rememberOnboardingReturn,takeOnboardingReturn} from "./onboarding-auth.m
 import catalog from "../../data/jobs.json";
 import {useWebsiteOnboarding} from "./use-website-onboarding";
 import {canViewWorkspace} from "./workspace-access";
+import {SUPABASE_URL as URL,SUPABASE_PUBLISHABLE_KEY as KEY} from "./supabase-config.mjs";
 let boot;
-const URL = "https://umhqfqzpwmszhcknwtrs.supabase.co";
-const KEY = "sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5";
 async function initialize() {
   window.JB ||= {};
   await import("../../lib/store.js");

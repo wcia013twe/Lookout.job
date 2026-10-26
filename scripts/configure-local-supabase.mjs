@@ -1,0 +1,16 @@
+import {execFileSync} from 'node:child_process';
+import {writeFileSync, existsSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {resolve} from 'node:path';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const paths=['next-app/.env.local','supabase/functions/.env.local'];
+if(paths.some(path=>existsSync(resolve(root,path)))) throw Error('Local env file exists. Review it before replacing; no files were changed.');
+const cli=resolve(root,'node_modules/.bin/supabase');
+const status=JSON.parse(execFileSync(cli,['status','-o','json'],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}));
+const url=status.API_URL;
+if(!url || !['127.0.0.1','localhost','[::1]'].includes(new URL(url).hostname)) throw Error('Expected a running loopback local Supabase project.');
+const key=status.PUBLISHABLE_KEY || status.ANON_KEY;
+if(!key || /^(sb_secret_|eyJ.*service_role)/.test(key) || key===status.SERVICE_ROLE_KEY) throw Error('Local browser key unavailable.');
+writeFileSync(resolve(root,paths[0]),`NEXT_PUBLIC_SUPABASE_URL=${url}\nNEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${key}\n`,{mode:0o600});
+writeFileSync(resolve(root,paths[1]),`LOOKOUT_PUBLIC_SUPABASE_URL=${url}\n`,{mode:0o600});
+console.log('Wrote ignored local frontend and Edge Function configuration. No service-role key was written. Restart Next.js and the function server to use it.');

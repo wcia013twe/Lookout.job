@@ -13,7 +13,14 @@
     "feature:start": "node scripts/feature-delivery.mjs start",
     "feature:land": "node scripts/feature-delivery.mjs land",
     "feature:publish": "node scripts/feature-delivery.mjs publish",
-    "feature:status": "node scripts/feature-delivery.mjs status"
+    "feature:status": "node scripts/feature-delivery.mjs status",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:env": "node scripts/configure-local-supabase.mjs",
+    "supabase:functions": "supabase functions serve --env-file supabase/functions/.env.local",
+    "validate:local-db": "node backend/local/check-schema.mjs",
+    "validate:local-edge": "node scripts/check-local-edge.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",
@@ -22,6 +29,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.4.6",
-    "esbuild": "0.25.12"
+    "esbuild": "0.25.12",
+    "supabase": "2.122.0"
   }
 }
