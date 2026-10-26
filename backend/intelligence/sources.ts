@@ -1,10 +1,10 @@
 import {contactsForProcess} from '../../lib/network-model.mjs';
 import {readConversation} from '../../lib/outreach-conversation.mjs';
-import type {Candidate} from './types.ts';
+import type {Candidate, MatchingContext, ResourceLink} from './types.ts';
 export type {Candidate} from './types.ts';
 export type CircleSource = {
  id:string; state:string; parent_id?:string|null; revision:number; published_revision:number|null; authorName?:string;
- content:{company:string; role?:string|null; stage?:string|null; insight?:string; body?:string; experienceDate?:string|null; provenance:string; uncertainty?:string|null};
+ content:{type?:string;title?:string;company?:string|null;sources?:ResourceLink[];contexts?:({kind:string;label:string;url?:string;company?:string;role?:string;stage?:string;jobId?:string;jobUrl?:string;contact?:string})[]; role?:string|null; stage?:string|null; insight?:string; body?:string; experienceDate?:string|null; provenance:string; uncertainty?:string|null};
 };
 export type ApplicationSource = {id:string; company:string; title?:string; candidateName?:string; url?:string; applicationUrl?:string; backendId?:string};
 export type MilestoneSource = {id:string; application_id:string; kind:string; phase:string; label:string; occurred_at:string|null; source?:unknown};
@@ -15,7 +15,20 @@ const identities = (...values:(string|undefined)[]) => values.filter((value):val
 export function circleObservation(post:CircleSource):Candidate {
  if(post.state!=='published'||post.parent_id||post.revision!==post.published_revision)throw Error('SOURCE_NOT_PUBLISHED');
  const c=post.content;
- return {identities:identities(post.authorName),observation:{sourceType:'circle_post',sourceId:post.id,sourceRevision:post.revision,company:c.company,role:c.role??null,stage:c.stage??null,insight:c.insight||c.body||'',experienceDate:c.experienceDate??null,provenance:c.provenance,uncertainty:c.uncertainty??null}};
+ const resource=c.type==='resource';
+ const contexts:MatchingContext[]=(c.contexts??[]).filter(item=>item.kind==='application').map(item=>({
+  label:item.label,...Object.fromEntries(['company','role','stage','jobId','jobUrl'].filter(key=>Object.hasOwn(item,key)).map(key=>[key,item[key as keyof typeof item]])),
+ }));
+ // A single attached application is usable context; never combine fields from unrelated attachments.
+ const primary=!c.company&&contexts.length===1?contexts[0]:null;
+ const resourceLinks=resource?[...(c.sources??[]),...(c.contexts??[]).filter(item=>item.kind==='resource'&&item.url).map(item=>({url:item.url!,label:item.label}))]:[];
+ return {
+  identities:identities(post.authorName,...(c.contexts??[]).filter(item=>item.kind==='referral').map(item=>item.contact)),
+  observation:{sourceType:'circle_post',sourceId:post.id,sourceRevision:post.revision,
+   contentKind:resource?'resource':'observation',title:c.title??null,resourceLinks,contexts,
+   company:c.company??primary?.company??null,role:primary?.role??c.role??null,stage:primary?.stage??c.stage??null,
+   insight:resource?[...new Set([c.insight,c.body].filter(Boolean))].join('\n\n'):c.insight||c.body||'',experienceDate:c.experienceDate??null,provenance:c.provenance,uncertainty:c.uncertainty??null},
+ };
 }
 export function applicationObservations(application:ApplicationSource,milestones:MilestoneSource[],contacts:ContactSource[]):Candidate[] {
  const base={sourceType:'application_update' as const,company:application.company,role:application.title??null};

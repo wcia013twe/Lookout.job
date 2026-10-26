@@ -10,3 +10,7 @@
 !tests/
 !tests/fixtures/
 !tests/fixtures/intelligence.mts
+!supabase/
+!supabase/functions/
+!supabase/functions/agent-gateway/
+!supabase/functions/agent-gateway/context-attachments.mjs

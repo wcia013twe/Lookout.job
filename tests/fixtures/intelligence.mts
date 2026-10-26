@@ -12,8 +12,24 @@ export function demoCandidates(){
  {id:'sent-001',direction:'sent',channel:'Email',date:'2026-10-12',body:'Private candidate introduction excluded'},
  {id:'received-001',direction:'received',channel:'Email',date:'2026-10-14',body:'Taylor Example, the technical round will discuss backend reliability. Morgan Example, morgan@example.com.'},
  {id:'received-002',direction:'received',channel:'Email',date:'2026-10-16',body:'The next round includes a project deep dive. Thread https://example.com/thread?token=fake'}]})};
- return [...posts.map(circleObservation),...applicationObservations(application,milestones,[contact])];
+ return [...posts.map(circleObservation),...applicationObservations(application,milestones,[contact]),...resourceCandidates()];
 }
 
 // Synthetic vectors prove storage mechanics only. They are not semantic embeddings.
 export function fixtureProvider():EmbeddingProvider{return {model:'fixture-vector-v1',async embed(text){const bytes=createHash('sha256').update(text).digest();return Array.from({length:1536},(_,i)=>(bytes[i%bytes.length]+1)/256);}};}
+
+export function resourceCandidates(){
+ return [
+  circleObservation({id:'demo-resource-general',state:'published',parent_id:null,revision:1,published_revision:1,authorName:'Alex Example',content:{
+   type:'resource',title:"Alex Example's concurrency study guide",body:'Alex Example used these notes to practice lock contention. Ask alex@example.com or +1 (212) 555-0100. Private notes: https://example.com/notes?token=fake',
+   provenance:'user_confirmed',sources:[{url:'https://example.com/prep/concurrency?utm_source=circle',label:'Concurrency preparation guide'}],
+   contexts:[{kind:'resource',label:'Same guide shared twice',url:'https://example.com/prep/concurrency'},{kind:'resource',label:"Alex Example's locking notes",url:'https://example.com/prep/locking'}],
+   uncertainty:'Fictional shared preparation resource; usefulness is a member report.'
+  }}),
+  circleObservation({id:'demo-resource-process',state:'published',parent_id:null,revision:1,published_revision:1,content:{
+   type:'resource',title:'Backend reliability reading list',insight:'Fictional preparation resource for a backend technical round.',body:'Read the failure-handling section before practicing the project deep dive.',provenance:'unknown',
+   sources:[{url:'https://example.com/prep/reliability',label:'Reliability preparation guide'}],
+   contexts:[{kind:'application',label:'Cedar Systems (demo) backend process',company:'Cedar Systems (demo)',role:'Backend Engineer',stage:'technical',jobId:'DEMO-BACKEND-2027',jobUrl:'https://example.com/jobs/cedar-backend'}]
+  }})
+ ];
+}

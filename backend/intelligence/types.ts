@@ -1,5 +1,14 @@
-export type Observation = {sourceType:'circle_post'|'application_update'; sourceId:string; sourceRevision:number; company:string; role:string|null; stage:string|null; insight:string; experienceDate:string|null; provenance:string; uncertainty:string|null};
-export type Report = Observation & {contentHash:string; processingVersion:string; embeddingText:string; embeddingModel:string};
+export type ResourceLink = {url:string; label:string};
+export type MatchingContext = {label:string; company?:string; role?:string; stage?:string; jobId?:string; jobUrl?:string};
+export type Observation = {
+ sourceType:'circle_post'|'application_update'; sourceId:string; sourceRevision:number;
+ contentKind?:'observation'|'resource'; title?:string|null; resourceLinks?:ResourceLink[]; contexts?:MatchingContext[];
+ company:string|null; role:string|null; stage:string|null; insight:string; experienceDate:string|null; provenance:string; uncertainty:string|null;
+};
+export type Report = Observation & {
+ contentKind:'observation'|'resource'; title:string|null; resourceLinks:ResourceLink[]; contexts:MatchingContext[];
+ contentHash:string; processingVersion:string; embeddingText:string; embeddingModel:string;
+};
 export type Query = (sql:string, values?:any[])=>Promise<{rows:any[]}>;
 export type Store = {get:(type:string,id:string)=>Promise<StoredVersion|undefined>; save:(r:Report,vector:number[])=>Promise<void>; list:(limit:number)=>Promise<any[]>};
 export type EmbeddingProvider = {model:string; embed:(text:string)=>Promise<number[]>};

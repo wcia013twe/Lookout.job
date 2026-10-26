@@ -12,3 +12,12 @@
 - Moved fictional records and synthetic-vector generation into test fixtures. The demo entrypoint injects them into a typed source-loader/provider boundary; reusable pipeline/service modules no longer load demo records themselves. Real account adapters can use this boundary once ownership/sharing/storage integration is added.
 - Centralized operation names, discovery schemas and argument validation. MCP only frames/forwards calls; the backend service enforces the shared contract. Tightened source/dependency types and corrected malformed HTTP JSON to a client error.
 - Verification: 560 repository tests passed; backend type checking and catalog validation (158 roles) passed. The new test processes an independently injected source without loading built-in records. Actual stdio MCP calls against rebuilt Docker skipped all six existing rows, listed six cleaned reports, and rejected an invalid limit through the shared backend validator.
+
+## Circle Resources metadata
+
+- Extended the existing Circle adapter to retain cleaned titles, source/resource links and application context. General resources can omit company. Distinct insight/body text is preserved up to the combined Circle field limits; metadata edits participate in source revision checks.
+- Added an additive local-only migration for content kind, title, resource links, matching contexts and nullable resource company. No grants, real-account source loaders or global publication behavior changed. Cleaning version advances to clean-v2 to refresh existing rows.
+- Reused the Circle public-URL validator with additional credential/local-address rejection, stripped tracking parameters and deduplicated references. Personal text is still redacted; structured public references survive for citation. No linked pages or local file previews are fetched/indexed.
+- Demo coverage includes generic and process-specific resource fixtures and a general resource in the existing Circle Resources UI demo.
+- Validation: 564 full-suite tests, 12 focused tests, backend type checking and 158-role catalog validation passed. Actual stdio MCP -> Docker Node -> PostgreSQL inserted two resources, refreshed six old rows and had zero failures; repeat skipped all eight. Input/output example is /private/tmp/intelligence-resource-cleaning.json.
+- Limits: synthetic vectors only; deterministic redaction does not guarantee anonymity. Source authorization, global-sharing policy, actual Circle polling, external page extraction and graph relationships remain unconnected.

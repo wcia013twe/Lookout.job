@@ -9,7 +9,7 @@ Before authoring fixtures, inspected the running `supabase_db_lookout-local` Doc
 1. **Circle source:** published root posts joined to their exact published revision in `private.knowledge_revisions`. Use `content.insight`, falling back to body; preserve content company, role, stage, experience date, provenance and uncertainty.
 2. **Application source:** application milestones plus application-linked logged networking replies. Milestones have kind, phase, label, optional `occurred_at` and private evidence JSON. Communications live in `outreach_contacts.record.notes` using `lookout-conversation-v1`. Existing `contactsForProcess` matches explicit application tags or exact job URLs; company name alone does not establish linkage. Only logged received messages enter this demonstration. Sent introductions, contact notes, thread URLs and milestone evidence excerpts are excluded.
 
-Six fictional observations: two Circle reports, two milestones, two received messages in one application-linked conversation. All company names and experiences are fictional. These adapters are used on fixed fixtures, not live account records. A future real-data adapter must enforce ownership and processing/sharing permission before invoking them.
+Eight fictional observations: two Circle experiences, two Circle resources, two milestones and two received messages in one application-linked conversation. The Circle UI demo also includes a general resource with source and resource attachments. All company names and experiences are fictional. These adapters are used on fixed fixtures, not live account records. A future real-data adapter must enforce ownership and processing/sharing permission before invoking them.
 
 Application message dates mean logged communication dates; milestone dates mean reported event dates. Never substitute record creation, email arrival or ingestion time for a missing event date. Received statements have unknown provenance with explicit uncertainty, not employer verification. Contact revision versions the message-derived observations in this first demonstration; fine-grained immutable message versioning is deferred.
 
@@ -23,7 +23,7 @@ The Node API is separately runnable and can later be imported into the user's Do
 
 ## Database schema
 
-Migration: `supabase/migrations/20261026174035_intelligence_demo_store.sql`. One table: `intelligence_demo.intelligence_reports` in the separate local database `lookout_intelligence_demo`. No duplicate schema dump.
+Migrations: `supabase/migrations/20261026174035_intelligence_demo_store.sql`, then `supabase/migrations/20261026184924_intelligence_resource_metadata.sql`. One table: `intelligence_demo.intelligence_reports` in the separate local database `lookout_intelligence_demo`. No duplicate schema dump.
 
 | Column | SQL type | Meaning |
 | --- | --- | --- |
@@ -31,10 +31,14 @@ Migration: `supabase/migrations/20261026174035_intelligence_demo_store.sql`. One
 | source_type | text | circle_post or application_update |
 | source_id | text | Fictional source identity; contact/message pair for replies |
 | source_revision | integer > 0 | Source revision; append-only milestones start at 1 |
-| company | text | Company context |
+| content_kind | text | observation or resource |
+| title | nullable text | Cleaned title; required for resources |
+| resource_links | jsonb array | Up to 16 deduplicated public HTTPS references with cleaned labels |
+| contexts | jsonb array | Up to six reviewed application context snapshots; no referral identity or private notes |
+| company | nullable text | Optional for resources; required for other observations |
 | role | nullable text | Reported role |
 | stage | nullable text | Reported stage or milestone kind; unknown for unclassified replies |
-| insight | text | Cleaned observation, maximum 4,000 characters |
+| insight | text | Cleaned observation, maximum 4,000 characters; resources allow 16,000 characters for combined insight/body |
 | experience_date | nullable date | Source-supplied event or communication date |
 | provenance | text | employer_verified, user_confirmed, agent_observed, agent_inferred or unknown |
 | uncertainty | nullable text | Source limitations |
@@ -51,6 +55,10 @@ Unique `(source_type, source_id)`; one latest successful row per source observat
 
 ## Cleaning and repeat behavior
 
+The resource adapter recognizes published `content.type=resource` posts. It preserves title, source links and resource-context links; combines distinct insight and body text without truncation; and retains reviewed application context without private referral details. One attached application can supply a missing company/role/stage tuple. Multiple applications stay separate and do not produce a guessed primary company.
+
+The cleaner uses version `clean-v2`, so old successful rows are reprocessed once. Public link metadata is validated with the existing Circle URL helper plus decoded credential-query and local-address checks. Tracking parameters are stripped and references are deduplicated. Labels and titles undergo the same redaction as descriptions. URLs themselves stay out of embedding text; structured links remain available for citations. No external page is fetched or attested as publicly accessible. Local file previews are not indexed.
+
 Normalize Unicode/whitespace; remove supplied known names literally; redact emails, phone numbers and all HTTP(S) URLs. Whitelisting drops source metadata. Freeform text is not summarized, verified or executed. Unknown names, contextual identifiers and confidential content can remain; therefore only fictional fixtures are accepted by the exposed tools.
 
 Same source revision with a different cleaned hash is a conflict. Older versions skip. Unchanged observations with the same processing/model version skip without a provider call. Higher source revisions or changed processing/model versions regenerate. Saving fields and vector is one SQL statement; provider failure leaves the previous good row intact. Each record's failure is independent and returns only its fixture index and bounded code.
@@ -66,6 +74,7 @@ npm ci
 npm ci --prefix next-app
 docker exec supabase_db_lookout-local createdb -U postgres lookout_intelligence_demo
 docker exec -i supabase_db_lookout-local psql -U postgres -d lookout_intelligence_demo -v ON_ERROR_STOP=1 < supabase/migrations/20261026174035_intelligence_demo_store.sql
+docker exec -i supabase_db_lookout-local psql -U postgres -d lookout_intelligence_demo -v ON_ERROR_STOP=1 < supabase/migrations/20261026184924_intelligence_resource_metadata.sql
 docker compose -f backend/intelligence/compose.yaml up --build -d
 ```
 
@@ -97,7 +106,7 @@ The scheduler container calls the identical ingestion function at UTC 00:00, 04:
 | Gate | Evidence | Status |
 | --- | --- | --- |
 | 1. Input and cleaning | Real source schema inspection; fixture/adapters, invalid inputs, exact process linkage and redaction tests | Passed |
-| 2. Local vector writes | PGlite vector tests and Docker Postgres independently report six rows and 1,536 dimensions; repeat skips six; failed writes preserve prior row | Passed with synthetic vectors |
+| 2. Local vector writes | PGlite vector tests and Docker Postgres independently report eight rows and 1,536 dimensions; repeat skips eight; failed writes preserve prior row | Passed with synthetic vectors |
 | 2b. Real embeddings | Actual OpenAI response produces vectors from sanitized text | Pending: no API key configured; mocked API contract tests are not live proof |
 | 3. MCP and timer | Actual stdio MCP → Docker HTTP API → Postgres; real session-lock exclusion; actual short timer invocation in Docker | Passed |
 
@@ -110,3 +119,9 @@ Stop here for inspection of stored records. Next work requires an explicit decis
 ## Cleanup follow-up
 
 Moved fixtures out of reusable backend modules; added explicit source record types and injected source loading. A database-backed test supplies a non-demo-dataset source through the service and proves it alone is processed. The demo table remains demo-only; this is a reusable processing boundary, not authorization to ingest real account data. MCP/HTTP validation now has one operation authority in `contract.ts`; transport tests exercise it through actual HTTP.
+
+## Resource ingestion validation
+
+Twelve focused tests and all 564 repository tests passed, plus backend type checking and catalog validation (158 roles). Resource-specific checks cover a missing company, title redaction, source and context links, URL deduplication, credential/private URL rejection, link-only posts, full descriptions, multiple application contexts, revision conflicts and reuse of the existing Circle UI demo content.
+
+Actual stdio MCP -> Docker API -> PostgreSQL: two new resources inserted, six old observations refreshed under clean-v2, zero failures; repeat skipped all eight. The general resource retained two public references with null company and date. The process resource retained company/role/stage and employer requisition context. The source and output comparison was saved for review at `/private/tmp/intelligence-resource-cleaning.json`. Synthetic fixture-vector-v1 remains explicit. Global sharing, live Circle polling, external page fetching and graph traversal remain deferred.
