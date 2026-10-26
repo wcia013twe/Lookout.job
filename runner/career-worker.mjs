@@ -34,7 +34,7 @@ export async function scanSource({target,config={},keywords=[],limit=50}, inject
   if(!j.title||!j.url)continue;
   let url;try{url=publicUrl(j.url);}catch{continue;}
   if(seen.has(url)||keywords.length&&!keywords.some(k=>`${j.title} ${j.description||''} ${j.location||''}`.toLowerCase().includes(k.toLowerCase())))continue;
-  seen.add(url);normalized.push({title:text(j.title).slice(0,500),url,company:text(j.company||target.name).slice(0,200),location:text(j.location).slice(0,500),description:text(j.description).slice(0,12000),...(Number.isFinite(j.postedAt)?{postedAt:new Date(j.postedAt).toISOString()}:{}),externalId:j.externalId??null,requisitionId:j.requisitionId??null,salary:j.salary??null,provider:resolved.provider.id,sourceTargetId:target.id,verification:'discovered'});
+  seen.add(url);normalized.push({title:text(j.title).slice(0,500),url,company:text(j.company||target.name).slice(0,200),location:text(j.location).slice(0,500),description:text(j.description).slice(0,12000),...(Number.isFinite(j.postedAt)?{postedAt:new Date(j.postedAt).toISOString()}:{}),listingIdentity:j.listingIdentity??null,externalId:j.externalId??null,requisitionId:j.requisitionId??null,salary:j.salary??null,provider:resolved.provider.id,sourceTargetId:target.id,verification:'discovered'});
   if(normalized.length>=limit)break;
  }
  return {targetId:target.id,provider:resolved.provider.id,status:'ok',requests,returned:normalized.length,available:jobs?.length||0,truncated:seen.size>=limit||jobs?.length>limit||Boolean(jobs?.workdayTruncated),jobs:normalized};
@@ -96,7 +96,54 @@ export async function generateDocument({kind,payload,template='classic',profileF
   return {pdf:pdf.toString('base64'),audit,render:{pageCount:render.pageCount,size:render.size}};
  }finally{await rm(workspace,{recursive:true,force:true});}
 }
+// The backend uses the existing isolated worker boundary. Only copied provider
+// and scanner/tracker functions decide identity; Lookout maps public rows back.
+export async function deduplicateDiscovery(jobs,previous=[],workspace=process.env.CAREER_OPS_ROOT) {
+ if(!workspace)throw Error('Isolated discovery workspace required');
+ const scanner=await import('./vendor/career-ops/scan.mjs');
+ const {postingUrlRelation}=await import('./vendor/career-ops/url-key.mjs');
+ const {resolveColumns,parseTrackerRow}=await import('./vendor/career-ops/tracker-parse.mjs');
+ previous=previous.map(row=>{
+  const parts=String(row.identity||row.atsIdentity||'').replace(/^ats:/,'').split(':');
+  return {...row,...(!row.listingIdentity&&parts.length===3&&['greenhouse','lever'].includes(parts[0])?{listingIdentity:{ats_provider:parts[0],board_slug:parts[1],posting_id:parts[2]}}:{})};
+ });
+ const seen=new Set();
+ for(const row of previous)scanner.markOfferSeen(row,seen);
+ const candidates=[];
+ for(const row of jobs){
+  // The copied tracker URL relation vetoes weak merges on two distinct public
+  // posting URLs (including functional ref/source parameters). A provider's
+  // explicit strong identity can still identify the same ATS posting.
+  const strong=scanner.listingIdentityToken(row);
+  const known=Boolean(strong&&seen.has(strong))||[...previous,...candidates].some(prior=>postingUrlRelation(prior.url,row.url)==='same');
+  if(known&&scanner.isOfferSeen(row,seen))continue;
+  scanner.markOfferSeen(row,seen);candidates.push(row);
+ }
+ const all=[...previous,...candidates];
+ const cell=v=>String(v??'').replaceAll('|','/').replace(/\r?\n/g,' ');
+ const header='| # | Date | Company | Role | Score | Status | PDF | Report | Notes | URL | Location |';
+ const table=header+'\n|---|---|---|---|---|---|---|---|---|---|---|\n'+all.map((r,i)=>'| '+[i+1,'',r.company,r.title,'0','Evaluated','','',r.requisitionId?'Job id '+r.requisitionId:'',r.url,r.location||''].map(cell).join(' | ')+' |').join('\n')+'\n';
+ const tracker=path.join(workspace,'discovery-tracker.md');
+ await writeFile(tracker,table,{mode:0o600});
+ // This original CLI is intentionally NOT imported: it performs top-level file
+ // transactions. Those transactions touch only this disposable mapped tracker.
+ await exec(process.execPath,[path.join(vendor,'dedup-tracker.mjs')],{cwd:workspace,env:{...process.env,CAREER_OPS_ROOT:workspace,CAREER_OPS_TRACKER:tracker},timeout:30000,maxBuffer:1000000});
+ const result=await readFile(tracker,'utf8');const columns=resolveColumns(result);
+ const retained=new Set(result.split('\n').map(line=>parseTrackerRow(line,columns)?.num).filter(Boolean));
+ return candidates.filter((_row,index)=>retained.has(previous.length+index+1));
+}
+export async function scanDiscovery(input) {
+ const greenhouse=(await import('./vendor/career-ops/providers/greenhouse.mjs')).default;
+ const lever=(await import('./vendor/career-ops/providers/lever.mjs')).default;
+ const providers=new Map([[greenhouse.id,greenhouse],[lever.id,lever]]);
+ const scan=await scanSource({target:input.target,config:input.config||{},limit:500},{providers});
+ if(scan.status!=='ok')return {...scan,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',scanner:'runner/career-worker.mjs scanSource',dedup:'scan.mjs + dedup-tracker.mjs'},jobs:[]};
+ const jobs=await deduplicateDiscovery(scan.jobs,input.previous||[]);
+ return {...scan,jobs,duplicates:scan.jobs.length-jobs.length,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',provider:'providers/'+scan.provider+'.mjs',scanner:'runner/career-worker.mjs scanSource',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};
+}
 export async function runTask({task,input}) {
+ if(task==='discovery')return scanDiscovery(input);
+ if(task==='dedup-discovery')return deduplicateDiscovery(input.jobs,input.previous);
  if(task==='catalog')return providerCatalog();
  if(task==='scan')return scanSource(input);
  if(task==='audit')return auditDocument(input);

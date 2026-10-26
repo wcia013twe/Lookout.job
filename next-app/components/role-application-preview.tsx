@@ -6,7 +6,7 @@ import type { Role } from "./role-card";
 import ProfileIcon from "./profile-icon";
 import { applicationReviewQuestions } from "../../lib/application-review.mjs";
 import styles from "./discover-role-panel.module.css";
-type Question = { question: string; answer?: string; reason?: string };
+type Question = { question: string; answer?: string; reason?: string; required?: boolean };
 export default function RoleApplicationPreview({ role }: { role: Role }) {
   const w = useWorkspace();
   const draft = w.state.workflow.applications[role.id];
@@ -19,7 +19,7 @@ export default function RoleApplicationPreview({ role }: { role: Role }) {
     <div className="mb-2 flex items-center justify-between gap-3"><h3 id="application-preview" className="text-lg font-semibold">Application review</h3><span className={styles.reviewCount}>{count ? `${count} to review` : "No recorded blockers"}</span></div>
     <p className="mb-5 text-sm text-board-muted">Only recorded questions that need your input or a custom answer review.</p>
     {questions.map((question, index) => <div key={`${question.question}-${index}`} className={styles.reviewQuestion}>
-      <div className="mb-2 flex items-start gap-2 text-board-warning"><ProfileIcon name="conversation" className="mt-0.5 shrink-0" width={18} height={18} /><span className="text-sm font-semibold">{question.answer?.trim() ? "Review this answer" : "Your answer needed"}</span></div>
+      <div className="mb-2 flex items-start gap-2 text-board-warning"><ProfileIcon name="conversation" className="mt-0.5 shrink-0" width={18} height={18} /><span className="text-sm font-semibold">{question.answer?.trim() ? "Review this answer" : question.required === false ? "Optional answer" : "Your answer needed"}</span></div>
       <Field label={question.question}><textarea className={`${control} min-h-24`} defaultValue={question.answer || ""} placeholder="Write your answer" /></Field>
       <p className="mt-2 text-xs leading-relaxed text-board-muted">{question.reason || "This recorded employer question has not been reviewed."}</p>
     </div>)}

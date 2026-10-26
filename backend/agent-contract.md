@@ -425,3 +425,36 @@ is temporary; persistent edits and human approval use Applications. Neither a
 saved assessment nor a preview interaction grants reuse consent or submission
 permission. Outreach requests are queued for a connected agent; queue creation
 does not prove execution or scheduling.
+
+
+## Bounded Node backend jobs
+
+The optional Node API/worker exposes five scoped backend job/schedule operations
+through the same MCP contract. `search_ats` is the only executable job kind; guide
+text does not become arbitrary execution. Reads require workspace:read; writes
+require workspace:read, preferences:write and drafts:write. Agent connection
+identity is server-bound. Browser parity uses the owned backend_job_action RPC.
+See [the complete bounded-job contract](backend-jobs.md) for payloads, version and
+retry rules, explicit scheduling authorization, demo coverage and release limits.
+Developer contract 54 and these tools require the migration/API/worker or gateway
+release and live verification before claiming hosted availability.
+
+
+## MCP scope metadata and conditional checks
+
+`agent-mcp/tool-scopes.mjs` records the complete mandatory scopes of existing
+SQL and gateway routes. Discovery filters by the complete baseline and calls
+check it before forwarding. `toolkit.record` with kind `source_config` additionally
+requires preferences:write; `toolkit.file.begin` with kind `resume` additionally
+requires profile:write. Completing a stored resume file and claiming/reporting a
+stored prepare_application task have row-dependent requirements enforced by SQL;
+MCP cannot infer their kind from the ID alone. Existing ownership, versions,
+credential revocation and human approval checks remain authoritative downstream.
+
+Fixed MCP operations use the full gateway payload validator and return safe
+argument errors for invalid nested fields or malformed schemas. Onboarding-state
+and task-list reads can initialize a missing session and reconcile expired task
+leases, so their metadata does not advertise read-only behavior. Those effects
+do not execute work or grant approval. Developer contract 55 documents these
+existing boundaries; it does not establish deployment or consent to migrate any
+service group.

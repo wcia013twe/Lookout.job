@@ -19,3 +19,14 @@ test('live assessment renders saved custom factors and evidence, while empty ass
  assert.ok(empty.includes('Match not assessed'));assert.ok(!empty.includes('Compensation'));assert.ok(!empty.includes('<details'));
  const demo=renderToStaticMarkup(React.createElement(Preview,{sample,demo:true}));assert.ok(demo.includes('Illustrative demo'));
 });
+
+test('compact card renders exactly four numeric/unknown scores and reveals reasoning only in expanded preview',()=>{
+ const sample={assessedAt:'2026-10-26T18:00:00Z',skillsExperience:{score:82,reasoning:'Database evidence maps to this role.'},compensation:{score:null,reasoning:'Pay is undisclosed.'},wellbeingCulture:{score:60,reasoning:'On-call needs clarification.'},locationWorkSetting:{score:0,reasoning:'Recorded location preference differs.'}};
+ const card=renderToStaticMarkup(React.createElement(Preview,{sample}));
+ for(const label of ['Skills &amp; experience','Compensation','Wellbeing &amp; culture','Location &amp; work setting'])assert.ok(card.includes(label),label);
+ for(const value of ['82 out of 100','60 out of 100','0 out of 100','Unknown'])assert.ok(card.includes(value),value);
+ assert.ok(!card.includes('Database evidence'));assert.ok(!card.includes('<details'));assert.ok(!card.includes('% job match'));
+ const preview=renderToStaticMarkup(React.createElement(Preview,{sample,expanded:true}));
+ assert.equal((preview.match(/<details/g)||[]).length,4);
+ for(const factor of Object.values(sample).filter(value=>typeof value==='object'))assert.ok(preview.includes(factor.reasoning));
+});

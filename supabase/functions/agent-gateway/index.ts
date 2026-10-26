@@ -1,3 +1,5 @@
+import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
+import { clientStorage } from './client-storage.mjs';
 import {resetHandoff} from './workspace-reset.mjs';
 import {readUserBrief} from './user-brief.mjs';
 import {withGatewayCors} from './cors.mjs';
@@ -19,6 +21,10 @@ import { museFeatureDispatch } from './muse-features.mjs';
 // revocation + scope checks in one database transaction for agent operations.
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
   auth: { persistSession: false, autoRefreshToken: false },
+});
+const resumeStorage = clientStorage(admin.storage.from('resumes'), {
+  internalUrl: Deno.env.get('SUPABASE_URL')!,
+  publicUrl: Deno.env.get('LOOKOUT_PUBLIC_SUPABASE_URL'),
 });
 const headers = {
   'Content-Type': 'application/json', 'Cache-Control': 'no-store',
@@ -64,6 +70,11 @@ Deno.serve(withGatewayCors(async request => {
       return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
+    if(BACKEND_OPERATIONS.includes(operation)) {
+      const {data,error}=await admin.rpc('backend_job_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
+      if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
+      return respond({data});
+    }
     if(operation==='workspace.reset_handoff') {
       const {data,error}=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'context.versions',payload:{}});
       if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
@@ -88,7 +99,7 @@ Deno.serve(withGatewayCors(async request => {
         const prepared=await rpc(operation,payload);
         if(prepared.error)return respond({error:'Upload intent rejected'},prepared.error.code==='42501'?403:400);
       }
-      const result=await resumeUploadDispatch({operation,payload,rpc,storage:admin.storage.from('resumes')});
+      const result=await resumeUploadDispatch({operation,payload,rpc,storage:resumeStorage});
       if(result.error)return respond({error:'Resume upload rejected'},result.error.code==='42501'?403:result.error.code==='P0002'?404:400);
       return respond({data:result.data});
     }
@@ -131,16 +142,16 @@ Deno.serve(withGatewayCors(async request => {
     }
     if (['resumes.begin_upload','resumes.complete_upload'].includes(operation)) {
       try {
-        return respond({data:await resumeSetupResponse({operation,data,storage:admin.storage.from('resumes'),rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
+        return respond({data:await resumeSetupResponse({operation,data,storage:resumeStorage,rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
       } catch { return respond({error:'Resume upload or verification incomplete; retry the same upload'},400); }
     }
     if (['toolkit.file.begin','toolkit.file.complete','toolkit.file.read'].includes(operation)) {
-      return respond({data:await toolkitFileResponse({operation,data,storage:admin.storage.from('resumes'),rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
+      return respond({data:await toolkitFileResponse({operation,data,storage:resumeStorage,rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
     }
     if (operation === 'resumes.read') {
       let url = data.reference_url;
       if (data.object_path) {
-        const { data: signed, error: signingError } = await admin.storage.from('resumes').createSignedUrl(data.object_path, 60);
+        const { data: signed, error: signingError } = await resumeStorage.createSignedUrl(data.object_path, 60);
         if (signingError) return respond({ error: 'Resume file unavailable' }, 404);
         url = signed.signedUrl;
       }

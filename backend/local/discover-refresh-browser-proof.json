@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-26T19:10:31.227Z",
+  "localOnly": true,
+  "batchId": "a24bb277-0d42-48ea-b2b7-6d1e5f6ac936",
+  "fullTimeCards": 3,
+  "gpuRecordedQuestions": 14,
+  "requiredQuestions": 6,
+  "optionalQuestions": 8,
+  "workSettingRendered": true,
+  "sponsorshipExplicitlyUndisclosed": true,
+  "expandedTechnicalAnalysis": true,
+  "apiAndJsFailures": [],
+  "logoDevConfigured": false,
+  "personalization": "blocked: applicant context missing",
+  "approvalThroughMuse": "not implemented",
+  "status": "partial"
+}

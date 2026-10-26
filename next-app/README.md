@@ -417,3 +417,5 @@ individual guide pages remain readable without signing in.
 
 `scripts/check-signed-out-ui.mjs` checks these boundaries using fictional sessions
 and intercepted API responses; no real account or external write is required.
+
+Compact card assessments extend the existing private `batch_items.recommendation.matchAssessment` JSON. New assessments carry exactly four named dimensions (`skillsExperience`, `compensation`, `wellbeingCulture`, `locationWorkSetting`), each `{score:0–100|null, reasoning:1–240 characters}`, plus an `assessedAt` timestamp. Optional overall `percent` and short `evidence` are agent supplied. Cards display numeric scores or Unknown; reasoning is available only in expanded Preview. There is no backend scoring engine, separate table or synthesized aggregate. Legacy factor assessments and immutable historical batches remain readable. The existing publish_batch tool validates/persists both formats; the compact-score migration and gateway56 must be released before claiming hosted support.

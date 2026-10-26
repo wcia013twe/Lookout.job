@@ -14,3 +14,12 @@ supabase/.temp/
 /next-app/**/* [0-9]*.tsx
 /next-app/**/* [0-9]*.css
 /next-app/scripts/* [0-9]*.mjs
+
+# Local credentials and machine-specific frontend configuration.
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Private retained local presentation account/session.
+/backend/runtime/.review-session.local.json

@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-26T18:29:12.018Z",
+  "localOnly": true,
+  "accountRetained": true,
+  "nodeApi": "http://127.0.0.1:8080",
+  "supabase": "http://127.0.0.1:54321",
+  "jobId": "f8736c58-e3fd-46db-8b45-337ee449ab98",
+  "runId": "0f215348-265c-4096-ae9e-70f3a7d9764d",
+  "jobState": "completed",
+  "runState": "completed",
+  "observations": 86,
+  "uniqueListings": 86,
+  "workerAttempts": 1,
+  "provenance": [
+    {
+      "dedup": "dedup-tracker.mjs",
+      "commit": "c78e14cdfd52f18a92e4a67694efab7ddef59385",
+      "scanner": "runner/career-worker.mjs scanSource",
+      "identity": "scan.mjs isOfferSeen/markOfferSeen",
+      "provider": "providers/greenhouse.mjs"
+    }
+  ],
+  "execution": "existing executeCareerTask sanitized child -> scanSource -> copied provider/scanner/dedup-tracker -> fenced Supabase RPC",
+  "scoresProduced": false,
+  "publishedBatchUntouched": true
+}

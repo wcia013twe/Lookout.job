@@ -17,7 +17,14 @@
     "intelligence:demo": "node backend/intelligence/demo.ts",
     "intelligence:mcp": "node backend/intelligence/mcp.ts",
     "intelligence:once": "node backend/intelligence/demo.ts --once",
-    "intelligence:typecheck": "next-app/node_modules/.bin/tsc -p backend/intelligence/tsconfig.json"
+    "intelligence:typecheck": "next-app/node_modules/.bin/tsc -p backend/intelligence/tsconfig.json",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:env": "node scripts/configure-local-supabase.mjs",
+    "supabase:functions": "supabase functions serve --env-file supabase/functions/.env.local",
+    "validate:local-db": "node backend/local/check-schema.mjs",
+    "validate:local-edge": "node scripts/check-local-edge.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",
@@ -28,6 +35,9 @@
   "devDependencies": {
     "@electric-sql/pglite": "0.4.6",
     "@types/pg": "8.15.5",
-    "esbuild": "0.25.12"
+    "esbuild": "0.25.12",
+    "@types/node": "26.6.5",
+    "supabase": "2.122.0",
+    "typescript": "7.0.2"
   }
 }

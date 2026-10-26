@@ -6,11 +6,12 @@ const source=await realpath(resolve(process.argv[2]||''));
 if(!process.argv[2])throw Error('Pass the checked-out pinned upstream source directory');
 const target=resolve('runner/vendor/career-ops');
 const providerFiles=(await readdir(join(source,'providers'))).filter(f=>f.endsWith('.mjs')&&f!=='local-parser.mjs').map(f=>'providers/'+f);
-const roots=[...providerFiles,'build-cv-html.mjs','generate-pdf.mjs','generate-cover-letter.mjs','verify-ats.mjs','verify-cv-facts.mjs','verify-cv-structure.mjs','keyword-match.mjs','stats.mjs','analyze-patterns.mjs','calibrate.mjs','upskill.mjs','salary-gap.mjs','funnel-velocity.mjs','detect-reposts.mjs','jd-similarity.mjs','liveness-api.mjs'];
+const roots=['scan.mjs','dedup-tracker.mjs','merge-tracker.mjs',...providerFiles,'build-cv-html.mjs','generate-pdf.mjs','generate-cover-letter.mjs','verify-ats.mjs','verify-cv-facts.mjs','verify-cv-structure.mjs','keyword-match.mjs','stats.mjs','analyze-patterns.mjs','calibrate.mjs','upskill.mjs','salary-gap.mjs','funnel-velocity.mjs','detect-reposts.mjs','jd-similarity.mjs','liveness-api.mjs'];
 const compiled=await build({entryPoints:roots.map(f=>join(source,f)),outdir:'/tmp/lookout-vendor-index',bundle:true,packages:'external',platform:'node',format:'esm',write:false,metafile:true,logLevel:'silent'});
 const files=new Set(Object.keys(compiled.metafile.inputs).map(f=>relative(source,resolve(f))));
 files.add('LICENSE');
 files.add('tracker-aliases.json');
+files.add('data-static/aggregator-domains.txt');
 async function assets(folder,predicate){for(const item of await readdir(join(source,folder),{withFileTypes:true})){const file=folder+'/'+item.name;if(item.isDirectory())await assets(file,predicate);else if(predicate(file))files.add(file);}}
 await assets('fonts',()=>true);
 await assets('templates',f=>f.endsWith('.html')||['states.yml','ats-rules.yml','benchmarks.yml','discard-reasons.yml'].some(n=>f.endsWith('/'+n)));

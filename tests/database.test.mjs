@@ -24,6 +24,8 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['careerops-discovery','copied CareerOps native identities and functional URL parameters survive persisted resume reads'],
+  ['backend-jobs','backend execution isolates owners, replays writes, fences leases and dispatch, and schedules only scoped work'],
   ['agent-connection-test','lightweight agent check-in exposes owned automation settings without advancing onboarding or creating tasks'],
   ['job-assessment','dynamic private assessments validate scores, preserve retries and isolate owners'],
   ['website-onboarding','website completion persists separately from agent readiness, rejects agents, isolates owners and replays safely'],

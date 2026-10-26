@@ -1,3 +1,4 @@
+import {createBackendJobsService} from '../lib/backend-jobs.mjs';
 import {validateCardPacks,batchPackDrops} from '../lib/card-packs.mjs';
 import {validatePlatformPayload} from '../supabase/functions/agent-gateway/platform-tools.mjs';
 import {callApi} from '../lib/api-failure.mjs';
@@ -55,6 +56,7 @@ function createBackend(client, expectedUserId = null) {
     return data.data;
   }
   return {
+    backendJobs:createBackendJobsService({rpc:(name,args)=>client.rpc(name,args),owner}),
     async readResetState() {
       const id=await owner();
       const {data,error}=await client.rpc('workspace_reset_state');
