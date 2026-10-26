@@ -21,16 +21,37 @@ authentication and guide operations directly; existing configuration/read and
 other domain routes retain their explicitly mapped Edge compatibility path.
 `lib/mcp-services.mjs` documents those routing boundaries.
 
-Public GETs permit only closed HTTPS ATS endpoint templates, reject redirects,
-bound each response to 8 MiB and retry transient failures once. Greenhouse is
-bounded to 500 observations per source; Lever to three 100-row pages; a job uses
-at most ten configured sources. Save transactions are capped at 25 rows and
-48,000 encoded UTF-8 bytes. Archived job descriptions are excerpts of at most
-4,500 characters; consumers needing a full modal/job description must retrieve
-the live employer posting or complete ATS response. Publication dates are null
-unless actually supplied; updated timestamps never become publication dates.
-Coverage describes source enumeration, not candidate fit or full-description
-archival. Partial/malformed/unsupported sources remain explicit.
+Actual fetching uses the existing `runner/career-tools.mjs executeCareerTask`
+sanitized child-process boundary and `runner/career-worker.mjs scanSource` flow.
+Only copied Greenhouse and Lever providers are available to this backend path;
+the installed catalog of 108 providers is not broadly activated. The verbatim
+scanner, tracker deduplication and merge dependency closure is copied by
+`scripts/import-career-tools.mjs` from CareerOps VERSION 1.36.0, commit
+`c78e14cdfd52f18a92e4a67694efab7ddef59385`. All 225 copied files retain their
+SHA-256 manifest and MIT license, including `data-static/aggregator-domains.txt`.
+No copied source file was hand-edited.
+
+The existing provider registry, guarded HTTP transport and per-connection socket
+scope perform fetching. Copied `scan.mjs` identity functions and the original
+`dedup-tracker.mjs` CLI decide duplicates in a disposable mapped tracker inside
+the child workspace. The copied `postingUrlRelation` protects distinct functional
+URLs; native posting identity and requisition fields are preserved through SQL
+resume reads. No second provider parser or URL normalization algorithm lives in
+`backend/runtime/ats.ts`; it maps outputs into the existing owned search tables.
+The original dedup CLI is deliberately executed, not imported, because it has
+top-level file transactions. Its temporary tracker is removed with the child
+workspace and never becomes a second user application store.
+
+The child receives no Supabase/agent credentials, has a 384 MiB JavaScript heap,
+a 120-second task timeout and 16 MiB output cap. Existing `scanSource` bounds a
+source to 20 HTTP requests and this integration to 500 returned jobs; the worker
+uses at most ten configured sources. Save transactions are capped at 25 rows and
+48,000 encoded UTF-8 bytes. Description excerpts follow the copied provider's
+limits (normally 4,000 characters for Greenhouse); the full card/modal uses the
+copied uncapped `browser-extract.mjs jdHtmlToText` path when explicitly fetched.
+Unknown publication dates remain null; Lever creation times are not promoted to
+publication dates. Unsupported sources stay agent research work. Coverage does
+not establish fit, eligibility, exhaustive research or full-description archival.
 
 On expired-lease retry, a worker resumes its pinned run and reads bounded identity
 pages from that run before fetching pending sources. Only canonical URL, company,
@@ -83,6 +104,20 @@ consent. The profiles contain targeting guidance, no invented resume facts.
 A connected agent must select verified relevant roles, supply honest compact
 assessment JSON and publish them through the existing batch service before they
 appear as Discover cards. Raw search listings alone do not populate Discover.
+
+The prototype receipt `backend/local/discovery-proof.json` predates the user's
+literal-reuse correction and is explicitly marked superseded. The current proof
+is `node scripts/check-local-careerops-discovery.mjs`: it uses the retained local
+review account, submits a new Node MCP job, proves copied provider/scanner/tracker
+execution from persisted provenance, reads actual owned Supabase observations,
+and preserves the account and published cards. Its sanitized receipt is
+`backend/local/careerops-discovery-proof.json`.
+
+API and worker Docker logs rotate at 10 MiB per file, at most three files each.
+Repeated worker database failures log at most once a minute and one recovery
+event; logs contain no tokens, private request bodies, full descriptions or
+resume data. Existing run summaries, source counts and blockers provide the
+bounded execution evidence; no trace table was added.
 
 The recorded proof is local only. Hosted users, private files, sessions and data
 have not been recovered; no hosted deployment, publication or real application

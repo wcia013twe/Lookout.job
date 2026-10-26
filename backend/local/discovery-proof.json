@@ -21,5 +21,6 @@
   "cancellation": true,
   "disabledSchedule": true,
   "revocation": true,
-  "cleanupVerified": true
+  "cleanupVerified": true,
+  "implementation": "Superseded prototype custom ATS adapter; current literal CareerOps proof is careerops-discovery-proof.json"
 }

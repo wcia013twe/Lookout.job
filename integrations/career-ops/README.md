@@ -26,10 +26,10 @@ read authorization. The developer index includes guide metadata, not full conten
 The updated local runner now vendors actual provider, document, ATS and analytics
 code separately under `runner/vendor/career-ops/`. Its SHA-256 manifest pins the
 same commit. `scripts/import-career-tools.mjs <reviewed-source-checkout>` reproduces
-the dependency closure (207 files, including 108 network providers), templates,
-fonts and license. It excludes arbitrary local parsers, the parallel tracker/UI,
+the dependency closure (225 files, including 108 network providers and the original scanner/tracker dedup/merge code), templates,
+fonts and license. It excludes arbitrary local parsers and upstream interactive UI,
 installers, self-updaters, model wrappers and user data. See `runner/README.md` for
-executable MCP tools. No scheduler is activated. Local capabilities require a
+executable MCP tools. The approved local Node discovery service reuses the existing isolated child/provider flow and original scanner identity + tracker dedup CLI on disposable mapped rows; it creates no parallel user tracker. Only Greenhouse/Lever are activated there, with provenance in backend/local/careerops-discovery-proof.json. Other services remain subject to the user’s separate approval. No personal-agent scheduler is activated. Local capabilities require a
 runner restart; hosted persistence requires the normal backend release.
 
 ## Updating

@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
-import {fetchSource,deduplicate} from './ats.ts';
+import {fetchSource} from './ats.ts';
 import type {Rpc,Payload,Claim,Dispatch} from './types.ts';
 
 export function listingBatches(rows:Payload[],maxBytes=48000){
@@ -16,29 +16,30 @@ export function listingBatches(rows:Payload[],maxBytes=48000){
   if(batch.length)batches.push({offset,listings:batch});
   return batches;
 }
-export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{request=fetch}: {request?:typeof fetch}={}) {
+export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute}: {execute?:import('./ats.ts').Execute}={}) {
   const prefix=`job:${job.id}:`;
   const run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):await dispatch('search.run.start',{profileId:job.input.profileId,eventKey:prefix+'start'});
   if(run.state!=='active')return {status:run.state==='completed'?'completed':'partial',result:{runId:run.id,summary:'Previously persisted search result recovered.',screening:'review-needed'}};
-  const seen=new Set<string>();
+  const seen:Payload[]=[];
   if(job.search_run_id){
     let offset=0;
     // At most ten sources x 500 observations. Refuse an incomplete identity
     // history instead of silently weakening durable deduplication on retry.
     for(let page=0;page<=50;page++){
       const prior=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100});
-      deduplicate(prior.listings,seen);
+      seen.push(...prior.listings);
       if(prior.nextOffset===null)break;
       if(!Number.isSafeInteger(prior.nextOffset)||prior.nextOffset<=offset||prior.nextOffset>5000||page===50)throw Error('Discovery identity history exceeded bounded pagination');
       offset=prior.nextOffset;
     }
   }
-  let saved=0;let blocked=0;let scanned=0;
+  let saved=0;let blocked=0;let scanned=0;const provenance:Payload[]=[];
   const sources=run.sources||[];
   for(const [index,source] of sources.entries()){
     if(source.state==='completed'){continue;}
-    const observation=index<10?await fetchSource(source.source_id,source.source,{request}):{listings:[],coverage:'truncated',blocker:'Bounded run supports at most ten configured sources.',total:0};
-    const rows=deduplicate(observation.listings,seen);scanned+=observation.total;
+    const observation=index<10?await fetchSource(source.source_id,source.source,{execute,previous:seen}):{listings:[],coverage:'truncated',blocker:'Bounded run supports at most ten configured sources.',total:0,provenance:undefined};
+    if(observation.provenance)provenance.push(observation.provenance);
+    const rows=observation.listings;seen.push(...rows);scanned+=observation.total;
     // Each idempotency key is tied to a persisted source version. Re-read and
     // checkpoint observations before completion; interrupted sources can repeat
     // safely through canonical database deduplication.
@@ -60,9 +61,9 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   const partial=blocked>0 || !latest.sources.every((s:Payload)=>s.state==='completed'&&s.coverage==='exhaustive');
   const summary=`Fetched ${scanned} postings and saved ${saved} canonical discovery observations. ${blocked} sources need review. Eligibility and narrative profile fit require agent review.`;
   await dispatch('search.run.finish',{runId:run.id,expectedVersion:latest.version,state:partial?'partial':'completed',summary,eventKey:prefix+'finish'});
-  return {status:partial?'partial':'completed',result:{runId:run.id,observed:scanned,saved,blockedSources:blocked,summary,screening:'review-needed'}};
+  return {status:partial?'partial':'completed',result:{runId:run.id,observed:scanned,saved,blockedSources:blocked,summary,screening:'review-needed',provenance}};
 }
-export async function workOnce(rpc:Rpc,{request=fetch}: {request?:typeof fetch}={}){
+export async function workOnce(rpc:Rpc,{execute}: {execute?:import('./ats.ts').Execute}={}){
   const call=async(operation:string,payload:Payload)=>{
     const {data,error}=await rpc('backend_worker',{operation,payload});
     if(error)throw Error('Worker transaction rejected');return data;
@@ -73,7 +74,7 @@ export async function workOnce(rpc:Rpc,{request=fetch}: {request?:typeof fetch}=
   const fencedDispatch:Dispatch=(operation,payload)=>call('dispatch',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload});
   try{
     if(claim.job.kind!=='search_ats')throw Error('Unsupported backend job');
-    const outcome=await executeSearch(claim.job,fencedDispatch,{request});
+    const outcome=await executeSearch(claim.job,fencedDispatch,{execute});
     await call('finish',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...outcome});
   }catch{
     // Expired/cancelled/revoked jobs reject this too, preserving the newer state.
@@ -81,9 +82,17 @@ export async function workOnce(rpc:Rpc,{request=fetch}: {request?:typeof fetch}=
   }
   return true;
 }
+export function workerDiagnostics(write:(message:string)=>void=console.error,now:()=>number=Date.now){
+  let down=false,last=0;
+  return {
+    unavailable(){const time=now();if(!down||time-last>=60000){write('Worker database unavailable; retrying quietly.');last=time;}down=true;},
+    recovered(){if(down)write('Worker database connection recovered.');down=false;},
+  };
+}
 export async function runWorker(rpc:Rpc,signal:AbortSignal){
+  const diagnostics=workerDiagnostics();
   while(!signal.aborted){
-    try{await workOnce(rpc);}catch{console.error('Worker database unavailable; retrying on next poll.');}
+    try{await workOnce(rpc);diagnostics.recovered();}catch{diagnostics.unavailable();}
     try{await delay(5000,undefined,{signal});}catch{break;}
   }
 }

@@ -1,7 +1,11 @@
 .git
 node_modules
 next-app
-runner
+runner/*
+!runner/career-tools.mjs
+!runner/career-worker.mjs
+!runner/gateway-client.mjs
+!runner/vendor
 openwiki
 data
 assets
@@ -11,3 +15,5 @@ tests
 **/node_modules
 supabase/.temp
 supabase/.branches
+
+**/.review-session.local.json

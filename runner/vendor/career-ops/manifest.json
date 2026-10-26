@@ -31,6 +31,10 @@
       "sha256": "06966def50c5ad48f0355ae0c867b85cce8aeb86c3601560d7212ebacdbaf633"
     },
     {
+      "path": "classify-tier.mjs",
+      "sha256": "04f81f2c9cd78bbe446ecbfd5d84c734e34b225d221581f9f2611e3cff57dc25"
+    },
+    {
       "path": "cv-experience-order.mjs",
       "sha256": "4591776e21ae03f279383b53fff32e1d9114796d184a6c1d76fda3631a783f88"
     },
@@ -43,8 +47,24 @@
       "sha256": "c337ac60b681d960d80309c28efa5945cc64cee8658ecf0287b81a51d8f2127d"
     },
     {
+      "path": "data-static/aggregator-domains.txt",
+      "sha256": "818e4626d30f8446959427980148353f1dd91ff520ff81b9fe0c15b2c9829e70"
+    },
+    {
+      "path": "dedup-tracker.mjs",
+      "sha256": "af2e64f97a7020f7fa5b7a9aedf79fa0cc5e4cb75983d6e5e30eeaa3e129a6be"
+    },
+    {
       "path": "detect-reposts.mjs",
       "sha256": "d61aa30ffadf7652a85d0199c8baf663830056ec5f5a3dbdfc6ced091dfaac40"
+    },
+    {
+      "path": "find.mjs",
+      "sha256": "678e4217b4e0bfe09eaa16f7cf0e70ef480ca9370b5f52ef2e65307aafd47ba9"
+    },
+    {
+      "path": "fingerprint-core.mjs",
+      "sha256": "37a8cfcc93a15be102f550afe3dbf52d4ee8bbce9f2e87a5f0a0aa13fef56c1a"
     },
     {
       "path": "followup-cadence.mjs",
@@ -151,12 +171,20 @@
       "sha256": "9f0f2bd645e8f00243abf050a9536a35dec695c620846ae04bdbcce087b29f02"
     },
     {
+      "path": "lib/scan-summary-marker.mjs",
+      "sha256": "497a17179bf27675c19a79ecf766aa9e787ebab623042c371b2855257aac3c03"
+    },
+    {
       "path": "lib/template-manifest.mjs",
       "sha256": "54ab434e970f92b725477cba1a47e07ef25c7c26c37d141f003d53152f3ba6ee"
     },
     {
       "path": "lib/tsv-formula-escape.mjs",
       "sha256": "1abe567026dbca73f08343432af6c883bf0f1875b2bf4dbf60ad8729f6859da2"
+    },
+    {
+      "path": "listing-fingerprint.mjs",
+      "sha256": "8b0453bdcef94740c25239c562d908b03ddb0131cafecc33198838b2b70ad920"
     },
     {
       "path": "liveness-api.mjs",
@@ -171,12 +199,36 @@
       "sha256": "7e88eba553dff9d02337441ed8736d392ba3113c73eeb91fa49bad5b457cacea"
     },
     {
+      "path": "merge-tracker.mjs",
+      "sha256": "205d438e8d58a6e2bfdc78c6b95f92492834131a468edaa38586c851aafd60fc"
+    },
+    {
       "path": "path-resolver.mjs",
       "sha256": "5ceb03a7a5248b0288a8e450c7143a7853ade6be358e4b9a3981aad0c2a2c5a8"
     },
     {
       "path": "pipeline-lock.mjs",
       "sha256": "037d526938e048fe8fccd2213b2c3c2eadc05c05109ae88758747d1b257d87ed"
+    },
+    {
+      "path": "plugins/_engine.mjs",
+      "sha256": "9fcb0707d48da741519363f45b83295768a9cddcf808ae7ed68dad1e0207a035"
+    },
+    {
+      "path": "plugins/_lock.mjs",
+      "sha256": "99e55348511318af21e351ac865d83e6fc22b2415dc94b172641d0b00547c408"
+    },
+    {
+      "path": "plugins/_net.mjs",
+      "sha256": "6c44248378aa0d24140c0ee44cde1633dde219b50254b5a67b7fd7ad6064d7a4"
+    },
+    {
+      "path": "plugins/_registry.mjs",
+      "sha256": "d9e2723a5c951109a1037928525792c9872c854e27f64c209947d92835434219"
+    },
+    {
+      "path": "portal-health-lock.mjs",
+      "sha256": "949d9c54bf8df2ce9f2dbd829763a102126ae88355693f24508cf394c074952f"
     },
     {
       "path": "providers/4dayweek.mjs",
@@ -671,6 +723,10 @@
       "sha256": "cb36cbac51e64e49a82f325a86cbff9130a97949daf67049164551a0a867f9fc"
     },
     {
+      "path": "scan.mjs",
+      "sha256": "c59688ade77f66e116509045e86b6fbb086e288052a46db0fdc71f25159ec799"
+    },
+    {
       "path": "skill-extract.mjs",
       "sha256": "7829ade36a99c71b25d968a6a6d4f73d7888ef93eef60def132f465365047535"
     },
@@ -681,6 +737,10 @@
     {
       "path": "stats.mjs",
       "sha256": "d06e697a503026a48755ac50ff1c97abf85cbc934dcfecb3bcdb747d25547d77"
+    },
+    {
+      "path": "sync-pdf-flags.mjs",
+      "sha256": "0d6d871a60be9ca451af1e3e80629506b22592ec20767bf488b57ad7ae0a5a4b"
     },
     {
       "path": "templates/ats-rules.yml",
@@ -799,8 +859,16 @@
       "sha256": "05077e53f388885fa9681563dfbc57eee9d60579f61a9b55eb15dab35566ebfe"
     },
     {
+      "path": "title-keywords.mjs",
+      "sha256": "26189856ecefe32dc675f823341bd95ebef38e7a8cd74cb1df2bbc988fc88b78"
+    },
+    {
       "path": "tracker-aliases.json",
       "sha256": "586db29f4feec667e8b10853b7d6df2b6acee378b40b5cfb852be5fd3dd042fd"
+    },
+    {
+      "path": "tracker-links.mjs",
+      "sha256": "f4d87172f1c5f34855b6635fa717c3f53f853ff04850d4e3b9aa14443028be63"
     },
     {
       "path": "tracker-parse.mjs",
@@ -833,6 +901,10 @@
     {
       "path": "verify-cv-structure.mjs",
       "sha256": "8464a53ef814013ebcef9694f60ecbbde071439df5faa2acefe96cb5a15ca8e4"
+    },
+    {
+      "path": "verify-portals.mjs",
+      "sha256": "9e5f58bcf7b4ef345d03d2a412311eecd58ac339d88c7d1179166c4141b69733"
     }
   ]
 }

@@ -85,7 +85,7 @@ async function main(){
   const search=await dispatch('search.run.start',{profileId:'discovery-proof',eventKey:'job:'+queued.id+':start'});
   await dispatch('search.discoveries.save',{runId:search.id,listings:[observed.listings[0]],eventKey:'job:'+queued.id+':proof-seed'});
   const identity=await dispatch('search.discoveries.read',{runId:search.id,offset:0,limit:100});
-  assert.equal(identity.listings.length,1);assert.deepEqual(Object.keys(identity.listings[0]).sort(),['company','location','title','url']);
+  assert.equal(identity.listings.length,1);assert.deepEqual(Object.keys(identity.listings[0]).sort(),['company','identity','location','requisitionId','title','url']);
   await run('docker',['exec',db,'psql','-X','-U','postgres','-d','postgres','-q','-v','ON_ERROR_STOP=1','-c',"update private.backend_jobs set lease_expires_at=now()-interval '1 second' where id='"+queued.id+"'::uuid;"]);
   // Node queue/auth/guides and the worker must continue with Edge paused.
   await run('docker',['pause',edge]);paused=true;
@@ -114,7 +114,7 @@ async function main(){
   const persisted=await sql("select json_build_object('state',(select state from public.search_runs where id='"+search.id+"'),'sources',(select json_agg(json_build_object('id',source_id,'state',state,'coverage',coverage,'saved',counts->'saved','checkpoint',checkpoint) order by source_id) from public.search_source_attempts where run_id='"+search.id+"'),'listings',(select count(*) from public.search_listings where user_id='"+person.id+"'),'observations',(select count(*) from public.search_observations where run_id='"+search.id+"'),'scores',(select count(*) from public.search_screenings where run_id='"+search.id+"'),'unknownPosted',(select count(*) from public.search_observations where run_id='"+search.id+"' and employer_posted_at is null));");
   assert.equal(persisted.state,'partial');assert.equal(persisted.scores,0,'Discovery must leave fit assessment to the agent');
   assert.equal(persisted.observations,persisted.listings,'Seeded/repeated sources must not duplicate persisted observations');
-  assert.equal(persisted.listings,deduplicate(observed.listings).length,'Canonical/normalized dedup must persist the expected unique postings');
+  assert.equal(persisted.listings,(await deduplicate(observed.listings)).length,'Canonical/normalized dedup must persist the expected unique postings');
   assert.equal(persisted.sources.filter(source=>source.coverage==='inaccessible').length,1);
   assert.equal(persisted.sources.filter(source=>source.coverage==='exhaustive').length,2);
   assert.deepEqual((await mcp(limited.token,'read_backend_jobs')).data,{jobs:[]},'Other owner must not see job');
