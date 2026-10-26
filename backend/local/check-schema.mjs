@@ -33,7 +33,7 @@ select json_build_object(
   'migrations', (select coalesce(json_agg(version order by version), '[]') from supabase_migrations.schema_migrations),
   'tables', (select coalesce(json_agg(json_build_object('name', n.nspname || '.' || c.relname, 'rls', c.relrowsecurity) order by n.nspname,c.relname), '[]') from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname in ('public','private') and c.relkind in ('r','p')),
   'buckets', (select json_agg(json_build_object('id',id,'public',public) order by id) from storage.buckets where id in ('resumes','company-logos')),
-  'rpcGrants', (select json_agg(json_build_object('name',p.oid::regprocedure::text,'anon',has_function_privilege('anon',p.oid,'EXECUTE'),'authenticated',has_function_privilege('authenticated',p.oid,'EXECUTE'),'service',has_function_privilege('service_role',p.oid,'EXECUTE')) order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('agent_dispatch','manage_agent_connection','agent_outreach_dispatch','runner_submission_context','runner_submission_transition','workspace_reset_service'))
+  'rpcGrants', (select json_agg(json_build_object('name',p.oid::regprocedure::text,'anon',has_function_privilege('anon',p.oid,'EXECUTE'),'authenticated',has_function_privilege('authenticated',p.oid,'EXECUTE'),'service',has_function_privilege('service_role',p.oid,'EXECUTE')) order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('agent_dispatch','manage_agent_connection','agent_outreach_dispatch','runner_submission_context','runner_submission_transition','workspace_reset_service','backend_job_dispatch','backend_worker'))
 ); rollback;`;
 const raw = await run(['exec', container, 'psql', '-X', '-U', 'postgres', '-d', 'postgres', '-A', '-t', '-q', '-v', 'ON_ERROR_STOP=1', '-c', sql]);
 const result = JSON.parse(raw);
@@ -46,7 +46,7 @@ for (const name of tables) {
 }
 assert.equal(result.buckets.find(bucket => bucket.id === 'resumes')?.public, false, 'Resume bucket must be private');
 assert.equal(result.buckets.find(bucket => bucket.id === 'company-logos')?.public, true, 'Company logo bucket must be public');
-const expectedRpcs = ['agent_dispatch','manage_agent_connection','agent_outreach_dispatch','runner_submission_context','runner_submission_transition','workspace_reset_service'];
+const expectedRpcs = ['agent_dispatch','manage_agent_connection','agent_outreach_dispatch','runner_submission_context','runner_submission_transition','workspace_reset_service','backend_job_dispatch','backend_worker'];
 for (const name of expectedRpcs) {
   const grants = result.rpcGrants.filter(rpc => rpc.name.split('(')[0] === name || rpc.name.split('(')[0] === `public.${name}`);
   assert.ok(grants.length, `Missing gateway RPC: ${name}`);
