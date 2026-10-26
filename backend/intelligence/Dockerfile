@@ -5,6 +5,7 @@ RUN npm ci --omit=dev --ignore-scripts
 COPY backend/intelligence ./backend/intelligence
 COPY tests/fixtures/intelligence.mts ./tests/fixtures/intelligence.mts
 COPY lib/network-model.mjs lib/outreach-conversation.mjs ./lib/
+COPY supabase/functions/agent-gateway/context-attachments.mjs ./supabase/functions/agent-gateway/context-attachments.mjs
 USER node
 ENV INTELLIGENCE_HOST=0.0.0.0
 EXPOSE 8091
