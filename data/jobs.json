@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastRun": "2026-10-24",
+  "lastRun": "2026-10-26",
   "roles": [
     {
       "id": "doordash-software-engineer-storage-8024644",
@@ -195,21 +195,6 @@
       "sourceFreshness": "12 days ago \u2014 retained from prior scan",
       "whyItFits": "Useful discovery entry, but it should clear the bar only with a backend, data, search, or infrastructure team rather than generic feature work.",
       "applicationUrl": "https://seatgeek.com/jobs/8227548?gh_jid=8227548",
-      "applicationStatus": "New"
-    },
-    {
-      "id": "nvidia-ignite-software-engineer-intern-jr2026958",
-      "company": "NVIDIA",
-      "title": "2027 Ignite Internship \u2014 Software Engineering",
-      "employmentType": "Internship",
-      "location": "Santa Clara, CA",
-      "category": "GPU, systems & AI infrastructure",
-      "priority": "Apply Now",
-      "postedDate": null,
-      "discoveredDate": "2026-10-06",
-      "sourceFreshness": "1 day ago",
-      "whyItFits": "Obvious trade-up on brand and scarce systems/AI adjacency. Team assignment is decisive, so ask about CUDA, inference, compilers, or platform exposure.",
-      "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/NVIDIA-2027-Ignite-Internships--Software-Engineering_JR2026958",
       "applicationStatus": "New"
     },
     {
