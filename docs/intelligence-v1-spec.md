@@ -17,7 +17,9 @@ Application message dates mean logged communication dates; milestone dates mean 
 
 MCP or timer → Node function → source adapters → validation/redaction → unchanged check → embedding provider → atomic upsert.
 
-The Node API is separately runnable and can later be imported into the user's Dockerized backend. Existing Node API/worker and hosted MCP are unchanged. The local demo adapter forwards requests to this Node HTTP API; it never accesses PostgreSQL directly.
+The reusable service receives a typed source-loader callback and an embedding provider. Fictional source records and synthetic vectors live in `tests/fixtures/intelligence.mts` and are wired only by `backend/intelligence/demo.ts`. Processing/service code has no fixture imports. Real source loaders can provide the same observations through this boundary without rewriting cleaning or embedding; ownership, sharing permission and a real-data storage boundary still need integration before using live accounts.
+
+The Node API is separately runnable and can later be imported into the user's Dockerized backend. Existing Node API/worker and hosted MCP are unchanged. The local demo adapter forwards requests to this Node HTTP API; it never accesses PostgreSQL directly. MCP owns protocol framing and discovery; HTTP owns request parsing. Both use the same operation contract, with the service enforcing allowed arguments and limits. Malformed HTTP JSON returns INVALID_REQUEST (400), not a backend outage.
 
 ## Database schema
 
@@ -104,3 +106,7 @@ The default four-hour scheduler is running; a four-hour interval has not elapsed
 Automated checks: `node --test tests/intelligence-ingestion.test.mjs`, `npm run intelligence:typecheck`, `npm test`, `npm run validate:data`. Full suite output for this session is preserved separately; release note records final results. No frontend files changed, so no frontend build is required for this slice.
 
 Stop here for inspection of stored records. Next work requires an explicit decision: real-source authorization/adapter integration, live embedding validation, then retrieval.
+
+## Cleanup follow-up
+
+Moved fixtures out of reusable backend modules; added explicit source record types and injected source loading. A database-backed test supplies a non-demo-dataset source through the service and proves it alone is processed. The demo table remains demo-only; this is a reusable processing boundary, not authorization to ingest real account data. MCP/HTTP validation now has one operation authority in `contract.ts`; transport tests exercise it through actual HTTP.

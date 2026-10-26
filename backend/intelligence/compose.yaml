@@ -17,4 +17,4 @@ services:
       - '127.0.0.1:8091:8091'
   scheduler:
     <<: *common
-    command: ['node', 'backend/intelligence/service.ts', '--schedule']
+    command: ['node', 'backend/intelligence/demo.ts', '--schedule']

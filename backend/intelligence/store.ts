@@ -16,7 +16,7 @@ export function localPool(url:string){
  if(!['postgres:','postgresql:'].includes(u.protocol)||!['localhost','127.0.0.1','host.docker.internal'].includes(u.hostname)||u.pathname!=='/lookout_intelligence_demo')throw Error('LOCAL_DEMO_DATABASE_REQUIRED');
  return new pg.Pool({connectionString:url,max:3,connectionTimeoutMillis:5000});
 }
-export async function lockedIngest(pool:pg.Pool,run:(store:Store)=>Promise<any>){
+export async function lockedIngest<T>(pool:pg.Pool,run:(store:Store)=>Promise<T>){
  const client=await pool.connect();
  try{
   const lock=await client.query('select pg_try_advisory_lock(19842761) as locked');

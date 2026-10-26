@@ -5,11 +5,11 @@ import {once} from 'node:events';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite/vector';
 import {clean,redact} from '../backend/intelligence/clean.ts';
-import {demoCandidates} from '../backend/intelligence/fixtures.ts';
+import {demoCandidates,fixtureProvider} from './fixtures/intelligence.mts';
 import {circleObservation,applicationObservations} from '../backend/intelligence/sources.ts';
-import {ingest,fixtureProvider,openAIProvider} from '../backend/intelligence/pipeline.ts';
+import {ingest,openAIProvider} from '../backend/intelligence/pipeline.ts';
 import {databaseStore,localPool,lockedIngest} from '../backend/intelligence/store.ts';
-import {httpServer} from '../backend/intelligence/service.ts';
+import {httpServer,ingestionService} from '../backend/intelligence/service.ts';
 import {backendClient,mcpHandler} from '../backend/intelligence/mcp.ts';
 import {scheduleIngestion,nextFourHourDelay} from '../backend/intelligence/schedule.ts';
 const fixture=()=>structuredClone(demoCandidates());
@@ -60,7 +60,13 @@ test('provider contracts keep real embeddings separate from synthetic fixtures',
 });
 test('MCP calls the Node HTTP backend and validates tools without SQL or raw-vector access',async()=>{
  const db=await database(),store=databaseStore((sql,args)=>db.query(sql,args));
- const server=httpServer(async(op,args)=>{if(op==='ingest_demo_intelligence')return ingest(store,fixtureProvider(),fixture());if(op==='list_demo_intelligence_reports')return {items:await store.list(args.limit??20)};throw Error('UNKNOWN_OPERATION');});
+ const pool={
+  query:(sql,args)=>db.query(sql,args),
+  async connect(){
+   return {async query(sql,args){if(sql.includes('advisory'))return {rows:[{locked:true}]};return db.query(sql,args);},release(){}};
+  }
+ };
+ const server=httpServer(ingestionService(pool,fixtureProvider(),fixture));
  server.listen(0,'127.0.0.1');await once(server,'listening');
  try{
  const address=server.address(),client=backendClient(`http://127.0.0.1:${address.port}`),handle=mcpHandler(client);
@@ -71,6 +77,8 @@ test('MCP calls the Node HTTP backend and validates tools without SQL or raw-vec
  assert((await rpc('tools/call',{name:'ingest_demo_intelligence',arguments:{sql:'select 1'}})).result.isError);
  assert((await rpc('tools/call',{name:'list_demo_intelligence_reports',arguments:{limit:100}})).result.isError);
  assert.throws(()=>backendClient('https://production.example'),/LOCAL_DEMO_BACKEND_REQUIRED/);
+ const malformed=await fetch(`http://127.0.0.1:${address.port}/demo/intelligence`,{method:'POST',body:'{'});assert.equal(malformed.status,400);assert.equal((await malformed.json()).error,'INVALID_REQUEST');
+ const invalidLimit=await fetch(`http://127.0.0.1:${address.port}/demo/intelligence`,{method:'POST',body:JSON.stringify({operation:'list_demo_intelligence_reports',arguments:{limit:null}})});assert.equal((await invalidLimit.json()).error,'INVALID_LIMIT');
  const response=await fetch(`http://127.0.0.1:${address.port}/demo/intelligence`,{method:'POST',headers:{Origin:'https://example.com'},body:'{}'});assert.equal(response.status,400);
  }finally{await new Promise(resolve=>server.close(resolve));await db.close();}
 });
@@ -85,4 +93,19 @@ test('four-hour UTC scheduler actually fires and stops',async()=>{
  assert.equal(nextFourHourDelay(new Date('2026-10-26T03:59:59Z')),1000);assert.equal(nextFourHourDelay(new Date('2026-10-26T04:00:00Z')),14400000);
  let calls=0,report;const done=new Promise(resolve=>{report=resolve;});const stop=scheduleIngestion(async()=>({count:++calls}),report,()=>10);
  assert.deepEqual(await done,{count:1});stop();await new Promise(resolve=>setTimeout(resolve,25));assert.equal(calls,1);
+});
+
+test('service processes an injected source rather than loading built-in demo records',async()=>{
+ const db=await database();
+ try{
+  const pool={query:(sql,args)=>db.query(sql,args),async connect(){return {async query(sql,args){if(sql.includes('advisory'))return {rows:[{locked:true}]};return db.query(sql,args);},release(){}};}};
+  let loaded=0;
+  const source=circleObservation({id:'injected-circle-post',state:'published',revision:2,published_revision:2,content:{company:'Injected source company',insight:'A source supplied independently of the demo dataset.',provenance:'unknown'}});
+  const call=ingestionService(pool,fixtureProvider(),async()=>{loaded++;return [source];});
+  assert.equal((await call('ingest_demo_intelligence')).inserted,1);
+  const result=await call('list_demo_intelligence_reports');
+  assert.equal(loaded,1);assert.equal(result.items.length,1);assert.equal(result.items[0].source_id,'injected-circle-post');assert.equal(result.items[0].company,'Injected source company');
+  assert.equal((await call('ingest_demo_intelligence')).skipped,1);
+  await assert.rejects(()=>call('ingest_demo_intelligence',{records:[]}),/UNKNOWN_ARGUMENT/);assert.equal(loaded,2);
+ }finally{await db.close();}
 });

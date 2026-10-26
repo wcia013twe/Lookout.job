@@ -7,3 +7,6 @@
 !lib/
 !lib/network-model.mjs
 !lib/outreach-conversation.mjs
+!tests/
+!tests/fixtures/
+!tests/fixtures/intelligence.mts

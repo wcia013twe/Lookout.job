@@ -1,6 +1,5 @@
-import {createHash} from 'node:crypto';
 import type {Store,EmbeddingProvider} from './types.ts';
-import type {Candidate} from './sources.ts';
+import type {Candidate} from './types.ts';
 import {clean} from './clean.ts';
 export function validVector(v:unknown):v is number[]{return Array.isArray(v)&&v.length===1536&&v.every(x=>typeof x==='number'&&Number.isFinite(x))&&v.some(x=>x!==0);}
 export async function ingest(store:Store,provider:EmbeddingProvider,candidates:Candidate[]){
@@ -28,6 +27,3 @@ export function openAIProvider(key:string|undefined,request:typeof fetch=fetch):
   return body.data[0].embedding;
  }};
 }
-
-// Synthetic vectors prove storage mechanics only. They are not semantic embeddings.
-export function fixtureProvider():EmbeddingProvider{return {model:'fixture-vector-v1',async embed(text){const bytes=createHash('sha256').update(text).digest();return Array.from({length:1536},(_,i)=>(bytes[i%bytes.length]+1)/256);}};}

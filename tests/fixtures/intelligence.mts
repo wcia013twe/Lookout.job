@@ -1,5 +1,7 @@
+import {createHash} from 'node:crypto';
+import type {EmbeddingProvider} from '../../backend/intelligence/types.ts';
 // Fictional only. Shapes follow the inspected local Docker source tables and contact-notes contract.
-import {circleObservation,applicationObservations} from './sources.ts';
+import {circleObservation,applicationObservations} from '../../backend/intelligence/sources.ts';
 export function demoCandidates(){
  const posts=[{id:'demo-circle-001',state:'published',parent_id:null,published_revision:1,revision:1,authorName:'Alex Example',content:{company:'Cedar Systems (demo)',role:'Backend Engineer',stage:'technical',insight:'Alex Example reported a discussion about lock contention. Contact alex@example.com or +1 (212) 555-0100. Notes: https://example.com/private?token=fake',experienceDate:'2026-10-20',provenance:'user_confirmed',uncertainty:'Fictional candidate experience; team format may vary.'}},
  {id:'demo-circle-002',state:'published',parent_id:null,published_revision:1,revision:1,content:{company:'Harbor Compute (demo)',role:'Systems Intern',stage:'technical',insight:'Fictional report: explain queue backpressure and retry storms.',provenance:'unknown'}}];
@@ -12,3 +14,6 @@ export function demoCandidates(){
  {id:'received-002',direction:'received',channel:'Email',date:'2026-10-16',body:'The next round includes a project deep dive. Thread https://example.com/thread?token=fake'}]})};
  return [...posts.map(circleObservation),...applicationObservations(application,milestones,[contact])];
 }
+
+// Synthetic vectors prove storage mechanics only. They are not semantic embeddings.
+export function fixtureProvider():EmbeddingProvider{return {model:'fixture-vector-v1',async embed(text){const bytes=createHash('sha256').update(text).digest();return Array.from({length:1536},(_,i)=>(bytes[i%bytes.length]+1)/256);}};}
