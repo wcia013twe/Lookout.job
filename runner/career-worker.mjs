@@ -102,10 +102,11 @@ export async function deduplicateDiscovery(jobs,previous=[],workspace=process.en
  const scanner=await import('./vendor/career-ops/scan.mjs');
  const {postingUrlRelation}=await import('./vendor/career-ops/url-key.mjs');
  const {resolveColumns,parseTrackerRow}=await import('./vendor/career-ops/tracker-parse.mjs');
- previous=previous.map(row=>{
+ const identityRow=row=>{
   const parts=String(row.identity||row.atsIdentity||'').replace(/^ats:/,'').split(':');
-  return {...row,...(!row.listingIdentity&&parts.length===3&&['greenhouse','lever'].includes(parts[0])?{listingIdentity:{ats_provider:parts[0],board_slug:parts[1],posting_id:parts[2]}}:{})};
- });
+  return {...row,url:row.canonical_url||row.url,requisitionId:row.requisition_id??row.requisitionId,...(!row.listingIdentity&&parts.length===3&&['greenhouse','lever'].includes(parts[0])?{listingIdentity:{ats_provider:parts[0],board_slug:parts[1],posting_id:parts[2]}}:{})};
+ };
+ previous=previous.map(identityRow);jobs=jobs.map(identityRow);
  const seen=new Set();
  for(const row of previous)scanner.markOfferSeen(row,seen);
  const candidates=[];
@@ -135,7 +136,8 @@ export async function scanDiscovery(input) {
  const greenhouse=(await import('./vendor/career-ops/providers/greenhouse.mjs')).default;
  const lever=(await import('./vendor/career-ops/providers/lever.mjs')).default;
  const providers=new Map([[greenhouse.id,greenhouse],[lever.id,lever]]);
- const scan=await scanSource({target:input.target,config:input.config||{},limit:500},{providers});
+ const limit=input.limit??500;if(!Number.isInteger(limit)||limit<1||limit>500)throw Error('Bounded discovery limit required');
+ const scan=await scanSource({target:input.target,config:input.config||{},limit},{providers});
  if(scan.status!=='ok')return {...scan,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',scanner:'runner/career-worker.mjs scanSource',dedup:'scan.mjs + dedup-tracker.mjs'},jobs:[]};
  const jobs=await deduplicateDiscovery(scan.jobs,input.previous||[]);
  return {...scan,jobs,duplicates:scan.jobs.length-jobs.length,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',provider:'providers/'+scan.provider+'.mjs',scanner:'runner/career-worker.mjs scanSource',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};
@@ -150,7 +152,7 @@ export async function runTask({task,input}) {
  if(task==='audit')return auditDocument(input);
  if(task==='analytics')return analyzeCareer(input);
  if(task==='document')return generateDocument(input);
- if(task==='verify') {publicUrl(input.url);const {checkLivenessViaApi}=await import('./vendor/career-ops/liveness-api.mjs');const result=await checkLivenessViaApi(input.url);return {...(result||{result:'uncertain',code:'unsupported_or_inconclusive',reason:'No conclusive public ATS verification; inspect the official employer page.'}),url:input.url,checkedAt:new Date().toISOString()};}
+ if(task==='verify')return (await import('./career-liveness.mjs')).checkDiscoveryLiveness([{url:input.url}]).then(results=>results[0]);
  throw Error('Unknown toolkit task');
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)) {

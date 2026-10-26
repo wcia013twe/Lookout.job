@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "test": "node --test",
+    "test:liveness": "node --test tests/career-liveness.test.mjs",
+    "test:dedup": "node --test tests/search-dedup.test.mjs",
+    "test:filter": "node --test tests/careerops-filter-parity.test.mjs tests/search-filters.test.mjs tests/discovery-filter-contract.test.mjs",
     "validate:data": "node scripts/validate-data.mjs",
     "test:db": "node backend/check-schema.mjs",
     "dev": "npm --prefix next-app run dev",

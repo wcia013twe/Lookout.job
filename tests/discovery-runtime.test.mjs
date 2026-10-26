@@ -23,9 +23,9 @@ test('exact copied scanner and tracker keep distinct native postings and functio
 
 test('thin runtime delegates to copied discovery task and maps evidence without invented publication dates',async()=>{
  const calls=[];
- const result=await fetchSource('portal:example',{name:'Example',careers_url:'https://job-boards.greenhouse.io/example'},{execute:async(task,input)=>{calls.push({task,input});return {status:'ok',provider:'lever',available:1,truncated:false,jobs:[{...posting('111'),postedAt:'2026-10-26T00:00:00Z',description:'Upstream plain-text excerpt'}],provenance:{provider:'providers/lever.mjs',dedup:'dedup-tracker.mjs'}};}});
- assert.equal(calls[0].task,'discovery');assert.equal(result.coverage,'exhaustive');
- assert.equal(result.listings[0].employerPostedAt,null,'Lever creation time must not become an invented publication date');
+ const result=await fetchSource('portal:example',{name:'Example',careers_url:'https://job-boards.greenhouse.io/example'},{execute:async(task,input)=>{calls.push({task,input});return task==='verify-discovery-leads'?{jobs:[{...posting('111'),postedAt:null,description:'Verified full description'}],diagnostics:[{status:'active'}],provenance:{verification:'copied verifier'}}:{status:'ok',provider:'greenhouse',available:1,truncated:false,jobs:[{...posting('111'),postedAt:'2026-10-26T00:00:00Z',description:'Upstream plain-text excerpt'}],provenance:{provider:'providers/greenhouse.mjs',dedup:'dedup-tracker.mjs'}};}});
+ assert.equal(calls[0].task,'discovery');assert.equal(calls[1].task,'verify-discovery-leads');assert.equal(calls[0].input.limit,25);assert.equal(result.coverage,'exhaustive');
+ assert.equal(result.listings[0].employerPostedAt,null,'Discovery metadata cannot override verified employer publication evidence');
  assert.equal(result.listings[0].atsIdentity,'greenhouse:example:111');
  assert.ok(!Object.hasOwn(result.listings[0],'score'));
  const unsupported=await fetchSource('query:1',{query:'research this source'},{execute:async()=>({status:'unsupported',jobs:[]})});
@@ -44,7 +44,8 @@ function harness(sources){
  const dispatch=async(operation,payload)=>{
   calls.push({operation,payload});
   if(operation==='search.run.start'||operation==='search.run.read')return structuredClone(run);
-  if(operation==='search.discoveries.read')return {listings:[posting('old')],nextOffset:null};
+  if(operation==='search.discoveries.read')return {listings:payload.purpose?[]:[posting('old')],nextOffset:null};
+  if(operation==='search.context')return {personalVersion:1,documents:[{kind:'profile',id:'general',version:1,projection:{filters:{}}}]};
   if(operation==='search.progress'){const source=run.sources.find(s=>s.source_id===payload.sourceId);assert.equal(source.version,payload.expectedVersion);Object.assign(source,payload,{version:source.version+1});run.version++;}
   if(operation==='search.discoveries.save')run.version++;
   if(operation==='search.run.finish'){assert.equal(payload.expectedVersion,run.version);run.state=payload.state;}
@@ -55,9 +56,9 @@ function harness(sources){
 test('worker resumes persisted identities through isolated copied scan task and retains honest partial coverage',async()=>{
  const h=harness([{source_id:'portal:example',source:{name:'Example',careers_url:'https://example.com'},version:0,state:'pending'},{source_id:'query:1',source:{query:'unsupported'},version:0,state:'pending'}]);
  const copied=[];
- const execute=async(task,input)=>{copied.push({task,input});return input.target.id==='query:1'?{status:'unsupported',jobs:[]}:{status:'ok',provider:'greenhouse',available:2,truncated:false,jobs:[posting('new')],provenance:{provider:'providers/greenhouse.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};};
+ const execute=async(task,input)=>{copied.push({task,input});if(task==='dedup-discovery')return [];if(task==='verify-discovery-leads')return {jobs:[{...posting('new'),description:'Verified',postedAt:null}],diagnostics:[{status:'active'}]};return input.target.id==='query:1'?{status:'unsupported',jobs:[]}:{status:'ok',provider:'greenhouse',available:2,truncated:false,jobs:[posting('new')],provenance:{provider:'providers/greenhouse.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};};
  const result=await executeSearch({...job,attempts:2,search_run_id:h.run.id},h.dispatch,{execute});
- assert.equal(result.status,'partial');assert.equal(result.result.screening,'review-needed');
+ assert.equal(result.status,'partial');assert.equal(result.result.shortlist.applicantEligibility,'not-evaluated');
  assert.equal(result.result.provenance[0].dedup,'dedup-tracker.mjs');
  assert.equal(copied[0].input.previous[0].url,posting('old').url);
  assert.ok(!h.calls.some(call=>/screening|publish|submission/.test(call.operation)));

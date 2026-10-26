@@ -453,7 +453,7 @@ this library. Actual execution remains a capability of the connected agent.
 
 ## Document-backed career context and agent search memory
 
-Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state. A configured Node worker can collect bounded source observations using the copied Career Ops layer; scoped Node MCP tools page Simplify leads, verify supported employer URLs and filter against current owned profiles. The personal agent supplies web search, narrative analysis and four card ratings. Saving preferences does not activate a schedule. See [the discovery flow](backend/discovery-flow.md) for the tested local sequence and explicit source limits. Existing targeting controls edit canonical documents. See [the contract](docs/schema.md#search) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
+Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state. A configured Node worker executes one bounded collect → verify → screen → deduplicate job using the copied Career Ops layer and persists shortlist IDs in the existing job result. Scoped manual research/rescreening tools remain available. The personal agent supplies web search, narrative analysis and four card ratings. Saving preferences does not activate a schedule. See [the discovery flow](backend/discovery-flow.md) for the tested local sequence and explicit source limits. Existing targeting controls edit canonical documents. See [the contract](docs/schema.md#search) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
 
 ## Private company Network
 
@@ -793,3 +793,24 @@ then `NEXT_PUBLIC_LOOKOUT_API_URL` in `.env.local`. See
 [local parser setup](backend/runtime/README.md#resume-parser-setup). No schema
 migration is needed. This is committed integration code and local verification,
 not a hosted deployment or proof of a live APILayer request.
+
+### Local test-account auto sign-in
+
+For a loopback preview backed by local Docker Supabase, set these in ignored
+`next-app/.env.local`, then rebuild the static preview or restart Next.js:
+
+```
+NEXT_PUBLIC_LOCAL_TEST_AUTO_SIGNIN=1
+NEXT_PUBLIC_LOCAL_TEST_EMAIL=<existing local test account email>
+NEXT_PUBLIC_LOCAL_TEST_PASSWORD=<existing local test account password>
+```
+
+Use the existing private `backend/runtime/.review-session.local.json` account when
+available; do not create a replacement or copy a hosted account. These values are
+included in the local browser build, so keep this export local. Both the website
+and Supabase must use HTTP loopback origins for this mode to activate. Existing
+sessions are preserved. An empty session signs in through local Supabase password
+auth; the Sign in action retries that same account. Sign out remains effective
+until reload. With this mode disabled, normal Google sign-in is unchanged.
+Detached fictional demo mode remains separate and does not load account auth.
+This is a development bootstrap using existing Auth, with no new product/MCP action.

@@ -5,14 +5,18 @@ operations at `/v1/operations`. Docker Compose separates the stateless API from
 the durable discovery worker. `/healthz` reports process health; it does not prove
 that Supabase or the worker is available.
 
-The approved discovery executor is `search_ats`. A connected agent owns intent,
-source/profile configuration, unsupported-source research, eligibility checks,
-fit reasoning and any card assessment JSON. The worker deterministically fetches
-supported public Greenhouse/Lever boards, saves official observations, deduplicates
-canonical URLs and normalized company/title/location identities, and records
-checkpoints and honest exhaustive/truncated/inaccessible coverage. It never
-scores candidates, publishes a batch, drafts answers, grants approval, sends
-messages or submits applications. Discovered rows remain unscored/review-needed.
+The approved executor is `search_ats`: one leased job collects up to 25 leads per
+source, verifies supported employer postings, saves observations, persists current
+versioned screening checks, applies copied Career Ops deduplication and stores
+shortlist IDs in its existing job result (`pipelineVersion: 1`). Muse reads that
+shortlist, writes candidate-specific reports and four ratings, publishes a batch
+and prepares drafts. Normal jobs need no separate screening/dedup MCP calls.
+Collection supports Greenhouse/Lever; liveness for each link uses the copied
+ATS API/browser ladder across upstream-supported sources. Full-description
+extraction currently supports Greenhouse. Active unsupported extraction remains
+explicit and partial; it does not become a fictional parsed record. Up to ten configured sources and 250 observations are bounded.
+The worker never generates LLM reports, messages or applications. Source coverage,
+unknown applicant eligibility and pending Muse reporting remain explicit.
 
 The worker uses direct service-only Supabase RPCs fenced by job ID, current
 version, short-lived lease token, active owned connection and pinned profile/run.
@@ -27,7 +31,7 @@ Only copied Greenhouse and Lever providers are available to this backend path;
 the installed catalog of 108 providers is not broadly activated. The verbatim
 scanner, tracker deduplication and merge dependency closure is copied by
 `scripts/import-career-tools.mjs` from CareerOps VERSION 1.36.0, commit
-`c78e14cdfd52f18a92e4a67694efab7ddef59385`. All 225 copied files retain their
+`c78e14cdfd52f18a92e4a67694efab7ddef59385`. All 249 copied files retain their
 SHA-256 manifest and MIT license, including `data-static/aggregator-domains.txt`.
 No copied source file was hand-edited.
 
@@ -44,18 +48,18 @@ workspace and never becomes a second user application store.
 
 The child receives no Supabase/agent credentials, has a 384 MiB JavaScript heap,
 a 120-second task timeout and 16 MiB output cap. Existing `scanSource` bounds a
-source to 20 HTTP requests and this integration to 500 returned jobs; the worker
-uses at most ten configured sources. Save transactions are capped at 25 rows and
-48,000 encoded UTF-8 bytes. Description excerpts follow the copied provider's
-limits (normally 4,000 characters for Greenhouse); the full card/modal uses the
-copied uncapped `browser-extract.mjs jdHtmlToText` path when explicitly fetched.
+source to 20 HTTP requests and the raw scanner to 500 returned jobs; the normal
+job requests 25 per source and uses at most ten configured sources. Save transactions are capped at 25 rows and
+48,000 encoded UTF-8 bytes. Provider discovery excerpts are not treated as full verified records: the job
+verifies supported exact employer URLs and parses the description through copied
+`normalizeGreenhouseJob`, bounded at 60,000 characters, before saving observations.
 Unknown publication dates remain null; Lever creation times are not promoted to
 publication dates. Unsupported sources stay agent research work. Coverage does
 not establish fit, eligibility, exhaustive research or full-description archival.
 
 On expired-lease retry, a worker resumes its pinned run and reads bounded identity
-pages from that run before fetching pending sources. Only canonical URL, company,
-title and location are returned to this internal deduplication path. Already
+pages from that run before fetching pending sources. Only public posting identity, company, title, location and requisition fields
+are returned to this internal deduplication path. Already
 completed sources remain completed; previously saved observations are retained.
 Attempt-specific retry keys prevent a changed fetched snapshot from reusing an
 older write key. All subsequent writes still require the current lease. The
@@ -210,3 +214,44 @@ verification uses memory-only fictional proposals and no APILayer/network calls.
 A real API key and a deliberately chosen test document are still needed for a
 live APILayer round trip; mocked/local checks do not establish vendor extraction
 accuracy or hosted availability.
+
+
+### Explicit live parser smoke test
+
+`SUPABASE_CLI=/opt/homebrew/bin/supabase LOOKOUT_RESUME_API_URL=http://127.0.0.1:8081 node scripts/check-live-resume-import.mjs`
+uses the running local API and its server-only key. It sends a generated fictional
+PDF to APILayer, then verifies the versioned website save and scoped MCP cached
+proposal. Only loopback local services are accepted. Test accounts/files are
+removed even after a failed assertion. This is an explicit live test and may
+consume an API request; it is not part of `npm test`. `--write-fixture` writes only
+the fictional PDF to `/private/tmp/lookout-live-resume-fixture.pdf` for inspection.
+
+Live response validation found that `dates` may be string arrays and `name` can be
+null. The adapter accepts these forms, leaves missing facts absent, and labels
+returned dates as parser output rather than asserting they appeared verbatim in
+the source. The fictional fixture missed the name, misidentified employers, and
+misread a date range as a phone number (that phone field is not imported). This
+proves connectivity and workflow operation, not extraction quality. Manual review
+of names/employers/dates remains necessary. Tiny hand-generated PDFs were rejected
+as too small; the smoke fixture is a valid, locally text-verified 36 KB document.
+
+## Single-job pipeline and cleanup
+
+`result.shortlist` is the handoff to Muse. Screening uses the same service as
+explicit MCP rescreening, with narrow leased SQL operations and current version
+checks. A separate dedup MCP wrapper was retired; the job directly invokes the
+shared adapter around unchanged copied code. Identity-only resume reads remain
+small; an explicit job-bound `purpose: screening` projection includes only the
+posting fields and observation needed to filter. No applicant profile/files or
+applications are added to discovery pages.
+
+`node --test tests/search-job-pipeline.test.mjs` covers the real SQL lease boundary,
+persisted checks/shortlist, partial coverage, recovery and settings conflicts with
+fictional provider fixtures and actual copied filtering/dedup children.
+
+The existing liveness stage uses `runner/career-liveness.mjs` as orchestration for
+unchanged copied API/browser classifiers. Docker installs system Chromium and
+passes only its executable path to the existing credential-free child. Browser
+checks stay sequential and retain the upstream URL/route guards. A soft 30-second
+fallback budget returns explicit uncertainty for remaining links. Liveness and
+extraction outcomes are separate source diagnostics, not a new service or table.

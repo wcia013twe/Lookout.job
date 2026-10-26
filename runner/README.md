@@ -147,7 +147,8 @@ normal release workflow; a local build does not deploy it.
 - `configure_job_provider`: select a provider/API for an existing saved target.
 - `scan_job_sources`: saved target IDs, optional keywords, 1–50 results/source,
   at most five sources. Saves leads, posting IDs, diagnostics and observation time.
-- `verify_job_posting`: real public ATS liveness lookup, returning active,
+- `verify_job_posting`: copied API-first liveness lookup with guarded sequential
+  browser fallback, returning active,
   expired or uncertain. Verified selected listings can use existing `publish_batch`.
 - `generate_career_document`: structured resume/cover-letter to a real private PDF;
   returns fileId, and resumeId for registered resumes. Four bundled CV templates.
