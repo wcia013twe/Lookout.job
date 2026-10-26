@@ -43,3 +43,36 @@ No table, migration, approval or submission permission is added.
 Validation: normalization and malformed-input cases, actual copied predicates,
 unconfigured/unknown distinction, multi-choice work settings, result guards and a
 TypeScript compile fixture with expected type errors.
+
+## Focused Career Ops parity audit
+
+Run `npm run test:filter` for offline filtering coverage, including direct calls to
+pinned `scan.mjs` predicates and a real runner-child invocation. Fictional inputs
+and a fixed clock exercise title/content rules, age/date boundaries, salary
+range overlap/currency, sponsorship policy, location precedence/Workday hints,
+reapplication cooldown, typed preferences and conservative missing-data behavior.
+This command does not fetch jobs, invoke an LLM or write database records.
+
+The reread found an adapter error: it changed every missing-evidence result to
+unknown, even when Career Ops explicitly rejected it. This bypassed
+`visa_filter.require_mention` and strict location policy. It also treated a raw
+`portals.location_filter` rejection as a soft preference, and disregarded URL-only
+location evidence. The adapter now preserves those upstream failures. A
+conservative upstream pass without evidence remains unknown, retained for review.
+Saved profile location preferences still honor Required/Preferred/Flexible.
+
+This is parity for the listed adapter gates, not the whole scanner. The upstream
+scan loop also implements company title overrides, declared-field filters,
+blacklists, tier skipping, deduplication and trust handling; importing its files
+does not make all of those part of `filterDiscovery`. Profile location selections
+currently replace the portal location predicate rather than composing with it.
+The work-arrangement adapter reuses a geography predicate with a remote-title
+fallback, so it needs a separate exact work-policy test/contract before claiming
+strict Hybrid-only or On-site-only matching. Freeform profile pay is not converted
+to a salary rule. Salary uses range overlap, not a guaranteed minimum offer.
+These are remaining boundaries, not capabilities established by this suite.
+
+Career Ops itself uses configured textual rules and conservative missing-data
+passes. It does not compute the six full applicant-eligibility checks listed
+above from a résumé. Those need explicit evidence/rules or agent review; they
+should not be presented as implemented by copying the scanner.
