@@ -8,7 +8,10 @@ export const metadata = {
   title: "Lookout",
   description: "Your personal job hunter. Your crew for what’s next. Discover roles, track applications, and make the hunt your own.",
   manifest: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/manifest.webmanifest`,
-  icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg` },
+  icons: {
+    icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/lookout-32.png`,
+    apple: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/lookout-180.png`,
+  },
 };
 export const viewport: Viewport = {
   width: "device-width",

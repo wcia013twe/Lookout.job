@@ -1,4 +1,5 @@
 "use client";
+import BrandMark from "./brand-mark";
 import {useRef,useState} from "react";
 import Link from "next/link";
 import {AnimatePresence,motion,MotionConfig,useReducedMotion} from "framer-motion";
@@ -7,6 +8,7 @@ import {ApplicationProfileProvider,useApplicationProfile} from "./application-pr
 import {readField,updateField} from "../../lib/search-profile.mjs";
 import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
 import {onboardingReveal,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
+import ResumeImport from "./resume-import";
 import AgentSelector from "./agent-selector";
 import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
@@ -93,8 +95,9 @@ function OnboardingFlow(){
    {!w.user&&!w.demo?<><p className="hint">Sign in to save your résumé privately.</p><Button secondary disabled={!w.authReady} onClick={w.signIn}>Sign in</Button></>:
    <>{resumes.length>0&&<Field label={w.demo?"Demo résumé":"Choose a saved résumé"}><select value={resumeId} onChange={e=>setResumeId(e.target.value)}><option value="">Choose a résumé</option>{resumes.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></Field>}
     {!w.demo&&<Button secondary disabled={uploading} onClick={()=>file.current?.click()}>{uploading?"Uploading…":resume?"Choose another file":"Choose a PDF or DOCX"}</Button>}
-    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. Uploading saves the file; your agent can review its contents after connecting."}</p></>}
+    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. After upload, you can autofill your profile and review the extracted details."}</p></>}
   </div>}
+  {resume&&method==="resume"&&(w.demo||resume.objectPath)&&<ResumeImport key={`${w.demo?w.demoEpoch:w.user?.id}-${resume.id}`} resumeId={resume.id}/>}
   {feedback&&<p className="hint" role="status">{feedback}</p>}
   <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
  </form><OnboardingSimplifyImport/></>;
@@ -110,7 +113,7 @@ function OnboardingFlow(){
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Button disabled={finishing||w.locked} onClick={()=>void finish()}>{finishing?"Saving setup…":"Open my workspace"}</Button><BrowserAppInstructions/></>;
  if(!w.demo&&!w.user)content=<><Dots/><Title sub="Create your Lookout account or return to your workspace before setting up your search and agent.">Sign up or sign in.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Checking sign-in…"}/></div><p className="hint">New here? Continuing with Google creates your account. Already joined? Use the same Google account to sign in.</p></>;
- return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><Dots/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
+ return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><BrandMark/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
 }
 
 function OnboardingSimplifyImport(){

@@ -15,6 +15,11 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],job_batches:[]};
  const client={async rpc(name,args){
   if(name==='workspace_reset_state')return {data:db.resetState||{}};
+  if(name==='update_workspace_fields'||name==='perform_platform_action'){
+   const current=db.profiles[0];
+   if((current?.updated_at||null)!==args.payload.expectedUpdatedAt)return {error:Error('Profile changed')};
+   const row={user_id:owner,facts:{...current?.facts,...(args.payload.fields||args.payload.facts)},verified_at:null,updated_at:'2026-10-26T13:00:00Z'};db.profiles=[clone(row)];return {data:row};
+  }
   if(name!=='save_preferences_preserving_quiet')throw Error('Unexpected RPC');
   const previous=db.preferences[0]||{};
   const search={...args.search_next};
@@ -177,4 +182,21 @@ test('new private job batches arrive on background sync without reloading the wo
  env.db.job_batches=[];
  await env.event('focus');
  assert.equal(seen.at(-1),null);
+});
+
+test('resume import adopts a versioned receipt without autosync overwriting retained fields',async()=>{
+ const env=await environment();env.store.set('workflow.profile.name','Keep my name');await JB.cloud.save();env.db.profiles[0].updated_at='2026-10-26T12:00:00Z';
+ const baseline=clone(env.store.get('workflow.profile')),writes=env.writes;
+ await JB.cloud.importProfileFields({skills:'TypeScript'},env.db.profiles[0].updated_at,baseline);
+ assert.equal(env.store.get('workflow.profile.name'),'Keep my name');assert.equal(env.store.get('workflow.profile.skills'),'TypeScript');assert.equal(env.store.get('workflow.profile.verified'),false);
+ await env.flush();assert.equal(env.writes,writes);assert.equal(env.db.profiles[0].facts.skills,'TypeScript');
+});
+test('resume import rejects local edits and stale remote profile versions',async()=>{
+ const env=await environment();env.store.set('workflow.profile.name','Saved');await JB.cloud.save();const baseline=clone(env.store.get('workflow.profile'));
+ env.store.set('workflow.profile.name','New local edit');await assert.rejects(JB.cloud.importProfileFields({skills:'Discard'},'2026-10-26T12:00:00Z',baseline),/profile changed/);
+ const next=clone(env.store.get('workflow.profile'));env.db.profiles[0].updated_at='2026-10-26T13:00:00Z';
+ await assert.rejects(JB.cloud.importProfileFields({skills:'Discard'},'2026-10-26T12:00:00Z',next),/Profile changed/);assert.equal(env.db.profiles[0].facts.name,'New local edit');assert.ok(!env.db.profiles[0].facts.skills);
+});
+test('resume import creates a missing tutorial profile through the versioned profile save boundary',async()=>{
+ const env=await environment();const baseline=clone(env.store.get('workflow.profile'));await JB.cloud.importProfileFields({name:'New candidate'},null,baseline);assert.equal(env.db.profiles[0].facts.name,'New candidate');assert.equal(env.store.get('workflow.profile.name'),'New candidate');assert.equal(env.store.get('workflow.profile.verified'),false);
 });

@@ -1,0 +1,7 @@
+# Diagnose bug-report prechecks without leaking data
+
+- Production inspection found 14 gateway 503s at 2026-10-24 22:54:31–22:55:29 UTC, no receipt rows, no newly created report issues (open or closed), and no receipt-RPC requests in available edge logs. The receipt table/function exist and service_role has EXECUTE. Production catch-all errors hide the failing outbound stage; token validity vs repository access vs label existence remains unconfirmed.
+- Return fixed stage names and GitHub HTTP status numbers, never response bodies, headers, exception text, credentials or report prose. Distinguish pre-creation failure from uncertain creation/receipt completion. Stop precheck retry loops and retain same-title reconciliation safeguards and reservations.
+- Clarify the newline-separated, column-one Attempted/Happened/Expected format in tool discovery, field schema, validation error and shared developer instructions. Increment developerVersion to 58. No UI behavior changed; fictional report fixtures cover formatting and failure states.
+- No production data, labels, credentials, permissions, rate limits or deployments changed; no live report retried and no unrelated bug repaired. This draft improves diagnosis and does not claim the underlying live configuration is fixed.
+- Validation: npm test passed 573 tests; 16 focused reporting/release/shared-context tests passed; npm run validate:data passed (158 roles); production build, frontend typecheck, node --check for the changed module and git diff --check passed. No lint script exists.
