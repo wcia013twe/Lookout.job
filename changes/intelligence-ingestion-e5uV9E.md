@@ -44,3 +44,9 @@ Post-integration verification: the landing integrated the separately completed l
 - Root `.env.local` is the shared frontend/intelligence configuration; intelligence npm commands load it automatically and Docker instructions use it explicitly. Next.js imports only NEXT_PUBLIC_ settings, preserving shell overrides. No product UI or demo behavior changes.
 - Validation: all 647 repository tests, 18 focused intelligence tests, intelligence type checking, 158-role catalog validation and production frontend build passed. A configuration smoke check verified public settings load, shell overrides win and OPENAI_API_KEY is excluded from the frontend loader.
 - Consolidated the existing local files into ignored root .env.local and corrected OPENAI_KEY to OPENAI_API_KEY. Live OpenAI requests returned HTTP 429 / credit_balance_exhausted (insufficient_quota); all three staged records remain pending without vectors. Gate 1 is not cleared; API credits are required. Automatic ingestion remains in pending mode.
+
+## Gate 1: real embedding verification
+
+- Retried after API credits became available: the existing account-backed pipeline updated all three local test-account records using text-embedding-3-small, with three real provider calls and zero failures. Database inspection confirmed all three are ready with 1,536-dimensional vectors and the expected model.
+- An unchanged second run skipped all three records, made zero provider calls and had zero failures. Gate 1 is cleared for this bounded local evaluation.
+- No runtime code changed in this verification pass. Automatic ingestion remains configured as pending; production routing, retrieval quality and the later gates are not claimed.
