@@ -45,6 +45,8 @@ export interface ApplicationMilestone {
   occurred_at?: string | null;
   created_at?: string;
   source: { kind: string; note?: string; timestampConfirmed?: boolean; messageId?: string; subject?: string; excerpt?: string; receivedAt?: string; url?: string };
+  supersedes_id?: string | null;
+  supersededBy?: string | null;
   observedConfirmation?: boolean;
 }
 

@@ -109,6 +109,8 @@ export function createDemoWorkspace(now = new Date()) {
     milestone('demo-interview', 'recruiter-call', 'recruiter_call', 'Recruiter call', `${day(today, -1)}T14:00:00Z`, 'completed', email('cedar-recruiter', 'Demo: thanks for the recruiter call', `Fictional email: thank you for speaking with our recruiter on ${day(today, -1)} at 14:00 UTC.`)),
     milestone('demo-interview', 'technical-round-1', 'technical_round', 'Technical round 1', `${confirmedDate}T14:00:00Z`, 'scheduled', copy(confirmedPlan.deadline.source)),
   ];
+  applications['demo-interview'].milestones.push({...milestone('demo-interview','old-technical-time','technical_round','Technical round 1 — earlier time',`${confirmedDate}T12:00:00Z`,'scheduled',email('cedar-original-time','Demo: original time','Fictional original time, replaced by the next update.'))});
+  applications['demo-interview'].milestones.find(row=>row.id==='demo-interview-technical-round-1').supersedes_id='demo-interview-old-technical-time';
   applications['demo-ambiguous'].milestones = [
     milestone('demo-ambiguous', 'recruiter-date-unknown', 'recruiter_call', 'Recruiter call — date needs confirmation', null, 'scheduled', copy(ambiguousPlan.deadline.source)),
   ];
@@ -209,7 +211,7 @@ export function createDemoServices(store) {
       if (input.occurredAt != null && (typeof input.occurredAt !== 'string' || !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(input.occurredAt) || !Number.isFinite(Date.parse(input.occurredAt)) || input.source.timestampConfirmed !== true)) throw new Error('Choose a valid milestone date with a confirmed time zone, or leave it unknown.');
       const milestones = copy(current.milestones || []);
       const source = { kind: 'user', ...(input.source.note ? { note: input.source.note } : {}), ...(input.occurredAt ? { timestampConfirmed: true } : {}) };
-      const content = { kind: input.kind, label: input.label || input.kind.replaceAll('_', ' '), occurred_at: input.occurredAt || null, phase: input.phase, source };
+      const content = { kind: input.kind, label: input.label || input.kind.replaceAll('_', ' '), occurred_at: input.occurredAt || null, phase: input.phase, source, supersedes_id: input.supersedesId || null };
       const existing = milestones.find(row => row.event_key === input.eventKey);
       if (existing) {
         if (Object.keys(content).some(key => JSON.stringify(existing[key]) !== JSON.stringify(content[key]))) {
@@ -217,6 +219,7 @@ export function createDemoServices(store) {
         }
         return copy(existing);
       }
+      if (input.supersedesId && (!milestones.some(row=>row.id===input.supersedesId) || milestones.some(row=>row.supersedes_id===input.supersedesId))) throw new Error('Demo milestone already replaced or unavailable. Reload the timeline.');
       const row = { id: `${id}-user-${input.eventKey}`, user_id: identity, application_id: id, event_key: input.eventKey, ...content, created_at: new Date().toISOString() };
       store.set(`workflow.applications.${id}`, { ...current, milestones: [...milestones, row] });
       return copy(row);
