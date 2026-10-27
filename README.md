@@ -346,7 +346,23 @@ Developer contract version **12** advertises these tools.
 Start in a fresh checkout with `npm run feature:start -- <name>`. After committing
 and reviewing the feature, run `npm run feature:land` there to integrate current
 local `main` and fast-forward the shared local `main` checkout. This routine path
-does not push or create a PR, so localhost receives completed work immediately.
+does not push or create a PR. For the everyday local app, run `make live` once:
+it serves an isolated SSD preview that follows committed shared `main` every second.
+Landing a feature updates that preview and Next.js refreshes connected browsers.
+Dependency changes reinstall locked dependencies and restart the frontend.
+`make frontend` / `make dev` still preview the active task checkout; those servers
+cannot hot reload changes landed into a different checkout. Keep unfinished task
+checkouts intact. `make live` never switches, resets or edits them and never restarts
+the backend. Stop the previous frontend before using its port 3000.
+
+The live preview owns a clone under `/Volumes/External SSD/Lookout/live-main/`.
+It refuses dirty preview files or non-fast-forward history instead of discarding
+work. An interrupted process can leave a `running` lock; verify no preview is
+running before removing that empty directory. `LOOKOUT_LIVE_ROOT` may override
+the storage directory when internal storage is explicitly authorized. Browser/API
+configuration still comes from the existing local frontend launcher; no private
+account records or task `.env` files are copied. Developer-only `--hosted` mode
+uses the existing hosted default without starting local services.
 
 When GitHub review, protected-branch CI or production publication is explicitly
 needed, use `npm run feature:publish -- --title "<title>" --body-file
