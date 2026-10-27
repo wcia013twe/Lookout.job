@@ -1,3 +1,4 @@
+import {execFileSync} from 'node:child_process';
 // Deployment packaging only: stamp build identity after checking exact source.
 // This creates no repository evidence record and grants no runtime permissions.
 export const VERSION_PATH='supabase/functions/agent-gateway/runtime-version.json';
@@ -9,4 +10,12 @@ export function stampRuntimeBundle({files,sourceCommit,readSource}) {
   if(readSource(sourceCommit,f.name)!==f.content)throw Error(`Source mismatch: ${f.name}`);
  }
  return [...files.filter(f=>f.name!==VERSION_PATH),{name:VERSION_PATH,content:JSON.stringify({sourceCommit})+'\n'}];
+}
+
+export function readCommittedSource(sourceCommit,name,cwd) {
+ try {
+  return execFileSync('git',['show',`${sourceCommit}:${name}`],{cwd,encoding:'utf8',maxBuffer:32*1024*1024,stdio:['ignore','pipe','pipe']});
+ } catch {
+  throw Error(`Could not read committed deployment source: ${name}`);
+ }
 }
