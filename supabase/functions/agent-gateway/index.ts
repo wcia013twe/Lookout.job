@@ -154,7 +154,7 @@ Deno.serve(withGatewayCors(async request => {
     }
     if(operation==='drafts.prepare') {
       const credentialHash=await hashToken(bearer);
-      const result=await prepareDraftWithPrefill((op: string,args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),payload,{loadJob:async(id: string)=>{const {data}=await admin.from('jobs').select('id,employer').eq('id',id).maybeSingle();return data;},loadApplication:async(jobId: string,userId: string)=>{const {data,error}=await admin.from('applications').select('*').eq('job_id',jobId).eq('user_id',userId).maybeSingle();if(error)throw Error('Existing draft read failed');return data;}});
+      const result=await prepareDraftWithPrefill((op: string,args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),payload,{loadJob:async(id: string)=>{const {data}=await admin.from('jobs').select('id,canonical_url,employer').eq('id',id).maybeSingle();return data;},loadApplication:async(jobId: string,userId: string)=>{const {data,error}=await admin.from('applications').select('*').eq('job_id',jobId).eq('user_id',userId).maybeSingle();if(error)throw Error('Existing draft read failed');return data;}});
       if(result.error){const [status,message]=databaseFailure(result.error);return respond({error:message},status);}
       return respond({data:result.data});
     }

@@ -20,8 +20,8 @@ export const DEMO_TOOLS = [
   },
   {
     name: SEARCH_TOOL,
-    description: 'Search current permitted local intelligence by meaning. Returns source references and cosine similarity (not confidence). No global access or generated answers.',
-    inputSchema: {type:'object', properties:{query:{type:'string',minLength:1,maxLength:1000},limit:{type:'integer',minimum:1,maximum:20}},required:['query'],additionalProperties:false},
+    description: 'Search current permitted local intelligence using vector search (default) or hybrid keyword/vector rank fusion. Returns source references and cosine similarity (not confidence). No global access or generated answers.',
+    inputSchema: {type:'object', properties:{mode:{type:'string',enum:['vector','hybrid']},query:{type:'string',minLength:1,maxLength:1000},limit:{type:'integer',minimum:1,maximum:20}},required:['query'],additionalProperties:false},
   },
 ] as const;
 
@@ -37,7 +37,9 @@ export function validateDemoCall(operation: unknown, args: unknown = {}) {
   }
   const query = 'query' in args ? args.query : undefined;
   if(operation===SEARCH_TOOL&&(typeof query!=='string'||!query.trim()||query.length>1000))throw Error('INVALID_QUERY');
-  return {operation, limit: limit as number | undefined, query: typeof query==='string'?query.trim():undefined};
+  const mode='mode' in args?args.mode:'vector';
+  if(mode!=='vector'&&mode!=='hybrid')throw Error('INVALID_SEARCH_MODE');
+  return {operation, mode:mode as 'vector'|'hybrid', limit: limit as number | undefined, query: typeof query==='string'?query.trim():undefined};
 }
 
 export type DemoCall = (operation: unknown, args?: unknown) => Promise<Record<string, unknown>>;

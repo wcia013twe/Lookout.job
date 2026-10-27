@@ -1,10 +1,10 @@
 // Narrow partial edits. Arrays and supplied nested values replace that whole field.
-import { profileFactsSchema } from './write-schemas.mjs';
+import { editableProfileFactsSchema } from './write-schemas.mjs';
 import { ARTIFACT_TOOLS } from './artifacts.mjs';
 const text={type:'string',maxLength:20000};
 const fields=names=>Object.fromEntries(names.split(' ').map(k=>[k,text]));
 const definitions=[
- ['update_profile_fields','profile.fields.update','profile:write','expectedUpdatedAt',profileFactsSchema.properties],
+ ['update_profile_fields','profile.fields.update','profile:write','expectedUpdatedAt',editableProfileFactsSchema.properties],
  ['update_company_workspace_fields','company_workspaces.fields.update','network:write','expectedRevision',{
   ...fields('name website priority interest targetTeams concerns research nextAction followUpDate'),
   sources:{type:'array',maxItems:30},contactIds:{type:'array',maxItems:1000},applicationIds:{type:'array',maxItems:1000},archived:{type:'boolean'}}],

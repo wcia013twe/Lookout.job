@@ -115,7 +115,9 @@ test('Gate 3: scripted agent reads HITL, repairs from verified facts through MCP
  const current=await row('select * from public.applications where id=$1',[failed.app.id]);
  const draft={...current.draft,formFingerprint:form.formFingerprint,questions:form.questions.flatMap(q=>q.fields.map(field=>({fieldId:field.id,fieldType:field.type,question:q.question,required:q.required,options:field.options,answer:''})))};
  const prepared=await tool('prepare_draft',{jobId:failed.jobId,expectedRevision:current.revision,blocker:'',draft});
- assert.equal(prepared.draft.questions.find(q=>q.fieldId==='phone').answer,'+1 202-555-0100');
+ assert.equal(prepared.draft,undefined,'Keep the compact handoff response');
+ const saved=await tool('read_application_record',{applicationId:failed.app.id});
+ assert.equal(saved.application.draft.questions.find(q=>q.fieldId==='phone').answer,'+1 202-555-0100');
  assert.equal((await row('select count(*)::int n from public.approvals where application_id=$1',[failed.app.id])).n,0,'Agent must not manufacture approval');
  const result=await tool('submit_application',{applicationId:failed.app.id,attemptId:'agent-repaired-e2e'});
  assert.equal(result.status,'Submitted',JSON.stringify(result));assert.equal(failed.fixture.posts,1);

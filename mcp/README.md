@@ -589,6 +589,12 @@ local Node HTTP/shared Edge handlers, private fixture downloads and migrated SQL
 It sends no real employer application and calls no model. Use
 `LOOKOUT_CHROMIUM_EXECUTABLE` to select an installed browser for this check.
 
-Release requires the submission-batch migration, gateway contract 73/application
+Release requires the submission-batch migration, gateway contract 75/application
 guide v4 and configured Node API image. Hosted deployment, Muse client execution
 and real employer behavior remain unverified until separately exercised.
+Personal profile patches now share the website's typed/version-checked database
+writer, including preferred-name/address/birthday fields. Only the authenticated
+human can verify the exact saved facts. Website stale edits pause for explicit
+reconciliation and retain their original version across offline reloads. See
+[the complete profile-edit flow](../backend/agent-contract.md#complete-personal-profile-edit-flow)
+for the flow gate, local verifier, demo scenario and coordinated release limits.

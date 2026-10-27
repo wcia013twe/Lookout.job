@@ -178,16 +178,18 @@ function createBackend(client, expectedUserId = null) {
       );
       return Object.fromEntries(tables.map((t, i) => [t, rows[i]]));
     },
-    saveProfile(facts, verified = false) {
-      return owned(
-        "profiles",
-        {
-          facts,
-          verified_at: verified ? new Date().toISOString() : null,
-          updated_at: new Date().toISOString(),
-        },
-        "user_id",
-      );
+    async saveProfile(fields, expectedUpdatedAt) {
+      if(Object.keys(fields).length)validateFieldUpdate('profile.fields.update',{fields,expectedUpdatedAt:expectedUpdatedAt??'2026-01-01T00:00:00Z'});
+      const id=await owner();
+      const data=await result(client.rpc('save_profile_changes',{payload:{fields,expectedUpdatedAt},expected_owner:id}));
+      if(await owner()!==id)throw Error('Account changed');
+      return data;
+    },
+    async reviewProfile(expectedUpdatedAt, reviewed) {
+      const id=await owner();
+      const data=await result(client.rpc('review_profile_facts',{expected_updated_at:expectedUpdatedAt,reviewed,expected_owner:id}));
+      if(await owner()!==id)throw Error('Account changed');
+      return data;
     },
     async savePreferences({
       search = {}, tierLists = [], activeTierListId = null, theme = { pack: "base" },

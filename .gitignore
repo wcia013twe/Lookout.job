@@ -23,3 +23,6 @@ supabase/.temp/
 
 # Private retained local presentation account/session.
 /backend/runtime/.review-session.local.json
+
+# Generated local profile-flow screenshots and server diagnostics.
+/next-app/.profile-flow-proof/

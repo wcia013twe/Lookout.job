@@ -291,6 +291,6 @@ local Node HTTP/shared Edge handlers, private fixture downloads and migrated SQL
 It sends no real employer application and calls no model. Use
 `LOOKOUT_CHROMIUM_EXECUTABLE` to select an installed browser for this check.
 
-Release requires the submission-batch migration, gateway contract 73/application
+Release requires the submission-batch migration, gateway contract 75/application
 guide v4 and configured Node API image. Hosted deployment, Muse client execution
 and real employer behavior remain unverified until separately exercised.
