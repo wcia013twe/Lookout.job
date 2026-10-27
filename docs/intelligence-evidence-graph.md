@@ -9,7 +9,7 @@ The Node module `backend/intelligence/evidence-graph.ts` implements the minimal 
 - `expandEvidenceGraph(seeds, resolvePostReference, options)` takes cleaned report projections in the existing database row shape. The resolver receives `{circleId, postId, revision, label}` and must validate the actual Circle identity plus current publication, ownership/access and source fingerprint. Return `null` for unavailable, withdrawn, private or mismatched targets. Resolver failure rejects the entire operation rather than returning a partially authorized graph.
 - The module additionally checks the returned source type/ID and any pinned revision before including the target. A null revision means an unpinned pointer resolved to the current eligible revision. Inconsistent versions of the same report in one expansion fail closed.
 
-The parent service must route HTTP and MCP through the same validated operation. The module exports the descriptor but does not register it or claim hosted deployment itself.
+The local Node service registers this descriptor and routes HTTP and MCP through the same validated operation. Its resolver reloads permitted sources, verifies the actual source Circle and stored content fingerprint, and applies the account owner boundary before returning evidence. This is not a hosted deployment.
 
 ## Evidence packet
 
@@ -23,4 +23,4 @@ Nodes and edges deduplicate; cycles terminate without repeated expansion. The pa
 
 The isolated fictional tests cover explicit provenance, uncertainty preservation, deduplication, cycles, depth limits, all size/lookup budgets, missing/private/withdrawn targets, source and revision mismatches, unsafe resource URLs, resolver failure, strict tool arguments and projection against accidental embedding/owner/reference leakage. These are backend fixture states, not an admin UI or external service activation.
 
-This module relies on the caller's source-access checks. It does not independently authenticate users or create a transactional snapshot of source permissions. Integration and end-to-end MCP/HTTP coverage belong to the calling service. Only explicit outgoing links are traversed; reply ingestion, inverse relationships, inferred topics, global-sharing policy and answer generation remain outside this implementation.
+This module relies on the caller's source-access checks. It does not independently authenticate users or create a transactional snapshot of source permissions. Service integration tests cover owner isolation, actual Circle mismatches, missing and withdrawn sources, pinned revisions, no embedding calls, and MCP over HTTP parity. Only explicit outgoing links are traversed; reply ingestion, inverse relationships, inferred topics, global-sharing policy and answer generation remain outside this implementation.

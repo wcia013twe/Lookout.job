@@ -1,3 +1,4 @@
+import {GRAPH_TOOL_DESCRIPTOR} from './evidence-graph.ts';
 import {METADATA_TOOL,metadataTool,validateMetadataArgs} from './metadata.ts';
 // One operation contract shared by MCP discovery and the HTTP-backed service.
 export const INGEST_TOOL = 'ingest_demo_intelligence';
@@ -25,6 +26,7 @@ export const DEMO_TOOLS = [
     inputSchema: {type:'object', properties:{mode:{type:'string',enum:['vector','hybrid']},query:{type:'string',minLength:1,maxLength:1000},limit:{type:'integer',minimum:1,maximum:20}},required:['query'],additionalProperties:false},
   },
   metadataTool,
+  GRAPH_TOOL_DESCRIPTOR,
 ] as const;
 
 export function validateDemoCall(operation: unknown, args: unknown = {}) {

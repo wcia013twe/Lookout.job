@@ -72,7 +72,7 @@ test('MCP calls the Node HTTP backend and validates tools without SQL or raw-vec
  try{
  const address=server.address(),client=backendClient(`http://127.0.0.1:${address.port}`),handle=mcpHandler(client);
  const rpc=(method,params)=>handle({jsonrpc:'2.0',id:1,method,params});
- const discovery=await rpc('tools/list');assert.equal(discovery.result.tools.length,4);
+ const discovery=await rpc('tools/list');assert.equal(discovery.result.tools.length,5);
  const result=await rpc('tools/call',{name:'ingest_demo_intelligence'});assert.equal(JSON.parse(result.result.content[0].text).inserted,9);
  const inspected=await rpc('tools/call',{name:'list_demo_intelligence_reports',arguments:{limit:2}});assert.equal(JSON.parse(inspected.result.content[0].text).items.length,2);
  assert((await rpc('tools/call',{name:'ingest_demo_intelligence',arguments:{sql:'select 1'}})).result.isError);
