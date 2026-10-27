@@ -1,88 +1,196 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:69d5f9e66db5c97b33106e85cd0dd27793682cc7a4138a1987efd231552c1071",
+  "pageVersion": "sha256:d61c4f35b6c18ebad15ae9f1ca7157be01eb4b8af1fd3bee863dd4a759533c53",
   "claims": [
     {
       "id": "claim_ab9d870ed6574dfeb59605c10877bbdf",
-      "statement": "The production UI is a Next.js App Router/React/Tailwind static export deployed from out/ to GitHub Pages, with private responses and resume links excluded from generated public and offline assets.",
+      "statement": "The production Next.js App Router/React/Tailwind UI is a static export for GitHub Pages, with private account responses/resumes excluded from generated public/offline assets.",
       "evidence": [
         {
-          "resource": "repo://next-app/README.md#L5-L19",
-          "version": "repo-lines-v1:sha256:ae3fb2f42498b9ba673b2e76b112b83e8d7c002e8aceedcb62833cba2175adc7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0ZDY1ZjkwMjA2ZTBkNDE2M2FiMDQ1NTFjMWJmMDNmMGJkNjkxYjNiYmRmMzAxMWYzZmM3ZjRjYWU2NDViNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMjMwYTdlN2UyNzFkNjgwYzBjZDBkZmY1MDU0MDI1YjZjMTg4ZmI3M2RhNzQzZDZiMTc2YTg4MzAzOWE4ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNmNiYWU4YjFjODA5ZDlmYTc3ZDEyNTA5Y2U4MzlhMzg1OTBkNzg0MzU0ZmZjODVmYTE2Y2RhYTBiMWYwOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmNWRjMDU1YTAzMTZhMWUyNGJkNGE3MWM0MjIzN2U2ZjQzYjkyNjM0YTRjYTA1MDhhODQ0Njk1ZjA4MzdjN2QifQ"
+          "resource": "repo://next-app/next.config.mjs#L1-L12",
+          "version": "repo-lines-v1:sha256:506ce2e448bb43a31e005a0bda120ab20e0911bf161e2f7aee13f02684fe4665:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwYWNiYWZiNzg3NGMzNDllMTRlYzg2NDk3YjIzZDJmOTU3ZTNlZDYxZmMzNWQ0ZDZmYWExNzM5MzAxYWQyYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZWNkYzViNWYwZTg2NDU4ZDI3ZDlhYmYzZWI4OTFhOTZmNjdkOWI3MWZmZGM2ZThjZDg5N2U1MmQxN2ViM2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://next-app/next.config.mjs#L1-L3",
-          "version": "repo-lines-v1:sha256:db3b75da209c08d83394cdced4980ee92c17ee2b3a682a0ab332530ecd76a697:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ5MmUwM2IwNmJjMjVjODQ3YmVkZTE5NmZmYjFlOGEyMzM5NzA1NGIwZmVlYWQ2YTgxNjE0MzRhMTFiNWJkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFjOGM5NWJiMDcxNzQxMjAyZjA3ODk4YzMyYWI2MmYwZThhOGFhZjhlYzVlZGRkYWEwOGE4ZjI3MDM1OTkwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://next-app/scripts/finalize-export.mjs",
+          "version": "repo-file-v1:sha256:ca03266a38d43cd287d739c0754870322b0da627360cb8f3c6e0f2c63e374fbf"
+        },
+        {
+          "resource": "repo://next-app/scripts/prepare-public.mjs",
+          "version": "repo-file-v1:sha256:dabf935cab9591169f49cb56e67c1ec5258b021be580dcba3ffc6e9d906d4e79"
         }
       ]
     },
     {
       "id": "claim_7b1e6c086f7b45af82e56cbda433afa8",
-      "statement": "React uses the repository-level store and cloud controller, while shared root domain modules remain active cross-runtime dependencies and the Playwright runner stays outside the frontend bundle.",
+      "statement": "React account initialization adapts the shared store/cloud controller and root domain modules, while browser execution remains outside the frontend bundle.",
       "evidence": [
         {
-          "resource": "repo://next-app/README.md#L15-L17",
-          "version": "repo-lines-v1:sha256:5b589930b31fec5a07d5270f3dd6b4d8de3b9964a49d2ce952bf36b864798b6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTY5MmYwMWY3ZjNmNTk3N2IzZjQ0NjE2YzJmYjE1MGI3MTdmYTI3ZTkzNGRhODVhYTQwMGZkZmI4YzY3ZmFlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDM4YTNlNGE3OThiNTBkNjFlYWVlNTI4NzU1YWJmZGZlOTBlZTMzZGU1NTVmNDg5NDI4MDQ1NWUxZGYyMmYxZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmZjMTI2ZGJkNzE5Y2MzZGU4NjEzOWU0NWEyNGJhMGNkZDlkMTEyZGY5ZGY5N2U0NzBiNjRhZDUxMTE1YWE0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmEwY2FjMTk0N2VjNjE1ZWIwYmQxYTEwODBlMmM1MGIxNTcwNmY3NGIwMjA1YTgxN2RlYmMzNmM0N2FjMTBmNSJ9"
+          "resource": "repo://next-app/lib/account-workspace.jsx#L1-L28",
+          "version": "repo-lines-v1:sha256:503deb41ff0279b9542ca046a389cb6d582e55be64a44f32088b7c208e848a3b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmYzZTg1ZDY3MTVhN2E5ZDBmNmMxYjMyZjMwY2Q4Y2IxNDRjYzc5YzhhYmFlOTUzZWExMzc4ODlmYWUyZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMGNhZmIzMzY5NGE0NGU1NDJlNzVmOTI1MzFlMzkzNjkzNGVhOTIyMDA4NzViM2NiNzI0YjZmNjgxNDQzMDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIzMDZiZTVmOWMwYTQwNmFkM2YxMjg3ZTVjYWU1ZmVjYTRlNDZjZGY5YWE2OTFjNWE4MzNkNGM4NjI2ODJhMTcifQ"
         },
         {
-          "resource": "repo://next-app/README.md#L35-L46",
-          "version": "repo-lines-v1:sha256:7681f7885a1dc09d8073040fe33453d95ebc273ff424b2a2f5aa6d19e1a60d62:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1MTkyNDZmMGM5MDBkZTJjZmY3Mjk0NzU0NjZhN2M1NWViNDlmOTFiNTExNGE4NmNjYWFhYzlmOTA5ODc1NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3ODA4ZTkzMjY0MTAxODVkNjM2N2JiY2Q5NjEzNjk1YjJlMTdlZTI0OWM4NGNkOGQ3MzE4OGQ3MzczYmFjMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhNDUzMzBiMTJlMjIwZmVkMzZjMGE4ZjBiN2I0M2Y5MjIyZWIyZDFkYWJiNGI0ZGJkYzY4MTk1MzE2MDNiMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3OGNmNGEyMGEzZmM0OWM2OGE4OWNhNGNhOGFhNDU4MGY2NDcxYmZjZTMyMjg1OGQwMjJmYzgxNGJkMDAzZGUifQ"
+          "resource": "repo://next-app/lib/workspace.jsx#L1-L16",
+          "version": "repo-lines-v1:sha256:2e491f4d348e8e5f633a6ab5e8dfa397795a7a9891a2f6d67a72831b384108c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmYzZTg1ZDY3MTVhN2E5ZDBmNmMxYjMyZjMwY2Q4Y2IxNDRjYzc5YzhhYmFlOTUzZWExMzc4ODlmYWUyZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://runner/runtime.mjs#L1-L80",
+          "version": "repo-lines-v1:sha256:1e2386c51e65da7e64f9d3e8807e0b75f75062fcc8780a0acc53b09eeb888d6d:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4YmE0OWE2OWQyMjJhNTA4MDU2ZmEyYmY0MWI4NmI0NGViNjg2ZDBjMWQ4OGIxOGJlNjVkMzI4ZjJlYmY0ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllMmU4ZTcwYzBkMjYxMDQ0MmU5ODU4NjdhOTkwYzJhYWY2NmM5ODgxZTE2NGJjN2Q0YTg5MWI0ZDIwZTBlYjkifQ"
         }
       ]
     },
     {
       "id": "claim_f2fd4828fb264ad7abdd95a3b11db635",
-      "statement": "Account synchronization serializes browser writes, retains unsynced local changes on failure, validates owned batch links, and falls back to public jobs when a private batch is unavailable.",
+      "statement": "Account sync serializes writes, preserves unsynced local edits and account ownership fences, and can fall back to public catalog data when an owned private batch is unavailable.",
       "evidence": [
         {
-          "resource": "repo://lib/cloud.mjs#L1-L4",
-          "version": "repo-lines-v1:sha256:672baa42f96112d215026a375f098dcf25cfad645b8b12cfccb92953bb513453:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MzZDMxZmZjMWMxMTNjNDYwMDRkZmVlNzhiNmJiYjkzMjliNjBlZTkzNTFlOTcxMTc2MWMxM2RmMDQxZWZmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZiYTFlZWE0NzM1MmU5ZDhmNTkwMzA1MTZmMGVlZGNlNGY4YjNlNzU2ZmE4ZTFmNGQxYzQ3NzAxZGM2ZTQyZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjdjYWExMGUyODMyODRkZWJjZWIwOGMzZDdkYjAzMGFiYjZkMjRlNzk3MzY1MDM4YmY2MWExZTViNmQ4Yjc3ZSJ9"
+          "resource": "repo://backend/client.mjs#L1-L92",
+          "version": "repo-lines-v1:sha256:adadf7f68c091869a89c24bc9cd9ba166a47cd19d1269bbbc0fc98b868a5f4d5:eyJzZWxlY3RlZExpbmVDb3VudCI6OTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjYjNlYThlM2Q3ZDJjNDA3ODgzZTIwMDQyZmNlZDNiZGU2MzZkODFiZDg2ZWEyMzFkMjNkZGU4NmUyNGQyYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1Njk0MmZiMDVhZGJlMmViYzEwZGM1ZmRjMGEzZWFlNTAxNTJkOTA3Yzk5ZDYxMzZiNjA5NzhlMTYzNTJhOGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2YmRhOGI1YjYzMGRkNGUwMzI4ZTQ3YTc1NjFkMTI5MDczNTcxODExYmMyNWU2ZDMxNDM4YWU2N2U5YTNmMTcifQ"
         },
         {
-          "resource": "repo://lib/cloud.mjs#L192-L211",
-          "version": "repo-lines-v1:sha256:3352bc80534fdc3987b9ddbb4649795a5ec5f8d95288b32a843a5df190f8732e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5M2ZlYTM4ZDg5N2YwZTNiZTNkYTBjNmM3N2EyOTg4N2M3ZjdhYWY4YzUwYTZkMGU0MmMyYzRhNzQ4MjVmYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ODBlZDg2ZjJhZDdmMzhhMzA1YzNkMThmYzYzMGFhNDM1MDBjNTJlMGY1ZDViY2FkYTg5YTg4N2ZlOTc5MjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YTFkMDc1M2I2MzFlNTdhNTY5N2EwOTExMzI4ZGYxZjJiYzdhMzA2ZWZmZWExNThjODZmMjE4MzY5N2Q5NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3MGYwOTNlZGVlNTcyYjQwMDhiNWU5NGEzMjIxMzMwNTgyN2U2MjA4OGM5ZTIyMmI1ZWNiNWEzZjI3MDQzOTAifQ"
+          "resource": "repo://lib/cloud.mjs#L1-L100",
+          "version": "repo-lines-v1:sha256:81f5983a42bfd222a001c4839ddced1683d1c4f0f87be46de12856506f196882:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlNWMxZjRiMDM5YzQ1OGRmZjhkZDZiYjhhZjM4NDU3OGM3Yjc0NDIxMTNjZjM5ZmYwMzhlZTI0YzhhOWRkNjNkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMmJhYzBhY2QxOTJlZDRlZjNmYmNhNTM3NjEzYTI5YzM2OGE2Y2NiYjZhNDllZDVjMDNhYzc3NjU3N2Y1ZGM1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxYTY1OWI5MGIzYTY4YjZjNzkwY2Q4MzEwYTRiMjdmYzNmYzNjZTZhMGU0MTA0YjkzNmU3NmZkOGQ4YTcxYTYwIn0"
         },
         {
-          "resource": "repo://lib/cloud.mjs#L35-L88",
-          "version": "repo-lines-v1:sha256:90fd2e3bcbb02611561a146f040aa01b774c26a522053343183bf94636a46e18:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYWUyYThkODc5NjI0MWVkZmNiNzI2MGU5NTkyZTA1NzVhZjNmOGMzOWQ4NjJmMzUzMjZkZjBmMGI2YmYwOTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNTM5NmE2N2RhZDE4ZmJmMGYyNDA3YzQ1M2FjYjUyZjAwYmZiOGY2OTE4Yzk4MDQ0ODY0MTlkZDAyYTBhMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0MjkzN2FiY2RhMjg3MmRkOGNiYTNhMTlkMTUwZTc4NTEzNGIzZDMwNTU4NmRjNGQyNTU0YjM3YzQxNGZjNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzk0NjM3MmU5NWFmOGM2M2M2NjE1YTYxNmYyYTVhZmQ3N2M5MzdkOTk2NjA2YmEzZTE3ZDI4NmJlM2Y0OTQifQ"
+          "resource": "repo://tests/cloud-sync.test.cjs",
+          "version": "repo-file-v1:sha256:fd7040f57a933623ecf80cd4eedbe4c64ce5d25520b31d99eaf37a0674324359"
         }
       ]
     },
     {
       "id": "claim_69dbab773e7c42e28ae66cd14de09214",
-      "statement": "The Supabase agent gateway is the privileged boundary that distinguishes human Supabase sessions from scoped opaque agent credentials and applies bounded parsing, database dispatch, revision checks, and short-lived resume signing.",
+      "statement": "The privileged Edge gateway distinguishes human sessions from scoped opaque agent credentials, validates bounded dispatch, and signs owned private resume downloads without exposing service credentials to clients.",
       "evidence": [
         {
-          "resource": "repo://supabase/functions/agent-gateway/index.ts#L11-L59",
-          "version": "repo-lines-v1:sha256:756a51ba2169fa5141539791d568479b607addb07882e44b61ebde85e7d79da3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NTJiM2UxOWU2NzhjNzAxYzM1YTMzNDgxNWE0OTdmMzVjNWRkZTA0OTY5ZjgzZmY3N2RmYmY2MTYyMjYzMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhM2ZmOGE0MWM1OTBiOWVlODlmOWJkZWY4ZmVhZGQxMTg3MWU1NWZkMmUzOGQxOTM1MjBkZTQ1MTZlZWQxNzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmODk3OTEyYzk3NDQwNmZlMWZlODYyNDNlY2M2YzU1MTQ5YjM0NmE2ODkxZjBmZTUwNGU1ZmE3ZTVkMGI1MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0OTZjMGIxYjFlZTFmMTk0OTgxOTRjMjY0NDJhM2VmOTAzMzllZmEyNzM5MGI1ZTczZTc5NGE1ZjNmZGEwOGYifQ"
+          "resource": "repo://supabase/functions/agent-gateway/index.ts#L160-L195",
+          "version": "repo-lines-v1:sha256:097171d5d79720e40f3361f39272b117b8343c9de4c341320abfb394319bbd8d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMjkxMzU0OWY3MjdiN2Y1MzAxZmJlZGY1YjQwY2FlNDU1NzY4YjEzMmZkMjA1Zjc2M2RmNzE4ODE3ZWUzODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMzkxYmU3MTIwNzRmYTdjZDZkOWFhMWYzMDM0YTJkZDljZWRkYjJkMjZhNTM3OTZmMzEyNjk0NzA2MjMxNTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlMWE1NjM5ZTBiODhjNTA1MTgyNjEwMmZkMWRhNWZkNTNjMjQwNzAzNmQ2NmEzODZhNzY0YmQ2ZDc4MWY0MWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxM2RmMWE5NjMyNzU4YWQ1NTg1YmUxMTljMjAxNTFiNTFkMzU5ZGI4NTdlYmU1M2NmNWVlYWQ3MGE1MDUyOWMifQ"
         },
         {
-          "resource": "repo://supabase/functions/agent-gateway/index.ts#L82-L135",
-          "version": "repo-lines-v1:sha256:334bfef3f9f0b35f30ac6761ecb4cc436a08b1c12caf945e9d5dbb0f50508fb2:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3OTAzNTliZTIxOTk4MTIyZTQxNTM1OGIyYmExZGIwZjA2MWEyNDA0Y2U0MjcyODQ0N2E5Nzk5MDJkZTM5NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3ZmM4NjdjMGQ2MzljMzIyZjNhNDRkYjIyY2RiOWY5Y2RjZDU3NjJlYzIwM2E1YzdlNjBlY2NlN2NkZDA2ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1Y2VlNzVhNGJlYWIyNjFjYzkxYjU4ODNlOWNlZTE0ODJhNGVhYWJkYjBkZGYzYzY1ZTJlZDE3Nzg2Zjc1M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlMjcwY2NlYjQ2YjJmMjAyZjMwODI1NzRiYjJhMzNjMTVjYTc2YTk4NzhhYzRhYTU5ZDg3OGJlMDk3N2ZhYTYifQ"
+          "resource": "repo://supabase/functions/agent-gateway/index.ts#L23-L100",
+          "version": "repo-lines-v1:sha256:07865b35dd59c3eed8156fe0adb5ab77936c9b4db311712809e5a4d1e9a1f7d2:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5M2UzMmRmMTM1ZTBmNjkxNjkyOTVkM2IzNTUxNzdlODdhMjZlZDQ5N2I3NTEzMjdkYTc1NjVjYzBhNWMwZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjMjQ2ZGQ2MmZmZjEyOGM5NWUzNTMyZDhmZmJjMzAzMWIyNjkyNmI4ZjA3YTliMjVjYWE2MGE5ZjE0MDU4ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhOGQ0MWU3YWU0Yjc1YTg3MGFjYWE4NzA5OGZiMjliZGNjMDY2Y2E2ZTY3NGZhMDM4ZDkyZTc3MmQ5NWJiN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNjJiMTlmMzk2MTM1MWVkMTViZTFlNzFmMDM0ODZlZDdhMDU0MTU3NTQ5M2FhZTI3YWQyZTVjZTI5Nzc5MmIifQ"
         }
       ]
     },
     {
       "id": "claim_eb4bc0beda9c43e8af21b12a9f1ee92e",
-      "statement": "The local runner forwards hosted data operations and adds only narrow form/resume/submission tools on one dedicated Playwright page, with per-call scope checks and no general browser or shell capability.",
+      "statement": "The local runner adds narrow form/resume/submission tools to forwarded data operations, owns a dedicated Playwright page, checks scopes and exposes no generic browser or shell tool.",
       "evidence": [
         {
-          "resource": "repo://runner/runtime.mjs#L10-L18",
-          "version": "repo-lines-v1:sha256:14016a79aa46837536cf05ce82c56d4a76eb7597eed9b004ae4c4adfd38ddb5d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQyZjBiNmUxODJhN2VkMGM1ODY2NTE2OTE5YzcxMGM0NjI1ZGFiOTYyODQxYTZhODc0NWE4Zjk5MDQ3ZmNkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDQ2Zjc2NDFiMzA4ZWY4ZDNhMWM1NzgzZWNiNTIxNWYwNzViMzBkMjFmMmJlNjgwMmViOTdjM2NiMTg1NmIyMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzFmYWE3ZTkwMDBmY2UwZmNlZDNkM2ViM2NhZWVlMTQ0NWE0Y2I4ZGVkYWE3Zjg4ODA1MGRhZmY5OTRhYTk5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjYyODI2ODdjZjQwMDVjODc3YmUyOTNkMDI3ODE2OGEzNzdjODhhZGQzMDljZjk3NWIyYWVmNzY4Y2RhYWUyYSJ9"
+          "resource": "repo://runner/mcp-server.mjs#L1-L24",
+          "version": "repo-lines-v1:sha256:47337d9e0c08378c714d244ed640dbb7a3334245c860bea40510fb1dc5b0b52d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5NzE2ODkzMWU3ZWZkOWM3NWRiZjI0NzZjZmExMWM3MDU3ZjJhM2E5MmQ5MjI2MWM3YjVlZTY5ZDVmNzQ5NzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0ZWY4ODAzODZjYTBkMTlhNDVjMTE0ZWQ2N2E3NTk4ZTQ3ZmNkMjQ0NzkwMjRlYTlhMzdlODI1ZTlkYzFiMDEifQ"
         },
         {
-          "resource": "repo://runner/runtime.mjs#L28-L65",
-          "version": "repo-lines-v1:sha256:890d956b261287bea35cb2dd97821437e8d25dd193bf222b1e6cab97a01c5c4b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljN2Q0NTlkZDExNTI0MzBhZWNiYWZkN2UwNTBmYjFhYzk1NmNhY2ZiYmY3NTE1ZmEwODdiZTgzODc5NmY2MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZDUwYmQzNGI3NWM4NmYwNDVhMzYxYzgwMTY0OGMxYzIxNGY4NDJhNDU1YTNhNWRmM2E2NzI0NTA0OTQ2OGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1MzUzMjQzYWNhYWM4MDMzYzRjNWQ4ZDVlZjYxODMxNzFlNTU4MTAyOTcyZTg1N2UzNWE4ZmYxMmRjZWRmMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2OWY0NmZiMDE3NjYwYjM2ZGY4ODI5OWI4OTI3NDg5OWE5Y2FhYTcwM2Q5ZDAzZWM5NWNlNTAxMjk3NjUwNjEifQ"
+          "resource": "repo://runner/runtime.mjs#L1-L85",
+          "version": "repo-lines-v1:sha256:2ad124dba2bf1ec3c9fc7d9a702b1ee14800e19354a8d5e7508713c576333894:eyJzZWxlY3RlZExpbmVDb3VudCI6ODUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4YmE0OWE2OWQyMjJhNTA4MDU2ZmEyYmY0MWI4NmI0NGViNjg2ZDBjMWQ4OGIxOGJlNjVkMzI4ZjJlYmY0ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZjRmNmNmZTVmOTVkZmZkNTkyN2ZhZDQ0NDYzMDllNTEwNmRiYWY1N2EyZjY1MDdlMWIxMzVjYTUxYzMzZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjNDQwMmNmYzZjZDhhNTI1NmNiNDE3YThiNzMxZWUxNmJkODg3MzFjMWEwNjZmYzA1YjQwOTlkZjY4ZjRlZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_da8104e92f7048da98da2d4694e84333",
+      "statement": "The Node API dispatches by service ownership across direct SQL, bounded Node execution and Edge compatibility, while a separate worker processes leased on-demand ATS discovery jobs.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/service.ts#L19-L44",
+          "version": "repo-lines-v1:sha256:6713991a6f2525c6338dd292f22b81d694e58bdaed2cb5af5e16670abd830728:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMDE4ZWMyZTJjNDM0OTU4MTNlZmRkOWY5OWRkYWMzZDAzMTA5NzA1ZWQ4M2FjNGE0ZDkxMzBmNjY5OTc0Y2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NjlmMmJjZjY3YmFmNWNiYTlmODM1MjAzYjhiMzMxMDk2YWNlYTU3NDI3MjljNzgzZjIyNDY3ZGYxOTlmNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMmQyMjI2MWViYTk2NGQ5NWQ4MmM5ODZmMDRhN2IzZGRmNDQxZmY2MDQxYTQyMjVjOGY2MTk2MTEwM2ZiOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyZWEwMDI3OGE5MDNlOTkzZjk1ZGI5MTQwMWJkOWQ1YmY1MmNlNjJiNDM0YTNlYTc1MWIxYTM5MDY4NDdhYmEifQ"
         },
         {
-          "resource": "repo://runner/runtime.mjs#L68-L81",
-          "version": "repo-lines-v1:sha256:29d5f14451ba2825b82d4848d3aa4e1de549130a4ea028f935b324743fbbfe1a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkODg3MDNlN2U4MmZmOTQwZjY3MGQ0NDgzMWY4NTAwYTM2NzE4YWE2NGU4YTVkM2E4ZjQyNmE4OTI1YWI2NWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzZmI5M2VjY2ZhYzExNmZjN2Q4OGQ3OTk1ZGRkOTJiOTdiMmEyZDQ5YjMxZDM5NmU2ZWEyYjFhZmFlOGQ4MGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkMGZlZGM0ODA2ZGNlN2I2ZmZhMWVhZGUxYmZiYmY4ZWU1YjU5YTBiYzg5NDA5YjI4YWMwMDAwYjYwODQ5ODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://backend/runtime/worker.ts#L98-L129",
+          "version": "repo-lines-v1:sha256:2d1fbb33d87a0a8b2d16ac2a6af6704e12503518552e99f0eac92f763849618b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4MjE3YjBkZjdiYjZlN2RlNWI4ZjliZTNkOTkzMzhkYTEwOTAwYzBiODNhYWQzZTQxM2NkNzM3OTE0MzZiNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3ZDFmOGZkYmM4OTNmNGZhZjYwYWM4YjkyNTAwYjAzMGM0YzVkNWQxZTM4YzU2ZWE4ZmRjNTIxYmQ5NjMwODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://lib/mcp-services.mjs#L1-L42",
+          "version": "repo-lines-v1:sha256:42af520f265632cee402544cf36597840cd99c4dcf18d47793bb396f98b7875a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxYThhMjVmMzNlNjE1ODQ3Y2FhYzQxNTE5NzhjMGM2MjI2YzM4NzUyNWViY2NjMGY1YWY1MWViYmRjZmM1ZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f0aa14ba318943fbbc0905bb28bb4038",
+      "statement": "My Agent routines are scheduled by the personal runtime; the duplicate Node recurring-search scheduler is retired while the bounded execution queue and safeguards remain.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/README.md#L8-L29",
+          "version": "repo-lines-v1:sha256:0e210191a538c9cc29fa2123c92b733a51d9e05846608ddce792b9ed70fa68a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4MmUwZDY5OTcyYTM5ZjdmNGM2MmZhMDc0MWNiMWVhZTg1NTAwMjVlZGQyMzIyOGY5NmRjNGUyMjkxMWZjYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxMzc3ZTk5NWYyODYzMmJkOGY0NGI3OTNmMjZlMTE5OGM4ZjNkMzNkOWVmMmMwMTlhYjA2NTgwZWE4MjcyY2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5MDI4NGYxYjFiNTgwZjM0ODMxMmJhMWEzODI3NDZhODJlNGMyY2U3NDNkNmY1NGUzMDA5ODVmYmIwOGM3NzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzYjA4NjkwMjNmMTA3MzJmOWMyOWIyMGVlZjY5ZjNlM2Q3N2VmZDQxNzlhNWNkMTFmMTJkYWZhYWY5OGQwOGMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261027023257_remove_backend_search_scheduler.sql",
+          "version": "repo-file-v1:sha256:7c4cdaf1ac17ca64ab42dd3d715168af8ea0051ef13cc40ab21eccf51eca89f7"
+        }
+      ]
+    },
+    {
+      "id": "claim_2f53c2cd9f304bae88372c48c155145b",
+      "statement": "Personal facts use typed versioned patches with explicit conflict recovery and separate human verification, while application-profile documents remain canonical for per-profile preferences and writing rules.",
+      "evidence": [
+        {
+          "resource": "repo://backend/agent-contract.md#L615-L634",
+          "version": "repo-lines-v1:sha256:912246a745d57f2ff1514ae2ba24d28462daf732d8d5bcc30fe0c98415ab0c4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZjViZjVjZjc5MzllMTY2Yjc1ZjI4ZmYwMjYwNDY0ZGJmZGJiZDYyOTc2MzUzMDUwNGQwNDEyYzkxZDM4YzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkNzU3MzYyOGYzZWU4ZjM3MThlZmI1YjI3YzUyNDU2NjZiZTE4NzIxNTFjM2Q3NjZhMzIzZGQ0MzMwYzViNWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczMzg5MmIyZjU4MTU4MDU5NTEyNTg4MzFiYzg2ZTAwYzZiMTQ3YWY3OWFiNDJmNmNlNTQ1ODQwMTM2NTYzOTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3YjE0ZGI3MTk2YWExZDIxNjA4ZjhmYThhN2Y3MzM4YjEzZDE1MzZlODM2NDRjODVkNTg2YmE5ODI2M2Y2M2IifQ"
+        },
+        {
+          "resource": "repo://lib/profile-sync.mjs",
+          "version": "repo-file-v1:sha256:6c92f11a85e10aad8af9f0c885661077d143f09f4101aea888ce23c671896ba9"
+        },
+        {
+          "resource": "repo://next-app/components/application-profile-context.tsx#L82-L131",
+          "version": "repo-lines-v1:sha256:6ec72519759e58a744cf6a665c18af35e74c328cc43e50266bb65abfc1e1566f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NzE0Mjg5OTc1MjFhM2Y3MTI3NGM3YzkxZmU3YjMxZGE1MDE5Y2U3NWM0OGJhOTNlOTYyYWM3NGIwOTM4ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkNGZjMzFkMzc1MWQ3NTM0Mzc0NTdhODFmN2NlNTYyZjI4NmQwMWIwZGMyMGFlNmNmNThmZWQ2YTkwZGJjYWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRjNzk0ZWRhMTI1MTY3MWI1ZTZkYzQ5MGIyYjJlMjM0ZDY2OTViY2JjZjhiMjRjNzA0OTlhZDI0ZDY4NDI1ZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjODg1MjU4MWMxNmNhZThiYzlmNDRhOTE5N2M4YWZkY2ZlODU3YzdlOWFjZTE0MDU3YjAzZGJkNDJjMDBjYjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_486d40d6397e4cefb2ae9f2e340d3a4f",
+      "statement": "Detached demo mode lazy-loads fictional memory-only services instead of persistent account storage/auth/cloud clients and resets without account writes.",
+      "evidence": [
+        {
+          "resource": "repo://next-app/lib/demo-runtime.mjs",
+          "version": "repo-file-v1:sha256:117f7708035f7c2f6157791a114c5b6c09ce0b78ff8f387bc7017937df84ec0b"
+        },
+        {
+          "resource": "repo://next-app/lib/demo-workspace.jsx#L1-L40",
+          "version": "repo-lines-v1:sha256:27d16f872c82efe31fbd37ab3791f3d9e270da8126091961822b3ef3ca124d81:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmYzZTg1ZDY3MTVhN2E5ZDBmNmMxYjMyZjMwY2Q4Y2IxNDRjYzc5YzhhYmFlOTUzZWExMzc4ODlmYWUyZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://next-app/lib/workspace.jsx#L1-L16",
+          "version": "repo-lines-v1:sha256:2e491f4d348e8e5f633a6ab5e8dfa397795a7a9891a2f6d67a72831b384108c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmYzZTg1ZDY3MTVhN2E5ZDBmNmMxYjMyZjMwY2Q4Y2IxNDRjYzc5YzhhYmFlOTUzZWExMzc4ODlmYWUyZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4106bc1904d54c76bd70923297fc0c71",
+      "statement": "Muse updates records through scoped tools and refreshes labeled change pointers with per-connection acknowledgements, without a behavior engine, push wake-up or new consent.",
+      "evidence": [
+        {
+          "resource": "repo://lib/muse-change-feed.mjs#L1-L20",
+          "version": "repo-lines-v1:sha256:4f43e151ca4eebf16a1fafa4b711a354fe078278c76445f0ff757070bc07c769:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1NTlhNWQ4NGUzOTg2NjUxMmIwMmRlODQzNDdhYTE5NjM4MzEyOTYwMzM5MTM1NGI2ZjI2NTg4OWM2ZDNjNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/instructions.json#L200-L216",
+          "version": "repo-lines-v1:sha256:05d24b2f7d9a01aade5961d332ddaf7e7173f61fd983f2a4eea457f5f32bb20a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzYTc1ZmRhZTgxNjAxOThiOTc2NDVhODliNjcxYTgzOTIwYTdhN2MyNTcwMGUxOWM3NmFjZGJlNTc5YmNkZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNTU1ODA2NTYxMGE5ZmY2NmJiZTVhYmQ5NDRlYzkzZDY0M2ZhMTRmZWNmOWUwZDBmMGQ3OGZlYjg3YWQ3YjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmOWE3ZWNjZDFiYmE1NWNlYWRhMjczYmYxMDMyMzNmNWM3MWRlZDI0OWY5NWJlYWZmMmI3NzNhNjNjZWI3ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmM2RiODk0YzcyZmIzM2FlNWM0ZjFkMzcwZjE0ZDVlOGUzMGYxYzg5NTAwZDFhMjA4NjdhOGI0MTQ1MjlmMDMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261027022419_muse_change_feed.sql#L73-L99",
+          "version": "repo-lines-v1:sha256:96a28f5aa0d294f4d0042f8a92d8ac0dc029bd67d943ebcfafaf9bcaa1bc55f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MjcyOTc4M2JkYjRjOTE0MDJjNTE3YTYzY2QwMzkzNWIyMjMzOGJiN2YyMTQwZDhiODg1ZTM2YTRjMWM0M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxZDM3NTA3OThhYjc2MmVkYjkxN2Y1YjBlMWI4ZmEyYzIzMGZkMGU5NjIyYjk3YzVjOTYxZDUyZTZmNTdiMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1M2NkZTY2MzU5M2MxNmZkYjFhZjNhYThlYTA1NjM1MTBlYjgyNzk5YzE3ZTQ0M2MyODNiYTg2M2U5MmE5ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhYzc4ODA3YjIwNjIyZmNjZTEwOTY4MDlkYWQ2NzBjZDg3MzJkNGYzMGYyYmQyYTRjZWY5ZjU0MTY4ZTdjZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_45c69739098643fc86f2d2ef3e447adc",
+      "statement": "Production Circle interview intelligence reads current permitted exact-posting evidence without vector/model requirements, separately from optional local/private Node intelligence ingestion and evaluation.",
+      "evidence": [
+        {
+          "resource": "repo://backend/intelligence/service.ts#L1-L33",
+          "version": "repo-lines-v1:sha256:650317131744e9e4c61fbf36a3571d9a3afb7bd680852a14b5f218e271031878:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NDU0ZTQxMzliZjJiYWM2NWM0YTI5MWZkMTg1YzJiZjE0YmM3M2FmZTk5M2Y0MGU3MjJlNjI3NTk0MTk3NjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczODc3NWZlMDk3MjdiNDNmOWVkMzdjZGIzZDVkMWEwY2ZiMzRlOTY1NzlhMzc3ODEzNzRlOTI2YWQ0NWIyZTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4YTFhY2UzZmE0NjMwYTUxNGM2N2VhMDg1ZWM4MmIzYWM1Y2YwZDQ3MTBkYWE3YTNhMDMyM2I3MTE0Njc3YTUifQ"
+        },
+        {
+          "resource": "repo://docs/intelligence-v1-spec.md#L1-L24",
+          "version": "repo-lines-v1:sha256:4d12eb56dfe36ce4d13238735d1cccdadce896cd6f0e981d4cac4e9ff9b00e3b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyOWNkMWIyMWIzNmE1MjI3NDE3YmFjZTk0ODU2ZDNmMDQxNjYyYWNjYWUzNGVjODMxNTU0MjZhZjg1ODAyNGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxOTMwMzA2YmY0NGIzYTdhZWUzMjc0MWQ1NzQ3YmY4NGM1MzgzNjNkMmFlZTc4YWVjZDQxZjM4ZDRjZDE5NGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExZDIwM2JhNDA2MWZhNjkyMTEzZTM2MGFmZDZhYjg2MDhlZWViYTI3YjRjNWI0NmQwZTQxMzhjNjU1ZGRiMDcifQ"
+        },
+        {
+          "resource": "repo://docs/interview-intelligence-platform.md",
+          "version": "repo-file-v1:sha256:b792d5135daf4d26e9745b2c8a84a74e0d16337f6168fb480223e953c22e7116"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-15T07:09:51.577Z"
+    "at": "2026-10-27T03:54:51.227Z"
   }
 }

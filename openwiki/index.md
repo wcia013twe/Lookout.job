@@ -4,7 +4,7 @@ okf_version: "0.2"
 
 # Files
 
-- [Quickstart and Task Routing](quickstart.md) - A concise contributor entry point for running Job Signal Board locally, choosing the correct subsystem, validating changes, and delivering them safely.
+- [Quickstart and Task Routing](quickstart.md) - Contributor entry point for SSD-isolated work, local services, current profile/tracker navigation, labeled Muse synchronization and separate frontend/backend verification boundaries.
 
 # Directories
 
