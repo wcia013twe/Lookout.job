@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { type Role } from "./role-card";
 import TutorialRoleCard from "./tutorial-role-card";
 import RoleMatchPreview from "./role-match-preview";
-import { useWorkspace } from "../lib/workspace";
 
 import { Button, Dots, Quiet, Title } from "./onboarding-ui";
 
@@ -45,10 +44,13 @@ type OnboardingRoleRevealProps = {
   demo: boolean;
   onPrepare: () => void;
   onLater: () => void;
+  presentation?: "onboarding" | "landing";
+  expanded?: boolean;
+  children?: ReactNode;
 };
 
-export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }: OnboardingRoleRevealProps) {
-  const w=useWorkspace();
+export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, presentation = "onboarding", expanded = false, children }: OnboardingRoleRevealProps) {
+  const landing = presentation === "landing";
   const pending=!role;
   const illustrative = demo;
   const reduced = useReducedMotion();
@@ -62,6 +64,13 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
     : illustrative
       ? role.whyItFits || "This fictional example demonstrates the reveal. Sample fit scores are illustrative."
       : "This catalog role matches the work type and location you chose. Your agent will check that the posting is still open and compare it with your saved profile and résumé before recommending a next step.";
+
+  useEffect(() => {
+    if (!landing) return;
+    if (reduced) { setOpened(true); return; }
+    const timer = window.setTimeout(() => setOpened(true), 650);
+    return () => window.clearTimeout(timer);
+  }, [landing, reduced]);
 
   useEffect(() => {
     setSpread(false);
@@ -81,10 +90,10 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
   }, [opened, reduced]);
 
   useEffect(() => {
-    if (spread) analysisHeading.current?.focus({ preventScroll: true });
-  }, [spread]);
+    if (spread && !landing) analysisHeading.current?.focus({ preventScroll: true });
+  }, [spread, landing]);
 
-  return <div className={`role-reveal${spread ? " spread" : ""}`}>
+  return <div className={`role-reveal${spread && !landing ? " spread" : ""}`}>
     <motion.div layout transition={{ layout: { duration: reduced ? 0 : 0.75, ease } }} className="gold-position">
       <motion.div className="card-flipper" initial={false} animate={{ rotateY: opened ? -180 : 0 }} transition={{ duration: reduced ? 0 : 0.8, ease }}>
         <button
@@ -109,13 +118,14 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
         </button>
         <TutorialRoleCard role={role} className="card-front" hidden={!opened} label={pending ? "Your first search" : illustrative ? "Sample opportunity" : "A role to explore"}>
           {role ? <>
-            {illustrative ? <RoleMatchPreview sample={role.matchPreview} demo animate active={spread}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer">View employer posting ↗</a></div>}
+            {illustrative ? <RoleMatchPreview key={role.id} sample={role.matchPreview} demo animate active={spread} expanded={landing && expanded}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer">View employer posting ↗</a></div>}
             <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Catalog shortlist · no personalized assessment yet"}</p>
           </> : <div className="onboarding-first-find"><Dots/><h2>Your first find is on its way.</h2><p>Connect your agent to look beyond the catalog.</p></div>}
+          {children}
         </TutorialRoleCard>
       </motion.div>
     </motion.div>
-    {spread && <motion.div className="reveal-copy" initial={reduced ? false : { opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduced ? 0 : 0.6, ease }}>
+    {!landing && spread && <motion.div className="reveal-copy" initial={reduced ? false : { opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduced ? 0 : 0.6, ease }}>
       <Dots />
       <Title>{pending ? "Let’s find your first role." : illustrative ? "A glimpse of what’s next." : "A role to explore."}</Title>
       <h3 ref={analysisHeading} tabIndex={-1}>{pending ? "Your search, ready to go" : illustrative ? "Illustrative fit analysis" : "Why it’s here"}</h3>
@@ -126,6 +136,6 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
         <Quiet onClick={onLater}>I’ll do this later</Quiet>
       </div>
     </motion.div>}
-    {!spread && <div className="reveal-later"><Quiet onClick={onLater}>I’ll do this later</Quiet></div>}
+    {!landing && !spread && <div className="reveal-later"><Quiet onClick={onLater}>I’ll do this later</Quiet></div>}
   </div>;
 }

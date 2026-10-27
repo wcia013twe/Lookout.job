@@ -1,14 +1,14 @@
 import styles from "./landing-mascot.module.css";
 
-/** The existing Buddy artwork, with only its eyes animated. No account state. */
+/** Full-body idle pose from the existing Buddy motion study; only the eyes move. */
 export default function LandingMascot({ className = "", paused = false }: { className?: string; paused?: boolean }) {
   return (
     <span className={`${styles.mascot} ${className}`} data-paused={paused || undefined} aria-hidden="true">
       <img
-        src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/lookout-mark.png`}
+        src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/lookout-buddy-idle.webp`}
         alt=""
-        width={192}
-        height={128}
+        width={1536}
+        height={1024}
         draggable={false}
         className={styles.artwork}
       />

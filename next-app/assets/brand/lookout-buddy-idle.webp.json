@@ -1,0 +1,6 @@
+{
+  "source": "assets/brand/lookout-buddy-style-sheet.png",
+  "method": "Built-in imagegen transparent extraction of first idle pose",
+  "prompt": "Edit the provided character study: isolate and enlarge ONLY the FIRST character, the idle full-body mascot at row1 column1, onto a fully TRANSPARENT background. Preserve the exact existing dark matcha green and cream colors, simple flat style, pose, binocular torso, hanging arms and rounded fingers, short legs and feet, two eyes with dark pupils and small smile. This is a faithful extraction of existing artwork, not a redesign. All body parts fully visible. Center with close framing and about4% padding. NO text, NO other characters, NO shadow, NO glow/halo, NO light bloom, NO colored pixels outside the actual silhouette, NO backdrop, NO tile, NO new rays or accessories. The transparent area must be alpha zero immediately outside the silhouette. Eyes and mouth stay opaque cream; the body stays opaque flat matcha. Output the one full-body cutout only.",
+  "delivery": "Converted with cwebp -q 90 -alpha_q 100 -m 6; no content changes. Original generated PNG preserved in Codex generated_images."
+}

@@ -1,0 +1,45 @@
+.section {
+  padding: 64px 0 48px;
+  border-top: 1px solid var(--color-board-line);
+  color: var(--color-board-text);
+}
+.heading { text-align: center; margin: 0 auto 14px; }
+.heading h2 {
+  margin: 0;
+  font-size: clamp(30px, 3.6vw, 46px);
+  line-height: 1.15;
+  font-weight: 650;
+  letter-spacing: -.03em;
+  text-wrap: balance;
+}
+.heading p { margin: 18px 0 0; color: var(--color-board-muted); font-size: 16px; }
+.visual { max-width: 960px; margin: auto; }
+.scale { display: block; width: 100%; height: auto; overflow: visible; }
+.base, .strings { stroke: var(--color-board-muted); }
+.base { opacity: .55; }
+.rail { stroke: var(--color-board-text); }
+.fulcrum, .tray { fill: var(--color-board-tag); }
+.tray { stroke: var(--color-board-muted); }
+.pivot { fill: var(--color-board-accent); stroke: var(--color-board-bg); stroke-width: 4px; }
+.weight { fill: var(--color-board-accent); }
+.labels { display: grid; grid-template-columns: 1fr 1fr; gap: 22%; text-align: center; margin: -2px 3% 0; }
+.labels span { display: block; margin-bottom: 9px; color: var(--color-board-muted); font-size: 12px; }
+.labels h3 { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 600; letter-spacing: -.02em; }
+.labels p { margin: 10px 0 0; font-size: 12px; line-height: 1.6; color: var(--color-board-muted); }
+.caption { margin: 35px 0 0; font-size: 11px; text-align: center; color: var(--color-board-muted); }
+@media (max-width: 700px) {
+  .section { padding: 46px 0 34px; }
+  .heading { margin-bottom: 24px; }
+  .heading p { font-size: 14px; margin-top: 15px; }
+  .labels { gap: 10%; margin: 7px 0 0; }
+  .labels span { font-size: 11px; margin-bottom: 7px; }
+  .labels h3 { font-size: 17px; }
+  .labels p { font-size: 11px; margin-top: 7px; }
+  .caption { max-width: 260px; margin: 26px auto 0; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .beam { transform: rotate(9deg) !important; }
+  .pan { transform: rotate(-9deg) !important; }
+  .applyingWeight, .transfer { opacity: 0 !important; }
+  .preparingWeight { opacity: 1 !important; }
+}
