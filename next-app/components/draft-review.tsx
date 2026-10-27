@@ -39,7 +39,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     title: "",
     status: "New",
     ...current,
-    questions: prefillApplicationQuestions({questions:current?.questions||[],profile:w.state.workflow.profile,answers:w.state.workflow.savedAnswers,resumes:w.state.workflow.resumes,resumeId:current?.resumeId,company:current?.company}).questions,
+    questions: prefillApplicationQuestions({questions:current?.questions||[],profile:w.state.workflow.profile,answers:w.state.workflow.savedAnswers,resumes:w.state.workflow.resumes,resumeId:current?.resumeId,company:current?.company,searchProfile:w.state.workflow.searchPreferences?.profiles?.find((p:any)=>p.id===current?.searchProfileId)}).questions,
   };
   if (JSON.stringify(initial.questions) !== JSON.stringify(current?.questions))
     initial.questionsReviewed = false;

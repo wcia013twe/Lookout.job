@@ -17,6 +17,10 @@ function demoSearchProfiles() {
   for (const [heading, key, value] of [
    ['Search Filters', 'Work arrangement', 'Remote'],
    ['Role preferences', 'Roles', 'Software engineering'],
+   ['Application answers', 'Requires sponsorship', 'No'],
+   ['Application answers', 'Earliest start date', '2027-06-01'],
+   ['Application answers', 'Graduation month', '2027-06'],
+   ['Application answers', 'Degree pursued', "Bachelor's"],
    ['Role preferences', 'Specializations', 'Backend, distributed systems'],
    ['Work-life balance & benefits', 'Work-life balance', 'Predictable hours and sustainable on-call rotation (demo).'],
    ['Work-life balance & benefits', 'Employer benefits', 'Health coverage and a learning budget (demo).'],

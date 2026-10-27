@@ -1,0 +1,301 @@
+{
+  "verifiedAt": "2026-10-27T00:53:14.995Z",
+  "method": "Read two live public form schemas; compare draft proposals only. No employer writes or preference changes.",
+  "fictionalOverridesAreNotUserFacts": true,
+  "forms": [
+    {
+      "company": "SingleStore",
+      "url": "https://job-boards.greenhouse.io/singlestore/jobs/8205389",
+      "currentSavedProfile": {
+        "counts": {
+          "filled": 7,
+          "preserved": 0,
+          "remaining": 9,
+          "requiredRemaining": 3,
+          "skippedAlternatives": 1
+        },
+        "preferenceFilled": []
+      },
+      "fictionalConfiguredProfile": {
+        "counts": {
+          "filled": 7,
+          "preserved": 0,
+          "remaining": 9,
+          "requiredRemaining": 3,
+          "skippedAlternatives": 1
+        },
+        "preferenceFilled": [],
+        "unresolved": [
+          {
+            "fieldId": "preferred_name",
+            "question": "Preferred First Name",
+            "fieldType": "text",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "cover_letter",
+            "question": "Cover Letter",
+            "fieldType": "file",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "cover_letter_text",
+            "question": "Cover Letter",
+            "fieldType": "textarea",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "longitude",
+            "question": "Longitude",
+            "fieldType": "hidden",
+            "required": true,
+            "reason": "unsupported-control"
+          },
+          {
+            "fieldId": "latitude",
+            "question": "Latitude",
+            "fieldType": "hidden",
+            "required": true,
+            "reason": "unsupported-control"
+          },
+          {
+            "fieldId": "location",
+            "question": "Location",
+            "fieldType": "text",
+            "required": true,
+            "reason": "missing-profile-value"
+          },
+          {
+            "fieldId": "veteran_status",
+            "question": "VeteranStatus",
+            "fieldType": "select",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "race",
+            "question": "Race",
+            "fieldType": "select",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "gender",
+            "question": "Gender",
+            "fieldType": "select",
+            "required": false,
+            "reason": "no-direct-match"
+          }
+        ]
+      },
+      "packet": {
+        "unresolvedQuestions": 7,
+        "browserChecks": 2,
+        "evidenceKeys": [],
+        "fullBytes": 8923,
+        "compactBytes": 2533,
+        "excludesFilledAnswerValues": true
+      }
+    },
+    {
+      "company": "Cloudflare",
+      "url": "https://boards.greenhouse.io/cloudflare/jobs/8199958",
+      "currentSavedProfile": {
+        "counts": {
+          "filled": 7,
+          "preserved": 0,
+          "remaining": 22,
+          "requiredRemaining": 16,
+          "skippedAlternatives": 1
+        },
+        "preferenceFilled": []
+      },
+      "fictionalConfiguredProfile": {
+        "counts": {
+          "filled": 14,
+          "preserved": 0,
+          "remaining": 15,
+          "requiredRemaining": 9,
+          "skippedAlternatives": 1
+        },
+        "preferenceFilled": [
+          "Requires sponsorship",
+          "F-1 student status",
+          "Return to school after internship",
+          "Graduation month",
+          "Degree pursued",
+          "Available for 12-week full-time internship",
+          "Specializations"
+        ],
+        "unresolved": [
+          {
+            "fieldId": "cover_letter",
+            "question": "Cover Letter",
+            "fieldType": "file",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "cover_letter_text",
+            "question": "Cover Letter",
+            "fieldType": "textarea",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "question_69172307",
+            "question": "Legal Name (if different than above)",
+            "fieldType": "text",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "question_69172310",
+            "question": "How did you hear about this job?",
+            "fieldType": "select",
+            "required": true,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "question_69172316",
+            "question": "A successful internship may lead to consideration for a full-time opportunity. If you were to receive a full-time offer, when would you be available to start?",
+            "fieldType": "select",
+            "required": true,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "question_69454441[]",
+            "question": "Which term(s) are you available to intern?",
+            "fieldType": "multiselect",
+            "required": true,
+            "reason": "unsupported-control"
+          },
+          {
+            "fieldId": "question_69172318",
+            "question": "Are you able to work in our Austin office 3\u20135 days a week?",
+            "fieldType": "select",
+            "required": true,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "question_69172321",
+            "question": "Why are you interested in Cloudflare's Software Engineering Internship? What products or features are you interested in building?",
+            "fieldType": "textarea",
+            "required": true,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "question_69172312[]",
+            "question": "Please review and acknowledge Cloudflare's Candidate Privacy Policy (cloudflare.com/candidate-privacy-notice/).",
+            "fieldType": "multiselect",
+            "required": true,
+            "reason": "unsupported-control"
+          },
+          {
+            "fieldId": "longitude",
+            "question": "Longitude",
+            "fieldType": "hidden",
+            "required": true,
+            "reason": "unsupported-control"
+          },
+          {
+            "fieldId": "latitude",
+            "question": "Latitude",
+            "fieldType": "hidden",
+            "required": true,
+            "reason": "unsupported-control"
+          },
+          {
+            "fieldId": "location",
+            "question": "Location",
+            "fieldType": "text",
+            "required": true,
+            "reason": "missing-profile-value"
+          },
+          {
+            "fieldId": "veteran_status",
+            "question": "VeteranStatus",
+            "fieldType": "select",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "race",
+            "question": "Race",
+            "fieldType": "select",
+            "required": false,
+            "reason": "no-direct-match"
+          },
+          {
+            "fieldId": "gender",
+            "question": "Gender",
+            "fieldType": "select",
+            "required": false,
+            "reason": "no-direct-match"
+          }
+        ]
+      },
+      "packet": {
+        "unresolvedQuestions": 11,
+        "browserChecks": 4,
+        "evidenceKeys": [
+          "skills",
+          "workExperience",
+          "projects"
+        ],
+        "fullBytes": 26314,
+        "compactBytes": 7730,
+        "excludesFilledAnswerValues": true
+      }
+    }
+  ],
+  "localGatewayVerification": {
+    "verifiedAt": "2026-10-27T01:04:57.398Z",
+    "path": "Local Node MCP \u2192 Edge prepare_draft \u2192 Supabase; owned read-back",
+    "noEmployerWrites": true,
+    "noUserPreferenceChanges": true,
+    "forms": [
+      {
+        "company": "SingleStore",
+        "compactDefault": true,
+        "answerPatchPreservesAllAnswers": true,
+        "status": "Blocked",
+        "questionsReviewed": false,
+        "counts": {
+          "filled": 0,
+          "preserved": 7,
+          "remaining": 9,
+          "requiredRemaining": 3,
+          "skippedAlternatives": 1
+        },
+        "unresolvedQuestions": 7,
+        "browserChecks": 2,
+        "compactBytes": 3052,
+        "fullStoredApplicationBytes": 4260,
+        "searchProfileVersion": 2
+      },
+      {
+        "company": "Cloudflare",
+        "compactDefault": true,
+        "answerPatchPreservesAllAnswers": true,
+        "status": "Blocked",
+        "questionsReviewed": false,
+        "counts": {
+          "filled": 0,
+          "preserved": 9,
+          "remaining": 20,
+          "requiredRemaining": 14,
+          "skippedAlternatives": 1
+        },
+        "unresolvedQuestions": 16,
+        "browserChecks": 4,
+        "compactBytes": 8001,
+        "fullStoredApplicationBytes": 10185,
+        "searchProfileVersion": 4
+      }
+    ]
+  }
+}
