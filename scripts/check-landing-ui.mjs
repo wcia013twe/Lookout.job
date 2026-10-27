@@ -18,7 +18,7 @@ for(const width of [1440,390]){
  await page.getByRole('button',{name:'Pause motion',exact:true}).click();
  assert.equal(await page.locator('[data-paused]').count(),1);
  assert.equal(await page.locator('[data-paused] [class*=sclera]').first().evaluate(el => getComputedStyle(el).animationName),'none');
- assert.equal(await page.locator('img[src$="lookout-buddy-idle.webp"]').evaluate(el=>el.complete && el.naturalWidth>0),true);
+ assert.equal(await page.locator('img[src$="lookout-buddy-purple-idle.webp"]').evaluate(el=>el.complete && el.naturalWidth>0),true);
  await page.getByRole('heading',{name:'Less time applying. More time preparing.'}).scrollIntoViewIfNeeded();
  await page.waitForTimeout(3100);
  assert.equal(await page.locator('[data-shift-state]').getAttribute('data-shift-state'),'complete');
