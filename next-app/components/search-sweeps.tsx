@@ -7,10 +7,19 @@ import {Field,control,primary,secondary,Notice} from './ui';
 function Sweeps(){
  const w=useWorkspace(),h=useSearchHarness();
  const [showRequest,setShowRequest]=useState(false),[profile,setProfile]=useState(''),[mode,setMode]=useState('fresh'),[selected,setSelected]=useState<SearchRun|null>(null),[nextOffset,setNextOffset]=useState<number|null>(null),[feedback,setFeedback]=useState('');
+ const runs=[...h.runs].sort((a,b)=>(Date.parse(b.created_at||'')||0)-(Date.parse(a.created_at||'')||0));
+ const latest=runs[0];
+ const status=(state:string)=>({active:'Searching',partial:'Incomplete',completed:'Completed',blocked:'Blocked',cancelled:'Cancelled'} as Record<string,string>)[state]||state;
  const profiles:{id:string;name:string}[]=h.context?.profiles||[];const profileId=profile||profiles[0]?.id||'';
  async function inspect(id:string){h.setBusy(true);try{const [run,page]=await Promise.all([h.action('search.run.read',{runId:id}),h.action('search.discoveries.read',{runId:id})]);setSelected(run);h.setListings(page.listings);setNextOffset(page.nextOffset);}catch(e){h.setError(e instanceof Error?e.message:'Could not load run.');}finally{h.setBusy(false);}}
  async function request(){h.setBusy(true);try{await h.action('search.request',{profileId,mode,eventKey:crypto.randomUUID()});setFeedback(w.demo?'Fictional request queued in this preview; no agent is contacted.':'Request queued. Your personal agent must connect, poll its inbox, and perform the search.');await h.reload();setShowRequest(false);}catch(e){setFeedback(e instanceof Error?e.message:'Could not queue sweep.');}finally{h.setBusy(false);}}
- return <section className="mt-8 border-t border-board-line pt-5" aria-labelledby="agent-searches-title">
+ return <section className="mt-8 border-t border-board-line pt-5" aria-label="Agent searches">
+  <details>
+   <summary className="flex min-h-11 cursor-pointer flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+    <span className="font-semibold">Latest search<span className="ml-2 font-normal text-board-muted">{latest?.created_at?new Date(latest.created_at).toLocaleDateString(undefined,{month:'short',day:'numeric'}):''}</span></span>
+    <span className="text-board-muted">{h.busy?'Loading…':h.error?'Status unavailable':latest?status(latest.state):(w.demo||w.user)?'No searches yet':'Sign in to view'}<span className="ml-3 text-board-accent">Details</span></span>
+   </summary>
+   <div className="pt-3">
   <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
    <h2 id="agent-searches-title" className="text-lg font-bold">Agent searches</h2>
    {(w.demo||w.user)&&<div className="flex items-center gap-4">
@@ -28,10 +37,10 @@ function Sweeps(){
     <p className="mt-3 text-sm text-board-muted">Requests wait for your connected agent to start searching.</p>
    </div>}
    {!h.runs.length&&!h.busy&&<p className="py-3 text-sm text-board-muted">No searches yet. Request one to get started.</p>}
-   <ul className="divide-y divide-board-line">{h.runs.map(run=><li key={run.id}>
+   <ul className="divide-y divide-board-line">{runs.map(run=><li key={run.id}>
     <button className="flex min-h-11 w-full items-center justify-between gap-4 rounded-lg py-3 text-left hover:bg-board-tag disabled:opacity-50" disabled={h.busy} aria-expanded={selected?.id===run.id} aria-controls="search-details" onClick={()=>{if(selected?.id===run.id)setSelected(null);else void inspect(run.id);}}>
      <span className="min-w-0"><span className="block text-sm font-semibold">{profiles.find(p=>p.id===run.profile_id)?.name||run.profile_id}</span><span className="mt-1 block text-xs text-board-muted">{run.created_at?new Date(run.created_at).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'Date unavailable'} · {run.mode==='fresh'?'Past 72 hours':'Past 30 days'}</span></span>
-     <span className="flex shrink-0 items-center gap-3 text-sm"><span className="text-board-muted">{({active:'Searching',partial:'Incomplete',completed:'Completed',blocked:'Blocked',cancelled:'Cancelled'} as Record<string,string>)[run.state]||run.state}</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" className={selected?.id===run.id?'rotate-180':''}><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+     <span className="flex shrink-0 items-center gap-3 text-sm"><span className="text-board-muted">{status(run.state)}</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" className={selected?.id===run.id?'rotate-180':''}><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
     </button>
    </li>)}</ul>
    {selected&&<div id="search-details" className="mt-2 space-y-5 border-t border-board-line pt-4">
@@ -49,6 +58,8 @@ function Sweeps(){
    </div>}
   </>:<p className="text-sm text-board-muted">Sign in to see your agent’s search history.</p>}
   <Notice>{h.error||feedback}</Notice>
+   </div>
+  </details>
  </section>;
 }
 export default function SearchSweeps(){const w=useWorkspace();return <Sweeps key={w.demo?`demo-${w.demoEpoch}`:w.user?.id||'guest'} />;}
