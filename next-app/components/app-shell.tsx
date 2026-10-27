@@ -31,7 +31,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const destination=websiteOnboardingDestination({path,demo:w.demo,authReady:w.authReady,signedIn:canViewWorkspace(w),status:w.websiteOnboarding?.status});
   useEffect(()=>{if(destination)router.replace(destination);},[destination,router]);
   const isPrivacy = /^\/privacy\/?$/.test(path);
-  const footer = <footer className="mt-10 border-t border-board-line pt-4 text-sm text-board-muted"><Link href="/privacy/" className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-board-text">Privacy &amp; sharing</Link></footer>;
   const hasAccess = canViewWorkspace(w);
   const isOnboarding = /\/onboarding\/?$/.test(path);
   if (!hasAccess && !isOnboarding) {
@@ -46,7 +45,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
             <GoogleSignInButton className="mt-6" onClick={w.signIn}/>
           </>}
         </section>}
-        {footer}
       </div>
     </main>;
   }
@@ -73,7 +71,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     return <main className="grid min-h-dvh place-items-center bg-board-bg p-6"><div role="status"><Notice>{w.websiteOnboarding?.status==='error'?'Could not check your setup. Retry to continue.':'Checking your setup…'}</Notice>{w.websiteOnboarding?.status==='error'&&<button className="mt-4 underline underline-offset-4" onClick={w.websiteOnboarding.retry}>Retry setup check</button>}</div></main>;
   }
   if (/\/onboarding\/?$/.test(path)) {
-    return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}<div className="mx-auto max-w-6xl px-4 pb-6 md:px-6">{footer}</div></main>;
+    return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
   }
   return (
     <MotionConfig reducedMotion="user"><main className={`workspace-shell min-h-dvh`} onClickCapture={event=>{
@@ -132,8 +130,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
       ) : (
         <div className="glass-panel rounded-2xl p-6" role="status"><p className="text-sm text-board-muted">Loading your workspace…</p><div aria-hidden="true" className="mt-5 grid gap-3 sm:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-28 rounded-xl bg-board-tag" />)}</div></div>
       )}
-      {process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN && <footer className="mt-8 text-xs text-board-muted"><a href="https://logo.dev" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Logos provided by Logo.dev</a></footer>}
-      {footer}
       {w.state&&!w.locked&&(w.demo||w.authReady)&&(path==="/"||path==="/discover/")&&<DashboardTour key={w.demo?`tour-demo-${w.demoEpoch}`:`tour-${w.accountUser?.id||w.user?.id||"guest"}`}/>}
       </div>
     </main></MotionConfig>
