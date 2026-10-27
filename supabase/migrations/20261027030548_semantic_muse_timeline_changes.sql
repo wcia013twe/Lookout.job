@@ -27,39 +27,21 @@ revoke all on function private.emit_muse_timeline_change() from public,anon,auth
 create trigger muse_timeline_milestone after insert on public.application_milestones for each row execute function private.emit_muse_timeline_change();
 create trigger muse_timeline_stage after update of status on public.applications for each row execute function private.emit_muse_timeline_change();
 
--- Update the existing inner feed dispatcher, preserving the newer outer
--- interview-reporting source/ownership validation.
-create or replace function private.interview_reporting_dispatch_previous(credential_hash text,operation text,payload jsonb) returns jsonb
-language plpgsql security definer set search_path='' as $$
-#variable_conflict use_variable
-declare c private.agent_connections;n integer;items jsonb;ids uuid[];key text;
+-- Find the existing feed implementation rather than replacing outer domain
+-- dispatchers introduced by other migrations. Keep its name, ACL and wrappers.
+do $migration$
+declare candidates oid[];definition text;changed text;
 begin
- if operation not in ('changes.read','changes.ack') then return private.agent_dispatch_before_muse_changes(credential_hash,operation,payload);end if;
- perform private.agent_dispatch_before_muse_changes(credential_hash,'credentials.verify','{}');
- select * into c from private.agent_connections where token_hash=credential_hash;
- if not ('workspace:read'=any(c.scopes)) or (operation='changes.ack' and not ('activity:write'=any(c.scopes))) then raise exception 'Change feed scope required' using errcode='42501';end if;
- if jsonb_typeof(payload) is distinct from 'object' then raise exception 'Object required' using errcode='22023';end if;
- if operation='changes.read' then
-  if exists(select 1 from jsonb_object_keys(payload) k where k<>'limit') then raise exception 'Unknown change feed argument' using errcode='22023';end if;
-  if payload ? 'limit' and (jsonb_typeof(payload->'limit')<>'number' or coalesce(payload->>'limit','') !~ '^[0-9]{1,2}$') then raise exception 'Integer limit required' using errcode='22023';end if;
-  n:=coalesce((payload->>'limit')::integer,20);if n not between 1 and 50 then raise exception 'Bounded limit required' using errcode='22023';end if;
-  select coalesce(jsonb_agg(jsonb_strip_nulls(jsonb_build_object('id',e.id,'kind',replace(e.kind,'muse.',''),'occurredAt',e.occurred_at,'entity',e.payload->'entity','recordId',e.payload->'recordId','version',e.payload->'version','jobId',e.payload->'jobId','fieldIds',e.payload->'fieldIds','status',e.payload->'status','runId',e.payload->'runId','summary',e.payload->'text','milestoneId',e.payload->'milestoneId','milestoneKind',e.payload->'milestoneKind','phase',e.payload->'phase','change',e.payload->'change','supersedesId',e.payload->'supersedesId')) order by e.occurred_at,e.id),'[]') into items
-  from (select * from public.activity_events e where e.user_id=c.user_id and e.actor='system' and e.kind in ('muse.answer_confirmed','muse.preferences_changed','muse.profile_changed','muse.backend_job_finished','muse.application_timeline_changed')
-   and not exists(select 1 from private.muse_change_receipts r where r.connection_id=c.id and r.event_id=e.id) order by e.occurred_at,e.id limit n+1) e;
-  return jsonb_build_object('items',(select coalesce(jsonb_agg(x.value order by x.ordinality),'[]') from jsonb_array_elements(items) with ordinality x where x.ordinality<=n),'hasMore',jsonb_array_length(items)>n,'limit',n);
- end if;
- if exists(select 1 from jsonb_object_keys(payload) k where k<>'eventIds') or jsonb_typeof(payload->'eventIds') is distinct from 'array' or jsonb_array_length(payload->'eventIds') not between 1 and 50
-  or exists(select 1 from jsonb_array_elements(payload->'eventIds') x where jsonb_typeof(x)<>'string') then raise exception 'Bounded event IDs required' using errcode='22023';end if;
- ids:=array(select x::uuid from jsonb_array_elements_text(payload->'eventIds') x);
- if cardinality(ids)<>(select count(distinct x) from unnest(ids) x) then raise exception 'Unique IDs required' using errcode='22023';end if;
- if exists(select 1 from unnest(ids) x where not exists(select 1 from public.activity_events e where e.id=x and e.user_id=c.user_id and e.actor='system' and e.kind in ('muse.answer_confirmed','muse.preferences_changed','muse.profile_changed','muse.backend_job_finished','muse.application_timeline_changed'))) then raise exception 'Owned change events required' using errcode='42501';end if;
- insert into private.muse_change_receipts(connection_id,event_id) select c.id,x from unnest(ids) x on conflict do nothing;
- -- Bounded housekeeping: only these system pointer events, older than 30 days,
- -- handled by every active full-workspace consumer. Never discard pending work.
- delete from public.activity_events e where e.id in (
-  select e.id from public.activity_events e where e.user_id=c.user_id and e.kind in ('muse.answer_confirmed','muse.preferences_changed','muse.profile_changed','muse.backend_job_finished','muse.application_timeline_changed') and e.actor='system' and e.occurred_at<now()-interval '30 days'
-  and not exists(select 1 from private.agent_connections ac where ac.user_id=c.user_id and ac.revoked_at is null and ac.expires_at>now() and array['workspace:read','activity:write']::text[]<@ac.scopes and not exists(select 1 from private.muse_change_receipts r where r.connection_id=ac.id and r.event_id=e.id))
-  order by e.occurred_at,e.id limit 100);
- return jsonb_build_object('acknowledgedIds',to_jsonb(ids));
-end $$;
+ select array_agg(p.oid) into candidates from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+ where n.nspname in ('private','public') and p.pronargs=3
+  and p.prosrc like '%Owned change events required%' and p.prosrc like '%changes.read%';
+ if coalesce(cardinality(candidates),0)<>1 then raise exception 'Expected one Muse change-feed implementation';end if;
+ definition:=pg_get_functiondef(candidates[1]);
+ changed:=replace(definition,$old$'muse.profile_changed','muse.backend_job_finished'$old$,$new$'muse.profile_changed','muse.backend_job_finished','muse.application_timeline_changed'$new$);
+ changed:=replace(changed,$old$'summary',e.payload->'text'$old$,$new$'summary',e.payload->'text','milestoneId',e.payload->'milestoneId','milestoneKind',e.payload->'milestoneKind','phase',e.payload->'phase','change',e.payload->'change','supersedesId',e.payload->'supersedesId'$new$);
+ changed:=replace(changed,$old$  n:=coalesce((payload->>'limit')::integer,20);$old$,$new$  if payload ? 'limit' and (jsonb_typeof(payload->'limit')<>'number' or coalesce(payload->>'limit','') !~ '^[0-9]{1,2}$') then raise exception 'Integer limit required' using errcode='22023';end if;
+  n:=coalesce((payload->>'limit')::integer,20);$new$);
+ if changed=definition or strpos(changed,$marker$'milestoneId',e.payload->'milestoneId'$marker$)=0 or strpos(changed,'Integer limit required')=0 then raise exception 'Expected feed implementation unavailable';end if;
+ execute changed;
+end $migration$;
 commit;
