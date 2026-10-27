@@ -11,3 +11,10 @@
 
 - The first hosted workflow stopped before migration application because the committed generated toolkit exceeds Node’s default child-process output buffer. Read committed source with a bounded 32 MiB buffer and sanitize read failures; add a regression check against the actual generated bundle.
 - Validation: full npm test and data validation; previous production frontend build remains unchanged by this packaging fix.
+
+## Hosted verification
+
+- Production backend workflow 40597204859 succeeded from merged source 5967c5e770b65b087a5cd0f9dffb4d51a316e872. All 77 migrations and agent-gateway, agent-mcp and workspace-reset are deployed. Gateway/MCP bundle readback reports that exact source; developer contract 87 is live.
+- A disposable fictional hosted account verified sign-in, human token issuance, authenticated MCP initialization, 103 scoped tools, onboarding read/connection test, developer context, anonymous denial and durable token revocation. The account was deleted; a database check found zero verification accounts remaining and no public tables without RLS.
+- Full suite: 867 passing. Production build/data validation passed.
+- Google provider and hosted/local redirect allowlist are configured, but Google still rejects the new callback with redirect_uri_mismatch. The full-site workflow was canceled and backend-only deployment used so the existing public website remains on its previous working backend. Add the new callback in Google Cloud before switching the public site. Private account data was not copied; optional Node API/parser/worker hosting is outside this deployment.
