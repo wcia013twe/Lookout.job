@@ -17,7 +17,7 @@ if (!config.API_URL || !config.ANON_KEY ||
   console.error('Expected a local API URL and anonymous key from supabase status.');
   process.exit(1);
 }
-const child = spawn('npm', ['--prefix', 'next-app', 'run', 'dev', '--', '--hostname', '127.0.0.1', '--port', '3000'], {
+const child = spawn('npm', ['--prefix', 'next-app', 'run', 'dev', '--', '--hostname', '127.0.0.1', '--port', process.env.PORT || '3000'], {
   cwd, stdio: 'inherit', env: {
     ...process.env,
     NEXT_PUBLIC_BASE_PATH: '',
