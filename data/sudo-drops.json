@@ -3670,13 +3670,13 @@
    "title": "AI/ML Developer Intern",
    "location": "San Jose, CA",
    "type": "Internship",
-   "comp": null,
-   "url": null,
+   "comp": "$35-$41/hr",
+   "url": "https://careers.hpe.com/us/en/job/1217413/AI-ML-Developer-Intern",
    "dateSeen": "2026-10-26",
    "source": "zero2sudo",
-   "status": "pending",
+   "status": "added",
    "skipReason": null,
-   "note": "Employer verification incomplete: the verification browser task closed without delivering its report. Recheck HPE careers before adding; do not dedupe against the board's skipped HPE Cybersecurity/Embedded/AI-HPC interns."
+   "note": "Verified live 2026-10-26 on HPE careers: Job ID 1217413, hybrid 2 days/week in office, $35.00-$41.00/hr; no explicit term length shown."
   },
   {
    "company": "Applied Materials",
@@ -3726,9 +3726,9 @@
    "url": "https://job-boards.greenhouse.io/gleanwork/jobs/4595665005",
    "dateSeen": "2026-10-26",
    "source": "zero2sudo",
-   "status": "pending",
-   "skipReason": null,
-   "note": "Employer page returned an error/redirect to the general board index on the 2026-10-26 check and the intern role was absent from the live board listing. Do not add until a recheck confirms it live."
+   "status": "skipped",
+   "skipReason": "Posting dead: employer page redirects to the general board with a job-no-longer-open error (verified 2026-10-26)",
+   "note": "The hybrid/pay/graduation details from aggregator listings could not be confirmed from a live posting page."
   },
   {
    "company": "Boston Scientific",
@@ -3765,9 +3765,9 @@
    "url": null,
    "dateSeen": "2026-10-26",
    "source": "zero2sudo",
-   "status": "pending",
-   "skipReason": null,
-   "note": "Employer verification incomplete: the verification browser task closed without delivering its report. Distinct from the board's ServiceNow Core Infrastructure Moveworks New Grad role; do not dedupe on title similarity. Recheck SmartRecruiters before adding."
+   "status": "skipped",
+   "skipReason": "Not found on ServiceNow SmartRecruiters board in the 2026-10-26 check (searched Graduate/Moveworks/AI-ML terms, Mountain View lists expanded)",
+   "note": "A distinct live role, Associate Software Engineer, Core Infrastructure - Moveworks (ID 744000107369741), was found; it is not the story role and not the board entry (ID 744000153279380), so no board change follows from it."
   }
  ]
 }
