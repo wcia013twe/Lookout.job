@@ -1,0 +1,2783 @@
+{
+  "fictional": true,
+  "runAt": "2026-10-27T01:15:50.448Z",
+  "engine": "@orama/orama@3.1.18",
+  "stopwords": "@orama/stopwords@3.1.18",
+  "model": "text-embedding-3-small",
+  "documents": 15,
+  "queries": 35,
+  "apiCalls": 50,
+  "indexMs": 185.1576669999995,
+  "configuration": {
+    "keyword": "Orama BM25 implementation k=1.2 b=.75 d=.5; English stemming + supplied English stopwords plus missing article a; normal token/prefix matching; threshold=1 (OR)",
+    "vector": "Orama cosine, minimum .30",
+    "hybrid": "Orama built-in normalized score fusion, text=.5 vector=.5",
+    "text": "Existing production clean().embeddingText unchanged",
+    "limit": 3
+  },
+  "summary": {
+    "all": {
+      "bm25": {
+        "evidenceQueries": 29,
+        "top1Hits": 16,
+        "meanRecallAt3": 0.6149425287356323,
+        "meanPrecisionAt3": 0.29885057471264365,
+        "wrongContextResults": 11,
+        "unanswerableWithRelatedResults": 5,
+        "medianSearchMs": 0.2727919999997539
+      },
+      "vector": {
+        "evidenceQueries": 29,
+        "top1Hits": 18,
+        "meanRecallAt3": 0.8850574712643678,
+        "meanPrecisionAt3": 0.4827586206896552,
+        "wrongContextResults": 12,
+        "unanswerableWithRelatedResults": 5,
+        "medianSearchMs": 0.20654199999989942
+      },
+      "hybrid": {
+        "evidenceQueries": 29,
+        "top1Hits": 18,
+        "meanRecallAt3": 0.8218390804597702,
+        "meanPrecisionAt3": 0.4367816091954024,
+        "wrongContextResults": 10,
+        "unanswerableWithRelatedResults": 5,
+        "medianSearchMs": 0.9119160000009288
+      }
+    },
+    "original": {
+      "bm25": {
+        "evidenceQueries": 9,
+        "top1Hits": 6,
+        "meanRecallAt3": 0.5370370370370371,
+        "meanPrecisionAt3": 0.25925925925925924,
+        "wrongContextResults": 8,
+        "unanswerableWithRelatedResults": 1,
+        "medianSearchMs": 0.40870799999902374
+      },
+      "vector": {
+        "evidenceQueries": 9,
+        "top1Hits": 6,
+        "meanRecallAt3": 0.9074074074074076,
+        "meanPrecisionAt3": 0.5185185185185185,
+        "wrongContextResults": 8,
+        "unanswerableWithRelatedResults": 1,
+        "medianSearchMs": 0.2517920000009326
+      },
+      "hybrid": {
+        "evidenceQueries": 9,
+        "top1Hits": 6,
+        "meanRecallAt3": 0.7592592592592593,
+        "meanPrecisionAt3": 0.40740740740740744,
+        "wrongContextResults": 7,
+        "unanswerableWithRelatedResults": 1,
+        "medianSearchMs": 0.9328329999989364
+      }
+    },
+    "previous-paraphrases": {
+      "bm25": {
+        "evidenceQueries": 15,
+        "top1Hits": 8,
+        "meanRecallAt3": 0.6333333333333333,
+        "meanPrecisionAt3": 0.31111111111111106,
+        "wrongContextResults": 0,
+        "unanswerableWithRelatedResults": 3,
+        "medianSearchMs": 0.35137500000200816
+      },
+      "vector": {
+        "evidenceQueries": 15,
+        "top1Hits": 9,
+        "meanRecallAt3": 0.8333333333333334,
+        "meanPrecisionAt3": 0.4444444444444444,
+        "wrongContextResults": 0,
+        "unanswerableWithRelatedResults": 3,
+        "medianSearchMs": 0.2294160000019474
+      },
+      "hybrid": {
+        "evidenceQueries": 15,
+        "top1Hits": 10,
+        "meanRecallAt3": 0.8333333333333334,
+        "meanPrecisionAt3": 0.44444444444444436,
+        "wrongContextResults": 0,
+        "unanswerableWithRelatedResults": 3,
+        "medianSearchMs": 0.7950420000015583
+      }
+    },
+    "unseen": {
+      "bm25": {
+        "evidenceQueries": 5,
+        "top1Hits": 2,
+        "meanRecallAt3": 0.7,
+        "meanPrecisionAt3": 0.3333333333333333,
+        "wrongContextResults": 3,
+        "unanswerableWithRelatedResults": 1,
+        "medianSearchMs": 0.1827499999999418
+      },
+      "vector": {
+        "evidenceQueries": 5,
+        "top1Hits": 3,
+        "meanRecallAt3": 1,
+        "meanPrecisionAt3": 0.5333333333333333,
+        "wrongContextResults": 4,
+        "unanswerableWithRelatedResults": 1,
+        "medianSearchMs": 0.17220799999995506
+      },
+      "hybrid": {
+        "evidenceQueries": 5,
+        "top1Hits": 2,
+        "meanRecallAt3": 0.9,
+        "meanPrecisionAt3": 0.4666666666666667,
+        "wrongContextResults": 3,
+        "unanswerableWithRelatedResults": 1,
+        "medianSearchMs": 0.9119160000009288
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "recent-intel",
+      "group": "original",
+      "query": "What are Bloomberg New Grad candidates reporting about their technical interviews in October 2026?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [
+        "senior",
+        "intern",
+        "other-employer",
+        "old-wait",
+        "generic-guide"
+      ],
+      "embeddingMs": 369.05866700000115,
+      "bm25": {
+        "searchMs": 21.829540999999153,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [
+          "old-wait",
+          "generic-guide"
+        ],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 1.717703050197358
+          },
+          {
+            "id": "old-wait",
+            "score": 1.6282817528368922
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.5079714234777604
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 59.206458000000566,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 0.6849751959359377
+          },
+          {
+            "id": "technical",
+            "score": 0.6798780422150724
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.6765863034125128
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 4.189957999999024,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [
+          "old-wait",
+          "generic-guide"
+        ],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 0.9739706763196958
+          },
+          {
+            "id": "recruiter",
+            "score": 0.9673269849474071
+          },
+          {
+            "id": "generic-guide",
+            "score": 0.7678186295595512
+          }
+        ]
+      }
+    },
+    {
+      "id": "oa-experience",
+      "group": "original",
+      "query": "I just received the Bloomberg New Grad OA. What have other candidates experienced?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [
+        "intern",
+        "senior",
+        "generic-guide"
+      ],
+      "embeddingMs": 298.8073750000003,
+      "vector": {
+        "searchMs": 0.4249579999996058,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 0.6755295640368589
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6508714113331556
+          },
+          {
+            "id": "oa-wait",
+            "score": 0.6214619367217252
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 2.645582999999533,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 0.9599813019344157
+          },
+          {
+            "id": "recruiter",
+            "score": 0.7928639486242642
+          },
+          {
+            "id": "oa-different",
+            "score": 0.7404352736270365
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.40870799999902374,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [
+          "generic-guide"
+        ],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 1.575711270767265
+          },
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.2657610610290717
+          }
+        ]
+      }
+    },
+    {
+      "id": "oa-wait",
+      "group": "original",
+      "query": "Anyone else waiting for Bloomberg New Grad after submitting the online assessment?",
+      "relevant": [
+        "oa-wait"
+      ],
+      "exclude": [
+        "waiting-thread",
+        "waiting-reply",
+        "old-wait",
+        "intern"
+      ],
+      "embeddingMs": 254.3474580000002,
+      "hybrid": {
+        "searchMs": 0.9328329999989364,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "waiting-reply"
+        ],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 1
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.7542285274247618
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.6788420538699702
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.20829199999934644,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "waiting-reply"
+        ],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 3.5336665718491993
+          },
+          {
+            "id": "oa-recent",
+            "score": 2.2092247753809118
+          },
+          {
+            "id": "waiting-reply",
+            "score": 1.684136161033593
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.20708299999932933,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "old-wait",
+          "waiting-thread"
+        ],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 0.6898436517220485
+          },
+          {
+            "id": "old-wait",
+            "score": 0.6280203363075622
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.6247930415924897
+          }
+        ]
+      }
+    },
+    {
+      "id": "technical-format",
+      "group": "original",
+      "query": "What did the live technical round involve for Bloomberg New Grad candidates?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [
+        "recruiter",
+        "senior",
+        "other-employer",
+        "generic-guide"
+      ],
+      "embeddingMs": 381.0090419999997,
+      "bm25": {
+        "searchMs": 1.3875830000015412,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "recruiter",
+          "other-employer"
+        ],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 2.3857911421106905
+          },
+          {
+            "id": "other-employer",
+            "score": 1.6248731555729528
+          },
+          {
+            "id": "technical",
+            "score": 1.5998500614002407
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.19954099999995378,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical",
+            "score": 0.7395124510224702
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.6644265582827609
+          },
+          {
+            "id": "next-step",
+            "score": 0.6078516570040923
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.6891660000001139,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "recruiter"
+        ],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 0.8738908739006527
+          },
+          {
+            "id": "technical",
+            "score": 0.8352871156996723
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.7608086521432111
+          }
+        ]
+      }
+    },
+    {
+      "id": "join-discussion",
+      "group": "original",
+      "query": "Where can I join people still waiting after their Bloomberg New Grad technical round in October 2026?",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply"
+      ],
+      "exclude": [
+        "old-wait",
+        "oa-wait",
+        "other-employer"
+      ],
+      "embeddingMs": 337.30375000000095,
+      "vector": {
+        "searchMs": 0.2517920000009326,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 0.710645483106504
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.6964798741662959
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.6454281938395349
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.9136660000003758,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.9541140478499355
+          },
+          {
+            "id": "old-wait",
+            "score": 0.8709619791512826
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.8254292215720607
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.2333330000001297,
+        "top1Relevant": true,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 2.4670714697392118
+          },
+          {
+            "id": "old-wait",
+            "score": 1.830379430244243
+          },
+          {
+            "id": "next-step",
+            "score": 1.6969099194165422
+          }
+        ]
+      }
+    },
+    {
+      "id": "next-step",
+      "group": "original",
+      "query": "What happened after candidates completed the Bloomberg New Grad technical interview, and how long did they wait?",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply",
+        "next-step"
+      ],
+      "exclude": [
+        "old-wait",
+        "oa-wait",
+        "senior"
+      ],
+      "embeddingMs": 364.2452919999996,
+      "hybrid": {
+        "searchMs": 3.9982920000002196,
+        "top1Relevant": true,
+        "recallAt3": 0.3333333333333333,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.9700908746392024
+          },
+          {
+            "id": "recruiter",
+            "score": 0.7989694232267308
+          },
+          {
+            "id": "old-wait",
+            "score": 0.7295071705985501
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.17970799999966403,
+        "top1Relevant": true,
+        "recallAt3": 0.3333333333333333,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 2.0744753407116336
+          },
+          {
+            "id": "recruiter",
+            "score": 1.7025884020354525
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.4909945888819476
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.3728339999997843,
+        "top1Relevant": false,
+        "recallAt3": 0.6666666666666666,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 0.7192135942782211
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.7076439813316131
+          },
+          {
+            "id": "next-step",
+            "score": 0.6977102473722149
+          }
+        ]
+      }
+    },
+    {
+      "id": "different-formats",
+      "group": "original",
+      "query": "Are Bloomberg New Grad candidates reporting different online assessment formats?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [
+        "intern",
+        "technical",
+        "generic-guide"
+      ],
+      "embeddingMs": 343.75395799999933,
+      "bm25": {
+        "searchMs": 2.9375419999996666,
+        "top1Relevant": true,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "intern"
+        ],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 3.3171153615195053
+          },
+          {
+            "id": "intern",
+            "score": 1.4786694854577813
+          },
+          {
+            "id": "oa-wait",
+            "score": 1.3247781234718805
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.41329099999893515,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "intern"
+        ],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 0.6805701655233463
+          },
+          {
+            "id": "intern",
+            "score": 0.6630171709687206
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6059432652055252
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 1.0606250000000728,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "intern"
+        ],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 1
+          },
+          {
+            "id": "intern",
+            "score": 0.7099890440694718
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6178581874439827
+          }
+        ]
+      }
+    },
+    {
+      "id": "screen-stage",
+      "group": "original",
+      "query": "What are candidates saying about the Bloomberg New Grad recruiter screen before the technical interview?",
+      "relevant": [
+        "recruiter"
+      ],
+      "exclude": [
+        "technical",
+        "technical-alt",
+        "senior"
+      ],
+      "embeddingMs": 350.00224999999955,
+      "vector": {
+        "searchMs": 0.16558299999996962,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "technical",
+          "technical-alt"
+        ],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 0.7223668192550189
+          },
+          {
+            "id": "technical",
+            "score": 0.6610951466866309
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.6556621758954155
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.43058300000120653,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 1
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.5758602522734679
+          },
+          {
+            "id": "old-wait",
+            "score": 0.567360139852444
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 2.593249999999898,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 3.337876736831614
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.4909945888819476
+          },
+          {
+            "id": "oa-wait",
+            "score": 1.2337769619384864
+          }
+        ]
+      }
+    },
+    {
+      "id": "rumor-evidence",
+      "group": "original",
+      "query": "Has anyone actually confirmed Bloomberg New Grad hiring is paused?",
+      "relevant": [
+        "rumor"
+      ],
+      "exclude": [],
+      "embeddingMs": 341.553249999999,
+      "hybrid": {
+        "searchMs": 0.9124590000010357,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "rumor",
+            "score": 1
+          },
+          {
+            "id": "recruiter",
+            "score": 0.46585767141699824
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.4239253345482143
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.21225000000049477,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "rumor",
+            "score": 4.722074422481729
+          },
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          },
+          {
+            "id": "oa-wait",
+            "score": 0.5720369409712399
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.16220900000007532,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "rumor",
+            "score": 0.7339624738311092
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.5377801763487815
+          },
+          {
+            "id": "next-step",
+            "score": 0.5196920421734856
+          }
+        ]
+      }
+    },
+    {
+      "id": "unknown-recruiting",
+      "group": "original",
+      "query": "What is the exact Bloomberg New Grad offer acceptance deadline for the Tokyo office?",
+      "relevant": [],
+      "exclude": [],
+      "embeddingMs": 307.4566250000007,
+      "bm25": {
+        "searchMs": 0.7053749999995489,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          },
+          {
+            "id": "waiting-reply",
+            "score": 1.2667560078271543
+          },
+          {
+            "id": "technical",
+            "score": 1.2337769619384864
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.16345899999942048,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-thread",
+            "score": 0.500681631149908
+          },
+          {
+            "id": "next-step",
+            "score": 0.4922023618485256
+          },
+          {
+            "id": "old-wait",
+            "score": 0.4697485330408671
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 1.1667919999999867,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.9409065409263471
+          },
+          {
+            "id": "recruiter",
+            "score": 0.9110000258173097
+          },
+          {
+            "id": "technical",
+            "score": 0.9021289760283536
+          }
+        ]
+      }
+    },
+    {
+      "id": "unrelated",
+      "group": "original",
+      "query": "How do I repair a leaking kitchen faucet?",
+      "relevant": [],
+      "exclude": [],
+      "embeddingMs": 349.2224589999987,
+      "vector": {
+        "searchMs": 0.2519169999995938,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": []
+      },
+      "hybrid": {
+        "searchMs": 0.4022919999988517,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": []
+      },
+      "bm25": {
+        "searchMs": 0.050416000000041095,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": []
+      }
+    },
+    {
+      "id": "paraphrase-0",
+      "group": "previous-paraphrases",
+      "query": "What was the Bloomberg New Grad online assessment format like?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [],
+      "embeddingMs": 348.3870000000006,
+      "hybrid": {
+        "searchMs": 1.1633340000007593,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 0.9821389926458859
+          },
+          {
+            "id": "intern",
+            "score": 0.7994482314734599
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6921291523064712
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.17537500000071304,
+        "top1Relevant": true,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 2.442287445560352
+          },
+          {
+            "id": "intern",
+            "score": 1.462677312645763
+          },
+          {
+            "id": "other-employer",
+            "score": 1.371037870628719
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.1399169999986043,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "intern",
+            "score": 0.6484552249552112
+          },
+          {
+            "id": "oa-different",
+            "score": 0.6252910978717338
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.5967409815453141
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-1",
+      "group": "previous-paraphrases",
+      "query": "What tasks did people actually get in the Bloomberg New Grad OA?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [],
+      "embeddingMs": 372.4337919999998,
+      "bm25": {
+        "searchMs": 0.9404580000009446,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "intern",
+            "score": 1.5892671881549618
+          },
+          {
+            "id": "oa-different",
+            "score": 1.4619255976661742
+          },
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.41450000000077125,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 0.6916402794284358
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.658270185930591
+          },
+          {
+            "id": "intern",
+            "score": 0.6161585280348009
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.655957999999373,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-different",
+            "score": 0.9599370101396786
+          },
+          {
+            "id": "intern",
+            "score": 0.9454327967596015
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.8632621209240716
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-2",
+      "group": "previous-paraphrases",
+      "query": "How was the timed test structured for Bloomberg graduate applicants?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [],
+      "embeddingMs": 387.35420800000065,
+      "vector": {
+        "searchMs": 0.19887500000004366,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical",
+            "score": 0.538631546101726
+          },
+          {
+            "id": "intern",
+            "score": 0.5211767882092369
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.5141473912001798
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.4870840000003227,
+        "top1Relevant": true,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-recent",
+            "score": 0.9472766635813146
+          },
+          {
+            "id": "recruiter",
+            "score": 0.80889838595673
+          },
+          {
+            "id": "intern",
+            "score": 0.7525934243083378
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.0915420000001177,
+        "top1Relevant": true,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-recent",
+            "score": 1.583230861965595
+          },
+          {
+            "id": "other-employer",
+            "score": 1.2657610610290717
+          },
+          {
+            "id": "recruiter",
+            "score": 1.2078039977448964
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-3",
+      "group": "previous-paraphrases",
+      "query": "Who is still waiting after submitting the Bloomberg New Grad OA?",
+      "relevant": [
+        "oa-wait"
+      ],
+      "exclude": [],
+      "embeddingMs": 369.01987499999996,
+      "hybrid": {
+        "searchMs": 0.8324160000011034,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 1
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.8427820364721268
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.7114495239628966
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.19516699999985576,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 2.554688921308232
+          },
+          {
+            "id": "waiting-reply",
+            "score": 2.2719018799001915
+          },
+          {
+            "id": "oa-recent",
+            "score": 1.3626318058495133
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.17308299999967858,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 0.7353817600706315
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6541326780343698
+          },
+          {
+            "id": "oa-different",
+            "score": 0.6171566155813131
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-4",
+      "group": "previous-paraphrases",
+      "query": "Has anyone else had no reply after the Bloomberg graduate coding test?",
+      "relevant": [
+        "oa-wait"
+      ],
+      "exclude": [],
+      "embeddingMs": 290.6673329999994,
+      "bm25": {
+        "searchMs": 1.6439169999994192,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-recent",
+            "score": 1.836694683420492
+          },
+          {
+            "id": "recruiter",
+            "score": 1.8117059966173448
+          },
+          {
+            "id": "rumor",
+            "score": 1.512062208706327
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.9769160000014381,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.6227191415865541
+          },
+          {
+            "id": "next-step",
+            "score": 0.5958163481950954
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.5817129554342652
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 2.922375000000102,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-recent",
+            "score": 0.9595684850394324
+          },
+          {
+            "id": "recruiter",
+            "score": 0.9039069084414213
+          },
+          {
+            "id": "rumor",
+            "score": 0.8365402194116457
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-5",
+      "group": "previous-paraphrases",
+      "query": "Where are candidates comparing delays after completing the Bloomberg assessment?",
+      "relevant": [
+        "oa-wait"
+      ],
+      "exclude": [],
+      "embeddingMs": 431.82845799999996,
+      "vector": {
+        "searchMs": 8.565209000000323,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 0.5672735821186425
+          },
+          {
+            "id": "intern",
+            "score": 0.5413494452065934
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.5344202771977177
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.5522500000006403,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 1
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.9704680719293731
+          },
+          {
+            "id": "generic-guide",
+            "score": 0.7314879346111971
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.15433399999892572,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 1.4868616641743404
+          },
+          {
+            "id": "oa-recent",
+            "score": 1.4851525708336404
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.2657610610290717
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-6",
+      "group": "previous-paraphrases",
+      "query": "What did candidates actually do during the Bloomberg New Grad live technical interview?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [],
+      "embeddingMs": 364.95537499999955,
+      "hybrid": {
+        "searchMs": 5.391874999999345,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 0.9098981319910129
+          },
+          {
+            "id": "technical",
+            "score": 0.7674505098822602
+          },
+          {
+            "id": "rumor",
+            "score": 0.600588655953542
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.1525419999998121,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 2.5863188381630877
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.4909945888819476
+          },
+          {
+            "id": "rumor",
+            "score": 1.3877245044512962
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.16891599999871687,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical",
+            "score": 0.7452114287550676
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.6792343687965334
+          },
+          {
+            "id": "recruiter",
+            "score": 0.6109215451701121
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-7",
+      "group": "previous-paraphrases",
+      "query": "What activities and problems were reported in Bloomberg graduate technical rounds?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [],
+      "embeddingMs": 289.10304200000064,
+      "bm25": {
+        "searchMs": 0.6029579999994894,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-thread",
+            "score": 1.6689154751133637
+          },
+          {
+            "id": "technical-alt",
+            "score": 1.5661005111323225
+          },
+          {
+            "id": "technical",
+            "score": 1.5253282548305813
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.7064169999976002,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical",
+            "score": 0.6862306361191415
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.6583929609511678
+          },
+          {
+            "id": "next-step",
+            "score": 0.6060290717909784
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 5.854457999997976,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical",
+            "score": 0.9569818776253396
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.9489140412714655
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.9325687157888369
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-8",
+      "group": "previous-paraphrases",
+      "query": "What was asked while candidates were speaking with a Bloomberg technical interviewer?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [],
+      "embeddingMs": 411.28520800000115,
+      "vector": {
+        "searchMs": 0.17716699999800767,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical-alt",
+            "score": 0.6176851066014726
+          },
+          {
+            "id": "technical",
+            "score": 0.6098301174560861
+          },
+          {
+            "id": "senior",
+            "score": 0.5524225674846845
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.4899170000026061,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical-alt",
+            "score": 1
+          },
+          {
+            "id": "generic-guide",
+            "score": 0.8095574057702883
+          },
+          {
+            "id": "technical",
+            "score": 0.6395190176355949
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.1009169999997539,
+        "top1Relevant": true,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical-alt",
+            "score": 1.5658706174112382
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.4909945888819476
+          },
+          {
+            "id": "senior",
+            "score": 0.5099198601818333
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-9",
+      "group": "previous-paraphrases",
+      "query": "Where can I join Bloomberg New Grad candidates still waiting after the technical round in October 2026?",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply"
+      ],
+      "exclude": [],
+      "embeddingMs": 296.4309579999972,
+      "hybrid": {
+        "searchMs": 14.736250000001746,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.949719107842408
+          },
+          {
+            "id": "old-wait",
+            "score": 0.8709619791512826
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.829589366712241
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 2.326874999998836,
+        "top1Relevant": true,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 2.4670714697392118
+          },
+          {
+            "id": "old-wait",
+            "score": 1.830379430244243
+          },
+          {
+            "id": "next-step",
+            "score": 1.6969099194165422
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 3.554707999999664,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 0.7157160439024147
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.7074043264875259
+          },
+          {
+            "id": "next-step",
+            "score": 0.6522866809745417
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-10",
+      "group": "previous-paraphrases",
+      "query": "I finished the Bloomberg graduate technical interview and have no update. Is anyone else waiting now?",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply"
+      ],
+      "exclude": [],
+      "embeddingMs": 371.7068330000002,
+      "bm25": {
+        "searchMs": 3.794291999998677,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-thread",
+            "score": 2.8610764569179836
+          },
+          {
+            "id": "old-wait",
+            "score": 2.5282207873946456
+          },
+          {
+            "id": "waiting-reply",
+            "score": 2.478035565147101
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.2294160000019474,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-thread",
+            "score": 0.7182128053773321
+          },
+          {
+            "id": "old-wait",
+            "score": 0.7131998488057142
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.7091860156055767
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 2.6206249999995634,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-thread",
+            "score": 1
+          },
+          {
+            "id": "old-wait",
+            "score": 0.9383404610059611
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.9267758014944426
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-11",
+      "group": "previous-paraphrases",
+      "query": "Find an active October 2026 discussion comparing silence after Bloomberg New Grad technical interviews.",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply"
+      ],
+      "exclude": [],
+      "embeddingMs": 349.10862500000076,
+      "vector": {
+        "searchMs": 0.40958300000056624,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 0.6010007048391459
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.599574071953204
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.5847701701446749
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.7233340000020689,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 1
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.8323239413214127
+          },
+          {
+            "id": "technical",
+            "score": 0.8108039635930482
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.36120799999844166,
+        "top1Relevant": false,
+        "recallAt3": 0,
+        "precisionAt3": 0,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 2.2998327644138494
+          },
+          {
+            "id": "recruiter",
+            "score": 1.7025884020354525
+          },
+          {
+            "id": "technical",
+            "score": 1.613953952813627
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-12",
+      "group": "previous-paraphrases",
+      "query": "Who actually received an invitation after the Bloomberg New Grad technical interview?",
+      "relevant": [
+        "next-step"
+      ],
+      "exclude": [],
+      "embeddingMs": 306.08833400000003,
+      "hybrid": {
+        "searchMs": 4.578333000001294,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "rumor",
+            "score": 0.8757552527914727
+          },
+          {
+            "id": "next-step",
+            "score": 0.856818409621805
+          },
+          {
+            "id": "recruiter",
+            "score": 0.7754983781555514
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.2727919999997539,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "rumor",
+            "score": 2.204185767740335
+          },
+          {
+            "id": "recruiter",
+            "score": 1.7025884020354525
+          },
+          {
+            "id": "next-step",
+            "score": 1.572988120312247
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.14645799999925657,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 0.7366313927178076
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.6357065656768532
+          },
+          {
+            "id": "technical",
+            "score": 0.6281476325742135
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-13",
+      "group": "previous-paraphrases",
+      "query": "Has a Bloomberg graduate candidate heard back with a next-round invite?",
+      "relevant": [
+        "next-step"
+      ],
+      "exclude": [],
+      "embeddingMs": 342.1090000000004,
+      "bm25": {
+        "searchMs": 0.8378330000014103,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 2.748789014243018
+          },
+          {
+            "id": "oa-recent",
+            "score": 1.5151874854623002
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.2657610610290717
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.13745900000139954,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 0.7257028230142157
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.5937045409285039
+          },
+          {
+            "id": "old-wait",
+            "score": 0.5445806428578555
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.25187499999810825,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 1
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.637271396803647
+          },
+          {
+            "id": "recruiter",
+            "score": 0.5868986904150844
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-14",
+      "group": "previous-paraphrases",
+      "query": "Find a reported next step after Bloomberg New Grad technical, rather than people still waiting.",
+      "relevant": [
+        "next-step"
+      ],
+      "exclude": [],
+      "embeddingMs": 315.9920839999977,
+      "vector": {
+        "searchMs": 0.17716699999800767,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-thread",
+            "score": 0.6632092549258213
+          },
+          {
+            "id": "old-wait",
+            "score": 0.6618419347927552
+          },
+          {
+            "id": "next-step",
+            "score": 0.6459507957673106
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.44637499999953434,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.9780993885048791
+          },
+          {
+            "id": "next-step",
+            "score": 0.9616108150153748
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.7583072369905625
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.11804100000153994,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 2.4817822540368057
+          },
+          {
+            "id": "next-step",
+            "score": 2.355817597104336
+          },
+          {
+            "id": "recruiter",
+            "score": 1.5171753541449606
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-15",
+      "group": "previous-paraphrases",
+      "query": "What is the exact Bloomberg New Grad Tokyo offer acceptance deadline?",
+      "relevant": [],
+      "exclude": [],
+      "embeddingMs": 307.59383399999933,
+      "hybrid": {
+        "searchMs": 0.6297089999970922,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.9348863404992718
+          },
+          {
+            "id": "recruiter",
+            "score": 0.9195550780403439
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.5604391191862138
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 10.099083000000974,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          },
+          {
+            "id": "waiting-reply",
+            "score": 1.2667560078271543
+          },
+          {
+            "id": "senior",
+            "score": 0.1847507576853354
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.14083299999765586,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-thread",
+            "score": 0.5135166967590475
+          },
+          {
+            "id": "next-step",
+            "score": 0.5056768280811608
+          },
+          {
+            "id": "old-wait",
+            "score": 0.47912497447509245
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-16",
+      "group": "previous-paraphrases",
+      "query": "How many days does Bloomberg give Tokyo graduate hires to accept their offer?",
+      "relevant": [],
+      "exclude": [],
+      "embeddingMs": 261.3122500000027,
+      "bm25": {
+        "searchMs": 0.35137500000200816,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 1.6703162322626217
+          },
+          {
+            "id": "recruiter",
+            "score": 1.2078039977448964
+          },
+          {
+            "id": "rumor",
+            "score": 1.1158664876649393
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.24237499999799184,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 0.48924300853749136
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.4760350554093528
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.46834577700588204
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.2506249999969441,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "waiting-reply",
+            "score": 0.9786433008066093
+          },
+          {
+            "id": "recruiter",
+            "score": 0.7792517539011365
+          },
+          {
+            "id": "rumor",
+            "score": 0.7345874018242944
+          }
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-17",
+      "group": "previous-paraphrases",
+      "query": "When must a Tokyo new grad candidate sign their Bloomberg offer?",
+      "relevant": [],
+      "exclude": [],
+      "embeddingMs": 329.0719590000008,
+      "vector": {
+        "searchMs": 0.4539999999979045,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 0.49611612751251577
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.49387892351886203
+          },
+          {
+            "id": "recruiter",
+            "score": 0.4726827134208538
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.7950420000015583,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 0.9763831361327083
+          },
+          {
+            "id": "next-step",
+            "score": 0.5619736942549546
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.5581844011176127
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.12387500000113505,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          },
+          {
+            "id": "generic-guide",
+            "score": 1.2657610610290717
+          },
+          {
+            "id": "senior",
+            "score": 0.1847507576853354
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-oa",
+      "group": "unseen",
+      "query": "Bloomberg New Grad applicants: what was on your online assessment?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [
+        "intern",
+        "senior"
+      ],
+      "embeddingMs": 614.9208749999998,
+      "hybrid": {
+        "searchMs": 0.6352499999993597,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "intern"
+        ],
+        "results": [
+          {
+            "id": "intern",
+            "score": 1
+          },
+          {
+            "id": "oa-different",
+            "score": 0.91517499176342
+          },
+          {
+            "id": "recruiter",
+            "score": 0.8655356818783103
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.09420800000225427,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "intern"
+        ],
+        "results": [
+          {
+            "id": "intern",
+            "score": 1.462677312645763
+          },
+          {
+            "id": "oa-different",
+            "score": 1.3454788599548646
+          },
+          {
+            "id": "oa-wait",
+            "score": 1.3104503234486153
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.11841699999786215,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "intern"
+        ],
+        "results": [
+          {
+            "id": "intern",
+            "score": 0.6852760519702329
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6279439315729346
+          },
+          {
+            "id": "oa-different",
+            "score": 0.6239273735080296
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-wait",
+      "group": "unseen",
+      "query": "I submitted my Bloomberg New Grad OA last week and the portal has not changed. Are others in the same situation?",
+      "relevant": [
+        "oa-wait"
+      ],
+      "exclude": [
+        "waiting-thread",
+        "waiting-reply",
+        "old-wait"
+      ],
+      "embeddingMs": 574.0155830000003,
+      "bm25": {
+        "searchMs": 6.062042000001384,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 2.6439652646026977
+          },
+          {
+            "id": "oa-recent",
+            "score": 1.3626318058495133
+          },
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.1573339999995369,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 0.7082068038406486
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6096203920010184
+          },
+          {
+            "id": "oa-different",
+            "score": 0.5972557776663254
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.2718329999988782,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "oa-wait",
+            "score": 1
+          },
+          {
+            "id": "oa-recent",
+            "score": 0.6880843195362896
+          },
+          {
+            "id": "oa-different",
+            "score": 0.5649586904759705
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-technical",
+      "group": "unseen",
+      "query": "For Bloomberg New Grad, what did you solve and explain during your live coding interview?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [
+        "senior",
+        "intern",
+        "recruiter"
+      ],
+      "embeddingMs": 420.92670799999905,
+      "vector": {
+        "searchMs": 0.2632919999996375,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "intern"
+        ],
+        "results": [
+          {
+            "id": "technical",
+            "score": 0.7327449435407429
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.6442343976404753
+          },
+          {
+            "id": "intern",
+            "score": 0.5659217477159152
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.9119160000009288,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "recruiter"
+        ],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 0.8860180592998531
+          },
+          {
+            "id": "technical",
+            "score": 0.8782311387354924
+          },
+          {
+            "id": "technical-alt",
+            "score": 0.6445131237169219
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.14962499999819556,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "recruiter"
+        ],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 2.989693140983139
+          },
+          {
+            "id": "technical",
+            "score": 2.261590082367487
+          },
+          {
+            "id": "oa-different",
+            "score": 1.6178302727498255
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-active",
+      "group": "unseen",
+      "query": "Looking for a current 2026 Bloomberg New Grad thread to compare how long we have waited since the technical interview.",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply"
+      ],
+      "exclude": [
+        "old-wait",
+        "oa-wait"
+      ],
+      "embeddingMs": 408.8855000000003,
+      "hybrid": {
+        "searchMs": 3.274416000000201,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 1
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.9479332168480943
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.7362656566683754
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.1827499999999418,
+        "top1Relevant": false,
+        "recallAt3": 0.5,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 3.088721919517246
+          },
+          {
+            "id": "waiting-reply",
+            "score": 2.9345924723731933
+          },
+          {
+            "id": "other-employer",
+            "score": 2.0300269261583703
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.11554099999921164,
+        "top1Relevant": false,
+        "recallAt3": 1,
+        "precisionAt3": 0.6666666666666666,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "old-wait",
+            "score": 0.7438436595128574
+          },
+          {
+            "id": "waiting-reply",
+            "score": 0.7035029005272891
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.6856141576512627
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-invite",
+      "group": "unseen",
+      "query": "Any Bloomberg New Grad candidate with a confirmed next-round invitation following the technical round?",
+      "relevant": [
+        "next-step"
+      ],
+      "exclude": [
+        "old-wait"
+      ],
+      "embeddingMs": 388.31766699999935,
+      "bm25": {
+        "searchMs": 2.22099999999773,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 1.7839202254926838
+          },
+          {
+            "id": "recruiter",
+            "score": 1.502060705983055
+          },
+          {
+            "id": "rumor",
+            "score": 1.3877245044512962
+          }
+        ]
+      },
+      "vector": {
+        "searchMs": 0.17220799999995506,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [
+          "old-wait"
+        ],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 0.7660530266356331
+          },
+          {
+            "id": "waiting-thread",
+            "score": 0.6790053641593778
+          },
+          {
+            "id": "old-wait",
+            "score": 0.6343749908733937
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 1.923917000000074,
+        "top1Relevant": true,
+        "recallAt3": 1,
+        "precisionAt3": 0.3333333333333333,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "next-step",
+            "score": 1
+          },
+          {
+            "id": "recruiter",
+            "score": 0.7938885071594912
+          },
+          {
+            "id": "rumor",
+            "score": 0.760660276516763
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-unknown",
+      "group": "unseen",
+      "query": "What exact relocation reimbursement does Bloomberg offer New Grad hires in Tokyo?",
+      "relevant": [],
+      "exclude": [],
+      "embeddingMs": 393.1710830000011,
+      "vector": {
+        "searchMs": 0.20654199999989942,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "technical",
+            "score": 0.42988464578127855
+          },
+          {
+            "id": "recruiter",
+            "score": 0.41655643385324964
+          },
+          {
+            "id": "next-step",
+            "score": 0.4074321901525726
+          }
+        ]
+      },
+      "hybrid": {
+        "searchMs": 0.3772080000017013,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 0.9844979204784041
+          },
+          {
+            "id": "rumor",
+            "score": 0.932801607465068
+          },
+          {
+            "id": "technical",
+            "score": 0.563587694987418
+          }
+        ]
+      },
+      "bm25": {
+        "searchMs": 0.07120800000120653,
+        "top1Relevant": null,
+        "recallAt3": null,
+        "precisionAt3": null,
+        "wrongContext": [],
+        "results": [
+          {
+            "id": "recruiter",
+            "score": 1.3015330099306577
+          },
+          {
+            "id": "rumor",
+            "score": 1.2024608885903454
+          },
+          {
+            "id": "senior",
+            "score": 0.1847507576853354
+          }
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "All search scoring delegated to pinned Orama library, not Elasticsearch/Lucene.",
+    "All 35 questions were established before this experiment; unseen denotes the six-question group introduced in the previous benchmark, not a new holdout.",
+    "Identical cached vectors feed vector/hybrid; BM25 calls no embedding API at query time.",
+    "In-memory Node timing excludes network latency and is not a load test.",
+    "Pre-authorized synthetic corpus only; no production authorization/sync integration is claimed.",
+    "No filters, reranker, graph, answer generation, field tuning or parameter tuning.",
+    "Orama BM25 variant/tokenization and hybrid normalization differ from PostgreSQL FTS/RRF; a result change cannot be attributed to BM25 alone."
+  ]
+}
