@@ -983,3 +983,10 @@ available to agents through scoped search-profile editing. No new write boundary
 Onboarding role preferences also support multiple removable roles. Suggested roles
 toggle independently; custom roles can be added with Enter or Add role. Selected
 roles use semicolon-separated text in the existing search-profile prompt.
+
+Website onboarding saves preferences before AI connection. Once a real runtime
+connection is confirmed, an optional first-role catalog preview is offered with
+Skip for now. Skipping connection bypasses the preview. Connection checks do not
+start searches; the preview does not queue an agent task, approve, or apply.
+The flow reuses the existing scoped onboarding read/check and search-profile save
+boundaries; only the order and optional presentation changed.

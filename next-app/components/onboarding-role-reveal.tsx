@@ -46,10 +46,11 @@ type OnboardingRoleRevealProps = {
   onLater: () => void;
   presentation?: "onboarding" | "landing";
   expanded?: boolean;
+  connected?: boolean;
   children?: ReactNode;
 };
 
-export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, presentation = "onboarding", expanded = false, children }: OnboardingRoleRevealProps) {
+export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, presentation = "onboarding", expanded = false, connected = false, children }: OnboardingRoleRevealProps) {
   const landing = presentation === "landing";
   const pending=!role;
   const illustrative = demo;
@@ -60,7 +61,7 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, p
   const swipe = useRef<number | null>(null);
   const analysisHeading = useRef<HTMLHeadingElement>(null);
   const text = pending
-    ? "Your preferences are saved. Connect your agent to find a current employer posting and compare it with your saved profile and résumé. Your first result will appear in your workspace."
+    ? connected ? "No catalog role matches these preferences yet. Ask your connected agent to find a current employer posting and compare it with your saved profile and résumé." : "Your preferences are saved. Connect your agent to find a current employer posting and compare it with your saved profile and résumé. Your first result will appear in your workspace."
     : illustrative
       ? role.whyItFits || "This fictional example demonstrates the reveal. Sample fit scores are illustrative."
       : "This catalog role matches the work type and location you chose. Your agent will check that the posting is still open and compare it with your saved profile and résumé before recommending a next step.";
@@ -120,7 +121,7 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, p
           {role ? <>
             {illustrative ? <RoleMatchPreview key={role.id} sample={role.matchPreview} demo animate active={spread} expanded={landing && expanded}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer">View employer posting ↗</a></div>}
             <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Catalog shortlist · no personalized assessment yet"}</p>
-          </> : <div className="onboarding-first-find"><Dots/><h2>Your first find is on its way.</h2><p>Connect your agent to look beyond the catalog.</p></div>}
+          </> : <div className="onboarding-first-find"><Dots/><h2>Your first find is on its way.</h2><p>{connected?"Ask your connected agent to look beyond the catalog.":"Connect your agent to look beyond the catalog."}</p></div>}
           {children}
         </TutorialRoleCard>
       </motion.div>
@@ -130,9 +131,9 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, p
       <Title>{pending ? "Let’s find your first role." : illustrative ? "A glimpse of what’s next." : "A role to explore."}</Title>
       <h3 ref={analysisHeading} tabIndex={-1}>{pending ? "Your search, ready to go" : illustrative ? "Illustrative fit analysis" : "Why it’s here"}</h3>
       <TypedAnalysis active={analysis} text={text} />
-      <p className="hint">{illustrative ? "Fictional example. This is not live résumé analysis." : pending ? "Your agent runs the search after connecting." : "Shortlisted from your preferences. The agent review is still to come."}</p>
+      <p className="hint">{illustrative ? "Fictional example. This is not live résumé analysis." : pending ? connected?"No search has run. Ask your connected agent when you’re ready.":"Your agent runs the search after connecting." : "Shortlisted from your preferences. The agent review is still to come."}</p>
       <div className="actions">
-        <Button onClick={onPrepare}>{pending ? "Connect my agent" : illustrative ? "Meet my agent" : "Check this with my agent"}</Button>
+        <Button onClick={onPrepare}>{connected ? "Continue" : pending ? "Connect my agent" : illustrative ? "Meet my agent" : "Check this with my agent"}</Button>
         <Quiet onClick={onLater}>I’ll do this later</Quiet>
       </div>
     </motion.div>}

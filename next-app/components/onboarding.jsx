@@ -67,7 +67,7 @@ function OnboardingFlow(){
   if(method==="resume"&&resume&&(w.demo||resume.objectPath)&&savedResumeId!==resume.id)return;
   go("preferences");
  }
- async function findRole(e){
+ async function savePreferences(e){
   e.preventDefault();
   if(a.busy||uploading||w.locked||!work.trim()||!location.trim())return;
   try{
@@ -75,11 +75,18 @@ function OnboardingFlow(){
    prompt=updateField(prompt,"Search Filters","Employment",employment);
    prompt=updateField(prompt,"Search Filters","Location",location.trim());
    if(resumeId)prompt=updateField(prompt,"Application materials","Default resume ID",resumeId);
+   if(!await a.saveProfilePrompt(prompt))return;
+   go("connect");
+  }catch(e){setError(e.message||"Could not save your search. Try again.");}
+ }
+ async function showFirstRole(){
+  if(a.busy||w.locked)return;
+  try{
    const preview=onboardingReveal(w.demo?w.roles:(w.publicRoles||w.roles),{work,employment,location},{demo:w.demo});
-   prompt=saveOnboardingSelection(prompt,!w.demo&&preview.role?preview.role:null);
+   const prompt=saveOnboardingSelection(a.profile.prompt,!w.demo&&preview.role?preview.role:null);
    if(!await a.saveProfilePrompt(prompt))return;
    setRole(preview.role);setSample(preview.sample);go("reveal");
-  }catch(e){setError(e.message||"Could not save your search. Try again.");}
+  }catch(e){setError(e.message||"Could not open your first-role preview.");}
  }
  function selectAgent(value,label){
   setProvider(value);setAgentName(label);
@@ -104,15 +111,16 @@ function OnboardingFlow(){
   {feedback&&<p className="hint" role="status">{feedback}</p>}
   <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")||(method==="resume"&&resume&&(w.demo||resume.objectPath)&&savedResumeId!==resume.id)}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
  </form><OnboardingSimplifyImport/></>;
- if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={findRole}>
+ if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={savePreferences}>
   <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Software Engineer","Data Scientist","Data Analyst","Product Manager","Business Analyst","UX Designer","QA Engineer","Cybersecurity Analyst","IT Specialist","Technical Program Manager","Solutions Engineer","Marketing Specialist"]}/>
   <Pills label="Job type" value={employment} onChange={setEmployment} options={["Full-time","Internship","Contract","Open to options"]}/>
   <LocationSelector value={location} onChange={setLocation}/>
-  <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Find my first role"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div>
+  <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Continue"}</Button><Quiet onClick={()=>go("connect")}>I’ll do this later</Quiet></div>
   {a.feedback&&<p className={a.saveError?"error":"hint"} role="status">{a.feedback}</p>}
  </form></>;
- if(scene==="reveal")content=<OnboardingRoleReveal role={role} demo={w.demo} onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("connect");}} onLater={later}/>;
- if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("circles")} onLater={later}/>;
+ if(scene==="reveal")content=<OnboardingRoleReveal role={role} demo={w.demo} connected onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("circles");}} onLater={later}/>;
+ if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("first-role")} onLater={later}/>;
+ if(scene==="first-role")content=<><Dots/><Title sub="Your AI is connected. You can preview a role now or keep going with setup.">Explore your first role?</Title><p className="hint">This optional preview uses your saved preferences. Your agent still needs to verify availability and fit.</p><div className="actions"><Button disabled={a.busy||w.locked||!work.trim()||!location.trim()} onClick={()=>void showFirstRole()}>{a.busy?"Opening…":"Preview my first role"}</Button><Quiet onClick={later}>Skip for now</Quiet></div>{(!work.trim()||!location.trim())&&<p className="hint">Add your roles and locations in your workspace to explore matching opportunities.</p>}{a.feedback&&<p className="hint" role="status">{a.feedback}</p>}</>;
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Button disabled={finishing||w.locked} onClick={()=>void finish()}>{finishing?"Saving setup…":"Open my workspace"}</Button><BrowserAppInstructions/></>;
  if(!w.demo&&!w.user)content=<><Dots/><Title sub="Create your Lookout account or return to your workspace before setting up your search and agent.">Sign up or sign in.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Checking sign-in…"}/></div><p className="hint">New here? Continuing with Google creates your account. Already joined? Use the same Google account to sign in.</p></>;
