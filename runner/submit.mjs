@@ -40,6 +40,7 @@ export async function readyToSubmit(page,context,plan) {
       const controls=[...forms[0].querySelectorAll('input,select,textarea')].filter(el=>field.type==='radio'?el.name===field.id&&el.value===String(field.value):el.id===field.id||el.name===field.id);
       if(controls.length!==1) return false;
       const el=controls[0];
+      if(!el.name || el.disabled || el.form!==forms[0]) return false;
       if(field.type==='radio' && !el.checked) return false;
       else if(field.type==='checkbox' && el.checked!==(String(field.value)==='true')) return false;
       else if(field.type==='file') {

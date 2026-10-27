@@ -563,3 +563,16 @@ The browser RPC `read_action_inbox` and agent operation share the same reader.
 Writes are implicit atomic effects of existing validated application/attempt
 transitions; no log-edit or approval shortcut is exposed. Node delegates this
 lightweight operation to Edge. Deploy the migration before releasing this tool.
+
+
+## Submission batch checkpoints
+
+Node executes `submit_application_batch`; Edge persists its execution journal.
+`submission.batch.begin` accepts `{eventKey,applications:[{applicationId,expectedRevision}]}`
+(1–10 unique references). `submission.batch.read` accepts optional `batchId` with
+workspace:read. Begin/touch/checkpoint additionally require drafts:write,
+approvals:read and resumes:read; their connection binding is server-derived.
+Touch/checkpoint accept only `{batchId,leaseToken,expectedVersion,applicationId}`.
+Checkpoints derive outcomes from saved application and attempt rows and cannot
+accept a caller's status/receipt. None of these operations grants approval.
+The browser reader shares `read_submission_batches` with the MCP read boundary.

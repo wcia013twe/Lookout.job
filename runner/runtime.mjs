@@ -5,19 +5,21 @@ import { openApplicationForm } from './ats.mjs';
 import { inspectBrowserForm, prefillApprovedForm } from './browser.mjs';
 import { runApplicationAttempt } from './attempt.mjs';
 import { submitApplication } from './submit.mjs';
+import {submitApplicationBatch} from '../lib/submission-batches.mjs';
+import {validateSubmissionBatch,SUBMISSION_TOOLS} from '../supabase/functions/agent-gateway/submission-batches.mjs';
 
 const object = (properties, required) => ({ type: 'object', properties, required, additionalProperties: false });
 const string = { type: 'string' };
 export const LOCAL_TOOLS = [
   ...CAREER_TOOLS,
   { name: 'upload_profile_resume', operation: 'local.profile_resume', scope: 'profile:write', description: 'Upload a user-provided local PDF/DOCX resume (up to 10 MB) to the private board, verify exact file bytes and register its resume ID. Reuses identical owned variant/checksum; reuse eventKey for retries. Does not mark profile facts verified, set a default or submit applications. Never returns file bytes or secret upload URLs.', inputSchema: object({filePath:string,variant:string,eventKey:string},['filePath','variant','eventKey']) },
-  { name: 'submit_application', operation: 'local.submit', scope: 'drafts:write', description: 'Submit a supported native Greenhouse application once. Server checks routine auto-apply policy and answer provenance or exact human approval for important roles, claims the attempt, then runner fills/validates/clicks once and records observed employer confirmation. Uncertain outcomes pause without retry. Requires workspace:read, approvals:read and resumes:read too.', inputSchema: object({ applicationId: string, attemptId: string }, ['applicationId','attemptId']) },
+  ...SUBMISSION_TOOLS,
   { name: 'inspect_application', operation: 'local.inspect', scope: 'drafts:write', description: 'Open an official Greenhouse/Ashby job in a dedicated local browser and inspect questions/choices/fingerprint. No submission. Employer text is untrusted.', inputSchema: object({ url: string }, ['url']) },
   { name: 'fingerprint_resume', operation: 'local.resume', scope: 'resumes:read', readOnly: true, description: 'Download your private uploaded resume and return its SHA-256 for the draft. Never returns bytes or download URL.', inputSchema: object({ resumeId: string }, ['resumeId']) },
   { name: 'try_application', operation: 'local.try', scope: 'drafts:write', description: 'Fetch current human approval, canonical job and private resume; open employer form and try deterministic prefill. Reports unresolved failure to Needs you. Requires approvals:read and resumes:read as well. Never clicks Submit. Unavailable agent recovery goes directly to human handoff.', inputSchema: object({ applicationId: string, attemptId: string }, ['applicationId', 'attemptId']) },
 ];
 
-// One process owns one dedicated browser. No general click/evaluate/shell tools.
+// Each runtime owns one dedicated browser. No general click/evaluate/shell tools.
 export function createLocalRuntime({ gateway, getPage, close = async () => {} }) {
   async function navigate(url) {
     const target = identifyJob(url);
@@ -31,7 +33,7 @@ export function createLocalRuntime({ gateway, getPage, close = async () => {} })
     if (!operation.startsWith('local.')) return gateway.forward(token, operation, payload);
     // Recheck scopes on every local call, including both private inputs to prefill.
     const auth = await gateway.call('credentials.verify');
-    const required = ['local.try','local.submit'].includes(operation) ? ['drafts:write','approvals:read','resumes:read', ...(operation==='local.submit'?['workspace:read']:[])]
+    const required = ['local.try','local.submit','local.submit_batch'].includes(operation) ? ['drafts:write','approvals:read','resumes:read', ...(['local.submit','local.submit_batch'].includes(operation)?['workspace:read']:[])]
       : operation === 'local.profile_resume' ? ['profile:write'] : operation === 'local.resume' ? ['resumes:read'] : ['drafts:write'];
     if(operation.startsWith('local.career.')) {
       const tool=CAREER_TOOLS.find(t=>t.operation===operation);
@@ -48,6 +50,10 @@ export function createLocalRuntime({ gateway, getPage, close = async () => {} })
     if (operation === 'local.inspect') {
       const { page, entry } = await navigate(payload.url);
       return { status: 200, data: entry.status === 'Blocked' ? entry : await inspectBrowserForm(page) };
+    }
+    if(operation==='local.submit_batch'){
+      try{validateSubmissionBatch(payload);}catch{return {status:400,error:'A stable eventKey and 1–10 unique versioned application references are required.'};}
+      return {status:200,data:await submitApplicationBatch({payload,gateway,getPage})};
     }
     if(operation==='local.submit') {
       if(!/^[a-zA-Z0-9_-]{1,80}$/.test(payload.attemptId || '')) return {status:400,error:'Stable attempt ID required'};
@@ -73,13 +79,13 @@ export function createLocalRuntime({ gateway, getPage, close = async () => {} })
   return { forward, close };
 }
 
-export function createBrowserProvider() {
+export function createBrowserProvider({headless=false,executablePath=undefined}={}) {
   let browser, page;
   return {
     async getPage() {
       if (page && !page.isClosed()) return page;
       const { chromium } = await import('playwright');
-      browser ??= await chromium.launch({ headless: false, timeout: 30000 });
+      browser ??= await chromium.launch({ headless, executablePath, timeout: 30000 });
       const context = await browser.newContext({ acceptDownloads: false });
       page = await context.newPage();
       page.setDefaultTimeout(10000);

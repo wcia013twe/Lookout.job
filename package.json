@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "node --test",
+    "test:submission:e2e": "node scripts/check-submission-e2e.mjs",
     "test:liveness": "node --test tests/career-liveness.test.mjs",
     "test:dedup": "node --test tests/search-dedup.test.mjs",
     "test:filter": "node --test tests/careerops-filter-parity.test.mjs tests/search-filters.test.mjs tests/discovery-filter-contract.test.mjs",

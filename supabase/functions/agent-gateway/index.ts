@@ -130,7 +130,7 @@ Deno.serve(withGatewayCors(async request => {
       if(result.error)return respond({error:'Resume upload rejected'},result.error.code==='42501'?403:result.error.code==='P0002'?404:400);
       return respond({data:result.data});
     }
-    if (operation.startsWith('submission.')) {
+    if (operation.startsWith('submission.') && !operation.startsWith('submission.batch.')) {
       const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});
       return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
     }

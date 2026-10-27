@@ -1,3 +1,4 @@
+import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
 import {editedWorkExperience} from '../../supabase/functions/agent-gateway/work-experience.mjs';
 import {createBackendJobsDemo} from '../../lib/backend-jobs-demo.mjs';
 import {createWorkflowDemo} from './agent-workflows-demo.mjs';
@@ -155,6 +156,7 @@ export function createDemoServices(store) {
   }
   return {
     backendJobs:createBackendJobsDemo(),
+    async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
     async editWorkExperience(payload) {
       const profile=store.get('workflow.profile');
       const timestamp=store.get('demo.profileUpdatedAt')||'2026-01-01T00:00:00.000Z';

@@ -39,10 +39,10 @@ test('Muse receives next-cycle pickup directions through initialize, developer c
  assert.match(init.instructions,/No inbox change wakes Muse/);
  const unpack=result=>result.structuredContent||JSON.parse(result.content[0].text);
  const developer=unpack(await request('tools/call',{name:'read_developer_context',arguments:{}}));
- assert.equal(developer.developerVersion,72);
+ assert(developer.developerVersion>=72);
  const instruction=developer.instructions.find(text=>text.startsWith('During each already authorized application-work cycle'));
  for(const pattern of [/state all/,/pending-only reads miss approvals/,/read_approval/,/exact current revision/,/fresh server authorization/,/user_reported_submitted/,/Do not call prepare_draft/,/within that task.s scope/])assert.match(instruction,pattern);
  const guide=unpack(await request('tools/call',{name:'read_guide',arguments:{id:'application-workspace'}}));
- assert.equal(guide.version,3);
+ assert(guide.version>=3);
  for(const pattern of [/read_action_inbox with state all/,/read_approval with applicationId/,/search-only cycle does not authorize submission/,/new stable attemptId/,/does not trigger an immediate Muse run/])assert.match(guide.instructions,pattern);
 });

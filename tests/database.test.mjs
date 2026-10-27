@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['submission-batches','submission batches pin versions, isolate owners, fence leases, replay safely and derive outcomes without consent shortcuts'],
   ['action-inbox','durable handoffs reconcile atomically, retain history, isolate owners and preserve consent'],
   ['work-experience','entry-level work history preserves facts, versions, scopes, ownership and website/MCP parity'],
   ['search-pipeline','scoped lead intake and screening replay atomically, isolate owners and rescreen current settings'],

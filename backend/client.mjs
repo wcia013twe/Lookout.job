@@ -141,6 +141,12 @@ function createBackend(client, expectedUserId = null) {
       if(applicationId)query=query.eq('application_id',applicationId);
       return result(query);
     },
+    async readApplicationBatches(payload = {}) {
+      const id=await owner();
+      const data=await result(client.rpc("read_submission_batches",{payload}));
+      if(await owner()!==id)throw Error("Account changed");
+      return data;
+    },
     async readActionInbox(payload = {}) {
       const id=await owner();
       const data=await result(client.rpc("read_action_inbox",{payload}));
