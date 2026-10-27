@@ -100,7 +100,6 @@ export async function workOnce(rpc:Rpc,{execute}: {execute?:import('./ats.ts').E
     const {data,error}=await rpc('backend_worker',{operation,payload});
     if(error)throw Error('Worker transaction rejected');return data;
   };
-  await call('enqueue_due',{});
   const claim:Claim|null=await call('claim',{});
   if(!claim)return false;
   const fencedDispatch:Dispatch=(operation,payload)=>call('dispatch',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload});

@@ -68,10 +68,10 @@ test('worker resumes persisted identities through isolated copied scan task and 
 test('worker database failures retain fenced finish and rate-limit diagnostics with a recovery event',async()=>{
  const calls=[];
  const rpc=async(name,args)=>{calls.push({name,args});assert.equal(name,'backend_worker');
-  if(args.operation==='enqueue_due')return {data:{enqueued:0}};
   if(args.operation==='claim')return {data:{job,leaseToken:'lease-secret'}};
   return {data:null,error:{code:'40001'}};};
  assert.equal(await workOnce(rpc),true);
+ assert.ok(!calls.some(call=>call.args.operation==='enqueue_due'),'Worker only claims submitted jobs');
  assert.equal(calls.find(call=>call.args.operation==='finish').args.payload.leaseToken,'lease-secret');
  let time=0;const lines=[];const diagnostics=workerDiagnostics(message=>lines.push(message),()=>time);
  diagnostics.unavailable();time=5000;diagnostics.unavailable();assert.equal(lines.length,1);

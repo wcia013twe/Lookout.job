@@ -25,7 +25,11 @@ const versions = files.map(name => {
 assert.equal(new Set(versions).size, versions.length, 'Migration timestamps must be unique');
 const sources = await Promise.all(files.map(name => readFile(new URL(name, migrationDir), 'utf8')));
 // Inventory comes directly from the canonical chain, never a second schema dump.
-const tables = [...new Set(sources.flatMap(sql => [...sql.matchAll(/create\s+table\s+(?:if\s+not\s+exists\s+)?((?:public|private)\.\w+)/gi)].map(match => match[1])))].sort();
+const activeTables = new Set();
+for (const source of sources) for (const match of source.matchAll(/(create|drop)\s+table\s+(?:(?:if\s+not\s+exists|if\s+exists)\s+)?((?:public|private)\.\w+)/gi)) {
+ if(match[1].toLowerCase()==='create')activeTables.add(match[2]);else activeTables.delete(match[2]);
+}
+const tables=[...activeTables].sort();
 assert.ok(tables.length, 'No application tables found in migrations');
 const sql = `begin read only;
 select json_build_object(
