@@ -11,3 +11,11 @@
 
 - Tunnel settings now come from `backend/runtime/.env.local`, matching the existing Docker backend configuration. Moved the placeholders to the runtime example, removed the separate tunnel template, and updated Make commands and setup instructions. Only the ngrok token is forwarded to the tunnel container.
 - Validation: Compose resolved with fictional runtime credentials; verified tunnel receives no Supabase key and default startup excludes it; Make dry run, data validation and diff whitespace checks. Live tunnel verification remains pending credentials and Docker access.
+
+## Follow-up: verified startup against the existing backend
+
+- Corrected the env-file location to the repository-root `.env.local`, where the user actually keeps ngrok settings. Added `MUSE_DEV_ENV` for selecting that file from an isolated checkout without copying secrets. Runtime backend credentials remain separate.
+- Changed the tunnel into its own `lookout-muse-dev` Compose project attached to the existing backend network. Startup no longer rebuilds, recreates, or stops API/worker containers owned by another checkout.
+- Added a mounted, read-only ngrok Traffic Policy denying every path except `/mcp` and rewriting the upstream Host header without the deprecated CLI option. Only the ngrok token enters the tunnel environment.
+- Live verification: ngrok image pulled, session established, and tunnel started. Public `/mcp` POST reaches API and returns 401 without credentials. `/`, `/healthz`, `/v1/operations`, `/v1/resume-import` and a normalized traversal request return 403. Existing API stayed healthy and worker unchanged. Compose model validation, Make dry run, `validate:data` (158 roles), and diff checks pass. No demo state or product action was added; existing demo fixtures remain detached.
+- Limits: authenticated Muse context/read/write flow was not exercised. Earlier full-suite dependency/sandbox failures remain documented above; no application logic changed in this follow-up. Tunnel service is intentionally left running for the user.

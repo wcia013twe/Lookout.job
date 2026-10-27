@@ -1,21 +1,21 @@
-# Explicit development overlay; normal Compose startup never starts a tunnel.
+# Separate project attaches only the tunnel to the existing backend network.
+name: lookout-muse-dev
 services:
   tunnel:
     image: ngrok/ngrok:latest
     profiles: [muse-dev]
     environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:?Set NGROK_AUTHTOKEN in backend/runtime/.env.local}
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:?Set NGROK_AUTHTOKEN in .env.local}
     command:
       - http
       - http://api:8080
-      - --url=${NGROK_URL:?Set your assigned HTTPS ngrok URL in backend/runtime/.env.local}
+      - --url=${NGROK_URL:?Set your assigned HTTPS ngrok URL in .env.local}
       - --inspect=false
-      # Keep the API's loopback Host allowlist; do not weaken it for public hosts.
-      - --host-header=localhost:8080
+      - --traffic-policy-file=/etc/ngrok/muse-dev-policy.yaml
       - --log=stdout
-    depends_on:
-      api:
-        condition: service_healthy
+    networks: [backend]
+    volumes:
+      - ./muse-dev-policy.yaml:/etc/ngrok/muse-dev-policy.yaml:ro
     # Stop with the testing session; do not reopen a tunnel on Docker restart.
     restart: 'no'
     logging:
@@ -23,3 +23,8 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+
+networks:
+  backend:
+    external: true
+    name: ${LOOKOUT_DOCKER_NETWORK:-lookout-backend_default}

@@ -1,0 +1,10 @@
+on_http_request:
+  - expressions:
+      - "req.url.path != '/mcp'"
+    actions:
+      - type: deny
+  - actions:
+      - type: add-headers
+        config:
+          headers:
+            host: localhost:8080

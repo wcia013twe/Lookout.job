@@ -3,16 +3,18 @@ SHELL := /bin/sh
 
 .PHONY: help dev up services frontend live down status install muse-dev muse-dev-down muse-dev-logs
 
-MUSE_DEV_COMPOSE = docker compose --env-file backend/runtime/.env.local -f backend/runtime/compose.yaml -f backend/runtime/compose.muse-dev.yaml --profile muse-dev
+MUSE_DEV_ENV ?= .env.local
+MUSE_DEV_COMPOSE = docker compose --env-file "$(MUSE_DEV_ENV)" -f backend/runtime/compose.muse-dev.yaml --profile muse-dev
 
 help:
 	@printf '%s\n' 'make dev       Start Docker services, then frontend at http://localhost:3000' 'make live      Preview landed local main; follows new commits automatically' 'make services  Start local Supabase services only' 'make frontend  Start frontend against running local services' 'make down      Stop services, preserving local data (Ctrl-C stops frontend)' 'make status    Show local service URLs and credentials' 'make install   Install locked root and frontend dependencies'
-	@printf '%s\n' 'make muse-dev       Start Node API, worker and optional Muse development tunnel (requires local Supabase)' 'make muse-dev-down  Stop only the development tunnel' 'make muse-dev-logs  Show tunnel connection logs'
+	@printf '%s\n' 'make muse-dev       Start Muse development tunnel to the running Node API' 'make muse-dev-down  Stop only the development tunnel' 'make muse-dev-logs  Show tunnel connection logs'
 
-# Local Supabase must already be running. Never stop/rebind another checkout's stack.
+# The Node API must already be running on the backend Docker network.
+# A separate Compose project never rebuilds or rebinds another checkout's API.
 muse-dev:
-	@test -f backend/runtime/.env.local || { echo 'Create backend/runtime/.env.local from backend/runtime/.env.example and fill in backend and ngrok settings.'; exit 1; }
-	$(MUSE_DEV_COMPOSE) up -d --build api worker tunnel
+	@test -f "$(MUSE_DEV_ENV)" || { echo 'Add NGROK_AUTHTOKEN and NGROK_URL to the repository-root .env.local.'; exit 1; }
+	$(MUSE_DEV_COMPOSE) up -d tunnel
 
 muse-dev-down:
 	$(MUSE_DEV_COMPOSE) stop tunnel
