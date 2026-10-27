@@ -78,7 +78,7 @@ export function validateRequest(input) {
   }
   validatePlatformPayload(input.operation, p);
   const featureKeys = {
-    'applications.timeline':['applicationId'], 'applications.milestone':['applicationId','eventKey','kind','label','occurredAt','phase','source'],
+    'applications.timeline':['applicationId'], 'applications.milestone':['applicationId','eventKey','kind','label','occurredAt','phase','source','supersedesId'],
     'preparation.read':['applicationId'], 'applications.record':['applicationId'],
     'preparation.update':['applicationId','expectedVersion','deadline','dailyMinutes','resourceGuides'],
     'preparation.complete':['applicationId','expectedVersion','taskId','completed'],
