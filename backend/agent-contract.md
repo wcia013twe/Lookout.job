@@ -552,3 +552,14 @@ receipt is `backend/local/work-experience-proof.json` when successful.
 Gateway/MCP release and migration deployment are required before connected
 production agents can discover/use the tool. Local source/tests are not a hosted
 availability claim. Refresh tool discovery on the new developer context version.
+
+
+## Durable application inbox
+
+`applications.inbox.read` accepts only optional `state` (pending/resolved/all)
+and `offset` (integer 0–100000), requires `workspace:read`, and returns owned
+`items` (100 maximum) plus `nextOffset`. Identity comes from the active credential.
+The browser RPC `read_action_inbox` and agent operation share the same reader.
+Writes are implicit atomic effects of existing validated application/attempt
+transitions; no log-edit or approval shortcut is exposed. Node delegates this
+lightweight operation to Edge. Deploy the migration before releasing this tool.

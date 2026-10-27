@@ -141,6 +141,12 @@ function createBackend(client, expectedUserId = null) {
       if(applicationId)query=query.eq('application_id',applicationId);
       return result(query);
     },
+    async readActionInbox(payload = {}) {
+      const id=await owner();
+      const data=await result(client.rpc("read_action_inbox",{payload}));
+      if(await owner()!==id)throw Error("Account changed");
+      return data;
+    },
     async loadWorkspace() {
       const userId = await owner();
       const tables = [
@@ -152,6 +158,7 @@ function createBackend(client, expectedUserId = null) {
         "activity_events",
         "submission_attempts",
         "application_milestones",
+        "action_inbox",
       ];
       const rows = await Promise.all(
         tables.map((t) =>

@@ -814,3 +814,42 @@ auth; the Sign in action retries that same account. Sign out remains effective
 until reload. With this mode disabled, normal Google sign-in is unchanged.
 Detached fictional demo mode remains separate and does not load account auth.
 This is a development bootstrap using existing Auth, with no new product/MCP action.
+
+
+## Durable application handoffs
+
+The Action Board reads `public.action_inbox`, an owner-private log maintained in
+the same transaction as application and submission-attempt transitions. Approval
+requests, blockers and uncertain submissions have at most one pending entry per
+application. Repeated reports retain the same entry; changed conditions retain
+the old entry as superseded. Existing pending applications are backfilled.
+Resolved entries remain visible in Action history. There is no dismiss/clear API:
+the existing exact-version approval, draft/blocker edit and human submission
+resolution boundaries remain authoritative. A progress status cannot dismiss an
+unresolved submission attempt or grant retry authority.
+
+The browser reads through RLS; MCP `read_action_inbox` maps to
+`applications.inbox.read` with `workspace:read`, using the same bounded reader as
+browser `read_action_inbox`. Optional `state` is pending/resolved/all and `offset`
+paginates 100 records. Pending entries include future `available_at` times for
+five-minute stalled-attempt checks. Agents can read and request the existing human
+handoff, but cannot mark these entries resolved directly.
+
+Workspace sync no longer polls every 15 seconds. An owner-scoped Supabase Realtime
+subscription observes a minimal `workspace_changes` version record, coalesces
+notifications, then retrieves current records through existing owned reads.
+Connection/reconnection, tab focus and network recovery reconcile missed updates.
+Failed reads/writes retain error retries; successful idle sync schedules no network
+poll. A one-time local timer reveals delayed submission checks without a network
+request. Live connection errors are disclosed; persisted actions survive them.
+
+Release requires the durable-inbox migration (including the Realtime publication),
+gateway/MCP developer contract 71 and frontend together. Local SQL, HTTP and client
+tests do not verify hosted Realtime delivery or activate a submission worker.
+No runner is automatically awakened when an action resolves.
+
+When the signed-in human records Submitted with a verification note, a pending
+submission check resolves as `user_reported_submitted`. Its attempt remains
+uncertain and retry stays blocked; no employer-observed receipt is fabricated.
+Agent progress reports cannot close that handoff. Interview/learning preparation
+tables also emit owner invalidations so weekly preparation retains live refresh.
