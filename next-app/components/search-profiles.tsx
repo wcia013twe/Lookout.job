@@ -126,25 +126,25 @@ function SearchProfileEditor() {
       <ApplicationMaterials />
       {preferenceGroups.map(group => <ProfileSection key={group.title} title={group.title} resetKey={profile.id} disabled={busy}>
         {editing => editing ? <>
-          <p className="mb-5 text-sm text-board-muted">Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification.</p>
+          <p className="mb-5 text-sm text-board-muted">{group.heading === "Application answers" ? "Saved answers for employer forms. Leave unknown answers blank. These are separate from job-search preferences and do not approve an application." : "Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification."}</p>
           <div className="space-y-5">
             {group.fields.map(([key, placeholder, heading]) => {
               const strength = readField(profile.prompt, "Priority & flexibility", key);
-              return <div key={key} className="grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]">
+              return <div key={key} className={group.heading === "Application answers" ? "grid items-start gap-3" : "grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"}>
                 {textField(heading || group.heading, key, placeholder)}
-                <Field label={`${key} priority`}>
+                {group.heading !== "Application answers" && <Field label={`${key} priority`}>
                   <select className={control} disabled={strength.conflict || busy} value={strength.value} onChange={e => change("Priority & flexibility",key,e.target.value)}>
                     <option value="">Not specified</option>
                     {flexibilityOptions.map(option => <option key={option}>{option}</option>)}
                   </select>
                   {strength.conflict && <span className="text-xs text-board-muted">Resolve duplicate priority lines in Advanced instructions.</span>}
-                </Field>
+                </Field>}
               </div>;
             })}
           </div>
         </> : <ProfileValues items={group.fields.map(([key,,heading]) => {
           const preference=value(heading || group.heading,key);
-          const priority=value("Priority & flexibility",key);
+          const priority=group.heading === "Application answers" ? "" : value("Priority & flexibility",key);
           return {label:key,value:preference ? [preference,priority].filter(Boolean).join(" · ") : priority ? `Not specified · ${priority}` : "Not specified"};
         })}/>}
       </ProfileSection>)}

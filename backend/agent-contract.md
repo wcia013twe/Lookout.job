@@ -553,6 +553,42 @@ Gateway/MCP release and migration deployment are required before connected
 production agents can discover/use the tool. Local source/tests are not a hosted
 availability claim. Refresh tool discovery on the new developer context version.
 
+## Application preferences and compact handoff
+
+The existing versioned job profile includes optional `Application answers` labeled
+fields. `save_search_profile`/`save_search_document` and the website editor own
+these values; no new store or preference endpoint. Explicit answers cover
+sponsorship, F-1 status, return to school, graduation month, degree, start date,
+12-week full-time internship availability, relocation and desired salary. They
+are not ranking priorities. Unknown values stay blank. Ordinary location/pay/work
+filters only answer questions about those preferences, never residency, office
+commitments or requested salary by inference.
+
+`prepare_draft` loads the selected active `draft.searchProfileId` from owned
+`search.context`, checks its version again before saving, and records preference
+provenance on filled questions. Unique exact option labels map to native values;
+ambiguous/unmatched options and conflicting existing answers stay unresolved.
+Missing application choices are not inferred from a résumé or search filters.
+Existing verified auto-policy saved answers retain their consent requirements.
+Preference-derived proposals do not authorize automatic submission; existing
+human-review/submission validation remains in force.
+
+Default response is now compact: `{id,job_id,revision,status,questionsReviewed,
+prefill:{counts,personalVersion,searchProfileId,searchProfileVersion},handoff}`.
+Handoff version 1 contains job/context references, unresolved questions with exact
+options and known limits, separate browser checks, an explicit requiresBrowserInspection flag, and only bounded relevant
+education/work/project evidence. It excludes completed answers, full draft,
+full profile, file bytes and signed URLs. Profile verification state remains
+explicit. `responseMode: full` is an intentional diagnostic opt-in.
+
+To answer the packet, call the same `prepare_draft` with current expectedRevision
+and `draft:{answerUpdates:[{fieldId,answer}]}`. Do not include questions too. The
+server merges exact existing supported field IDs into the stored complete draft;
+unknown/duplicate IDs, unsupported files/widgets, invalid choices and confirmed
+length violations reject. Unchanged answers and metadata remain intact. Supplied
+updates never grant reviewed state or reusable-answer verification. Use an explicit
+selected profile ID when applying profile preferences; no arbitrary profile is
+chosen when multiple profiles exist.
 
 ## Durable application inbox
 

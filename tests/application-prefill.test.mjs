@@ -39,7 +39,7 @@ test('duplicate identities and field limits fail or escape loudly',()=>{
 });
 function service({version=7}={}){const calls=[];return {calls,call:async(op,p)=>{calls.push({op,p});if(op==='context.personal')return {data:{personalVersion:7,settings:{profile,answers:[],resumes:[resume],preferences:{search:{defaultResumeId:resume.id}}}}};if(op==='context.versions')return {data:{personalVersion:version}};return {data:{id:'app',draft:p.draft}};}};}
 test('existing prepare_draft service fills current context and returns escape report without granting approval',async()=>{
- const h=service(),p={jobId:'job',expectedRevision:-1,draft:{questions:[q('Email','email'),q('Why us?','why','textarea')],questionsReviewed:true}};
+ const h=service(),p={responseMode:'full',jobId:'job',expectedRevision:-1,draft:{questions:[q('Email','email'),q('Why us?','why','textarea')],questionsReviewed:true}};
  const r=await prepareDraftWithPrefill(h.call,p,{loadJob:async()=>({employer:{company:'Example'}})});
  assert.equal(r.data.draft.questions[0].answer,profile.facts.email);assert.equal(r.data.draft.questionsReviewed,false);assert.equal(r.data.prefill.counts.remaining,1);assert.equal(r.data.prefill.personalVersion,7);assert.equal(h.calls.at(-1).p.expectedRevision,-1);
 });
@@ -51,7 +51,7 @@ test('context changes or foreign resume IDs reject before saving',async()=>{
 
 test('fresh inspection cannot erase existing manual answers or unrelated draft data',async()=>{
  const h=service(),existing={revision:3,draft:{customNote:'keep',questions:[{fieldId:'e',question:'Email',answer:'manual@example.com'}]},blocker:'Existing blocker'};
- const r=await prepareDraftWithPrefill(h.call,{jobId:'j',expectedRevision:3,draft:{questions:[q('Email','e')]}},{loadJob:async()=>({employer:{}}),loadApplication:async()=>existing});
+ const r=await prepareDraftWithPrefill(h.call,{responseMode:'full',jobId:'j',expectedRevision:3,draft:{questions:[q('Email','e')]}},{loadJob:async()=>({employer:{}}),loadApplication:async()=>existing});
  assert.equal(r.data.draft.questions[0].answer,'manual@example.com');assert.equal(r.data.draft.customNote,'keep');assert.equal(h.calls.at(-1).p.blocker,'Existing blocker');assert.equal(r.data.draft.prefill,undefined);assert.equal(r.data.prefill.counts.preserved,1);
 });
 
@@ -69,7 +69,7 @@ test('actual migrated SQL draft preparation preserves ownership, revision and ap
   await db.query('insert into public.jobs(id,canonical_url,employer) values($1,$2,$3)',['prefill-fixture','https://example.com/jobs/prefill',{company:'Example'}]);
   const call=async(op,p)=>{try{return {data:(await db.query('select public.agent_dispatch($1,$2,$3) data',[hash,op,p])).rows[0].data,error:null};}catch(e){return {data:null,error:{code:e.code}};}};
   const loaders={loadJob:async id=>(await db.query('select * from public.jobs where id=$1',[id])).rows[0],loadApplication:async id=>(await db.query('select * from public.applications where user_id=$1 and job_id=$2',[owner,id])).rows[0]};
-  const payload={jobId:'prefill-fixture',expectedRevision:-1,draft:{questions:[q('Email','email'),q('Why this team?','why','textarea')],questionsReviewed:true}};
+  const payload={responseMode:'full',jobId:'prefill-fixture',expectedRevision:-1,draft:{questions:[q('Email','email'),q('Why this team?','why','textarea')],questionsReviewed:true}};
   const result=await prepareDraftWithPrefill(call,payload,loaders);assert.equal(result.error,null);assert.equal(result.data.draft.questions[0].answer,'fictional@example.com');assert.equal(result.data.draft.questionsReviewed,false);assert.equal(result.data.prefill.counts.remaining,1);assert.equal(result.data.draft.prefill,undefined);
   assert.equal((await db.query('select count(*)::int n from public.approvals')).rows[0].n,0);
   assert.equal((await prepareDraftWithPrefill(call,payload,loaders)).error.code,'40001');
