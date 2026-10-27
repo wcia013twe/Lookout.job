@@ -2,7 +2,7 @@
 
 `google-g.png` is Google's official multicolor G, sourced from
 https://developers.google.com/static/identity/images/g-logo.png.
-Used only with Google sign-in text on a white button; no recoloring.
+Used with Google sign-in text and as the Google company mark in named role previews; no recoloring.
 Brand guidance: https://developers.google.com/identity/branding-guidelines.
 
 # Lookout Buddy assets
@@ -17,3 +17,8 @@ Archived matcha logo: assets/brand/lookout-buddy-matcha-master.png at repo root.
 Archived approved style sheet: assets/brand/lookout-buddy-matcha-style-sheet.png.
 The original lookout-buddy-style-sheet.png is also retained as a character reference.
 PNG derivatives are generated with the installed Sharp package.
+
+
+## Landing motion study
+
+`lookout-buddy-idle.webp` is a transparent, full-body idle pose extracted with imagegen from the existing `assets/brand/lookout-buddy-style-sheet.png` motion study at the user’s request. It preserves matcha/cream, hands, torso, legs and feet. The exact source and generation prompt are in `lookout-buddy-idle.webp.json`. The raster stays still; CSS eye masks provide restrained glances and blinks. Header/app icons keep their existing indigo identity.
