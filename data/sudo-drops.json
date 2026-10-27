@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Est\u00e9e Lauder",
+   "company": "Estée Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -3025,7 +3025,7 @@
    "dateSeen": "2026-10-23",
    "source": "zero2sudo",
    "status": "skipped",
-   "skipReason": "No live amazon.jobs req found; only a stale June-2026-cohort version (published 2026-01-23, grad gate 'June 2028 and beyond') \u2014 weak fit regardless",
+   "skipReason": "No live amazon.jobs req found; only a stale June-2026-cohort version (published 2026-01-23, grad gate 'June 2028 and beyond') — weak fit regardless",
    "note": "Story-verified 2026-10-23 midday. No canonical amazon.jobs URL locatable via text search. Skip: unverifiable and off-track."
   },
   {
@@ -3065,7 +3065,7 @@
    "source": "zero2sudo",
    "status": "pending",
    "skipReason": null,
-   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA \u2014 Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
+   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA — Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
   },
   {
    "company": "Palantir",
@@ -3768,6 +3768,84 @@
    "status": "skipped",
    "skipReason": "Not found on ServiceNow SmartRecruiters board in the 2026-10-26 check (searched Graduate/Moveworks/AI-ML terms, Mountain View lists expanded)",
    "note": "A distinct live role, Associate Software Engineer, Core Infrastructure - Moveworks (ID 744000107369741), was found; it is not the story role and not the board entry (ID 744000153279380), so no board change follows from it."
+  },
+  {
+   "company": "Disney",
+   "title": "Product & Technology Software Engineering Intern, Summer 2027",
+   "location": "Glendale, CA / San Francisco, CA / New York, NY",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.disneycareers.com",
+   "dateSeen": "2026-10-27",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Story frame: Disney Careers, Job ID 10163573, posted Oct. 23, 2026. Employer-site verification task closed without a report, so exact posting not confirmed live on disneycareers.com; Simplify mirrors show live Disney SWE intern postings crawled within 1-2 days. NOT boarded until live employer check confirms it. Flag: Disney internships typically require returning to school after the term, which fits the Dec 2027 framing, not a May 2027 graduation."
+  },
+  {
+   "company": "Wells Fargo",
+   "title": "2027 Technology Summer Internship - Early Careers (Data Engineering)",
+   "location": "Charlotte, NC / Irving, TX / Iselin, NJ",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.wellsfargojobs.com/en/jobs/r-583066/2027-technology-summer-internship-early-careers-data-engineering/",
+   "dateSeen": "2026-10-27",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Enterprise bank data engineering intern, below the selective intern bar (not a tech-company data infra team)",
+   "note": "Verified live 2026-10-27 on Wells Fargo careers: 10-week program, June-Aug 2027, data pipelines/platforms/APIs. Distinct from the seen Cybersecurity variant."
+  },
+  {
+   "company": "T-Mobile",
+   "title": "Summer 2027 Software Engineer, Cloud Security Summer Internship",
+   "location": "Not shown on frame (2 locations)",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-27",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Security niche, off-target",
+   "note": "Story frame: paid internship, link sticker via WayUp page; distinct from the seen general T-Mobile SWE intern."
+  },
+  {
+   "company": "Danaher Corporation",
+   "title": "Computer Science/Data AI Co-op Supply Chain",
+   "location": "Indianapolis, IN",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-27",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Supply-chain co-op, not a core SWE role",
+   "note": "Story frame: Intern, R1320599, jobs.danaher.com."
+  },
+  {
+   "company": "Amazon",
+   "title": "Technical Program Manager Intern 2027",
+   "location": "Not shown on frame",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-27",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "PM role, off-target",
+   "note": "Story frame: Winter 2027 start (Jan/Feb), also Summer and Fall 2027; distinct from the seen Amazon Program Manager Internship."
+  },
+  {
+   "company": "Cadillac Formula 1 Team",
+   "title": "12-Month Aerodynamics AI Industrial Placement",
+   "location": "Silverstone, England, United Kingdom",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://apply.workable.com",
+   "dateSeen": "2026-10-27",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Non-US role (UK-based), outside US scope",
+   "note": "Story frame: on-site, 12-month placement, closing Fri Oct 30, 2026."
   }
  ]
 }
