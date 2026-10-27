@@ -3,7 +3,7 @@ begin;
 -- owned history in the existing request ledger, never as a second schedule.
 lock table private.backend_schedules in access exclusive mode;
 insert into private.backend_requests(user_id,event_key,operation,payload,response)
- select user_id,'retired-backend-schedule:'||id::text,'backend.schedules.retired','{}',to_jsonb(s)
+ select user_id,'retired-backend-schedule:'||id::text||':'||gen_random_uuid()::text,'backend.schedules.retired','{}',to_jsonb(s)
  from private.backend_schedules s;
 
 create or replace function private.backend_action(owner_id uuid,bound_connection uuid,operation text,payload jsonb) returns jsonb
