@@ -11,7 +11,7 @@ begin
   select * into app from public.applications where id=new.application_id and user_id=new.user_id;
   if not found then return new;end if;
   key:='milestone:'||new.id;stamp:=to_jsonb(new.created_at);
-  extra:=jsonb_build_object('change','milestone_added','milestoneId',new.id,'milestoneKind',new.kind,'phase',new.phase);
+  extra:=jsonb_build_object('change',case when new.supersedes_id is null then 'milestone_added' else 'milestone_replaced' end,'milestoneId',new.id,'supersedesId',new.supersedes_id,'milestoneKind',new.kind,'phase',new.phase);
  else
   if new.status is not distinct from old.status or not (new.status in ('Submitted','Interview','Offer','Rejected','Withdrawn') or old.status in ('Submitted','Interview','Offer','Rejected','Withdrawn')) then return new;end if;
   app:=new;key:='stage:'||new.id||':'||gen_random_uuid();stamp:=to_jsonb(new.revision);
@@ -27,7 +27,9 @@ revoke all on function private.emit_muse_timeline_change() from public,anon,auth
 create trigger muse_timeline_milestone after insert on public.application_milestones for each row execute function private.emit_muse_timeline_change();
 create trigger muse_timeline_stage after update of status on public.applications for each row execute function private.emit_muse_timeline_change();
 
-create or replace function public.agent_dispatch(credential_hash text,operation text,payload jsonb) returns jsonb
+-- Update the existing inner feed dispatcher, preserving the newer outer
+-- interview-reporting source/ownership validation.
+create or replace function private.interview_reporting_dispatch_previous(credential_hash text,operation text,payload jsonb) returns jsonb
 language plpgsql security definer set search_path='' as $$
 #variable_conflict use_variable
 declare c private.agent_connections;n integer;items jsonb;ids uuid[];key text;
@@ -41,7 +43,7 @@ begin
   if exists(select 1 from jsonb_object_keys(payload) k where k<>'limit') then raise exception 'Unknown change feed argument' using errcode='22023';end if;
   if payload ? 'limit' and (jsonb_typeof(payload->'limit')<>'number' or coalesce(payload->>'limit','') !~ '^[0-9]{1,2}$') then raise exception 'Integer limit required' using errcode='22023';end if;
   n:=coalesce((payload->>'limit')::integer,20);if n not between 1 and 50 then raise exception 'Bounded limit required' using errcode='22023';end if;
-  select coalesce(jsonb_agg(jsonb_strip_nulls(jsonb_build_object('id',e.id,'kind',replace(e.kind,'muse.',''),'occurredAt',e.occurred_at,'entity',e.payload->'entity','recordId',e.payload->'recordId','version',e.payload->'version','jobId',e.payload->'jobId','fieldIds',e.payload->'fieldIds','status',e.payload->'status','runId',e.payload->'runId','summary',e.payload->'text','milestoneId',e.payload->'milestoneId','milestoneKind',e.payload->'milestoneKind','phase',e.payload->'phase','change',e.payload->'change')) order by e.occurred_at,e.id),'[]') into items
+  select coalesce(jsonb_agg(jsonb_strip_nulls(jsonb_build_object('id',e.id,'kind',replace(e.kind,'muse.',''),'occurredAt',e.occurred_at,'entity',e.payload->'entity','recordId',e.payload->'recordId','version',e.payload->'version','jobId',e.payload->'jobId','fieldIds',e.payload->'fieldIds','status',e.payload->'status','runId',e.payload->'runId','summary',e.payload->'text','milestoneId',e.payload->'milestoneId','milestoneKind',e.payload->'milestoneKind','phase',e.payload->'phase','change',e.payload->'change','supersedesId',e.payload->'supersedesId')) order by e.occurred_at,e.id),'[]') into items
   from (select * from public.activity_events e where e.user_id=c.user_id and e.actor='system' and e.kind in ('muse.answer_confirmed','muse.preferences_changed','muse.profile_changed','muse.backend_job_finished','muse.application_timeline_changed')
    and not exists(select 1 from private.muse_change_receipts r where r.connection_id=c.id and r.event_id=e.id) order by e.occurred_at,e.id limit n+1) e;
   return jsonb_build_object('items',(select coalesce(jsonb_agg(x.value order by x.ordinality),'[]') from jsonb_array_elements(items) with ordinality x where x.ordinality<=n),'hasMore',jsonb_array_length(items)>n,'limit',n);

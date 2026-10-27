@@ -7,9 +7,14 @@ import {museChangeFeedResponse} from '../lib/muse-change-feed.mjs';
 const config=await readFile(new URL('../supabase/config.toml',import.meta.url),'utf8');assert.match(config,/project_id\s*=\s*"lookout-local"/);
 const container='supabase_db_lookout-local',details=JSON.parse(execFileSync('docker',['inspect',container],{encoding:'utf8'}))[0];
 assert.equal(details.Config.Labels['com.supabase.cli.project'],'lookout-local');assert.equal(details.State.Running,true);
-const migration=(await readFile(new URL('../supabase/migrations/20261027030548_semantic_muse_timeline_changes.sql',import.meta.url),'utf8')).replace(/^begin;\s*/i,'').replace(/commit;\s*$/i,'');
+const strip=sql=>sql.replace(/^begin;\s*/i,'').replace(/commit;\s*$/i,'');
+const exists=execFileSync('docker',['exec',container,'psql','-X','-U','postgres','-d','postgres','-A','-t','-q','-c',"select to_regprocedure('private.interview_reporting_dispatch_previous(text,text,jsonb)') is not null"],{encoding:'utf8'}).trim()==='t';
+// Apply the adjacent reporting dependency only inside this rolled-back proof.
+const dependency=exists?'':strip(await readFile(new URL('../supabase/migrations/20261027030033_interview_reporting.sql',import.meta.url),'utf8'));
+const migration=strip(await readFile(new URL('../supabase/migrations/20261027030548_semantic_muse_timeline_changes.sql',import.meta.url),'utf8'));
 const user=randomUUID(),app=randomUUID(),job='timeline-proof-'+randomUUID(),hash=randomBytes(32).toString('hex');
 const sql=`begin;
+${dependency}
 ${migration}
 insert into auth.users(id) values('${user}');
 insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values('${user}','Fictional local timeline proof','${hash}',array['workspace:read','activity:write'],now()+interval '1 hour');

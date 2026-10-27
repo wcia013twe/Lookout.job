@@ -732,9 +732,9 @@ that event; agent draft proposals cannot forge it. Other emitted kinds are
 `preferences_changed`, `profile_changed` (search profiles), and
 `backend_job_finished` (completed/partial/failed/cancelled), and
 `application_timeline_changed` (recorded milestones or tracking-stage changes).
-Timeline pointers include `change` (`milestone_added` or `stage_changed`), and
+Timeline pointers include `change` (`milestone_added`, `milestone_replaced` or `stage_changed`), and
 milestone pointers include ID/kind/phase. Interview labels distinguish scheduled,
-completed and received updates. Notes, email subjects/excerpts and interview dates
+completed, rescheduled and received updates. Corrections include `supersedesId`. Notes, email subjects/excerpts and interview dates
 remain in the existing `read_application_timeline` response. Immutable milestone
 retries emit once; rejected writes and no-op stage saves emit nothing. Timeline
 milestone `version` identifies its creation timestamp, not an aggregate timeline
@@ -746,7 +746,7 @@ revision; always read current records before making another update.
 | `preferences_changed` | Shared preferences changed → `read_personal_context` |
 | `profile_changed` | Application profile changed → `read_search_context` |
 | `backend_job_finished` | Backend job finished → `read_backend_jobs` |
-| `application_timeline_changed` | Timeline updated / Interview scheduled / Interview completed / Interview update recorded → `read_application_timeline` |
+| `application_timeline_changed` | Timeline updated / Interview scheduled / Interview rescheduled / Interview completed / Interview update recorded → `read_application_timeline` |
 
 This is two-way platform sync: existing scoped tools make updates; the feed points
 Muse to updates to read and acknowledge. There is no behavior engine, field-by-field

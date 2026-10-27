@@ -52,7 +52,14 @@ test('website/MCP timeline writes → labeled feed → read current timeline →
   feed=await mcp('read_muse_changes');assert.equal(feed.items.length,1);assert.equal(feed.items[0].label,'Interview completed');
   current=await mcp(feed.items[0].refresh.tool,feed.items[0].refresh.arguments);assert.equal(current.milestones.length,2);
   assert.equal((await mcp('read_muse_changes',{},second)).items.length,2);assert.equal((await mcp('read_muse_changes',{},foreign)).items.length,0);
-  const old=feed.items[0];await db.query("update public.activity_events set occurred_at=now()-interval '40 days' where id=$1",[old.id]);await mcp('acknowledge_muse_changes',{eventIds:[old.id]});assert.equal((await db.query('select count(*)::int n from public.activity_events where id=$1',[old.id])).rows[0].n,1);await mcp('acknowledge_muse_changes',{eventIds:[old.id]},second);assert.equal((await db.query('select count(*)::int n from public.activity_events where id=$1',[old.id])).rows[0].n,0);
+  const completionEvent=feed.items[0];
+  await mcp('record_application_milestone',{...completion,eventKey:'timeline:rescheduled',phase:'scheduled',supersedesId:milestone.id,source:{kind:'user_reported',note:'PRIVATE candidate reschedule report'}});
+  const rescheduled=(await mcp('read_muse_changes')).items.find(item=>item.supersedesId===milestone.id);
+  assert.ok(rescheduled);assert.equal(rescheduled.label,'Interview rescheduled');assert.equal(rescheduled.change,'milestone_replaced');
+  const revised=await mcp(rescheduled.refresh.tool,rescheduled.refresh.arguments);
+  assert.ok(revised.milestones.some(item=>item.supersedes_id===milestone.id&&item.source.kind==='user_reported'));
+  await mcp('acknowledge_muse_changes',{eventIds:[rescheduled.id]});
+  const old=completionEvent;await db.query("update public.activity_events set occurred_at=now()-interval '40 days' where id=$1",[old.id]);await mcp('acknowledge_muse_changes',{eventIds:[old.id]});assert.equal((await db.query('select count(*)::int n from public.activity_events where id=$1',[old.id])).rows[0].n,1);await mcp('acknowledge_muse_changes',{eventIds:[old.id]},second);assert.equal((await db.query('select count(*)::int n from public.activity_events where id=$1',[old.id])).rows[0].n,0);
   await db.query("select set_config('test.uid',$1,false)",[owner]);
   await db.query('select public.set_application_stage($1,$2,$3,$4)',[app.id,app.revision,'Submitted','PRIVATE submission note']);
   const submitted=(await mcp('read_muse_changes')).items;assert.equal(submitted.length,1);assert.equal(submitted[0].status,'Submitted');
