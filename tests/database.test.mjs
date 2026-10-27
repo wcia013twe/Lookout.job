@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['action-inbox','durable handoffs reconcile atomically, retain history, isolate owners and preserve consent'],
   ['work-experience','entry-level work history preserves facts, versions, scopes, ownership and website/MCP parity'],
   ['search-pipeline','scoped lead intake and screening replay atomically, isolate owners and rescreen current settings'],
   ['careerops-discovery','copied CareerOps native identities and functional URL parameters survive persisted resume reads'],

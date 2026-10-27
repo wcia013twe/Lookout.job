@@ -29,7 +29,10 @@
     "validate:local-db": "node backend/local/check-schema.mjs",
     "validate:local-edge": "node scripts/check-local-edge.mjs",
     "intelligence:account": "node --env-file-if-exists=.env.local backend/intelligence/account.ts",
-    "intelligence:evaluate-search": "node --env-file-if-exists=.env.local scripts/evaluate-intelligence-search.mjs"
+    "intelligence:evaluate-search": "node --env-file-if-exists=.env.local scripts/evaluate-intelligence-search.mjs",
+    "intelligence:evaluate-bloomberg": "node --env-file-if-exists=.env.local scripts/evaluate-bloomberg-intelligence.mjs",
+    "intelligence:diagnose-bloomberg": "node --env-file-if-exists=.env.local scripts/diagnose-bloomberg-search.mjs",
+    "intelligence:compare-hybrid": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-hybrid.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "0.24.1",

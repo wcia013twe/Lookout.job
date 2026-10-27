@@ -589,3 +589,13 @@ length violations reject. Unchanged answers and metadata remain intact. Supplied
 updates never grant reviewed state or reusable-answer verification. Use an explicit
 selected profile ID when applying profile preferences; no arbitrary profile is
 chosen when multiple profiles exist.
+
+## Durable application inbox
+
+`applications.inbox.read` accepts only optional `state` (pending/resolved/all)
+and `offset` (integer 0–100000), requires `workspace:read`, and returns owned
+`items` (100 maximum) plus `nextOffset`. Identity comes from the active credential.
+The browser RPC `read_action_inbox` and agent operation share the same reader.
+Writes are implicit atomic effects of existing validated application/attempt
+transitions; no log-edit or approval shortcut is exposed. Node delegates this
+lightweight operation to Edge. Deploy the migration before releasing this tool.
