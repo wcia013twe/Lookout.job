@@ -4,3 +4,5 @@
 - Restarted the frontend against the existing local Docker backend. No dependency declarations, application behavior, or demo fixtures changed.
 - Validation: npm ci; npm ci --prefix next-app (audit reported zero vulnerabilities); frontend typecheck; @nivo/sankey module resolution; npm run validate:data (158 roles); Applications route HTTP 200.
 - Limits: authenticated chart interaction was not exercised. The shared main checkout's installed dependencies remain stale; the running frontend uses this isolated checkout, which must be retained while in use.
+
+- Follow-up: updated both AGENTS.md storage rules to prefer the external SSD when available and permit internal storage without confirmation when unavailable, including temporary-checkout and default-cache guidance. Existing Docker disk images may remain in place. Validation: reviewed the documentation diff, git diff --check, and reran data validation; no runtime behavior changed.
