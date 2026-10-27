@@ -12,7 +12,7 @@ export type Report = Observation & {
  contentHash:string; processingVersion:string; embeddingText:string; embeddingModel:string|null;
 };
 export type Query = (sql:string, values?:any[])=>Promise<{rows:any[]}>;
-export type Store = {get:(type:string,id:string)=>Promise<StoredVersion|undefined>; save:(r:Report,vector:number[]|null)=>Promise<void>; list:(limit:number,current?:Report[])=>Promise<any[]>};
+export type Store = {get:(type:string,id:string)=>Promise<StoredVersion|undefined>; save:(r:Report,vector:number[]|null)=>Promise<void>; list:(limit:number,current?:Report[],search?:{vector:number[];model:string;minSimilarity:number})=>Promise<any[]>};
 export type EmbeddingProvider = {model:string; embed:(text:string)=>Promise<number[]>};
 export type Candidate = {observation:Observation; identities:string[]};
 export type SourceLoader = () => Candidate[] | Promise<Candidate[]>;
