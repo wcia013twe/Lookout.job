@@ -27,7 +27,7 @@ export async function publicPreviewEnv(source,{local=false}={}){
   }catch(error){if(error.code!=='ENOENT')throw error;}
  }
  if(ngrokUrl){
-  const url=new URL(ngrokUrl);
+  const url=new URL(ngrokUrl.includes('://')?ngrokUrl:'https://'+ngrokUrl);
   if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||!['','/'].includes(url.pathname))throw Error('NGROK_URL must be an HTTPS base URL without a path or credentials.');
   result.NEXT_PUBLIC_AGENT_MCP_URL=url.origin+'/mcp';
  }
@@ -56,10 +56,10 @@ async function main(){
  const parent=join(home,createHash('sha256').update(source).digest('hex').slice(0,12));
  const preview=join(parent,'repo');
  await mkdir(parent,{recursive:true});
+ const env={...process.env,...await publicPreviewEnv(source,{local:!process.argv.includes('--hosted')}),npm_config_cache:process.env.npm_config_cache||join(home,'npm-cache')};
  const lock=join(parent,'running');
  try{await mkdir(lock);}catch{throw Error(`Live preview is already running, or its lock needs review: ${lock}`);}
  let child,stopping=false,timer,checking=false;
- const env={...process.env,...await publicPreviewEnv(source,{local:!process.argv.includes('--hosted')}),npm_config_cache:process.env.npm_config_cache||join(home,'npm-cache')};
  async function dependencyKey(){
   const hash=createHash('sha256');
   for(const file of ['package.json','package-lock.json','next-app/package.json','next-app/package-lock.json'])hash.update(await readFile(join(preview,file)));

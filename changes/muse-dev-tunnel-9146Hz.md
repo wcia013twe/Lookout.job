@@ -25,3 +25,5 @@
 - Local frontend startup now derives the advertised MCP URL from the root `NGROK_URL`, overriding stale localhost connection instructions. Live preview forwards only that public URL, never the ngrok token or server credentials. Browser data traffic stays on local Supabase, with the local anonymous key explicitly overriding any hosted publishable-key setting. Hosted build defaults are unchanged.
 - Scoped MCP mapping and fictional demo behavior are unchanged: this fixes the endpoint advertised by the existing connection setup, not a new backend operation.
 - Validation: four launcher/env tests pass, including private-key exclusion, localhost override, HTTPS validation and hosted-mode isolation; data validation passes (158 roles). Live runtime checks are recorded below.
+
+- Live verification: a disposable fictional local account and scoped agent token successfully read the same profile via direct Node MCP and public ngrok MCP; the account was deleted afterward. Startup also accepts ngrok dashboard hostnames without an explicit scheme and normalizes the advertised URL to HTTPS. Invalid configuration is checked before acquiring the preview lock.

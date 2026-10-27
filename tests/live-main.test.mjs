@@ -54,6 +54,8 @@ test('local connection setup advertises the tunnel while keeping private setting
   await writeFile(join(root,'next-app/.env.local'),'NEXT_PUBLIC_AGENT_MCP_URL=http://127.0.0.1:8080/mcp\n');
   assert.deepEqual(await publicPreviewEnv(root,{local:true}),{NEXT_PUBLIC_AGENT_MCP_URL:'https://fictional.ngrok.app/mcp'});
   assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_AGENT_MCP_URL:'http://127.0.0.1:8080/mcp'});
+  await writeFile(join(root,'.env.local'),'NGROK_URL=fictional.ngrok.app\n');
+  assert.deepEqual(await publicPreviewEnv(root,{local:true}),{NEXT_PUBLIC_AGENT_MCP_URL:'https://fictional.ngrok.app/mcp'});
   await writeFile(join(root,'.env.local'),'NGROK_URL=http://fictional.ngrok.app\n');
   await assert.rejects(publicPreviewEnv(root,{local:true}),/HTTPS base URL/);
  }finally{await rm(root,{recursive:true,force:true});}
