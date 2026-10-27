@@ -541,5 +541,15 @@ Application and submission transitions append/resolve entries atomically; exact
 report retries do not duplicate them. History remains available after resolution.
 Use existing human-review handoffs for approval and uncertain submission recovery.
 No clear/dismiss operation exists, and reading/resolving an item never starts a
-worker or authorizes a new attempt. Developer contract 71 and the inbox migration
+worker or authorizes a new attempt. Developer contract 72 and the inbox migration
 must be released before advertising availability; hosted delivery is unverified.
+
+
+Developer contract 72 makes next-cycle pickup explicit in MCP initialization,
+developer context, and `read_guide({id:"application-workspace"})` version 3.
+During authorized application work, read pending and resolved inbox history,
+retrieve current application records and exact approval when required, then let
+the supported runner reauthorize execution. Never recreate an unchanged approved
+draft or interpret resolution as consent. Search-only cycles do not authorize
+submission; uncertain and user-reported submissions remain ineligible for retry.
+These directions require release and client context/tool refresh to reach Muse.
