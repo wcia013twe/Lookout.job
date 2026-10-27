@@ -57,6 +57,7 @@ export default function AccountWorkspaceProvider({ children }) {
         setState(store.get());
         for (const slice of [
           "workflow",
+          "ui.profileConflict",
           "network",
           "tracker",
           "progress",

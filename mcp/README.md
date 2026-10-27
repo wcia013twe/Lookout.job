@@ -553,3 +553,10 @@ the supported runner reauthorize execution. Never recreate an unchanged approved
 draft or interpret resolution as consent. Search-only cycles do not authorize
 submission; uncertain and user-reported submissions remain ineligible for retry.
 These directions require release and client context/tool refresh to reach Muse.
+
+Personal profile patches now share the website's typed/version-checked database
+writer, including preferred-name/address/birthday fields. Only the authenticated
+human can verify the exact saved facts. Website stale edits pause for explicit
+reconciliation and retain their original version across offline reloads. See
+[the complete profile-edit flow](../backend/agent-contract.md#complete-personal-profile-edit-flow)
+for the flow gate, local verifier, demo scenario and coordinated release limits.

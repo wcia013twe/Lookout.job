@@ -26,13 +26,15 @@ const profileHash=async id=>createHash('sha256').update(JSON.stringify(ok(await 
 // Saved test identity is inspected read-only. The write exercise uses a disposable account.
 const retained=JSON.parse(await readFile(process.env.LOOKOUT_REVIEW_SESSION||join(sourceRoot,'backend/runtime/.review-session.local.json'),'utf8'));
 const retainedBefore=await profileHash(retained.account.id);
-const migrationName=(await readdir(join(root,'supabase/migrations'))).find(name=>name.endsWith('_work_experience_edits.sql'));
+for(const suffix of ['_work_experience_edits.sql',...(process.env.LOOKOUT_PROFILE_FLOW_UI==='1'?['_durable_action_inbox.sql','_profile_edit_flow.sql']:[])]) {
+const migrationName=(await readdir(join(root,'supabase/migrations'))).find(name=>name.endsWith(suffix));
 assert.ok(migrationName);const version=migrationName.split('_')[0];
 const applied=docker('exec','supabase_db_lookout-local','psql','-U','postgres','-d','postgres','-Atc',"select count(*) from supabase_migrations.schema_migrations where version='"+version+"'").trim();
 if(applied==='0') {
  const migration=await readFile(join(root,'supabase/migrations',migrationName),'utf8');
  // Apply only this additive migration, never unrelated pending work or a reset.
- execFileSync('docker',['exec','-i','supabase_db_lookout-local','psql','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1'],{input:"begin;\n"+migration+"\ninsert into supabase_migrations.schema_migrations(version,name,statements) values('"+version+"','work_experience_edits',array[$migration$"+migration+"$migration$]);\nnotify pgrst,'reload schema';\ncommit;",stdio:['pipe','pipe','pipe']});
+ execFileSync('docker',['exec','-i','supabase_db_lookout-local','psql','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1'],{input:"begin;\n"+migration+"\ninsert into supabase_migrations.schema_migrations(version,name,statements) values('"+version+"','"+migrationName.slice(version.length+1,-4)+"',array[$migration$"+migration+"$migration$]);\nnotify pgrst,'reload schema';\ncommit;",stdio:['pipe','pipe','pipe']});
+}
 }
 const temp=await mkdtemp(join(tmpdir(),'work-history-proof-'));
 const container='lookout-work-history-proof-'+randomUUID().slice(0,8);let started=false,api,user;
@@ -71,9 +73,10 @@ try {
  const stale=await mcp('edit_work_experience',{action:'remove',entryIndex:0,expectedUpdatedAt:b.updated_at});assert.equal(stale.isError,true);assert.equal(JSON.parse(stale.content[0].text).status,409);
  const read=await mcp('workspace_read',{});assert.ok(!read.isError);assert.ok(edgeCalls>=5);
  const stored=ok(await admin.from('profiles').select('facts').eq('user_id',user.id).single());assert.deepEqual(stored.facts,c.facts);
+ const fullFlow=process.env.LOOKOUT_PROFILE_FLOW_UI==='1'?await (await import('./profile-flow-ui.mjs')).checkProfileFlowUI({root,local,admin,client,user,mcp}):null;
  assert.equal(await profileHash(retained.account.id),retainedBefore,'Retained test profile must remain unchanged');
- const receipt={checkedAt:new Date().toISOString(),localOnly:true,transport:'task Node MCP -> isolated Supabase Edge runtime -> real local Supabase PostgreSQL',checks:{addPreservesHistory:true,updatePreservesEntryFields:true,browserRemovalSameSql:true,staleAddRetryRejected:true,staleRemovalRejected:true,profileReadBackMatches:true,verificationInvalidated:true,retainedProfileUnchanged:true},limits:['No hosted deployment','No shared runtime restart or rebind','Retained profile inspected read-only; writes used a disposable fictional account']};
- await writeFile(join(root,'backend/local/work-experience-proof.json'),JSON.stringify(receipt,null,2)+'\n');
+ const receipt={...(fullFlow?{flow:fullFlow}:{}),checkedAt:new Date().toISOString(),localOnly:true,transport:'task Node MCP -> isolated Supabase Edge runtime -> real local Supabase PostgreSQL',checks:{addPreservesHistory:true,updatePreservesEntryFields:true,browserRemovalSameSql:true,staleAddRetryRejected:true,staleRemovalRejected:true,profileReadBackMatches:true,verificationInvalidated:true,retainedProfileUnchanged:true},limits:['No hosted deployment','No shared runtime restart or rebind','Retained profile inspected read-only; writes used a disposable fictional account']};
+ await writeFile(join(root,process.env.LOOKOUT_PROFILE_FLOW_UI==='1'?'backend/local/profile-edit-flow-proof.json':'backend/local/work-experience-proof.json'),JSON.stringify(receipt,null,2)+'\n');
  console.log('PASS: real Node -> isolated Edge -> local SQL; add/update/remove, shared browser RPC, stale retry rejection, read-back and retained test profile preservation.');
 } catch(error) {
  if(started){const log=spawnSync('docker',['logs','--tail','20',container],{encoding:'utf8'});console.error(log.stdout+log.stderr);}

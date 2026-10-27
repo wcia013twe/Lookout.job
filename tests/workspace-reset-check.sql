@@ -44,7 +44,7 @@ begin
  perform public.workspace_reset_service(u,'begin',jsonb_build_object('resetId',reset_id,'confirmation','RESET MY WORKSPACE','expectedPersonalVersion',before_version));
  if not exists(select 1 from public.profiles where user_id=u and facts->>'name'='Keep newest onboarding') then raise exception 'Historic replay erased new work';end if;
  perform set_config('role','authenticated',true);
- begin update public.profiles set facts='{}' where user_id=u;raise exception 'Stale session restored deleted content';exception when object_not_in_prerequisite_state then null;end;
+ begin update public.profiles set facts='{}' where user_id=u;raise exception 'Stale session restored deleted content';exception when insufficient_privilege then null;end;
  perform set_config('role','none',true);
 
 end $$;

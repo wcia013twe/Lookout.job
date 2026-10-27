@@ -11,7 +11,7 @@ begin
  p:=jsonb_build_object('expectedUpdatedAt',t,'fields',jsonb_build_object('location','New'));
  r:=public.agent_dispatch(k,'profile.fields.update',p);
  if r#>>'{facts,name}'<>'Fictional Person' or r#>>'{facts,location}'<>'New' or r#>>'{facts,projects,0,name}'<>'Keep' or r->>'verified_at' is not null then raise exception 'Partial facts lost fields or granted verification';end if;
- begin perform public.agent_dispatch(k,'profile.fields.update',p||jsonb_build_object('expectedUpdatedAt',t-interval '1 second'));raise exception 'Stale profile accepted';exception when serialization_failure then null;end;
+ begin perform public.agent_dispatch(k,'profile.fields.update',p||jsonb_build_object('expectedUpdatedAt',t-interval '1 second'));raise exception 'Stale profile accepted';exception when sqlstate 'PT409' then null;end;
  begin perform public.agent_dispatch(k,'profile.fields.update',p||'{"fields":{"verified_at":"now"}}');raise exception 'Verification injection accepted';exception when invalid_parameter_value then null;end;
  insert into public.company_workspaces(user_id,id,name,research) values(u,'target','Fictional Co','Keep research');
  p:='{"id":"target","expectedRevision":1,"fields":{"nextAction":"Ask about team scope"}}';

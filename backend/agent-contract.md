@@ -599,3 +599,45 @@ The browser RPC `read_action_inbox` and agent operation share the same reader.
 Writes are implicit atomic effects of existing validated application/attempt
 transitions; no log-edit or approval shortcut is exposed. Node delegates this
 lightweight operation to Edge. Deploy the migration before releasing this tool.
+
+## Complete personal-profile edit flow
+
+The website now sends only changed facts through `save_profile_changes`, and MCP
+`update_profile_fields` reaches the same `private.patch_profile_facts` writer. Both
+require the current profile timestamp, validate typed fields/arrays, preserve
+omitted facts, clear verification on changes, and reject stale writes with
+`PT409`/HTTP 409. Direct authenticated table upserts are revoked. Account reads
+remain protected by RLS; Node remains Muse's MCP access point. Individual work
+entries still use the scoped entry operation. No processing job is added.
+
+Website sync keeps the original server row/version alongside its existing private
+account-scoped offline cache (`workflow.profileSyncBase`). This is conflict
+metadata, not another backend profile. Reloading an offline draft cannot silently
+adopt a newer version and overwrite changes made by Muse. A stale save pauses
+automatic retries; Reload latest profile preserves non-conflicting local changes.
+Overlapping fields require Use latest values or Keep my edits. An older cache
+without a known baseline requires an explicit choice. Active form editing defers
+background hydration so it cannot erase text being typed.
+
+`review_profile_facts` is a separate authenticated human-only RPC over the exact
+profile version. Fact saves never set verification; a stale review rejects. The
+existing MCP `request_human_action(verify-profile)` remains the agent handoff.
+Agent credentials cannot call the human session RPC or include review fields in
+a patch. Resume imports retain their separate proposal/review flow.
+
+Gate: Muse adds an entry -> website receives it -> human edits a different field
+-> Muse reads both -> stale browser save rejects -> explicit reload/reconciliation
+-> saved data survives a page reload. Tests also cover overlapping choices,
+offline-cache reloads, verification invalidation, old-table-write denial, and
+account isolation. `LOOKOUT_PROFILE_FLOW_UI=1 node scripts/check-local-work-experience.mjs`
+runs the actual task frontend, Node MCP, isolated Edge and local Docker database
+with a disposable fictional account; the retained review profile is read-only.
+It installs this migration and the already-landed Action Inbox dependency needed
+by current frontend loading, without restarting shared services. The sanitized
+receipt is `backend/local/profile-edit-flow-proof.json` when successful.
+
+Demo: `/profile/?demo=1&section=about&demoApi=profile-conflict` exercises the same
+conflict controls through fictional memory-only services; reload/reset restores
+the scenario and no real cloud service is called. Application-profile preferences
+and account-wide settings remain separate gates. Release the migration, frontend
+and gateway/MCP instruction/schema changes together before advertising live support.
