@@ -43,3 +43,7 @@ The gate verifies the local application-context → scoped evidence → interpre
 All eight fixture cases passed through the host adapter → localhost MCP/HTTP → database → model interpretation → presentation flow. The final run used six model calls and zero embedding calls: the two empty scopes bypassed the model entirely. Useful OA/technical reports and differing formats returned source-exact excerpts; the rumor retained its explicit lack of confirmation; unknown deadlines abstained; automatic empty and insufficient output was null. Results are retained in `docs/evaluations/muse-intelligence-final.json`.
 
 Manual review rejected an earlier narrative prototype despite its eight automated checks passing: it speculated about causes and continuing hiring. `muse-intelligence-narrative-prototype.json` preserves that failure. The final rendered excerpts were manually compared against the supplied reports. This closes the controlled local integration gate, not a live Muse-host deployment or a general accuracy benchmark.
+
+## Platform connection
+
+The platform now has a separate authenticated `read_interview_intelligence` operation and application Overview panel, implemented against current permitted published Circle revisions. Its evidence packet is compatible with `presentMuseInsight`; the local evaluation `read_demo_muse_intelligence` remains a separate development tool. See `docs/interview-intelligence-platform.md` for the shared human/Node authorization path and release limits.

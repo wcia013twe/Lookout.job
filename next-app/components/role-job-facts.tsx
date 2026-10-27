@@ -1,17 +1,18 @@
 import type { Role } from "./role-card";
 import {formatPostedDate,formatAvailabilityCheck,postingStatus} from "../../lib/posting-age.mjs";
+import {compensationLabel,workSettingLabel,sponsorshipLabel} from "../lib/job-fact-labels";
 import ProfileIcon, { type ProfileIconName } from "./profile-icon";
 import { compensationTag } from "../lib/role-display";
 export default function RoleJobFacts({ role, compact = false }: { role: Role; compact?: boolean }) {
   const status = postingStatus(role);
   const pay = role.compensation || compensationTag(role.whyItFits);
   const facts: { icon: ProfileIconName; label: string; value: string }[] = [
-    { icon: "money", label: "Compensation", value: pay === "Comp not listed" ? "Pay not disclosed" : pay },
-    { icon: "location", label: "Location", value: role.location || "Location not disclosed" },
+    { icon: "money", label: "Compensation", value: compensationLabel(pay) },
+    { icon: "location", label: "Location", value: role.location || "Not disclosed" },
     ...(!compact ? [
-      { icon: "building" as const, label: "Work setting", value: role.workSetting || "Not confirmed" },
-      { icon: "sliders" as const, label: "Focus", value: role.category || "Not listed" },
-      { icon: "shield" as const, label: "Sponsorship", value: role.sponsorship || "Not confirmed" },
+      { icon: "building" as const, label: "Work setting", value: workSettingLabel(role.workSetting) },
+      { icon: "sliders" as const, label: "Focus", value: role.category || "Not disclosed" },
+      { icon: "shield" as const, label: "Sponsorship", value: sponsorshipLabel(role.sponsorship) },
       { icon: "clock" as const, label: "Posted", value: formatPostedDate(role) },
       { icon: "clock" as const, label: "Availability checked", value: formatAvailabilityCheck(role) },
     ] : []),

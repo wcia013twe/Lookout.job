@@ -935,3 +935,10 @@ and formatting are local presentation actions over existing owned batch reads;
 the scoped `batches.read` gateway/MCP path already exposes the same posting evidence.
 No new backend write or MCP capability is introduced. Detached demo fixtures cover
 recent, older and unknown dates plus all three availability states.
+
+Job facts use concise display categories: work setting is Remote, Hybrid, On-site
+or Not disclosed; sponsorship is Available, Not available or Not disclosed.
+Only explicit source statements produce a known category. Work authorization alone
+does not establish sponsorship policy, and a city does not establish office attendance.
+Undisclosed compensation uses the same Not disclosed label. No expansion is required;
+saved source evidence and existing backend/MCP responses retain their original text.
