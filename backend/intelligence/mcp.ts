@@ -1,3 +1,4 @@
+import {MUSE_INSTRUCTIONS} from './muse.ts';
 import {createInterface} from 'node:readline';
 import {pathToFileURL} from 'node:url';
 import {DEMO_TOOLS, type DemoCall} from './contract.ts';
@@ -9,7 +10,7 @@ export function mcpHandler(call:DemoCall){return async(p:any)=>{
  if(!p||p.jsonrpc!=='2.0')return {jsonrpc:'2.0',id:p?.id??null,error:{code:-32600,message:'Invalid request'}};
  if(p.id===undefined)return null;
  const reply=(result:any)=>({jsonrpc:'2.0',id:p.id,result});
- if(p.method==='initialize')return reply({protocolVersion:'2025-11-25',capabilities:{tools:{}},serverInfo:{name:'lookout-intelligence-demo',version:'0.1.0'}});
+ if(p.method==='initialize')return reply({protocolVersion:'2025-11-25',capabilities:{tools:{}},serverInfo:{name:'lookout-intelligence-demo',version:'0.2.0'},instructions:MUSE_INSTRUCTIONS});
  if(p.method==='ping')return reply({});
  if(p.method==='tools/list')return reply({tools:DEMO_TOOLS});
  if(p.method!=='tools/call')return {jsonrpc:'2.0',id:p.id,error:{code:-32601,message:'Method not found'}};

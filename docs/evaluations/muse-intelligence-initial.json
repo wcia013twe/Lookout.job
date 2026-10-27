@@ -1,0 +1,956 @@
+{
+  "fictional": true,
+  "runAt": "2026-10-27T02:10:43.923Z",
+  "model": "gpt-4.1-mini",
+  "apiCalls": 16,
+  "embeddingCalls": 0,
+  "summary": {
+    "passed": 5,
+    "total": 8
+  },
+  "limits": [
+    "Controlled model surrogate, not a live Muse-host session.",
+    "PGlite and synthetic authorized sources; not production latency or global permissions.",
+    "Checks verify scope, abstention, citations and key concepts; factual entailment still needs reviewing the retained responses.",
+    "Single run, no guarantee across models/prompts."
+  ],
+  "cases": [
+    {
+      "id": "useful-oa",
+      "question": "What have candidates experienced in the OA for my posting?",
+      "mode": "automatic",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "jobId": "bloomberg-ny-2026",
+            "stage": "OA",
+            "limit": 5
+          }
+        }
+      ],
+      "packet": {
+        "status": "evidence_available",
+        "scope": {
+          "jobId": "bloomberg-ny-2026",
+          "stage": "OA"
+        },
+        "automaticAction": "assess_usefulness",
+        "seedIds": [
+          "report:circle_post:oa-recent",
+          "report:circle_post:oa-wait"
+        ],
+        "evidence": [
+          {
+            "id": "report:circle_post:oa-recent",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-recent",
+            "sourceRevision": 1,
+            "title": "OA finished yesterday",
+            "insight": "I completed the online assessment yesterday. Mine had two timed coding tasks. One used a hash map and the other involved a sliding window. I could run sample tests. Has anyone heard back after submitting?",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-25T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-recent",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-recent"
+            }
+          },
+          {
+            "id": "report:circle_post:oa-wait",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-wait",
+            "sourceRevision": 1,
+            "title": "Waiting after the OA",
+            "insight": "I submitted my online assessment eight days ago and have not received an update. The portal still says in review. Anyone else waiting after the assessment? Please compare dates here.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-23T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-wait",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-wait"
+            }
+          }
+        ],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 5,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "useful",
+        "message": "Candidates for the Bloomberg New Grad Software Engineer online assessment have reported having two timed coding tasks, one involving a hash map and the other a sliding window technique. The assessment allows running sample tests. After submission, candidates have experienced a wait for updates, with some reporting no feedback even after eight days, while the portal indicates the application is still under review. This insight is based on candidate reports dated October 2026 but should be considered individual experiences, not official employer policy. (Sources: report:circle_post:oa-recent, report:circle_post:oa-wait)",
+        "citations": [
+          "report:circle_post:oa-recent",
+          "report:circle_post:oa-wait"
+        ]
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": true,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": true,
+        "emptyCitations": true,
+        "usefulMessage": true,
+        "concepts": true
+      },
+      "pass": true,
+      "latencyMs": 4018
+    },
+    {
+      "id": "technical",
+      "question": "What did candidates actually do in the technical interview?",
+      "mode": "direct",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "jobId": "bloomberg-ny-2026",
+            "stage": "Technical interview",
+            "limit": 10
+          }
+        }
+      ],
+      "packet": {
+        "status": "evidence_available",
+        "scope": {
+          "jobId": "bloomberg-ny-2026",
+          "stage": "Technical interview"
+        },
+        "automaticAction": "assess_usefulness",
+        "seedIds": [
+          "report:circle_post:technical"
+        ],
+        "evidence": [
+          {
+            "id": "report:circle_post:technical",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "technical",
+            "sourceRevision": 1,
+            "title": "Live technical round experience",
+            "insight": "I had my live technical interview for the New York new grad position. We solved a graph traversal problem, discussed complexity, and walked through a bug in my solution. This is only my experience, not an official question list.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "Technical interview",
+            "experienceDate": "2026-10-24T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "technical",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=technical"
+            }
+          }
+        ],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 10,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "useful",
+        "message": "Candidates in the Bloomberg New York technical interview for a New Grad Software Engineer role typically solved a graph traversal problem, discussed the complexity of their solution, and walked through debugging their code during the live technical round. This report is based on an individual candidate's experience and is not an official question list, so there may be some variability. (source: report:circle_post:technical)",
+        "citations": [
+          "report:circle_post:technical"
+        ]
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": true,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": true,
+        "emptyCitations": true,
+        "usefulMessage": true,
+        "concepts": true
+      },
+      "pass": true,
+      "latencyMs": 2472
+    },
+    {
+      "id": "different-formats",
+      "question": "Do reports agree on the number of OA tasks?",
+      "mode": "direct",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "limit": 10
+          }
+        }
+      ],
+      "packet": {
+        "status": "evidence_available",
+        "scope": {
+          "company": "Bloomberg",
+          "role": "New Grad Software Engineer",
+          "stage": "OA"
+        },
+        "automaticAction": "assess_usefulness",
+        "seedIds": [
+          "report:circle_post:oa-recent",
+          "report:circle_post:oa-different",
+          "report:circle_post:oa-wait"
+        ],
+        "evidence": [
+          {
+            "id": "report:circle_post:oa-recent",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-recent",
+            "sourceRevision": 1,
+            "title": "OA finished yesterday",
+            "insight": "I completed the online assessment yesterday. Mine had two timed coding tasks. One used a hash map and the other involved a sliding window. I could run sample tests. Has anyone heard back after submitting?",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-25T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-recent",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-recent"
+            }
+          },
+          {
+            "id": "report:circle_post:oa-different",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-different",
+            "sourceRevision": 1,
+            "title": "My OA format was different",
+            "insight": "My online assessment had three shorter coding tasks, not two. I applied to the London new grad position. I do not know whether location or scheduling explains the difference.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-24T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-different",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-different"
+            }
+          },
+          {
+            "id": "report:circle_post:oa-wait",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-wait",
+            "sourceRevision": 1,
+            "title": "Waiting after the OA",
+            "insight": "I submitted my online assessment eight days ago and have not received an update. The portal still says in review. Anyone else waiting after the assessment? Please compare dates here.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-23T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-wait",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-wait"
+            }
+          }
+        ],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 10,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "useful",
+        "message": "Reports do not agree consistently on the number of online assessment (OA) tasks for the Bloomberg New Grad Software Engineer role. One report mentions two timed coding tasks, while another from a different location reports three shorter coding tasks. This suggests variability possibly due to location or scheduling differences. Both reports are from recent candidates but are individual accounts, not official employer policy. This variability has been noted in the October 2026 interview cycle [report:circle_post:oa-recent, report:circle_post:oa-different].",
+        "citations": [
+          "report:circle_post:oa-recent",
+          "report:circle_post:oa-different"
+        ]
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": true,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": true,
+        "emptyCitations": true,
+        "usefulMessage": true,
+        "concepts": true
+      },
+      "pass": true,
+      "latencyMs": 2901
+    },
+    {
+      "id": "unknown-deadline",
+      "question": "What is the exact offer acceptance deadline?",
+      "mode": "direct",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "jobId": "bloomberg-ny-2026"
+          }
+        }
+      ],
+      "packet": {
+        "status": "evidence_available",
+        "scope": {
+          "jobId": "bloomberg-ny-2026"
+        },
+        "automaticAction": "assess_usefulness",
+        "seedIds": [
+          "report:circle_post:rumor",
+          "report:circle_post:waiting-thread",
+          "report:circle_post:oa-recent",
+          "report:circle_post:next-step",
+          "report:circle_post:technical",
+          "report:circle_post:oa-wait",
+          "report:circle_post:recruiter"
+        ],
+        "evidence": [
+          {
+            "id": "report:circle_post:rumor",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "rumor",
+            "sourceRevision": 1,
+            "title": "Unconfirmed rumor about headcount",
+            "insight": "I saw someone elsewhere claim that new grad hiring was paused. I have no firsthand confirmation or recruiter message. Has anyone received an actual update? Please do not treat this as confirmed.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-26T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "rumor",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=rumor"
+            }
+          },
+          {
+            "id": "report:circle_post:waiting-thread",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "waiting-thread",
+            "sourceRevision": 1,
+            "title": "Anyone waiting after the technical round?",
+            "insight": "I finished my New York new grad technical round nine days ago. No decision yet. I am still actively interviewing. Anyone else in this stage? Share your interview date and any recruiter updates in this thread.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-25T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "waiting-thread",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=waiting-thread"
+            }
+          },
+          {
+            "id": "report:circle_post:oa-recent",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-recent",
+            "sourceRevision": 1,
+            "title": "OA finished yesterday",
+            "insight": "I completed the online assessment yesterday. Mine had two timed coding tasks. One used a hash map and the other involved a sliding window. I could run sample tests. Has anyone heard back after submitting?",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-25T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-recent",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-recent"
+            }
+          },
+          {
+            "id": "report:circle_post:next-step",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "next-step",
+            "sourceRevision": 1,
+            "title": "Update: invited to the next round",
+            "insight": "I heard back three business days after my technical interview and was invited to another conversation. A friend is still waiting; my timing is not a promise for anyone else.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-24T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "next-step",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=next-step"
+            }
+          },
+          {
+            "id": "report:circle_post:technical",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "technical",
+            "sourceRevision": 1,
+            "title": "Live technical round experience",
+            "insight": "I had my live technical interview for the New York new grad position. We solved a graph traversal problem, discussed complexity, and walked through a bug in my solution. This is only my experience, not an official question list.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "Technical interview",
+            "experienceDate": "2026-10-24T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "technical",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=technical"
+            }
+          },
+          {
+            "id": "report:circle_post:oa-wait",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-wait",
+            "sourceRevision": 1,
+            "title": "Waiting after the OA",
+            "insight": "I submitted my online assessment eight days ago and have not received an update. The portal still says in review. Anyone else waiting after the assessment? Please compare dates here.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-23T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-wait",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-wait"
+            }
+          },
+          {
+            "id": "report:circle_post:recruiter",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "recruiter",
+            "sourceRevision": 1,
+            "title": "Recruiter screen experience",
+            "insight": "My recruiter screen covered graduation date, work authorization and why I was interested in the company. There was no live coding in my call. I have not reached the technical interview yet.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "Recruiter screen",
+            "experienceDate": "2026-10-22T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "recruiter",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=recruiter"
+            }
+          }
+        ],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 10,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "no_discussions",
+        "message": "No specific reports or candidate discussions mention the exact offer acceptance deadline for the Bloomberg New Grad Software Engineer role in New York for 2026. The available reports mostly cover interview stages, technical experiences, and waiting times after assessments but do not include information on offer deadlines.",
+        "citations": []
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": false,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": true,
+        "emptyCitations": true,
+        "usefulMessage": true,
+        "concepts": true
+      },
+      "pass": false,
+      "latencyMs": 2284
+    },
+    {
+      "id": "unknown-automatic",
+      "question": "Find the exact offer acceptance deadline to enrich my application.",
+      "mode": "automatic",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "jobId": "bloomberg-ny-2026"
+          }
+        }
+      ],
+      "packet": {
+        "status": "evidence_available",
+        "scope": {
+          "jobId": "bloomberg-ny-2026"
+        },
+        "automaticAction": "assess_usefulness",
+        "seedIds": [
+          "report:circle_post:rumor",
+          "report:circle_post:waiting-thread",
+          "report:circle_post:oa-recent",
+          "report:circle_post:next-step",
+          "report:circle_post:technical",
+          "report:circle_post:oa-wait",
+          "report:circle_post:recruiter"
+        ],
+        "evidence": [
+          {
+            "id": "report:circle_post:rumor",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "rumor",
+            "sourceRevision": 1,
+            "title": "Unconfirmed rumor about headcount",
+            "insight": "I saw someone elsewhere claim that new grad hiring was paused. I have no firsthand confirmation or recruiter message. Has anyone received an actual update? Please do not treat this as confirmed.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-26T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "rumor",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=rumor"
+            }
+          },
+          {
+            "id": "report:circle_post:waiting-thread",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "waiting-thread",
+            "sourceRevision": 1,
+            "title": "Anyone waiting after the technical round?",
+            "insight": "I finished my New York new grad technical round nine days ago. No decision yet. I am still actively interviewing. Anyone else in this stage? Share your interview date and any recruiter updates in this thread.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-25T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "waiting-thread",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=waiting-thread"
+            }
+          },
+          {
+            "id": "report:circle_post:oa-recent",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-recent",
+            "sourceRevision": 1,
+            "title": "OA finished yesterday",
+            "insight": "I completed the online assessment yesterday. Mine had two timed coding tasks. One used a hash map and the other involved a sliding window. I could run sample tests. Has anyone heard back after submitting?",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-25T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-recent",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-recent"
+            }
+          },
+          {
+            "id": "report:circle_post:next-step",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "next-step",
+            "sourceRevision": 1,
+            "title": "Update: invited to the next round",
+            "insight": "I heard back three business days after my technical interview and was invited to another conversation. A friend is still waiting; my timing is not a promise for anyone else.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-24T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "next-step",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=next-step"
+            }
+          },
+          {
+            "id": "report:circle_post:technical",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "technical",
+            "sourceRevision": 1,
+            "title": "Live technical round experience",
+            "insight": "I had my live technical interview for the New York new grad position. We solved a graph traversal problem, discussed complexity, and walked through a bug in my solution. This is only my experience, not an official question list.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "Technical interview",
+            "experienceDate": "2026-10-24T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "technical",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=technical"
+            }
+          },
+          {
+            "id": "report:circle_post:oa-wait",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "oa-wait",
+            "sourceRevision": 1,
+            "title": "Waiting after the OA",
+            "insight": "I submitted my online assessment eight days ago and have not received an update. The portal still says in review. Anyone else waiting after the assessment? Please compare dates here.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "OA",
+            "experienceDate": "2026-10-23T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "oa-wait",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=oa-wait"
+            }
+          },
+          {
+            "id": "report:circle_post:recruiter",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "recruiter",
+            "sourceRevision": 1,
+            "title": "Recruiter screen experience",
+            "insight": "My recruiter screen covered graduation date, work authorization and why I was interested in the company. There was no live coding in my call. I have not reached the technical interview yet.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "Recruiter screen",
+            "experienceDate": "2026-10-22T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "recruiter",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=recruiter"
+            }
+          }
+        ],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 10,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "insufficient",
+        "message": "No reports specifically mention the exact offer acceptance deadline for the Bloomberg New York 2026 new grad software engineer position. Current discussions cover interview stages and timelines but do not provide firm dates or deadlines for offer acceptance.",
+        "citations": [
+          "report:circle_post:rumor",
+          "report:circle_post:waiting-thread",
+          "report:circle_post:oa-recent",
+          "report:circle_post:next-step",
+          "report:circle_post:technical",
+          "report:circle_post:oa-wait",
+          "report:circle_post:recruiter"
+        ]
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": true,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": false,
+        "emptyCitations": false,
+        "usefulMessage": true,
+        "concepts": true
+      },
+      "pass": false,
+      "latencyMs": 1931
+    },
+    {
+      "id": "empty-automatic",
+      "question": "Surface useful interview reports for my posting.",
+      "mode": "automatic",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "jobId": "bloomberg-empty"
+          }
+        }
+      ],
+      "packet": {
+        "status": "no_discussions",
+        "scope": {
+          "jobId": "bloomberg-empty"
+        },
+        "automaticAction": "suppress",
+        "seedIds": [],
+        "evidence": [],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 10,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "no_discussions",
+        "message": "",
+        "citations": []
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": true,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": true,
+        "emptyCitations": true,
+        "usefulMessage": true,
+        "concepts": true
+      },
+      "pass": true,
+      "latencyMs": 1785
+    },
+    {
+      "id": "empty-direct",
+      "question": "Are there any interview reports for my posting?",
+      "mode": "direct",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "jobId": "bloomberg-empty",
+            "limit": 3
+          }
+        }
+      ],
+      "packet": {
+        "status": "no_discussions",
+        "scope": {
+          "jobId": "bloomberg-empty"
+        },
+        "automaticAction": "suppress",
+        "seedIds": [],
+        "evidence": [],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 3,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "no_discussions",
+        "message": "No interview reports were found for the specified posting (jobId: bloomberg-empty) in the accessible scope.",
+        "citations": []
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": true,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": true,
+        "emptyCitations": true,
+        "usefulMessage": true,
+        "concepts": true
+      },
+      "pass": true,
+      "latencyMs": 2277
+    },
+    {
+      "id": "rumor",
+      "question": "Is Bloomberg hiring confirmed to be paused?",
+      "mode": "direct",
+      "calls": [
+        {
+          "name": "read_demo_muse_intelligence",
+          "args": {
+            "jobId": "bloomberg-ny-2026",
+            "stage": "After technical",
+            "limit": 5
+          }
+        }
+      ],
+      "packet": {
+        "status": "evidence_available",
+        "scope": {
+          "jobId": "bloomberg-ny-2026",
+          "stage": "After technical"
+        },
+        "automaticAction": "assess_usefulness",
+        "seedIds": [
+          "report:circle_post:rumor",
+          "report:circle_post:waiting-thread",
+          "report:circle_post:next-step"
+        ],
+        "evidence": [
+          {
+            "id": "report:circle_post:rumor",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "rumor",
+            "sourceRevision": 1,
+            "title": "Unconfirmed rumor about headcount",
+            "insight": "I saw someone elsewhere claim that new grad hiring was paused. I have no firsthand confirmation or recruiter message. Has anyone received an actual update? Please do not treat this as confirmed.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-26T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "rumor",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=rumor"
+            }
+          },
+          {
+            "id": "report:circle_post:waiting-thread",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "waiting-thread",
+            "sourceRevision": 1,
+            "title": "Anyone waiting after the technical round?",
+            "insight": "I finished my New York new grad technical round nine days ago. No decision yet. I am still actively interviewing. Anyone else in this stage? Share your interview date and any recruiter updates in this thread.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-25T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "waiting-thread",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=waiting-thread"
+            }
+          },
+          {
+            "id": "report:circle_post:next-step",
+            "kind": "report",
+            "sourceType": "circle_post",
+            "sourceId": "next-step",
+            "sourceRevision": 1,
+            "title": "Update: invited to the next round",
+            "insight": "I heard back three business days after my technical interview and was invited to another conversation. A friend is still waiting; my timing is not a promise for anyone else.",
+            "company": "Bloomberg",
+            "role": "New Grad Software Engineer",
+            "stage": "After technical",
+            "experienceDate": "2026-10-24T00:00:00.000Z",
+            "provenance": "unknown",
+            "uncertainty": "Fictional evaluation data. Individual report, not verified employer policy.",
+            "source": {
+              "circleId": "fictional-bloomberg",
+              "postId": "next-step",
+              "revision": 1,
+              "path": "/circles/?circle=fictional-bloomberg&thread=next-step"
+            }
+          }
+        ],
+        "resources": [],
+        "links": [],
+        "coverage": {
+          "limit": 5,
+          "possiblyMore": false,
+          "order": "reported_date_desc",
+          "graphTruncated": null
+        }
+      },
+      "answer": {
+        "status": "insufficient",
+        "message": "There is no confirmed information about Bloomberg pausing hiring. Some candidates have heard rumors about new grad hiring being paused, but there is no firsthand confirmation or official recruiter message. Candidates are still receiving interview invitations or waiting for decisions after technical rounds without confirmed hiring pauses.",
+        "citations": [
+          "report:circle_post:rumor",
+          "report:circle_post:waiting-thread",
+          "report:circle_post:next-step"
+        ]
+      },
+      "checks": {
+        "retrieved": true,
+        "scope": true,
+        "expectedStatus": false,
+        "validCitations": true,
+        "requiredCitations": true,
+        "silentAutomatic": true,
+        "emptyCitations": true,
+        "usefulMessage": true,
+        "concepts": false
+      },
+      "pass": false,
+      "latencyMs": 1909
+    }
+  ]
+}

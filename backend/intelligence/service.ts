@@ -1,3 +1,4 @@
+import {MUSE_TOOL,validateMuseArgs} from './muse.ts';
 import {GRAPH_TOOL,validateGraphArgs,expandEvidenceGraph} from './evidence-graph.ts';
 import type {SourceKey} from './types.ts';
 import {METADATA_TOOL,validateMetadataArgs} from './metadata.ts';
@@ -12,8 +13,8 @@ export {INGEST_TOOL, LIST_TOOL} from './contract.ts';
 
 // Internal backend API: no fixture imports, MCP names or demo storage defaults.
 export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader, target:StoreTarget) {
-  return {
-    graph: async (args:unknown) => {
+  const processor = {
+    graph: async (args:unknown,followLinks=true) => {
       const options=validateGraphArgs(args);
       const store=databaseStore((sql,values)=>pool.query(sql,values),target);
       const readCurrent=async(keys:SourceKey[],circleId?:string)=>{
@@ -27,11 +28,40 @@ export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider
         }
         return eligible.length?store.list(eligible.length,current,undefined,{sourceKeys:eligible}):[];
       };
-      const seeds=await readCurrent(options.seeds);
+      const rows=await readCurrent(options.seeds);
+      const seeds=followLinks?rows:rows.map(r=>({...r,post_references:[],resource_links:[]}));
       return expandEvidenceGraph(seeds,async ref=>{
         const rows=await readCurrent([{sourceType:'circle_post',sourceId:ref.postId}],ref.circleId);
         return rows[0]??null;
       },options);
+    },
+    muse: async (args:unknown) => {
+      const {expandLinks,limit,...scope}=validateMuseArgs(args);
+      const candidates=(await loadSources()).filter(c=>c.observation.sourceType==='circle_post');
+      const current=candidates.map(c=>clean(c.observation,null,c.identities));
+      const store=databaseStore((sql,values)=>pool.query(sql,values),target);
+      // Filter discussion sources before LIMIT: private application milestones cannot
+      // become community evidence or crowd discussions out of a bounded result.
+      const items=await store.list(limit,current,undefined,{...scope,sourceKeys:current.map(r=>({sourceType:r.sourceType,sourceId:r.sourceId}))});
+      // Revalidate the selected sources even when link expansion is disabled.
+      const graph=items.length?await processor.graph({seeds:items.map(r=>({sourceType:r.source_type,sourceId:r.source_id})),maxDepth:expandLinks?2:1,maxNodes:30},expandLinks):null;
+      const selected=new Set(items.map(r=>`report:${r.source_type}:${r.source_id}`));
+      const reports=(graph?.nodes.filter(n=>n.kind==='report'&&(expandLinks||selected.has(n.id)))??[]).map(n=>{
+        if(n.kind!=='report')return n;
+        const source=candidates.find(c=>c.observation.sourceId===n.sourceId&&c.observation.sourceRevision===n.sourceRevision);
+        const circleId=source?.sourceCircleId;
+        return {...n,source:circleId?{circleId,postId:n.sourceId,revision:n.sourceRevision,path:`/circles/?circle=${encodeURIComponent(circleId)}&thread=${encodeURIComponent(n.sourceId)}`}:null};
+      });
+      const seedIds=reports.filter(n=>selected.has(n.id)).map(n=>n.id);
+      const hasDiscussions=seedIds.length>0;
+      return {status:hasDiscussions?'evidence_available':'no_discussions',scope,
+        automaticAction:hasDiscussions?'assess_usefulness':'suppress',
+        seedIds:hasDiscussions?seedIds:[],
+        evidence:hasDiscussions?reports:[],
+        resources:hasDiscussions&&expandLinks?graph!.nodes.filter(n=>n.kind==='resource'):[],
+        links:hasDiscussions&&expandLinks?graph!.edges:[],
+        coverage:{limit,possiblyMore:items.length===limit,order:'reported_date_desc',graphTruncated:expandLinks?graph?.truncated??null:null},
+      };
     },
     metadata: async (args:unknown) => {
       const {limit,...filters}=validateMetadataArgs(args);
@@ -59,12 +89,14 @@ export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider
       return databaseStore((sql, values) => pool.query(sql, values),target).list(limit,current);
     },
   };
+  return processor;
 }
 
 // Local evaluation transport only. Production callers must authenticate and select owner server-side.
 export function ingestionService(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader,target:StoreTarget): DemoCall {
   const processor=intelligenceProcessor(pool,provider,loadSources,target);
   return async (operation, args = {}) => {
+    if(operation===MUSE_TOOL)return processor.muse(args);
     if(operation===GRAPH_TOOL)return processor.graph(args);
     const call = validateDemoCall(operation, args);
     if(call.operation===METADATA_TOOL)return processor.metadata(call.metadata);
