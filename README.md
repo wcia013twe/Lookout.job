@@ -979,3 +979,7 @@ The demo uses fictional suggestions without vendor requests.
 MCP mapping: suggestions are an optional input aid; selected location text uses the
 existing search-profile prompt save and its ownership/version validation, also
 available to agents through scoped search-profile editing. No new write boundary.
+
+Onboarding role preferences also support multiple removable roles. Suggested roles
+toggle independently; custom roles can be added with Enter or Add role. Selected
+roles use semicolon-separated text in the existing search-profile prompt.

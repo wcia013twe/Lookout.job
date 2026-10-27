@@ -5,3 +5,9 @@
 - Selected labels remain semicolon-separated location text in the existing search-profile prompt. Browser and scoped MCP profile edits retain shared backend ownership/version validation; autocomplete adds no backend write or approval boundary.
 - Validation: 14 targeted tests, frontend typecheck, data validation (158 roles), production static build, clean design detector, browser country/city and keyboard/multi-select checks, mobile screenshot inspection. A bounded live Geoapify lookup returned five results using the configured key.
 - Limits: browser UI tests use fictional API responses; no hosted publication. Production builds need their own configured browser key and allowed origins.
+
+## Multiple role preferences
+
+- Role suggestions now toggle independently with removable chips. Custom roles can be added using Enter or Add role. Existing search-profile text stores the selected roles separated by semicolons, through the same browser/MCP save boundary.
+- Browser coverage selects two roles together and adds/removes a custom role; the shared onboarding component covers demo rendering too.
+- Follow-up validation: typecheck, data validation, eight onboarding tests, production build, design detector and desktop/mobile browser verification passed.
