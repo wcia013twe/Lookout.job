@@ -8,7 +8,7 @@ import { useWorkspace } from "../lib/workspace";
 import { checkOnboardingConnection } from "../lib/onboarding-search-handoff.mjs";
 import { onboardingConnectionReady } from "../lib/onboarding-connection.mjs";
 import { Iphone } from "./iphone";
-import AgentConnections from "./agent-connections";
+import AgentConnections, { AgentPluginSteps } from "./agent-connections";
 import { Button, Dots, Icon, Quiet, Title } from "./onboarding-ui";
 
 type Props = { room: ReactNode; onFinish: () => void; onLater: () => void };
@@ -85,6 +85,7 @@ export default function OnboardingAgentConnection({ room, onFinish, onLater }: P
     {room}
     <div className="agent-connect-heading"><h2>Add a connector in your agent.</h2></div>
     {w.demo ? <div className="agent-connect">
+      <AgentPluginSteps />
       <p className="hint">Demo preview · no connector is created.</p>
       {!copied && <Button onClick={() => setCopied(true)}>Preview connection</Button>}
     </div> : w.user ? <AgentConnections onboarding onSetupCopied={() => setCopied(true)} /> : <>

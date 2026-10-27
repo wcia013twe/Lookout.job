@@ -21,7 +21,7 @@ const scopeLabels: Record<string, string> = {
   "approvals:read": "Read application review decisions",
 };
 export function AgentPluginSteps() {
-  return <p className="hint">Add a connector in your agent using the server URL and token below.</p>;
+  return <p className="hint">In your agent’s settings, add a connector named Lookout, paste the server URL and token below, then save.</p>;
 }
 export default function AgentConnections({onboarding=false,onSetupCopied,onConnectionsChange}:{onboarding?:boolean;onSetupCopied?:()=>void;onConnectionsChange?:(connections:AgentConnection[])=>void}) {
   const w = useWorkspace();

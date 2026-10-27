@@ -18,3 +18,8 @@
 - Copying the token enables a connection check; only the existing backend agent confirmation marks it connected. Account-settings instructions and shared credential-free handoff remain unchanged. Existing scoped connection/onboarding tools continue to own issuance, revocation and readiness.
 - Demo uses a fictional preview interaction without copying credentials or creating a connector.
 - Validation: full npm test, production build, data validation, whitespace check, design detector. No manual browser or live external connector verification.
+
+## Follow-up: plain-language connector directions
+
+- Added a single plain-language direction to find agent settings, add Lookout, paste the server URL and token, and save. The same direction appears in the fictional demo.
+- Validation: production build, data validation, whitespace check and design detector. Copy-only change; no external agent settings or live connector verified. No backend or MCP contract changes.
