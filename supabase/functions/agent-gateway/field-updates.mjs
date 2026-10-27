@@ -1,10 +1,10 @@
 // Narrow partial edits. Arrays and supplied nested values replace that whole field.
-import { profileFactsSchema } from './write-schemas.mjs';
+import { editableProfileFactsSchema } from './write-schemas.mjs';
 import { ARTIFACT_TOOLS } from './artifacts.mjs';
 const text={type:'string',maxLength:20000};
 const fields=names=>Object.fromEntries(names.split(' ').map(k=>[k,text]));
 const definitions=[
- ['update_profile_fields','profile.fields.update','profile:write','expectedUpdatedAt',profileFactsSchema.properties],
+ ['update_profile_fields','profile.fields.update','profile:write','expectedUpdatedAt',editableProfileFactsSchema.properties],
  ['update_company_workspace_fields','company_workspaces.fields.update','network:write','expectedRevision',{
   ...fields('name website priority interest targetTeams concerns research nextAction followUpDate'),
   sources:{type:'array',maxItems:30},contactIds:{type:'array',maxItems:1000},applicationIds:{type:'array',maxItems:1000},archived:{type:'boolean'}}],
@@ -13,7 +13,7 @@ const definitions=[
  ['update_artifact_fields','artifacts.fields.update','drafts:write','expectedVersion',Object.fromEntries(Object.entries(ARTIFACT_TOOLS.find(t=>t.operation==='artifacts.save').inputSchema.properties).filter(([k])=>['title','purpose','body','sources','links','materials','preparedFor','weekOf','company'].includes(k)))],
 ];
 export const FIELD_UPDATE_TOOLS=definitions.map(([name,operation,scope,version,properties])=>({name,operation,scope,
- description:'Edit only named fields on an existing owned record. Read current state first. Unspecified fields remain unchanged; supplied arrays/nested values replace that entire field, not individual items. Supply the exact current version; stale writes reject. No creation, approval, verification, sending or submission. Freeform text can contain agent analysis, clearly labeled with evidence and unknowns; profile facts must be source-backed. Read current state after an uncertain response before retrying.',
+ description:(operation==='profile.fields.update'?'For individual work-history additions, edits or removals, use edit_work_experience instead of replacing workExperience. ':'')+'Edit only named fields on an existing owned record. Read current state first. Unspecified fields remain unchanged; supplied arrays/nested values replace that entire field, not individual items. Supply the exact current version; stale writes reject. No creation, approval, verification, sending or submission. Freeform text can contain agent analysis, clearly labeled with evidence and unknowns; profile facts must be source-backed. Read current state after an uncertain response before retrying.',
  inputSchema:{type:'object',additionalProperties:false,required:[...(version==='expectedUpdatedAt'?[]:['id']),version,'fields'],properties:{
  ...(version==='expectedUpdatedAt'?{}:{id:{type:'string',minLength:1,maxLength:200}}),
  [version]:version==='expectedUpdatedAt'?{type:'string',format:'date-time'}:{type:'integer',minimum:version==='expectedVersion'?1:0,maximum:2147483646},

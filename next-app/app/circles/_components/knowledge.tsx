@@ -11,6 +11,7 @@ import listStyles from './circle-list.module.css';
 import Settings from './settings';
 import AgentContext from './agent-context';
 import CircleSearch from './search';
+import CompanyDiscussions from './company-discussions';
 import CircleDashboard from './circle-views';
 import ApiError from '../../../components/api-error';
 type Page<T>={items:T[];nextCursor:Cursor|null};
@@ -20,11 +21,12 @@ const date=(at:string)=>new Date(at).toLocaleDateString(undefined,{year:'numeric
 export default function CircleKnowledge(){
  const client=useKnowledgeClient();
  if(client.connectionState==='loading')return <Notice>Connecting to your Circle account…</Notice>;
- if(client.connectionState==='signed_out')return <><Heading title="Circles">Sign in to open your private Circles.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={client.signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div></>;
+ if(client.connectionState==='signed_out')return <><Heading title="Community">Sign in to open your Circles and company discussions.</Heading><div className="flex flex-wrap gap-3"><button className={primary} onClick={client.signIn}>Sign in</button><button className={secondary} onClick={client.openDemo}>Explore fictional demo</button></div></>;
  if(!client.ready)return <ApiError message="Circle client initialization failed [CLIENT_UNAVAILABLE]. Reload the page to reconnect." onRetry={()=>location.reload()}/>;
  return <KnowledgeSurface key={client.identity} request={client.request} demo={client.demo}/>;
 }
 export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
+ const [view,setView]=useState<'circles'|'companies'>('circles');
  const [circles,setCircles]=useState<Circle[]>([]),[circleId,setCircleId]=useState(''),[threadId,setThreadId]=useState('');
  const [circleView,setCircleView]=useState<'clubhouse'|'settings'>('clubhouse');
  const [detail,setDetail]=useState<Detail|null>(null),[page,setPage]=useState<Page<Post>>({items:[],nextCursor:null}),[thread,setThread]=useState<Thread|null>(null);
@@ -45,8 +47,8 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  },[request]);
  useEffect(()=>{
   let current=true;setLoading(true);
-  list().then(rows=>{if(!current||!rows)return;const params=new URL(location.href).searchParams;setCircleId(params.get('circle')||'');setThreadId(params.get('thread')||'');}).catch(e=>{if(current)setError(errorText(e));}).finally(()=>{if(current)setLoading(false);});
-  const pop=()=>{version.current++;const p=new URL(location.href).searchParams;setDetail(null);setPage({items:[],nextCursor:null});setDraftPosts([]);setEditor(null);setThread(null);setThreadId(p.get('thread')||'');setCircleId(p.get('circle')||'');setCircleView('clubhouse');};window.addEventListener('popstate',pop);
+  list().then(rows=>{if(!current||!rows)return;const params=new URL(location.href).searchParams;setView(params.get('view')==='companies'?'companies':'circles');setCircleId(params.get('circle')||'');setThreadId(params.get('thread')||'');}).catch(e=>{if(current)setError(errorText(e));}).finally(()=>{if(current)setLoading(false);});
+  const pop=()=>{version.current++;const p=new URL(location.href).searchParams;setDetail(null);setPage({items:[],nextCursor:null});setDraftPosts([]);setEditor(null);setThread(null);setThreadId(p.get('thread')||'');setCircleId(p.get('circle')||'');setCircleView('clubhouse');setView(p.get('view')==='companies'?'companies':'circles');};window.addEventListener('popstate',pop);
   return()=>{current=false;window.removeEventListener('popstate',pop);};
  },[list]);
  const refresh=useCallback(async()=>{
@@ -97,9 +99,10 @@ export function KnowledgeSurface({request,demo}:{request:Request;demo:boolean}){
  const privateDrafts=[...new Map([...draftPosts,...page.items].map(post=>[post.id,post])).values()].filter(post=>post.owned&&post.revision!==post.publishedRevision);
  return <div className="min-w-0">
   {circleId&&<button type="button" className={`${secondary} mb-4`} disabled={busy} onClick={()=>{setCircleView('clubhouse');locate('');}}>Back to your circles</button>}
-  {!circleId&&<Heading title="Circles" />}
+  {!circleId&&<><Heading title="Community" /><nav aria-label="Community views" className="mb-7 flex flex-wrap gap-2 border-b border-board-line pb-3">{([['circles','Circles'],['companies','Companies']] as const).map(([key,label])=><button key={key} type="button" aria-current={view===key?'page':undefined} className={view===key?primary:secondary} onClick={()=>{setView(key);const url=new URL(location.href);if(key==='companies')url.searchParams.set('view','companies');else url.searchParams.delete('view');history.pushState(null,'',url);}}>{label}</button>)}</nav></>}
   <ApiError message={error} onRetry={()=>void (async()=>{setLoading(true);try{await list();await refresh();}catch(failure){setError(errorText(failure));}finally{if(mounted.current)setLoading(false);}})()}/><div role="status"><Notice>{notice||(loading?'Loading Circle…':'')}</Notice></div>
-  {available&&!circleId&&!loading&&<>
+  {available&&!circleId&&!loading&&view==='companies'&&<CompanyDiscussions request={request} openPost={post=>locate(post.circleId,post.id)}/>}
+  {available&&!circleId&&!loading&&view==='circles'&&<>
    {!error&&<section className="mb-8" aria-labelledby="your-circles-title">
     <h2 id="your-circles-title" className="mb-3 text-xl font-semibold">Your circles</h2>
     {circles.length?<ul className={listStyles.list}>{circles.map(circle=><CircleListItem key={circle.id} circle={circle} request={request} demo={demo} busy={busy} open={()=>{setCircleView('clubhouse');locate(circle.id);}} manage={()=>{setCircleView('settings');locate(circle.id);}}/>)}</ul>:<p className="py-4 text-board-muted">No circles yet. Join your people with an invite code, or start your own.</p>}

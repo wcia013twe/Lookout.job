@@ -12,7 +12,7 @@ export function useKnowledgeClient():{request:Request;ready:boolean;identity:str
   if(current.identity!==identity)throw Error('Account changed. Reload Circles.');
   if(service)return service.action(operation,payload) as T;
   if(!owner||!client)throw Error('Sign in to open a private Circle.');
-  const data=await callApi(operation,()=>client.rpc('knowledge_action',{operation,payload}),data=>!!data&&typeof data==='object'&&(data.available===false||(operation==='circles.list'?Array.isArray(data.circles):['knowledge.search','knowledge.feed'].includes(operation)?Array.isArray(data.items):operation==='knowledge.read'?!!data.post&&Array.isArray(data.replies):true)));
+  const data=await callApi(operation,()=>client.rpc('knowledge_action',{operation,payload}),data=>!!data&&typeof data==='object'&&(data.available===false||(operation==='knowledge.interview'?Array.isArray(data.evidence)&&['no_discussions','evidence_available'].includes(data.status):operation==='circles.list'?Array.isArray(data.circles):['knowledge.search','knowledge.feed'].includes(operation)?Array.isArray(data.items):operation==='knowledge.read'?!!data.post&&Array.isArray(data.replies):true)));
   if(active.current!==current)throw Error('Account changed. Reload Circles.');
   if(data.available===false)throw apiFailure(operation,{code:'FEATURE_UNAVAILABLE'});
   return circleKnowledgeResponse(operation,data) as T;

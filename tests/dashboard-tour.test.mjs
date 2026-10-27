@@ -30,6 +30,6 @@ test('new personal workspaces wait for a private batch while public browsing and
 
 test('tour introduces the workspace then each navigation tab separately, with the Network illustration',()=>{
  assert.deepEqual(dashboardTourSteps.slice(1).map(step=>step.targets.length),[1,1,1,1,1,1]);
- assert.deepEqual(dashboardTourSteps.slice(1).map(step=>step.title),['Action board','Discover','Applications','Network','Career Toolkit','Circles']);
+ assert.deepEqual(dashboardTourSteps.slice(1).map(step=>step.title),['Action board','Discover','Applications','Network','Career Toolkit','Community']);
  assert.equal(dashboardTourSteps.find(step=>step.title==='Network').illustration,'network');
 });

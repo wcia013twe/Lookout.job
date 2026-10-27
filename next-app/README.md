@@ -417,3 +417,40 @@ individual guide pages remain readable without signing in.
 
 `scripts/check-signed-out-ui.mjs` checks these boundaries using fictional sessions
 and intercepted API responses; no real account or external write is required.
+
+Compact card assessments extend the existing private `batch_items.recommendation.matchAssessment` JSON. New assessments carry exactly four named dimensions (`skillsExperience`, `compensation`, `wellbeingCulture`, `locationWorkSetting`), each `{score:0–100|null, reasoning:1–240 characters}`, plus an `assessedAt` timestamp. Optional overall `percent` and short `evidence` are agent supplied. Cards display numeric scores or Unknown; reasoning is available only in expanded Preview. There is no backend scoring engine, separate table or synthesized aggregate. Legacy factor assessments and immutable historical batches remain readable. The existing publish_batch tool validates/persists both formats; the compact-score migration and gateway56 must be released before claiming hosted support.
+
+
+### Tracker application flow
+
+Applications → Stats renders bounded counters and a client-side Nivo Sankey below them. `lib/application-flow.mjs` partitions the deduplicated native/imported applications using the tracker's current progress/outcome rules, with totals matching the Applications counter. It does not reconstruct unrecorded intermediate steps or infer ghosting from silence. Saved jobs and drafts are excluded; accessible labeled counts accompany the chart, and empty/single-outcome states are supported. This is a read-only visualization over the existing workspace/application reads, with no new MCP mutation or data sent to an external chart service.
+
+`node scripts/check-profile-navigation.mjs` checks the complete desktop/mobile navigation and chart flow. Isolated demo URLs `/applications/?demo=1&demoApi=application-flow`, `application-flow-single` and `application-flow-empty` cover every branch and edge state; demo reset recreates the selected fixture without account writes.
+
+
+### Public landing page
+
+Signed-out `/` renders the Lookout landing page with a personalized tutorial-card hero, a time-shift scale, a Connect/Ask/Watch workflow, Muse check-in, preparation and Circles; signed-in and explicit-demo home still render Discover. `/discover/` retains its sign-in gate. Signup uses the existing `/onboarding/` Google account flow and login uses `/discover/?demo=0`; no new auth provider or application authority is introduced.
+
+The hero reuses `OnboardingRoleReveal` in a compact landing presentation and its shared `TutorialRoleCard` face. The existing purple-to-gold flip and `RoleMatchPreview` show an explicit fictional profile, overall fit and four animated factor scores. Review exposes expandable factor reasoning; Replay repeats the reveal. Normal onboarding retains its side-by-side explanation and focus behavior. Its example roles, Pass and Review actions are component-local and never persist preferences, application records or progress. Review reveals verification guidance and account setup, never submits. Muse check-ins, preparation and Circle discussions are labeled examples. Recurring runs still depend on a configured agent schedule. The hero uses the full-body Buddy from the existing motion study, including hands, torso and feet, in the active purple/indigo-and-lavender palette. The body stays still while the eyes glance and blink. Three observation marks appear only with the forward gaze; paused and reduced-motion views show that centered pose with all three marks. The ordinary header logo remains indigo. A generated transparent cutout and exact source/prompt provenance are bundled in `assets/brand/`. The new workflow follows “Your agent does the work. You’re always in control.” with three steps and a large illustrative workspace; its counts and activity are fictional. Google marks reuse the bundled authentication logo.
+
+`node scripts/check-landing-ui.mjs` checks desktop/mobile rendering, review/pass state, signup/login destinations and reduced motion. The signed-out regression covers protected routes, guest-cache isolation, demo and account sign-out. These previews add no backend action or MCP mutation; existing account/agent boundaries are unchanged.
+
+The time-shift section follows the hero: “Less time applying. More time preparing.” A literal balance scale shifts once on scroll from applying toward preparation in under three seconds. Reduced-motion mode shows its final state. The illustration is conceptual, not a measured time-saving claim; its copy focuses on repetitive search and admin.
+
+Onboarding navigation checkpoints use account-scoped, versioned localStorage keys. Refresh resumes the last visited setup step; the transient role reveal resumes at the preview entry. No résumé content, tokens, connection authority or completion receipts are stored in this checkpoint. A successful setup completion or workspace reset clears it. Blocked storage falls back to normal setup without a saved-state claim. The fictional demo uses a separate demo-epoch scope and exercises the same navigation checkpoints. This browser navigation preference has no backend/MCP mutation: existing `onboarding.get_state` / `onboarding.submit_step` retain authority for connection and completion.
+
+The onboarding connection panel asks users to add a connector in their agent, exposing the MCP server URL and a one-time token with separate copy actions. Access/privacy and revocation details are collapsed. Copying a token only enables the connection-check action; readiness still comes from the existing agent-confirmed onboarding state, never the clipboard. The checking screen asks the user to have their agent test the connection. Detailed account-settings handoff instructions remain available outside onboarding. Demo setup uses an explicit fictional connection preview without issuing or copying credentials. Existing scoped `connections.issue`, `connections.revoke`, and onboarding state tools remain unchanged.
+
+Agent choice in onboarding and My Agent uses `workflow.searchPreferences.agentSelection`
+(`provider`, `name`), persisted by existing owned preference cloud sync. Both surfaces
+share the option catalog and migrate legacy `setupAgent*` fields out of candidate facts.
+The choice describes the preferred agent; credential issuance and verified connection
+readiness remain separate. Onboarding connection names use the selected agent.
+Demo resets restore fictional Muse; change the dropdown, visit setup and verify the
+same selection, then reset. Account persistence is covered by cloud hydration tests;
+a live signed-in reload and connector handshake require account verification.
+MCP boundary: agent selection is a human setup preference; agents should request the
+user choose it in My Profile → My Agent. Existing scoped connection tools continue to
+manage credentials, and workspace reads expose saved preferences. No new connection
+or deployed MCP capability is implied by selecting a companion.

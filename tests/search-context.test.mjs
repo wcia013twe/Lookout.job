@@ -14,7 +14,7 @@ test('YAML/profile canonicalization preserves narrative and produces rebuildable
 });
 test('documents and generated edge codec stay in sync',()=>execFileSync(process.execPath,['scripts/build-search-documents.mjs','--check']));
 test('new accounts have explicit gaps, no candidate/template facts, and optional source templates',()=>{
- const d=searchResponse('search.context',{documents:[],profile:null,tierLists:[]});assert.equal(d.execution,'personal-agent');assert.equal(d.configurationGaps.length,2);assert.equal(d.sourceTemplates.length,3);assert(!d.documents.length);
+ const d=searchResponse('search.context',{documents:[],profile:null,tierLists:[]});assert.equal(d.execution,'personal-agent');assert.equal(d.configurationGaps.length,2);assert.equal(d.sourceTemplates.length,4);const cafe=d.sourceTemplates.find(s=>s.id==='hiringcafe');assert.equal(cafe.api,'https://hiringcafe.com/api/chatgpt/mcp');assert.equal(parseDocument('portals',JSON.stringify({tracked_companies:[cafe],search_queries:[]})).projection.tracked_companies[0].id,'hiringcafe');assert(!d.documents.length);
 });
 test('every hosted search tool maps to bounded gateway contract; no scanner runtime required',()=>{
  for(const tool of SEARCH_TOOLS)assert(TOOLS.some(t=>t.name===tool.name&&t.operation===tool.operation));
@@ -33,5 +33,5 @@ test('discovery guide resolves dependencies and explains interruption, uncertain
  const g=readGuide('career-find-jobs');assert.equal(g.version,findToolkitSkill('find-jobs').version);assert(g.dependencies.tools.includes('save_search_discoveries'));for(const text of ['No local runner','resume','preferred','partial','source age','searchListingId'])assert(g.instructions.includes(text),text);
 });
 test('fictional search memory is resettable and contains no real accounts or execution',async()=>{
- const {searchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();a.documents[0].content='edited';assert.notEqual(b.documents[0].content,'edited');assert.equal(b.runs[0].state,'partial');assert.equal(b.listings[0].screening.decision,'review-needed');assert.equal(b.listings[0].observation.employer_posted_at,null);assert(b.runs[0].sources.some(s=>s.coverage==='inaccessible'));
+ const {searchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();a.documents[0].content='edited';assert.notEqual(b.documents[0].content,'edited');assert.equal(b.runs.find(r=>r.id==='demo-run').state,'partial');assert.equal(b.listings[0].screening.decision,'review-needed');assert.equal(b.listings[0].observation.employer_posted_at,null);assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.coverage==='inaccessible'));assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.source_id==='portal:demo-aggregate'&&s.blocker.includes('employer application link is unresolved')));const context=searchResponse('search.context',{documents:b.documents,profile:null});assert(context.sourceTemplates.some(s=>s.id==='hiringcafe'));assert(b.documents.find(d=>d.kind==='portals').projection.tracked_companies.every(s=>s.careers_url.startsWith('https://example.com/')));
 });

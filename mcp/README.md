@@ -503,6 +503,148 @@ questions human-reviewed or approve submission. Saved tier lists supply display
 rankings; unranked companies remain visible. These changes require the database
 migration and gateway configuration release before hosted validation is current.
 
+
+## Bounded backend execution
+
+A configured Node API/worker can expose submit_backend_job, read_backend_jobs,
+and cancel_backend_job. The only
+job kind is search_ats for a saved owned active profile; it does not execute
+arbitrary guides, browsers, messages or applications. Read actual job states and
+coverage diagnostics before claiming completion. Writes require workspace:read,
+preferences:write and drafts:write; caller-supplied connectionId is forbidden.
+My Agent routines are the single schedule configuration; the personal runtime
+owns recurring invocation and submits one bounded Node job on each authorized
+run. Node has no recurring-search scheduler. Tool discovery or a queued job does
+not prove execution. See [the shared website/MCP
+contract](../backend/backend-jobs.md). The updated developer contract, retirement migration and configured runtime
+require release and live verification before hosted support can be claimed.
+
+## Individual work-history edits
+
+Use `edit_work_experience` (`profile:write`) for a single add/update/remove, with
+`expectedUpdatedAt` from `workspace_read`. Update/remove also take `entryIndex`
+from that exact profile snapshot; add/update take only the entry `fields` to save.
+Other fields and entries are preserved. Stale retries reject; read back before
+retrying, and remove only when requested. Changed facts become unverified.
+
+Node MCP forwards this lightweight operation to Edge. The browser adapter calls
+the same owned SQL validator. Bulk section imports remain explicit replacements.
+See [the full contract, examples and release limits](../backend/agent-contract.md#individual-work-history-edits).
+
+
+## Durable Action Board inbox
+
+`read_action_inbox({state?: "pending" | "resolved" | "all", offset?: number})`
+requires `workspace:read` and reads up to 100 owned entries with `nextOffset`.
+It is a lightweight Edge + Supabase operation even when accessed through Node MCP.
+Pending entries may have a future `available_at` for a stalled submission check.
+Application and submission transitions append/resolve entries atomically; exact
+report retries do not duplicate them. History remains available after resolution.
+Use existing human-review handoffs for approval and uncertain submission recovery.
+No clear/dismiss operation exists, and reading/resolving an item never starts a
+worker or authorizes a new attempt. Developer contract 72 and the inbox migration
+must be released before advertising availability; hosted delivery is unverified.
+
+
+Developer contract 72 makes next-cycle pickup explicit in MCP initialization,
+developer context, and `read_guide({id:"application-workspace"})` version 3.
+During authorized application work, read pending and resolved inbox history,
+retrieve current application records and exact approval when required, then let
+the supported runner reauthorize execution. Never recreate an unchanged approved
+draft or interpret resolution as consent. Search-only cycles do not authorize
+submission; uncertain and user-reported submissions remain ineligible for retry.
+These directions require release and client context/tool refresh to reach Muse.
+
+
+## Programmatic application submission
+
+The configured Node API can expose `submit_application` and
+`submit_application_batch` when `LOOKOUT_SUBMISSION_ENABLED=true`. Its default is
+off; discovery is filtered by workspace:read, drafts:write, approvals:read and
+resumes:read. These tools reuse the local runner implementation; no parallel
+submission engine or search-cron execution path exists. Browser contexts and
+credentials are isolated per request, with at most two executions per API process.
+
+A batch accepts `{eventKey, applications:[{applicationId,expectedRevision}]}`
+(1–10 unique owned references). It executes sequentially while the request runs,
+recording durable checkpoints in Edge/Supabase after each application. There is
+no background submission scheduler. Node owns browser work; Edge owns validation
+and saves; Muse owns reasoning and content. Every child independently obtains
+current authorization, validates the exact form/resume and claims a single click.
+
+Use `read_application_batches({batchId})` to reconcile after a lost response.
+An active execution lease returns busy; an expired lease allows the identical
+batch to resume unfinished entries with stable child attempt IDs. Terminal
+results replay without running again. Checkpoint outcomes derive from saved
+application/attempt records, not caller-supplied success. A partial batch retains
+independent successes and Action Board blockers. Repair supported pre-click
+issues from verified facts or request human input, then submit a new eventKey
+with current revisions. An agent cannot resolve uncertain submission or invent
+approval. Known submitted or uncertain attempts never authorize another click.
+
+The browser `readApplicationBatches` adapter and MCP read use the same private,
+owner-scoped reader. Fictional demo services expose completed, partial/uncertain
+and running examples without execution. The optional E2E command
+`npm run test:submission:e2e` uses real Chromium, controlled employer routes,
+local Node HTTP/shared Edge handlers, private fixture downloads and migrated SQL.
+It sends no real employer application and calls no model. Use
+`LOOKOUT_CHROMIUM_EXECUTABLE` to select an installed browser for this check.
+
+Release requires the submission-batch migration, gateway contract 75/application
+guide v4 and configured Node API image. Hosted deployment, Muse client execution
+and real employer behavior remain unverified until separately exercised.
+Personal profile patches now share the website's typed/version-checked database
+writer, including preferred-name/address/birthday fields. Only the authenticated
+human can verify the exact saved facts. Website stale edits pause for explicit
+reconciliation and retain their original version across offline reloads. See
+[the complete profile-edit flow](../backend/agent-contract.md#complete-personal-profile-edit-flow)
+for the flow gate, local verifier, demo scenario and coordinated release limits.
+
+
+## Profile-aware resume selection
+
+Preparation and automatic submission now share `selectResume`: active role
+assignments in the selected application profile match normalized title phrases
+and job type; unmatched roles use that profile’s fallback. Blank assignment job
+type inherits the profile types. Blank assignment resume uses the same fallback.
+Conflicting matching files, malformed assignments, unchecked conditions/timelines
+and unavailable/superseded/private-file gaps require review. Legacy account-wide
+rules/defaults remain only for clients without profile resume configuration.
+
+`prepare_draft` exposes `handoff.resumeSelection` and pins an automatically chosen
+owned file/hash. It preserves existing explicit draft selections and reports
+differences from current rules. Submission rereads the owned canonical profile in
+its existing authorization context, including atomic claim/start comparisons.
+Routine execution rejects a stale/mismatched file; exact human approval can
+intentionally override the mapping. The runner downloads the draft’s pinned file,
+never a newly guessed alternative. Deploy the profile-resume-selection migration
+with the gateway update before claiming the new authorization behavior is live.
+
+### Check what changed
+
+On each actual work run: check context versions, then `read_muse_changes`.
+The response includes `eventTypes`, the supported event/label/read-tool list. Each
+item includes a readable `label` and `refresh: {tool, arguments}`. Follow that
+read pointer to get the current record; use existing scoped tools for updates.
+Application/interview timeline updates now appear alongside answers, preferences,
+profiles and completed backend jobs. Interview labels distinguish scheduled,
+completed and other recorded interview updates; raw notes/email bodies stay out
+of the feed.
+Read the affected current application, search profile, preferences or backend job
+through its existing scoped tool. A confirmed answer means a draft answer was
+saved, not that the application was approved. Continue only already-authorized
+work, then call `acknowledge_muse_changes` with the handled IDs. Unhandled changes
+stay pending, independently for each connection. Read another page when `hasMore`
+is true. Do not run this loop during lightweight connection setup; no wake-up or
+scheduled polling is added. If the acknowledgement tool is absent, keep events
+pending and report the scope gap. Feed acknowledgements are not message delivery.
+
+Connection startup delivers these feed instructions through MCP `initialize` for
+both the Node HTTP server and the shared hosted/stdio protocol. No extra user
+prompt is required to discover the contract. First work after connect/reconnect
+refreshes developer/personal context; changed developer versions also refresh
+`tools/list`. Setup-only requests stop after setup. The labeled feed is consumed
+on authorized work runs, with read/ack visibility gated by their existing scopes.
 ### Search observation and progress payloads
 
 `save_search_discoveries` uses its own observation vocabulary, separate from

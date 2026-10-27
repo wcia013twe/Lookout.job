@@ -1,5 +1,6 @@
 "use client";
 import { useState, type ReactNode } from "react";
+import AgentPreference from "./agent-preference";
 import AgentConnections, { type AgentConnection } from "./agent-connections";
 import SearchTargets from "./search-targets";
 import DailySchedule from "./daily-schedule";
@@ -16,6 +17,7 @@ export default function DiscoverySetup({children}:{children?:ReactNode}) {
       <div className="flex items-center gap-1"><h2 className="text-xl font-semibold">My Agent</h2><InfoPopover label="My Agent">Connect your agent, define a search, and choose a pack for its results.</InfoPopover></div>
       <Link className="inline-flex min-h-11 shrink-0 items-center text-sm text-board-muted underline underline-offset-4" href={w.demo?"/discover/?demo=1":"/discover/"}>Back to Discover</Link>
     </div>
+    <div className="agent-settings-box"><AgentPreference/></div>
     <div className="agent-settings-box" id="agent-panel-packs"><CardPackWidgets configure connections={connections} onEditSearch={()=>document.getElementById("agent-panel-search")?.scrollIntoView({behavior:"instant",block:"start"})}/></div>
     <div className="agent-settings-box scroll-mt-6" id="agent-panel-search"><DailySchedule connections={connections}/></div>
     <div className="agent-settings-box" id="agent-panel-sources"><SearchTargets/></div>

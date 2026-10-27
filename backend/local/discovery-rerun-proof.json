@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-26T19:08:35.955Z",
+  "localOnly": true,
+  "jobId": "421e164f-440b-4d62-a8b3-16b6db39940e",
+  "runId": "a7a44e58-8c32-442c-8e0a-d521ab805232",
+  "jobState": "completed",
+  "runState": "completed",
+  "observations": 87,
+  "uniqueListings": 87,
+  "sessionReadFailureRepaired": true,
+  "scoresProduced": false
+}

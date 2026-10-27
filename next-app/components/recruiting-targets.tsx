@@ -73,7 +73,7 @@ export default function RecruitingTargets() {
       <p className="mt-2 mb-4 max-w-prose text-sm text-board-muted">
         Connect one or more job titles and a job type to a resume for {a.profile.name}.
         A blank resume uses your fallback. If different resumes match, your agent should ask you to choose.
-        These assignments guide preparation; they do not authorize submission.
+        Job titles match phrases, ignoring case and punctuation. Job type must also match. Additional conditions or timelines need review. These assignments guide preparation; they do not authorize submission.
       </p>
       {error ? (
         <p role="alert" className="text-sm">

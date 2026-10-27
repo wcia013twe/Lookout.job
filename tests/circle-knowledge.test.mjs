@@ -155,7 +155,7 @@ test('Circle demo exercises forum review and private citation retraction without
  const {createCircleKnowledgeDemo}=await import('../lib/circle-knowledge-demo.mjs');
  const demo=createCircleKnowledgeDemo(),circleId='demo-circle';
  const activity=demo.action('knowledge.search',{circleId}).items;
- assert.deepEqual(new Set(activity.filter(post=>post.state==='published').map(post=>post.content.type)),new Set(['milestone','opportunity','interview_report','resource','discussion','offer_comparison']));
+ assert.deepEqual(new Set(activity.filter(post=>post.state==='published').map(post=>post.content.type)),new Set(['milestone','opportunity','interview_report','resource','discussion','offer_comparison','timeline']));
  assert(activity.find(post=>post.id==='demo-review-draft').publishedRevision===null);
  assert(activity.find(post=>post.id==='demo-shared-opportunity').content.uncertainty.includes('not a verified or open job'));
  const read=()=>demo.action('knowledge.read',{circleId,postId:'demo-interview-report'});

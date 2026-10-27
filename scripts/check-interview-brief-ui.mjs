@@ -10,8 +10,8 @@ try{
  const user={id:'11111111-1111-1111-1111-111111111111',aud:'authenticated',role:'authenticated',email:'fictional@example.com',app_metadata:{demo_preview:true},user_metadata:{},is_anonymous:false};
  const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url');
  const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
- await context.addInitScript(({user,token})=>localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user})),{user,token});
- await context.route('https://umhqfqzpwmszhcknwtrs.supabase.co/**',async route=>{
+ await context.addInitScript(({user,token})=>localStorage.setItem('sb-osyrlausutnqzlegxmnd-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user})),{user,token});
+ await context.route('https://osyrlausutnqzlegxmnd.supabase.co/**',async route=>{
   cloud.push(route.request().url());const url=route.request().url();
   const op=route.request().postDataJSON()?.operation;
   const body=url.includes('/auth/v1/user')?user:url.includes('/rpc/search_action')&&op==='search.context'?{documents:[],profileId:null}:[];
@@ -96,30 +96,23 @@ try{
  await page.getByRole('button',{name:'Active',exact:true}).click();
  await page.getByRole('button',{name:'Open Backend Engineer at Cedar Systems (demo)',exact:true}).click();
  await panel.getByRole('button',{name:'Interview',exact:true}).click();
- const debriefs=panel.getByRole('region',{name:'Interview debriefs',exact:true});
- await debriefs.getByText(/Fictional debrief: we discussed backend ownership/).waitFor();
- await debriefs.getByRole('button',{name:'Add debrief',exact:true}).click();
- await debriefs.getByLabel('Debrief round',{exact:true}).fill('Technical round 1');
- await debriefs.getByLabel('Debrief summary',{exact:true}).fill('We discussed query planning. I explained index tradeoffs well; I need more practice with backpressure. Private recruiter contact: example only.');
- await debriefs.getByRole('button',{name:'Save debrief',exact:true}).click();
- const entry=debriefs.locator('article').filter({hasText:'Technical round 1'});
- await entry.getByRole('button',{name:'Update debrief',exact:true}).click();
- await debriefs.getByLabel('Debrief summary',{exact:true}).fill('We discussed query planning and index tradeoffs. More practice with backpressure would help.');
- await debriefs.getByRole('button',{name:'Save debrief',exact:true}).click();
- await entry.getByRole('button',{name:'Share to Circle',exact:true}).click();
- const share=debriefs.getByRole('region',{name:'Share debrief to Circle',exact:true});
- await share.getByRole('combobox').selectOption('demo-circle');
- assert.equal(await share.getByLabel('Forum summary',{exact:true}).inputValue(),'We discussed query planning and index tradeoffs. More practice with backpressure would help.');
- await share.getByRole('button',{name:'Save forum draft',exact:true}).click();
- const forumLink=share.getByRole('link',{name:'Review draft in Circle',exact:true});await forumLink.waitFor();
- await share.scrollIntoViewIfNeeded();await page.screenshot({path:dir+'/debrief-forum-desktop.png'});
- await page.setViewportSize({width:390,height:844});await share.scrollIntoViewIfNeeded();
+ const notes=panel.getByRole('region',{name:'Interview notes',exact:true});
+ await notes.getByText(/Candidate report \(fictional, saved by Muse\): we discussed backend ownership/).waitFor();
+ await notes.getByRole('button',{name:'Add note',exact:true}).click();
+ assert.equal(await notes.getByRole('textbox').count(),1,'A note needs only its text');
+ await notes.getByLabel('Private interview note',{exact:true}).fill('We discussed query planning. More practice with backpressure would help.');
+ await notes.getByRole('button',{name:'Save note',exact:true}).click();
+ const entry=notes.locator('article').filter({hasText:'We discussed query planning.'});
+ await entry.getByRole('button',{name:'Edit note',exact:true}).click();
+ await notes.getByLabel('Private interview note',{exact:true}).fill('We discussed query planning and index tradeoffs. More practice with backpressure would help.');
+ await notes.getByRole('button',{name:'Save note',exact:true}).click();
+ await notes.getByText('We discussed query planning and index tradeoffs. More practice with backpressure would help.',{exact:true}).waitFor();
+ assert.equal(await notes.getByRole('button',{name:'Share to Circle',exact:true}).count(),0);
+ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:dir+'/interview-notes-desktop.png'});
+ await page.setViewportSize({width:390,height:844});await notes.scrollIntoViewIfNeeded();
  assert(await panel.evaluate(el=>el.scrollWidth<=el.clientWidth+1));
- await page.screenshot({path:dir+'/debrief-forum-mobile.png'});
- assert.deepEqual(cloud.slice(before).map(value=>new URL(value).pathname).filter(path=>!path.startsWith('/storage/v1/object/public/company-logos/')),[],'Demo debrief and forum saves stay isolated from account data');
- await forumLink.click();
- await page.getByText('Private draft',{exact:false}).first().waitFor();
- assert.equal(await page.getByRole('button',{name:'Share with The Next Chapter (demo)',exact:true}).count(),1);
+ await page.screenshot({path:dir+'/interview-notes-mobile.png'});
+ assert.deepEqual(cloud.slice(before).map(value=>new URL(value).pathname).filter(path=>!path.startsWith('/storage/v1/object/public/company-logos/')),[],'Demo notes stay isolated from account data');
  assert.equal(errors.length,0,errors.join('\n'));
- console.log(JSON.stringify({result:'passed',checks:['three priorities maximum','three materials maximum','no setup form or checklist','sources collapsed','uncertain dates remain unconfirmed','no-plan empty state','open-by-default round and email sections','grouped round form','Round details navigation','Action Board link','manual debrief create and update','debrief to private Circle forum draft','no demo cloud calls','desktop dark/mobile light','no overflow','Escape'],artifacts:dir},null,2));
+ console.log(JSON.stringify({result:'passed',checks:['compact brief','sources and uncertain dates','round editor and navigation','simple note create/edit','no embedded sharing','no demo cloud calls','desktop/mobile','no overflow','Escape'],artifacts:dir},null,2));
 } finally {await browser.close();}

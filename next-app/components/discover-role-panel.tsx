@@ -1,4 +1,5 @@
 "use client";
+import {recommendationNeedsRefresh} from "../../lib/job-assessment.mjs";
 import { useEffect, useRef } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { primary, secondary } from "./ui";
@@ -8,7 +9,7 @@ import RoleJobFacts from "./role-job-facts";
 import RoleApplicationPreview from "./role-application-preview";
 import ProfileIcon from "./profile-icon";
 import { companyRanking } from "../lib/role-display";
-import { recordRoleOpened } from "../lib/progress.mjs";
+import ApplicationActions from "./application-actions";
 import styles from "./discover-role-panel.module.css";
 export default function DiscoverRolePanel({ role, onClose, assessmentPending=false }: { role: Role; onClose: () => void; assessmentPending?:boolean }) {
   const w = useWorkspace();
@@ -37,6 +38,7 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
       </div>
     </header>
     <div className="space-y-7 px-5 py-6 sm:px-8">
+      {recommendationNeedsRefresh(role,w.state.workflow.searchPreferences.profiles || []) && <p role="status" className="rounded-lg border border-board-warning/40 p-3 text-sm text-board-warning">Your preferences changed since this analysis. Ask Muse to refresh these recommendations.</p>}
       <RoleJobFacts role={role} />
       <div className={styles.match}><RoleMatchPreview sample={sample} demo={w.demo} expanded /></div>
       <section aria-labelledby="fit-reasoning">
@@ -55,12 +57,10 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
       <details className="border-t border-board-line pt-3">
         <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3"><h3 className="text-lg font-semibold">About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary>
         <p className="mt-4 max-w-prose whitespace-pre-line text-sm leading-relaxed text-board-muted">{role.description || "Full description not collected. Open the employer posting to verify responsibilities, requirements and availability."}</p>
-        <p className="mt-3 text-xs text-board-muted">Posted: {role.postedDate || "Not disclosed"}</p>
       </details>
     </div>
     <footer className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 border-t border-board-line bg-board-panel px-5 py-4 sm:px-8">
-      <p className="text-xs text-board-muted">{w.demo ? "Demo preview · no external actions" : "Opening the posting adds it to Auto Tracker."}</p>
-      {w.demo ? <button className={secondary} onClick={onClose}>Back to Discover</button> : <a href={role.applicationUrl} target="_blank" rel="noopener noreferrer" className={primary} onClick={() => recordRoleOpened(w.store, role.id)}>Open employer posting</a>}
+      <div className="w-full"><ApplicationActions role={role}/></div>
     </footer>
   </dialog>;
 }

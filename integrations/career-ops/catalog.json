@@ -189,7 +189,7 @@
     {
       "id": "find-jobs",
       "guideId": "career-find-jobs",
-      "version": 5,
+      "version": 6,
       "category": "search",
       "title": "Find relevant jobs",
       "summary": "Search your chosen sources for roles that fit your goals.",
@@ -211,7 +211,7 @@
         "Search my saved sources for new backend roles that match my active preferences.",
         "Find internships with strong systems work and explain what still needs verification."
       ],
-      "requirements": "A connected personal agent with browsing/search access and the scoped Lookout search-state tools. No local runner or Career Ops installation required.",
+      "requirements": "A connected personal agent with browsing/search access and scoped Lookout search-state tools, or a configured Node API/worker for bounded search_ats jobs when those tools are available. Backend execution needs the backend-job migration, a running worker and the appropriate scoped connection; local code or discovery does not prove hosted deployment. No local runner or Career Ops installation required for personal-agent searches.",
       "sources": [
         "modes/scan.md"
       ],

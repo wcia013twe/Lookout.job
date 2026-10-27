@@ -1,0 +1,25 @@
+{
+  "batchId": "d6d6926f-0b5e-4ebd-b318-8b21e5677b3c",
+  "jobId": "agent-26b1c9f0a8392431b1c70a9ce57d279d",
+  "location": "San Francisco or Seattle",
+  "inspectedAt": "2026-10-27T01:35:19.711Z",
+  "revision": 4,
+  "counts": {
+    "filled": 0,
+    "preserved": 7,
+    "remaining": 9,
+    "requiredRemaining": 3,
+    "skippedAlternatives": 1
+  },
+  "status": "Blocked",
+  "questionsReviewed": false,
+  "browserVerified": {
+    "surface": "Chrome \u2192 Discover \u2192 SingleStore Engine \u2192 Preview job",
+    "location": "San Francisco or Seattle",
+    "savedAnswers": 7,
+    "requiredUnanswered": 1,
+    "optionalUnanswered": 6,
+    "inspectionTimeVisible": true,
+    "assessmentUnchanged": true
+  }
+}

@@ -432,6 +432,345 @@ saved assessment nor a preview interaction grants reuse consent or submission
 permission. Outreach requests are queued for a connected agent; queue creation
 does not prove execution or scheduling.
 
+
+## Bounded Node backend jobs
+
+The optional Node API/worker exposes five scoped backend job/schedule operations
+through the same MCP contract. `search_ats` is the only executable job kind; guide
+text does not become arbitrary execution. Reads require workspace:read; writes
+require workspace:read, preferences:write and drafts:write. Agent connection
+identity is server-bound. Browser parity uses the owned backend_job_action RPC.
+See [the complete bounded-job contract](backend-jobs.md) for payloads, version and
+retry rules, explicit scheduling authorization, demo coverage and release limits.
+Developer contract 54 and these tools require the migration/API/worker or gateway
+release and live verification before claiming hosted availability.
+
+
+## MCP scope metadata and conditional checks
+
+`agent-mcp/tool-scopes.mjs` records the complete mandatory scopes of existing
+SQL and gateway routes. Discovery filters by the complete baseline and calls
+check it before forwarding. `toolkit.record` with kind `source_config` additionally
+requires preferences:write; `toolkit.file.begin` with kind `resume` additionally
+requires profile:write. Completing a stored resume file and claiming/reporting a
+stored prepare_application task have row-dependent requirements enforced by SQL;
+MCP cannot infer their kind from the ID alone. Existing ownership, versions,
+credential revocation and human approval checks remain authoritative downstream.
+
+Fixed MCP operations use the full gateway payload validator and return safe
+argument errors for invalid nested fields or malformed schemas. Onboarding-state
+and task-list reads can initialize a missing session and reconcile expired task
+leases, so their metadata does not advertise read-only behavior. Those effects
+do not execute work or grant approval. Developer contract 55 documents these
+existing boundaries; it does not establish deployment or consent to migrate any
+service group.
+
+## Node search pipeline
+
+The configured Node MCP endpoint adds `read_search_source_leads`,
+`submit_search_leads` and `screen_search_discoveries`. The lead read requires
+workspace:read; intake/screening additionally require drafts:write. They derive
+ownership from the credential, reuse existing search records and enforce current
+versions and exact-request replay. Source paging/filtering and copied ATS full
+parsing are bounded; unsupported and closed URLs remain explicit diagnostics.
+These operations return 501 from the Edge-only endpoint with a Node handoff; they
+do not silently run a different implementation there. Web search itself and
+personal analysis remain the connected agent's work. See
+[the source-to-publication sequence](discovery-flow.md). Hosted availability has
+not been verified by the local proof.
+
+## Direct application draft fill
+
+`prepare_draft` now requires workspace:read as well as drafts:write. Before the
+existing SQL draft write, the gateway reads current owned context, maps exact
+contact labels to profile facts, selects the explicitly chosen/default résumé,
+and reuses unique exact verified auto-policy saved answers with matching company
+scope. The website draft editor uses the same pure resolver. Submission checks
+share its contact-label vocabulary (including GitHub).
+
+Supply inspected field IDs/types/options; nested public-form question groups are
+accepted and flattened. Nonempty supplied/existing answers are preserved, and
+owned existing draft metadata/blockers are retained. Selected resume upload skips
+its same-group paste alternative. No other file, consent, hidden or multiselect
+control is inferred. Hidden controls remain in the escape report, not the human-facing draft question list. Exact choice values must match; no semantic yes/no mapping.
+
+The response adds `prefill: {counts, filled, preserved, escapes, skipped,
+personalVersion}` alongside the saved application. Escapes include public question
+text, field identity/type, required and a reason. The report is not stored as
+another trace/history table or inside the approved draft. It is a handoff for Muse
+to handle unresolved writing and missing facts. Draft/profile and submission
+approval remain separate; questionsReviewed stays false. Existing SQL owner and
+revision checks remain authoritative, with a current-personal-version check before
+saving. Files are proposed by ID, never uploaded to employers by this pass.
+
+Public API inspections are incomplete: conditional controls, hidden location
+widgets, exact browser limits and form fingerprint must be checked in the existing
+browser runner before actual submission. No real application submission is part
+of direct-fill validation.
+
+## Individual work-history edits
+
+`edit_work_experience` (`profile.work_experience.edit`, `profile:write`) adds,
+updates or removes one entry in `profiles.facts.workExperience`. This is ordinary
+CRUD: Muse connects to Node MCP, which forwards this operation to Edge. No Node
+worker, parser, LLM call, new candidate table or entry-ID backfill is involved.
+
+Read `workspace_read` for the owned profile and exact `updated_at` first. Send
+`action: add` and `fields` to append. For `update`, send `entryIndex` (zero-based)
+and only changed `fields`; omitted entry fields and other entries remain intact.
+For `remove`, send `entryIndex` without `fields`, only on the user's request.
+Every action requires `expectedUpdatedAt`; an index is valid only for that exact
+profile snapshot. Unknown fields, malformed values, missing entries, more than
+50 entries, wrong scope, revoked credentials and stale versions reject. Scalar
+text remains bounded at 20,000 characters and `current` is a boolean.
+
+The database locks the owned profile before checking its timestamp and editing
+its array. Changes advance the timestamp even within one transaction and clear
+`verified_at`; exact no-op updates preserve both. Retrying a successful add or
+removal with the old timestamp returns a conflict, rather than editing twice.
+After an uncertain response, read current state and reconcile; do not blindly
+retry using a fresh version. The operation does not provide a durable idempotency
+receipt. Changed profile context versions remain server-triggered.
+
+Stale entry edits raise `PT409`, mapped to HTTP 409 by PostgREST and the gateway.
+This avoids the PostgREST retry loop caused by using `40001` for a persistent
+application conflict. See [Supabase’s documented behavior](https://supabase.com/kb/troubleshooting/high-cpu-and-infinite-transaction-retries-when-using-custom-error-codes-in-rpc-functions).
+
+Authenticated browser adapter `editWorkExperience` calls
+`edit_work_experience(payload, expected_owner)`. Both transports share
+`private.edit_work_experience`; the browser checks account identity before and
+after the RPC. Private helper and credential dispatch are denied to browser and
+anonymous roles. Existing website bulk editing and resume imports remain explicit
+section-replacement paths; this change does not migrate their autosync or promise
+conflict protection for those older writes. Agents must use the entry tool for
+routine work-history edits rather than reconstructing the whole array.
+
+Verification: `tests/work-experience.test.mjs` covers MCP validation/discovery,
+Node-to-Edge routing, browser account fencing and fictional demo add/edit/remove,
+stale rejection and reset. `tests/work-experience-check.sql` exercises actual
+migration/SQL preservation, versions, scopes, ownership and browser/MCP parity.
+`node scripts/check-local-work-experience.mjs` verifies real local Node MCP,
+isolated Edge and Docker Supabase, writes only through a disposable fictional
+account, and inspects the retained review profile read-only. It applies only this
+additive migration and never restarts/rebinds shared services. Its sanitized
+receipt is `backend/local/work-experience-proof.json` when successful.
+
+Gateway/MCP release and migration deployment are required before connected
+production agents can discover/use the tool. Local source/tests are not a hosted
+availability claim. Refresh tool discovery on the new developer context version.
+
+## Application preferences and compact handoff
+
+The existing versioned job profile includes optional `Application answers` labeled
+fields. `save_search_profile`/`save_search_document` and the website editor own
+these values; no new store or preference endpoint. Explicit answers cover
+sponsorship, F-1 status, return to school, graduation month, degree, start date,
+12-week full-time internship availability, relocation and desired salary. They
+are not ranking priorities. Unknown values stay blank. Ordinary location/pay/work
+filters only answer questions about those preferences, never residency, office
+commitments or requested salary by inference.
+
+`prepare_draft` loads the selected active `draft.searchProfileId` from owned
+`search.context`, checks its version again before saving, and records preference
+provenance on filled questions. Unique exact option labels map to native values;
+ambiguous/unmatched options and conflicting existing answers stay unresolved.
+Missing application choices are not inferred from a résumé or search filters.
+Existing verified auto-policy saved answers retain their consent requirements.
+Preference-derived proposals do not authorize automatic submission; existing
+human-review/submission validation remains in force.
+
+Default response is now compact: `{id,job_id,revision,status,questionsReviewed,
+prefill:{counts,personalVersion,searchProfileId,searchProfileVersion},handoff}`.
+Handoff version 1 contains job/context references, unresolved questions with exact
+options and known limits, separate browser checks, an explicit requiresBrowserInspection flag, and only bounded relevant
+education/work/project evidence. It excludes completed answers, full draft,
+full profile, file bytes and signed URLs. Profile verification state remains
+explicit. `responseMode: full` is an intentional diagnostic opt-in.
+
+To answer the packet, call the same `prepare_draft` with current expectedRevision
+and `draft:{answerUpdates:[{fieldId,answer}]}`. Do not include questions too. The
+server merges exact existing supported field IDs into the stored complete draft;
+unknown/duplicate IDs, unsupported files/widgets, invalid choices and confirmed
+length violations reject. Unchanged answers and metadata remain intact. Supplied
+updates never grant reviewed state or reusable-answer verification. Use an explicit
+selected profile ID when applying profile preferences; no arbitrary profile is
+chosen when multiple profiles exist.
+
+## Durable application inbox
+
+`applications.inbox.read` accepts only optional `state` (pending/resolved/all)
+and `offset` (integer 0–100000), requires `workspace:read`, and returns owned
+`items` (100 maximum) plus `nextOffset`. Identity comes from the active credential.
+The browser RPC `read_action_inbox` and agent operation share the same reader.
+Writes are implicit atomic effects of existing validated application/attempt
+transitions; no log-edit or approval shortcut is exposed. Node delegates this
+lightweight operation to Edge. Deploy the migration before releasing this tool.
+
+
+## Submission batch checkpoints
+
+Node executes `submit_application_batch`; Edge persists its execution journal.
+`submission.batch.begin` accepts `{eventKey,applications:[{applicationId,expectedRevision}]}`
+(1–10 unique references). `submission.batch.read` accepts optional `batchId` with
+workspace:read. Begin/touch/checkpoint additionally require drafts:write,
+approvals:read and resumes:read; their connection binding is server-derived.
+Touch/checkpoint accept only `{batchId,leaseToken,expectedVersion,applicationId}`.
+Checkpoints derive outcomes from saved application and attempt rows and cannot
+accept a caller's status/receipt. None of these operations grants approval.
+The browser reader shares `read_submission_batches` with the MCP read boundary.
+## Complete personal-profile edit flow
+
+The website now sends only changed facts through `save_profile_changes`, and MCP
+`update_profile_fields` reaches the same `private.patch_profile_facts` writer. Both
+require the current profile timestamp, validate typed fields/arrays, preserve
+omitted facts, clear verification on changes, and reject stale writes with
+`PT409`/HTTP 409. Direct authenticated table upserts are revoked. Account reads
+remain protected by RLS; Node remains Muse's MCP access point. Individual work
+entries still use the scoped entry operation. No processing job is added.
+
+Website sync keeps the original server row/version alongside its existing private
+account-scoped offline cache (`workflow.profileSyncBase`). This is conflict
+metadata, not another backend profile. Reloading an offline draft cannot silently
+adopt a newer version and overwrite changes made by Muse. A stale save pauses
+automatic retries; Reload latest profile preserves non-conflicting local changes.
+Overlapping fields require Use latest values or Keep my edits. An older cache
+without a known baseline requires an explicit choice. Active form editing defers
+background hydration so it cannot erase text being typed.
+
+`review_profile_facts` is a separate authenticated human-only RPC over the exact
+profile version. Fact saves never set verification; a stale review rejects. The
+existing MCP `request_human_action(verify-profile)` remains the agent handoff.
+Agent credentials cannot call the human session RPC or include review fields in
+a patch. Resume imports retain their separate proposal/review flow.
+
+Gate: Muse adds an entry -> website receives it -> human edits a different field
+-> Muse reads both -> stale browser save rejects -> explicit reload/reconciliation
+-> saved data survives a page reload. Tests also cover overlapping choices,
+offline-cache reloads, verification invalidation, old-table-write denial, and
+account isolation. `LOOKOUT_PROFILE_FLOW_UI=1 node scripts/check-local-work-experience.mjs`
+runs the actual task frontend, Node MCP, isolated Edge and local Docker database
+with a disposable fictional account; the retained review profile is read-only.
+It installs this migration and the already-landed Action Inbox dependency needed
+by current frontend loading, without restarting shared services. The sanitized
+receipt is `backend/local/profile-edit-flow-proof.json` when successful.
+
+Demo: `/profile/?demo=1&section=about&demoApi=profile-conflict` exercises the same
+conflict controls through fictional memory-only services; reload/reset restores
+the scenario and no real cloud service is called. Application-profile preferences
+and account-wide settings remain separate gates. Release the migration, frontend
+and gateway/MCP instruction/schema changes together before advertising live support.
+
+Preview posting facts use `recommendation.jobFacts.location`, when supplied, ahead
+of the older catalog location. It is optional bounded nonempty text within the
+existing source URL/check timestamp contract; `publish_batch` validates it for
+both MCP and browser projections. Legacy batches retain catalog fallback. Posting
+refreshes do not change assessment timestamps or grant application approval.
+The application preview counts saved answers separately from required/optional
+unanswered controls. Browser saves preserve `inspectedAt` and `inspectionComplete`
+so autosync cannot erase the saved form inspection metadata.
+
+`read_batch` and browser `getBatch` overlay the latest owned `search_observations`
+for each catalog job, including checkedAt, liveness, publication date and full
+posting text. The immutable batch/AI recommendation remains intact. The same
+shared loader fences both observation and listing owners; read failures surface,
+not silently stale success. The UI formats recency from this typed observation.
+No newer observation means the original publication snapshot remains the fallback.
+
+`prepare_draft.handoff.routing` classifies existing unresolved field IDs into
+human, agent, optional and browser groups. The website uses the same classifier.
+Required unknown personal facts/conflicts need the person; required writing can
+be drafted by the agent; empty optional controls are non-blocking; unsupported
+widgets/files/consent require explicit browser handling. These labels never
+change stored answers, review state, approvals or submission validation.
+
+
+## Profile-aware resume selection
+
+Preparation and automatic submission now share `selectResume`: active role
+assignments in the selected application profile match normalized title phrases
+and job type; unmatched roles use that profile’s fallback. Blank assignment job
+type inherits the profile types. Blank assignment resume uses the same fallback.
+Conflicting matching files, malformed assignments, unchecked conditions/timelines
+and unavailable/superseded/private-file gaps require review. Legacy account-wide
+rules/defaults remain only for clients without profile resume configuration.
+
+`prepare_draft` exposes `handoff.resumeSelection` and pins an automatically chosen
+owned file/hash. It preserves existing explicit draft selections and reports
+differences from current rules. Submission rereads the owned canonical profile in
+its existing authorization context, including atomic claim/start comparisons.
+Routine execution rejects a stale/mismatched file; exact human approval can
+intentionally override the mapping. The runner downloads the draft’s pinned file,
+never a newly guessed alternative. Deploy the profile-resume-selection migration
+with the gateway update before claiming the new authorization behavior is live.
+
+The website's Preview job → Confirm answer uses the same field/choice/length
+validation as `prepare_draft` answerUpdates, then the existing account-scoped,
+revision-guarded cloud draft save. It awaits persistence before displaying Saved
+to draft; stale revisions, account switches and write failures remain explicit.
+It clears prior application approval and retains questionsReviewed=false. This
+confirmation is not reusable-answer verification or application approval. The
+MCP equivalent remains prepare_draft with draft.answerUpdates at the current
+revision; no new tool or permission is introduced.
+
+## Muse change feed
+
+`read_muse_changes` (`changes.read`, workspace:read) returns the oldest 20 pending
+system change pointers by default (limit 1–50), with `hasMore`. `eventTypes` lists
+the supported kinds, labels and existing read tools. Each item adds a readable
+`label` and `refresh: {tool, arguments}` so Muse can read its current record.
+Each item has an
+ID, kind, time, affected entity/record ID and version; application events include
+the job ID/field IDs, and backend results include status/run ID. Answers, resumes,
+profiles and job results stay in their existing records.
+
+`acknowledge_muse_changes` (`changes.ack`, workspace:read + activity:write) accepts
+only 1–50 unique owned change event IDs. Acknowledgements are idempotent and
+connection-specific. Reads don't mark anything seen; an older acknowledgement
+cannot hide a newer event, and one connection cannot clear another's pending
+work. Fetch current affected records, continue previously authorized work, then
+acknowledge handled events or durable blockers. This is distinct from message
+delivery acknowledgement and never wakes a runtime or grants submission consent.
+
+Confirm answer saves `draft.lastAnswerConfirmation {id,fieldId}` with its answer.
+The SQL trigger emits `answer_confirmed` in the SAME transaction, including for a
+new confirmation of unchanged text. Only an authenticated owner save can emit
+that event; agent draft proposals cannot forge it. Other emitted kinds are
+`preferences_changed`, `profile_changed` (search profiles), and
+`backend_job_finished` (completed/partial/failed/cancelled), and
+`application_timeline_changed` (recorded milestones or tracking-stage changes).
+Timeline pointers include `change` (`milestone_added`, `milestone_replaced` or `stage_changed`), and
+milestone pointers include ID/kind/phase. Interview labels distinguish scheduled,
+completed, rescheduled and received updates. Corrections include `supersedesId`. Notes, email subjects/excerpts and interview dates
+remain in the existing `read_application_timeline` response. Immutable milestone
+retries emit once; rejected writes and no-op stage saves emit nothing. Timeline
+milestone `version` identifies its creation timestamp, not an aggregate timeline
+revision; always read current records before making another update.
+
+| Kind | Label / refresh |
+| --- | --- |
+| `answer_confirmed` | Application answer confirmed → `read_application_record` |
+| `preferences_changed` | Shared preferences changed → `read_personal_context` |
+| `profile_changed` | Application profile changed → `read_search_context` |
+| `backend_job_finished` | Backend job finished → `read_backend_jobs` |
+| `application_timeline_changed` | Timeline updated / Interview scheduled / Interview rescheduled / Interview completed / Interview update recorded → `read_application_timeline` |
+
+This is two-way platform sync: existing scoped tools make updates; the feed points
+Muse to updates to read and acknowledge. There is no behavior engine, field-by-field
+automation policy, new work queue or inferred permission.
+
+Theme-only and ordinary
+agent draft saves don't create changes. Reserved system activity cannot be
+inserted through client/agent activity APIs.
+
+Existing activity rows store the events. `private.muse_change_receipts` stores
+only connection/event IDs and acknowledgement time. Acknowledgement performs
+bounded cleanup of these system pointer events older than 30 days ONLY when all
+active full-workspace consumers handled them; pending changes are retained.
+Workspace reset and account/application deletion retain their existing cascade
+boundaries. No new scheduler, queue, message transport or broad database tool.
+The detached demo feed has fictional pointers and isolated resettable receipts.
+Hosted availability requires the migration and gateway/MCP release; local tests
+and tool documentation do not establish a production deployment.
 ### Artifact validation diagnostics
 
 `artifacts.save` / MCP `save_artifact` use the same field validation as the

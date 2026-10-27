@@ -1,0 +1,17 @@
+**
+!package.json
+!package-lock.json
+!backend/
+!backend/intelligence/
+!backend/intelligence/**
+!lib/
+!lib/network-model.mjs
+!lib/outreach-conversation.mjs
+!tests/
+!tests/fixtures/
+!tests/fixtures/intelligence.mts
+!supabase/
+!supabase/functions/
+!supabase/functions/agent-gateway/
+!supabase/functions/agent-gateway/context-attachments.mjs
+!lib/circle-forum-mentions.mjs

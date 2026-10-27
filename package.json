@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "test": "node --test",
+    "test:submission:e2e": "node scripts/check-submission-e2e.mjs",
+    "test:liveness": "node --test tests/career-liveness.test.mjs",
+    "test:dedup": "node --test tests/search-dedup.test.mjs",
+    "test:filter": "node --test tests/careerops-filter-parity.test.mjs tests/search-filters.test.mjs tests/discovery-filter-contract.test.mjs",
     "validate:data": "node scripts/validate-data.mjs",
     "test:db": "node backend/check-schema.mjs",
     "dev": "npm --prefix next-app run dev",
@@ -13,15 +17,43 @@
     "feature:start": "node scripts/feature-delivery.mjs start",
     "feature:land": "node scripts/feature-delivery.mjs land",
     "feature:publish": "node scripts/feature-delivery.mjs publish",
-    "feature:status": "node scripts/feature-delivery.mjs status"
+    "feature:status": "node scripts/feature-delivery.mjs status",
+    "intelligence:demo": "node --env-file-if-exists=.env.local backend/intelligence/demo.ts",
+    "intelligence:mcp": "node --env-file-if-exists=.env.local backend/intelligence/mcp.ts",
+    "intelligence:once": "node --env-file-if-exists=.env.local backend/intelligence/demo.ts --once",
+    "intelligence:typecheck": "next-app/node_modules/.bin/tsc -p backend/intelligence/tsconfig.json",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:env": "node scripts/configure-local-supabase.mjs",
+    "supabase:functions": "supabase functions serve --env-file supabase/functions/.env.local",
+    "validate:local-db": "node backend/local/check-schema.mjs",
+    "validate:local-edge": "node scripts/check-local-edge.mjs",
+    "intelligence:account": "node --env-file-if-exists=.env.local backend/intelligence/account.ts",
+    "intelligence:evaluate-search": "node --env-file-if-exists=.env.local scripts/evaluate-intelligence-search.mjs",
+    "intelligence:evaluate-bloomberg": "node --env-file-if-exists=.env.local scripts/evaluate-bloomberg-intelligence.mjs",
+    "intelligence:diagnose-bloomberg": "node --env-file-if-exists=.env.local scripts/diagnose-bloomberg-search.mjs",
+    "intelligence:compare-hybrid": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-hybrid.mjs",
+    "intelligence:evaluate-muse": "node --env-file-if-exists=.env.local scripts/evaluate-muse-intelligence.mjs",
+    "intelligence:compare-library": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-library.mjs",
+    "deploy:backend": "node scripts/deploy-supabase.mjs"
   },
   "dependencies": {
+    "@google/generative-ai": "0.24.1",
     "@supabase/supabase-js": "2.117.3",
     "js-yaml": "5.3.0",
+    "pg": "8.16.3",
+    "playwright": "1.64.0",
     "undici": "6.28.1"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.4.6",
-    "esbuild": "0.25.12"
+    "@orama/orama": "3.1.18",
+    "@orama/stopwords": "3.1.18",
+    "@types/node": "26.6.5",
+    "@types/pg": "8.15.5",
+    "esbuild": "0.25.12",
+    "supabase": "2.122.0",
+    "typescript": "7.0.2"
   }
 }

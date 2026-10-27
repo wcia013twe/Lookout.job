@@ -7,13 +7,14 @@ export type Role = {
   id: string; company: string; title: string; employmentType: string;
   location: string; category: string; priority: string; postedDate?: string | null;
   description?: string; matchPreview?: MatchPreview; matchAssessment?: MatchPreview;
-  materialGap?: string; rankingProfile?: any; searchProfileId?: string;
+  materialGap?: string; rankingProfile?: any; searchProfileId?: string; evaluatedProfileVersion?: number;
+  postingObservation?: {checkedAt:string;liveness:string;postedAt:string|null;description:string};
   compensation?: string; workSetting?: string; sponsorship?: string;
   reviewPreview?: { question: string; answer: string; reason: string }[];
   discoveredDate: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;
 };
 import { useWorkspace } from "../lib/workspace";
-import { recordRoleOpened } from "../lib/progress.mjs";
+import ApplicationActions from "./application-actions";
 import RoleJobFacts from "./role-job-facts";
 import RoleMatchPreview, { type MatchPreview } from "./role-match-preview";
 import { primary, secondary } from "./ui";
@@ -27,7 +28,7 @@ import {
 export function CompanyLogo({ company }: { company: string }) {
   const providerUrl = companyLogoUrl(company, process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN);
   const cachedUrl = (logos as Record<string, { url: string }>)[normCompany(company)]?.url;
-  return <CompanyLogoImage key={`${company}:${providerUrl}:${cachedUrl}`} company={company} urls={[providerUrl, cachedUrl].filter((url): url is string => Boolean(url))} />;
+  return <CompanyLogoImage key={`${company}:${providerUrl}:${cachedUrl}`} company={company} urls={[normCompany(company) === "google" ? `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/google-g.png` : null, providerUrl, cachedUrl].filter((url): url is string => Boolean(url))} />;
 }
 function CompanyLogoImage({ company, urls }: { company: string; urls: string[] }) {
   const [attempt, setAttempt] = useState(0);
@@ -73,16 +74,6 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
   function restSheen() { sheenPosition.set(.5); sheenIntensity.set(.2); }
   const queued = Boolean(w.state.workflow.applications[role.id]);
   const rarity = rarityOf(role.company, role.employmentType, role.title, w.state.workflow, role.rankingProfile || role.searchProfileId) as keyof typeof TIER_HEX;
-  function open() {
-    recordRoleOpened(w.store, role.id);
-  }
-  function queue() {
-    if (!queued)
-      w.store.update("workflow.applications", (apps: Record<string, unknown>) => ({
-        ...apps,
-        [role.id]: w.models.workflowModel.create(role),
-      }));
-  }
   return (
     <motion.article
       whileHover={reduceMotion ? undefined : { y: -3 }}
@@ -107,7 +98,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
         </span>
       </motion.div>
       <div className={styles.body}>
-        <h3 className="break-words text-lg font-semibold leading-snug tracking-tight md:text-xl">{role.title}</h3>
+        <h3 className="break-words text-lg font-semibold leading-snug tracking-tight md:text-xl">{onPreview ? <button className="text-left" onClick={()=>onPreview(role)}>{role.title}</button> : role.title}</h3>
         <RoleJobFacts role={role} compact />
         <p className="line-clamp-2 text-sm leading-relaxed text-board-muted md:line-clamp-3">
           {role.whyItFits}
@@ -125,20 +116,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
             {role.sourceFreshness}
           </p>
         </details>}
-        <div className="role-card-actions mt-auto grid gap-2 pt-1 min-[360px]:grid-cols-2 md:pt-2">
-          <button onClick={queue} disabled={queued} className={`${secondary} w-full`}>
-            {queued ? "Queued" : <><span className="md:hidden">Queue</span><span className="hidden md:inline">Queue application</span></>}
-          </button>
-          {onPreview ? <button className={`${primary} w-full`} onClick={() => onPreview(role)}>Preview job</button> : <a
-            className={`${primary} w-full`}
-            href={role.applicationUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(event) => { if (w.demo) event.preventDefault(); open(); }}
-          >
-            <span className="md:hidden">{w.demo ? "Preview role" : "Open posting"}</span><span className="hidden md:inline">{w.demo ? "Simulate opening" : "Open application"}</span>
-          </a>}
-        </div>
+        <ApplicationActions role={role} onPreview={onPreview}/>
       </div>
     </motion.article>
   );

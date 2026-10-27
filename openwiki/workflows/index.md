@@ -1,3 +1,3 @@
 # Files
 
-- [Discovery and Application Tracking](discovery-and-tracking.md) - How public catalog roles move through Discover, browser tracking, owned agent batches, private application records, and evidence-aware timelines.
+- [Discovery and Application Tracking](discovery-and-tracking.md) - Public catalog and immutable private discovery batches, bounded Node shortlists, tracker/import state, truthful Stats flows and source-preserving interview timelines.

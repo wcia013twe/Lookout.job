@@ -1,3 +1,4 @@
+import {withApplicationFlowDemo} from './application-flow-demo.mjs';
 import {createDemoSimplifyImport} from './simplify-import-demo.mjs';
 import {demoPack,demoPackTask} from './card-pack-demo.mjs';
 import {demoApiScenario} from './demo-api-scenarios.mjs';
@@ -13,7 +14,15 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
  fixtures.state.workflow.tierLists=presets.presets.map(p=>models.tierlistModel.seed(p));
  fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id||'';
  fixtures.state.workflow.theme={...fixtures.state.workflow.theme,cardPacks:[structuredClone(demoPack)],cardPacksVersion:1};
+ fixtures.state.workflow.searchPreferences.agentSelection={provider:"muse",name:"Muse"};
  fixtures.state.workflow.searchPreferences.schedule={enabled:false,timezone:'UTC',routines:[structuredClone(demoPackTask)],configVersion:1};
+ if(apiScenario==='profile-conflict') {
+  const before=structuredClone(fixtures.state.workflow.profile);
+  fixtures.state.demo.profileConflict={before,latest:{...structuredClone(before),location:'Fictional agent location',verified:false}};
+  fixtures.state.workflow.profile={...before,location:'Fictional browser location',phone:'+1 202-555-0199',verified:false};
+  fixtures.state.ui={...fixtures.state.ui,profileConflict:{fields:[]}};
+ }
+ withApplicationFlowDemo(fixtures,apiScenario);
  const store=createDemoStore(fixtures.state);
  return {store,services:{...demoApiScenario(createDemoServices(store),apiScenario),simplifyImport:createDemoSimplifyImport()}};
 }

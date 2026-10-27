@@ -1,4 +1,5 @@
 "use client";
+import {onboardingStorage,clearOnboardingProgress,onboardingProgressKey} from "../lib/onboarding-progress.mjs";
 import GoogleSignInButton from "./google-sign-in-button";
 import {useEffect,useState} from "react";
 import Link from "next/link";
@@ -30,6 +31,7 @@ export default function WorkspaceReset(){
     await window.JB.cloud.pauseForReset();
     const receipt=await createBackend(w.client,w.accountUser.id).resetWorkspace({resetId,confirmation,expectedPersonalVersion:preview.personalVersion});
     if(receipt.state!=='completed')throw Error('Incomplete reset');
+    clearOnboardingProgress(onboardingStorage(),onboardingProgressKey(w.accountUser.id));
     w.store.clearAccountCache(w.accountUser.id,resetId);
     const {error}=await w.client.auth.signOut({scope:'local'});
     if(error){setError('Workspace reset completed. Sign out before onboarding again.');setDone(true);return;}

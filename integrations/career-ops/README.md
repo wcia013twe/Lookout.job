@@ -26,10 +26,10 @@ read authorization. The developer index includes guide metadata, not full conten
 The updated local runner now vendors actual provider, document, ATS and analytics
 code separately under `runner/vendor/career-ops/`. Its SHA-256 manifest pins the
 same commit. `scripts/import-career-tools.mjs <reviewed-source-checkout>` reproduces
-the dependency closure (207 files, including 108 network providers), templates,
-fonts and license. It excludes arbitrary local parsers, the parallel tracker/UI,
+the dependency closure (249 files, including 108 network providers and the original scanner/tracker dedup/merge code), templates,
+fonts and license. It excludes arbitrary local parsers and upstream interactive UI,
 installers, self-updaters, model wrappers and user data. See `runner/README.md` for
-executable MCP tools. No scheduler is activated. Local capabilities require a
+executable MCP tools. The approved local Node discovery service reuses the existing isolated child/provider flow and original scanner identity + tracker dedup CLI on disposable mapped rows; it creates no parallel user tracker. Only Greenhouse/Lever are activated there, with provenance in backend/local/careerops-discovery-proof.json. Other services remain subject to the user’s separate approval. No personal-agent scheduler is activated. Local capabilities require a
 runner restart; hosted persistence requires the normal backend release.
 
 ## Updating
@@ -44,3 +44,20 @@ normal production release; do not update the shared backend from a feature branc
 ## Interview answer writers
 
 STAR Answer Writer and Interview Answer Builder are original Lookout coaching procedures informed by the linked Harvard MCS and The Muse articles (reviewed 2026-10-22), with pinned Career Ops interview references. Article text and sample answers are not vendored. Both resolve through the existing workspace-read `read_guide` boundary; private outputs use `list_artifacts`, `read_artifact` and `save_artifact` (drafts:write). They reuse the existing artifact validation and ownership/version checks. No new action, automatic onboarding generation or scheduler is introduced. Hosted guide availability requires the normal gateway release.
+
+The executable import now includes the complete upstream search entry points: the
+main scanner, reverse ATS scanner, HN and browser-based source scanners, ATS/company
+discovery, JD fetching, liveness, portal validation, pipeline verification/ranking
+and their dependency closure. `manifest.searchEntrypoints` lists the exact source
+files. The originals remain unchanged; dependency versions are locked in Lookout.
+Presence is distinct from execution: browser-based sources still need a configured
+browser engine, and optional AI enrichment still needs its own configured provider.
+Default server workers do not inherit agent credentials or model keys.
+
+Lookout translates owned saved profiles into upstream filter inputs and persists
+results through scoped versioned tools. It must reuse Career Ops predicates rather
+than replace title/location/salary/visa/dedup behavior. A discovery predicate passing
+on missing data means keep the lead, not verified eligibility. Personal narrative
+analysis and four card ratings remain work for the connected agent. Simplify JSON
+is an aggregate lead adapter because this pinned upstream has no Simplify provider;
+it does not replace employer verification or the original search/filter layer.

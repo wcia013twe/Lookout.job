@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-26T18:10:04.650Z",
+  "localOnly": true,
+  "batchId": "e0b1f802-c9f1-4909-be91-7a85bed5c0ad",
+  "fullTimeCards": 3,
+  "internshipCards": 6,
+  "scoreDimensions": 4,
+  "unknownCandidateValues": true,
+  "fullEmployerDescription": true,
+  "actualEmployerQuestions": true,
+  "applicationsDraftsVisible": true,
+  "submittedApplications": 0,
+  "apiFailures": [],
+  "jsErrors": [],
+  "screenshots": "/Volumes/External SSD/Lookout/tmp/real-discover-ui",
+  "payloadSizes": {
+    "cards": 9,
+    "assessmentBytesRange": [
+      533,
+      533
+    ],
+    "cardWithFullPostingBytesRange": [
+      4393,
+      7434
+    ],
+    "allNineCardsBytes": 50911
+  }
+}

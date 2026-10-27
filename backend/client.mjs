@@ -1,3 +1,6 @@
+import {withLatestPostingEvidence} from '../lib/batch-posting-evidence.mjs';
+import {validateWorkExperience} from '../supabase/functions/agent-gateway/work-experience.mjs';
+import {createBackendJobsService} from '../lib/backend-jobs.mjs';
 import {validateCardPacks,batchPackDrops} from '../lib/card-packs.mjs';
 import {validatePlatformPayload} from '../supabase/functions/agent-gateway/platform-tools.mjs';
 import {callApi} from '../lib/api-failure.mjs';
@@ -55,6 +58,13 @@ function createBackend(client, expectedUserId = null) {
     return data.data;
   }
   return {
+    async queueApplicationJob(payload) {
+      const id=await owner();
+      const value=await result(client.rpc('queue_application_job',{payload}));
+      if(await owner()!==id)throw Error('Account changed');
+      return value;
+    },
+    backendJobs:createBackendJobsService({rpc:(name,args)=>client.rpc(name,args),owner}),
     async readResetState() {
       const id=await owner();
       const {data,error}=await client.rpc('workspace_reset_state');
@@ -76,6 +86,13 @@ function createBackend(client, expectedUserId = null) {
       if(response.error)throw response.error;
       if(await owner()!==userId)throw Error('Account changed');
       return response.data;
+    },
+    async editWorkExperience(payload) {
+      validateWorkExperience(payload);
+      const userId=await owner();
+      const data=await result(client.rpc('edit_work_experience',{payload,expected_owner:userId}));
+      if(await owner()!==userId)throw Error('Account changed');
+      return data;
     },
     async updateFields(operation, payload) {
       if(!validateFieldUpdate(operation,payload))throw Error('Unknown field update');
@@ -131,6 +148,18 @@ function createBackend(client, expectedUserId = null) {
       if(applicationId)query=query.eq('application_id',applicationId);
       return result(query);
     },
+    async readApplicationBatches(payload = {}) {
+      const id=await owner();
+      const data=await result(client.rpc("read_submission_batches",{payload}));
+      if(await owner()!==id)throw Error("Account changed");
+      return data;
+    },
+    async readActionInbox(payload = {}) {
+      const id=await owner();
+      const data=await result(client.rpc("read_action_inbox",{payload}));
+      if(await owner()!==id)throw Error("Account changed");
+      return data;
+    },
     async loadWorkspace() {
       const userId = await owner();
       const tables = [
@@ -142,6 +171,7 @@ function createBackend(client, expectedUserId = null) {
         "activity_events",
         "submission_attempts",
         "application_milestones",
+        "action_inbox",
       ];
       const rows = await Promise.all(
         tables.map((t) =>
@@ -155,16 +185,18 @@ function createBackend(client, expectedUserId = null) {
       );
       return Object.fromEntries(tables.map((t, i) => [t, rows[i]]));
     },
-    saveProfile(facts, verified = false) {
-      return owned(
-        "profiles",
-        {
-          facts,
-          verified_at: verified ? new Date().toISOString() : null,
-          updated_at: new Date().toISOString(),
-        },
-        "user_id",
-      );
+    async saveProfile(fields, expectedUpdatedAt) {
+      if(Object.keys(fields).length)validateFieldUpdate('profile.fields.update',{fields,expectedUpdatedAt:expectedUpdatedAt??'2026-01-01T00:00:00Z'});
+      const id=await owner();
+      const data=await result(client.rpc('save_profile_changes',{payload:{fields,expectedUpdatedAt},expected_owner:id}));
+      if(await owner()!==id)throw Error('Account changed');
+      return data;
+    },
+    async reviewProfile(expectedUpdatedAt, reviewed) {
+      const id=await owner();
+      const data=await result(client.rpc('review_profile_facts',{expected_updated_at:expectedUpdatedAt,reviewed,expected_owner:id}));
+      if(await owner()!==id)throw Error('Account changed');
+      return data;
     },
     async savePreferences({
       search = {}, tierLists = [], activeTierListId = null, theme = { pack: "base" },
@@ -396,7 +428,9 @@ function createBackend(client, expectedUserId = null) {
           .eq("user_id", userId)
           .order("position"),
       );
-      return { batch, items };
+      const enriched=await withLatestPostingEvidence(client,{batch,items},userId);
+      if(await owner()!==userId)throw Error('Account changed');
+      return enriched;
     },
     async saveDraft(id, expectedRevision, draft, blocker = null) {
       const userId = await owner();

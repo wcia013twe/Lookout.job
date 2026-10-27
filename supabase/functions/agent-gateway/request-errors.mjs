@@ -6,7 +6,7 @@ export function validationMessage(error) {
 }
 /** @returns {[number,string]} */
 export function databaseFailure(error) {
- const known={28000:[401,'Credential expired, revoked, or invalid'],42501:[403,'Scope required: this operation needs a permission not granted to the connection.'],40001:[409,'Record or settings changed; read current state and retry with its version'],'40P01':[409,'Concurrent edit; read current state before retrying.'],P0002:[404,'Owned record not found']};
+ const known={PT409:[409,'Record or settings changed; read current state and retry with its version'],28000:[401,'Credential expired, revoked, or invalid'],42501:[403,'Scope required: this operation needs a permission not granted to the connection.'],40001:[409,'Record or settings changed; read current state and retry with its version'],'40P01':[409,'Concurrent edit; read current state before retrying.'],P0002:[404,'Owned record not found']};
  if(known[error.code])return known[error.code];
  if(error.code==='22023')return [400,/^(Invalid|Missing|Use|Choose|Active|Fresh|Incomplete|Revoke|Profile|Source|Document|Unknown|Owned|Default|Upload|Request|Current|Search)/.test(error.message||'') ? error.message.slice(0,240) : 'Invalid arguments for this operation. Read the tool schema and current versions.'];
  if(error.code==='22P02'||error.code==='22007'||error.code==='22008')return [400,'Invalid UUID, JSON or date format. Use the formats in the tool schema.'];

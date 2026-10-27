@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateJobRecommendation,savedJobAssessment} from '../lib/job-assessment.mjs';
+import {validateJobRecommendation,savedJobAssessment,recommendationNeedsRefresh} from '../lib/job-assessment.mjs';
 import {batchRoles} from '../lib/cloud-model.mjs';
 import {companyRanking} from '../next-app/lib/role-display.js';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
@@ -49,4 +49,41 @@ test('detached demo covers ranked and unranked cards through saved fictional pla
  assert.equal(companyRanking('NVIDIA','FT',workflow).label,'A tier');
  assert.equal(companyRanking('Oracle','FT',workflow).label,'D tier');
  assert.equal(companyRanking('Unlisted demo company','FT',workflow).label,'Unranked');
+});
+
+test('compact four-score agent JSON survives the existing batch/card path without generating an overall score',()=>{
+ const compact={assessedAt:'2026-10-26T18:00:00Z',skillsExperience:{score:82,reasoning:'Database project aligns; ownership needs verification.'},compensation:{score:null,reasoning:'Compensation is undisclosed.'},wellbeingCulture:{score:null,reasoning:'No reliable culture evidence.'},locationWorkSetting:{score:0,reasoning:'Does not match the recorded location preference.'}};
+ assert.doesNotThrow(()=>validateRequest({operation:'batches.publish',payload:{...batch,jobs:[{jobId:'role',recommendation:{matchAssessment:compact}}]}}));
+ const mapped=batchRoles([{job_id:'role',jobs:{employer:{company:'Example'}},recommendation:{matchAssessment:compact}}],'2026-10-26')[0];
+ assert.deepEqual(mapped.matchAssessment,compact);assert.equal(mapped.matchAssessment.percent,undefined);
+ const bads=[{...compact,skillsExperience:{score:101,reasoning:'Outside bounds.'}},{...compact,compensation:{score:'82',reasoning:'String score.'}},{...compact,compensation:{score:null,reasoning:'x'.repeat(241)}},{...compact,locationWorkSetting:undefined},{...compact,extra:{score:80,reasoning:'Unapproved dimension.'}},{...compact,assessedAt:'yesterday'},{...compact,compensation:{score:null,reasoning:'Missing evidence',rating:'Good'}}];
+ for(const bad of bads)assert.throws(()=>validateJobRecommendation({matchAssessment:bad}));
+ assert.equal(savedJobAssessment({...compact,compensation:{score:null,reasoning:''}}),undefined);
+});
+
+test('fresh private batch observations fill displayed facts without overwriting shared catalog',()=>{
+ const facts={sourceUrl:'https://jobs.example.com/123',checkedAt:'2026-10-26T19:00:00Z',workSetting:'Three days per week in office',sponsorship:'Not disclosed by employer'};
+ assert.doesNotThrow(()=>validateJobRecommendation({jobFacts:facts}));
+ const item={job_id:'role',jobs:{employer:{workSetting:'Old',category:'GPU systems'},canonical_url:facts.sourceUrl},recommendation:{jobFacts:facts}};
+ const role=batchRoles([item],'2026-10-26')[0];assert.equal(role.category,'GPU systems');assert.equal(role.workSetting,facts.workSetting);assert.equal(role.sponsorship,facts.sponsorship);assert.equal(item.jobs.employer.workSetting,'Old');
+ for(const patch of [{checkedAt:'bad'},{sourceUrl:'http://example.com'},{sponsorship:''},{extra:'bad'}])assert.throws(()=>validateJobRecommendation({jobFacts:{...facts,...patch}}));
+});
+
+test('saved analysis is marked outdated after a profile lever changes',()=>{
+ const role={searchProfileId:'ft',evaluatedProfileVersion:2};
+ assert.equal(recommendationNeedsRefresh(role,[{id:'ft',version:2}]),false);
+ assert.equal(recommendationNeedsRefresh(role,[{id:'ft',version:3}]),true);
+ assert.equal(recommendationNeedsRefresh(role,[{id:'intern',version:3}]),false);
+ assert.equal(recommendationNeedsRefresh({searchProfileId:'ft'},[{id:'ft',version:3}]),false);
+ assert.throws(()=>validateJobRecommendation({evaluatedProfileVersion:'3'}));
+});
+
+test('refreshed observed location takes precedence in the card and preview without replacing assessment',()=>{
+ const job={employer:{location:'United States'},canonical_url:'https://jobs.example.com/engine'};
+ const facts={sourceUrl:job.canonical_url,checkedAt:'2026-10-27T01:11:00Z',location:'San Francisco or Seattle',workSetting:'Office schedule undisclosed',sponsorship:'Undisclosed'};
+ assert.doesNotThrow(()=>validateJobRecommendation({jobFacts:facts}));
+ const role=batchRoles([{job_id:'engine',jobs:job,recommendation:{jobFacts:facts,whyItFits:'Keep analysis'}}],'2026-10-26')[0];
+ assert.equal(role.location,'San Francisco or Seattle');assert.equal(role.whyItFits,'Keep analysis');assert.equal(job.employer.location,'United States');
+ for(const location of ['',null,{},'x'.repeat(2001)])assert.throws(()=>validateJobRecommendation({jobFacts:{...facts,location}}));
+ assert.equal(batchRoles([{job_id:'legacy',jobs:job,recommendation:{}}],'2026-10-26')[0].location,'United States');
 });

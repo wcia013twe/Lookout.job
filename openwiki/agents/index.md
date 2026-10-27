@@ -1,4 +1,4 @@
 # Files
 
-- [Agent Gateway and MCP Contract](gateway-and-mcp.md) - How agent credentials, scoped MCP discovery, context refresh, and gateway validation expose private job-board operations without weakening ownership or human-action boundaries.
-- [Application Preparation and Submission Safety](submission-safety.md) - The guarded path from a revisioned application draft to one browser submission attempt, including authorization, duplicate prevention, confirmation evidence, and human recovery.
+- [Agent Gateway and MCP Contract](gateway-and-mcp.md) - How Muse connects, discovers scoped tools, updates owned records, and consumes labeled platform changes across Node and Edge without bypassing consent or version checks.
+- [Application Preparation and Submission Safety](submission-safety.md) - Guarded profile-aware preparation, Node/local-runner submission and batch recovery, plus the separate evidence boundary for user-reported interview timelines and corrections.

@@ -10,7 +10,11 @@ concurrency:
   group: production-deploy
   cancel-in-progress: false
 jobs:
+  backend:
+    uses: ./.github/workflows/deploy-backend.yml
+    secrets: inherit
   build:
+    needs: backend
     uses: ./.github/workflows/ci.yml
     with:
       upload_pages: true

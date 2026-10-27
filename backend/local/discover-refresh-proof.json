@@ -1,0 +1,109 @@
+{
+  "checkedAt": "2026-10-26T19:06:55.501Z",
+  "localOnly": true,
+  "developerVersion": 57,
+  "guide": "application-workspace",
+  "batchId": "a24bb277-0d42-48ea-b2b7-6d1e5f6ac936",
+  "previousBatchId": "e0b1f802-c9f1-4909-be91-7a85bed5c0ad",
+  "records": [
+    {
+      "id": "4188119007",
+      "jobId": "agent-0c0afa9f225947550218dd97c6e6f071",
+      "title": "Systems Research Engineer, GPU Programming",
+      "descriptionCharacters": 2776,
+      "visibleQuestions": 14,
+      "requiredQuestions": 6,
+      "workSetting": "Employer asks: three days per week in our San Francisco office; description also mentions remote flexibility. Confirm arrangement.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "5186628007",
+      "jobId": "agent-91d4393ebd3f74fd4b929319fe64f5bd",
+      "title": "[Junior / Senior / Staff] Software Engineer, Inference / Compute Infrastructure Engineering",
+      "descriptionCharacters": 5693,
+      "visibleQuestions": 12,
+      "requiredQuestions": 10,
+      "workSetting": "Employer asks: four days per week in our San Francisco office.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "4790243007",
+      "jobId": "agent-299ec3e4aa1b2a86be550b9e12efb29c",
+      "title": "Platform Engineer, Model Shaping",
+      "descriptionCharacters": 4757,
+      "visibleQuestions": 14,
+      "requiredQuestions": 7,
+      "workSetting": "Remote flexibility mentioned; exact office requirements not disclosed.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "5238469007",
+      "jobId": "agent-432ce0dc06df5294c00f4c6040ac0746",
+      "title": "Hardware Security Engineer Intern (Summer 2027)",
+      "descriptionCharacters": 3688,
+      "visibleQuestions": 16,
+      "requiredQuestions": 11,
+      "workSetting": "Employer asks: four days per week in our San Francisco office.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "5238468007",
+      "jobId": "agent-5d29f74db45f7d723372807c157b26e1",
+      "title": "Research Intern, Frontier Agents (Summer 2027)",
+      "descriptionCharacters": 4064,
+      "visibleQuestions": 19,
+      "requiredQuestions": 14,
+      "workSetting": "Employer asks: four days per week in our San Francisco office.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "5267198007",
+      "jobId": "agent-ee38e9c42bd3c51c3c87318444cec1b9",
+      "title": "Research Intern, Frontier Speculative Decoding (Summer 2027)",
+      "descriptionCharacters": 4330,
+      "visibleQuestions": 16,
+      "requiredQuestions": 11,
+      "workSetting": "Employer asks: four days per week in our San Francisco office.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "5238462007",
+      "jobId": "agent-ab2590902f1f8d58dd6bdd9ce0565877",
+      "title": "Research Intern, Inference (Summer 2027)",
+      "descriptionCharacters": 3727,
+      "visibleQuestions": 16,
+      "requiredQuestions": 11,
+      "workSetting": "Employer asks: four days per week in our San Francisco office.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "5238466007",
+      "jobId": "agent-abe889051f1906e1efdad05d51e71143",
+      "title": "Research Intern, Model Shaping (Summer 2027)",
+      "descriptionCharacters": 3844,
+      "visibleQuestions": 16,
+      "requiredQuestions": 11,
+      "workSetting": "Not disclosed in the accessible employer source.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    },
+    {
+      "id": "5238460007",
+      "jobId": "agent-2495e6bb6cc19afca72499e1dd8e8e52",
+      "title": "Systems Research Engineer Intern - GPU Programming (Summer 2027)",
+      "descriptionCharacters": 2857,
+      "visibleQuestions": 16,
+      "requiredQuestions": 11,
+      "workSetting": "Employer asks: four days per week in our San Francisco office.",
+      "sourceCheckedAt": "2026-10-26T19:06:55.501Z"
+    }
+  ],
+  "status": "partial",
+  "failures": [
+    "Applicant résumé and verified profile are unavailable: personalized fit scores and factual autofill cannot be generated.",
+    "Writing preferences/examples are not connected: personalized prose starters cannot be claimed.",
+    "Public API inspection does not prove conditional browser fields are complete.",
+    "Logo.dev publishable token is missing in the local build.",
+    "Per-question durable Discover review and approval through Muse are not implemented."
+  ],
+  "submissionCount": 0
+}

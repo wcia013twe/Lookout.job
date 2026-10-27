@@ -10,7 +10,7 @@ The website and MCP use the same database ownership and concurrency rules. Agent
 | Inspect / change quiet settings | `readQuietMode`, `saveQuietMode(settings, expectedPersonalVersion)` | `read_quiet_mode` / `workspace:read`; `update_quiet_mode` / `profile:write` | Same exact settings validation and optimistic personal version. Unrelated preferences survive under lock. Returns `{settings, personalVersion}`. |
 | Deliver updates | Runtime transport | `read_delivery_policy`, `acknowledge_delivery` / `workspace:read`, `activity:write` | Policy is advice; acknowledge only after delivery. Owned events and current synthetic decision/deadline IDs only. No built-in background scheduler. |
 | Inspect process timeline | `readApplicationTimeline` | `read_application_timeline` / `workspace:read` | Owned immutable milestones, stable chronology, unknown dates remain null. |
-| Record process milestone | `recordApplicationMilestone` | `record_application_milestone` / `activity:write` | Shared SQL bounds and timestamp rules. Browser source is user; agents require email message ID, subject, excerpt and received timestamp. A dated event requires explicit timestamp confirmation and timezone. Idempotent event keys reject changed evidence. Never changes status, receipt or approval. |
+| Record process milestone | `recordApplicationMilestone` | `record_application_milestone` / `activity:write` | Shared SQL bounds and timestamp rules. Browser source is user; agents use email evidence or user_reported with the candidate statement. Corrections use supersedesId for a current event in the same owned application, retaining history. A dated event requires explicit timestamp confirmation and timezone. Idempotent event keys reject changed evidence. Never changes status, receipt or approval. |
 | Inspect completion record | `readSubmissionRecord` | `read_application_record` / `workspace:read` | Historical attempt materials only; unrelated profile/answer-library/settings snapshots omitted. Human-reported progress is distinct. |
 | Download historical résumé | Signed private storage URL | `read_resume` / `resumes:read` | Read the résumé ID from the record. URLs expire and must not enter logs or saved records. |
 | Approve exact application | Signed-in `approve_application` | `open_human_application_action(action: approve)` / `workspace:read` | Human-only. Tool returns owned board URL, current revision, `humanOnly: true`, `performed: false`; never mints approval. |
@@ -53,3 +53,21 @@ learning tasks and saved artifact references under one daily budget. See the
 [full mapping and release limits](../docs/schema.md#documents-and-ai-text). Local parity tests
 do not establish deployed availability; release the migration, gateway/config,
 MCP and frontend together and verify the hosted round trip.
+
+
+### Resume extraction and profile import
+
+Local integration: tutorial resume uploads/selection and Documents uploads/source
+replacement share the reviewable APILayer proposal. Node MCP `parse_profile_resume`
+(`resumes.parse`, workspace:read + resumes:read + profile:write) uses the same
+closed resume-ID input, owned immutable file validation and mapper as browser
+`POST /v1/resume-import`. It never saves or verifies profile facts. Review precedes
+existing `update_profile_fields` / website `update_workspace_fields` saves with
+current `expectedUpdatedAt`; history arrays replace whole sections. Missing profiles
+use versioned `save_profile_facts` / website `profile.save` creation. Node profile
+field updates use existing `agent_dispatch` SQL directly. Edge-only MCP does not
+advertise extraction. Scope discovery, cache rechecks, account isolation, stale
+saves and fictional demo isolation have local tests; no hosted release or real
+APILayer call is implied.
+
+| Queue AI Apply | `queueApplicationJob` / authenticated queue_application_job RPC | `queue_application_job` / applications.submit_job | Shared closed SQL validation, canonical URL identity, ownership, revision, active execution scopes and idempotency. No approval or applied status from queueing. Node worker requires release/flags; see docs/discover-application-jobs.md. |

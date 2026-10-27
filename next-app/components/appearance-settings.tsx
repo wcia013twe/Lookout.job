@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { asset, useWorkspace } from "../lib/workspace";
 import { PACK_TEXTURES, resolvePackTexture } from "../styles/templates/pack-styles";
 import ColorModeControl from "./color-mode";
@@ -14,6 +15,13 @@ export default function AppearanceSettings() {
   return <div className="space-y-8">
     <div><h2 className="text-2xl font-bold tracking-tight">Appearance</h2><p className="mt-2 text-sm text-board-muted">Make Lookout feel like yours.</p></div>
     <div className="space-y-3"><h3 className="text-base font-semibold">Color theme</h3><ColorModeControl /></div>
+    <section className="border-t border-board-line pt-6" aria-labelledby="workspace-setup-title">
+      <h3 id="workspace-setup-title" className="text-base font-semibold">Setup &amp; guidance</h3>
+      <div className="mt-2 flex flex-wrap gap-x-6">
+        <Link href={w.demo ? "/onboarding/?demo=1" : "/onboarding/"} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4 hover:text-board-accent">Open onboarding</Link>
+        <Link href={w.demo ? "/?demo=1&tour=replay" : "/?tour=replay"} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4 hover:text-board-accent">Dashboard tour</Link>
+      </div>
+    </section>
     <section className="border-t border-board-line pt-6" aria-labelledby="pack-texture-title">
       <h3 id="pack-texture-title" className="text-base font-semibold">Pack texture</h3>
       <p className="mt-2 text-sm text-board-muted">Choose the wrapper for your daily drop packs.{w.demo ? " Demo changes stay in memory." : ""}</p>
@@ -38,5 +46,9 @@ export default function AppearanceSettings() {
       </div>
     </section>
     <ThemeMarketplace embedded/>
+
+    {(w.accountUser || w.demo) && <section className="border-t border-board-line pt-6" aria-label="Workspace reset">
+      <Link href={w.demo ? "/workspace-reset/?demo=1" : "/workspace-reset/"} className="inline-flex min-h-11 items-center text-sm text-board-muted underline underline-offset-4 hover:text-board-text">Reset workspace</Link>
+    </section>}
   </div>;
 }

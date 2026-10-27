@@ -150,7 +150,7 @@ test('dated practice keeps its restriction and explains the supported field and 
 
 test('MCP and browser surface the shared artifact diagnostics before writes; scope denial still wins',async()=>{
  const payload={...doc,kind:'practice',preparedFor:'2026-10-26'};
- let scope=['drafts:write'];const writes=[];
+ let scope=['workspace:read','drafts:write'];const writes=[];
  const handler=createHandler(async(_token,operation,args)=>{
   if(operation==='credentials.verify')return {status:200,data:{scopes:scope}};
   writes.push(args);return {status:200,data:{saved:true}};
@@ -162,5 +162,5 @@ test('MCP and browser surface the shared artifact diagnostics before writes; sco
  await assert.rejects(createBackend(client,id).artifactAction('artifacts.save',payload),{message:response.error.message});
  assert.equal(writes.length,0);
  scope=[];assert.match((await call(payload)).result.content[0].text,/Missing required scope/);assert.equal(writes.length,0);
- scope=['drafts:write'];assert.equal((await call({...doc,kind:'practice'})).result.isError,undefined);assert.equal(writes.length,1);
+ scope=['workspace:read','drafts:write'];assert.equal((await call({...doc,kind:'practice'})).result.isError,undefined);assert.equal(writes.length,1);
 });

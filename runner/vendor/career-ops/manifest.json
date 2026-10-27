@@ -1,6 +1,23 @@
 {
   "repository": "https://github.com/career-ops-hq/career-ops",
   "commit": "c78e14cdfd52f18a92e4a67694efab7ddef59385",
+  "searchEntrypoints": [
+    "scan.mjs",
+    "scan-ats-full.mjs",
+    "scan-hn.mjs",
+    "scan-interamt.mjs",
+    "scan-dayforce.mjs",
+    "discover-ats.mjs",
+    "discover-new-companies.mjs",
+    "fetch-jd.mjs",
+    "check-liveness.mjs",
+    "verify-pipeline.mjs",
+    "verify-portals.mjs",
+    "validate-portals.mjs",
+    "rank-pipeline.mjs",
+    "classify-tier.mjs",
+    "find.mjs"
+  ],
   "excluded": [
     "providers/local-parser.mjs (arbitrary configured subprocesses)",
     "upstream web/TUI, installer, self-updater, model runners and user data"
@@ -19,6 +36,10 @@
       "sha256": "feb77fc28825643177f60f28613c6e328dda86489c6491eabb2663d7147a02ee"
     },
     {
+      "path": "audit-portals.mjs",
+      "sha256": "c90e55fcfbff8767ac9ad8e4060160b38e654129b3de4775b35848279f0f5e95"
+    },
+    {
       "path": "browser-extract.mjs",
       "sha256": "4771ff993296dc59d7705e7571e8bad16f99f6ea2efa23f44ff93bcebd2bd5f0"
     },
@@ -29,6 +50,18 @@
     {
       "path": "calibrate.mjs",
       "sha256": "06966def50c5ad48f0355ae0c867b85cce8aeb86c3601560d7212ebacdbaf633"
+    },
+    {
+      "path": "check-jd-archive.mjs",
+      "sha256": "87acd91a44521a182332748eab8d0a3e2a66e77d3d979f1343e8097dac646dc6"
+    },
+    {
+      "path": "check-liveness.mjs",
+      "sha256": "729fab33e8dc2227703445965a2f7ab03c9bb8f3eec19bb32603180ffec2cf6b"
+    },
+    {
+      "path": "classify-tier.mjs",
+      "sha256": "04f81f2c9cd78bbe446ecbfd5d84c734e34b225d221581f9f2611e3cff57dc25"
     },
     {
       "path": "cv-experience-order.mjs",
@@ -43,8 +76,40 @@
       "sha256": "c337ac60b681d960d80309c28efa5945cc64cee8658ecf0287b81a51d8f2127d"
     },
     {
+      "path": "data-static/aggregator-domains.txt",
+      "sha256": "818e4626d30f8446959427980148353f1dd91ff520ff81b9fe0c15b2c9829e70"
+    },
+    {
+      "path": "dead-boards.mjs",
+      "sha256": "170b8ecee03abff4476a747793c39ffa5f2b4a3e741030ece6be4dba14e40415"
+    },
+    {
+      "path": "dedup-tracker.mjs",
+      "sha256": "af2e64f97a7020f7fa5b7a9aedf79fa0cc5e4cb75983d6e5e30eeaa3e129a6be"
+    },
+    {
       "path": "detect-reposts.mjs",
       "sha256": "d61aa30ffadf7652a85d0199c8baf663830056ec5f5a3dbdfc6ced091dfaac40"
+    },
+    {
+      "path": "discover-ats.mjs",
+      "sha256": "3e2dc4afe09e58bdf99e55cec9207e2c4bc82fa8a318e71297d95b376a590718"
+    },
+    {
+      "path": "discover-new-companies.mjs",
+      "sha256": "555ab6e29769bec331170d40e9472a33e551c3373393ae3400d082c5f3b74f4a"
+    },
+    {
+      "path": "fetch-jd.mjs",
+      "sha256": "b0d619d05c8b74c16f6bda548d53a8a79b00660fbc56cea7367886198efbf15c"
+    },
+    {
+      "path": "find.mjs",
+      "sha256": "678e4217b4e0bfe09eaa16f7cf0e70ef480ca9370b5f52ef2e65307aafd47ba9"
+    },
+    {
+      "path": "fingerprint-core.mjs",
+      "sha256": "37a8cfcc93a15be102f550afe3dbf52d4ee8bbce9f2e87a5f0a0aa13fef56c1a"
     },
     {
       "path": "followup-cadence.mjs",
@@ -95,8 +160,16 @@
       "sha256": "452c7572700ca57c993a362a352d4041e554ef3fdf4d189747cc088b6137951d"
     },
     {
+      "path": "history-ats-seeds.mjs",
+      "sha256": "2b9c3578e9e3d1fe1736987c5c92571b5199cbc3583c4ee8fca7e899815430af"
+    },
+    {
       "path": "invite-match.mjs",
       "sha256": "723adb1d69761f498f3918ab93ec7f1c14837fe3444ae78a5ccff6b534d93d59"
+    },
+    {
+      "path": "jd-capture.mjs",
+      "sha256": "30e3319d8dd5ff1f78d3b4208d00f6d4ff5c84a1e2d8e38d2283107c9995c2d0"
     },
     {
       "path": "jd-similarity.mjs",
@@ -147,8 +220,20 @@
       "sha256": "4d035d8b5b21561a856002493bb661b66b7bb9028d19a2047c72452b71c54cf5"
     },
     {
+      "path": "lib/placeholder-cell.mjs",
+      "sha256": "414578105b3879f0d674267d5215c7de03e0cb34aaf9f68a2e4de69bb2999b92"
+    },
+    {
       "path": "lib/scan-history-columns.mjs",
       "sha256": "9f0f2bd645e8f00243abf050a9536a35dec695c620846ae04bdbcce087b29f02"
+    },
+    {
+      "path": "lib/scan-summary-marker.mjs",
+      "sha256": "497a17179bf27675c19a79ecf766aa9e787ebab623042c371b2855257aac3c03"
+    },
+    {
+      "path": "lib/small-board.mjs",
+      "sha256": "83eb7c579fa891f6356245856fa2b9a22456552ce8ce157445ab3d38f8952b3c"
     },
     {
       "path": "lib/template-manifest.mjs",
@@ -157,6 +242,10 @@
     {
       "path": "lib/tsv-formula-escape.mjs",
       "sha256": "1abe567026dbca73f08343432af6c883bf0f1875b2bf4dbf60ad8729f6859da2"
+    },
+    {
+      "path": "listing-fingerprint.mjs",
+      "sha256": "8b0453bdcef94740c25239c562d908b03ddb0131cafecc33198838b2b70ad920"
     },
     {
       "path": "liveness-api.mjs",
@@ -171,12 +260,44 @@
       "sha256": "7e88eba553dff9d02337441ed8736d392ba3113c73eeb91fa49bad5b457cacea"
     },
     {
+      "path": "merge-tracker.mjs",
+      "sha256": "205d438e8d58a6e2bfdc78c6b95f92492834131a468edaa38586c851aafd60fc"
+    },
+    {
+      "path": "package.json",
+      "sha256": "308b6fa9a7ac46e2ead04e7634cedaa22553d48ba78ebe31123f2f6e6a724607"
+    },
+    {
       "path": "path-resolver.mjs",
       "sha256": "5ceb03a7a5248b0288a8e450c7143a7853ade6be358e4b9a3981aad0c2a2c5a8"
     },
     {
       "path": "pipeline-lock.mjs",
       "sha256": "037d526938e048fe8fccd2213b2c3c2eadc05c05109ae88758747d1b257d87ed"
+    },
+    {
+      "path": "plugins/_engine.mjs",
+      "sha256": "9fcb0707d48da741519363f45b83295768a9cddcf808ae7ed68dad1e0207a035"
+    },
+    {
+      "path": "plugins/_lock.mjs",
+      "sha256": "99e55348511318af21e351ac865d83e6fc22b2415dc94b172641d0b00547c408"
+    },
+    {
+      "path": "plugins/_net.mjs",
+      "sha256": "6c44248378aa0d24140c0ee44cde1633dde219b50254b5a67b7fd7ad6064d7a4"
+    },
+    {
+      "path": "plugins/_registry.mjs",
+      "sha256": "d9e2723a5c951109a1037928525792c9872c854e27f64c209947d92835434219"
+    },
+    {
+      "path": "portal-health-lock.mjs",
+      "sha256": "949d9c54bf8df2ce9f2dbd829763a102126ae88355693f24508cf394c074952f"
+    },
+    {
+      "path": "process-quality.mjs",
+      "sha256": "0f6c77097f768977fe6cda84aa888bfcfa02f46368652705c40d833d29470896"
     },
     {
       "path": "providers/4dayweek.mjs",
@@ -663,12 +784,40 @@
       "sha256": "282d622073c5ed898650eb6736ef6fe970e7ce988fc46ec0c62b7ca97cdb7f15"
     },
     {
+      "path": "rank-pipeline.mjs",
+      "sha256": "f64a358f275da7454f4385ac2d6b1ff3765e9beeaeda158fa587de64fdd53599"
+    },
+    {
       "path": "role-matcher.mjs",
       "sha256": "3d7ceec2e432c322509b3b7d63f835692977f83f0cdd7a661ddec1f9a83b10ae"
     },
     {
       "path": "salary-gap.mjs",
       "sha256": "cb36cbac51e64e49a82f325a86cbff9130a97949daf67049164551a0a867f9fc"
+    },
+    {
+      "path": "scan-ats-full.mjs",
+      "sha256": "bb92270de6c4e4e734ccf2b4e1047d34a5f6002794382558f3ea120eb78036e2"
+    },
+    {
+      "path": "scan-dayforce.mjs",
+      "sha256": "83c04e0f29fc9c7d6352dd76d1b83e35fd2d767725cbb65d0e46a396230d9a3f"
+    },
+    {
+      "path": "scan-hn.mjs",
+      "sha256": "8d1306f6b4320a442bc5b7546277db377fc423abf8eda8790bad10996e168880"
+    },
+    {
+      "path": "scan-interamt.mjs",
+      "sha256": "9aa17b65f4b187c94bf477bb78f9a97930847255d18c78c32db5cce61c02fa77"
+    },
+    {
+      "path": "scan.mjs",
+      "sha256": "c59688ade77f66e116509045e86b6fbb086e288052a46db0fdc71f25159ec799"
+    },
+    {
+      "path": "seeds/vc-portfolios.mjs",
+      "sha256": "8b08e28057170871094efe786f7f5a1763a58d923ff1ed010324b67fbda884ad"
     },
     {
       "path": "skill-extract.mjs",
@@ -681,6 +830,10 @@
     {
       "path": "stats.mjs",
       "sha256": "d06e697a503026a48755ac50ff1c97abf85cbc934dcfecb3bcdb747d25547d77"
+    },
+    {
+      "path": "sync-pdf-flags.mjs",
+      "sha256": "0d6d871a60be9ca451af1e3e80629506b22592ec20767bf488b57ad7ae0a5a4b"
     },
     {
       "path": "templates/ats-rules.yml",
@@ -723,6 +876,10 @@
       "sha256": "4c994ef5728754513ff7b5d85aee15ca8ac1de830f2fc32edd21450542155f3f"
     },
     {
+      "path": "templates/career-profile.example.yml",
+      "sha256": "c7dfa531e881df1c0c5db217b569ee0917215eb93b25a6b8947eb87d2c15b701"
+    },
+    {
       "path": "templates/cover-letter-template.html",
       "sha256": "e5a7859aa9ba0649ef612311c5804297c85dc4d808d8806f1339c461c24c3127"
     },
@@ -757,6 +914,10 @@
     {
       "path": "templates/discard-reasons.yml",
       "sha256": "6bdc75ac08734b68e6e256b44cd2627bdd2378f658f677ed85fd4c928947ab44"
+    },
+    {
+      "path": "templates/portals.example.yml",
+      "sha256": "08c454731dbfa0b400749606337eae0e2dbeade18c9dadd55f052da3cd5ea07b"
     },
     {
       "path": "templates/resume-template.html",
@@ -799,12 +960,24 @@
       "sha256": "05077e53f388885fa9681563dfbc57eee9d60579f61a9b55eb15dab35566ebfe"
     },
     {
+      "path": "title-keywords.mjs",
+      "sha256": "26189856ecefe32dc675f823341bd95ebef38e7a8cd74cb1df2bbc988fc88b78"
+    },
+    {
       "path": "tracker-aliases.json",
       "sha256": "586db29f4feec667e8b10853b7d6df2b6acee378b40b5cfb852be5fd3dd042fd"
     },
     {
+      "path": "tracker-links.mjs",
+      "sha256": "f4d87172f1c5f34855b6635fa717c3f53f853ff04850d4e3b9aa14443028be63"
+    },
+    {
       "path": "tracker-parse.mjs",
       "sha256": "72518230cddcb924973ce04cfe4c44e33d2f6bb52e0d425c30f2281402d9c731"
+    },
+    {
+      "path": "tracker-sync-check.mjs",
+      "sha256": "38358bea18c2c0ae39fae9cc5dbe60d30612519fb6ebd95bbadbab1be5c49a90"
     },
     {
       "path": "tracker-utils.mjs",
@@ -823,6 +996,10 @@
       "sha256": "5cfe6248115d0db0cb11ba5e658642e49482700d687c19dec36c0616428a5649"
     },
     {
+      "path": "validate-portals.mjs",
+      "sha256": "8c062924c3f3b6d227e95bd4706e7a4a229abd03b02f3781795df16514eb4f97"
+    },
+    {
       "path": "verify-ats.mjs",
       "sha256": "054ed3f89a70167174a9bf553e4647f5348349e8965cbae0c76272e2ff7b32b9"
     },
@@ -833,6 +1010,14 @@
     {
       "path": "verify-cv-structure.mjs",
       "sha256": "8464a53ef814013ebcef9694f60ecbbde071439df5faa2acefe96cb5a15ca8e4"
+    },
+    {
+      "path": "verify-pipeline.mjs",
+      "sha256": "f2a16861a48737c22dc24a6268948c7e8ce74c937e942b16bd8c2d9014f32e65"
+    },
+    {
+      "path": "verify-portals.mjs",
+      "sha256": "9e5f58bcf7b4ef345d03d2a412311eecd58ac339d88c7d1179166c4141b69733"
     }
   ]
 }

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import {ProfileDraftContext} from "./profile-draft-context";
 import rawSchema from "../../lib/profile-schema.js";
 import { createProfileReview } from "../../lib/profile-review.mjs";
 import { useWorkspace } from "../lib/workspace";
@@ -116,6 +117,7 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
     review.reset(profile, profile.verified);
   }, [JSON.stringify(profile), w.user?.id, w.demoEpoch, review]);
   function update(key: string, value: unknown) {
+    w.store.set('ui.profileEditing',true);
     const next = { ...facts, [key]: value };
     if(key==="firstName"||key==="lastName")next.name=[next.firstName,next.lastName].filter(Boolean).join(" ");
     setFacts(next);
@@ -136,7 +138,8 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
     // Editing facts invalidates verification; saving must never imply human review.
     const verified = profile.verified === true && JSON.stringify(values) === JSON.stringify(profile);
     w.store.set("workflow.profile", { ...values, verified });
-    setFeedback("Saved");
+    w.store.set('ui.profileEditing',false);
+    setFeedback('Saved locally. Syncing your profile.');
     return true;
   }
 
@@ -154,13 +157,29 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
     setFeedback(verified ? "Saved profile details confirmed. This does not approve an application." : "Profile confirmation removed.");
   }
 
+  const conflict=w.state.ui?.profileConflict;
+  const [resolving,setResolving]=useState(false),[recoveryError,setRecoveryError]=useState("");
+  useEffect(()=>()=>{w.store.set('ui.profileEditing',false);},[w.store]);
+  async function resolveConflict(choice='review') {
+    setResolving(true);setRecoveryError("");
+    try{await (w.demo?w.services.resolveProfileConflict(choice):window.JB.cloud.resolveProfileConflict(choice));}
+    catch(error){setRecoveryError(error instanceof Error?error.message:'Could not reload your profile. Your edits are kept.');}
+    finally{setResolving(false);}
+  }
   const groups = [
     {title:"Personal Info",keys:["firstName","lastName","preferredName","suffix","email","phone","birthday","location","address","address2","address3","postalCode",...(!facts.firstName&&!facts.lastName?["name"]:[])]},
     {title:"Professional summary",keys:["headline","currentEmployer","jobSearchStatus"]},
     {title:"Professional links",keys:["linkedin","github","portfolio","otherUrl"]},
   ];
   const renderGroup=(group:typeof groups[number])=>(<ProfileSection key={group.title} title={group.title} resetKey={profile} onFinish={save}>{editing=>editing?<fieldset><legend className="sr-only">{group.title}</legend><div className="grid gap-5 sm:grid-cols-2">{group.keys.map(key=><Field label={labels[key]} key={key}><input form={formId} id={`profile-${key}`} name={key} className={control} value={(facts[key] as string)||""} type={key==='email'?'email':key==='phone'?'tel':key==='birthday'?'date':['linkedin','github','portfolio','otherUrl'].includes(key)?'url':'text'} autoComplete={({name:'name',firstName:'given-name',lastName:'family-name',preferredName:'nickname',suffix:'honorific-suffix',email:'email',phone:'tel',birthday:'bday',location:'address-level2',address:'address-line1',address2:'address-line2',address3:'address-line3',postalCode:'postal-code'} as Record<string,string>)[key]||'off'} onChange={e=>update(key,e.target.value)}/></Field>)}</div></fieldset>:<ProfileValues items={group.keys.map(key=>({label:labels[key],value:facts[key]}))}/>}</ProfileSection>);
-  return <>
+  return <ProfileDraftContext.Provider value={hasUnsavedFacts}>
+    {conflict&&<div role="alert" className="mb-6 space-y-3">
+      <p className="text-sm">Your profile changed elsewhere. Your edits are kept here.</p>
+      {conflict.fields?.length?<>
+        <p className="text-sm text-board-muted">Both versions changed: {conflict.fields.map((key:string)=>labels[key]||sections[key]||key).join(', ')}. Choose which values to keep for those fields. Other edits are preserved.</p>
+        <div className="flex flex-wrap gap-3"><button type="button" className={secondary} disabled={resolving||w.locked} onClick={()=>resolveConflict('latest')}>Use latest values</button><button type="button" className={secondary} disabled={resolving||w.locked} onClick={()=>resolveConflict('local')}>Keep my edits</button></div>
+      </>:<button type="button" className={secondary} disabled={resolving||w.locked} onClick={()=>resolveConflict()}>{resolving?'Loading latest profile…':'Reload latest profile'}</button>}
+    </div>}
     {renderGroup(groups[0])}
     {children}
     <h2 className="mb-3 mt-8 text-lg font-bold">Career background</h2>
@@ -174,7 +193,7 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
         {!facts[kind]?.length&&<p className="text-sm text-board-muted">No entries added yet.</p>}
         {editing&&<button type="button" className={`${secondary} mt-5`} onClick={()=>update(kind,[...(facts[kind]||[]),{}])}>Add {sections[kind].toLowerCase()}</button>}
       </>}</ProfileSection>)}
-      <ProfileSection title="Skills & languages" resetKey={profile} onFinish={save}>{editing=>editing?<div className="grid gap-5 sm:grid-cols-2">{pillFields.map(key=><ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key]||""} onDraft={value=>setPillDrafts(current=>({...current,[key]:value}))} onChange={value=>update(key,value)}/>)}</div>:<>{pillFields.map(key=><div key={key} className={styles.skillGroup}><h4>{labels[key]}</h4>{pills([...(pills(facts[key])),pillDrafts[key]||""]).length?<ul className={styles.tags} aria-label={labels[key]}>{pills([...(pills(facts[key])),pillDrafts[key]||""]).map(item=><li key={item}>{item}</li>)}</ul>:<p className="text-sm text-board-muted">Not provided</p>}</div>)}</>}</ProfileSection>
+      <ProfileSection title="Skills & languages" resetKey={profile} onFinish={save}>{editing=>editing?<div className="grid gap-5 sm:grid-cols-2">{pillFields.map(key=><ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key]||""} onDraft={value=>{w.store.set('ui.profileEditing',true);setPillDrafts(current=>({...current,[key]:value}));}} onChange={value=>update(key,value)}/>)}</div>:<>{pillFields.map(key=><div key={key} className={styles.skillGroup}><h4>{labels[key]}</h4>{pills([...(pills(facts[key])),pillDrafts[key]||""]).length?<ul className={styles.tags} aria-label={labels[key]}>{pills([...(pills(facts[key])),pillDrafts[key]||""]).map(item=><li key={item}>{item}</li>)}</ul>:<p className="text-sm text-board-muted">Not provided</p>}</div>)}</>}</ProfileSection>
       <div className="mt-6 border-t border-board-line pt-5">
         <label className="flex min-h-11 items-start gap-3 text-sm leading-relaxed">
           <input type="checkbox" className="mt-1 h-5 w-5 shrink-0 accent-board-accent" checked={profile.verified === true && !hasUnsavedFacts} disabled={w.locked || hasUnsavedFacts} onChange={confirmReview} />
@@ -182,7 +201,7 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
         </label>
         <p className="mt-2 text-xs text-board-muted">{hasUnsavedFacts ? "Save your edits before confirming the updated details." : "This confirms your profile details only. It does not approve or submit an application."}</p>
       </div>
-      <Notice>{feedback}</Notice>
+      <Notice>{recoveryError||(conflict?"Review the profile conflict above before syncing.":feedback)}</Notice>
     </form>
-  </>;
+  </ProfileDraftContext.Provider>;
 }

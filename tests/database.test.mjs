@@ -24,6 +24,14 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['discover-application-jobs','Discover application jobs replay safely, isolate owners, fence worker leases and preserve submission consent'],
+  ['submission-batches','submission batches pin versions, isolate owners, fence leases, replay safely and derive outcomes without consent shortcuts'],
+  ['action-inbox','durable handoffs reconcile atomically, retain history, isolate owners and preserve consent'],
+  ['profile-edit-flow','complete browser and MCP profile flow preserves facts, rejects stale versions and enforces human review'],
+  ['work-experience','entry-level work history preserves facts, versions, scopes, ownership and website/MCP parity'],
+  ['search-pipeline','scoped lead intake and screening replay atomically, isolate owners and rescreen current settings'],
+  ['careerops-discovery','copied CareerOps native identities and functional URL parameters survive persisted resume reads'],
+  ['backend-jobs','backend execution isolates owners, replays writes, fences leases and dispatch, and rejects retired scheduling'],
   ['agent-connection-test','lightweight agent check-in exposes owned automation settings without advancing onboarding or creating tasks'],
   ['job-assessment','dynamic private assessments validate scores, preserve retries and isolate owners'],
   ['website-onboarding','website completion persists separately from agent readiness, rejects agents, isolates owners and replays safely'],
@@ -44,6 +52,7 @@ for (const [file, behavior] of [
   ['runner-failure', 'failure reports preserve drafts, reject stale writes and replay once'],
   ['submission', 'submission claims permit one click and retain observed evidence'],
   ['muse-parity', 'quiet settings and human handoffs retain scoped ownership and versions'],
+  ['interview-reporting','automatic candidate reports, corrections and private notes preserve evidence, ownership, versions and website/MCP parity'],
   ['milestones', 'process milestones preserve evidence, ownership, and unknown dates'],
   ['preparation-planner', 'shared prep sessions enforce budget, atomic versions, idempotency and owner isolation'],
   ['muse-features', 'preparation, selection and notification records enforce ownership and versions'],

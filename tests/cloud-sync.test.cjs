@@ -5,16 +5,28 @@ const fs=require('node:fs');
 const one='11111111-1111-4111-8111-111111111111',two='22222222-2222-4222-8222-222222222222';
 const clone=value=>JSON.parse(JSON.stringify(value));
 function deferred(){let resolve;const promise=new Promise(done=>resolve=done);return {promise,resolve};}
-async function environment(batch=null,reactUI=false,preferences=[],initialReadFailure=false){
+async function environment(batch=null,reactUI=false,preferences=[],initialReadFailure=false,cache=new Map(),existingDb=null){
  const listeners=new Map(),timers=new Map(),elements=new Map(),windowEvents=new Map();let next=0,owner=one,gate=null,fail=false,writes=0,readGate=null,failRead=initialReadFailure;
  const document={getElementById:id=>element(id),querySelector:selector=>element(selector),addEventListener:(type,fn)=>listeners.set(type,fn),dispatchEvent:event=>listeners.get(event.type)?.(event)};
  function element(id){if(!elements.has(id))elements.set(id,{hidden:false,disabled:false,textContent:'',addEventListener(){}});return elements.get(id);}
  const timeout=fn=>{timers.set(++next,fn);return next;};
- const ctx={document,window:{addEventListener:(type,fn)=>windowEvents.set(type,fn)},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:()=>null,setItem(){},removeItem(){},length:0}};
+ const ctx={document,window:{addEventListener:(type,fn)=>windowEvents.set(type,fn)},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:key=>cache.get(key)??null,setItem:(key,value)=>cache.set(key,value),removeItem:key=>cache.delete(key),get length(){return cache.size;},key:index=>[...cache.keys()][index]}};
  vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
- const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],job_batches:[]};
- const client={async rpc(name,args){
+ const db=existingDb||{profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],action_inbox:[],job_batches:[],search_observations:[]};
+ let notify,status,removed=0;
+ const client={channel(){const c={on(event,filter,fn){notify=fn;return c;},subscribe(fn){status=fn;return c;}};return c;},removeChannel(){removed++;},async rpc(name,args){
   if(name==='workspace_reset_state')return {data:db.resetState||{}};
+  if(name==='save_profile_changes'||name==='review_profile_facts'){
+   writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}
+   const current=db.profiles[0],expected=name==='review_profile_facts'?args.expected_updated_at:args.payload.expectedUpdatedAt;
+   if((current?.updated_at??null)!==expected)return {error:Object.assign(Error('Profile changed'),{code:'PT409'})};
+   const row={user_id:owner,facts:{...current?.facts,...(args.payload?.fields||{})},verified_at:name==='review_profile_facts'&&args.reviewed?'2026-10-26T12:00:00Z':null,updated_at:new Date(Math.max(Date.parse(current?.updated_at||'2026-01-01T00:00:00Z')+1,Date.parse('2026-01-01T00:00:00Z')+writes)).toISOString()};db.profiles=[clone(row)];return {data:row};
+  }
+  if(name==='update_workspace_fields'||name==='perform_platform_action'){
+   const current=db.profiles[0];
+   if((current?.updated_at||null)!==args.payload.expectedUpdatedAt)return {error:Error('Profile changed')};
+   const row={user_id:owner,facts:{...current?.facts,...(args.payload.fields||args.payload.facts)},verified_at:null,updated_at:'2026-10-26T13:00:00Z'};db.profiles=[clone(row)];return {data:row};
+  }
   if(name!=='save_preferences_preserving_quiet')throw Error('Unexpected RPC');
   const previous=db.preferences[0]||{};
   const search={...args.search_next};
@@ -27,7 +39,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
    if(operation==='upsert'){writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}db[table]=[clone(fields)];return {data:clone(fields)};}
    if(table==='profiles' && readGate){const pending=readGate;readGate=null;await pending.promise;}
    if(table==='profiles' && failRead){failRead=false;return {error:Error('Offline')};}
-   const rows=db[table].filter(row=>filters.every(([key,value])=>row[key]===value)).slice(start,end+1);return {data:single?rows[0]:clone(rows)};
+   const rows=(db[table]||[]).filter(row=>filters.every(([key,value])=>row[key]===value)).slice(start,end+1);return {data:single?rows[0]:clone(rows)};
   })().then(resolve,reject);}};return query;
  }};
  global.JB={store,auth:{get userId(){return owner;}},catalogReady:Promise.resolve(),setBatch(){}};
@@ -37,7 +49,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  const {connectCloud}=await import('../lib/cloud.mjs');connectCloud(client,reactUI?ui:null);
  async function flush(){const pending=[...timers.values()];timers.clear();pending.forEach(fn=>fn());for(let i=0;i<100;i++)await Promise.resolve();}
  await flush();
- return {store,db,ui,flush,event:type=>windowEvents.get(type)?.(),blockRead(){readGate=deferred();return readGate;},failRead(){failRead=true;},get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
+ return {store,db,ui,flush,cache,notify:()=>notify?.(),status:value=>status?.(value),get timers(){return [...timers.values()].filter(fn=>fn.toString().includes("autoSync")).length;},get timerSources(){return [...timers.values()].map(fn=>fn.toString());},get removed(){return removed;},event:type=>windowEvents.get(type)?.(),blockRead(){readGate=deferred();return readGate;},failRead(){failRead=true;},get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
 }
 const globals = ['JB', 'document', 'window', 'location', 'CustomEvent', 'setTimeout', 'clearTimeout'];
 let savedGlobals;
@@ -88,10 +100,12 @@ test('React cloud adapter receives sync and lock state without static page contr
 });
 
 
-test('background refresh receives agent account changes without manual reload',async()=>{
+test('notifications refresh agent changes without idle polling',async()=>{
  const env=await environment(null,true);
+ assert.equal(env.timers,0,JSON.stringify(env.timerSources));
  env.db.profiles=[{user_id:one,facts:{name:'Prepared by agent'},verified:false}];
- await env.flush();
+ env.notify();await env.flush();
+ assert.equal(env.timers,0,JSON.stringify(env.timerSources));
  assert.equal(env.store.get('workflow.profile.name'),'Prepared by agent');
  assert.equal(env.writes,0);
  assert.equal(env.store.get('workflow.cloudDirty'),false);
@@ -106,9 +120,9 @@ test('background refresh never overwrites an edit made while a read is in flight
  await env.flush();
  assert.equal(env.db.profiles[0].facts.name,'Local edit during refresh');
 });
-test('online event retries failed reads and clears the temporary error',async()=>{
+test('background read failures stay quiet and recover on the online event',async()=>{
  const env=await environment(null,true);env.failRead();
- await env.event('focus');assert.match(env.ui.error.textContent,/retry automatically/);
+ await env.event('focus');assert.equal(env.ui.error.textContent,'');assert.equal(env.timers,1);
  env.db.profiles=[{user_id:one,facts:{name:'Recovered'},verified:false}];
  await env.event('online');
  assert.equal(env.store.get('workflow.profile.name'),'Recovered');
@@ -177,4 +191,82 @@ test('new private job batches arrive on background sync without reloading the wo
  env.db.job_batches=[];
  await env.event('focus');
  assert.equal(seen.at(-1),null);
+});
+
+test('resume import adopts a versioned receipt without autosync overwriting retained fields',async()=>{
+ const env=await environment();env.store.set('workflow.profile.name','Keep my name');await JB.cloud.save();env.db.profiles[0].updated_at='2026-10-26T12:00:00Z';
+ const baseline=clone(env.store.get('workflow.profile')),writes=env.writes;
+ await JB.cloud.importProfileFields({skills:'TypeScript'},env.db.profiles[0].updated_at,baseline);
+ assert.equal(env.store.get('workflow.profile.name'),'Keep my name');assert.equal(env.store.get('workflow.profile.skills'),'TypeScript');assert.equal(env.store.get('workflow.profile.verified'),false);
+ assert.equal(env.writes,writes+1);await env.flush();assert.equal(env.writes,writes+1);assert.equal(env.db.profiles[0].facts.skills,'TypeScript');
+});
+test('resume import rejects local edits and stale remote profile versions',async()=>{
+ const env=await environment();env.store.set('workflow.profile.name','Saved');await JB.cloud.save();const baseline=clone(env.store.get('workflow.profile'));
+ env.store.set('workflow.profile.name','New local edit');await assert.rejects(JB.cloud.importProfileFields({skills:'Discard'},'2026-10-26T12:00:00Z',baseline),/profile changed/);
+ const next=clone(env.store.get('workflow.profile'));env.db.profiles[0].updated_at='2026-10-26T13:00:00Z';
+ await assert.rejects(JB.cloud.importProfileFields({skills:'Discard'},'2026-10-26T12:00:00Z',next),/Profile changed/);assert.equal(env.db.profiles[0].facts.name,'New local edit');assert.ok(!env.db.profiles[0].facts.skills);
+});
+test('resume import creates a missing tutorial profile through the versioned profile save boundary',async()=>{
+ const env=await environment();const baseline=clone(env.store.get('workflow.profile'));await JB.cloud.importProfileFields({name:'New candidate'},null,baseline);assert.equal(env.db.profiles[0].facts.name,'New candidate');assert.equal(env.store.get('workflow.profile.name'),'New candidate');assert.equal(env.store.get('workflow.profile.verified'),false);
+});
+
+test('reconnecting reconciles missed inbox writes and removes old account subscriptions',async()=>{
+ const env=await environment();await env.flush();
+ env.db.action_inbox=[{id:'handoff',user_id:one,application_id:'app',kind:'resolve_blocker',reason:'Missing answer',available_at:new Date().toISOString(),created_at:new Date().toISOString(),resolved_at:null}];
+ env.status('SUBSCRIBED');await env.flush();
+ assert.equal(env.store.get('workflow.actionInbox')[0].id,'handoff');
+ assert.equal(env.timers,0,JSON.stringify(env.timerSources));
+ env.switch(two);await env.flush();assert.equal(env.removed,1);assert.equal(env.store.get('workflow.actionInbox').length,0);
+ JB.cloud.suspendForDemo(true);assert.equal(env.removed,2);
+});
+
+
+test('complete profile flow: agent edit arrives, website edits another field, agent read-back and stale recovery preserve both',async()=>{
+ const env=await environment(null,true);env.store.set('workflow.profile',{...env.store.get('workflow.profile'),name:'Fictional Candidate',workExperience:[{company:'Original',title:'Intern'}]});await JB.cloud.save();
+ // The agent writes through the separately SQL-tested entry boundary.
+ env.db.profiles[0].facts.workExperience.push({company:'Agent added',title:'Engineer'});env.db.profiles[0].updated_at='2026-10-26T10:00:00Z';
+ env.notify();await env.flush();assert.equal(env.store.get('workflow.profile.workExperience').length,2);
+ env.store.set('workflow.profile.phone','Website phone');await JB.cloud.save();assert.equal(env.db.profiles[0].facts.phone,'Website phone');assert.equal(env.db.profiles[0].facts.workExperience.length,2);
+ env.store.set('workflow.profile.location','Website location');
+ env.db.profiles[0].facts.workExperience.push({company:'Concurrent agent addition',title:'Engineer'});env.db.profiles[0].updated_at='2026-10-26T11:00:00Z';
+ await assert.rejects(JB.cloud.save(),error=>error.code==='PT409');assert.equal(env.db.profiles[0].facts.location??'','');assert.equal(env.db.profiles[0].facts.workExperience.length,3);assert.ok(env.store.get('ui.profileConflict'));
+ const writes=env.writes;await env.flush();assert.equal(env.writes,writes,'conflicts must not retry automatically');
+ assert.equal(await JB.cloud.resolveProfileConflict(),true);await JB.cloud.save();assert.equal(env.db.profiles[0].facts.location,'Website location');assert.equal(env.db.profiles[0].facts.workExperience.length,3);
+ env.store._flush();const refreshed=await environment(null,true,[],false,env.cache,env.db);assert.equal(refreshed.store.get('workflow.profile.location'),'Website location');assert.equal(refreshed.store.get('workflow.profile.workExperience').length,3);
+});
+test('conflicting same-field edits require a choice; latest preserves other local edits and review is not inherited',async()=>{
+ const env=await environment(null,true);env.store.set('workflow.profile.name','Original');await JB.cloud.save();
+ env.store.set('workflow.profile.name','Local name');env.store.set('workflow.profile.phone','Keep local phone');
+ env.db.profiles[0].facts.name='Agent name';env.db.profiles[0].updated_at='2026-10-26T10:00:00Z';
+ await assert.rejects(JB.cloud.save());assert.equal(await JB.cloud.resolveProfileConflict(),false);assert.deepEqual(clone(env.store.get('ui.profileConflict.fields')),['name']);
+ await JB.cloud.resolveProfileConflict('latest');await JB.cloud.save();assert.equal(env.db.profiles[0].facts.name,'Agent name');assert.equal(env.db.profiles[0].facts.phone,'Keep local phone');assert.equal(env.store.get('workflow.profile.verified'),false);
+});
+test('offline draft retains its original version across a page reload and cannot overwrite newer agent data',async()=>{
+ const env=await environment();env.store.set('workflow.profile.name','Saved name');await JB.cloud.save();env.store.set('workflow.profile.phone','Offline edit');env.store._flush();
+ env.db.profiles[0].facts.name='New agent name';env.db.profiles[0].updated_at='2026-10-26T10:00:00Z';
+ const reloaded=await environment(null,true,[],false,env.cache,env.db);await assert.rejects(JB.cloud.save(),error=>error.code==='PT409');assert.ok(reloaded.store.get('ui.profileConflict'));assert.equal(reloaded.db.profiles[0].facts.name,'New agent name');assert.equal(reloaded.store.get('workflow.profile.phone'),'Offline edit');
+ await JB.cloud.resolveProfileConflict();await JB.cloud.save();assert.equal(reloaded.db.profiles[0].facts.name,'New agent name');assert.equal(reloaded.db.profiles[0].facts.phone,'Offline edit');
+});
+test('live refresh does not erase an in-progress profile form',async()=>{
+ const env=await environment();env.store.set('ui.profileEditing',true);env.db.profiles=[{user_id:one,facts:{name:'Agent update'},updated_at:'2026-10-26T10:00:00Z'}];
+ await env.event('focus');assert.equal(env.store.get('workflow.profile.name'),'');env.store.set('ui.profileEditing',false);await env.event('focus');assert.equal(env.store.get('workflow.profile.name'),'Agent update');
+});
+
+test('legacy offline cache without a baseline requires explicit review before replacing any server fields',async()=>{
+ const env=await environment();env.store.set('workflow.profile.name','Older cached name');env.store.set('workflow.profileSyncBase',null);env.store._flush();env.db.profiles=[{user_id:one,facts:{name:'Newer server name',workExperience:[{company:'Keep server history'}]},updated_at:'2026-10-26T10:00:00Z'}];
+ const reloaded=await environment(null,true,[],false,env.cache,env.db);assert.ok(reloaded.store.get('ui.profileConflict'));assert.equal(await JB.cloud.resolveProfileConflict(),false);assert.ok(reloaded.store.get('ui.profileConflict.fields').includes('name'));
+ await JB.cloud.resolveProfileConflict('latest');await JB.cloud.save();assert.equal(reloaded.db.profiles[0].facts.name,'Newer server name');assert.equal(reloaded.db.profiles[0].facts.workExperience.length,1);
+});
+
+
+test('a refresh started before typing cannot hydrate after a profile form becomes dirty',async()=>{
+ const env=await environment(),hold=env.blockRead();const pending=env.event('focus');for(let i=0;i<10;i++)await Promise.resolve();env.store.set('ui.profileEditing',true);env.db.profiles=[{user_id:one,facts:{name:'Late agent refresh'},updated_at:'2026-10-26T10:00:00Z'}];hold.resolve();await pending;assert.equal(env.store.get('workflow.profile.name'),'');
+});
+
+test('resume import creates a sparse profile when the parser omits the name',async()=>{
+ const env=await environment();const baseline=clone(env.store.get('workflow.profile'));
+ await JB.cloud.importProfileFields({email:'fictional@example.com',skills:'SQL',workExperience:[{title:'Intern',company:'Example'}]},null,baseline);
+ assert.equal(env.db.profiles[0].facts.email,'fictional@example.com');
+ assert.equal(env.store.get('workflow.profile.workExperience')[0].company,'Example');
+ const writes=env.writes;await env.flush();assert.equal(env.writes,writes);
 });

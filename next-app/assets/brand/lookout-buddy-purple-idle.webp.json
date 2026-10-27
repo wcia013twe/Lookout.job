@@ -1,0 +1,6 @@
+{
+  "source": "Full-body idle extraction of assets/brand/lookout-buddy-style-sheet.png; active color reference next-app/assets/brand/lookout-mark.png",
+  "method": "Built-in imagegen palette-only edit, preserving full-body anatomy and canvas",
+  "prompt": "Palette-only edit of image1, the full-body Lookout character. Recolor ONLY its matcha green body, arms, hands, torso, legs, feet and pupils to the active deep purple-indigo #233562 from image2, and recolor cream eyes/mouth to pale lavender #F0EBFF. Image2 is COLOR REFERENCE ONLY, not anatomy. Preserve image1 exactly otherwise: same 1536x1024 canvas, identical character scale, pixel positions, body silhouette, hands, fingers, feet, eyes, smile, pose, proportions, and transparency. No added glow, no shadow, no background, no rays or observation marks yet (these will be animated separately in the website). No cropping, no extra padding, no text. The only change is green->purple-indigo and cream->lavender, keeping the full body intact. Output a transparent PNG.",
+  "delivery": "Converted with cwebp -q 90 -alpha_q 100 -m 6; no content changes. Observation rays are separate animated SVG geometry matching active brand mark."
+}

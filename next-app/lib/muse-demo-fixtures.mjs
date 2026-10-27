@@ -1,3 +1,9 @@
+import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
+import {createMuseChangeFeedDemo} from '../../lib/muse-change-feed-demo.mjs';
+import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
+import {reconcileProfileChanges} from '../../lib/profile-sync.mjs';
+import {editedWorkExperience} from '../../supabase/functions/agent-gateway/work-experience.mjs';
+import {createBackendJobsDemo} from '../../lib/backend-jobs-demo.mjs';
 import {createWorkflowDemo} from './agent-workflows-demo.mjs';
 import {createArtifactDemo} from './artifact-demo.mjs';
 import { demoOutreachContacts } from './outreach-demo.mjs';
@@ -104,6 +110,8 @@ export function createDemoWorkspace(now = new Date()) {
     milestone('demo-interview', 'recruiter-call', 'recruiter_call', 'Recruiter call', `${day(today, -1)}T14:00:00Z`, 'completed', email('cedar-recruiter', 'Demo: thanks for the recruiter call', `Fictional email: thank you for speaking with our recruiter on ${day(today, -1)} at 14:00 UTC.`)),
     milestone('demo-interview', 'technical-round-1', 'technical_round', 'Technical round 1', `${confirmedDate}T14:00:00Z`, 'scheduled', copy(confirmedPlan.deadline.source)),
   ];
+  applications['demo-interview'].milestones.push({...milestone('demo-interview','old-technical-time','technical_round','Technical round 1 — earlier time',`${confirmedDate}T12:00:00Z`,'scheduled',email('cedar-original-time','Demo: original time','Fictional original time, replaced by the next update.'))});
+  applications['demo-interview'].milestones.find(row=>row.id==='demo-interview-technical-round-1').supersedes_id='demo-interview-old-technical-time';
   applications['demo-ambiguous'].milestones = [
     milestone('demo-ambiguous', 'recruiter-date-unknown', 'recruiter_call', 'Recruiter call — date needs confirmation', null, 'scheduled', copy(ambiguousPlan.deadline.source)),
   ];
@@ -152,6 +160,35 @@ export function createDemoServices(store) {
     return {...artifactDemo.artifactSnapshot(),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
+    ...createMuseChangeFeedDemo(),
+    backendJobs:createBackendJobsDemo(),
+    async queueApplicationJob(payload) {
+      // The demo's example.com postings are inert; validate using a fictional supported URL.
+      validateApplicationJob({...payload,posting:{...payload.posting,url:'https://job-boards.greenhouse.io/lookout_fictional_demo/jobs/1'}});
+      const role=payload.posting,previous=store.get('workflow.applications.'+role.id);
+      const job=previous?.executionJob||{id:'demo-job-'+payload.eventKey,status:'queued'};
+      const app={...role,url:role.url,backendId:'demo-application-'+role.id,id:role.id,status:'Queued',questions:[],backendRevision:0,...previous,executionJob:job};
+      store.set('workflow.applications.'+role.id,app);
+      return {application:copy(app),job:copy(job)};
+    },
+    async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
+    async resolveProfileConflict(choice='review') {
+      const scenario=store.get('demo.profileConflict');if(!scenario)throw Error('No fictional profile conflict');
+      const result=reconcileProfileChanges(scenario.before,store.get('workflow.profile'),scenario.latest,choice);
+      if(result.conflicts.length){store.set('ui.profileConflict',{fields:result.conflicts});return false;}
+      store.set('workflow.profile',result.profile);store.set('ui.profileConflict',null);return true;
+    },
+    async editWorkExperience(payload) {
+      const profile=store.get('workflow.profile');
+      const timestamp=store.get('demo.profileUpdatedAt')||'2026-01-01T00:00:00.000Z';
+      if(payload.expectedUpdatedAt!==timestamp)throw Error('Profile changed; reload before editing work history');
+      const workExperience=editedWorkExperience(profile.workExperience||[],payload);
+      if(JSON.stringify(workExperience)===JSON.stringify(profile.workExperience))return {facts:profile,updated_at:timestamp};
+      const updated_at=new Date(Date.parse(timestamp)+1).toISOString();
+      store.set('workflow.profile',{...profile,workExperience,verified:false});
+      store.set('demo.profileUpdatedAt',updated_at);
+      return {facts:store.get('workflow.profile'),updated_at,verified_at:null};
+    },
     ...artifactDemo,
     ...createWorkflowDemo(store),
     async discoverToolkit() { return copy(store.get('demo.toolkitDiscovery') || []); },
@@ -172,7 +209,7 @@ export function createDemoServices(store) {
       return plannerBundle();
     },
 
-    knowledge: createCircleKnowledgeDemo(),
+    knowledge: createCircleKnowledgeDemo({getJobs:()=>Object.values(store.get('workflow').applications||{})}),
     async onboardingAction(operation, payload = {}) { return demoOnboardingAction(store, operation, payload); },
     async readApplicationTimeline(id) {
       const current = application(id);
@@ -184,7 +221,7 @@ export function createDemoServices(store) {
       if (input.occurredAt != null && (typeof input.occurredAt !== 'string' || !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(input.occurredAt) || !Number.isFinite(Date.parse(input.occurredAt)) || input.source.timestampConfirmed !== true)) throw new Error('Choose a valid milestone date with a confirmed time zone, or leave it unknown.');
       const milestones = copy(current.milestones || []);
       const source = { kind: 'user', ...(input.source.note ? { note: input.source.note } : {}), ...(input.occurredAt ? { timestampConfirmed: true } : {}) };
-      const content = { kind: input.kind, label: input.label || input.kind.replaceAll('_', ' '), occurred_at: input.occurredAt || null, phase: input.phase, source };
+      const content = { kind: input.kind, label: input.label || input.kind.replaceAll('_', ' '), occurred_at: input.occurredAt || null, phase: input.phase, source, supersedes_id: input.supersedesId || null };
       const existing = milestones.find(row => row.event_key === input.eventKey);
       if (existing) {
         if (Object.keys(content).some(key => JSON.stringify(existing[key]) !== JSON.stringify(content[key]))) {
@@ -192,6 +229,7 @@ export function createDemoServices(store) {
         }
         return copy(existing);
       }
+      if (input.supersedesId && (!milestones.some(row=>row.id===input.supersedesId) || milestones.some(row=>row.supersedes_id===input.supersedesId))) throw new Error('Demo milestone already replaced or unavailable. Reload the timeline.');
       const row = { id: `${id}-user-${input.eventKey}`, user_id: identity, application_id: id, event_key: input.eventKey, ...content, created_at: new Date().toISOString() };
       store.set(`workflow.applications.${id}`, { ...current, milestones: [...milestones, row] });
       return copy(row);

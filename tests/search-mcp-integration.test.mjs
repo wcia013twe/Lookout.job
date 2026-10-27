@@ -19,7 +19,7 @@ test('a hosted-MCP-only agent configures, checkpoints, reconnects, resumes, publ
  let transport=handler();
  const call=async(name,args={},expectedError)=>{
   const res=await transport(new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})}));
-  const body=await res.json();assert(!body.error,JSON.stringify(body));if(expectedError){assert(body.result.isError);assert.match(body.result.content[0].text,expectedError);return;}assert(!body.result.isError,JSON.stringify(body.result));return body.result.structuredContent||JSON.parse(body.result.content[0].text);
+  const body=await res.json();if(expectedError&&body.error){assert.equal(body.error.code,-32602);assert.match(body.error.message,expectedError);return;}assert(!body.error,JSON.stringify(body));if(expectedError){assert(body.result.isError);assert.match(body.result.content[0].text,expectedError);return;}assert(!body.result.isError,JSON.stringify(body.result));return body.result.structuredContent||JSON.parse(body.result.content[0].text);
  };
  const empty=await call('read_search_context');assert.equal(empty.configurationGaps.length,2);
  const guide=await call('read_guide',{id:'career-find-jobs'});assert(guide.dependencies.runtime.includes('agent browsing/search'));

@@ -89,6 +89,7 @@
 
  .tracker-browse-cta {display:none;}
  .tracker-header-tabs {gap:14px;margin-top:6px;}
+ .tracker-header-tabs>span {flex-basis:100%;}
  .tracker-header-tabs button {min-width:44px;}
  .tracker-filters {grid-template-columns:1fr 1fr;gap:8px;}
  .tracker-surface input,.tracker-surface select,.tracker-surface textarea {font-size:16px;}

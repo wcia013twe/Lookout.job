@@ -96,3 +96,9 @@ test('browser prefill fails closed before filling when employer control becomes 
     locator: () => ({ count: async () => 2, fill: () => { throw new Error('Must not fill ambiguous control'); } }) };
   assert.equal((await prefillApprovedForm(page, context)).status, 'Blocked');
 });
+
+test('public Greenhouse inspection flattens nested voluntary compliance questions',()=>{
+ const form=greenhouseForm({...payload,compliance:[{type:'eeoc',questions:[{label:'Veteran status',required:false,fields:[{name:'veteran_status',type:'multi_value_single_select',values:[{value:3,label:'Prefer not to answer'}]}]}]}]},url);
+ const q=form.questions.find(q=>q.question==='Veteran status');assert.ok(q);assert.equal(q.required,false);assert.equal(q.fields[0].type,'select');assert.equal(q.fields[0].options[0].value,'3');
+ assert.ok(form.questions.every(q=>q.question));
+});

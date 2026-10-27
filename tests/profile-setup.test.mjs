@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { PGlite } from '@electric-sql/pglite';
+import {vector} from '@electric-sql/pglite/vector';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { verifyResumeBytes, resumeSetupResponse } from '../supabase/functions/agent-gateway/profile-setup.mjs';
 import { uploadProfileResume } from '../runner/profile-upload.mjs';
@@ -46,7 +47,7 @@ test('local resume tool reuses a matching uploaded file without transmitting byt
   assert.equal(result.resume.id,uid);assert.equal(calls,1);
   await assert.rejects(uploadProfileResume({filePath:path,variant:'Master',eventKey:'file',gateway:{call:async()=>({uploadUrl:'https://evil.test/upload'})},fetchImpl:()=>{throw Error('Must not contact');}}),/Invalid private upload URL/);
   const requests=[];
-  const complete=await uploadProfileResume({filePath:path,variant:'Master',eventKey:'file',gateway:{call:async(op)=>op==='resumes.begin_upload'?{...plan,contentType:'application/pdf',uploadUrl:`https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/upload/sign/resumes/${plan.objectPath}?token=test`}:{resume:{id:plan.uploadId}}},fetchImpl:async(url,options)=>{requests.push(options);return new Response(null,{status:200});}});
+  const complete=await uploadProfileResume({filePath:path,variant:'Master',eventKey:'file',gateway:{call:async(op)=>op==='resumes.begin_upload'?{...plan,contentType:'application/pdf',uploadUrl:`https://osyrlausutnqzlegxmnd.supabase.co/storage/v1/object/upload/sign/resumes/${plan.objectPath}?token=test`}:{resume:{id:plan.uploadId}}},fetchImpl:async(url,options)=>{requests.push(options);return new Response(null,{status:200});}});
   assert.equal(complete.resume.id,plan.uploadId);assert.deepEqual(requests[0].body,pdf);assert.equal(requests[0].redirect,'error');assert.equal(requests[0].headers.Authorization,undefined);
  } finally {await rm(directory,{recursive:true});}
 });
@@ -63,7 +64,7 @@ test('profile setup MCP tools are hidden from old preparation/read-only keys',as
 });
 
 test('profile imports, uploads, defaults and scope changes keep ownership and human-review boundaries',async()=>{
- const db=new PGlite();
+ const db=new PGlite({extensions:{vector}});
  try {
   await db.exec(`create role anon; create role authenticated; create role service_role bypassrls; create schema auth; create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('test.uid',true),'')::uuid$$;grant usage on schema auth to authenticated,anon;grant execute on function auth.uid() to authenticated,anon;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text);alter table storage.objects enable row level security;create function storage.foldername(text) returns text[] language sql as $$select string_to_array($1,'/')$$;grant usage on schema storage to authenticated;grant all on storage.objects to authenticated;`);
   const dir=new URL('../supabase/migrations/',import.meta.url);

@@ -60,12 +60,18 @@ developer instructions and message defaults live in
 last-seen versions. See [context refresh setup](mcp/README.md#two-version-context-refresh).
 This avoids repeated full prompt reads; permanent agent memory depends on its runtime.
 
+On actual work runs, Muse can read a compact per-connection change feed for
+confirmed answers, job preferences/search profiles and finished backend jobs. It
+fetches only affected records and explicitly acknowledges handled events; unfinished
+changes remain pending. Events contain IDs and versions, not answer/document bodies.
+The feed does not wake Muse, create a schedule or authorize submissions.
+
 ## Desired daily interaction
 
 1. **Set up once.** Optionally sign in with Google; save verified profile facts, resume variants, search preferences, and separate Full-time / Internship company rankings. Choose which saved answers may autofill and which must always ask.
 2. **Muse prepares the morning batch.** Your connected agent reads your preferences, searches for relevant jobs, verifies employer postings, and publishes a private batch. Personal fit notes stay separate from the shared job catalog.
 3. **Open the link.** Muse sends “Your morning jobs are ready” through its own notification channel. The link opens your batch on the shared website. Login identifies the owner; a batch ID alone does not grant access.
-4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Opening a posting is not applying.
+4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Open Application only opens the employer posting. AI Apply queues a durable application job and stays visible as Queued; the posting leaves the latest Discover view only after recorded applied progress.
 5. **Prepare under your policy.** Muse inspects the live form and selects your configured résumé. Routine matches can proceed using verified facts and permitted saved answers. Important matches, auto-apply-off, unfamiliar answers and missing choices go to the **Action Board** for focused exact-version review. Agents never manufacture a human approval.
 Unresolved Playwright and agent recovery failures go to the **Action Board** with a reason and next action. Uncertain submission outcomes pause for human verification.
 
@@ -93,7 +99,7 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 ## Company logos
 
 The shared company mark uses Logo.dev when `NEXT_PUBLIC_LOGO_DEV_TOKEN` is set.
-Locally, set a publishable `pk_` key in `next-app/.env.local`. For GitHub Pages,
+Locally, set a publishable `pk_` key in `.env.local`. For GitHub Pages,
 set the repository Actions variable `NEXT_PUBLIC_LOGO_DEV_TOKEN` and rebuild.
 The token is embedded at build time; never supply a secret `sk_` key.
 Known aliases use `data/company-domains.json`; others use provider name lookup.
@@ -140,6 +146,32 @@ npm run test:db
 npm run validate:data
 npm run dev
 ```
+
+For the local Docker-backed stack, install the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started), start Docker Desktop (or another Docker engine), then run:
+
+```sh
+# One-time dependency setup; keep installs/caches on the external SSD.
+npm_config_cache="/Volumes/External SSD/Lookout/npm-cache" make install
+make dev
+```
+
+`make dev` (also `make up`, or just `make`) starts local Supabase containers,
+applies `supabase/migrations/` on first startup, and runs Next.js at
+`http://localhost:3000` with the local API URL and anonymous key. The frontend
+runs on the host; Supabase runs in Docker. The local stack uses separate data
+from the hosted project. Studio is at `http://localhost:54323`, email preview
+at `http://localhost:54324`, and the API at `http://127.0.0.1:54321`.
+
+Ctrl-C stops the frontend; `make down` stops this project's containers and
+preserves data. Use `make services`, `make frontend`, and `make status` separately
+as needed. Port 3000 must be free; Next.js will fail instead of choosing another
+port. The first services startup may download Docker images; keep Docker's disk
+image on the external SSD. Local Google OAuth requires separate provider secrets
+and callback setup; hosted Google configuration is not copied. Local agent
+endpoints require a runtime that can reach your localhost. `npm run dev` retains
+the hosted backend default for the existing workflow. Demo fixtures remain
+fictional and isolated; this startup tooling does not change product actions or
+MCP contracts.
 
 `npm test` runs behavior checks and the consolidated database scenarios. The database suite applies migrations once in disposable PGlite; `npm run test:db` runs the same scenarios separately. Hosted checks remain separate.
 
@@ -268,8 +300,7 @@ continues to work. Muse should save the package rather than asking for manual
 entry, then ask only about missing/conflicting facts. Imports remain unverified
 until reviewed; saved-answer autofill suggestions are distinct from permission.
 Account changes refresh automatically every 15 seconds and when you return to the app. Local edits sync automatically; failed connections retry without a reload button. HTTP/MCP setup and local-file upload
-are documented in the gateway and runner contracts. Resume parsing itself runs
-in the user's agent, not in this backend. No real candidate package is imported
+are documented in the gateway and runner contracts. When configured, the Node API can extract an uploaded resume through APILayer and return a reviewable profile proposal. The website tutorial and resume library share the import review; connected agents can use the scoped Node-only `parse_profile_resume` tool. Personal-agent extraction remains a fallback. No real candidate package is imported
 as part of development validation.
 
 ## Company outreach
@@ -315,7 +346,24 @@ Developer contract version **12** advertises these tools.
 Start in a fresh checkout with `npm run feature:start -- <name>`. After committing
 and reviewing the feature, run `npm run feature:land` there to integrate current
 local `main` and fast-forward the shared local `main` checkout. This routine path
-does not push or create a PR, so localhost receives completed work immediately.
+does not push or create a PR. For the everyday local app, run `make live` once:
+it serves an isolated SSD preview that follows committed shared `main` every second.
+Landing a feature updates that preview and Next.js refreshes connected browsers.
+Dependency changes reinstall locked dependencies and restart the frontend.
+`make frontend` / `make dev` on shared `main` use this stable preview too. In a
+feature checkout, they still preview that task; those servers cannot hot reload
+changes landed into a different checkout. Keep unfinished task
+checkouts intact. `make live` never switches, resets or edits them and never restarts
+the backend. Stop the previous frontend before using its port 3000.
+
+The live preview owns a clone under `/Volumes/External SSD/Lookout/live-main/`.
+It refuses dirty preview files or non-fast-forward history instead of discarding
+work. An interrupted process can leave a `running` lock; verify no preview is
+running before removing that empty directory. `LOOKOUT_LIVE_ROOT` may override
+the storage directory when internal storage is explicitly authorized. Browser/API
+configuration still comes from the existing local frontend launcher; no private
+account records or task `.env` files are copied. Developer-only `--hosted` mode
+uses the existing hosted default without starting local services.
 
 When GitHub review, protected-branch CI or production publication is explicitly
 needed, use `npm run feature:publish -- --title "<title>" --body-file
@@ -428,7 +476,7 @@ this library. Actual execution remains a capability of the connected agent.
 
 ## Document-backed career context and agent search memory
 
-Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state; it does not execute searches or activate schedules. Existing targeting controls edit canonical documents. See [the contract](docs/schema.md#search) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
+Personal agents can load career-ops-style targeting, house rules and portal/query configuration, then checkpoint their own sweeps and save discovery/screening evidence. Lookout stores and displays this state. A configured Node worker executes one bounded collect → verify → screen → deduplicate job using the copied Career Ops layer and persists shortlist IDs in the existing job result. Scoped manual research/rescreening tools remain available. The personal agent supplies web search, narrative analysis and four card ratings. Saving preferences does not activate a schedule. The optional HiringCafe resource includes a tested public MCP endpoint; see [its connection and verification limits](backend/discovery-flow.md#hiringcafe-resource-and-connection). See [the discovery flow](backend/discovery-flow.md) for the tested local sequence and explicit source limits. Existing targeting controls edit canonical documents. See [the contract](docs/schema.md#search) for tool mapping, migration and release verification. Backend deployment and a live hosted-MCP round trip are required before claiming availability.
 
 ## Private company Network
 
@@ -738,3 +786,224 @@ Connect/reconnect is not a job-search run. The agent reads onboarding state and 
 The setup request instructs the runtime to add/update enabled scheduled tasks assigned to this connection in its own automation settings, preserve saved time/timezone, deduplicate by Lookout task ID and leave unrelated automations intact. Disabled/manual/unassigned tasks are not run. Actual scheduler receipts are required before reporting success; missing settings/capabilities are a blocker, not a reason to launch work or install infrastructure. The agent then gives a short report and stops. Searches/imports execute only under a separate work request or actual scheduled invocation. Lookout stores definitions; it does not supply Muse’s scheduler.
 
 MCP mapping: `read_onboarding_state` → `update_onboarding_step(event=connection_test)`; the browser observes `data.connectionTest`. Existing runtime browsing attestation remains separate. Developer contract 52 defines this bounded setup sequence. Muse’s actual automation-settings support must still be verified in that runtime.
+
+## Local Supabase recovery workspace
+
+For an independent Docker-backed database, Auth, Storage and agent-gateway/MCP setup, see [the local setup and validation guide](backend/local/README.md). Local startup does not require Supabase CLI login and does not recover or switch the hosted account.
+
+
+## Resume autofill with APILayer (local integration)
+
+Tutorial resume upload or selection automatically extracts and saves supported
+facts inline, then shows a green check and **Data saved**. **Continue** advances to preferences. Omitted fields stay unchanged;
+extraction or save errors remain visible without advancing. My Profile →
+About me → Documents offers **Autofill with APILayer**. New uploads and successful source replacements open
+that offer; existing private uploaded resumes have **Autofill profile**. A link
+reference, cover letter or template is not sent to the resume parser. Upload alone
+never sends a document to APILayer. The tutorial Continue hint and profile extraction button disclose the transfer.
+The API key remains in the server-only Node env; no browser OCR is added.
+
+The optional My Profile review shows saved and extracted values side by side. Missing fields default
+selected; existing fields and whole history sections default unchecked. Selecting
+a history section replaces all entries in that section. Discard leaves the profile
+unchanged; saving preserves unrelated fields and clears verification. Unsaved
+background edits block import, and account changes or stale profile versions stop
+saving. Neither extraction nor saving grants autofill permission or submission
+approval. APILayer returns free-text dates, which are retained in descriptions rather than
+inventing start/end months. Scanned-resume OCR support is unverified; use text-based
+PDF/DOCX documents and review all extracted values. Unknown/unsupported schemas fail closed.
+
+Configure `APILAYER_API_KEY` in `backend/runtime/.env.local`,
+then `NEXT_PUBLIC_LOOKOUT_API_URL` in `.env.local`. See
+[local parser setup](backend/runtime/README.md#resume-parser-setup). No schema
+migration is needed. This is committed integration code and local verification,
+not a hosted deployment or proof of a live APILayer request.
+
+### Local test-account auto sign-in
+
+For a loopback preview backed by local Docker Supabase, set these in ignored
+`next-app/.env.local`, then rebuild the static preview or restart Next.js:
+
+```
+NEXT_PUBLIC_LOCAL_TEST_AUTO_SIGNIN=1
+NEXT_PUBLIC_LOCAL_TEST_EMAIL=<existing local test account email>
+NEXT_PUBLIC_LOCAL_TEST_PASSWORD=<existing local test account password>
+```
+
+Use the existing private `backend/runtime/.review-session.local.json` account when
+available; do not create a replacement or copy a hosted account. These values are
+included in the local browser build, so keep this export local. Both the website
+and Supabase must use HTTP loopback origins for this mode to activate. Existing
+sessions are preserved. An empty session signs in through local Supabase password
+auth; the Sign in action retries that same account. Sign out remains effective
+until reload. With this mode disabled, normal Google sign-in is unchanged.
+Detached fictional demo mode remains separate and does not load account auth.
+This is a development bootstrap using existing Auth, with no new product/MCP action.
+
+
+## Durable application handoffs
+
+The Action Board reads `public.action_inbox`, an owner-private log maintained in
+the same transaction as application and submission-attempt transitions. Approval
+requests, blockers and uncertain submissions have at most one pending entry per
+application. Repeated reports retain the same entry; changed conditions retain
+the old entry as superseded. Existing pending applications are backfilled.
+Resolved entries remain visible in Action history. There is no dismiss/clear API:
+the existing exact-version approval, draft/blocker edit and human submission
+resolution boundaries remain authoritative. A progress status cannot dismiss an
+unresolved submission attempt or grant retry authority.
+
+The browser reads through RLS; MCP `read_action_inbox` maps to
+`applications.inbox.read` with `workspace:read`, using the same bounded reader as
+browser `read_action_inbox`. Optional `state` is pending/resolved/all and `offset`
+paginates 100 records. Pending entries include future `available_at` times for
+five-minute stalled-attempt checks. Agents can read and request the existing human
+handoff, but cannot mark these entries resolved directly.
+
+Workspace sync no longer polls every 15 seconds. An owner-scoped Supabase Realtime
+subscription observes a minimal `workspace_changes` version record, coalesces
+notifications, then retrieves current records through existing owned reads.
+Connection/reconnection, tab focus and network recovery reconcile missed updates.
+Failed reads/writes retain error retries; successful idle sync schedules no network
+poll. A one-time local timer reveals delayed submission checks without a network
+request. Live connection errors are disclosed; persisted actions survive them.
+
+Release requires the durable-inbox migration (including the Realtime publication),
+gateway/MCP developer contract 72 and frontend together. Local SQL, HTTP and client
+tests do not verify hosted Realtime delivery or activate a submission worker.
+No runner is automatically awakened when an action resolves.
+
+When the signed-in human records Submitted with a verification note, a pending
+submission check resolves as `user_reported_submitted`. Its attempt remains
+uncertain and retry stays blocked; no employer-observed receipt is fabricated.
+Agent progress reports cannot close that handoff. Interview/learning preparation
+tables also emit owner invalidations so weekly preparation retains live refresh.
+
+
+## Programmatic application submission
+
+The configured Node API can expose `submit_application` and
+`submit_application_batch` when `LOOKOUT_SUBMISSION_ENABLED=true`. Its default is
+off; discovery is filtered by workspace:read, drafts:write, approvals:read and
+resumes:read. These tools reuse the local runner implementation; no parallel
+submission engine or search-cron execution path exists. Browser contexts and
+credentials are isolated per request, with at most two executions per API process.
+
+A batch accepts `{eventKey, applications:[{applicationId,expectedRevision}]}`
+(1–10 unique owned references). It executes sequentially while the request runs,
+recording durable checkpoints in Edge/Supabase after each application. There is
+no background submission scheduler. Node owns browser work; Edge owns validation
+and saves; Muse owns reasoning and content. Every child independently obtains
+current authorization, validates the exact form/resume and claims a single click.
+
+Use `read_application_batches({batchId})` to reconcile after a lost response.
+An active execution lease returns busy; an expired lease allows the identical
+batch to resume unfinished entries with stable child attempt IDs. Terminal
+results replay without running again. Checkpoint outcomes derive from saved
+application/attempt records, not caller-supplied success. A partial batch retains
+independent successes and Action Board blockers. Repair supported pre-click
+issues from verified facts or request human input, then submit a new eventKey
+with current revisions. An agent cannot resolve uncertain submission or invent
+approval. Known submitted or uncertain attempts never authorize another click.
+
+The browser `readApplicationBatches` adapter and MCP read use the same private,
+owner-scoped reader. Fictional demo services expose completed, partial/uncertain
+and running examples without execution. The optional E2E command
+`npm run test:submission:e2e` uses real Chromium, controlled employer routes,
+local Node HTTP/shared Edge handlers, private fixture downloads and migrated SQL.
+It sends no real employer application and calls no model. Use
+`LOOKOUT_CHROMIUM_EXECUTABLE` to select an installed browser for this check.
+
+Release requires the submission-batch migration, gateway contract 75/application
+guide v4 and configured Node API image. Hosted deployment, Muse client execution
+and real employer behavior remain unverified until separately exercised.
+
+
+## Profile-aware resume selection
+
+Preparation and automatic submission now share `selectResume`: active role
+assignments in the selected application profile match normalized title phrases
+and job type; unmatched roles use that profile’s fallback. Blank assignment job
+type inherits the profile types. Blank assignment resume uses the same fallback.
+Conflicting matching files, malformed assignments, unchecked conditions/timelines
+and unavailable/superseded/private-file gaps require review. Legacy account-wide
+rules/defaults remain only for clients without profile resume configuration.
+
+`prepare_draft` exposes `handoff.resumeSelection` and pins an automatically chosen
+owned file/hash. It preserves existing explicit draft selections and reports
+differences from current rules. Submission rereads the owned canonical profile in
+its existing authorization context, including atomic claim/start comparisons.
+Routine execution rejects a stale/mismatched file; exact human approval can
+intentionally override the mapping. The runner downloads the draft’s pinned file,
+never a newly guessed alternative. Deploy the profile-resume-selection migration
+with the gateway update before claiming the new authorization behavior is live.
+
+### Discover posting dates and availability
+
+Discover's Posted filter offers the last 24 hours, 3 days, week, 2 weeks, month,
+any time, and posting date unknown. It filters the selected board by employer
+publication time, independently of the existing Discover day and profile filters.
+Any time is the default; unknown dates are excluded only when a dated window is
+selected. Publication time uses the latest owned posting observation when present,
+including an explicit unknown date, otherwise the catalog publication date.
+
+Cards and previews show Live, Closed, or Unverified from the last recorded employer
+check. Live means active at that check, not a new check on page refresh. The preview
+shows Posted and Availability checked separately using readable dates. Filtering
+and formatting are local presentation actions over existing owned batch reads;
+the scoped `batches.read` gateway/MCP path already exposes the same posting evidence.
+No new backend write or MCP capability is introduced. Detached demo fixtures cover
+recent, older and unknown dates plus all three availability states.
+
+Job facts use concise display categories: work setting is Remote, Hybrid, On-site
+or Not disclosed; sponsorship is Available, Not available or Not disclosed.
+Only explicit source statements produce a known category. Work authorization alone
+does not establish sponsorship policy, and a city does not establish office attendance.
+Undisclosed compensation uses the same Not disclosed label. No expansion is required;
+saved source evidence and existing backend/MCP responses retain their original text.
+
+Discover application queue behavior, scopes and worker setup: [application jobs](docs/discover-application-jobs.md).
+
+## Country and city autocomplete
+
+Onboarding location entry supports multiple removable countries/cities and Remote.
+Open to anywhere is exclusive. Selected labels use semicolon-separated text in the
+existing search profile. It searches countries and cities with Geoapify, debounces
+typing and cancels stale queries. Remote, Open to anywhere and manual text remain
+available. Set `GEOIFY_API` in the root `.env.local` (or supply
+`NEXT_PUBLIC_GEOAPIFY_API_KEY` to the frontend). This is a browser-visible Geoapify
+key; configure allowed origins in Geoapify. No private server credentials are copied.
+Live-main reads it from the shared source checkout; restart the preview after changing it.
+The demo uses fictional suggestions without vendor requests.
+
+MCP mapping: suggestions are an optional input aid; selected location text uses the
+existing search-profile prompt save and its ownership/version validation, also
+available to agents through scoped search-profile editing. No new write boundary.
+
+Onboarding role preferences also support multiple removable roles. Suggested roles
+toggle independently; custom roles can be added with Enter or Add role. Selected
+roles use semicolon-separated text in the existing search-profile prompt.
+
+Website onboarding saves preferences before AI connection. Once a real runtime
+connection is confirmed, an optional first-role catalog preview is offered with
+Skip for now. Skipping connection bypasses the preview. Connection checks do not
+start searches; the preview does not queue an agent task, approve, or apply.
+The flow reuses the existing scoped onboarding read/check and search-profile save
+boundaries; only the order and optional presentation changed.
+
+Agent picker artwork is served locally from `next-app/assets/agents/`; official
+source URLs and retrieval date are recorded in `sources.json` there. Dots keeps
+its existing `dot` provider ID; Claude Duet has its own `claude-duet` choice.
+Hermes is available directly in the picker. Selection remains profile setup
+metadata through the existing profile writer; artwork does not establish a live
+connection. The shared picker also supplies demo imagery.
+
+## Hosted Lookout release
+
+Production Supabase is `osyrlausutnqzlegxmnd` (Lookout). The static frontend and trusted runner default to that project; local `make dev` continues to use its isolated Docker database. Existing public logo-cache URLs remain public assets on the original project and do not carry account credentials. This release does not transfer existing accounts, private files, tokens or application history from the original backend.
+
+The main-branch **Deploy React board** workflow deploys the backend first through **Deploy Supabase backend**, then builds and publishes the static website. The backend workflow can also be dispatched alone from main. It uses the encrypted repository `SUPABASE_ACCESS_TOKEN`, links only the fixed production project, previews/applies committed migrations, and deploys `agent-gateway`, `agent-mcp` and `workspace-reset` with their committed authentication configuration. The retired logo bootstrap is not deployed.
+
+`scripts/deploy-supabase.mjs` requires an exact, clean main-branch Actions source commit and verifies source bytes with the existing runtime stamping helper before packaging. Gateway and MCP report the same reviewed commit. This is deployment provenance, not proof of application behavior. Do not deploy a feature branch or override local Auth settings onto production. Hosted Auth redirect/provider configuration and external-service secrets are managed separately.
+
+The new Google OAuth callback is `https://osyrlausutnqzlegxmnd.supabase.co/auth/v1/callback`; it must be allowed by the Google OAuth client. Supabase alone does not host the optional Node API, parser, worker or submission browser. Those capabilities remain unavailable until a separate runtime and required secrets are configured and verified.

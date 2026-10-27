@@ -1,86 +1,190 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:afe1deefcb990d7049684d78c087bda9d63d51d39d2d08fe26c3c687bbc47fcc",
+  "pageVersion": "sha256:91b8a21e9d572c1cd7daf2802028c9468fb99d9fc83650aaafd00264a9de475d",
   "claims": [
     {
       "id": "claim_449d069cafd149d6a2635968fd4856ae",
-      "statement": "The hosted MCP function is a stateless protocol and tool-registry layer that forwards authenticated fixed operations to agent-gateway without holding service-role credentials or providing browser, SQL, or submission execution.",
+      "statement": "The hosted MCP function is a stateless protocol and tool-registry layer forwarding authenticated fixed operations to agent-gateway without a service-role key or browser execution runtime.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L3-L11",
-          "version": "repo-lines-v1:sha256:4c70ad93180ffc9e5a2e60d5af2f2ac95c373601ddac068b2ea8955fb44350fb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjRmM2UyMDZhYWEzZmFmNGNmZjkxOWMyMDFjNTI5MDAwMDRmNTk3NThkZGIwMGEyMjFiNjg1Y2EwNWYwNzkwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk1ODM1NDAzYzEzMTc3NjBkNGNmZGU4OThiYWVkNjI2ZGJiZTg5ZTM3NjQ4Njg1ZGQ1YjE3MGE2MmE5M2IzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjMzMzcyZDA0MTRjOGE0Y2IzYzkxYjkxYWVhYTE5YTk3M2JkYjU4MmUwZGVlMTMyNzZiZjUwYmI1ZDU3ZWUwMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyZTQ0Y2FkZDE1NmI1ZTEzMDFmNjczOWIzYTkwNTk1MTNmMjczMWUyNWE2NDI3YzQ4OTJlMjA4MDU4YjAwYiJ9"
-        },
-        {
           "resource": "repo://supabase/functions/agent-mcp/index.ts#L1-L14",
-          "version": "repo-lines-v1:sha256:051718345a591b1a3137618b943c969f43a41356c7910cbcf54243c691eed7d6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMmRiOTBlNzFmNDkwY2Y1Yzc0YWFiNDZiOTY0M2RkMzQ0MmM0NDQxNGIwMjI0MGZlZDk5MGVlYjM4MzYzYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3ZjE1NzI3YTgzZTIzZWNlNzdhNDhmYmUwZGMzYWQ3ZDkyMjU5ZDBkYTFlN2E3NzkyNWJjMWUzYjI5NDVhYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "version": "repo-lines-v1:sha256:92fc1fca134b94dc99c164a823abf2e74a464e662165729a53857910ba9af9c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNTEyODJiMWY2OTc3NzNjZWJmNGU4MDgwMGQyMmRiYTZhYTI5MDRjN2JmYzRiZjM1NGIwNGI5Yzg2YzU0MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViNzQxZDJjMDhlNmY1MTBiN2U5YTI2NGYzNzhmOWNlMDA0OWE1MDRlMGU3ZWY1ZDY3Y2QzZWE4MTNmODU0NzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_f664d451c15e444d8d75c80495b39a3e",
-      "statement": "Human owners issue expiring, scoped agent connections through an authenticated session; the one-time opaque token cannot manage connections and must remain out of URLs, messages, job data, and logs.",
+      "statement": "Human owners issue expiring scoped connections through authenticated sessions; the one-time opaque agent token cannot manage connections and must stay out of URLs, messages, committed files and logs.",
       "evidence": [
         {
           "resource": "repo://backend/agent-contract.md#L5-L27",
-          "version": "repo-lines-v1:sha256:ed3f41cdccc92842ea108c7a53dff53950b3242bd34f392e1d5fb04f4aea8aba:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjYTc0ODVkYjEyMGNlZDE2ZDU5ZTFlY2EyNzBkNjU4ZGQ0NGJjNDE5YWY1ZTljNmMxZTcxNWIzODIwZmY2ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMWNkZGU1OTdlZjdmZjAwNTE4ZGRlYmQxMTg1YmVmZGE0MTE1YjRhNzAxNGZlMWJhYjQ2ODE4MzhjN2Q3NWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlZjkzZGExYzI0NjlkYzkwOTQ1NzE3MDc5ZWIzNGVhOTI4ZmI0YWU4YzJiMzAxYWI2MmUzZWU4MTQ2MDU0NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiZWUzOWNlM2M5OTY1ZmJiMGM3NTUyODI5MWYxNzUyNTAzZmFmNzQ1ZjI4Y2FmYTE4YTBiNjk4MzNmMDIxMDMifQ"
+          "version": "repo-lines-v1:sha256:94ca95719beb83dc1189548594de5241f62d0fa99ff8998ed1219742a166aa3f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4OGZhYWUwM2RhMjU5OTJlODdjOTM3NWJmNzg4ZTViNWI4MjdmYzM1Y2YzZDFkMTBjNGJmOTQyYjZmYjc1OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1ZDc1ZDc1NWMxMDMzNmY4MWExODQxMTNkYjk5MzkxZTg0N2IzMTk5NWJlNjQ2ZWQ2MGRmYjZiNjc4OTk3OGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNGY2OGZjYmI0NzM4ZWQ0Nzg4ZmZjOTQ2YjQ0ZTNjY2ZlOTZmYjc1N2FiNjBhMmU4MDhmZWVjMmU4NzkyYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNGUxNTI3MWRhNzE5NzQ5YzI3ZGFjM2NkMDA3NTE0YTdmMjAzNDc5MDNmN2I2MTFjY2MwOTk2NzE3MGUyYzUifQ"
+        },
+        {
+          "resource": "repo://lib/agent-connections.mjs#L12-L33",
+          "version": "repo-lines-v1:sha256:cb487b4f9bb287b498dd2f890310608224a1b9a6ced50d5aef3a69be50c908dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjM2ZlYTNjNWMwODkyODlkZDFmNzA5ODYzMGFhZWMyNzRiOTFmOGUzMGQ2MjVjZjE5NGVlYzgzZjU0YjRjMTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmYWM5OWVjZWZjZTJiN2EzMjZkNDNjMjFmMWU5N2MzZTYzMzc0Yzg5M2Q1YTkxNmRiZTJhZGRjM2IyNGQ0ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_61352f8c5fd84e7081e514c2c50d2450",
-      "statement": "MCP validates the credential even for discovery, exposes tools only when their scope is granted, validates arguments against the registry schema, and delegates ownership and write enforcement to the gateway.",
+      "statement": "MCP verifies credentials even for initialization/discovery, filters tools by required scopes and validates bounded arguments; mapped domain services and SQL enforce ownership and writes.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L5-L11",
-          "version": "repo-lines-v1:sha256:ab367d785e7710ca4f1d972e18a87acbd3d5121b0948ac50e8ae9dd6ce5683c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTNmMmJkY2U3NzMxN2NiYTNkN2FjMjgzZDAyOWUyZmMwZGVlN2EyOTUyNTE0ZmM5OGZmNTIxNjhhZTg3NzI2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk1ODM1NDAzYzEzMTc3NjBkNGNmZGU4OThiYWVkNjI2ZGJiZTg5ZTM3NjQ4Njg1ZGQ1YjE3MGE2MmE5M2IzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2MzY2RjZWM2YmEyZjEwNTA4MGI3ZGQwZWQ0NWU5ZjA4M2ZjNDllMmJlYTMxZmI4ZTZmYmM0M2JkZWRlZjA5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyZTQ0Y2FkZDE1NmI1ZTEzMDFmNjczOWIzYTkwNTk1MTNmMjczMWUyNWE2NDI3YzQ4OTJlMjA4MDU4YjAwYiJ9"
+          "resource": "repo://backend/runtime/service.ts#L19-L44",
+          "version": "repo-lines-v1:sha256:6713991a6f2525c6338dd292f22b81d694e58bdaed2cb5af5e16670abd830728:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMDE4ZWMyZTJjNDM0OTU4MTNlZmRkOWY5OWRkYWMzZDAzMTA5NzA1ZWQ4M2FjNGE0ZDkxMzBmNjY5OTc0Y2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NjlmMmJjZjY3YmFmNWNiYTlmODM1MjAzYjhiMzMxMDk2YWNlYTU3NDI3MjljNzgzZjIyNDY3ZGYxOTlmNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMmQyMjI2MWViYTk2NGQ5NWQ4MmM5ODZmMDRhN2IzZGRmNDQxZmY2MDQxYTQyMjVjOGY2MTk2MTEwM2ZiOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyZWEwMDI3OGE5MDNlOTkzZjk1ZGI5MTQwMWJkOWQ1YmY1MmNlNjJiNDM0YTNlYTc1MWIxYTM5MDY4NDdhYmEifQ"
         },
         {
-          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L78-L122",
-          "version": "repo-lines-v1:sha256:b5489fd534f38d1e360fc48cf3bad6485f6161a2cbc1468599c22f2feeb1e9e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1NTllMmQzYjMyZmVmYzZhYjI0YjE3ZmU3Nzk0YjY5YTUwNWZlMzllNjQ1ZmIzZmY5ODM1NDM2NTQ3MTMyMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiMWUyNWZiNzdmYjM2YjQ1OWFiOTcxN2YyYjI1NTIwZWUwOWFkZGZmMjkyNmNhNmFjNjlmMTI4OWY0YTM2NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5NGZmNDUwZTZiOTBlNDMyNzRkZWU3ZDY0MTgwMzgyZTg5MzJmOTkwMjQ1NWM0NDJhM2ViMTkxM2IxM2EzY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhZTkyMjExZmRlMTM3YjkxMmRhMTliZmY3OWNlODdkMTMyMjliNGI1NWE0NGNiN2M5NTAzMGZkZDk4YWI5ODgifQ"
+          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L127-L165",
+          "version": "repo-lines-v1:sha256:39649c07bbb778a57869fe533d8baa505d9fc76bf74903154c96432911dee4f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2ZWM0Nzc0MmJiOWRlZTY4MDZlZWVlOTRlZTIwYjQ2NDU3NmRhOGE0YjQ1ZTQ0OWQxMWY1ZjY4NGVhYTg5N2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0YTk4OGNiMGJiMjVjYzc5NTU3MmQxNTU4ZTMwYmUwODFjZjRkN2Q1ZWU1NTJhNDQ0ZmQwNzdjMzJiZjM5NjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0MGViNzJhODVhOWUzZWMyNGU5NDM2ZGVlNzdmNDRkNzAxNTk1YjE2YzI0NzU4MjgyOGMzNzBjNDA3ZjQ0OGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRiNDQ2MmQwNzIyZmRmYzA2YmE3YmZlNWMyMTA5ZThhM2RlZDY0N2U3MGNjYTY4MTU1NzBhOWU4MzE1ZDBkM2IifQ"
         }
       ]
     },
     {
       "id": "claim_b6f832f8fd7b4e2fb95d37750f81033e",
-      "statement": "Connected agents use independent personal and developer version counters to reload only changed context, while bootstrap or lost memory requires both sections and failed fetches must not advance the retained cache.",
+      "statement": "Agents retain personal/developer versions per connection, reload only changed context, force bootstrap after lost context, and advance cache versions only after successful reads.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L81-L116",
-          "version": "repo-lines-v1:sha256:82136f626800099a89d404d90922e2a34a639e42369af0c8da2c7176e2d2daaa:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2ZjM3MjJlYTkwMmMyNzYwY2U2MDdhNzlhNjg2MTgzMGNkNzdhNTY0OTY3ZjhlZTY5NWE0MjkwYjBkZmJiNzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0NDc4MGFkZjZlODFlNmMyM2QyMWJiYWEyNDY1NjY0ZDEwZWE5M2FjNmZlNGFhZjEyOTAwOTc3Y2MyZTUwMTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1YzE3ZjJmMmI2NTNhZTg1MjgwMGU3YmY4ZDE2Zjg0NDYzMzJiMjQyNzQ0YmM2ZDJlZGQwMDA1ZDI3NmE1YWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxYmM1ZWEzM2E0OTcwMjQwYWVmOTJiZjAxN2Y1NGQxYjVkODcyNTY1MTY1MTNjNGUwZDY4MzMxYTI5ZWE4ZmMifQ"
+          "resource": "repo://mcp/context-cache.mjs",
+          "version": "repo-file-v1:sha256:2b6410e30b60d7371d069a1914fb8fdf1c7d8520fe686328f348f2238b53b7c3"
+        },
+        {
+          "resource": "repo://tests/context-versions.test.mjs#L10-L49",
+          "version": "repo-lines-v1:sha256:0bdafa738cc3eae3d199b5b792b92e5e49c7e7d93ee28d2074998d06b83c6599:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxMzRjNDI1ODEwYTczNWM4NzE1ODIzZDhlMjEzOWNiN2VlMjI3YjUyZWY0MjQ0MDlhZTQzNzk1OWFlMDMxZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3ZDEyYTUxYjA0YmE4ODdhN2Y5M2ZjOTI1NTM4NjhhN2I1NmQzMTAzNDQ5MWU0NzE4YzFjNDgyYmMwMWM1ODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNWI3MjA5NWE5ZDBkNTRhYzYxMjU5YzZlOTcyNjk3ZWRmYWY1NzM0NTZmNTU5MjU4MTZkMTQ1OWI5NTRkMmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyYzZmNTRkYTgxNGE3MTgyODQ3YWE2ZDA0YjkwN2U4N2JkYTM2NDdmMGRlMTBlMjJmNjJkYWFkMDUwMmM0ZjYifQ"
         }
       ]
     },
     {
       "id": "claim_1a8055b8109943778bf647bf868b2fea",
-      "statement": "Agent tools preserve human and evidence boundaries: draft preparation does not approve or submit, approval reads do not mint approval, activity is not submission proof, and browser automation belongs to the separate local runner.",
+      "statement": "Draft preparation, approval reads and activity preserve consent/evidence boundaries; supported browser execution resides in configured Node services or the local runner and requires fresh server authorization.",
       "evidence": [
         {
-          "resource": "repo://mcp/README.md#L41-L58",
-          "version": "repo-lines-v1:sha256:5340940435594c93edd8ff7c51101f42f7324a07e04ca0b4fd4a202174714ce7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZjFiNWE1NTQ2YmM2MWFmMjNmNDMxYzIzZWRhYmViZjJlZmJjYzZiOGZlZTJkNDMzODcwZDFmNTMxNDI4YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZTliYWM5NTllMmYwN2ExOWIzMzRiZjY4ODA4MjRiNGI5NWQ0NGUwODNlM2MyMzUxYTY2NTA3NTA1NTE4YjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NjFkNjk1YzBiMDgwNTk1ZGUwODU0ZTg1NjkwNWE3ODdmOGViZGQxMjEzZTY2NzZkZThhNjk5YjlmOGUyZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiZTQ1NTg5MDI5OGIxN2NmYWI0N2JkMjk5MDNjZjAwYTVkMDBjYmVlODc5ZGQ2OTk1MzlkNjhiZTNjNGEyZjMifQ"
+          "resource": "repo://backend/runtime/submission.ts",
+          "version": "repo-file-v1:sha256:7563d5300d112fd70d71b3ceba924e7011ccc5fda0213da3bb4fc05b818af35a"
         },
         {
-          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L34-L45",
-          "version": "repo-lines-v1:sha256:2e8a4e65720c4300718c435fdb3ce7611aa3c456787af4cf2f22f1b4f99d43a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5NjUyMDc0NDllNmFlNzUyMmI1NDRkZDhiZWQ0Nzk3NmE2YjhiMWFjNmMzMzJmZTM4ZmMyZGViOWQxYWM1YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MWVhZTgyZmZlNzc3NGJiMWQ3NWQxZjIzZjc5NzBhYWJkNmIyMjcwMGNlNmFmOWY1YTc2YTRmNTZiYTYyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwMjZlODgyMmUyMTllYTZkNmUxNzJiYWJhMWM2NjBiNGY0YmM5NmU4ZDZmNDVlMDA5MjIwNjlhMDIxNGQ3ZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlN2Y0NGUxOGEwYmZhZGE4MjUyN2VlNGUxYTliYjg3N2Q2MzliYTYyN2U0ZTk3NjdmMjJjYmMzNDNmYjNlY2UifQ"
+          "resource": "repo://runner/README.md",
+          "version": "repo-file-v1:sha256:f01e45cea1b3fab4685e7a1f736f781a94093353a02566344405342341fb3298"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L31-L74",
+          "version": "repo-lines-v1:sha256:1c9129758c3f396754a0ea8e8cb0142d1a1241b63c5e0c55a631d9117cf1558e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxNTQzNDBkMmViOWRhZGY1MzMyMTJmNDg4YzM3NmZmMTk1ZGQ0MGU5MzY3MDQzMTg2MDczNjg1ZDVmMzJkN2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYzBhZjcwNjIwZmExNTdmNGNkNzlkMDZiYzM2ZWFjYjQwNDQ5MmRiZGYwNGNkODBhZGVkYjEyOTM0NWNjMWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwMmVjZjNjODg3NjM3OTQ1MjY4YTk2YTZmYjY4YTQzOGQ3Yzk1ZDUwYTk0ZmNiZWMwNTUxZGFlMDk1NGFhM2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3Nzk1ODQ2NDNiMGIxMTkxMDM4YmU1M2ZmZGM0YjIzZTNhNzk1OGVlZWJhZWEwOTJiYWNmNWE3YjRjMDIzMjAifQ"
         }
       ]
     },
     {
       "id": "claim_432253e98c334fb9a158611e2f5f4267",
-      "statement": "Gateway and MCP behavior is verified by focused protocol and contract tests plus transactional SQL checks, while hosted smoke tests require a private token and avoid printing private data.",
+      "statement": "Focused protocol/context/feed tests and transactional SQL verify local contracts, while hosted availability requires the matching migration/runtime release and live verification.",
       "evidence": [
         {
-          "resource": "repo://backend/agent-contract.md#L75-L81",
-          "version": "repo-lines-v1:sha256:033e793f00f0b89234c6389870cdfaa1204e654014054aee514bb4bb7ae0f432:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2Y1ZDFkMjY3MzQ3MTBmNDhhYzZiZmUzMjFkZWU3ODQ3YTY2NmZlMmZiOGExN2Q0NzQwN2E5MDJiMWY0ZTRhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFkNzE0MDZjNTU3NzE5OTFlMWI1YzUxYWY3YjVhYjlkZWJmMTlmOWM2OGViNzFiOTg0ODkyODhmOTIxZmE1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjhlOGE2YjQwODFmNTA2M2M4ZDI2MmI2OWQ4NzJlMzY2MDM4YWExNGFjZjdkMDFkOGNhNjMwMmNlOThmNDNkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWQ0MzQ3MDlkOTcxNGM2MGJkZTg2ZDJmM2FjZDVkNTYwMzg5YWE1Y2M3MmE3YTk5MDlmZWJiNDgxMDY3OTJjMSJ9"
+          "resource": "repo://backend/agent-contract.md#L711-L767",
+          "version": "repo-lines-v1:sha256:9d5faa3e96ccf5a9144fc8179b5cecda79966eda8db94a646cae560bda7d53f0:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwYjViNjlhOTJjYzM5Y2IxZDNjMWRkZDZkNDlhYWM1MzAwMDM1YWNiNTQ5MDc5ZmY4NTRiYjc3MTUzNzNiMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1NDVhNDdlNDUwODdjMmVhMGE3NjgzYmI5NWY3NzFhYjdhM2MxYTAyN2Q5ZjZjOGFlOWU0Nzk5OTMxZjliOTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhZTBkNTczYjBiNjU1MzU5MjFjODJkN2ZjYWY0ODEzYzY2MGY3OGFhNjc0YjMyZWVkMWJkNGVlZDRlMDM0YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://mcp/README.md#L60-L76",
-          "version": "repo-lines-v1:sha256:d04e6eae88b0eeca4e2829ac29947055d3bbc24ae5c22878e394e2ca29c11501:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYjUzZWVlMzJhNWM0NWU1NDRmZjlkNDdiYWY2NmIyM2E4MjdmMzQ3NzRjYzY5ODhkYWZmODM5Y2I4ZjljYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiZjI3ZTBjOTlkYWIzZjRlMTlkYjY3MDFmMDIzN2U2MTIyMWNiMjhjMDdjMWQzN2JhMDVjOGUwZjZhYTcxOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkwMGI1MjI5Njg4ZDBlOTZjNGFjNDM3ZGU5ZWIwYTc0MjBlMzVmOTgzYTM1ZWVjZTllNmJmYmU4NTNlYTc2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzOTEyNWMyZWZhNTEwMTAyNTE3OGI4YzQ2OGQ4YzVkZTM4ODExMDUxYTY2ODYxYTY3MzU5NzQ0NGM5ZjYwODUifQ"
+          "resource": "repo://scripts/check-local-muse-timeline.mjs",
+          "version": "repo-file-v1:sha256:ce956e8dd6b6a89088935d60ddf1079401077080140e5a350f79f6c4e7f781c3"
+        },
+        {
+          "resource": "repo://tests/mcp-protocol.test.mjs",
+          "version": "repo-file-v1:sha256:ca3a68809e5d890488862d0f5753e15cfb6126b5fef249209e5bc3c7fa0dc29d"
+        },
+        {
+          "resource": "repo://tests/muse-timeline-changes.test.mjs",
+          "version": "repo-file-v1:sha256:92082e1458ed21a8fc2fe3f5ce3daa536c10c723f794f0795035a728e2f7137d"
+        }
+      ]
+    },
+    {
+      "id": "claim_5dea3a2a10c049bc88d35fd988d4c788",
+      "statement": "The Node MCP dispatcher routes selected owned SQL and bounded execution directly while retaining mapped Edge compatibility operations instead of migrating all settings to Node.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/service.ts#L19-L44",
+          "version": "repo-lines-v1:sha256:6713991a6f2525c6338dd292f22b81d694e58bdaed2cb5af5e16670abd830728:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMDE4ZWMyZTJjNDM0OTU4MTNlZmRkOWY5OWRkYWMzZDAzMTA5NzA1ZWQ4M2FjNGE0ZDkxMzBmNjY5OTc0Y2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NjlmMmJjZjY3YmFmNWNiYTlmODM1MjAzYjhiMzMxMDk2YWNlYTU3NDI3MjljNzgzZjIyNDY3ZGYxOTlmNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMmQyMjI2MWViYTk2NGQ5NWQ4MmM5ODZmMDRhN2IzZGRmNDQxZmY2MDQxYTQyMjVjOGY2MTk2MTEwM2ZiOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyZWEwMDI3OGE5MDNlOTkzZjk1ZGI5MTQwMWJkOWQ1YmY1MmNlNjJiNDM0YTNlYTc1MWIxYTM5MDY4NDdhYmEifQ"
+        },
+        {
+          "resource": "repo://lib/mcp-services.mjs#L1-L42",
+          "version": "repo-lines-v1:sha256:42af520f265632cee402544cf36597840cd99c4dcf18d47793bb396f98b7875a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxYThhMjVmMzNlNjE1ODQ3Y2FhYzQxNTE5NzhjMGM2MjI2YzM4NzUyNWViY2NjMGY1YWY1MWViYmRjZmM1ZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e572d009a123438daf866bbb1ba02d8f",
+      "statement": "MCP initialize supplies the shared quickstart; contract 83 teaches labeled feed read/refresh/ack on authorized work runs, and setup-only connections stop without executing work.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-gateway/instructions.json#L200-L216",
+          "version": "repo-lines-v1:sha256:05d24b2f7d9a01aade5961d332ddaf7e7173f61fd983f2a4eea457f5f32bb20a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzYTc1ZmRhZTgxNjAxOThiOTc2NDVhODliNjcxYTgzOTIwYTdhN2MyNTcwMGUxOWM3NmFjZGJlNTc5YmNkZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNTU1ODA2NTYxMGE5ZmY2NmJiZTVhYmQ5NDRlYzkzZDY0M2ZhMTRmZWNmOWUwZDBmMGQ3OGZlYjg3YWQ3YjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmOWE3ZWNjZDFiYmE1NWNlYWRhMjczYmYxMDMyMzNmNWM3MWRlZDI0OWY5NWJlYWZmMmI3NzNhNjNjZWI3ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmM2RiODk0YzcyZmIzM2FlNWM0ZjFkMzcwZjE0ZDVlOGUzMGYxYzg5NTAwZDFhMjA4NjdhOGI0MTQ1MjlmMDMifQ"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L148-L153",
+          "version": "repo-lines-v1:sha256:4152a1abe31dcf489b457e544736b5636017d59baf80b7c36c96bcfeef1cc9da:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM0Y2FjMWFjN2RjODQ1YjJhZjM0NTdlZGVkMzNkMTFkNTEyNjhjMWY4ZDQ4YWNhZTI0MzlkMDc5M2FjZjU2ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzdmYjM2MTU1NmY2NjJjNGE5NTg4YTMyY2Q4NmFkMWFkYjgxOTlmNDQ5MDhiYTMzMzRlOWQxOTY3ZWE5MzIxYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjAyODY1NmE5NDNmNmE5N2Y0MTk5ZjZiZTJkYTYxZTVlOWFmMDI1YTFlMWM2YmJkYjdkNjQ5ODFkZjg0MWI3NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ZjMDc3ZDNhOThlMmM1YzgxNjhlYjFhZWNhYmQ5N2U0ZjA5OTU0Yzg5ZDNiNmM0OGI2ODQ4NmEyNmY0OThlNyJ9"
+        },
+        {
+          "resource": "repo://tests/mcp-protocol.test.mjs#L29-L40",
+          "version": "repo-lines-v1:sha256:0663937c0c6bf2bfb6027c11356e2fbcd9d2dbb0063185cacd23489d3d03c45d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzNzE1ZTllOGEzN2U0OTk3ZWVlMGZiYzU2NzViNjg0Y2IxMjQwNzIyNGY1NTQ5OWFhNWIwOTk3YzhlMTk2ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNjBkZWM3NjVkMGNjZjBkOGEzZGE5ZGUzMWVmOGNjMTNiYzRjZjJjZDk5MWY4OTk4NTk5NDljYmI3MjQ1YWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjZjc4NmRlMmZjODcxYjcwYmUxNDc5ODIxMDI3ZmM5MzEwMjI3YWI1OGI2ZTBkZjAxMzcwM2VlYmQ2ODRlMTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d4197d1e6cb74338b5600b84824d67a0",
+      "statement": "The feed exposes five labeled event kinds and exact existing read-tool arguments, including interview scheduled/rescheduled/completed labels, while current record values remain canonical.",
+      "evidence": [
+        {
+          "resource": "repo://lib/muse-change-feed.mjs#L1-L20",
+          "version": "repo-lines-v1:sha256:4f43e151ca4eebf16a1fafa4b711a354fe078278c76445f0ff757070bc07c769:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1NTlhNWQ4NGUzOTg2NjUxMmIwMmRlODQzNDdhYTE5NjM4MzEyOTYwMzM5MTM1NGI2ZjI2NTg4OWM2ZDNjNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261027030548_semantic_muse_timeline_changes.sql#L7-L28",
+          "version": "repo-lines-v1:sha256:ef1cd2a1253e79e5741a45d2cc3aa36b479c1e328da6aade7208742996981cb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5MDhjZGRmYTliODYwOTZmYjgwYTFjZTMwNzI3ZTk0ZjFhOGU4ZDI5ZDZmZjAyNWI3NTIyNDU3YjJhYWQwMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZjA3MWFkMjNmNDQyMjZkNjVkNDA3ZTBhYmE2ZDA3Y2JkYTMxNmU5YTQ2OWE5NmNkMzljNzlkNzJjOGE4ZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1YzM0M2VkMzFlNzcwMjVkNDIwNTcxYzFmOGI1NzMxOGJmYjE2MTFmY2I3NTAwNzg2YmIzMWNhNDc4ZGNiMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1OWFmOTIwZDZlOGE4MjkwZGU3MTEzMTJjZWU0ZDg3ODQ0MTEwMjgxN2Q1YzA2ZDkzYzI0Y2M4YTgzZjE5YjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a3d18c3396654bb99e0e52e70e238d99",
+      "statement": "Feed acknowledgements are idempotent and per connection; reads do not consume events, and old pointer cleanup waits for every active full-workspace consumer.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261027022419_muse_change_feed.sql#L73-L99",
+          "version": "repo-lines-v1:sha256:96a28f5aa0d294f4d0042f8a92d8ac0dc029bd67d943ebcfafaf9bcaa1bc55f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MjcyOTc4M2JkYjRjOTE0MDJjNTE3YTYzY2QwMzkzNWIyMjMzOGJiN2YyMTQwZDhiODg1ZTM2YTRjMWM0M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxZDM3NTA3OThhYjc2MmVkYjkxN2Y1YjBlMWI4ZmEyYzIzMGZkMGU5NjIyYjk3YzVjOTYxZDUyZTZmNTdiMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1M2NkZTY2MzU5M2MxNmZkYjFhZjNhYThlYTA1NjM1MTBlYjgyNzk5YzE3ZTQ0M2MyODNiYTg2M2U5MmE5ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhYzc4ODA3YjIwNjIyZmNjZTEwOTY4MDlkYWQ2NzBjZDg3MzJkNGYzMGYyYmQyYTRjZWY5ZjU0MTY4ZTdjZmEifQ"
+        },
+        {
+          "resource": "repo://tests/muse-timeline-changes.test.mjs",
+          "version": "repo-file-v1:sha256:92082e1458ed21a8fc2fe3f5ce3daa536c10c723f794f0795035a728e2f7137d"
+        }
+      ]
+    },
+    {
+      "id": "claim_70819a1f846141229e22ccc8fd2b120b",
+      "statement": "My Agent is the recurring schedule configuration and the personal runtime submits bounded Node jobs; the duplicate backend search scheduler is retired without discarding historical configuration or jobs.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/README.md#L8-L29",
+          "version": "repo-lines-v1:sha256:0e210191a538c9cc29fa2123c92b733a51d9e05846608ddce792b9ed70fa68a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4MmUwZDY5OTcyYTM5ZjdmNGM2MmZhMDc0MWNiMWVhZTg1NTAwMjVlZGQyMzIyOGY5NmRjNGUyMjkxMWZjYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxMzc3ZTk5NWYyODYzMmJkOGY0NGI3OTNmMjZlMTE5OGM4ZjNkMzNkOWVmMmMwMTlhYjA2NTgwZWE4MjcyY2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5MDI4NGYxYjFiNTgwZjM0ODMxMmJhMWEzODI3NDZhODJlNGMyY2U3NDNkNmY1NGUzMDA5ODVmYmIwOGM3NzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzYjA4NjkwMjNmMTA3MzJmOWMyOWIyMGVlZjY5ZjNlM2Q3N2VmZDQxNzlhNWNkMTFmMTJkYWZhYWY5OGQwOGMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261027023257_remove_backend_search_scheduler.sql",
+          "version": "repo-file-v1:sha256:7c4cdaf1ac17ca64ab42dd3d715168af8ea0051ef13cc40ab21eccf51eca89f7"
+        }
+      ]
+    },
+    {
+      "id": "claim_7d384cf40ae24e909ca868d7ab3559e8",
+      "statement": "Personal fact and entry edits share owned version-checked website/MCP writers, while application-profile preferences remain canonical saved profile documents.",
+      "evidence": [
+        {
+          "resource": "repo://backend/agent-contract.md#L530-L554",
+          "version": "repo-lines-v1:sha256:7e07d9a7b3c451f98ad21631688d6982912434c2bd3b59ebdffe1606442d5793:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxNGE3YWUwNDliYjA4MjlmZjVlZTM0MTgyNzJlNTM5NmFiYzIyYjcyM2FmNjg1YjM3NTg5OGUwN2M3ODQ2NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViNDRiZmU2MDYwZmY2NTYxNWUwOWJlNWU3NmQ1NWY3OWI4M2E0MGFhMmJhY2I4M2VkODk3NDA1MWQxNzNjMTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyM2JkMzZkMDZiOGQzODljZTYwOGM3YmM3NWJkMmU1M2NmNzNmMmVlZWUyZDY3ZmM3MjJkNzMyOGVkOGQyN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljYTEwMDgwMmM5MjAwZWE2MzI1MDVjNmQzODViY2IyYWQ3MGI2ZjU0Y2I3NWYzZThlNTliNzRlOTY5NWIzNzYifQ"
+        },
+        {
+          "resource": "repo://backend/agent-contract.md#L615-L634",
+          "version": "repo-lines-v1:sha256:912246a745d57f2ff1514ae2ba24d28462daf732d8d5bcc30fe0c98415ab0c4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZjViZjVjZjc5MzllMTY2Yjc1ZjI4ZmYwMjYwNDY0ZGJmZGJiZDYyOTc2MzUzMDUwNGQwNDEyYzkxZDM4YzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkNzU3MzYyOGYzZWU4ZjM3MThlZmI1YjI3YzUyNDU2NjZiZTE4NzIxNTFjM2Q3NjZhMzIzZGQ0MzMwYzViNWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczMzg5MmIyZjU4MTU4MDU5NTEyNTg4MzFiYzg2ZTAwYzZiMTQ3YWY3OWFiNDJmNmNlNTQ1ODQwMTM2NTYzOTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3YjE0ZGI3MTk2YWExZDIxNjA4ZjhmYThhN2Y3MzM4YjEzZDE1MzZlODM2NDRjODVkNTg2YmE5ODI2M2Y2M2IifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-15T07:09:51.577Z"
+    "at": "2026-10-27T03:54:51.227Z"
   }
 }

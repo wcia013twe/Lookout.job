@@ -1,0 +1,16 @@
+{
+  "retrieved": "2026-10-27",
+  "note": "Official public product artwork used for identification in the agent picker. Provider trademarks remain with their owners. Existing legacy assets are not referenced by this mapping.",
+  "assets": {
+    "duet.svg": "https://assets.claude.com/9273e22b909074c1c2d42ca3514a239623f8af40.svg",
+    "gemini.png": "https://www.gstatic.com/lamda/images/gemini_sparkle_4g_512_lt_f94943af3be039176192d.png",
+    "hermes.png": "https://web-assets.nousresearch.com/marketing/90c810c77171509f21f785eee179606126510d7f/assets/hermes-agent/icon.png",
+    "dots.svg": "https://images.ctfassets.net/kftzwdyauwt9/KKSjto3MtJguvsLQsM1Bp/1704a6937d22b1bb3cac38dc5f43f9df/dots-o.svg",
+    "grok-bot.webp": "https://x.ai/images/news/grok-bot-more-plans-og.webp",
+    "chatgpt.svg": "https://cdn.oaistatic.com/assets/favicon-o20kmmos.svg",
+    "muse-official.webp": "https://scontent-iad3-2.xx.fbcdn.net/v/t39.2365-6/795767136_1630478025086800_8969738526855678960_n.webp?_nc_cat=104&ccb=1-7&_nc_sid=aa6a2f&_nc_ohc=9R9dh8Fds9EQ7kNvwH4mr8D&_nc_oc=AdonFTo_SoA9qneH9aqeuoyvtfjOebzR1AFxB59Mf11xbQjksV0B4ANcVH4P9lbyeTQkp5unTE_y07TdWGnVOC_S&_nc_zt=14&_nc_ht=scontent-iad3-2.xx&_nc_gid=YqBO3TSRxvz--NUkxOpnMA&_nc_ss=7b289&oh=00_AQMM4fGF7fLqXtuOUIM4qXptaDcOPkd1qitCIi8Qx2B6bw&oe=6AE6E913",
+    "hermes.webp": "https://web-assets.nousresearch.com/marketing/90c810c77171509f21f785eee179606126510d7f/assets/hermes-agent/hero.webp",
+    "claude.svg": "https://claude.com/resources/articles/claude-duet (unchanged standalone Claude symbol path from the official wordmark SVG)",
+    "hermes-custom.png": "User-supplied 512 \u00d7 520 PNG, provided 2026-10-27 for the Hermes icon and preview."
+  }
+}

@@ -10,9 +10,9 @@ import {rememberOnboardingReturn,takeOnboardingReturn} from "./onboarding-auth.m
 import catalog from "../../data/jobs.json";
 import {useWebsiteOnboarding} from "./use-website-onboarding";
 import {canViewWorkspace} from "./workspace-access";
+import {SUPABASE_URL as URL,SUPABASE_PUBLISHABLE_KEY as KEY} from "./supabase-config.mjs";
+import {configuredLocalTestCredentials} from "./local-test-auth";
 let boot;
-const URL = "https://umhqfqzpwmszhcknwtrs.supabase.co";
-const KEY = "sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5";
 async function initialize() {
   window.JB ||= {};
   await import("../../lib/store.js");
@@ -57,6 +57,7 @@ export default function AccountWorkspaceProvider({ children }) {
         setState(store.get());
         for (const slice of [
           "workflow",
+          "ui.profileConflict",
           "network",
           "tracker",
           "progress",
@@ -140,7 +141,18 @@ export default function AccountWorkspaceProvider({ children }) {
           data: { subscription },
         } = client.auth.onAuthStateChange((_event, value) => session(value));
         unsub.push(() => subscription.unsubscribe());
-        client.auth.getSession().then(({ data, error }) => {
+        client.auth.getSession().then(async ({ data, error }) => {
+          if (!alive) return;
+          const credentials = configuredLocalTestCredentials(location.origin, URL);
+          if (!error && !data.session && credentials) {
+            const result = await client.auth.signInWithPassword(credentials);
+            if (!alive) return;
+            if (result.error) {
+              setError("Local test sign-in failed. Check the saved test account credentials.");
+              setAuthReady(true);
+            } else session(result.data.session);
+            return;
+          }
           if (error) {
             setError(
               "Sign-in is unavailable. Reload to try again.",
@@ -165,6 +177,12 @@ export default function AccountWorkspaceProvider({ children }) {
   const store = typeof window !== "undefined" ? window.JB?.store : null;
   async function signIn() {
     setError("");
+    const credentials = configuredLocalTestCredentials(location.origin, URL);
+    if (credentials) {
+      const {error} = await clientRef.current.auth.signInWithPassword(credentials);
+      if (error) setError("Local test sign-in failed. Check the saved test account credentials.");
+      return;
+    }
     try {rememberOnboardingReturn(window.sessionStorage,location.pathname);}catch{ /* No private data is stored here. */ }
     const returnToOnboarding = /\/onboarding\/?$/.test(location.pathname);
     const redirect = new globalThis.URL(asset(returnToOnboarding ? "onboarding/" : ""), location.origin);

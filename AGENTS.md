@@ -20,7 +20,7 @@
 
 ## Simple session workflow
 
-- Use the external SSD for task checkouts, dependencies, build artifacts and caches to avoid internal-disk exhaustion. Start features with `TMPDIR="/Volumes/External SSD/Lookout/tmp" npm run feature:start -- <name>` and set `npm_config_cache="/Volumes/External SSD/Lookout/npm-cache"` for installs. Keep the shared main checkout in its existing location. If the SSD is unavailable, ask before using internal storage for a large install or build.
+- Prefer the external SSD for task checkouts, dependencies, build artifacts and caches when available. Start features with `TMPDIR="/Volumes/External SSD/Lookout/tmp" npm run feature:start -- <name>` and set `npm_config_cache="/Volumes/External SSD/Lookout/npm-cache"` for installs. Keep the shared main checkout in its existing location. If the SSD is unavailable, use internal storage for task checkouts, dependencies, caches and builds without asking; use a writable temporary directory for task checkouts and the default npm cache.
 
 - One writing task, one isolated checkout and one `codex/` branch. This applies to code, documentation, catalog updates and dependency changes. Reuse the same checkout and branch for follow-ups; do not let two sessions write in it concurrently. A PR is optional and should be created only when the user requests GitHub review/publication or the change needs protected-branch CI before release.
 - Keep the shared `main` checkout for inspection and local landing. Make edits and install dependencies in the task checkout. Preserve unfamiliar edits; never reset, restore or stash another session's work to make a checkout clean.
@@ -37,6 +37,14 @@
 - Keep React page framing and interactions in `next-app/`; use Tailwind utilities and shared theme tokens in `next-app/app/globals.css`. Keep domain models and backend contracts independent of presentation.
 - The user authorized the complete Next.js/React/Tailwind migration. The production UI lives in `next-app/`, deployed as a static export by `.github/workflows/deploy.yml`. The retired static frontend has been removed; shared domain behavior belongs in `lib/`.
 - Avoid computer-use or browser-UI automation for repository work unless the task is visual and requires iterative on-screen inspection. Prefer file, shell and purpose-built test tools for non-visual work.
+
+## Local startup
+
+- Use `make dev` (or `make up`) from the active task checkout to start local Supabase Docker services, then the frontend at `http://localhost:3000`. `make` defaults to the same action.
+- Start Docker Desktop or another Docker engine first and install the Supabase CLI. Use `make install` for locked npm dependencies; prefer the external SSD for the task checkout, npm cache, build artifacts and Docker disk image when available. If it is unavailable, use internal storage without asking; an existing Docker disk image can remain in its current location.
+- `make services` starts only the backend; `make frontend` connects to the running local stack. The frontend receives only the local API URL and anonymous key from `supabase status`; never inject a service-role key into browser configuration.
+- Ctrl-C stops the frontend. `make down` stops the project's containers while preserving local data; `make status` shows service connection details. Do not stop or rebind a stack owned by another active checkout without resolving ownership.
+- `supabase/config.toml` owns local service configuration, and `supabase/migrations/` remains the schema source. Local data and OAuth setup are separate from hosted production. `npm run dev` retains the hosted default.
 
 ## Backend and agent work
 

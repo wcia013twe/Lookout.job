@@ -1,0 +1,5 @@
+# Refresh OpenWiki for current Muse and Node boundaries
+
+- Updated the six existing factual pages in place: quickstart, system architecture, gateway/MCP, submission safety, discovery/tracking and testing/delivery. Covers MCP startup contract 83, labeled read-refresh-ack events and timeline reschedules, canonical profile saves, agent-owned scheduling/Node jobs, tracker Stats, interview reporting and release limits.
+- Used the pinned OpenWiki 0.7.2 deterministic lifecycle through its official host adapter: begin, plan, sequential assigned-page submissions with sparse claim reconciliation, and finish. OpenWiki finalized the run as complete and regenerated claims, provenance, manifests and indexes; no managed metadata was edited by hand. No application source was changed.
+- Validation: six pages and 57 material claims finalized; 35 relative Markdown links resolve; retrieval finds the refreshed feed/startup documentation; data validation passed (158 roles); whitespace check passed. Documentation-only pass; no product tests/build repeated, deployment, push or publication performed.

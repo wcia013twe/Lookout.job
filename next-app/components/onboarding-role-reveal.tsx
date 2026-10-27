@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { CompanyLogo, type Role } from "./role-card";
+import { type Role } from "./role-card";
+import TutorialRoleCard from "./tutorial-role-card";
 import RoleMatchPreview from "./role-match-preview";
-import { useWorkspace } from "../lib/workspace";
-import { recordRoleOpened } from "../lib/progress.mjs";
+
 import { Button, Dots, Quiet, Title } from "./onboarding-ui";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -44,10 +44,14 @@ type OnboardingRoleRevealProps = {
   demo: boolean;
   onPrepare: () => void;
   onLater: () => void;
+  presentation?: "onboarding" | "landing";
+  expanded?: boolean;
+  connected?: boolean;
+  children?: ReactNode;
 };
 
-export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }: OnboardingRoleRevealProps) {
-  const w=useWorkspace();
+export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, presentation = "onboarding", expanded = false, connected = false, children }: OnboardingRoleRevealProps) {
+  const landing = presentation === "landing";
   const pending=!role;
   const illustrative = demo;
   const reduced = useReducedMotion();
@@ -57,10 +61,17 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
   const swipe = useRef<number | null>(null);
   const analysisHeading = useRef<HTMLHeadingElement>(null);
   const text = pending
-    ? "Your preferences are saved. Connect your agent to find a current employer posting and compare it with your saved profile and résumé. Your first result will appear in your workspace."
+    ? connected ? "No catalog role matches these preferences yet. Ask your connected agent to find a current employer posting and compare it with your saved profile and résumé." : "Your preferences are saved. Connect your agent to find a current employer posting and compare it with your saved profile and résumé. Your first result will appear in your workspace."
     : illustrative
       ? role.whyItFits || "This fictional example demonstrates the reveal. Sample fit scores are illustrative."
       : "This catalog role matches the work type and location you chose. Your agent will check that the posting is still open and compare it with your saved profile and résumé before recommending a next step.";
+
+  useEffect(() => {
+    if (!landing) return;
+    if (reduced) { setOpened(true); return; }
+    const timer = window.setTimeout(() => setOpened(true), 650);
+    return () => window.clearTimeout(timer);
+  }, [landing, reduced]);
 
   useEffect(() => {
     setSpread(false);
@@ -80,10 +91,10 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
   }, [opened, reduced]);
 
   useEffect(() => {
-    if (spread) analysisHeading.current?.focus({ preventScroll: true });
-  }, [spread]);
+    if (spread && !landing) analysisHeading.current?.focus({ preventScroll: true });
+  }, [spread, landing]);
 
-  return <div className={`role-reveal${spread ? " spread" : ""}`}>
+  return <div className={`role-reveal${spread && !landing ? " spread" : ""}`}>
     <motion.div layout transition={{ layout: { duration: reduced ? 0 : 0.75, ease } }} className="gold-position">
       <motion.div className="card-flipper" initial={false} animate={{ rotateY: opened ? -180 : 0 }} transition={{ duration: reduced ? 0 : 0.8, ease }}>
         <button
@@ -106,31 +117,26 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
           </svg>
           <strong>Tap or swipe to reveal</strong>
         </button>
-        <article className="gold-card card-front" aria-hidden={!opened} inert={!opened}>
-          <div className="gold-banner"><Dots /><span className="gold-tier">{pending ? "Your first search" : illustrative ? "Sample opportunity" : "A role to explore"}</span></div>
-          <div className="gold-body">
-            {role ? <>
-              <div className="gold-company"><CompanyLogo company={role.company} /><span>{role.company}</span></div>
-              <h2>{role.title}</h2>
-              <p className="meta">{role.employmentType==="FT"?"Full-time":role.employmentType} · {role.location || "Location not recorded"}</p>
-              {illustrative ? <RoleMatchPreview sample={role.matchPreview} demo animate active={spread}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer" onClick={()=>recordRoleOpened(w.store,role.id)}>View employer posting ↗</a></div>}
-              <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Catalog shortlist · no personalized assessment yet"}</p>
-            </> : <div className="onboarding-first-find"><Dots/><h2>Your first find is on its way.</h2><p>Connect your agent to look beyond the catalog.</p></div>}
-          </div>
-        </article>
+        <TutorialRoleCard role={role} className="card-front" hidden={!opened} label={pending ? "Your first search" : illustrative ? "Sample opportunity" : "A role to explore"}>
+          {role ? <>
+            {illustrative ? <RoleMatchPreview key={role.id} sample={role.matchPreview} demo animate active={spread} expanded={landing && expanded}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer">View employer posting ↗</a></div>}
+            <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Catalog shortlist · no personalized assessment yet"}</p>
+          </> : <div className="onboarding-first-find"><Dots/><h2>Your first find is on its way.</h2><p>{connected?"Ask your connected agent to look beyond the catalog.":"Connect your agent to look beyond the catalog."}</p></div>}
+          {children}
+        </TutorialRoleCard>
       </motion.div>
     </motion.div>
-    {spread && <motion.div className="reveal-copy" initial={reduced ? false : { opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduced ? 0 : 0.6, ease }}>
+    {!landing && spread && <motion.div className="reveal-copy" initial={reduced ? false : { opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduced ? 0 : 0.6, ease }}>
       <Dots />
       <Title>{pending ? "Let’s find your first role." : illustrative ? "A glimpse of what’s next." : "A role to explore."}</Title>
       <h3 ref={analysisHeading} tabIndex={-1}>{pending ? "Your search, ready to go" : illustrative ? "Illustrative fit analysis" : "Why it’s here"}</h3>
       <TypedAnalysis active={analysis} text={text} />
-      <p className="hint">{illustrative ? "Fictional example. This is not live résumé analysis." : pending ? "Your agent runs the search after connecting." : "Shortlisted from your preferences. The agent review is still to come."}</p>
+      <p className="hint">{illustrative ? "Fictional example. This is not live résumé analysis." : pending ? connected?"No search has run. Ask your connected agent when you’re ready.":"Your agent runs the search after connecting." : "Shortlisted from your preferences. The agent review is still to come."}</p>
       <div className="actions">
-        <Button onClick={onPrepare}>{pending ? "Connect my agent" : illustrative ? "Meet my agent" : "Check this with my agent"}</Button>
+        <Button onClick={onPrepare}>{connected ? "Continue" : pending ? "Connect my agent" : illustrative ? "Meet my agent" : "Check this with my agent"}</Button>
         <Quiet onClick={onLater}>I’ll do this later</Quiet>
       </div>
     </motion.div>}
-    {!spread && <div className="reveal-later"><Quiet onClick={onLater}>I’ll do this later</Quiet></div>}
+    {!landing && !spread && <div className="reveal-later"><Quiet onClick={onLater}>I’ll do this later</Quiet></div>}
   </div>;
 }

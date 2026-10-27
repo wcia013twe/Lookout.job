@@ -37,3 +37,9 @@ test('default outreach skill delivers all starter templates and protects cached 
  const {default: canonical} = await import('../supabase/functions/agent-gateway/skills/outreach-templates.json', {with:{type:'json'}});
  assert.deepEqual(readGuide('cold-outreach').templates, canonical.templates);
 });
+
+test('application workspace guide is advertised with truthful personalization and approval boundaries',()=>{
+ const g=readGuide('application-workspace');assert.ok(guideIndex().some(x=>x.id===g.id));
+ for(const phrase of ['prepare_draft','writing preferences','NOT implemented','Fail loudly','read back','required/optional'])assert.ok(g.instructions.toLowerCase().includes(phrase.toLowerCase()),phrase);
+ assert.ok(contextResponse('context.developer',{}).instructions.some(x=>x.includes('application-workspace')));
+});

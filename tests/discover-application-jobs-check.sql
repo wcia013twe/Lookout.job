@@ -1,0 +1,43 @@
+begin;
+do $$
+declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();conn uuid;h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text);a uuid;b uuid;other_app uuid;lease uuid;version integer;claim jsonb;p jsonb;result jsonb;again jsonb;
+begin
+ insert into auth.users(id) values(u),(v);
+ insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Application jobs',h,array['workspace:read','preferences:write','drafts:write','approvals:read','resumes:read'],now()+interval '1 hour') returning id into conn;
+ p:='{"posting":{"id":"selected-public-job","url":"https://job-boards.greenhouse.io/fixture/jobs/2001","company":"Fictional Systems","title":"Fictional Backend Engineer","employmentType":"FT","location":"Remote"},"expectedRevision":0,"eventKey":"human-click:1"}';
+ perform set_config('test.uid',u::text,true);execute 'set local role authenticated';
+ result:=public.queue_application_job(p);a:=(result->'application'->>'id')::uuid;b:=(result->'job'->>'id')::uuid;
+ if result->'job'->>'status'<>'queued' or result->'application'->'execution_job'->>'status'<>'queued' then raise exception 'Queue has no durable projected receipt';end if;
+ if public.queue_application_job(p)<>result then raise exception 'Human retry duplicated';end if;
+ begin update public.applications set execution_job='{"status":"completed"}' where id=a;raise exception 'Human forged job state';exception when insufficient_privilege then null;end;
+ begin perform public.queue_application_job(p||'{"ownerId":"other"}');raise exception 'Owner injection';exception when invalid_parameter_value then null;end;
+ begin perform public.queue_application_job(p||'{"expectedRevision":1}');raise exception 'Changed retry';exception when serialization_failure then null;end;
+ begin perform public.queue_application_job(jsonb_set(p,'{posting,url}','"http://127.0.0.1/private"'));raise exception 'Unsafe posting';exception when invalid_parameter_value then null;end;
+ execute 'reset role';
+ if public.agent_dispatch(h,'applications.submit_job',p)<>result then raise exception 'Website/MCP mismatch';end if;
+ again:=public.backend_job_dispatch(h,'applications.submit_job',p||'{"eventKey":"mcp-click:2"}');
+ if again->'job'->>'id'<>b::text or (select count(*) from private.backend_jobs where user_id=u)<>1 then raise exception 'Double click queued duplicate active job';end if;
+ if (select receipt from public.applications where id=a) is not null or (select status from public.applications where id=a)<>'Queued' or exists(select 1 from public.approvals where application_id=a) then raise exception 'Queue minted submission/approval';end if;
+ begin perform public.backend_job_dispatch(h,'backend.jobs.submit',jsonb_build_object('kind','application_submit','input',jsonb_build_object('applicationId',a,'expectedRevision',0),'eventKey','generic-queue'));raise exception 'Generic queue bypass';exception when invalid_parameter_value then null;end;
+ -- Search-only workers leave application work alone; no feature flag can claim it accidentally.
+ if public.backend_worker('claim','{}') is not null then raise exception 'Search worker claimed application';end if;
+ claim:=public.backend_worker('claim_application','{}');lease:=(claim->>'leaseToken')::uuid;version:=(claim->'job'->>'version')::integer;
+ if claim->'job'->>'id'<>b::text or (select execution_job->>'status' from public.applications where id=a)<>'running' then raise exception 'Application claim not reflected';end if;
+ insert into public.applications(user_id,job_id) values(v,'selected-public-job') returning id into other_app;
+ begin perform public.backend_worker('application_dispatch',jsonb_build_object('jobId',b,'leaseToken',lease,'expectedVersion',version,'name','runner_submission_context','args',jsonb_build_object('app_id',other_app)));raise exception 'Foreign execution target';exception when insufficient_privilege then null;end;
+ begin perform public.backend_worker('application_dispatch',jsonb_build_object('jobId',b,'leaseToken',lease,'expectedVersion',version,'name','agent_dispatch','args',jsonb_build_object('operation','batches.publish','payload','{}'::jsonb)));raise exception 'Generic worker dispatch';exception when invalid_parameter_value then null;end;
+ again:=public.backend_worker('application_dispatch',jsonb_build_object('jobId',b,'leaseToken',lease,'expectedVersion',version,'name','runner_submission_context','args',jsonb_build_object('app_id',a)));
+ if again->'application'->>'id'<>a::text then raise exception 'Owned context missing';end if;
+ update private.backend_jobs set lease_expires_at=now()-interval '1 second' where id=b;
+ begin perform public.backend_worker('application_dispatch',jsonb_build_object('jobId',b,'leaseToken',lease,'expectedVersion',version,'name','runner_submission_context','args',jsonb_build_object('app_id',a)));raise exception 'Expired lease used';exception when serialization_failure then null;end;
+ claim:=public.backend_worker('claim_application','{}');
+ if claim->'job'->>'id'<>b::text or (claim->'job'->>'attempts')::integer<>2 then raise exception 'Lease did not reconcile same job';end if;
+ update private.agent_connections set revoked_at=now() where id=conn;
+ begin perform public.backend_worker('application_dispatch',jsonb_build_object('jobId',b,'leaseToken',claim->>'leaseToken','expectedVersion',(claim->'job'->>'version')::integer,'name','runner_submission_context','args',jsonb_build_object('app_id',a)));raise exception 'Revoked worker authority';exception when insufficient_privilege then null;end;
+ perform set_config('test.uid',v::text,true);execute 'set local role authenticated';
+ if jsonb_array_length(public.backend_job_action('backend.jobs.read','{}')->'jobs')<>0 then raise exception 'Other owner sees application job';end if;
+ begin perform public.queue_application_job(p);raise exception 'Missing execution connection accepted';exception when insufficient_privilege then null;end;
+ begin perform public.backend_worker('claim_application','{}');raise exception 'Human claimed worker';exception when insufficient_privilege then null;end;
+ execute 'reset role';
+end $$;
+rollback;

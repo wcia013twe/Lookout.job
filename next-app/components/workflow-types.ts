@@ -14,18 +14,23 @@ export interface Application {
   company: string; companyId?:string|null;
   title: string;
   status: string;
+  searchProfileId?: string;
   employmentType?: string;
   location?: string;
   applicationUrl?: string;
   url?: string;
   backendId?: string;
   backendRevision?: number;
+  executionJob?: {id:string;status:string;result?:{summary?:string}} | null;
   revision?: number;
   receipt?: { message: string; source: string; observedUrl?: string };
   resumeId?: string;
   blocker?: string;
   questions: ApplicationQuestion[];
   questionsReviewed?: boolean;
+  lastAnswerConfirmation?: {id:string;fieldId:string};
+  inspectedAt?: string;
+  inspectionComplete?: boolean;
   submissionAttempts?: { id: string; state: string; startedAt: string }[];
   activity?: { text: string; actor: string; at: string }[];
   milestones?: ApplicationMilestone[];
@@ -41,6 +46,8 @@ export interface ApplicationMilestone {
   occurred_at?: string | null;
   created_at?: string;
   source: { kind: string; note?: string; timestampConfirmed?: boolean; messageId?: string; subject?: string; excerpt?: string; receivedAt?: string; url?: string };
+  supersedes_id?: string | null;
+  supersededBy?: string | null;
   observedConfirmation?: boolean;
 }
 

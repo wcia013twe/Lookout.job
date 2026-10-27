@@ -21,7 +21,7 @@ export function greenhouseForm(job, rawUrl) {
   const target = identifyJob(rawUrl);
   if (target.ats !== 'greenhouse' || String(job.id) !== target.jobId) throw new Error('Returned job does not match target');
   if (!Array.isArray(job.questions)) throw new Error('Employer question list unavailable');
-  const questions = [...job.questions, ...(job.location_questions || []), ...(job.compliance || [])].map((question, index) => ({
+  const questions = [...job.questions, ...(job.location_questions || []), ...(job.compliance || []).flatMap(group => group.questions || [])].map((question, index) => ({
     id: `question-${index}`, question: question.label, required: Boolean(question.required),
     fields: (question.fields || []).map(field => ({ id: field.name, type: fieldTypes[field.type] || 'unsupported', options: (field.values || []).map(option => ({ value: String(option.value), label: option.label })) })),
   }));

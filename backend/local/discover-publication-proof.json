@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-10-26T18:05:28.905Z",
+  "localOnly": true,
+  "accountId": "79633985-c559-45c5-9fdc-c67a15cf9401",
+  "source": "https://boards-api.greenhouse.io/v1/boards/togetherai/jobs?content=true",
+  "provider": "runner/vendor/career-ops/providers/greenhouse.mjs",
+  "fullDescriptionParser": "runner/vendor/career-ops/browser-extract.mjs:jdHtmlToText",
+  "livePostings": 86,
+  "selected": 9,
+  "fullTime": 3,
+  "internships": 6,
+  "batchId": "e0b1f802-c9f1-4909-be91-7a85bed5c0ad",
+  "descriptionLengths": [
+    {
+      "title": "Systems Research Engineer, GPU Programming",
+      "characters": 2776
+    },
+    {
+      "title": "[Junior / Senior / Staff] Software Engineer, Inference / Compute Infrastructure Engineering",
+      "characters": 5693
+    },
+    {
+      "title": "Platform Engineer, Model Shaping",
+      "characters": 4757
+    },
+    {
+      "title": "Hardware Security Engineer Intern (Summer 2027)",
+      "characters": 3688
+    },
+    {
+      "title": "Research Intern, Frontier Agents (Summer 2027)",
+      "characters": 4064
+    },
+    {
+      "title": "Research Intern, Frontier Speculative Decoding (Summer 2027)",
+      "characters": 4330
+    },
+    {
+      "title": "Research Intern, Inference (Summer 2027)",
+      "characters": 3727
+    },
+    {
+      "title": "Research Intern, Model Shaping (Summer 2027)",
+      "characters": 3844
+    },
+    {
+      "title": "Systems Research Engineer Intern - GPU Programming (Summer 2027)",
+      "characters": 2857
+    }
+  ],
+  "recordedApplicationDrafts": 9,
+  "scores": "Agent-generated unknowns; no resume or user preference evidence available",
+  "submittedApplications": 0
+}

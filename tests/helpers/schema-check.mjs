@@ -6,10 +6,8 @@ export async function checkSchema(db) {
   await db.exec(
     `insert into public.jobs(id,canonical_url,employer) values('job','https://example.com/job','{}'); set role authenticated; set test.uid='${one}';`,
   );
-  await db.query(
-    "insert into public.profiles(user_id,facts,verified_at) values($1,$2,now())",
-    [one, { name: "Test", email: "test@example.com" }],
-  );
+  const profile=(await db.query("select public.save_profile_changes($1,$2) data",[{fields:{name:'Test',email:'test@example.com'},expectedUpdatedAt:null},one])).rows[0].data;
+  await db.query('select public.review_profile_facts($1,true,$2)',[profile.updated_at,one]);
   const resume = (
     await db.query(
       "insert into public.resumes(user_id,name,reference_url) values($1,$2,$3) returning id",

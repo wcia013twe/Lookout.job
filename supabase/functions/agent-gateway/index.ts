@@ -1,3 +1,7 @@
+import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs';
+import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
+import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
+import { clientStorage } from './client-storage.mjs';
 import runtimeVersion from './runtime-version.json' with {type:'json'};
 import {resetHandoff} from './workspace-reset.mjs';
 import {readUserBrief} from './user-brief.mjs';
@@ -22,6 +26,10 @@ import { getBugStatus } from './bug-status.mjs';
 // revocation + scope checks in one database transaction for agent operations.
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
   auth: { persistSession: false, autoRefreshToken: false },
+});
+const resumeStorage = clientStorage(admin.storage.from('resumes'), {
+  internalUrl: Deno.env.get('SUPABASE_URL')!,
+  publicUrl: Deno.env.get('LOOKOUT_PUBLIC_SUPABASE_URL'),
 });
 const headers = {
   'Content-Type': 'application/json', 'Cache-Control': 'no-store',
@@ -95,6 +103,16 @@ Deno.serve(withGatewayCors(async request => {
       return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
+    if(['search.leads.submit','search.source.leads','search.discoveries.screen'].includes(operation)) {
+      const auth=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'credentials.verify',payload:{}});
+      if(auth.error){const [status,message]=databaseFailure(auth.error);return respond({error:message},status);}
+      return respond({error:'Search pipeline operations require the configured Node MCP endpoint. This Edge endpoint has not saved or screened any records.'},501);
+    }
+    if(BACKEND_OPERATIONS.includes(operation)) {
+      const {data,error}=await admin.rpc('backend_job_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
+      if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
+      return respond({data});
+    }
     if(operation==='workspace.reset_handoff') {
       const {data,error}=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'context.versions',payload:{}});
       if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
@@ -107,6 +125,7 @@ Deno.serve(withGatewayCors(async request => {
       if (result.error) return respond({error: 'Guide access rejected'}, result.error.code === '28000' ? 401 : result.error.code === '42501' ? 403 : result.error.code === 'P0002' ? 404 : 400);
       return respond({data: result.data});
     }
+    if(operation==='resumes.parse')return respond({error:'Resume parsing requires the configured Node API endpoint.'},503);
     if (operation.startsWith('outreach.')) {
       const {data,error} = await admin.rpc('agent_outreach_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
       if(error) return respond({error: error.code==='40001'?'Outreach changed; reload before retrying':'Outreach operation rejected'},error.code==='28000'?401:error.code==='42501'?403:error.code==='40001'?409:400);
@@ -119,11 +138,11 @@ Deno.serve(withGatewayCors(async request => {
         const prepared=await rpc(operation,payload);
         if(prepared.error)return respond({error:'Upload intent rejected'},prepared.error.code==='42501'?403:400);
       }
-      const result=await resumeUploadDispatch({operation,payload,rpc,storage:admin.storage.from('resumes')});
+      const result=await resumeUploadDispatch({operation,payload,rpc,storage:resumeStorage});
       if(result.error)return respond({error:'Resume upload rejected'},result.error.code==='42501'?403:result.error.code==='P0002'?404:400);
       return respond({data:result.data});
     }
-    if (operation.startsWith('submission.')) {
+    if (operation.startsWith('submission.') && !operation.startsWith('submission.batch.')) {
       const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});
       return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
     }
@@ -145,6 +164,12 @@ Deno.serve(withGatewayCors(async request => {
       if(response.error){const [status,message]=databaseFailure(response.error);return respond({error:message},status);}
       return respond({data:response.data});
     }
+    if(operation==='drafts.prepare') {
+      const credentialHash=await hashToken(bearer);
+      const result=await prepareDraftWithPrefill((op: string,args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),payload,{loadJob:async(id: string)=>{const {data}=await admin.from('jobs').select('id,canonical_url,employer').eq('id',id).maybeSingle();return data;},loadApplication:async(jobId: string,userId: string)=>{const {data,error}=await admin.from('applications').select('*').eq('job_id',jobId).eq('user_id',userId).maybeSingle();if(error)throw Error('Existing draft read failed');return data;}});
+      if(result.error){const [status,message]=databaseFailure(result.error);return respond({error:message},status);}
+      return respond({data:result.data});
+    }
     const policyRequest = operation === 'applications.policy';
     const { data, error } = await admin.rpc('agent_dispatch', {
       credential_hash: await hashToken(bearer), operation: policyRequest ? 'context.personal' : operation, payload: policyRequest ? {} : payload,
@@ -162,21 +187,22 @@ Deno.serve(withGatewayCors(async request => {
     }
     if (['resumes.begin_upload','resumes.complete_upload'].includes(operation)) {
       try {
-        return respond({data:await resumeSetupResponse({operation,data,storage:admin.storage.from('resumes'),rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
+        return respond({data:await resumeSetupResponse({operation,data,storage:resumeStorage,rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
       } catch { return respond({error:'Resume upload or verification incomplete; retry the same upload'},400); }
     }
     if (['toolkit.file.begin','toolkit.file.complete','toolkit.file.read'].includes(operation)) {
-      return respond({data:await toolkitFileResponse({operation,data,storage:admin.storage.from('resumes'),rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
+      return respond({data:await toolkitFileResponse({operation,data,storage:resumeStorage,rpc:(name,args)=>admin.rpc(name,args),credentialHash:await hashToken(bearer)})});
     }
     if (operation === 'resumes.read') {
       let url = data.reference_url;
       if (data.object_path) {
-        const { data: signed, error: signingError } = await admin.storage.from('resumes').createSignedUrl(data.object_path, 60);
+        const { data: signed, error: signingError } = await resumeStorage.createSignedUrl(data.object_path, 60);
         if (signingError) return respond({ error: 'Resume file unavailable' }, 404);
         url = signed.signedUrl;
       }
       return respond({ data: { resume: data, url } });
     }
+    if(operation==='batches.read')return respond({data:await withLatestPostingEvidence(admin,data,data.batch.user_id)});
     return respond({ data: operation.startsWith('search.') ? searchResponse(operation,data) : contextResponse(operation, data) });
   } catch { return respond({ error: 'Lookout could not complete this operation. Read current state before retrying a write.' }, 500); }
 }));
