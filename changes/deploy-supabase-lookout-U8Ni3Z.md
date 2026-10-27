@@ -6,3 +6,8 @@
 - Demo boundaries remain fictional and resettable; project-host changes update their network mocks without adding real writes. Existing scoped MCP services remain the same; deployment adds no generic data tools.
 - Validation: full npm test, focused merge-contract tests, production build, data validation and whitespace checks. Hosted migration/function/source readback and auth checks recorded in the delivery response.
 - Limits: Google OAuth allowlist, external secrets and separately hosted Node processing/worker features require their own configuration; do not claim those live based on an Edge deployment.
+
+## Deployment packaging follow-up
+
+- The first hosted workflow stopped before migration application because the committed generated toolkit exceeds Node’s default child-process output buffer. Read committed source with a bounded 32 MiB buffer and sanitize read failures; add a regression check against the actual generated bundle.
+- Validation: full npm test and data validation; previous production frontend build remains unchanged by this packaging fix.
