@@ -16,7 +16,6 @@ const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export default function AgentSelector({ agent, provider, onSelect, joinedOnce }) {
   const selected = agent === "platform" ? "platform" : provider;
   const character = [...characters, ...invitedAgents].find((c) => c.id === selected);
-  const waitingRoom = useRef(null);
   const hasJoined = joinedOnce;
   const joiningTimer = useRef(null);
   const [joining, setJoining] = useState(null);
@@ -62,16 +61,6 @@ export default function AgentSelector({ agent, provider, onSelect, joinedOnce })
         </div>
 
       </div>
-      <div className="agent-invite-row mt-4">
-        <button type="button" className="agent-invite-button min-h-11 text-sm underline underline-offset-4" onClick={() => waitingRoom.current.showModal()}>Invite your own agent</button>
-      </div>
-      <dialog ref={waitingRoom} className="agent-waiting-room">
-        <div className="flex items-center justify-between gap-4"><h2 className="text-2xl font-semibold">Waiting room</h2><button type="button" className="min-h-11 rounded-lg border border-board-line px-4 text-sm" onClick={() => waitingRoom.current.close()}>Close</button></div>
-        <p className="mt-3 text-sm leading-relaxed text-board-muted">Choose who to invite into your setup. You’ll connect it securely in the next step.</p>
-        <div className="mt-6 space-y-3">{invitedAgents.map(c => <div key={c.id} className="flex items-center gap-3 rounded-xl border border-board-line p-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-board-tag text-xl font-bold" aria-hidden="true">{c.name.slice(0,1)}</span><div className="flex-1"><h3 className="font-semibold">{c.name}</h3><p className="mt-1 text-xs text-board-muted">Your own agent</p></div><button type="button" className="min-h-11 rounded-lg bg-board-accent px-4 text-sm font-semibold text-board-ink" aria-label={`Invite ${c.name}`} onClick={() => { choose(c); waitingRoom.current.close(); }}>Invite</button></div>)}</div>
-        <button type="button" className="mt-5 min-h-11 text-sm underline underline-offset-4" onClick={() => { clearTimeout(joiningTimer.current); setJoining(null); onSelect("custom", ""); waitingRoom.current.close(); }}>Use a different agent</button>
-        <p className="mt-3 text-xs text-board-muted">Choosing an agent is a preview. Secure connection comes next.</p>
-      </dialog>
     </fieldset>
   );
 }
