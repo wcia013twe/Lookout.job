@@ -11,3 +11,8 @@
 
 - Replaced Cappy’s letter placeholder with the existing user-designed purple Lookout buddy in both picker thumbnail and selected preview. Reuses the brand asset without generating or duplicating artwork. Shared demo picker uses the same asset.
 - Follow-up validation: typecheck, data validation, and desktop/mobile browser image/flow checks passed; inspected the Cappy mobile capture. No new image generation or backend changes.
+
+## User-supplied Hermes artwork
+
+- Uses the supplied 512 × 520 portrait for both Hermes thumbnail and large preview, replacing the separate low-resolution icon/landing artwork. Copies the original PNG unchanged and records user provenance. Shared demo picker uses the same file.
+- Validation: typecheck, data validation and whitespace checks passed; SHA-256 comparison confirms the supplied image is unchanged.

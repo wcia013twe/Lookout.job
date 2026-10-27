@@ -7,7 +7,7 @@ const characters = [
   { id: "grok", name: "Grok Bot", company: "xAI", image: "grok-bot.webp", animation: null },
   { id: "muse", name: "Muse", company: "Meta", image: "muse-official.webp", animation: null },
   { id: "claude-duet", name: "Claude Duet", company: "Anthropic", image: "duet.svg", animation: null },
-  { id: "hermes", name: "Hermes", company: "Nous Research", image: "hermes.png", preview: "hermes.webp", animation: null },
+  { id: "hermes", name: "Hermes", company: "Nous Research", image: "hermes-custom.png", animation: null },
   { id: "chatgpt", name: "ChatGPT", company: "OpenAI", image: "chatgpt.svg", animation: null },
   { id: "claude", name: "Claude", company: "Anthropic", image: "claude.svg", animation: null },
   { id: "gemini", name: "Gemini", company: "Google", image: "gemini.png", animation: null },
