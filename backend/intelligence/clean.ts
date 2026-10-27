@@ -3,7 +3,7 @@ import {parseForumMentions} from '../../lib/circle-forum-mentions.mjs';
 import {isIP} from 'node:net';
 import {publicContextUrl} from '../../supabase/functions/agent-gateway/context-attachments.mjs';
 import type {Observation,Report,ResourceLink,MatchingContext,PostReference} from './types.ts';
-export const PROCESSING_VERSION='clean-v3';
+export const PROCESSING_VERSION='clean-v4';
 export function redact(text:string,identities:string[]=[]):string {
  let value=parseForumMentions(text.normalize('NFKC')).map(part=>part.text).join('');
  for(const identity of identities.filter(Boolean).sort((a,b)=>b.length-a.length))value=value.replace(new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'[person]');
@@ -55,7 +55,11 @@ export function clean(input:Observation,model:string|null,identities:string[]=[]
  const contexts:MatchingContext[]=rawContexts.map(context=>{
   if(!context||typeof context!=='object'||Object.keys(context).some(key=>!['label','company','role','stage','jobId','jobUrl'].includes(key)))throw Error('INVALID_CONTEXTS');
   const item:MatchingContext={label:text(context.label,200)!};
-  for(const key of ['company','role','stage','jobId'] as const)if(context[key]!==undefined)item[key]=text(context[key],200)!;
+  for(const key of ['company','role','stage'] as const)if(context[key]!==undefined)item[key]=text(context[key],200)!;
+  if(context.jobId!==undefined){
+   if(typeof context.jobId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9:_.-]{0,199}$/.test(context.jobId))throw Error('INVALID_JOB_ID');
+   item.jobId=context.jobId; // Opaque posting identity; never redact or guess from a role name.
+  }
   if(context.jobUrl!==undefined)item.jobUrl=publicResourceUrl(context.jobUrl);
   return item;
  });

@@ -12,9 +12,11 @@ export type Report = Observation & {
  contentHash:string; processingVersion:string; embeddingText:string; embeddingModel:string|null;
 };
 export type Query = (sql:string, values?:any[])=>Promise<{rows:any[]}>;
-export type Store = {get:(type:string,id:string)=>Promise<StoredVersion|undefined>; save:(r:Report,vector:number[]|null)=>Promise<void>; list:(limit:number,current?:Report[],search?:{vector:number[];model:string;minSimilarity:number;mode?:'vector'|'hybrid';query?:string})=>Promise<any[]>};
+export type SourceKey = {sourceType:'circle_post'|'application_update';sourceId:string};
+export type MetadataFilters = {jobId?:string;company?:string;role?:string;stage?:string;fromDate?:string;toDate?:string;sourceKeys?:SourceKey[]};
+export type Store = {get:(type:string,id:string)=>Promise<StoredVersion|undefined>; save:(r:Report,vector:number[]|null)=>Promise<void>; list:(limit:number,current?:Report[],search?:{vector:number[];model:string;minSimilarity:number;mode?:'vector'|'hybrid';query?:string},metadata?:MetadataFilters)=>Promise<any[]>};
 export type EmbeddingProvider = {model:string; embed:(text:string)=>Promise<number[]>};
-export type Candidate = {observation:Observation; identities:string[]};
+export type Candidate = {observation:Observation; identities:string[];sourceCircleId?:string};
 export type SourceLoader = () => Candidate[] | Promise<Candidate[]>;
 export type StoredVersion = {source_revision:number; content_hash:string; processing_version:string; embedding_model:string|null};
 export type StoreTarget = {kind:'demo'} | {kind:'account'; ownerId:string};

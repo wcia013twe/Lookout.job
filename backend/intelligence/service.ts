@@ -1,3 +1,6 @@
+import {GRAPH_TOOL,validateGraphArgs,expandEvidenceGraph} from './evidence-graph.ts';
+import type {SourceKey} from './types.ts';
+import {METADATA_TOOL,validateMetadataArgs} from './metadata.ts';
 import {createServer} from 'node:http';
 import type pg from 'pg';
 import type {EmbeddingProvider, SourceLoader,StoreTarget} from './types.ts';
@@ -10,6 +13,32 @@ export {INGEST_TOOL, LIST_TOOL} from './contract.ts';
 // Internal backend API: no fixture imports, MCP names or demo storage defaults.
 export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader, target:StoreTarget) {
   return {
+    graph: async (args:unknown) => {
+      const options=validateGraphArgs(args);
+      const store=databaseStore((sql,values)=>pool.query(sql,values),target);
+      const readCurrent=async(keys:SourceKey[],circleId?:string)=>{
+        const candidates=await loadSources();
+        const matches=candidates.filter(c=>keys.some(k=>k.sourceType===c.observation.sourceType&&k.sourceId===c.observation.sourceId)&&(!circleId||c.sourceCircleId===circleId));
+        const current=matches.map(c=>clean(c.observation,null,c.identities));
+        const eligible:SourceKey[]=[];
+        for(const r of current){
+          const saved=await store.get(r.sourceType,r.sourceId);
+          if(saved?.content_hash===r.contentHash&&saved.processing_version===r.processingVersion)eligible.push({sourceType:r.sourceType,sourceId:r.sourceId});
+        }
+        return eligible.length?store.list(eligible.length,current,undefined,{sourceKeys:eligible}):[];
+      };
+      const seeds=await readCurrent(options.seeds);
+      return expandEvidenceGraph(seeds,async ref=>{
+        const rows=await readCurrent([{sourceType:'circle_post',sourceId:ref.postId}],ref.circleId);
+        return rows[0]??null;
+      },options);
+    },
+    metadata: async (args:unknown) => {
+      const {limit,...filters}=validateMetadataArgs(args);
+      const current=target.kind==='account'?(await loadSources()).map(c=>clean(c.observation,null,c.identities)):undefined;
+      const items=await databaseStore((sql,values)=>pool.query(sql,values),target).list(limit,current,undefined,filters);
+      return {items,filters,order:'reported_date_desc',limit};
+    },
     search: async (query:string,limit=5,mode:'vector'|'hybrid'='vector') => {
       validateDemoCall(SEARCH_TOOL,{query,limit,mode});
       if(!provider)throw Error('EMBEDDING_PROVIDER_REQUIRED');
@@ -36,7 +65,9 @@ export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider
 export function ingestionService(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader,target:StoreTarget): DemoCall {
   const processor=intelligenceProcessor(pool,provider,loadSources,target);
   return async (operation, args = {}) => {
+    if(operation===GRAPH_TOOL)return processor.graph(args);
     const call = validateDemoCall(operation, args);
+    if(call.operation===METADATA_TOOL)return processor.metadata(call.metadata);
     if(call.operation===SEARCH_TOOL)return processor.search(call.query!,call.limit??5,call.mode);
     return call.operation === INGEST_TOOL ? processor.run() : {items:await processor.list(call.limit??20)};
   };

@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import {matchesPostingAge,postingAgeOptions} from "../../lib/posting-age.mjs";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, control, Notice, InsetBox } from "./ui";
 import RoleCard, { type Role } from "./role-card";
@@ -41,11 +42,13 @@ function DiscoverBoard() {
   const preview = selection?.owner === previewOwner ? selection.role : null;
   function setPreview(role: Role | null) { setSelection(role ? { role, owner: previewOwner } : null); }
   const [search, setSearch] = useState(""),
-    [day, setDay] = useState("latest");
+    [day, setDay] = useState("latest"),
+    [postingAge, setPostingAge] = useState("any");
   const dates = [...new Set([sourceDate, ...sourceRoles.map((r: Role) => r.discoveredDate)].filter(Boolean))].sort().reverse();
   const selectedDay = day === "latest" ? sourceDate : day;
   const roles = sourceRoles.filter(
     (r: Role) =>
+      matchesPostingAge(r, postingAge) &&
       (selectedDay === "all" || r.discoveredDate === selectedDay) &&
       (day !== "latest" || !w.state.tracker.ids.includes(r.id)) &&
       `${r.company} ${r.title} ${r.location} ${r.category}`
@@ -59,7 +62,7 @@ function DiscoverBoard() {
       (normalize(drop.company) === normalize(role.company) && normalize(drop.title) === normalize(role.title) &&
        (!drop.location || normalize(drop.location) === normalize(role.location)))));
     if (!matches.length) return;
-    setSearch(""); setDay("all");
+    setSearch(""); setDay("all"); setPostingAge("any");
     setArrival(previous => ({owner:previewOwner,ids:matches.map((role:Role)=>role.id),run:(previous?.run||0)+1}));
     requestAnimationFrame(() => board.current?.scrollIntoView({behavior: reduced ? "instant" : "smooth", block:"start"}));
   }
@@ -87,7 +90,7 @@ function DiscoverBoard() {
     <>
       {header}
       {newArrival&&publicView&&<button type="button" className="mb-4 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={()=>setPublicView(false)}>Back to my agent’s finds</button>}
-      <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_230px] md:gap-3">
+      <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_200px_200px] md:gap-3">
         <input
           aria-label="Search roles or companies"
           placeholder="Search roles or companies"
@@ -95,6 +98,7 @@ function DiscoverBoard() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <label className="flex min-w-0 flex-col gap-1 text-xs text-board-muted">Posted<select aria-label="Posted" className={control} value={postingAge} onChange={event=>setPostingAge(event.target.value)}>{postingAgeOptions.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
         <DayFilter label="Discover day" dates={dates} latest={sourceDate} value={day} onChange={setDay} />
 
       </InsetBox>
@@ -123,7 +127,7 @@ function DiscoverBoard() {
             })}
           </div> : <div className="glass-inset rounded-xl px-5 py-7">
             <p className="text-sm text-board-muted">No new roles for this profile in this view.</p>
-            {search && <button className="mt-3 min-h-11 text-sm font-semibold text-board-accent hover:underline" onClick={() => { setSearch(""); }}>Clear filters</button>}
+            {(search || postingAge !== "any") && <button className="mt-3 min-h-11 text-sm font-semibold text-board-accent hover:underline" onClick={() => { setSearch(""); setPostingAge("any"); }}>Clear filters</button>}
           </div>}
         </section>
       ))}
