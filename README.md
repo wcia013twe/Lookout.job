@@ -350,8 +350,9 @@ does not push or create a PR. For the everyday local app, run `make live` once:
 it serves an isolated SSD preview that follows committed shared `main` every second.
 Landing a feature updates that preview and Next.js refreshes connected browsers.
 Dependency changes reinstall locked dependencies and restart the frontend.
-`make frontend` / `make dev` still preview the active task checkout; those servers
-cannot hot reload changes landed into a different checkout. Keep unfinished task
+`make frontend` / `make dev` on shared `main` use this stable preview too. In a
+feature checkout, they still preview that task; those servers cannot hot reload
+changes landed into a different checkout. Keep unfinished task
 checkouts intact. `make live` never switches, resets or edits them and never restarts
 the backend. Stop the previous frontend before using its port 3000.
 

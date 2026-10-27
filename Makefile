@@ -20,7 +20,7 @@ live:
 	node scripts/live-main.mjs
 
 frontend:
-	node scripts/local-frontend.mjs
+	@if [ "$$(git branch --show-current)" = main ]; then node scripts/live-main.mjs; else node scripts/local-frontend.mjs; fi
 
 down:
 	supabase stop
