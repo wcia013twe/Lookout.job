@@ -844,7 +844,7 @@ poll. A one-time local timer reveals delayed submission checks without a network
 request. Live connection errors are disclosed; persisted actions survive them.
 
 Release requires the durable-inbox migration (including the Realtime publication),
-gateway/MCP developer contract 71 and frontend together. Local SQL, HTTP and client
+gateway/MCP developer contract 72 and frontend together. Local SQL, HTTP and client
 tests do not verify hosted Realtime delivery or activate a submission worker.
 No runner is automatically awakened when an action resolves.
 
