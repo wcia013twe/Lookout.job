@@ -892,3 +892,23 @@ It sends no real employer application and calls no model. Use
 Release requires the submission-batch migration, gateway contract 75/application
 guide v4 and configured Node API image. Hosted deployment, Muse client execution
 and real employer behavior remain unverified until separately exercised.
+
+
+## Profile-aware resume selection
+
+Preparation and automatic submission now share `selectResume`: active role
+assignments in the selected application profile match normalized title phrases
+and job type; unmatched roles use that profile’s fallback. Blank assignment job
+type inherits the profile types. Blank assignment resume uses the same fallback.
+Conflicting matching files, malformed assignments, unchecked conditions/timelines
+and unavailable/superseded/private-file gaps require review. Legacy account-wide
+rules/defaults remain only for clients without profile resume configuration.
+
+`prepare_draft` exposes `handoff.resumeSelection` and pins an automatically chosen
+owned file/hash. It preserves existing explicit draft selections and reports
+differences from current rules. Submission rereads the owned canonical profile in
+its existing authorization context, including atomic claim/start comparisons.
+Routine execution rejects a stale/mismatched file; exact human approval can
+intentionally override the mapping. The runner downloads the draft’s pinned file,
+never a newly guessed alternative. Deploy the profile-resume-selection migration
+with the gateway update before claiming the new authorization behavior is live.

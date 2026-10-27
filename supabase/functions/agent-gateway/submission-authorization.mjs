@@ -27,8 +27,8 @@ export function authorizeSubmission(context) {
   if (humanApproval) return { allowed:true, authorization:{ mode:'human', id:approval.id, applicationId:a.id,userId:a.user_id,revision:a.revision,personalVersion:context.personalVersion,snapshot:approval.snapshot } };
   if (policy.mode === 'review') return reject('Important match or auto-apply off: approve this exact draft first.');
   if (!profile?.verified_at || profile.user_id !== a.user_id) return reject('Verified profile required for routine auto-apply.');
-  const selected = selectResume({ userId:a.user_id,job:job.employer,resumes:context.resumes,preferences:preferences?.search });
-  if (selected.status !== 'Selected' || selected.resumeId !== resume.id) return reject('Select a default résumé or an unambiguous matching résumé rule.');
+  const selected = selectResume({ userId:a.user_id,job:job.employer,resumes:context.resumes,preferences:preferences?.search,profileId:draft.searchProfileId,searchProfile:context.searchProfile });
+  if (selected.status !== 'Selected' || selected.resumeId !== resume.id) return reject(selected.status!=='Selected'?selected.reason:'The draft resume no longer matches the current profile assignment. Prepare the mapped resume or obtain exact human approval.');
   const ids = new Set();
   for (const q of draft.questions) {
     if (!q?.fieldId || !q.question || ids.has(q.fieldId) || q.answer == null || !String(q.answer).trim()) return reject('Missing or ambiguous employer answer.');

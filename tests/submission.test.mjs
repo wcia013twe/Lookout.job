@@ -156,7 +156,7 @@ test('additional documents cannot receive the résumé file even with human appr
 
 test('automatic submission rechecks the saved profile bound to the draft',()=>{
  const f=fixture();
- const makeProfile=(id,enabled)=>({id,name:id,active:true,filters:{Employment:'Full-time'},instructions:`## Application automation\n- Auto-apply routine matches: ${enabled}\n- Review threshold: A\n## Company priorities\n- Tier list ID: ft`});
+ const makeProfile=(id,enabled)=>({id,name:id,active:true,filters:{Employment:'Full-time'},instructions:`## Application automation\n- Auto-apply routine matches: ${enabled}\n- Review threshold: A\n## Company priorities\n- Tier list ID: ft\n## Application materials\n- Default resume ID: ${rid}`});
  f.context.preferences.search.profiles=[makeProfile('backend','Yes'),makeProfile('research','No')];
  assert.equal(authorizeSubmission(f.context).allowed,false);
  f.context.application.draft.searchProfileId='backend';assert.equal(authorizeSubmission(f.context).allowed,true);
@@ -167,4 +167,13 @@ test('automatic submission rechecks the saved profile bound to the draft',()=>{
 test('GitHub direct-fill provenance uses the same exact fact rule at submission',()=>{
  const f=fixture(),q=f.context.application.draft.questions[0];q.question='Github Profile URL';q.profileField='github';q.answer='https://github.com/example';q.fieldType='url';f.context.profile.facts.github=q.answer;
  assert.equal(authorizeSubmission(f.context).allowed,true);q.answer='https://github.com/other';assert.equal(authorizeSubmission(f.context).allowed,false);
+});
+
+test('an exact human approval can intentionally override a profile resume assignment',()=>{
+ const f=fixture();f.context.application.draft.searchProfileId='override';
+ f.context.searchProfile={id:'override',active:true,filters:{Employment:'Full-time'},instructions:'## Application materials\n- Default resume ID: a-different-resume'};
+ f.context.preferences.search.profiles=[{...f.context.searchProfile,instructions:f.context.searchProfile.instructions+'\n## Application automation\n- Auto-apply routine matches: No'}];
+ f.context.application.status='Approved';f.context.application.draft.questionsReviewed=true;
+ f.context.approval={id:'human',application_id:aid,user_id:user,revision:1,snapshot:{draft:structuredClone(f.context.application.draft),resume:structuredClone(f.context.resume),profile:structuredClone(f.context.profile.facts)}};
+ assert.equal(authorizeSubmission(f.context).authorization.mode,'human');
 });

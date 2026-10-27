@@ -676,3 +676,23 @@ Required unknown personal facts/conflicts need the person; required writing can
 be drafted by the agent; empty optional controls are non-blocking; unsupported
 widgets/files/consent require explicit browser handling. These labels never
 change stored answers, review state, approvals or submission validation.
+
+
+## Profile-aware resume selection
+
+Preparation and automatic submission now share `selectResume`: active role
+assignments in the selected application profile match normalized title phrases
+and job type; unmatched roles use that profile’s fallback. Blank assignment job
+type inherits the profile types. Blank assignment resume uses the same fallback.
+Conflicting matching files, malformed assignments, unchecked conditions/timelines
+and unavailable/superseded/private-file gaps require review. Legacy account-wide
+rules/defaults remain only for clients without profile resume configuration.
+
+`prepare_draft` exposes `handoff.resumeSelection` and pins an automatically chosen
+owned file/hash. It preserves existing explicit draft selections and reports
+differences from current rules. Submission rereads the owned canonical profile in
+its existing authorization context, including atomic claim/start comparisons.
+Routine execution rejects a stale/mismatched file; exact human approval can
+intentionally override the mapping. The runner downloads the draft’s pinned file,
+never a newly guessed alternative. Deploy the profile-resume-selection migration
+with the gateway update before claiming the new authorization behavior is live.

@@ -12,3 +12,13 @@
 - Integration: preserved the concurrent profile-edit/typed-preference audit, reconciled shared imports/demo services/docs, and advanced the combined developer contract to 75 without replacing its profile instructions.
 
 - Integrated verification: all 758 regression tests and the combined production build pass. The scripted agent honors the newer compact prepare_draft response and reads back the owned application record before verifying its repair.
+
+
+## Profile role-to-resume mapping follow-up
+
+- Fixed the settings/runtime gap: one selector reads the selected active profile’s Recruiting targets (title phrases plus explicit/inherited job type) and that profile’s Application materials fallback. Different matching files, invalid/missing/foreign/superseded files, malformed settings and unchecked conditions/timelines require selection/review. Legacy account rules/defaults remain only when no profile resume configuration is bound.
+- prepare_draft now proposes the mapped/fallback file, pins its existing owned immutable hash for new automatic choices, and exposes compact handoff.resumeSelection metadata. Existing explicit draft files are preserved; differences from current rules require review rather than silent replacement.
+- Submission context includes the current owned canonical profile/version in the existing atomic context comparisons. Routine authorization reuses the selector and rejects mismatched/stale files. Exact human approval can intentionally override mapping; no consent path was added. Existing prepare_draft and submit_application/MCP/browser paths share this behavior.
+- Updated Muse developer instructions to version 78 and the application guide, clarified matching in assignment UI text, and extended isolated demo fixtures to cover unconditional mapping, fallback and conditional review.
+- Validation: all 772 npm regression tests pass, including every database scenario and new profile-selection/real-SQL authorization tests. All 8 controlled Chromium/Node/Edge/SQL E2E scenarios pass; the new scenario proves both mapped and fallback choices upload their expected PDF bytes instead of the account default and saves the exact attempt file/hash. Production static build, Node runtime typecheck, validate:data (158 roles), and git diff --check pass.
+- Limits: no real employer submissions, hosted migration/gateway deployment, or live Muse execution was performed. Release the profile-resume-selection migration and gateway before claiming live enforcement. Title matching is deterministic normalized phrase matching; free-text conditions/timelines remain review-required. Existing explicit/approved files are not silently changed.
