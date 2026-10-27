@@ -10,6 +10,7 @@ import {OPERATIONS,validateRequest} from '../agent-gateway/contract.mjs';
 export {requiredToolScopes,CONDITIONAL_TOOL_SCOPES} from './tool-scopes.mjs';
 import {BACKEND_TOOLS} from '../agent-gateway/backend-jobs.mjs';
 import runtimeVersion from '../agent-gateway/runtime-version.json' with {type:'json'};
+import {validateSearch} from '../agent-gateway/search.mjs';
 import {IMPORT_TOOLS} from '../agent-gateway/simplify-import.mjs';
 import agentInstructions from '../agent-gateway/instructions.json' with { type: 'json' };
 import {RESET_HANDOFF_TOOL} from '../agent-gateway/workspace-reset.mjs';
@@ -161,6 +162,10 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
     if (!hasToolScopes(tool,scopes,args)) return result(id, { content: [{ type: 'text', text: 'Missing required scope: ' + requiredToolScopes(tool,args).filter(scope=>!scopes.includes(scope)).join(', ') }], isError: true });
     if (tool.operation.startsWith('artifacts.') || tool.operation.startsWith('learning.')) {
       try { validateArtifact(tool.operation, args); }
+      catch (e) { return error(id, -32602, e.message); }
+    }
+    if (tool.operation.startsWith('search.')) {
+      try { validateSearch(tool.operation, args); }
       catch (e) { return error(id, -32602, e.message); }
     }
     if (!validArgs(tool, args)) return error(id, -32602, 'Invalid tool arguments');

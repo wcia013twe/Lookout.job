@@ -5,7 +5,7 @@ import {mkdir} from 'node:fs/promises';
 const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/private/tmp/lookout-discover-ui';await mkdir(dir,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.LOOKOUT_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
 const errors=[];const cloud=[];
-const supabaseUrl=process.env.LOOKOUT_UI_SUPABASE_URL||'https://umhqfqzpwmszhcknwtrs.supabase.co';
+const supabaseUrl=process.env.LOOKOUT_UI_SUPABASE_URL||'https://osyrlausutnqzlegxmnd.supabase.co';
 const authStorageKey='sb-'+new URL(supabaseUrl).hostname.split('.')[0]+'-auth-token';
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block'});

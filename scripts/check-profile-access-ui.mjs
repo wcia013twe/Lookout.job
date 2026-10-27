@@ -13,9 +13,9 @@ try {
   if(mode==='signed-in'||mode==='anonymous') {
    const b64=value=>Buffer.from(JSON.stringify(value)).toString('base64url');
    const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
-   await context.addInitScript(({user,token})=>localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user})),{user,token});
+   await context.addInitScript(({user,token})=>localStorage.setItem('sb-osyrlausutnqzlegxmnd-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user})),{user,token});
   }
-  await context.route('https://umhqfqzpwmszhcknwtrs.supabase.co/**',async route=>{
+  await context.route('https://osyrlausutnqzlegxmnd.supabase.co/**',async route=>{
    calls.push(route.request().url());const url=route.request().url();
    const op=route.request().postDataJSON()?.operation;
    const body=url.includes('/auth/v1/user')?user:url.includes('/auth/v1/logout')?{}:url.includes('/rpc/search_action')&&op==='search.context'?{documents:[],profileId:null}:[];

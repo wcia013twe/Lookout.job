@@ -41,7 +41,7 @@ try {
  const user={id:'11111111-1111-4111-8111-111111111111',aud:'authenticated',role:'authenticated',email:'fictional@example.com',app_metadata:{},user_metadata:{},is_anonymous:false};
  const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url');
  const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
- await context.addInitScript(({user,token})=>localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,token_type:'bearer',user})),{user,token});
+ await context.addInitScript(({user,token})=>localStorage.setItem('sb-osyrlausutnqzlegxmnd-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,token_type:'bearer',user})),{user,token});
  await context.route('https://*.supabase.co/**',route=>{
   const path=new URL(route.request().url()).pathname;
   return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(path.endsWith('/user')?user:path.endsWith('/onboarding_action')?{data:{websiteCompletedAt:'2026-10-23T00:00:00Z'}}:[])});

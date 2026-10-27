@@ -10,8 +10,8 @@ try{
  const user={id:'11111111-1111-1111-1111-111111111111',aud:'authenticated',role:'authenticated',email:'fictional@example.com',app_metadata:{demo_preview:true},user_metadata:{},is_anonymous:false};
  const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url');
  const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
- await context.addInitScript(({user,token})=>{if(window.top!==window)return;localStorage.setItem('sb-umhqfqzpwmszhcknwtrs-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user}));},{user,token});
- await context.route('https://umhqfqzpwmszhcknwtrs.supabase.co/**',async route=>{
+ await context.addInitScript(({user,token})=>{if(window.top!==window)return;localStorage.setItem('sb-osyrlausutnqzlegxmnd-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user}));},{user,token});
+ await context.route('https://osyrlausutnqzlegxmnd.supabase.co/**',async route=>{
   cloud.push(route.request().url());const url=route.request().url();
   const op=route.request().postDataJSON()?.operation;
   const body=url.includes('/auth/v1/user')?user:url.includes('/rpc/search_action')&&op==='search.context'?{documents:[],profileId:null}:[];

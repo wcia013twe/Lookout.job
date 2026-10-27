@@ -35,7 +35,8 @@
     "intelligence:diagnose-bloomberg": "node --env-file-if-exists=.env.local scripts/diagnose-bloomberg-search.mjs",
     "intelligence:compare-hybrid": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-hybrid.mjs",
     "intelligence:evaluate-muse": "node --env-file-if-exists=.env.local scripts/evaluate-muse-intelligence.mjs",
-    "intelligence:compare-library": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-library.mjs"
+    "intelligence:compare-library": "node --env-file-if-exists=.env.local scripts/compare-bloomberg-library.mjs",
+    "deploy:backend": "node scripts/deploy-supabase.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "0.24.1",

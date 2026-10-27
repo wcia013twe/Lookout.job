@@ -997,3 +997,13 @@ its existing `dot` provider ID; Claude Duet has its own `claude-duet` choice.
 Hermes is available directly in the picker. Selection remains profile setup
 metadata through the existing profile writer; artwork does not establish a live
 connection. The shared picker also supplies demo imagery.
+
+## Hosted Lookout release
+
+Production Supabase is `osyrlausutnqzlegxmnd` (Lookout). The static frontend and trusted runner default to that project; local `make dev` continues to use its isolated Docker database. Existing public logo-cache URLs remain public assets on the original project and do not carry account credentials. This release does not transfer existing accounts, private files, tokens or application history from the original backend.
+
+The main-branch **Deploy React board** workflow deploys the backend first through **Deploy Supabase backend**, then builds and publishes the static website. The backend workflow can also be dispatched alone from main. It uses the encrypted repository `SUPABASE_ACCESS_TOKEN`, links only the fixed production project, previews/applies committed migrations, and deploys `agent-gateway`, `agent-mcp` and `workspace-reset` with their committed authentication configuration. The retired logo bootstrap is not deployed.
+
+`scripts/deploy-supabase.mjs` requires an exact, clean main-branch Actions source commit and verifies source bytes with the existing runtime stamping helper before packaging. Gateway and MCP report the same reviewed commit. This is deployment provenance, not proof of application behavior. Do not deploy a feature branch or override local Auth settings onto production. Hosted Auth redirect/provider configuration and external-service secrets are managed separately.
+
+The new Google OAuth callback is `https://osyrlausutnqzlegxmnd.supabase.co/auth/v1/callback`; it must be allowed by the Google OAuth client. Supabase alone does not host the optional Node API, parser, worker or submission browser. Those capabilities remain unavailable until a separate runtime and required secrets are configured and verified.

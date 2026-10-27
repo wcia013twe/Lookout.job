@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto';
 
 // Fixed project endpoints: never send an agent credential to caller-supplied URLs.
-export const PROJECT_URL = 'https://umhqfqzpwmszhcknwtrs.supabase.co';
-const PUBLIC_KEY = 'sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5';
+export const PROJECT_URL = 'https://osyrlausutnqzlegxmnd.supabase.co';
+const PUBLIC_KEY = 'sb_publishable_Wd5zta2ryg67FK2J7zGroA_ui050NlY';
 const MAX_RESUME_BYTES = 10 * 1024 * 1024;
 const uuid = value => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
 export function createGatewayClient({ token, fetchImpl = fetch, projectUrl = PROJECT_URL }) {

@@ -47,7 +47,7 @@ test('local resume tool reuses a matching uploaded file without transmitting byt
   assert.equal(result.resume.id,uid);assert.equal(calls,1);
   await assert.rejects(uploadProfileResume({filePath:path,variant:'Master',eventKey:'file',gateway:{call:async()=>({uploadUrl:'https://evil.test/upload'})},fetchImpl:()=>{throw Error('Must not contact');}}),/Invalid private upload URL/);
   const requests=[];
-  const complete=await uploadProfileResume({filePath:path,variant:'Master',eventKey:'file',gateway:{call:async(op)=>op==='resumes.begin_upload'?{...plan,contentType:'application/pdf',uploadUrl:`https://umhqfqzpwmszhcknwtrs.supabase.co/storage/v1/object/upload/sign/resumes/${plan.objectPath}?token=test`}:{resume:{id:plan.uploadId}}},fetchImpl:async(url,options)=>{requests.push(options);return new Response(null,{status:200});}});
+  const complete=await uploadProfileResume({filePath:path,variant:'Master',eventKey:'file',gateway:{call:async(op)=>op==='resumes.begin_upload'?{...plan,contentType:'application/pdf',uploadUrl:`https://osyrlausutnqzlegxmnd.supabase.co/storage/v1/object/upload/sign/resumes/${plan.objectPath}?token=test`}:{resume:{id:plan.uploadId}}},fetchImpl:async(url,options)=>{requests.push(options);return new Response(null,{status:200});}});
   assert.equal(complete.resume.id,plan.uploadId);assert.deepEqual(requests[0].body,pdf);assert.equal(requests[0].redirect,'error');assert.equal(requests[0].headers.Authorization,undefined);
  } finally {await rm(directory,{recursive:true});}
 });
