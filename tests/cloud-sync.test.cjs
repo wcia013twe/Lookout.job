@@ -120,9 +120,9 @@ test('background refresh never overwrites an edit made while a read is in flight
  await env.flush();
  assert.equal(env.db.profiles[0].facts.name,'Local edit during refresh');
 });
-test('online event retries failed reads and clears the temporary error',async()=>{
+test('background read failures stay quiet and recover on the online event',async()=>{
  const env=await environment(null,true);env.failRead();
- await env.event('focus');assert.match(env.ui.error.textContent,/retry automatically/);
+ await env.event('focus');assert.equal(env.ui.error.textContent,'');assert.equal(env.timers,1);
  env.db.profiles=[{user_id:one,facts:{name:'Recovered'},verified:false}];
  await env.event('online');
  assert.equal(env.store.get('workflow.profile.name'),'Recovered');
