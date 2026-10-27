@@ -1,3 +1,4 @@
+import {withLatestPostingEvidence} from '../lib/batch-posting-evidence.mjs';
 import {validateWorkExperience} from '../supabase/functions/agent-gateway/work-experience.mjs';
 import {createBackendJobsService} from '../lib/backend-jobs.mjs';
 import {validateCardPacks,batchPackDrops} from '../lib/card-packs.mjs';
@@ -421,7 +422,9 @@ function createBackend(client, expectedUserId = null) {
           .eq("user_id", userId)
           .order("position"),
       );
-      return { batch, items };
+      const enriched=await withLatestPostingEvidence(client,{batch,items},userId);
+      if(await owner()!==userId)throw Error('Account changed');
+      return enriched;
     },
     async saveDraft(id, expectedRevision, draft, blocker = null) {
       const userId = await owner();

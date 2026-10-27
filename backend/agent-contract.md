@@ -662,3 +662,17 @@ refreshes do not change assessment timestamps or grant application approval.
 The application preview counts saved answers separately from required/optional
 unanswered controls. Browser saves preserve `inspectedAt` and `inspectionComplete`
 so autosync cannot erase the saved form inspection metadata.
+
+`read_batch` and browser `getBatch` overlay the latest owned `search_observations`
+for each catalog job, including checkedAt, liveness, publication date and full
+posting text. The immutable batch/AI recommendation remains intact. The same
+shared loader fences both observation and listing owners; read failures surface,
+not silently stale success. The UI formats recency from this typed observation.
+No newer observation means the original publication snapshot remains the fallback.
+
+`prepare_draft.handoff.routing` classifies existing unresolved field IDs into
+human, agent, optional and browser groups. The website uses the same classifier.
+Required unknown personal facts/conflicts need the person; required writing can
+be drafted by the agent; empty optional controls are non-blocking; unsupported
+widgets/files/consent require explicit browser handling. These labels never
+change stored answers, review state, approvals or submission validation.

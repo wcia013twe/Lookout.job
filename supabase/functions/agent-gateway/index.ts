@@ -1,3 +1,4 @@
+import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs';
 import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
 import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
 import { clientStorage } from './client-storage.mjs';
@@ -190,6 +191,7 @@ Deno.serve(withGatewayCors(async request => {
       }
       return respond({ data: { resume: data, url } });
     }
+    if(operation==='batches.read')return respond({data:await withLatestPostingEvidence(admin,data,data.batch.user_id)});
     return respond({ data: operation.startsWith('search.') ? searchResponse(operation,data) : contextResponse(operation, data) });
   } catch { return respond({ error: 'Lookout could not complete this operation. Read current state before retrying a write.' }, 500); }
 }));

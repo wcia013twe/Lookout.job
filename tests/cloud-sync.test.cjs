@@ -12,7 +12,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  const timeout=fn=>{timers.set(++next,fn);return next;};
  const ctx={document,window:{addEventListener:(type,fn)=>windowEvents.set(type,fn)},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:key=>cache.get(key)??null,setItem:(key,value)=>cache.set(key,value),removeItem:key=>cache.delete(key),get length(){return cache.size;},key:index=>[...cache.keys()][index]}};
  vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
- const db=existingDb||{profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],action_inbox:[],job_batches:[]};
+ const db=existingDb||{profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],action_inbox:[],job_batches:[],search_observations:[]};
  let notify,status,removed=0;
  const client={channel(){const c={on(event,filter,fn){notify=fn;return c;},subscribe(fn){status=fn;return c;}};return c;},removeChannel(){removed++;},async rpc(name,args){
   if(name==='workspace_reset_state')return {data:db.resetState||{}};
@@ -39,7 +39,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
    if(operation==='upsert'){writes++;if(gate){const pending=gate;gate=null;await pending.promise;}if(fail){fail=false;return {error:Error('Offline')};}db[table]=[clone(fields)];return {data:clone(fields)};}
    if(table==='profiles' && readGate){const pending=readGate;readGate=null;await pending.promise;}
    if(table==='profiles' && failRead){failRead=false;return {error:Error('Offline')};}
-   const rows=db[table].filter(row=>filters.every(([key,value])=>row[key]===value)).slice(start,end+1);return {data:single?rows[0]:clone(rows)};
+   const rows=(db[table]||[]).filter(row=>filters.every(([key,value])=>row[key]===value)).slice(start,end+1);return {data:single?rows[0]:clone(rows)};
   })().then(resolve,reject);}};return query;
  }};
  global.JB={store,auth:{get userId(){return owner;}},catalogReady:Promise.resolve(),setBatch(){}};
