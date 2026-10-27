@@ -60,6 +60,9 @@ function baseDemoFixtures(date) {
 // fixtures remain the starting point. Feature scenarios share its memory store.
 export function demoFixtures(date) {
  const base=baseDemoFixtures(date),muse=createDemoWorkspace(date);
+ const bloomberg={id:'demo-bloomberg',company:'Bloomberg',title:'New Grad Software Engineer',employmentType:'FT',location:'New York, NY',category:'Backend',applicationUrl:'#',url:'#',discoveredDate:date,sourceFreshness:'Fictional demo',description:'Fictional role for the Community company-space demo. Not an employer posting.'};
+ base.roles.push(bloomberg);base.state.tracker.ids.push(bloomberg.id);base.state.tracker.items[bloomberg.id]={status:'Interview',openedDate:date};
+ base.state.workflow.applications[bloomberg.id]={...bloomberg,status:'Interview',revision:0,questions:[],activity:[],submissionAttempts:[]};
  const roles=[...discoverPreviewRoles(date),...base.roles,...muse.demo.roles].map(role => role.id === 'demo-interview' ? {...role, workSetting:'Remote (fictional demo)', sponsorship:'Not confirmed (demo)', description:'Fictional posting: build and debug PostgreSQL-backed job processing. Investigate retry safety, query latency and queue backpressure with a systems team.'} : role);
  const baseApplications=Object.fromEntries(Object.entries(base.state.workflow.applications).map(([id,value])=>[id,{...value,backendId:id,backendRevision:value.revision||0}]));
  const preparationPlans={...base.state.workflow.preparationPlans,...muse.workflow.preparationPlans};
