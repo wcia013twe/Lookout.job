@@ -57,7 +57,6 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
       <details className="border-t border-board-line pt-3">
         <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3"><h3 className="text-lg font-semibold">About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary>
         <p className="mt-4 max-w-prose whitespace-pre-line text-sm leading-relaxed text-board-muted">{role.description || "Full description not collected. Open the employer posting to verify responsibilities, requirements and availability."}</p>
-        <p className="mt-3 text-xs text-board-muted">Posted: {role.postedDate || "Not disclosed"}</p>
       </details>
     </div>
     <footer className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 border-t border-board-line bg-board-panel px-5 py-4 sm:px-8">
