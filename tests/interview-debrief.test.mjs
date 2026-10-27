@@ -18,7 +18,9 @@ test('website debrief payloads fit existing MCP notes and private forum-draft co
  assert.throws(()=>debriefPayload(app,{...draft,summary:' '}));assert.throws(()=>debriefForumContent(app,{content:payload},'x'.repeat(12001)));
 });
 test('agent-style artifact saves are readable and versioned by the website, and forum mapping stays private',async()=>{
- const store=createMemoryStore(demoFixtures('2026-10-22').state),api=createDemoServices(store);
+ const store=createMemoryStore(demoFixtures('2026-10-22').state);
+ store.set('workflow.applications.'+app.id,app);
+ const api=createDemoServices(store);
  const row=await api.artifactAction('artifacts.save',debriefPayload(app,draft));
  const list=await api.artifactAction('artifacts.list',{kind:'notes',query:debriefMarker(app.backendId)});
  assert.equal(list.items[0].id,row.id);

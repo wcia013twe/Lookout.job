@@ -5,8 +5,11 @@ export function validateMilestone(payload) {
  const s=payload.source;
  if(!bounded(payload.eventKey,200)||!bounded(payload.label,300)||!MILESTONE_KINDS.includes(payload.kind)||!['scheduled','completed','received'].includes(payload.phase)
   ||!s||typeof s!=='object'||Array.isArray(s)||Object.keys(s).some(k=>!['kind','messageId','subject','excerpt','receivedAt','timestampConfirmed','note'].includes(k))
-  ||s.kind!=='email'||!bounded(s.messageId,200)||!bounded(s.subject,300)||!bounded(s.excerpt,2000)||!timestamp(s.receivedAt)
+  ||!['email','user_reported'].includes(s.kind)
+  ||(s.kind==='email'&&(!bounded(s.messageId,200)||!bounded(s.subject,300)||!bounded(s.excerpt,2000)||!timestamp(s.receivedAt)))
+  ||(s.kind==='user_reported'&&(!bounded(s.note,2000)||Object.keys(s).some(k=>!['kind','note','timestampConfirmed'].includes(k))))
+  ||(payload.supersedesId!==undefined&&!/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(payload.supersedesId))
   ||(s.note!==undefined&&(typeof s.note!=='string'||s.note.length>2000))
   ||(payload.occurredAt!==undefined&&payload.occurredAt!==null&&(!timestamp(payload.occurredAt)||s.timestampConfirmed!==true)))
-  throw Error('An owned milestone needs email evidence; leave uncertain dates null or supply a confirmed timestamp with timezone.');
+  throw Error('An owned milestone needs email evidence or a candidate report; leave uncertain dates null or supply a confirmed timestamp with timezone.');
 }

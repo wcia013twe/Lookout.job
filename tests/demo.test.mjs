@@ -5,7 +5,7 @@ import { createMemoryStore, demoFixtures } from '../next-app/lib/demo.mjs';
 import { buildPreparationAgenda } from '../lib/preparation-planner.mjs';
 import { buildSubmissionRecord } from '../lib/submission-record.mjs';
 import { createDemoStore } from '../next-app/lib/demo-store.mjs';
-import { hasCallback, sortApplications, timelineItems } from '../lib/application-timeline.mjs';
+import { hasCallback, sortApplications, timelineItems, currentTimelineItems } from '../lib/application-timeline.mjs';
 const now = '2026-10-14T12:00:00Z';
 function memory(state) { return { get(path) { return path ? path.split('.').reduce((value, key) => value?.[key], state) : state; }, set(path, value) { const keys=path.split('.'),last=keys.pop(); const parent=keys.reduce((value,key)=>value[key] ||= {},state); parent[last]=value; } }; }
 test('demo fixtures reset deterministically and include confirmed and uncertain states', () => {
@@ -126,7 +126,7 @@ test('admin fixture calendar dates remain exact across local timezone conversion
 test('demo timelines distinguish confirmed callbacks, unknown email dates and uncertain attempts', async () => {
  const store=createDemoStore(createDemoWorkspace(now)),service=createDemoServices(store);
  const cedar=await service.readApplicationTimeline('demo-interview');
- assert.deepEqual(cedar.milestones.map(row=>[row.kind,row.phase]),[['submitted','received'],['recruiter_call','completed'],['technical_round','scheduled']]);
+ assert.deepEqual(currentTimelineItems({},cedar.milestones).map(row=>[row.kind==='application_submitted'?'submitted':row.kind,row.phase]),[['submitted','received'],['recruiter_call','completed'],['technical_round','scheduled']]);
  assert.equal(cedar.milestones[2].label,'Technical round 1');
  assert.ok(cedar.milestones.every(row=>row.source.kind==='email'&&row.source.messageId&&row.source.subject&&row.source.excerpt&&row.source.receivedAt));
  assert.ok(cedar.milestones.every(row=>new URL(row.source.url).hostname==='example.com'));
@@ -177,7 +177,10 @@ test('demo callback sorting and timelines preserve evidence and historical resum
  assert.equal(hasCallback(apps['demo-ambiguous']),true);
  assert.equal(hasCallback(apps['demo-confirmed']),false);
  assert.equal(hasCallback({...apps['demo-interview'],status:'Rejected'}),false);
- const cedar=timelineItems(apps['demo-interview']);
+ const history=timelineItems(apps['demo-interview']);
+ assert.equal(history.filter(row=>row.supersededBy).length,1);
+ assert.equal(history.length,4);
+ const cedar=currentTimelineItems(apps['demo-interview']);
  assert.deepEqual(cedar.map(item=>item.kind),['application_submitted','recruiter_call','technical_round']);
  assert.equal(cedar[0].observedConfirmation,false);
  assert.equal(cedar[1].phase,'completed');

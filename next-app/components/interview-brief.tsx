@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useId } from "react";
-import { timelineItems } from "../../lib/application-timeline.mjs";
+import { currentTimelineItems } from "../../lib/application-timeline.mjs";
 import ProfileIcon from "./profile-icon";
 import { primary, secondary } from "./ui";
 import type { Application, PreparationPlan } from "./workflow-types";
@@ -30,7 +30,7 @@ export default function InterviewBrief({ application, plan, demo, timeZone, onRo
   const current = plan && [application.id, application.backendId].includes(plan.applicationId) ? plan : null;
   const now = new Date();
   const today = calendarDay(now,timeZone);
-  const scheduled = timelineItems(application).filter(event => event.phase === "scheduled" && roundKinds.includes(event.kind));
+  const scheduled = currentTimelineItems(application).filter(event => event.phase === "scheduled" && roundKinds.includes(event.kind));
   const round = scheduled.filter(event => !event.occurred_at || (event.occurred_at.length === 10 ? event.occurred_at >= today : Date.parse(event.occurred_at) >= now.getTime())).sort((a,b) => (a.occurred_at ? Date.parse(a.occurred_at) : Infinity) - (b.occurred_at ? Date.parse(b.occurred_at) : Infinity))[0];
   const deadline = current?.deadline;
   const source = round?.source || deadline?.source;
