@@ -294,3 +294,7 @@ It sends no real employer application and calls no model. Use
 Release requires the submission-batch migration, gateway contract 75/application
 guide v4 and configured Node API image. Hosted deployment, Muse client execution
 and real employer behavior remain unverified until separately exercised.
+
+## Interview intelligence
+
+`read_interview_intelligence` (`knowledge.interview`) is a read-only Node MCP operation backed by the same database function as the signed-in application Overview. Both `knowledge:read` and `workspace:read` are required for agents. It resolves an owned application or catalog posting, then retrieves current published reports across current Circle memberships by explicit posting association. Empty scopes do not trigger automatic Muse output. See `docs/interview-intelligence-platform.md` for source identity, tests and the undeployed release boundary.

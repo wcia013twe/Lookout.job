@@ -195,7 +195,7 @@ export function createDemoServices(store) {
       return plannerBundle();
     },
 
-    knowledge: createCircleKnowledgeDemo(),
+    knowledge: createCircleKnowledgeDemo({getJobs:()=>Object.values(store.get('workflow').applications||{})}),
     async onboardingAction(operation, payload = {}) { return demoOnboardingAction(store, operation, payload); },
     async readApplicationTimeline(id) {
       const current = application(id);

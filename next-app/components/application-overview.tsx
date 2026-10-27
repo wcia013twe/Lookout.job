@@ -1,4 +1,5 @@
 "use client";
+import InterviewIntelligence from "./interview-intelligence";
 import type { Role } from "./role-card";
 import type { Application } from "./workflow-types";
 import RoleJobFacts from "./role-job-facts";
@@ -56,6 +57,7 @@ export default function ApplicationOverview({ application, role, workflow, item,
       <p>{facts.whyItFits || "No role-fit research has been recorded for this application."}</p>
       <small>Collected research notes · not a new AI assessment</small>
     </section>
+    {!application.imported && <InterviewIntelligence jobId={application.id} applicationId={application.backendId}/> }
     <details className="application-overview-description"><summary><h3>About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary><p>{facts.description || "The full employer description has not been collected. Use the job posting to verify the current responsibilities and requirements."}</p></details>
   </section>;
 }
