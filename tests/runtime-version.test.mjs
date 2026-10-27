@@ -1,5 +1,5 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {stampRuntimeBundle,VERSION_PATH} from '../scripts/runtime-version.mjs';
+import {stampRuntimeBundle,VERSION_PATH,readCommittedSource} from '../scripts/runtime-version.mjs';
 import {createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
 test('deployment stamps exact source identity and refuses mismatched source',()=>{
  const sourceCommit='a'.repeat(40),files=[{name:'entry.ts',content:'source'}];
@@ -12,4 +12,11 @@ test('MCP initializes only after credential verification and unstamped builds id
  const denied=createHandler(async()=>({status:401}));assert.equal((await denied(request())).status,401);
  const allowed=createHandler(async()=>({status:200,data:{scopes:[]}}));
  assert.equal((await(await allowed(request())).json()).result.serverInfo.version,'development');
+});
+
+test('deployment verifies the actual generated toolkit above the default process buffer limit',()=>{
+ const text=readCommittedSource('HEAD','supabase/functions/agent-gateway/skills/career-toolkit.json',process.cwd());
+ assert.ok(Buffer.byteLength(text)>1024*1024);
+ assert.doesNotThrow(()=>JSON.parse(text));
+ assert.throws(()=>readCommittedSource('HEAD','missing-source',process.cwd()),/Could not read committed deployment source: missing-source/);
 });
