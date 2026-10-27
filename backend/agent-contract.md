@@ -252,6 +252,12 @@ state after a stale-revision error. The backend supports:
   owned published batch item. Freshness is limited to 24 hours and the source must
   match the canonical employer URL. The agent must actually browse and verify;
   this endpoint validates the evidence contract, not arbitrary live websites.
+  `jobId` is the published job ID, not a search listing/screening ID. Put all six
+  fields directly in `data`; `available` must be boolean `true` (not
+  `availability`). `sourceUrl` must exactly equal the job's HTTPS `canonical_url`.
+  `checkedAt` may be at most one minute ahead of server time. Trimmed `evidence`
+  must be 10–2000 characters; trimmed `fit` must be 5–2000 characters. Publication,
+  archival and screening records alone do not substitute for fresh evidence.
   Fit stays preliminary without profile verification and a résumé record.
 - `no_match`: `{reason}` preserves first-match pending and records a concrete
   blocker. Refine `intent` after asking a focused question; never publish a demo
@@ -765,3 +771,40 @@ boundaries. No new scheduler, queue, message transport or broad database tool.
 The detached demo feed has fictional pointers and isolated resettable receipts.
 Hosted availability requires the migration and gateway/MCP release; local tests
 and tool documentation do not establish a production deployment.
+### Artifact validation diagnostics
+
+`artifacts.save` / MCP `save_artifact` use the same field validation as the
+browser adapter. Schema errors identify a field path (for example,
+`arguments.id` or `arguments.sources[0].observedAt`) without echoing supplied
+values or unknown field names. MCP checks the connection and required scope
+before returning these diagnostics; rejected input is not forwarded for saving.
+
+`preparedFor` must be a real `YYYY-MM-DD` calendar date and is supported only
+for `weekly_prep` and `interview_brief`. A `practice` artifact stays undated;
+omit `preparedFor` to save it. A dated preparation collection may reference a
+saved practice artifact through its existing `materials` field. Saving material
+does not schedule execution or record completed practice.
+
+### Backend repair runtime readiness
+
+Developer context64 removes separate deployment-evidence records. Deployments
+bundle their exact reviewed source commit in `runtime-version.json`; the tracked
+placeholder is null and therefore fails closed until stamped by the deployment
+helper. `scripts/runtime-version.mjs` checks every supplied source byte against
+the pinned commit before stamping. No credential or user data enters this file.
+
+`get_bug_status` keeps owner authorization. It reads its own running gateway
+version and uses the same credential for the existing authenticated MCP initialize
+call, which reports MCP's running source version in `serverInfo.version`. Both
+commits must contain the linked merged fix. Backend-only fixes need no frontend
+release or bot receipt. Mixed frontend changes still need their frontend release.
+Unknown/older versions and unsupported schema/service changes remain unready.
+Readiness proves deployed code, not a successful reproduction. Runtime source
+identities form a stable releaseId; never automatically retry the same identity
+or an uncertain write. Backend readiness leaves reports open for the retry outcome.
+
+Always use the stamping helper when packaging gateway/MCP deployment payloads and
+read back deployed files afterward. Preserve existing authentication and scopes.
+This reports loaded build identity; it does not independently inspect all source
+on every status call. GitHub access failure or MCP authentication failure cannot
+produce a ready result. No new public endpoint or access grant is introduced.

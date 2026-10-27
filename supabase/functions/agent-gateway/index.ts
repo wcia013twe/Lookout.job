@@ -2,6 +2,7 @@ import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs
 import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
 import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
 import { clientStorage } from './client-storage.mjs';
+import runtimeVersion from './runtime-version.json' with {type:'json'};
 import {resetHandoff} from './workspace-reset.mjs';
 import {readUserBrief} from './user-brief.mjs';
 import {withGatewayCors} from './cors.mjs';
@@ -63,6 +64,16 @@ Deno.serve(withGatewayCors(async request => {
       const credentialHash=await hashToken(bearer);
       const execute=operation==='bugs.report' ? reportBug : getBugStatus;
       const result=await execute({payload,
+        runtimeVersion,
+        readMcpVersion:async()=>{
+          const response=await fetch(Deno.env.get('SUPABASE_URL')+'/functions/v1/agent-mcp',{
+            method:'POST',redirect:'error',signal:AbortSignal.timeout(10000),
+            headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},
+            body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-03-26',capabilities:{},clientInfo:{name:'lookout-runtime-check',version:'1'}}}),
+          });
+          if(!response.ok)return null;
+          return (await response.json()).result?.serverInfo?.version;
+        },
         token:Deno.env.get('LOOKOUT_BUG_GITHUB_TOKEN'),
         connectionId:Deno.env.get('LOOKOUT_BUG_CONNECTION_ID'),
         authorize:async()=>{

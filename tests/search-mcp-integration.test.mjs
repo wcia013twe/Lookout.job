@@ -17,15 +17,23 @@ test('a hosted-MCP-only agent configures, checkpoints, reconnects, resumes, publ
   }catch(e){return {status:e.code==='40001'?409:400,error:e.message};}
  });
  let transport=handler();
- const call=async(name,args={})=>{
+ const call=async(name,args={},expectedError)=>{
   const res=await transport(new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})}));
-  const body=await res.json();assert(!body.error,JSON.stringify(body));assert(!body.result.isError,JSON.stringify(body.result));return body.result.structuredContent||JSON.parse(body.result.content[0].text);
+  const body=await res.json();assert(!body.error,JSON.stringify(body));if(expectedError){assert(body.result.isError);assert.match(body.result.content[0].text,expectedError);return;}assert(!body.result.isError,JSON.stringify(body.result));return body.result.structuredContent||JSON.parse(body.result.content[0].text);
  };
  const empty=await call('read_search_context');assert.equal(empty.configurationGaps.length,2);
  const guide=await call('read_guide',{id:'career-find-jobs'});assert(guide.dependencies.runtime.includes('agent browsing/search'));
  await call('save_search_document',{kind:'profile',id:'general',expectedVersion:0,eventKey:'profile',content:profileDocument({id:'general',name:'General',active:true,filters:{Employment:'Full-time'},priorities:{},instructions:'Prefer backend infrastructure; unknown leveling needs review.'})});
  await call('save_search_document',{kind:'portals',id:'shared',expectedVersion:0,eventKey:'portals',content:'tracked_companies:\n  - id: example\n    name: Example\n    kind: careers\n    careers_url: https://example.com/careers\n    enabled: true\nsearch_queries: []\n'});
  const run=await call('start_search_run',{profileId:'general',eventKey:'start'});assert.equal(run.days,3);
+ // These schema-permitted payloads previously reached SQL's generic errors.
+ const malformedProgress={runId:run.id,sourceId:'portal:example',expectedVersion:0,state:'active',checkpoint:{},counts:{found:'1'},coverage:'unknown',eventKey:'bad-progress'};
+ await assert.rejects(db.query('select public.agent_dispatch($1,$2,$3)',[hash,'search.progress',malformedProgress]),/Invalid source progress/);
+ await call('record_search_progress',malformedProgress,/counts values: expected integer/);
+ const malformedDiscovery={runId:run.id,eventKey:'bad-listing',listings:[{sourceId:'portal:example',url:'https://example.com/jobs/42',company:'Example',title:'Engineer',location:null,checkedAt:new Date().toISOString(),liveness:'uncertain',evidence:'Fictional fixture',employerPostedAt:null,sourceListAgeDays:null,description:'',postedDate:'2026-01-01'}]};
+ await assert.rejects(db.query('select public.agent_dispatch($1,$2,$3)',[hash,'search.discoveries.save',malformedDiscovery]),/Invalid observed listing/);
+ await call('save_search_discoveries',malformedDiscovery,/listings\[0\]: unsupported field/);
+ assert.equal((await db.query('select count(*)::int n from public.search_observations')).rows[0].n,0);
  await call('record_search_progress',{runId:run.id,sourceId:'portal:example',expectedVersion:0,state:'active',checkpoint:{page:1},counts:{found:0},coverage:'unknown',eventKey:'page1'});
  // A fresh MCP transport has no conversation memory, local files, scanner or runner.
  transport=handler();

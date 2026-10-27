@@ -645,3 +645,45 @@ prompt is required to discover the contract. First work after connect/reconnect
 refreshes developer/personal context; changed developer versions also refresh
 `tools/list`. Setup-only requests stop after setup. The labeled feed is consumed
 on authorized work runs, with read/ack visibility gated by their existing scopes.
+### Search observation and progress payloads
+
+`save_search_discoveries` uses its own observation vocabulary, separate from
+`publish_batch` employer fields. Its nested schema lists required fields and
+nullable unknowns: `location`, `employerPostedAt`, and `sourceListAgeDays` must
+be present, with `null` when unknown. Supply the actual `checkedAt`, evidence,
+liveness and archived `description`; do not send catalog `postedDate` or
+`discoveredDate` fields. Use the exact source ID returned by `read_search_run`.
+
+`record_search_progress` takes an object checkpoint and named integer counts,
+e.g. `{"found":1,"checked":2}` (each 0–999999999). Coverage is `unknown`,
+`exhaustive`, `truncated`, or `inaccessible`; source state `completed` does not
+itself mean exhaustive. Read the current source version before updating.
+Gateway errors identify listing index/field or progress field without echoing
+private values. Database ownership, source membership, version and replay checks
+remain authoritative. Changed retry payloads need a new event key.
+
+Developer version 62 refreshes these schemas through `tools/list`. They require
+separate reviewed release of both gateway and MCP functions; a frontend release
+alone does not publish the contract.
+
+## CSV import discovery
+
+`list_imported_jobs` requires `workspace:read`. Both `preview_simplify_import`
+and `import_simplify_jobs` require `tracking:write`, including the read-only
+preview. A connection can therefore read history without permission to import.
+Developer version 60 makes the import workflow conditional on current discovery.
+If either import tool is absent, refresh discovery once, report the unavailable
+capability and stop; do not grant scopes or substitute other write tools.
+Restricted scopes, stale runner code and backend release gaps are distinct
+possible causes and require evidence to distinguish. This contract update needs
+the existing backend release process; it does not change existing connections.
+
+### Backend repair status (developer version64)
+
+`get_bug_status` checks running gateway/MCP source versions for backend-only fixes,
+without a separate evidence record or frontend release gate. MCP initialize exposes
+its bundled source commit as `serverInfo.version`; authentication is unchanged.
+Refresh context and tools/list after version changes. Retry only with
+`readyToRetry:true` and a new `releaseId`; retain the full runtime identity.
+Missing/older versions, unsupported migrations and unverified mixed frontend
+releases stay unready. Deployed code does not itself prove the bug is fixed.
