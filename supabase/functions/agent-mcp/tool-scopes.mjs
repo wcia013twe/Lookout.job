@@ -3,7 +3,7 @@
 const workspaceWrites=[
   'artifacts.fields.update','artifacts.save','artifacts.archive','learning.save',
   'search.document.save','search.run.start','search.progress','search.discoveries.save','search.screening.save','search.run.finish','search.request',
-  'toolkit.record','toolkit.file.begin','toolkit.file.complete',
+  'drafts.prepare','toolkit.record','toolkit.file.begin','toolkit.file.complete',
   'onboarding.submit_step','tasks.create','tasks.claim','tasks.report_result',
   'preparation.update','preparation.complete','selection.record','outreach.prepare',
 ];

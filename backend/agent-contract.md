@@ -472,3 +472,32 @@ do not silently run a different implementation there. Web search itself and
 personal analysis remain the connected agent's work. See
 [the source-to-publication sequence](discovery-flow.md). Hosted availability has
 not been verified by the local proof.
+
+## Direct application draft fill
+
+`prepare_draft` now requires workspace:read as well as drafts:write. Before the
+existing SQL draft write, the gateway reads current owned context, maps exact
+contact labels to profile facts, selects the explicitly chosen/default résumé,
+and reuses unique exact verified auto-policy saved answers with matching company
+scope. The website draft editor uses the same pure resolver. Submission checks
+share its contact-label vocabulary (including GitHub).
+
+Supply inspected field IDs/types/options; nested public-form question groups are
+accepted and flattened. Nonempty supplied/existing answers are preserved, and
+owned existing draft metadata/blockers are retained. Selected resume upload skips
+its same-group paste alternative. No other file, consent, hidden or multiselect
+control is inferred. Exact choice values must match; no semantic yes/no mapping.
+
+The response adds `prefill: {counts, filled, preserved, escapes, skipped,
+personalVersion}` alongside the saved application. Escapes include public question
+text, field identity/type, required and a reason. The report is not stored as
+another trace/history table or inside the approved draft. It is a handoff for Muse
+to handle unresolved writing and missing facts. Draft/profile and submission
+approval remain separate; questionsReviewed stays false. Existing SQL owner and
+revision checks remain authoritative, with a current-personal-version check before
+saving. Files are proposed by ID, never uploaded to employers by this pass.
+
+Public API inspections are incomplete: conditional controls, hidden location
+widgets, exact browser limits and form fingerprint must be checked in the existing
+browser runner before actual submission. No real application submission is part
+of direct-fill validation.
