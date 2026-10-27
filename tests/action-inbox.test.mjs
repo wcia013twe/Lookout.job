@@ -1,4 +1,5 @@
 import test from 'node:test';
+import agentContract from '../supabase/functions/agent-gateway/instructions.json' with {type:'json'};
 import assert from 'node:assert/strict';
 import {pendingActions,nextActionTime} from '../lib/action-inbox.mjs';
 import {subscribeWorkspaceChanges} from '../lib/workspace-subscription.mjs';
@@ -39,7 +40,7 @@ test('Muse receives next-cycle pickup directions through initialize, developer c
  assert.match(init.instructions,/No inbox change wakes Muse/);
  const unpack=result=>result.structuredContent||JSON.parse(result.content[0].text);
  const developer=unpack(await request('tools/call',{name:'read_developer_context',arguments:{}}));
- assert.equal(developer.developerVersion,73);
+ assert.equal(developer.developerVersion,agentContract.developerVersion);
  const instruction=developer.instructions.find(text=>text.startsWith('During each already authorized application-work cycle'));
  for(const pattern of [/state all/,/pending-only reads miss approvals/,/read_approval/,/exact current revision/,/fresh server authorization/,/user_reported_submitted/,/Do not call prepare_draft/,/within that task.s scope/])assert.match(instruction,pattern);
  const guide=unpack(await request('tools/call',{name:'read_guide',arguments:{id:'application-workspace'}}));

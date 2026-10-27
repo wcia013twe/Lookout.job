@@ -158,12 +158,12 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
   }
 
   const conflict=w.state.ui?.profileConflict;
-  const [resolving,setResolving]=useState(false);
+  const [resolving,setResolving]=useState(false),[recoveryError,setRecoveryError]=useState("");
   useEffect(()=>()=>{w.store.set('ui.profileEditing',false);},[w.store]);
   async function resolveConflict(choice='review') {
-    setResolving(true);
+    setResolving(true);setRecoveryError("");
     try{await (w.demo?w.services.resolveProfileConflict(choice):window.JB.cloud.resolveProfileConflict(choice));}
-    catch(error){setFeedback(error instanceof Error?error.message:'Could not reload your profile. Your edits are kept.');}
+    catch(error){setRecoveryError(error instanceof Error?error.message:'Could not reload your profile. Your edits are kept.');}
     finally{setResolving(false);}
   }
   const groups = [
@@ -193,7 +193,7 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
         {!facts[kind]?.length&&<p className="text-sm text-board-muted">No entries added yet.</p>}
         {editing&&<button type="button" className={`${secondary} mt-5`} onClick={()=>update(kind,[...(facts[kind]||[]),{}])}>Add {sections[kind].toLowerCase()}</button>}
       </>}</ProfileSection>)}
-      <ProfileSection title="Skills & languages" resetKey={profile} onFinish={save}>{editing=>editing?<div className="grid gap-5 sm:grid-cols-2">{pillFields.map(key=><ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key]||""} onDraft={value=>setPillDrafts(current=>({...current,[key]:value}))} onChange={value=>update(key,value)}/>)}</div>:<>{pillFields.map(key=><div key={key} className={styles.skillGroup}><h4>{labels[key]}</h4>{pills([...(pills(facts[key])),pillDrafts[key]||""]).length?<ul className={styles.tags} aria-label={labels[key]}>{pills([...(pills(facts[key])),pillDrafts[key]||""]).map(item=><li key={item}>{item}</li>)}</ul>:<p className="text-sm text-board-muted">Not provided</p>}</div>)}</>}</ProfileSection>
+      <ProfileSection title="Skills & languages" resetKey={profile} onFinish={save}>{editing=>editing?<div className="grid gap-5 sm:grid-cols-2">{pillFields.map(key=><ProfilePills key={key} name={key} value={facts[key]} draft={pillDrafts[key]||""} onDraft={value=>{w.store.set('ui.profileEditing',true);setPillDrafts(current=>({...current,[key]:value}));}} onChange={value=>update(key,value)}/>)}</div>:<>{pillFields.map(key=><div key={key} className={styles.skillGroup}><h4>{labels[key]}</h4>{pills([...(pills(facts[key])),pillDrafts[key]||""]).length?<ul className={styles.tags} aria-label={labels[key]}>{pills([...(pills(facts[key])),pillDrafts[key]||""]).map(item=><li key={item}>{item}</li>)}</ul>:<p className="text-sm text-board-muted">Not provided</p>}</div>)}</>}</ProfileSection>
       <div className="mt-6 border-t border-board-line pt-5">
         <label className="flex min-h-11 items-start gap-3 text-sm leading-relaxed">
           <input type="checkbox" className="mt-1 h-5 w-5 shrink-0 accent-board-accent" checked={profile.verified === true && !hasUnsavedFacts} disabled={w.locked || hasUnsavedFacts} onChange={confirmReview} />
@@ -201,7 +201,7 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
         </label>
         <p className="mt-2 text-xs text-board-muted">{hasUnsavedFacts ? "Save your edits before confirming the updated details." : "This confirms your profile details only. It does not approve or submit an application."}</p>
       </div>
-      <Notice>{conflict?"Review the profile conflict above before syncing.":feedback}</Notice>
+      <Notice>{recoveryError||(conflict?"Review the profile conflict above before syncing.":feedback)}</Notice>
     </form>
   </ProfileDraftContext.Provider>;
 }
