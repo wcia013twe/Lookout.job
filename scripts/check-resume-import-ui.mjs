@@ -15,7 +15,7 @@ try{
  await importer.getByRole('heading',{name:'Review extracted details',exact:true}).waitFor();
  const history=importer.getByRole('checkbox',{name:'Work experience',exact:true});assert.equal(await history.isChecked(),false,'Existing history must default unchecked');
  await importer.screenshot({path:dir+'/review-desktop.png'});await page.setViewportSize({width:390,height:844});await importer.screenshot({path:dir+'/review-mobile.png'});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile review overflows');
- await history.check();await importer.getByRole('button',{name:'Save selected details',exact:true}).click();await importer.getByText('Demo profile updated in memory. Reset the demo to restore it.',{exact:true}).waitFor();
+ await history.check();await importer.getByRole('button',{name:'Save selected details',exact:true}).click();await importer.getByRole('heading',{name:'Your profile is saved',exact:true}).waitFor();assert.equal(await importer.getByRole('list',{name:'Profile processing'}).getByText('Completed',{exact:true}).count(),3);await importer.getByText('Demo profile updated in memory. Reset the demo to restore it.',{exact:true}).waitFor();
  await page.getByRole('region',{name:'Work experience',exact:true}).getByText('Dates returned by parser: June–August 2026',{exact:true}).waitFor();
  await importer.getByRole('button',{name:'Close',exact:true}).click();
  await page.getByRole('button',{name:'Edit Personal Info',exact:true}).click();await page.getByRole('textbox',{name:'First name',exact:true}).fill('Unsaved');
