@@ -10,20 +10,19 @@ import {createMemoryStore} from '../next-app/lib/demo.mjs';
 import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
 import instructions from '../supabase/functions/agent-gateway/instructions.json' with {type:'json'};
 const submit={kind:'search_ats',input:{profileId:'general'},eventKey:'authorized-search-1'};
-const schedule={...submit,intervalMinutes:1440,enabled:true,expectedVersion:0};
 const uuid='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const token='jb_agent_'+'f'.repeat(64);
 const request=(method,params)=>new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
 
 test('backend job tools share a closed gateway contract and expose no worker controls',()=>{
-  assert.equal(new Set(BACKEND_OPERATIONS).size,5);
+  assert.equal(new Set(BACKEND_OPERATIONS).size,3);
   for(const tool of BACKEND_TOOLS) {
     assert.equal(TOOLS.filter(t=>t.name===tool.name&&t.operation===tool.operation).length,1);
     assert.equal(tool.inputSchema.additionalProperties,false);
     assert.ok(!/worker|lease|credential|sql|shell/.test(tool.name));
   }
   assert.deepEqual(validateRequest({operation:'backend.jobs.submit',payload:submit}).payload,submit);
-  assert.doesNotThrow(()=>validateRequest({operation:'backend.schedules.save',payload:schedule}));
+
   for(const payload of [{...submit,connectionId:uuid},{...submit,ownerId:uuid},{...submit,kind:'script'},{...submit,input:{profileId:'general',url:'https://arbitrary.example'}},{...submit,input:{profileId:'../secret'}},{...submit,eventKey:' '},{...submit,eventKey:'x'.repeat(161)},{...submit,eventKey:'key\n'}]) {
     assert.throws(()=>validateRequest({operation:'backend.jobs.submit',payload}));
   }
@@ -32,11 +31,17 @@ test('backend job tools share a closed gateway contract and expose no worker con
   assert.throws(()=>validateBackendJob('backend.jobs.read',{jobId:''}));
 });
 
-test('backend schedules use strict bounds, explicit enablement and exact create/update versions',()=>{
-  for(const intervalMinutes of [15,10080])assert.doesNotThrow(()=>validateBackendJob('backend.schedules.save',{...schedule,intervalMinutes}));
-  for(const payload of [{...schedule,intervalMinutes:14},{...schedule,intervalMinutes:10081},{...schedule,enabled:'true'},{...schedule,expectedVersion:1},{...schedule,id:uuid},{...schedule,id:uuid,expectedVersion:-1},{...schedule,expectedVersion:0.5}])assert.throws(()=>validateBackendJob('backend.schedules.save',payload));
-  assert.doesNotThrow(()=>validateBackendJob('backend.schedules.save',{...schedule,id:uuid,expectedVersion:2}));
-  assert.throws(()=>validateBackendJob('backend.schedules.read',{enabled:true}));
+test('retired recurring scheduler tools and operations are unavailable, including stale MCP calls',async()=>{
+ const handle=createHandler(async()=>({status:200,data:{scopes:['workspace:read','preferences:write','drafts:write']}}));
+ const list=await (await handle(request('tools/list',{}))).json();
+ for(const [name,operation] of [['save_backend_schedule','backend.schedules.save'],['read_backend_schedules','backend.schedules.read']]) {
+  assert.ok(!list.result.tools.some(tool=>tool.name===name));
+  assert.throws(()=>validateRequest({operation,payload:{}}));
+  const response=await (await handle(request('tools/call',{name,arguments:{}}))).json();
+  assert.ok(response.error||response.result?.isError);
+ }
+ assert.equal(createBackendJobsDemo().saveSchedule,undefined);
+ assert.equal(createBackendJobsDemo().readSchedules,undefined);
 });
 
 test('MCP filters writes by all required scopes and rejects nested/connection injection before forwarding',async()=>{
@@ -73,7 +78,7 @@ test('browser adapter uses the same bounded RPC with explicit owned connection a
   await assert.rejects(switched.submit(payload),/Account changed/);
 });
 
-test('fictional backend job states, cancellation, retry receipts and schedule versions reset without execution',async()=>{
+test('fictional backend job states, cancellation, retry receipts reset without execution',async()=>{
   const a=createBackendJobsDemo(),b=createBackendJobsDemo();
   const rows=(await a.read()).jobs;
   assert.deepEqual(rows.map(row=>row.status),['queued','running','completed','partial','failed','cancelled']);
@@ -87,12 +92,8 @@ test('fictional backend job states, cancellation, retry receipts and schedule ve
   assert.equal(cancelled.status,'cancelled');
   await assert.rejects(a.cancel({jobId:queued.id,expectedVersion:queued.version}),/changed/);
   assert.equal((await b.read()).jobs.length,6);
-  const saved=await a.saveSchedule({...schedule,connectionId:DEMO_BACKEND_CONNECTION_ID});
-  assert.equal(saved.version,1);
-  await assert.rejects(a.saveSchedule({...schedule,id:saved.id,connectionId:DEMO_BACKEND_CONNECTION_ID,eventKey:'schedule-update',expectedVersion:2}),/changed/);
-  const updated=await a.saveSchedule({...schedule,id:saved.id,connectionId:DEMO_BACKEND_CONNECTION_ID,eventKey:'schedule-update',expectedVersion:1,enabled:false});
-  assert.equal(updated.version,2);assert.equal(updated.enabled,false);
-  a.reset();assert.deepEqual(await a.read(),await b.read());assert.deepEqual(await a.readSchedules(),await b.readSchedules());
+  a.reset();assert.deepEqual(await a.read(),await b.read());
+
 });
 
 test('detached demo service includes isolated backend fixtures and versioned guides describe conditional execution',async()=>{

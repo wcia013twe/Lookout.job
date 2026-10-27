@@ -18,30 +18,38 @@ a queued/running row is not a completed search or a verified fit assessment.
 | `submit_backend_job` | `backend.jobs.submit` | `backendJobs.submit(payload)` |
 | `read_backend_jobs` | `backend.jobs.read` | `backendJobs.read({jobId?})` |
 | `cancel_backend_job` | `backend.jobs.cancel` | `backendJobs.cancel({jobId,expectedVersion})` |
-| `save_backend_schedule` | `backend.schedules.save` | `backendJobs.saveSchedule(payload)` |
-| `read_backend_schedules` | `backend.schedules.read` | `backendJobs.readSchedules()` |
 
-MCP reads require `workspace:read`. All three write tools require
+MCP reads require `workspace:read`. Both write tools require
 `workspace:read`, `preferences:write` and `drafts:write`; discovery hides them when
 any required scope is missing. `backend_job_dispatch` derives the connection and
 owner from a valid scoped credential and rejects caller-supplied `connectionId`.
 The authenticated website adapter calls `backend_job_action`, deriving owner
-from the Auth session. Browser submits and schedule saves explicitly select an
+from the Auth session. Browser submits explicitly select an
 owned scoped `connectionId`; browser cancellation remains a human-owned action.
 Both routes use the same database ownership, current-version and validation path.
 The website adapter checks account identity before and after each request.
 
-Schedules take `kind`, `input`, `intervalMinutes` (15–10080), explicit `enabled`,
-`expectedVersion` and `eventKey`, plus `id` when updating. New schedules require
-version 0; edits require the current positive version. Jobs and schedules return
-sanitized current rows; worker lease secrets are not exposed. Reuse an event key
-for an exact retry; changed requests need a new key. Read/reconcile conflicts.
-Cancellation uses the current job version and cannot rewrite completed work.
+Jobs return sanitized current rows; worker lease secrets are not exposed. Reuse
+an event key for an exact retry; changed requests need a new key. Cancellation
+uses the current job version and cannot rewrite completed work.
 
-Saving an enabled interval is a request for future execution while the worker
-runs and the scoped connection remains valid. Only create or enable schedules on
-explicit user authorization. These schedules are separate from My Agent's saved
-personal-runtime routines and do not activate them during connection onboarding.
+My Agent routines in `preferences.search.schedule` are the single schedule
+configuration. Muse's actual authorized runtime owns recurrence; on each real
+scheduled invocation it submits one bounded Node job and reads the outcome.
+Saving a routine does not configure a runtime scheduler by itself. Connection
+setup still registers only explicitly enabled/assigned routines and does not run
+their work. Node polls the job queue; it has no recurring search scheduler.
+
+The retirement migration archives existing backend schedules in the owned private
+request ledger, then removes the schedule table and timer execution path. It does
+not create Muse runtime automations or duplicate those old schedules into My
+Agent. Old jobs keep their historical `schedule_id` as provenance without a
+foreign key or executable schedule. Existing jobs, results and My Agent routines
+remain intact. Archived configuration is removed by the existing workspace reset.
+Old scheduler tools and direct API/SQL operations are rejected after release.
+Deploy the database migration, gateway/MCP contract and Node worker together;
+older workers that still call the removed timer need restarting on this release.
+
 No tool grants LLM reasoning, arbitrary guide execution, browser control,
 resume generation, messaging, approval, application submission or Circle sharing.
 Guide text stays instructions unless an actual bounded executor is configured.
@@ -49,11 +57,14 @@ Guide text stays instructions unless an actual bounded executor is configured.
 `createBackend(client).backendJobs` is the browser service boundary; this pass
 adds no new page. The detached demo provides a memory-only `backendJobs` service
 with fictional queued, running, completed, partial, failed and cancelled states.
-Submitting demo work only adds a queued fixture. Demo schedule saves start no
-timers, network calls or worker; reset/rebuilding the demo restores its fixtures.
+Submitting demo work only adds a queued fixture; there are no schedule methods
+or timer fixtures. Reset/rebuilding the demo restores its job fixtures.
 
 Verification covers strict nested payloads, injected identities, schema bounds,
 MCP scope filtering/forwarding, browser RPC parity/account changes, idempotent
 fictional retries, cancellation/version conflicts, demo isolation/reset, and
-conditional versioned guide descriptions. Database checks and actual Node
-API/worker round trips must be run separately before reporting live execution.
+conditional versioned guide descriptions. `tests/backend-scheduler-removal.test.mjs` verifies a seeded upgrade through an
+actual Node HTTP/MCP server and disposable SQL database.
+`node scripts/check-local-scheduler-removal.mjs` checks archival, timer rejection
+and queue/website/reset safeguards on real local Docker PostgreSQL, rolling back
+all schema and fixture changes. Neither proves a hosted release.

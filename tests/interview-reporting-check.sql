@@ -1,0 +1,58 @@
+begin;
+do $$
+declare u uuid:=gen_random_uuid(); v uuid:=gen_random_uuid(); app uuid; other_app uuid; foreign_app uuid; first_id uuid; replacement uuid; artifact_id uuid:=gen_random_uuid();
+ h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); p jsonb; r jsonb; original jsonb;
+begin
+ insert into auth.users(id) values(u),(v);
+ insert into public.jobs(id,canonical_url,employer) values('interview-reporting-a','https://example.com/reporting-a','{}'),('interview-reporting-b','https://example.com/reporting-b','{}');
+ insert into public.applications(user_id,job_id) values(u,'interview-reporting-a') returning id into app;
+ insert into public.applications(user_id,job_id) values(u,'interview-reporting-b') returning id into other_app;
+ insert into public.applications(user_id,job_id) values(v,'interview-reporting-a') returning id into foreign_app;
+ insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Reporting',h,array['workspace:read','activity:write','drafts:write'],now()+interval '1 hour');
+ original:=jsonb_build_object('applicationId',app,'eventKey','conversation:round-original','kind','technical_round','label','Technical round','phase','scheduled','occurredAt','2026-11-06T14:00:00Z','source',jsonb_build_object('kind','user_reported','note','The candidate said: technical interview November 6 at 14:00 UTC.','timestampConfirmed',true));
+ r:=public.agent_dispatch(h,'applications.milestone',original);first_id:=(r->>'id')::uuid;
+ if r->'source'->>'kind'<>'user_reported' then raise exception 'Candidate provenance lost';end if;
+ if public.agent_dispatch(h,'applications.milestone',original)<>r then raise exception 'Conversation replay changed';end if;
+ p:=original||jsonb_build_object('eventKey','conversation:reschedule','label','Technical round — rescheduled','occurredAt','2026-11-09T14:00:00Z','supersedesId',first_id,'source',jsonb_build_object('kind','user_reported','note','Candidate said it moved to Monday November 9 at 14:00 UTC.','timestampConfirmed',true));
+ r:=public.agent_dispatch(h,'applications.milestone',p);replacement:=(r->>'id')::uuid;
+ if (r->>'supersedes_id')::uuid<>first_id then raise exception 'Replacement missing';end if;
+ if public.agent_dispatch(h,'applications.milestone',p)<>r then raise exception 'Replacement retry changed';end if;
+ if public.agent_dispatch(h,'applications.milestone',original)->>'id'<>first_id::text then raise exception 'Historical retry lost';end if;
+ begin perform public.agent_dispatch(h,'applications.milestone',p||'{"eventKey":"fork"}');raise exception 'Second replacement allowed';exception when serialization_failure then null;end;
+ begin perform public.agent_dispatch(h,'applications.milestone',p||'{"label":"Changed retry"}');raise exception 'Changed replacement replay';exception when serialization_failure then null;end;
+ begin perform public.agent_dispatch(h,'applications.milestone',p||jsonb_build_object('applicationId',other_app,'eventKey','wrong-app'));raise exception 'Cross-application replacement';exception when no_data_found then null;end;
+ begin perform public.agent_dispatch(h,'applications.milestone',p||jsonb_build_object('applicationId',foreign_app,'eventKey','foreign'));raise exception 'Foreign replacement';exception when no_data_found then null;end;
+ begin perform public.agent_dispatch(h,'applications.milestone',original||'{"eventKey":"forged-human","source":{"kind":"user","note":"approved"}}');raise exception 'Forged authenticated human';exception when invalid_parameter_value then null;end;
+ begin perform public.agent_dispatch(h,'applications.milestone',original||'{"eventKey":"missing-report","source":{"kind":"user_reported"}}');raise exception 'Missing candidate report';exception when invalid_parameter_value then null;end;
+ begin perform public.agent_dispatch(h,'applications.milestone',original||'{"eventKey":"fake-email","source":{"kind":"user_reported","note":"Something happened","messageId":"fake"}}');raise exception 'Spoofed report email';exception when invalid_parameter_value then null;end;
+ begin perform public.agent_dispatch(h,'applications.milestone',original||'{"eventKey":"unconfirmed","source":{"kind":"user_reported","note":"Maybe next week"}}');raise exception 'Unconfirmed time';exception when invalid_parameter_value then null;end;
+ r:=public.agent_dispatch(h,'applications.milestone',original||'{"eventKey":"unknown-time","occurredAt":null,"source":{"kind":"user_reported","note":"Candidate says there is another round; time not known."}}');
+ if r->'occurred_at'<>'null' then raise exception 'Invented date';end if;
+ -- Browser correction uses the identical owned helper, but cannot forge agent/email provenance.
+ perform set_config('test.uid',u::text,true);execute 'set local role authenticated';
+ r:=to_jsonb(public.record_application_milestone(app,jsonb_build_object('eventKey','human-completed','kind','technical_round','label','Technical round completed','phase','completed','occurredAt',null,'supersedesId',replacement,'source',jsonb_build_object('kind','user','note','I finished this round.'))));
+ if (r->>'supersedes_id')::uuid<>replacement then raise exception 'Browser replacement lost';end if;
+ begin perform public.record_application_milestone(app,(original-'applicationId')||'{"eventKey":"human-spoof"}');raise exception 'Browser forged agent provenance';exception when invalid_parameter_value then null;end;
+ execute 'reset role';
+ if (select count(*) from public.application_milestones where application_id=app)<>4 then raise exception 'History lost or duplicated';end if;
+ if exists(select 1 from public.approvals where application_id=app) or (select receipt from public.applications where id=app) is not null or (select status from public.applications where id=app)<>'Queued' then raise exception 'Report forged status/consent/receipt';end if;
+ -- Muse notes use the same versioned private artifact action as the website.
+ p:=jsonb_build_object('id',artifact_id,'expectedVersion',0,'title','Interview note','purpose','Interview debrief ['||app||'] Interview note','kind','notes','format','markdown','body','Candidate report: discussed indexes. Agent suggestion: practice query plans.','company','Example','sources','[]'::jsonb,'links',jsonb_build_array(jsonb_build_object('applicationId',app)));
+ r:=public.agent_dispatch(h,'artifacts.save',p);
+ perform set_config('test.uid',u::text,true);execute 'set local role authenticated';
+ if public.artifact_action('artifacts.save',p)<>r then raise exception 'Note cross-transport retry';end if;
+ if public.artifact_action('artifacts.read',jsonb_build_object('id',artifact_id))->'content'->>'body'<>p->>'body' then raise exception 'Website cannot read Muse note';end if;
+ if jsonb_array_length(public.artifact_action('artifacts.list',jsonb_build_object('kind','notes','query','Interview debrief ['||app||']'))->'items')<>1 then raise exception 'Note missing from interview panel query';end if;
+ r:=public.artifact_action('artifacts.save',p||'{"expectedVersion":1,"body":"Candidate corrected the details."}');
+ if r->>'version'<>'2' then raise exception 'Note revision lost';end if;
+ execute 'reset role';
+ begin perform public.agent_dispatch(h,'artifacts.save',p);raise exception 'Agent overwrote human note';exception when serialization_failure then null;end;
+ perform set_config('test.uid',v::text,true);execute 'set local role authenticated';
+ begin perform public.artifact_action('artifacts.read',jsonb_build_object('id',artifact_id));raise exception 'Foreign notes readable';exception when no_data_found then null;end;
+ execute 'reset role';
+ update private.agent_connections set scopes=array['workspace:read'] where token_hash=h;
+ begin perform public.agent_dispatch(h,'applications.milestone',original);raise exception 'Read-only report allowed';exception when insufficient_privilege then null;end;
+ update private.agent_connections set scopes=array['workspace:read','activity:write'],revoked_at=now() where token_hash=h;
+ begin perform public.agent_dispatch(h,'applications.milestone',original);raise exception 'Revoked report allowed';exception when invalid_authorization_specification then null;end;
+end $$;
+rollback;

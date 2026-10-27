@@ -72,29 +72,22 @@ begin
  if (select state from public.search_runs where search_runs.id=(run->>'id')::uuid)<>'partial' then raise exception 'Retry exhaustion retained active run';end if;
  if (select status from private.backend_jobs where backend_jobs.id=id)<>'failed' then raise exception 'Exhausted job unresolved';end if;
  -- Schedule tick is atomic, replay-safe, bounded, and disables revoked executors.
- payload:='{"kind":"search_ats","input":{"profileId":"test-profile"},"intervalMinutes":15,"enabled":true,"expectedVersion":0,"eventKey":"schedule-one"}';
- s:=public.backend_job_dispatch(h,'backend.schedules.save',payload);
- if public.backend_job_dispatch(h,'backend.schedules.save',payload)<>s then raise exception 'Schedule replay changed';end if;
- begin perform public.backend_job_dispatch(h,'backend.schedules.save',payload||jsonb_build_object('id',s->>'id','eventKey','schedule-stale'));raise exception 'Stale schedule accepted';exception when serialization_failure then null;end;
- begin perform public.backend_job_dispatch(h,'backend.schedules.save',payload||'{"eventKey":"string-interval","intervalMinutes":"15"}');raise exception 'String interval accepted';exception when invalid_parameter_value then null;end;
- begin perform public.backend_job_dispatch(h,'backend.schedules.save',payload||'{"eventKey":"bad-interval","intervalMinutes":1}');raise exception 'Bad interval accepted';exception when invalid_parameter_value then null;end;
- if public.backend_job_dispatch(h2,'backend.schedules.read','{}')->'schedules'<>'[]' then raise exception 'Schedule owner leak';end if;
- update private.backend_schedules set next_run_at=now()-interval '1 second' where backend_schedules.id=(s->>'id')::uuid;
- if public.backend_worker('enqueue_due','{}')->>'enqueued'<>'1' then raise exception 'Schedule did not enqueue';end if;
- if public.backend_worker('enqueue_due','{}')->>'enqueued'<>'0' then raise exception 'Schedule tick duplicated';end if;
+ -- Removed scheduler operations reject even through direct SQL, without affecting jobs.
+ begin perform public.backend_job_dispatch(h,'backend.schedules.save','{}');raise exception 'Retired scheduler write accepted';exception when invalid_parameter_value then null;end;
+ begin perform public.backend_job_dispatch(h,'backend.schedules.read','{}');raise exception 'Retired scheduler read accepted';exception when invalid_parameter_value then null;end;
+ begin perform public.backend_worker('enqueue_due','{}');raise exception 'Retired timer accepted';exception when invalid_parameter_value then null;end;
+ if to_regclass('private.backend_schedules') is not null then raise exception 'Scheduler table remains';end if;
+ perform public.backend_job_dispatch(h,'backend.jobs.submit','{"kind":"search_ats","input":{"profileId":"test-profile"},"eventKey":"revoked-job"}');
  update private.agent_connections set revoked_at=now() where agent_connections.id=c;
  if public.backend_worker('claim','{}') is not null then raise exception 'Revoked queued job claimed';end if;
- update private.backend_schedules set next_run_at=now()-interval '1 second' where backend_schedules.id=(s->>'id')::uuid;
- perform public.backend_worker('enqueue_due','{}');
- if (select enabled from private.backend_schedules where backend_schedules.id=(s->>'id')::uuid) then raise exception 'Revoked schedule stayed active';end if;
  if has_function_privilege('authenticated','public.backend_worker(text,jsonb)','execute') or has_function_privilege('anon','public.backend_job_dispatch(text,text,jsonb)','execute') or has_function_privilege('authenticated','private.backend_action(uuid,uuid,text,jsonb)','execute') then raise exception 'Private execution boundary exposed';end if;
- -- Existing workspace reset must remove queued work and schedules while keeping Auth.
+ -- Existing workspace reset must remove queued work and history while keeping Auth.
  preview:=public.workspace_reset_service(u,'preview');reset_id:=gen_random_uuid();
- if not (preview->'counts' ?& array['private.backend_jobs','private.backend_schedules','private.backend_requests']) then raise exception 'Reset omits execution records';end if;
+ if not (preview->'counts' ?& array['private.backend_jobs','private.backend_requests']) then raise exception 'Reset omits execution records';end if;
  perform public.workspace_reset_service(u,'begin',jsonb_build_object('resetId',reset_id,'confirmation','RESET MY WORKSPACE','expectedPersonalVersion',preview->'personalVersion'));
  begin update private.backend_jobs set result='{}' where user_id=u;raise exception 'Reset allowed queue write';exception when object_not_in_prerequisite_state then null;end;
  perform public.workspace_reset_service(u,'finish',jsonb_build_object('resetId',reset_id));
- if exists(select 1 from private.backend_jobs where user_id=u) or exists(select 1 from private.backend_schedules where user_id=u) or exists(select 1 from private.backend_requests where user_id=u) or not exists(select 1 from auth.users where auth.users.id=u) then raise exception 'Reset retained execution state or removed Auth';end if;
+ if exists(select 1 from private.backend_jobs where user_id=u) or exists(select 1 from private.backend_requests where user_id=u) or not exists(select 1 from auth.users where auth.users.id=u) then raise exception 'Reset retained execution state or removed Auth';end if;
  if exists(select 1 from private.agent_tasks where user_id=u) then raise exception 'Backend queue rewrote agent tasks';end if;
 end $$;
 rollback;

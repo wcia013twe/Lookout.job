@@ -15,9 +15,10 @@ export default function ApplicationTimeline({ application, milestones, compact =
       {index < items.length - 1 && <span aria-hidden="true" className="absolute bottom-0 left-[6px] top-3 w-px bg-board-line" />}
       <span aria-hidden="true" className={`absolute left-0 top-1 size-[13px] rounded-full border ${item.phase === 'completed' ? 'border-board-accent bg-board-accent' : 'border-board-accent bg-board-bg'}`} />
       <p className="break-words text-sm font-semibold">{item.label}</p>
-      <p className="mt-1 text-xs tabular-nums text-board-muted">{phaseLabel[item.phase]} · {dateLabel(item.occurred_at)}</p>
+      <p className="mt-1 text-xs tabular-nums text-board-muted">{item.supersededBy ? "Replaced by a later update" : phaseLabel[item.phase]} · {dateLabel(item.occurred_at)}</p>
       {item.source.note && <p className="mt-2 whitespace-pre-wrap break-words text-sm text-board-muted">{item.source.note}</p>}
-      {item.kind === 'application_submitted' && <p className="mt-1 text-xs text-board-muted">{item.observedConfirmation ? 'Employer confirmation observed' : item.source.kind === 'user' ? 'Reported by you' : 'Recorded submission update'}</p>}
+      {item.kind === 'application_submitted' && <p className="mt-1 text-xs text-board-muted">{item.observedConfirmation ? 'Employer confirmation observed' : ['user','user_reported'].includes(item.source.kind) ? 'Reported by you' : 'Recorded submission update'}</p>}
+      {item.source.kind === 'user_reported' && <p className="mt-1 text-xs text-board-muted">Candidate report saved by Muse</p>}
       {item.source.kind === 'email' && <details className="mt-1 text-sm">
         <summary className="min-h-11 cursor-pointer py-3 text-board-accent">Source email{item.source.subject ? `: ${item.source.subject}` : ''}</summary>
         <div className="max-w-prose space-y-2 text-sm leading-relaxed text-board-muted">

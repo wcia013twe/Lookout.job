@@ -60,6 +60,12 @@ developer instructions and message defaults live in
 last-seen versions. See [context refresh setup](mcp/README.md#two-version-context-refresh).
 This avoids repeated full prompt reads; permanent agent memory depends on its runtime.
 
+On actual work runs, Muse can read a compact per-connection change feed for
+confirmed answers, job preferences/search profiles and finished backend jobs. It
+fetches only affected records and explicitly acknowledges handled events; unfinished
+changes remain pending. Events contain IDs and versions, not answer/document bodies.
+The feed does not wake Muse, create a schedule or authorize submissions.
+
 ## Desired daily interaction
 
 1. **Set up once.** Optionally sign in with Google; save verified profile facts, resume variants, search preferences, and separate Full-time / Internship company rankings. Choose which saved answers may autofill and which must always ask.

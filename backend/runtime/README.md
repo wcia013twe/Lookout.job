@@ -5,6 +5,10 @@ operations at `/v1/operations`. Docker Compose separates the stateless API from
 the durable discovery worker. `/healthz` reports process health; it does not prove
 that Supabase or the worker is available.
 
+My Agent is the single schedule configuration; the personal agent runtime owns
+recurrence and submits one bounded job per authorized run. The Node worker only
+claims already queued jobs. There is no Node recurring-search scheduler.
+
 The approved executor is `search_ats`: one leased job collects up to 25 leads per
 source, verifies supported employer postings, saves observations, persists current
 versioned screening checks, applies copied Career Ops deduplication and stores

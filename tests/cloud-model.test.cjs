@@ -59,3 +59,8 @@ test('browser save round trip retains the inspected form timestamp and incomplet
  const saved=draftPayload(fromCloud(rows).applications.role);
  assert.equal(saved.inspectedAt,draft.inspectedAt);assert.equal(saved.inspectionComplete,false);assert.equal(saved.formFingerprint,'known-form');
 });
+
+
+test('confirmed answer intent survives browser hydration and autosave',async()=>{
+ const {fromCloud,draftPayload}=await import('../lib/cloud-model.mjs');const marker={id:'00000000-0000-4000-8000-000000000001',fieldId:'location'};const rows={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[{id:'app',job_id:'job',draft:{questions:[],lastAnswerConfirmation:marker}}]};assert.deepEqual(draftPayload(fromCloud(rows).applications.job).lastAnswerConfirmation,marker);
+});

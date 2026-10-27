@@ -705,3 +705,38 @@ It clears prior application approval and retains questionsReviewed=false. This
 confirmation is not reusable-answer verification or application approval. The
 MCP equivalent remains prepare_draft with draft.answerUpdates at the current
 revision; no new tool or permission is introduced.
+
+## Muse change feed
+
+`read_muse_changes` (`changes.read`, workspace:read) returns the oldest 20 pending
+system change pointers by default (limit 1–50), with `hasMore`. Each item has an
+ID, kind, time, affected entity/record ID and version; application events include
+the job ID/field IDs, and backend results include status/run ID. Answers, resumes,
+profiles and job results stay in their existing records.
+
+`acknowledge_muse_changes` (`changes.ack`, workspace:read + activity:write) accepts
+only 1–50 unique owned change event IDs. Acknowledgements are idempotent and
+connection-specific. Reads don't mark anything seen; an older acknowledgement
+cannot hide a newer event, and one connection cannot clear another's pending
+work. Fetch current affected records, continue previously authorized work, then
+acknowledge handled events or durable blockers. This is distinct from message
+delivery acknowledgement and never wakes a runtime or grants submission consent.
+
+Confirm answer saves `draft.lastAnswerConfirmation {id,fieldId}` with its answer.
+The SQL trigger emits `answer_confirmed` in the SAME transaction, including for a
+new confirmation of unchanged text. Only an authenticated owner save can emit
+that event; agent draft proposals cannot forge it. Other emitted kinds are
+`preferences_changed`, `profile_changed` (search profiles), and
+`backend_job_finished` (completed/partial/failed/cancelled). Theme-only and ordinary
+agent draft saves don't create changes. Reserved system activity cannot be
+inserted through client/agent activity APIs.
+
+Existing activity rows store the events. `private.muse_change_receipts` stores
+only connection/event IDs and acknowledgement time. Acknowledgement performs
+bounded cleanup of these system pointer events older than 30 days ONLY when all
+active full-workspace consumers handled them; pending changes are retained.
+Workspace reset and account/application deletion retain their existing cascade
+boundaries. No new scheduler, queue, message transport or broad database tool.
+The detached demo feed has fictional pointers and isolated resettable receipts.
+Hosted availability requires the migration and gateway/MCP release; local tests
+and tool documentation do not establish a production deployment.

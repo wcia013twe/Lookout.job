@@ -118,8 +118,7 @@ async function main(){
   assert.equal(persisted.sources.filter(source=>source.coverage==='inaccessible').length,1);
   assert.equal(persisted.sources.filter(source=>source.coverage==='exhaustive').length,2);
   assert.deepEqual((await mcp(limited.token,'read_backend_jobs')).data,{jobs:[]},'Other owner must not see job');
-  const schedule=(await mcp(connection.token,'save_backend_schedule',{kind:'search_ats',input:{profileId:'discovery-proof'},intervalMinutes:15,enabled:false,expectedVersion:0,eventKey:'proof:disabled-schedule'})).data;
-  assert.equal(schedule.enabled,false);
+
   const cancelled=(await mcp(connection.token,'submit_backend_job',{...payload,eventKey:'proof:cancel'})).data;
   assert.equal((await mcp(connection.token,'cancel_backend_job',{jobId:cancelled.id,expectedVersion:cancelled.version})).data.status,'cancelled');
   await run('docker',['unpause',edge]);paused=false;

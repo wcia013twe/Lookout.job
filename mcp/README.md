@@ -507,15 +507,16 @@ migration and gateway configuration release before hosted validation is current.
 ## Bounded backend execution
 
 A configured Node API/worker can expose submit_backend_job, read_backend_jobs,
-cancel_backend_job, save_backend_schedule and read_backend_schedules. The only
+and cancel_backend_job. The only
 job kind is search_ats for a saved owned active profile; it does not execute
 arbitrary guides, browsers, messages or applications. Read actual job states and
 coverage diagnostics before claiming completion. Writes require workspace:read,
 preferences:write and drafts:write; caller-supplied connectionId is forbidden.
-Save backend interval schedules only on an explicit user request; they are
-separate from personal-agent routines and need a running worker. Tool discovery
-or saved enabled state does not prove execution. See [the shared website/MCP
-contract](../backend/backend-jobs.md). Contract 54, migration and configured runtime
+My Agent routines are the single schedule configuration; the personal runtime
+owns recurring invocation and submits one bounded Node job on each authorized
+run. Node has no recurring-search scheduler. Tool discovery or a queued job does
+not prove execution. See [the shared website/MCP
+contract](../backend/backend-jobs.md). The updated developer contract, retirement migration and configured runtime
 require release and live verification before hosted support can be claimed.
 
 ## Individual work-history edits
@@ -618,3 +619,15 @@ Routine execution rejects a stale/mismatched file; exact human approval can
 intentionally override the mapping. The runner downloads the draft’s pinned file,
 never a newly guessed alternative. Deploy the profile-resume-selection migration
 with the gateway update before claiming the new authorization behavior is live.
+
+### Check what changed
+
+On each actual work run: check context versions, then `read_muse_changes`.
+Read the affected current application, search profile, preferences or backend job
+through its existing scoped tool. A confirmed answer means a draft answer was
+saved, not that the application was approved. Continue only already-authorized
+work, then call `acknowledge_muse_changes` with the handled IDs. Unhandled changes
+stay pending, independently for each connection. Read another page when `hasMore`
+is true. Do not run this loop during lightweight connection setup; no wake-up or
+scheduled polling is added. If the acknowledgement tool is absent, keep events
+pending and report the scope gap. Feed acknowledgements are not message delivery.
