@@ -19,9 +19,12 @@ export function listingBatches(rows:Payload[],maxBytes=48000){
   if(batch.length)batches.push({offset,listings:batch});
   return batches;
 }
-export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute}: {execute?:import('./ats.ts').Execute}={}) {
+export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute,request}: {execute?:import('./ats.ts').Execute;request?:typeof fetch}={}) {
   const prefix=`job:${job.id}:`;
   const run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):await dispatch('search.run.start',{profileId:job.input.profileId,eventKey:prefix+'start'});
+  const collectionContext=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
+  const collectionProfile=collectionContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===(run.profile_id||job.input.profileId));
+  if(!collectionProfile)throw Error('Current job profile unavailable');
   const seen:Payload[]=[];
   if(job.search_run_id){
     let offset=0;
@@ -39,7 +42,7 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   const sources=run.sources||[];
   for(const [index,source] of (run.state==='active'?sources:[]).entries()){
     if(source.state==='completed'){continue;}
-    const observation=index<10?await fetchSource(source.source_id,source.source,{execute,previous:seen}):{listings:[],coverage:'truncated',blocker:'Bounded run supports at most ten configured sources.',total:0,examined:0,provenance:undefined,diagnostics:[]};
+    const observation=index<10?await fetchSource(source.source_id,source.source,{execute,previous:seen,profile:collectionProfile.projection,request,days:run.days||(run.mode==='backlog'?30:3)}):{listings:[],coverage:'truncated',blocker:'Bounded run supports at most ten configured sources.',total:0,examined:0,provenance:undefined,diagnostics:[]};
     if(observation.provenance)provenance.push(observation.provenance);
     const rows=observation.listings;seen.push(...rows);scanned+=observation.examined??observation.total;
     // Each idempotency key is tied to a persisted source version. Re-read and
@@ -64,6 +67,7 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   const context=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
   const profile=context.documents.find((d:Payload)=>d.kind==='profile'&&d.id===(run.profile_id||job.input.profileId));
   if(!profile)throw Error('Current job profile unavailable');
+  if(profile.version!==collectionProfile.version||context.personalVersion!==collectionContext.personalVersion)throw Error('Job settings changed during source collection');
   const discoveries:Payload[]=[];
   for(let offset=0;;){
     const page=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100,purpose:'screening'});

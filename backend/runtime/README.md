@@ -15,7 +15,7 @@ versioned screening checks, applies copied Career Ops deduplication and stores
 shortlist IDs in its existing job result (`pipelineVersion: 1`). Muse reads that
 shortlist, writes candidate-specific reports and four ratings, publishes a batch
 and prepares drafts. Normal jobs need no separate screening/dedup MCP calls.
-Collection supports Greenhouse/Lever; liveness for each link uses the copied
+Collection supports Greenhouse/Lever and the first-party HiringCafe aggregate adapter; liveness for each link uses the copied
 ATS API/browser ladder across upstream-supported sources. Full-description
 extraction currently supports Greenhouse. Active unsupported extraction remains
 explicit and partial; it does not become a fictional parsed record. Up to ten configured sources and 250 observations are bounded.
@@ -31,7 +31,7 @@ other domain routes retain their explicitly mapped Edge compatibility path.
 
 Actual fetching uses the existing `runner/career-tools.mjs executeCareerTask`
 sanitized child-process boundary and `runner/career-worker.mjs scanSource` flow.
-Only copied Greenhouse and Lever providers are available to this backend path;
+Only copied Greenhouse and Lever providers are available to this backend path; the separate HiringCafe adapter calls its official public MCP API and passes resolved employer links into the same verification pipeline. See [HiringCafe limits](../discovery-flow.md#hiringcafe-resource-and-connection).
 the installed catalog of 108 providers is not broadly activated. The verbatim
 scanner, tracker deduplication and merge dependency closure is copied by
 `scripts/import-career-tools.mjs` from CareerOps VERSION 1.36.0, commit

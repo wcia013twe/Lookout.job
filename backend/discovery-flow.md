@@ -101,38 +101,55 @@ API 404. `npm run test:liveness` exercises the copied classifiers and adapter.
 
 ## HiringCafe resource and connection
 
-The optional `hiringcafe` source template returned by `read_search_context` points
-to https://hiringcafe.com/ and records the public MCP endpoint
-https://hiringcafe.com/api/chatgpt/mcp in its `api` field. It is a discovery
-resource; adding the template does not install a connector, enable the copied
-provider scanner, or alter anyone's private saved sources. Save an explicitly
-chosen source through the existing versioned `save_search_document` portals
-operation (website targeting controls share the canonical document validation).
-The personal agent must have an MCP client or use browser sourcing. The copied
-scanner has no HiringCafe provider and must report unsupported access honestly.
+The optional `hiringcafe` template uses https://hiringcafe.com/ and records the
+public ChatGPT MCP endpoint. Save an enabled HiringCafe board source through
+`save_search_document` (portals), or the website's Search targets controls.
+Then the normal `submit_backend_job` call
+`{kind:"search_ats",input:{profileId},eventKey}` collects it automatically; no
+separate API call or newly scoped tool is required. Both website and Node MCP
+job submission retain existing ownership, version, credential and lease checks.
+Merely adding the optional template does not change private saved sources.
 
-Official connection documentation:
-https://hiringcafe.com/documentation/hiringcafe-chatgpt-app
+`backend/runtime/hiringcafe.ts` is a first-party aggregate adapter, like Simplify;
+the copied CareerOps source remains unchanged. It uses the fixed official
+https://hiringcafe.com/api/chatgpt/mcp endpoint with `search_hiringcafe_jobs` and
+`get_hiringcafe_job_details`. It does not forward credentials, resumes or profile
+narrative. The selected profile contributes structured location, employment and
+entry-level choices; required work arrangements become provider filters, while
+preferred work arrangements stay broad. Source keywords override the Roles
+field; absent keywords/roles means newest matches using structured filters.
+Full-time and internship tracks are separate calls. Fresh/backlog run windows
+become `posted_within_days`; the provider rounds freshness and dates are not
+independent employer publication evidence. Freeform compensation, team fit and
+other narrative preferences remain downstream screening/research work.
 
-The remote service uses Streamable HTTP JSON-RPC POST requests and no
-authentication. Discover its current schema with `tools/list`, then call
-`search_hiringcafe_jobs` and `get_hiringcafe_job_details`. Run full-time and
-internship searches separately using the selected profile. Search returns a
-bounded selection (currently 20, one role per company); never treat that page
-as exhaustive catalog coverage. A result's `applyUrl` may be a HiringCafe page,
-so follow it to the employer/ATS before submitting canonical employer URLs to
-`submit_search_leads`. Preserve provider dates as source evidence until the
-employer independently discloses a posting date.
+Each source permits four query combinations, 25 unique inspected leads, a
+75-second deadline and 2 MB per response; exceeding query, row or time budgets
+keeps coverage partial. Provider match counts are sums across executed queries
+and may overlap. The API returns one role per company, so coverage is always
+`truncated`, including empty results; it never establishes an exhaustive sweep.
+Rate limits, malformed responses and failed sources become explicit blockers.
 
-Live smoke check on 2026-10-27: `tools/list`, a US entry-level full-time
-`backend engineer` search, and a details call all returned HTTP 200 without
-JSON-RPC/tool errors. Search reported 122 matches and supplied 20 rows. Details
-for job `51pabf3drml5p70b` returned TikTok's Backend Engineer Graduate (User
-Growth) - 2027 Start with a description and a HiringCafe link. This verifies
-read access only: employer availability, catalog completeness, rate limits,
-production deployment and an end-to-end saved personal search were not tested.
-No discovered roles or personal records were imported by this smoke check.
+An API-provided external application URL enters the existing copied employer
+verifier. When details return only a HiringCafe job page, the adapter attempts
+one bounded public-page read and accepts only a unique external Apply link.
+Blocked, ambiguous or missing links remain uncertain source diagnostics and
+never become employer-verified observations. No challenge bypass is attempted.
+The same copied deduplication, official full-description extraction (currently
+Greenhouse), versioned screening and shortlist pipeline runs on resolved URLs.
+An aggregate description alone never supplies a verified employer record.
 
-Demo verification uses the existing fictional search-context path: its
-`searchResponse('search.context', ...)` exposes the same optional templates
-without making external requests or changing fictional saved sources.
+Official docs: https://hiringcafe.com/documentation/hiringcafe-chatgpt-app
+
+Run `node scripts/check-hiringcafe-batch.mjs /private/tmp/hiringcafe-proof.json`
+for a read-only live smoke check through `executeSearch`. Its persistence is
+fictional memory: no personal account, queue, catalog, submission or publication
+is modified. Tests additionally exercise a resolved employer fixture through
+collection, verification, observation saves, screening and shortlist dedup;
+blocked links, rate limits, changed schemas and duplicate leads are covered.
+Demo fixtures show a fictional aggregate source with an unresolved employer
+link and a partial backend result without external requests.
+
+Local worker rebuild/restart is necessary to activate runtime changes. Hosted
+Node deployment and gateway/config release remain separate; local landing does
+not deploy production or add HiringCafe to a user's private Sources list.
