@@ -1,3 +1,4 @@
+import {METADATA_TOOL,validateMetadataArgs} from './metadata.ts';
 import {createServer} from 'node:http';
 import type pg from 'pg';
 import type {EmbeddingProvider, SourceLoader,StoreTarget} from './types.ts';
@@ -10,6 +11,12 @@ export {INGEST_TOOL, LIST_TOOL} from './contract.ts';
 // Internal backend API: no fixture imports, MCP names or demo storage defaults.
 export function intelligenceProcessor(pool: pg.Pool, provider: EmbeddingProvider|undefined, loadSources: SourceLoader, target:StoreTarget) {
   return {
+    metadata: async (args:unknown) => {
+      const {limit,...filters}=validateMetadataArgs(args);
+      const current=target.kind==='account'?(await loadSources()).map(c=>clean(c.observation,null,c.identities)):undefined;
+      const items=await databaseStore((sql,values)=>pool.query(sql,values),target).list(limit,current,undefined,filters);
+      return {items,filters,order:'reported_date_desc',limit};
+    },
     search: async (query:string,limit=5,mode:'vector'|'hybrid'='vector') => {
       validateDemoCall(SEARCH_TOOL,{query,limit,mode});
       if(!provider)throw Error('EMBEDDING_PROVIDER_REQUIRED');
@@ -37,6 +44,7 @@ export function ingestionService(pool: pg.Pool, provider: EmbeddingProvider|unde
   const processor=intelligenceProcessor(pool,provider,loadSources,target);
   return async (operation, args = {}) => {
     const call = validateDemoCall(operation, args);
+    if(call.operation===METADATA_TOOL)return processor.metadata(call.metadata);
     if(call.operation===SEARCH_TOOL)return processor.search(call.query!,call.limit??5,call.mode);
     return call.operation === INGEST_TOOL ? processor.run() : {items:await processor.list(call.limit??20)};
   };

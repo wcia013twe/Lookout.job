@@ -1,4 +1,5 @@
 import pg from 'pg';
+import {metadataPredicate} from './metadata.ts';
 import {validVector} from './pipeline.ts';
 import type {Query,Report,Store,StoreTarget} from './types.ts';
 const columns=`id,source_type,source_id,source_revision,content_kind,title,resource_links,contexts,post_references,company,role,stage,insight,experience_date,provenance,uncertainty,sharing_status,processing_version,embedding_model,created_at,updated_at,extensions.vector_dims(embedding) as embedding_dimensions,case when embedding is null then 'pending' else 'ready' end as embedding_status`;
@@ -15,7 +16,7 @@ export function databaseStore(query:Query,target:StoreTarget):Store {
  values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14::extensions.vector,$15,$16,$17,$18::jsonb,$19::jsonb,$20::jsonb${owner?',$21':''})
  on conflict(${owner?'owner_id,':''}source_type,source_id) do update set source_revision=excluded.source_revision,company=excluded.company,role=excluded.role,stage=excluded.stage,insight=excluded.insight,experience_date=excluded.experience_date,provenance=excluded.provenance,uncertainty=excluded.uncertainty,content_hash=excluded.content_hash,processing_version=excluded.processing_version,embedding_text=excluded.embedding_text,embedding=excluded.embedding,embedding_model=excluded.embedding_model,content_kind=excluded.content_kind,title=excluded.title,resource_links=excluded.resource_links,contexts=excluded.contexts,post_references=excluded.post_references,updated_at=now()`,
  [r.sourceType,r.sourceId,r.sourceRevision,r.company,r.role,r.stage,r.insight,r.experienceDate,r.provenance,r.uncertainty,r.contentHash,r.processingVersion,r.embeddingText,(vector===null?null:JSON.stringify(vector)),r.embeddingModel,r.contentKind,r.title,JSON.stringify(r.resourceLinks),JSON.stringify(r.contexts),JSON.stringify(r.postReferences),...(owner?[owner]:[])]);},
- async list(limit,current,search){
+ async list(limit,current,search,metadata){
   if(!Number.isInteger(limit)||limit<1||limit>50)throw Error('INVALID_LIMIT');
   // Account reads require freshly authorized source fingerprints. Filter before LIMIT.
   if(owner&&!current)throw Error('CURRENT_SOURCES_REQUIRED');
@@ -26,6 +27,12 @@ export function databaseStore(query:Query,target:StoreTarget):Store {
   const fingerprints=current?.map(r=>({source_type:r.sourceType,source_id:r.sourceId,content_hash:r.contentHash,processing_version:r.processingVersion}));
   const args:any[]=owner?[limit,owner,JSON.stringify(fingerprints)]:[limit];
   let filter=visibility, projection=columns, order='source_type,source_id';
+  if(metadata){
+   if(search)throw Error('INCOMPATIBLE_SEARCH_OPTIONS');
+   const predicate=metadataPredicate(metadata,args);
+   filter+=`${owner?' and':' where'} ${predicate}`;
+   order='experience_date desc nulls last,created_at desc,source_type,source_id';
+  }
   let hybridSql:string|undefined;
   if(search){
    if(!validVector(search.vector))throw Error('INVALID_VECTOR');

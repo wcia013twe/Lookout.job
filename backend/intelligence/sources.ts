@@ -5,10 +5,10 @@ import {readConversation} from '../../lib/outreach-conversation.mjs';
 import type {Candidate, MatchingContext, ResourceLink} from './types.ts';
 export type {Candidate} from './types.ts';
 export type CircleSource = {
- id:string; state:string; parent_id?:string|null; revision:number; published_revision:number|null; authorName?:string;
+ id:string; circle_id?:string; state:string; parent_id?:string|null; revision:number; published_revision:number|null; authorName?:string;
  content:{type?:string;title?:string;company?:string|null;sources?:ResourceLink[];contexts?:({kind:string;label:string;url?:string;company?:string;role?:string;stage?:string;jobId?:string;jobUrl?:string;contact?:string})[]; role?:string|null; stage?:string|null; insight?:string; body?:string; experienceDate?:string|null; provenance:string; uncertainty?:string|null};
 };
-export type ApplicationSource = {id:string; company:string; title?:string; candidateName?:string; url?:string; applicationUrl?:string; backendId?:string};
+export type ApplicationSource = {id:string; jobId?:string; company:string; title?:string; candidateName?:string; url?:string; applicationUrl?:string; backendId?:string};
 export type MilestoneSource = {id:string; application_id:string; kind:string; phase:string; label:string; occurred_at:string|null; source?:unknown};
 export type ContactSource = {id:string; revision?:number; contact?:string; name?:string; tags?:string[]; notes:string; jobUrl?:string; link?:string};
 type LoggedMessage = {id:string; direction:string; channel:string; date:string; body:string};
@@ -32,6 +32,7 @@ export function circleObservation(post:CircleSource):Candidate {
  const parts=parseForumMentions([...new Set([c.insight,c.body].filter(Boolean))].join('\n\n'));
  const postReferences=parts.filter(part=>part.postId&&part.circleId).map(part=>({circleId:part.circleId!,postId:part.postId!,revision:null,label:part.text.replace(/^@/,'')}));
  return {
+  ...(post.circle_id?{sourceCircleId:post.circle_id}:{}),
   identities:identities(post.authorName,...(c.contexts??[]).filter(item=>item.kind==='referral').map(item=>item.contact)),
   observation:{sourceType:'circle_post',sourceId:post.id,sourceRevision:post.revision,
    contentKind:resource?'resource':'observation',title:c.title??null,resourceLinks,contexts,postReferences,
@@ -40,7 +41,7 @@ export function circleObservation(post:CircleSource):Candidate {
  };
 }
 export function applicationObservations(application:ApplicationSource,milestones:MilestoneSource[],contacts:ContactSource[]):Candidate[] {
- const base={sourceType:'application_update' as const,company:application.company,role:application.title??null};
+ const base={sourceType:'application_update' as const,company:application.company,role:application.title??null,contexts:application.jobId?[{label:'Application posting',jobId:application.jobId,company:application.company,...(application.title?{role:application.title}:{})}]:[]};
  const rows:Candidate[]=milestones.filter(m=>m.application_id===application.id).map(m=>({identities:identities(application.candidateName),observation:{...base,sourceId:m.id,sourceRevision:1,stage:m.kind,insight:`${m.phase}: ${m.label}`,experienceDate:m.occurred_at?.slice(0,10)??null,provenance:'unknown',uncertainty:'Recorded application milestone; not independent employer verification.'}}));
  for(const contact of contactsForProcess(contacts,application)) {
   for(const message of (readConversation(contact).messages as LoggedMessage[]).filter(m=>m.direction==='received'))rows.push({identities:identities(contact.contact,contact.name,application.candidateName),observation:{...base,sourceId:communicationId(contact.id,message.id),sourceRevision:contact.revision??1,stage:null,insight:`Logged ${message.channel} reply: ${message.body}`,experienceDate:message.date,provenance:'unknown',uncertainty:'Logged correspondence; sender statements are not independently verified.'}});
