@@ -1,0 +1,10 @@
+{
+  "name": "lookout-agent",
+  "version": "0.1.0",
+  "description": "Credential-free Lookout Agent Watch and runtime setup instructions",
+  "type": "module",
+  "engines": {"node": ">=22"},
+  "bin": {"lookout-agent-watch": "watch.mjs"},
+  "files": ["watch.mjs", "config.example.json", "README.md"],
+  "license": "UNLICENSED"
+}

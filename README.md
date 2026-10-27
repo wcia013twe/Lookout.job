@@ -1011,3 +1011,14 @@ The new Google OAuth callback is `https://osyrlausutnqzlegxmnd.supabase.co/auth/
 A count-only agent watch can be configured through `configure_agent_watch`; see
 [watch setup and limitations](mcp/README.md#credential-free-pending-count-watch).
 It needs backend release and a separately configured host watcher before use.
+
+The [Lookout agent package](agent-package/README.md) ships a dependency-free
+Node watcher, example config and setup instructions. MCP mapping:
+`read_guide {id:"agent-package"}` uses the existing authenticated guide boundary;
+`configure_agent_watch` issues/rotates the count-only handle. The frontend build
+publishes `agent-package/manifest.json` and a versioned `.tgz` under the site's
+actual base URL. The manifest records the archive SHA-256 and byte count.
+No new data-write or shell-execution MCP tool is introduced. Host installation,
+service management and wake commands remain local, authorized runtime actions.
+Developer version 90 advertises setup; release artifacts and backend must both
+be verified before claiming the package is available or watching is active.

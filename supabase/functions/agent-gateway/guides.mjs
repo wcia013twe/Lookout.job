@@ -1,10 +1,11 @@
+import agentPackage from './skills/agent-package.json' with {type:'json'};
 import { TOOLKIT_ROUTING } from './toolkit-routing.mjs';
 import outreach from './skills/cold-outreach.json' with { type: 'json' };
 import resume from './skills/resume-parse.json' with { type: 'json' };
 import outreachTemplates from './skills/outreach-templates.json' with { type: 'json' };
 import toolkit from './skills/career-toolkit.json' with { type: 'json' };
 import applicationWorkspace from './skills/application-workspace.json' with { type: 'json' };
-const guides = [...toolkit.guides, applicationWorkspace, resume, { ...outreach, ...outreachTemplates, version: outreach.version, templateVersion: outreachTemplates.version }];
+const guides = [agentPackage, ...toolkit.guides, applicationWorkspace, resume, { ...outreach, ...outreachTemplates, version: outreach.version, templateVersion: outreachTemplates.version }];
 export function guideIndex() {
   return guides.map(({id, version, name, description, whenToUse}) => ({id, version, name, description, whenToUse}));
 }

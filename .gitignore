@@ -26,3 +26,8 @@ supabase/.temp/
 
 # Generated local profile-flow screenshots and server diagnostics.
 /next-app/.profile-flow-proof/
+
+# Private agent watcher configuration and runtime state.
+/agent-package/*.config.json
+/agent-package/*.state.json
+/agent-package/*.lock

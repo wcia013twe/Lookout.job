@@ -1,3 +1,4 @@
+import {buildAgentPackage} from '../../scripts/build-agent-package.mjs';
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../../", import.meta.url));
@@ -14,6 +15,7 @@ for (const name of ["data", "manifest.webmanifest"]) {
 for (const directory of ["agents", "textures", "circles", "brand"]) {
   await cp(fileURLToPath(new URL(`../assets/${directory}/`, import.meta.url)), dest + directory, { recursive: true });
 }
+await buildAgentPackage(dest + 'agent-package');
 // Replace the old worker at the same scope and discard stale static UI caches.
 await writeFile(
   dest + "sw.js",
