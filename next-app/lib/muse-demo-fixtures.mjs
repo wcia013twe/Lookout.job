@@ -1,3 +1,4 @@
+import {createMuseChangeFeedDemo} from '../../lib/muse-change-feed-demo.mjs';
 import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
 import {reconcileProfileChanges} from '../../lib/profile-sync.mjs';
 import {editedWorkExperience} from '../../supabase/functions/agent-gateway/work-experience.mjs';
@@ -156,6 +157,7 @@ export function createDemoServices(store) {
     return {...artifactDemo.artifactSnapshot(),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
+    ...createMuseChangeFeedDemo(),
     backendJobs:createBackendJobsDemo(),
     async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
     async resolveProfileConflict(choice='review') {

@@ -27,6 +27,7 @@ export interface Application {
   blocker?: string;
   questions: ApplicationQuestion[];
   questionsReviewed?: boolean;
+  lastAnswerConfirmation?: {id:string;fieldId:string};
   inspectedAt?: string;
   inspectionComplete?: boolean;
   submissionAttempts?: { id: string; state: string; startedAt: string }[];
