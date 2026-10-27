@@ -6,3 +6,8 @@
 - Added image decode checks for all eight requested providers, desktop/mobile screenshots and overflow checking. Corrected the fieldset/grid minimum width so the longer participant strip scrolls inside the mobile picker. Used the original official Claude SVG path for a crisp preview.
 - Validation: frontend typecheck, data validation (158 roles), production static build, 11 onboarding/handoff tests, design detector and browser image/flow checks passed. Desktop and mobile screenshots inspected. SVG assets contain no scripts or remote references.
 - Limits: artwork/selection does not establish provider connectivity; no hosted publication or live agent invocation.
+
+## Cappy artwork
+
+- Replaced Cappy’s letter placeholder with the existing user-designed purple Lookout buddy in both picker thumbnail and selected preview. Reuses the brand asset without generating or duplicating artwork. Shared demo picker uses the same asset.
+- Follow-up validation: typecheck, data validation, and desktop/mobile browser image/flow checks passed; inspected the Cappy mobile capture. No new image generation or backend changes.
