@@ -31,3 +31,9 @@
 - Removed the separate onboarding processing screen. Resume upload/selection starts parse and save inline on the original page, ending with a green check and “Data saved.” Continue enables only after successful saving and advances to preferences.
 - Reuses the existing shared import, demo and versioned save paths; failures remain inline and do not claim success. Browser coverage asserts the confirmation appears while still on the original page.
 - Validation: typecheck, data validation, production build, browser automatic parse/save/read-back and same-page confirmation checks, and design detector passed. Provider calls were mocked in browser verification.
+
+## Broader onboarding role suggestions
+
+- Replaced narrow engineering specialties with common job titles spanning software, data, product, business analysis, design, QA, security, IT, program management, solutions and marketing. The field still accepts any custom role.
+- Shared onboarding suggestions also cover the fictional demo flow; no backend or MCP contract changes.
+- Validation: frontend typecheck, data validation and diff whitespace check passed. Copy-only update; no live provider or backend changes.

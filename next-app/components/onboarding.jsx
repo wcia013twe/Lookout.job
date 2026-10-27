@@ -104,7 +104,7 @@ function OnboardingFlow(){
   <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")||(method==="resume"&&resume&&(w.demo||resume.objectPath)&&savedResumeId!==resume.id)}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
  </form><OnboardingSimplifyImport/></>;
  if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={findRole}>
-  <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Backend engineering","Frontend engineering","Design","Product","Data & AI"]}/>
+  <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Software Engineer","Data Scientist","Data Analyst","Product Manager","Business Analyst","UX Designer","QA Engineer","Cybersecurity Analyst","IT Specialist","Technical Program Manager","Solutions Engineer","Marketing Specialist"]}/>
   <Pills label="Job type" value={employment} onChange={setEmployment} options={["Full-time","Internship","Contract","Open to options"]}/>
   <SuggestedField label="Where would you like to work?" value={location} onChange={setLocation} placeholder="Type a location or choose below" options={["Remote","New York","SF Bay Area","Seattle","Open to anywhere"]}/>
   <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Find my first role"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div>
