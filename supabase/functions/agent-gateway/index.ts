@@ -1,3 +1,4 @@
+import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs';
 import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
 import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
 import { clientStorage } from './client-storage.mjs';
@@ -130,7 +131,7 @@ Deno.serve(withGatewayCors(async request => {
       if(result.error)return respond({error:'Resume upload rejected'},result.error.code==='42501'?403:result.error.code==='P0002'?404:400);
       return respond({data:result.data});
     }
-    if (operation.startsWith('submission.')) {
+    if (operation.startsWith('submission.') && !operation.startsWith('submission.batch.')) {
       const result = await submissionDispatch({operation,payload,credentialHash:await hashToken(bearer),rpc:(name,args)=>admin.rpc(name,args)});
       return respond(result.status===200 ? {data:result.data} : {error:result.error},result.status);
     }
@@ -190,6 +191,7 @@ Deno.serve(withGatewayCors(async request => {
       }
       return respond({ data: { resume: data, url } });
     }
+    if(operation==='batches.read')return respond({data:await withLatestPostingEvidence(admin,data,data.batch.user_id)});
     return respond({ data: operation.startsWith('search.') ? searchResponse(operation,data) : contextResponse(operation, data) });
   } catch { return respond({ error: 'Lookout could not complete this operation. Read current state before retrying a write.' }, 500); }
 }));

@@ -51,3 +51,11 @@ test('cloud draft sync preserves the application profile used for policy checks'
  const {draftPayload}=await import('../lib/cloud-model.mjs');
  assert.equal(draftPayload({searchProfileId:'backend',resumeId:'r',questions:[],questionsReviewed:false}).searchProfileId,'backend');
 });
+
+test('browser save round trip retains the inspected form timestamp and incomplete status',async()=>{
+ const {fromCloud,draftPayload}=await import('../lib/cloud-model.mjs');
+ const draft={questions:[],inspectedAt:'2026-10-27T01:11:00Z',inspectionComplete:false,formFingerprint:'known-form'};
+ const rows={profiles:[],preferences:[],resumes:[],answer_library:[],applications:[{id:'app',job_id:'role',status:'Blocked',revision:2,draft}]};
+ const saved=draftPayload(fromCloud(rows).applications.role);
+ assert.equal(saved.inspectedAt,draft.inspectedAt);assert.equal(saved.inspectionComplete,false);assert.equal(saved.formFingerprint,'known-form');
+});

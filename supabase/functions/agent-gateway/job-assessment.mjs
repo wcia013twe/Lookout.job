@@ -19,7 +19,8 @@ export function validateJobRecommendation(value = {}) {
  if(value.evaluatedProfileVersion!==undefined&&(!Number.isSafeInteger(value.evaluatedProfileVersion)||value.evaluatedProfileVersion<1))throw Error('Analysis profile version must be a positive integer.');
  const facts=value.jobFacts;
  if(facts!==undefined){
-  if(!facts || typeof facts!=='object' || Array.isArray(facts) || Object.keys(facts).some(k=>!['sourceUrl','checkedAt','workSetting','sponsorship'].includes(k)) || !['sourceUrl','checkedAt','workSetting','sponsorship'].every(k=>typeof facts[k]==='string' && facts[k].trim() && facts[k].length<=2000) || !/^https:\/\//.test(facts.sourceUrl) || !Number.isFinite(Date.parse(facts.checkedAt)))throw Error('Job facts need sourceUrl, checkedAt, workSetting and sponsorship; undisclosed values must be explicit.');
+  if(!facts || typeof facts!=='object' || Array.isArray(facts) || Object.keys(facts).some(k=>!['sourceUrl','checkedAt','workSetting','sponsorship','location'].includes(k)) || !['sourceUrl','checkedAt','workSetting','sponsorship'].every(k=>typeof facts[k]==='string' && facts[k].trim() && facts[k].length<=2000) || !/^https:\/\//.test(facts.sourceUrl) || !Number.isFinite(Date.parse(facts.checkedAt)))throw Error('Job facts need sourceUrl, checkedAt, workSetting and sponsorship; undisclosed values must be explicit.');
+  if(facts.location!==undefined&&(typeof facts.location!=='string'||!facts.location.trim()||facts.location.length>2000))throw Error('Observed location must be nonempty text up to 2000 characters.');
   let source;try{source=new URL(facts.sourceUrl);}catch{throw Error('Job facts need a public HTTPS source.');}if(source.protocol!=='https:'||source.username||source.password)throw Error('Job facts need a public HTTPS source.');
  }
  const assessment=value.matchAssessment;

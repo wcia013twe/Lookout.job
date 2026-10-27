@@ -600,6 +600,18 @@ Writes are implicit atomic effects of existing validated application/attempt
 transitions; no log-edit or approval shortcut is exposed. Node delegates this
 lightweight operation to Edge. Deploy the migration before releasing this tool.
 
+
+## Submission batch checkpoints
+
+Node executes `submit_application_batch`; Edge persists its execution journal.
+`submission.batch.begin` accepts `{eventKey,applications:[{applicationId,expectedRevision}]}`
+(1–10 unique references). `submission.batch.read` accepts optional `batchId` with
+workspace:read. Begin/touch/checkpoint additionally require drafts:write,
+approvals:read and resumes:read; their connection binding is server-derived.
+Touch/checkpoint accept only `{batchId,leaseToken,expectedVersion,applicationId}`.
+Checkpoints derive outcomes from saved application and attempt rows and cannot
+accept a caller's status/receipt. None of these operations grants approval.
+The browser reader shares `read_submission_batches` with the MCP read boundary.
 ## Complete personal-profile edit flow
 
 The website now sends only changed facts through `save_profile_changes`, and MCP
@@ -641,3 +653,26 @@ conflict controls through fictional memory-only services; reload/reset restores
 the scenario and no real cloud service is called. Application-profile preferences
 and account-wide settings remain separate gates. Release the migration, frontend
 and gateway/MCP instruction/schema changes together before advertising live support.
+
+Preview posting facts use `recommendation.jobFacts.location`, when supplied, ahead
+of the older catalog location. It is optional bounded nonempty text within the
+existing source URL/check timestamp contract; `publish_batch` validates it for
+both MCP and browser projections. Legacy batches retain catalog fallback. Posting
+refreshes do not change assessment timestamps or grant application approval.
+The application preview counts saved answers separately from required/optional
+unanswered controls. Browser saves preserve `inspectedAt` and `inspectionComplete`
+so autosync cannot erase the saved form inspection metadata.
+
+`read_batch` and browser `getBatch` overlay the latest owned `search_observations`
+for each catalog job, including checkedAt, liveness, publication date and full
+posting text. The immutable batch/AI recommendation remains intact. The same
+shared loader fences both observation and listing owners; read failures surface,
+not silently stale success. The UI formats recency from this typed observation.
+No newer observation means the original publication snapshot remains the fallback.
+
+`prepare_draft.handoff.routing` classifies existing unresolved field IDs into
+human, agent, optional and browser groups. The website uses the same classifier.
+Required unknown personal facts/conflicts need the person; required writing can
+be drafted by the agent; empty optional controls are non-blocking; unsupported
+widgets/files/consent require explicit browser handling. These labels never
+change stored answers, review state, approvals or submission validation.

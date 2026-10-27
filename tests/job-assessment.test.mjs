@@ -77,3 +77,13 @@ test('saved analysis is marked outdated after a profile lever changes',()=>{
  assert.equal(recommendationNeedsRefresh({searchProfileId:'ft'},[{id:'ft',version:3}]),false);
  assert.throws(()=>validateJobRecommendation({evaluatedProfileVersion:'3'}));
 });
+
+test('refreshed observed location takes precedence in the card and preview without replacing assessment',()=>{
+ const job={employer:{location:'United States'},canonical_url:'https://jobs.example.com/engine'};
+ const facts={sourceUrl:job.canonical_url,checkedAt:'2026-10-27T01:11:00Z',location:'San Francisco or Seattle',workSetting:'Office schedule undisclosed',sponsorship:'Undisclosed'};
+ assert.doesNotThrow(()=>validateJobRecommendation({jobFacts:facts}));
+ const role=batchRoles([{job_id:'engine',jobs:job,recommendation:{jobFacts:facts,whyItFits:'Keep analysis'}}],'2026-10-26')[0];
+ assert.equal(role.location,'San Francisco or Seattle');assert.equal(role.whyItFits,'Keep analysis');assert.equal(job.employer.location,'United States');
+ for(const location of ['',null,{},'x'.repeat(2001)])assert.throws(()=>validateJobRecommendation({jobFacts:{...facts,location}}));
+ assert.equal(batchRoles([{job_id:'legacy',jobs:job,recommendation:{}}],'2026-10-26')[0].location,'United States');
+});

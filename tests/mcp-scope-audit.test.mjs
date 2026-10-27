@@ -16,6 +16,7 @@ const derivedAuthorization={
 async function authorize(db,hash,operation,payload) {
   if(operation.startsWith('backend.'))return db.query('select public.backend_job_dispatch($1,$2,$3)',[hash,operation,payload]);
   if(operation.startsWith('outreach.'))return db.query('select public.agent_outreach_dispatch($1,$2,$3)',[hash,operation,payload]);
+  if(operation==='submission.batch.read')return db.query('select public.agent_dispatch($1,$2,$3)',[hash,operation,payload]);
   if(operation==='submission.finish')return db.query("select public.runner_submission_transition($1,'finish',$2)",[hash,payload]);
   if(operation.startsWith('submission.'))return db.query('select public.runner_submission_context($1,null)',[hash]);
   return db.query('select public.agent_dispatch($1,$2,$3)',[hash,derivedAuthorization[operation]||operation,payload]);

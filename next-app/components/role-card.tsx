@@ -8,6 +8,7 @@ export type Role = {
   location: string; category: string; priority: string; postedDate?: string | null;
   description?: string; matchPreview?: MatchPreview; matchAssessment?: MatchPreview;
   materialGap?: string; rankingProfile?: any; searchProfileId?: string; evaluatedProfileVersion?: number;
+  postingObservation?: {checkedAt:string;liveness:string;postedAt:string|null;description:string};
   compensation?: string; workSetting?: string; sponsorship?: string;
   reviewPreview?: { question: string; answer: string; reason: string }[];
   discoveredDate: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;

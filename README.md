@@ -853,3 +853,42 @@ submission check resolves as `user_reported_submitted`. Its attempt remains
 uncertain and retry stays blocked; no employer-observed receipt is fabricated.
 Agent progress reports cannot close that handoff. Interview/learning preparation
 tables also emit owner invalidations so weekly preparation retains live refresh.
+
+
+## Programmatic application submission
+
+The configured Node API can expose `submit_application` and
+`submit_application_batch` when `LOOKOUT_SUBMISSION_ENABLED=true`. Its default is
+off; discovery is filtered by workspace:read, drafts:write, approvals:read and
+resumes:read. These tools reuse the local runner implementation; no parallel
+submission engine or search-cron execution path exists. Browser contexts and
+credentials are isolated per request, with at most two executions per API process.
+
+A batch accepts `{eventKey, applications:[{applicationId,expectedRevision}]}`
+(1–10 unique owned references). It executes sequentially while the request runs,
+recording durable checkpoints in Edge/Supabase after each application. There is
+no background submission scheduler. Node owns browser work; Edge owns validation
+and saves; Muse owns reasoning and content. Every child independently obtains
+current authorization, validates the exact form/resume and claims a single click.
+
+Use `read_application_batches({batchId})` to reconcile after a lost response.
+An active execution lease returns busy; an expired lease allows the identical
+batch to resume unfinished entries with stable child attempt IDs. Terminal
+results replay without running again. Checkpoint outcomes derive from saved
+application/attempt records, not caller-supplied success. A partial batch retains
+independent successes and Action Board blockers. Repair supported pre-click
+issues from verified facts or request human input, then submit a new eventKey
+with current revisions. An agent cannot resolve uncertain submission or invent
+approval. Known submitted or uncertain attempts never authorize another click.
+
+The browser `readApplicationBatches` adapter and MCP read use the same private,
+owner-scoped reader. Fictional demo services expose completed, partial/uncertain
+and running examples without execution. The optional E2E command
+`npm run test:submission:e2e` uses real Chromium, controlled employer routes,
+local Node HTTP/shared Edge handlers, private fixture downloads and migrated SQL.
+It sends no real employer application and calls no model. Use
+`LOOKOUT_CHROMIUM_EXECUTABLE` to select an installed browser for this check.
+
+Release requires the submission-batch migration, gateway contract 75/application
+guide v4 and configured Node API image. Hosted deployment, Muse client execution
+and real employer behavior remain unverified until separately exercised.

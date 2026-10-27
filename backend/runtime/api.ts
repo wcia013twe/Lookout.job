@@ -6,8 +6,8 @@ import {ResumeParseError} from './resume-parser.ts';
 import type {Payload} from './types.ts';
 
 type Dispatch = (token: string, operation: string, payload: Payload) => Promise<Reply>;
-export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>}) {
-  const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL]);
+export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,executionTools=[]}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; executionTools?: any[]}) {
+  const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL,...executionTools]);
   const server=createServer(async (req,res)=>{
     const json=(status:number,data: unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     let url:URL;

@@ -1,3 +1,4 @@
+import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
 import {reconcileProfileChanges} from '../../lib/profile-sync.mjs';
 import {editedWorkExperience} from '../../supabase/functions/agent-gateway/work-experience.mjs';
 import {createBackendJobsDemo} from '../../lib/backend-jobs-demo.mjs';
@@ -156,6 +157,7 @@ export function createDemoServices(store) {
   }
   return {
     backendJobs:createBackendJobsDemo(),
+    async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
     async resolveProfileConflict(choice='review') {
       const scenario=store.get('demo.profileConflict');if(!scenario)throw Error('No fictional profile conflict');
       const result=reconcileProfileChanges(scenario.before,store.get('workflow.profile'),scenario.latest,choice);

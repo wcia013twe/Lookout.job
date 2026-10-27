@@ -5,13 +5,16 @@ export const PROJECT_URL = 'https://umhqfqzpwmszhcknwtrs.supabase.co';
 const PUBLIC_KEY = 'sb_publishable_hWhdwxwVfWS_0zd5VvoFzA_DvfV6jp5';
 const MAX_RESUME_BYTES = 10 * 1024 * 1024;
 const uuid = value => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
-export function createGatewayClient({ token, fetchImpl = fetch }) {
+export function createGatewayClient({ token, fetchImpl = fetch, projectUrl = PROJECT_URL }) {
+  const configured=new URL(projectUrl);
+  if(configured.username||configured.password||configured.pathname!=='/'||configured.search||configured.hash||!(configured.protocol==='https:'||(configured.protocol==='http:'&&['localhost','127.0.0.1','kong','host.docker.internal'].includes(configured.hostname))))throw Error('Trusted configured backend URL required');
+  const backendUrl=configured.origin;
   if (!/^jb_agent_[a-f0-9]{64}$/.test(token || '')) throw new Error('JOB_BOARD_AGENT_TOKEN required');
   async function request(url, options = {}) {
     return fetchImpl(url, { ...options, redirect: 'error', signal: AbortSignal.timeout(30000) });
   }
   async function forward(_token, operation, payload) {
-    const response = await request(`${PROJECT_URL}/functions/v1/agent-gateway`, {
+    const response = await request(`${backendUrl}/functions/v1/agent-gateway`, {
       method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ operation, payload }),
     });
@@ -29,7 +32,7 @@ export function createGatewayClient({ token, fetchImpl = fetch }) {
     if (resume?.id !== resumeId || !resume.object_path) throw new Error('Upload the resume to private board Storage first');
     const target = new URL(url);
     const expectedPath = `/storage/v1/object/sign/resumes/${resume.object_path}`;
-    if (target.origin !== PROJECT_URL || decodeURIComponent(target.pathname) !== expectedPath
+    if (target.origin !== backendUrl || decodeURIComponent(target.pathname) !== expectedPath
       || target.username || target.password || target.hash || !target.searchParams.has('token')) throw new Error('Invalid private resume URL');
     const response = await request(target.href);
     if (!response.ok || !response.body || Number(response.headers.get('Content-Length') || 0) > MAX_RESUME_BYTES) throw new Error('Resume download unavailable');
@@ -50,7 +53,7 @@ export function createGatewayClient({ token, fetchImpl = fetch }) {
     let resumeData;
     try { resumeData = await loadResume(context.application.draft?.resumeId); }
     catch { return context; } // Preserve revision for reporting missing/unavailable files.
-    const response = await request(`${PROJECT_URL}/rest/v1/jobs?id=eq.${context.application.job_id}&select=id,canonical_url,employer`, { headers: { apikey: PUBLIC_KEY } });
+    const response = await request(`${backendUrl}/rest/v1/jobs?id=eq.${context.application.job_id}&select=id,canonical_url,employer`, { headers: { apikey: PUBLIC_KEY } });
     if (!response.ok) throw new Error('Canonical job unavailable');
     const jobs = await response.json();
     if (!Array.isArray(jobs) || jobs.length !== 1 || jobs[0].id !== context.application.job_id) throw new Error('Canonical job unavailable');
