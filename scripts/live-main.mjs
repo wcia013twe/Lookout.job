@@ -52,7 +52,7 @@ async function main(){
   await writeFile(installedKey,await dependencyKey());
  }
  async function stopChild(){
-  if(!child||child.exitCode!==null)return;
+  if(!child||child.exitCode!==null||child.signalCode!==null)return;
   const p=child;child=null;
   await new Promise(yes=>{p.once('exit',yes);process.kill(-p.pid,'SIGTERM');});
  }
