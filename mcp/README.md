@@ -529,3 +529,17 @@ retrying, and remove only when requested. Changed facts become unverified.
 Node MCP forwards this lightweight operation to Edge. The browser adapter calls
 the same owned SQL validator. Bulk section imports remain explicit replacements.
 See [the full contract, examples and release limits](../backend/agent-contract.md#individual-work-history-edits).
+
+
+## Durable Action Board inbox
+
+`read_action_inbox({state?: "pending" | "resolved" | "all", offset?: number})`
+requires `workspace:read` and reads up to 100 owned entries with `nextOffset`.
+It is a lightweight Edge + Supabase operation even when accessed through Node MCP.
+Pending entries may have a future `available_at` for a stalled submission check.
+Application and submission transitions append/resolve entries atomically; exact
+report retries do not duplicate them. History remains available after resolution.
+Use existing human-review handoffs for approval and uncertain submission recovery.
+No clear/dismiss operation exists, and reading/resolving an item never starts a
+worker or authorizes a new attempt. Developer contract 71 and the inbox migration
+must be released before advertising availability; hosted delivery is unverified.

@@ -12,8 +12,9 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  const timeout=fn=>{timers.set(++next,fn);return next;};
  const ctx={document,window:{addEventListener:(type,fn)=>windowEvents.set(type,fn)},setTimeout:timeout,clearTimeout:id=>timers.delete(id),CustomEvent:function(type,options){this.type=type;this.detail=options?.detail;},localStorage:{getItem:()=>null,setItem(){},removeItem(){},length:0}};
  vm.runInNewContext(fs.readFileSync('lib/store.js','utf8'),ctx);const store=ctx.window.JB.store;store.switchAccount(one);
- const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],job_batches:[]};
- const client={async rpc(name,args){
+ const db={profiles:[],preferences:clone(preferences),resumes:[],answer_library:[],applications:[],activity_events:[],submission_attempts:[],application_milestones:[],action_inbox:[],job_batches:[]};
+ let notify,status,removed=0;
+ const client={channel(){const c={on(event,filter,fn){notify=fn;return c;},subscribe(fn){status=fn;return c;}};return c;},removeChannel(){removed++;},async rpc(name,args){
   if(name==='workspace_reset_state')return {data:db.resetState||{}};
   if(name==='update_workspace_fields'||name==='perform_platform_action'){
    const current=db.profiles[0];
@@ -42,7 +43,7 @@ async function environment(batch=null,reactUI=false,preferences=[],initialReadFa
  const {connectCloud}=await import('../lib/cloud.mjs');connectCloud(client,reactUI?ui:null);
  async function flush(){const pending=[...timers.values()];timers.clear();pending.forEach(fn=>fn());for(let i=0;i<100;i++)await Promise.resolve();}
  await flush();
- return {store,db,ui,flush,event:type=>windowEvents.get(type)?.(),blockRead(){readGate=deferred();return readGate;},failRead(){failRead=true;},get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
+ return {store,db,ui,flush,notify:()=>notify?.(),status:value=>status?.(value),get timers(){return [...timers.values()].filter(fn=>fn.toString().includes("autoSync")).length;},get timerSources(){return [...timers.values()].map(fn=>fn.toString());},get removed(){return removed;},event:type=>windowEvents.get(type)?.(),blockRead(){readGate=deferred();return readGate;},failRead(){failRead=true;},get writes(){return writes;},block(){gate=deferred();return gate;},fail(){fail=true;},switch(id){owner=id;store.switchAccount(id);}};
 }
 const globals = ['JB', 'document', 'window', 'location', 'CustomEvent', 'setTimeout', 'clearTimeout'];
 let savedGlobals;
@@ -93,10 +94,12 @@ test('React cloud adapter receives sync and lock state without static page contr
 });
 
 
-test('background refresh receives agent account changes without manual reload',async()=>{
+test('notifications refresh agent changes without idle polling',async()=>{
  const env=await environment(null,true);
+ assert.equal(env.timers,0,JSON.stringify(env.timerSources));
  env.db.profiles=[{user_id:one,facts:{name:'Prepared by agent'},verified:false}];
- await env.flush();
+ env.notify();await env.flush();
+ assert.equal(env.timers,0,JSON.stringify(env.timerSources));
  assert.equal(env.store.get('workflow.profile.name'),'Prepared by agent');
  assert.equal(env.writes,0);
  assert.equal(env.store.get('workflow.cloudDirty'),false);
@@ -199,4 +202,14 @@ test('resume import rejects local edits and stale remote profile versions',async
 });
 test('resume import creates a missing tutorial profile through the versioned profile save boundary',async()=>{
  const env=await environment();const baseline=clone(env.store.get('workflow.profile'));await JB.cloud.importProfileFields({name:'New candidate'},null,baseline);assert.equal(env.db.profiles[0].facts.name,'New candidate');assert.equal(env.store.get('workflow.profile.name'),'New candidate');assert.equal(env.store.get('workflow.profile.verified'),false);
+});
+
+test('reconnecting reconciles missed inbox writes and removes old account subscriptions',async()=>{
+ const env=await environment();await env.flush();
+ env.db.action_inbox=[{id:'handoff',user_id:one,application_id:'app',kind:'resolve_blocker',reason:'Missing answer',available_at:new Date().toISOString(),created_at:new Date().toISOString(),resolved_at:null}];
+ env.status('SUBSCRIBED');await env.flush();
+ assert.equal(env.store.get('workflow.actionInbox')[0].id,'handoff');
+ assert.equal(env.timers,0,JSON.stringify(env.timerSources));
+ env.switch(two);await env.flush();assert.equal(env.removed,1);assert.equal(env.store.get('workflow.actionInbox').length,0);
+ JB.cloud.suspendForDemo(true);assert.equal(env.removed,2);
 });
