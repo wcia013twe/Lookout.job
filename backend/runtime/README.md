@@ -72,6 +72,52 @@ exhaust a five-minute lease rather than write with stale authority.
 
 ## Run locally
 
+### Optional Muse development tunnel
+
+To test hosted Muse against this local backend, run ngrok as an opt-in Compose
+service. Normal startup does not include the tunnel. Local Supabase must already
+be running and `backend/runtime/.env.local` must point to it as described below.
+Use the checkout that owns the running stack: the existing Compose project and
+container names are shared, so do not start a competing stack from another checkout.
+
+1. Create an ngrok account and obtain its agent authtoken and an assigned/reserved
+   HTTPS endpoint URL from its dashboard. The Docker container supplies the ngrok
+   client; no host ngrok installation is needed.
+2. From the repository root, run
+   `cp backend/runtime/.env.tunnel.example backend/runtime/.env.tunnel.local`.
+   Fill in `NGROK_AUTHTOKEN` and `NGROK_URL` locally. This ignored file contains
+   only tunnel settings; the tunnel does not receive the API's Supabase credentials.
+3. Run `make muse-dev`. It builds/starts the Node API and worker and starts the
+   tunnel after the API health check passes. It does not start Supabase or the
+   frontend. API health alone does not establish backend readiness.
+4. Run `make muse-dev-logs` to check the connection. Register a **separate development
+   Muse connector** at `NGROK_URL` plus `/mcp`. Keep the assigned URL stable to avoid
+   re-registering the connector. A client that pins the production host needs a
+   development configuration that allows this host.
+5. In the local website, create an agent connection under **Profile → Your agent**
+   and put its scoped bearer token in the development connector's secret settings.
+   The ngrok authtoken is only for running the tunnel; it does not authenticate MCP
+   calls. Never use a Supabase service-role key as a connector token.
+6. Test `tools/list` and a permitted read such as `read_onboarding_state` before
+   testing writes. Confirm the returned context belongs to the local test account.
+   Keep production routines on the production connector. Connector support and
+   successful hosted Muse execution require a live check; Compose startup alone
+   does not verify either.
+
+Run `make muse-dev-down` to stop only the tunnel, leaving local services running.
+The tunnel has no host ports or inspection UI and request inspection is disabled.
+It forwards to `http://api:8080` on the Compose network, preserving the API's existing
+bearer authentication. The forwarded port includes the API routes, not just `/mcp`;
+use isolated local test data. The laptop, API and tunnel must remain running during
+testing. The tunnel does not automatically restart when Docker restarts.
+ngrok rewrites the upstream Host header to `localhost:8080` so the API's existing
+Host allowlist remains enforced. A client sending an Origin header must still use
+an explicitly allowed origin; the tunnel does not bypass that check.
+
+The development profile adds transport for the existing scoped MCP tools; it adds
+no product action, approval bypass, or demo data path. Detached demos remain
+fictional and do not connect to the tunnel. See [ngrok's Docker instructions](https://ngrok.com/download/docker).
+
 Keep populated `backend/runtime/.env.local` outside Git. It supplies the local
 `SUPABASE_URL` (inside Docker: `http://host.docker.internal:54321`) and server-only
 `SUPABASE_SERVICE_ROLE_KEY`. Set `LOOKOUT_EXECUTION_ENABLED=true` only for approved
