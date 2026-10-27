@@ -1,14 +1,14 @@
 'use client';
 import {useEffect,useRef,useState,type FormEvent} from 'react';
 import {useWorkspace} from '../../../lib/workspace';
-import {interviewingCompanies,companySpaces,companyTopics} from '../../../../lib/company-spaces.mjs';
+import {interviewingCompanies,companySpaces,companyConversations} from '../../../../lib/company-spaces.mjs';
 import {CompanyLogo} from '../../../components/role-card';
 import {Notice,secondary} from '../../../components/ui';
 import ApiError from '../../../components/api-error';
 import {types,type Post,type Cursor,type Request} from '../_lib/types';
 import styles from './company-discussions.module.css';
 type Page={items:Post[];nextCursor:Cursor|null};
-type Space={key:string;company:string;role:string;stage:string;recommended:boolean;posts:Post[]};
+type Space={key:string;company:string;role:string;stage:string;recommended:boolean;level?:number;posts:Post[]};
 function SearchIcon(){return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>;}
 function Arrow(){return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>;}
 export default function CompanyDiscussions({request,openPost}:{request:Request;openPost:(post:Post)=>void}){
@@ -45,22 +45,28 @@ export default function CompanyDiscussions({request,openPost}:{request:Request;o
    {!busy&&!error&&!page.items.length&&<div className={styles.empty}><h4>The conversation is still ahead.</h4><p>No shared threads about {company} in your Circles yet. You can start one inside a Circle.</p></div>}
   </section>:<>
    {query&&<div className={styles.sectionHeading}><div><h3>Results for “{query}”</h3><p>Companies mentioned in matching threads.</p></div><button type="button" className={styles.back} onClick={reset}>Clear search</button></div>}
-   {!query&&!!recommended.length&&<section className={styles.section} aria-label="Where you’re interviewing"><div className={styles.sectionHeading}><div><h3>Where you’re interviewing</h3><p>A little context for the rounds ahead.</p></div><span>Based on your applications</span></div><div className={styles.grid}>{recommended.map(space=><CompanyTile key={space.key} space={space} open={()=>openCompany(space.company)}/>)}</div></section>}
-   {!!explore.length&&<section className={styles.section} aria-label={query?'Matching companies':'More companies to explore'}>{!query&&<div className={styles.sectionHeading}><div><h3>More companies to explore</h3><p>Follow the conversations relevant to your search.</p></div></div>}<div className={styles.grid}>{explore.map(space=><CompanyTile key={space.key} space={space} open={()=>openCompany(space.company)}/>)}</div></section>}
+   {!query&&!!recommended.length&&<section className={styles.section} aria-label="Where you’re interviewing"><div className={styles.sectionHeading}><div><h3>Where you’re interviewing</h3><p>A little context for the rounds ahead.</p></div><span>Based on your applications</span></div><div className={styles.grid}>{recommended.map(space=><CompanyTile key={space.key} space={space} openPost={openPost} open={()=>openCompany(space.company)}/>)}</div></section>}
+   {!!explore.length&&<section className={styles.section} aria-label={query?'Matching companies':'More companies to explore'}>{!query&&<div className={styles.sectionHeading}><div><h3>More companies to explore</h3><p>Follow the conversations relevant to your search.</p></div></div>}<div className={styles.grid}>{explore.map(space=><CompanyTile key={space.key} space={space} openPost={openPost} open={()=>openCompany(space.company)}/>)}</div></section>}
    {!busy&&!error&&!spaces.length&&<div className={styles.empty}><h3>{query?'No companies found for that search.':'Your company spaces start here.'}</h3><p>{query?'Try a company name, role, or interview topic.':'Companies you’re interviewing with will appear here. Shared company threads from your Circles will show up as they become available.'}</p>{query&&<button className={secondary} onClick={reset}>Clear search</button>}</div>}
   </>}
   {busy&&!!page.items.length&&<Notice>Finding discussions…</Notice>}
   {page.nextCursor&&<button className={`${secondary} mt-6`} disabled={busy} onClick={()=>void load(true)}>{company?'More discussions':'Explore more companies'}</button>}
  </section>;
 }
-function CompanyTile({space,open}:{space:Space;open:()=>void}){
- const preview=space.posts.find(post=>post.content.type==='interview_report')||space.posts[0],topics=companyTopics(space.posts);
+function CompanyTile({space,open,openPost}:{space:Space;open:()=>void;openPost:(post:Post)=>void}){
+ const conversations=companyConversations(space) as {post:Post;stage:string;role:string}[];
+ const personal=space.stage==='Screen'?'You’re at the screening stage.':`You’re at the ${space.stage.toLowerCase()} stage.`;
  return <article className={`${styles.tile} ${space.recommended?styles.recommended:''}`}>
   <div className={styles.identity}><CompanyLogo company={space.company}/><h4>{space.company}</h4>{space.recommended&&<span className={styles.stage}>{space.stage}</span>}</div>
-  <p className={styles.role}>{space.role||'Explore shared recruiting experiences'}</p>
-  <div className={styles.preview}>{preview?<><p className={styles.threadTitle}>{preview.content.title}</p><p className={styles.excerpt}>{preview.content.insight||preview.content.body}</p><p className={styles.source}>{[types[preview.content.type],preview.content.experienceDate||'Date unknown'].join(' · ')}</p></>:<><p className={styles.threadTitle}>What will your next round look like?</p><p className={styles.excerpt}>Explore your Circles for experiences that could help with your next round.</p></>}</div>
-  {!!topics.length&&<ul className={styles.topics} aria-label="Discussion topics">{topics.slice(0,2).map(topic=><li key={topic}>{topic}</li>)}</ul>}
-  <button type="button" aria-label={`Explore ${space.company} discussions`} className={styles.open} onClick={open}>Explore discussions<Arrow/></button>
+  <p className={styles.role}>{space.role||'Shared recruiting conversations'}</p>
+  {space.recommended&&<p className={styles.personal}>{personal}</p>}
+  {conversations.length?<ul className={styles.conversations} aria-label={`${space.company} conversation previews`}>{conversations.map(({post,stage,role})=><li key={post.id}>
+   <button type="button" aria-label={`Open thread: ${post.content.title}`} className={styles.conversation} onClick={()=>openPost(post)}>
+    <svg className={styles.chatIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8 9 9 0 0 1-3.6-.7L4 20l1.2-4.4A8 8 0 1 1 20 11.5Z"/></svg>
+    <span className={styles.conversationText}><span className={styles.conversationTitle}>{post.content.title}</span><span className={styles.conversationMeta}>{stage&&<span className={styles.sourceStage}>{stage}</span>}{role&&role.toLowerCase()!==space.role.toLowerCase()&&<span>{role}</span>}<span>{post.content.experienceDate||'Experience date unknown'}</span></span><span className={styles.conversationByline}>{post.author} · {types[post.content.type]}</span></span><Arrow/>
+   </button>
+  </li>)}</ul>:<div className={styles.preview}><p className={styles.threadTitle}>What would help you take your next step?</p><p className={styles.excerpt}>Open this company to look for shared experiences or start a question in your Circle.</p></div>}
+  <button type="button" aria-label={`Explore ${space.company} discussions`} className={styles.open} onClick={open}>All {space.company} discussions<Arrow/></button>
  </article>;
 }
 function ThreadList({posts,openPost}:{posts:Post[];openPost:(post:Post)=>void}){
