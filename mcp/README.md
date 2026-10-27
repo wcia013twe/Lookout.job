@@ -619,3 +619,15 @@ Routine execution rejects a stale/mismatched file; exact human approval can
 intentionally override the mapping. The runner downloads the draft’s pinned file,
 never a newly guessed alternative. Deploy the profile-resume-selection migration
 with the gateway update before claiming the new authorization behavior is live.
+
+### Check what changed
+
+On each actual work run: check context versions, then `read_muse_changes`.
+Read the affected current application, search profile, preferences or backend job
+through its existing scoped tool. A confirmed answer means a draft answer was
+saved, not that the application was approved. Continue only already-authorized
+work, then call `acknowledge_muse_changes` with the handled IDs. Unhandled changes
+stay pending, independently for each connection. Read another page when `hasMore`
+is true. Do not run this loop during lightweight connection setup; no wake-up or
+scheduled polling is added. If the acknowledgement tool is absent, keep events
+pending and report the scope gap. Feed acknowledgements are not message delivery.
