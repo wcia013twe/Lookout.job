@@ -1,4 +1,5 @@
 import pg from 'pg';
+import {validVector} from './pipeline.ts';
 import type {Query,Report,Store,StoreTarget} from './types.ts';
 const columns=`id,source_type,source_id,source_revision,content_kind,title,resource_links,contexts,post_references,company,role,stage,insight,experience_date,provenance,uncertainty,sharing_status,processing_version,embedding_model,created_at,updated_at,extensions.vector_dims(embedding) as embedding_dimensions,case when embedding is null then 'pending' else 'ready' end as embedding_status`;
 export function databaseStore(query:Query,target:StoreTarget):Store {
@@ -14,7 +15,7 @@ export function databaseStore(query:Query,target:StoreTarget):Store {
  values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14::extensions.vector,$15,$16,$17,$18::jsonb,$19::jsonb,$20::jsonb${owner?',$21':''})
  on conflict(${owner?'owner_id,':''}source_type,source_id) do update set source_revision=excluded.source_revision,company=excluded.company,role=excluded.role,stage=excluded.stage,insight=excluded.insight,experience_date=excluded.experience_date,provenance=excluded.provenance,uncertainty=excluded.uncertainty,content_hash=excluded.content_hash,processing_version=excluded.processing_version,embedding_text=excluded.embedding_text,embedding=excluded.embedding,embedding_model=excluded.embedding_model,content_kind=excluded.content_kind,title=excluded.title,resource_links=excluded.resource_links,contexts=excluded.contexts,post_references=excluded.post_references,updated_at=now()`,
  [r.sourceType,r.sourceId,r.sourceRevision,r.company,r.role,r.stage,r.insight,r.experienceDate,r.provenance,r.uncertainty,r.contentHash,r.processingVersion,r.embeddingText,(vector===null?null:JSON.stringify(vector)),r.embeddingModel,r.contentKind,r.title,JSON.stringify(r.resourceLinks),JSON.stringify(r.contexts),JSON.stringify(r.postReferences),...(owner?[owner]:[])]);},
- async list(limit,current){
+ async list(limit,current,search){
   if(!Number.isInteger(limit)||limit<1||limit>50)throw Error('INVALID_LIMIT');
   // Account reads require freshly authorized source fingerprints. Filter before LIMIT.
   if(owner&&!current)throw Error('CURRENT_SOURCES_REQUIRED');
@@ -23,7 +24,18 @@ export function databaseStore(query:Query,target:StoreTarget):Store {
    where current.source_type=reports.source_type and current.source_id=reports.source_id
     and current.content_hash=reports.content_hash and current.processing_version=reports.processing_version)` : '';
   const fingerprints=current?.map(r=>({source_type:r.sourceType,source_id:r.sourceId,content_hash:r.contentHash,processing_version:r.processingVersion}));
-  const rows=(await query(`select ${columns} from ${table} as reports${visibility} order by source_type,source_id limit $1`,owner?[limit,owner,JSON.stringify(fingerprints)]:[limit])).rows;
+  const args:any[]=owner?[limit,owner,JSON.stringify(fingerprints)]:[limit];
+  let filter=visibility, projection=columns, order='source_type,source_id';
+  if(search){
+   if(!validVector(search.vector))throw Error('INVALID_VECTOR');
+   if(!Number.isFinite(search.minSimilarity)||search.minSimilarity<0||search.minSimilarity>1)throw Error('INVALID_SIMILARITY');
+   const v=args.push(JSON.stringify(search.vector)),m=args.push(search.model),cutoff=args.push(search.minSimilarity);
+   const score=`(1 - (embedding OPERATOR(extensions.<=>) $${v}::extensions.vector))`;
+   filter+=`${owner?' and':' where'} embedding is not null and embedding_model=$${m} and ${score}>=$${cutoff}`;
+   projection+=`, ${score} as similarity`;
+   order='similarity desc,source_type,source_id';
+  }
+  const rows=(await query(`select ${projection} from ${table} as reports${filter} order by ${order} limit $1`,args)).rows;
   // These are typed pointers/snapshots only. This projection never resolves private records.
   return rows.map(row=>({...row,references:[
    ...row.contexts.map((context:Record<string,unknown>)=>({kind:'application_context',...context})),
