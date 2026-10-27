@@ -2615,7 +2615,23 @@
    "whyItFits": "Early-career SWE (0-2 years, Bachelor's) on Anduril's Air & Missile Defense Radar team: high-performance real-time distributed systems processing radar sensor data, multi-target tracking algorithms, C++/Python; $97,000-$129,000 base. Flag: role requires ability to obtain and maintain a U.S. Top Secret SCI clearance, and transcripts are requested early in the application.",
    "applicationUrl": "https://job-boards.greenhouse.io/andurilindustries/jobs/5275431007?gh_jid=5275431007",
    "applicationStatus": "New",
-   "verification": "Verified live 2026-10-26 on Anduril Greenhouse: Early Career Software Engineer, Battlespace Awareness posting page live, 0-2 years, $97,000-$129,000 USD. Locations per story frame; posting page text did not restate them. Distinct from the Anduril Systems Engineer (Broomfield) role surfaced by search."
+   "verification": "Verified live 2026-10-26 on Anduril Greenhouse: Early Career Software Engineer, Battlespace Awareness posting page live, locations Broomfield, CO and Fort Collins, CO confirmed, 0-2 years, $97,000-$129,000 USD. Distinct from the Anduril Systems Engineer (Broomfield) role surfaced by search."
+  },
+  {
+   "id": "hpe-ai-ml-developer-intern-1217413",
+   "company": "HPE",
+   "title": "AI/ML Developer Intern",
+   "employmentType": "Internship",
+   "location": "San Jose, CA",
+   "category": "AI/ML infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-10-26",
+   "sourceFreshness": "verified live 2026-10-26",
+   "whyItFits": "AI/ML intern building and operating ML models for network diagnostics, root-cause analysis, remediation, and optimization: Python/PySpark/scikit-learn, statistical and ML techniques including anomaly detection and event-stream mining. Hybrid (2 days/week in office), $35-$41/hr. No explicit term length shown on the posting.",
+   "applicationUrl": "https://careers.hpe.com/us/en/apply?jobSeqNo=HPE1US1217413EXTERNALENUS",
+   "applicationStatus": "New",
+   "verification": "Verified live 2026-10-26 on HPE careers: AI/ML Developer Intern, San Jose, Job ID 1217413, hybrid, $35.00-$41.00/hr. Distinct from the board's skipped HPE Cybersecurity/Embedded/AI-HPC interns."
   }
  ]
 }
