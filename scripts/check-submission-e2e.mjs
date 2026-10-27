@@ -193,8 +193,17 @@ test('Profile role/job-type mapping and fallback upload their own pinned resume 
  }
 });
 
+let workerProfileReady=false;
+async function workerProfile(){
+ if(workerProfileReady)return;
+ let instructions=updateField('','Application automation','Auto-apply routine matches','Yes');
+ instructions=updateField(instructions,'Company priorities','Tier list ID','ft');
+ instructions=updateField(instructions,'Application materials','Default resume ID',resumeId);
+ await tool('save_search_profile',{expectedVersion:0,profile:{id:'worker-execution',name:'Fictional worker execution',active:true,filters:{Employment:'Full-time'},priorities:{},instructions}});
+ workerProfileReady=true;
+}
 test('AI Apply durable job executes the existing one-click runner and projects its real result',async()=>{
- const f=await application();
+ await workerProfile();const f=await application('normal',{profileId:'worker-execution'});
  const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'worker-submit:1'};
  const queued=await tool('queue_application_job',payload);
  assert.equal(queued.job.status,'queued');assert.equal(f.fixture.posts,0);
@@ -205,8 +214,8 @@ test('AI Apply durable job executes the existing one-click runner and projects i
  const repeat=await tool('queue_application_job',payload);assert.equal(repeat.job.id,queued.job.id);assert.equal(f.fixture.posts,1);
 });
 test('AI Apply inspects an empty draft, selects its mapped resume and submits permitted routine fields',async()=>{
- const f=await application('normal',{emptyResume:true});
- await db.query("update public.applications set draft=jsonb_build_object('url',$2::text) where id=$1",[f.app.id,f.url]);
+ await workerProfile();const f=await application('normal',{profileId:'worker-execution',emptyResume:true});
+ await db.query("update public.applications set draft=jsonb_build_object('url',$2::text,'searchProfileId','worker-execution') where id=$1",[f.app.id,f.url]);
  const current=await row('select revision from public.applications where id=$1',[f.app.id]);
  const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:current.revision,eventKey:'worker-prefill:1'};
  await tool('queue_application_job',payload);
@@ -220,7 +229,7 @@ test('AI Apply inspects an empty draft, selects its mapped resume and submits pe
 test('Queued worker preserves pre-click HITL and post-click uncertainty without a second submission',async()=>{
  const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
  for(const mode of ['unnamed','uncertain']){
-  const f=await application(mode);
+  await workerProfile();const f=await application(mode,{profileId:'worker-execution'});
   const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'worker-stop:'+mode};
   const queued=await tool('queue_application_job',payload);await workOnce(rpc,{applicationExecutor:executor});
   const record=await tool('read_application_record',{applicationId:f.app.id});
@@ -231,4 +240,19 @@ test('Queued worker preserves pre-click HITL and post-click uncertainty without 
   const replay=await tool('queue_application_job',payload);assert.equal(replay.job.id,queued.job.id);
   assert.equal(await workOnce(rpc,{applicationExecutor:executor}),false);assert.equal(f.fixture.posts,mode==='uncertain'?1:0);
  }
+});
+
+test('An AI Apply click never replaces exact human approval when auto-apply is off',async()=>{
+ let instructions=updateField('','Application automation','Auto-apply routine matches','No');
+ instructions=updateField(instructions,'Company priorities','Tier list ID','ft');
+ instructions=updateField(instructions,'Application materials','Default resume ID',resumeId);
+ await tool('save_search_profile',{expectedVersion:0,profile:{id:'worker-human-review',name:'Fictional human review',active:true,filters:{Employment:'Full-time'},priorities:{},instructions}});
+ const f=await application('normal',{profileId:'worker-human-review'});
+ await tool('queue_application_job',{posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-human-review',expectedRevision:f.app.revision,eventKey:'worker-human-review'});
+ const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
+ await workOnce(rpc,{applicationExecutor:executor});
+ const record=await tool('read_application_record',{applicationId:f.app.id});
+ assert.equal(record.application.status,'Blocked');assert.equal(record.application.execution_job.status,'partial');assert.equal(f.fixture.posts,0);
+ assert.equal((await row('select count(*)::int n from public.approvals where application_id=$1',[f.app.id])).n,0);
+ const inbox=await tool('read_action_inbox');assert(inbox.items.some(item=>item.application_id===f.app.id));
 });
