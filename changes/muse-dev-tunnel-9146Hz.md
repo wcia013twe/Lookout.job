@@ -27,3 +27,5 @@
 - Validation: four launcher/env tests pass, including private-key exclusion, localhost override, HTTPS validation and hosted-mode isolation; data validation passes (158 roles). Live runtime checks are recorded below.
 
 - Live verification: a disposable fictional local account and scoped agent token successfully read the same profile via direct Node MCP and public ngrok MCP; the account was deleted afterward. Startup also accepts ngrok dashboard hostnames without an explicit scheme and normalizes the advertised URL to HTTPS. Invalid configuration is checked before acquiring the preview lock.
+
+- Final live check: restarted the existing local preview, then fetched the actual `/profile/` browser bundles and confirmed the advertised ngrok `/mcp` URL and `http://127.0.0.1:54321` data endpoint. The API container points to local Supabase through `host.docker.internal:54321`. Thirty-nine targeted launcher, MCP, scope and demo tests passed; the launcher tests were rerun after hostname normalization. A Muse connector still needs the human-created token in its secure settings; no real-account token was issued or connector registered by this task.
