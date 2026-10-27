@@ -3,7 +3,7 @@ SHELL := /bin/sh
 
 .PHONY: help dev up services frontend live down status install muse-dev muse-dev-down muse-dev-logs
 
-MUSE_DEV_COMPOSE = docker compose --env-file backend/runtime/.env.tunnel.local -f backend/runtime/compose.yaml -f backend/runtime/compose.muse-dev.yaml --profile muse-dev
+MUSE_DEV_COMPOSE = docker compose --env-file backend/runtime/.env.local -f backend/runtime/compose.yaml -f backend/runtime/compose.muse-dev.yaml --profile muse-dev
 
 help:
 	@printf '%s\n' 'make dev       Start Docker services, then frontend at http://localhost:3000' 'make live      Preview landed local main; follows new commits automatically' 'make services  Start local Supabase services only' 'make frontend  Start frontend against running local services' 'make down      Stop services, preserving local data (Ctrl-C stops frontend)' 'make status    Show local service URLs and credentials' 'make install   Install locked root and frontend dependencies'
@@ -11,7 +11,7 @@ help:
 
 # Local Supabase must already be running. Never stop/rebind another checkout's stack.
 muse-dev:
-	@test -f backend/runtime/.env.tunnel.local || { echo 'Copy backend/runtime/.env.tunnel.example to backend/runtime/.env.tunnel.local and fill in your ngrok token and HTTPS URL.'; exit 1; }
+	@test -f backend/runtime/.env.local || { echo 'Create backend/runtime/.env.local from backend/runtime/.env.example and fill in backend and ngrok settings.'; exit 1; }
 	$(MUSE_DEV_COMPOSE) up -d --build api worker tunnel
 
 muse-dev-down:

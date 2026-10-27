@@ -20,7 +20,6 @@ supabase/.temp/
 .env.*
 !.env.example
 !**/.env.example
-!backend/runtime/.env.tunnel.example
 
 # Private retained local presentation account/session.
 /backend/runtime/.review-session.local.json

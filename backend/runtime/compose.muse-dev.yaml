@@ -4,11 +4,11 @@ services:
     image: ngrok/ngrok:latest
     profiles: [muse-dev]
     environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:?Set NGROK_AUTHTOKEN in backend/runtime/.env.tunnel.local}
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:?Set NGROK_AUTHTOKEN in backend/runtime/.env.local}
     command:
       - http
       - http://api:8080
-      - --url=${NGROK_URL:?Set your assigned HTTPS ngrok URL in backend/runtime/.env.tunnel.local}
+      - --url=${NGROK_URL:?Set your assigned HTTPS ngrok URL in backend/runtime/.env.local}
       - --inspect=false
       # Keep the API's loopback Host allowlist; do not weaken it for public hosts.
       - --host-header=localhost:8080

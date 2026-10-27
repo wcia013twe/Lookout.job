@@ -6,3 +6,8 @@
 - Demo: existing fictional fixtures are unchanged because no product state or interaction was added. The focused demo/MCP run passed 35 checks; its database scope audit could not load missing PGlite.
 - Validation: `feature:doctor`; Compose v5.6.1 configuration validation with fixture credentials; service enumeration confirms no tunnel with the profile disabled; missing-token/URL rejection; Make dry runs and missing-file setup feedback; `validate:data` (158 roles); `git diff --check`.
 - Limits: root and frontend `npm ci` failed after registry DNS `ENOTFOUND` errors. `npm test` completed with 665 passes and 56 failures, including missing dependencies, a provider-count assertion (103 vs 108), and sandbox-denied local socket binding. Full output retained at `/private/tmp/muse-dev-tunnel-tests.log`. Docker engine access was denied by the execution sandbox; no containers were started, credentials created, or live tunnel/Muse round trip performed. Configuration validation does not verify image pulling, ngrok authentication, or backend availability.
+
+## Follow-up: shared runtime environment file
+
+- Tunnel settings now come from `backend/runtime/.env.local`, matching the existing Docker backend configuration. Moved the placeholders to the runtime example, removed the separate tunnel template, and updated Make commands and setup instructions. Only the ngrok token is forwarded to the tunnel container.
+- Validation: Compose resolved with fictional runtime credentials; verified tunnel receives no Supabase key and default startup excludes it; Make dry run, data validation and diff whitespace checks. Live tunnel verification remains pending credentials and Docker access.

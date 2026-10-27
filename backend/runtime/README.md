@@ -83,10 +83,11 @@ container names are shared, so do not start a competing stack from another check
 1. Create an ngrok account and obtain its agent authtoken and an assigned/reserved
    HTTPS endpoint URL from its dashboard. The Docker container supplies the ngrok
    client; no host ngrok installation is needed.
-2. From the repository root, run
-   `cp backend/runtime/.env.tunnel.example backend/runtime/.env.tunnel.local`.
-   Fill in `NGROK_AUTHTOKEN` and `NGROK_URL` locally. This ignored file contains
-   only tunnel settings; the tunnel does not receive the API's Supabase credentials.
+2. Add `NGROK_AUTHTOKEN` and `NGROK_URL` to the existing ignored
+   `backend/runtime/.env.local`. If creating it for the first time, copy
+   `backend/runtime/.env.example` and fill in both backend and tunnel settings.
+   Compose reads this file for interpolation but passes only `NGROK_AUTHTOKEN`
+   to the tunnel container; the tunnel does not receive Supabase credentials.
 3. Run `make muse-dev`. It builds/starts the Node API and worker and starts the
    tunnel after the API health check passes. It does not start Supabase or the
    frontend. API health alone does not establish backend readiness.
