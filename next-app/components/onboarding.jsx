@@ -103,7 +103,7 @@ function OnboardingFlow(){
   const current=w.store.get("workflow.profile");
   w.store.set("workflow.profile",{...current,setupAgent:value==="platform"?"platform":"own",setupAgentProvider:value,setupAgentName:label});
  }
- const room=<div className="mb-6"><AgentSelector joinedOnce={joinedOnce} agent={provider==="platform"?"platform":"own"} provider={provider} onSelect={selectAgent}/>{provider==="platform"&&<p className="hint">Cappy is a preview. To start now, connect your own agent below.</p>}{provider==="custom"&&<Field label="Agent name"><input maxLength={100} value={agentName} onChange={e=>selectAgent("custom",e.target.value)}/></Field>}</div>;
+ const room=<div className="mb-6"><AgentSelector joinedOnce={joinedOnce} agent={provider==="platform"?"platform":"own"} provider={provider} onSelect={selectAgent}/>{provider==="platform"&&<p className="hint">Cappy is coming soon. Choose another agent to continue.</p>}{provider==="custom"&&<Field label="Agent name"><input maxLength={100} value={agentName} onChange={e=>selectAgent("custom",e.target.value)}/></Field>}</div>;
  let content;
  if(scene==="start")content=<><Dots/><Title sub="Add your résumé when you’re ready. We’ll help with what’s next.">Let’s start with you.</Title><form onSubmit={continueBackground}>
   <div className="entry-choices">{/* LinkedIn connector is not available yet.

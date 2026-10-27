@@ -11,3 +11,10 @@
 
 - Removed “Invite your own agent” and its waiting-room dialog from setup, including demo setup. Existing saved agent selections remain readable; the normal agent choices and secure connection flow remain available. No backend or MCP behavior changed.
 - Validation: production build, data validation and whitespace check. No manual browser verification.
+
+## Follow-up: simplify connector setup
+
+- Replaced the onboarding chat-instruction handoff with “Add a connector in your agent,” server URL and token copy controls. Collapsed access/privacy and revocation details and removed redundant creation metadata. Simplified Cappy preview guidance.
+- Copying the token enables a connection check; only the existing backend agent confirmation marks it connected. Account-settings instructions and shared credential-free handoff remain unchanged. Existing scoped connection/onboarding tools continue to own issuance, revocation and readiness.
+- Demo uses a fictional preview interaction without copying credentials or creating a connector.
+- Validation: full npm test, production build, data validation, whitespace check, design detector. No manual browser or live external connector verification.

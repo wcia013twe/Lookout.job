@@ -21,11 +21,7 @@ const scopeLabels: Record<string, string> = {
   "approvals:read": "Read application review decisions",
 };
 export function AgentPluginSteps() {
-  return (<ul className="agent-plugin-steps">
-        <li>Copy the connection instructions into your agent’s chat.</li>
-        <li>Enter the token only in its secure credential form or plugin/MCP settings.</li>
-        <li>Your agent adds your saved schedules, reports setup status, then stops.</li>
-      </ul>);
+  return <p className="hint">Add a connector in your agent using the server URL and token below.</p>;
 }
 export default function AgentConnections({onboarding=false,onSetupCopied,onConnectionsChange}:{onboarding?:boolean;onSetupCopied?:()=>void;onConnectionsChange?:(connections:AgentConnection[])=>void}) {
   const w = useWorkspace();
@@ -114,7 +110,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
       if (epoch !== generation.current) return;
       setToken(result.token);
       setTokenConnectionId(result.connection?.id || "");
-      setFeedback("Connection created. Copy the token into your agent’s secure settings; it is shown only once.");
+      setFeedback(onboarding?"":"Connection created. Copy the token into your agent’s secure settings; it is shown only once.");
       await refresh(true);
     } catch (e) {
       if (epoch === generation.current) setFeedback(errorMessage(e));
@@ -168,27 +164,41 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
       await navigator.clipboard.writeText(connectionClipboardText(token,!setup));
       if (epoch === generation.current) {
         setFeedback(setup?"Instructions copied. These contain no token and can be pasted into chat.":"Token copied. Enter it only in the secure credential form, never in chat.");
-        if(setup) { setSetupCopied(true); onSetupCopied?.(); }
+        if(setup) { setSetupCopied(true); }
+        if(setup || onboarding) onSetupCopied?.();
       }
     } catch {
       if (epoch === generation.current) setFeedback(setup?"Could not copy the instructions. Try again.":"Could not copy the token. Select its field and copy it into the secure credential form.");
     }
   }
+  async function copyServerUrl() {
+    const epoch=generation.current;
+    try {
+      await navigator.clipboard.writeText(mcp);
+      if(epoch===generation.current)setFeedback("Server URL copied.");
+    } catch {
+      if(epoch===generation.current)setFeedback("Could not copy. Select the server URL to copy it.");
+    }
+  }
   if (onboarding) return (
     <div className="agent-connect">
       <AgentPluginSteps/>
-      <p className="agent-connect-permissions">Prepare jobs, import application history and record progress · you approve applications.</p>
-      {token ? <div aria-label="Your new agent connection">
-        <Field label="One-time connection token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
-        <div className="actions"><OnboardingButton onClick={()=>void copy(true)}>Copy instructions for chat</OnboardingButton><OnboardingButton secondary onClick={()=>void copy(false)}>Copy token for secure entry</OnboardingButton></div>
-        <p className="hint">The chat instructions contain no credentials. Your token is shown once; enter it only in the secure credential form or connection settings.</p>
-        {tokenConnectionId&&<OnboardingButton secondary disabled={busy} onClick={()=>void revoke(tokenConnectionId)}>Revoke this token and start over</OnboardingButton>}
+      {token ? <div aria-label="Your new agent connection" className="space-y-4">
+        <Field label="Server URL"><input className={control} value={mcp} readOnly onFocus={e=>e.currentTarget.select()}/></Field>
+        <OnboardingButton secondary onClick={()=>void copyServerUrl()}>Copy server URL</OnboardingButton>
+        <Field label="Token"><input className={control} value={token} readOnly type="password" autoComplete="off" spellCheck={false} onFocus={e=>e.currentTarget.select()}/></Field>
+        <OnboardingButton onClick={()=>void copy(false)}>Copy token</OnboardingButton>
+        <p className="hint">Save this token in your connector settings before leaving. It’s shown only once.</p>
+        <details className="text-sm">
+          <summary className="min-h-11 py-2">Connection details</summary>
+          <p className="hint">Your agent can prepare jobs, import history and record progress. You approve applications. Access lasts 30 days. <Link href="/privacy/#agents">Privacy details</Link></p>
+          {tokenConnectionId&&<OnboardingButton secondary disabled={busy} onClick={()=>void revoke(tokenConnectionId)}>Revoke token</OnboardingButton>}
+        </details>
       </div> : <form onSubmit={issue} aria-label="Create an agent connection">
         <input type="hidden" name="name" value="My personal agent"/>
-        <OnboardingButton type="submit" disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating setup…":"Get connection setup"}</OnboardingButton>
+        <OnboardingButton type="submit" disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating token…":"Create connector token"}</OnboardingButton>
       </form>}
       {feedback&&<p role="status" className="hint">{feedback}</p>}
-      <p className="hint">Access lasts 30 days. Your agent’s AI provider handles the information it receives. <Link href="/privacy/#agents">Privacy details</Link></p>
     </div>
   );
   const content = (
