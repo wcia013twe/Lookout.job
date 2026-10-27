@@ -653,3 +653,12 @@ conflict controls through fictional memory-only services; reload/reset restores
 the scenario and no real cloud service is called. Application-profile preferences
 and account-wide settings remain separate gates. Release the migration, frontend
 and gateway/MCP instruction/schema changes together before advertising live support.
+
+Preview posting facts use `recommendation.jobFacts.location`, when supplied, ahead
+of the older catalog location. It is optional bounded nonempty text within the
+existing source URL/check timestamp contract; `publish_batch` validates it for
+both MCP and browser projections. Legacy batches retain catalog fallback. Posting
+refreshes do not change assessment timestamps or grant application approval.
+The application preview counts saved answers separately from required/optional
+unanswered controls. Browser saves preserve `inspectedAt` and `inspectionComplete`
+so autosync cannot erase the saved form inspection metadata.

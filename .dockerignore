@@ -9,6 +9,14 @@ runner/*
 !runner/career-search-intake.mjs
 !runner/career-search-filters.mjs
 !runner/gateway-client.mjs
+!runner/submit.mjs
+!runner/runtime.mjs
+!runner/prepare.mjs
+!runner/browser.mjs
+!runner/ats.mjs
+!runner/forms.mjs
+!runner/attempt.mjs
+!runner/profile-upload.mjs
 !runner/vendor
 openwiki
 data
