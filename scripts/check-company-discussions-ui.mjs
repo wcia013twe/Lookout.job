@@ -16,6 +16,11 @@ try{
   const recommended=discussions.getByRole('region',{name:'Where you’re interviewing',exact:true});
   const bloomberg=recommended.getByRole('article').filter({has:page.getByRole('heading',{name:'Bloomberg',exact:true})});
   await bloomberg.getByText('Beyond getting it right: explaining your coding decisions',{exact:true}).waitFor();
+  const activity=bloomberg.locator('dl[aria-label="Bloomberg activity"]');
+  await activity.getByLabel('Open roles: 1',{exact:true}).waitFor();
+  await activity.getByLabel('Shared insights: 3',{exact:true}).waitFor();
+  await activity.getByLabel('Applicants here: unavailable',{exact:true}).waitFor();
+  await activity.getByLabel('At your stage: unavailable',{exact:true}).waitFor();
   assert.equal(await discussions.getByRole('searchbox').count(),1,'One search field');
   await bloomberg.getByText('Technical interview',{exact:true}).first().waitFor();
   await bloomberg.getByText('New Grad Software Engineer',{exact:true}).waitFor();

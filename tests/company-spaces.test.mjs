@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {interviewingCompanies,companySpaces,companyTopics,companyConversations} from '../lib/company-spaces.mjs';
+import {interviewingCompanies,companySpaces,companyTopics,companyConversations,companyActivity} from '../lib/company-spaces.mjs';
 import {demoFixtures} from '../next-app/lib/demo.mjs';
 import {createCircleKnowledgeDemo} from '../lib/circle-knowledge-demo.mjs';
 import {validateKnowledge} from '../supabase/functions/agent-gateway/knowledge.mjs';
@@ -39,4 +39,15 @@ test('conversation previews prioritize the owned stage and role without mixing c
  assert.deepEqual(previews.map(item=>item.post.id),['technical','senior','newer-screen','mixed']);
  assert.equal(previews.at(-1).stage,'Offer');
  assert.equal(previews.at(-1).role,'Other');
+});
+
+test('company activity counts source records without inventing population totals or availability',()=>{
+ const now=Date.parse('2026-10-27T16:00:00Z');
+ const roles=[{id:'a',company:'Bloomberg',applicationUrl:'https://example.com/a',postingObservation:{checkedAt:'2026-10-27T10:00:00Z',liveness:'active'}},{id:'duplicate',company:'Bloomberg',applicationUrl:'https://example.com/a',postingObservation:{checkedAt:'2026-10-27T10:00:00Z',liveness:'active'}},{id:'old',company:'Bloomberg',postingObservation:{checkedAt:'2026-10-20T10:00:00Z',liveness:'active'}},{id:'unknown',company:'Bloomberg'},{id:'other',company:'Stripe',postingObservation:{checkedAt:'2026-10-27T10:00:00Z',liveness:'active'}}];
+ const post={id:'p',parentId:null,state:'published',revision:1,publishedRevision:1,authorId:'same-stage-person',content:{type:'interview_report',stage:'Technical interview'}};
+ const result=companyActivity({key:'bloomberg',posts:[post,post,{...post,id:'draft',revision:2}]},{roles,partial:true,now});
+ assert.equal(result.activeJobs,1);assert.equal(result.activeJobsPartial,true);assert.equal(result.sharedInsights,1);assert.equal(result.insightsPartial,true);
+ assert.equal(result.applicants,null);assert.equal(result.atYourStage,null);
+ const unavailable=companyActivity({key:'missing',posts:[]},{roles,partial:true,now});
+ assert.equal(unavailable.activeJobs,null);assert.equal(unavailable.sharedInsights,null);
 });
