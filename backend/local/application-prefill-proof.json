@@ -120,8 +120,7 @@
         "Demographic questions require explicit manual review",
         "Hidden or unsupported fields require browser review"
       ],
-      "conditionalFormComplete": false,
-      "existingApplication": true
+      "conditionalFormComplete": false
     },
     {
       "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8199958",
@@ -331,8 +330,50 @@
       "blockers": [
         "Hidden or unsupported fields require browser review"
       ],
-      "conditionalFormComplete": false,
-      "existingApplication": false
+      "conditionalFormComplete": false
     }
+  ],
+  "gatewayVerification": [
+    {
+      "company": "SingleStore",
+      "via": "local Node MCP \u2192 Edge \u2192 Supabase",
+      "counts": {
+        "filled": 0,
+        "preserved": 7,
+        "remaining": 9,
+        "requiredRemaining": 3,
+        "skippedAlternatives": 1
+      },
+      "existingAnswersPreserved": true,
+      "hiddenControlsInDraft": 0,
+      "hiddenControlsInEscapes": 2,
+      "status": "Blocked",
+      "questionsReviewed": false,
+      "employerWrites": 0,
+      "submissions": 0
+    },
+    {
+      "company": "Cloudflare",
+      "via": "local Node MCP \u2192 Edge \u2192 Supabase",
+      "counts": {
+        "filled": 0,
+        "preserved": 9,
+        "remaining": 20,
+        "requiredRemaining": 14,
+        "skippedAlternatives": 1
+      },
+      "existingAnswersPreserved": true,
+      "hiddenControlsInDraft": 0,
+      "hiddenControlsInEscapes": 2,
+      "status": "Blocked",
+      "questionsReviewed": false,
+      "employerWrites": 0,
+      "submissions": 0
+    }
+  ],
+  "verificationLimits": [
+    "Live form schemas were parsed and drafts prepared locally; no personal values were sent to employer forms.",
+    "Public API form inspection is incomplete for conditional and browser-controlled fields.",
+    "Existing Cloudflare catalog URL includes gh_jid; reconcile canonical identity before any submission."
   ]
 }

@@ -12,7 +12,7 @@ test('direct contact/GitHub/resume fills use explicit sources without AI or fabr
 });
 test('unknown personal choices and free text remain explicit escapes',()=>{
  const r=fill([q('Preferred First Name','preferred'),q('Current location','location'),q('Why this company?','why','textarea'),q('Privacy acknowledgement','privacy','checkbox'),q('Latitude','lat','hidden')]);
- assert.deepEqual(r.escapes.map(x=>x.reason),['no-direct-match','missing-profile-value','no-direct-match','unsupported-control','unsupported-control']);assert.ok(r.questions.every(x=>x.answer===''));
+ assert.deepEqual(r.escapes.map(x=>x.reason),['no-direct-match','missing-profile-value','no-direct-match','unsupported-control','unsupported-control']);assert.ok(r.questions.every(x=>x.answer===''));assert.equal(r.questions.some(x=>x.fieldType==='hidden'),false);
 });
 test('manual answers are preserved and permitted saved answers require exact unique company-scoped provenance',()=>{
  const answers=[{id:'saved',user_id:user,question:'Sponsorship?',answer:'0',autofill_policy:'auto',verified_at:'today',context:{version:3},company_scope:'Example'}];
