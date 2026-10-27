@@ -14,6 +14,12 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
  fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id||'';
  fixtures.state.workflow.theme={...fixtures.state.workflow.theme,cardPacks:[structuredClone(demoPack)],cardPacksVersion:1};
  fixtures.state.workflow.searchPreferences.schedule={enabled:false,timezone:'UTC',routines:[structuredClone(demoPackTask)],configVersion:1};
+ if(apiScenario==='profile-conflict') {
+  const before=structuredClone(fixtures.state.workflow.profile);
+  fixtures.state.demo.profileConflict={before,latest:{...structuredClone(before),location:'Fictional agent location',verified:false}};
+  fixtures.state.workflow.profile={...before,location:'Fictional browser location',phone:'+1 202-555-0199',verified:false};
+  fixtures.state.ui={...fixtures.state.ui,profileConflict:{fields:[]}};
+ }
  const store=createDemoStore(fixtures.state);
  return {store,services:{...demoApiScenario(createDemoServices(store),apiScenario),simplifyImport:createDemoSimplifyImport()}};
 }

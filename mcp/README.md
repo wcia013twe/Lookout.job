@@ -543,3 +543,10 @@ Use existing human-review handoffs for approval and uncertain submission recover
 No clear/dismiss operation exists, and reading/resolving an item never starts a
 worker or authorizes a new attempt. Developer contract 71 and the inbox migration
 must be released before advertising availability; hosted delivery is unverified.
+
+Personal profile patches now share the website's typed/version-checked database
+writer, including preferred-name/address/birthday fields. Only the authenticated
+human can verify the exact saved facts. Website stale edits pause for explicit
+reconciliation and retain their original version across offline reloads. See
+[the complete profile-edit flow](../backend/agent-contract.md#complete-personal-profile-edit-flow)
+for the flow gate, local verifier, demo scenario and coordinated release limits.

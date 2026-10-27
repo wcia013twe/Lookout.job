@@ -117,6 +117,7 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
     review.reset(profile, profile.verified);
   }, [JSON.stringify(profile), w.user?.id, w.demoEpoch, review]);
   function update(key: string, value: unknown) {
+    w.store.set('ui.profileEditing',true);
     const next = { ...facts, [key]: value };
     if(key==="firstName"||key==="lastName")next.name=[next.firstName,next.lastName].filter(Boolean).join(" ");
     setFacts(next);
@@ -137,7 +138,8 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
     // Editing facts invalidates verification; saving must never imply human review.
     const verified = profile.verified === true && JSON.stringify(values) === JSON.stringify(profile);
     w.store.set("workflow.profile", { ...values, verified });
-    setFeedback("Saved");
+    w.store.set('ui.profileEditing',false);
+    setFeedback('Saved locally. Syncing your profile.');
     return true;
   }
 
@@ -155,6 +157,15 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
     setFeedback(verified ? "Saved profile details confirmed. This does not approve an application." : "Profile confirmation removed.");
   }
 
+  const conflict=w.state.ui?.profileConflict;
+  const [resolving,setResolving]=useState(false);
+  useEffect(()=>()=>{w.store.set('ui.profileEditing',false);},[w.store]);
+  async function resolveConflict(choice='review') {
+    setResolving(true);
+    try{await (w.demo?w.services.resolveProfileConflict(choice):window.JB.cloud.resolveProfileConflict(choice));}
+    catch(error){setFeedback(error instanceof Error?error.message:'Could not reload your profile. Your edits are kept.');}
+    finally{setResolving(false);}
+  }
   const groups = [
     {title:"Personal Info",keys:["firstName","lastName","preferredName","suffix","email","phone","birthday","location","address","address2","address3","postalCode",...(!facts.firstName&&!facts.lastName?["name"]:[])]},
     {title:"Professional summary",keys:["headline","currentEmployer","jobSearchStatus"]},
@@ -162,6 +173,13 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
   ];
   const renderGroup=(group:typeof groups[number])=>(<ProfileSection key={group.title} title={group.title} resetKey={profile} onFinish={save}>{editing=>editing?<fieldset><legend className="sr-only">{group.title}</legend><div className="grid gap-5 sm:grid-cols-2">{group.keys.map(key=><Field label={labels[key]} key={key}><input form={formId} id={`profile-${key}`} name={key} className={control} value={(facts[key] as string)||""} type={key==='email'?'email':key==='phone'?'tel':key==='birthday'?'date':['linkedin','github','portfolio','otherUrl'].includes(key)?'url':'text'} autoComplete={({name:'name',firstName:'given-name',lastName:'family-name',preferredName:'nickname',suffix:'honorific-suffix',email:'email',phone:'tel',birthday:'bday',location:'address-level2',address:'address-line1',address2:'address-line2',address3:'address-line3',postalCode:'postal-code'} as Record<string,string>)[key]||'off'} onChange={e=>update(key,e.target.value)}/></Field>)}</div></fieldset>:<ProfileValues items={group.keys.map(key=>({label:labels[key],value:facts[key]}))}/>}</ProfileSection>);
   return <ProfileDraftContext.Provider value={hasUnsavedFacts}>
+    {conflict&&<div role="alert" className="mb-6 space-y-3">
+      <p className="text-sm">Your profile changed elsewhere. Your edits are kept here.</p>
+      {conflict.fields?.length?<>
+        <p className="text-sm text-board-muted">Both versions changed: {conflict.fields.map((key:string)=>labels[key]||sections[key]||key).join(', ')}. Choose which values to keep for those fields. Other edits are preserved.</p>
+        <div className="flex flex-wrap gap-3"><button type="button" className={secondary} disabled={resolving||w.locked} onClick={()=>resolveConflict('latest')}>Use latest values</button><button type="button" className={secondary} disabled={resolving||w.locked} onClick={()=>resolveConflict('local')}>Keep my edits</button></div>
+      </>:<button type="button" className={secondary} disabled={resolving||w.locked} onClick={()=>resolveConflict()}>{resolving?'Loading latest profile…':'Reload latest profile'}</button>}
+    </div>}
     {renderGroup(groups[0])}
     {children}
     <h2 className="mb-3 mt-8 text-lg font-bold">Career background</h2>
@@ -183,7 +201,7 @@ export default function ProfileEditor({children}:{children?:ReactNode}) {
         </label>
         <p className="mt-2 text-xs text-board-muted">{hasUnsavedFacts ? "Save your edits before confirming the updated details." : "This confirms your profile details only. It does not approve or submit an application."}</p>
       </div>
-      <Notice>{feedback}</Notice>
+      <Notice>{conflict?"Review the profile conflict above before syncing.":feedback}</Notice>
     </form>
   </ProfileDraftContext.Provider>;
 }
