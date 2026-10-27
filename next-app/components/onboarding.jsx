@@ -1,7 +1,7 @@
 "use client";
 import LocationSelector from "./location-selector";
 import BrandMark from "./brand-mark";
-import {useRef,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import Link from "next/link";
 import {AnimatePresence,motion,MotionConfig,useReducedMotion} from "framer-motion";
 import {useWorkspace} from "../lib/workspace";
@@ -20,6 +20,8 @@ import {useSimplifyImports} from "../lib/simplify-import";
 import GoogleSignInButton from "./google-sign-in-button";
 import {Dots,Icon,Button,Quiet,Title,Field,SuggestedField,Pills} from "./onboarding-ui";
 
+import {onboardingStorage,setupSteps,onboardingProgressKey,readOnboardingProgress,saveOnboardingProgress,clearOnboardingProgress} from "../lib/onboarding-progress.mjs";
+
 export default function Onboarding(){
  const w=useWorkspace();
  if(!w.state)return null;
@@ -28,11 +30,21 @@ export default function Onboarding(){
 function OnboardingFlow(){
  const w=useWorkspace(),a=useApplicationProfile(),profile=w.state.workflow.profile;
  const [finishing,setFinishing]=useState(false);
- async function finish(){setFinishing(true);setError("");try{await w.websiteOnboarding.complete();}catch(e){setError(e.message||"Could not save setup. Please retry.");setFinishing(false);}}
+ async function finish(){setFinishing(true);setError("");try{await w.websiteOnboarding.complete();clearOnboardingProgress(onboardingStorage(),progressKey);}catch(e){setError(e.message||"Could not save setup. Please retry.");setFinishing(false);}}
  const [scene,setScene]=useState("start"),[method,setMethod]=useState(""),[linkedin,setLinkedin]=useState(profile.linkedin||"");
  const [work,setWork]=useState(readField(a.profile.prompt,"Role preferences","Roles").value);
  const [location,setLocation]=useState(readField(a.profile.prompt,"Search Filters","Location").value);
  const [employment,setEmployment]=useState(readField(a.profile.prompt,"Search Filters","Employment").value||"Full-time");
+ const progressKey=onboardingProgressKey(w.demo?`demo-${w.demoEpoch}`:w.user?.id);
+ const [progressReady,setProgressReady]=useState(false),[progressSaved,setProgressSaved]=useState(false);
+ useEffect(()=>{
+  setScene(readOnboardingProgress(onboardingStorage(),progressKey));
+  setProgressReady(true);
+ },[progressKey]);
+ useEffect(()=>{
+  if(progressReady)setProgressSaved(saveOnboardingProgress(onboardingStorage(),progressKey,scene));
+ },[progressReady,progressKey,scene]);
+ const step=scene==='reveal'?4:setupSteps.indexOf(scene)+1;
  const [savedResumeId,setSavedResumeId]=useState("");
  const [resumeId,setResumeId]=useState(readField(a.profile.prompt,"Application materials","Default resume ID").value);
  const [sample,setSample]=useState(false),[role,setRole]=useState(null),[error,setError]=useState(""),[feedback,setFeedback]=useState(""),[uploading,setUploading]=useState(false);
@@ -124,7 +136,7 @@ function OnboardingFlow(){
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Button disabled={finishing||w.locked} onClick={()=>void finish()}>{finishing?"Saving setup…":"Open my workspace"}</Button><BrowserAppInstructions/></>;
  if(!w.demo&&!w.user)content=<><Dots/><Title sub="Create your Lookout account or return to your workspace before setting up your search and agent.">Sign up or sign in.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Checking sign-in…"}/></div><p className="hint">New here? Continuing with Google creates your account. Already joined? Use the same Google account to sign in.</p></>;
- return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><BrandMark/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
+ return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><BrandMark/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{progressReady&&(w.demo||w.user)&&<p className="hint" role="status">Step {step} of {setupSteps.length}{progressSaved?" · Saved in this browser":""}</p>}{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
 }
 
 function OnboardingSimplifyImport(){
