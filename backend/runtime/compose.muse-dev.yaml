@@ -1,0 +1,25 @@
+# Explicit development overlay; normal Compose startup never starts a tunnel.
+services:
+  tunnel:
+    image: ngrok/ngrok:latest
+    profiles: [muse-dev]
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:?Set NGROK_AUTHTOKEN in backend/runtime/.env.tunnel.local}
+    command:
+      - http
+      - http://api:8080
+      - --url=${NGROK_URL:?Set your assigned HTTPS ngrok URL in backend/runtime/.env.tunnel.local}
+      - --inspect=false
+      # Keep the API's loopback Host allowlist; do not weaken it for public hosts.
+      - --host-header=localhost:8080
+      - --log=stdout
+    depends_on:
+      api:
+        condition: service_healthy
+    # Stop with the testing session; do not reopen a tunnel on Docker restart.
+    restart: 'no'
+    logging:
+      driver: local
+      options:
+        max-size: '10m'
+        max-file: '3'
