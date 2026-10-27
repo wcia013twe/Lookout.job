@@ -98,3 +98,41 @@ remaining fallback checks return `browser_budget_exhausted`, never an invented
 live/dead verdict. An in-flight copied check may complete beyond the soft budget.
 The API preserves provider-specific exceptions, including Lever's non-authoritative
 API 404. `npm run test:liveness` exercises the copied classifiers and adapter.
+
+## HiringCafe resource and connection
+
+The optional `hiringcafe` source template returned by `read_search_context` points
+to https://hiringcafe.com/ and records the public MCP endpoint
+https://hiringcafe.com/api/chatgpt/mcp in its `api` field. It is a discovery
+resource; adding the template does not install a connector, enable the copied
+provider scanner, or alter anyone's private saved sources. Save an explicitly
+chosen source through the existing versioned `save_search_document` portals
+operation (website targeting controls share the canonical document validation).
+The personal agent must have an MCP client or use browser sourcing. The copied
+scanner has no HiringCafe provider and must report unsupported access honestly.
+
+Official connection documentation:
+https://hiringcafe.com/documentation/hiringcafe-chatgpt-app
+
+The remote service uses Streamable HTTP JSON-RPC POST requests and no
+authentication. Discover its current schema with `tools/list`, then call
+`search_hiringcafe_jobs` and `get_hiringcafe_job_details`. Run full-time and
+internship searches separately using the selected profile. Search returns a
+bounded selection (currently 20, one role per company); never treat that page
+as exhaustive catalog coverage. A result's `applyUrl` may be a HiringCafe page,
+so follow it to the employer/ATS before submitting canonical employer URLs to
+`submit_search_leads`. Preserve provider dates as source evidence until the
+employer independently discloses a posting date.
+
+Live smoke check on 2026-10-27: `tools/list`, a US entry-level full-time
+`backend engineer` search, and a details call all returned HTTP 200 without
+JSON-RPC/tool errors. Search reported 122 matches and supplied 20 rows. Details
+for job `51pabf3drml5p70b` returned TikTok's Backend Engineer Graduate (User
+Growth) - 2027 Start with a description and a HiringCafe link. This verifies
+read access only: employer availability, catalog completeness, rate limits,
+production deployment and an end-to-end saved personal search were not tested.
+No discovered roles or personal records were imported by this smoke check.
+
+Demo verification uses the existing fictional search-context path: its
+`searchResponse('search.context', ...)` exposes the same optional templates
+without making external requests or changing fictional saved sources.
