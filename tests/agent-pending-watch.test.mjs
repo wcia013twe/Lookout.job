@@ -18,13 +18,13 @@ test('count HTTP boundary contains a scalar only and fails closed',async()=>{
 test('watch configuration and real counts share ownership, receipts, scopes and lifecycle through MCP and gateway SQL',async()=>{
  const db=await createTestDatabase(),h='1'.repeat(64),h2='2'.repeat(64),hf='3'.repeat(64),hr='4'.repeat(64);
  const call=async(hash,operation,payload={})=>(await db.query('select public.agent_dispatch($1,$2,$3) data',[hash,operation,payload])).rows[0].data;
- const count=async id=>Number((await db.query('select public.muse_pending_count($1) n',[id])).rows[0].n);
+ const count=async id=>Number((await db.query('select public.agent_pending_count($1) n',[id])).rows[0].n);
  try{
   for(const [hash,user,scopes]of [[h,owner,['workspace:read','activity:write']],[h2,owner,['workspace:read','activity:write']],[hf,other,['workspace:read','activity:write']],[hr,owner,['workspace:read']]])await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,'Fictional watch',$2,$3,now()+interval '1 day')",[user,hash,scopes]);
   for(const payload of [{},{enabled:'true'},{enabled:true,userId:other}]){assert.throws(()=>validateRequest({operation:'changes.watch',payload}));await assert.rejects(call(h,'changes.watch',payload));}
   await assert.rejects(call(hr,'changes.watch',{enabled:true}),e=>e.code==='42501');
   const handler=createHandler(async(token,operation,payload)=>({status:200,data:await call(token.slice(9),operation,payload)}));
-  const response=await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+h,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'configure_muse_watch',arguments:{enabled:true}}})}));
+  const response=await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+h,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'configure_agent_watch',arguments:{enabled:true}}})}));
   const result=await response.json();assert.ok(!result.result.isError,JSON.stringify(result));
   const watch=JSON.parse(result.result.content[0].text).watchId;assert.ok(watch);
   const second=(await call(h2,'changes.watch',{enabled:true})).watchId,foreign=(await call(hf,'changes.watch',{enabled:true})).watchId;
@@ -45,7 +45,7 @@ test('watch configuration and real counts share ownership, receipts, scopes and 
  }finally{await db.close();}
 });
 test('fictional watch demo rotates, acknowledges and resets without account IO',async()=>{
- const demo=createMuseChangeFeedDemo(),watch=(await demo.configureMuseWatch({enabled:true})).watchId;
- assert.equal(await demo.readMusePendingCount(watch),4);const feed=await demo.readMuseChanges();await demo.acknowledgeMuseChanges({eventIds:[feed.items[0].id]});assert.equal(await demo.readMusePendingCount(watch),3);
- const next=(await demo.configureMuseWatch({enabled:true})).watchId;assert.equal(await demo.readMusePendingCount(watch),0);assert.equal(await demo.readMusePendingCount(next),3);await demo.configureMuseWatch({enabled:false});assert.equal(await demo.readMusePendingCount(next),0);assert.equal((await createMuseChangeFeedDemo().readMuseChanges()).items.length,4);
+ const demo=createMuseChangeFeedDemo(),watch=(await demo.configureAgentWatch({enabled:true})).watchId;
+ assert.equal(await demo.readAgentPendingCount(watch),4);const feed=await demo.readMuseChanges();await demo.acknowledgeMuseChanges({eventIds:[feed.items[0].id]});assert.equal(await demo.readAgentPendingCount(watch),3);
+ const next=(await demo.configureAgentWatch({enabled:true})).watchId;assert.equal(await demo.readAgentPendingCount(watch),0);assert.equal(await demo.readAgentPendingCount(next),3);await demo.configureAgentWatch({enabled:false});assert.equal(await demo.readAgentPendingCount(next),0);assert.equal((await createMuseChangeFeedDemo().readMuseChanges()).items.length,4);
 });

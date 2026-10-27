@@ -1008,6 +1008,6 @@ The main-branch **Deploy React board** workflow deploys the backend first throug
 
 The new Google OAuth callback is `https://osyrlausutnqzlegxmnd.supabase.co/auth/v1/callback`; it must be allowed by the Google OAuth client. Supabase alone does not host the optional Node API, parser, worker or submission browser. Those capabilities remain unavailable until a separate runtime and required secrets are configured and verified.
 
-A count-only Muse watch can be configured through `configure_muse_watch`; see
+A count-only agent watch can be configured through `configure_agent_watch`; see
 [watch setup and limitations](mcp/README.md#credential-free-pending-count-watch).
 It needs backend release and a separately configured host watcher before use.

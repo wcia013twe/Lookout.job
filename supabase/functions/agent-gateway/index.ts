@@ -39,7 +39,7 @@ function respond(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers });
 }
 Deno.serve(withGatewayCors(async request => {
-  const countResponse=await pendingCountResponse(request,(watchId:string)=>admin.rpc('muse_pending_count',{watch_id:watchId}));
+  const countResponse=await pendingCountResponse(request,(watchId:string)=>admin.rpc('agent_pending_count',{watch_id:watchId}));
   if(countResponse)return countResponse;
   if (request.method !== 'POST') return respond({ error: 'Use POST' }, 405);
   const bearer = request.headers.get('Authorization')?.match(/^Bearer (.+)$/)?.[1];

@@ -812,7 +812,7 @@ produce a ready result. No new public endpoint or access grant is introduced.
 ## Credential-free pending-count watch
 
 Implemented locally; production requires the migration and gateway/MCP release.
-An authenticated `configure_muse_watch` call (`changes.watch`, workspace:read +
+An authenticated `configure_agent_watch` call (`changes.watch`, workspace:read +
 activity:write) with `{enabled:true}` returns `watchId`, `enabled` and
 `pollIntervalSeconds:120`. Each enable rotates the previous handle.
 `{enabled:false}` invalidates it. There is one watch per connection; no user ID
@@ -843,5 +843,5 @@ Idle polls use no model tokens, but incur normal HTTP/function/database usage.
 This feature installs no scheduler or wake integration. Confirm actual host
 wake behavior separately before claiming it is active.
 
-Detached demo services expose configureMuseWatch/readMusePendingCount with
+Detached demo services expose configureAgentWatch/readAgentPendingCount with
 fictional handles, independent acknowledgement and reset; no network is called.
