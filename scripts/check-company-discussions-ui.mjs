@@ -11,7 +11,7 @@ try{
   await context.route('**/*.supabase.co/**',route=>{if(!new URL(route.request().url()).pathname.startsWith('/storage/v1/object/public/company-logos/'))cloudCalls++;return route.abort();});
   const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',error=>errors.push(error.message));
   await page.goto((process.env.LOOKOUT_UI_URL||'http://127.0.0.1:3074')+'/circles/?demo=1');
-  await page.getByRole('navigation',{name:'Circles views'}).getByRole('button',{name:'Company discussions',exact:true}).click();
+  await page.getByRole('navigation',{name:'Community views'}).getByRole('button',{name:'Companies',exact:true}).click();
   const discussions=page.getByRole('region',{name:'Company discussions',exact:true});
   await discussions.getByRole('button',{name:'Search',exact:true}).waitFor({state:'visible'});
   await discussions.getByRole('region',{name:'Companies from your applications'}).getByRole('button',{name:'Stripe',exact:true}).click();
@@ -27,7 +27,7 @@ try{
   await discussions.getByRole('button',{name:'Clear search',exact:true}).click();
   await discussions.getByRole('button',{name:'Stripe OA: a fictional recruiting update',exact:true}).waitFor();
   await page.reload();await discussions.getByRole('heading',{name:'Company discussions',exact:true}).waitFor();
-  await page.getByRole('navigation',{name:'Circles views'}).getByRole('button',{name:'Your circles',exact:true}).click();
+  await page.getByRole('navigation',{name:'Community views'}).getByRole('button',{name:'Circles',exact:true}).click();
   await page.getByRole('heading',{name:'Your circles',exact:true}).waitFor();
   assert.equal(cloudCalls,0);assert.deepEqual(errors,[]);
   console.log(`${name}: subviews, company shortcut, source thread, return, empty/clear, reload, overflow and isolated demo passed`);

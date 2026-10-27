@@ -21,7 +21,7 @@ const navigation = [
   ["/applications/", "Applications", "applications"],
   ["/referrals/", "Network", "referrals"],
   ["/career-toolkit/", "Career Toolkit", "toolkit"],
-  ["/circles/", "Circles", "circles"],
+  ["/circles/", "Community", "circles"],
 ] as const;
 
 export default function AppShell({ children }: { children: ReactNode }) {
