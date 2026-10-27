@@ -62,7 +62,6 @@ export default function ResumeImport({resumeId,onClose,autoStart=false,onComplet
    <ProcessingStep label={saved?'Profile details saved':proposal&&busy?'Saving your profile':'Save reviewed profile details'} done={saved} active={busy&&Boolean(proposal)}/>
   </ol>}
   {saved&&autoStart&&<button type="button" className={primary} onClick={onComplete}>Continue</button>}
-  {autoStart&&feedback&&!proposal&&!saved&&<button type="button" className={secondary} disabled={busy||w.locked||draftPending} onClick={()=>void parse()}>Try again</button>}
   {proposal&&<>
    <p className="text-sm text-board-muted">Missing fields are selected. Existing fields are unchecked. Selecting a history section replaces that entire section; compare every entry before saving. Imported details remain unverified.</p>
    {proposal.warnings.map((warning:string)=><p key={warning} role="status" className="text-sm text-board-muted">{warning}</p>)}

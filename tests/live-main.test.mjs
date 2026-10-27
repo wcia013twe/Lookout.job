@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
-import {syncMain} from '../scripts/live-main.mjs';
+import {syncMain,publicPreviewEnv} from '../scripts/live-main.mjs';
 const git=(cwd,...args)=>execFileSync('git',args,{cwd,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
 test('main preview follows landed commits, flags dependency changes and preserves dirty work',async()=>{
  const root=await mkdtemp(join(tmpdir(),'live-main-test-'));
@@ -32,4 +32,15 @@ test('main preview refuses divergent commits before changing files',async()=>{
   return '';
  }),/not an ancestor/);
  assert.equal(calls.some(args=>args[0]==='merge'),false);
+});
+
+test('preview carries only the configured public parser origin from source env files',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'live-env-test-'));
+ try{
+  await mkdir(join(root,'next-app'));
+  await writeFile(join(root,'.env.local'),'NEXT_PUBLIC_LOOKOUT_API_URL="http://127.0.0.1:8081"\nAPILAYER_API_KEY=private\nOPENAI_API_KEY=private\n');
+  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOOKOUT_API_URL:'http://127.0.0.1:8081'});
+  await writeFile(join(root,'next-app/.env.local'),'NEXT_PUBLIC_LOOKOUT_API_URL=http://127.0.0.1:8082\n');
+  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOOKOUT_API_URL:'http://127.0.0.1:8082'});
+ }finally{await rm(root,{recursive:true,force:true});}
 });

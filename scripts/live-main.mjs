@@ -1,5 +1,5 @@
 import {execFile, spawn} from 'node:child_process';
-import {promisify} from 'node:util';
+import {promisify,parseEnv} from 'node:util';
 import {mkdir, readFile, access, rmdir, writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join, resolve} from 'node:path';
@@ -11,6 +11,18 @@ export async function sourceCheckout(cwd, execute=run) {
  const root=await execute('git',['rev-parse','--show-toplevel'],cwd);
  try {return JSON.parse(await readFile(join(root,'.git/codex-feature.json'),'utf8')).sourceCheckout||root;}
  catch {return root;}
+}
+
+// Copy only the public parser origin; source env files may contain private keys.
+export async function publicPreviewEnv(source){
+ const result={};
+ for(const file of ['.env.local','next-app/.env.local']){
+  try{
+   const values=parseEnv(await readFile(join(source,file),'utf8'));
+   if(values.NEXT_PUBLIC_LOOKOUT_API_URL)result.NEXT_PUBLIC_LOOKOUT_API_URL=values.NEXT_PUBLIC_LOOKOUT_API_URL;
+  }catch(error){if(error.code!=='ENOENT')throw error;}
+ }
+ return result;
 }
 
 // The preview owns this clone. Never sync into a task checkout or discard edits.
@@ -38,7 +50,7 @@ async function main(){
  const lock=join(parent,'running');
  try{await mkdir(lock);}catch{throw Error(`Live preview is already running, or its lock needs review: ${lock}`);}
  let child,stopping=false,timer,checking=false;
- const env={...process.env,npm_config_cache:process.env.npm_config_cache||join(home,'npm-cache')};
+ const env={...await publicPreviewEnv(source),...process.env,npm_config_cache:process.env.npm_config_cache||join(home,'npm-cache')};
  async function dependencyKey(){
   const hash=createHash('sha256');
   for(const file of ['package.json','package-lock.json','next-app/package.json','next-app/package-lock.json'])hash.update(await readFile(join(preview,file)));

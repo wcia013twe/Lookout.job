@@ -12,3 +12,10 @@
 - Successful saves show “Your profile is saved” and keep the confirmation visible until Continue. Extraction failures show an attention state and retry without claiming success.
 - Shared fictional demo now verifies all three completed steps and the saved heading.
 - Follow-up validation: frontend typecheck, data validation, production build, clean design detector, and desktop/mobile browser checks passed. Live provider processing remains unverified.
+
+## Parser connection repair
+
+- Removed the onboarding Try again control. Continue still makes one automatic parse request; failures show their actual message.
+- Live-main now reads only NEXT_PUBLIC_LOOKOUT_API_URL from source local env files, so isolated previews connect to the configured parser without copying private credentials.
+- Root cause locally: parser running on 8081 but preview had no API URL. Added coverage for public-only propagation and env precedence.
+- Validation: three live-preview tests, typecheck, data validation, production build and production-build browser checks passed. Provider extraction with a real resume remains unverified.
