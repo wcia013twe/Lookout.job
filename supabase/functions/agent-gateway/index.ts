@@ -1,3 +1,4 @@
+import {pendingCountResponse} from './pending-count.mjs';
 import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs';
 import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
 import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
@@ -38,6 +39,8 @@ function respond(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers });
 }
 Deno.serve(withGatewayCors(async request => {
+  const countResponse=await pendingCountResponse(request,(watchId:string)=>admin.rpc('muse_pending_count',{watch_id:watchId}));
+  if(countResponse)return countResponse;
   if (request.method !== 'POST') return respond({ error: 'Use POST' }, 405);
   const bearer = request.headers.get('Authorization')?.match(/^Bearer (.+)$/)?.[1];
   if (!bearer) return respond({ error: 'Authentication required' }, 401);

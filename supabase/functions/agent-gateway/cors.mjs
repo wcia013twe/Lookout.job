@@ -6,7 +6,7 @@ export function withGatewayCors(handle){
   const origin=request.headers.get('Origin');
   const headers=new Headers({
    'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info',
-   'Access-Control-Allow-Methods':'POST, OPTIONS',
+   'Access-Control-Allow-Methods':'GET, POST, OPTIONS',
    'Cache-Control':'no-store',
    'Vary':'Origin',
   });

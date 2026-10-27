@@ -1007,3 +1007,7 @@ The main-branch **Deploy React board** workflow deploys the backend first throug
 `scripts/deploy-supabase.mjs` requires an exact, clean main-branch Actions source commit and verifies source bytes with the existing runtime stamping helper before packaging. Gateway and MCP report the same reviewed commit. This is deployment provenance, not proof of application behavior. Do not deploy a feature branch or override local Auth settings onto production. Hosted Auth redirect/provider configuration and external-service secrets are managed separately.
 
 The new Google OAuth callback is `https://osyrlausutnqzlegxmnd.supabase.co/auth/v1/callback`; it must be allowed by the Google OAuth client. Supabase alone does not host the optional Node API, parser, worker or submission browser. Those capabilities remain unavailable until a separate runtime and required secrets are configured and verified.
+
+A count-only Muse watch can be configured through `configure_muse_watch`; see
+[watch setup and limitations](mcp/README.md#credential-free-pending-count-watch).
+It needs backend release and a separately configured host watcher before use.

@@ -687,3 +687,40 @@ Refresh context and tools/list after version changes. Retry only with
 `readyToRetry:true` and a new `releaseId`; retain the full runtime identity.
 Missing/older versions, unsupported migrations and unverified mixed frontend
 releases stay unready. Deployed code does not itself prove the bug is fixed.
+
+## Credential-free pending-count watch
+
+Implemented locally; production requires the migration and gateway/MCP release.
+An authenticated `configure_muse_watch` call (`changes.watch`, workspace:read +
+activity:write) with `{enabled:true}` returns `watchId`, `enabled` and
+`pollIntervalSeconds:120`. Each enable rotates the previous handle.
+`{enabled:false}` invalidates it. There is one watch per connection; no user ID
+or connection ID is accepted. Both MCP and gateway use the same SQL validation.
+
+The watcher may GET `<agent-gateway URL>/pending-count?watchId=<watchId>`
+without Authorization or an API key. HTTP 200 contains only a JSON integer,
+including 0 for unknown, disabled, revoked, expired or scope-ineligible handles.
+It counts all unacknowledged supported system events for that connection,
+including timeline changes, rather than the first 20/50 feed items. Reading
+counts never acknowledges events or updates connection last-used state. Responses
+are no-store. Invalid queries return 400, wrong methods 405, and database failure
+503; failures must never be interpreted as an empty feed.
+
+The handle is an unguessable count-only capability, not a Lookout credential.
+Anyone holding it can observe pending activity counts, so avoid public links/logs.
+It cannot read records, acknowledge events, or authorize work. Rotate it after
+accidental disclosure. Runtime policies must permit storing this limited handle;
+this does not override a host rule against all capability URLs.
+
+Runtime setup (outside Lookout): poll about every 120 seconds with jitter, a
+request timeout and exponential error backoff. On count > 0, serialize one
+authenticated worker: read_muse_changes → refresh affected records → handle
+already-authorized work → acknowledge handled IDs, paging until done. Coalesce
+wake-ups while active; if blocked events remain, use a cooldown/backoff rather
+than repeatedly waking. Do not acknowledge before handling or on HTTP errors.
+Idle polls use no model tokens, but incur normal HTTP/function/database usage.
+This feature installs no scheduler or wake integration. Confirm actual host
+wake behavior separately before claiming it is active.
+
+Detached demo services expose configureMuseWatch/readMusePendingCount with
+fictional handles, independent acknowledgement and reset; no network is called.
