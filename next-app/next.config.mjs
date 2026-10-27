@@ -5,6 +5,7 @@ import { parseEnv } from 'node:util';
 const localEnv = new URL('../.env.local', import.meta.url);
 if (existsSync(localEnv)) {
   for (const [key, value] of Object.entries(parseEnv(readFileSync(localEnv, 'utf8')))) {
+    if(key==='GEOIFY_API'&&!process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY)process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY=value;
     if (key.startsWith('NEXT_PUBLIC_') && process.env[key] === undefined) process.env[key] = value;
   }
 }

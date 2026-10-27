@@ -13,12 +13,13 @@ export async function sourceCheckout(cwd, execute=run) {
  catch {return root;}
 }
 
-// Copy only the public parser origin; source env files may contain private keys.
+// Copy only browser configuration; never forward unrelated private credentials.
 export async function publicPreviewEnv(source){
  const result={};
  for(const file of ['.env.local','next-app/.env.local']){
   try{
    const values=parseEnv(await readFile(join(source,file),'utf8'));
+   if(values.NEXT_PUBLIC_GEOAPIFY_API_KEY||values.GEOIFY_API)result.NEXT_PUBLIC_GEOAPIFY_API_KEY=values.NEXT_PUBLIC_GEOAPIFY_API_KEY||values.GEOIFY_API;
    if(values.NEXT_PUBLIC_LOOKOUT_API_URL)result.NEXT_PUBLIC_LOOKOUT_API_URL=values.NEXT_PUBLIC_LOOKOUT_API_URL;
   }catch(error){if(error.code!=='ENOENT')throw error;}
  }

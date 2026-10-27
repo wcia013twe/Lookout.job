@@ -1,4 +1,5 @@
 "use client";
+import LocationSelector from "./location-selector";
 import BrandMark from "./brand-mark";
 import {useRef,useState} from "react";
 import Link from "next/link";
@@ -106,7 +107,7 @@ function OnboardingFlow(){
  if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={findRole}>
   <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Software Engineer","Data Scientist","Data Analyst","Product Manager","Business Analyst","UX Designer","QA Engineer","Cybersecurity Analyst","IT Specialist","Technical Program Manager","Solutions Engineer","Marketing Specialist"]}/>
   <Pills label="Job type" value={employment} onChange={setEmployment} options={["Full-time","Internship","Contract","Open to options"]}/>
-  <SuggestedField label="Where would you like to work?" value={location} onChange={setLocation} placeholder="Type a location or choose below" options={["Remote","New York","SF Bay Area","Seattle","Open to anywhere"]}/>
+  <LocationSelector value={location} onChange={setLocation}/>
   <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Find my first role"}</Button><Quiet onClick={later}>I’ll do this later</Quiet></div>
   {a.feedback&&<p className={a.saveError?"error":"hint"} role="status">{a.feedback}</p>}
  </form></>;

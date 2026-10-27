@@ -963,3 +963,19 @@ Undisclosed compensation uses the same Not disclosed label. No expansion is requ
 saved source evidence and existing backend/MCP responses retain their original text.
 
 Discover application queue behavior, scopes and worker setup: [application jobs](docs/discover-application-jobs.md).
+
+## Country and city autocomplete
+
+Onboarding location entry supports multiple removable countries/cities and Remote.
+Open to anywhere is exclusive. Selected labels use semicolon-separated text in the
+existing search profile. It searches countries and cities with Geoapify, debounces
+typing and cancels stale queries. Remote, Open to anywhere and manual text remain
+available. Set `GEOIFY_API` in the root `.env.local` (or supply
+`NEXT_PUBLIC_GEOAPIFY_API_KEY` to the frontend). This is a browser-visible Geoapify
+key; configure allowed origins in Geoapify. No private server credentials are copied.
+Live-main reads it from the shared source checkout; restart the preview after changing it.
+The demo uses fictional suggestions without vendor requests.
+
+MCP mapping: suggestions are an optional input aid; selected location text uses the
+existing search-profile prompt save and its ownership/version validation, also
+available to agents through scoped search-profile editing. No new write boundary.

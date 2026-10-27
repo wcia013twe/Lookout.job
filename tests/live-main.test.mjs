@@ -38,9 +38,9 @@ test('preview carries only the configured public parser origin from source env f
  const root=await mkdtemp(join(tmpdir(),'live-env-test-'));
  try{
   await mkdir(join(root,'next-app'));
-  await writeFile(join(root,'.env.local'),'NEXT_PUBLIC_LOOKOUT_API_URL="http://127.0.0.1:8081"\nAPILAYER_API_KEY=private\nOPENAI_API_KEY=private\n');
-  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOOKOUT_API_URL:'http://127.0.0.1:8081'});
+  await writeFile(join(root,'.env.local'),'NEXT_PUBLIC_LOOKOUT_API_URL="http://127.0.0.1:8081"\nAPILAYER_API_KEY=private\nOPENAI_API_KEY=private\nGEOIFY_API=fictional-browser-key\n');
+  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOOKOUT_API_URL:'http://127.0.0.1:8081',NEXT_PUBLIC_GEOAPIFY_API_KEY:'fictional-browser-key'});
   await writeFile(join(root,'next-app/.env.local'),'NEXT_PUBLIC_LOOKOUT_API_URL=http://127.0.0.1:8082\n');
-  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOOKOUT_API_URL:'http://127.0.0.1:8082'});
+  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOOKOUT_API_URL:'http://127.0.0.1:8082',NEXT_PUBLIC_GEOAPIFY_API_KEY:'fictional-browser-key'});
  }finally{await rm(root,{recursive:true,force:true});}
 });
