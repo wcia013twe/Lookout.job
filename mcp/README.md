@@ -623,6 +623,13 @@ with the gateway update before claiming the new authorization behavior is live.
 ### Check what changed
 
 On each actual work run: check context versions, then `read_muse_changes`.
+The response includes `eventTypes`, the supported event/label/read-tool list. Each
+item includes a readable `label` and `refresh: {tool, arguments}`. Follow that
+read pointer to get the current record; use existing scoped tools for updates.
+Application/interview timeline updates now appear alongside answers, preferences,
+profiles and completed backend jobs. Interview labels distinguish scheduled,
+completed and other recorded interview updates; raw notes/email bodies stay out
+of the feed.
 Read the affected current application, search profile, preferences or backend job
 through its existing scoped tool. A confirmed answer means a draft answer was
 saved, not that the application was approved. Continue only already-authorized

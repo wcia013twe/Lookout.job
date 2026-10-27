@@ -58,5 +58,5 @@ test('real migrated feed keeps events compact, atomic, owned, pending and indepe
 
 test('detached Muse feed demo acknowledges handled events and resets independently',async()=>{
  const {demoFixtures,createMemoryStore,createDemoServices}=await import('../next-app/lib/demo.mjs');
- const store=createMemoryStore(demoFixtures('2026-10-26').state),api=createDemoServices(store);const first=await api.readMuseChanges({limit:1});assert.equal(first.items.length,1);assert.equal(first.hasMore,true);await api.acknowledgeMuseChanges({eventIds:[first.items[0].id]});assert.equal((await api.readMuseChanges()).items.length,2);assert.equal((await createDemoServices(store).readMuseChanges()).items.length,3);
+ const store=createMemoryStore(demoFixtures('2026-10-26').state),api=createDemoServices(store);const first=await api.readMuseChanges({limit:1});assert.equal(first.items.length,1);assert.equal(first.hasMore,true);await api.acknowledgeMuseChanges({eventIds:[first.items[0].id]});assert.equal((await api.readMuseChanges()).items.length,3);assert.equal((await createDemoServices(store).readMuseChanges()).items.length,4);
 });
