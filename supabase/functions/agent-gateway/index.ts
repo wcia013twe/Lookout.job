@@ -1,3 +1,4 @@
+import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
 import {BACKEND_OPERATIONS} from './backend-jobs.mjs';
 import { clientStorage } from './client-storage.mjs';
 import {resetHandoff} from './workspace-reset.mjs';
@@ -150,6 +151,12 @@ Deno.serve(withGatewayCors(async request => {
       const response=await readUserBrief((op: string,args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),payload);
       if(response.error){const [status,message]=databaseFailure(response.error);return respond({error:message},status);}
       return respond({data:response.data});
+    }
+    if(operation==='drafts.prepare') {
+      const credentialHash=await hashToken(bearer);
+      const result=await prepareDraftWithPrefill((op: string,args: unknown)=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:op,payload:args}),payload,{loadJob:async(id: string)=>{const {data}=await admin.from('jobs').select('id,employer').eq('id',id).maybeSingle();return data;},loadApplication:async(jobId: string,userId: string)=>{const {data,error}=await admin.from('applications').select('*').eq('job_id',jobId).eq('user_id',userId).maybeSingle();if(error)throw Error('Existing draft read failed');return data;}});
+      if(result.error){const [status,message]=databaseFailure(result.error);return respond({error:message},status);}
+      return respond({data:result.data});
     }
     const policyRequest = operation === 'applications.policy';
     const { data, error } = await admin.rpc('agent_dispatch', {

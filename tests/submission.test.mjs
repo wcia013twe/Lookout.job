@@ -163,3 +163,8 @@ test('automatic submission rechecks the saved profile bound to the draft',()=>{
  f.context.application.draft.searchProfileId='research';assert.equal(authorizeSubmission(f.context).allowed,false);
  f.context.application.draft.searchProfileId='foreign';assert.equal(authorizeSubmission(f.context).allowed,false);
 });
+
+test('GitHub direct-fill provenance uses the same exact fact rule at submission',()=>{
+ const f=fixture(),q=f.context.application.draft.questions[0];q.question='Github Profile URL';q.profileField='github';q.answer='https://github.com/example';q.fieldType='url';f.context.profile.facts.github=q.answer;
+ assert.equal(authorizeSubmission(f.context).allowed,true);q.answer='https://github.com/other';assert.equal(authorizeSubmission(f.context).allowed,false);
+});

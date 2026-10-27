@@ -1,0 +1,379 @@
+{
+  "verifiedAt": "2026-10-27T00:15:10.862186+00:00",
+  "method": "Read live public Greenhouse schemas; run direct draft fill locally using owned test profile. No employer form writes or submissions.",
+  "forms": [
+    {
+      "url": "https://job-boards.greenhouse.io/singlestore/jobs/8205389",
+      "source": "live-public-greenhouse-form",
+      "counts": {
+        "filled": 7,
+        "preserved": 0,
+        "remaining": 9,
+        "requiredRemaining": 3,
+        "skippedAlternatives": 1
+      },
+      "filled": [
+        {
+          "question": "First Name",
+          "source": "profile"
+        },
+        {
+          "question": "Last Name",
+          "source": "profile"
+        },
+        {
+          "question": "Email",
+          "source": "profile"
+        },
+        {
+          "question": "Phone",
+          "source": "profile"
+        },
+        {
+          "question": "Resume/CV",
+          "source": "selected-resume"
+        },
+        {
+          "question": "LinkedIn Profile",
+          "source": "profile"
+        },
+        {
+          "question": "Website",
+          "source": "profile"
+        }
+      ],
+      "remaining": [
+        {
+          "fieldId": "preferred_name",
+          "question": "Preferred First Name",
+          "fieldType": "text",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "cover_letter",
+          "question": "Cover Letter",
+          "fieldType": "file",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "cover_letter_text",
+          "question": "Cover Letter",
+          "fieldType": "textarea",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "longitude",
+          "question": "Longitude",
+          "fieldType": "hidden",
+          "required": true,
+          "reason": "unsupported-control"
+        },
+        {
+          "fieldId": "latitude",
+          "question": "Latitude",
+          "fieldType": "hidden",
+          "required": true,
+          "reason": "unsupported-control"
+        },
+        {
+          "fieldId": "location",
+          "question": "Location",
+          "fieldType": "text",
+          "required": true,
+          "reason": "missing-profile-value"
+        },
+        {
+          "fieldId": "veteran_status",
+          "question": "VeteranStatus",
+          "fieldType": "select",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "race",
+          "question": "Race",
+          "fieldType": "select",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "gender",
+          "question": "Gender",
+          "fieldType": "select",
+          "required": false,
+          "reason": "no-direct-match"
+        }
+      ],
+      "skipped": [
+        {
+          "fieldId": "resume_text",
+          "question": "Resume/CV",
+          "fieldType": "textarea",
+          "required": true,
+          "reason": "resume-file-selected"
+        }
+      ],
+      "blockers": [
+        "Demographic questions require explicit manual review",
+        "Hidden or unsupported fields require browser review"
+      ],
+      "conditionalFormComplete": false
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8199958",
+      "source": "live-public-greenhouse-form",
+      "counts": {
+        "filled": 7,
+        "preserved": 0,
+        "remaining": 22,
+        "requiredRemaining": 16,
+        "skippedAlternatives": 1
+      },
+      "filled": [
+        {
+          "question": "First Name",
+          "source": "profile"
+        },
+        {
+          "question": "Last Name",
+          "source": "profile"
+        },
+        {
+          "question": "Email",
+          "source": "profile"
+        },
+        {
+          "question": "Phone",
+          "source": "profile"
+        },
+        {
+          "question": "Resume/CV",
+          "source": "selected-resume"
+        },
+        {
+          "question": "Linkedin Profile",
+          "source": "profile"
+        },
+        {
+          "question": "Github Profile URL",
+          "source": "profile"
+        }
+      ],
+      "remaining": [
+        {
+          "fieldId": "cover_letter",
+          "question": "Cover Letter",
+          "fieldType": "file",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "cover_letter_text",
+          "question": "Cover Letter",
+          "fieldType": "textarea",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172307",
+          "question": "Legal Name (if different than above)",
+          "fieldType": "text",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172310",
+          "question": "How did you hear about this job?",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172311",
+          "question": "Do you now or will you in the future require immigration sponsorship to work at Cloudflare?",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69353768",
+          "question": "Are you a student in F-1 status who plans to work pursuant to curricular practical training (CPT), or optional practical training (OPT)?",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172313",
+          "question": "Are you currently enrolled in a university or program and will return to the program upon completion of internship?",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172314",
+          "question": "If you are currently enrolled in a university or program, when do you expect to graduate or complete your program? (Select the closest date.)",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172315",
+          "question": "If you are enrolled in university, what degree are you currently pursuing?\n",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172316",
+          "question": "A successful internship may lead to consideration for a full-time opportunity. If you were to receive a full-time offer, when would you be available to start?",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69454441[]",
+          "question": "Which term(s) are you available to intern?",
+          "fieldType": "multiselect",
+          "required": true,
+          "reason": "unsupported-control"
+        },
+        {
+          "fieldId": "question_69172317",
+          "question": "Are you available for a 12-week full-time (40 hours per week) internship during your select term(s)?",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172318",
+          "question": "Are you able to work in our Austin office 3\u20135 days a week?",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172319",
+          "question": "Area of interest in Software Engineering\n",
+          "fieldType": "select",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172321",
+          "question": "Why are you interested in Cloudflare's Software Engineering Internship? What products or features are you interested in building?",
+          "fieldType": "textarea",
+          "required": true,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "question_69172312[]",
+          "question": "Please review and acknowledge Cloudflare's Candidate Privacy Policy (cloudflare.com/candidate-privacy-notice/).",
+          "fieldType": "multiselect",
+          "required": true,
+          "reason": "unsupported-control"
+        },
+        {
+          "fieldId": "longitude",
+          "question": "Longitude",
+          "fieldType": "hidden",
+          "required": true,
+          "reason": "unsupported-control"
+        },
+        {
+          "fieldId": "latitude",
+          "question": "Latitude",
+          "fieldType": "hidden",
+          "required": true,
+          "reason": "unsupported-control"
+        },
+        {
+          "fieldId": "location",
+          "question": "Location",
+          "fieldType": "text",
+          "required": true,
+          "reason": "missing-profile-value"
+        },
+        {
+          "fieldId": "veteran_status",
+          "question": "VeteranStatus",
+          "fieldType": "select",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "race",
+          "question": "Race",
+          "fieldType": "select",
+          "required": false,
+          "reason": "no-direct-match"
+        },
+        {
+          "fieldId": "gender",
+          "question": "Gender",
+          "fieldType": "select",
+          "required": false,
+          "reason": "no-direct-match"
+        }
+      ],
+      "skipped": [
+        {
+          "fieldId": "resume_text",
+          "question": "Resume/CV",
+          "fieldType": "textarea",
+          "required": true,
+          "reason": "resume-file-selected"
+        }
+      ],
+      "blockers": [
+        "Hidden or unsupported fields require browser review"
+      ],
+      "conditionalFormComplete": false
+    }
+  ],
+  "gatewayVerification": [
+    {
+      "company": "SingleStore",
+      "via": "local Node MCP \u2192 Edge \u2192 Supabase",
+      "counts": {
+        "filled": 0,
+        "preserved": 7,
+        "remaining": 9,
+        "requiredRemaining": 3,
+        "skippedAlternatives": 1
+      },
+      "existingAnswersPreserved": true,
+      "hiddenControlsInDraft": 0,
+      "hiddenControlsInEscapes": 2,
+      "status": "Blocked",
+      "questionsReviewed": false,
+      "employerWrites": 0,
+      "submissions": 0
+    },
+    {
+      "company": "Cloudflare",
+      "via": "local Node MCP \u2192 Edge \u2192 Supabase",
+      "counts": {
+        "filled": 0,
+        "preserved": 9,
+        "remaining": 20,
+        "requiredRemaining": 14,
+        "skippedAlternatives": 1
+      },
+      "existingAnswersPreserved": true,
+      "hiddenControlsInDraft": 0,
+      "hiddenControlsInEscapes": 2,
+      "status": "Blocked",
+      "questionsReviewed": false,
+      "employerWrites": 0,
+      "submissions": 0
+    }
+  ],
+  "verificationLimits": [
+    "Live form schemas were parsed and drafts prepared locally; no personal values were sent to employer forms.",
+    "Public API form inspection is incomplete for conditional and browser-controlled fields.",
+    "Existing Cloudflare catalog URL includes gh_jid; reconcile canonical identity before any submission."
+  ]
+}

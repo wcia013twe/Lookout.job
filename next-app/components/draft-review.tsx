@@ -1,4 +1,5 @@
 "use client";
+import {prefillApplicationQuestions} from "../../lib/application-prefill.mjs";
 import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { control, primary, secondary, Field, Notice, Section } from "./ui";
@@ -38,22 +39,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     title: "",
     status: "New",
     ...current,
-    questions: (current?.questions || []).map((q) => {
-      if (q.answer?.trim()) return q;
-      const a = w.models.savedAnswerModel.automatic(
-        w.state.workflow.savedAnswers,
-        q.question,
-        current?.company,
-      );
-      return a
-        ? {
-            ...q,
-            answer: a.answer,
-            savedAnswerId: a.id,
-            savedAnswerVersion: a.version,
-          }
-        : q;
-    }),
+    questions: prefillApplicationQuestions({questions:current?.questions||[],profile:w.state.workflow.profile,answers:w.state.workflow.savedAnswers,resumes:w.state.workflow.resumes,resumeId:current?.resumeId,company:current?.company}).questions,
   };
   if (JSON.stringify(initial.questions) !== JSON.stringify(current?.questions))
     initial.questionsReviewed = false;

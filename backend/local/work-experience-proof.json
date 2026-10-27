@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-27T00:31:38.363Z",
+  "localOnly": true,
+  "transport": "task Node MCP -> isolated Supabase Edge runtime -> real local Supabase PostgreSQL",
+  "checks": {
+    "addPreservesHistory": true,
+    "updatePreservesEntryFields": true,
+    "browserRemovalSameSql": true,
+    "staleAddRetryRejected": true,
+    "staleRemovalRejected": true,
+    "profileReadBackMatches": true,
+    "verificationInvalidated": true,
+    "retainedProfileUnchanged": true
+  },
+  "limits": [
+    "No hosted deployment",
+    "No shared runtime restart or rebind",
+    "Retained profile inspected read-only; writes used a disposable fictional account"
+  ]
+}

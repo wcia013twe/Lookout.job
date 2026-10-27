@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['work-experience','entry-level work history preserves facts, versions, scopes, ownership and website/MCP parity'],
   ['search-pipeline','scoped lead intake and screening replay atomically, isolate owners and rescreen current settings'],
   ['careerops-discovery','copied CareerOps native identities and functional URL parameters survive persisted resume reads'],
   ['backend-jobs','backend execution isolates owners, replays writes, fences leases and dispatch, and schedules only scoped work'],
