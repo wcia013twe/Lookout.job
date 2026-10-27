@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { CompanyLogo, type Role } from "./role-card";
 import RoleMatchPreview from "./role-match-preview";
 import { useWorkspace } from "../lib/workspace";
-import { recordRoleOpened } from "../lib/progress.mjs";
+
 import { Button, Dots, Quiet, Title } from "./onboarding-ui";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -113,7 +113,7 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater }:
               <div className="gold-company"><CompanyLogo company={role.company} /><span>{role.company}</span></div>
               <h2>{role.title}</h2>
               <p className="meta">{role.employmentType==="FT"?"Full-time":role.employmentType} · {role.location || "Location not recorded"}</p>
-              {illustrative ? <RoleMatchPreview sample={role.matchPreview} demo animate active={spread}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer" onClick={()=>recordRoleOpened(w.store,role.id)}>View employer posting ↗</a></div>}
+              {illustrative ? <RoleMatchPreview sample={role.matchPreview} demo animate active={spread}/> : <div className="onboarding-role-check"><h3>Agent review comes next.</h3><p>Availability and résumé fit haven’t been checked yet.</p>{role.compensation&&<p>{role.compensation}</p>}<a href={role.applicationUrl} target="_blank" rel="noreferrer">View employer posting ↗</a></div>}
               <p className="hint">{illustrative ? "Fictional role · illustrative fit preview" : "Catalog shortlist · no personalized assessment yet"}</p>
             </> : <div className="onboarding-first-find"><Dots/><h2>Your first find is on its way.</h2><p>Connect your agent to look beyond the catalog.</p></div>}
           </div>

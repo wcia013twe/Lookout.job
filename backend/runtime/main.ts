@@ -5,6 +5,7 @@ import {createApi} from './api.ts';
 import {createSubmissionService} from './submission.ts';
 import {SUBMISSION_TOOLS} from '../../supabase/functions/agent-gateway/submission-batches.mjs';
 import {createDispatch} from './service.ts';
+import {createApplicationExecutor} from './application-worker.ts';
 import {runWorker} from './worker.ts';
 import type {Rpc} from './types.ts';
 
@@ -19,7 +20,7 @@ const mode=process.env.LOOKOUT_PROCESS||'api';
 if(mode==='worker'){
   if(process.env.LOOKOUT_EXECUTION_ENABLED==='true'){
     console.log('Lookout worker started; durable queue polling enabled.');
-    await runWorker(rpc,controller.signal);
+    await runWorker(rpc,controller.signal,{applicationExecutor:process.env.LOOKOUT_SUBMISSION_ENABLED==='true'?createApplicationExecutor({download:async resume=>{const {data,error}=await client.storage.from('resumes').download(resume.object_path);if(error||!data||data.size>10*1024*1024)throw Error('Resume unavailable');return Buffer.from(await data.arrayBuffer());}}):undefined});
   }else{
     console.log('Lookout worker is idle; backend execution awaits service approval.');
     while(!controller.signal.aborted){try{await delay(30000,undefined,{signal:controller.signal});}catch{break;}}

@@ -9,6 +9,8 @@ import {chromium} from 'playwright';
 import {createTestDatabase} from '../tests/helpers/database.mjs';
 import {createApi} from '../backend/runtime/api.ts';
 import {createDispatch,credentialHash} from '../backend/runtime/service.ts';
+import {createApplicationExecutor} from '../backend/runtime/application-worker.ts';
+import {workOnce} from '../backend/runtime/worker.ts';
 import {createSubmissionService} from '../backend/runtime/submission.ts';
 import {SUBMISSION_TOOLS} from '../supabase/functions/agent-gateway/submission-batches.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
@@ -42,9 +44,11 @@ async function rpc(name,args){
   if(name==='agent_dispatch')data=await row('select public.agent_dispatch($1,$2,$3) data',[args.credential_hash,args.operation,args.payload]);
   else if(name==='runner_submission_context')data=await row('select public.runner_submission_context($1,$2) data',[args.credential_hash,args.app_id]);
   else if(name==='runner_submission_transition')data=await row('select public.runner_submission_transition($1,$2,$3,$4,$5) data',[args.credential_hash,args.operation,args.p_payload,args.expected_context||null,args.execution_authorization||null]);
+  else if(name==='backend_worker')data=await row('select public.backend_worker($1,$2) data',[args.operation,args.payload]);
+  else if(name==='backend_job_dispatch')data=await row('select public.backend_job_dispatch($1,$2,$3) data',[args.credential_hash,args.operation,args.payload]);
   else throw Error('Unexpected RPC');
   return {data:data.data,error:null};
- }catch(error){return {data:null,error};}
+ }catch(error){console.error('Fictional SQL diagnostic:',name,args.operation,error.code,error.message);return {data:null,error};}
 }
 before(async()=>{
  db=await createTestDatabase();
@@ -186,5 +190,45 @@ test('Profile role/job-type mapping and fallback upload their own pinned resume 
   assert.equal(result.status,'Submitted',JSON.stringify(result));assert.equal(f.fixture.posts,1);
   assert.match(f.fixture.sent,/MAPPED PROFILE RESUME FIXTURE/);assert(!f.fixture.sent.includes('Fictional submission test resume.'));
   const attempt=await row('select context_snapshot from public.submission_attempts where application_id=$1',[f.app.id]);assert.equal(attempt.context_snapshot.resume.id,mapped.id);assert.equal(attempt.context_snapshot.resume.content_hash,mappedHash);
+ }
+});
+
+test('AI Apply durable job executes the existing one-click runner and projects its real result',async()=>{
+ const f=await application();
+ const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'worker-submit:1'};
+ const queued=await tool('queue_application_job',payload);
+ assert.equal(queued.job.status,'queued');assert.equal(f.fixture.posts,0);
+ const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
+ assert.equal(await workOnce(rpc,{applicationExecutor:executor}),true);
+ const record=await tool('read_application_record',{applicationId:f.app.id});
+ assert.equal(record.application.status,'Submitted',JSON.stringify({blocker:record.application.blocker,job:record.application.execution_job}));assert.equal(record.application.execution_job.status,'completed');assert.equal(f.fixture.posts,1);
+ const repeat=await tool('queue_application_job',payload);assert.equal(repeat.job.id,queued.job.id);assert.equal(f.fixture.posts,1);
+});
+test('AI Apply inspects an empty draft, selects its mapped resume and submits permitted routine fields',async()=>{
+ const f=await application('normal',{emptyResume:true});
+ await db.query("update public.applications set draft=jsonb_build_object('url',$2::text) where id=$1",[f.app.id,f.url]);
+ const current=await row('select revision from public.applications where id=$1',[f.app.id]);
+ const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:current.revision,eventKey:'worker-prefill:1'};
+ await tool('queue_application_job',payload);
+ const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
+ await workOnce(rpc,{applicationExecutor:executor});
+ const record=await tool('read_application_record',{applicationId:f.app.id});
+ assert(record.application.draft.formFingerprint);assert.equal(record.application.draft.resumeId,resumeId);
+ assert.equal(record.application.status,'Submitted',JSON.stringify(record.application.execution_job));assert.equal(f.fixture.posts,1);
+});
+
+test('Queued worker preserves pre-click HITL and post-click uncertainty without a second submission',async()=>{
+ const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
+ for(const mode of ['unnamed','uncertain']){
+  const f=await application(mode);
+  const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'worker-stop:'+mode};
+  const queued=await tool('queue_application_job',payload);await workOnce(rpc,{applicationExecutor:executor});
+  const record=await tool('read_application_record',{applicationId:f.app.id});
+  assert.equal(record.application.execution_job.status,'partial');assert.equal(record.application.receipt,null);
+  assert.equal(f.fixture.posts,mode==='uncertain'?1:0);
+  const inbox=await tool('read_action_inbox');assert(inbox.items.some(item=>item.application_id===f.app.id));
+  if(mode==='uncertain')assert.equal((await row('select state from public.submission_attempts where application_id=$1',[f.app.id])).state,'uncertain');
+  const replay=await tool('queue_application_job',payload);assert.equal(replay.job.id,queued.job.id);
+  assert.equal(await workOnce(rpc,{applicationExecutor:executor}),false);assert.equal(f.fixture.posts,mode==='uncertain'?1:0);
  }
 });

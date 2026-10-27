@@ -24,6 +24,7 @@ test('leaderboard derives scores, deduplicates refreshes and exposes only opted-
 });
 
 for (const [file, behavior] of [
+  ['discover-application-jobs','Discover application jobs replay safely, isolate owners, fence worker leases and preserve submission consent'],
   ['submission-batches','submission batches pin versions, isolate owners, fence leases, replay safely and derive outcomes without consent shortcuts'],
   ['action-inbox','durable handoffs reconcile atomically, retain history, isolate owners and preserve consent'],
   ['profile-edit-flow','complete browser and MCP profile flow preserves facts, rejects stale versions and enforces human review'],

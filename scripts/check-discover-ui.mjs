@@ -27,7 +27,7 @@ try{
  assert.equal(await card.getByLabel('75 out of 100',{exact:true}).count(),2,'Card shows numeric scores');
  assert.equal(await card.getByText('Good',{exact:true}).count(),0,'Card omits redundant rating adjectives');
  assert.equal(await card.getByText('Fictional evidence:',{exact:false}).count(),0,'Score reasoning stays out of card');
- await card.getByRole('button',{name:'Preview job',exact:true}).click();
+ await card.locator('h3 button').click();
  const panel=page.getByRole('dialog');
  await panel.getByRole('heading',{name:'About the job',exact:true}).waitFor();
  await panel.getByRole('region',{name:'Job facts',exact:true}).waitFor();
@@ -42,8 +42,8 @@ try{
  assert.equal(cloud.length,before,'Preview should not call a service');
  await page.keyboard.press('Escape');
  assert.equal(await panel.count(),0);
- assert(await card.getByRole('button',{name:'Preview job',exact:true}).evaluate(el=>document.activeElement===el),'Focus returns to the preview button');
- await card.getByRole('button',{name:'Preview job',exact:true}).click();
+ assert(await card.locator('h3 button').evaluate(el=>document.activeElement===el),'Focus returns to the preview button');
+ await card.locator('h3 button').click();
  assert.equal(await panel.getByLabel('Can you work onsite three days per week?',{exact:true}).inputValue(),'Temporary review answer');
  await panel.getByRole('heading',{name:'Application answers',exact:true}).scrollIntoViewIfNeeded();
  await page.screenshot({path:dir+'/discover-application-desktop.png'});
@@ -62,14 +62,14 @@ try{
  const unknown=page.locator('article').filter({hasText:'Example Search (demo)'});
  await unknown.getByText('Match not assessed',{exact:true}).waitFor();
  assert.equal(await unknown.getByText('Unknown',{exact:true}).count(),0,'Unassessed cards omit empty factor bars');
- const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('h3').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.getByRole('region',{name:'Job match preview',exact:true}).boundingBox(),action:await item.getByRole('button',{name:'Preview job',exact:true}).boundingBox()})));
+ const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('h3').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.getByRole('region',{name:'Job match preview',exact:true}).boundingBox(),action:await item.getByRole('button',{name:'AI Apply',exact:true}).boundingBox()})));
  for(const key of ['title','facts','match','action']) assert(Math.abs(bounds[0][key].y-bounds[1][key].y)<2,`${key} rows align despite title length and assessment differences`);
- await unknown.getByRole('button',{name:'Preview job',exact:true}).click();
+ await unknown.locator('h3 button').click();
  await panel.getByText('Match not assessed',{exact:true}).waitFor();
  assert.equal(await panel.getByRole('link',{name:'Open employer posting'}).count(),0,'Demo must not open external postings');
- await panel.getByRole('button',{name:'Back to Discover'}).click();
+ await panel.getByRole('button',{name:'Close',exact:true}).click();
  await page.getByRole('combobox',{name:'Application profile',exact:true}).selectOption('internships');
- await page.locator('article').filter({hasText:'Example Compute (demo)'}).getByRole('button',{name:'Preview job',exact:true}).click();
+ await page.locator('article').filter({hasText:'Example Compute (demo)'}).locator('h3 button').click();
  await panel.getByText('54% job match',{exact:true}).waitFor();
  await panel.getByText('Unknown',{exact:true}).waitFor();
  await page.keyboard.press('Escape');

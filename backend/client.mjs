@@ -58,6 +58,12 @@ function createBackend(client, expectedUserId = null) {
     return data.data;
   }
   return {
+    async queueApplicationJob(payload) {
+      const id=await owner();
+      const value=await result(client.rpc('queue_application_job',{payload}));
+      if(await owner()!==id)throw Error('Account changed');
+      return value;
+    },
     backendJobs:createBackendJobsService({rpc:(name,args)=>client.rpc(name,args),owner}),
     async readResetState() {
       const id=await owner();

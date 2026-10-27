@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useWorkspace } from '../lib/workspace';
+import { trackedApplications } from '../../lib/discover-application-state.mjs';
 import { applicationStats } from '../../lib/application-stats.mjs';
 import ProfileIcon, {type ProfileIconName} from './profile-icon';
 import ApplicationList from './application-list';
@@ -17,8 +18,7 @@ const ApplicationFlowChart=dynamic(()=>import('./application-flow-chart'),{ssr:f
 export default function Applications() {
  const w=useWorkspace(),imports=useSimplifyImports();
  const [search,setSearch]=useState(''),[type,setType]=useState(''),[stage,setStage]=useState(''),[view,setView]=useState('Active');
- const ids=[...new Set<string>([...w.state.tracker.ids,...Object.keys(w.state.workflow.applications)])];
- const native:Application[]=ids.map(id=>({...w.roles.find((r:Application)=>r.id===id),...w.state.workflow.applications[id],id,status:w.state.workflow.applications[id]?.status || w.state.tracker.items[id]?.status || 'New',questions:w.state.workflow.applications[id]?.questions || []})).filter(a=>a.company && a.title);
+ const native:Application[]=trackedApplications({roles:w.roles,publicRoles:w.publicRoles,applications:w.state.workflow.applications,trackerIds:w.state.tracker.ids,trackerItems:w.state.tracker.items});
  const all:Application[]=[...native,...imports.records.map(importedApplication).filter((a:Application)=>!native.some(n=>(a.url&&n.url===a.url)||(n.company.toLowerCase()===a.company.toLowerCase()&&n.title.toLowerCase()===a.title.toLowerCase()&&(n.location||'').toLowerCase()===(a.location||'').toLowerCase())))];
  useEffect(()=>{const requested=new URL(location.href).searchParams.get('application');const application=all.find(item=>item.backendId===requested);if(application){const status=trackerProgress(application,w.state.tracker.items[application.id]).status;setView(['Rejected','Withdrawn'].includes(status)?'Closed':status==='Opened'?'Saved jobs':'Active');}},[w.user?.id,w.demo,all.map(item=>`${item.backendId}:${trackerProgress(item,w.state.tracker.items[item.id]).status}`).join(',')]);
  const stats=applicationStats(all,w.state.tracker.items);

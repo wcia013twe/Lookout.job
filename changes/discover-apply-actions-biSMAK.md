@@ -1,0 +1,9 @@
+# Discover AI Apply and application jobs
+
+- Open Application is read-only. AI Apply submits a durable job and shows Queued; only recorded applied progress removes a role from the latest Discover view. Card titles retain the existing detailed preview. Failed/uncertain work remains visible.
+- Applications resolves legacy opened public-catalog IDs outside the current private batch, recovering the path that hid SingleStore. Canonical duplicates prefer the owned record.
+- Website and scoped MCP queue actions share SQL validation, ownership, profile/revision pinning, active execution scopes and idempotency. Jobs use the existing queue; the application exposes a protected server-owned execution projection.
+- The submission-enabled Node worker inspects/prefills supported forms through existing fact/resume mapping helpers, then uses the shared authorization, stable attempt, one-click and receipt flow. Lease/revocation/target fences apply to every worker RPC. Search-only workers leave application jobs untouched.
+- Muse instructions/tool discovery and the workflow guide expose queue/recovery behavior. Demo actions are fictional, memory-only, resettable, and make no account or employer calls.
+- Validation so far: all 824 repository tests pass; runtime/frontend typechecks, data validation (158 roles), production static build and desktop/mobile Discover action checks pass. Three new real Chromium worker scenarios pass (prepared submission, automatic prefill, and blocked/uncertain recovery). Final integrated checks and local stack activation remain in progress.
+- Limits: controlled fixtures are not live employer or live Muse validation. Hosted release is not performed by this pass; the configured Node worker requires both execution and submission flags. Existing unsupported ATS/control limitations remain.

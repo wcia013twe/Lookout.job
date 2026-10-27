@@ -597,3 +597,5 @@ MCP 21. All 43 gateway and 23 MCP deployed files match source; both endpoints re
 unauthenticated HTTP requests with 401. Local validation passed 502 tests and the
 147-role catalog check. Authenticated Muse handshake remains unverified. This release
 adds no tables, credentials, UI behavior or external scheduling capability.
+
+`applications.execution_job` is an owner-readable, server-controlled projection of its current durable backend application job. The queue trigger owns updates; authenticated direct edits are rejected. Jobs keep the stable application/revision reference in the existing private backend queue. See [application jobs](discover-application-jobs.md).

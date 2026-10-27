@@ -71,7 +71,7 @@ The feed does not wake Muse, create a schedule or authorize submissions.
 1. **Set up once.** Optionally sign in with Google; save verified profile facts, resume variants, search preferences, and separate Full-time / Internship company rankings. Choose which saved answers may autofill and which must always ask.
 2. **Muse prepares the morning batch.** Your connected agent reads your preferences, searches for relevant jobs, verifies employer postings, and publishes a private batch. Personal fit notes stay separate from the shared job catalog.
 3. **Open the link.** Muse sends “Your morning jobs are ready” through its own notification channel. The link opens your batch on the shared website. Login identifies the owner; a batch ID alone does not grant access.
-4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Opening a posting is not applying.
+4. **Review cards and queue roles.** Cards show company, role, rarity, location and compensation tags, with base versus total compensation labelled accurately. Open Application only opens the employer posting. AI Apply queues a durable application job and stays visible as Queued; the posting leaves the latest Discover view only after recorded applied progress.
 5. **Prepare under your policy.** Muse inspects the live form and selects your configured résumé. Routine matches can proceed using verified facts and permitted saved answers. Important matches, auto-apply-off, unfamiliar answers and missing choices go to the **Action Board** for focused exact-version review. Agents never manufacture a human approval.
 Unresolved Playwright and agent recovery failures go to the **Action Board** with a reason and next action. Uncertain submission outcomes pause for human verification.
 
@@ -942,3 +942,5 @@ Only explicit source statements produce a known category. Work authorization alo
 does not establish sponsorship policy, and a city does not establish office attendance.
 Undisclosed compensation uses the same Not disclosed label. No expansion is required;
 saved source evidence and existing backend/MCP responses retain their original text.
+
+Discover application queue behavior, scopes and worker setup: [application jobs](docs/discover-application-jobs.md).

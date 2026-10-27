@@ -19,7 +19,7 @@ Collection supports Greenhouse/Lever; liveness for each link uses the copied
 ATS API/browser ladder across upstream-supported sources. Full-description
 extraction currently supports Greenhouse. Active unsupported extraction remains
 explicit and partial; it does not become a fictional parsed record. Up to ten configured sources and 250 observations are bounded.
-The worker never generates LLM reports, messages or applications. Source coverage,
+The search executor never generates LLM reports, messages or applications. A separate submission-enabled application executor is described below. Source coverage,
 unknown applicant eligibility and pending Muse reporting remain explicit.
 
 The worker uses direct service-only Supabase RPCs fenced by job ID, current
@@ -302,3 +302,7 @@ and real employer behavior remain unverified until separately exercised.
 ## Interview intelligence
 
 `read_interview_intelligence` (`knowledge.interview`) is a read-only Node MCP operation backed by the same database function as the signed-in application Overview. Both `knowledge:read` and `workspace:read` are required for agents. It resolves an owned application or catalog posting, then retrieves current published reports across current Circle memberships by explicit posting association. Empty scopes do not trigger automatic Muse output. See `docs/interview-intelligence-platform.md` for source identity, tests and the undeployed release boundary.
+
+## Application jobs
+
+`queue_application_job` accepts a selected canonical Greenhouse posting and pins the current owned application revision/profile in the durable backend queue. With both execution and submission flags enabled, the worker uses its fenced application RPC path and the existing guarded runner. Search claims exclude application jobs. No LLM runs inside this worker. See [the shared contract and verification limits](../../docs/discover-application-jobs.md).

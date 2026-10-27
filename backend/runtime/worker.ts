@@ -95,21 +95,22 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   return {status:partial?'partial':'completed',result:{pipelineVersion:1,runId:run.id,observed:scanned,saved,blockedSources:blocked,summary,shortlist,stages:{collection:'finished',verification:'finished',screening:'finished',deduplication:'finished'},provenance}};
 
 }
-export async function workOnce(rpc:Rpc,{execute}: {execute?:import('./ats.ts').Execute}={}){
+export async function workOnce(rpc:Rpc,{execute,applicationExecutor}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>}={}){
   const call=async(operation:string,payload:Payload)=>{
     const {data,error}=await rpc('backend_worker',{operation,payload});
     if(error)throw Error('Worker transaction rejected');return data;
   };
-  const claim:Claim|null=await call('claim',{});
+  const applicationClaim:Claim|null=applicationExecutor?await call('claim_application',{}):null;
+  const claim:Claim|null=applicationClaim||await call('claim',{});
   if(!claim)return false;
   const fencedDispatch:Dispatch=(operation,payload)=>call('dispatch',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload});
   try{
-    if(claim.job.kind!=='search_ats')throw Error('Unsupported backend job');
-    const outcome=await executeSearch(claim.job,fencedDispatch,{execute});
+    if(!['search_ats','application_submit'].includes(claim.job.kind))throw Error('Unsupported backend job');
+    const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute});
     await call('finish',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...outcome});
   }catch{
     // Expired/cancelled/revoked jobs reject this too, preserving the newer state.
-    await call('finish',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,status:'failed',result:{summary:'Search execution failed. Inspect the persisted run before requesting another job.'}}).catch(()=>{});
+    await call('finish',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,status:'failed',result:{summary:claim.job.kind==='application_submit'?'Application execution interrupted. Inspect its saved attempt before requesting another job.':'Search execution failed. Inspect the persisted run before requesting another job.'}}).catch(()=>{});
   }
   return true;
 }
@@ -120,10 +121,10 @@ export function workerDiagnostics(write:(message:string)=>void=console.error,now
     recovered(){if(down)write('Worker database connection recovered.');down=false;},
   };
 }
-export async function runWorker(rpc:Rpc,signal:AbortSignal){
+export async function runWorker(rpc:Rpc,signal:AbortSignal,options:Parameters<typeof workOnce>[1]={}){
   const diagnostics=workerDiagnostics();
   while(!signal.aborted){
-    try{await workOnce(rpc);diagnostics.recovered();}catch{diagnostics.unavailable();}
+    try{await workOnce(rpc,options);diagnostics.recovered();}catch{diagnostics.unavailable();}
     try{await delay(5000,undefined,{signal});}catch{break;}
   }
 }

@@ -21,6 +21,7 @@ export interface Application {
   url?: string;
   backendId?: string;
   backendRevision?: number;
+  executionJob?: {id:string;status:string;result?:{summary?:string}} | null;
   revision?: number;
   receipt?: { message: string; source: string; observedUrl?: string };
   resumeId?: string;

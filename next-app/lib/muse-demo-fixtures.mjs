@@ -1,3 +1,4 @@
+import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
 import {createMuseChangeFeedDemo} from '../../lib/muse-change-feed-demo.mjs';
 import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
 import {reconcileProfileChanges} from '../../lib/profile-sync.mjs';
@@ -161,6 +162,15 @@ export function createDemoServices(store) {
   return {
     ...createMuseChangeFeedDemo(),
     backendJobs:createBackendJobsDemo(),
+    async queueApplicationJob(payload) {
+      // The demo's example.com postings are inert; validate using a fictional supported URL.
+      validateApplicationJob({...payload,posting:{...payload.posting,url:'https://job-boards.greenhouse.io/lookout_fictional_demo/jobs/1'}});
+      const role=payload.posting,previous=store.get('workflow.applications.'+role.id);
+      const job=previous?.executionJob||{id:'demo-job-'+payload.eventKey,status:'queued'};
+      const app={...role,url:role.url,backendId:'demo-application-'+role.id,id:role.id,status:'Queued',questions:[],backendRevision:0,...previous,executionJob:job};
+      store.set('workflow.applications.'+role.id,app);
+      return {application:copy(app),job:copy(job)};
+    },
     async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
     async resolveProfileConflict(choice='review') {
       const scenario=store.get('demo.profileConflict');if(!scenario)throw Error('No fictional profile conflict');

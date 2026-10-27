@@ -69,3 +69,5 @@ field updates use existing `agent_dispatch` SQL directly. Edge-only MCP does not
 advertise extraction. Scope discovery, cache rechecks, account isolation, stale
 saves and fictional demo isolation have local tests; no hosted release or real
 APILayer call is implied.
+
+| Queue AI Apply | `queueApplicationJob` / authenticated queue_application_job RPC | `queue_application_job` / applications.submit_job | Shared closed SQL validation, canonical URL identity, ownership, revision, active execution scopes and idempotency. No approval or applied status from queueing. Node worker requires release/flags; see docs/discover-application-jobs.md. |

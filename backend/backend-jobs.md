@@ -50,7 +50,7 @@ Old scheduler tools and direct API/SQL operations are rejected after release.
 Deploy the database migration, gateway/MCP contract and Node worker together;
 older workers that still call the removed timer need restarting on this release.
 
-No tool grants LLM reasoning, arbitrary guide execution, browser control,
+The search tools grant no LLM reasoning, arbitrary guide execution, browser control,
 resume generation, messaging, approval, application submission or Circle sharing.
 Guide text stays instructions unless an actual bounded executor is configured.
 
@@ -68,3 +68,5 @@ actual Node HTTP/MCP server and disposable SQL database.
 `node scripts/check-local-scheduler-removal.mjs` checks archival, timer rejection
 and queue/website/reset safeguards on real local Docker PostgreSQL, rolling back
 all schema and fixture changes. Neither proves a hosted release.
+
+`queue_application_job` adds a separate scoped `applications.submit_job` boundary for durable guarded application execution; it is not a new search kind accepted by generic submit_backend_job. See [Discover application jobs](../docs/discover-application-jobs.md).

@@ -1,4 +1,5 @@
 "use client";
+import { roleApplied } from '../../lib/discover-application-state.mjs';
 import { useRef, useState } from "react";
 import {matchesPostingAge,postingAgeOptions} from "../../lib/posting-age.mjs";
 import { useWorkspace } from "../lib/workspace";
@@ -33,7 +34,7 @@ function DiscoverBoard() {
   const sourceRoles=(publicView?(w.publicRoles||w.roles):w.roles).filter((role:Role)=>matchesProfileEmployment(role,a.profile)).map((role:Role)=>({...role,rankingProfile:a.profile}));
   const sourceDate=publicView?(w.publicDate||w.date):w.date;
   const savedRole=!w.demo?savedOnboardingRole([a.profile],w.publicRoles||w.roles):null;
-  const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)?savedRole:null;
+  const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)&&!roleApplied(savedRole,w.state.workflow.applications,w.state.tracker.items)?{...savedRole,rankingProfile:a.profile}:null;
   const reduced = useReducedMotion();
   const board = useRef<HTMLElement>(null);
   const [arrival, setArrival] = useState<{owner:string;ids:string[];run:number}|null>(null);
@@ -50,7 +51,7 @@ function DiscoverBoard() {
     (r: Role) =>
       matchesPostingAge(r, postingAge) &&
       (selectedDay === "all" || r.discoveredDate === selectedDay) &&
-      (day !== "latest" || !w.state.tracker.ids.includes(r.id)) &&
+      (day !== "latest" || !roleApplied(r,w.state.workflow.applications,w.state.tracker.items)) &&
       `${r.company} ${r.title} ${r.location} ${r.category}`
         .toLowerCase()
         .includes(search.toLowerCase()),
