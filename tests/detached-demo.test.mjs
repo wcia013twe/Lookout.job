@@ -63,3 +63,9 @@ test('onboarding exits demo mode for direct links and clears only the tab mode f
   assert.equal(resolveDemoMode(`https://example.com${path}?demo=1`,()=>{throw Error('Storage blocked');}),false);
  }
 });
+
+test('account routes leave remembered demo mode while explicit previews remain isolated',()=>{
+ const values=new Map([[DEMO_MODE_KEY,'1']]);
+ const storage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};
+ for(const route of ['login','signup']){values.set(DEMO_MODE_KEY,'1');assert.equal(resolveDemoMode(`https://example.com/${route}/`,()=>storage),false);assert.equal(resolveDemoMode(`https://example.com/${route}/?demo=1`,()=>storage),true);}
+});

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import BrandMark from "./brand-mark";
 import LandingPage from "./landing-page";
+import AuthPage from "./auth-page";
 import {useEffect, type ReactNode} from "react";
 import { MotionConfig } from "framer-motion";
 import { streak } from "../lib/progress.mjs";
@@ -34,6 +35,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const isPrivacy = /^\/privacy\/?$/.test(path);
   const hasAccess = canViewWorkspace(w);
   const isOnboarding = /\/onboarding\/?$/.test(path);
+  if (/^\/(login|signup)\/?$/.test(path)) return <AuthPage signup={path.startsWith("/signup")} />;
+  if (!hasAccess && /^\/discover\/?$/.test(path)) return <AuthPage />;
   if (!hasAccess && path === "/") return <LandingPage />;
   if (!hasAccess && !isOnboarding) {
     return <main className="min-h-dvh bg-board-bg">

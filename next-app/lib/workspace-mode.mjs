@@ -2,8 +2,9 @@
 export const DEMO_MODE_KEY='lookout:detached-demo';
 export function resolveDemoMode(href,getStorage=()=>null) {
  const url=new URL(href);
- // Onboarding always creates or reconnects a real account, even from an old demo link.
- const choice=/\/onboarding\/?$/.test(url.pathname)?'0':url.searchParams.get('demo');
+ // Account entry leaves remembered demo mode; explicit auth previews remain fictional.
+ const explicit=url.searchParams.get('demo');
+ const choice=/\/onboarding\/?$/.test(url.pathname)||(/\/(login|signup)\/?$/.test(url.pathname)&&explicit!=='1')?'0':explicit;
  try {
   const storage=getStorage();
   if(choice==='1'){storage?.setItem(DEMO_MODE_KEY,'1');return true;}

@@ -47,14 +47,14 @@ export default function LandingPage() {
     <a href="#landing-content" className={styles.skip}>Skip to content</a>
     <header className={styles.nav}>
       <Link href="/" className={styles.brand} aria-label="Lookout home"><BrandMark />Lookout</Link>
-      <nav aria-label="Account"><Link href="/discover/?demo=0" className={styles.login}>Log in</Link><Link href="/onboarding/" className={primary}>Get started free</Link></nav>
+      <nav aria-label="Account"><Link href="/login/?demo=0" className={styles.login}>Log in</Link><Link href="/signup/?demo=0" className={primary}>Get started free</Link></nav>
     </header>
     <div id="landing-content" className={styles.content}>
       <section className={styles.hero} aria-labelledby="landing-title">
         <div className={styles.heroCopy}>
           <h1 id="landing-title">Your next move<br/>is in the cards.</h1>
           <p>The right opportunities, picked for you.<br className={styles.desktopBreak}/> Your agent handles the busywork.</p>
-          <Link href="/onboarding/" className={`${primary} ${styles.cta}`}>Find your next move <ProfileIcon name="arrow" aria-hidden="true"/></Link>
+          <Link href="/signup/?demo=0" className={`${primary} ${styles.cta}`}>Find your next move <ProfileIcon name="arrow" aria-hidden="true"/></Link>
           <span className={styles.freeNote}>Free to connect your own agent.</span>
           <div className={styles.mascot}><LandingMascot paused={paused}/><button className={styles.motionControl} onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "Resume motion" : "Pause motion"}</button></div>
         </div>
@@ -66,7 +66,7 @@ export default function LandingPage() {
               <div className={styles.cardActions}><button className={secondary} onClick={pass}>Pass</button><button className={primary} aria-expanded={review} aria-controls="landing-role-review" onClick={() => setReview(value => !value)}>{review ? "Close details" : "Review role"}<ProfileIcon name="arrow" aria-hidden="true"/></button></div>
               {review && <div id="landing-role-review" className={styles.review}>
                 <strong>Explore your match</strong><p>Open any match factor above to see the example reasoning, including what still needs checking.</p>
-                <Link href="/onboarding/">Connect your agent to review real roles <ProfileIcon name="arrow" aria-hidden="true"/></Link>
+                <Link href="/signup/?demo=0">Connect your agent to review real roles <ProfileIcon name="arrow" aria-hidden="true"/></Link>
                 <small>Reviewing a role never submits an application.</small>
               </div>}
             </OnboardingRoleReveal>
@@ -107,7 +107,7 @@ export default function LandingPage() {
           <div className={styles.previewFoot}><ProfileIcon name="conversation" aria-hidden="true"/><span>Candidate discussion preview</span></div>
         </div>
       </section>
-      <div className={styles.close}><p>Your agent. Your next move.</p><Link href="/onboarding/" className={`${primary} ${styles.cta}`}>Get started free <ProfileIcon name="arrow" aria-hidden="true"/></Link><span>Connect your existing agent for free.</span></div>
+      <div className={styles.close}><p>Your agent. Your next move.</p><Link href="/signup/?demo=0" className={`${primary} ${styles.cta}`}>Get started free <ProfileIcon name="arrow" aria-hidden="true"/></Link><span>Connect your existing agent for free.</span></div>
     </div>
     <footer className={styles.footer}><Link href="/" className={styles.brand}><BrandMark/>Lookout</Link><p>Less applying. More becoming.</p><Link href="/privacy/">Privacy</Link></footer>
   </main>;
