@@ -1,7 +1,7 @@
 // Local-only disposable account proof. No employer writes or real-account edits.
-import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import {randomUUID,randomBytes,createHash} from 'node:crypto';import {createClient} from '@supabase/supabase-js';
+import {fileURLToPath} from 'node:url';import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import {randomUUID,randomBytes,createHash} from 'node:crypto';import {createClient} from '@supabase/supabase-js';
 import {createBackend} from '../backend/client.mjs';import {confirmDraftAnswer} from '../lib/confirm-draft-answer.mjs';import {draftPayload} from '../lib/cloud-model.mjs';
-const root=new URL('../',import.meta.url),cwd=root.pathname;const config=JSON.parse(execFileSync('/opt/homebrew/bin/supabase',['status','-o','json'],{cwd,encoding:'utf8',stdio:['ignore','pipe','pipe']}));
+const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);const config=JSON.parse(execFileSync(process.env.SUPABASE_CLI||(fs.existsSync('/opt/homebrew/bin/supabase')?'/opt/homebrew/bin/supabase':'supabase'),['status','-o','json'],{cwd,encoding:'utf8',stdio:['ignore','pipe','pipe']}));
 const url=new URL(config.API_URL);if(!['127.0.0.1','localhost'].includes(url.hostname)||url.port!=='54321')throw Error('Expected local Supabase');
 const nodeUrl=process.env.LOOKOUT_LOCAL_NODE_URL||'http://127.0.0.1:8080';if(!['127.0.0.1','localhost'].includes(new URL(nodeUrl).hostname))throw Error('Expected local Node API');
 const authOptions={auth:{persistSession:false,autoRefreshToken:false}},admin=createClient(url.origin,config.SERVICE_ROLE_KEY,authOptions),client=createClient(url.origin,config.ANON_KEY,authOptions);let user,proof;

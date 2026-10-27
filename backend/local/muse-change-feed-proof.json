@@ -1,0 +1,16 @@
+{
+  "verifiedAt": "2026-10-27T02:38:43.463Z",
+  "path": "Authenticated browser draft save → local Supabase trigger → Node MCP → Edge → feed read/ack",
+  "developerVersion": 79,
+  "atomicConfirmation": true,
+  "unchangedTextConfirmation": true,
+  "answerBodiesExcluded": true,
+  "perConnectionAcknowledgements": true,
+  "idempotentAcknowledgements": true,
+  "unhandledPreferenceStillPending": true,
+  "newerEventStillPending": true,
+  "applicationNotApproved": true,
+  "employerWrites": false,
+  "realAccountEdits": false,
+  "disposableAccountRemoved": true
+}
