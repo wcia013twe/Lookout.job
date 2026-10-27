@@ -14,6 +14,7 @@ export interface Application {
   company: string; companyId?:string|null;
   title: string;
   status: string;
+  searchProfileId?: string;
   employmentType?: string;
   location?: string;
   applicationUrl?: string;
