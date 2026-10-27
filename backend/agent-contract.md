@@ -709,7 +709,10 @@ revision; no new tool or permission is introduced.
 ## Muse change feed
 
 `read_muse_changes` (`changes.read`, workspace:read) returns the oldest 20 pending
-system change pointers by default (limit 1–50), with `hasMore`. Each item has an
+system change pointers by default (limit 1–50), with `hasMore`. `eventTypes` lists
+the supported kinds, labels and existing read tools. Each item adds a readable
+`label` and `refresh: {tool, arguments}` so Muse can read its current record.
+Each item has an
 ID, kind, time, affected entity/record ID and version; application events include
 the job ID/field IDs, and backend results include status/run ID. Answers, resumes,
 profiles and job results stay in their existing records.
@@ -727,7 +730,29 @@ The SQL trigger emits `answer_confirmed` in the SAME transaction, including for 
 new confirmation of unchanged text. Only an authenticated owner save can emit
 that event; agent draft proposals cannot forge it. Other emitted kinds are
 `preferences_changed`, `profile_changed` (search profiles), and
-`backend_job_finished` (completed/partial/failed/cancelled). Theme-only and ordinary
+`backend_job_finished` (completed/partial/failed/cancelled), and
+`application_timeline_changed` (recorded milestones or tracking-stage changes).
+Timeline pointers include `change` (`milestone_added` or `stage_changed`), and
+milestone pointers include ID/kind/phase. Interview labels distinguish scheduled,
+completed and received updates. Notes, email subjects/excerpts and interview dates
+remain in the existing `read_application_timeline` response. Immutable milestone
+retries emit once; rejected writes and no-op stage saves emit nothing. Timeline
+milestone `version` identifies its creation timestamp, not an aggregate timeline
+revision; always read current records before making another update.
+
+| Kind | Label / refresh |
+| --- | --- |
+| `answer_confirmed` | Application answer confirmed → `read_application_record` |
+| `preferences_changed` | Shared preferences changed → `read_personal_context` |
+| `profile_changed` | Application profile changed → `read_search_context` |
+| `backend_job_finished` | Backend job finished → `read_backend_jobs` |
+| `application_timeline_changed` | Timeline updated / Interview scheduled / Interview completed / Interview update recorded → `read_application_timeline` |
+
+This is two-way platform sync: existing scoped tools make updates; the feed points
+Muse to updates to read and acknowledge. There is no behavior engine, field-by-field
+automation policy, new work queue or inferred permission.
+
+Theme-only and ordinary
 agent draft saves don't create changes. Reserved system activity cannot be
 inserted through client/agent activity APIs.
 
