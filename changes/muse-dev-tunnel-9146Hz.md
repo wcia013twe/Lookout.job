@@ -19,3 +19,9 @@
 - Added a mounted, read-only ngrok Traffic Policy denying every path except `/mcp` and rewriting the upstream Host header without the deprecated CLI option. Only the ngrok token enters the tunnel environment.
 - Live verification: ngrok image pulled, session established, and tunnel started. Public `/mcp` POST reaches API and returns 401 without credentials. `/`, `/healthz`, `/v1/operations`, `/v1/resume-import` and a normalized traversal request return 403. Existing API stayed healthy and worker unchanged. Compose model validation, Make dry run, `validate:data` (158 roles), and diff checks pass. No demo state or product action was added; existing demo fixtures remain detached.
 - Limits: authenticated Muse context/read/write flow was not exercised. Earlier full-suite dependency/sandbox failures remain documented above; no application logic changed in this follow-up. Tunnel service is intentionally left running for the user.
+
+## Follow-up: local UI connection handoff
+
+- Local frontend startup now derives the advertised MCP URL from the root `NGROK_URL`, overriding stale localhost connection instructions. Live preview forwards only that public URL, never the ngrok token or server credentials. Browser data traffic stays on local Supabase, with the local anonymous key explicitly overriding any hosted publishable-key setting. Hosted build defaults are unchanged.
+- Scoped MCP mapping and fictional demo behavior are unchanged: this fixes the endpoint advertised by the existing connection setup, not a new backend operation.
+- Validation: four launcher/env tests pass, including private-key exclusion, localhost override, HTTPS validation and hosted-mode isolation; data validation passes (158 roles). Live runtime checks are recorded below.

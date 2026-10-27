@@ -1,5 +1,6 @@
 import { execFileSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import {publicPreviewEnv} from './live-main.mjs';
 
 const cwd = fileURLToPath(new URL('../', import.meta.url));
 let config;
@@ -20,9 +21,11 @@ if (!config.API_URL || !config.ANON_KEY ||
 const child = spawn('npm', ['--prefix', 'next-app', 'run', 'dev', '--', '--hostname', '127.0.0.1', '--port', process.env.PORT || '3000'], {
   cwd, stdio: 'inherit', env: {
     ...process.env,
+    ...await publicPreviewEnv(cwd,{local:true}),
     NEXT_PUBLIC_BASE_PATH: '',
     NEXT_PUBLIC_SUPABASE_URL: config.API_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: config.ANON_KEY,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: config.ANON_KEY,
   },
 });
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => child.kill(signal));

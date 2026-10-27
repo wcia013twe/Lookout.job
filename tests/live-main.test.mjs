@@ -44,3 +44,17 @@ test('preview carries only the configured public parser origin from source env f
   assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOOKOUT_API_URL:'http://127.0.0.1:8082',NEXT_PUBLIC_GEOAPIFY_API_KEY:'fictional-browser-key'});
  }finally{await rm(root,{recursive:true,force:true});}
 });
+
+
+test('local connection setup advertises the tunnel while keeping private settings out of the browser',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'local-mcp-env-test-'));
+ try{
+  await mkdir(join(root,'next-app'));
+  await writeFile(join(root,'.env.local'),'NGROK_URL=https://fictional.ngrok.app/\nNGROK_AUTHTOKEN=private-tunnel-token\nSUPABASE_SERVICE_ROLE_KEY=private-service-key\n');
+  await writeFile(join(root,'next-app/.env.local'),'NEXT_PUBLIC_AGENT_MCP_URL=http://127.0.0.1:8080/mcp\n');
+  assert.deepEqual(await publicPreviewEnv(root,{local:true}),{NEXT_PUBLIC_AGENT_MCP_URL:'https://fictional.ngrok.app/mcp'});
+  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_AGENT_MCP_URL:'http://127.0.0.1:8080/mcp'});
+  await writeFile(join(root,'.env.local'),'NGROK_URL=http://fictional.ngrok.app\n');
+  await assert.rejects(publicPreviewEnv(root,{local:true}),/HTTPS base URL/);
+ }finally{await rm(root,{recursive:true,force:true});}
+});

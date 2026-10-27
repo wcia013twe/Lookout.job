@@ -98,15 +98,20 @@ root environment file if the running backend uses a different network name.
 3. With the Docker API service already running, run `make muse-dev`. It starts only
    the tunnel and never starts Supabase, the API, the worker, or the frontend. A
    missing external Docker network means the backend needs to be started first.
-4. Run `make muse-dev-logs` to check the connection. Register a **separate development
+4. Restart the local frontend with `make frontend`. Local startup derives
+   `NEXT_PUBLIC_AGENT_MCP_URL` from `NGROK_URL` and supplies it to the browser, so
+   **Set up connection** advertises the tunnel. Browser data requests still use
+   local Supabase directly; the ngrok agent token is never passed to the frontend.
+   Restart the frontend after changing the tunnel URL. Hosted builds are unchanged.
+5. Run `make muse-dev-logs` to check the connection. Register a **separate development
    Muse connector** at `NGROK_URL` plus `/mcp`. Keep the assigned URL stable to avoid
    re-registering the connector. A client that pins the production host needs a
    development configuration that allows this host.
-5. In the local website, create an agent connection under **Profile → Your agent**
+6. In the local website, create an agent connection under **Profile → Your agent**
    and put its scoped bearer token in the development connector's secret settings.
    The ngrok authtoken is only for running the tunnel; it does not authenticate MCP
    calls. Never use a Supabase service-role key as a connector token.
-6. Test `tools/list` and a permitted read such as `read_onboarding_state` before
+7. Test `tools/list` and a permitted read such as `read_onboarding_state` before
    testing writes. Confirm the returned context belongs to the local test account.
    Keep production routines on the production connector. Connector support and
    successful hosted Muse execution require a live check; Compose startup alone

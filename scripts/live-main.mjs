@@ -14,14 +14,22 @@ export async function sourceCheckout(cwd, execute=run) {
 }
 
 // Copy only browser configuration; never forward unrelated private credentials.
-export async function publicPreviewEnv(source){
+export async function publicPreviewEnv(source,{local=false}={}){
+ let ngrokUrl;
  const result={};
  for(const file of ['.env.local','next-app/.env.local']){
   try{
    const values=parseEnv(await readFile(join(source,file),'utf8'));
    if(values.NEXT_PUBLIC_GEOAPIFY_API_KEY||values.GEOIFY_API)result.NEXT_PUBLIC_GEOAPIFY_API_KEY=values.NEXT_PUBLIC_GEOAPIFY_API_KEY||values.GEOIFY_API;
    if(values.NEXT_PUBLIC_LOOKOUT_API_URL)result.NEXT_PUBLIC_LOOKOUT_API_URL=values.NEXT_PUBLIC_LOOKOUT_API_URL;
+   if(values.NEXT_PUBLIC_AGENT_MCP_URL)result.NEXT_PUBLIC_AGENT_MCP_URL=values.NEXT_PUBLIC_AGENT_MCP_URL;
+   if(local&&values.NGROK_URL)ngrokUrl=values.NGROK_URL;
   }catch(error){if(error.code!=='ENOENT')throw error;}
+ }
+ if(ngrokUrl){
+  const url=new URL(ngrokUrl);
+  if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||!['','/'].includes(url.pathname))throw Error('NGROK_URL must be an HTTPS base URL without a path or credentials.');
+  result.NEXT_PUBLIC_AGENT_MCP_URL=url.origin+'/mcp';
  }
  return result;
 }
@@ -51,7 +59,7 @@ async function main(){
  const lock=join(parent,'running');
  try{await mkdir(lock);}catch{throw Error(`Live preview is already running, or its lock needs review: ${lock}`);}
  let child,stopping=false,timer,checking=false;
- const env={...await publicPreviewEnv(source),...process.env,npm_config_cache:process.env.npm_config_cache||join(home,'npm-cache')};
+ const env={...process.env,...await publicPreviewEnv(source,{local:!process.argv.includes('--hosted')}),npm_config_cache:process.env.npm_config_cache||join(home,'npm-cache')};
  async function dependencyKey(){
   const hash=createHash('sha256');
   for(const file of ['package.json','package-lock.json','next-app/package.json','next-app/package-lock.json'])hash.update(await readFile(join(preview,file)));
