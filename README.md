@@ -990,3 +990,10 @@ Skip for now. Skipping connection bypasses the preview. Connection checks do not
 start searches; the preview does not queue an agent task, approve, or apply.
 The flow reuses the existing scoped onboarding read/check and search-profile save
 boundaries; only the order and optional presentation changed.
+
+Agent picker artwork is served locally from `next-app/assets/agents/`; official
+source URLs and retrieval date are recorded in `sources.json` there. Dots keeps
+its existing `dot` provider ID; Claude Duet has its own `claude-duet` choice.
+Hermes is available directly in the picker. Selection remains profile setup
+metadata through the existing profile writer; artwork does not establish a live
+connection. The shared picker also supplies demo imagery.
