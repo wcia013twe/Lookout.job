@@ -7,3 +7,8 @@
 - Complete-flow verification: website milestone write → MCP labeled feed/catalog → current-timeline read → acknowledgement → later agent completion/candidate-reported reschedule; covers independent connections, foreign owners, retries, rejected writes, no-op stages and retention. Cross-domain reporting/intelligence checks passed. Real local Docker PostgreSQL proof passed in a rolled-back transaction; no local accounts, schema history or running services were permanently changed.
 - Final validation: all 819 tests passed, including every database scenario; frontend and Node runtime typechecks, data validation (158 roles), production static export (55 pages, 395 offline assets), and whitespace check passed.
 - Limits: hosted availability requires the migration and gateway/MCP release. No deployment, push or shared service restart was performed.
+
+## MCP connection startup
+
+- Developer contract 83 explicitly teaches labeled feed sync in `initialize`: first work after connecting/reconnecting refreshes context, discovers the feed, follows each refresh pointer, and acknowledges handled events. Developer version changes refresh tool discovery. Setup-only still stops without consuming changes or starting work. Secure copy instructions mention the same next-run flow without exposing tokens.
+- Added handshake/discovery scope coverage and extended the complete timeline SQL/MCP test to begin with initialize and tools/list. Validation: 22 focused startup/context/feed checks and all 820 repository/database tests passed; frontend/Node runtime typechecks, data validation (158 roles), production export (55 pages, 395 offline assets), whitespace passed. The gateway/MCP release is still required before hosted clients receive this update.

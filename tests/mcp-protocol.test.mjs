@@ -26,6 +26,18 @@ test('initialize negotiates supported versions and initialized notification retu
   const notification = await handle(request({ jsonrpc: '2.0', method: 'notifications/initialized' }));
   assert.equal(notification.status, 202); assert.equal(await notification.text(), '');
 });
+test('connection handshake advertises labeled feed sync and discovery respects read/ack scopes without starting work',async()=>{
+ const calls=[],handle=handler(calls,['workspace:read','activity:write']);
+ const initialized=(await (await handle(request(rpc('initialize',{protocolVersion:'2025-11-25'})))).json()).result;
+ for(const phrase of ['read_muse_changes','eventTypes','refresh {tool, arguments}','acknowledge_muse_changes','connecting/reconnecting','Connection setup still stops'])assert.ok(initialized.instructions.includes(phrase),phrase);
+ assert.deepEqual(calls.map(call=>call.operation),['credentials.verify'],'Initialize does not consume events or execute work');
+ const tools=(await (await handle(request(rpc('tools/list')))).json()).result.tools;
+ assert.equal(tools.find(tool=>tool.name==='read_muse_changes').annotations.readOnlyHint,true);
+ assert.ok(tools.some(tool=>tool.name==='acknowledge_muse_changes'));
+ const readOnly=(await (await handler([],['workspace:read'])(request(rpc('tools/list')))).json()).result.tools;
+ assert.ok(readOnly.some(tool=>tool.name==='read_muse_changes'));assert.ok(!readOnly.some(tool=>tool.name==='acknowledge_muse_changes'));
+ assert.ok(calls.every(call=>call.operation==='credentials.verify'),'Discovery does not start work');
+});
 test('missing, malformed, expired credentials and forbidden origins reject discovery', async () => {
   assert.equal((await handler()(request(rpc('tools/list'), { Authorization: '' }))).status, 401);
   assert.equal((await handler()(request(rpc('tools/list'), { Authorization: 'Bearer not-agent' }))).status, 401);
