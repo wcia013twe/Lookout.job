@@ -676,3 +676,12 @@ Required unknown personal facts/conflicts need the person; required writing can
 be drafted by the agent; empty optional controls are non-blocking; unsupported
 widgets/files/consent require explicit browser handling. These labels never
 change stored answers, review state, approvals or submission validation.
+
+The website's Preview job → Confirm answer uses the same field/choice/length
+validation as `prepare_draft` answerUpdates, then the existing account-scoped,
+revision-guarded cloud draft save. It awaits persistence before displaying Saved
+to draft; stale revisions, account switches and write failures remain explicit.
+It clears prior application approval and retains questionsReviewed=false. This
+confirmation is not reusable-answer verification or application approval. The
+MCP equivalent remains prepare_draft with draft.answerUpdates at the current
+revision; no new tool or permission is introduced.

@@ -8,7 +8,7 @@ export function discoverPreviewRoles(date) {
     ...role,
     compensation: percent === 76 ? '$55–$65/hr (fictional demo)' : undefined,
     postingObservation:{checkedAt:`${date}T12:00:00Z`,liveness:'active',postedAt:null,description:'Fictional live posting observation.'},workSetting: 'Remote (demo)', sponsorship: 'Not recorded (demo)',
-    reviewPreview: percent === undefined ? [{ question: 'Email', answer: 'candidate@example.com', profileField: 'email' }] : [{ question: 'Can you work onsite three days per week?', required: false, answer: '', reason: 'The work-setting exception needs your decision.' }, ...(limited ? [{ question: 'What is your earliest available start date?', answer: '', reason: 'Confirm your school schedule before answering.' }] : [])],
+    reviewPreview: percent === undefined ? [{ question: 'Email', answer: 'candidate@example.com', profileField: 'email' }] : [{ question: 'Can you work onsite three days per week?', required: true, answer: '', reason: 'The work-setting exception needs your decision.' }, ...(limited ? [{ question: 'What is your earliest available start date?', answer: '', reason: 'Confirm your school schedule before answering.' }] : [])],
     location: 'Remote · United States (demo)', category: 'Systems infrastructure',
     priority: 'Strong Consider', applicationUrl: 'https://example.com/demo-only',
     discoveredDate: date, postedDate: null, sourceFreshness: 'Fictional demo listing · not a real opening',
