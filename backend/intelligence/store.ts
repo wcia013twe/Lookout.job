@@ -26,16 +26,43 @@ export function databaseStore(query:Query,target:StoreTarget):Store {
   const fingerprints=current?.map(r=>({source_type:r.sourceType,source_id:r.sourceId,content_hash:r.contentHash,processing_version:r.processingVersion}));
   const args:any[]=owner?[limit,owner,JSON.stringify(fingerprints)]:[limit];
   let filter=visibility, projection=columns, order='source_type,source_id';
+  let hybridSql:string|undefined;
   if(search){
    if(!validVector(search.vector))throw Error('INVALID_VECTOR');
    if(!Number.isFinite(search.minSimilarity)||search.minSimilarity<0||search.minSimilarity>1)throw Error('INVALID_SIMILARITY');
    const v=args.push(JSON.stringify(search.vector)),m=args.push(search.model),cutoff=args.push(search.minSimilarity);
    const score=`(1 - (embedding OPERATOR(extensions.<=>) $${v}::extensions.vector))`;
+   if(search.mode==='hybrid'){
+    if(typeof search.query!=='string'||!search.query.trim()||search.query.length>1000)throw Error('INVALID_QUERY');
+    const q=args.push(search.query);
+    // OR normalized lexemes for conversational recall; no user-provided tsquery syntax.
+    // Equal-weight reciprocal rank fusion; fixed top-20 pools keep the experiment bounded.
+    hybridSql=`with terms as (
+     select coalesce(string_agg(quote_literal(lexeme),' | '),'')::tsquery as query
+     from unnest(to_tsvector('english',$${q}))
+    ), eligible as (
+     select reports.*, ${score} as similarity,
+      ts_rank_cd(to_tsvector('english',embedding_text),terms.query) as keyword_score
+     from ${table} as reports cross join terms
+     ${visibility}${owner?' and':' where'} embedding is not null and embedding_model=$${m}
+    ), semantic as (
+     select id,row_number() over(order by similarity desc,source_type,source_id)::int as semantic_rank
+     from eligible where similarity>=$${cutoff} order by similarity desc,source_type,source_id limit 20
+    ), lexical as (
+     select id,row_number() over(order by keyword_score desc,source_type,source_id)::int as keyword_rank
+     from eligible where keyword_score>0 order by keyword_score desc,source_type,source_id limit 20
+    ), fused as (
+     select coalesce(semantic.id,lexical.id) as id,semantic_rank,keyword_rank,
+      (coalesce(1.0/(60+semantic_rank),0)+coalesce(1.0/(60+keyword_rank),0))::float8 as fusion_score
+     from semantic full outer join lexical on semantic.id=lexical.id
+    ) select ${columns},similarity,keyword_score,semantic_rank,keyword_rank,fusion_score
+     from eligible join fused using(id) order by fusion_score desc,source_type,source_id limit $1`;
+   }
    filter+=`${owner?' and':' where'} embedding is not null and embedding_model=$${m} and ${score}>=$${cutoff}`;
    projection+=`, ${score} as similarity`;
    order='similarity desc,source_type,source_id';
   }
-  const rows=(await query(`select ${projection} from ${table} as reports${filter} order by ${order} limit $1`,args)).rows;
+  const rows=(await query(hybridSql??`select ${projection} from ${table} as reports${filter} order by ${order} limit $1`,args)).rows;
   // These are typed pointers/snapshots only. This projection never resolves private records.
   return rows.map(row=>({...row,references:[
    ...row.contexts.map((context:Record<string,unknown>)=>({kind:'application_context',...context})),
