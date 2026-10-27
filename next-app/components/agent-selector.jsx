@@ -2,18 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 // Add an animation URL to a character when its final media is supplied.
 // Existing static references remain the poster/fallback; no motion is enabled yet.
-const characters = [
-  { id: "dot", name: "Dots", company: "OpenAI", image: "dots.svg", animation: null },
-  { id: "grok", name: "Grok Bot", company: "xAI", image: "grok-bot.webp", animation: null },
-  { id: "muse", name: "Muse", company: "Meta", image: "muse-official.webp", animation: null },
-  { id: "claude-duet", name: "Claude Duet", company: "Anthropic", image: "duet.svg", animation: null },
-  { id: "hermes", name: "Hermes", company: "Nous Research", image: "hermes-custom.png", animation: null },
-  { id: "chatgpt", name: "ChatGPT", company: "OpenAI", image: "chatgpt.svg", animation: null },
-  { id: "claude", name: "Claude", company: "Anthropic", image: "claude.svg", animation: null },
-  { id: "gemini", name: "Gemini", company: "Google", image: "gemini.png", animation: null },
-  { id: "platform", name: "Cappy", company: "Platform agent", image: "lookout-buddy-purple-idle.webp", directory: "brand", animation: null },
-];
-const invitedAgents = [{ id: "openclaw", name: "OpenClaw", company: "Your own agent" }];
+import {characters, invitedAgents} from "../../lib/agent-selection.mjs";
 const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export default function AgentSelector({ agent, provider, onSelect, joinedOnce }) {
   const selected = agent === "platform" ? "platform" : provider;

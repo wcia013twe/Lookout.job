@@ -11,6 +11,7 @@ import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
 import {onboardingReveal,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
 import ResumeImport from "./resume-import";
 import AgentSelector from "./agent-selector";
+import {readAgentSelection,saveAgentSelection} from "../../lib/agent-selection.mjs";
 import OnboardingAgentConnection from "./onboarding-agent-connection";
 import OnboardingRoleReveal from "./onboarding-role-reveal";
 import OnboardingCircleStory from "./onboarding-circle-story";
@@ -46,7 +47,8 @@ function OnboardingFlow(){
  const [savedResumeId,setSavedResumeId]=useState("");
  const [resumeId,setResumeId]=useState(readField(a.profile.prompt,"Application materials","Default resume ID").value);
  const [sample,setSample]=useState(false),[role,setRole]=useState(null),[error,setError]=useState(""),[feedback,setFeedback]=useState(""),[uploading,setUploading]=useState(false);
- const [provider,setProvider]=useState(profile.setupAgentProvider||"muse"),[agentName,setAgentName]=useState(profile.setupAgentName||"Muse");
+ const {provider,name:agentName}=readAgentSelection(w.state.workflow.searchPreferences,profile);
+ useEffect(()=>{const profile=w.store.get("workflow.profile");if(["setupAgent","setupAgentProvider","setupAgentName"].some(key=>key in profile)){const saved=readAgentSelection(w.store.get("workflow.searchPreferences"),profile);saveAgentSelection(w.store,saved.provider,saved.name);}},[w.store]);
  const file=useRef(null),heading=useRef(null),joinedOnce=useRef(false),uploadLock=useRef(false);
  const reduce=useReducedMotion();
  const resumes=(w.state.workflow.resumes||[]).filter(r=>!r.supersededBy),resume=resumes.find(r=>r.id===resumeId);
@@ -99,9 +101,7 @@ function OnboardingFlow(){
   }catch(e){setError(e.message||"Could not open your first-role preview.");}
  }
  function selectAgent(value,label){
-  setProvider(value);setAgentName(label);
-  const current=w.store.get("workflow.profile");
-  w.store.set("workflow.profile",{...current,setupAgent:value==="platform"?"platform":"own",setupAgentProvider:value,setupAgentName:label});
+  saveAgentSelection(w.store,value,label);
  }
  const room=<div className="mb-6"><AgentSelector joinedOnce={joinedOnce} agent={provider==="platform"?"platform":"own"} provider={provider} onSelect={selectAgent}/>{provider==="platform"&&<p className="hint">Cappy is coming soon. Choose another agent to continue.</p>}{provider==="custom"&&<Field label="Agent name"><input maxLength={100} value={agentName} onChange={e=>selectAgent("custom",e.target.value)}/></Field>}</div>;
  let content;

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import {readAgentSelection} from "../../lib/agent-selection.mjs";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Section, Field, control, primary, secondary } from "./ui";
@@ -195,7 +196,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
           {tokenConnectionId&&<OnboardingButton secondary disabled={busy} onClick={()=>void revoke(tokenConnectionId)}>Revoke token</OnboardingButton>}
         </details>
       </div> : <form onSubmit={issue} aria-label="Create an agent connection">
-        <input type="hidden" name="name" value="My personal agent"/>
+        <input type="hidden" name="name" value={readAgentSelection(w.state.workflow.searchPreferences,w.state.workflow.profile).name}/>
         <OnboardingButton type="submit" disabled={(!w.user&&!w.demo)||busy}>{busy?"Creating token…":"Create connector token"}</OnboardingButton>
       </form>}
       {feedback&&<p role="status" className="hint">{feedback}</p>}
@@ -218,7 +219,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
             <p className="mt-1 text-sm text-board-muted">Use a separate connection for each agent. Access expires after 30 days.</p>
           </div>
           <Field label="Connection name (required)">
-            <input className={control} name="name" placeholder="e.g. Muse on my laptop" required maxLength={80} aria-invalid={Boolean(nameError)} aria-describedby={nameError ? "agent-name-error" : undefined} onChange={() => setNameError("")} disabled={(!w.user && !w.demo) || busy} />
+            <input className={control} name="name" defaultValue={readAgentSelection(w.state.workflow.searchPreferences,w.state.workflow.profile).name} placeholder="e.g. Muse on my laptop" required maxLength={80} aria-invalid={Boolean(nameError)} aria-describedby={nameError ? "agent-name-error" : undefined} onChange={() => setNameError("")} disabled={(!w.user && !w.demo) || busy} />
           </Field>
           {nameError && <p id="agent-name-error" role="alert" className="-mt-3 text-sm leading-relaxed">{nameError}</p>}
           <fieldset disabled={(!w.user && !w.demo) || busy} className="space-y-2">

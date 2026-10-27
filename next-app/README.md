@@ -441,3 +441,16 @@ The time-shift section follows the hero: “Less time applying. More time prepar
 Onboarding navigation checkpoints use account-scoped, versioned localStorage keys. Refresh resumes the last visited setup step; the transient role reveal resumes at the preview entry. No résumé content, tokens, connection authority or completion receipts are stored in this checkpoint. A successful setup completion or workspace reset clears it. Blocked storage falls back to normal setup without a saved-state claim. The fictional demo uses a separate demo-epoch scope and exercises the same navigation checkpoints. This browser navigation preference has no backend/MCP mutation: existing `onboarding.get_state` / `onboarding.submit_step` retain authority for connection and completion.
 
 The onboarding connection panel asks users to add a connector in their agent, exposing the MCP server URL and a one-time token with separate copy actions. Access/privacy and revocation details are collapsed. Copying a token only enables the connection-check action; readiness still comes from the existing agent-confirmed onboarding state, never the clipboard. The checking screen asks the user to have their agent test the connection. Detailed account-settings handoff instructions remain available outside onboarding. Demo setup uses an explicit fictional connection preview without issuing or copying credentials. Existing scoped `connections.issue`, `connections.revoke`, and onboarding state tools remain unchanged.
+
+Agent choice in onboarding and My Agent uses `workflow.searchPreferences.agentSelection`
+(`provider`, `name`), persisted by existing owned preference cloud sync. Both surfaces
+share the option catalog and migrate legacy `setupAgent*` fields out of candidate facts.
+The choice describes the preferred agent; credential issuance and verified connection
+readiness remain separate. Onboarding connection names use the selected agent.
+Demo resets restore fictional Muse; change the dropdown, visit setup and verify the
+same selection, then reset. Account persistence is covered by cloud hydration tests;
+a live signed-in reload and connector handshake require account verification.
+MCP boundary: agent selection is a human setup preference; agents should request the
+user choose it in My Profile → My Agent. Existing scoped connection tools continue to
+manage credentials, and workspace reads expose saved preferences. No new connection
+or deployed MCP capability is implied by selecting a companion.

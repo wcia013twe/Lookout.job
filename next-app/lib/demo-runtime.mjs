@@ -14,6 +14,7 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
  fixtures.state.workflow.tierLists=presets.presets.map(p=>models.tierlistModel.seed(p));
  fixtures.state.workflow.activeTierListId=fixtures.state.workflow.tierLists[0]?.id||'';
  fixtures.state.workflow.theme={...fixtures.state.workflow.theme,cardPacks:[structuredClone(demoPack)],cardPacksVersion:1};
+ fixtures.state.workflow.searchPreferences.agentSelection={provider:"muse",name:"Muse"};
  fixtures.state.workflow.searchPreferences.schedule={enabled:false,timezone:'UTC',routines:[structuredClone(demoPackTask)],configVersion:1};
  if(apiScenario==='profile-conflict') {
   const before=structuredClone(fixtures.state.workflow.profile);
