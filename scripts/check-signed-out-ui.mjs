@@ -20,14 +20,14 @@ try {
     if(/Private guest fixture|9876 XP|Last scan:|to review ·/.test(text))window.__workspaceLeaks.push(text);
    }).observe(document,{childList:true,subtree:true});
   });
-  for(const path of ['', 'discover/', 'applications/', 'needs-you/', 'profile/', 'referrals/', 'circles/', 'progress/','career-toolkit/']) {
+  for(const path of ['discover/', 'applications/', 'needs-you/', 'profile/', 'referrals/', 'circles/', 'progress/','career-toolkit/']) {
    await page.goto(`${base}/${path}`);
    await page.getByRole('heading',{name:'Sign in to your workspace'}).waitFor();
    await page.getByRole('button',{name:'Sign in with Google',exact:true}).waitFor();
    assert.equal(await page.locator('input[aria-label="Search roles or companies"]').count(),0);
    assert.deepEqual(await page.evaluate(()=>window.__workspaceLeaks),[]);
   }
-  await page.goto(`${base}/`);await page.getByRole('button',{name:'Sign in with Google',exact:true}).waitFor();
+  await page.goto(`${base}/`);await page.getByRole('heading',{name:'Your next move is in the cards.'}).waitFor();
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await page.screenshot({path:`${dir}/signed-out-${viewport.width}.png`,fullPage:true});
   await page.goto(`${base}/privacy/`);await page.getByRole('heading',{level:1}).waitFor();
@@ -50,7 +50,7 @@ try {
  await page.goto(`${base}/`);await page.getByRole('heading',{name:'Room for your next move.'}).waitFor();
  assert.equal(await page.locator('input[aria-label="Search roles or companies"]').count(),0,'New account does not fall back to catalog');
  await page.evaluate(()=>window.JB.auth.client.auth.signOut({scope:'local'}));
- await page.getByRole('heading',{name:'Sign in to your workspace'}).waitFor();
+ await page.getByRole('heading',{name:'Your next move is in the cards.'}).waitFor();
  assert.equal(await page.getByRole('heading',{name:'Room for your next move.'}).count(),0);
  await context.close();
  assert.deepEqual(errors,[]);

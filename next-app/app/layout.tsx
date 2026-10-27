@@ -6,7 +6,7 @@ import { colorModeScript } from "../lib/color-mode";
 import AppShell from "../components/app-shell";
 export const metadata = {
   title: "Lookout",
-  description: "Your personal job hunter. Your crew for what’s next. Discover roles, track applications, and make the hunt your own.",
+  description: "Your next move is in the cards. The right opportunities, picked for you. Your agent handles the busywork.",
   manifest: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/manifest.webmanifest`,
   icons: {
     icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/lookout-32.png`,

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import BrandMark from "./brand-mark";
+import LandingPage from "./landing-page";
 import {useEffect, type ReactNode} from "react";
 import { MotionConfig } from "framer-motion";
 import { streak } from "../lib/progress.mjs";
@@ -33,6 +34,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const isPrivacy = /^\/privacy\/?$/.test(path);
   const hasAccess = canViewWorkspace(w);
   const isOnboarding = /\/onboarding\/?$/.test(path);
+  if (!hasAccess && path === "/") return <LandingPage />;
   if (!hasAccess && !isOnboarding) {
     return <main className="min-h-dvh bg-board-bg">
       <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-4 md:px-6">

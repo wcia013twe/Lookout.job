@@ -426,3 +426,12 @@ Compact card assessments extend the existing private `batch_items.recommendation
 Applications → Stats renders bounded counters and a client-side Nivo Sankey below them. `lib/application-flow.mjs` partitions the deduplicated native/imported applications using the tracker's current progress/outcome rules, with totals matching the Applications counter. It does not reconstruct unrecorded intermediate steps or infer ghosting from silence. Saved jobs and drafts are excluded; accessible labeled counts accompany the chart, and empty/single-outcome states are supported. This is a read-only visualization over the existing workspace/application reads, with no new MCP mutation or data sent to an external chart service.
 
 `node scripts/check-profile-navigation.mjs` checks the complete desktop/mobile navigation and chart flow. Isolated demo URLs `/applications/?demo=1&demoApi=application-flow`, `application-flow-single` and `application-flow-empty` cover every branch and edge state; demo reset recreates the selected fixture without account writes.
+
+
+### Public landing page
+
+Signed-out `/` renders the four-section Lookout landing page; signed-in and explicit-demo home still render Discover. `/discover/` retains its sign-in gate. Signup uses the existing `/onboarding/` Google account flow and login uses `/discover/?demo=0`; no new auth provider or application authority is introduced.
+
+The hero reuses `TutorialRoleCard`, extracted from the onboarding reveal with the same gold face, shared logo and typography. Its example roles, Pass and Review actions are component-local and never persist preferences, application records or progress. Review reveals verification guidance and account setup, never submits. Muse check-ins, preparation and Circle discussions are labeled examples. Recurring runs still depend on a configured agent schedule. The existing Lookout mascot has eye-only animation, a pause control and a reduced-motion static state. Google marks reuse the bundled authentication logo.
+
+`node scripts/check-landing-ui.mjs` checks desktop/mobile rendering, review/pass state, signup/login destinations and reduced motion. The signed-out regression covers protected routes, guest-cache isolation, demo and account sign-out. These previews add no backend action or MCP mutation; existing account/agent boundaries are unchanged.
