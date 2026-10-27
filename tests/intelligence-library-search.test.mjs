@@ -21,3 +21,17 @@ test('Node library adapter uses independent BM25/vector modes and library hybrid
  await assert.rejects(()=>run('bm25','test',undefined,21),/INVALID_LIMIT/);
  await assert.rejects(()=>librarySearchEvaluation([...records,records[0]]),/INVALID_EVALUATION_RECORD/);
 });
+
+test('library company and role scope excludes other roles and companies in every mode',async()=>{
+ const run=await librarySearchEvaluation([
+  {id:'match',text:'Waiting after interview',company:'Bloomberg',role:'New Grad Software Engineer',embedding:vector(0)},
+  {id:'intern',text:'Waiting after interview',company:'Bloomberg',role:'Software Engineer Intern',embedding:vector(0)},
+  {id:'other',text:'Waiting after interview',company:'Cedar Systems',role:'New Grad Software Engineer',embedding:vector(0)},
+ ]);
+ const scope={company:'Bloomberg',role:'New Grad Software Engineer'};
+ for(const mode of ['bm25','vector','hybrid']){
+  assert.equal((await run(mode,'Waiting after interview',vector(0),3)).length,3);
+  assert.deepEqual((await run(mode,'Waiting after interview',vector(0),3,scope)).map(h=>h.id),['match']);
+  assert.equal((await run(mode,'Waiting after interview',vector(0),3,{...scope,company:'Missing'})).length,0);
+ }
+});
