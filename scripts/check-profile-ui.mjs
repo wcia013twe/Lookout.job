@@ -18,10 +18,10 @@ try{
   await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*','Content-Range':'0-0/0'},body:JSON.stringify(body)});
  });
  const page=await context.newPage();page.setDefaultTimeout(12000);page.on('pageerror',e=>errors.push(e.message));
- await page.goto((process.env.LOOKOUT_UI_URL || 'http://localhost:3034') + '/profile/');
- await page.getByRole('button',{name:'Open profile navigation'}).click();
- await page.getByRole('button',{name:'Demo mode',exact:true}).click();
- assert.equal(await page.getByRole('navigation',{name:'Profile shortcuts',exact:true}).getByRole('button').count(),3);
+ await page.goto((process.env.LOOKOUT_UI_URL || 'http://localhost:3034') + '/profile/?demo=1');
+ await page.getByRole('heading',{name:'About me',exact:true}).waitFor();
+ assert.equal(await page.getByRole('navigation',{name:'Profile sections',exact:true}).getByRole('button').count(),4);
+ assert.equal(await page.getByRole('button',{name:'Overview',exact:true}).count(),0);
  assert.equal(await page.getByRole('heading',{name:'Assigned accounts',exact:true}).count(),0);
  assert.equal(await page.getByRole('heading',{name:'Your writing voice',exact:true}).count(),0);
  await page.getByRole('button',{name:'New profile',exact:true}).click();

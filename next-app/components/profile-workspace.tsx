@@ -1,11 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
 import { secondary, control } from "./ui";
 import ProfileEditor from "./profile-editor";
-import ProfileOverview from "./profile-overview";
 import ProfileDocuments from "./profile-documents";
 import AppearanceSettings from "./appearance-settings";
 
@@ -21,22 +19,20 @@ import {
   EligibilitySettings,
   WritingStyles,
 } from "./profile-settings";
-type ProfileSectionId = "overview" | "about" | "preferences" | "agent" | "appearance";
+type ProfileSectionId = "about" | "preferences" | "agent" | "appearance";
 const sections: [ProfileSectionId, string][] = [
-  ["overview", "Overview"],
   ["about", "About me"],
   ["preferences", "Job preferences"],
   ["agent", "My Agent"],
   ["appearance", "Appearance"],
 ];
 function ProfileContent() {
-  const { demo, accountUser } = useWorkspace();
   const a = useApplicationProfile();
-  const [active, setActive] = useState<ProfileSectionId>("overview"),
-    [visited, setVisited] = useState<ProfileSectionId[]>([]);
+  const [active, setActive] = useState<ProfileSectionId>("about"),
+    [visited, setVisited] = useState<ProfileSectionId[]>(["about"]);
   useEffect(() => {
     const section = new URLSearchParams(window.location.search).get("section");
-    const requested = section === "kit" ? "preferences" : section;
+    const requested = section === "kit" ? "preferences" : section === "overview" ? "about" : section;
     if (sections.some(([id]) => id === requested)) {
       setActive(requested as ProfileSectionId);
       setVisited([requested as ProfileSectionId]);
@@ -78,7 +74,6 @@ function ProfileContent() {
           </button>
         ))}
       </nav>
-      {active === "overview" && <ProfileOverview onSelect={select} />}
       {visited.includes("about") && (
         <section
           className={profileStyles.panel}
@@ -121,16 +116,6 @@ function ProfileContent() {
         {a.feedback} <button type="button" className={secondary} disabled={a.busy} onClick={a.retrySave}>Retry saving</button>
       </p>}
 
-      <Link
-        href={demo ? "/onboarding/?demo=1" : "/onboarding/"}
-        className="mt-6 inline-flex min-h-11 items-center text-xs text-board-muted underline underline-offset-4 hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent"
-      >
-        Open onboarding
-      </Link>
-      <Link href={demo ? "/?demo=1&tour=replay" : "/?tour=replay"} className="ml-5 inline-flex min-h-11 items-center text-xs text-board-muted underline underline-offset-4 hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent">Dashboard tour</Link>
-      {active === "overview" && (accountUser || demo) && <div className="mt-8 border-t border-board-line pt-4">
-        <Link href={demo ? "/workspace-reset/?demo=1" : "/workspace-reset/"} className="inline-flex min-h-11 items-center text-sm text-board-muted underline underline-offset-4 hover:text-board-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-board-accent">Reset workspace</Link>
-      </div>}
     </ProfileSurface>
   );
 }

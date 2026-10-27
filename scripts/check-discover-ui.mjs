@@ -32,9 +32,11 @@ try{
  await panel.getByRole('heading',{name:'About the job',exact:true}).waitFor();
  await panel.getByRole('region',{name:'Job facts',exact:true}).waitFor();
  await panel.getByRole('heading',{name:'AI fit analysis',exact:true}).waitFor();
- await panel.getByRole('heading',{name:'Application review',exact:true}).waitFor();
+ await panel.getByRole('heading',{name:'Application answers',exact:true}).waitFor();
  await panel.getByText('Can you work onsite three days per week?',{exact:true}).waitFor();
  await panel.getByLabel('Can you work onsite three days per week?',{exact:true}).fill('Temporary review answer');
+ await panel.getByRole('button',{name:'Confirm answer',exact:true}).click();
+ await panel.getByRole('status').filter({hasText:'Saved to draft'}).waitFor();
  await panel.locator('summary').filter({hasText:'Skills & experience'}).first().click();
  await page.screenshot({path:dir+'/discover-panel-desktop.png',fullPage:false});
  assert.equal(cloud.length,before,'Preview should not call a service');
@@ -42,8 +44,8 @@ try{
  assert.equal(await panel.count(),0);
  assert(await card.getByRole('button',{name:'Preview job',exact:true}).evaluate(el=>document.activeElement===el),'Focus returns to the preview button');
  await card.getByRole('button',{name:'Preview job',exact:true}).click();
- assert.equal(await panel.getByLabel('Can you work onsite three days per week?',{exact:true}).inputValue(),'');
- await panel.getByRole('heading',{name:'Application review',exact:true}).scrollIntoViewIfNeeded();
+ assert.equal(await panel.getByLabel('Can you work onsite three days per week?',{exact:true}).inputValue(),'Temporary review answer');
+ await panel.getByRole('heading',{name:'Application answers',exact:true}).scrollIntoViewIfNeeded();
  await page.screenshot({path:dir+'/discover-application-desktop.png'});
  await page.setViewportSize({width:390,height:844});
  await page.emulateMedia({colorScheme:'light'});

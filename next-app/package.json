@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@nivo/sankey": "0.99.0",
     "@supabase/supabase-js": "2.117.3",
     "framer-motion": "^14.2.0",
     "micromark": "4.0.3",

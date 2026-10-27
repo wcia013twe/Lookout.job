@@ -419,3 +419,10 @@ individual guide pages remain readable without signing in.
 and intercepted API responses; no real account or external write is required.
 
 Compact card assessments extend the existing private `batch_items.recommendation.matchAssessment` JSON. New assessments carry exactly four named dimensions (`skillsExperience`, `compensation`, `wellbeingCulture`, `locationWorkSetting`), each `{score:0–100|null, reasoning:1–240 characters}`, plus an `assessedAt` timestamp. Optional overall `percent` and short `evidence` are agent supplied. Cards display numeric scores or Unknown; reasoning is available only in expanded Preview. There is no backend scoring engine, separate table or synthesized aggregate. Legacy factor assessments and immutable historical batches remain readable. The existing publish_batch tool validates/persists both formats; the compact-score migration and gateway56 must be released before claiming hosted support.
+
+
+### Tracker application flow
+
+Applications → Stats renders bounded counters and a client-side Nivo Sankey below them. `lib/application-flow.mjs` partitions the deduplicated native/imported applications using the tracker's current progress/outcome rules, with totals matching the Applications counter. It does not reconstruct unrecorded intermediate steps or infer ghosting from silence. Saved jobs and drafts are excluded; accessible labeled counts accompany the chart, and empty/single-outcome states are supported. This is a read-only visualization over the existing workspace/application reads, with no new MCP mutation or data sent to an external chart service.
+
+`node scripts/check-profile-navigation.mjs` checks the complete desktop/mobile navigation and chart flow. Isolated demo URLs `/applications/?demo=1&demoApi=application-flow`, `application-flow-single` and `application-flow-empty` cover every branch and edge state; demo reset recreates the selected fixture without account writes.
