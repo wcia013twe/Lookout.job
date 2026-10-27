@@ -28,7 +28,7 @@ import {
 export function CompanyLogo({ company }: { company: string }) {
   const providerUrl = companyLogoUrl(company, process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN);
   const cachedUrl = (logos as Record<string, { url: string }>)[normCompany(company)]?.url;
-  return <CompanyLogoImage key={`${company}:${providerUrl}:${cachedUrl}`} company={company} urls={[providerUrl, cachedUrl].filter((url): url is string => Boolean(url))} />;
+  return <CompanyLogoImage key={`${company}:${providerUrl}:${cachedUrl}`} company={company} urls={[normCompany(company) === "google" ? `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/google-g.png` : null, providerUrl, cachedUrl].filter((url): url is string => Boolean(url))} />;
 }
 function CompanyLogoImage({ company, urls }: { company: string; urls: string[] }) {
   const [attempt, setAttempt] = useState(0);
