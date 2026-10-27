@@ -517,3 +517,15 @@ separate from personal-agent routines and need a running worker. Tool discovery
 or saved enabled state does not prove execution. See [the shared website/MCP
 contract](../backend/backend-jobs.md). Contract 54, migration and configured runtime
 require release and live verification before hosted support can be claimed.
+
+## Individual work-history edits
+
+Use `edit_work_experience` (`profile:write`) for a single add/update/remove, with
+`expectedUpdatedAt` from `workspace_read`. Update/remove also take `entryIndex`
+from that exact profile snapshot; add/update take only the entry `fields` to save.
+Other fields and entries are preserved. Stale retries reject; read back before
+retrying, and remove only when requested. Changed facts become unverified.
+
+Node MCP forwards this lightweight operation to Edge. The browser adapter calls
+the same owned SQL validator. Bulk section imports remain explicit replacements.
+See [the full contract, examples and release limits](../backend/agent-contract.md#individual-work-history-edits).

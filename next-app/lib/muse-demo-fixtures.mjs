@@ -1,3 +1,4 @@
+import {editedWorkExperience} from '../../supabase/functions/agent-gateway/work-experience.mjs';
 import {createBackendJobsDemo} from '../../lib/backend-jobs-demo.mjs';
 import {createWorkflowDemo} from './agent-workflows-demo.mjs';
 import {createArtifactDemo} from './artifact-demo.mjs';
@@ -154,6 +155,17 @@ export function createDemoServices(store) {
   }
   return {
     backendJobs:createBackendJobsDemo(),
+    async editWorkExperience(payload) {
+      const profile=store.get('workflow.profile');
+      const timestamp=store.get('demo.profileUpdatedAt')||'2026-01-01T00:00:00.000Z';
+      if(payload.expectedUpdatedAt!==timestamp)throw Error('Profile changed; reload before editing work history');
+      const workExperience=editedWorkExperience(profile.workExperience||[],payload);
+      if(JSON.stringify(workExperience)===JSON.stringify(profile.workExperience))return {facts:profile,updated_at:timestamp};
+      const updated_at=new Date(Date.parse(timestamp)+1).toISOString();
+      store.set('workflow.profile',{...profile,workExperience,verified:false});
+      store.set('demo.profileUpdatedAt',updated_at);
+      return {facts:store.get('workflow.profile'),updated_at,verified_at:null};
+    },
     ...artifactDemo,
     ...createWorkflowDemo(store),
     async discoverToolkit() { return copy(store.get('demo.toolkitDiscovery') || []); },

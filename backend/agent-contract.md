@@ -501,3 +501,54 @@ Public API inspections are incomplete: conditional controls, hidden location
 widgets, exact browser limits and form fingerprint must be checked in the existing
 browser runner before actual submission. No real application submission is part
 of direct-fill validation.
+
+## Individual work-history edits
+
+`edit_work_experience` (`profile.work_experience.edit`, `profile:write`) adds,
+updates or removes one entry in `profiles.facts.workExperience`. This is ordinary
+CRUD: Muse connects to Node MCP, which forwards this operation to Edge. No Node
+worker, parser, LLM call, new candidate table or entry-ID backfill is involved.
+
+Read `workspace_read` for the owned profile and exact `updated_at` first. Send
+`action: add` and `fields` to append. For `update`, send `entryIndex` (zero-based)
+and only changed `fields`; omitted entry fields and other entries remain intact.
+For `remove`, send `entryIndex` without `fields`, only on the user's request.
+Every action requires `expectedUpdatedAt`; an index is valid only for that exact
+profile snapshot. Unknown fields, malformed values, missing entries, more than
+50 entries, wrong scope, revoked credentials and stale versions reject. Scalar
+text remains bounded at 20,000 characters and `current` is a boolean.
+
+The database locks the owned profile before checking its timestamp and editing
+its array. Changes advance the timestamp even within one transaction and clear
+`verified_at`; exact no-op updates preserve both. Retrying a successful add or
+removal with the old timestamp returns a conflict, rather than editing twice.
+After an uncertain response, read current state and reconcile; do not blindly
+retry using a fresh version. The operation does not provide a durable idempotency
+receipt. Changed profile context versions remain server-triggered.
+
+Stale entry edits raise `PT409`, mapped to HTTP 409 by PostgREST and the gateway.
+This avoids the PostgREST retry loop caused by using `40001` for a persistent
+application conflict. See [Supabase’s documented behavior](https://supabase.com/kb/troubleshooting/high-cpu-and-infinite-transaction-retries-when-using-custom-error-codes-in-rpc-functions).
+
+Authenticated browser adapter `editWorkExperience` calls
+`edit_work_experience(payload, expected_owner)`. Both transports share
+`private.edit_work_experience`; the browser checks account identity before and
+after the RPC. Private helper and credential dispatch are denied to browser and
+anonymous roles. Existing website bulk editing and resume imports remain explicit
+section-replacement paths; this change does not migrate their autosync or promise
+conflict protection for those older writes. Agents must use the entry tool for
+routine work-history edits rather than reconstructing the whole array.
+
+Verification: `tests/work-experience.test.mjs` covers MCP validation/discovery,
+Node-to-Edge routing, browser account fencing and fictional demo add/edit/remove,
+stale rejection and reset. `tests/work-experience-check.sql` exercises actual
+migration/SQL preservation, versions, scopes, ownership and browser/MCP parity.
+`node scripts/check-local-work-experience.mjs` verifies real local Node MCP,
+isolated Edge and Docker Supabase, writes only through a disposable fictional
+account, and inspects the retained review profile read-only. It applies only this
+additive migration and never restarts/rebinds shared services. Its sanitized
+receipt is `backend/local/work-experience-proof.json` when successful.
+
+Gateway/MCP release and migration deployment are required before connected
+production agents can discover/use the tool. Local source/tests are not a hosted
+availability claim. Refresh tool discovery on the new developer context version.

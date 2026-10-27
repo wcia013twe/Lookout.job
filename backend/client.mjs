@@ -1,3 +1,4 @@
+import {validateWorkExperience} from '../supabase/functions/agent-gateway/work-experience.mjs';
 import {createBackendJobsService} from '../lib/backend-jobs.mjs';
 import {validateCardPacks,batchPackDrops} from '../lib/card-packs.mjs';
 import {validatePlatformPayload} from '../supabase/functions/agent-gateway/platform-tools.mjs';
@@ -78,6 +79,13 @@ function createBackend(client, expectedUserId = null) {
       if(response.error)throw response.error;
       if(await owner()!==userId)throw Error('Account changed');
       return response.data;
+    },
+    async editWorkExperience(payload) {
+      validateWorkExperience(payload);
+      const userId=await owner();
+      const data=await result(client.rpc('edit_work_experience',{payload,expected_owner:userId}));
+      if(await owner()!==userId)throw Error('Account changed');
+      return data;
     },
     async updateFields(operation, payload) {
       if(!validateFieldUpdate(operation,payload))throw Error('Unknown field update');

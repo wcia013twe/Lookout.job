@@ -60,6 +60,10 @@ Use existing `search_documents` for configuration and `career_artifacts` for pre
 | Prepared application answers | Current `applications.draft`; approval and submission preserve their own snapshots. |
 | Screening explanation / selection rationale | `search_screenings.explanation` and `selection_decisions.reason/evidence`, beside the structured decision and run/context evidence. |
 
+Individual work-history edits use the shared `private.edit_work_experience` validator.
+Exact profile timestamps fence zero-based indices; changes preserve unrelated facts
+and clear verification. No table or entry IDs are added. See [the operation contract](../backend/agent-contract.md#individual-work-history-edits).
+
 An artifact's `content` is `{title, purpose, kind, format, body, sources, links, weekOf?, company?, preparedFor?, materials?}`. `company` is display/context text; use a typed link for identity. Sources are at most 30 `{title,url,observedAt}` records with dated HTTPS URLs. No invented source dates. Content kinds are `weekly_prep`, `company_research`, `interview_brief`, `read_up`, `explainer`, `practice`, `decision_aid`, `notes`, `cover_letter`, `application_template`.
 
 Each `links` item has **exactly one** `applicationId`, `goalId`, `companyWorkspaceId`, `contactId` or `jobId`. `taskId` is optional and only allowed with an application/goal that contains that task. Owned subjects are checked against the authenticated owner; jobs must exist in the shared catalog. Links are validated at save time, not SQL foreign keys inside JSON. Historical document revisions retain their original links; reading them grants no access to a deleted or inaccessible subject. No empty task or synthetic plan is needed merely to save an analysis.
