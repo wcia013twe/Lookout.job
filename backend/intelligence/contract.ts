@@ -1,3 +1,4 @@
+import {MUSE_TOOL_DESCRIPTOR} from './muse.ts';
 import {GRAPH_TOOL_DESCRIPTOR} from './evidence-graph.ts';
 import {METADATA_TOOL,metadataTool,validateMetadataArgs} from './metadata.ts';
 // One operation contract shared by MCP discovery and the HTTP-backed service.
@@ -27,6 +28,7 @@ export const DEMO_TOOLS = [
   },
   metadataTool,
   GRAPH_TOOL_DESCRIPTOR,
+  MUSE_TOOL_DESCRIPTOR,
 ] as const;
 
 export function validateDemoCall(operation: unknown, args: unknown = {}) {
