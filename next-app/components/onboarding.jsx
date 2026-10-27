@@ -95,12 +95,12 @@ function OnboardingFlow(){
    {!w.user&&!w.demo?<><p className="hint">Sign in to save your résumé privately.</p><Button secondary disabled={!w.authReady} onClick={w.signIn}>Sign in</Button></>:
    <>{resumes.length>0&&<Field label={w.demo?"Demo résumé":"Choose a saved résumé"}><select value={resumeId} onChange={e=>setResumeId(e.target.value)}><option value="">Choose a résumé</option>{resumes.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></Field>}
     {!w.demo&&<Button secondary disabled={uploading} onClick={()=>file.current?.click()}>{uploading?"Uploading…":resume?"Choose another file":"Choose a PDF or DOCX"}</Button>}
-    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. Continue extracts profile details with APILayer for you to review."}</p></>}
+    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. Continue extracts and saves your profile details with APILayer."}</p></>}
   </div>}
   {feedback&&<p className="hint" role="status">{feedback}</p>}
   <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
  </form><OnboardingSimplifyImport/></>;
- if(scene==="resume-review")content=<><Dots/><Title sub="Review the extracted details before saving them to your profile.">Your résumé details.</Title><ResumeImport key={`${w.demo?w.demoEpoch:w.user?.id}-${resume.id}`} resumeId={resume.id} autoStart onComplete={()=>go("preferences")} onClose={()=>go("preferences")}/></>;
+ if(scene==="resume-review")content=<><Dots/><Title sub="We’re adding your résumé details to your profile.">Setting up your profile.</Title><ResumeImport key={`${w.demo?w.demoEpoch:w.user?.id}-${resume.id}`} resumeId={resume.id} autoStart onComplete={()=>go("preferences")} onClose={()=>go("preferences")}/></>;
  if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={findRole}>
   <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Backend engineering","Frontend engineering","Design","Product","Data & AI"]}/>
   <Pills label="Job type" value={employment} onChange={setEmployment} options={["Full-time","Internship","Contract","Open to options"]}/>

@@ -35,6 +35,12 @@ export default function ResumeImport({resumeId,onClose,autoStart=false,onComplet
    const result=w.demo?{resumeId,profileUpdatedAt:'2026-01-01T00:00:00Z',profileFacts:baseline.current,facts:{name:'Jordan Example',skills:'TypeScript\nPostgreSQL',workExperience:[{company:'Example Systems',title:'Software Engineering Intern',description:'Dates returned by parser: June–August 2026'}]},warnings:['Fictional extraction preview. No file is sent to APILayer and no API credits are used.','Dates returned by the parser may be normalized or incomplete. They are preserved in descriptions; check the original resume before filling date fields.']}:await requestResumeParse({client:w.client,getOwner:()=>window.JB.auth.userId,resumeId,apiUrl:process.env.NEXT_PUBLIC_LOOKOUT_API_URL});
    if(owner()!==identity.current)return;
    if(JSON.stringify(w.store.get('workflow.profile'))!==JSON.stringify(baseline.current))throw Error('Your profile changed during parsing. Start the import again.');
+   if(autoStart){
+    if(w.demo)w.store.set('workflow.profile',{...baseline.current,...result.facts,verified:false});
+    else await window.JB.cloud.importProfileFields(result.facts,result.profileUpdatedAt,baseline.current);
+    if(owner()!==identity.current)return;
+    setSaved(true);onComplete?.();return;
+   }
    const choices=profileImportChoices(result.profileFacts,result.facts);
    setProposal({...result,choices});setSelected(choices.filter((c:any)=>c.selected).map((c:any)=>c.key));
   }catch(e){if(owner()===identity.current)setFeedback(e instanceof Error?e.message:'Could not parse this resume. Your file is saved.');}
@@ -54,12 +60,12 @@ export default function ResumeImport({resumeId,onClose,autoStart=false,onComplet
   finally{lock.current=false;setBusy(false);}
  }
  return <section aria-label="Resume profile autofill" aria-busy={busy} className="mt-5 space-y-4 border-t border-board-line pt-5">
-  <div className="flex flex-wrap items-center justify-between gap-3"><h3 className="font-semibold">{saved?'Your profile is saved':proposal?'Review extracted details':autoStart?'Building your profile':'Fill your profile from this resume'}</h3>{onClose&&<button type="button" className={secondary} disabled={busy} onClick={onClose}>Close</button>}</div>
+  <div className="flex flex-wrap items-center justify-between gap-3"><h3 className="font-semibold">{saved?'Your profile is saved':proposal?'Review extracted details':autoStart?'Saving your profile':'Fill your profile from this resume'}</h3>{onClose&&<button type="button" className={secondary} disabled={busy} onClick={onClose}>Close</button>}</div>
   {!proposal&&!saved&&!autoStart&&<><p className="max-w-prose text-sm text-board-muted">{w.demo?'Preview a fictional resume import. No file leaves this demo.':'Send this resume to APILayer to extract your profile details. APILayer states that uploaded files are deleted after 15 seconds and parsed results are not retained. Scanned-resume support is unverified; use a text-based PDF or DOCX. You choose what to save; existing details stay unchanged until then.'}</p><button type="button" className={secondary} disabled={busy||w.locked||draftPending} onClick={()=>void parse()}>{busy?'Reading resume…':w.demo?'Preview autofill':'Autofill with APILayer'}</button></>}
   {(autoStart||saved||proposal)&&<ol aria-label="Profile processing" aria-live="polite" className="py-2">
    <ProcessingStep label="Résumé saved" done/>
    <ProcessingStep label={proposal||saved?'Profile details extracted':feedback&&!proposal?'Extraction needs attention':'Extracting profile details'} done={Boolean(proposal)||saved} active={busy&&!proposal&&!saved}/>
-   <ProcessingStep label={saved?'Profile details saved':proposal&&busy?'Saving your profile':'Save reviewed profile details'} done={saved} active={busy&&Boolean(proposal)}/>
+   <ProcessingStep label={saved?'Profile details saved':autoStart?'Saving profile details':proposal&&busy?'Saving your profile':'Save reviewed profile details'} done={saved} active={busy&&Boolean(proposal)}/>
   </ol>}
   {saved&&autoStart&&<button type="button" className={primary} onClick={onComplete}>Continue</button>}
   {proposal&&<>

@@ -794,15 +794,16 @@ For an independent Docker-backed database, Auth, Storage and agent-gateway/MCP s
 
 ## Resume autofill with APILayer (local integration)
 
-Tutorial **Continue** automatically extracts a selected uploaded resume and opens
-a review before saving; extraction errors allow retry or skipping. My Profile →
+Tutorial **Continue** automatically extracts and saves supported facts from the
+selected uploaded resume, then advances to preferences. Omitted fields stay unchanged;
+extraction or save errors remain visible without advancing. My Profile →
 About me → Documents offers **Autofill with APILayer**. New uploads and successful source replacements open
 that offer; existing private uploaded resumes have **Autofill profile**. A link
 reference, cover letter or template is not sent to the resume parser. Upload alone
 never sends a document to APILayer. The tutorial Continue hint and profile extraction button disclose the transfer.
 The API key remains in the server-only Node env; no browser OCR is added.
 
-The review shows saved and extracted values side by side. Missing fields default
+The optional My Profile review shows saved and extracted values side by side. Missing fields default
 selected; existing fields and whole history sections default unchecked. Selecting
 a history section replaces all entries in that section. Discard leaves the profile
 unchanged; saving preserves unrelated fields and clears verification. Unsaved

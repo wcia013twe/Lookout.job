@@ -198,7 +198,7 @@ test('resume import adopts a versioned receipt without autosync overwriting reta
  const baseline=clone(env.store.get('workflow.profile')),writes=env.writes;
  await JB.cloud.importProfileFields({skills:'TypeScript'},env.db.profiles[0].updated_at,baseline);
  assert.equal(env.store.get('workflow.profile.name'),'Keep my name');assert.equal(env.store.get('workflow.profile.skills'),'TypeScript');assert.equal(env.store.get('workflow.profile.verified'),false);
- await env.flush();assert.equal(env.writes,writes);assert.equal(env.db.profiles[0].facts.skills,'TypeScript');
+ assert.equal(env.writes,writes+1);await env.flush();assert.equal(env.writes,writes+1);assert.equal(env.db.profiles[0].facts.skills,'TypeScript');
 });
 test('resume import rejects local edits and stale remote profile versions',async()=>{
  const env=await environment();env.store.set('workflow.profile.name','Saved');await JB.cloud.save();const baseline=clone(env.store.get('workflow.profile'));
@@ -261,4 +261,12 @@ test('legacy offline cache without a baseline requires explicit review before re
 
 test('a refresh started before typing cannot hydrate after a profile form becomes dirty',async()=>{
  const env=await environment(),hold=env.blockRead();const pending=env.event('focus');for(let i=0;i<10;i++)await Promise.resolve();env.store.set('ui.profileEditing',true);env.db.profiles=[{user_id:one,facts:{name:'Late agent refresh'},updated_at:'2026-10-26T10:00:00Z'}];hold.resolve();await pending;assert.equal(env.store.get('workflow.profile.name'),'');
+});
+
+test('resume import creates a sparse profile when the parser omits the name',async()=>{
+ const env=await environment();const baseline=clone(env.store.get('workflow.profile'));
+ await JB.cloud.importProfileFields({email:'fictional@example.com',skills:'SQL',workExperience:[{title:'Intern',company:'Example'}]},null,baseline);
+ assert.equal(env.db.profiles[0].facts.email,'fictional@example.com');
+ assert.equal(env.store.get('workflow.profile.workExperience')[0].company,'Example');
+ const writes=env.writes;await env.flush();assert.equal(env.writes,writes);
 });

@@ -19,3 +19,9 @@
 - Live-main now reads only NEXT_PUBLIC_LOOKOUT_API_URL from source local env files, so isolated previews connect to the configured parser without copying private credentials.
 - Root cause locally: parser running on 8081 but preview had no API URL. Added coverage for public-only propagation and env precedence.
 - Validation: three live-preview tests, typecheck, data validation, production build and production-build browser checks passed. Provider extraction with a real resume remains unverified.
+
+## Direct onboarding save
+
+- Continue now parses, saves all returned supported profile facts, and advances to preferences after the save receipt. No onboarding review, field selections, warnings list or second save click. Missing extracted values leave existing facts intact; imported facts stay unverified.
+- Resume imports now use the same versioned saveProfile writer as normal profile edits, including initial sparse profiles without an extracted name. Removed the separate legacy profile.save creation path. My Profile retains optional manual review.
+- Validation: all 840 tests, typecheck, data validation, production build, design detector and browser verification passed. Browser verification confirms a sparse parsed profile saves and reads back before advancing; uses fictional responses, not a live vendor call.
