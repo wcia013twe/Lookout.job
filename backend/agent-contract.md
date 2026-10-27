@@ -486,7 +486,7 @@ Supply inspected field IDs/types/options; nested public-form question groups are
 accepted and flattened. Nonempty supplied/existing answers are preserved, and
 owned existing draft metadata/blockers are retained. Selected resume upload skips
 its same-group paste alternative. No other file, consent, hidden or multiselect
-control is inferred. Exact choice values must match; no semantic yes/no mapping.
+control is inferred. Hidden controls remain in the escape report, not the human-facing draft question list. Exact choice values must match; no semantic yes/no mapping.
 
 The response adds `prefill: {counts, filled, preserved, escapes, skipped,
 personalVersion}` alongside the saved application. Escapes include public question
