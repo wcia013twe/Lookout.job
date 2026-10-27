@@ -25,3 +25,9 @@
 - Continue now parses, saves all returned supported profile facts, and advances to preferences after the save receipt. No onboarding review, field selections, warnings list or second save click. Missing extracted values leave existing facts intact; imported facts stay unverified.
 - Resume imports now use the same versioned saveProfile writer as normal profile edits, including initial sparse profiles without an extracted name. Removed the separate legacy profile.save creation path. My Profile retains optional manual review.
 - Validation: all 840 tests, typecheck, data validation, production build, design detector and browser verification passed. Browser verification confirms a sparse parsed profile saves and reads back before advancing; uses fictional responses, not a live vendor call.
+
+## Inline saved confirmation
+
+- Removed the separate onboarding processing screen. Resume upload/selection starts parse and save inline on the original page, ending with a green check and “Data saved.” Continue enables only after successful saving and advances to preferences.
+- Reuses the existing shared import, demo and versioned save paths; failures remain inline and do not claim success. Browser coverage asserts the confirmation appears while still on the original page.
+- Validation: typecheck, data validation, production build, browser automatic parse/save/read-back and same-page confirmation checks, and design detector passed. Provider calls were mocked in browser verification.

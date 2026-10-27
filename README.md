@@ -794,8 +794,8 @@ For an independent Docker-backed database, Auth, Storage and agent-gateway/MCP s
 
 ## Resume autofill with APILayer (local integration)
 
-Tutorial **Continue** automatically extracts and saves supported facts from the
-selected uploaded resume, then advances to preferences. Omitted fields stay unchanged;
+Tutorial resume upload or selection automatically extracts and saves supported
+facts inline, then shows a green check and **Data saved**. **Continue** advances to preferences. Omitted fields stay unchanged;
 extraction or save errors remain visible without advancing. My Profile →
 About me → Documents offers **Autofill with APILayer**. New uploads and successful source replacements open
 that offer; existing private uploaded resumes have **Autofill profile**. A link

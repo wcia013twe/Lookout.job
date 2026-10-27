@@ -32,6 +32,7 @@ function OnboardingFlow(){
  const [work,setWork]=useState(readField(a.profile.prompt,"Role preferences","Roles").value);
  const [location,setLocation]=useState(readField(a.profile.prompt,"Search Filters","Location").value);
  const [employment,setEmployment]=useState(readField(a.profile.prompt,"Search Filters","Employment").value||"Full-time");
+ const [savedResumeId,setSavedResumeId]=useState("");
  const [resumeId,setResumeId]=useState(readField(a.profile.prompt,"Application materials","Default resume ID").value);
  const [sample,setSample]=useState(false),[role,setRole]=useState(null),[error,setError]=useState(""),[feedback,setFeedback]=useState(""),[uploading,setUploading]=useState(false);
  const [provider,setProvider]=useState(profile.setupAgentProvider||"muse"),[agentName,setAgentName]=useState(profile.setupAgentName||"Muse");
@@ -48,7 +49,7 @@ function OnboardingFlow(){
    if(!w.user||!window.JB.cloud.ready)throw Error("Sign in and wait for your account to connect, then choose your résumé.");
    const row=await uploadResume({client:w.client,getOwner:()=>window.JB.auth.userId,file:selected,variant:"Master",version:1});
    w.store.update("workflow.resumes",items=>[...items,{id:row.id,name:row.name,variant:row.variant,version:row.version,objectPath:row.object_path,contentHash:row.content_hash}]);
-   setResumeId(row.id);setFeedback("Your private résumé is saved.");
+   setResumeId(row.id);setFeedback("");
   }catch(e){setError(e.message||"Could not upload your résumé. Please try again.");}
   finally{uploadLock.current=false;setUploading(false);if(file.current)file.current.value="";}
  }
@@ -62,7 +63,8 @@ function OnboardingFlow(){
     if(saved.linkedin!==url.href)w.store.set("workflow.profile",{...saved,linkedin:url.href,verified:false});
    }catch{setError("Use a LinkedIn profile link, like https://linkedin.com/in/your-name.");return;}
   }
-  go(method==="resume"&&resume&&(w.demo||resume.objectPath)?"resume-review":"preferences");
+  if(method==="resume"&&resume&&(w.demo||resume.objectPath)&&savedResumeId!==resume.id)return;
+  go("preferences");
  }
  async function findRole(e){
   e.preventDefault();
@@ -95,12 +97,12 @@ function OnboardingFlow(){
    {!w.user&&!w.demo?<><p className="hint">Sign in to save your résumé privately.</p><Button secondary disabled={!w.authReady} onClick={w.signIn}>Sign in</Button></>:
    <>{resumes.length>0&&<Field label={w.demo?"Demo résumé":"Choose a saved résumé"}><select value={resumeId} onChange={e=>setResumeId(e.target.value)}><option value="">Choose a résumé</option>{resumes.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></Field>}
     {!w.demo&&<Button secondary disabled={uploading} onClick={()=>file.current?.click()}>{uploading?"Uploading…":resume?"Choose another file":"Choose a PDF or DOCX"}</Button>}
-    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. Continue extracts and saves your profile details with APILayer."}</p></>}
+    <p className="hint">{w.demo?"Fictional résumé only. No private file is read or uploaded.":"PDF or DOCX · up to 10 MB. Your résumé details are extracted and saved with APILayer."}</p></>}
   </div>}
+  {resume&&method==="resume"&&(w.demo||resume.objectPath)&&<ResumeImport key={`${w.demo?w.demoEpoch:w.user?.id}-${resume.id}`} resumeId={resume.id} autoStart compact onComplete={()=>setSavedResumeId(resume.id)}/>}
   {feedback&&<p className="hint" role="status">{feedback}</p>}
-  <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
+  <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")||(method==="resume"&&resume&&(w.demo||resume.objectPath)&&savedResumeId!==resume.id)}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
  </form><OnboardingSimplifyImport/></>;
- if(scene==="resume-review")content=<><Dots/><Title sub="We’re adding your résumé details to your profile.">Setting up your profile.</Title><ResumeImport key={`${w.demo?w.demoEpoch:w.user?.id}-${resume.id}`} resumeId={resume.id} autoStart onComplete={()=>go("preferences")} onClose={()=>go("preferences")}/></>;
  if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={findRole}>
   <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Backend engineering","Frontend engineering","Design","Product","Data & AI"]}/>
   <Pills label="Job type" value={employment} onChange={setEmployment} options={["Full-time","Internship","Contract","Open to options"]}/>
