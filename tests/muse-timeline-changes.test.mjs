@@ -37,6 +37,11 @@ test('website/MCP timeline writes → labeled feed → read current timeline →
    const response=await handler(new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+credential,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})}));
    const body=await response.json();assert.ok(!body.error&&!body.result.isError,JSON.stringify(body));return JSON.parse(body.result.content[0].text);
   };
+  const initialized=await handler(new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+hash,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:0,method:'initialize',params:{protocolVersion:'2025-11-25'}})}));
+  const startup=(await initialized.json()).result.instructions;
+  assert.match(startup,/read_muse_changes[\s\S]*eventTypes[\s\S]*refresh \{tool, arguments\}/);
+  const discovered=await handler(new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+hash,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list',params:{}})}));
+  const names=(await discovered.json()).result.tools.map(tool=>tool.name);assert.ok(names.includes('read_muse_changes')&&names.includes('acknowledge_muse_changes'));
   const payload={eventKey:'timeline:scheduled',kind:'technical_round',label:'PRIVATE interview details',occurredAt:null,phase:'scheduled',source:{kind:'user',note:'PRIVATE interview notes'}};
   await db.query("select set_config('test.uid',$1,false)",[owner]);
   const milestone=(await db.query('select to_jsonb(public.record_application_milestone($1,$2)) as data',[app.id,payload])).rows[0].data;

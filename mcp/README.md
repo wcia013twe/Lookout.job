@@ -638,3 +638,10 @@ stay pending, independently for each connection. Read another page when `hasMore
 is true. Do not run this loop during lightweight connection setup; no wake-up or
 scheduled polling is added. If the acknowledgement tool is absent, keep events
 pending and report the scope gap. Feed acknowledgements are not message delivery.
+
+Connection startup delivers these feed instructions through MCP `initialize` for
+both the Node HTTP server and the shared hosted/stdio protocol. No extra user
+prompt is required to discover the contract. First work after connect/reconnect
+refreshes developer/personal context; changed developer versions also refresh
+`tools/list`. Setup-only requests stop after setup. The labeled feed is consumed
+on authorized work runs, with read/ack visibility gated by their existing scopes.
