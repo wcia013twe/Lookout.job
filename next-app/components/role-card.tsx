@@ -116,7 +116,7 @@ export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: 
             {role.sourceFreshness}
           </p>
         </details>}
-        <ApplicationActions role={role}/>
+        <ApplicationActions role={role} onPreview={onPreview}/>
       </div>
     </motion.article>
   );
