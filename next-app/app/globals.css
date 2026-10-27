@@ -874,3 +874,10 @@ button:not(:disabled) {
   .workspace-shell .agent-settings-box,
   .workspace-shell .agent-settings-other > .workspace-section { padding: 16px; }
 }
+
+/* Official provider icons sit inside the existing agent call tiles. */
+.call-speaker-media.call-agent-logo { padding: 32px; }
+.call-participant-media.call-agent-thumbnail { padding: 8px; }
+@media (min-width: 768px) { .call-speaker-media.call-agent-logo { padding: 90px; } }
+
+.call-layout, .call-sidebar { min-width: 0; }
