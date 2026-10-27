@@ -1,0 +1,498 @@
+{
+  "fictional": true,
+  "runAt": "2026-10-27T00:36:49.883Z",
+  "model": "text-embedding-3-small",
+  "documents": 15,
+  "limit": 3,
+  "apiCalls": 26,
+  "ingestMs": 7783,
+  "summary": {
+    "passed": 4,
+    "total": 11,
+    "top1Rate": 0.6666666666666666,
+    "meanRecallAt3": 0.9074074074074076,
+    "meanPrecisionAt3": 0.5185185185185185,
+    "medianLatencyMs": 376,
+    "p95LatencyMs": 1243
+  },
+  "limits": [
+    "Single sequential run; not a load test.",
+    "PGlite in-memory SQL timing, not production PostgreSQL latency.",
+    "Pre-authorized synthetic reports bypass actual source loading and sharing.",
+    "Reply is injected as a report: existing account loader excludes replies; discussion navigation is not implemented.",
+    "Retrieval only: no synthesis, factual verification or automatic Muse trigger."
+  ],
+  "cases": [
+    {
+      "id": "recent-intel",
+      "query": "What are Bloomberg New Grad candidates reporting about their technical interviews in October 2026?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [
+        "senior",
+        "intern",
+        "other-employer",
+        "old-wait",
+        "generic-guide"
+      ],
+      "pass": false,
+      "recallAt3": 0.5,
+      "precisionAt3": 0.3333333333333333,
+      "top1Relevant": false,
+      "latencyMs": 412,
+      "embeddingMs": 406,
+      "sqlMs": 5,
+      "forbidden": [
+        "old-wait"
+      ],
+      "results": [
+        {
+          "id": "old-wait",
+          "title": "Anyone waiting after technical? Old cycle",
+          "similarity": 0.685,
+          "experienceDate": "2024-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "technical",
+          "title": "Live technical round experience",
+          "similarity": 0.6799,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "waiting-thread",
+          "title": "Anyone waiting after the technical round?",
+          "similarity": 0.6766,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "oa-experience",
+      "query": "I just received the Bloomberg New Grad OA. What have other candidates experienced?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [
+        "intern",
+        "senior",
+        "generic-guide"
+      ],
+      "pass": true,
+      "recallAt3": 1,
+      "precisionAt3": 0.6666666666666666,
+      "top1Relevant": true,
+      "latencyMs": 410,
+      "embeddingMs": 406,
+      "sqlMs": 3,
+      "forbidden": [],
+      "results": [
+        {
+          "id": "oa-different",
+          "title": "My OA format was different",
+          "similarity": 0.6755,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "oa-recent",
+          "title": "OA finished yesterday",
+          "similarity": 0.6509,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "oa-wait",
+          "title": "Waiting after the OA",
+          "similarity": 0.6215,
+          "experienceDate": "2026-10-23T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "oa-wait",
+      "query": "Anyone else waiting for Bloomberg New Grad after submitting the online assessment?",
+      "relevant": [
+        "oa-wait"
+      ],
+      "exclude": [
+        "waiting-thread",
+        "waiting-reply",
+        "old-wait",
+        "intern"
+      ],
+      "pass": false,
+      "recallAt3": 1,
+      "precisionAt3": 0.3333333333333333,
+      "top1Relevant": true,
+      "latencyMs": 1038,
+      "embeddingMs": 1034,
+      "sqlMs": 3,
+      "forbidden": [
+        "old-wait",
+        "waiting-thread"
+      ],
+      "results": [
+        {
+          "id": "oa-wait",
+          "title": "Waiting after the OA",
+          "similarity": 0.6898,
+          "experienceDate": "2026-10-23T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "old-wait",
+          "title": "Anyone waiting after technical? Old cycle",
+          "similarity": 0.628,
+          "experienceDate": "2024-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "waiting-thread",
+          "title": "Anyone waiting after the technical round?",
+          "similarity": 0.6248,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "technical-format",
+      "query": "What did the live technical round involve for Bloomberg New Grad candidates?",
+      "relevant": [
+        "technical",
+        "technical-alt"
+      ],
+      "exclude": [
+        "recruiter",
+        "senior",
+        "other-employer",
+        "generic-guide"
+      ],
+      "pass": true,
+      "recallAt3": 1,
+      "precisionAt3": 0.6666666666666666,
+      "top1Relevant": true,
+      "latencyMs": 358,
+      "embeddingMs": 354,
+      "sqlMs": 3,
+      "forbidden": [],
+      "results": [
+        {
+          "id": "technical",
+          "title": "Live technical round experience",
+          "similarity": 0.7395,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "technical-alt",
+          "title": "Technical round felt different",
+          "similarity": 0.6644,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "next-step",
+          "title": "Update: invited to the next round",
+          "similarity": 0.6079,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "join-discussion",
+      "query": "Where can I join people still waiting after their Bloomberg New Grad technical round in October 2026?",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply"
+      ],
+      "exclude": [
+        "old-wait",
+        "oa-wait",
+        "other-employer"
+      ],
+      "pass": false,
+      "recallAt3": 1,
+      "precisionAt3": 0.6666666666666666,
+      "top1Relevant": false,
+      "latencyMs": 1243,
+      "embeddingMs": 1239,
+      "sqlMs": 3,
+      "forbidden": [
+        "old-wait"
+      ],
+      "results": [
+        {
+          "id": "old-wait",
+          "title": "Anyone waiting after technical? Old cycle",
+          "similarity": 0.7106,
+          "experienceDate": "2024-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "waiting-thread",
+          "title": "Anyone waiting after the technical round?",
+          "similarity": 0.6965,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "waiting-reply",
+          "title": "Reply: still waiting too",
+          "similarity": 0.6454,
+          "experienceDate": "2026-10-26T00:00:00.000Z",
+          "references": [
+            {
+              "kind": "post",
+              "resolved": false,
+              "label": "Reply belongs to the waiting-after-technical discussion",
+              "postId": "waiting-thread",
+              "circleId": "fictional-bloomberg",
+              "revision": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "next-step",
+      "query": "What happened after candidates completed the Bloomberg New Grad technical interview, and how long did they wait?",
+      "relevant": [
+        "waiting-thread",
+        "waiting-reply",
+        "next-step"
+      ],
+      "exclude": [
+        "old-wait",
+        "oa-wait",
+        "senior"
+      ],
+      "pass": false,
+      "recallAt3": 0.6666666666666666,
+      "precisionAt3": 0.6666666666666666,
+      "top1Relevant": false,
+      "latencyMs": 378,
+      "embeddingMs": 375,
+      "sqlMs": 3,
+      "forbidden": [
+        "old-wait"
+      ],
+      "results": [
+        {
+          "id": "old-wait",
+          "title": "Anyone waiting after technical? Old cycle",
+          "similarity": 0.7192,
+          "experienceDate": "2024-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "waiting-thread",
+          "title": "Anyone waiting after the technical round?",
+          "similarity": 0.7076,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "next-step",
+          "title": "Update: invited to the next round",
+          "similarity": 0.6977,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "different-formats",
+      "query": "Are Bloomberg New Grad candidates reporting different online assessment formats?",
+      "relevant": [
+        "oa-recent",
+        "oa-different"
+      ],
+      "exclude": [
+        "intern",
+        "technical",
+        "generic-guide"
+      ],
+      "pass": false,
+      "recallAt3": 1,
+      "precisionAt3": 0.6666666666666666,
+      "top1Relevant": true,
+      "latencyMs": 376,
+      "embeddingMs": 372,
+      "sqlMs": 3,
+      "forbidden": [
+        "intern"
+      ],
+      "results": [
+        {
+          "id": "oa-different",
+          "title": "My OA format was different",
+          "similarity": 0.6806,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "intern",
+          "title": "Internship assessment experience",
+          "similarity": 0.663,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "oa-recent",
+          "title": "OA finished yesterday",
+          "similarity": 0.6059,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "screen-stage",
+      "query": "What are candidates saying about the Bloomberg New Grad recruiter screen before the technical interview?",
+      "relevant": [
+        "recruiter"
+      ],
+      "exclude": [
+        "technical",
+        "technical-alt",
+        "senior"
+      ],
+      "pass": false,
+      "recallAt3": 1,
+      "precisionAt3": 0.3333333333333333,
+      "top1Relevant": true,
+      "latencyMs": 311,
+      "embeddingMs": 307,
+      "sqlMs": 3,
+      "forbidden": [
+        "technical",
+        "technical-alt"
+      ],
+      "results": [
+        {
+          "id": "recruiter",
+          "title": "Recruiter screen experience",
+          "similarity": 0.7224,
+          "experienceDate": "2026-10-22T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "technical",
+          "title": "Live technical round experience",
+          "similarity": 0.6611,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "technical-alt",
+          "title": "Technical round felt different",
+          "similarity": 0.6557,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "rumor-evidence",
+      "query": "Has anyone actually confirmed Bloomberg New Grad hiring is paused?",
+      "relevant": [
+        "rumor"
+      ],
+      "exclude": [],
+      "note": "Finding the rumor is not confirmation; preserve its explicit lack of evidence.",
+      "pass": true,
+      "recallAt3": 1,
+      "precisionAt3": 0.3333333333333333,
+      "top1Relevant": true,
+      "latencyMs": 266,
+      "embeddingMs": 262,
+      "sqlMs": 3,
+      "forbidden": [],
+      "results": [
+        {
+          "id": "rumor",
+          "title": "Unconfirmed rumor about headcount",
+          "similarity": 0.734,
+          "experienceDate": "2026-10-26T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "waiting-thread",
+          "title": "Anyone waiting after the technical round?",
+          "similarity": 0.5378,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "next-step",
+          "title": "Update: invited to the next round",
+          "similarity": 0.5197,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "unknown-recruiting",
+      "query": "What is the exact Bloomberg New Grad offer acceptance deadline for the Tokyo office?",
+      "relevant": [],
+      "exclude": [],
+      "note": "No report in this dataset answers this question.",
+      "pass": false,
+      "recallAt3": null,
+      "precisionAt3": 0,
+      "top1Relevant": null,
+      "latencyMs": 288,
+      "embeddingMs": 285,
+      "sqlMs": 3,
+      "forbidden": [],
+      "results": [
+        {
+          "id": "waiting-thread",
+          "title": "Anyone waiting after the technical round?",
+          "similarity": 0.5007,
+          "experienceDate": "2026-10-25T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "next-step",
+          "title": "Update: invited to the next round",
+          "similarity": 0.4922,
+          "experienceDate": "2026-10-24T00:00:00.000Z",
+          "references": []
+        },
+        {
+          "id": "old-wait",
+          "title": "Anyone waiting after technical? Old cycle",
+          "similarity": 0.4697,
+          "experienceDate": "2024-10-25T00:00:00.000Z",
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "unrelated",
+      "query": "How do I repair a leaking kitchen faucet?",
+      "relevant": [],
+      "exclude": [],
+      "pass": true,
+      "recallAt3": null,
+      "precisionAt3": null,
+      "top1Relevant": null,
+      "latencyMs": 295,
+      "embeddingMs": 291,
+      "sqlMs": 3,
+      "forbidden": [],
+      "results": []
+    }
+  ]
+}
