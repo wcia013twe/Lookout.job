@@ -892,3 +892,40 @@ It sends no real employer application and calls no model. Use
 Release requires the submission-batch migration, gateway contract 75/application
 guide v4 and configured Node API image. Hosted deployment, Muse client execution
 and real employer behavior remain unverified until separately exercised.
+
+
+## Profile-aware resume selection
+
+Preparation and automatic submission now share `selectResume`: active role
+assignments in the selected application profile match normalized title phrases
+and job type; unmatched roles use that profile’s fallback. Blank assignment job
+type inherits the profile types. Blank assignment resume uses the same fallback.
+Conflicting matching files, malformed assignments, unchecked conditions/timelines
+and unavailable/superseded/private-file gaps require review. Legacy account-wide
+rules/defaults remain only for clients without profile resume configuration.
+
+`prepare_draft` exposes `handoff.resumeSelection` and pins an automatically chosen
+owned file/hash. It preserves existing explicit draft selections and reports
+differences from current rules. Submission rereads the owned canonical profile in
+its existing authorization context, including atomic claim/start comparisons.
+Routine execution rejects a stale/mismatched file; exact human approval can
+intentionally override the mapping. The runner downloads the draft’s pinned file,
+never a newly guessed alternative. Deploy the profile-resume-selection migration
+with the gateway update before claiming the new authorization behavior is live.
+
+### Discover posting dates and availability
+
+Discover's Posted filter offers the last 24 hours, 3 days, week, 2 weeks, month,
+any time, and posting date unknown. It filters the selected board by employer
+publication time, independently of the existing Discover day and profile filters.
+Any time is the default; unknown dates are excluded only when a dated window is
+selected. Publication time uses the latest owned posting observation when present,
+including an explicit unknown date, otherwise the catalog publication date.
+
+Cards and previews show Live, Closed, or Unverified from the last recorded employer
+check. Live means active at that check, not a new check on page refresh. The preview
+shows Posted and Availability checked separately using readable dates. Filtering
+and formatting are local presentation actions over existing owned batch reads;
+the scoped `batches.read` gateway/MCP path already exposes the same posting evidence.
+No new backend write or MCP capability is introduced. Detached demo fixtures cover
+recent, older and unknown dates plus all three availability states.

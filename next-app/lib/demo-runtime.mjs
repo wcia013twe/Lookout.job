@@ -1,3 +1,4 @@
+import {withApplicationFlowDemo} from './application-flow-demo.mjs';
 import {createDemoSimplifyImport} from './simplify-import-demo.mjs';
 import {demoPack,demoPackTask} from './card-pack-demo.mjs';
 import {demoApiScenario} from './demo-api-scenarios.mjs';
@@ -20,6 +21,7 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
   fixtures.state.workflow.profile={...before,location:'Fictional browser location',phone:'+1 202-555-0199',verified:false};
   fixtures.state.ui={...fixtures.state.ui,profileConflict:{fields:[]}};
  }
+ withApplicationFlowDemo(fixtures,apiScenario);
  const store=createDemoStore(fixtures.state);
  return {store,services:{...demoApiScenario(createDemoServices(store),apiScenario),simplifyImport:createDemoSimplifyImport()}};
 }
