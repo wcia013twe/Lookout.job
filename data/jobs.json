@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastRun": "2026-10-27",
+  "lastRun": "2026-10-28",
   "roles": [
     {
       "id": "doordash-software-engineer-storage-8024644",
@@ -2617,6 +2617,23 @@
       "applicationUrl": "https://careers.hpe.com/us/en/apply?jobSeqNo=HPE1US1217413EXTERNALENUS",
       "applicationStatus": "New",
       "verification": "Verified live 2026-10-26 on HPE careers: AI/ML Developer Intern, San Jose, Job ID 1217413, hybrid, $35.00-$41.00/hr. Distinct from the board's skipped HPE Cybersecurity/Embedded/AI-HPC interns."
+    },
+    {
+      "id": "two-sigma-software-engineering-campus-hire-nyc",
+      "company": "Two Sigma",
+      "title": "Software Engineering Full-Time Campus Hire (NYC)",
+      "employmentType": "FT",
+      "location": "New York, NY, in-office",
+      "category": "Distributed systems and infrastructure",
+      "priority": "Apply Now",
+      "postedDate": null,
+      "discoveredDate": "2026-10-28",
+      "sourceFreshness": "location-variant correction",
+      "whyItFits": "Separate NYC requisition (JobDetail 14014), distinct from the Houston req (14018) already on board: this corrects the Oct 23 skip that merged location variants. Same genuinely infra scope: distributed storage and cloud environments used by every engineering team, low-latency trading systems, and data ingestion from 10,000+ sources daily, with generalist hiring and team matching 2-3 months before start. Employer page lists $225,000 base. Bachelor's, Master's, or PhD in a technical field plus large-scale systems experience fits his May 2027 M.S. track; no explicit graduation window was shown on the employer page.",
+      "applicationUrl": "https://careers.twosigma.com/careers/JobDetail/New-York-New-York-United-States-Software-Engineering-Full-Time-Campus-Hire-NYC/14014",
+      "applicationStatus": "New",
+      "discoverySource": "Morning sweep location-variant recheck",
+      "verifiedDate": "2026-10-28"
     }
   ]
 }
