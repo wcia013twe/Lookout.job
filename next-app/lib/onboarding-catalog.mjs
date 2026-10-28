@@ -32,6 +32,7 @@ export function onboardingIntent({work,employment,location},role) {
 }
 const sampleOpportunity={id:'onboarding-sample-opportunity',company:'ExampleCo',title:'Frontend engineering',employmentType:'FT',location:'SF Bay Area',applicationUrl:'',whyItFits:'This fictional example shows how your agent can explain a role after reviewing your experience. Sample scores are illustrative, not a personal assessment.',matchPreview:{percent:86,assessedAt:'2026-10-23T12:00:00Z',evidence:'Fictional onboarding example only.',factors:[['Skills & experience',86],['Compensation',72],['Wellbeing & culture',68],['Location & work setting',94]].map(([label,value])=>({label,value,rating:'Strong',reason:'Illustrative example only.'}))}};
 export function isRealCatalogRole(role) {
+ if(role.active===false||role.available===false||role.status==='closed')return false;
  try {const url=new URL(role.applicationUrl);return url.protocol==='https:'&&!url.username&&!url.password&&!/(^|\.)example\.(com|org|net)$/.test(url.hostname)&&!String(role.id).startsWith('demo-')&&!/\((demo|fictional)\)/i.test(role.company||'');}catch{return false;}
 }
 export function onboardingReveal(roles,preferences,{demo=false}={}) {
@@ -40,17 +41,32 @@ export function onboardingReveal(roles,preferences,{demo=false}={}) {
  return demo?{role:sampleOpportunity,sample:true,pending:false}:{role:null,sample:false,pending:true};
 }
 const heading='First opportunity';
-export function saveOnboardingSelection(prompt,role) {
- for(const [key,value] of [['Catalog role ID',role?.id||''],['Employer URL',role?.applicationUrl||''],['Company',role?.company||''],['Title',role?.title||'']])prompt=updateField(prompt,heading,key,value);
- return prompt;
+// The catalog owns job details. Persist only a stable reference and selection time
+// through the existing owner-scoped, versioned search-profile boundary.
+export function saveOnboardingSelection(prompt,role,{selectedAt=new Date().toISOString()}={}) {
+ const previousId=readField(prompt,heading,'Catalog role ID');
+ const previousTime=readField(prompt,heading,'Selected at');
+ const time=role&&previousId.value===role.id&&!previousTime.conflict&&Number.isFinite(Date.parse(previousTime.value))?previousTime.value:selectedAt;
+ let section=false;
+ prompt=String(prompt||'').split('\n').filter(line=>{
+  if(/^##\s+/.test(line))section=line.trim()==='## '+heading;
+  return !(section&&/^- (Catalog role ID|Selected at|Employer URL|Company|Title):/.test(line));
+ }).join('\n');
+ if(!role)return prompt;
+ prompt=updateField(prompt,heading,'Catalog role ID',role.id);
+ return updateField(prompt,heading,'Selected at',time);
 }
-export function savedOnboardingRole(profiles,roles) {
+export function savedOnboardingRole(profiles,roles,{preferences,demo=false}={}) {
  for(const profile of profiles||[]){
   if(profile.active===false)continue;
-  const prompt=promptFromProfile(profile),id=readField(prompt,heading,'Catalog role ID'),url=readField(prompt,heading,'Employer URL');
-  if(id.conflict||url.conflict||!id.value||!url.value)continue;
-  const role=roles.find(role=>role.id===id.value&&role.applicationUrl===url.value&&isRealCatalogRole(role));
-  if(role)return role;
+  const prompt=profile.prompt??promptFromProfile(profile),id=readField(prompt,heading,'Catalog role ID'),url=readField(prompt,heading,'Employer URL');
+  if(id.conflict||url.conflict||!id.value)continue;
+  const role=roles.find(role=>role.id===id.value&&(!url.value||role.applicationUrl===url.value)&&(demo||isRealCatalogRole(role)));
+  if(role&&(!preferences||selectOnboardingRole([role],preferences)))return role;
  }
  return null;
+}
+export function chooseOnboardingPreview(roles,preferences,{prompt='',demo=false}={}) {
+ const saved=savedOnboardingRole([{prompt}],roles,{preferences,demo});
+ return saved?{role:saved,sample:false,pending:false}:onboardingReveal(roles,preferences,{demo});
 }

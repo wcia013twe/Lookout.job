@@ -79,3 +79,11 @@
 .lookout-onboarding .onboarding-role-check a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 .lookout-onboarding .onboarding-first-find{min-height:310px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:18px}
 .lookout-onboarding .onboarding-first-find p{color:var(--muted);font-size:14px}
+
+/* The setup preview uses catalog facts, without an analysis panel. */
+.lookout-onboarding .catalog-preview .gold-card,.lookout-onboarding .catalog-preview .gold-body{min-height:0}
+.lookout-onboarding .catalog-preview .gold-banner{min-height:64px;padding-bottom:24px}
+.lookout-onboarding .catalog-role-link{display:inline-block;margin-top:28px;min-height:44px;padding-block:10px;text-underline-offset:4px}
+.lookout-onboarding .catalog-preview .lead{margin-block:20px 32px}
+.lookout-onboarding .catalog-preview-empty{grid-template-columns:minmax(0,1fr);min-height:0}
+.lookout-onboarding .catalog-preview-empty .reveal-copy{grid-column:1}

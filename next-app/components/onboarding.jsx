@@ -8,7 +8,7 @@ import {useWorkspace} from "../lib/workspace";
 import {ApplicationProfileProvider,useApplicationProfile} from "./application-profile-context";
 import {readField,updateField} from "../../lib/search-profile.mjs";
 import {uploadResume,validateResume} from "../../lib/resume-model.mjs";
-import {onboardingReveal,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
+import {chooseOnboardingPreview,saveOnboardingSelection} from "../lib/onboarding-catalog.mjs";
 import ResumeImport from "./resume-import";
 import AgentSelector from "./agent-selector";
 import {readAgentSelection,saveAgentSelection} from "../../lib/agent-selection.mjs";
@@ -34,6 +34,14 @@ function OnboardingFlow(){
  const [work,setWork]=useState(readField(a.profile.prompt,"Role preferences","Roles").value);
  const [location,setLocation]=useState(readField(a.profile.prompt,"Search Filters","Location").value);
  const [employment,setEmployment]=useState(readField(a.profile.prompt,"Search Filters","Employment").value||"Full-time");
+ const preferencesEdited=useRef(false);
+ useEffect(()=>{
+  if(preferencesEdited.current)return;
+  setWork(readField(a.profile.prompt,"Role preferences","Roles").value);
+  setLocation(readField(a.profile.prompt,"Search Filters","Location").value);
+  setEmployment(readField(a.profile.prompt,"Search Filters","Employment").value||"Full-time");
+ },[a.profile.id,a.profile.prompt]);
+ const changePreference=setter=>value=>{preferencesEdited.current=true;setter(value);};
  const progressKey=onboardingProgressKey(w.demo?`demo-${w.demoEpoch}`:w.user?.id);
  const [progressReady,setProgressReady]=useState(false),[progressSaved,setProgressSaved]=useState(false);
  useEffect(()=>{
@@ -43,7 +51,7 @@ function OnboardingFlow(){
  useEffect(()=>{
   if(progressReady)setProgressSaved(saveOnboardingProgress(onboardingStorage(),progressKey,scene));
  },[progressReady,progressKey,scene]);
- const step=scene==='reveal'?4:setupSteps.indexOf(scene)+1;
+ const step=scene==='reveal'?3:setupSteps.indexOf(scene)+1;
  const [savedResumeId,setSavedResumeId]=useState("");
  const [resumeId,setResumeId]=useState(readField(a.profile.prompt,"Application materials","Default resume ID").value);
  const [sample,setSample]=useState(false),[role,setRole]=useState(null),[error,setError]=useState(""),[feedback,setFeedback]=useState(""),[uploading,setUploading]=useState(false);
@@ -87,18 +95,13 @@ function OnboardingFlow(){
    prompt=updateField(prompt,"Search Filters","Employment",employment);
    prompt=updateField(prompt,"Search Filters","Location",location.trim());
    if(resumeId)prompt=updateField(prompt,"Application materials","Default resume ID",resumeId);
-   if(!await a.saveProfilePrompt(prompt))return;
-   go("connect");
-  }catch(e){setError(e.message||"Could not save your search. Try again.");}
- }
- async function showFirstRole(){
-  if(a.busy||w.locked)return;
-  try{
-   const preview=onboardingReveal(w.demo?w.roles:(w.publicRoles||w.roles),{work,employment,location},{demo:w.demo});
-   const prompt=saveOnboardingSelection(a.profile.prompt,!w.demo&&preview.role?preview.role:null);
+   const unchanged=readField(a.profile.prompt,"Role preferences","Roles").value===work.trim()&&readField(a.profile.prompt,"Search Filters","Employment").value===employment&&readField(a.profile.prompt,"Search Filters","Location").value===location.trim();
+   if(!unchanged)prompt=saveOnboardingSelection(prompt,null);
+   const preview=chooseOnboardingPreview(w.demo?w.roles:(w.publicRoles||w.roles),{work,employment,location},{prompt,demo:w.demo});
+   prompt=saveOnboardingSelection(prompt,preview.role);
    if(!await a.saveProfilePrompt(prompt))return;
    setRole(preview.role);setSample(preview.sample);go("reveal");
-  }catch(e){setError(e.message||"Could not open your first-role preview.");}
+  }catch(e){setError(e.message||"Could not save your search. Try again.");}
  }
  function selectAgent(value,label){
   saveAgentSelection(w.store,value,label);
@@ -122,17 +125,20 @@ function OnboardingFlow(){
   <div className="actions"><Button type="submit" disabled={uploading||w.locked||(!resume&&method!=="linkedin")||(method==="resume"&&resume&&(w.demo||resume.objectPath)&&savedResumeId!==resume.id)}>Continue</Button><Quiet onClick={()=>go("preferences")}>I’ll do this later</Quiet></div>
  </form></>;
  if(scene==="preferences")content=<><Dots/><Title sub="Just the basics. You can change these anytime.">What’s your next move?</Title><form onSubmit={savePreferences}>
-  <SuggestedField label="Type of work" value={work} onChange={setWork} placeholder="Type a role or choose below" options={["Software Engineer","Data Scientist","Data Analyst","Product Manager","Business Analyst","UX Designer","QA Engineer","Cybersecurity Analyst","IT Specialist","Technical Program Manager","Solutions Engineer","Marketing Specialist"]}/>
-  <Pills label="Job type" value={employment} onChange={setEmployment} options={["Full-time","Internship","Contract","Open to options"]}/>
-  <LocationSelector value={location} onChange={setLocation}/>
+  <SuggestedField label="Type of work" value={work} onChange={changePreference(setWork)} placeholder="Type a role or choose below" options={["Software Engineer","Data Scientist","Data Analyst","Product Manager","Business Analyst","UX Designer","QA Engineer","Cybersecurity Analyst","IT Specialist","Technical Program Manager","Solutions Engineer","Marketing Specialist"]}/>
+  <Pills label="Job type" value={employment} onChange={changePreference(setEmployment)} options={["Full-time","Internship","Contract","Open to options"]}/>
+  <LocationSelector value={location} onChange={changePreference(setLocation)}/>
   <div className="actions"><Button type="submit" disabled={a.busy||!work.trim()||!location.trim()}>{a.busy?"Saving…":"Continue"}</Button><Quiet onClick={()=>go("connect")}>I’ll do this later</Quiet></div>
   {a.feedback&&<p className={a.saveError?"error":"hint"} role="status">{a.feedback}</p>}
  </form></>;
- if(scene==="reveal")content=<OnboardingRoleReveal role={role} demo={w.demo} connected onPrepare={()=>{if(w.demo&&!sample)w.store.set("demo.onboardingRole",role);go("circles");}} onLater={later}/>;
- if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("first-role")} onLater={later}/>;
- if(scene==="first-role")content=<><Dots/><Title sub="Your AI is connected. You can preview a role now or keep going with setup.">Explore your first role?</Title><p className="hint">This optional preview uses your saved preferences. Your agent still needs to verify availability and fit.</p><div className="actions"><Button disabled={a.busy||w.locked||!work.trim()||!location.trim()} onClick={()=>void showFirstRole()}>{a.busy?"Opening…":"Preview my first role"}</Button><Quiet onClick={later}>Skip for now</Quiet></div>{(!work.trim()||!location.trim())&&<p className="hint">Add your roles and locations in your workspace to explore matching opportunities.</p>}{a.feedback&&<p className="hint" role="status">{a.feedback}</p>}</>;
+ if(scene==="reveal"||scene==="first-role"){
+  const preview=chooseOnboardingPreview(w.demo?w.roles:(w.publicRoles||w.roles),{work,employment,location},{prompt:a.profile.prompt,demo:w.demo});
+  content=<OnboardingRoleReveal role={role||preview.role} demo={w.demo} onPrepare={()=>{if(w.demo&&!sample&&(role||preview.role))w.store.set("demo.onboardingRole",role||preview.role);go("connect");}} onLater={()=>go("connect")} onAdjust={()=>{setRole(null);go("preferences");}}/>;
+ }
+ if(scene==="connect")content=<OnboardingAgentConnection room={room} onFinish={()=>go("circles")} onLater={later}/>;
+
  if(scene==="circles")content=<OnboardingCircleStory onLater={()=>go("done")}/>;
  if(scene==="done")content=<><Dots/><Title sub="Explore roles, check your applications, or pick up where you left off.">Make your next move.</Title><Button disabled={finishing||w.locked} onClick={()=>void finish()}>{finishing?"Saving setup…":"Open my workspace"}</Button><BrowserAppInstructions/></>;
  if(!w.demo&&!w.user)content=<><Dots/><Title sub="Create your Lookout account or return to your workspace before setting up your search and agent.">Sign up or sign in.</Title><div className="actions"><GoogleSignInButton disabled={!w.authReady} onClick={w.signIn} label={w.authReady?"Continue with Google":"Checking sign-in…"}/></div><p className="hint">New here? Continuing with Google creates your account. Already joined? Use the same Google account to sign in.</p></>;
- return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><BrandMark/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{progressReady&&(w.demo||w.user)&&<p className="hint" role="status">Step {step} of {setupSteps.length}{progressSaved?" · Saved in this browser":""}</p>}{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
+ return <MotionConfig reducedMotion="user"><div className="lookout-onboarding setup-experience"><header className="brandbar"><Link className="brand" href="/"><BrandMark/>lookout</Link>{w.demo&&<span className="hint">Demo · fictional data</span>}</header><div className="ob-main"><AnimatePresence mode="wait"><motion.section key={scene} ref={heading} tabIndex={-1} aria-label="Onboarding" onAnimationComplete={()=>heading.current?.focus({preventScroll:true})} className={"stage "+(["reveal","first-role","connect"].includes(scene)?"wide":"")} initial={reduce?false:{opacity:.6,y:12}} animate={{opacity:1,y:0}} exit={reduce?{}:{opacity:0,y:-6}} transition={{duration:.25}}>{progressReady&&(w.demo||w.user)&&<p className="hint" role="status">Step {step} of {setupSteps.length}{progressSaved?" · Saved in this browser":""}</p>}{content}{(error||w.error||w.syncError)&&<p className="error" role="alert">{error||w.error||w.syncError}</p>}</motion.section></AnimatePresence></div><footer className="app-foot"><Dots/><span>Your next chapter starts here.</span></footer></div></MotionConfig>;
 }

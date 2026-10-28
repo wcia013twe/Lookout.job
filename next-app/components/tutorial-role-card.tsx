@@ -8,7 +8,7 @@ export default function TutorialRoleCard({ role, label, children, className = ""
   role: Role | null; label: string; children: ReactNode; className?: string; hidden?: boolean;
 }) {
   return <article className={`gold-card ${className}`} aria-hidden={hidden || undefined} inert={hidden || undefined}>
-    <div className="gold-banner"><Dots /><span className="gold-tier">{label}</span></div>
+    <div className="gold-banner"><Dots />{label&&<span className="gold-tier">{label}</span>}</div>
     <div className="gold-body">
       {role && <><div className="gold-company"><CompanyLogo company={role.company} /><span>{role.company}</span></div>
         <h2>{role.title}</h2><p className="meta">{role.employmentType === "FT" ? "Full-time" : role.employmentType} · {role.location || "Location not recorded"}</p></>}
