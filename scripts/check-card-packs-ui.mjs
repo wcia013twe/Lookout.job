@@ -11,7 +11,8 @@ try{
  const page=await demo.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
  await page.goto(`${base}/discover/?demo=1`);
  await page.getByRole('heading',{name:'My discovery pack (demo)',exact:true}).waitFor();
- await page.getByRole('link',{name:'Set up packs & connection',exact:true}).click();
+ assert.equal(await page.getByRole('link',{name:'Set up packs & connection',exact:true}).count(),0);
+ await page.goto(`${base}/profile/?section=agent&demo=1#pack-setup`);
  await page.getByRole('heading',{name:'My Agent',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'Preview cards',exact:true}).count(),0,'Pack setup has no preview panel');
  await page.getByLabel('Connection name (required)',{exact:true}).fill('New pack agent');
@@ -79,7 +80,8 @@ try{
  await page.getByRole('link',{name:'Back to Discover',exact:true}).click();
  await page.waitForURL(/\/discover\//);
  await page.getByRole('heading',{name:'My discovery pack (demo)',exact:true}).waitFor();
- await page.getByRole('link',{name:'Set up packs & connection',exact:true}).click();
+ assert.equal(await page.getByRole('link',{name:'Set up packs & connection',exact:true}).count(),0);
+ await page.goto(`${base}/profile/?section=agent&demo=1#pack-setup`);
  await page.getByRole('heading',{name:'My Agent',exact:true}).waitFor();
  await page.reload();
  await page.getByText(/Find fictional roles for my discovery pack\. Use the fictional search profile/).waitFor();
@@ -93,6 +95,7 @@ try{
  await account.route('**/data/sudo-drops.json',route=>{archiveCalls.push(route.request().url());return route.abort();});
  await account.route('https://*.supabase.co/**',async route=>{const req=route.request(),url=req.url();let body=[],status=200;
   if(url.includes('/auth/v1/user'))body=user;
+  else if(url.includes('/rpc/onboarding_action'))body={revision:1,step:'ready',data:{websiteCompletedAt:'2026-10-28T12:00:00Z'}};
   else if(url.includes('/rest/v1/preferences')&&req.method()==='GET')body=fail?(status=403,{code:'42501',message:'private details'}):url.includes('theme%2Csearch%2Cupdated_at')?{theme:{},search:{targets:[]},updated_at:null}:[];
   else if(url.includes('/rpc/search_action'))body={documents:[],profileId:null};
   else if(url.includes('/functions/v1/agent-gateway'))body={data:[]};
@@ -100,7 +103,8 @@ try{
  });
  const real=await account.newPage();real.setDefaultTimeout(15000);real.on('pageerror',e=>errors.push(e.message));
  await real.goto(`${base}/discover/`);
- await real.getByRole('link',{name:'Set up packs & connection',exact:true}).click();
+ assert.equal(await real.getByRole('link',{name:'Set up packs & connection',exact:true}).count(),0);
+ await real.goto(`${base}/profile/?section=agent#pack-setup`);
  await real.getByRole('heading',{name:'My Agent',exact:true}).waitFor();
  assert.equal(await real.getByRole('button',{name:'Add card pack',exact:true}).isEnabled(),true);
  await real.getByRole('button',{name:'Add card pack',exact:true}).click();

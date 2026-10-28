@@ -384,7 +384,7 @@ version and validation checks. Connection creation/revocation stays in the exist
 human-controlled connection boundary; the local preview adds no service capability.
 This UI pass does not claim new deployed parity or change gateway instructions.
 
-Detached demo: `/discover/?demo=1` → **Set up packs & connection**. Create a fictional
+Detached demo: open `/profile/?section=agent&demo=1#pack-setup` (My Agent settings). Create a fictional
 connection, add a source, save a task and link a pack on one page. The demo connection
 service and sample task share the same publishing connection; new fictional connection
 IDs satisfy task validation. Reload/reset restores the fixtures.

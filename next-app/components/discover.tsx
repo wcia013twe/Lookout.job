@@ -8,7 +8,6 @@ import RoleCard, { type Role } from "./role-card";
 import DiscoverRolePanel from "./discover-role-panel";
 import SearchSweeps from "./search-sweeps";
 import CardPackWidgets from "./card-pack-widgets";
-import { PackSetupSuggestion } from "./discovery-setup-link";
 import DayFilter from "./day-filter";
 import ProfileIcon from "./profile-icon";
 import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
@@ -72,7 +71,6 @@ function DiscoverBoard() {
   const header=<div className="mb-6 flex flex-wrap items-start justify-between gap-4 [&>.workspace-heading]:mb-0"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
   if(newArrival&&!publicView)return <>
     {header}
-    <PackSetupSuggestion/>
     {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         <RoleCard role={{...firstRole,whyItFits:"Saved from onboarding. Your agent will check availability and compare this role with your profile and résumé."}} onPreview={setPreview}/>
