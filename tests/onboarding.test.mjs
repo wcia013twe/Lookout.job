@@ -85,7 +85,28 @@ test('selected first role survives a versioned search profile round trip without
  const prompt=saveOnboardingSelection('## My instructions\nKeep my own notes.',role);
  const profile=profileFromPrompt(prompt,{id:'general',name:'General',active:true,version:2});
  assert.equal(savedOnboardingRole([profile],[role]),role);
- assert.equal(savedOnboardingRole([profile],[{...role,applicationUrl:'https://other.test/changed'}]),null);
+ const current={...role,applicationUrl:'https://other.test/changed'};
+ assert.equal(savedOnboardingRole([profile],[current]),current);
+ assert.equal(savedOnboardingRole([profile],[]),null);
  assert.equal(savedOnboardingRole([profileFromPrompt(saveOnboardingSelection(prompt,null),profile)],[role]),null);
  assert.match(profile.instructions,/Keep my own notes/);
+});
+
+
+test('the tiny preview reference is stable, drops copied job details and replaces an unavailable match',async()=>{
+ const {chooseOnboardingPreview,saveOnboardingSelection}=await import('../next-app/lib/onboarding-catalog.mjs');
+ const {readField}=await import('../lib/search-profile.mjs');
+ const preferences={work:'Backend engineering',employment:'Full-time',location:'Remote'};
+ const role={id:'first',company:'A',title:'Backend Engineer',employmentType:'FT',location:'Remote',applicationUrl:'https://careers.actual-employer.test/first'};
+ const other={...role,id:'second',applicationUrl:'https://careers.actual-employer.test/second'};
+ const time='2026-10-28T12:00:00Z';
+ const legacy='## First opportunity\n- Employer URL: https://old.test/job\n- Company: Old company\n- Title: Old title\n## My instructions\nKeep my notes.';
+ const prompt=saveOnboardingSelection(legacy,role,{selectedAt:time});
+ assert.equal(readField(prompt,'First opportunity','Selected at').value,time);
+ assert(!prompt.includes('Old company'));assert(!prompt.includes('Employer URL:'));assert(prompt.includes('Keep my notes.'));
+ assert.equal(chooseOnboardingPreview([other,role],preferences,{prompt}).role,role);
+ assert.equal(saveOnboardingSelection(prompt,role,{selectedAt:'2026-10-29T12:00:00Z'}),prompt);
+ assert.equal(chooseOnboardingPreview([other,{...role,available:false}],preferences,{prompt}).role,other);
+ assert.equal(chooseOnboardingPreview([role],{...preferences,employment:'Internship'},{prompt}).role,null);
+ assert.equal(chooseOnboardingPreview([],preferences,{prompt}).role,null);
 });

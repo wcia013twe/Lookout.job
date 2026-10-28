@@ -432,7 +432,7 @@ Applications → Stats renders bounded counters and a client-side Nivo Sankey be
 
 Signed-out `/` renders the Lookout landing page with a personalized tutorial-card hero, a time-shift scale, a Connect/Ask/Watch workflow, Muse check-in, preparation and Circles; signed-in and explicit-demo home still render Discover. `/discover/` retains its sign-in gate. Signup uses the existing `/onboarding/` Google account flow and login uses `/discover/?demo=0`; no new auth provider or application authority is introduced.
 
-The hero reuses `OnboardingRoleReveal` in a compact landing presentation and its shared `TutorialRoleCard` face. The existing purple-to-gold flip and `RoleMatchPreview` show an explicit fictional profile, overall fit and four animated factor scores. Review exposes expandable factor reasoning; Replay repeats the reveal. Normal onboarding retains its side-by-side explanation and focus behavior. Its example roles, Pass and Review actions are component-local and never persist preferences, application records or progress. Review reveals verification guidance and account setup, never submits. Muse check-ins, preparation and Circle discussions are labeled examples. Recurring runs still depend on a configured agent schedule. The hero uses the full-body Buddy from the existing motion study, including hands, torso and feet, in the active purple/indigo-and-lavender palette. The body stays still while the eyes glance and blink. Three observation marks appear only with the forward gaze; paused and reduced-motion views show that centered pose with all three marks. The ordinary header logo remains indigo. A generated transparent cutout and exact source/prompt provenance are bundled in `assets/brand/`. The new workflow follows “Your agent does the work. You’re always in control.” with three steps and a large illustrative workspace; its counts and activity are fictional. Google marks reuse the bundled authentication logo.
+The hero reuses `OnboardingRoleReveal` in a compact landing presentation and its shared `TutorialRoleCard` face. The existing purple-to-gold flip and `RoleMatchPreview` show an explicit fictional profile, overall fit and four animated factor scores. Review exposes expandable factor reasoning; Replay repeats the reveal. Normal onboarding uses a compact catalog card without scores or an analysis panel. Its example roles, Pass and Review actions are component-local and never persist preferences, application records or progress. Review reveals verification guidance and account setup, never submits. Muse check-ins, preparation and Circle discussions are labeled examples. Recurring runs still depend on a configured agent schedule. The hero uses the full-body Buddy from the existing motion study, including hands, torso and feet, in the active purple/indigo-and-lavender palette. The body stays still while the eyes glance and blink. Three observation marks appear only with the forward gaze; paused and reduced-motion views show that centered pose with all three marks. The ordinary header logo remains indigo. A generated transparent cutout and exact source/prompt provenance are bundled in `assets/brand/`. The new workflow follows “Your agent does the work. You’re always in control.” with three steps and a large illustrative workspace; its counts and activity are fictional. Google marks reuse the bundled authentication logo.
 
 `node scripts/check-landing-ui.mjs` checks desktop/mobile rendering, review/pass state, signup/login destinations and reduced motion. The signed-out regression covers protected routes, guest-cache isolation, demo and account sign-out. These previews add no backend action or MCP mutation; existing account/agent boundaries are unchanged.
 
@@ -454,3 +454,35 @@ MCP boundary: agent selection is a human setup preference; agents should request
 user choose it in My Profile → My Agent. Existing scoped connection tools continue to
 manage credentials, and workspace reads expose saved preferences. No new connection
 or deployed MCP capability is implied by selecting a companion.
+
+
+### Catalog role during setup
+
+Saving the basic role, job-type and location filters immediately selects one public
+catalog role, before agent connection. This is a local filter/ranking operation,
+not a new search or model call. The preview shows company, title, location, job
+type, an employer link, and one factual sentence about the filters. Users can
+adjust filters or continue setup; a no-match state offers those same paths.
+Catalog availability is not reverified by viewing the preview.
+
+The tiny selection is stored under **First opportunity** in the existing versioned
+search profile instructions: **Catalog role ID** and **Selected at**. Job details
+continue to come from `data/jobs.json`. The selection time is not a posting or
+availability date. Refresh reuses a still-eligible selection; changed filters,
+a removed role, or explicit unavailability permit reselection. Legacy copies of
+the employer URL/company/title are removed when the selection is saved again.
+
+MCP parity reuses `save_search_profile` (`preferences.profile.save`) / the website
+`save_search_profile` RPC and existing personal-context reads, including owner, scope and
+optimistic-version checks. No new operation, model endpoint, schedule, or approval
+is introduced. Agent connection confirmation and website completion remain their
+existing separate boundaries. Previewing a role does not create an application.
+The fictional demo seeds a resettable catalog reference; demo links do not navigate
+out to employer sites.
+
+`node scripts/check-onboarding-catalog-ui.mjs` tests a running local frontend
+(default port 3059) against local Supabase with disposable accounts. It checks
+selection persistence, refresh, changed-filter/no-match behavior, setup continuation,
+no application creation and desktop/mobile layouts. `LOOKOUT_UI_URL`,
+`LOOKOUT_UI_ARTIFACTS`, `SUPABASE_CLI` and `LOOKOUT_CHROMIUM_EXECUTABLE` can override
+its local test setup. It does not verify employer availability or hosted deployment.

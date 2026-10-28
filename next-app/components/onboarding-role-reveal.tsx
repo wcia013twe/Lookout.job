@@ -44,13 +44,14 @@ type OnboardingRoleRevealProps = {
   demo: boolean;
   onPrepare: () => void;
   onLater: () => void;
+  onAdjust?: () => void;
   presentation?: "onboarding" | "landing";
   expanded?: boolean;
   connected?: boolean;
   children?: ReactNode;
 };
 
-export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, presentation = "onboarding", expanded = false, connected = false, children }: OnboardingRoleRevealProps) {
+export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, presentation = "onboarding", expanded = false, connected = false, onAdjust, children }: OnboardingRoleRevealProps) {
   const landing = presentation === "landing";
   const pending=!role;
   const illustrative = demo;
@@ -93,6 +94,21 @@ export default function OnboardingRoleReveal({ role, demo, onPrepare, onLater, p
   useEffect(() => {
     if (spread && !landing) analysisHeading.current?.focus({ preventScroll: true });
   }, [spread, landing]);
+
+  if(!landing)return <div className={`role-reveal spread catalog-preview${pending?" catalog-preview-empty":""}`}>
+    {role&&<div className="gold-position"><TutorialRoleCard role={role} label={demo?"Demo role":""}>
+      {role.applicationUrl&&<a className="catalog-role-link" href={role.applicationUrl} target="_blank" rel="noreferrer" onClick={event=>{if(demo)event.preventDefault();}}>View role ↗</a>}
+      {children}
+    </TutorialRoleCard></div>}
+    <div className="reveal-copy">
+      <Title>{pending?"No role matches yet.":"A role to explore."}</Title>
+      <p className="lead">{pending?"Try different filters, or keep going with setup.":"Based on your role, job type, and location preferences."}</p>
+      <div className="actions">
+        <Button onClick={onPrepare}>Continue setup</Button>
+        {onAdjust&&<Quiet onClick={onAdjust}>Adjust filters</Quiet>}
+      </div>
+    </div>
+  </div>;
 
   return <div className={`role-reveal${spread && !landing ? " spread" : ""}`}>
     <motion.div layout transition={{ layout: { duration: reduced ? 0 : 0.75, ease } }} className="gold-position">

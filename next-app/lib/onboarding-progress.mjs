@@ -1,5 +1,5 @@
 // Browser-only navigation checkpoint. Never evidence of connection or completion.
-export const setupSteps = ['start','preferences','connect','first-role','circles','done'];
+export const setupSteps = ['start','preferences','first-role','connect','circles','done'];
 export function onboardingProgressKey(owner) {
  return owner ? `lookout:onboarding-progress:v1:${owner}` : null;
 }

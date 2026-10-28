@@ -9,6 +9,7 @@ begin
  p:=p||jsonb_build_object('instructions',E'## Role preferences\n- Roles: Backend engineering\n## Priority & flexibility\n- Roles: Preferred\n## Career goals & tradeoffs\n- Career goals: Build systems depth\n  Own reliability\n- Tradeoffs: Relocate for mentorship\n## Company priorities\n- Tier list ID: sample-owned-list');
  p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## Application identity\n- Application email: candidate@example.com\n- Email account: Personal Gmail\n## Employer answer writing\n- Tone: Professional & direct\n## Outreach writing\n- Tone: Warm & conversational\n## Application materials\n- Default resume ID: owned-resume\n## Eligibility & availability\n- Work authorization country: United States\n- Sponsorship required now: No\n- Expected graduation: 2027-05');
  p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## Profile evaluation\n- Rules: Prioritize long-term growth.\n## Recruiting targets\n- Targets: [{"id":"backend","name":"Backend SWE","active":true,"roles":"Backend","employment":"Full-time","timeline":"After graduation","resumeId":"owned-resume","conditions":"Systems ownership"}]');
+ p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## First opportunity\n- Catalog role ID: catalog-onboarding-fixture\n- Selected at: 2026-10-28T12:00:00Z');
  begin
   perform public.agent_dispatch(h,'preferences.profile.save',jsonb_build_object('expectedVersion',0,'profile',p));
   raise exception 'Missing write scope accepted';
@@ -35,6 +36,8 @@ begin
  if r->>'instructions' not like '%Prioritize long-term growth.%' or r->>'instructions' not like '%After graduation%' then raise exception 'UI lost profile evaluation or recruiting targets'; end if;
  if r->>'instructions' not like '%"employment":"Full-time"%' then raise exception 'UI lost role-type resume assignment'; end if;
  if r->>'version'<>'2' then raise exception 'UI does not share version checks'; end if;
+ if r->>'instructions' not like '%catalog-onboarding-fixture%' or r->>'instructions' not like '%2026-10-28T12:00:00Z%' then raise exception 'UI lost the MCP-saved catalog preview reference'; end if;
+ if exists(select 1 from public.applications where user_id=u) then raise exception 'Preview created an application'; end if;
  perform public.save_workspace_preferences('{"autoSubmitApproved":false,"profiles":[]}','[]',null,'{}');
  if (select search#>>'{profiles,0,instructions}' from public.preferences where user_id=u) is distinct from r->>'instructions' then raise exception 'Autosync clobbered profile'; end if;
  execute 'reset role';
