@@ -1,0 +1,8 @@
+# User-facing agent instructions
+
+- Added a common recruiting-assistant communication policy to MCP startup and developer context: concise outcomes, saved destinations and genuinely needed user actions; safe technical diagnostics only when troubleshooting is requested. Removed conflicting routine requirements to report tool names, codes and record IDs.
+- Added routine decision-making and recovery guidance for authorized work: inspect tools/state, reuse or create suitable owned targeting profiles when runtime policy permits, preserve existing preferences, distinguish independent search requests from onboarding-gated tasks, and publish/read back results. Human consent, host approvals, scopes, eligibility facts and submission safeguards remain unchanged.
+- Bumped developerVersion 90 → 91, career-find-jobs guide 6 → 7 and application-workspace guide 7 → 8. Updated the canonical Career Toolkit catalog/generator and regenerated the guide bundle without changing pinned upstream documents.
+- MCP mapping: existing initialize, check_context_versions, read_developer_context and read_guide. No new product action or tool. Regression coverage checks policy delivery on startup/context, guide cache versions, read-only/scoped guide access, and retained connection-setup stop rules.
+- Validation: npm test passed 882 tests including database scenarios; validate:data passed (158 roles); generated guides match pinned sources; git diff --check passed. Existing fictional guide/demo tests pass; no new UI state or external action was introduced.
+- Limits: instructions improve guidance but do not guarantee model compliance or fix transport failures. Production publication/deployment is not part of this local change. Local runtime verification follows landing.

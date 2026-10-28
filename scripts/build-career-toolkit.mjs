@@ -59,6 +59,13 @@ const researchGuidance = JSON.parse(await read('supabase/functions/agent-gateway
 if (!researchGuidance) throw Error('Dynamic research guidance is missing');
 discovery.instructions += '\n' + researchGuidance;
 
+// Communication policy is canonical developer configuration, not an upstream manual edit.
+const agentContract=JSON.parse(await read('supabase/functions/agent-gateway/instructions.json'));
+const userFacingGuidance=agentContract.instructions.filter(text=>text.startsWith("Speak as the user's recruiting assistant.")||text.startsWith('Within an already authorized request,')||text.startsWith('For an independently requested search,'));
+if(userFacingGuidance.length!==3)throw Error('User-facing search guidance is missing');
+discovery.instructions=userFacingGuidance.join('\n\n')+'\n\n'+discovery.instructions;
+discovery.expectedOutput=[...discovery.expectedOutput,'A concise user-facing result summary and saved destination; safe technical diagnostics only when requested'];
+
 const output = JSON.stringify({version:catalog.version,upstream:manifest.commit,guides},null,2)+'\n';
 const target = new URL('supabase/functions/agent-gateway/skills/career-toolkit.json', root);
 if (process.argv.includes('--check')) {

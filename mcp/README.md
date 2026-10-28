@@ -735,3 +735,27 @@ No new data-write or shell-execution MCP tool is introduced. Host installation,
 service management and wake commands remain local, authorized runtime actions.
 Developer version 90 advertises setup; release artifacts and backend must both
 be verified before claiming the package is available or watching is active.
+
+
+## User-facing agent replies
+
+The MCP startup instructions and developer context tell connected agents to act
+as recruiting assistants: report results, saved destinations, and necessary user
+actions in ordinary language. Tool names, payloads, revisions, record IDs and
+status codes stay in safe diagnostics unless the user explicitly requests
+troubleshooting. Queued, running, saved and published work remain distinct; agents
+read results back before claiming success.
+
+For authorized work, agents inspect current tools and state, reuse an equivalent
+search profile or create an appropriately scoped one while preserving existing
+profiles, and handle bounded retries themselves when runtime policy allows.
+Meaningful preferences, missing facts, permissions and host approval requirements
+still require the user. Independent searches use the existing search-sweep inbox
+route rather than advancing onboarding to bypass a task guard. The search and
+application-workspace guides carry the same communication policy.
+
+This is instruction guidance, not an added execution, messaging, scheduling or
+approval capability. Developer version changes invalidate cached context; guide
+versions invalidate cached workflow instructions. New code/config must be loaded
+by the runtime and released through the production workflow before claiming
+hosted availability. No model-behavior guarantee follows from configuration tests.

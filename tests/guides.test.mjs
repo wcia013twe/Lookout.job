@@ -43,3 +43,21 @@ test('application workspace guide is advertised with truthful personalization an
  for(const phrase of ['prepare_draft','writing preferences','NOT implemented','Fail loudly','read back','required/optional'])assert.ok(g.instructions.toLowerCase().includes(phrase.toLowerCase()),phrase);
  assert.ok(contextResponse('context.developer',{}).instructions.some(x=>x.includes('application-workspace')));
 });
+
+
+test('startup and developer context deliver the same user-facing policy and versioned workflow guidance',async()=>{
+ const {createHandler}=await import('../supabase/functions/agent-mcp/protocol.mjs');
+ const context=contextResponse('context.developer',{}),policy=context.instructions[0];
+ const handle=createHandler(async()=>({status:200,data:{scopes:['workspace:read']}}));
+ const response=await handle(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-11-25'}})}));
+ const initialized=(await response.json()).result;
+ assert(initialized.instructions.startsWith(policy));
+ assert.match(policy,/user-facing/);assert.match(policy,/explicit troubleshooting request/);
+ assert.equal(context.developerVersion,contextResponse('context.versions',{personalVersion:2}).developerVersion);
+ for(const id of ['career-find-jobs','application-workspace']){
+  const guide=readGuide(id);assert(guide.instructions.includes(policy));
+  assert.equal(context.guides.find(g=>g.id===id).version,guide.version);
+ }
+ assert(context.quickstart.some(s=>s.includes('request_search_sweep')&&s.includes('connection_pending')));
+ assert(!context.quickstart.some(s=>s.includes('report its destination and ID')));
+});
