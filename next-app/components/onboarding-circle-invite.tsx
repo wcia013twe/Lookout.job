@@ -15,7 +15,7 @@ function InviteForm({ client, onContinue }: { client: ReturnType<typeof useKnowl
   const profile = w.state.workflow.profile;
   const savedName = profile.preferredName || profile.firstName || profile.name || "";
   const [token, setToken] = useState("");
-  const [alias, setAlias] = useState(savedName);
+  const alias = savedName.trim() || "Circle member";
   const [busy, setBusy] = useState(false);
   const [joined, setJoined] = useState(false);
   const [error, setError] = useState("");
@@ -44,7 +44,6 @@ function InviteForm({ client, onContinue }: { client: ReturnType<typeof useKnowl
         <Field label="Invite code"><input value={token} onChange={e=>{setToken(e.target.value);setError("");}} placeholder="Paste your code" required maxLength={100} autoCapitalize="none" autoCorrect="off" spellCheck={false} disabled={busy}/></Field>
         {client.ready ? <Button type="submit" disabled={busy || !token.trim() || !alias.trim()}>{busy ? "Joining…" : "Join Circle"}</Button> : <Button disabled={client.connectionState!=="signed_out"} onClick={client.signIn}>Sign in to join</Button>}
         </div>
-        {!savedName && <Field label="Your name in the Circle"><input value={alias} onChange={e=>setAlias(e.target.value)} required maxLength={80} autoComplete="given-name" disabled={busy}/></Field>}
         {savedName && <p className="hint">Joining as {savedName}.</p>}
         {error && <p className="error" role="alert">{error}</p>}
         {client.demo && <p className="hint">Demo only · use demo-invite.</p>}
