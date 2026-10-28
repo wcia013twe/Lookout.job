@@ -44,3 +44,9 @@ Every tour stop has a small decorative motion sequence. Shared diagram primitive
 ## Bring an existing job search
 
 Onboarding’s first screen and Applications reuse a compact Bring your existing search disclosure. It explains exporting CSV from Simplify or Excel and sharing it directly with the connected agent, with a copyable request and manual-copy fallback. The website neither uploads nor parses a file. The request asks the agent to inspect available capabilities, deduplicate, preserve existing statuses, clarify conflicts and report actual saves. Imported progress must remain user-reported, never an employer receipt. Existing batches.publish, drafts.prepare and applications.progress boundaries may be used only where the connected agent supports the relevant operation and scopes; no new import tool or deployed CSV importer is advertised. Sharing a CSV remains an explicit user action in their agent’s chat. Demo copy performs no network or account mutation.
+
+### Save-as-app guide
+
+The final “Make your next move” screen shows an optional, bordered save-as-app guide with a download icon, numbered browser-specific steps, Share/menu icons and a link to the browser vendor's instructions. It uses the same component in fictional onboarding and real onboarding, and hides when standalone display mode is detected. Saving is a browser-owned human action; this guide does not install anything or write account data, so it adds no backend or MCP operation.
+
+Demo review: proceed through fictional onboarding to the final screen. Check the desktop menu guide and iPhone Share guide at narrow widths; Open my workspace stays available without installing. Standalone mode should hide the guide. Browser-specific menu wording can vary by version; the linked vendor help remains available.
