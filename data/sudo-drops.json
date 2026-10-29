@@ -4074,12 +4074,12 @@
       "location": "Mountain View, CA",
       "type": "Full-time",
       "comp": null,
-      "url": null,
+      "url": "https://job-boards.greenhouse.io/gleanwork/jobs/4748567005",
       "dateSeen": "2026-10-28",
       "source": "zero2sudo",
-      "status": "skipped",
-      "skipReason": "Not found on the live Glean Greenhouse board (checked 2026-10-28/29: board lists no University Grad opening); aggregator copies are labeled 2026 and posted 6+ months ago, so no verified live 2027 posting.",
-      "note": "Story frame 2026-10-28. Employer-board check 2026-10-28/29 found no University Grad opening."
+      "status": "added",
+      "skipReason": null,
+      "note": "Verified live 2026-10-28 on Glean Greenhouse board (job 4748567005); boarded. Corrects the earlier skip: the board listing crawl missed this posting."
     },
     {
       "company": "Validus",
@@ -4269,12 +4269,12 @@
       "location": "Poughkeepsie, NY",
       "type": "Full-time",
       "comp": null,
-      "url": null,
+      "url": "https://careers.ibm.com/en_US/careers/JobDetail?jobId=137787&source=WEB_Search_NA",
       "dateSeen": "2026-10-28",
       "source": "zero2sudo",
-      "status": "pending",
+      "status": "added",
       "skipReason": null,
-      "note": "Late story frame 2026-10-28. Search cross-check 2026-10-28 did not confirm this exact title live (closest IBM Poughkeepsie early-career listings are older Back End / Software Developer postings); live-browser verification report still outstanding, so held pending and NOT boarded."
+      "note": "Verified live 2026-10-28 on IBM careers (jobId 137787, posted 21-Oct-2026); boarded."
     },
     {
       "company": "IBM",
