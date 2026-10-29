@@ -4353,6 +4353,45 @@
       "status": "skipped",
       "skipReason": "Underclassman program per the frame overlay (similar to Microsoft Explore / Nvidia Ignite); does not fit an M.S. student.",
       "note": null
+    },
+    {
+      "company": "Ginkgo Bioworks",
+      "title": "Software Intern, Autonomous Lab",
+      "location": "Emeryville, CA",
+      "type": "Internship",
+      "comp": null,
+      "url": null,
+      "dateSeen": "2026-10-29",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "Biotech lab-automation niche; below the selective intern bar, no backend/distributed/ML-systems team angle shown.",
+      "note": "Frame link domain: job-boards.greenhouse.io."
+    },
+    {
+      "company": "Nintendo of America",
+      "title": "Intern - Software Engineer, DevOps (NTD)",
+      "location": null,
+      "type": "Internship",
+      "comp": null,
+      "url": null,
+      "dateSeen": "2026-10-29",
+      "source": "zero2sudo",
+      "status": "pending",
+      "skipReason": null,
+      "note": "Frame showed no location and no compensation. NTD is Redmond-based, but the exact intern posting was not pinned in a web search (a full-time Engineer, DevOps (NTD) in Redmond exists); not boarded pending an employer-page check. DevOps/CI scope at a consumer-gaming company is below-bar pending that check."
+    },
+    {
+      "company": "ASML",
+      "title": "Internship/Co-Op: Data Engineer",
+      "location": "San Diego, CA, USA",
+      "type": "Internship",
+      "comp": null,
+      "url": null,
+      "dateSeen": "2026-10-29",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "Part-time college co-op at a semiconductor-equipment firm; hardware niche, not a Summer 2027 SWE/ML-systems internship.",
+      "note": "Frame code J-00355626; org IT & Data, Chief Data Office US; hybrid. Frame link domain: asml.wd3.myworkdayjobs.com."
     }
   ]
 }
