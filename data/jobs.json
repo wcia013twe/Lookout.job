@@ -2883,6 +2883,23 @@
    "applicationStatus": "New",
    "verification": "Verified live 2026-10-29 on jobs.uber.com: 2027 Software Engineering Intern, US, SF/Seattle/Sunnyvale, $52/hr, Dec 2027-Sep 2028 graduation wording, Published 2026-10-20.",
    "verifiedDate": "2026-10-29"
+  },
+  {
+   "id": "meta-software-engineering-intern-1952991802037374",
+   "company": "Meta",
+   "title": "Software Engineering Intern",
+   "employmentType": "Internship",
+   "location": "Bellevue, WA; Menlo Park, CA; Seattle, WA; New York, NY, in person",
+   "category": "General SWE / high-volume servers",
+   "priority": "Apply Now",
+   "postedDate": null,
+   "discoveredDate": "2026-10-29",
+   "sourceFreshness": "aggregator-published 2026-10-28; employer page verified live 2026-10-29. Caveat: the employer page does not state Summer 2027 in its title or visible body text, so the Summer 2027 label is aggregator-derived, not employer-confirmed.",
+   "whyItFits": "Epic intern tier with a strong conversion pipeline. General SWE intern driving the systems behind Meta products, creating web applications reaching billions of people, and building high-volume servers; minimum 12-week duration. $7,313-$12,667/month plus benefits. Employer wording fits the Dec 2027 internship framing: currently enrolled full-time in a degree-seeking program pursuing a bachelor's or master's, with intent to return to the degree program after the internship preferred.",
+   "applicationUrl": "https://www.metacareers.com/profile/job_details/1952991802037374/",
+   "applicationStatus": "New",
+   "verification": "Verified live 2026-10-29 by a live-browser Meta Careers check: Software Engineering Intern, Bellevue/Menlo Park/Seattle/New York, Apply button shown with no closed notice, enrollment and return-to-degree wording as quoted in the run log. A plain text fetch of the same URL failed, which is not evidence against the live-browser finding; a second confirmatory live read was requested.",
+   "verifiedDate": "2026-10-29"
   }
  ]
 }
