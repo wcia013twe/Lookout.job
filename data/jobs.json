@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-10-29",
+ "lastRun": "2026-10-30",
  "roles": [
   {
    "id": "doordash-software-engineer-storage-8024644",
@@ -3008,6 +3008,38 @@
    "discoverySource": "morning sweep 2026-10-30",
    "verification": "Verified live 2026-10-30 on Visa's own Workday site (wd5 tenant): 'Software Engineer, Intern - 2027 Austin, TX', requisition REF089918W, Apply button shown, 'Posted 3 Days Ago', graduation December 2027 to August 2028, 12-week program, $39-$46/hr. No closing date shown on the posting.",
    "verifiedDate": "2026-10-30"
+  },
+  {
+   "id": "nvidia-ai-systems-software-engineering-intern-summer-2027-jr2027170",
+   "company": "NVIDIA",
+   "title": "AI Systems Software Engineering Intern - Summer 2027",
+   "employmentType": "Internship",
+   "location": "Austin, TX",
+   "category": "ML systems / AI infrastructure",
+   "priority": "Apply Now",
+   "postedDate": "2026-10-29",
+   "discoveredDate": "2026-10-30",
+   "sourceFreshness": "24h priority: posted Oct 29 per employer page ('Posted Yesterday' on Oct 30); applications accepted at least until Nov 2, 2026",
+   "whyItFits": "Legendary intern in the ML-systems lane at NVIDIA. AI systems software work, Austin, $20-$71/hr. Pursuing BS, MS, or PhD in CS, CE, EE, or a related field fits his MS enrollment. Prompt call needed: the employer page guarantees applications only at least until Nov 2, 2026.",
+   "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-TX-Austin/AI-Systems-Software-Engineering-Intern---Summer-2027_JR2027170",
+   "applicationStatus": "New",
+   "verification": "Verified live on NVIDIA Workday Oct 30, 2026: req JR2027170, full posting rendered, Apply button present (not clicked)."
+  },
+  {
+   "id": "nvidia-compiler-software-engineering-intern-summer-2027-jr2028607",
+   "company": "NVIDIA",
+   "title": "Compiler Software Engineering Intern - Summer 2027",
+   "employmentType": "Internship",
+   "location": "Redmond, WA",
+   "category": "Dev infra / compilers",
+   "priority": "Apply Now",
+   "postedDate": "2026-10-29",
+   "discoveredDate": "2026-10-30",
+   "sourceFreshness": "24h priority: posted Oct 29 per employer page ('Posted Yesterday' on Oct 30); applications accepted at least until Nov 2, 2026",
+   "whyItFits": "Legendary intern in the dev-infra lane at NVIDIA. Compiler engineering, Redmond, $20-$71/hr. Eligibility check needed: the posting requires a completed undergraduate Compiler Design class plus pursuing a BS/MS in CS/CE or similar. Prompt call needed: the employer page guarantees applications only at least until Nov 2, 2026. Note: the posting body also contains older wording (grad student, 2021 internship); title, location, and req ID are Summer 2027.",
+   "applicationUrl": "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-WA-Redmond/Compiler-Software-Engineering-Intern---Summer-2027_JR2028607",
+   "applicationStatus": "New",
+   "verification": "Verified live on NVIDIA Workday Oct 30, 2026: req JR2028607, full posting rendered, Apply button present (not clicked)."
   }
  ]
 }
