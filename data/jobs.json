@@ -3090,6 +3090,42 @@
       "discoverySource": "morning sweep 2026-10-31",
       "verification": "Verified live 2026-10-31 on Veeam's own Greenhouse board (job-boards.eu.greenhouse.io/veeamsoftware/jobs/4951792101): Kasten K10 cloud-native backup/disaster recovery, June-August 2027 10-week program, pursuing a Master's in CS, $40-$50/hr US intern range.",
       "verifiedDate": "2026-10-31"
+    },
+    {
+      "id": "visa-software-engineer-intern-2027-ashburn-ref089879w",
+      "company": "Visa",
+      "title": "Software Engineer, Intern - 2027 Ashburn, VA",
+      "employmentType": "Internship",
+      "location": "Ashburn, VA",
+      "category": "Distributed systems",
+      "priority": "Strong Consider",
+      "postedDate": "2026-10-27",
+      "discoveredDate": "2026-10-30",
+      "sourceFreshness": "Verified live Oct 31, 2026 on Visa Workday (Posted 4 Days Ago); first found Oct 30, 2026 as a separate requisition from Austin",
+      "whyItFits": "Same Visa 2027 SWE intern program as the boarded Austin role, as a separate requisition (never dedupe location variants). Graduation December 2027 to August 2028 fits Dec 2027 exactly. Hybrid, full time. Pay and project examples were not confirmed on this variant page in the Oct 31 check and are not copied from Austin; team placement is unknown, so check for an infra/platform team before applying.",
+      "applicationUrl": "https://visa.wd5.myworkdayjobs.com/en-US/Visa/details/Software-Engineer--Intern---2027-Ashburn--VA_REF089879W-1",
+      "applicationStatus": "New",
+      "discoverySource": "morning sweep 2026-10-30, staged 2026-10-31",
+      "verification": "Verified live 2026-10-31 on Visa's own Workday site (/Visa/): 'Software Engineer, Intern - 2027 Ashburn, VA', requisition REF089879W, Hybrid, Full time, Posted 4 Days Ago, graduation December 2027-August 2028.",
+      "verifiedDate": "2026-10-31"
+    },
+    {
+      "id": "visa-software-engineer-intern-2027-foster-city-ref089875w",
+      "company": "Visa",
+      "title": "Software Engineer, Intern - Foster City 2027",
+      "employmentType": "Internship",
+      "location": "Foster City, CA",
+      "category": "Distributed systems",
+      "priority": "Strong Consider",
+      "postedDate": "2026-10-27",
+      "discoveredDate": "2026-10-30",
+      "sourceFreshness": "Verified live Oct 31, 2026 on Visa Workday (Posted 4 Days Ago); first found Oct 30, 2026 as a separate requisition from Austin",
+      "whyItFits": "Same Visa 2027 SWE intern program as the boarded Austin role, as a separate requisition (never dedupe location variants). Graduation December 2027 to August 2028 fits Dec 2027 exactly. Full time. Pay and project examples were not confirmed on this variant page in the Oct 31 check and are not copied from Austin; team placement is unknown, so check for an infra/platform team before applying. Note the employer site orders the title as Foster City 2027, not 2027 Foster City.",
+      "applicationUrl": "https://visa.wd5.myworkdayjobs.com/en-US/Visa/details/Software-Engineer--Intern---Foster-City-2027_REF089875W-1",
+      "applicationStatus": "New",
+      "discoverySource": "morning sweep 2026-10-30, staged 2026-10-31",
+      "verification": "Verified live 2026-10-31 on Visa's own Workday site (/Visa/): 'Software Engineer, Intern - Foster City 2027', requisition REF089875W, Full time, Posted 4 Days Ago, graduation December 2027-August 2028.",
+      "verifiedDate": "2026-10-31"
     }
   ]
 }
