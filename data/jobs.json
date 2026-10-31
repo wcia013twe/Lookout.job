@@ -3126,6 +3126,22 @@
       "discoverySource": "morning sweep 2026-10-30, staged 2026-10-31",
       "verification": "Verified live 2026-10-31 on Visa's own Workday site (/Visa/): 'Software Engineer, Intern - Foster City 2027', requisition REF089875W, Full time, Posted 4 Days Ago, graduation December 2027-August 2028.",
       "verifiedDate": "2026-10-31"
+    },
+    {
+      "id": "amazon-software-development-engineer-database-early-career-2027-10593902",
+      "company": "Amazon",
+      "title": "Software Development Engineer (Database) Early Career - 2027 (US)",
+      "employmentType": "FT",
+      "location": "Boston, MA; Austin, TX; Seattle, WA; Redmond, WA; East Palo Alto, CA",
+      "category": "Databases & distributed systems",
+      "priority": "Apply Now",
+      "postedDate": null,
+      "discoveredDate": "2026-10-31",
+      "sourceFreshness": "Midday zero2sudo story Oct 31, 2026; verified live on amazon.jobs Oct 31, 2026 (Job ID 10593902)",
+      "whyItFits": "Database-specific early-career role at Amazon (Rare) in the databases/distributed-systems lane, distinct from the generic SDE Early Career requisition already boarded. Base pay $129,000 in Austin/Boston/Seattle/Redmond and $148,400 in East Palo Alto. Eligibility: bachelor's or master's in CS/CE/Data Science/IS or related STEM in progress; no graduation month gate beyond the 2027 title.",
+      "applicationUrl": "https://www.amazon.jobs/en/jobs/10593902/software-development-engineer-database-early-career-2027-us",
+      "applicationStatus": "New",
+      "verification": "Verified live on amazon.jobs Oct 31, 2026: Job ID 10593902, Amazon.com Services LLC, Jobs for grads / Software Development, Apply present (not clicked), no deadline stated."
     }
   ]
 }
