@@ -1,5 +1,5 @@
 {
- "date": "2026-10-31",
+ "date": "2026-11-01",
  "source": "zero2sudo",
  "drops": [
   {
@@ -580,12 +580,12 @@
    "location": "Sunnyvale, CA (Hybrid)",
    "type": "Internship",
    "comp": "$11,800-$14,600/month",
-   "url": "https://generalmotors.wd5.myworkdayjobs.com/en-CA/Careers_GM/job/Sunnyvale-California-United-States-of-America/XMLNAME-2027-Summer-Intern--Onboard-Autonomy--Embodied-AI_JR-202622135",
+   "url": "https://search-careers.gm.com/en/jobs/jr-202622135/2027-summer-intern-onboard-autonomy-embodied-ai-phd/",
    "dateSeen": "2026-10-11",
    "source": "zero2sudo",
-   "status": "pending",
-   "skipReason": null,
-   "note": "Mixed signal: listed on aggregators Oct 10, but one tracker flags req JR-202622135 inactive - confirm on GM's site before applying. Tracker degrees: Master's, PhD."
+   "status": "skipped",
+   "skipReason": "PhD-gated: employer page for JR-202622135 is the Onboard Autonomy, Embodied AI (PhD) variant (currently pursuing a PhD, graduating Dec 2027-June 2028); Wesley is an MS student, so this variant does not fit. The separate Masters variant JR-202622543 is boarded as its own role.",
+   "note": "Verified live Nov 1, 2026 on GM search-careers as the PhD variant, $14,600/mo, posted Oct 23, 2026. Do not confuse with the Masters variant JR-202622543."
   },
   {
    "company": "Amazon",
@@ -5055,6 +5055,58 @@
    "status": "skipped",
    "skipReason": "Data Science intern, not SWE/ML-systems lane; consistent with the earlier skipped FedEx Data Science Intern drop",
    "note": "Evening story frame, REQ ID P25-392649-1, Student Programs, full time, not remote; distinct posting from the Memphis req."
+  },
+  {
+   "company": "The New York Times",
+   "title": "Backend Engineering Intern, Wirecutter",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": "$40/hr",
+   "url": "https://job-boards.greenhouse.io/thenewyorktimes/jobs/4748483005",
+   "dateSeen": "2026-11-01",
+   "source": "morning sweep",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 1, 2026 on NYT Greenhouse board (REQ-020880), New badge, Apply visible, not clicked. Posting body states no graduation window or degree requirement and does not itself say Summer 2027; Summer 2027 framing from NYT program page (postings live Oct 30, open about a week). Hybrid, NYC/Tri-State commute."
+  },
+  {
+   "company": "General Motors",
+   "title": "2027 Summer Intern, Onboard Autonomy, Embodied AI (Masters)",
+   "location": "Sunnyvale, CA",
+   "type": "Internship",
+   "comp": "$11,800/month",
+   "url": "https://search-careers.gm.com/en/jobs/jr-202622543/2027-summer-intern-onboard-autonomy-embodied-ai-masters/",
+   "dateSeen": "2026-11-01",
+   "source": "morning sweep",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 1, 2026 on GM search-careers: JR-202622543, posted Oct 23, 2026, graduating Dec 2027-June 2028, Apply Now visible, not clicked. Masters variant; PhD variant JR-202622135 recorded as skipped separately."
+  },
+  {
+   "company": "General Motors",
+   "title": "2027 Summer Intern - Machine Learning Intern, Autonomous Vehicles: Software Validation (Master's)",
+   "location": "Sunnyvale, CA",
+   "type": "Internship",
+   "comp": "$8,700-$10,300/month",
+   "url": "https://search-careers.gm.com/en/jobs/jr-202621655/2027-summer-intern-machine-learning-intern-autonomous-vehicles-software-validation-master-s/",
+   "dateSeen": "2026-11-01",
+   "source": "morning sweep",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 1, 2026 on GM search-careers: JR-202621655, posted Oct 5, 2026, graduating Dec 2027-Aug 2028, Apply Now visible, not clicked."
+  },
+  {
+   "company": "General Motors",
+   "title": "2027 Summer Intern, Data Scaling, Embodied AI (Masters)",
+   "location": "Sunnyvale, CA",
+   "type": "Internship",
+   "comp": "$11,800/month",
+   "url": "https://search-careers.gm.com/en/jobs/jr-202622540/2027-summer-intern-data-scaling-embodied-ai-masters/",
+   "dateSeen": "2026-11-01",
+   "source": "morning sweep",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 1, 2026 on GM search-careers: JR-202622540, posted Oct 15, 2026, graduating Dec 2027-June 2028, Apply Now visible, not clicked. PhD variant JR-202622132 not boarded."
   }
  ]
 }
