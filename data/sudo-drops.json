@@ -1,5 +1,5 @@
 {
- "date": "2026-10-30",
+ "date": "2026-10-31",
  "source": "zero2sudo",
  "drops": [
   {
@@ -5003,6 +5003,58 @@
    "status": "pending",
    "skipReason": null,
    "note": "Evening story frame. Title verified live on IBM careers Oct 30, 2026: Job ID 138632, Entry Level, Hybrid, Fixed Term - Short, posted Oct 30, 2026; Apply now shown, not clicked. NOT boarded: the IBM detail page rendered an empty description section, so no term dates or eligibility wording could be confirmed; recheck before boarding."
+  },
+  {
+   "company": "Amazon",
+   "title": "Software Development Engineer (Database) Early Career- 2027 (US)",
+   "location": "Boston, MA; Austin, TX; Seattle, WA; Redmond, WA; East Palo Alto, CA",
+   "type": "Full-time",
+   "comp": "$129,000-$148,400 annually",
+   "url": "https://www.amazon.jobs/en/jobs/10593902/software-development-engineer-database-early-career-2027-us",
+   "dateSeen": "2026-10-31",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Evening story frame, Job ID 10593902. Verified live on Amazon jobs Oct 31, 2026: Amazon.com Services LLC, Apply now shown, not clicked; no posted date, deadline, or start date on the page; no explicit graduating-in-2027 requirement beyond the 2027 title."
+  },
+  {
+   "company": "HPE",
+   "title": "Software Engineering Intern",
+   "location": "Sunnyvale, CA",
+   "type": "Internship",
+   "comp": "$35.00-$41.00 hourly (California)",
+   "url": "https://careers.hpe.com/us/en/job/1214146/Software-Engineering-Intern",
+   "dateSeen": "2026-10-31",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Eligibility wording is currently pursuing a Bachelor's degree, which does not fit his completed BS / current MS enrollment; generic scope (category shown as Administration & Workplace) with no team evidence; no term dates or explicit full-time term confirmed on HPE's own pages",
+   "note": "Evening story frame, Job ID 1214146. Verified live on HPE careers Oct 31, 2026: Sunnyvale onsite, Apply Now shown, not clicked; story's Posted Today and full-time descriptors could not be confirmed on HPE's pages."
+  },
+  {
+   "company": "FedEx",
+   "title": "Intern - Data Science",
+   "location": "Memphis, TN",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-31",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Data Science intern, not SWE/ML-systems lane; consistent with the earlier skipped FedEx Data Science Intern drop",
+   "note": "Evening story frame, REQ ID P25-392650-1, Student Programs, full time, not remote."
+  },
+  {
+   "company": "FedEx",
+   "title": "Intern - Data Science",
+   "location": "Collierville, TN",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-10-31",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Data Science intern, not SWE/ML-systems lane; consistent with the earlier skipped FedEx Data Science Intern drop",
+   "note": "Evening story frame, REQ ID P25-392649-1, Student Programs, full time, not remote; distinct posting from the Memphis req."
   }
  ]
 }
