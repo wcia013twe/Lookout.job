@@ -3224,6 +3224,42 @@
    "discoverySource": "morning sweep 2026-11-02",
    "verification": "Verified live 2026-11-02 on Sierra's own Ashby board: Software Engineer, Agent (New Grad 2027), San Francisco OR New York, $150,000-$180,000, on-site, primarily in-person company based in San Francisco. No explicit graduation cutoff in the visible overview; eligibility conveyed by New Grad 2027 title, so do not assume a June 2027 cutoff for this role.",
    "verifiedDate": "2026-11-02"
+  },
+  {
+   "id": "google-software-engineer-ii-early-career-109116638069957318",
+   "company": "Google",
+   "title": "Software Engineer II, Early Career",
+   "employmentType": "FT",
+   "location": "Mountain View, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; San Bruno, CA, USA; Seattle, WA, USA; Sunnyvale, CA, USA",
+   "category": "General software engineering",
+   "priority": "Apply Now",
+   "postedDate": null,
+   "discoveredDate": "2026-11-02",
+   "sourceFreshness": "Midday zero2sudo story Nov 2, 2026 (9h old frame); verified live on Google Careers Nov 2, 2026",
+   "whyItFits": "Google (Mythic) FT early-career SWE role, 12 US locations including Mountain View. Application window open until at least November 27, 2026. Minimum qualifications were not confirmed on the detail page in this check beyond the Early Career title, so check them before applying.",
+   "applicationUrl": "https://www.google.com/about/careers/applications/jobs/results/109116638069957318-software-engineer-ii-early-career",
+   "applicationStatus": "New",
+   "discoverySource": "midday zero2sudo story check 2026-11-02, staged 2026-11-02",
+   "verification": "Verified live 2026-11-02 on Google Careers: 'Software Engineer II, Early Career', Mountain View plus 11 more (12 total), application window open until at least November 27, 2026.",
+   "verifiedDate": "2026-11-02"
+  },
+  {
+   "id": "roku-sw-engineer-intern-ai-engineering-8769",
+   "company": "Roku",
+   "title": "SW Engineer Intern, AI Engineering",
+   "employmentType": "Internship",
+   "location": "San Jose, CA",
+   "category": "ML systems & AI infrastructure",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-11-02",
+   "sourceFreshness": "Midday zero2sudo story Nov 2, 2026 (1h old frame); verified live on Roku careers Nov 2, 2026",
+   "whyItFits": "AI Engineering intern in the ML-systems/AI-infra lane, San Jose. No deadline was shown on the detail page. Roku is not in his tier lists (Common), boarded on direct AI-engineering lane fit, not brand tier. Logo manifest has no Roku entry yet; logo fetch outstanding.",
+   "applicationUrl": "https://www.weareroku.com/jobs/sw-engineer-intern-ai-engineering-san-jose-california-united-states",
+   "applicationStatus": "New",
+   "discoverySource": "midday zero2sudo story check 2026-11-02, staged 2026-11-02",
+   "verification": "Verified live 2026-11-02 on Roku careers (weareroku.com): 'SW Engineer Intern, AI Engineering', San Jose, California, United States, ID 8769, Apply present (not clicked), no deadline shown.",
+   "verifiedDate": "2026-11-02"
   }
  ]
 }
