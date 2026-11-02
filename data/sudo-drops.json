@@ -1,5 +1,5 @@
 {
- "date": "2026-11-01",
+ "date": "2026-11-02",
  "source": "zero2sudo",
  "drops": [
   {
@@ -5159,6 +5159,71 @@
    "status": "skipped",
    "skipReason": "PM role, not SWE",
    "note": "Evening story frame Nov 1, 1h old, LIFEATTIKTOK.COM link not clicked; no req ID or pay shown."
+  },
+  {
+   "company": "Google",
+   "title": "Software Engineer II, Early Career",
+   "location": "Mountain View, CA, USA; +11 more",
+   "type": "Full-time",
+   "comp": null,
+   "url": "https://www.google.com/about/careers/applications/jobs/results/109116638069957318-software-engineer-ii-early-career",
+   "dateSeen": "2026-11-02",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Midday story frame Nov 2, 2026, 9h old. Application window open until at least November 27, 2026. Verified live on Google Careers Nov 2, 2026."
+  },
+  {
+   "company": "Roku",
+   "title": "SW Engineer Intern, AI Engineering",
+   "location": "San Jose, United States",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.weareroku.com/jobs/sw-engineer-intern-ai-engineering-san-jose-california-united-states",
+   "dateSeen": "2026-11-02",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Midday story frame Nov 2, 2026, 1h old, Job ID 8769. Verified live on Roku careers Nov 2, 2026; no deadline shown."
+  },
+  {
+   "company": "TikTok",
+   "title": "Product Manager - Project Intern (Global Monetization Product and Technology) - 2027 Start",
+   "location": "San Jose",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-02",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "PM role, not SWE",
+   "note": "Midday story frame Nov 2, 2026, 17h old, LIFEATTIKTOK.COM link not clicked. Seattle variant of the same title was already skipped Nov 1 evening; this San Jose location variant is recorded separately and skipped on the same PM reason."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Explore Program Engineering Internship Opportunities: First-Year Students",
+   "location": "Redmond, WA",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-02",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "First-year undergraduate program only; Wesley is an M.S. student, not eligible",
+   "note": "Midday story frame Nov 2, 2026, 12h old, Job number 200042630, posted Nov 01, 2026. Verified live on Microsoft Careers Nov 2, 2026; required qualifications require enrollment in the first year of a 4-year undergraduate degree program."
+  },
+  {
+   "company": "Shopify",
+   "title": "Software Developer Intern (Backend, Frontend, Mobile), Data Science Intern, Product Design Intern - 2026 Interns",
+   "location": null,
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-02",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Midday story frame Nov 2, 2026, about 45m old: 'Shopify is hiring 2026 Interns!' No location shown on the frame and no legible full application URL. Could not confirm a live US posting matching the frame; secondary sources show Summer 2026 terms passed and Summer 2027 US postings closed Oct 12, 2026. Held pending, not boarded, pending a confirmed live posting with location."
   }
  ]
 }
