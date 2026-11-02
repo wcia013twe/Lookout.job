@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-10-31",
+ "lastRun": "2026-11-02",
  "roles": [
   {
    "id": "doordash-software-engineer-storage-8024644",
@@ -3206,6 +3206,24 @@
    "applicationUrl": "https://search-careers.gm.com/en/jobs/jr-202622540/2027-summer-intern-data-scaling-embodied-ai-masters/",
    "applicationStatus": "New",
    "verification": "Verified live Nov 1, 2026 on GM search-careers: Masters variant JR-202622540, Sunnyvale, posted Oct 15, 2026, Apply Now visible, not clicked. Distinct from the PhD variant JR-202622132, which does not fit."
+  },
+  {
+   "id": "sierra-software-engineer-agent-new-grad-2027",
+   "company": "Sierra",
+   "title": "Software Engineer, Agent (New Grad 2027)",
+   "employmentType": "FT",
+   "location": "San Francisco, CA or New York, NY",
+   "category": "AI agents / AI application engineering",
+   "priority": "Strong Consider",
+   "postedDate": null,
+   "discoveredDate": "2026-11-02",
+   "sourceFreshness": "Backfill: about 18 days old per swejoblists, employer Ashby page verified live Nov 2, 2026",
+   "whyItFits": "Production-grade AI agents for customer-facing use cases with full Agent Development Life Cycle ownership from pilot through deployment and iteration; direct AI infra/application lane fit at an AI-agent platform, $150,000-$180,000, on-site. Common tier kept on exceptional AI-agent team fit, not brand. Location caveat: Ashby list page shows San Francisco OR New York, not SF-only.",
+   "applicationUrl": "https://jobs.ashbyhq.com/sierra/149f368c-52d5-408f-ba26-ad888f318a00",
+   "applicationStatus": "New",
+   "discoverySource": "morning sweep 2026-11-02",
+   "verification": "Verified live 2026-11-02 on Sierra's own Ashby board: Software Engineer, Agent (New Grad 2027), San Francisco OR New York, $150,000-$180,000, on-site, primarily in-person company based in San Francisco. No explicit graduation cutoff in the visible overview; eligibility conveyed by New Grad 2027 title, so do not assume a June 2027 cutoff for this role.",
+   "verifiedDate": "2026-11-02"
   }
  ]
 }
