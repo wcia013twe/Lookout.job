@@ -6,7 +6,9 @@ audit. Per-profile settings live in the existing versioned profile narrative und
 `## Career Ops discovery filters`, with one fenced JSON object; shared sources are
 not retargeted. Missing role-to-title configuration blocks collection until Muse
 derives appropriate keywords from the selected résumé/targets using the imported
-`career-adjacent-titles` procedure. Explicitly broad title configuration remains
+`career-adjacent-titles` procedure. Missing-filter failures return
+`code: search_filters_not_ready`, the filter plan, evaluated versions and recovery
+pointers in the job result; a fresh search run is not created until preflight passes. Explicitly broad title configuration remains
 possible and visible. See `backend/discovery-filter-contract.md`.
 
 For a normal configured scan, Muse calls `submit_backend_job` once with

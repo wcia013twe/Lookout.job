@@ -119,5 +119,5 @@ test('profile-scoped Career Ops settings persist through authorized SQL writes a
  assert.deepEqual((await db.query("select projection->>'instructions' instructions from public.search_documents where user_id=$1 and kind='profile' and id=$2",[f.owner,f.profile])).rows[0].instructions,instructions);
  const missing=await fixture(),m=tasks();
  await db.query("update public.search_documents set projection=jsonb_set(projection,'{instructions}',to_jsonb($2::text)) where user_id=$1 and kind='profile'",[missing.owner,'## Role preferences\n- Roles: Software Engineer']);
- await workOnce(rpc,{execute:m.execute});assert.equal((await result(missing.job.id)).status,'failed');assert.equal(m.calls.some(c=>c.task==='discovery'),false);
+ await workOnce(rpc,{execute:m.execute});const failed=await result(missing.job.id);assert.equal(failed.status,'failed');assert.equal(failed.search_run_id,null);assert.equal(failed.result.code,'search_filters_not_ready');assert.match(failed.result.filterPlan.gaps[0],/title keywords/);assert.equal(failed.result.recovery.tool,'read_search_filter_plan');assert.equal(failed.result.evaluatedProfileVersion,1);assert.equal(m.calls.some(c=>c.task==='discovery'),false);
 });
