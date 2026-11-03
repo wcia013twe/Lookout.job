@@ -20,3 +20,4 @@
 - Expanded real SQL regression verifies failed job contains actionable diagnostics and no search_run_id when configuration is missing. Existing happy-path and fenced ownership tests remain.
 
 - Recovery validation: all 24 focused worker/SQL/MCP tests passed; runtime typecheck, data validation and diff check passed. Packaged network-disabled reproduction returns search_filters_not_ready with profile version/recovery tool and runCreated=false.
+- Recovery activation: all 929 full-suite tests passed. Landed and activated `lookout-node:careerops-search-recovery` for the idle local API/worker. API healthy; worker running. Disposable-account live Node/MCP → gateway → SQL write/read/plan verification passed again at developer context 99. No personal search, criteria edit or historical job/run rewrite. Hosted production unchanged.
