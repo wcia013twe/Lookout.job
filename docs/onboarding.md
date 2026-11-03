@@ -1,6 +1,6 @@
 # Lookout onboarding
 
-Agents start with `read_developer_context`: its `operatingGuide` is the canonical entry point for connection setup, saved schedules, first requested work, optional background watching, ongoing maintenance and workspace operations. The same response supplies detailed contracts and task-reference metadata. Cache per connection and refresh on developerVersion changes. MCP startup and the website connection handoff point to this guide; reading it does not activate work. Source: `supabase/functions/agent-gateway/instructions.json`.
+Agents start with `read_developer_context`: its `operatingGuide` is the canonical entry point for connection setup, saved schedules, first requested work, optional background watching, ongoing maintenance and workspace operations. The same response supplies detailed contracts and task-reference metadata. Cache per connection and refresh on developerVersion changes. MCP startup and the website connection handoff point to this guide; reading it does not activate work. The preserved `quickstart` in `supabase/functions/agent-gateway/instructions.json` and the watcher guide are assembled by `supabase/functions/agent-gateway/operating-guide.mjs` for both MCP startup and this response.
 
 The Next.js `/onboarding/` route introduces background, work preferences, a catalog opportunity, the existing agent connection flow, and an optional Circle story. Its presentation components are in `next-app/components/onboarding-*.tsx`, with scoped styles in `next-app/app/onboarding.css`.
 
@@ -52,3 +52,8 @@ Onboarding’s first screen and Applications reuse a compact Bring your existing
 The final “Make your next move” screen shows an optional, bordered save-as-app guide with a download icon, numbered browser-specific steps, Share/menu icons and a link to the browser vendor's instructions. It uses the same component in fictional onboarding and real onboarding, and hides when standalone display mode is detected. Saving is a browser-owned human action; this guide does not install anything or write account data, so it adds no backend or MCP operation.
 
 Demo review: proceed through fictional onboarding to the final screen. Check the desktop menu guide and iPhone Share guide at narrow widths; Open my workspace stays available without installing. Standalone mode should hide the guide. Browser-specific menu wording can vary by version; the linked vendor help remains available.
+
+
+## Schedule change pickup
+
+My Agent task definitions remain in the owned, versioned `preferences.search.schedule` record. Website changes and `save_notification_preferences` share that record. The existing count-only watch counts `schedule_changed` along with other pending events; it does not identify the event. `read_muse_changes` returns a compact pointer to `read_agent_schedule`, which returns only the current schedule, configVersion, preferences update timestamp and the calling connection ID. The consumer reconciles its real runtime registrations by stable task ID and acknowledges the event after it handles the change; if it cannot reconcile, it leaves the event pending. Schedule-only maintenance needs no full context read, but a later authorized work run still checks context versions. A saved schedule or wake never proves scheduler activation.
