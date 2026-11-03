@@ -1,5 +1,6 @@
 import {museChangeFeedResponse} from '../../../lib/muse-change-feed.mjs';
 import contract from './instructions.json' with { type: 'json' };
+import { operatingGuide } from './operating-guide.mjs';
 import { guideIndex } from './guides.mjs';
 import { circleKnowledgeResponse } from './circle-context.mjs';
 
@@ -7,6 +8,6 @@ import { circleKnowledgeResponse } from './circle-context.mjs';
 export function contextResponse(operation, data) {
   if (operation === 'changes.read') return museChangeFeedResponse(data);
   if (operation === 'context.versions') return { personalVersion: data.personalVersion, developerVersion: contract.developerVersion };
-  if (operation === 'context.developer') return structuredClone({ ...contract, guides: guideIndex() });
+  if (operation === 'context.developer') return structuredClone({ ...contract, operatingGuide, guides: guideIndex() });
   return circleKnowledgeResponse(operation, data);
 }

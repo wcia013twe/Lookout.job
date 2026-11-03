@@ -82,7 +82,7 @@ test('one fictional MCP context read delivers the complete operating guide witho
  assert.deepEqual(guide.sections.map(s=>s.id),['role','connect','first-value','run','watch','workspace','search','applications','career','recover']);
  assert.match(guide.lifecycle,/Read once per version, not once forever/);
  const watch=guide.sections.find(s=>s.id==='watch').instructions.join('\n');
- for(const phrase of ['configure_agent_watch','--check','--test-wake','SHA-256','30-minute cooldown','verified enqueue/wake command','runtime receipts'])assert(watch.includes(phrase),phrase);
+ for(const phrase of ['configure_agent_watch','--check','--test-wake','SHA-256','30 minutes','verified local enqueue/wake CLI','runtime receipt'])assert(watch.includes(phrase),phrase);
  const connect=guide.sections.find(s=>s.id==='connect').instructions;
  assert(connect.every(instruction=>startup.instructions.includes(instruction)),'startup must use the canonical connection rules');
  assert.equal(calls.filter(op=>op==='context.developer').length,1);

@@ -46,6 +46,6 @@ test('watch configuration and real counts share ownership, receipts, scopes and 
 });
 test('fictional watch demo rotates, acknowledges and resets without account IO',async()=>{
  const demo=createMuseChangeFeedDemo(),watch=(await demo.configureAgentWatch({enabled:true})).watchId;
- assert.equal(await demo.readAgentPendingCount(watch),4);const feed=await demo.readMuseChanges();await demo.acknowledgeMuseChanges({eventIds:[feed.items[0].id]});assert.equal(await demo.readAgentPendingCount(watch),3);
- const next=(await demo.configureAgentWatch({enabled:true})).watchId;assert.equal(await demo.readAgentPendingCount(watch),0);assert.equal(await demo.readAgentPendingCount(next),3);await demo.configureAgentWatch({enabled:false});assert.equal(await demo.readAgentPendingCount(next),0);assert.equal((await createMuseChangeFeedDemo().readMuseChanges()).items.length,4);
+ assert.equal(await demo.readAgentPendingCount(watch),5);const feed=await demo.readMuseChanges();await demo.acknowledgeMuseChanges({eventIds:[feed.items[0].id]});assert.equal(await demo.readAgentPendingCount(watch),4);
+ const next=(await demo.configureAgentWatch({enabled:true})).watchId;assert.equal(await demo.readAgentPendingCount(watch),0);assert.equal(await demo.readAgentPendingCount(next),4);await demo.configureAgentWatch({enabled:false});assert.equal(await demo.readAgentPendingCount(next),0);assert.equal((await createMuseChangeFeedDemo().readMuseChanges()).items.length,5);
 });

@@ -10,7 +10,7 @@ const hash='e'.repeat(64),second='f'.repeat(64),foreign='d'.repeat(64);
 const owner='11111111-1111-1111-1111-111111111111',other='22222222-2222-2222-2222-222222222222';
 
 test('the label catalog uses existing read tools and the detached feed includes timeline updates',async()=>{
- assert.equal(MUSE_CHANGE_TYPES.length,5);
+ assert.equal(MUSE_CHANGE_TYPES.length,6);
  for(const type of MUSE_CHANGE_TYPES)assert.ok(TOOLS.some(tool=>tool.name===type.readTool&&tool.readOnly));
  const demo=createMuseChangeFeedDemo(),feed=await demo.readMuseChanges();
  assert.deepEqual(feed.eventTypes,MUSE_CHANGE_TYPES);
