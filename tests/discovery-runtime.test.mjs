@@ -56,11 +56,11 @@ function harness(sources){
 test('worker resumes persisted identities through isolated copied scan task and retains honest partial coverage',async()=>{
  const h=harness([{source_id:'portal:example',source:{name:'Example',careers_url:'https://example.com'},version:0,state:'pending'},{source_id:'query:1',source:{query:'unsupported'},version:0,state:'pending'}]);
  const copied=[];
- const execute=async(task,input)=>{copied.push({task,input});if(task==='dedup-discovery')return [];if(task==='verify-discovery-leads')return {jobs:[{...posting('new'),description:'Verified',postedAt:null}],diagnostics:[{status:'active'}]};return input.target.id==='query:1'?{status:'unsupported',jobs:[]}:{status:'ok',provider:'greenhouse',available:2,truncated:false,jobs:[posting('new')],provenance:{provider:'providers/greenhouse.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};};
+ const execute=async(task,input)=>{copied.push({task,input});if(task==='inspect-discovery-filters')return {ready:true,gaps:[],validation:{errors:[]}};if(task==='dedup-discovery')return [];if(task==='verify-discovery-leads')return {jobs:[{...posting('new'),description:'Verified',postedAt:null}],diagnostics:[{status:'active'}]};return input.target.id==='query:1'?{status:'unsupported',jobs:[]}:{status:'ok',provider:'greenhouse',available:2,truncated:false,jobs:[posting('new')],provenance:{provider:'providers/greenhouse.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};};
  const result=await executeSearch({...job,attempts:2,search_run_id:h.run.id},h.dispatch,{execute});
  assert.equal(result.status,'partial');assert.equal(result.result.shortlist.applicantEligibility,'not-evaluated');
  assert.equal(result.result.provenance[0].dedup,'dedup-tracker.mjs');
- assert.equal(copied[0].input.previous[0].url,posting('old').url);
+ assert.equal(copied.find(c=>c.task==='discovery').input.previous[0].url,posting('old').url);
  assert.ok(!h.calls.some(call=>/screening|publish|submission/.test(call.operation)));
  assert.ok(h.calls.find(call=>call.operation==='search.progress').payload.eventKey.includes('a2'));
 });

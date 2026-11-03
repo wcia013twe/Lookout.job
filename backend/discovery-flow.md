@@ -1,5 +1,14 @@
 # Discovery flow: one backend job, then Muse reports
 
+Before scanning, Muse reads the selected profile and `read_search_filter_plan`
+(Node MCP). The plan runs the pinned Career Ops validator and offline source/query
+audit. Per-profile settings live in the existing versioned profile narrative under
+`## Career Ops discovery filters`, with one fenced JSON object; shared sources are
+not retargeted. Missing role-to-title configuration blocks collection until Muse
+derives appropriate keywords from the selected résumé/targets using the imported
+`career-adjacent-titles` procedure. Explicitly broad title configuration remains
+possible and visible. See `backend/discovery-filter-contract.md`.
+
 For a normal configured scan, Muse calls `submit_backend_job` once with
 `{kind:"search_ats",input:{profileId},eventKey}` and polls `read_backend_jobs`.
 The worker collects bounded sources, verifies supported employer postings, saves
@@ -17,7 +26,7 @@ this pipeline ran. Failed jobs do not return a completed shortlist.
 The shortlist is deduplicated within this run, up to 250 observed discoveries
 (ten sources × up to 25 collected leads each). Source totals are availability,
 not counts actually verified. Liveness checks use the copied API/browser ladder for every supplied link.
-Unsupported extraction (currently full-description parsing outside Greenhouse),
+Unsupported extraction or incomplete employer metadata,
 uncertain links, blocked sources or truncated pages keep the job partial; a partial
 job may still return a useful shortlist. These bounds do not establish a complete
 daily source sweep or a 50-report quota. Automatic historical-report reuse and
@@ -87,8 +96,12 @@ browser checks are sequential. Browser runtime is installed in the Node image.
 Each submitted URL returns `status: active | expired | uncertain`, `code`, `reason`,
 `checkedAt`, `method` and a separate `extraction` outcome (`parsed`, `unsupported`,
 `failed`, `not-attempted`). An active link with unsupported extraction remains
-active; no fictional job record is created. The current Greenhouse extractor is
-unchanged. Only confirmed-active, parsed records proceed to screening/analysis.
+active; no fictional job record is created. The unchanged Career Ops normalizer handles ordinary Greenhouse. Its original
+`fetchJdViaKnownApi` dispatcher handles Lever, Ashby, Workday, SmartRecruiters
+and embedded Greenhouse. Employer attribution and posting identity must still
+come from official metadata or a matching owned board (never an aggregate label
+or guessed board name). Missing metadata remains a diagnostic. Only
+confirmed-active, fully parsed and attributed records proceed to screening/analysis.
 Diagnostics are returned by manual intake and saved in existing source checkpoints
 by the single backend job, including expired/uncertain links. No new log table.
 
@@ -135,8 +148,7 @@ verifier. When details return only a HiringCafe job page, the adapter attempts
 one bounded public-page read and accepts only a unique external Apply link.
 Blocked, ambiguous or missing links remain uncertain source diagnostics and
 never become employer-verified observations. No challenge bypass is attempted.
-The same copied deduplication, official full-description extraction (currently
-Greenhouse), versioned screening and shortlist pipeline runs on resolved URLs.
+The same copied deduplication, official full-description extraction through the pinned Career Ops JD fetchers, versioned screening and shortlist pipeline runs on resolved URLs.
 An aggregate description alone never supplies a verified employer record.
 
 Official docs: https://hiringcafe.com/documentation/hiringcafe-chatgpt-app

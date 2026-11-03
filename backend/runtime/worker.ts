@@ -33,6 +33,8 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   const collectionContext=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
   const collectionProfile=collectionContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===(run.profile_id||job.input.profileId));
   if(!collectionProfile)throw Error('Current job profile unavailable');
+  const filterPlan=await (execute||executeCareerTask)('inspect-discovery-filters',{profile:collectionProfile.projection,portals:collectionContext.documents.find((d:Payload)=>d.kind==='portals')?.projection||{}});
+  if(!filterPlan.ready)throw Error('Configure search filters before collecting: '+[...filterPlan.gaps,...filterPlan.validation.errors.map((e:Payload)=>e.path+': '+e.message)].join(' '));
   const seen:Payload[]=[];
   if(job.search_run_id){
     let offset=0;
@@ -104,7 +106,7 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   const shortlist={...deduplication,evaluatedProfileVersion:profile.version,personalVersion:context.personalVersion,screenedCount:discoveries.length,excludedCount:discoveries.length-retained.size,applicantEligibility:'not-evaluated',reporting:'pending-muse'};
   const summary=`Screened ${discoveries.length} verified discoveries; ${shortlist.retainedListingIds.length} retained after Career Ops deduplication. ${latest.sources.filter((s:Payload)=>s.state!=='completed'||s.coverage!=='exhaustive').length} sources have incomplete coverage. Personal eligibility and reports require Muse review.`;
   if(latest.state==='active')await dispatch('search.run.finish',{runId:run.id,expectedVersion:latest.version,state:partial?'partial':'completed',summary,eventKey:prefix+'finish'});
-  return {status:partial?'partial':'completed',result:{pipelineVersion:1,runId:run.id,observed:scanned,saved,blockedSources:blocked,summary,shortlist,stages:{collection:'finished',verification:'finished',screening:'finished',deduplication:'finished'},provenance}};
+  return {status:partial?'partial':'completed',result:{pipelineVersion:1,runId:run.id,observed:scanned,saved,filterPlan,blockedSources:blocked,summary,shortlist,stages:{collection:'finished',verification:'finished',screening:'finished',deduplication:'finished'},provenance}};
 
 }
 export async function workOnce(rpc:Rpc,{execute,applicationExecutor}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>}={}){

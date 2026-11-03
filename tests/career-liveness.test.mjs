@@ -70,7 +70,8 @@ test('URL guards run before network/browser access and typed status rejects fabr
 });
 
 const verdict=(url,result='active')=>({url,result,code:'fictional_'+result,reason:'Fictional '+result,checkedAt:stamp,method:'ats-api'});
-test('active non-Greenhouse posting retains its status independently of unsupported extraction',async()=>{
+test('active posting outside the upstream JD dispatcher retains unsupported extraction',async()=>{
+ const lever='https://apply.workable.com/example/j/ABC123/';
  const result=await verifyDiscoveryLeads([{url:lever},{url:gh}],{check:async()=>[verdict(lever),verdict(gh,'expired')],fetchJson:async()=>{throw Error('Must not parse unsupported or expired links');}});
  assert.equal(result.jobs.length,0);assert.equal(result.diagnostics[0].status,'active');assert.equal(result.diagnostics[0].extraction,'unsupported');assert.equal(result.diagnostics[1].status,'expired');assert.equal(result.diagnostics[1].extraction,'not-attempted');
 });

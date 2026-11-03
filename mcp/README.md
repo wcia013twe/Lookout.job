@@ -788,3 +788,14 @@ approval capability. Developer version changes invalidate cached context; guide
 versions invalidate cached workflow instructions. New code/config must be loaded
 by the runtime and released through the production workflow before claiming
 hosted availability. No model-behavior guarantee follows from configuration tests.
+
+### Career Ops filter inspection
+
+`read_search_filter_plan` is a read-only Node MCP tool requiring `workspace:read`
+and `{profileId}`. It authorizes current owned context, invokes the pinned Career
+Ops validator and offline query/provider audit, rechecks versions and returns
+effective filters, readiness gaps and provenance. It does not fetch postings or
+write preferences. Use existing `save_search_document` to preserve/update the
+profile's `## Career Ops discovery filters` fenced JSON section, then read back
+and inspect again before a search. See `backend/discovery-filter-contract.md`
+for supported keys and the distinction between title tiers and eligibility.

@@ -76,3 +76,68 @@ Career Ops itself uses configured textual rules and conservative missing-data
 passes. It does not compute the six full applicant-eligibility checks listed
 above from a résumé. Those need explicit evidence/rules or agent review; they
 should not be presented as implemented by copying the scanner.
+
+## Connected Career Ops configuration and extraction
+
+The current adapter uses the unchanged pinned `validate-portals.mjs` CLI,
+`audit-portals.mjs` offline query/provider checks and `classify-tier.mjs` in
+addition to the previously connected predicates. No vendor matcher is changed.
+`read_search_filter_plan(profileId)` authorizes through existing owned search
+context reads, validates current versions and returns effective config, gaps,
+validation findings, offline source handoffs and provenance. This is a Node read;
+Edge-only callers receive an explicit Node-service handoff. No network search,
+settings write or new database table is part of inspection.
+
+Muse saves scanner controls in the existing versioned profile document, preserving
+frontmatter and all other narrative:
+
+```markdown
+## Career Ops discovery filters
+```
+
+Follow that heading with one fenced `json` object, for example:
+
+```json
+{
+  "title_filter": {"positive": ["Backend", "Software Engineer"], "negative": []},
+  "skip_tiers": ["senior"],
+  "location_filter": {"allow": ["New York", "Remote"], "block_hard": ["Brazil"], "strict": true}
+}
+```
+
+These are fictional targeting examples, not default user criteria. Supported keys
+are title_filter, skip_tiers, location_filter, max_posting_age_days, posted_after,
+posted_before, content_filter, country_eligibility_filter, visa_filter, salary_filter
+and re_apply_windows. Each local key replaces that shared fallback key for this
+profile only. The codec rejects malformed sections; inspection and execution run
+the original validator plus bounded transport/typo guards. Existing save/read
+operations preserve ownership, revisions and retry behavior. Browser edits and
+MCP writes use the same codec and worker screening.
+
+Saved Roles without usable positive keywords block collection unless a local
+title_filter is explicitly present (an empty one is deliberately broad). Muse
+uses the imported titles procedure to derive role-family terms from evidence;
+the backend does not guess synonyms from literal labels. New goals and intentional
+retirements remain meaningful choices.
+
+Explicit profile location_filter is a hard scanner policy. Without one, the
+existing profile Location preference retains its configured strength and the
+shared hard location policy also applies; it is no longer silently replaced by
+the soft preference. There is no geographic-radius engine. Country-limited remote
+work and actual applicant experience still require evidence review. skip_tiers
+is title classification only: plain titles fall into upstream's mid bucket.
+
+The JD intake now calls the original fetchJdViaKnownApi dispatcher for Lever,
+Ashby, Workday, SmartRecruiters and embedded Greenhouse. Ordinary Greenhouse
+continues to use normalizeGreenhouseJob. Liveness must be confirmed independently.
+Full text alone is insufficient to save a record: missing company attribution
+or posting identity remains failed extraction, without changing active liveness.
+Matching owned source names can attribute an employer only when the posting
+belongs to that exact configured board; aggregate labels are never promoted.
+Unknown dates remain null.
+
+Limits: no full scanner-loop replacement, arbitrary local parsers, source-budget
+increase, automated résumé eligibility engine, rank-based publication threshold
+or rewriting of historical batches. Muse must select relevant opportunities
+from the review queue before publishing. Hosted deployment and live external ATS
+coverage require separate verification.

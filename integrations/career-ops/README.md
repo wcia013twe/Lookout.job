@@ -61,3 +61,12 @@ on missing data means keep the lead, not verified eligibility. Personal narrativ
 analysis and four card ratings remain work for the connected agent. Simplify JSON
 is an aggregate lead adapter because this pinned upstream has no Simplify provider;
 it does not replace employer verification or the original search/filter layer.
+
+## Connected search components
+
+The search adapter now invokes the unchanged pinned `validate-portals.mjs` CLI,
+`audit-portals.mjs` offline checks, `classify-tier.mjs`, and the existing JD API
+dispatch in `browser-extract.mjs`. Profile-specific filters use existing versioned
+profile documents; Muse uses the imported titles workflow to configure role-family
+keywords instead of inheriting author defaults. No vendor file or manifest hash
+changes. See `backend/discovery-filter-contract.md` for current wiring and limits.

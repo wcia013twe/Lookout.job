@@ -1,4 +1,4 @@
-import {submitSearchLeads,readSearchSourceLeads} from './search-intake.ts';
+import {submitSearchLeads,readSearchSourceLeads,readSearchFilterPlan} from './search-intake.ts';
 import {screenSearchDiscoveries} from '../../lib/search-screening.mjs';
 import {ResumeParseError} from './resume-parser.ts';
 import {createHash} from 'node:crypto';
@@ -27,7 +27,8 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
         try{return {status:200,data:await parseResume(token,payload)};}catch(e){return {status:e instanceof ResumeParseError?e.status:503,error:e instanceof ResumeParseError?e.message:'Resume parsing is unavailable.'};}
       }
       let result;
-      if(service.handler==='queue-rpc')result=await rpc('backend_job_dispatch',{credential_hash:hash,operation,payload});
+      if(operation==='search.filters.inspect')result=await readSearchFilterPlan(authorize,payload);
+      else if(service.handler==='queue-rpc')result=await rpc('backend_job_dispatch',{credential_hash:hash,operation,payload});
       else if(service.handler==='credential-rpc')result=await authorize(operation,payload);
       else if(operation==='search.source.leads')result=await readSearchSourceLeads(authorize,payload);
       else if(operation==='search.leads.submit')result=await submitSearchLeads(authorize,payload);

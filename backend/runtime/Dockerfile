@@ -10,7 +10,7 @@ COPY supabase/functions ./supabase/functions
 COPY lib ./lib
 COPY runner/submit.mjs runner/runtime.mjs runner/prepare.mjs runner/browser.mjs runner/ats.mjs runner/forms.mjs runner/attempt.mjs runner/profile-upload.mjs ./runner/
 COPY runner/vendor/application-controls.mjs ./runner/vendor/
-COPY runner/career-tools.mjs runner/career-worker.mjs runner/public-source.mjs runner/career-search-intake.mjs runner/career-liveness.mjs runner/career-search-filters.mjs runner/gateway-client.mjs ./runner/
+COPY runner/career-tools.mjs runner/career-worker.mjs runner/public-source.mjs runner/career-search-intake.mjs runner/career-liveness.mjs runner/career-search-filters.mjs runner/career-search-plan.mjs runner/gateway-client.mjs ./runner/
 COPY runner/vendor/career-ops ./runner/vendor/career-ops
 USER node
 EXPOSE 8080

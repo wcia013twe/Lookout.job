@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "categories": [
     {
       "id": "profile",
@@ -189,7 +189,7 @@
     {
       "id": "find-jobs",
       "guideId": "career-find-jobs",
-      "version": 8,
+      "version": 9,
       "category": "search",
       "title": "Find relevant jobs",
       "summary": "Search your chosen sources for roles that fit your goals.",
@@ -388,7 +388,7 @@
     {
       "id": "adjacent-titles",
       "guideId": "career-adjacent-titles",
-      "version": 4,
+      "version": 5,
       "category": "search",
       "title": "Expand your job-title search",
       "summary": "Find relevant role titles you may not know to search for.",
@@ -400,7 +400,8 @@
       "steps": [
         "Read the evidence behind your experience.",
         "Suggest adjacent titles with a reason and likely fit tradeoffs.",
-        "Review additions or removals before changing search preferences."
+        "Review additions or removals before changing search preferences.",
+        "For an authorized Lookout search, translate reviewed role-family keywords into the selected profile’s Career Ops discovery filters section using save_search_document with the current version. Preserve the entire document and shared sources. Read back and inspect read_search_filter_plan before searching; expanding goals or retiring intentional targets still needs the meaningful user choice described upstream."
       ],
       "outputs": [
         "Suggested search titles",
@@ -410,7 +411,7 @@
         "Suggest adjacent job titles supported by my profile that my search may be missing.",
         "Would platform engineering or developer infrastructure be a sensible expansion for me?"
       ],
-      "requirements": "Suggestions do not automatically change your filters. Keep seniority and eligibility constraints explicit.",
+      "requirements": "Evidence-backed suggestions do not automatically expand career goals. Already authorized search setup may configure corresponding profile-scoped filters; preserve exclusions, seniority and eligibility constraints. Use current scoped tools, not upstream filesystem commands.",
       "sources": [
         "modes/titles.md"
       ],

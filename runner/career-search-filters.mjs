@@ -1,17 +1,24 @@
 import {discoveryConstraints,observedEmployment,assertDiscoverySourceFacts,assertDiscoveryResults,DISCOVERY_EVALUATION_SCOPE} from '../lib/discovery-filter-contract.mjs';
 // Translate Lookout records; all configured search predicates remain upstream.
+import {inspectDiscoveryFilters} from './career-search-plan.mjs';
+import {classifyTier} from './vendor/career-ops/classify-tier.mjs';
 import {readField} from '../lib/search-profile.mjs';
 export async function filterDiscovery({profile,listings,portals={},now=Date.now()}){
+ const plan=await inspectDiscoveryFilters({profile,portals});
+ if(!plan.ready)throw Error([...plan.gaps,...plan.validation.errors.map(e=>e.path+': '+e.message)].join(' '));
+ portals=plan.config;
  assertDiscoverySourceFacts(listings);const constraints=discoveryConstraints(profile);
  const scan=await import('./vendor/career-ops/scan.mjs');const {buildTitleFilter}=await import('./vendor/career-ops/title-keywords.mjs');
- const instructions=profile.instructions||'',filters=profile.filters||{},diagnostics=[];
+ const instructions=profile.instructions||'',filters=profile.filters||{},diagnostics=[...plan.warnings,...plan.validation.warnings.map(e=>e.path+': '+e.message)];
  const field=(heading,key)=>{const result=readField(instructions,heading,key);if(result.conflict)throw Error('Resolve duplicate preference '+key);return result.value;};
  const strength=key=>field('Priority & flexibility',key)||(/required/i.test(filters[key]||'')||key==='Employment'?'Required':'Preferred');
  const title=buildTitleFilter(portals.title_filter),content=scan.buildContentFilter(portals.content_filter),age=scan.buildPostingAgeFilter(portals.max_posting_age_days,now),dates=scan.buildPostedDateFilter(portals.posted_after,portals.posted_before);
  const country=field('Eligibility & availability','Work authorization country');const countryGate=scan.buildCountryEligibilityFilter(portals.country_eligibility_filter,country);
  const visa=scan.buildVisaFilter(portals.visa_filter),salary=scan.buildSalaryFilter(portals.salary_filter),cooldown=scan.buildCooldownFilter(portals.re_apply_windows,new Date(now).toISOString().slice(0,10));
  const locations=String(filters.Location||'').split(/[;,]/).map(x=>x.trim()).filter(Boolean);
- const locationGate=scan.buildLocationFilter(locations.length?{allow:locations,strict:strength('Location')==='Required'}:portals.location_filter);
+ const explicitLocation=plan.profileOverrides.includes('location_filter');
+ const portalLocationGate=scan.buildLocationFilter(portals.location_filter);
+ const locationGate=scan.buildLocationFilter(explicitLocation?portals.location_filter:locations.length?{allow:locations,strict:strength('Location')==='Required'}:portals.location_filter);
  const workTerms=constraints.workArrangement.values.flatMap(value=>value==='on-site'?['on-site','onsite','in-office','in office']:[value]);
  const workKnown=scan.buildLocationFilter({allow:['remote','hybrid','on-site','onsite','in-office','in office'],strict:true}),workGate=scan.buildLocationFilter({allow:workTerms,strict:true});
  const intern=buildTitleFilter({positive:['word:intern','word:internship','co-op','co op']}),newgrad=buildTitleFilter({positive:['new grad','new graduate','new college grad']});
@@ -25,6 +32,7 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
   // Only a conservative PASS becomes unknown; never soften an explicit false.
   const upstream=(name,passed,present=true,required=true,configured=true)=>add(name,!configured?'not-applicable':!passed?'unmet':present?'met':'unknown',!configured?'No constraint is configured for this discovery gate.':!passed?`Original CareerOps ${name} predicate rejected this lead, including any configured missing-evidence policy.`:present?`Original CareerOps ${name} predicate kept this lead.`:`Missing source data; upstream conservative pass does not establish ${name}.`,configured&&required);
   upstream('careerops-title',title(job.title),Boolean(job.title),true,Boolean(portals.title_filter?.positive?.length||portals.title_filter?.negative?.length));upstream('careerops-posting-age',age(job.postedAt),Number.isFinite(job.postedAt),true,Number(portals.max_posting_age_days)>0);upstream('careerops-posted-date',dates(job.postedAt),Number.isFinite(job.postedAt),true,Boolean(portals.posted_after||portals.posted_before));upstream('careerops-content',content(job.description,scan.matchedTitleKeywords(job.title,portals.title_filter)),Boolean(job.description),true,Boolean(portals.content_filter?.positive?.length||portals.content_filter?.negative?.length||Object.keys(portals.content_filter?.by_title_keyword||{}).length));upstream('careerops-country',countryGate(job.description),Boolean(job.description)&&Boolean(country),true,Boolean(portals.country_eligibility_filter));upstream('careerops-visa',visa(job.description),Boolean(job.description),true,Boolean(portals.visa_filter&&portals.visa_filter.enabled!==false));upstream('careerops-salary',salary(job.salary),Boolean(job.salary),true,Boolean(portals.salary_filter&&(Number(portals.salary_filter.min)>0||Number(portals.salary_filter.max)>0)));
+  upstream('careerops-seniority',!(portals.skip_tiers||[]).includes(classifyTier(job.title)),Boolean(job.title),true,Boolean(portals.skip_tiers?.length));
   const cooling=cooldown(job);upstream('careerops-cooldown',!cooling.skip,true,true,Object.keys(portals.re_apply_windows||{}).length>0);
   const requested=constraints.employment,observed=observedEmployment(item.employment_type??item.employmentType??observation.employment_type);
   const type=observed||(intern(job.title)?'Internship':newgrad(job.title)?'FT':null);
@@ -34,11 +42,12 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
   const locationUrl=job.canonical_url||job.url,locationEvidence=Boolean(job.location?.trim()||scan.locationHintFromUrl(locationUrl));
   // Saved profile location preferences have explicit strengths. A raw upstream
   // portals.location_filter is a scanner gate, not an implicit soft preference.
-  upstream('location',locationGate(job.location,locationUrl,job.title),locationEvidence,locations.length?strength('Location')==='Required':true,locationConfigured);
+  upstream('location',locationGate(job.location,locationUrl,job.title),locationEvidence,explicitLocation||!locations.length?true:strength('Location')==='Required',locationConfigured);
+  if(!explicitLocation&&locations.length&&portals.location_filter&&!portalLocationGate(job.location,locationUrl,job.title))add('location-policy','unmet','Original Career Ops shared location policy rejected this lead.',true);
   for(const key of ['experience','graduation','availability','authorization','prior-application','company-limits'])add(key,'unknown',key==='authorization'?'Authorization/sponsorship is not inferred from country or a passed discovery filter.':`Agent must reconcile ${key} with current applicant evidence and this exact employer requirement before claiming eligibility.`);
-  if(filters['Minimum base pay']&&!portals.salary_filter)add('minimum-base-pay','unknown',diagnostics[0],strength('Minimum base pay')==='Required');
+  if(filters['Minimum base pay']&&!portals.salary_filter)add('minimum-base-pay','unknown','Minimum base pay has no normalized salary_filter.',strength('Minimum base pay')==='Required');
   const decision=hardFailure?'ineligible':'review-needed';return {listingId:item.id||item.url,passed:!hardFailure,rejectedBy,checks,decision,explanation:hardFailure?'Excluded by a Required saved discovery constraint: '+rejectedBy.join(', '):'Passed configured required discovery gates; unresolved personal eligibility and narrative fit still require agent review.'};
  });
  assertDiscoveryResults(results,listings);
- return {results,diagnostics,provenance:{...DISCOVERY_EVALUATION_SCOPE,commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',filters:'scan.mjs exported predicates + title-keywords.mjs',personalScoresProduced:false}};
+ return {results,diagnostics,filterPlan:plan,provenance:{...DISCOVERY_EVALUATION_SCOPE,commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',filters:'scan.mjs exported predicates + title-keywords.mjs',personalScoresProduced:false}};
 }

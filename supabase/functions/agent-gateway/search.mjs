@@ -1,5 +1,5 @@
 import {observationSchema,countsSchema,coverageSchema,validateObservationValue,validateObservations} from './search-observation-schema.mjs';
-import {parseDocument,compactBrief,sourceTemplates} from './search-documents.mjs';
+import {parseDocument,compactBrief,sourceTemplates,discoveryFilterPlan} from './search-documents.mjs';
 const obj=(properties,required=[])=>({type:'object',properties,required,additionalProperties:false});
 const str={type:'string'},json={type:'object'},rev={type:'integer',minimum:0};
 export const SEARCH_TOOLS=[
@@ -36,5 +36,6 @@ export function prepareSearch(operation,p){
 export function searchResponse(operation,data){
  if(operation!=='search.context')return data;
  const profile=data.documents?.find(d=>d.kind==='profile'&&d.id===data.profileId);
- return {...data,brief:compactBrief(profile),guide:{id:'career-find-jobs',version:2},sourceTemplates,execution:'personal-agent',configurationGaps:[...(!profile?['Choose or create a search profile.']:[]),...(!data.documents?.some(d=>d.kind==='portals'&&(d.projection.tracked_companies?.some(s=>s.enabled)||d.projection.search_queries?.length))?['Configure an enabled portal or search query.']:[])]};
+ const filterPlan=profile?discoveryFilterPlan(profile.projection,data.documents?.find(d=>d.kind==='portals')?.projection||{}):null;
+ return {...data,filterPlan,brief:compactBrief(profile),guide:{id:'career-find-jobs',version:2},sourceTemplates,execution:'personal-agent',configurationGaps:[...(filterPlan?.gaps||[]),...(!profile?['Choose or create a search profile.']:[]),...(!data.documents?.some(d=>d.kind==='portals'&&(d.projection.tracked_companies?.some(s=>s.enabled)||d.projection.search_queries?.length))?['Configure an enabled portal or search query.']:[])]};
 }

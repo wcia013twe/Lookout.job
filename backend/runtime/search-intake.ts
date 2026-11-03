@@ -10,7 +10,9 @@ export async function submitSearchLeads(call:Call,payload:Payload,{verify=verify
  const replay=await call('search.leads.read',{request:payload});
  if(replay.error)return replay;
  if(replay.data)return {data:{...replay.data,replayed:true},error:null};
- const verified=await verify(payload.sourceId,payload.leads);
+ const run=await call('search.run.read',{runId:payload.runId});if(run.error)return run;
+ const source=run.data.sources?.find((s:Payload)=>s.source_id===payload.sourceId)?.source;
+ const verified=await verify(payload.sourceId,payload.leads,{source});
  const diagnostics=verified.diagnostics||[];
  return call('search.leads.commit',{request:payload,observations:verified.listings,diagnostics});
 }
@@ -32,4 +34,16 @@ export async function readSearchSourceLeads(call:Call,payload:Payload){
   if(nextContext.data.personalVersion!==context.data.personalVersion)return {error:{code:'40001'}};
   return {data:{...page,sourceId:payload.sourceId,evaluatedProfileVersion:profile.version,unfilteredPageCount:page.leads.length,leads:page.leads.filter((_lead:Payload,index:number)=>filtered.results[index].passed),excluded:page.leads.flatMap((lead:Payload,index:number)=>filtered.results[index].passed?[]:[{url:lead.url,rejectedBy:filtered.results[index].rejectedBy}]),diagnostics:filtered.diagnostics,filterProvenance:filtered.provenance},error:null};
  }catch(error){return {error:{code:'22023',message:'Source lead retrieval failed: '+(error instanceof Error?error.message:'unavailable')}};}
+}
+
+export async function readSearchFilterPlan(call:Call,payload:Payload,{execute=executeCareerTask}={}) {
+ const context=await call('search.context',{profileId:payload.profileId});if(context.error)return context;
+ const profile=context.data.documents?.find((d:Payload)=>d.kind==='profile'&&d.id===payload.profileId);
+ if(!profile)return {error:{code:'P0002'}};
+ try{
+  const plan=await execute('inspect-discovery-filters',{profile:profile.projection,portals:context.data.documents.find((d:Payload)=>d.kind==='portals')?.projection||{}});
+  const current=await call('search.context',{profileId:payload.profileId});if(current.error)return current;
+  if(current.data.personalVersion!==context.data.personalVersion||current.data.documents?.find((d:Payload)=>d.kind==='profile'&&d.id===payload.profileId)?.version!==profile.version)return {error:{code:'40001'}};
+  return {data:{...plan,profileId:profile.id,evaluatedProfileVersion:profile.version,personalVersion:context.data.personalVersion},error:null};
+ }catch(error){return {error:{code:'22023',message:'Invalid discovery filters: '+(error instanceof Error?error.message:'unavailable')}};}
 }

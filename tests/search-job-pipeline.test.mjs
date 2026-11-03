@@ -33,7 +33,7 @@ test('one real SQL-leased job persists verified observations, screenings and a c
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});
  const j=await result(f.job.id);assert.equal(j.status,'completed');assert.equal(j.result.pipelineVersion,1);
  assert.equal(j.result.shortlist.screenedCount,3);assert.equal(j.result.shortlist.excludedCount,2);assert.equal(j.result.shortlist.retainedListingIds.length,1);assert.equal(j.result.shortlist.reporting,'pending-muse');assert.equal(j.result.shortlist.applicantEligibility,'not-evaluated');
- assert.deepEqual(t.calls.map(c=>c.task),['discovery','verify-discovery-leads','filter-discovery','dedup-discovery']);
+ assert.deepEqual(t.calls.map(c=>c.task),['inspect-discovery-filters','discovery','verify-discovery-leads','filter-discovery','dedup-discovery']);
  assert.equal((await db.query('select count(*)::int n from public.search_screenings where user_id=$1',[f.owner])).rows[0].n,3);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
@@ -105,4 +105,19 @@ test('demo profile-only context shows default sources without execution and pres
  assert.deepEqual(d.documents.find(d=>d.kind==='portals').projection.tracked_companies,sourceTemplates);
  const override=synchronizeSearchDemo(d,{targets:[]});
  assert.deepEqual(override.documents.find(d=>d.kind==='portals').projection.tracked_companies,[]);
+});
+
+test('profile-scoped Career Ops settings persist through authorized SQL writes and fence collection before missing targeting',async()=>{
+ const {profileDocument,parseDocument}=await import('../lib/search/documents.mjs');
+ const f=await fixture(),t=tasks(),hash=f.owner.replaceAll('-','').repeat(2);
+ const instructions='## Role preferences\n- Roles: Software Engineer\n## Career Ops discovery filters\n```json\n'+JSON.stringify({title_filter:{positive:['Software Engineer'],negative:['word:Intern']},skip_tiers:['senior']})+'\n```';
+ const content=parseDocument('profile',profileDocument({id:f.profile,name:'Fictional systems',active:true,filters:{Employment:'Full-time','Work arrangement':'Remote required'},priorities:{},instructions})).content;
+ const saved=(await db.query("select public.agent_dispatch($1,'search.document.save',$2) data",[hash,{kind:'profile',id:f.profile,expectedVersion:1,content,eventKey:'configure-owned-filters'}])).rows[0].data;
+ assert.equal(saved.version,2);
+ await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
+ assert.equal(j.status,'completed');assert.equal(j.result.shortlist.evaluatedProfileVersion,2);assert.equal(j.result.filterPlan.config.skip_tiers[0],'senior');assert.equal(j.result.shortlist.retainedListingIds.length,1);
+ assert.deepEqual((await db.query("select projection->>'instructions' instructions from public.search_documents where user_id=$1 and kind='profile' and id=$2",[f.owner,f.profile])).rows[0].instructions,instructions);
+ const missing=await fixture(),m=tasks();
+ await db.query("update public.search_documents set projection=jsonb_set(projection,'{instructions}',to_jsonb($2::text)) where user_id=$1 and kind='profile'",[missing.owner,'## Role preferences\n- Roles: Software Engineer']);
+ await workOnce(rpc,{execute:m.execute});assert.equal((await result(missing.job.id)).status,'failed');assert.equal(m.calls.some(c=>c.task==='discovery'),false);
 });
