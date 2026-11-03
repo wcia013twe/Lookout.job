@@ -1,6 +1,7 @@
 import {APPLICATION_FACT_LABELS as FACT_LABELS,RESUME_QUESTION_LABELS,normalizeApplicationQuestion as normalize} from '../../../lib/application-field-facts.mjs';
 import { applicationPolicy } from './application-policy.mjs';
 import { selectResume } from './resume-selection.mjs';
+import { canonicalSubmissionTarget } from '../../../lib/submission-targets.mjs';
 const equal = (a,b) => canonical(a) === canonical(b);
 function canonical(value) {
   if (Array.isArray(value)) return JSON.stringify(value.map(v => JSON.parse(canonical(v))));
@@ -14,9 +15,7 @@ export function authorizeSubmission(context) {
   if (!a?.id || !a.user_id || !job || job.id !== a.job_id || !['Queued','Draft','Awaiting approval','Approved'].includes(a.status) || a.blocker) return reject('Current application is blocked or past drafting.');
   const draft = a.draft;
   if (!draft || draft.url !== job.canonical_url || !/^[a-f0-9]{64}$/.test(draft.resumeSha256 || '') || !/^[a-f0-9]{64}$/.test(draft.formFingerprint || '') || !Array.isArray(draft.questions) || !draft.questions.length) return reject('Inspect the employer form and pin draft metadata first.');
-  let target;
-  try { target = new URL(job.canonical_url); } catch { return reject('Canonical employer URL required.'); }
-  if (!['boards.greenhouse.io','job-boards.greenhouse.io'].includes(target.hostname) || target.protocol !== 'https:' || target.port || target.username || target.password || target.search || target.hash || !/^\/[^/]+\/jobs\/\d+$/.test(target.pathname)) return reject('Automatic submission currently supports canonical Greenhouse forms only.');
+  try { canonicalSubmissionTarget(job.canonical_url); } catch { return reject('Automatic submission supports canonical Greenhouse, Ashby and Lever forms only.'); }
   if (!resume || resume.id !== draft.resumeId || resume.user_id !== a.user_id || !resume.object_path || resume.content_hash !== draft.resumeSha256) return reject('Use an owned private uploaded résumé with a matching file hash.');
   const policy = applicationPolicy({ preferences, job:job.employer, profileId:draft.searchProfileId });
   if (policy.mode === 'skip') return reject(policy.reason);

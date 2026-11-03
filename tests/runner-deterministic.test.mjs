@@ -83,7 +83,7 @@ test('ATS entry excludes submit-like controls and ambiguous Apply buttons', asyn
   let clicks = 0, opened = false;
   const trigger = info => ({ isVisible: async () => true, isEnabled: async () => true, evaluate: async () => info, click: async () => { clicks++; opened = true; } });
   let list = [trigger({ label: 'Apply', tag: 'BUTTON', type: 'submit', inForm: true })];
-  const page = { url: () => `${url}/application`, locator: selector => selector === 'form:visible'
+  const page = { url: () => `${url}/application`, waitForFunction:async()=>{}, locator: selector => selector === 'form:visible'
     ? { count: async () => opened ? 1 : 0 } : { count: async () => list.length, nth: i => list[i] } };
   assert.equal((await openApplicationForm(page)).status, 'Blocked'); assert.equal(clicks, 0);
   const valid = { label: 'Apply now', tag: 'BUTTON', type: 'button', inForm: false };

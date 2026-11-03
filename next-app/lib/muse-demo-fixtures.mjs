@@ -36,6 +36,8 @@ export function createDemoWorkspace(now = new Date()) {
     { id: 'demo-confirmed', company: 'Harbor Data (demo)', title: 'Database Engineer', description: 'Develop database query services.', status: 'Submitted' },
     { id: 'demo-uncertain', company: 'Lantern Compute (demo)', title: 'Infrastructure Engineer', description: 'Build reliable backend systems.', status: 'Blocked' },
     { id: 'demo-skip-location', company: 'Pine Networks (demo)', title: 'Backend Engineer', description: 'An office-only role outside the demo candidate’s preferred location.', status: 'New' },
+    { id: 'demo-ashby', company: 'Aspen Tools (demo)', title: 'Developer Tools Engineer', description: 'Fictional Ashby submission receipt.', status: 'Submitted', ats: 'ashby' },
+    { id: 'demo-lever', company: 'Birch Platform (demo)', title: 'Platform Engineer', description: 'Fictional Lever submission receipt.', status: 'Submitted', ats: 'lever' },
     { id: 'demo-skip-level', company: 'Willow Software (demo)', title: 'Senior Platform Engineer', description: 'Experience requirements are unclear in this fictional posting.', status: 'New' },
   ].map(role => ({ ...role, employmentType: 'FT', type: 'FT', location: 'Fictional City, Remote', priority: 'Strong Consider', applicationUrl: `https://example.com/demo/jobs/${role.id}`, url: `https://example.com/demo/jobs/${role.id}`, discoveredDate: today, postedDate: today, whyItFits: role.id === 'demo-interview' ? 'Cedar builds multi-tenant job processing backed by PostgreSQL. This backend round focuses on retry safety, queue backpressure and SQL performance. Your fictional Query Lab project gives you a concrete latency-debugging example; rehearse how you would extend it to production failure handling.' : role.id === 'demo-confirmed' ? 'Harbor builds a SQL query engine. Your fictional SQL-service internship is relevant to query latency and index selection; prepare to explain an EXPLAIN plan and how you would validate a performance improvement.' : 'Fictional role for exercising Muse features. No real employer or opening.' }));
   const resume = { id: resumeId, name: 'Jordan Example — backend résumé (demo)', version: 2, filename: 'demo-backend-resume.pdf', content_hash: hash, text: 'Fictional profile: instrumented p95 SQL query latency in a sample service during an internship. Built Query Lab, a university project comparing indexed lookups and query plans. Production queue backpressure is a learning goal. No real candidate information.' };
@@ -43,7 +45,7 @@ export function createDemoWorkspace(now = new Date()) {
     { id: 'demo-why', question: 'Why are you interested in this team?', answer: 'Demo answer: I enjoy understanding database reliability and would like to build dependable services.', fieldType: 'text' },
     { id: 'demo-project', question: 'Tell us about a relevant project.', answer: 'Demo answer: I built a fictional course project that measured SQL query latency.', fieldType: 'textarea' },
   ];
-  const applications = Object.fromEntries(roles.slice(0, 4).map(role => [role.id, {
+  const applications = Object.fromEntries(roles.filter(role => role.status !== 'New').map(role => [role.id, {
     ...role, backendId: role.id, backendRevision: 1, revision: 1, resumeId, resumeName: resume.name, resumeVersion: resume.version,
     questions: copy(questions), questionsReviewed: true, note: 'Fictional demo application. Actions stay in the demo.',
     approved: { revision: 1, at, resume: copy(resume), questions: copy(questions) },
@@ -81,9 +83,9 @@ export function createDemoWorkspace(now = new Date()) {
   secondPlan = variedPrep(secondPlan,'Harbor','explain SQL query plans and indexing choices');
   const prepRows = Object.fromEntries([confirmedPlan, ambiguousPlan, secondPlan].map(plan => [plan.applicationId, { application_id: plan.applicationId, user_id: identity, plan: copy(plan), version: 1, updated_at: at }]));
   function attempt(id, state) {
-    const application = applications[id];
+    const application = applications[id], ats = application.ats || 'greenhouse';
     const receipt = state === 'confirmed' ? {
-      source: 'runner-observed-greenhouse-confirmation', marker: '#confirmation', message: 'Fictional demo confirmation: your application has been received.',
+      source: `runner-observed-${ats}-confirmation`, marker: ats === 'ashby' ? '.ashby-application-form-success' : ats === 'lever' ? '.application-received' : '#confirmation', message: 'Fictional demo confirmation: your application has been received.',
       jobUrl: application.url, observedUrl: `https://example.com/demo/confirmation/${id}`, observedAt: at,
     } : null;
     return { id: `${id}-attempt`, application_id: id, state, revision: 1, created_at: at, started_at: at, finished_at: at, receipt,
@@ -122,6 +124,7 @@ export function createDemoWorkspace(now = new Date()) {
   applications['demo-uncertain'].milestones = [];
   const submissionRecords = Object.fromEntries([
     ['demo-confirmed', confirmedAttempt], ['demo-uncertain', uncertainAttempt],
+    ['demo-ashby', attempt('demo-ashby', 'confirmed')], ['demo-lever', attempt('demo-lever', 'confirmed')],
   ].map(([id, item]) => [id, { application: { id, status: applications[id].status, receipt: copy(item.receipt), submitted_at: item.state === 'confirmed' ? at : null }, attempts: [copy(item)] }]));
   const selectionDecisions = [
     { id: 'demo-decision-location', job_id: 'demo-skip-location', preference: 'excludedCompanies', reason: 'Company is excluded by your search settings.', evidence: 'The fictional posting is from Pine Networks (demo), which appears in the demo candidate’s excluded-company list.', certainty: 'exclusion', reconsidered_at: null, created_at: at, jobs: { employer: {company:'Pine Networks (demo)',title:'Backend Engineer'}, canonical_url: 'https://example.com/demo/jobs/demo-skip-location' } },

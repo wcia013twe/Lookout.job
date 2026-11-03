@@ -124,7 +124,7 @@ trusted authorization to the database. No human approval is minted automatically
   cancelled. Confirmation is structured runner-observed evidence. Finish retries
   are idempotent and cannot turn an uncertain result into a fresh execution.
 
-The local runner submits only supported native Greenhouse forms with a PDF résumé.
+The local runner submits only supported native Greenhouse, Ashby and Lever forms with a PDF résumé.
 Additional documents, CAPTCHA, custom widgets, multiple/embedded forms and unsupported
 confirmation markers pause. Automatic drafts need exact profileField provenance
 for allowlisted contact labels, or savedAnswerId/savedAnswerVersion referencing a

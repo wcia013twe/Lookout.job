@@ -1,4 +1,5 @@
 // Adapted from Ying-Kai-Liao/jev-browser src/page-script.mjs (MIT).
+// Ashby/Lever form and label selectors adapted from ApplyAI content_scripts/{ashby,lever}.js (MIT).
 // See ../THIRD_PARTY.md for source revisions and full license notices.
 // Self-contained because Playwright serializes this function into the employer page.
 export function collectApplicationControls() {
@@ -19,6 +20,23 @@ export function collectApplicationControls() {
   const forms = [...document.querySelectorAll('form')].filter(visible);
   if (forms.length !== 1) return { questions: [], blockers: ['Expected one visible application form; manual review required'] };
   const form = forms[0];
+  // ApplyAI's platform selectors supplement native labels, without guessing
+  // answers from placeholder/name strings or selecting the first ambiguous field.
+  const hostname = typeof location === 'undefined' ? '' : location.hostname;
+  const platform = hostname === 'jobs.ashbyhq.com' ? 'ashby'
+    : ['jobs.lever.co', 'jobs.eu.lever.co'].includes(hostname) ? 'lever' : null;
+  if (platform) {
+    const selectors = platform === 'ashby'
+      ? '.ashby-application-form, [data-testid="application-form"], form[class*="application"]'
+      : '.application-form, [data-qa="application-form"], form.application';
+    if (!form.matches(selectors)) return { questions: [], blockers: ['Unrecognized application form; manual review required'] };
+  }
+  const platformLabel = el => {
+    if (platform === 'ashby') return clean(form.querySelector(`[data-testid=${JSON.stringify('label-' + (el.name || el.id))}]`)?.textContent);
+    if (platform === 'lever') return clean(el.closest('.application-field')?.querySelector('.application-field-label')?.textContent
+      || el.closest('.application-question')?.querySelector('.application-label')?.textContent);
+    return '';
+  };
   const questions = [], blockers = [], ids = new Set(), radios = new Map();
   const inputs = [...form.querySelectorAll('input, textarea, select')];
   for (const input of inputs) {
@@ -29,13 +47,14 @@ export function collectApplicationControls() {
     // Hidden upload controls may be intentionally bound to a visible upload button.
     if (!visible(input) && !styledLabel && type !== 'file') continue;
     const id = type === 'radio' ? input.name : (input.id || input.name);
-    const label = labelOf(input);
+    const label = labelOf(input) || platformLabel(input);
     if (!id || !label) { blockers.push('Unlabelled field requires manual review'); continue; }
-    const required = input.required || input.getAttribute('aria-required') === 'true';
+    const required = input.required || input.getAttribute('aria-required') === 'true'
+      || Boolean(platform && /[*✱]\s*$/.test(label));
     if (type === 'radio') {
-      const group = input.closest('fieldset, [role="radiogroup"]');
+      const group = input.closest('fieldset, [role="radiogroup"], .application-question');
       const question = clean(group?.querySelector('legend')?.innerText)
-        || (group && labelOf(group));
+        || (group && labelOf(group)) || (platform === 'lever' && clean(group?.querySelector('.application-label')?.textContent));
       if (!question || !group) { blockers.push(`Unlabelled radio group: ${label}`); continue; }
       if (radios.has(id) && radios.get(id).group !== group) { blockers.push(`Duplicate radio group: ${question}`); continue; }
       if (!radios.has(id)) radios.set(id, { group, question, required, options: [] });
@@ -59,7 +78,7 @@ export function collectApplicationControls() {
       fields: [{ id, type: 'radio', options: entry.options }] });
   }
   // Do not infer consent, invent custom-widget choices or inspect challenge frames.
-  if (form.querySelector('[role="combobox"], [role="listbox"], iframe, [data-sitekey]')
+  if (form.querySelector('[role="combobox"], [role="listbox"], [role="radio"], [role="checkbox"], button[aria-pressed], button[aria-haspopup], iframe, [data-sitekey]')
     || document.querySelector('iframe[src*="captcha"], [data-sitekey]')) {
     blockers.push('Custom choices, embedded controls or CAPTCHA require manual review');
   }

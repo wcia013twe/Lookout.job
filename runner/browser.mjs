@@ -30,7 +30,18 @@ export async function prefillApprovedForm(page, context) {
   }
   for (const { field, locator } of bindings) {
     if (identifyJob(page.url()).url !== form.url) throw new Error('Employer page changed before prefill');
-    if (field.type === 'file') await locator.setInputFiles({ name: 'resume.pdf', mimeType: 'application/pdf', buffer: context.resumeBytes });
+    if (field.type === 'file') {
+      await locator.setInputFiles({ name: 'resume.pdf', mimeType: 'application/pdf', buffer: context.resumeBytes });
+      if (form.ats === 'lever') {
+        // Lever parses uploads asynchronously and may rewrite contact fields.
+        // Wait for an uploaded-file acknowledgement before final value checks.
+        await page.waitForFunction(() => {
+          const text = document.querySelector('form')?.innerText || '';
+          return text.includes('resume.pdf') && !/analyzing resume|uploading/i.test(text)
+            && !document.querySelector('form [aria-busy="true"]');
+        }, undefined, { timeout: 45000 });
+      }
+    }
     else if (field.type === 'select') await locator.selectOption(String(field.value));
     else if (field.type === 'radio') await locator.check();
     else if (field.type === 'checkbox') await locator.setChecked(String(field.value) === 'true');

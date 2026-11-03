@@ -4,13 +4,13 @@ The stdio MCP adapter forwards the board's scoped data tools and adds:
 
 | Tool | Behavior |
 | --- | --- |
-| inspect_application | Open a canonical Greenhouse/Ashby job and inspect exact native fields/choices/fingerprint |
+| inspect_application | Open a canonical Greenhouse/Ashby/Lever job and inspect exact native fields/choices/fingerprint |
 | fingerprint_resume | Hash an owned private uploaded résumé; return no bytes or signed URL |
 | try_application | Human-approved prefill only; Prepared is not Submitted |
-| submit_application | Server-authorized native Greenhouse prefill/validation, one claim, one click, observed confirmation |
+| submit_application | Server-authorized native Greenhouse/Ashby/Lever prefill/validation, one claim, one click, observed confirmation |
 
 No model dependency, arbitrary browser/evaluate/shell tool, CAPTCHA bypass or
-embedded agent recovery is bundled. Ashby/Workday submission, extra documents,
+embedded agent recovery is bundled. Workday submission, extra documents,
 custom widgets and unsupported confirmation pages remain manual. PDF only.
 
 ## Install or update
@@ -53,7 +53,7 @@ does not install a browser or grant tools. Calls run serially on one dedicated p
 Check context versions → inspect the **live browser form** → fingerprint the
 private uploaded PDF → prepare a draft. Required metadata:
 
-- url: exact canonical Greenhouse job URL; no query/hash.
+- url: exact canonical Greenhouse, Ashby or Lever posting URL; no query/hash.
 - resumeId / resumeSha256: immutable private uploaded résumé and exact bytes hash.
 - formFingerprint: browser inspection fingerprint, not the public API fingerprint.
 - questions: exact `{fieldId,fieldType,question,answer}`; file answer uses résumé ID.
@@ -76,8 +76,7 @@ then clicks one unambiguous enabled native Submit control **once**.
 
 Confirmation requires a supported marker absent before submission, visible after
 it, a known success phrase, no remaining visible form, and the same canonical job
-URL (or its /confirmation path). Supported markers: #confirmation,
-#application_confirmation, [data-testid="application-confirmation"]. Unexpected
+URL (or its /confirmation path). Platform-specific confirmation rules live in `lib/submission-targets.mjs`; Greenhouse uses #confirmation, #application_confirmation and [data-testid="application-confirmation"]. Ashby/Lever also accept recognized success containers or a success heading after the form disappears. See [ATS support](../docs/ats-submission.md). Unexpected
 redirects, unsupported markers and timeouts remain uncertain, never assumed success.
 Receipts are labelled runner-observed employer confirmation, not signed API proof.
 

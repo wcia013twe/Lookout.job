@@ -2,17 +2,18 @@ import { identifyJob } from './forms.mjs';
 import { openApplicationForm } from './ats.mjs';
 import { inspectBrowserForm, prefillApprovedForm } from './browser.mjs';
 import { assertExecutionAuthorization } from './prepare.mjs';
-export const CONFIRMATION_MARKERS=['#confirmation','#application_confirmation','[data-testid="application-confirmation"]'];
-const success=/thank you for applying|application (?:has been |was )?submitted|application (?:has been |was )?received/i;
+import { normalizeApplicationQuestion, RESUME_QUESTION_LABELS } from '../lib/application-field-facts.mjs';
+import { CONFIRMATION_RULES, CONFIRMATION_MESSAGE as success, CONFIRMATION_REJECTION as rejected, confirmationUrlMatches } from '../lib/submission-targets.mjs';
+export const CONFIRMATION_MARKERS=CONFIRMATION_RULES.greenhouse.markers;
 
 export async function readConfirmation(page,jobUrl) {
-  const expected=new URL(jobUrl), observed=new URL(page.url());
-  if(observed.origin!==expected.origin || ![expected.pathname,expected.pathname+'/confirmation'].includes(observed.pathname) || observed.search || observed.hash || observed.username || observed.password) return null;
-  for(const marker of CONFIRMATION_MARKERS) {
+  const target=identifyJob(jobUrl), observed=new URL(page.url());
+  if(!confirmationUrlMatches(jobUrl,observed.href)) return null;
+  for(const marker of CONFIRMATION_RULES[target.ats].markers) {
     const el=page.locator(marker);
     if(await el.count()===1 && await el.isVisible()) {
       const message=(await el.innerText()).replace(/\s+/g,' ').trim();
-      if(message.length<=1000 && success.test(message) && await page.locator('form:visible').count()===0) return {source:'runner-observed-greenhouse-confirmation',jobUrl,observedUrl:observed.href,marker,message};
+      if(message.length<=1000 && success.test(message) && !rejected.test(message) && await page.locator('form:visible').count()===0) return {source:`runner-observed-${target.ats}-confirmation`,jobUrl,observedUrl:observed.href,marker,message};
     }
   }
   return null;
@@ -22,13 +23,13 @@ export async function readConfirmation(page,jobUrl) {
 // résumé ID for them. Never upload the résumé into a transcript/cover-letter slot.
 export function assertSubmitFormScope(form) {
   const uploads=form.questions.flatMap(q=>q.fields.filter(f=>f.type==='file').map(f=>({question:q.question,field:f})));
-  const labels=['resume','resume/cv','resume / cv','cv','upload resume','attach resume'];
-  if(uploads.length>1 || uploads.some(q=>!labels.includes(q.question.toLowerCase().replace(/[ *:]+$/g,'').trim()))) throw new Error('Additional document upload requires manual completion');
+  if(uploads.length>1 || uploads.some(q=>!RESUME_QUESTION_LABELS.includes(normalizeApplicationQuestion(q.question)))) throw new Error('Additional document upload requires manual completion');
 }
 
 // All labels/values are fixed by the trusted execution snapshot, not model choices.
 export async function readyToSubmit(page,context,plan) {
-  if(identifyJob(page.url()).ats!=='greenhouse' || identifyJob(page.url()).url!==plan.url) throw new Error('Unsupported submission target');
+  const target=identifyJob(page.url());
+  if(target.url!==plan.url) throw new Error('Unsupported submission target');
   assertExecutionAuthorization(context);
   const form=await inspectBrowserForm(page);
   assertSubmitFormScope(form);
@@ -52,11 +53,14 @@ export async function readyToSubmit(page,context,plan) {
     return true;
   },{fields:plan.fields,resumeSha256:context.application.draft.resumeSha256});
   if(!valid) throw new Error('Required fields or filled values are invalid');
-  const buttons=page.locator('form:visible button[type="submit"], form:visible input[type="submit"]');
+  const buttons=page.locator('form:visible button[type="submit"]:visible, form:visible input[type="submit"]:visible');
   if(await buttons.count()!==1 || !await buttons.isVisible() || !await buttons.isEnabled()) throw new Error('Submit control is ambiguous or unavailable');
   const label=await buttons.evaluate(el=>(el.innerText||el.value||'').trim());
   if(!/^(submit|submit application|apply|apply now)$/i.test(label)) throw new Error('Unsupported submit control');
-  for(const marker of CONFIRMATION_MARKERS) if(await page.locator(marker).count()>0 && await page.locator(marker).isVisible()) throw new Error('Existing confirmation marker; verify manually');
+  for(const marker of CONFIRMATION_RULES[target.ats].markers) {
+    const el=page.locator(marker);
+    if(await el.count()===1 && await el.isVisible() && success.test(await el.innerText())) throw new Error('Existing confirmation marker; verify manually');
+  }
   return buttons;
 }
 
@@ -76,7 +80,6 @@ export async function submitApplication({applicationId,attemptId,gateway,getPage
     }
     assertExecutionAuthorization(context);
     const target=identifyJob(context.job.canonical_url);
-    if(target.ats!=='greenhouse') throw new Error('Unsupported ATS');
     const page=await getPage(); await page.goto(target.url,{waitUntil:'domcontentloaded',timeout:30000});
     const entry=await openApplicationForm(page); if(entry.status==='Blocked') throw new Error('Form entry unavailable');
     assertSubmitFormScope(await inspectBrowserForm(page));
@@ -96,12 +99,12 @@ export async function submitApplication({applicationId,attemptId,gateway,getPage
     // Exactly one call. Any exception after start is uncertain, even if click
     // appears not to have happened. No recovery model or automatic retry here.
     await button.click({timeout:Math.min(3000,remaining)});
-    await page.waitForFunction(({markers})=>{
+    await page.waitForFunction(({markers,successSource})=>{
       const visible=el=>el&&el.getBoundingClientRect().width>0&&el.getBoundingClientRect().height>0;
       return ![...document.querySelectorAll('form')].some(visible) && markers.some(marker=>{
-        const el=document.querySelector(marker);return visible(el)&&/thank you for applying|application (?:has been |was )?submitted|application (?:has been |was )?received/i.test(el.innerText||'');
+        const el=document.querySelector(marker);return visible(el)&&new RegExp(successSource,'i').test(el.innerText||'');
       });
-    },{markers:CONFIRMATION_MARKERS},{timeout:15000});
+    },{markers:CONFIRMATION_RULES[target.ats].markers,successSource:success.source},{timeout:15000});
     const receipt=await readConfirmation(page,target.url); if(!receipt) throw new Error('No supported confirmation');
     try {
       const saved=await finish('confirmed',receipt);

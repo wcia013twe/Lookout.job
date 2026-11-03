@@ -14,6 +14,13 @@ one application form, retain full question text and exact choice values, omit ty
 values from inspection, and stop at unfamiliar controls, changed questions or URLs.
 Entry navigation allows only one safe control outside a form on the same ATS job.
 
+Ashby/Lever form and label selectors in `vendor/application-controls.mjs` also adapt
+ApplyAI's MIT-licensed `content_scripts/ashby.js` and `content_scripts/lever.js` at
+`d4a97b5643aa219592883a43b068fc18dff94678`. Exact reference modules and the full
+copyright/license notice are in `vendor/applyai/`. No extension runtime, LLM,
+answer generation, browser storage or automatic submission code was imported.
+See [source review and support limits](../docs/ats-submission.md).
+
 No Jev client, models, general-purpose browser agent, submission retry loop,
 outreach, CAPTCHA solver or upstream dependency tree was copied. No claims of
 upstream compatibility or benchmark performance are inherited.

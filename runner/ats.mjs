@@ -5,6 +5,7 @@ import { identifyJob } from './forms.mjs';
 export const ATS_ENTRY = Object.freeze({
   greenhouse: { triggerSelector: 'a:has-text("Apply"), button:has-text("Apply"), a:has-text("Apply for this job"), button:has-text("Apply for this job")' },
   ashby: { triggerSelector: 'a:has-text("Apply"), button:has-text("Apply"), a:has-text("Apply now"), button:has-text("Apply now")' },
+  lever: { triggerSelector: 'a:has-text("Apply for this job"), a:has-text("Apply"), button:has-text("Apply")' },
 });
 
 // Open a form only on the same allowlisted job. Never click a button inside a form.
@@ -28,6 +29,9 @@ export async function openApplicationForm(page) {
   }
   if (candidates.length !== 1) return { status: 'Blocked', blockers: ['Application entry is missing or ambiguous; open the form manually'] };
   await candidates[0].click();
+  await page.waitForFunction(() => [...document.querySelectorAll('form')].some(el => {
+    const rect=el.getBoundingClientRect();return rect.width>0&&rect.height>0;
+  }), undefined, {timeout:10000});
   if (identifyJob(page.url()).url !== target.url) throw new Error('Application entry navigated away from the selected job');
   if (await page.locator('form:visible').count() !== 1) return { status: 'Blocked', blockers: ['Application form did not open; manual handoff required'] };
   return { status: 'Ready', url: target.url };

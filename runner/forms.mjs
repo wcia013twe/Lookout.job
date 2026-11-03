@@ -1,19 +1,11 @@
 import { createHash } from 'node:crypto';
+import { identifySubmissionTarget } from '../lib/submission-targets.mjs';
 
 export const fingerprint = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 
 // Only published ATS job URLs are accepted. No arbitrary internal-network fetches.
 export function identifyJob(rawUrl) {
-  const url = new URL(rawUrl);
-  if (url.protocol !== 'https:' || url.username || url.password || url.port) throw new Error('Expected an HTTPS ATS job URL');
-  const path = url.pathname.split('/').filter(Boolean);
-  if (['boards.greenhouse.io', 'job-boards.greenhouse.io'].includes(url.hostname) && path.length === 3 && path[1] === 'jobs' && /^\d+$/.test(path[2])) {
-    return { ats: 'greenhouse', board: path[0], jobId: path[2], url: `${url.origin}/${path.join('/')}` };
-  }
-  if (url.hostname === 'jobs.ashbyhq.com' && (path.length === 2 || (path.length === 3 && path[2] === 'application')) && /^[a-z0-9-]+$/i.test(path[1])) {
-    return { ats: 'ashby', board: path[0], jobId: path[1], url: `${url.origin}/${path.slice(0, 2).join('/')}` };
-  }
-  throw new Error('Unsupported ATS URL; use manual application handoff');
+  return identifySubmissionTarget(rawUrl);
 }
 
 const fieldTypes = { input_text: 'text', textarea: 'textarea', input_file: 'file', multi_value_single_select: 'select', multi_value_multi_select: 'multiselect', input_hidden: 'hidden' };
@@ -41,7 +33,7 @@ export function formResult(target, questions, blockers = [], source = 'browser')
 
 export async function inspectPublicForm(rawUrl, fetchImpl = fetch) {
   const target = identifyJob(rawUrl);
-  if (target.ats !== 'greenhouse') return formResult(target, [], ['Ashby public postings do not expose applicant forms; inspect the browser form'], 'public-api');
+  if (target.ats !== 'greenhouse') return formResult(target, [], ['Inspect the live browser application form for exact questions and choices'], 'public-api');
   const endpoint = `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(target.board)}/jobs/${target.jobId}?questions=true`;
   const response = await fetchImpl(endpoint, { redirect: 'error', signal: AbortSignal.timeout(15000) });
   if (!response.ok) throw new Error(`Employer form lookup failed (${response.status})`);

@@ -368,7 +368,7 @@ and real employer behavior remain unverified until separately exercised.
 
 ## Application jobs
 
-`queue_application_job` accepts a selected canonical Greenhouse posting and pins the current owned application revision/profile in the durable backend queue. With both execution and submission flags enabled, the worker uses its fenced application RPC path and the existing guarded runner. Search claims exclude application jobs. No LLM runs inside this worker. See [the shared contract and verification limits](../../docs/discover-application-jobs.md).
+`queue_application_job` accepts a selected canonical Greenhouse, Ashby or Lever posting and pins the current owned application revision/profile in the durable backend queue. With both execution and submission flags enabled, the worker uses its fenced application RPC path and the existing guarded runner. Search claims exclude application jobs. No LLM runs inside this worker. See [the shared contract and verification limits](../../docs/discover-application-jobs.md).
 
 ## Shared default search sources
 

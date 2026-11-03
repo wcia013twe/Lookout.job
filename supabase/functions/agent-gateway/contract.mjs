@@ -1,4 +1,5 @@
 import {APPLICATION_JOB_TOOL,validateApplicationJob} from './application-jobs.mjs';
+import {validSubmissionReceipt} from '../../../lib/submission-targets.mjs';
 import {MUSE_CHANGE_TOOLS,validateMuseChanges} from './muse-changes.mjs';
 import {READ_SUBMISSION_BATCH_TOOL,validateSubmissionBatchOperation} from './submission-batches.mjs';
 import {validateApplicationAnswerUpdates} from '../../../lib/application-handoff.mjs';
@@ -122,12 +123,9 @@ export function validateRequest(input) {
       if (!['confirmed','uncertain','cancelled'].includes(p.outcome)) throw new Error('Outcome required');
       if (p.outcome==='confirmed') {
         const r=p.receipt;
-        if(!r || Object.keys(r).some(key=>!['source','jobUrl','observedUrl','marker','message'].includes(key)) || r.source!=='runner-observed-greenhouse-confirmation'
+        if(!r || Object.keys(r).some(key=>!['source','jobUrl','observedUrl','marker','message'].includes(key))
           || typeof r.jobUrl!=='string' || typeof r.observedUrl!=='string' || r.jobUrl.length>2048 || r.observedUrl.length>2048
-          || !['#confirmation','#application_confirmation','[data-testid="application-confirmation"]'].includes(r.marker)
-          || typeof r.message!=='string' || !/thank you for applying|application (?:has been |was )?submitted|application (?:has been |was )?received/i.test(r.message) || r.message.length>1000) throw new Error('Observed employer confirmation required');
-        const expected=new URL(r.jobUrl), observed=new URL(r.observedUrl);
-        if(expected.origin!==observed.origin || ![expected.pathname,expected.pathname+'/confirmation'].includes(observed.pathname) || observed.search || observed.hash || observed.username || observed.password) throw new Error('Confirmation URL mismatch');
+          || !validSubmissionReceipt(r)) throw new Error('Observed employer confirmation required');
       } else if(p.receipt!==undefined) throw new Error('Receipt not allowed without confirmation');
     }
   }

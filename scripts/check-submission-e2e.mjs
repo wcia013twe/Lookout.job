@@ -24,7 +24,11 @@ const bytes=Buffer.from('%PDF-1.4\nFictional submission test resume. No real per
 const resumeFiles=new Map();
 const forms=new Map(),external=[];let loseCheckpointOnce=false;
 const row=async(sql,args=[]) => (await db.query(sql,args)).rows[0];
-const html=phone=>`<!doctype html><html><body><form id="application_form"><label for="email">Email</label><input id="email" name="email" type="email" required><label for="resume">Resume</label><input id="resume" name="resume" type="file" required>${phone?'<label for="phone">Phone</label><input id="phone" name="phone" type="tel" required>':''}<button type="submit">Submit application</button></form><script>document.querySelector('form').addEventListener('submit',async event=>{event.preventDefault();const r=await fetch(location.pathname,{method:'POST',body:new FormData(event.target)});if(r.ok){event.target.remove();const c=document.createElement('div');c.id='confirmation';c.textContent='Thank you for applying. Your application has been submitted.';document.body.appendChild(c);}});</script></body></html>`;
+const html=(phone,ats='greenhouse')=>{
+ const email=ats==='ashby'?'<span data-testid="label-email">Email</span>':ats==='lever'?'<span class="application-field-label">Email ✱</span>':'<label for="email">Email</label>';
+ const confirmation=ats==='lever'?"c.className='application-received'":ats==='ashby'?"c.className='ashby-application-form-success'":"c.id='confirmation'";
+ return `<!doctype html><html><head><meta charset="utf-8"></head><body><form id="application_form" class="${ats==='ashby'?'ashby-application-form':'application-form'}"><div class="application-field">${email}<input id="email" name="email" type="email" required></div><label for="resume">Resume</label><input id="resume" name="resume" type="file" required><span id="upload-state"></span>${phone?'<label for="phone">Phone</label><input id="phone" name="phone" type="tel" required>':''}<button type="submit">Submit application</button></form><script>document.querySelector('[type="file"]').addEventListener('change',()=>{document.querySelector('#upload-state').textContent='resume.pdf';});document.querySelector('form').addEventListener('submit',async event=>{event.preventDefault();const r=await fetch(location.pathname,{method:'POST',body:new FormData(event.target)});if(r.ok){event.target.remove();const c=document.createElement('div');${confirmation};c.textContent='Thank you for applying. Your application has been submitted.';document.body.appendChild(c);}});</script></body></html>`;
+};
 async function browserFactory(){
  const context=await browser.newContext();
  await context.route('**/*',async route=>{
@@ -34,7 +38,12 @@ async function browserFactory(){
    fixture.posts++;fixture.sent=route.request().postDataBuffer()?.toString('utf8');
    return route.fulfill({status:fixture.mode==='uncertain'?503:200,body:'fixture only'});
   }
-  return route.fulfill({contentType:'text/html',body:fixture.mode==='unnamed'?html(false).replace('name="email"',''):html(fixture.mode==='changed')});
+  if(fixture.entry && url.href===fixture.base)return route.fulfill({contentType:'text/html',body:`<a href="${fixture.base+(fixture.ats==='ashby'?'/application':'/apply')}">Apply now</a>`});
+  let body=fixture.mode==='unnamed'?html(false,fixture.ats).replace('name="email"',''):html(fixture.mode==='changed',fixture.ats);
+  if(fixture.extra)body=body.replace('</form>',fixture.extra+'</form>');
+  if(fixture.rewrite)body=body.replace("document.querySelector('#upload-state').textContent='resume.pdf';","document.querySelector('#email').value='parser@example.com';document.querySelector('#upload-state').textContent='resume.pdf';");
+  if(fixture.conditional)body=body.replace('</body>',`<script>document.querySelector('#email').addEventListener('input',()=>{if(!document.querySelector('#new-question'))document.querySelector('form').insertAdjacentHTML('beforeend','<label for="new-question">Additional question</label><input id="new-question" name="new-question" required>');});</script></body>`);
+  return route.fulfill({contentType:'text/html',body});
  });
  const page=await context.newPage();return {getPage:async()=>page,close:async()=>context.close()};
 }
@@ -93,12 +102,12 @@ after(async()=>{
 });
 async function direct(operation,payload){const response=await fetch(apiUrl+'/v1/operations',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({operation,payload})});const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body.data;}
 async function tool(name,args={}){const response=await fetch(apiUrl+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})});const body=await response.json();assert(!body.error,JSON.stringify(body));assert(!body.result.isError,JSON.stringify(body));return JSON.parse(body.result.content[0].text);}
-async function application(mode='normal',{profileId,emptyResume=false}={}){
- const number=++serial,url=`https://job-boards.greenhouse.io/fixture/jobs/${number}`,jobId='fixture-'+number;
- const fixture={mode:'normal',posts:0,sent:null};forms.set(url,fixture);
+async function application(mode='normal',{profileId,emptyResume=false,ats='greenhouse'}={}){
+ const number=++serial,url=ats==='greenhouse'?`https://job-boards.greenhouse.io/fixture/jobs/${number}`:ats==='ashby'?`https://jobs.ashbyhq.com/fixture/fixture-${number}`:`https://jobs.lever.co/fixture/fixture-${number}`,jobId='fixture-'+number;
+ const fixture={mode:'normal',ats,base:url,posts:0,sent:null};forms.set(url,fixture);
  const provider=await browserFactory(),page=await provider.getPage();await page.goto(url);const form=await inspectBrowserForm(page);await provider.close();
  await db.query('insert into public.jobs(id,canonical_url,employer) values($1,$2,$3)',[jobId,url,{company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT'}]);
- const draft={url,resumeId,resumeSha256:sha,formFingerprint:form.formFingerprint,questionsReviewed:false,questions:[{fieldId:'email',fieldType:'email',question:'Email',answer:'fictional@example.com',profileField:'email'},{fieldId:'resume',fieldType:'file',question:'Resume',answer:resumeId}]};
+ const draft={url,resumeId,resumeSha256:sha,formFingerprint:form.formFingerprint,questionsReviewed:false,questions:[{fieldId:'email',fieldType:'email',question:ats==='lever'?'Email ✱':'Email',answer:'fictional@example.com',profileField:'email'},{fieldId:'resume',fieldType:'file',question:'Resume',answer:resumeId}]};
  if(profileId)draft.searchProfileId=profileId;
  if(emptyResume){delete draft.resumeId;delete draft.resumeSha256;draft.questions.find(q=>q.fieldId==='resume').answer='';}
  const app=await row('insert into public.applications(user_id,job_id,draft) values($1,$2,$3) returning *',[owner,jobId,draft]);fixture.mode=mode;return {app,fixture,url,jobId};
@@ -255,4 +264,49 @@ test('An AI Apply click never replaces exact human approval when auto-apply is o
  assert.equal(record.application.status,'Blocked');assert.equal(record.application.execution_job.status,'partial');assert.equal(f.fixture.posts,0);
  assert.equal((await row('select count(*)::int n from public.approvals where application_id=$1',[f.app.id])).n,0);
  const inbox=await tool('read_action_inbox');assert(inbox.items.some(item=>item.application_id===f.app.id));
+});
+
+for(const ats of ['ashby','lever']) {
+ test(`${ats}: native form submits through MCP, Edge and SQL once and renders the platform receipt`,async()=>{
+  await workerProfile();const f=await application('normal',{ats,profileId:'worker-execution'});
+  const result=await tool('submit_application',{applicationId:f.app.id,attemptId:'platform-'+ats});
+  assert.equal(result.status,'Submitted',JSON.stringify(result));assert.equal(f.fixture.posts,1);
+  assert.equal(result.receipt.source,`runner-observed-${ats}-confirmation`);
+  const saved=await row('select status,receipt from public.applications where id=$1',[f.app.id]);
+  assert.equal(saved.status,'Submitted');assert.equal(saved.receipt.source,result.receipt.source);
+  assert.match(f.fixture.sent,/fictional@example.com/);assert.match(f.fixture.sent,/Fictional submission test resume/);
+  assert.equal((await tool('submit_application',{applicationId:f.app.id,attemptId:'platform-'+ats})).status,'Already submitted');
+  assert.equal(f.fixture.posts,1);
+ });
+ test(`${ats}: AI Apply queue and worker reuse the supported submission executor`,async()=>{
+  await workerProfile();const f=await application('normal',{ats,profileId:'worker-execution'}),payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-execution',expectedRevision:f.app.revision,eventKey:'worker-'+ats};
+  const queued=await tool('queue_application_job',payload);
+  const executor=createApplicationExecutor({download:async()=>bytes,browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return(await promise).getPage();},close:async()=>{if(promise)await(await promise).close();}};}});
+  await workOnce(rpc,{applicationExecutor:executor});
+  const saved=await row('select status from public.applications where id=$1',[f.app.id]);
+  assert.equal(saved.status,'Submitted');assert.equal(f.fixture.posts,1);
+  assert.equal((await tool('queue_application_job',payload)).job.id,queued.job.id);
+ });
+}
+
+for(const ats of ['ashby','lever']) {
+ test(`${ats}: same-job application entry navigates before filling`,async()=>{
+  await workerProfile();const f=await application('normal',{ats,profileId:'worker-execution'});
+  f.fixture.entry=true;forms.set(f.url+(ats==='ashby'?'/application':'/apply'),f.fixture);
+  const result=await tool('submit_application',{applicationId:f.app.id,attemptId:'entry-'+ats});
+  assert.equal(result.status,'Submitted',JSON.stringify(result));assert.equal(f.fixture.posts,1);
+ });
+ for(const kind of ['captcha','custom','conditional'])test(`${ats}: ${kind} hands off before claiming or clicking`,async()=>{
+  await workerProfile();const f=await application('normal',{ats,profileId:'worker-execution'});
+  if(kind==='conditional')f.fixture.conditional=true;
+  else f.fixture.extra=kind==='captcha'?'<div data-sitekey="fictional-challenge"></div>':'<button type="button" role="combobox">Choose</button>';
+  const result=await tool('submit_application',{applicationId:f.app.id,attemptId:kind+'-'+ats});
+  assert.equal(result.status,'Needs you');assert.equal(f.fixture.posts,0);
+  assert.equal((await row('select count(*)::int n from public.submission_attempts where application_id=$1',[f.app.id])).n,0);
+ });
+}
+test('Lever resume parsing cannot silently replace an authorized contact answer',async()=>{
+ await workerProfile();const f=await application('normal',{ats:'lever',profileId:'worker-execution'});f.fixture.rewrite=true;
+ const result=await tool('submit_application',{applicationId:f.app.id,attemptId:'lever-parser'});
+ assert.equal(result.status,'Needs you');assert.equal(f.fixture.posts,0);
 });

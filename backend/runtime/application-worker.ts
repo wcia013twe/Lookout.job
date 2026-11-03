@@ -35,7 +35,6 @@ export function createApplicationExecutor({download,browserFactory=()=>createBro
    const draft=current.application.draft||{};
    if(!['Submitted','Interview','Offer','Rejected','Withdrawn','Blocked','Approved'].includes(current.application.status)&&(!draft.formFingerprint||!draft.resumeSha256||!draft.questions?.length)){
     const target=identifyJob(current.job.canonical_url);
-    if(target.ats!=='greenhouse')throw Error('Unsupported application target');
     const page=await browser.getPage();await page.goto(target.url,{waitUntil:'domcontentloaded',timeout:30000});
     const entry=await openApplicationForm(page);if(entry.status==='Blocked')throw Error('Employer form unavailable');
     const form=await inspectBrowserForm(page);

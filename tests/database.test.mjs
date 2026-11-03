@@ -5,6 +5,7 @@ import { createTestDatabase } from './helpers/database.mjs';
 import { checkSchema } from './helpers/schema-check.mjs';
 import { checkLeaderboard } from './helpers/leaderboard-check.mjs';
 import { checkApplicationPipeline } from './pipeline-check.mjs';
+import {validSubmissionReceipt} from '../lib/submission-targets.mjs';
 
 // Apply migrations once. SQL scenarios use disposable clones of the migrated
 // baseline; session roles, cached plans and fixtures cannot leak between checks.
@@ -21,6 +22,26 @@ test('application pipeline requires submission and deduplicates stage events', a
 });
 test('leaderboard derives scores, deduplicates refreshes and exposes only opted-in metrics', async () => {
   await checkLeaderboard(db);
+});
+
+test('SQL and Edge bind platform receipts to the exact job and reject spoofed or negative confirmations',async()=>{
+ for(const [ats,jobUrl,marker,suffix] of [
+  ['greenhouse','https://job-boards.greenhouse.io/fixture/jobs/123','#confirmation','/confirmation'],
+  ['ashby','https://jobs.ashbyhq.com/fixture/abc-123','h1','/application'],
+  ['lever','https://jobs.eu.lever.co/fixture/abc-123','.application-received','/thanks'],
+ ]){
+  const receipt={source:`runner-observed-${ats}-confirmation`,jobUrl,observedUrl:jobUrl+suffix,marker,message:'Your application has been submitted.'};
+  for(const patch of [{},{source:'runner-observed-workday-confirmation'},{observedUrl:jobUrl+'/other'},{observedUrl:jobUrl+suffix+'?x=1'},{marker:'body'},{message:'We have not received your application'},{message:'We previously received your application'},{message:'Form disappeared'}]){
+   const value={...receipt,...patch};
+   const saved=await db.query('select private.valid_submission_receipt($1) as valid',[value]);
+   assert.equal(saved.rows[0].valid,validSubmissionReceipt(value),JSON.stringify(value));
+   assert.equal(saved.rows[0].valid,Object.keys(patch).length===0);
+  }
+ }
+ for(const role of ['anon','authenticated']){
+  const result=await db.query("select has_function_privilege($1,'private.valid_submission_receipt(jsonb)','execute') as allowed",[role]);
+  assert.equal(result.rows[0].allowed,false);
+ }
 });
 
 for (const [file, behavior] of [
