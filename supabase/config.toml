@@ -56,3 +56,9 @@ verify_jwt = false
 
 [analytics]
 enabled = false
+
+[auth.external.google]
+enabled = true
+client_id = "814028142122-53kbjce0cu7k1tsffas89052pna57cp7.apps.googleusercontent.com"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET)"
+skip_nonce_check = false

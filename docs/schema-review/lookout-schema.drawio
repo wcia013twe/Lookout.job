@@ -2649,4 +2649,53 @@
             </root>
         </mxGraphModel>
     </diagram>
+    <diagram id="WdXI0ZwOU49ycaz9fIeP" name="Page-9">
+        <mxGraphModel dx="778" dy="492" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="nuZ6xpvxqmaEOjN5wmoV-0"/>
+                <mxCell id="nuZ6xpvxqmaEOjN5wmoV-1" parent="nuZ6xpvxqmaEOjN5wmoV-0"/>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-0" parent="nuZ6xpvxqmaEOjN5wmoV-1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="global table" vertex="1">
+                    <mxGeometry height="80" width="80" x="210" y="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-4" edge="1" parent="nuZ6xpvxqmaEOjN5wmoV-1" source="Pf5S9eKklcYKCUYEz_zZ-1" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="Pf5S9eKklcYKCUYEz_zZ-0">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-1" parent="nuZ6xpvxqmaEOjN5wmoV-1" style="whiteSpace=wrap;html=1;" value="application data&amp;nbsp;&lt;br&gt;- job id/ company" vertex="1">
+                    <mxGeometry height="60" width="120" x="30" y="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-5" edge="1" parent="nuZ6xpvxqmaEOjN5wmoV-1" source="Pf5S9eKklcYKCUYEz_zZ-2" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="Pf5S9eKklcYKCUYEz_zZ-0">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-2" parent="nuZ6xpvxqmaEOjN5wmoV-1" style="whiteSpace=wrap;html=1;" value="de PPI data from circles" vertex="1">
+                    <mxGeometry height="60" width="120" x="190" y="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-6" edge="1" parent="nuZ6xpvxqmaEOjN5wmoV-1" source="Pf5S9eKklcYKCUYEz_zZ-3" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="Pf5S9eKklcYKCUYEz_zZ-0">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-3" parent="nuZ6xpvxqmaEOjN5wmoV-1" style="whiteSpace=wrap;html=1;" value="timestamps of communications and process knowledge dePIII" vertex="1">
+                    <mxGeometry height="60" width="120" x="350" y="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-8" edge="1" parent="nuZ6xpvxqmaEOjN5wmoV-1" source="Pf5S9eKklcYKCUYEz_zZ-7" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Pf5S9eKklcYKCUYEz_zZ-0">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-11" edge="1" parent="nuZ6xpvxqmaEOjN5wmoV-1" source="Pf5S9eKklcYKCUYEz_zZ-7" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="440" y="100" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-7" parent="nuZ6xpvxqmaEOjN5wmoV-1" style="rhombus;whiteSpace=wrap;html=1;shapeInside=1;" value="search tool" vertex="1">
+                    <mxGeometry height="80" width="80" x="210" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-10" edge="1" parent="nuZ6xpvxqmaEOjN5wmoV-1" source="Pf5S9eKklcYKCUYEz_zZ-9" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="Pf5S9eKklcYKCUYEz_zZ-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-9" parent="nuZ6xpvxqmaEOjN5wmoV-1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Agent" vertex="1">
+                    <mxGeometry height="30" width="50" x="90" y="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="Pf5S9eKklcYKCUYEz_zZ-12" parent="nuZ6xpvxqmaEOjN5wmoV-1" style="whiteSpace=wrap;html=1;" value="Auto search intelligence and push useful alpha to users" vertex="1">
+                    <mxGeometry height="60" width="120" x="440" y="70" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>
