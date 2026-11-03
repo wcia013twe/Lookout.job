@@ -5,3 +5,11 @@
 - The guide is retained per connection and refreshed on developer version changes or context loss. Reading it does not load personal records, install services, start searches, submit applications or grant consent. Background watching still requires an explicit request and verified runtime support.
 - Validation: all 883 tests passed (`npm test`, with local HTTP listener access), including a fictional MCP initialization/context-read scenario, transport/approval invariants and existing database/demo coverage. `npm run validate:data` validated 158 roles; `npm run build` produced the static frontend export; `git diff --check` passed. Initial sandboxed tests could not open local listeners; the unrestricted rerun passed. Registry install timeout was resolved using the existing offline frontend cache.
 - Limits: no hosted backend deployment, push/publication, actual Muse wake delivery or scheduler activation was performed. Hosted connections receive this contract only after the normal backend release and context refresh.
+
+## Concise messaging follow-up
+
+- DeveloperVersion 93 sets one outcome-focused message per meaningful update, normally one or two short sentences with at most one necessary next action. It suppresses tool narration, routine progress, unchanged-status texts and habitual optional questions. Direct requests still get concise answers; proactive routine updates follow the saved digest cadence and only actionable important reviews, urgent deadlines or blockers interrupt.
+- Shortened default notification templates. Full work, evidence and drafts remain saved and verified; partial results and failures must still be disclosed. No saved account cadence or runtime schedule was changed.
+- Validation: 29 focused context/MCP/delivery tests and catalog validation passed; full-suite result recorded below. No frontend implementation changed in this follow-up.
+- Runtime limit: the inspected local account page could not load agent settings. This change updates the developer operating contract in local main; active hosted Muse still needs the normal backend release and context refresh. No messaging preference save, SMS delivery or production activation is claimed.
+- Full follow-up validation: all 883 tests passed with local HTTP listener access; `git diff --check` passed.
