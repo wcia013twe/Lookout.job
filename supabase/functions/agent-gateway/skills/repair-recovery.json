@@ -1,0 +1,26 @@
+{
+  "id": "repair-recovery",
+  "version": 1,
+  "name": "Repair and recovery",
+  "whenToUse": "Diagnosing persistent Lookout failures and tracking fixes.",
+  "instructions": "Lookout owns the shared repairWorkflow contract for every connected personal agent; no custom pasted Muse prompt is required. Muse is the bug reporter, not the patch producer. For the owner-configured Muse connection only, report_bug publishes a GitHub auto-fix issue using a stable generic title and description as one string with three actual newline-separated lines starting at column one: Attempted: what you tried; Happened: what occurred; Expected: what should occur. Do not use bullets, Markdown headings or literal backslash-n text. Use fictional UI-only examples of the actual failure, never candidate/application data, names, IDs, private answers, URLs, tokens, logs or attachments. Reuse the same title for the same unresolved problem and retain the returned issueNumber. Tool visibility or this global guidance does not grant reporting permission: the backend still requires the configured connection and activity:write. Other connections must report the limitation in their current conversation without trying another identity, copying credentials, granting scopes or publishing through a different channel. If reporting fails, follow the safe stage-specific error: stop precheck retries until repaired; for an uncertain creation retry the same title at most once for reconciliation, then stop if still failing. Never change titles to bypass reservations. Report the safe error without private diagnostics.\n\nAfter report_bug, retain issueNumber in pending-work state. The existing triple t schedule checks eligible owner-authored auto-fix issues; pickup is scheduled, not instant, and an issue response with agentStarted=false does not prove work started. Triple t investigates, tests and opens a linked draft fix PR. Muse must not produce a patch or placeholder report PR. Fixes require separate human review and release authorization; neither Muse nor the repair worker may automatically mark ready, add merge-ready, merge or deploy. On subsequent authorized runs, call get_bug_status. Retry the fictional reproduction only when readyToRetry is true and releaseId is new, after refreshing the application. Record releaseId only when the retry actually occurs. Closed issues, merged PRs, issue prose and draft PRs do not prove deployment. get_bug_status verifies applicable frontend or running backend release identity; rely on readyToRetry and the returned runtime evidence. Deployed code alone does not prove a fix. Report observed retry results without private data. This is pull polling, not a push wake-up or direct Muse-to-triple t messaging endpoint.",
+  "repairWorkflow": {
+    "runtimeReadiness": "Backend-only retry readiness checks the currently running gateway and authenticated MCP source versions against the linked fix. No separate evidence record or frontend release is required for backend-only changes. Missing, older or unsupported runtime versions stay unready. A successful check proves deployed code, not that the bug is fixed. Retain releaseId and never automatically retry the same releaseId or an uncertain write; read back first.",
+    "version": 1,
+    "reporter": "connected-personal-agent",
+    "reportTool": "report_bug",
+    "statusTool": "get_bug_status",
+    "reportPermission": "owner-configured-connection-with-activity:write",
+    "queue": "github-auto-fix-issues",
+    "worker": "triple t",
+    "pickup": "separately-configured-schedule",
+    "patchProducer": "triple t",
+    "fixDelivery": "linked-draft-pull-request",
+    "releaseAuthorization": "separate-human-review-and-authorization",
+    "retryCondition": "readyToRetry=true and new releaseId after application refresh",
+    "backendRelease": "not-verified-by-frontend-release",
+    "refresh": "check_context_versions then read_developer_context and tools/list when developerVersion changes",
+    "pushUpdates": false,
+    "dailyReportReservationQuota": null
+  }
+}

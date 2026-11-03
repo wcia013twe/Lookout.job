@@ -104,8 +104,8 @@ test('detached demo service includes isolated backend fixtures and versioned gui
   assert.equal((await demo.backendJobs.read()).jobs.length,6);
   assert.equal(demo.backendJobs.fictional,true);
   assert.ok(instructions.developerVersion>=54);
-  assert.equal(instructions.capabilities.backendJobs.hostedDeploymentVerified,false);
-  assert.match(readGuide('career-find-jobs').instructions,/configured Node API and running worker/);
+  assert.equal(readGuide('workspace-maintenance').capabilities.backendJobs.hostedDeploymentVerified,false);
+  assert.match(readGuide('career-find-jobs').instructions,/configured Node API|configured TypeScript Node backend/);
 });
 
 test('fictional terminal demo jobs expose the single-job shortlist while pending jobs do not',async()=>{

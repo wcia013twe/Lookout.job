@@ -599,3 +599,8 @@ unauthenticated HTTP requests with 401. Local validation passed 502 tests and th
 adds no tables, credentials, UI behavior or external scheduling capability.
 
 `applications.execution_job` is an owner-readable, server-controlled projection of its current durable backend application job. The queue trigger owns updates; authenticated direct edits are rejected. Jobs keep the stable application/revision reference in the existing private backend queue. See [application jobs](discover-application-jobs.md).
+
+
+## Muse selective context (developer version 96)
+
+The developer-context response now contains core instructions and a primary guide index only. Named workflow guides replace embedded quickstart/operating-guide procedures. Change-feed responses add guide ID/version references; existing pointers, ownership, acknowledgements and schema remain unchanged. Durable progress uses existing domain records. No migration, new workflow table or polling protocol is introduced. See `mcp/README.md` and `docs/muse-instruction-consolidation.md`.

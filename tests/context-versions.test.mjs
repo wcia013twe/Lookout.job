@@ -19,20 +19,20 @@ function fixture() {
 
 test('unchanged retained context costs one small version request', async () => {
   const { call, calls } = fixture();
-  const result = await refreshAgentContext({ call, cache, connectionKey: cache.connectionKey });
+  const result = await refreshAgentContext({ call, cache, connectionKey: cache.connectionKey, hasContext: true });
   assert.deepEqual(calls, ['context.versions']); assert.deepEqual(result.updates, {});
   assert.deepEqual(result.cache, cache);
 });
 test('personal and developer changes fetch only their own section', async () => {
   for (const section of ['personal', 'developer']) {
     const { call, calls } = fixture();
-    const result = await refreshAgentContext({ call, cache: { ...cache, [`${section}Version`]: 1 }, connectionKey: cache.connectionKey });
+    const result = await refreshAgentContext({ call, cache: { ...cache, [`${section}Version`]: 1 }, connectionKey: cache.connectionKey, hasContext: true });
     assert.deepEqual(calls, ['context.versions', `context.${section}`]);
     assert.deepEqual(Object.keys(result.updates), [section]);
   }
 });
 test('bootstrap, account switch and lost context force both reads', async () => {
-  for (const options of [{}, { cache, connectionKey: 'another-connection' }, { cache, hasContext: false }]) {
+  for (const options of [{}, {cache}, { cache, connectionKey: 'another-connection' }, { cache, hasContext: false }]) {
     const { call, calls } = fixture();
     await refreshAgentContext({ call, connectionKey: cache.connectionKey, ...options });
     assert.deepEqual(calls, ['context.versions', 'context.personal', 'context.developer']);
@@ -48,7 +48,7 @@ test('version response contains exactly two values and developer config is isola
   assert.deepEqual(Object.keys(contextResponse('context.versions', { personalVersion: 2, secret: 'never return' })), ['personalVersion', 'developerVersion']);
   const first = contextResponse('context.developer', {}); first.instructions.push('mutated');
   assert.ok(!contextResponse('context.developer', {}).instructions.includes('mutated'));
-  assert.equal(contextResponse('context.developer', {}).capabilities.automaticSubmission, 'supported-greenhouse-native-forms');
+  assert.equal(Object.hasOwn(contextResponse('context.developer', {}), 'capabilities'), false);
   for (const operation of ['context.versions', 'context.personal', 'context.developer']) {
     assert.equal(validateRequest({ operation }).operation, operation);
     assert.throws(() => validateRequest({ operation, payload: { userId: 'other' } }), /arguments/);

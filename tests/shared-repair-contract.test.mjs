@@ -1,3 +1,4 @@
+import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
@@ -11,15 +12,15 @@ test('existing client refresh discovers the shared repair contract without chang
  assert.ok(version.developerVersion>56);
  const calls=[];
  const call=async operation=>{calls.push(operation);return contextResponse(operation,{personalVersion:12});};
- const result=await refreshAgentContext({call,cache:{connectionKey:'a',personalVersion:12,developerVersion:56},connectionKey:'a'});
+ const result=await refreshAgentContext({call,cache:{connectionKey:'a',personalVersion:12,developerVersion:56},connectionKey:'a',hasContext:true});
  assert.deepEqual(calls,['context.versions','context.developer']);
- assert.equal(result.updates.developer.repairWorkflow.worker,'triple t');
- assert.equal(result.updates.developer.repairWorkflow.fixDelivery,'linked-draft-pull-request');
- assert.equal(result.updates.developer.repairWorkflow.pushUpdates,false);
+ assert.equal(readGuide('repair-recovery').repairWorkflow.worker,'triple t');
+ assert.equal(readGuide('repair-recovery').repairWorkflow.fixDelivery,'linked-draft-pull-request');
+ assert.equal(readGuide('repair-recovery').repairWorkflow.pushUpdates,false);
  assert.equal(result.updates.personal,undefined);
  assert.match(result.updates.developer.instructions.join('\n'),/refresh tools\/list/);
  calls.length=0;
- assert.deepEqual((await refreshAgentContext({call,cache:result.cache,connectionKey:'a'})).updates,{});
+ assert.deepEqual((await refreshAgentContext({call,cache:result.cache,connectionKey:'a',hasContext:true})).updates,{});
  assert.deepEqual(calls,['context.versions']);
 });
 test('shared MCP guidance is discoverable without granting owner-only reporting permission',async()=>{
@@ -33,14 +34,14 @@ test('shared MCP guidance is discoverable without granting owner-only reporting 
   });
   const invoke=async(method,params)=>(await (await handle(request(method,params))).json()).result;
   const init=await invoke('initialize',{protocolVersion:'2025-11-25'});
-  assert.match(init.instructions,/repairWorkflow/);
-  assert.match(init.instructions,/refresh tools\/list/);
+  assert.match(init.instructions,/repair-recovery/);
+  assert(contextResponse('context.developer',{}).instructions.some(s=>s.includes('refresh tools/list')));
   assert.deepEqual(init.capabilities,{tools:{}});
   const discovery=await invoke('tools/list');
   assert.ok(discovery.tools.some(t=>t.name==='read_developer_context'));
   assert.equal(discovery.tools.some(t=>t.name==='report_bug'),scopes.includes('activity:write'));
   const context=JSON.parse((await invoke('tools/call',{name:'read_developer_context',arguments:{}})).content[0].text);
-  assert.equal(context.repairWorkflow.reportPermission,'owner-configured-connection-with-activity:write');
+  assert.equal(readGuide('repair-recovery').repairWorkflow.reportPermission,'owner-configured-connection-with-activity:write');
   const report=await invoke('tools/call',{name:'report_bug',arguments:payload});
   assert.equal(report.isError,true);
   assert.match(report.content[0].text,scopes.includes('activity:write')?/403/:/Missing required scope/);

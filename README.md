@@ -6,8 +6,9 @@ A job-search workspace with a public catalog, private candidate records, and too
 
 Read the compact [agent quickstart](mcp/README.md#agent-quickstart) for connection,
 onboarding, data imports, verified writes and approval boundaries. Connected agents
-receive the same startup sequence automatically from MCP `initialize` and can refresh
-it through `read_developer_context`; full workflow guides are loaded only when needed.
+receive a short bootstrap from MCP `initialize`; `read_developer_context` returns
+the small core and guide index. Task procedures load only when needed, and changes
+point to the relevant guide and persisted workflow records.
 `AGENTS.md` is for repository maintenance, not personal career-agent onboarding.
 
 ## Copy into Muse

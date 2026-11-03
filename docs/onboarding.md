@@ -1,6 +1,6 @@
 # Lookout onboarding
 
-Agents start with `read_developer_context`: its `operatingGuide` is the canonical entry point for connection setup, saved schedules, first requested work, optional background watching, ongoing maintenance and workspace operations. The same response supplies detailed contracts and task-reference metadata. Cache per connection and refresh on developerVersion changes. MCP startup and the website connection handoff point to this guide; reading it does not activate work. The preserved `quickstart` in `supabase/functions/agent-gateway/instructions.json` and the watcher guide are assembled by `supabase/functions/agent-gateway/operating-guide.mjs` for both MCP startup and this response.
+Agents start with `read_developer_context`, which returns a small core and versioned guide index. Load `connection-schedules` for setup/onboarding and `change-resumption` for event wakes; other procedures load only for their task. MCP initialize supplies a short bootstrap, without embedded watcher or career procedures. Retain actual guide content by connection and version; reload after version changes or context loss. This document is product context, not a duplicate runtime procedure.
 
 The Next.js `/onboarding/` route introduces background, work preferences, a catalog opportunity, the existing agent connection flow, and an optional Circle story. Its presentation components are in `next-app/components/onboarding-*.tsx`, with scoped styles in `next-app/app/onboarding.css`.
 

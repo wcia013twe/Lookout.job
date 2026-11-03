@@ -1,3 +1,4 @@
+import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parseSimplifyCsv,parseCsv,canonicalImportUrl,importedApplication} from '../lib/simplify-import.mjs';
@@ -67,7 +68,8 @@ test('CSV import discovery and direct calls preserve each connection scope bound
    if(!canImport)assert.match(result.content[0].text,/Missing required scope: tracking:write/);
   }
   const context=JSON.parse((await send('tools/call',{name:'read_developer_context'})).result.content[0].text);
-  const guidance=context.instructions.find(s=>s.startsWith('Simplify CSV imports'));
+  assert(context.guides.some(g=>g.id==='workspace-maintenance'));
+  const guidance=readGuide('workspace-maintenance').instructions;
   assert.match(guidance,/tracking:write/);
   assert.match(guidance,/workspace:read/);
   assert.match(guidance,/If either tool is absent/);

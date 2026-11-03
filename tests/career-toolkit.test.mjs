@@ -16,7 +16,7 @@ test('every manual resolves to an isolated, sourced agent guide with the same ex
     assert.ok(guide.instructions.includes('Lookout adaptation'));
     assert.match(guide.instructions,/never fabricate/i);
     assert.ok(guide.sourceDocuments.every(doc=>doc.content.length>100));
-    assert.ok(guideIndex().some(item=>item.id===skill.guideId&&item.version===skill.version));
+    assert.ok(discoverGuides().guides.some(item=>item.id===skill.guideId&&item.version===skill.version));
     assert.ok(skill.inputs.length&&skill.steps.length&&skill.outputs.length&&skill.examples.length);
     for(const id of skill.related)assert.ok(toolkitSkills.some(s=>s.id===id));
     guide.manual.examples[0]='mutated';guide.sourceDocuments[0].content='mutated';

@@ -1,6 +1,6 @@
 # Lookout agent-first onboarding — implementation handoff
 
-Agent operating instructions now have one entry point: call `read_developer_context` and read its complete `operatingGuide` plus the detailed `instructions` in the same response. Its quickstart source is `supabase/functions/agent-gateway/instructions.json`; `operating-guide.mjs` assembles that source and the watcher reference for MCP startup and developer context. Retain per connection and reload on developerVersion changes. This document is a historical product specification, not the runtime onboarding authority.
+Agents start with `read_developer_context`, which returns a small core and versioned guide index. Load `connection-schedules` for setup/onboarding and `change-resumption` for event wakes; other procedures load only for their task. MCP initialize supplies a short bootstrap, without embedded watcher or career procedures. Retain actual guide content by connection and version; reload after version changes or context loss. This document is product context, not a duplicate runtime procedure.
 
 Status: **proposed UX and engineering specification, not implemented behavior**. Target: Muse, other bring-your-own-agent (BYOA) runtimes, and future managed texting agents. Use this as an implementation plan; inspect the actual repository contracts and deployed capabilities before changing code.
 

@@ -5,7 +5,9 @@ const css = `html{color-scheme:light dark;background:#fbfcfe;color:#223248}body{
 export function skillDocument(skill: {id:string;guideId:string;sourceUrl:string}) {
  const guide = readGuide(skill.guideId);
  if (!guide || !('sourceDocuments' in guide) || !Array.isArray(guide.sourceDocuments)) throw Error(`Missing guide: ${skill.guideId}`);
- const markdown = `# ${guide.name}\n\n${guide.description}\n\n## Lookout skill instructions\n\n${guide.instructions}\n\n## Expected output\n\n${typeof guide.expectedOutput === 'string' ? guide.expectedOutput : JSON.stringify(guide.expectedOutput,null,2)}\n\n${guide.sourceDocuments.map((doc: {path:string;content:string}) => `---\n\n## Reference: ${doc.path}\n\n${doc.content}`).join('\n\n')}\n\n---\n\nAdapted from [Career Ops](${skill.sourceUrl}). Pinned source and MIT license are included in Lookout’s Career Ops integration.`;
+ const description = 'description' in guide ? guide.description : '';
+ const expectedOutput = 'expectedOutput' in guide ? guide.expectedOutput : undefined;
+ const markdown = `# ${guide.name}\n\n${description}\n\n## Lookout skill instructions\n\n${guide.instructions}\n\n## Expected output\n\n${typeof expectedOutput === 'string' ? expectedOutput : JSON.stringify(expectedOutput,null,2)}\n\n${guide.sourceDocuments.map((doc: {path:string;content:string}) => `---\n\n## Reference: ${doc.path}\n\n${doc.content}`).join('\n\n')}\n\n---\n\nAdapted from [Career Ops](${skill.sourceUrl}). Pinned source and MIT license are included in Lookout’s Career Ops integration.`;
  const content = micromark(markdown, {extensions:[gfm()], htmlExtensions:[gfmHtml()]});
  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><title>${skill.id} · Skill.md</title><style>${css}</style></head><body>${content}</body></html>`;
 }

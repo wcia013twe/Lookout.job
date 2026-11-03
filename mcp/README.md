@@ -22,25 +22,27 @@ verified by Pages success.
 `supabase/functions/agent-gateway/instructions.json` is the shared contract source.
 Developer version 57 adds `repairWorkflow`: Muse reports an issue; scheduled
 triple t consumption produces a linked draft fix PR; separate human authorization
-controls release; Muse retries only a new verified frontend release. These
+controls release; Muse retries only a new verified applicable release. These
 instructions describe the interface globally, but reporting/status remain gated
 to the configured owner connection with `activity:write`. Tool visibility alone
 never grants access. Other users report the limitation in their conversation.
 
-MCP `initialize` returns `quickstart`; `tools/list` advertises scope-filtered
-`check_context_versions` and `read_developer_context` (`workspace:read`). Each
-work run checks versions. A changed developerVersion causes a developer-context
-read and fresh tool discovery; unchanged personal context need not be reloaded.
-First run, lost context or account changes require both context sections. The
-existing local context-cache helper also reloads changed sections; runtime
-clients must follow discovery-refresh instructions. There is no resource
-subscription, SSE push, `tools/list_changed` notification or agent wake-up.
-Offline/idle clients learn changes only on their next successful refresh.
+MCP `initialize` returns a short bootstrap. `read_developer_context` returns only
+`developerVersion`, core `instructions` and a compact workflow `guides` index.
+Load task procedures with `read_guide(id)`. The larger career catalog is available
+through `discover_toolkit`; pinned reference documents are fetched only through
+the optional `referenceGuideId` returned by a toolkit guide read.
 
-This update must be merged and deployed with both `agent-gateway` and `agent-mcp`
-through the existing backend release process before production clients see version
-57. Frontend Pages deployment alone does not update this contract. No custom
-prompt per Muse is needed, and this contract does not register a schedule.
+Each authorized work run checks context versions and refreshes changed sections.
+A changed developer version also requires fresh tool discovery. Lost context or
+an account switch requires reloading content even when version numbers match.
+Guides are retained by connection and ID/version only while their content remains
+available. Setup does not read personal career records or execute work.
+
+Developer version 96 requires releasing both gateway and MCP through the existing
+backend workflow. Frontend deployment alone does not publish it. There is no MCP
+SSE subscription or managed agent runtime; optional polling uses the existing
+count-only watcher and a separately verified host wake command.
 
 This is a small stateless Streamable HTTP server using JSON responses. It has no
 SDK/runtime dependency, browser tools, shell, SQL, connection management, or
@@ -52,29 +54,55 @@ single authority for ownership, expiry/revocation, write validation and revision
 
 ## Agent quickstart
 
-Use the existing MCP connection with its token in secure settings. The server returns
-this startup sequence during `initialize`; `read_developer_context` returns it as
-`quickstart`. The canonical runtime text is
-[`instructions.json`](../supabase/functions/agent-gateway/instructions.json).
+Keep the connection token in secure settings. Start with the small core/index from
+`read_developer_context`, then load only the guide matching the current task:
 
-0. For connection setup only, read onboarding state and submit `update_onboarding_step` with `event: connection_test`, its current revision, stable event key and empty data. Use the returned `automationSetup.schedule` and connection ID to configure enabled assigned scheduled tasks in the runtime’s actual automation settings. Verify receipts or report the blocker, then stop; do not execute tasks, load career guides or claim queued work during setup.
-1. Discover tools and current argument schemas. Report missing scopes; do not guess.
-2. Call `check_context_versions`; load developer and personal context on first use,
-   account change or lost context, then reload only changed sections.
-3. Call `read_onboarding_state` before a questionnaire. Follow its next prompt;
-   honor explicit imports from supplied evidence. Load relevant guides on demand.
-4. Read owned records and versions, then use the appropriate scoped save/update tool.
-   Candidate facts, AI analysis, private fit notes and shared employer data stay distinct.
-5. Read back writes before reporting success. Reuse event keys; reconcile conflicts;
-   distinguish empty data from API failures. Report saved IDs and the next action.
-6. The personal agent supplies reasoning, browsing and delivery. Human verification,
-   approval and Circle sharing consent cannot be invented by an agent. Claim queued
-   tasks before execution; report actual outcomes, not requested automation as active.
+- `connection-schedules`: connection-only setup, onboarding and schedule reconciliation.
+- `change-resumption`: targeted event refresh and resuming persisted work.
+- `career-find-jobs` and `application-workspace`: search and application workflows.
+- `workspace-maintenance`, `interview-preparation`, `notifications`, `circle-knowledge`,
+  `cold-outreach`, `resume-parse`, `repair-recovery`: other task-specific procedures.
+- `agent-package`: watcher installation/lifecycle, only when requested.
+
+Procedures live in those guides; this document is a routing reference. They never
+grant permissions or substitute for current schemas and server validation.
+
+### Stateful polling wakes
+
+The watcher polls the existing count-only endpoint and enqueues a host worker;
+it does not call a model on idle polls or read private work. The authenticated
+worker reads `read_muse_changes`. Each known event has the existing `refresh`
+pointer plus `workflow: {guideId, guideVersion}`. Refresh current records, load
+needed guides, inspect saved progress/leases and continue existing authorized work.
+
+Search progress stays in search runs/checkpoints and job results; application
+progress stays in drafts, immutable attempts, task results and Action Board
+handoffs. Events are pointers, never new authorization. Acknowledge only after
+verified handling or a durably saved blocker with a resume condition. Scheduler
+changes specifically require real reconciliation receipts. Failed persistence
+leaves events pending. Stop when blocked pending events prevent paging progress.
+The existing watcher cooldown can delay later changes while older events remain
+pending; the count-only protocol is unchanged.
+
+The optional `mcp/change-worker.mjs` adapter exports `consumeMuseChanges` for a
+Node host. Supply a connection-specific MCP `call(toolName, arguments)`, an
+already-authorized `handle({events,current,guide})` and an independent
+`verify({events,current,guide,outcome})` that reads authoritative saved state or
+scheduler receipts. A handler returns `{status:'handled'}` or
+`{status:'blocked',resumeCondition:'...'}`; a blocker requires an existing durable
+record, not just this return value. Only verification returning `true` permits
+acknowledgement. Errors leave affected events pending. Returned `guideCache`
+contains actual content and must be discarded when context is lost. Explicit
+`hasContext:true` is only for a host retaining current core content; its normal
+work-entry path still checks context versions and refreshes current personal data.
+
+The adapter coalesces same-record events per page, bounds pages and serializes
+calls in one process. Hosts must separately coalesce cross-process wakes and honor
+existing backend task leases. No host is installed, activated or given new
+execution rights by importing it. Schedule-only wakes retain targeted reads.
 
 For connection compatibility and secure token setup, see [Connect an agent](#connect-an-agent).
-The website is optional for routine work; protected human-review actions retain their
-explicit handoff. Client support and successful authenticated round trips must be
-verified in the actual agent runtime.
+Protected human-review actions retain their authenticated handoff.
 
 ## One experience across personal agents
 
@@ -240,15 +268,15 @@ Start each run with `check_context_versions`:
 ```
 
 Keep last-loaded versions **per agent connection**, independently of other agents.
-On bootstrap load both `read_personal_context` and `read_developer_context`.
+On the first authorized work run load both `read_personal_context` and `read_developer_context`; connection-only setup excludes personal career reads.
 Otherwise read only the section whose version differs. Do not consume/reset a
 flag. Personal edits to profile, preferences (including tiers/theme/custom
 messages/schedule), resumes and saved answers advance the personal version.
 Timestamp-only/no-op saves and job/application history do not.
 
 The personal response includes its version plus settings; the developer response
-includes its version plus instructions, default messages, settings paths and
-honest capability flags. Apply each section to the retained agent context, then
+includes its version, core instructions and the primary guide index. Task guides
+provide message defaults, settings mappings and relevant operational references. Apply each section to the retained agent context, then
 acknowledge its **returned** version. Failed fetches must not advance your cache.
 A change racing the fetch is detected on the next poll.
 
@@ -256,7 +284,8 @@ A change racing the fetch is detected on the next poll.
 `call` uses HTTP operation names from the gateway contract. Store the returned
 cache only after persisting the updated instructions/settings in the agent's
 own memory. The connection key is a stable local cache identity, never a raw
-credential. Reconnecting to another account starts a fresh cache.
+credential. Reconnecting to another account starts a fresh cache. `hasContext`
+defaults to false: explicitly pass true only when actual context content is retained.
 
 This API does not create permanent memory in Muse/Dot/Grok. If the runtime did
 not restore the prior context, use `hasContext:false` and reload both sections.

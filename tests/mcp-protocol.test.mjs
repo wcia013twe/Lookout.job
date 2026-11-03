@@ -19,17 +19,17 @@ test('initialize negotiates supported versions and initialized notification retu
   assert.equal(response.status, 200);
   const initialized=await response.json();
   assert.equal(initialized.result.protocolVersion, '2025-11-25');
-  assert.match(initialized.result.instructions,/automatically select relevant Lookout workflows/);
-  assert.match(initialized.result.instructions,/check_context_versions[\s\S]*read_onboarding_state/);
-  assert.match(initialized.result.instructions,/Read back every saved result/);
-  assert.match(initialized.result.instructions,/Never forge human verification/);
+  assert.match(initialized.result.instructions,/read_developer_context/);
+  assert.match(initialized.result.instructions,/connection-schedules/);
+  assert.match(initialized.result.instructions,/change-resumption/);
+  assert(!initialized.result.instructions.includes('SHA-256'));
   const notification = await handle(request({ jsonrpc: '2.0', method: 'notifications/initialized' }));
   assert.equal(notification.status, 202); assert.equal(await notification.text(), '');
 });
 test('connection handshake advertises labeled feed sync and discovery respects read/ack scopes without starting work',async()=>{
  const calls=[],handle=handler(calls,['workspace:read','activity:write']);
  const initialized=(await (await handle(request(rpc('initialize',{protocolVersion:'2025-11-25'})))).json()).result;
- for(const phrase of ['read_muse_changes','eventTypes','refresh {tool, arguments}','acknowledge_muse_changes','connecting/reconnecting','Connection setup still stops'])assert.ok(initialized.instructions.includes(phrase),phrase);
+ for(const phrase of ['read_developer_context','connection-schedules','change-resumption','read_guide'])assert.ok(initialized.instructions.includes(phrase),phrase);
  assert.deepEqual(calls.map(call=>call.operation),['credentials.verify'],'Initialize does not consume events or execute work');
  const tools=(await (await handle(request(rpc('tools/list')))).json()).result.tools;
  assert.equal(tools.find(tool=>tool.name==='read_muse_changes').annotations.readOnlyHint,true);
