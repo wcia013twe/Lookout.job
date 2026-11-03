@@ -1,5 +1,11 @@
 import type { SVGProps } from "react";
 const paths = {
+  plus: "M12 5v14M5 12h14",
+  close: "m6 6 12 12M6 18 18 6",
+  search: "M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z",
+  link: "m10 13 4-4M8 16l-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 1 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0",
+  copy: "M9 9h12v12H9V9ZM5 15H3V3h12v2",
+
   money: "M3 6h18v12H3V6ZM3 10a4 4 0 0 0 4-4M17 6a4 4 0 0 0 4 4M3 14a4 4 0 0 1 4 4M17 18a4 4 0 0 1 4-4M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z",
   clock: "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 7v5l3 2",
   building: "M5 22V3h14v19M3 22h18M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 22v-4h4v4",

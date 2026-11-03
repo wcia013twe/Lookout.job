@@ -8,7 +8,7 @@ const origin=process.env.LOOKOUT_UI_URL||'http://127.0.0.1:3063';
 const errors=[],cloud=[];
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark',serviceWorkers:'block',permissions:['clipboard-read','clipboard-write']});
- await context.route('**/*.supabase.co/**',async route=>{if(!route.request().url().includes('/storage/v1/object/public/'))cloud.push(route.request().url());await route.abort();});
+ await context.route('**/*.supabase.co/**',async route=>{if(route.request().url().includes('/storage/v1/object/public/')){await route.continue();return;}cloud.push(route.request().url());await route.abort();});
  const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/referrals/?demo=1');
  const suggestions=page.getByRole('region',{name:'Muse suggestions',exact:true});
@@ -18,6 +18,7 @@ try{
  assert.equal(await page.getByRole('navigation',{name:'Network views'}).count(),0);
  assert.equal(await page.getByRole('button',{name:/Find people|Prepare with Muse|Request outreach/}).count(),0);
  await page.screenshot({path:dir+'/network-desktop.png',fullPage:true});
+ await page.screenshot({path:dir+'/network-desktop-viewport.png'});
  await suggestions.locator('li').filter({has:page.getByRole('heading',{name:'Jamie (fictional) · Stripe',exact:true})}).getByRole('button',{name:'Review message',exact:true}).click();
  const detail=page.getByRole('region',{name:'Person details for Jamie (fictional)',exact:true});
  await detail.waitFor();assert.match(page.url(),/person=demo-referral/);

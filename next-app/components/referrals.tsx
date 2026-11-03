@@ -9,6 +9,7 @@ import { OUTREACH_STATUSES, contactType, safeUrl } from "../../lib/outreach-mode
 import { conversationStage, waitingOn } from "../../lib/outreach-conversation.mjs";
 import OutreachConversation from "./outreach-conversation";
 import AnnotatedMessage from "./annotated-message";
+import ProfileIcon from "./profile-icon";
 
 export type ContactRecord = { id: string; origin?: "target" | "person"; company?: string; contact?: string; name?: string; title?: string; role?: string; contactType?: string; message?: string; subject?: string; linkedin?: string; link?: string; evidence?: string; reason?: string; connection?: string; sourceUrl?: string; followUp?: string; followup?: string; notes?: string; status?: string; _cloudId?: string; _revision?: number; collection?: string; [key: string]: unknown };
 type ContactGroup = { key: string; company: string; contacts: ContactRecord[] };
@@ -35,10 +36,10 @@ export function MessageEditor({ contact, update, remove, processContext = false,
     catch { setFeedback("Copy failed. Select the text below and copy it manually."); }
   }
   function draftMessage() { return <>
-    <h3 className="mt-6 text-lg font-bold">Draft message</h3>
+    <h3 className="mt-6 flex items-center gap-2 text-lg font-bold">{personContext&&<ProfileIcon name="mail" width={18} height={18}/>}Draft message</h3>
     {(contact.subject || personContext) && <div className="mt-4"><Field label="Email subject"><input className={control} name="subject" value={contact.subject||''} onChange={e => update({ subject: e.target.value })}/></Field></div>}
     <AnnotatedMessage contact={contact} name={contact.contact || contact.name || "contact"} onChange={message => { update({ message }); setFeedback(""); }}/>
-    <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>Copy message</button>{contact.subject && <button className={secondary} type="button" onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}</div>
+    <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>{personContext&&<ProfileIcon name="copy" width={16} height={16}/>}Copy message</button>{contact.subject && <button className={secondary} type="button" onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}</div>
     <Notice>{feedback}</Notice>
     {contact.message && !ready && <Notice>Replace the bracketed placeholders before copying.</Notice>}
   </>; }
