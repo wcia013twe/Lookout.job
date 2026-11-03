@@ -21,7 +21,7 @@ export async function scanSource({target,config={},keywords=[],limit=50}, inject
  const {makeHttpCtx}=await import('./vendor/career-ops/providers/_http.mjs');
  const {withConnectionScope}=await import('./vendor/career-ops/providers/_connection-scope.mjs');
  const providers=injected?.providers||await loadProviders(path.join(vendor,'providers'));
- const entry={name:target.name,careers_url:target.address,...config,max_pages:3,getro_max_pages:3};
+ const entry={name:target.name,careers_url:target.address,...config,maxPages:3,max_pages:3,getro_max_pages:3};
  // Only canonical saved address and scalar, explicitly configured provider options enter vendor code.
  const resolved=resolveProvider(entry,providers,{skipIds:['local-parser']});
  if(!resolved?.provider) return {targetId:target.id,status:'unsupported',error:resolved?.error||'No matching public provider; configure a provider or use browser sourcing',jobs:[]};
@@ -133,11 +133,8 @@ export async function deduplicateDiscovery(jobs,previous=[],workspace=process.en
  return candidates.filter((_row,index)=>retained.has(previous.length+index+1));
 }
 export async function scanDiscovery(input) {
- const greenhouse=(await import('./vendor/career-ops/providers/greenhouse.mjs')).default;
- const lever=(await import('./vendor/career-ops/providers/lever.mjs')).default;
- const providers=new Map([[greenhouse.id,greenhouse],[lever.id,lever]]);
  const limit=input.limit??500;if(!Number.isInteger(limit)||limit<1||limit>500)throw Error('Bounded discovery limit required');
- const scan=await scanSource({target:input.target,config:input.config||{},limit},{providers});
+ const scan=await scanSource({target:input.target,config:input.config||{},limit});
  if(scan.status!=='ok')return {...scan,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',scanner:'runner/career-worker.mjs scanSource',dedup:'scan.mjs + dedup-tracker.mjs'},jobs:[]};
  const jobs=await deduplicateDiscovery(scan.jobs,input.previous||[]);
  return {...scan,jobs,duplicates:scan.jobs.length-jobs.length,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',provider:'providers/'+scan.provider+'.mjs',scanner:'runner/career-worker.mjs scanSource',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};

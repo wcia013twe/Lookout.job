@@ -369,3 +369,36 @@ and real employer behavior remain unverified until separately exercised.
 ## Application jobs
 
 `queue_application_job` accepts a selected canonical Greenhouse posting and pins the current owned application revision/profile in the durable backend queue. With both execution and submission flags enabled, the worker uses its fenced application RPC path and the existing guarded runner. Search claims exclude application jobs. No LLM runs inside this worker. See [the shared contract and verification limits](../../docs/discover-application-jobs.md).
+
+## Shared default search sources
+
+`lib/search/default-portals.json` consolidates the four existing aggregate sources,
+all 198 entries in the pinned Career Ops `templates/portals.example.yml`, and all
+43 named query templates. It retains disabled entries, public provider routing,
+options and source notes. The SQL migration embeds the same document; parity is
+checked by `tests/default-search-sources.test.mjs`. When updating this catalog,
+update the JSON and a new migration together, then regenerate the Edge document
+codec with `node scripts/build-search-documents.mjs`.
+
+Accounts without an owned portals document inherit this one shared default in
+`read_search_context` and in run creation. It is a version-zero built-in document,
+not a copied personal setting. Users can save an optional versioned override;
+existing saved documents and selected targeting profiles remain authoritative.
+No source configuration is needed to start a search with an existing profile.
+
+The 43 query templates are reference web-search patterns, not active constraints
+or candidate facts. They retain upstream example roles/regions so the agent can
+adapt their structure to the selected profile. No upstream title/location filter
+is applied by the shared default. Templates are not queued as executable ATS
+sources. An agent performs supplemental web research with its available tools.
+
+Backend discovery now resolves the full installed public provider registry using
+the existing isolated scanner. Arbitrary local parsers remain excluded. Scanner
+routing does not prove source reachability or full-description parsing support;
+the current verifier's unsupported parsers remain explicit diagnostics. A job
+scans at most ten sources: the four aggregate defaults followed by a deterministic
+per-run sample of the enabled employer/board catalog. Remaining sources are
+recorded as unscanned, with partial coverage. Sampling is stable on retry and
+rotates with a new run; this is not exhaustive coverage of the entire catalog.
+A source can still need human/agent browsing, and no real searches or submissions
+are executed by the regression tests.

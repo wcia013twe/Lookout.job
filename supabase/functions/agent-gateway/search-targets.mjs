@@ -1,6 +1,6 @@
 export const targetKinds = { board: 'Job board', careers: 'Company careers page', social: 'Social account' };
 export function validateTargets(targets) {
-  if (!Array.isArray(targets) || targets.length > 100) throw Error('Use up to 100 search targets.');
+  if (!Array.isArray(targets) || targets.length > 500) throw Error('Use up to 500 search targets.');
   const ids = new Set(), addresses = new Set();
   for (const t of targets) {
     if (!t || Object.keys(t).some(k => !['id','name','kind','address'].includes(k)) || typeof t.id !== 'string' || !/^[a-zA-Z0-9_-]{1,80}$/.test(t.id) || typeof t.name !== 'string' || !t.name.trim() || t.name.length > 120 || !Object.hasOwn(targetKinds,t.kind) || typeof t.address !== 'string' || t.address.length > 2048) throw Error('Each target needs a name, source type, and URL or social handle.');

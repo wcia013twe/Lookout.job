@@ -69,7 +69,7 @@ function Editor() {
       <Field label={draft.kind === 'social' ? 'Profile URL or @handle' : 'Source URL'}><input required maxLength={2048} className={control} value={draft.address} placeholder={draft.kind === 'social' ? '@zero2sudo' : 'https://…'} onChange={e => setDraft({ ...draft,address:e.target.value })} /></Field>
       </fieldset>
       <div className="flex flex-wrap gap-2"><button className={primary} disabled={busy || w.locked}>{busy ? 'Saving…' : 'Save target'}</button><button type="button" className={secondary} disabled={busy} onClick={() => setDraft(null)}>Cancel</button></div>
-    </form> : <button type="button" className={`${primary} mt-5`} disabled={busy || w.locked || targets.length >= 100} onClick={() => { setDraft({ ...blank }); setFeedback(''); }}>Add target</button>}
+    </form> : <button type="button" className={`${primary} mt-5`} disabled={busy || w.locked || targets.length >= 500} onClick={() => { setDraft({ ...blank }); setFeedback(''); }}>Add target</button>}
     {w.user && !w.demo && <button type="button" className={`${secondary} ml-2 mt-5`} disabled={busy || w.locked} onClick={reload}>Reload saved list</button>}
     <Notice>{feedback}</Notice>
   </Section>;

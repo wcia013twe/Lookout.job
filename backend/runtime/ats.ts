@@ -21,7 +21,7 @@ export async function fetchSource(sourceId:string,source:Payload,{execute=execut
    const checked=await verifyLeadSource(sourceId,unique,{execute});
    return {...checked,examined:page.leads.length,provenance:{...checked.provenance,aggregate:'official Simplify structured JSON',dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'},total:page.total,coverage:page.nextOffset!==null?'truncated':checked.coverage,blocker:page.nextOffset!==null?`Bounded aggregate sample; ${page.total} active source leads, next source offset ${page.nextOffset}. Agent can page remaining leads through read_search_source_leads. ${checked.blocker}`:checked.blocker};
   }
-  const result=await execute('discovery',{limit:25,target:{id:sourceId,name:source.name||sourceId,address:source.careers_url},config:{...(source.provider?{provider:source.provider}:{}),...(source.api?{api:source.api}:{})},previous});
+  const result=await execute('discovery',{limit:25,target:{id:sourceId,name:source.name||sourceId,address:source.careers_url},config:{...(source.config||{}),...(source.provider?{provider:source.provider}:{}),...(source.api?{api:source.api}:{})},previous});
   if(result.status!=='ok')return {listings:[],coverage:'inaccessible',blocker:'Source needs agent research or a supported copied CareerOps connector.',total:0,provenance:result.provenance};
   const checked=await verifyLeadSource(sourceId,result.jobs.map((row:Payload)=>({url:row.url})),{execute});
   return {...checked,examined:result.jobs.length,total:result.available,coverage:result.truncated?'truncated':checked.coverage,blocker:result.truncated?'Copied provider output reached the bounded result limit. '+checked.blocker:checked.blocker,provenance:{...result.provenance,...checked.provenance}};

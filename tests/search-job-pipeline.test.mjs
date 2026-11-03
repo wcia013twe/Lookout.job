@@ -75,3 +75,34 @@ test('final SQL job receipt rejects a settings change after the last JS version 
  const r=await rpc('backend_worker',{operation:'finish',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...outcome}});
  assert.equal(r.error.code,'40001');assert.equal((await result(f.job.id)).result.shortlist,undefined);
 });
+
+test('profile-only accounts start leased searches with built-in connected sources and matching context',async()=>{
+ const f=await fixture();
+ await db.query("delete from public.search_documents where user_id=$1 and kind='portals'",[f.owner]);
+ const claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;
+ assert.equal(claim.job.id,f.job.id);
+ const dispatch=async(operation,payload)=>{
+  const r=await rpc('backend_worker',{operation:'dispatch',payload:{jobId:f.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload}});
+  assert.equal(r.error,null);return r.data;
+ };
+ const context=await dispatch('search.context',{profileId:f.profile});
+ const portals=context.documents.find(d=>d.kind==='portals');
+ const {sourceTemplates}=await import('../lib/search/documents.mjs');
+ assert.deepEqual(portals.projection.tracked_companies,sourceTemplates);
+ assert.equal(portals.builtin,true);
+ const run=await dispatch('search.run.start',{profileId:f.profile,eventKey:`job:${f.job.id}:start`});
+ assert.deepEqual(run.sources.map(s=>s.source).sort((a,b)=>a.id.localeCompare(b.id)),sourceTemplates.filter(s=>s.enabled).sort((a,b)=>a.id.localeCompare(b.id)));
+ assert.equal(run.contextChanged,false);
+ assert.equal((await db.query("select count(*)::int n from public.search_documents where user_id=$1 and kind='portals'",[f.owner])).rows[0].n,0);
+ await rpc('backend_worker',{operation:'finish',payload:{jobId:f.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,status:'failed',result:{summary:'Fictional test cleanup'}}});
+});
+
+test('demo profile-only context shows default sources without execution and preserves overrides',async()=>{
+ const {searchDemo,synchronizeSearchDemo}=await import('../lib/search/demo.mjs');
+ const {sourceTemplates}=await import('../lib/search/documents.mjs');
+ const data=searchDemo();data.documents=data.documents.filter(d=>d.kind!=='portals');
+ const d=synchronizeSearchDemo(data);
+ assert.deepEqual(d.documents.find(d=>d.kind==='portals').projection.tracked_companies,sourceTemplates);
+ const override=synchronizeSearchDemo(d,{targets:[]});
+ assert.deepEqual(override.documents.find(d=>d.kind==='portals').projection.tracked_companies,[]);
+});

@@ -19,6 +19,14 @@ export function listingBatches(rows:Payload[],maxBytes=48000){
   if(batch.length)batches.push({offset,listings:batch});
   return batches;
 }
+
+// Keep aggregate defaults available on every run and rotate the bounded employer
+// sample across the complete catalog. The seed is durable across job retries.
+export function orderedSearchSources(sources:Payload[],runId:string){
+ const primary=new Set(['hiringcafe','simplify-summer','simplify-newgrad','simplify-offseason']);
+ const rank=(s:Payload)=>createHash('sha256').update(runId+':'+s.source_id).digest('hex');
+ return [...sources].sort((a,b)=>Number(primary.has(b.source?.id))-Number(primary.has(a.source?.id))||rank(a).localeCompare(rank(b)));
+}
 export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute,request}: {execute?:import('./ats.ts').Execute;request?:typeof fetch}={}) {
   const prefix=`job:${job.id}:`;
   const run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):await dispatch('search.run.start',{profileId:job.input.profileId,eventKey:prefix+'start'});
@@ -39,10 +47,10 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
     }
   }
   let saved=0;let blocked=0;let scanned=0;const provenance:Payload[]=[];
-  const sources=run.sources||[];
+  const sources=orderedSearchSources(run.sources||[],run.id);
   for(const [index,source] of (run.state==='active'?sources:[]).entries()){
     if(source.state==='completed'){continue;}
-    const observation=index<10?await fetchSource(source.source_id,source.source,{execute,previous:seen,profile:collectionProfile.projection,request,days:run.days||(run.mode==='backlog'?30:3)}):{listings:[],coverage:'truncated',blocker:'Bounded run supports at most ten configured sources.',total:0,examined:0,provenance:undefined,diagnostics:[]};
+    const observation=index<10?await fetchSource(source.source_id,source.source,{execute,previous:seen,profile:collectionProfile.projection,request,days:run.days||(run.mode==='backlog'?30:3)}):{listings:[],coverage:'truncated',blocker:'Not scanned in this bounded ten-source sample. The full shared catalog remains available for agent research or another run.',total:0,examined:0,provenance:undefined,diagnostics:[]};
     if(observation.provenance)provenance.push(observation.provenance);
     const rows=observation.listings;seen.push(...rows);scanned+=observation.examined??observation.total;
     // Each idempotency key is tied to a persisted source version. Re-read and
