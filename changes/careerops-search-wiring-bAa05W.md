@@ -18,3 +18,5 @@
 - Diagnosed run 4 read-only: it still used profile general v5 with saved Roles but no title filter; the exact packaged inspector reproduced ready=false with the missing-title gap and no validator errors. The worker had not crashed; workOnce hid the deliberate preflight stop behind its generic exception result.
 - Worker now performs preflight before creating a new search run and persists `search_filters_not_ready`, the inspected filter plan, evaluated versions and scoped recovery pointers. Muse can configure/reinspect before submitting a new job. No source fetch occurs, and unchanged targeting is not bypassed. Existing runs/batches are not rewritten.
 - Expanded real SQL regression verifies failed job contains actionable diagnostics and no search_run_id when configuration is missing. Existing happy-path and fenced ownership tests remain.
+
+- Recovery validation: all 24 focused worker/SQL/MCP tests passed; runtime typecheck, data validation and diff check passed. Packaged network-disabled reproduction returns search_filters_not_ready with profile version/recovery tool and runCreated=false.
