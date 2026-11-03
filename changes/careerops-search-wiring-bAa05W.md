@@ -12,3 +12,9 @@
 
 - Local activation: landed into local main and updated the idle existing Node API/worker using `/private/tmp/lookout-careerops-runtime.json`, preserving environment, ports and networks. API healthy; worker running. Repaired the local Edge runtime’s stale individual module mounts with a read-only `lib/` directory mount using `/private/tmp/lookout-local-edge-runtime.json`; retained its previous stopped container/config for rollback.
 - Live local verification: disposable fictional account exercised Node operations/MCP → gateway → existing SQL: developer context 99, authorized profile write/read-back, ready filter plan using original validator and MCP tool discovery. Fixture account deleted. No new search or personal profile/batch modification. No push, PR or hosted deployment.
+
+## Missing-filter recovery follow-up
+
+- Diagnosed run 4 read-only: it still used profile general v5 with saved Roles but no title filter; the exact packaged inspector reproduced ready=false with the missing-title gap and no validator errors. The worker had not crashed; workOnce hid the deliberate preflight stop behind its generic exception result.
+- Worker now performs preflight before creating a new search run and persists `search_filters_not_ready`, the inspected filter plan, evaluated versions and scoped recovery pointers. Muse can configure/reinspect before submitting a new job. No source fetch occurs, and unchanged targeting is not bypassed. Existing runs/batches are not rewritten.
+- Expanded real SQL regression verifies failed job contains actionable diagnostics and no search_run_id when configuration is missing. Existing happy-path and fenced ownership tests remain.

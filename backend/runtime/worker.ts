@@ -29,12 +29,14 @@ export function orderedSearchSources(sources:Payload[],runId:string){
 }
 export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute,request}: {execute?:import('./ats.ts').Execute;request?:typeof fetch}={}) {
   const prefix=`job:${job.id}:`;
-  const run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):await dispatch('search.run.start',{profileId:job.input.profileId,eventKey:prefix+'start'});
-  const collectionContext=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
-  const collectionProfile=collectionContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===(run.profile_id||job.input.profileId));
+  let run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):null;
+  const profileId=run?.profile_id||job.input.profileId;
+  const collectionContext=await dispatch('search.context',{profileId});
+  const collectionProfile=collectionContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId);
   if(!collectionProfile)throw Error('Current job profile unavailable');
   const filterPlan=await (execute||executeCareerTask)('inspect-discovery-filters',{profile:collectionProfile.projection,portals:collectionContext.documents.find((d:Payload)=>d.kind==='portals')?.projection||{}});
-  if(!filterPlan.ready)throw Error('Configure search filters before collecting: '+[...filterPlan.gaps,...filterPlan.validation.errors.map((e:Payload)=>e.path+': '+e.message)].join(' '));
+  if(!filterPlan.ready)return {status:'failed',result:{code:'search_filters_not_ready',summary:'Search did not start because the selected profile needs configured or corrected discovery filters.',profileId,evaluatedProfileVersion:collectionProfile.version,personalVersion:collectionContext.personalVersion,filterPlan,recovery:{tool:'read_search_filter_plan',arguments:{profileId},guideId:'career-find-jobs',action:'Read the filter gaps, configure the selected profile through save_search_document, inspect and read back the corrected plan, then submit a new job. Do not retry an unchanged search or use a broad filter to bypass targeting.'}}};
+  if(!run)run=await dispatch('search.run.start',{profileId,eventKey:prefix+'start'});
   const seen:Payload[]=[];
   if(job.search_run_id){
     let offset=0;
