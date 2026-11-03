@@ -6,6 +6,7 @@ import { submissionDispatch } from '../supabase/functions/agent-gateway/submissi
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { submitApplication, assertSubmitFormScope } from '../runner/submit.mjs';
 import { formResult, identifyJob } from '../runner/forms.mjs';
+import {applicationBlocker,blockerFromError} from '../lib/application-blockers.mjs';
 const aid='00000000-0000-4000-8000-000000000001', rid='00000000-0000-4000-8000-000000000002', claimId='00000000-0000-4000-8000-000000000003';
 const url='https://job-boards.greenhouse.io/example/jobs/123', user='owner';
 function fixture() {
@@ -176,4 +177,67 @@ test('an exact human approval can intentionally override a profile resume assign
  f.context.application.status='Approved';f.context.application.draft.questionsReviewed=true;
  f.context.approval={id:'human',application_id:aid,user_id:user,revision:1,snapshot:{draft:structuredClone(f.context.application.draft),resume:structuredClone(f.context.resume),profile:structuredClone(f.context.profile.facts)}};
  assert.equal(authorizeSubmission(f.context).authorization.mode,'human');
+});
+
+test('Muse receives changed field identities and choices without prepared answer values',async()=>{
+ const f=fixture();const question={question:'Which office can you attend?',required:true,fields:[{id:'office',type:'select',options:[{value:'ny',label:'New York'},{value:'sf',label:'San Francisco'}]}]};
+ f.page.evaluate=async()=>({questions:[question],blockers:[]});
+ const result=await submitApplication({applicationId:aid,attemptId:'changed-question',gateway:f.gateway,getPage:async()=>f.page});
+ assert.equal(result.blocker.code,'form-changed');assert.equal(result.blocker.submitClickAttempted,false);assert.equal(result.blocker.safeToRetry,true);
+ assert.equal(result.blocker.recovery.requiresAttemptCheck,true);assert.equal(result.blocker.recovery.requiresFreshAuthorization,true);
+ assert.equal(result.blocker.questions[0].fieldId,'office');assert.equal(result.blocker.questions[0].options[1].value,'sf');
+ assert(!JSON.stringify(result.blocker).includes('test@example.com'));assert.equal(f.clicks,0);
+ assert.match(f.calls.at(-1).payload.reason,/questions or choices changed/);
+});
+test('authorization failures return only unresolved question metadata and never suggest bypassing approval',async()=>{
+ const f=fixture();f.context.application.draft.questions[0].answer='';
+ const result=await submitApplication({applicationId:aid,attemptId:'missing-answer',gateway:f.gateway,getPage:async()=>f.page});
+ assert.equal(result.blocker.code,'authorization-required');assert.equal(result.blocker.safeToRetry,false);
+ assert.equal(result.blocker.questions[0].fieldId,'email');assert.equal(result.blocker.questions.length,1);
+ assert(!Object.hasOwn(result.blocker.questions[0],'answer'));assert.equal(f.clicks,0);
+});
+test('final validation identifies the failing field without echoing its filled value',async()=>{
+ const f=fixture(),evaluate=f.page.evaluate;
+ f.page.evaluate=async(fn,arg)=>arg?.fields?{valid:false,fieldIds:['email'],reason:'value-mismatch'}:evaluate(fn,arg);
+ const result=await submitApplication({applicationId:aid,attemptId:'invalid-email',gateway:f.gateway,getPage:async()=>f.page});
+ assert.equal(result.blocker.code,'values-invalid');assert.deepEqual(result.blocker.questions.map(q=>q.fieldId),['email']);
+ assert(!JSON.stringify(result.blocker).includes('test@example.com'));assert.equal(f.clicks,0);
+});
+test('raw browser exceptions never enter a Muse blocker or saved failure record',async()=>{
+ const f=fixture();f.page.goto=async()=>{throw Error('Bearer private-token https://storage.example/file?token=secret applicant@example.com');};
+ const result=await submitApplication({applicationId:aid,attemptId:'navigation-failed',gateway:f.gateway,getPage:async()=>f.page});
+ assert.equal(result.blocker.code,'navigation-failed');assert.equal(result.blocker.recovery.action,'use-browser');
+ assert(!/private-token|token=secret|applicant@example.com/.test(JSON.stringify(result)+JSON.stringify(f.calls)));
+});
+test('lost start responses and post-click timeouts have distinct click facts and both forbid retry',async()=>{
+ for(const startedClick of [false,true]){
+  const f=fixture(),call=f.gateway.call;
+  if(startedClick)f.page.waitForFunction=async()=>{throw Error('timeout');};
+  else f.gateway.call=async(op,payload)=>{const result=await call(op,payload);if(op==='submission.start')throw Error('lost start response');return result;};
+  const result=await submitApplication({applicationId:aid,attemptId:'uncertain-details',gateway:f.gateway,getPage:async()=>f.page});
+  assert.equal(result.blocker.submissionState,'uncertain');assert.equal(result.blocker.submitClickAttempted,startedClick);
+  assert.equal(result.blocker.safeToRetry,false);assert.equal(result.blocker.recovery.action,'verify-outcome');
+ }
+});
+test('observed confirmation with a lost report gives Muse a report-only recovery',async()=>{
+ const f=fixture(),call=f.gateway.call;f.gateway.call=async(op,payload)=>{if(op==='submission.finish')throw Error('offline');return call(op,payload);};
+ const result=await submitApplication({applicationId:aid,attemptId:'report-details',gateway:f.gateway,getPage:async()=>f.page});
+ assert.equal(result.blocker.code,'report-pending');assert.equal(result.blocker.submissionState,'confirmed');assert.equal(result.blocker.submitClickAttempted,true);
+ assert.equal(result.blocker.recovery.action,'report-result');assert.equal(result.blocker.safeToRetry,false);
+ assert.equal(result.pendingReport.outcome,'confirmed');assert.equal(f.clicks,1);
+});
+test('blocker metadata is bounded, marks truncation and excludes answers and raw errors',()=>{
+ const q={fieldId:'field',fieldType:'select',question:'Q'.repeat(1000),required:true,answer:'PRIVATE ANSWER',options:Array.from({length:20},(_,i)=>({value:String(i),label:'Choice'.repeat(100)}))};
+ const result=applicationBlocker({code:'prefill-blocked',questions:Array(20).fill(q),reasons:Array(10).fill('reason'.repeat(100)),safeToRetry:true});
+ assert.equal(result.questions.length,5);assert.equal(result.questionsTruncated,true);assert.equal(result.questions[0].options.length,10);assert.equal(result.questions[0].optionsTruncated,true);
+ assert.equal(result.questions[0].question.length,400);assert.equal(result.questions[0].questionTruncated,true);assert.equal(result.reasons.length,5);assert(Buffer.byteLength(JSON.stringify(result))<24000);
+ assert(!JSON.stringify(result).includes('PRIVATE ANSWER'));
+ assert(!JSON.stringify(blockerFromError(Error('secret'),{code:'navigation-failed'})).includes('secret'));
+ assert.equal(applicationBlocker({code:'existing-confirmation',safeToRetry:true}).safeToRetry,false);
+});
+
+test('authorization diagnostics retain truncation flags for large unresolved forms',async()=>{
+ const f=fixture();f.context.application.draft.questions=Array.from({length:8},(_,i)=>({fieldId:'question-'+i,question:'Question '+i,fieldType:'select',required:true,answer:'',options:Array.from({length:12},(_,j)=>({value:String(j),label:'Choice '+j}))}));
+ const result=await submitApplication({applicationId:aid,attemptId:'truncated-auth',gateway:f.gateway,getPage:async()=>f.page});
+ assert.equal(result.blocker.questionsTruncated,true);assert.equal(result.blocker.questions[0].optionsTruncated,true);assert.equal(result.blocker.safeToRetry,false);
 });

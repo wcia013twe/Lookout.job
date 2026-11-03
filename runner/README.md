@@ -82,6 +82,15 @@ Receipts are labelled runner-observed employer confirmation, not signed API proo
 
 ## Duplicate prevention and recovery
 
+Submission failures return an actionable `blocker` for Muse: fixed code and stage,
+bounded relevant questions/options, current-run click facts and recovery action.
+The Node worker saves the same object in its existing job result, readable through
+`read_backend_jobs` after the completion change. Muse resolves supported issues
+from Lookout or its own browser tools before escalating missing personal decisions.
+`safeToRetry` is not permission: always check saved attempts and obtain current
+authorization. Unknown/uncertain outcomes require verification; an observed but
+unsaved confirmation provides `pendingReport` for reporting-only recovery.
+
 One active/uncertain/confirmed attempt per owned application is enforced in SQL.
 Claimed/started attempts freeze draft edits. Claims/start recheck the full current
 context, credential/scopes, policy version and exact snapshot. A click permit is

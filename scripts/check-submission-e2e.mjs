@@ -15,6 +15,7 @@ import {createSubmissionService} from '../backend/runtime/submission.ts';
 import {SUBMISSION_TOOLS} from '../supabase/functions/agent-gateway/submission-batches.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {submissionDispatch} from '../supabase/functions/agent-gateway/submission-dispatch.mjs';
+import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
 import {prepareDraftWithPrefill} from '../lib/application-prefill-service.mjs';
 import {updateField} from '../lib/search-profile.mjs';
 import {inspectBrowserForm} from '../runner/browser.mjs';
@@ -87,6 +88,7 @@ before(async()=>{
    if(result.error){console.error('Fictional Edge diagnostic:',operation,result.error.code,result.error.message);res.writeHead(['40001'].includes(result.error.code)?409:400,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:result.error.message}));}
    if(operation==='submission.batch.checkpoint'&&loseCheckpointOnce){loseCheckpointOnce=false;return res.destroy();}
    if(operation==='resumes.read')result.data={resume:result.data,url:edgeUrl+'/storage/v1/object/sign/resumes/'+result.data.object_path+'?token=fixture-only'};
+   if(operation==='changes.read')result.data=contextResponse(operation,result.data);
    res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify({data:result.data}));
   }catch(error){res.writeHead(500,{'Content-Type':'application/json'});res.end(JSON.stringify({error:error.message}));}
  });edge.listen(0,'127.0.0.1');await once(edge,'listening');edgeUrl=`http://127.0.0.1:${edge.address().port}`;
@@ -124,6 +126,8 @@ test('Gate 2: employer form changes, no click occurs, durable HITL action appear
  failed=await application('changed');
  const result=await direct('local.submit',{applicationId:failed.app.id,attemptId:'changed-form-e2e'});
  assert.equal(result.status,'Needs you');assert.equal(result.reported,true);assert.equal(failed.fixture.posts,0);
+ assert.equal(result.blocker.code,'form-changed');assert.equal(result.blocker.submitClickAttempted,false);assert.equal(result.blocker.safeToRetry,true);
+ assert(result.blocker.questions.some(q=>q.fieldId==='phone'&&q.question==='Phone'));
  const inbox=await tool('read_action_inbox');assert(inbox.items.some(item=>item.application_id===failed.app.id&&item.kind==='resolve_blocker'));
  assert.equal((await row('select status from public.applications where id=$1',[failed.app.id])).status,'Blocked');
 });
@@ -243,6 +247,10 @@ test('Queued worker preserves pre-click HITL and post-click uncertainty without 
   const queued=await tool('queue_application_job',payload);await workOnce(rpc,{applicationExecutor:executor});
   const record=await tool('read_application_record',{applicationId:f.app.id});
   assert.equal(record.application.execution_job.status,'partial');assert.equal(record.application.receipt,null);
+  const observed=await tool('read_backend_jobs',{jobId:queued.job.id}),blocker=observed.jobs[0].result.blocker;
+  assert(blocker);assert.equal(blocker.submitClickAttempted,mode==='uncertain');
+  assert.equal(blocker.safeToRetry,mode!=='uncertain');
+  if(mode==='uncertain'){assert.equal(blocker.submissionState,'uncertain');assert.equal(blocker.recovery.action,'verify-outcome');}
   assert.equal(f.fixture.posts,mode==='uncertain'?1:0);
   const inbox=await tool('read_action_inbox');assert(inbox.items.some(item=>item.application_id===f.app.id));
   if(mode==='uncertain')assert.equal((await row('select state from public.submission_attempts where application_id=$1',[f.app.id])).state,'uncertain');
@@ -309,4 +317,40 @@ test('Lever resume parsing cannot silently replace an authorized contact answer'
  await workerProfile();const f=await application('normal',{ats:'lever',profileId:'worker-execution'});f.fixture.rewrite=true;
  const result=await tool('submit_application',{applicationId:f.app.id,attemptId:'lever-parser'});
  assert.equal(result.status,'Needs you');assert.equal(f.fixture.posts,0);
+});
+
+test('Muse reads a queued blocker through the completion feed, repairs from Lookout and submits once',async()=>{
+ await workerProfile();const f=await application('changed',{profileId:'worker-execution'});
+ const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-execution',expectedRevision:f.app.revision,eventKey:'muse-repair-job'};
+ const queued=await tool('queue_application_job',payload);
+ const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return(await promise).getPage();},close:async()=>{if(promise)await(await promise).close();}};}});
+ await workOnce(rpc,{applicationExecutor:executor});
+ const feed=await tool('read_muse_changes',{limit:50});
+ const event=feed.items.find(item=>item.kind==='backend_job_finished'&&item.recordId===queued.job.id);
+ assert(event);assert.deepEqual(event.refresh,{tool:'read_backend_jobs',arguments:{jobId:queued.job.id}});
+ const jobs=await tool(event.refresh.tool,event.refresh.arguments),job=jobs.jobs[0];
+ assert.equal(job.kind,'application_submit');assert.equal(job.status,'partial');
+ const blocker=job.result.blocker;assert.equal(blocker.code,'form-changed');assert.equal(blocker.safeToRetry,true);
+ assert(blocker.questions.some(q=>q.fieldId==='phone'));assert(!JSON.stringify(blocker).includes('fictional@example.com'));assert.equal(f.fixture.posts,0);
+ const provider=await browserFactory(),page=await provider.getPage();await page.goto(f.url);const form=await inspectBrowserForm(page);await provider.close();
+ const current=(await tool('read_application_record',{applicationId:f.app.id})).application;
+ await tool('prepare_draft',{jobId:f.jobId,expectedRevision:current.revision,blocker:'',draft:{...current.draft,formFingerprint:form.formFingerprint,questions:form.questions.flatMap(q=>q.fields.map(field=>({fieldId:field.id,fieldType:field.type,question:q.question,required:q.required,options:field.options,answer:''})))}});
+ const repaired=(await tool('read_application_record',{applicationId:f.app.id})).application;
+ assert.equal(repaired.draft.questions.find(q=>q.fieldId==='phone').answer,'+1 202-555-0100');
+ const result=await tool('submit_application',{applicationId:f.app.id,attemptId:'muse-repaired-job'});
+ assert.equal(result.status,'Submitted',JSON.stringify(result));assert.equal(f.fixture.posts,1);
+});
+
+test('queued initial form inspection retains actionable custom-control details for Muse',async()=>{
+ await workerProfile();const f=await application('normal',{profileId:'worker-execution'});
+ await db.query('update public.applications set draft=$1 where id=$2',[{searchProfileId:'worker-execution'},f.app.id]);
+ const app=await row('select * from public.applications where id=$1',[f.app.id]);
+ f.fixture.extra='<button type="button" role="combobox" aria-label="Choose an office">Choose an office</button>';
+ const queued=await tool('queue_application_job',{posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-execution',expectedRevision:app.revision,eventKey:'initial-custom-control'});
+ const executor=createApplicationExecutor({download:async()=>bytes,browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return(await promise).getPage();},close:async()=>{if(promise)await(await promise).close();}};}});
+ await workOnce(rpc,{applicationExecutor:executor});
+ const job=(await tool('read_backend_jobs',{jobId:queued.job.id})).jobs[0];
+ assert.equal(job.result.blocker.code,'form-inspection');assert.equal(job.result.blocker.recovery.action,'use-browser');
+ assert.equal(job.result.blocker.questions[0].question,'Choose an office');assert.equal(job.result.blocker.questions[0].fieldType,'unsupported');
+ assert(job.result.blocker.reasons.some(reason=>/Custom/.test(reason)));assert.equal(job.result.blocker.submitClickAttempted,false);assert.equal(f.fixture.posts,0);
 });

@@ -77,6 +77,12 @@ export function collectApplicationControls() {
     questions.push({ id, question: entry.question, required: entry.required,
       fields: [{ id, type: 'radio', options: entry.options }] });
   }
+  const custom=[...form.querySelectorAll('[role="combobox"], [role="listbox"], [role="radio"], [role="checkbox"], button[aria-pressed], button[aria-haspopup]')];
+  for(const [index,control] of custom.entries()) {
+    if(inputs.includes(control)||!visible(control))continue;
+    const id=control.id||control.name||`unsupported-control-${index}`;
+    questions.push({id,question:labelOf(control)||platformLabel(control)||'Unlabelled custom control',required:control.getAttribute('aria-required')==='true',fields:[{id,type:'unsupported',options:[]}]});
+  }
   // Do not infer consent, invent custom-widget choices or inspect challenge frames.
   if (form.querySelector('[role="combobox"], [role="listbox"], [role="radio"], [role="checkbox"], button[aria-pressed], button[aria-haspopup], iframe, [data-sitekey]')
     || document.querySelector('iframe[src*="captcha"], [data-sitekey]')) {

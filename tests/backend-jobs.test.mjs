@@ -81,7 +81,7 @@ test('browser adapter uses the same bounded RPC with explicit owned connection a
 test('fictional backend job states, cancellation, retry receipts reset without execution',async()=>{
   const a=createBackendJobsDemo(),b=createBackendJobsDemo();
   const rows=(await a.read()).jobs;
-  assert.deepEqual(rows.map(row=>row.status),['queued','running','completed','partial','failed','cancelled']);
+  assert.deepEqual(rows.filter(row=>row.kind==='search_ats').map(row=>row.status),['queued','running','completed','partial','failed','cancelled']);
   assert.ok(rows.every(row=>!Object.hasOwn(row,'lease_token')));
   const payload={...submit,connectionId:DEMO_BACKEND_CONNECTION_ID};
   const queued=await a.submit(payload);
@@ -91,7 +91,7 @@ test('fictional backend job states, cancellation, retry receipts reset without e
   const cancelled=await a.cancel({jobId:queued.id,expectedVersion:queued.version});
   assert.equal(cancelled.status,'cancelled');
   await assert.rejects(a.cancel({jobId:queued.id,expectedVersion:queued.version}),/changed/);
-  assert.equal((await b.read()).jobs.length,6);
+  assert.equal((await b.read()).jobs.length,8);
   a.reset();assert.deepEqual(await a.read(),await b.read());
 
 });
@@ -101,7 +101,7 @@ test('detached demo service includes isolated backend fixtures and versioned gui
   const store=createMemoryStore(fixtures);
   // createDemoWorkspace already returns the complete fictional state shape.
   const demo=createDemoServices(store);
-  assert.equal((await demo.backendJobs.read()).jobs.length,6);
+  assert.equal((await demo.backendJobs.read()).jobs.length,8);
   assert.equal(demo.backendJobs.fictional,true);
   assert.ok(instructions.developerVersion>=54);
   assert.equal(readGuide('workspace-maintenance').capabilities.backendJobs.hostedDeploymentVerified,false);
@@ -111,8 +111,18 @@ test('detached demo service includes isolated backend fixtures and versioned gui
 test('fictional terminal demo jobs expose the single-job shortlist while pending jobs do not',async()=>{
  const demo=createBackendJobsDemo(),{jobs}=await demo.read();
  for(const job of jobs){
-  if(['completed','partial'].includes(job.status)){assert.equal(job.result.pipelineVersion,1);assert.equal(job.result.shortlist.reporting,'pending-muse');assert.equal(job.result.shortlist.applicantEligibility,'not-evaluated');assert.equal(job.result.shortlist.retainedListingIds.length,1);}
+  if(job.kind==='search_ats'&&['completed','partial'].includes(job.status)){assert.equal(job.result.pipelineVersion,1);assert.equal(job.result.shortlist.reporting,'pending-muse');assert.equal(job.result.shortlist.applicantEligibility,'not-evaluated');assert.equal(job.result.shortlist.retainedListingIds.length,1);}
   else assert.equal(job.result?.shortlist,undefined);
  }
  demo.reset();assert.equal((await demo.read()).jobs.length,jobs.length);
+});
+
+test('application demo jobs expose bounded repair and uncertain handoffs without execution',async()=>{
+ const demo=createBackendJobsDemo(),{jobs}=await demo.read();
+ const [uncertain,repair]=jobs.filter(job=>job.kind==='application_submit');
+ assert.equal(uncertain.result.blocker.safeToRetry,false);assert.equal(uncertain.result.blocker.submitClickAttempted,true);
+ assert.equal(repair.result.blocker.questions[0].fieldId,'availability');assert.equal(repair.result.blocker.recovery.action,'repair-draft');
+ uncertain.result.blocker.message='mutated';
+ assert.notEqual((await demo.read({jobId:uncertain.id})).jobs[0].result.blocker.message,'mutated');
+ demo.reset();assert.equal((await demo.read()).jobs.length,8);
 });
