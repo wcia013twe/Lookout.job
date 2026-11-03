@@ -5,8 +5,8 @@ begin
  insert into auth.users(id) values(u);
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Extended',h,array['workspace:read','network:write','tracking:write','resumes:write'],now()+interval '1 hour');
  begin
-  perform public.agent_dispatch(h,'contacts.save','{"id":"missing-company","record":{},"expectedRevision":0}');
-  raise exception 'Missing company accepted';
+  perform public.agent_dispatch(h,'contacts.save','{"id":"missing-company","record":{"contact":"Pat","company":123},"expectedRevision":0}');
+  raise exception 'Invalid company accepted';
  exception when invalid_parameter_value then null; end;
  r:=public.agent_dispatch(h,'contacts.save','{"id":"extended-test","record":{"company":"Example","contact":"Fictional"},"expectedRevision":0}');
  if r->>'revision'<>'1' then raise exception 'Contact version wrong'; end if;

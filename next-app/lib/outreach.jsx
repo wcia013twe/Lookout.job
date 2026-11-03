@@ -1,22 +1,24 @@
 "use client";
+import {validatePersonContext} from '../../lib/network-people.mjs';
 import {callApi,apiFailure,apiErrorText} from '../../lib/api-failure.mjs';
 import {isCompanyRecord} from '../../lib/network-model.mjs';
 import { outreachDemoMessages } from './outreach-demo.mjs';
 import { useEffect, useRef, useState } from 'react';
 import { useSlice, useWorkspace } from './workspace';
-const recordOf = row => { const {id,_revision,_outreachDirty,origin,...record}=row; return record; };
+const recordOf = row => { const {id,_revision,_updatedAt,_outreachDirty,origin,...record}=row; return record; };
 export function useOutreach() {
  const {client,user,store,demo}=useWorkspace(); const [contacts,setLocal]=useSlice('network.referrals');
  const [requests,setRequests]=useState([]),[status,setStatus]=useState(''),[error,setError]=useState(''),[ready,setReady]=useState(false);
  const session=useRef(null),latest=useRef(contacts||[]); latest.current=contacts||[];
  function isCurrent(s) {return session.current===s && window.JB?.auth?.userId===s.owner;}
  function apply(rows) { latest.current=rows; setLocal(rows); }
- async function refresh(s) {
+ async function refresh(s,discard=false) {
+  if(discard && isCurrent(s) && !s.running){s.pending.clear();clearTimeout(s.timer);store.set('network.outreachDeletions',[]);}
   if(!isCurrent(s) || s.pending.size || s.running) return;
   const [a,b]=await Promise.all([callApi('outreach_contacts.read',()=>client.from('outreach_contacts').select('*').eq('user_id',s.owner).order('updated_at'),Array.isArray),callApi('outreach_requests.read',()=>client.from('outreach_requests').select('*').eq('user_id',s.owner).order('created_at',{ascending:false}).limit(30),Array.isArray)]);
   if(!isCurrent(s) || s.pending.size || s.running) return;
   s.revisions=new Map(a.map(r=>[r.id,r.revision]));
-  apply(a.filter(r=>!r.deleted_at&&r.record.collection!=='companies').map(r=>({...r.record,id:r.id,companyId:r.company_id||r.record.companyId,_revision:r.revision}))); setRequests(b);setError('');setStatus('Saved to your account.');
+  apply(a.filter(r=>!r.deleted_at&&r.record.collection!=='companies').map(r=>({...r.record,id:r.id,companyId:r.company_id||r.record.companyId,_revision:r.revision,_updatedAt:r.updated_at}))); setRequests(b);setError('');setStatus('Saved to your account.');
  }
  async function flush() {
   const s=session.current; if(!s) return;
@@ -25,14 +27,16 @@ export function useOutreach() {
    while(s.pending.size && isCurrent(s)) {
     const [id,value]=s.pending.entries().next().value; s.pending.delete(id); s.inFlight=id;
     let result;
-    try { result={data:await callApi('contacts.save',()=>client.rpc('save_outreach_contact',{p_id:id,p_expected_revision:s.revisions.get(id)??-1,p_record:recordOf(value||{id}),p_expected_owner:s.owner,p_deleted:!value}),data=>!!data&&Number.isInteger(data.revision))}; }
+    try { result={data:await callApi('contacts.save',()=>client.rpc('save_outreach_contact',{p_id:id,p_expected_revision:value?._revision??s.revisions.get(id)??-1,p_record:recordOf(value||{id}),p_expected_owner:s.owner,p_deleted:!value}),data=>!!data&&Number.isInteger(data.revision))}; }
     catch(error) {result={error};}
     const {data,error}=result;
     if(!isCurrent(s)) return;
     s.inFlight=null;
     if(error) { if(!s.pending.has(id)) s.pending.set(id,value); const failure=apiFailure('contacts.save',error,result.status);setError(failure.message+' Your local edits are preserved; the save is not confirmed.');throw failure; }
     s.revisions.set(id,data.revision);
-    if(value) apply(latest.current.map(r=>r.id===id && JSON.stringify(recordOf(r))===JSON.stringify(recordOf(value)) ? {...r,_revision:data.revision,_outreachDirty:false} : r));
+    const queued=s.pending.get(id);
+    if(value&&queued&&queued._revision===value._revision)s.pending.set(id,{...queued,_revision:data.revision});
+    if(value) apply(latest.current.map(r=>r.id===id ? {...r,_revision:data.revision,_outreachDirty:JSON.stringify(recordOf(r))===JSON.stringify(recordOf(value))?false:r._outreachDirty} : r));
     else store.set('network.outreachDeletions',(store.get('network.outreachDeletions')||[]).filter(r=>r.id!==id));
    }
    if(isCurrent(s)) setStatus('Saved to your account.');
@@ -40,8 +44,9 @@ export function useOutreach() {
   try { await s.running; } finally { s.running=null; }
  }
  function setContacts(next) {
+  next.forEach(validatePersonContext);
   const previous=latest.current; const s=session.current; if(!s) {apply(next);return;}
-  next=next.map(r=>{const old=previous.find(p=>p.id===r.id);if(old&&old.company!==r.company)r={...r,companyId:undefined};return !old || JSON.stringify(recordOf(old))!==JSON.stringify(recordOf(r)) ? {...r,_outreachDirty:true}:r;});apply(next);
+  next=next.map(r=>{const old=previous.find(p=>p.id===r.id);if(old&&old.company!==r.company)r={...r,companyId:undefined};return !old || JSON.stringify(recordOf(old))!==JSON.stringify(recordOf(r)) ? {...r,_updatedAt:new Date().toISOString(),_outreachDirty:true}:r;});apply(next);
   for(const row of next) { const old=previous.find(r=>r.id===row.id); if(!old || JSON.stringify(recordOf(old))!==JSON.stringify(recordOf(row))) s.pending.set(row.id,row); }
   for(const row of previous) if(!next.some(r=>r.id===row.id)) {if(!s.revisions.has(row.id) && s.inFlight!==row.id){s.pending.delete(row.id);continue;}s.pending.set(row.id,null);store.set('network.outreachDeletions',[...(store.get('network.outreachDeletions')||[]).filter(r=>r.id!==row.id),{id:row.id,revision:s.revisions.get(row.id)??-1}]);}
   clearTimeout(s.timer); s.timer=setTimeout(()=>flush().catch(()=>{}),500); setStatus('Saving outreach…');
@@ -84,5 +89,5 @@ export function useOutreach() {
   await callApi('outreach_requests.create',()=>client.from('outreach_requests').insert({companies:names,user_id:s.owner}),()=>true);
   await refresh(s);
  }
- return {demo,records:contacts||[],setRecords:setContacts,flush,contacts:(contacts||[]).filter(r=>!isCompanyRecord(r)),setContacts:next=>setContacts([...latest.current.filter(isCompanyRecord),...next]),requests,status,error,ready,request,refresh:async()=>{const s=session.current;if(s)await s.sync();},signedIn:!!user || demo};
+ return {demo,records:contacts||[],setRecords:setContacts,flush,contacts:(contacts||[]).filter(r=>!isCompanyRecord(r)),setContacts:next=>setContacts([...latest.current.filter(isCompanyRecord),...next]),requests,status,error,ready,request,reloadSaved:async()=>{const s=session.current;if(s){if(s.running)await s.running.catch(()=>{});await refresh(s,true);}},refresh:async()=>{const s=session.current;if(s)await s.sync();},signedIn:!!user || demo};
 }

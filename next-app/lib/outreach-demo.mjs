@@ -31,7 +31,7 @@ export function demoConversation(contact, date, entries) {
 
 // Fresh records for each demo/reset; never used to seed a real account.
 export function demoOutreachContacts(date = localDate()) {
-  return [...outreachDemoMessages].reverse().map(example => {
+  const contacts = [...outreachDemoMessages].reverse().map(example => {
     let contact = {
       ...example, id: `demo-${example.id}`, contact: example.name,
       title: example.id === 'referral' ? 'Infrastructure Engineer' : 'Backend Engineer',
@@ -62,6 +62,14 @@ export function demoOutreachContacts(date = localDate()) {
     }
     const meetingDay=new Date(`${date}T12:00:00Z`);meetingDay.setUTCDate(meetingDay.getUTCDate()+(example.id==='referral'?2:-2));
     Object.assign(contact,recordMeeting(contact,{id:`${contact.id}-meeting`,kind:example.id==='referral'?'coffee_chat':'meeting',status:example.id==='referral'?'scheduled':'completed',date:meetingDay.toISOString().slice(0,10),location:example.id==='referral'?'Video call · fictional demo':'Recruiter call · fictional demo',notes:example.id==='referral'?'':'Fictional meeting notes: discussed team scope and the interview sequence. Follow up on mentorship and on-call expectations; no outcome was promised.'}));
+    contact.professionalTitle=example.id==='referral'?'Infrastructure engineer':'Technical recruiter';
+    contact.technicalInterests='Backend reliability, query execution, distributed systems';
+    contact.relationshipSummary=example.id==='referral'?'Met at the fictional university systems club. Jamie made a referral and offered an introduction.':'Existing fictional recruiting contact. Discussed team scope, timing, and interview preparation.';
+    contact.nextAction=example.id==='referral'?'Send the two questions for the engineer introduction.':'Wait for the recruiting update; keep preparing the project deep dive.';
+    contact.suggestion={id:contact.id+'-suggestion',purpose:example.id==='referral'?'referral':'maintain',rationale:example.id==='referral'?'Jamie offered an introduction to an engineer. Follow through on that existing offer.':'Keep your team-scope and mentorship questions ready for the next recruiter conversation.',action:example.id==='referral'?'Share two questions about onboarding and ownership.':'Review the questions for your next conversation.',sources:[{title:'Fictional demo context',url:'https://example.com/demo/context',observedAt:date}],createdAt:date+'T12:00:00Z',updatedAt:date+'T12:00:00Z',state:'active'};
+    contact.message=example.id==='referral'?'Hi Jamie, thanks for offering the engineer introduction. My two questions are: who reviews a new engineer’s first design, and what did their first three months of ownership look like? Would you be comfortable passing those along?':'Hi Alex, for our next conversation, could we cover which team owns this role and how new engineers are supported during their first few months?';
+    contact._updatedAt=date+'T12:00:00Z';
     return contact;
   });
+  return [...contacts,{id:'demo-new-connection',contact:'Morgan (fictional)',company:'Stripe',professionalTitle:'Database engineer',technicalInterests:'Query planning, execution, storage',whyThem:'Public fictional technical work overlaps your query-engine interests. No relationship is established.',sources:[{title:'Fictional technical talk',url:'https://example.com/demo/talk',observedAt:date}],message:'Hi Morgan, I came across your fictional talk about query planning. Would you be open to a brief conversation about the engineering work?',status:'Not asked',source:'Demo',suggestion:{id:'demo-connect-suggestion',purpose:'connect',rationale:'Morgan’s fictional technical talk is relevant to your interest in query engines.',action:'Introduce yourself and ask about the technical work.',sources:[{title:'Fictional technical talk',url:'https://example.com/demo/talk',observedAt:date}],createdAt:date+'T12:00:00Z',updatedAt:date+'T12:00:00Z',state:'active'}},{id:'demo-independent',contact:'Sam (fictional)',company:'',professionalTitle:'Independent engineer',relationshipSummary:'Former project collaborator. No current employer recorded.',nextAction:'Share an update when the project ships.',status:'Not asked',source:'Demo'}];
 }

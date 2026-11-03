@@ -22,9 +22,9 @@ test('pagination is bounded and handoffs cannot execute approvals',()=>{
  assert.equal(validatePlatformPayload('human.request',{action:'approve-application',recordId:'id'}),true);
 });
 
-test('contact drafts require a nonempty company name',()=>{
- for(const company of [undefined,null,'', '   ',123]) assert.throws(()=>validatePlatformPayload('contacts.save',{id:'contact',record:{company},expectedRevision:0}),/company/);
- assert.equal(validatePlatformPayload('contacts.save',{id:'contact',record:{company:'Example'},expectedRevision:0}),true);
+test('person cards allow an optional company and reject malformed company values',()=>{
+ for(const company of [undefined,'','   ','Example'])assert.doesNotThrow(()=>validatePlatformPayload('contacts.save',{id:'contact',record:{contact:'Pat',company},expectedRevision:0}));
+ for(const company of [null,123,'x'.repeat(201)])assert.throws(()=>validatePlatformPayload('contacts.save',{id:'contact',record:{contact:'Pat',company},expectedRevision:0}),/company/);
 });
 
 test('resume references use HTTPS and cannot embed credentials',()=>{

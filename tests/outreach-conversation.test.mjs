@@ -47,7 +47,8 @@ test('demo has two resettable company conversations with distinct next actions',
   assert.match(conversationMessages(stripe).at(-1).body,/two questions/);
   assert.equal(stripe.status,'Referred');
   assert.equal(waitingOn(robinhood),'Waiting for reply');
-  assert.deepEqual(a.map(r=>r.company).sort(),['Robinhood','Stripe']);
+  assert.deepEqual(a.filter(r=>conversationStage(r)==='ongoing').map(r=>r.company).sort(),['Robinhood','Stripe']);
+  assert.ok(a.some(r=>!r.company));assert.ok(a.some(r=>r.suggestion?.purpose==='connect'));
   stripe.notes='Changed';assert.equal(conversationMessages(b.find(r=>r.id===stripe.id)).length,8);
 });
 
