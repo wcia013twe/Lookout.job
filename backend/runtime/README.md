@@ -95,7 +95,9 @@ root environment file if the running backend uses a different network name.
    tunnel container; unrelated credentials are not. For a task checkout, use
    `make muse-dev MUSE_DEV_ENV=/absolute/path/to/shared-checkout/.env.local` rather
    than copying private settings. The API keeps its separate runtime `.env.local`.
-3. With the Docker API service already running, run `make muse-dev`. It starts only
+3. With the Docker API service already running, `make dev` starts the tunnel after
+   Supabase and before the frontend. To start it separately, run `make muse-dev`.
+   That command starts only
    the tunnel and never starts Supabase, the API, the worker, or the frontend. A
    missing external Docker network means the backend needs to be started first.
 4. Restart the local frontend with `make frontend`. Local startup derives

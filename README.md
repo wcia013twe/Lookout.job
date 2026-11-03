@@ -156,9 +156,11 @@ make dev
 ```
 
 `make dev` (also `make up`, or just `make`) starts local Supabase containers,
-applies `supabase/migrations/` on first startup, and runs Next.js at
+applies `supabase/migrations/` on first startup, starts the ngrok MCP tunnel, and runs Next.js at
 `http://localhost:3000` with the local API URL and anonymous key. The frontend
-runs on the host; Supabase runs in Docker. The local stack uses separate data
+runs on the host; Supabase runs in Docker. Configure `NGROK_AUTHTOKEN` and
+`NGROK_URL` in the root `.env.local` and start the Node API before running
+`make dev`; see [tunnel setup](backend/runtime/README.md). The local stack uses separate data
 from the hosted project. Studio is at `http://localhost:54323`, email preview
 at `http://localhost:54324`, and the API at `http://127.0.0.1:54321`.
 
