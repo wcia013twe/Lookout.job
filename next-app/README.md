@@ -300,37 +300,9 @@ for the note retrieval convention, tool boundaries and verification limits.
 
 My Agent no longer displays the reusable Templates library or Account-wide submission resume control. This is a page-only removal: stored documents and existing submission defaults are retained, and scoped backend/MCP contracts are unchanged. The shared question bank, writing workspace and outreach template previews remain. Demo profile verification asserts both removed controls are absent.
 
-Network reuses the same compact contact/conversation editor in Outreach and Active
-Processes. The process view omits repeated company/role context and single-person
-tabs; multiple contacts use a selector. Logged message history stays visible.
-Follow-up date editing, contact status/removal and secondary process actions sit
-behind explicit controls. Logging still records user/agent-reported history,
-never sends a message, and preserves the existing contact/MCP envelope.
-`scripts/check-network-compact-ui.mjs` covers fictional process isolation, compact
-defaults, logging and shared-history presentation on desktop/mobile.
+Network now presents Muse suggestions followed by searchable person cards, without Network subtabs or company-request forms. Company is an optional filter. A person’s professional title is distinct from a target job title. Detail presents sources, relationship context, next action, an annotated message draft, and collapsed History. Add update saves a dated relationship note without fabricating messages; explicit historical message and meeting logging remains available.
 
-Company target Overview now uses the existing About Me `ProfileSection` pencil/checkmark
-pattern for company details, interests, teams, questions, research, next action and
-sources. This does not change About Me or that shared component. The global Edit
-company button is removed; inline saves retain company revision checks. Unsaved
-company edits survive company tab switches, and a save footer can save/discard all
-pending edits. Linked records/archive remain in a disclosure. Company People &
-outreach uses the shared compact contact editor without another enclosing card.
-
-The Network admin demo is focused on Robinhood and Stripe only: two targets, two
-active process views and one developed fictional contact conversation for each.
-Robinhood's six-message recruiter exchange is waiting for a reply; Stripe's
-eight-message referral exchange spans LinkedIn/email and needs the user's next
-reply. Demo opens on ongoing conversations. Company names are illustrative;
-messages, referrals, people and outcomes are fictional. Other product demos retain
-their feature scenarios; real account data is unchanged.
-
-Network conversation timelines distinguish Coffee chat and Meeting records from
-messages, with explicit scheduled/completed/cancelled status and optional notes.
-Log meeting and Add notes/Update reuse the contact's existing versioned private
-notes/MCP save path. They send no invites and do not change application status.
-The focused Robinhood/Stripe demo includes a completed recruiter meeting and an
-upcoming coffee chat. See [the record format](../docs/schema.md#companies-and-network).
+Suggestions use the same owned contact record and revision checks. Done/dismissed suggestions preserve people, drafts, history and application outcomes. Company details and legacy process links remain reachable. The detached demo includes new-connection, maintenance and referral suggestions, developed Robinhood/Stripe histories, and a person without an employer. The UI check covers desktop/mobile, search, updates, draft preservation, history, company/process links, and reset without private account traffic.
 
 ## API failures and empty workspaces
 

@@ -94,6 +94,10 @@ Website transitions and MCP operations use the same owned validation. Human-only
 
 ## Companies and network
 
+Person cards remain in `outreach_contacts.record`, with owner/revision boundaries unchanged. Optional fields added by the Networking refactor: `professionalTitle`, `technicalInterests`, `relationshipSummary`, `nextAction` (text), `relationshipUpdates` (up to 100 `{id,date,body}` entries), and dated HTTPS `sources` (up to 30 `{title,url,observedAt,summary?}` entries). Company may be empty or omitted; `title`/`role` retain legacy target-role meaning. Notes preserve their existing conversation envelope.
+
+One optional current `suggestion` is saved on the person: `{id,purpose:connect|maintain|referral,rationale,action,role?,roleUrl?,sources,createdAt,updatedAt,state:active|done|dismissed}`. Sources require observation dates, timestamps are ISO values, and role links use HTTPS. Completion/dismissal only changes the suggestion. Agent full/partial saves and browser writes validate the new context; stale revisions reject. No separate suggestion table, person migration, automatic identity merge or application-state change is introduced.
+
 `companies` is the maintained identity registry (name, optional domain, bounded aliases). Only trusted maintenance changes it. Exact aliases resolve identity; ambiguity stays unresolved. `company_workspaces` is the private target/research record, not another company identity. Its explicit contact/application links are intentional associations, validated for ownership; company/title similarity alone never establishes process involvement.
 
 Browser `company_action` and MCP `list_companies`, `list_company_workspaces`, `save_company_workspace` share ownership and expected-revision checks. The migration preserves old target IDs, malformed notes and review flags. Conflicts keep local drafts for explicit resolution. A saved company workspace can now be the typed subject of an artifact.

@@ -216,7 +216,7 @@ test('demo opens with fictional referral drafts and independent resettable templ
  assert.equal(first.demo.outreachLibrary.defaultGuide, 'cold-outreach');
  assert.equal(first.demo.outreachLibrary.templates.length, 5);
  assert.equal(first.network.referrals[0].id, 'demo-referral');
- assert.match(first.network.referrals[0].message, /Would you feel comfortable referring me/);
+ assert.match(first.network.referrals[0].message, /thanks for offering the engineer introduction/);
  assert.equal(first.network.referrals[0].source, 'Demo');
  first.network.referrals[0].message = 'Edited draft';
  assert.notEqual(second.network.referrals[0].message, 'Edited draft');
