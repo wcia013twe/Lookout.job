@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastRun": "2026-11-03",
+  "lastRun": "2026-11-03 midday zero2sudo story check (staged)",
   "roles": [
     {
       "id": "doordash-software-engineer-storage-8024644",
@@ -3332,6 +3332,60 @@
       "applicationStatus": "New",
       "discoverySource": "morning sweep 2026-11-03",
       "verification": "Verified live 2026-11-03 on Docusign careers: Seattle hybrid, Cloud Engineering STaaS team, Dec 2027-May/June 2028, $38-45/hr, 3 months.",
+      "verifiedDate": "2026-11-03"
+    },
+    {
+      "id": "samsung-intern-ai-application-engineer-8163994003",
+      "company": "Samsung Semiconductor",
+      "title": "Intern, AI Application Engineer",
+      "employmentType": "Internship",
+      "location": "Folsom, CA (header; body says daily onsite at San Jose, CA headquarters - location flag)",
+      "category": "ML systems & AI infrastructure",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-03",
+      "sourceFreshness": "Midday zero2sudo story Nov 3, 2026; verified live on Samsung Greenhouse Nov 3, 2026",
+      "whyItFits": "Direct ML-systems/inference lane fit: SoC Architect team deploying and operating an LLM inference service (vLLM serving Llama-3.3-70B on 4x NVIDIA H200), plus a benchmark harness and KV-cache offloading experiments. $28-68/hr, deadline Jan 31, 2027, Bachelor's/Master's/PhD with at least one quarter/semester remaining. Samsung is not in his tier lists (Common), boarded on direct inference-infra scope, not brand tier. Location flag: header says Folsom, CA but body says daily onsite at San Jose HQ; confirm location before applying. Frame job ID 44315 does not match the live board ID 8163994003.",
+      "applicationUrl": "https://job-boards.greenhouse.io/samsungsemiconductor/jobs/8163994003",
+      "applicationStatus": "New",
+      "discoverySource": "midday zero2sudo story check 2026-11-03, staged 2026-11-03",
+      "verification": "Verified live 2026-11-03 on Samsung Semiconductor Greenhouse: 'Intern, AI Application Engineer', Folsom header, $28-68/hr, deadline Jan 31, 2027.",
+      "verifiedDate": "2026-11-03"
+    },
+    {
+      "id": "zebra-2027-summer-internship-ai-jr103639",
+      "company": "Zebra Technologies",
+      "title": "2027 Summer Internship (US) - AI",
+      "employmentType": "Internship",
+      "location": "Lincolnshire, IL (Hybrid, at least 3 days in office)",
+      "category": "ML systems & AI infrastructure",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-03",
+      "sourceFreshness": "Midday zero2sudo story Nov 3, 2026; verified live on Zebra Workday Nov 3, 2026; page end date Nov 6, 2026",
+      "whyItFits": "AI-engineering scope on the CTO Solutions Startup team's Claude-powered AI engine: onboarding data sources, source connectors and ingestion workflows, Claude-driven analysis commands and prompt engineering. Graduation window May 2027-May 2028 fits his Dec 2027 internship framing. $36.00-44.50/hr. Zebra is not in his tier lists (Common), boarded on direct AI-engineering scope. Urgency: page end date Nov 6, 2026, inside 72 hours. Distinct from the Zebra SWE intern variants skipped Nov 2.",
+      "applicationUrl": "https://zebra.wd501.myworkdayjobs.com/en-US/Zebra_careers/job/XMLNAME-2027-Summer-Internship--US----AI_JR103639",
+      "applicationStatus": "New",
+      "discoverySource": "midday zero2sudo story check 2026-11-03, staged 2026-11-03",
+      "verification": "Verified live 2026-11-03 on Zebra Workday: '2027 Summer Internship (US) - AI', Lincolnshire, Req JR103639, $36.00-44.50/hr, end date Nov 6, 2026.",
+      "verifiedDate": "2026-11-03"
+    },
+    {
+      "id": "costco-cds-intern-infosec-aiml-10994",
+      "company": "Costco",
+      "title": "CDS Intern - InfoSec AI/ML",
+      "employmentType": "Internship",
+      "location": "Issaquah, WA (in office 5 days/week)",
+      "category": "ML systems & AI infrastructure",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-03",
+      "sourceFreshness": "Midday zero2sudo story Nov 3, 2026; verified live on Costco Taleo Nov 3, 2026",
+      "whyItFits": "InfoSec team building LLM- and agent-based AI/ML systems and automation, a direct AI-systems lane fit. 12-week program mid-June to early September 2027, $21.00-32.90/hr, enrolled IT or related undergrad/grad with GPA 3.0 or higher (his 3.5 fits). Costco is not in his tier lists (Common), boarded on direct AI/ML-systems scope, not brand tier. Flags: in-office 5 days/week in Issaquah with no out-of-state work, and pay is below his other intern targets.",
+      "applicationUrl": "https://phf.tbe.taleo.net/phf02/ats/careers/v2/viewRequisition?org=COSTCO&cws=41&rid=10994",
+      "applicationStatus": "New",
+      "discoverySource": "midday zero2sudo story check 2026-11-03, staged 2026-11-03",
+      "verification": "Verified live 2026-11-03 on Costco Taleo: 'CDS Intern - InfoSec AI/ML', Issaquah, Order #10994, $21.00-32.90/hr, 12 weeks mid-June to early September 2027.",
       "verifiedDate": "2026-11-03"
     }
   ]
