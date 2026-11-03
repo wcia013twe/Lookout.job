@@ -1,5 +1,7 @@
 # Lookout agent-first onboarding — implementation handoff
 
+Agent operating instructions now have one entry point: call `read_developer_context` and read its complete `operatingGuide` plus the detailed `instructions` in the same response. The canonical source is `supabase/functions/agent-gateway/instructions.json`; MCP startup and the connection handoff route agents there. Retain per connection and reload on developerVersion changes. This document is a historical product specification, not the runtime onboarding authority.
+
 Status: **proposed UX and engineering specification, not implemented behavior**. Target: Muse, other bring-your-own-agent (BYOA) runtimes, and future managed texting agents. Use this as an implementation plan; inspect the actual repository contracts and deployed capabilities before changing code.
 
 ## Product objective

@@ -22,8 +22,8 @@ import {createMemoryStore,demoFixtures} from '../next-app/lib/demo.mjs';
 test('setup instructions configure saved automations and stop without doing their work',()=>{
  const text=connectionClipboardText('not-a-real-token');
  for(const phrase of ['connection_test','automationSetup.schedule','Do not run the tasks now','actual scheduler receipts','then stop','avoiding duplicates','MCP initialize','read_muse_changes','refresh tool/arguments','acknowledge handled event IDs'])assert.ok(text.includes(phrase),phrase);
- assert.ok(contract.quickstart.some(text=>text.includes('connection_test')));
- assert.ok(contract.quickstart.some(text=>text.includes('Do not run searches')));
+ assert.ok(contract.operatingGuide.sections.flatMap(section=>section.instructions).some(text=>text.includes('connection_test')));
+ assert.ok(contract.operatingGuide.sections.flatMap(section=>section.instructions).some(text=>text.includes('Do not run searches')));
  assert.ok(contract.instructions.some(text=>text.includes('do not execute tasks now')||text.includes('execute searches now')));
 });
 test('fictional connection setup exposes only its isolated schedule and never queues discovery',async()=>{

@@ -1,5 +1,7 @@
 # Lookout onboarding
 
+Agents start with `read_developer_context`: its `operatingGuide` is the canonical entry point for connection setup, saved schedules, first requested work, optional background watching, ongoing maintenance and workspace operations. The same response supplies detailed contracts and task-reference metadata. Cache per connection and refresh on developerVersion changes. MCP startup and the website connection handoff point to this guide; reading it does not activate work. Source: `supabase/functions/agent-gateway/instructions.json`.
+
 The Next.js `/onboarding/` route introduces background, work preferences, a catalog opportunity, the existing agent connection flow, and an optional Circle story. Its presentation components are in `next-app/components/onboarding-*.tsx`, with scoped styles in `next-app/app/onboarding.css`.
 
 A LinkedIn URL is a profile reference, not an OAuth connection or import. Résumé uploads reuse the private résumé service and its ownership, file-type, size and hash validation. Guests must sign in to upload. Demo mode uses fictional résumé metadata and never opens or uploads private files.

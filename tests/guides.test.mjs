@@ -58,6 +58,34 @@ test('startup and developer context deliver the same user-facing policy and vers
   const guide=readGuide(id);assert(guide.instructions.includes(policy));
   assert.equal(context.guides.find(g=>g.id===id).version,guide.version);
  }
- assert(context.quickstart.some(s=>s.includes('request_search_sweep')&&s.includes('connection_pending')));
- assert(!context.quickstart.some(s=>s.includes('report its destination and ID')));
+ assert(context.operatingGuide.sections.flatMap(section=>section.instructions).some(s=>s.includes('request_search_sweep')&&s.includes('connection_pending')));
+ assert(!context.operatingGuide.sections.flatMap(section=>section.instructions).some(s=>s.includes('report its destination and ID')));
+});
+
+test('one fictional MCP context read delivers the complete operating guide without personal reads or setup side effects',async()=>{
+ const {createHandler}=await import('../supabase/functions/agent-mcp/protocol.mjs');
+ const calls=[];
+ const handle=createHandler(async(_token,operation)=>{
+  calls.push(operation);
+  if(operation==='credentials.verify')return {status:200,data:{scopes:['workspace:read']}};
+  assert.equal(operation,'context.developer','reading the operating guide must not load personal records or activate work');
+  return {status:200,data:contextResponse(operation,{})};
+ });
+ const send=async(method,params)=>{
+  const response=await handle(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}));
+  const body=await response.json();assert(!body.error);assert(!body.result.isError);return body.result;
+ };
+ const startup=await send('initialize',{protocolVersion:'2025-11-25'});
+ assert.match(startup.instructions,/read_developer_context once/);
+ const result=await send('tools/call',{name:'read_developer_context',arguments:{}});
+ const context=JSON.parse(result.content[0].text),guide=context.operatingGuide;
+ assert.deepEqual(guide.sections.map(s=>s.id),['role','connect','first-value','run','watch','workspace','search','applications','career','recover']);
+ assert.match(guide.lifecycle,/Read once per version, not once forever/);
+ const watch=guide.sections.find(s=>s.id==='watch').instructions.join('\n');
+ for(const phrase of ['configure_agent_watch','--check','--test-wake','SHA-256','30-minute cooldown','verified enqueue/wake command','runtime receipts'])assert(watch.includes(phrase),phrase);
+ const connect=guide.sections.find(s=>s.id==='connect').instructions;
+ assert(connect.every(instruction=>startup.instructions.includes(instruction)),'startup must use the canonical connection rules');
+ assert.equal(calls.filter(op=>op==='context.developer').length,1);
+ guide.sections[0].instructions[0]='mutated';
+ assert.notEqual(contextResponse('context.developer',{}).operatingGuide.sections[0].instructions[0],'mutated');
 });
