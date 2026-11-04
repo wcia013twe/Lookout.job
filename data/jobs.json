@@ -3387,6 +3387,42 @@
       "discoverySource": "midday zero2sudo story check 2026-11-03, staged 2026-11-03",
       "verification": "Verified live 2026-11-03 on Costco Taleo: 'CDS Intern - InfoSec AI/ML', Issaquah, Order #10994, $21.00-32.90/hr, 12 weeks mid-June to early September 2027.",
       "verifiedDate": "2026-11-03"
+    },
+    {
+      "id": "flexai-software-engineer-new-grad",
+      "company": "FlexAI",
+      "title": "Software Engineer, New Grad",
+      "employmentType": "FT",
+      "location": "San Jose, CA",
+      "category": "AI infrastructure / GPU compute",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-04",
+      "sourceFreshness": "Backfill: Simplify published 2026-10-29; Rippling ATS page shows 'Posted about 4 months ago'; verified live Nov 4, 2026",
+      "whyItFits": "On-demand GPU compute infrastructure for the full AI lifecycle (training, fine-tuning, inference); direct AI infra lane fit, $100,000-$150,000, hybrid San Jose. Final-year or recently completed B.S./M.S. fits May 2027 graduation. Common tier kept on exceptional AI infra team fit, not brand.",
+      "applicationUrl": "https://ats.rippling.com/flexai/jobs/93ada67c-8527-427c-b2f6-4a5557b00674?isComingFromApp=true",
+      "applicationStatus": "New",
+      "discoverySource": "morning sweep 2026-11-04",
+      "verification": "Verified live 2026-11-04 on FlexAI Rippling ATS: Software Engineer, New Grad, San Jose, CA, Hybrid, $100,000-$150,000/yr, final-year or recently completed B.S./M.S. in CS/CE or related field, at least one internship ideally in high-growth startup or infrastructure. No deadline shown.",
+      "verifiedDate": "2026-11-04"
+    },
+    {
+      "id": "zip-software-engineer-new-grad-2027-start",
+      "company": "Zip",
+      "title": "Software Engineer, New Grad (2027 Start)",
+      "employmentType": "FT",
+      "location": "San Francisco, CA",
+      "category": "AI platform / product engineering",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-04",
+      "sourceFreshness": "Backfill: aggregator-published 2026-09-04; verified live Nov 4, 2026 via direct Ashby posting",
+      "whyItFits": "AI platform for enterprise procurement built for humans and agents; core products and architecture scope, $165,000-$170,000, hybrid San Francisco HQ. Graduating Dec 2026-June 2027 fits May 2027 graduation. Common tier kept on AI-agent platform fit, not brand.",
+      "applicationUrl": "https://jobs.ashbyhq.com/zip/df6eb1ee-b360-46fe-b23f-658626ec59ea",
+      "applicationStatus": "New",
+      "discoverySource": "morning sweep 2026-11-04",
+      "verification": "Verified live 2026-11-04 via direct Ashby posting: Software Engineer, New Grad (2027 Start), San Francisco, Hybrid, $165,000-$170,000, BS/MS in CS/CE or related coding field, graduating Dec 2026-June 2027, on-site at SF HQ. No deadline shown. Flag: the role did not appear in the 100-position board listing search on zip.com/careers / jobs.ashbyhq.com/Zip the same day, so liveness rests on the direct posting URL.",
+      "verifiedDate": "2026-11-04"
     }
   ]
 }
