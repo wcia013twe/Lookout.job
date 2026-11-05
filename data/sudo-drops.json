@@ -1,5 +1,5 @@
 {
- "date": "2026-11-04",
+ "date": "2026-11-05",
  "source": "zero2sudo",
  "drops": [
   {
@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Est\u00e9e Lauder",
+   "company": "Estée Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -3025,7 +3025,7 @@
    "dateSeen": "2026-10-23",
    "source": "zero2sudo",
    "status": "skipped",
-   "skipReason": "No live amazon.jobs req found; only a stale June-2026-cohort version (published 2026-01-23, grad gate 'June 2028 and beyond') \u2014 weak fit regardless",
+   "skipReason": "No live amazon.jobs req found; only a stale June-2026-cohort version (published 2026-01-23, grad gate 'June 2028 and beyond') — weak fit regardless",
    "note": "Story-verified 2026-10-23 midday. No canonical amazon.jobs URL locatable via text search. Skip: unverifiable and off-track."
   },
   {
@@ -3065,7 +3065,7 @@
    "source": "zero2sudo",
    "status": "pending",
    "skipReason": null,
-   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA \u2014 Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
+   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA — Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
   },
   {
    "company": "Palantir",
@@ -5705,6 +5705,240 @@
    "status": "added",
    "skipReason": null,
    "note": "Midday story frame Nov 4, 2026, Advanced Intelligence Lab. Verified live Nov 5, 2026 on Samsung Research America Greenhouse: Job 8926019002, 665 Clyde Avenue, Mountain View, CA, marked New, $36-$63/hr, BS/MS/PhD pursuing in CS or equivalent with NLP knowledge. Term options include Summer (May-Aug) 2027. Added to jobs.json."
+  },
+  {
+   "company": "Zebra Technologies",
+   "title": "2027 Summer Internship (US) - Software Engineer, AI Features & Product Convergence, Zebra Task Manager",
+   "location": "Kennesaw, GA (Hybrid)",
+   "type": "Internship",
+   "comp": "$33.00-$40.50/hr",
+   "url": "https://zebra.wd501.myworkdayjobs.com/en-US/Zebra_Careers/details/XMLNAME-2027-Summer-Internship--US----Software-Engineer--AI-Features---Product-Convergence--Zebra-Task-Manager_JR103636",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on Zebra Workday: Req JR103636, Kennesaw GA hybrid, $33.00-$40.50/hr, end date Nov 7, 2026. Masters May 2027-2028 window fits his Dec 2027 internship framing. Added to jobs.json. Distinct from boarded Lincolnshire AI intern JR103639."
+  },
+  {
+   "company": "Venmo (PayPal)",
+   "title": "Software Engineer Intern - Summer 2027",
+   "location": "San Jose, CA (also Austin, Chicago, Scottsdale, Omaha)",
+   "type": "Internship",
+   "comp": "San Jose $32-$55/hr",
+   "url": "https://paypal.eightfold.ai/careers?query=Software+Engineer+Intern&start=0&pid=274922982814&sort_by=relevance",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026 (Venmo-branded). Verified live Nov 5, 2026 on PayPal Eightfold: Req R0138586, five US locations, San Jose $32-$55/hr, bachelor's or master's, must be returning to school Fall 2027, applications through Dec 6, 2026. Added to jobs.json."
+  },
+  {
+   "company": "Venmo (PayPal)",
+   "title": "Machine Learning Engineer Intern - Summer 2027",
+   "location": "San Jose, CA",
+   "type": "Internship",
+   "comp": "$50.00-$59.00/hr",
+   "url": "https://paypal.eightfold.ai/careers/job?pid=274922983149",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026 (Venmo-branded). Verified live Nov 5, 2026 on PayPal Eightfold: Req R0138581, San Jose only, $50.00-$59.00 hourly, bachelor's or master's in CS/ML/DS/stats/math, must be returning to school Fall 2027, applications through Dec 6, 2026. Added to jobs.json."
+  },
+  {
+   "company": "GM Financial",
+   "title": "Intern - Cloud Engineer",
+   "location": "Irving, TX (Hybrid)",
+   "type": "Internship",
+   "comp": "Competitive pay (no amount posted)",
+   "url": "https://fa-exvu-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs/preview/261245/?keyword=Cloud+Engineer+Intern&mode=location",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "added",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on GM Financial Oracle Cloud: Job 261245, Irving TX hybrid, posted Nov 4, 2026, apply before Dec 4, 2026, bachelor's degree or higher, GPA 3.0+, competitive pay. Added to jobs.json."
+  },
+  {
+   "company": "William Blair",
+   "title": "Working in Technology (WiT) - Agentic AI Development - Summer 2027",
+   "location": "Chicago, IL",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.williamblair.com/Careers/job-description?gh_jid=5242282007",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on William Blair Greenhouse: Job JR101652, Chicago, 12-week Summer 2027 program, no pay posted. Skipped: undergraduate-only (full-time students pursuing a Bachelor's, Sophomore or Junior year, expected graduation Dec 2027-Jun 2030); his M.S. track does not fit the class-standing gate."
+  },
+  {
+   "company": "Etched",
+   "title": "IA Research Engineer (Kernels) Intern",
+   "location": "San Jose, CA (On-site)",
+   "type": "Internship",
+   "comp": "Paid (no amount posted)",
+   "url": "https://jobs.ashbyhq.com/Etched/05d67dff-a7a4-4ece-a809-3200d95e7440",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on Etched Ashby: listed as 'IA Research Engineer Intern' (Kernels team in the description), San Jose on-site, 12-week paid internship. Skipped: PhD-gated (currently enrolled in a PhD program or beginning one within 6 months); his M.S. track does not qualify."
+  },
+  {
+   "company": "PACCAR",
+   "title": "2027 Summer Internship: Data Engineer",
+   "location": "Denton, TX",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://jobs.paccar.com/job/Denton-2027-Summer-Internship-Data-Engineer-TX-76205-7864/1454360033/",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on PACCAR careers: Denton TX, posted Nov 4, 2026, no pay posted. Skipped: undergraduate-only (must be currently enrolled in a Bachelor's program and have completed junior year before the internship starts)."
+  },
+  {
+   "company": "Arine",
+   "title": "Data Services Intern",
+   "location": "San Francisco, CA (On-site)",
+   "type": "Internship",
+   "comp": "$25/hr",
+   "url": "https://ats.rippling.com/arine/jobs/74bd101b-40c8-494b-8f82-68ec50eefa09",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on Arine Rippling: San Francisco on-site, $25/hr, currently pursuing or recently completed a Bachelor's, no graduation window or returning-to-school requirement. Skipped: Data Services scope, not a SWE/AI-infra lane; no exceptional team fit for a Common-tier add."
+  },
+  {
+   "company": "Staples",
+   "title": "Software Engineer Intern (SDS e-Commerce Team)",
+   "location": "Framingham, MA (On-site)",
+   "type": "Internship",
+   "comp": "$24.00",
+   "url": "https://careers.staples.com/en/job/framingham/software-engineer-intern-sds-e-commerce-team/44412/102822452928",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on Staples careers: Job 77133, Framingham on-site, Summer Internship Program starting June 7, 2027, pay $24.00. Skipped: eligibility worded as currently pursuing a Bachelor's degree in CS or a related field; Common tier with an e-commerce team, no exceptional fit."
+  },
+  {
+   "company": "Microsoft",
+   "title": "Research Intern - Research in Software Engineering, ML Systems, Agents",
+   "location": "Redmond, WA",
+   "type": "Internship",
+   "comp": "$6,810-$13,480/month",
+   "url": "https://apply.careers.microsoft.com/careers?query=Research+Intern&start=0&pid=1970393557054069&sort_by=relevance",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on Microsoft careers: Job 200065702, Redmond, 3 days/week in office, $6,810-$13,480/month. Skipped: Doctorate-only (currently enrolled in a Doctorate program in CS, STEM, or a relevant field); no bachelor's/master's eligibility."
+  },
+  {
+   "company": "Venmo (PayPal)",
+   "title": "Mobile Engineer Intern - Summer 2027",
+   "location": "San Jose, CA (also Austin, Chicago, Scottsdale, Omaha)",
+   "type": "Internship",
+   "comp": "San Jose $32-$55/hr",
+   "url": "https://paypal.eightfold.ai/careers?query=Software+Engineer+Intern&start=0&pid=274922982818&sort_by=relevance",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026 (Venmo Mobile SWE Intern). Verified live Nov 5, 2026 on PayPal Eightfold: listed as 'Mobile Engineer Intern - Summer 2027', Req R0138583, five US locations, San Jose $32-$55/hr, returning to school Fall 2027, applications through Dec 6, 2026. Skipped: mobile lane off-target."
+  },
+  {
+   "company": "Venmo (PayPal)",
+   "title": "Data Scientist Intern - Summer 2027",
+   "location": "San Jose, CA",
+   "type": "Internship",
+   "comp": "San Jose $32-$55/hr",
+   "url": "https://paypal.eightfold.ai/careers?start=0&pid=274922982821&sort_by=timestamp",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on PayPal Eightfold: Req R0138582, San Jose only, $32-$55/hr, returning to school Fall 2027, applications through Dec 6, 2026. Skipped: data science lane, not SWE/MLE."
+  },
+  {
+   "company": "Charter Communications",
+   "title": "2027 Summer Intern: Software Engineer",
+   "location": "Englewood, CO",
+   "type": "Internship",
+   "comp": "Paid (no amount posted)",
+   "url": "https://invitation-charter.icims.com/jobs/81795/2027-summer-intern%3a-software-engineer/job",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Verified live Nov 5, 2026 on Charter iCIMS: Req 2026-81795, Englewood CO, 11-week program May 26-Aug 6, 2027, paid. Skipped: undergraduate-only (currently enrolled in a bachelor's program, rising senior, expected graduation Dec 2027-May 2028, GPA 3.0+); his M.S. track does not fit."
+  },
+  {
+   "company": "Centene Corporation",
+   "title": "AI Business Strategy Intern (Undergraduate Summer 2027)",
+   "location": "Remote-MO",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://jobs.centene.com/us/en/jobs/1667703/ai-business-strategy-intern-undergraduate-summer-2027/",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Could NOT verify live Nov 5, 2026: the Centene posting URL returns Page Not Found and a jobs.centene.com search for 1667703 returns no match, so the posting is closed. Skipped: posting closed, and the role was business/strategy (not engineering) and undergraduate-only per its title and indexed description."
+  },
+  {
+   "company": "Wells Fargo",
+   "title": "Wells Fargo Technology Internship Program",
+   "location": "City of London",
+   "type": "Internship",
+   "comp": "$60/hr (story overlay)",
+   "url": "https://www.wellsfargojobs.com",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Skipped on frame evidence, no live check: City of London location is non-US; his search is US roles only. The $60/hr figure is a zero2sudo overlay, not verified on the employer page. Distinct from the boarded US Wells Fargo technology internship tracks."
+  },
+  {
+   "company": "T-Mobile",
+   "title": "Summer 2027 Quality Engineering Internship",
+   "location": "Philadelphia, PA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://tmobile.wd1.myworkdayjobs.com",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Skipped on frame evidence, no live check: Quality Engineering is a QA lane, off-target for his SWE/AI-infra search. Distinct from the boarded T-Mobile SWE internship roles."
+  },
+  {
+   "company": "Amazon Future Engineer",
+   "title": "Amazon Future Engineer Scholarship and Internship",
+   "location": null,
+   "type": "Internship",
+   "comp": "Up to $40,000 scholarship",
+   "url": "https://amazonfutureengineer.com",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. Skipped on frame evidence, no live check: a scholarship program (up to $40,000 for an engineering/CS degree plus a paid Amazon internship), not a job posting; aimed at undergraduates, not his M.S. track."
+  },
+  {
+   "company": "Dell Technologies",
+   "title": "CSG Software Engineering Undergraduate Intern",
+   "location": "TX, United States",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://jobs.dell.com",
+   "dateSeen": "2026-11-05",
+   "source": "zero2sudo",
+   "status": "pending",
+   "skipReason": null,
+   "note": "Midday story frame Nov 5, 2026. NOT verified Nov 5, 2026: an exact quoted search for 'Software Engineering Undergraduate Intern' on Dell careers returned 0 jobs, and a 'CSG Software' search returned only 'CSG Hardware Engineering Intern' in TX, so the CSG software role could not be confirmed live and no canonical URL is recorded. Gate: recheck Dell careers on the next sweep; if the posting surfaces, verify whether it is undergraduate-only before boarding. The enterpriseplatform.dell.com root redirects to an Oracle identity sign-in and was not used."
   }
  ]
 }
