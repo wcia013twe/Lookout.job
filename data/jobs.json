@@ -3733,6 +3733,42 @@
       "discoverySource": "evening zero2sudo story check 2026-11-05, staged 2026-11-05",
       "verification": "Verified live 2026-11-05 on IBM careers: Software Engineer Intern 2027, Austin, hybrid, jobId 140102, posted 05-Nov-2026, projected $75,600-$138,600/yr FTE schedule, bachelor's in CS/SE or related plus Python/Java backend experience, no visa sponsorship. Anticipated posting window 15 days from Nov 5 (about Nov 20, 2026).",
       "verifiedDate": "2026-11-05"
+    },
+    {
+      "id": "roblox-summer-2027-software-engineer-intern-8072713",
+      "company": "Roblox",
+      "title": "[Summer 2027] Software Engineer Intern",
+      "employmentType": "Internship",
+      "location": "San Mateo, CA",
+      "category": "Distributed systems",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-06",
+      "sourceFreshness": "Published 2026-11-05 (Haystack); verified live Nov 6, 2026 on Roblox careers",
+      "whyItFits": "Roblox SWE intern, San Mateo, 12-week full-time onsite/hybrid, $62/hr. Pursuing an undergraduate or graduate degree in CS or related field, no graduation window stated, so it fits his M.S. status. Roblox is not on his intern tier lists (Common), boarded on real platform-scale/real-time systems team fit. Distinct from the boarded Roblox FT '[2027] Software Engineer, Early Career' role. No deadline stated.",
+      "applicationUrl": "https://careers.roblox.com/jobs/8072713",
+      "applicationStatus": "New",
+      "discoverySource": "morning sweep 2026-11-06",
+      "verification": "Verified live 2026-11-06 on Roblox careers: [Summer 2027] Software Engineer Intern, San Mateo, CA, $62/hr, 12-week full-time onsite/hybrid, pursuing undergrad or graduate degree in CS or related field; no graduation window or deadline stated.",
+      "verifiedDate": "2026-11-06"
+    },
+    {
+      "id": "tiktok-software-engineer-intern-ai-infra-compute-2027-summer-a84146b",
+      "company": "TikTok",
+      "title": "Software Engineer Intern (AI Infra Compute) - 2027 Summer",
+      "employmentType": "Internship",
+      "location": "San Jose, CA",
+      "category": "ML systems & AI infrastructure",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-06",
+      "sourceFreshness": "Posted 2026-08-04 (iAgora); verified live Nov 6, 2026 on ByteDance careers",
+      "whyItFits": "TikTok/ByteDance SWE intern on the Compute division building large-scale, highly available cloud infrastructure: direct AI infra lane fit, San Jose, $45/hr. Minimum qualification is currently pursuing a Master in Software Development, CS, CE or a related technical discipline, which fits his M.S. status at application time; no return-to-school clause was visible in the posting. TikTok is not on his intern tier lists (Common), boarded on direct AI infra team fit. Rolling review; max 2 applications across ByteDance affiliates. A separate Seattle listing of the same title also exists (not yet verified with its own URL). Note: posting lives on ByteDance's portal (joinbytedance.com), not lifeattiktok.com.",
+      "applicationUrl": "https://joinbytedance.com/search/7667377525182662965",
+      "applicationStatus": "New",
+      "discoverySource": "morning sweep 2026-11-06",
+      "verification": "Verified live 2026-11-06 on ByteDance careers (joinbytedance.com, Job Code A84146B): Software Engineer Intern (AI Infra Compute) - 2027 Summer, San Jose, CA, $45/hr, Compute division; currently pursuing a Master in Software Development/CS/CE or a related discipline; rolling review. Exact-title search on lifeattiktok.com returned no match.",
+      "verifiedDate": "2026-11-06"
     }
   ]
 }
