@@ -6209,9 +6209,9 @@
       "url": "https://jobs.dell.com",
       "dateSeen": "2026-11-05",
       "source": "zero2sudo",
-      "status": "pending",
-      "skipReason": null,
-      "note": "Midday story frame Nov 5, 2026. NOT verified Nov 5, 2026: an exact quoted search for 'Software Engineering Undergraduate Intern' on Dell careers returned 0 jobs, and a 'CSG Software' search returned only 'CSG Hardware Engineering Intern' in TX, so the CSG software role could not be confirmed live and no canonical URL is recorded. Gate: recheck Dell careers on the next sweep; if the posting surfaces, verify whether it is undergraduate-only before boarding. The enterpriseplatform.dell.com root redirects to an Oracle identity sign-in and was not used. Rechecked Nov 5, 2026 evening: jobs.dell.com keyword search loaded all 85 jobs (via enterpriseplatform.dell.com redirect, no sign-in presented or used); exact title still absent. Second consecutive not-found. Gate: recheck once more next sweep; close as not-found if still absent."
+      "status": "skipped",
+      "skipReason": "Not found on Dell careers after 3 checks (Nov 4-6, 2026); closed as not-found. Closest: CSG Hardware Engineering Intern (Round Rock, TX) and 2027 Software Engineer Campus Hire (Taiwan, not US).",
+      "note": "Midday story frame Nov 5, 2026. Third and final check Nov 6, 2026: exact title absent from Dell careers search results."
     },
     {
       "company": "Amazon",
@@ -6430,9 +6430,9 @@
       "url": null,
       "dateSeen": "2026-11-05",
       "source": "zero2sudo",
-      "status": "pending",
-      "skipReason": "Not found as stated on Cisco careers Nov 5, 2026 (searched 'Software Engineer Intern Summer 2027' and 'Software Engineer Intern', filtered San Jose; closest are a Splunk Solutions Engineer intern, a Data & AI PhD intern, and a Galway SWE intern). Gate: recheck Cisco careers next sweep; the San Jose variant may surface or may have closed.",
-      "note": "Evening story frame Nov 5, 2026. NOT verified: no canonical URL recorded."
+      "status": "skipped",
+      "skipReason": "Not found as stated on Cisco careers after Nov 5 and Nov 6 checks; closed as not-found. Closest: Software Engineer - CHG (FT, San Jose) and Software Consulting Engineer I (Intern) (Raleigh/Durham, NC).",
+      "note": "Evening story frame Nov 5, 2026. Final recheck Nov 6, 2026: no plain Software Engineer Intern, San Jose, Summer 2027 among 41 Cisco results (19 US)."
     },
     {
       "company": "CrowdStrike",
