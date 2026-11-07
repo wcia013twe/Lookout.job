@@ -492,8 +492,8 @@ Demo check: edit Query Lab, add a project, remove it with its trash icon, and fi
 
 ### Background organization logos
 
-About me work and education entries reuse the shared CompanyLogo renderer. Logo.dev is attempted with the existing publishable token; unavailable, empty or fictional organizations fall back to a briefcase. The same fallback applies across existing logo surfaces. Projects retain their project icon. Background marks use 80px on desktop and 64px on mobile, with logos filling that space.
+About me work and education entries reuse the shared CompanyLogo renderer. Logo.dev is attempted with the existing publishable token; unavailable, empty or fictional organizations fall back to a briefcase. The same fallback applies across existing logo surfaces. Projects retain their project icon. Background marks use 68px on desktop and 56px on mobile, with logos filling that space.
 
 Demo check: fictional employers/schools show briefcases without external logo requests. Edit an organization name to a real brand to check logo loading and name changes; simulate failed image responses to check the direct briefcase fallback on desktop/mobile. Reset restores the fictional records. Run `node scripts/check-profile-logos-ui.mjs` against an isolated frontend with a fake logo token for mocked success/failure and reset coverage.
 
-Role-card company marks use 64px on desktop and 56px on mobile. The ranking badge is temporarily commented out; saved ranking settings and card color treatment remain available. Demo check: inspect Discover cards on desktop/mobile to confirm the larger company mark, title wrapping and absence of the ranking badge.
+Role-card company marks use 56px on desktop and 48px on mobile. The ranking badge is temporarily commented out; saved ranking settings and card color treatment remain available. Demo check: inspect Discover cards on desktop/mobile to confirm the larger company mark, title wrapping and absence of the ranking badge.
