@@ -1,3 +1,4 @@
+import {EXTRA_FEATURES_ENABLED} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTestDatabase} from './helpers/database.mjs';
@@ -20,7 +21,7 @@ test('demo conversations preserve attached context, search job IDs and reset ind
  for(const extra of [{offers:[]},{offers:[offers[0]]},{offers:[{company:''},offers[1]]},{offers:[{company:'A',base:42},offers[1]]},{type:'discussion'},{jobId:42},{jobId:' '},{offers:[{company:'A',privateNotes:'secret'},offers[1]]}])assert.throws(()=>demo.action('knowledge.propose',{circleId,expectedRevision:0,content:{...base,...extra}}));
 });
 
-test('website and scoped MCP share offer/job validation, search and exact-revision approval',async()=>{
+test('website and scoped MCP share offer/job validation, search and exact-revision approval',{skip:!EXTRA_FEATURES_ENABLED && 'Community MCP is temporarily paused; rejection covered in mcp-protocol.test.mjs'},async()=>{
  const db=await createTestDatabase(),owner='11111111-1111-1111-1111-111111111111',friend='22222222-2222-2222-2222-222222222222',hash='d'.repeat(64);let sequence=0;
  async function human(user,operation,payload){await db.query("select set_config('test.uid',$1,false)",[user]);await db.exec('set role authenticated');try{return (await db.query('select public.knowledge_action($1,$2::jsonb) result',[operation,JSON.stringify({...payload,...(['knowledge.read','knowledge.search'].includes(operation)?{}:{eventKey:`human-${++sequence}`})})])).rows[0].result;}finally{await db.exec('reset role');}}
  const handler=createHandler(async(token,operation,payload)=>{

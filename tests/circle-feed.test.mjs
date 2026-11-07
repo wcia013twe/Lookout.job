@@ -1,3 +1,4 @@
+import {EXTRA_FEATURES_ENABLED} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTestDatabase} from './helpers/database.mjs';
@@ -62,7 +63,7 @@ test('feed migration keeps historical knowledge without inventing publication ev
  }finally{await db.close();}
 });
 
-test('browser RPC and actual MCP share publication order, exact shared revisions, cursors and revocation',async()=>{
+test('browser RPC and actual MCP share publication order, exact shared revisions, cursors and revocation',{skip:!EXTRA_FEATURES_ENABLED && 'Community MCP is temporarily paused; rejection covered in mcp-protocol.test.mjs'},async()=>{
  const db=await createTestDatabase();let sequence=0;
  const hashes={owner:'a'.repeat(64),friend:'b'.repeat(64),readOnly:'c'.repeat(64),noRead:'d'.repeat(64),expired:'e'.repeat(64)};
  async function human(user,operation,payload={}){

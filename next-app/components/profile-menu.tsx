@@ -1,4 +1,5 @@
 "use client";
+import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -51,7 +52,7 @@ export default function ProfileMenu() {
           <p className="mt-1 break-words text-xs text-board-muted">{w.demo ? "Fictional demo profile" : w.accountUser?.email || "Saved in this browser"}</p>
         </div>
         {(w.demo || (w.user && !w.user.is_anonymous)) && <Link className={item} href="/profile/" onClick={() => setOpen(false)}>My Profile</Link>}
-        <Link className={item} href="/progress/#sharing-privacy" onClick={() => setOpen(false)}>Sharing &amp; privacy</Link>
+        <Link className={item} href={EXTRA_FEATURES_ENABLED ? "/progress/#sharing-privacy" : "/privacy/"} onClick={() => setOpen(false)}>Privacy</Link>
         {w.demo && <div className="mt-2 border-t border-board-line pt-2">
           <button type="button" className={item} aria-pressed={w.demo}
             onClick={() => { setOpen(false); w.toggleDemo(); }}>
@@ -66,9 +67,9 @@ export default function ProfileMenu() {
         </div>}
         <div className="mt-2 space-y-2 border-t border-board-line pt-2 md:hidden">
           <ColorModeControl compact />
-          <Link className={item} href="/progress/" onClick={() => setOpen(false)}>
+          {EXTRA_FEATURES_ENABLED && <Link className={item} href="/progress/" onClick={() => setOpen(false)}>
             Progress · {w.state?.progress?.xp || 0} XP · {streak(w.state?.progress?.streakDays)}d streak
-          </Link>
+          </Link>}
         </div>
         {!w.demo && <div className="mt-2 border-t border-board-line pt-2">
           {w.accountUser ? <button type="button" className={item} disabled={!w.authReady} onClick={()=>{setOpen(false);w.signOut();}}>Sign out</button> : <GoogleSignInButton className="w-full" disabled={!w.authReady} onClick={()=>{setOpen(false);w.signIn();}}/>}

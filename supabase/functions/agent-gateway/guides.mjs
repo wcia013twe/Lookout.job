@@ -1,3 +1,4 @@
+import {EXTRA_FEATURES_ENABLED} from '../../../lib/feature-scope.mjs';
 import connectionSchedules from './skills/connection-schedules.json' with {type:'json'};
 import workspaceMaintenance from './skills/workspace-maintenance.json' with {type:'json'};
 import interviewPreparation from './skills/interview-preparation.json' with {type:'json'};
@@ -17,7 +18,7 @@ const workflowGuides = [connectionSchedules, workspaceMaintenance, interviewPrep
 const guides = [...workflowGuides, agentPackage, ...toolkit.guides.filter(g=>g.id!==search.id), search, applicationWorkspace, resume, { ...outreach, ...outreachTemplates, version: outreach.version, templateVersion: outreachTemplates.version }];
 export function guideIndex() {
   const primary = new Set([...workflowGuides.map(g=>g.id), 'agent-package', 'career-find-jobs', 'application-workspace', 'resume-parse', 'cold-outreach']);
-  return guides.filter(g=>primary.has(g.id)).map(({id, version, name, whenToUse}) => ({id, version, name, whenToUse}));
+  return guides.filter(g=>primary.has(g.id) && (EXTRA_FEATURES_ENABLED || g.id!==circleKnowledge.id)).map(({id, version, name, whenToUse}) => ({id, version, name, whenToUse}));
 }
 export function readGuide(id) {
   const reference = typeof id === 'string' && id.endsWith('-reference');
@@ -31,7 +32,7 @@ export function readGuide(id) {
 export async function guideDispatch(id, authorize) {
   const result = await authorize('context.developer', {});
   if (result.error) return result;
-  const guide = readGuide(id);
+  const guide = !EXTRA_FEATURES_ENABLED && id === circleKnowledge.id ? null : readGuide(id);
   if (!guide) return {error: {code: 'P0002'}};
   if (!id.endsWith('-reference') && guide.sourceDocuments) {
     const {manual, sourceDocuments, ...workflow} = guide;

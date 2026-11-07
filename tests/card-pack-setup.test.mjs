@@ -63,17 +63,17 @@ test('first pack preserves default routines when no schedule exists',async()=>{
  await savePackWithTask({...args(h),timezone:'UTC'});assert.equal(h.get().schedule.routines.length,5);
  assert.equal(h.get().schedule.configVersion,1);assert.equal(h.get().schedule.timezone,'UTC');
 });
-test('the same linked setup uses the existing scoped MCP task and pack tools',async()=>{
+test('paused pack setup cannot invoke theme writes through MCP',async()=>{
  const h=harness(),operations=[];
  const handler=createHandler(async(_token,operation,payload)=>{
   if(operation==='credentials.verify')return {status:200,data:{scopes:['preferences:write']}};
   operations.push(operation);return {status:200,data:await h.performAction(operation,payload)};
  });
- await savePackWithTask({...args(h),performAction:async(operation,payload)=>{
+ await assert.rejects(savePackWithTask({...args(h),performAction:async(operation,payload)=>{
   const name=operation==='preferences.notifications.save'?'save_notification_preferences':'save_theme_preferences';
   const response=await handler(new Request('http://local/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:payload}})}));
-  const body=await response.json();assert.ok(body.result&&!body.result.isError,JSON.stringify(body));
+  const body=await response.json();if(body.error)throw Error('Pack tool paused');assert.ok(body.result&&!body.result.isError,JSON.stringify(body));
   return operation==='preferences.notifications.save'?{search:{schedule:h.get().schedule},updated_at:h.get().updatedAt}:{theme:h.get().theme,updated_at:h.get().updatedAt};
- }});
- assert.deepEqual(operations,['preferences.notifications.save','preferences.theme.save']);
+ }}),/Pack tool paused/);
+ assert.deepEqual(operations,['preferences.notifications.save']);
 });

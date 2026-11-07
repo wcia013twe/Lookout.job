@@ -1021,3 +1021,21 @@ No new data-write or shell-execution MCP tool is introduced. Host installation,
 service management and wake commands remain local, authorized runtime actions.
 Developer version 90 advertises setup; release artifacts and backend must both
 be verified before claiming the package is available or watching is active.
+
+## Assignment feature scope
+
+Community/Circles, shared interview intelligence, card packs, appearance settings,
+XP/leaderboards and the dashboard tour are temporarily paused. Discover,
+Applications, Network, Career Toolkit, profile/agent settings and the Action Board
+remain available. `lib/feature-scope.mjs` controls the frontend gates and MCP
+transport filter; implementations, backend contracts and saved data are retained.
+Paused MCP tools reject direct calls as well as disappearing from discovery.
+The Circle guide is hidden from the primary index and unavailable through
+`read_guide`. Theme writes (including message-template edits through
+`save_theme_preferences`) are paused; saved templates still work.
+
+The static frontend and gateway/MCP must be released together through the normal
+production workflows. Local changes do not update hosted agents; refresh tool
+and developer-context discovery after release. Five legacy Community MCP parity
+scenarios are paused while their transports are unavailable; active MCP tests
+verify rejection instead. Backend/domain tests remain in the suite.

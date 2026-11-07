@@ -1,4 +1,5 @@
 "use client";
+import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 import { roleApplied } from '../../lib/discover-application-state.mjs';
 import { useRef, useState } from "react";
 import {matchesPostingAge,postingAgeOptions} from "../../lib/posting-age.mjs";
@@ -105,7 +106,8 @@ function DiscoverBoard() {
         {roles.length} to review ·{" "}
         {roles.filter((r: Role) => r.priority === "Apply Now").length} apply now
       </Notice>
-      <CardPackWidgets key={previewOwner} onOpened={populateBoard}/>
+      {/* Paused: card-pack widgets and reveal effects. */}
+      {EXTRA_FEATURES_ENABLED && <CardPackWidgets key={previewOwner} onOpened={populateBoard}/>}
       <section ref={board} aria-label="Discover board" className="scroll-mt-6">
       {arriving && <p role="status" className="mt-4 text-sm text-board-muted">{arriving.ids.length} pack {arriving.ids.length === 1 ? "job" : "jobs"} on your board.</p>}
       {roleGroups.map(({ key, label, roles: group }) => (

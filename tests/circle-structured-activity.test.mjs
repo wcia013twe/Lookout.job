@@ -1,3 +1,4 @@
+import {EXTRA_FEATURES_ENABLED} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTestDatabase} from './helpers/database.mjs';
@@ -28,7 +29,7 @@ test('structured demo activity, legacy fallback and independent resets',()=>{
  }
 });
 
-test('website and actual MCP dispatch store activity on exact revisions and enforce consent and membership',async()=>{
+test('website and actual MCP dispatch store activity on exact revisions and enforce consent and membership',{skip:!EXTRA_FEATURES_ENABLED && 'Community MCP is temporarily paused; rejection covered in mcp-protocol.test.mjs'},async()=>{
  const db=await createTestDatabase(),owner='11111111-1111-1111-1111-111111111111',friend='22222222-2222-2222-2222-222222222222',hash='e'.repeat(64);let sequence=0;
  async function human(user,operation,payload){
   await db.query("select set_config('test.uid',$1,false)",[user]);await db.exec('set role authenticated');

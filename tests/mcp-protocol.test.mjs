@@ -1,3 +1,4 @@
+import {enabledMcpOperation} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PLATFORM_TOOLS } from '../supabase/functions/agent-gateway/platform-tools.mjs';
@@ -53,7 +54,7 @@ test('scope-filtered discovery exposes only bounded workspace tools', async () =
 test('context discovery and calls use workspace scope and accept no owner injection', async () => {
   const calls = [], handle = handler(calls, ['workspace:read']);
   const list = await (await handle(request(rpc('tools/list')))).json();
-  assert.deepEqual(list.result.tools.map(tool => tool.name), TOOLS.filter(tool=>tool.scope==='workspace:read').map(tool=>tool.name));
+  assert.deepEqual(list.result.tools.map(tool => tool.name), TOOLS.filter(tool=>tool.scope==='workspace:read' && enabledMcpOperation(tool.operation)).map(tool=>tool.name));
   await handle(request(rpc('tools/call', { name: 'check_context_versions', arguments: {} })));
   assert.deepEqual(calls.at(-1), { operation: 'context.versions', payload: {} });
   const invalid = await handle(request(rpc('tools/call', { name: 'read_personal_context', arguments: { userId: 'other' } })));
@@ -100,7 +101,7 @@ test('product and compatibility tools register once with distinct variant operat
 });
 
 test('every registered tool rejects missing scope before forwarding an action', async () => {
-  for (const tool of TOOLS) {
+  for (const tool of TOOLS.filter(tool=>enabledMcpOperation(tool.operation))) {
     const calls = [];
     const response = await handler(calls, [])(request(rpc('tools/call', { name: tool.name, arguments: {} })));
     assert.equal((await response.json()).result.isError, true, tool.name);
@@ -108,15 +109,22 @@ test('every registered tool rejects missing scope before forwarding an action', 
   }
 });
 
-test('Circle knowledge discovery and citation forwarding preserve scopes and the bounded contract',async()=>{
- const calls=[],readOnly=handler(calls,['knowledge:read']);
- const discovered=(await (await readOnly(request(rpc('tools/list')))).json()).result.tools;
- assert(discovered.some(t=>t.name==='search_circle_knowledge'));
- assert(!discovered.some(t=>t.name==='record_knowledge_citation'));
- const writable=handler(calls,['knowledge:read','knowledge:write']);
- const args={circleId:'11111111-1111-1111-1111-111111111111',postId:'22222222-2222-2222-2222-222222222222',revision:1,category:'answer',reference:'answer-1',eventKey:'citation-1'};
- const response=await writable(request(rpc('tools/call',{name:'record_knowledge_citation',arguments:args})));
- assert(!(await response.json()).result.isError);assert.deepEqual(calls.at(-1),{operation:'knowledge.cite',payload:args});
- const injected=await writable(request(rpc('tools/call',{name:'record_knowledge_citation',arguments:{...args,ownerId:'someone-else'}})));
- assert.equal((await injected.json()).error.code,-32602);
+test('paused MCP tools are absent and reject direct calls, including local extras',async()=>{
+ const calls=[];
+ const paused=TOOLS.filter(tool=>!enabledMcpOperation(tool.operation));
+ assert(paused.some(tool=>tool.name==='read_interview_intelligence'));
+ assert(paused.some(tool=>tool.name==='save_theme_preferences'));
+ assert(paused.some(tool=>tool.name==='read_leaderboard'));
+ const handle=createHandler(async(_token,operation,payload)=>{
+  calls.push({operation,payload});
+  return {status:200,data:{scopes:[...scopes,'knowledge:read','knowledge:write']}};
+ },[],[{name:'local_circle_bypass',operation:'knowledge.read',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
+ const discovered=(await (await handle(request(rpc('tools/list')))).json()).result.tools;
+ for(const tool of [...paused,{name:'local_circle_bypass'}]){
+  assert(!discovered.some(t=>t.name===tool.name),tool.name);
+  const body=await (await handle(request(rpc('tools/call',{name:tool.name,arguments:{}})))).json();
+  assert.equal(body.error.code,-32602,tool.name);
+ }
+ assert(calls.every(call=>call.operation==='credentials.verify'));
+ for(const name of ['publish_batch','prepare_draft','list_contacts','save_contact','save_artifact','read_preparation_plan'])assert(discovered.some(t=>t.name===name),name);
 });

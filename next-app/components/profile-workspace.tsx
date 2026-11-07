@@ -1,4 +1,5 @@
 "use client";
+import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 import { useEffect, useState } from "react";
 import ProfileSurface, { profileStyles } from "./profile-surface";
 import { useWorkspace } from "../lib/workspace";
@@ -25,7 +26,7 @@ const sections: [ProfileSectionId, string][] = [
   ["preferences", "Job preferences"],
   ["agent", "My Agent"],
   ["appearance", "Appearance"],
-];
+].filter(([id]) => EXTRA_FEATURES_ENABLED || id !== "appearance") as [ProfileSectionId, string][];
 function ProfileContent() {
   const a = useApplicationProfile();
   const [active, setActive] = useState<ProfileSectionId>("about"),
@@ -106,12 +107,12 @@ function ProfileContent() {
         >
           <DiscoverySetup>
           <WritingStyles />
-          <CircleAgentSettings />
+          {EXTRA_FEATURES_ENABLED && <CircleAgentSettings />}
           <Preferences mode="agent" showDefaultResume={false} />
           </DiscoverySetup>
         </section>
       )}
-      {visited.includes("appearance") && <section className={profileStyles.panel} hidden={active !== "appearance"} aria-label="Appearance"><AppearanceSettings /></section>}
+      {EXTRA_FEATURES_ENABLED && visited.includes("appearance") && <section className={profileStyles.panel} hidden={active !== "appearance"} aria-label="Appearance"><AppearanceSettings /></section>}
       {a.saveError && <p role="alert" className="text-sm text-board-muted">
         {a.feedback} <button type="button" className={secondary} disabled={a.busy} onClick={a.retrySave}>Retry saving</button>
       </p>}

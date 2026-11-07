@@ -49,8 +49,7 @@ test('posting intelligence shares human/Node MCP authorization, published eviden
   assert.deepEqual((await dispatch(token,'knowledge.interview',payload)).data,packet);
   server=createApi({dispatch});server.listen(0,'127.0.0.1');await once(server,'listening');
   const response=await fetch(`http://127.0.0.1:${server.address().port}/mcp`,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_interview_intelligence',arguments:payload}})});
-  const body=await response.json();assert.equal(response.status,200);assert(!body.result?.isError,JSON.stringify(body));
-  assert.deepEqual(JSON.parse(body.result.content[0].text),packet);
+  const body=await response.json();assert.equal(response.status,200);assert.equal(body.error.code,-32602,'community intelligence is paused at MCP');
   await db.query("update private.agent_connections set scopes=array['workspace:read'] where token_hash=$1",[hash]);assert.equal((await dispatch(token,'knowledge.interview',payload)).status,403);
   await db.query("update private.agent_connections set scopes=array['knowledge:read'] where token_hash=$1",[hash]);assert.equal((await dispatch(token,'knowledge.interview',payload)).status,403);
   await db.query("update private.agent_connections set scopes=array['workspace:read','knowledge:read'] where token_hash=$1",[hash]);

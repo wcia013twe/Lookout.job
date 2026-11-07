@@ -1,3 +1,4 @@
+import {EXTRA_FEATURES_ENABLED} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {circleAgentContext,circleKnowledgeResponse} from '../lib/circle-context.mjs';
@@ -62,7 +63,7 @@ test('demo accepts an insight without a message and rejects empty or private-lin
  }
 });
 
-test('browser projection and scoped gateway/MCP reads expose the same context after authorized retrieval',async()=>{
+test('browser projection and scoped gateway/MCP reads expose the same context after authorized retrieval',{skip:!EXTRA_FEATURES_ENABLED && 'Community MCP is temporarily paused; rejection covered in mcp-protocol.test.mjs'},async()=>{
  const post=read(createCircleKnowledgeDemo()).post;
  const raw={post,replies:[],nextCursor:null};
  delete post.agentContext;

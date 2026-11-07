@@ -1,3 +1,4 @@
+import {enabledMcpOperation} from '../../../lib/feature-scope.mjs';
 import {APPLICATION_JOB_TOOL} from '../agent-gateway/application-jobs.mjs';
 import {MUSE_CHANGE_TOOLS} from '../agent-gateway/muse-changes.mjs';
 import {READ_SUBMISSION_BATCH_TOOL} from '../agent-gateway/submission-batches.mjs';
@@ -120,7 +121,7 @@ function validArgs(tool, args) {
 }
 const hasToolScopes=(tool,scopes,payload=undefined)=>requiredToolScopes(tool,payload).every(scope=>scopes.includes(scope));
 export function createHandler(forward, allowedOrigins = ['https://wcia013twe.github.io'], extraTools = []) {
-  const availableTools = [...TOOLS, ...extraTools];
+  const availableTools = [...TOOLS, ...extraTools].filter(tool => enabledMcpOperation(tool.operation));
   return async request => {
     const origin = request.headers.get('Origin');
     if (origin && !allowedOrigins.includes(origin)) return error(null, -32000, 'Origin forbidden', 403);

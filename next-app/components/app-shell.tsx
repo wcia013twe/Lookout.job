@@ -1,4 +1,5 @@
 "use client";
+import {EXTRA_FEATURES_ENABLED, pausedFrontendRoute} from "../../lib/feature-scope.mjs";
 import Link from "next/link";
 import BrandMark from "./brand-mark";
 import LandingPage from "./landing-page";
@@ -100,7 +101,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         aria-label="Workspace pages"
         className="workspace-nav flex-wrap"
       >
-        {navigation.map(([href, label]) => (
+        {navigation.filter(([href]) => !pausedFrontendRoute(href)).map(([href, label]) => (
           <Link
             key={href}
             data-dashboard-tour={href==="/"?"discover":href==="/applications/"?"applications":href==="/needs-you/"?"needs":href==="/career-toolkit/"?"toolkit":href==="/referrals/"?"network":href==="/circles/"?"circles":undefined}
@@ -115,7 +116,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           </Link>
         ))}
       </nav>
-        <div className="workspace-utilities"><div className="workspace-desktop-utilities"><ColorModeControl />{!/^\/circles(?:\/|$)/.test(path)&&<details className="workspace-progress text-sm">
+        <div className="workspace-utilities"><div className="workspace-desktop-utilities"><ColorModeControl />{EXTRA_FEATURES_ENABLED&&!/^\/circles(?:\/|$)/.test(path)&&<details className="workspace-progress text-sm">
           <summary className="workspace-progress-trigger">
             {w.state?.progress?.xp || 0} XP ·{" "}
             {streak(w.state?.progress?.streakDays)}d streak
@@ -130,12 +131,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
       {w.error && <Notice>{w.error}</Notice>}
       {w.state || isPrivacy ? (
         <div key={w.demo ? `demo-${w.demoEpoch}` : w.user?.id || "guest"} inert={(!isPrivacy && w.locked) || undefined}>
-          {children}
+          {pausedFrontendRoute(path) ? <section className="py-12"><h1 className="text-2xl font-semibold">This feature is paused</h1><Link href="/discover/" className="mt-4 inline-flex min-h-11 items-center underline underline-offset-4">Back to Discover</Link></section> : children}
         </div>
       ) : (
         <div className="glass-panel rounded-2xl p-6" role="status"><p className="text-sm text-board-muted">Loading your workspace…</p><div aria-hidden="true" className="mt-5 grid gap-3 sm:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-28 rounded-xl bg-board-tag" />)}</div></div>
       )}
-      {w.state&&!w.locked&&(w.demo||w.authReady)&&(path==="/"||path==="/discover/")&&<DashboardTour key={w.demo?`tour-demo-${w.demoEpoch}`:`tour-${w.accountUser?.id||w.user?.id||"guest"}`}/>}
+      {EXTRA_FEATURES_ENABLED&&w.state&&!w.locked&&(w.demo||w.authReady)&&(path==="/"||path==="/discover/")&&<DashboardTour key={w.demo?`tour-demo-${w.demoEpoch}`:`tour-${w.accountUser?.id||w.user?.id||"guest"}`}/>}
       </div>
     </main></MotionConfig>
   );

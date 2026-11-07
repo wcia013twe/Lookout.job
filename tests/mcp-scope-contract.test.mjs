@@ -1,3 +1,4 @@
+import {enabledMcpOperation} from '../lib/feature-scope.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {TOOLS,createHandler,requiredToolScopes,CONDITIONAL_TOOL_SCOPES} from '../supabase/functions/agent-mcp/protocol.mjs';
@@ -11,8 +12,8 @@ const harness=scopes=>{
 };
 
 test('every mandatory secondary scope filters discovery and denies calls before product forwarding',async()=>{
-  const scoped=TOOLS.filter(tool=>tool.requiredScopes?.length);
-  assert.ok(scoped.length>=33); // 30 audited paths plus three backend writes.
+  const scoped=TOOLS.filter(tool=>tool.requiredScopes?.length && enabledMcpOperation(tool.operation));
+  assert.ok(scoped.length>=32); // Active audited paths; community intelligence is paused.
   for(const tool of scoped)for(const missing of tool.requiredScopes) {
     const scopes=allScopes.filter(scope=>scope!==missing),h=harness(scopes);
     const listing=await h.call('tools/list',{});

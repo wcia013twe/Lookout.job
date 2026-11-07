@@ -1,12 +1,13 @@
+import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 // Browser-only navigation checkpoint. Never evidence of connection or completion.
-export const setupSteps = ['start','preferences','first-role','connect','circles','done'];
+export const setupSteps = ['start','preferences','first-role','connect','circles','done'].filter(step => EXTRA_FEATURES_ENABLED || step !== 'circles');
 export function onboardingProgressKey(owner) {
  return owner ? `lookout:onboarding-progress:v1:${owner}` : null;
 }
 export function readOnboardingProgress(storage, key) {
  try {
   const scene=key && storage.getItem(key);
-  return setupSteps.includes(scene) ? scene : 'start';
+  return scene === 'circles' && !EXTRA_FEATURES_ENABLED ? 'done' : setupSteps.includes(scene) ? scene : 'start';
  } catch { return 'start'; }
 }
 export function saveOnboardingProgress(storage,key,scene) {

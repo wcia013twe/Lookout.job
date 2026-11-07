@@ -1,4 +1,5 @@
 "use client";
+import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 import Link from "next/link";
 import { useState } from "react";
 import BrandMark from "./brand-mark";
@@ -99,14 +100,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="circle-title">
+      {EXTRA_FEATURES_ENABLED && <section className={styles.section} aria-labelledby="circle-title">
         <div className={styles.sectionCopy}><h2 id="circle-title">Get the inside<br/>perspective.</h2><p>Join Circles. See what other<br className={styles.desktopBreak}/> candidates are discussing.</p></div>
         <div className={`${styles.preview} ${styles.circle}`}>
           <header className={styles.previewHead}><div className={styles.identity}><CompanyLogo company="Google"/><strong>Google Circle</strong></div><span className={styles.example}>Illustrative</span></header>
           <div className={styles.discussion}><div className={styles.author}><span className={styles.avatar}>J</span><span>Jordan <span>· Candidate</span></span></div><h3>Anyone heard back<br/>after the OA?</h3><div className={styles.tags}><span>New Grad SWE</span><span>Recruiting timeline</span></div></div>
           <div className={styles.previewFoot}><ProfileIcon name="conversation" aria-hidden="true"/><span>Candidate discussion preview</span></div>
         </div>
-      </section>
+      </section>}
       <div className={styles.close}><p>Your agent. Your next move.</p><Link href="/signup/?demo=0" className={`${primary} ${styles.cta}`}>Get started free <ProfileIcon name="arrow" aria-hidden="true"/></Link><span>Connect your existing agent for free.</span></div>
     </div>
     <footer className={styles.footer}><Link href="/" className={styles.brand}><BrandMark/>Lookout</Link><p>Less applying. More becoming.</p><Link href="/privacy/">Privacy</Link></footer>
