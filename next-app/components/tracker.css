@@ -42,6 +42,9 @@
 .tracker-dot svg {width:100%;height:100%;color:var(--color-board-panel);}
 .tracker-progress .reached .tracker-dot {border-color:transparent;background:linear-gradient(135deg,var(--tracker-reached),var(--tracker-gradient-end)) border-box;}
 .tracker-progress [aria-current="step"] .tracker-dot {outline:2px solid var(--tracker-reached);outline-offset:3px;}
+.tracker-progress .is-complete .tracker-dot {border-color:var(--color-board-success);background:var(--color-board-success);}
+.tracker-progress .is-complete[aria-current="step"] .tracker-dot {outline-color:var(--color-board-success);}
+.tracker-progress li.is-complete:not(:last-child):has(+li.is-complete)::after {background:var(--color-board-success);}
 .tracker-progress time {font-size:10px;min-height:15px;font-variant-numeric:tabular-nums;}
 .tracker-row-progress>small {display:block;text-align:center;font-size:11px;color:var(--color-board-muted);margin-top:8px;}
 .tracker-stage-label {font-weight:600;white-space:nowrap;}
