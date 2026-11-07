@@ -37,6 +37,7 @@ export function createArtifactDemo(store){
  previewMaterials.forEach(([id,title,purpose,body],index)=>{
   const row=seed.find(item=>item.id===id);
   row.content.title=title;row.content.purpose=purpose;row.content.company='Cedar Systems (demo)';
+  if(interview)row.content.links=[...row.content.links.filter(link=>!link.applicationId),{applicationId:'demo-interview'}];
   row.content.weekOf=weekStart(today);row.updated_at=new Date(Date.now()-index*1000).toISOString();
   if(body)row.content.body=body;
   if(id===demoArtifactIds.company)row.content.body+='\n\n## Why this team · motivation draft\n\nIn this fictional scenario, the team works on database services and reliable background processing. The demo candidate’s Query Lab experience gives them a concrete starting point for discussing query plans, while the reliability work offers a growth area.\n\n**A conversational opening:** “I enjoyed investigating how query behavior changes with the dataset. I would like to apply that curiosity to a team where database performance and failure handling are part of the product.”\n\n**Verify before using:** whether this particular team owns those systems, what a junior engineer would own, and whether the work matches your actual interests. This is sample wording, not a saved personal preference.';
