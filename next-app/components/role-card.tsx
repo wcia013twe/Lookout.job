@@ -1,5 +1,5 @@
 "use client";
-import { useState, type CSSProperties, type PointerEvent } from "react";
+import { type CSSProperties, type PointerEvent } from "react";
 import styles from "./role-card.module.css";
 import { motion, useReducedMotion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
@@ -18,43 +18,12 @@ import ApplicationActions from "./application-actions";
 import RoleJobFacts from "./role-job-facts";
 import RoleMatchPreview, { type MatchPreview } from "./role-match-preview";
 import { primary, secondary } from "./ui";
-import { companyLogoUrl } from "../lib/company-logo";
-import logos from "../../data/logo-manifest.json";
+import { CompanyLogo } from "./company-logo";
+export { CompanyLogo } from "./company-logo";
 import {
-  normCompany,
   rarityOf, companyRanking,
   TIER_HEX,
 } from "../lib/role-display";
-export function CompanyLogo({ company }: { company: string }) {
-  const providerUrl = companyLogoUrl(company, process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN);
-  const cachedUrl = (logos as Record<string, { url: string }>)[normCompany(company)]?.url;
-  return <CompanyLogoImage key={`${company}:${providerUrl}:${cachedUrl}`} company={company} urls={[normCompany(company) === "google" ? `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/brand/google-g.png` : null, providerUrl, cachedUrl].filter((url): url is string => Boolean(url))} />;
-}
-function CompanyLogoImage({ company, urls }: { company: string; urls: string[] }) {
-  const [attempt, setAttempt] = useState(0);
-  const url = urls[attempt];
-  return url ? (
-    <img
-      src={url}
-      alt={`${company} logo`}
-      width="38"
-      height="38"
-      onError={() => setAttempt(value => value + 1)}
-      className="h-10 w-10 shrink-0 rounded-lg bg-white object-contain p-1"
-    />
-  ) : (
-    <span
-      aria-hidden="true"
-      className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-board-tag text-sm font-bold"
-    >
-      {company
-        .split(/\s+/)
-        .map((w) => w[0])
-        .slice(0, 2)
-        .join("")}
-    </span>
-  );
-}
 const REFRACTION: Record<keyof typeof TIER_HEX, string> = { common: "#7ae9db", rare: "#aeb6ff", epic: "#efb0df", legendary: "#ffa577", mythic: "#ffbb73" };
 
 export default function RoleCard({ role, onPreview }: { role: Role; onPreview?: (role: Role) => void }) {
