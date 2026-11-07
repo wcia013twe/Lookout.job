@@ -48,6 +48,20 @@ try{
   await page.getByText('Auto-apply uses verified facts and permitted saved answers.',{exact:false}).waitFor();
   assert.equal(await page.locator('#agent-panel-packs').count(),0);
   assert.equal(await page.getByRole('button',{name:'Appearance',exact:true}).count(),0);
+  assert.equal(await page.getByRole('heading',{name:'Your agent',exact:true}).count(),0);
+  const connectionForm=page.getByRole('form',{name:'Create an agent connection',exact:true});
+  const agentChoice=connectionForm.getByRole('combobox',{name:'Selected agent',exact:true});
+  await agentChoice.selectOption('custom');
+  await connectionForm.getByRole('textbox',{name:'Agent name',exact:true}).fill('Fictional local runtime');
+  await connectionForm.getByRole('textbox',{name:'Connection name (required)',exact:true}).fill('Fictional laptop connection');
+  await agentChoice.selectOption('muse');
+  assert.equal(await connectionForm.getByRole('textbox',{name:'Connection name (required)',exact:true}).inputValue(),'Fictional laptop connection');
+  await page.screenshot({path:`/private/tmp/lookout-connection-agent-${viewport.width}.png`});
+  await connectionForm.getByRole('button',{name:'Create connection',exact:true}).click();
+  await page.getByText('Connection created. Copy the token into your agent’s secure settings; it is shown only once.',{exact:true}).waitFor();
+  await page.getByText('Fictional laptop connection',{exact:true}).waitFor();
+  assert.equal(await agentChoice.inputValue(),'muse');
+
   assert.equal(await page.getByRole('heading',{name:/Circle/}).count(),0);
   await page.screenshot({path:`/private/tmp/lookout-scope-profile-${viewport.width}.png`});
   if(viewport.width<640)await page.locator('select').filter({has:page.locator('option[value="preferences"]')}).selectOption('preferences');

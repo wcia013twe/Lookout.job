@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import AgentPreference from "./agent-preference";
 import {readAgentSelection} from "../../lib/agent-selection.mjs";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useWorkspace } from "../lib/workspace";
@@ -218,6 +219,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
             <h3 className="font-semibold">Create a connection</h3>
             <p className="mt-1 text-sm text-board-muted">Use a separate connection for each agent. Access expires after 30 days.</p>
           </div>
+          <AgentPreference disabled={busy}/>
           <Field label="Connection name (required)">
             <input className={control} name="name" defaultValue={readAgentSelection(w.state.workflow.searchPreferences,w.state.workflow.profile).name} placeholder="e.g. Muse on my laptop" required maxLength={80} aria-invalid={Boolean(nameError)} aria-describedby={nameError ? "agent-name-error" : undefined} onChange={() => setNameError("")} disabled={(!w.user && !w.demo) || busy} />
           </Field>

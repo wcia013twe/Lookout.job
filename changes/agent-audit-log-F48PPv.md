@@ -81,3 +81,16 @@
   → guide → start/append/read test persists the guide payloads in an isolated DB.
   Startup/index remain within their 6 KB/4 KB budgets. Live Muse capture remains
   unverified and needs the normal main-branch backend release/context refresh.
+
+## Agent choice in the personal connection form
+
+- Move the existing agent selector into Create a connection, directly above its
+  connection-name field. Remove the separate Your agent panel.
+- Keep existing account/setup selection sync, custom agent names and connector
+  permissions/issuance unchanged. The selector disables during connection actions.
+- Reuses existing preference sync and human-only connection credential issuance;
+  no service/API, MCP contract or backend change.
+- Validation: frontend typecheck/build, 941 passing tests (5 paused Community skips),
+  158-role data validation, desktop/mobile fictional connection creation and custom
+  selection checks; no external requests, page errors or mechanical design findings.
+- Limits: no real token issuance or hosted deployment performed in this follow-up.
