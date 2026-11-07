@@ -1,0 +1,24 @@
+{
+  "scope": "Local Docker only; public feed smoke tests, not an account job search",
+  "date": "2026-11-07",
+  "liveSmoke": [
+    {
+      "source": "jobright-newgrad",
+      "publishedRows": 829,
+      "sampledDetails": 3,
+      "resolvedEmployerLinks": 0,
+      "unresolved": 3
+    },
+    {
+      "source": "jobright-internship",
+      "publishedRows": 100,
+      "sampledDetails": 3,
+      "resolvedEmployerLinks": 0,
+      "unresolved": 3
+    }
+  ],
+  "blocker": "Sampled public pages omit explicit employer apply URLs; no listings saved from these samples",
+  "runtime": "API and worker use lookout-node:jobright; both provider addresses recognized",
+  "accountSources": "Both enabled through built-in defaults; personalVersion unchanged at 121; no custom document overwrite",
+  "deployment": "No push or GCP deployment"
+}

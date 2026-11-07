@@ -9,7 +9,7 @@ import {createTestDatabase} from './helpers/database.mjs';
 
 test('shared default consolidates all copied portals, provider hints and query templates without personal targeting',async()=>{
  const upstream=load(await readFile(new URL('../runner/vendor/career-ops/templates/portals.example.yml',import.meta.url),'utf8'));
- assert.equal(defaultPortals.tracked_companies.length,4+upstream.tracked_companies.length+upstream.job_boards.length);
+ assert.equal(defaultPortals.tracked_companies.length,6+upstream.tracked_companies.length+upstream.job_boards.length);
  assert.equal(defaultPortals.query_templates.length,upstream.search_queries.length);
  for(const source of [...upstream.tracked_companies,...upstream.job_boards]){
   const stored=defaultPortals.tracked_companies.find(s=>s.name===source.name);
@@ -28,9 +28,9 @@ test('shared default consolidates all copied portals, provider hints and query t
 test('defaults keep aggregates first and order the full employer catalog deterministically',()=>{
  const sources=defaultPortals.tracked_companies.filter(s=>s.enabled).map(source=>({source,source_id:'portal:'+source.id}));
  const a=orderedSearchSources(sources,'run-a'),b=orderedSearchSources(sources,'run-b');
- assert.deepEqual(a.slice(0,4).map(s=>s.source.id).sort(),['hiringcafe','simplify-newgrad','simplify-offseason','simplify-summer']);
+ assert.deepEqual(a.slice(0,6).map(s=>s.source.id).sort(),['hiringcafe','jobright-internship','jobright-newgrad','simplify-newgrad','simplify-offseason','simplify-summer']);
  assert.deepEqual(a,orderedSearchSources([...sources].reverse(),'run-a'));
- assert.notDeepEqual(a.slice(4,10),b.slice(4,10));assert.equal(a.length,sources.length);
+ assert.notDeepEqual(a.slice(6,12),b.slice(6,12));assert.equal(a.length,sources.length);
 });
 
 test('SQL and browser/MCP defaults match and the entire document can be customized with current versions',async()=>{

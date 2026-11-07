@@ -1,5 +1,6 @@
 import {resolveProvider} from '../../runner/vendor/career-ops/providers/_registry.mjs';
 import {hiringCafeSource,readHiringCafeLeads} from './hiringcafe.ts';
+import {jobrightFeed,readJobrightLeads} from './jobright.ts';
 import {simplifyFeed,readSimplifyLeads} from './simplify.ts';
 import type {Payload} from './types.ts';
 import type {Execute,SourceResult} from './ats.ts';
@@ -8,7 +9,7 @@ export interface CollectedSource {
  jobs:Payload[];total:number;examined:number;coverage:SourceResult['coverage'];
  blocker:string;diagnostics?:SourceResult['diagnostics'];provenance?:Payload;
 }
-interface ProviderContext {sourceId:string;profile:Payload;days:number;request:typeof fetch;execute:Execute}
+interface ProviderContext {sourceId:string;profile:Payload;days:number;request:typeof fetch;execute:Execute;prefilter?:boolean|Payload}
 // Use Career Ops' {id, detect, fetch} provider pattern and resolver. Collection
 // implementations return leads only; none verifies, screens, or writes records.
 export const sourceProviders=new Map([
@@ -26,6 +27,15 @@ export const sourceProviders=new Map([
   async fetch(source:Payload,{request}:ProviderContext):Promise<CollectedSource>{
    const page=await readSimplifyLeads(source.careers_url,{limit:null,request});
    return {jobs:page.leads,total:page.total,examined:page.leads.length,coverage:page.nextOffset===null?'exhaustive':'truncated',blocker:page.nextOffset===null?'':'Simplify feed collection is incomplete.',provenance:{provider:'simplify',aggregate:'official Simplify structured JSON'}};
+  },
+ }],
+ ['jobright',{
+  id:'jobright',detect:(source:Payload)=>Boolean(jobrightFeed(source.careers_url)),
+  async fetch(source:Payload,{request,execute,profile,prefilter}:ProviderContext):Promise<CollectedSource>{
+   const page=await readJobrightLeads(source.careers_url,{request,select:prefilter?rows=>execute('prefilter-discovery',{profile,jobs:rows,config:prefilter===true?undefined:prefilter}):undefined});
+   return {jobs:page.leads,total:page.total,examined:page.examined,coverage:'truncated',
+    blocker:'Jobright public lists cover only a subset of jobs from the last seven days. '+(page.diagnostics.length?'Some public employer application links could not be resolved.':''),
+    diagnostics:page.diagnostics,provenance:{provider:'jobright',aggregate:'official Jobright GitHub README',prefilterExcluded:page.prefilterExcluded}};
   },
  }],
  ['careerops',{
