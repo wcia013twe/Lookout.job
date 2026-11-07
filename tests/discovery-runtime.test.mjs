@@ -40,14 +40,15 @@ test('database observation batches are bounded by rows and encoded UTF-8 bytes',
 });
 
 function harness(sources){
- const calls=[];const run={id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',state:'active',version:0,sources:structuredClone(sources)};
+ const calls=[];const stored=[];const run={id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',state:'active',version:0,sources:structuredClone(sources)};
  const dispatch=async(operation,payload)=>{
   calls.push({operation,payload});
   if(operation==='search.run.start'||operation==='search.run.read')return structuredClone(run);
-  if(operation==='search.discoveries.read')return {listings:payload.purpose?[]:[posting('old')],nextOffset:null};
+  if(operation==='search.history.read')return {listings:[],nextOffset:null};
+  if(operation==='search.discoveries.read')return {listings:stored,nextOffset:null};
   if(operation==='search.context')return {personalVersion:1,documents:[{kind:'profile',id:'general',version:1,projection:{filters:{}}}]};
   if(operation==='search.progress'){const source=run.sources.find(s=>s.source_id===payload.sourceId);assert.equal(source.version,payload.expectedVersion);Object.assign(source,payload,{version:source.version+1});run.version++;}
-  if(operation==='search.discoveries.save')run.version++;
+  if(operation==='search.discoveries.save'){run.version++;for(const row of payload.listings)stored.push({...row,id:row.url,observation:{id:row.url,description:row.description},screeningVersion:0});}
   if(operation==='search.run.finish'){assert.equal(payload.expectedVersion,run.version);run.state=payload.state;}
   return {};
  };
@@ -56,13 +57,13 @@ function harness(sources){
 test('worker resumes persisted identities through isolated copied scan task and retains honest partial coverage',async()=>{
  const h=harness([{source_id:'portal:example',source:{name:'Example',careers_url:'https://example.com'},version:0,state:'pending'},{source_id:'query:1',source:{query:'unsupported'},version:0,state:'pending'}]);
  const copied=[];
- const execute=async(task,input)=>{copied.push({task,input});if(task==='inspect-discovery-filters')return {ready:true,gaps:[],validation:{errors:[]}};if(task==='dedup-discovery')return input.jobs;if(task==='verify-discovery-leads')return {jobs:[{...posting('new'),description:'Verified',postedAt:null}],diagnostics:[{status:'active'}]};return input.target.id==='query:1'?{status:'unsupported',jobs:[]}:{status:'ok',provider:'greenhouse',available:2,truncated:false,jobs:[posting('new')],provenance:{provider:'providers/greenhouse.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};};
+ const execute=async(task,input)=>{copied.push({task,input});if(task==='inspect-discovery-filters')return {ready:true,gaps:[],validation:{errors:[]}};if(task==='prefilter-discovery')return input.jobs;if(task==='filter-discovery')return {results:input.listings.map(row=>({listingId:row.id,passed:true,rejectedBy:[],checks:[],decision:'review-needed',explanation:'Fictional retained posting.'}))};if(task==='dedup-discovery')return input.jobs;if(task==='verify-discovery-leads')return {jobs:[{...posting('new'),description:'Verified',postedAt:null}],diagnostics:[{status:'active'}]};return input.target.id==='query:1'?{status:'unsupported',jobs:[]}:{status:'ok',provider:'greenhouse',available:2,truncated:false,jobs:[posting('new')],provenance:{provider:'providers/greenhouse.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};};
  const result=await executeSearch({...job,attempts:2,search_run_id:h.run.id},h.dispatch,{execute});
  assert.equal(result.status,'partial');assert.equal(result.result.shortlist.applicantEligibility,'not-evaluated');
- assert.equal(result.result.provenance[0].dedup,'dedup-tracker.mjs');
- assert.equal(copied.find(c=>c.task==='dedup-discovery').input.previous[0].url,posting('old').url);
- assert.ok(!h.calls.some(call=>/screening|publish|submission/.test(call.operation)));
- assert.ok(h.calls.find(call=>call.operation==='search.progress').payload.eventKey.includes('a2'));
+ assert.equal(result.result.storage,'direct-shortlist');
+ assert.deepEqual(copied.find(c=>c.task==='dedup-discovery').input.previous,[]);
+ assert.ok(!h.calls.some(call=>/publish|submission/.test(call.operation)));
+ assert.ok(h.calls.find(call=>call.operation==='search.progress').payload.eventKey.includes('v2'));
 });
 
 test('worker database failures retain fenced finish and rate-limit diagnostics with a recovery event',async()=>{
@@ -124,8 +125,8 @@ test('worker fetches and checkpoints sources beyond the former ten-source sample
   throw Error('Unexpected task '+task);
  };
  const result=await executeSearch(job,h.dispatch,{execute});
- assert.equal(fetched.length,22);assert(fetched.includes('portal:22'));assert(!fetched.includes('portal:0'));
- assert.equal(h.calls.filter(c=>c.operation==='search.progress').length,44);
+ assert.equal(fetched.length,23);assert(fetched.includes('portal:22'));assert(fetched.includes('portal:0'),'missing temporary files require recollection');
+ assert.equal(h.calls.filter(c=>c.operation==='search.progress').length,69);
  assert.equal(result.status,'completed');
 });
 
@@ -133,7 +134,7 @@ test('worker fetches and checkpoints sources beyond the former ten-source sample
 test('retry identity pagination reads beyond the old 5000-observation ceiling',async()=>{
  const h=harness([]);let pages=0;
  const dispatch=async(operation,payload)=>{
-  if(operation==='search.discoveries.read'&&!payload.purpose){pages++;return {listings:[],nextOffset:payload.offset<5100?payload.offset+100:null};}
+  if(operation==='search.history.read'){pages++;return {listings:[],nextOffset:payload.offset<5100?payload.offset+100:null};}
   return h.dispatch(operation,payload);
  };
  const execute=async task=>task==='inspect-discovery-filters'?{ready:true}:[];

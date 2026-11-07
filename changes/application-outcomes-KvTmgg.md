@@ -139,7 +139,7 @@
   rejected. Original source rows/notes and omitted fields remain unchanged.
 - Imported dates/flags feed existing row indicators and optional date sorting;
   explicit completed stages show check marks on the original progress bar.
-- Incremented developer contract to 115, application-workspace guide to 15 and its
+- Incremented developer contract to 116, application-workspace guide to 15 and its
   change-feed reference. Guide explains exact fields, null/clear semantics,
   preserving prior completions, date confirmation and read-back before success.
 - Fictional demo uses the same pure field validator. Added SQL browser/MCP parity

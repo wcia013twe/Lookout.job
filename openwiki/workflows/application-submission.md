@@ -253,7 +253,7 @@ The list refreshes confirmed preparation dates on account refresh, focus and
 reconnect, guards account/demo changes and reports failed reads. This is source
 behavior; production availability must be checked separately.
 
-### Imported action dates and completed stages (contract 115 source update)
+### Imported action dates and completed stages (contract 116 source update)
 
 `update_imported_job` and the browser's **Overview → Tracking details** now edit
 `nextAction`, `actionDate`, `needsAction` and `completedStages` on the existing

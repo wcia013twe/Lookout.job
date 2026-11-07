@@ -26,6 +26,7 @@ export const ACCESS_TOOLS = [
 ];
 export function toolWorkflow(tool) {
   const op=tool.operation;
+  if(op==='workspace.agent_permissions_handoff')return 'agent';
   if (/^(toolkit\.|artifacts\.|mock\.|learning\.|local\.career\.)/.test(op)) return 'toolkit';
   if (op==='imports.update') return 'applications';
   if (/^(search\.|backend\.jobs\.|imports\.|jobs\.|batches\.|selection\.|preferences\.(targets|profile)\.)/.test(op)) return 'search';
