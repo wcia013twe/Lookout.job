@@ -36,7 +36,17 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const isPrivacy = /^\/privacy\/?$/.test(path);
   const hasAccess = canViewWorkspace(w);
   const isOnboarding = /\/onboarding\/?$/.test(path);
-  if (/^\/(login|signup)\/?$/.test(path)) return <AuthPage signup={path.startsWith("/signup")} />;
+  const isAuthRoute = /^\/(login|signup)\/?$/.test(path);
+  // An unresolved session is not a signed-out session. This also covers the
+  // provider's hydration/lazy-loading fallback and returning users on auth URLs.
+  if (!w.demo && !isPublicReferencePage(path) && (!w.authReady || (hasAccess && isAuthRoute))) {
+    const setupError = hasAccess && w.websiteOnboarding?.status === "error";
+    return <WorkspaceLoading
+      error={w.error || (setupError ? "Could not check your setup. Retry to continue." : "")}
+      onRetry={!w.authReady ? () => window.location.reload() : w.websiteOnboarding?.retry}
+    />;
+  }
+  if (isAuthRoute) return <AuthPage signup={path.startsWith("/signup")} />;
   if (!hasAccess && /^\/discover\/?$/.test(path)) return <AuthPage />;
   if (!hasAccess && path === "/") return <LandingPage />;
   if (!hasAccess && !isOnboarding) {
@@ -74,7 +84,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
       ? 1
       : 0));
   if(!w.demo&&!isPublicReferencePage(path)&&!/^\/workspace-reset\/?$/.test(path)&&(destination||(hasAccess&&w.websiteOnboarding?.status!=='complete'&&w.websiteOnboarding?.status!=='incomplete'))){
-    return <main className="grid min-h-dvh place-items-center bg-board-bg p-6"><div role="status"><Notice>{w.websiteOnboarding?.status==='error'?'Could not check your setup. Retry to continue.':'Checking your setup…'}</Notice>{w.websiteOnboarding?.status==='error'&&<button className="mt-4 underline underline-offset-4" onClick={w.websiteOnboarding.retry}>Retry setup check</button>}</div></main>;
+    return <WorkspaceLoading
+      error={w.websiteOnboarding?.status === "error" ? "Could not check your setup. Retry to continue." : ""}
+      onRetry={w.websiteOnboarding?.retry}
+    />;
   }
   if (/\/onboarding\/?$/.test(path)) {
     return <main className="min-h-dvh bg-board-bg">{w.state ? <div key={w.user?.id || "guest"} inert={w.locked || undefined}>{children}</div> : <div className="grid min-h-dvh place-items-center"><Notice>Loading your workspace…</Notice></div>}</main>;
@@ -140,4 +153,16 @@ export default function AppShell({ children }: { children: ReactNode }) {
       </div>
     </main></MotionConfig>
   );
+}
+
+function WorkspaceLoading({ error, onRetry }: { error?: string; onRetry?: () => void }) {
+  return <main className="grid min-h-dvh place-items-center bg-board-bg p-6 text-board-text">
+    <div className="max-w-md text-center">
+      <div className="mb-4 flex items-center justify-center gap-2 text-xl font-bold"><BrandMark />Lookout</div>
+      {error ? <>
+        <p role="alert" className="text-sm text-board-muted">{error}</p>
+        <button type="button" className="mt-4 min-h-11 underline underline-offset-4" onClick={onRetry}>Retry</button>
+      </> : <p role="status" className="text-sm text-board-muted">Loading your workspace…</p>}
+    </div>
+  </main>;
 }

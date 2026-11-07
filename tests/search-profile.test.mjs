@@ -140,6 +140,26 @@ test('application profile demo is fictional, isolated and resettable', async () 
  assert.equal(withApplicationProfileDemo(base).state.workflow.searchPreferences.profiles.length,2);
 });
 
+test('four fit-context notes round trip through website and MCP without changing filters or legacy evidence', async () => {
+  const {agentContextFields, agentContextHeading, profileFromPrompt, promptFromProfile} = await import('../lib/search-profile.mjs');
+  const {ASSESSMENT_DIMENSIONS} = await import('../lib/job-assessment.mjs');
+  const {validateRequest} = await import('../supabase/functions/agent-gateway/contract.mjs');
+  assert.deepEqual(agentContextFields.map(({id,label}) => [id,label]), ASSESSMENT_DIMENSIONS);
+  let prompt = updateField(initialPrompt({locations:['US']}), 'Career goals & tradeoffs', 'Tradeoffs', 'Keep my existing timing constraints.');
+  prompt = updateField(prompt, 'Profile evaluation', 'Rules', 'Preserve my explicit exclusions.');
+  for (const {label} of agentContextFields) prompt = updateField(prompt, agentContextHeading, label, 'User statement: this matters.\nUnanswered: verify the role evidence.');
+  const profile = profileFromPrompt(prompt);
+  assert.equal(validateRequest({operation:'preferences.profile.save',payload:{expectedVersion:0,profile}}).payload.profile, profile);
+  const restored = promptFromProfile(profile);
+  for (const {label} of agentContextFields) assert.equal(readField(restored,agentContextHeading,label).value,'User statement: this matters.\nUnanswered: verify the role evidence.');
+  assert.equal(readField(restored,'Search Filters','Location').value,'US');
+  assert.match(restored,/Keep my existing timing constraints/);
+  assert.match(restored,/Preserve my explicit exclusions/);
+  const cleared = updateField(restored,agentContextHeading,agentContextFields[0].label,'');
+  assert.equal(readField(cleared,agentContextHeading,agentContextFields[0].label).value,'');
+  assert(readField(cleared,agentContextHeading,agentContextFields[1].label).value);
+  assert.throws(() => profileFromPrompt('## What your agent knows\n- Compensation: First\n- Compensation: Second'), /duplicate Compensation/);
+});
 
 test('clearance search preference round trips through website and MCP without answering employer facts',async()=>{
  const {clearanceQuestion,profileFromPrompt,promptFromProfile}=await import('../lib/search-profile.mjs');

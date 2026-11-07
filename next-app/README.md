@@ -85,10 +85,27 @@ Demo check: open the avatar, visit My Profile and My Agent, return to Sharing & 
 Job preferences groups roles/experience, locations/working style, companies/industries,
 skills/compensation, exclusions and values. Each criterion has an optional Required,
 Preferred or Flexible priority. Each named search profile independently maintains
-career goals, tradeoffs and an associated tier-list ID. Profile facts and employment
+personal fit context and an associated tier-list ID. Profile facts and employment
 answers stay shared. Multiple active profiles are supported; paused profiles remain
 editable. Unsaved drafts survive switching profiles and Profile sections, and reset
 when the account or demo epoch changes.
+
+What your agent knows has four optional notes using the same labels as Discover:
+Skills & experience, Compensation, Wellbeing & culture, and Location & work setting.
+Each captures personal evidence, motivations, constraints, tradeoffs and questions
+relevant to its score; broad unrelated memory is outside this section. Old goals,
+tradeoffs and profile rules remain editable under Previous goals & rules; nothing
+is automatically reclassified. The Discover link retains demo mode.
+
+The notes remain labeled fields under `## What your agent knows` in private profile
+instructions. Website autosave and MCP `save_search_profile` share the existing
+owner/version boundary; there is no new store, permission or endpoint. The canonical
+`career-find-jobs` guide maps each note to its `matchAssessment` dimension, requires
+personal and employer evidence, explicit gaps, null for unsupported scores and
+the evaluated profile version. Agent writes preserve unrelated fields and legacy
+context. Refreshing guide bundles locally does not deploy live agent instructions.
+Run `node scripts/check-agent-context-ui.mjs` after the production build for isolated
+desktop/mobile demo coverage of editing, autosave, empty and legacy notes.
 
 The editor uses the existing versioned `save_search_profile` RPC and
 `save_search_profile` MCP tool (`preferences.profile.save`, preferences:write).
