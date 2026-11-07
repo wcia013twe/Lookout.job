@@ -39,6 +39,23 @@ try{
  assert.equal(await page.getByRole('region',{name:'Work experience',exact:true}).locator('details').count(),0,'Background sections stay expanded');
  assert.equal(await page.getByRole('textbox',{name:'First name',exact:true}).count(),0,'Background starts read-only');
  await page.getByText('Compared cache strategies and documented reliability tradeoffs',{exact:false}).waitFor();
+ // Projects expose just the essential fields, with a named keyboard-accessible remove action.
+ const projects=page.getByRole('region',{name:'Projects & outside experience',exact:true});
+ assert.equal(await projects.getByText('Role',{exact:true}).count(),0);
+ assert.equal(await projects.getByText('Start date',{exact:true}).count(),0);
+ assert.equal(await projects.getByText('End date',{exact:true}).count(),0);
+ await projects.getByRole('button',{name:'Edit Projects & outside experience',exact:true}).click();
+ assert.equal(await projects.getByRole('textbox').count(),3);
+ await projects.getByRole('textbox',{name:'Project URL',exact:true}).fill('https://example.com/query-lab-updated');
+ await projects.getByRole('button',{name:'Add projects & outside experience',exact:true}).click();
+ const names=projects.getByRole('textbox',{name:'Project name',exact:true});
+ await names.nth(1).fill('Temporary demo project');
+ const removeProject=projects.getByRole('button',{name:'Remove project Temporary demo project',exact:true});
+ await removeProject.focus();await page.keyboard.press('Enter');
+ assert.equal(await names.count(),1);
+ await projects.getByRole('button',{name:'Finish editing Projects & outside experience',exact:true}).click();
+ await projects.getByText('https://example.com/query-lab-updated',{exact:true}).waitFor();
+
  const documentsCloudBefore=cloud.length;
  const documents=page.getByRole('region',{name:'Documents',exact:true});
  const docBox=await documents.boundingBox(),careerBox=await page.getByRole('heading',{name:'Career background',exact:true}).boundingBox();
