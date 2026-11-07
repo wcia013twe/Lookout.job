@@ -91,6 +91,16 @@ This shows the hosted MCP authorization path; it does not depict an autonomous a
 
 ### Search and discovery execution
 
+The current direct-search implementation uses pipeline version 2: immutable temporary
+snapshots on a named Docker worker volume, metadata gates before official verification,
+full configured gates and historical dedup before permanent shortlist saves. SQL stores
+leases, fenced snapshot references, aggregate progress and bounded diagnostics while
+collection runs. The agent receives a terminal shortlist receipt and pages the run for
+all results; its first 100 IDs are a preview. Automatic hosted-board collection and
+publication are disabled for this path. Personal eligibility remains agent review.
+Applications are untouched. See the current [workflow](../workflows/job-discovery.md)
+and `backend/runtime/README.md`; earlier execution descriptions below are historical.
+
 The local Node API and worker are separate Docker services. The worker only claims already-queued jobs; it contains no recurring-search scheduler. When explicitly enabled, one `search_ats` job is bounded to configured sources and observations, uses service-only RPCs with job/version/lease/connection/profile fences, and fetches through a constrained child-process boundary. It collects and verifies supported leads, persists observations and screening inputs, and returns shortlist IDs. It does not generate model reports, messages, or applications. Unsupported extraction remains partial rather than becoming a fabricated parsed record.
 
 The source is deliberately conservative: configured execution is off by default (`LOOKOUT_EXECUTION_ENABLED=false`), the worker is idle otherwise, and retry/lease behavior can finish a run as partial. The repository’s local proof documentation explicitly says it does not establish a hosted deployment, externally reachable MCP endpoint, real Google OAuth, or real employer submission.
