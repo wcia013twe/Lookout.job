@@ -22,7 +22,7 @@ test('agent-style artifact saves are readable and versioned by the website, and 
  store.set('workflow.applications.'+app.id,app);
  const api=createDemoServices(store);
  const row=await api.artifactAction('artifacts.save',debriefPayload(app,draft));
- const list=await api.artifactAction('artifacts.list',{kind:'notes',query:debriefMarker(app.backendId)});
+ const list=await api.artifactAction('artifacts.list',{kind:'interview_debrief',query:debriefMarker(app.backendId)});
  assert.equal(list.items[0].id,row.id);
  const read=await api.artifactAction('artifacts.read',{id:row.id});assert.equal(read.content.body,draft.summary);
  await api.artifactAction('artifacts.save',debriefPayload(app,{...draft,version:read.version,summary:'Updated from my account.'}));
