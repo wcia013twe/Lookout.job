@@ -26,7 +26,7 @@ export const ACCESS_TOOLS = [
 ];
 export function toolWorkflow(tool) {
   const op=tool.operation;
-  if (/^(toolkit\.|artifacts\.|learning\.|local\.career\.)/.test(op)) return 'toolkit';
+  if (/^(toolkit\.|artifacts\.|mock\.|learning\.|local\.career\.)/.test(op)) return 'toolkit';
   if (op==='imports.update') return 'applications';
   if (/^(search\.|backend\.jobs\.|imports\.|jobs\.|batches\.|selection\.|preferences\.(targets|profile)\.)/.test(op)) return 'search';
   if (/^(applications\.|drafts\.|approvals\.|submission\.|runner\.|preparation\.|human\.|local\.(inspect|resume|try|submit|submit_batch)$)/.test(op)) return 'applications';
