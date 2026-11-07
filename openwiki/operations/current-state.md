@@ -302,3 +302,13 @@ sort (earliest first; undated last), while progress/date stays the default.
 Completed/superseded rounds and terminal records are excluded. Website and MCP
 continue using the existing owned timeline/preparation writers and readers; see
 the application-submission workflow for mappings and lifecycle details.
+
+## Structured imported action progress (contract 115 source update)
+
+Imported application records now support nextAction/actionDate/needsAction and
+explicit completedStages through the existing owner/version/replay-checked update
+writer and MCP tool. Overview Tracking details exposes the same fields. Screen
+completion is separate from current stage; recorded dates feed optional sorting.
+No source notes are parsed or rewritten, and no native records or submission
+receipts are synthesized. Source tests establish behavior; runtime and hosted
+release verification remain separate and are recorded in the feature note.

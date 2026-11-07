@@ -252,3 +252,27 @@ existing `update_preparation_plan` boundary; no new mutation/scopes are added.
 The list refreshes confirmed preparation dates on account refresh, focus and
 reconnect, guards account/demo changes and reports failed reads. This is source
 behavior; production availability must be checked separately.
+
+### Imported action dates and completed stages (contract 115 source update)
+
+`update_imported_job` and the browser's **Overview → Tracking details** now edit
+`nextAction`, `actionDate`, `needsAction` and `completedStages` on the existing
+owned imported tracker record. A completed Screen may remain SCREEN while the
+employer decides; it does not become an Interview. Explicit completions show check
+marks on the original five-stage progress display. Only a true `needsAction`
+flags candidate work; waiting for the employer can have a next-action description
+with no date and no flag. Dates feed the existing optional Next action sort.
+
+`completedStages` replaces the full intended set using SAVED/APPLIED/SCREEN/
+INTERVIEW/OFFER. Preserve earlier completions; stages ahead of the current stage
+are rejected. `nextAction` is bounded text or null, `actionDate` is a real confirmed
+YYYY-MM-DD or null, and `needsAction` is boolean. A date/true flag requires an
+action description. Clear an action with all three values (null/null/false).
+Browser/MCP share ownership, global tracker version, validation and event replay.
+
+Muse reads the latest tracker/version, preserves source notes and unrelated data,
+and migrates only explicit confirmed dates—not guessed dates parsed from notes.
+Unknown dates stay null. Original CSV source rows are immutable. Existing native
+milestone/preparation writers remain separate; generic native workflow mutations
+on imported records still report the documented mismatch. Migration, gateway/MCP
+and dev runtime activation are required before tools advertise these fields.
