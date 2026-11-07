@@ -1043,7 +1043,7 @@ verify rejection instead. Backend/domain tests remain in the suite.
 ## Private agent audit collection
 
 `agent_audit_runs` and `agent_audit_events` retain private task context and ordered,
-append-only observations without scoring or changing application state. Scoped
+append-only observations and structured personalization/performance self-checks without independent scoring or changing application state. Scoped
 start/append/read MCP tools use a dedicated credential RPC; owners can inspect the
 same records in Supabase. See [capture conventions, access and release limits](docs/agent-audit-logs.md).
 Tables alone do not automatically capture Muse activity. The existing workspace

@@ -1,6 +1,6 @@
 # Agent audit logs
 
-Collection only: no scoring, judge, model execution, automatic Muse capture or
+Evidence collection and explicit agent self-checks: no independent scoring, judge, model execution, automatic Muse capture or
 external submissions. Tables are private to their owner and append-only for API
 roles. Database administrators can maintain them; this is not tamper-proof storage.
 
@@ -35,7 +35,7 @@ scheduled pruning is introduced.
 ## Capture convention
 
 The developer-context lookup now requires `read_guide` → `agent-audit` for authorized
-Discover, Applications, Networking and Career Toolkit work, including resumed change
+Action Board, Discover, Applications, Networking and Career Toolkit work, including resumed change
 wakes. Startup routes to the same guide; the developer version refresh invalidates
 stale instructions. This is instruction-driven capture, not a host interception hook.
 
@@ -99,3 +99,127 @@ Gateway/MCP and Node tools still need the normal committed-main release. Refresh
 agent tool discovery/developer context and read `agent-audit` after release.
 Creating tables does not automatically record Muse messages or native tool traces;
 Muse or its host must call these tools with available redacted observations.
+
+## Structured benchmark evidence (schema version 2)
+
+The additive benchmark migration preserves legacy events and retry payloads.
+New events use `schemaVersion: 2`. Existing `kind` is the event type; `data` is
+its versioned payload. No parallel event_type/payload columns are introduced.
+
+| Event field | Stored column | Meaning |
+| --- | --- | --- |
+| schemaVersion | schema_version | 1 legacy; 2 structured evidence |
+| feature | feature | action_board, discover, applications, network, toolkit, setup, other |
+| dimension | dimension | personalization, decision_quality, consistency, performance, safety |
+| scenarioId | scenario_id | Stable scenario shared by comparable runs |
+| checkId | check_id | Stable check within a versioned rubric |
+| Not accepted from callers | actor | Server sets agent; runner/evaluator are reserved for future authenticated ingestion |
+
+Version 2 requires feature. Assertions also require dimension, scenarioId and
+checkId. A decision may support several assertions, one per dimension. Run metadata
+pins the fixture/context/rubric versions, experiment/baseline/repeat grouping and
+actual model/configuration when available. Global server sequence is ingestion order;
+`occurredAt` is client-reported execution time. Run metadata remains immutable;
+terminal outcomes and usage remain events, with no automatic run-summary scoring.
+
+### Muse capture procedure
+
+1. Read `agent-audit` version 3 and the current tool schemas. Start a run and retain
+   its returned ID plus stable retry keys. Use the authorized task's area, including
+   `action_board`. Logging is not a request to execute additional real-world work.
+2. Record `context.loaded` with `data.contextRefs`: only context actually read,
+   identified by private IDs and versions. Preserve the input scenario/rubric.
+3. Record meaningful `decision` events with `chosenAction`, `justification`,
+   `preferencesApplied` and `evidenceRefs`. The last two are arrays; empty arrays
+   require an explanation of missing or irrelevant context in justification.
+   Optional alternatives describe observable choices, never hidden reasoning.
+4. Record actions/results and actual backend receipt references. An agent's claim
+   of success does not replace product-state read-back or employer confirmation.
+5. Record one `assertion` per applicable rubric check with the shape below.
+   Assertions are self-checks. Pass/fail requires earlier evidence events in the
+   same run (including earlier events in that batch); cross-run consistency uses
+   an earlier comparison observation that links the repeated runs and fixtures.
+6. Record `usage` with `metricsScope: task|audit` and observed `durationMs`,
+   `toolCallCount`, `inputTokens`, `outputTokens`, `costUsd`. Missing values are
+   null/absent, never invented zeroes. Counts/time are nonnegative safe integers;
+   cost may be fractional. Record measurement source and boundaries in data;
+   exclude audit overhead from task comparisons and avoid double-counting totals.
+7. Save terminal outcome and missing evidence; paginate read-back before claiming
+   capture complete. A logging failure is disclosed, not converted to success.
+
+Use the supplied versioned rubric. Without one, use `muse-self-check-v1` for
+qualitative checks below; no numerical benchmark score is implied. `not_evaluated`
+means insufficient evidence or unavailable measurement; `not_applicable` explains
+why the check does not apply. Neither is a pass. A single run cannot establish
+repeatability. Independent scoring and automatic runner timing/cost capture remain
+unimplemented; the existing audit API cannot assert actor=runner/evaluator.
+
+| Feature | Decision checks for Muse |
+| --- | --- |
+| Action Board | Agent repair versus human input; next action fits urgency/budget; resolution grants no new authority |
+| Discover | Current preferences/exclusions applied; evidence-backed fit and gaps; uncertainty and coverage disclosed |
+| Applications | Configured resume/permitted answers; missing facts escalated; authorization respected; uncertain attempts not retried |
+| Network | Contacts/company priorities fit current goals/history; outreach is grounded and personalized; sending is authorized |
+| Toolkit | Material fits goal, experience, stage and budget; existing work is preserved and saved output linked |
+
+### Fictional structured batch
+
+```json
+{
+  "runId": "<returned UUID>",
+  "events": [
+    {
+      "eventKey": "decision-remote-1",
+      "schemaVersion": 2,
+      "feature": "discover",
+      "scenarioId": "remote-only-v1",
+      "kind": "decision",
+      "data": {
+        "chosenAction": "Exclude the on-site role",
+        "justification": "The posting explicitly requires office attendance and the fixture requires remote work.",
+        "preferencesApplied": [{"ref": "fixture-profile", "version": 7, "field": "workArrangement"}],
+        "evidenceRefs": [{"ref": "fixture-posting", "version": 1}]
+      }
+    },
+    {
+      "eventKey": "check-remote-1",
+      "schemaVersion": 2,
+      "feature": "discover",
+      "kind": "assertion",
+      "dimension": "personalization",
+      "scenarioId": "remote-only-v1",
+      "checkId": "exclude-onsite",
+      "data": {
+        "evaluationSource": "self_check",
+        "status": "pass",
+        "expected": "Exclude roles explicitly requiring office attendance.",
+        "observed": "Excluded the on-site role.",
+        "rubricVersion": "remote-rubric-v1",
+        "evidenceEventKeys": ["decision-remote-1"]
+      }
+    }
+  ]
+}
+```
+
+The server validates the envelope, key payload fields, evidence-key existence and
+immutable retries. It does not decide whether evidence truly supports a self-check.
+Muse cannot set actor or upload an independent grade through this API. Separate
+runner/evaluator ingestion needs its own authenticated provenance boundary before
+those roles can be advertised as supported. Owner RLS, append-only permissions,
+secret checks and workspace-reset behavior remain in effect.
+
+
+## Expansion verification receipt
+
+Migration `20261107005745_agent_audit_benchmark_events.sql` is applied to hosted
+Lookout. Hosted scoped start/append/read/replay, actor-injection rejection and
+missing-evidence rejection passed with synthetic records in a rolled-back
+transaction. No fixture accounts or logs were retained. RLS/append-only grants
+remain enabled and the security advisor reports no audit-related findings.
+
+Source now advertises developer context 105 and agent-audit guide version 3.
+Those tool/guide changes still require the normal main-branch gateway/MCP or Node
+release and agent discovery/context refresh. Hosted Muse capture is not verified
+by the database check. No frontend audit screen or automatic benchmark evaluator
+was added.
