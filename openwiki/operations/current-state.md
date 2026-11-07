@@ -151,3 +151,15 @@ name, and `call_discovered_tool` shares the original direct-call validation path
 `discover_toolkit` still discovers guides. Existing names remain callable;
 paused operations remain unavailable. See `mcp/README.md` for access and release
 limits. Hosted/client behavior is not verified by local catalog tests.
+
+### Local audit runtime verification
+
+The local API was rebuilt from `6c44441`; the mounted Edge runtime now reports
+developer contract 110. The two existing audit migrations (`20261107002624` and
+`20261107005745`) were applied to the local database without applying other
+pending migrations. The existing MCP connection successfully loaded agent-audit
+v3, discovered all three audit tools, and started/appended/read a labeled repair
+verification audit. Clients with cached tool catalogs need a refresh/reconnect.
+No job search was queued and no batch was published during verification. The
+worker and separate résumé API were preserved; hosted deployment and full worker
+execution remain outside this check. See the feature change note for details.

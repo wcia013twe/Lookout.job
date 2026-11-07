@@ -492,6 +492,6 @@ Demo check: edit Query Lab, add a project, remove it with its trash icon, and fi
 
 ### Background organization logos
 
-About me work and education entries reuse the shared CompanyLogo renderer. Logo.dev is attempted with the existing publishable token; unavailable, empty or fictional organizations fall back to a briefcase. The same fallback applies across existing logo surfaces. Projects retain their project icon.
+About me work and education entries reuse the shared CompanyLogo renderer. Logo.dev is attempted with the existing publishable token; unavailable, empty or fictional organizations fall back to a briefcase. The same fallback applies across existing logo surfaces. Projects retain their project icon. Background marks use 56px on desktop and 48px on mobile, with logos filling that space.
 
 Demo check: fictional employers/schools show briefcases without external logo requests. Edit an organization name to a real brand to check logo loading and name changes; simulate failed image responses to check the direct briefcase fallback on desktop/mobile. Reset restores the fictional records. Run `node scripts/check-profile-logos-ui.mjs` against an isolated frontend with a fake logo token for mocked success/failure and reset coverage.
