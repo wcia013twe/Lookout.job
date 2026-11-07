@@ -9,3 +9,6 @@
 - Limits: no hosted deployment, authenticated production round trip or live agent execution. Guide behavior is an instruction contract, not a semantic classifier of freeform notes. No real personal notes were changed.
 
 - Local-main integration: preserved the concurrent clearance, company-size and session-restoration changes. Regenerated the merged Edge codec; 51 focused tests, the combined production build and desktop/mobile context flow passed after resolving overlaps.
+
+- Follow-up: replaced the verbose context-writing guidance with the agreed single decision-brief constraint. Removed the requirement to put source/date commentary into visible notes. The profile-save tool now routes agents to the canonical search guide before updating these sections; bumped developer/guide/catalog/workflow versions and regenerated the toolkit. Existing scoring and ownership rules remain intact. No personal notes changed; hosted instructions still require deployment.
+- Follow-up validation: 60 focused tooling/profile tests passed; full npm test passed (954 passed, 5 skipped); data validation passed (158 roles); git diff --check passed. Existing fictional four-section briefs already exercise the retained format; no UI behavior changed.

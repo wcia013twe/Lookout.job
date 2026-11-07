@@ -84,6 +84,10 @@ test('one fictional MCP context read returns only core and index without persona
 test('Discover guide connects every fit-context category to scored, evidence-based analysis', async () => {
  const {agentContextFields} = await import('../lib/search-profile.mjs');
  const guide=readGuide('career-find-jobs');
+ const {TOOLS}=await import('../supabase/functions/agent-mcp/protocol.mjs');
+ assert.match(TOOLS.find(tool=>tool.name==='save_search_profile').description,/read_guide career-find-jobs.*decision-brief/);
+ assert(guide.instructions.includes("Write each section as a short, current decision brief: what matters to the user, what makes a role a good fit, and any important tradeoff or unknown. Include only information that could change a role evaluation. Synthesize rather than append, and never turn an assumption into a preference."));
+ assert(!guide.instructions.includes('Include source/date in the note'));
  for(const {id,label} of agentContextFields) assert(guide.instructions.includes(label+' -> '+id));
  for(const phrase of ['What your agent knows','save_search_profile','expectedVersion','evaluatedProfileVersion','Use null','must-have conflict','materialGap','read back']) assert(guide.instructions.includes(phrase),phrase);
  const delivered=(await guideDispatch('career-find-jobs',async()=>({data:{}}))).data;

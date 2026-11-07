@@ -92,8 +92,10 @@ when the account or demo epoch changes.
 
 What your agent knows has four optional notes using the same labels as Discover:
 Skills & experience, Compensation, Wellbeing & culture, and Location & work setting.
-Each captures personal evidence, motivations, constraints, tradeoffs and questions
-relevant to its score; broad unrelated memory is outside this section. Old goals,
+Each is a short, current decision brief: what matters, what makes a role a good
+fit, and important tradeoffs or unknowns. Agents synthesize rather than append,
+include only context that could change an evaluation, and never turn assumptions
+into preferences; broad unrelated memory is outside this section. Old goals,
 tradeoffs and profile rules remain editable under Previous goals & rules; nothing
 is automatically reclassified. The Discover link retains demo mode.
 
