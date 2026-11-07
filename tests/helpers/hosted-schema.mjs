@@ -1,10 +1,29 @@
 // Source-derived schema comparison shared by fresh/upgrade checks. Platform Auth
 // and Storage internals differ from test doubles and are verified separately.
 // Definitions are generated from migrations, not maintained as a schema dump.
+import {createTestDatabase} from './database.mjs';
+
+// Match the observed platform defaults for objects created by postgres. These
+// grants are absent in a bare Postgres/PGlite database and can hide privilege
+// bugs unless upgrades are tested with the same defaults as hosted Supabase.
+export const hostedDefaultPrivilegesSql = `
+ alter default privileges in schema public grant all on tables to anon,authenticated,service_role;
+ alter default privileges in schema public grant execute on functions to anon,authenticated,service_role;
+ alter default privileges in schema public grant all on sequences to anon,authenticated,service_role;
+`;
+
+export function createHostedTestDatabase(options={}) {
+ let first=true;
+ return createTestDatabase({...options,beforeMigration:async(db,name)=>{
+  if(first){await db.exec(hostedDefaultPrivilegesSql);first=false;}
+  await options.beforeMigration?.(db,name);
+ }});
+}
+
 export const hostedSchemaSql = `
 select kind, name, definition from (
  select 'column' as kind,n.nspname||'.'||c.relname||'.'||a.attname as name,
- concat_ws('|',format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attidentity,a.attgenerated,pg_get_expr(d.adbin,d.adrelid)) as definition
+ concat_ws('|',regexp_replace(format_type(a.atttypid,a.atttypmod),'^(extensions[.]|public[.])?vector[(]','vector('),a.attnotnull,a.attidentity,a.attgenerated,pg_get_expr(d.adbin,d.adrelid)) as definition
  from pg_attribute a join pg_class c on c.oid=a.attrelid join pg_namespace n on n.oid=c.relnamespace
  left join pg_attrdef d on d.adrelid=a.attrelid and d.adnum=a.attnum
  where n.nspname in ('public','private','intelligence_demo') and c.relkind in ('r','p') and a.attnum>0 and not a.attisdropped

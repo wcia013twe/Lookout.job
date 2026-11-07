@@ -27,3 +27,25 @@
   imported row/progress, native dialog tabs, vertical progress, Notes and email
   history, plus the intentional unsaved timeline error. No horizontal overflow
   or page errors. Full backend suite was not repeated for this UI/read-model pass.
+
+## Follow-up: clarify fit, prep, documents and context
+
+- Always shows the four saved fit dimensions in application Overview; missing
+  scores are N/A and real zero scores remain zero. Added a clearly fictional
+  saved assessment with one missing dimension to the resettable demo.
+- Current prep links to Interview brief and Toolkit workspace. Notes provides
+  two recent distinct context snippets with expandable text. Trimmed repeated
+  captions, empty-state instructions and redundant preparation/status copy.
+- Documents displays only captured historical employer fields and pinned resume,
+  with expandable answers. Missing historical snapshots show Not available;
+  imports explicitly identify outside-Lookout submissions. Imported Saved roles
+  never claim they were submitted. Current profile/draft data is not substituted.
+  Native unsent drafts remain clearly labeled; raw evidence stays optional.
+- Validation: 33 focused assessment/document/submission/demo/progress tests passed,
+  including new rendered privacy/provenance checks; frontend typecheck, static
+  production build, catalog validation (158 roles), diff check and UI detector
+  passed. Desktop/mobile demo verified missing/saved fit scores, prep links,
+  external missing documents, confirmed captured answers and no overflow/errors.
+- Limits: no Scale AI private record was edited, no missing scores or submitted
+  answers were invented, and no backend/schema/runtime change was needed. Full
+  backend suite was not repeated for this presentation-only pass.

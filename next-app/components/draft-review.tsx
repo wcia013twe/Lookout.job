@@ -218,32 +218,19 @@ export default function DraftReview({ id, application, onClose }: { id: string; 
     });
   }
   const events = timelineItems(current);
+  const quickNotes=[...events].reverse().filter((event,index,all)=>event.source.note&&!event.supersededBy&&all.findIndex(item=>item.source.note===event.source.note)===index).slice(0,2);
   return <dialog ref={dialog} onCancel={onClose} aria-labelledby="draft-review-heading" className="tracker-detail tracker-surface">
     <header className="tracker-detail-header"><CompanyMark company={current.company}/><div><h2 id="draft-review-heading">{current.title}</h2><p>{current.company}</p></div><button className="tracker-button tracker-close workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={onClose} aria-label="Close application details"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
     <div className="tracker-detail-grid"><div className="tracker-detail-main">
       <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Interview"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
       <div className="tracker-detail-content">
-        {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={trackerItem} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} />}
+        {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={trackerItem} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} onPreparation={() => setTab("Interview")} />}
         {tab === "Interview" && <ApplicationPreparation application={{...role,...current}} onRounds={openRounds} />}
-        {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />{downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}      <details className="mt-5 border-t border-board-line pt-3">
-        <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
-        {(!w.demo && !w.user) || !current.backendId ? <p className="mt-3 text-sm text-board-muted">Sign in and sync this application to inspect its saved submission evidence.</p>
-          : recordOpen && <>
-            <SubmissionRecord
-              application={recordState?.key === recordKey ? recordState.data?.application || {} : {}}
-              attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []}
-              loading={recordState?.key !== recordKey || recordState.loading}
-              error={recordState?.key === recordKey ? recordState.error : ""}
-              onDownloadResume={w.demo ? undefined : downloadRecordResume}
-            />
-            {recordState?.key === recordKey && recordState.error && <button className={`${secondary} mt-3`} onClick={() => setRecordRetry(value => value + 1)}>Retry loading record</button>}
-
-          </>}
-      </details>
+        {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />{downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}      {current.backendId&&<details className="mt-5 border-t border-board-line pt-3"><summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission details</summary><SubmissionRecord application={recordState?.key===recordKey?recordState.data?.application||{}:{}} attempts={recordState?.key===recordKey?recordState.data?.attempts||[]:[]} loading={recordState?.key!==recordKey||recordState.loading} error={recordState?.key===recordKey?recordState.error:''} onDownloadResume={w.demo?undefined:downloadRecordResume}/></details>}
 {editable && <p className="tracker-prose">Change the selected resume below before approving the draft.</p>}</>}
 
 
-        {tab === "Documents" && <details className="application-documents-editor"><summary>Edit draft & review</summary><h3 className="mt-5">Draft editor</h3>{!workflow && <p>Queue this role from Discover to prepare application answers.</p>}{!draft.questions.length && <p className="tracker-prose">No employer questions recorded yet.</p>}      <form
+        {tab === "Documents" && editable && <details className="application-documents-editor"><summary>Edit draft & review</summary><h3 className="mt-5">Draft editor</h3>{!workflow && <p>Queue this role from Discover to prepare application answers.</p>}{!draft.questions.length && <p className="tracker-prose">No employer questions recorded yet.</p>}      <form
         onSubmit={(e) => {
           e.preventDefault();
           action("save");
@@ -374,7 +361,7 @@ export default function DraftReview({ id, application, onClose }: { id: string; 
 </details>}
         {tab === "Interview" && <>
           <details ref={rounds} open={roundsOpen} onToggle={e => setRoundsOpen(e.currentTarget.open)} className="interview-support">
-            <summary><ProfileIcon name="clock"/><span><strong>Round details</strong><small>Schedule, round notes and progress</small></span><ProfileIcon name="chevron" className="support-chevron"/></summary>
+            <summary><ProfileIcon name="clock"/><span><strong>Round details</strong></span><ProfileIcon name="chevron" className="support-chevron"/></summary>
             <div className="interview-support-body">
               <h3 className="support-heading">Interview rounds &amp; history</h3>
               <ApplicationTimeline application={current} demo={w.demo}/>
@@ -383,14 +370,14 @@ export default function DraftReview({ id, application, onClose }: { id: string; 
             </div>
           </details>
           <details open className="interview-support">
-            <summary><ProfileIcon name="mail"/><span><strong>History &amp; emails</strong><small>{events.filter(e=>e.source.kind === "email").length} linked emails · application activity</small></span><ProfileIcon name="chevron" className="support-chevron"/></summary>
+            <summary><ProfileIcon name="mail"/><span><strong>History &amp; emails</strong></span><ProfileIcon name="chevron" className="support-chevron"/></summary>
             <div className="interview-support-body">
               <h3 className="support-heading">Recruiting emails</h3>
               {events.filter(e=>e.source.kind === "email").length ? <div className="interview-email-list">{events.filter(e=>e.source.kind === "email").map(e=><article key={e.id}>
                 <ProfileIcon name="mail" className="email-icon" width={19} height={19}/><div><h4>{e.source.subject || e.label}</h4><small>{e.label} · {e.source.receivedAt ? new Date(e.source.receivedAt).toLocaleString() : "Received date not recorded"}</small><p>{e.source.excerpt || "No excerpt recorded."}</p>{!w.demo && e.source.url && <a href={e.source.url} target="_blank" rel="noopener noreferrer">Open source email<ProfileIcon name="arrow" width={15} height={15}/></a>}{w.demo && <small>Fictional demo email</small>}</div>
-              </article>)}</div> : <p className="interview-support-empty">No emails linked yet. Recorded inbox updates will appear here.</p>}
+              </article>)}</div> : <p className="interview-support-empty">No linked emails.</p>}
               <h3 className="support-heading support-activity-heading">Application activity</h3>
-              {(current.activity || []).length ? <ol className="interview-activity">{(current.activity || []).map((a,i)=><li key={i}><span>{a.text}</span><small>{a.actor === "user" ? "You" : a.actor} · {new Date(a.at).toLocaleString()}</small></li>)}</ol> : <p className="interview-support-empty">No additional activity recorded.</p>}
+              {(current.activity || []).length ? <ol className="interview-activity">{(current.activity || []).map((a,i)=><li key={i}><span>{a.text}</span><small>{a.actor === "user" ? "You" : a.actor} · {new Date(a.at).toLocaleString()}</small></li>)}</ol> : <p className="interview-support-empty">No activity.</p>}
             </div>
           </details>
 </>}
@@ -443,6 +430,6 @@ export default function DraftReview({ id, application, onClose }: { id: string; 
           </div>
         )}
       </Section>
-</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{events.some(e=>e.source.note) ? events.filter(e=>e.source.note).map(e=><div key={e.id}><strong>{e.label}</strong><p>{e.source.note}</p></div>) : <p>Add notes, reminders, or interview experiences to a round.</p>}<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>{ setRoundEditorOpen(true); openRounds(); }}>Add round & note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
+</details></section><section className="tracker-notes"><h3>Notes</h3><div className="tracker-notes-body">{quickNotes.length?quickNotes.map(e=><details key={e.id}><summary className="min-h-11 cursor-pointer py-2 text-sm">{e.source.note.trim().split('\n')[0].slice(0,180)}{e.source.note.length>180?'…':''}</summary><p>{e.source.note}</p></details>):<p>No context saved.</p>}<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>{ setRoundEditorOpen(true); openRounds(); }}>Add note</button></div></section>{w.demo && <p className="tracker-prose">Fictional demo. Approval and submission actions are disabled.</p>}<Notice>{feedback}</Notice></aside></div>
   </dialog>;
 }

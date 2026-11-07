@@ -1,67 +1,30 @@
 "use client";
-import { useState } from "react";
-import { buildSubmissionRecord } from "../../lib/submission-record.mjs";
-import type { Application, SavedResume } from "./workflow-types";
-import ProfileIcon from "./profile-icon";
-import { control, secondary } from "./ui";
-type Profile = Record<string, unknown>;
-type PreviewQuestion = { question: string; answer: unknown; fieldType?: string | null };
-const display = (value: unknown): string => value == null || value === "" ? "Not recorded" : typeof value === "boolean" ? value ? "Yes" : "No" : Array.isArray(value) ? value.map(display).join(", ") : typeof value === "object" ? JSON.stringify(value, null, 2) : String(value);
-
-type PreviewField = readonly [label: string, value: unknown];
-
-function ProfileFields({ fields, className = "application-form-fields", markMissing = false, formatLabel }: {
-  fields: readonly PreviewField[];
-  className?: string;
-  markMissing?: boolean;
-  formatLabel?: (label: string) => string;
-}) {
-  return <dl className={className}>
-    {fields.map(([label, value]) => <div key={label}>
-      <dt>{formatLabel ? formatLabel(label) : label}</dt>
-      <dd className={markMissing ? (!value ? "is-missing" : "") : undefined}>{display(value)}</dd>
-    </div>)}
-  </dl>;
-}
-
-export default function ApplicationDocumentsPreview({ application, draft, profile, resume, hasDraft, recordApplication, attempts, loading, error, onRetry, onDownloadResume }: {
-  application: Application; draft: Application; profile: Profile; resume?: SavedResume; hasDraft: boolean;
-  recordApplication?: Partial<Application>; attempts: Record<string, unknown>[]; loading: boolean; error: string; onRetry: () => void; onDownloadResume?: (resume: SavedResume) => void | Promise<void>;
-}) {
-  const [selection, setSelection] = useState<string | null>(null);
-  const record = buildSubmissionRecord(recordApplication || { ...application, id: application.backendId || application.id }, attempts);
-  const snapshots = record.attempts.filter(attempt => attempt.hasSnapshot);
-  const historical = ["Submitted", "Interview", "Offer", "Rejected", "Withdrawn"].includes(application.status);
-  const preferred = snapshots[0];
-  const source = selection ?? (historical && preferred ? preferred.id : "draft");
-  const snapshot = snapshots.find(attempt => attempt.id === source);
-  const questions: PreviewQuestion[] = snapshot ? snapshot.questions : draft.questions || [];
-  const chosenResume = snapshot ? snapshot.resume : resume || application.submittedResume;
-  const attachmentId = snapshot?.resume?.id || resume?.id;
-  const answered = questions.filter(question => question.answer != null && String(question.answer).trim()).length;
-  const contacts: PreviewField[] = [
-    ["Full name", profile.name || [profile.firstName, profile.lastName].filter(Boolean).join(" ")],
-    ["Email", profile.email], ["Phone", profile.phone], ["Location", profile.location],
-    ...([ ["LinkedIn", profile.linkedin], ["GitHub", profile.github], ["Portfolio", profile.portfolio], ["Work authorization", profile.authorization] ] as PreviewField[]).filter(([, value]) => Boolean(value)),
-  ];
-  return <section className="application-form-preview" aria-label="Complete application preview">
-    <div className="application-form-heading"><div><h3>Application preview</h3><p>{snapshot ? "Saved materials for this attempt" : hasDraft ? "Current draft and profile reference" : "Application has not been prepared"}</p></div><span className={`application-form-badge ${snapshot?.confirmed ? "is-confirmed" : ""}`}>{snapshot ? snapshot.label : "Draft view"}</span></div>
-    {snapshots.length > 0 && <label className="mb-5 block text-sm text-board-muted">Preview source<select className={`${control} mt-2`} aria-label="Application preview source" value={source} onChange={event => setSelection(event.target.value)}><option value="draft">Current draft · current profile</option>{snapshots.map(attempt => <option key={attempt.id} value={attempt.id}>{attempt.label} · revision {attempt.revision}{attempt.createdAt ? ` · ${attempt.createdAt.slice(0, 10)}` : ""}</option>)}</select></label>}
-    {loading && <p className="application-form-notice" role="status">Loading saved submission materials…</p>}
-    {error && <div className="application-form-notice" role="alert"><p>Saved submission materials could not load. The draft view below is not submission evidence.</p><button className={`${secondary} mt-3`} onClick={onRetry}>Retry saved materials</button></div>}
-    {historical && !snapshot && !loading && !error && <p className="application-form-caption">No saved attempt snapshot is available here. Showing the current draft reference.</p>}
-    <div className="application-form-notice">{snapshot ? "Exact fields saved for this attempt. Employer confirmation does not independently verify every answer." : "Recorded draft answers plus your current profile reference. These details do not prove what was sent."}</div>
-    <div className="application-form-material"><ProfileIcon name="file" className="shrink-0 text-board-accent" /><div><h4>{chosenResume?.name || "No resume recorded"}</h4><p>{chosenResume?.version ? `Version ${chosenResume.version}` : "Version not recorded"}{snapshot ? " · Pinned to this attempt" : resume ? " · Selected for this draft" : application.submittedResume ? " · Recorded submitted resume metadata" : ""}</p>{snapshot?.resume?.objectPath && onDownloadResume && <button className={`${secondary} mt-3`} onClick={() => onDownloadResume(snapshot.resume!)}>Download recorded resume</button>}</div></div>
-    {!snapshot && <section className="application-form-section" aria-labelledby="application-contact"><h4 id="application-contact"><ProfileIcon name="user" />Profile reference</h4><p className="application-form-caption">Current account details · not mapped employer fields{profile.verified !== true ? " · not verified" : ""}</p><ProfileFields fields={contacts} markMissing />
-      {Boolean(profile.headline || profile.skills) && <ProfileFields className="application-form-fields mt-5" fields={([ ["Professional headline", profile.headline], ["Skills", profile.skills] ] as PreviewField[]).filter(([, value]) => Boolean(value))} />}
-      {([ ["Work experience", "workExperience"], ["Education", "education"], ["Projects", "projects"] ] as const).map(([label, key]) => {
-        const entries = Array.isArray(profile[key]) ? profile[key] as Record<string, unknown>[] : [];
-        return entries.length > 0 && <section key={key} className="application-form-background"><h5>{label}</h5>{entries.map((entry, index) => <ProfileFields key={index} fields={Object.entries(entry).filter(([, value]) => value !== undefined && value !== null && value !== "")} formatLabel={field => field.replace(/([A-Z])/g, " $1").replace(/^./, letter => letter.toUpperCase())} />)}</section>;
-      })}
-    </section>}
-    <section className="application-form-section" aria-labelledby="application-answers"><div className="application-form-heading"><h4 id="application-answers"><ProfileIcon name="conversation" />{snapshot ? "Captured application fields" : "Employer questions & answers"}</h4><span className={`application-form-badge ${questions.length > 0 && answered === questions.length ? "is-complete" : ""}`}>{questions.length ? `${answered}/${questions.length} filled` : "No fields recorded"}</span></div>
-      {questions.length ? <dl className="application-form-answers">{questions.map((question, index) => <div key={index}><dt><span>{question.question || "Untitled employer question"}</span>{!String(question.answer ?? "").trim() && <span className="text-xs text-board-warning">Answer needed</span>}</dt><dd className={!String(question.answer ?? "").trim() ? "is-missing" : ""}>{("fieldType" in question && question.fieldType === "file" && Boolean(attachmentId) && question.answer === attachmentId) ? chosenResume?.name || "Recorded attachment" : question.answer == null || !String(question.answer).trim() ? "No answer recorded" : display(question.answer)}</dd></div>)}</dl> : <p className="application-form-notice">{snapshot ? "No field answers were captured in this attempt snapshot." : "No employer questions have been recorded. This does not establish that the employer form has no questions."}</p>}
-      {!snapshot && <p className="application-form-caption">{draft.questionsReviewed ? "Question-list review recorded for this draft." : "The employer question list still needs review."} Saving or viewing this preview does not submit an application.</p>}
-    </section>
-  </section>;
+import {useState} from 'react';
+import {buildSubmissionRecord} from '../../lib/submission-record.mjs';
+import type {Application,SavedResume} from './workflow-types';
+import {control,secondary} from './ui';
+const display=(value:unknown):string=>value==null||value===''?'Not available':typeof value==='boolean'?(value?'Yes':'No'):typeof value==='object'?JSON.stringify(value,null,2):String(value);
+export default function ApplicationDocumentsPreview({application,draft,resume,recordApplication,attempts,loading,error,onRetry,onDownloadResume}:{
+ application:Application;draft:Application;profile:Record<string,unknown>;resume?:SavedResume;hasDraft:boolean;
+ recordApplication?:Partial<Application>;attempts:Record<string,unknown>[];loading:boolean;error:string;onRetry:()=>void;onDownloadResume?:(resume:SavedResume)=>void|Promise<void>;
+}){
+ const [selection,setSelection]=useState<string|null>(null);
+ const record=buildSubmissionRecord(recordApplication||{...application,id:application.backendId||application.id},attempts);
+ const snapshots=record.attempts.filter(attempt=>attempt.hasSnapshot);
+ const external=Boolean(application.imported);
+ const historical=(external&&application.imported?.record.status!=='SAVED')||['Submitted','Applied','Interview','Offer','Rejected','Withdrawn','Closed'].includes(application.status);
+ const preferred=snapshots.find(attempt=>attempt.confirmed)||snapshots[0];
+ const snapshot=snapshots.find(attempt=>attempt.id===(selection||preferred?.id));
+ if(loading)return <section aria-label="Application documents"><h3>Submitted application</h3><p role="status" className="mt-3 text-sm text-board-muted">Loading…</p></section>;
+ if(error)return <section aria-label="Application documents"><h3>Submitted application</h3><p role="alert" className="mt-3 text-sm text-board-muted">Saved application unavailable.</p><button className={`${secondary} mt-3`} onClick={onRetry}>Retry</button></section>;
+ if((historical||external)&&!snapshot)return <section aria-label="Application documents"><h3>{historical?'Submitted application':'Application documents'}</h3><p className="mt-3 text-sm text-board-muted">{!historical?'Not available. No application materials were recorded.':application.imported?'Not available. This application was submitted outside Lookout.':'Not available. No submission snapshot was saved.'}</p></section>;
+ const questions:{question:string;answer:unknown;fieldType?:string|null}[]=snapshot?snapshot.questions:draft.questions||[];
+ const savedResume=snapshot?snapshot.resume:resume;
+ return <section className="application-form-preview" aria-label="Application documents">
+  <h3>{snapshot?.confirmed?'Submitted application':snapshot?'Saved application attempt':'Application draft'}</h3>
+  {snapshot&&!snapshot.confirmed&&<p className="mt-2 text-sm text-board-muted">Submission not confirmed.</p>}
+  {snapshots.length>1&&<label className="mt-4 block text-sm text-board-muted">Saved attempt<select className={`${control} mt-2`} value={snapshot?.id} onChange={e=>setSelection(e.target.value)}>{snapshots.map(attempt=><option key={attempt.id} value={attempt.id}>{attempt.label}{attempt.createdAt?` · ${attempt.createdAt.slice(0,10)}`:''}</option>)}</select></label>}
+  <section className="application-form-section"><h4>Résumé</h4><p className="mt-2 text-sm">{savedResume?.name||'Not available'}</p>{savedResume?.version!=null&&<p className="mt-1 text-sm text-board-muted">Version {savedResume.version}</p>}{snapshot?.resume?.objectPath&&onDownloadResume&&<button className={`${secondary} mt-3`} onClick={()=>onDownloadResume(snapshot.resume!)}>Download résumé</button>}</section>
+  <section className="application-form-section"><h4>Employer questions</h4>{questions.length?<div className="application-form-answers">{questions.map((question,index)=><details key={index} className="border-b border-board-line py-2"><summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">{question.question||'Employer question'}</summary><p className="whitespace-pre-wrap break-words pb-3 text-sm text-board-muted">{('fieldType' in question&&question.fieldType==='file'&&question.answer===savedResume?.id)?savedResume?.name||'Recorded attachment':display(question.answer)}</p></details>)}</div>:<p className="mt-3 text-sm text-board-muted">Not available.</p>}</section>
+ </section>;
 }
