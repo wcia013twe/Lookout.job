@@ -11,10 +11,10 @@ try{
  const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url');
  const token=b64({alg:'HS256',typ:'JWT'})+'.'+b64({sub:user.id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600})+'.fictional';
  await context.addInitScript(({user,token})=>{localStorage.setItem('sb-osyrlausutnqzlegxmnd-auth-token',JSON.stringify({access_token:token,refresh_token:'fictional',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user}));},{user,token});
- const writes=[],requests=[];
+ const writes=[],requests=[],cachedRequests=[];
  await context.route('https://*.supabase.co/**',async route=>{
   const url=new URL(route.request().url());
-  if(url.pathname.includes('/storage/'))return route.fulfill({status:404,body:''});
+  if(url.pathname.includes('/storage/')){cachedRequests.push(url.pathname);return route.fulfill({status:404,body:''});}
   const op=route.request().postDataJSON()?.operation;
   if(op&&!op.endsWith('.read')&&!op.endsWith('.context'))writes.push(op);
   const body=url.pathname.endsWith('/auth/v1/user')?user:op==='search.context'?{documents:[],profileId:null}:[];
@@ -41,7 +41,10 @@ try{
  const loaded=work.getByRole('img',{name:'NVIDIA logo',exact:true});
  await loaded.waitFor();await loaded.evaluate(img=>img.decode());
  assert(new URL(await loaded.getAttribute('src')).hostname==='img.logo.dev');
- // A new name resets failed-image state; missing provider/cache images fall back to a briefcase.
+ // A new name resets failed-image state; missing provider images fall back to a briefcase.
+ await company.fill('Google');
+ const google=work.getByRole('img',{name:'Google logo',exact:true});await google.waitFor();await google.evaluate(img=>img.decode());
+ assert.equal(new URL(await google.getAttribute('src')).hostname,'img.logo.dev','Google also uses the provider directly');
  await company.fill('Missing Logo Example');
  await work.getByRole('img',{name:'Missing Logo Example logo',exact:true}).waitFor({state:'hidden'});
  assert.equal(await work.locator('svg[width="24"]').count(),2);
@@ -60,6 +63,6 @@ try{
  await page.getByRole('button',{name:'Open profile navigation',exact:true}).click();await page.getByRole('button',{name:'Reset demo data',exact:true}).click();
  await work.getByText('Example Systems (demo)',{exact:true}).waitFor();
  assert.equal(await work.getByRole('img').count(),0);assert.equal(await education.getByRole('img').count(),0);
- assert.deepEqual(writes,[]);assert.deepEqual(errors,[]);
+ assert.deepEqual(cachedRequests,[],'No legacy logo storage requests');assert.deepEqual(writes,[]);assert.deepEqual(errors,[]);
  console.log('PASS: work/school logos, briefcase fallback, name-change recovery, project icon, demo reset, desktop/mobile; no account writes');
 }finally{await browser.close();}
