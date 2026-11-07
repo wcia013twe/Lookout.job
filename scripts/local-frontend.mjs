@@ -1,15 +1,17 @@
 import { execFileSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {publicPreviewEnv} from './live-main.mjs';
+import {savedLocalConfig} from './local-startup.mjs';
 
 const cwd = fileURLToPath(new URL('../', import.meta.url));
 let config;
+config=await savedLocalConfig({cwd});
 try {
-  config = JSON.parse(execFileSync('supabase', ['status', '-o', 'json'], {
-    cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'],
+  if(!config)config = JSON.parse(execFileSync('supabase', ['status', '-o', 'json'], {
+    cwd, encoding: 'utf8', timeout:10000, killSignal:'SIGKILL', stdio: ['ignore', 'pipe', 'pipe'],
   }));
-} catch {
-  console.error('Local services are unavailable. Run make services first.');
+} catch (error) {
+  console.error(error.killed?'Supabase status did not respond within 10 seconds. Check Docker Desktop, then retry.':'Local services are unavailable. Run make services first.');
   process.exit(1);
 }
 // Select only browser-safe values; never pass the CLI service-role key to Next.js.

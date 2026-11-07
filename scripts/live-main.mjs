@@ -1,8 +1,9 @@
 import {execFile, spawn} from 'node:child_process';
 import {promisify,parseEnv} from 'node:util';
-import {mkdir, readFile, access, rmdir, writeFile} from 'node:fs/promises';
-import {createHash} from 'node:crypto';
+import {mkdir, readFile, access, rmdir, writeFile, unlink} from 'node:fs/promises';
+import {createHash,randomUUID} from 'node:crypto';
 import {join, resolve} from 'node:path';
+import {tmpdir} from 'node:os';
 import {fileURLToPath} from 'node:url';
 const exec=promisify(execFile);
 const run=async(file,args,cwd)=>(await exec(file,args,{cwd,maxBuffer:4*1024*1024})).stdout.trim();
@@ -51,16 +52,34 @@ export async function syncMain(source, preview, execute=run) {
  return {changed:true,dependencies:files.split('\n').some(p=>['package.json','package-lock.json','next-app/package.json','next-app/package-lock.json'].includes(p))};
 }
 
+export async function claimPreviewLock(lock,{pid=process.pid,alive=value=>{try{process.kill(value,0);return true;}catch(error){return error.code!=='ESRCH';}}}={}) {
+ const ownerFile=join(lock,'owner.json');
+ try{await mkdir(lock);}catch(error){
+  if(error.code!=='EEXIST')throw error;
+  let owner;try{owner=JSON.parse(await readFile(ownerFile,'utf8'));}catch{throw Error(`Preview lock needs review (no process owner): ${lock}. Stop the existing preview before clearing it.`);}
+  if(!Number.isInteger(owner.pid)||owner.pid<1||alive(owner.pid))throw Error(`Live preview is already running (PID ${owner.pid}): ${lock}`);
+  // Remove only the dead owner's known file; unknown contents block recovery.
+  await unlink(ownerFile);await rmdir(lock);await mkdir(lock);
+ }
+ const token=randomUUID();await writeFile(ownerFile,JSON.stringify({pid,token}));
+ return async()=>{const owner=JSON.parse(await readFile(ownerFile,'utf8'));if(owner.token!==token)throw Error('Preview lock owner changed; lock preserved.');await unlink(ownerFile);await rmdir(lock);};
+}
+
+export async function liveRoot(env=process.env,check=access) {
+ if(env.LOOKOUT_LIVE_ROOT)return env.LOOKOUT_LIVE_ROOT;
+ try{await check('/Volumes/External SSD/Lookout');return '/Volumes/External SSD/Lookout/live-main';}
+ catch(error){if(!['ENOENT','EACCES','EPERM'].includes(error.code))throw error;return join(tmpdir(),'lookout-live-main');}
+}
+
 async function main(){
  const source=await sourceCheckout(process.cwd());
- const home=process.env.LOOKOUT_LIVE_ROOT||'/Volumes/External SSD/Lookout/live-main';
- if(!process.env.LOOKOUT_LIVE_ROOT)await access('/Volumes/External SSD/Lookout');
+ const home=await liveRoot();
  const parent=join(home,createHash('sha256').update(source).digest('hex').slice(0,12));
  const preview=join(parent,'repo');
  await mkdir(parent,{recursive:true});
  const env={...process.env,...await publicPreviewEnv(source,{local:!process.argv.includes('--hosted')}),npm_config_cache:process.env.npm_config_cache||join(home,'npm-cache')};
  const lock=join(parent,'running');
- try{await mkdir(lock);}catch{throw Error(`Live preview is already running, or its lock needs review: ${lock}`);}
+ const releaseLock=await claimPreviewLock(lock);
  let child,stopping=false,timer,checking=false;
  async function dependencyKey(){
   const hash=createHash('sha256');
@@ -87,7 +106,7 @@ async function main(){
  }
  async function shutdown(code=0){
   if(stopping)return;stopping=true;clearInterval(timer);
-  await stopChild();await rmdir(lock);process.exit(code);
+  await stopChild();await releaseLock();process.exit(code);
  }
  for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>void shutdown());
  try{

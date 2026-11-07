@@ -203,3 +203,21 @@ Choose checks by changed deployment unit:
 - For a tunnel, test `tools/list` and a permitted read against isolated local data before writes. A connected ngrok process does not establish that a hosted client supports the connector or that a production endpoint is live.
 
 Keep test identities and data disposable, keep secret files ignored, and reconcile durable state after an interrupted write rather than assuming a timeout failed. The release boundary exists to prevent a static frontend change, a local Docker proof, or a source-level test from being mistaken for deployment of privileged backend behavior.
+
+## Focused startup reliability update
+
+`make dev`/`up`, `services` and `frontend` now use `scripts/local-startup.mjs`.
+An identified existing Lookout frontend is reused; an unrelated occupied port is
+reported without stopping its owner. Saved public loopback configuration is reused
+only after Auth and REST health checks. This avoids waiting on Docker's control
+API when the local backend is still serving requests. Otherwise Docker/CLI checks
+have 10-second deadlines and cold Supabase startup has a three-minute limit.
+Configured tunnel startup is best effort and does not block the frontend.
+
+Preview locks now record a process owner; dead owners can be recovered, while
+live owners and unowned legacy locks require review. The preview falls back to
+internal temporary storage if the external SSD is absent. No automatic Docker
+restart, container removal, database reset or takeover of another server is added.
+Tests cover timeout termination, fallback credential restrictions, tunnel failures,
+occupied ports and lock recovery. Local live verification is recorded in the
+startup feature change note; it does not establish cold Docker or hosted behavior.
