@@ -7,15 +7,17 @@ const review = (reason, details = {}) => ({ mode: 'review', reviewRequired: true
 export function profileAutomationSettings(profile, search = {}) {
   const text=profile?.prompt ?? profile?.instructions ?? '';
   const enabled=readField(text,'Application automation','Auto-apply routine matches');
+  const submissionMode=readField(text,'Application automation','Submission mode');
+  const simple=!!submissionMode.value;
   const threshold=readField(text,'Application automation','Review threshold');
   const list=readField(text,'Company priorities','Tier list ID');
   const employment=profile?.filters?.Employment || readField(text,'Search Filters','Employment').value;
   const key=employment==='Internship'?'internship':employment==='Full-time'?'fullTime':null;
   const legacy=key?search.reviewPolicy?.[key]||{}:{};
-  return {configured:Boolean(enabled.value||enabled.conflict||threshold.value||threshold.conflict),conflict:enabled.conflict||threshold.conflict||list.conflict||(text.match(/^## Application automation\s*$/gm)||[]).length>1||(text.match(/^## Company priorities\s*$/gm)||[]).length>1,
-    enabled:enabled.value?enabled.value==='Yes':search.autoSubmitApproved===true,
+  return {configured:Boolean(simple||submissionMode.conflict||enabled.value||enabled.conflict||threshold.value||threshold.conflict),submissionMode:submissionMode.value,conflict:submissionMode.conflict||enabled.conflict||(!simple&&(threshold.conflict||list.conflict))||(text.match(/^## Application automation\s*$/gm)||[]).length>1||(!simple&&(text.match(/^## Company priorities\s*$/gm)||[]).length>1),
+    enabled:simple?submissionMode.value==='Auto-apply'&&enabled.value!=='No':enabled.value?enabled.value==='Yes':search.autoSubmitApproved===true,
     threshold:threshold.value||legacy.threshold||'A',tierListId:list.value||(!enabled.value?legacy.tierListId:'')||'',
-    invalid:Boolean(enabled.value&&!['Yes','No'].includes(enabled.value)),employment};
+    invalid:Boolean(simple&&!['Auto-apply','Review each application'].includes(submissionMode.value)||enabled.value&&!['Yes','No'].includes(enabled.value)||simple&&enabled.value&&(enabled.value==='Yes')!==(submissionMode.value==='Auto-apply')),employment};
 }
 
 // Uses owned persisted preferences and canonical employer facts, never agent rank claims.
@@ -39,7 +41,8 @@ export function applicationPolicy({ preferences = {}, job, profileId }) {
     if(settings.conflict||settings.invalid)return review('Resolve conflicting application profile automation settings.');
     if(settings.employment&&!(settings.employment.split(',').map(v=>v.trim()).includes(job.employmentType==='FT'?'Full-time':'Internship')))return review('Role type does not match the application profile.');
     if(!settings.configured){const legacy=search.reviewPolicy?.[job.employmentType==='FT'?'fullTime':'internship']||{};settings={...settings,threshold:legacy.threshold??'A',tierListId:legacy.tierListId||''};}
-    if(!settings.enabled)return review('Auto-apply is off for this application profile.');
+    if(!settings.enabled)return review(settings.submissionMode==='Review each application'?'Your policy requires review for every application.':'Auto-apply is off for this application profile.');
+    if(settings.submissionMode==='Auto-apply')return {mode:'auto-apply',reviewRequired:false,reason:'Auto-apply with verified facts and permitted saved answers; unresolved questions still require review.',profileId:selectedProfile.id,employmentType:job.employmentType};
   } else {
     if(profiles.some(profile=>profileAutomationSettings(profile,search).configured))return review('Choose the application profile for this draft before automatic submission.');
     if(search.autoSubmitApproved!==true)return review('Auto-apply is off.');

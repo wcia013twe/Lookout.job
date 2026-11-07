@@ -241,3 +241,15 @@ test('authorization diagnostics retain truncation flags for large unresolved for
  const result=await submitApplication({applicationId:aid,attemptId:'truncated-auth',gateway:f.gateway,getPage:async()=>f.page});
  assert.equal(result.blocker.questionsTruncated,true);assert.equal(result.blocker.questions[0].optionsTruncated,true);assert.equal(result.blocker.safeToRetry,false);
 });
+
+test('simple auto-apply removes company tiers while retaining verified facts, answer and blocker checks',()=>{
+ const f=fixture();
+ const profile={id:'general',name:'General',active:true,filters:{Employment:'Full-time'},instructions:`## Application automation\n- Submission mode: Auto-apply\n- Auto-apply routine matches: Yes\n## Application materials\n- Default resume ID: ${rid}`};
+ f.context.preferences.search.profiles=[profile];f.context.preferences.tier_lists=[];
+ f.context.application.draft.searchProfileId='general';
+ assert.equal(authorizeSubmission(f.context).allowed,true);
+ f.context.profile.verified_at=null;assert.equal(authorizeSubmission(f.context).allowed,false);
+ f.context.profile.verified_at='today';f.context.application.draft.questions[0].answer='invented@example.com';assert.equal(authorizeSubmission(f.context).allowed,false);
+ f.context.application.draft.questions[0].answer='test@example.com';f.context.application.blocker='Outcome uncertain';assert.equal(authorizeSubmission(f.context).allowed,false);
+ f.context.application.blocker=null;profile.instructions=profile.instructions.replace('Submission mode: Auto-apply','Submission mode: Review each application');assert.equal(authorizeSubmission(f.context).allowed,false);
+});

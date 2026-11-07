@@ -1,4 +1,6 @@
 "use client";
+import {SINGLE_PROFILE_UI} from "../../lib/single-profile.mjs";
+import SimpleJobPreferences from "./simple-job-preferences";
 import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary } from "./ui";
@@ -123,7 +125,7 @@ function SearchProfileEditor() {
           Include this profile in job searches
         </label> : <ProfileValues items={[{label:"Status",value:profile.active ? "Actively looking" : "Paused"}]}/>}
       </ProfileSection>
-      <ApplicationMaterials />
+      {!SINGLE_PROFILE_UI && <ApplicationMaterials />}
       {preferenceGroups.map(group => <ProfileSection key={group.title} title={group.title} resetKey={profile.id} disabled={busy}>
         {editing => editing ? <>
           <p className="mb-5 text-sm text-board-muted">{group.heading === "Application answers" ? "Saved answers for employer forms. Leave unknown answers blank. These are separate from job-search preferences and do not approve an application." : "Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification."}</p>
@@ -202,5 +204,5 @@ function SearchProfileEditor() {
 }
 export default function SearchProfiles() {
   const { profile } = useApplicationProfile();
-  return <SearchProfileEditor key={profile.id} />;
+  return SINGLE_PROFILE_UI ? <SimpleJobPreferences key={profile.id}/> : <SearchProfileEditor key={profile.id} />;
 }

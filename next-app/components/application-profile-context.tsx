@@ -1,4 +1,5 @@
 "use client";
+import {SINGLE_PROFILE_UI,primaryApplicationProfile} from "../../lib/single-profile.mjs";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   parseRecruitingTargets,
@@ -46,7 +47,7 @@ function useProfiles() {
     ...saved.map((v) => drafts[v.id] || v),
     ...Object.values(drafts).filter((v) => !saved.some((s) => s.id === v.id)),
   ];
-  const profile = profiles.find((v) => v.id === selected) || profiles[0];
+  const profile = SINGLE_PROFILE_UI ? primaryApplicationProfile(profiles) as ApplicationProfile : profiles.find((v) => v.id === selected) || profiles[0];
   function patch(fields: Partial<ApplicationProfile>) {
     setDrafts((prev) => ({ ...prev, [profile.id]: { ...profile, ...fields } }));
     setFeedback("Changes save automatically.");
@@ -63,7 +64,7 @@ function useProfiles() {
     }
   }
   function create(name: string, duplicate = false) {
-    if (!name.trim() || busy) return;
+    if (SINGLE_PROFILE_UI || !name.trim() || busy) return;
     const id = crypto.randomUUID();
     setDrafts((prev) => ({
       ...prev,
@@ -206,6 +207,7 @@ function useProfiles() {
     profiles,
     profile,
     select: (id: string) => {
+      if(SINGLE_PROFILE_UI)return;
       setSelected(id);
       w.store.set("ui.applicationProfileId", id);
       setFeedback("");

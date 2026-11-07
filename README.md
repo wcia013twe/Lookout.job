@@ -1048,3 +1048,29 @@ start/append/read MCP tools use a dedicated credential RPC; owners can inspect t
 same records in Supabase. See [capture conventions, access and release limits](docs/agent-audit-logs.md).
 Tables alone do not automatically capture Muse activity. The existing workspace
 reset and account deletion remove owned logs.
+
+## Single-profile assignment interface
+
+`lib/single-profile.mjs` temporarily limits the UI to one stable application/search
+profile (General when saved; otherwise the first active profile, then the first
+saved profile). Switching, creating and duplicating profiles are hidden/disabled.
+Older profiles and files remain stored; existing application references do not change.
+Job preferences expose search status, roles, job type, locations, work arrangement,
+minimum pay, excluded companies and one notes field. Other saved constraints remain
+in effect and are not silently erased. Controlled evaluations should use a clean,
+explicitly pinned profile fixture; storage APIs retain legacy multi-profile support.
+
+About me selects one résumé. Selecting/uploading a résumé deactivates saved
+role-specific assignments while retaining their contents; replacement updates the
+selected source through the existing versioned flow. No variant picker or additional
+resume upload is shown while a selected file exists. Other saved files can still be
+chosen as the single selected résumé.
+
+Company-tier MCP writes are paused alongside their frontend controls.
+Application automation exposes only review-each-application versus auto-apply with
+verified facts. Saving the setting writes an explicit Submission mode in the owned
+versioned profile. That mode replaces company-tier thresholds for that profile;
+legacy profiles retain their previous policy until explicitly saved. Missing facts,
+answer reuse permissions, current authorization, supported forms, duplicate prevention
+and uncertain-outcome handling continue to apply. No automatic production preference
+rewrite, new consent, real application or backend deployment is performed by this UI change.

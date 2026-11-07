@@ -1,4 +1,5 @@
 "use client";
+import {SINGLE_PROFILE_UI,singleResumePrompt} from "../../lib/single-profile.mjs";
 import { useId, useState } from "react";
 import {
   eligibilityHeading,
@@ -17,6 +18,7 @@ import ProfileSection, {ProfileValues} from "./profile-section";
 export function ProfileSwitcher({manage=true}: {manage?:boolean}) {
   const a=useApplicationProfile();
   const [creating,setCreating]=useState(false),[name,setName]=useState("");
+  if(SINGLE_PROFILE_UI)return null;
   return <section className={styles.profilePicker} aria-label="Application profile selection">
     <div className={styles.pickerMain}>
       <label className={styles.profileSelect}>
@@ -46,22 +48,21 @@ export function ApplicationMaterials({mode = "resume"}: {mode?: "resume" | "answ
     return answer ? `${answer.question}${answer.companyScope ? ` · ${answer.companyScope}` : ""}` : "Previously selected answer unavailable";
   });
   return (
-    <ProfileSection title={mode === "resume" ? "Fallback resume" : "Saved answers for this profile"} resetKey={a.profile.id} disabled={a.busy}>{editing => editing ? <>
+    <ProfileSection title={mode === "resume" ? (SINGLE_PROFILE_UI ? "Selected résumé" : "Fallback resume") : "Saved answers for this profile"} resetKey={a.profile.id} disabled={a.busy}>{editing => editing ? <>
       <p className="mb-5 text-sm text-board-muted">
-        {mode === "resume" ? "Choose a fallback when no role assignment matches. Manage shared resumes in About me." : "Select shared answers for this application profile. Their individual review and reuse policies still apply."}
+        {mode === "resume" ? (SINGLE_PROFILE_UI ? "Use one résumé for this profile. Other saved files are kept." : "Choose a fallback when no role assignment matches. Manage shared resumes in About me.") : "Select shared answers for this application profile. Their individual review and reuse policies still apply."}
       </p>
-      {mode === "resume" && <><Field label="Fallback resume">
+      {mode === "resume" && <><Field label={SINGLE_PROFILE_UI ? "Selected résumé" : "Fallback resume"}>
         <select
           className={control}
           disabled={a.busy}
           value={id}
-          onChange={(e) =>
-            a.change(
-              "Application materials",
-              "Default resume ID",
-              e.target.value,
-            )
-          }
+          onChange={(e) => {
+            try {
+              if(SINGLE_PROFILE_UI)a.patch({prompt:singleResumePrompt(a.profile.prompt,e.target.value)});
+              else a.change("Application materials","Default resume ID",e.target.value);
+            } catch(error){a.setFeedback(error instanceof Error?error.message:"Could not select résumé.");}
+          }}
         >
           <option value="">No profile resume selected</option>
           {id &&
@@ -130,7 +131,7 @@ export function ApplicationMaterials({mode = "resume"}: {mode?: "resume" | "answ
         )}
       </fieldset>}
     </> : <ProfileValues items={mode === "resume" ? [
-      {label:"Fallback resume",value:resume?.name || (id ? "Previously selected resume unavailable" : "No profile resume selected")},
+      {label:SINGLE_PROFILE_UI ? "Selected résumé" : "Fallback resume",value:resume?.name || (id ? "Previously selected resume unavailable" : "No profile resume selected")},
     ] : [
       {label:"Saved answers to use",value:selectedAnswers.length ? selectedAnswers.join("\n") : "No saved answers selected"},
     ]}/>}

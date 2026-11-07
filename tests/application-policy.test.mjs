@@ -79,3 +79,17 @@ test('unconfigured profiles retain the legacy master opt-out and ignore unrelate
  const own=structuredClone(preferences);own.search.autoSubmitApproved=false;own.search.profiles=[{id:'backend',active:true,filters:{Employment:'Full-time'},instructions:''}];own.search.reviewPolicy={fullTime:{threshold:'A',tierListId:'FT',enabled:true,configured:true}};
  assert.equal(applicationPolicy({preferences:own,job:{company:'Oracle',employmentType:'FT'},profileId:'backend'}).mode,'review');
 });
+
+test('explicit simple submission modes work without company tiers and fail closed for invalid settings',()=>{
+ const make=mode=>({id:'general',name:'General',active:true,filters:{Employment:'Full-time'},instructions:`## Application automation\n- Submission mode: ${mode}\n- Auto-apply routine matches: ${mode==='Auto-apply'?'Yes':'No'}\n- Review threshold: all\n## Company priorities\n- Tier list ID: unavailable`});
+ const own={search:{profiles:[make('Auto-apply')]},tier_lists:[]};
+ const decide=()=>applicationPolicy({preferences:own,job:{company:'Unranked employer',employmentType:'FT'},profileId:'general'});
+ assert.equal(decide().mode,'auto-apply');
+ own.search.profiles[0]=make('Auto-apply');own.search.profiles[0].instructions=own.search.profiles[0].instructions.replace('Auto-apply routine matches: Yes','Auto-apply routine matches: No');assert.equal(decide().mode,'review','a conflicting opt-out must never enable submission');
+ own.search.profiles[0]=make('Review each application');assert.equal(decide().mode,'review');
+ own.search.profiles[0]=make('invalid');assert.equal(decide().mode,'review');
+ own.search.profiles[0]=make('Auto-apply');own.search.profiles[0].instructions+='\n- Submission mode: Review each application';
+ // A duplicate under another section is not a valid automation override.
+ own.search.profiles[0].instructions+='\n## Application automation\n- Submission mode: Review each application';assert.equal(decide().mode,'review');
+ own.search.profiles[0]=make('Auto-apply');own.search.profiles[0].active=false;assert.equal(decide().mode,'review');
+});

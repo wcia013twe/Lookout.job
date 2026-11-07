@@ -115,6 +115,7 @@ test('paused MCP tools are absent and reject direct calls, including local extra
  assert(paused.some(tool=>tool.name==='read_interview_intelligence'));
  assert(paused.some(tool=>tool.name==='save_theme_preferences'));
  assert(paused.some(tool=>tool.name==='read_leaderboard'));
+ assert(paused.some(tool=>tool.name==='save_company_tiers'));
  const handle=createHandler(async(_token,operation,payload)=>{
   calls.push({operation,payload});
   return {status:200,data:{scopes:[...scopes,'knowledge:read','knowledge:write']}};

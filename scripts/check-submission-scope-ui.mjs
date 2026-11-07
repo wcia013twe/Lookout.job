@@ -33,10 +33,45 @@ try{
   await page.getByRole('heading',{name:'My Profile',exact:true}).waitFor();
   if(viewport.width<640)await page.locator('select').filter({has:page.locator('option[value="agent"]')}).selectOption('agent');
   else await page.getByRole('button',{name:'My Agent',exact:true}).click();
+  assert.equal(await page.getByRole('combobox',{name:'Application profile',exact:true}).count(),0);
+  assert.equal(await page.getByRole('button',{name:'New profile',exact:true}).count(),0);
+  assert.equal(await page.getByRole('button',{name:'Duplicate profile',exact:true}).count(),0);
+  assert.equal(await page.getByRole('combobox',{name:'Company tier list',exact:true}).count(),0);
+  assert.equal(await page.getByRole('combobox',{name:'Review threshold',exact:true}).count(),0);
+  const auto=page.getByRole('checkbox',{name:'Auto-apply with verified facts',exact:true});
+  await auto.waitFor();
+  await auto.uncheck();
+  await page.getByRole('button',{name:'Save submission mode',exact:true}).click();
+  await page.getByText('Review each application before submission.',{exact:false}).waitFor();
+  await auto.check();
+  await page.getByRole('button',{name:'Save submission mode',exact:true}).click();
+  await page.getByText('Auto-apply uses verified facts and permitted saved answers.',{exact:false}).waitFor();
   assert.equal(await page.locator('#agent-panel-packs').count(),0);
   assert.equal(await page.getByRole('button',{name:'Appearance',exact:true}).count(),0);
   assert.equal(await page.getByRole('heading',{name:/Circle/}).count(),0);
   await page.screenshot({path:`/private/tmp/lookout-scope-profile-${viewport.width}.png`});
+  if(viewport.width<640)await page.locator('select').filter({has:page.locator('option[value="preferences"]')}).selectOption('preferences');
+  else await page.getByRole('button',{name:'Job preferences',exact:true}).click();
+  await page.getByRole('button',{name:'Edit Search preferences',exact:true}).click();
+  await page.getByRole('textbox',{name:'Roles',exact:true}).fill('Backend Engineer');
+  await page.getByRole('combobox',{name:'Job type',exact:true}).selectOption('Full-time');
+  await page.getByRole('textbox',{name:'Locations',exact:true}).fill('New York');
+  assert.equal(await page.getByRole('combobox',{name:/priority$/}).count(),0);
+  assert.equal(await page.getByRole('heading',{name:'Company priorities',exact:true}).count(),0);
+  await page.getByRole('button',{name:'Finish editing Search preferences',exact:true}).click();
+  await page.getByText('Backend Engineer',{exact:true}).waitFor();
+  await page.screenshot({path:`/private/tmp/lookout-simple-preferences-${viewport.width}.png`});
+  if(viewport.width<640)await page.locator('select').filter({has:page.locator('option[value="about"]')}).selectOption('about');
+  else await page.getByRole('button',{name:'About me',exact:true}).click();
+  await page.getByRole('button',{name:'Edit Selected résumé',exact:true}).click();
+  const resume=page.getByRole('combobox',{name:'Selected résumé',exact:true});
+  const resumeId=await resume.locator('option').evaluateAll(options=>options.find(option=>option.value)?.value);
+  assert(resumeId,'fictional resume available');
+  await resume.selectOption(resumeId);
+  await page.getByRole('button',{name:'Finish editing Selected résumé',exact:true}).click();
+  assert.equal(await page.getByRole('button',{name:'Assign roles',exact:true}).count(),0);
+  assert.equal(await page.getByRole('button',{name:'Add resume',exact:true}).count(),0);
+  await page.screenshot({path:`/private/tmp/lookout-simple-resume-${viewport.width}.png`});
   for(const route of ['circles','themes','progress']){
    await page.goto(`http://127.0.0.1:${server.address().port}/${route}/?demo=1`);
    await page.getByRole('heading',{name:'This feature is paused'}).waitFor();
@@ -44,5 +79,5 @@ try{
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   assert.deepEqual(calls,[]);assert.deepEqual(errors,[]);await context.close();
  }
- console.log('Passed desktop/mobile: core navigation, no packs/appearance/XP/Circles settings, paused direct routes, no external requests or page errors.');
+ console.log('Passed desktop/mobile: core navigation, single profile/resume, simple preferences, submission mode toggle, no tiers/packs/appearance/XP/Circles settings, paused direct routes, no external requests or page errors.');
 }finally{await browser?.close();await new Promise(done=>server.close(done));}

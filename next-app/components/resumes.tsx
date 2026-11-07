@@ -21,9 +21,10 @@ const variants = [
   "ML Infrastructure",
   "Master",
 ];
-export default function Resumes({onAssign,children,assignments={},replaceBlocked=false}:{replaceBlocked?:boolean;onAssign?:(resumeId:string)=>void;children?:ReactNode;assignments?:Record<string,string[]>}) {
+export default function Resumes({onAssign,children,assignments={},replaceBlocked=false,single=false,selectedResumeId=""}:{single?:boolean;selectedResumeId?:string;replaceBlocked?:boolean;onAssign?:(resumeId:string)=>void;children?:ReactNode;assignments?:Record<string,string[]>}) {
   const w = useWorkspace(),
     resumes: ResumeRecord[] = (w.state.workflow.resumes || []).filter((r:ResumeRecord)=>!r.supersededBy);
+  const visibleResumes=single?resumes.filter(r=>r.id===selectedResumeId):resumes;
   const [feedback, setFeedback] = useState(""),
     [busy, setBusy] = useState(false);
   const [adding,setAdding]=useState(false),[source,setSource]=useState("file");
@@ -155,15 +156,15 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
     }
   }
   return (
-    <ProfileCard title="Resumes" icon="file" actions={<button type="button" className={secondary} disabled={busy||w.locked} aria-expanded={adding} onClick={()=>{setAdding(!adding);setSource("file");}}> {adding?"Cancel":"Add resume"}</button>}>
-      {!resumes.length && (
+    <ProfileCard title="Resumes" icon="file" actions={(!single||!visibleResumes.length)&&<button type="button" className={secondary} disabled={busy||w.locked} aria-expanded={adding} onClick={()=>{setAdding(!adding);setSource("file");}}> {adding?"Cancel":"Add resume"}</button>}>
+      {!visibleResumes.length && (
         <p className="mt-6 border-t border-board-line pt-5 text-sm text-board-muted">
-          No resume variants saved yet.
+          No résumé selected yet.
         </p>
       )}
       <p className="text-xs text-board-muted">Drop one PDF or DOCX onto a resume name, or choose a file, to replace its source.</p>
       <ul className="mt-5 divide-y divide-board-line">
-        {resumes.map((r) => (
+        {visibleResumes.map((r) => (
           <li
             className="grid gap-3 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
             key={r.id}
@@ -176,10 +177,10 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
               <ProfileIcon name="file" width={20} height={20} className="mt-1 shrink-0 text-board-muted"/><div className="min-w-0"><strong className="break-words">
               {r.name}{" "}
               <small className="text-board-muted">v{r.version || 1}</small>
-            </strong><p className="mt-1 text-xs text-board-muted">{assignments[r.id]?.join(" · ") || "No roles assigned in this profile"}</p><span className="mt-1 block text-xs text-board-muted">{busy?"Uploading…":"Choose replacement file"}</span></div></label>
+            </strong><p className="mt-1 text-xs text-board-muted">{single?"Selected résumé":assignments[r.id]?.join(" · ") || "No roles assigned in this profile"}</p><span className="mt-1 block text-xs text-board-muted">{busy?"Uploading…":"Choose replacement file"}</span></div></label>
             <div className="flex flex-wrap gap-2">
             {(w.demo||r.objectPath)&&<button type="button" className={secondary} disabled={busy||w.locked||replaceBlocked} onClick={()=>setImportId(r.id)}>Autofill profile</button>}
-            {onAssign&&<button type="button" className={secondary} disabled={w.locked} onClick={()=>onAssign(r.id)}>Assign roles</button>}
+            {!single&&onAssign&&<button type="button" className={secondary} disabled={w.locked} onClick={()=>onAssign(r.id)}>Assign roles</button>}
             {w.demo ? <button type="button" className={secondary} disabled title="Demo files have no PDF attached">Preview</button> : r.objectPath ? (
               <button className={secondary} onClick={() => open(r)}>
                 Preview
@@ -199,7 +200,7 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
         ))}
       </ul>
       {adding&&<div className="mt-5 border-t border-board-line pt-5">
-        <Field label="Resume source"><select className={`${control} mb-5`} value={source} disabled={busy} onChange={e=>setSource(e.target.value)}><option value="file">Upload a file</option><option value="link">Use a document link</option></select></Field>
+        {!single&&<Field label="Resume source"><select className={`${control} mb-5`} value={source} disabled={busy} onChange={e=>setSource(e.target.value)}><option value="file">Upload a file</option><option value="link">Use a document link</option></select></Field>}
         {source === "link" && <>
         <form
           onSubmit={reference}
@@ -239,13 +240,13 @@ export default function Resumes({onAssign,children,assignments={},replaceBlocked
               disabled={(!w.user && !w.demo) || busy}
             />
           </Field>
-          <Field label="File variant">
+          {single?<input type="hidden" name="variant" value="Master"/>:<Field label="File variant">
             <select className={control} name="variant">
               {variants.map((v) => (
                 <option key={v}>{v}</option>
               ))}
             </select>
-          </Field>
+          </Field>}
           <button className={primary} disabled={(!w.user && !w.demo) || busy}>
             {busy ? "Uploading…" : "Upload private resume"}
           </button>

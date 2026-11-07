@@ -34,3 +34,26 @@
   inside a rolled-back transaction. No test users, runs or events were retained.
 - Limits: frontend and gateway/MCP/Node code were not pushed or deployed. The tables
   are live; Muse logging tools require normal backend release and discovery refresh.
+
+## Simple job preferences, one profile and one selected résumé
+
+- Gate the full editor behind SINGLE_PROFILE_UI. Keep one stable visible profile,
+  basic search preferences, and one résumé selection; hide profile management,
+  priority/tier boards, company-tier MCP writes, role assignments, variant pickers and additional uploads
+  while a résumé is selected. Keep saved profiles/files and application snapshots.
+- A deliberate résumé selection deactivates saved role assignments without losing
+  their contents, so preparation uses the selected fallback file consistently.
+- Replace automation tier/threshold controls with one toggle. Explicit saved
+  Submission mode supports review-each versus auto-apply without company ranking;
+  all fact/answer/authorization/uncertainty checks remain. Legacy policies are not
+  silently broadened before the user saves the new setting.
+- Update workspace/application guides, workflow references and developer context 103.
+- Limits: UI constraint, not a database cardinality restriction. Existing API records,
+  hidden preferences and other profile histories remain available; fixtures should
+  pin the intended profile. No production code or preference deployment.
+
+- Validation for this pass: 945 tests, 940 passed and 5 explicitly paused Community
+  MCP tests; frontend/backend TypeScript checks; data validation (158 roles);
+  production frontend build; desktop/mobile fictional browser interactions for
+  basic preference edits, single résumé selection and both submission modes;
+  no external account requests, page errors or mechanical design findings.
