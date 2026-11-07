@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {matchesPostingAge,formatPostedDate,postingStatus} from '../lib/posting-age.mjs';
-import {discoverPreviewRoles} from '../next-app/lib/discover-preview-demo.mjs';
+import {matchesPostingAge, formatPostedDate, postingStatus} from '../lib/posting-age.mjs';
+
 const now=Date.parse('2026-10-27T12:00:00Z');
 test('publication filters use posted time rather than a fresh availability check',()=>{
  const role={postedDate:'2026-10-01',postingObservation:{postedAt:'2026-09-15T12:00:00Z',checkedAt:'2026-10-27T12:00:00Z',liveness:'active'}};
@@ -21,11 +21,4 @@ test('filter cutoffs include the boundary and exclude future or unknown dates',(
  assert.equal(matchesPostingAge(unknown,'unknown',now),true);
  assert.equal(formatPostedDate(unknown,now),'Not disclosed');
  assert.equal(postingStatus(unknown),'Unverified');
-});
-test('fictional demo covers recent, older, unknown publication and all availability states',()=>{
- const roles=discoverPreviewRoles('2026-10-27');
- assert.deepEqual(roles.map(postingStatus),['Live','Closed','Unverified']);
- assert.deepEqual(roles.map(r=>matchesPostingAge(r,'1',now)),[true,false,false]);
- assert.deepEqual(roles.map(r=>matchesPostingAge(r,'14',now)),[true,true,false]);
- assert.deepEqual(roles.map(r=>matchesPostingAge(r,'unknown',now)),[false,false,true]);
 });

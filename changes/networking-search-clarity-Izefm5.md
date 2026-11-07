@@ -1,0 +1,7 @@
+# Networking search and interviewer clarity
+
+- Added three concise rules to the existing outreach guide: public-web discovery must satisfy the requested people rather than stop at warm contacts; known interviewers get sourced professional research for preparation; cold drafts visibly apply saved style using a recipient-specific reason, candidate achievement and clear ask.
+- Interview preparation can identify participants from authorized email text and To/CC or forwarded scheduling context. CC alone does not confirm an interviewer. Preserve the message evidence and save confirmed/uncertain roles in existing application-linked interview briefs; no separate store, automatic contact or new tool.
+- Updated canonical and packaged outreach guidance, interviewer guide/routing versions and developer contract 114. Added fictional prep content contrasting an explicitly named interviewer with a CC-only participant, plus focused contract assertions. OpenWiki received a focused update only.
+- Validation: catalog validation (158 roles) passed; npm test: 1,033 passed, 5 skipped, zero failures, including guide parity and database scenarios. Frontend typecheck and production static build passed (425 offline assets).
+- Limits: instruction/fixture tests do not prove live-agent search quality, accurate identity matching or connected inbox access. No real messages or account writes. Production release must use the existing main workflow, never a feature deployment.

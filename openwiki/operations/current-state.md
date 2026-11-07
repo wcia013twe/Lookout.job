@@ -264,6 +264,15 @@ visible but imported records have no native application ID: timeline writes
 show the existing sync error and workflow writes report an unsaved update.
 This intentional backend mismatch must remain explicit until a later integration.
 
+Application rows show a separate **Needs action** flag for due, unresolved
+handoffs from the existing durable action inbox (review, blocker or submission
+check). The recorded reason opens the existing application detail dialog. Flags
+clear when the underlying inbox action resolves and appear when a deferred action
+becomes due; hiring stages and Active date ordering stay independent. This is the
+same read surface as Action Board and MCP `read_action_inbox`; it does not add a
+manual task flag or infer recruiter requests from notes or interview stages.
+The resettable fictional demo includes a review handoff; demo approval remains
+disabled. Source verification does not establish production deployment.
 ## Weekly Career Toolkit (contract 113 source update)
 
 The existing Toolkit cards and reader now support explicit weekly filtering and
@@ -274,3 +283,22 @@ agent-only interviewer preparation, with versioned resume/completion and a linke
 debrief. The user calls their agent externally; no scheduler or call transport is
 provided. Source tests and detached demo coverage do not establish hosted release
 or an external-agent call. See the Career Toolkit concept page and feature note.
+
+## Test harness consolidation (focused source update)
+
+The full Node suite uses a disposable migrated PGlite snapshot for independent
+ordinary database fixtures, with four concurrent test files. Migration/upgrade
+fixtures retain full replay and custom hooks. The snapshot lives only for one
+run and is cleaned up; focused direct Node tests need no snapshot. Demo reset
+isolation is checked over whole fixture graphs instead of repeated exact sample
+contents. That check found shared nested preparation resource data; the two
+workspace fixture factories now clone their returned graphs. See the verification
+strategy for scope and the feature change note for actual validation results.
+
+Application rows additionally display optional next-action dates from current
+scheduled rounds or confirmed unfinished preparation deadlines, with no guessed
+dates or second manual date store. Active offers an explicit Next action date
+sort (earliest first; undated last), while progress/date stays the default.
+Completed/superseded rounds and terminal records are excluded. Website and MCP
+continue using the existing owned timeline/preparation writers and readers; see
+the application-submission workflow for mappings and lifecycle details.

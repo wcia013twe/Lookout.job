@@ -169,7 +169,7 @@ the hosted backend default for the existing workflow. Demo fixtures remain
 fictional and isolated; this startup tooling does not change product actions or
 MCP contracts.
 
-`npm test` runs behavior checks and the consolidated database scenarios. The database suite applies migrations once in disposable PGlite; `npm run test:db` runs the same scenarios separately. The default runner caps parallel test files at four to bound memory use; no extra runner is required. Do not run `test:db` again after a successful `npm test`. Hosted checks remain separate.
+`npm test` uses Node's built-in runner with at most four concurrent test files. It migrates one disposable PGlite baseline, then loads independent databases for ordinary integration tests; custom migration and hosted-upgrade scenarios still replay their own history. The temporary snapshot is removed after the run. `npm run test:db` runs only the database scenarios for focused debugging; do not repeat it after a successful full run. Run a single file directly with `node --test tests/<name>.test.mjs` to avoid full-suite setup. Hosted checks remain separate.
 
 Open `http://localhost:3000`. Production is built and deployed by `.github/workflows/deploy.yml` from `next-app/out/`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The React export bundles the browser client at build time.
 

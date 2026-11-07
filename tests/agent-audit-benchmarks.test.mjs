@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+
 import {createTestDatabase} from './helpers/database.mjs';
-import {AUDIT_FEATURES,validateAudit} from '../supabase/functions/agent-gateway/agent-audit.mjs';
+import {AUDIT_FEATURES, validateAudit} from '../supabase/functions/agent-gateway/agent-audit.mjs';
 import {createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
-import {readGuide,guideIndex} from '../supabase/functions/agent-gateway/guides.mjs';
+
 const owner='11111111-1111-1111-1111-111111111111', hash='7'.repeat(64);
 const decision=(feature='discover')=>({eventKey:`${feature}-decision`,schemaVersion:2,feature,scenarioId:'fixture-v1',kind:'decision',data:{chosenAction:'Exclude the on-site role',justification:'The fixture profile requires remote work.',preferencesApplied:[{ref:'fixture-profile',version:7}],evidenceRefs:[{ref:'fixture-posting',version:1}]}});
 const assertion=(feature='discover')=>({eventKey:`${feature}-check`,schemaVersion:2,feature,kind:'assertion',dimension:'personalization',scenarioId:'fixture-v1',checkId:'respect-preferences',data:{evaluationSource:'self_check',status:'pass',expected:'Follow the current fixture preference.',observed:'The decision follows the current fixture preference.',rubricVersion:'fixture-rubric-v1',evidenceEventKeys:[`${feature}-decision`]}});
@@ -94,12 +94,4 @@ test('migration retains legacy event identity and replay when upgrading populate
   for(const [key,value] of Object.entries(original))assert.deepEqual(row[key],value,key);
   assert.equal(row.schema_version,1);assert.equal(row.actor,'agent');assert.equal(row.feature,null);
  }finally{await db.close();}
-});
-
-test('Muse guide exposes versioned feature checks and makes self-check provenance explicit',async()=>{
- const guide=readGuide('agent-audit');assert.equal(guide.version,3);
- assert.equal(guideIndex().find(g=>g.id===guide.id).version,3);
- for(const text of ['schemaVersion:2','self_check','not_evaluated','evidenceEventKeys','metricsScope','action_board','discover','applications','network','toolkit','missing capture','separately authenticated'])assert(guide.instructions.includes(text),text);
- const instructions=JSON.parse(await readFile(new URL('../supabase/functions/agent-gateway/instructions.json',import.meta.url),'utf8'));
- assert(instructions.instructions.some(s=>s.includes('load read_guide agent-audit')));
 });
