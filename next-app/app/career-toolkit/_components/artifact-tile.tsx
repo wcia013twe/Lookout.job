@@ -1,3 +1,4 @@
+import {mockCalendarPreview} from '../../../lib/mock-calendar-preview.mjs';
 import Link from 'next/link';
 import {artifactLabels,artifactPath,artifactPurpose} from '../../../../lib/artifacts.mjs';
 import {CompanyLogo} from '../../../components/company-logo';
@@ -17,25 +18,27 @@ function Context({artifact,application,compact=false}:{artifact:ArtifactSummary;
 function Identity({company}:{company?:string}){
  return company?<span className={styles.companyIdentity}><CompanyLogo company={company}/><span>{company.replace(/ \(demo\)$/,'')}</span></span>:<span className={styles.companyIdentity}>Personal preparation</span>;
 }
-export default function ArtifactTile({artifact,featured=false,dated=false,application}:{artifact:ArtifactSummary;featured?:boolean;dated?:boolean;application?:MaterialApplication}){
- const c=artifact.content,interactive=c.format==='html';
+export default function ArtifactTile({artifact,featured=false,dated=false,demo=false,application}:{artifact:ArtifactSummary;featured?:boolean;dated?:boolean;demo?:boolean;application?:MaterialApplication}){
+ const c=artifact.content,interactive=c.kind==='practice';
+ const calendar=demo?mockCalendarPreview(c):null;
  const tone=interactive?'interactive':c.kind==='mock_interview'||c.kind==='weekly_prep'?'prep':c.kind==='company_research'||c.kind==='interview_brief'?'research':'document';
- const href=c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id);
+ const href=calendar||(c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id));
  return <li className={`${featured?styles.featuredMaterial:''} ${dated?styles.datedMaterial:''}`}><article className={`${styles.materialTile} ${styles[tone]}`}>
-  <Link href={href} target={c.kind==='resource'?'_blank':undefined} rel={c.kind==='resource'?'noopener noreferrer':undefined} className={styles.materialCover}>
+  <Link href={href} target={calendar||c.kind==='resource'?'_blank':undefined} rel={calendar||c.kind==='resource'?'noopener noreferrer':undefined} className={styles.materialCover}>
    <span className={styles.backgroundIcon}><ToolkitIcon name={iconFor(c.kind)} size={130}/></span>
    <Identity company={application?.company||c.company}/>
    <h3>{c.title}</h3><p>{artifactPurpose(c)}</p>
    {c.scheduledAt&&<span className={styles.sessionTime}>{new Date(c.scheduledAt).toLocaleTimeString(undefined,{timeZone:c.timeZone,hour:'numeric',minute:'2-digit'})} · {c.timeZone}</span>}
+   {calendar&&<span className={styles.calendarAction}><ToolkitIcon name="calendar" size={14}/>Open in Google Calendar</span>}
    <span className={styles.cardArrow}><ToolkitIcon name="arrow" size={18}/></span>
   </Link>
   <Context artifact={artifact} application={application}/>
  </article></li>;
 }
-export function SavedMaterialRow({artifact,application}:{artifact:ArtifactSummary;application?:MaterialApplication}){
- const c=artifact.content;
+export function SavedMaterialRow({artifact,application,demo=false}:{artifact:ArtifactSummary;application?:MaterialApplication;demo?:boolean}){
+ const c=artifact.content,calendar=demo?mockCalendarPreview(artifact.content):null;
  return <li className={styles.rowItem}><article className={styles.compactMaterial}>
-  <Link href={c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id)} target={c.kind==='resource'?'_blank':undefined} rel={c.kind==='resource'?'noopener noreferrer':undefined} className={styles.savedMaterialRow}>
+  <Link href={calendar||(c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id))} target={calendar||c.kind==='resource'?'_blank':undefined} rel={calendar||c.kind==='resource'?'noopener noreferrer':undefined} className={styles.savedMaterialRow}>
    <span className={styles.savedMaterialIcon}>{(application?.company||c.company)?<CompanyLogo company={application?.company||c.company||''}/>:<ToolkitIcon name={iconFor(c.kind)} size={22}/>}</span>
    <div><h3>{c.title}</h3><p>{artifactPurpose(c)}</p></div><ToolkitIcon name="arrow" size={17}/>
   </Link><Context artifact={artifact} application={application} compact/>

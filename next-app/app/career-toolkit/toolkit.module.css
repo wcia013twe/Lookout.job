@@ -373,3 +373,10 @@
 .datedMaterial .materialCover { min-height: 108px; }
 .datedMaterial .backgroundIcon { right: 1.25rem; bottom: -2.4rem; }
 @media(max-width:480px) { .workspaceTopbar .workspaceTabs a { font-size: .75rem; } .workspaceTopbar { gap: .25rem; } }
+
+/* Embedded artifacts keep their own neutral document canvas, without app chrome. */
+.calendarAction { display: inline-flex; align-items: center; gap: .4rem; margin-top: .7rem; font-size: .75rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.readerHeading h1 { font-size: 1.375rem; line-height: 1.35; }
+.readerToolbar { margin-block: .6rem .8rem; }
+.activityFrame { height: 78vh; min-height: 36rem; background: white; }
+@media(max-width:700px) { .readerHeading h1 { font-size: 1.125rem; } .activityFrame { min-height: 32rem; height: 78vh; } }
