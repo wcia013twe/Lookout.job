@@ -105,3 +105,13 @@
   one-page vector PDF without raster images, color/monochrome visual review,
   data validation (158 roles), and diff whitespace checks.
 - Limit: no local diagrams.net application; editor import/round-trip is unverified.
+
+## Simplify architecture figure
+
+- Reduce visible text from 224 to 129 words, enlarge key labels, add soft inner
+  color bands and number the review/persist/poll/wake/resume loop.
+- Remove two secondary connectors; retain their architectural context in the
+  supporting source notes. Update all three editable/vector formats together.
+- Verified native XML references, embedded SVG source, one-page vector PDF and
+  color/grayscale rendering; 158-role data validation passed. Application code
+  unchanged. Editor round-trip remains unverified.

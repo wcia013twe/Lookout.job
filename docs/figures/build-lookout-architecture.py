@@ -13,7 +13,7 @@ import json
 OUT=Path(__file__).resolve().parent
 W,H=1800,1000
 INK='#263442'; MUTED='#4a5662'; LINE='#596671'
-PALETTE={'human':('#f3eee6','#8b775f'),'agent':('#eaf1f7','#57758e'),'mcp':('#edf2ec','#657d61'),'workspace':('#f1eef7','#77678c'),'infra':('#f3f4f5','#78818a')}
+PALETTE={'human':('#faf8f5','#8b775f'),'agent':('#f5f8fb','#57758e'),'mcp':('#f6f9f5','#657d61'),'workspace':('#f8f6fb','#77678c'),'infra':('#f8f9fa','#78818a')}
 items=[]; regions={}; nodes={}; arrows=[]
 def region(id,x,y,w,h,label,key):
  fill,stroke=PALETTE[key];regions[id]=(x,y,w,h)
@@ -46,79 +46,81 @@ def icon(kind,x,y,parent):
 def arrow(id,source,target,points,label='',lx=0,ly=0,dash=False,both=False):
  arrows.append(dict(id=id,source=source,target=target,points=points,label=label,lx=lx,ly=ly,dash=dash,both=both))
 
-txt('title',40,39,'Lookout: shared workspace for ongoing human-agent workflows',30,True)
+txt('title',40,39,'Lookout architecture',32,True)
 region('human',40,75,270,835,'Human','human')
 region('agent',350,75,360,835,'Personal Agent','agent')
 region('interface',750,75,290,450,'Lookout Interface','mcp')
 region('workspace',1080,75,680,450,'Lookout Workspace','workspace')
 region('infrastructure',750,610,1010,300,'Infrastructure','infra')
 
-rect('user',65,145,220,155,'human');icon('person',80,165,'user')
-txt('user-title',125,183,'User',28,True,'user')
-for i,t in enumerate(['Goals / preferences','Review decisions']):txt('user-t'+str(i),80,238+i*30,t,22,parent='user')
-rect('web',65,365,220,185,'human');icon('browser',80,383,'web')
-txt('web-title',126,406,'Web UI',27,True,'web')
-for i,t in enumerate(['Review jobs','Edit records','Approve / resolve']):txt('web-t'+str(i),80,453+i*29,t,22,parent='web')
-txt('human-note1',63,655,'Authenticated review',23,True,'human');txt('human-note2',63,689,'and visible progress',23,parent='human')
+rect('user',65,145,220,155,'human',fill='#faecd9');icon('person',80,165,'user')
+txt('user-title',125,183,'User',30,True,'user')
+txt('user-t0',80,244,'Preferences',26,parent='user')
+rect('web',65,365,220,185,'human',fill='#faecd9');icon('browser',80,383,'web')
+txt('web-title',126,406,'Web UI',29,True,'web')
+txt('web-t0',80,464,'Review and edit',26,parent='web')
+txt('web-t1',80,506,'Approve / resolve',24,parent='web')
 
-rect('reason',375,145,310,205,'agent');icon('agent',392,162,'reason')
-txt('reason-title',440,186,'External agent',27,True,'reason')
-for i,t in enumerate(['Muse / Dots / OpenClaw','Reasoning and planning','Private personal context','Task-specific decisions']):txt('reason-t'+str(i),392,230+i*30,t,23,parent='reason')
-rect('host',375,645,310,205,'agent',dash=True);icon('terminal',392,664,'host')
-txt('host-title',440,689,'Agent host',27,True,'host')
-for i,t in enumerate(['Schedules (host-owned)','Optional Lookout watcher','Count polling + wake','Host setup required']):txt('host-t'+str(i),392,733+i*29,t,22,parent='host')
+rect('reason',375,145,310,205,'agent',fill='#e5eef8');icon('agent',392,162,'reason')
+txt('reason-title',440,186,'External agent',28,True,'reason')
+txt('reason-t0',392,240,'Reasoning + planning',26,parent='reason')
+txt('reason-t1',392,286,'Private personal context',24,parent='reason')
+rect('host',375,645,310,205,'agent',fill='#e5eef8',dash=True);icon('terminal',392,664,'host')
+txt('host-title',440,689,'Agent host',29,True,'host')
+txt('host-t0',392,745,'Native schedules',26,parent='host')
+txt('host-t1',392,790,'Optional polling + wake',24,parent='host')
 
 rect('mcp',775,145,240,205,'interface');icon('terminal',790,162,'mcp')
-txt('mcp-title',837,186,'MCP server',26,True,'mcp')
-for i,t in enumerate(['Auth + scoped calls','Progressive tools','Context + guides','HTTP / stdio adapter']):txt('mcp-t'+str(i),790,230+i*30,t,23,parent='mcp')
-txt('mcp-note1',775,395,'discover_tools',23,True,'interface');txt('mcp-note2',775,425,'progressive tool access',21,parent='interface')
+txt('mcp-title',837,186,'MCP',29,True,'mcp')
+# Inner bands are editable labels within one interface, not services.
+for id,y,label,fill in [('tools',208,'Tools','#f9e4d9'),('context',254,'Context','#e1efdc'),('guides',300,'Guides','#deedf5')]:
+ rect('mcp-band-'+id,790,y,210,38,'mcp',fill=fill,stroke=fill,round=5)
+ txt('mcp-t-'+id,895,y+28,label,26,parent='mcp',anchor='middle')
+txt('mcp-note1',775,407,'Auth + scopes',25,True,'interface')
 
 rect('capabilities',1105,145,630,220,'workspace')
-txt('cap-title',1126,181,'Logical capabilities',27,True,'capabilities')
-# Text within one module, not independently deployed service boxes.
-for i,t in enumerate(['Job discovery and screening','Application preparation and tracking','Action Board / human review','Search preferences and resume rules','Network and Career Toolkit']):txt('cap-t'+str(i),1126,218+i*28,t,24,parent='capabilities')
-rect('domain',1105,405,630,92,'workspace');icon('shield',1124,424,'domain')
-txt('domain-title',1174,440,'Domain services and policy checks',27,True,'domain')
-txt('domain-sub',1174,475,'Versions, scoped writes, durable workflow coordination',22,parent='domain')
+txt('cap-title',1126,182,'Career workflows',29,True,'capabilities')
+for id,x,label in [('discover',1126,'Discover'),('apply',1430,'Applications')]:
+ rect('cap-band-'+id,x,200,285,48,'capabilities',fill='#f9e4d9',stroke='#f9e4d9',round=5)
+ txt('cap-t-'+id,x+142.5,233,label,28,parent='capabilities',anchor='middle')
+rect('cap-band-review',1126,264,589,48,'capabilities',fill='#e9e1f3',stroke='#e9e1f3',round=5)
+txt('cap-t-review',1420,297,'Action Board: review + resolve',28,True,'capabilities',anchor='middle')
+txt('cap-t-other',1126,346,'Network + Career Toolkit',25,parent='capabilities')
+rect('domain',1105,405,630,92,'workspace',fill='#deedf5');icon('shield',1124,424,'domain')
+txt('domain-title',1174,440,'Shared state + policy',29,True,'domain')
+txt('domain-sub',1174,477,'Preferences / approvals / progress',26,parent='domain')
 
-rect('worker',775,665,285,90,'infrastructure');icon('queue',789,683,'worker')
-txt('worker-title',835,701,'Backend workers',26,True,'worker');txt('worker-sub',789,735,'Leased execution queue',23,parent='worker')
-rect('db',1110,665,310,90,'infrastructure');icon('database',1125,684,'db')
-txt('db-title',1173,701,'Postgres',26,True,'db');txt('db-sub',1125,735,'Owned workflow records',23,parent='db')
-rect('storage',1470,665,265,90,'infrastructure');icon('document',1484,679,'storage')
-txt('storage-title',1530,701,'Private Storage',25,True,'storage');txt('storage-sub',1484,735,'Resumes and documents',22,parent='storage')
-rect('browser',775,800,285,90,'infrastructure');icon('browser',789,818,'browser')
-txt('browser-title',835,837,'Browser runner',26,True,'browser');txt('browser-sub',789,870,'Inspect / prefill / submit',23,parent='browser')
-rect('employer',1470,800,265,90,'infrastructure');icon('browser',1484,818,'employer')
-txt('employer-title',1530,837,'External sites',25,True,'employer');txt('employer-sub',1484,870,'Boards / employer ATS',23,parent='employer')
+rect('worker',775,665,285,90,'infrastructure',fill='#edf0f3');icon('queue',789,683,'worker')
+txt('worker-title',835,701,'Workers',28,True,'worker');txt('worker-sub',789,735,'Queued execution',25,parent='worker')
+rect('db',1110,665,310,90,'infrastructure',fill='#edf0f3');icon('database',1125,684,'db')
+txt('db-title',1173,701,'Postgres',28,True,'db');txt('db-sub',1125,735,'Workflow state',25,parent='db')
+rect('storage',1470,665,265,90,'infrastructure',fill='#edf0f3');icon('document',1484,679,'storage')
+txt('storage-title',1530,701,'Private files',27,True,'storage');txt('storage-sub',1484,735,'Resumes + documents',23,parent='storage')
+rect('browser',775,800,285,90,'infrastructure',fill='#edf0f3');icon('browser',789,818,'browser')
+txt('browser-title',835,837,'Browser runner',26,True,'browser');txt('browser-sub',789,870,'Inspect / fill / submit',25,parent='browser')
+rect('employer',1470,800,265,90,'infrastructure',fill='#edf0f3');icon('browser',1484,818,'employer')
+txt('employer-title',1530,837,'External sites',25,True,'employer');txt('employer-sub',1484,870,'Postings + forms',25,parent='employer')
 
-arrow('A1','user','web',[(175,300),(175,365)],'review / edit',240,334)
-arrow('A2','user','reason',[(285,222),(375,222)],'delegate',330,207,both=True)
-arrow('B1','reason','mcp',[(685,268),(775,268)],'calls',730,252,both=True)
-arrow('B2','mcp','capabilities',[(1015,268),(1105,268)],'results',1060,252,both=True)
-arrow('A3','web','domain',[(285,465),(1105,465)],'goals / edits / approvals',865,487)
-arrow('D0','capabilities','domain',[(1420,365),(1420,405)])
-arrow('D1','domain','db',[(1280,497),(1280,665)],'records / approvals / checkpoints',1275,561,both=True)
-arrow('D2','domain','storage',[(1605,497),(1605,665)],'files',1640,584,both=True)
-arrow('E1','domain','worker',[(1150,497),(1150,540),(918,540),(918,665)],'queue / claim',920,589,dash=True)
-arrow('E2','worker','browser',[(918,755),(918,800)],'authorized',994,786)
-arrow('F1','browser','employer',[(1060,845),(1470,845)],'forms and confirmations',1265,831,both=True)
-# Workers also fetch public posting sources without requiring a browser.
-arrow('F2','worker','employer',[(1060,710),(1080,710),(1080,780),(1745,780),(1745,845),(1735,845)],'public posting sources',1275,802,both=True)
-# This is polling coordination, not a server-push or direct SQL subscription.
-arrow('G1','domain','host',[(1105,450),(1088,450),(1088,570),(730,570),(730,742),(685,742)],'pending-count / change pointers',700,554,dash=True)
-arrow('G2','host','reason',[(375,700),(360,700),(360,328),(375,328)],'host wake',440,594,dash=True)
-# Explicit post-wake read path: normal B1/B2 tools retrieve current persisted state.
-txt('resume-note1',392,389,'Resume through MCP:',22,True,'agent');txt('resume-note2',392,416,'read current state, then act',22,parent='agent')
+arrow('A1','user','web',[(175,300),(175,365)])
+arrow('A2','user','reason',[(285,222),(375,222)],'Goals',330,207,both=True)
+arrow('B1','reason','mcp',[(685,268),(775,268)],'5 Resume',730,252,both=True)
+arrow('B2','mcp','capabilities',[(1015,268),(1105,268)],'Tools',1060,252,both=True)
+arrow('A3','web','domain',[(285,465),(1105,465)],'1 Review / edit',865,487)
+arrow('D1','domain','db',[(1280,497),(1280,665)],'2 Persist',1280,571,both=True)
+arrow('D2','domain','storage',[(1605,497),(1605,665)],both=True)
+arrow('E1','domain','worker',[(1150,497),(1150,540),(918,540),(918,665)],'Queue',920,589,dash=True)
+arrow('E2','worker','browser',[(918,755),(918,800)])
+arrow('F1','browser','employer',[(1060,845),(1470,845)],'Inspect / submit',1265,831,both=True)
+# Polling coordination, not server push or a direct database subscription.
+arrow('G1','domain','host',[(1105,450),(1088,450),(1088,570),(730,570),(730,742),(685,742)],'3 Poll changes',700,554,dash=True)
+arrow('G2','host','reason',[(375,700),(360,700),(360,328),(375,328)],'4 Wake',440,594,dash=True)
+txt('resume-note1',392,398,'Resume from saved state',25,True,'agent')
 
-# Database annotation sits in spare infrastructure space, away from paths.
-txt('db-details1',1111,866,'Approvals / checkpoints',22,parent='infrastructure')
-txt('db-details2',1111,893,'Execution / audit journals',22,parent='infrastructure')
 line('legend-solid',[(45,947),(110,947)],width=2)
-txt('legend-solid-label',124,955,'Request / response or local execution',24)
+txt('legend-solid-label',124,955,'Calls / results',26)
 line('legend-dash',[(750,947),(815,947)],width=2,dash=True)
-txt('legend-dash-label',830,955,'Queued work or polling / wake coordination',24)
-txt('footnote',45,987,'Boundaries are logical responsibilities, not a claim of separately deployed microservices. Wake delivery depends on the agent host.',22,color=MUTED)
+txt('legend-dash-label',830,955,'Polling / queued work',26)
+txt('footnote',45,987,'Logical capabilities, not separate services. Optional wake requires an agent-host integration.',24,color=MUTED)
 
 # Shared vector rendering: PDF and SVG use the same text baselines and paths.
 svg=[]
@@ -214,5 +216,5 @@ for c in root:
 for i in items:
  if i['kind']=='text' and i['parent'] in nodes:
   x,y,w,h=nodes[i['parent']];tw=stringWidth(i['text'],'Helvetica-Bold' if i['bold'] else 'Helvetica',i['size']);
-  assert i['x']+tw<=x+w+2,(i['id'],'text exceeds box')
+  assert i['x']+tw/(2 if i['anchor']=='middle' else 1)<=x+w+2,(i['id'],'text exceeds box')
 print(json.dumps({'components':12,'boundaries':len(regions),'arrows':len(arrows),'editableCells':len(ids),'canvas':[W,H]}))
