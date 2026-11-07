@@ -73,3 +73,51 @@ test('one fictional MCP context read returns only core and index without persona
  context.instructions[0]='mutated';
  assert.notEqual(contextResponse('context.developer',{}).instructions[0],'mutated');
 });
+
+
+test('material recipes are discoverable without preloading bodies and fail closed with guide authorization',async()=>{
+ const {discoverGuides}=await import('../supabase/functions/agent-gateway/guides.mjs');
+ const discovery=discoverGuides(),guide=readGuide(discovery.materialGuide.id);
+ assert.equal(discovery.materialGuide.version,guide.version);
+ assert(guideIndex().some(entry=>entry.id===guide.id&&entry.version===guide.version));
+ assert(!JSON.stringify(discovery).includes('htmlTemplate'));
+ assert.deepEqual(guide.materialFormats.map(format=>format.kind),['company_research','interview_brief','story_bank','mock_interview','interview_debrief','resource']);
+ assert.equal(guide.materialFormats.find(format=>format.kind==='mock_interview').saveWith,'save_mock_interview');
+ assert(!/<script|<iframe|<button|<input|<form|@import|url\(/i.test(guide.htmlTemplate));
+ for(const format of guide.materialFormats)for(const id of format.skills)assert(readGuide(id),id);
+ for(const code of ['28000','42501'])assert.deepEqual(await guideDispatch(guide.id,async()=>({error:{code}})),{error:{code}});
+ guide.materialFormats[0].sections.length=0;guide.htmlTemplate='changed';
+ assert(readGuide(guide.id).materialFormats[0].sections.length);assert.notEqual(readGuide(guide.id).htmlTemplate,'changed');
+});
+
+test('a workspace generator discovers the recipe and saves/reads static HTML through scoped MCP tools',async()=>{
+ const {createHandler}=await import('../supabase/functions/agent-mcp/protocol.mjs');
+ const {guideDiscoveryDispatch}=await import('../supabase/functions/agent-gateway/guides.mjs');
+ const {createArtifactDemo}=await import('../next-app/lib/artifact-demo.mjs');
+ const {createMemoryStore}=await import('../next-app/lib/demo.mjs');
+ const demo=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));
+ let scopes=['workspace:read','drafts:write'];const writes=[];
+ const handler=createHandler(async(_token,operation,payload)=>{
+  if(operation==='credentials.verify')return {status:200,data:{scopes}};
+  if(operation==='guides.discover')return {status:200,...await guideDiscoveryDispatch(async()=>({data:{}}))};
+  if(operation==='guides.read')return {status:200,...await guideDispatch(payload.id,async()=>({data:{}}))};
+  if(operation==='artifacts.save')writes.push(payload);
+  return {status:200,data:await demo.artifactAction(operation,payload)};
+ });
+ const call=async(name,args={})=>{
+  const response=await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})}));
+  const result=(await response.json()).result;if(result.isError)return result;return JSON.parse(result.content[0].text);
+ };
+ const discovery=await call('discover_toolkit');
+ const recipe=await call('read_guide',{id:discovery.materialGuide.id});
+ const tools=await call('discover_tools',{workflow:'toolkit'});
+ assert(tools.tools.some(tool=>tool.name==='save_artifact'));
+ const id='cccccccc-1111-4000-8000-111111111111';
+ const payload={id,expectedVersion:0,title:'Example role prep',purpose:'A fictional generation evaluation',kind:'interview_brief',format:'html',body:recipe.htmlTemplate.replace('[Material title]','Example role prep'),sources:[{title:'Example resource',url:'https://example.com/resource',observedAt:'2026-11-07'}],links:[]};
+ const saved=await call('call_discovered_tool',{name:'save_artifact',arguments:payload});
+ const read=await call('call_discovered_tool',{name:'read_artifact',arguments:{id:saved.id}});
+ assert.equal(read.content.body,payload.body);assert.deepEqual(read.content.sources,payload.sources);assert(read.path.includes(id));
+ scopes=['workspace:read'];
+ assert.equal((await call('call_discovered_tool',{name:'save_artifact',arguments:{...payload,expectedVersion:1}})).isError,true);
+ assert.equal(writes.length,1);
+});

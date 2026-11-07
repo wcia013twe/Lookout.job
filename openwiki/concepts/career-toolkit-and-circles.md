@@ -195,3 +195,17 @@ Google Calendar event integration is not claimed by this preview.
 ### Palantir research demo
 
 The current five-material preview centers on the public New York New Grad Query Engines posting, with a separately labeled fictional application. The round brief saves two short Glassdoor excerpts with report dates, anonymous attribution and review IDs; it labels those as general SWE candidate reports, not a confirmed Query Engines process. Original practice prompts are distinguished from reported questions. Visible source links and three external-resource rows open Glassdoor, the employer posting, DataFusion, PostgreSQL and Furnace pages through the existing source/resource link boundaries. Research stays dated November 7, 2026 across demo resets. Candidate stories, events, status and debrief remain fictional; no employer action or real account write occurs.
+
+### Agent-facing material formats (contract 117 source update)
+
+The primary guide index and `discover_toolkit.materialGuide` expose the versioned
+`toolkit-materials` guide. It provides six optional recipes (five contributions
+plus external resources), matching career-skill IDs, a neutral static HTML starter,
+report-excerpt attribution and source-link rules. Relevant company/interview skills
+load it before saving; the interview/workspace workflows reference it without
+preloading bodies into startup. Static documents are the default for synthesis,
+while curated resources and concise Markdown remain valid. Mock logistics/profile
+separation and actual-call/Calendar limits are unchanged. Existing scoped artifact
+and mock tools own execution; no new generic writer or consent is introduced.
+A detached MCP generation test covers discovery, recipe loading, save/read-back
+and read-only denial. Hosted availability requires the normal main-branch release.

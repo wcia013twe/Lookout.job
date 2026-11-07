@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "categories": [
     {
       "id": "profile",
@@ -352,7 +352,7 @@
     {
       "id": "research-company",
       "guideId": "career-research-company",
-      "version": 5,
+      "version": 6,
       "category": "search",
       "title": "Research a company",
       "summary": "Learn enough about the company and team to ask better questions.",
@@ -365,7 +365,8 @@
         "Research current products, strategy, engineering work and recent developments.",
         "Separate sourced observations from interpretations.",
         "Connect the findings to your experience, application angle and questions.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "A sourced company brief",
@@ -384,7 +385,12 @@
         "quick-triage",
         "evaluate-job"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/deep.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/deep.md",
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
+      ]
     },
     {
       "id": "adjacent-titles",
@@ -736,7 +742,7 @@
     {
       "id": "interview-research",
       "guideId": "career-interview-research",
-      "version": 5,
+      "version": 6,
       "category": "interviews",
       "title": "Research an interview",
       "summary": "Prepare for a company's actual process and the role you are discussing.",
@@ -749,7 +755,8 @@
         "Research the company and likely process, clearly labeling unverified reports.",
         "Connect likely topics to your experience and gaps.",
         "Prepare questions, talking points and a focused next step.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "A company-specific interview brief",
@@ -768,12 +775,17 @@
         "practice-interview",
         "story-bank"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview-prep.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview-prep.md",
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
+      ]
     },
     {
       "id": "prep-plan",
       "guideId": "career-prep-plan",
-      "version": 5,
+      "version": 6,
       "category": "interviews",
       "title": "Build an interview preparation plan",
       "summary": "Use the time you have to prepare the most important topics.",
@@ -787,7 +799,8 @@
         "Confirm the deadline and current preparation budget.",
         "Prioritize topics, stories and practice for this round.",
         "Update the existing Lookout preparation plan while preserving completed tasks.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "A time-budgeted preparation plan",
@@ -806,12 +819,17 @@
         "practice-interview",
         "story-bank"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/plan.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/plan.md",
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
+      ]
     },
     {
       "id": "practice-interview",
       "guideId": "career-practice-interview",
-      "version": 5,
+      "version": 6,
       "category": "interviews",
       "title": "Practice an interview",
       "summary": "Practice one question at a time with feedback grounded in your experience.",
@@ -825,7 +843,8 @@
         "Choose the round and practice style.",
         "Ask one question, wait for your answer, then give specific feedback.",
         "Keep track of weak areas and stronger evidence-backed answers.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "A practice conversation",
@@ -849,11 +868,13 @@
       "tools": [
         "save_mock_interview",
         "read_mock_interview",
-        "save_artifact"
+        "save_artifact",
+        "list_artifacts",
+        "read_artifact"
       ]
     },
     {
-      "version": 3,
+      "version": 4,
       "category": "interviews",
       "sources": [
         "modes/interview/debrief.md",
@@ -881,9 +902,10 @@
         "Write labeled Situation, Task, Action and Result sections plus a short reflection. Keep context brief and give most detail to the candidate's actions and reasoning. Include a conversational spoken version, a short cue outline, supporting evidence, unresolved details and two probing follow-up questions. Failed outcomes should include accountability and what changed afterward; never rewrite failure into success.",
         "Keep a reusable base separate from optional company adaptations. For company claims, use current official sources; record title, URL and observation date. Treat public candidate reports and Lookout Intelligence, when actually available, as attributed observations with role, round, date and uncertainty, never a guaranteed interview script.",
         "Check relevance to the actual prompt, individual ownership, causal claims, supported results and natural delivery. Aim for a flexible roughly one-to-two-minute spoken answer rather than a memorized script; adapt to the interviewer. Preserve the original facts when changing emphasis for a company.",
-        "Before saving, call list_artifacts and read_artifact for matching material. Save a private Markdown artifact with save_artifact, kind notes, sources and existing task links when applicable. Use a new UUID with expectedVersion 0 for new work; revise using the current version. Return the saved URL only after success. If tools or scope are unavailable, return an explicitly unsaved draft. Do not put private answers in shared company intelligence or mark practice completed.",
+        "Before saving, call list_artifacts and read_artifact for matching material. Save a private artifact with save_artifact using the toolkit-materials recipe (story_bank for reusable stories/answers; retain legacy notes when revising), sources and existing task links when applicable. Use a new UUID with expectedVersion 0 for new work; revise using the current version. Return the saved URL only after success. If tools or scope are unavailable, return an explicitly unsaved draft. Do not put private answers in shared company intelligence or mark practice completed.",
         "For later mock interviews, read the saved artifact and use career-practice-interview one question at a time. Saving a draft does not verify its claims or authorize automatic reuse in applications. No background generation, onboarding trigger, scheduling or messages are activated by this skill.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "Reusable STAR drafts and conversational versions",
@@ -902,10 +924,15 @@
         "interview-answer-builder",
         "practice-interview",
         "interview-research"
+      ],
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
       ]
     },
     {
-      "version": 3,
+      "version": 4,
       "category": "interviews",
       "sources": [
         "modes/interview/debrief.md",
@@ -933,9 +960,10 @@
         "For each question explain the intent briefly, give a concise first-person draft and cue outline, cite the candidate evidence used, flag unknowns and suggest a follow-up probe. Ask about genuine motivations or development areas when unknown; never invent passion, personal history, a flattering weakness or an improvement result.",
         "Keep a reusable base separate from optional company adaptations. For company claims, use current official sources; record title, URL and observation date. Treat public candidate reports and Lookout Intelligence, when actually available, as attributed observations with role, round, date and uncertainty, never a guaranteed interview script.",
         "When company context is absent, produce a reusable base and clearly marked company-specific blanks. When present, show what changed and why, preserve facts, avoid generic praise and unsupported cultural claims, and adjust technical depth to the round. Include thoughtful questions the candidate can ask. Review for directness, credibility and a natural speaking voice; coach flexible practice rather than verbatim memorization.",
-        "Before saving, call list_artifacts and read_artifact for matching material. Save a private Markdown artifact with save_artifact, kind notes, sources and existing task links when applicable. Use a new UUID with expectedVersion 0 for new work; revise using the current version. Return the saved URL only after success. If tools or scope are unavailable, return an explicitly unsaved draft. Do not put private answers in shared company intelligence or mark practice completed.",
+        "Before saving, call list_artifacts and read_artifact for matching material. Save a private artifact with save_artifact using the toolkit-materials recipe (story_bank for reusable stories/answers; retain legacy notes when revising), sources and existing task links when applicable. Use a new UUID with expectedVersion 0 for new work; revise using the current version. Return the saved URL only after success. If tools or scope are unavailable, return an explicitly unsaved draft. Do not put private answers in shared company intelligence or mark practice completed.",
         "For later mock interviews, read the saved artifact and use career-practice-interview one question at a time. Saving a draft does not verify its claims or authorize automatic reuse in applications. No background generation, onboarding trigger, scheduling or messages are activated by this skill.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "Common-question answer pack with cue outlines and evidence",
@@ -954,12 +982,17 @@
         "story-bank",
         "interview-research",
         "practice-interview"
+      ],
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
       ]
     },
     {
       "id": "story-bank",
       "guideId": "career-story-bank",
-      "version": 5,
+      "version": 6,
       "category": "interviews",
       "title": "Build your interview story bank",
       "summary": "Develop a small set of truthful stories you can adapt to behavioral questions.",
@@ -972,7 +1005,8 @@
         "Choose a concrete experience and clarify your role.",
         "Describe situation, task, action, result and reflection using supported facts.",
         "Identify the competencies it demonstrates and how to adapt it without embellishment.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "Reusable STAR plus reflection stories",
@@ -991,12 +1025,17 @@
         "prep-plan",
         "practice-interview"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md",
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
+      ]
     },
     {
       "id": "interview-debrief",
       "guideId": "career-interview-debrief",
-      "version": 5,
+      "version": 6,
       "category": "interviews",
       "title": "Debrief an interview",
       "summary": "Capture what happened while it is fresh and improve the next round.",
@@ -1010,7 +1049,8 @@
         "Record your observations without guessing the interviewer's judgment.",
         "Identify strong answers, gaps and better-supported examples.",
         "Prepare next-round actions and add relevant notes through available Lookout tools.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "A private debrief",
@@ -1030,12 +1070,17 @@
         "prep-plan",
         "practice-interview"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview/debrief.md",
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
+      ]
     },
     {
       "id": "interview-signals",
       "guideId": "career-interview-signals",
-      "version": 5,
+      "version": 6,
       "category": "interviews",
       "title": "Review interview warning signs",
       "summary": "Reflect on observed interview behavior and mismatches before deciding what to ask next.",
@@ -1048,7 +1093,8 @@
         "Identify concrete statements and events.",
         "Separate isolated observations from repeated patterns or corroborated mismatches.",
         "Prepare neutral follow-up questions and identify anything requiring current official guidance.",
-        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts."
+        "Load the Lookout interview-preparation guide for the weekly research → plan → practice → debrief loop; reuse existing material and curate external resources before creating new artifacts.",
+        "Before saving workspace material, load read_guide toolkit-materials for the matching optional recipe, neutral static HTML theme, attributed report excerpts and visible source/resource links. Reuse existing materials; do not generate every type or require users to select skills."
       ],
       "outputs": [
         "A sourced observations list",
@@ -1068,7 +1114,12 @@
         "prep-plan",
         "practice-interview"
       ],
-      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview-redflag.md"
+      "sourceUrl": "https://github.com/career-ops-hq/career-ops/blob/c78e14cdfd52f18a92e4a67694efab7ddef59385/modes/interview-redflag.md",
+      "tools": [
+        "list_artifacts",
+        "read_artifact",
+        "save_artifact"
+      ]
     },
     {
       "id": "find-contacts",
