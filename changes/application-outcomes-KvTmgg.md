@@ -145,3 +145,20 @@
 - Fictional demo uses the same pure field validator. Added SQL browser/MCP parity
   and isolation/version/replay tests, import-to-row/render checks, and an editor
   interaction verifying save/read-back, clear and disabled future completions.
+- Validation: full integrated suite passed (1,018 passed, 5 pre-existing skips),
+  including all SQL scenarios; 34 focused import/action/context tests and 25
+  contract/guide/version tests passed. Final typecheck/static build, data
+  validation (158 roles), UI detector and diff checks passed. Desktop/mobile demo
+  exercised saved action/date/flag/completion and clearing without account calls.
+- Concurrent local-main integration already used developer 115, so this feature
+  advances to 116 to ensure clients refresh discovery; the guide remains 15.
+  Initial sandbox HTTP failures required loopback-enabled execution; the complete
+  integrated rerun passed without suppressing tests.
+- Dev activation verified: applied only migration 20261107211643 atomically with
+  its ledger entry, verified private validators are not executable by anonymous
+  or authenticated roles, built a separate committed-source dev API image and
+  reloaded local Edge. Existing worker/network/tunnel remained in place. The
+  connected MCP reports developer 116, discovery exposes nextAction/actionDate/
+  needsAction/completedStages and application-workspace guide 15 reads back.
+  No personal imported data/notes were modified. Production still requires the
+  normal reviewed-main backend workflow; this is a dev availability claim only.
