@@ -107,6 +107,26 @@ The Node API can parse an owned private resume using a server-only APILayer key.
 
 ## Hosted and local release boundary
 
+The November 7 hosted-readiness reconciliation uses the observed Lookout project
+history in `tests/fixtures/hosted-lookout-20261107.json`: 80 applied versions,
+including audit migrations, with six older feature migrations still absent at
+inspection. The regression replays that precise history and then the pending
+migrations, comparing the resulting columns, constraints, indexes, policies,
+RLS, grants, triggers, views and functions with a fresh migration replay. It also
+checks preservation of fictional owned data and the imported-tracker, Discover
+removal, connection, profile and search paths. Historical statement hash differences
+in four migrations were statement-separator formatting, not conflicting SQL.
+
+The production migration push explicitly selects the linked project, includes
+reviewed older pending migrations, and skips local Vault configuration. A forward
+migration revokes direct browser execution of the optional hosted
+`public.rls_auto_enable()` event-trigger helper while preserving its DDL behavior.
+This release prepares schema/backend compatibility only: local personal accounts,
+private files and sessions are not imported. Hosted readiness still requires the
+main-branch backend workflow and live source/schema/permission checks; local test
+success alone is not a release receipt. Existing detached demo fixtures remain
+unchanged and are covered by the ordinary isolation tests.
+
 The Pages workflow runs on `main`, calls the backend deployment workflow first, runs the repository test suite and data validation, builds the static export, then deploys the Pages artifact. Backend deployment runs only from `main`, requires the production environment and `SUPABASE_ACCESS_TOKEN`, and invokes `npm run deploy:backend`. This wiring means a frontend-only build should not be represented as publishing gateway/MCP or migration changes.
 
 Repository documentation records a prior prepared schema rollout and gateway/MCP release, including unauthenticated denial checks. It simultaneously says authenticated MCP discovery/read/write, client support, real Google sign-in, and intended-device round trips need verification. Therefore describe those releases as **recorded deployment evidence with explicit verification gaps**, not as blanket proof that all current functionality is live.
