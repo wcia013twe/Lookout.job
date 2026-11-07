@@ -1,5 +1,6 @@
 import {hiringCafeSource,readHiringCafeLeads} from './hiringcafe.ts';
 import {readSimplifyLeads,simplifyFeed} from './simplify.ts';
+import {discoveryDedupRow} from '../../lib/search-dedup.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
 import type {Payload} from './types.ts';
 export interface Listing {sourceId:string;url:string;company:string;title:string;location:string|null;checkedAt:string;liveness:'active';evidence:string;employerPostedAt:string|null;sourceListAgeDays:number|null;description:string;atsIdentity?:string;requisitionId?:string;listingIdentity?:Payload;employmentType?:string}
@@ -12,22 +13,41 @@ export async function fetchSource(sourceId:string,source:Payload,{execute=execut
   if(hiringCafeSource(source.careers_url)){
    const page=await readHiringCafeLeads(source,{profile,days,request});
    const unique=await deduplicate(page.leads,previous,execute);
-   const checked=unique.length?await verifyLeadSource(sourceId,unique,{execute,source}):{listings:[],diagnostics:[],blocker:'',provenance:{}};
+   const checked=unique.length?await verifySourceBatches(sourceId,unique,{execute,source}):{listings:[],diagnostics:[],blocker:'',provenance:{}};
    return {...checked,examined:page.examined,total:page.total,coverage:'truncated',blocker:'HiringCafe bounded per-company sample; rounded provider freshness is not an exact posting-date filter. '+(page.omittedQueries?'Some query combinations exceeded the four-query budget. ':'')+(page.diagnostics.length?'Some employer links remain unresolved; inspect diagnostics. ':'')+checked.blocker,diagnostics:[...page.diagnostics,...(checked.diagnostics||[])],provenance:{...checked.provenance,aggregate:'HiringCafe public MCP',endpoint:page.endpoint,queries:page.queries,omittedQueries:page.omittedQueries,dedup:'dedup-tracker.mjs'}};
   }
   if(simplifyFeed(source.careers_url)){
-   const page=await readSimplifyLeads(source.careers_url,{limit:25});
+   const page=await readSimplifyLeads(source.careers_url,{limit:null,request});
    const unique=await deduplicate(page.leads,previous,execute);
-   const checked=await verifyLeadSource(sourceId,unique,{execute,source});
+   const checked=await verifySourceBatches(sourceId,unique,{execute,source});
    return {...checked,examined:page.leads.length,provenance:{...checked.provenance,aggregate:'official Simplify structured JSON',dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'},total:page.total,coverage:page.nextOffset!==null?'truncated':checked.coverage,blocker:page.nextOffset!==null?`Bounded aggregate sample; ${page.total} active source leads, next source offset ${page.nextOffset}. Agent can page remaining leads through read_search_source_leads. ${checked.blocker}`:checked.blocker};
   }
-  const result=await execute('discovery',{limit:25,target:{id:sourceId,name:source.name||sourceId,address:source.careers_url},config:{...(source.config||{}),...(source.provider?{provider:source.provider}:{}),...(source.api?{api:source.api}:{})},previous});
+  const result=await execute('discovery',{target:{id:sourceId,name:source.name||sourceId,address:source.careers_url},config:{...(source.config||{}),...(source.provider?{provider:source.provider}:{}),...(source.api?{api:source.api}:{})},previous:previous.map(discoveryDedupRow)});
   if(result.status!=='ok')return {listings:[],coverage:'inaccessible',blocker:'Source needs agent research or a supported copied CareerOps connector.',total:0,provenance:result.provenance};
-  const checked=await verifyLeadSource(sourceId,result.jobs.map((row:Payload)=>({url:row.url})),{execute,source});
-  return {...checked,examined:result.jobs.length,total:result.available,coverage:result.truncated?'truncated':checked.coverage,blocker:result.truncated?'Copied provider output reached the bounded result limit. '+checked.blocker:checked.blocker,provenance:{...result.provenance,...checked.provenance}};
+  const checked=await verifySourceBatches(sourceId,result.jobs.map((row:Payload)=>({url:row.url})),{execute,source});
+  return {...checked,examined:result.jobs.length,total:result.available,coverage:result.truncated?'truncated':checked.coverage,blocker:result.truncated?'Career Ops provider reported incomplete pagination. '+checked.blocker:checked.blocker,provenance:{...result.provenance,...checked.provenance}};
  }catch(error){return {listings:[],coverage:'inaccessible',blocker:hiringCafeSource(source.careers_url)?(error instanceof Error?error.message:'HiringCafe unavailable'):'Copied CareerOps provider failed or exceeded isolated execution limits; use agent research or retry.',total:0};}
 }
-export async function deduplicate(listings:Payload[],previous:Payload[]=[],execute:Execute=executeCareerTask){return execute('dedup-discovery',{jobs:listings,previous});}
+export async function deduplicate(listings:Payload[],previous:Payload[]=[],execute:Execute=executeCareerTask){return execute('dedup-discovery',{jobs:listings,previous:previous.map(discoveryDedupRow)});}
+
+// Provider pagination is upstream-owned; verification retains its 25-link call
+// boundary while consuming every returned lead, including the final short batch.
+export async function verifySourceBatches(sourceId:string,leads:{url:string;sourceListAgeDays?:number|null;employmentType?:string}[],options:{execute?:Execute;source?:Payload}={}):Promise<SourceResult>{
+ const listings:Listing[]=[],diagnostics:NonNullable<SourceResult['diagnostics']>=[];
+ let complete=true;const provenance:Payload={};
+ for(let offset=0;offset<leads.length;offset+=25){
+  const batch=leads.slice(offset,offset+25);
+  try{
+   const result=await verifyLeadSource(sourceId,batch,options);
+   listings.push(...result.listings);diagnostics.push(...(result.diagnostics||[]));
+   Object.assign(provenance,result.provenance||{});if(result.coverage!=='exhaustive')complete=false;
+  }catch{
+   complete=false;
+   diagnostics.push(...batch.map(lead=>({url:lead.url,status:'uncertain',reason:'Verification batch failed or timed out; retry or inspect this posting.'})));
+  }
+ }
+ return {listings,diagnostics,provenance,total:leads.length,coverage:complete?'exhaustive':listings.length?'truncated':'inaccessible',blocker:complete?'':'Some postings could not be verified or parsed; inspect per-link diagnostics.'};
+}
 
 export async function verifyLeadSource(sourceId:string,leads:{url:string;sourceListAgeDays?:number|null;employmentType?:string}[],{execute=executeCareerTask,source}:{execute?:Execute;source?:Payload}={}):Promise<SourceResult>{
  const result=await execute('verify-discovery-leads',{leads:leads.map(({url})=>({url})),...(source?{source:{name:source.name,careers_url:source.careers_url}}:{})});const checkedAt=new Date().toISOString();

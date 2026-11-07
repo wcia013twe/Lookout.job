@@ -9,8 +9,7 @@ My Agent is the single schedule configuration; the personal agent runtime owns
 recurrence and submits one bounded job per authorized run. The Node worker only
 claims already queued jobs. There is no Node recurring-search scheduler.
 
-The approved executor is `search_ats`: one leased job collects up to 25 leads per
-source, verifies supported employer postings, saves observations, persists current
+The approved executor is `search_ats`: one leased job collects provider results using upstream pagination, verifies supported employer postings, saves observations, persists current
 versioned screening checks, applies copied Career Ops deduplication and stores
 shortlist IDs in its existing job result (`pipelineVersion: 1`). Muse reads that
 shortlist, writes candidate-specific reports and four ratings, publishes a batch
@@ -51,9 +50,7 @@ top-level file transactions. Its temporary tracker is removed with the child
 workspace and never becomes a second user application store.
 
 The child receives no Supabase/agent credentials, has a 384 MiB JavaScript heap,
-a 120-second task timeout and 16 MiB output cap. Existing `scanSource` bounds a
-source to 20 HTTP requests and the raw scanner to 500 returned jobs; the normal
-job requests 25 per source and scans all configured sources with up to ten concurrent source tasks. Provider pagination remains bounded to three pages by the adapter. Save transactions are capped at 25 rows and
+a 120-second task timeout and 16 MiB output cap. The normal job preserves Career Ops provider pagination, request spacing, retries and safety bounds; it adds no blanket page, request or result cap. All configured sources are attempted with up to ten concurrent source tasks. Every returned lead is verified in batches of at most 25; a failed batch retains diagnostics and does not discard other successful batches. The supported Simplify feed is read in full; HiringCafe remains an explicitly sampled aggregate. Save transactions are capped at 25 rows and
 48,000 encoded UTF-8 bytes. Provider discovery excerpts are not treated as full verified records: the job
 verifies supported exact employer URLs and parses the description through copied
 `normalizeGreenhouseJob`, bounded at 60,000 characters, before saving observations.

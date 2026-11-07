@@ -45,3 +45,13 @@ test('fictional search demo shows complete source traversal beyond ten and prese
  assert(sources.every(source=>run.sources.some(s=>s.source_id==='portal:'+source.id&&s.state==='completed')));
  assert.equal(run.state,'partial');assert.match(run.summary,/No external requests/);
 });
+
+
+test('fictional demo distinguishes complete batched verification from the retained discovery count',async()=>{
+ const {searchDemo}=await import('../lib/search/demo.mjs');const data=searchDemo();
+ const source=data.runs.find(r=>r.id==='demo-run').sources[0];
+ assert.equal(source.counts.observed,61);assert.equal(source.counts.saved,1);
+ assert.equal(source.checkpoint.diagnostics.length,61);
+ assert.equal(source.checkpoint.diagnostics.filter(d=>d.status==='expired').length,60);
+ assert.equal(source.coverage,'exhaustive');assert.equal(data.listings.length,1);
+});

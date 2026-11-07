@@ -27,7 +27,8 @@ this pipeline ran. Failed jobs do not return a completed shortlist.
 
 The shortlist is deduplicated across all persisted discoveries in this run.
 Every configured run source is attempted using up to ten concurrent source tasks,
-with up to 25 collected leads per source. Source totals are availability,
+using upstream provider pagination defaults. Every returned lead is verified in
+batches of at most 25. Explicit upstream incomplete-pagination flags remain partial. Source totals are availability,
 not counts actually verified. Liveness checks use the copied API/browser ladder for every supplied link.
 Unsupported extraction or incomplete employer metadata,
 uncertain links, blocked sources or truncated pages keep the job partial; a partial
