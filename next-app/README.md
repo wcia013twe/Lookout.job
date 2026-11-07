@@ -104,7 +104,11 @@ instructions. Website autosave and MCP `save_search_profile` share the existing
 owner/version boundary; there is no new store, permission or endpoint. The canonical
 `career-find-jobs` guide maps each note to its `matchAssessment` dimension, requires
 personal and employer evidence, explicit gaps, null for unsupported scores and
-the evaluated profile version. Agent writes preserve unrelated fields and legacy
+the evaluated profile version. The two Discover narrative fields synthesize the
+strongest match and most consequential concern from those same four assessments,
+using the same profile and employer evidence. The publish tool routes agents to
+that writing contract, including a conditional good example. Unsupported concerns
+are omitted instead of invented. Agent writes preserve unrelated fields and legacy
 context. Refreshing guide bundles locally does not deploy live agent instructions.
 Run `node scripts/check-agent-context-ui.mjs` after the production build for isolated
 desktop/mobile demo coverage of editing, autosave, empty and legacy notes.
