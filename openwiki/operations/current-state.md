@@ -163,3 +163,18 @@ verification audit. Clients with cached tool catalogs need a refresh/reconnect.
 No job search was queued and no batch was published during verification. The
 worker and separate résumé API were preserved; hosted deployment and full worker
 execution remain outside this check. See the feature change note for details.
+
+## Local startup reliability
+
+The local startup helper bounds Docker/CLI checks, can reuse verified running local
+APIs with saved public loopback configuration, treats the configured MCP tunnel
+as optional, and recognizes an existing Lookout frontend. Main preview locks
+track process ownership and recover stopped owners; unknown owners are preserved.
+See [local runtime details](local-and-release-runtime.md#focused-startup-reliability-update)
+and the startup feature change note for checks and live-verification limits.
+
+The warm local startup path was verified after recovering an unresponsive Docker
+Desktop engine: Auth/REST health passed, the port-3000 frontend was gracefully
+restarted with a process-owned preview lock, and the page returned HTTP 200.
+Repeated startup commands reuse the running setup. No database reset or container
+removal was performed; cold startup and remote tunnel connectivity remain unverified.

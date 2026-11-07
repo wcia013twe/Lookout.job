@@ -1,0 +1,14 @@
+# Stable local startup and preview locks
+
+- Routed `make dev`/`up`, `services` and `frontend` through one bounded startup helper. Docker/CLI checks stop after 10 seconds; cold Supabase startup has a three-minute limit with progress. Existing Supabase configuration is reused; configured ngrok is best effort and cannot prevent local frontend startup.
+- Repeated startup recognizes an existing Lookout frontend, while unrelated listeners produce an actionable port error without terminating another process. Main previews record lock ownership, recover dead-owner locks and preserve live or unknown owners. Missing external SSD storage falls back to an internal temporary preview.
+- Saved public loopback configuration can bypass Docker control commands only when Auth and REST respond. Anonymous JWT/publishable credentials are accepted; hosted endpoints, service-role keys and unrelated private settings cannot become browser configuration. The direct frontend status check also has a deadline.
+- Validation: all 987 repository tests completed (982 passed, 5 skipped), including deadline termination, tunnel failure, credential restrictions, occupied ports, dead/live locks, storage fallback and database scenarios. `npm run validate:data` validated 158 roles; `git diff --check` passed.
+- Live verification initially confirmed the stalled Docker command fails within its deadline. Saved-config reuse correctly refused the currently unhealthy REST endpoint. Runtime recovery and the requested port-3000 frontend restart are recorded below after verification. No new schema, migration, worker, MCP action or demo product data is introduced by this development-only change.
+- Limits: mocked cold startup covers command sequencing; no cold Docker image download or hosted behavior is claimed. An existing unrelated or unowned frontend lock is never silently removed.
+
+## Live recovery and frontend restart
+
+- Recovered the unresponsive local Docker Desktop control plane after its normal restart timed out. A normal quit stopped the desktop/VM; the remaining hung control process was cleared, then Docker reopened. Existing Supabase, Node API/worker and résumé API containers recovered with their data intact; no database reset or container removal was performed. Auth and REST health checks then succeeded and the new helper reused their saved public configuration.
+- Gracefully stopped the identified old port-3000 frontend, which released its legacy preview/Next.js locks. Restarted `make dev` from shared main; the new preview acquired a process-owned lock and served HTTP 200. The configured MCP tunnel startup returned without blocking the frontend.
+- Live checks of repeated `make dev`, `make services` and `make frontend` reuse the running setup; frontend and Node API health endpoints return HTTP 200. This is warm local verification; cold image downloads and remote agent connectivity remain unverified.

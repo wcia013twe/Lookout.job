@@ -152,18 +152,17 @@ make dev
 ```
 
 `make dev` (also `make up`, or just `make`) starts local Supabase containers,
-applies `supabase/migrations/` on first startup, starts the ngrok MCP tunnel, and runs Next.js at
+applies `supabase/migrations/` on first startup, attempts the configured ngrok MCP tunnel without blocking the frontend, and runs Next.js at
 `http://localhost:3000` with the local API URL and anonymous key. The frontend
 runs on the host; Supabase runs in Docker. Configure `NGROK_AUTHTOKEN` and
 `NGROK_URL` in the root `.env.local` and start the Node API before running
-`make dev`; see [tunnel setup](backend/runtime/README.md). The local stack uses separate data
+`make dev` when a remote agent needs the tunnel; local frontend startup does not require it. See [tunnel setup](backend/runtime/README.md). The local stack uses separate data
 from the hosted project. Studio is at `http://localhost:54323`, email preview
 at `http://localhost:54324`, and the API at `http://127.0.0.1:54321`.
 
 Ctrl-C stops the frontend; `make down` stops this project's containers and
 preserves data. Use `make services`, `make frontend`, and `make status` separately
-as needed. Port 3000 must be free; Next.js will fail instead of choosing another
-port. The first services startup may download Docker images; keep Docker's disk
+as needed. A repeated `make dev` recognizes an existing Lookout on port 3000 and leaves it running. An unrelated listener produces a clear error; use `PORT=3001 make dev` for a separate preview. The first services startup may download Docker images; keep Docker's disk
 image on the external SSD. Local Google OAuth requires separate provider secrets
 and callback setup; hosted Google configuration is not copied. Local agent
 endpoints require a runtime that can reach your localhost. `npm run dev` retains
@@ -357,9 +356,7 @@ the backend. Stop the previous frontend before using its port 3000.
 
 The live preview owns a clone under `/Volumes/External SSD/Lookout/live-main/`.
 It refuses dirty preview files or non-fast-forward history instead of discarding
-work. An interrupted process can leave a `running` lock; verify no preview is
-running before removing that empty directory. `LOOKOUT_LIVE_ROOT` may override
-the storage directory when internal storage is explicitly authorized. Browser/API
+work. The preview records its process owner in the `running` lock and recovers a dead-owner lock automatically; a live owner or legacy lock without ownership metadata is preserved for review. If the external SSD is unavailable, startup uses an internal temporary preview directory. `LOOKOUT_LIVE_ROOT` can override the directory. Browser/API
 configuration still comes from the existing local frontend launcher; no private
 account records or task `.env` files are copied. Developer-only `--hosted` mode
 uses the existing hosted default without starting local services.
@@ -1074,3 +1071,17 @@ legacy profiles retain their previous policy until explicitly saved. Missing fac
 answer reuse permissions, current authorization, supported forms, duplicate prevention
 and uncertain-outcome handling continue to apply. No automatic production preference
 rewrite, new consent, real application or backend deployment is performed by this UI change.
+
+### Bounded local startup
+
+`make dev`, `make services` and `make frontend` use the shared startup helper.
+Docker and CLI status checks have 10-second deadlines; cold Supabase startup has
+a three-minute deadline with progress messages. Configured tunnel startup has a
+three-second Docker check and a 30-second Compose limit, then warns and continues
+if unavailable. Timeout errors never remove containers or local data.
+
+When saved public loopback configuration is available, responding local Auth and
+REST endpoints allow reuse without calling an unresponsive Docker control API.
+Only an anonymous JWT or publishable key is accepted; hosted URLs and service-role
+keys cannot be used for this fallback. This checks the local API, not every worker
+or external integration. No schema changes or background execution are added.
