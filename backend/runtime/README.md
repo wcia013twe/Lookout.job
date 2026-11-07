@@ -451,3 +451,14 @@ Coverage always remains partial: Jobright documents a subset of jobs from the la
 ### Simplify feed limit
 
 The direct background worker verifies at most the 100 newest title/seniority-matching leads from each Simplify feed per run (new-grad, summer and off-season independently). It reads active visible feed metadata newest-first, applies the existing metadata prefilter, then selects the first 100 before existing deduplication and 25-link employer verification. Full screening, temporary staging, lease fencing and final shortlist persistence remain unchanged. Older omitted matching leads produce explicit partial coverage and an omitted count; no durable cursor or automatic continuation is retained. Repeated scans select the newest matching leads again, so older jobs may never be verified. This is an intentional Simplify-only limit; Jobright, HiringCafe and employer-source behavior are unchanged. Website/MCP backend searches use the same provider; explicit manual Simplify lead paging remains available separately.
+
+### Check mock interview persistence locally
+
+After applying the source weekly Toolkit migration `20261107201448` to the local
+stack and refreshing the Node API, run `node scripts/check-local-toolkit-mock.mjs`.
+It rejects non-loopback API origins, checks the local database prerequisite, creates
+a disposable fictional account/connection, and verifies actual Node MCP -> Edge ->
+SQL save/read/retry with a 45-minute mock. It verifies normal artifact reads omit
+the private profile and removes its fixtures in `finally`. No user interview,
+Calendar event, worker or scheduler is created. Discovery-only checks do not prove
+this persistence path works.
