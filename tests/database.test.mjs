@@ -54,6 +54,7 @@ for (const [file, behavior] of [
   ['careerops-discovery','copied CareerOps native identities and functional URL parameters survive persisted resume reads'],
   ['backend-jobs','backend execution isolates owners, replays writes, fences leases and dispatch, and rejects retired scheduling'],
   ['agent-connection-test','lightweight agent check-in exposes owned automation settings without advancing onboarding or creating tasks'],
+  ['discover-removal','Discover removal isolates owners, scopes and batches and preserves applications'],
   ['job-assessment','dynamic private assessments validate scores, preserve retries and isolate owners'],
   ['website-onboarding','website completion persists separately from agent readiness, rejects agents, isolates owners and replays safely'],
   ['simplify-import','Simplify imports retain missing URLs and source reports, preserve status, isolate owners, reject stale writes and replay safely'],
