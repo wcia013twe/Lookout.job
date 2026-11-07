@@ -80,3 +80,12 @@ test('one fictional MCP context read returns only core and index without persona
  context.instructions[0]='mutated';
  assert.notEqual(contextResponse('context.developer',{}).instructions[0],'mutated');
 });
+
+test('Discover guide connects every fit-context category to scored, evidence-based analysis', async () => {
+ const {agentContextFields} = await import('../lib/search-profile.mjs');
+ const guide=readGuide('career-find-jobs');
+ for(const {id,label} of agentContextFields) assert(guide.instructions.includes(label+' -> '+id));
+ for(const phrase of ['What your agent knows','save_search_profile','expectedVersion','evaluatedProfileVersion','Use null','must-have conflict','materialGap','read back']) assert(guide.instructions.includes(phrase),phrase);
+ const delivered=(await guideDispatch('career-find-jobs',async()=>({data:{}}))).data;
+ assert.equal(delivered.instructions,guide.instructions);
+});

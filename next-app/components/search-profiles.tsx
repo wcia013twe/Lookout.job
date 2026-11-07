@@ -7,7 +7,6 @@ import {
   priorities,
   preferenceGroups,
   flexibilityOptions,
-  careerFields,
   readField,
   updateField,
 } from "../../lib/search-profile.mjs";
@@ -15,13 +14,12 @@ import {
 import TierLists from "./tierlists";
 import ProfileSection, { ProfileValues } from "./profile-section";
 import { ApplicationMaterials } from "./profile-settings";
-import ProfileRuleCopy from "./profile-rule-copy";
+import AgentFitContext from "./agent-fit-context";
 import { errorMessage } from "./profile-types";
 import { useApplicationProfile } from "./application-profile-context";
 function SearchProfileEditor() {
   const w = useWorkspace();
   const { profile, patch, busy, setFeedback } = useApplicationProfile();
-  const [showLegacy, setShowLegacy] = useState(false);
   const [undo, setUndo] = useState<{
     id: string;
     prompt: string;
@@ -170,15 +168,7 @@ function SearchProfileEditor() {
           </> : <ProfileValues items={[{label:"Company tier list",value:tierField.conflict ? "Conflicting selections — review Advanced instructions" : tierField.value ? w.state.workflow.tierLists.find((list:{id:string}) => list.id === tierField.value)?.name || "Previously selected list unavailable" : "No tier list selected"}]}/>}
         </>}
       </ProfileSection>}
-      <ProfileSection title="Career goals & tradeoffs" resetKey={profile.id} disabled={busy}>
-        {editing => editing ? <div className="space-y-5">{careerFields.map(key => textField("Career goals & tradeoffs",key,key === "Career goals" ? "What should your next role help you achieve?" : "What would justify lower pay, relocation, or a change in timing?",true))}</div> : <ProfileValues items={careerFields.map(key => ({label:key,value:value("Career goals & tradeoffs",key),wide:true}))}/>}
-      </ProfileSection>
-      <ProfileSection title="Profile rules" resetKey={profile.id} disabled={busy}>
-        {editing => editing ? <>
-          {textField("Profile evaluation","Rules","How should your agent evaluate opportunities for this profile?",true)}
-          {(w.user || w.demo) && <details className="mt-4" onToggle={e=>setShowLegacy(e.currentTarget.open)}><summary className="text-sm font-medium">Copy previous rules</summary>{showLegacy && <ProfileRuleCopy/>}</details>}
-        </> : <ProfileValues items={[{label:"Rules for this profile",value:value("Profile evaluation","Rules"),wide:true}]}/>}
-      </ProfileSection>
+      <AgentFitContext />
       <ProfileSection title="Advanced instructions" resetKey={profile.id} disabled={busy}>
         {editing => editing ? <>
           <p className="mb-4 text-sm text-board-muted">These are the same instructions your agent reads. Existing prose is preserved. Submission permissions live in My Agent.</p>

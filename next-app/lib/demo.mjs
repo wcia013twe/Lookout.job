@@ -31,8 +31,10 @@ function demoSearchProfiles(date) {
    ['Priority & flexibility', 'Work-life balance', 'Preferred'],
    ['Priority & flexibility', 'Employment', 'Required'],
    ['Priority & flexibility', 'Location', 'Preferred'],
-   ['Career goals & tradeoffs', 'Career goals', 'Build deeper systems experience (fictional demo).'],
-   ['Career goals & tradeoffs', 'Tradeoffs', employment === 'Internship' ? 'Consider timing changes for strong mentorship and conversion potential (demo).' : 'Flexible on company size for an excellent engineering team (demo).'],
+   ['What your agent knows', 'Skills & experience', 'Fictional demo: built a query service using Go and PostgreSQL. Wants deeper systems ownership; has not operated a large production system. Look for mentorship and check the expected level of independence.'],
+   ['What your agent knows', 'Compensation', 'Fictional demo: predictable base pay and health coverage matter more than speculative equity. No salary minimum has been supplied; verify the range before judging affordability.'],
+   ['What your agent knows', 'Wellbeing & culture', 'Fictional demo: learns best with regular feedback and a supportive manager. Sustainable on-call matters; verify rotation frequency and incident support rather than assuming culture from company branding.'],
+   ['What your agent knows', 'Location & work setting', 'Fictional demo: based in New York and prefers remote work in US Eastern hours. Relocation is undecided; remote eligibility and required travel need verification.'],
    ['Company priorities', 'Tier list ID', listId],
    ['Company priorities', 'Tier list name', employment + ' company priorities (demo)'],
   ]) prompt = updateField(prompt, heading, key, value);

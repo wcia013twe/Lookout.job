@@ -17,9 +17,9 @@ export function discoverPreviewRoles(date) {
     whyItFits: limited ? 'Potential trade-up in this fictional scenario: systems internship scope could deepen performance-debugging experience. The demo profile has a query-service project, but ML serving experience is not established. Verify mentorship, conversion potential and whether a graduation delay is justified.' : 'The fictional profile describes a SQL-service internship and a query-planning project, which connect to this example’s latency and database work. The material gap is evidence of production-scale ownership; a project alone does not establish that experience.',
     ...(percent === undefined ? {} : { matchPreview: { percent, assessedAt: `${date}T12:00:00Z`,
       skillsExperience: {score: limited ? 50 : 75, reasoning: 'Fictional evidence: Go, PostgreSQL and a query-service project align. Production ownership and ML serving remain unverified.'},
-      compensation: {score: limited ? null : 75, reasoning: limited ? 'No compensation evidence is included in this example.' : 'Illustrative assumption only: pay aligns with the demo target. No employer compensation was verified.'},
-      wellbeingCulture: {score: 25, reasoning: 'Illustrative concern: on-call expectations are unclear. This is not a factual assessment of employer culture.'},
-      locationWorkSetting: {score: limited ? 50 : 100, reasoning: 'The fictional posting allows US remote work. Actual location eligibility and working hours need confirmation.'},
+      compensation: {score: null, reasoning: limited ? 'Fictional demo: stable base pay matters, but this role has no pay evidence. Verify its range and benefits.' : 'Fictional demo: the listed range is $55–$65/hr. Your context prioritizes stable pay and health coverage; your minimum and employer benefits are unknown.'},
+      wellbeingCulture: {score: null, reasoning: 'Fictional demo: you value regular feedback and sustainable on-call. This posting does not establish management support or rotation frequency; verify both.'},
+      locationWorkSetting: {score: limited ? 50 : 100, reasoning: 'Fictional demo: US remote work aligns with your New York base. Eastern working hours and required travel are unconfirmed; relocation remains undecided.'},
     } }),
   }));
 }

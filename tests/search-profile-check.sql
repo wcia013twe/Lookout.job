@@ -10,6 +10,7 @@ begin
  p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## Application identity\n- Application email: candidate@example.com\n- Email account: Personal Gmail\n## Employer answer writing\n- Tone: Professional & direct\n## Outreach writing\n- Tone: Warm & conversational\n## Application materials\n- Default resume ID: owned-resume\n## Eligibility & availability\n- Work authorization country: United States\n- Sponsorship required now: No\n- Expected graduation: 2027-05');
  p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## Profile evaluation\n- Rules: Prioritize long-term growth.\n## Recruiting targets\n- Targets: [{"id":"backend","name":"Backend SWE","active":true,"roles":"Backend","employment":"Full-time","timeline":"After graduation","resumeId":"owned-resume","conditions":"Systems ownership"}]');
  p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## First opportunity\n- Catalog role ID: catalog-onboarding-fixture\n- Selected at: 2026-10-28T12:00:00Z');
+ p:=p||jsonb_build_object('instructions',(p->>'instructions')||E'\n## What your agent knows\n- Skills & experience: Wants mentorship; has SQL project evidence.\n- Compensation: Needs stable base pay; threshold unknown.\n- Wellbeing & culture: Sustainable on-call matters.\n- Location & work setting: Eastern hours preferred; relocation undecided.');
  begin
   perform public.agent_dispatch(h,'preferences.profile.save',jsonb_build_object('expectedVersion',0,'profile',p));
   raise exception 'Missing write scope accepted';
