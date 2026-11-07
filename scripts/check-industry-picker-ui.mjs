@@ -59,7 +59,7 @@ try{
  // Capture both shipped color modes and viewport classes in one inspection pass.
  for(const [name,width,height,scheme] of [['desktop-dark',1440,1000,'dark'],['mobile-light',390,844,'light']]){
   await page.setViewportSize({width,height});await page.emulateMedia({colorScheme:scheme});
-  await companies.screenshot({path:join(artifact,name+'.png')});
+  if(process.env.LOOKOUT_UI_SCREENSHOTS !== '0')await companies.screenshot({path:join(artifact,name+'.png')});
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow');
   for(const button of await picker.getByRole('button').all())assert((await button.boundingBox()).height>=44,'44px touch target');
  }
@@ -87,7 +87,7 @@ try{
  assert.equal(await companies.getByRole('list',{name:'Selected industries'}).locator('li').count(),4);
  assert.equal(cloud.length,0,'Detached demo never calls backend');assert.deepEqual(errors,[]);
  // Controlled component harness verifies busy state independently of save timing.
- const bundle=await build({stdin:{contents:`import React from 'react'; import {createRoot} from 'react-dom/client'; import Picker from './components/industry-picker'; const root=createRoot(document.getElementById('root')); window.renderPicker=props=>root.render(<Picker {...props} onChange={value=>window.changed=value}/>);`,resolveDir:join(root,'next-app'),loader:'tsx'},bundle:true,write:false,format:'iife',platform:'browser',jsx:'automatic',loader:{'.css':'empty'},logLevel:'silent'});
+ const bundle=await build({stdin:{contents:`import React from 'react'; import {createRoot} from 'react-dom/client'; import Picker from './components/industry-picker'; const root=createRoot(document.getElementById('root')); window.renderPicker=props=>root.render(<Picker {...props} onChange={value=>window.changed=value}/>);`,resolveDir:join(root,'next-app'),loader:'tsx'},bundle:true,write:false,format:'iife',platform:'browser',jsx:'automatic',loader:{'.css':'empty','.module.css':'empty'},logLevel:'silent'});
  const harness=await context.newPage();await harness.setContent('<div id="root"></div>');await harness.addScriptTag({content:bundle.outputFiles[0].text});
  await harness.evaluate(()=>window.renderPicker({value:'Fintech, Research tools (demo)',disabled:true}));
  await harness.getByRole('button',{name:'Fintech',exact:true}).waitFor();
