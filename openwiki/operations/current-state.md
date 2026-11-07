@@ -10,6 +10,8 @@ The workspace presents one profile and one selected résumé in the simplified f
 
 “What your agent knows” contains optional decision briefs used in Discover fit analysis. The search guide directs agents to ground assessments in candidate and employer evidence and preserve unknowns. See `changes/agent-context-TdGVvy.md` and the canonical search guide under `supabase/functions/agent-gateway/skills/`.
 
+Application automation honors the strict account-wide `autoSubmitApproved` guard even for explicit profile modes. Profile controls show the account block and remain disabled while it is off or missing; profile saves cannot grant global consent. Policy reads and runner authorization explain the block and direct the user to exact-draft approval in Applications. This is locally verified behavior; hosted availability requires the frontend and gateway release.
+
 ## Search and agent operations
 
 A search preflight checks saved targeting before creating a run. Missing title filters can produce `search_filters_not_ready` with recovery details; the worker does not silently broaden targeting. The pinned Career Ops adapters provide filtering and ATS description retrieval subject to liveness and identity checks. See `changes/careerops-search-wiring-*.md` and `backend/runtime/`.

@@ -241,8 +241,13 @@ Profile instructions store Application automation / Auto-apply routine matches
 list ID. `read_application_policy({jobId,profileId})` reads current owned settings
 and canonical employer data. Drafts carry `searchProfileId` so submission rechecks
 the selected active profile. Unbound drafts require review once profile rules
-exist. Existing `autoSubmitApproved` and fullTime/internship policies remain a
-compatibility fallback. These local changes require the updated gateway/MCP/config
+exist. The account-wide `autoSubmitApproved` guard must be strictly `true` for every
+automatic path, including explicit profile modes. Profile controls show this guard
+and remain disabled while it blocks automation; saving a profile never grants
+account-wide consent. `read_application_policy` reports `account_auto_apply_disabled`
+with the specific reason, and submission authorization preserves that reason. Exact
+human approval in Applications remains available. Legacy fullTime/internship tier
+policies remain a compatibility fallback. These local changes require the updated gateway/MCP/config
 release and hosted verification before claiming profile-based execution is live.
 Policy advice is not approval, execution authorization or a submission receipt.
 

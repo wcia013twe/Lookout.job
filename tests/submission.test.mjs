@@ -253,3 +253,19 @@ test('simple auto-apply removes company tiers while retaining verified facts, an
  f.context.application.draft.questions[0].answer='test@example.com';f.context.application.blocker='Outcome uncertain';assert.equal(authorizeSubmission(f.context).allowed,false);
  f.context.application.blocker=null;profile.instructions=profile.instructions.replace('Submission mode: Auto-apply','Submission mode: Review each application');assert.equal(authorizeSubmission(f.context).allowed,false);
 });
+
+
+test('profile auto-apply cannot bypass the global guard and runner returns the precise reason without a click',async()=>{
+ const f=fixture();
+ f.context.preferences.search.profiles=[{id:'general',active:true,instructions:'## Application automation\n- Submission mode: Auto-apply\n- Auto-apply routine matches: Yes'}];
+ f.context.application.draft.searchProfileId='general';
+ f.context.preferences.search.autoSubmitApproved=false;
+ const denied=authorizeSubmission(f.context);
+ assert.equal(denied.allowed,false);assert.match(denied.reason,/Account-wide auto-apply is off/);
+ const result=await submitApplication({applicationId:aid,attemptId:'global-off',gateway:f.gateway,getPage:async()=>f.page});
+ assert.equal(result.status,'Needs you');assert.equal(f.clicks,0);assert.equal(f.calls.some(call=>['submission.claim','submission.start'].includes(call.op)),false);
+ assert.match(JSON.stringify(result),/Account-wide auto-apply is off/);
+ f.context.application.status='Approved';f.context.application.draft.questionsReviewed=true;
+ f.context.approval={id:'human',application_id:aid,user_id:user,revision:1,snapshot:{draft:structuredClone(f.context.application.draft),resume:structuredClone(f.context.resume),profile:structuredClone(f.context.profile.facts)}};
+ assert.equal(authorizeSubmission(f.context).authorization.mode,'human');
+});

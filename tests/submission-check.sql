@@ -2,7 +2,7 @@ begin;
 do $$
 declare u uuid:=gen_random_uuid(); other_u uuid:=gen_random_uuid(); r uuid; app uuid; ctx jsonb; authz jsonb; result jsonb; claim uuid; rev integer;
   h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text); other_h text:=md5(gen_random_uuid()::text)||md5(gen_random_uuid()::text);
-  j text:='submit-test-'||gen_random_uuid()::text; d jsonb;
+  j text:='submit-test-'||gen_random_uuid()::text; d jsonb; guard_value jsonb;
 begin
   insert into auth.users(id) values(u),(other_u);
   insert into public.profiles(user_id,facts,verified_at) values(u,'{"name":"Test","email":"test@example.com"}',now());
@@ -19,6 +19,18 @@ begin
   begin perform public.runner_submission_context(other_h,app); raise exception 'Scope bypass'; exception when insufficient_privilege then null; end;
   ctx:=public.runner_submission_context(h,app);
   authz:=jsonb_build_object('mode','automatic','id','auto-test','applicationId',app,'userId',u,'revision',0,'snapshot',jsonb_build_object('draft',d,'resume',ctx->'resume'));
+  -- Explicit profile auto-apply must never override the strict account guard.
+  for guard_value in select value from jsonb_array_elements('[null,false,"true",1,{},[]]'::jsonb) loop
+    update public.preferences set search=jsonb_build_object('autoSubmitApproved',guard_value,'profiles',jsonb_build_array(jsonb_build_object('id','general','active',true,'instructions',E'## Application automation\n- Submission mode: Auto-apply\n- Auto-apply routine matches: Yes'))) where user_id=u;
+    ctx:=public.runner_submission_context(h,app);
+    begin
+      perform public.runner_submission_transition(h,'claim',jsonb_build_object('applicationId',app,'attemptId','guard-bypass'),ctx,authz);
+      raise exception 'Global guard bypass';
+    exception when insufficient_privilege then null; end;
+  end loop;
+  if exists(select 1 from public.submission_attempts where application_id=app) then raise exception 'Blocked guard created attempt'; end if;
+  update public.preferences set search='{"autoSubmitApproved":true}' where user_id=u;
+  ctx:=public.runner_submission_context(h,app);
   result:=public.runner_submission_transition(h,'claim',jsonb_build_object('applicationId',app,'attemptId','one'),ctx,authz);
   if result->>'canProceed'<>'true' then raise exception 'Claim failed'; end if;
   claim:=(result->'attempt'->>'id')::uuid;
