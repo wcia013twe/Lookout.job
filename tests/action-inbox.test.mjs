@@ -50,3 +50,40 @@ test('Muse receives next-cycle pickup directions through initialize, developer c
  assert(guide.version>=3);
  for(const pattern of [/read_action_inbox with state all/,/read_approval with applicationId/,/search-only cycle does not authorize submission/,/new stable attemptId/,/does not trigger an immediate Muse run/])assert.match(guide.instructions,pattern);
 });
+
+test('same-owner subscriptions stay independent while channel removal is pending',async()=>{
+ const channels=new Map(),pending=[];
+ const client={
+  channel(topic){
+   if(channels.has(topic))return channels.get(topic);
+   const channel={joined:false,on(type,filter,fn){
+    if(this.joined)throw Error('cannot add callbacks after subscribe');
+    assert.equal(filter.filter,'user_id=eq.owner');this.event=fn;return this;
+   },subscribe(fn){this.joined=true;this.status=fn;return this;}};
+   channels.set(topic,channel);return channel;
+  },
+  removeChannel(channel){return new Promise(resolve=>pending.push(()=>{
+   for(const [topic,value] of channels)if(value===channel)channels.delete(topic);
+   resolve('ok');
+  }));}
+ };
+ let oldRefresh=0,newRefresh=0,oldErrors=0,newErrors=0;
+ const stopOld=subscribeWorkspaceChanges(client,'owner',()=>oldRefresh++,()=>oldErrors++);
+ const old=[...channels.values()][0];
+ stopOld();
+ const stopNew=subscribeWorkspaceChanges(client,'owner',()=>newRefresh++,()=>newErrors++);
+ const current=[...channels.values()][1];
+ assert.equal(channels.size,2);
+ old.event();old.status('SUBSCRIBED');old.status('CLOSED');
+ assert.equal(oldRefresh,0);assert.equal(oldErrors,0);
+ pending.shift()();await Promise.resolve();
+ assert.equal(channels.size,1);
+ current.status('SUBSCRIBED');current.event();current.status('CHANNEL_ERROR');
+ assert.equal(newRefresh,2);assert.equal(newErrors,1);
+ // An overlapping consumer for the same owner also owns a distinct channel.
+ const stopOther=subscribeWorkspaceChanges(client,'owner',()=>{});
+ assert.equal(channels.size,2);
+ stopNew();stopOther();for(const finish of pending)finish();
+ await Promise.resolve();
+ assert.equal(channels.size,0);
+});

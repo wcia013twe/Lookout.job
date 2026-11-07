@@ -29,7 +29,7 @@ export default function ArtifactTile({artifact,featured=false,dated=false,demo=f
    <Identity company={application?.company||c.company}/>
    <h3>{c.title}</h3><p>{artifactPurpose(c)}</p>
    {c.scheduledAt&&<span className={styles.sessionTime}>{new Date(c.scheduledAt).toLocaleTimeString(undefined,{timeZone:c.timeZone,hour:'numeric',minute:'2-digit'})} · {c.timeZone}</span>}
-   {calendar&&<span className={styles.calendarAction}><ToolkitIcon name="calendar" size={14}/>Open in Google Calendar</span>}
+   {calendar&&<span className={styles.calendarAction}><ToolkitIcon name="calendar" size={14}/>Add to Google Calendar</span>}
    <span className={styles.cardArrow}><ToolkitIcon name="arrow" size={18}/></span>
   </Link>
   <Context artifact={artifact} application={application}/>

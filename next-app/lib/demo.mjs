@@ -1,3 +1,4 @@
+import {palantirDemoApplicationId,toolkitResearch,researchCheckedAt} from './toolkit-demo-research.mjs';
 import {saveOnboardingSelection} from './onboarding-catalog.mjs';
 import { discoverPreviewRoles } from './discover-preview-demo.mjs';
 import {defaultDailySchedule} from '../../lib/daily-schedule.mjs';
@@ -93,6 +94,11 @@ export function demoFixtures(date) {
   },
   demo:{...muse.demo,onboarding:{revision:0,step:"connection_pending",prompt:"Choose a companion and preview connecting.",data:{},tasks:[]},roles,preparationRows:{...basePreparationRows,...muse.demo.preparationRows}},
  };
+ // Public role research with an explicitly fictional application; no employer action.
+ const palantir={id:palantirDemoApplicationId,company:'Palantir',title:'Software Engineer, New Grad - Query Engines',employmentType:'FT',type:'FT',location:'New York, NY',workSetting:'Hybrid',applicationUrl:toolkitResearch.role.url,url:toolkitResearch.role.url,discoveredDate:researchCheckedAt,postedDate:null,sourceFreshness:`Public role checked ${researchCheckedAt}; application and timeline are fictional demo data.`,description:'Query-engine infrastructure for Foundry. See the official role linked from the Toolkit company brief.',whyItFits:'Illustrative candidate fit: Query Lab provides a performance-investigation example. Engine implementation and open-source contribution need evidence.'};
+ roles.push(palantir);
+ state.tracker.ids.push(palantir.id);state.tracker.items[palantir.id]={status:'Interview',openedDate:date};
+ state.workflow.applications[palantir.id]={...palantir,backendId:palantir.id,backendRevision:0,revision:0,status:'Interview',questions:[],activity:[],submissionAttempts:[],milestones:[],note:'Fictional application to demonstrate linked Toolkit preparation. No application was submitted and no employer interview is confirmed.'};
  return structuredClone({roles,state});
 }
 

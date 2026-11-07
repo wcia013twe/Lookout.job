@@ -343,3 +343,31 @@ contract 116, advertises all four fields on update_imported_job and serves
 application-workspace guide 15. Migration 20261107211643 is recorded locally and
 the API is healthy. This did not migrate personal records or notes. It does not
 establish hosted/production availability; see the feature note for validation.
+
+
+### Jobright public lists
+
+The Jobright new-grad and internship GitHub lists are enabled default lead sources. A thin collection provider parses every published README row, carries forward continuation-row companies, removes Jobright tracking parameters, and resolves eligible titles with up to six concurrent public detail requests. Only explicit, identity-matched public `applyLink`/`originalUrl` fields can enter the existing employer verification, temporary staging, full filtering and final account-history deduplication pipeline. No Jobright summaries are saved as verified employer postings. Website and MCP source configuration use the existing versioned portals document and search-job tools.
+
+Coverage always remains partial: Jobright documents a subset of jobs from the last seven days, and public detail pages may omit employer application URLs. Live checks on 2026-11-07 found those fields absent on ten sampled listings; these entries are reported unresolved and are not saved. No authenticated Jobright API or paid service is used. Fixture success does not establish live employer-link availability. Default updates do not overwrite customized account portals or modify already-running source snapshots.
+
+## Agent workspace material formats (contract 117, locally verified)
+
+`toolkit-materials` v1 is advertised in the primary index and through
+`discover_toolkit.materialGuide`. It exposes optional material recipes, the neutral
+static HTML starter and matching career skill IDs through existing authorized
+`read_guide`. Company/interview skills route to it; existing scoped artifact/mock
+tools retain execution, ownership and versions. No new writer, Calendar or scheduler
+integration is added. Full source validation passed (1,030 tests, five skipped),
+including detached discovery/guide/save/read-back and read-only denial.
+
+The landed source was built into the local API image and the mounted local Edge
+runtime reloaded. Connected MCP checks report contract 117, all 39 career skills,
+the six recipes, HTML starter and interview-research v6 routing. The worker and
+database stayed running. Live verification read only; no account artifacts or
+external events were created. Hosted release is separate and was not performed.
+
+
+### Simplify feed limit
+
+The direct background worker verifies at most the 100 newest title/seniority-matching leads from each Simplify feed per run (new-grad, summer and off-season independently). It reads active visible feed metadata newest-first, applies the existing metadata prefilter, then selects the first 100 before existing deduplication and 25-link employer verification. Full screening, temporary staging, lease fencing and final shortlist persistence remain unchanged. Older omitted matching leads produce explicit partial coverage and an omitted count; no durable cursor or automatic continuation is retained. Repeated scans select the newest matching leads again, so older jobs may never be verified. This is an intentional Simplify-only limit; Jobright, HiringCafe and employer-source behavior are unchanged. Website/MCP backend searches use the same provider; explicit manual Simplify lead paging remains available separately.
