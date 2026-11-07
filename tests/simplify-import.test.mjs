@@ -120,3 +120,15 @@ test('MCP imported corrections expose applications routing and enforce scope and
   assert.equal(calls.length,scopes.includes('tracking:write')?1:0);
  }
 });
+
+test('original application detail UI receives imported notes and source dates without inventing linked emails',async()=>{
+ const {timelineItems}=await import('../lib/application-timeline.mjs');
+ const {trackerProgress}=await import('../lib/tracker-display.mjs');
+ const row={id:'history',record:{...parseSimplifyCsv(simplifyDemoCsv).rows[0],status:'OFFER',notes:'Current corrected tracker note'},source_rows:[{status:'REJECTED',statusDate:'2026-10-21',appliedDate:null,notes:'Original imported note: recruiter follow-up'},{status:'APPLIED',statusDate:null,appliedDate:null,notes:'Unknown communication date'}]};
+ const before=structuredClone(row),a=importedApplication(row),events=timelineItems(a);
+ assert(events.some(e=>e.source.note==='Original imported note: recruiter follow-up'&&e.occurred_at==='2026-10-21'));
+ assert(events.some(e=>e.source.note==='Unknown communication date'&&e.occurred_at===null));
+ assert(events.some(e=>e.label==='Tracker notes'&&e.source.note==='Current corrected tracker note'&&e.occurred_at===null));
+ assert.equal(events.filter(e=>e.source.kind==='email').length,0);
+ assert.equal(trackerProgress(a).status,'Offer');assert.deepEqual(row,before);
+});
