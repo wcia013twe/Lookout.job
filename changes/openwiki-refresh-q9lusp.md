@@ -8,3 +8,6 @@
 - Follow-up: regenerated the repository wiki with OpenWiki 0.7.2 using the configured API key. Preserved the session-start reading rule and verified regenerated entry points and Markdown links.
 - Validation: OpenWiki completed its 13-page init; local Markdown link check, data validation and git diff check passed.
 - Limits: LangSmith was not configured; one page awaits OpenWiki frontmatter enrichment. Verify generated descriptions against authoritative source.
+
+- Follow-up: clarified that sessions read the wiki before repository work and maintain affected pages during the same feature pass; source and tests remain authoritative.
+- Validation: required entry points exist; data validation and git diff check passed.
