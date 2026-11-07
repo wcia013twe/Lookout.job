@@ -100,7 +100,9 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 ## Company logos
 
 The shared company mark uses Logo.dev when `NEXT_PUBLIC_LOGO_DEV_TOKEN` is set.
-Locally, set a publishable `pk_` key in `.env.local`. For GitHub Pages,
+Locally, set a publishable `pk_` key in `.env.local`; the live-main and local
+frontend launchers forward it to Next.js. Restart the launcher after changing
+this configuration. For GitHub Pages,
 set the repository Actions variable `NEXT_PUBLIC_LOGO_DEV_TOKEN` and rebuild.
 The token is embedded at build time; never supply a secret `sk_` key.
 Known aliases use `data/company-domains.json`; others use provider name lookup.
