@@ -22,9 +22,9 @@ export default function ToolkitWorkspace(){
  useEffect(()=>{const read=()=>setTab(location.hash&&location.hash!=='#workspace'?'tools':'workspace');read();window.addEventListener('hashchange',read);return()=>window.removeEventListener('hashchange',read);},[]);
  const owner=w.demo?`demo-${w.demoEpoch}`:w.user?.id;
  return <>
-  <div className={styles.workspaceTopbar}>
+  {!params.get('artifact')&&<div className={styles.workspaceTopbar}>
   {!params.get('artifact')&&<header className={styles.workspaceHeading}><h1>{tab==='tools'?'Tools & skills':'Career Toolkit'}</h1></header>}
-  <nav className={styles.workspaceTabs} aria-label="Career Toolkit sections">{[['workspace','Workspace'],['tools','Tools & skills']].filter(([id])=>id!==tab).map(([id,label])=><Link key={id} href={`/career-toolkit/#${id}`} onClick={()=>setTab(id)} aria-current={tab===id?'page':undefined}><ToolkitIcon name={id==='workspace'?'documents':'all'} size={17}/>{label}</Link>)}</nav></div>
+  <nav className={styles.workspaceTabs} aria-label="Career Toolkit sections">{[['workspace','Workspace'],['tools','Tools & skills']].filter(([id])=>id!==tab).map(([id,label])=><Link key={id} href={`/career-toolkit/#${id}`} onClick={()=>setTab(id)} aria-current={tab===id?'page':undefined}><ToolkitIcon name={id==='workspace'?'documents':'all'} size={17}/>{label}</Link>)}</nav></div>}
   {!params.get('artifact')&&tab==='tools'?<ToolkitLibrary/>:<Workspace key={owner||'guest'} w={w} owner={owner} artifactId={params.get('artifact')} revision={params.get('version')}/>}
  </>;
 }
@@ -69,7 +69,7 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
  return <div className="min-w-0">
   <ApiError message={error} onRetry={()=>setReload(n=>n+1)}/>
   {!owner&&<Notice><Link className="text-board-accent underline" href="/profile/">Sign in through Profile</Link> to see the materials your agent has prepared.</Notice>}
-  {artifactId?<><Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>{artifact&&!loading&&<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onVersion={v=>router.push(artifactPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} busy={busy}/>} {artifact&&!loading&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
+  {artifactId?<>{!artifact&&<Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>}{artifact&&!loading&&<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onVersion={v=>router.push(artifactPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} busy={busy}/>} {artifact&&!loading&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
    <div className={styles.weekToolbar} aria-label="Preparation week">
     <div className={styles.weekNavigation}>
      <button className={styles.quietAction} aria-label="Previous week" disabled={allWeeks} onClick={()=>changeWeek(shiftWeek(week,-1))}><span className={styles.previousChevron}><ToolkitIcon name="chevron" size={16}/></span></button>
