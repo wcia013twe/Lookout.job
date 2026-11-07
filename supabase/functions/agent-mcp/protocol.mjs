@@ -19,6 +19,7 @@ import { bootstrapInstructions } from '../agent-gateway/operating-guide.mjs';
 import {RESET_HANDOFF_TOOL} from '../agent-gateway/workspace-reset.mjs';
 import {BRIEF_TOOL} from '../agent-gateway/user-brief.mjs';
 import {FIELD_UPDATE_TOOLS} from '../agent-gateway/field-updates.mjs';
+import {MOCK_TOOLS,validateMock} from '../agent-gateway/mock-interviews.mjs';
 import {ARTIFACT_TOOLS,validateArtifact} from '../agent-gateway/artifacts.mjs';
 import {SEARCH_TOOLS} from '../agent-gateway/search.mjs';
 import {profileFactsSchema,proposedAnswersSchema,resumeUploadSchema,batchSchema,activitySchema} from '../agent-gateway/write-schemas.mjs';
@@ -33,7 +34,7 @@ export const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 const object = (properties = {}, required = []) => ({ type: 'object', properties, required, additionalProperties: false });
 const string = { type: 'string' };
 const json = { type: 'object' };
-export const TOOLS = [...AUDIT_TOOLS,APPLICATION_JOB_TOOL,...MUSE_CHANGE_TOOLS,READ_SUBMISSION_BATCH_TOOL,ACTION_INBOX_TOOL,WORK_EXPERIENCE_TOOL,BUG_TOOL,BUG_STATUS_TOOL,...SEARCH_INTAKE_TOOLS,...SCREENING_TOOLS,...BACKEND_TOOLS,...IMPORT_TOOLS,RESET_HANDOFF_TOOL,BRIEF_TOOL,...FIELD_UPDATE_TOOLS,...ARTIFACT_TOOLS,...SEARCH_TOOLS,
+export const TOOLS = [...AUDIT_TOOLS,APPLICATION_JOB_TOOL,...MUSE_CHANGE_TOOLS,READ_SUBMISSION_BATCH_TOOL,ACTION_INBOX_TOOL,WORK_EXPERIENCE_TOOL,BUG_TOOL,BUG_STATUS_TOOL,...SEARCH_INTAKE_TOOLS,...SCREENING_TOOLS,...BACKEND_TOOLS,...IMPORT_TOOLS,RESET_HANDOFF_TOOL,BRIEF_TOOL,...FIELD_UPDATE_TOOLS,...MOCK_TOOLS,...ARTIFACT_TOOLS,...SEARCH_TOOLS,
   {name:'read_toolkit_context',operation:'toolkit.context',scope:'workspace:read',readOnly:true,description:'Read owned profile, source preferences, applications with employer records, real milestones and toolkit history for executable scanners and analytics. Coverage limits are explicit; no signed file URLs.',inputSchema:object({applicationId:string})},
   {name:'read_toolkit_results',operation:'toolkit.results',scope:'workspace:read',readOnly:true,description:'Read the latest 100 owned toolkit results, optionally for an application/kind. Outputs are agent observations, never approvals or submission proof.',inputSchema:object({applicationId:string,kind:string})},
   {name:'record_toolkit_result',operation:'toolkit.record',scope:'drafts:write',description:'Save an owned scan/evaluation/analytics/ATS/document/source_config/compensation result with a stable eventKey. Exact retries replay; changed payload rejects. Evaluation requires owned application, score 1-5 and requirements [{requirement,match:met/partial/missing/unknown,evidence}]. Outputs never establish human verification or submission.',inputSchema:object({applicationId:string,kind:string,eventKey:string,result:json},['kind','eventKey','result'])},
@@ -176,8 +177,8 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
     const tool = availableTools.find(tool => tool.name === name);
     if (!tool) return error(id, -32602, 'Unknown tool');
     if (!hasToolScopes(tool,scopes,args)) return result(id, { content: [{ type: 'text', text: 'Missing required scope: ' + requiredToolScopes(tool,args).filter(scope=>!scopes.includes(scope)).join(', ') }], isError: true });
-    if (tool.operation.startsWith('artifacts.') || tool.operation.startsWith('learning.')) {
-      try { validateArtifact(tool.operation, args); }
+    if (tool.operation.startsWith('artifacts.') || tool.operation.startsWith('learning.') || tool.operation.startsWith('mock.')) {
+      try { validateArtifact(tool.operation, args); validateMock(tool.operation, args); }
       catch (e) { return error(id, -32602, e.message); }
     }
     if (tool.operation.startsWith('search.')) {

@@ -442,9 +442,9 @@ Referrals previews five built-in templates (recruiter interview, warm referral, 
 ## Career Toolkit
 
 Career Toolkit opens on a private artifact workspace at `/career-toolkit/`.
-Connected agents can prepare and save documents, company research and interactive
-HTML while planning the week. Upcoming dated prep appears under Prepared for you; reusable and past work stays
-in Saved materials. Agents can assemble ordered saved revisions into an interview
+Connected agents curate resources and prepare useful documents, company research and interactive
+HTML while planning the week. Explicit weekly assignments appear in This week; reusable and past work stays
+in All materials. Agents can assemble ordered saved revisions into an interview
 collection that reads as one scrollable pack. Materials link directly from preparation tasks;
 learning goals share the interview planner’s daily budget even without upcoming
 interviews. Text remains the request/revision interface, and the workspace renders
@@ -1086,3 +1086,21 @@ REST endpoints allow reuse without calling an unresponsive Docker control API.
 Only an anonymous JWT or publishable key is accepted; hosted URLs and service-role
 keys cannot be used for this fallback. This checks the local API, not every worker
 or external integration. No schema changes or background execution are added.
+
+### Weekly Career Toolkit preparation
+
+The existing workspace defaults to This week, with previous/next week navigation
+and All materials for reusable and older work. The agent follows Career Ops closely:
+research → round plan → practice → debrief → improve the next round. Company
+context includes team motivation; stories remain separate reusable material;
+round research and preparation live in the same brief. These contributions are
+optional, not a requirement to generate five documents. Curated external resources
+can be saved directly with `resourceUrl` and a short purpose.
+
+Scheduled mocks show logistics in the workspace. The connected agent uses
+`save_mock_interview` and `read_mock_interview` to maintain separate interviewer
+preparation excluded from browser artifacts. At the chosen time, call your agent
+in its existing app using the session reference. Sessions can resume and save a
+linked debrief. Lookout does not place calls, install reminders or run a scheduler.
+The migration, frontend and gateway/MCP must be released together; local checks do
+not verify the hosted or external-call round trip.

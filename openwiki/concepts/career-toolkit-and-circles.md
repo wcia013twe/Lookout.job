@@ -132,3 +132,31 @@ After actually using another author's currently published revision in an answer 
 Do not claim production availability merely because the UI, migration, or demo exists. Circle release requires the feature gate, an authenticated hosted two-account/RLS check, and concurrency checks around publication versus removal/policy revocation. The browser keeps Circle results in memory, refreshes visible sessions periodically/on focus, and clears shared content on access errors; static export and service-worker cache must not contain private Circle data.
 
 Focused coverage in `tests/preparation-planner.test.mjs` exercises deterministic allocation, budget limits, shared-versus-company-specific work, partial credit, stale/foreign targets, idempotent sessions, and website/MCP snapshot parity. `tests/circle-knowledge.test.mjs` uses authenticated-role database calls and scoped agent connections to test release gating, invitation membership, draft isolation, exact approval, no implicit application sharing, private citations, revision reset, conservative standing permission, pagination, reporting/moderation, removal, revocation, and expiry. These are source-level checks; hosted grants and deployment still need the explicit release verification.
+
+## Weekly Career Toolkit and scheduled mocks (source update)
+
+Career Toolkit keeps its existing workspace and reader. It defaults to an explicit
+Monday–Sunday week in the saved preparation timezone (device timezone fallback),
+with previous/next navigation and All materials. Assignments use `weekOf`; undated
+legacy/reusable materials remain in All materials. Weekly filtering and newest-update
+ordering happen in SQL before pagination. Editing does not reassign a week.
+
+The agent follows the pinned Career Ops research → round plan → practice → debrief
+→ next-round loop. Five optional contributions are company context plus motivation,
+round research plus prep brief, a separate reusable story bank, mock interviews,
+and interview debriefs. It curates external resources first and creates material
+only where useful. Resource artifacts use `resourceUrl`; normal saved revisions
+remain usable inside briefs. Tools & skills remains the reference library.
+
+`save_mock_interview` atomically saves visible artifact logistics and separate
+interviewer preparation; `read_mock_interview` returns that preparation to the
+scoped connected agent. Public browser artifact APIs never return the profile.
+The profile is excluded from ordinary artifact metadata, revisions and collections
+and is deleted with its session. Sessions start scheduled, may resume in_progress,
+and require a saved owned debrief to complete. Completed/cancelled sessions are
+terminal; archive preserves history. The user calls their existing agent externally
+when ready. Saving logistics does not activate a scheduler, reminders or calls.
+
+These are source changes requiring the migration and gateway/MCP release together
+with the frontend. Demo sessions are fictional and have no interviewer service.
+Live external-agent calling and hosted behavior are not established by local tests.

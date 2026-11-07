@@ -263,3 +263,14 @@ history; notes do not become linked emails. Native application actions remain
 visible but imported records have no native application ID: timeline writes
 show the existing sync error and workflow writes report an unsaved update.
 This intentional backend mismatch must remain explicit until a later integration.
+
+## Weekly Career Toolkit (contract 113 source update)
+
+The existing Toolkit cards and reader now support explicit weekly filtering and
+an All materials library. Agent preparation follows the pinned Career Ops loop,
+curating external resources and reusing stories rather than generating every
+possible document. Scheduled mocks save visible logistics separately from
+agent-only interviewer preparation, with versioned resume/completion and a linked
+debrief. The user calls their agent externally; no scheduler or call transport is
+provided. Source tests and detached demo coverage do not establish hosted release
+or an external-agent call. See the Career Toolkit concept page and feature note.

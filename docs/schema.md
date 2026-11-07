@@ -608,3 +608,31 @@ adds no tables, credentials, UI behavior or external scheduling capability.
 ## Muse selective context (developer version 96)
 
 The developer-context response now contains core instructions and a primary guide index only. Named workflow guides replace embedded quickstart/operating-guide procedures. Change-feed responses add guide ID/version references; existing pointers, ownership, acknowledgements and schema remain unchanged. Durable progress uses existing domain records. No migration, new workflow table or polling protocol is introduced. See `mcp/README.md` and `docs/muse-instruction-consolidation.md`.
+
+### Weekly toolkit items and interviewer preparation
+
+`career_artifacts` remains the visible, revisioned workspace record. Additional
+kinds are `story_bank`, `interview_debrief`, `resource` and `mock_interview`.
+Resources require a public HTTPS `resourceUrl`. The existing `weekOf` filter and
+newest-update ordering run before pagination; the UI assigns Monday weeks in the
+saved preparation timezone and keeps undated material available in All materials.
+
+Mock artifacts contain only visible logistics: `scheduledAt` with an explicit
+UTC offset, `timeZone`, `durationMinutes` (5–180), `sessionStatus`, and optional
+owned `debriefId`. Their `weekOf` must match the scheduled local week. The
+agent-only `save_mock_interview` (`mock.save`, workspace:read + drafts:write)
+accepts `{artifact, interviewerProfile}` and atomically updates the canonical
+artifact and separate private interviewer preparation. `read_mock_interview`
+(`mock.read`, workspace:read) accepts `{id}` and returns the current artifact and
+profile. Browser artifacts APIs cannot save mock profiles or retrieve them; all
+normal summaries, historical revisions and collections contain visible content
+only. Private profiles have no browser table grants and cascade with artifacts.
+
+Creation starts scheduled; in-progress sessions resume, completed sessions need
+an owned saved interview debrief, and completed/cancelled sessions cannot restart.
+Use the current artifact version for every mutation; exact retries replay, while
+changed retries and stale versions conflict. Archive is the existing artifact
+action. Session status does not credit planner minutes or prove an interview
+outcome. The user starts the external agent call; no scheduler, call transport or
+notification service is added. This source change requires the matching backend
+migration and gateway/MCP deployment before hosted use.
