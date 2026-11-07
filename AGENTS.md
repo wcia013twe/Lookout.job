@@ -73,4 +73,6 @@ Do not advertise parity until the capability is deployed and verified.
 
 ## OpenWiki session startup
 
-At the start of every new session working in this repository, read `openwiki/quickstart.md` and `openwiki/operations/current-state.md` before making changes. Follow their task-routing links when relevant. This instruction applies even if OpenWiki retrieval tools are unavailable. Source code and tests remain authoritative; verify facts that affect the task. Keep OpenWiki current when material behavior changes, and identify any verification limits.
+At the start of every new session working in this repository, read `openwiki/quickstart.md` and `openwiki/operations/current-state.md` before beginning repository work, even when OpenWiki retrieval tools are unavailable. Read the relevant linked pages for the task, then verify consequential details against current source and tests.
+
+When a change materially affects documented behavior, update the relevant OpenWiki pages as part of the same feature pass before landing. Use the OpenWiki generator when available or make a focused source-grounded update; record any stale coverage or verification limits. Do not claim the generated wiki is current beyond its documented source revision. The scheduled updater must preserve this startup rule.

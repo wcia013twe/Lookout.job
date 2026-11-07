@@ -1,112 +1,89 @@
 ---
-type: guide
-title: Quickstart and Task Routing
-description: Contributor entry point for SSD-isolated work, local services, current profile/tracker navigation, labeled Muse synchronization and separate frontend/backend verification boundaries.
-tags: [quickstart, contributors, development, testing, mcp]
+type: engineering quickstart
+title: Lookout engineering quickstart
+description: Task-oriented reading map for safely changing the Lookout job-search workspace. Routes contributors from a change area to its authority, workflow, operations, and focused verification guidance.
+tags: [quickstart, engineering, navigation, workflows, verification]
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-27T03:54:51.227Z
+    at: 2026-11-07T02:52:01.830Z
 sources:
-  - id: openwiki-source-6766b7a0c14857435d2077c9
-    resource: repo://.github/workflows/deploy.yml
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
-  - id: openwiki-source-ee1b3e21718542a757d4d790
-    resource: repo://backend/runtime/README.md
-  - id: openwiki-source-a9e1c6c32dfd334ae56d3f3e
-    resource: repo://lib/mcp-services.mjs
-  - id: openwiki-source-8bdb9080f51dd31bf9d211bd
-    resource: repo://lib/muse-change-feed.mjs
   - id: openwiki-source-012f2c78e3b1446dfc35803f
     resource: repo://Makefile
-  - id: openwiki-source-772292b8604c1bdb82fdf033
-    resource: repo://next-app/components/appearance-settings.tsx
-  - id: openwiki-source-76afc9721711ec0c4fade891
-    resource: repo://next-app/components/applications.tsx
-  - id: openwiki-source-720bdfcccf0a2396c967b4d5
-    resource: repo://next-app/components/profile-menu.tsx
-  - id: openwiki-source-baa0beacbe69e73461042a6e
-    resource: repo://next-app/components/profile-workspace.tsx
-  - id: openwiki-source-5c5dc57d5c7c840354826599
-    resource: repo://next-app/next.config.mjs
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-  - id: openwiki-source-e427ac8f776114f15ac33a12
-    resource: repo://scripts/feature-delivery.mjs
-  - id: openwiki-source-f6d61f277a1bbda883e922be
-    resource: repo://scripts/local-frontend.mjs
-  - id: openwiki-source-5e0e032552d77cb40052782b
-    resource: repo://supabase/functions/agent-gateway/instructions.json
-generated: { by: "codex", at: "2026-10-27T03:54:51.227Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 ---
 
-# Quickstart and Task Routing
+# Lookout engineering quickstart
 
-Job Signal Board is a public job catalog plus a private, agent-assisted candidate workspace. The production UI is a static Next.js/React/Tailwind export on GitHub Pages; Supabase owns identity, private data, files, and agent authorization; configured Node services and the separate local runner own bounded execution. Muse supplies reasoning and its actual runtime schedule.
+Use this page to choose the smallest set of context needed for a change; it is a reading map, not a replacement for the implementation. **Source code, migrations, and tests are authoritative.** The linked pages explain the current design and test intent, but a passing local fixture or build does not establish that an external provider, agent host, hosted deployment, or employer action is live. Start with the source and focused tests for the boundary you will change, and use [current implementation state](operations/current-state.md) to state verification limits accurately.
 
-## Current state
+## Start here
 
-Read [Current State and Recent Changes](operations/current-state.md) at session start. This manually reviewed supplement covers changes after the generated pages were last refreshed; verify task-specific details in source and tests.
+1. Read [`AGENTS.md`](../AGENTS.md) for repository working rules, delivery flow, domain placement, catalog constraints, demo isolation, and MCP parity requirements.
+2. Read [system architecture and trust boundaries](architecture/system-overview.md) when a change crosses the browser, Supabase, agent gateway/MCP, Node runtime, runner, or external agent boundary.
+3. Find the task row below and read its linked workflow/domain page **before** changing its writer, record lifecycle, authorization, or user-facing status language.
+4. Locate the closest test in [`tests/`](../tests/) and run it first. Add database, catalog, typecheck, build, or whole-suite checks only as the change reaches those authorities; the [verification strategy](testing/verification-strategy.md) gives the escalation rules.
+5. Before describing a change as released or live, check [current implementation state](operations/current-state.md) and validate the correct deployment unit and intended environment.
 
-## Set up a feature checkout
+## Route by the change you are making
 
-Use Node.js 22 or newer. Keep the shared `main` checkout for inspection and landing. Start each writing task in its own checkout:
+| If your task changes… | Read first | Then inspect/change | Verify the boundary |
+| --- | --- | --- | --- |
+| Runtime topology, trust boundary, browser/backend split, or an external capability claim | [System architecture and trust boundaries](architecture/system-overview.md) | `next-app/`, `lib/`, `supabase/`, `backend/`, `runner/`, or `mcp/` at the owning boundary | [Current implementation state](operations/current-state.md) and [verification strategy](testing/verification-strategy.md) |
+| A private record, RLS policy, RPC, migration, version check, lease, idempotency key, or data writer | [Data model, ownership, and consistency rules](architecture/data-and-ownership.md) | `supabase/migrations/` first; keep browser and server writers aligned with the schema | Run the closest SQL-backed test and `npm run test:db`; add owner, stale-version, and replay cases |
+| Sign-in workspace state, autosync, account switching, browser cache, realtime refresh, or the isolated preview | [Browser workspace state, cloud sync, and demo isolation](concepts/workspace-sync-and-demo-mode.md) | `next-app/lib/workspace.jsx`, `lib/`, and demo factories; do not bring production clients into demo | `node --test tests/cloud-sync.test.cjs tests/demo-mode.test.mjs`, plus typecheck/build for UI changes |
+| Onboarding, profile facts, resume import/upload/selection, saved answers, search preferences, or connection setup | [Onboarding, profile, resumes, and preference changes](workflows/onboarding-and-profile.md) | profile/resume components and owner-scoped services; preserve review and version invalidation | closest profile/resume/onboarding test, then database checks if the writer changes |
+| Agent credentials, gateway operations, MCP tools, context versions, guides, scopes, or an agent-facing user action | [Agent credentials, gateway, MCP, and guide routing](concepts/agent-access-and-mcp.md) | `supabase/functions/agent-gateway/` and `agent-mcp/`; add only narrowly scoped parity tools | MCP protocol/scope tests, gateway tests, and database checks for new authority |
+| Shared preparation documents, networking, referral/outreach, Circle activity, or consent-gated knowledge publication | [Career Toolkit, artifacts, network, and Circle knowledge](concepts/career-toolkit-and-circles.md) | owning private/shared records and membership/consent boundaries | focused toolkit/Circle tests and `npm run test:db` for persistent policy or publication changes |
+| Search profiles, sources, worker execution, observation/screening, deduplication, or private Discover batches | [Job discovery, search runs, and private batch publishing](workflows/job-discovery.md) | backend queue/worker and canonical search writers; keep source coverage and candidate assessment separate | search pipeline/dedup/MCP tests, `npm run test:filter`, and `npm run test:db` |
+| A catalog-only role update or static Discover presentation | [`AGENTS.md` catalog rules](../AGENTS.md#job-signal-board-maintenance) | `data/jobs.json` before UI code; preserve known statuses and canonical-URL deduplication | `npm run validate:data`, then consumer tests if behavior changed |
+| Application preparation, policy, review, ATS form support, attempt recovery, or submission evidence | [Application drafting, authorization, and guarded submission](workflows/application-submission.md) | gateway authorization, database attempt state, and local runner together; never collapse prepared, approved, reported, and confirmed states | runner/submission focused tests plus `npm run test:db`; use the bounded E2E check only when applicable |
+| ATS/CareerOps/HiringCafe adapters, provider behavior, file integration, or claims about an external source | [ATS, CareerOps, HiringCafe, and file integrations](integrations/ats-and-career-data-sources.md) | adapter boundary and provider constraints; preserve partial/inaccessible results rather than fabricating completeness | adapter/liveness/filter tests and environment-specific verification before making a live claim |
+| Local setup, environment variables, Docker/Node API/worker modes, Edge Functions, migrations, or release automation | [Local stack, backend processes, and release boundaries](operations/local-and-release-runtime.md) | [`Makefile`](../Makefile), `supabase/config.toml`, backend runtime configuration, and deployment scripts | [Current implementation state](operations/current-state.md); distinguish local runnable behavior from deployed evidence |
+| A frontend page, component, route, shared styling, or static-export behavior | [System architecture and trust boundaries](architecture/system-overview.md) | `next-app/app/`, `next-app/components/`, and shared models rather than duplicating domain behavior in the UI | closest focused test, `npm --prefix next-app run typecheck`, and `npm run build` |
+
+## Safe change rules
+
+- **Follow the authoritative writer.** `supabase/migrations/` defines the database schema; do not create a competing schema dump. Keep shared domain behavior in `lib/`, production presentation in `next-app/`, and server functions/migrations in `supabase/`.
+- **Preserve trust boundaries.** Browser configuration uses publishable values only. Ownership comes from an authenticated user or validated agent connection, never a caller-supplied user ID. Do not add general SQL, shell, or approval-bypass tools.
+- **Preserve outcome vocabulary.** Opening a posting is not applying; a draft, authorization/approval, user report, runner-observed confirmation, and uncertain attempt are different facts. Search `partial` means evidence was retained but coverage was incomplete.
+- **Treat demo as detached.** New demo interactions must use fictional, resettable state and must not load account storage, cloud sync, private files, backend writes, or production MCP.
+- **Keep website/MCP parity narrow.** A product action needs an existing scoped MCP operation or a narrowly scoped counterpart that shares backend validation, ownership, and version checks. Human-only actions must remain explicit boundaries.
+
+## Local commands and release scope
+
+Install locked root and frontend dependencies with:
 
 ```sh
-npm run feature:doctor          # first use or setup trouble
-TMPDIR="/Volumes/External SSD/Lookout/tmp" npm run feature:start -- <name>
-cd <returned-checkout>
-npm_config_cache="/Volumes/External SSD/Lookout/npm-cache" npm ci
-npm_config_cache="/Volumes/External SSD/Lookout/npm-cache" npm ci --prefix next-app
+make install
 ```
 
-Work only in the returned `codex/…` branch. Complete its generated file under `changes/`, including checks and honest limits, before committing.
+With the Supabase CLI and Docker engine available, `make dev` starts local Supabase services, the development MCP tunnel, and the frontend; `make services`, `make frontend`, `make status`, and `make down` separate those responsibilities. Local Supabase data and OAuth configuration are separate from hosted production. `npm run dev` retains the hosted-backend default, so choose the command that matches the environment you intend to test.
 
-## Run the application and checks
+For a routine code change, use the repository feature workflow in [`AGENTS.md`](../AGENTS.md#development-and-delivery): start an isolated checkout with `npm run feature:start -- <name>`, make and validate the change there, record its verification limits in the generated change note, and land with `npm run feature:land`. Backend/migration/function changes have a different release boundary from the static frontend; do not represent a frontend build as a backend or integration deployment.
+
+## Baseline validation, with honest limits
+
+The ordinary baseline is:
 
 ```sh
-npm run dev             # delegates to next-app
-npm test                # domain, gateway, runner, and database scenarios
-npm run validate:data   # canonical catalog shape and uniqueness
-npm run build           # static production export
+npm test
+npm run test:db
+npm run validate:data
+npm --prefix next-app run typecheck
+npm run build
 ```
 
-For local Docker-backed development, start Docker and install the Supabase CLI,
-then use `make dev` (or `make up`) from the task checkout. This starts local
-Supabase first and the frontend at `http://localhost:3000` using the local API
-and anonymous key. Use `make install` for initial locked dependency setup,
-`make services` / `make frontend` for separate startup, and `make status` for
-service details. Ctrl-C stops the frontend; `make down` stops the containers
-and preserves data. Check ownership before operating a stack bound to another
-checkout. Prefer the external SSD for Docker storage, dependencies and build output; use internal storage when it is unavailable. See [local startup details](operations/testing-and-delivery.md#local-docker-services-and-frontend)
-and the root [Makefile](../Makefile). `npm run dev` retains the hosted default.
+Run the focused test first and omit irrelevant checks only deliberately. `npm test` is the root Node test suite, `npm run test:db` runs database scenarios, `npm run validate:data` validates catalog data, and `npm run build` builds the frontend static export. These checks establish the contracts they exercise; they do not by themselves verify hosted Auth/Storage/OAuth, an MCP client, an external agent scheduler or notification channel, source-provider availability, or a real employer submission. Record those gaps in the change note and release communication.
 
-Use `npm run test:db` only for focused database debugging. Real Google sign-in, private file round trips, live MCP clients, and employer forms still require explicit live verification; tests do not submit real applications.
+## When documentation and implementation disagree
 
-## Route work by behavior
-
-- **Understand runtime and ownership boundaries:** read [System Architecture](architecture/system-overview.md). It explains the static client, shared domain modules, cloud controller, Supabase services, agent adapters, and runner.
-- **Change catalog discovery or the tracker:** read [Discovery and Application Tracking](workflows/discovery-and-tracking.md). Update `data/jobs.json` before catalog UI, preserve statuses, and remember that opening or queueing is not applying.
-- **Add or change an agent-facing action:** read [Agent Gateway and MCP Contract](agents/gateway-and-mcp.md). The website and MCP must share backend ownership, validation, scopes, and versions; do not add generic database tools.
-- **Touch preparation, approval, or execution:** read [Application Preparation and Submission Safety](agents/submission-safety.md). Human approval, automatic policy authorization, browser execution, user-reported progress, and observed confirmation are distinct.
-- **Validate, commit, land, or publish:** read [Testing, Data Validation, and Feature Delivery](operations/testing-and-delivery.md). Routine completion lands locally; a PR is only for requested review, protected CI, or production publication. Frontend deployment does not release backend migrations, gateway/MCP config or Node services.
-
-## Current workspace and agent flow
-
-My Profile opens About me, with Job preferences, My Agent and Appearance as the other sections. Onboarding replay and Dashboard tour live in Appearance; Sharing & privacy remains in profile navigation. Job Tracker owns the Stats tab, including bounded counters and the current-outcome application-flow chart.
-
-MCP `initialize` supplies the shared startup instructions automatically. On the first authorized work run after connect/reconnect, Muse refreshes context and uses `read_muse_changes` to pick up labeled platform updates. Each event names the current record/read tool; Muse reads it and acknowledges handled IDs. Timelines include interview reschedules. This is context synchronization, not a new behavior engine or permission to execute work. Connection setup still stops after setup.
-
-My Agent remains the user-managed schedule configuration. Its personal runtime triggers authorized work and submits a bounded Node search job when supported; Node has no duplicate recurring-search scheduler. The worker produces verified/screened/deduplicated shortlists, while Muse writes analysis and publishes private batches. See the linked workflow pages for coverage and version limits.
-
-## Source-of-truth rules
-
-`data/jobs.json` owns the public catalog. `supabase/migrations/` owns the database schema. `supabase/functions/agent-gateway/instructions.json` owns developer interaction defaults and requires a `developerVersion` increment when its advertised contract changes. Production React work belongs in `next-app/`; root `lib/` holds shared domain/browser modules; the retired static frontend is no longer present. Personal records and profile documents remain canonical backend data; Muse context and change pointers do not become a second factual store.
-
-Never infer ownership from caller-supplied user IDs, expose service-role credentials, put private resumes in public assets, forge approval, or treat status as submission proof. Preserve unfamiliar edits and resolve overlap in the feature checkout rather than resetting another session's work.
-
-## Deliver
-
-After relevant checks pass, commit the intended files and run `npm run feature:land` from the feature checkout. Report the checkout, branch, local-main commit, checks, publication status, and any remaining uncommitted work.
+1. Prefer current source, migration history, and the closest test over this map or any workflow prose.
+2. Determine whether the behavior is implemented, feature-gated, locally runnable, deployment-recorded, or still unverified using [current implementation state](operations/current-state.md).
+3. Update the appropriate owned documentation and focused test alongside a material behavior change; do not advertise an unconnected external service as live.
+4. If the change alters a cross-boundary invariant, read the linked architecture/workflow page and extend the focused regression coverage before landing.

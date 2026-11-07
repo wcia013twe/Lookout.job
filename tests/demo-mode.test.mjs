@@ -23,3 +23,18 @@ test('onboarding catalog preview uses a resettable fictional reference without c
  const store=createMemoryStore(fixtures.state);store.set('workflow.searchPreferences.profiles',[]);
  assert.equal(demoFixtures('2026-10-28').state.workflow.searchPreferences.profiles[0].id,'general');
 });
+
+
+test('demo shows a saved auto-apply preference blocked by account authorization and resets edits',async()=>{
+ const {accountAutomationSettings,profileAutomationSettings}=await import('../lib/application-policy.mjs');
+ const {applicationPolicy}=await import('../supabase/functions/agent-gateway/application-policy.mjs');
+ const initial=demoFixtures('2026-11-06').state,search=initial.workflow.searchPreferences;
+ const profile=search.profiles.find(p=>p.id==='general');
+ assert.equal(profileAutomationSettings(profile,search).enabled,true);
+ assert.equal(accountAutomationSettings(search).enabled,false);
+ const decide=search=>applicationPolicy({preferences:{search},profileId:'general',job:{company:'Example Systems (demo)',employmentType:'FT'}});
+ assert.equal(decide(search).code,'account_auto_apply_disabled');
+ const store=createMemoryStore(initial);store.set('workflow.searchPreferences.autoSubmitApproved',true);
+ assert.equal(decide(store.get('workflow.searchPreferences')).mode,'auto-apply');
+ assert.equal(decide(demoFixtures('2026-11-06').state.workflow.searchPreferences).code,'account_auto_apply_disabled');
+});

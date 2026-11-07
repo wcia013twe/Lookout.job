@@ -100,26 +100,21 @@ Card-opening animations and new theme packs are outside this pass. Existing pack
 ## Company logos
 
 The shared company mark uses Logo.dev when `NEXT_PUBLIC_LOGO_DEV_TOKEN` is set.
-Locally, set a publishable `pk_` key in `.env.local`. For GitHub Pages,
+Locally, set a publishable `pk_` key in `.env.local`; the live-main and local
+frontend launchers forward it to Next.js. Restart the launcher after changing
+this configuration. For GitHub Pages,
 set the repository Actions variable `NEXT_PUBLIC_LOGO_DEV_TOKEN` and rebuild.
 The token is embedded at build time; never supply a secret `sk_` key.
 Known aliases use `data/company-domains.json`; others use provider name lookup.
-Failed requests fall back to cached logos, then initials. Fictional `(demo)`
+Failed requests fall back directly to a briefcase icon. Fictional `(demo)`
 companies skip Logo.dev. Demo roles and tier lists cover real and fictional names.
 This is display enrichment: existing scoped job/company tools return company names;
 there is no new write action, backend contract or permission.
 Provider reference: https://github.com/logo-dev/logo-api
 
-### Legacy cache fallback
-
-Company logos are public branding assets in the Supabase `company-logos` Storage
-bucket. The website resolves normalized company names through
-`data/logo-manifest.json`; agents do not search for or download logos during job
-scans. Content-hashed URLs keep browser/CDN caches stable. Missing or unavailable company logos show initials; no company images are bundled.
-Verify stored assets with `node scripts/company-logo-cache.mjs --verify`.
-Upload new PNG/JPEG assets from an external directory with
-`node scripts/company-logo-cache.mjs --upload /path/to/logos`. This bucket is
-separate from private resume storage.
+Logo.dev supplies the image CDN and caching. The website does not consult the
+legacy logo manifest or a separate logo storage bucket. Existing legacy assets
+and maintenance utilities are retained independently of the rendering path.
 
 ## Data model
 
@@ -241,8 +236,13 @@ Profile instructions store Application automation / Auto-apply routine matches
 list ID. `read_application_policy({jobId,profileId})` reads current owned settings
 and canonical employer data. Drafts carry `searchProfileId` so submission rechecks
 the selected active profile. Unbound drafts require review once profile rules
-exist. Existing `autoSubmitApproved` and fullTime/internship policies remain a
-compatibility fallback. These local changes require the updated gateway/MCP/config
+exist. The account-wide `autoSubmitApproved` guard must be strictly `true` for every
+automatic path, including explicit profile modes. Profile controls show this guard
+and remain disabled while it blocks automation; saving a profile never grants
+account-wide consent. `read_application_policy` reports `account_auto_apply_disabled`
+with the specific reason, and submission authorization preserves that reason. Exact
+human approval in Applications remains available. Legacy fullTime/internship tier
+policies remain a compatibility fallback. These local changes require the updated gateway/MCP/config
 release and hosted verification before claiming profile-based execution is live.
 Policy advice is not approval, execution authorization or a submission receipt.
 

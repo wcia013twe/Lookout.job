@@ -33,8 +33,8 @@ try{
  assert.equal(await page.getByRole('button',{name:'Save shared background',exact:true}).count(),0);
  assert.equal(await page.getByRole('button',{name:'Save application profile',exact:true}).count(),0);
  assert.equal(await page.getByRole('checkbox',{name:'I have checked these facts.',exact:true}).count(),0);
- assert.equal(await page.getByRole('region',{name:'Work experience',exact:true}).locator('svg[aria-hidden="true"][width="28"]').count(),2);
- assert.equal(await page.getByRole('region',{name:'Education',exact:true}).locator('svg[aria-hidden="true"][width="28"]').count(),1);
+ assert.equal(await page.getByRole('region',{name:'Work experience',exact:true}).locator('svg[aria-hidden="true"][width="24"]').count(),2);
+ assert.equal(await page.getByRole('region',{name:'Education',exact:true}).locator('svg[aria-hidden="true"][width="24"]').count(),1);
  assert.equal(await page.getByRole('region',{name:'Projects & outside experience',exact:true}).locator('svg[aria-hidden="true"][width="28"]').count(),1);
  assert.equal(await page.getByRole('region',{name:'Work experience',exact:true}).locator('details').count(),0,'Background sections stay expanded');
  assert.equal(await page.getByRole('textbox',{name:'First name',exact:true}).count(),0,'Background starts read-only');

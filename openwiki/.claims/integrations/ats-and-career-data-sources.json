@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:fd2a1f65122250ec9e279e1dbd103e89f7b0ba257cb32f3b11ea47e6c1c29f4f",
+  "claims": [
+    {
+      "id": "claim_c33f2b091602460eadbe43aa611c2823",
+      "statement": "The isolated CareerOps child is launched with a disposable workspace and a minimal environment that excludes agent/cloud/proxy/user credentials, has a 384 MiB heap, a configurable 120-second default timeout, and a 16 MiB stdout cap; its workspace is removed after the task.",
+      "evidence": [
+        {
+          "resource": "repo://runner/career-tools.mjs#L19-L31",
+          "version": "repo-lines-v1:sha256:d9a9a622c61e87b94fbdbac94e59aaffd07570dc3c297cd2430b4f9b149464c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2N2U4YWEyMmI1ZDViY2FlZGI5N2VjNzZmNzNlM2I2OTM5N2E5MTU2MmMxZjE0MzExYTlmNWU1YTJkMDcxNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhNDQ2MTM3OTkxZDMzODk2ZDFhY2I2NzFjNmUwNGMyODM2MDMyZmVmYjQ4YTZjZjJjMzRiOGY0NzdmY2E0OTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5MjQ1ODNkY2IzYjkyYTMwN2JmNDJlNGI5NDBhMzljZjdlNTAzMzM2NzE4M2FlZTUzOGYxYzliOGVlZTliMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNzRjYzcyMWM1MDA5ODg0NjJkYjNmM2M3OGY5YmNmYjA4MzUxNGY0ZWRhNGNjODM3MjIzZTM2NjU5YjQ4ZTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_44d0db5a5e534c73b4e25a4cade5a960",
+      "statement": "The CareerOps import script pins commit c78e14cdfd52f18a92e4a67694efab7ddef59385, copies an explicit dependency closure with hashes into a manifest, and excludes the arbitrary configured local parser.",
+      "evidence": [
+        {
+          "resource": "repo://integrations/career-ops/README.md#L26-L33",
+          "version": "repo-lines-v1:sha256:11ea6857ddbd6e4a033650d2389870c066b1f231e56ceedc3d438a26373e8ad9:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFmYjIwMTFjZDQwOGUwN2ZhZWNiYzQzMDFmNTFjZmRjMTg1MzFkYzU5ZTdmNWM3MWU5MGFhNzhlZGVlNTYyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzFjYWM5ODY3YWI3ZGI0ZjA2MzMzZjJlMzMzN2FlZTZkODNkMDJlYTY0NTM3YjE0ZGM5MTliNzJmYjA4NjAyYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzY2NWE1ODQyMzcwY2M4ZTgwMDYzM2U3ZmI4NzdiODIzZmZlMjNiOTU2ODZmNjYzM2NjYmIxOGM0NTQ4ZjFhYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2UyMGQ4OGNlMTYxMWUwNDYwZDIxYmEwOTQzY2YzNDk5ZTY3NzE1MGY0MDdkMGE3NDM5MDA2YjZlMDhjYTA3NiJ9"
+        },
+        {
+          "resource": "repo://scripts/import-career-tools.mjs#L5-L26",
+          "version": "repo-lines-v1:sha256:f22da23abd9867cc7a43e7ee526c2061df21d860fbe39c2fe62890e3a0808333:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmUzNTNjNDJhYWExMTNiZWY0MzRlNDdhOTk1NGI3YTlkMzRmZTA5ODkyODcyZjMyMTlhZTYxMGQ5YzQ2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYTM0MGZhMTU1NmI0OWJmNzc2MGU3YTc0ODZkMmIyNDY1NDYyOGFhY2ZjMjkwOWYzMzliMmFhMTIyYWU5MjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3ZjE1ZjRkYjQ0YjM4N2M3OGJmM2NhMmY0MTA0NjE0YmIyN2Y2NzEwMDA0N2Q5ZDBiNTA5MzMwNTk2NzhiNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxYjVlZDlmMWY0MGU4MTUxYjBiMmZiZjBjN2IwMmRlYzg2NjM1NjFhNDQ4NzFkM2JkZjNjYjlkZmEzN2VhZGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7afaad5a6ec64beda0085e261f639fdf",
+      "statement": "Discovery fetches bounded leads, deduplicates them through the isolated task, and verifies employer URLs before producing listings; task failures produce inaccessible coverage rather than listings.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/ats.ts#L10-L30",
+          "version": "repo-lines-v1:sha256:789b9a89cc991c171f3c386c4e1f14cc2770e7649d4fb8e03de9d826ffde61ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxYThmOGM2YTlmZWFkOTgyZDBlNTk3YjNmZWY5MzI3MTRhODQ3NmNiNDQxNTg4NjgxNTE1ODVhYTQxNWMxYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YTVjYzRhYzg2NzBmN2UxZTAyYTYyYzI2YmE3YzE1OTk4ZGE3YjRlZDkzYmJjNzViYjU4MjI4ODNlNjE1NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxNDc1MTI1MWYwMDBmMThmZmU2ZWQzNjZmNmVlMzY2NTRhZDRjZWUzYjliMTdmNDgxNzhmNDBmZDkzYmM0NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkYzlhNmM0ZGJhMGVjNjE5YmJmMjQ0NjQwYjQzOTI3ODEyZjkwNGU4NmQ2N2FjYjY5ZjY0ZjNkZmE5Y2Q0MzMifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/ats.ts#L32-L36",
+          "version": "repo-lines-v1:sha256:8dabec710c46570580f53e2ab74807149d41bcee1b7bf458df872fc61227ad78:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTliNGRmNDNiOWIyMjk3NjVmMTk0Y2RiZjkxNGRhNzkwMGFkNjRiZmM4NDU2YWVkZTkwZWRmYzVkNjI5ZmQ1OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU0YzJkZTAyODFhMTJiMWRmMDIzMDc4YWM0MzNhYWMxZDNmNjE4MjliOTk0ZDQzMzM5NDMyZjUyMDI0N2QwMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWI1NTAyZDU5NGNjM2E4MTVmZDI3YjkzN2RmM2U4OWUyMWQ5YTYyYzliODgxZTViOGY1NjdkMzIwODgzOTFiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7129c5249334ab6a37c6a9299b4f221",
+      "statement": "Liveness is distinct from description extraction: an active posting outside the supported JD dispatcher retains an unsupported extraction diagnostic, and failed extraction does not change an active liveness result.",
+      "evidence": [
+        {
+          "resource": "repo://tests/career-liveness.test.mjs#L73-L86",
+          "version": "repo-lines-v1:sha256:83f8867927da4fd9a790b45ff1c55a93381fa1c3c3d084fd326de8852a8bab84:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyNjAyM2ZkMjkzYmYzY2QzMDdkN2IzNTc2ODIwZGY3MTFjNzIwN2E5MDljOGQ5MzNkNTViNzU0MmYzYTg0MGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NTI2ZWI4ZTVjZWRiZGJhOTA1MTc5ZTU2MGE5NDgyYzMzZjY0MTVmZmJlM2Q1ZTg5YmEwNzcwZWQxZGExNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzOGZjOWI5MTY0NTk4MDI3NGE5YmJiZmZjZDBlMmNhYzMzZjUyM2YxNTJmZTc2MzliNzEyMGJiMzgxMTdiYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYTIxNzdlMjBhYjkwYzE4ODMzNGZhMTU0M2RlNmY2ZWRkYzEwM2RmZjNjYWUyNDkxZmIzOGQ0OGM1MGEwMWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_083898afee214224a2a15176f8e8c647",
+      "statement": "HiringCafe accepts only guarded public HTTPS HiringCafe source URLs, maps profile/source filters to at most four queries, caps unique examined jobs at 25, and treats its result set as truncated bounded sampling.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/hiringcafe.ts#L40-L62",
+          "version": "repo-lines-v1:sha256:f7d5e6da30f7901fdcec7907ef96eaae055200aecf791e677c23af0221768c98:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMzZkYjdjZTFlOGY0Yjc2ODIyOWRhMWE0ZGVlM2IzOTU5OTI2MzNhZjdiNWFmZmYxZTJlZjY2NTM5MWI3OTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjYTQwZDI2MzY1ODlkOWYyMWU1Yjg5ZmQwMmE1ZTA1NGZmYTYwMDE2Zjg0N2NhY2E5MmM2Y2U0YzM0YmQxN2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkNGEzNTlhNmE5ZjQzNGZmN2E0ZDQxY2RmZWM0M2I3NTBjNWQwMWE3OGQ1YjNmYjI2MjdkYjRhZDg5ZTliM2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/hiringcafe.ts#L5-L24",
+          "version": "repo-lines-v1:sha256:e520c5be457954f8a684fbbaefe0b5a35943ff291d6bad11bf38f3d159a4e74c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZmRjYmNlNTA4NWU0NmI2YjE5YTk1YjY4NzQzZjkyMDYxMzBhMjkwNDBkNmMzNWZjM2M5MjZiZjc1NmI5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliY2FmZGQ2ZTE2ZTMwYjZiODgyMmNhZTc2Mzk4MjYwY2RlYjg0MGNjYTg1M2VlMTIxMWQzODMxMWU0YjYzODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkYzgwMTFiOGI4NjMxMTE2NDIzOThmN2YyY2E0ZjI3NDAzNDdmZTQxNDRjZDRhMDk0ODM2YmM2ZGY2OTYzM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwNjE1ZDJlYjlmZTlkZWVkYTVmZjY2YWQ3NmM1YmVlMGZiNzNkZjMxMTUxMjRjZTNjZjVjNjIyNmIzYmU1OGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_749405a4454a413595d79daf2809feb0",
+      "statement": "A HiringCafe lead reaches employer verification only through a direct public non-HiringCafe URL or exactly one explicit external Apply anchor; missing, ambiguous, or blocked employer links become diagnostics instead.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/hiringcafe.ts#L25-L39",
+          "version": "repo-lines-v1:sha256:7b42b970002c6a85faf4da4e72d5d0eaaa9f8b284940466a246cc6bf483a9ea8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3MDhjZWRhMDVlYTFjYTIzNjRiMzMwYjhlNTNhOGRjODg0M2M3MmQ4YmU4NGVjNDAwZDY5YzEwNmViZGViOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlZDEwNzAwMTM3MTAyZWQ2NmU2YzczNDEwNmI3MzBmMjExNmQ3NThmYjBmODYyYWFmYjU0ZWJiZTk0ZWRiYjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxZTZhMjQwYTJhMmYzNWVkZmZiNWE2MzhhOGI4N2I0ZDMzYzVmMTQ2YzhiNTNiZWVkZGJhMzg2NjM5MDIzNjgifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/hiringcafe.ts#L54-L59",
+          "version": "repo-lines-v1:sha256:2cec198010de3f977a39a7feaf4d8e02f707f4d962394e460d201f0db59e04ac:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTM3YjEyOTc4Y2U2M2ExYjYyODM2OWI5YzNjMzVhMmZhZDUxYjRmMjEwNWM0OTczOGQyMWI2Yzg0ODMyYTZkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjY5M2MyMTFkNzQ5NWVkMTJiYjBiOGM5NjFlNjVmYzY5ZjhjNDczMmQ0OTQzNmUxNzhmODEzYzJlZTM3YjJiMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWNlNGUxYTA2ZDcwZjdkMGM4Y2QwMGYyNTkxOGRhYzk2YzhkYmQwNjMzYjlkODIzZDc1YjY4MzUzYWUwMDkzMCJ9"
+        },
+        {
+          "resource": "repo://tests/hiringcafe.test.mjs#L18-L35",
+          "version": "repo-lines-v1:sha256:877d403f1a5f2979a71a515ba2ea1e0c3b4107c0ae19a495460e4f31ee367f3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxZjU0ZDY1ZTkyMDkxMmE3MjkxM2I0ZjVhN2YwZjgxZTQ4MjIxMzA2NzdmMWJjNGIxOTEyMDFlMmU4YTg5MTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMzJiMzI2NDU0ODdmYjc4OTU5MTU3ZTU2NTVkNjIyMjgwNDM4MzgwYTNkMzE4NTQ4ODYxNDY0N2E5OWY2MjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyZTE2NmE4NGU4YmRjYWM1NzI0Njk4ZWRmMGIyYzIzOTNkYTFlMGUzN2NkYTcxZjMzNThmOTlkZjZiYzg0OTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0ZDQ5YTFkMWRmMzZlZDNlNTE5ZjlhZmVkMDVmNTViMzZlYjZkZmViOTUyZDNkZTcxYjU4ZTc5MTc1MTJlMzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5cb3b4db4b0d4d039f405d3631525d4c",
+      "statement": "Programmatic submission tools are exposed only with LOOKOUT_SUBMISSION_ENABLED=true, while worker application execution additionally depends on LOOKOUT_EXECUTION_ENABLED=true; the API wires submission tools and the worker wires its browser executor only under those flags.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/README.md#L327-L341",
+          "version": "repo-lines-v1:sha256:c6ca26e490a9fc794ed671e384d4ae3ba7a68903290f358637c6e71c7a1a68f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwZTU2MWJkNWI1NmZlMjk1MGIxYWM5ODNjYTk5ZGJkMWVmNTBjZDAyMGUyMDk3ZTBkNzAwNTM4MjVlMzZmMmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhNmVhNGNmZTM2MTI2ZmJkMTBkZTMyYWY3MzAxZTllMjRmOTQ1YmYyMjg3NDEzZmExZWUzOTAzOGJhMDJkMTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkOGYwYmY0NWYxNzVjNzNjOTJmZDJjOTA5MGYwYzM3N2EyMzk1NWY3YmYyZmE1ODVhNjdkYThkZDc0ZWQ5MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1ZDExNDg5OTExZWMzYzFjMjVkYzIyZTNmMTYxYmVkOGUwYTdhYjNmNTRkMGYzZDJkZjJkNGM5ZGY1N2I2ZjAifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/main.ts#L19-L38",
+          "version": "repo-lines-v1:sha256:4cceb26d90480a211bf21acb78510417951958f7108371188ca892382cd82598:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkZWUyMzY0ZTA2MGE0OTJhNjZmOWZjNDc0NGUzMDRhNjk3ZDc4YThmMmViMjNmMzZlZjE4YzRlYzRkOWU0YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzZGMwMjI0ODc4MjFmMjA0ZDhkMGZiYzQxOGIxM2U3NmQ1MjQzMGIzNTUxNzkzZDYzZTRlM2I4YWYxZmE1YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxMWVjZGUxZmJmNTQ1YzczOTA3MDdkNWQyOTZjOWQ2Y2E5ZmJkOTQ5N2QzODI0MzE0NDFiOGYwNjNiYjZlMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmZjcxYWUxZjUyYjkzNGY3MjNhNDRiYjQ4MDkxNjllNzBmM2VkNTc3NmI1NGJhZDA4YzdiMjcyNzEyMGVkYzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c11b2024b0c4d32aab2fe3c7f80e12a",
+      "statement": "The submission runner only proceeds for an authorized canonical job and a single supported form whose fingerprint and values remain pinned; it allows exactly one submit click and requires an expected confirmation URL, visible success marker, and no visible form for a receipt.",
+      "evidence": [
+        {
+          "resource": "repo://runner/submit.mjs#L10-L20",
+          "version": "repo-lines-v1:sha256:d8009aaaa3bfbaee4b771ecf62c77e2cd55319df35d2fce223e5bfc78ee66869:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYmMxYjFiMDc1OWFkOTc2OTQ4M2I2OTk1YWRiOGEwMmE4ZTZmZDI4YWQ5Njg4ZWQ4NWUwZjQzNWNkYjM5ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZDg4NjljYmEyMjJlMDAwM2IwZjI1YmExODMxM2I1Nzc3YTU1MDkxZDdmZjE4NjA5OTZkODg3NzY1OTI0ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkMDg2YjA5YTI1YTEyOTFkOWI0ZWFhYzAzNWFmM2NmZTU4NjFmOWYxYjZmMjIyOTMzOWVlZjQ4ZWU4ODM4YjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5ZDcwYzczZTgzMzZkNWU0MWM3NWRlMmJjODRmOWQ5ZTE4NGYzZmFkNGIwZWI3NzM4NWVhNDQ5MGM0ODM3ZjMifQ"
+        },
+        {
+          "resource": "repo://runner/submit.mjs#L30-L70",
+          "version": "repo-lines-v1:sha256:cdf0df3bec03bf8c8bebf2043be1cd910609e5b709228411bbf4afed77deb754:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5OWNhNjY5MmRmNGU4YTU5YzJhMzk1Y2I3MmIxZjA0OTc4MzI3Yjg2NzVhN2EwNjA3NzZlYzBlODlhYjNkNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwNWM5NjY2ZjYwZThmZmNkYjUyNzZiODU5MjhkMzZlMGJmMjAzNGUxZDFjMDNiMzUxZDM0Y2NhYTVjZThhYzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyYjFkNjRlMjgwYjEyZDI5Y2Y4MmE1YjE2YTM1ZWVjODhjNmQ4YWNmMDUzMGEzMWNjYWM5MzA3OThhZTViOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3ZTI0OWNmOTdlMjU4YTFlZDI1OWEyMDVkZTZlOGU3Yzk4ODkwOGIzOTYzZTQxYTViOTAzYTZmNjExN2ViODQifQ"
+        },
+        {
+          "resource": "repo://runner/submit.mjs#L93-L127",
+          "version": "repo-lines-v1:sha256:542e6c8230a59dd6badcd72f98b90e3eb5f1344116b1dbea3d4774f02d7a84f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMWM3Nzg3YTBmMjQyZDM0MzE2ZDk2ZDM5MjIxNTRiZjE2NWQ4NjFhNzI3YTE3NWMyZTg1NTdhNGUwNzIwNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3OTE2NTNjOWQ4MjIxYmU0NmExMmI0ZjU1MTAyZGMwNTdiYTY3ZTYzMjRjZWNiYzYwOTM0ZDlhNWQwNmMyN2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0MDYzYzkzZmUwZDlkMWNiZmExMjJlNjc1MDk4ZTU2YjdjZTg1MDVjMDFiY2VmNzFkODRiOTQ2NGRjYjE1YTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1ZDYwMjFlZGE5NzNlOThjYTQ4MzEzMWM5M2ZhZGNlZGYyYWYzN2YwNWQyYmE5ZmM0MzgwYmNlNjNkOWE3YjIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_749fbbc4909e40a697ac19454616b3f8",
+      "statement": "After submission start is requested, runner errors are treated as uncertain and the runner does not authorize another click; recovery reports or asks for human employer-status verification.",
+      "evidence": [
+        {
+          "resource": "repo://runner/submit.mjs#L106-L115",
+          "version": "repo-lines-v1:sha256:55ef143c3f9d51baccd427bf835c91e7f7849bae861e2b322fcd3cc958990413:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ZmQ1ZGNhOWVjOTQ2NDFiM2RjYzY1ZmM5NzQ1ZTlmMDc3OTlmNGFkNmYzNzAwYTQyYWFiYzY3YTcyZTE3MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NDNlNjRkMTYyY2E1MDcyZjMxZTkyOGM1ODAwNDdlZjg0MjVmMzhmNmY3ODQxYzFlOTIzZTQ3ZDE2OGZjOTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZDg5YjIxZDk2ZWFjOGYyZjM0OTZkYzc1OTcwMGZlNjU2YWJhYTdmYjU3MTk5ZjEyOTI4ZjZkMzUxYTdmYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkMjlkZjYwODViZjY5Y2FhM2I0OTk1ZTExNTEwYjFmMzdkNzFjYjVkNTQxMjRmZjkzNzkyZjRiZWUwOWFmYzMifQ"
+        },
+        {
+          "resource": "repo://runner/submit.mjs#L129-L148",
+          "version": "repo-lines-v1:sha256:6d39275168994815ec3f6ec0dd2f4497b03b990d8cbd4cf2c3107d9eaedcee7e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNGMzZjkxODAyZjIyMzhmNzhhYjE5Yjk2ZmFmOTgxZTQwNWIwNzAwY2FjZDNiZDUzZGZkNTQ0MTJlYWFiMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMzEzOWVlMmE3YTU5ZTMxZDZkMTlmMTlkNDc4YTQ4ODA1YzFmMzBiMjAxZDlkYzAzYmYxNDJiMzcxNzAwOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhZDAxMzk1YmJmNDY4ODliZGNlNTE4MDZlOGIwODAwMjRlN2UxOWI5YmJkNzllODk2NDg3NmQ3YTZiNDljYjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ccab1a2dcdc341338ed7cf84112ca708",
+      "statement": "Resume parsing accepts only an owned current private resume ID, validates owner-scoped object path and content hash, verifies downloaded bytes, and sends the bytes only to the fixed APILayer endpoint; agent parsing rechecks required scopes and ownership.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/resume-parser.ts#L34-L36",
+          "version": "repo-lines-v1:sha256:3e39b996a444edcdd5c2ece3c85971198ed49e26af60c53e7786c9edbfc00ecb:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzUzMTkwMDcwMmM3M2RiYmUxZThkOGY0OTExMjg2ZmM5NDIxMTVmZTJkYjI2ZjhlMTM1Y2UzNGEyNzFiMWMyZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTcyMjU5ODZkYjQ1YThjMzE0MGZmYTg5ZDYxY2Q0NzM1M2Y5MjQ3ZmM5MDNlOTY0Y2YyYzUwY2MxZTI4NzJmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGRkMDhhNmRjZGZlMjUwOWJiNDc3M2Q0MzRkY2Y3MzI1NmQ2NzY0MDA5YzY4MmE2YjM0ZGI2NTVhYmNmY2JkYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjgyYzFhZWY4MGRjYThmNmMwODI3OGM5MzNiZjk5YmRkYmEwOTc5YTMwODY1NjNkNjdhYmI5MzE0MzAwNTdjMyJ9"
+        },
+        {
+          "resource": "repo://backend/runtime/resume-parser.ts#L42-L63",
+          "version": "repo-lines-v1:sha256:147a608ced78f71c1837db65c2274d3d0272ff66fe187cec544fb5ddbf6434a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlNjE3OTFhNDgwZGZiZjQ3ZjMwYjllMmM4NzJlZWIxYTZhNzRkNDAzMmYzYzcyMzM4MzAzYjA2M2I0ZjNmMGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZmIxYzZjNzczNWI1NTM3MjEyYmM3OWY5OGM5OTI4NTIzMTRiNjg5YWE1OGEzYTk5NjFkNTFjZGM0NDU2MTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwZDdhYjExN2U4ZWY5MjdkNWZiZTQzNGYyODIzODEwMGNhZWU5MmE3NDkzMWYzYWRlNDAyOTJlNzYzY2EyMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlYjE3MzJmYTM0Nzc1Y2U5MzVjNGI3NzBkZDNkYjU3YjQ3YWZhOThmYjcwOGJlMjljMGMwMjY4M2I3YWU1MTIifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/resume-parser.ts#L83-L90",
+          "version": "repo-lines-v1:sha256:465ba5525ae51bd4d17f46a619b89f1d7f017b4195034a15b0d082d279395e5b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjlhNTMxOWVkZmVlZjAwMDYzNGExZjQ5YzAyMGI4ZWZlOGViOTc5YTg4ZDZlMjRmNGMxYTQxOTgxNTFmZmNkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWYyNWJhMDVjYjkwMjRkOTJjMjEzN2QzNmVmMDhlNTAzMWU1NmU4YzAxMzYyZTNlMzgzYTRmY2UzMzc3MzY1YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2ExYzE2MzNhOTYwY2ExNmI1NThlYzU3YTA2NjI2MzAwNzc5OTczOTM4YzFhMGY4M2E3ZjJjZjJiZDA4MmM2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTE5MGIxNjEyMmY2NTdlZGM2YTgzMDNkODllNTFkMjFlMTZhYTYzNGVkYTAyYzdiNWVkYTFlMjlkM2M4YTM4MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_17bf0cfd78594260bebdee368bad253d",
+      "statement": "Resume parser results are schema-checked and returned as a review-required proposal rather than a profile write; sanitized per-owner/content-hash results are cached only in process memory for 15 minutes and are not durable billing deduplication.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/resume-parser.ts#L12-L32",
+          "version": "repo-lines-v1:sha256:20a06adc580d6137742c4d686e04f60c2134f1012368ac76dec874fe2bb37ce8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiN2FmMDk2YmM4OGUyZmI4MGExMTE4Yjg3YzlmN2Q1YzA2YWFjNTIzMDRiMzJlZTg5MTEyYzQ1ZjAzYjUzNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwZGQ3NDNhY2RjYTQ1ZTVhMDc3MGVkM2M4OGRjNGVjZWFiZWFmOTk5ZmUxNjk2ZmFmNDEwNDNhYTI3MjA5MjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3NzE3ZmE5ZTAxYzQyMWMzYjFjODVkZGIyZDllNDBiNmQ2YWM4OGE1Y2ZkMzFhMTZkMDE4NTJlMWJkZjg3MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljYzA2MWI3MDY5NDY5N2I2NTc3YTFmYTI4M2NlOTM5MjIwMGJlZTZjMzE5ZTg3YzE3MDYyZjA2NTAxMjZjNjYifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/resume-parser.ts#L38-L40",
+          "version": "repo-lines-v1:sha256:f88a7fa4e2132a0c790b58d865761496ab308907bb8cd5ccdf3a44670a171a91:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M0YzQwYzFkMDlkYzliYjFhNDZjYWQ1ZmUyOGFjYTgxNzNjMDBiYWQ3OTA2Y2RhOTZiMDU3OTkzODY2MDM4YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGZiZTg1ZTE2MmQ1ODY0MTk0MDI2ODBkYTE1MzMwOGY3NzY1NzNkZmUwMmMyZDJiMjU1YzU4MTA3YmFhM2U1NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzFlZjY5M2M2NzU4ZjNiNWI3YWMyZmU1NGUxMzQ2ODRhMjU2YmE5Y2MxNjc1NTc0MmJhOTBmYWJhMDM3YTdhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzAzZDNhNzhmMGIwYTk3YzliYjY0NTE5ZDJiODVlNzk4MjBmMzUyMTgwZWQzMDNhNmVlMjEyZDhjMDMwYTc4OCJ9"
+        },
+        {
+          "resource": "repo://backend/runtime/resume-parser.ts#L50-L80",
+          "version": "repo-lines-v1:sha256:a019faa19910d2aea5e9ee9a96c6cef4598776fbe4ee01ca2ded0ed5ac9d6476:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNmZkMDAwNjk4NzEzYjVjZjZjZTRlZDcyOTgwNjc0YTk1N2VlOTI0MDY2MmQ2NmExYmQ5NmY5YTFiYmUyNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMzM4NGMyYTJkODZmMjFkMWFjNGE3NDRkMzRiNGMzOTUxNzg3N2QxNDBiMjkwNGJmM2E5MjJkMTI4Yzg4NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmODVmZTBkYWVlNzQ3ZjQ5MTQwOTIxODc0MWUzMTg2MDY2NmI2YmU5MDdlNDQ5MTg1Y2NjM2YyNmQ3NjdmODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MDgzYjA4NjQyZmJjODUwNWM3MDE3MDJlMjIzMDdhOGNiZTljYTU1MTAzMTBhZWViYTZiOTViOGQ1NzM4NDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fb7700079a954acc81c7198a49581b84",
+      "statement": "Controlled submission E2E tests use real Chromium against controlled employer routes and local handlers, and explicitly do not send a real employer application or call a model.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/README.md#L353-L363",
+          "version": "repo-lines-v1:sha256:8be85dd0c56850828e6af19b63f36c3fbdb16a8448560ff6bc6a160d7ffc2865:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzM2NzIwOGM2ZGRhYmQyMWUyNDlkNWUzYTJlMWQ0ZDZiODk5YzcxMjZiNmQ0YzgzZjY1MWYxZDZlMjZlNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViMjBmOTVmN2E2M2Y5YmU5YjFmYjFkMTRiMzQ0NmU0ZjdkMDcyYTQ3ZTY0NjhjMWZlYTdiZjliYTkyYmUzMGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5YzgwZGE2ZWRjM2M0Y2M5ZDdiNTc3NmIxOWMxMjkxMzNlMzBhMmM5MzExMzA4ZDIyNGY0Yzc0YjI4MGQxYjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4ZDE1NTI2MjBiYWU1ODE0MTYxNjdkZWQ0YTM1ZDU4OGU1MDYyZGE5NzRiODFlYTZlMzQwMWZmYjQ5NzhiNTMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}

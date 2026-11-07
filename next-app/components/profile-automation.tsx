@@ -2,13 +2,14 @@
 import {SINGLE_PROFILE_UI} from "../../lib/single-profile.mjs";
 import { useWorkspace } from '../lib/workspace';
 import { useApplicationProfile } from './application-profile-context';
-import { profileAutomationSettings } from '../../lib/application-policy.mjs';
+import { profileAutomationSettings, accountAutomationSettings } from '../../lib/application-policy.mjs';
 import { updateField } from '../../lib/search-profile.mjs';
 import { Section, Field, control, primary, Notice } from './ui';
 
 export default function ProfileAutomation() {
   const w=useWorkspace(),a=useApplicationProfile();
   const settings=profileAutomationSettings(a.profile,w.state.workflow.searchPreferences||{});
+  const account=accountAutomationSettings(w.state.workflow.searchPreferences||{});
   function nextPrompt(fields:Partial<typeof settings>) {
     const next={...settings,...fields};
     try {
@@ -25,10 +26,11 @@ export default function ProfileAutomation() {
   function change(fields:Partial<typeof settings>){const prompt=nextPrompt(fields);if(prompt!==undefined)a.patch({prompt});}
   function save(){const prompt=nextPrompt({});if(prompt!==undefined){a.patch({prompt});void a.saveProfilePrompt(prompt);}}
   return <Section title="Application automation">
-    <p className="mb-5 text-sm text-board-muted">Automation rules for {a.profile.name}. Your saved approval rules still apply.</p>
+    <p className="mb-5 text-sm text-board-muted">Automation rules for {a.profile.name}. Profile preferences apply only when account-wide auto-apply is authorized.</p>
+    <p id="account-auto-apply-status" className="mb-4 text-sm leading-relaxed" role="status">{account.enabled?'Account-wide auto-apply is authorized. Your saved profile rules and submission checks still apply.':`${account.reason} Review and approve each exact draft in Applications to submit. The control below shows your saved profile preference; it is inactive while account-wide auto-apply is blocked.`}</p>
     <fieldset disabled={a.busy||w.locked||settings.conflict}>
-      <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm"><input type="checkbox" className="h-5 w-5 accent-board-accent" checked={settings.enabled} onChange={e=>change({enabled:e.target.checked})}/>{SINGLE_PROFILE_UI?"Auto-apply with verified facts":"Auto-apply routine matches for this profile"}</label>
-      <p className="mb-5 mt-2 text-sm leading-relaxed text-board-muted">{SINGLE_PROFILE_UI?`${settings.enabled?"Auto-apply uses verified facts and permitted saved answers.":"Review each application before submission."} Missing answers and uncertain outcomes still pause for review. Submission needs a connected supported runner.`:"Important matches, missing facts, unfamiliar answers, and uncertain outcomes require review. Submission needs a connected supported runner."}</p>
+      <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm"><input type="checkbox" className="h-5 w-5 accent-board-accent" aria-describedby="account-auto-apply-status" disabled={!account.enabled} checked={settings.enabled} onChange={e=>change({enabled:e.target.checked})}/>{SINGLE_PROFILE_UI?"Auto-apply with verified facts":"Auto-apply routine matches for this profile"}</label>
+      <p className="mb-5 mt-2 text-sm leading-relaxed text-board-muted">{SINGLE_PROFILE_UI?`${settings.enabled&&account.enabled?"Auto-apply uses verified facts and permitted saved answers.":"Review each application before submission."} Missing answers and uncertain outcomes still pause for review. Submission needs a connected supported runner.`:"Important matches, missing facts, unfamiliar answers, and uncertain outcomes require review. Submission needs a connected supported runner."}</p>
       {!SINGLE_PROFILE_UI && <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Company tier list"><select className={control} value={settings.tierListId} onChange={e=>change({tierListId:e.target.value})}><option value="">Choose a company list</option>{settings.tierListId&&!w.state.workflow.tierLists.some((list:{id:string})=>list.id===settings.tierListId)&&<option value={settings.tierListId}>Previously selected list unavailable</option>}{w.state.workflow.tierLists.map((list:{id:string;name:string})=><option key={list.id} value={list.id}>{list.name}</option>)}</select></Field>
         <Field label="Review threshold"><select className={control} value={settings.threshold} onChange={e=>change({threshold:e.target.value})}>{['S','A','B','C','D','all'].map(t=><option value={t} key={t}>{t==='all'?'Review every match':`${t} tier and above`}</option>)}</select></Field>

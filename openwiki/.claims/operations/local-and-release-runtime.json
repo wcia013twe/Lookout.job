@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:0f63a5b148eda6a91b87d63c0a6e3fcb0af28d434695707e5d595932fdc2083d",
+  "claims": [
+    {
+      "id": "claim_6b2d2ee035dc4f3089d5c67efc5c6714",
+      "statement": "The local Supabase configuration defines an isolated `lookout-local` project with the API on port 54321, database on 54322, Studio on 54323, Inbucket on 54324, migrations enabled, and seeding disabled.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/config.toml#L1-L34",
+          "version": "repo-lines-v1:sha256:747a7d958e8a5dc1d7e7d194717a45b8e99d9923d38b90afd0cddceecee7083c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0OWExMDQxNzhlYmE2MzJjZDE4ODY4NjUyNWQ5NmIzNDYxMDMxYjQ4Mzk5MTkyZGZiNzIzZGQxZDllYjZhNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YjVjZTg4YmIzMjZmZGViNTVlOWIyOTYxYTExZTY1NzZlYzUxNmJiMjBmNjA2ZmUyNDcyYmJkMThhM2M3YzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiYzdiZDc0ZWY0MDliMzgxYmIwYzYxYjQ1YzE2ODdjYTRjMWIzYzI0YjMwYWM2NWU2ZmQ2MGM3OWFjOTNiYjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9795d26dcb547a3b2563bdfb32136ed",
+      "statement": "`make services` requires the Supabase CLI and Docker before running `supabase start`; `make frontend` selects the live-main preview on `main` and otherwise launches the local frontend, while `make down` runs `supabase stop`.",
+      "evidence": [
+        {
+          "resource": "repo://Makefile#L25-L46",
+          "version": "repo-lines-v1:sha256:670dc140299294b53d582d190e2b7af315256683d4c499b975d83b87db6196ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NGM4NzE1ZTcyOGEzMTZhZmUwNzNhOTk4N2Q0MDU4MTY0NDkxZjYxYzA4ZTViYTY5NDI3ZTZlN2M0ZjRjYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NDdjMzg3YmU1YmQzNjAxYWFiZjgxZTg5MzRhNmFkNTcyNDE0YmFhNmE2MjdhNDAxNjFmNDUzOGQ3NDBmMTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3M2I0ZTkzNDI3NTMwMTZmZDI4NmZmMGNkNTY1MDI3ZDFlN2I1ZGNiMzU0YWFjNTRiYmU4ZjVkYTcyZmU5ODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxMDAwODI3NmU2OTdkZmFiMGE2MGI0YzkxMWE1MDAzNTkwNDU0YjJkOTk4MTA0YjYxN2QwMDlkM2RmNzQ4YWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b10efabbd644761a28a8e9acbb810df",
+      "statement": "The non-main local frontend launcher reads local Supabase status, rejects non-loopback API URLs, and passes only the API URL and anonymous/publishable key into the Next process rather than the service-role key.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/local-frontend.mjs#L8-L29",
+          "version": "repo-lines-v1:sha256:e2b7917ee2238f402d929e1872bd1d81007661b6a421e68760c1831ba3d022d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNmM0OTczYTBlMTI5MTAwYTVlMGJjY2UyYTIyNGQ0NzliYWQ1NzEwYjUwOTQ5YTY1MjhhMTgxYWMxMmYwNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiMGZhYzg4NDI3YzEyMmRhNTVlYjkyMjM3YWE3MTM3ZjYwMzc0ZjBkOGE4OTk0MTRkNDJiZTczY2FiMDg2OWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkZmFjMzdlYTM5YTY0NmZhZGQwYTJjYmRjYzcyMjcxZGFmNjVmY2U2YTM1Y2NlYzc3ZDc2ZTRiZjAyYzYxOTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_93a799b15e7f4a3aa31b834481fa7169",
+      "statement": "The Next configuration loads only `NEXT_PUBLIC_` root-local values into the frontend process (apart from a narrow Geoapify compatibility mapping), outputs a static export, and supports an optional public base path.",
+      "evidence": [
+        {
+          "resource": "repo://next-app/next.config.mjs#L1-L13",
+          "version": "repo-lines-v1:sha256:164485ebb7a0e61a4810fbbc09494e36e5d96a28bb7a609d9eb7ae47c2445ca2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwYWNiYWZiNzg3NGMzNDllMTRlYzg2NDk3YjIzZDJmOTU3ZTNlZDYxZmMzNWQ0ZDZmYWExNzM5MzAxYWQyYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMjA3NjNkNmJhOWIxYmMwNzkwYWM3OTFjYjE5YzI4NTYzMzgwZTNmNDIzZGFhMzA4MTI3Yjg5MmMwOWYzMzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_926e7142f801416186ac5178f5a96519",
+      "statement": "The Node runtime requires `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`, uses a service Supabase client, and chooses API or worker behavior with `LOOKOUT_PROCESS`.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/main.ts#L12-L20",
+          "version": "repo-lines-v1:sha256:a94ed3f000934856ac3e4957f752ff15b5c79a5aa6a9bed5cc7cc0f4dbb84b25:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU3MmYzMGU2M2I4NzM4ZTE4ZWRhNTMxNDQ0MmQ0ODdjOTNhMWU2ODE4NTk3MzM4MWNjYTlhMGI5MWYzYzE1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjA3M2UyYmI2ODE5YTIyZDIxYzIxM2ZjNjMwYmUyYjk1ZTMxYzM2YjI5NTgzNDM4MzNlZTFhZDkyOTlkNWVlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjY4MTUyMDY1OTMzZGM2MjFlODMwZDI4NjIwYzAzNjJkMjU5YzEzZWVlZDY0NzUyOGJlNmVlYjJhZTI2MTQ1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjgzYzY3ZjAwZThkZjZhMGIwYTAyMjVjNDYxYTRiODE5YmNkZTVjOTVmOWFhOTc2NDFiMDljZWZmMTljODA5YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d4aaaf24e0e9468588b1c5892e616439",
+      "statement": "In API mode the Node process validates port and host/origin configuration and starts the HTTP server; in worker mode it polls durable work only when `LOOKOUT_EXECUTION_ENABLED=true`, otherwise remains idle, and submission execution is additionally feature-gated.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/main.ts#L20-L40",
+          "version": "repo-lines-v1:sha256:731bf07a6a9d53a4d6e4f0f45c6089622de5ce2d2243e340acaff6e4af958ce0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwNzNlMmJiNjgxOWEyMmQyMWMyMTNmYzYzMGJlMmI5NWUzMWMzNmIyOTU4MzQzODMzZWUxYWQ5Mjk5ZDVlZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3NzM2ZDFmZTkzMzI2MmFhNThlM2ExNjRiMmNlODA0ZDlmMGI5OWNiZjI3MWY1YTRkYjY1NTNlYTI4MjQxN2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkwN2ZlMmY2NDBmYmYzMjgxODI1MmI2YTUxZWY0MmNkNTJiZGZjZWE1Zjc4OWQxZWM2Njk3YzgzZjFkYTY1MmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1de5bf241c3547cd987618be82887f5f",
+      "statement": "The local Compose stack runs the API and worker as separate containers from the same image and environment file; only the API publishes `127.0.0.1:8080`, while both use bounded local log rotation and the host gateway.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/compose.yaml#L1-L41",
+          "version": "repo-lines-v1:sha256:dbcaff48e7eb9419ad2cbaa1914d87749e3f7283470c1baec71edef0dca00eb1:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwYTIxMTQ5NThhOGM2ZTI5ZTg0Mzk1YjkyY2M2ZGEwMGY0OThjMDAwM2UzNThiY2MxNTk4OGY3ZDU3MDFiZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NTA1MDUwMTVkMWZkMDIzMWQ0NmYzZGJmMWFkZDU3MDc4NjM3NGY1NTgzNWM2OWRhMGZjMTEwMDU0OTNlN2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bdfb8ee8b01948eca0a897f3b6b1d35f",
+      "statement": "The Node API's `/healthz` is only a process-health endpoint; MCP, agent operations, and resume import are separate routes subject to host/origin, method, content-type, and request-size controls.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/README.md#L3-L6",
+          "version": "repo-lines-v1:sha256:9adf1b8b1a1fdca0c24edd89be60a3c9ce8b022abb816a78d7259ebbea059215:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjc4YWZkMDU1ZTQ5N2RkZTUzNzFkNDJkZGFkNzFjMmE1MDk5MGM0ZTA3OTkzNzMzN2E1NGRmYWFhYjVhZTNjMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGExYzgxOTFhNTdmMGVmNDk3Mzg1YTA1Mjg5ZjJhYmRlODM4NjM0MjkzNzdmNzA2YjdkNDdjMjU4OWIyNzI2YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTBhODk3NGUyNmFkMDZlY2E1ZTk0MTIwYTNkMjFiOGI1NDQzNGRkM2MxNTdmM2M3ZjM4ZWJhZDAxODNkZGMxYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY3YmM3NjgxMDRlZWExYmM3OTY1MjM3YTcwNDJkMjYzYjZiZGEwYWExMTEyMzFmNjVjNmE5ZGJlNDhlMzQ3NiJ9"
+        },
+        {
+          "resource": "repo://backend/runtime/api.ts#L47-L56",
+          "version": "repo-lines-v1:sha256:125a6da8d268e1b2203077aa814a9ad80a86b8dbfeecf595d3e21d9a5795e05b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYWU2NDU2ZTgzN2RjNzA2NjVmODlkMjc2ZTkxYTY1MmQyZDNmNGE4ZDBlMjYzYmU2NTI0MTk0MzFlYjVkNjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YzQ2ZmE1YzY5ZDRmN2RlYWQxNjU3ZDBhOTBjYTJmZDYyYjgwODllMjUyNTQ5NGZjNTY1NjcxNmRlODQ5MTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwNjg2OGJhMDhhNzY4MTFjZjMwNzg5NTA2NGE2MmQ2NGMwMWIyYjdjMjJkY2ZkMDE3MzgzOTVhYTg5MzM4MjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/api.ts#L9-L25",
+          "version": "repo-lines-v1:sha256:88c91a733ecd39e06e92acd6bf09239f1d113aa304879913e82a5bf0da4e20f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiMGM4NGMxNzkyYjA5MDg4MDkwODljMDc4MGRhNmYwYjUxYTVkNjA3YWEzYzBiY2JlMGFmZTZlNzY2YzRhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NDk0YTI5MmJlNDAwYTdjNzY3YTg1NTllYzNjNzBkYjhhM2Q0MGU2ZTI5NDE0NDg2M2FjNjJjMjBmNGRlYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3ZjQwYmYyZGM5NTk4NzZjNjZjZGY1OTU1ZGU2ODM3N2QzMTc4ZmUxNmNlODA5N2FhZDQ5ZWIwMjYyMjk3MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyZWFjNWE4MDZiYzI1MjNkMWMxMDJkM2Q1YmQ0YTMwODc0ZGRkNmNkNjA4NzNkZGQ2YTUwMjNkZWM5MTBkMTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b627bb94eb544f03a7c77ff22791f047",
+      "statement": "The optional ngrok Compose project attaches only a tunnel to an existing external backend network, forwards to `http://api:8080`, receives only `NGROK_AUTHTOKEN`, disables inspection, and does not restart automatically.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/compose.muse-dev.yaml#L1-L30",
+          "version": "repo-lines-v1:sha256:41ef4f28a6da8c1304bc0af83b930634e130a4065da9014e74e96a9e6677e997:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4YWJmMDhkOWFiZjA4MWUzNTdmMTdmYmI3MzM0ZGYxZDU0MDgxZTk2OGRkNTQ1YzYxOTJlYzhjMTIyZGQzMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1YjJlMDVjNmZhOTU0MmQ0M2Y3YjY2MDdlOTQ2YzQ0OGY4NmYwYTVjYjU5ZTc2MDRmZjYyNGI3OTkxYWU2NGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_40d231cbd8234b93a419e968f3740e0a",
+      "statement": "The tunnel traffic policy denies every path except `/mcp` and rewrites the upstream Host header to `localhost:8080`.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/muse-dev-policy.yaml#L1-L10",
+          "version": "repo-lines-v1:sha256:0c959e6573e26a0b9cd250b94ffb4ed2abf0d54b8524eb19746ff2aaddffa5ba:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYzUwZDM3N2U1OWJkODIwYmIxYjUwMTNmNWE1MzQ4ZDliMTU4ZGNkM2ViODQ1MjczM2VmNmY4ZDFkNDU5ZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwNjdjMGJkMWM4ODYzY2Q3NTU1ZjVjMzUwYjM4OTVlYTNmNmNkZTdkOGNlN2Y5OTI4N2M4YzczNDM0NzExZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5bf3ecaabc1949a1a134020d52ce3619",
+      "statement": "`make dev` orders local Supabase, the tunnel, and the frontend; `make muse-dev` explicitly requires a root environment file and starts only the tunnel profile.",
+      "evidence": [
+        {
+          "resource": "repo://Makefile#L7-L29",
+          "version": "repo-lines-v1:sha256:134b555c21d17798a931f9e939411767ef175981a44287cca91c10f79bd450bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiYTkwM2NiYWFjZGM3MGI3NTQwZjgxM2JmNjQwZGI4OTY2OWU3ZTU2MTlkZmMxYzdmOTg3MjM2NjlmZmFhNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlYjU4ZmIwODhjMzU1Y2JmNjBkNWI3M2VkNDI3YWMyMGU2ZmJiYWI0NDFjYTViN2NlOGU2MzQwZTQyY2U3NDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhODg5YzNmODA3MzJiZWI4MzE2YzYxMjQ1ODVjZWEzN2RhZGM2MGUwMzU2MGNhZGRjNjM3NWUyZGNmM2M5N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzNmJmYjgxZmEzMjMyN2RmNmQ2ZjE3Mzg4Y2Y0ZTIyYTRhMmNlOWFkN2E0Y2JlMmRjYTI5MWM3N2I2MGZjOWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b59912231d9b4c449cd9d524cfdf38be",
+      "statement": "For local frontend startup, `NGROK_URL` is validated as an HTTPS base URL and converted into the browser-visible `NEXT_PUBLIC_AGENT_MCP_URL` ending in `/mcp`; the helper copies only selected public configuration values.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/live-main.mjs#L16-L34",
+          "version": "repo-lines-v1:sha256:3398ff1487861244e7d78df2e2cd01a0f90ce5a1636388017566164916db1598:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxMmJjOWYyYzg0OTRlOWQ1NWRhNjZhNGFjNDg3NTI0M2ZhN2QzY2NhYjFiYzRlZGM4ODVlNWIzZTIzODI1ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliYmIzMTExYjc3NzcxZDcwMjkyMjNiYTkxYTZmM2Q1N2FhOTRjNjg1ODZkYmExYTkyNDNmMGI1ODcwNWI1YjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1MGIxZDljZDk4ODYwMGMxYTQ5NDNjMmZlOTk1YjBkODFkMjA4YmZiYjI3MGFhZjRhYTQzYWE1N2U2NWRmYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNzFmZmExYmMwOWY4NzJlNWI4MmMzM2E4N2MzNTIyZGVhZjBlYzc4ZjUzYjYwMjM1ZjAxODEzZjE5ZDNjYjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_54c3fabbf6634d348e70b76401617f1a",
+      "statement": "The frontend build runs public-asset preparation, `next build --webpack`, and export finalization; export finalization writes a content-hashed service-worker cache covering generated public assets.",
+      "evidence": [
+        {
+          "resource": "repo://next-app/package.json#L6-L10",
+          "version": "repo-lines-v1:sha256:60a53a46c8a3385255db2400b6a4483934db37670244409b7d1da7769bed3a78:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ4MzNkNTk0OWMwM2E0MGNhOTUyNDkxNjEwYTY2NTk2NDRiM2FhNDY2MzYyZjc5OTAyMGRiZjE5ODE1NDdkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWI2YjI0YTYyMzk0YWUyNmFiNjU1YjdiNmY1NGQ2YTRmM2UyYWNlY2MwNzNjN2E2ZmU5YjRhZjRiYjY0ODIyMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGMzMmIyMjZjZDg2ODQyNDkzNmNhMTI1MzE5ZGMzYmIyNzM2N2Y4M2RmNzdmMDFiNTQ1NWUwYTYzYTI4M2MzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTMyOTE4YjIxZWU0Njc3MzgwMWM2YmFhNGQzNzQ5NGI4MDkwYTQ1ODBiY2IwYzgyNTc4YzZjNzZhMDNmZjQ5OSJ9"
+        },
+        {
+          "resource": "repo://next-app/scripts/finalize-export.mjs#L4-L21",
+          "version": "repo-lines-v1:sha256:d07caafb97b023f0ffaf62871923acbb0067177e20ad1b6fa2549427aa5da747:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZjAyMThjMDRlZTZkN2MyMDE0ZGU2ZDA0MzcwZDRjM2ZjMGYxNzhhNzNjN2M1MWJjMDk3ZTc2MWU4MWE2MTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1MTgzZGI0OWIwZjcyNGI5OWQ2NDNmMzYxMWU1Mjc5NjRjN2FhYjBlNDZmNTU2ODhjZmE1NTRlMDU4YjQ0NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyZGM1ZjY1MTI2OTljNTZmZTdlZjg2YTljZDI1YzE2YzlkNDU0MDk3ZmQ4NDk1NDdkNjg4MWE1NThhNTEzNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c0a231247aaf4c179e1018fe17d785da",
+      "statement": "The production Pages workflow on `main` invokes the backend deployment workflow before CI/build, then uploads `next-app/out` and deploys it to GitHub Pages.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/ci.yml#L37-L46",
+          "version": "repo-lines-v1:sha256:15cc1f30d91c6a6ec6770e2ce3b67ff182e547c73ea44bf2cf8f0253910787c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2ZTAwMWI5NmRmYjQ3NmYzN2NiYjFmYjFkMGQxNGMyODQ0YjEwZDI1MTFkODgxZmI1M2ZjMzM1ZTcwN2I3NzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyOTJjZmE1YjdmNGNhMjZjNjk5NjNhMDIxZGVlMDBhZDJjNzY5NmQ4YmU5N2Y0ODE1M2EwNDMyZTNjMzNjNmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0YWJkNjRmM2YzOGJlMjk3YWVjNGEyNmM1YmZhNDFjNWM2MWNlNGU0NTZkMzExYjIyM2NhM2NlMmQzOGRjYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/deploy.yml#L1-L33",
+          "version": "repo-lines-v1:sha256:23b48f9884396568c708c05aee79d0e96e591bfe3cc4302f018be7f233372d2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjMTVlYjA1MjcxNWNlMTgzYzcxY2Q2ZGZiOWRjNmFlMjdmN2JkMWI2NGQ0NGE2ZWM4MzE2NGNjZWI3YjVjMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNmEyN2IwODdmMDQzZTdlOGY4ZTUxNWM4YWExMGQ5ZDE3ZjY3NjZmM2Y0YTQzMWQ4MTcwMzg5M2UzZGM0ZjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwNTNmMjdjYWQwYmY5NzM0NTg4ODIzN2YxZDA2NzFjOGZiMzFiMjExN2ZlMGExMDQ5YjM2ZDJjZGRlMDkxY2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e9d4745547914a86a61f0fd90c4508cc",
+      "statement": "The backend deployment workflow is restricted to `main` and the production environment, installs dependencies, and supplies `SUPABASE_ACCESS_TOKEN` only to `npm run deploy:backend`.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/deploy-backend.yml#L1-L28",
+          "version": "repo-lines-v1:sha256:8db28d155fccd96070c7b443cf40e7383a7826dfdccc74da96b30387c875434e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0NzM2YTFmMTA4MDhhMmViYWZjYTFiZjQzZGMxNjY3ODBmNTIxOWM5NzY5YTQ4ZjY5NWE0M2RjMjA5ZDc4NjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4ZmZkYjc4NTViMWM4MWIwNzAxMmFkZDVmMTYwY2MyNTkwYjExNzZjNWI5NDA1NDA4ODIyNjUzOTk0YTRjOTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_81533d2eed8242f3bdb1b13942939eaf",
+      "statement": "`supabase/migrations/` is designated as the single source of truth for the database schema.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L183-L200",
+          "version": "repo-lines-v1:sha256:ae03f324024308a94a933ab1906482f369630c602337c2ce460ab46a9d731d1a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkMGVjMzE1NmI2MTJjYTg2YTM5NWUwZjllZTZjMjRjYzUxYTNkOTEyMTE4OWJjNDg1NWZiYzQ1N2RlNWQyMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiOWNjZThlNzA1OTVlMjQ4OWY2MDlhZDlkMjNhZjFlMjU0YTI2YTAzMDgzYmE2ODQwNDFjMjkzODgzMmRhMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1N2NjNWVhOTU1YzAyNjVjYjhiZmMzN2QyZThlZjJhZTUyZmJlZmM3MmI0NzZiNDE1YTkxYTIzZjc4MGE4YjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzMWU4ZWNlOGY1NjNjMDNiNGMxNDI5MTEwNzQ5YzI2NTA0ZGY5Y2JjNzYzNWU1NmY1NWJkNjY4ZTU5NzhmYjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a106073174bb4306bb273ac66b83f5e7",
+      "statement": "The production deployment script refuses non-main workflow sources, dirty checkouts, and commit mismatches; it previews and applies migrations and deploys `agent-gateway`, `agent-mcp`, and `workspace-reset`, restoring the committed runtime-version file afterward.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/deploy-supabase.mjs#L5-L26",
+          "version": "repo-lines-v1:sha256:ef7569839c0e613b01774b12f395444f9cb3484e3a9936d9bfeed3c8f2f59a57:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViYWU4NjAyNDBhNDkwNzNiMzRjOTViZWEyZDc3NDgxMDRmMTFkNTRlNzhjNzQ2ZDUxZDA4NTY1OTk3Njc1YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzOWQ2ZDZkZjJlN2U3ZTIzNDgyMWZkN2I5ODZjZTVhYmQ1MzUwNWI3YjIwYzcxZGFkNzE1MTQwZjUxYWQ4MjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1Y2Y2MzE1NDk4NDkwZTc3YThiY2IxNDVkOGUzZWFiNmM0MjY1MmM0NDFmZjdiMDljMzhmMjdmMjM0YWNjYmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_043b1c3c551e4ea885ec3922de98081c",
+      "statement": "Browser environment examples designate only publishable Supabase configuration and public Node/MCP endpoint URLs, explicitly excluding secret keys from frontend configuration.",
+      "evidence": [
+        {
+          "resource": "repo://.env.example#L1-L13",
+          "version": "repo-lines-v1:sha256:0943dca27a08453b93206de083f45aa58e43b426c6b31290a6c5db210db313fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZjE2ZmIzM2E4NTE0YmUzYzc2MzlhZDZjODgzNTNhOGUyODEzZTMyYzA4ZDNjZTBmZWM1Mzc3ZDU2ZjRkOGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3OGZhMmJhZTVhN2M0ZGQ1M2VhOTY2NTYwMzA3MmE0MTUxNDc2Nzg1MGQ2YWU5ZmVlZmQ2NDYzY2M3YTM2MTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkMzAzY2U5MjcyYzA3YjdjMDQzYmIzYTQwNTFlZTFhZTU2MmU4MjAwOThiMzE3NDY5ZmNhOTg2NjhjMjMwZTMifQ"
+        },
+        {
+          "resource": "repo://next-app/.env.example#L1-L12",
+          "version": "repo-lines-v1:sha256:5781a7450a9c7bc2d0eeba2243b03738a64c767cd4c7258ba25800de527aaa1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwOWQ4MDJmNGE4ZTZmNjRiNDA1OTNkM2UwODFhMzVkOGI5ZmZhOTQ5NTRlODc1NGI3Nzg3MmNiMWEwODYyMmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3OGZhMmJhZTVhN2M0ZGQ1M2VhOTY2NTYwMzA3MmE0MTUxNDc2Nzg1MGQ2YWU5ZmVlZmQ2NDYzY2M3YTM2MTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}

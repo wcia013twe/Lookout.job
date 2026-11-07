@@ -489,3 +489,9 @@ its local test setup. It does not verify employer availability or hosted deploym
 About me → Projects & outside experience shows project name, URL and description in both read and edit views. Each entry has a project folder/code icon and, while editing, a labeled trash button that removes that entry from the draft. Editors stay open while local fields change; Finish editing saves through the existing profile writer. Existing stored role/date fields remain compatible with backend and MCP records; editing the visible fields preserves them.
 
 Demo check: edit Query Lab, add a project, remove it with its trash icon, and finish editing. Check the empty state after removing every project; reset demo to restore the fixture. Check desktop and mobile layouts.
+
+### Background organization logos
+
+About me work and education entries reuse the shared CompanyLogo renderer. Logo.dev is attempted with the existing publishable token; unavailable, empty or fictional organizations fall back to a briefcase. The same fallback applies across existing logo surfaces. Projects retain their project icon.
+
+Demo check: fictional employers/schools show briefcases without external logo requests. Edit an organization name to a real brand to check logo loading and name changes; simulate failed image responses to check the direct briefcase fallback on desktop/mobile. Reset restores the fictional records. Run `node scripts/check-profile-logos-ui.mjs` against an isolated frontend with a fake logo token for mocked success/failure and reset coverage.
