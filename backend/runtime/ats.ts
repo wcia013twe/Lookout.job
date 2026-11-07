@@ -12,7 +12,7 @@ export async function fetchSource(sourceId:string,source:Payload,{execute=execut
  let checkpointFailed=false;
  try{
   signal?.throwIfAborted();
-  const collected=await collectSource(sourceId,source,{execute,profile,days,request});
+  const collected=await collectSource(sourceId,source,{execute,profile,days,request,prefilter});
   if(collected.coverage==='inaccessible')return {listings:[],coverage:'inaccessible',total:collected.total,examined:collected.examined,blocker:collected.blocker,diagnostics:collected.diagnostics,provenance:collected.provenance};
   const candidates=prefilter&&collected.jobs.length?await execute('prefilter-discovery',{profile,jobs:collected.jobs,config:prefilter===true?undefined:prefilter}):collected.jobs;
   const unique=candidates.length?await deduplicate(candidates,previous,execute):[];
@@ -21,7 +21,7 @@ export async function fetchSource(sourceId:string,source:Payload,{execute=execut
    coverage:collected.coverage==='exhaustive'?checked.coverage:'truncated',
    blocker:[collected.blocker,checked.blocker].filter(Boolean).join(' '),
    diagnostics:[...(collected.diagnostics||[]),...(checked.diagnostics||[])],
-   provenance:{...collected.provenance,...checked.provenance,prefilterExcluded:collected.jobs.length-candidates.length,dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'}};
+   provenance:{...collected.provenance,...checked.provenance,prefilterExcluded:(collected.provenance?.prefilterExcluded||0)+collected.jobs.length-candidates.length,dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'}};
  }catch(error){if(checkpointFailed)throw error;signal?.throwIfAborted();return {listings:[],coverage:'inaccessible',blocker:'Source collection failed: '+(error instanceof Error?error.message:'provider unavailable'),total:0};}
 }
 

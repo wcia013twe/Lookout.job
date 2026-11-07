@@ -8,3 +8,10 @@
 - Validation: focused tests and the connection database scenario passed; catalog validation (158 roles), frontend typecheck and production static build passed (425 offline assets). Final npm test: 1,009 passed, 5 skipped, zero failures, including database scenarios.
 - After local-main integration: 27 focused permission/client/MCP/guide tests and the migrated connection database scenario passed. Concurrent unrelated changes were preserved; the full-suite/build results above describe this feature before that integration.
 - Limits: no real account permission was changed, no live token was tested, and no migration/gateway deployment is established by these local checks. The UI and scoped handoff must be released with the migration/gateway through the normal main workflow before hosted availability is claimed.
+
+## Local persistence follow-up
+
+- Diagnosed the running local database: permissions editor/gateway source was available, but migration 20261107210538 was absent. Applied only that committed migration and reloaded the REST schema cache; no reset, container restart, user permission change or token recreation.
+- Extended the local Edge smoke check to save scopes, independently list them again, preserve connection metadata/original token, remove scopes and verify removal, and reject foreign/agent edits. Real local Auth/gateway/MCP verification passed using disposable fictional accounts, which were deleted afterward. Run the script from the owning running-stack checkout so Supabase status supplies its matching keys.
+- A separate live stale-edit probe timed out; fixtures were cleaned up. Existing SQL stale-write rejection coverage still passes; live concurrent-editor error delivery is not established by the successful save/read-back check. Hosted deployment remains unverified and unchanged.
+- Follow-up validation: npm test passed (1,015 passed, 5 skipped); validate:data passed (158 roles); four focused permission/local-origin tests passed. No frontend files changed in this follow-up.
