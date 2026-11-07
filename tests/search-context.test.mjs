@@ -62,3 +62,9 @@ test('fictional demo labels HiringCafe as a source using the shared provider pip
  assert.equal(run.sources.find(s=>s.source_id==='portal:demo-aggregate').source.name,'HiringCafe (fictional)');
  assert.match(run.summary,/All providers share collection, deduplication, employer verification and database persistence/);
 });
+
+
+test('fictional recovery demo keeps saved batch progress on the same active run',async()=>{
+ const {searchDemo}=await import('../lib/search/demo.mjs');const run=searchDemo().runs.find(r=>r.id==='demo-run-resuming');
+ assert.equal(run.state,'active');assert.equal(run.sources[0].checkpoint.savedOffset,25);assert.equal(run.sources[0].counts.available,61);assert.match(run.summary,/same run/);
+});
