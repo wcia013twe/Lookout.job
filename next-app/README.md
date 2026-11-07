@@ -227,7 +227,7 @@ Resume rows support dropping one PDF/DOCX on the name or choosing a replacement 
 Discover refinement: icon-led facts on cards and in the panel expose pay,
 location, work setting, focus, sponsorship and source recency without inventing
 unknown values. Soft semantic surfaces distinguish fit evidence and uncertainty;
-About the job is expandable. Application review surfaces missing contact facts
+About the job is expandable. Collected descriptions appear in a bordered quotation with a job-posting source label and a source-domain link when available; demo descriptions are labeled fictional. Application review surfaces missing contact facts
 and recorded, unreviewed employer questions. Existing populated contact details
 start collapsed, with an unverified warning when appropriate. The review count
 includes a single saved-contact confirmation group, not four redundant fields.
