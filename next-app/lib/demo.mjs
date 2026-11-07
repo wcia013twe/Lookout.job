@@ -18,6 +18,7 @@ function demoSearchProfiles(date) {
   for (const [heading, key, value] of [
    ['Search Filters', 'Work arrangement', 'Remote'],
    ['Role preferences', 'Roles', 'Software engineering'],
+   ['Eligibility', 'Would you like to see roles that require top security clearance?', employment === 'Full-time' ? 'No' : 'Yes'],
    ['Application answers', 'Are you authorized to work in the US?', 'Yes'],
    ['Application answers', 'Are you authorized to work in Canada?', 'No'],
    ['Application answers', 'Are you authorized to work in the United Kingdom?', 'No'],
