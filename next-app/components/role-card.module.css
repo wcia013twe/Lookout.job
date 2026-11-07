@@ -40,6 +40,8 @@
   background: radial-gradient(ellipse 65% 180% at var(--sheen-x, 50%) -35%, #eef9ff16, transparent 65%);
   opacity: var(--sheen-strength, .2);
 }
+.banner > img, .banner > :global(.bg-board-tag) { width: 64px; height: 64px; }
+.banner > :global(.bg-board-tag) > svg { width: 36px; height: 36px; }
 .company { min-width: 0; flex: 1; overflow-wrap: anywhere; line-height: 1.4; text-shadow: 0 2px 8px #02081166; }
 .rarity {
   flex-shrink: 0;
@@ -64,6 +66,8 @@
 }
 @media (max-width: 767px) {
   .banner { min-height: 82px; gap: 10px; padding: 14px 14px 24px; }
+  .banner > img, .banner > :global(.bg-board-tag) { width: 56px; height: 56px; }
+  .banner > :global(.bg-board-tag) > svg { width: 32px; height: 32px; }
   .rarity { padding: 4px 7px; font-size: 11px; }
   .body { gap: 11px; margin-top: -10px; padding: 16px; }
 }
