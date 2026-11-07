@@ -6040,9 +6040,9 @@
       "url": null,
       "dateSeen": "2026-11-06",
       "source": "zero2sudo",
-      "status": "pending",
-      "skipReason": null,
-      "note": "Midday story frame Nov 6, 2026. Exact title NOT found on careers.ibm.com Nov 6, 2026 (13 results for 'Software Engineer Intern 2027' reviewed, no exact title). Closest Austin 2027 intern postings: 'Intern Software Engineer / Agent Engineer - EDA - Austin 2027', 'SW Developer Intern | AI Center of Excellence - Austin, TX - 2027', 'SW Developer Intern: Systems Assurance - Austin, TX & Rochester, MN - 2027'. Search URL: https://careers.ibm.com/en_US/careers/OpenJobs/Software%20Engineer%20Intern%202027/?listFilterMode=1&jobRecordsPerPage=9&jobOffset=0 . Gate: recheck IBM careers next sweep; if the exact title does not surface, close as not found."
+      "status": "skipped",
+      "skipReason": "Exact title not found on IBM careers after two checks",
+      "note": "Midday story frame Nov 6, 2026. Exact title NOT found on careers.ibm.com Nov 6, 2026 (13 results for 'Software Engineer Intern 2027' reviewed, no exact title). Closest Austin 2027 intern postings: 'Intern Software Engineer / Agent Engineer - EDA - Austin 2027', 'SW Developer Intern | AI Center of Excellence - Austin, TX - 2027', 'SW Developer Intern: Systems Assurance - Austin, TX & Rochester, MN - 2027'. Search URL: https://careers.ibm.com/en_US/careers/OpenJobs/Software%20Engineer%20Intern%202027/?listFilterMode=1&jobRecordsPerPage=9&jobOffset=0 . Gate: recheck IBM careers next sweep; if the exact title does not surface, close as not found. Rechecked Nov 6, 2026 evening: frame did not reappear as a standalone story frame (only a one-line mention in the Nov 5 Recap frame), and a web search again surfaced no exact-title posting on careers.ibm.com, only the differently-titled Austin 2027 intern roles and a Direct Consideration mirror of the story drop. Closed as not found per the noon gate."
     },
     {
       "company": "Moody's",
@@ -6053,9 +6053,9 @@
       "url": "https://careers.moodys.com/en/job/newark/applied-ai-and-analytics-summer-intern/49841/102920026464",
       "dateSeen": "2026-11-06",
       "source": "zero2sudo",
-      "status": "pending",
+      "status": "added",
       "skipReason": null,
-      "note": "Midday story frame Nov 6, 2026. Verified live Nov 6, 2026 on Moody's careers: Job ref 14580, Newark, graduation Dec 2027-June 2028 (fits Dec 2027 framing), $35/hr, applications Nov 6-20, 2026. NOT boarded: scope gate. Title mixes Applied AI with Analytics; posting body not read, so build/apply-ML vs analytics/BI scope is unresolved. Gate: read the posting duties; add if it involves building or applying ML/AI systems, skip if analytics/BI. Deadline Nov 20, 2026."
+      "note": "Midday story frame Nov 6, 2026. Verified live Nov 6, 2026 on Moody's careers: Job ref 14580, Newark, graduation Dec 2027-June 2028 (fits Dec 2027 framing), $35/hr, applications Nov 6-20, 2026. Scope gate resolved on the evening duties read: build AI solutions with language models, RAG, model evaluation and agentic tooling; build and evaluate predictive models. Added to jobs.json on the evening check."
     },
     {
       "company": "Western Alliance Bank",
@@ -6238,6 +6238,123 @@
       "status": "skipped",
       "skipReason": "PM lane",
       "note": "Midday story frame Nov 6, 2026. Job Code A210420. No live check; off-target on frame evidence."
+    },
+    {
+      "company": "Moody's",
+      "title": "Applied AI & Analytics Summer Intern",
+      "location": "Newark, NJ",
+      "type": "Internship",
+      "comp": "$35/hr",
+      "url": "https://careers.moodys.com/en/job/newark/applied-ai-and-analytics-summer-intern/49841/102920026464",
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "added",
+      "skipReason": null,
+      "note": "Evening story frame Nov 6, 2026 (re-drop of the noon frame; scope gate resolved tonight). Verified live Nov 6, 2026 on Moody's careers: Job ref 14580, Newark, $35/hr, graduation Dec 2027-June 2028 (fits Dec 2027 framing), program June 7-Aug 13, 2027, applications Nov 6-20, 2026. Duties read: build AI solutions with language models, RAG, model evaluation and agentic tooling; build and evaluate predictive models for job runtimes, queue wait times and capacity. Scope gate PASSED: building/applying ML/AI, not analytics/BI. Added to jobs.json."
+    },
+    {
+      "company": "Notion",
+      "title": "SWE Intern, Frontend (Summer 2027)",
+      "location": "New York, NY (Hybrid)",
+      "type": "Internship",
+      "comp": "$57/hr (BS) / $61/hr (MS)",
+      "url": "https://jobs.ashbyhq.com/notion/43ffba97-b64a-4c6a-ac13-c803253c9413",
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "Frontend scope, off-target lane",
+      "note": "Evening story frame Nov 6, 2026. Verified live Nov 6, 2026 on Notion Ashby: New York NY hybrid, $57/hr bachelor's / $61/hr master's, pursuing a bachelor's or master's in CS/Engineering/related, must graduate before Summer 2028, May 24-Aug 13 or June 14-Sept 3, 2027. Not boarded: Web Infrastructure team work is front-end systems (TypeScript/React, common web patterns, tooling to test/debug/profile front-end systems), off-target lane. Same eligibility wording as the iOS role."
+    },
+    {
+      "company": "Notion",
+      "title": "SWE Intern, iOS (Summer 2027)",
+      "location": "New York, NY (Hybrid)",
+      "type": "Internship",
+      "comp": "$57/hr (BS) / $61/hr (MS)",
+      "url": "https://jobs.ashbyhq.com/notion/27090d0f-07d3-419b-adaa-837b5e22f947",
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "iOS/mobile scope, off-target lane",
+      "note": "Evening story frame Nov 6, 2026. Verified live Nov 6, 2026 on Notion Ashby: New York NY, $57/hr bachelor's / $61/hr master's, pursuing a bachelor's or master's in CS/Engineering/related, must graduate before Summer 2028, May 24-Aug 13 or June 14-Sept 3, 2027. Not boarded: iOS/mobile platform scope (Swift, shared frameworks, build systems, shared Rust layer), off-target lane."
+    },
+    {
+      "company": "Samsara",
+      "title": "Software Engineering Internship",
+      "location": "San Francisco, CA (Hybrid, SF9)",
+      "type": "Internship",
+      "comp": "$61.90/hr",
+      "url": "https://www.samsara.com/company/careers/roles/8358786?gh_jid=8358786&gh_board=samsara",
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "Bachelor's junior-only wording (2028-2029 completion); he is an M.S. student graduating Dec 2027",
+      "note": "Evening story frame Nov 6, 2026. Verified live Nov 6, 2026 on Samsara careers: Req JR11987, San Francisco CA hybrid 3 days/week, $61.90/hr, relocation available, backend IoT / full-stack / React Native / embedded-edge AI teams. Not boarded: eligibility is junior-year students pursuing a bachelor's with degree completion Spring/Summer/Fall 2028 or Winter 2029; he is an M.S. student graduating Dec 2027. Note: applications close Nov 26, 2026 at 11:59pm ET, rolling review."
+    },
+    {
+      "company": "Microsoft",
+      "title": "Research Intern - AI & Human Systems",
+      "location": "New York, NY / Cambridge, MA",
+      "type": "Internship",
+      "comp": "$6,810-$13,480/month",
+      "url": "https://apply.careers.microsoft.com/careers?q=Research+Intern+AI+Human+Systems&start=0&pid=1970393557056017&sort_by=timestamp",
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "PhD-only (MS degree explicitly not sufficient)",
+      "note": "Evening story frame Nov 6, 2026. Verified live Nov 6, 2026 on Microsoft careers: Job 200066265, posted Nov 6, 2026, New York NY and Cambridge MA, up to 50% work from home, $6,810-$13,480/month. Not boarded: PhD-only (\"Currently enrolled in a PhD program... (I.e., MS degree is not sufficient.)\"). Duties are human-AI collaboration research, user studies, publishing. Consistent with prior MSR research-intern skips."
+    },
+    {
+      "company": "Stripe",
+      "title": "Controllership Intern",
+      "location": "Seattle, WA",
+      "type": "Internship",
+      "comp": null,
+      "url": null,
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "Controllership (accounting/finance), non-engineering",
+      "note": "Evening story frame Nov 6, 2026. No live check; off-target on frame evidence."
+    },
+    {
+      "company": "Pinterest",
+      "title": "Strategy & Operations Intern 2027 (USA)",
+      "location": "San Francisco, CA / Remote",
+      "type": "Internship",
+      "comp": null,
+      "url": null,
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "Strategy & operations, non-engineering",
+      "note": "Evening story frame Nov 6, 2026. No live check; off-target on frame evidence."
+    },
+    {
+      "company": "Pinterest",
+      "title": "UX Quantitative Research Intern (USA)",
+      "location": "Remote / San Francisco, CA / Seattle, WA / New York, NY",
+      "type": "Internship",
+      "comp": null,
+      "url": null,
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "UX research, non-engineering",
+      "note": "Evening story frame Nov 6, 2026. No live check; off-target on frame evidence."
+    },
+    {
+      "company": "Salesforce",
+      "title": "Summer 2027 Intern - Product Management",
+      "location": "San Francisco, CA / New York, NY",
+      "type": "Internship",
+      "comp": null,
+      "url": null,
+      "dateSeen": "2026-11-06",
+      "source": "zero2sudo",
+      "status": "skipped",
+      "skipReason": "PM lane",
+      "note": "Evening story frame Nov 6, 2026. No live check; off-target on frame evidence. Note on posting per frame: apply for a maximum of 3 roles within 12 months. Distinct from the boarded Salesforce AI Research intern."
     }
   ]
 }
