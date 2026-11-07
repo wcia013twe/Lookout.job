@@ -1,11 +1,11 @@
-import { test } from 'node:test';
+import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import { createDemoWorkspace, createDemoServices } from '../next-app/lib/muse-demo-fixtures.mjs';
-import { createMemoryStore, demoFixtures } from '../next-app/lib/demo.mjs';
-import { buildPreparationAgenda } from '../lib/preparation-planner.mjs';
-import { buildSubmissionRecord } from '../lib/submission-record.mjs';
-import { createDemoStore } from '../next-app/lib/demo-store.mjs';
-import { hasCallback, sortApplications, timelineItems, currentTimelineItems } from '../lib/application-timeline.mjs';
+import {createDemoWorkspace, createDemoServices} from '../next-app/lib/muse-demo-fixtures.mjs';
+import {createMemoryStore, demoFixtures} from '../next-app/lib/demo.mjs';
+import {buildPreparationAgenda} from '../lib/preparation-planner.mjs';
+import {buildSubmissionRecord} from '../lib/submission-record.mjs';
+import {createDemoStore} from '../next-app/lib/demo-store.mjs';
+import {hasCallback, sortApplications, timelineItems, currentTimelineItems} from '../lib/application-timeline.mjs';
 const now = '2026-10-14T12:00:00Z';
 function memory(state) { return { get(path) { return path ? path.split('.').reduce((value, key) => value?.[key], state) : state; }, set(path, value) { const keys=path.split('.'),last=keys.pop(); const parent=keys.reduce((value,key)=>value[key] ||= {},state); parent[last]=value; } }; }
 test('demo fixtures reset deterministically and include confirmed and uncertain states', () => {
@@ -94,29 +94,6 @@ test('demo memory store notifies subscribers and never touches real browser stor
  } finally { if(prior)Object.defineProperty(globalThis,'localStorage',prior);else delete globalThis.localStorage; }
 });
 
-test('demo delivery preview defers routine progress and interrupts important decisions without sending',async()=>{
- const service=createDemoServices(createDemoStore(createDemoWorkspace(now)));
- assert.equal((await service.readDeliveryPolicy('routine')).delivery.decision,'defer');
- assert.equal((await service.readDeliveryPolicy('decision')).delivery.decision,'due');
-});
-test('combined admin fixtures preserve established demo and add Muse states without resume collisions',async()=>{
- const combined=demoFixtures('2026-10-14');
- assert.equal(combined.state.workflow.profile.name,'Demo Candidate');
- assert.equal(combined.state.network.referrals.length,2);
- assert.equal(combined.state.progress.xp,275);
- assert.ok(combined.roles.some(role=>role.id==='demo-robinhood'));
- assert.ok(combined.roles.some(role=>role.id==='demo-interview'));
- const resumes=combined.state.workflow.resumes.map(resume=>resume.id);
- assert.deepEqual(resumes,['demo-resume','muse-demo-resume']);
- assert.equal(combined.state.workflow.applications['demo-robinhood'].resumeId,'demo-resume');
- assert.equal(combined.state.workflow.applications['demo-interview'].resumeId,'muse-demo-resume');
- assert.equal(combined.state.demo.date,'2026-10-14');
- const service=createDemoServices(createMemoryStore(combined.state));
- assert.equal((await service.readPreparation('demo-robinhood')).plan.applicationId,'demo-robinhood');
- assert.deepEqual((await service.readSubmissionRecord('demo-stripe')).attempts,[]);
- assert.equal((await service.readSubmissionRecord('demo-confirmed')).attempts[0].state,'confirmed');
-});
-
 test('admin fixture calendar dates remain exact across local timezone conversion',()=>{
  const state=demoFixtures('2026-10-13').state;
  assert.equal(state.demo.date,'2026-10-13');
@@ -142,15 +119,6 @@ test('demo timelines distinguish confirmed callbacks, unknown email dates and un
  assert.deepEqual(harbor.application.submittedResume,{id:'muse-demo-resume',name:'Jordan Example — backend résumé (demo)',version:2,variant:'Backend',contentHash:'d'.repeat(64),evidenceSource:'observed_confirmation'});
  assert.ok(harbor.application.receipt);
  assert.equal((await service.readSubmissionRecord('demo-confirmed')).attempts[0].context_snapshot.resume.version,2);
-});
-
-test('demo selectivity is an occasional routine insight with explicit uncertainty',async()=>{
- const service=createDemoServices(createDemoStore(createDemoWorkspace(now)));
- const insight=await service.readDeliveryPolicy('selectivity');
- assert.equal(insight.delivery.decision,'defer');
- assert.equal(insight.events[0].actionRequired,false);
- assert.match(insight.events[0].summary,/excluded in your preferences/);
- assert.match(insight.events[0].summary,/still need verification/);
 });
 
 test('demo user milestone adapter is isolated, idempotent and cannot supply email provenance', async () => {
@@ -192,38 +160,6 @@ test('demo callback sorting and timelines preserve evidence and historical resum
  apps['demo-confirmed'].resumeName='Changed current draft résumé';
  assert.equal(apps['demo-confirmed'].submittedResume.version,2);
  assert.equal(state.demo.submissionRecords['demo-confirmed'].attempts[0].context_snapshot.resume.version,2);
-});
-
-test('demo search profiles include active and paused searches and reset isolated edits', () => {
- const initial = demoFixtures('2026-10-14').state;
- const store = createMemoryStore(initial);
- const profiles = store.get('workflow.searchPreferences.profiles');
- assert.equal(profiles[0].filters['Work arrangement'], 'Remote');
- assert.equal(profiles[0].active, true);
- assert.equal(profiles[1].active, false);
- profiles[0].instructions = 'Edited demo instructions';
- store.set('workflow.searchPreferences.profiles', profiles);
- assert.equal(store.get('workflow.searchPreferences.profiles')[0].instructions, 'Edited demo instructions');
- const reset = demoFixtures('2026-10-14').state;
- assert.ok(reset.workflow.searchPreferences.profiles[0].instructions.includes('I want a reliable team with time to learn.'));
- assert.deepEqual(reset.workflow.searchPreferences.profiles, initial.workflow.searchPreferences.profiles);
- assert.notEqual(initial.workflow.searchPreferences.profiles[0].instructions, profiles[0].instructions);
-});
-
-
-test('demo opens with fictional referral drafts and independent resettable templates', () => {
- const first = createDemoWorkspace(now), second = createDemoWorkspace(now);
- assert.equal(first.demo.outreachLibrary.defaultGuide, 'cold-outreach');
- assert.equal(first.demo.outreachLibrary.templates.length, 5);
- assert.equal(first.network.referrals[0].id, 'demo-referral');
- assert.match(first.network.referrals[0].message, /thanks for offering the engineer introduction/);
- assert.equal(first.network.referrals[0].source, 'Demo');
- first.network.referrals[0].message = 'Edited draft';
- assert.notEqual(second.network.referrals[0].message, 'Edited draft');
- assert.notEqual(createDemoWorkspace(now).network.referrals[0].message, 'Edited draft');
- first.demo.outreachLibrary.templates[0].message = 'Edited preview';
- assert.notEqual(second.demo.outreachLibrary.templates[0].message, 'Edited preview');
- assert.notEqual(createDemoWorkspace(now).demo.outreachLibrary.templates[0].message, 'Edited preview');
 });
 
 test('aggregated planner demo saves budget and credits shared sessions in the production memory store', async()=>{

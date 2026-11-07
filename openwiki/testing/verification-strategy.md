@@ -46,7 +46,7 @@ This is a guide to **what must remain true** and how to select checks; it is not
 
 1. **Focused behavior test first.** Run the closest `node --test tests/<name>.test.mjs` while implementing a narrowly scoped change. It gives fast feedback on the high-risk contract and makes a regression expectation explicit.
 2. **Database/PGlite check for persisted authority.** If a migration, RPC, RLS policy, trigger, private table, lease, receipt, or canonical writer changes, run `npm run test:db` and the focused SQL-backed test. This is the layer that can prove two-owner isolation and service-only mutations.
-3. **Whole Node suite for shared code.** Run `npm test` when a shared contract, common model, gateway validation, or cross-workflow behavior changed. The root command is `node --test --test-concurrency=4`, bounding concurrent files and PGlite instances.
+3. **Whole Node suite for shared code.** Run `npm test` when a shared contract, common model, gateway validation, or cross-workflow behavior changed. The root command is `node scripts/test.mjs`: it replays current migrations once, exports a temporary PGlite snapshot, and runs Node tests with four concurrent files. Ordinary database fixtures load independent databases from that snapshot. Custom migration lists, directories and before-migration hooks bypass it, preserving upgrade coverage. Direct `node --test` focused runs still replay their own migrations. The snapshot is deleted after the full run; no persisted cache or new dependency is used.
 4. **Contract data validation.** Run `npm run validate:data` after editing `data/jobs.json` or any generator that produces it. It rejects missing required job fields, invalid priorities/types, and duplicate IDs or application URLs.
 5. **Type and UI artifact checks.** Run `npm --prefix next-app run typecheck` when TypeScript or frontend interfaces change, and `npm run build` for static-export/UI, routing, asset, or production frontend changes. Run both after a cross-cutting frontend change.
 
@@ -85,6 +85,16 @@ flowchart TD
 | Next.js/TypeScript UI surface | `npm --prefix next-app run typecheck` | `npm run build`; focused UI/model tests; `npm test` if shared code changed | Type compatibility and the production static artifact are separate checks. |
 
 `package.json` defines `test`, `test:db`, `validate:data`, `build`, `test:filter`, and `test:submission:e2e`; `test:db` deliberately imports the same database scenarios used by the suite. Use it for focused debugging; do not repeat it after a successful `npm test`. Vendor integrity is checked once against the complete Career Ops manifest in `career-execution.test.mjs`; liveness and dedup suites focus on behavior. React render tests share the small `tests/helpers/render.mjs` bundling helper. CSS spelling and exact selector formatting are left to visual review rather than source-text assertions. The intelligence runtime has its own `npm run intelligence:typecheck`. Do not interpret a passing unit fixture, PGlite database, or static build as proof of a hosted provider, real agent host, or employer interaction.
+
+## Keep the harness small
+
+Treat a test as useful when it detects a distinct user-impacting failure. Keep authorization, owner isolation, consent, version/retry safety, uncertain submissions and persisted workflow outcomes. Test each common registration/validation mechanism centrally; add per-feature cases when its behavior differs. Prefer action/result assertions over exact fixture names, counts, guide phrases, source text or prescribed call sequences, unless that sequence itself enforces a safety boundary.
+
+`demo-fixtures.test.mjs` checks reset independence across entire fixture graphs. Feature-specific demo tests should exercise interactions or meaningful states, rather than repeat fixture inventories. Component renders still protect missing-data and consent behavior. `database-fixture.test.mjs` verifies independent rows/session roles and custom-history bypass for the shared baseline.
+
+These are deterministic product tests, not a measurement of model reliability. Actual agent evaluation requires representative tasks, execution traces and checks against saved outcomes; preserve failures from real use as regression cases. Do not add model judges or an eval framework unless a concrete nondeterministic behavior needs them.
+
+The pruning policy follows [OpenAI evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices) (task-specific goals and representative failures) and [Anthropic's agent evaluation guidance](https://www.anthropic.com/research/demystifying-evals-for-ai-agents) (deterministic grading where possible and outcome-based checks). Neither recommends an arbitrary ceiling for product unit tests. This focused update describes current source; it does not refresh the rest of the generated wiki's verification metadata.
 
 ## Invariants by workflow
 
