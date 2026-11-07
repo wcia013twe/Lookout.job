@@ -11,3 +11,6 @@
 
 - Follow-up: clarified that sessions read the wiki before repository work and maintain affected pages during the same feature pass; source and tests remain authoritative.
 - Validation: required entry points exist; data validation and git diff check passed.
+
+- Follow-up: removed the daily OpenWiki workflow schedule to avoid recurring model usage. Manual workflow dispatch remains available; the session rule favors focused documentation updates.
+- Validation: data validation and diff check passed; workflow trigger inspected. No workflow dispatched.
