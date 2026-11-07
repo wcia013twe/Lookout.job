@@ -851,3 +851,15 @@ approvals, new scheduler, database schema or orchestration engine is added.
 Release gateway and MCP together through the existing production workflow;
 local checks do not establish deployed client availability or improved agent
 performance.
+
+### Imported application corrections (source contract 111)
+
+Discover `update_imported_job` in the applications workflow. Read
+`list_imported_jobs` (workspace:read), then update an owned import with
+tracking:write, its tracker expectedVersion, stable eventKey and named changes.
+Status supports SAVED/APPLIED/SCREEN/INTERVIEW/OFFER/REJECTED/WITHDRAWN/CLOSED.
+Employment types match settings: FT, Internship, Part-time, Contract, Temporary.
+Titles, locations, notes, known dates and archive state can also be corrected.
+Original source rows stay intact; re-import preserves current records. No
+approvals or verified receipts are created. Requires the tracker-outcomes
+migration and gateway/MCP deployment; older endpoints remain unsupported.

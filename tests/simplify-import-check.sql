@@ -26,12 +26,36 @@ begin
  begin perform public.agent_dispatch(h,'imports.preview',jsonb_build_object('rows',jsonb_build_array((rows->0)||'{"url":"javascript:alert(1)"}')));raise exception 'Unsafe URL accepted';exception when invalid_parameter_value then null;end;
  begin perform public.agent_dispatch(h,'imports.preview',jsonb_build_object('rows',jsonb_build_array((rows->0)||'{"appliedDate":"2026-02-30"}')));raise exception 'Invalid date accepted';exception when datetime_field_overflow or invalid_parameter_value then null;end;
  begin perform public.agent_dispatch(h,'imports.preview',jsonb_build_object('rows',jsonb_build_array((rows->0)||'{"receipt":{},"status":"APPROVED"}')));raise exception 'Authority injection accepted';exception when invalid_parameter_value then null;end;
+ -- Rich outcomes and employment types share browser/MCP row validation.
+ r:=public.agent_dispatch(h,'imports.preview',jsonb_build_object('rows',jsonb_build_array(
+  (rows->0)||'{"status":"REJECTED","statusDate":"2026-10-22","employmentType":"Part-time","appliedDate":null}',
+  rows->0)));
+ if r->'decisions'->0->'record'->>'status'<>'REJECTED' or r->'decisions'->0->'record'->>'appliedDate'<>'2026-10-20' then raise exception 'Outcome precedence/date retention failed: %',r;end if;
+ select id into app from public.imported_jobs where user_id=u and record->>'status'='APPLIED';
+ request:=jsonb_build_object('id',app,'expectedVersion',3,'eventKey','correct-import','changes','{"status":"REJECTED","statusDate":"2026-10-22","employmentType":"Contract","location":""}'::jsonb);
+ -- The fixture role lacks hosted service_role BYPASSRLS by default.
+ alter role service_role bypassrls;
+ set local role service_role;
+ report:=public.agent_dispatch(h,'imports.update',request);
+ reset role;
+ alter role service_role nobypassrls;
+ if report->>'version'<>'4' or public.agent_dispatch(h,'imports.update',request) is distinct from report then raise exception 'Correction replay failed';end if;
+ if not exists(select 1 from public.imported_jobs where id=app and record->>'status'='REJECTED' and record->>'employmentType'='Contract' and record->>'location'='' and source_rows->0->>'status'='APPLIED') then raise exception 'Correction lost source rows';end if;
+ begin perform public.agent_dispatch(h,'imports.update',request||'{"eventKey":"stale-correction"}');raise exception 'Stale correction accepted';exception when serialization_failure then null;end;
+ begin perform public.agent_dispatch(h,'imports.update',request||'{"changes":{"status":"OFFER"}}');raise exception 'Changed retry accepted';exception when serialization_failure then null;end;
+ begin perform public.agent_dispatch(ro,'imports.update',request);raise exception 'Read-only correction accepted';exception when insufficient_privilege then null;end;
+ begin perform public.agent_dispatch(h,'imports.update',request||'{"expectedVersion":4,"eventKey":"bad","changes":{"receipt":{}}}');raise exception 'Authority correction accepted';exception when invalid_parameter_value then null;end;
+ begin perform public.agent_dispatch(h,'imports.update',request||'{"expectedVersion":4,"eventKey":"bad-date","changes":{"statusDate":"2026-02-30"}}');raise exception 'Invalid correction date accepted';exception when datetime_field_overflow or invalid_parameter_value then null;end;
+ begin perform public.agent_dispatch(h,'imports.update',request||'{"expectedVersion":4,"eventKey":"bad-type","changes":{"employmentType":"Other"}}');raise exception 'Invalid correction type accepted';exception when invalid_parameter_value then null;end;
  perform set_config('test.uid',u::text,true);set local role authenticated;
- r:=public.simplify_import('list');if jsonb_array_length(r->'records')<>2 then raise exception 'Browser read differs from MCP';end if;
+ r:=public.simplify_import('list');if r->>'version'<>'4' or jsonb_array_length(r->'records')<>2 then raise exception 'Browser read differs from MCP';end if;
  r:=public.simplify_import('preview',jsonb_build_object('rows',rows));if r->>'skipped'<>'2' then raise exception 'Browser duplicate handling differs';end if;
  if (select count(*) from public.imported_jobs)<>2 then raise exception 'RLS leaked other history';end if;
+ r:=public.simplify_import('update',jsonb_build_object('id',app,'expectedVersion',4,'eventKey','browser-correct','changes','{"employmentType":"Temporary"}'::jsonb));
+ if r->'record'->'record'->>'employmentType'<>'Temporary' then raise exception 'Browser correction differs';end if;
  reset role;perform set_config('test.uid',other::text,true);set local role authenticated;
  if (select count(*) from public.imported_jobs)<>0 then raise exception 'Cross-owner read';end if;
+ begin perform public.simplify_import('update',jsonb_build_object('id',app,'expectedVersion',0,'eventKey','cross-owner','changes','{"status":"OFFER"}'::jsonb));raise exception 'Cross-owner correction accepted';exception when no_data_found then null;end;
  r:=public.simplify_import('save',jsonb_build_object('expectedVersion',0,'eventKey','other','rows',jsonb_build_array(rows->2)));if r->>'added'<>'1' then raise exception 'Browser import failed';end if;
  reset role;
  if not 'public.imported_jobs'=any(private.workspace_reset_tables()) then raise exception 'Import history missing from reset';end if;
