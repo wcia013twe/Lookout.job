@@ -65,3 +65,20 @@
   resettable mixed native/import demo read; frontend typecheck, production static
   build, catalog validation (158 roles) and diff check passed. Backend/data writes
   are unchanged; no new visual layout or backend deployment is involved.
+
+## Follow-up: Needs action application flag
+
+- Application rows show a compact Needs action flag and the recorded reason for
+  due, unresolved application inbox handoffs. Opening it uses existing details;
+  resolved/future handoffs stay unflagged, and deferred actions refresh when due.
+- Flags remain separate from hiring stages and existing Active date ordering.
+  They read existing review/blocker/submission-check records shared with Action
+  Board and MCP read_action_inbox. No new write path, manual task flag, inferred
+  recruiter request or imported-record backend connection is advertised.
+- Added a fictional review handoff to resettable demo data and tested its
+  isolated resolution/reset. Demo approval remains intentionally disabled.
+- Validation: 12 focused inbox/flag/sort tests, frontend typecheck, production
+  static build, catalog validation (158 roles), diff check and UI detector passed.
+  Desktop/mobile demo checks confirmed visible reason, detail opening, no page
+  errors or horizontal overflow. No backend/schema change; full database suite
+  was not repeated for this read-only UI pass.

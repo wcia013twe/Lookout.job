@@ -248,3 +248,13 @@ history; notes do not become linked emails. Native application actions remain
 visible but imported records have no native application ID: timeline writes
 show the existing sync error and workflow writes report an unsaved update.
 This intentional backend mismatch must remain explicit until a later integration.
+
+Application rows show a separate **Needs action** flag for due, unresolved
+handoffs from the existing durable action inbox (review, blocker or submission
+check). The recorded reason opens the existing application detail dialog. Flags
+clear when the underlying inbox action resolves and appear when a deferred action
+becomes due; hiring stages and Active date ordering stay independent. This is the
+same read surface as Action Board and MCP `read_action_inbox`; it does not add a
+manual task flag or infer recruiter requests from notes or interview stages.
+The resettable fictional demo includes a review handoff; demo approval remains
+disabled. Source verification does not establish production deployment.
