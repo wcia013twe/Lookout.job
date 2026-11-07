@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:5cc7e650c091fb5231dff350b3f44c091f0fb369de92168fe5c51f149964930f",
+  "claims": [
+    {
+      "id": "claim_d2d3956b02e243a3a40d899e757ac614",
+      "statement": "Application submission distinguishes editable drafts, immutable human approvals, execution attempts, and recruitment milestones: none of opening a job, saving a draft, or recording a milestone is by itself proof of employer submission.",
+      "evidence": [
+        {
+          "resource": "repo://runner/README.md#L69-L81",
+          "version": "repo-lines-v1:sha256:6a2e8ac3abfaf0911add2f5a07cc75ef7e43593e218b99c3934734446a3c6e9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkMzdiYjQ3NGRiOThkOTg4NDk5MzgxOTBmZjI5Yzg5MWFkMzJhYjA3OTU3MzFiMTVmNGI1NzI5YjQ1Y2ZiMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2MjhhZTkxNWI5NjE2MTk1MTA1YjA1NzNhNGE0NDYwNzE4MDczMmY5MjNjZjAwZjNiMjgxMmVkMDBlNjc0NTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1OWZlM2E3NDg5YjZlNTFkMGE4MDk3MDUxNGE2MmU2ZTVmYTg5MzczODBiMTM0M2QyNzBhNGE5MjdiMDIwYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwYTcxYzA5MDhhNzFkMGRmYzRjNzkxMzMzOGY0N2ZmYTg1YWU1M2MxMDk5ZjgwYTBmMWJiZDVjZjU2YmFjZTQifQ"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/submission-authorization.mjs#L12-L26",
+          "version": "repo-lines-v1:sha256:27aa1294fe3abe841a0fe3f97bd485b43b6bd4e6b701dfca790c1d49db761f85:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmZjMxNzFlNDk0NDU5ZjY5MjJiN2MwZTE4ZDFjZmVkMTI0YzFkNmRkZGJhYTI1MTZiODliM2Q3MzgxZmRkODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkYmRiYjRkYWM5ODJlODMxNzZkY2UzOGZhYzM4YTZhNGY2YjFhMThiNDgxMWMxYTVhNTQ5Y2YyZGRhYjkyOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmMjI1MmZmYTViZWYwZmUwMGJhYzZjZmY4NTVmZDFmN2JhNzI4MmU2ZTNkNjc2N2RlZTllYmFhMjU0MjAyMzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwYzE3OTczNmNkYmI5YzZmZDEyODA3ZGJkYmZlYzIzMTMzNGMzYWNlZmU2ZTM1ZTZjZDg3NDNiYjk5N2FjZWQifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261103204522_ashby_lever_submission.sql#L83-L99",
+          "version": "repo-lines-v1:sha256:5218e422f37c1ebe4338ff9ab0ebbdf5b37c736df97cc1e4c6c627a9bc81072a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjMTZkYmM3Njk5ODY1ZDA5NjM1ODMzMzdiMDJlNGU1ZDliOWEwMDI3NzRkMmRkOWM0OTI4ZTIxMTU2MjFmZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMjZkZjgxNmM0ZGNiZmI4ZDkwOTZkNWQ3ZmVkMDU0MGJjYzNhYWQzYTdhYTFkODk1MDg1MTUxYjUyZDE1NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3ZjVmYTZjZGJiNTJhZGJjOTJjYWVmNjc4NDk3OWZjYzUzZDMyODA4OGNiOGNmMzVmMmU4NjQ0ZmZiZTgyN2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1NWQwMDA5ZTQ5Yjc0ZTdiMjk1ZmUyYmUzYmQ3ZGExZjgyYzM3ZDBmYjY1MDhhNWVjMzFkMjkzYjY3YTZkMjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a8dd651fc85146aa805af7fcfe59d18c",
+      "statement": "Draft preparation checks application revision and personal/search-profile versions, derives prefill from owned context and resume selection, pins the selected resume hash when appropriate, and writes through the draft preparation boundary only after rechecking versions.",
+      "evidence": [
+        {
+          "resource": "repo://lib/application-handoff.mjs#L5-L16",
+          "version": "repo-lines-v1:sha256:e05b00450279de41022ca98415abfa84c29cd110117132a605faf1060cfb077c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmM2M3NDU0NDc0NTM5MGExM2I0YzkyNGNjYjM2Zjg5YWZhYTllMjIzMDkxNTA4NDc0NDdjZjY0MDhlY2ZjYzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwYmJjZjU0YzNmM2RiYTViNjg2NWJkNzMwYjc1NWVjN2UwNmE3Mzk1YmE2Mjg1MzM2MmUwZTQwZGIyZDI1ZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhOWFjMWIxMGIxMjZkMTQ3MzBjNmQ2MjFhMjI2OTE5N2EwYjJjMjI1NmJhMTY5NGI2NmI3MDA2MTk2ODA3YzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkYjYzNGE4OGEyNjliMmY3YWU2MTU0OGM2MDg0NzAxYTg3MDg5N2I5OGExMmM1MzQwYzRhYTM3Y2Y2OGI5Y2EifQ"
+        },
+        {
+          "resource": "repo://lib/application-prefill-service.mjs#L5-L35",
+          "version": "repo-lines-v1:sha256:ed7d7106b15132e5c747b4f0546c9426f6249ca54a8d95f4ba783b24895c8964:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5MzI1NTlkZGJhY2NlNWNmZGViMDFiODg2MzIzNGRiNDcxMDZlODZkOWVmYWFmMjdlYzY1NDhiYjI3ODJhODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkMzNlOGE3NmE5MjAxNjUwNjRlOTljOGY0NGU3ZjQ4OTM3M2Q2NjBhMGExNDQ5ZTAzYzNiNTQyM2Q1M2MxZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkMGFlNzA3N2ExZTdiODg2YmFmNDM1NWZmYTMxMjYxN2Q1YTM2MmZhYWJkMGE1NTg0MmE1Y2MwYTk5YTk0NTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d660fcc01e9c4e88b2850be23233f259",
+      "statement": "Automatic authorization is restricted to a current routine auto-apply policy, verified profile, selected owned resume, and exact allowed answer provenance, while human authorization requires an approved, reviewed application whose approval snapshot exactly matches the current draft, profile facts, resume, and revision.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-gateway/application-policy.mjs#L23-L68",
+          "version": "repo-lines-v1:sha256:b4a451ca5d2d34b511196378d52efb6f86932ea0d4ea0c794a2cc269c9ff892b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0YmYzODk4ZWE1OTZlMjBjNGM2YWExOTFhZjE4OGYyNjc2NjI0ZGVjNTI4MjA2MWY2NjhmNDYwMmIwNDNhMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1MWI1ODI3OWE0MDY3OTRlMDJhMDdmOTA1NWM0MTQwZTJhZDc3MGE5MGZhYjEyZjRhMmY3YTVjOWRmYzdhM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5Y2YyNjY0N2VkZmQxNjExZmQ5OWU1NDU1NWZmYmQ1NmMwNDIzNWRiNGI3Y2ZlNzE4MzY1YWM4YWMwMmQ3NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/submission-authorization.mjs#L12-L44",
+          "version": "repo-lines-v1:sha256:0023a10c98a255a95471f57e1d84edb8ad7a7c5c5c004f66c7a5b9fe12132063:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmZjMxNzFlNDk0NDU5ZjY5MjJiN2MwZTE4ZDFjZmVkMTI0YzFkNmRkZGJhYTI1MTZiODliM2Q3MzgxZmRkODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NTA4ZWI5Yjk4MGUzNWVlNmMwZTJhYTg5MTI0OWIxYmY1NzVlMWY3OTQ2ZWFhYWYzMDA3NjRmZWIyYTQzODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmMjI1MmZmYTViZWYwZmUwMGJhYzZjZmY4NTVmZDFmN2JhNzI4MmU2ZTNkNjc2N2RlZTllYmFhMjU0MjAyMzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0efda482a08749f1a9af9867203e9fab",
+      "statement": "The gateway derives submission authorization from current owner-scoped records, rejects stale application/personal versions before claim or start, and does not accept caller-supplied authorization or context snapshots as authoritative input.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-gateway/submission-dispatch.mjs#L4-L16",
+          "version": "repo-lines-v1:sha256:a07e41f67a9d3b29de4dd8b90a941457fd67a5caf3d61f0535d7b4cc7d066abf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0N2RiMjM4OTE4YmNkNGE4YTM0NDBiNjAzYWI5YWJiZmJhODJjOTVhNWZmMjdhZTZkYTVkMmI1OWNhZmJjOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzYmMxOTM3MWJkYTBjOWNjMDZhYmY0MDFiM2E0MzJjNGUxNzc1OTY4MWMxNWU4OTUzNmJkZDVlNzRhZjJkMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhOGRmZjM1OWRkYmYzY2JkNzc5MGQ3N2Y2ZTU2MTk2MDZlNGE0OTk3NDUxYzc5MTY0YmM3NzYyM2I3YzE1ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://tests/submission.test.mjs#L84-L119",
+          "version": "repo-lines-v1:sha256:69a6b12b88d927ecea93cb7e87e0fbdfd6a9141b2d1d2fa85688b969f901869c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiYThjMjEzZDkzNWM5MDkyNzgwMzE3Y2VjZGI5ZTViZGE2MGViMTVlODdlZDM1ZmQyMjg3ZDY2NzI4ZWQ2NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzZTdlYThlNTc2ZjBlYTE2YzUzZGJmOWI4Yzk1OWEwNDJmNmExYWJiNzJjYzczMTNiZWExYzJmZGMxNjU0MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3MjU0OTEyMGM4YmIxYTk1NGUwOWQ5NWI0ZDM5NWM3NjgyNDE2NjYxMWMzNTNkOTA3ZjJmZWFiYTJmODVhYTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_87635bd83dfe4942b43553cff24e4126",
+      "statement": "The guarded runner inspects and pre-fills the live supported ATS form, verifies fingerprint, exact values, resume hash, native validation and one unambiguous enabled Submit control before it claims an attempt; it then revalidates before exactly one click.",
+      "evidence": [
+        {
+          "resource": "repo://runner/submit.mjs#L23-L70",
+          "version": "repo-lines-v1:sha256:c7d6425b9efa30a0eb859639985c04a7bfba93d63e7276468b06aaef2edae4d2:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1MDllMjM3YWE0YTMxMTQ3Yjc0NmU2YmFhM2I3MTExYWI4NTBiYjdlNTBhYzdhYTA5ZTcwMmM2NjEyOTQyMTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwNWM5NjY2ZjYwZThmZmNkYjUyNzZiODU5MjhkMzZlMGJmMjAzNGUxZDFjMDNiMzUxZDM0Y2NhYTVjZThhYzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5ZjFiZmNiZGUyMzdhMTIxNDEyMDUyNDRhOWNhNDAzM2I4OGVkYzAwNTlmNmQ1YzAzM2U0MTcxMmRhYTEyMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3ZTI0OWNmOTdlMjU4YTFlZDI1OWEyMDVkZTZlOGU3Yzk4ODkwOGIzOTYzZTQxYTViOTAzYTZmNjExN2ViODQifQ"
+        },
+        {
+          "resource": "repo://runner/submit.mjs#L93-L115",
+          "version": "repo-lines-v1:sha256:4912f26380ac07c702b9653b3475c7a940c428ca5568ccff2bbe34fea4cded52:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMWM3Nzg3YTBmMjQyZDM0MzE2ZDk2ZDM5MjIxNTRiZjE2NWQ4NjFhNzI3YTE3NWMyZTg1NTdhNGUwNzIwNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NDNlNjRkMTYyY2E1MDcyZjMxZTkyOGM1ODAwNDdlZjg0MjVmMzhmNmY3ODQxYzFlOTIzZTQ3ZDE2OGZjOTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0MDYzYzkzZmUwZDlkMWNiZmExMjJlNjc1MDk4ZTU2YjdjZTg1MDVjMDFiY2VmNzFkODRiOTQ2NGRjYjE1YTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkMjlkZjYwODViZjY5Y2FhM2I0OTk1ZTExNTEwYjFmMzdkNzFjYjVkNTQxMjRmZjkzNzkyZjRiZWUwOWFmYzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3a488bda39e649e892b0a88511ad7e56",
+      "statement": "SQL enforces at most one claimed, started, uncertain, or confirmed attempt for an application, cancels only expired pre-click claims, and issues a one-use click permit that expires in five seconds when the matching claim starts.",
+      "evidence": [
+        {
+          "resource": "repo://runner/README.md#L94-L103",
+          "version": "repo-lines-v1:sha256:e470d99fe5131979b74634cf26075cd387e804b84572a5c76345f55fca73e9bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlYThiNDg1MDU4NjAwMDhiZTI2MGI0OGJkY2FlMDRjNzBhNGEwYTBkZTYyMmFhNTY3ZDdhMTc2MjFhMGYyODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMDhlNTA1MTQ4OTRhMjI3NmE0ZmEzZDVmNzg3MGVjNDgxMjdiMWEzZjM3MzhhYWVjMmY2ZDY1YTE3MTY1MWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MjMxNTZlY2ViYTFlYTRmYjIxM2UyMzIzYmQzMTdjNTA0YWQyYjdkYTljMTc1NTdiNzQxNDA3OWY0ZGUxZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2Yjc4YTY0ZmJjOTdhMTU4YzVjYWY5OThkZTQzMDY1NjA3OTQ1NjJhODRiMTczZDRmZDIyN2EyNmNlMzdhZGUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261103204522_ashby_lever_submission.sql#L57-L75",
+          "version": "repo-lines-v1:sha256:51440d0ecc492a89b965cc0aa18d57a9e5cc63fd5ca5f13a604d1ed5b4f1dc24:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjkyMDk0ZTZlNjhjODQ0YjE3ZjAxNzE0NjRkMjFkMzQ0MDMxYjA5OTRlZGI5NjBiOTg0OWFiMjQyMjg4MjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMThiZGZhN2VjYjU4MjU3ZDkyYWY1ZmVjMDRhNGI0MDg5ZWY2N2MyYmE2NDE2OThlYzUxZDIxNTViMjJlODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MjYwNjFhOTY4OTgzZTU5MWUwYjUxMTc4YWY4ZTUwOGI3NDBhMWI0MDljMGRhNjllODRiYzY1MzE3ODQ5MmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwYTFhMDNkOGQ5MDI1ZjliOWUyZjU1NTdhMTJiYmEzYzA3ODcyNWRjYWMxNjhiZTNlNWIxYWI3MTQ1YzQwNDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dc1010b47716406b8d18933eb4bb39e2",
+      "statement": "A confirmed submission requires a supported runner-observed platform receipt whose URL, marker, success text, and absence of a visible form meet validation rules; persistence independently validates that receipt before marking the attempt confirmed and the application submitted.",
+      "evidence": [
+        {
+          "resource": "repo://runner/submit.mjs#L10-L20",
+          "version": "repo-lines-v1:sha256:d8009aaaa3bfbaee4b771ecf62c77e2cd55319df35d2fce223e5bfc78ee66869:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYmMxYjFiMDc1OWFkOTc2OTQ4M2I2OTk1YWRiOGEwMmE4ZTZmZDI4YWQ5Njg4ZWQ4NWUwZjQzNWNkYjM5ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZDg4NjljYmEyMjJlMDAwM2IwZjI1YmExODMxM2I1Nzc3YTU1MDkxZDdmZjE4NjA5OTZkODg3NzY1OTI0ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkMDg2YjA5YTI1YTEyOTFkOWI0ZWFhYzAzNWFmM2NmZTU4NjFmOWYxYjZmMjIyOTMzOWVlZjQ4ZWU4ODM4YjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5ZDcwYzczZTgzMzZkNWU0MWM3NWRlMmJjODRmOWQ5ZTE4NGYzZmFkNGIwZWI3NzM4NWVhNDQ5MGM0ODM3ZjMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261103204522_ashby_lever_submission.sql#L13-L30",
+          "version": "repo-lines-v1:sha256:ff5d86e8f616d0fec753bceff0afacdce5acd1a2f41f5eda736145acbd89b02e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5NzcyODA3M2NiNzYwZTBmMTc0Y2Y1ZGU2ZWZiNmVhOWZkMDIwMzcxNjdiMmVjNGQ2YWNmZjQxOGE5Y2M2NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZjJkMDg0ZmRhNzJmNDEzODFhNjQ3ZjA2ZmFhODk5YWRiY2VkODc1NjY0YThlMGJmYTU3NzQyZWYyNjBkM2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1NzkzZTRmZGVmODhiZDUxNTI1OGFmOGY4ZjVlM2FiODA5ODBiY2JjZWIzZWU1YzY4YjQ1YTg5OWMxMTA3NTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyNjBiMDZmYjJkN2YzZTYzNmE2NTE5MzBhOWU0N2JhNGIyZWU2ZmJmNzhjYmZkZmEzNjVkNjc4ZDNmNGFlMzAifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261103204522_ashby_lever_submission.sql#L82-L99",
+          "version": "repo-lines-v1:sha256:51f745da66abcd4346d4646d4a8778633a720aa94710bff13b4152c0b581f402:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3M2I4MmVmODVjOWRlNDIzOTMyYWU2MjdkYzE2NGIxNjJlZGNjNmNkOGZjZjczZjgwMTk4NWJiZjkwYWNjYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMjZkZjgxNmM0ZGNiZmI4ZDkwOTZkNWQ3ZmVkMDU0MGJjYzNhYWQzYTdhYTFkODk1MDg1MTUxYjUyZDE1NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhZmRjZTFhYTg1ZjdmYzVlYWE2NDM2YWVlNDkxODQ1NmM0MzI1MTdlM2IyMzM0YzgzZGE1Njc4NmMxYmI0ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1NWQwMDA5ZTQ5Yjc0ZTdiMjk1ZmUyYmUzYmQ3ZGExZjgyYzM3ZDBmYjY1MDhhNWVjMzFkMjkzYjY3YTZkMjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ee65f27055149eebc82491b2591eee7",
+      "statement": "Any failure after a start request may have committed is handled as uncertain and does not permit another Submit click; observed confirmation whose reporting fails is retained for report-only recovery.",
+      "evidence": [
+        {
+          "resource": "repo://lib/application-blockers.mjs#L17-L21",
+          "version": "repo-lines-v1:sha256:1d7dcbbcd6a73f3d2ceda43f98e9b3a247538d2b3b9d547d1de698c8980e9562:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzI3NWIzZTc3NzE2NjUxMjA0Yzk4YmUwOWI1ZmY5OThlNWQxZGNhNTFhYjcxYjdkMTY2ZTkxZDI1M2M0YTViZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzc4MGVlODNhNjZiNTVjYmEwNzJmZDg3ZjIwYjgyZTY2YWNmZTBlM2VlYzUyYjI4MmI1NmVmZTE5OGQwOGNlMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzRiZmUxZmFhZjdjYWFlYmYyN2Q0OTcxYjNjNTU2YmJjMDJjMzAxYWE2ZTBmZjc2ZTM0Y2JjNmMyNWFhNjQ1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2NhMTdkYzMyZTVhYTU0YmU2YjZiNTZhNTU4YzRhNTU4ZWQzNDY0Mjk0OWQ2YmI2YzEzZjA0ZjI4ZjNiN2Y2MSJ9"
+        },
+        {
+          "resource": "repo://runner/submit.mjs#L106-L148",
+          "version": "repo-lines-v1:sha256:b322880e1769e0ab794c06aee045501d771f052b9c43035a80452eed12cd2fc4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ZmQ1ZGNhOWVjOTQ2NDFiM2RjYzY1ZmM5NzQ1ZTlmMDc3OTlmNGFkNmYzNzAwYTQyYWFiYzY3YTcyZTE3MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMzEzOWVlMmE3YTU5ZTMxZDZkMTlmMTlkNDc4YTQ4ODA1YzFmMzBiMjAxZDlkYzAzYmYxNDJiMzcxNzAwOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZDg5YjIxZDk2ZWFjOGYyZjM0OTZkYzc1OTcwMGZlNjU2YWJhYTdmYjU3MTk5ZjEyOTI4ZjZkMzUxYTdmYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        },
+        {
+          "resource": "repo://tests/submission.test.mjs#L58-L67",
+          "version": "repo-lines-v1:sha256:127ccc565b5c1ca98aca7abd846779018d3dbaad84de8bcce08c035b721c7631:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5YjU1YmUxMmZhNmQ2NWFhMWExZTIwMmI4ZDg1ZTk3YTY1MzdhZDQyODcxN2I2Zjc4ZWM3MTA4YmQ0ZmYwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiNTJjNmNlYjIwZGJjNjI3MTQwMzhjMWVlMzlhMDkwNDFmNjdmZWNhNTE2YjJjNjEwNzE4NTU4ZTFlODZmYzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyMWViZTk5ZGJlM2E2NzMwN2M1NzgzOTQ4MWU3MjU3M2U2NWY4ZTg0MzZkMDQ3YTVjYWQ3OWNhYjM5NGViY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwZmExZTA2YjRhYzgwMDI2MjI0NjA2YzZkYjI3M2FmZTIyNzMzMDA5OTBlODI3ODdkMzBjOGZhYjMxMTcyN2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca765b1eb0c444f4a531ebde98e27faa",
+      "statement": "Only a signed-in human can resolve an uncertain or stale started attempt after verifying it was not submitted; this cancels the old attempt and requires a fresh authorized attempt rather than serving as employer confirmation.",
+      "evidence": [
+        {
+          "resource": "repo://lib/cloud.mjs#L340-L371",
+          "version": "repo-lines-v1:sha256:b526d662b6f882d3796733f0539a0213fd2120863c4c9825b36139e4e52cb36f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZTk4ZjAxYWU4ODhkNDM1YmNmNDkyNGIwMzAwZjEzYWIzZTM2ZjM3OTY0YjYzZTVmMDliMjg3MGI4ZTJiYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjZGJlNzFjZDNiMzM0ZWUwNDM5YmI5MjVlMjg0YzliNGY4OGMzNDRkYzAwMGU3NmNhOGE0Yzk4YTRiYzRkOTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMzY1ZmQ0YTQ5ZjUwMzBmYmE4M2ZhYTliZmE3MzU4NTE5OTdlNTRjYWNmMjYxYjhkM2VkNjE1NmVhZjVmMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzODU4YTQ4YmE0Mzc0OTE3M2E3ODQyNmM3YTI5OTFjNzI5MDBhMjhlMDA2YmY0NTFkZDBmODE2MWNkMjRjNTQifQ"
+        },
+        {
+          "resource": "repo://runner/README.md#L105-L110",
+          "version": "repo-lines-v1:sha256:a4691634668c36ee8d505f44e9e18065eebee924ef2e40865fcf045452aa0d39:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2QxMDQ3MDA5NjVjOWVkMzY2ZTkwODYyYmJmY2I3ZDYwZjkyNThjMzhmOTU3YWY2MWVjMjlmZmVkZjFmNDU5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTJmZDhmYTViYWYyNjE5MDE0ZGMzMGZjYWJhZDQ2OWIyMWU4Nzg4ODZjMDlhMjlkYWY4ZGMyMWUxN2VkMGExZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2IzNDUxMGY3MWE1MmZjZjA4NjgxNzViMjIwN2E0NGEyNjVmMGY0OTlhNzczNTk2ZjM4YjkwYzMzZTM4NzFiNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzRlMWIxMjIyNzQwYTQzNDNkNTY1NTUwZjlhOGI5MGVhM2Y5MGE0MmIxZmI0YmVmMGIxYjc2ZGZhNzU3MDViYSJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261103204522_ashby_lever_submission.sql#L59-L64",
+          "version": "repo-lines-v1:sha256:0f40c3a8ed7fc32bc6d3679cb4fbf673319c87d0ccf1b956ca6e9485f13b5713:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBmZTliNjIyM2NkNjhiZjViM2Q2YTAxMzE1OTBkNzQ4ZGU5NDUwZTBhYmI5YzYzZmQwOTQ5OTQ0MGVmNTY2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDEwNDdlM2U5YThmMzA5ZTE1NjI2YjhmMTUwZjE3MjQ5YWZhYjhlZjRjYzVlN2JlMDE5NjE5OGIxMDYyNTliNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDg3YmFhNDFhZmQ0YzI5NTk2YTZjOWZkZmZiY2U4ZmNkMTY4Yzc3MDc2ZjYyZmEyOTdhZTVlYThiZWJmNWFlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTEyMzNlNmRkNTI0ZWEyZjdkODhkNDgxNGZjMDk3NThlYjExYThlOWE1Y2Q4OWVmNTM3YWFjNThhZTM3YmQxNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_59e2c93bd40d4036a66bc9de68438984",
+      "statement": "Runner blockers expose fixed, bounded diagnostic metadata and recovery actions while excluding raw errors, answers, credentials, file bytes, and session URLs.",
+      "evidence": [
+        {
+          "resource": "repo://lib/application-blockers.mjs#L1-L45",
+          "version": "repo-lines-v1:sha256:a3bef6997533a271c41c18c135178685368e3d1423e0f3ad8aec38a27eccd685:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxNzBlMzlmNTdmODgzMTEzOTdhNWY1MDg1Mzk5ZGIyNjVlNWUzYTE0MTZmMjVmZjFkYWVhMGQzYWY0MmYxYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyMGMxMDgzZDY1YWE0NTI3Zjg4NzA2MTBjNzkwMTgyYWIwZjdiNjA0ZWQ0ZDk0YTAwMmE2M2MzYzk4Y2UwMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://tests/submission.test.mjs#L229-L242",
+          "version": "repo-lines-v1:sha256:1e7f56ece7609462e3cc01771310841883469e36234aff13df224957bfb1b199:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlOTUwZWIzZmZlMmRhNmE5OWI0ODRiYWFmYTRmMGYyYTgxNDM5Nzg3OGJjYjBmNTg1YTdmMGIwNjcwY2FhZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MDcwZmI1OGQ5MjMzMjA5MmE5MzQzYmQ5Y2RmNDM3MTE1OTY2NjQxZTNiNDhhMjA0NmEyM2NmMjllZDQ5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxNjk5MWYyNzQ4MTQzMjlmZmQ0Y2E2ZWNmZjExMDM4MmZkZWZlNjczNDIwNjczYmNkMjYzNDYxOGFjNWViM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxNDhkZjU3ZWRhOTUwMTIwYzZhZjJiOWEzMDljYzU3OWNhOGE2M2MwODk5MjVmNTAxNDE2OWNiYTMxNGFkYmUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}

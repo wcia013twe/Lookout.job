@@ -4,11 +4,13 @@ okf_version: "0.2"
 
 # Files
 
-- [Quickstart and Task Routing](quickstart.md) - Contributor entry point for SSD-isolated work, local services, current profile/tracker navigation, labeled Muse synchronization and separate frontend/backend verification boundaries.
+- [Lookout engineering quickstart](quickstart.md) - Task-oriented reading map for safely changing the Lookout job-search workspace. Routes contributors from a change area to its authority, workflow, operations, and focused verification guidance.
 
 # Directories
 
-- [agents](agents/)
 - [architecture](architecture/)
+- [concepts](concepts/)
+- [integrations](integrations/)
 - [operations](operations/)
+- [testing](testing/)
 - [workflows](workflows/)
