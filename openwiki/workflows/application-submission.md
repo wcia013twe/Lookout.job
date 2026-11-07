@@ -215,3 +215,15 @@ Current profile fields, current draft answers and current resume selections neve
 substitute for unavailable historical submission materials. Unsent native drafts
 still display their recorded employer answers as a draft. Raw submission details
 remain optional; historical/externally imported records have no draft editor.
+
+### Active application ordering
+
+The Active tab puts Screening/OA, Interview/Onsite and Offer progress first,
+then applications still waiting after submission. Each group sorts newest
+application date first. The shared reader uses explicit tracker/import applied
+dates, stored submitted timestamps or current submission milestones, falling
+back to a recorded opened date. Future interview dates are not application dates.
+Missing/invalid dates sort last within their group; ties retain their prior order.
+Both native and imported records use the same progress rules, including tracker
+updates and sourced milestones. Other tabs retain their existing ordering. This
+is read-only presentation over existing reads; it creates no dates or records.
