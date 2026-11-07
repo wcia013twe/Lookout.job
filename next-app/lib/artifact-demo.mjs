@@ -1,3 +1,4 @@
+import {demoMaterialDocument} from './toolkit-demo-documents.mjs';
 import {debriefMarker} from '../../lib/interview-debrief.mjs';
 import {validateArtifact,artifactResponse,artifactMetadata,isPreparedArtifact,artifactSubjectKeys,weekStart,shiftWeek} from '../../lib/artifacts.mjs';
 const clone=value=>structuredClone(value);
@@ -43,6 +44,9 @@ export function createArtifactDemo(store){
   if(id===demoArtifactIds.company)row.content.body+='\n\n## Why this team · motivation draft\n\nIn this fictional scenario, the team works on database services and reliable background processing. The demo candidate’s Query Lab experience gives them a concrete starting point for discussing query plans, while the reliability work offers a growth area.\n\n**A conversational opening:** “I enjoyed investigating how query behavior changes with the dataset. I would like to apply that curiosity to a team where database performance and failure handling are part of the product.”\n\n**Verify before using:** whether this particular team owns those systems, what a junior engineer would own, and whether the work matches your actual interests. This is sample wording, not a saved personal preference.';
   if(id==='aaaaaaaa-2222-4000-8000-222222222222')row.content.materials=[{id:demoArtifactIds.company,version:1},{id:'aaaaaaaa-1111-4000-8000-111111111111',version:1}];
  });
+ for(const [id] of previewMaterials){const row=seed.find(item=>item.id===id);const body=demoMaterialDocument(row.content.kind);if(body){row.content.format='html';row.content.body=body;delete row.content.materials;}if(row.content.kind==='interview_brief')row.content.sources=[{title:'PostgreSQL · Using EXPLAIN',url:'https://www.postgresql.org/docs/current/using-explain.html',observedAt:today}];}
+ // Keep older examples available without competing with the five current previews.
+ for(const id of [demoArtifactIds.pack,demoArtifactIds.interactive])delete seed.find(row=>row.id===id).content.weekOf;
  const rows=()=>store.get('demo.artifacts')??seed;
  const history=()=>store.get('demo.artifactHistory')??Object.fromEntries(seed.map(r=>[r.id,[r]]));
  function saveRows(row){store.set('demo.artifacts',[row,...rows().filter(r=>r.id!==row.id)]);store.set('demo.artifactHistory',{...history(),[row.id]:[row,...(history()[row.id]||[])]});return artifactResponse(clone(row));}

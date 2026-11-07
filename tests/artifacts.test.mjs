@@ -74,7 +74,7 @@ test('HTML previews receive a first-position restrictive CSP and the host blocks
  const html=artifactHtml('<script>fetch("https://example.com")</script>');
  assert.ok(html.indexOf('Content-Security-Policy')<html.indexOf('fetch('));
  for(const directive of ["default-src 'none'","connect-src 'none'","frame-src 'none'","form-action 'none'","worker-src 'none'"])assert.ok(html.includes(directive));
- const viewer=await readFile(new URL('../next-app/app/career-toolkit/_components/artifact-viewer.tsx',import.meta.url),'utf8');assert.match(viewer,/sandbox="allow-scripts"/);assert.doesNotMatch(viewer,/allow-same-origin/);
+ const viewer=await readFile(new URL('../next-app/app/career-toolkit/_components/artifact-viewer.tsx',import.meta.url),'utf8');assert.match(viewer,/sandbox=\{readOnly\?/);assert.doesNotMatch(viewer,/allow-same-origin/);
  const layout=await readFile(new URL('../next-app/app/layout.tsx',import.meta.url),'utf8');assert.match(layout,/frame-src 'self'/);
 });
 
