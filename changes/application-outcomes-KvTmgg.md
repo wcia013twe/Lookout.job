@@ -111,3 +111,18 @@
   arbitrary task/deadline field. Imported records retain their existing native
   workflow mismatch. Full database suite and live account/deployment verification
   were not repeated for this presentation/read-only integration.
+
+## Follow-up: compact search toolbar
+
+- Consolidated search, type, stage and Active sort into a single desktop toolbar.
+  Replaced oversized boxed selectors and the separate Sort row with lightweight
+  native selects: All types, All stages, Progress / Next action. Search stays the
+  primary input; mobile places the three controls directly below it.
+- Existing filter/sort values, default ordering and accessible names are retained.
+  Controls keep 44px interaction targets and native keyboard/dropdown behavior.
+- Validation: frontend typecheck, production static build, UI detector, catalog
+  validation (158 roles) and diff check passed. Fictional desktop/mobile preview
+  exercised search, type/stage filters, Clear filters and action sorting, and
+  confirmed single-row desktop layout, mobile targets and no overflow/page errors.
+- Presentation only: no domain/backend/data changes or new tests; full backend
+  suite and live deployment verification were not repeated.
