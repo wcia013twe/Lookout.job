@@ -16,6 +16,8 @@ A search preflight checks saved targeting before creating a run. Missing title f
 
 Private append-only agent audit runs and events have scoped start, append and read tools. Authorized core work and resumed change wakes use the agent-audit guide for logging; audit records are observations, not submission proof. Availability in a particular environment depends on its deployed migration, gateway and MCP versions. See `supabase/functions/agent-gateway/skills/` and `changes/agent-audit-log-F48PPv.md`.
 
+Discover batch items can be removed through the scoped `remove_discover_job` action. Removal hides the owned item in Discover while retaining its batch history, shared catalog entry and applications. Availability depends on deployment of the migration and gateway; see `changes/discover-remove-7PMSxi.md`.
+
 ## Delivery and verification
 
 New sessions must read the quickstart and this page. Use a separate feature checkout, preserve concurrent work, complete a change note and land routine completed work into local main as directed by `AGENTS.md`. Prefer the external SSD when available; use internal storage when it is not. Local code, hosted backend and published frontend can be at different versions. Do not infer deployment or live external behavior from local tests or change notes.
