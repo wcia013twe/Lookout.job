@@ -1,3 +1,4 @@
+import {permissionHandoff} from './connection-permissions.mjs';
 import {pendingCountResponse} from './pending-count.mjs';
 import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs';
 import {prepareDraftWithPrefill} from '../../../lib/application-prefill-service.mjs';
@@ -102,7 +103,7 @@ Deno.serve(withGatewayCors(async request => {
           ...(token ? { tokenHash: await hashToken(token) } : {}),
         },
       });
-      if (dbError) return respond({ error: 'Connection request rejected' }, 400);
+      if (dbError) return respond({ error: dbError.code==='40001' ? 'Permissions changed elsewhere. Cancel and reopen Edit permissions before retrying.' : 'Connection request rejected' }, dbError.code==='40001'?409:400);
       return respond(token ? { connection: data, token } : { data, ...(operation === 'connections.list' ? {supportedScopes: SCOPES} : {}) });
     }
     if (!/^jb_agent_[a-f0-9]{64}$/.test(bearer)) return respond({ error: 'Agent credential required' }, 401);
@@ -120,6 +121,12 @@ Deno.serve(withGatewayCors(async request => {
       const {data,error}=await admin.rpc('agent_audit_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
       if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
       return respond({data});
+    }
+    if(operation==='workspace.agent_permissions_handoff') {
+      const credentialHash=await hashToken(bearer);
+      const result=await permissionHandoff(()=>admin.rpc('agent_dispatch',{credential_hash:credentialHash,operation:'credentials.verify',payload:{}}));
+      if(result.error){const [status,message]=databaseFailure(result.error);return respond({error:message},status);}
+      return respond({data:result.data});
     }
     if(operation==='workspace.reset_handoff') {
       const {data,error}=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'context.versions',payload:{}});

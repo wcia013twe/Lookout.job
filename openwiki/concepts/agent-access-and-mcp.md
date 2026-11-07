@@ -149,3 +149,7 @@ there is no unlock state or new authority. Direct calls by original names remain
 compatible. `discover_toolkit` discovers instruction guides, not executable
 schemas. See `mcp/README.md` and `tests/mcp-tool-surface.test.mjs` for the current
 source contract and local verification; hosted clients remain unverified.
+
+## Editing existing agent permissions
+
+The signed-in owner can select Edit permissions under My Agent → Your connections. The human-only `connections.permissions` gateway action locks the active owned connection and compares `expectedScopes` before updating its supported nonempty scope set. It preserves the token hash, ID, name, expiry and all other fields; stale edits fail rather than overwrite concurrent changes. Expired/revoked connections cannot be edited. Agents cannot invoke management operations or grant themselves access. The scoped read-only `open_agent_permissions` MCP tool (`workspace.agent_permissions_handoff`, workspace:read) only returns the human editor link. After a save, refresh agent tool discovery; writes are still checked against current server scopes. Demo edits remain fictional/resettable. Source checks do not establish hosted deployment or a real-account round trip.

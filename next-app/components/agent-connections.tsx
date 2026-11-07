@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import {sameScopes} from "../../supabase/functions/agent-gateway/connection-permissions.mjs";
 import AgentPreference from "./agent-preference";
 import {readAgentSelection} from "../../lib/agent-selection.mjs";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -38,7 +39,9 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
     [action, setAction] = useState(""),
     [access, setAccess] = useState("work"),
     [loading, setLoading] = useState(true),
-    [revokeTarget, setRevokeTarget] = useState<string | null>(null);
+    [revokeTarget, setRevokeTarget] = useState<string | null>(null),
+    [permissionEdit, setPermissionEdit] = useState<AgentConnection | null>(null),
+    [permissionSelection, setPermissionSelection] = useState<string[]>([]);
   const generation = useRef(0);
   const additionalPermissions = optionalScopes.filter(([scope]) => supportedScopes.includes(scope) && !connectionScopes(access).includes(scope));
   async function call(operation: string, payload: Record<string, unknown> = {}) {
@@ -46,10 +49,11 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
     return invokeConnection(w.client, operation, payload, () => window.JB.auth.userId, w.user?.id);
   }
 
-  async function refresh(saved = false) {
+  async function refresh(saved = false, expected?: {id:string;scopes:string[]}) {
     const epoch = generation.current;
     try {
       const response = await call("connections.list");
+      if(expected && !response.data?.some((c:AgentConnection)=>c.id===expected.id && sameScopes(c.scopes,expected.scopes)))throw Error("Saved permissions could not be verified. Refresh connections before retrying.");
       if (epoch === generation.current) {
         setConnections((response.data || []).filter((connection: AgentConnection) => !connection.revoked_at));
         onConnectionsChange?.(response.data || []);
@@ -75,6 +79,8 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
     setSupportedScopes([]);
     setFeedback("");
     setRevokeTarget(null);
+    setPermissionEdit(null);
+    setPermissionSelection([]);
     setLoading(Boolean(w.user || w.demo));
     if (w.user || w.demo) refresh();
     return () => {
@@ -140,24 +146,26 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
       if (epoch === generation.current) setBusy(false);
     }
   }
-  async function profileSetup(connection: AgentConnection) {
-    const epoch = generation.current;
-    setBusy(true);
-    setAction(`profile:${connection.id}`);
-    setFeedback("");
+  function editPermissions(connection:AgentConnection) {
+    setPermissionEdit({...connection,scopes:[...connection.scopes]});
+    setPermissionSelection([...connection.scopes]);
+    setRevokeTarget(null);setFeedback("");setAction(`permissions:${connection.id}`);
+  }
+  async function savePermissions(event:FormEvent<HTMLFormElement>) {
+    event.preventDefault();if(!permissionEdit || busy)return;
+    const epoch=generation.current, editing=permissionEdit, scopes=[...permissionSelection];
+    setBusy(true);setAction(`permissions:${editing.id}`);setFeedback("");
     try {
-      await call("connections.profile_setup", {
-        id: connection.id,
-        enabled: !connection.scopes.includes("profile:write"),
-      });
-      if (epoch !== generation.current) return;
-      setFeedback("Profile setup access updated. Ask your agent to refresh tools; your existing token still works.");
-      await refresh(true);
-    } catch (error) {
-      if (epoch === generation.current) setFeedback(errorMessage(error));
-    } finally {
-      if (epoch === generation.current) setBusy(false);
-    }
+      await call("connections.permissions",{id:editing.id,expectedScopes:editing.scopes,scopes});
+      if(epoch!==generation.current)return;
+      const verified=await refresh(true,{id:editing.id,scopes});
+      if(epoch!==generation.current)return;
+      if(verified) {
+        setPermissionEdit(null);
+        setFeedback("Permissions updated. Your existing token and expiry are unchanged. Ask your agent to refresh its tools.");
+      }
+    } catch(error) {if(epoch===generation.current)setFeedback(errorMessage(error));}
+    finally {if(epoch===generation.current)setBusy(false);}
   }
   async function copy(setup: boolean) {
     const epoch = generation.current;
@@ -285,7 +293,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
           {feedback && action === "copy" && <p role="status" className="mt-3 text-sm leading-relaxed">{feedback}</p>}
         </div>
       )}
-      <div className="mt-8 border-t border-board-line pt-6">
+      <div id="agent-connections" className="mt-8 scroll-mt-6 border-t border-board-line pt-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-semibold">Your connections</h3>
           {(w.user || w.demo) && <button className={secondary} disabled={busy || loading} onClick={() => { setAction("refresh"); setFeedback(""); setLoading(true); void refresh(); }}>{loading ? "Loading…" : "Refresh connections"}</button>}
@@ -315,18 +323,35 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
                     </div>
                     {!c.revoked_at && (
                       <div className="flex flex-wrap gap-2">
-                        {active && <button className={secondary} disabled={busy} onClick={() => profileSetup(c)}>
-                          {busy && action === `profile:${c.id}` ? "Updating…" : c.scopes.includes("profile:write") ? "Disable profile setup" : "Enable profile setup"}
+                        {active && <button className={secondary} disabled={busy} onClick={() => editPermissions(c)}>
+                          Edit permissions
                         </button>}
-                        <button className={secondary} onClick={() => setRevokeTarget(c.id)} disabled={busy}>Revoke access</button>
+                        <button className={secondary} onClick={() => {setPermissionEdit(null);setFeedback("");setRevokeTarget(c.id);}} disabled={busy}>Revoke access</button>
                       </div>
                     )}
                   </div>
+                  {permissionEdit?.id===c.id && <form onSubmit={savePermissions} className="mt-4 border-y border-board-line py-4" aria-label={`Edit permissions for ${c.name}`}>
+                    <fieldset disabled={busy}>
+                      <legend className="text-sm font-semibold">Permissions for {c.name}</legend>
+                      <p className="mt-2 max-w-prose text-sm leading-relaxed text-board-muted">Choose what this agent can access. Saving keeps the same token and expiry.</p>
+                      <div className="mt-3 grid gap-x-6 sm:grid-cols-2">
+                        {[...new Set([...supportedScopes,...permissionEdit.scopes])].map(scope=><label key={scope} className="flex min-h-11 items-start gap-3 py-2 text-sm leading-relaxed">
+                          <input type="checkbox" className="mt-1 size-4 shrink-0 accent-board-accent" checked={permissionSelection.includes(scope)} disabled={!supportedScopes.includes(scope)} onChange={event=>setPermissionSelection(current=>event.target.checked?[...current,scope]:current.filter(s=>s!==scope))}/>
+                          <span>{scopeLabels[scope]||scope}</span>
+                        </label>)}
+                      </div>
+                      {!permissionSelection.length && <p role="alert" className="mt-2 text-sm">Select at least one permission, or use Revoke access to disable the connection.</p>}
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <button type="submit" className={primary} disabled={busy||!permissionSelection.length||sameScopes(permissionSelection,permissionEdit.scopes)}>{busy?"Saving permissions…":"Save permissions"}</button>
+                        <button type="button" className={secondary} disabled={busy} onClick={()=>{setPermissionEdit(null);setFeedback("");}}>Cancel</button>
+                      </div>
+                    </fieldset>
+                  </form>}
                   <details className="mt-2 text-sm text-board-muted">
                     <summary className="min-h-11 py-2">View permissions</summary>
                     <ul className="list-disc space-y-1 pl-5 text-xs leading-relaxed">{c.scopes.map(scope => <li key={scope}>{scopeLabels[scope] || scope}</li>)}</ul>
                   </details>
-                  {feedback && (action === `revoke:${c.id}` || action === `profile:${c.id}`) && <p role="status" className="mt-3 text-sm leading-relaxed">{feedback}</p>}
+                  {feedback && (action === `revoke:${c.id}` || action === `permissions:${c.id}`) && <p role="status" className="mt-3 text-sm leading-relaxed">{feedback}</p>}
                   {revokeTarget === c.id && (
                     <div className="mt-4 rounded-lg bg-board-tag p-4">
                       <p className="text-sm leading-relaxed">Revoke access for <strong>{c.name}</strong>? Its token will stop working. This does not delete information the agent already received. Your saved workspace stays here.</p>
