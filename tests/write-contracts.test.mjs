@@ -29,3 +29,17 @@ test('document errors explain allowed fields without echoing private YAML',()=>{
  assert.equal(databaseFailure({code:'40001'})[0],409);
  assert.equal(databaseFailure({code:'42501'})[0],403);
 });
+
+
+test('gateway forwarding preserves fixed actionable diagnostics without reflecting private server content',async()=>{
+ const {gatewayFailure}=await import('../supabase/functions/agent-gateway/request-errors.mjs');
+ assert.match(gatewayFailure(400,{error:'Unknown operation'})[1],/matching backend migration/);
+ const message='Dated mock session in its local week required';
+ assert.deepEqual(databaseFailure({code:'22023',message}),[400,message]);
+ assert.deepEqual(gatewayFailure(400,{error:message}),[400,message]);
+ for(const error of ['PRIVATE INTERVIEWER PROFILE','jb_agent_'+ 'a'.repeat(64),{message:'private'},'Unknown operation: private SQL'])assert.deepEqual(gatewayFailure(500,{error}),[500,'Gateway operation rejected; read current state before retrying']);
+ const {createDispatch}=await import('../backend/runtime/service.ts');
+ const dispatch=createDispatch({rpc:async()=>assert.fail('mock should retain Edge boundary'),supabaseUrl:'http://127.0.0.1:54321',request:async()=>Response.json({error:'Unknown operation'},{status:400})});
+ const result=await dispatch('jb_agent_'+ 'a'.repeat(64),'mock.read',{id:'cccccccc-1111-4000-8000-111111111111'});
+ assert.equal(result.status,400);assert.match(result.error,/matching backend migration/);
+});

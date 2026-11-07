@@ -166,7 +166,7 @@ Live external-agent calling and hosted behavior are not established by local tes
 ### Compact weekly scan
 
 The Toolkit title and view switch share a line; one toolbar owns week navigation,
-All materials, the collapsed filters and agent planning. Dated mock sessions and
+All materials, the collapsed filters. Dated mock sessions and
 prep briefs lead the weekly timeline. Undated company context, stories, notes and
 external resources follow without invented event dates. Primary prep uses compact
 cards with rotated type icons; supporting items use denser rows. Company marks
@@ -183,11 +183,41 @@ timelines supply hierarchy without repeating app navigation or branding. Demo
 embeds use an empty sandbox, and HTML is described as a document rather than
 inherently interactive. Older saved records remain available; the older demo pack
 and interactive example are off the current-week shelf. The planning button and
-copy-request panel were removed from the workspace.
+copy-request panel were removed from the workspace. The reader has one compact back/title/discussion header; metadata and revision controls are collapsed, while resource links stay visible. Embedded documents fit the remaining viewport so ordinary reading scrolls inside the document without requiring an additional outer page scroll. The sandbox remains unchanged.
 
-Active mock cards in detached demo open Google's prefilled event editor with title,
+Active mock cards labeled **Add to Google Calendar** in detached demo open Google's prefilled event editor with title,
 time and a generic description. They do not create an event, reminders, attendees,
 a call, or a saved Calendar association. Hidden interviewer preparation and internal
 record IDs are never placed in that URL. Completed/cancelled sessions retain their
 saved reader/feedback route. Real-account mock routing is unchanged; a deployed
 Google Calendar event integration is not claimed by this preview.
+
+### Palantir research demo
+
+The current five-material preview centers on the public New York New Grad Query Engines posting, with a separately labeled fictional application. The round brief saves two short Glassdoor excerpts with report dates, anonymous attribution and review IDs; it labels those as general SWE candidate reports, not a confirmed Query Engines process. Original practice prompts are distinguished from reported questions. Visible source links and three external-resource rows open Glassdoor, the employer posting, DataFusion, PostgreSQL and Furnace pages through the existing source/resource link boundaries. Research stays dated November 7, 2026 across demo resets. Candidate stories, events, status and debrief remain fictional; no employer action or real account write occurs.
+
+### Agent-facing material formats (contract 117 source update)
+
+The primary guide index and `discover_toolkit.materialGuide` expose the versioned
+`toolkit-materials` guide. It provides six optional recipes (five contributions
+plus external resources), matching career-skill IDs, a neutral static HTML starter,
+report-excerpt attribution and source-link rules. Relevant company/interview skills
+load it before saving; the interview/workspace workflows reference it without
+preloading bodies into startup. Static documents are the default for synthesis,
+while curated resources and concise Markdown remain valid. Mock logistics/profile
+separation and actual-call/Calendar limits are unchanged. Existing scoped artifact
+and mock tools own execution; no new generic writer or consent is introduced.
+A detached MCP generation test covers discovery, recipe loading, save/read-back
+and read-only denial. Hosted availability requires the normal main-branch release.
+
+### Local mock save readiness correction (contract 118)
+
+Tool discovery alone was insufficient: the local database lacked migration
+`20261107201448`, and Node's service map omitted the `mock` prefix. The map now
+routes mock reads/saves through the existing checked Edge/SQL path. Node preserves
+only fixed safe scope/version/mock diagnostics and explains an unsupported
+database operation as a migration mismatch; arbitrary server text remains hidden.
+The local-only `scripts/check-local-toolkit-mock.mjs` checks the prerequisite and
+exercises actual Node MCP -> Edge -> SQL saves, idempotent retries and private
+profile separation using a disposable account removed in `finally`. It does not
+create the user's requested session or any Calendar event.

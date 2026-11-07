@@ -30,6 +30,20 @@
       "enabled": true
     },
     {
+      "id": "jobright-newgrad",
+      "name": "Jobright new-grad",
+      "kind": "board",
+      "careers_url": "https://github.com/jobright-ai/2026-Software-Engineer-New-Grad",
+      "enabled": true
+    },
+    {
+      "id": "jobright-internship",
+      "name": "Jobright internships",
+      "kind": "board",
+      "careers_url": "https://github.com/jobright-ai/2026-Software-Engineer-Internship",
+      "enabled": true
+    },
+    {
       "id": "careerops-7d9e4677296d70e5",
       "name": "YMCA of Greater Toronto",
       "kind": "careers",

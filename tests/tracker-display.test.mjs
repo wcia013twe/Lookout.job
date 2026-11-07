@@ -26,3 +26,14 @@ test('closed outcomes stay visible without inventing prior milestone dates',()=>
 test('recorded terminal email events close the tracker even when the old status remains Interview',()=>{
  assert.equal(trackerProgress({status:'Interview',milestones:[{id:'rejection',kind:'rejected',phase:'received',source:{kind:'email'}}]}).status,'Rejected');
 });
+test('completed earlier stages and applied submissions get checks without advancing the current stage',()=>{
+ for(const [status,expected] of [['New',[false,false,false,false,false]],['Submitted',[true,true,false,false,false]],['Phone Screen',[true,true,false,false,false]],['Interview',[true,true,true,false,false]],['Offer',[true,true,true,true,false]]]){
+  const app={status},before=structuredClone(app),p=trackerProgress(app);
+  assert.deepEqual(p.completed,expected);assert.deepEqual(app,before);
+ }
+ assert.deepEqual(trackerProgress({status:'New'},{openedDate:'2026-11-07'}).completed,[true,false,false,false,false]);
+ assert.equal(trackerProgress({status:'Phone Screen'}).status,'Screen');
+ const reported=trackerProgress({status:'Phone Screen',imported:{record:{completedStages:['SCREEN']}}});
+ assert.deepEqual(reported.completed,[true,true,true,false,false]);assert.equal(reported.status,'Screen');
+ const closed=trackerProgress({status:'Rejected'});assert.deepEqual(closed.completed,[false,false,false,false,false]);
+});

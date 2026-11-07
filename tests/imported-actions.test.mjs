@@ -22,7 +22,7 @@ test('imported actions drive flags/dates/sorting and completion independently of
  const saved=await api('update',request);assert.deepEqual(await api('update',request),saved);
  let app=importedApplication(saved.record);
  assert.equal(applicationNextAction(app).date,'2026-11-08');assert.equal(applicationAction(app).reason,'Complete assessment');
- assert.equal(trackerProgress(app).status,'Screen');assert.deepEqual(trackerProgress(app).completed,[false,true,true,false,false]);
+ assert.equal(trackerProgress(app).status,'Screen');assert.deepEqual(trackerProgress(app).completed,[true,true,true,false,false]);
  assert.deepEqual(saved.record.source_rows,before);assert.equal(app.receipt,undefined);assert.equal(app.backendId,undefined);
  const waiting=await api('update',{id:source.id,expectedVersion:2,eventKey:'waiting',changes:{nextAction:'Wait for employer response',actionDate:null,needsAction:false}});
  app=importedApplication(waiting.record);assert.equal(applicationNextAction(app),null);assert.equal(applicationAction(app),null);assert(trackerProgress(app).completed[2]);
@@ -31,7 +31,7 @@ test('imported actions drive flags/dates/sorting and completion independently of
  await assert.rejects(api('update',{...request,eventKey:'stale'}));
  assert.equal((await createDemoSimplifyImport()('list')).records.length,0);
  const Component=(await bundleComponent('next-app/components/tracker-progress.tsx',{plugins:[{name:'logo',setup(build){build.onResolve({filter:/^\.\/role-card$/},()=>({path:'logo',namespace:'stub'}));build.onLoad({filter:/.*/,namespace:'stub'},()=>({contents:'export const CompanyLogo=()=>null;',loader:'js'}));}}]}))();
- const html=renderToStaticMarkup(React.createElement(Component,{application:dated}));assert.match(html,/Screen/);assert.equal((html.match(/>Completed<\/span>/g)||[]).length,2);
+ const html=renderToStaticMarkup(React.createElement(Component,{application:dated}));assert.match(html,/Screen/);assert.equal((html.match(/>Completed<\/span>/g)||[]).length,3);
 });
 test('MCP advertises and forwards structured imported fields only under tracking scope',async()=>{
  const payload={id:'11111111-1111-4111-8111-111111111111',expectedVersion:66,eventKey:'structured',changes:{nextAction:'Technical interview',actionDate:'2026-11-11',needsAction:true,completedStages:['APPLIED','SCREEN']}};

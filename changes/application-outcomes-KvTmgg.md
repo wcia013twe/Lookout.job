@@ -162,3 +162,23 @@
   needsAction/completedStages and application-workspace guide 15 reads back.
   No personal imported data/notes were modified. Production still requires the
   normal reviewed-main backend workflow; this is a dev availability claim only.
+
+## Follow-up: green completed progress for every application
+
+- Previously only imported explicit completedStages values drew checks, so CTC's
+  recently saved completion stood out while other already-passed stages had none.
+  Now earlier stages, recorded opened links and reported Applied/Submitted steps
+  receive green checks/connectors. The current screening/interview/offer stays
+  pending unless explicitly completed; shared-stage-only displays remain scoped.
+- Imported Tracking details checks/disables already-passed steps consistently,
+  while keeping explicit current-stage completion editable. Rendering does not
+  change personal records, completion flags, hiring status or submission evidence.
+- Fixed a related display bug where a synthetic Phone Screen timeline entry
+  incorrectly raised progress to Interview, which would falsely complete Screen.
+- Validation: 22 focused tracker/import/render/sort/timeline tests passed;
+  frontend typecheck/build, catalog validation (158 roles), detector and diff
+  checks passed. Existing fictional native/import demo coverage verifies completed
+  earlier steps and explicit current completion; desktop/light/dark and mobile
+  detail checks confirmed green connectors/checks and an unfinished current round,
+  with no page errors or overflow. No schema/MCP writer/runtime change; full DB
+  suite was not repeated for this presentation pass (focused import SQL passed).

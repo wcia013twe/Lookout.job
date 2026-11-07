@@ -45,6 +45,21 @@ export async function checkLocalEdge({url,anonKey,serviceKey,request=fetch,log=c
       assert.deepEqual(own.data.data.map(row=>row.id),[user.connection.id],'Connection list leaked or omitted records');
     }
     const [first,second]=users;
+    const permissionPayload={id:first.connection.id,expectedScopes:['workspace:read'],scopes:['workspace:read','network:write']};
+    const edited=await gateway(first.session,'connections.permissions',permissionPayload);
+    assert.equal(edited.status,200,'Human permission save failed');
+    const reopened=await gateway(first.session,'connections.list');
+    assert.equal(reopened.status,200,'Saved permission read-back failed');
+    const persisted=reopened.data.data.find(row=>row.id===first.connection.id);
+    assert.deepEqual([...persisted.scopes].sort(),[...permissionPayload.scopes].sort(),'Reopening must read saved database permissions');
+    for(const field of ['id','name','expires_at'])assert.equal(persisted[field],first.connection[field],'Permission save changed '+field);
+    assert.equal((await gateway(first.token,'context.versions')).status,200,'Original token stopped working after permission edit');
+    assert.notEqual((await gateway(second.session,'connections.permissions',{...permissionPayload,expectedScopes:permissionPayload.scopes})).status,200,'Foreign permission edit must be rejected');
+    assert.notEqual((await gateway(first.token,'connections.permissions',{...permissionPayload,expectedScopes:permissionPayload.scopes})).status,200,'Agent must not edit its own permissions');
+    const removed=await gateway(first.session,'connections.permissions',{id:first.connection.id,expectedScopes:permissionPayload.scopes,scopes:['workspace:read']});
+    assert.equal(removed.status,200,'Permission removal failed');
+    const restored=await gateway(first.session,'connections.list');
+    assert.deepEqual(restored.data.data.find(row=>row.id===first.connection.id).scopes,['workspace:read'],'Permission removal did not persist');
     const foreign=await gateway(second.session,'connections.revoke',{id:first.connection.id});
     assert.notEqual(foreign.status,200,'Foreign connection revocation must be rejected');
     const versions=await gateway(first.token,'context.versions');
@@ -68,7 +83,7 @@ export async function checkLocalEdge({url,anonKey,serviceKey,request=fetch,log=c
     assert.equal(revoked.status,200);
     assert.equal((await gateway(first.token,'context.versions')).status,401,'Revoked gateway credential accepted');
     assert.equal((await mcp(first.token,'tools/list')).status,401,'Revoked MCP credential accepted');
-    log('Local Edge checks passed: real Auth sessions, gateway issuance/read/scopes/owner isolation/revocation, MCP forwarding/discovery/context/revocation.');
+    log('Local Edge checks passed: real Auth sessions, gateway issuance/read/permission save-reopen/removal/scopes/owner isolation/revocation, MCP forwarding/discovery/context/revocation.');
   } catch(error) {failure=error;}
   finally {
     for(const user of users) {

@@ -56,7 +56,7 @@ top-level file transactions. Its temporary tracker is removed with the child
 workspace and never becomes a second user application store.
 
 The child receives no Supabase/agent credentials, has a 384 MiB JavaScript heap,
-a 120-second task timeout and 16 MiB output cap. The normal job preserves Career Ops provider pagination, request spacing, retries and safety bounds; it adds no blanket page, request or result cap. All configured sources are attempted with up to ten concurrent source tasks. Every returned lead is verified in batches of at most 25; a failed batch retains diagnostics and does not discard other successful batches. The supported Simplify feed is read in full; HiringCafe remains an explicitly sampled aggregate. Save transactions are capped at 25 rows and
+a 120-second task timeout and 16 MiB output cap. The normal job preserves Career Ops provider pagination, request spacing, retries and safety bounds; it adds no blanket page, request or result cap. All configured sources are attempted with up to ten concurrent source tasks. Every returned lead is verified in batches of at most 25; a failed batch retains diagnostics and does not discard other successful batches. Simplify feed metadata is read in full, but only the 100 newest title/seniority-matching leads per feed are selected for verification; omitted matching leads make coverage partial. HiringCafe remains an explicitly sampled aggregate. Save transactions are capped at 25 rows and
 48,000 encoded UTF-8 bytes. Provider discovery excerpts are not treated as full verified records: the job
 verifies supported exact employer URLs and parses the description through copied
 `normalizeGreenhouseJob`, bounded at 60,000 characters, before saving observations.
@@ -439,3 +439,26 @@ preview; retrieve the rest through the existing scoped `read_search_discoveries`
 run pagination. The SQL finish checks current profile/settings and saved count.
 No hosted-board collection or automatic batch publication is enabled. Existing
 personal report/application writers are unchanged and require their own scope.
+
+
+### Jobright public lists
+
+The Jobright new-grad and internship GitHub lists are enabled default lead sources. A thin collection provider parses every published README row, carries forward continuation-row companies, removes Jobright tracking parameters, and resolves eligible titles with up to six concurrent public detail requests. Only explicit, identity-matched public `applyLink`/`originalUrl` fields can enter the existing employer verification, temporary staging, full filtering and final account-history deduplication pipeline. No Jobright summaries are saved as verified employer postings. Website and MCP source configuration use the existing versioned portals document and search-job tools.
+
+Coverage always remains partial: Jobright documents a subset of jobs from the last seven days, and public detail pages may omit employer application URLs. Live checks on 2026-11-07 found those fields absent on ten sampled listings; these entries are reported unresolved and are not saved. No authenticated Jobright API or paid service is used. Fixture success does not establish live employer-link availability. Default updates do not overwrite customized account portals or modify already-running source snapshots.
+
+
+### Simplify feed limit
+
+The direct background worker verifies at most the 100 newest title/seniority-matching leads from each Simplify feed per run (new-grad, summer and off-season independently). It reads active visible feed metadata newest-first, applies the existing metadata prefilter, then selects the first 100 before existing deduplication and 25-link employer verification. Full screening, temporary staging, lease fencing and final shortlist persistence remain unchanged. Older omitted matching leads produce explicit partial coverage and an omitted count; no durable cursor or automatic continuation is retained. Repeated scans select the newest matching leads again, so older jobs may never be verified. This is an intentional Simplify-only limit; Jobright, HiringCafe and employer-source behavior are unchanged. Website/MCP backend searches use the same provider; explicit manual Simplify lead paging remains available separately.
+
+### Check mock interview persistence locally
+
+After applying the source weekly Toolkit migration `20261107201448` to the local
+stack and refreshing the Node API, run `node scripts/check-local-toolkit-mock.mjs`.
+It rejects non-loopback API origins, checks the local database prerequisite, creates
+a disposable fictional account/connection, and verifies actual Node MCP -> Edge ->
+SQL save/read/retry with a 45-minute mock. It verifies normal artifact reads omit
+the private profile and removes its fixtures in `finally`. No user interview,
+Calendar event, worker or scheduler is created. Discovery-only checks do not prove
+this persistence path works.

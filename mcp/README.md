@@ -867,3 +867,21 @@ migration and gateway/MCP deployment; older endpoints remain unsupported.
 ## Editing existing agent permissions
 
 The signed-in owner can select Edit permissions under My Agent → Your connections. The human-only `connections.permissions` gateway action locks the active owned connection and compares `expectedScopes` before updating its supported nonempty scope set. It preserves the token hash, ID, name, expiry and all other fields; stale edits fail rather than overwrite concurrent changes. Expired/revoked connections cannot be edited. Agents cannot invoke management operations or grant themselves access. The scoped read-only `open_agent_permissions` MCP tool (`workspace.agent_permissions_handoff`, workspace:read) only returns the human editor link. After a save, refresh agent tool discovery; writes are still checked against current server scopes. Demo edits remain fictional/resettable. Source checks do not establish hosted deployment or a real-account round trip.
+
+### Workspace material recipes (contract 117 source update)
+
+`read_developer_context.guides` advertises `toolkit-materials`; `discover_toolkit`
+also returns its `materialGuide` ID/version while preserving the full career-skill
+catalog. Load it with `read_guide` for six optional recipes (the five material
+types plus external resources), related career skill IDs, a neutral static HTML
+starter and evidence/link rules. Related company/interview skills route here
+automatically; users need not select formats or copy prompts. Documents default
+to static HTML, resources link out, and mocks retain private interviewer profiles.
+
+Execution stays on existing scoped `list_artifacts`, `read_artifact`,
+`save_artifact` and mock tools, discovered through workflow `toolkit`. Working
+links use dated `sources` or `resourceUrl`; iframe link/script capabilities are
+unchanged. No new persistence, browser, Calendar or scheduler integration is added.
+Release the updated gateway/MCP guide package from main before claiming hosted
+availability; local tests exercise discovery -> guide read -> save -> read-back
+and read-only scope denial with detached fictional data.
