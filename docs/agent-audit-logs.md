@@ -34,6 +34,11 @@ scheduled pruning is introduced.
 
 ## Capture convention
 
+The developer-context lookup now requires `read_guide` → `agent-audit` for authorized
+Discover, Applications, Networking and Career Toolkit work, including resumed change
+wakes. Startup routes to the same guide; the developer version refresh invalidates
+stale instructions. This is instruction-driven capture, not a host interception hook.
+
 Start one run per task execution with a stable eventKey. Metadata should include
 actual model/configuration, runtime, code commit, prompt/guide versions, task and
 experiment IDs, fixture version, candidate/profile version and initial context.
@@ -52,7 +57,11 @@ Append promptly, at most 25 events and 200 KB encoded JSON per request, with at
 most 128 KB per event's data (and run metadata). Oversized evidence can use multiple
 redacted events with artifactId/chunkIndex/totalChunks. Keep failed and partial
 runs. A crashed run remains incomplete unless a later observer records that fact.
-Do not log audit-tool calls recursively.
+Do not log audit-tool calls recursively. Save a request before each domain tool call
+and its result/error afterward, sharing a toolCallId. If capture fails, pause the
+logged test before the next domain action; recover exact pending writes and identify
+known gaps. Verify the terminal event by paginated read-back before claiming the log
+was saved. Missing host-native observations must remain explicitly unavailable.
 
 Redact secrets before storage. The API/database reject common secret field names,
 Lookout credentials, Bearer strings and signed Storage links. This is a guard

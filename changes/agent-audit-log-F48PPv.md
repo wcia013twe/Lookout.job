@@ -67,3 +67,17 @@
 - Validation: frontend typecheck and production build; 940 tests passed, 5 paused
   Community tests skipped; 158 catalog roles validated; desktop/mobile demo checks
   passed with no external requests or page errors.
+
+## Muse instruction lookup enables audit collection
+
+- Route startup/developer context to required agent-audit v2 for authorized core
+  assignment work and resumed change wakes; advance developer context to 104.
+- Specify run creation, correlated tool request/result capture, redaction, errors,
+  outcomes and paginated read-back. Pause logged tests on capture failure.
+- Keep task authority, change-feed acknowledgement and product checkpoints separate.
+  No host interception, grading, database change or production deployment.
+- Validation: 941 tests passed, 5 paused Community tests skipped; backend runtime
+  TypeScript and 158-role data validation passed. Fictional MCP initialize → context
+  → guide → start/append/read test persists the guide payloads in an isolated DB.
+  Startup/index remain within their 6 KB/4 KB budgets. Live Muse capture remains
+  unverified and needs the normal main-branch backend release/context refresh.

@@ -1,7 +1,80 @@
 {
   "id": "agent-audit",
-  "version": 1,
+  "version": 2,
   "name": "Private agent run logs",
-  "whenToUse": "Collect or inspect auditable execution data for authorized Lookout tasks; no grading.",
-  "instructions": "Use the scoped audit tools only when run logging is requested or part of an authorized task. Start with start_agent_audit_run using a stable eventKey, explicit live/controlled mode, task and area. Metadata should preserve actual model/settings, runtime, prompt/guide versions, code commit, experiment/task/fixture IDs and context snapshot references where available. Unknown values stay unknown. Keep candidate snapshots private. Logging never grants execution, consent, approval, sending or submission authority.\n\nAppend messages, tool calls/results, brief decision summaries, sources and observed timestamps, state snapshots, artifacts, failures/retries, user interventions, model usage and final outcomes as available. Use append_agent_audit_events, stable unique event keys and shared correlation IDs in data (for example toolCallId, parentEventKey, applicationId, backendJobId). Save promptly; batch at most 25 events within the 200 KB request and 128 KB/event-data bounds. Preserve oversized redacted evidence in separate chunks with artifactId, chunkIndex and totalChunks; record any truncation, missing capture or failed logging explicitly. Do not store hidden chain-of-thought. Never log this audit tool's own calls recursively.\n\nRedact credentials, authorization headers, signed URLs and secrets before writing. The server rejects common secret patterns but cannot guarantee arbitrary free text is safe. Store durable private artifact IDs/paths and hashes, not expiring signed links. A user asking to collect data is not permission to send outreach or submit real applications.\n\nUse run.finished/run.failed/run.interrupted events with observed outcomes, stop reason and available usage; never fabricate completion for a crashed run. These append-only logs are agent observations, not independent proof of external success or a second application state store. Runtime-native traces and actual backend receipts should be linked when available; manual event logging cannot capture information the runtime does not expose. No scores, judge or benchmark execution is added by these tools.\n\nRead back with read_agent_audit_run. Continue afterSequence=nextSequence while hasMore; preserve server ingestion sequence separately from client occurredAt. Exact duplicate writes replay, changed retry data conflicts, and a failed batch commits nothing. Reconcile uncertain writes before retrying. Owners can inspect the same records in Supabase; workspace reset or account deletion removes their logs. Tables alone do not capture Muse activity automatically. Gateway/MCP release and agent tool discovery refresh are required before these tools are usable."
+  "whenToUse": "Required run logging for authorized Discover, Applications, Networking and Career Toolkit work, including resumed work; inspect private execution data without grading.",
+  "instructions": "Run logging is enabled for this assignment. For every authorized Discover, Applications, Networking or Career Toolkit task execution, load this guide before domain work and record the run without asking the user to repeat the logging request. Include work resumed by change wakes. Logging neither starts a task nor grants execution, consent, approval, sending or submission authority. Connection setup still stops after setup; schedule-only maintenance retains its narrow context procedure. For other tasks use logging when requested. A user can explicitly stop collection.\n\nStart: discover start_agent_audit_run, append_agent_audit_events and read_agent_audit_run with workspace:read and activity:write. After required context/version lookup, call start_agent_audit_run with a stable eventKey, task, area and mode. Use discover/applications/network/toolkit for the corresponding area. mode=controlled requires an isolated fixture or sandbox; otherwise use live, even if no application is submitted. Reuse a retained runId when resuming the same execution. A new execution gets a new key and may link previousRunId in metadata; never reuse a key for changed task data. Retain the exact start payload until its outcome is reconciled. The returned id is the runId for all append/read calls.\n\nMetadata: save actual runtime/model/settings, developerVersion, loaded guide id/version pairs, code commit, experiment/task/fixture IDs, candidate/profile versions and private context/artifact references when exposed. Unknown values stay absent or explicitly unknown. Do not invent model identity, token counts, costs, timestamps, hashes or code revisions. Append run.started with the authorized request and context.snapshot with available redacted initial state. Context lookup before run creation can be captured retrospectively only from retained real calls/results; mark reconstructed=true and identify any uncaptured startup. Logging is agent-reported observation, not complete runtime-native tracing.\n\nDuring work: before each non-audit tool call append tool.call with toolName, redacted arguments and data.toolCallId; after it append tool.result or error with that same toolCallId, the redacted returned evidence and any observed timing. Record user messages/interventions, source URLs with retrieval times and relevant excerpts, state snapshots, saved artifact IDs/hashes, retries, and brief decision summaries with supporting evidence. Do not store hidden chain-of-thought. Record a retry as a distinct observed attempt linked to its prior event; reuse the identical audit event payload/key only when retrying an uncertain log write. After loading another guide, record its id/version as context evidence. Keep product checkpoints in existing task/job/application records, never in the audit log alone.\n\nAppend promptly with stable unique per-run event keys; batch up to 25 events within 200 KB/request and 128 KB/event-data. Do not wait until the end of a long task. Use parentEventKey, applicationId, backendJobId and artifactId where available to connect steps. Oversized evidence uses redacted chunks with artifactId, chunkIndex and totalChunks. Identify truncation, unavailable native traces, missing capture and failed logging explicitly. Never log the audit tools' own calls recursively. Record a drafted final response as prepared, not delivered; record delivery only when a host receipt exposes it.\n\nFailure handling: if tools are missing, scopes denied, run start fails, or an event cannot be saved, pause the logged test before the next domain action and tell the user collection is blocked. Preserve any available redacted pending payloads and runId in private host context; do not claim they reached the database. For an uncertain write, reconcile by reading the run if its id is known, then retry only the identical payload/key; an uncertain start can replay its exact start payload to recover the id. Changed retry data conflicts and a failed batch commits nothing. After bounded recovery fails, stop instead of continuing unlogged or retrying an uncertain external submission. On recovery append an error/capture-gap event for known missing capture without fabricating past observations. A crash can leave an incomplete run; never synthesize a successful ending.\n\nFinish: append run.finished, run.failed or run.interrupted with observed outcome, stop reason, durable result/checkpoint IDs, available usage and capture gaps. Use run.interrupted for waiting on the user or a durable blocker; later execution can link the prior run. Read back with read_agent_audit_run and follow afterSequence=nextSequence while hasMore, retaining a cursor only after successful reads. Confirm expected event keys and the terminal event before saying the run log was saved. Preserve server ingestion sequence separately from client occurredAt. Outcome claims are not independent proof of external success; link real backend receipts when available. No scoring or grading is performed.\n\nPrivacy and release: redact credentials, authorization headers, signed URLs and secrets before every write. Server pattern checks are incomplete; store durable private artifact IDs/paths instead of signed links, and keep candidate content out of public exports. Owners can inspect public.agent_audit_runs and public.agent_audit_events in Supabase. Workspace reset/account deletion removes logs. Gateway/MCP release plus tool/context refresh is required; database tables and these instructions alone do not capture Muse automatically.",
+  "examples": {
+    "start": {
+      "tool": "start_agent_audit_run",
+      "arguments": {
+        "eventKey": "fictional-discover-execution-1",
+        "task": "Find one backend role in the fictional fixture",
+        "area": "discover",
+        "mode": "controlled",
+        "metadata": {
+          "fixtureVersion": "fictional-v1",
+          "developerVersion": 104,
+          "guides": [
+            {
+              "id": "agent-audit",
+              "version": 2
+            }
+          ]
+        }
+      }
+    },
+    "append": {
+      "tool": "append_agent_audit_events",
+      "arguments": {
+        "runId": "00000000-0000-4000-8000-000000000001",
+        "events": [
+          {
+            "eventKey": "started",
+            "kind": "run.started",
+            "summary": "Authorized fictional discovery run started"
+          },
+          {
+            "eventKey": "call-1-request",
+            "kind": "tool.call",
+            "toolName": "workspace_read",
+            "data": {
+              "toolCallId": "call-1",
+              "arguments": {}
+            }
+          },
+          {
+            "eventKey": "call-1-result",
+            "kind": "tool.result",
+            "toolName": "workspace_read",
+            "data": {
+              "toolCallId": "call-1",
+              "result": {
+                "id": "general",
+                "active": true
+              },
+              "capture": "fictional example, not a real tool result"
+            }
+          },
+          {
+            "eventKey": "finished",
+            "kind": "run.finished",
+            "data": {
+              "outcome": "blocked",
+              "stopReason": "Fictional fixture has no verified job posting",
+              "captureGaps": []
+            }
+          }
+        ]
+      }
+    },
+    "read": {
+      "tool": "read_agent_audit_run",
+      "arguments": {
+        "runId": "00000000-0000-4000-8000-000000000001",
+        "limit": 20
+      }
+    }
+  },
+  "exampleNote": "Fictional audit payload shapes only. Substitute the real returned run id, retained tool arguments/results and current versions. Do not execute this example workflow or record its fabricated observations."
 }
