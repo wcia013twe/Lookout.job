@@ -156,3 +156,7 @@ Focused tests are especially valuable here:
 - `tests/detached-demo.test.mjs` verifies tab-scoped mode navigation and builds the demo entry to assert that account bootstrap, production store/cloud/backend client, and Supabase dependencies are absent.
 
 When changing workspace data semantics, also follow the database consistency and migration guidance in [Data model, ownership, and consistency rules](../architecture/data-and-ownership.md).
+
+### Startup recovery
+
+Auth session and website setup reads report a retryable error after 12 seconds instead of leaving the workspace loading indefinitely. A timed-out read does not grant access or discard cached account data. The timeout does not establish why the underlying service or browser session stalled.

@@ -11,6 +11,7 @@ import catalog from "../../data/jobs.json";
 import {useWebsiteOnboarding} from "./use-website-onboarding";
 import {canViewWorkspace} from "./workspace-access";
 import {SUPABASE_URL as URL,SUPABASE_PUBLISHABLE_KEY as KEY} from "./supabase-config.mjs";
+import {withStartupTimeout} from "./startup-timeout.mjs";
 import {configuredLocalTestCredentials} from "./local-test-auth";
 let boot;
 async function initialize() {
@@ -141,11 +142,11 @@ export default function AccountWorkspaceProvider({ children }) {
           data: { subscription },
         } = client.auth.onAuthStateChange((_event, value) => session(value));
         unsub.push(() => subscription.unsubscribe());
-        client.auth.getSession().then(async ({ data, error }) => {
+        withStartupTimeout(client.auth.getSession()).then(async ({ data, error }) => {
           if (!alive) return;
           const credentials = configuredLocalTestCredentials(location.origin, URL);
           if (!error && !data.session && credentials) {
-            const result = await client.auth.signInWithPassword(credentials);
+            const result = await withStartupTimeout(client.auth.signInWithPassword(credentials));
             if (!alive) return;
             if (result.error) {
               setError("Local test sign-in failed. Check the saved test account credentials.");
@@ -159,6 +160,8 @@ export default function AccountWorkspaceProvider({ children }) {
             );
             setAuthReady(true);
           } else { session(data.session); if(data.session) client.auth.getUser().then(({data})=>{if(alive && data.user?.id===userRef.current)setUser(data.user);}); }
+        }).catch(() => {
+          if (alive) { setError("Sign-in is taking too long. Reload to try again."); }
         });
         navigator.serviceWorker?.register(asset("sw.js")).catch(() => {});
       })

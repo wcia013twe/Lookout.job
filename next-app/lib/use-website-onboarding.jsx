@@ -1,5 +1,6 @@
 "use client";
 import {useCallback,useEffect,useRef,useState} from 'react';
+import {withStartupTimeout} from './startup-timeout.mjs';
 import {createBackend} from '../../backend/client.mjs';
 import {finishWebsiteOnboarding,websiteOnboardingComplete} from './website-onboarding.mjs';
 export function useWebsiteOnboarding(client,user){
@@ -9,7 +10,7 @@ export function useWebsiteOnboarding(client,user){
   if(!owner||!client)return;
   let alive=true;
   setSnapshot({owner,status:'loading'});
-  createBackend(client,owner).onboardingAction('onboarding.get_state').then(state=>{
+  withStartupTimeout(createBackend(client,owner).onboardingAction('onboarding.get_state')).then(state=>{
    if(alive&&current.current===owner)setSnapshot({owner,status:websiteOnboardingComplete(state)?'complete':'incomplete'});
   }).catch(()=>{if(alive&&current.current===owner)setSnapshot({owner,status:'error'});});
   return()=>{alive=false;};
