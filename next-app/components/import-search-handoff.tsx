@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useRef,useState} from 'react';
 import {useWorkspace} from '../lib/workspace';
-import {parseSimplifyCsv,MAX_CSV_BYTES} from '../../lib/simplify-import.mjs';
+import {parseSimplifyCsv,MAX_CSV_BYTES,importStatuses} from '../../lib/simplify-import.mjs';
 import {parseDemoSimplify} from '../lib/simplify-import-demo.mjs';
 import {primary,secondary} from './ui';
 import styles from './import-search-handoff.module.css';
@@ -42,8 +42,8 @@ export default function ImportSearchHandoff({imports}:{imports:any}){
    {feedback&&<p role="status">{feedback}</p>}
    {preview&&parsed&&<div className="mt-4">
     <p><strong>{parsed.total} rows reviewed</strong> · {preview.added} new jobs · {preview.skipped} existing · {preview.duplicateRows} repeated rows</p>
-    <p>{parsed.applied} applied · {parsed.saved} saved · {parsed.missingUrls} without links. Repeated rows retain their original history; an applied report takes precedence over saved.</p>
-    <div className="max-h-80 overflow-auto rounded-lg border border-board-line"><table className="w-full text-left text-sm"><caption className="sr-only">Simplify import preview</caption><thead><tr><th scope="col" className="p-3">Job</th><th scope="col" className="p-3">Status</th><th scope="col" className="p-3">Import</th></tr></thead><tbody>{preview.decisions.map((d:any,i:number)=><tr className="border-t border-board-line" key={i}><td className="p-3"><strong>{d.record.company}</strong><br/>{d.record.title}{!d.record.url&&<small className="block">No job link</small>}</td><td className="p-3">{d.record.status==='APPLIED'?'Applied':'Saved'}{d.record.archived?' · Archived':''}</td><td className="p-3">{d.disposition==='new'?'Add':`${d.disposition} · keep unchanged`}{d.existingStatus&&<small className="block">Current status: {d.existingStatus}</small>}{d.duplicateRows>0&&<small className="block">{d.duplicateRows} repeated rows combined</small>}</td></tr>)}</tbody></table></div>
+    <p>{parsed.applied} applied · {parsed.saved} saved · {parsed.missingUrls} without links. Repeated rows retain their original history; reported outcomes take precedence over applied and saved; the latest dated outcome wins.</p>
+    <div className="max-h-80 overflow-auto rounded-lg border border-board-line"><table className="w-full text-left text-sm"><caption className="sr-only">Simplify import preview</caption><thead><tr><th scope="col" className="p-3">Job</th><th scope="col" className="p-3">Status</th><th scope="col" className="p-3">Import</th></tr></thead><tbody>{preview.decisions.map((d:any,i:number)=><tr className="border-t border-board-line" key={i}><td className="p-3"><strong>{d.record.company}</strong><br/>{d.record.title}{!d.record.url&&<small className="block">No job link</small>}</td><td className="p-3">{importStatuses[d.record.status]}{d.record.archived?' · Archived':''}</td><td className="p-3">{d.disposition==='new'?'Add':`${d.disposition} · keep unchanged`}{d.existingStatus&&<small className="block">Current status: {d.existingStatus}</small>}{d.duplicateRows>0&&<small className="block">{d.duplicateRows} repeated rows combined</small>}</td></tr>)}</tbody></table></div>
     <div className="mt-4 flex flex-wrap gap-3"><button className={primary} disabled={busy||w.locked} onClick={()=>void save()}>Import {preview.added} jobs{w.demo?' into demo':''}</button><button className={secondary} disabled={busy} onClick={()=>{generation.current++;setPreview(null);setParsed(null);request.current=null;}}>Cancel</button></div>
    </div>}
   </div>

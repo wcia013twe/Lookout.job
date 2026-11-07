@@ -166,3 +166,20 @@ Changes to authorization, draft provenance, ATS selectors, fingerprints, receipt
 - Database tests are necessary for the durable SQL lock, attempt-state, receipt, scope, and human-only recovery boundaries; a browser fixture alone cannot prove them.
 
 Run the closest focused test first, then `npm run test:db` for persistence/RPC changes and `npm test` for shared behavior. The broader [testing strategy](../testing/verification-strategy.md) explains that a passing fixture is not proof of a live employer integration.
+
+## Imported tracker history: focused update
+
+The tracker import supports Saved, Applied, Screen, Interview, Offer, Rejected,
+Withdrawn and Posting closed independently from the archive flag. Employment
+types reuse the existing settings contract: FT, Internship, Part-time, Contract
+and Temporary. The browser edit form and `update_imported_job` MCP tool share
+the owner-scoped `simplify_import` writer (`imports.update` for agents), row
+validation, tracker version lock and event-key replay checks. Corrections can
+change title, location, employment type, status, known dates, notes and archive
+state; source rows remain immutable. Re-import still preserves existing records.
+Unknown locations/dates must stay unknown. No migration infers outcomes from
+old notes, and imported outcomes never create receipts or approvals.
+
+Duplicate source groups prefer process/outcome reports over applied/saved,
+then newest known status date, retaining an explicit applied date from another
+source row when available. Local tests do not establish deployed Muse parity.

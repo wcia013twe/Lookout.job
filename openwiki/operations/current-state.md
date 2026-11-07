@@ -178,3 +178,15 @@ Desktop engine: Auth/REST health passed, the port-3000 frontend was gracefully
 restarted with a process-owned preview lock, and the page returned HTTP 200.
 Repeated startup commands reuse the running setup. No database reset or container
 removal was performed; cold startup and remote tunnel connectivity remain unverified.
+
+## Application tracker outcomes (contract 111 source update)
+
+The import writer and website editor support explicit hiring outcomes and the
+existing employment types from settings, including Part-time, Contract and
+Temporary. `update_imported_job` is a gated applications tool requiring
+tracking:write; reads require workspace:read. It shares browser ownership, row
+validation, version locks and replay checks. Original source rows and existing
+imported records are preserved. No automatic repair of statuses encoded in
+notes is performed. See the application-submission workflow for field boundaries.
+Local checks and demo coverage establish source behavior only; a running contract
+110 endpoint does not expose this update until its migration/functions are released.

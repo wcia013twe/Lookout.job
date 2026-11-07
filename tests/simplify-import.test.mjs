@@ -76,3 +76,47 @@ test('CSV import discovery and direct calls preserve each connection scope bound
   assert.match(guidance,/never self-grant/);
  }
 });
+
+test('all settings job types and explicit outcomes retain truthful tracker progress',async()=>{
+ const {importEmploymentTypes,importStatuses}=await import('../lib/simplify-import.mjs');
+ const {EMPLOYMENT_TYPES}=await import('../lib/discovery-filter-contract.mjs');
+ const {trackerProgress}=await import('../lib/tracker-display.mjs');
+ assert.deepEqual(Object.keys(importEmploymentTypes),[...EMPLOYMENT_TYPES]);
+ for(const [type,label] of Object.entries(importEmploymentTypes)){
+  const parsed=parseSimplifyCsv(simplifyDemoCsv.replaceAll('Internship',label));assert.equal(parsed.rows[0].employmentType,type);
+ }
+ for(const status of Object.keys(importStatuses)){
+  const parsed=parseSimplifyCsv(simplifyDemoCsv.replaceAll('APPLIED',status));
+  const a=importedApplication({id:status,record:{...parsed.rows[0],appliedDate:status==='SAVED'?null:parsed.rows[0].appliedDate}}),progress=trackerProgress(a);
+  assert.equal(a.receipt,undefined);
+  assert.equal(progress.status,{SAVED:'Opened',APPLIED:'Applied',SCREEN:'Screen',INTERVIEW:'Interview',OFFER:'Offer',REJECTED:'Rejected',WITHDRAWN:'Withdrawn',CLOSED:'Closed'}[status]);
+ }
+ const noDate=importedApplication({id:'unknown',record:{...parseSimplifyCsv(simplifyDemoCsv).rows[0],status:'REJECTED',appliedDate:null}});
+ assert.equal(trackerProgress(noDate).level,0);assert.equal(noDate.trackerItem.appliedDate,null);
+});
+test('demo corrections preserve source history and reject stale or changed retries',async()=>{
+ const call=createDemoSimplifyImport(),rows=parseSimplifyCsv(simplifyDemoCsv).rows;
+ await call('save',{rows,expectedVersion:0,eventKey:'seed'});
+ const before=await call('list'),record=before.records[0];
+ const payload={id:record.id,expectedVersion:1,eventKey:'correct',changes:{status:'INTERVIEW',employmentType:'Contract',statusDate:null}};
+ const saved=await call('update',payload);assert.equal(saved.version,2);
+ assert.deepEqual((await call('list')).records[0].source_rows,record.source_rows);
+ assert.deepEqual(await call('update',payload),saved);
+ await assert.rejects(call('update',{...payload,eventKey:'stale'}),/changed/);
+ await assert.rejects(call('update',{...payload,changes:{status:'OFFER'}}),/key changed/);
+});
+test('MCP imported corrections expose applications routing and enforce scope and field boundaries',async()=>{
+ const {IMPORT_TOOLS}=await import('../supabase/functions/agent-gateway/simplify-import.mjs');
+ const args={id:'11111111-1111-4111-8111-111111111111',expectedVersion:1,eventKey:'update',changes:{employmentType:'Part-time',status:'REJECTED',statusDate:null}};
+ validateRequest({operation:'imports.update',payload:args});
+ for(const changes of [{receipt:{}},{userId:'other'},{}])assert.throws(()=>validateRequest({operation:'imports.update',payload:{...args,changes}}));
+ for(const scopes of [['workspace:read'],['tracking:write']]){
+  const calls=[];const handler=createHandler(async(_token,operation,payload)=>{
+   if(operation==='credentials.verify')return {status:200,data:{scopes}};
+   calls.push({operation,payload});return {status:200,data:{version:2,record:{id:args.id}}};
+  });
+  const response=await (await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'update_imported_job',arguments:args}})}))).json();
+  assert.equal(!!response.result.isError,!scopes.includes('tracking:write'));
+  assert.equal(calls.length,scopes.includes('tracking:write')?1:0);
+ }
+});

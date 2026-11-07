@@ -1,11 +1,12 @@
 "use client";
+import {EMPLOYMENT_TYPES} from '../../lib/discovery-filter-contract.mjs';
 import {useApplicationProfile} from "./application-profile-context";
 import {Field,control} from "./ui";
 import ProfileSection,{ProfileValues} from "./profile-section";
 
 const fields = [
   {heading:"Role preferences",key:"Roles",label:"Roles",placeholder:"Backend Engineer, Software Engineer"},
-  {heading:"Search Filters",key:"Employment",label:"Job type",options:["Full-time","Internship","Full-time, Internship","Contract"]},
+  {heading:"Search Filters",key:"Employment",label:"Job type",options:[...EMPLOYMENT_TYPES.map(t=>t==="FT"?"Full-time":t),"Full-time, Internship"]},
   {heading:"Search Filters",key:"Location",label:"Locations",placeholder:"United States, New York, remote"},
   {heading:"Search Filters",key:"Work arrangement",label:"Work arrangement",options:["Any","Remote preferred","Remote required","Hybrid","On-site"]},
   {heading:"Search Filters",key:"Minimum base pay",label:"Minimum base pay",placeholder:"USD 100,000/year, or leave blank"},
