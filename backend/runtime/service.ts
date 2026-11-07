@@ -29,6 +29,7 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
       let result;
       if(operation==='search.filters.inspect')result=await readSearchFilterPlan(authorize,payload);
       else if(service.handler==='queue-rpc')result=await rpc('backend_job_dispatch',{credential_hash:hash,operation,payload});
+      else if(service.handler==='audit-rpc')result=await rpc('agent_audit_dispatch',{credential_hash:hash,operation,payload});
       else if(service.handler==='credential-rpc')result=await authorize(operation,payload);
       else if(operation==='search.source.leads')result=await readSearchSourceLeads(authorize,payload);
       else if(operation==='search.leads.submit')result=await submitSearchLeads(authorize,payload);

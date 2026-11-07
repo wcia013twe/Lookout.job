@@ -1,3 +1,4 @@
+import agentAudit from './skills/agent-audit.json' with {type:'json'};
 import {EXTRA_FEATURES_ENABLED} from '../../../lib/feature-scope.mjs';
 import connectionSchedules from './skills/connection-schedules.json' with {type:'json'};
 import workspaceMaintenance from './skills/workspace-maintenance.json' with {type:'json'};
@@ -14,7 +15,7 @@ import outreachTemplates from './skills/outreach-templates.json' with { type: 'j
 import toolkit from './skills/career-toolkit.json' with { type: 'json' };
 import applicationWorkspace from './skills/application-workspace.json' with { type: 'json' };
 const search = toolkit.guides.find(g=>g.id==='career-find-jobs');
-const workflowGuides = [connectionSchedules, workspaceMaintenance, interviewPreparation, circleKnowledge, notifications, repairRecovery, changeResumption];
+const workflowGuides = [agentAudit,connectionSchedules, workspaceMaintenance, interviewPreparation, circleKnowledge, notifications, repairRecovery, changeResumption];
 const guides = [...workflowGuides, agentPackage, ...toolkit.guides.filter(g=>g.id!==search.id), search, applicationWorkspace, resume, { ...outreach, ...outreachTemplates, version: outreach.version, templateVersion: outreachTemplates.version }];
 export function guideIndex() {
   const primary = new Set([...workflowGuides.map(g=>g.id), 'agent-package', 'career-find-jobs', 'application-workspace', 'resume-parse', 'cold-outreach']);

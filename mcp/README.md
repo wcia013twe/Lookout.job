@@ -799,3 +799,12 @@ write preferences. Use existing `save_search_document` to preserve/update the
 profile's `## Career Ops discovery filters` fenced JSON section, then read back
 and inspect again before a search. See `backend/discovery-filter-contract.md`
 for supported keys and the distinction between title tiers and eligibility.
+
+## Agent run audit collection
+
+`start_agent_audit_run`, `append_agent_audit_events` and `read_agent_audit_run`
+provide private observation storage. Writes require workspace:read and
+activity:write; reads require workspace:read. Read the `agent-audit` guide and
+[storage contract](../docs/agent-audit-logs.md). Requires the audit migration and
+normal gateway/MCP or Node release. Storage is not automatic host trace capture,
+scoring, approval or independent submission verification.

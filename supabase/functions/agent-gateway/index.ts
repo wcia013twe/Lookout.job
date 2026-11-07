@@ -116,6 +116,11 @@ Deno.serve(withGatewayCors(async request => {
       if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
       return respond({data});
     }
+    if(operation.startsWith('audit.')) {
+      const {data,error}=await admin.rpc('agent_audit_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
+      if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
+      return respond({data});
+    }
     if(operation==='workspace.reset_handoff') {
       const {data,error}=await admin.rpc('agent_dispatch',{credential_hash:await hashToken(bearer),operation:'context.versions',payload:{}});
       if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}

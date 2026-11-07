@@ -14,6 +14,7 @@ const derivedAuthorization={
   'selection.record':'context.personal',
 };
 async function authorize(db,hash,operation,payload) {
+  if(operation.startsWith('audit.'))return db.query('select public.agent_audit_dispatch($1,$2,$3)',[hash,operation,payload]);
   if(operation.startsWith('backend.'))return db.query('select public.backend_job_dispatch($1,$2,$3)',[hash,operation,payload]);
   if(operation.startsWith('outreach.'))return db.query('select public.agent_outreach_dispatch($1,$2,$3)',[hash,operation,payload]);
   if(operation==='submission.batch.read')return db.query('select public.agent_dispatch($1,$2,$3)',[hash,operation,payload]);

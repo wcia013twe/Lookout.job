@@ -1039,3 +1039,12 @@ production workflows. Local changes do not update hosted agents; refresh tool
 and developer-context discovery after release. Five legacy Community MCP parity
 scenarios are paused while their transports are unavailable; active MCP tests
 verify rejection instead. Backend/domain tests remain in the suite.
+
+## Private agent audit collection
+
+`agent_audit_runs` and `agent_audit_events` retain private task context and ordered,
+append-only observations without scoring or changing application state. Scoped
+start/append/read MCP tools use a dedicated credential RPC; owners can inspect the
+same records in Supabase. See [capture conventions, access and release limits](docs/agent-audit-logs.md).
+Tables alone do not automatically capture Muse activity. The existing workspace
+reset and account deletion remove owned logs.
