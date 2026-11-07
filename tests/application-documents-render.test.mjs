@@ -1,12 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {build} from 'esbuild';
-import {createRequire} from 'node:module';
-import vm from 'node:vm';
-const require=createRequire(new URL('../next-app/package.json',import.meta.url));
-const React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
-async function component(path){const bundle=await build({entryPoints:[path],bundle:true,write:false,platform:'node',format:'cjs',packages:'external',jsx:'automatic',logLevel:'silent'});const module={exports:{}};vm.runInNewContext(bundle.outputFiles[0].text,{module,exports:module.exports,require,console,process,setTimeout,clearTimeout});return module.exports.default;}
-const Documents=await component('next-app/components/application-documents-preview.tsx'),Fit=await component('next-app/components/application-fit-assessment.tsx');
+import {React,renderToStaticMarkup,bundleComponent} from './helpers/render.mjs';
+const Documents=(await bundleComponent('next-app/components/application-documents-preview.tsx'))();
+const Fit=(await bundleComponent('next-app/components/application-fit-assessment.tsx'))();
 const app={id:'job',backendId:'app',company:'Example',title:'Engineer',status:'Submitted',questions:[]};
 const props={application:app,draft:{...app,questions:[{question:'Current draft question',answer:'Changed answer'}]},profile:{name:'Private current profile',email:'private-current@example.test',workExperience:[{company:'Current employer'}]},resume:{id:'new',name:'Current résumé'},hasDraft:true,attempts:[],loading:false,error:'',onRetry(){}};
 const receipt={source:'runner-observed-greenhouse-confirmation',marker:'#confirmation',message:'Application received',jobUrl:'https://example.com/job'};

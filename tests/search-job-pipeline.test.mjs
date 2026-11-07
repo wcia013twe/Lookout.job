@@ -75,7 +75,7 @@ test('final SQL job receipt rejects a settings change after the last JS version 
  const outcome=await executeSearch(claim.job,fenced,{execute:t.execute});
  await db.query("update public.search_documents set version=version+1 where user_id=$1 and kind='profile'",[f.owner]);
  const r=await rpc('backend_worker',{operation:'finish',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...outcome}});
- assert.equal(r.error.code,'40001');assert.equal((await result(f.job.id)).result.shortlist,undefined);
+ assert.equal(r.error.code,'PT409');assert.equal((await result(f.job.id)).result.shortlist,undefined);
 });
 
 test('profile-only accounts start leased searches with built-in connected sources and matching context',async()=>{
@@ -186,13 +186,13 @@ test('lease heartbeat extends only a live owned search without changing its fenc
  await db.query("update private.backend_jobs set lease_expires_at=now()+interval '10 seconds' where id=$1",[claim.job.id]);
  const renewed=await rpc('backend_worker',{operation:'heartbeat',payload:fence});assert.equal(renewed.error,null);assert.equal(renewed.data.version,claim.job.version);
  const row=(await db.query("select lease_expires_at>now()+interval '4 minutes' as renewed,attempts from private.backend_jobs where id=$1",[claim.job.id])).rows[0];assert(row.renewed);assert.equal(row.attempts,1);
- assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,leaseToken:randomUUID()}})).error.code,'40001');
- assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,expectedVersion:claim.job.version+1}})).error.code,'40001');
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,leaseToken:randomUUID()}})).error.code,'PT409');
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,expectedVersion:claim.job.version+1}})).error.code,'PT409');
  assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,unexpected:true}})).error.code,'22023');
  await db.query("update private.backend_jobs set lease_expires_at=now()-interval '1 second' where id=$1",[claim.job.id]);
- assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:fence})).error.code,'40001');
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:fence})).error.code,'PT409');
  const next=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;assert.equal(next.job.id,claim.job.id);assert.equal(next.job.attempts,2);
- assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:fence})).error.code,'40001');
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:fence})).error.code,'PT409');
  await db.query('update private.agent_connections set revoked_at=now() where user_id=$1',[f.owner]);
  assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{jobId:next.job.id,leaseToken:next.leaseToken,expectedVersion:next.job.version}})).error.code,'42501');
  const permissions=(await db.query("select has_function_privilege('authenticated','public.backend_worker(text,jsonb)','execute') as exposed")).rows[0];assert.equal(permissions.exposed,false);

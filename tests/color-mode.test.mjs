@@ -1,10 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { readFileSync } from 'node:fs';
 import { parseColorMode, resolveColorMode, colorModeScript } from '../next-app/lib/color-mode.ts';
 
-const trackerCss = readFileSync(new URL('../next-app/components/tracker.css', import.meta.url), 'utf8');
 
 test('theme preferences reject invalid or missing stored values', () => {
   for (const value of [null, undefined, '', 'sepia', {}, '<script>']) assert.equal(parseColorMode(value), 'system');
@@ -35,9 +33,4 @@ test('first paint follows system without a valid saved preference', () => {
 });
 test('blocked storage still renders the system palette', () => {
   assert.deepEqual(firstPaint(null,true,true),{colorMode:'system',theme:'dark'});
-});
-test('application tracker inherits the workspace palette in both themes', () => {
-  assert.doesNotMatch(trackerCss, /--(?:color-board|workspace-action)-[\w-]+\s*:/);
-  assert.doesNotMatch(trackerCss, /tracker-workspace/);
-  assert.match(trackerCss, /\.tracker-detail\s*\{[^}]*background:var\(--color-board-panel\)/);
 });

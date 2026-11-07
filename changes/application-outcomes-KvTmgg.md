@@ -49,3 +49,19 @@
 - Limits: no Scale AI private record was edited, no missing scores or submitted
   answers were invented, and no backend/schema/runtime change was needed. Full
   backend suite was not repeated for this presentation-only pass.
+
+## Follow-up: date ordering on Active applications
+
+- Active now groups screening/OA, interviews/onsites and offers above applications
+  awaiting a response. Each group sorts newest recorded application date first;
+  undated records follow dated records and ties remain stable.
+- Uses existing applied/submitted dates, current submission milestones and an
+  opened-date fallback. Future interview dates do not reorder application dates.
+  Native, tracker-only and imported progress share the same rules. Other tabs
+  keep their existing ordering; no account or catalog data is changed.
+- Demo verification reuses the existing fictional native/imported dated records,
+  advanced stages and resettable state; ordering never persists or mutates them.
+- Validation: 19 focused sorting/timeline/progress tests passed, including a
+  resettable mixed native/import demo read; frontend typecheck, production static
+  build, catalog validation (158 roles) and diff check passed. Backend/data writes
+  are unchanged; no new visual layout or backend deployment is involved.
