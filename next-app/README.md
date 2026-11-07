@@ -486,6 +486,6 @@ its local test setup. It does not verify employer availability or hosted deploym
 
 ### Simple project entries
 
-About me → Projects & outside experience shows project name, URL and description in both read and edit views. Each entry has a project folder/code icon and, while editing, a labeled trash button that removes that entry from the draft. Finish editing saves through the existing profile writer. Existing stored role/date fields remain compatible with backend and MCP records; editing the visible fields preserves them.
+About me → Projects & outside experience shows project name, URL and description in both read and edit views. Each entry has a project folder/code icon and, while editing, a labeled trash button that removes that entry from the draft. Editors stay open while local fields change; Finish editing saves through the existing profile writer. Existing stored role/date fields remain compatible with backend and MCP records; editing the visible fields preserves them.
 
 Demo check: edit Query Lab, add a project, remove it with its trash icon, and finish editing. Check the empty state after removing every project; reset demo to restore the fixture. Check desktop and mobile layouts.
