@@ -227,3 +227,28 @@ Missing/invalid dates sort last within their group; ties retain their prior orde
 Both native and imported records use the same progress rules, including tracker
 updates and sourced milestones. Other tabs retain their existing ordering. This
 is read-only presentation over existing reads; it creates no dates or records.
+
+### Optional next action ordering
+
+Application rows show **Next action** only when a current scheduled round has a
+recorded date, or an owned preparation plan has a confirmed date and unfinished
+tasks. Current scheduled rounds own their timing; superseded/completed rounds and
+old preparation deadlines do not reappear as a second reminder. Terminal or
+archived applications have no next action. Unknown/invalid dates stay blank;
+inbox notification `available_at` is never treated as an employer deadline.
+
+Active defaults to the progress/application-date ordering above. Its **Sort →
+Next action date** option orders recorded pending dates earliest first, including
+past dates until the underlying round/task is completed or replaced. Equal and
+undated rows retain the default order, with undated rows last. Other tabs keep
+their ordering. This adds no recurring scheduling or automatic priority rules.
+
+Dates use existing timeline/planner records, rather than a separate manual field:
+website Add round / Confirmed date & time maps to MCP
+`record_application_milestone` (`applications.milestone`, activity:write), with
+`supersedesId` for corrections/completion. `read_application_timeline` and
+`read_preparation_planner` provide scoped reads. Preparation updates keep their
+existing `update_preparation_plan` boundary; no new mutation/scopes are added.
+The list refreshes confirmed preparation dates on account refresh, focus and
+reconnect, guards account/demo changes and reports failed reads. This is source
+behavior; production availability must be checked separately.

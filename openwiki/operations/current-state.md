@@ -294,3 +294,11 @@ isolation is checked over whole fixture graphs instead of repeated exact sample
 contents. That check found shared nested preparation resource data; the two
 workspace fixture factories now clone their returned graphs. See the verification
 strategy for scope and the feature change note for actual validation results.
+
+Application rows additionally display optional next-action dates from current
+scheduled rounds or confirmed unfinished preparation deadlines, with no guessed
+dates or second manual date store. Active offers an explicit Next action date
+sort (earliest first; undated last), while progress/date stays the default.
+Completed/superseded rounds and terminal records are excluded. Website and MCP
+continue using the existing owned timeline/preparation writers and readers; see
+the application-submission workflow for mappings and lifecycle details.
