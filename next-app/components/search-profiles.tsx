@@ -5,6 +5,8 @@ import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary } from "./ui";
 import {
   priorities,
+  clearanceQuestion,
+  clearanceHelp,
   preferenceGroups,
   flexibilityOptions,
   careerFields,
@@ -51,7 +53,13 @@ function SearchProfileEditor() {
         }
         key={key}
       >
-        {multiline ? (
+        {heading === "Eligibility" && key === clearanceQuestion ? (
+          <select className={control} value={field.value} disabled={field.conflict || busy} onChange={e => change(heading,key,e.target.value)}>
+            <option value="">No preference</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        ) : multiline ? (
           <textarea
             className={control}
             rows={3}
@@ -127,13 +135,13 @@ function SearchProfileEditor() {
       {!SINGLE_PROFILE_UI && <ApplicationMaterials />}
       {preferenceGroups.map(group => <ProfileSection key={group.title} title={group.title} resetKey={profile.id} disabled={busy}>
         {editing => editing ? <>
-          <p className="mb-5 text-sm text-board-muted">{group.heading === "Application answers" ? "Saved answers for employer forms. Leave unknown answers blank. These are separate from job-search preferences and do not approve an application." : "Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification."}</p>
+          <p className="mb-5 text-sm text-board-muted">{group.heading === "Eligibility" ? clearanceHelp : group.heading === "Application answers" ? "Saved answers for employer forms. Leave unknown answers blank. These are separate from job-search preferences and do not approve an application." : "Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification."}</p>
           <div className="space-y-5">
             {group.fields.map(([key, placeholder, heading]) => {
               const strength = readField(profile.prompt, "Priority & flexibility", key);
-              return <div key={key} className={group.heading === "Application answers" ? "grid items-start gap-3" : "grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"}>
+              return <div key={key} className={["Application answers", "Eligibility"].includes(group.heading) ? "grid items-start gap-3" : "grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"}>
                 {textField(heading || group.heading, key, placeholder)}
-                {group.heading !== "Application answers" && <Field label={`${key} priority`}>
+                {!["Application answers", "Eligibility"].includes(group.heading) && <Field label={`${key} priority`}>
                   <select className={control} disabled={strength.conflict || busy} value={strength.value} onChange={e => change("Priority & flexibility",key,e.target.value)}>
                     <option value="">Not specified</option>
                     {flexibilityOptions.map(option => <option key={option}>{option}</option>)}
@@ -145,7 +153,8 @@ function SearchProfileEditor() {
           </div>
         </> : <ProfileValues items={group.fields.map(([key,,heading]) => {
           const preference=value(heading || group.heading,key);
-          const priority=group.heading === "Application answers" ? "" : value("Priority & flexibility",key);
+          const priority=["Application answers", "Eligibility"].includes(group.heading) ? "" : value("Priority & flexibility",key);
+          if(group.heading === "Eligibility")return {label:key,value:preference || "No preference"};
           return {label:key,value:preference ? [preference,priority].filter(Boolean).join(" · ") : priority ? `Not specified · ${priority}` : "Not specified"};
         })}/>}
       </ProfileSection>)}

@@ -139,3 +139,23 @@ test('application profile demo is fictional, isolated and resettable', async () 
  store.set('workflow.searchPreferences.profiles',[]);
  assert.equal(withApplicationProfileDemo(base).state.workflow.searchPreferences.profiles.length,2);
 });
+
+
+test('clearance search preference round trips through website and MCP without answering employer facts',async()=>{
+ const {clearanceQuestion,profileFromPrompt,promptFromProfile}=await import('../lib/search-profile.mjs');
+ const {validateRequest}=await import('../supabase/functions/agent-gateway/contract.mjs');
+ const {applicationPreference}=await import('../lib/application-preferences.mjs');
+ for(const choice of ['Yes','No','']){
+  const prompt=updateField('## Skill preferences\n- Security clearance: Legacy custom preference','Eligibility',clearanceQuestion,choice);
+  const profile=profileFromPrompt(prompt,{id:'clearance',active:true});
+  assert.equal(readField(promptFromProfile(profile),'Eligibility',clearanceQuestion).value,choice);
+  assert.ok(profile.instructions.includes('Legacy custom preference'));
+  assert.equal(validateRequest({operation:'preferences.profile.save',payload:{expectedVersion:0,profile}}).payload.profile,profile);
+  assert.equal(applicationPreference('Do you hold a security clearance?',profile),null);
+ }
+ assert.throws(()=>profileFromPrompt(updateField('','Eligibility',clearanceQuestion,'Maybe')),/Choose Yes, No/);
+ const {demoFixtures}=await import('../next-app/lib/demo.mjs');
+ const profiles=demoFixtures('2026-11-06').state.workflow.searchPreferences.profiles;
+ assert.equal(readField(profiles[0].instructions,'Eligibility',clearanceQuestion).value,'No');
+ assert.equal(readField(profiles[1].instructions,'Eligibility',clearanceQuestion).value,'Yes');
+});
