@@ -132,7 +132,7 @@ export function createDemoWorkspace(now = new Date()) {
     { id: 'demo-decision-location', job_id: 'demo-skip-location', preference: 'excludedCompanies', reason: 'Company is excluded by your search settings.', evidence: 'The fictional posting is from Pine Networks (demo), which appears in the demo candidate’s excluded-company list.', certainty: 'exclusion', reconsidered_at: null, created_at: at, jobs: { employer: {company:'Pine Networks (demo)',title:'Backend Engineer'}, canonical_url: 'https://example.com/demo/jobs/demo-skip-location' } },
     { id: 'demo-decision-level', job_id: 'demo-skip-level', preference: 'Experience level', reason: 'Seniority requirements may be above your current target.', evidence: 'Fictional posting says senior but does not provide a clear experience range. Muse would need to verify the team’s expectations.', certainty: 'uncertain', reconsidered_at: null, created_at: at, jobs: { employer: {company:'Willow Software (demo)',title:'Senior Platform Engineer'}, canonical_url: 'https://example.com/demo/jobs/demo-skip-level' } },
   ];
-  return {
+  return structuredClone({
     progress: { xp: 0, xpAwards: {}, streakDays: [] },
     tracker: { ids: roles.slice(0, 4).map(role => role.id), items: Object.fromEntries(roles.slice(0, 4).map(role => [role.id, { status: role.status === 'Submitted' ? 'Applied' : role.status === 'Blocked' ? 'New' : role.status, statusDate: today, openedDate: day(today, -3), ...(role.id === 'demo-confirmed' ? { appliedDate: today } : {}) }])) },
     drops: { seenDropIds: [], packStamps: {} }, network: { referrals: demoOutreachContacts(), people: [] },
@@ -150,7 +150,7 @@ export function createDemoWorkspace(now = new Date()) {
       { goal: 'Rewrite my summary for this fictional job.', guideId: 'career-tailor-resume' },
       { goal: 'Help me prepare for my fictional interview.', guideId: 'career-prep-plan' },
     ] },
-  };
+  });
 }
 
 export function createDemoServices(store) {

@@ -92,7 +92,7 @@ export function demoFixtures(date) {
   },
   demo:{...muse.demo,onboarding:{revision:0,step:"connection_pending",prompt:"Choose a companion and preview connecting.",data:{},tasks:[]},roles,preparationRows:{...basePreparationRows,...muse.demo.preparationRows}},
  };
- return {roles,state};
+ return structuredClone({roles,state});
 }
 
 // Illustrative human handoffs only; these never authorize real account actions.
