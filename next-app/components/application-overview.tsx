@@ -1,5 +1,6 @@
 "use client";
 import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
+import JobDescription from "./job-description";
 import InterviewIntelligence from "./interview-intelligence";
 import type { Role } from "./role-card";
 import type { Application } from "./workflow-types";
@@ -59,6 +60,6 @@ export default function ApplicationOverview({ application, role, workflow, item,
       <small>Collected research notes · not a new AI assessment</small>
     </section>
     {EXTRA_FEATURES_ENABLED && !application.imported && <InterviewIntelligence jobId={application.id} applicationId={application.backendId}/> }
-    <details className="application-overview-description"><summary><h3>About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary><p>{facts.description || "The full employer description has not been collected. Use the job posting to verify the current responsibilities and requirements."}</p></details>
+    <details className="application-overview-description"><summary><h3>About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary><JobDescription description={facts.description} url={url || facts.applicationUrl} demo={demo} /></details>
   </section>;
 }

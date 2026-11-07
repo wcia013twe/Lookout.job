@@ -10,6 +10,7 @@ import RoleApplicationPreview from "./role-application-preview";
 import ProfileIcon from "./profile-icon";
 import { companyRanking } from "../lib/role-display";
 import ApplicationActions from "./application-actions";
+import JobDescription from "./job-description";
 import styles from "./discover-role-panel.module.css";
 export default function DiscoverRolePanel({ role, onClose, assessmentPending=false }: { role: Role; onClose: () => void; assessmentPending?:boolean }) {
   const w = useWorkspace();
@@ -56,7 +57,7 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
       <RoleApplicationPreview role={role} />
       <details className="border-t border-board-line pt-3">
         <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3"><h3 className="text-lg font-semibold">About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary>
-        <p className="mt-4 max-w-prose whitespace-pre-line text-sm leading-relaxed text-board-muted">{role.description || "Full description not collected. Open the employer posting to verify responsibilities, requirements and availability."}</p>
+        <JobDescription description={role.description} url={role.applicationUrl} demo={w.demo} />
       </details>
     </div>
     <footer className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 border-t border-board-line bg-board-panel px-5 py-4 sm:px-8">

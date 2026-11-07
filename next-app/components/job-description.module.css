@@ -1,0 +1,6 @@
+.excerpt { margin-top: 16px; padding: 16px 18px; border: 1px solid var(--color-board-line); border-radius: 12px; background: var(--color-board-panel); }
+.source { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; margin-bottom: 12px; color: var(--color-board-muted); font-size: 12px; }
+.source a { color: var(--color-board-accent); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.source a:focus-visible { outline: 2px solid var(--color-board-accent); outline-offset: 4px; }
+.text, .empty { margin: 0; color: var(--color-board-muted); font-size: 14px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+.empty { margin-top: 16px; }
