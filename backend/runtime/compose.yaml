@@ -1,6 +1,7 @@
 name: lookout-backend
 services:
   api:
+    init: true
     image: lookout-node:local
     build:
       context: ../..
@@ -26,6 +27,7 @@ services:
       timeout: 3s
       retries: 5
   worker:
+    init: true
     image: lookout-node:local
     container_name: lookout-node-worker
     env_file: .env.local

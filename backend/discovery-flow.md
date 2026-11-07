@@ -174,3 +174,8 @@ link and a partial backend result without external requests.
 Local worker rebuild/restart is necessary to activate runtime changes. Hosted
 Node deployment and gateway/config release remain separate; local landing does
 not deploy production or add HiringCafe to a user's private Sources list.
+
+
+## Long-running worker recovery
+
+The search worker renews its five-minute lease every 30 seconds using a service-only heartbeat that validates its current token/version, connection and profile. Renewal cannot revive expired ownership. Loss of authority cancels fetches and kills isolated child process groups. Verification batches are persisted before versioned progress checkpoints; a failed checkpoint stops collection. Restart resumes the same job/run from saved identities, with existing transaction/idempotency boundaries. Completed sources are skipped. Shutdown leaves the job reclaimable after lease expiry. Docker init reaps exited browser descendants. Recent diagnostics are bounded with an explicit omitted count; provider offsets are not blindly trusted across changed snapshots.

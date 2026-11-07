@@ -183,3 +183,16 @@ old notes, and imported outcomes never create receipts or approvals.
 Duplicate source groups prefer process/outcome reports over applied/saved,
 then newest known status date, retaining an explicit applied date from another
 source row when available. Local tests do not establish deployed Muse parity.
+
+### Original application UI for imports
+
+Imported rows now use the same compact tracker row, shared progress bar and
+application detail dialog as native records. Overview, Documents, Interview,
+round history, recruiting emails and the vertical status panel remain visible.
+Original import notes appear as dated/undated imported reports in history and
+Notes; they are not parsed into linked emails or treated as new status evidence.
+Per the requested UI-first restoration, imported records still lack a native
+application backend ID: round writes report the existing sync error, and native
+progress/draft actions report that the imported workflow is not connected. No
+synthetic native records, receipts or approvals are created. Metadata corrections
+remain available through update_imported_job; its separate row editor is removed.

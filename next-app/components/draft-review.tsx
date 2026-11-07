@@ -18,12 +18,13 @@ import { timelineItems } from "../../lib/application-timeline.mjs";
 import "./tracker.css";
 import { dayStamp, awardStatus } from "../lib/progress.mjs";
 import type { Application, SavedResume } from "./workflow-types";
-export default function DraftReview({ id, onClose }: { id: string; onClose: () => void }) {
+export default function DraftReview({ id, application, onClose }: { id: string; application?: Application; onClose: () => void }) {
   const w = useWorkspace(),
     model = w.models.workflowModel;
-  const workflow: Application | undefined = w.state.workflow.applications[id];
+  const workflow: Application | undefined = application || w.state.workflow.applications[id];
   const role = w.roles.find((r: Application) => r.id === id);
   const current: Application | undefined = workflow || (role ? {...role, status: w.state.tracker.items[id]?.status || "New", questions: []} : undefined);
+  const trackerItem = w.state.tracker.items[id] || {appliedDate:current?.trackerItem?.appliedDate||undefined,openedDate:current?.trackerItem?.openedDate||undefined};
   const [tab, setTab] = useState("Overview");
   const [roundEditorOpen, setRoundEditorOpen] = useState(false);
   const [roundsOpen, setRoundsOpen] = useState(true);
@@ -118,7 +119,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     if (current) setDraft(current);
   }, [current?.revision, current?.backendRevision, current?.status]);
   if (!current) return null;
-  const editable = !!workflow && !w.demo && !w.locked && model.canEdit(current);
+  const editable = !!workflow && !current.imported && !w.demo && !w.locked && model.canEdit(current);
   const unresolved = (current.submissionAttempts || []).find(
     (t) =>
       t.state === "uncertain" ||
@@ -153,6 +154,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     }));
   }
   async function action(kind: "save" | "approve" | "record" | "recover") {
+    if (current?.imported) { setFeedback("This imported record is not connected to the application workflow yet. The update was not saved."); return; }
     if (w.demo || w.locked || !workflow) { setFeedback("Application actions are disabled in this fictional demo."); return; }
     setBusy(true);
     setFeedback("");
@@ -221,7 +223,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
     <div className="tracker-detail-grid"><div className="tracker-detail-main">
       <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Interview"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
       <div className="tracker-detail-content">
-        {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={w.state.tracker.items[id] || {}} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} />}
+        {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={trackerItem} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} />}
         {tab === "Interview" && <ApplicationPreparation application={{...role,...current}} onRounds={openRounds} />}
         {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />{downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}      <details className="mt-5 border-t border-board-line pt-3">
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission record</summary>
@@ -393,7 +395,7 @@ export default function DraftReview({ id, onClose }: { id: string; onClose: () =
           </details>
 </>}
       </div>
-    </div><aside className="tracker-detail-sidebar"><section className="tracker-status-panel"><h3>Application Status</h3>{!workflow && <label>Hiring stage<select aria-label="Update hiring stage" disabled={w.locked} value={current.status} onChange={e=>{const status=e.target.value;awardStatus(w.store,id,status);w.store.update("tracker.items",(items:Record<string,unknown>)=>({...items,[id]:{...w.state.tracker.items[id],status,statusDate:dayStamp(),...(status!=="New"&&!w.state.tracker.items[id]?.appliedDate?{appliedDate:dayStamp()}:{})}}));}}>{["New","Applied","OA","Phone Screen","Interview","Onsite","Offer","Rejected","Withdrawn"].map(s=><option key={s} value={s}>{s==="New"?"Opened":s}</option>)}</select></label>}<TrackerProgress application={current} item={w.state.tracker.items[id] || {}} vertical/><details className="tracker-update"><summary>Update status</summary>      <Section title="Update application progress">
+    </div><aside className="tracker-detail-sidebar"><section className="tracker-status-panel"><h3>Application Status</h3>{!workflow && <label>Hiring stage<select aria-label="Update hiring stage" disabled={w.locked} value={current.status} onChange={e=>{const status=e.target.value;awardStatus(w.store,id,status);w.store.update("tracker.items",(items:Record<string,unknown>)=>({...items,[id]:{...w.state.tracker.items[id],status,statusDate:dayStamp(),...(status!=="New"&&!w.state.tracker.items[id]?.appliedDate?{appliedDate:dayStamp()}:{})}}));}}>{["New","Applied","OA","Phone Screen","Interview","Onsite","Offer","Rejected","Withdrawn"].map(s=><option key={s} value={s}>{s==="New"?"Opened":s}</option>)}</select></label>}<TrackerProgress application={current} item={trackerItem} vertical/><details className="tracker-update"><summary>Update status</summary>      <Section title="Update application progress">
         <p className="mb-4 text-sm text-board-muted">
           Record an application you submitted yourself or a later outcome.
         </p>

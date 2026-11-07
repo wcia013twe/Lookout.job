@@ -66,7 +66,7 @@ Before collection, the worker loads the profile and portals context and runs `in
 
 ## Leased execution and collection
 
-The durable job queue—not the browser or agent—coordinates execution. A service worker claims queued work (or expired running work) under `FOR UPDATE SKIP LOCKED`, checks the still-active owned connection and valid profile, increments its attempt count, and issues an opaque five-minute lease token. Every internal dispatch and final finish must present the job ID, lease token, and expected job version. Expired/revoked/cancelled work cannot overwrite newer state; a job has three attempts, after which its retained evidence is closed as partial.
+The durable job queue—not the browser or agent—coordinates execution. A service worker claims queued work (or expired running work) under `FOR UPDATE SKIP LOCKED`, checks the still-active owned connection and valid profile, increments its attempt count, and issues an opaque five-minute lease token. Search jobs renew this lease every 30 seconds through a service-only heartbeat with the same ownership/version fence and connection/profile authorization. Renewal never revives an expired lease. Every internal dispatch and final finish must present the job ID, lease token, and expected job version. Ownership loss cancels source requests and isolated process groups; shutdown preserves the pinned run for reclaim after lease expiry. Expired/revoked/cancelled work cannot overwrite newer state; a job has three attempts, after which its retained evidence is closed as partial.
 
 ```mermaid
 sequenceDiagram
@@ -97,7 +97,7 @@ sequenceDiagram
 
 *From queued work through a fenced worker and source checkpoints to version-fenced shortlist completion and agent-owned batch publication.*
 
-The worker rotates configured sources deterministically from the durable run ID, while prioritizing aggregate defaults. It scans all configured run sources with up to ten concurrent source tasks. A source is checkpointed after collection as `completed` only with exhaustive coverage; otherwise it is `blocked` with coverage, counts, diagnostics, and a human-readable blocker. Completed sources are skipped on retry; pending and blocked sources are attempted again. Provider-specific page, request and result budgets still report partial coverage.
+The worker rotates configured sources deterministically from the durable run ID, while prioritizing aggregate defaults. It scans all configured run sources with up to ten concurrent source tasks. Sources first checkpoint as `active`; each verification batch is saved and checkpointed with the current source version. A source is marked `completed` only with exhaustive coverage; otherwise it is `blocked` with coverage, counts, diagnostics, and a human-readable blocker. Completed sources are skipped on retry; pending and blocked sources are attempted again. Provider-specific page, request and result budgets still report partial coverage.
 
 HiringCafe, Simplify and isolated Career Ops collection share the `{id, detect, fetch}` provider contract and copied resolver in `source-providers.ts`. `fetchSource` deduplicates and verifies every provider’s leads before the worker persists observations. Career Ops collection runs in a sanitized child process. The child has no agent, Supabase, cloud, proxy, or user credentials; it has a 384 MiB heap, a 120-second task budget, and a 16 MiB output limit. Employer sources preserve upstream pagination, request spacing, retries and safety bounds without blanket page/request/result caps. All returned leads are verified in batches of at most 25; failed batches retain per-link uncertainty and successful batches remain available. Simplify reads the full supported feed; HiringCafe remains explicitly sampled. Observations are saved in transactions of at most 25 rows and 48,000 encoded bytes; an oversized single observation fails rather than escaping the transaction bound.
 
@@ -170,3 +170,6 @@ npm run test:filter
 ```
 
 See [Testing strategy and safety invariants](../testing/verification-strategy.md) for when to expand to the full suite, and [Local stack, backend processes, and release boundaries](../operations/local-and-release-runtime.md) for the fact that a local test, API health check, or frontend deployment does not prove a worker or external source is live.
+
+
+Worker recovery preserves the existing job and run. Resume reads persisted identities to avoid repeating saved verified postings; numeric offsets are informational because upstream results can change. Checkpoints retain a bounded recent diagnostic window plus an explicit omitted count. Child cancellation/timeout kills the whole process group, and Docker init reaps exited browser descendants. These mechanisms do not establish live source reachability or complete market coverage.

@@ -177,3 +177,47 @@ test('HiringCafe, Simplify and Career Ops share verification and dedup before pr
  const persisted=await dispatch('search.discoveries.read',{runId:outcome.result.runId,offset:0,limit:100});
  assert.equal(persisted.listings.length,2);assert.deepEqual(new Set(persisted.listings.map(row=>row.canonical_url||row.url)),new Set([base+'100',base+'300']));
 });
+
+
+test('lease heartbeat extends only a live owned search without changing its fence',async()=>{
+ const f=await fixture(),claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;
+ assert.equal(claim.job.id,f.job.id);
+ const fence={jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version};
+ await db.query("update private.backend_jobs set lease_expires_at=now()+interval '10 seconds' where id=$1",[claim.job.id]);
+ const renewed=await rpc('backend_worker',{operation:'heartbeat',payload:fence});assert.equal(renewed.error,null);assert.equal(renewed.data.version,claim.job.version);
+ const row=(await db.query("select lease_expires_at>now()+interval '4 minutes' as renewed,attempts from private.backend_jobs where id=$1",[claim.job.id])).rows[0];assert(row.renewed);assert.equal(row.attempts,1);
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,leaseToken:randomUUID()}})).error.code,'40001');
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,expectedVersion:claim.job.version+1}})).error.code,'40001');
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{...fence,unexpected:true}})).error.code,'22023');
+ await db.query("update private.backend_jobs set lease_expires_at=now()-interval '1 second' where id=$1",[claim.job.id]);
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:fence})).error.code,'40001');
+ const next=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;assert.equal(next.job.id,claim.job.id);assert.equal(next.job.attempts,2);
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:fence})).error.code,'40001');
+ await db.query('update private.agent_connections set revoked_at=now() where user_id=$1',[f.owner]);
+ assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{jobId:next.job.id,leaseToken:next.leaseToken,expectedVersion:next.job.version}})).error.code,'42501');
+ const permissions=(await db.query("select has_function_privilege('authenticated','public.backend_worker(text,jsonb)','execute') as exposed")).rows[0];assert.equal(permissions.exposed,false);
+});
+test('a saved verification batch survives interruption and the same run resumes without duplicate observations',async()=>{
+ const f=await fixture(),claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;
+ const controller=new AbortController();let runId;let interrupted=false;
+ const fence={jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version};
+ const dispatch=async(operation,payload)=>{
+  const r=await rpc('backend_worker',{operation:'dispatch',payload:{...fence,operation,payload}});if(r.error)throw r.error;
+  if(operation==='search.run.start')runId=r.data.id;
+  if(operation==='search.progress'&&payload.state==='active'&&payload.counts.saved===25&&!interrupted){interrupted=true;controller.abort(Error('Fixture worker interrupted'));}
+  return r.data;
+ };
+ const rows=Array.from({length:61},(_,i)=>({company:'Example (fictional)',title:'Software Engineer New Grad',location:'Remote',employmentType:'FT',url:'https://job-boards.greenhouse.io/example/jobs/'+(1000+i),listingIdentity:{ats_provider:'greenhouse',board_slug:'example',posting_id:String(1000+i)},description:'Fictional backend systems role.',postedAt:null}));
+ const batches=[];const execute=async(task,input)=>{
+  if(task==='discovery')return {status:'ok',available:61,truncated:false,jobs:rows};
+  if(task==='verify-discovery-leads'){batches.push(input.leads.length);return {jobs:input.leads.map(({url})=>rows.find(r=>r.url===url)),diagnostics:input.leads.map(({url})=>({url,status:'active',extraction:'parsed'}))};}
+  return executeCareerTask(task,input);
+ };
+ await assert.rejects(executeSearch(claim.job,dispatch,{execute,signal:controller.signal}),/interrupted/);
+ assert.equal((await db.query('select count(*)::int n from public.search_observations where run_id=$1',[runId])).rows[0].n,25);
+ const source=(await db.query('select checkpoint,state from public.search_source_attempts where run_id=$1',[runId])).rows[0];assert.equal(source.state,'active');assert.equal(source.checkpoint.savedOffset,25);
+ const outcome=await executeSearch({...claim.job,search_run_id:runId},dispatch,{execute});
+ assert.equal(outcome.result.runId,runId);assert.equal(outcome.status,'completed');assert.deepEqual(batches,[25,25,11]);
+ assert.equal((await db.query('select count(*)::int n from public.search_observations where run_id=$1',[runId])).rows[0].n,61);
+ assert.equal(outcome.result.shortlist.screenedCount,61);
+});

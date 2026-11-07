@@ -8,3 +8,22 @@
 - Validation: `npm test` passed (1006 passed, 5 skipped), including database scenarios; focused import/MCP/workflow tests passed; frontend typecheck, production build, `npm run validate:data` (158 roles) and `git diff --check` passed. An initial guide-version mismatch was corrected; the final full run passed. Service-role regression emulates hosted BYPASSRLS in the fixture and verifies the actual execute boundary.
 - Local Dev: applied only migration 20261107190957 to lookout-local, recording it atomically and verifying the existing imported-row fingerprint was unchanged. No other pending migrations, account records, Docker restarts or hosted changes were performed. Existing authenticated connection answered with personal 119 / developer 110 before source landing.
 - Limits: browser verification used isolated fictional demo state; no real application outcomes were corrected. Hosted migration/function deployment and authenticated Muse verification of contract 111 remain separate release checks. Five existing suite tests are skipped; no real employer submission was exercised.
+
+## Follow-up: restore the original application interface
+
+- Removed the separate imported row/editor. Imports now open the original
+  application detail dialog and use the native compact row, progress bar,
+  Overview/Documents/Interview sections, round/email history and Notes panel.
+- Retains original source notes as explicitly imported reports with only known
+  dates. Notes never become fabricated email links or override current status.
+- Intentionally leaves backend mismatch visible, as requested: imported records
+  have no native application ID; round writes fail with the existing sync error,
+  and native workflow mutations show an unsaved error rather than creating ghost
+  applications or approvals. Existing MCP metadata correction remains available.
+- No backend schema or runtime deployment is part of this follow-up.
+- Follow-up validation: 24 focused import/timeline/progress tests passed; frontend
+  typecheck, production static build, catalog validation (158 roles), diff check
+  and mechanical UI detector passed. Desktop/mobile demo verified the original
+  imported row/progress, native dialog tabs, vertical progress, Notes and email
+  history, plus the intentional unsaved timeline error. No horizontal overflow
+  or page errors. Full backend suite was not repeated for this UI/read-model pass.
