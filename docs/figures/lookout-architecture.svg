@@ -8,484 +8,365 @@
           &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;9&quot; width=&quot;323.272&quot; height=&quot;36&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;human&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#faf8f5;strokeColor=#8b775f;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;75&quot; width=&quot;270&quot; height=&quot;835&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;75&quot; width=&quot;330&quot; height=&quot;260&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;human-label&quot; value=&quot;Human&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;93.114&quot; height=&quot;30&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;agent&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f5f8fb;strokeColor=#57758e;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;350&quot; y=&quot;75&quot; width=&quot;360&quot; height=&quot;835&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;385&quot; width=&quot;330&quot; height=&quot;320&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;agent-label&quot; value=&quot;Personal Agent&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;195.71&quot; height=&quot;30&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;interface&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f6f9f5;strokeColor=#657d61;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;750&quot; y=&quot;75&quot; width=&quot;290&quot; height=&quot;450&quot; /&gt;
+        &lt;mxCell id=&quot;lookout&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f8f6fb;strokeColor=#77678c;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;430&quot; y=&quot;75&quot; width=&quot;1320&quot; height=&quot;570&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;interface-label&quot; value=&quot;Lookout Interface&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;interface&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;223.14000000000001&quot; height=&quot;30&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;workspace&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f8f6fb;strokeColor=#77678c;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1080&quot; y=&quot;75&quot; width=&quot;680&quot; height=&quot;450&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;workspace-label&quot; value=&quot;Lookout Workspace&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;workspace&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;253.482&quot; height=&quot;30&quot; /&gt;
+        &lt;mxCell id=&quot;lookout-label&quot; value=&quot;Lookout&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;lookout&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;107.544&quot; height=&quot;30&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;infrastructure&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f8f9fa;strokeColor=#78818a;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;750&quot; y=&quot;610&quot; width=&quot;1010&quot; height=&quot;300&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;430&quot; y=&quot;695&quot; width=&quot;1320&quot; height=&quot;240&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;infrastructure-label&quot; value=&quot;Infrastructure&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;174.026&quot; height=&quot;30&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;user&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#faecd9;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;220&quot; height=&quot;155&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;20&quot; y=&quot;70&quot; width=&quot;290&quot; height=&quot;130&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;user-head&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;21&quot; width=&quot;14&quot; height=&quot;14&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;30&quot; y=&quot;21&quot; width=&quot;14&quot; height=&quot;14&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;user-icon-body&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;user&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;32&quot; y=&quot;35&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;32&quot; y=&quot;55&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;37&quot; y=&quot;35&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;37&quot; y=&quot;55&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;user-icon-arms&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;user&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;18&quot; y=&quot;44&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;46&quot; y=&quot;44&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;23&quot; y=&quot;44&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;51&quot; y=&quot;44&quot; /&gt;
             &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;32&quot; y=&quot;38&quot; /&gt;
+              &lt;mxPoint x=&quot;37&quot; y=&quot;38&quot; /&gt;
             &lt;/Array&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;user-icon-legs&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;user&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;20&quot; y=&quot;64&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;44&quot; y=&quot;64&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;25&quot; y=&quot;64&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;49&quot; y=&quot;64&quot; /&gt;
             &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;32&quot; y=&quot;55&quot; /&gt;
+              &lt;mxPoint x=&quot;37&quot; y=&quot;55&quot; /&gt;
             &lt;/Array&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;user-title&quot; value=&quot;User&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=30;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;10&quot; width=&quot;71.69&quot; height=&quot;34&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;70&quot; y=&quot;14&quot; width=&quot;71.69&quot; height=&quot;34&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;user-t0&quot; value=&quot;Preferences&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;75&quot; width=&quot;145.166&quot; height=&quot;30&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;web&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#faecd9;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;290&quot; width=&quot;220&quot; height=&quot;185&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;web-window&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;18&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;web-icon-bar&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;web&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;15&quot; y=&quot;26&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;51&quot; y=&quot;26&quot; /&gt;
-          &lt;/mxGeometry&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;web-dot&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18.799999999999997&quot; y=&quot;20.80000000000001&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;web-title&quot; value=&quot;Web UI&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;61&quot; y=&quot;14&quot; width=&quot;103.281&quot; height=&quot;33&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;web-t0&quot; value=&quot;Review and edit&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;75&quot; width=&quot;189.964&quot; height=&quot;30&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;web-t1&quot; value=&quot;Approve / resolve&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;119&quot; width=&quot;191.74400000000003&quot; height=&quot;28&quot; /&gt;
+        &lt;mxCell id=&quot;user-sub&quot; value=&quot;Goals + preferences&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;20&quot; y=&quot;76&quot; width=&quot;239.832&quot; height=&quot;30&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e5eef8;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;310&quot; height=&quot;205&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;20&quot; y=&quot;70&quot; width=&quot;290&quot; height=&quot;210&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason-node-a&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;27&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;30&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason-node-b&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;17&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;41&quot; y=&quot;20&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason-node-c&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;39&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;41&quot; y=&quot;42&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason-icon-links&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;reason&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;26&quot; y=&quot;29&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;40&quot; y=&quot;24&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;27&quot; y=&quot;32&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;41&quot; y=&quot;27&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason-icon-link2&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;reason&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;26&quot; y=&quot;35&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;40&quot; y=&quot;42&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;27&quot; y=&quot;38&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;41&quot; y=&quot;45&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason-icon-link3&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;reason&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;45&quot; y=&quot;27&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;45&quot; y=&quot;39&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;46&quot; y=&quot;30&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;46&quot; y=&quot;42&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;reason-title&quot; value=&quot;External agent&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;65&quot; y=&quot;15&quot; width=&quot;197.948&quot; height=&quot;32&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;66&quot; y=&quot;14&quot; width=&quot;197.948&quot; height=&quot;32&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;reason-t0&quot; value=&quot;Reasoning + planning&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;71&quot; width=&quot;257.20000000000005&quot; height=&quot;30&quot; /&gt;
+        &lt;mxCell id=&quot;reason-t0&quot; value=&quot;Reasoning + planning&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;62&quot; width=&quot;247.50000000000003&quot; height=&quot;29&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;reason-t1&quot; value=&quot;Private personal context&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;119&quot; width=&quot;262.448&quot; height=&quot;28&quot; /&gt;
+        &lt;mxCell id=&quot;reason-t1&quot; value=&quot;Private personal context&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;102&quot; width=&quot;251.721&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;host&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e5eef8;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;dashed=1;dashPattern=9 6;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;570&quot; width=&quot;310&quot; height=&quot;205&quot; /&gt;
+        &lt;mxCell id=&quot;reason-t2&quot; value=&quot;Scheduling / optional wake&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;145&quot; width=&quot;266.69&quot; height=&quot;26&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;host-term&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;19&quot; width=&quot;36&quot; height=&quot;28&quot; /&gt;
+        &lt;mxCell id=&quot;web&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#faecd9;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;lookout&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;50&quot; y=&quot;70&quot; width=&quot;270&quot; height=&quot;130&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;host-icon-prompt&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;host&quot;&gt;
+        &lt;mxCell id=&quot;web-window&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;21&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-icon-bar&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;web&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;23&quot; y=&quot;27&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;23&quot; y=&quot;37&quot; /&gt;
-            &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;29&quot; y=&quot;32&quot; /&gt;
-            &lt;/Array&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;18&quot; y=&quot;29&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;54&quot; y=&quot;29&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;host-icon-cursor&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;host&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;34&quot; y=&quot;38&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;44&quot; y=&quot;38&quot; /&gt;
-          &lt;/mxGeometry&gt;
+        &lt;mxCell id=&quot;web-dot&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21.80000000000001&quot; y=&quot;23.80000000000001&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;host-title&quot; value=&quot;Agent host&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;65&quot; y=&quot;17&quot; width=&quot;156.43800000000002&quot; height=&quot;33&quot; /&gt;
+        &lt;mxCell id=&quot;web-title&quot; value=&quot;Web UI&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;66&quot; y=&quot;16&quot; width=&quot;103.281&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;host-t0&quot; value=&quot;Native schedules&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;76&quot; width=&quot;202.964&quot; height=&quot;30&quot; /&gt;
+        &lt;mxCell id=&quot;web-sub&quot; value=&quot;Review / edit / approve&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;77&quot; width=&quot;249.10399999999998&quot; height=&quot;28&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;host-t1&quot; value=&quot;Optional polling + wake&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;123&quot; width=&quot;253.784&quot; height=&quot;28&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;interface&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;240&quot; height=&quot;205&quot; /&gt;
+        &lt;mxCell id=&quot;mcp&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e1efdc;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;lookout&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;50&quot; y=&quot;380&quot; width=&quot;270&quot; height=&quot;130&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;mcp-term&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;17&quot; width=&quot;36&quot; height=&quot;28&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;21&quot; width=&quot;36&quot; height=&quot;28&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;mcp-icon-prompt&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;mcp&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;21&quot; y=&quot;25&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;21&quot; y=&quot;35&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;24&quot; y=&quot;29&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;24&quot; y=&quot;39&quot; /&gt;
             &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;27&quot; y=&quot;30&quot; /&gt;
+              &lt;mxPoint x=&quot;30&quot; y=&quot;34&quot; /&gt;
             &lt;/Array&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;mcp-icon-cursor&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;mcp&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;32&quot; y=&quot;36&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;42&quot; y=&quot;36&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;35&quot; y=&quot;40&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;45&quot; y=&quot;40&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-title&quot; value=&quot;MCP&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;62&quot; y=&quot;14&quot; width=&quot;69.438&quot; height=&quot;33&quot; /&gt;
+        &lt;mxCell id=&quot;mcp-title&quot; value=&quot;MCP tools&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;66&quot; y=&quot;16&quot; width=&quot;146.781&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-band-tools&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#f9e4d9;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;63&quot; width=&quot;210&quot; height=&quot;38&quot; /&gt;
+        &lt;mxCell id=&quot;mcp-sub&quot; value=&quot;Auth + context + guides&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;77&quot; width=&quot;257.168&quot; height=&quot;28&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-t-tools&quot; value=&quot;Tools&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;85.71500000000003&quot; y=&quot;67&quot; width=&quot;68.57&quot; height=&quot;30&quot; /&gt;
+        &lt;mxCell id=&quot;backend&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;lookout&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;420&quot; y=&quot;70&quot; width=&quot;840&quot; height=&quot;440&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-band-context&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e1efdc;strokeColor=#e1efdc;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;109&quot; width=&quot;210&quot; height=&quot;38&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-t-context&quot; value=&quot;Context&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;72.702&quot; y=&quot;113&quot; width=&quot;94.596&quot; height=&quot;30&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-band-guides&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#deedf5;strokeColor=#deedf5;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;155&quot; width=&quot;210&quot; height=&quot;38&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-t-guides&quot; value=&quot;Guides&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;76.31600000000003&quot; y=&quot;159&quot; width=&quot;87.36800000000001&quot; height=&quot;30&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;mcp-note1&quot; value=&quot;Auth + scopes&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;interface&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;309&quot; width=&quot;176.57500000000002&quot; height=&quot;29&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;capabilities&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;workspace&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;630&quot; height=&quot;220&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-title&quot; value=&quot;Career workflows&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;10&quot; width=&quot;246.744&quot; height=&quot;33&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-band-discover&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#f9e4d9;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;55&quot; width=&quot;285&quot; height=&quot;48&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-t-discover&quot; value=&quot;Discover&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;106.55400000000009&quot; y=&quot;62&quot; width=&quot;113.89200000000001&quot; height=&quot;32&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-band-apply&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#f9e4d9;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;325&quot; y=&quot;55&quot; width=&quot;285&quot; height=&quot;48&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-t-apply&quot; value=&quot;Applications&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;389.52600000000007&quot; y=&quot;62&quot; width=&quot;155.948&quot; height=&quot;32&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-band-review&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e9e1f3;strokeColor=#e9e1f3;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;119&quot; width=&quot;589&quot; height=&quot;48&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-t-review&quot; value=&quot;Action Board: review + resolve&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;107.48399999999992&quot; y=&quot;126&quot; width=&quot;415.032&quot; height=&quot;32&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;cap-t-other&quot; value=&quot;Network + Career Toolkit&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;178&quot; width=&quot;282.15000000000003&quot; height=&quot;29&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;domain&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#deedf5;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;workspace&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;330&quot; width=&quot;630&quot; height=&quot;92&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;domain-icon-shield&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;domain&quot;&gt;
+        &lt;mxCell id=&quot;backend-icon-shield&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;backend&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;36&quot; y=&quot;19&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;36&quot; y=&quot;19&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;39&quot; y=&quot;21&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;39&quot; y=&quot;21&quot; /&gt;
             &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;52&quot; y=&quot;25&quot; /&gt;
-              &lt;mxPoint x=&quot;50&quot; y=&quot;42&quot; /&gt;
-              &lt;mxPoint x=&quot;36&quot; y=&quot;54&quot; /&gt;
-              &lt;mxPoint x=&quot;22&quot; y=&quot;42&quot; /&gt;
-              &lt;mxPoint x=&quot;20&quot; y=&quot;25&quot; /&gt;
+              &lt;mxPoint x=&quot;55&quot; y=&quot;27&quot; /&gt;
+              &lt;mxPoint x=&quot;53&quot; y=&quot;44&quot; /&gt;
+              &lt;mxPoint x=&quot;39&quot; y=&quot;56&quot; /&gt;
+              &lt;mxPoint x=&quot;25&quot; y=&quot;44&quot; /&gt;
+              &lt;mxPoint x=&quot;23&quot; y=&quot;27&quot; /&gt;
             &lt;/Array&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;domain-icon-check&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;domain&quot;&gt;
+        &lt;mxCell id=&quot;backend-icon-check&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;backend&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;28&quot; y=&quot;35&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;44&quot; y=&quot;30&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;31&quot; y=&quot;37&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;47&quot; y=&quot;32&quot; /&gt;
             &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;34&quot; y=&quot;41&quot; /&gt;
+              &lt;mxPoint x=&quot;37&quot; y=&quot;43&quot; /&gt;
             &lt;/Array&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;domain-title&quot; value=&quot;Shared state + policy&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;domain&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;69&quot; y=&quot;8&quot; width=&quot;295.928&quot; height=&quot;33&quot; /&gt;
+        &lt;mxCell id=&quot;backend-title&quot; value=&quot;Backend&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=31;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;72&quot; y=&quot;17&quot; width=&quot;134.208&quot; height=&quot;35&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;domain-sub&quot; value=&quot;Preferences / approvals / progress&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;domain&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;69&quot; y=&quot;48&quot; width=&quot;402.384&quot; height=&quot;30&quot; /&gt;
+        &lt;mxCell id=&quot;cap-band-discover&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#f9e4d9;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;75&quot; width=&quot;380&quot; height=&quot;52&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;worker&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf0f3;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;55&quot; width=&quot;285&quot; height=&quot;90&quot; /&gt;
+        &lt;mxCell id=&quot;cap-t-discover&quot; value=&quot;Discover&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;156.10950000000003&quot; y=&quot;83&quot; width=&quot;117.781&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;worker-q0&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;18&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
+        &lt;mxCell id=&quot;cap-band-apply&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#f9e4d9;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;435&quot; y=&quot;75&quot; width=&quot;380&quot; height=&quot;52&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;worker-q1&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;28&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
+        &lt;mxCell id=&quot;cap-t-apply&quot; value=&quot;Applications&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;544.3305&quot; y=&quot;83&quot; width=&quot;161.339&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;worker-q2&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;38&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
+        &lt;mxCell id=&quot;cap-band-review&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e9e1f3;strokeColor=#e9e1f3;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;147&quot; width=&quot;790&quot; height=&quot;58&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;worker-title&quot; value=&quot;Workers&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;10&quot; width=&quot;117.028&quot; height=&quot;32&quot; /&gt;
+        &lt;mxCell id=&quot;cap-t-review&quot; value=&quot;Action Board: review + resolve&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;205.16200000000003&quot; y=&quot;158&quot; width=&quot;429.676&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;worker-sub&quot; value=&quot;Queued execution&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;47&quot; width=&quot;207.89999999999998&quot; height=&quot;29&quot; /&gt;
+        &lt;mxCell id=&quot;cap-band-network&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#f9e4d9;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;225&quot; width=&quot;380&quot; height=&quot;52&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;db&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf0f3;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;360&quot; y=&quot;55&quot; width=&quot;310&quot; height=&quot;90&quot; /&gt;
+        &lt;mxCell id=&quot;cap-t-network&quot; value=&quot;Network&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;159.32849999999996&quot; y=&quot;233&quot; width=&quot;111.343&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;db-cylinder&quot; value=&quot;&quot; style=&quot;shape=cylinder;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;db&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;19&quot; width=&quot;34&quot; height=&quot;32&quot; /&gt;
+        &lt;mxCell id=&quot;cap-band-toolkit&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#f9e4d9;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;435&quot; y=&quot;225&quot; width=&quot;380&quot; height=&quot;52&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;db-title&quot; value=&quot;Postgres&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;db&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;63&quot; y=&quot;10&quot; width=&quot;124.812&quot; height=&quot;32&quot; /&gt;
+        &lt;mxCell id=&quot;cap-t-toolkit&quot; value=&quot;Career Toolkit&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;531.4545&quot; y=&quot;233&quot; width=&quot;187.091&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;db-sub&quot; value=&quot;Workflow state&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;db&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;47&quot; width=&quot;168.925&quot; height=&quot;29&quot; /&gt;
+        &lt;mxCell id=&quot;state-band&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#deedf5;strokeColor=#deedf5;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;310&quot; width=&quot;790&quot; height=&quot;95&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;storage&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf0f3;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;720&quot; y=&quot;55&quot; width=&quot;265&quot; height=&quot;90&quot; /&gt;
+        &lt;mxCell id=&quot;state-title&quot; value=&quot;Shared state + approval rules&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;214.81899999999996&quot; y=&quot;321&quot; width=&quot;410.36199999999997&quot; height=&quot;33&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;storage-icon-page&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;14&quot; y=&quot;14&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;14&quot; y=&quot;14&quot; /&gt;
-            &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;37&quot; y=&quot;14&quot; /&gt;
-              &lt;mxPoint x=&quot;47&quot; y=&quot;24&quot; /&gt;
-              &lt;mxPoint x=&quot;47&quot; y=&quot;48&quot; /&gt;
-              &lt;mxPoint x=&quot;14&quot; y=&quot;48&quot; /&gt;
-            &lt;/Array&gt;
-          &lt;/mxGeometry&gt;
+        &lt;mxCell id=&quot;state-sub&quot; value=&quot;Preferences / versioned records / durable progress&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;backend&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;124.88300000000004&quot; y=&quot;362&quot; width=&quot;590.234&quot; height=&quot;30&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;storage-icon-fold&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;37&quot; y=&quot;14&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;47&quot; y=&quot;24&quot; /&gt;
-            &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;37&quot; y=&quot;24&quot; /&gt;
-            &lt;/Array&gt;
-          &lt;/mxGeometry&gt;
+        &lt;mxCell id=&quot;executor&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf0f3;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;50&quot; y=&quot;60&quot; width=&quot;350&quot; height=&quot;110&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;storage-icon-text&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;21&quot; y=&quot;32&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;40&quot; y=&quot;32&quot; /&gt;
-          &lt;/mxGeometry&gt;
+        &lt;mxCell id=&quot;executor-q0&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;executor&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;21&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;storage-icon-text2&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;21&quot; y=&quot;39&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;37&quot; y=&quot;39&quot; /&gt;
-          &lt;/mxGeometry&gt;
+        &lt;mxCell id=&quot;executor-q1&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;executor&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;31&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;storage-title&quot; value=&quot;Private files&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;storage&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;11&quot; width=&quot;156.578&quot; height=&quot;31&quot; /&gt;
+        &lt;mxCell id=&quot;executor-q2&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;executor&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;41&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;storage-sub&quot; value=&quot;Resumes + documents&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;storage&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;49&quot; width=&quot;240.84199999999998&quot; height=&quot;27&quot; /&gt;
+        &lt;mxCell id=&quot;executor-title&quot; value=&quot;Workers + browser&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;executor&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;66&quot; y=&quot;17&quot; width=&quot;248.83700000000002&quot; height=&quot;31&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;browser&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf0f3;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;190&quot; width=&quot;285&quot; height=&quot;90&quot; /&gt;
+        &lt;mxCell id=&quot;executor-sub&quot; value=&quot;Queued / authorized execution&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;executor&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18&quot; y=&quot;64&quot; width=&quot;318.23699999999997&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;browser-window&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;18&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
+        &lt;mxCell id=&quot;supabase&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf0f3;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;500&quot; y=&quot;60&quot; width=&quot;430&quot; height=&quot;110&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;browser-icon-bar&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;browser&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;14&quot; y=&quot;26&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;50&quot; y=&quot;26&quot; /&gt;
-          &lt;/mxGeometry&gt;
+        &lt;mxCell id=&quot;supabase-cylinder&quot; value=&quot;&quot; style=&quot;shape=cylinder;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;supabase&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;20&quot; y=&quot;21&quot; width=&quot;34&quot; height=&quot;32&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;browser-dot&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17.799999999999955&quot; y=&quot;20.799999999999955&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
+        &lt;mxCell id=&quot;supabase-title&quot; value=&quot;Supabase&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=31;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;supabase&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;70&quot; y=&quot;14&quot; width=&quot;151.44400000000002&quot; height=&quot;35&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;browser-title&quot; value=&quot;Browser runner&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;13&quot; width=&quot;198.596&quot; height=&quot;30&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;browser-sub&quot; value=&quot;Inspect / fill / submit&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;47&quot; width=&quot;224.525&quot; height=&quot;29&quot; /&gt;
+        &lt;mxCell id=&quot;supabase-sub&quot; value=&quot;Postgres + private Storage&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;supabase&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;20&quot; y=&quot;60&quot; width=&quot;325.40900000000005&quot; height=&quot;31&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;employer&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf0f3;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;720&quot; y=&quot;190&quot; width=&quot;265&quot; height=&quot;90&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1020&quot; y=&quot;60&quot; width=&quot;260&quot; height=&quot;110&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;employer-window&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;18&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;16&quot; y=&quot;21&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;employer-icon-bar&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;employer&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;14&quot; y=&quot;26&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;50&quot; y=&quot;26&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;16&quot; y=&quot;29&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;52&quot; y=&quot;29&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;employer-dot&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17.799999999999955&quot; y=&quot;20.799999999999955&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;19.799999999999955&quot; y=&quot;23.799999999999955&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;employer-title&quot; value=&quot;External sites&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;14&quot; width=&quot;167.575&quot; height=&quot;29&quot; /&gt;
+        &lt;mxCell id=&quot;employer-title&quot; value=&quot;Employer ATS&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;64&quot; y=&quot;20&quot; width=&quot;175.875&quot; height=&quot;29&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;employer-sub&quot; value=&quot;Postings + forms&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;47&quot; width=&quot;191.875&quot; height=&quot;29&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;resume-note1&quot; value=&quot;Resume from saved state&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;42&quot; y=&quot;300&quot; width=&quot;307.875&quot; height=&quot;29&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;16&quot; y=&quot;62&quot; width=&quot;191.875&quot; height=&quot;29&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;legend-solid&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;45&quot; y=&quot;947&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;110&quot; y=&quot;947&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;45&quot; y=&quot;970&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;110&quot; y=&quot;970&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;legend-solid-label&quot; value=&quot;Calls / results&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;124&quot; y=&quot;931&quot; width=&quot;161.026&quot; height=&quot;30&quot; /&gt;
+        &lt;mxCell id=&quot;legend-solid-label&quot; value=&quot;Calls / results&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;124&quot; y=&quot;955&quot; width=&quot;155.025&quot; height=&quot;29&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;legend-dash&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;dashed=1;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;750&quot; y=&quot;947&quot; /&gt;
-            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;815&quot; y=&quot;947&quot; /&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;750&quot; y=&quot;970&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;815&quot; y=&quot;970&quot; /&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;legend-dash-label&quot; value=&quot;Polling / queued work&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;830&quot; y=&quot;931&quot; width=&quot;253.56&quot; height=&quot;30&quot; /&gt;
+        &lt;mxCell id=&quot;legend-dash-label&quot; value=&quot;Queued work / polling + wake&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;830&quot; y=&quot;955&quot; width=&quot;333.625&quot; height=&quot;29&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;footnote&quot; value=&quot;Logical capabilities, not separate services. Optional wake requires an agent-host integration.&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#4a5662;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;45&quot; y=&quot;965&quot; width=&quot;985.4480000000001&quot; height=&quot;28&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;A1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;user&quot; target=&quot;web&quot;&gt;
+        &lt;mxCell id=&quot;A1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;user&quot; target=&quot;web&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;A2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.4967741935483871;exitDx=0;exitDy=0;entryX=0.0;entryY=0.375609756097561;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;user&quot; target=&quot;reason&quot;&gt;
+        &lt;mxCell id=&quot;A1-label&quot; value=&quot;Review&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;374.581&quot; y=&quot;171&quot; width=&quot;80.838&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.9310344827586207;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;user&quot; target=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;205&quot; y=&quot;355&quot; /&gt;
+              &lt;mxPoint x=&quot;330&quot; y=&quot;355&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A2-label&quot; value=&quot;Delegate&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;219.97899999999998&quot; y=&quot;348&quot; width=&quot;96.042&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.30952380952380953;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;reason&quot; target=&quot;mcp&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;A2-label&quot; value=&quot;Goals&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;296.574&quot; y=&quot;185&quot; width=&quot;66.852&quot; height=&quot;27&quot; /&gt;
+        &lt;mxCell id=&quot;B1-label&quot; value=&quot;Calls / results&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;345.9895&quot; y=&quot;480&quot; width=&quot;138.02100000000002&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;B1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.6;exitDx=0;exitDy=0;entryX=0.0;entryY=0.6;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;reason&quot; target=&quot;mcp&quot;&gt;
+        &lt;mxCell id=&quot;A3&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.14772727272727273;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;web&quot; target=&quot;backend&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;B1-label&quot; value=&quot;5 Resume&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;676.1514999999999&quot; y=&quot;230&quot; width=&quot;107.697&quot; height=&quot;27&quot; /&gt;
+        &lt;mxCell id=&quot;A3-label&quot; value=&quot;Edits&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;770.6585&quot; y=&quot;171&quot; width=&quot;58.683&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;B2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.6;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5590909090909091;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;mcp&quot; target=&quot;capabilities&quot;&gt;
+        &lt;mxCell id=&quot;B2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.8522727272727273;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;mcp&quot; target=&quot;backend&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;B2-label&quot; value=&quot;Tools&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1028.3275&quot; y=&quot;230&quot; width=&quot;63.345&quot; height=&quot;27&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;768.3275&quot; y=&quot;480&quot; width=&quot;63.345&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;A3&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5405405405405406;exitDx=0;exitDy=0;entryX=0.0;entryY=0.6521739130434783;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;web&quot; target=&quot;domain&quot;&gt;
+        &lt;mxCell id=&quot;D1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.47619047619047616;exitY=1.0;exitDx=0;exitDy=0;entryX=0.7441860465116279;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;backend&quot; target=&quot;supabase&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;A3-label&quot; value=&quot;1 Review / edit&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;790.141&quot; y=&quot;465&quot; width=&quot;149.718&quot; height=&quot;27&quot; /&gt;
+        &lt;mxCell id=&quot;D1-label&quot; value=&quot;Persist&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1266.912&quot; y=&quot;660&quot; width=&quot;76.176&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;D1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.2777777777777778;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5483870967741935;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;db&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;D1-label&quot; value=&quot;2 Persist&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1233.155&quot; y=&quot;549&quot; width=&quot;93.69&quot; height=&quot;27&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;D2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.7936507936507936;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5094339622641509;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;storage&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;E1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.07142857142857142;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5017543859649123;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;worker&quot;&gt;
+        &lt;mxCell id=&quot;E1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.9659090909090909;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;backend&quot; target=&quot;executor&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
             &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;1150&quot; y=&quot;540&quot; /&gt;
-              &lt;mxPoint x=&quot;918&quot; y=&quot;540&quot; /&gt;
+              &lt;mxPoint x=&quot;815&quot; y=&quot;570&quot; /&gt;
+              &lt;mxPoint x=&quot;815&quot; y=&quot;705&quot; /&gt;
+              &lt;mxPoint x=&quot;655&quot; y=&quot;705&quot; /&gt;
             &lt;/Array&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;E1-label&quot; value=&quot;Queue&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;882.479&quot; y=&quot;567&quot; width=&quot;75.042&quot; height=&quot;27&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;697.479&quot; y=&quot;668&quot; width=&quot;75.042&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;E2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5017543859649123;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5017543859649123;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;worker&quot; target=&quot;browser&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;F1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;browser&quot; target=&quot;employer&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;mxCell id=&quot;F1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;executor&quot; target=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;655&quot; y=&quot;900&quot; /&gt;
+              &lt;mxPoint x=&quot;1580&quot; y=&quot;900&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
         &lt;mxCell id=&quot;F1-label&quot; value=&quot;Inspect / submit&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1185.4685&quot; y=&quot;809&quot; width=&quot;159.063&quot; height=&quot;27&quot; /&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1040.4685&quot; y=&quot;869&quot; width=&quot;159.063&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;G1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.4891304347826087;exitDx=0;exitDy=0;entryX=1.0;entryY=0.47317073170731705;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;host&quot;&gt;
+        &lt;mxCell id=&quot;G1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.9204545454545454;exitDx=0;exitDy=0;entryX=1.0;entryY=0.7857142857142857;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;backend&quot; target=&quot;reason&quot;&gt;
           &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
             &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;1088&quot; y=&quot;450&quot; /&gt;
-              &lt;mxPoint x=&quot;1088&quot; y=&quot;570&quot; /&gt;
-              &lt;mxPoint x=&quot;730&quot; y=&quot;570&quot; /&gt;
-              &lt;mxPoint x=&quot;730&quot; y=&quot;742&quot; /&gt;
+              &lt;mxPoint x=&quot;790&quot; y=&quot;550&quot; /&gt;
+              &lt;mxPoint x=&quot;790&quot; y=&quot;620&quot; /&gt;
             &lt;/Array&gt;
           &lt;/mxGeometry&gt;
         &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;G1-label&quot; value=&quot;3 Poll changes&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;625.1305&quot; y=&quot;532&quot; width=&quot;149.739&quot; height=&quot;27&quot; /&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;G2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.2682926829268293;exitDx=0;exitDy=0;entryX=0.0;entryY=0.8926829268292683;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;host&quot; target=&quot;reason&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
-            &lt;Array as=&quot;points&quot;&gt;
-              &lt;mxPoint x=&quot;360&quot; y=&quot;700&quot; /&gt;
-              &lt;mxPoint x=&quot;360&quot; y=&quot;328&quot; /&gt;
-            &lt;/Array&gt;
-          &lt;/mxGeometry&gt;
-        &lt;/mxCell&gt;
-        &lt;mxCell id=&quot;G2-label&quot; value=&quot;4 Wake&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
-          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;398.405&quot; y=&quot;572&quot; width=&quot;83.19&quot; height=&quot;27&quot; /&gt;
+        &lt;mxCell id=&quot;G1-label&quot; value=&quot;Poll changes / optional wake&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;440.9335&quot; y=&quot;628&quot; width=&quot;278.133&quot; height=&quot;27&quot; /&gt;
         &lt;/mxCell&gt;
       &lt;/root&gt;
     &lt;/mxGraphModel&gt;
@@ -493,170 +374,134 @@
 &lt;/mxfile&gt;" role="img" aria-labelledby="fig-title fig-desc">
 <title id="fig-title">Lookout architecture</title><desc id="fig-desc">Human edits and approvals persist in the workspace. An optional polling watcher wakes the external personal agent, which resumes through scoped MCP reads. Workspace capabilities are logical modules.</desc>
 <rect width="100%" height="100%" fill="white"/>
-<rect x="40" y="75" width="270" height="835" rx="12" fill="#faf8f5" stroke="#8b775f" stroke-width="1.8"/>
-<rect x="350" y="75" width="360" height="835" rx="12" fill="#f5f8fb" stroke="#57758e" stroke-width="1.8"/>
-<rect x="750" y="75" width="290" height="450" rx="12" fill="#f6f9f5" stroke="#657d61" stroke-width="1.8"/>
-<rect x="1080" y="75" width="680" height="450" rx="12" fill="#f8f6fb" stroke="#77678c" stroke-width="1.8"/>
-<rect x="750" y="610" width="1010" height="300" rx="12" fill="#f8f9fa" stroke="#78818a" stroke-width="1.8"/>
-<rect x="65" y="145" width="220" height="155" rx="8" fill="#faecd9" stroke="#596671" stroke-width="1.6"/>
+<rect x="40" y="75" width="330" height="260" rx="12" fill="#faf8f5" stroke="#8b775f" stroke-width="1.8"/>
+<rect x="40" y="385" width="330" height="320" rx="12" fill="#f5f8fb" stroke="#57758e" stroke-width="1.8"/>
+<rect x="430" y="75" width="1320" height="570" rx="12" fill="#f8f6fb" stroke="#77678c" stroke-width="1.8"/>
+<rect x="430" y="695" width="1320" height="240" rx="12" fill="#f8f9fa" stroke="#78818a" stroke-width="1.8"/>
+<rect x="60" y="145" width="290" height="130" rx="8" fill="#faecd9" stroke="#596671" stroke-width="1.6"/>
 <circle cx="97" cy="173" r="7" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
 <polyline points="97,180 97,200" fill="none" stroke="#596671" stroke-width="1.6"/>
 <polyline points="83,189 97,183 111,189" fill="none" stroke="#596671" stroke-width="1.6"/>
 <polyline points="85,209 97,200 109,209" fill="none" stroke="#596671" stroke-width="1.6"/>
-<rect x="65" y="365" width="220" height="185" rx="8" fill="#faecd9" stroke="#596671" stroke-width="1.6"/>
-<rect x="80" y="383" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<polyline points="80,391 116,391" fill="none" stroke="#596671" stroke-width="1.6"/>
-<circle cx="85" cy="387" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
-<rect x="375" y="145" width="310" height="205" rx="8" fill="#e5eef8" stroke="#596671" stroke-width="1.6"/>
-<circle cx="397" cy="177" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
-<circle cx="420" cy="167" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
-<circle cx="420" cy="189" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
-<polyline points="401,174 415,169" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="401,180 415,187" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="420,172 420,184" fill="none" stroke="#596671" stroke-width="1.6"/>
-<rect x="375" y="645" width="310" height="205" rx="8" fill="#e5eef8" stroke="#596671" stroke-width="1.6" stroke-dasharray="9 6"/>
-<rect x="392" y="664" width="36" height="28" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<polyline points="398,672 404,677 398,682" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="409,683 419,683" fill="none" stroke="#596671" stroke-width="1.6"/>
-<rect x="775" y="145" width="240" height="205" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<rect x="790" y="162" width="36" height="28" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<polyline points="796,170 802,175 796,180" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="807,181 817,181" fill="none" stroke="#596671" stroke-width="1.6"/>
-<rect x="790" y="208" width="210" height="38" rx="5" fill="#f9e4d9" stroke="#f9e4d9" stroke-width="1.6"/>
-<rect x="790" y="254" width="210" height="38" rx="5" fill="#e1efdc" stroke="#e1efdc" stroke-width="1.6"/>
-<rect x="790" y="300" width="210" height="38" rx="5" fill="#deedf5" stroke="#deedf5" stroke-width="1.6"/>
-<rect x="1105" y="145" width="630" height="220" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<rect x="1126" y="200" width="285" height="48" rx="5" fill="#f9e4d9" stroke="#f9e4d9" stroke-width="1.6"/>
-<rect x="1430" y="200" width="285" height="48" rx="5" fill="#f9e4d9" stroke="#f9e4d9" stroke-width="1.6"/>
-<rect x="1126" y="264" width="589" height="48" rx="5" fill="#e9e1f3" stroke="#e9e1f3" stroke-width="1.6"/>
-<rect x="1105" y="405" width="630" height="92" rx="8" fill="#deedf5" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1141,424 1157,430 1155,447 1141,459 1127,447 1125,430 1141,424" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1133,440 1139,446 1149,435" fill="none" stroke="#596671" stroke-width="1.6"/>
-<rect x="775" y="665" width="285" height="90" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
-<rect x="789" y="683" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<rect x="789" y="693" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<rect x="789" y="703" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<rect x="1110" y="665" width="310" height="90" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1125,689 1125,711" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1159,689 1159,711" fill="none" stroke="#596671" stroke-width="1.7"/>
-<ellipse cx="1142.0" cy="689" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
-<ellipse cx="1142.0" cy="711" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
-<rect x="1470" y="665" width="265" height="90" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1484,679 1507,679 1517,689 1517,713 1484,713 1484,679" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1507,679 1507,689 1517,689" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1491,697 1510,697" fill="none" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1491,704 1507,704" fill="none" stroke="#596671" stroke-width="1.6"/>
-<rect x="775" y="800" width="285" height="90" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
-<rect x="789" y="818" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<polyline points="789,826 825,826" fill="none" stroke="#596671" stroke-width="1.6"/>
-<circle cx="794" cy="822" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
-<rect x="1470" y="800" width="265" height="90" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
-<rect x="1484" y="818" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
-<polyline points="1484,826 1520,826" fill="none" stroke="#596671" stroke-width="1.6"/>
-<circle cx="1489" cy="822" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
-<polyline points="45,947 110,947" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="750,947 815,947" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
-<polyline points="175,300 175,365" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="175,300 175,365" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="175,365 171.0,354.0 179.0,354.0 175,365" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="285,222 375,222" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="285,222 375,222" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="375,222 364.0,226.0 364.0,218.0 375,222" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="285,222 296.0,218.0 296.0,226.0 285,222" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="685,268 775,268" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="685,268 775,268" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="775,268 764.0,272.0 764.0,264.0 775,268" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="685,268 696.0,264.0 696.0,272.0 685,268" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1015,268 1105,268" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="1015,268 1105,268" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="1105,268 1094.0,272.0 1094.0,264.0 1105,268" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1015,268 1026.0,264.0 1026.0,272.0 1015,268" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="285,465 1105,465" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="285,465 1105,465" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="1105,465 1094.0,469.0 1094.0,461.0 1105,465" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1280,497 1280,665" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="1280,497 1280,665" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="1280,665 1276.0,654.0 1284.0,654.0 1280,665" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1280,497 1284.0,508.0 1276.0,508.0 1280,497" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1605,497 1605,665" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="1605,497 1605,665" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="1605,665 1601.0,654.0 1609.0,654.0 1605,665" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1605,497 1609.0,508.0 1601.0,508.0 1605,497" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1150,497 1150,540 918,540 918,665" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="1150,497 1150,540 918,540 918,665" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
-<polyline points="918,665 914.0,654.0 922.0,654.0 918,665" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="918,755 918,800" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="918,755 918,800" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="918,800 914.0,789.0 922.0,789.0 918,800" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1060,845 1470,845" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="1060,845 1470,845" fill="none" stroke="#596671" stroke-width="2"/>
-<polyline points="1470,845 1459.0,849.0 1459.0,841.0 1470,845" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1060,845 1071.0,841.0 1071.0,849.0 1060,845" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="1105,450 1088,450 1088,570 730,570 730,742 685,742" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="1105,450 1088,450 1088,570 730,570 730,742 685,742" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
-<polyline points="685,742 696.0,738.0 696.0,746.0 685,742" fill="none" stroke="#596671" stroke-width="1.7"/>
-<polyline points="375,700 360,700 360,328 375,328" fill="none" stroke="#ffffff" stroke-width="7"/>
-<polyline points="375,700 360,700 360,328 375,328" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
-<polyline points="375,328 364.0,332.0 364.0,324.0 375,328" fill="none" stroke="#596671" stroke-width="1.7"/>
+<rect x="60" y="455" width="290" height="210" rx="8" fill="#e5eef8" stroke="#596671" stroke-width="1.6"/>
+<circle cx="83" cy="490" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<circle cx="106" cy="480" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<circle cx="106" cy="502" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<polyline points="87,487 101,482" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="87,493 101,500" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="106,485 106,497" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="480" y="145" width="270" height="130" rx="8" fill="#faecd9" stroke="#596671" stroke-width="1.6"/>
+<rect x="498" y="166" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="498,174 534,174" fill="none" stroke="#596671" stroke-width="1.6"/>
+<circle cx="503" cy="170" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<rect x="480" y="455" width="270" height="130" rx="8" fill="#e1efdc" stroke="#596671" stroke-width="1.6"/>
+<rect x="498" y="476" width="36" height="28" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="504,484 510,489 504,494" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="515,495 525,495" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="850" y="145" width="840" height="440" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="889,166 905,172 903,189 889,201 875,189 873,172 889,166" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="881,182 887,188 897,177" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="875" y="220" width="380" height="52" rx="5" fill="#f9e4d9" stroke="#f9e4d9" stroke-width="1.6"/>
+<rect x="1285" y="220" width="380" height="52" rx="5" fill="#f9e4d9" stroke="#f9e4d9" stroke-width="1.6"/>
+<rect x="875" y="292" width="790" height="58" rx="5" fill="#e9e1f3" stroke="#e9e1f3" stroke-width="1.6"/>
+<rect x="875" y="370" width="380" height="52" rx="5" fill="#f9e4d9" stroke="#f9e4d9" stroke-width="1.6"/>
+<rect x="1285" y="370" width="380" height="52" rx="5" fill="#f9e4d9" stroke="#f9e4d9" stroke-width="1.6"/>
+<rect x="875" y="455" width="790" height="95" rx="5" fill="#deedf5" stroke="#deedf5" stroke-width="1.6"/>
+<rect x="480" y="755" width="350" height="110" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
+<rect x="498" y="776" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="498" y="786" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="498" y="796" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="930" y="755" width="430" height="110" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
+<polyline points="950,781 950,803" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="984,781 984,803" fill="none" stroke="#596671" stroke-width="1.7"/>
+<ellipse cx="967.0" cy="781" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
+<ellipse cx="967.0" cy="803" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
+<rect x="1450" y="755" width="260" height="110" rx="8" fill="#edf0f3" stroke="#596671" stroke-width="1.6"/>
+<rect x="1466" y="776" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1466,784 1502,784" fill="none" stroke="#596671" stroke-width="1.6"/>
+<circle cx="1471" cy="780" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<polyline points="45,970 110,970" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="750,970 815,970" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="350,210 480,210" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="350,210 480,210" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="480,210 469.0,214.0 469.0,206.0 480,210" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="350,210 361.0,206.0 361.0,214.0 350,210" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="205,275 205,355 330,355 330,455" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="205,275 205,355 330,355 330,455" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="330,455 326.0,444.0 334.0,444.0 330,455" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="350,520 480,520" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="350,520 480,520" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="480,520 469.0,524.0 469.0,516.0 480,520" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="350,520 361.0,516.0 361.0,524.0 350,520" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="750,210 850,210" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="750,210 850,210" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="850,210 839.0,214.0 839.0,206.0 850,210" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="750,210 761.0,206.0 761.0,214.0 750,210" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="750,520 850,520" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="750,520 850,520" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="850,520 839.0,524.0 839.0,516.0 850,520" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="750,520 761.0,516.0 761.0,524.0 750,520" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1250,585 1250,755" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1250,585 1250,755" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1250,755 1246.0,744.0 1254.0,744.0 1250,755" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1250,585 1254.0,596.0 1246.0,596.0 1250,585" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="850,570 815,570 815,705 655,705 655,755" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="850,570 815,570 815,705 655,705 655,755" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="655,755 651.0,744.0 659.0,744.0 655,755" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="655,865 655,900 1580,900 1580,865" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="655,865 655,900 1580,900 1580,865" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1580,865 1584.0,876.0 1576.0,876.0 1580,865" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="655,865 659.0,876.0 651.0,876.0 655,865" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="850,550 790,550 790,620 350,620" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="850,550 790,550 790,620 350,620" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="350,620 361.0,616.0 361.0,624.0 350,620" fill="none" stroke="#596671" stroke-width="1.7"/>
 <text x="40" y="39" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#263442">Lookout architecture</text>
 <text x="62" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Human</text>
-<text x="372" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Personal Agent</text>
-<text x="772" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Lookout Interface</text>
-<text x="1102" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Lookout Workspace</text>
-<text x="772" y="646" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Infrastructure</text>
-<text x="125" y="183" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#263442">User</text>
-<text x="80" y="244" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Preferences</text>
-<text x="126" y="406" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Web UI</text>
-<text x="80" y="464" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Review and edit</text>
-<text x="80" y="506" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Approve / resolve</text>
-<text x="440" y="186" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#263442">External agent</text>
-<text x="392" y="240" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Reasoning + planning</text>
-<text x="392" y="286" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Private personal context</text>
-<text x="440" y="689" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Agent host</text>
-<text x="392" y="745" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Native schedules</text>
-<text x="392" y="790" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Optional polling + wake</text>
-<text x="837" y="186" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">MCP</text>
-<text x="863.215" y="236" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Tools</text>
-<text x="850.202" y="282" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Context</text>
-<text x="853.816" y="328" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Guides</text>
-<text x="775" y="407" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#263442">Auth + scopes</text>
-<text x="1126" y="182" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Career workflows</text>
-<text x="1214.054" y="233" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#263442">Discover</text>
-<text x="1497.026" y="233" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#263442">Applications</text>
-<text x="1214.984" y="297" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#263442">Action Board: review + resolve</text>
-<text x="1126" y="346" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Network + Career Toolkit</text>
-<text x="1174" y="440" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Shared state + policy</text>
-<text x="1174" y="477" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Preferences / approvals / progress</text>
-<text x="835" y="701" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#263442">Workers</text>
-<text x="789" y="735" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Queued execution</text>
-<text x="1173" y="701" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#263442">Postgres</text>
-<text x="1125" y="735" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Workflow state</text>
-<text x="1530" y="701" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Private files</text>
-<text x="1484" y="735" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Resumes + documents</text>
-<text x="835" y="837" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Browser runner</text>
-<text x="789" y="870" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Inspect / fill / submit</text>
-<text x="1530" y="837" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#263442">External sites</text>
-<text x="1484" y="870" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Postings + forms</text>
-<text x="392" y="398" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#263442">Resume from saved state</text>
-<text x="124" y="955" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Calls / results</text>
-<text x="830" y="955" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Polling / queued work</text>
-<text x="45" y="987" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#4a5662">Logical capabilities, not separate services. Optional wake requires an agent-host integration.</text>
-<rect x="297.574" y="186" width="64.852" height="27" fill="white"/>
-<text x="302.574" y="207" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Goals</text>
-<rect x="677.1514999999999" y="231" width="105.697" height="27" fill="white"/>
-<text x="682.1514999999999" y="252" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">5 Resume</text>
-<rect x="1029.3275" y="231" width="61.345" height="27" fill="white"/>
-<text x="1034.3275" y="252" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Tools</text>
-<rect x="791.141" y="466" width="147.718" height="27" fill="white"/>
-<text x="796.141" y="487" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">1 Review / edit</text>
-<rect x="1234.155" y="550" width="91.69" height="27" fill="white"/>
-<text x="1239.155" y="571" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">2 Persist</text>
-<rect x="883.479" y="568" width="73.042" height="27" fill="white"/>
-<text x="888.479" y="589" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Queue</text>
-<rect x="1186.4685" y="810" width="157.063" height="27" fill="white"/>
-<text x="1191.4685" y="831" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Inspect / submit</text>
-<rect x="626.1305" y="533" width="147.739" height="27" fill="white"/>
-<text x="631.1305" y="554" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">3 Poll changes</text>
-<rect x="399.405" y="573" width="81.19" height="27" fill="white"/>
-<text x="404.405" y="594" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">4 Wake</text>
+<text x="62" y="421" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Personal Agent</text>
+<text x="452" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Lookout</text>
+<text x="452" y="731" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Infrastructure</text>
+<text x="130" y="187" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#263442">User</text>
+<text x="80" y="245" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Goals + preferences</text>
+<text x="126" y="495" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#263442">External agent</text>
+<text x="78" y="540" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Reasoning + planning</text>
+<text x="78" y="578" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Private personal context</text>
+<text x="78" y="620" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Scheduling / optional wake</text>
+<text x="546" y="188" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Web UI</text>
+<text x="498" y="244" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Review / edit / approve</text>
+<text x="546" y="498" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">MCP tools</text>
+<text x="498" y="554" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Auth + context + guides</text>
+<text x="922" y="191" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700" fill="#263442">Backend</text>
+<text x="1008.6095" y="255" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="400" fill="#263442">Discover</text>
+<text x="1396.8305" y="255" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="400" fill="#263442">Applications</text>
+<text x="1057.662" y="330" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Action Board: review + resolve</text>
+<text x="1011.8285" y="405" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="400" fill="#263442">Network</text>
+<text x="1383.9545" y="405" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="400" fill="#263442">Career Toolkit</text>
+<text x="1067.319" y="493" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Shared state + approval rules</text>
+<text x="977.383" y="531" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#263442">Preferences / versioned records / durable progress</text>
+<text x="546" y="797" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Workers + browser</text>
+<text x="498" y="840" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Queued / authorized execution</text>
+<text x="1000" y="798" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700" fill="#263442">Supabase</text>
+<text x="950" y="840" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#263442">Postgres + private Storage</text>
+<text x="1514" y="798" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#263442">Employer ATS</text>
+<text x="1466" y="840" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Postings + forms</text>
+<text x="124" y="978" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Calls / results</text>
+<text x="830" y="978" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Queued work / polling + wake</text>
+<rect x="375.581" y="172" width="78.838" height="27" fill="white"/>
+<text x="380.581" y="193" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Review</text>
+<rect x="220.97899999999998" y="349" width="94.042" height="27" fill="white"/>
+<text x="225.97899999999998" y="370" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Delegate</text>
+<rect x="346.9895" y="481" width="136.02100000000002" height="27" fill="white"/>
+<text x="351.9895" y="502" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Calls / results</text>
+<rect x="771.6585" y="172" width="56.683" height="27" fill="white"/>
+<text x="776.6585" y="193" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Edits</text>
+<rect x="769.3275" y="481" width="61.345" height="27" fill="white"/>
+<text x="774.3275" y="502" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Tools</text>
+<rect x="1267.912" y="661" width="74.176" height="27" fill="white"/>
+<text x="1272.912" y="682" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Persist</text>
+<rect x="698.479" y="669" width="73.042" height="27" fill="white"/>
+<text x="703.479" y="690" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Queue</text>
+<rect x="1041.4685" y="870" width="157.063" height="27" fill="white"/>
+<text x="1046.4685" y="891" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Inspect / submit</text>
+<rect x="441.9335" y="629" width="276.133" height="27" fill="white"/>
+<text x="446.9335" y="650" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Poll changes / optional wake</text>
 </svg>

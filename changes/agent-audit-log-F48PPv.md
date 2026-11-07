@@ -115,3 +115,13 @@
 - Verified native XML references, embedded SVG source, one-page vector PDF and
   color/grayscale rendering; 158-role data validation passed. Application code
   unchanged. Editor round-trip remains unverified.
+
+## Consolidate the architecture around shared state
+
+- Merge interface/workspace into one Lookout boundary with parallel Web UI and
+  MCP entry paths into the same backend. Merge scheduling/wake into Personal Agent.
+- Group persistence as Supabase (Postgres + private Storage), keep execution
+  secondary and show one optional polling/wake return path. Update evidence notes.
+- Verified XML connections/parents, matching vector formats, required labels,
+  color/grayscale rendering and 158-role data validation. No application changes.
+  diagrams.net editor round-trip remains unverified.

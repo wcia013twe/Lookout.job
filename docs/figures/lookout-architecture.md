@@ -1,88 +1,80 @@
 # Lookout architecture figure
 
-Source audit: local commit `6c44441`. This figure describes implemented logical
-responsibilities and available execution paths, not verified deployment or measured
-research benefits. Domain capabilities are grouped within one workspace; the boxes
-are not a microservice deployment inventory.
+This is a simplified logical architecture, not a deployment inventory or a claim
+of measured agent improvements. The current layout consolidates the interface
+and workspace into one Lookout boundary. It shows two parallel paths:
 
-## Deliverables
+- Human -> Web UI -> Backend -> Supabase.
+- Personal agent -> MCP tools -> Backend -> Supabase.
 
-- `lookout-architecture.drawio`: uncompressed native diagrams.net XML; labels,
-  containers, connectors and icon primitives remain editable.
-- `lookout-architecture.svg`: vector drawing with the native XML embedded in its
-  `content` attribute; no remote assets, raster images or HTML foreign objects.
-- `lookout-architecture.pdf`: one landscape vector page, suitable for
-  `\includegraphics[width=\textwidth]{lookout-architecture.pdf}` inside `figure*`.
-- `build-lookout-architecture.py`: shared geometry source for all three formats.
-  Run with Python 3 and ReportLab. The diagram is 1800 x 1000 drawing units.
+The agent does not operate through the web UI. Both interfaces access shared
+workflow records and domain rules. Scheduling/wake support belongs to the agent's
+runtime and is grouped with the personal agent, rather than drawn as another agent.
 
-Five low-saturation boundary fills distinguish Human, Personal Agent, Lookout
-Interface, Lookout Workspace and Infrastructure. Inner color bands separate tools,
-context and guides, and distinguish workflow areas from the Action Board. These
-bands are logical subdivisions, not deployed services. The numbered example loop
-is review/edit -> persist -> poll changes -> host wake -> resume through MCP. Text labels and line styles carry the same
-meaning in monochrome. Icons use local vector primitives, including a native
-cylinder, rather than remotely loaded logos.
+## Files and editing
 
-## Major arrows and implementation evidence
+- `lookout-architecture.drawio`: native editable diagrams.net XML.
+- `lookout-architecture.svg`: vector preview with the native XML embedded.
+- `lookout-architecture.pdf`: one vector landscape page for LaTeX `figure*`.
+- `build-lookout-architecture.py`: shared geometry model; requires Python 3 and
+  ReportLab. Regenerates all formats without network or account access.
 
-Edge IDs below are retained in the editable XML. Solid arrows represent
-request/response or local execution. Dashed arrows represent asynchronous work
-coordination, including polling: they do not assert a push transport.
+Use `\includegraphics[width=\textwidth]{lookout-architecture.pdf}`. Colored inner
+bands identify logical capabilities, not separate services. Shapes, labels, icons
+and connectors are editable native objects; no remote image assets are required.
 
-| ID | Arrow | Implementation evidence |
+## Arrow evidence
+
+Implementation sources were inspected at local commit `6c44441`. The presentation
+was subsequently revised without changing application behavior. Edge IDs are
+retained in the editable source. Solid lines show calls/results or execution;
+dashed lines show queued work and polling/wake coordination, not server push.
+
+| ID | Connection | Repository evidence |
 | --- | --- | --- |
-| A1 | User -> Web UI: review and edits | `backend/client.mjs`, `createBackend()` supplies authenticated review/write operations; `next-app/components/draft-review.tsx`, `DraftReview()` presents them. |
-| A2 | User <-> external agent: delegation/conversation | External to this repository. `supabase/functions/agent-gateway/instructions.json` defines the connected agent's contract; `runner/mcp-server.mjs`, `serveStdio()` and `backend/runtime/api.ts`, `createApi()` implement its integration boundary. The diagram makes no claim that Lookout implements chat delivery or the agent. |
-| A3 | Web UI -> workspace: goals, edits, approvals | `lib/cloud.mjs`, `connectCloud()` synchronizes account edits; `backend/client.mjs`, `createBackend()` invokes scoped domain RPCs. `supabase/migrations/20261013160000_job_board_backend_foundation.sql`, `approve_application()` persists authenticated exact-revision approval. |
-| B1 | Agent <-> MCP: scoped calls/results | `supabase/functions/agent-mcp/protocol.mjs`, `createHandler()` authenticates, checks tool scopes and validates arguments. Agent-selected task inputs may enter calls; there is no automatic bulk export of private agent memory. |
-| B2 | MCP <-> workspace capabilities | `backend/runtime/service.ts`, `createDispatch()` and `lib/mcp-services.mjs`, `operationService()` route operations to domain handlers/RPCs. `supabase/functions/agent-mcp/tool-surface.mjs`, `ACCESS_TOOLS`, exposes `discover_tools` and `call_discovered_tool`; this is tool access, not execution authority. |
-| D1 | Workspace <-> Postgres | Versioned owned records and RPC transitions. `supabase/migrations/20261020170155_search_context_sweeps.sql` stores search progress/checkpoints; `20261027003600_durable_action_inbox.sql`, `private.sync_application_inbox()`, derives and resolves handoffs; `20261107002624_agent_audit_logs.sql` stores audit observations. |
-| D2 | Workspace <-> private Storage | `supabase/functions/agent-gateway/client-storage.mjs`, `clientStorage()` and `resume-upload.mjs`, `resumeUploadDispatch()`, implement guarded file access/upload. Records retain private file references; URLs are short-lived. |
-| E1 | Workspace -> workers: queue/claim | `supabase/functions/agent-gateway/backend-jobs.mjs`, `BACKEND_TOOLS`; `supabase/migrations/20261026171906_backend_execution_queue.sql`, `backend_worker()`; `backend/runtime/worker.ts`, `workOnce()`. Jobs are persisted, leased and fenced by version/token. |
-| E2 | Worker -> browser: authorized execution | `backend/runtime/application-worker.ts`, `createApplicationExecutor()`; `runner/runtime.mjs`, `createLocalRuntime()`; `runner/submit.mjs`, `submitApplication()`. Execution is conditional on runtime flags and current server authorization. |
-| F1 | Browser <-> employer sites: form interaction | `runner/ats.mjs`, `openApplicationForm()`; `runner/browser.mjs`, `inspectBrowserForm()` and `prefillApprovedForm()`; `runner/submit.mjs`, `submitApplication()` and `readConfirmation()`. Supported native Greenhouse/Ashby/Lever paths, not arbitrary website automation. |
-| G1 | Persisted changes -> optional host watcher | `supabase/migrations/20261027003600_durable_action_inbox.sql`, `private.workspace_changed()`, records workspace invalidations; semantic change events are defined by `lib/muse-change-feed.mjs`, `MUSE_CHANGE_TYPES`. `agent-package/watch.mjs`, `readPendingCount()` and `runWatch()`, poll the gateway's count endpoint. An authenticated worker separately reads `read_muse_changes`; count polling does not reveal record contents. |
-| G2 | Host -> agent: wake, then resume through B1/B2 | `agent-package/watch.mjs`, `handleCount()` and `wakeCommand()`, invoke a configured host command. `mcp/change-worker.mjs`, `consumeMuseChanges()`, refreshes referenced records, loads guides, and acknowledges only verified handling or a durable blocker. Actual model wake integration is host-supplied; an exit-zero command is not proof of resumed work. |
+| A1 | Human <-> Web UI | `next-app/components/draft-review.tsx`, `DraftReview()`; `backend/client.mjs`, `createBackend()`: authenticated human review and saved results. |
+| A2 | Human -> personal agent: delegation | Conversation is external to this repository. `supabase/functions/agent-gateway/instructions.json` defines the connected agent contract; it does not implement the agent or its chat transport. |
+| B1 | Personal agent <-> MCP tools | `supabase/functions/agent-mcp/protocol.mjs`, `createHandler()`: authenticated tool calls, schemas, scopes and results. `tool-surface.mjs`, `ACCESS_TOOLS`: progressive discovery and calls. |
+| A3 | Web UI <-> backend | `lib/cloud.mjs`, `connectCloud()`; `backend/client.mjs`, `createBackend()`: account sync and authenticated domain RPCs. `20261013160000_job_board_backend_foundation.sql`, `approve_application()`: exact-revision human approval. |
+| B2 | MCP tools <-> backend | `backend/runtime/service.ts`, `createDispatch()`; `lib/mcp-services.mjs`, `operationService()`; `supabase/functions/agent-gateway/index.ts`: routing to Node/Edge domain logic and RPCs. Tool visibility does not grant approval. |
+| D1 | Backend <-> Supabase | `20261020170155_search_context_sweeps.sql`: search documents/progress/checkpoints. `20261027003600_durable_action_inbox.sql`, `private.sync_application_inbox()`: durable handoffs and history. `client-storage.mjs`, `clientStorage()`; `resume-upload.mjs`, `resumeUploadDispatch()`: private files. |
+| E1 | Backend -> workers/browser: queue | `backend-jobs.mjs`, `BACKEND_TOOLS`; `20261026171906_backend_execution_queue.sql`, `backend_worker()`; `backend/runtime/worker.ts`, `workOnce()`; `application-worker.ts`, `createApplicationExecutor()`: leased jobs and guarded execution. |
+| F1 | Workers/browser <-> employer sites | `backend/runtime/ats.ts`, `fetchSource()`: posting collection. `runner/ats.mjs`, `openApplicationForm()`; `runner/browser.mjs`, `inspectBrowserForm()` and `prefillApprovedForm()`; `runner/submit.mjs`, `submitApplication()` and `readConfirmation()`: supported form interaction and observed results. |
+| G1 | Saved changes -> optional wake -> agent | `lib/muse-change-feed.mjs`, `MUSE_CHANGE_TYPES`: change pointers. `agent-package/watch.mjs`, `readPendingCount()`, `handleCount()`, `wakeCommand()` and `runWatch()`: count polling and a configured host command. `mcp/change-worker.mjs`, `consumeMuseChanges()`: record refresh, guide loading, verification and acknowledgement. After wake the agent uses B1/B2 again to retrieve current state. |
 
-Workers also fetch public posting sources through `executeSearch()` and
-`backend/runtime/ats.ts`, `fetchSource()`. That additional route is omitted from
-the simplified figure; browser execution is not required for every source.
+The shared-state strip denotes application-specific preferences, versioned domain
+records and coordination rules; the actual durable storage is Supabase below.
+The Action Board band denotes backend handoff records/transitions; its user-facing
+view is rendered by the Web UI. The backend encompasses existing Node/Edge/domain
+handlers, not five independent feature deployments.
 
-## Interpretation constraints
+## Important boundaries
 
-- The external personal agent owns reasoning, general personalization and native
-  scheduling. Lookout owns domain records and explicit policy/transition checks.
-- A human edit/approval becomes durable state; it does not itself start a worker
-  or grant new task authority. A resumed agent must reread current records.
-- Approval and automatic policy authorization are distinct. The shield represents
-  current checks, not a requirement for manual approval on every action.
-- The Agent host box is dashed because the Lookout watcher is optional. Its
-  native schedules belong to the host. The former backend recurring scheduler
-  was removed in `20261027023257_remove_backend_search_scheduler.sql`.
-- Infrastructure includes external sites for visual economy; they are third-party
-  systems, not owned Lookout services. Storage is private, unlike public postings.
-- Audit events are observations/self-checks; no independent grader or automatic
-  native trace collection is depicted.
+- Private agent context stays with the external agent. Only selected task inputs
+  or explicit preference writes reach Lookout; no complete memory synchronization
+  is depicted.
+- Supabase groups Postgres and private Storage. Workers/browser are executable
+  code paths with configuration gates, not guaranteed always-running services.
+- The dashed return path summarizes polling plus a host-provided wake integration.
+  It is not direct database access, server push, or automatic execution on approval.
+  A wake does not grant new authority. Resumption rereads current owned state.
+- Routine automatic authorization and exact human approval are separate supported
+  paths. The shield does not mean that every tool call needs manual approval.
+- Submission is restricted to supported Greenhouse/Ashby/Lever forms. General
+  employer automation, CAPTCHA handling and universal recovery are not claimed.
 
 ## Suggested caption
 
-**Lookout architecture.** An external personal agent accesses domain-specific
-records and operations through an authenticated MCP interface. Humans review and
-modify the same workflow through the web UI. The workspace persists progress,
-approvals and execution evidence and coordinates supported worker/browser paths.
-An optional polling watcher invokes a host wake command; the agent resumes by
-retrieving current state rather than treating the wake as new authorization.
-Domain capabilities are logical modules, not separate microservices.
+**Lookout architecture.** Humans and external personal agents use parallel web and
+MCP interfaces to access shared career workflows. The backend persists preferences,
+progress, approvals and evidence in Supabase and coordinates supported execution.
+An optional polling/wake path lets the agent return and resume using current state.
+Colored areas are logical capabilities rather than separate services.
 
-## Verification and editing
+## Verification limits
 
-The native XML was parsed and checked for unique IDs, valid parent/edge references
-and text widths. SVG and PDF are generated from the same geometry; the PDF was
-rendered for visual inspection. The PDF contains vector/text objects rather than
-a flattened page image. The diagram does not require remote icon/font assets.
-
-No local diagrams.net application was available, so an interactive editor
-import/round-trip was not performed. After opening the `.drawio` in diagrams.net,
-edit its native objects and use File -> Export as SVG/PDF. The Python builder
-regenerates its own model; it does not ingest later edits to the `.drawio` file.
+Native XML IDs, parent/edge references and text widths were checked. SVG embeds
+editable XML, and the PDF contains vector/text objects rather than a page image.
+Color and grayscale renders were inspected. No local diagrams.net application was
+available, so editor import/round-trip remains unverified. After manual edits in
+diagrams.net, export SVG/PDF there; the builder does not ingest those later edits.
