@@ -73,13 +73,12 @@ The ordinary baseline is:
 
 ```sh
 npm test
-npm run test:db
 npm run validate:data
 npm --prefix next-app run typecheck
 npm run build
 ```
 
-Run the focused test first and omit irrelevant checks only deliberately. `npm test` is the root Node test suite, `npm run test:db` runs database scenarios, `npm run validate:data` validates catalog data, and `npm run build` builds the frontend static export. These checks establish the contracts they exercise; they do not by themselves verify hosted Auth/Storage/OAuth, an MCP client, an external agent scheduler or notification channel, source-provider availability, or a real employer submission. Record those gaps in the change note and release communication.
+Run the focused test first and omit irrelevant checks only deliberately. `npm test` includes the database scenarios; `npm run test:db` runs only those same scenarios for focused debugging, `npm run validate:data` validates catalog data, and `npm run build` builds the frontend static export. These checks establish the contracts they exercise; they do not by themselves verify hosted Auth/Storage/OAuth, an MCP client, an external agent scheduler or notification channel, source-provider availability, or a real employer submission. Record those gaps in the change note and release communication.
 
 ## When documentation and implementation disagree
 

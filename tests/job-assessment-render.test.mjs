@@ -1,15 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {build} from 'esbuild';
-import {createRequire} from 'node:module';
-import vm from 'node:vm';
-const require=createRequire(new URL('../next-app/package.json',import.meta.url));
-const React=require('react');
-const {renderToStaticMarkup}=require('react-dom/server');
-const bundle=await build({entryPoints:['next-app/components/role-match-preview.tsx'],bundle:true,write:false,platform:'node',format:'cjs',packages:'external',jsx:'automatic',logLevel:'silent'});
-const module={exports:{}};
-vm.runInNewContext(bundle.outputFiles[0].text,{module,exports:module.exports,require,console,process,setTimeout,clearTimeout});
-const Preview=module.exports.default;
+import {React,renderToStaticMarkup,bundleComponent} from './helpers/render.mjs';
+const Preview=(await bundleComponent('next-app/components/role-match-preview.tsx'))();
 test('live assessment renders saved custom factors and evidence, while empty assessments have no invented factors',()=>{
  const sample={percent:67,assessedAt:'2026-10-23T19:00:00Z',evidence:'A supported profile fact.',factors:[{label:'Query planning',value:67,rating:'Good',reason:'Database project.'},{label:'Team scope',value:null,rating:'Unknown',reason:'Not disclosed.'}]};
  const html=renderToStaticMarkup(React.createElement(Preview,{sample,expanded:true}));

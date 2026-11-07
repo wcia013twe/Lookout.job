@@ -1,20 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {build} from 'esbuild';
-import {createRequire} from 'node:module';
-import vm from 'node:vm';
-const require=createRequire(new URL('../next-app/package.json',import.meta.url));
-const React=require('react');
-const {renderToStaticMarkup}=require('react-dom/server');
-const bundle=await build({entryPoints:['next-app/components/profile-automation.tsx'],bundle:true,write:false,platform:'node',format:'cjs',packages:'external',jsx:'automatic',logLevel:'silent',plugins:[{name:'workspace-fixture',setup(build){
+import {React,renderToStaticMarkup,bundleComponent} from './helpers/render.mjs';
+const component=await bundleComponent('next-app/components/profile-automation.tsx',{plugins:[{name:'workspace-fixture',setup(build){
  build.onLoad({filter:/\/workspace\.jsx$/},()=>({contents:'export const useWorkspace=()=>globalThis.workspace;',loader:'js'}));
  build.onLoad({filter:/\/application-profile-context\.tsx$/},()=>({contents:'export const useApplicationProfile=()=>globalThis.applicationProfile;',loader:'js'}));
 }}]});
 function render(globalOptIn,profileOptIn=true){
- const module={exports:{}};
  const applicationProfile={profile:{name:'Fictional profile',prompt:`## Application automation\n- Submission mode: ${profileOptIn?'Auto-apply':'Review each application'}\n- Auto-apply routine matches: ${profileOptIn?'Yes':'No'}`},busy:false,feedback:''};
- vm.runInNewContext(bundle.outputFiles[0].text,{module,exports:module.exports,require,console,process,applicationProfile,workspace:{locked:false,state:{workflow:{searchPreferences:{autoSubmitApproved:globalOptIn},tierLists:[]}}}});
- return renderToStaticMarkup(React.createElement(module.exports.default));
+ const Component=component({applicationProfile,workspace:{locked:false,state:{workflow:{searchPreferences:{autoSubmitApproved:globalOptIn},tierLists:[]}}}});
+ return renderToStaticMarkup(React.createElement(Component));
 }
 test('blocked account explains saved preference, disables auto-apply and offers exact review',()=>{
  for(const value of [undefined,false,'true',1]){

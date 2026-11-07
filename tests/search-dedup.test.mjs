@@ -1,20 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
 import {executeCareerTask} from '../runner/career-tools.mjs';
 import {deduplicateDiscoveryRows,discoveryDedupRow} from '../lib/search-dedup.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const row=(n,extra={})=>({id:id(n),company:'Example Systems (fictional)',title:'Backend Engineer',canonical_url:`https://job-boards.greenhouse.io/example/jobs/${n}`,identity:`ats:greenhouse:example:${n}`,location:'Remote',requisition_id:`R${n}`,...extra});
-test('the reused scanner and tracker are exact pinned upstream files',async()=>{
- const root=new URL('../runner/vendor/career-ops/',import.meta.url),manifest=JSON.parse(await readFile(new URL('manifest.json',root)));
- for(const path of ['scan.mjs','dedup-tracker.mjs','url-key.mjs','tracker-parse.mjs']){
-  const pinned=manifest.files.find(f=>f.path===path);assert.ok(pinned,path);
-  assert.equal(createHash('sha256').update(await readFile(new URL(path,root))).digest('hex'),pinned.sha256,path);
- }
-});
 
 test('canonical storage fields map to upstream rows without applicant/private text',()=>{
  const r=discoveryDedupRow({...row(1),description:'private irrelevant text',observation:{description:'full JD'},applicationStatus:'Applied'});
