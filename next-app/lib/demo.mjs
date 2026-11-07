@@ -26,6 +26,8 @@ function demoSearchProfiles(date) {
    ['Application answers', 'Graduation month', '2027-06'],
    ['Application answers', 'Degree pursued', "Bachelor's"],
    ['Role preferences', 'Specializations', 'Backend, distributed systems'],
+   ['Company preferences', 'Industries', employment === 'Full-time' ? 'AI & Machine Learning, Data & Analytics, Enterprise Software, Research tools (demo)' : 'Robotics & Automation, Hardware'],
+   ['Priority & flexibility', 'Industries', 'Preferred'],
    ['Work-life balance & benefits', 'Work-life balance', 'Predictable hours and sustainable on-call rotation (demo).'],
    ['Work-life balance & benefits', 'Employer benefits', 'Health coverage and a learning budget (demo).'],
    ['Priority & flexibility', 'Work-life balance', 'Preferred'],

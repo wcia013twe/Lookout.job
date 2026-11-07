@@ -13,6 +13,7 @@ import {
 } from "../../lib/search-profile.mjs";
 
 import TierLists from "./tierlists";
+import IndustryPicker, { IndustrySummary } from "./industry-picker";
 import ProfileSection, { ProfileValues } from "./profile-section";
 import { ApplicationMaterials } from "./profile-settings";
 import ProfileRuleCopy from "./profile-rule-copy";
@@ -32,7 +33,7 @@ function SearchProfileEditor() {
       const prompt = updateField(profile.prompt, heading, key, value);
       setUndo({ id: profile.id, prompt: profile.prompt, after: prompt });
       patch({ prompt });
-      setFeedback(`${key} updated. Save the application profile when ready.`);
+      setFeedback(`${key} updated. Changes save automatically.`);
     } catch (error) {
       setFeedback(errorMessage(error));
     }
@@ -127,14 +128,19 @@ function SearchProfileEditor() {
       {!SINGLE_PROFILE_UI && <ApplicationMaterials />}
       {preferenceGroups.map(group => <ProfileSection key={group.title} title={group.title} resetKey={profile.id} disabled={busy}>
         {editing => editing ? <>
-          <p className="mb-5 text-sm text-board-muted">{group.heading === "Application answers" ? "Saved answers for employer forms. Leave unknown answers blank. These are separate from job-search preferences and do not approve an application." : "Separate choices with commas. Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification."}</p>
+          <p className="mb-5 text-sm text-board-muted">{group.heading === "Application answers" ? "Saved answers for employer forms. Leave unknown answers blank. These are separate from job-search preferences and do not approve an application." : `${group.heading === "Company preferences" ? "Select any industries that fit. Separate text choices with commas." : "Separate choices with commas."} Required is a must-have; Preferred favors a match; Flexible allows a tradeoff. Missing evidence needs verification.`}</p>
           <div className="space-y-5">
             {group.fields.map(([key, placeholder, heading]) => {
               const strength = readField(profile.prompt, "Priority & flexibility", key);
-              return <div key={key} className={group.heading === "Application answers" ? "grid items-start gap-3" : "grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"}>
-                {textField(heading || group.heading, key, placeholder)}
+              return <div key={key} className={(group.heading === "Application answers" || key === "Industries") ? "grid items-start gap-3" : "grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"}>
+                {key === "Industries" ? <IndustryPicker
+                  value={readField(profile.prompt, group.heading, key).value}
+                  conflict={readField(profile.prompt, group.heading, key).conflict}
+                  disabled={busy}
+                  onChange={value => change(group.heading, key, value)}
+                /> : textField(heading || group.heading, key, placeholder)}
                 {group.heading !== "Application answers" && <Field label={`${key} priority`}>
-                  <select className={control} disabled={strength.conflict || busy} value={strength.value} onChange={e => change("Priority & flexibility",key,e.target.value)}>
+                  <select className={`${control} ${key === "Industries" ? "max-w-48" : ""}`} disabled={strength.conflict || busy} value={strength.value} onChange={e => change("Priority & flexibility",key,e.target.value)}>
                     <option value="">Not specified</option>
                     {flexibilityOptions.map(option => <option key={option}>{option}</option>)}
                   </select>
@@ -146,6 +152,9 @@ function SearchProfileEditor() {
         </> : <ProfileValues items={group.fields.map(([key,,heading]) => {
           const preference=value(heading || group.heading,key);
           const priority=group.heading === "Application answers" ? "" : value("Priority & flexibility",key);
+          if (key === "Industries" && !readField(profile.prompt, group.heading, key).conflict) {
+            return {label:key,value:preference,wide:true,content:<IndustrySummary value={preference} priority={priority}/>};
+          }
           return {label:key,value:preference ? [preference,priority].filter(Boolean).join(" · ") : priority ? `Not specified · ${priority}` : "Not specified"};
         })}/>}
       </ProfileSection>)}

@@ -70,15 +70,15 @@ export function ProfileCard(props: Omit<ProfileFrameProps, "titleClassName">) {
   return <ProfileFrame {...props} titleClassName="flex min-w-0 items-center gap-3" />;
 }
 
-type ProfileValue = { label: string; value: unknown; wide?: boolean };
+type ProfileValue = { label: string; value: unknown; wide?: boolean; content?: ReactNode };
 
 export function ProfileValues({ items }: { items: ProfileValue[] }) {
   return (
     <dl className={styles.values}>
-      {items.map(({ label, value, wide }) => (
+      {items.map(({ label, value, wide, content }) => (
         <div key={label} className={wide ? styles.wide : undefined}>
           <dt>{label}</dt>
-          <dd>{typeof value === "boolean" ? (value ? "Yes" : "No") : Array.isArray(value) ? value.join(", ") : String(value || "").trim() || <span className={styles.empty}>Not provided</span>}</dd>
+          <dd>{content ?? (typeof value === "boolean" ? (value ? "Yes" : "No") : Array.isArray(value) ? value.join(", ") : String(value || "").trim() || <span className={styles.empty}>Not provided</span>)}</dd>
         </div>
       ))}
     </dl>
