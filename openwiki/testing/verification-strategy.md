@@ -46,7 +46,7 @@ This is a guide to **what must remain true** and how to select checks; it is not
 
 1. **Focused behavior test first.** Run the closest `node --test tests/<name>.test.mjs` while implementing a narrowly scoped change. It gives fast feedback on the high-risk contract and makes a regression expectation explicit.
 2. **Database/PGlite check for persisted authority.** If a migration, RPC, RLS policy, trigger, private table, lease, receipt, or canonical writer changes, run `npm run test:db` and the focused SQL-backed test. This is the layer that can prove two-owner isolation and service-only mutations.
-3. **Whole Node suite for shared code.** Run `npm test` when a shared contract, common model, gateway validation, or cross-workflow behavior changed. The root command is `node --test`.
+3. **Whole Node suite for shared code.** Run `npm test` when a shared contract, common model, gateway validation, or cross-workflow behavior changed. The root command is `node --test --test-concurrency=4`, bounding concurrent files and PGlite instances.
 4. **Contract data validation.** Run `npm run validate:data` after editing `data/jobs.json` or any generator that produces it. It rejects missing required job fields, invalid priorities/types, and duplicate IDs or application URLs.
 5. **Type and UI artifact checks.** Run `npm --prefix next-app run typecheck` when TypeScript or frontend interfaces change, and `npm run build` for static-export/UI, routing, asset, or production frontend changes. Run both after a cross-cutting frontend change.
 
@@ -84,7 +84,7 @@ flowchart TD
 | Circle knowledge, membership, publication, or citations | `node --test tests/circle-knowledge.test.mjs` | `npm run test:db`; `npm test` | It covers human/agent separation, membership, revisioned publication, and revocation. |
 | Next.js/TypeScript UI surface | `npm --prefix next-app run typecheck` | `npm run build`; focused UI/model tests; `npm test` if shared code changed | Type compatibility and the production static artifact are separate checks. |
 
-`package.json` defines `test`, `test:db`, `validate:data`, `build`, `test:filter`, and `test:submission:e2e`; `test:db` deliberately imports the same database scenarios used by the suite. The intelligence runtime has its own `npm run intelligence:typecheck`. Do not interpret a passing unit fixture, PGlite database, or static build as proof of a hosted provider, real agent host, or employer interaction.
+`package.json` defines `test`, `test:db`, `validate:data`, `build`, `test:filter`, and `test:submission:e2e`; `test:db` deliberately imports the same database scenarios used by the suite. Use it for focused debugging; do not repeat it after a successful `npm test`. Vendor integrity is checked once against the complete Career Ops manifest in `career-execution.test.mjs`; liveness and dedup suites focus on behavior. React render tests share the small `tests/helpers/render.mjs` bundling helper. CSS spelling and exact selector formatting are left to visual review rather than source-text assertions. The intelligence runtime has its own `npm run intelligence:typecheck`. Do not interpret a passing unit fixture, PGlite database, or static build as proof of a hosted provider, real agent host, or employer interaction.
 
 ## Invariants by workflow
 
