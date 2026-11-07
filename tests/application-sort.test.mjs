@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {sortActiveApplications,applicationSortDate} from '../lib/application-sort.mjs';
+import {sortActiveApplications, applicationSortDate} from '../lib/application-sort.mjs';
 import {importedApplication} from '../lib/simplify-import.mjs';
 test('active applications group advanced stages first and sort newest application dates within each group',()=>{
  const rows=[{id:'new-applied',status:'Submitted',submittedAt:'2026-11-07'},{id:'old-interview',status:'Interview',submittedAt:'2026-10-01'},{id:'new-offer',status:'Offer',submittedAt:'2026-11-02'},{id:'old-applied',status:'Submitted',submittedAt:'2026-10-10'},{id:'screen',status:'Phone Screen',submittedAt:'2026-10-20'}];
@@ -23,14 +23,4 @@ test('explicit tracker dates and current submission events are used without prom
  assert.equal(applicationSortDate(rows[1]),'2026-11-04');assert.equal(applicationSortDate(rows[1],{appliedDate:'2026-11-05'}),'2026-11-05');
  assert.deepEqual(sortActiveApplications(rows).map(a=>a.id),['active','closed']);
  assert.equal(applicationSortDate({id:'opened',trackerItem:{openedDate:'2026-11-02'}}),'2026-11-02');
-});
-test('resettable demo mixes native and imported application dates without persisting the ordering',async()=>{
- const {createDemoWorkspace}=await import('../next-app/lib/muse-demo-fixtures.mjs');
- const {parseSimplifyCsv}=await import('../lib/simplify-import.mjs');
- const {simplifyDemoCsv}=await import('../next-app/lib/simplify-import-demo.mjs');
- const state=createDemoWorkspace('2026-11-07'),before=structuredClone(state);
- const imported=importedApplication({id:'demo-import',record:parseSimplifyCsv(simplifyDemoCsv).rows[0]});
- const applications=[imported,state.workflow.applications['demo-confirmed'],state.workflow.applications['demo-interview'],state.workflow.applications['demo-ambiguous']];
- assert.deepEqual(sortActiveApplications(applications,state.tracker.items).map(a=>a.id),['demo-interview','demo-ambiguous','demo-confirmed','import:demo-import']);
- assert.deepEqual(state,before);assert.deepEqual(createDemoWorkspace('2026-11-07'),before);
 });

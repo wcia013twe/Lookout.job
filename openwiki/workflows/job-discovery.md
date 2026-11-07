@@ -1,3 +1,13 @@
+> Current direct path: pipeline 2 stages candidates on the Docker worker volume,
+> applies metadata gates before verification and full filters before permanent
+> storage, and saves only the deduplicated new/changed shortlist for agent analysis.
+> Hosted-board collection and automatic publication are disabled. The receipt's
+> first 100 IDs are a preview; page the run for all results. SQL leases/checkpoints
+> remain durable; temporary snapshot references are fenced. Missing files trigger
+> recollection; finished runs clean up, abandoned files expire after three days.
+> See `backend/runtime/README.md` for current storage/recovery details. Legacy
+> manual discovery operations documented below remain explicit fallback tools.
+
 ---
 type: job discovery workflow
 title: Job discovery, search runs, and private batch publishing

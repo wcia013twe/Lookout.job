@@ -65,3 +65,100 @@
   resettable mixed native/import demo read; frontend typecheck, production static
   build, catalog validation (158 roles) and diff check passed. Backend/data writes
   are unchanged; no new visual layout or backend deployment is involved.
+
+## Follow-up: Needs action application flag
+
+- Application rows show a compact Needs action flag and the recorded reason for
+  due, unresolved application inbox handoffs. Opening it uses existing details;
+  resolved/future handoffs stay unflagged, and deferred actions refresh when due.
+- Flags remain separate from hiring stages and existing Active date ordering.
+  They read existing review/blocker/submission-check records shared with Action
+  Board and MCP read_action_inbox. No new write path, manual task flag, inferred
+  recruiter request or imported-record backend connection is advertised.
+- Added a fictional review handoff to resettable demo data and tested its
+  isolated resolution/reset. Demo approval remains intentionally disabled.
+- Validation: 12 focused inbox/flag/sort tests, frontend typecheck, production
+  static build, catalog validation (158 roles), diff check and UI detector passed.
+  Desktop/mobile demo checks confirmed visible reason, detail opening, no page
+  errors or horizontal overflow. No backend/schema change; full database suite
+  was not repeated for this read-only UI pass.
+- Local-main integration preserved concurrent Career Toolkit/test-harness work;
+  after resolving the documentation append, all 11 remaining focused tests,
+  frontend typecheck and static build passed again (the consolidated harness
+  moved one earlier demo assertion into its shared fixture coverage).
+
+## Follow-up: optional next action date and sort
+
+- Application rows show a dated next round or confirmed unfinished preparation
+  deadline beside any independent Needs action flag. Unknown dates stay blank.
+  Current scheduled rounds own their timing, avoiding duplicate/stale prep dates;
+  completed, superseded, terminal and archived records do not create reminders.
+- Active keeps its progress/date default and adds Sort → Next action date.
+  This optional order uses earliest pending date first, undated last, with stable
+  default ordering for ties. No automatic priority rules or new task store.
+- Reuses scoped timeline/preparation records and existing website/MCP writers;
+  dates remain editable through Add round / Confirmed date & time, with existing
+  corrections/completion. Uses one planner read with owner/reset/race guards and
+  refresh on cloud-ready/focus/reconnect. Failed reads are reported explicitly.
+- Demo coverage uses existing fictional confirmed, unknown, rescheduled and
+  undated application states; added an interaction test for recording, moving,
+  completing and resetting a next action through the isolated milestone writer.
+- Validation: 17 focused next-action/display/inbox/sort tests, frontend typecheck,
+  production static build and catalog validation (158 roles) passed. Desktop and
+  mobile preview verified the optional sort/default restore, flagged dated row,
+  detail opening and no page errors/overflow. UI detector/diff checks passed.
+- Limits: this is a read-only list feature, with no schema/writer change or new
+  arbitrary task/deadline field. Imported records retain their existing native
+  workflow mismatch. Full database suite and live account/deployment verification
+  were not repeated for this presentation/read-only integration.
+
+## Follow-up: compact search toolbar
+
+- Consolidated search, type, stage and Active sort into a single desktop toolbar.
+  Replaced oversized boxed selectors and the separate Sort row with lightweight
+  native selects: All types, All stages, Progress / Next action. Search stays the
+  primary input; mobile places the three controls directly below it.
+- Existing filter/sort values, default ordering and accessible names are retained.
+  Controls keep 44px interaction targets and native keyboard/dropdown behavior.
+- Validation: frontend typecheck, production static build, UI detector, catalog
+  validation (158 roles) and diff check passed. Fictional desktop/mobile preview
+  exercised search, type/stage filters, Clear filters and action sorting, and
+  confirmed single-row desktop layout, mobile targets and no overflow/page errors.
+- Presentation only: no domain/backend/data changes or new tests; full backend
+  suite and live deployment verification were not repeated.
+
+## Follow-up: imported action fields and explicit stage completion
+
+- Extends the existing imported-record update writer with nextAction/actionDate,
+  needsAction and completedStages. Dates may be null; candidate actions are
+  separate from waiting for employer response. Completion never advances the
+  current stage or creates verified submission/approval evidence.
+- Browser Overview → Tracking details and scoped update_imported_job use the same
+  owner checks, tracker version, validation and stable replay keys. Future or
+  duplicate completed stages, invalid dates/flags and unnamed dated actions are
+  rejected. Original source rows/notes and omitted fields remain unchanged.
+- Imported dates/flags feed existing row indicators and optional date sorting;
+  explicit completed stages show check marks on the original progress bar.
+- Incremented developer contract to 116, application-workspace guide to 15 and its
+  change-feed reference. Guide explains exact fields, null/clear semantics,
+  preserving prior completions, date confirmation and read-back before success.
+- Fictional demo uses the same pure field validator. Added SQL browser/MCP parity
+  and isolation/version/replay tests, import-to-row/render checks, and an editor
+  interaction verifying save/read-back, clear and disabled future completions.
+- Validation: full integrated suite passed (1,018 passed, 5 pre-existing skips),
+  including all SQL scenarios; 34 focused import/action/context tests and 25
+  contract/guide/version tests passed. Final typecheck/static build, data
+  validation (158 roles), UI detector and diff checks passed. Desktop/mobile demo
+  exercised saved action/date/flag/completion and clearing without account calls.
+- Concurrent local-main integration already used developer 115, so this feature
+  advances to 116 to ensure clients refresh discovery; the guide remains 15.
+  Initial sandbox HTTP failures required loopback-enabled execution; the complete
+  integrated rerun passed without suppressing tests.
+- Dev activation verified: applied only migration 20261107211643 atomically with
+  its ledger entry, verified private validators are not executable by anonymous
+  or authenticated roles, built a separate committed-source dev API image and
+  reloaded local Edge. Existing worker/network/tunnel remained in place. The
+  connected MCP reports developer 116, discovery exposes nextAction/actionDate/
+  needsAction/completedStages and application-workspace guide 15 reads back.
+  No personal imported data/notes were modified. Production still requires the
+  normal reviewed-main backend workflow; this is a dev availability claim only.

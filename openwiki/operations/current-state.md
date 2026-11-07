@@ -91,6 +91,16 @@ This shows the hosted MCP authorization path; it does not depict an autonomous a
 
 ### Search and discovery execution
 
+The current direct-search implementation uses pipeline version 2: immutable temporary
+snapshots on a named Docker worker volume, metadata gates before official verification,
+full configured gates and historical dedup before permanent shortlist saves. SQL stores
+leases, fenced snapshot references, aggregate progress and bounded diagnostics while
+collection runs. The agent receives a terminal shortlist receipt and pages the run for
+all results; its first 100 IDs are a preview. Automatic hosted-board collection and
+publication are disabled for this path. Personal eligibility remains agent review.
+Applications are untouched. See the current [workflow](../workflows/job-discovery.md)
+and `backend/runtime/README.md`; earlier execution descriptions below are historical.
+
 The local Node API and worker are separate Docker services. The worker only claims already-queued jobs; it contains no recurring-search scheduler. When explicitly enabled, one `search_ats` job is bounded to configured sources and observations, uses service-only RPCs with job/version/lease/connection/profile fences, and fetches through a constrained child-process boundary. It collects and verifies supported leads, persists observations and screening inputs, and returns shortlist IDs. It does not generate model reports, messages, or applications. Unsupported extraction remains partial rather than becoming a fabricated parsed record.
 
 The source is deliberately conservative: configured execution is off by default (`LOOKOUT_EXECUTION_ENABLED=false`), the worker is idle otherwise, and retry/lease behavior can finish a run as partial. The repository’s local proof documentation explicitly says it does not establish a hosted deployment, externally reachable MCP endpoint, real Google OAuth, or real employer submission.
@@ -264,6 +274,15 @@ visible but imported records have no native application ID: timeline writes
 show the existing sync error and workflow writes report an unsaved update.
 This intentional backend mismatch must remain explicit until a later integration.
 
+Application rows show a separate **Needs action** flag for due, unresolved
+handoffs from the existing durable action inbox (review, blocker or submission
+check). The recorded reason opens the existing application detail dialog. Flags
+clear when the underlying inbox action resolves and appear when a deferred action
+becomes due; hiring stages and Active date ordering stay independent. This is the
+same read surface as Action Board and MCP `read_action_inbox`; it does not add a
+manual task flag or infer recruiter requests from notes or interview stages.
+The resettable fictional demo includes a review handoff; demo approval remains
+disabled. Source verification does not establish production deployment.
 ## Weekly Career Toolkit (contract 113 source update)
 
 The existing Toolkit cards and reader now support explicit weekly filtering and
@@ -274,3 +293,53 @@ agent-only interviewer preparation, with versioned resume/completion and a linke
 debrief. The user calls their agent externally; no scheduler or call transport is
 provided. Source tests and detached demo coverage do not establish hosted release
 or an external-agent call. See the Career Toolkit concept page and feature note.
+
+The hosted reconciliation subsequently released the contract-113 backend through
+official main-branch run `42412623024`, source
+`0d3eac234ca4982e37a690d7de6ea78a7c04132e`. All **92** migration versions and
+**2,994** schema/permission entries match source replay. All 57 MCP and 88 gateway
+files match that release. Fresh hosted MCP and browser checks passed owned writes,
+read-back/retry, foreign-owner/read-only denial and private mock-profile separation.
+Weekly toolkit scenarios passed in a rolled-back hosted transaction, excluding
+the fixture-only role alteration and destructive cascade assertion. Fictional
+accounts were removed; accounts, profiles, files, connections, artifacts, private
+mock profiles and backend jobs all ended at zero. Shared data and bucket settings
+are unchanged. Personal local data was not transferred. This establishes database
+and backend readiness for that release; real Google login, personal-data cutover,
+GCP worker execution and separate Pages publication remain unverified. Later local
+guide contract 114 is not included in this deployed receipt.
+
+## Test harness consolidation (focused source update)
+
+The full Node suite uses a disposable migrated PGlite snapshot for independent
+ordinary database fixtures, with four concurrent test files. Migration/upgrade
+fixtures retain full replay and custom hooks. The snapshot lives only for one
+run and is cleaned up; focused direct Node tests need no snapshot. Demo reset
+isolation is checked over whole fixture graphs instead of repeated exact sample
+contents. That check found shared nested preparation resource data; the two
+workspace fixture factories now clone their returned graphs. See the verification
+strategy for scope and the feature change note for actual validation results.
+
+Application rows additionally display optional next-action dates from current
+scheduled rounds or confirmed unfinished preparation deadlines, with no guessed
+dates or second manual date store. Active offers an explicit Next action date
+sort (earliest first; undated last), while progress/date stays the default.
+Completed/superseded rounds and terminal records are excluded. Website and MCP
+continue using the existing owned timeline/preparation writers and readers; see
+the application-submission workflow for mappings and lifecycle details.
+
+## Structured imported action progress (contract 116 source update)
+
+Imported application records now support nextAction/actionDate/needsAction and
+explicit completedStages through the existing owner/version/replay-checked update
+writer and MCP tool. Overview Tracking details exposes the same fields. Screen
+completion is separate from current stage; recorded dates feed optional sorting.
+No source notes are parsed or rewritten, and no native records or submission
+receipts are synthesized. Source tests establish behavior; runtime and hosted
+release verification remain separate and are recorded in the feature note.
+
+Dev verification for the imported-progress update: the connected local MCP reports
+contract 116, advertises all four fields on update_imported_job and serves
+application-workspace guide 15. Migration 20261107211643 is recorded locally and
+the API is healthy. This did not migrate personal records or notes. It does not
+establish hosted/production availability; see the feature note for validation.

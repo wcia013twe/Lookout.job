@@ -227,3 +227,52 @@ Missing/invalid dates sort last within their group; ties retain their prior orde
 Both native and imported records use the same progress rules, including tracker
 updates and sourced milestones. Other tabs retain their existing ordering. This
 is read-only presentation over existing reads; it creates no dates or records.
+
+### Optional next action ordering
+
+Application rows show **Next action** only when a current scheduled round has a
+recorded date, or an owned preparation plan has a confirmed date and unfinished
+tasks. Current scheduled rounds own their timing; superseded/completed rounds and
+old preparation deadlines do not reappear as a second reminder. Terminal or
+archived applications have no next action. Unknown/invalid dates stay blank;
+inbox notification `available_at` is never treated as an employer deadline.
+
+Active defaults to the progress/application-date ordering above. Its **Sort →
+Next action date** option orders recorded pending dates earliest first, including
+past dates until the underlying round/task is completed or replaced. Equal and
+undated rows retain the default order, with undated rows last. Other tabs keep
+their ordering. This adds no recurring scheduling or automatic priority rules.
+
+Dates use existing timeline/planner records, rather than a separate manual field:
+website Add round / Confirmed date & time maps to MCP
+`record_application_milestone` (`applications.milestone`, activity:write), with
+`supersedesId` for corrections/completion. `read_application_timeline` and
+`read_preparation_planner` provide scoped reads. Preparation updates keep their
+existing `update_preparation_plan` boundary; no new mutation/scopes are added.
+The list refreshes confirmed preparation dates on account refresh, focus and
+reconnect, guards account/demo changes and reports failed reads. This is source
+behavior; production availability must be checked separately.
+
+### Imported action dates and completed stages (contract 116 source update)
+
+`update_imported_job` and the browser's **Overview → Tracking details** now edit
+`nextAction`, `actionDate`, `needsAction` and `completedStages` on the existing
+owned imported tracker record. A completed Screen may remain SCREEN while the
+employer decides; it does not become an Interview. Explicit completions show check
+marks on the original five-stage progress display. Only a true `needsAction`
+flags candidate work; waiting for the employer can have a next-action description
+with no date and no flag. Dates feed the existing optional Next action sort.
+
+`completedStages` replaces the full intended set using SAVED/APPLIED/SCREEN/
+INTERVIEW/OFFER. Preserve earlier completions; stages ahead of the current stage
+are rejected. `nextAction` is bounded text or null, `actionDate` is a real confirmed
+YYYY-MM-DD or null, and `needsAction` is boolean. A date/true flag requires an
+action description. Clear an action with all three values (null/null/false).
+Browser/MCP share ownership, global tracker version, validation and event replay.
+
+Muse reads the latest tracker/version, preserves source notes and unrelated data,
+and migrates only explicit confirmed dates—not guessed dates parsed from notes.
+Unknown dates stay null. Original CSV source rows are immutable. Existing native
+milestone/preparation writers remain separate; generic native workflow mutations
+on imported records still report the documented mismatch. Migration, gateway/MCP
+and dev runtime activation are required before tools advertise these fields.

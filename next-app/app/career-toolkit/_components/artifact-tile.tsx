@@ -1,33 +1,46 @@
+import {mockCalendarPreview} from '../../../lib/mock-calendar-preview.mjs';
 import Link from 'next/link';
 import {artifactLabels,artifactPath,artifactPurpose} from '../../../../lib/artifacts.mjs';
+import {CompanyLogo} from '../../../components/company-logo';
 import {ToolkitIcon} from './toolkit-icon';
 import type {Artifact} from './artifact-viewer';
 import styles from '../toolkit.module.css';
 export type ArtifactSummary=Omit<Artifact,'content'>&{content:Omit<Artifact['content'],'body'>};
-export default function ArtifactTile({artifact,featured=false}:{artifact:ArtifactSummary;featured?:boolean}){
+export type MaterialApplication={id:string;title:string;company:string};
+const iconFor=(kind:string)=>({mock_interview:'interviews',interview_brief:'calendar',weekly_prep:'calendar',company_research:'globe',story_bank:'book',interview_debrief:'check',resource:'book',practice:'play'}[kind]||'documents');
+function Context({artifact,application,compact=false}:{artifact:ArtifactSummary;application?:MaterialApplication;compact?:boolean}){
  const c=artifact.content;
- const interactive=c.format==='html';
- const tone=interactive?'interactive':c.kind==='weekly_prep'?'prep':c.kind==='company_research'||c.kind==='interview_brief'?'research':'document';
- const icon=c.materials?.length?'folder':interactive?'play':tone==='prep'?'calendar':tone==='research'?'globe':'documents';
- const date=c.weekOf?new Date(`${c.weekOf}T12:00:00Z`).toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'}):null;
- return <li className={featured?styles.featuredMaterial:undefined}>
-  <Link href={c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id)} target={c.kind==='resource'?'_blank':undefined} rel={c.kind==='resource'?'noopener noreferrer':undefined} className={`${styles.materialTile} ${styles[tone]} ${featured?styles.featuredTile:''}`}>
-   <div className={styles.materialCover}>
-    <span className={styles.materialSymbol}><ToolkitIcon name={icon} size={featured?40:30}/></span>
-    <h3>{c.title}</h3>
-    {featured&&<p>{artifactPurpose(c)}</p>}
-    <div className={styles.coverFooter}><span>{artifactLabels[c.kind as keyof typeof artifactLabels]||c.kind}</span><span className={styles.openSymbol}><ToolkitIcon name="arrow" size={20}/></span></div>
-   </div>
-   <div className={styles.materialCaption}><span>{interactive?'Interactive':c.kind==='resource'?'Online resource':c.company||'Document'}</span>{c.materials?.length?<span>{c.materials.length} materials</span>:null}{c.scheduledAt&&<span>{new Date(c.scheduledAt).toLocaleString(undefined,{timeZone:c.timeZone})} ({c.timeZone}) · {c.durationMinutes} min · {c.sessionStatus?.replace('_',' ')}</span>}{c.preparedFor?<span>For {new Date(`${c.preparedFor}T12:00:00Z`).toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'})}</span>:date&&<span>Week of {date}</span>}{!!c.sources.length&&<span>{c.sources.length} {c.sources.length===1?'source':'sources'}</span>}</div>
-  </Link>
- </li>;
+ return <div className={styles.materialContext}>
+  <span>{compact&&(application?.company||c.company)?`${(application?.company||c.company)?.replace(/ \(demo\)$/,'')} · `:''}{artifactLabels[c.kind as keyof typeof artifactLabels]||c.kind}{c.durationMinutes?` · ${c.durationMinutes} min`:''}{c.sessionStatus?` · ${c.sessionStatus.replace('_',' ')}`:''}</span>
+  {application&&<Link className={styles.applicationLink} href={`/applications/?application=${encodeURIComponent(application.id)}`} title={`${application.company} · ${application.title}`}><ToolkitIcon name="offers" size={13}/>{application.title}<ToolkitIcon name="chevron" size={12}/></Link>}
+ </div>;
 }
-
-export function SavedMaterialRow({artifact}:{artifact:ArtifactSummary}){
- const c=artifact.content;
- return <li><Link href={c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id)} target={c.kind==='resource'?'_blank':undefined} rel={c.kind==='resource'?'noopener noreferrer':undefined} className={styles.savedMaterialRow}>
-  <span className={styles.savedMaterialIcon}><ToolkitIcon name={c.materials?.length?'folder':c.format==='html'?'play':'documents'} size={20}/></span>
-  <div><h3>{c.title}</h3><p>{artifactPurpose(c)}</p><span>{artifactLabels[c.kind as keyof typeof artifactLabels]||c.kind}{c.company?` · ${c.company}`:''}{c.kind==='resource'?' · Opens resource':''}{c.scheduledAt?` · ${new Date(c.scheduledAt).toLocaleString(undefined,{timeZone:c.timeZone})} · ${c.durationMinutes} min · ${c.sessionStatus}`:''}{c.materials?.length?` · ${c.materials.length} materials`:''}</span></div>
-  <ToolkitIcon name="arrow" size={18}/>
- </Link></li>;
+function Identity({company}:{company?:string}){
+ return company?<span className={styles.companyIdentity}><CompanyLogo company={company}/><span>{company.replace(/ \(demo\)$/,'')}</span></span>:<span className={styles.companyIdentity}>Personal preparation</span>;
+}
+export default function ArtifactTile({artifact,featured=false,dated=false,demo=false,application}:{artifact:ArtifactSummary;featured?:boolean;dated?:boolean;demo?:boolean;application?:MaterialApplication}){
+ const c=artifact.content,interactive=c.kind==='practice';
+ const calendar=demo?mockCalendarPreview(c):null;
+ const tone=interactive?'interactive':c.kind==='mock_interview'||c.kind==='weekly_prep'?'prep':c.kind==='company_research'||c.kind==='interview_brief'?'research':'document';
+ const href=calendar||(c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id));
+ return <li className={`${featured?styles.featuredMaterial:''} ${dated?styles.datedMaterial:''}`}><article className={`${styles.materialTile} ${styles[tone]}`}>
+  <Link href={href} target={calendar||c.kind==='resource'?'_blank':undefined} rel={calendar||c.kind==='resource'?'noopener noreferrer':undefined} className={styles.materialCover}>
+   <span className={styles.backgroundIcon}><ToolkitIcon name={iconFor(c.kind)} size={130}/></span>
+   <Identity company={application?.company||c.company}/>
+   <h3>{c.title}</h3><p>{artifactPurpose(c)}</p>
+   {c.scheduledAt&&<span className={styles.sessionTime}>{new Date(c.scheduledAt).toLocaleTimeString(undefined,{timeZone:c.timeZone,hour:'numeric',minute:'2-digit'})} · {c.timeZone}</span>}
+   {calendar&&<span className={styles.calendarAction}><ToolkitIcon name="calendar" size={14}/>Open in Google Calendar</span>}
+   <span className={styles.cardArrow}><ToolkitIcon name="arrow" size={18}/></span>
+  </Link>
+  <Context artifact={artifact} application={application}/>
+ </article></li>;
+}
+export function SavedMaterialRow({artifact,application,demo=false}:{artifact:ArtifactSummary;application?:MaterialApplication;demo?:boolean}){
+ const c=artifact.content,calendar=demo?mockCalendarPreview(artifact.content):null;
+ return <li className={styles.rowItem}><article className={styles.compactMaterial}>
+  <Link href={calendar||(c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id))} target={calendar||c.kind==='resource'?'_blank':undefined} rel={calendar||c.kind==='resource'?'noopener noreferrer':undefined} className={styles.savedMaterialRow}>
+   <span className={styles.savedMaterialIcon}>{(application?.company||c.company)?<CompanyLogo company={application?.company||c.company||''}/>:<ToolkitIcon name={iconFor(c.kind)} size={22}/>}</span>
+   <div><h3>{c.title}</h3><p>{artifactPurpose(c)}</p></div><ToolkitIcon name="arrow" size={17}/>
+  </Link><Context artifact={artifact} application={application} compact/>
+ </article></li>;
 }

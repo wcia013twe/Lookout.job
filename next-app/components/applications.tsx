@@ -7,6 +7,7 @@ import { trackedApplications } from '../../lib/discover-application-state.mjs';
 import { applicationStats } from '../../lib/application-stats.mjs';
 import ProfileIcon, {type ProfileIconName} from './profile-icon';
 import ApplicationList from './application-list';
+import {useApplicationDeadlines} from '../lib/use-application-deadlines';
 import SkippedOpportunities from './skipped-opportunities';
 import { trackerProgress } from '../../lib/tracker-display.mjs';
 import type { Application } from './workflow-types';
@@ -16,7 +17,8 @@ import {importedApplication,importEmploymentTypes} from '../../lib/simplify-impo
 import ImportSearchHandoff from './import-search-handoff';
 const ApplicationFlowChart=dynamic(()=>import('./application-flow-chart'),{ssr:false,loading:()=> <p role="status" className="mt-6 text-sm text-board-muted">Loading application flow…</p>});
 export default function Applications() {
- const w=useWorkspace(),imports=useSimplifyImports();
+ const w=useWorkspace(),imports=useSimplifyImports(),deadlines=useApplicationDeadlines();
+ const [order,setOrder]=useState('default');
  const [search,setSearch]=useState(''),[type,setType]=useState(''),[stage,setStage]=useState(''),[view,setView]=useState('Active');
  const native:Application[]=trackedApplications({roles:w.roles,publicRoles:w.publicRoles,applications:w.state.workflow.applications,trackerIds:w.state.tracker.ids,trackerItems:w.state.tracker.items});
  const all:Application[]=[...native,...imports.records.map(importedApplication).filter((a:Application)=>!native.some(n=>(a.url&&n.url===a.url)||(n.company.toLowerCase()===a.company.toLowerCase()&&n.title.toLowerCase()===a.title.toLowerCase()&&(n.location||'').toLowerCase()===(a.location||'').toLowerCase())))];
@@ -39,9 +41,10 @@ export default function Applications() {
  <ApplicationFlowChart applications={all} trackerItems={w.state.tracker.items}/>
  </section> : <>
  <ImportSearchHandoff key={imports.scope} imports={imports}/>
- <div className="tracker-filters"><input aria-label="Search tracked roles" placeholder="Search for roles or companies" value={search} onChange={e=>setSearch(e.target.value)}/><select aria-label="Job type" value={type} onChange={e=>setType(e.target.value)}><option value="">Job type · All</option>{Object.entries(importEmploymentTypes).map(([value,label])=><option key={value} value={value}>{label as string}</option>)}</select><select aria-label="Hiring stage" value={stage} onChange={e=>setStage(e.target.value)}><option value="">Status · All</option>{['Opened','Applied','Screen','Interview','Offer','Rejected','Withdrawn','Closed'].map(s=><option key={s}>{s}</option>)}</select></div>
- <div className="tracker-list-meta"><p><strong>{items.length}</strong> roles <span className="tracker-counter">{items.filter(a=>a.employmentType==='FT').length} full-time</span><span className="tracker-counter">{items.filter(a=>a.employmentType==='Internship').length} internships</span></p>{(search||type||stage)&&<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>{setSearch('');setType('');setStage('');}}>Clear filters</button>}<span>List view</span></div>
- <ApplicationList key={`applications:${imports.scope}`} items={items} active={view==='Active'}/>
+ <div className="tracker-filters"><input aria-label="Search tracked roles" placeholder="Search applications" value={search} onChange={e=>setSearch(e.target.value)}/><div className="tracker-filter-options"><select aria-label="Job type" value={type} onChange={e=>setType(e.target.value)}><option value="">All types</option>{Object.entries(importEmploymentTypes).map(([value,label])=><option key={value} value={value}>{label as string}</option>)}</select><select aria-label="Hiring stage" value={stage} onChange={e=>setStage(e.target.value)}><option value="">All stages</option>{['Opened','Applied','Screen','Interview','Offer','Rejected','Withdrawn','Closed'].map(s=><option key={s}>{s}</option>)}</select>{view==='Active'&&<select aria-label="Sort active applications" title={order==='action'?'Next action date':'Progress and application date'} value={order} onChange={e=>setOrder(e.target.value)}><option value="default">Progress</option><option value="action">Next action</option></select>}</div></div>
+ <div className="tracker-list-meta"><p><strong>{items.length}</strong> roles <span className="tracker-counter">{items.filter(a=>a.employmentType==='FT').length} full-time</span><span className="tracker-counter">{items.filter(a=>a.employmentType==='Internship').length} internships</span></p>{(search||type||stage)&&<button className="tracker-button workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>{setSearch('');setType('');setStage('');}}>Clear filters</button>}</div>
+ {deadlines.error&&<p role="status" className="tracker-prose">{deadlines.error}</p>}
+ <ApplicationList key={`applications:${imports.scope}`} items={items} active={view==='Active'} sortByAction={order==='action'} plans={deadlines.plans} importVersion={imports.version} onUpdateImport={async(id,changes,expectedVersion,eventKey)=>{const result=await imports.call('update',{id,changes,expectedVersion,eventKey});await imports.refresh();return result.version;}}/>
  {view==='Saved jobs'&&<p className="tracker-prose">Opened roles you haven’t applied to yet, including drafts in preparation.</p>}
  {!items.length&&<div className="tracker-empty"><h2>{all.length?'No matching roles':'Your next opportunity starts here'}</h2><p>{all.length?'Try another search or clear your filters.':'Open a role from Discover to track it. Opening a role is separate from applying.'}</p><Link href="/" className="tracker-button tracker-primary workspace-primary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50">Browse roles</Link></div>}
  <SkippedOpportunities/>

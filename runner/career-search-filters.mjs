@@ -51,3 +51,12 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
  assertDiscoveryResults(results,listings);
  return {results,diagnostics,filterPlan:plan,provenance:{...DISCOVERY_EVALUATION_SCOPE,commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',filters:'scan.mjs exported predicates + title-keywords.mjs',personalScoresProduced:false}};
 }
+
+// Only metadata gates whose evidence is already available. Description-based
+// and unresolved employment/location predicates remain in full verification.
+export async function prefilterDiscovery({profile,jobs,config}){
+ const plan=config?{ready:true,config}:await inspectDiscoveryFilters({profile,portals:{}});if(!plan.ready)throw Error('Search filters are not ready');
+ const {buildTitleFilter}=await import('./vendor/career-ops/title-keywords.mjs');
+ const title=buildTitleFilter(plan.config.title_filter);
+ return jobs.filter(job=>title(job.title)&&!(plan.config.skip_tiers||[]).includes(classifyTier(job.title)));
+}

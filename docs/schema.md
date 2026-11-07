@@ -636,3 +636,17 @@ action. Session status does not credit planner minutes or prove an interview
 outcome. The user starts the external agent call; no scheduler, call transport or
 notification service is added. This source change requires the matching backend
 migration and gateway/MCP deployment before hosted use.
+
+## Imported application progress
+
+The existing owner-scoped `imported_jobs.record` JSON supports optional
+`nextAction` (text up to 300 characters or null), `actionDate` (YYYY-MM-DD or null),
+`needsAction` (boolean), and `completedStages` (unique SAVED/APPLIED/SCREEN/
+INTERVIEW/OFFER values). These are candidate reports, independent of current
+status and original immutable `source_rows`; no native application, receipt or
+approval is created. No future stage can be marked complete. A date or true action
+flag requires a named action. Clearing the action clears its date and flag in the
+same update. Omitted keys remain unchanged; the completed array replaces the
+supplied set. Both authenticated browser `simplify_import('update')` and MCP
+`update_imported_job` retain the same owner checks, tracker-version lock and
+idempotency history. CSV source parsing is unchanged; no notes are auto-migrated.
