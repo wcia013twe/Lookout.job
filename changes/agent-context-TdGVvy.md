@@ -7,3 +7,5 @@
 - Demo: four fictional context notes plus context-aware role explanations; isolated desktop/mobile integration check covers reading, edits, autosave/reopen, missing notes, legacy editing, navigation and no account writes. Light desktop and dark mobile screenshots reviewed.
 - Validation: npm test (947 passed, 5 skipped); focused profile/guide tests (48 passed); frontend typecheck; production static build; npm run validate:data (158 roles); git diff --check; Impeccable detector (no findings); node scripts/check-agent-context-ui.mjs passed.
 - Limits: no hosted deployment, authenticated production round trip or live agent execution. Guide behavior is an instruction contract, not a semantic classifier of freeform notes. No real personal notes were changed.
+
+- Local-main integration: preserved the concurrent clearance, company-size and session-restoration changes. Regenerated the merged Edge codec; 51 focused tests, the combined production build and desktop/mobile context flow passed after resolving overlaps.

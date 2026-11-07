@@ -18,6 +18,7 @@ function demoSearchProfiles(date) {
   for (const [heading, key, value] of [
    ['Search Filters', 'Work arrangement', 'Remote'],
    ['Role preferences', 'Roles', 'Software engineering'],
+   ['Eligibility', 'Would you like to see roles that require top security clearance?', employment === 'Full-time' ? 'No' : 'Yes'],
    ['Application answers', 'Are you authorized to work in the US?', 'Yes'],
    ['Application answers', 'Are you authorized to work in Canada?', 'No'],
    ['Application answers', 'Are you authorized to work in the United Kingdom?', 'No'],
@@ -26,6 +27,7 @@ function demoSearchProfiles(date) {
    ['Application answers', 'Graduation month', '2027-06'],
    ['Application answers', 'Degree pursued', "Bachelor's"],
    ['Role preferences', 'Specializations', 'Backend, distributed systems'],
+   ['Company preferences', 'Company size', employment === 'Full-time' ? '201–500, 501–1,000, 1,001–5,000' : '1–10, 11–50'],
    ['Work-life balance & benefits', 'Work-life balance', 'Predictable hours and sustainable on-call rotation (demo).'],
    ['Work-life balance & benefits', 'Employer benefits', 'Health coverage and a learning budget (demo).'],
    ['Priority & flexibility', 'Work-life balance', 'Preferred'],
