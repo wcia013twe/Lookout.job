@@ -182,3 +182,24 @@
   detail checks confirmed green connectors/checks and an unfinished current round,
   with no page errors or overflow. No schema/MCP writer/runtime change; full DB
   suite was not repeated for this presentation pass (focused import SQL passed).
+
+## Follow-up: purple bar, green checkmark only
+
+- Per visual correction, progress connectors, reached circles and current-stage
+  rings stay purple. Only the checkmark glyph is green, with a light green that
+  remains legible against the purple circle in light and dark themes.
+- Completion logic and saved records are unchanged. Existing fictional progress
+  demos cover the styling; desktop light/dark and mobile detail inspection
+  confirmed the exact colors, no page errors or overflow.
+- Validation: production static build, UI detector, catalog validation (158 roles)
+  and diff check passed. No new tests or backend suite for this CSS-only change.
+
+## Follow-up: restore the softer original lavender
+
+- Restored the existing lavender shade (#a78bcb) for progress bars/circles instead
+  of the darker replacement purple. Kept the glyph green, using a dark green for
+  legibility inside the lighter lavender circle. Completion/data behavior stays
+  unchanged.
+- Production build, catalog validation (158 roles) and diff check passed. The
+  fictional application preview confirmed the original lavender color and green
+  glyph in computed styles and screenshot. No backend change or new tests.

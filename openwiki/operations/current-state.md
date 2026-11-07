@@ -371,3 +371,22 @@ external events were created. Hosted release is separate and was not performed.
 ### Simplify feed limit
 
 The direct background worker verifies at most the 100 newest title/seniority-matching leads from each Simplify feed per run (new-grad, summer and off-season independently). It reads active visible feed metadata newest-first, applies the existing metadata prefilter, then selects the first 100 before existing deduplication and 25-link employer verification. Full screening, temporary staging, lease fencing and final shortlist persistence remain unchanged. Older omitted matching leads produce explicit partial coverage and an omitted count; no durable cursor or automatic continuation is retained. Repeated scans select the newest matching leads again, so older jobs may never be verified. This is an intentional Simplify-only limit; Jobright, HiringCafe and employer-source behavior are unchanged. Website/MCP backend searches use the same provider; explicit manual Simplify lead paging remains available separately.
+
+## Mock save readiness correction (contract 118, locally verified)
+
+The contract-117 check established guide discovery, not mock persistence. A real
+Node MCP save exposed two missing prerequisites: the local database lacked weekly
+Toolkit migration `20261107201448`, and Node's service registry lacked the `mock`
+prefix. The source migration alone was applied locally, after checking later
+artifact-function overlap, without changing existing user/artifact counts. The
+Node route now retains the existing checked Edge/SQL boundary, and safe error
+forwarding explains a missing migration instead of a generic content rejection.
+
+After the local API/gateway refresh, connected context reports 118. The local-only
+mock check passed save, idempotent retry, private read and ordinary-read profile
+separation through the actual running API, then removed its disposable fixtures.
+The rolled-back lifecycle/ownership SQL checks passed with real Supabase auth
+settings. Full source checks passed (1,036 tests, five skipped), typecheck/build
+and data validation passed. No real candidate session, Calendar event, worker or
+database restart, push or hosted deployment occurred. Muse must retry its original
+session save; source/tool discovery alone must not be called persistence-ready.

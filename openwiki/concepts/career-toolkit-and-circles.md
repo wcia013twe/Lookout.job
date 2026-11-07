@@ -210,6 +210,8 @@ and mock tools own execution; no new generic writer or consent is introduced.
 A detached MCP generation test covers discovery, recipe loading, save/read-back
 and read-only denial. Hosted availability requires the normal main-branch release.
 
+Network UI follow-up: the suggestions section is commented out; saved suggestions and person records remain intact. People details retain external navigation, with a LinkedIn-blue profile button and a mail icon box for Gmail conversation links. Application associations continue to use existing explicit contact tags or matching role URLs; company similarity alone does not establish process relevance.
+
 ### Local mock save readiness correction (contract 118)
 
 Tool discovery alone was insufficient: the local database lacked migration
