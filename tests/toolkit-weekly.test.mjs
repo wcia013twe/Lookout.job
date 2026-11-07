@@ -76,3 +76,23 @@ test('the four embedded demo formats share a static self-contained document canv
  }
  assert.equal(demoMaterialDocument('mock_interview'),null);
 });
+
+
+test('Palantir research remains dated and attributed inside a detached fictional application',async()=>{
+ const {demoFixtures}=await import('../next-app/lib/demo.mjs');
+ const {researchCheckedAt,palantirDemoApplicationId,toolkitResearch}=await import('../next-app/lib/toolkit-demo-research.mjs');
+ const fixture=demoFixtures('2027-01-01');
+ const application=fixture.state.workflow.applications[palantirDemoApplicationId];
+ assert.equal(application.postedDate,null);assert.deepEqual(application.milestones,[]);assert.deepEqual(application.submissionAttempts,[]);
+ const service=createArtifactDemo(createMemoryStore(fixture.state));
+ const list=await service.artifactAction('artifacts.list',{applicationId:palantirDemoApplicationId});
+ assert.equal(list.items.length,8);
+ const brief=await service.artifactAction('artifacts.read',{id:'aaaaaaaa-2222-4000-8000-222222222222'});
+ assert.match(brief.content.body,/105900583/);assert.match(brief.content.body,/105848809/);
+ assert.match(brief.content.body,/not a verified Query Engines loop/);
+ assert.match(brief.content.body,/original, not leaked questions/);
+ assert(brief.content.sources.every(source=>source.observedAt===researchCheckedAt));
+ assert(brief.content.sources.some(source=>source.url===toolkitResearch.glassdoor.url));
+ for(const resource of list.items.filter(row=>row.content.kind==='resource'))assert.match(resource.content.resourceUrl,/^https:/);
+ assert(!JSON.stringify(list).includes('interviewerProfile'));
+});

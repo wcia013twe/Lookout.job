@@ -18,3 +18,9 @@
 Removed the reader's redundant Tools & skills navigation and combined back, title and discussion controls. Metadata/revisions remain under Material details; working resource links are visible above the document. Embedded frames fit the remaining viewport without relaxing sandbox permissions. Demo mock wording now says Add to Google Calendar (still a draft, no event creation). Existing scoped artifact reads/actions are unchanged; no new persistence or tool boundary.
 
 Validation: focused artifact/toolkit/demo tests, frontend typecheck/build, data validation and desktop/mobile static-preview inspection. Source/local only; no push or deployment.
+
+### Palantir Query Engines research preview
+
+Replaced the five generic previews with the researched New York Palantir New Grad Query Engines role. Saved two short attributed Glassdoor excerpts, dated source links, original practice examples, a focused learning sequence, and separate DataFusion/EXPLAIN/Furnace resource rows. Added an explicitly fictional linked application without submission receipts or confirmed employer events. Public research is a fixed November 7, 2026 snapshot; candidate stories/mock/debrief remain illustrative. Existing artifact/source/resource actions provide the tool mapping; no service contract changed.
+
+Validation: artifact/toolkit/demo and fixture-isolation tests, frontend typecheck/build, data validation and desktop/mobile preview. Public pages were researched; exact Query Engines interview stages are unverified. No account materials, external events, push or deployment.
