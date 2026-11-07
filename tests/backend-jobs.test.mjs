@@ -93,6 +93,7 @@ test('fictional backend job states, cancellation, retry receipts reset without e
 
 });
 
+
 test('application demo jobs expose bounded repair and uncertain handoffs without execution',async()=>{
  const demo=createBackendJobsDemo(),{jobs}=await demo.read();
  const [uncertain,repair]=jobs.filter(job=>job.kind==='application_submit');

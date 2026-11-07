@@ -138,8 +138,10 @@ Focused coverage in `tests/preparation-planner.test.mjs` exercises deterministic
 Career Toolkit keeps its existing workspace and reader. It defaults to an explicit
 Monday–Sunday week in the saved preparation timezone (device timezone fallback),
 with previous/next navigation and All materials. Assignments use `weekOf`; undated
-legacy/reusable materials remain in All materials. Weekly filtering and newest-update
-ordering happen in SQL before pagination. Editing does not reassign a week.
+legacy/reusable materials remain in All materials. Weekly filtering happens in SQL. The weekly view loads all matching metadata
+before grouping dated sessions and prep chronologically, followed by undated
+resources ordered by latest update. All materials retains paginated latest-update
+ordering. Editing does not reassign a week.
 
 The agent follows the pinned Career Ops research → round plan → practice → debrief
 → next-round loop. Five optional contributions are company context plus motivation,
@@ -160,3 +162,14 @@ when ready. Saving logistics does not activate a scheduler, reminders or calls.
 These are source changes requiring the migration and gateway/MCP release together
 with the frontend. Demo sessions are fictional and have no interviewer service.
 Live external-agent calling and hosted behavior are not established by local tests.
+
+### Compact weekly scan
+
+The Toolkit title and view switch share a line; one toolbar owns week navigation,
+All materials, the collapsed filters and agent planning. Dated mock sessions and
+prep briefs lead the weekly timeline. Undated company context, stories, notes and
+external resources follow without invented event dates. Primary prep uses compact
+cards with rotated type icons; supporting items use denser rows. Company marks
+reuse the shared logo/fallback component. Application links resolve explicit owned
+artifact links against current workspace records; company text alone never creates
+an association. These are presentation changes over existing scoped artifact reads.

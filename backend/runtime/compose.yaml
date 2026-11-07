@@ -33,6 +33,9 @@ services:
     env_file: .env.local
     environment:
       LOOKOUT_PROCESS: worker
+      LOOKOUT_SEARCH_STAGING_DIR: /var/lib/lookout/search-runs
+    volumes:
+      - search_staging:/var/lib/lookout/search-runs
     logging:
       driver: local
       options:
@@ -41,3 +44,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+
+volumes:
+  search_staging:
+    name: lookout-search-staging

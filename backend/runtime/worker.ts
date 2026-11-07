@@ -3,6 +3,10 @@ import {deduplicateDiscoveryRows} from '../../lib/search-dedup.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
 import {createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
+import {SearchStaging,pruneSearchStaging,observationHash} from './search-staging.ts';
+import {assertDiscoveryResults} from '../../lib/discovery-filter-contract.mjs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
 import {fetchSource} from './ats.ts';
 import type {Rpc,Payload,Claim,Dispatch} from './types.ts';
 
@@ -38,101 +42,100 @@ export async function scanAllSources<T>(sources:T[],visit:(source:T)=>Promise<vo
   if(failure?.status==='rejected')throw failure.reason;
 }
 
-export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute,request,signal,onFailure}: {execute?:import('./ats.ts').Execute;request?:typeof fetch;signal?:AbortSignal;onFailure?:(error:unknown)=>void}={}) {
-  const prefix=`job:${job.id}:`;
-  let run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):null;
-  const profileId=run?.profile_id||job.input.profileId;
-  const collectionContext=await dispatch('search.context',{profileId});
-  const collectionProfile=collectionContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId);
-  if(!collectionProfile)throw Error('Current job profile unavailable');
-  const filterPlan=await (execute||executeCareerTask)('inspect-discovery-filters',{profile:collectionProfile.projection,portals:collectionContext.documents.find((d:Payload)=>d.kind==='portals')?.projection||{}});
-  if(!filterPlan.ready)return {status:'failed',result:{code:'search_filters_not_ready',summary:'Search did not start because the selected profile needs configured or corrected discovery filters.',profileId,evaluatedProfileVersion:collectionProfile.version,personalVersion:collectionContext.personalVersion,filterPlan,recovery:{tool:'read_search_filter_plan',arguments:{profileId},guideId:'career-find-jobs',action:'Read the filter gaps, configure the selected profile through save_search_document, inspect and read back the corrected plan, then submit a new job. Do not retry an unchanged search or use a broad filter to bypass targeting.'}}};
-  if(!run)run=await dispatch('search.run.start',{profileId,eventKey:prefix+'start'});
-  const seen:Payload[]=[];
-  if(job.search_run_id){
-    let offset=0;
-    // Read every persisted identity page; retries must cover the full catalog.
-    for(;;){
-      const prior=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100});
-      seen.push(...prior.listings);
-      if(prior.nextOffset===null)break;
-      if(!Number.isSafeInteger(prior.nextOffset)||prior.nextOffset<=offset)throw Error('Discovery identity history exceeded bounded pagination');
-      offset=prior.nextOffset;
-    }
-  }
-  let saved=0;let blocked=0;let scanned=0;const provenance:Payload[]=[];
-  const sources=orderedSearchSources(run.sources||[],run.id);
-  await scanAllSources(run.state==='active'?sources:[],async source=>{
-    signal?.throwIfAborted();if(source.state==='completed')return;
-    let version=source.version,savedOffset=source.checkpoint?.savedOffset||0,processed=0,batchIndex=0;
-    const sourceKey=createHash('sha256').update(source.source_id).digest('hex');
-    const attempt=`${source.version}a${job.attempts}`;
-    const checkpoint=async(state:string,coverage:string,blocker:string,diagnostics:Payload[]=[],counts:Payload={})=>{
-      signal?.throwIfAborted();
-      const bounded=[];let bytes=0;
-      for(const diagnostic of diagnostics.slice(-25).reverse()){
-        const size=Buffer.byteLength(JSON.stringify(diagnostic));if(bytes+size>16000)break;
-        bounded.unshift(diagnostic);bytes+=size;
-      }
-      const result=await dispatch('search.progress',{runId:run.id,sourceId:source.source_id,expectedVersion:version,state,coverage,blocker,
-        checkpoint:{stage:state==='active'?(processed?'verification':'collection'):'finished',savedOffset,processed,diagnostics:bounded,diagnosticsOmitted:Math.max(0,diagnostics.length-bounded.length)},counts,
-        eventKey:`${prefix}${sourceKey}:v${attempt}:progress:${batchIndex++}`});
-      version=result?.version??version+1;
-    };
-    await checkpoint('active','unknown','',[],{saved:savedOffset});
-    const observation=await fetchSource(source.source_id,source.source,{execute,previous:[...seen],profile:collectionProfile.projection,request,signal,days:run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
-      signal?.throwIfAborted();
-      for(const batch of listingBatches(result.listings)){
-        await dispatch('search.discoveries.save',{runId:run.id,listings:batch.listings,eventKey:`${prefix}${sourceKey}:v${attempt}:batch:${progress.batchIndex}:${batch.offset}`});
-        saved+=batch.listings.length;savedOffset+=batch.listings.length;seen.push(...batch.listings);
-      }
-      processed=progress.processed;
-      await checkpoint('active','unknown','',result.diagnostics,{observed:processed,available:progress.available,saved:savedOffset});
-    }});
-    signal?.throwIfAborted();
-    if(observation.provenance)provenance.push(observation.provenance);
-    scanned+=observation.examined??observation.total;
-    const complete=observation.coverage==='exhaustive';if(!complete)blocked++;
-    await checkpoint(complete?'completed':'blocked',observation.coverage,observation.blocker,observation.diagnostics,{observed:observation.examined??observation.total,available:observation.total,saved:savedOffset});
-  },10,onFailure);
+export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=executeCareerTask,request,signal,onFailure,stagingRoot=process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging')}: {execute?:import('./ats.ts').Execute;request?:typeof fetch;signal?:AbortSignal;onFailure?:(error:unknown)=>void;stagingRoot?:string}={}) {
+ const prefix=`job:${job.id}:`;
+ let run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):null;
+ const profileId=run?.profile_id||job.input.profileId;
+ const context=await dispatch('search.context',{profileId});
+ const profile=context.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId);
+ if(!profile)throw Error('Current job profile unavailable');
+ const portals=context.documents.find((d:Payload)=>d.kind==='portals')?.projection||{};
+ const filterPlan=await execute('inspect-discovery-filters',{profile:profile.projection,portals});
+ if(!filterPlan.ready)return {status:'failed',result:{code:'search_filters_not_ready',summary:'Configure the selected profile filters before searching.',profileId,filterPlan,evaluatedProfileVersion:profile.version,personalVersion:context.personalVersion,recovery:{tool:'read_search_filter_plan',arguments:{profileId}}}};
+ if(!run)run=await dispatch('search.run.start',{profileId,eventKey:prefix+'start'});
+ const staging=new SearchStaging(stagingRoot,job.id,run.id);
+ await pruneSearchStaging(stagingRoot);
+ const history:Payload[]=[];
+ for(let offset=0;;){const page=await dispatch('search.history.read',{offset,limit:100});history.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid search history page');offset=page.nextOffset;}
+ const persisted:Payload[]=[];
+ for(let offset=0;;){const page=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100,purpose:'screening'});persisted.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid discovery page');offset=page.nextOffset;}
+ const sources=orderedSearchSources(run.sources||[],run.id),snapshots=new Map<string,Payload>(),seen:Payload[]=[];
+ for(const source of sources){const snapshot=await staging.read(source.checkpoint?.stagingKey);if(snapshot){snapshots.set(source.source_id,snapshot);seen.push(...snapshot.seen);}}
+ await scanAllSources(run.state==='active'?sources:[],async source=>{
+  signal?.throwIfAborted();let snapshot=snapshots.get(source.source_id);
+  // A completed SQL checkpoint without its files must be recollected, never
+  // treated as an empty source. Only committed immutable snapshots are resumed.
+  if(source.state==='completed'&&snapshot?.finished)return;
+  snapshot=snapshot||{accepted:[],seen:[],processed:0,screened:0,excluded:0,available:0};
+  snapshot.currentProcessed=0;
+  snapshots.set(source.source_id,snapshot);
+  let version=source.version,index=0;
+  const checkpoint=async(state:string,coverage:string,blocker:string,diagnostics:Payload[]=[])=>{
+   signal?.throwIfAborted();const stagingKey=await staging.write(job.version,source.source_id,snapshot!);
+   const result=await dispatch('search.progress',{runId:run.id,sourceId:source.source_id,expectedVersion:version,state,coverage,blocker,
+    checkpoint:{stage:state==='active'?'temporary-staging':'finished',stagingKey,processed:snapshot!.processed,diagnostics:diagnostics.slice(-10).map(d=>({status:d.status,reason:String(d.reason||'').slice(0,300)}))},
+    counts:{observed:snapshot!.processed,available:snapshot!.available,staged:snapshot!.accepted.length,saved:0},eventKey:`${prefix}stage:${source.source_id}:v${job.version}:${source.version}:${index++}`});
+   version=result?.version??version+1;
+  };
+  await checkpoint('active','unknown','');
+  const collected=await fetchSource(source.source_id,source.source,{execute,previous:[...seen,...history.filter(h=>h.tracked)],profile:profile.projection,request,signal,prefilter:filterPlan.config||true,days:run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
+   signal?.throwIfAborted();
+   const rows=result.listings.map(row=>({...row,id:row.url}));
+   const evaluated=rows.length?await execute('filter-discovery',{profile:profile.projection,portals,listings:rows.map(row=>({...row,canonical_url:row.url,employment_type:row.employmentType,observation:{description:row.description,employer_posted_at:row.employerPostedAt}})),now:Date.now()}):{results:[]};
+   assertDiscoveryResults(evaluated.results,rows);
+   const passing=new Set(evaluated.results.filter((r:Payload)=>r.passed).map((r:Payload)=>r.listingId));
+   snapshot!.accepted.push(...rows.filter(row=>passing.has(row.id)).map(row=>({listing:row,screening:evaluated.results.find((r:Payload)=>r.listingId===row.id)})));
+   const identities=result.listings.map(({description,...row})=>row);
+   snapshot!.seen.push(...identities);seen.push(...identities);
+   snapshot!.processed+=progress.processed-(snapshot!.currentProcessed||0);snapshot!.currentProcessed=progress.processed;
+   snapshot!.screened+=rows.length;snapshot!.excluded+=rows.length-passing.size;snapshot!.available=progress.available;
+   await checkpoint('active','unknown','',result.diagnostics);
+  }});
+  snapshot!.currentProcessed=0;snapshot!.finished=true;snapshot!.coverage=collected.coverage;snapshot!.blocker=collected.blocker;snapshot!.available=collected.total;
+  snapshot!.examined=collected.examined??collected.total;snapshot!.prefilterExcluded=collected.provenance?.prefilterExcluded||0;
+  await checkpoint(collected.coverage==='exhaustive'?'completed':'blocked',collected.coverage,collected.blocker,collected.diagnostics);
+ },10,onFailure);
+ const latestContext=await dispatch('search.context',{profileId});
+ if(latestContext.personalVersion!==context.personalVersion||latestContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId)?.version!==profile.version)throw Error('Job settings changed during source collection');
+ // Compare unchanged content only after fresh verification. Existing tracked
+ // applications are excluded before verification and are never updated here.
+ const pool=[...snapshots.values()].flatMap(snapshot=>snapshot.accepted);
+ const alreadyCommitted=new Set(persisted.map(row=>row.id));
+ const unchanged=history.filter(h=>h.tracked||!alreadyCommitted.has(h.id)&&pool.some(({listing:r})=>h.contentHash===observationHash(r)&&h.company===r.company&&h.title===r.title&&(h.location||'')===(r.location||'')&&(h.employment_type||'')===(r.employmentType||'')));
+ const candidates=[...new Map(pool.map(item=>[item.listing.id,item])).values()];
+ const dedup=await deduplicateDiscoveryRows(candidates.map(({listing})=>listing),unchanged,{execute});
+ const keep=new Set(dedup.retainedListingIds);
+ const selected=candidates.filter(({listing})=>keep.has(listing.id));
+ // No discovery rows are written until every source has finished and the full
+ // filtered, verified, history-deduplicated shortlist is ready.
+ for(const batch of listingBatches(selected.map(({listing:{id,...row}})=>row))){
+  signal?.throwIfAborted();const digest=createHash('sha256').update(JSON.stringify(batch.listings)).digest('hex');
+  await dispatch('search.discoveries.save',{runId:run.id,listings:batch.listings,eventKey:prefix+'shortlist:'+digest});
 
-  // Every deterministic stage belongs to this one leased job. Only the final
-  // shortlist goes to Muse; narrative analysis and four ratings remain agent work.
-  const context=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
-  const profile=context.documents.find((d:Payload)=>d.kind==='profile'&&d.id===(run.profile_id||job.input.profileId));
-  if(!profile)throw Error('Current job profile unavailable');
-  if(profile.version!==collectionProfile.version||context.personalVersion!==collectionContext.personalVersion)throw Error('Job settings changed during source collection');
-  const discoveries:Payload[]=[];
-  for(let offset=0;;){
-    const page=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100,purpose:'screening'});
-    discoveries.push(...page.listings);
-    if(page.nextOffset===null)break;
-    if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid job discovery page');
-    offset=page.nextOffset;
-  }
-  const call=async(operation:string,payload:Payload)=>({data:await dispatch(operation,operation==='search.discoveries.read'?{...payload,purpose:'screening'}:payload),error:null});
-  const retained=new Set<string>();
-  for(let offset=0;offset<discoveries.length;offset+=10){
-    const rows=discoveries.slice(offset,offset+10);
-    const digest=createHash('sha256').update(JSON.stringify(rows.map(r=>[r.id,r.observation.id]))).digest('hex');
-    const request={runId:run.id,listingIds:rows.map(r=>r.id),eventKey:`${prefix}screen:${context.personalVersion}:${profile.version}:${digest}`};
-    const screening=await screenSearchDiscoveries(call,request,{evaluate:(input:Payload)=>(execute||executeCareerTask)('filter-discovery',input)});
-    if(screening.error)throw Error('Job screening failed or current settings changed');
-    if(screening.data.personalVersion!==context.personalVersion||screening.data.evaluatedProfileVersion!==profile.version)throw Error('Job screening settings changed');
-    for(const row of screening.data.screenings)if(row.decision!=='ineligible')retained.add(row.listing_id||row.listingId);
-  }
-  const deduplication=await deduplicateDiscoveryRows(discoveries.filter(row=>retained.has(row.id)),[],{execute:execute||executeCareerTask});
-  const current=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
-  if(current.personalVersion!==context.personalVersion||current.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profile.id)?.version!==profile.version)throw Error('Job settings changed before shortlist completion');
-  const latest=await dispatch('search.run.read',{runId:run.id});
-  const partial=latest.state==='partial'||!latest.sources.every((s:Payload)=>s.state==='completed'&&s.coverage==='exhaustive');
-  const shortlist={...deduplication,evaluatedProfileVersion:profile.version,personalVersion:context.personalVersion,screenedCount:discoveries.length,excludedCount:discoveries.length-retained.size,applicantEligibility:'not-evaluated',reporting:'pending-muse'};
-  const summary=`Screened ${discoveries.length} verified discoveries; ${shortlist.retainedListingIds.length} retained after Career Ops deduplication. ${latest.sources.filter((s:Payload)=>s.state!=='completed'||s.coverage!=='exhaustive').length} sources have incomplete coverage. Personal eligibility and reports require Muse review.`;
-  if(latest.state==='active')await dispatch('search.run.finish',{runId:run.id,expectedVersion:latest.version,state:partial?'partial':'completed',summary,eventKey:prefix+'finish'});
-  return {status:partial?'partial':'completed',result:{pipelineVersion:1,runId:run.id,observed:scanned,saved,filterPlan,blockedSources:blocked,summary,shortlist,stages:{collection:'finished',verification:'finished',screening:'finished',deduplication:'finished'},provenance}};
-
+ }
+ const finalRows:Payload[]=[];
+ for(let offset=0;;){const page=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100,purpose:'screening'});finalRows.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid shortlist page');offset=page.nextOffset;}
+ const call=async(operation:string,payload:Payload)=>({data:await dispatch(operation,operation==='search.discoveries.read'?{...payload,purpose:'screening'}:payload),error:null});
+ for(let offset=0;offset<finalRows.length;offset+=10){
+  const rows=finalRows.slice(offset,offset+10),digest=createHash('sha256').update(JSON.stringify(rows.map(r=>[r.id,r.observation.id]))).digest('hex');
+  const result=await screenSearchDiscoveries(call,{runId:run.id,listingIds:rows.map(r=>r.id),eventKey:prefix+'shortlist-screen:'+digest},{evaluate:(input:Payload)=>execute('filter-discovery',input)});
+  if(result.error)throw Error('Shortlist screening commit rejected');
+ }
+ const latest=await dispatch('search.run.read',{runId:run.id});
+ if(latest.state==='active')for(const source of latest.sources){
+  const count=finalRows.filter(row=>selected.some(({listing:r})=>r.sourceId===source.source_id&&(row.canonical_url===r.url||row.identity==='ats:'+r.atsIdentity))).length;
+  await dispatch('search.progress',{runId:run.id,sourceId:source.source_id,expectedVersion:source.version,state:source.state,coverage:source.coverage,blocker:source.blocker||'',checkpoint:{...source.checkpoint,stage:'shortlist-ready'},counts:{...source.counts,saved:count},eventKey:`${prefix}shortlist-progress:${source.source_id}:v${source.version}`});
+ }
+ const finishedRun=await dispatch('search.run.read',{runId:run.id});
+ const incomplete=latest.sources.filter((s:Payload)=>s.state!=='completed'||s.coverage!=='exhaustive').length;
+ const shortlist={runId:run.id,retainedListingIds:finalRows.slice(0,100).map(r=>r.id),totalRetained:finalRows.length,nextOffset:finalRows.length>100?100:null,evaluatedProfileVersion:profile.version,personalVersion:context.personalVersion,screenedCount:[...snapshots.values()].reduce((n,s)=>n+s.screened,0),excludedCount:[...snapshots.values()].reduce((n,s)=>n+s.excluded,0),unchangedOrDuplicate:pool.length-selected.length,applicantEligibility:'not-evaluated',reporting:'pending-muse'};
+ const summary=`${finalRows.length} new or changed jobs ready for agent review. ${incomplete} sources have incomplete coverage. Unfiltered postings were temporary and are not saved as discoveries.`;
+ if(finishedRun.state==='active')await dispatch('search.run.finish',{runId:run.id,expectedVersion:finishedRun.version,state:incomplete?'partial':'completed',summary,eventKey:prefix+'finish'});
+ // Cleanup happens after the fenced job finish, not before a retry can recover.
+ return {status:incomplete?'partial':'completed',result:{pipelineVersion:2,runId:run.id,storage:'direct-shortlist',observed:[...snapshots.values()].reduce((n,s)=>n+(s.examined||0),0),prefilterExcluded:[...snapshots.values()].reduce((n,s)=>n+(s.prefilterExcluded||0),0),filterPlan:{ready:true,config:{title_filter:filterPlan.config?.title_filter,skip_tiers:filterPlan.config?.skip_tiers}},saved:finalRows.length,shortlist,summary,stages:{collection:'finished',verification:'finished',screening:'finished',deduplication:'finished'}}};
 }
-export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heartbeatMs=30000}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>;signal?:AbortSignal;heartbeatMs?:number}={}){
+
+export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heartbeatMs=30000,stagingRoot}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>;signal?:AbortSignal;heartbeatMs?:number;stagingRoot?:string}={}){
   const call=async(operation:string,payload:Payload)=>{
     const {data,error}=await rpc('backend_worker',{operation,payload});
     if(error)throw Object.assign(Error(['Backend lease changed','Search lease changed','Source changed','Invalid observed listing','Invalid source progress','Invalid worker payload','Run is closed','Discovery observation exceeds bounded transaction size'].includes(error.message)?error.message:'Worker transaction rejected'),{code:error.code||'unknown',operation:operation==='dispatch'?payload.operation:operation});return data;
@@ -160,8 +163,9 @@ export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heart
   try{
     if(!['search_ats','application_submit'].includes(claim.job.kind))throw Error('Unsupported backend job');
     if(claim.job.kind==='search_ats')renew();
-    const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})});
+    const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,stagingRoot,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})});
     await stop();controller.signal.throwIfAborted();await call('finish',{...fence,...outcome});
+    if(claim.job.kind==='search_ats'&&outcome.result?.pipelineVersion===2)await new SearchStaging(stagingRoot||process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),claim.job.id,outcome.result.runId).clear();
   }catch(error){
     const failure=error as Error & {code?:string;operation?:string};
     console.error(JSON.stringify({service:'lookout-worker',event:'execution-interrupted',kind:claim.job.kind,operation:failure.operation||'pipeline',code:failure.code||'execution',reason:['Backend lease changed','Search lease changed','Source changed','Invalid observed listing','Invalid source progress','Invalid worker payload','Run is closed','Discovery observation exceeds bounded transaction size'].includes(failure.message)?failure.message:'Execution interrupted'}));

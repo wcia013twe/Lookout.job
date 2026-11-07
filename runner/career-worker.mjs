@@ -142,6 +142,7 @@ export async function scanDiscovery(input) {
 export async function runTask({task,input}) {
  if(task==='inspect-discovery-filters')return (await import('./career-search-plan.mjs')).inspectDiscoveryFilters(input);
  if(task==='verify-discovery-leads')return (await import('./career-search-intake.mjs')).verifyDiscoveryLeads(input.leads,{source:input.source});
+ if(task==='prefilter-discovery')return (await import('./career-search-filters.mjs')).prefilterDiscovery(input);
  if(task==='filter-discovery')return (await import('./career-search-filters.mjs')).filterDiscovery(input);
  if(task==='discovery')return scanDiscovery(input);
  if(task==='dedup-discovery')return deduplicateDiscovery(input.jobs,input.previous);
