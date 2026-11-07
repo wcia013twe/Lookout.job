@@ -338,6 +338,12 @@ No source notes are parsed or rewritten, and no native records or submission
 receipts are synthesized. Source tests establish behavior; runtime and hosted
 release verification remain separate and are recorded in the feature note.
 
+Dev verification for the imported-progress update: the connected local MCP reports
+contract 116, advertises all four fields on update_imported_job and serves
+application-workspace guide 15. Migration 20261107211643 is recorded locally and
+the API is healthy. This did not migrate personal records or notes. It does not
+establish hosted/production availability; see the feature note for validation.
+
 
 ### Jobright public lists
 

@@ -380,3 +380,21 @@
 .readerToolbar { margin-block: .6rem .8rem; }
 .activityFrame { height: 78vh; min-height: 36rem; background: white; }
 @media(max-width:700px) { .readerHeading h1 { font-size: 1.125rem; } .activityFrame { min-height: 32rem; height: 78vh; } }
+
+/* Keep reading controls compact and leave the document the available viewport. */
+.readerHeading { align-items: center; gap: .75rem; }
+.readerHeading > div { flex: 1; }
+.readerBack { flex-shrink: 0; color: var(--color-board-muted); font-size: .8125rem; text-decoration: underline; }
+.reader > .materialDetails { margin-block: .5rem; }
+.readerSources { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem 1rem; margin-block: .75rem; }
+.readerSources ul { display: flex; flex-wrap: wrap; gap: .5rem 1rem; }
+.activityFrame { min-height: 0; }
+@media(max-width:700px) {
+ .readerHeading { flex-direction: row; flex-wrap: wrap; gap: .5rem .75rem; }
+ .readerHeading > div { order: 3; flex-basis: 100%; }
+ .readerHeading > button { margin-left: auto; }
+ .readerHeading h1 { font-size: 1rem; }
+ .activityFrame { min-height: 0; }
+}
+
+.surface:has(.reader) { padding-block: .5rem 0; }
