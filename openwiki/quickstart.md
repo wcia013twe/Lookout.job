@@ -46,6 +46,10 @@ generated: { by: "codex", at: "2026-10-27T03:54:51.227Z" }
 
 Job Signal Board is a public job catalog plus a private, agent-assisted candidate workspace. The production UI is a static Next.js/React/Tailwind export on GitHub Pages; Supabase owns identity, private data, files, and agent authorization; configured Node services and the separate local runner own bounded execution. Muse supplies reasoning and its actual runtime schedule.
 
+## Current state
+
+Read [Current State and Recent Changes](operations/current-state.md) at session start. This manually reviewed supplement covers changes after the generated pages were last refreshed; verify task-specific details in source and tests.
+
 ## Set up a feature checkout
 
 Use Node.js 22 or newer. Keep the shared `main` checkout for inspection and landing. Start each writing task in its own checkout:
@@ -76,8 +80,7 @@ and anonymous key. Use `make install` for initial locked dependency setup,
 `make services` / `make frontend` for separate startup, and `make status` for
 service details. Ctrl-C stops the frontend; `make down` stops the containers
 and preserves data. Check ownership before operating a stack bound to another
-checkout. Keep Docker storage, dependencies and build output on the external
-SSD. See [local startup details](operations/testing-and-delivery.md#local-docker-services-and-frontend)
+checkout. Prefer the external SSD for Docker storage, dependencies and build output; use internal storage when it is unavailable. See [local startup details](operations/testing-and-delivery.md#local-docker-services-and-frontend)
 and the root [Makefile](../Makefile). `npm run dev` retains the hosted default.
 
 Use `npm run test:db` only for focused database debugging. Real Google sign-in, private file round trips, live MCP clients, and employer forms still require explicit live verification; tests do not submit real applications.
