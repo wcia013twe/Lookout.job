@@ -172,3 +172,9 @@ as optional, and recognizes an existing Lookout frontend. Main preview locks
 track process ownership and recover stopped owners; unknown owners are preserved.
 See [local runtime details](local-and-release-runtime.md#focused-startup-reliability-update)
 and the startup feature change note for checks and live-verification limits.
+
+The warm local startup path was verified after recovering an unresponsive Docker
+Desktop engine: Auth/REST health passed, the port-3000 frontend was gracefully
+restarted with a process-owned preview lock, and the page returned HTTP 200.
+Repeated startup commands reuse the running setup. No database reset or container
+removal was performed; cold startup and remote tunnel connectivity remain unverified.
