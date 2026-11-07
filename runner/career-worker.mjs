@@ -135,7 +135,8 @@ export async function scanDiscovery(input) {
  const limit=input.limit===undefined?Infinity:input.limit;if(input.limit!==undefined&&(!Number.isInteger(limit)||limit<1||limit>500))throw Error('Invalid explicit discovery limit');
  const scan=await scanSource({target:input.target,config:input.config||{},limit});
  if(scan.status!=='ok')return {...scan,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',scanner:'runner/career-worker.mjs scanSource',dedup:'scan.mjs + dedup-tracker.mjs'},jobs:[]};
- const jobs=await deduplicateDiscovery(scan.jobs.map(({description,...job})=>job),input.previous||[]);
+ const leads=scan.jobs.map(({description,...job})=>job);
+ const jobs=input.collectOnly?leads:await deduplicateDiscovery(leads,input.previous||[]);
  return {...scan,jobs,duplicates:scan.jobs.length-jobs.length,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',provider:'providers/'+scan.provider+'.mjs',scanner:'runner/career-worker.mjs scanSource',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};
 }
 export async function runTask({task,input}) {

@@ -24,3 +24,13 @@ test('background source collection consumes the full Simplify feed in verificati
  assert.equal(requests,1);assert.deepEqual(sizes,[25,25,11]);assert.equal(output.total,61);assert.equal(output.listings.length,61);assert.equal(output.coverage,'exhaustive');
  assert(output.listings.every(r=>r.employmentType==='Internship'));
 });
+
+
+test('Simplify off-season page uses the same structured provider with its published season window',async()=>{
+ const address=url+'/blob/dev/README-Off-Season.md';const rows=[row('fall',{terms:['Fall 2026']}),row('winter',{terms:['Winter 2027']}),row('spring',{terms:['Spring 2027']}),row('summer'),row('old',{terms:['Winter 2026']}),row('multi',{terms:['Summer 2027','Spring 2027']})];
+ assert(simplifyFeed(address));
+ const page=await readSimplifyLeads(address,{limit:null,request:async()=>new Response(JSON.stringify(rows))});
+ assert.equal(page.coverage,'exhaustive');assert.deepEqual(new Set(page.leads.map(r=>r.url.split('/').at(-1))),new Set(['fall','winter','spring','multi']));
+ const {sourceProviders}=await import('../backend/runtime/source-providers.ts');
+ assert.equal(sourceProviders.get('simplify').detect({careers_url:address}),true);
+});

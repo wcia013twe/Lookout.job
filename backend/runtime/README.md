@@ -9,6 +9,11 @@ My Agent is the single schedule configuration; the personal agent runtime owns
 recurrence and submits one bounded job per authorized run. The Node worker only
 claims already queued jobs. There is no Node recurring-search scheduler.
 
+HiringCafe, Simplify and copied Career Ops collection are registered through one
+`{id, detect, fetch}` interface in `source-providers.ts`. Every provider returns
+leads, provenance and coverage diagnostics to the same deduplication and employer
+verification pipeline; only the existing fenced worker writes observations.
+
 The approved executor is `search_ats`: one leased job collects provider results using upstream pagination, verifies supported employer postings, saves observations, persists current
 versioned screening checks, applies copied Career Ops deduplication and stores
 shortlist IDs in its existing job result (`pipelineVersion: 1`). Muse reads that

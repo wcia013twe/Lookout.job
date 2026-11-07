@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {createTestDatabase} from './helpers/database.mjs';
 import {workOnce,executeSearch} from '../backend/runtime/worker.ts';
+import {verifyDiscoveryLeads} from '../runner/career-search-intake.mjs';
 import {executeCareerTask} from '../runner/career-tools.mjs';
 let db;before(async()=>{db=await createTestDatabase();});after(async()=>{await db?.close();});
 async function fixture({partial=false,extraSources=0}={}){
@@ -34,7 +35,7 @@ test('one real SQL-leased job persists verified observations, screenings and a c
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});
  const j=await result(f.job.id);assert.equal(j.status,'completed');assert.equal(j.result.pipelineVersion,1);
  assert.equal(j.result.shortlist.screenedCount,3);assert.equal(j.result.shortlist.excludedCount,2);assert.equal(j.result.shortlist.retainedListingIds.length,1);assert.equal(j.result.shortlist.reporting,'pending-muse');assert.equal(j.result.shortlist.applicantEligibility,'not-evaluated');
- assert.deepEqual(t.calls.map(c=>c.task),['inspect-discovery-filters','discovery','verify-discovery-leads','filter-discovery','dedup-discovery']);
+ assert.deepEqual(t.calls.map(c=>c.task),['inspect-discovery-filters','discovery','dedup-discovery','verify-discovery-leads','filter-discovery','dedup-discovery']);
  assert.equal((await db.query('select count(*)::int n from public.search_screenings where user_id=$1',[f.owner])).rows[0].n,3);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
@@ -142,4 +143,37 @@ test('concurrent source collection preserves every distinct listing through fenc
  assert.equal(j.status,'completed');assert(peak>1&&peak<=10);assert.equal(verified.length,12);
  assert.equal(j.result.shortlist.screenedCount,12);assert.equal(j.result.shortlist.retainedListingIds.length,12);
  assert.equal(new Set(j.result.shortlist.retainedListingIds).size,12);
+});
+
+
+test('HiringCafe, Simplify and Career Ops share verification and dedup before protected database persistence',async()=>{
+ const f=await fixture();
+ const sources=[{id:'cafe',name:'HiringCafe (fictional transport)',careers_url:'https://hiringcafe.com/',enabled:true},{id:'simplify',name:'Simplify (fictional transport)',careers_url:'https://github.com/SimplifyJobs/New-Grad-Positions',enabled:true},{id:'employer',name:'Example (fictional)',careers_url:'https://job-boards.greenhouse.io/example',enabled:true}];
+ await db.query("update public.search_documents set projection=$2 where user_id=$1 and kind='portals'",[f.owner,{tracked_companies:sources,search_queries:[]}]);
+ const base='https://job-boards.greenhouse.io/example/jobs/';const checked=[],saved=[];
+ const execute=async(task,input)=>{
+  if(task==='discovery'){assert.equal(input.collectOnly,true);return {status:'ok',available:2,truncated:false,jobs:['100','300'].map(id=>({url:base+id,title:'Software Engineer New Grad',company:'Example (fictional)',location:'Remote'}))};}
+  if(task==='verify-discovery-leads')return verifyDiscoveryLeads(input.leads,{source:input.source,
+   check:async leads=>leads.map(({url})=>{checked.push(url);const id=url.split('/').at(-1);return {url,result:id==='200'?'expired':id==='400'?'uncertain':'active',code:'fixture',reason:'Fictional employer response',checkedAt:new Date().toISOString(),method:'ats-api'};}),
+   fetchJson:async url=>{const id=Number(url.match(/jobs\/(\d+)/)[1]);return {id,title:'Software Engineer New Grad',absolute_url:base+id,company_name:'Example (fictional)',location:{name:'Remote'},content:'<p>Fictional full-time backend infrastructure role.</p>'};},
+  });
+  return executeCareerTask(task,input);
+ };
+ const request=async(url,init={})=>{
+  if(String(url).startsWith('https://raw.githubusercontent.com/'))return new Response(JSON.stringify(['100','200','400'].map(id=>({id,active:true,url:base+id,title:'Software Engineer New Grad',company_name:'Example (fictional)',locations:['Remote']}))));
+  const call=JSON.parse(init.body);assert.equal(call.params.name,'refine_hiringcafe_job_results');
+  return new Response(JSON.stringify({result:{structuredContent:{jobs:['100','200'].map(id=>({id,title:'Software Engineer New Grad',company:'Example (fictional)',applyUrl:base+id})),total_matches:2}}}));
+ };
+ const claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;
+ const dispatch=async(operation,payload)=>{
+  if(operation==='search.discoveries.save')saved.push(...payload.listings);
+  const r=await rpc('backend_worker',{operation:'dispatch',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload}});
+  if(r.error)throw r.error;return r.data;
+ };
+ const outcome=await executeSearch(claim.job,dispatch,{execute,request});
+ assert.equal(outcome.status,'partial');assert(checked.includes(base+'200'));assert(checked.includes(base+'400'));
+ assert(saved.every(row=>['100','300'].some(id=>row.url===base+id)));
+ assert.equal(outcome.result.shortlist.screenedCount,2);assert.equal(outcome.result.shortlist.retainedListingIds.length,2);
+ const persisted=await dispatch('search.discoveries.read',{runId:outcome.result.runId,offset:0,limit:100});
+ assert.equal(persisted.listings.length,2);assert.deepEqual(new Set(persisted.listings.map(row=>row.canonical_url||row.url)),new Set([base+'100',base+'300']));
 });

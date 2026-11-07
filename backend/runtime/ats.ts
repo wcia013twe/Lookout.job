@@ -1,5 +1,4 @@
-import {hiringCafeSource,readHiringCafeLeads} from './hiringcafe.ts';
-import {readSimplifyLeads,simplifyFeed} from './simplify.ts';
+import {collectSource} from './source-providers.ts';
 import {discoveryDedupRow} from '../../lib/search-dedup.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
 import type {Payload} from './types.ts';
@@ -10,24 +9,18 @@ export type Execute=(task:string,input:Payload)=>Promise<any>;
 // No provider, URL normalization or deduplication implementation lives here.
 export async function fetchSource(sourceId:string,source:Payload,{execute=executeCareerTask,previous=[],profile={},days=3,request=fetch}: {execute?:Execute;previous?:Payload[];profile?:Payload;days?:number;request?:typeof fetch}={}):Promise<SourceResult>{
  try{
-  if(hiringCafeSource(source.careers_url)){
-   const page=await readHiringCafeLeads(source,{profile,days,request});
-   const unique=await deduplicate(page.leads,previous,execute);
-   const checked=unique.length?await verifySourceBatches(sourceId,unique,{execute,source}):{listings:[],diagnostics:[],blocker:'',provenance:{}};
-   return {...checked,examined:page.examined,total:page.total,coverage:'truncated',blocker:'HiringCafe bounded per-company sample; rounded provider freshness is not an exact posting-date filter. '+(page.omittedQueries?'Some query combinations exceeded the four-query budget. ':'')+(page.diagnostics.length?'Some employer links remain unresolved; inspect diagnostics. ':'')+checked.blocker,diagnostics:[...page.diagnostics,...(checked.diagnostics||[])],provenance:{...checked.provenance,aggregate:'HiringCafe public MCP',endpoint:page.endpoint,queries:page.queries,omittedQueries:page.omittedQueries,dedup:'dedup-tracker.mjs'}};
-  }
-  if(simplifyFeed(source.careers_url)){
-   const page=await readSimplifyLeads(source.careers_url,{limit:null,request});
-   const unique=await deduplicate(page.leads,previous,execute);
-   const checked=await verifySourceBatches(sourceId,unique,{execute,source});
-   return {...checked,examined:page.leads.length,provenance:{...checked.provenance,aggregate:'official Simplify structured JSON',dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'},total:page.total,coverage:page.nextOffset!==null?'truncated':checked.coverage,blocker:page.nextOffset!==null?`Bounded aggregate sample; ${page.total} active source leads, next source offset ${page.nextOffset}. Agent can page remaining leads through read_search_source_leads. ${checked.blocker}`:checked.blocker};
-  }
-  const result=await execute('discovery',{target:{id:sourceId,name:source.name||sourceId,address:source.careers_url},config:{...(source.config||{}),...(source.provider?{provider:source.provider}:{}),...(source.api?{api:source.api}:{})},previous:previous.map(discoveryDedupRow)});
-  if(result.status!=='ok')return {listings:[],coverage:'inaccessible',blocker:'Source needs agent research or a supported copied CareerOps connector.',total:0,provenance:result.provenance};
-  const checked=await verifySourceBatches(sourceId,result.jobs.map((row:Payload)=>({url:row.url})),{execute,source});
-  return {...checked,examined:result.jobs.length,total:result.available,coverage:result.truncated?'truncated':checked.coverage,blocker:result.truncated?'Career Ops provider reported incomplete pagination. '+checked.blocker:checked.blocker,provenance:{...result.provenance,...checked.provenance}};
- }catch(error){return {listings:[],coverage:'inaccessible',blocker:hiringCafeSource(source.careers_url)?(error instanceof Error?error.message:'HiringCafe unavailable'):'Copied CareerOps provider failed or exceeded isolated execution limits; use agent research or retry.',total:0};}
+  const collected=await collectSource(sourceId,source,{execute,profile,days,request});
+  if(collected.coverage==='inaccessible')return {listings:[],coverage:'inaccessible',total:collected.total,examined:collected.examined,blocker:collected.blocker,diagnostics:collected.diagnostics,provenance:collected.provenance};
+  const unique=collected.jobs.length?await deduplicate(collected.jobs,previous,execute):[];
+  const checked=await verifySourceBatches(sourceId,unique,{execute,source});
+  return {...checked,total:collected.total,examined:collected.examined,
+   coverage:collected.coverage==='exhaustive'?checked.coverage:'truncated',
+   blocker:[collected.blocker,checked.blocker].filter(Boolean).join(' '),
+   diagnostics:[...(collected.diagnostics||[]),...(checked.diagnostics||[])],
+   provenance:{...collected.provenance,...checked.provenance,dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'}};
+ }catch(error){return {listings:[],coverage:'inaccessible',blocker:'Source collection failed: '+(error instanceof Error?error.message:'provider unavailable'),total:0};}
 }
+
 export async function deduplicate(listings:Payload[],previous:Payload[]=[],execute:Execute=executeCareerTask){return execute('dedup-discovery',{jobs:listings,previous:previous.map(discoveryDedupRow)});}
 
 // Provider pagination is upstream-owned; verification retains its 25-link call

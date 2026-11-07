@@ -54,7 +54,7 @@ owned profile/source configuration, scoped persistence and the website view.
 
 1. Read current search context and applicant context, including the selected
    profile, relevant résumé, existing applications and source configuration.
-2. Use configured aggregate lead sources (Simplify New Grad and Summer 2027) or
+2. Use configured aggregate lead sources (Simplify New Grad, Summer 2027 and the off-season page) or
    copied Career Ops providers. The agent's own runtime can execute web search;
    Lookout does not silently substitute an unconfigured search engine.
 3. Start an owned search run. Submit 1–25 discovered employer URLs through
@@ -127,9 +127,13 @@ separate API call or newly scoped tool is required. Both website and Node MCP
 job submission retain existing ownership, version, credential and lease checks.
 Merely adding the optional template does not change private saved sources.
 
-`backend/runtime/hiringcafe.ts` is a first-party aggregate adapter, like Simplify;
-the copied CareerOps source remains unchanged. It uses the fixed official
-https://hiringcafe.com/api/chatgpt/mcp endpoint with `search_hiringcafe_jobs` and
+HiringCafe, Simplify and Career Ops collection use the same `{id, detect, fetch}`
+provider contract and the copied Career Ops resolver in `backend/runtime/source-providers.ts`.
+Providers return leads and coverage diagnostics; the shared `fetchSource` pipeline
+deduplicates, verifies liveness and parses supported employer postings before the
+existing worker saves observations through fenced database transactions. The copied
+Career Ops files remain unchanged. HiringCafe uses the fixed official
+https://hiringcafe.com/api/chatgpt/mcp endpoint with `refine_hiringcafe_job_results` and
 `get_hiringcafe_job_details`. It does not forward credentials, resumes or profile
 narrative. The selected profile contributes structured location, employment and
 entry-level choices; required work arrangements become provider filters, while
@@ -140,11 +144,12 @@ become `posted_within_days`; the provider rounds freshness and dates are not
 independent employer publication evidence. Freeform compensation, team fit and
 other narrative preferences remain downstream screening/research work.
 
-Each source permits four query combinations, 25 unique inspected leads, a
-75-second deadline and 2 MB per response; exceeding query, row or time budgets
-keeps coverage partial. Provider match counts are sums across executed queries
-and may overlap. The API returns one role per company, so coverage is always
-`truncated`, including empty results; it never establishes an exhaustive sweep.
+Every configured query combination is attempted within a 75-second deadline and
+2 MB per response; interrupted queries remain visible in coverage metadata. The
+current live MCP schema exposes up to 25 results per query and up to five jobs per
+employer, with no pagination cursor. Provider match counts sum executed queries
+and may overlap. Coverage is always `truncated`, including empty results; it never
+establishes an exhaustive sweep.
 Rate limits, malformed responses and failed sources become explicit blockers.
 
 An API-provided external application URL enters the existing copied employer

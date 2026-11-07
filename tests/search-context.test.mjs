@@ -55,3 +55,10 @@ test('fictional demo distinguishes complete batched verification from the retain
  assert.equal(source.checkpoint.diagnostics.filter(d=>d.status==='expired').length,60);
  assert.equal(source.coverage,'exhaustive');assert.equal(data.listings.length,1);
 });
+
+
+test('fictional demo labels HiringCafe as a source using the shared provider pipeline',async()=>{
+ const {searchDemo}=await import('../lib/search/demo.mjs');const run=searchDemo().runs.find(r=>r.id==='demo-run');
+ assert.equal(run.sources.find(s=>s.source_id==='portal:demo-aggregate').source.name,'HiringCafe (fictional)');
+ assert.match(run.summary,/All providers share collection, deduplication, employer verification and database persistence/);
+});

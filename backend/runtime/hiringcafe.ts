@@ -18,7 +18,7 @@ export function hiringCafeQueries(source:Payload,profile:Payload={},days=3){
   if(constraints.workArrangement.strength==='required'&&constraints.workArrangement.values.length)q.workplace_types=constraints.workArrangement.values.map((v:string)=>({'remote':'Remote','hybrid':'Hybrid','on-site':'Onsite'}[v]));
   queries.push(q);
  }
- return {queries:queries.slice(0,4),omittedQueries:Math.max(0,queries.length-4)};
+ return {queries,omittedQueries:0};
 }
 async function boundedJson(response:Response){if(!response.ok)throw Error(`HiringCafe HTTP ${response.status}${response.status===429?'; rate limited; retry later':''}`);return JSON.parse(await boundedText(response));}
 async function boundedText(response:Response){if(!response.body)throw Error('HiringCafe response body missing');const chunks:Uint8Array[]=[];let size=0;for await(const chunk of response.body){size+=chunk.length;if(size>2000000)throw Error('HiringCafe response exceeds 2 MB');chunks.push(chunk);}return Buffer.concat(chunks).toString('utf8');}
@@ -37,18 +37,18 @@ export async function resolveHiringCafeEmployer(job:Payload,request:typeof fetch
  }
  if(links.size!==1)throw Error('HiringCafe employer link missing or ambiguous');return [...links][0];
 }
-export async function readHiringCafeLeads(source:Payload,{profile={},days=3,request=fetch,limit=25}:{profile?:Payload;days?:number;request?:typeof fetch;limit?:number}={}){
+export async function readHiringCafeLeads(source:Payload,{profile={},days=3,request=fetch,limit=Infinity}:{profile?:Payload;days?:number;request?:typeof fetch;limit?:number}={}){
  if(!hiringCafeSource(source.careers_url))throw Error('HiringCafe source required');
- if(!Number.isInteger(limit)||limit<1||limit>25)throw Error('Bounded HiringCafe limit required');
+ if(limit!==Infinity&&(!Number.isInteger(limit)||limit<1||limit>25))throw Error('Bounded HiringCafe limit required');
  const deadline=AbortSignal.timeout(75000),originalRequest=request;request=(url,init={})=>originalRequest(url,{...init,signal:AbortSignal.any([deadline,...(init.signal?[init.signal]:[])])});
  const plan=hiringCafeQueries(source,profile,days),leads:Payload[]=[],diagnostics:{url:string;status:string;reason:string;extraction:string}[]=[],queries:Payload[]=[];const seen=new Set<string>();let total=0,examined=0;
  for(const [index,args] of plan.queries.entries()){
   if(examined>=limit||deadline.aborted)break;
-  let response:Response;try{response=await request(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json, text/event-stream'},redirect:'error',signal:AbortSignal.timeout(30000),body:JSON.stringify({jsonrpc:'2.0',id:index+1,method:'tools/call',params:{name:'search_hiringcafe_jobs',arguments:args}})});}catch(error){if(!queries.length)throw error;diagnostics.push({url:endpoint,status:'uncertain',reason:'HiringCafe query interrupted; earlier results retained',extraction:'not-attempted'});break;}
+  let response:Response;try{response=await request(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json, text/event-stream'},redirect:'error',signal:AbortSignal.timeout(30000),body:JSON.stringify({jsonrpc:'2.0',id:index+1,method:'tools/call',params:{name:'refine_hiringcafe_job_results',arguments:{...args,limit:25,max_per_company:5}}})});}catch(error){if(!queries.length)throw error;diagnostics.push({url:endpoint,status:'uncertain',reason:'HiringCafe query interrupted; earlier results retained',extraction:'not-attempted'});break;}
   if(!response.ok&&queries.length){diagnostics.push({url:endpoint,status:'uncertain',reason:`HiringCafe HTTP ${response.status}; earlier results retained`,extraction:'not-attempted'});break;}
   const envelope=await boundedJson(response);if(envelope.error||envelope.result?.isError)throw Error('HiringCafe search tool failed');
-  const result=envelope.result?.structuredContent;if(!Array.isArray(result?.jobs)||!Number.isInteger(result.total_matches)||result.total_matches<result.jobs.length)throw Error('HiringCafe search response schema changed');
-  queries.push({filters:args,reportedMatches:result.total_matches,returned:result.jobs.length});total+=result.total_matches;
+  const result=envelope.result?.structuredContent;if(!Array.isArray(result?.jobs)||result.total_matches!==null&&(!Number.isInteger(result.total_matches)||result.total_matches<result.jobs.length))throw Error('HiringCafe search response schema changed');
+  queries.push({filters:args,reportedMatches:result.total_matches,returned:result.jobs.length});total+=result.total_matches??result.jobs.length;
   for(const job of result.jobs){
    if(examined>=limit||deadline.aborted)break;if(typeof job.id!=='string'||!job.id||typeof job.title!=='string'||typeof job.company!=='string')throw Error('HiringCafe job response schema changed');if(seen.has(job.id))continue;seen.add(job.id);examined++;
    let detail=job;
@@ -58,6 +58,7 @@ export async function readHiringCafeLeads(source:Payload,{profile={},days=3,requ
    }catch(error){diagnostics.push({url:typeof detail.applyUrl==='string'?detail.applyUrl:`https://hiringcafe.com/job/${encodeURIComponent(job.id)}`,status:'uncertain',reason:error instanceof Error?error.message:'HiringCafe employer link unresolved',extraction:'not-attempted'});}
   }
  }
- // Provider returns one role per company and rounded freshness windows; always a bounded sample.
- return {leads,diagnostics,total,examined,queries,omittedQueries:plan.omittedQueries,coverage:'truncated' as const,endpoint};
+ // The live MCP schema exposes up to 25 results and no cursor; all configured
+ // query combinations are attempted, but these remain limited search results.
+ return {leads,diagnostics,total,examined,queries,omittedQueries:Math.max(0,plan.queries.length-queries.length),coverage:'truncated' as const,endpoint};
 }

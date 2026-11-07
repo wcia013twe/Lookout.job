@@ -13,7 +13,7 @@ const result=(jobs,total_matches=jobs.length)=>json({result:{structuredContent:{
 test('HiringCafe maps saved filters into separate bounded tracks without making preferences mandatory',()=>{
  assert(hiringCafeSource('https://hiring.cafe/'));for(const u of ['https://hiringcafe.com.evil.test','https://hiringcafe.com@evil.test','http://hiringcafe.com','https://hiringcafe.com:444'])assert(!hiringCafeSource(u));
  const plan=hiringCafeQueries(source,profile,30);assert.equal(plan.queries.length,2);assert.deepEqual(plan.queries.map(q=>q.employment_types),[['Full Time'],['Internship']]);assert.equal(plan.queries[0].posted_within_days,30);assert.equal(plan.queries[0].location,'United States');assert.equal(plan.queries[0].workplace_types,undefined);assert.deepEqual(plan.queries[0].seniority_levels,['No Prior Experience Required','Entry Level']);
- assert.deepEqual(hiringCafeQueries({},{}).queries,[{posted_within_days:3}]);assert(hiringCafeQueries({...source,keywords:['a','b','c']},{filters:{Location:'A;B;C',Employment:'Full-time, Internship'}}).omittedQueries>0);
+ assert.deepEqual(hiringCafeQueries({},{}).queries,[{posted_within_days:3}]);assert.equal(hiringCafeQueries({...source,keywords:['a','b','c']},{filters:{Location:'A;B;C',Employment:'Full-time, Internship'}}).queries.length,18);
 });
 test('HiringCafe only resolves explicit public employer links; missing and ambiguous links remain unknown',async()=>{
  assert.equal(await resolveHiringCafeEmployer(job),url);
@@ -30,7 +30,7 @@ test('aggregate failures are explicit, provider dates stay source evidence, and 
  }
 });
 test('unresolved HiringCafe pages remain diagnostics and never enter employer verification',async()=>{
- let verify=0;const request=async(_url,init)=>{if(init.method==='POST'){const p=JSON.parse(init.body).params;if(p.name==='search_hiringcafe_jobs')return result([{...job,applyUrl:undefined}],1);return json({result:{structuredContent:{job:{...job,applyUrl:'https://hiringcafe.com/job/example'}}}});}return new Response('challenge',{status:403});};
+ let verify=0;const request=async(_url,init)=>{if(init.method==='POST'){const p=JSON.parse(init.body).params;if(p.name==='refine_hiringcafe_job_results')return result([{...job,applyUrl:undefined}],1);return json({result:{structuredContent:{job:{...job,applyUrl:'https://hiringcafe.com/job/example'}}}});}return new Response('challenge',{status:403});};
  const output=await fetchSource('portal:cafe',source,{request,execute:async(task,input)=>{if(task==='dedup-discovery')return input.jobs;verify++;throw Error('must not verify unresolved links');}});
  assert.equal(verify,0);assert.equal(output.coverage,'truncated');assert.equal(output.diagnostics[0].status,'uncertain');assert.match(output.diagnostics[0].reason,/403/);assert.equal(output.listings.length,0);
 });
@@ -44,4 +44,15 @@ test('one batch search job collects HiringCafe, verifies employer URLs, screens 
  const execute=async(task,input)=>{if(task==='verify-discovery-leads'){assert.deepEqual(input.leads,[{url}]);return {jobs:[{url,title:job.title,company:job.company,description:'Employer verified backend role',location:'United States',postedAt:null,listingIdentity:{ats_provider:'greenhouse',board_slug:'example',posting_id:'123'}}],diagnostics:[{url,status:'active',extraction:'parsed'}]};}return executeCareerTask(task,input);};
  const output=await executeSearch({id:'batch',kind:'search_ats',input:{profileId:'general'},version:1,attempts:1},dispatch,{execute,request:async(endpoint,init)=>{http.push(JSON.parse(init.body));return result([job,job],5);}});
  assert.equal(http.length,1);assert.equal(http[0].params.arguments.search,'backend engineer');assert.deepEqual(http[0].params.arguments.employment_types,['Full Time']);assert.equal(output.status,'partial');assert.equal(output.result.saved,1);assert.deepEqual(output.result.shortlist.retainedListingIds,['listing-0']);assert.equal(saved[0].employerPostedAt,null);assert(calls.includes('search.screenings.commit'));assert.equal(output.result.provenance[0].aggregate,'HiringCafe public MCP');assert(!calls.some(op=>/publish|submit|application/.test(op)));
+});
+
+
+test('HiringCafe provider uses the live structured tool schema and processes every query combination',async()=>{
+ const requests=[];
+ const page=await readHiringCafeLeads({...source,keywords:['backend','database','inference']},{profile,request:async(_url,init)=>{
+  const call=JSON.parse(init.body);requests.push(call);
+  assert.equal(call.params.name,'refine_hiringcafe_job_results');assert.equal(call.params.arguments.limit,25);assert.equal(call.params.arguments.max_per_company,5);
+  return result([{...job,id:String(requests.length),applyUrl:url+'?ref='+requests.length}],null);
+ }});
+ assert.equal(requests.length,6);assert.equal(page.omittedQueries,0);assert.equal(page.leads.length,6);assert.equal(page.coverage,'truncated');
 });
