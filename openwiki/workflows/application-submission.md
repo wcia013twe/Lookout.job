@@ -292,3 +292,6 @@ shared current step, without projecting private history.
 Visual correction: the progress bar, circles and current-step ring are purple;
 only the checkmark glyph inside a completed step is green. Completion rules above
 are unchanged.
+
+Palette refinement: progress uses the softer original lavender (#a78bcb), with a
+contrasting green checkmark inside. No completion or data behavior changes.
