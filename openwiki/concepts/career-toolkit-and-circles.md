@@ -191,3 +191,7 @@ a call, or a saved Calendar association. Hidden interviewer preparation and inte
 record IDs are never placed in that URL. Completed/cancelled sessions retain their
 saved reader/feedback route. Real-account mock routing is unchanged; a deployed
 Google Calendar event integration is not claimed by this preview.
+
+### Palantir research demo
+
+The current five-material preview centers on the public New York New Grad Query Engines posting, with a separately labeled fictional application. The round brief saves two short Glassdoor excerpts with report dates, anonymous attribution and review IDs; it labels those as general SWE candidate reports, not a confirmed Query Engines process. Original practice prompts are distinguished from reported questions. Visible source links and three external-resource rows open Glassdoor, the employer posting, DataFusion, PostgreSQL and Furnace pages through the existing source/resource link boundaries. Research stays dated November 7, 2026 across demo resets. Candidate stories, events, status and debrief remain fictional; no employer action or real account write occurs.
