@@ -157,6 +157,21 @@ Google OAuth and GCP worker/browser execution were not exercised. The separate
 Pages release `42408607455` timed out after its successful backend step; this
 receipt establishes database/backend readiness, not successful website publication.
 
+Final reconciliation also includes the subsequently committed worker-conflict
+guards `20261107200723` and `20261107201211`. Official backend run `42411416297`
+succeeded from protected main `4a1c1f635e7a0e535f0c429b9f4d99a55e8f1fe2`.
+All **91** migration versions and **2,960** schema/permission entries match the
+source replay. The real hosted worker queue/ownership/cancelled-expired-lease
+conflict scenarios passed in one rolled-back transaction using fictional users
+and actual Auth claim settings. Final counts are zero accounts, profiles, files,
+connections, imported records, backend jobs and backend requests; shared records
+and bucket settings are unchanged. All 56 deployed MCP and 87 gateway source
+files match that reviewed commit, including the stamped runtime version. Their
+executable sources are otherwise byte-identical to the earlier live smoke-tested
+contract-112 handlers; the added SQL guards only change stale worker conflicts
+to non-retryable `PT409`. No personal data was transferred and no execution was
+enabled. The separate website publication limit above still applies.
+
 The Pages workflow runs on `main`, calls the backend deployment workflow first, runs the repository test suite and data validation, builds the static export, then deploys the Pages artifact. Backend deployment runs only from `main`, requires the production environment and `SUPABASE_ACCESS_TOKEN`, and invokes `npm run deploy:backend`. This wiring means a frontend-only build should not be represented as publishing gateway/MCP or migration changes.
 
 Repository documentation records a prior prepared schema rollout and gateway/MCP release, including unauthenticated denial checks. It simultaneously says authenticated MCP discovery/read/write, client support, real Google sign-in, and intended-device round trips need verification. Therefore describe those releases as **recorded deployment evidence with explicit verification gaps**, not as blanket proof that all current functionality is live.
