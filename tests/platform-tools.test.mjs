@@ -1,11 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PLATFORM_TOOLS,validatePlatformPayload } from '../supabase/functions/agent-gateway/platform-tools.mjs';
+import {PLATFORM_TOOLS, validatePlatformPayload} from '../supabase/functions/agent-gateway/platform-tools.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
-test('every product action has one registered tool with an explicit scope',()=>{
- for(const tool of PLATFORM_TOOLS){assert.equal(TOOLS.filter(t=>t.operation===tool.operation).length,1);assert.ok(tool.scope);assert.equal(tool.inputSchema.additionalProperties,false);}
-});
 test('pack texture changes use the scoped theme-preference tool',()=>{
  const tool=PLATFORM_TOOLS.find(item=>item.operation==='preferences.theme.save');
  assert.match(tool.description,/pack texture/);

@@ -1,8 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {industryOptions,parseIndustries,toggleIndustry} from '../lib/industries.mjs';
-import {readField,updateField,profileFromPrompt,promptFromProfile} from '../lib/search-profile.mjs';
-import {demoFixtures} from '../next-app/lib/demo.mjs';
+import {industryOptions, parseIndustries, toggleIndustry} from '../lib/industries.mjs';
+import {readField, updateField, profileFromPrompt, promptFromProfile} from '../lib/search-profile.mjs';
 
 test('industry taxonomy has the exact 31 choices and reads legacy case without adding aliases',()=>{
  assert.equal(industryOptions.length,31);
@@ -25,15 +24,6 @@ test('industry toggles retain custom values, permit clearing all selections, and
  assert.equal(readField(cleared,'Priority & flexibility','Industries').value,'Required');
  assert.deepEqual(profileFromPrompt(promptFromProfile(profileFromPrompt(next))),profileFromPrompt(next));
  assert.throws(()=>edit('Fintech')('## Company preferences\n- Industries: Design\n- Industries: Energy'),/duplicate/);
-});
-test('demo industries include selected standard/custom options and reset independently',()=>{
- const a=demoFixtures('2026-11-07'),b=demoFixtures('2026-11-07');
- const profile=a.state.workflow.searchPreferences.profiles[0];
- const prompt=promptFromProfile(profile);
- assert.deepEqual(parseIndustries(readField(prompt,'Company preferences','Industries').value),['AI & Machine Learning','Data & Analytics','Enterprise Software','Research tools (demo)']);
- assert.equal(readField(prompt,'Priority & flexibility','Industries').value,'Preferred');
- profile.instructions='Changed only in this fixture';
- assert.notEqual(b.state.workflow.searchPreferences.profiles[0].instructions,profile.instructions);
 });
 test('website and native MCP save industry strings through the same versioned owner boundary',async()=>{
  const {createTestDatabase}=await import('./helpers/database.mjs');

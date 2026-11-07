@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateJobRecommendation,savedJobAssessment,recommendationNeedsRefresh} from '../lib/job-assessment.mjs';
+import {validateJobRecommendation, savedJobAssessment, recommendationNeedsRefresh} from '../lib/job-assessment.mjs';
 import {batchRoles} from '../lib/cloud-model.mjs';
 import {companyRanking} from '../next-app/lib/role-display.js';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
@@ -41,14 +41,6 @@ test('rankings follow saved track/profile placements, never company name tables'
  assert.equal(companyRanking('Google','FT',workflow,'missing').label,'Unranked');
  workflow.tierLists[0].placements={A:['company']};assert.equal(companyRanking('Google','FT',workflow).rarity,'legendary');
  const drops=batchPackDrops([{id:'batch',batch_date:'2026-10-23'}],[{batch_id:'batch',recommendation:rec,jobs:{employer:{company:'Google'}}}]);assert.equal(drops[0].searchProfileId,'systems');
-});
-
-test('detached demo covers ranked and unranked cards through saved fictional placements',async()=>{
- const {demoFixtures}=await import('../next-app/lib/demo.mjs');
- const workflow=demoFixtures('2026-10-23').state.workflow;
- assert.equal(companyRanking('NVIDIA','FT',workflow).label,'A tier');
- assert.equal(companyRanking('Oracle','FT',workflow).label,'D tier');
- assert.equal(companyRanking('Unlisted demo company','FT',workflow).label,'Unranked');
 });
 
 test('compact four-score agent JSON survives the existing batch/card path without generating an overall score',()=>{

@@ -274,3 +274,14 @@ agent-only interviewer preparation, with versioned resume/completion and a linke
 debrief. The user calls their agent externally; no scheduler or call transport is
 provided. Source tests and detached demo coverage do not establish hosted release
 or an external-agent call. See the Career Toolkit concept page and feature note.
+
+## Test harness consolidation (focused source update)
+
+The full Node suite uses a disposable migrated PGlite snapshot for independent
+ordinary database fixtures, with four concurrent test files. Migration/upgrade
+fixtures retain full replay and custom hooks. The snapshot lives only for one
+run and is cleaned up; focused direct Node tests need no snapshot. Demo reset
+isolation is checked over whole fixture graphs instead of repeated exact sample
+contents. That check found shared nested preparation resource data; the two
+workspace fixture factories now clone their returned graphs. See the verification
+strategy for scope and the feature change note for actual validation results.

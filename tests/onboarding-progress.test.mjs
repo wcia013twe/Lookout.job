@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {onboardingProgressKey as key,readOnboardingProgress as read,saveOnboardingProgress as save,clearOnboardingProgress as clear} from '../next-app/lib/onboarding-progress.mjs';
+import {onboardingProgressKey as key, readOnboardingProgress as read, saveOnboardingProgress as save, clearOnboardingProgress as clear} from '../next-app/lib/onboarding-progress.mjs';
 function storage(){const data=new Map();return {getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};}
 test('refresh resumes navigation, isolates accounts and demo, and reset clears it',()=>{
  const s=storage();save(s,key('alice'),'circles');
@@ -15,10 +15,4 @@ test('transient reveal resumes at preview and invalid or unavailable storage sta
  assert.equal(read(null,key('alice')),'start');assert.equal(save(null,key('alice'),'connect'),false);
  assert.doesNotThrow(()=>clear(null,key('alice')));
  assert.equal(key(null),null);
-});
-test('fictional demo checkpoints survive refresh and reset epochs start fresh',()=>{
- const s=storage();save(s,key('demo-3'),'connect');
- assert.equal(read(s,key('demo-3')),'connect');
- assert.equal(read(s,key('demo-4')),'start');
- assert.equal(read(s,key('alice')),'start');
 });

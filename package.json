@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "node --test --test-concurrency=4",
+    "test": "node scripts/run-tests.mjs",
     "test:submission:e2e": "node scripts/check-submission-e2e.mjs",
     "test:liveness": "node --test tests/career-liveness.test.mjs",
     "test:dedup": "node --test tests/search-dedup.test.mjs",

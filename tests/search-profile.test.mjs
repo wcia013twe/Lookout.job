@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialPrompt, readField, updateField } from '../lib/search-profile.mjs';
+import {initialPrompt, readField, updateField} from '../lib/search-profile.mjs';
 test('adjustments preserve prose and other sections, parse direct edits, and clear constraints', () => {
   const original = initialPrompt({ categories: ['Any industry'], locations: ['US'] }) + '\n## Additional Context\nRemote might be nice.\n';
   const edited = updateField(original, 'Search Filters', 'Work arrangement', 'Remote required');
@@ -82,19 +82,6 @@ test('duplicate and invalid priority instructions require resolution', async () 
   assert.throws(() => profileFromPrompt('## Priority & flexibility\n- Roles: Required\n- Roles: Flexible'), /Required, Preferred/);
   assert.throws(() => profileFromPrompt('## Priority & flexibility\n- Roles: Definitely'), /Required, Preferred/);
 });
-test('demo search strategies have isolated, resettable goals and tier-list associations', async () => {
-  const {demoFixtures, createMemoryStore} = await import('../next-app/lib/demo.mjs');
-  const initial = demoFixtures('2026-10-14');
-  const store = createMemoryStore(initial.state);
-  const profiles = store.get('workflow.searchPreferences.profiles');
-  const {promptFromProfile} = await import('../lib/search-profile.mjs');
-  assert.equal(profiles.length,2);
-  const ids = profiles.map(profile => readField(promptFromProfile(profile),'Company priorities','Tier list ID').value);
-  assert.notEqual(ids[0],ids[1]);
-  assert.ok(ids.every(id => initial.state.workflow.tierLists.some(list => list.id === id)));
-  store.set('workflow.searchPreferences.profiles',[]);
-  assert.equal(demoFixtures('2026-10-14').state.workflow.searchPreferences.profiles.length,2);
-});
 
 test('application profile identity, material selections and writing styles round trip independently', async () => {
  const {profileFromPrompt,promptFromProfile} = await import('../lib/search-profile.mjs');
@@ -123,21 +110,6 @@ test('application profile identity, material selections and writing styles round
  assert.equal(readField(promptFromProfile(second),'Employer answer writing','Length').value,'Detailed');
  assert.equal(readField(promptFromProfile(second),'Outreach writing','Length').value,'Brief');
  assert.equal(first.autoSubmitApproved,undefined);
-});
-
-test('application profile demo is fictional, isolated and resettable', async () => {
- const {withApplicationProfileDemo} = await import('../next-app/lib/application-profile-demo.mjs');
- const {demoFixtures,createMemoryStore} = await import('../next-app/lib/demo.mjs');
- const {promptFromProfile} = await import('../lib/search-profile.mjs');
- const base=demoFixtures('2026-10-20');
- const enhanced=withApplicationProfileDemo(base);
- const profiles=enhanced.state.workflow.searchPreferences.profiles;
- const emails=profiles.map(p=>readField(promptFromProfile(p),'Application identity','Application email').value);
- assert.deepEqual(emails,['candidate@example.com','candidate@example.edu']);
- assert.equal(readField(promptFromProfile(base.state.workflow.searchPreferences.profiles[0]),'Application identity','Application email').value,'');
- const store=createMemoryStore(enhanced.state);
- store.set('workflow.searchPreferences.profiles',[]);
- assert.equal(withApplicationProfileDemo(base).state.workflow.searchPreferences.profiles.length,2);
 });
 
 test('four fit-context notes round trip through website and MCP without changing filters or legacy evidence', async () => {

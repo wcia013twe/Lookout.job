@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {conversationMeetings,conversationTimeline,recordMeeting,conversationStage,conversationMessages,logInteraction,readConversation,waitingOn,validDate} from '../lib/outreach-conversation.mjs';
-import {demoOutreachContacts} from '../next-app/lib/outreach-demo.mjs';
+import {conversationMeetings, conversationTimeline, recordMeeting, conversationStage, conversationMessages, logInteraction, readConversation, waitingOn, validDate} from '../lib/outreach-conversation.mjs';
+
 import {processContactDraft} from '../lib/network-model.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 const message = {id:'sent',direction:'sent',channel:'LinkedIn',date:'2026-10-20',body:'The message actually sent'};
@@ -36,20 +36,6 @@ test('chronology follows reported dates; malformed data and unsafe links stay in
   assert.equal(validDate('2024-02-29'),true);assert.equal(validDate('2026-02-29'),false);
   const notes='{"format":"lookout-conversation-v1","messages":[{"body":"fake"}]}';
   assert.deepEqual(readConversation({notes}).messages,[]);assert.equal(readConversation({notes}).notes,notes);
-});
-test('demo has two resettable company conversations with distinct next actions',()=>{
-  const a=demoOutreachContacts('2026-10-20'),b=demoOutreachContacts('2026-10-20');
-  const robinhood=a.find(r=>r.id==='demo-recruiter');
-  const stripe=a.find(r=>r.id==='demo-referral');
-  assert.equal(conversationStage(robinhood),'ongoing');assert.equal(conversationStage(stripe),'ongoing');
-  assert.equal(conversationMessages(stripe).length,8);assert.equal(stripe.followUpDate,'2026-10-20');assert.equal(waitingOn(stripe),'Your turn to reply');
-  assert.deepEqual([...new Set(conversationMessages(stripe).map(m=>m.channel))].sort(),['Email','LinkedIn']);
-  assert.match(conversationMessages(stripe).at(-1).body,/two questions/);
-  assert.equal(stripe.status,'Referred');
-  assert.equal(waitingOn(robinhood),'Waiting for reply');
-  assert.deepEqual(a.filter(r=>conversationStage(r)==='ongoing').map(r=>r.company).sort(),['Robinhood','Stripe']);
-  assert.ok(a.some(r=>!r.company));assert.ok(a.some(r=>r.suggestion?.purpose==='connect'));
-  stripe.notes='Changed';assert.equal(conversationMessages(b.find(r=>r.id===stripe.id)).length,8);
 });
 
 test('meetings are separate optional notes, preserve message turn and status, and never imply completion',()=>{
