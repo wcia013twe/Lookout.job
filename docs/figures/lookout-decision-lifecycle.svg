@@ -1,0 +1,329 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" content="&lt;mxfile host=&quot;app.diagrams.net&quot; agent=&quot;Lookout figure generator&quot; version=&quot;24.7.17&quot;&gt;
+  &lt;diagram id=&quot;lookout-decision-lifecycle&quot; name=&quot;Lookout decision lifecycle&quot;&gt;
+    &lt;mxGraphModel dx=&quot;1800&quot; dy=&quot;1000&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;1800&quot; pageHeight=&quot;1000&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;
+      &lt;root&gt;
+        &lt;mxCell id=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;1&quot; parent=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;A&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e5eef8;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;600&quot; y=&quot;40&quot; width=&quot;600&quot; height=&quot;100&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A-title&quot; value=&quot;Personal Agent&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=32;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;A&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;180.14&quot; y=&quot;13&quot; width=&quot;239.72&quot; height=&quot;36&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A-sub&quot; value=&quot;Delegated job search&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;A&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;169.93849999999998&quot; y=&quot;52&quot; width=&quot;260.123&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;L&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f8f6fb;strokeColor=#77678c;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;70&quot; y=&quot;205&quot; width=&quot;1660&quot; height=&quot;385&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;L-label&quot; value=&quot;Lookout: Persistent Workflow Environment&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;L&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;539.508&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;L&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;50&quot; y=&quot;85&quot; width=&quot;270&quot; height=&quot;110&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B-title&quot; value=&quot;Discover &amp;amp; Screen&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;B&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;13.200500000000005&quot; y=&quot;39&quot; width=&quot;243.599&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;C&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;L&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;395&quot; y=&quot;85&quot; width=&quot;270&quot; height=&quot;110&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;C-title&quot; value=&quot;Prepare &amp;amp; Apply&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;C&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;27.470000000000027&quot; y=&quot;39&quot; width=&quot;215.06&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f9e4d9;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;L&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;740&quot; y=&quot;85&quot; width=&quot;270&quot; height=&quot;110&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D-title&quot; value=&quot;Track Application&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;D&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;19.221499999999992&quot; y=&quot;39&quot; width=&quot;231.557&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;E&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#e1efdc;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;L&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1180&quot; y=&quot;70&quot; width=&quot;430&quot; height=&quot;100&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;E-title&quot; value=&quot;Network &amp;amp; Follow Up&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;E&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;67.4855&quot; y=&quot;33&quot; width=&quot;295.029&quot; height=&quot;33&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;F&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#deedf5;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;L&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1180&quot; y=&quot;240&quot; width=&quot;430&quot; height=&quot;100&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;F-title&quot; value=&quot;Interview Preparation&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=29;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;F&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;65.03500000000008&quot; y=&quot;33&quot; width=&quot;299.93&quot; height=&quot;33&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;bus&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#596671;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;941&quot; y=&quot;656&quot; width=&quot;8&quot; height=&quot;8&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;state-bus&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;255&quot; y=&quot;660&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;1710&quot; y=&quot;660&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;state-link-B&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;255&quot; y=&quot;400&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;255&quot; y=&quot;660&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;state-link-C&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;600&quot; y=&quot;400&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;600&quot; y=&quot;660&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;state-link-D&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;945&quot; y=&quot;400&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;945&quot; y=&quot;660&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;state-link-E&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;1680&quot; y=&quot;325&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;1710&quot; y=&quot;660&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1710&quot; y=&quot;325&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;state-link-F&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;1465&quot; y=&quot;545&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;1465&quot; y=&quot;660&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;bus-label&quot; value=&quot;Each stage reads / writes shared state&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;120&quot; y=&quot;678&quot; width=&quot;430.2&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;S&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#deedf5;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;680&quot; y=&quot;740&quot; width=&quot;520&quot; height=&quot;120&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;S-cylinder&quot; value=&quot;&quot; style=&quot;shape=cylinder;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;S&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;23&quot; width=&quot;34&quot; height=&quot;32&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;S-title&quot; value=&quot;Shared Workflow State&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=30;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;S&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;121.13499999999999&quot; y=&quot;23&quot; width=&quot;331.73&quot; height=&quot;34&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;S-sub&quot; value=&quot;Preferences / decisions / progress&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;S&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;68.53750000000002&quot; y=&quot;73&quot; width=&quot;382.925&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#faecd9;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1320&quot; y=&quot;740&quot; width=&quot;400&quot; height=&quot;120&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-head&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;30&quot; y=&quot;23&quot; width=&quot;14&quot; height=&quot;14&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-icon-body&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;37&quot; y=&quot;37&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;37&quot; y=&quot;57&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-icon-arms&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;23&quot; y=&quot;46&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;51&quot; y=&quot;46&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;37&quot; y=&quot;40&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-icon-legs&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;25&quot; y=&quot;66&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;49&quot; y=&quot;66&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;37&quot; y=&quot;57&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-title&quot; value=&quot;Human Review&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=30;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;113.80500000000006&quot; y=&quot;24&quot; width=&quot;218.39000000000001&quot; height=&quot;34&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-sub&quot; value=&quot;&amp;amp; Feedback&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;122.79600000000005&quot; y=&quot;69&quot; width=&quot;154.40800000000002&quot; height=&quot;32&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;review-label&quot; value=&quot;When input is needed&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1056.6&quot; y=&quot;612&quot; width=&quot;246.8&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-solid&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;75&quot; y=&quot;942&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;140&quot; y=&quot;942&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-solid-label&quot; value=&quot;Workflow / shared state&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;155&quot; y=&quot;928&quot; width=&quot;266.2&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-dash&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;dashed=1;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;860&quot; y=&quot;942&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;925&quot; y=&quot;942&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-dash-label&quot; value=&quot;Human input / resumption&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;940&quot; y=&quot;928&quot; width=&quot;291.225&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;note&quot; value=&quot;Conceptual lifecycle. Workflow transitions and wake delivery depend on task policy and the agent runtime.&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#4a5662;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;75&quot; y=&quot;967&quot; width=&quot;1083.907&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A-B&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;A&quot; target=&quot;B&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;900&quot; y=&quot;265&quot; /&gt;
+              &lt;mxPoint x=&quot;255&quot; y=&quot;265&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B-C&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;B&quot; target=&quot;C&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;C-D&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;C&quot; target=&quot;D&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D-E&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.3181818181818182;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;D&quot; target=&quot;E&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D-F&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.6818181818181818;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;D&quot; target=&quot;F&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1140&quot; y=&quot;365&quot; /&gt;
+              &lt;mxPoint x=&quot;1140&quot; y=&quot;495&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;bus-S&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5096153846153846;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;bus&quot; target=&quot;S&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;C-H&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=1.0;exitY=0.7727272727272727;exitDx=0;exitDy=0;entryX=1.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;C&quot; target=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;770&quot; y=&quot;375&quot; /&gt;
+              &lt;mxPoint x=&quot;770&quot; y=&quot;610&quot; /&gt;
+              &lt;mxPoint x=&quot;1760&quot; y=&quot;610&quot; /&gt;
+              &lt;mxPoint x=&quot;1760&quot; y=&quot;800&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;E-H&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=1.0;exitY=0.8;exitDx=0;exitDy=0;entryX=1.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;E&quot; target=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1760&quot; y=&quot;355&quot; /&gt;
+              &lt;mxPoint x=&quot;1760&quot; y=&quot;800&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;F-H&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=1.0;exitY=0.7;exitDx=0;exitDy=0;entryX=1.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;F&quot; target=&quot;H&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1760&quot; y=&quot;515&quot; /&gt;
+              &lt;mxPoint x=&quot;1760&quot; y=&quot;800&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-S&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.5;exitDx=0;exitDy=0;entryX=1.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;H&quot; target=&quot;S&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;H-S-label&quot; value=&quot;Approval / correction&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1157.715&quot; y=&quot;871&quot; width=&quot;204.57&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;S-A&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;S&quot; target=&quot;A&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;30&quot; y=&quot;800&quot; /&gt;
+              &lt;mxPoint x=&quot;30&quot; y=&quot;90&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;S-A-label&quot; value=&quot;Updated context / resume&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;173.77499999999998&quot; y=&quot;763&quot; width=&quot;252.45000000000002&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+      &lt;/root&gt;
+    &lt;/mxGraphModel&gt;
+  &lt;/diagram&gt;
+&lt;/mxfile&gt;" role="img" aria-labelledby="fig-title fig-desc">
+<title id="fig-title">Lookout decision lifecycle</title><desc id="fig-desc">A personal agent progresses through discovery, applications, tracking, networking and interview preparation. All stages share persistent state; human feedback updates state before agent resumption. This is a conceptual workflow, not an automatic backend state machine.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<rect x="600" y="40" width="600" height="100" rx="8" fill="#e5eef8" stroke="#596671" stroke-width="1.6"/>
+<rect x="70" y="205" width="1660" height="385" rx="12" fill="#f8f6fb" stroke="#77678c" stroke-width="1.8"/>
+<rect x="120" y="290" width="270" height="110" rx="8" fill="#f9e4d9" stroke="#596671" stroke-width="1.6"/>
+<rect x="465" y="290" width="270" height="110" rx="8" fill="#f9e4d9" stroke="#596671" stroke-width="1.6"/>
+<rect x="810" y="290" width="270" height="110" rx="8" fill="#f9e4d9" stroke="#596671" stroke-width="1.6"/>
+<rect x="1250" y="275" width="430" height="100" rx="8" fill="#e1efdc" stroke="#596671" stroke-width="1.6"/>
+<rect x="1250" y="445" width="430" height="100" rx="8" fill="#deedf5" stroke="#596671" stroke-width="1.6"/>
+<rect x="941" y="656" width="8" height="8" rx="0" fill="#596671" stroke="#596671" stroke-width="1.6"/>
+<polyline points="255,660 1710,660" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="255,400 255,660" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="600,400 600,660" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="945,400 945,660" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1680,325 1710,325 1710,660" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1465,545 1465,660" fill="none" stroke="#596671" stroke-width="2"/>
+<rect x="680" y="740" width="520" height="120" rx="8" fill="#deedf5" stroke="#596671" stroke-width="1.6"/>
+<polyline points="705,768 705,790" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="739,768 739,790" fill="none" stroke="#596671" stroke-width="1.7"/>
+<ellipse cx="722.0" cy="768" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
+<ellipse cx="722.0" cy="790" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
+<rect x="1320" y="740" width="400" height="120" rx="8" fill="#faecd9" stroke="#596671" stroke-width="1.6"/>
+<circle cx="1357" cy="770" r="7" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1357,777 1357,797" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1343,786 1357,780 1371,786" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1345,806 1357,797 1369,806" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="75,942 140,942" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="860,942 925,942" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="900,140 900,265 255,265 255,290" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="900,140 900,265 255,265 255,290" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="255,290 251.0,279.0 259.0,279.0 255,290" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="390,345 465,345" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="390,345 465,345" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="465,345 454.0,349.0 454.0,341.0 465,345" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="735,345 810,345" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="735,345 810,345" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="810,345 799.0,349.0 799.0,341.0 810,345" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1080,325 1250,325" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1080,325 1250,325" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1250,325 1239.0,329.0 1239.0,321.0 1250,325" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1080,325 1091.0,321.0 1091.0,329.0 1080,325" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1080,365 1140,365 1140,495 1250,495" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1080,365 1140,365 1140,495 1250,495" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1250,495 1239.0,499.0 1239.0,491.0 1250,495" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1080,365 1091.0,361.0 1091.0,369.0 1080,365" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="945,664 945,740" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="945,664 945,740" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="945,740 941.0,729.0 949.0,729.0 945,740" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="945,664 949.0,675.0 941.0,675.0 945,664" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="735,375 770,375 770,610 1760,610 1760,800 1720,800" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="735,375 770,375 770,610 1760,610 1760,800 1720,800" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="1720,800 1731.0,796.0 1731.0,804.0 1720,800" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1680,355 1760,355 1760,800 1720,800" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1680,355 1760,355 1760,800 1720,800" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="1720,800 1731.0,796.0 1731.0,804.0 1720,800" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1680,515 1760,515 1760,800 1720,800" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1680,515 1760,515 1760,800 1720,800" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="1720,800 1731.0,796.0 1731.0,804.0 1720,800" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1320,800 1200,800" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1320,800 1200,800" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="1200,800 1211.0,796.0 1211.0,804.0 1200,800" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="680,800 30,800 30,90 600,90" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="680,800 30,800 30,90 600,90" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="600,90 589.0,94.0 589.0,86.0 600,90" fill="none" stroke="#596671" stroke-width="1.7"/>
+<text x="782.64" y="83" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#263442">Personal Agent</text>
+<text x="772.4385" y="117" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#263442">Delegated job search</text>
+<text x="92" y="241" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Lookout: Persistent Workflow Environment</text>
+<text x="135.7005" y="354" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Discover &amp; Screen</text>
+<text x="494.97" y="354" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Prepare &amp; Apply</text>
+<text x="831.7215" y="354" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Track Application</text>
+<text x="1319.9855" y="335" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Network &amp; Follow Up</text>
+<text x="1317.535" y="505" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" fill="#263442">Interview Preparation</text>
+<text x="120" y="701" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Each stage reads / writes shared state</text>
+<text x="803.635" y="791" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#263442">Shared Workflow State</text>
+<text x="751.0375" y="836" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Preferences / decisions / progress</text>
+<text x="1436.305" y="792" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#263442">Human Review</text>
+<text x="1445.296" y="835" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#263442">&amp; Feedback</text>
+<text x="1059.1" y="635" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">When input is needed</text>
+<text x="155" y="951" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Workflow / shared state</text>
+<text x="940" y="951" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" fill="#263442">Human input / resumption</text>
+<text x="75" y="988" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#4a5662">Conceptual lifecycle. Workflow transitions and wake delivery depend on task policy and the agent runtime.</text>
+<rect x="1158.715" y="872" width="202.57" height="27" fill="white"/>
+<text x="1163.715" y="893" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Approval / correction</text>
+<rect x="174.77499999999998" y="764" width="250.45000000000002" height="27" fill="white"/>
+<text x="179.77499999999998" y="785" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">Updated context / resume</text>
+</svg>
