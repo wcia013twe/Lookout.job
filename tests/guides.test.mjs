@@ -85,6 +85,9 @@ test('Discover guide connects every fit-context category to scored, evidence-bas
  const {agentContextFields} = await import('../lib/search-profile.mjs');
  const guide=readGuide('career-find-jobs');
  const {TOOLS}=await import('../supabase/functions/agent-mcp/protocol.mjs');
+ assert.match(TOOLS.find(tool=>tool.name==='publish_batch').description,/read_guide career-find-jobs.*narrative and four-fit-score/);
+ for(const phrase of ['## Per-job narrative in Discover','same personal context, posting evidence and evaluated profile version','recommendation.whyItFits','recommendation.materialGap','omit materialGap','Do not manufacture a concern','Illustrative example','both narrative fields agree with the four assessments']) assert(guide.instructions.includes(phrase),phrase);
+ assert(!guide.instructions.includes('State one concrete matching fact and one material gap'));
  assert.match(TOOLS.find(tool=>tool.name==='save_search_profile').description,/read_guide career-find-jobs.*decision-brief/);
  assert(guide.instructions.includes("Write each section as a short, current decision brief: what matters to the user, what makes a role a good fit, and any important tradeoff or unknown. Include only information that could change a role evaluation. Synthesize rather than append, and never turn an assumption into a preference."));
  assert(!guide.instructions.includes('Include source/date in the note'));

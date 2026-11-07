@@ -87,3 +87,8 @@ test('refreshed observed location takes precedence in the card and preview witho
  for(const location of ['',null,{},'x'.repeat(2001)])assert.throws(()=>validateJobRecommendation({jobFacts:{...facts,location}}));
  assert.equal(batchRoles([{job_id:'legacy',jobs:job,recommendation:{}}],'2026-10-26')[0].location,'United States');
 });
+
+test('Discover hides dismissed batch items without altering retained records',()=>{
+ const items=[{job_id:'hidden',jobs:{employer:{}},dismissed_at:'2026-11-07T00:00:00Z'},{job_id:'visible',jobs:{employer:{}},dismissed_at:null}];
+ assert.deepEqual(batchRoles(items,'2026-11-07').map(x=>x.id),['visible']);assert.equal(items.length,2);
+});

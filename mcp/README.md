@@ -808,3 +808,7 @@ activity:write; reads require workspace:read. Read the `agent-audit` guide and
 [storage contract](../docs/agent-audit-logs.md). Requires the audit migration and
 normal gateway/MCP or Node release. Storage is not automatic host trace capture,
 scoring, approval or independent submission verification.
+
+### Remove a Discover role
+
+`remove_discover_job` requires `activity:write` and takes `batchId` and `jobId` from `read_batch`. Use it only on request; re-read the batch and check `dismissed_at` to verify. Repeating the same request is safe. The item remains in batch history but is hidden from Discover; shared catalog jobs, other batches and applications remain unchanged. The website's `dismiss_batch_item` RPC uses the same owner-scoped operation. Gateway version 109 and the corresponding migration must be deployed before this tool is available.

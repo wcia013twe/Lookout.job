@@ -104,7 +104,11 @@ instructions. Website autosave and MCP `save_search_profile` share the existing
 owner/version boundary; there is no new store, permission or endpoint. The canonical
 `career-find-jobs` guide maps each note to its `matchAssessment` dimension, requires
 personal and employer evidence, explicit gaps, null for unsupported scores and
-the evaluated profile version. Agent writes preserve unrelated fields and legacy
+the evaluated profile version. The two Discover narrative fields synthesize the
+strongest match and most consequential concern from those same four assessments,
+using the same profile and employer evidence. The publish tool routes agents to
+that writing contract, including a conditional good example. Unsupported concerns
+are omitted instead of invented. Agent writes preserve unrelated fields and legacy
 context. Refreshing guide bundles locally does not deploy live agent instructions.
 Run `node scripts/check-agent-context-ui.mjs` after the production build for isolated
 desktop/mobile demo coverage of editing, autosave, empty and legacy notes.
@@ -479,3 +483,15 @@ selection persistence, refresh, changed-filter/no-match behavior, setup continua
 no application creation and desktop/mobile layouts. `LOOKOUT_UI_URL`,
 `LOOKOUT_UI_ARTIFACTS`, `SUPABASE_CLI` and `LOOKOUT_CHROMIUM_EXECUTABLE` can override
 its local test setup. It does not verify employer availability or hosted deployment.
+
+### Simple project entries
+
+About me → Projects & outside experience shows project name, URL and description in both read and edit views. Each entry has a project folder/code icon and, while editing, a labeled trash button that removes that entry from the draft. Editors stay open while local fields change; Finish editing saves through the existing profile writer. Existing stored role/date fields remain compatible with backend and MCP records; editing the visible fields preserves them.
+
+Demo check: edit Query Lab, add a project, remove it with its trash icon, and finish editing. Check the empty state after removing every project; reset demo to restore the fixture. Check desktop and mobile layouts.
+
+### Background organization logos
+
+About me work and education entries reuse the shared CompanyLogo renderer. Logo.dev is attempted with the existing publishable token; unavailable, empty or fictional organizations fall back to a briefcase. The same fallback applies across existing logo surfaces. Projects retain their project icon.
+
+Demo check: fictional employers/schools show briefcases without external logo requests. Edit an organization name to a real brand to check logo loading and name changes; simulate failed image responses to check the direct briefcase fallback on desktop/mobile. Reset restores the fictional records. Run `node scripts/check-profile-logos-ui.mjs` against an isolated frontend with a fake logo token for mocked success/failure and reset coverage.
