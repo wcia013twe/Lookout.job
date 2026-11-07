@@ -190,3 +190,11 @@ imported records are preserved. No automatic repair of statuses encoded in
 notes is performed. See the application-submission workflow for field boundaries.
 Local checks and demo coverage establish source behavior only; a running contract
 110 endpoint does not expose this update until its migration/functions are released.
+
+The UI-first follow-up routes imported rows through the original application
+detail dialog and progress display. The separate metadata row editor has been
+removed. Original source notes and subsequent tracker notes remain visible in
+history; notes do not become linked emails. Native application actions remain
+visible but imported records have no native application ID: timeline writes
+show the existing sync error and workflow writes report an unsaved update.
+This intentional backend mismatch must remain explicit until a later integration.
