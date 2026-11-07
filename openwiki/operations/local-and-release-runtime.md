@@ -206,7 +206,7 @@ Keep test identities and data disposable, keep secret files ignored, and reconci
 
 ## Personal GCP hosting option
 
-[`infra/gcp/README.md`](../../infra/gcp/README.md) documents an optional single-VM
+The optional configuration in `infra/gcp/` supports a single-VM
 deployment for the existing Node API/MCP and queued discovery worker. Terraform
 owns dedicated Compute Engine networking, IAP-only SSH, a static IPv4 address and
 an Ubuntu VM. A separate committed-source upload builds the Docker image on the

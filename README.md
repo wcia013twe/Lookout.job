@@ -1004,7 +1004,7 @@ The main-branch **Deploy React board** workflow deploys the backend first throug
 
 The new Google OAuth callback is `https://osyrlausutnqzlegxmnd.supabase.co/auth/v1/callback`; it must be allowed by the Google OAuth client. Supabase alone does not host the optional Node API, parser, worker or submission browser. Those capabilities remain unavailable until a separate runtime and required secrets are configured and verified.
 
-For a personal always-on API and discovery worker, see the [GCP Terraform and terminal walkthrough](infra/gcp/README.md). It provisions one VM with HTTPS while retaining hosted Supabase and GitHub Pages. Configuration validation is local; deployment, authenticated hosted checks and any account-data migration remain separate steps.
+The optional Terraform configuration in `infra/gcp/` provisions one VM with HTTPS for a personal always-on API and discovery worker while retaining hosted Supabase and GitHub Pages. Configuration validation is local; deployment, authenticated hosted checks and any account-data migration remain separate steps.
 
 A count-only agent watch can be configured through `configure_agent_watch`; see
 [watch setup and limitations](mcp/README.md#credential-free-pending-count-watch).
