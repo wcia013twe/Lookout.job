@@ -34,3 +34,30 @@ test('Simplify off-season page uses the same structured provider with its publis
  const {sourceProviders}=await import('../backend/runtime/source-providers.ts');
  assert.equal(sourceProviders.get('simplify').detect({careers_url:address}),true);
 });
+
+test('Simplify verifies only the 100 newest matching leads after title triage and marks omissions partial',async()=>{
+ const {fetchSource}=await import('../backend/runtime/ats.ts');const batches=[];
+ const rows=Array.from({length:250},(_,i)=>row(String(i),{date_posted:i+1,title:i>=200?'Senior Software Engineer':'Software Engineer Intern'}));
+ const result=await fetchSource('portal:simplify',{careers_url:url},{prefilter:true,request:async()=>new Response(JSON.stringify(rows)),execute:async(task,input)=>{
+  if(task==='prefilter-discovery')return input.jobs.filter(r=>!r.title.startsWith('Senior')).reverse();
+  if(task==='dedup-discovery')return input.jobs;
+  assert.equal(task,'verify-discovery-leads');batches.push(input.leads.map(r=>r.url));
+  return {jobs:input.leads.map(({url})=>({url,title:'Software Engineer Intern',company:'Example',description:'Verified',listingIdentity:{ats_provider:'greenhouse',board_slug:'example',posting_id:url.split('/').at(-1)}})),diagnostics:[]};
+ }});
+ assert.equal(result.total,250);assert.equal(result.listings.length,100);assert.deepEqual(batches.map(b=>b.length),[25,25,25,25]);
+ assert.deepEqual(batches.flat().map(u=>Number(u.split('/').at(-1))).sort((a,b)=>b-a),Array.from({length:100},(_,i)=>199-i));
+ assert.equal(result.coverage,'truncated');assert.equal(result.provenance.prefilterExcluded,50);assert.equal(result.provenance.omittedMatchingLeads,100);assert.match(result.blocker,/No continuation cursor/);
+});
+
+test('exactly 100 Simplify matching leads are not falsely reported as capped',async()=>{
+ const {collectSource}=await import('../backend/runtime/source-providers.ts');
+ for(const n of [0,100,101]){
+  const page=await collectSource('portal:simplify',{careers_url:url},{profile:{},days:3,request:async()=>new Response(JSON.stringify(Array.from({length:n},(_,i)=>row(String(i))))),execute:async()=>{throw Error('No configured prefilter');}});
+  assert.equal(page.jobs.length,Math.min(100,n));assert.equal(page.coverage,n>100?'truncated':'exhaustive');
+ }
+});
+
+test('capped Simplify demo remains fictional, partial and resettable',async()=>{
+ const {searchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();const find=d=>d.runs.find(r=>r.id==='demo-run').sources.find(s=>s.source_id==='portal:demo-simplify-capped');
+ assert.equal(find(a).coverage,'truncated');assert.equal(find(a).counts.observed,100);assert.match(find(a).blocker,/220 older/);find(a).blocker='edited';assert.notEqual(find(b).blocker,'edited');
+});

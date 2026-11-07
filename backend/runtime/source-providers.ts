@@ -24,9 +24,17 @@ export const sourceProviders=new Map([
  }],
  ['simplify',{
   id:'simplify',detect:(source:Payload)=>Boolean(simplifyFeed(source.careers_url)),
-  async fetch(source:Payload,{request}:ProviderContext):Promise<CollectedSource>{
+  async fetch(source:Payload,{request,execute,profile,prefilter}:ProviderContext):Promise<CollectedSource>{
    const page=await readSimplifyLeads(source.careers_url,{limit:null,request});
-   return {jobs:page.leads,total:page.total,examined:page.leads.length,coverage:page.nextOffset===null?'exhaustive':'truncated',blocker:page.nextOffset===null?'':'Simplify feed collection is incomplete.',provenance:{provider:'simplify',aggregate:'official Simplify structured JSON'}};
+   const matching=prefilter?await execute('prefilter-discovery',{profile,jobs:page.leads,config:prefilter===true?undefined:prefilter}):page.leads;
+   // Keep the feed's newest-first ordering even if the predicate returns rows in
+   // another order. Cap only this provider, after title/seniority triage.
+   const allowed=new Set(matching.map((row:Payload)=>row.url));
+   const eligible=page.leads.filter(row=>allowed.has(row.url)),jobs=eligible.slice(0,100);
+   const omitted=eligible.length-jobs.length;
+   return {jobs,total:page.total,examined:page.leads.length,coverage:omitted>0?'truncated':'exhaustive',
+    blocker:omitted>0?`Simplify limited to the 100 newest title-matching leads for this feed; ${omitted} older matching leads were not verified. No continuation cursor is retained.`:'',
+    provenance:{provider:'simplify',aggregate:'official Simplify structured JSON',leadLimit:100,matchingLeads:eligible.length,omittedMatchingLeads:omitted,prefilterExcluded:page.leads.length-eligible.length}};
   },
  }],
  ['jobright',{

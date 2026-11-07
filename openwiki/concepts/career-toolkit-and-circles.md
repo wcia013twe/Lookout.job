@@ -211,3 +211,15 @@ A detached MCP generation test covers discovery, recipe loading, save/read-back
 and read-only denial. Hosted availability requires the normal main-branch release.
 
 Network UI follow-up: the suggestions section is commented out; saved suggestions and person records remain intact. People details retain external navigation, with a LinkedIn-blue profile button and a mail icon box for Gmail conversation links. Application associations continue to use existing explicit contact tags or matching role URLs; company similarity alone does not establish process relevance.
+
+### Local mock save readiness correction (contract 118)
+
+Tool discovery alone was insufficient: the local database lacked migration
+`20261107201448`, and Node's service map omitted the `mock` prefix. The map now
+routes mock reads/saves through the existing checked Edge/SQL path. Node preserves
+only fixed safe scope/version/mock diagnostics and explains an unsupported
+database operation as a migration mismatch; arbitrary server text remains hidden.
+The local-only `scripts/check-local-toolkit-mock.mjs` checks the prerequisite and
+exercises actual Node MCP -> Edge -> SQL saves, idempotent retries and private
+profile separation using a disposable account removed in `finally`. It does not
+create the user's requested session or any Calendar event.

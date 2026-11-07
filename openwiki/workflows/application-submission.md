@@ -276,3 +276,15 @@ Unknown dates stay null. Original CSV source rows are immutable. Existing native
 milestone/preparation writers remain separate; generic native workflow mutations
 on imported records still report the documented mismatch. Migration, gateway/MCP
 and dev runtime activation are required before tools advertise these fields.
+
+### Green progress checkmarks
+
+Progress now shows green checks for steps before the current stage, recorded
+opened links, and a reported Applied/Submitted step. An explicit completedStages
+flag can complete the current Screen/Interview/Offer without advancing its status.
+A current screening/interview is otherwise pending. In the imported editor,
+already-passed steps appear checked and disabled; current-stage completion stays
+editable. These are display projections: no dates, receipts or stored completion
+flags are generated. Synthetic current-status timeline entries cannot promote a
+Phone Screen into Interview. Shared community stage displays still show only the
+shared current step, without projecting private history.

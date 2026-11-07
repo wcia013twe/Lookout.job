@@ -113,7 +113,14 @@ test('fictional admin demo edits profile, discovers and reads a gated brief, rej
 });
 test('startup explains executable discovery and preserves the small permanent contract',()=>{
  assert.match(bootstrapInstructions,/discover_tools/);assert.match(bootstrapInstructions,/call_discovered_tool/);
- assert.equal(contract.developerVersion,117);
+ assert.equal(contract.developerVersion,118);
  assert(Buffer.byteLength(JSON.stringify(contract))+Buffer.byteLength(bootstrapInstructions)<=6000);
  assert.equal(ACCESS_TOOLS.length,2);
+});
+
+
+test('private mock tools have a Node service route through the checked Edge boundary',async()=>{
+ const {operationService}=await import('../lib/mcp-services.mjs');
+ const {MOCK_TOOLS}=await import('../supabase/functions/agent-gateway/mock-interviews.mjs');
+ for(const tool of MOCK_TOOLS)assert.equal(operationService(tool.operation)?.handler,'edge',tool.name);
 });
