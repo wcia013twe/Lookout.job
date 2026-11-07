@@ -24,7 +24,7 @@ export function authorizeSubmission(context) {
     && profile?.verified_at && equal(approval.snapshot?.profile,profile.facts)
     && equal(approval.snapshot?.draft,draft) && equal(approval.snapshot?.resume,resume);
   if (humanApproval) return { allowed:true, authorization:{ mode:'human', id:approval.id, applicationId:a.id,userId:a.user_id,revision:a.revision,personalVersion:context.personalVersion,snapshot:approval.snapshot } };
-  if (policy.mode === 'review') return reject('Important match or auto-apply off: approve this exact draft first.');
+  if (policy.mode === 'review') return reject(`${policy.reason} Review and approve this exact draft in Applications before submission.`);
   if (!profile?.verified_at || profile.user_id !== a.user_id) return reject('Verified profile required for routine auto-apply.');
   const selected = selectResume({ userId:a.user_id,job:job.employer,resumes:context.resumes,preferences:preferences?.search,profileId:draft.searchProfileId,searchProfile:context.searchProfile });
   if (selected.status !== 'Selected' || selected.resumeId !== resume.id) return reject(selected.status!=='Selected'?selected.reason:'The draft resume no longer matches the current profile assignment. Prepare the mapped resume or obtain exact human approval.');

@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:900cccf0176e8d102be6d04765391785f7cbe775505c3a8531f6d0fb2f0b28ea",
+  "claims": [
+    {
+      "id": "claim_ebcefd325a504a2790fba805e6df9983",
+      "statement": "The browser store persists the non-UI state under a versioned guest key or a UUID-validated per-user key; switching accounts flushes the previous namespace, loads the new state, and emits a workspace account event, while UI state is not persisted.",
+      "evidence": [
+        {
+          "resource": "repo://lib/store.js#L1-L12",
+          "version": "repo-lines-v1:sha256:f40381d777d034c29dbe9a593632c561fbfeebe7c2c0129aff497da659f8a13f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwYWMzMjMwMGI0Y2RiOTZmMjg0NWE0ZGNkYzEwM2Y4ZDZhMjZkYTc2ZGRjZGZjZGM2NTBmMzA2NmRhYTdkM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MTlmNzFkMmFmYTk0ZWY5ZTRiN2ZlZDZhMmIzNDA5N2ZhYWU0YzEzZjk2OTU0MzgzZDI0NGVjZWNjNDk0NDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3OTVmNGY0MDgzNThlNDI2YjMyNGMzMmQ1NzczMDJkMDVkZGZjZDhlNTQzYjZjNDg5MTJhODU0MGZhZWQ4Y2QifQ"
+        },
+        {
+          "resource": "repo://lib/store.js#L166-L182",
+          "version": "repo-lines-v1:sha256:dd225adeeab84072cf9eec740b0a6c6798d3d58289b56cb14e889a6e6d012cfb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5YzA4NmFlMGU4YmZiOTcxZWU4MGFjOTlkYzU5Y2RjZmZjNmUyNDcwNmIwMjBlZWQ5ZWI4YjA4MWQ4M2M5MzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlNWFjYTlhMTkzMWE1YWI5NGVjMGI2MDc2YjA4ODZlODViYmNiODJiZmYxNmNlYWRiZDg3NjFiYjkzNjQxNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlZjAzNDlkODdmYjYzNzNhYjc1MDc5NmUzMjE5NDQxZWQxNzJjZGUxMGY3ZWE2ZmZkYjBkNDI0NDZiODY5OTMifQ"
+        },
+        {
+          "resource": "repo://lib/store.js#L282-L311",
+          "version": "repo-lines-v1:sha256:7ebfe7c51edebc9fde23a20181b7c946555b8b887a162baa64145cb285e62037:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNTAyZjQ2ZGM1NmZmZTNjYzcxZGY4MDRmZDliMzA1NThjMzVmNzgwOTMwZjIwMTM3OGY3MjE0ZjNmMjVjNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZjY5MDA3YTdlNzVjY2RiMmMxOWVmYTlkOTVjNDNiZjc4N2YzM2EyYjljODI2NWM0YTVjZTY0MmZlNmRiZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxOWMxMTcxMGIzODcwZDkzM2QzMzllN2UwMDA1NWU3MDUyOWMyZDYzNzA3MzAwNzhhODUzN2E3MjEzNzJjNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmYzk5ZTkzMmExNDJlMzdlYWM4YjY0ZDE5ZWNjMjdlMWZiMmU0ZmQ2NzEyNWMyMmRmOTgxNjBjNWRmNjFkMjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c97f961fad5845ae927eb9924324e22c",
+      "statement": "The account workspace provider initializes the persistent store and domain models, creates a Supabase PKCE browser client with persisted auto-refreshed sessions, switches store accounts on auth changes, and connects the cloud controller.",
+      "evidence": [
+        {
+          "resource": "repo://next-app/lib/account-workspace.jsx#L16-L38",
+          "version": "repo-lines-v1:sha256:2ff6c717cbb028dbc468a985e2e9b5fad9ea260855bb93e921cec6edd3b00767:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0YjZlM2M2ODRmYjYzNzc2MzkzYmEzZjZiNzYxZDU1ZjgyY2E5MWZkZDU4MGYzY2NiYmRhNWUwZTg2NTIyMmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzYzkzNzI0ZjRmYzdkMTc0YmNmMWI0ZGY3NDYwYjk1YTA4ZTFlN2RiYWFiNDU2YWI5YmFiNjU1NWY2NWU5MjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNGE4YzEwNjkzYTE1NjNmMTJmNzRmMjY4Mjc2OTYxOTAwM2JkYzQ1NGRiNmY5ZTU4N2YwZjljM2U2NzIzYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3MDNjNDZiNTU3YjE4OThiZmY5ODUyNGIyZTI3YmRhODllY2EzZmVmMDAxYTA4MTAwZjU0NzFiNTFiZDNlMGIifQ"
+        },
+        {
+          "resource": "repo://next-app/lib/account-workspace.jsx#L71-L115",
+          "version": "repo-lines-v1:sha256:5de241b2ebcefc7ed09e228c988a5f42ff0ac30b04d9cd91142abbb0a469a814:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ODZlOGMyMTUwZTI3MGQwZjU4ODA1NTQ5Yzg5NmM4NGEyMTVkYmJiNzM3NTcwOWJmZWVkMWY1OTk2ZjE5MjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZmZhOWJhMDVkMzk1ZTY2YzI5ZDZjODEwMjM0ODRmMjEzMjA0NjUwZTQ1YzE4NGMyNjFlZTk5ZGFkYTIyMjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1ZTVmMzFhODU0ZDUzN2YyOGJlZjRiZGY5NGM4ZTc2MDJmZDBjMDk5NjUzYmE3NmRmMDU3MTdjMDc1MTFkMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYzFjZTlkNDRhMzU3ZTFhYzMwZDJmMzViNTg3ZmQ1MzFlOTIxZDk0ZjY1NGQxNGRmMWUxYzViNGFiNGZjZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_745f0d59af0d448b96146e984d0bbf30",
+      "statement": "The browser backend client derives and verifies the authenticated owner rather than accepting a UI-supplied owner, rejects account changes, and loads the owner-filtered workspace tables with stable paginated ordering.",
+      "evidence": [
+        {
+          "resource": "repo://backend/client.mjs#L163-L187",
+          "version": "repo-lines-v1:sha256:0bea73a8014ecbbc2f6aeb9db3ef285405886595fa5b4edfcb300a7c4f58d66f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0ZDg3YTBlMDA3MmU5ZTg1YmQxZmEzZmVjZWU1ZmVhMDljMDkyNzBjZGNlZDA2YTE0OGM2ZjA5YmNmMTg0YjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMzJmYTg2MzhmMjE4ZDExMjE5MzcwYWM5OWRkNTE0YTA1ZjEyMTY3NzE5NTNmZjQ0ZDYyNDNkNjg5MTg0MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjMTY4MTE3NzQwOTU5ODkwYjRkMjNkMGJiODQ2ZjViYTYzYTM3OGY5NmFhN2U3OThmMjcwOGQ5ODM5MDhlN2EifQ"
+        },
+        {
+          "resource": "repo://backend/client.mjs#L26-L42",
+          "version": "repo-lines-v1:sha256:3015727755d9527ca6c1662d21b858bca5c5da54c09a3f343c4533c0fc4e19d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMGI0OWE0ZDY4NTU4MmZjYjljNTU5MzdhMzU2YmI5MGIzYzE3MWU2M2NiZTE5MGQ5NjQ2MmU4NDRhNTQxNTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjMjc4YmFkMGRjYzNlZDZiMDBhMTliMTAwYmUwYzUzNjNkNTg5MjYwNGE3YzBjOGRjYTU2NmU0NDEyYjE4ZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzYmJkYjMyYzM0NzcyOWFmMzgwZTkyNGJmYjdlYTE5NTdmODA3ZDE2YmNiYWNhYjI2NDZiOTk0M2EzOWU1NTEifQ"
+        },
+        {
+          "resource": "repo://backend/client.mjs#L9-L24",
+          "version": "repo-lines-v1:sha256:496b6b843d647ceb77267a32e7cd204c93c77feab56b29fa9c0104caa69b5c7e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYmEyMGFlZTViZGJjYmUzOGMyNzA4MmJlNGNmNzU0ODFkYzY4OTQxMmI4YjM1YjBkYzRkMzE0NDU0NjZlYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlNzIyYWRlZmEzYjA4YTJmNzY5OWQ0ODQ3MzdmMGFlNGExNTg0ZjI2NzdkYzlkZDhjYmZlMzU4MzAzYTFmMmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4ZmUxNWJlYzI0ZTBiNDYwMDMyOTczMDZiMDAzZDgzYTg3MTFkMmQyMDg3MThlMDA5ZDU3MWZhMmMxZWZiOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExZWU3Njg1N2FkMDQ3NzAyZjAyZWQzY2Q2ZTU5MTI2NjUxOWI3YTUzZTJkY2UxZDcxM2QwYzQ2YjY0ODcwOGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b3010319b60a44cbaec7c5f368d10937",
+      "statement": "The cloud controller serializes workspace saves through one running worker, marks local workflow changes dirty, debounces them, and continues saving until no dirty changes remain.",
+      "evidence": [
+        {
+          "resource": "repo://lib/cloud.mjs#L283-L301",
+          "version": "repo-lines-v1:sha256:4691789de96085d23a0b94ea68038ef7d5eba5bdb2fde2e155261480395dc38e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyNGIyNjRhNjU1MDZmZmYyMGQyOTkxOTc3ZTlhZmZlY2U1ZmNhNDBkYzg0NGMxMmJiOTM1MTZiOTUzNDY4NDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiYTMxZTg0NTEwMTUyNmVkNGM2OTViMzNmNTFmMGU0Y2Y2YTZiYjQyNTdlYzVmMDA1MjEyZDgzOGM4MGQ5MjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiNTllYTEwNDNlMDYwOTEyNDE2ZGVlZTdlNWU2NjdiZDM2ZWIwZjE2MzY0N2RiOWY4NDA2Nzc5MThkM2IwZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyNDJiZWQ4OTZmZjM0YjUyODBiZTgwODVhYTJmNTliZjk5ZWFiZmI3OWZlZmQwNDIwMzMzMDU5NjM0ZDMwYWUifQ"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L382-L387",
+          "version": "repo-lines-v1:sha256:73a11e61b10b7b2dae0a6dd34f3e36bc19efed538b695c20bf08b8c2e07800e1:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmJiNzY0OGFlMmFhYjAzMmIzNjVjNDNiYzYyZjUwM2NjMWFlY2M5NDljNTA1YzBjNzJmNmM4ODljYjZmYmY3ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTAzYThlNjEzYWM4NzNlNmMyMTZiMGQ2YTk4NjhhMjYxYWNjZjViNTcwMmRkYTU5MDljYzNiODdhYmUxMDBhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzRlNmRjNGExNjFlNmI2MmQzODI0NjMyNzA4NTM5MDkyNDQ5YzliN2IwNjM3NWNmMzQ3MTZkZDkxOWQxNTE1MSJ9"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L93-L97",
+          "version": "repo-lines-v1:sha256:e647e1dcd6ee14f3a6689a466b56fde3a66c967bb0ce5a467899de538eb75ba6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDI2YjQ5Yjc2N2NkMmExZTI1MWM3ZGNmNGFhY2QwYzIzNTM0ZmQyNmI1OGI0MTFlMGYzYjMxZTQ2NDQ4ZWQwNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjBmZWUyNTYyZTZmNGM0MDlhYzdmOTUzZWQ5NmExMTEwYmE1MTdiZGNkOTJmYjE1NGI1ZjAzMGQ3YzYwOGY3ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmQ5ODk1NzhkMTUwM2RmOTc2YjVmMjk2ZmUyOTcwN2RmNTg0ZTczYzY0MjU2OTFlOGZmMjNhNWQwOTQ5NzgyZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_04e495bcc76840ea9c4ba4b916d77821",
+      "statement": "After a save, cloud sync reloads the server workspace; it hydrates only when the sent local snapshot is unchanged, otherwise preserves newer local edits and schedules another save, while failures retain browser edits and schedule exponential-backoff background retry.",
+      "evidence": [
+        {
+          "resource": "repo://lib/cloud.mjs#L254-L280",
+          "version": "repo-lines-v1:sha256:c842942de3e3208977995f1989050e19a0215aa7bb33d880299897749aec7f98:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YjBmYmRiZmZmZTMxNGI3MDU5NDhhYmVjMmE1M2MxNGYwYTY0YmQ5NTcyM2M5NGU2YTFhY2JkNDJlODRiNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiYzM5NzI2N2E5MWE3OTA4MmY2MmE5NThhZDdmYzFiNzY5OTNkOTZjYWIyN2ExZGQ3NjA1NjVjMDU5YWFlZDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3NDRlMTYwNjBlYTAzNjBhNGNkZTBiYWM4MmM3MDk2NWUxZTVlYjdkZDBkMjYyMmRmYjU2YTE0ZTMxYjgxMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjOWIxODFhMjM3ZDY5MTVhODVkMDRmMmZlMWQzMjlmNDM1MzQzODA2NzViMDNjY2I4N2Y0ZTk1MWRhZGY0ZDUifQ"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L51-L58",
+          "version": "repo-lines-v1:sha256:f7b95957baf73a1fce047e523fd015ecd595f4aec19f832d62c91b157aa39248:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWJlMTNlOGZlMDliMWYyNjhhYWJiNzQ0NzU1MTJkNWFjYWJjNzg5Yzg2MDBjNzU2ZDI2NDFjMDQ2OGY1ZDM5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWI2MmY2MGQ4NTkwYTU3OWNmNDZmOGQ2NzM3OGM0YzU3MmI5NjJjZWNjZGI5MGM3YTVmN2I0MmI5NjA3ODJhNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDJkMTUyOTgyMGFjYjRlMDZmOTM4ZDUzMzUzOWY5YmIxZmJiNDA1MzBkNzFiMjgyNDU4OTViYmQ1MmYxMTA2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjRkOTIzOTg5MzNhNGM4NWQxZTMzMmRlNTA5NDg3ZTIzODg1NThmMTlkNjg1OWEzYWU1NDQxMjIxOGQyN2I3MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e186bc7b5e124bddb7d54d3e3709d4d2",
+      "statement": "Cloud synchronization uses a generation and expected owner checks to reject stale asynchronous results across account changes and demo suspension, including during load, persist, and account-event handling.",
+      "evidence": [
+        {
+          "resource": "repo://lib/cloud.mjs#L107-L165",
+          "version": "repo-lines-v1:sha256:6837a8b0bb4d0c05966657b86177b75d7bb992de2e45cbfcaa75fdac6f7eba42:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5ZDM4YThiMzZkOTg2ZDY3YzgzN2RlYWE0YTM5ZmVjMzQ2ZWFmMDczMDM1ZDk2MjM3MDljMDQ2ZWYwMTRjOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkYjE3YTIwOWY1YjUwZGNmMTlkZGVmY2UwNGRhZWZhYmI2MzRlMjRiNGNiMzE3N2U0MDQ0ZmQ1ZWM5YWMwMDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhNzNmZGFlODcxMWRiYjRiZDI5MmFiNWY4MmQ4MjE3ZWY5NDhmNjljM2NmODhjMGJmNjM4NmJjZjM5MDI1MWYifQ"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L167-L191",
+          "version": "repo-lines-v1:sha256:2611b965e17ceb3dee81a1f0bedacb3c895bcf8038c2dc94e44922c3b9eb39bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5N2RhNzQ0NjA3NTI4NTA4NWUzMDFhMzI5ZjJhY2U1NzI2NjcyNWEzMTU0YmFhZWRlNzllODVlOWNmYTlkNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjMDhjYjdiODU0OTI2NGYxNWIyNGMyM2EzOTJiOTQ2YjM0ODM1ZTMyMDg1NGUwYWM1YTA1MzNjNTZjOWMzNmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4YTRkYzdkNGRlNDg1NDRmMjhlMWYwODU2ZGMwZTkwYjJlZWYxYTg1Y2RjZGQxZjM4MzE5MzcwNWJjZGUwZDIifQ"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L389-L417",
+          "version": "repo-lines-v1:sha256:4bb82c32b35ed91c5ed2e831dbb955fe168cdc207cb67618de1840716afcb40c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmNzQ0ZWUxZGE0Njc3MDc3NTc4YTJiYzJhMTU1ZGZiMGIzMDRiMTMxYjEyZDlmMmY3ZDBjMjgzNTZkYjllMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyNzA3OGFhM2ViMzRlNDY5YTcxMDcyZTg1MDY4Yjc0ZjJjNWY5NjUwZTNlZWU2ZmYzNDA1ZjU2Y2RiNWVkMWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3OWUwOGUwYjhjYmU3ZDViOWU3MmVmNDQ1NWMzZTc5NDg4NTY3NDQ4OWQ2ODUzNjYxNDA2OGEyYzY1ZWNkYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzM2Q4MzVjYjE0NmE1M2MwMGM3ZDZkY2ViY2NkYjFmZjBjODJmMjU3YTM4NDIyYjdiYTk4OTdhNGIxZjJhZTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_13096db66d9b453ab4b0bf03f4b9d731",
+      "statement": "Profile synchronization preserves a baseline for field-level reconciliation; a PT409 enters an explicit conflict state, and reconciliation requires review for same-field conflicts while preserving non-conflicting local changes.",
+      "evidence": [
+        {
+          "resource": "repo://lib/cloud.mjs#L15-L17",
+          "version": "repo-lines-v1:sha256:1273c2e54666d49274537fd7e4315bc09c810b7cef270a11549310aa8767b1a3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQ4NjZjZWY1MDExN2UzMDJmNzczMTc5ZDM4ZTYzNTA3M2ZkYmI1YzE3NTU1MTQ4ODM2NmJkNGY4N2QyN2RiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTM1N2Q3NmYxNTU1NjE5Mzc0MzIzYWExMmM1YWVjNmMzOWI4ZGVjZWQ0ZDFlZTZhN2UxOGFlM2Y2ZTcxODlkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGM3YmM5ODU5MDY5ZjkxNjg2N2MxODViNzAzMGI4MGMxZDQzNjc5MzYyM2I0MjBjOThkMmVkMTUyMThmMDc3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjkzNzUxM2JlMWUyOWVhMTc2NWJhYWZlZWE3ZGRkZDA0NzRkZTEyNTFhNmMzZGZlZjY4ODljZThkMzk0N2FiNyJ9"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L272-L280",
+          "version": "repo-lines-v1:sha256:9682c5d42b4488d3c5fef21613d1faf21fcae42c6906956705ac13f8ccf2dce5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhkYjc0NjA4MTgyY2I3Y2E0ZDlmYmE0OWEzOTQ5OWE3ZjM5MDdiNGVhMDMzYjE0OTJhZDVjZjBiZWVlZWNlZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJjMzk3MjY3YTkxYTc5MDgyZjYyYTk1OGFkN2ZjMWI3Njk5M2Q5NmNhYjI3YTFkZDc2MDU2NWMwNTlhYWVkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTBlOWE1Y2U2YWNiMWU5YjU0OTk3YTFjYTFjZGQ5NzhlZjUzNDgxZTJjZWVmNWM2OWNjOWU0MmZjODExNWI1YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmM5YjE4MWEyMzdkNjkxNWE4NWQwNGYyZmUxZDMyOWY0MzUzNDM4MDY3NWIwM2NjYjg3ZjRlOTUxZGFkZjRkNSJ9"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L303-L318",
+          "version": "repo-lines-v1:sha256:d381cd1eac018078f2d395a2e629ead62836e13bd1b6cd98ca0c4f87a3a9ed12:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYjU3ZmQ4Mzc3MzM0NGYwNDU0N2Y2MWJlNzkyYmNkNDlhNzIzZDZkZTVhM2ZlOTFmMjg5YjkwOGMyYjU0MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1ODEwN2U1OTliODZlZjljYjE3ZmE3ODliMjFhNTJhMGE3ZGM1MjM4YmQyOTAwYzVhOThhODNmMDQ3NTBlNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyZmYyZTg5Nzc1NTcxOGMwMzdmYjlhNjczOWIzNmY0YjczNGQ3ZDgyNGRlYzQ5Y2U5MzYxOTFiMjhhZDcyN2EifQ"
+        },
+        {
+          "resource": "repo://lib/profile-sync.mjs#L1-L9",
+          "version": "repo-lines-v1:sha256:6c92f11a85e10aad8af9f0c885661077d143f09f4101aea888ce23c671896ba9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjBjNmZiZGJhYzYwNTgzYWFmNDRkNzZmNWI4MDgzNDY2OWJjZGM4ZTA3ODJiM2I4ZTE4MzhiMmU2Y2YxZTY0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5db1921371d94ade8f9e4ff50f1f9d99",
+      "statement": "Realtime workspace notifications are owner-filtered invalidations: subscribing and reconnecting request a refresh, while the database maintains a per-owner version row via triggers and publishes that row rather than private workspace payloads.",
+      "evidence": [
+        {
+          "resource": "repo://lib/workspace-subscription.mjs#L1-L13",
+          "version": "repo-lines-v1:sha256:ee085fb7e5dc085be426e3ae1ecad3bb155ff30c5e6681ac307ad717512911b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmOWI5NGRkNzlhOTRiOWYyNzBjMjM4ODhkZTVkMWY0NmUzZmRhMWVhMTMwOTU1YzU0MDY2YTVhN2I3NDNjMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYTExYWYyYTE5OWM1MGJmMjU2ZjYzMWZjN2E0MTIwMTM3NzhjYWVlOGViOGIwODUwZTA5OTdjMDRhNTM4YzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261027003600_durable_action_inbox.sql#L26-L35",
+          "version": "repo-lines-v1:sha256:25e08ee2ee387000c3c078766c31206f72698b7ce7589a11a37a1e4cd8f69e3c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MzZlMDE0NTRjMjM0ZDU1MzMzNGVlZDc3ZjhlNmQ0YTA0MmY3ZDllODgxZTMwODgzNjI3MzY1OWI5NGI5NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZmEyNDM4YmYzMWZiM2I0YTk0MzljNjk4ZjRjZjAzYWExYzIxZGQ2Njk0Nzk0MmQyNmRlM2E1MmIyZWYwMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwNDllZTkyMjQ5ZmNmMmIwODIyNDZmYTQyYTQ3NTk3NjcyNjJlNmJlZmE5M2FmMzE0Nzk1ZWIzZTRkNjUzZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxZWM5OTI0MWM4YTkzYmVhOTliYTBkMGI4Zjk1NWJiMDQyZWUyMWM5ZmU0ZGE2N2E2MzRhNWYyNzAxNzlkM2UifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261027003600_durable_action_inbox.sql#L81-L101",
+          "version": "repo-lines-v1:sha256:a020528698465c6684678b18e09ae54a0e7eeb695e373c5bae48a6d512465d30:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiOTg4NTFmZjc2MDFjYWMzZmYwZDk2MmE1YjBlYmM2NWVkZmEzN2MwMWE1ODE1N2UzZDEyOTk3MWZmMmJhZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2MDEzODlkYTQ2ZmJmM2QyMWQwYzlkZjdmOWY5NGYzOGY3NDEwMDYyODJmNTNhOTI5NDFmOWFhZGE1NTFmMmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1ZGFiYjA3Njg3MThjY2ExM2EwYTRkOTVhOTNhMTE1OGVjNDQyOGExZmI0N2M0YzdjNWY2NmE5ZjdlNjA3YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzMDBjNzRiN2Q2YTMyMjZlMTE1Y2ZlNzkzOTdkNDc5MzgyZWMxOWZjODBjYmVjYjgxMDAzM2E0M2M1MjVhNzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b92a8af76e04008b2af46982da8715b",
+      "statement": "Before loading or persisting, cloud sync reconciles reset state; a completed reset with a new ID clears only the matching account cache and prevents stale dirty cache from syncing, while database reset guards serialize reset operations and reject pending-reset writes.",
+      "evidence": [
+        {
+          "resource": "repo://lib/cloud.mjs#L129-L140",
+          "version": "repo-lines-v1:sha256:435e6106c3a72f7de77e92bef60834d2a51d2a7f37bcc2a0d79e46c0dfca226d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExZGY4N2E0NzMxNmM3MDhjNTUwMjA5OGU5YWY2YzQ0NTM0ZWI4MGJlYWRjZjYwNjMwMjhlZmNhODU5MzdhYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0ZWI0YzgyOWI1ZDAxMjFhY2RhMWEyYzIyYTQ4NzI2N2QwZDQ0YTE1ZDNjMGQ4YjMzODEzZTlkMzMyMzg5ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwMDNhYmVkODNhMjQzMDhjOTU1ZmJmNGNkNThhZjMwMTc1NWJmMDRlOTBkMTE2NmExZGIxYjI5NzQ4ZTY0OWEifQ"
+        },
+        {
+          "resource": "repo://lib/cloud.mjs#L64-L73",
+          "version": "repo-lines-v1:sha256:4542d60574a9ea08ee3af2546b0eb2530065533f6e7c0903c434cff1dde5c787:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlNGE1NjI4ZWZlZmY5ZDJkN2I3NmVjZmQ2YWYwZWY2MGI2NDFkOTVmNTM5ZGVlMmNlNDc0ZjMwODA1NTA5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4OTYyNGZiMDYxMjhhZGI3MDMzNDlhNWMzNTZkYWU5OWY2ZmUxMjE4ZGEwMDA4Yjg0ZTU4MzhiNTIwM2ZmOTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjOTcwMzgzZmFjNGM2MmEzMTU1NjgxMDA1MzNmNzc0Njk3NGUzNjIzNGY0NTZkMzg3MTM4MmZjMzM5ZmM1YjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0ZDIyZTU1NWRiOGJkNGYwYzRmZTIxMTU5MWRhZTNiODUxOGFjOTRkZWRkZGJmODU4MDUzNjJjMWE5ODc3ZjIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261023061223_workspace_reset.sql#L115-L137",
+          "version": "repo-lines-v1:sha256:35ee0ce9694bf3f88cc58381f461c0ed436641490f90efe2898392b0da5e7330:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0OTU2OGNmNjI2NTgwZDI1NjJiNjhhMDlmNTlmMTFkODE1NmFmYzVlOTMyOTQxMjM1YzA4MzYyODE2MzZjOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMjMyMjQ3MTkwNjlhZjhkN2JhMDVlN2I3ZWE2MDhjZjNkYjAyZGFiMDJiZWZkMmUzYTVmMDk4MWY0ODdmMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjNGFmZjFmMWU1N2U5M2FkNDJjOWU4NWZiNzQxYWNhMThjM2FhZDFiNTI2ZDFlY2U1ODIyMDM0MjUzMzc4ZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0M2FlZTQxN2M3OTM5OGMzMzY1MjZmMWY3NWVkMzU1ZTViYjNkZDhkNjQyMmMzODNlMzI3MWI3YWQ5Y2U0ODYifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261023061223_workspace_reset.sql#L36-L65",
+          "version": "repo-lines-v1:sha256:5eb1f69975de7bb7db0edc93dd121a1e36964ba693d1d71ef7d3fcf6656832e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiOTQ3YzQ5YWQxZDE4NGY5ZTBmYTEwN2JkN2FhNGUzZjEzYzFlZDYwOGMwOWZiZDhiYmNmMDE0YzdlYmNlYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxZDM3NTA3OThhYjc2MmVkYjkxN2Y1YjBlMWI4ZmEyYzIzMGZkMGU5NjIyYjk3YzVjOTYxZDUyZTZmNTdiMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0Njc3NmVlYjBlOTg4ZDhhMWJhZDFkMjljMjI1N2U0MTlkYjYzODliNTZmYmFhZjlkNDUxMjA1ODU3MzJjMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NWFmN2ZjOGViZWU1ZDBmNTg0ODYyNGU5ODk2ODBhZDIyYWY2YTQxNTFjZmM4OTYxNGU5NGZlYTIyNTQwNjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_07a82eba90704c4b92d6fea637350909",
+      "statement": "The account provider uses the static jobs catalog only for public roles; authenticated private roles are derived from the cloud-loaded batch and batch unavailability does not disable workspace synchronization.",
+      "evidence": [
+        {
+          "resource": "repo://lib/cloud.mjs#L141-L149",
+          "version": "repo-lines-v1:sha256:2f05157e337ccf0bdc7981ccb04effb886a0570d11ad68d7b138edd6e35dac9a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTE1OTY5ZmM2YzYzYTM0ZDBjZWIzYmIyMTM2Njg2MjkwMDJmNWNhYjQ0NTQzMjg4NTcxNGY5MDQ3MTMxY2EzNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWI2MmY2MGQ4NTkwYTU3OWNmNDZmOGQ2NzM3OGM0YzU3MmI5NjJjZWNjZGI5MGM3YTVmN2I0MmI5NjA3ODJhNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDE3NmQ5OTAyYzdjY2MzMjkwOGNhMTJkY2E0ZTM0OTE0OTYxZTU1OWY3MDg1NjQwOWQ5YjI2MTQxYWMxMjM3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQ5MWQ0NDJhOGZhMjMyNTBlZWY5YTRlMGJlNDU2NTY0NDg2YjEzZjI5MjRjYjlkYjI1MjhhMjA0NmZkMjkzMCJ9"
+        },
+        {
+          "resource": "repo://next-app/lib/account-workspace.jsx#L10-L13",
+          "version": "repo-lines-v1:sha256:5ab7d8e506c5e7900e5dfb04d21d22d63b8247581a603363aa0cfa7a175d5fe4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGE0MTQ0Yzc1NTU4MGRmYzc4NTExNjBhZGVjMmQ5YzUwZWI2MjZmMmExM2Q5ZDMwNGU4Yjg4NmUxZmU1ZTI0NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmFiNmEwZjFkMTA5NTQ1ZGRmOGFhOTEwNWY5ZjE2OTExMTU1MDI4MWZjOTgyNWM1OTQzNjg3MGYxY2EwZmM5OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjcyMDZlZjRjMTRmOTZiOGU1NmI0N2Q5ODMzOWRjMDNkYjU2M2M0ZWRhNDc2MDQ5ZThjN2Y4Nzk4YjZkYTQzZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGRhZTBlYjNhYWU5YmMwZTA2NDE3M2Y3YzNmMWU3Y2ZhYTUwMmNjYWQyZmNhN2Y2YzRmOWIzNDBhYTY3YzY1ZSJ9"
+        },
+        {
+          "resource": "repo://next-app/lib/account-workspace.jsx#L201-L212",
+          "version": "repo-lines-v1:sha256:8be926f5241b2790a76657b98d3672e15bb7a9b1c958b7420e5df453a278da31:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NzcxMWRlZmU5ZjVlYTMzMTkyMDY2OTU4MGM2MTM1NjQxN2U4MDU3NzlhMjU0YzQ0ZDBhNGZiYjE1MTQ2ZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMjUwZWQzNDFhZGYxMDZkMWM3ZmI1Zjk4Y2UyNTJiNWNkMDYyNzlmNzcwYThiYzVhZjg1MTJlZjczMzgxYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5ZjFiOGY3YzcxZmIxOTkyYzhlOWExNjU3ZjgzNjBmZTBiZjQ2ZjAxOTBkNDQyYjQ5OThlNmNjNzMwYTlmNzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd478afd6f764438bfaf4c1dfc99a7f6",
+      "statement": "Demo mode is a separate lazily selected runtime controlled by a tab-scoped flag; changing modes full-navigates with all existing query and fragment context removed.",
+      "evidence": [
+        {
+          "resource": "repo://next-app/lib/workspace-mode.mjs#L1-L19",
+          "version": "repo-lines-v1:sha256:47ffe3030b7eff7a85f1515e071fdd8c8dba9096e99c9ed2a874b5da28fbce0d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0OWY4MDcxYzY1ZGU3YzI0MGU3NzlkNjU4NWNmZjJlZmM2ZjJlYjMwYTkyMjBhYzI2MjliMTIyMzc3OGM1NDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZTdjZDU2ODhjOTZhOWVkNDgzN2IwOWIwNjZlMmZjYmE0YzEyM2EzN2ZkMmVlNjQ3NmQyYWU2ODg1ZjZjM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://next-app/lib/workspace.jsx#L1-L15",
+          "version": "repo-lines-v1:sha256:446413a40f4d8b410bbc09d8e689e20fd5f38bfdae38afa8c72b66cd388e5bb9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmYzZTg1ZDY3MTVhN2E5ZDBmNmMxYjMyZjMwY2Q4Y2IxNDRjYzc5YzhhYmFlOTUzZWExMzc4ODlmYWUyZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMmFlZmQ5NjQ3MjM4ZjliZmUyNmJkOWVkOGY5NzQ0MjliZWRjYTQxMGEwYTVhNzU1NWU1ZjQ2ZGY5M2RlNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fcc2add355ba4ace8c304f62d806d71f",
+      "statement": "The detached demo runtime explicitly avoids production store, auth, cloud synchronization, account metadata, and localStorage; it uses cloned fictional fixtures and an in-memory store with no account switching, backend, or file access.",
+      "evidence": [
+        {
+          "resource": "repo://next-app/lib/demo-runtime.mjs#L1-L27",
+          "version": "repo-lines-v1:sha256:056afbf0d46d3cc39eca87b93b553285471f063dc9582e67bbb15990cd85bc27:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNmRiZjcwMGZlODc5ZjZjYjE0YTg5ODc3MWFkMzkzMDhkNzVjNzNhNWY2ZTg5ZDUwMWUwYWQ2MGJlYjA5ZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YWRkNjYyMzJhYThkMTY2OGZkNDJkYTA5NDVlYjQ1NzJkZTAxZjBiNjkxNTFiYzBjMDYzMmNhYjU4NTZmYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://next-app/lib/demo-store.mjs#L1-L15",
+          "version": "repo-lines-v1:sha256:7ca4d599a3b13ffcb5cd7e2c5469f16fc1347b7b075a45b794d0859bf8ad33cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1OGRmMWE3ZmY2MGIzOTgzNWZjODQzODg3NGViN2U2MDE4YzkzMTJkOTc2NTdjMTkzZDRhNWM3OGI2MmUyNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjN2E2MDMxYzdkNjFkOWQ5ZDAwOWFhYTFmYWE3NmExMTZiMjc2Y2M2M2E4YjdiNjE0ODI0N2ZlMzVjZTkwZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://next-app/lib/demo-workspace.jsx#L19-L39",
+          "version": "repo-lines-v1:sha256:ce6ac45b11951d1ad02350876c4ddfd237b37c1eb4f8f112fafa5aab4a636300:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzNTg3NjcwMTY3MWIxMmVhNGFjOWE0ZjgyZDA0ZDlkMGVmYzk1YjFkY2QyYzYxZjQzYWI1NWEwZjU0Mzg2YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2Y2Q0M2UwNjYwZTZkYjFiZDFlNjUwOTJhNGZiYzQ3ZTI4OGM2ZmE5YTNmOGE0MjMwZjJhNmQ5MGQ3NmViNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxOWEzYzRhMGM2OTMwMGI2MDE0NjFlNWY5NGFkMDVmOTk0YTUwZGIzMTRjZDBmMjAwOTcyNzY1MzQ3OTRlZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://next-app/lib/demo-workspace.jsx#L9-L14",
+          "version": "repo-lines-v1:sha256:6e68f2abc81958a16c4ae06c6d952db0ff5af411d22bcc62bdf637a503861c47:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWUxNzFlNWU1MTdlOWZiZGUwOWE4M2I3YjgyN2Y2ZDUyMzAwOGE5N2RmNWFlM2YwMmZjNTVmYWU2NzUxODdjYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTgwMzVhNGY2ODRjNGZjZTUxMzQ0YzNkODFkZDgzY2Y5NzFlNDgwODZlZmRmNmNmOTU1ZDA1YzY1YzU0NWIxYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTQ3NmJiMThmZTcxZTY2M2ZjYWM0NzViNzU5OWMxZWU1NGVmN2ZmMzk0MjFiN2M0YzY4MGRjMzY5YWQ4MzViMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmFjY2FiN2ZmYjdlOTgzMzg4NTQ4MmI1MzIxZWFiMzFkZTdmNGYyNTc2MzFkY2E2ZjI4NmY2N2RkMTY2NzRmOSJ9"
+        },
+        {
+          "resource": "repo://tests/detached-demo.test.mjs#L34-L55",
+          "version": "repo-lines-v1:sha256:16dc2de80c1ea8c37a0eb9034c5800b1cc9e73bb993c2f0794d24b839c02fff9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwNGYyOWFmNWYyNDE5NzU4MTkwODBkZjY2YTE4MjlmODc5NzkyYzYzN2ZlNWJjMjQzZTVlYTA5YTg1Zjg0YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1NzY2NjE4NGM2NmZhZjMxYTUwZjc3YzY1Y2U0ZmFhNWRjZGQxNGQ4YjUzZDYwYmEwOTczNTQzZDFjYjZkNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0YThkNTdjMTBhMTEwN2YxYjRkYzY1YjY2ODQ2OTQzNWIyNGYxNjUzNzk1ZjNkYmZjNTcxZTEyYjk0ZmZlZTIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}

@@ -1,109 +1,146 @@
 ---
-type: architecture
-title: System Architecture
-description: Runtime and ownership boundaries across the static React client, canonical account data, Edge services, Node execution, Muse change sync and optional Circle intelligence.
-tags: [architecture, nextjs, supabase, agents, data-flow, node]
+type: system architecture
+title: System architecture and trust boundaries
+description: Runtime topology for the Lookout job-search workspace, including the browser, Supabase, scoped agent interfaces, optional Node runtime, and local runner. Explains public catalog data, private candidate data, and which capabilities remain outside Lookout.
+tags: [architecture, trust-boundaries, supabase, agents, runtime]
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-27T03:54:51.227Z
+    at: 2026-11-07T02:52:01.830Z
 sources:
-  - id: openwiki-source-5bd02f3d5dbed48e36fcb5ab
-    resource: repo://backend/agent-contract.md
-  - id: openwiki-source-9c3db0099e9f49932a5ab28c
-    resource: repo://backend/client.mjs
-  - id: openwiki-source-ab7c96c03cc7d35075e96ff3
-    resource: repo://backend/intelligence/service.ts
+  - id: openwiki-source-6022a6e334c8fd28e21eb729
+    resource: repo://backend/runtime/api.ts
+  - id: openwiki-source-1eb06e63a575f0306b5f94a0
+    resource: repo://backend/runtime/compose.yaml
+  - id: openwiki-source-bed7755e9721f2cc07f835ee
+    resource: repo://backend/runtime/main.ts
   - id: openwiki-source-ee1b3e21718542a757d4d790
     resource: repo://backend/runtime/README.md
-  - id: openwiki-source-4f85b903dcd8ff42cf4e79dc
-    resource: repo://backend/runtime/service.ts
   - id: openwiki-source-59fbab138f8a655b0be18622
     resource: repo://backend/runtime/worker.ts
-  - id: openwiki-source-1b750ccbbba8d691ecef1a74
-    resource: repo://docs/intelligence-v1-spec.md
-  - id: openwiki-source-41c6057c81314b2b102ebe9c
-    resource: repo://docs/interview-intelligence-platform.md
+  - id: openwiki-source-8baf8eb274b55cb53e7cba0b
+    resource: repo://data/jobs.json
   - id: openwiki-source-a8bb617ebaa9fdedae69cc1d
     resource: repo://lib/cloud.mjs
-  - id: openwiki-source-a9e1c6c32dfd334ae56d3f3e
-    resource: repo://lib/mcp-services.mjs
-  - id: openwiki-source-8bdb9080f51dd31bf9d211bd
-    resource: repo://lib/muse-change-feed.mjs
-  - id: openwiki-source-c2565295ed5c42c265f796fe
-    resource: repo://lib/profile-sync.mjs
-  - id: openwiki-source-10b284b4d36ef128b35a8d39
-    resource: repo://next-app/components/application-profile-context.tsx
   - id: openwiki-source-d28350a21befcd07cb2ca6d4
     resource: repo://next-app/lib/account-workspace.jsx
-  - id: openwiki-source-70edbb94f068146a752dd992
-    resource: repo://next-app/lib/demo-runtime.mjs
   - id: openwiki-source-a675f1c438dee1055568ede9
     resource: repo://next-app/lib/demo-workspace.jsx
+  - id: openwiki-source-f9d511c892e2605dfee6cb5d
+    resource: repo://next-app/lib/supabase-config.mjs
   - id: openwiki-source-980a00b6ef8d3f93f906cc6c
     resource: repo://next-app/lib/workspace.jsx
-  - id: openwiki-source-5c5dc57d5c7c840354826599
-    resource: repo://next-app/next.config.mjs
-  - id: openwiki-source-e8c7a238c8d038536bfeb509
-    resource: repo://next-app/scripts/finalize-export.mjs
-  - id: openwiki-source-d4b49891072a908c1aa558de
-    resource: repo://next-app/scripts/prepare-public.mjs
+  - id: openwiki-source-23775c3de52f3ab95a13cb8b
+    resource: repo://README.md
+  - id: openwiki-source-d4da9f109427e840258eec4d
+    resource: repo://runner/gateway-client.mjs
   - id: openwiki-source-0426071fbb3110101b8e91ac
     resource: repo://runner/mcp-server.mjs
+  - id: openwiki-source-d1a22cc381bbd73a73205d18
+    resource: repo://runner/README.md
   - id: openwiki-source-e511468b88bd67d2e4f7a0d8
     resource: repo://runner/runtime.mjs
   - id: openwiki-source-491126b88c8fadf4e4211275
     resource: repo://supabase/functions/agent-gateway/index.ts
-  - id: openwiki-source-5e0e032552d77cb40052782b
-    resource: repo://supabase/functions/agent-gateway/instructions.json
-  - id: openwiki-source-da5a12ae20329b06dc01428f
-    resource: repo://supabase/migrations/20261027022419_muse_change_feed.sql
-  - id: openwiki-source-d10fe354f475113d387a69cc
-    resource: repo://supabase/migrations/20261027023257_remove_backend_search_scheduler.sql
-  - id: openwiki-source-a89745146b3086aa3b11f618
-    resource: repo://tests/cloud-sync.test.cjs
-generated: { by: "codex", at: "2026-10-27T03:54:51.227Z" }
+  - id: openwiki-source-3cae6e3f5eeea02db512314f
+    resource: repo://supabase/functions/agent-mcp/index.ts
+  - id: openwiki-source-087879b934e7d16238495623
+    resource: repo://supabase/migrations/20261013160000_job_board_backend_foundation.sql
+  - id: openwiki-source-6a85d15d60829c2dc4e07d68
+    resource: repo://supabase/migrations/20261013164918_agent_gateway.sql
+generated: { by: "openwiki/0.7.2", at: "2026-11-07T02:52:01.830Z" }
 ---
 
-# System Architecture
+Lookout is a job-search workspace, not an autonomous agent host. It owns durable records—catalog entries, private workspaces, batches, drafts, approvals, attempts, and activity—and defines the server-side boundaries for reading or changing them. A connected agent supplies inference and judgment; its own runtime supplies scheduling, browsing (unless the local runner is installed), and notification delivery. Those capabilities are not silently provided by the website, Edge Functions, or Node worker.
 
-Lookout combines a static React application, owned Supabase records, a scoped agent interface and optional execution services. Presentation, durable authorization, reasoning and browser side effects have different owners. A feature existing in source does not establish that its hosted runtime or migration is deployed.
+## Runtime context
 
-## Static production client
+```mermaid
+flowchart LR
+  Browser["Next.js browser workspace"]
+  Static["Static public catalog"]
+  Auth["Supabase Auth and RLS"]
+  Data["Supabase database and private Storage"]
+  Edge["Agent gateway Edge Function"]
+  Mcp["Hosted MCP Edge endpoint"]
+  Agent["External agent client"]
+  Node["Optional Node API and worker"]
+  Runner["Optional local Playwright runner"]
+  Employer["Employer job site"]
 
-`next-app/` is the production Next.js App Router/React/Tailwind frontend. `output: export` produces static files for GitHub Pages; there is no request-time Next.js server, cookie session layer or Server Action backend. Public asset preparation/offline caching excludes private account responses, resumes and signed download URLs. The retired static frontend is no longer a development target.
+  Browser --> Static
+  Browser --> Auth
+  Browser --> Data
+  Agent --> Mcp
+  Mcp --> Edge
+  Agent --> Edge
+  Edge --> Data
+  Agent --> Node
+  Node --> Data
+  Agent --> Runner
+  Runner --> Edge
+  Runner --> Employer
+```
 
-The workspace provider lazy-loads separate account and detached-demo runtimes. Account initialization adapts React to the shared store/cloud controller and `backend/client.mjs`; root `lib/` owns shared domain behavior. Private pages require account access. Explicit `?demo=1` uses fictional memory-only state and services without loading the persistent account store or Supabase client. Demo reset recreates fixtures and never becomes a live account write.
+*Caption: Lookout’s browser and agent-facing paths converge on Supabase-owned records; inference, schedules, notifications, and ordinary remote browsing remain in the external agent environment, while the optional local runner is the constrained browser-execution exception.*
 
-## Browser state and canonical records
+### Components and entrypoints
 
-Signed-in browser state is an account-scoped cache and draft workspace. The serialized cloud controller retains unsynced changes, fences late account-switch responses and reconciles remote refreshes. Owned batch locators load after authentication; missing/foreign batches can fall back to public catalog data without disabling account sync.
+| Boundary | Role and entrypoint | What it does not own |
+| --- | --- | --- |
+| Browser UI | `next-app/` is a Next.js/React workspace. `WorkspaceProvider` selects a signed-in account workspace or detached demo; the account provider initializes the browser store, Supabase PKCE session, and cloud synchronization. | It has a publishable Supabase key only, not a service-role key or authority to impersonate a user. |
+| Static catalog | `data/jobs.json` is the canonical static discovery feed packaged with the UI. It provides broadly visible job facts and must retain canonical URLs and known application statuses. | It is not the authority for a signed-in candidate’s application state or recommendations. |
+| Supabase | Auth identifies people; Postgres and Storage hold durable workspace data; RLS protects owner-scoped rows; migrations define the schema. The `resumes` bucket is private and its object prefix is constrained to the authenticated owner. | It does not run an agent’s model, recurrence, text messages, or a general-purpose browser. |
+| Agent gateway | `supabase/functions/agent-gateway/index.ts` accepts the human-authenticated connection-management operations and opaque `jb_agent_…` bearer credentials for agent operations. It hashes credentials and dispatches scoped, owner-derived database RPCs. | It exposes neither general SQL nor a shell, and it does not treat an agent-supplied user ID as ownership proof. |
+| Hosted MCP | `supabase/functions/agent-mcp/index.ts` speaks the MCP protocol and forwards each operation and bearer token to the fixed gateway URL. | It is a protocol adapter, not a browser launcher or scheduler. |
+| Node runtime | `backend/runtime/main.ts` runs as either an HTTP/MCP API or a worker. The API exposes `/mcp`, `/v1/operations`, optional resume parsing, and `/healthz`; the worker polls durable jobs only when execution is enabled. | A healthy process does not prove Supabase or a worker is available. The worker has no recurring-search scheduler. |
+| Local runner | `runner/mcp-server.mjs` is an opt-in stdio MCP adapter. It forwards hosted data tools and adds narrowly scoped local tools for form inspection, private-resume fingerprinting, approved prefill, and guarded submission. | It deliberately omits arbitrary shell, evaluate/click, CAPTCHA bypass, model calls, and generic agent recovery. |
+| External agent | The agent client uses its connection credential and decides how to infer fit, create reports, schedule work, and deliver notifications. It can optionally host the runner on a graphical machine. | Lookout cannot claim that an agent was scheduled, browsed Instagram, sent a text, or has persistent memory merely because it stored a preference or change event. |
 
-Supabase records and migrations are authoritative for personal facts, application profiles, permissions, drafts, timelines and private assets. Personal-fact saves use typed versioned patches, preserving unrelated fields; stale overlapping edits require reconciliation. Verification is a separate human action rather than an incidental consequence of a fact save. Application-profile preferences and writing instructions remain canonical saved profile documents, with structured projections for consumers. Muse's conversational memory is a cache of this context, not another factual database.
+## Public catalog versus private workspace
 
-## Backend ownership and routing
+The data boundary is intentional rather than a UI convention:
 
-Supabase supplies Auth, owned relational data, RLS and private storage. The Edge gateway verifies human access tokens for connection management and opaque agent credentials for scoped operations. It maps safe failures and signs owned resume downloads for a short lifetime. Service-role credentials never enter browser configuration.
+- **Shared catalog facts** live in `public.jobs` and in the static feed: a canonical posting URL, employer/job facts, and discovery/verification metadata. The database policy permits catalog reads to anonymous and authenticated clients. Employer facts can be reused across candidates.
+- **Private candidate records** include profiles, preferences, résumés, saved answers, job batches, batch-item recommendations, applications, approvals, activity, agent connections, and private files. Core tables use `user_id` RLS policies; the browser sync layer also supplies the current account and checks it has not switched while saving.
+- **Personalization is private.** A batch item joins an owner’s batch to a shared job and carries the candidate-specific recommendation; it is not written onto the employer record. An opaque agent credential resolves to its connection’s owner server-side, and credentials are stored as hashes with expiry/revocation state.
+- **Demo is a separate trust domain.** `?demo=1` selects an in-memory fictional runtime with no account client, cloud synchronization, or production MCP capability. It is useful for previewing interaction but produces no candidate records.
 
-Node hosts the shared MCP transport at `/mcp` and bounded operations at `/v1/operations`. `lib/mcp-services.mjs` maps domain operations to direct owned SQL, Node execution or existing Edge compatibility. This is an execution split, not a requirement to move every lightweight setting writer into Node. Website and MCP converge on ownership, validation, consent and version checks.
+For schema-level ownership detail, see [Data and ownership](data-and-ownership.md).
 
-The API and worker are separate processes. A leased `search_ats` job collects supported ATS sources, verifies postings, screens saved preferences, deduplicates and persists a shortlist. Muse supplies interpretation, candidate-specific reports, ratings and subsequent authorized work. Configured Node resume extraction returns a reviewable proposal; it does not silently verify imported facts. My Agent is the user-managed recurring-task configuration; the personal runtime schedules those tasks and submits bounded jobs. The duplicate backend recurring-search scheduler is retired, while Node queue polling, retries, cancellation and lease fencing remain.
+## Control flow and action boundary
 
-## Muse and platform synchronization
+A browser session reaches Supabase as the signed-in user, subject to Auth and RLS. An agent does not receive that user session: the person first creates a scoped, expiring connection, then the agent presents its opaque bearer token to the gateway or MCP adapter. The gateway verifies the token’s hash, expiry, revocation, and operation scope inside database dispatch before it loads or changes the owner’s data. Connection issuance itself requires a human Supabase token, and the raw agent token is returned only at issuance.
 
-The hosted MCP adapter forwards fixed operations to Edge; Node and local stdio expose the shared protocol with their configured capabilities. Every request verifies credentials, discovery is scope-filtered, and `initialize` supplies the current shared startup instructions.
+The Node API is an optional compatibility and execution surface rather than a replacement database. It validates the same credential format and maps each operation to a declared service. Some Node-owned search pipeline operations call service-only RPCs directly; compatibility operations forward to the Edge gateway. In worker mode, it claims a durable, leased job, performs bounded deterministic discovery or an enabled application executor, and finishes with the job ID, lease token, and expected version. A failure is persisted as a failed outcome rather than granting indefinite authority.
 
-Muse writes through existing scoped tools. On authorized work runs it reads `read_muse_changes`, follows each labeled event's exact read pointer to current records, refreshes its context and acknowledges handled IDs. Five event types cover confirmed answers, preferences, application profiles, backend job results and application/interview timelines. Timeline corrections/reschedules retain history. Acknowledgements are per connection; reads do not consume events. The feed is not a behavior engine, push wake-up, work request or consent grant.
+The agent should read current state before retrying a write. Gateway failures intentionally direct callers to do this because a rejected or interrupted request might coexist with a completed durable operation.
 
-## Browser execution and human review
+### Application execution is deliberately narrower than preparation
 
-The local runner adds narrow form inspection, resume fingerprinting, deterministic prefill and guarded native Greenhouse submission. Its dedicated browser page exposes no general click/evaluate/shell tool. Configured Node submission reuses that implementation with isolated per-request browser contexts; bounded batches still independently authorize each child. Neither frontend rendering nor discovery jobs execute submissions.
+Preparation records drafts and may require a human approval snapshot. Submission is a separately guarded action boundary:
 
-Prepared drafts, exact human approvals, routine automatic policy authorization, user-reported timeline observations and runner-observed confirmations remain distinct. Unknown or uncertain submission outcomes go to authenticated human recovery rather than automatic retry. See [Submission Safety](../agents/submission-safety.md).
+1. The runner loads **current** server authorization and the owned private résumé; offline fixtures are not authorization.
+2. It opens a canonical supported ATS posting in its dedicated browser, inspects the live form, and rechecks the approval after navigation.
+3. For submission, the workflow validates the draft, résumé bytes/hash, canonical URL, and form fingerprint; it then obtains an atomic claim and a short-lived one-use click permit.
+4. It makes one unambiguous native Submit click and requires an observed employer confirmation. Redirects, unsupported confirmation markers, and timeouts are uncertain—not successes.
+5. An uncertain or started attempt is not automatically retried. It becomes a human handoff; human verification is required before a fresh attempt is allowed.
 
-## Circle knowledge and intelligence
+This separation is why an external agent may reason about a role or use its own browser for research, yet cannot manufacture human approval or convert “prepared” into “submitted.” The runner serializes calls through one dedicated browser page so concurrent application actions cannot share or mutate it.
 
-Production Circle interview lookup reads current permitted published source revisions, matches the exact posting, and respects membership and knowledge/workspace scopes. Empty results remain empty; the platform does not invent a company/title fallback. This lookup does not require a vector store or server-side model.
+## External capabilities and operational implications
 
-`backend/intelligence/` is a separate optional Node ingestion/evaluation surface with explicit demo or owner-scoped private targets, embeddings/metadata and evidence-graph facilities. Its local tests and configured services are not proof of a globally published knowledge backend. Private processing does not authorize public sharing, and model reasoning/presentation remains a Muse/host responsibility.
+Lookout persists schedules/preferences where supported and exposes context versions/change feeds for an agent to consume, but it does **not** wake an agent. The connected agent’s scheduler must invoke it. Likewise, notification templates/settings do not send messages: the agent’s own messaging integration must deliver them. Normal search and report quality depend on the agent’s inference; the Node discovery worker explicitly does not generate LLM reports, messages, or applications.
 
-See [Discovery and Tracking](../workflows/discovery-and-tracking.md), [Gateway and MCP](../agents/gateway-and-mcp.md), and [Testing and Delivery](../operations/testing-and-delivery.md).
+Remote-only agents can use the hosted MCP/gateway data tools, but cannot gain local Playwright actions unless a runner host is installed and reachable. The runner uses a fixed configured Supabase origin and validates signed resume-download paths before fetching, preventing it from sending the agent credential to arbitrary URLs. Employer content remains untrusted input.
+
+Configuration follows the same split:
+
+- Browser configuration uses `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; these are intentionally public build-time values. `NEXT_PUBLIC_AGENT_MCP_URL` may point at a separately deployed Node MCP endpoint.
+- The Node runtime requires `SUPABASE_URL` and server-only `SUPABASE_SERVICE_ROLE_KEY`. `LOOKOUT_PROCESS` selects `api` or `worker`; `LOOKOUT_EXECUTION_ENABLED=true` enables queue polling, and `LOOKOUT_SUBMISSION_ENABLED=true` enables the application executor/tools.
+- Local Compose separates the API and worker containers. The API binds `127.0.0.1:8080`; its host/origin allowlists and bounded request handling are additional network controls, not substitutes for gateway authorization.
+
+## Failure model and focused verification
+
+The design favors explicit durable state over inferred success: expired or revoked credentials fail closed, RLS/dispatch rejects cross-owner access, revision/version checks prevent stale writes, and submission uncertainty blocks automated retry. Private browser changes can remain locally dirty during a cloud failure; the sync controller retries background loads/saves and pauses on profile conflicts rather than overwriting remote state.
+
+Useful focused checks include `tests/agent-gateway.test.mjs` and `tests/gateway-cors.test.mjs` for gateway authorization/request boundaries; `tests/discovery-runtime.test.mjs` and `tests/backend-jobs.test.mjs` for leased queue execution; and `tests/runner-mcp.test.mjs`, `tests/runner-attempt.test.mjs`, and `tests/runner-deterministic.test.mjs` for runner protocol and guarded browser behavior. Database scenarios additionally cover ownership, scopes, revocation, approval/attempt behavior, and recovery paths. A successful local test or `/healthz` response is not proof of a live external agent, notification channel, employer submission, or hosted deployment.

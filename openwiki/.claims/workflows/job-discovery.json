@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:bf7e3a7a5206264ecee7420f27527508bc12732f1ba8de7420346ed6aabbac9b",
+  "claims": [
+    {
+      "id": "claim_e63b67d15e3d4e0f8792c379c57d5f80",
+      "statement": "A `search_ats` backend job is an owned, leased execution path that performs bounded collect, verify, screen, and deduplicate stages, stores a `pipelineVersion: 1` shortlist, reports partial coverage explicitly, and does not apply, message, or run an LLM; Muse reporting and ratings occur afterward.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/worker.ts#L77-L111",
+          "version": "repo-lines-v1:sha256:61f8de8fd6db490f077ab7ab292f4593ee07f28bd02acd559b2f8cf104aa5508:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZDRjODQ0MTA1NGI2YTdmOTAwNzliNzc1Y2QxNmFmN2U2ODEwZTZjNzZjMzMzYjgyNWJkMzZhNjM3NWRjMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhYmQ1YjNmYjczMDRjNDFkNjNmOTIyZTllY2JmNGY2N2Y4NWM4NGFkODk5ZTVjMTNhMWRlZTc2NDEwMTkzN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExZjBlNmUxMGE5NGYxMWU3MWM2MTdkYjIyMTg2MmJlNTIyNTE0ZTNiODNiNzc5NGM5MzFiM2E3ZGZiOWYyZmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5NTg2ZDFiYjVjN2VkMTE2NTZjZjQ4NzkxNWY3ODhiNWNlZWUxZTVkYjRlNTkzM2M1YTcyMGQzNDdjMGE2ZDkifQ"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/backend-jobs.mjs#L10-L14",
+          "version": "repo-lines-v1:sha256:02fba27cf8a1d113e01731f1cad0816ac90c953ef3401fb61b897c70bf3c3f49:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmJlYzI4ZjIwYWVhOWJhYjViNzE5YzkwY2EzYzk3MmJmNjc2NzM1ZjQ1N2MwMDEwMDlkZTFlNDlhYzdmNmUxMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY0NzI2NmQ0YTkwODQ1N2JkOWRjNjlhYTgwMzY3ZGY3MGQ3NjdkZjBkM2EwYTRiYWE3YzM3NWZjMmZlYjFkYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGRlOTVkOGQ5YzVmMzI5MDg4OTE3MjBmZThjODhmNGE1MzMzYWY4YjdiMTRmODdhM2NjMDZmNWY5MTNlOWFkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzJiMTMxMDFhOGFkNjU0ODAzODI2NTcwMTJiZGYxODNjMjkzZGQxODlmODU2MzQ1M2RiNmNjMjQ0NzQyMTg3YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1de8622fb8794e00b5190b863e99defd",
+      "statement": "The worker claims queued or expired-running jobs under a five-minute lease, fences internal dispatch and final finish with job ID, lease token, and expected version, and closes jobs that have reached the three-attempt limit as failed while retaining/closing prior search evidence as partial.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261026175155_backend_discovery_resume_dedup.sql#L10-L29",
+          "version": "repo-lines-v1:sha256:2f4b2a87179268238a2b98b5a96e601a894dec6e0d8f8d652fd8620c8f473172:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzOGI4Mzk5OGY5YjZmYzI3OTQ0NTQwYzUwZTBjYTRiMzQyYzI4MTI5YmM3OTc0YzYwOGY5MzY5OGU1MDAxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZDg4NjljYmEyMjJlMDAwM2IwZjI1YmExODMxM2I1Nzc3YTU1MDkxZDdmZjE4NjA5OTZkODg3NzY1OTI0ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmZTEyMmFmZTY4Y2RlY2M0NzI3OGFhNzI1NzVkZWNlMDBhODE1NWExN2EyYjVmZWZiZTdmNGVmYmRlOGMyZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmZDI2YjIwNTIwYTgyN2RhMmVjZjE4ODNiN2U2OWJiOWU5YWEwZTk3Njg1OGU5ZTAxMTM1NzE0YzZjM2FjNzcifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261026175155_backend_discovery_resume_dedup.sql#L30-L70",
+          "version": "repo-lines-v1:sha256:92bb9116682ef821124cce1e504929b62ceff353e434ec12acf77561858c29c2:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4YzkwMGYzZDk5NjY2ZWExZTdlMzZhYTA4MmI4NWU4NTFhNmQ4YmFhYjUxMTIxMGRmODNhMzMzMDRjMTY5MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjNjUyOWExZjg4MjBlZjdiM2E4ZjlhN2EwMDg3NTRhZDIwMjdiMzUxNWFhMWE2ZmJiODk5MjkzNGY4YzMzMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhMzg0YzQ1YjFmZDcwYzNlMzhiYTY2NTU4NWU3MDBjN2VkYjg0M2M5OGI3NWIwZjJmOTMzNmQ4Njg1NjVhMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNmEyOGFkOTY5ZTExZjQ5YzZlNzVjYTlmZWYzNTBkZjRmN2JkYmJjZjg4ZTZhZGY5OTFlODA2Zjc2MzFlZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_583a8c5e2eb34d8d9a177bdba7e0c804",
+      "statement": "Search documents are bounded, validated configuration: profiles have constrained frontmatter and targeting narrative, portals have constrained public-source fields and unique IDs, and absent saved portals can be represented by built-in source templates.",
+      "evidence": [
+        {
+          "resource": "repo://lib/search/documents.mjs#L12-L49",
+          "version": "repo-lines-v1:sha256:2b95fff5cb336a5462cc4958d4ff386733603af417a1cab8598c4776bfb1a993:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5MjljMDYxOTQwMDlhM2NlYWE2ZDAxZmQxNTBmNDI1M2M1NDcwZDYwYWE1M2M1ZjdlYjY5MDhhZGVmNGU1ZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhNDFlMWQzMTQyNGM0MjEwYjdhZGY3ZjNiMTE2ZGM5ZDcwNDQ2MzMyYTU2MjI1NjcyNGRiZjIyNTYyY2ZiNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyOTU0YTlkZmE2NWQ5OWIxODBjMTJlMDg3MGMxYmUxMDJhMTVjYTY4YzNhODkzZTE2ZTgwNTIzZTA5YjE0YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzZDcyNzdmYThiMmI3NjQxYmFkYWUyYmZlZTFlYWMxNGJiNzdiMTYyODFlMjcxZDMzMjM0ZThlMzg0NmU5ZDEifQ"
+        },
+        {
+          "resource": "repo://tests/search-job-pipeline.test.mjs#L79-L97",
+          "version": "repo-lines-v1:sha256:b1e36a73c24418cedfc4ce6f7237d36da677fb0c49a5036af4d4f092d424ea88:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NDVkNDBkMzEyMjA5MWJmYTE0MjFjMjRhNGVjMjU4NzVhOTIxYjllNDE1ZGM2OWJhNmExYjViNGEyNmJhMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmZGI0NDAwZTFmNGVlZDM4NzhiYTBmYzc1MTM3Zjg2MTQxYjNiZDVkNDE2MzE3MzE0MWI3MGZiYmVlMjk2MWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlZmQxZjVmMGQzYjRlZjcxZmQxOWFhZTM4MWUwYTg1ODc2YzBmZWEwNGJmZmVmZDQ3ODM1MmI2Nzc2YWM1ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmMjA4NTdlN2E1MDI1NjU4NmM0YTU5YjNiMDMwNzZiOTEzNmYyMTM2MTk1YTkwN2Y2YTNlOTM3NjU3ZmE4MzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_844abe82f41a4fa2a03fb2510ac8cf89",
+      "statement": "Collection refuses to start when discovery filters are not ready; otherwise it starts or resumes a run, scans at most ten sources, marks non-exhaustive sources blocked with diagnostics, and treats sources outside that sample as explicitly truncated.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/worker.ts#L30-L39",
+          "version": "repo-lines-v1:sha256:afbca429c2e715f07aded580d2211499f9e4216dab53d02abfc686a3cea2b611:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkMTVjZTE5ZDJiNzA5OWFjMDIwMzM2MTI4OWI1ZDFkM2EzMDgwODVlODU5YTU5YjViMjFlOWEyOTBhMjI5YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3NGMwYTMyZmJjOTRiOTdhN2JkNTExMmQzZjk2MjhlYzI0NzY2ZjY2YWQ5YzM1ODllNzUwNWE3YzEzODc3ZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhZWI3YzljYzJjZGExN2JhNDIxOGJkMjVjYTc1YjJiZjMwODAxNmQzZjY5MDc4YTU5MmY3ZGJhYmEzMmEyNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1YzJjNmRiNDYyY2Q4MjM0NGRmYzRhZTY1OTllYjVlYzkwMDBkNTU4ZDc4MTJiZjY1MzE0OTQ5OTRjYzE0YWEifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/worker.ts#L53-L75",
+          "version": "repo-lines-v1:sha256:d10a09748b3383ff1be872a4d7c0ead90c1fcaa73172a6936c1641f261183435:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1OWRkNDIyYjAzYmYzOTYyYWExYmNlMjNmMDQ5MmMxNjU3ZDVhNzQ1N2YyNjU5MjU4Yjg2NWIxMjgzMzMzM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1OTk2MWQ4ZjFmNTUzNWU3MDFlNmJmMzg4OTQ3ZmVkYzI1OThmOWM4NTU1NzFkYjNmMzUyNDMzNGZkODk1ZDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5Zjk3MTM5NDk5MWQ4ODJkMzg4MWZiYjhlZmZlZWQwYzRlOTIxYjE3Mjk3NTA3ZmY1NmFkZjM3ZTc4MWMyYjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1ZTBjOWUxYzMyZmU2NzgxZTBmMmI2YWRlM2QzN2FjYjlmM2JkYjAzNTZkYjFjN2JlMzNiMjQxMDM3MWUzZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b6a3ab2ef9064e0d81ace0937343bd26",
+      "statement": "Discovery saves are transaction-bounded to at most 25 listings and 48,000 UTF-8 bytes, and source writes use attempt-specific event keys while canonical database identity makes interrupted/retried source persistence safe.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/worker.ts#L60-L75",
+          "version": "repo-lines-v1:sha256:edfd06b63dfe91766ffad8b67a6dfe4fc8d828f89203a969e35db39813de1445:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzMzRhNmI2NGMxZjAwMWI4NTViNzI4YmExNTlhNmI2ZjI2MDFjYWM0YjkyMTY5ZDM1YmUxZjEzMzExYzY0ZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1OTk2MWQ4ZjFmNTUzNWU3MDFlNmJmMzg4OTQ3ZmVkYzI1OThmOWM4NTU1NzFkYjNmMzUyNDMzNGZkODk1ZDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkNjljYjU0Y2VlZjViMjdhOWRlMzE4ZTU4NDkxOTVhNzEyNzdlMTA1YjVkYzljYmQzZTM5ZWRiZmIyMjIxNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1ZTBjOWUxYzMyZmU2NzgxZTBmMmI2YWRlM2QzN2FjYjlmM2JkYjAzNTZkYjFjN2JlMzNiMjQxMDM3MWUzZjgifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/worker.ts#L9-L20",
+          "version": "repo-lines-v1:sha256:47f427b8e519872033b8fba652ebda43f8a3d563c5d3a1987e25275081177bfc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1ZmIwZmUwMTliZTU4NDY4OTQyMmI3NzA2ZmI2NDMyZGE0NjQzMzNiYjdmZjA0Yjg2YTMyMzY5MDg4ZDA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMDNhM2IzOTcwMDM4MmU1OTliYjU1YzE3YjBlNTI1NGI4NDA5NGRjOWU0M2IzMmFmNjZiMTRlMzBkODQyOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkYTBmMzVkNjA5MjVjMzBlZDQyZGMxOWFhYWZmYmY5NDdmYjFjMjhhYjFlNDVhMjY1YWUzNTdjOWE2YmFjYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExYzgxYmFlMjg2NzdlYmZmODdmM2U5ODYwMTI1MTk3ODJiNzg2YTdjYzRhOWJhODE5OTc5NThjZDZkZjk2MGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_64d8438b619648118c4a9e11e4c31847",
+      "statement": "HiringCafe collection is a deliberately bounded sample: it generates at most four filter queries, reads at most 25 unique results under a deadline, limits bodies to 2 MB, resolves exactly one external Apply link, and always returns truncated coverage because provider freshness and one-role-per-company output are not exhaustive.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/hiringcafe.ts#L40-L62",
+          "version": "repo-lines-v1:sha256:f7d5e6da30f7901fdcec7907ef96eaae055200aecf791e677c23af0221768c98:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMzZkYjdjZTFlOGY0Yjc2ODIyOWRhMWE0ZGVlM2IzOTU5OTI2MzNhZjdiNWFmZmYxZTJlZjY2NTM5MWI3OTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjYTQwZDI2MzY1ODlkOWYyMWU1Yjg5ZmQwMmE1ZTA1NGZmYTYwMDE2Zjg0N2NhY2E5MmM2Y2U0YzM0YmQxN2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkNGEzNTlhNmE5ZjQzNGZmN2E0ZDQxY2RmZWM0M2I3NTBjNWQwMWE3OGQ1YjNmYjI2MjdkYjRhZDg5ZTliM2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/hiringcafe.ts#L7-L24",
+          "version": "repo-lines-v1:sha256:a4e1344feb0ddaf5e4adedf4cbb8e8572a1ea957b7f3e51309852542dd13d759:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNTI2MjU4NzQ3MDQ1M2FmN2ZlNmM5N2NlNzU3ODQzZDlkNDVmMmUwMDdkMmY1M2NkMTY2OTgxZGNkYmZmMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliY2FmZGQ2ZTE2ZTMwYjZiODgyMmNhZTc2Mzk4MjYwY2RlYjg0MGNjYTg1M2VlMTIxMWQzODMxMWU0YjYzODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4NTJlNWVkM2Y5ODFmYjhlYjg3NWQ2YTI1YzE0NjQ1Y2JkOTJhM2M3ZDc4ZmYwOTBhMjlkNTAxMTMyNmNkNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwNjE1ZDJlYjlmZTlkZWVkYTVmZjY2YWQ3NmM1YmVlMGZiNzNkZjMxMTUxMjRjZTNjZjVjNjIyNmIzYmU1OGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_84fc58fb3a1c4140bc4b3088f84daf79",
+      "statement": "Only verified official employer postings become persisted listings: source leads are sent to `verify-discovery-leads`, and incomplete extraction/link outcomes are represented as diagnostics and truncated or inaccessible coverage rather than fabricated records.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/ats.ts#L10-L28",
+          "version": "repo-lines-v1:sha256:93cdd4ce18f7f193290d77cc26a404f26bffccf56646db64c9318993ee60e271:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxYThmOGM2YTlmZWFkOTgyZDBlNTk3YjNmZWY5MzI3MTRhODQ3NmNiNDQxNTg4NjgxNTE1ODVhYTQxNWMxYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0ZTI4YmUzMjViMmI1N2ViY2RhMjRlYzYxZWViNjE0Nzk2MzMzNTZhMjI5NDVlYTIwYjMzZDRiNjNkYmZkNWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxNDc1MTI1MWYwMDBmMThmZmU2ZWQzNjZmNmVlMzY2NTRhZDRjZWUzYjliMTdmNDgxNzhmNDBmZDkzYmM0NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliNTUwMmQ1OTRjYzNhODE1ZmQyN2I5MzdkZjNlODllMjFkOWE2MmM5Yjg4MWU1YjhmNTY3ZDMyMDg4MzkxYmUifQ"
+        },
+        {
+          "resource": "repo://backend/runtime/ats.ts#L32-L36",
+          "version": "repo-lines-v1:sha256:8dabec710c46570580f53e2ab74807149d41bcee1b7bf458df872fc61227ad78:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTliNGRmNDNiOWIyMjk3NjVmMTk0Y2RiZjkxNGRhNzkwMGFkNjRiZmM4NDU2YWVkZTkwZWRmYzVkNjI5ZmQ1OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU0YzJkZTAyODFhMTJiMWRmMDIzMDc4YWM0MzNhYWMxZDNmNjE4MjliOTk0ZDQzMzM5NDMyZjUyMDI0N2QwMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWI1NTAyZDU5NGNjM2E4MTVmZDI3YjkzN2RmM2U4OWUyMWQ5YTYyYzliODgxZTViOGY1NjdkMzIwODgzOTFiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6203e29d58e94826bc5abe4b9f4cda8c",
+      "statement": "Before and after collection, the worker fences the shortlist on profile and personal-context versions; the final SQL receipt independently checks those versions, caps retained IDs at 250, and verifies that every retained listing belongs to the job run.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/worker.ts#L79-L111",
+          "version": "repo-lines-v1:sha256:b06297c9ebed4215f41d1c6a73745e90627ca3eea87a9d7c5ba48ea415b3c2af:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1YjVjYWQ1Mjc1ZjQ3ZmQwYmMzZDZlYzNkZjY0MjhhZDg4Yzg0MWEwMWNlMDIwZDY3M2MyZDJkOGU2ODhiZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhYmQ1YjNmYjczMDRjNDFkNjNmOTIyZTllY2JmNGY2N2Y4NWM4NGFkODk5ZTVjMTNhMWRlZTc2NDEwMTkzN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1ZTBjOWUxYzMyZmU2NzgxZTBmMmI2YWRlM2QzN2FjYjlmM2JkYjAzNTZkYjFjN2JlMzNiMjQxMDM3MWUzZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5NTg2ZDFiYjVjN2VkMTE2NTZjZjQ4NzkxNWY3ODhiNWNlZWUxZTVkYjRlNTkzM2M1YTcyMGQzNDdjMGE2ZDkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261026225756_backend_search_pipeline_job.sql#L28-L38",
+          "version": "repo-lines-v1:sha256:d70c391437fa0bf6344adafb3c9768db524b77603265d17d3f5739cb9310c4bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTc1ODFmOTY2YWRlYzc3YjIxZjBkZmMzZWM5YzM3NDlhMzY5MGIxN2E3YjY2OTNjODdlZDE4MjI0MzAxZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2OGI2ZjgwNDA2NDUyZjNjYTAwZTU3MTc2ZDllYTQ2NzQzZDU1N2U1ZmY2YjI4ZDcxNmQ3Y2RiNTAwZTQ5YTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwMTM5NTdkNWMzMDZkZjkzNGE4MWYzMjhlMmUzYTNlYWExNTAyNGFlZDQ0ZjRkNzVmZWI4MWYxMGQwMDkwMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4ZjU0ZmQ5YzRmMzY0OGRiZTkxNWVmZDYyMTUwNWJkMzM2OTM4ODIxZTY3MDY2ZTIzNzM4MzY5NDhiZmNhMzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9a84f7dbc76483cae448b06bdf1cf69",
+      "statement": "Screening is replay-safe and versioned: it reuses an existing request result when present, otherwise reloads the owned run/context/listings, evaluates and validates the requested set, then commits with expected personal/profile/listing versions.",
+      "evidence": [
+        {
+          "resource": "repo://backend/runtime/worker.ts#L92-L102",
+          "version": "repo-lines-v1:sha256:e090b9a98b8f222716fe9ce0c35bd701588a73889e9e890b07c448c41a8f0441:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3ZmExMDY1MjVmZTg1NGVhYTRlYzU3MjMzZjRkYmM4NGE0MWRkYjIzM2I2MzVlYjNlMGE3YzE2ZWJkMjY3YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiMjJmOGM0MjNhZjJhZTUxNGY3ZmY0Nzk4YTFhNGVlMWQ5MmY3MmQyOGFhZjViNjljMjFiMWNhYmI5MDBlMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViNTU2ZDU3ZTEyYTRhNDAxNWZhMTJlYzUzMGNkMGMyNWJkNjBhNGI2OTcxMmVmMTE1NjEwNzc3YzU1YWNkZTEifQ"
+        },
+        {
+          "resource": "repo://lib/search-screening.mjs#L3-L17",
+          "version": "repo-lines-v1:sha256:76976c42ad35b6a315cfb116612df63a96ae308c011315a0a6bde787bb83a779:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3M2Y0OTFlZjE5ODk2NmUwNzc5NDM1MzFlYTY0Y2M1ZDE2YTQxZDYyMWRkY2NhNTdmYTE5ODZkNWVhNTg4NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MDhiNWE0MjQyMTRiMWMwNTA3NmQzMWJkYTNmMDYzMTE2NjRhZTUxYjdiNzYyMzQ2MzEwMGYzN2M3M2ZiOTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyM2MzNTA5ZDE0MDczZWNjZDI2N2NmM2M1OWJiMWM1MDEyOTY4OTM4NDA5YTQ3YzUyOGJkYWRiZGJhY2JlZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7e6d4ceb15a14a739f31cdd97079bce4",
+      "statement": "Deduplication deliberately maps only identity-relevant storage fields into copied CareerOps code and rejects malformed output; tests confirm native aliases are removed while distinct requisitions, locations, and functional URLs remain distinct.",
+      "evidence": [
+        {
+          "resource": "repo://lib/search-dedup.mjs#L1-L11",
+          "version": "repo-lines-v1:sha256:a1c26486d3afc98d44a20f53c72bac0c9171a355600b3412c21397f389a0c6fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZjU1NDBiNDQzNjQwMTgzNzA3YzZlZDhiMGZhZTQ0Y2U1OTRjZTJiODNkMTM2MmJkNjE2ZTQ5NGM0ZGJhZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0NzM3NmFkOTJjOTBjZjgzZWNjOGMyOTE4ODBjODFkNDRiODFmMjc3ZDIxMTMwOGViZGQxNTFmZmFkNTU4MzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://tests/search-dedup.test.mjs#L19-L46",
+          "version": "repo-lines-v1:sha256:690635b5428a4fde603ab833143d225ae0fe1f3e4a82794a0acfc184d2b87314:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxNjhkYTgyMzY1ZTU4NDM1YjZiN2Y4ZmI0ZjY5NWZhMGM0MDlmNmRkZDA4NThhNDM5NTFlN2M2YzM3ZTZjNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzN2UyNmUyMWM0OTA1MmY5ODVlYmY1OWI1MzdkYjU5ODdiNDA5ZjA1M2RmMmEyOTJhNTMwNTIzODM0MDcwNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwNzMyYTE5Y2Y3YWM4ZDNhNjE5MTg5ZDA5OWU1YTJiMTMwODVhOGY5MTM4NjRmOTViNGZjM2M5OWNlMjUwNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1da9cdd18db046459472bb3908295a1f",
+      "statement": "The shared public catalog and private discovery/recommendation state are separate: `publish_batch` may create/reuse a catalog job by canonical URL but stores personalized recommendation JSON on the owner-scoped batch item, and retries return the original immutable batch by owner/event key.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-mcp/protocol.mjs#L79-L80",
+          "version": "repo-lines-v1:sha256:9e67bd29ce08d70eb301e88aeb8031ee8d5f5ef32b82c3b4379f2a4f6e7094c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVkYmFmNzUxMTFiNGYwNTVmZjkyZmM5NWUyOWQ0N2UwNzliMmE1NDgyYzdiNmI3YzA3M2RjYWZhYWY5NzE1MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE1ZmZhYTBiNGY1MDVhODU2NmI4N2FiNjFiNzI0OWVlMzg0ZTFmZmNkNmQ4NGUxNGJjYWZhNTU4ZGNkM2IwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMyOTc1MzI1MjEwNTU5OGY2YjZiYTZiZWYwY2IyYzJkMDgxNDIyNzE5YjQ3ZTgyZDkwODYyMDkxYmI0MTJmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjlkNWQ0ODVkOGVmMzQxNmQzNWZhYTE2YzViYTc3NmVhY2MxYTU1OTI5NjlkZGViOGNmNjlmMGNkOTA4N2ZhNCJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013164918_agent_gateway.sql#L52-L75",
+          "version": "repo-lines-v1:sha256:c87d6145d99045c20827c3f4d18f82db5a1321cdae6f54f91834d81c01e5a920:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjMzJiN2MxOWY5MTc3M2QxMTEzYTAxYjQ1OWQwMjdmNzVhZjFjMGM3ZjE3NzkzNmRiOWVkM2M5ODFmYWI2ZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwYzFlZDMxMjE1ZWM5ZjNmMDc1MjAxYjVlZDNhMzJhZjkzZDRlODFjMTA1NmFmMzE0Mjc3Njg5ZWVhOTQ0ZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlMzA5ZTYxNjg3YjEzYzk4ZWFhMTdmN2NjMjk5NGM0NGUzMTBlNjUzNGI4NzYyYWE0ZTg3ZGNmODRkODc1NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkOTRjY2Y2Njk1ODI1NGRmZTM1NjNkM2Y3M2FjYTU3ZDY5NGRlNTExOTc4NDA3MjRhNTQ2YWI2ZWFlN2RlOGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5d306c61b6ed4662961650bc2d33259a",
+      "statement": "The search pipeline test suite verifies SQL-leased pipeline ordering, partial coverage, replay without recollection, version-race failure, and absence of batch/application writes; the MCP integration test verifies that a published batch does not create applications, approvals, or submission attempts.",
+      "evidence": [
+        {
+          "resource": "repo://tests/search-job-pipeline.test.mjs#L32-L77",
+          "version": "repo-lines-v1:sha256:a9e2b0324efde30f9b4f2a27363f4f98360ac88f80e9f061b2431c3c28dd8719:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MDljYzg0MWE5Y2RhNTBiMGRmZjg4MzkwZjdhMTYyYzAwZjE2Y2MxMDMzYWE5NTBhMjcwYjk0M2FhN2QxY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNjE5MGYxMWE5Njk0Mjc2NTc2OGE3NTczN2FiZGRmNjlkMDdmOGQ2ODBiMTc4NDQ4NjFhNDZiYjZiYjBjYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjMDM3NjU0Njk1ZjA2MTc0OTk1YmI4NGJlYjMyMjNkOTE4MjUzZDM1MzAyMGFiZmE1NGUzM2Y5YTgxMTU4MjYifQ"
+        },
+        {
+          "resource": "repo://tests/search-mcp-integration.test.mjs#L42-L51",
+          "version": "repo-lines-v1:sha256:5cbf09f7288ef5198fdd5b9f7a85db76e0bf18cd8fd99705e45c4b477880983e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzZDM1ZjJkM2Y4ZDZiMGFiNzg2MDY0NjIyZjE2MGJkMmU2NDBmMjRmZWYxOGJlNTBlOGI1MWIwZTc5MjgwNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5OGFiMDEzMTk3OTFjY2IyZjdkNTg3NzFiOGUyZTlmMjYyMjdiMzlhMThlZWQxZWZjMDc2M2E1ODgxY2RmODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlNDk5ODlhNWE0MjEwYzAzNzM3ZDIxOGUwMTViODNkM2Q0MzUzNTkwOGRmNzA1ODk3ZTMwOWIwNGFmZTJkNzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlODIxNjEwZGFmNTMxYmJlZTBiMjczMDA5YmI0M2RhNmEwZDZlYjIzYzM3MzY3MTNmZDM3NTkzN2RjNGI3YzYifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}

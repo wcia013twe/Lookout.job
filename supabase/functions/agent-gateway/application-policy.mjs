@@ -4,6 +4,15 @@ export const TIER_ORDER = ['S', 'A', 'B', 'C', 'D'];
 const normalized = value => typeof value === 'string' ? value.normalize('NFKC').trim().toLowerCase().replace(/\s+/g, ' ') : '';
 const review = (reason, details = {}) => ({ mode: 'review', reviewRequired: true, reason, ...details });
 
+// Mirrors the database's strict global guard; profile preferences cannot grant it.
+export function accountAutomationSettings(search = {}) {
+  const enabled = search.autoSubmitApproved === true;
+  const reason = search.autoSubmitApproved === false ? 'Account-wide auto-apply is off.'
+    : search.autoSubmitApproved == null ? 'Account-wide auto-apply has not been authorized.'
+    : 'Account-wide auto-apply authorization is invalid; review is required.';
+  return { enabled, reason: enabled ? '' : `${reason} Profile settings cannot enable it.` };
+}
+
 export function profileAutomationSettings(profile, search = {}) {
   const text=profile?.prompt ?? profile?.instructions ?? '';
   const enabled=readField(text,'Application automation','Auto-apply routine matches');
@@ -31,6 +40,8 @@ export function applicationPolicy({ preferences = {}, job, profileId }) {
   if (Array.isArray(search.employmentTypes) && !search.employmentTypes.includes(job.employmentType)) {
     return { mode: 'skip', reviewRequired: false, reason: 'Role type is excluded by your settings.' };
   }
+  const account = accountAutomationSettings(search);
+  if (!account.enabled) return review(account.reason, { code: 'account_auto_apply_disabled' });
   const profiles=Array.isArray(search.profiles)?search.profiles:[];
   let settings,selectedProfile;
   if(profileId!==undefined) {
@@ -45,7 +56,6 @@ export function applicationPolicy({ preferences = {}, job, profileId }) {
     if(settings.submissionMode==='Auto-apply')return {mode:'auto-apply',reviewRequired:false,reason:'Auto-apply with verified facts and permitted saved answers; unresolved questions still require review.',profileId:selectedProfile.id,employmentType:job.employmentType};
   } else {
     if(profiles.some(profile=>profileAutomationSettings(profile,search).configured))return review('Choose the application profile for this draft before automatic submission.');
-    if(search.autoSubmitApproved!==true)return review('Auto-apply is off.');
     settings=search.reviewPolicy?.[job.employmentType==='FT'?'fullTime':'internship']||{};
   }
   if(selectedProfile&&settings.configured&&!settings.tierListId)return review('Choose a company tier list for this application profile.');
