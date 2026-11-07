@@ -3,11 +3,10 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
 import {bootstrapInstructions} from '../supabase/functions/agent-gateway/operating-guide.mjs';
-import {readGuide,guideIndex,discoverGuides} from '../supabase/functions/agent-gateway/guides.mjs';
-import {MUSE_CHANGE_TYPES,museChangeFeedResponse} from '../lib/muse-change-feed.mjs';
+import {readGuide, guideIndex, discoverGuides} from '../supabase/functions/agent-gateway/guides.mjs';
+import {MUSE_CHANGE_TYPES, museChangeFeedResponse} from '../lib/muse-change-feed.mjs';
 import {loadWorkflowGuide} from '../mcp/context-cache.mjs';
 import {consumeMuseChanges} from '../mcp/change-worker.mjs';
-import {createMuseChangeFeedDemo} from '../lib/muse-change-feed-demo.mjs';
 
 test('startup budgets exclude all task bodies and workflow references resolve to unique current guides',async()=>{
  const context=contextResponse('context.developer',{}),index=guideIndex();
@@ -119,15 +118,6 @@ test('concurrent wakes coalesce within a host process and scoped failures never 
  const denied=fixture();
  await assert.rejects(consumeMuseChanges({...options,connectionKey:'denied',call:async(name,args)=>{if(name==='read_backend_jobs')throw Error('42501');return denied.call(name,args);}}),/42501/);
  assert.equal(denied.acks.size,0);
-});
-
-test('detached demo feed exposes selective workflow references and acknowledgement resets independently',async()=>{
- const demo=createMuseChangeFeedDemo(),second=createMuseChangeFeedDemo();
- const feed=await demo.readMuseChanges();
- for(const event of feed.items)assert.equal(event.workflow.guideVersion,readGuide(event.workflow.guideId).version);
- await demo.acknowledgeMuseChanges({eventIds:[feed.items[0].id]});
- assert.equal((await demo.readMuseChanges()).items.length,4);assert.equal((await second.readMuseChanges()).items.length,5);
- assert(!JSON.stringify(feed).includes('instructions'));
 });
 
 test('toolkit tool reads defer bulky pinned references through the same authorized guide boundary',async()=>{

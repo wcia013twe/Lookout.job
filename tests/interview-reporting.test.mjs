@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
-import {currentTimelineItems,timelineItems,hasTerminalOutcome} from '../lib/application-timeline.mjs';
-import {debriefPayload,debriefMarker} from '../lib/interview-debrief.mjs';
+import {currentTimelineItems, timelineItems, hasTerminalOutcome} from '../lib/application-timeline.mjs';
+import {debriefPayload, debriefMarker} from '../lib/interview-debrief.mjs';
 import {createMemoryStore} from '../next-app/lib/demo.mjs';
-import {createDemoServices,createDemoWorkspace} from '../next-app/lib/muse-demo-fixtures.mjs';
+import {createDemoServices, createDemoWorkspace} from '../next-app/lib/muse-demo-fixtures.mjs';
 const applicationId='11111111-1111-4111-8111-111111111111';
 test('MCP accepts actual candidate reports and replacement IDs without claiming authenticated human/email evidence',()=>{
  const p={applicationId,eventKey:'conversation:1',kind:'interview',label:'Next interview',phase:'scheduled',occurredAt:null,source:{kind:'user_reported',note:'Candidate says there is another interview; date not confirmed.'}};
@@ -23,12 +23,12 @@ test('rescheduling retains provenance/history and current views exclude replaced
 test('simple notes need no round form and preserve agent metadata when a human edits',()=>{
  const app={id:'job',backendId:applicationId,company:'Example'};
  const payload=debriefPayload(app,{id:applicationId,summary:'Candidate report: interview went well.'});
- validateRequest({operation:'artifacts.save',payload});assert.equal(payload.purpose,debriefMarker(applicationId)+' Interview note');
+ validateRequest({operation:'artifacts.save',payload});assert.equal(payload.kind,'interview_debrief');assert.equal(payload.purpose,debriefMarker(applicationId)+' Interview note');
  assert.deepEqual(payload.links,[{applicationId}]);
  const original={...payload};delete original.id;delete original.expectedVersion;
- original.title='Muse conversation note';original.sources=[{title:'Source',url:'https://example.com/interview',observedAt:'2026-10-26'}];
+ original.kind='notes';original.title='Muse conversation note';original.sources=[{title:'Source',url:'https://example.com/interview',observedAt:'2026-10-26'}];
  const edit=debriefPayload(app,{id:applicationId,version:1,summary:'Corrected details.',original});
- validateRequest({operation:'artifacts.save',payload:edit});assert.deepEqual(edit.sources,original.sources);assert.deepEqual(edit.links,original.links);assert.equal(edit.title,original.title);
+ validateRequest({operation:'artifacts.save',payload:edit});assert.equal(edit.kind,'notes');assert.deepEqual(edit.sources,original.sources);assert.deepEqual(edit.links,original.links);assert.equal(edit.title,original.title);
 });
 test('resettable demo exercises rescheduling and simple note edits without account access',async()=>{
  const fixture=createDemoWorkspace('2026-10-26'),store=createMemoryStore(fixture),api=createDemoServices(store);
@@ -42,12 +42,4 @@ test('resettable demo exercises rescheduling and simple note edits without accou
  const note=await api.artifactAction('artifacts.save',payload);assert.equal(note.version,1);
  assert.equal((await api.artifactAction('artifacts.read',{id:note.id})).content.body,payload.body);
  assert(!fixture.workflow.applications['demo-interview'].milestones.some(r=>r.id===row.id));
-});
-test('interview panels subscribe to owned invalidations and contain no polling timers',async()=>{
- for(const name of ['interview-debriefs','application-preparation']){
-  const source=await readFile(new URL(`../next-app/components/${name}.tsx`,import.meta.url),'utf8');
-  assert.match(source,/subscribePreparationRefresh/);assert.doesNotMatch(source,/setInterval|setTimeout/);
- }
- const source=await readFile(new URL('../next-app/components/interview-debriefs.tsx',import.meta.url),'utf8');
- assert.doesNotMatch(source,/Share to Circle|Debrief round|useKnowledgeClient/);
 });

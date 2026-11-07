@@ -3,7 +3,13 @@ const { PGlite } = await import(process.env.PGLITE_MODULE_PATH || "@electric-sql
 
 const {vector} = await import("@electric-sql/pglite/vector");
 
-export async function createTestDatabase({beforeMigration,migrationFiles,migrationDir=new URL("../../supabase/migrations/", import.meta.url)}={}) {
+const defaultMigrationDir=new URL("../../supabase/migrations/", import.meta.url);
+export async function createTestDatabase({beforeMigration,migrationFiles,migrationDir=defaultMigrationDir}={}) {
+  // Migration/upgrade scenarios must replay their own history and hooks.
+  const snapshot=process.env.LOOKOUT_TEST_DATABASE_SNAPSHOT;
+  if(snapshot && !beforeMigration && !migrationFiles && String(migrationDir)===String(defaultMigrationDir)) {
+    return new PGlite({extensions:{vector},loadDataDir:new Blob([await readFile(snapshot)])});
+  }
   const db = new PGlite({extensions:{vector}});
   try {
     await db.exec(`create role anon; create role authenticated; create role service_role;

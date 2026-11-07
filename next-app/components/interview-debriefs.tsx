@@ -6,7 +6,7 @@ import { createBackend } from "../../backend/client.mjs";
 import { debriefMarker, debriefPayload } from "../../lib/interview-debrief.mjs";
 import type { Application } from "./workflow-types";
 import { control, primary, secondary, Notice } from "./ui";
-type Note = { id: string; version: number; content: { title: string; purpose: string; body: string; sources?: unknown[]; links?: unknown[] }; updated_at: string };
+type Note = { id: string; version: number; content: { title: string; purpose: string; body: string; kind?: string; sources?: unknown[]; links?: unknown[] }; updated_at: string };
 type Draft = { id: string; version: number; round?: string; summary: string; original?: Note['content'] };
 export default function InterviewDebriefs({ application }: { application: Application }) {
   const w=useWorkspace();
@@ -24,7 +24,7 @@ function Notes({ application }: { application: Application }) {
     if(!api){setLoading(false);return;}
     try {
       const metadata:Note[]=[];let offset:number|null=0;
-      do {const page:{items:Note[];nextOffset:number|null}=await api.artifactAction('artifacts.list',{kind:'notes',query:marker,offset});if(!current())return;metadata.push(...page.items.filter((r:Note)=>r.content.purpose.startsWith(marker+' ')));offset=page.nextOffset;}while(offset!==null&&offset!==undefined);
+      do {const page:{items:Note[];nextOffset:number|null}=await api.artifactAction('artifacts.list',{query:marker,offset});if(!current())return;metadata.push(...page.items.filter((r:Note)=>['notes','interview_debrief'].includes(r.content.kind||'notes')&&r.content.purpose.startsWith(marker+' ')));offset=page.nextOffset;}while(offset!==null&&offset!==undefined);
       const records=await Promise.all(metadata.map(r=>api.artifactAction('artifacts.read',{id:r.id})));
       if(current()){setRows(records);setError('');}
     } catch(e){if(current())setError(e instanceof Error?e.message:'Notes could not load.');}

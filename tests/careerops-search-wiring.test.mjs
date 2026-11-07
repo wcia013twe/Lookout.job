@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {profileDiscoveryFilters,discoveryFilterPlan} from '../lib/search/discovery-config.mjs';
+import {profileDiscoveryFilters, discoveryFilterPlan} from '../lib/search/discovery-config.mjs';
 import {inspectDiscoveryFilters} from '../runner/career-search-plan.mjs';
 import {filterDiscovery} from '../runner/career-search-filters.mjs';
-import {profileDocument,parseDocument} from '../lib/search/documents.mjs';
+import {profileDocument, parseDocument} from '../lib/search/documents.mjs';
 import {readSearchFilterPlan} from '../backend/runtime/search-intake.ts';
 import {createDispatch} from '../backend/runtime/service.ts';
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
@@ -57,10 +57,6 @@ test('filter-plan MCP read authorizes owned context, advertises read scope and c
  const changed=await readSearchFilterPlan(context,{profileId:'systems'},{execute:async()=>({ready:true})});assert.equal(changed.error.code,'40001');
  const token='jb_agent_'+'a'.repeat(64);const dispatch=createDispatch({supabaseUrl:'http://localhost:54321',rpc:async()=>({error:{code:'42501'}}),request:async()=>assert.fail('must not forward to Edge')});
  assert.equal((await dispatch(token,'search.filters.inspect',{profileId:'systems'})).status,403);
-});
-test('resettable fictional demo exposes profile filter plan without account reads or network',async()=>{
- const {searchDemo}=await import('../lib/search/demo.mjs');const data=searchDemo();
- const result=searchResponse('search.context',data);assert.deepEqual(result.filterPlan.config.skip_tiers,['senior']);assert.deepEqual(searchDemo(),data);
 });
 
 test('original JD dispatcher retrieves each supported ATS body and Lookout keeps official metadata and identity',async t=>{

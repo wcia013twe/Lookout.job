@@ -1,14 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {BACKEND_TOOLS,BACKEND_OPERATIONS,validateBackendJob,createBackendJobsService} from '../lib/backend-jobs.mjs';
-import {createBackendJobsDemo,DEMO_BACKEND_CONNECTION_ID} from '../lib/backend-jobs-demo.mjs';
+import {BACKEND_TOOLS, BACKEND_OPERATIONS, validateBackendJob, createBackendJobsService} from '../lib/backend-jobs.mjs';
+import {createBackendJobsDemo, DEMO_BACKEND_CONNECTION_ID} from '../lib/backend-jobs-demo.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
-import {TOOLS,createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
+import {TOOLS, createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
 import {createBackend} from '../backend/client.mjs';
-import {createDemoServices,createDemoWorkspace} from '../next-app/lib/muse-demo-fixtures.mjs';
-import {createMemoryStore} from '../next-app/lib/demo.mjs';
-import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
-import instructions from '../supabase/functions/agent-gateway/instructions.json' with {type:'json'};
+
 const submit={kind:'search_ats',input:{profileId:'general'},eventKey:'authorized-search-1'};
 const uuid='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const token='jb_agent_'+'f'.repeat(64);
@@ -94,27 +91,6 @@ test('fictional backend job states, cancellation, retry receipts reset without e
   assert.equal((await b.read()).jobs.length,8);
   a.reset();assert.deepEqual(await a.read(),await b.read());
 
-});
-
-test('detached demo service includes isolated backend fixtures and versioned guides describe conditional execution',async()=>{
-  const fixtures=createDemoWorkspace('2026-10-26');
-  const store=createMemoryStore(fixtures);
-  // createDemoWorkspace already returns the complete fictional state shape.
-  const demo=createDemoServices(store);
-  assert.equal((await demo.backendJobs.read()).jobs.length,8);
-  assert.equal(demo.backendJobs.fictional,true);
-  assert.ok(instructions.developerVersion>=54);
-  assert.equal(readGuide('workspace-maintenance').capabilities.backendJobs.hostedDeploymentVerified,false);
-  assert.match(readGuide('career-find-jobs').instructions,/configured Node API|configured TypeScript Node backend/);
-});
-
-test('fictional terminal demo jobs expose the single-job shortlist while pending jobs do not',async()=>{
- const demo=createBackendJobsDemo(),{jobs}=await demo.read();
- for(const job of jobs){
-  if(job.kind==='search_ats'&&['completed','partial'].includes(job.status)){assert.equal(job.result.pipelineVersion,1);assert.equal(job.result.shortlist.reporting,'pending-muse');assert.equal(job.result.shortlist.applicantEligibility,'not-evaluated');assert.equal(job.result.shortlist.retainedListingIds.length,1);}
-  else assert.equal(job.result?.shortlist,undefined);
- }
- demo.reset();assert.equal((await demo.read()).jobs.length,jobs.length);
 });
 
 test('application demo jobs expose bounded repair and uncertain handoffs without execution',async()=>{

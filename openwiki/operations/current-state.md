@@ -157,6 +157,21 @@ Google OAuth and GCP worker/browser execution were not exercised. The separate
 Pages release `42408607455` timed out after its successful backend step; this
 receipt establishes database/backend readiness, not successful website publication.
 
+Final reconciliation also includes the subsequently committed worker-conflict
+guards `20261107200723` and `20261107201211`. Official backend run `42411416297`
+succeeded from protected main `4a1c1f635e7a0e535f0c429b9f4d99a55e8f1fe2`.
+All **91** migration versions and **2,960** schema/permission entries match the
+source replay. The real hosted worker queue/ownership/cancelled-expired-lease
+conflict scenarios passed in one rolled-back transaction using fictional users
+and actual Auth claim settings. Final counts are zero accounts, profiles, files,
+connections, imported records, backend jobs and backend requests; shared records
+and bucket settings are unchanged. All 56 deployed MCP and 87 gateway source
+files match that reviewed commit, including the stamped runtime version. Their
+executable sources are otherwise byte-identical to the earlier live smoke-tested
+contract-112 handlers; the added SQL guards only change stale worker conflicts
+to non-retryable `PT409`. No personal data was transferred and no execution was
+enabled. The separate website publication limit above still applies.
+
 The Pages workflow runs on `main`, calls the backend deployment workflow first, runs the repository test suite and data validation, builds the static export, then deploys the Pages artifact. Backend deployment runs only from `main`, requires the production environment and `SUPABASE_ACCESS_TOKEN`, and invokes `npm run deploy:backend`. This wiring means a frontend-only build should not be represented as publishing gateway/MCP or migration changes.
 
 Repository documentation records a prior prepared schema rollout and gateway/MCP release, including unauthenticated denial checks. It simultaneously says authenticated MCP discovery/read/write, client support, real Google sign-in, and intended-device round trips need verification. Therefore describe those releases as **recorded deployment evidence with explicit verification gaps**, not as blanket proof that all current functionality is live.
@@ -175,7 +190,7 @@ For local development, `make services` starts local Supabase; `make frontend` st
 
 A change author should make a claim no broader than the checks actually completed.
 
-1. **Run baseline checks:** `npm test`, `npm run test:db`, `npm run validate:data`, `npm --prefix next-app run typecheck`, and `npm run build`. CI currently runs the tests, catalog validation, and production static export; database checks and local-edge checks should be run when the change affects their boundary.
+1. **Run baseline checks:** `npm test` (includes database scenarios), `npm run validate:data`, `npm --prefix next-app run typecheck`, and `npm run build`. CI currently runs the tests, catalog validation, and production static export; database checks and local-edge checks should be run when the change affects their boundary.
 2. **Run focused checks for the changed path.** Examples include `node --test tests/mcp-protocol.test.mjs` for MCP framing/scope behavior; the documented local runtime checks for discovery; and runner/database tests for claim, permit, uncertainty, and recovery semantics. Passing fixtures or PGlite scenarios proves those contracts, not a hosted external integration.
 3. **Validate the correct deployment unit.** Schema and Edge/MCP changes require the backend deployment path and post-deploy authenticated checks. A Pages deployment only establishes the static frontend artifact. Keep migration/function release versions together when the contract changes.
 4. **Verify the intended environment with isolated data.** Local verification must reject hosted endpoints and use disposable/fictional accounts where the supplied scripts do so. A local Docker/Compose proof does not validate production Auth, Storage, OAuth, agent connectivity, or notification delivery.
@@ -258,3 +273,24 @@ same read surface as Action Board and MCP `read_action_inbox`; it does not add a
 manual task flag or infer recruiter requests from notes or interview stages.
 The resettable fictional demo includes a review handoff; demo approval remains
 disabled. Source verification does not establish production deployment.
+## Weekly Career Toolkit (contract 113 source update)
+
+The existing Toolkit cards and reader now support explicit weekly filtering and
+an All materials library. Agent preparation follows the pinned Career Ops loop,
+curating external resources and reusing stories rather than generating every
+possible document. Scheduled mocks save visible logistics separately from
+agent-only interviewer preparation, with versioned resume/completion and a linked
+debrief. The user calls their agent externally; no scheduler or call transport is
+provided. Source tests and detached demo coverage do not establish hosted release
+or an external-agent call. See the Career Toolkit concept page and feature note.
+
+## Test harness consolidation (focused source update)
+
+The full Node suite uses a disposable migrated PGlite snapshot for independent
+ordinary database fixtures, with four concurrent test files. Migration/upgrade
+fixtures retain full replay and custom hooks. The snapshot lives only for one
+run and is cleaned up; focused direct Node tests need no snapshot. Demo reset
+isolation is checked over whole fixture graphs instead of repeated exact sample
+contents. That check found shared nested preparation resource data; the two
+workspace fixture factories now clone their returned graphs. See the verification
+strategy for scope and the feature change note for actual validation results.

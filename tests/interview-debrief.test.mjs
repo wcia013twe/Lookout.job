@@ -6,7 +6,7 @@ import {createMemoryStore,demoFixtures} from '../next-app/lib/demo.mjs';
 import {createDemoServices} from '../next-app/lib/muse-demo-fixtures.mjs';
 const app={id:'local-app',backendId:'11111111-1111-4111-8111-111111111111',company:'Example',title:'Backend Engineer'};
 const draft={id:'22222222-2222-4222-8222-222222222222',round:'Technical round 1',summary:'Discussed indexes. I want more practice explaining retries.'};
-test('website debrief payloads fit existing MCP notes and private forum-draft contracts',()=>{
+test('website debrief payloads fit existing MCP artifacts and private forum-draft contracts',()=>{
  const payload=debriefPayload(app,draft);
  validateRequest({operation:'artifacts.save',payload});
  assert.equal(payload.expectedVersion,0);assert.equal(payload.purpose,debriefMarker(app.backendId)+' Technical round 1');
@@ -22,7 +22,7 @@ test('agent-style artifact saves are readable and versioned by the website, and 
  store.set('workflow.applications.'+app.id,app);
  const api=createDemoServices(store);
  const row=await api.artifactAction('artifacts.save',debriefPayload(app,draft));
- const list=await api.artifactAction('artifacts.list',{kind:'notes',query:debriefMarker(app.backendId)});
+ const list=await api.artifactAction('artifacts.list',{kind:'interview_debrief',query:debriefMarker(app.backendId)});
  assert.equal(list.items[0].id,row.id);
  const read=await api.artifactAction('artifacts.read',{id:row.id});assert.equal(read.content.body,draft.summary);
  await api.artifactAction('artifacts.save',debriefPayload(app,{...draft,version:read.version,summary:'Updated from my account.'}));

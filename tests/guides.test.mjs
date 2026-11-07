@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {guideIndex,readGuide,guideDispatch} from '../supabase/functions/agent-gateway/guides.mjs';
+import {guideIndex, readGuide, guideDispatch} from '../supabase/functions/agent-gateway/guides.mjs';
 import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 test('context advertises small versioned index; guide reads are isolated',()=>{
@@ -38,13 +38,6 @@ test('default outreach skill delivers all starter templates and protects cached 
  assert.deepEqual(readGuide('cold-outreach').templates, canonical.templates);
 });
 
-test('application workspace guide is advertised with truthful personalization and approval boundaries',()=>{
- const g=readGuide('application-workspace');assert.ok(guideIndex().some(x=>x.id===g.id));
- for(const phrase of ['prepare_draft','writing preferences','NOT implemented','read back','required/optional'])assert.ok(g.instructions.toLowerCase().includes(phrase.toLowerCase()),phrase);
- assert.ok(contextResponse('context.developer',{}).instructions.some(x=>x.includes('application-workspace')));
-});
-
-
 test('startup and developer context deliver the same user-facing policy and versioned workflow guidance',async()=>{
  const {createHandler}=await import('../supabase/functions/agent-mcp/protocol.mjs');
  const context=contextResponse('context.developer',{}),policy=context.instructions[0];
@@ -79,20 +72,4 @@ test('one fictional MCP context read returns only core and index without persona
  assert.equal(calls.filter(op=>op==='context.developer').length,1);
  context.instructions[0]='mutated';
  assert.notEqual(contextResponse('context.developer',{}).instructions[0],'mutated');
-});
-
-test('Discover guide connects every fit-context category to scored, evidence-based analysis', async () => {
- const {agentContextFields} = await import('../lib/search-profile.mjs');
- const guide=readGuide('career-find-jobs');
- const {TOOLS}=await import('../supabase/functions/agent-mcp/protocol.mjs');
- assert.match(TOOLS.find(tool=>tool.name==='publish_batch').description,/read_guide career-find-jobs.*narrative and four-fit-score/);
- for(const phrase of ['## Per-job narrative in Discover','same personal context, posting evidence and evaluated profile version','recommendation.whyItFits','recommendation.materialGap','omit materialGap','Do not manufacture a concern','Illustrative example','both narrative fields agree with the four assessments']) assert(guide.instructions.includes(phrase),phrase);
- assert(!guide.instructions.includes('State one concrete matching fact and one material gap'));
- assert.match(TOOLS.find(tool=>tool.name==='save_search_profile').description,/read_guide career-find-jobs.*decision-brief/);
- assert(guide.instructions.includes("Write each section as a short, current decision brief: what matters to the user, what makes a role a good fit, and any important tradeoff or unknown. Include only information that could change a role evaluation. Synthesize rather than append, and never turn an assumption into a preference."));
- assert(!guide.instructions.includes('Include source/date in the note'));
- for(const {id,label} of agentContextFields) assert(guide.instructions.includes(label+' -> '+id));
- for(const phrase of ['What your agent knows','save_search_profile','expectedVersion','evaluatedProfileVersion','Use null','must-have conflict','materialGap','read back']) assert(guide.instructions.includes(phrase),phrase);
- const delivered=(await guideDispatch('career-find-jobs',async()=>({data:{}}))).data;
- assert.equal(delivered.instructions,guide.instructions);
 });

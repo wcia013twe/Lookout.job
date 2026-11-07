@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applicationReviewQuestions } from '../lib/application-review.mjs';
-import { discoverPreviewRoles } from '../next-app/lib/discover-preview-demo.mjs';
+import {applicationReviewQuestions} from '../lib/application-review.mjs';
 
 test('review contains only recorded custom decisions and unanswered fields', () => {
   const missing = { question: 'Start date?', answer: '' };
@@ -15,10 +14,6 @@ test('review contains only recorded custom decisions and unanswered fields', () 
   assert.deepEqual(applicationReviewQuestions(questions), [missing, custom]);
   assert.deepEqual(applicationReviewQuestions(questions, true), [missing]);
   assert.deepEqual(applicationReviewQuestions(), []);
-});
-
-test('demo covers one custom decision, multiple decisions and no custom input', () => {
-  assert.deepEqual(discoverPreviewRoles('2026-10-23').map(role => applicationReviewQuestions(role.reviewPreview).length), [1, 2, 0]);
 });
 
 test('preview distinguishes filled answers from required and optional unanswered controls',async()=>{

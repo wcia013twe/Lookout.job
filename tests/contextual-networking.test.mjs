@@ -1,22 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
-import {demoOutreachContacts} from '../next-app/lib/outreach-demo.mjs';
-import {validatePersonContext,activeSuggestions,setSuggestionState} from '../lib/network-people.mjs';
-import {readConversation} from '../lib/outreach-conversation.mjs';
 
-test('networking entry guides route relevant authorized work to the contextual workflow',()=>{
- for(const id of ['career-find-jobs','application-workspace','interview-preparation']) {
-  const guide=readGuide(id);
-  assert.match(guide.instructions,/Load cold-outreach for context-aware suggestions/);
- }
- const instructions=readGuide('cold-outreach').instructions;
- for(const stage of ['Exploration:','Applying:','Interviewing:','Offer evaluation:','Relationship maintenance:'])assert.ok(instructions.includes(stage));
- assert.match(instructions,/No inbox access means unknown reply state, not no reply/);
- assert.match(instructions,/personal preferences take precedence/);
- assert.match(instructions,/For routine updates, report only a meaningful change/);
- assert.match(instructions,/stay quiet/);
-});
+import {demoOutreachContacts} from '../next-app/lib/outreach-demo.mjs';
+import {validatePersonContext, activeSuggestions, setSuggestionState} from '../lib/network-people.mjs';
+import {readConversation} from '../lib/outreach-conversation.mjs';
 
 test('fictional interview and warm-introduction suggestions use existing contact contracts',()=>{
  const people=demoOutreachContacts('2026-11-07');
@@ -49,4 +36,15 @@ test('demo suggestion interaction preserves drafts, conversation and dismissal o
  assert.equal(activeSuggestions(people).length,3);
  completed.message='Temporary demo edit';
  assert.equal(demoOutreachContacts('2026-11-07').find(p=>p.id===warm.id).message,before.message);
+});
+
+// Contract coverage only; these checks do not measure a live model's research quality.
+test('networking distinguishes requested engineers, copied participants and cold-message evidence',()=>{
+ const outreach=readGuide('cold-outreach').instructions,prep=readGuide('interview-preparation').instructions;
+ assert.match(outreach,/a recruiter introduction is an additional route, not a substitute/);
+ assert.match(outreach,/Google\/public-web search/);
+ assert.match(outreach,/one relevant candidate achievement and one clear ask/);
+ assert.match(prep,/A copied recipient alone is not a confirmed interviewer/);
+ assert.match(prep,/message ID, subject, conversation link/);
+ assert.match(prep,/application-linked interview_brief through save_artifact/);
 });

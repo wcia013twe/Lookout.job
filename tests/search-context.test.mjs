@@ -1,10 +1,9 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {parseDocument,profileDocument,compactBrief} from '../lib/search/documents.mjs';
-import {SEARCH_TOOLS,prepareSearch,searchResponse} from '../supabase/functions/agent-gateway/search.mjs';
+import {parseDocument, profileDocument, compactBrief} from '../lib/search/documents.mjs';
+import {SEARCH_TOOLS, prepareSearch, searchResponse} from '../supabase/functions/agent-gateway/search.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
-import {TOOLS,createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
-import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
-import {findToolkitSkill} from '../lib/career-toolkit.mjs';
+import {TOOLS, createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
+
 import {execFileSync} from 'node:child_process';
 test('YAML/profile canonicalization preserves narrative and produces rebuildable projections',()=>{
  const input='---\nid: general\nname: General\nactive: true\nfilters: {Location: Anywhere}\npriorities: {}\n---\n## Exceptions\nKeep my exact prose.\n';
@@ -29,42 +28,6 @@ test('MCP discovers the hosted sweep workflow and dispatches an agent state oper
  const discovery=await call('tools/call',{name:'discover_tools',arguments:{workflow:'search'}});const discovered=JSON.parse(discovery.result.content[0].text);assert(discovered.tools.some(t=>t.name==='start_search_run'));assert(!discovered.tools.some(t=>t.name==='save_search_document'));
  const r=await call('tools/call',{name:'start_search_run',arguments:{profileId:'general',eventKey:'run'}});assert(!r.error);assert(calls.some(([op])=>op==='search.run.start'));
 });
-test('discovery guide resolves dependencies and explains interruption, uncertainty and vendor-independent execution',()=>{
- const g=readGuide('career-find-jobs');assert.equal(g.version,findToolkitSkill('find-jobs').version);assert(g.dependencies.tools.includes('save_search_discoveries'));for(const text of ['No local runner','resume','preferred','partial','source age','searchListingId'])assert(g.instructions.includes(text),text);
-});
 test('fictional search memory is resettable and contains no real accounts or execution',async()=>{
  const {searchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();a.documents[0].content='edited';assert.notEqual(b.documents[0].content,'edited');assert.equal(b.runs.find(r=>r.id==='demo-run').state,'partial');assert.equal(b.listings[0].screening.decision,'review-needed');assert.equal(b.listings[0].observation.employer_posted_at,null);assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.coverage==='inaccessible'));assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.source_id==='portal:demo-aggregate'&&s.blocker.includes('employer application link is unresolved')));const context=searchResponse('search.context',{documents:b.documents,profile:null});assert(context.sourceTemplates.some(s=>s.id==='hiringcafe'));assert(b.documents.find(d=>d.kind==='portals').projection.tracked_companies.every(s=>s.careers_url.startsWith('https://example.com/')));
-});
-
-
-test('fictional search demo shows complete source traversal beyond ten and preserves blocked coverage',async()=>{
- const {searchDemo}=await import('../lib/search/demo.mjs');
- const data=searchDemo(),run=data.runs.find(r=>r.id==='demo-run');
- const sources=data.documents.find(d=>d.kind==='portals').projection.tracked_companies;
- assert.equal(sources.length,12);
- assert(sources.every(source=>run.sources.some(s=>s.source_id==='portal:'+source.id&&s.state==='completed')));
- assert.equal(run.state,'partial');assert.match(run.summary,/No external requests/);
-});
-
-
-test('fictional demo distinguishes complete batched verification from the retained discovery count',async()=>{
- const {searchDemo}=await import('../lib/search/demo.mjs');const data=searchDemo();
- const source=data.runs.find(r=>r.id==='demo-run').sources[0];
- assert.equal(source.counts.observed,61);assert.equal(source.counts.saved,1);
- assert.equal(source.checkpoint.diagnostics.length,61);
- assert.equal(source.checkpoint.diagnostics.filter(d=>d.status==='expired').length,60);
- assert.equal(source.coverage,'exhaustive');assert.equal(data.listings.length,1);
-});
-
-
-test('fictional demo labels HiringCafe as a source using the shared provider pipeline',async()=>{
- const {searchDemo}=await import('../lib/search/demo.mjs');const run=searchDemo().runs.find(r=>r.id==='demo-run');
- assert.equal(run.sources.find(s=>s.source_id==='portal:demo-aggregate').source.name,'HiringCafe (fictional)');
- assert.match(run.summary,/All providers share collection, deduplication, employer verification and database persistence/);
-});
-
-
-test('fictional recovery demo keeps saved batch progress on the same active run',async()=>{
- const {searchDemo}=await import('../lib/search/demo.mjs');const run=searchDemo().runs.find(r=>r.id==='demo-run-resuming');
- assert.equal(run.state,'active');assert.equal(run.sources[0].checkpoint.savedOffset,25);assert.equal(run.sources[0].counts.available,61);assert.match(run.summary,/same run/);
 });

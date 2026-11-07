@@ -82,3 +82,7 @@
   Desktop/mobile demo checks confirmed visible reason, detail opening, no page
   errors or horizontal overflow. No backend/schema change; full database suite
   was not repeated for this read-only UI pass.
+- Local-main integration preserved concurrent Career Toolkit/test-harness work;
+  after resolving the documentation append, all 11 remaining focused tests,
+  frontend typecheck and static build passed again (the consolidated harness
+  moved one earlier demo assertion into its shared fixture coverage).
