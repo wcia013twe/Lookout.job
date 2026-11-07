@@ -196,3 +196,34 @@ application backend ID: round writes report the existing sync error, and native
 progress/draft actions report that the imported workflow is not connected. No
 synthetic native records, receipts or approvals are created. Metadata corrections
 remain available through update_imported_job; its separate row editor is removed.
+
+### Application detail evidence and context
+
+Application Overview always renders the four canonical fit dimensions, showing
+N/A when no saved score exists. It never computes new scores on open. Current
+prep links to the application's Interview brief and the Career Toolkit workspace;
+it no longer repeats the application's status as preparation content. Notes is
+a compact reference to two recent distinct current notes, with full text behind
+disclosures; round/email history remains in Interview.
+
+Documents shows captured attempt fields and the pinned resume, with individual
+employer answers behind disclosures. Confirmed attempts are labeled submitted;
+unconfirmed attempts remain labeled as saved attempts. Historical records without
+a snapshot show Not available, including an explicit outside-Lookout message for
+imported application history. An imported Saved job does not claim submission.
+Current profile fields, current draft answers and current resume selections never
+substitute for unavailable historical submission materials. Unsent native drafts
+still display their recorded employer answers as a draft. Raw submission details
+remain optional; historical/externally imported records have no draft editor.
+
+### Active application ordering
+
+The Active tab puts Screening/OA, Interview/Onsite and Offer progress first,
+then applications still waiting after submission. Each group sorts newest
+application date first. The shared reader uses explicit tracker/import applied
+dates, stored submitted timestamps or current submission milestones, falling
+back to a recorded opened date. Future interview dates are not application dates.
+Missing/invalid dates sort last within their group; ties retain their prior order.
+Both native and imported records use the same progress rules, including tracker
+updates and sourced milestones. Other tabs retain their existing ordering. This
+is read-only presentation over existing reads; it creates no dates or records.

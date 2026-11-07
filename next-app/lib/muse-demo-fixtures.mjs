@@ -45,6 +45,8 @@ export function createDemoWorkspace(now = new Date()) {
     { id: 'demo-why', question: 'Why are you interested in this team?', answer: 'Demo answer: I enjoy understanding database reliability and would like to build dependable services.', fieldType: 'text' },
     { id: 'demo-project', question: 'Tell us about a relevant project.', answer: 'Demo answer: I built a fictional course project that measured SQL query latency.', fieldType: 'textarea' },
   ];
+  // Fictional saved assessment: one unknown dimension stays N/A in application details.
+  roles.find(role=>role.id==='demo-interview').matchAssessment={assessedAt:at,skillsExperience:{score:84,reasoning:'Fictional Query Lab work matches the backend focus.'},compensation:{score:null,reasoning:'No compensation comparison was saved.'},wellbeingCulture:{score:68,reasoning:'Fictional on-call expectations need review.'},locationWorkSetting:{score:90,reasoning:'The fictional remote arrangement matches this profile.'}};
   const applications = Object.fromEntries(roles.filter(role => role.status !== 'New').map(role => [role.id, {
     ...role, backendId: role.id, backendRevision: 1, revision: 1, resumeId, resumeName: resume.name, resumeVersion: resume.version,
     questions: copy(questions), questionsReviewed: true, note: 'Fictional demo application. Actions stay in the demo.',
