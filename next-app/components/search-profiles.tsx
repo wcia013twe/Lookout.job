@@ -13,6 +13,7 @@ import {
 } from "../../lib/search-profile.mjs";
 
 import TierLists from "./tierlists";
+import CompanySizeSetting from "./company-size-setting";
 import ProfileSection, { ProfileValues } from "./profile-section";
 import { ApplicationMaterials } from "./profile-settings";
 import ProfileRuleCopy from "./profile-rule-copy";
@@ -131,8 +132,13 @@ function SearchProfileEditor() {
           <div className="space-y-5">
             {group.fields.map(([key, placeholder, heading]) => {
               const strength = readField(profile.prompt, "Priority & flexibility", key);
-              return <div key={key} className={group.heading === "Application answers" ? "grid items-start gap-3" : "grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"}>
-                {textField(heading || group.heading, key, placeholder)}
+              return <div key={key} className={group.heading === "Application answers" || key === "Company size" ? "grid items-start gap-3" : "grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_190px]"}>
+                {key === "Company size" ? <CompanySizeSetting
+                  value={readField(profile.prompt, heading || group.heading, key).value}
+                  conflict={readField(profile.prompt, heading || group.heading, key).conflict}
+                  disabled={busy}
+                  onChange={value => change(heading || group.heading, key, value)}
+                /> : textField(heading || group.heading, key, placeholder)}
                 {group.heading !== "Application answers" && <Field label={`${key} priority`}>
                   <select className={control} disabled={strength.conflict || busy} value={strength.value} onChange={e => change("Priority & flexibility",key,e.target.value)}>
                     <option value="">Not specified</option>

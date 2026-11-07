@@ -1,0 +1,7 @@
+# Company size choices
+
+- Replaced the free-text Company size input in Job preferences with the eight employee ranges from the reference, individual selection, and Select all / Unselect all. Desktop uses two columns; small screens use one. Existing priority settings remain available.
+- Recognizes saved hyphen/en-dash ranges and employee labels, preserves additional custom instructions, and blocks edits to conflicting duplicate fields. Uses the existing Company preferences instruction line and versioned website/MCP profile save boundary; no schema or tool change.
+- Added fictional demo selections, isolated browser interactions, and profile round-trip coverage for thousands separators, custom notes, all/none, and subsets.
+- Validation: preference tests (13 passed), typecheck, production compilation/static export, data validation (158 roles), browser checks for eight ranges, bulk/individual/keyboard selection, autosave, desktop/mobile layout, and zero demo account writes. Full suite: 945 passed, 5 skipped, 2 disk-space-related failures; the affected pipeline file subsequently passed all 8 tests using external SSD temporary storage. Export finalization succeeded after removing this task's generated build cache following ENOSPC.
+- Verification limits: browser checks used fictional demo state, not a live account save. Existing website/MCP profile contract tests passed. Screenshots and logs are on the external SSD under Lookout/tmp/company-size-verification.
