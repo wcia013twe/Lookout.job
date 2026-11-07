@@ -275,6 +275,21 @@ debrief. The user calls their agent externally; no scheduler or call transport i
 provided. Source tests and detached demo coverage do not establish hosted release
 or an external-agent call. See the Career Toolkit concept page and feature note.
 
+The hosted reconciliation subsequently released the contract-113 backend through
+official main-branch run `42412623024`, source
+`0d3eac234ca4982e37a690d7de6ea78a7c04132e`. All **92** migration versions and
+**2,994** schema/permission entries match source replay. All 57 MCP and 88 gateway
+files match that release. Fresh hosted MCP and browser checks passed owned writes,
+read-back/retry, foreign-owner/read-only denial and private mock-profile separation.
+Weekly toolkit scenarios passed in a rolled-back hosted transaction, excluding
+the fixture-only role alteration and destructive cascade assertion. Fictional
+accounts were removed; accounts, profiles, files, connections, artifacts, private
+mock profiles and backend jobs all ended at zero. Shared data and bucket settings
+are unchanged. Personal local data was not transferred. This establishes database
+and backend readiness for that release; real Google login, personal-data cutover,
+GCP worker execution and separate Pages publication remain unverified. Later local
+guide contract 114 is not included in this deployed receipt.
+
 ## Test harness consolidation (focused source update)
 
 The full Node suite uses a disposable migrated PGlite snapshot for independent
