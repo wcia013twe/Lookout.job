@@ -11,25 +11,29 @@ derives appropriate keywords from the selected résumé/targets using the import
 pointers in the job result; a fresh search run is not created until preflight passes. Explicitly broad title configuration remains
 possible and visible. See `backend/discovery-filter-contract.md`.
 
-For a normal configured scan, Muse calls `submit_backend_job` once with
-`{kind:"search_ats",input:{profileId},eventKey}` and polls `read_backend_jobs`.
-The worker collects bounded sources, verifies supported employer postings, saves
-observations, screens against current settings, deduplicates with copied Career
-Ops code, and persists `result.shortlist` in the same leased backend job.
+The normal direct path uses `submit_backend_job` and pipeline version 2. Concurrent
+source tasks first apply metadata title/seniority gates, verify official postings,
+and apply full saved filters into immutable temporary source snapshots. The Docker
+worker volume persists these files across container replacement on local Docker or
+the configured Compute Engine VM. Fenced source checkpoints contain only snapshot
+references, counts and bounded diagnostics. Rejected descriptions never enter
+permanent discovery storage. Missing snapshots cause recollection.
 
-A terminal result with `pipelineVersion: 1` contains `shortlist.retainedListingIds`,
-`duplicateListingIds`, `screenedCount`, `excludedCount`, `evaluatedProfileVersion`
-and `personalVersion`. Muse reads those owned discoveries, checks existing report
-freshness, creates role-specific analysis and four score/reasoning ratings,
-publishes the batch and prepares drafts. No separate screening/dedup calls are
-needed to complete the job. Legacy job receipts without a shortlist do not prove
-this pipeline ran. Failed jobs do not return a completed shortlist.
+After every source finishes, copied deduplication compares the pool against saved
+job identities/content hashes and tracked applications. Only qualifying new or
+changed jobs are saved and screened. An identical fully covered repeat returns no
+new shortlist rows; changing sources or recovered coverage can yield new results.
+Final persistence uses bounded transactions after the shortlist has been selected;
+an interrupted final write resumes the same job/run. Application records are untouched.
 
-The shortlist is deduplicated across all persisted discoveries in this run.
-Every configured run source is attempted using up to ten concurrent source tasks,
-using upstream provider pagination defaults. Every returned lead is verified in
-batches of at most 25. Explicit upstream incomplete-pagination flags remain partial. Source totals are availability,
-not counts actually verified. Liveness checks use the copied API/browser ladder for every supplied link.
+Only a terminal pipeline-2 result is ready for agent analysis. Its shortlist stores
+`totalRetained` plus a preview of at most 100 `retainedListingIds`; agents must page
+`read_search_discoveries` for the full run. This preview is not a result cap.
+Personal eligibility and four-dimension analysis remain agent work. Automatic
+hosted-board collection/publication is disabled for this workflow. Temporary data
+is removed after successful job finish; abandoned directories expire after three
+days on the next search. Source failure and incomplete pagination remain explicit.
+
 Unsupported extraction or incomplete employer metadata,
 uncertain links, blocked sources or truncated pages keep the job partial; a partial
 job may still return a useful shortlist. These bounds do not establish a complete

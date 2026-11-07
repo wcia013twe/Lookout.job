@@ -66,5 +66,5 @@ test('fictional demo labels HiringCafe as a source using the shared provider pip
 
 test('fictional recovery demo keeps saved batch progress on the same active run',async()=>{
  const {searchDemo}=await import('../lib/search/demo.mjs');const run=searchDemo().runs.find(r=>r.id==='demo-run-resuming');
- assert.equal(run.state,'active');assert.equal(run.sources[0].checkpoint.savedOffset,25);assert.equal(run.sources[0].counts.available,61);assert.match(run.summary,/same run/);
+ assert.equal(run.state,'active');assert.equal(run.sources[0].checkpoint.stage,'temporary-staging');assert.equal(run.sources[0].counts.saved,0);assert.equal(run.sources[0].counts.staged,25);assert.equal(run.sources[0].counts.available,61);assert.match(run.summary,/same run/);
 });

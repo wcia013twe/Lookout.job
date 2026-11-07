@@ -1,0 +1,47 @@
+{
+  "kind": "controlled-local-Docker-volume-proof",
+  "fictional": true,
+  "recordedAt": "2026-11-07T21:08:24.636957+00:00",
+  "providerReplies": "Fictional inputs; real Career Ops filters/dedup, SQL fences, Docker volume, container replacement and persistence.",
+  "stages": [
+    {
+      "phase": "interrupted",
+      "status": "running",
+      "scanned": null,
+      "metadataRejected": null,
+      "verified": null,
+      "fullFilterRejected": null,
+      "stagedCandidates": 3,
+      "savedThisRun": 0,
+      "totalPermanentJobs": 0,
+      "totalPermanentObservations": 0,
+      "protectedApplicationStatus": "Submitted"
+    },
+    {
+      "phase": "resumed",
+      "status": "completed",
+      "scanned": 3300,
+      "metadataRejected": 3294,
+      "verified": 6,
+      "fullFilterRejected": 3,
+      "stagedCandidates": 3,
+      "savedThisRun": 3,
+      "totalPermanentJobs": 3,
+      "totalPermanentObservations": 3,
+      "protectedApplicationStatus": "Submitted"
+    },
+    {
+      "phase": "repeat",
+      "status": "completed",
+      "scanned": 3300,
+      "metadataRejected": 3294,
+      "verified": 6,
+      "fullFilterRejected": 3,
+      "stagedCandidates": 3,
+      "savedThisRun": 0,
+      "totalPermanentJobs": 3,
+      "totalPermanentObservations": 3,
+      "protectedApplicationStatus": "Submitted"
+    }
+  ]
+}

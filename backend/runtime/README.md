@@ -14,11 +14,12 @@ HiringCafe, Simplify and copied Career Ops collection are registered through one
 leads, provenance and coverage diagnostics to the same deduplication and employer
 verification pipeline; only the existing fenced worker writes observations.
 
-The approved executor is `search_ats`: one leased job collects provider results using upstream pagination, verifies supported employer postings, saves observations, persists current
-versioned screening checks, applies copied Career Ops deduplication and stores
-shortlist IDs in its existing job result (`pipelineVersion: 1`). Muse reads that
-shortlist, writes candidate-specific reports and four ratings, publishes a batch
-and prepares drafts. Normal jobs need no separate screening/dedup MCP calls.
+The direct executor is `search_ats`: one leased job stages provider candidates on
+the worker volume, applies metadata gates, verifies official postings, applies
+full configured filters, and deduplicates against the pool and account history.
+Only the final new/changed shortlist is saved (`pipelineVersion: 2`). The agent
+reads every shortlist page and performs personal fit analysis. Automatic hosted
+board collection/publication is disabled; application records are unchanged.
 Collection supports Greenhouse/Lever and the first-party HiringCafe aggregate adapter; liveness for each link uses the copied
 ATS API/browser ladder across upstream-supported sources. Full-description
 extraction currently supports Greenhouse. Active unsupported extraction remains
@@ -405,3 +406,36 @@ A source can still need human/agent browsing, and no real searches or submission
 are executed by the regression tests.
 
 Worker lease and source-version conflicts return HTTP 409 (`PT409`), so PostgREST rejects stale requests once instead of repeatedly retrying a deterministic failure. Genuine transaction serialization failures retain their native error.
+
+## Direct search staging (pipeline 2)
+
+The worker stores immutable source snapshots in `LOOKOUT_SEARCH_STAGING_DIR`
+(default OS temporary directory for standalone tests). Local and Compute Engine
+Compose deployments mount a stable named volume at `/var/lib/lookout/search-runs`.
+Each checkpoint points to an immutable snapshot created by that attempt; SQL's
+existing lease/version fence controls which snapshot is resumable. Missing files
+cause recollection, never silent source omission. Different attempts cannot
+replace one another's files. Completed jobs remove their run directory;
+interrupted/orphaned directories expire after three days on the next search.
+
+Metadata title/seniority gates run before official verification. Full configured
+filters run against verified facts in temporary storage. No permanent discovery
+observations are saved during collection. After all sources finish, copied
+Career Ops dedup removes in-pool aliases, unchanged previously saved jobs, and
+tracked applications. Description changes or source metadata changes may return
+an existing job for review. Only this final shortlist is saved and screened.
+Applications and their statuses are never changed by this pipeline.
+
+Only job metadata, aggregate counts and bounded diagnostics enter SQL during
+collection. `search.history.read` is service-only, account scoped, fenced and
+paged at 100 identities; it includes content hashes, never full prior JDs.
+Final writes retain bounded per-batch transactions; an interrupted final write
+can leave qualifying shortlist rows, and recovery completes the same run.
+They are not an agent-ready receipt until the backend job finishes.
+
+The receipt uses `pipelineVersion:2` and `storage:direct-shortlist`.
+`shortlist.totalRetained` counts every saved result. The first 100 IDs are a
+preview; retrieve the rest through the existing scoped `read_search_discoveries`
+run pagination. The SQL finish checks current profile/settings and saved count.
+No hosted-board collection or automatic batch publication is enabled. Existing
+personal report/application writers are unchanged and require their own scope.

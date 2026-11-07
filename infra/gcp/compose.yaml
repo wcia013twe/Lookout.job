@@ -28,6 +28,9 @@ services:
         format: raw
     environment:
       LOOKOUT_PROCESS: worker
+      LOOKOUT_SEARCH_STAGING_DIR: /var/lib/lookout/search-runs
+    volumes:
+      - search_staging:/var/lib/lookout/search-runs
     restart: unless-stopped
     init: true
     logging: *logging
@@ -47,3 +50,5 @@ services:
 volumes:
   caddy_data:
   caddy_config:
+  search_staging:
+    name: lookout-cloud-search-staging
