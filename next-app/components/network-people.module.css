@@ -14,3 +14,6 @@
 .detailHeader{padding-bottom:18px;border-bottom:1px solid var(--color-board-line)}.detailHeader .companyMark{width:56px;height:56px}.history>summary .sectionTitle{display:inline-flex;vertical-align:middle}.searchControl{position:relative;display:block}.searchControl>svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--color-board-muted);pointer-events:none}.searchControl input{padding-left:38px}
 @media(max-width:767px){.suggestion{padding:16px;gap:16px}.suggestionIdentity{gap:12px}.companyMark{width:46px;height:46px}.identity{align-items:flex-start}.detailHeader .identity{flex-basis:100%}.detailHeader .companyMark{width:48px;height:48px}.cardIdentity{gap:12px}.personCard{padding:16px}}
 @media(prefers-reduced-motion:reduce){.cardArrow{transition:none}.personCard:hover .cardArrow,.personCard[aria-pressed=true] .cardArrow{transform:none}}
+
+/* Brand treatment for existing external contact links. */
+.actions .linkedinButton{background:#0a66c2;border-color:#0a66c2;color:#fff}.actions .linkedinButton:hover{background:#004182;border-color:#004182;color:#fff}.emailIcon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid #dadce0;border-radius:6px;background:#fff;color:#b3261e}
