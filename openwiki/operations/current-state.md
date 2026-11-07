@@ -137,6 +137,26 @@ not protect. Schema comparison normalizes only pgvector's optional schema prefix
 retaining its dimension/type checks. Service-role defaults are compared in the
 same platform context rather than mistaken for browser permissions.
 
+Verified hosted receipt, November 7: main-branch **Deploy Supabase backend** run
+`42409833561` succeeded from `34a3c50b59b78503b883340603022459e15c3308`.
+All 89 migration versions and 2,960 source-derived schema/permission entries
+matched the live project after accounting for observed platform defaults and
+pgvector qualification. The optional RLS helper retained its enabled event hook
+and passed a rolled-back DDL probe, with direct anon/authenticated execution
+revoked. No application table exposed browser TRUNCATE/REFERENCES/TRIGGER grants.
+Live MCP reported that exact source commit and developer contract 112. Disposable
+checks passed gateway/MCP unauthenticated denial, executable tool discovery,
+owned imported-record writes/read-back/retry, foreign-owner/read-only denial,
+and authenticated browser RPC/profile isolation. Test accounts, connections and
+imported records were removed; hosted ended with zero accounts, profiles, files,
+imports or connections. The six shared companies, knowledge configuration and
+Storage bucket settings were preserved. Local personal data was not imported.
+Security advisors report no anonymous definer-execution warning; authenticated
+owner-scoped definer entry points and private-table RLS notices remain expected.
+Google OAuth and GCP worker/browser execution were not exercised. The separate
+Pages release `42408607455` timed out after its successful backend step; this
+receipt establishes database/backend readiness, not successful website publication.
+
 The Pages workflow runs on `main`, calls the backend deployment workflow first, runs the repository test suite and data validation, builds the static export, then deploys the Pages artifact. Backend deployment runs only from `main`, requires the production environment and `SUPABASE_ACCESS_TOKEN`, and invokes `npm run deploy:backend`. This wiring means a frontend-only build should not be represented as publishing gateway/MCP or migration changes.
 
 Repository documentation records a prior prepared schema rollout and gateway/MCP release, including unauthenticated denial checks. It simultaneously says authenticated MCP discovery/read/write, client support, real Google sign-in, and intended-device round trips need verification. Therefore describe those releases as **recorded deployment evidence with explicit verification gaps**, not as blanket proof that all current functionality is live.
