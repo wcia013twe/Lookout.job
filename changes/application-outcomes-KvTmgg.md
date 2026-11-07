@@ -86,3 +86,43 @@
   after resolving the documentation append, all 11 remaining focused tests,
   frontend typecheck and static build passed again (the consolidated harness
   moved one earlier demo assertion into its shared fixture coverage).
+
+## Follow-up: optional next action date and sort
+
+- Application rows show a dated next round or confirmed unfinished preparation
+  deadline beside any independent Needs action flag. Unknown dates stay blank.
+  Current scheduled rounds own their timing, avoiding duplicate/stale prep dates;
+  completed, superseded, terminal and archived records do not create reminders.
+- Active keeps its progress/date default and adds Sort → Next action date.
+  This optional order uses earliest pending date first, undated last, with stable
+  default ordering for ties. No automatic priority rules or new task store.
+- Reuses scoped timeline/preparation records and existing website/MCP writers;
+  dates remain editable through Add round / Confirmed date & time, with existing
+  corrections/completion. Uses one planner read with owner/reset/race guards and
+  refresh on cloud-ready/focus/reconnect. Failed reads are reported explicitly.
+- Demo coverage uses existing fictional confirmed, unknown, rescheduled and
+  undated application states; added an interaction test for recording, moving,
+  completing and resetting a next action through the isolated milestone writer.
+- Validation: 17 focused next-action/display/inbox/sort tests, frontend typecheck,
+  production static build and catalog validation (158 roles) passed. Desktop and
+  mobile preview verified the optional sort/default restore, flagged dated row,
+  detail opening and no page errors/overflow. UI detector/diff checks passed.
+- Limits: this is a read-only list feature, with no schema/writer change or new
+  arbitrary task/deadline field. Imported records retain their existing native
+  workflow mismatch. Full database suite and live account/deployment verification
+  were not repeated for this presentation/read-only integration.
+
+## Follow-up: compact search toolbar
+
+- Consolidated search, type, stage and Active sort into a single desktop toolbar.
+  Replaced oversized boxed selectors and the separate Sort row with lightweight
+  native selects: All types, All stages, Progress / Next action. Search stays the
+  primary input; mobile places the three controls directly below it.
+- Existing filter/sort values, default ordering and accessible names are retained.
+  Controls keep 44px interaction targets and native keyboard/dropdown behavior.
+- Validation: frontend typecheck, production static build, UI detector, catalog
+  validation (158 roles) and diff check passed. Fictional desktop/mobile preview
+  exercised search, type/stage filters, Clear filters and action sorting, and
+  confirmed single-row desktop layout, mobile targets and no overflow/page errors.
+- Presentation only: no domain/backend/data changes or new tests; full backend
+  suite and live deployment verification were not repeated.
