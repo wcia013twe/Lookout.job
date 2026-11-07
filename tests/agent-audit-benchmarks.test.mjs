@@ -97,9 +97,9 @@ test('migration retains legacy event identity and replay when upgrading populate
 });
 
 test('Muse guide exposes versioned feature checks and makes self-check provenance explicit',async()=>{
- const guide=readGuide('agent-audit');assert.equal(guide.version,2);
- assert.equal(guideIndex().find(g=>g.id===guide.id).version,2);
+ const guide=readGuide('agent-audit');assert.equal(guide.version,3);
+ assert.equal(guideIndex().find(g=>g.id===guide.id).version,3);
  for(const text of ['schemaVersion:2','self_check','not_evaluated','evidenceEventKeys','metricsScope','action_board','discover','applications','network','toolkit','missing capture','separately authenticated'])assert(guide.instructions.includes(text),text);
  const instructions=JSON.parse(await readFile(new URL('../supabase/functions/agent-gateway/instructions.json',import.meta.url),'utf8'));
- assert(instructions.instructions.some(s=>s.includes('load agent-audit')));
+ assert(instructions.instructions.some(s=>s.includes('load read_guide agent-audit')));
 });

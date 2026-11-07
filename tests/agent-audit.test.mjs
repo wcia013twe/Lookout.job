@@ -4,6 +4,8 @@ import {createTestDatabase} from './helpers/database.mjs';
 import {AUDIT_TOOLS,validateAudit} from '../supabase/functions/agent-gateway/agent-audit.mjs';
 import {createHandler} from '../supabase/functions/agent-mcp/protocol.mjs';
 import {createDispatch,credentialHash} from '../backend/runtime/service.ts';
+import {contextResponse} from '../supabase/functions/agent-gateway/context.mjs';
+import {guideDispatch} from '../supabase/functions/agent-gateway/guides.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 const owner='11111111-1111-1111-1111-111111111111',other='22222222-2222-2222-2222-222222222222';
 const token='jb_agent_'+'6'.repeat(64),hash=credentialHash(token),otherHash='8'.repeat(64);
@@ -106,4 +108,52 @@ test('audit contract validates bounded typed data without allowing secrets or ow
  for(const payload of [{...start,metadata:{accessToken:'private'}},{...start,userId:owner},{...start,mode:'benchmark-success'}])assert.throws(()=>validateAudit('audit.start',payload));
  assert.throws(()=>validateAudit('audit.append',{runId:owner,events:[{eventKey:'e',kind:'tool.result',data:{nested:[{password:'private'}]}}]}));
  assert.throws(()=>validateAudit('audit.read',{runId:owner,afterSequence:-1}));
+});
+
+
+test('Muse instruction lookup routes to a usable audit guide and its examples persist through MCP',async()=>{
+ const db=await createTestDatabase();
+ await db.exec('alter role service_role bypassrls');
+ try{
+  await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,'Fictional guide capture',$2,array['workspace:read','activity:write'],now()+interval '1 day')",[owner,hash]);
+  const calls=[];
+  const forward=async(_token,operation,payload)=>{
+   calls.push(operation);
+   if(operation==='credentials.verify')return {status:200,data:{scopes:['workspace:read','activity:write']}};
+   if(operation==='context.developer')return {status:200,data:contextResponse(operation,{})};
+   if(operation==='guides.read')return {status:200,...await guideDispatch(payload.id,async()=>({data:{}}))};
+   await db.exec('set role service_role');
+   try{return {status:200,data:(await db.query('select public.agent_audit_dispatch($1,$2,$3::jsonb) result',[hash,operation,JSON.stringify(payload)])).rows[0].result};}
+   finally{await db.exec('reset role');}
+  };
+  const handle=createHandler(forward);
+  const send=async(method,params)=>{
+   const response=await handle(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}));
+   const body=await response.json();assert(!body.error,JSON.stringify(body.error));return body.result;
+  };
+  const invoke=async(name,args={})=>{
+   const result=await send('tools/call',{name,arguments:args});assert(!result.isError,JSON.stringify(result));return JSON.parse(result.content[0].text);
+  };
+  const startup=await send('initialize',{protocolVersion:'2025-11-25'});
+  assert.match(startup.instructions,/load agent-audit to record the run/);
+  const context=await invoke('read_developer_context');
+  assert(context.instructions.some(s=>s.includes('Assignment data collection is enabled')&&s.includes('pause a logged test')));
+  const entry=context.guides.find(g=>g.id==='agent-audit');assert.match(entry.whenToUse,/Required run logging/);
+  const guide=await invoke('read_guide',{id:entry.id});assert.equal(guide.version,entry.version);
+  for(const phrase of ['before each non-audit tool call','pause the logged test','Never log the audit tools','not complete runtime-native tracing','No scoring or grading'])assert(guide.instructions.includes(phrase),phrase);
+  const discovered=await send('tools/list',{});
+  for(const example of Object.values(guide.examples)){
+   const tool=discovered.tools.find(t=>t.name===example.tool);assert(tool);
+   validateRequest({operation:AUDIT_TOOLS.find(t=>t.name===example.tool).operation,payload:example.arguments});
+  }
+  const request=guide.examples.append.arguments.events.find(e=>e.kind==='tool.call');
+  assert(discovered.tools.some(t=>t.name===request.toolName),'example must reference an available domain tool');
+  const run=await invoke(guide.examples.start.tool,guide.examples.start.arguments);
+  await invoke(guide.examples.append.tool,{...guide.examples.append.arguments,runId:run.id});
+  const saved=await invoke(guide.examples.read.tool,{...guide.examples.read.arguments,runId:run.id});
+  assert.deepEqual(saved.events.map(e=>e.event_key),guide.examples.append.arguments.events.map(e=>e.eventKey));
+  assert.equal(saved.events.at(-1).kind,'run.finished');assert.equal(saved.events.at(-1).data.outcome,'blocked');
+  assert.equal(saved.events[1].data.toolCallId,saved.events[2].data.toolCallId);
+  assert.deepEqual(calls.filter(op=>op.startsWith('audit.')),['audit.start','audit.append','audit.read']);
+ }finally{await db.exec('reset role');await db.close();}
 });

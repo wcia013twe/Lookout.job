@@ -34,6 +34,11 @@ scheduled pruning is introduced.
 
 ## Capture convention
 
+The developer-context lookup now requires `read_guide` → `agent-audit` for authorized
+Action Board, Discover, Applications, Networking and Career Toolkit work, including resumed change
+wakes. Startup routes to the same guide; the developer version refresh invalidates
+stale instructions. This is instruction-driven capture, not a host interception hook.
+
 Start one run per task execution with a stable eventKey. Metadata should include
 actual model/configuration, runtime, code commit, prompt/guide versions, task and
 experiment IDs, fixture version, candidate/profile version and initial context.
@@ -52,7 +57,11 @@ Append promptly, at most 25 events and 200 KB encoded JSON per request, with at
 most 128 KB per event's data (and run metadata). Oversized evidence can use multiple
 redacted events with artifactId/chunkIndex/totalChunks. Keep failed and partial
 runs. A crashed run remains incomplete unless a later observer records that fact.
-Do not log audit-tool calls recursively.
+Do not log audit-tool calls recursively. Save a request before each domain tool call
+and its result/error afterward, sharing a toolCallId. If capture fails, pause the
+logged test before the next domain action; recover exact pending writes and identify
+known gaps. Verify the terminal event by paginated read-back before claiming the log
+was saved. Missing host-native observations must remain explicitly unavailable.
 
 Redact secrets before storage. The API/database reject common secret field names,
 Lookout credentials, Bearer strings and signed Storage links. This is a guard
@@ -115,7 +124,7 @@ terminal outcomes and usage remain events, with no automatic run-summary scoring
 
 ### Muse capture procedure
 
-1. Read `agent-audit` version 2 and the current tool schemas. Start a run and retain
+1. Read `agent-audit` version 3 and the current tool schemas. Start a run and retain
    its returned ID plus stable retry keys. Use the authorized task's area, including
    `action_board`. Logging is not a request to execute additional real-world work.
 2. Record `context.loaded` with `data.contextRefs`: only context actually read,
@@ -209,7 +218,7 @@ missing-evidence rejection passed with synthetic records in a rolled-back
 transaction. No fixture accounts or logs were retained. RLS/append-only grants
 remain enabled and the security advisor reports no audit-related findings.
 
-Source now advertises developer context 104 and agent-audit guide version 2.
+Source now advertises developer context 105 and agent-audit guide version 3.
 Those tool/guide changes still require the normal main-branch gateway/MCP or Node
 release and agent discovery/context refresh. Hosted Muse capture is not verified
 by the database check. No frontend audit screen or automatic benchmark evaluator
