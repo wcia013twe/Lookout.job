@@ -11,17 +11,26 @@ try{
  await context.route('**/*.supabase.co/**',async route=>{if(route.request().url().includes('/storage/v1/object/public/')){await route.continue();return;}cloud.push(route.request().url());await route.abort();});
  const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/referrals/?demo=1');
- const suggestions=page.getByRole('region',{name:'Muse suggestions',exact:true});
+ // Test-only transient URLs; never click them or put them in shipped fixtures.
+ const previewLinks=()=>page.evaluate(()=>window.JB.store.set('network.referrals',window.JB.store.get('network.referrals').map(person=>person.id==='demo-referral'?{...person,linkedin:'https://www.linkedin.com/in/lookout-demo-fictional-person/',notes:JSON.stringify({...JSON.parse(person.notes),url:'https://mail.google.com/mail/u/0/#all/demo-fictional-thread'})}:person)));
+ await page.getByRole('list',{name:'Saved people',exact:true}).waitFor();
+ await previewLinks();
+
+ const suggestions=page.getByRole('region',{name:'Agent Suggestions',exact:true});
  const people=page.getByRole('list',{name:'Saved people',exact:true});
- await suggestions.getByRole('heading',{name:'Jamie (fictional) · Stripe',exact:true}).waitFor();
+ assert.equal(await suggestions.count(),0);
+ await people.getByRole('button',{name:/Jamie \(fictional\)/}).waitFor();
  assert.equal(await people.locator('li').count(),4);
  assert.equal(await page.getByRole('navigation',{name:'Network views'}).count(),0);
  assert.equal(await page.getByRole('button',{name:/Find people|Prepare with Muse|Request outreach/}).count(),0);
  await page.screenshot({path:dir+'/network-desktop.png',fullPage:true});
  await page.screenshot({path:dir+'/network-desktop-viewport.png'});
- await suggestions.locator('li').filter({has:page.getByRole('heading',{name:'Jamie (fictional) · Stripe',exact:true})}).getByRole('button',{name:'Review message',exact:true}).click();
+ await people.getByRole('button',{name:/Jamie \(fictional\)/}).click();
  const detail=page.getByRole('region',{name:'Person details for Jamie (fictional)',exact:true});
  await detail.waitFor();assert.match(page.url(),/person=demo-referral/);
+ const linkedin=detail.getByRole('link',{name:'Open LinkedIn',exact:true});await linkedin.waitFor();
+ assert.equal(await linkedin.evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(10, 102, 194)');
+ await detail.getByRole('link',{name:'Open Gmail',exact:true}).waitFor();
  const draft=detail.getByRole('textbox',{name:'Message for Jamie (fictional)',exact:true});const before=await draft.inputValue();
  assert.equal(await detail.locator('details').first().getAttribute('open'),null);
  await detail.getByRole('button',{name:'Add update',exact:true}).click();
@@ -37,12 +46,6 @@ try{
  await detail.getByRole('button',{name:'Company details',exact:true}).click();
  await page.getByRole('heading',{name:'Stripe',exact:true}).first().waitFor();
  await page.getByRole('button',{name:'Back to targets',exact:true}).click();await detail.waitFor();
- await suggestions.locator('li').filter({has:page.getByRole('heading',{name:'Jamie (fictional) · Stripe',exact:true})}).getByRole('button',{name:'Dismiss',exact:true}).click();
- assert.equal(await suggestions.getByRole('heading',{name:'Jamie (fictional) · Stripe',exact:true}).count(),0);
- assert.equal(await people.locator('li').count(),4);
- await suggestions.locator('li').filter({has:page.getByRole('heading',{name:'Morgan (fictional) · Stripe',exact:true})}).getByRole('button',{name:'Mark done',exact:true}).click();
- assert.equal(await suggestions.getByRole('heading',{name:'Morgan (fictional) · Stripe',exact:true}).count(),0);
- assert.equal(await people.locator('li').count(),4);
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({colorScheme:'light'});
  await detail.getByRole('heading',{name:'Jamie (fictional)',exact:true}).scrollIntoViewIfNeeded();
  await page.screenshot({path:dir+'/person-mobile.png',fullPage:true});
@@ -60,18 +63,20 @@ try{
  await page.screenshot({path:dir+'/network-mobile.png',fullPage:true});
  await page.goto(origin+'/referrals/?demo=1&view=processes&process=demo-stripe');
  await page.getByRole('button',{name:'Show all people',exact:true}).waitFor();
- assert.equal(await people.locator('li').count(),1);
+ assert.equal(await people.locator('li').count(),2);
  await page.getByRole('button',{name:'Show all people',exact:true}).click();
  await page.setViewportSize({width:1440,height:1000});await page.emulateMedia({colorScheme:'dark'});
+ await previewLinks();
  await people.getByRole('button',{name:/Jamie \(fictional\)/}).click();
  await page.screenshot({path:dir+'/person-desktop.png',fullPage:true});
  await page.getByRole('region',{name:'People',exact:true}).getByRole('heading',{name:/^People /}).scrollIntoViewIfNeeded();
  await page.screenshot({path:dir+'/people-desktop-viewport.png'});
  await page.getByRole('button',{name:'Open profile navigation',exact:true}).click();
  await page.getByRole('button',{name:'Reset demo data',exact:true}).click();
- await suggestions.getByRole('heading',{name:'Jamie (fictional) · Stripe',exact:true}).waitFor();
+ assert.equal(await suggestions.count(),0);
+ await people.getByRole('button',{name:/Jamie \(fictional\)/}).waitFor();
  assert.equal(await people.locator('li').count(),4);
  assert.equal(await page.getByText('Fictional update: discussed ownership and agreed to send two questions.',{exact:true}).count(),0);
  assert.deepEqual(errors,[]);assert.deepEqual(cloud,[]);
- console.log(JSON.stringify({result:'passed',checks:['person cards','all suggestion purposes','history collapsed','message copy and preservation','relationship update','dismiss and done preserve people','no employer required','company deep links','legacy process links','search context','mobile back','dark desktop and light mobile','no overflow','demo reset','no account cloud access'],artifacts:dir}));
+ console.log(JSON.stringify({result:'passed',checks:['person cards','suggestions section hidden','history collapsed','message copy and preservation','relationship update','no employer required','company deep links','legacy process links','search context','mobile back','dark desktop and light mobile','no overflow','demo reset','no account cloud access'],artifacts:dir}));
 }finally{await browser.close();}
