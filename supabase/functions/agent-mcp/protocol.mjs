@@ -1,3 +1,4 @@
+import {ACCESS_TOOLS,DEFAULT_TOOL_NAMES,toolWorkflow,publicTool,validAccessArguments} from './tool-surface.mjs';
 import {AUDIT_TOOLS} from '../agent-gateway/agent-audit.mjs';
 import {enabledMcpOperation} from '../../../lib/feature-scope.mjs';
 import {APPLICATION_JOB_TOOL} from '../agent-gateway/application-jobs.mjs';
@@ -47,7 +48,7 @@ export const TOOLS = [...AUDIT_TOOLS,APPLICATION_JOB_TOOL,...MUSE_CHANGE_TOOLS,R
   {name:'save_search_profile',operation:'preferences.profile.save',scope:'preferences:write',description:'Create or update an owned search profile after a user asks to change preferences. Read personal context first. Pass current profile version, or 0 for a new profile. Profile contains id, name, active, filters, priorities, instructions. For What your agent knows notes, first read_guide career-find-jobs and follow its four-section decision-brief constraint. Does not change submission permission or human approvals.',inputSchema:object({expectedVersion:{type:'integer',minimum:0},profile:json},['expectedVersion','profile'])},
   {name:'read_application_timeline',operation:'applications.timeline',scope:'workspace:read',readOnly:true,description:'Read an owned application and immutable process milestones, including email evidence and unknown dates. Milestones do not prove submission or human approval.',inputSchema:object({applicationId:string},['applicationId'])},
   {name:'record_application_milestone',operation:'applications.milestone',scope:'activity:write',description:'Automatically save relevant process updates during authorized conversations or email checks. source is email with messageId/subject/excerpt/receivedAt, or user_reported with note containing what the candidate said; never use source user. Preserve scheduled/completed/received. Leave occurredAt null unless exact date/time/timezone is confirmed and source.timestampConfirmed=true. For a correction or reschedule, read the timeline and set supersedesId to the current event being replaced. Old evidence stays in history. Reuse eventKey and identical content on retry. Never writes submission receipt, approval, or status. Interview reflections use save_artifact kind notes with purpose Interview debrief [applicationId] Interview note; list/read existing notes before saving a new UUID (expectedVersion 0) or current version edit. Keep notes private.',inputSchema:object({applicationId:string,eventKey:string,kind:string,label:string,occurredAt:{type:['string','null']},phase:string,source:json,supersedesId:string},['applicationId','eventKey','kind','label','phase','source'])},
-  {name:'discover_toolkit',operation:'guides.discover',scope:'workspace:read',readOnly:true,description:'Discover Lookout workflows automatically for career goals: job search and fit, profile/resume improvement, cover letters, applications, interview practice/preparation, outreach/follow-ups, offers/negotiation, career growth and recurring work. Call when the guide index is missing; select matching descriptions/examples and load read_guide. No skill names, downloads or copied prompts required. Returns metadata and runtime requirements, not execution or new permissions.',inputSchema:object()},
+  {name:'discover_toolkit',operation:'guides.discover',scope:'workspace:read',readOnly:true,description:'Discover instruction guides, not executable tool schemas (use discover_tools for those). Discover Lookout workflows automatically for career goals: job search and fit, profile/resume improvement, cover letters, applications, interview practice/preparation, outreach/follow-ups, offers/negotiation, career growth and recurring work. Call when the guide index is missing; select matching descriptions/examples and load read_guide. No skill names, downloads or copied prompts required. Returns metadata and runtime requirements, not execution or new permissions.',inputSchema:object()},
   {name:'read_guide',operation:'guides.read',scope:'workspace:read',readOnly:true,description:'Load instructions for a workflow selected automatically from discover_toolkit or read_developer_context.guides for the current goal. The user need not name a skill. Guides do not grant permissions.',inputSchema:object({id:string},['id'])},
   {name:'reconsider_skipped_opportunity',operation:'selection.reconsider',scope:'activity:write',description:'Request reconsideration of an owned skipped role. Read skipped opportunities first; pass expectedReconsideredAt as its timestamp or empty string when absent. Does not change preferences or apply.',inputSchema:object({decisionId:string,expectedReconsideredAt:string},['decisionId','expectedReconsideredAt'])},
   {name:'read_quiet_mode',operation:'quiet.read',scope:'workspace:read',readOnly:true,description:'Read quiet delivery settings and personalVersion for a subsequent scoped update.',inputSchema:object()},
@@ -154,12 +155,26 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
       return result(id, { protocolVersion: VERSIONS.includes(message.params.protocolVersion) ? message.params.protocolVersion : VERSIONS[0], capabilities: { tools: {} }, serverInfo: { name: 'job-board', version: runtimeVersion.sourceCommit ?? 'development' }, instructions: bootstrapInstructions });
     }
     if (message.method === 'ping') return result(id, {});
-    if (message.method === 'tools/list') return result(id, { tools: availableTools.filter(tool => hasToolScopes(tool,scopes)).map(({ operation, scope, requiredScopes, readOnly, destructive, openWorld, ...tool }) => ({ ...tool, annotations: { readOnlyHint: !!readOnly, destructiveHint: !!destructive || tool.name === 'prepare_draft', openWorldHint: !!openWorld || ['report_bug','get_bug_status'].includes(tool.name) } })) });
+    if (message.method === 'tools/list') return result(id, {tools:[...availableTools.filter(tool=>DEFAULT_TOOL_NAMES.has(tool.name)&&hasToolScopes(tool,scopes)).map(publicTool),...ACCESS_TOOLS]});
 
     if (message.method !== 'tools/call') return error(id, -32601, 'Method not found');
-    const tool = availableTools.find(tool => tool.name === message.params?.name);
+    let name=message.params?.name;
+    let args=message.params?.arguments ?? {};
+    if (ACCESS_TOOLS.some(tool=>tool.name===name)) {
+      if (!validAccessArguments(name,args)) return error(id,-32602,'Invalid tool arguments');
+      if (name==='discover_tools') {
+        const tools=availableTools.filter(tool=>hasToolScopes(tool,scopes)
+          && (args.workflow==='all'||toolWorkflow(tool)===args.workflow)
+          && (args.name===undefined||tool.name===args.name));
+        return result(id,{content:[{type:'text',text:JSON.stringify({workflow:args.workflow,tools:tools.map(tool=>({...publicTool(tool),workflow:toolWorkflow(tool),gated:!DEFAULT_TOOL_NAMES.has(tool.name)}))})}]});
+      }
+      // Unwrap once, then use precisely the direct-call path below. Access tools
+      // are not in availableTools, so recursive dispatch cannot grant authority.
+      name=args.name;
+      args=args.arguments;
+    }
+    const tool = availableTools.find(tool => tool.name === name);
     if (!tool) return error(id, -32602, 'Unknown tool');
-    const args = message.params?.arguments ?? {};
     if (!hasToolScopes(tool,scopes,args)) return result(id, { content: [{ type: 'text', text: 'Missing required scope: ' + requiredToolScopes(tool,args).filter(scope=>!scopes.includes(scope)).join(', ') }], isError: true });
     if (tool.operation.startsWith('artifacts.') || tool.operation.startsWith('learning.')) {
       try { validateArtifact(tool.operation, args); }

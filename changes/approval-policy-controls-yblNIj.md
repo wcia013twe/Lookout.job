@@ -1,0 +1,8 @@
+# Align profile automation with account authorization
+
+- Every automatic policy path now requires the database's existing strict account-wide `autoSubmitApproved === true` guard, including explicit per-profile submission modes. Exclusions still skip; exact human approval remains a separate authorization path.
+- Application automation shows account authorization beside the saved profile preference and disables the profile checkbox while the account guard blocks it. Off, absent and malformed authorization have distinct explanations; saving a profile never grants account consent.
+- `read_application_policy` exposes `account_auto_apply_disabled` and the same precise explanation used by the UI. Submission authorization preserves the policy reason and tells the user to approve the exact draft in Applications. No new consent write or approval bypass was added.
+- Updated the application guide, workflow version, README, OpenWiki and resettable fictional demo. Website rendering, MCP policy responses, no-click runner behavior, strict SQL enforcement and human approval are covered by regression checks.
+- Validation: 48 focused policy, MCP, runner, demo and rendered-control checks pass; canonical data validation passes (158 roles). `npm test` passes (963 passed, 5 skipped, 0 failures), including every database scenario. Frontend typecheck and production static export pass. `git diff --check` passes.
+- Limits: no real employer submission, account consent change, hosted migration, gateway deployment, push or publication. Dependency installation used an isolated external-SSD directory after local network/disk restrictions; no shared dependencies were modified.

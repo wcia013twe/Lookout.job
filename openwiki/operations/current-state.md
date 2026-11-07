@@ -56,6 +56,8 @@ This page separates **code present in this repository**, **behavior that a local
 
 ## What is implemented
 
+Application automation honors the strict account-wide `autoSubmitApproved` guard even for explicit profile modes. Profile controls show the account block and remain disabled while it is off or missing; profile saves cannot grant global consent. Policy reads and runner authorization explain the block and direct the user to exact-draft approval in Applications. This is locally verified behavior; hosted availability requires the frontend and gateway release.
+
 ### Product and persistence surfaces
 
 The production UI is a static Next.js export, while Supabase owns identity, private records, storage, and server-side authorization. The public catalog remains static data; signed-in private state—including profile facts, preferences, resumes, batches, applications, approvals, attempts, search records, and operational records—is modeled by migrations and protected by owner-aware services. A detached `?demo=1` workspace uses fictional in-memory fixtures, deliberately avoids the account store, auth client, cloud sync, and production MCP, and resets on refresh.
@@ -139,3 +141,25 @@ A change author should make a claim no broader than the checks actually complete
 - Wider rollout still needs account export/deletion, orphan-file cleanup, operational monitoring/rate limits, and abuse handling.
 
 See [local and release runtime](local-and-release-runtime.md), [verification strategy](../testing/verification-strategy.md), [the system overview](../architecture/system-overview.md), [agent/MCP setup](../../mcp/README.md), and [the schema reference](../../docs/schema.md) for adjacent operational detail.
+
+## Smaller agent tool catalog (local contract 110)
+
+MCP startup now lists common actions, logs and bugs directly. Hosted maximum:
+47 exposed / 73 gated; configured Node API: 50 / 73; local runner: 50 / 83.
+`discover_tools` returns scope-filtered executable schemas by workflow or exact
+name, and `call_discovered_tool` shares the original direct-call validation path.
+`discover_toolkit` still discovers guides. Existing names remain callable;
+paused operations remain unavailable. See `mcp/README.md` for access and release
+limits. Hosted/client behavior is not verified by local catalog tests.
+
+### Local audit runtime verification
+
+The local API was rebuilt from `6c44441`; the mounted Edge runtime now reports
+developer contract 110. The two existing audit migrations (`20261107002624` and
+`20261107005745`) were applied to the local database without applying other
+pending migrations. The existing MCP connection successfully loaded agent-audit
+v3, discovered all three audit tools, and started/appended/read a labeled repair
+verification audit. Clients with cached tool catalogs need a refresh/reconnect.
+No job search was queued and no batch was published during verification. The
+worker and separate résumé API were preserved; hosted deployment and full worker
+execution remain outside this check. See the feature change note for details.

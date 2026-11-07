@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applicationPolicy } from '../supabase/functions/agent-gateway/application-policy.mjs';
+import { applicationPolicy, accountAutomationSettings } from '../supabase/functions/agent-gateway/application-policy.mjs';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { createHandler } from '../supabase/functions/agent-mcp/protocol.mjs';
 const list = type => ({ id: type, employmentType: type, companies: [{ id: 'nv', name: 'NVIDIA' },{ id: 'or', name: 'Oracle' }], placements: { S: ['nv'], C: ['or'], unranked: [] } });
@@ -82,7 +82,7 @@ test('unconfigured profiles retain the legacy master opt-out and ignore unrelate
 
 test('explicit simple submission modes work without company tiers and fail closed for invalid settings',()=>{
  const make=mode=>({id:'general',name:'General',active:true,filters:{Employment:'Full-time'},instructions:`## Application automation\n- Submission mode: ${mode}\n- Auto-apply routine matches: ${mode==='Auto-apply'?'Yes':'No'}\n- Review threshold: all\n## Company priorities\n- Tier list ID: unavailable`});
- const own={search:{profiles:[make('Auto-apply')]},tier_lists:[]};
+ const own={search:{autoSubmitApproved:true,profiles:[make('Auto-apply')]},tier_lists:[]};
  const decide=()=>applicationPolicy({preferences:own,job:{company:'Unranked employer',employmentType:'FT'},profileId:'general'});
  assert.equal(decide().mode,'auto-apply');
  own.search.profiles[0]=make('Auto-apply');own.search.profiles[0].instructions=own.search.profiles[0].instructions.replace('Auto-apply routine matches: Yes','Auto-apply routine matches: No');assert.equal(decide().mode,'review','a conflicting opt-out must never enable submission');
@@ -92,4 +92,29 @@ test('explicit simple submission modes work without company tiers and fail close
  // A duplicate under another section is not a valid automation override.
  own.search.profiles[0].instructions+='\n## Application automation\n- Submission mode: Review each application';assert.equal(decide().mode,'review');
  own.search.profiles[0]=make('Auto-apply');own.search.profiles[0].active=false;assert.equal(decide().mode,'review');
+});
+
+
+test('global guard blocks both explicit profile modes for every non-boolean opt-in',()=>{
+ for(const value of [undefined,false,null,'true',1,{},[]]) {
+  for(const profile of [automationProfile('backend'),{...automationProfile('backend'),instructions:'## Application automation\n- Submission mode: Auto-apply\n- Auto-apply routine matches: Yes'}]) {
+   const own={...preferences,search:{autoSubmitApproved:value,profiles:[profile]}};
+   const policy=applicationPolicy({preferences:own,job:{company:'Oracle',employmentType:'FT'},profileId:'backend'});
+   assert.equal(policy.mode,'review');assert.equal(policy.reviewRequired,true);
+   assert.equal(policy.code,'account_auto_apply_disabled');
+   assert.equal(policy.reason,accountAutomationSettings(own.search).reason);
+  }
+ }
+ assert.equal(accountAutomationSettings({autoSubmitApproved:true}).enabled,true);
+ assert.equal(accountAutomationSettings().enabled,false);
+});
+
+
+test('MCP policy reads expose the account blocker unchanged',async()=>{
+ const blocked={search:{profiles:[automationProfile('backend')]}};
+ const handler=createHandler(async(_token,operation,payload)=>({status:200,data:operation==='credentials.verify'?{scopes:['workspace:read']}:applicationPolicy({preferences:blocked,job:{company:'Oracle',employmentType:'FT'},profileId:payload.profileId})}));
+ const request=new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_application_policy',arguments:{jobId:'00000000-0000-4000-8000-000000000001',profileId:'backend'}}})});
+ const response=await(await handler(request)).json(),policy=JSON.parse(response.result.content[0].text);
+ assert.equal(policy.mode,'review');assert.equal(policy.code,'account_auto_apply_disabled');
+ assert.equal(policy.reason,accountAutomationSettings(blocked.search).reason);
 });

@@ -26,7 +26,7 @@ test('every hosted search tool maps to bounded gateway contract; no scanner runt
 test('MCP discovers the hosted sweep workflow and dispatches an agent state operation',async()=>{
  const calls=[];const handler=createHandler(async(_token,op,p)=>{calls.push([op,p]);return {status:200,data:op==='credentials.verify'?{scopes:['workspace:read','drafts:write']}:{id:'run'}};});
  const call=async(method,params)=>{const r=await handler(new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}));return r.json();};
- const discovered=await call('tools/list',{});assert(discovered.result.tools.some(t=>t.name==='start_search_run'));assert(!discovered.result.tools.some(t=>t.name==='save_search_document'));
+ const discovery=await call('tools/call',{name:'discover_tools',arguments:{workflow:'search'}});const discovered=JSON.parse(discovery.result.content[0].text);assert(discovered.tools.some(t=>t.name==='start_search_run'));assert(!discovered.tools.some(t=>t.name==='save_search_document'));
  const r=await call('tools/call',{name:'start_search_run',arguments:{profileId:'general',eventKey:'run'}});assert(!r.error);assert(calls.some(([op])=>op==='search.run.start'));
 });
 test('discovery guide resolves dependencies and explains interruption, uncertainty and vendor-independent execution',()=>{

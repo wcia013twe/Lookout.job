@@ -1,0 +1,15 @@
+# Smaller MCP catalog and on-demand supporting tools
+
+- Reduced default discovery to 45 existing shared named actions plus `discover_tools` and `call_discovered_tool`. Maximum source counts before scope filtering: hosted 47 exposed / 73 gated; configured Node API 50 / 73; local runner 50 / 83. Seventeen paused registrations remain unavailable. Logs, progress/outcome reporting and bug tools remain directly exposed.
+- Supporting tools load by workflow or exact name from existing registrations with original schemas and annotations. Generic calls reuse direct-call scopes (including conditional scopes), validators and execution. Existing named calls stay compatible; there is no unlock state, new permission, database change or workflow engine.
+- Updated developer contract 110, startup routing, MCP documentation and OpenWiki. Toolkit guide discovery remains separate from executable discovery. Added a fictional admin demo transport interaction covering profile editing, gated brief read, stale rejection and reset without network or account storage.
+- Validation: full `npm test` passed (972 passed, 5 skipped after integrating local main), including database scenarios; focused catalog/contract tests passed after final wording changes. `npm run validate:data` validated 158 roles. Production frontend build and `git diff --check` passed. Initial sandboxed suite could not bind local HTTP servers; the full run with loopback access passed.
+- Integrated newer local-main changes and preserved the regenerated OpenWiki pages; added the focused gate update to the current MCP concepts page.
+- Limits: local implementation only; no push, publication or hosted gateway/MCP release. Real client discovery/execution, production workers, external employer forms and improvement in agent task performance remain unverified. Backend rollout must release gateway and MCP together through the existing production workflow.
+
+## Local runtime repair
+
+- Applied the already-committed `20261107002624` and `20261107005745` audit migrations atomically to the running local database and recorded both migration versions. Refreshed the REST schema cache; verified row-level security and owner read-only grants on both audit tables. No other pending migrations were applied.
+- Rebuilt the API from committed source `6c44441` and replaced only `lookout-node-api`, preserving its environment, port, network and restart settings. Restarted the local Edge runtime to refresh the mounted contract to developer version 110. Existing database, worker and separate résumé API containers were preserved.
+- Live verification through the existing configured connection: contract 110, agent-audit guide v3, all three audit tools plus discovery/dispatcher and bug reporting in the fresh scoped catalog. Started a clearly labeled controlled repair audit, appended completion and read it back. No search, batch publication or employer submission was performed.
+- The client may retain its old tool catalog until refreshed/reconnected. This verifies the local API and audit boundary, not hosted deployment or the unchanged worker's full search/submission execution.

@@ -29,7 +29,8 @@ test('stdio discovery and approved prefill traverse the concrete runtime', async
   const messages = [ { id: 1, method: 'initialize', params: { protocolVersion: '2025-11-25' } }, { method: 'notifications/initialized' }, { id: 2, method: 'tools/list' }, { id: 3, method: 'tools/call', params: { name: 'try_application', arguments: { applicationId: aid, attemptId: 'run1' } } } ].map(m => JSON.stringify({ jsonrpc: '2.0', ...m })+'\n');
   const output = []; await serveStdio({ input: Readable.from(messages), output: { write: s => output.push(s) }, token, runtime });
   const replies = output.map(s => JSON.parse(s)); assert.equal(replies.length, 3);
-  assert.ok(replies[1].result.tools.some(t => t.name === 'try_application'));
+  assert.ok(!replies[1].result.tools.some(t => t.name === 'try_application'));
+  assert.ok(replies[1].result.tools.some(t => t.name === 'call_discovered_tool'));
   const result = JSON.parse(replies[2].result.content[0].text);
   assert.equal(result.status, 'Prepared'); assert.equal(result.submission, 'manual-handoff');
   assert.deepEqual(f.fills, ['test@example.com']); assert.deepEqual(f.visits, [url]); assert.equal(f.reports.length, 0);

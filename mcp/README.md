@@ -812,3 +812,42 @@ scoring, approval or independent submission verification.
 ### Remove a Discover role
 
 `remove_discover_job` requires `activity:write` and takes `batchId` and `jobId` from `read_batch`. Use it only on request; re-read the batch and check `dismissed_at` to verify. Repeating the same request is safe. The item remains in batch history but is hidden from Discover; shared catalog jobs, other batches and applications remain unchanged. The website's `dismiss_batch_item` RPC uses the same owner-scoped operation. Gateway version 109 and the corresponding migration must be deployed before this tool is available.
+
+## Default tool surface and supporting tools (developer version 110)
+
+The initial catalog exposes 45 shared named actions plus `discover_tools` and
+`call_discovered_tool`: 47 hosted tools, with 73 supporting tools gated. All 17
+paused tools remain unavailable. These are maximum source catalog counts before
+connection scopes. A Node API with parsing and both submission tools exposes 50,
+with 73 gated. The local runner exposes 50, with 83 gated. Runtime extras are
+available only where actually registered; discovery does not prove execution is
+configured or a worker is running.
+
+Common search, profile, applications, network and schedule actions remain named.
+Logs, progress/outcome reporting and `report_bug`/`get_bug_status` stay directly
+exposed. Toolkit execution, detailed reads, manual workflow steps, alternative
+writers/uploads and recovery tools load on demand:
+
+1. Call `discover_tools` with `workflow` search, applications, profile, network,
+   agent, toolkit, recovery or all. Optional `name` matches an exact existing tool
+   name, including a name referenced by a guide. Use all for an unknown category.
+2. Read `tools` in its JSON text result: each entry has the original description,
+   input schema, annotations, workflow and `gated` presentation flag. Discovery
+   includes both common and supporting tools in the selected category. Empty
+   results mean no matching tool is authorized/registered, not an empty workspace.
+3. Call `call_discovered_tool` with `{name, arguments}` using that schema.
+
+`discover_toolkit` continues to discover instruction guides; `read_guide` loads
+them. It does not discover executable tool schemas. Retain schemas only while
+current; refresh after developer/runtime changes. If a tool is absent from the
+initial catalog, try exact-name discovery before treating it as unavailable.
+
+The gate is presentation, not an authorization boundary or persistent unlock.
+Direct calls to original names remain compatible. Both call paths share scope,
+conditional-scope, ownership, version and input validation; the dispatcher cannot
+call arbitrary gateway operation strings or recurse into itself. Generic dispatch
+is conservatively marked mutating, destructive and external. No automatic writes,
+approvals, new scheduler, database schema or orchestration engine is added.
+Release gateway and MCP together through the existing production workflow;
+local checks do not establish deployed client availability or improved agent
+performance.

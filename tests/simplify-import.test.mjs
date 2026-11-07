@@ -41,7 +41,7 @@ test('MCP imports expose only scoped actions and share exact payload validation'
  const token='jb_agent_'+ 'a'.repeat(64),calls=[];
  const handler=createHandler(async(t,operation,payload)=>{assert.equal(t,token);if(operation==='credentials.verify')return {status:200,data:{scopes:connectionScopes('work')}};validateRequest({operation,payload});calls.push({operation,payload});return {status:200,data:{version:0,decisions:[]}};});
  const send=async(method,params)=>await (await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}))).json();
- const discovery=await send('tools/list',{});assert.ok(discovery.result.tools.some(t=>t.name==='import_simplify_jobs'));
+ const discovery=JSON.parse((await send('tools/call',{name:'discover_tools',arguments:{workflow:'search'}})).result.content[0].text);assert.ok(discovery.tools.some(t=>t.name==='import_simplify_jobs'));
  const payload={rows:parseSimplifyCsv(simplifyDemoCsv).rows};const result=await send('tools/call',{name:'preview_simplify_import',arguments:payload});assert.ok(!result.result.isError);assert.deepEqual(calls,[{operation:'imports.preview',payload}]);
  assert.throws(()=>validateRequest({operation:'imports.save',payload:{...payload,expectedVersion:0,eventKey:'ok',userId:'other'}}));
  assert.throws(()=>validateRequest({operation:'imports.save',payload:{...payload,expectedVersion:-1,eventKey:'ok'}}));
@@ -57,7 +57,7 @@ test('CSV import discovery and direct calls preserve each connection scope bound
    return {status:200,data:operation==='context.developer'?contextResponse(operation,{}):{version:0,records:[]}};
   });
   const send=async(method,params={})=>(await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}))).json();
-  const names=(await send('tools/list')).result.tools.map(t=>t.name);
+  const names=JSON.parse((await send('tools/call',{name:'discover_tools',arguments:{workflow:'search'}})).result.content[0].text).tools.map(t=>t.name);
   const canImport=scopes.includes('tracking:write');
   assert.ok(names.includes('list_imported_jobs'));
   for(const [name,args,operation] of [['preview_simplify_import',payload,'imports.preview'],['import_simplify_jobs',{...payload,expectedVersion:0,eventKey:'scope-test'},'imports.save']]){

@@ -129,3 +129,23 @@ Connect a client that supports Streamable HTTP and a custom `Authorization` head
 Deployment needs both the gateway and MCP functions; a frontend deployment alone does not publish this contract. The remote endpoint implements custom credential validation, so it is deployed with platform JWT verification disabled while every request is independently verified through the gateway. Do not log request payloads, credentials, signed resume URLs, or returned private data.
 
 Focused protocol coverage in `tests/mcp-protocol.test.mjs` checks protocol negotiation, credential/origin rejection, scope-filtered discovery, owner-injection rejection, fixed-operation forwarding, malformed arguments, size/method/version limits, safe infrastructure errors, and absence of browser/shell/SQL/approval-management tools. Gateway tests and hosted SQL checks cover token generation, ownership, expiry/revocation, scope enforcement, atomicity, and stale writes. These tests establish source-level behavior; use the release workflow and an authenticated hosted smoke check before claiming a deployed integration is available.
+
+## Focused local update: default tool surface (contract 110)
+
+The MCP adapter now lists 45 existing common actions plus `discover_tools` and
+`call_discovered_tool`; supporting registrations are omitted from the initial
+catalog. Maximum counts before connection scope filtering are hosted 47 exposed /
+73 gated, configured Node API 50 / 73, and local runner 50 / 83. Seventeen paused
+tools remain unavailable. Logs, progress/outcome reporting and bug tools stay
+named. This updates the discovery behavior described above without claiming a
+regeneration of this page or a hosted release.
+
+For executable schemas call `discover_tools` with workflow search, applications,
+profile, network, agent, toolkit, recovery or all; optional `name` is exact.
+Results include original schemas, annotations and a presentation-only `gated`
+flag. Use `call_discovered_tool` with `{name, arguments}` through the original
+validation and execution path. Both discovery and calls retain existing scopes;
+there is no unlock state or new authority. Direct calls by original names remain
+compatible. `discover_toolkit` discovers instruction guides, not executable
+schemas. See `mcp/README.md` and `tests/mcp-tool-surface.test.mjs` for the current
+source contract and local verification; hosted clients remain unverified.

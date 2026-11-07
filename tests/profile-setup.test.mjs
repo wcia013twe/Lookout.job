@@ -56,8 +56,8 @@ test('profile setup MCP tools are hidden from old preparation/read-only keys',as
  const token='jb_agent_'+'a'.repeat(64);
  for(const scope of ['drafts:write','workspace:read','profile:write']) {
   const handler=createHandler(async()=>({status:200,data:{scopes:[scope]}}));
-  const response=await handler(new Request('https://example.test',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list'})}));
-  const names=(await response.json()).result.tools.map(tool=>tool.name);
+  const response=await handler(new Request('https://example.test',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'discover_tools',arguments:{workflow:'profile'}}})}));
+  const names=JSON.parse((await response.json()).result.content[0].text).tools.map(tool=>tool.name);
   assert.equal(names.includes('save_profile_package'),scope==='profile:write');
   assert.equal(names.includes('begin_resume_upload'),scope==='profile:write');
  }
