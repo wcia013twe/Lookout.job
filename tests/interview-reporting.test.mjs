@@ -23,12 +23,12 @@ test('rescheduling retains provenance/history and current views exclude replaced
 test('simple notes need no round form and preserve agent metadata when a human edits',()=>{
  const app={id:'job',backendId:applicationId,company:'Example'};
  const payload=debriefPayload(app,{id:applicationId,summary:'Candidate report: interview went well.'});
- validateRequest({operation:'artifacts.save',payload});assert.equal(payload.purpose,debriefMarker(applicationId)+' Interview note');
+ validateRequest({operation:'artifacts.save',payload});assert.equal(payload.kind,'interview_debrief');assert.equal(payload.purpose,debriefMarker(applicationId)+' Interview note');
  assert.deepEqual(payload.links,[{applicationId}]);
  const original={...payload};delete original.id;delete original.expectedVersion;
- original.title='Muse conversation note';original.sources=[{title:'Source',url:'https://example.com/interview',observedAt:'2026-10-26'}];
+ original.kind='notes';original.title='Muse conversation note';original.sources=[{title:'Source',url:'https://example.com/interview',observedAt:'2026-10-26'}];
  const edit=debriefPayload(app,{id:applicationId,version:1,summary:'Corrected details.',original});
- validateRequest({operation:'artifacts.save',payload:edit});assert.deepEqual(edit.sources,original.sources);assert.deepEqual(edit.links,original.links);assert.equal(edit.title,original.title);
+ validateRequest({operation:'artifacts.save',payload:edit});assert.equal(edit.kind,'notes');assert.deepEqual(edit.sources,original.sources);assert.deepEqual(edit.links,original.links);assert.equal(edit.title,original.title);
 });
 test('resettable demo exercises rescheduling and simple note edits without account access',async()=>{
  const fixture=createDemoWorkspace('2026-10-26'),store=createMemoryStore(fixture),api=createDemoServices(store);
