@@ -27,7 +27,7 @@ export function listingBatches(rows:Payload[],maxBytes=48000){
 // Prioritize aggregate defaults, then deterministically order the full employer
 // catalog. The seed is durable across job retries.
 export function orderedSearchSources(sources:Payload[],runId:string){
- const primary=new Set(['hiringcafe','simplify-summer','simplify-newgrad','simplify-offseason']);
+ const primary=new Set(['hiringcafe','simplify-summer','simplify-newgrad','simplify-offseason','jobright-newgrad','jobright-internship']);
  const rank=(s:Payload)=>createHash('sha256').update(runId+':'+s.source_id).digest('hex');
  return [...sources].sort((a,b)=>Number(primary.has(b.source?.id))-Number(primary.has(a.source?.id))||rank(a).localeCompare(rank(b)));
 }

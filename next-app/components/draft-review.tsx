@@ -6,6 +6,7 @@ import { control, primary, secondary, Field, Notice, Section } from "./ui";
 import { createBackend } from "../../backend/client.mjs";
 import ApplicationDocumentsPreview from "./application-documents-preview";
 import ApplicationOverview from "./application-overview";
+import ImportedApplicationTracking,{type ImportUpdate} from "./imported-application-tracking";
 import ProfileIcon from "./profile-icon";
 import ApplicationTimeline from "./application-timeline";
 import TimelineEditor from "./timeline-editor";
@@ -18,7 +19,7 @@ import { timelineItems } from "../../lib/application-timeline.mjs";
 import "./tracker.css";
 import { dayStamp, awardStatus } from "../lib/progress.mjs";
 import type { Application, SavedResume } from "./workflow-types";
-export default function DraftReview({ id, application, onClose }: { id: string; application?: Application; onClose: () => void }) {
+export default function DraftReview({ id, application, importedTracker, onClose }: { id: string; application?: Application; importedTracker?:{version:number;update:ImportUpdate}; onClose: () => void }) {
   const w = useWorkspace(),
     model = w.models.workflowModel;
   const workflow: Application | undefined = application || w.state.workflow.applications[id];
@@ -224,7 +225,7 @@ export default function DraftReview({ id, application, onClose }: { id: string; 
     <div className="tracker-detail-grid"><div className="tracker-detail-main">
       <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Interview"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
       <div className="tracker-detail-content">
-        {tab === "Overview" && <ApplicationOverview application={current} role={role} workflow={workflow} item={trackerItem} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} onPreparation={() => setTab("Interview")} />}
+        {tab === "Overview" && <><ApplicationOverview application={current} role={role} workflow={workflow} item={trackerItem} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} onPreparation={() => setTab("Interview")} />{current?.imported&&importedTracker&&<ImportedApplicationTracking row={current.imported} version={importedTracker.version} update={importedTracker.update}/>}</>}
         {tab === "Interview" && <ApplicationPreparation application={{...role,...current}} onRounds={openRounds} />}
         {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />{downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}      {current.backendId&&<details className="mt-5 border-t border-board-line pt-3"><summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission details</summary><SubmissionRecord application={recordState?.key===recordKey?recordState.data?.application||{}:{}} attempts={recordState?.key===recordKey?recordState.data?.attempts||[]:[]} loading={recordState?.key!==recordKey||recordState.loading} error={recordState?.key===recordKey?recordState.error:''} onDownloadResume={w.demo?undefined:downloadRecordResume}/></details>}
 {editable && <p className="tracker-prose">Change the selected resume below before approving the draft.</p>}</>}

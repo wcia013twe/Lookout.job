@@ -56,3 +56,23 @@ test('detached demo exposes all five contributions and external links without in
  const mock=current.items.find(a=>a.content.kind==='mock_interview');
  assert.match((await demo.artifactAction('artifacts.read',{id:mock.id})).content.body,/no interviewer service/);
 });
+
+test('calendar demo opens a timed draft without copying private briefing or identifiers',async()=>{
+ const {mockCalendarPreview}=await import('../next-app/lib/mock-calendar-preview.mjs');
+ const content={...artifact,title:'Backend mock',interviewerProfile:'PRIVATE QUESTIONS',id:'private-session-id',body:'Private notes'};
+ const url=new URL(mockCalendarPreview(content));
+ assert.equal(url.origin,'https://calendar.google.com');assert.equal(url.pathname,'/calendar/r/eventedit');
+ assert.equal(url.searchParams.get('action'),'TEMPLATE');
+ assert.equal(url.searchParams.get('dates'),'20261109T000000Z/20261109T003000Z');
+ assert(!decodeURIComponent(url.href).includes('PRIVATE QUESTIONS'));assert(!url.href.includes('private-session-id'));
+ assert.equal(mockCalendarPreview({...content,scheduledAt:'invalid'}),null);
+ assert.equal(mockCalendarPreview({...content,sessionStatus:'completed'}),null);
+});
+test('the four embedded demo formats share a static self-contained document canvas',async()=>{
+ const {demoMaterialDocument}=await import('../next-app/lib/toolkit-demo-documents.mjs');
+ for(const kind of ['company_research','interview_brief','story_bank','interview_debrief']){
+  const html=demoMaterialDocument(kind);assert(html.includes('<style>'));assert(html.includes('<h1>'));
+  assert(!/<script|<iframe|<button|<input|<form|@import|url\(/i.test(html));
+ }
+ assert.equal(demoMaterialDocument('mock_interview'),null);
+});

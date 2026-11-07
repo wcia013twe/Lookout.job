@@ -36,6 +36,6 @@ export async function inspectDiscoveryFilters({profile={},portals={}}) {
  for(const [key,fields] of Object.entries({title_filter:['positive','negative'],location_filter:['allow','always_allow','block','block_hard'],content_filter:['positive','negative'],visa_filter:['positive','negative'],country_eligibility_filter:['exclusionary','inclusive']}))for(const field of fields){const list=plan.config[key]?.[field];if(list!==undefined&&(!Array.isArray(list)||list.some(v=>typeof v!=='string'||!v.trim()||/^(word|stem):\s*$/.test(v))))validation.errors.push({path:`${key}.${field}`,message:'Use an array of nonempty keyword strings.'});}
  const providers=await loadProviders(fileURLToPath(new URL('./vendor/career-ops/providers/',import.meta.url)));
  const sources=(portals.tracked_companies||[]).filter(s=>s.enabled).map(s=>({...s,...(s.config||{})}));
- const unclaimed=findUnclaimedEntries(sources.filter(s=>!['hiringcafe','simplify-summer','simplify-newgrad'].includes(s.id)),providers);
+ const unclaimed=findUnclaimedEntries(sources.filter(s=>!['hiringcafe','simplify-summer','simplify-newgrad','simplify-offseason','jobright-newgrad','jobright-internship'].includes(s.id)),providers);
  return {...plan,ready:plan.ready&&validation.errors.length===0,validation,sourceDiagnostics:{unclaimed,staleQueries:findStaleScanQueries(sources,plan.config.title_filter?.positive||[])},provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',validation:'validate-portals.mjs',audit:'audit-portals.mjs',seniority:'classify-tier.mjs'}};
 }

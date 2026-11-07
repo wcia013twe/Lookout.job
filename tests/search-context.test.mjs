@@ -13,7 +13,7 @@ test('YAML/profile canonicalization preserves narrative and produces rebuildable
 });
 test('documents and generated edge codec stay in sync',()=>execFileSync(process.execPath,['scripts/build-search-documents.mjs','--check']));
 test('new accounts have explicit gaps, no candidate/template facts, and optional source templates',()=>{
- const d=searchResponse('search.context',{documents:[],profile:null,tierLists:[]});assert.equal(d.execution,'personal-agent');assert.equal(d.configurationGaps.length,2);assert.equal(d.sourceTemplates.length,202);const cafe=d.sourceTemplates.find(s=>s.id==='hiringcafe');assert.equal(cafe.api,'https://hiringcafe.com/api/chatgpt/mcp');assert.equal(parseDocument('portals',JSON.stringify({tracked_companies:[cafe],search_queries:[]})).projection.tracked_companies[0].id,'hiringcafe');assert(!d.documents.length);
+ const d=searchResponse('search.context',{documents:[],profile:null,tierLists:[]});assert.equal(d.execution,'personal-agent');assert.equal(d.configurationGaps.length,2);assert.equal(d.sourceTemplates.length,204);const cafe=d.sourceTemplates.find(s=>s.id==='hiringcafe');assert.equal(cafe.api,'https://hiringcafe.com/api/chatgpt/mcp');assert.equal(parseDocument('portals',JSON.stringify({tracked_companies:[cafe],search_queries:[]})).projection.tracked_companies[0].id,'hiringcafe');assert(!d.documents.length);
 });
 test('every hosted search tool maps to bounded gateway contract; no scanner runtime required',()=>{
  for(const tool of SEARCH_TOOLS)assert(TOOLS.some(t=>t.name===tool.name&&t.operation===tool.operation));

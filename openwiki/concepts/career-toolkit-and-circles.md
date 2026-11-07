@@ -166,10 +166,28 @@ Live external-agent calling and hosted behavior are not established by local tes
 ### Compact weekly scan
 
 The Toolkit title and view switch share a line; one toolbar owns week navigation,
-All materials, the collapsed filters and agent planning. Dated mock sessions and
+All materials, the collapsed filters. Dated mock sessions and
 prep briefs lead the weekly timeline. Undated company context, stories, notes and
 external resources follow without invented event dates. Primary prep uses compact
 cards with rotated type icons; supporting items use denser rows. Company marks
 reuse the shared logo/fallback component. Application links resolve explicit owned
 artifact links against current workspace records; company text alone never creates
 an association. These are presentation changes over existing scoped artifact reads.
+
+### Static embedded demo documents
+
+The five-material demo now uses four script-free HTML documents built with one
+neutral, light artifact canvas: company/team motivation, a timed round brief,
+a story bank and a debrief. Color callouts, tables, evidence labels and preparation
+timelines supply hierarchy without repeating app navigation or branding. Demo
+embeds use an empty sandbox, and HTML is described as a document rather than
+inherently interactive. Older saved records remain available; the older demo pack
+and interactive example are off the current-week shelf. The planning button and
+copy-request panel were removed from the workspace. The reader has one compact back/title/discussion header; metadata and revision controls are collapsed, while resource links stay visible. Embedded documents fit the remaining viewport so ordinary reading scrolls inside the document without requiring an additional outer page scroll. The sandbox remains unchanged.
+
+Active mock cards labeled **Add to Google Calendar** in detached demo open Google's prefilled event editor with title,
+time and a generic description. They do not create an event, reminders, attendees,
+a call, or a saved Calendar association. Hidden interviewer preparation and internal
+record IDs are never placed in that URL. Completed/cancelled sessions retain their
+saved reader/feedback route. Real-account mock routing is unchanged; a deployed
+Google Calendar event integration is not claimed by this preview.

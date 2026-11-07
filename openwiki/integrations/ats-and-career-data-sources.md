@@ -111,3 +111,10 @@ To extend an integration safely, retain the distinction between lead collection,
 
 
 The Simplify provider recognizes New Grad, Summer 2027 and the configured off-season README link. All read the official structured JSON, retaining only active visible leads. Summer uses `Summer 2027`; off-season uses the page's published Fall 2026 / Winter 2027 / Spring 2027 window, including rows with any matching term. The same deduplication, employer-verification and owned persistence stages follow all three feeds. Aggregate terms and dates do not prove employer eligibility or publication dates.
+
+
+### Jobright public lists
+
+The Jobright new-grad and internship GitHub lists are enabled default lead sources. A thin collection provider parses every published README row, carries forward continuation-row companies, removes Jobright tracking parameters, and resolves eligible titles with up to six concurrent public detail requests. Only explicit, identity-matched public `applyLink`/`originalUrl` fields can enter the existing employer verification, temporary staging, full filtering and final account-history deduplication pipeline. No Jobright summaries are saved as verified employer postings. Website and MCP source configuration use the existing versioned portals document and search-job tools.
+
+Coverage always remains partial: Jobright documents a subset of jobs from the last seven days, and public detail pages may omit employer application URLs. Live checks on 2026-11-07 found those fields absent on ten sampled listings; these entries are reported unresolved and are not saved. No authenticated Jobright API or paid service is used. Fixture success does not establish live employer-link availability. Default updates do not overwrite customized account portals or modify already-running source snapshots.
