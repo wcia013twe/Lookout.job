@@ -19,8 +19,11 @@ const run=args=>execFileSync(cli,args,{cwd:root,stdio:'inherit'});
 console.log(`Deploying reviewed source ${sourceCommit} to ${project}`);
 try {
  run(['link','--project-ref',project]);
- run(['db','push','--dry-run']);
- run(['db','push','--yes']);
+ // Hosted history can contain newer audit migrations while reviewed older
+ // feature migrations are still pending. Upgrade tests cover this exact order.
+ // Keep the remote target explicit and do not apply local Vault configuration.
+ run(['db','push','--linked','--include-all','--skip-vault','--dry-run']);
+ run(['db','push','--linked','--include-all','--skip-vault','--yes']);
  for(const name of ['agent-gateway','agent-mcp','workspace-reset'])run(['functions','deploy',name,'--project-ref',project,'--use-api']);
 } finally {
  writeFileSync(new URL('../'+VERSION_PATH,import.meta.url),execFileSync('git',['show',`HEAD:${VERSION_PATH}`],{cwd:root,encoding:'utf8'}));
