@@ -12,3 +12,15 @@ test('unconfigured feeds, malformed JSON and HTTP failures fail loudly',async()=
  await assert.rejects(readSimplifyLeads(url,{request:async()=>new Response('{}')}),/array/);
  await assert.rejects(readSimplifyLeads(url,{request:async()=>new Response('bad')}),/valid structured JSON/);
 });
+
+test('background source collection consumes the full Simplify feed in verification batches',async()=>{
+ const {fetchSource}=await import('../backend/runtime/ats.ts');const sizes=[];let requests=0;
+ const rows=Array.from({length:61},(_,i)=>row(String(i)));
+ const output=await fetchSource('portal:simplify',{careers_url:url},{request:async()=>{requests++;return new Response(JSON.stringify(rows));},execute:async(task,input)=>{
+  if(task==='dedup-discovery')return input.jobs;
+  assert.equal(task,'verify-discovery-leads');sizes.push(input.leads.length);
+  return {jobs:input.leads.map(({url})=>({url,title:'Software Engineer Intern',company:'Example',description:'Verified',postedAt:null,listingIdentity:{ats_provider:'greenhouse',board_slug:'example',posting_id:url.split('/').at(-1)}})),diagnostics:input.leads.map(({url})=>({url,status:'active',extraction:'parsed'}))};
+ }});
+ assert.equal(requests,1);assert.deepEqual(sizes,[25,25,11]);assert.equal(output.total,61);assert.equal(output.listings.length,61);assert.equal(output.coverage,'exhaustive');
+ assert(output.listings.every(r=>r.employmentType==='Internship'));
+});

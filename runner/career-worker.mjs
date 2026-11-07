@@ -21,12 +21,11 @@ export async function scanSource({target,config={},keywords=[],limit=50}, inject
  const {makeHttpCtx}=await import('./vendor/career-ops/providers/_http.mjs');
  const {withConnectionScope}=await import('./vendor/career-ops/providers/_connection-scope.mjs');
  const providers=injected?.providers||await loadProviders(path.join(vendor,'providers'));
- const entry={name:target.name,careers_url:target.address,...config,maxPages:3,max_pages:3,getro_max_pages:3};
+ const entry={name:target.name,careers_url:target.address,...config};
  // Only canonical saved address and scalar, explicitly configured provider options enter vendor code.
  const resolved=resolveProvider(entry,providers,{skipIds:['local-parser']});
  if(!resolved?.provider) return {targetId:target.id,status:'unsupported',error:resolved?.error||'No matching public provider; configure a provider or use browser sourcing',jobs:[]};
- let requests=0;const ctx=injected?.ctx||makeHttpCtx({onRequest(){if(++requests>20)throw Error('Source request budget exceeded');}});
- ctx.maxPages=3;ctx.sleep=ms=>new Promise(r=>setTimeout(r,Math.min(ms,1000)));
+ let requests=0;const ctx=injected?.ctx||makeHttpCtx({onRequest(){requests++;}});
  const jobs=await withConnectionScope(()=>resolved.provider.fetch(entry,ctx));
  const seen=new Set();const normalized=[];
  for(const j of jobs||[]) {
@@ -36,7 +35,7 @@ export async function scanSource({target,config={},keywords=[],limit=50}, inject
   seen.add(url);normalized.push({title:text(j.title).slice(0,500),url,company:text(j.company||target.name).slice(0,200),location:text(j.location).slice(0,500),description:text(j.description).slice(0,12000),...(Number.isFinite(j.postedAt)?{postedAt:new Date(j.postedAt).toISOString()}:{}),listingIdentity:j.listingIdentity??null,externalId:j.externalId??null,requisitionId:j.requisitionId??null,salary:j.salary??null,provider:resolved.provider.id,sourceTargetId:target.id,verification:'discovered'});
   if(normalized.length>=limit)break;
  }
- return {targetId:target.id,provider:resolved.provider.id,status:'ok',requests,returned:normalized.length,available:jobs?.length||0,truncated:seen.size>=limit||jobs?.length>limit||Boolean(jobs?.workdayTruncated),jobs:normalized};
+ return {targetId:target.id,provider:resolved.provider.id,status:'ok',requests,returned:normalized.length,available:jobs?.length||0,truncated:jobs?.length>limit||Object.keys(jobs||{}).some(key=>/Truncated$|Incomplete$/.test(key)&&Boolean(jobs[key])),jobs:normalized};
 }
 export async function auditDocument({html,keywords=[],profileFacts={}}) {
  const {auditAts,extractVisibleText}=await import('./vendor/career-ops/verify-ats.mjs');
@@ -133,10 +132,10 @@ export async function deduplicateDiscovery(jobs,previous=[],workspace=process.en
  return candidates.filter((_row,index)=>retained.has(previous.length+index+1));
 }
 export async function scanDiscovery(input) {
- const limit=input.limit??500;if(!Number.isInteger(limit)||limit<1||limit>500)throw Error('Bounded discovery limit required');
+ const limit=input.limit===undefined?Infinity:input.limit;if(input.limit!==undefined&&(!Number.isInteger(limit)||limit<1||limit>500))throw Error('Invalid explicit discovery limit');
  const scan=await scanSource({target:input.target,config:input.config||{},limit});
  if(scan.status!=='ok')return {...scan,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',scanner:'runner/career-worker.mjs scanSource',dedup:'scan.mjs + dedup-tracker.mjs'},jobs:[]};
- const jobs=await deduplicateDiscovery(scan.jobs,input.previous||[]);
+ const jobs=await deduplicateDiscovery(scan.jobs.map(({description,...job})=>job),input.previous||[]);
  return {...scan,jobs,duplicates:scan.jobs.length-jobs.length,provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',provider:'providers/'+scan.provider+'.mjs',scanner:'runner/career-worker.mjs scanSource',identity:'scan.mjs isOfferSeen/markOfferSeen',dedup:'dedup-tracker.mjs'}};
 }
 export async function runTask({task,input}) {

@@ -9,8 +9,7 @@ My Agent is the single schedule configuration; the personal agent runtime owns
 recurrence and submits one bounded job per authorized run. The Node worker only
 claims already queued jobs. There is no Node recurring-search scheduler.
 
-The approved executor is `search_ats`: one leased job collects up to 25 leads per
-source, verifies supported employer postings, saves observations, persists current
+The approved executor is `search_ats`: one leased job collects provider results using upstream pagination, verifies supported employer postings, saves observations, persists current
 versioned screening checks, applies copied Career Ops deduplication and stores
 shortlist IDs in its existing job result (`pipelineVersion: 1`). Muse reads that
 shortlist, writes candidate-specific reports and four ratings, publishes a batch
@@ -18,7 +17,7 @@ and prepares drafts. Normal jobs need no separate screening/dedup MCP calls.
 Collection supports Greenhouse/Lever and the first-party HiringCafe aggregate adapter; liveness for each link uses the copied
 ATS API/browser ladder across upstream-supported sources. Full-description
 extraction currently supports Greenhouse. Active unsupported extraction remains
-explicit and partial; it does not become a fictional parsed record. Up to ten configured sources and 250 observations are bounded.
+explicit and partial; it does not become a fictional parsed record. All configured run sources are attempted with up to ten concurrent source tasks; all persisted discoveries are paged for screening.
 The search executor never generates LLM reports, messages or applications. A separate submission-enabled application executor is described below. Source coverage,
 unknown applicant eligibility and pending Muse reporting remain explicit.
 
@@ -51,9 +50,7 @@ top-level file transactions. Its temporary tracker is removed with the child
 workspace and never becomes a second user application store.
 
 The child receives no Supabase/agent credentials, has a 384 MiB JavaScript heap,
-a 120-second task timeout and 16 MiB output cap. Existing `scanSource` bounds a
-source to 20 HTTP requests and the raw scanner to 500 returned jobs; the normal
-job requests 25 per source and uses at most ten configured sources. Save transactions are capped at 25 rows and
+a 120-second task timeout and 16 MiB output cap. The normal job preserves Career Ops provider pagination, request spacing, retries and safety bounds; it adds no blanket page, request or result cap. All configured sources are attempted with up to ten concurrent source tasks. Every returned lead is verified in batches of at most 25; a failed batch retains diagnostics and does not discard other successful batches. The supported Simplify feed is read in full; HiringCafe remains an explicitly sampled aggregate. Save transactions are capped at 25 rows and
 48,000 encoded UTF-8 bytes. Provider discovery excerpts are not treated as full verified records: the job
 verifies supported exact employer URLs and parses the description through copied
 `normalizeGreenhouseJob`, bounded at 60,000 characters, before saving observations.
@@ -396,9 +393,10 @@ Backend discovery now resolves the full installed public provider registry using
 the existing isolated scanner. Arbitrary local parsers remain excluded. Scanner
 routing does not prove source reachability or full-description parsing support;
 the current verifier's unsupported parsers remain explicit diagnostics. A job
-scans at most ten sources: the four aggregate defaults followed by a deterministic
-per-run sample of the enabled employer/board catalog. Remaining sources are
-recorded as unscanned, with partial coverage. Sampling is stable on retry and
-rotates with a new run; this is not exhaustive coverage of the entire catalog.
+scans every configured run source using the Career Ops worker-pool pattern with
+up to ten concurrent source tasks. Aggregate defaults remain first, followed by a
+stable per-run ordering of the enabled employer/board catalog. Completed sources
+are skipped on retry. Per-source page/result budgets and inaccessible sources
+still produce partial coverage; attempting every source does not establish exhaustive results.
 A source can still need human/agent browsing, and no real searches or submissions
 are executed by the regression tests.

@@ -48,7 +48,7 @@ CareerOps is imported rather than treated as an opaque dependency. `scripts/impo
 
 ## Discovery: lead collection is not publication
 
-`fetchSource` is the runtime adapter from a saved source to a bounded `SourceResult`. For ordinary sources it asks the isolated child for at most 25 leads, deduplicates them using copied code, and passes only URLs to `verify-discovery-leads`. A child failure produces `inaccessible` coverage rather than a made-up result. The verification result is saved only when the employer posting is active **and** its description is parsed; otherwise per-link diagnostics preserve whether it is expired, uncertain, unsupported, or failed.
+`fetchSource` is the runtime adapter from a saved source to a bounded `SourceResult`. For ordinary sources it asks the isolated child to use unchanged upstream provider pagination, deduplicates returned leads using copied code, and passes URLs to `verify-discovery-leads` in batches of at most 25. Every returned lead is processed; failed batches retain per-link uncertainty while other batches remain available. A child failure produces `inaccessible` coverage rather than a made-up result. The verification result is saved only when the employer posting is active **and** its description is parsed; otherwise per-link diagnostics preserve whether it is expired, uncertain, unsupported, or failed.
 
 ```mermaid
 flowchart TD
@@ -68,7 +68,7 @@ This shows why a collected lead cannot become a verified listing merely because 
 
 Liveness and extraction are independent. The liveness orchestrator first uses copied ATS APIs; inconclusive results can fall back to a guarded browser check. API work can run concurrently, while browser checks remain sequential; a soft browser budget reports remaining links as uncertain. URL guards run before network or browser access. For example, an authoritative Greenhouse API 404 can be expired, whereas a Lever 404 falls back to browser checking; a bot challenge, unavailable browser, or exhausted budget stays uncertain. An active page outside the JD dispatcher remains `extraction: unsupported`, and a parser failure does not overwrite active liveness.
 
-The discovery worker is bounded further: normal jobs use at most ten configured sources and 25 requested leads per source; the child limits a source to 20 HTTP requests and 500 raw jobs. Returned descriptions are bounded before persistence. Source coverage can consequently be `truncated` even when the selected leads were checked; it is never a claim of exhaustive market search, fit, eligibility, or publication date accuracy.
+The discovery worker attempts every configured run source with up to ten concurrent source tasks. It preserves upstream pagination, request spacing, retries and provider safety limits instead of adding blanket page/request/result caps. It carries provider incomplete-pagination flags into partial coverage. Child process resource budgets and job lease fencing remain in force. Returned descriptions are bounded before persistence. Source coverage can consequently be `truncated` even when the selected leads were checked; it is never a claim of exhaustive market search, fit, eligibility, or publication date accuracy.
 
 ### HiringCafe is an aggregate lead adapter
 

@@ -25,7 +25,7 @@ test('shared default consolidates all copied portals, provider hints and query t
  const providers=await providerCatalog();assert(providers.length>50);assert(providers.some(p=>p.id==='ashby'));assert(providers.some(p=>p.id==='getro'));
 });
 
-test('bounded defaults keep aggregates first and rotate employer coverage deterministically',()=>{
+test('defaults keep aggregates first and order the full employer catalog deterministically',()=>{
  const sources=defaultPortals.tracked_companies.filter(s=>s.enabled).map(source=>({source,source_id:'portal:'+source.id}));
  const a=orderedSearchSources(sources,'run-a'),b=orderedSearchSources(sources,'run-b');
  assert.deepEqual(a.slice(0,4).map(s=>s.source.id).sort(),['hiringcafe','simplify-newgrad','simplify-offseason','simplify-summer']);

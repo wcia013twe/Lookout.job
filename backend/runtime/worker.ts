@@ -20,13 +20,24 @@ export function listingBatches(rows:Payload[],maxBytes=48000){
   return batches;
 }
 
-// Keep aggregate defaults available on every run and rotate the bounded employer
-// sample across the complete catalog. The seed is durable across job retries.
+// Prioritize aggregate defaults, then deterministically order the full employer
+// catalog. The seed is durable across job retries.
 export function orderedSearchSources(sources:Payload[],runId:string){
  const primary=new Set(['hiringcafe','simplify-summer','simplify-newgrad','simplify-offseason']);
  const rank=(s:Payload)=>createHash('sha256').update(runId+':'+s.source_id).digest('hex');
  return [...sources].sort((a,b)=>Number(primary.has(b.source?.id))-Number(primary.has(a.source?.id))||rank(a).localeCompare(rank(b)));
 }
+// Career Ops scan.mjs worker-pool pattern: bound concurrent fetches, not coverage.
+// Drain active workers before propagating a failure so no writes outlive the job.
+export async function scanAllSources<T>(sources:T[],visit:(source:T)=>Promise<void>,concurrency=10){
+  if(!Number.isSafeInteger(concurrency)||concurrency<1)throw Error('Invalid scan concurrency');
+  let index=0;let failed=false;
+  const next=async()=>{while(!failed&&index<sources.length){const source=sources[index++];try{await visit(source);}catch(error){failed=true;throw error;}}};
+  const results=await Promise.allSettled(Array.from({length:Math.min(concurrency,sources.length)},next));
+  const failure=results.find(result=>result.status==='rejected');
+  if(failure?.status==='rejected')throw failure.reason;
+}
+
 export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute,request}: {execute?:import('./ats.ts').Execute;request?:typeof fetch}={}) {
   const prefix=`job:${job.id}:`;
   let run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):null;
@@ -40,21 +51,20 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   const seen:Payload[]=[];
   if(job.search_run_id){
     let offset=0;
-    // At most ten sources x 500 observations. Refuse an incomplete identity
-    // history instead of silently weakening durable deduplication on retry.
-    for(let page=0;page<=50;page++){
+    // Read every persisted identity page; retries must cover the full catalog.
+    for(;;){
       const prior=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100});
       seen.push(...prior.listings);
       if(prior.nextOffset===null)break;
-      if(!Number.isSafeInteger(prior.nextOffset)||prior.nextOffset<=offset||prior.nextOffset>5000||page===50)throw Error('Discovery identity history exceeded bounded pagination');
+      if(!Number.isSafeInteger(prior.nextOffset)||prior.nextOffset<=offset)throw Error('Discovery identity history exceeded bounded pagination');
       offset=prior.nextOffset;
     }
   }
   let saved=0;let blocked=0;let scanned=0;const provenance:Payload[]=[];
   const sources=orderedSearchSources(run.sources||[],run.id);
-  for(const [index,source] of (run.state==='active'?sources:[]).entries()){
-    if(source.state==='completed'){continue;}
-    const observation=index<10?await fetchSource(source.source_id,source.source,{execute,previous:seen,profile:collectionProfile.projection,request,days:run.days||(run.mode==='backlog'?30:3)}):{listings:[],coverage:'truncated',blocker:'Not scanned in this bounded ten-source sample. The full shared catalog remains available for agent research or another run.',total:0,examined:0,provenance:undefined,diagnostics:[]};
+  await scanAllSources(run.state==='active'?sources:[],async source=>{
+    if(source.state==='completed'){return;}
+    const observation=await fetchSource(source.source_id,source.source,{execute,previous:[...seen],profile:collectionProfile.projection,request,days:run.days||(run.mode==='backlog'?30:3)});
     if(observation.provenance)provenance.push(observation.provenance);
     const rows=observation.listings;seen.push(...rows);scanned+=observation.examined??observation.total;
     // Each idempotency key is tied to a persisted source version. Re-read and
@@ -73,7 +83,7 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
     const complete=observation.coverage==='exhaustive';
     if(!complete)blocked++;
     await dispatch('search.progress',{runId:run.id,sourceId:source.source_id,expectedVersion:source.version,state:complete?'completed':'blocked',checkpoint:{savedOffset:offset+rows.length,diagnostics:observation.diagnostics||[]},counts:{observed:observation.examined??observation.total,available:observation.total,saved:rows.length},coverage:observation.coverage,blocker:observation.blocker,eventKey:`${prefix}${sourceKey}:v${attempt}:progress`});
-  }
+  });
   // Every deterministic stage belongs to this one leased job. Only the final
   // shortlist goes to Muse; narrative analysis and four ratings remain agent work.
   const context=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
@@ -84,9 +94,8 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   for(let offset=0;;){
     const page=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100,purpose:'screening'});
     discoveries.push(...page.listings);
-    if(discoveries.length>250)throw Error('Job exceeds the bounded 250-discovery shortlist pipeline');
     if(page.nextOffset===null)break;
-    if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset||page.nextOffset>5000)throw Error('Invalid job discovery page');
+    if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid job discovery page');
     offset=page.nextOffset;
   }
   const call=async(operation:string,payload:Payload)=>({data:await dispatch(operation,operation==='search.discoveries.read'?{...payload,purpose:'screening'}:payload),error:null});

@@ -5,13 +5,14 @@ import {createTestDatabase} from './helpers/database.mjs';
 import {workOnce,executeSearch} from '../backend/runtime/worker.ts';
 import {executeCareerTask} from '../runner/career-tools.mjs';
 let db;before(async()=>{db=await createTestDatabase();});after(async()=>{await db?.close();});
-async function fixture({partial=false}={}){
+async function fixture({partial=false,extraSources=0}={}){
  const owner=randomUUID(),profile='profile_'+owner.replaceAll('-','');
  await db.query('insert into auth.users values($1)',[owner]);
  await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,'Fictional pipeline',$2,array['workspace:read','preferences:write','drafts:write'],now()+interval '1 day')",[owner,owner.replaceAll('-','').repeat(2)]);
  const hash=owner.replaceAll('-','').repeat(2);
  const projection={active:true,filters:{Employment:'Full-time','Work arrangement':'Remote required'},instructions:''};
  const portals={tracked_companies:[{id:'example',name:'Example (fictional)',careers_url:'https://job-boards.greenhouse.io/example',enabled:true},...(partial?[{id:'unsupported',name:'Unsupported fictional source',careers_url:'https://unsupported.test/careers',enabled:true}]:[])],search_queries:[]};
+ for(let i=1;i<=extraSources;i++)portals.tracked_companies.push({id:'example-'+i,name:`Example ${i} (fictional)`,careers_url:`https://job-boards.greenhouse.io/example${i}`,enabled:true});
  await db.query("insert into public.search_documents(user_id,kind,id,version,content,projection) values($1,'profile',$2,1,'{}',$3),($1,'portals','shared',1,'{}',$4)",[owner,profile,projection,portals]);
  const q=await db.query("select public.backend_job_dispatch($1,'backend.jobs.submit',$2) data",[hash,{kind:'search_ats',input:{profileId:profile},eventKey:'single-job'}]);
  return {owner,profile,job:q.rows[0].data};
@@ -120,4 +121,25 @@ test('profile-scoped Career Ops settings persist through authorized SQL writes a
  const missing=await fixture(),m=tasks();
  await db.query("update public.search_documents set projection=jsonb_set(projection,'{instructions}',to_jsonb($2::text)) where user_id=$1 and kind='profile'",[missing.owner,'## Role preferences\n- Roles: Software Engineer']);
  await workOnce(rpc,{execute:m.execute});const failed=await result(missing.job.id);assert.equal(failed.status,'failed');assert.equal(failed.search_run_id,null);assert.equal(failed.result.code,'search_filters_not_ready');assert.match(failed.result.filterPlan.gaps[0],/title keywords/);assert.equal(failed.result.recovery.tool,'read_search_filter_plan');assert.equal(failed.result.evaluatedProfileVersion,1);assert.equal(m.calls.some(c=>c.task==='discovery'),false);
+});
+
+
+test('concurrent source collection preserves every distinct listing through fenced SQL writes',async()=>{
+ const f=await fixture({extraSources:11});let active=0,peak=0;const verified=[];
+ const execute=async(task,input)=>{
+  if(task==='discovery'){
+   active++;peak=Math.max(peak,active);await new Promise(resolve=>setTimeout(resolve,2));active--;
+   const id=input.target.id.replace('portal:','');
+   return {status:'ok',available:1,truncated:false,jobs:[{url:`https://job-boards.greenhouse.io/example/jobs/${id}`} ]};
+  }
+  if(task==='verify-discovery-leads'){
+   verified.push(...input.leads.map(r=>r.url));
+   return {jobs:input.leads.map(({url})=>({url,company:'Example (fictional)',title:'Software Engineer New Grad',location:'Remote',employmentType:'FT',description:'Fictional role.',postedAt:null,listingIdentity:{ats_provider:'greenhouse',board_slug:'example',posting_id:url.split('/').at(-1)}})),diagnostics:input.leads.map(({url})=>({url,status:'active',extraction:'parsed'}))};
+  }
+  return executeCareerTask(task,input);
+ };
+ await workOnce(rpc,{execute});const j=await result(f.job.id);
+ assert.equal(j.status,'completed');assert(peak>1&&peak<=10);assert.equal(verified.length,12);
+ assert.equal(j.result.shortlist.screenedCount,12);assert.equal(j.result.shortlist.retainedListingIds.length,12);
+ assert.equal(new Set(j.result.shortlist.retainedListingIds).size,12);
 });

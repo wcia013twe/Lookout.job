@@ -47,3 +47,20 @@ test('replay exposes discovery scope without recomputing or rewriting saved chec
  const result=await screenSearchDiscoveries(async op=>{calls.push(op);return {data:saved,error:null};},{eventKey:'same'});
  assert.deepEqual(calls,['search.screenings.read']);assert.deepEqual(result.data.screenings,saved.screenings);assert.equal(result.data.applicantEligibility,'not-evaluated');assert.equal(result.data.contractVersion,1);assert.equal(result.data.replayed,true);
 });
+
+
+test('shared screening finds discoveries beyond the former 5000-row sample',async()=>{
+ const {screenSearchDiscoveries}=await import('../lib/search-screening.mjs');let committed=false,pages=0;
+ const dispatch=async(op,payload)=>{
+  let data;
+  if(op==='search.screenings.read')data=null;
+  else if(op==='search.run.read')data={profile_id:'ft'};
+  else if(op==='search.context')data={personalVersion:1,documents:[{kind:'profile',id:'ft',version:1,projection:{filters:{}}}]};
+  else if(op==='search.discoveries.read'){pages++;data={listings:payload.offset===5100?[{id:'a',observation:{id:'o'}}]:[],nextOffset:payload.offset<5100?payload.offset+100:null};}
+  else if(op==='search.screenings.commit'){committed=true;data={screenings:payload.screenings};}
+  else throw Error(op);
+  return {data,error:null};
+ };
+ const result=await screenSearchDiscoveries(dispatch,{runId:'r',listingIds:['a'],eventKey:'beyond-sample'},{evaluate:async()=>({results:[{listingId:'a',passed:true,rejectedBy:[],checks:[],decision:'review-needed',explanation:'Needs applicant review.'}]})});
+ assert.equal(result.error,null);assert.equal(pages,52);assert.equal(committed,true);
+});

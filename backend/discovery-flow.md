@@ -25,8 +25,10 @@ publishes the batch and prepares drafts. No separate screening/dedup calls are
 needed to complete the job. Legacy job receipts without a shortlist do not prove
 this pipeline ran. Failed jobs do not return a completed shortlist.
 
-The shortlist is deduplicated within this run, up to 250 observed discoveries
-(ten sources × up to 25 collected leads each). Source totals are availability,
+The shortlist is deduplicated across all persisted discoveries in this run.
+Every configured run source is attempted using up to ten concurrent source tasks,
+using upstream provider pagination defaults. Every returned lead is verified in
+batches of at most 25. Explicit upstream incomplete-pagination flags remain partial. Source totals are availability,
 not counts actually verified. Liveness checks use the copied API/browser ladder for every supplied link.
 Unsupported extraction or incomplete employer metadata,
 uncertain links, blocked sources or truncated pages keep the job partial; a partial
