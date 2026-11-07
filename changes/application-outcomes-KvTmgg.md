@@ -182,3 +182,14 @@
   detail checks confirmed green connectors/checks and an unfinished current round,
   with no page errors or overflow. No schema/MCP writer/runtime change; full DB
   suite was not repeated for this presentation pass (focused import SQL passed).
+
+## Follow-up: purple bar, green checkmark only
+
+- Per visual correction, progress connectors, reached circles and current-stage
+  rings stay purple. Only the checkmark glyph is green, with a light green that
+  remains legible against the purple circle in light and dark themes.
+- Completion logic and saved records are unchanged. Existing fictional progress
+  demos cover the styling; desktop light/dark and mobile detail inspection
+  confirmed the exact colors, no page errors or overflow.
+- Validation: production static build, UI detector, catalog validation (158 roles)
+  and diff check passed. No new tests or backend suite for this CSS-only change.

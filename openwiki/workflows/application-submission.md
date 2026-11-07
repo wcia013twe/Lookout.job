@@ -288,3 +288,7 @@ editable. These are display projections: no dates, receipts or stored completion
 flags are generated. Synthetic current-status timeline entries cannot promote a
 Phone Screen into Interview. Shared community stage displays still show only the
 shared current step, without projecting private history.
+
+Visual correction: the progress bar, circles and current-step ring are purple;
+only the checkmark glyph inside a completed step is green. Completion rules above
+are unchanged.
