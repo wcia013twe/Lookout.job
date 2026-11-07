@@ -222,3 +222,16 @@ test('a source persistence failure cancels sibling work before the pool returns'
  },2,error=>controller.abort(error)),/Source checkpoint failed/);
  assert(cancelled);
 });
+
+
+test('an oversized verified description is explicit partial coverage and does not discard other postings',async()=>{
+ const rows=[posting('large',{description:'界'.repeat(20000)}),posting('small')];
+ const batches=[];
+ const result=await fetchSource('fictional',{name:'Example',careers_url:'https://job-boards.greenhouse.io/example'},{execute:async(task)=>{
+  if(task==='discovery')return {status:'ok',jobs:rows,available:2,truncated:false};
+  if(task==='dedup-discovery')return rows;
+  return {jobs:rows,diagnostics:rows.map(row=>({url:row.url,status:'active',extraction:'parsed'}))};
+ },onBatch:async(batch)=>{batches.push(...batch.listings);}});
+ assert.deepEqual(batches.map(row=>row.url),[rows[1].url]);assert.equal(result.coverage,'truncated');
+ assert(result.diagnostics.some(row=>row.url===rows[0].url&&row.status==='uncertain'&&row.reason.includes('bounded')));
+});

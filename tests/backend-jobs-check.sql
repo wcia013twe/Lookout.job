@@ -48,16 +48,16 @@ begin
  -- Human cancellation remains possible when the execution credential is revoked.
  j:=public.backend_job_action('backend.jobs.cancel',jsonb_build_object('jobId',id,'expectedVersion',claim->'job'->'version'));
  if (select state from public.search_runs where search_runs.id=(run->>'id')::uuid)<>'cancelled' then raise exception 'Cancelled backend retained active run';end if;
- begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Cancelled lease completed';exception when serialization_failure then null;end;
+ begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Cancelled lease completed';exception when sqlstate 'PT409' then null;end;
  update private.agent_connections set revoked_at=null where agent_connections.id=c;
  -- Expired leases are reclaimed at most three times and old workers are fenced.
  j:=public.backend_job_dispatch(h,'backend.jobs.submit',payload||'{"eventKey":"retry-job"}');id:=(j->>'id')::uuid;
  claim:=public.backend_worker('claim','{}');finish:=jsonb_build_object('jobId',id,'leaseToken',claim->>'leaseToken','expectedVersion',claim->'job'->'version');
  run:=public.backend_worker('dispatch',finish||jsonb_build_object('operation','search.run.start','payload',jsonb_build_object('profileId','test-profile','eventKey','job:'||id||':start')));
  update private.backend_jobs set lease_expires_at=now()-interval '1 second' where backend_jobs.id=id;
- begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Expired lease completed';exception when serialization_failure then null;end;
+ begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Expired lease completed';exception when sqlstate 'PT409' then null;end;
  claim:=public.backend_worker('claim','{}');if claim->'job'->>'attempts'<>'2' then raise exception 'Lease not reclaimed';end if;
- begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Old lease completed';exception when serialization_failure then null;end;
+ begin perform public.backend_worker('finish',finish||'{"status":"completed","result":{}}');raise exception 'Old lease completed';exception when sqlstate 'PT409' then null;end;
  update private.backend_jobs set lease_expires_at=now()-interval '1 second' where backend_jobs.id=id;
  claim:=public.backend_worker('claim','{}');if claim->'job'->>'attempts'<>'3' then raise exception 'Third claim missing';end if;
  finish:=jsonb_build_object('jobId',id,'leaseToken',claim->>'leaseToken','expectedVersion',claim->'job'->'version');

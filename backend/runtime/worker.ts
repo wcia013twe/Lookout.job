@@ -135,7 +135,7 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
 export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heartbeatMs=30000}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>;signal?:AbortSignal;heartbeatMs?:number}={}){
   const call=async(operation:string,payload:Payload)=>{
     const {data,error}=await rpc('backend_worker',{operation,payload});
-    if(error)throw Error('Worker transaction rejected');return data;
+    if(error)throw Object.assign(Error(['Backend lease changed','Search lease changed','Source changed','Invalid observed listing','Invalid source progress','Invalid worker payload','Run is closed','Discovery observation exceeds bounded transaction size'].includes(error.message)?error.message:'Worker transaction rejected'),{code:error.code||'unknown',operation:operation==='dispatch'?payload.operation:operation});return data;
   };
   signal?.throwIfAborted();
   const applicationClaim:Claim|null=applicationExecutor?await call('claim_application',{}):null;
@@ -162,7 +162,9 @@ export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heart
     if(claim.job.kind==='search_ats')renew();
     const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})});
     await stop();controller.signal.throwIfAborted();await call('finish',{...fence,...outcome});
-  }catch{
+  }catch(error){
+    const failure=error as Error & {code?:string;operation?:string};
+    console.error(JSON.stringify({service:'lookout-worker',event:'execution-interrupted',kind:claim.job.kind,operation:failure.operation||'pipeline',code:failure.code||'execution',reason:['Backend lease changed','Search lease changed','Source changed','Invalid observed listing','Invalid source progress','Invalid worker payload','Run is closed','Discovery observation exceeds bounded transaction size'].includes(failure.message)?failure.message:'Execution interrupted'}));
     const lostOwnership=controller.signal.aborted;
     controller.abort(Error('Search execution interrupted'));await stop();
     // Lost ownership or shutdown leaves the pinned run reclaimable after expiry.
