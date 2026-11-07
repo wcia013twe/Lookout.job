@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:04bd2ef3868e188ee437eafe22a0d5f1591bc4344fe1ef28fa9fb3107d3602af",
+  "claims": [
+    {
+      "id": "claim_38c1cb23e4b046d781431da625a0d94a",
+      "statement": "The ordered SQL under `supabase/migrations/` is the executable schema authority; migrations include upgrade and compatibility behavior and must be preserved rather than treated as disposable prose or concatenated schema.",
+      "evidence": [
+        {
+          "resource": "repo://docs/schema.md#L1-L5",
+          "version": "repo-lines-v1:sha256:aec8b247b090ca3b96915df77c072ffddcf6b11ef1ef76d47d15b57627cffdac:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDUyZTMwMWYxZTNmZjk2N2VjNzRmYTllOTQ4Njk5MDc3NDRkMzdmNDI2OWQ2ZmZhYTY3ODkxYjkxODkxYmNiMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWY2MzJjZmFhYTBhNWMzNDMwYzAwYzhmYjY4OWQ1MDdlYjlmNmZjODRhYmIyNmEwNzk2YWIzY2I4NjQ1Zjc2ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjE2MTQ4MzJjMzhkMTQ5NjdmYzY5NDhhZjVjZDI5OGZmMTBhOWI4NDA2M2Q2ZmFhOTA4MjYxNTM3YTdiM2FjZiJ9"
+        },
+        {
+          "resource": "repo://docs/schema.md#L469-L477",
+          "version": "repo-lines-v1:sha256:e0ae253bb4927d3dd599b1a7a360fa95bd7642f1b7971d7e0c3916c3a4f2727f:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWU5ZDZhODU2NzU0OGY0NzFmZDE2ZGExOTcyZDI5MWZjMjQ4OWM4OTZmNTcyYTQwNjQ2YjhlOTczOWNkNGM5MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjE2ZWRkYjlkZWNmMmVhNGFlOTY1ZGRkNDMzZDU4YTM5ODZmM2MzNThiMmYzZjgwMjMyYTIwNDg1YTZiZDgwNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTJiYTI5OTc1MGQ5NDczM2NkY2NmMWIzMmMyNDljNmY4MTljN2E5Y2YyMjhjMmIxNzhkNzQwZDUxMGQ2YTEwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGExMGYyNTEwN2RjNjkyYjFmNTc1ZjM1ODFlMGY5ODAyOTk3NDY5OGFmOTQ3NTYwMmE2ZGRiYzQ4YTg1N2MwNyJ9"
+        },
+        {
+          "resource": "repo://tests/helpers/database.mjs#L6-L25",
+          "version": "repo-lines-v1:sha256:48066d7d5e8dbd8b8fe57f90e327eda84bb45c1eb4f403e35e597d3f50cea552:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhNzc3YmY4MTE1NWEyYTU5NTU3NGMwNjAxN2MzOWQxZmU5NzBiOGU5MTUyZjMwYjdkZWI1MjdjZDY1ZWFhYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlMGQ2NDQ0M2VkYWEyZDVhOWFhMDc5MDliM2U4ODZmM2FkMmZmNjllOTRhMGY5NmYzMGUyNzE1MmExYzI2NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI5MzA0MmM1ZmQxMmMxNmE3MjlkMmU1OTIwYWYxZGE5YzhjY2ViOTFlN2Q1M2QyZDFmMWRkMDZjMzhkZDVmMTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b011adf539284d1cb8c66c8197c4767e",
+      "statement": "The model separates shared job/catalog identity from owner-scoped workspace records: `jobs.canonical_url` is unique, while applications are unique per owner and job and use owner-qualified foreign keys for approvals and other private children.",
+      "evidence": [
+        {
+          "resource": "repo://docs/schema.md#L231-L261",
+          "version": "repo-lines-v1:sha256:3784033d9d01413c1f51d77fef70f87d9cd656b5638ff8080c1c78b33b1c1990:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkODI4MTE3YmIxOTY5NTY3Zjc5MmJhMWVhMmNkMGRmODUxOGYwMGI1OTMyNmFhOTY4YjczZjg1NGU3MjliNGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmZWI4NWI5NjdiODZhYTFmNzQ4YWE0YWNkY2VjYjc3OWM2Y2RmMmQ3ZWI5YmEyZDYwM2EwYzZmMWRlMDIwOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0Y2NlM2MwOWY2NjhjNDJlYmJlMWRkOTZmMmUwMDJjOWRlNjA1MDgxMmQ4ZWI0OWQxMTE2ZGI0Nzk0MWMwNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliNGI1ZWFlYzI2ZmJmZTAxYzNmNDVlYTI4NGMzMTUyNjcyYjUyZTAyYWJjMjE3NGI0NGM3YmYyMzM0NGZlZGMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013160000_job_board_backend_foundation.sql#L38-L43",
+          "version": "repo-lines-v1:sha256:d814e06d0d93053f37a37e56c1a6b6fe2248683b75fe1532999a1dc3a22f41e4:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDRhMDdhNjEyMjQwYjJhZDVlY2UxNDBiMDBhYzdhNmNhYTMzYTkyMTE3Y2EwYmE3MTY1YjVhMjRlNDc0YzA1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk5NjdlYzFlZDM4MzZmOGViMTdhZmYxNzJiNWJmZWY3ZGU2MDQ4NWE0MzljNmNhMTFjNTkxZTE3NTU3MzlhZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmYzNWFkOTM4MDQzNDk4MzA2YWNiMmRlYWY3MTAxNjdmNjRmMjA3Y2JmMzIwMmQyZmQxYWI0NzA1MWZjOTk5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjQ5YTg1ODNhNmJmODdkYjFkZGMwZjkwN2M0MzYzNTIzNjRkNzY5YTY1NzgxYWYyNDRlNTNjMDk0MmI1M2M4MSJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013160000_job_board_backend_foundation.sql#L59-L83",
+          "version": "repo-lines-v1:sha256:6139e37efeb69b07015caa594ba10782bcc0b79e084547979c80929ca7af18f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhMGZiZDkzZDEzNWYwN2ZhYWUzMzU2OWEyYjUzM2RiYWM5YTQ3ZmZmMmYwZDZjZjlhNDM2ODQ5MTlmOWUyMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzYTZiMWZiOGUyYzJiZjJkMDEwYjUxZmRjZWE1MzQwNWU0YTU5ZWQxYjhhNzcyNzA2YWIyZGVjY2IyMzhjZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0YzM0ZjU3NzczMmEwYWMwMWViNGZmYmI4YmM4MTdjNTEzM2I3ZDIzNTAyOTBlZDAyNzQ3ZGFhYjY4MTBlZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3MTdlMTFhNjcyZDIyNGY4MGZiYzU2NDU4NjRmZjUzZjc1MzBmOGNlOTQ5OWJjOGYzZWNmOTMyOTFiMjdlNDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_31a8f3f8738442ac91ed6d87ffc9d210",
+      "statement": "Browser data access derives the current authenticated owner, scopes user-row reads and writes to that identity, and rechecks it after sensitive RPC calls; these checks supplement rather than replace database RLS.",
+      "evidence": [
+        {
+          "resource": "repo://backend/client.mjs#L43-L59",
+          "version": "repo-lines-v1:sha256:b04373d193cee57fadd29b86109cc0867c2db49275db778c34f637539c5b6c69:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNjBjMDU3Y2EzY2MzZDM0NzI1YWVjYmU4M2I1ZjdlZmFkYzQ2MDI0NjJiNzViNGE2ZGZmZDYyZjY0MTQwZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmNzEzYzVmN2E2MWMyNjhkMDE3NTU4NzU5YzEyNWM2MjMxNDhkZjNjMjlhMTk1NzIyYTgxMWE3NWU3YzkyYjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4NmU2ODJlMjJmNzE2ZTg3ZGM1ODBhOGNkNWRmMzI3OTkyYTlmMTQwMDBlOWRmNzZjODNlNWU0YTJkOWEwMWUifQ"
+        },
+        {
+          "resource": "repo://backend/client.mjs#L9-L25",
+          "version": "repo-lines-v1:sha256:7eb651e17f5a466f8c408d3f2a446dc187b6f8b0140382d99c7a9f3fc9e8a545:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYmEyMGFlZTViZGJjYmUzOGMyNzA4MmJlNGNmNzU0ODFkYzY4OTQxMmI4YjM1YjBkYzRkMzE0NDU0NjZlYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4ZmUxNWJlYzI0ZTBiNDYwMDMyOTczMDZiMDAzZDgzYTg3MTFkMmQyMDg3MThlMDA5ZDU3MWZhMmMxZWZiOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2ZDRmY2M5YjY4OWVmYjNiMjQ5OTExOTI3ZmRhM2JkYzNiZjM5NzY3ZWM3MmUwYTQzNTRkNzIzOWI3MmVjYmEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013160000_job_board_backend_foundation.sql#L119-L141",
+          "version": "repo-lines-v1:sha256:0867f7866f75ceaa90d6c37b3d2f822109b8e58ce43fd4538459cff2f80a5995:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjMmY0ZmUzMDY1NzBjNjI3M2JlMDUzOTEyNGFlNDM1NWQ5YTQzZWM1ZjE3NTM4YTMzOTIyODM1OTU1NTYxMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMDgyODhjNmIwNGE2NTgwZDM0NTZkNjM5MThhYmM5MjlkNGJlOTBkNTU3MDVkY2QxZTFhM2JlMzRkZmNmYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDY0ZGNjNjZkOTY5MThmMGRiNTk5NTlmYjE4MTk2ZWFiMDhiMzY4ZjRkNTAyMzNjODZiMTk4OTRjZWJiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2MGRhNTllOGM2MTVlMmI0MTE3OWUyMjZmMzAwNTRjZjQ1N2Q4NjlkODE4ZmU3MzNjOTgwOTIzNWQ0YjQ0YzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c481ec167b3b4b488272c1171baf2147",
+      "statement": "Agent authority is connection-derived rather than caller-supplied: the gateway hashes opaque credentials, and database dispatch validates hash, expiry, revocation, and operation scope before using the stored connection owner.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-gateway/index.ts#L25-L30",
+          "version": "repo-lines-v1:sha256:37e8ef3147fee6b0665c7c1cbad8fad54f6335583d51459026ed9adbaa55348e:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkzZTMyZGYxMzVlMGY2OTE2OTI5NWQzYjM1NTE3N2U4N2EyNmVkNDk3Yjc1MTMyN2RhNzU2NWNjMGE1YzBmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmE4ZDQxZTdhZTRiNzVhODcwYWNhYTg3MDk4ZmIyOWJkY2MwNjZjYTZlNjc0ZmEwMzhkOTJlNzcyZDk1YmI3YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWUzYTE0MTIxZDIyMzZkYjkyMjIyODc3NGM3ZTlkZDEwZjMzZmQzNDc2MTZlN2U0OTg3N2M1MDdmMzQ3MzEzMCJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/index.ts#L94-L108",
+          "version": "repo-lines-v1:sha256:8e6a79718d53c2ed9fd37e0a9cae879a922308e175099a35830b8096c1acdd56:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2E1NWY3ZGI1YzY0ZTNlZThiMzEzNTkwMDU1ZjgzNDQ1NTY5NGM5ODE3MWU1NTgzNTRhZTAyOTZmNjM4ZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxZWI2MDU4YmNkNTFjOGZjZjM3NjJhMTljYzg3YjJlYTE3NDE0MDY2NjhhNzNhN2RhMWJmNGMwNzE4MTI4ODkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2OTg0ZGViNWRiYjU0OGJkMTc0YTExMzBmMDVkNzI5Zjk4ZWQ2NjVkMzU0MjUyMjUxZjE0MTA0ODVjMmJiYjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhYjFmOWJlNzIwMmZhYjc3ZGU0ZTc1YmY5OGVkMzhkODAzZTJhYjE2YTZjYWVlZjVjZDU1ODE4ZjJkM2FlZDMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013164918_agent_gateway.sql#L34-L44",
+          "version": "repo-lines-v1:sha256:58f5e096a34458fe7cf31a51a8e6542253eac6992cb7f653ba557dbffb47d33d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZmUyNWZlNWJiMmQzMTcyYzg3OTBhZTBhZTFiZGJhY2E3ODQ1YTQ4M2NiZTQwZTE1MmRiZTY5ZmQ5MTVhNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmZjg2YWE0Yzg5OWMyMDU0YWM4MmZiZDljMWFhYTIzYmZiNmQzYTUyMTA0ZTQzOTZkYWY3YzVjZTllNzA5NjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4NjhmMzE5ZGFkZDk5OTAxNDYyZjMzMGViNTI3ZTcyNDA5NmJjZDNhNTk3NGMyYjljOGYyMDMyYWExYjA5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0ZTMyNWMzMjU2ZTEzNjBjODRlYjZkYmQ0OTEyZmY0MzMzYWEyNzhkYzkyOGEyOGMzMTAyZDA5OTdjMWI3ZDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_68e5bd96c1904663b40597e51ec58173",
+      "statement": "`applications` is the canonical mutable draft record: material draft/blocker changes advance its revision and set draft-derived status, while approval is a separate human-only exact-revision snapshot guarded by ownership, verified profile, owned resume, and reviewed answers.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261013160000_job_board_backend_foundation.sql#L143-L183",
+          "version": "repo-lines-v1:sha256:3d1152d73c734f1f625e16ffb31c1801dba40dbd5966192e131b47638668c808:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwMjIxY2QzMjQwYjRiN2RjYjY2ZWVlMmViOTBmYTkyOGQ5ZjI0YjZkZjM5Njc4ZTJiYzY0ZDM0NjU4ODNlMTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MTc4ZTcwYmRiODc0YTFiYmI0NmUwMjZlM2EyOGVjNGRjNjVlNmFlZTQzZjI5NGIyMzI1YzVkYjVjMDU5NzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2ZTNjMGRlOTM4ZjQ0ZGI4YmFmNTVmNjA4MWMyYTA2YmY0Yjc3MGQzOTk0M2JiZWRjNjJkZWYzNDMyYjBmM2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwZWM3NjIyMDFkOTExMzE4M2JjYzI4NDVkZTU2NzU4Y2JmN2NjOGQzYTRmMzkzYjA0YzJhZmRlZTkwZTYwNmYifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013160000_job_board_backend_foundation.sql#L59-L75",
+          "version": "repo-lines-v1:sha256:0964ab65f1675fa4c67041d8361725c3ec5371d029d54a47478873b61fb863a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhMGZiZDkzZDEzNWYwN2ZhYWUzMzU2OWEyYjUzM2RiYWM5YTQ3ZmZmMmYwZDZjZjlhNDM2ODQ5MTlmOWUyMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmY2JlNjA5NTdiMjQ2MjY5ZjZhNjcwYzU3OWM4YjNhNjkyYjJmODYyNTVhZTIwMGRhZTljMmNhMmJiOTg5MzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0YzM0ZjU3NzczMmEwYWMwMWViNGZmYmI4YmM4MTdjNTEzM2I3ZDIzNTAyOTBlZDAyNzQ3ZGFhYjY4MTBlZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyOWQwNGFkODdhN2M1Mzg3NDY3OTNkZDk0NTFjMzE3OTE4ODFhZmZlM2JhZDRkMDhmMTJjYWM2NTAzMzA2ZDkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013163357_application_transition_ownership.sql#L1-L5",
+          "version": "repo-lines-v1:sha256:6ea716ad7b6add21bd6e90d7f5e6ebefedac8f9c6db6b58887a8158d5e8ed816:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmEwOTU5YWY5NTc0YWIwMGRlOTg3MGUxMmQyNjE4MmZkMjE4MjAzMTRhYWM1NWVkMmJhMmE1ZmYxODM0NjYwMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzkxYjllOTBkYTQ3YWY2MWM1Yjc1MDg5ZTM0ZjNiNmNhNzNkZTJiMjA4YzU1N2FhYWQwOTk2MDE1NjkzMmViMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d942be76a8104ae0b0309aee2332b090",
+      "statement": "Submission attempts are distinct execution evidence with pinned context and authorization: one active/confirmed/uncertain attempt per application prevents duplicate execution, start grants a short click permit only after revalidation, confirmed outcomes require a supported observed receipt, and uncertain outcomes block automatic retry until human recovery.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261013225545_submission_attempts.sql#L1-L19",
+          "version": "repo-lines-v1:sha256:502fcc9f79aecccee89e9bfea4404ba4d90978d4f8d05faff1782d731fa2036e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMTkzY2U0ZjA3NDJmMzIwMzFmZGQyZjIxOTcxMzI4ZDg4MGZjMzQ0ZWZlMGU5YjU3MGZjYjI2M2QwZTY4M2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiOGZjMjM5M2VlM2UwNDk3Y2MxY2IyMWE5NmMyYTE5NzlmNTE4ZWMyYjc3MzA1YjkxMWJjMmJlOWM0ZjliNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllOTc5OTc2NjI2MTI1YjlkOTdkZjAyNTVkNGY1YTM1MGE4MDJlYjI5MzVhYTFiM2RiMGRiMWIyNzE0ZDllMDAifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013225545_submission_attempts.sql#L124-L159",
+          "version": "repo-lines-v1:sha256:fc5284dc6eeabf62444fdce2c11eb51165423983e57414f185e9e06f1d9c2314:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMjIwMjI0ZjllNTQ2MmE4MjgzMzBjYTNkM2ZkN2YyNDQ3NDMyYWEyYWVjODlmZGZjY2U5YjNkYmQyNmEyM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2NWVhMDNiMzQ4OTI0NDhjMGE4MGNhODZiZjg2OGNhYzcxNzc1NjBhZDEwOWU1ZmY2ZWI2YTYxODhlYzJmYzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjODdlMzQ1NjcxMzI4YzUyOTYzNWY5MjIwZDUwZTA4MDhmNGNmODAyN2QwNDhjNDNkOGQ1ODE2NWNjMTlmNjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013225545_submission_attempts.sql#L50-L117",
+          "version": "repo-lines-v1:sha256:13b813592d385d5a8fe2683b72c56f72f24614d46e7d20bd8520a1d51b2ee93e:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MDdmOTgwNDQzYzJkNDU4N2ZkZGJkMTRhZjZlOGNkZTYwZTgwMDZjNjdlNzhlYjc1MTg5OTdiYjk5MmM1NTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMjZkZjgxNmM0ZGNiZmI4ZDkwOTZkNWQ3ZmVkMDU0MGJjYzNhYWQzYTdhYTFkODk1MDg1MTUxYjUyZDE1NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwYjI5M2YyNTNkNTY2NmMzYTlkN2MzNDhmMWE2MjcxN2Q4MmVhYThjYTQ4NTVlZmFlMGQwMDM5ZTllYzBjOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1NWQwMDA5ZTQ5Yjc0ZTdiMjk1ZmUyYmUzYmQ3ZGExZjgyYzM3ZDBmYjY1MDhhNWVjMzFkMjkzYjY3YTZkMjkifQ"
+        },
+        {
+          "resource": "repo://tests/submission.test.mjs#L52-L89",
+          "version": "repo-lines-v1:sha256:02fa1a78bc1043bd17394e1cebfae3356ac009fe1c461ca1fccf57d84e812bc9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4ZWVhMjFlZDZjZDZmMmNkZGRiOWRlYzkyOTk5NGMyZTI2OWJjN2Q1MzEzNmJmOWY1MmZmZDEzNmMyYzdjZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyODQ0YTkwNzQ2ZDFiNDQyNDY5MTM2NzQwMWNlMGUyMzA1MGI5OWE1NzM3NDU2OTEzMWVkZmE4YmFmNDM2Y2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3Y2ZmM2VkY2JkYjY2ZWRhMjdjNTczZmU2ZDY3Yzk1OTgxMzk0M2E4MmMyNzYzY2EzZDMyZmIzZjczZjU2NTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_808af334aa184009b2ca4fc46c1e1d8c",
+      "statement": "Application milestones are owner-scoped, event-key-idempotent process observations with validated user or email evidence; they deliberately do not constitute an approval or submission receipt.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261014015818_application_milestones.sql#L19-L63",
+          "version": "repo-lines-v1:sha256:0abf728af899447c90a13a8ac52547b6412977e54ad43a281a4329fcc479beaa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZGM5NzA1ODQ3MGYwYWY2NDIyOWFiMDE1MzFiNmZjMjJhNDAzZDRlNmNlODAwMzhiYzZjODIyY2Q4NzllZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZDIxMjQ0ZTkzNGU4NzZmZDM4MWUyMzhhZjJjMWEwYjgxOWE0MmNjMjZjYWZlZDhkOTE5NDU4NTE5NjZkYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5MDQ4Y2E4Y2Q2NjIzN2QxYjFkM2E3YjY3NmI4ZmU0OWI5MGJkZWU3YTU0OTU4MmVjNWE2NjI0MTQyYzFkNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5MzAwYzFjNTg2YmNhNDNiNjNmYWRjMWUzYjA3ZjRjZWRjNzQ4YmQxODdlNTk0YWM0ZGE3NDMxNTNjYzFhNTkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261014015818_application_milestones.sql#L2-L17",
+          "version": "repo-lines-v1:sha256:3030d6d955648d2000b69fde18030984057ec727d78f138b7283180f68ffd356:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkOWUyMzE3NDk3N2E1YTJlZjE4MDJiODI3NDBmYjEyZThhZjA1ODY0NjA1ZDA4NDM5MTY3ZTA2MmNkMWI2YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3M2NhNGNhNGJlYmY3ZDVlYzFjZWExNWI2NjQ3ZWRjNTgxMzUzMDU1NmRmYTJjYjg0ZTU0OWM3ZGZjNTRlYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYzVlNzdiOTdlNzY5NTQ2ZDk4ODE1NjBjZmEzMjZlYzIxZGQyYTNkNmUwNjQ0ZTNlNjI5MTc0NjgxZjA3YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0NzIxNTc4YjQ5YWRjMmE2ZDQ5OTA5MGU5ODMzNzJhN2NhYmE0YmJhMzA1ZmNlYTEyZGIyOWE4YjM5ZWExZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a1b965d7fada438a8819a759a09f103a",
+      "statement": "Versions, immutable snapshots, and idempotency keys serve separate consistency purposes: expected versions reject stale writes, historical approval/submission/search/document snapshots retain contemporaneous context, and owner-scoped event keys replay the original result or reject changed evidence.",
+      "evidence": [
+        {
+          "resource": "repo://docs/schema.md#L14-L15",
+          "version": "repo-lines-v1:sha256:c106172f8c99d7d6a934684ec2089c15a0f2735e8568c2fb375a757e4467ead1:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTk2YjgzZmU2NDdkMzQyZWJjNGMzYmQ0NGQxM2RjMGRjZmFjZDk4NjVhZWMyZGJlMjU4NmMxYzQxYWIyODdjMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRjOWEyNmNkYjBmYmZhZjY5N2Y0MTlhMmU3ODE5MDFiZWE0MGQxNWE0YjI3Y2E1OGQxZjEyYTBmYTZjOThjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM0NTViNDIwM2ZiZjc5OGFmMzdhNWY4ODlmMDY1MTEzNDI0OWNmNzdmZDI0YmJkOWZkYjFmODQ5MjJkZGE1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTlmNjU3ZjZmZDdmMmU0ZmQzYWY4ZTc4MjU4YTVhMTUyOTY1MjdjMzE4ZjRiZWIyZGM3NzIwZmEyZTVkNDM3YSJ9"
+        },
+        {
+          "resource": "repo://docs/schema.md#L75-L85",
+          "version": "repo-lines-v1:sha256:76798cb64555861131a1ad5c05ccc8281e40c592efcc6266ce188bb1d06ccfe5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNjcyZTVmOWU0MzBmMTZmM2Y4ZTBlZTY1ZjE3M2M2ZmQ1ZTQzMDA3MDY5ZTBiNGY1MmM3MjVjZTNjMzZkMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MzM1ZjgyZWE5NmZlYmZmMzQzYTU5MGZkMjc3NTM0NmVkM2I5NzUzMjhhMWI2ZmM2YjdiNDRlMTYwMGU5YTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MmI1MzFkNmEwY2I2ZjFhNmIzYTcwZjVlYTBkMjc2MmY5MmRlNzkyNzE5NGVjZjI0MjQxOTJiY2NhZWMxNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkYmIyZWI3ZTYzZTE0OTc2NmRkOGRkZDUwMjYwZjIzNzhiOGU2MzJhZTdjMGMzM2QwMDRiNzEyOWZlZGIwNTYifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261013225545_submission_attempts.sql#L74-L84",
+          "version": "repo-lines-v1:sha256:6837debde67a88f9bb4cf7e0bbfe2150f880e41b5a3997b84c4a467fad8e09f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjkyMDk0ZTZlNjhjODQ0YjE3ZjAxNzE0NjRkMjFkMzQ0MDMxYjA5OTRlZGI5NjBiOTg0OWFiMjQyMjg4MjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjNjczMzBmNWVlYWZiYjNhNDg2NzY3MzA2ZjZlMzA2OTc5OTYwMGRjOWE1MTcwODQwYmJjNzVkNTZhZjdjY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MjYwNjFhOTY4OTgzZTU5MWUwYjUxMTc4YWY4ZTUwOGI3NDBhMWI0MDljMGRhNjllODRiYzY1MzE3ODQ5MmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyYmNhNzdkZDI1NDQ0ZWE0NmMwMTgzYjhjZWI0MzAxODMzNDMyM2VkNGZmNTdlYTA1MzM3YmUwZTFiMzliNTEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261014015818_application_milestones.sql#L49-L57",
+          "version": "repo-lines-v1:sha256:64ba69e69b2067018956d538406b4fa475875016f69a943dcbca0a66feb8103e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E1Zjc5M2Y4ZDExZTJkYThmOWYyN2U3ZDQxYjg0MzNiYmIxNDlkYWJlMDBjOWRlOGI0MzY5ZGFkMjZiZjAyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDYwMTM4OWRhNDZmYmYzZDIxZDBjOWRmN2Y5Zjk0ZjM4Zjc0MTAwNjI4MmY1M2E5Mjk0MWY5YWFkYTU1MWYyYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDhkMjhkMTY3MjhmYjEwZDIzOThjYWQwNDAwNjkxYzdkOTA5ZWRjMzZhM2EyZjgzZDRiZWMxZmM3OTdiMTViMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjg5NTUyNmU0ZTdkNjJiMWU0N2ViM2M5Yzc2YzNlMzE0YzU1MmRlZjJmYjU0Mzk0ZmI5YWEwNjA3NzMyMzJmNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_021bd15b151a49ef800393cbd7041c09",
+      "statement": "Private backend jobs use versioned leases for service coordination: workers claim queued or expired work with row locking, issue a five-minute opaque lease, verify lease token and version on dispatch/finish, and clear or fail terminal work without becoming a second search-truth store.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261026171906_backend_execution_queue.sql#L10-L29",
+          "version": "repo-lines-v1:sha256:560982ac088c1fbe02cf1fb073b91138300fa648e41d31b64d30e71ebcfb912d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkZGQxMWFlMDcxMzNjODNlNzAwMjU1MGM1OGY4NTUzNjNjNDVlMjNhMmQ4YjFhOGY2MjNlNmU5OTlkNDc5ODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZjIxN2ZmMmZlMjI3NDM1NTgwYTAzNWZmNDZlMGIzOWRmMmQ4ZDNlMDY3NDVmNjM2MzkyMDAwMTY4OGY3ZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4N2UxZGVjOTY5OWY2NGRjYWZlMWU2OWQ4ZDc4MWFjNDhkMGExNThlMWIzOTg5NGVhYzI5MTJiYjY0ZWMyYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlNzk5Y2FmNDA2ZDQxOTU0ZTliNmUzYWI4OWFlMjU4ZDJjNmU5YWU4OGE1NjIzNWM2OTM4ZmE4MTQxZmUyYzcifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261026171906_backend_execution_queue.sql#L141-L195",
+          "version": "repo-lines-v1:sha256:ab221d1e811e621ba078830787ff4be0b270bf751a6c0f4f201b28ba34c5b4cc:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyMjNlYzA3Nzk0ZDAxYWRjYTU0YTJiNTQ4NmIzMTQ0MDBlNmQ0ZmRjY2RjMmJkNzVlYWZhODFhNTdlYjAyYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjNjUyOWExZjg4MjBlZjdiM2E4ZjlhN2EwMDg3NTRhZDIwMjdiMzUxNWFhMWE2ZmJiODk5MjkzNGY4YzMzMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNjc0ZWY2NzJmMDI2Mjk3OWFmZGYzNzI5Yzg3NmViMTZiYzIzNGI2OGVlZDJkNjdiYTQ5M2JkZjA3MDdiZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNmEyOGFkOTY5ZTExZjQ5YzZlNzVjYTlmZWYzNTBkZjRmN2JkYmJjZjg4ZTZhZGY5OTFlODA2Zjc2MzFlZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b9054b0e0e0545afaaee0ba4907aa937",
+      "statement": "Circle knowledge is a consent- and membership-governed sharing domain: posts have immutable revisions and publication points to an exact reviewed revision, while private application data is not automatically shared.",
+      "evidence": [
+        {
+          "resource": "repo://docs/schema.md#L113-L117",
+          "version": "repo-lines-v1:sha256:2d5a30af852042e6cc10a68c95ae623fbd9b3a5652442f6b993e91a42237007f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFhMTdjMGUzYzU5MjE2ZWU5ZTI0NmRkMDM0ZTI5NmIzNmU3NWUwM2UxYjZmZDFlMDk1YWQwMWE4ZTMwZjBhZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM3YzBiZTI2NWIwMGJjNjQ5YWMyN2YwYzg0MTI4ZGM3NjA4NjBiZTkyZTAwOGZlNGQ3NWM3MThmNjVlODQ2MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGEwNjY1YzM1YTYxYTU5NmNkNmNlYjVmNzM5YzU5YjAzYzNmM2ViOGU4MzA4Y2ZiNWMxNGY0ODAwZTViYmFiYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzU0ZjZmMjA1OTk0YmQ4ODAzNDAyMGZkYjk4NTVhYTllZDk2Mjk3NzQzOGRhZjNmZTE5ODNjY2E2MTBmNmIzYiJ9"
+        },
+        {
+          "resource": "repo://docs/schema.md#L335-L393",
+          "version": "repo-lines-v1:sha256:235a02d2304675b2b560b34171a4bd864367565beee07e952aa25bbcf5a69dec:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2NTcwMjM1YjcwMzI0YjRjNjc2ZjJjODBlN2M5M2I5ZTFkZmQyZmU5ZjNjZTNjODM5Yzk5ODk2YzllZTlmNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1N2I0NDhmYmYzZjQxMjQ3OTkzOWExZTJmY2I4ZTQzNWY3ZDMzMTI5ODk2NDU1MjA0YmUzOWQwZjNjNTMzNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkwNWRiNjM2ZmMwMTYxNmZjYWE1M2I1MTA0ZDU2MWQ5ZDgyNWRhNzRhNzBiOTY2NGUxMDNjZmRiM2FiOWU0NGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhMjkzMDgzZDQ2YThlYWQ2NDg4M2JkZWFmZDQ0MTMyMGNiOTU0ZjQzOTZiZGNlNTcxMGE2NWE1MWU2MTcyMWMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}

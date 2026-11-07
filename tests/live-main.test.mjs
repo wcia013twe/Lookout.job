@@ -60,3 +60,18 @@ test('local connection setup advertises the tunnel while keeping private setting
   await assert.rejects(publicPreviewEnv(root,{local:true}),/HTTPS base URL/);
  }finally{await rm(root,{recursive:true,force:true});}
 });
+
+
+test('live and local preview forward publishable logo configuration without private keys',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'logo-preview-env-test-'));
+ try{
+  await mkdir(join(root,'next-app'));
+  await writeFile(join(root,'.env.local'),'NEXT_PUBLIC_LOGO_DEV_TOKEN=" pk_fictional_root "\nLOGO_DEV_SECRET_KEY=sk_private\n');
+  for(const local of [false,true])assert.deepEqual(await publicPreviewEnv(root,{local}),{NEXT_PUBLIC_LOGO_DEV_TOKEN:'pk_fictional_root'});
+  await writeFile(join(root,'next-app/.env.local'),'NEXT_PUBLIC_LOGO_DEV_TOKEN=pk_fictional_frontend\n');
+  assert.deepEqual(await publicPreviewEnv(root),{NEXT_PUBLIC_LOGO_DEV_TOKEN:'pk_fictional_frontend'});
+  await writeFile(join(root,'.env.local'),'NEXT_PUBLIC_LOGO_DEV_TOKEN=sk_private\n');
+  await writeFile(join(root,'next-app/.env.local'),'');
+  assert.deepEqual(await publicPreviewEnv(root),{});
+ }finally{await rm(root,{recursive:true,force:true});}
+});

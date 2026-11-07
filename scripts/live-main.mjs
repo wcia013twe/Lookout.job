@@ -21,6 +21,8 @@ export async function publicPreviewEnv(source,{local=false}={}){
   try{
    const values=parseEnv(await readFile(join(source,file),'utf8'));
    if(values.NEXT_PUBLIC_GEOAPIFY_API_KEY||values.GEOIFY_API)result.NEXT_PUBLIC_GEOAPIFY_API_KEY=values.NEXT_PUBLIC_GEOAPIFY_API_KEY||values.GEOIFY_API;
+   const logoToken=values.NEXT_PUBLIC_LOGO_DEV_TOKEN?.trim();
+   if(logoToken?.startsWith('pk_'))result.NEXT_PUBLIC_LOGO_DEV_TOKEN=logoToken;
    if(values.NEXT_PUBLIC_LOOKOUT_API_URL)result.NEXT_PUBLIC_LOOKOUT_API_URL=values.NEXT_PUBLIC_LOOKOUT_API_URL;
    if(values.NEXT_PUBLIC_AGENT_MCP_URL)result.NEXT_PUBLIC_AGENT_MCP_URL=values.NEXT_PUBLIC_AGENT_MCP_URL;
    if(local&&values.NGROK_URL)ngrokUrl=values.NGROK_URL;

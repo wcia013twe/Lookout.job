@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:81a834de8c6f8abc386796dd8ab18b3d6f60b4320306d548dbd74a3a75fda018",
+  "claims": [
+    {
+      "id": "claim_6baae30d9e0247bdb7840b5062dde723",
+      "statement": "Career artifacts are private owner-scoped versioned documents with immutable revision history; their content supports typed links to one application, learning goal, company workspace, contact, or shared job, while old links do not grant subject access.",
+      "evidence": [
+        {
+          "resource": "repo://docs/schema.md#L309-L319",
+          "version": "repo-lines-v1:sha256:b9353db587ebf10e487d1724afa340cba5ca45acf5ee96d22b3a32726f6976cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNmE5NmMwMDRhNjFkNjc2Y2RiYTI5NzhhM2NlNDNmYmVlYjk5ZTFhMzEwODYyMDc2YzZjZjJkYTE2ZGQ0ZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwMTE4ZmM0YjZiMGEyYjRjMjk2OGFmZmZhMmZiNGNmNmRhZDU1ZmExMmJmYTMwNmFiNDQ2ZjQwYzg1OTBhMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyZGY2MTYxZTEyZjk0YTI2MTFhZDIwMzc3NTYyNTU5NzJlOGNmMDAwODU4ZTFmNzA4MmQ0Njk5ZjhlMTE1ZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1ZTQ1MDYxMDlhZGUxZGM0NTg0NjI2MDUxN2U1MzVmZTM5ZGQwMWI2NjdhMGZjMGY5Mzg3OWNmNDhiNmY3YjYifQ"
+        },
+        {
+          "resource": "repo://docs/schema.md#L44-L45",
+          "version": "repo-lines-v1:sha256:42a544ba6dca9a29f2473c837b84a66f4a3b26f2b5f4d472ab8226c5e577ab21:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjM3OTJjYWFjZjUyMTQyNWQ0NzQyNDMwNGE2ZmM1NGRmMWQ4NmZiOTc5ZGEyZWI3YjczMjFjYjUwMTA3NThkZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzIzNWZlODI5YTYwMDkyMGNlMDIzYWIyNGM0NmY1NjgxNmUyY2ZhNmJhNzBiMjFkMTg4M2VjYWI4YTNlYWJiMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGY5ODVhZGVjZjE2NzFjMGJiN2E3ZmUzZTNhYTBlNjBlODBhNjAzOWQ3ZGI1MWQ0OGM3MDEzMjlkNmJjMDFmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjNmNTdhNGIxY2I5YTcwMDlmODM3MDBhYjY0YTFjN2Q0MWNhMzU4OTZjZTM1N2E2ZWNkOGZmNmI0ZTllZmViYSJ9"
+        },
+        {
+          "resource": "repo://docs/schema.md#L67-L75",
+          "version": "repo-lines-v1:sha256:798e5c06d5d535c8e411290cbfa0edc106d347e1de3f562f662ddd02fb539cdc:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTI2YTBlZGJiZmQxODcyOGQxOWE1MTk3MWE0NGJhNTQ1ZDdlZTczNGNiNjhlNDFkMGM3N2RiMjNkYjE2Y2ZjYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE2NzJlNWY5ZTQzMGYxNmYzZjhlMGVlNjVmMTczYzZmZDVlNDMwMDcwNjllMGI0ZjUyYzcyNWNlM2MzNmQwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjc3Y2E0NGRkY2M5YmMzYWI3NGY3YWU1ZjlhYmY0MjRlYWQ4ODAzMDZhMGU3OWJmNWMzNDkxNGZmOWIyOTIxOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTIwYjIxM2EwNDk3N2U1ODliMjg5NzM5Y2RkMzQyNWU0NzliNTBhMmI5YWY5NzA4MTkwYzZlMTU5MmFmZDkyZCJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/artifacts.mjs#L3-L14",
+          "version": "repo-lines-v1:sha256:bec338c3c7a76bdb639fc61cfacf1e8e0b35baf20bff3e8e61fa453b7881c0a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMGI4MGYzMWEyY2JjYzRkNTE0MDllNTJhZTI0ZGM3ZmE0YjEzMmM0ZWI1YjVkNmI3ODZlMjhiZGRjMTQyYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1ZDRjNzVjMDYxNTg4MmMwYzU2Y2ViMmFiMjFmNTM1MTgwYmNjZTAzMzk3NDUyZDE0NWYyY2Q0ZjI5YThlODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMGNhY2I3NjEwYmZiZmJhYjMxYzIyNDk5NGJmYjdiZTM4Njk0NTM4ZmQ2Y2QyYmFlNTNjZTM2YzQ2YjRkMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3ZDU1N2I2ZDVhMzZiMTM5N2VhN2Q0MGE3OGJmYjZjZTczZjY4OTMwYzE2NGU4YWM0MTRhYTI2ZGYzOWNiYzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bb09718a98f746f08c5fd213c47d5124",
+      "statement": "Artifact saves use optimistic `expectedVersion` semantics (zero to create, current version to revise), archived state is versioned, and artifact writes do not grant approval, publication consent, answer reuse, or submission authority.",
+      "evidence": [
+        {
+          "resource": "repo://docs/schema.md#L75-L75",
+          "version": "repo-lines-v1:sha256:b1672e5f9e430f16f3f8e0ee65f173c6fd5e43007069e0b4f52c725ce3c36d0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE2NzJlNWY5ZTQzMGYxNmYzZjhlMGVlNjVmMTczYzZmZDVlNDMwMDcwNjllMGI0ZjUyYzcyNWNlM2MzNmQwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE2NzJlNWY5ZTQzMGYxNmYzZjhlMGVlNjVmMTczYzZmZDVlNDMwMDcwNjllMGI0ZjUyYzcyNWNlM2MzNmQwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjgyYjUzMWQ2YTBjYjZmMWE2YjNhNzBmNWVhMGQyNzYyZjkyZGU3OTI3MTk0ZWNmMjQyNDE5MmJjY2FlYzE0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTIwYjIxM2EwNDk3N2U1ODliMjg5NzM5Y2RkMzQyNWU0NzliNTBhMmI5YWY5NzA4MTkwYzZlMTU5MmFmZDkyZCJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/artifacts.mjs#L11-L14",
+          "version": "repo-lines-v1:sha256:b8a350f00773c47e7b18fdc98a182f58ee1d0f86df9de3817c70bc04861b607c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTgzMDQ0MTI1MzRjOTAwNDY0ZDI2MDhkMmUwOWY3NmZjMTRjNjhmOTkzY2VjYTdmNjFhZWI3YTY5NTg2MDA0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTVkNGM3NWMwNjE1ODgyYzBjNTZjZWIyYWIyMWY1MzUxODBiY2NlMDMzOTc0NTJkMTQ1ZjJjZDRmMjlhOGU4MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjMxODk0ZDM2MGIzZTBhZDM0NDJmOGQ1ZTk3ZDBhYTczOWZiNjMwNWE2ZjJhMzNjNDc3NDc1MGNlYTczMzc4NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTdkNTU3YjZkNWEzNmIxMzk3ZWE3ZDQwYTc4YmZiNmNlNzNmNjg5MzBjMTY0ZThhYzQxNGFhMjZkZjM5Y2JjOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_29414b3d1f1f45dc820f0d984c9c03ad",
+      "statement": "Only Markdown `weekly_prep` and `interview_brief` artifacts can use real-date `preparedFor` values and ordered material references; collections are bounded, non-self, and non-nested, while HTML artifacts must be self-contained and are rendered under a restrictive CSP.",
+      "evidence": [
+        {
+          "resource": "repo://next-app/app/career-toolkit/_components/toolkit-workspace.tsx#L47-L50",
+          "version": "repo-lines-v1:sha256:19e8c148f4a23415fca171cca2b4331fdfbbb8273eee287921f01f4aaf8d596c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjFhNGZhMmMzZjdiY2M4YjhmMWVjMzkzZDdlN2U0YTY5Njg3ZDBlNTQ5NzJiYjc4ZDNiMzZkOWMzNmQ5YThjYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY5ZGJjN2YyZjI0YjUyODQzNTdmOTg2MzA2ZmVmMDQxN2NjNmY4MWE4M2EwMmJmODE1MGY3MTEyZjg4M2IwOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjExMzAyZGIzMmI0MWI4NmE3NmMzYzgzYjJhZDhmMTg1YjQxYjg1YzNiYzlhMjEyMWRiNTZlNTJjNzFhMDQ0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWE3NDA1NGRiZGFkMGNjNTNmYjQxNGRiZmFjYTc2ZTFjOWEwY2YxNTYxOGE0ODk0YTQ4OTUxZGZmZGU2MGEzZSJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/artifacts.mjs#L13-L13",
+          "version": "repo-lines-v1:sha256:25738e44cecbc71350ae84d450c5f429ee5fc35463d9307b21857e86e6b9e40f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjU3MzhlNDRjZWNiYzcxMzUwYWU4NGQ0NTBjNWY0MjllZTVmYzM1NDYzZDkzMDdiMjE4NTdlODZlNmI5ZTQwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjU3MzhlNDRjZWNiYzcxMzUwYWU4NGQ0NTBjNWY0MjllZTVmYzM1NDYzZDkzMDdiMjE4NTdlODZlNmI5ZTQwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzRmMDEzN2QyYjEwY2UwMjViYWI4OTA0YjRlNWUyMDkzMzA4MjhlZjg4Mzg2ZTkxMTg5MmE0OTA5ODc1NWQ3OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTE2NWZhMDVjYzM3ZjQxNzg3YTU0ZmFiNWI3NGRjNzFhOTNjMmQ5NWVmN2VjYTYzZjBmMTYwM2VlYjY1ZjljNCJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/artifacts.mjs#L54-L60",
+          "version": "repo-lines-v1:sha256:33e39971558632ff0962b4eec375354caeb77e8df590a830d50fd5d5795a40d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTdkODdhMDVmYTA2Yjg3MDA4MTliZmJjYzIxYjY4NTM2YTRlNzllMjE1NmQ0NDNlNTQ1Mjc2ZTdjNWIwZWRkMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzBkMzFkMmU3Y2Q0ZDBjYTRlNDlkNzJjNGM3MWVkMDM2MTVmNzZhNDc0N2Y3M2UzODYxMzJlOGM3NTQ4ZTI3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAyYmM5ZDVkYTQxNDk1ZWRmMThmZTQ4ODE4ZDFhYzQ0YzIwNGMwMDNhNTY2Njg2NjA3OGJkNTQ5NGNkMzFlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzIzNjE2Y2M2NWZkMTJhZTE5ZTRiYzcyNDU1M2MzMDA2NjQ5YWViNzkxMDU3M2NlNGY5YjRkM2I5YmNhNmMzNiJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/artifacts.mjs#L70-L76",
+          "version": "repo-lines-v1:sha256:9703ecfaaad18c2227ccc51b4e2db5722273d5a2f69ae89b264f0bcf93ae3ec4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmIxMGE5YmI0ZTY4NTE4MTNiZWFkNTU2MmI2MjE2NTExMThkODcyZTQ3OWFlOGM0MTc0OWEyODhmZDU1MDU1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTQ2NGFlN2Q2MTZkNjVjMGRkOTM3ZjM5MTI3ZWIwMWZkOGNkNDU2ZGEwNjM3NDFmMzM2NThkNTI4MmUwODI1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzg0ZjJhYmU4M2FmMGFmYzZlNjJiZTdjNGQwOGU3ZTJiYjgyZTQzYzY4MWZmZDAzNGVjYWUwYTk5ZGYzOGY5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_294e4745a85b45e9b4744287d53071c4",
+      "statement": "The preparation agenda uses a daily 0–240-minute budget, plans seven days of confirmed active interviews before active learning goals, and does not merge company-specific research even when its URL matches.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-gateway/preparation-planner.mjs#L11-L13",
+          "version": "repo-lines-v1:sha256:de19a83cbcf69a9d4f9b6d157609d4d18ae2bacb553f25a01fd1d59086e39830:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTJkNGZlNWU3Y2M2OTRjMzQ3OTZjNjAzNWQ4ZTUwMGQ4MjA0MzQxNzgzZGFjNDI0MGZjN2NmMzA0YWVjYjc3YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJmZjNhZjI1ODQ3NzQxYjhkMGUyNzA1ZTAzZTk3OGI1NmE3NWRkN2U1MzZjNjAzMzQ2Zjk0MDgyOWEyMWJhMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGIyNjI5OTEzMGE3ODQ5MjIwNTZkZWU3ZGRjODVkNGE0MWViZDJjM2YwNDZkMGQ5MTczY2ZhYzZkMTJjYzk0YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTZhZThmMDUwZTc1ZjU3NmMzYmIzMDEyMDMwODg4NDJiNTU0MGNkNTA1MzVlYWU4ZTQ0MDI4MTBkMmNkNmQzNyJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/preparation-planner.mjs#L63-L119",
+          "version": "repo-lines-v1:sha256:6da67a0ff93d9519a68e4f836a0d5b4adcaabc675435dd31653b64733f7038eb:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjMTQyMGU3ZjYxNzE3Zjg1OGM3YzUyMWE1Nzg0ZDIyODlhMWM5Y2YwMjQ3YjhlYzg1ZGJkZDc1MmI5ZWY4ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5NGY2NWQ5MWNmMGMyNzkxMGRkMDEyOTQxNTFlYjQwNjZmNWFhMzFmODQ4YzFlNWNiOTBjMGVjM2E3ZWE2N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMzQyNTNkOWIzZDRjNTE5MWJmMzc3NDgyN2ZlNGU5MzI5YzgzYjJhNjQ4ODQ4NWQ2NjBiNmY1YmRiOTA4MzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5ODAyMjkyYmU1ZDRkYTg3MjE2ZWI2NGYxYTVlMmNkMjE0NGE3NGUxMzAzMWNlYjhhN2U2NTQyMDE0N2Q0MDAifQ"
+        },
+        {
+          "resource": "repo://tests/preparation-planner.test.mjs#L15-L24",
+          "version": "repo-lines-v1:sha256:ccf5603f530050c37e465445042ed4885e41bf503ea484a47b0c571a659ae6f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlMzYxMTgyYzI3ODFlM2IyMmZkZTliYWM1ZGQ4YjQzZTdkOTY0NjM3MTE4ZThiYTY4MDkyYjMyYjg1ZDBiMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4Zjg3MGU0NmNiNWQ5YzViM2E2YjE0MDA3NDYxOTJjYmEwYmRiOWJkYWI1ODMzZWEyNDg0NDQzMGJlNGI1Y2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwYjZlNzZkZWVhMzFkMWE3NDFkYjYyOWRiNjRhM2U0OTM3ODY3MWFlNTcxYmNhNmVmOGQ4ODZiN2RhOTI5YjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4ZmQ5ZTdkYjMwZDJlN2YyMzVjOGZkOGRiYzZmZWViODE4M2IzOTI1M2UxZmNkOTRhYTk4MmYzOWY0ZmIyNDcifQ"
+        },
+        {
+          "resource": "repo://tests/preparation-planner.test.mjs#L69-L76",
+          "version": "repo-lines-v1:sha256:cd41d792b7b20d65e0e546f24f88204251d4576b087c8a59792c7359b3317ef1:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFiNTRjZmE0OTUxN2Q1NjkxMzUyYjRhY2UwNzY1NTRjNGNkNDNiZmQ5MjMzN2E0YjgwZjQ4MjJjMzkzZTg4MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmMwNDM2YmM5MjgyYmE2MjliYWRlNmE1YzJlNjMwYmUwMjlhODhiMjQ4NzdjYmIyOTg2NzlkYWM2ZTU1MTU1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2I0ZmE5OGU2MGNjYmU1ODE0Y2QwNjg0Njg5YTRkOGE2ZmFhMWQ0YmI3ZWFhNTE2YTI5ODBlMmQwMzNiNmFmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzg4NThiZWQ5MzdmMDg1MzU4NGVkNThiNjdhM2YxZGRjNTQ0MDFjODUzNzMzNTM5ZWRlNTQ3YzI3YjBjZDg1NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_404296717e4a448c902f3cee2cc3029e",
+      "statement": "Completing a preparation session records its minutes once, atomically validates all owned target versions before writes, enforces the user's local-day remaining budget, and credits each target until its estimated minutes are met; identical session-ID retries replay while changed/stale/duplicate inputs fail.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261015205745_aggregated_preparation_planner.sql#L44-L89",
+          "version": "repo-lines-v1:sha256:4070ca06e2a5e1ef0cb7c43d7f95e199962448135662f4177bbdfe7db8f1658e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4ZTE1YmM4NWE1YmUzYTRmZWM3MWRjMzg2MjU1MGZjYmRiYjE0NDYzZTVlY2FiNzRjNWI0NzgzMjc2NWM1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1NjRkMDFlYmU2MzQ1NzI0ODQwZDQyMWE1NTBiNmYwNDNiOWFjOWYyNTVlMDFjOTBiNDhhNWQxMzU2OWYyMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI2YzY3OWZiODVhOTczOTQwY2EyMjQxZTYwYWQxZTQxYTIyZjNhODkyNzIyZWY1NjFmOTE4YzQ1MDNjM2NhOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlNmU5OGM2YTFlZWJjYmI3ZDQxNmRiZmZlM2NiNDczMjZlODE3NTUzYjk5MzlhYzdhNGI3NWNhNDk5ODc2OTIifQ"
+        },
+        {
+          "resource": "repo://tests/preparation-planner.test.mjs#L33-L47",
+          "version": "repo-lines-v1:sha256:5a1b49f85cfdaee93354e60120c19f599b2b24c49fff184b4e487c5a1fab0e25:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZWEyZWI2NjYzMjNkM2ZmOTY1OTAzMjk1NDBjOTk0MmI1ZDhjZmNiODFiNmYxYWJkZTZlYjMwNWMxYzE5MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkZjc3NDE3ODEwMTZmYWQ2MDgyZDdkYWVhODE3OWM3ODcyOTMzZGUyOTM5MGZkMjFjZWQwYWI4YzMwODM1NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyOTE2ZWM3MWI4MGY1N2E5MmFhM2UwY2ExNzUxMWIzOWE5ZTA0ZTgzNmMxMWExYzI5ODk1ZGQ5M2U0MDc2NGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmYTlkMjgyNWZlYjIyM2RiZWFlZDY3ZWI1NTA5ZDAyZTE3ZjM1NDg4N2FhY2QwNDc3Mzg2MjhmODQ1OTc1MjcifQ"
+        },
+        {
+          "resource": "repo://tests/preparation-planner.test.mjs#L78-L84",
+          "version": "repo-lines-v1:sha256:cd496e529890938637f78b85d5227ffc553bd56cc5ff2382503b90f403aef34d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc5MjFiMzQyNTlkNzYyYjE4MDlkZGZiMzRjYjBiYmI1OTc5MTU4MTdjYzRhNjQ3MTZiZTlkZmVkMmEyNmY0NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNThmZThkMDM5MTE2NzcxNDRkMGU2MWU4YTBjOTlhMTQ3Yjk1ZGU2Y2Q1YmMwZDE0MTdjMjBjODljOTVhODExOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWY0YjVlZjc4ZWY2MjMzYTFkM2JkOTlkNmQxMjU2MWNiNGI4OTE1OWYxMmFmODU5YTYwYTdhNTlhNDQ3OTJhYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjdlMjBkZmJiNDJmMjI0MzkzYmI0MzdkMjc5YjY2M2M1YTQ5MzRiMzIzZDI4NzQ3MTBiYmE3ZDBmZjBiNTllOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0ab4dd8d2c774436a6d9233e04d2c843",
+      "statement": "Agents access the same preparation snapshot and agenda through scoped planner operations: `workspace:read` to read, `preferences:write` to update budget, and `drafts:write` to complete a session.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-gateway/muse-features.mjs#L38-L44",
+          "version": "repo-lines-v1:sha256:63c74f3386d9e593a152789a54509965b618bba023938aa12ce580c5c1268488:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWFhZTg1NDQ1ZDg4YjI5MTk4MzQ5ZmE3ZGJlMDgzYTFlOTUxNTdmYjk0ZjVjNDY1NmQ5NGY1NTNhNGZiZGRjYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU3MmY1ZDUzYjhkNzMxMGE0Mzc2NGFhODM3YzRiMzcwYjNlMDFkZDE0OTFjYzdkNzdiN2ZkYmZiZWQyZTk2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTBiZGRhNGE3MDc0OGU3ZTkyMmM1NWI3YTdlOTZkNjUxZDA0ZTQxY2Q3M2YyNjZlYWJjMmNmNmFhMTRmZTBiMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDQ3YzVhODQwY2RhMzczZDc2NTgwY2FkNGY0YjE2MGY1OTQxZmZiYTM0NGI4ZmU0NTIzM2NlNmRkNDgwNjQ5OCJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015205745_aggregated_preparation_planner.sql#L115-L126",
+          "version": "repo-lines-v1:sha256:f0bc1dda0c9b173c9e33735e9551c651a79dedc354422a323c72fbf7c4317bed:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5OGJiNTc4YTNiNTk5N2QzNWE2ZDVmZTJlMjZkYWMyNzIxYTM3MzExYzRhZGEzMjUzNTBhYzAyMDJlMTA1NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3NjNhMjJkY2U4N2I5NGZjY2ZkMmNkYjZjY2NmZTEzYTkxNTc0M2VlZmUyMDI4NGZiNWFkMjA1OTI1ODA4OGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNDVhNDRhZDZmYWZmNjk0NzA0NWU0ZTJiNWM4ZTUxYzg1MzhhMzc1M2VmMzg4YjQ3ODA1ZGZlZTI5ZTljMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NjNlNzRkZjk3ZDdkOGIxM2Q2ZmY5ZjEwOTVjNDQyY2IyYzQ2Y2FjMzlkNmQ2OGE0YzNjN2JlYTk3NTc2ODYifQ"
+        },
+        {
+          "resource": "repo://tests/preparation-planner.test.mjs#L86-L93",
+          "version": "repo-lines-v1:sha256:71dcc1cdda97155bc951c0b75b01028b8f1497f65c059dd7d4b44dc942f26733:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODAxYjM4NDNlODZkODNmNTllMjBhZTlhNmE3NWM0NTQ4MTQzZGNhODcwMDI0YWE0OTBjNWVjZTljNmE5NmQ1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjM5YzdlNmNjMTMwY2E5NmMyMGVlYzBiN2ZkMDMxMjcwYWYzY2I1MDNhYzA4ZGNjNjgyZjcwNjBiMmQ1MDYxNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2IzZmRmYjNiZmQ5YjBkOTY3ZGNjOTkyNmNiZGVhOTA1ZDg4YWY4ZWQ5MDlhYTgyNmUwZmFiOWEwMGE5OGY3ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_acc2754b36d24da3a8689e1917b2c4cb",
+      "statement": "Company identity is a maintainer-controlled exact name/alias registry, while private company workspaces and contact/application associations are explicit owner-scoped records; saving a workspace does not change shared identities or applications.",
+      "evidence": [
+        {
+          "resource": "repo://docs/schema.md#L101-L105",
+          "version": "repo-lines-v1:sha256:ef330d6a07ac7bcf189fdc3dfbd4fc5e064b31cfe0e101c2d647234ef3529803:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Q0OTExZGJhMGQyNzJkOTNhN2ZlZmIwZjE2YmFjZTQ4MjJlY2ZiZTY3NTc5MDE3ZTNhMGM0ZjI1ZDUxYzA2NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjczZjhhN2Y5OWFmMjkxM2YzZTA3M2ExYjYxYWZjNzdkOWM4Njg2NzJmYTAwN2NiMDQ3YjNhNWRlMTk3NjA3OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQ5NzJhOWM2MGIxN2I0ZjIyMDc4NDAwOWZjOWE4YWQ0YjhlMGUyZDMyZDA2MzFkNTFlOWNkMWZjMThjMjg2OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjUxMDg3ZTdiM2U3MzczOGZhOGMyMmIzOTY1ZmM5M2FmZTFlYjI5NzEzYzUyYmViMzIwYWMyYTlmOTlhNGE1MSJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/platform-tools.mjs#L13-L18",
+          "version": "repo-lines-v1:sha256:8f0757e7e9eb09b093f4a7931dcd6c8e63831f0b83f9d2ba42f6dba72a7dd3a8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODdmOTYwZDE3YTMzYjEyZWJlZTQ4NzcyY2Q0NmMyNTY4YjEzODc0YzAzZWQyMDM3NWFhM2M4NjlkZWUwZjkzMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2U3MDRjNWQ1YmVjZGM2ZmY5NDY3YTc4ODVjYTE1MWU1ZjE4MjFlMjQ2MzMwNDc5NDFmYTUwZGEwYzA3MzMzZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzZiZjA0NTFjNTRhNTA0OGRiOWMwZmZlMmUzODMwNTY3NDZmNDMwZTRhM2Q2YjZjZmRiNWZiM2NlMTc2NTJmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjU0ZGFhMWI5OTZjMDYyMzM0Njc5YjEzZmQ2MzEzMTE4ODgxZWU0YTkyNWI5N2MyMzg5MzllYjMxNjg4MGRiZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7576b8101054580aedc5b3a1277f252",
+      "statement": "Person cards retain an owner/revision boundary and can hold bounded dated relationship updates, sources, and one structured connect/maintain/referral suggestion whose done/dismissed state changes only that suggestion.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/functions/agent-gateway/network-people.mjs#L29-L36",
+          "version": "repo-lines-v1:sha256:9f10638be9aada491e8cb4f35dd40870ceabf30e51b9e8a79c65dc0aaf01e246:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWU1NDVkMWJkMDM4ZmI5NzIwNDI2OTBhNWY2MmZjZTAzNWJkZWJkYjk2MThkOWY4MDVmYTRiODM3NmJmNDhkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODVlN2FmZjk2ZDQ0MGM1NTU4NTYyZDY1NjM4MmJkYTRmNWQ0YmY2MTU3ZjliZDJmZTE3MGE1MDU1YTM4Zjk1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTZmMTBjMmM0NGY1OWI3NjU2MjJmZjkzZjE3N2FhN2ZiMWVjYmZjZGI2YzFhYWYzMmMzY2U5NzgyYjYyNDMzOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/network-people.mjs#L3-L20",
+          "version": "repo-lines-v1:sha256:455c8104d06f4f1e132c8008c66a8c4d989f6a238ee721baa780064daf180a6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NjIyMmQ1ZjMxYzlhZWVhYjkwZTg5MmNhNmZlYjE1ZTU0NjExMDUxYWM5MGRlY2UzMjgwNjA0OGZhM2E4YzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwYzhiMmJlYjA1NjEzNmExMjg5YWYxYmI4YTZlZWYyNjU3ZjNmYjIyNWZiNzQ1NGI2YWNjNjM5MGYxYjllMjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYjA2N2Y5ZGY0YjU1OTZlYmJiYzBiZjBiZDE3MzdiZDM4NmNiN2EyOTIzYjZkNjRlYmRhNDEzODU4OWFkN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkNjI3YWY3ODZiZWEyM2Y5MmFlNjU2YmJkMGYwZmQxNzkwZWI1NTliMzcyZGRmZWEzN2Q0ZWZmNTA5YTI2NWIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261103224016_network_person_cards.sql#L2-L40",
+          "version": "repo-lines-v1:sha256:2c85b656ec9db2a82e1ccab32bd4221d9834491282c260b01233edcd94312794:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkYjJlMTMzZTU2OTJiZTQ3OWIyN2ExODc4ZmZlNTBlYzYzNzA4YjZmMzg0ODY1MTVhZjAxMWNlOWRkZWVlM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiMzc4ZDQxZGM3OTZlNzQxM2Q4OTdhZGM1NzU1NGVmOWQxNDcyNDdjYzZhN2JjMzkyYTMwYWE2Njg0YjRlNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiNjJiMTJmNTU3NjMwMTk2YTBlODFiMGFiNGVkODk0NGIzY2E3OTM5MDY0YmM1MDE0ZWExYTQ1OTA4ZDVhNTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlNjA4MDIzMWE2MWNkYWUzYzFiYTUyMjQ5ZDgxYTg5NmYxNzRjNmNiYTczNTI1OGEwNTM4NDVhMDM1NWZjN2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c502866a7f934b268b9250ae695bc28a",
+      "statement": "Circle knowledge is release-gated and exposed through checked browser/agent action functions rather than direct table access; the feature returns unavailable while disabled, and valid agent operations require scoped nonexpired, unrevoked credentials.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L2-L24",
+          "version": "repo-lines-v1:sha256:ed269faca575b8767b0dc51c8919dbb23c8c3d9ab66905867eed58d81029ca85:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4ZTA0MzdiYzExOWZiZDZjZmRhZDM3ZmI4YTc0NmEwN2ExNDE3OTcwODc4ZTQ2OWE1ZmFjNTgyNThiM2M1ZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyOWI3ZDJmNGQ3ZTU5N2U1ZjYzZmY3YjNhMTgxMGRiZDg1NWIyODllNzM1ZGEzOWIwODVkZWFjYzE0MmQ2OWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYzVlNzdiOTdlNzY5NTQ2ZDk4ODE1NjBjZmEzMjZlYzIxZGQyYTNkNmUwNjQ0ZTNlNjI5MTc0NjgxZjA3YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiZjQ4MzIwNjJmOTIwN2RmY2U2ZDBmY2ZhMjgyMjM2MzE2ZGJhNzY3YmFkMTNjNDg1Y2IwYTI5ZjcyYjY5MGUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L237-L248",
+          "version": "repo-lines-v1:sha256:898aefd5f3cb06ed59123b08ecfaa0deb93416eddf7fe70408dc264f85ee305a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkZWE1ZTdjNTA1MjcxZmI0MzVlMGM3MzVhNmFkZmE2OTk3MDM1YjRlYTc3MWFkZGExYzliZTZkOTg1ZGEwMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3ZDg1OGNiODg0OTBlOTg5ODQ1MDc0ODY1ZjNhZjU1NGQ2YjEwNTRmYmMwZTllYjcxYThmZGU3ZTI0ZDEzOGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2NWExMjE4NmI5MmVjYTU4ZjYxZTVkNWJmNWRlZDZlYmU2ODM2MDcyMDYwN2I0NWFlMGI4ZWUzMzM0M2EzZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmMDYzNmFjMzY5NmY1ODg5YTk0N2Q4Nzc1NzUyNDBhYTUyNzM4NDMwZDUwNGE1YjEyNWU3YTY1ZjhkNTc3YWQifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L53-L71",
+          "version": "repo-lines-v1:sha256:ffa25695fc77cc75c5bd83ebf686e9447739735ce790f62391af81866e2196e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YTAyODhkMmI2Y2UzYTYzNDAwZDVhZTBmOWJiYzgwMTZhODM1YTNmMjlmNjNjYjBhYTMzM2MwODJiMDE3NTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmNjA5NDczNjVkOWJlZjY2ZWZiNTkzMjA2OTQwZjg5ZTllZGZlYzcwODE4NmVkMjc2YWZhZmVmNWNlZTRkZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzYzQ3ZmQ1MzhiN2UzN2ZkMTQyYTFlZmIxMjdkZTE0ZDI2ZjBmYTE0YWY5MzVlMjNjNDhhNzY4NzQ3ODBiMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1NTAxNDEwM2YwOGVlMzkwMzY3ODEwMWU0YjMxNDY5ZDA5ODM5NGRhOWY4ZjAwOGEwNGIwNDE2NjcxNTgzYjAifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L27-L33",
+          "version": "repo-lines-v1:sha256:73c1e766acb33d00c78b79cd513873ea377afc0b0ab91f9233d8ae2d3de13283:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUwOTFhY2Q4Y2EzYTAyOTg4NWIzNzgzZjMzMzQ0ZDYxM2EwOTZiZTNjN2VlMGJmODc3ZWEzMzk2ZWQxNzllYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjBiMmI3MmMzOTYxOTEzNmFkMjA1NWUzYzFmMDQxODQ1NWUzOGU3Nzk5ZjZhNWU3MjNhNWY0ZjhjNGM0NTdkYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzkxZGU0NmUwNTg3YWUxYWMyYzZkZjFlNzU4OGUxNGYyYTI2YzM2YWFhMmI4YjZhYTc5MzJlZTc0MDdkZjVjOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTU3YWY1MDhhMzRlYjY3YTljZGM3Njg4MmU3ZTUxYTRmMzVhMzc3NWUzOTU3YTQwYzExNDVjZjY0OTcwYjQ4YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f01f219be42f430ea514e3d40593b2d1",
+      "statement": "Circle membership is invitation-only, and removal/leave blocks subsequent access while clearing standing permission and unpublished exact-revision approval; an old invitation cannot restore a removed member.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md#L59-L67",
+          "version": "repo-lines-v1:sha256:7637f194b06b0af9ab63918cf73f225e75d1bcb060610f53fcf1716c05459de9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTJiMjc4ZGQ0MWNkNWYzMDk4MmYyOTAxMmU1ZThmNzdkZjcwOGQzYWJlMGNkYzNmOWQ5MjQ1YWEzNjM5YmQ1OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzUzN2QwMTk3MjNmY2QzM2M0ZTIxMjYyMThmZWE1MDRkZDkyMThkMzNiNzg3ZjJjYzllNjAxOGJiZjVhMzJiOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzBkMTIwMDJhMTI5NTRlOWYyZTgxY2ViZmQ1M2EyZDY1M2U2YmY1Yzc1ZDJjZGM5ZTI5ZTM1YjFhNzhhNjU1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1MzkwMjRjZTViYTkyOTc1YjVlYTg2YzNmODg3M2VkODBhNGM3ZGY3YmQ4MGZlYWM3YTU1ODY2ZTFhOWQ1NSJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L114-L131",
+          "version": "repo-lines-v1:sha256:67858ecdf09f023589e3d1f595e3019e7ca2b319757d11f2805ced4658d8817c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0MzZlMzZkYTY3MTRkMGEzMTkwZmU0N2QwYjlhMGVmOWMwNjhjNzBkZjhiMmVlMDhkNGM3YzkzMjFjNjgxN2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1ZDkwNzFmZTY2MTg1YWNkNDc2OWFmNTIyYWY5MmNhNGNmZDgwYmM3ZGEzYjMzOTQ2ODU1MzFlMTYyN2FiZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNTJlOGM5MjllNjE4NTJlZDNiYmNkYjM5YzgyNDc1MjZlZjVjZDhiMTRkZmI1ZjRhYjc5N2UwMzBiMDgxODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2OGEyODM5MjZmZWExOGI3NDAzYjVjMDIyNGUwMmY1M2VjZDhjZWFiZDQyNGI4NTMyYzFlNTgwZmFlMjUwNmIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L87-L104",
+          "version": "repo-lines-v1:sha256:0073957f8e5dc52ca11eed4f529c6eb8140bb25adabc83b408218fdf758bda03:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlMzNiYzc3NDY0YjBhOGE2YjI1ZTgxOThmYTllNGY1NjhkZDZiN2RiMmQ2NDU4MjJjZjBkMTk4Y2UyZTAyNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmMDViNjM5YzUzODBhZmQ4YzAzNDlmOWZkNTdhNGZlOGJmYWJlNGQ0MWNhMjY2NDRjMTQ2ODc0ZTU2NWZiNjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyYWUxZTJkM2RjZGY5OWUyMzA4OWY3YmFhOTdjN2Y4OTYyNDgyNWE4NjRiZjUzNjc3ODg1NWJkM2MxMmY5N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5NTBmZjJkYzY2Y2MxNmQ3NjFmNmIzMjlhODY5NDA4ZDQ2ODUzYWZlZmJlNjc4MWE2ZTQ4NWFkNDZlZDhlNDYifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L132-L149",
+          "version": "repo-lines-v1:sha256:6f40ad378947ff522f91ac5a537674523448ab87a2bdf44f4e3eda2439ab95cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmZjA3NWY0NGQzMmUxZjgxZWNhMGY0NzJhMDM3N2EzMGQ2Y2EwOTBhY2YxMjIzYTI1YjA4NWZkMDllMjliZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1NjdmYmY0MmU1OGQyNDM3YmI2ZGM1ZjMyODIzZTY5Y2YzMDY5MTVlNGVhZTU2OTBjZDYxYTdhY2Y3Njk3NTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhZTIyY2EyMGQ2NWI3Y2YwM2U4OTIwNjI2ZWQwMWU4YmI3NDNkNjYwYmExZTFkZjczMDkyN2Y5ZGU3NWEzZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1YjAxYTljNDgwOWVhNTBhNzViMGIxMmRiZmM5Njc2NzkwMWIxNzE1NWIyY2Q5Y2IzM2FiOGE0OWNjOTkzYTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9266a02121ff4b0cb2bf921314cd387c",
+      "statement": "Agents cannot create invitations, alter Circle sharing policy, approve a revision, or moderate/hide content; they can request a membership-checked human-action handoff that performs none of those actions.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md#L59-L67",
+          "version": "repo-lines-v1:sha256:7637f194b06b0af9ab63918cf73f225e75d1bcb060610f53fcf1716c05459de9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTJiMjc4ZGQ0MWNkNWYzMDk4MmYyOTAxMmU1ZThmNzdkZjcwOGQzYWJlMGNkYzNmOWQ5MjQ1YWEzNjM5YmQ1OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzUzN2QwMTk3MjNmY2QzM2M0ZTIxMjYyMThmZWE1MDRkZDkyMThkMzNiNzg3ZjJjYzllNjAxOGJiZjVhMzJiOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzBkMTIwMDJhMTI5NTRlOWYyZTgxY2ViZmQ1M2EyZDY1M2U2YmY1Yzc1ZDJjZGM5ZTI5ZTM1YjFhNzhhNjU1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1MzkwMjRjZTViYTkyOTc1YjVlYTg2YzNmODg3M2VkODBhNGM3ZGY3YmQ4MGZlYWM3YTU1ODY2ZTFhOWQ1NSJ9"
+        },
+        {
+          "resource": "repo://supabase/functions/agent-gateway/knowledge.mjs#L12-L19",
+          "version": "repo-lines-v1:sha256:ed589a8dd92bc88f09aaa6d76038ed714f11dd35f374cba35546cbf277962efa:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmM3MmEwY2RkODQ1NzQ0MjBjNGRiMDE5MzM1Y2NlYjUyN2EzZDI4OGIwNGFkYTMyM2ZmNDU5NWMyMzVmNmI1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU1NjA2NDNlMzYzNGE1M2IxOTk4MjI2MzBkMDY5ZmJmODlkNjUzMmE0NGM1ODkwYmVjODUxMjMxYmE2NmIyNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzE1YWI4ZGEwNjU2ZDU0YmYxYjM5OTY0NjU3MGY2MWVmOGU3OTIxMTAxZGI5NDY3MDhmMjY4ODkwOWMyZWY4YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2M3YWU0MDhjZTJjYTkzZGY3ZWJiMmQwNGI4MjRhY2Q1YmEyN2UzNzgzZDM4ZDE0YmJmMDY5MWY4NmMxMjNmMyJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L69-L71",
+          "version": "repo-lines-v1:sha256:be2f8a8f8d9b68b1e00f123d5971808d0c6ab9afe5983193894d984405b6da1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc4MTMwNDg1NDE0MGUwMTgyOWI2MzhiYTAxNTE1MDU0ZGQyMTkwYmI1NjRhNDExZDQyMDNjNGViZGJiOGNkMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmY2MDk0NzM2NWQ5YmVmNjZlZmI1OTMyMDY5NDBmODllOWVkZmVjNzA4MTg2ZWQyNzZhZmFmZWY1Y2VlNGRlZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDRmYWY2ZDgzZTMwNDgwMmY0Y2RjMGMyMzgwZGU1NzlhYmRjMGFjOGY4ZTRhZTM5ZTZlZTk3MmNiMjI1MTdhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTU1MDE0MTAzZjA4ZWUzOTAzNjc4MTAxZTRiMzE0NjlkMDk4Mzk0ZGE5ZjhmMDA4YTA0YjA0MTY2NzE1ODNiMCJ9"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L9-L15",
+          "version": "repo-lines-v1:sha256:96881639c4a93f87ffd905d744c7eefea240b36cb4dcdb37996642a3a710449b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVjODgzMmFlY2IxMGIxMGQ4OTY1MjU5NDZiZTNlZTZkOTE5NzlmODgwNWIxM2U3NTI5MWE2YTkyNmE5ZGI0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDMxMzYzNjE4NGQyM2I3MDI1NGU3MjdmZDM2ODFmMmU5MzY0MjdjY2Y3OGRjZTI4NGNhZDkyZmE2MDk4YTIxMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmJiOWUyYWEyNjlhMjVmYmY3YzcxODA3ODNlYTI2ZDNhMTE4ODRiZmRmZTIwZTJjMGI1MzZhZmFhMDk0NzI3OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f9ed9dc9b6034e9eabad7afa08000437",
+      "statement": "A Circle post has immutable revisions: edits create a new current revision, keep the older published revision visible to other members, and require exact-revision authorization before agent publication; private drafts are excluded from other members' retrieval.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L10-L17",
+          "version": "repo-lines-v1:sha256:2ad7fbf9c9bbae67dc256dea822dd36b5319774d9054478889f418f2b8ef9a7e:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzM1NDMxZGI5MDNkNTQ4NTRhMWY0MzMxNWYyZGYyMDY4MWE0OWRlNDcwYWY0OTNjNGIzNGNmZTkyNzA1ZTVkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDA0ZDU1N2IwYmVhYTBjNDRiZWI5MWRkMWQ4YjQ3ZTg4MDJkYzY1YjE3OWE0NmY0NTkwZTFlMzhkODNlMmQyOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQwNDUyNDk2MThkZmRhYTBjNGMyNGY1NGZjMDUwZTRkMmE1NWU3NWU1Zjk3NDc2MWQ1NjVjMTRlZDk2MjBiMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ZkMjhiNWZkYzljOWNmYTg1YzkwY2ExODIxMmEwYTAxMjJiZWIzZGRlODBjYjJhNmQ5MzljYmUxYWZhYjk4YiJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L155-L178",
+          "version": "repo-lines-v1:sha256:1c27aa2cdc971f338e717ed1c297f64b789e1b92cc032000979fff7fa29403ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiZmY0Zjc0ZGVjYmZhM2I2ZDQ4OGI3M2EzZGI1MTkxOTYzY2Q0MGU1MjBkMzgwY2E1MDMwYmExNjczNWViYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxYWFjMzUwZmNiYWIzMDE2ZGFmMGFlYjRhNjk1MDUxYjMyM2U5NjQ0YTgyODYwOTlmNWIzNjk3Yjc3MmRhZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyMDdmYjRjNDhiZTk2Y2M1YmMyZGY2OTExYjQzOTE2OWU0MWRhODJmMWZjNDcwNGM3Y2JiMzc1Y2JlNmNiYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlNmVlYzk3OWI0ZDBkOTUwNDI0MzUwMGNmZGVlOGY4ODYzNjEyYjVhNDdiMWQ4MDAxODlhM2E3ZmY0NTMyYjEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L192-L205",
+          "version": "repo-lines-v1:sha256:1ef2fe15cb000cd390abecb836f0875b0050cbce9b97b592e494e8b534b3cd9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3YWYxN2M4NjhkMmFlMTEwYjBlMjVjZDMzY2IzYmI2MjE0NTNjZmRhMjBmMjU4ZjdlZWU4YzdmNDFjODEzYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMDNlOWU0ZDM3MGUyMDUyZjNhNTk4YThjYWFhNmFlOTIxY2NhZmQ4Yzg3Njg0ZjAzYTc4MzA0NzQ5ZTk5ZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1ODI5NzEzYjgwNWY5MzIxYWI0ZGFiYmJlZjdlN2E5NGQ0NGUwZDNkYjgzY2Q1MTI2MWRlMGEwYjNlOTU1ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4OGU2ZTcyMTcyNzE2MjE0OTA2Mjk5NTY1M2E3NzMzYjg5NDY2NjFlZTJlN2RiNjVjZjdmYjJmZDIzMDI4OTAifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L48-L74",
+          "version": "repo-lines-v1:sha256:303e529b5cd4c1847152b12510b5428aeafe0982f9b0e864f58cafef08244547:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlMjA1Y2ZiMTI2MjRhNGRhMThhYjk0OTJiYTFlZTZjZjdkYjBlZTE5OWZmZDkwMmU1ODdiNGNkYzU1YjgyNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3Zjg1ZGEzZDRkYmIzOWY2YWUzNmFiMTFkOTU2ZWRmOWYxYTRmNDViMmFlMzIyM2IwYWIzY2ExZmQ1YmIzNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxMDJhOGI1NGMxMmM5MWI3MjQzY2IyZmY1MzJjZTE3ZmMxNWY0ZmNmYjljMjZjNGM1ZmMyZmY1ZjkwNDdkN2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhODk0MmZjZDAwZjY0NmQ3ZGQ1ODEwMzNmOTQwYTE4YzdiYTQ3MDE4N2VkOGE1YmMwOWMwOGVmYzI2YmM1ODUifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L89-L100",
+          "version": "repo-lines-v1:sha256:4e1ce0931f55688631bf7a2b6621f559adc2e3fb57dad65b6781edeccba13aa4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhNzFkMjQ3ZWI5ODM2MDU2ZWE5MWMwYWM1OThjMmZiZTM3ZTAxMjc1NTQzNTA0OGVkYTE3MDBkYjk3NGVlNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4ZDQ3NTNhMTgwZGY4NjAxN2M0MDczNjViYjM5NTExN2UxODY5MmU5Y2EzNDE4NzQ1NzMxYmQxZDUwYWZiMTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5NzI0NDE5YzNlMjIyYmM4Mzc4NzIzNTMwMzFlZGM0MDUyMTAyZTlkOGFlMjgyNDgxMThmZmJiMGQ3M2ZmODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4NmI4NWExMzFiM2YxZDEzYTE0OWJhM2FjYjhlNTZhZGQ3MjZiNzg2ZTNkY2RhMDgzYjE3NjcwOWI3YjFlOGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9fdb35098b694848aeabb1a13b382d6f",
+      "statement": "Standing agent publication is restricted to an opted-in closed public resource/opportunity template with no personal or optional fields and one allowlisted documentation URL; freeform and personal content require exact human review.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md#L105-L129",
+          "version": "repo-lines-v1:sha256:f73e30830ccacc8569dc1df15be1662ec06ab13fc5f5e5067f759231666c44b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZDQxMmM1NDQyMjg2YjNlNjNjNDhiY2E3MjlhMWFkNjhjZmEwY2ZkZmMxYWUyZDQ0ZTE5YWJkNTE0YmQwOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzMTQwMzdlMTBkNTRkN2FiYjE2MzgwMzcxZWFiMTY5N2NjOGE1ZjUxMzBjNmU0OTU3MTA1MWYyNDMyMmMwYjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5ZWQ2YjIwNWY0MGFmNzcxYzE2MDIyMjkyNjljMmMyNThmMmE1OGNhOGVhOTBlN2NhMDcwNDI2Nzg1ZmJhN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNzcyNTM1M2JlNzkzY2Q2NDVlMTVmZmU5ODg4MTc4YTc4YmYwMTdkYTIxNDVmMzg2ZmMwYjc1ZWQ1OTFkMDcifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L127-L131",
+          "version": "repo-lines-v1:sha256:ee92b49a9b594a99f7dae9ebd3c4a831550dd5b1f147c4f32731f346d206e2e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODQ5NWZhYzNlNjFiYTE5ZDE2Yzk5Zjk2OGYyODdlOTEyN2NkMjNhMzBiNzI3ODIzZDZlYzk0OGYyNjdiMThjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODVkOTA3MWZlNjYxODVhY2Q0NzY5YWY1MjJhZjkyY2E0Y2ZkODBiYzdkYTNiMzM5NDY4NTUzMWUxNjI3YWJkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzQ4ZWI1NGZmZGNlZGMwMzhlNmM0ZGE0MDAzZDdjMDM2NjE3MWJiNzU0YzQ5YTkwOTMzYWUwOWQzYzczYjE2OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY4YTI4MzkyNmZlYTE4Yjc0MDNiNWMwMjI0ZTAyZjUzZWNkOGNlYWJkNDI0Yjg1MzJjMWU1ODBmYWUyNTA2YiJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L199-L205",
+          "version": "repo-lines-v1:sha256:ec6686cbb25d84d44834413c663238959dce3d7b6f3244d5d6eb7c5e67c699ba:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhiMDNkNDU4MDIxYjhhYzEwNWU4NDUxOGJiNDc5OGY4NTcwNWE5NDA3OGQzMjE0OTRmZjVlODVmOThmY2Q0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGIwM2U5ZTRkMzcwZTIwNTJmM2E1OThhOGNhYWE2YWU5MjFjY2FmZDhjODc2ODRmMDNhNzgzMDQ3NDllOTlkZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQ2MzU2N2RmZTQ2MzMzOTcyMjU0ZTU1MGU5MGQ5NzUwOTFkMzEzOTAyMjE5ZjA1ZGI1ZjUxNWE1ZTM4MmE3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTg4ZTZlNzIxNzI3MTYyMTQ5MDYyOTk1NjUzYTc3MzNiODk0NjY2MWVlMmU3ZGI2NWNmN2ZiMmZkMjMwMjg5MCJ9"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L102-L112",
+          "version": "repo-lines-v1:sha256:4e6e9187a448cd22e65dbea2d77e12a5c43fc64f06c0d16b477b26827c981af2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwYTJiYjA2ZDhjOWU4NWYxN2JjM2E5MzU4Yjk0MDgxODdhNGIwMWYxNjExYTkyYjY0ZGQ2NjU2ZDZjMDc1MWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwYjJiNzJjMzk2MTkxMzZhZDIwNTVlM2MxZjA0MTg0NTVlMzhlNzc5OWY2YTVlNzIzYTVmNGY4YzRjNDU3ZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYTA0ZjZjMjRlODZlMWM2YTczZmMyN2U3Njk3ZWNiZmU5NmFlNDBmZGU0NTU0OWFlNTUzYjY5NTE3ZGViMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2NDRhZmY2MmM3YzM4ODlmMWQxMjJhMzU4ZDEwNzQ3ZmNlODZkNWJlMjg2MWQzZmE0ZTdlOTgwMjk2YTJhNWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc3bbd90cab047fea2ee9392fe44f064",
+      "statement": "Circle content validation rejects private/signed storage and mail links, agents cannot claim `user_confirmed` provenance, and agent milestone proposals must reference an owned milestone without exposing application/source IDs in shared projections.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L155-L177",
+          "version": "repo-lines-v1:sha256:d72d8b0a9370f7398032ee78ec83920ee4e67192cbf1372bfe456401d701f375:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiZmY0Zjc0ZGVjYmZhM2I2ZDQ4OGI3M2EzZGI1MTkxOTYzY2Q0MGU1MjBkMzgwY2E1MDMwYmExNjczNWViYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4OWExZjQzMDg0Yjk4MDdkODE2ZWI0NTA4ZDgxMDJjMWZiYjE0ZjU2NTg0NTY4NTRlZWNlOTBjNDhiYzlkMzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyMDdmYjRjNDhiZTk2Y2M1YmMyZGY2OTExYjQzOTE2OWU0MWRhODJmMWZjNDcwNGM3Y2JiMzc1Y2JlNmNiYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4YWQwZmE5YmRmMzc0MzA5OTc5NTFiNzQ3MzIxNGIwZDA3ODA3NjJiZjEwOWYzNTUzOTI3NGRkYjA3ODgzMGUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L26-L45",
+          "version": "repo-lines-v1:sha256:cc2ea4197f79da57cd706f27172d46dac26c98b93c8a7e1f23c5ae7517663e9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkOWE4ZmRhNDg1ZGYzMDhjY2Y0Mzk4NmFmZmE2MmVkNjg5MmJlOWE1ODdjY2IxOTk4MTU5MGUwMzM4OWM3NmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxZDM3NTA3OThhYjc2MmVkYjkxN2Y1YjBlMWI4ZmEyYzIzMGZkMGU5NjIyYjk3YzVjOTYxZDUyZTZmNTdiMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4OTU2ZTI1NWJiZjUxNDM5OGVlOGIxNzVjMzU1YWFlMDQ2Njg3NmNhNjcwZGQwOTNlNWYyMjQ1N2NkZDE3OWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhZWExZmRjMzRiN2I1ZmQ1MTljYmMxNzQyOWM4ZDA5MzUzNTg3YmJiMGRiMTdhMjhjNGIwMTY1ZjU3OWE0NWEifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L49-L70",
+          "version": "repo-lines-v1:sha256:d4f9e9d35378826f5455ff12963e4be97c95e6e2f900ccf257858db05b62e925:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0NTE1NjlkZjU4YmRiMjNiZmFmNzZlYzgxZjRiYzkyOGY0NzIyMzMzNDliOTNjNGVjZDE4OTVkYTJiZGJhNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjMTAzODUzYWMyZWZkMjkwYTkxNjQzMmNhNjRiMTZjNzNjNGNjMTI4YjAxNjA0MWY0ZjQzNzY5ZjkyYTM5NjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhYzljNjcwZDlkMzZhMzQxN2I4Y2FhODYyMGUxN2E2Mjk2NDJlZGVhYzZjMDEwM2FiOGM5Nzc1NDFjM2RlMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRkYjkxMjczNmQ0NDZjMTRjNmU5NjE1YjE5ODRmNzE4NDQ3MjM4OWViNjFhNzNiNTI3ZmQ4ZDFjZTZhNzRjMDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c52b31a5cb5948748709632a08739d52",
+      "statement": "Citation receipts may be recorded only after agent-reported use of another author's current published revision, are unique per human and revision across agents, remain private to the citing human, reset visible counts on a newly published revision, and do not prove benefit.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md#L131-L149",
+          "version": "repo-lines-v1:sha256:2f363cbbfba8a8e6a951ae20936c6ab7b2445f2a231a5f1629747d8125da148e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyYjZkMTNmMjNkZThjZmU4NjJjOGNlNjBkNDEyNmYzZGIzZGM5NjUxYjBhNGU4ZGRhNmVhMDhkMDIxYWEyOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiMzc2NWViNjRkYzQyNzdjNWZiNzQyM2JkMDgzNzdiN2IzYjE2NWZjMWU3OTZiNDFiYmRkMzNmMmU0MjA2OTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkMzdmNjI0MWVhZjI1NDFkZGJlYWM5YTk3ZGUwMzU4ZmQ0ZGRiN2RhOWIyNDgwZTY2Y2Q4MDU1ZjkzYWYyMTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViNzc1YTk3ODZiN2U1MTIwY2UyODU4MGIzM2I4ZDY1NzM5M2I3ZDk5OGQ3MGJmZTdkZWNkODEwNTk0NjUxYTkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L151-L154",
+          "version": "repo-lines-v1:sha256:519186503c1deb3f6519d0d7566b2af46b083037cc2b3917b9f0d25dc41d14cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzI3MGJhY2ZlYzc5ZGU3MTcxMmE1OTEwNTQ5N2RmZjQxYTE2ZDVjZGZjYWU1MmRkMmZjZjE2MWZjOTA4NGZiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWJkYmZiNzhkOWJhY2NjYWE2ZmZjODU2NGQ1NWViMjgwZjQ5MDEwMzJjODg1YThjMjJlMjA3ZmVmN2I5NDZjZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjI3ZTA0ZWU5MDI1ZmIxNDFlYmYyZGFhMzU1Y2NlMGFiM2Y3YzI1MjlkZjAyY2U0NjdkYWU5OTBlNjc2ZDQ5NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjU5MmQwMTZkZWI1MGM5ZGZmZWIwODM5NWMyYmQyYjEzODU1ZjgyMGIyYmQyYjc3ZjM3Mzg2Mjc3N2UxMGI0ZiJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L16-L20",
+          "version": "repo-lines-v1:sha256:666587e9924800c701b17dba780ea402a696e68fc6bc7efd52ab8c1b8b5df0f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTVjOWM0ZjczZmJhZTIxOTQ1OTc0MTA3MmQzY2I3Y2UwYjNiMjAyM2MzY2VkMjU3MDIyYzFhODRmNGNlY2QwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjA5MDgzZDYwZTBjNWFlYWNlYzAyZjY1YTgyMjU1YTU2MDRjNGE4MzYyZTRlNWRhOTRjYjZlZGJlNjJhODYyOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODY1ZDZhOTNlNTliZDFjOGY5ZmMxMzQ5ZjczOWQ2Y2YyNjM5OTYzOTQyMzdmNGFiMGIzMjIxZTYxNzhhOWU5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTEwOTFhYjkwZDExMzkzYmUzMDk5MDVmMzM3ZjkwY2U0YWEzNTI3MDgzNjNmN2FiYTM1YmUyZmNmMGNlYTA2YyJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/20261015204955_circle_knowledge.sql#L213-L218",
+          "version": "repo-lines-v1:sha256:2159ec328b2f18f08a60181a550357fc1bb5d4aad1066845495080584ca38991:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTg5ZGEwZmRiYzIxODU5NDgzNTQxOWQ3YmE5YzQ1NTFkODU5MGIxYWUwZWJiZmQzZjkyNDlmNWI2ZWE4ZWYwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTRlNDRmMGFlNWRhYTk0NzIyNzcyZTUxNzQ5YzMyNmFkYjgyYWU3NzE5ZjJiOWE3N2MwMGIyODhjYzU2NTNiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTNjNDhlYzM2OGUyZGZlYzQzMGY3YTFlNjNlMGMyZjRkMTNiNGU1Mjc5MWRhNWI1YjA5MjIzZjczY2QxMzgzMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGY3OGEyMDgxODk3MTgxNzdjYTAxZmY2OGM2MTdlODhhNTliNTY5OGRmMTE4YmRhM2Q3ZjZiMzEzYzFjN2M4NiJ9"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L76-L100",
+          "version": "repo-lines-v1:sha256:82924ca418db99221f228524c9b9226806a9e72deb1101d95c61109d602cffab:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmNGQ3NzZkYzA1NjNjZGFlZDhhMTM0NGZiOWI5MzJhNzZkNDVmZGQwYzdmMzg0MzFlN2U5YWJhNTYxMWRjNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4ZDQ3NTNhMTgwZGY4NjAxN2M0MDczNjViYjM5NTExN2UxODY5MmU5Y2EzNDE4NzQ1NzMxYmQxZDUwYWZiMTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljYjcwMzZhNjgzZjRhYWM4N2E0NmJlNGMyOWYyZjg1ZDIyMTMzMTJhYjFjOTViYzVkMGRlOGIzNTZlOGNkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4NmI4NWExMzFiM2YxZDEzYTE0OWJhM2FjYjhlNTZhZGQ3MjZiNzg2ZTNkY2RhMDgzYjE3NjcwOWI3YjFlOGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5ed24b5565d94c0b90073518c4b39104",
+      "statement": "Circle tests exercise release gating, membership, draft isolation, exact approval, citation privacy/counting, standing-permission limits, moderation, removal, and credential expiry/revocation; preparation tests exercise allocation, sessions, validation, and MCP parity.",
+      "evidence": [
+        {
+          "resource": "repo://backend/circle-knowledge.md#L161-L184",
+          "version": "repo-lines-v1:sha256:5482cba9e8ee996dec16f4cc2dc003330a7dd8042fae707076c805b993c1ddb6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlZDJjZjM2YTNjYWM1Y2VmZjVmY2FiNTdiNmU1NmZkMzg3YWFlYzRjZWEzODQwNDJmNDZlYTYwYjA1NDgxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjY2NhMTBjZDc4ODJhNTViZmNhZTEzMTIyMmQ4YjI0MGNhMjI4OWQ5ODM2MGIzNGQ1ZTcyYTU3OWE3OTc4YjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxYzZjMGM0NzU0NzljMzliMWQ2N2U3NTg1OGYzYjA5MzMxZjU2Mzc3MDA3YWU3NGZmZjkzYjA4MTcyZTYzYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1MjNhMDU3Y2VmOGY2YWM3YjQwNTZkNjNlMTZhYjU2Y2U2YmMxODUxN2FhYmJmODFmNmFlYWEwYWE3MzJlZDIifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L16-L150",
+          "version": "repo-lines-v1:sha256:f348b3500f297e549e7ba32d4df5efff599ebe332a08ba5e9757f38b7664cb56:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmMmU0NWMyZGVkZGM3YTNmMTQxMThhYmMwZmI4ODc0NTM3Zjk4NDU4Yjg1MDBmNTU2Yjc5MjVhY2FkNzJlNzVlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI2MGIyYjcyYzM5NjE5MTM2YWQyMDU1ZTNjMWYwNDE4NDU1ZTM4ZTc3OTlmNmE1ZTcyM2E1ZjRmOGM0YzQ1N2RjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI5YjEwYjU0ODg4MzI1MjRhMTM1ODQwNGEzZjlhYjQ4YWJhMzU2MTg3ZDJmYWZkYzBhNjYyZDAxNjI2M2Q0YWJlIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIyYWY5OTc2NTQ1YzE5MDRjNjM0NmYyZTE3NDg0N2Y2MDE0YTc2MzFkNjdmNjFmMjM0ODFlYTQwMjUyNjBjMGViIn0"
+        },
+        {
+          "resource": "repo://tests/preparation-planner.test.mjs#L15-L104",
+          "version": "repo-lines-v1:sha256:70029d23c45976e70a3a046785c0eafa4f92a885488575aefffa3af0807756cb:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlMzYxMTgyYzI3ODFlM2IyMmZkZTliYWM1ZGQ4YjQzZTdkOTY0NjM3MTE4ZThiYTY4MDkyYjMyYjg1ZDBiMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwYjZlNzZkZWVhMzFkMWE3NDFkYjYyOWRiNjRhM2U0OTM3ODY3MWFlNTcxYmNhNmVmOGQ4ODZiN2RhOTI5YjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}

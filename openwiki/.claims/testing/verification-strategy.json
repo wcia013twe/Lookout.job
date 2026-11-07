@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7e2a27126b59de521b31e5c9cde3f35618b3a170674c1d6606f735397aeba932",
+  "claims": [
+    {
+      "id": "claim_94461a6636ff46bd8488d23608b5ba26",
+      "statement": "The root scripts define `npm test` as `node --test`, `npm run test:db` as the standalone schema scenario import, `npm run validate:data`, `npm run build`, `npm run test:filter`, `npm run test:submission:e2e`, and an intelligence-specific TypeScript check command.",
+      "evidence": [
+        {
+          "resource": "repo://backend/check-schema.mjs#L1-L2",
+          "version": "repo-lines-v1:sha256:22e6e015dfc104725b298af2863e9b95c9df2861296d9e25afdec4cfeed83ae6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDljMDQxNDBhM2YxNGI3MzUwZWIwYzQ1N2M3NzJhYWY0MTY5ODg4NjBiNmEwNTE0MzIyZWI0OTk0MGZlNWUyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVhODY4MzA2MTk3ZTk1OWUzZDI2NjRkOTJkMzAyNTM1YWExZjU5MTBjZjNjNzlkMmQ1NDllYjY5MGMxNjNlOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://package.json#L5-L39",
+          "version": "repo-lines-v1:sha256:fa1da4cd6ff5587374356e002a4b59712c96ef42a5e4bcfd03d49214d9a5c238:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMzNjNTE5OTBlMjQyZmVkNGUxZDY0ODcxY2Q3NGI4NWIxOTNhNTU1YTM3MmY4ZmFjZGViMTc4ODI1YTllNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5YjRmMjFkYjhhOTJiMDhiNjRhZWZkODNiY2FmZGY2ODI4MmNlN2NkYmI5YTEwODkzZmIwZjg1M2UxZjA4MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiNzRjZDc5MDQ4NjdjNmM5MTMyNjE1YWI3Njk3MzJhZDcxNGU4ODlkN2ZiNDkzMzc4NGVhNTA4ZWVmMTM0NWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_72cdaf049c79463a8cdcd6ca2a450e17",
+      "statement": "The PGlite test helper creates disposable roles and Auth-like users, replays SQL migrations in lexical order, and closes the database on setup failure; the database suite resets role/session identity and uses cloned migrated databases for isolated SQL scenarios.",
+      "evidence": [
+        {
+          "resource": "repo://tests/database.test.mjs#L10-L15",
+          "version": "repo-lines-v1:sha256:9b6f04b9da52e52261d0017d20e3cf33be7037dc264f1c73fcd4771807d543bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ0MzEzYjI4NDIwNDhlMTk4ZTI1YzVhMTViZWNkZDhjODg5ZTU0M2EzZmI0MjgxODhhNjc3YmE3YThkMzkyYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTE4ZmY2YmQzMGY5YTIyMWQ5OTdlNDg5ODMyNDU5NGZiYTdhNmRlNDhkNWIwN2YzYTUwN2JjMmQ1YjZhYThhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmZhMThhMDU4MjBjMTQ1N2ZjNTM3MTA1NDI5ZDA1NGZmZTgxNjc2ZTUxODlhNGIwZDU3Yzk4YjI1MTM3Mzg4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzRlMDg5ODU5ZTgwYzRjNDAxZTg1ZTFiMjZiMGFlNzRmZGY1YTg4NGMxNDU1NWQ5YjZlMDBjNzZiMWVkMzk1YiJ9"
+        },
+        {
+          "resource": "repo://tests/database.test.mjs#L85-L93",
+          "version": "repo-lines-v1:sha256:dbd0cbc41f608bc0b1e9b162dd288b1c4741e73bb6ad381d3beec37362a7bc30:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDgxZmVhNTAxOGY1NjZkNjQ0MGI3N2Q4NTZmNzY5NmE0ZGI3NzRmZDY3ZWE0YjQ3OTQ0NDFjNDY3MDNjM2JjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2EzZTQ2Zjk0Mjc2YjZmNmY0ZWQxZjAyYWY3OGJlZjZhMmVlMWM0MzlkZDU1ODRiOTczOTQ4MzEzMjE0ZDJiNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTIxZjFhMTE0NWIwOThmMmRmNzdjNTMxMDE2NzIwNTAxYjAyNDVmM2MyZDE3MWI5MzMyOTAyNDY2OTYxNWVlMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWYyYTU3YmFkNDhkMDgzNjZhYzg4MjgyMjYxY2NkYjk5NGY1ZWU1ZTU4MGIxMWI3ZDNiOTBjNDQ0MzQ2YjcyOSJ9"
+        },
+        {
+          "resource": "repo://tests/helpers/database.mjs#L1-L30",
+          "version": "repo-lines-v1:sha256:51641be1a21babe31ba4524baa18dadc7878c72bc81889679d0c9d2d5fc3184a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhNTRiMmFjMzZkNWZjZjgyZTk3NDIwYjQxNWVmMWU1NDZkNWFiMGJhY2E2MzJhNDg4OWYyMjMzZThkZTg0OTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_11c080aa29cc4287856f454bc9d327b0",
+      "statement": "The database tests verify schema owner isolation, immutable approvals, private storage, and deny trusted context dispatch to authenticated and anonymous roles.",
+      "evidence": [
+        {
+          "resource": "repo://tests/database.test.mjs#L17-L24",
+          "version": "repo-lines-v1:sha256:608e9bf6c6c93862811c7f61d530357481cb3eccef2bdd36a3d16cd6eb848d75:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDI3NDYxNzQ5ZDNiNWQ5YzFmOGU0ODU1ZDE2MGQ4MGEzYmUwMjIyMDI0YmI4MDU1ODQwNTkzYmM4NzcxMWMzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWI0MjQ0MTE3NTg5MmE1M2NhYzNjZGUzZGQzZTgxMDk3MGQ0ZmU5MGNmZThmMjUyZDUzODEzZGZhYmZlMjQ1NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODE1NDU2YzA5MDVlZDRhZjk2MmY0NjdjYTVmMDI0ZDYyZjY5NDhhNjkxY2QyZjY4OGQ2NjMyNjYwMjFhNzA4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDBlOTZhYzI1YjRhZGQwMTg3YTg3ZjY4OWUzZmM4M2E1NjVjMmY0YmY5NzNmYmMyMjA0N2NhYTMyMTdhYWZlMSJ9"
+        },
+        {
+          "resource": "repo://tests/database.test.mjs#L95-L101",
+          "version": "repo-lines-v1:sha256:613edc02224a85ce24d09ee075a2fd42af9b16bbbde695c5d0032a259af6f190:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGRkZmRiN2FmYmU1OGJjNzMzYmUyOWVjZDBjMjIxMTQwMjk1NjE4YTk0YjA5MzRiMGE3MTM2NzhkZGY0ZmQyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmQzNDFlMjA1NjZkNThmOTFmN2VlYjRlOTE4NGQzZGRjMzcyNTdmODc0NTI2YWQ5MzhjNzhlZGYzOWVjMjhhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_dcfc7f1b9291435d904b57439d3dff1a",
+      "statement": "Catalog data validation requires specified job fields, restricts priority and employment type values, and rejects duplicate role IDs or application URLs.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/validate-data.mjs#L1-L17",
+          "version": "repo-lines-v1:sha256:914fc89b4b49c80b8239dbb9e1aacdde82b540bdb09c56245b93b9d1df0a4170:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MTFjMjFmYWZjNDI1ZWRjOWVhNzZjYTJkZDBmY2Q4OWVmMTgzZDI1ZThhZjY5ZDQzMjhhNDc5NTYxNjhmYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlN2M0YjVjZTI4MzkwMWEzYzNlYWNkMjc3MDA3NDJjOWYzOTZlM2U4ZjI4YzkwM2QxYzEyNDBiYWMxM2VhMTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c173e7119766434589a55009f408e58c",
+      "statement": "Cloud-sync tests cover serialized dirty writes, transient retry, account-switch invalidation, in-flight background-read protection, conflict handling without automatic retry, and demo suspension that blocks account reads/writes.",
+      "evidence": [
+        {
+          "resource": "repo://tests/cloud-sync.test.cjs#L113-L168",
+          "version": "repo-lines-v1:sha256:5b83b000471f3bb4e9cd9a768d553c43b77ee9c6c976ada561e6e695ba3086d9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxMzZiMGQ4ODc1NjRhMmUyN2RkNjViZTQ2MTQ5ZDk3OGZiZDczMTJhMGQ2NDQ5ZjViZDdiOGViYjkxNjg0ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MGY4YmY3M2FhNDIwZThiM2FiN2IyYWZlM2I3NGFkYTY4YzJlNTczZjZmNzgzZjJjYjU5M2E4ZWE5NjU1NTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmZTA3NGZlMDRlN2U2NDFmMGZlYmYxMGZhNjBhMTBiNTFiNjE4YzRiMThhNTE0NzBhNGRmM2Q1ZGY5MDZkNWMifQ"
+        },
+        {
+          "resource": "repo://tests/cloud-sync.test.cjs#L224-L248",
+          "version": "repo-lines-v1:sha256:38fc761e83e0a0c6db59e056bb2f0286b8835b2310fbc2c89d7fe51f79e05863:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiMDVmYmYwZTZhNjc3NzczNzk0NWVhMDYxYTE5NDFlYjcxNzcxN2QwNGNiYWRmZWIwODQxM2NlMjI1ZWYyN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4ZjhiNzJlMTE1MjkwOGZkYWU0YjU1MjBkYTE0OTJiNmY4NmRkMmUyMGE4ZjE5ZThlYzZkYjNlYzlmYTdkNGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExODRmYzBhMGFjMmViNDQwZjZhYTlhMGI4MDg3NTM5YmE4ZGQ4NDAyYjY4ZmVkNGNiNDVmYWIzMWM0YWEwMmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwM2ZhYjJiMjlmMGE5NGMyZTRiNTUyZmVlMmNkNzViODY5ZWY2MGVmMmE5ODY0NDNhM2Y5ZjM1MGI2Y2ZjNTYifQ"
+        },
+        {
+          "resource": "repo://tests/cloud-sync.test.cjs#L63-L74",
+          "version": "repo-lines-v1:sha256:afca17e22f40a3f1fcf79944e3644984f69f1981d2c0679ff08576661a15a056:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMGUwMzA3MzM1MDFjYjBlMTYzOGEzMGNlMmM0ZTUzMDBiYzNiYWQwNzk1OWVhNmI0MTY5MDVlZTAxODIzNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0OWQ1MzVhMjdkNjQ1MTNkOGQ5ODg2YTQ3MmZlM2RlZDgzYjgxNDVjYzNhNGRmOTQ4Mzk4MTM0ZjcyOTQ3MmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjYTVjZTBhNWM4NjhmM2JmNjU5YzZjYWEyNTQ5NDVkNDRiZGU1YmNhMjRmMDQyZTM5Nzg5ZmNjYmJjNmNhNjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d18b3e60bd4f4b709d2a861cc824da14",
+      "statement": "The search job pipeline test executes a PGlite-backed worker flow and verifies leased processing persists screenings without applications, marks incomplete source coverage as `partial`, rebuilds a saved shortlist without recollection/duplicate screenings, and rejects success when settings change.",
+      "evidence": [
+        {
+          "resource": "repo://tests/search-job-pipeline.test.mjs#L1-L7",
+          "version": "repo-lines-v1:sha256:26bfeaaea57964d56709d5395837179466222754814103873a5e4966ba4169cf:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjRhYTkwYTQwMGQxODExOGU0ZjBkM2Q0YWZkNDg2OTQyMWE1NWJkOGMxNDc5OWZlN2NhNWMyYjE1MDQ4NDA5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjE3MmYzYWQ5MjAzMGExMzI2ZDJjMjQ2MzdjNjE4ZjM5MzIxNTI0NGExYTY1YzcyMGMyOTVhMjQyNzk2OTdlZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmU1YmE0YTM3YjdkNzE5MmZlYzMyOTE1ZGQzZWUwM2ZhOWE0ZTlkNWI5MDQ3ZmYwYThkZDZhNzZkOGMyZmNmYiJ9"
+        },
+        {
+          "resource": "repo://tests/search-job-pipeline.test.mjs#L32-L77",
+          "version": "repo-lines-v1:sha256:a9e2b0324efde30f9b4f2a27363f4f98360ac88f80e9f061b2431c3c28dd8719:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MDljYzg0MWE5Y2RhNTBiMGRmZjg4MzkwZjdhMTYyYzAwZjE2Y2MxMDMzYWE5NTBhMjcwYjk0M2FhN2QxY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNjE5MGYxMWE5Njk0Mjc2NTc2OGE3NTczN2FiZGRmNjlkMDdmOGQ2ODBiMTc4NDQ4NjFhNDZiYjZiYjBjYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjMDM3NjU0Njk1ZjA2MTc0OTk1YmI4NGJlYjMyMjNkOTE4MjUzZDM1MzAyMGFiZmE1NGUzM2Y5YTgxMTU4MjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0262aa5fb834403dbf036569bd936808",
+      "statement": "Deterministic runner tests require exact reviewed native control values, preflight form bindings before writes, current application/revision matching, owned nonambiguous resume selection, and a unique non-submit Apply entry control.",
+      "evidence": [
+        {
+          "resource": "repo://tests/runner-deterministic.test.mjs#L29-L95",
+          "version": "repo-lines-v1:sha256:828a2eaca904e6cad6f335285af152fc3794a1a1ba7e29725e2d378733e0faaa:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5YWU3ODU1NWJjYTYxMTVhZDdiODQyYjM0Njc3YzNlYTBkNWI4MDNmM2FkOGE4OGU3M2ZhOGNmMWMzNTAxZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlYmQxODMxNTI0ZGY2MjI2MGVmMjUyMDM4NGM4MGMwNjFhNDEyNzk3NDcwMTk2MTJkODllNWYxZDE4MzBiYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhMGE2MjY5ZWI3ODEyZTZjNzJmYzBiMWM4ODc1ZWE3ZGZkNDI1NmRkN2RmZTkzYTM0Mjg3ZTc3YjI2NDI4MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4cfb2dbbea2e48a7b5cde7fa9a37b493",
+      "statement": "Submission tests require authorization derived from current records, a single claim and current click permit before a click, supported observed confirmation before `Submitted`, and no automatic retry after uncertain or duplicate execution; they also reject caller-injected owners, authorization snapshots, and fabricated receipts.",
+      "evidence": [
+        {
+          "resource": "repo://tests/submission.test.mjs#L32-L89",
+          "version": "repo-lines-v1:sha256:5db4aa0576d7225ebec247e3631ad89358d00c55824d2a3fdb087ce419d6abbc:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5Y2RkZTk4MWY0NDAyNzVjODYwMWY3MjNkYTQwMDc5NmMxMTY5Zjc5ODcyMmJhZjFiZGMyY2I1YzBiMzAwMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3YmQ5YmFlN2Q3ZTJkMjNlZGY3NmVkMDdkY2UwOGQxMjllMTMxNTlhNzE4OWE2ODgzYTg4YWQ5ZWViMDA0M2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3Y2ZmM2VkY2JkYjY2ZWRhMjdjNTczZmU2ZDY3Yzk1OTgxMzk0M2E4MmMyNzYzY2EzZDMyZmIzZjczZjU2NTMifQ"
+        },
+        {
+          "resource": "repo://tests/submission.test.mjs#L90-L149",
+          "version": "repo-lines-v1:sha256:f71a3c2af683e7d7721e56c4a84abf06b00f49dffab8db05067caa80cb6525a2:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjMDA3MTc0YmUzOWJlOGUwZWRhNTA5NzZkMmMyYTkzMzI3ZmVlMGUxNjAwYzZmMWRlZjAwMmJhNGY3NjBhODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0NTgyMzAxZjViZjU1MzcxMWViZmVhMjA2OWVmMTY4ZDQ2OTQyZGMyYmViYzM3Nzc5NzNkNWQ3OGZmZTM0YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlNDUwNzA4ZDYyOGZmZTQxYmFiZDZiNjM3YjI3NTU4MDE0OTljYmViMjI2ZTc2YjMwZmIzNDIzOGY2ODMxMjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0b2ba1a72714d4b93be98e0a3b89c50",
+      "statement": "MCP protocol and scope-contract tests verify bearer/origin/protocol rejection, scope-filtered discovery, fixed gateway operation mapping, rejection of injected owner and unknown arguments, mandatory and conditional scope checks before forwarding, and absence of paused/local bypass tools.",
+      "evidence": [
+        {
+          "resource": "repo://tests/mcp-protocol.test.mjs#L103-L130",
+          "version": "repo-lines-v1:sha256:2ce8059cdd80ea1610b29599b7d4474a821cce2a10826cdb3ecc8583cd5acfff:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwZjcyYjM4MjY3ZjMxYzM2YjViZmY4OGEyMjJhMGU4YTJlMTE2YzYyNWIwMGI0ZWM0OTRlNTQwNjVlMzYwYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5ZmFlMzZhZDkwMWFjYzEwOGE1YzM0M2ViOTgxNGU5ZWViM2IzZjNhZGI1YzQwNjE2NTc3ZWI0MzdhMTMxMjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4N2M0YTc0YzBhZmY1MTJlNmIyOTJhYTJhZWVmYTE4NzA1ODU0MWY0NzM0NmJkMjhmOTk1M2U0NWYxYTY3YjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://tests/mcp-protocol.test.mjs#L42-L85",
+          "version": "repo-lines-v1:sha256:dfdadf9588a3348c2e5cb30967ce323054c09a6ffa26c017e7d978fe1557ba5b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjNjRmYmRkYzU0ZmEzZTc4Y2MwM2JhYzg1OTJkNDI2NzIxZTkwYWE2MjE5OTk1OWNlNGFjNzRkOTQ3NWQyMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwN2YyYzdmMjcyOTQxYmVjNDZjODAyMTJhMjY5MWVlMjE3MTNlN2M1ZDVkNDRlZDFhNTA3NGY5NzIwYjA3ZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyMzc0NGU0MTNiNjJiMjllNDFmYzlkOTk0OGI1OWJkYjMzOTI1OWZjODlhMGVlODQ0YWVmMmJmNTQzNjMzYWMifQ"
+        },
+        {
+          "resource": "repo://tests/mcp-scope-contract.test.mjs#L14-L65",
+          "version": "repo-lines-v1:sha256:a7ed4aaeaa9c1e25dc0f55cafb10648c8df07f18cc200e0a514ec351664ad228:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMTcxMDAyZGQ2OGZhZjhlMWY0MzQ2YjFiZGMwNTIyNWVmMDcwOGNhMWE0ZDJkMzNhZjRmNWY4MDk5MDgzNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNmM5MDE1NDVhYWUyMGY3M2ZhOTY0ODg3ZGVhYzM0NWFmNWM4YTFiNmI4YjU1ZTM2MzlkZjJiZWFiMTQ0NGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3NjQ4ZDMyMTM0OTllYjM1NzIwNGJmYTRlNWQwYzhmNDI4MjE5MzlmNjliNjg4MzIwMzYwMWExMDFkY2JhMmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxM2FkZjhiYTZhMzBmYmY0ODVjZWQ1NDk4ODc1YmUzZGMxYTM0MmM1Njk2Yjc4ZGY4NjAwNGEyMWE1YTQxY2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0112dab92141449f84aa57a4bf3f29c4",
+      "statement": "Circle tests verify feature/scope gating, invitation membership, private draft and source boundaries, exact-revision approval before publication, idempotent requests, revocation/removal blocking retries, and fresh in-memory demo state.",
+      "evidence": [
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L132-L151",
+          "version": "repo-lines-v1:sha256:03d9a39e9806d406e35b896a4194b5f224a05b7f83078b755e4d3accd2ae8a9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmZjA3NWY0NGQzMmUxZjgxZWNhMGY0NzJhMDM3N2EzMGQ2Y2EwOTBhY2YxMjIzYTI1YjA4NWZkMDllMjliZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3MTRiMGY1MmRhOWNjZjliNGFhNmZiNGUzODQzYWYwNTA0MzIyYzc2Yjc3MjYwMzUxNmMzNzlkYmZkYjc3ZmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhZTIyY2EyMGQ2NWI3Y2YwM2U4OTIwNjI2ZWQwMWU4YmI3NDNkNjYwYmExZTFkZjczMDkyN2Y5ZGU3NWEzZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmYzJmZTAwMDYwNjdmYjI1NGVmZTM2NGQwZjc5NTdlODJjOTVhNWU4NzliMjdkOWQ1ZGIxNDZiMTQyNjZjOTUifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L154-L175",
+          "version": "repo-lines-v1:sha256:757c484d134ca9d40dea72f0c91b3d3add6ceb06385c61cc5e0a53558c2569f3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMWM4NTYxMTE1Njg0NjllYjFjYzVjNjViOTllY2VkNTFmMGJlODUzOGVhNzBhMmIzNWI0YjQwNDAwMzlhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhZjk5NzY1NDVjMTkwNGM2MzQ2ZjJlMTc0ODQ3ZjYwMTRhNzYzMWQ2N2Y2MWYyMzQ4MWVhNDAyNTI2MGMwZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L27-L75",
+          "version": "repo-lines-v1:sha256:1e5eebaa5282d252529c3beec1fbf4433e0be1c27368221586433c543a7c4f02:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MDkxYWNkOGNhM2EwMjk4ODViMzc4M2YzMzM0NGQ2MTNhMDk2YmUzYzdlZTBiZjg3N2VhMzM5NmVkMTc5ZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwYjJiNzJjMzk2MTkxMzZhZDIwNTVlM2MxZjA0MTg0NTVlMzhlNzc5OWY2YTVlNzIzYTVmNGY4YzRjNDU3ZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5MWRlNDZlMDU4N2FlMWFjMmM2ZGYxZTc1ODhlMTRmMmEyNmMzNmFhYTJiOGI2YWE3OTMyZWU3NDA3ZGY1YzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkZGRmOWMwMGQ4M2E1ZmZlYjNmMDQ4OTE1MWFiYjIwMjBmNjMyMmQ5NjM2ZGRhYTY2ZDI0Y2E0OWFjMzk0NTYifQ"
+        },
+        {
+          "resource": "repo://tests/circle-knowledge.test.mjs#L9-L15",
+          "version": "repo-lines-v1:sha256:96881639c4a93f87ffd905d744c7eefea240b36cb4dcdb37996642a3a710449b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVjODgzMmFlY2IxMGIxMGQ4OTY1MjU5NDZiZTNlZTZkOTE5NzlmODgwNWIxM2U3NTI5MWE2YTkyNmE5ZGI0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDMxMzYzNjE4NGQyM2I3MDI1NGU3MjdmZDM2ODFmMmU5MzY0MjdjY2Y3OGRjZTI4NGNhZDkyZmE2MDk4YTIxMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmJiOWUyYWEyNjlhMjVmYmY3YzcxODA3ODNlYTI2ZDNhMTE4ODRiZmRmZTIwZTJjMGI1MzZhZmFhMDk0NzI3OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_14083844ae8a44219b42176d7813d517",
+      "statement": "Demo-mode tests verify the fictional memory store does not mutate its input or independent snapshots and that onboarding preview fixtures are resettable without creating tracked work.",
+      "evidence": [
+        {
+          "resource": "repo://tests/demo-mode.test.mjs#L1-L25",
+          "version": "repo-lines-v1:sha256:5c53faf74dc10edd9d0da21442dfbd84b2044536b30408414ab831f55a23e42a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwZTIxZTA3MWE0OWFlYWJlNzcyMzQ1ZDUxZjc5ZmM4MjBhYWIyZjE4MjQ5YTFjOWQ2NGUyZTdjOWUxYzhjNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T02:52:01.830Z"
+  }
+}
