@@ -94,3 +94,14 @@
   158-role data validation, desktop/mobile fictional connection creation and custom
   selection checks; no external requests, page errors or mechanical design findings.
 - Limits: no real token issuance or hosted deployment performed in this follow-up.
+
+## Publication architecture figure
+
+- Add native editable diagrams.net XML, matching vector SVG/PDF, shared geometry
+  builder and a source-backed explanation of all 14 major connectors.
+- Group workspace capabilities under one logical boundary; show optional polling,
+  host wake and state-based resumption explicitly. No application code changed.
+- Validation: native XML references/IDs and text widths, embedded SVG source,
+  one-page vector PDF without raster images, color/monochrome visual review,
+  data validation (158 roles), and diff whitespace checks.
+- Limit: no local diagrams.net application; editor import/round-trip is unverified.

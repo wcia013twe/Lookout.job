@@ -1,0 +1,734 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" content="&lt;mxfile host=&quot;app.diagrams.net&quot; agent=&quot;Lookout figure generator&quot; version=&quot;24.7.17&quot;&gt;
+  &lt;diagram id=&quot;lookout-architecture&quot; name=&quot;Lookout architecture&quot;&gt;
+    &lt;mxGraphModel dx=&quot;1800&quot; dy=&quot;1000&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;1800&quot; pageHeight=&quot;1000&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;
+      &lt;root&gt;
+        &lt;mxCell id=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;1&quot; parent=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;title&quot; value=&quot;Lookout: shared workspace for ongoing human-agent workflows&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=30;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;11&quot; width=&quot;930.14&quot; height=&quot;34&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;human&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f3eee6;strokeColor=#8b775f;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;75&quot; width=&quot;270&quot; height=&quot;835&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;human-label&quot; value=&quot;Human&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;93.114&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;agent&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#eaf1f7;strokeColor=#57758e;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;350&quot; y=&quot;75&quot; width=&quot;360&quot; height=&quot;835&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;agent-label&quot; value=&quot;Personal Agent&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;195.71&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;interface&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf2ec;strokeColor=#657d61;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;750&quot; y=&quot;75&quot; width=&quot;290&quot; height=&quot;450&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;interface-label&quot; value=&quot;Lookout Interface&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;interface&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;223.14000000000001&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;workspace&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f1eef7;strokeColor=#77678c;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1080&quot; y=&quot;75&quot; width=&quot;680&quot; height=&quot;450&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;workspace-label&quot; value=&quot;Lookout Workspace&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;workspace&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;253.482&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;infrastructure&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f3f4f5;strokeColor=#78818a;strokeWidth=1.8;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;750&quot; y=&quot;610&quot; width=&quot;1010&quot; height=&quot;300&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;infrastructure-label&quot; value=&quot;Infrastructure&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;22&quot; y=&quot;12&quot; width=&quot;174.026&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;220&quot; height=&quot;155&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user-head&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;21&quot; width=&quot;14&quot; height=&quot;14&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user-icon-body&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;32&quot; y=&quot;35&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;32&quot; y=&quot;55&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user-icon-arms&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;18&quot; y=&quot;44&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;46&quot; y=&quot;44&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;32&quot; y=&quot;38&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user-icon-legs&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;20&quot; y=&quot;64&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;44&quot; y=&quot;64&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;32&quot; y=&quot;55&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user-title&quot; value=&quot;User&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=28;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;12&quot; width=&quot;67.244&quot; height=&quot;32&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user-t0&quot; value=&quot;Goals / preferences&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;73&quot; width=&quot;196.972&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;user-t1&quot; value=&quot;Review decisions&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;user&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;103&quot; width=&quot;174.928&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;290&quot; width=&quot;220&quot; height=&quot;185&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-window&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;18&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-icon-bar&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;15&quot; y=&quot;26&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;51&quot; y=&quot;26&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-dot&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;18.799999999999997&quot; y=&quot;20.80000000000001&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-title&quot; value=&quot;Web UI&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;61&quot; y=&quot;16&quot; width=&quot;96.503&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-t0&quot; value=&quot;Review jobs&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;68&quot; width=&quot;123.58&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-t1&quot; value=&quot;Edit records&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;97&quot; width=&quot;122.37&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;web-t2&quot; value=&quot;Approve / resolve&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;126&quot; width=&quot;176.18200000000002&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;human-note1&quot; value=&quot;Authenticated review&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;23&quot; y=&quot;559&quot; width=&quot;236.334&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;human-note2&quot; value=&quot;and visible progress&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;human&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;23&quot; y=&quot;593&quot; width=&quot;209.516&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;310&quot; height=&quot;205&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-node-a&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;27&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-node-b&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;17&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-node-c&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;40&quot; y=&quot;39&quot; width=&quot;10&quot; height=&quot;10&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-icon-links&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;26&quot; y=&quot;29&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;40&quot; y=&quot;24&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-icon-link2&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;26&quot; y=&quot;35&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;40&quot; y=&quot;42&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-icon-link3&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;45&quot; y=&quot;27&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;45&quot; y=&quot;39&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-title&quot; value=&quot;External agent&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;65&quot; y=&quot;16&quot; width=&quot;191.057&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-t0&quot; value=&quot;Muse / Dots / OpenClaw&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;64&quot; width=&quot;254.251&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-t1&quot; value=&quot;Reasoning and planning&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;94&quot; width=&quot;253.032&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-t2&quot; value=&quot;Private personal context&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;124&quot; width=&quot;251.721&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;reason-t3&quot; value=&quot;Task-specific decisions&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;154&quot; width=&quot;241.44&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;dashed=1;dashPattern=9 6;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;570&quot; width=&quot;310&quot; height=&quot;205&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-term&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;19&quot; width=&quot;36&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-icon-prompt&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;23&quot; y=&quot;27&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;23&quot; y=&quot;37&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;29&quot; y=&quot;32&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-icon-cursor&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;34&quot; y=&quot;38&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;44&quot; y=&quot;38&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-title&quot; value=&quot;Agent host&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;65&quot; y=&quot;19&quot; width=&quot;145.994&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-t0&quot; value=&quot;Schedules (host-owned)&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;68&quot; width=&quot;242.204&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-t1&quot; value=&quot;Optional Lookout watcher&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;97&quot; width=&quot;254.458&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-t2&quot; value=&quot;Count polling + wake&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;126&quot; width=&quot;209.82000000000002&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;host-t3&quot; value=&quot;Host setup required&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17&quot; y=&quot;155&quot; width=&quot;196.972&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;interface&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;240&quot; height=&quot;205&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-term&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;17&quot; width=&quot;36&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-icon-prompt&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;21&quot; y=&quot;25&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;21&quot; y=&quot;35&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;27&quot; y=&quot;30&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-icon-cursor&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;32&quot; y=&quot;36&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;42&quot; y=&quot;36&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-title&quot; value=&quot;MCP server&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;62&quot; y=&quot;17&quot; width=&quot;148.052&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-t0&quot; value=&quot;Auth + scoped calls&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;64&quot; width=&quot;205.077&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-t1&quot; value=&quot;Progressive tools&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;94&quot; width=&quot;181.387&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-t2&quot; value=&quot;Context + guides&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;124&quot; width=&quot;178.236&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-t3&quot; value=&quot;HTTP / stdio adapter&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;154&quot; width=&quot;217.198&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-note1&quot; value=&quot;discover_tools&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;interface&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;299&quot; width=&quot;167.334&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;mcp-note2&quot; value=&quot;progressive tool access&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=21;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;interface&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;331&quot; width=&quot;224.40800000000002&quot; height=&quot;25&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;capabilities&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;workspace&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;70&quot; width=&quot;630&quot; height=&quot;220&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;cap-title&quot; value=&quot;Logical capabilities&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;11&quot; width=&quot;254.10200000000003&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;cap-t0&quot; value=&quot;Job discovery and screening&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;51&quot; width=&quot;309.12800000000004&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;cap-t1&quot; value=&quot;Application preparation and tracking&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;79&quot; width=&quot;387.848&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;cap-t2&quot; value=&quot;Action Board / human review&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;107&quot; width=&quot;311.792&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;cap-t3&quot; value=&quot;Search preferences and resume rules&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;135&quot; width=&quot;406.496&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;cap-t4&quot; value=&quot;Network and Career Toolkit&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;capabilities&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;21&quot; y=&quot;163&quot; width=&quot;297.08&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;domain&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;workspace&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;330&quot; width=&quot;630&quot; height=&quot;92&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;domain-icon-shield&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;domain&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;36&quot; y=&quot;19&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;36&quot; y=&quot;19&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;52&quot; y=&quot;25&quot; /&gt;
+              &lt;mxPoint x=&quot;50&quot; y=&quot;42&quot; /&gt;
+              &lt;mxPoint x=&quot;36&quot; y=&quot;54&quot; /&gt;
+              &lt;mxPoint x=&quot;22&quot; y=&quot;42&quot; /&gt;
+              &lt;mxPoint x=&quot;20&quot; y=&quot;25&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;domain-icon-check&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;domain&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;28&quot; y=&quot;35&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;44&quot; y=&quot;30&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;34&quot; y=&quot;41&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;domain-title&quot; value=&quot;Domain services and policy checks&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=27;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;domain&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;69&quot; y=&quot;10&quot; width=&quot;459.70700000000005&quot; height=&quot;31&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;domain-sub&quot; value=&quot;Versions, scoped writes, durable workflow coordination&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;domain&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;69&quot; y=&quot;50&quot; width=&quot;540.524&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;worker&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;55&quot; width=&quot;285&quot; height=&quot;90&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;worker-q0&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;18&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;worker-q1&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;28&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;worker-q2&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;38&quot; width=&quot;33&quot; height=&quot;6&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;worker-title&quot; value=&quot;Backend workers&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;12&quot; width=&quot;220.306&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;worker-sub&quot; value=&quot;Leased execution queue&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;worker&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;49&quot; width=&quot;255.608&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;db&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;360&quot; y=&quot;55&quot; width=&quot;310&quot; height=&quot;90&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;db-cylinder&quot; value=&quot;&quot; style=&quot;shape=cylinder;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;db&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;19&quot; width=&quot;34&quot; height=&quot;32&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;db-title&quot; value=&quot;Postgres&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;db&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;63&quot; y=&quot;12&quot; width=&quot;116.25399999999999&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;db-sub&quot; value=&quot;Owned workflow records&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;db&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;15&quot; y=&quot;49&quot; width=&quot;256.78100000000006&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;storage&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;720&quot; y=&quot;55&quot; width=&quot;265&quot; height=&quot;90&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;storage-icon-page&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;14&quot; y=&quot;14&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;14&quot; y=&quot;14&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;37&quot; y=&quot;14&quot; /&gt;
+              &lt;mxPoint x=&quot;47&quot; y=&quot;24&quot; /&gt;
+              &lt;mxPoint x=&quot;47&quot; y=&quot;48&quot; /&gt;
+              &lt;mxPoint x=&quot;14&quot; y=&quot;48&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;storage-icon-fold&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;37&quot; y=&quot;14&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;47&quot; y=&quot;24&quot; /&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;37&quot; y=&quot;24&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;storage-icon-text&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;21&quot; y=&quot;32&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;40&quot; y=&quot;32&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;storage-icon-text2&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;storage&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;21&quot; y=&quot;39&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;37&quot; y=&quot;39&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;storage-title&quot; value=&quot;Private Storage&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;storage&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;13&quot; width=&quot;188.4&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;storage-sub&quot; value=&quot;Resumes and documents&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;storage&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;50&quot; width=&quot;254.43600000000004&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;browser&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;25&quot; y=&quot;190&quot; width=&quot;285&quot; height=&quot;90&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;browser-window&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;18&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;browser-icon-bar&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;browser&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;14&quot; y=&quot;26&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;50&quot; y=&quot;26&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;browser-dot&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17.799999999999955&quot; y=&quot;20.799999999999955&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;browser-title&quot; value=&quot;Browser runner&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=26;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;13&quot; width=&quot;198.596&quot; height=&quot;30&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;browser-sub&quot; value=&quot;Inspect / prefill / submit&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;browser&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;49&quot; width=&quot;240.198&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;employer&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;720&quot; y=&quot;190&quot; width=&quot;265&quot; height=&quot;90&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;employer-window&quot; value=&quot;&quot; style=&quot;rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.6;container=1;collapsible=0;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;18&quot; width=&quot;36&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;employer-icon-bar&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;14&quot; y=&quot;26&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;50&quot; y=&quot;26&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;employer-dot&quot; value=&quot;&quot; style=&quot;ellipse;html=0;fillColor=#ffffff;strokeColor=#596671;strokeWidth=1.7;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;17.799999999999955&quot; y=&quot;20.799999999999955&quot; width=&quot;2.4&quot; height=&quot;2.4&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;employer-title&quot; value=&quot;External sites&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=25;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;60&quot; y=&quot;14&quot; width=&quot;167.575&quot; height=&quot;29&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;employer-sub&quot; value=&quot;Boards / employer ATS&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=23;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;14&quot; y=&quot;49&quot; width=&quot;242.751&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;resume-note1&quot; value=&quot;Resume through MCP:&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;42&quot; y=&quot;294&quot; width=&quot;242.116&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;resume-note2&quot; value=&quot;read current state, then act&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;agent&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;42&quot; y=&quot;321&quot; width=&quot;267.922&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;db-details1&quot; value=&quot;Approvals / checkpoints&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;361&quot; y=&quot;236&quot; width=&quot;237.32000000000002&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;db-details2&quot; value=&quot;Execution / audit journals&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;infrastructure&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;361&quot; y=&quot;263&quot; width=&quot;250.78400000000002&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-solid&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;45&quot; y=&quot;947&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;110&quot; y=&quot;947&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-solid-label&quot; value=&quot;Request / response or local execution&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;124&quot; y=&quot;933&quot; width=&quot;406.52&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-dash&quot; value=&quot;&quot; style=&quot;endArrow=none;strokeColor=#596671;strokeWidth=2;dashed=1;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;mxPoint as=&quot;sourcePoint&quot; x=&quot;750&quot; y=&quot;947&quot; /&gt;
+            &lt;mxPoint as=&quot;targetPoint&quot; x=&quot;815&quot; y=&quot;947&quot; /&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;legend-dash-label&quot; value=&quot;Queued work or polling / wake coordination&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=24;fontColor=#263442;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;830&quot; y=&quot;933&quot; width=&quot;465.20000000000005&quot; height=&quot;28&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;footnote&quot; value=&quot;Boundaries are logical responsibilities, not a claim of separately deployed microservices. Wake delivery depends on the agent host.&quot; style=&quot;text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=nowrap;fontFamily=Helvetica;fontSize=22;fontColor=#4a5662;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;45&quot; y=&quot;967&quot; width=&quot;1282.76&quot; height=&quot;26&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;user&quot; target=&quot;web&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A1-label&quot; value=&quot;review / edit&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;177.98250000000002&quot; y=&quot;312&quot; width=&quot;124.035&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.4967741935483871;exitDx=0;exitDy=0;entryX=0.0;entryY=0.375609756097561;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;user&quot; target=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A2-label&quot; value=&quot;delegate&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;283.722&quot; y=&quot;185&quot; width=&quot;92.55600000000001&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.6;exitDx=0;exitDy=0;entryX=0.0;entryY=0.6;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;reason&quot; target=&quot;mcp&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B1-label&quot; value=&quot;calls&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;703.0&quot; y=&quot;230&quot; width=&quot;54.0&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.6;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5590909090909091;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;mcp&quot; target=&quot;capabilities&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;B2-label&quot; value=&quot;results&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1023.0775&quot; y=&quot;230&quot; width=&quot;73.845&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A3&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5405405405405406;exitDx=0;exitDy=0;entryX=0.0;entryY=0.6521739130434783;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;web&quot; target=&quot;domain&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;A3-label&quot; value=&quot;goals / edits / approvals&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;748.6975&quot; y=&quot;465&quot; width=&quot;232.60500000000002&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D0&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;capabilities&quot; target=&quot;domain&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.2777777777777778;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5483870967741935;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;db&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D1-label&quot; value=&quot;records / approvals / checkpoints&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1115.5215&quot; y=&quot;539&quot; width=&quot;318.957&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.7936507936507936;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5094339622641509;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;storage&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;D2-label&quot; value=&quot;files&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1615.331&quot; y=&quot;562&quot; width=&quot;49.338&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;E1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.07142857142857142;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5017543859649123;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;worker&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1150&quot; y=&quot;540&quot; /&gt;
+              &lt;mxPoint x=&quot;918&quot; y=&quot;540&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;E1-label&quot; value=&quot;queue / claim&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;851.5565&quot; y=&quot;567&quot; width=&quot;136.887&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;E2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=0.5017543859649123;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5017543859649123;entryY=0.0;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;worker&quot; target=&quot;browser&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;E2-label&quot; value=&quot;authorized&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;938.9755&quot; y=&quot;764&quot; width=&quot;110.049&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;F1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;browser&quot; target=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;F1-label&quot; value=&quot;forms and confirmations&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1146.965&quot; y=&quot;809&quot; width=&quot;236.07&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;F2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=block;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=1.0;entryY=0.5;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;worker&quot; target=&quot;employer&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1080&quot; y=&quot;710&quot; /&gt;
+              &lt;mxPoint x=&quot;1080&quot; y=&quot;780&quot; /&gt;
+              &lt;mxPoint x=&quot;1745&quot; y=&quot;780&quot; /&gt;
+              &lt;mxPoint x=&quot;1745&quot; y=&quot;845&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;F2-label&quot; value=&quot;public posting sources&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;1165.1235&quot; y=&quot;780&quot; width=&quot;219.75300000000001&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;G1&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.4891304347826087;exitDx=0;exitDy=0;entryX=1.0;entryY=0.47317073170731705;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;domain&quot; target=&quot;host&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1088&quot; y=&quot;450&quot; /&gt;
+              &lt;mxPoint x=&quot;1088&quot; y=&quot;570&quot; /&gt;
+              &lt;mxPoint x=&quot;730&quot; y=&quot;570&quot; /&gt;
+              &lt;mxPoint x=&quot;730&quot; y=&quot;742&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;G1-label&quot; value=&quot;pending-count / change pointers&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;543.9970000000001&quot; y=&quot;532&quot; width=&quot;312.006&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;G2&quot; value=&quot;&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=0;startArrow=none;startFill=0;strokeWidth=2;strokeColor=#596671;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=9 6;exitX=0.0;exitY=0.2682926829268293;exitDx=0;exitDy=0;entryX=0.0;entryY=0.8926829268292683;entryDx=0;entryDy=0;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;host&quot; target=&quot;reason&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; relative=&quot;1&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;360&quot; y=&quot;700&quot; /&gt;
+              &lt;mxPoint x=&quot;360&quot; y=&quot;328&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;G2-label&quot; value=&quot;host wake&quot; style=&quot;text;html=0;fillColor=#ffffff;strokeColor=none;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=21;fontColor=#263442;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry as=&quot;geometry&quot; x=&quot;386.729&quot; y=&quot;572&quot; width=&quot;106.542&quot; height=&quot;27&quot; /&gt;
+        &lt;/mxCell&gt;
+      &lt;/root&gt;
+    &lt;/mxGraphModel&gt;
+  &lt;/diagram&gt;
+&lt;/mxfile&gt;" role="img" aria-labelledby="fig-title fig-desc">
+<title id="fig-title">Lookout architecture</title><desc id="fig-desc">Human edits and approvals persist in the workspace. An optional polling watcher wakes the external personal agent, which resumes through scoped MCP reads. Workspace capabilities are logical modules.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<rect x="40" y="75" width="270" height="835" rx="12" fill="#f3eee6" stroke="#8b775f" stroke-width="1.8"/>
+<rect x="350" y="75" width="360" height="835" rx="12" fill="#eaf1f7" stroke="#57758e" stroke-width="1.8"/>
+<rect x="750" y="75" width="290" height="450" rx="12" fill="#edf2ec" stroke="#657d61" stroke-width="1.8"/>
+<rect x="1080" y="75" width="680" height="450" rx="12" fill="#f1eef7" stroke="#77678c" stroke-width="1.8"/>
+<rect x="750" y="610" width="1010" height="300" rx="12" fill="#f3f4f5" stroke="#78818a" stroke-width="1.8"/>
+<rect x="65" y="145" width="220" height="155" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<circle cx="97" cy="173" r="7" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<polyline points="97,180 97,200" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="83,189 97,183 111,189" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="85,209 97,200 109,209" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="65" y="365" width="220" height="185" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="80" y="383" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="80,391 116,391" fill="none" stroke="#596671" stroke-width="1.6"/>
+<circle cx="85" cy="387" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<rect x="375" y="145" width="310" height="205" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<circle cx="397" cy="177" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<circle cx="420" cy="167" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<circle cx="420" cy="189" r="5" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<polyline points="401,174 415,169" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="401,180 415,187" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="420,172 420,184" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="375" y="645" width="310" height="205" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6" stroke-dasharray="9 6"/>
+<rect x="392" y="664" width="36" height="28" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="398,672 404,677 398,682" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="409,683 419,683" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="775" y="145" width="240" height="205" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="790" y="162" width="36" height="28" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="796,170 802,175 796,180" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="807,181 817,181" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="1105" y="145" width="630" height="220" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="1105" y="405" width="630" height="92" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1141,424 1157,430 1155,447 1141,459 1127,447 1125,430 1141,424" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1133,440 1139,446 1149,435" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="775" y="665" width="285" height="90" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="789" y="683" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="789" y="693" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="789" y="703" width="33" height="6" rx="1" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="1110" y="665" width="310" height="90" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1125,689 1125,711" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1159,689 1159,711" fill="none" stroke="#596671" stroke-width="1.7"/>
+<ellipse cx="1142.0" cy="689" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
+<ellipse cx="1142.0" cy="711" rx="17.0" ry="5" fill="white" stroke="#596671" stroke-width="1.7"/>
+<rect x="1470" y="665" width="265" height="90" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1484,679 1507,679 1517,689 1517,713 1484,713 1484,679" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1507,679 1507,689 1517,689" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1491,697 1510,697" fill="none" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1491,704 1507,704" fill="none" stroke="#596671" stroke-width="1.6"/>
+<rect x="775" y="800" width="285" height="90" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="789" y="818" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="789,826 825,826" fill="none" stroke="#596671" stroke-width="1.6"/>
+<circle cx="794" cy="822" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<rect x="1470" y="800" width="265" height="90" rx="8" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<rect x="1484" y="818" width="36" height="29" rx="2" fill="#ffffff" stroke="#596671" stroke-width="1.6"/>
+<polyline points="1484,826 1520,826" fill="none" stroke="#596671" stroke-width="1.6"/>
+<circle cx="1489" cy="822" r="1.2" fill="#ffffff" stroke="#596671" stroke-width="1.7"/>
+<polyline points="45,947 110,947" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="750,947 815,947" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="175,300 175,365" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="175,300 175,365" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="175,365 171.0,354.0 179.0,354.0 175,365" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="285,222 375,222" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="285,222 375,222" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="375,222 364.0,226.0 364.0,218.0 375,222" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="285,222 296.0,218.0 296.0,226.0 285,222" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="685,268 775,268" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="685,268 775,268" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="775,268 764.0,272.0 764.0,264.0 775,268" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="685,268 696.0,264.0 696.0,272.0 685,268" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1015,268 1105,268" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1015,268 1105,268" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1105,268 1094.0,272.0 1094.0,264.0 1105,268" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1015,268 1026.0,264.0 1026.0,272.0 1015,268" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="285,465 1105,465" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="285,465 1105,465" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1105,465 1094.0,469.0 1094.0,461.0 1105,465" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1420,365 1420,405" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1420,365 1420,405" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1420,405 1416.0,394.0 1424.0,394.0 1420,405" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1280,497 1280,665" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1280,497 1280,665" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1280,665 1276.0,654.0 1284.0,654.0 1280,665" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1280,497 1284.0,508.0 1276.0,508.0 1280,497" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1605,497 1605,665" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1605,497 1605,665" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1605,665 1601.0,654.0 1609.0,654.0 1605,665" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1605,497 1609.0,508.0 1601.0,508.0 1605,497" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1150,497 1150,540 918,540 918,665" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1150,497 1150,540 918,540 918,665" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="918,665 914.0,654.0 922.0,654.0 918,665" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="918,755 918,800" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="918,755 918,800" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="918,800 914.0,789.0 922.0,789.0 918,800" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1060,845 1470,845" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1060,845 1470,845" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1470,845 1459.0,849.0 1459.0,841.0 1470,845" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1060,845 1071.0,841.0 1071.0,849.0 1060,845" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1060,710 1080,710 1080,780 1745,780 1745,845 1735,845" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1060,710 1080,710 1080,780 1745,780 1745,845 1735,845" fill="none" stroke="#596671" stroke-width="2"/>
+<polyline points="1735,845 1746.0,841.0 1746.0,849.0 1735,845" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1060,710 1071.0,706.0 1071.0,714.0 1060,710" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="1105,450 1088,450 1088,570 730,570 730,742 685,742" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="1105,450 1088,450 1088,570 730,570 730,742 685,742" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="685,742 696.0,738.0 696.0,746.0 685,742" fill="none" stroke="#596671" stroke-width="1.7"/>
+<polyline points="375,700 360,700 360,328 375,328" fill="none" stroke="#ffffff" stroke-width="7"/>
+<polyline points="375,700 360,700 360,328 375,328" fill="none" stroke="#596671" stroke-width="2" stroke-dasharray="9 6"/>
+<polyline points="375,328 364.0,332.0 364.0,324.0 375,328" fill="none" stroke="#596671" stroke-width="1.7"/>
+<text x="40" y="39" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#263442">Lookout: shared workspace for ongoing human-agent workflows</text>
+<text x="62" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Human</text>
+<text x="372" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Personal Agent</text>
+<text x="772" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Lookout Interface</text>
+<text x="1102" y="111" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Lookout Workspace</text>
+<text x="772" y="646" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Infrastructure</text>
+<text x="125" y="183" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#263442">User</text>
+<text x="80" y="238" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Goals / preferences</text>
+<text x="80" y="268" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Review decisions</text>
+<text x="126" y="406" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Web UI</text>
+<text x="80" y="453" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Review jobs</text>
+<text x="80" y="482" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Edit records</text>
+<text x="80" y="511" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Approve / resolve</text>
+<text x="63" y="655" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700" fill="#263442">Authenticated review</text>
+<text x="63" y="689" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">and visible progress</text>
+<text x="440" y="186" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">External agent</text>
+<text x="392" y="230" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Muse / Dots / OpenClaw</text>
+<text x="392" y="260" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Reasoning and planning</text>
+<text x="392" y="290" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Private personal context</text>
+<text x="392" y="320" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Task-specific decisions</text>
+<text x="440" y="689" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Agent host</text>
+<text x="392" y="733" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Schedules (host-owned)</text>
+<text x="392" y="762" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Optional Lookout watcher</text>
+<text x="392" y="791" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Count polling + wake</text>
+<text x="392" y="820" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Host setup required</text>
+<text x="837" y="186" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">MCP server</text>
+<text x="790" y="230" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Auth + scoped calls</text>
+<text x="790" y="260" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Progressive tools</text>
+<text x="790" y="290" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Context + guides</text>
+<text x="790" y="320" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">HTTP / stdio adapter</text>
+<text x="775" y="395" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700" fill="#263442">discover_tools</text>
+<text x="775" y="425" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">progressive tool access</text>
+<text x="1126" y="181" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Logical capabilities</text>
+<text x="1126" y="218" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Job discovery and screening</text>
+<text x="1126" y="246" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Application preparation and tracking</text>
+<text x="1126" y="274" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Action Board / human review</text>
+<text x="1126" y="302" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Search preferences and resume rules</text>
+<text x="1126" y="330" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Network and Career Toolkit</text>
+<text x="1174" y="440" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263442">Domain services and policy checks</text>
+<text x="1174" y="475" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Versions, scoped writes, durable workflow coordination</text>
+<text x="835" y="701" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Backend workers</text>
+<text x="789" y="735" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Leased execution queue</text>
+<text x="1173" y="701" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Postgres</text>
+<text x="1125" y="735" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Owned workflow records</text>
+<text x="1530" y="701" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#263442">Private Storage</text>
+<text x="1484" y="735" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Resumes and documents</text>
+<text x="835" y="837" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#263442">Browser runner</text>
+<text x="789" y="870" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Inspect / prefill / submit</text>
+<text x="1530" y="837" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#263442">External sites</text>
+<text x="1484" y="870" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#263442">Boards / employer ATS</text>
+<text x="392" y="389" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#263442">Resume through MCP:</text>
+<text x="392" y="416" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">read current state, then act</text>
+<text x="1111" y="866" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Approvals / checkpoints</text>
+<text x="1111" y="893" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#263442">Execution / audit journals</text>
+<text x="124" y="955" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Request / response or local execution</text>
+<text x="830" y="955" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#263442">Queued work or polling / wake coordination</text>
+<text x="45" y="987" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#4a5662">Boundaries are logical responsibilities, not a claim of separately deployed microservices. Wake delivery depends on the agent host.</text>
+<rect x="178.98250000000002" y="313" width="122.035" height="27" fill="white"/>
+<text x="183.98250000000002" y="334" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">review / edit</text>
+<rect x="284.722" y="186" width="90.55600000000001" height="27" fill="white"/>
+<text x="289.722" y="207" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">delegate</text>
+<rect x="704.0" y="231" width="52.0" height="27" fill="white"/>
+<text x="709.0" y="252" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">calls</text>
+<rect x="1024.0775" y="231" width="71.845" height="27" fill="white"/>
+<text x="1029.0775" y="252" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">results</text>
+<rect x="749.6975" y="466" width="230.60500000000002" height="27" fill="white"/>
+<text x="754.6975" y="487" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">goals / edits / approvals</text>
+<rect x="1116.5215" y="540" width="316.957" height="27" fill="white"/>
+<text x="1121.5215" y="561" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">records / approvals / checkpoints</text>
+<rect x="1616.331" y="563" width="47.338" height="27" fill="white"/>
+<text x="1621.331" y="584" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">files</text>
+<rect x="852.5565" y="568" width="134.887" height="27" fill="white"/>
+<text x="857.5565" y="589" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">queue / claim</text>
+<rect x="939.9755" y="765" width="108.049" height="27" fill="white"/>
+<text x="944.9755" y="786" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">authorized</text>
+<rect x="1147.965" y="810" width="234.07" height="27" fill="white"/>
+<text x="1152.965" y="831" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">forms and confirmations</text>
+<rect x="1166.1235" y="781" width="217.75300000000001" height="27" fill="white"/>
+<text x="1171.1235" y="802" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">public posting sources</text>
+<rect x="544.9970000000001" y="533" width="310.006" height="27" fill="white"/>
+<text x="549.9970000000001" y="554" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">pending-count / change pointers</text>
+<rect x="387.729" y="573" width="104.542" height="27" fill="white"/>
+<text x="392.729" y="594" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#263442">host wake</text>
+</svg>
