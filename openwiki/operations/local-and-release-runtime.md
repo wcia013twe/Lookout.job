@@ -204,6 +204,21 @@ Choose checks by changed deployment unit:
 
 Keep test identities and data disposable, keep secret files ignored, and reconcile durable state after an interrupted write rather than assuming a timeout failed. The release boundary exists to prevent a static frontend change, a local Docker proof, or a source-level test from being mistaken for deployment of privileged backend behavior.
 
+## Personal GCP hosting option
+
+[`infra/gcp/README.md`](../../infra/gcp/README.md) documents an optional single-VM
+deployment for the existing Node API/MCP and queued discovery worker. Terraform
+owns dedicated Compute Engine networking, IAP-only SSH, a static IPv4 address and
+an Ubuntu VM. A separate committed-source upload builds the Docker image on the
+VM and runs Caddy for HTTPS. Server credentials are uploaded over SSH separately
+and do not enter Terraform state or VM metadata. GitHub Pages and hosted Supabase
+remain separate deployment units; this option does not migrate accounts, run
+Supabase migrations, supply a personal agent scheduler or verify browser submission.
+The static build can consume the public API/MCP repository variables after the
+hosted endpoints pass authenticated verification. This is locally validated
+deployment configuration, not evidence of a live GCP release. Existing detached
+demo fixtures and MCP actions are unchanged; no new product action is introduced.
+
 ## Focused startup reliability update
 
 `make dev`/`up`, `services` and `frontend` now use `scripts/local-startup.mjs`.

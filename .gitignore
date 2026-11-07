@@ -3,6 +3,14 @@ node_modules/
 /out/
 /.sites-runtime/
 
+# Local Terraform plans, state and configuration. Commit provider lockfiles.
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+/infra/gcp/terraform.tfvars
+/infra/gcp/*.tfplan
+/infra/gcp/crash.log
+
 
 supabase/.temp/
 
