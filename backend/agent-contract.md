@@ -559,6 +559,20 @@ Gateway/MCP release and migration deployment are required before connected
 production agents can discover/use the tool. Local source/tests are not a hosted
 availability claim. Refresh tool discovery on the new developer context version.
 
+## Security clearance search preference
+
+Job preferences → Eligibility stores the exact question `Would you like to see
+roles that require top security clearance?` under the `Eligibility` heading in
+the existing versioned profile instructions. Website editing and MCP
+`save_search_profile`/`save_search_document` share the same validation. `Yes`
+allows these roles alongside other roles; `No` asks the search agent to exclude
+roles with an evidenced top security clearance requirement. Blank means No
+preference. It does not assert a clearance, citizenship or applicant eligibility,
+and does not answer employer application questions. Previously saved free-text
+`Skill preferences` / `Security clearance` instructions remain preserved in
+Advanced instructions. This setting does not add a deterministic catalog gate;
+search agents must read the profile instructions and verify posting evidence.
+
 ## Application preferences and compact handoff
 
 The existing versioned job profile includes optional `Application answers` labeled
