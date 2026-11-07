@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastRun": "2026-11-06 midday zero2sudo story check (staged 2026-11-06)",
+  "lastRun": "2026-11-06 evening zero2sudo story check (staged 2026-11-06)",
   "roles": [
     {
       "id": "doordash-software-engineer-storage-8024644",
@@ -3638,6 +3638,24 @@
       "applicationStatus": "New",
       "discoverySource": "midday zero2sudo story check 2026-11-06, staged 2026-11-06",
       "verification": "Verified live 2026-11-06 on Zoox Lever: 'Software Engineer Intern, Software Platforms & Product [Summer 2027]', Foster City CA hybrid, B.S./M.S./Ph.D., expected graduation Fall 2027-Summer 2028, $6,500-$9,500/month, no deadline shown.",
+      "verifiedDate": "2026-11-06"
+    },
+    {
+      "id": "moodys-applied-ai-analytics-summer-intern",
+      "company": "Moody's",
+      "title": "Applied AI & Analytics Summer Intern",
+      "employmentType": "Internship",
+      "location": "Newark, NJ",
+      "category": "ML systems & AI infrastructure",
+      "priority": "Strong Consider",
+      "postedDate": null,
+      "discoveredDate": "2026-11-06",
+      "sourceFreshness": "Evening zero2sudo story Nov 6, 2026; verified live Nov 6, 2026",
+      "whyItFits": "Applied AI intern on Moody's Insurance Data Platform team, Newark, June 7-Aug 13, 2027. Scope gate passed on the duties read: building AI solutions with language models, RAG, model evaluation and agentic tooling, plus predictive models for job runtimes and queue wait times. Eligibility fits his Dec 2027 internship framing: graduation Dec 2027-June 2028, currently pursuing CS, Data Science, Statistics, Applied Math, Operations Research or related quantitative discipline. $35/hr. Urgency: applications accepted Nov 6-20, 2026. Moody's is not in his tier lists (Common); boarded on direct applied-ML/AI lane fit.",
+      "applicationUrl": "https://careers.moodys.com/en/job/newark/applied-ai-and-analytics-summer-intern/49841/102920026464",
+      "applicationStatus": "New",
+      "discoverySource": "evening zero2sudo story check 2026-11-06, staged 2026-11-06",
+      "verification": "Verified live 2026-11-06 on Moody's careers: Job ref 14580, Newark, $35/hr, graduation Dec 2027-June 2028, program June 7-Aug 13, 2027, applications Nov 6-20, 2026. Duties confirm building AI solutions (LLMs, RAG, agentic tooling, predictive models); scope gate passed.",
       "verifiedDate": "2026-11-06"
     }
   ]
