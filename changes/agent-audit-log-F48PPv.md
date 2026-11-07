@@ -57,3 +57,13 @@
   production frontend build; desktop/mobile fictional browser interactions for
   basic preference edits, single résumé selection and both submission modes;
   no external account requests, page errors or mechanical design findings.
+
+## Restore the previous job-preferences UI
+
+- Restore the existing detailed preferences editor, including priority choices,
+  career tradeoffs, profile rules and advanced instructions. Keep company tiers
+  hidden as requested; preserve one profile, one selected résumé and the submission toggle.
+- No backend, database or saved preference changes in this follow-up.
+- Validation: frontend typecheck and production build; 940 tests passed, 5 paused
+  Community tests skipped; 158 catalog roles validated; desktop/mobile demo checks
+  passed with no external requests or page errors.

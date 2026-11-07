@@ -1,6 +1,5 @@
 "use client";
 import {SINGLE_PROFILE_UI} from "../../lib/single-profile.mjs";
-import SimpleJobPreferences from "./simple-job-preferences";
 import { useState } from "react";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, secondary } from "./ui";
@@ -158,7 +157,7 @@ function SearchProfileEditor() {
           </select>{field.conflict && <span className="text-xs text-board-muted">Resolve duplicate lines in Advanced instructions.</span>}</Field>;
         })}</div> : <ProfileValues items={priorities.map(key => ({label:key,value:value("How to Evaluate Opportunities",key) || "No preference"}))}/>}
       </ProfileSection>
-      <ProfileSection title="Company priorities" resetKey={profile.id} disabled={busy}>
+      {!SINGLE_PROFILE_UI && <ProfileSection title="Company priorities" resetKey={profile.id} disabled={busy}>
         {editing => <>
           <p className="mb-5 text-sm text-board-muted">Tiers guide company priority; the role and team still determine fit.</p>
           {editing ? <>
@@ -170,7 +169,7 @@ function SearchProfileEditor() {
             <div className="mt-5"><TierLists selectedListId={tierExists ? tierField.value : undefined} onSelectList={selectTierList}/></div>
           </> : <ProfileValues items={[{label:"Company tier list",value:tierField.conflict ? "Conflicting selections — review Advanced instructions" : tierField.value ? w.state.workflow.tierLists.find((list:{id:string}) => list.id === tierField.value)?.name || "Previously selected list unavailable" : "No tier list selected"}]}/>}
         </>}
-      </ProfileSection>
+      </ProfileSection>}
       <ProfileSection title="Career goals & tradeoffs" resetKey={profile.id} disabled={busy}>
         {editing => editing ? <div className="space-y-5">{careerFields.map(key => textField("Career goals & tradeoffs",key,key === "Career goals" ? "What should your next role help you achieve?" : "What would justify lower pay, relocation, or a change in timing?",true))}</div> : <ProfileValues items={careerFields.map(key => ({label:key,value:value("Career goals & tradeoffs",key),wide:true}))}/>}
       </ProfileSection>
@@ -204,5 +203,5 @@ function SearchProfileEditor() {
 }
 export default function SearchProfiles() {
   const { profile } = useApplicationProfile();
-  return SINGLE_PROFILE_UI ? <SimpleJobPreferences key={profile.id}/> : <SearchProfileEditor key={profile.id} />;
+  return <SearchProfileEditor key={profile.id} />;
 }

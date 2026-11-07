@@ -52,14 +52,18 @@ try{
   await page.screenshot({path:`/private/tmp/lookout-scope-profile-${viewport.width}.png`});
   if(viewport.width<640)await page.locator('select').filter({has:page.locator('option[value="preferences"]')}).selectOption('preferences');
   else await page.getByRole('button',{name:'Job preferences',exact:true}).click();
-  await page.getByRole('button',{name:'Edit Search preferences',exact:true}).click();
+  await page.getByRole('button',{name:'Edit Roles & experience',exact:true}).click();
   await page.getByRole('textbox',{name:'Roles',exact:true}).fill('Backend Engineer');
-  await page.getByRole('combobox',{name:'Job type',exact:true}).selectOption('Full-time');
-  await page.getByRole('textbox',{name:'Locations',exact:true}).fill('New York');
-  assert.equal(await page.getByRole('combobox',{name:/priority$/}).count(),0);
+  await page.getByRole('textbox',{name:'Employment',exact:true}).fill('Full-time');
+  await page.getByRole('combobox',{name:'Roles priority',exact:true}).selectOption('Required');
   assert.equal(await page.getByRole('heading',{name:'Company priorities',exact:true}).count(),0);
-  await page.getByRole('button',{name:'Finish editing Search preferences',exact:true}).click();
-  await page.getByText('Backend Engineer',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Finish editing Roles & experience',exact:true}).click();
+  await page.getByText('Backend Engineer · Required',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Edit Location & working style',exact:true}).click();
+  await page.getByRole('textbox',{name:'Location',exact:true}).fill('New York');
+  await page.getByRole('button',{name:'Finish editing Location & working style',exact:true}).click();
+  await page.getByText(/^New York(?: · (?:Required|Preferred|Flexible))?$/).waitFor();
+  for(const name of ['What you value','Career goals & tradeoffs','Profile rules','Advanced instructions'])await page.getByRole('heading',{name,exact:true}).waitFor();
   await page.screenshot({path:`/private/tmp/lookout-simple-preferences-${viewport.width}.png`});
   if(viewport.width<640)await page.locator('select').filter({has:page.locator('option[value="about"]')}).selectOption('about');
   else await page.getByRole('button',{name:'About me',exact:true}).click();
@@ -79,5 +83,5 @@ try{
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   assert.deepEqual(calls,[]);assert.deepEqual(errors,[]);await context.close();
  }
- console.log('Passed desktop/mobile: core navigation, single profile/resume, simple preferences, submission mode toggle, no tiers/packs/appearance/XP/Circles settings, paused direct routes, no external requests or page errors.');
+ console.log('Passed desktop/mobile: core navigation, single profile/resume, restored detailed preferences, submission mode toggle, no tiers/packs/appearance/XP/Circles settings, paused direct routes, no external requests or page errors.');
 }finally{await browser?.close();await new Promise(done=>server.close(done));}
