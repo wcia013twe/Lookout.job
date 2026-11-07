@@ -97,7 +97,7 @@ sequenceDiagram
 
 *From queued work through a fenced worker and source checkpoints to version-fenced shortlist completion and agent-owned batch publication.*
 
-The worker rotates configured sources deterministically from the durable run ID, while prioritizing aggregate defaults. It scans no more than ten sources per job. A source is checkpointed after collection as `completed` only with exhaustive coverage; otherwise it is `blocked` with coverage, counts, diagnostics, and a human-readable blocker. Remaining configured sources beyond the ten-source sample are explicitly truncated, not silently skipped.
+The worker rotates configured sources deterministically from the durable run ID, while prioritizing aggregate defaults. It scans all configured run sources with up to ten concurrent source tasks. A source is checkpointed after collection as `completed` only with exhaustive coverage; otherwise it is `blocked` with coverage, counts, diagnostics, and a human-readable blocker. Completed sources are skipped on retry; pending and blocked sources are attempted again. Provider-specific page, request and result budgets still report partial coverage.
 
 `fetchSource` chooses a supported aggregate adapter or invokes copied CareerOps code in a sanitized child process. The child has no agent, Supabase, cloud, proxy, or user credentials; it has a 384 MiB heap, a 120-second task budget, and a 16 MiB output limit. A source is requested with at most 25 leads. Observations are saved in transactions of at most 25 rows and 48,000 encoded bytes; an oversized single observation fails rather than escaping the transaction bound.
 
@@ -127,7 +127,7 @@ On a retry of an already completed run, the pipeline can reconstruct the shortli
 
 ## Screening and deduplication are version-fenced
 
-After source collection, the worker re-reads profile and personal-context versions. If either differs from the collection snapshot, it stops with “settings changed” rather than combining old collection with new requirements. It pages no more than 250 discoveries into the shortlist pipeline, processes screening in groups of ten, and derives a stable screening event key from the run, current versions, and listing/observation IDs.
+After source collection, the worker re-reads profile and personal-context versions. If either differs from the collection snapshot, it stops with “settings changed” rather than combining old collection with new requirements. It pages all persisted discoveries into the shortlist pipeline, processes screening in groups of ten, and derives a stable screening event key from the run, current versions, and listing/observation IDs.
 
 `screenSearchDiscoveries` first looks up the same screening request for replay. Otherwise it reloads the owned run/context/listings, passes only the requested listings and portal projection to `filter-discovery`, validates the returned result contract, and commits each decision with its expected screening version plus the expected personal and profile versions. An eligible decision requires an active employer observation, actual location, and resolved required checks; unknowns are review-needed and do not prove candidate facts or authorize applying.
 

@@ -35,3 +35,13 @@ test('discovery guide resolves dependencies and explains interruption, uncertain
 test('fictional search memory is resettable and contains no real accounts or execution',async()=>{
  const {searchDemo}=await import('../lib/search/demo.mjs');const a=searchDemo(),b=searchDemo();a.documents[0].content='edited';assert.notEqual(b.documents[0].content,'edited');assert.equal(b.runs.find(r=>r.id==='demo-run').state,'partial');assert.equal(b.listings[0].screening.decision,'review-needed');assert.equal(b.listings[0].observation.employer_posted_at,null);assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.coverage==='inaccessible'));assert(b.runs.find(r=>r.id==='demo-run').sources.some(s=>s.source_id==='portal:demo-aggregate'&&s.blocker.includes('employer application link is unresolved')));const context=searchResponse('search.context',{documents:b.documents,profile:null});assert(context.sourceTemplates.some(s=>s.id==='hiringcafe'));assert(b.documents.find(d=>d.kind==='portals').projection.tracked_companies.every(s=>s.careers_url.startsWith('https://example.com/')));
 });
+
+
+test('fictional search demo shows complete source traversal beyond ten and preserves blocked coverage',async()=>{
+ const {searchDemo}=await import('../lib/search/demo.mjs');
+ const data=searchDemo(),run=data.runs.find(r=>r.id==='demo-run');
+ const sources=data.documents.find(d=>d.kind==='portals').projection.tracked_companies;
+ assert.equal(sources.length,12);
+ assert(sources.every(source=>run.sources.some(s=>s.source_id==='portal:'+source.id&&s.state==='completed')));
+ assert.equal(run.state,'partial');assert.match(run.summary,/No external requests/);
+});

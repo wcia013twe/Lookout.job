@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {executeCareerTask} from '../runner/career-tools.mjs';
 import {fetchSource} from '../backend/runtime/ats.ts';
-import {listingBatches,executeSearch,workOnce,workerDiagnostics} from '../backend/runtime/worker.ts';
+import {listingBatches,scanAllSources,executeSearch,workOnce,workerDiagnostics} from '../backend/runtime/worker.ts';
 import {createDispatch} from '../backend/runtime/service.ts';
 import {createApi} from '../backend/runtime/api.ts';
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
@@ -95,4 +95,48 @@ test('Node API routes approved queue and skill reads directly to SQL while legac
     assert.equal((await fetch(base+'/v1/operations',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,401);
     assert.equal((await fetch(base+'/mcp',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://evil.example'},body:'{}'})).status,403);
   }finally{await new Promise(resolve=>api.close(resolve));}
+});
+
+
+test('source pool scans the whole catalog with ten concurrent fetches',async()=>{
+ let active=0,peak=0;const visited=[];
+ await scanAllSources(Array.from({length:27},(_,i)=>i),async id=>{
+  active++;peak=Math.max(peak,active);
+  await new Promise(resolve=>setTimeout(resolve,2));visited.push(id);active--;
+ });
+ assert.equal(peak,10);assert.equal(active,0);assert.deepEqual(visited.sort((a,b)=>a-b),Array.from({length:27},(_,i)=>i));
+});
+test('source pool drains in-flight work before returning a failure',async()=>{
+ let active=0;
+ await assert.rejects(scanAllSources([0,1,2],async id=>{
+  active++;try{if(id===0)throw Error('lease expired');await new Promise(resolve=>setTimeout(resolve,10));}finally{active--;}
+ },2),/lease expired/);
+ assert.equal(active,0);
+});
+test('worker fetches and checkpoints sources beyond the former ten-source sample',async()=>{
+ const sources=Array.from({length:23},(_,i)=>({source_id:'portal:'+i,source:{name:'Employer '+i,careers_url:'https://example.com/'+i},version:0,state:i===0?'completed':'pending',coverage:i===0?'exhaustive':null}));
+ const h=harness(sources);const fetched=[];
+ const execute=async(task,input)=>{
+  if(task==='inspect-discovery-filters')return {ready:true};
+  if(task==='discovery'){fetched.push(input.target.id);return {status:'ok',available:0,truncated:false,jobs:[]};}
+  if(task==='verify-discovery-leads')return {jobs:[],diagnostics:[]};
+  if(task==='dedup-discovery')return [];
+  throw Error('Unexpected task '+task);
+ };
+ const result=await executeSearch(job,h.dispatch,{execute});
+ assert.equal(fetched.length,22);assert(fetched.includes('portal:22'));assert(!fetched.includes('portal:0'));
+ assert.equal(h.calls.filter(c=>c.operation==='search.progress').length,22);
+ assert.equal(result.status,'completed');
+});
+
+
+test('retry identity pagination reads beyond the old 5000-observation ceiling',async()=>{
+ const h=harness([]);let pages=0;
+ const dispatch=async(operation,payload)=>{
+  if(operation==='search.discoveries.read'&&!payload.purpose){pages++;return {listings:[],nextOffset:payload.offset<5100?payload.offset+100:null};}
+  return h.dispatch(operation,payload);
+ };
+ const execute=async task=>task==='inspect-discovery-filters'?{ready:true}:[];
+ await executeSearch({...job,search_run_id:h.run.id},dispatch,{execute});
+ assert.equal(pages,52);
 });
