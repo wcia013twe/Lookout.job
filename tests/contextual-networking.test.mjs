@@ -1,3 +1,4 @@
+import {readGuide} from '../supabase/functions/agent-gateway/guides.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 

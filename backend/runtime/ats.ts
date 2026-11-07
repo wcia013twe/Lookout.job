@@ -8,19 +8,20 @@ export type Execute=(task:string,input:Payload,options?:{signal?:AbortSignal})=>
 export type VerificationBatch=(result:SourceResult,progress:{processed:number;batchIndex:number;available:number;examined:number})=>Promise<void>;
 // Public identity metadata only enters the existing sanitized CareerOps child.
 // No provider, URL normalization or deduplication implementation lives here.
-export async function fetchSource(sourceId:string,source:Payload,{execute=executeCareerTask,previous=[],profile={},days=3,request=fetch,signal,onBatch}: {execute?:Execute;previous?:Payload[];profile?:Payload;days?:number;request?:typeof fetch;signal?:AbortSignal;onBatch?:VerificationBatch}={}):Promise<SourceResult>{
+export async function fetchSource(sourceId:string,source:Payload,{execute=executeCareerTask,previous=[],profile={},days=3,request=fetch,signal,onBatch,prefilter=false}: {execute?:Execute;previous?:Payload[];profile?:Payload;days?:number;request?:typeof fetch;signal?:AbortSignal;onBatch?:VerificationBatch;prefilter?:boolean|Payload}={}):Promise<SourceResult>{
  let checkpointFailed=false;
  try{
   signal?.throwIfAborted();
   const collected=await collectSource(sourceId,source,{execute,profile,days,request});
   if(collected.coverage==='inaccessible')return {listings:[],coverage:'inaccessible',total:collected.total,examined:collected.examined,blocker:collected.blocker,diagnostics:collected.diagnostics,provenance:collected.provenance};
-  const unique=collected.jobs.length?await deduplicate(collected.jobs,previous,execute):[];
+  const candidates=prefilter&&collected.jobs.length?await execute('prefilter-discovery',{profile,jobs:collected.jobs,config:prefilter===true?undefined:prefilter}):collected.jobs;
+  const unique=candidates.length?await deduplicate(candidates,previous,execute):[];
   const checked=await verifySourceBatches(sourceId,unique,{execute,source,signal,onBatch:onBatch?async(result,progress)=>{try{await onBatch(result,{...progress,available:collected.total,examined:collected.examined});}catch(error){checkpointFailed=true;throw error;}}:undefined});
   return {...checked,total:collected.total,examined:collected.examined,
    coverage:collected.coverage==='exhaustive'?checked.coverage:'truncated',
    blocker:[collected.blocker,checked.blocker].filter(Boolean).join(' '),
    diagnostics:[...(collected.diagnostics||[]),...(checked.diagnostics||[])],
-   provenance:{...collected.provenance,...checked.provenance,dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'}};
+   provenance:{...collected.provenance,...checked.provenance,prefilterExcluded:collected.jobs.length-candidates.length,dedup:'dedup-tracker.mjs',identity:'scan.mjs isOfferSeen/markOfferSeen'}};
  }catch(error){if(checkpointFailed)throw error;signal?.throwIfAborted();return {listings:[],coverage:'inaccessible',blocker:'Source collection failed: '+(error instanceof Error?error.message:'provider unavailable'),total:0};}
 }
 

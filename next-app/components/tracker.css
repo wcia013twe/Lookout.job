@@ -14,9 +14,14 @@
 .tracker-header-tabs>span {font-size:12px;font-weight:700;color:var(--color-board-muted);}
 .tracker-header-tabs button {min-height:46px;border-bottom:2px solid transparent;font-weight:600;color:var(--color-board-muted);}
 .tracker-header-tabs button[aria-pressed=true] {color:var(--color-board-accent);border-bottom-color:var(--color-board-accent);}
-.tracker-filters {display:grid;grid-template-columns:minmax(0,1fr) 170px 170px;gap:12px;}
+.tracker-filters {display:flex;align-items:center;gap:12px;}
+.tracker-filters>input {flex:1;}
+.tracker-filter-options {display:flex;align-items:center;gap:4px;}
+.tracker-surface .tracker-filter-options select {width:auto;max-width:160px;background:transparent;border-color:transparent;font-size:14px;padding-inline:8px;}
+.tracker-filter-options select:hover {background:var(--color-board-tag);}
+.tracker-filter-options select:focus-visible {outline:2px solid var(--color-board-accent);outline-offset:2px;}
 
-.tracker-list-meta {display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--color-board-muted);font-size:12px;margin:18px 0;}
+.tracker-list-meta {display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--color-board-muted);font-size:12px;margin:12px 0;}
 .tracker-list-meta p {display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .tracker-counter {border:1px solid var(--color-board-line);border-radius:6px;padding:3px 7px;background:var(--color-board-tag);color:var(--color-board-muted);}
 .tracker-list-meta>span {margin-left:auto;}
@@ -91,9 +96,11 @@
  .tracker-header-tabs {gap:14px;margin-top:6px;}
  .tracker-header-tabs>span {flex-basis:100%;}
  .tracker-header-tabs button {min-width:44px;}
- .tracker-filters {grid-template-columns:1fr 1fr;gap:8px;}
+ .tracker-filters {flex-direction:column;align-items:stretch;gap:4px;}
+ .tracker-filter-options {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
+ .tracker-surface .tracker-filter-options select {width:100%;max-width:none;font-size:16px;padding-inline:4px;}
  .tracker-surface input,.tracker-surface select,.tracker-surface textarea {font-size:16px;}
- .tracker-filters input {grid-column:1/-1;}
+
  .tracker-list-meta {margin:12px 0;}
  .tracker-list-meta>span {display:none;}
  .tracker-counter {padding:2px 6px;}
@@ -121,7 +128,7 @@
  .tracker-progress-vertical time {grid-column:3;grid-row:1;margin-top:4px;}
 }
 @media (prefers-reduced-motion:reduce) {.tracker-row {transition:none;}}
-.tracker-company-mark img,.tracker-company-mark>span {width:100%;height:100%;font-size:20px;background:var(--color-board-tag);}
+.tracker-company-mark img,.tracker-company-mark>span {width:100%;height:100%;font-size:20px;}
 .tracker-detail-tabs button {flex-shrink:0;}
 
 

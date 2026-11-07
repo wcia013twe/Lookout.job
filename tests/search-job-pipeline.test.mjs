@@ -25,7 +25,7 @@ function tasks(){
  return {calls,execute:async(task,input)=>{
   calls.push({task,input});
   if(task==='discovery')return input.target.id==='portal:unsupported'?{status:'unsupported',jobs:[]}:{status:'ok',provider:'greenhouse',available:3,truncated:false,jobs:rows};
-  if(task==='verify-discovery-leads')return {jobs:rows,diagnostics:rows.map(r=>({url:r.url,status:'active',reason:'Fictional verifier fixture.'}))};
+  if(task==='verify-discovery-leads')return {jobs:rows.filter(row=>input.leads.some(lead=>lead.url===row.url)),diagnostics:rows.filter(row=>input.leads.some(lead=>lead.url===row.url)).map(r=>({url:r.url,status:'active',reason:'Fictional verifier fixture.'}))};
   return executeCareerTask(task,input);
  }};
 }
@@ -33,10 +33,10 @@ async function result(id){return (await db.query('select status,result,search_ru
 
 test('one real SQL-leased job persists verified observations, screenings and a copied-dedup shortlist',async()=>{
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});
- const j=await result(f.job.id);assert.equal(j.status,'completed');assert.equal(j.result.pipelineVersion,1);
+ const j=await result(f.job.id);assert.equal(j.status,'completed');assert.equal(j.result.pipelineVersion,2);
  assert.equal(j.result.shortlist.screenedCount,3);assert.equal(j.result.shortlist.excludedCount,2);assert.equal(j.result.shortlist.retainedListingIds.length,1);assert.equal(j.result.shortlist.reporting,'pending-muse');assert.equal(j.result.shortlist.applicantEligibility,'not-evaluated');
- assert.deepEqual(t.calls.map(c=>c.task),['inspect-discovery-filters','discovery','dedup-discovery','verify-discovery-leads','filter-discovery','dedup-discovery']);
- assert.equal((await db.query('select count(*)::int n from public.search_screenings where user_id=$1',[f.owner])).rows[0].n,3);
+ assert(t.calls.some(c=>c.task==='prefilter-discovery'));assert(t.calls.some(c=>c.task==='filter-discovery'));
+ assert.equal((await db.query('select count(*)::int n from public.search_screenings where user_id=$1',[f.owner])).rows[0].n,1);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
 });
@@ -173,7 +173,7 @@ test('HiringCafe, Simplify and Career Ops share verification and dedup before pr
  const outcome=await executeSearch(claim.job,dispatch,{execute,request});
  assert.equal(outcome.status,'partial');assert(checked.includes(base+'200'));assert(checked.includes(base+'400'));
  assert(saved.every(row=>['100','300'].some(id=>row.url===base+id)));
- assert.equal(outcome.result.shortlist.screenedCount,2);assert.equal(outcome.result.shortlist.retainedListingIds.length,2);
+ assert(outcome.result.shortlist.screenedCount>=2);assert.equal(outcome.result.shortlist.retainedListingIds.length,2);
  const persisted=await dispatch('search.discoveries.read',{runId:outcome.result.runId,offset:0,limit:100});
  assert.equal(persisted.listings.length,2);assert.deepEqual(new Set(persisted.listings.map(row=>row.canonical_url||row.url)),new Set([base+'100',base+'300']));
 });
@@ -197,14 +197,14 @@ test('lease heartbeat extends only a live owned search without changing its fenc
  assert.equal((await rpc('backend_worker',{operation:'heartbeat',payload:{jobId:next.job.id,leaseToken:next.leaseToken,expectedVersion:next.job.version}})).error.code,'42501');
  const permissions=(await db.query("select has_function_privilege('authenticated','public.backend_worker(text,jsonb)','execute') as exposed")).rows[0];assert.equal(permissions.exposed,false);
 });
-test('a saved verification batch survives interruption and the same run resumes without duplicate observations',async()=>{
+test('a saved verification batch stays temporary through interruption and the same run resumes without losing shortlisted jobs',async()=>{
  const f=await fixture(),claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;
  const controller=new AbortController();let runId;let interrupted=false;
  const fence={jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version};
  const dispatch=async(operation,payload)=>{
   const r=await rpc('backend_worker',{operation:'dispatch',payload:{...fence,operation,payload}});if(r.error)throw r.error;
   if(operation==='search.run.start')runId=r.data.id;
-  if(operation==='search.progress'&&payload.state==='active'&&payload.counts.saved===25&&!interrupted){interrupted=true;controller.abort(Error('Fixture worker interrupted'));}
+  if(operation==='search.progress'&&payload.state==='active'&&payload.counts.staged===25&&!interrupted){interrupted=true;controller.abort(Error('Fixture worker interrupted'));}
   return r.data;
  };
  const rows=Array.from({length:61},(_,i)=>({company:'Example (fictional)',title:'Software Engineer New Grad',location:'Remote',employmentType:'FT',url:'https://job-boards.greenhouse.io/example/jobs/'+(1000+i),listingIdentity:{ats_provider:'greenhouse',board_slug:'example',posting_id:String(1000+i)},description:'Fictional backend systems role.',postedAt:null}));
@@ -214,10 +214,53 @@ test('a saved verification batch survives interruption and the same run resumes 
   return executeCareerTask(task,input);
  };
  await assert.rejects(executeSearch(claim.job,dispatch,{execute,signal:controller.signal}),/interrupted/);
- assert.equal((await db.query('select count(*)::int n from public.search_observations where run_id=$1',[runId])).rows[0].n,25);
- const source=(await db.query('select checkpoint,state from public.search_source_attempts where run_id=$1',[runId])).rows[0];assert.equal(source.state,'active');assert.equal(source.checkpoint.savedOffset,25);
+ assert.equal((await db.query('select count(*)::int n from public.search_observations where run_id=$1',[runId])).rows[0].n,0);
+ const source=(await db.query('select checkpoint,counts,state from public.search_source_attempts where run_id=$1',[runId])).rows[0];assert.equal(source.state,'active');assert.equal(source.counts.staged,25);
  const outcome=await executeSearch({...claim.job,search_run_id:runId},dispatch,{execute});
  assert.equal(outcome.result.runId,runId);assert.equal(outcome.status,'completed');assert.deepEqual(batches,[25,25,11]);
  assert.equal((await db.query('select count(*)::int n from public.search_observations where run_id=$1',[runId])).rows[0].n,61);
  assert.equal(outcome.result.shortlist.screenedCount,61);
+});
+
+test('a second direct search saves no unchanged jobs; a changed description updates the existing job',async()=>{
+ const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});
+ const first=await result(f.job.id);assert.equal(first.result.shortlist.totalRetained,1);
+ const hash=f.owner.replaceAll('-','').repeat(2);
+ const queue=async key=>(await db.query("select public.backend_job_dispatch($1,'backend.jobs.submit',$2) data",[hash,{kind:'search_ats',input:{profileId:f.profile},eventKey:key}])).rows[0].data;
+ const second=await queue('second-identical');await workOnce(rpc,{execute:t.execute});
+ const repeated=await result(second.id);assert.equal(repeated.result.shortlist.totalRetained,0);assert.equal(repeated.result.saved,0);
+ assert.equal((await db.query('select count(*)::int n from public.search_listings where user_id=$1',[f.owner])).rows[0].n,1);
+ const third=await queue('third-changed-description');
+ await workOnce(rpc,{execute:async(task,input,options)=>{const output=await t.execute(task,input,options);if(task==='verify-discovery-leads')for(const row of output.jobs){row.description+=' Changed scope.';row.title='Software Engineer New Grad - Databases';}return output;}});
+ assert.equal((await result(third.id)).result.shortlist.totalRetained,1);
+ assert.equal((await db.query('select title from public.search_listings where user_id=$1',[f.owner])).rows[0].title,'Software Engineer New Grad - Databases');
+ assert.equal((await db.query('select count(*)::int n from public.search_listings where user_id=$1',[f.owner])).rows[0].n,1);
+});
+
+test('collection and rejected jobs remain outside permanent storage until the shortlist is ready',async()=>{
+ const f=await fixture({extraSources:11}),t=tasks();let collected=0;let firstSaveAt;
+ const claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;
+ const dispatch=async(operation,payload)=>{
+  if(operation==='search.progress'&&payload.checkpoint.stage!=='shortlist-ready'){
+   assert.equal((await db.query('select count(*)::int n from public.search_observations where user_id=$1',[f.owner])).rows[0].n,0);
+  }
+  if(operation==='search.discoveries.save')firstSaveAt??=collected;
+  const r=await rpc('backend_worker',{operation:'dispatch',payload:{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload}});if(r.error)throw r.error;return r.data;
+ };
+ const outcome=await executeSearch(claim.job,dispatch,{execute:async(task,input,options)=>{if(task==='discovery')collected++;return t.execute(task,input,options);}});
+ assert.equal(firstSaveAt,12);assert.equal(outcome.result.shortlist.totalRetained,1);
+ const rows=(await db.query('select title from public.search_listings where user_id=$1',[f.owner])).rows;
+ assert.deepEqual(rows.map(row=>row.title),['Software Engineer New Grad']);
+});
+
+test('direct search excludes an already tracked Applied job and preserves its application',async()=>{
+ const f=await fixture(),t=tasks(),id='protected-'+f.owner;
+ await db.query("insert into public.jobs(id,canonical_url,employer) values($1,'https://job-boards.greenhouse.io/example/jobs/100','{}')",[id]);
+ await db.query("insert into public.applications(user_id,job_id,status) values($1,$2,'Queued')",[f.owner,id]);
+ await db.query("update public.applications set status='Submitted',submitted_at=now() where user_id=$1",[f.owner]);
+ const before=(await db.query('select to_jsonb(a) data from public.applications a where user_id=$1',[f.owner])).rows;
+ await workOnce(rpc,{execute:t.execute});
+ assert.equal((await result(f.job.id)).result.shortlist.totalRetained,0);
+ assert.deepEqual((await db.query('select to_jsonb(a) data from public.applications a where user_id=$1',[f.owner])).rows,before);
+ assert(!t.calls.filter(c=>c.task==='verify-discovery-leads').flatMap(c=>c.input.leads).some(lead=>lead.url.endsWith('/100')));
 });

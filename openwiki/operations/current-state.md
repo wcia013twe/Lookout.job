@@ -91,6 +91,16 @@ This shows the hosted MCP authorization path; it does not depict an autonomous a
 
 ### Search and discovery execution
 
+The current direct-search implementation uses pipeline version 2: immutable temporary
+snapshots on a named Docker worker volume, metadata gates before official verification,
+full configured gates and historical dedup before permanent shortlist saves. SQL stores
+leases, fenced snapshot references, aggregate progress and bounded diagnostics while
+collection runs. The agent receives a terminal shortlist receipt and pages the run for
+all results; its first 100 IDs are a preview. Automatic hosted-board collection and
+publication are disabled for this path. Personal eligibility remains agent review.
+Applications are untouched. See the current [workflow](../workflows/job-discovery.md)
+and `backend/runtime/README.md`; earlier execution descriptions below are historical.
+
 The local Node API and worker are separate Docker services. The worker only claims already-queued jobs; it contains no recurring-search scheduler. When explicitly enabled, one `search_ats` job is bounded to configured sources and observations, uses service-only RPCs with job/version/lease/connection/profile fences, and fetches through a constrained child-process boundary. It collects and verifies supported leads, persists observations and screening inputs, and returns shortlist IDs. It does not generate model reports, messages, or applications. Unsupported extraction remains partial rather than becoming a fabricated parsed record.
 
 The source is deliberately conservative: configured execution is off by default (`LOOKOUT_EXECUTION_ENABLED=false`), the worker is idle otherwise, and retry/lease behavior can finish a run as partial. The repository’s local proof documentation explicitly says it does not establish a hosted deployment, externally reachable MCP endpoint, real Google OAuth, or real employer submission.
@@ -264,6 +274,15 @@ visible but imported records have no native application ID: timeline writes
 show the existing sync error and workflow writes report an unsaved update.
 This intentional backend mismatch must remain explicit until a later integration.
 
+Application rows show a separate **Needs action** flag for due, unresolved
+handoffs from the existing durable action inbox (review, blocker or submission
+check). The recorded reason opens the existing application detail dialog. Flags
+clear when the underlying inbox action resolves and appear when a deferred action
+becomes due; hiring stages and Active date ordering stay independent. This is the
+same read surface as Action Board and MCP `read_action_inbox`; it does not add a
+manual task flag or infer recruiter requests from notes or interview stages.
+The resettable fictional demo includes a review handoff; demo approval remains
+disabled. Source verification does not establish production deployment.
 ## Weekly Career Toolkit (contract 113 source update)
 
 The existing Toolkit cards and reader now support explicit weekly filtering and
@@ -300,3 +319,11 @@ isolation is checked over whole fixture graphs instead of repeated exact sample
 contents. That check found shared nested preparation resource data; the two
 workspace fixture factories now clone their returned graphs. See the verification
 strategy for scope and the feature change note for actual validation results.
+
+Application rows additionally display optional next-action dates from current
+scheduled rounds or confirmed unfinished preparation deadlines, with no guessed
+dates or second manual date store. Active offers an explicit Next action date
+sort (earliest first; undated last), while progress/date stays the default.
+Completed/superseded rounds and terminal records are excluded. Website and MCP
+continue using the existing owned timeline/preparation writers and readers; see
+the application-submission workflow for mappings and lifecycle details.
