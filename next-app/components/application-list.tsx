@@ -8,11 +8,12 @@ import { trackerProgress } from '../../lib/tracker-display.mjs';
 import TrackerProgress,{ApplicationIdentity} from './tracker-progress';
 import {importEmploymentTypes} from '../../lib/simplify-import.mjs';
 import DraftReview from './draft-review';
+import type {ImportUpdate} from './imported-application-tracking';
 import {applicationNextAction,sortByNextAction} from '../../lib/application-next-action.mjs';
 import ApplicationActionNotice from './application-action-notice';
 import type {PreparationPlan} from './workflow-types';
 import type { Application } from './workflow-types';
-export default function ApplicationList({items,active=false,sortByAction=false,plans={}}:{items:Application[];active?:boolean;sortByAction?:boolean;plans?:Record<string,PreparationPlan>}) {
+export default function ApplicationList({items,active=false,sortByAction=false,plans={},importVersion=0,onUpdateImport}:{items:Application[];active?:boolean;sortByAction?:boolean;plans?:Record<string,PreparationPlan>;importVersion?:number;onUpdateImport?:ImportUpdate}) {
  const w=useWorkspace(),[review,setReview]=useState<string|null>(null);
  const [now,setNow]=useState(()=>Date.now()),inbox=w.state.workflow.actionInbox||[];
  useEffect(()=>{
@@ -31,5 +32,5 @@ export default function ApplicationList({items,active=false,sortByAction=false,p
  <ApplicationActionNotice title={a.title} company={a.company} action={action} next={next} onOpen={()=>setReview(a.id)}/>
  {a.executionJob&&<span className="tracker-workflow">AI Apply: {a.executionJob.status}</span>}
  {!action&&['Queued','Draft','Awaiting approval','Approved','Blocked'].includes(a.status)&&<span className="tracker-workflow">Preparation: {a.status}</span>}
- </li>;})}</ul>{review&&<DraftReview key={`${w.demo?'demo':w.user?.id||'guest'}:${review}`} id={review} application={items.find(a=>a.id===review&&a.imported)} onClose={()=>setReview(null)}/>}</>;
+ </li>;})}</ul>{review&&<DraftReview key={`${w.demo?'demo':w.user?.id||'guest'}:${review}`} id={review} application={items.find(a=>a.id===review&&a.imported)} importedTracker={onUpdateImport?{version:importVersion,update:onUpdateImport}:undefined} onClose={()=>setReview(null)}/>}</>;
 }

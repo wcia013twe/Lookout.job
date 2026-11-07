@@ -16,10 +16,10 @@ export function SharedApplicationStages({stage}:{stage:string}) {
  const progress=sharedTrackerStage(stage);
  return progress.level<0?null:<StageProgress progress={progress} currentOnly/>;
 }
-function StageProgress({progress,vertical=false,currentOnly=false}:{progress:{level:number;status:string;dates:(string|undefined)[]};vertical?:boolean;currentOnly?:boolean}) {
+function StageProgress({progress,vertical=false,currentOnly=false}:{progress:{level:number;status:string;dates:(string|undefined)[];completed?:boolean[]};vertical?:boolean;currentOnly?:boolean}) {
  return <ol className={`tracker-progress ${vertical?'tracker-progress-vertical':''}`} aria-label={`${currentOnly?'Shared application stage':'Application progress'}: ${progress.status}`}>
  {trackerStages.map((label,index)=><li key={label} className={(currentOnly?index===progress.level:index<=progress.level)?'reached':''} aria-current={index===progress.level?'step':undefined}>
- <span className="tracker-stage-label">{label}</span><span className="tracker-dot" aria-hidden="true"/>
+ <span className="tracker-stage-label">{label}</span><span className="tracker-dot" aria-hidden="true">{progress.completed?.[index]&&<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m5 10 3 3 7-7"/></svg>}</span>{progress.completed?.[index]&&<span className="sr-only">Completed</span>}
  {progress.dates[index] && <time dateTime={progress.dates[index]}>{new Date(progress.dates[index]).toLocaleDateString(undefined,{month:'numeric',day:'numeric',year:'2-digit',...(progress.dates[index].length===10?{timeZone:'UTC'}:{})})}</time>}
  </li>)}
  </ol>;

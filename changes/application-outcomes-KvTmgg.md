@@ -126,3 +126,22 @@
   confirmed single-row desktop layout, mobile targets and no overflow/page errors.
 - Presentation only: no domain/backend/data changes or new tests; full backend
   suite and live deployment verification were not repeated.
+
+## Follow-up: imported action fields and explicit stage completion
+
+- Extends the existing imported-record update writer with nextAction/actionDate,
+  needsAction and completedStages. Dates may be null; candidate actions are
+  separate from waiting for employer response. Completion never advances the
+  current stage or creates verified submission/approval evidence.
+- Browser Overview → Tracking details and scoped update_imported_job use the same
+  owner checks, tracker version, validation and stable replay keys. Future or
+  duplicate completed stages, invalid dates/flags and unnamed dated actions are
+  rejected. Original source rows/notes and omitted fields remain unchanged.
+- Imported dates/flags feed existing row indicators and optional date sorting;
+  explicit completed stages show check marks on the original progress bar.
+- Incremented developer contract to 116, application-workspace guide to 15 and its
+  change-feed reference. Guide explains exact fields, null/clear semantics,
+  preserving prior completions, date confirmation and read-back before success.
+- Fictional demo uses the same pure field validator. Added SQL browser/MCP parity
+  and isolation/version/replay tests, import-to-row/render checks, and an editor
+  interaction verifying save/read-back, clear and disabled future completions.

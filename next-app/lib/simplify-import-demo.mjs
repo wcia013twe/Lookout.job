@@ -1,3 +1,5 @@
+import {validateImport} from '../../supabase/functions/agent-gateway/simplify-import.mjs';
+import {validateImportedActions} from '../../lib/imported-actions.mjs';
 import {parseSimplifyCsv,simplifyColumns,importStatusRank,importStatuses,importEmploymentTypes} from '../../lib/simplify-import.mjs';
 export const simplifyDemoCsv=[simplifyColumns.join(','),
  'Platform Intern,Example Systems (demo),Fictional City,https://example.com/demo/platform,2026-10-20,APPLIED,2026-10-20,No,N/A,Fictional imported application,Internship',
@@ -11,9 +13,11 @@ export function createDemoSimplifyImport(){
   if(['save','update'].includes(action)&&events.has(p.eventKey)){const old=events.get(p.eventKey);if(old.request!==JSON.stringify(p))throw Error('Event key changed. Preview again.');return structuredClone(old.result);}
   if(['save','update'].includes(action)&&p.expectedVersion!==version)throw Error('Your tracker changed. Preview again.');
   if(action==='update'){
+   validateImport('imports.update',p);
    const old=records.find(r=>r.id===p.id);if(!old)throw Error('Imported job not found.');
    if(!Object.hasOwn(importStatuses,p.changes.status||old.record.status)||!Object.hasOwn(importEmploymentTypes,p.changes.employmentType||old.record.employmentType))throw Error('Unsupported tracker value.');
-   old.record={...old.record,...p.changes};version++;
+   const merged={...old.record,...p.changes};validateImportedActions(merged);
+   old.record=merged;version++;
    const result={version,record:structuredClone(old),verifiedSubmission:false};events.set(p.eventKey,{request:JSON.stringify(p),result:structuredClone(result)});return result;
   }
   const groups=new Map();for(const row of p.rows){const key=row.url||`${row.company}:${row.title}:${row.location}`.toLowerCase();groups.set(key,[...(groups.get(key)||[]),row]);}
