@@ -18,7 +18,10 @@ function demoSearchProfiles(date) {
   for (const [heading, key, value] of [
    ['Search Filters', 'Work arrangement', 'Remote'],
    ['Role preferences', 'Roles', 'Software engineering'],
-   ['Application answers', 'Requires sponsorship', 'No'],
+   ['Application answers', 'Are you authorized to work in the US?', 'Yes'],
+   ['Application answers', 'Are you authorized to work in Canada?', 'No'],
+   ['Application answers', 'Are you authorized to work in the United Kingdom?', 'No'],
+   ['Application answers', 'Will you now or in the future require sponsorship for employment visa status?', 'No'],
    ['Application answers', 'Earliest start date', '2027-06-01'],
    ['Application answers', 'Graduation month', '2027-06'],
    ['Application answers', 'Degree pursued', "Bachelor's"],

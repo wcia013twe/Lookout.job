@@ -563,10 +563,12 @@ availability claim. Refresh tool discovery on the new developer context version.
 
 The existing versioned job profile includes optional `Application answers` labeled
 fields. `save_search_profile`/`save_search_document` and the website editor own
-these values; no new store or preference endpoint. Explicit answers cover
-sponsorship, F-1 status, return to school, graduation month, degree, start date,
-12-week full-time internship availability, relocation and desired salary. They
-are not ranking priorities. Unknown values stay blank. Ordinary location/pay/work
+these values; no new store or preference endpoint. The editor exposes exact
+employment-information questions for ethnicity, work authorization in the US,
+Canada and United Kingdom, visa sponsorship, disability, LGBTQ+ identity, gender
+and veteran status. These optional answers have no shared personal defaults.
+Legacy internship, relocation, salary and sponsorship fields remain readable for
+existing profiles. These answers are not ranking priorities. Unknown values stay blank. Ordinary location/pay/work
 filters only answer questions about those preferences, never residency, office
 commitments or requested salary by inference.
 

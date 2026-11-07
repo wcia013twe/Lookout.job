@@ -73,7 +73,30 @@ test('invalid existing native choices remain unresolved and typography-only degr
 test('fictional demo settings round trip through the existing profile tools and fill a preference proposal',async()=>{
  const {demoFixtures}=await import('../next-app/lib/demo.mjs');const {readField,promptFromProfile,profileFromPrompt}=await import('../lib/search-profile.mjs');
  const profile=demoFixtures('2026-10-26').state.workflow.searchPreferences.profiles.find(p=>p.id==='general');
- assert.equal(readField(profile.instructions,'Application answers','Requires sponsorship').value,'No');
+ assert.equal(readField(profile.instructions,'Application answers','Will you now or in the future require sponsorship for employment visa status?').value,'No');
  const round=profileFromPrompt(promptFromProfile(profile),profile);assert.equal(round.instructions,profile.instructions);
  const r=prefillApplicationQuestions({questions:[question('Do you require sponsorship?','s',yesNo)],searchProfile:profile});assert.equal(r.questions[0].answer,'0');assert.equal(r.questionsReviewed,false);
+});
+
+
+test('employment information questions round trip and fill only explicitly saved answers',async()=>{
+ const {APPLICATION_PREFERENCE_FIELDS}=await import('../lib/application-preference-fields.mjs');
+ const {updateField,profileFromPrompt,promptFromProfile}=await import('../lib/search-profile.mjs');
+ const answers=['East Asian','Yes','No','No','No','No','No','Male','No'];
+ let prompt='';
+ for(const [index,[key]] of APPLICATION_PREFERENCE_FIELDS.entries())prompt=updateField(prompt,'Application answers',key,answers[index]);
+ const profile=profileFromPrompt(prompt,{id:'employment',active:true});
+ assert.equal(promptFromProfile(profile),prompt);
+ const questions=APPLICATION_PREFERENCE_FIELDS.map(([key],i)=>question(key,String(i),[{value:'selected',label:answers[i]}]));
+ const result=prefillApplicationQuestions({questions,searchProfile:profile});
+ assert.deepEqual(result.questions.map(q=>q.answer),answers.map(()=> 'selected'));
+ assert.equal(result.questionsReviewed,false);
+ const blank=prefillApplicationQuestions({questions,searchProfile:{...profile,instructions:''}});
+ assert.ok(blank.questions.every(q=>q.answer===''));
+ assert.equal(blank.filled.length,0);
+ const conflict=updateField(prompt,'Application answers','Requires sponsorship','Yes');
+ assert.throws(()=>applicationPreference('Do you require sponsorship?',{...profile,instructions:conflict}),/duplicate/);
+ const unmatched=prefillApplicationQuestions({questions:[question('What is your ethnicity?','ethnicity',[{value:'asian',label:'Asian'}])],searchProfile:profile});
+ assert.equal(unmatched.questions[0].answer,'');
+ assert.equal(unmatched.escapes[0].reason,'option-mismatch');
 });
