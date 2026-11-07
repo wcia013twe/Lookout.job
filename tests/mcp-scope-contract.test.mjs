@@ -16,7 +16,7 @@ test('every mandatory secondary scope filters discovery and denies calls before 
   assert.ok(scoped.length>=32); // Active audited paths; community intelligence is paused.
   for(const tool of scoped)for(const missing of tool.requiredScopes) {
     const scopes=allScopes.filter(scope=>scope!==missing),h=harness(scopes);
-    const listing=await h.call('tools/list',{});
+    const listing={result:JSON.parse((await h.call('tools/call',{name:'discover_tools',arguments:{workflow:'all'}})).result.content[0].text)};
     assert.ok(!listing.result.tools.some(item=>item.name===tool.name),tool.name+': '+missing);
     const response=await h.call('tools/call',{name:tool.name,arguments:{}});
     assert.equal(response.result.isError,true,tool.name+': '+missing);
@@ -67,7 +67,7 @@ test('malformed empty schemas and strict nested payloads produce safe MCP argume
 
 test('onboarding reads disclose initialization and lease maintenance instead of readOnly hints',async()=>{
   const h=harness(['workspace:read']);
-  const {result}=await h.call('tools/list',{});
+  const result=JSON.parse((await h.call('tools/call',{name:'discover_tools',arguments:{workflow:'all'}})).result.content[0].text);
   for(const name of ['read_onboarding_state','read_agent_tasks']) {
     const tool=result.tools.find(tool=>tool.name===name);
     assert.equal(tool.annotations.readOnlyHint,false,name);

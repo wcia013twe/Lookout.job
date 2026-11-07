@@ -147,7 +147,8 @@ test('Muse instruction lookup routes to a usable audit guide and its examples pe
    validateRequest({operation:AUDIT_TOOLS.find(t=>t.name===example.tool).operation,payload:example.arguments});
   }
   const request=guide.examples.append.arguments.events.find(e=>e.kind==='tool.call');
-  assert(discovered.tools.some(t=>t.name===request.toolName),'example must reference an available domain tool');
+  const supporting=await invoke('discover_tools',{workflow:'all',name:request.toolName});
+  assert(supporting.tools.some(t=>t.name===request.toolName),'example must reference a discoverable domain tool');
   const run=await invoke(guide.examples.start.tool,guide.examples.start.arguments);
   await invoke(guide.examples.append.tool,{...guide.examples.append.arguments,runId:run.id});
   const saved=await invoke(guide.examples.read.tool,{...guide.examples.read.arguments,runId:run.id});

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { PLATFORM_TOOLS } from '../supabase/functions/agent-gateway/platform-tools.mjs';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
 import { createHandler, TOOLS } from '../supabase/functions/agent-mcp/protocol.mjs';
+import {DEFAULT_TOOL_NAMES,ACCESS_TOOLS} from '../supabase/functions/agent-mcp/tool-surface.mjs';
 const token = 'jb_agent_' + 'a'.repeat(64); // Synthetic, never valid in production.
 const scopes = TOOLS.map(tool => tool.scope);
 function request(message, extra = {}) {
@@ -47,14 +48,16 @@ test('missing, malformed, expired credentials and forbidden origins reject disco
 });
 test('scope-filtered discovery exposes only bounded workspace tools', async () => {
   const body = await (await handler([], ['approvals:read'])(request(rpc('tools/list')))).json();
-  assert.deepEqual(body.result.tools.map(tool => tool.name), ['read_approval']);
+  assert.deepEqual(body.result.tools.map(tool => tool.name), ACCESS_TOOLS.map(tool=>tool.name));
+  const discovery=await (await handler([],['approvals:read'])(request(rpc('tools/call',{name:'discover_tools',arguments:{workflow:'all'}})))).json();
+  assert.deepEqual(JSON.parse(discovery.result.content[0].text).tools.map(tool=>tool.name),['read_approval']);
   assert.ok(!TOOLS.some(tool => /browser|shell|sql|approve|issue|revoke/.test(tool.name)));
   assert.deepEqual(TOOLS.filter(tool=>/submit/.test(tool.name)).map(tool=>tool.name),['submit_search_leads','submit_backend_job']);
 });
 test('context discovery and calls use workspace scope and accept no owner injection', async () => {
   const calls = [], handle = handler(calls, ['workspace:read']);
   const list = await (await handle(request(rpc('tools/list')))).json();
-  assert.deepEqual(list.result.tools.map(tool => tool.name), TOOLS.filter(tool=>tool.scope==='workspace:read' && enabledMcpOperation(tool.operation)).map(tool=>tool.name));
+  assert.deepEqual(list.result.tools.map(tool => tool.name), [...TOOLS.filter(tool=>tool.scope==='workspace:read' && enabledMcpOperation(tool.operation) && DEFAULT_TOOL_NAMES.has(tool.name)).map(tool=>tool.name),...ACCESS_TOOLS.map(tool=>tool.name)]);
   await handle(request(rpc('tools/call', { name: 'check_context_versions', arguments: {} })));
   assert.deepEqual(calls.at(-1), { operation: 'context.versions', payload: {} });
   const invalid = await handle(request(rpc('tools/call', { name: 'read_personal_context', arguments: { userId: 'other' } })));
@@ -120,7 +123,8 @@ test('paused MCP tools are absent and reject direct calls, including local extra
   calls.push({operation,payload});
   return {status:200,data:{scopes:[...scopes,'knowledge:read','knowledge:write']}};
  },[],[{name:'local_circle_bypass',operation:'knowledge.read',scope:'workspace:read',inputSchema:{type:'object',properties:{}}}]);
- const discovered=(await (await handle(request(rpc('tools/list')))).json()).result.tools;
+ const catalog=await (await handle(request(rpc('tools/call',{name:'discover_tools',arguments:{workflow:'all'}})))).json();
+ const discovered=JSON.parse(catalog.result.content[0].text).tools;
  for(const tool of [...paused,{name:'local_circle_bypass'}]){
   assert(!discovered.some(t=>t.name===tool.name),tool.name);
   const body=await (await handle(request(rpc('tools/call',{name:tool.name,arguments:{}})))).json();

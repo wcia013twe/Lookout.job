@@ -21,3 +21,13 @@ Discover batch items can be removed through the scoped `remove_discover_job` act
 ## Delivery and verification
 
 New sessions must read the quickstart and this page. Use a separate feature checkout, preserve concurrent work, complete a change note and land routine completed work into local main as directed by `AGENTS.md`. Prefer the external SSD when available; use internal storage when it is not. Local code, hosted backend and published frontend can be at different versions. Do not infer deployment or live external behavior from local tests or change notes.
+
+## Smaller agent tool catalog (local contract 110)
+
+MCP startup now lists common actions, logs and bugs directly. Hosted maximum:
+47 exposed / 73 gated; configured Node API: 50 / 73; local runner: 50 / 83.
+`discover_tools` returns scope-filtered executable schemas by workflow or exact
+name, and `call_discovered_tool` shares the original direct-call validation path.
+`discover_toolkit` still discovers guides. Existing names remain callable;
+paused operations remain unavailable. See `mcp/README.md` for access and release
+limits. Hosted/client behavior is not verified by local catalog tests.
