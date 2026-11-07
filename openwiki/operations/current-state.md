@@ -351,6 +351,22 @@ The Jobright new-grad and internship GitHub lists are enabled default lead sourc
 
 Coverage always remains partial: Jobright documents a subset of jobs from the last seven days, and public detail pages may omit employer application URLs. Live checks on 2026-11-07 found those fields absent on ten sampled listings; these entries are reported unresolved and are not saved. No authenticated Jobright API or paid service is used. Fixture success does not establish live employer-link availability. Default updates do not overwrite customized account portals or modify already-running source snapshots.
 
+## Agent workspace material formats (contract 117, locally verified)
+
+`toolkit-materials` v1 is advertised in the primary index and through
+`discover_toolkit.materialGuide`. It exposes optional material recipes, the neutral
+static HTML starter and matching career skill IDs through existing authorized
+`read_guide`. Company/interview skills route to it; existing scoped artifact/mock
+tools retain execution, ownership and versions. No new writer, Calendar or scheduler
+integration is added. Full source validation passed (1,030 tests, five skipped),
+including detached discovery/guide/save/read-back and read-only denial.
+
+The landed source was built into the local API image and the mounted local Edge
+runtime reloaded. Connected MCP checks report contract 117, all 39 career skills,
+the six recipes, HTML starter and interview-research v6 routing. The worker and
+database stayed running. Live verification read only; no account artifacts or
+external events were created. Hosted release is separate and was not performed.
+
 
 ### Simplify feed limit
 
