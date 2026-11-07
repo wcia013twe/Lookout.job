@@ -125,3 +125,13 @@
 - Verified XML connections/parents, matching vector formats, required labels,
   color/grayscale rendering and 158-role data validation. No application changes.
   diagrams.net editor round-trip remains unverified.
+
+## Decision lifecycle diagram
+
+- Add a separate editable draw.io lifecycle with matching SVG/PDF and a concise
+  interpretation note, following the supplied Mermaid relationships.
+- Use a shared-state bus and conditional review collector to reduce crossings;
+  preserve tracking feedback loops and the state-to-agent resumption path.
+- Verified native XML references, nodes/edges, embedded SVG source, one-page vector
+  PDF and visual rendering; data validation passed (158 roles). No application or
+  existing architecture figure edits. Editor round-trip remains unverified.
