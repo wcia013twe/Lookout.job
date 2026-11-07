@@ -29,16 +29,16 @@ export function orderedSearchSources(sources:Payload[],runId:string){
 }
 // Career Ops scan.mjs worker-pool pattern: bound concurrent fetches, not coverage.
 // Drain active workers before propagating a failure so no writes outlive the job.
-export async function scanAllSources<T>(sources:T[],visit:(source:T)=>Promise<void>,concurrency=10){
+export async function scanAllSources<T>(sources:T[],visit:(source:T)=>Promise<void>,concurrency=10,onError?:(error:unknown)=>void){
   if(!Number.isSafeInteger(concurrency)||concurrency<1)throw Error('Invalid scan concurrency');
   let index=0;let failed=false;
-  const next=async()=>{while(!failed&&index<sources.length){const source=sources[index++];try{await visit(source);}catch(error){failed=true;throw error;}}};
+  const next=async()=>{while(!failed&&index<sources.length){const source=sources[index++];try{await visit(source);}catch(error){failed=true;onError?.(error);throw error;}}};
   const results=await Promise.allSettled(Array.from({length:Math.min(concurrency,sources.length)},next));
   const failure=results.find(result=>result.status==='rejected');
   if(failure?.status==='rejected')throw failure.reason;
 }
 
-export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute,request}: {execute?:import('./ats.ts').Execute;request?:typeof fetch}={}) {
+export async function executeSearch(job:Claim['job'] & {search_run_id?:string},dispatch:Dispatch,{execute,request,signal,onFailure}: {execute?:import('./ats.ts').Execute;request?:typeof fetch;signal?:AbortSignal;onFailure?:(error:unknown)=>void}={}) {
   const prefix=`job:${job.id}:`;
   let run=job.search_run_id?await dispatch('search.run.read',{runId:job.search_run_id}):null;
   const profileId=run?.profile_id||job.input.profileId;
@@ -63,27 +63,39 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   let saved=0;let blocked=0;let scanned=0;const provenance:Payload[]=[];
   const sources=orderedSearchSources(run.sources||[],run.id);
   await scanAllSources(run.state==='active'?sources:[],async source=>{
-    if(source.state==='completed'){return;}
-    const observation=await fetchSource(source.source_id,source.source,{execute,previous:[...seen],profile:collectionProfile.projection,request,days:run.days||(run.mode==='backlog'?30:3)});
-    if(observation.provenance)provenance.push(observation.provenance);
-    const rows=observation.listings;seen.push(...rows);scanned+=observation.examined??observation.total;
-    // Each idempotency key is tied to a persisted source version. Re-read and
-    // checkpoint observations before completion; interrupted sources can repeat
-    // safely through canonical database deduplication.
-    const checkpoint=source.checkpoint||{};
-    const offset=Number.isSafeInteger(checkpoint.savedOffset)?checkpoint.savedOffset:0;
+    signal?.throwIfAborted();if(source.state==='completed')return;
+    let version=source.version,savedOffset=source.checkpoint?.savedOffset||0,processed=0,batchIndex=0;
     const sourceKey=createHash('sha256').update(source.source_id).digest('hex');
-    // Fetch snapshots may change across retries. Save a source atomically under
-    // attempt-specific keys; DB canonical identity prevents duplicate listings.
     const attempt=`${source.version}a${job.attempts}`;
-    for(const batch of listingBatches(rows)){
-      await dispatch('search.discoveries.save',{runId:run.id,listings:batch.listings,eventKey:`${prefix}${sourceKey}:v${attempt}:batch:${batch.offset}`});
-      saved+=batch.listings.length;
-    }
-    const complete=observation.coverage==='exhaustive';
-    if(!complete)blocked++;
-    await dispatch('search.progress',{runId:run.id,sourceId:source.source_id,expectedVersion:source.version,state:complete?'completed':'blocked',checkpoint:{savedOffset:offset+rows.length,diagnostics:observation.diagnostics||[]},counts:{observed:observation.examined??observation.total,available:observation.total,saved:rows.length},coverage:observation.coverage,blocker:observation.blocker,eventKey:`${prefix}${sourceKey}:v${attempt}:progress`});
-  });
+    const checkpoint=async(state:string,coverage:string,blocker:string,diagnostics:Payload[]=[],counts:Payload={})=>{
+      signal?.throwIfAborted();
+      const bounded=[];let bytes=0;
+      for(const diagnostic of diagnostics.slice(-25).reverse()){
+        const size=Buffer.byteLength(JSON.stringify(diagnostic));if(bytes+size>16000)break;
+        bounded.unshift(diagnostic);bytes+=size;
+      }
+      const result=await dispatch('search.progress',{runId:run.id,sourceId:source.source_id,expectedVersion:version,state,coverage,blocker,
+        checkpoint:{stage:state==='active'?(processed?'verification':'collection'):'finished',savedOffset,processed,diagnostics:bounded,diagnosticsOmitted:Math.max(0,diagnostics.length-bounded.length)},counts,
+        eventKey:`${prefix}${sourceKey}:v${attempt}:progress:${batchIndex++}`});
+      version=result?.version??version+1;
+    };
+    await checkpoint('active','unknown','',[],{saved:savedOffset});
+    const observation=await fetchSource(source.source_id,source.source,{execute,previous:[...seen],profile:collectionProfile.projection,request,signal,days:run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
+      signal?.throwIfAborted();
+      for(const batch of listingBatches(result.listings)){
+        await dispatch('search.discoveries.save',{runId:run.id,listings:batch.listings,eventKey:`${prefix}${sourceKey}:v${attempt}:batch:${progress.batchIndex}:${batch.offset}`});
+        saved+=batch.listings.length;savedOffset+=batch.listings.length;seen.push(...batch.listings);
+      }
+      processed=progress.processed;
+      await checkpoint('active','unknown','',result.diagnostics,{observed:processed,available:progress.available,saved:savedOffset});
+    }});
+    signal?.throwIfAborted();
+    if(observation.provenance)provenance.push(observation.provenance);
+    scanned+=observation.examined??observation.total;
+    const complete=observation.coverage==='exhaustive';if(!complete)blocked++;
+    await checkpoint(complete?'completed':'blocked',observation.coverage,observation.blocker,observation.diagnostics,{observed:observation.examined??observation.total,available:observation.total,saved:savedOffset});
+  },10,onFailure);
+
   // Every deterministic stage belongs to this one leased job. Only the final
   // shortlist goes to Muse; narrative analysis and four ratings remain agent work.
   const context=await dispatch('search.context',{profileId:run.profile_id||job.input.profileId});
@@ -120,25 +132,45 @@ export async function executeSearch(job:Claim['job'] & {search_run_id?:string},d
   return {status:partial?'partial':'completed',result:{pipelineVersion:1,runId:run.id,observed:scanned,saved,filterPlan,blockedSources:blocked,summary,shortlist,stages:{collection:'finished',verification:'finished',screening:'finished',deduplication:'finished'},provenance}};
 
 }
-export async function workOnce(rpc:Rpc,{execute,applicationExecutor}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>}={}){
+export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heartbeatMs=30000}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>;signal?:AbortSignal;heartbeatMs?:number}={}){
   const call=async(operation:string,payload:Payload)=>{
     const {data,error}=await rpc('backend_worker',{operation,payload});
     if(error)throw Error('Worker transaction rejected');return data;
   };
+  signal?.throwIfAborted();
   const applicationClaim:Claim|null=applicationExecutor?await call('claim_application',{}):null;
-  const claim:Claim|null=applicationClaim||await call('claim',{});
-  if(!claim)return false;
-  const fencedDispatch:Dispatch=(operation,payload)=>call('dispatch',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload});
+  const claim:Claim|null=applicationClaim||await call('claim',{});if(!claim)return false;
+  const controller=new AbortController();const abort=()=>controller.abort(signal?.reason||Error('Worker stopped'));
+  signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
+  const fence={jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version};
+  let stopped=false,timer:ReturnType<typeof setTimeout>|undefined,pending:Promise<void>=Promise.resolve();
+  const renew=()=>{timer=setTimeout(()=>{pending=(async()=>{
+    try{await call('heartbeat',fence);}catch(error){if(!stopped)controller.abort(error);}
+    if(!stopped&&!controller.signal.aborted)renew();
+  })();},heartbeatMs);};
+  const stop=async()=>{stopped=true;clearTimeout(timer);await pending;};
+  const fencedDispatch:Dispatch=async(operation,payload)=>{
+    controller.signal.throwIfAborted();
+    try{return await call('dispatch',{...fence,operation,payload});}
+    catch(error){controller.abort(error);throw error;}
+  };
+  const runTask:import('./ats.ts').Execute=async(task,input)=>{
+    controller.signal.throwIfAborted();return (execute||executeCareerTask)(task,input,{signal:controller.signal});
+  };
   try{
     if(!['search_ats','application_submit'].includes(claim.job.kind))throw Error('Unsupported backend job');
-    const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute});
-    await call('finish',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...outcome});
+    if(claim.job.kind==='search_ats')renew();
+    const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})});
+    await stop();controller.signal.throwIfAborted();await call('finish',{...fence,...outcome});
   }catch{
-    // Expired/cancelled/revoked jobs reject this too, preserving the newer state.
-    await call('finish',{jobId:claim.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,status:'failed',result:{summary:claim.job.kind==='application_submit'?'Application execution interrupted. Inspect its saved attempt before requesting another job.':'Search execution failed. Inspect the persisted run before requesting another job.'}}).catch(()=>{});
-  }
+    const lostOwnership=controller.signal.aborted;
+    controller.abort(Error('Search execution interrupted'));await stop();
+    // Lost ownership or shutdown leaves the pinned run reclaimable after expiry.
+    if(!lostOwnership)await call('finish',{...fence,status:'failed',result:{summary:claim.job.kind==='application_submit'?'Application execution interrupted. Inspect its saved attempt before requesting another job.':'Search execution interrupted. Previously saved observations and source checkpoints are retained.'}}).catch(()=>{});
+  }finally{await stop();signal?.removeEventListener('abort',abort);}
   return true;
 }
+
 export function workerDiagnostics(write:(message:string)=>void=console.error,now:()=>number=Date.now){
   let down=false,last=0;
   return {
@@ -149,7 +181,7 @@ export function workerDiagnostics(write:(message:string)=>void=console.error,now
 export async function runWorker(rpc:Rpc,signal:AbortSignal,options:Parameters<typeof workOnce>[1]={}){
   const diagnostics=workerDiagnostics();
   while(!signal.aborted){
-    try{await workOnce(rpc,options);diagnostics.recovered();}catch{diagnostics.unavailable();}
+    try{await workOnce(rpc,{...options,signal});diagnostics.recovered();}catch{diagnostics.unavailable();}
     try{await delay(5000,undefined,{signal});}catch{break;}
   }
 }

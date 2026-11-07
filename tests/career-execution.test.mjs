@@ -38,3 +38,12 @@ test('scanner preserves provider page settings and throttling and carries all un
   delete rows[marker];
  }
 });
+
+
+test('isolated career tasks honor cancellation and terminate timed-out process groups',async()=>{
+ const controller=new AbortController();controller.abort(Error('Fixture lease lost'));
+ await assert.rejects(executeCareerTask('catalog',{}, {signal:controller.signal}),/Fixture lease lost/);
+ await assert.rejects(executeCareerTask('catalog',{}, {timeout:1}),/time budget/);
+ const active=new AbortController();const task=executeCareerTask('catalog',{}, {signal:active.signal});setTimeout(()=>active.abort(Error('Fixture cancellation')),1);
+ await assert.rejects(task,/Fixture cancellation/);
+});
