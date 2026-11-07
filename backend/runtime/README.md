@@ -66,11 +66,9 @@ not establish fit, eligibility, exhaustive research or full-description archival
 On expired-lease retry, a worker resumes its pinned run and reads bounded identity
 pages from that run before fetching pending sources. Only public posting identity, company, title, location and requisition fields
 are returned to this internal deduplication path. Already
-completed sources remain completed; previously saved observations are retained.
+completed sources remain completed; previously saved observations are retained. Verification batches are saved before their progress checkpoints, and a rejected checkpoint stops the pipeline.
 Attempt-specific retry keys prevent a changed fetched snapshot from reusing an
-older write key. All subsequent writes still require the current lease. The
-existing three-attempt limit closes unresolved runs as partial; a slow source can
-exhaust a five-minute lease rather than write with stale authority.
+older write key. All subsequent writes still require the current lease. Search jobs renew their five-minute lease every 30 seconds through a service-only heartbeat that rechecks the current job fence, connection and profile. Expired ownership cannot be renewed. Lease loss or shutdown cancels requests and kills isolated process groups; shutdown leaves the pinned job reclaimable after expiry. The existing three-attempt limit remains. Each verification batch is saved before a versioned progress checkpoint. Resume uses saved identities rather than blindly skipping changing provider offsets. Checkpoints retain bounded recent diagnostics plus an explicit omitted count. Docker init reaps exited browser descendants.
 
 ## Run locally
 

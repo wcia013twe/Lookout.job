@@ -72,7 +72,7 @@ test('worker database failures retain fenced finish and rate-limit diagnostics w
   return {data:null,error:{code:'40001'}};};
  assert.equal(await workOnce(rpc),true);
  assert.ok(!calls.some(call=>call.args.operation==='enqueue_due'),'Worker only claims submitted jobs');
- assert.equal(calls.find(call=>call.args.operation==='finish').args.payload.leaseToken,'lease-secret');
+ assert.ok(!calls.some(call=>call.args.operation==='finish'),'Do not finish work after losing its fence');
  let time=0;const lines=[];const diagnostics=workerDiagnostics(message=>lines.push(message),()=>time);
  diagnostics.unavailable();time=5000;diagnostics.unavailable();assert.equal(lines.length,1);
  time=60000;diagnostics.unavailable();assert.equal(lines.length,2);
@@ -125,7 +125,7 @@ test('worker fetches and checkpoints sources beyond the former ten-source sample
  };
  const result=await executeSearch(job,h.dispatch,{execute});
  assert.equal(fetched.length,22);assert(fetched.includes('portal:22'));assert(!fetched.includes('portal:0'));
- assert.equal(h.calls.filter(c=>c.operation==='search.progress').length,22);
+ assert.equal(h.calls.filter(c=>c.operation==='search.progress').length,44);
  assert.equal(result.status,'completed');
 });
 
@@ -165,4 +165,60 @@ test('a failed verification batch preserves successful batches and labels every 
  const result=await fetchSource('portal:example',{careers_url:'https://example.com/careers'},{execute});
  assert.equal(batch,3);assert.equal(result.listings.length,36);assert.equal(result.coverage,'truncated');
  assert.equal(result.diagnostics.length,61);assert.equal(result.diagnostics.filter(d=>d.status==='uncertain').length,25);
+});
+
+
+test('search worker renews ownership during slow work and stops heartbeat on completion',async()=>{
+ const h=harness([]);let heartbeats=0,release;const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(Error('Heartbeat test timed out')),5000);
+ const rpc=async(_name,args)=>{
+  if(args.operation==='claim')return {data:{job,leaseToken:'lease'}};
+  if(args.operation==='heartbeat'){heartbeats++;if(heartbeats===3)release();return {data:{}};}
+  if(args.operation==='dispatch')return {data:await h.dispatch(args.payload.operation,args.payload.payload)};
+  return {data:{}};
+ };
+ try{await workOnce(rpc,{heartbeatMs:5,signal:controller.signal,execute:async(task,_input,{signal})=>{if(task==='inspect-discovery-filters'){await new Promise((resolve,reject)=>{release=resolve;signal.addEventListener('abort',()=>reject(signal.reason),{once:true});});return {ready:true};}return [];}});}finally{clearTimeout(timer);}
+ assert(heartbeats>=2);const stopped=heartbeats;await new Promise(r=>setTimeout(r,15));assert.equal(heartbeats,stopped);
+});
+test('heartbeat failure aborts an in-flight task and prevents further collection',async()=>{
+ const h=harness([]);let aborted=false;const calls=[];
+ const rpc=async(_name,args)=>{
+  calls.push(args.operation);
+  if(args.operation==='claim')return {data:{job,leaseToken:'lease'}};
+  if(args.operation==='heartbeat')return {error:{code:'40001'}};
+  if(args.operation==='dispatch')return {data:await h.dispatch(args.payload.operation,args.payload.payload)};
+  return {data:{}};
+ };
+ await workOnce(rpc,{heartbeatMs:5,execute:async(_task,_input,{signal})=>new Promise((resolve,reject)=>{
+  signal.addEventListener('abort',()=>{aborted=true;reject(signal.reason);},{once:true});
+ })});
+ assert(aborted);assert(calls.includes('heartbeat'));assert.equal(h.calls.some(c=>c.operation==='search.run.start'),false);
+});
+
+
+test('worker shutdown cancels work but leaves the existing job reclaimable',async()=>{
+ const h=harness([]),controller=new AbortController(),calls=[];
+ const rpc=async(_name,args)=>{calls.push(args.operation);if(args.operation==='claim')return {data:{job,leaseToken:'lease'}};if(args.operation==='dispatch')return {data:await h.dispatch(args.payload.operation,args.payload.payload)};return {data:{}};};
+ await workOnce(rpc,{signal:controller.signal,execute:async(_task,_input,{signal})=>{
+  queueMicrotask(()=>controller.abort(Error('Fixture shutdown')));
+  return new Promise((resolve,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));
+ }});
+ assert(!calls.includes('finish'));assert(!h.calls.some(c=>c.operation==='search.run.start'));
+});
+test('checkpoint persistence errors stop verification instead of being swallowed as source failures',async()=>{
+ const jobs=Array.from({length:61},(_,i)=>posting(String(i)));let batches=0;
+ await assert.rejects(fetchSource('portal:fixture',{careers_url:'https://example.com/careers'},{onBatch:async()=>{throw Error('Checkpoint rejected');},execute:async(task,input)=>{
+  if(task==='discovery')return {status:'ok',jobs,available:61,truncated:false};if(task==='dedup-discovery')return input.jobs;
+  batches++;return {jobs:input.leads.map(({url})=>({...jobs.find(r=>r.url===url),description:'Verified',postedAt:null})),diagnostics:[]};
+ }}),/Checkpoint rejected/);assert.equal(batches,1);
+});
+
+
+test('a source persistence failure cancels sibling work before the pool returns',async()=>{
+ const controller=new AbortController();let cancelled=false;
+ await assert.rejects(scanAllSources([0,1,2],async id=>{
+  if(id===0){await new Promise(r=>setTimeout(r,5));throw Error('Source checkpoint failed');}
+  await new Promise((resolve,reject)=>controller.signal.addEventListener('abort',()=>{cancelled=true;reject(controller.signal.reason);},{once:true}));
+ },2,error=>controller.abort(error)),/Source checkpoint failed/);
+ assert(cancelled);
 });
