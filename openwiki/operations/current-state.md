@@ -688,3 +688,9 @@ without a hidden scenario parameter: filled drafts first, a missing answer,
 CAPTCHA verification, and an uncertain submission. All resolve in memory through
 fictional services and return on Reset demo data. Explicit named test scenarios
 keep their existing fixtures. No account writes or external employer forms open.
+
+Discover now uses a dedicated compact DiscoveredRoleWidget with company identity,
+role title, facts, fit summary, expandable match details and existing queue/preview
+actions. The decorative rarity banner is removed. Application references retain
+the shared Circles progress preview; discovery never implies an application
+stage. This is presentation only; existing service and MCP writers are unchanged.

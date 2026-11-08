@@ -128,3 +128,14 @@ Limits: checks use disposable migrated databases and fictional detached browser 
 - Verify pending resolution and reset through detached services and the default
   desktop/mobile demo route. No production service or MCP contract changed.
 - Verification: 18 focused tests passed; full `npm test` passed (1,101 passed, five skipped); data validation (158 roles), frontend typecheck and production build passed. Desktop/mobile browser checks passed on the ordinary demo route, including required input gates, CAPTCHA resolution, uncertain-submission recovery, notification removal, keyboard controls and mobile swipes. No account writes or hosted publication.
+
+
+## Follow-up: separate discovered-role widget
+
+- Replace Discover's decorative role face with a compact opportunity widget:
+  small company identity, role title, job facts, fit summary and existing actions.
+  Keep match details expandable and retain the existing grid, preview and queue
+  writers. Application references retain their separate progress-stage widget.
+- Uses existing demo discoveries (including Example Query Labs) in both themes.
+  No domain service, data, approval or MCP behavior changes.
+- Verification pending.
