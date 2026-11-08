@@ -185,9 +185,17 @@ test('new private job batches arrive on background sync without reloading the wo
  env.db.job_batches=[{id:batch,user_id:one,batch_date:'2026-10-23',label:'My first roles'}];
  env.db.batch_items=[{user_id:one,batch_id:batch,job_id:'first-owned-role',position:0,recommendation:{whyItFits:'Private agent context'},jobs:{canonical_url:'https://employer.test/jobs/first',employer:{company:'Employer',title:'Backend Engineer',employmentType:'FT',location:'Remote'}}}];
  await env.event('focus');
- assert.equal(seen.at(-1).label,'My first roles');
+ assert.equal(seen.at(-1).label,'All reviewed jobs');
+ assert.equal(seen.at(-1).cumulative,true);
  assert.equal(seen.at(-1).roles[0].id,'first-owned-role');
  assert.equal(seen.at(-1).roles[0].whyItFits,'Private agent context');
+ const newer='44444444-4444-4444-8444-444444444444';
+ env.db.job_batches.push({id:newer,user_id:one,batch_date:'2026-10-24',created_at:'2026-10-24T12:00:00Z',label:'Next reviewed subset'});
+ env.db.batch_items.push({...clone(env.db.batch_items[0]),batch_id:newer,recommendation:{whyItFits:'Newest assessment'}});
+ env.db.batch_items.push({...clone(env.db.batch_items[0]),batch_id:newer,job_id:'second-owned-role',jobs:{canonical_url:'https://employer.test/jobs/second',employer:{company:'Employer',title:'Platform Engineer',employmentType:'FT'}}});
+ await env.event('focus');
+ assert.equal(seen.at(-1).roles.length,2);assert.equal(seen.at(-1).batchCount,2);
+ assert.equal(seen.at(-1).roles.find(r=>r.id==='first-owned-role').whyItFits,'Newest assessment');
  env.db.job_batches=[];
  await env.event('focus');
  assert.equal(seen.at(-1),null);

@@ -405,6 +405,14 @@ function createBackend(client, expectedUserId = null) {
     resumeLink(path) {
       return result(client.storage.from("resumes").createSignedUrl(path, 60));
     },
+    async allBatches() {
+      const userId=await owner();
+      const batches=await allRows('job_batches',userId);
+      const prepared=[];
+      for(const batch of batches)prepared.push(await this.getBatch(batch.id));
+      if(await owner()!==userId)throw Error('Account changed');
+      return prepared;
+    },
     async latestBatch() {
       const userId = await owner();
       const rows = await result(

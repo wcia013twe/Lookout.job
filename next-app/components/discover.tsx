@@ -2,6 +2,7 @@
 import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 import { roleApplied } from '../../lib/discover-application-state.mjs';
 import { useRef, useState } from "react";
+import Link from "next/link";
 import {matchesPostingAge,postingAgeOptions} from "../../lib/posting-age.mjs";
 import { useWorkspace } from "../lib/workspace";
 import { Heading, control, Notice, InsetBox } from "./ui";
@@ -14,7 +15,7 @@ import ProfileIcon from "./profile-icon";
 import {savedOnboardingRole} from "../lib/onboarding-catalog.mjs";
 import {ApplicationProfileProvider, useApplicationProfile} from "./application-profile-context";
 import {ProfileSwitcher} from "./profile-settings";
-import {matchesProfileEmployment, showAgentEmptyState} from "../lib/discover-view.mjs";
+import {matchesProfileEmployment, showAgentEmptyState, matchesDiscoveryStatus} from "../lib/discover-view.mjs";
 import { motion, useReducedMotion } from "framer-motion";
 import cardStyles from "./role-card.module.css";
 import type { Drop } from "../lib/drop-pack";
@@ -42,16 +43,18 @@ function DiscoverBoard() {
   const [selection, setSelection] = useState<{ role: Role; owner: string } | null>(null);
   const preview = selection?.owner === previewOwner ? selection.role : null;
   function setPreview(role: Role | null) { setSelection(role ? { role, owner: previewOwner } : null); }
+  const [includeApplied,setIncludeApplied]=useState(false);
   const [search, setSearch] = useState(""),
-    [day, setDay] = useState("latest"),
+    [day, setDay] = useState(""),
     [postingAge, setPostingAge] = useState("any");
   const dates = [...new Set([sourceDate, ...sourceRoles.map((r: Role) => r.discoveredDate)].filter(Boolean))].sort().reverse();
-  const selectedDay = day === "latest" ? sourceDate : day;
+  const viewDay=day||(w.discoveryLog&&!publicView?"all":"latest");
+  const selectedDay = viewDay === "latest" ? sourceDate : viewDay;
   const roles = sourceRoles.filter(
     (r: Role) =>
       matchesPostingAge(r, postingAge) &&
       (selectedDay === "all" || r.discoveredDate === selectedDay) &&
-      (day !== "latest" || !roleApplied(r,w.state.workflow.applications,w.state.tracker.items)) &&
+      ((w.discoveryLog&&!publicView)?matchesDiscoveryStatus(r,{applications:w.state.workflow.applications,trackerItems:w.state.tracker.items,includeApplied}):(viewDay !== "latest" || !roleApplied(r,w.state.workflow.applications,w.state.tracker.items))) &&
       `${r.company} ${r.title} ${r.location} ${r.category}`
         .toLowerCase()
         .includes(search.toLowerCase()),
@@ -90,6 +93,7 @@ function DiscoverBoard() {
   return (
     <>
       {header}
+      {!publicView&&!w.discoveryLog&&w.hasPrivateBatch&&<Link href="/discover/" className="mb-4 inline-flex min-h-11 items-center text-sm text-board-accent underline underline-offset-4">Show jobs from all batches</Link>}
       {newArrival&&publicView&&<button type="button" className="mb-4 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={()=>setPublicView(false)}>Back to my agent’s finds</button>}
       <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_200px_200px] md:gap-3">
         <input
@@ -100,9 +104,10 @@ function DiscoverBoard() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <label className="flex min-w-0 flex-col gap-1 text-xs text-board-muted">Posted<select aria-label="Posted" className={control} value={postingAge} onChange={event=>setPostingAge(event.target.value)}>{postingAgeOptions.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
-        <DayFilter label="Discover day" dates={dates} latest={sourceDate} value={day} onChange={setDay} />
+        <DayFilter label="Discover day" dates={dates} latest={sourceDate} value={viewDay} onChange={setDay} />
 
       </InsetBox>
+      {w.discoveryLog&&!publicView&&<label className="mb-3 flex min-h-11 items-center gap-2 text-sm text-board-muted"><input type="checkbox" checked={includeApplied} onChange={event=>setIncludeApplied(event.target.checked)}/>Include applied jobs</label>}
       <Notice>
         {roles.length} to review ·{" "}
         {roles.filter((r: Role) => r.priority === "Apply Now").length} apply now

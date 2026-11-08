@@ -642,3 +642,14 @@ and analyzes top roles. Fixture coverage includes selected-source isolation,
 retry, owner/disabled validation, browser/MCP parity and detached demo reset.
 No TikTok adapter or ByteDance verifier was added. Local activation and live
 portal verification are reported separately in the feature change note.
+
+## Cumulative Discover loading
+
+Discover's default browser projection reads all owned batches instead of just
+the latest one, deduplicates repeated jobs using the newest saved assessment,
+and defaults to unapplied jobs across all discovery dates. Applied records and
+individual batch snapshots are retained. The existing batch readers, RLS and
+MCP `read_batch` own access; no new service or database migration is introduced.
+A fictional 32+14 overlap fixture proves 42 unique roles, not a 14-role cap;
+fictional UI fixtures cover an older unapplied role and the applied-history toggle.
+Local build/test evidence and hosted release remain separate.

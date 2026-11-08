@@ -245,3 +245,21 @@ starting the next on that profile and deduplicate combined results. New source
 selection does not imply new provider support: ByteDance has a collector but
 currently lacks supported full-JD verification; TikTok is not a configured
 automated source. Test that support before using either in a live class demo.
+
+## Discover across reviewed batches
+
+Default Discover now loads every owned saved batch through the existing paged
+batch readers, rather than selecting only the latest batch. This fixes the
+appearance of a 14-role publication replacing an earlier 32-role publication;
+14 was a batch size, not a search or storage cap. A pure projection deduplicates
+by canonical job URL/catalog identity, uses the newest saved assessment and
+retains the earliest discovery date. A latest dismissal suppresses older copies.
+No batches, discoveries or applications are rewritten. Explicit `?batch=` links
+retain their original single-batch view, with a link to the cumulative board.
+
+The cumulative view defaults to all discovery dates and only unapplied jobs.
+“Include applied jobs” exposes retained applied history without changing any
+application state. Existing profile employment/search/date controls still apply.
+Website reads use the existing authenticated/RLS batch readers; MCP's existing
+`read_batch` remains the owner-scoped reader for each original batch. No new
+queue, database table, migration, publication or agent analysis is required.

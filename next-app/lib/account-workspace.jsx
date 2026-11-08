@@ -208,6 +208,7 @@ export default function AccountWorkspaceProvider({ children }) {
     state,store,user,accountUser:user,demo:false,demoEpoch:0,canDemo:true,
     toggleDemo:()=>navigateWorkspaceMode(window.location,true),resetDemo:()=>{},
     locked,status,error,authReady,signIn,signOut,syncError,
+    discoveryLog:hasAccess&&Boolean(batch?.cumulative),
     hasPrivateBatch:hasAccess&&Boolean(batch),publicRoles:hasAccess?catalog.roles:[],publicDate:hasAccess?catalog.lastRun:"",
     roles:hasAccess?(batch?.roles || []):[],date:hasAccess?(batch?.date || ""):"",batchLabel:hasAccess?batch?.label:undefined,
     models:typeof window!=="undefined"?window.JB:null,

@@ -34,6 +34,7 @@ export default function DemoWorkspaceProvider({children}) {
  const value={state,store:runtime.current?.store||null,user:null,accountUser:null,demo:true,demoEpoch:epoch,canDemo:true,
   toggleDemo:exit,resetDemo:()=>{if(runtime.current)reset();},locked:false,status:'Fictional demo. Changes stay in memory.',error,syncError:'',authReady:false,
   signIn:()=>setError('Exit demo mode before signing in.'),signOut:()=>setError('Demo mode has no signed-in account.'),
+  discoveryLog:true,
   roles:state?.demo.roles||[],date:state?.demo.date||'',batchLabel:'Demo listings — fictional data for preview.',
   models:typeof window!=='undefined'?window.JB:null,client:null,services:runtime.current?.services||null};
  return <Context.Provider value={value}>{children}</Context.Provider>;

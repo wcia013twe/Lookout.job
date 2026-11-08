@@ -1,0 +1,9 @@
+# Cumulative Discover loading
+
+Discover was loading only the latest batch; 14 was the latest publication size, not a cap. Load every owned batch with existing paged readers, then derive a unique-job view. Keep the newest saved assessment, earliest discovery date and latest dismissal; preserve immutable batch links and all application records. Default to all discovery dates and only unapplied jobs; Include applied jobs exposes retained applied history. No new table, migration, endpoint, MCP tool, merged publication or agent reassessment. Existing scoped read_batch covers the original batches.
+
+Verification: full suite 1,096 passed, 5 skipped, no failures. Focused all-batch/cloud/demo checks passed (46); frontend typecheck and static production build passed; 158 catalog roles validated; diff check passed. Isolated built UI checked at desktop/mobile: all dates selected, unapplied default 6 fictional roles, Include applied jobs 16 roles, toggle reversible, no page errors, external requests or mobile overflow. Desktop/mobile screenshots are in the checkout’s ignored `next-app/.profile-flow-proof/discovery-log/`. Mechanical UI check reported no findings. Tests include a fictional 32+14 overlap yielding 42 unique roles, >200 batch pagination, account switches, dismissal and application preservation. Detached demo adds an earlier-date role and retains reset isolation.
+
+Limits: this reads already published reviewed jobs, not raw or pending review results. Existing employment and search/date filters still apply. Large batch histories reuse existing per-batch posting-evidence reads. No real account data was rewritten. No push or GCP deployment.
+
+Checkout: `/Volumes/External SSD/Lookout/tmp/lookout-features/cumulative-discover-log-6ofaIU/repo`; branch `codex/cumulative-discover-log-6ofaIU`.

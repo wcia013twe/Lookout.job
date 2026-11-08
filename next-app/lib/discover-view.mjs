@@ -1,3 +1,4 @@
+import {roleApplied} from "../../lib/discover-application-state.mjs";
 import {readField, promptFromProfile} from "../../lib/search-profile.mjs";
 
 // Public browsing remains available; a signed-in workspace starts with agent-owned finds.
@@ -11,4 +12,8 @@ export function matchesProfileEmployment(role, profile) {
  const normalize=value=>String(value).trim().toLowerCase().replace(/[\s-]+/g,"").replace(/^ft$/, "fulltime").replace(/^internships$/, "internship");
  const types=preference.split(/[,;/]|\s+(?:or|and)\s+/i).map(normalize).filter(Boolean);
  return !types.length || types.some(type=>["any","all","opentooptions"].includes(type)) || types.includes(normalize(role.employmentType));
+}
+
+export function matchesDiscoveryStatus(role,{applications={},trackerItems={},includeApplied=false}={}) {
+ return includeApplied||!roleApplied(role,applications,trackerItems);
 }
