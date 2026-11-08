@@ -1,0 +1,185 @@
+\documentclass[twocolumn]{article}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{titlesec}
+
+\raggedbottom
+\titlespacing*{\section}{0pt}{1.5ex}{0.5ex}
+
+\title{Beyond Tool Calling: Domain-Specific Workspaces
+for Personalized AI Agents}
+\author{Wei-Lin Chou}
+\date{}
+
+\begin{document}
+
+
+\maketitle
+
+
+
+
+
+
+
+
+\section*{Abstract}
+\noindent
+
+Personal AI agents can use external tools to execute complex tasks, but managing workflows that span multiple services and sessions introduces challenges in maintaining task state, coordinating actions, and incorporating user preferences. General-purpose browser automation and tool interfaces provide access to external systems, but the extent to which dedicated software environments improve agent performance remains unclear.
+
+This paper presents Lookout, an agent-native workspace designed to support personal AI agents in managing job search workflows. Lookout provides structured access to job opportunities, persistent application records, and tools for executing and tracking actions on behalf of users. The system separates agent reasoning and personalization from domain-specific workflow management, allowing existing personal agents to operate through a shared software environment.
+
+We formulate an evaluation to test whether providing agents with this workspace improves task completion, execution efficiency, and workflow continuity compared with agents using general-purpose tools. We propose a controlled evaluation of representative job-search tasks. This draft reports the architecture and implementation boundaries; it does not yet report comparative experimental results.
+
+\section{Introduction}
+\subsection{Motivation}
+Job searching involves a combination of repetitive tasks and decisions that require individual judgment. Applicants regularly discover opportunities, compare job requirements, prepare application materials, submit forms, and track recruitment progress. While many of these activities can be automated, evaluating career opportunities, representing personal experience, and deciding which applications to pursue often require human involvement.
+
+Personal AI agents can perform much of this work through external tools, persistent memory, and scheduled automations. A user might instruct an agent to search for relevant positions each morning, prepare applications, or monitor recruiting updates. However, delegating an ongoing job search involves more than executing a collection of independent instructions. The agent must determine what work can proceed autonomously, what requires user input, and how to continue after receiving feedback. Meanwhile, the user needs to understand what the agent is doing, review its decisions, and redirect its work as priorities change.
+
+These interactions raise a software design question. Conversational instructions and scheduled tasks can initiate delegated work, but do not by themselves define a shared domain record of decisions, permissions, and outcomes. A job-search interface must also make those records inspectable and editable by the user. A shared workspace could provide an alternative by allowing agents to perform routine work while presenting opportunities, pending decisions, and application progress in a form users can directly inspect and control.
+
+This paper investigates whether such a workspace improves the effectiveness of personal agents compared with managing the same workflows through general-purpose tools and agent-level automations. We examine this question through Lookout, an agent-native job search workspace designed to support ongoing task execution and human-agent coordination.
+
+\subsection{Research Question and Contributions}
+This paper investigates whether dedicated software environments improve how personal AI agents manage ongoing tasks on behalf of users. Specifically, we examine whether an agent-native workspace offers measurable advantages over configuring equivalent workflows directly through an agent's tools, memory, and scheduled automations. We focus on three aspects of performance: task completion, execution efficiency, and the amount of human supervision required.
+
+To study this question, we developed Lookout, a job-search workspace that allows existing personal agents to discover opportunities, manage applications, and coordinate actions with users through structured tools and persistent workflow records.
+
+The primary contributions of this work are:
+
+Agent-native workspace architecture: A design for coordinating autonomous task execution and human oversight through a shared software environment.
+
+System implementation: Lookout, an MCP-accessible job-search workspace integrating opportunity discovery, application management, and user review workflows.
+
+Evaluation protocol (proposed): A comparison of workspace-supported agents and agents using general-purpose tools and automations, measuring task completion, execution efficiency, and human intervention requirements.
+\section{Background and Related Work}
+\subsection{Long-Horizon Agent Execution}
+
+Long-horizon workflows require agents to coordinate dependent actions, maintain task constraints, and respond to changes throughout execution. Yuan et al.~\cite{osworld} introduced OSWorld 2.0, a benchmark containing 108 realistic computer-use workflows that take human users a median of approximately 1.6 hours to complete. Their evaluation identified recurring failures in tracking constraints, responding to newly available information, and verifying completed actions. In the cited paper, the strongest evaluated configuration achieved a 20.6\% full-task completion rate under a 500-step budget, demonstrating the difficulty of sustained execution even for capable agents.
+
+These findings are relevant to job search workflows, where agents must manage multiple applications with different requirements and changing statuses. However, OSWorld 2.0 primarily evaluates execution within individual workflows rather than the coordination of ongoing responsibilities across sessions.
+
+\subsection{Persistent State Management}
+One approach to improving long-horizon reliability is to maintain an explicit representation of task progress outside the agent's conversational history. Zou et al.~\cite{stateharness} proposed StateHarness, a runtime framework that records project decisions, relevant findings, dependencies, and unresolved work for coding agents. On RefactorBench, StateHarness improved full-chain task completion from 29.4\% to 35.3\%, suggesting that structured state management can improve execution consistency.
+
+Ding et al.~\cite{alwayson} examined this problem more broadly in their survey of always-on agents. They characterize persistent agents as systems that maintain not only memory, but also task records, permissions, commitments, and externally executed actions. Their analysis highlights the importance of governing and recovering operational state as agents continue working over time.
+
+These studies motivate explicit persistent state, although StateHarness focuses on software development and the survey does not directly evaluate domain-specific applications shared between agents and users.
+
+\subsection{Human-Agent Collaboration}
+Long-running tasks also require coordination between automated execution and human judgment. Hayati et al.~\cite{kolab} introduced Kolab, a benchmark based on over 115 hours of interactions between 50 professionals and AI agents. Their findings show that evaluating autonomous task completion alone does not adequately capture collaboration quality. Agents must also account for how users adopt, revise, or reject their contributions throughout a workflow.
+
+This distinction is relevant to job searching, where an agent may independently discover opportunities and prepare materials while requiring user input before consequential actions. Managing these interactions introduces requirements beyond task execution, including presenting pending decisions, incorporating feedback, and resuming work afterward.
+
+Together, these studies motivate investigating whether an external, domain-specific workspace can improve long-horizon agent execution while supporting ongoing human supervision. Lookout examines this question in the context of job search management, comparing workspace-supported workflows against equivalent agent-level tooling and automations.
+
+\section{Problem Formulation}
+\subsection{Problem Definition}
+We consider a personal AI agent tasked with managing an ongoing workflow on behalf of a user. The workflow consists of interdependent tasks whose execution may span multiple sessions and require information from external services. Each task has associated context, progress, and constraints that may change as the workflow evolves. Some actions can be performed autonomously, while others require user authorization or additional information.
+
+We study this problem through job search management, where an agent must coordinate opportunity discovery, application preparation, submission, and subsequent status updates. Successful execution requires preserving decisions across sessions, avoiding repeated or conflicting actions, and resuming work following user intervention.
+
+The central problem is whether these responsibilities are managed more effectively within the agent's existing environment or through an external, domain-specific workspace shared with the user.
+
+\subsection{Workspace Requirements}
+We identify three requirements for supporting long-running workflows delegated to personal AI agents:
+
+State continuity: Preserve task progress, prior decisions, and execution outcomes across sessions to support reliable resumption without duplicating completed work.
+
+Controlled execution: Enforce authorization constraints and workflow transitions, including safeguards against repeated actions when execution outcomes are uncertain.
+
+Human-agent coordination: Allow users to inspect ongoing work, review consequential decisions, and provide feedback that agents can incorporate into subsequent execution.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{docs/figures/lookout-architecture.pdf}
+    \caption{Lookout system architecture showing
+    the interactions between users, personal agents,
+    MCP interfaces, and workspace services. The figure summarizes logical boundaries; its workers/browser path includes retained deterministic application code that is currently paused. Current AI Apply requests use the external agent host for browser execution.}
+    \label{fig:architecture}
+\end{figure*}
+
+
+\section{System Design}
+
+
+\subsection{Architecture Overview}
+
+Lookout separates personal-agent reasoning from domain-specific workflow management. As illustrated in Figure~\ref{fig:architecture}, the architecture consists of an external personal agent, an authenticated Model Context Protocol (MCP) interface, persistent workspace services, a user-facing interface, and execution infrastructure.
+
+The external agent is responsible for reasoning, planning, and applying knowledge of the user to job-search activities. Lookout provides the environment through which those activities are organized and executed. Its backend supports opportunity discovery, application management, networking records, career preparation, and workflow coordination. A shared persistence layer maintains application progress and user decisions independently of individual agent sessions.
+
+The system exposes two interfaces to the same underlying workspace. Agents interact through MCP tools, while users inspect and modify records through the web interface. This separation allows either participant to update ongoing work without requiring the other to remain continuously active.
+
+\subsection{Agent Interface and Personalization}
+
+Lookout provides a domain-oriented interface that allows personal agents to access job-search capabilities without directly navigating every underlying application. Operations include discovering opportunities, preparing applications, retrieving workflow information, and managing ongoing tasks. The interface distinguishes common operations from specialized supporting capabilities, allowing agents to access additional functionality when required. This organization is intended to preserve flexibility while limiting the complexity of routine interactions.
+
+Personalization is divided between the external agent and Lookout. The agent maintains broader knowledge of the user, including preferences and context accumulated through previous interactions. Lookout maintains structured domain information such as target positions, search constraints, résumé selections, and application history. Agents combine these sources when evaluating opportunities and deciding what actions to take. This separation allows the workspace to maintain consistent job-search records without requiring ownership of the agent's private memory or personalization mechanisms.
+
+\subsection{Persistent Workflow Model}
+
+Lookout represents job-search activities as persistent workflows rather than isolated tool executions. Opportunities, applications, and related tasks maintain explicit states that evolve as work progresses. Each workflow may involve dependencies between actions, external updates, and decisions that cannot be resolved during a single agent session. The workspace preserves completed operations, pending work, and previous decisions so that subsequent executions can continue from the current workflow state.
+
+The design also separates proposed actions from verified outcomes. An agent's intention to submit an application is different from a confirmed submission, and an interrupted operation does not necessarily indicate failure. Consequently, workflow records must distinguish preparation, authorization, execution, and observed results. State transitions and revisions provide a consistent representation of these distinctions, supporting recovery and preventing subsequent actions from relying on outdated assumptions.
+
+\subsection{Human-Agent Coordination}
+
+Lookout supports delegated workflows in which the agent performs routine activities while users retain control over consequential decisions. The workspace surfaces opportunities requiring attention through a shared Action Board, including application reviews, missing information, and execution blockers. Users can inspect the relevant context, provide approval or corrections, and update their preferences without directly managing the agent's individual tool calls. These decisions become part of the persistent workflow state.
+
+Human intervention does not necessarily coincide with an active agent session. After a user updates the workspace, the new state can be made available to the personal agent for subsequent execution. The agent can retrieve the updated context and determine how to continue within the applicable authorization constraints. This design allows delegated activities to progress asynchronously while preserving a common record of human decisions and agent actions.
+
+\section{Implementation}
+\subsection{Technology Stack}
+Lookout uses a Next.js and React frontend, Supabase PostgreSQL for persistent workflow records, and private object storage for résumés and generated documents. Backend functionality is provided through Supabase Edge Functions and an optional Node.js API. External agents connect through an authenticated MCP endpoint. The transport validates protocol requests and forwards credentials and operations to the gateway, where connection scope, ownership, and revision checks govern domain operations. Tool discovery does not grant authority. The interface uses progressive tool discovery, exposing frequently used operations by default while making specialized tools available on demand.
+
+\subsection{State Persistence and Authorization}
+
+Workflow records include application states, draft revisions, approval snapshots, search checkpoints, and execution-attempt journals. Database operations enforce record ownership, version consistency, and permitted state transitions. Application authorization is evaluated against the current draft, selected résumé, verified answers, and applicable submission policy. Human approvals are bound to specific revisions, while qualifying applications may receive automatic authorization only when account-wide auto-submit consent is explicitly enabled and the applicable policy requirements are satisfied. Profile-level settings alone cannot grant that consent. These checks are enforced independently of the agent's instructions.
+
+\subsection{Execution and Recovery}
+Lookout uses bounded Node.js workers for supported discovery tasks. Search jobs use execution leases and fenced temporary snapshot references; these snapshots reside on worker storage rather than being complete database checkpoints. Persistence and recovery therefore depend on both durable job metadata and available worker storage.
+
+The current AI Apply path queues a connection-bound request, emits a change-feed pointer, and waits for the external agent (Muse) to claim it. The agent reuses saved drafts and supplies authorized browser execution through its host. Pickup and outcome reporting use current job and application versions. A running request has no timed takeover; an interruption requires reconciliation rather than duplicate execution. Reported outcomes distinguish prepared, completed, blocked, and uncertain work. Completing a request does not create approval, submitted status, or a verified employer receipt.
+
+The repository retains a Playwright-based deterministic application runner, but new application-worker pickup and browser-tool registrations are currently paused. A runtime flag alone does not restore them. Existing approval, authorization, stop, and submission-evidence boundaries remain separate from host browser capability. An uncertain external outcome requires verification and must not automatically trigger resubmission.
+
+Human decisions and workflow changes are exposed through change-consumption operations. An optional polling watcher can invoke a configured external agent host when new work requires attention. The agent then retrieves updated records and resumes execution according to its own scheduling and reasoning capabilities. This mechanism depends on the connected agent environment and does not constitute an independent agent runtime within Lookout.
+
+\section{Proposed Experimental Evaluation}
+No controlled comparison has been completed for this draft. Repository tests establish selected implementation contracts; they do not establish improvements in agent performance or user supervision.
+
+\subsection{Research Hypotheses}
+We hypothesize that shared domain records improve task completion and recovery after interruption, reduce repeated operations, and reduce avoidable user intervention without increasing unauthorized actions. These are hypotheses rather than findings.
+
+\subsection{Experimental Setup and Baselines}
+The proposed study compares the same agent model, model version, instructions, initial user profile, browser capability, task set, and execution budgets in two conditions. The baseline uses general-purpose tools, persistent notes, and equivalent host scheduling. The workspace condition adds Lookout's domain tools and shared records. Both receive the same source data and authorization constraints. A baseline with structured notes would help distinguish the effect of persistence from domain validation and the shared interface. Trials should use resettable fictional accounts and controlled employer-form fixtures rather than real applications.
+
+\subsection{Evaluation Tasks and Metrics}
+Tasks should cover discovery and deduplication, draft preparation with missing facts, exact-revision review, resumption after user edits, stale-write rejection, and recovery from an uncertain external outcome. Independent task checks should score verified completion, constraint violations, duplicate actions, tool calls, tokens, elapsed time, and user interventions. Necessary authorization requests and avoidable clarification should be reported separately. Repeated trials and uncertainty intervals are needed; no sample size or result is claimed here.
+
+\subsection{Results and Analysis}
+Comparative results remain pending. Local fixture checks and deployment records must be reported separately from agent-task outcomes and actual external-host behavior.
+
+\section{Discussion}
+\subsection{Design Implications}
+Lookout makes domain state and human decisions available independently of a conversation. This architecture provides explicit places to enforce ownership, revision checks, and outcome distinctions. Whether these mechanisms improve end-to-end performance remains an empirical question.
+
+\subsection{Limitations and Threats to Validity}
+The workspace does not supply an agent model, scheduler, notification transport, or general-purpose browser. Agent-host capabilities and source availability affect execution. Current local activation evidence does not establish hosted release, a real Muse wake, or employer submission. The retained deterministic runner is not an active production execution path. A controlled fixture study would also have limited ecological validity: live forms, changing postings, sensitive user data, and consequential decisions may introduce failures absent from fixtures. Tool granularity and the workspace's prebuilt domain logic may confound comparisons unless the baseline and budgets are documented carefully.
+
+\section{Conclusion and Future Work}
+Lookout implements a shared job-search workspace with scoped agent operations, persistent domain records, and explicit human-decision and outcome boundaries. This draft describes the system and proposes a controlled comparison with general-purpose agent tooling. Future work must execute that comparison and verify host-dependent behavior before claiming improved completion, efficiency, or continuity.
+
+\begin{thebibliography}{9}
+\bibitem{osworld} M. Yuan et al., ``OSWorld 2.0: Benchmarking Computer Use Agents on Long-Horizon Real-World Tasks,'' arXiv:2606.29537, 2026. \url{https://arxiv.org/abs/2606.29537}.
+\bibitem{stateharness} C. Zou, Y. Zhou, X. Luo, and X. Zhang, ``StateHarness: Maintaining Evolving Project State for Long-Horizon Coding Agents,'' arXiv:2610.17616, 2026. \url{https://arxiv.org/abs/2610.17616}.
+\bibitem{alwayson} T. Ding, A. Nannapaneni, B. Liu, and L. Zhang, ``Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents,'' arXiv:2606.30306, 2026. \url{https://arxiv.org/abs/2606.30306}.
+\bibitem{kolab} S. A. Hayati et al., ``Kolab: Benchmarking Human-Agent Collaboration in Long-Horizon Workflows,'' arXiv:2610.21109, 2026. \url{https://arxiv.org/abs/2610.21109}.
+\end{thebibliography}
+
+\end{document}
