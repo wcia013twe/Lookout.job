@@ -673,6 +673,27 @@ fixture covers the detached demo. The direct worker's existing tracked-job
 exclusion is tested with Submitted and Rejected records, preserving each full
 application row. No new writer, migration, tool or permission is added.
 
+### Embedded communication reference
+
+Action Board message reviews now embed a compact communication summary alongside
+the existing application attachment pattern. It shows the saved recipient, company,
+destination and subject when available; its link opens the owned Network message
+and retains the board return path. Application summaries are also clickable across
+the widget, with a separate accessible external-posting target and no extra
+details text link. The complete draft and exact-message review
+remain inline. Acceptance still only marks the draft ready for the human to send.
+This is presentation over the existing board read/response boundary (including
+read_action_board MCP); it introduces no writer, sending capability or schema.
+Detached fixtures cover a subject/email and missing optional metadata. Hosted
+release and real-account browser verification remain separate.
+
+The board's Edit message control saves subject/body through the existing
+owner/revision-checked save_outreach_contact writer, preserving all other contact
+fields and status. Cancel keeps the saved draft. Unsaved editing disables
+decisions; changed drafts receive a new exact-review identity. Agents use the
+existing save_contact/contacts.save boundary. No message is sent. Detached
+interaction and adapter checks cover save/cancel, fresh review and stale writes.
+
 
 Action Board input indicators derive from the existing owned pending decisions:
 blockers, missing answers, uncertain submissions and drafts with unanswered
@@ -703,3 +724,9 @@ That is unresolved coverage, not evidence of an empty job market. Exact employer
 link research remains the existing agent handoff; no login bypass, guessed links,
 LLM worker or alternate write path was introduced. Local Docker persistence proof
 is recorded separately from hosted deployment in the feature change note.
+
+The ordinary detached demo now includes the connected Action Board examples
+without a hidden scenario parameter: filled drafts first, a missing answer,
+CAPTCHA verification, and an uncertain submission. All resolve in memory through
+fictional services and return on Reset demo data. Explicit named test scenarios
+keep their existing fixtures. No account writes or external employer forms open.
