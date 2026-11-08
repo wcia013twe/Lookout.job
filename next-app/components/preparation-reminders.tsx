@@ -1,5 +1,6 @@
 "use client";
 import {upcomingPreparationDates,relativeCalendarDate} from "../lib/preparation-calendar.mjs";
+import {CompanyLogo} from "./company-logo";
 import SurfacePanel from "./surface-panel";
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -34,6 +35,10 @@ const agendaFor = buildWeeklyPreparationAgenda as unknown as (input: Bundle & { 
 const localSession = recordLocalPreparationSession as unknown as (bundle: Bundle, input: SessionInput) => Bundle;
 const calendarLabel = (date: string, options: Intl.DateTimeFormatOptions) => new Date(`${date}T12:00:00Z`).toLocaleDateString(undefined, { ...options, timeZone: "UTC" });
 
+function CalendarMark({company}:{company?:string}) {
+  return company ? <span aria-hidden="true" className="shrink-0"><CompanyLogo company={company} size="small" /></span> : <TaskIcon calendar />;
+}
+
 // Presentational boundary also used by the isolated demo/browser verification.
 export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComplete, onOpen, busy = false, locked = false, timeZone }: {
   agenda: Agenda; minutes: string; onMinutes: (value: string) => void; onBudget: () => void;
@@ -56,8 +61,8 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
         <h3 className={`prep-date ${day.date === agenda.today ? "prep-date-today" : ""}`}><span>{day.date === agenda.today ? "Today" : calendarLabel(day.date, { weekday: "short" })}</span><span className="prep-date-number">{calendarLabel(day.date, { day: "numeric" })}</span></h3>
         <div className="min-w-0">
           <span className="mb-2 inline-flex rounded-full border border-board-border px-2 py-0.5 text-[10px] font-medium text-board-muted">{relativeCalendarDate(day.date,agenda.today)}</span>
-          {day.events?.map(event => event.path ? <Link key={event.id} href={event.path} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.company || event.title}</strong>{event.company && <span className="block text-xs font-normal">{event.title}</span>}</span></Link> : <button key={event.id} type="button" onClick={() => onOpen(event.applicationId!,event.roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.company}</strong><span className="block text-xs font-normal">{event.title}</span></span></button>)}
-          {day.interviews.map(interview => <button key={`${interview.applicationId}:${(interview as any).roundId||'standalone'}`} type="button" onClick={() => onOpen(interview.applicationId,(interview as any).roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{interview.kind || "Interview"}</span><strong className="block">{interview.company}</strong><span className="block text-xs font-normal">{interview.stage}</span></span></button>)}
+          {day.events?.map(event => event.path ? <Link key={event.id} href={event.path} className="prep-interview"><CalendarMark company={event.applicationId || event.id.startsWith("mock:") || event.id.startsWith("material:") ? event.company : undefined} /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.company || event.title}</strong>{event.company && <span className="block text-xs font-normal">{event.title}</span>}</span></Link> : <button key={event.id} type="button" onClick={() => onOpen(event.applicationId!,event.roundId)} className="prep-interview"><CalendarMark company={event.applicationId || event.id.startsWith("mock:") || event.id.startsWith("material:") ? event.company : undefined} /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.company}</strong><span className="block text-xs font-normal">{event.title}</span></span></button>)}
+          {day.interviews.map(interview => <button key={`${interview.applicationId}:${(interview as any).roundId||'standalone'}`} type="button" onClick={() => onOpen(interview.applicationId,(interview as any).roundId)} className="prep-interview"><CalendarMark company={interview.company} /><span><span className="prep-interview-label">{interview.kind || "Interview"}</span><strong className="block">{interview.company}</strong><span className="block text-xs font-normal">{interview.stage}</span></span></button>)}
           {day.completedMinutes > 0 && <p className="mb-2 text-xs text-board-accent">{day.completedMinutes} min practiced</p>}
           <ul className="space-y-2">{day.items.map(item => <li key={item.id} className="prep-session">
             <details className="min-w-0 flex-1">
