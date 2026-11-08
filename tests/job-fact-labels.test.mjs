@@ -13,3 +13,13 @@ test('only explicit arrangements and sponsorship policies become quick facts',()
  for(const [input,expected] of [['Remote (demo)','Remote'],['Hybrid: 3 days in office','Hybrid'],['On-site required','On-site'],['San Francisco','Not disclosed'],['Remote work may be allowed','Not disclosed'],['Remote work is not offered','Not disclosed'],['Ask whether remote work is allowed','Not disclosed']])assert.equal(workSettingLabel(input),expected,input);
  for(const [input,expected] of [['Yes','Available'],['Visa sponsorship available','Available'],['No','Not available'],['No visa sponsorship','Not available'],['Sponsorship is not offered','Not available'],['Sponsorship may be available','Not disclosed'],['Sponsorship availability depends on the team','Not disclosed'],['No sponsorship policy disclosed','Not disclosed'],['Requires sponsorship','Not disclosed']])assert.equal(sponsorshipLabel(input),expected,input);
 });
+
+test('hourly, annual and monthly employer pay remains in its original unit',()=>{
+ for(const pay of ['$55–$65/hour','$120,000–$150,000/year base + equity','$6,000–$8,000/month'])assert.equal(compensationLabel(pay),pay);
+});
+
+test('known employer base pay is not hidden because bonus or equity is unknown',()=>{
+ const pay='$120,000–$150,000/year base; bonus and equity not disclosed';
+ assert.equal(compensationLabel(pay),pay);
+ assert.equal(compensationLabel('Base salary: $60/hour; bonus unknown'),'Base salary: $60/hour; bonus unknown');
+});

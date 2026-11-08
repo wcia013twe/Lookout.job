@@ -2,10 +2,9 @@ import type { Role } from "./role-card";
 import {formatPostedDate,formatAvailabilityCheck,postingStatus} from "../../lib/posting-age.mjs";
 import {compensationLabel,workSettingLabel,sponsorshipLabel} from "../lib/job-fact-labels";
 import ProfileIcon, { type ProfileIconName } from "./profile-icon";
-import { compensationTag } from "../lib/role-display";
 export default function RoleJobFacts({ role, compact = false, unrecorded = false }: { role: Role; compact?: boolean; unrecorded?: boolean }) {
   const status = postingStatus(role);
-  const pay = role.compensation || compensationTag(role.whyItFits);
+  const pay = role.compensation;
   const facts: { icon: ProfileIconName; label: string; value: string }[] = [
     { icon: "money", label: "Compensation", value: compensationLabel(pay) },
     { icon: "location", label: "Location", value: role.location || "Not disclosed" },
