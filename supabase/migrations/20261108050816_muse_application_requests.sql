@@ -7,6 +7,9 @@ create function public.backend_worker(operation text,payload jsonb default '{}')
 language plpgsql security definer set search_path='' as $$
 begin
  if operation='claim_application' then return null;end if;
+ if payload ? 'jobId' and exists(select 1 from private.backend_jobs where id=(payload->>'jobId')::uuid and result->>'executor'='muse') then
+  raise exception 'Muse request has no worker lease' using errcode='42501';
+ end if;
  if operation='application_dispatch' and payload->>'name'='runner_submission_transition' and coalesce(payload->'args'->>'operation','')<>'finish' then
   raise exception 'AI Apply is owned by Muse; deterministic submission is paused' using errcode='42501';
  end if;

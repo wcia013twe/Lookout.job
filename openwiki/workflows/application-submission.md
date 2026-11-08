@@ -467,3 +467,8 @@ refresh, exact approvals, progress reporting and durable acknowledgement. AI
 Apply events point to the existing queued job; agents must not start competing
 workers. Backend migration/gateway/MCP release and an authenticated host wake
 receipt are required before claiming this is active in a hosted account.
+
+
+### Muse-owned AI Apply routing (source update)
+
+AI Apply now waits for connection-bound Muse pickup and host computer use. The existing saved draft is reused; required approval, durable stops and uncertainty checks remain. Prepared/completed request outcomes never manufacture submission evidence. Deterministic browser registrations are temporarily paused. See [the routing contract](../../docs/discover-application-jobs.md) and [current implementation state](../operations/current-state.md) for activation and host-verification limits.

@@ -4,7 +4,7 @@ import {chromium} from 'playwright';
 const base=process.env.LOOKOUT_UI_URL||'http://localhost:3194';
 if(!['localhost','127.0.0.1'].includes(new URL(base).hostname))throw Error('Use an isolated local demo.');
 const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/tmp/discovered-role-widget';await mkdir(dir,{recursive:true});
-const browser=await chromium.launch();
+const browser=await chromium.launch({executablePath:process.env.LOOKOUT_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
 try{
  for(const [name,viewport,colorScheme] of [['desktop',{width:1440,height:1000},'light'],['mobile',{width:390,height:844},'dark']]){
   const context=await browser.newContext({viewport,colorScheme,reducedMotion:'reduce'}),page=await context.newPage(),errors=[];
@@ -23,7 +23,17 @@ try{
   const dialog=page.getByRole('dialog');await dialog.waitFor();await dialog.getByRole('heading',{name:'About the job',exact:true}).waitFor();
   await page.keyboard.press('Escape');await dialog.waitFor({state:'detached'});
   await card.getByRole('button',{name:'AI Apply',exact:true}).click();await card.getByRole('button',{name:'Queued',exact:true}).waitFor();
+  await card.getByText('Waiting for Muse',{exact:true}).waitFor();
+  await card.getByRole('button',{name:'Demo: Muse picks up',exact:true}).click();
+  await card.getByText('Muse is working',{exact:true}).waitFor();
+  assert(await card.getByRole('button',{name:'With Muse',exact:true}).isDisabled());
+  await card.getByRole('button',{name:'Demo: save outcome',exact:true}).click();
+  await card.getByText('Ready for review',{exact:true}).waitFor();
+  assert.equal(await card.getByRole('button',{name:'Applied',exact:true}).count(),0);
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  await page.screenshot({path:`${dir}/${name}-muse-outcome.png`});
+  await page.reload();await page.locator('[data-discovered-role="demo-discover-good"]').getByRole('button',{name:'AI Apply',exact:true}).waitFor();
   assert.deepEqual(errors,[]);await context.close();
  }
- console.log('Compact discovery widget: light desktop/dark mobile, expandable saved match, keyboard preview, queue action, no overflow or private writes. '+dir);
+ console.log('Compact discovery widget: light desktop/dark mobile, expandable saved match, keyboard preview, queue → Muse pickup → saved review outcome, reset, no overflow or private writes. '+dir);
 }finally{await browser.close();}

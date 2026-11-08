@@ -1,6 +1,7 @@
 # Route AI Apply to Muse
 
-- Pause deterministic application worker pickup and browser-tool registrations while retaining their implementations.
-- Route AI Apply through the existing change feed and job journal, with connection-bound, versioned Muse pickup and outcome tools. Reports do not create approvals, submitted status or verified receipts.
-- Validation in progress: migrated pickup/report assertions passed through ownership, replay and readback checks; correcting a final fixture request. Full-suite, demo and integration verification remain before landing.
-- Limits: no deployment, real Muse wake, host browser session or employer submission has been verified.
+- AI Apply emits the existing request pointer; its bound connection claims one versioned job, reuses saved materials in its own host browser and saves a prepared/completed/blocked/uncertain outcome. Website and MCP share the existing queue writer; agent pickup/report use scoped queue operations and the existing job journal. No new workflow store, approval or verified receipt is created.
+- Comment out deterministic worker hookup and Node/local inspect/try/submit registrations, retaining implementations. SQL disables application worker pickup and new worker submission permits, and rejects worker access to Muse-owned jobs. Existing started deterministic work may still persist its real finish.
+- Integrate the connected Action Board feed work. Add honest Waiting for Muse / Muse is working / Ready for review labels and detached demo pickup/outcome controls. Document host capability, approval, stop and uncertainty boundaries.
+- Validation: npm test: 1,130 passed, 5 skipped, 0 failed (1,135 total); npm run validate:data (158 roles); frontend and backend runtime typechecks; npm run build; controlled submission E2E (23 passed); desktop light/mobile dark UI checks covering queue, pickup, saved outcome and reset with no private requests or overflow; design detector returned no findings; git diff --check.
+- Limits: no real Muse wake, subagent/browser-host access or employer submission verified. Backend migration, gateway/MCP release, rebuilt Node service and agent context/tool refresh are distinct from local-main landing. No production push/publication in this pass. Existing design metadata drift was left outside this routing change.
