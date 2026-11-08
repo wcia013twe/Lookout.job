@@ -846,17 +846,7 @@ Future requests use an owned, versioned application-agent preference, separate f
 
 Local routing activation: the migration and Node image lookout-node:application-agent-147 are active. Scoped MCP write/read-back saved Muse Local as the default, and the live queue resolver confirmed Dots callers target it without queueing a test application. Full suite (1145 passed/five skipped), focused final reset/demo checks, production build and detached desktop/mobile selector checks passed. Existing WGU state, Dots permissions and watch configuration were not changed. Hosted release and real-account browser interaction remain unverified.
 
-Discover compact Strong Consider cards omit the reasoning excerpt while retaining
-the saved label, match scores and full analysis in the job preview. The detached
-demo shares this presentation; saved assessments and service/MCP boundaries are unchanged.
-
-Discover card previews now display all seven saved job facts directly, replacing
-the compact facts, reasoning excerpt and four-score disclosure. Full analysis
-remains in the job drawer. Demo and account cards share this presentation.
-
-Discover cards now limit visible facts to Compensation, Location, Work setting
-and Focus. Sponsorship, Posted and Availability checked remain in the full job
-preview. This is presentation-only and applies equally to the detached demo.
-
-Discover cards now show only Compensation and Location; the full job preview
-retains all seven facts. This presentation also applies to detached demo cards.
+Discover cards use the original tier-colored company header and glass body,
+compact compensation/location facts and four match scores. Fit/recommendation
+summaries stay out of the cards; full analysis remains in the job drawer. The
+separate embedded role widget is unchanged. Demo cards share this presentation.

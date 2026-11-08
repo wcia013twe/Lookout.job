@@ -22,13 +22,10 @@ try{
  const page=await context.newPage();page.setDefaultTimeout(12000);page.on('pageerror',e=>errors.push(e.message));
  await page.goto((process.env.LOOKOUT_UI_URL || 'http://127.0.0.1:3048') + '/discover/?demo=1');
  const card=page.locator('article').filter({hasText:'Example Query Labs (demo)'});
- await card.getByRole('region',{name:'Job facts',exact:true}).waitFor();
+ await card.getByLabel('Job match preview').waitFor();
  const before=cloud.length;
- for(const label of ['Compensation','Location']) assert.equal(await card.locator('dt').filter({hasText:new RegExp('^'+label+'$')}).count(),1,`Card shows ${label}`);
- for(const label of ['Work setting','Focus','Sponsorship','Posted','Availability checked']) assert.equal(await card.locator('dt').filter({hasText:new RegExp('^'+label+'$')}).count(),0,`Card omits ${label}`);
- assert.equal(await card.getByLabel('Job match preview').count(),0,'Four match scores stay out of the card');
- assert.equal(await card.getByText('Good',{exact:true}).count(),0,'Card omits redundant rating adjectives');
- assert.equal(await card.getByText('Fictional evidence:',{exact:false}).count(),0,'Score reasoning stays out of card');
+ assert(await card.getByLabel('75 out of 100',{exact:true}).count()>0,'Original card includes numeric match scores');
+ assert.equal(await card.locator('p.line-clamp-2,p.line-clamp-3').count(),0,'Fit summary stays out of the card');
  await card.locator('h3 button').click();
  const panel=page.getByRole('dialog');
  await panel.getByRole('heading',{name:'Job Description',exact:true}).waitFor();
