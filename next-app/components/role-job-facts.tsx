@@ -9,14 +9,12 @@ export default function RoleJobFacts({ role, compact = false, cardPreview = fals
   const facts: { icon: ProfileIconName; label: string; value: string }[] = [
     { icon: "money", label: "Compensation", value: compensationLabel(pay) },
     { icon: "location", label: "Location", value: role.location || "Not disclosed" },
-    ...(!compact ? [
+    ...(!compact && !cardPreview ? [
       { icon: "building" as const, label: "Work setting", value: jobFactText(role.workSetting) },
       { icon: "sliders" as const, label: "Focus", value: role.category || "Not disclosed" },
-      ...(!cardPreview ? [
       { icon: "shield" as const, label: "Sponsorship", value: jobFactText(role.sponsorship) },
       { icon: "clock" as const, label: "Posted", value: formatPostedDate(role) },
       { icon: "clock" as const, label: "Availability checked", value: formatAvailabilityCheck(role) },
-      ] : []),
     ] : []),
   ];
   return <section aria-label="Job facts">

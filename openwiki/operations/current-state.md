@@ -857,3 +857,6 @@ remains in the job drawer. Demo and account cards share this presentation.
 Discover cards now limit visible facts to Compensation, Location, Work setting
 and Focus. Sponsorship, Posted and Availability checked remain in the full job
 preview. This is presentation-only and applies equally to the detached demo.
+
+Discover cards now show only Compensation and Location; the full job preview
+retains all seven facts. This presentation also applies to detached demo cards.

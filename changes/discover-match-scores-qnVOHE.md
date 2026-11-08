@@ -15,3 +15,8 @@
 
 - Remove Sponsorship, Posted and Availability checked from Discover cards. Keep Compensation, Location, Work setting and Focus. Full job-preview facts remain available; demo cards use the same presentation.
 - Validation: frontend typecheck, data validation and production build.
+
+## Follow-up: two card facts
+
+- Keep only Compensation and Location on Discover cards, with visible labels. The full job preview retains all facts. Demo cards share the same presentation.
+- Validation: frontend typecheck and catalog validation.
