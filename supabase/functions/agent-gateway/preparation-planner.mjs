@@ -102,7 +102,7 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
       if (date >= today && date <= end) interviews.push({applicationId:app.id, roundId:round.id, company:app.company, title:app.title, stage:round.label, date, kind:round.stage === 'SCREEN' ? 'Screen' : 'Interview'});
     }
     if (app.imported && app.needsAction && app.nextAction && preparationDate(app.actionDate)) {
-      events.push({id:`action:${app.id}`, applicationId:app.id, company:app.company, title:app.nextAction, date:app.actionDate, kind:'Next action'});
+      events.push({id:`action:${app.id}`, applicationId:app.id, path:`/applications/?application=${encodeURIComponent(app.id)}`, company:app.company, title:app.nextAction, date:app.actionDate, kind:'Next action'});
     }
   }
   for (const artifact of calendarArtifacts) {

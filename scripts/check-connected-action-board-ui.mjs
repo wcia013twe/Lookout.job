@@ -30,7 +30,7 @@ try{
  await page.getByRole('button',{name:'I reviewed this exact message'}).click();await page.getByRole('button',{name:'Accept',exact:true}).click();await page.getByText('Ready for you to send. Nothing was sent.',{exact:true}).waitFor();
  await page.getByRole('link',{name:'Back to Action Board',exact:true}).click();
  const interview=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Confirm interview details',exact:true})});await interview.getByRole('button',{name:'Accept',exact:true}).click();
- const round=page.locator('.prep-interview').filter({hasText:'Follow-up'});await round.waitFor();await round.click();
+ const round=page.getByRole('button',{name:/^Interview .+ Follow-up$/});await round.waitFor();await round.click();
  await dialog.getByRole('button',{name:'Save round update',exact:true}).waitFor();
  const correction=dialog.getByLabel('Replaces an earlier update (optional)');assert(await correction.inputValue());
  await dialog.locator('form.interview-round-editor').getByLabel('Progress').selectOption('cancelled');await dialog.getByRole('button',{name:'Save round update',exact:true}).click();await dialog.getByText('Timeline update recorded.',{exact:true}).waitFor();

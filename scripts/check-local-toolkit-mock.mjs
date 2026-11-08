@@ -34,6 +34,10 @@ try{
  const replay=await call('call_discovered_tool',{name:'save_mock_interview',arguments:payload});assert.equal(replay.artifact.version,1);
  const internal=await call('call_discovered_tool',{name:'read_mock_interview',arguments:{id:session}});assert.equal(internal.interviewerProfile,profile);
  const visible=await call('call_discovered_tool',{name:'read_artifact',arguments:{id:session}});assert(!JSON.stringify(visible).includes(profile));
+ const planner=await call('read_preparation_planner',{});
+ assert.equal(planner.calendarArtifacts.filter(row=>row.id===session).length,1);
+ assert(planner.agenda.days.flatMap(day=>day.events||[]).some(event=>event.id==='mock:'+session));
+ assert(!JSON.stringify(planner).includes(profile));
  assert.equal(visible.content.durationMinutes,45);assert.equal(visible.content.timeZone,'America/New_York');
  console.log('Passed: local mock offset/preparedFor rejection plus Node MCP -> Edge -> SQL save/read/retry; hidden profile stays out of ordinary artifact reads.');
 }finally{
