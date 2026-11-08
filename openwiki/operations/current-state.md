@@ -682,3 +682,9 @@ Filled application drafts lead the list using a stable partition; chronology
 within each group, review gates and backend priority/supersession remain intact.
 This adds no notification delivery service or new MCP mutation. Existing
 `read_action_board` and owning writers supply the same pending items to agents.
+
+The ordinary detached demo now includes the connected Action Board examples
+without a hidden scenario parameter: filled drafts first, a missing answer,
+CAPTCHA verification, and an uncertain submission. All resolve in memory through
+fictional services and return on Reset demo data. Explicit named test scenarios
+keep their existing fixtures. No account writes or external employer forms open.
