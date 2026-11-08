@@ -392,4 +392,13 @@ begin
 end $$;
 revoke all on function private.guard_declined_outreach() from public,anon,authenticated;
 create trigger guard_declined_outreach before update on public.outreach_contacts for each row execute function private.guard_declined_outreach();
+-- New owned records participate in the existing reset and reset write fence.
+alter function private.workspace_reset_tables() rename to workspace_reset_tables_before_board;
+create function private.workspace_reset_tables() returns text[] language sql immutable set search_path='' as $$
+ select array['private.action_response_events','private.action_decision_receipts','public.application_work_holds']::text[]||private.workspace_reset_tables_before_board()
+$$;
+revoke all on function private.workspace_reset_tables(),private.workspace_reset_tables_before_board() from public,anon,authenticated;
+create trigger workspace_reset_guard before insert or update or delete on private.action_response_events for each row execute function private.workspace_reset_write_guard();
+create trigger workspace_reset_guard before insert or update or delete on private.action_decision_receipts for each row execute function private.workspace_reset_write_guard();
+create trigger workspace_reset_guard before insert or update or delete on public.application_work_holds for each row execute function private.workspace_reset_write_guard();
 commit;

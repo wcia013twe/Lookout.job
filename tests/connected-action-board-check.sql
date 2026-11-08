@@ -86,5 +86,10 @@ begin
  if jsonb_array_length(public.read_action_board()->'items')<>0 then raise exception 'Browser board leaked';end if;
  begin perform public.respond_action_board(jsonb_build_object('key',app,'response','resume','eventKey',gen_random_uuid()));raise exception 'Foreign resume allowed';exception when no_data_found then null;end;
  execute 'reset role';
+ -- Reset must remove decisions and replay receipts so old consent cannot survive it.
+ result:=private.workspace_reset_service(u,'preview','{}');
+ result:=private.workspace_reset_service(u,'begin',jsonb_build_object('resetId',gen_random_uuid(),'confirmation','RESET MY WORKSPACE','expectedPersonalVersion',result->'personalVersion'));
+ perform private.workspace_reset_service(u,'finish',jsonb_build_object('resetId',result->>'resetId'));
+ if exists(select 1 from private.action_decision_receipts where user_id=u) or exists(select 1 from private.action_response_events where user_id=u) or exists(select 1 from public.application_work_holds where user_id=u) then raise exception 'Workspace reset retained decision or hold state';end if;
 end $$;
 rollback;

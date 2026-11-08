@@ -1,12 +1,15 @@
 # Connected Action Board and canonical interview prep
 
 - Preserved desktop framing, rows and review dialogs; added deterministic human questions, Accept/Reject controls and equivalent mobile touch swipes. Exact saved application/message review precedes acceptance; required input and uncertain submissions retain their owning flows.
+- Registered new decision receipts and work holds with the existing workspace reset and reset write fence, preventing stale consent or suppression after a reset.
 - Added owner-scoped board projection, source/version review and response receipts, idempotency, exact human-action links and a gated read-only MCP counterpart. Answer links open the actual expanded My Agent question bank. Outreach acceptance means ready for the human to send, never sent.
 - Application rejection keeps history/tracker state, invalidates review, cancels queued work and fences draft preparation, queueing and runner prefill/claim/start. Only a version-checked human Resume lifts the hold; prior approval stays invalid. Declined outreach cannot be automatically rewritten.
 - Canonical rounds retain stable IDs across corrections, explicit practice category/timezone, proposed-time confirmation and cancellation. Round tasks share the existing versioned plan/session ledger; rescheduling preserves IDs, completed work and credit. Legacy association requires one exact confirmed-date match. Round resource authoring derives dates instead of duplicating them.
 - Added fictional connected-flow demo (`?demo=1&demoApi=action-board`), source/SQL/upgrade tests and desktop/mobile browser acceptance script. The existing planner and company follow-ups keep their presentation.
 
 Validation on the integrated source: `npm test` passed (1048 passed, 5 skipped; 1053 total), `npm run validate:data` passed (158 roles), `npm --prefix next-app run typecheck` passed and `npm run build` produced the static export. The connected-board desktop/mobile browser script passed against that production export, covering exact review, answer/outreach navigation, canonical cancellation, actual touch scrolling/swipes and version-checked stop/resume. Upgrade tests preserve completed tasks and partial credit while leaving ambiguous matches standalone. The design detector reported no findings. `git diff --check` passed.
+
+The final Network filter follow-up was checked with 20 focused network/import/connected-board tests, frontend typecheck and another production build.
 
 Integrated current local main without dropping its search/toolkit/import changes. The combined agent contract is 120; guide routing retains the current canonical versions. Screenshots are in `/tmp/connected-action-board-ui/`.
 
