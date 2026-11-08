@@ -12,6 +12,8 @@ try{
  const desktop=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),page=await desktop.newPage();attach(page);
  await page.goto(base+path);const app=applicationRow(page);await app.waitFor();
  await page.getByText('Complete the assessment',{exact:true}).waitFor();
+ assert.equal(await page.locator('.prep-interview').filter({hasText:'Example Dated Assessment (demo)'}).count(),1,'Dated action card includes company exactly once');
+ assert.equal(await page.getByText('Assessment with a saved deadline',{exact:true}).count(),0,'No additional undated row when the next action owns the deadline');
  assert.equal(await page.locator('.prep-agenda-day').count(),7,'All seven days remain visible');
  assert(await page.getByText('No scheduled tasks',{exact:true}).count());
  assert(await page.getByRole('button',{name:'This week',exact:true}).isDisabled());

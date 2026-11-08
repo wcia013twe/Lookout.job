@@ -88,3 +88,18 @@ test('MCP week selection projects the same source and rejects invalid or injecte
  for(const bad of ['2026-11-10','2026-02-30',null,42])assert.throws(()=>validateRequest({operation:'preparation.planner.read',payload:{weekOf:bad}}));
  assert.throws(()=>validateRequest({operation:'preparation.planner.read',payload:{weekOf:'2026-11-09',userId:'other'}}));
 });
+
+test('saved next-action deadlines represent a lone undated assessment once, and dated rounds replace duplicate same-day actions',()=>{
+ const imported=(id,date,roundDate=null)=>({id,record:{company:id,title:'Engineer',status:'SCREEN',needsAction:true,nextAction:'Complete assessment',actionDate:date,rounds:[{id:'assessment',label:'Assessment',stage:'SCREEN',type:'oa',phase:roundDate?'scheduled':'received',date:roundDate,cancelled:false}]}});
+ const first=imported('Fictional Compute','2026-11-17'),second=imported('Fictional Trading','2026-12-03');
+ for(const [record,week] of [[first,'2026-11-16'],[second,'2026-11-30']]){
+  const agenda=buildWeeklyPreparationAgenda({today:'2026-11-07',weekOf:week,imports:[record]});
+  const events=agenda.days.flatMap(d=>d.events);assert.equal(events.length,1);assert.equal(events[0].date,record.record.actionDate);assert.equal(events[0].company,record.id);assert.equal(agenda.pending.length,0);assert.equal(record.record.rounds[0].date,null,'Projection never overwrites the saved round date');
+ }
+ const rounds=[imported('Fictional Data','2026-11-11','2026-11-11'),imported('Fictional Robotics','2026-11-11','2026-11-11')];
+ let agenda=buildWeeklyPreparationAgenda({today:'2026-11-07',weekOf:'2026-11-09',imports:rounds});
+ const wednesday=agenda.days.find(d=>d.date==='2026-11-11');assert.equal(wednesday.interviews.length,2);assert.equal(wednesday.events.length,0);assert.equal(agenda.pending.length,0);
+ agenda=buildWeeklyPreparationAgenda({today:'2026-11-07',imports:rounds});assert.equal(agenda.pending.length,2,'Same deduplication applies outside the visible week');
+ rounds[0].record.actionDate='2026-11-12';agenda=buildWeeklyPreparationAgenda({today:'2026-11-07',weekOf:'2026-11-09',imports:rounds});assert.equal(agenda.days.flatMap(d=>d.events).length,1,'A distinct dated action is preserved');
+ first.record.needsAction=false;agenda=buildWeeklyPreparationAgenda({today:'2026-11-07',weekOf:'2026-11-16',imports:[first]});assert.equal(agenda.days.flatMap(d=>d.events).length,1,'Saved dates do not depend on the attention flag');
+});

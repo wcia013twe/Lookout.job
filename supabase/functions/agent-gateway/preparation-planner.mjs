@@ -105,14 +105,21 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
   const imported = imports.filter(row => !native.some(app => (row.record.url && row.record.url === app.url) || ['company','title','location'].every(k => String(row.record[k] || '').toLowerCase() === String(app[k] || '').toLowerCase()))).map(row => ({...row.record, id:`import:${row.id}`, imported:row}));
   const events = [];
   for (const app of [...native, ...imported].filter(activeApplication)) {
-    for (const round of applicationRounds(app)) {
+    const rounds = applicationRounds(app).filter(round => !round.cancelled && ['pending','scheduled'].includes(round.status));
+    const actionDate = preparationDate(app.actionDate);
+    const hasAction = Boolean(app.imported && app.nextAction && (actionDate || app.needsAction));
+    for (const round of rounds) {
       const date = dayOf(round.date);
-      if (round.cancelled || !['pending','scheduled'].includes(round.status)) continue;
+      // An imported application may describe its one open round through its
+      // next action. Keep that saved deadline; do not synthesize a round date.
+      if (!date && rounds.length === 1 && hasAction) continue;
       if (outside(date)) pending.push({id:`round:${app.id}:${round.id}`,applicationId:app.id,roundId:round.id,company:app.company,title:round.label,date,reason:pendingReason(date)});
       else interviews.push({applicationId:app.id, roundId:round.id, company:app.company, title:app.title, stage:round.label, date, kind:round.stage === 'SCREEN' ? 'Screen' : 'Interview'});
     }
-    if (app.imported && app.needsAction && app.nextAction) {
-      events.push({id:`action:${app.id}`, applicationId:app.id, path:`/applications/?application=${encodeURIComponent(app.id)}`, company:app.company, title:app.nextAction, date:preparationDate(app.actionDate), kind:'Next action'});
+    // A dated round already represents this application's action on that day.
+    const roundOwnsActionDate = actionDate && rounds.some(round => dayOf(round.date) === actionDate);
+    if (hasAction && !roundOwnsActionDate) {
+      events.push({id:`action:${app.id}`, applicationId:app.id, path:`/applications/?application=${encodeURIComponent(app.id)}`, company:app.company, title:app.nextAction, date:actionDate, kind:'Next action'});
     }
   }
   for (const artifact of calendarArtifacts) {

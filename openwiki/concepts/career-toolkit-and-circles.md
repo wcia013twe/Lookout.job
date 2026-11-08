@@ -295,3 +295,15 @@ and undated pending assessment rounds; it did not infer tasks from material text
 or assign guessed dates. The detached demo covers an unfinished undated OA.
 Validation and local activation receipts are in the shared calendar feature note;
 hosted deployment remains separate.
+
+
+#### Application date precedence and duplicate removal (contract 128)
+
+Imported next actions use saved actionDate even without needsAction. A lone
+unfinished undated round is represented by its existing next action; the date
+is not copied into the round. Current round dates suppress duplicate same-day
+application actions; different-day actions and multiple open rounds remain
+separate. This applies both in calendar days and Other pending tasks. Action
+cards show company and description. The detached demo covers an assessment
+whose deadline is saved on next action with its attention flag false. Source
+validation and local read-back receipts are recorded in the shared calendar note.
