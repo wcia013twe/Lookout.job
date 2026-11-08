@@ -1,4 +1,6 @@
 "use client";
+import BoardReturn from './board-return';
+import {matchesBoardApplication} from '../../lib/action-board.mjs';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -21,8 +23,8 @@ export default function Applications() {
  const [order,setOrder]=useState('default');
  const [search,setSearch]=useState(''),[type,setType]=useState(''),[stage,setStage]=useState(''),[view,setView]=useState('Active');
  const native:Application[]=trackedApplications({roles:w.roles,publicRoles:w.publicRoles,applications:w.state.workflow.applications,trackerIds:w.state.tracker.ids,trackerItems:w.state.tracker.items});
- const all:Application[]=[...native,...imports.records.map(importedApplication).filter((a:Application)=>!native.some(n=>(a.url&&n.url===a.url)||(n.company.toLowerCase()===a.company.toLowerCase()&&n.title.toLowerCase()===a.title.toLowerCase()&&(n.location||'').toLowerCase()===(a.location||'').toLowerCase())))];
- useEffect(()=>{const requested=new URL(location.href).searchParams.get('application');const application=all.find(item=>item.backendId===requested);if(application){const status=trackerProgress(application,w.state.tracker.items[application.id]).status;setView(['Rejected','Withdrawn','Closed'].includes(status)?'Closed':status==='Opened'?'Saved jobs':'Active');}},[w.user?.id,w.demo,all.map(item=>`${item.backendId}:${trackerProgress(item,w.state.tracker.items[item.id]).status}`).join(',')]);
+ const all:Application[]=[...native,...imports.records.map(importedApplication).filter((a:Application)=>(typeof window!=='undefined'&&new URL(location.href).searchParams.get('application')===a.id)||!native.some(n=>(a.url&&n.url===a.url)||(n.company.toLowerCase()===a.company.toLowerCase()&&n.title.toLowerCase()===a.title.toLowerCase()&&(n.location||'').toLowerCase()===(a.location||'').toLowerCase())))];
+ useEffect(()=>{const requested=new URL(location.href).searchParams.get('application');const application=all.find(item=>matchesBoardApplication(item,requested));if(application){const status=trackerProgress(application,w.state.tracker.items[application.id]).status;setView(['Rejected','Withdrawn','Closed'].includes(status)?'Closed':status==='Opened'?'Saved jobs':'Active');}},[w.user?.id,w.demo,all.map(item=>`${item.backendId||item.id}:${trackerProgress(item,w.state.tracker.items[item.id]).status}`).join(',')]);
  const stats=applicationStats(all,w.state.tracker.items);
  const metrics:{label:string;value:number;icon:ProfileIconName;color:string}[]=[
   {label:'Tracked jobs',value:stats.tracked,icon:'briefcase',color:'text-board-accent'},
@@ -32,7 +34,7 @@ export default function Applications() {
  ];
  const items=all.filter(a=>{const status=trackerProgress(a,w.state.tracker.items[a.id]).status;const group=a.archived||['Rejected','Withdrawn','Closed'].includes(status)?'Closed':status==='Opened'?'Saved jobs':'Active';return view===group&&(!type||a.employmentType===type)&&(!stage||status===stage)&&`${a.company} ${a.title}`.toLowerCase().includes(search.toLowerCase());});
  return <div className="tracker-surface">
- <header className="tracker-page-header workspace-heading"><div><h1 className="font-bold">Your Job Tracker</h1><div className="tracker-header-tabs"><span>{all.length} TOTAL JOBS</span>{['Active','Saved jobs','Closed','Stats'].map(name=><button key={name} aria-pressed={view===name} onClick={()=>{setView(name);setStage('');}}>{name}</button>)}</div></div><Link href="/" className="tracker-button tracker-primary tracker-browse-cta workspace-primary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50">Browse roles</Link></header>
+ <BoardReturn/><header className="tracker-page-header workspace-heading"><div><h1 className="font-bold">Your Job Tracker</h1><div className="tracker-header-tabs"><span>{all.length} TOTAL JOBS</span>{['Active','Saved jobs','Closed','Stats'].map(name=><button key={name} aria-pressed={view===name} onClick={()=>{setView(name);setStage('');}}>{name}</button>)}</div></div><Link href="/" className="tracker-button tracker-primary tracker-browse-cta workspace-primary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50">Browse roles</Link></header>
  {imports.error&&<p role="status" className="tracker-prose">Imported history: {imports.error}</p>}
  {view==='Stats' ? <section aria-label="Application stats" className="py-6">
  <h2 className="text-xl font-semibold">Application stats</h2>

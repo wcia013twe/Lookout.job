@@ -6,8 +6,8 @@ export const simplifyDemoCsv=[simplifyColumns.join(','),
  'Platform Intern,Example Systems (demo),Fictional City,https://example.com/demo/platform,2026-10-19,APPLIED,2026-10-19,No,N/A,Earlier fictional report,Internship',
  'Database Engineer,Example Compute (demo),Remote,N/A,N/A,SAVED,2026-10-21,No,N/A,Fictional saved job without a URL,Full-time',
  'Systems Intern,Example Archive (demo),Remote,N/A,2026-09-01,REJECTED,2026-10-01,Yes,2026-10-01,Fictional rejected application,Part-time'].join('\n');
-export function createDemoSimplifyImport(){
- let version=0,records=[];const events=new Map();
+export function createDemoSimplifyImport(initial=[]){
+ let version=initial.length?1:0,records=structuredClone(initial);const events=new Map();
  return async(action,p={})=>{
   if(action==='list')return structuredClone({version,records});
   if(['save','update'].includes(action)&&events.has(p.eventKey)){const old=events.get(p.eventKey);if(old.request!==JSON.stringify(p))throw Error('Event key changed. Preview again.');return structuredClone(old.result);}
