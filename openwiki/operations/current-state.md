@@ -811,3 +811,7 @@ report_application_request. A disposable account verified authenticated queueing
 MCP pickup and a saved blocked outcome; no employer action or real account
 decision occurred. Actual Muse wake/browser work and hosted release remain
 unverified.
+
+### One-minute Muse event watcher (local activation)
+
+Agent package 0.2.0 uses 60-second default polling/wake cooldown and bounded error backoff against the existing event count. Context versions remain freshness checks. The optional receiver adapter now accepts Action Board refresh arguments; authenticated handling still requires verified durable outcomes before acknowledgement. Local Node MCP read-back confirmed developer140 and agent-package/change-resumption v2, and localhost serves the checksummed 0.2.0 package. This does not activate a host watcher: Dots Local watch was disabled and WGU remained queued v1 at verification. Edge/hosted release, actual host wake and employer work remain separate.
