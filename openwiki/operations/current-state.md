@@ -758,6 +758,17 @@ and border. It renders a saved fitLabel when present, otherwise an existing
 saved priority. Scores never synthesize a label. Exact owned role identity links
 a board application to its saved discovery label; missing labels are omitted.
 
+### Bounded Discover analysis
+
+The five-point fit analysis keeps Team, Your contribution and Your growth in a
+rounded fit surface, with Support and Practical fit in a separate rounded
+“What to watch out for” surface. Saved caveats and trailing priority text remain
+intact, including the legacy prose fallback. This is presentation over existing
+owned records, not a new assessment or writer. Hosted release is verified
+separately from source and component tests.
+The disclosure heading is Job Description. Explicitly marked Structured paraphrase
+content is presented as a saved summary rather than an employer quotation; saved
+content and the existing source URL are preserved.
 
 ### Unified Action Board and AI Apply change feed
 
