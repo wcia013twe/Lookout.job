@@ -25,11 +25,11 @@ function taskGroup(task, plan, application) {
   if (key === 'practice') {
     const stage = (plan.deadline?.stage || '').toLowerCase();
     const role = `${application.title || ''} ${application.description || ''}`.toLowerCase();
-    const focus = /system.?design|architecture/.test(stage) ? 'systems' : /coding|algorithm|\boa\b/.test(stage) ? 'coding'
+    const focus = plan.roundId ? (plan.practiceCategory === 'general' ? null : plan.practiceCategory) : /system.?design|architecture/.test(stage) ? 'systems' : /coding|algorithm|\boa\b/.test(stage) ? 'coding'
       : /behavior|recruiter|phone screen/.test(stage) ? 'behavioral'
       : /technical/.test(stage) ? /sql|database/.test(role) ? 'sql' : /machine learning|inference|\bml\b/.test(role) ? 'ml' : /backend|distributed|infrastructure|platform/.test(role) ? 'systems' : 'coding' : null;
     const labels = { systems: ['Practice system design', 'Explain a design, its tradeoffs and failure modes aloud.'], coding: ['Practice coding interviews', 'Solve a relevant problem, explain your approach and review its complexity.'], behavioral: ['Rehearse your experience stories', 'Practice concise examples from your own experience and the decisions you made.'], sql: ['Practice SQL and database questions', 'Work through queries and explain indexes, query plans and tradeoffs.'], ml: ['Practice ML systems interviews', 'Explain model serving, evaluation and performance tradeoffs relevant to your roles.'] };
-    if (focus) return { key: `practice:${focus}`, title: labels[focus][0], detail: labels[focus][1], shared: true };
+    if (focus && labels[focus]) return { key: `practice:${focus}`, title: labels[focus][0], detail: labels[focus][1], shared: true };
   }
   return { key: `specific:${application.id}:${task.id}`, title: task.title, detail: task.detail, shared: false };
 }
@@ -60,7 +60,25 @@ function allocate(groups, available, date, planned) {
   }
   return [...states.values()].reduce((best, value) => value.score > best.score ? value : best, { score: -1, picks: [] }).picks;
 }
-export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, learningGoals = [], artifacts = [], today = plannerToday(), timeZone = 'UTC' } = {}) {
+export function roundPreparationRows(rows, applications, timeZone='UTC') {
+ return rows.flatMap(row=>{
+  const plan=row.plan;if(!plan)return [];
+  const application=applications[plan.applicationId]||Object.values(applications).find(a=>a.backendId===row.application_id);
+  if(!application)return [row];
+  const tasks=plan.tasks||[],roundIds=[...new Set(tasks.map(t=>t.roundId).filter(Boolean))];
+  if(!roundIds.length)return [row];
+  const events=application.milestones||[],superseded=new Set(events.map(m=>m.supersedes_id).filter(Boolean));
+  const current=events.filter(m=>!superseded.has(m.id));
+  const legacy=tasks.filter(t=>!t.roundId);
+  return [...(legacy.length?[{...row,plan:{...plan,tasks:legacy,standalone:true}}]:[]),...roundIds.flatMap(roundId=>{
+   const round=current.find(m=>(m.round_id||m.id)===roundId);
+   if(!round||round.phase!=='scheduled'||round.confirmation==='incorrect')return [];
+   const confirmed=round.confirmation==='confirmed'||(!round.confirmation&&round.source?.timestampConfirmed===true);
+   return [{...row,plan:{...plan,roundId,roundEventId:round.id,practiceCategory:round.practice_category||'general',deadline:{date:round.occurred_at?plannerToday(round.occurred_at,timeZone):null,status:confirmed?'confirmed':'needs_confirmation',stage:round.label,source:round.source},tasks:tasks.filter(t=>t.roundId===roundId)}}];
+  })];
+ });
+}
+export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, learningGoals = [], artifacts = [], today = plannerToday(), timeZone = 'UTC', holds = [] } = {}) {
   if (!preparationDate(today)) throw Error('Choose a valid planner date.');
   const dailyMinutes = validatePlannerMinutes(settings.dailyMinutes ?? 45);
   const end = plannerDay(today, 6), progress = new Map(), spent = new Map();
@@ -71,7 +89,8 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
   }
   const groups = new Map(), interviews = [], dormant = [], uncertain = [], expired = [];
   const rows = Array.isArray(plans) ? plans : Object.entries(plans).map(([id, value]) => value?.plan ? value : { application_id: id, version: 0, plan: value });
-  for (const row of rows) {
+  for (const row of roundPreparationRows(rows,applications,timeZone)) {
+    if(holds.some(h=>h.application_id===row.application_id&&!h.resumed_at))continue;
     const plan = row.plan;
     const application = applications[plan?.applicationId] || Object.values(applications).find(a => a.backendId === row.application_id);
     if (!application || !plan || closed.has(application.status) || (application.milestones || []).some(event => ['rejected','withdrawn'].includes(event.kind) && event.phase !== 'scheduled')) continue;
@@ -79,10 +98,10 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
     if (!date || plan.deadline?.status !== 'confirmed') { uncertain.push(application.id); continue; }
     if (date < today) { expired.push(application.id); continue; }
     if (date > end) { dormant.push(application.id); continue; }
-    interviews.push({ applicationId: application.id, company: application.company, title: application.title, date, stage: plan.deadline.stage });
+    interviews.push({ roundId:plan.roundId, standalone:!!plan.standalone, applicationId: application.id, company: application.company, title: application.title, date, stage: plan.deadline.stage });
     for (const task of plan.tasks || []) {
       if (task.completed || !Number.isFinite(task.minutes) || task.minutes <= 0) continue;
-      const target = { applicationId: row.application_id || application.backendId || application.id, jobId: application.id, taskId: task.id, expectedVersion: row.version || 0, company: application.company, deadline: date, minutes: task.minutes, priority: application.priority === 'Apply Now' ? 1.5 : 1 };
+      const target = { applicationId: row.application_id || application.backendId || application.id, jobId: application.id, roundId:plan.roundId, taskId: task.id, expectedVersion: row.version || 0, company: application.company, deadline: date, minutes: task.minutes, priority: application.priority === 'Apply Now' ? 1.5 : 1 };
       target.remaining = Math.max(0, task.minutes - (progress.get(targetKey(target)) || 0));
       if (!target.remaining) continue;
       const definition = taskGroup(task, plan, application);
@@ -100,7 +119,7 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
       if(target.remaining)learning.push({key:`learning:${row.id}:${task.id}`,title:task.title,detail:task.detail,shared:false,learning:true,targets:[target]});
     }
   }
-  const references = target => artifacts.filter(a => (a.links || []).some(l => l.taskId === target.taskId && (target.goalId ? l.goalId === target.goalId : l.applicationId === target.applicationId))).map(({id,version,title,path}) => ({id,version,title,path}));
+  const references = target => artifacts.filter(a => (a.links || []).some(l => l.taskId === target.taskId && (target.goalId ? l.goalId === target.goalId : l.applicationId === target.applicationId))).map(({id,version,title,path}) => ({id,version,title,path:`${path}${path?.includes('?')?'&':'?'}version=${version}&returnTo=%2Fneeds-you%2F`}));
   const ordered = [...groups.values()].sort((a, b) => a.key.localeCompare(b.key));
   const planned = new Map();
   const days = Array.from({ length: 7 }, (_, i) => {

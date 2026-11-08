@@ -3,7 +3,10 @@ const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T\d{2}:
 const bounded = (value,max) => typeof value==='string' && value.trim() && value.length<=max;
 export function validateMilestone(payload) {
  const s=payload.source;
- if(!bounded(payload.eventKey,200)||!bounded(payload.label,300)||!MILESTONE_KINDS.includes(payload.kind)||!['scheduled','completed','received'].includes(payload.phase)
+ if(payload.practiceCategory!==undefined&&!['general','coding','systems','behavioral','sql','ml'].includes(payload.practiceCategory))throw Error('Invalid practice category');
+ if(payload.timeZone!==undefined){try{new Intl.DateTimeFormat('en',{timeZone:payload.timeZone});}catch{throw Error('Invalid timezone');}}
+ if(payload.proposedAt!==undefined&&payload.proposedAt!==null&&!timestamp(payload.proposedAt))throw Error('Proposed time needs explicit timezone');
+ if(!bounded(payload.eventKey,200)||!bounded(payload.label,300)||!MILESTONE_KINDS.includes(payload.kind)||!['scheduled','completed','received','cancelled'].includes(payload.phase)
   ||!s||typeof s!=='object'||Array.isArray(s)||Object.keys(s).some(k=>!['kind','messageId','subject','excerpt','receivedAt','timestampConfirmed','note'].includes(k))
   ||!['email','user_reported'].includes(s.kind)
   ||(s.kind==='email'&&(!bounded(s.messageId,200)||!bounded(s.subject,300)||!bounded(s.excerpt,2000)||!timestamp(s.receivedAt)))

@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import {mkdir} from 'node:fs/promises';
+import {chromium} from 'playwright';
+const base=process.env.LOOKOUT_UI_URL||'http://localhost:3107';
+if(!['localhost','127.0.0.1'].includes(new URL(base).hostname))throw Error('Use an isolated local preview.');
+const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/tmp/connected-action-board-ui';await mkdir(dir,{recursive:true});
+const browser=await chromium.launch();const errors=[];
+const attach=page=>{page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/\/(rest|functions)\/v1\//.test(r.url()))errors.push('Detached demo attempted backend access');});};
+const path='/needs-you/?demo=1&demoApi=action-board';
+const applicationRow=page=>page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Review an application',exact:true})});
+try{
+ const desktop=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),page=await desktop.newPage();attach(page);
+ await page.goto(base+path);const app=applicationRow(page);await app.waitFor();
+ const left=await page.locator('.needs-you-priority').boundingBox(),right=await page.locator('.prep-widget').boundingBox();
+ assert(right.x>=left.x+left.width,'Desktop retains the original two-column framing');
+ assert.equal(await app.getByRole('button',{name:'Accept',exact:true}).isDisabled(),true);
+ if(process.env.LOOKOUT_UI_CAPTURE!=='0')await page.screenshot({path:`${dir}/desktop.png`,fullPage:true});
+ await app.getByRole('button',{name:/^Review application:/}).click();
+ const dialog=page.getByRole('dialog');await dialog.getByRole('button',{name:'I reviewed this exact application version'}).click();
+ await dialog.getByRole('button',{name:'Close application details'}).click();
+ await app.getByRole('button',{name:'Accept',exact:true}).focus();await app.getByRole('button',{name:'Accept',exact:true}).press('Enter');
+ await page.getByText('This version is approved. It has not been submitted.',{exact:true}).waitFor();assert.equal(await applicationRow(page).count(),0);
+ const answer=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Can you work onsite three days a week?',exact:true})});
+ await answer.getByRole('link',{name:'Edit answer',exact:true}).click();await page.locator('#saved-answer-editor').waitFor({state:'visible'});
+ const values=await page.locator('#saved-answer-editor input,#saved-answer-editor textarea').evaluateAll(nodes=>nodes.map(n=>n.value));assert(values.includes('Can you work onsite three days a week?'));
+ await page.getByRole('link',{name:'Back to Action Board',exact:true}).click();
+ const outreach=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Review message',exact:true})});await outreach.getByRole('link',{name:'Review message',exact:true}).click();
+ await page.getByRole('button',{name:'I reviewed this exact message'}).click();await page.getByRole('button',{name:'Accept',exact:true}).click();await page.getByText('Ready for you to send. Nothing was sent.',{exact:true}).waitFor();
+ await page.getByRole('link',{name:'Back to Action Board',exact:true}).click();
+ const interview=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Confirm interview details',exact:true})});await interview.getByRole('button',{name:'Accept',exact:true}).click();
+ const round=page.locator('.prep-interview').filter({hasText:'Follow-up'});await round.waitFor();await round.click();
+ await dialog.getByRole('button',{name:'Save round update',exact:true}).waitFor();
+ const correction=dialog.getByLabel('Replaces an earlier update (optional)');assert(await correction.inputValue());
+ await dialog.locator('form.interview-round-editor').getByLabel('Progress').selectOption('cancelled');await dialog.getByRole('button',{name:'Save round update',exact:true}).click();await dialog.getByText('Timeline update recorded.',{exact:true}).waitFor();
+ await dialog.getByRole('button',{name:'Close application details'}).click();await round.waitFor({state:'detached'});
+ await desktop.close();
+ const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await mobile.newPage();attach(phone);
+ await phone.goto(base+path);const pending=applicationRow(phone);await pending.waitFor();
+ assert(await phone.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
+ if(process.env.LOOKOUT_UI_CAPTURE!=='0')await phone.screenshot({path:`${dir}/mobile.png`,fullPage:true});
+ const cdp=await mobile.newCDPSession(phone);
+ async function swipe(dx,dy){await pending.scrollIntoViewIfNeeded();const box=await pending.boundingBox(),x=box.x+box.width*0.7,y=box.y+28;await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});for(let i=1;i<=8;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx*i/8,y:y+dy*i/8,id:1}]});}await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
+ await swipe(0,-130);assert.equal(await pending.count(),1,'Vertical scrolling is not a decision');
+ await swipe(-145,0);await phone.getByText('Application saved. Agent work stopped until you resume it.',{exact:true}).waitFor();assert.equal(await pending.count(),0);
+ await phone.getByText(/Action history ·/).click();await phone.getByRole('link',{name:'View application',exact:true}).click();
+ await phone.getByText('Agent work stopped. This job stays saved.',{exact:true}).waitFor();await phone.getByRole('button',{name:'Resume agent work',exact:true}).click();await phone.getByText('Agent work stopped. This job stays saved.',{exact:true}).waitFor({state:'detached'});
+ assert.deepEqual(errors,[]);await mobile.close();console.log(`Connected board verified: desktop layout, exact review, answer/outreach links, canonical cancellation, mobile swipes, stop/resume. Screenshots: ${dir}`);
+}finally{await browser.close();}

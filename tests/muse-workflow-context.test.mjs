@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,16);assert.equal(apps.version,16);assert.equal(digest.version,2);
+ assert.equal(search.version,16);assert.equal(apps.version,17);assert.equal(digest.version,2);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);

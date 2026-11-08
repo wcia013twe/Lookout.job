@@ -222,7 +222,7 @@ export function createDemoServices(store) {
     },
     async recordApplicationMilestone(id, input) {
       const current = application(id);
-      if (!input || typeof input.eventKey !== 'string' || !input.eventKey.trim() || input.eventKey.length > 120 || !['submitted', 'recruiter_call', 'technical_round', 'interview', 'offer', 'rejected', 'withdrawn'].includes(input.kind) || !['scheduled', 'completed', 'received'].includes(input.phase) || input.source?.kind !== 'user') throw new Error('Choose a valid user-reported demo milestone.');
+      if (!input || typeof input.eventKey !== 'string' || !input.eventKey.trim() || input.eventKey.length > 120 || !['submitted', 'recruiter_call', 'technical_round', 'interview', 'offer', 'rejected', 'withdrawn'].includes(input.kind) || !['scheduled', 'completed', 'received','cancelled'].includes(input.phase) || input.source?.kind !== 'user') throw new Error('Choose a valid user-reported demo milestone.');
       if (input.occurredAt != null && (typeof input.occurredAt !== 'string' || !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(input.occurredAt) || !Number.isFinite(Date.parse(input.occurredAt)) || input.source.timestampConfirmed !== true)) throw new Error('Choose a valid milestone date with a confirmed time zone, or leave it unknown.');
       const milestones = copy(current.milestones || []);
       const source = { kind: 'user', ...(input.source.note ? { note: input.source.note } : {}), ...(input.occurredAt ? { timestampConfirmed: true } : {}) };

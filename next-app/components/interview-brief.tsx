@@ -23,23 +23,24 @@ function dateLabel(value: string, timeZone?: string) {
   const options: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", year: "numeric", ...(dateOnly ? { timeZone: "UTC" } : { hour: "numeric", minute: "2-digit", timeZoneName: "short", ...(timeZone ? { timeZone } : {}) }) };
   try { return new Date(value).toLocaleString(undefined, options); } catch { return new Date(value).toLocaleString(); }
 }
-export default function InterviewBrief({ application, plan, demo, timeZone, onRounds }: {
-  application: Application; plan?: PreparationPlan | null; demo: boolean; timeZone?: string; onRounds: () => void;
+export default function InterviewBrief({ application, plan, demo, timeZone, onRounds,selectedRoundId }: {
+  application: Application;selectedRoundId?:string; plan?: PreparationPlan | null; demo: boolean; timeZone?: string; onRounds: () => void;
 }) {
   const id = useId();
   const current = plan && [application.id, application.backendId].includes(plan.applicationId) ? plan : null;
   const now = new Date();
   const today = calendarDay(now,timeZone);
   const scheduled = currentTimelineItems(application).filter(event => event.phase === "scheduled" && roundKinds.includes(event.kind));
-  const round = scheduled.filter(event => !event.occurred_at || (event.occurred_at.length === 10 ? event.occurred_at >= today : Date.parse(event.occurred_at) >= now.getTime())).sort((a,b) => (a.occurred_at ? Date.parse(a.occurred_at) : Infinity) - (b.occurred_at ? Date.parse(b.occurred_at) : Infinity))[0];
+  const round = scheduled.find(event=>event.id===selectedRoundId||event.round_id===selectedRoundId) || scheduled.filter(event => !event.occurred_at || (event.occurred_at.length === 10 ? event.occurred_at >= today : Date.parse(event.occurred_at) >= now.getTime())).sort((a,b) => (a.occurred_at ? Date.parse(a.occurred_at) : Infinity) - (b.occurred_at ? Date.parse(b.occurred_at) : Infinity))[0];
   const deadline = current?.deadline;
   const source = round?.source || deadline?.source;
   const date = round ? round.occurred_at : deadline?.date;
   const uncertain = round ? !round.occurred_at : deadline?.status !== "confirmed" || Boolean(deadline?.date && deadline.date < today);
   const roundDay = round?.occurred_at ? round.occurred_at.length === 10 ? round.occurred_at : calendarDay(new Date(round.occurred_at),timeZone) : null;
-  const outdated = Boolean(roundDay && deadline?.date && roundDay !== deadline.date);
+  const linked=Boolean(round&&(current?.tasks||[]).some(task=>(task as any).roundId===round.round_id));
+  const outdated = !linked&&Boolean(roundDay && deadline?.date && roundDay !== deadline.date);
   const order = ["practice", "mock-interview", "application", "company-research", "questions", "logistics"];
-  const priorities = (current?.tasks || []).filter((task: Focus) => !task.completed && !task.guideId && !task.key?.startsWith("guide-") && !task.id.includes(":guide-")).sort((a: Focus,b: Focus) => {
+  const priorities = (current?.tasks || []).filter((task: Focus) => !task.completed && (!linked||(task as any).roundId===round?.round_id) && !task.guideId && !task.key?.startsWith("guide-") && !task.id.includes(":guide-")).sort((a: Focus,b: Focus) => {
     const rank = (task: Focus) => { const key = task.key || task.id.split(":").pop() || ""; const index = order.indexOf(key); return index < 0 ? order.length : index; };
     return rank(a)-rank(b);
   }).slice(0,3);
