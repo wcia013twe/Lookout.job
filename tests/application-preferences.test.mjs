@@ -43,7 +43,7 @@ test('default handoff excludes completed answers/full profile and keeps only unr
 
 test('answer-only update merges the stored full draft and returns a smaller remaining packet',async()=>{
  const h=harness();const r=await prepareDraftWithPrefill(h.call,{jobId:'job',expectedRevision:2,draft:{answerUpdates:[{fieldId:'why',answer:'I build reliable systems.'}]}},{loadJob:h.loadJob,loadApplication:h.loadApplication});
- assert.equal(r.error,null);assert.equal(r.data.handoff.questions.length,0);assert.equal(h.draft.questions.length,2);assert.equal(h.draft.questions[0].answer,'private@example.com');assert.equal(h.draft.questions[1].answer,'I build reliable systems.');assert.equal(h.draft.answerUpdates,undefined);assert.equal(h.draft.questionsReviewed,false);
+ assert.equal(r.error,null);assert.equal(r.data.handoff.questions.length,0);assert.equal(h.draft.questions.length,2);assert.equal(h.draft.questions[0].answer,'private@example.com');assert.equal(h.draft.questions[1].answer,'I build reliable systems.');assert.equal(h.draft.questions[1].answerSource,'ai_generated');assert.equal(h.draft.answerUpdates,undefined);assert.equal(h.draft.questionsReviewed,false);
 });
 
 test('patches reject unknown/duplicate controls, invalid choices, oversize answers and mixed replacement',()=>{

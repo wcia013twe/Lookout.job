@@ -49,3 +49,9 @@ after saved content changes; preserve human sending.
 Input follow-up: use a small static notification dot on pending human blockers
 and navigation, with an accessible label and board-level input count. Filled
 application drafts lead the existing list. No flashing/pulsing or new layout.
+
+Review clarification: use Submission and Need your input as application action
+headings. CAPTCHA/login and other human blockers belong to Need your input.
+Reuse Discover's compact role widget for these cards; show résumé name/version,
+employer questions and explicit AI/inference/unknown source disclosures inline.
+Keep exact action meanings and human review receipts distinct from these labels.
