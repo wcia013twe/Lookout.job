@@ -855,3 +855,7 @@ summaries stay out of the cards; full analysis remains in the job drawer. The
 separate embedded role widget is unchanged. Demo cards share this presentation.
 
 Local publication verified: the Muse dev tunnel serves manifest/archive 0.2.1 with matching SHA-256 and 10/10 defaults. Refreshed MCP reads developer148 and agent-package guide3/package0.2.1. The existing watch handle/config was not changed; Muse must upgrade its installed package, set both explicit intervals to10 and restart its existing host service. Remote running cadence remains unverified.
+
+## Saved human response in decision notifications
+
+Action-decision events now include savedResponse, the exact validated durable card request (including input.note and input.answers). An after-ledger trigger enriches the existing event atomically, including the inline writer's final request update. Existing events are enriched without clearing acknowledgements or replaying historical consent. The authenticated scoped feed exposes the body only for action_decision; count-only polling remains body-free. No new writer or approval authority. Guides require reconciling current source versions and persisting/read-verifying answers before acknowledgement. Fictional demo matches the feed contract.

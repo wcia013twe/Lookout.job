@@ -9,7 +9,7 @@ export function withActionBoardDemo(services,store){
  const stopped=id=>[...receipts.values()].some(r=>r.source_kind==='imported_action'&&r.source_id===id&&r.response==='reject'&&!r.resumed_at);
  const trackerHash=value=>{let h=2166136261;for(const c of JSON.stringify(value))h=Math.imul(h^c.charCodeAt(0),16777619);return (h>>>0).toString(16);};
  const trackerKey=row=>{const resumed=[...receipts.values()].filter(r=>r.source_kind==='imported_action'&&r.source_id===row.id&&r.resumed_at).map(r=>r.resumed_at).sort().at(-1);return `imported:${row.id}:${trackerHash(row.record)}`+(resumed?':r'+signature(resumed):'');};
- const emit=(key,response,kind,id)=>emitDemoMuseChange(store,{eventKey:`decision:${key}:${response}`,kind:'action_decision',entity:'action_board',recordId:id,decisionKey:key,sourceKind:kind,response,summary:'Fictional human action decision saved.'});
+ const emit=(key,response,kind,id,savedResponse)=>emitDemoMuseChange(store,{eventKey:`decision:${key}:${response}`,kind:'action_decision',entity:'action_board',recordId:id,decisionKey:key,sourceKind:kind,response,...(savedResponse?{savedResponse:copy(savedResponse)}:{}),summary:'Fictional human action decision saved.'});
 
  function items(includeResolved=false,imports=store.get('demo.boardImports')||[]){
   const apps=Object.values(store.get('workflow.applications')||{}),answers=store.get('workflow.savedAnswers')||[],contacts=store.get('network.referrals')||[],result=[];
@@ -57,7 +57,7 @@ export function withActionBoardDemo(services,store){
      if(['blocked','uncertain'].includes(r.work_state)&&(!input.confirmed||!input.note?.trim()))throw Error('Verification note required');
      r.resumed_at=new Date().toISOString();
     }else{if(r.response!=='accept'||r.work_state==='completed')throw Error('Tracker work changed');r.response='reject';}
-    r.work_version=(r.work_version||1)+1;emit(payload.key,response==='resume_tracker'?'resume':'reject','imported_action',r.source_id);
+    r.work_version=(r.work_version||1)+1;emit(payload.key,response==='resume_tracker'?'resume':'reject','imported_action',r.source_id,payload);
    }else if(response==='resume'){const held=holds.get(payload.key);if(!held||held.resumed_at||held.version!==payload.expectedVersion)throw Error('Work hold changed');held.version++;held.resumed_at=new Date().toISOString();}
    else{
     const imported=services.simplifyImport?await services.simplifyImport('list'):null;
@@ -86,7 +86,7 @@ export function withActionBoardDemo(services,store){
       if(response==='accept')await this.recordApplicationMilestone(target.backendId,{eventKey:'board-'+payload.eventKey,kind:round.kind,label:round.label,phase:'scheduled',occurredAt:input.at||round.proposed_at,supersedesId:round.id,practiceCategory:round.practice_category,timeZone:input.timeZone||round.time_zone,source:{kind:'user',timestampConfirmed:true,note:'Confirmed in fictional Action Board'}});
       else store.update('workflow.applications',rows=>{rows[target.id].milestones=rows[target.id].milestones.map(m=>m.id===round.id?{...m,confirmation:'incorrect'}:m);return rows;});
      }
-     if(response!=='save'){receipts.set(item.key,{...receipts.get(item.key),source_kind:item.kind,source_id:item.sourceId,response,work_version:1,responded_at:new Date().toISOString()});emit(item.key,response,item.kind,item.sourceId);}
+     if(response!=='save'){receipts.set(item.key,{...receipts.get(item.key),source_kind:item.kind,source_id:item.sourceId,response,work_version:1,responded_at:new Date().toISOString()});emit(item.key,response,item.kind,item.sourceId,payload);}
     }
    }
    const result={saved:true,key:payload.key,response};events.set(payload.eventKey,{payload:copy(payload),result});return copy(result);
