@@ -28,6 +28,9 @@ test('saved human text is delivered atomically, replay-safe, owned and historica
   const old=(await db.query("select payload from public.activity_events where payload->>'decisionKey'=$1",[historical.request.key])).rows[0].payload;
   assert.deepEqual(old.savedResponse,historical.request,'Historical notification now contains exact saved text');
   const current=await fixture(db,'current-response');
+  const app=(await db.query('select status,blocker,draft from public.applications where id=$1',[current.app])).rows[0];
+  assert.equal(app.status,'Draft');assert.equal(app.blocker,null);assert.equal(app.draft.questionsReviewed,false);
+  assert.equal((await call(hash,'actions.board.read')).items.some(i=>i.sourceId===current.app&&i.kind==='review_application'),false,'Answering a blocker does not create an approval card');
   let feed=await call(hash,'changes.read');const event=feed.items.find(e=>e.decisionKey===current.request.key);
   assert.deepEqual(event.savedResponse,current.request);
   assert.deepEqual(museChangeFeedResponse(feed).items.find(e=>e.id===event.id).savedResponse,current.request,'Shared browser/MCP projection retains the body');
@@ -54,4 +57,7 @@ test('fictional decision notification contains saved structured answers and note
  const original=structuredClone(request);await api.respondActionBoard(request);
  const event=(await api.readMuseChanges({limit:50})).items.find(e=>e.decisionKey===item.key);
  assert.deepEqual(event.savedResponse,original);assert.deepEqual(request,original);
+ const app=Object.values(store.get('workflow.applications')).find(a=>a.backendId===item.applicationId);
+ assert.equal(app.status,'Draft');assert.equal(app.questionsReviewed,false);
+ assert.equal((await api.readActionBoard()).items.some(i=>i.sourceId===item.sourceId&&i.kind==='review_application'),false);
 });
