@@ -7,3 +7,4 @@
 - Limits: source directions only; no live agent message, scheduler activation, text approval or hosted deployment verified. Full-suite result recorded below.
 - Full npm test completed with failures: local HTTP integration tests cannot bind 127.0.0.1 in the sandbox; render tests also failed with incomplete frontend dependencies. The focused rerun of action-inbox integration and backend scheduler removal outside the sandbox passed all 3 tests. The full suite is not green. Root npm ci completed with an ENOSPC warning; frontend npm ci was interrupted after the disk-space warning. UI build/typecheck were not run for this instruction-only change.
 - Landing reconciliation preserved the concurrent application-volume guidance; merged workflow/MCP/briefing checks were rerun.
+- Final merged focused suite passed all 28 checks after updating the concurrent notification-version assertion; data validation passed.
