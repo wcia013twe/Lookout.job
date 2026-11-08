@@ -757,3 +757,18 @@ attachment's icon, role/company hierarchy, spacing, contrasting neutral surface
 and border. It renders a saved fitLabel when present, otherwise an existing
 saved priority. Scores never synthesize a label. Exact owned role identity links
 a board application to its saved discovery label; missing labels are omitted.
+
+
+### Unified Action Board and AI Apply change feed
+
+Production paths now emit action_decision (human decisions/native approvals)
+and application_requested (AI Apply job insertion) into the existing pointer-only
+change feed and count-only watcher. Per-connection acknowledgement is delivery
+consumption, never completion. Tracker approvals stay pending until the claimed
+agent reports an outcome through record_tracker_action_progress. Owner/version/
+connection fences, durable rejection, explicit human reopening and late-outcome
+preservation use the existing decision ledger and owning tracker records. The
+normal Action Board displays this pipeline inline. Demo fixtures exercise the
+same requests and lifecycle in detached memory. Historical Done/Dismissed receipts
+are not retroactive permissions. Contract138/guide26 and the migration require
+normal backend release; a real Muse wake remains host/environment verification.

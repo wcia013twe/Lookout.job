@@ -1,6 +1,6 @@
 import {validateRoundMetadata} from '../../lib/application-rounds.mjs';
 import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
-import {createMuseChangeFeedDemo} from '../../lib/muse-change-feed-demo.mjs';
+import {createMuseChangeFeedDemo,emitDemoMuseChange} from '../../lib/muse-change-feed-demo.mjs';
 import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
 import {reconcileProfileChanges} from '../../lib/profile-sync.mjs';
 import {editedWorkExperience} from '../../supabase/functions/agent-gateway/work-experience.mjs';
@@ -166,15 +166,16 @@ export function createDemoServices(store) {
     return {...artifactDemo.artifactSnapshot(),imports:copy(store.get('demo.boardImports') || []),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
-    ...createMuseChangeFeedDemo(),
-    backendJobs:createBackendJobsDemo(),
+    ...createMuseChangeFeedDemo(store),
+    backendJobs:createBackendJobsDemo(store),
     async queueApplicationJob(payload) {
       // The demo's example.com postings are inert; validate using a fictional supported URL.
       validateApplicationJob({...payload,posting:{...payload.posting,url:'https://job-boards.greenhouse.io/lookout_fictional_demo/jobs/1'}});
       const role=payload.posting,previous=store.get('workflow.applications.'+role.id);
-      const job=previous?.executionJob||{id:'demo-job-'+payload.eventKey,status:'queued'};
+      const job=previous?.executionJob||{id:crypto.randomUUID(),status:'queued',version:1,kind:'application_submit',input:{applicationId:'demo-application-'+role.id,expectedRevision:0}};
       const app={...role,url:role.url,backendId:'demo-application-'+role.id,id:role.id,status:'Queued',questions:[],backendRevision:0,...previous,executionJob:job};
       store.set('workflow.applications.'+role.id,app);
+      emitDemoMuseChange(store,{eventKey:'apply:'+job.id,kind:'application_requested',entity:'backend_job',recordId:job.id,applicationId:app.backendId,version:1,status:'queued',summary:'Fictional AI Apply request; preparation is not submission approval.'});
       return {application:copy(app),job:copy(job)};
     },
     async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},

@@ -431,3 +431,39 @@ workspace-refresh events synchronize the projection; no new push channel is
 claimed. Changed draft content requires current-version review. Legacy data is
 not backfilled with invented provenance. Gateway guide25/contract137 and the new
 read projection require their normal backend release for hosted availability.
+
+
+### Unified request, decision and outcome pipeline (contract 138 source update)
+
+AI Apply saves its existing queued application job and an application_requested
+change pointer atomically. Human board decisions and native application approvals
+emit action_decision pointers with exact decision keys and responses. Existing
+read_muse_changes/read_action_board/read_backend_jobs and per-connection feed
+acknowledgements serve the same pipeline. The count-only watcher includes both
+event types; reading/acknowledging never grants execution or completes a task.
+An installed host wake callback remains a separately verified runtime boundary.
+
+Tracker checkmarks now authorize Muse to handle the exact task; they no longer
+clear needsAction. The existing decision receipt stores pickup/outcome metadata
+and an immutable task summary for audit. Task text and completion remain on the
+owned imported record, with no separate editable update sheet. The board shows
+approved, started, blocked/uncertain, completed, stopped or superseded rows.
+record_tracker_action_progress requires workspace:read, tracking:write and
+activity:write, exact key/version, UUID idempotency and a single connection claim.
+Only that connection may report outcomes; completion clears only the unchanged
+approved task via the existing tracker writer. It never creates a submission
+receipt, grants exact-draft approval or sends outreach.
+
+Rejection survives source edits, cancels queued matching native jobs, and fences
+agent tracker writes and matching native queue/draft/execution paths. Human
+Reopen for review invalidates the old approval; blockers/uncertainty require
+a verification note and confirmation first. Already-started observed outcomes
+remain reportable after stop or source change without clearing a replacement
+task or lifting the stop. Legacy Done/Dismissed receipts are not reinterpreted
+as approvals. Website responses remain human-only; agents cannot forge them.
+
+Application-workspace guide26 explains event pickup, worker coordination, source
+refresh, exact approvals, progress reporting and durable acknowledgement. AI
+Apply events point to the existing queued job; agents must not start competing
+workers. Backend migration/gateway/MCP release and an authenticated host wake
+receipt are required before claiming this is active in a hosted account.

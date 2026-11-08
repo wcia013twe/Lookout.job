@@ -61,7 +61,7 @@ try{
  await message.getByRole('region',{name:'Attached communication context'}).getByText('Edited subject (fictional)',{exact:false}).waitFor();
  assert(await accept(message).isDisabled());assert.equal(await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).isChecked(),false);
  await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).click();await accept(message).click();await page.getByText('Ready for you to send. Nothing was sent.',{exact:true}).waitFor();
- const task=card(page,'imported_action');await task.getByText('Choose an interview time',{exact:true}).waitFor();await accept(task).click();await task.waitFor({state:'detached'});
+ const task=card(page,'imported_action');await task.getByText('Choose an interview time',{exact:true}).waitFor();await accept(task).click();await task.waitFor({state:'detached'});const pipeline=page.getByRole('region',{name:'Tracker action pipeline'});await pipeline.getByText('Approved · waiting for Muse',{exact:true}).waitFor();await pipeline.getByRole('button',{name:'Demo: Muse picks up',exact:true}).click();await pipeline.getByText('Muse is working',{exact:true}).waitFor();await pipeline.getByRole('button',{name:'Demo: save outcome',exact:true}).click();await pipeline.getByText('Muse reported completion',{exact:true}).waitFor();
  const interview=card(page,'confirm_interview').first();await accept(interview).click();await page.getByText('Interview details confirmed. Weekly prep is updated.',{exact:true}).waitFor();
  // A mobile vertical drag must remain scroll; an intentional horizontal drag rejects.
  const pending=card(phone,'review_application').first(),cdp=await phoneContext.newCDPSession(phone);
