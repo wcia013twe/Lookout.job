@@ -1,7 +1,7 @@
 "use client";
 import { timelineItems } from '../../lib/application-timeline.mjs';
 import type { Application, ApplicationMilestone } from './workflow-types';
-const phaseLabel = { scheduled: 'Scheduled', completed: 'Completed', received: 'Received' };
+const phaseLabel = { scheduled: 'Scheduled', completed: 'Completed', received: 'Received', cancelled:'Cancelled' };
 function dateLabel(value?: string | null) {
   if (!value) return 'Date not recorded';
   const date = new Date(value);

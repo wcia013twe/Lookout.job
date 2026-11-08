@@ -1,4 +1,5 @@
 "use client";
+import {useActionBoard} from '../lib/use-action-board';
 import {EXTRA_FEATURES_ENABLED, pausedFrontendRoute} from "../../lib/feature-scope.mjs";
 import Link from "next/link";
 import BrandMark from "./brand-mark";
@@ -31,6 +32,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const w = useWorkspace(),
     path = usePathname();
   const router=useRouter();
+  const board=useActionBoard();
   const destination=websiteOnboardingDestination({path,demo:w.demo,authReady:w.authReady,signedIn:canViewWorkspace(w),status:w.websiteOnboarding?.status});
   useEffect(()=>{if(destination)router.replace(destination);},[destination,router]);
   const isPrivacy = /^\/privacy\/?$/.test(path);
@@ -66,7 +68,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   }
   const isCurrent = (href: string) => path === href || path === href.slice(0, -1) || (href === "/career-toolkit/" && path.startsWith(href)) || (href === "/" && /^\/discover\/?$/.test(path));
   const apps = Object.values(w.state?.workflow?.applications || {}) as Array<{ status: string; submissionAttempts?: Array<{ state: string; startedAt: string }> }>;
-  const needs = (w.demo ? demoNeedsYouTasks.length :
+  const needs = (board.snapshot&&(!w.demo||w.state.demo?.connectedBoard) ? board.snapshot.items.length+(!w.state?.workflow?.profile?.verified||!w.state?.workflow?.resumes?.length?1:0) : w.demo ? demoNeedsYouTasks.length :
     apps.filter(
       (a) =>
         a.status === "Blocked" ||

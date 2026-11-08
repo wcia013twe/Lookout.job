@@ -223,3 +223,32 @@ The local-only `scripts/check-local-toolkit-mock.mjs` checks the prerequisite an
 exercises actual Node MCP -> Edge -> SQL saves, idempotent retries and private
 profile separation using a disposable account removed in `finally`. It does not
 create the user's requested session or any Calendar event.
+
+Network people can now be filtered by tracked or imported application, or by No linked application. Cards display linked company/role labels using the existing explicit-tag/role-URL association rules. Company and application filters can be combined, and existing process deep links select the same filter. No contact write, new ranking store or inferred company-only process link is introduced; scoped list_contacts/save_contact remain the agent read/write boundary.
+
+The cold-outreach guide now tells agents to suggest application-relevant contacts during authorized work, merge exact existing application IDs into contact tags, verify structured profile/conversation routes and point to the Network Application filter after read-back. Hidden UI suggestions do not disable contextual agent recommendations. Company-only matches stay unlinked until a clear role-specific purpose is established; human drafts/history/states remain intact. Source instructions require gateway/MCP release and a context refresh before availability in deployed agents is claimed.
+
+## Canonical round preparation (connected board source update)
+
+Application milestones now retain a stable round identity across append-only corrections, an explicit practice category and time zone, and confirmed/proposed/incorrect details. Lifecycle supports cancellation separately from completion. The milestone writer accepts `practiceCategory`, `timeZone` and optional `proposedAt`; unknown confirmed times remain null. A person may confirm a proposed time through Action Board, producing a correction that retains the original evidence.
+
+Confirmed scheduled rounds receive round-scoped tasks inside the existing application plan and versioned preparation-session ledger. Weekly Prep derives the active date and practice grouping from the current round, without interpreting its label. Rescheduling fences stale sessions, keeps existing task IDs/completed work/time credit and recalculates allocation; completed, cancelled and superseded rounds do not produce future work. Generic practice can still share one session across its explicit task targets. Learning goals and the daily budget retain their existing rules.
+
+Legacy tasks attach automatically only when one current confirmed round matches the application and exact date. Ambiguous or unmatched work remains standalone. Existing ledger entries are never rewritten. Task and material links select the actual round or immutable artifact revision and provide a return to Action Board. The desktop planner's existing layout is preserved.
+
+The detached scenario `?demo=1&demoApi=action-board` covers the shared decision rows, exact review, stopped/resumed applications, manual outreach readiness, proposed-round confirmation, cancellation and typed practice. It is fictional, resettable and has no account/backend access. Migration, function release and authenticated hosted verification remain separate from local tests and screenshots.
+
+Tailored round resources use the existing `update_preparation_plan` operation with `roundId` and current `expectedVersion`, omitting `deadline`. It reads the owned current canonical round, preserves other rounds and completed task identities, and saves through the original plan validator. Legacy standalone inputs remain supported; linked plans reject newly duplicated standalone task templates and foreign-round links. Daily planning uses the owner's configured time zone while retaining the event's original time zone as evidence.
+
+### Mock schema and rejection diagnostics (contract 123)
+
+Mock discovery now advertises only mock fields, requires scheduling fields and
+shows an RFC 3339 timestamp pattern with an explicit UTC offset. A separate
+`timeZone` does not make an offset-free `scheduledAt` valid. `preparedFor` is
+brief-only and is omitted from the mock schema; target-interview context belongs
+in purpose/body. Material-format guide v2 states the same rules. MCP mock
+validation/backend rejections produce a server diagnostic ID, stage, allowlisted
+reason and field types only. They never record request values, mock IDs, tokens
+or interviewer-profile content. Historical rejections without these diagnostics
+cannot be reconstructed from logs; unchanged JSON-RPC error bodies preserve
+client compatibility.

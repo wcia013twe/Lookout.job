@@ -650,3 +650,21 @@ same update. Omitted keys remain unchanged; the completed array replaces the
 supplied set. Both authenticated browser `simplify_import('update')` and MCP
 `update_imported_job` retain the same owner checks, tracker-version lock and
 idempotency history. CSV source parsing is unchanged; no notes are auto-migrated.
+
+## Canonical employer rounds
+
+Native process steps remain in `application_milestones`, with optional `round`
+metadata `{stage: SCREEN|INTERVIEW, type, cancelled}`. The existing kind, label,
+phase, confirmed timestamp, source evidence and supersedes_id retain ownership,
+idempotency and append-only corrections. Imported steps live only in their owned
+`imported_jobs.record.rounds` array (up to 100), with stable id, label, stage, type,
+phase, date/null, notes and cancelled boolean. Array order is preserved; an edit
+keeps its round ID. No second round-count table or workflow tracker is added.
+
+Both browser Stats and MCP `read_application_round_stats` use the shared
+`application-rounds` projection. It excludes superseded native events, synthetic
+status placeholders and note/activity text; legacy native kinds map to known
+stage/type only. It counts pending/scheduled/completed/cancelled rounds by stage
+and type, separately from unique applications. The scoped reader returns computed
+counts, not its private raw context. Native writes use the existing milestone
+boundary; imports use update_imported_job and its tracker-version fence.

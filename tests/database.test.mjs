@@ -45,6 +45,7 @@ test('SQL and Edge bind platform receipts to the exact job and reject spoofed or
 });
 
 for (const [file, behavior] of [
+  ['connected-action-board','connected decisions share ownership, versioned review, durable stop fences and canonical round prep'],
   ['discover-application-jobs','Discover application jobs replay safely, isolate owners, fence worker leases and preserve submission consent'],
   ['submission-batches','submission batches pin versions, isolate owners, fence leases, replay safely and derive outcomes without consent shortcuts'],
   ['action-inbox','durable handoffs reconcile atomically, retain history, isolate owners and preserve consent'],

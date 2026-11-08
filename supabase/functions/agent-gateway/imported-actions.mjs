@@ -1,6 +1,8 @@
+import {validateImportedRounds} from './application-rounds.mjs';
 export const IMPORT_PROGRESS_STAGES=['SAVED','APPLIED','SCREEN','INTERVIEW','OFFER'];
-export const IMPORT_ACTION_FIELDS=['nextAction','actionDate','needsAction','completedStages'];
+export const IMPORT_ACTION_FIELDS=['nextAction','actionDate','needsAction','completedStages','rounds'];
 export function validateImportedActions(record,{partial=false}={}) {
+ if(Object.hasOwn(record,'rounds'))validateImportedRounds(record.rounds);
  if(Object.hasOwn(record,'nextAction')&&record.nextAction!==null&&(typeof record.nextAction!=='string'||record.nextAction.length>300))throw Error('Next action must be text up to 300 characters, or null.');
  if(Object.hasOwn(record,'actionDate')&&record.actionDate!==null){
   const date=record.actionDate;

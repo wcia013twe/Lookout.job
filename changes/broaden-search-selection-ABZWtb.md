@@ -1,0 +1,11 @@
+# Broader fit analysis and saved targeting
+
+Search guide16 treats personal analysis as “how good a fit is this job,” surfaces relevant plausible matches, flags unknowns and clearance requirements, and uses match strength for prioritization and tailoring. Application guide17 supports preparation volume only during authorized application work; notifications guide2 reports actual prepared/tailored/blocked/review counts without inventing work or submission. Match strength reuses existing recommendation priority and four fit scores; no separate narrative tag, field, schema or UI.
+
+Saved profile changes (General version44, read back; candidate facts unchanged): July starts acceptable; May2027 actual graduation retained with a conditional December2027 internship search scenario; engineering work at non-tech employers remains eligible; broad industry/team preferences are softer; clearance roles stay visible with requirements flagged. Candidate facts, application automation/consent and existing Discover results must remain unchanged.
+
+Validation: initial full suite 1,040 passed, 5 skipped; final 22 guide/MCP checks and 38 focused workflow/MCP/pipeline checks passed. After integrating local main, the complete loopback-enabled suite had 1,049 passes, 5 skips and one temporary-staging ENOENT race during simultaneous test runs. All 18 worker-runtime checks passed when rerun with an isolated staging directory; the failed check was included. The earlier restricted full run was superseded because loopback HTTP tests could not bind. Data validation passed (158 roles); diff whitespace check passed. No worker code or production test-staging behavior was changed in this instruction-only pass.
+
+Private profile General version44 and candidate-fact preservation were read back; ten audit events were verified. No current jobs were reassessed or republished. Local API image lookout-node:broader-fit and Edge were refreshed after landing. Authenticated serving read-back verified developer121, search guide16, application guide17 (retaining concurrent Action Board stop/resume safeguards), notifications guide2 and priority reuse. The worker, database and volumes were preserved. No push/GCP deployment.
+
+Checkout: `/private/tmp/lookout-features/broaden-search-selection-ABZWtb/repo`; branch `codex/broaden-search-selection-ABZWtb`. No push/GCP deployment.

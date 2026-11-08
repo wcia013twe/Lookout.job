@@ -58,7 +58,9 @@ export function validateArtifact(operation,p,{allowMock=false}={}){
   const mockFields=['scheduledAt','timeZone','durationMinutes','sessionStatus','debriefId'];
   if(p.kind!=='mock_interview'&&mockFields.some(k=>p[k]!==undefined))throw Error('Mock session fields require a mock interview');
   if(p.kind==='mock_interview'){
-   if(!/^\d{4}-\d{2}-\d{2}T.*(Z|[+-]\d{2}:\d{2})$/.test(p.scheduledAt||'')||!Number.isFinite(Date.parse(p.scheduledAt))||!p.timeZone||!p.durationMinutes||!p.sessionStatus)throw Error('Dated mock session required');
+   if(!/^\d{4}-\d{2}-\d{2}T.*(Z|[+-]\d{2}:\d{2})$/.test(p.scheduledAt||'')||!Number.isFinite(Date.parse(p.scheduledAt)))throw Error('scheduledAt must include Z or an explicit UTC offset, for example 2026-11-09T15:00:00-05:00');
+   if(!p.timeZone||!p.durationMinutes||!p.sessionStatus)throw Error('Dated mock session required');
+   if(p.preparedFor!==undefined)throw Error('Remove preparedFor from mock interviews; describe the target interview in purpose or body instead');
    try{new Intl.DateTimeFormat('en-US',{timeZone:p.timeZone}).format();}catch{throw Error('Valid time zone required');}
    if(p.weekOf!==weekStart(dateInZone(p.timeZone,new Date(p.scheduledAt))))throw Error('Assign the mock to its scheduled local week');
   }

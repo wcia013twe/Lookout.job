@@ -1,6 +1,6 @@
 "use client";
 import {SINGLE_PROFILE_UI,singleResumePrompt} from "../../lib/single-profile.mjs";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import {
   eligibilityHeading,
   countryEligibilityFields,
@@ -155,6 +155,8 @@ const channels = [
 export function WritingStyles() {
   const a = useApplicationProfile(), w = useWorkspace(), id = useId();
   const [channel, setChannel] = useState(1);
+  const [answerRequested,setAnswerRequested]=useState(false);
+  useEffect(()=>{if(new URL(location.href).searchParams.has("answer")){setAnswerRequested(true);setChannel(0);}},[]);
   return <>
     <section className={writing.studio} aria-label="Writing workspace">
       <header className={writing.header}>
@@ -199,7 +201,7 @@ export function WritingStyles() {
       </div>)}
 
     </section>
-    <details className={writing.bank}>
+    <details className={writing.bank} open={answerRequested||undefined}>
       <summary>Shared question bank &amp; saved answers</summary>
       <p className="mt-3 text-sm text-board-muted">Manage shared employer answers and choose which answers this profile can use.</p>
       <ApplicationMaterials mode="answers"/><SavedAnswers/>

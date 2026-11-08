@@ -1,0 +1,95 @@
+begin;
+do $$
+declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();app uuid;r uuid;answer_id uuid;round1 uuid;round2 uuid;replacement uuid;h text:=repeat('a',64);ro text:=repeat('b',64);item jsonb;result jsonb;request jsonb;first_key text;version_before integer;task_id text;
+begin
+ insert into auth.users(id) values(u),(v);
+ insert into public.profiles(user_id,facts,verified_at) values(u,'{"name":"Fictional Person","email":"fixture@example.com"}',now());
+ insert into public.resumes(user_id,name,object_path,content_hash) values(u,'Fixture',u||'/r.pdf',repeat('a',64)) returning id into r;
+ insert into public.jobs(id,canonical_url,employer) values('board-fixture','https://job-boards.greenhouse.io/fixture/jobs/999','{"company":"Fixture","title":"Backend Engineer"}');
+ insert into public.applications(user_id,job_id,draft) values(u,'board-fixture',jsonb_build_object('resumeId',r,'questions','[]'::jsonb,'questionsReviewed',true,'url','https://job-boards.greenhouse.io/fixture/jobs/999')) returning id into app;
+ update public.applications set status='Awaiting approval' where id=app;
+ insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Fixture',h,array['workspace:read','drafts:write','activity:write','approvals:read','resumes:read'],now()+interval '1 hour'),(v,'Other',ro,array['workspace:read'],now()+interval '1 hour');
+ perform set_config('test.uid',u::text,true);
+ select x into item from private.action_board_items(u) x where x->>'kind'='review_application';
+ first_key:=item->>'key';
+ if first_key is null then raise exception 'No deterministic draft decision';end if;
+ if public.read_action_board() is distinct from public.agent_dispatch(h,'actions.board.read','{}') then raise exception 'Website/MCP snapshot mismatch';end if;
+ if jsonb_array_length(public.agent_dispatch(ro,'actions.board.read','{}')->'items')<>0 then raise exception 'Foreign board leaked';end if;
+ begin perform public.respond_action_board(jsonb_build_object('key',first_key,'response','accept','eventKey',gen_random_uuid()));raise exception 'Accepted before review';exception when insufficient_privilege then null;end;
+ perform public.respond_action_board(jsonb_build_object('key',first_key,'response','review','eventKey',gen_random_uuid()));
+ update public.applications set draft=draft||'{"changed":true}' where id=app;
+ begin perform public.respond_action_board(jsonb_build_object('key',first_key,'response','accept','eventKey',gen_random_uuid()));raise exception 'Accepted stale reviewed draft';exception when serialization_failure then null;end;
+ update public.applications set status='Awaiting approval' where id=app;
+ select x into item from private.action_board_items(u) x where x->>'kind'='review_application';
+ insert into private.backend_jobs(user_id,connection_id,kind,input) select u,id,'application_submit',jsonb_build_object('applicationId',app) from private.agent_connections where token_hash=h;
+ request:=jsonb_build_object('key',item->>'key','response','reject','eventKey',gen_random_uuid());
+ result:=public.respond_action_board(request);
+ if public.respond_action_board(request)<>result then raise exception 'Decision replay differs';end if;
+ if exists(select 1 from private.backend_jobs where user_id=u and kind='application_submit' and status='queued') then raise exception 'Rejection left queued work';end if;
+ if not private.work_is_stopped(u,app) then raise exception 'Rejection did not stop work';end if;
+ if not exists(select 1 from public.applications where id=app) then raise exception 'Rejection removed application';end if;
+ begin update public.applications set draft=draft||'{"repair":true}' where id=app;raise exception 'Stopped draft edited';exception when insufficient_privilege then null;end;
+ begin perform public.runner_submission_context(h,app);raise exception 'Stopped runner context allowed';exception when insufficient_privilege then null;end;
+ begin perform public.runner_submission_transition(h,'claim',jsonb_build_object('applicationId',app));raise exception 'Stopped runner claim allowed';exception when insufficient_privilege then null;end;
+ begin perform public.agent_dispatch(h,'drafts.prepare',jsonb_build_object('applicationId',app));raise exception 'Stopped agent preparation allowed';exception when insufficient_privilege then null;end;
+ begin perform public.queue_application_job(jsonb_build_object('posting',jsonb_build_object('url','https://job-boards.greenhouse.io/fixture/jobs/999')));raise exception 'Stopped queue allowed';exception when insufficient_privilege then null;end;
+ begin perform public.respond_action_board(jsonb_build_object('key',app,'response','resume','expectedVersion',99,'eventKey',gen_random_uuid()));raise exception 'Stale hold resumed';exception when serialization_failure then null;end;
+ perform public.respond_action_board(jsonb_build_object('key',app,'response','resume','expectedVersion',1,'eventKey',gen_random_uuid()));
+ if private.work_is_stopped(u,app) then raise exception 'Human resume failed';end if;
+ if exists(select 1 from public.approvals p join public.applications a on a.id=p.application_id and a.revision=p.revision where a.id=app) then raise exception 'Resume restored approval';end if;
+ -- Successful exact approval still uses the original domain validator after fresh review.
+ update public.applications set draft=jsonb_set(draft,'{questionsReviewed}','true'::jsonb),status='Awaiting approval' where id=app;
+ select x into item from private.action_board_items(u) x where x->>'kind'='review_application';
+ perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','review','eventKey',gen_random_uuid()));
+ perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid()));
+ if (select status from public.applications where id=app)<>'Approved' then raise exception 'Exact approval failed';end if;
+ -- Answer reuse permission is required and never inferred.
+ insert into public.answer_library(user_id,question,answer,provenance) values(u,'A fixture question?','A fixture answer','agent') returning id into answer_id;
+ select x into item from private.action_board_items(u) x where x->>'sourceId'=answer_id::text;
+ begin perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid()));raise exception 'Inferred reuse permission';exception when invalid_parameter_value then null;end;
+ perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','accept','policy','ask','eventKey',gen_random_uuid()));
+ if not exists(select 1 from public.answer_library where id=answer_id and verified_at is not null and autofill_policy='ask') then raise exception 'Answer permission lost';end if;
+ -- Ready-to-send is a receipt, not a sent contact status.
+ insert into public.outreach_contacts(id,user_id,record) values('fixture-person',u,'{"name":"Fixture Person","message":"Hello from a fictional candidate.","status":"Not asked"}');
+ select x into item from private.action_board_items(u) x where x->>'kind'='review_outreach';
+ perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','review','eventKey',gen_random_uuid()));
+ perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid()));
+ if (select record->>'status' from public.outreach_contacts where user_id=u and id='fixture-person')<>'Not asked' then raise exception 'Approval fabricated sending';end if;
+ update public.outreach_contacts set record=record||'{"message":"A new exact draft."}' where user_id=u and id='fixture-person';
+ select x into item from private.action_board_items(u) x where x->>'kind'='review_outreach';
+ if item->>'reviewed'<>'false' then raise exception 'Changed message retained review';end if;
+ perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','reject','eventKey',gen_random_uuid()));
+ perform set_config('test.uid','',true);
+ begin update public.outreach_contacts set record=record||'{"message":"Automatic repair"}' where user_id=u and id='fixture-person';raise exception 'Agent repaired declined outreach';exception when insufficient_privilege then null;end;
+ perform set_config('test.uid',u::text,true);
+ -- Multiple canonical rounds share one versioned task ledger without label matching.
+ result:=to_jsonb(private.record_application_milestone_owned(u,app,jsonb_build_object('eventKey','round-1','kind','technical_round','label','Opaque round A','phase','scheduled','occurredAt','2026-11-10T17:00:00Z','practiceCategory','systems','timeZone','America/New_York','source',jsonb_build_object('kind','user','timestampConfirmed',true)),'user'));
+ round1:=(result->>'id')::uuid;
+ result:=to_jsonb(private.record_application_milestone_owned(u,app,jsonb_build_object('eventKey','round-2','kind','technical_round','label','Opaque round B','phase','scheduled','occurredAt','2026-11-12T17:00:00Z','practiceCategory','coding','source',jsonb_build_object('kind','user','timestampConfirmed',true)),'user'));
+ round2:=(result->>'id')::uuid;
+ if (select count(distinct t->>'roundId') from public.preparation_plans p,jsonb_array_elements(p.plan->'tasks') t where p.application_id=app)<>2 then raise exception 'Round tasks missing';end if;
+ select version,plan#>>'{tasks,0,id}' into version_before,task_id from public.preparation_plans where application_id=app;
+ result:=to_jsonb(private.record_application_milestone_owned(u,app,jsonb_build_object('eventKey','reschedule','kind','technical_round','label','Different label','phase','scheduled','occurredAt','2026-11-11T17:00:00Z','supersedesId',round1,'practiceCategory','systems','source',jsonb_build_object('kind','user','timestampConfirmed',true)),'user'));
+ if (select version from public.preparation_plans where application_id=app)<=version_before then raise exception 'Round reschedule did not fence stale practice';end if;
+ if result->>'round_id'<>round1::text then raise exception 'Reschedule lost stable identity';end if;
+ if not exists(select 1 from public.preparation_plans p,jsonb_array_elements(p.plan->'tasks') t where p.application_id=app and t->>'id'=task_id) then raise exception 'Reschedule discarded prior tasks';end if;
+ -- Proposals require human confirmation and preserve original evidence.
+ result:=to_jsonb(private.record_application_milestone_owned(u,app,jsonb_build_object('eventKey','proposal','kind','interview','label','Proposed round','phase','scheduled','proposedAt','2026-11-13T17:00:00Z','practiceCategory','ml','source',jsonb_build_object('kind','user_reported','note','Candidate reported a proposed time')),'user_reported'));
+ select x into item from private.action_board_items(u) x where x->>'sourceId'=result->>'id';
+ perform public.respond_action_board(jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid()));
+ if not exists(select 1 from public.application_milestones where supersedes_id=(result->>'id')::uuid and confirmation='confirmed' and practice_category='ml') then raise exception 'Human confirmation did not create canonical correction';end if;
+ if public.agent_dispatch(h,'human.request',jsonb_build_object('action','verify-answer','recordId',answer_id))->>'url' not like '%section=agent&answer=%' then raise exception 'Answer handoff not precise';end if;
+ -- Human-only writer is not an agent operation, even with full scopes.
+ begin perform public.agent_dispatch(h,'actions.board.respond',request);raise exception 'Agent decision path exposed';exception when invalid_parameter_value then null;end;
+ perform set_config('test.uid',v::text,true);
+ execute 'set local role authenticated';
+ if jsonb_array_length(public.read_action_board()->'items')<>0 then raise exception 'Browser board leaked';end if;
+ begin perform public.respond_action_board(jsonb_build_object('key',app,'response','resume','eventKey',gen_random_uuid()));raise exception 'Foreign resume allowed';exception when no_data_found then null;end;
+ execute 'reset role';
+ -- Reset must remove decisions and replay receipts so old consent cannot survive it.
+ result:=private.workspace_reset_service(u,'preview','{}');
+ result:=private.workspace_reset_service(u,'begin',jsonb_build_object('resetId',gen_random_uuid(),'confirmation','RESET MY WORKSPACE','expectedPersonalVersion',result->'personalVersion'));
+ perform private.workspace_reset_service(u,'finish',jsonb_build_object('resetId',result->>'resetId'));
+ if exists(select 1 from private.action_decision_receipts where user_id=u) or exists(select 1 from private.action_response_events where user_id=u) or exists(select 1 from public.application_work_holds where user_id=u) then raise exception 'Workspace reset retained decision or hold state';end if;
+end $$;
+rollback;

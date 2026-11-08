@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {ResponsiveSankey} from '@nivo/sankey';
 import {applicationFlow} from '../../lib/application-flow.mjs';
+import ApplicationRoundStats from './application-round-stats';
 import type {Application} from './workflow-types';
 
 // SVG colors are explicit so Nivo can interpolate gradient links in both themes.
@@ -29,5 +30,6 @@ export default function ApplicationFlowChart({applications,trackerItems}:{applic
    <dl aria-label="Application flow counts" className="mt-4 flex flex-wrap gap-x-6 gap-y-3 text-sm">{flow.destinations.map((destination:{id:string;label:string;count:number})=><div key={destination.id} className="flex items-center gap-2"><dt className="flex items-center gap-2"><span aria-hidden="true" className="size-2.5 rounded-sm" style={{backgroundColor:colors[destination.id]}}/>{destination.label}</dt><dd className="font-semibold tabular-nums">{destination.count}</dd></div>)}</dl>
   </> : <p className="py-10 text-sm text-board-muted">Your flow will appear when an application or hiring stage is recorded.</p>}
   <p className="mt-5 text-xs leading-relaxed text-board-muted">Saved jobs and drafts are excluded. Missing responses are not marked as ghosted. This shows the latest recorded state, not every step an application took.</p>
+ <ApplicationRoundStats applications={applications}/>
  </section>;
 }

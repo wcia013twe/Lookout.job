@@ -264,3 +264,29 @@ test('direct search excludes an already tracked Applied job and preserves its ap
  assert.deepEqual((await db.query('select to_jsonb(a) data from public.applications a where user_id=$1',[f.owner])).rows,before);
  assert(!t.calls.filter(c=>c.task==='verify-discovery-leads').flatMap(c=>c.input.leads).some(lead=>lead.url.endsWith('/100')));
 });
+
+test('a completed direct shortlist reaches private Discover only through agent-reviewed publication, with replay and website parity',async()=>{
+ const {batchRoles}=await import('../lib/cloud-model.mjs');
+ const {readGuide}=await import('../supabase/functions/agent-gateway/guides.mjs');
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,16);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
+ const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
+ assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
+ const hash=f.owner.replaceAll('-','').repeat(2);
+ await db.query("update private.agent_connections set scopes=array_append(scopes,'batches:write') where user_id=$1",[f.owner]);
+ const listings=(await db.query("select private.search_owned($1,'search.discoveries.read',$2) as p",[f.owner,{runId:j.search_run_id,offset:0,limit:100}])).rows[0].p.listings;
+ assert.equal(listings.length,1);const l=listings[0];
+ // Fictional agent output, supplied only after the worker has finished. No model
+ // execution, candidate facts or publication is inferred from screening alone.
+ const recommendation={searchRunId:j.search_run_id,searchListingId:l.id,searchProfileId:f.profile,evaluatedProfileVersion:1,whyItFits:'Your fictional backend project connects to the verified backend systems work.',materialGap:'The fictional employer does not disclose compensation.',matchAssessment:{assessedAt:'2026-11-07T12:00:00Z',skillsExperience:{score:80,reasoning:'Fictional backend project matches the posted systems work.'},compensation:{score:null,reasoning:'Pay and a personal threshold are not disclosed in this fictional scenario.'},wellbeingCulture:{score:null,reasoning:'Team working practices are unknown in this fictional scenario.'},locationWorkSetting:{score:95,reasoning:'Verified remote work matches the fictional required remote preference.'}}};
+ const payload={eventKey:`discover:${j.search_run_id}:profile:1:part:0`,label:'Fictional reviewed shortlist',jobs:[{canonicalUrl:l.canonical_url,employer:{company:l.company,title:l.title,location:l.location,employmentType:'FT',description:l.observation.description},recommendation}]};
+ const publish=async()=> (await db.query("select public.agent_dispatch($1,'batches.publish',$2) as p",[hash,payload])).rows[0].p;
+ const saved=await publish(),again=await publish();assert.equal(saved.batch.id,again.batch.id);
+ const read=(await db.query("select public.agent_dispatch($1,'batches.read',$2) as p",[hash,{batchId:saved.batch.id}])).rows[0].p;
+ assert.equal(read.items.length,1);assert.equal(read.items[0].recommendation.searchListingId,l.id);
+ const websiteItems=(await db.query('select to_jsonb(i)||jsonb_build_object(\'jobs\',to_jsonb(j)) as item from public.batch_items i join public.jobs j on j.id=i.job_id where i.user_id=$1 and i.batch_id=$2 order by i.position',[f.owner,saved.batch.id])).rows.map(r=>r.item);
+ const roles=batchRoles(websiteItems,read.batch.batch_date);assert.equal(roles.length,1);assert.equal(roles[0].matchAssessment.skillsExperience.score,80);assert.equal(roles[0].matchAssessment.compensation.score,null);assert.equal(roles[0].applicationUrl,l.canonical_url);
+ assert.equal((await db.query('select job_id from public.search_listings where id=$1',[l.id])).rows[0].job_id,read.items[0].job_id);
+ assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,1);
+ assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
+ assert(!Object.hasOwn(read.items[0].job.employer,'matchAssessment'));
+});

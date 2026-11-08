@@ -203,3 +203,74 @@
 - Production build, catalog validation (158 roles) and diff check passed. The
   fictional application preview confirmed the original lavender color and green
   glyph in computed styles and screenshot. No backend change or new tests.
+
+## Follow-up: dynamic employer rounds and shared chart/Muse counts
+
+- Adds typed Screen/Interview rounds (OA, take-home, technical, system design,
+  behavioral, hiring manager, onsite, recruiter, other) with custom names and
+  pending/scheduled/completed/cancelled states. Existing native milestones and
+  imported record.rounds are the only saved sources; there is no count store.
+- Shared applicationRounds/applicationRoundStats drive UI round lists, progress,
+  next dates, Stats and scoped read_application_round_stats. Native corrections
+  count once; no synthetic status, note or activity-text rounds. Unique jobs stay
+  separate from round counts, using the board's native/import duplicate rule.
+- Existing native milestone writer gains optional round metadata under its owned
+  evidence/replay/replacement boundary. Imported full-list edits keep stable IDs,
+  global tracker version and exact retries, and advance earlier active status to
+  the explicit round stage without touching terminal outcomes or inventing Offer.
+- Native editor supports type/stage/cancellation and replacement prefill. Imported
+  Interview links to the working Tracking details round editor; its rounds can
+  be added/reordered/edited. Current-stage checks follow saved round phases.
+- Contract 121, application-workspace 16 and interview-preparation 6 document
+  canonical round fields, count/read-back rules and employer-round vs prep/mock
+  distinctions. Change-feed workflow references match the guide versions.
+- Added real SQL browser/MCP parity, owner/version/replay and shared-counter tests,
+  rendering/count unit checks, and a resettable mixed-state round demo. Initial
+  broad suite had 1,040 passing, 5 skipped and one expected catalog-size assertion;
+  the assertion was updated for the new supporting read tool and focused tests
+  passed. Final integrated validation and runtime receipts follow below.
+- Final integrated verification passed: full npm suite 1,045 passed / 5 existing
+  skips, frontend typecheck/static build, catalog validation (158 roles), detector
+  and diff check. Desktop/mobile demo exercised adding a Screen take-home,
+  completing it without an Interview promotion, adding a real Interview round,
+  saving its date and reading the distinct round/application totals in Stats.
+- Local-main integration preserved the newer private Discover handoff guide and
+  its version 15 while retaining round guide versions 16/6 and contract 121.
+  No personal records were migrated from notes; runtime activation follows the
+  committed source and is recorded separately below.
+- Integrated the concurrent Connected Action Board implementation, preserving
+  native stable round IDs, practice categories/timezones, confirmation, cancellation
+  and round-linked prep. The round migration now extends its underlying writer
+  instead of replacing that wrapper. Corrections/confirmation preserve stage/type
+  when omitted; cancelled phase and unconfirmed dates use the same projection.
+  Updated workflow references to application-workspace 17 / interview-preparation 7.
+- Hierarchy remains Applied → Screen → Interview → Offer, with each employer's
+  ordered rounds nested inside those broad phases. Source changes do not invent
+  rounds from notes or backfill personal records.
+- Final frozen integrated source passed the complete suite: 1,055 passed,
+  5 existing skips, zero failures (1,060 total). The 13 focused round/connected-board
+  tests also passed, including metadata preservation through corrections. Both
+  production-export browser scripts passed on desktop/mobile; build, typecheck,
+  158-role data validation and diff checks passed. Earlier intermediate runs were
+  superseded after concurrent-source integration and catalog/version updates.
+- Preserved the subsequent broader-fit guidance (search 16), combined application
+  guide 18 / preparation guide 7 and developer contract 122. Remote #78's squash
+  tree exactly matched ancestor c84de87; integrated that duplicate history without
+  discarding newer local work. Development activation receipt follows below.
+- Live dev verification found the scoped round reader's private SQL projection
+  lacked its service_role execution grant. Added a narrow follow-up migration,
+  retained stable IDs/confirmation/order in the context projection and added a
+  regression using Supabase's service-role BYPASSRLS behavior (the test fixture's
+  placeholder role otherwise differs). Round and hosted-upgrade tests pass.
+  The final integration also retains the current mock schema/diagnostics fix.
+- Dev activation verified through the authenticated Muse connector: contract 123,
+  discovery of read_application_round_stats and a successful aggregate read from
+  the real owner-scoped backend after the service grant. Applied/registered local
+  migrations 20261107215826, 20261107235547 and 20261107235949. No imported notes
+  were converted into rounds, no real submissions/messages were sent and no hosted
+  production mutation was performed. Preserved the newer mock-schema API activation,
+  existing worker/tunnel and unrelated shared-main edits.
+- The notification-guide-only final merge passed 29 focused workflow/MCP checks;
+  the service-role reader plus hosted-upgrade regression passed all 6 tests.
+- Final post-live-fix complete suite: 1,057 passed, 5 existing skips, zero failures
+  (1,062 total). Data validation and diff checks remain clean.

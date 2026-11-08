@@ -1,0 +1,65 @@
+// Detached, fictional services: no imports of account clients or persistent storage.
+const copy=structuredClone;
+const signature=value=>encodeURIComponent(JSON.stringify(value));
+export function withActionBoardDemo(services,store){
+ const receipts=new Map(),events=new Map(),holds=new Map();
+ function items(includeResolved=false){
+  const apps=Object.values(store.get('workflow.applications')||{}),answers=store.get('workflow.savedAnswers')||[],contacts=store.get('network.referrals')||[],result=[];
+  for(const app of apps){
+   if(holds.get(app.backendId)?.resumed_at===null)continue;
+   const kind=app.status==='Awaiting approval'?'review_application':app.status==='Blocked'?'resolve_blocker':null;
+   if(kind)result.push({key:`application:${app.backendId}:${app.backendRevision||0}:${kind}`,kind,sourceId:app.backendId,applicationId:app.backendId,version:String(app.backendRevision||0),company:app.company,role:app.title,reason:app.blocker||'Your approval is required before this application can proceed.',href:`/applications/?application=${app.backendId}&tab=Documents`,canAccept:kind==='review_application',canReject:kind==='review_application',requiresReview:kind==='review_application',questions:app.questions||[]});
+   for(const round of app.milestones||[]){if(round.phase!=='scheduled'||round.confirmation!=='needs_confirmation'||(app.milestones||[]).some(m=>m.supersedes_id===round.id))continue;result.push({key:`interview:${round.id}`,kind:'confirm_interview',sourceId:round.id,applicationId:app.backendId,version:round.id,company:app.company,title:round.label,proposedAt:round.proposed_at,timeZone:round.time_zone||'UTC',reason:'These interview details need confirmation before preparation can be scheduled.',href:`/applications/?application=${app.backendId}&tab=Interview&round=${round.id}`,canAccept:!!round.proposed_at,canReject:true,requiresReview:false});}
+  }
+  for(const answer of answers.filter(a=>!a.verifiedAt&&a.imported))result.push({key:`answer:${answer.id}:${signature(answer)}`,kind:['','ask me'].includes(answer.answer?.trim().toLowerCase()||'')?'missing_answer':'verify_answer',sourceId:answer.id,version:signature(answer),title:answer.question,body:answer.answer,reason:'This proposed answer has not been verified. Choose whether it may be reused.',href:`/profile/?section=agent&answer=${answer.id}`,canAccept:!['','ask me'].includes(answer.answer?.trim().toLowerCase()||''),canReject:!['','ask me'].includes(answer.answer?.trim().toLowerCase()||''),requiresReview:false});
+  for(const c of contacts.filter(c=>c.message?.trim()&&!/\[[^\]]+\]/.test(c.message)&&['Not asked','Draft','Drafted'].includes(c.status||'Not asked')))result.push({key:`outreach:${c.id}:${signature([c.message,c.subject,c.contact||c.name,c.email,c.linkedin])}`,kind:'review_outreach',sourceId:c.id,version:String(c._revision||0),title:'Review message',recipient:c.contact||c.name,subject:c.subject||'',company:c.company,body:c.message,reason:'This message is ready for review. Accepting marks it ready for you to send.',href:`/referrals/?person=${c.id}`,canAccept:true,canReject:true,requiresReview:true});
+  return result.map(i=>({...i,createdAt:'2026-11-07T12:00:00Z',reviewed:!!receipts.get(i.key)?.reviewed_at})).filter(i=>includeResolved||!receipts.get(i.key)?.response);
+ }
+ return {...services,
+  async readActionBoard(){return copy({items:items(),outreach:items(true).filter(i=>i.kind==='review_outreach'&&receipts.get(i.key)?.response).map(i=>({...i,response:receipts.get(i.key).response})),holds:[...holds.values()],history:[...receipts].filter(([,r])=>r.response).map(([decision_key,r])=>({decision_key,...r}))});},
+  async respondActionBoard(payload){
+   const old=events.get(payload.eventKey);if(old){if(JSON.stringify(old.payload)!==JSON.stringify(payload))throw Error('Retry changed');return copy(old.result);}
+   let item;if(payload.response==='resume'){const held=holds.get(payload.key);if(!held||held.resumed_at||held.version!==payload.expectedVersion)throw Error('Work hold changed');held.version++;held.resumed_at=new Date().toISOString();}
+   else {item=items().find(i=>i.key===payload.key);if(!item)throw Error('Decision changed');
+    if(payload.response==='review'){if(!item.requiresReview)throw Error('Review not required');receipts.set(item.key,{reviewed_at:new Date().toISOString()});}
+    else{
+     if(!['accept','reject'].includes(payload.response)||!item[payload.response==='accept'?'canAccept':'canReject'])throw Error('Use owning editor');
+     if(payload.response==='accept'&&item.requiresReview&&!item.reviewed)throw Error('Review exact version first');
+     if(item.kind==='review_application'){const apps=store.get('workflow.applications'),app=Object.values(apps).find(a=>a.backendId===item.sourceId);if(payload.response==='reject'){holds.set(item.sourceId,{application_id:item.sourceId,resumed_at:null,version:(holds.get(item.sourceId)?.version||0)+1});app.backendRevision=(app.backendRevision||0)+1;app.status='Draft';app.approved=null;}else{app.status='Approved';app.approved={revision:app.backendRevision};}store.set('workflow.applications',apps);}
+     if(item.kind==='verify_answer'&&payload.response==='accept'){if(!['ask','auto'].includes(payload.policy))throw Error('Choose reuse permission');store.update('workflow.savedAnswers',rows=>rows.map(a=>a.id===item.sourceId?{...a,verifiedAt:new Date().toISOString(),policy:payload.policy}:a));}
+     if(item.kind==='confirm_interview'){
+      const app=Object.values(store.get('workflow.applications')).find(a=>a.milestones?.some(m=>m.id===item.sourceId)),round=app.milestones.find(m=>m.id===item.sourceId);
+      if(payload.response==='accept')await this.recordApplicationMilestone(app.backendId,{eventKey:'board-'+payload.eventKey,kind:round.kind,label:round.label,phase:'scheduled',occurredAt:round.proposed_at,supersedesId:round.id,practiceCategory:round.practice_category,timeZone:round.time_zone,source:{kind:'user',timestampConfirmed:true,note:'Confirmed in fictional Action Board'}});
+      else store.update('workflow.applications',apps=>{apps[app.id].milestones=apps[app.id].milestones.map(m=>m.id===round.id?{...m,confirmation:'incorrect'}:m);return apps;});
+     }
+     receipts.set(item.key,{...receipts.get(item.key),source_kind:item.kind,source_id:item.sourceId,response:payload.response,responded_at:new Date().toISOString()});
+    }
+   }
+   const result={saved:true,key:payload.key,response:payload.response};events.set(payload.eventKey,{payload:copy(payload),result});return copy(result);
+  },
+  async recordApplicationMilestone(id,input){
+   const before=Object.values(store.get('workflow.applications')).find(a=>a.backendId===id),previous=before?.milestones?.find(m=>m.id===input.supersedesId);
+   const row=await services.recordApplicationMilestone(id,input);
+   Object.assign(row,{round_id:previous?.round_id||previous?.id||row.id,practice_category:input.practiceCategory||'general',time_zone:input.timeZone||'UTC',confirmation:input.occurredAt?'confirmed':'needs_confirmation',proposed_at:input.proposedAt||null});
+   store.update('workflow.applications',apps=>{const app=Object.values(apps).find(a=>a.backendId===id);app.milestones=app.milestones.map(m=>m.id===row.id?row:m);return apps;});
+   if(['recruiter_call','technical_round','interview'].includes(row.kind)){
+    const rows=store.get('demo.preparationRows')||{},existing=rows[id]||{application_id:id,version:0,plan:{applicationId:before.id,deadline:{date:null,status:'needs_confirmation'},tasks:[],guides:[],warnings:[]}};
+    if(!existing.plan.tasks.some(t=>t.roundId===row.round_id)&&row.phase==='scheduled'&&row.confirmation==='confirmed')existing.plan.tasks.push(...[['practice','Practice for this round',30],['questions','Prepare questions for the team',15]].map(([key,title,minutes])=>({id:row.round_id+':'+key,roundId:row.round_id,key,title,detail:'Fictional practice.',minutes,completed:false})));
+    existing.version++;rows[id]=existing;store.set('demo.preparationRows',rows);
+   }
+   return copy(row);
+  },
+  async queueApplicationJob(payload){const app=Object.values(store.get('workflow.applications')||{}).find(a=>a.id===payload.posting.id);if(holds.get(app?.backendId)?.resumed_at===null)throw Error('Agent work stopped');return services.queueApplicationJob(payload);},
+  async readPreparationPlanner(){const bundle=await services.readPreparationPlanner();return {...bundle,applications:store.get('workflow.applications'),holds:[...holds.values()]};}
+ };
+}
+export function enableActionBoardScenario(fixtures,date){
+ fixtures.state.demo.connectedBoard=true;
+ const apps=Object.values(fixtures.state.workflow.applications),app=apps[0];
+ app.status='Awaiting approval';app.questionsReviewed=true;
+ fixtures.state.workflow.savedAnswers.push({id:'demo-board-answer',question:'Can you work onsite three days a week?',answer:'Yes, for the fictional demo.',imported:true,policy:'ask',companyScope:''});
+ const target=apps[1]||app,day=offset=>new Date(Date.parse(date+'T12:00:00Z')+offset*86400000).toISOString().slice(0,10);
+ const rounds=[{id:'demo-round-a',round_id:'demo-round-a',label:'Architecture discussion',practice_category:'systems',confirmation:'confirmed',occurred_at:day(3)+'T17:00:00Z'},{id:'demo-round-b',round_id:'demo-round-b',label:'Follow-up',practice_category:'coding',confirmation:'needs_confirmation',proposed_at:day(5)+'T17:00:00Z'}].map(r=>({...r,kind:'technical_round',phase:'scheduled',time_zone:'UTC',source:{kind:'user',timestampConfirmed:r.confirmation==='confirmed'}}));
+ target.milestones=rounds;
+ fixtures.state.demo.preparationRows[target.backendId]={application_id:target.backendId,version:1,plan:{applicationId:target.id,deadline:{date:null,status:'needs_confirmation'},guides:[],warnings:[],tasks:rounds.map(r=>({id:r.id+':practice',roundId:r.round_id,key:'practice',title:'Practice for this round',detail:'Fictional practice.',minutes:30,completed:false}))}};
+}

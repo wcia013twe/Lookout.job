@@ -390,3 +390,57 @@ settings. Full source checks passed (1,036 tests, five skipped), typecheck/build
 and data validation passed. No real candidate session, Calendar event, worker or
 database restart, push or hosted deployment occurred. Muse must retry its original
 session save; source/tool discovery alone must not be called persistence-ready.
+
+## Shared application round counts (contract 121 source update)
+
+Native milestone round metadata and imported record.rounds feed one shared
+projector used by Applications Stats and the workspace:read MCP
+read_application_round_stats tool. Counts distinguish rounds from applications,
+Screen from Interview, and pending/scheduled/completed/cancelled. Existing scoped
+writers retain owner, version, evidence and retry/correction checks. No private
+application data is automatically backfilled from notes. Runtime activation and
+production release are separate; consult the feature note for actual receipts.
+
+
+### Agent-reviewed private Discover handoff
+
+A completed or partial direct scan supplies the private shortlist; it does not itself populate Discover. The connected personal agent now finishes an authorized search by reading all shortlist pages and current candidate/profile evidence, selecting personally suitable live opportunities, writing the four assessment dimensions and role-specific narrative, then publishing through the existing scoped `publish_batch` service. It reads each returned private batch back before claiming Discover is populated. Stable run/profile/chunk event keys prevent duplicate batches on completion-event replay. No new model runtime, scheduler, worker publication, automatic applications or shared hosted-board collection is added. Raw filter matches remain outside Discover until agent review. Empty Discover keeps the existing search-history/request control visible while waiting.
+
+## Connected Action Board (contract 120 source update)
+
+The source preserves desktop Action Board framing and existing review dialogs,
+adding deterministic human questions and Accept/Reject controls with mobile swipe
+parity. Exact application/message review is versioned; application rejection
+keeps the job saved and fences agent work until a version-checked human Resume.
+Outreach acceptance only marks the message ready for the user to send.
+Canonical round IDs, typed practice categories, confirmation and cancellation now
+drive the existing Weekly Prep/session ledger without duplicate deadline labels.
+
+The website and read-only `read_action_board` MCP operation share owned SQL
+projection and validation; human decisions remain authenticated website actions.
+Disposable database, upgrade, domain and detached browser checks establish local
+source behavior. The integrated production export and desktop/mobile connected
+flow were verified. Migration plus gateway/MCP release and an authenticated
+hosted check are still required; no hosted parity or real submission/message
+execution is claimed. See the connected-action-board feature note and the
+application-submission and Career Toolkit concept pages for the contract.
+
+### Broad review with fit-based effort
+
+Search guide16 surfaces relevant plausible jobs after personal analysis instead of selecting only exceptional fits. Fit strength guides priority and tailoring depth; weaker fit, unknown pay, unclear team scope and unconfirmed clearance/citizenship are not automatic rejections. User-requested clearance roles stay visible with active-at-application/start versus obtainable-after-hire requirements called out explicitly. Confirmed non-exempt mandatory conflicts and clearly unrelated work can still be excluded. Conditional graduation scenarios remain targeting, never changes to actual education facts or employer-form answers.
+
+Application guide17 supports routine accurate preparation volume during already authorized application work, with deeper effort for the best matches. Notifications guide2 distinguishes actual prepared, tailored, blocked, ready-for-review and submitted counts. Instructions do not execute work, activate schedules, send messages or grant submission consent. Match strength reuses the existing recommendation priority (Apply Now, Strong Consider, Skip Unless Team Fit) and four fit scores, with no separate tag, column or UI. Lower priority does not stop otherwise authorized preparation. Current Discover batches and applications are not reassessed or republished by this pass.
+
+## Mock schema diagnostics (contract 123, locally verified)
+
+The mock tool schema now excludes document-only preparedFor/materials/resourceUrl,
+requires its scheduling fields and advertises an explicit-offset RFC 3339
+scheduledAt pattern. Material-format guide v2 explains these requirements. The
+local API/gateway refresh was verified through connected discovery and disposable
+Node MCP -> Edge -> SQL tests: each invalid field gets a specific rejection, while
+the corrected mock saves, replays and reads with its profile kept private. Server
+mock-rejection logs retain generated diagnostic IDs, stages, allowlisted reasons
+and field types only. Historical failures without this logging cannot be recovered.
+No real user session or external event was created. Forty-nine relevant integrated
+checks passed; a full-suite search-pipeline failure passed on isolated rerun.
+Hosted publication was not performed.

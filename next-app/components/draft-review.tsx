@@ -1,4 +1,8 @@
 "use client";
+import ApplicationRoundList from "./application-round-list";
+import {draftPayload} from '../../lib/cloud-model.mjs';
+import {ApplicationWorkControl} from './decision-buttons';
+import type {BoardItem} from '../lib/use-action-board';
 import {prefillApplicationQuestions} from "../../lib/application-prefill.mjs";
 import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "../lib/workspace";
@@ -19,14 +23,14 @@ import { timelineItems } from "../../lib/application-timeline.mjs";
 import "./tracker.css";
 import { dayStamp, awardStatus } from "../lib/progress.mjs";
 import type { Application, SavedResume } from "./workflow-types";
-export default function DraftReview({ id, application, importedTracker, onClose }: { id: string; application?: Application; importedTracker?:{version:number;update:ImportUpdate}; onClose: () => void }) {
+export default function DraftReview({ id, application, importedTracker, onClose, initialTab, initialRoundId, boardDecision, onBoardReviewed }: { id: string; application?: Application; importedTracker?:{version:number;update:ImportUpdate}; onClose: () => void;initialTab?:string;initialRoundId?:string;boardDecision?:BoardItem;onBoardReviewed?:()=>Promise<void> }) {
   const w = useWorkspace(),
     model = w.models.workflowModel;
   const workflow: Application | undefined = application || w.state.workflow.applications[id];
   const role = w.roles.find((r: Application) => r.id === id);
   const current: Application | undefined = workflow || (role ? {...role, status: w.state.tracker.items[id]?.status || "New", questions: []} : undefined);
   const trackerItem = w.state.tracker.items[id] || {appliedDate:current?.trackerItem?.appliedDate||undefined,openedDate:current?.trackerItem?.openedDate||undefined};
-  const [tab, setTab] = useState("Overview");
+  const [tab, setTab] = useState(initialTab || (typeof window!=="undefined"&&["Overview","Documents","Interview"].includes(new URL(location.href).searchParams.get("tab")||"")?new URL(location.href).searchParams.get("tab")!:"Overview"));
   const [roundEditorOpen, setRoundEditorOpen] = useState(false);
   const [roundsOpen, setRoundsOpen] = useState(true);
   const rounds = useRef<HTMLDetailsElement | null>(null);
@@ -41,7 +45,7 @@ export default function DraftReview({ id, application, importedTracker, onClose 
     title: "",
     status: "New",
     ...current,
-    questions: prefillApplicationQuestions({questions:current?.questions||[],profile:w.state.workflow.profile,answers:w.state.workflow.savedAnswers,resumes:w.state.workflow.resumes,resumeId:current?.resumeId,company:current?.company,searchProfile:w.state.workflow.searchPreferences?.profiles?.find((p:any)=>p.id===current?.searchProfileId)}).questions,
+    questions: boardDecision ? (current?.questions||[]) : prefillApplicationQuestions({questions:current?.questions||[],profile:w.state.workflow.profile,answers:w.state.workflow.savedAnswers,resumes:w.state.workflow.resumes,resumeId:current?.resumeId,company:current?.company,searchProfile:w.state.workflow.searchPreferences?.profiles?.find((p:any)=>p.id===current?.searchProfileId)}).questions,
   };
   if (JSON.stringify(initial.questions) !== JSON.stringify(current?.questions))
     initial.questionsReviewed = false;
@@ -225,8 +229,10 @@ export default function DraftReview({ id, application, importedTracker, onClose 
     <div className="tracker-detail-grid"><div className="tracker-detail-main">
       <nav className="tracker-detail-tabs" aria-label="Application details">{["Overview","Documents","Interview"].map(name=><button key={name} aria-pressed={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</nav>
       <div className="tracker-detail-content">
+        {current?.backendId&&<ApplicationWorkControl applicationId={current.backendId}/>}
+        {tab==='Documents'&&boardDecision&&onBoardReviewed&&String(current?.backendRevision??current?.revision??0)===boardDecision.version&&<button type="button" className={`${secondary} my-3`} disabled={busy||JSON.stringify(draftPayload(current||{}))!==JSON.stringify(draftPayload(draft))} onClick={async()=>{setBusy(true);try{await onBoardReviewed();setFeedback('Review recorded for this exact version. Return to Action Board to accept or reject.');}catch{setFeedback('Review could not save. Reload Action Board and review the current version.');}finally{setBusy(false);}}}>I reviewed this exact application version</button>}
         {tab === "Overview" && <><ApplicationOverview application={current} role={role} workflow={workflow} item={trackerItem} uncertain={Boolean(unresolved)} preparing={Boolean(workflow && model.canEdit(current))} demo={w.demo} onDocuments={() => setTab("Documents")} onPreparation={() => setTab("Interview")} />{current?.imported&&importedTracker&&<ImportedApplicationTracking row={current.imported} version={importedTracker.version} update={importedTracker.update}/>}</>}
-        {tab === "Interview" && <ApplicationPreparation application={{...role,...current}} onRounds={openRounds} />}
+        {tab === "Interview" && <ApplicationPreparation selectedRoundId={initialRoundId} application={{...role,...current}} onRounds={openRounds} />}
         {tab === "Documents" && <><ApplicationDocumentsPreview application={current} draft={draft} profile={w.state.workflow.profile || {}} resume={w.state.workflow.resumes.find((r: SavedResume) => r.id === draft.resumeId)} hasDraft={Boolean(workflow)} recordApplication={recordState?.key === recordKey ? recordState.data?.application : undefined} attempts={recordState?.key === recordKey ? recordState.data?.attempts || [] : []} loading={Boolean(recordOpen && current.backendId && (w.demo || w.user) && (recordState?.key !== recordKey || recordState.loading))} error={recordState?.key === recordKey ? recordState.error || "" : ""} onRetry={() => setRecordRetry(value => value + 1)} onDownloadResume={w.demo ? undefined : downloadRecordResume} />{downloadFeedback && <p role="status" className="mt-3 text-sm text-board-muted">{downloadFeedback}</p>}      {current.backendId&&<details className="mt-5 border-t border-board-line pt-3"><summary className="min-h-11 cursor-pointer py-2 font-semibold">Submission details</summary><SubmissionRecord application={recordState?.key===recordKey?recordState.data?.application||{}:{}} attempts={recordState?.key===recordKey?recordState.data?.attempts||[]:[]} loading={recordState?.key!==recordKey||recordState.loading} error={recordState?.key===recordKey?recordState.error:''} onDownloadResume={w.demo?undefined:downloadRecordResume}/></details>}
 {editable && <p className="tracker-prose">Change the selected resume below before approving the draft.</p>}</>}
 
@@ -366,7 +372,7 @@ export default function DraftReview({ id, application, importedTracker, onClose 
             <div className="interview-support-body">
               <h3 className="support-heading">Interview rounds &amp; history</h3>
               <ApplicationTimeline application={current} demo={w.demo}/>
-              {workflow && <TimelineEditor application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}
+              {workflow && <><ApplicationRoundList application={current!}/>{current.imported?<button type="button" className={secondary} onClick={()=>{setTab('Overview');requestAnimationFrame(()=>{const editor=dialog.current?.querySelector<HTMLDetailsElement>('[data-import-tracking]');if(editor){editor.open=true;editor.scrollIntoView({block:'start'});}});}}>Edit rounds</button>:<TimelineEditor selectedRoundId={initialRoundId} application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}</>}
               <InterviewDebriefs application={current}/>
             </div>
           </details>

@@ -1,3 +1,4 @@
+import {roundStatsFromContext} from './application-rounds.mjs';
 import { buildPreparationAgenda, plannerToday } from './preparation-planner.mjs';
 import { createPreparationPlan, setPreparationTaskCompletion, PREPARATION_GUIDES } from './preparation-model.mjs';
 import { buildDeliveryPolicy, normalizeQuietMode } from './quiet-mode.mjs';
@@ -36,6 +37,7 @@ export function notificationAdvice(bundle, now=new Date()) {
  return {delivery,events:delivery.decision==='due'?events.filter(e=>ids.includes(e.id)):[],pendingCount:events.length,applications:bundle.applications||[],transport:'agent-runtime',acknowledgeOnlyAfterDelivery:true};
 }
 export async function museFeatureDispatch({operation,payload,rpc,loadJob,now=new Date()}) {
+ if(operation==='applications.round_stats'){const read=await rpc(operation,payload);return read.error?read:{data:roundStatsFromContext(read.data),error:null};}
  if (['preparation.planner.read','preparation.budget','preparation.session.complete'].includes(operation)) {
   const bundle = await rpc(operation, payload);
   if (bundle.error) return bundle;
@@ -57,7 +59,19 @@ export async function museFeatureDispatch({operation,payload,rpc,loadJob,now=new
    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now).map(p=>[p.type,p.value]));
    const today=`${parts.year}-${parts.month}-${parts.day}`;
    const guides=[...new Map([...PREPARATION_GUIDES,...(previous?.plan?.guides||[]),...(payload.resourceGuides||[])].map(g=>[g.id,g])).values()];
-   plan=createPreparationPlan({application:{...context.application.draft,...employer,id:context.application.job_id,resume:context.resume},deadline:payload.deadline,previousPlan:previous?.plan,now:today,dailyMinutes:payload.dailyMinutes,guides});
+   const application={...context.application.draft,...employer,id:context.application.job_id,resume:context.resume};
+   if(payload.roundId){
+    const round=(context.rounds||[]).find(m=>m.round_id===payload.roundId||m.id===payload.roundId);
+    if(!round||round.phase!=='scheduled'||round.confirmation!=='confirmed'||!round.occurred_at)throw Error('Choose a current confirmed scheduled round.');
+    const roundId=round.round_id||round.id,oldTasks=(previous?.plan?.tasks||[]).filter(t=>t.roundId===roundId);
+    const key=t=>t.key||t.id.split(':').at(-1);
+    const selectedPrevious={...previous?.plan,applicationId:application.id,tasks:oldTasks.map(t=>({...t,id:`${application.id}:${key(t)}`}))};
+    const generated=createPreparationPlan({application,deadline:{date:plannerToday(round.occurred_at,zone),stage:round.label,confirmed:true,source:{...round.source,kind:round.source?.kind==='email'?'email':'manual'}},previousPlan:selectedPrevious,now:today,dailyMinutes:payload.dailyMinutes,guides});
+    const selected=generated.tasks.map(t=>{const old=oldTasks.find(o=>key(o)===key(t));return {...t,id:old?.id||`${roundId}:${key(t)}`,roundId};});
+    plan={...(previous?.plan||generated),tasks:[...(previous?.plan?.tasks||[]).filter(t=>t.roundId!==roundId),...selected],guides:[...new Map([...(previous?.plan?.guides||[]),...generated.guides].map(g=>[g.id,g])).values()]};
+   }else{
+    plan=createPreparationPlan({application,deadline:payload.deadline,previousPlan:previous?.plan,now:today,dailyMinutes:payload.dailyMinutes,guides});
+   }
   }
   return rpc('preparation.save',{applicationId:payload.applicationId,expectedVersion:payload.expectedVersion,plan});
  }
