@@ -12,6 +12,7 @@ try{
   page.on('request',r=>{if(/\/(rest|functions)\/v1\//.test(r.url()))errors.push('Fictional widget contacted a private backend');});
   await page.goto(base+'/discover/?demo=1');
   const card=page.locator('[data-discovered-role="demo-discover-good"]');await card.waitFor();
+  await card.getByText('Strong fit',{exact:true}).waitFor();
   assert.equal(await card.getByRole('list',{name:/Shared application stage/}).count(),0,'Opportunity has no application progress');
   assert(await card.getByRole('button',{name:'AI Apply',exact:true}).isEnabled());
   const summary=card.locator('summary').filter({hasText:'76% job match'});

@@ -138,4 +138,24 @@ Limits: checks use disposable migrated databases and fictional detached browser 
   writers. Application references retain their separate progress-stage widget.
 - Uses existing demo discoveries (including Example Query Labs) in both themes.
   No domain service, data, approval or MCP behavior changes.
-- Verification pending.
+- Verification: final combined-source checks below cover this widget; desktop/mobile screenshots and queue/keyboard preview interactions passed.
+
+
+## Follow-up: Submission and Need your input review design
+
+- Both application card families reuse the compact Discover role widget.
+  Show saved résumé name/version, employer questions, AI-drafted/inferred answer
+  sources, other inferred details and unknown provenance without guessing.
+- Source disclosures travel with the existing owned draft. Extend the read
+  projection for inferences/cover-letter source, preserve them through browser
+  sync, and label compact agent answer updates as AI-drafted. Human receipts
+  remain authoritative; these labels cannot confer verification or approval.
+- Application guide25/developer137 explains one writer/read-back flow with no
+  duplicate board post. Add fictional direct-source, generated and inferred
+  examples. Preserve the concurrently landed communication widget.
+- Verification: full `npm test` passed (1,107 passed, five skipped), including owner-scoped SQL web/MCP read parity; 56 focused guide/board/demo tests and disclosure/sync tests passed. Data validation (158 roles), frontend typecheck and production build passed. Desktop/light and mobile/dark checks covered labels, résumé versions, source disclosures, CAPTCHA/uncertainty resolution, exact review, communication editing, keyboard access and swipes. Compact-widget screenshots verified the matching application material and readable mobile labels. New projection/guide changes require backend release for
+  hosted availability; legacy provenance is not fabricated or backfilled.
+
+Saved label refinement: widgets display the existing stored fitLabel when
+present, otherwise saved recommendation.priority. No score-to-label inference
+or new classification state. Demo includes Strong fit and priority fallbacks.

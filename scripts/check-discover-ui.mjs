@@ -64,7 +64,7 @@ try{
  const unknown=page.locator('article').filter({hasText:'Example Search (demo)'});
  await unknown.getByText('Match not assessed',{exact:true}).waitFor();
  assert.equal(await unknown.getByText('Unknown',{exact:true}).count(),0,'Unassessed cards omit empty factor bars');
- const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('h3').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.locator('summary').filter({hasText:/match.*details/}).boundingBox(),action:await item.getByRole('button',{name:'AI Apply',exact:true}).boundingBox()})));
+ const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('header').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.locator('summary').filter({hasText:/match.*details/}).boundingBox(),action:await item.getByRole('button',{name:'AI Apply',exact:true}).boundingBox()})));
  for(const key of ['title','facts','match','action']) assert(Math.abs(bounds[0][key].y-bounds[1][key].y)<2,`${key} rows align despite title length and assessment differences`);
  await unknown.locator('h3 button').click();
  await panel.getByText('Match not assessed',{exact:true}).waitFor();

@@ -1,9 +1,9 @@
 .gridItem { display: grid; min-width: 0; }
 @supports (grid-template-rows: subgrid) {
- .gridItem { grid-row: span 6; grid-template-rows: subgrid; }
+ .gridItem { grid-row: span 5; grid-template-rows: subgrid; }
  .gridItem > article {
   display: grid;
-  grid-row: span 6;
+  grid-row: span 5;
   grid-template-rows: subgrid;
   row-gap: 0;
  }

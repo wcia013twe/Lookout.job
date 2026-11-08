@@ -6,12 +6,13 @@ begin
  insert into public.profiles(user_id,facts,verified_at) values(u,'{"name":"Fictional Person","email":"fixture@example.com"}',now());
  insert into public.resumes(user_id,name,object_path,content_hash) values(u,'Fixture',u||'/r.pdf',repeat('a',64)) returning id into r;
  insert into public.jobs(id,canonical_url,employer) values('board-fixture','https://job-boards.greenhouse.io/fixture/jobs/999','{"company":"Fixture","title":"Backend Engineer"}');
- insert into public.applications(user_id,job_id,draft) values(u,'board-fixture',jsonb_build_object('resumeId',r,'questions','[]'::jsonb,'questionsReviewed',true,'url','https://job-boards.greenhouse.io/fixture/jobs/999')) returning id into app;
+ insert into public.applications(user_id,job_id,draft) values(u,'board-fixture',jsonb_build_object('resumeId',r,'questions','[{"question":"Why this team?","answer":"Fictional draft","answerSource":"ai_generated","questionSource":"employer_form"}]'::jsonb,'inferences','[{"field":"Team scope","reason":"Needs verification"}]'::jsonb,'questionsReviewed',true,'url','https://job-boards.greenhouse.io/fixture/jobs/999')) returning id into app;
  update public.applications set status='Awaiting approval' where id=app;
  insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values(u,'Fixture',h,array['workspace:read','drafts:write','activity:write','approvals:read','resumes:read'],now()+interval '1 hour'),(v,'Other',ro,array['workspace:read'],now()+interval '1 hour');
  perform set_config('test.uid',u::text,true);
  select x into item from private.action_board_items(u) x where x->>'kind'='review_application';
  first_key:=item->>'key';
+ if item->'questions'->0->>'answerSource'<>'ai_generated' or item->'inferences'->0->>'field'<>'Team scope' or item->'resume'->>'name'<>'Fixture' then raise exception 'Draft disclosure projection lost source data';end if;
  if first_key is null then raise exception 'No deterministic draft decision';end if;
  if public.read_action_board() is distinct from public.agent_dispatch(h,'actions.board.read','{}') then raise exception 'Website/MCP snapshot mismatch';end if;
  if jsonb_array_length(public.agent_dispatch(ro,'actions.board.read','{}')->'items')<>0 then raise exception 'Foreign board leaked';end if;

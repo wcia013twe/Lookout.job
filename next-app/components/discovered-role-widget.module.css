@@ -1,58 +1,9 @@
-.widget {
- display: flex;
- flex-direction: column;
- min-width: 0;
- height: 100%;
- padding: 20px;
- border: 1px solid var(--color-board-line);
- border-radius: 12px;
- background: var(--color-board-panel);
- color: var(--color-board-text);
-}
-.header {
- display: flex;
- align-items: center;
- gap: 10px;
- min-width: 0;
-}
-.header > img, .header > span, .header > div {
- flex: 0 0 auto;
- width: 32px;
- height: 32px;
- border-radius: 7px;
-}
-.header p {
- margin: 0;
- font-size: 13px;
- line-height: 1.5;
- font-weight: 600;
- overflow-wrap: anywhere;
- color: var(--color-board-muted);
-}
-.title {
- margin: 14px 0 12px;
- font-size: 18px;
- font-weight: 650;
- line-height: 1.4;
- overflow-wrap: anywhere;
-}
-.title button {
- min-height: 44px;
- text-align: left;
- border-radius: 4px;
-}
-.title button:hover { color: var(--color-board-accent); }
-.title button:focus-visible {
- outline: 2px solid var(--color-board-accent);
- outline-offset: 4px;
-}
-.content {
- display: flex;
- flex: 1;
- flex-direction: column;
- gap: 14px;
- min-width: 0;
-}
-@media(max-width:767px) {
- .widget { padding: 16px; }
-}
+.widget{display:flex;flex-direction:column;min-width:0;height:100%;padding:20px;border:1px solid var(--color-board-line);border-radius:12px;background:var(--color-board-panel);color:var(--color-board-text)}
+.header{display:flex;align-items:center;gap:10px;min-width:0;margin-bottom:16px}
+.header>img,.header>span:not(.savedLabel){flex:none;width:34px;height:34px;border-radius:7px}
+.identity{flex:1;min-width:0}.identity p{margin:4px 0 0;font-size:12px;line-height:1.5;overflow-wrap:anywhere;color:var(--color-board-muted)}
+.title{margin:0;font-size:17px;font-weight:650;line-height:1.5;overflow-wrap:anywhere}.title button{min-height:44px;text-align:left;border-radius:4px}.title button:hover{color:var(--color-board-accent)}.title button:focus-visible{outline:2px solid var(--color-board-accent);outline-offset:4px}
+.content{display:flex;flex:1;flex-direction:column;gap:14px;min-width:0}
+.savedLabel{flex:0 0 auto;max-width:32%;padding:4px 7px;border:1px solid var(--color-board-line);border-radius:6px;background:var(--color-board-tag);color:var(--color-board-text);font-size:11px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+.widget[data-compact=true]{height:auto;padding:12px 14px;border-radius:10px}.widget[data-compact=true] .header{margin:0}.widget[data-compact=true] .title{font-size:12px;line-height:1.5}.widget[data-compact=true] .identity p{margin-top:2px;font-size:11px}
+@media(max-width:767px){.widget{padding:16px}.header{flex-wrap:wrap}.savedLabel{max-width:100%;margin-left:44px}.identity{flex-basis:calc(100% - 44px)}.widget[data-compact=true] .header{flex-wrap:nowrap}.widget[data-compact=true] .identity{flex-basis:auto}.widget[data-compact=true] .savedLabel{max-width:32%;margin-left:0}}
