@@ -47,3 +47,9 @@
   two bounded caution bullets, dark desktop/light mobile surfaces, no horizontal
   overflow, Job Description disclosure, Escape/focus return, reopen and Close.
   Screenshots were visually inspected. No private account browser claim is made.
+- Production-only release validation: 1,113 tests passed, five skipped, zero
+  failures; data validation (158 roles), frontend typecheck and production build
+  passed. The dedicated browser regression also passed on that release build.
+  The optional broader Discover script stops at an existing numeric-score count
+  assertion (expects two, receives one) before entering the changed section;
+  that unrelated assertion is not presented as a passing end-to-end check.
