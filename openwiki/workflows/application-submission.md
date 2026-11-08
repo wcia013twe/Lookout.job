@@ -495,3 +495,13 @@ Application guide33 (developer146) requires incremental employer questions to be
 Application card focus (guide31/developer144): retain the selected résumé and show unanswered/proposed answers; unknown provenance also remains reviewable. Hide direct sourced factual answers only in the card, retaining full application access through the widget. Validation and response payloads still use the complete ordered questions, preserving hidden answers and ownership/revision gates. Existing MCP readers/writers keep their complete projection.
 
 Recorded submission supersedes old preparation labels in Applications. The existing native application/progress writer owns the outcome; default Discover visibility derives from that saved state. The applied-history toggle still allows deliberate browsing. Old blocked-job records remain historical rather than being rewritten as successful submissions; uncertainty remains explicit. Guide32/developer145 require saving and reading back the actual application outcome.
+
+### Direct answers in the input card
+Application questions retain a question label above their answer control. The
+résumé selector is labeled Résumé used and an unsaved selection stays explicitly
+empty. Legacy blockers with no structured questions show their saved request
+above an answer textbox instead of requesting correction instructions. That
+answer uses the existing blocker note payload; no employer fields are invented.
+Save and resume Muse saves through the existing versioned response boundary
+without granting submission approval. Actual host resumption remains separately
+verified. The detached demo includes a fictional hub-ranking textbox.
