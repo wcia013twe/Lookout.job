@@ -846,7 +846,12 @@ Future requests use an owned, versioned application-agent preference, separate f
 
 Local routing activation: the migration and Node image lookout-node:application-agent-147 are active. Scoped MCP write/read-back saved Muse Local as the default, and the live queue resolver confirmed Dots callers target it without queueing a test application. Full suite (1145 passed/five skipped), focused final reset/demo checks, production build and detached desktop/mobile selector checks passed. Existing WGU state, Dots permissions and watch configuration were not changed. Hosted release and real-account browser interaction remain unverified.
 
+## Ten-second watcher follow-up
+
+Package 0.2.1 defaults and minimums are 10 seconds for count polling and wake cooldown (up to 10% polling jitter). Explicit existing configs retain their values and must set both fields to 10. Error backoff stays exponential, capped at five minutes plus jitter; serialized worker/durable acknowledgement rules are unchanged. Guides agent-package 3/change-resumption 4 and developer 148 describe the new contract. Runtime installation/activation must be verified separately from package publication.
 Discover cards use the original tier-colored company header and glass body,
 compact compensation/location facts and four match scores. Fit/recommendation
 summaries stay out of the cards; full analysis remains in the job drawer. The
 separate embedded role widget is unchanged. Demo cards share this presentation.
+
+Local publication verified: the Muse dev tunnel serves manifest/archive 0.2.1 with matching SHA-256 and 10/10 defaults. Refreshed MCP reads developer148 and agent-package guide3/package0.2.1. The existing watch handle/config was not changed; Muse must upgrade its installed package, set both explicit intervals to10 and restart its existing host service. Remote running cadence remains unverified.
