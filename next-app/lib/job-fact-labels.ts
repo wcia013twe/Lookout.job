@@ -3,7 +3,9 @@ const clean = (value?: string) => (value || '').trim().replace(/\s+/g, ' ');
 const unknown = /not (?:disclosed|confirmed|recorded|specified|established)|unknown|unclear|unconfirmed|to be confirmed|not yet|\b(?:may|might|possibly)\b/i;
 export function compensationLabel(value?: string) {
   const text = clean(value);
-  return !text || unknown.test(text) || /^(?:comp|pay|salary) not listed$/i.test(text) ? 'Not disclosed' : text;
+  // A disclosed base range remains known even when bonus/equity is undisclosed.
+  const disclosedAmount = /^(?:(?:base(?: salary)?|salary|compensation|pay)\s*[:=]?\s*)?(?:[$€£¥]\s*\d|(?:USD|EUR|GBP|CAD)\s*\d)/i.test(text);
+  return !text || (!disclosedAmount && unknown.test(text)) || /^(?:comp|pay|salary) not listed$/i.test(text) ? 'Not disclosed' : text;
 }
 export function workSettingLabel(value?: string) {
   const text = clean(value);
