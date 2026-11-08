@@ -1,4 +1,5 @@
 "use client";
+import {matchesBoardApplication} from '../../lib/action-board.mjs';
 import { useEffect, useState } from 'react';
 import {applicationAction,nextActionTime} from '../../lib/action-inbox.mjs';
 import { useWorkspace } from '../lib/workspace';
@@ -22,7 +23,7 @@ export default function ApplicationList({items,active=false,sortByAction=false,p
   const timer=setTimeout(()=>setNow(Date.now()),Math.min(2147483647,Math.max(0,due-Date.now()+1)));
   return ()=>clearTimeout(timer);
  },[inbox,now]);
- useEffect(()=>{const requested=new URL(location.href).searchParams.get('application');const owned=items.find(item=>item.backendId===requested);if(owned)setReview(owned.id);},[w.user?.id,items.map(item=>item.backendId).join(',')]);
+ useEffect(()=>{const requested=new URL(location.href).searchParams.get('application');const owned=items.find(item=>matchesBoardApplication(item,requested));if(owned)setReview(owned.id);},[w.user?.id,items.map(item=>item.backendId||item.id).join(',')]);
  const defaultOrder=active?sortActiveApplications(items,w.state.tracker.items):sortApplications(items);
  const ordered=active&&sortByAction?sortByNextAction(defaultOrder,plans):defaultOrder;
  return <><ul className="tracker-list">{ordered.map((a:Application)=>{const action=applicationAction(a,inbox,Date.now()),item=w.state.tracker.items[a.id]||a.trackerItem||{},progress=trackerProgress(a,item),next=['Rejected','Withdrawn','Closed'].includes(progress.status)?null:applicationNextAction(a,plans[a.backendId||a.id]),type=importEmploymentTypes[a.employmentType||'']||'Type not recorded',date=item.appliedDate||item.openedDate,dateLabel=date?`${item.appliedDate?'Applied':'Opened'} ${new Date(date).toLocaleDateString(undefined,{month:'short',day:'numeric',...(date.length===10?{timeZone:'UTC'}:{})})}`:'Date not recorded';return <li className="tracker-row glass-inset" key={a.id}>

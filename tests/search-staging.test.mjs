@@ -23,7 +23,7 @@ test('expired staging is removed while recent resumable work remains',async()=>{
  try{
   const old=new SearchStaging(root,'old','run'),fresh=new SearchStaging(root,'fresh','run');
   await old.write(1,'a',{});const key=await fresh.write(1,'b',{kept:true});
-  const date=new Date(Date.now()-4*86400000);await utimes(old.directory,date,date);
+  const date=new Date(Date.now()-8*86400000);await utimes(old.directory,date,date);
   await pruneSearchStaging(root);assert.deepEqual(await fresh.read(key),{kept:true});assert.equal((await readdir(root)).length,1);
  }finally{await rm(root,{recursive:true,force:true});}
 });

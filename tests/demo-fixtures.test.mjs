@@ -25,3 +25,8 @@ test('all demo fixture factories reset independently after nested edits',()=>{
     assert.deepEqual(factory(),original);
   }
 });
+
+test('Discover demo includes explicit hourly, monthly and undisclosed employer pay',()=>{
+ const roles=discoverPreviewRoles('2026-11-07');
+ assert(roles.some(r=>r.compensation?.includes('/hr')));assert(roles.some(r=>r.compensation?.includes('/month')));assert(roles.some(r=>!r.compensation));
+});

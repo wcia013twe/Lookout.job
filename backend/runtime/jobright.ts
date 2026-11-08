@@ -26,7 +26,7 @@ export function parseJobrightList(markdown:string,employmentType:string,address:
   const id=jobrightId(url);if(new URL(url).hostname==='jobright.ai'&&!id)continue;
   if(id)url='https://jobright.ai/jobs/info/'+id;
   if(seen.has(url))continue;seen.add(url);
-  leads.push({url,title:text(link[1]),company,location:text(cells[2]),employmentType,leadSource:address});
+  leads.push({url,title:text(link[1]),company,location:text(cells[2]),employmentType,leadSource:address,sourceListedDate:text(cells[4]),sourceWorkSetting:text(cells[3])});
  }
  return leads;
 }
@@ -47,20 +47,26 @@ export function jobrightEmployerUrl(html:string,id:string){
  if(urls.size!==1)throw Error(urls.size?'Jobright employer application link is ambiguous':'Jobright does not expose a public employer application link');
  return [...urls][0];
 }
-export async function readJobrightLeads(address:string,{request=fetch,select}:{request?:typeof fetch;select?:(rows:Payload[])=>Promise<Payload[]>}={}){
+export async function readJobrightLeads(address:string,{request=fetch,select,onRetained,resolve=true}:{request?:typeof fetch;select?:(rows:Payload[])=>Promise<Payload[]>;onRetained?:(rows:Payload[])=>Promise<void>;resolve?:boolean}={}){
  const feed=jobrightFeed(address);if(!feed)throw Error('Only configured official Jobright repositories are supported');
  const markdown=await boundedText(await request(`https://raw.githubusercontent.com/jobright-ai/${feed.repo}/master/README.md`,{redirect:'error',signal:AbortSignal.timeout(30000)}),8000000);
  const rows=parseJobrightList(markdown,feed.employmentType,address);
  if(!rows.length)throw Error('Jobright list has no recognizable job rows; format may have changed');
  // Apply the existing title gate before spending network calls on detail pages.
+ const retained:Payload[]=rows.map(row=>({...row,resolution:'pending'}));
+ await onRetained?.(retained);
  const selected=select?await select(rows):rows;
+ const selectedUrls=new Set(selected.map(row=>row.url));
+ for(const row of retained)if(!selectedUrls.has(row.url))row.resolution='filtered-title';
+ if(!resolve)return {leads:[],retained,total:rows.length,examined:0,prefilterExcluded:rows.length-selected.length,diagnostics:[]};
  const leads:Payload[]=[],diagnostics:NonNullable<SourceResult['diagnostics']>=[];let index=0;
  await Promise.all(Array.from({length:Math.min(6,selected.length)},async()=>{
   while(index<selected.length){const lead=selected[index++],id=jobrightId(lead.url);
-   try{const url=id?jobrightEmployerUrl(await boundedText(await request('https://jobright.ai/jobs/info/'+id,{redirect:'error',signal:AbortSignal.timeout(20000)}),2000000),id):lead.url;leads.push({...lead,url});}
-   catch(error){diagnostics.push({url:lead.url,status:'uncertain',reason:error instanceof Error?error.message:'Jobright employer link unresolved'});}
+   try{const url=id?jobrightEmployerUrl(await boundedText(await request('https://jobright.ai/jobs/info/'+id,{redirect:'error',signal:AbortSignal.timeout(20000)}),2000000),id):lead.url;leads.push({...lead,url});Object.assign(retained.find(row=>row.url===lead.url)!,{resolution:'resolved',employerUrl:url});}
+   catch(error){const reason=error instanceof Error?error.message:'Jobright employer link unresolved';Object.assign(retained.find(row=>row.url===lead.url)!,{resolution:'unresolved',reason});diagnostics.push({url:lead.url,status:'uncertain',reason});}
   }
  }));
+ await onRetained?.(retained);
  leads.sort((a,b)=>a.url.localeCompare(b.url));
- return {leads,total:rows.length,examined:selected.length,prefilterExcluded:rows.length-selected.length,diagnostics};
+ return {leads,retained,total:rows.length,examined:selected.length,prefilterExcluded:rows.length-selected.length,diagnostics};
 }

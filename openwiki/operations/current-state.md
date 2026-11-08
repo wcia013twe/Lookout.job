@@ -444,3 +444,150 @@ and field types only. Historical failures without this logging cannot be recover
 No real user session or external event was created. Forty-nine relevant integrated
 checks passed; a full-suite search-pipeline failure passed on isolated rerun.
 Hosted publication was not performed.
+
+### Connected Action Board application coverage follow-up
+
+The shared board projection includes filled native drafts, approved applications
+awaiting submission, and explicitly flagged imported application next actions.
+These open exact existing records without inventing binary approval. The source
+update preserves inbox precedence, owner isolation, hold enforcement and
+cross-page resolution. Migration
+`20261108004208_action_board_application_actions.sql` was applied to the existing
+local database without changing application, import or decision records. Both
+owned reads succeeded and all eight flagged imported actions were included.
+Detached desktop/mobile flows, full tests, data checks, typecheck and production
+build passed; real-account browser and hosted verification remain separate. See the connected-action-board change note for verification receipts.
+
+
+### Shared Action Board calendar (contract 125 source update)
+
+The existing seven-day Weekly prep calendar also projects current application
+rounds without requiring a preparation plan, explicit dated imported next actions,
+and scheduled/in-progress Toolkit mock sessions. The shared owned planner snapshot
+includes imported records without source notes and only visible mock logistics;
+private interviewer preparation stays excluded. Website and MCP
+`read_preparation_planner` use the same projector. Existing round corrections,
+import updates, mock lifecycle and practice writers remain authoritative.
+Cancelled/completed rounds and mocks, archived mocks and terminal applications
+leave the upcoming calendar; source links open their existing editors. Dates use
+the saved preparation timezone, and native/import duplicate preference matches
+round stats. Existing interview/learning practice still shares one daily budget.
+The visible calendar refreshes every minute, on focus/reconnect and account sync;
+returning to the board reloads the owned snapshot. Demo reads the same fictional
+mock sources. No external Calendar events, calls or scheduler are created.
+Source validation and local runtime activation are reported in the feature note;
+hosted deployment is separate.
+
+### Employer compensation on private Discover cards
+
+`publish_batch` accepts optional `recommendation.jobFacts.compensation` for an existing catalog job, using the same source URL/check timestamp as its other observed facts. It is bounded employer pay text preserving currency, range, original pay period (hour/week/month/year) and base/bonus/equity distinctions. No automatic annualization or benchmark substitution occurs. The browser and card-pack projection prefer this private observed value over older catalog compensation; explicit Not disclosed can override an outdated value. Omission retains the catalog fallback. Cards no longer extract a salary from personal fit prose, which can contain comparison benchmarks. This extends the existing private JSON observation; it does not rewrite catalog facts, assessments, applications or historical batches and introduces no database column/migration.
+
+Search guide17, application guide19 and developer contract124 advertise the scoped publication path. Fictional Discover previews cover hourly/monthly and undisclosed pay; validation covers annual pay too. Local code/database tests and a frontend export establish source behavior only; hosted release remains separate.
+
+### Inline action card design
+
+The Action Board source now uses distinct inline content for application drafts,
+questions, outreach, interviews, next actions and submission verification. It
+uses Circles-style owned object mentions and check/red-X decisions, with required
+input and exact saved-review gates. Saving answers is distinct from approval;
+reported submission is distinct from execution. Website and read-only MCP share
+the enriched projection and source identities. Migration `20261108005642` extends
+the existing human-only response operation and was applied locally without
+changing application, import or decision records. Both owned reads succeeded;
+integrated tests (1,074 passed, five skipped), build, typecheck, data checks and
+detached desktop/mobile flows passed. Combined developer contract 129 and
+application-workspace guide 21 include current calendar/Network work. Hosted
+release and real-account browser verification remain separate. Consult the
+connected-action-board feature note for receipts.
+
+
+#### Full-week calendar and missing-task correction (contract 126)
+
+The Action Board now displays every Monday–Sunday date with previous/next/current
+week controls. `read_preparation_planner` accepts optional Monday `weekOf`; website
+and MCP use `buildWeeklyPreparationAgenda` over the existing owned snapshot.
+The lower-level rolling allocator remains available for bounded planning checks.
+Past days never acquire newly allocated practice. The saved timezone is shown.
+
+Other pending tasks retains unfinished assessment rounds with unknown dates,
+imported next actions without dates, overdue/out-of-week events and preparation
+or learning tasks excluded by budget/date rules. Links open their owning source;
+unknown dates remain null. Week browsing does not change dates, task completion,
+budget or personal preferences. Dated interviews/mocks outside the selected week
+remain accessible through navigation and pending items. Completed/cancelled rounds
+and inactive/terminal/archived sources retain their existing exclusion rules.
+
+A scoped diagnosis found zero saved learning goals/preparation plans, one mock,
+and undated pending assessment rounds; it did not infer tasks from material text
+or assign guessed dates. The detached demo covers an unfinished undated OA.
+Validation and local activation receipts are in the shared calendar feature note;
+hosted deployment remains separate.
+
+### Compact team-focused fit analysis
+
+Search guide18 makes the default analysis a 130–180-word decision brief: existing priority with a short verdict; up to five chat bullets covering team, candidate contribution, growth, support and practical fit; and one sentence on what changes priority. Research exact-team evidence first and clearly distinguish adjacent-team context, inference and unknowns. Save the same substance in existing whyItFits/materialGap text and four assessments; no new tags, fields or Markdown-rendering requirement. Application guide20 follows this format during authorized work. This changes future instructions, not historical assessments or publication.
+
+
+#### Application date precedence and duplicate removal (contract 128)
+
+Imported next actions use saved actionDate even without needsAction. A lone
+unfinished undated round is represented by its existing next action; the date
+is not copied into the round. Current round dates suppress duplicate same-day
+application actions; different-day actions and multiple open rounds remain
+separate. This applies both in calendar days and Other pending tasks. Action
+cards show company and description. The detached demo covers an assessment
+whose deadline is saved on next action with its attention flag false. Source
+validation and local read-back receipts are recorded in the shared calendar note.
+
+Action card material follow-up: each type now has a full border and colored
+background, borrowing the Career Toolkit's theme-aware material palette. Matching
+ink/divider colors preserve contrast in light and dark modes. This is a visual
+change; the existing inline decision and ownership rules are unchanged.
+
+
+### Assigned material preparation dates
+
+Toolkit documents and online resources support optional `prepOn` (YYYY-MM-DD),
+separate from a brief's target/need `preparedFor` date. The reader's Prep on
+control saves or clears it through the existing owner/version-checked
+`artifact_action` writer; agents use `save_artifact` with the same validation.
+Omit `prepOn` in a revision to clear it. Its Monday week takes precedence over
+legacy `weekOf` in weekly lists; clearing restores the stored weekly assignment.
+The calendar reads the current saved artifact directly, links to its reader and
+never creates a second task, time credit or completion record. Archived material
+is excluded. Undated materials remain reusable; no dates are inferred. Mock
+interviews retain `scheduledAt`, and application documents cannot use `prepOn`.
+Planner snapshots expose only calendar metadata, never document bodies or private
+interviewer profiles. Demo includes dated company context and a round brief plus
+undated resources. Runtime/hosted availability requires its own verification.
+#### Upcoming relevant-date presentation
+
+The website calendar now skips empty/past days and groups upcoming dated work
+chronologically, including dates beyond the current week from the owned pending
+projection. Each group shows Today/In X days. Week navigation is removed from
+this compact widget; the scoped planner's weekOf read remains available. Undated
+and overdue tasks stay in Other pending tasks. Source dates, duplicate rules,
+budgets and completion writers are unchanged; this is a presentation correction.
+
+
+Material prep dates are locally activated at contract 130 (toolkit-materials v3).
+Connected schema discovery and disposable live save/list/calendar/clear checks
+passed, with private mock separation retained and all fixtures removed. Existing
+real dates were not backfilled. This is a local receipt, not a hosted release.
+
+
+### Broader collection with recoverable Jobright leads
+
+Both Jobright providers snapshot every published row into immutable, lease-fenced temporary storage before title triage or detail resolution. Source dates/work settings remain source-list metadata. Each raw row retains resolution and triage status, while only live parsed, filtered and history-deduplicated jobs enter database discoveries. Completion keeps Jobright pools for seven days; read expiry is enforced even before filesystem pruning. A missing pool is explicit, never silently replaced by a fresh feed.
+
+The existing `read_search_source_leads` tool pages all retained rows (100 maximum per response) after both run/source and backend-job ownership checks. It never drops title-excluded or unresolved rows. The API requires the existing staging volume mounted read-only at the same configured path as the worker. This works on the existing single-host Docker/Compute Engine deployment; separately hosted API/worker instances need a genuinely shared staging volume. No new database table or generic file reader is introduced.
+
+Explicit engineering families expand to common title variants while preserving negative and seniority rules. US-wide profile targeting recognizes country/state forms and treats incomplete locations as unknown; explicit foreign countries and explicit scanner/narrow city restrictions retain their exclusions. The saved freshness limit controls provider collection as well as later filtering. General was updated through the owned writer to seven days with engineering aliases; candidate facts and applications were preserved.
+
+Search guide19/developer131 directs the connected agent to inspect retained/pending counts, page source pools, research exact employer links for plausible unresolved leads and use the existing verification/screening/deduplication path before private publication. Worker completion does not imply those research tasks finished. Source accounting distinguishes raw, title-excluded, unresolved, verified, filtered and screened-candidate counts from the final shortlist. No automatic worker search engine or LLM is added.
+
+Action Board application references now reuse the Circles JobAttachment component
+instead of a text-only @ mention. Scheduled interviews remain calendar context;
+only explicitly flagged human tasks enter the decision list. Three event-only
+flags were corrected via the scoped tracker writer with round/date/status
+preservation verified; genuine assessment and confirmation tasks remain pending.

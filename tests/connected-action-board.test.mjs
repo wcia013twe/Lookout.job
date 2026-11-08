@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {swipeResponse,safeBoardReturn} from '../lib/action-board.mjs';
+import {swipeResponse,safeBoardReturn,matchesBoardApplication} from '../lib/action-board.mjs';
 import {buildPreparationAgenda} from '../lib/preparation-planner.mjs';
 import {validateRequest} from '../supabase/functions/agent-gateway/contract.mjs';
 import {TOOLS} from '../supabase/functions/agent-mcp/protocol.mjs';
@@ -86,4 +86,38 @@ test('round prep authoring derives its deadline and preserves other rounds and c
  const id='11111111-1111-4111-8111-111111111111';
  assert.doesNotThrow(()=>validateRequest({operation:'preparation.update',payload:{applicationId:id,expectedVersion:1,roundId:id}}));
  assert.throws(()=>validateRequest({operation:'preparation.update',payload:{applicationId:id,expectedVersion:1,roundId:id,deadline:{date:'2026-11-10'}}}));
+});
+
+test('owned application links select exact native and imported identities',()=>{
+ assert(matchesBoardApplication({id:'job',backendId:'app'},'app'));
+ assert(matchesBoardApplication({id:'import:one'},'import:one'));
+ assert(!matchesBoardApplication({id:'import:two'},'import:one'));
+ assert(!matchesBoardApplication({id:'job'},'job'));
+ assert(!matchesBoardApplication({id:'import:one'},null));
+});
+test('filled drafts, approved applications and explicit next actions stage with guarded human controls',async()=>{
+ const {demoFixtures,createMemoryStore,createDemoServices}=await import('../next-app/lib/demo.mjs');
+ const {withActionBoardDemo,enableActionBoardScenario}=await import('../next-app/lib/action-board-demo.mjs');
+ const fixtures=demoFixtures('2026-11-07');enableActionBoardScenario(fixtures,'2026-11-07');
+ const store=createMemoryStore(fixtures.state),services=withActionBoardDemo(createDemoServices(store),store);
+ const board=await services.readActionBoard();
+ for(const kind of ['prepared_application','submit_application','imported_action']){
+  const item=board.items.find(i=>i.kind===kind);assert(item,kind);assert(item.canAccept&&item.canReject);
+  if(kind!=='imported_action')await assert.rejects(services.respondActionBoard({key:item.key,response:'accept',eventKey:crypto.randomUUID()}),/form fields|Verification note/);
+ }
+ store.update('demo.boardImports',rows=>rows.map(row=>({...row,record:{...row.record,needsAction:false}})));
+ assert(!(await services.readActionBoard()).items.some(i=>i.kind==='imported_action'));
+});
+
+test('scheduled interview context alone is not an action; an explicit confirmation task remains actionable',async()=>{
+ const {demoFixtures,createMemoryStore,createDemoServices}=await import('../next-app/lib/demo.mjs');
+ const {withActionBoardDemo,enableActionBoardScenario}=await import('../next-app/lib/action-board-demo.mjs');
+ const fixtures=demoFixtures('2026-11-07');enableActionBoardScenario(fixtures,'2026-11-07');
+ const store=createMemoryStore(fixtures.state),services=withActionBoardDemo(createDemoServices(store),store);
+ const event=store.get('demo.boardImports').find(row=>row.identity_key==='demo-event-only');
+ assert(event.record.rounds.some(round=>round.phase==='scheduled'));
+ assert(!(await services.readActionBoard()).items.some(item=>item.sourceId===event.id));
+ store.update('demo.boardImports',rows=>rows.map(row=>row.id===event.id?{...row,record:{...row.record,needsAction:true,nextAction:'Confirm interview time'}}:row));
+ assert((await services.readActionBoard()).items.some(item=>item.sourceId===event.id));
+ assert.deepEqual(store.get('demo.boardImports').find(row=>row.id===event.id).record.rounds,event.record.rounds);
 });

@@ -73,12 +73,12 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
   const checkpoint=async(state:string,coverage:string,blocker:string,diagnostics:Payload[]=[])=>{
    signal?.throwIfAborted();const stagingKey=await staging.write(job.version,source.source_id,snapshot!);
    const result=await dispatch('search.progress',{runId:run.id,sourceId:source.source_id,expectedVersion:version,state,coverage,blocker,
-    checkpoint:{stage:state==='active'?'temporary-staging':'finished',stagingKey,processed:snapshot!.processed,diagnostics:diagnostics.slice(-10).map(d=>({status:d.status,reason:String(d.reason||'').slice(0,300)}))},
+    checkpoint:{stage:state==='active'?'temporary-staging':'finished',stagingKey,stagingJobId:job.id,retainedLeads:snapshot!.rawLeads?.length||0,unresolvedLeads:snapshot!.rawLeads?.filter((row:Payload)=>row.resolution==='unresolved').length||0,processed:snapshot!.processed,diagnostics:diagnostics.slice(-10).map(d=>({status:d.status,reason:String(d.reason||'').slice(0,300)}))},
     counts:{observed:snapshot!.processed,available:snapshot!.available,staged:snapshot!.accepted.length,saved:0},eventKey:`${prefix}stage:${source.source_id}:v${job.version}:${source.version}:${index++}`});
    version=result?.version??version+1;
   };
   await checkpoint('active','unknown','');
-  const collected=await fetchSource(source.source_id,source.source,{execute,previous:[...seen,...history.filter(h=>h.tracked)],profile:profile.projection,request,signal,prefilter:filterPlan.config||true,days:run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
+  const collected=await fetchSource(source.source_id,source.source,{execute,previous:[...seen,...history.filter(h=>h.tracked)],profile:profile.projection,request,signal,prefilter:filterPlan.config||true,onLeads:async rows=>{snapshot!.retainedAt??=new Date().toISOString();snapshot!.rawLeads=[...new Map([...(snapshot!.rawLeads||[]),...rows].map((row:Payload)=>[row.url,row])).values()];await checkpoint('active','unknown','Jobright leads retained for resolution and triage.');},days:filterPlan.config?.max_posting_age_days||run.days||(run.mode==='backlog'?30:3),onBatch:async(result,progress)=>{
    signal?.throwIfAborted();
    const rows=result.listings.map(row=>({...row,id:row.url}));
    const evaluated=rows.length?await execute('filter-discovery',{profile:profile.projection,portals,listings:rows.map(row=>({...row,canonical_url:row.url,employment_type:row.employmentType,observation:{description:row.description,employer_posted_at:row.employerPostedAt}})),now:Date.now()}):{results:[]};
@@ -91,6 +91,9 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
    snapshot!.screened+=rows.length;snapshot!.excluded+=rows.length-passing.size;snapshot!.available=progress.available;
    await checkpoint('active','unknown','',result.diagnostics);
   }});
+  for(const lead of snapshot!.rawLeads||[]){
+   lead.triageStatus=lead.resolution==='filtered-title'?'filtered-title':lead.resolution==='unresolved'||lead.resolution==='pending'?'unresolved':collected.duplicateUrls?.includes(lead.employerUrl)?'duplicate':snapshot!.accepted.some((r:Payload)=>r.listing.url===lead.employerUrl)?'passed-screening':snapshot!.seen.some((r:Payload)=>r.url===lead.employerUrl)?'filtered':collected.diagnostics?.some(d=>d.url===lead.employerUrl&&d.status==='expired')?'expired':'verification-unresolved';
+  }
   snapshot!.currentProcessed=0;snapshot!.finished=true;snapshot!.coverage=collected.coverage;snapshot!.blocker=collected.blocker;snapshot!.available=collected.total;
   snapshot!.examined=collected.examined??collected.total;snapshot!.prefilterExcluded=collected.provenance?.prefilterExcluded||0;
   await checkpoint(collected.coverage==='exhaustive'?'completed':'blocked',collected.coverage,collected.blocker,collected.diagnostics);
@@ -129,10 +132,11 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
  const finishedRun=await dispatch('search.run.read',{runId:run.id});
  const incomplete=latest.sources.filter((s:Payload)=>s.state!=='completed'||s.coverage!=='exhaustive').length;
  const shortlist={runId:run.id,retainedListingIds:finalRows.slice(0,100).map(r=>r.id),totalRetained:finalRows.length,nextOffset:finalRows.length>100?100:null,evaluatedProfileVersion:profile.version,personalVersion:context.personalVersion,screenedCount:[...snapshots.values()].reduce((n,s)=>n+s.screened,0),excludedCount:[...snapshots.values()].reduce((n,s)=>n+s.excluded,0),unchangedOrDuplicate:pool.length-selected.length,applicantEligibility:'not-evaluated',reporting:'pending-muse'};
- const summary=`${finalRows.length} new or changed jobs ready for agent review. ${incomplete} sources have incomplete coverage. Unfiltered postings were temporary and are not saved as discoveries.`;
+ const retainedLeads=[...snapshots.values()].reduce((n,s)=>n+(s.rawLeads?.length||0),0),pendingLeadResolution=[...snapshots.values()].reduce((n,s)=>n+(s.rawLeads?.filter((r:Payload)=>r.resolution==='unresolved'||r.resolution==='pending').length||0),0);
+ const summary=`${finalRows.length} new or changed jobs ready for agent review. ${incomplete} sources have incomplete coverage. ${retainedLeads} Jobright source leads retained temporarily, including ${pendingLeadResolution} awaiting employer-link resolution. Raw leads are not saved as discoveries.`;
  if(finishedRun.state==='active')await dispatch('search.run.finish',{runId:run.id,expectedVersion:finishedRun.version,state:incomplete?'partial':'completed',summary,eventKey:prefix+'finish'});
  // Cleanup happens after the fenced job finish, not before a retry can recover.
- return {status:incomplete?'partial':'completed',result:{pipelineVersion:2,runId:run.id,storage:'direct-shortlist',observed:[...snapshots.values()].reduce((n,s)=>n+(s.examined||0),0),prefilterExcluded:[...snapshots.values()].reduce((n,s)=>n+(s.prefilterExcluded||0),0),filterPlan:{ready:true,config:{title_filter:filterPlan.config?.title_filter,skip_tiers:filterPlan.config?.skip_tiers}},saved:finalRows.length,shortlist,summary,stages:{collection:'finished',verification:'finished',screening:'finished',deduplication:'finished'}}};
+ return {status:incomplete?'partial':'completed',result:{pipelineVersion:2,runId:run.id,storage:'direct-shortlist',retainedLeads,pendingLeadResolution,sourceAccounting:sources.map(s=>{const p=snapshots.get(s.source_id);return {sourceId:s.source_id,collected:p?.rawLeads?.length||p?.available||0,titleExcluded:p?.prefilterExcluded||0,unresolved:p?.rawLeads?.filter((r:Payload)=>r.resolution==='unresolved').length||0,verified:p?.screened||0,filtered:p?.excluded||0,screenedCandidates:p?.accepted?.length||0};}),observed:[...snapshots.values()].reduce((n,s)=>n+(s.examined||0),0),prefilterExcluded:[...snapshots.values()].reduce((n,s)=>n+(s.prefilterExcluded||0),0),filterPlan:{ready:true,config:{title_filter:filterPlan.config?.title_filter,skip_tiers:filterPlan.config?.skip_tiers}},saved:finalRows.length,shortlist,summary,stages:{collection:'finished',linkResolution:pendingLeadResolution?'pending-agent':'finished',verification:pendingLeadResolution?'partial':'finished',screening:'finished',deduplication:'finished'}}};
 }
 
 export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heartbeatMs=30000,stagingRoot}: {execute?:import('./ats.ts').Execute;applicationExecutor?:(claim:Claim,rpc:Rpc)=>Promise<Payload>;signal?:AbortSignal;heartbeatMs?:number;stagingRoot?:string}={}){
@@ -165,7 +169,7 @@ export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heart
     if(claim.job.kind==='search_ats')renew();
     const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,stagingRoot,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})});
     await stop();controller.signal.throwIfAborted();await call('finish',{...fence,...outcome});
-    if(claim.job.kind==='search_ats'&&outcome.result?.pipelineVersion===2)await new SearchStaging(stagingRoot||process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),claim.job.id,outcome.result.runId).clear();
+    if(claim.job.kind==='search_ats'&&outcome.result?.pipelineVersion===2&&!outcome.result?.retainedLeads)await new SearchStaging(stagingRoot||process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),claim.job.id,outcome.result.runId).clear();
   }catch(error){
     const failure=error as Error & {code?:string;operation?:string};
     console.error(JSON.stringify({service:'lookout-worker',event:'execution-interrupted',kind:claim.job.kind,operation:failure.operation||'pipeline',code:failure.code||'execution',reason:['Backend lease changed','Search lease changed','Source changed','Invalid observed listing','Invalid source progress','Invalid worker payload','Run is closed','Discovery observation exceeds bounded transaction size'].includes(failure.message)?failure.message:'Execution interrupted'}));

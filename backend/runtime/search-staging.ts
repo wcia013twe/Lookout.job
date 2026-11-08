@@ -20,10 +20,10 @@ export class SearchStaging {
  }
  async clear(){await rm(this.directory,{recursive:true,force:true});}
 }
-export async function pruneSearchStaging(root:string,maxAgeMs=3*24*60*60*1000){
+export async function pruneSearchStaging(root:string,maxAgeMs=7*24*60*60*1000){
  await mkdir(root,{recursive:true,mode:0o700});
  for(const entry of await readdir(root,{withFileTypes:true}))if(entry.isDirectory()&&/^[a-f0-9]{64}$/.test(entry.name)){
-  const directory=path.join(root,entry.name);if(Date.now()-(await stat(directory)).mtimeMs>maxAgeMs)await rm(directory,{recursive:true,force:true});
+  const directory=path.join(root,entry.name);try{if(Date.now()-(await stat(directory)).mtimeMs>maxAgeMs)await rm(directory,{recursive:true,force:true});}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
  }
 }
 export const observationHash=(row:Payload)=>createHash('md5').update(row.description||'').digest('hex');

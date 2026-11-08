@@ -84,3 +84,26 @@ test('Discover hides dismissed batch items without altering retained records',()
  const items=[{job_id:'hidden',jobs:{employer:{}},dismissed_at:'2026-11-07T00:00:00Z'},{job_id:'visible',jobs:{employer:{}},dismissed_at:null}];
  assert.deepEqual(batchRoles(items,'2026-11-07').map(x=>x.id),['visible']);assert.equal(items.length,2);
 });
+
+test('private observed pay preserves hourly, annual and monthly units without changing catalog or fit score',()=>{
+ const base={sourceUrl:'https://jobs.example.com/pay',checkedAt:'2026-11-07T12:00:00Z',workSetting:'Hybrid',sponsorship:'Not disclosed'};
+ for(const pay of ['$55–$65/hour','$120,000–$150,000/year base + equity','$6,000–$8,000/month','Not disclosed']){
+  const recommendation={jobFacts:{...base,compensation:pay},whyItFits:'Compare to a $94,212/year benchmark; this is not employer pay.'};
+  assert.doesNotThrow(()=>validateRequest({operation:'batches.publish',payload:{eventKey:'pay',label:'Pay fixture',jobs:[{jobId:'existing',recommendation}]}}));
+  const item={job_id:'existing',jobs:{employer:{compensation:'Old catalog pay'}},recommendation};
+  const role=batchRoles([item],'2026-11-07')[0];assert.equal(role.compensation,pay);assert.equal(role.matchAssessment,undefined);assert.equal(item.jobs.employer.compensation,'Old catalog pay');
+ }
+ for(const compensation of ['',null,{},123,'x'.repeat(2001)])assert.throws(()=>validateJobRecommendation({jobFacts:{...base,compensation}}));
+ assert.equal(batchRoles([{job_id:'old',jobs:{employer:{compensation:'$40/hour'}}}],'2026-11-07')[0].compensation,'$40/hour');
+ assert.equal(batchRoles([{job_id:'unknown',jobs:{employer:{}},recommendation:{whyItFits:'Compare with $100,000/year.'}}],'2026-11-07')[0].compensation,'');
+});
+
+test('MCP publication accepts employer pay on an existing catalog job and preserves the pay period',async()=>{
+ const payload={eventKey:'observed-pay',label:'Fictional monthly internship',jobs:[{jobId:'existing',recommendation:{jobFacts:{sourceUrl:'https://jobs.example.com/intern',checkedAt:'2026-11-07T12:00:00Z',workSetting:'Hybrid',sponsorship:'Not disclosed',compensation:'$6,000–$8,000/month'}}}]};
+ const calls=[];const handler=createHandler(async(_token,operation,args)=>{
+  if(operation==='credentials.verify')return {status:200,data:{scopes:['batches:write']}};
+  validateRequest({operation,payload:args});calls.push(args);return {status:200,data:{saved:true}};
+ });
+ const response=await handler(new Request('http://local/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'publish_batch',arguments:payload}})}));
+ const result=await response.json();assert(result.result&&!result.result.isError,JSON.stringify(result));assert.deepEqual(calls,[payload]);
+});

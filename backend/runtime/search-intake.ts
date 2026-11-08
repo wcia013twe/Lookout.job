@@ -1,3 +1,7 @@
+import {SearchStaging} from './search-staging.ts';
+import path from 'node:path';
+import {tmpdir} from 'node:os';
+import {jobrightFeed} from './jobright.ts';
 import {assertDiscoveryResults} from '../../lib/discovery-filter-contract.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
 import {readSimplifyLeads,simplifyFeed} from './simplify.ts';
@@ -17,11 +21,23 @@ export async function submitSearchLeads(call:Call,payload:Payload,{verify=verify
  return call('search.leads.commit',{request:payload,observations:verified.listings,diagnostics});
 }
 
-export async function readSearchSourceLeads(call:Call,payload:Payload){
+export async function readSearchSourceLeads(call:Call,payload:Payload,{stagingRoot=process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),readJob=(args:Payload)=>call('backend.jobs.read',args)}={}){
  const result=await call('search.run.read',{runId:payload.runId});if(result.error)return result;
  const source=result.data?.sources?.find((s:Payload)=>s.source_id===payload.sourceId);
  if(!source)return {error:{code:'P0002',message:'Owned run source not found'}};
  const address=source.source?.careers_url;
+ if(jobrightFeed(address)){
+  const jobId=source.checkpoint?.stagingJobId;
+  if(typeof jobId!=='string')return {error:{code:'P0002',message:'This run has no retained Jobright pool. A new authorized search is needed; historical rows cannot be reconstructed.'}};
+  const jobs=await readJob({jobId});if(jobs.error)return jobs;
+  const job=jobs.data?.jobs?.find((j:Payload)=>j.id===jobId&&j.search_run_id===payload.runId);
+  if(!job)return {error:{code:'42501',message:'Retained source pool must belong to this owned backend run.'}};
+  const snapshot=await new SearchStaging(stagingRoot,jobId,payload.runId).read(source.checkpoint?.stagingKey);
+  if(!Array.isArray(snapshot?.rawLeads)||!Number.isFinite(Date.parse(snapshot.retainedAt))||Date.now()-Date.parse(snapshot.retainedAt)>7*86400000)return {error:{code:'P0002',message:'Temporary Jobright pool is unavailable or expired. Start a new authorized search; no leads were inferred.'}};
+  const offset=payload.offset||0,limit=payload.limit||50,total=snapshot.rawLeads.length;
+  return {data:{sourceId:payload.sourceId,total,offset,nextOffset:offset+limit<total?offset+limit:null,leads:snapshot.rawLeads.slice(offset,offset+limit),storage:'temporary-source-leads',verified:false,applicantEligibility:'not-evaluated',retentionDays:7},error:null};
+ }
+
  if(!simplifyFeed(address))return {error:{code:'22023',message:'Source requires the agent runtime or supported copied provider scanner; aggregate lead paging supports official Simplify feeds only.'}};
  try{
   const context=await call('search.context',{profileId:result.data.profile_id});if(context.error)return context;

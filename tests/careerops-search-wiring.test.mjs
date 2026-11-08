@@ -22,7 +22,7 @@ test('profile filters persist through the existing codec, override shared keys a
  const shared={title_filter:{positive:['Account Executive']},location_filter:{block_hard:['Brazil']}};
  const p=profile({title_filter:{positive:['Software Engineer','Backend','UX Designer'],negative:['word:Senior']},skip_tiers:['senior']});
  const saved=parseDocument('profile',profileDocument(p));assert.deepEqual(saved.projection,p);
- const plan=discoveryFilterPlan(saved.projection,shared);assert.deepEqual(plan.config.title_filter.positive,['Software Engineer','Backend','UX Designer']);assert.deepEqual(plan.config.location_filter,shared.location_filter);
+ const plan=discoveryFilterPlan(saved.projection,shared);assert.deepEqual(plan.config.title_filter.positive.slice(0,3),['Software Engineer','Backend','UX Designer']);assert(plan.config.title_filter.positive.includes('Software Development Engineer'));assert(plan.config.title_filter.positive.includes('Backend Developer'));assert.deepEqual(plan.config.location_filter,shared.location_filter);
  assert.deepEqual(discoveryFilterPlan({instructions:'',filters:{}},shared).config.title_filter,shared.title_filter);
  assert.equal(shared.title_filter.positive[0],'Account Executive');
  assert.deepEqual(searchResponse('search.context',{profileId:p.id,documents:[{kind:'profile',id:p.id,projection:p}]}).filterPlan.config.skip_tiers,['senior']);

@@ -416,7 +416,7 @@ Each checkpoint points to an immutable snapshot created by that attempt; SQL's
 existing lease/version fence controls which snapshot is resumable. Missing files
 cause recollection, never silent source omission. Different attempts cannot
 replace one another's files. Completed jobs remove their run directory;
-interrupted/orphaned directories expire after three days on the next search.
+interrupted/orphaned directories expire after seven days on the next search. Jobright raw lead pools remain for up to seven days after completion and are available through the owned source-lead reader; other successful runs still clean up immediately.
 
 Metadata title/seniority gates run before official verification. Full configured
 filters run against verified facts in temporary storage. No permanent discovery
@@ -445,7 +445,7 @@ personal report/application writers are unchanged and require their own scope.
 
 The Jobright new-grad and internship GitHub lists are enabled default lead sources. A thin collection provider parses every published README row, carries forward continuation-row companies, removes Jobright tracking parameters, and resolves eligible titles with up to six concurrent public detail requests. Only explicit, identity-matched public `applyLink`/`originalUrl` fields can enter the existing employer verification, temporary staging, full filtering and final account-history deduplication pipeline. No Jobright summaries are saved as verified employer postings. Website and MCP source configuration use the existing versioned portals document and search-job tools.
 
-Coverage always remains partial: Jobright documents a subset of jobs from the last seven days, and public detail pages may omit employer application URLs. Live checks on 2026-11-07 found those fields absent on ten sampled listings; these entries are reported unresolved and are not saved. No authenticated Jobright API or paid service is used. Fixture success does not establish live employer-link availability. Default updates do not overwrite customized account portals or modify already-running source snapshots.
+Coverage always remains partial: Jobright documents a subset of jobs from the last seven days, and public detail pages may omit employer application URLs. Live checks on 2026-11-07 found those fields absent on ten sampled listings; these entries are retained as unresolved in temporary source pools, with title-excluded rows retained too; they are not saved as database discoveries. No authenticated Jobright API or paid service is used. Fixture success does not establish live employer-link availability. Default updates do not overwrite customized account portals or modify already-running source snapshots.
 
 
 ### Simplify feed limit

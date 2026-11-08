@@ -608,7 +608,7 @@ button:not(:disabled) {
 }
 .prep-total, .prep-duration { flex-shrink: 0; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-board-accent); }
 .prep-total { font-size: .8125rem; font-weight: 600; padding-top: .25rem; }
-.prep-agenda-day { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: .875rem; padding-block: 1rem; }
+.prep-agenda-day { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: .875rem; padding-block: .75rem; }
 .prep-date { display: flex; flex-direction: column; gap: .25rem; padding-top: .75rem; font-size: .75rem; color: var(--color-board-muted); }
 .prep-date-number { font-size: 2rem; font-weight: 600; line-height: 1; }
 .prep-date-today { color: var(--color-board-accent); }
@@ -625,7 +625,7 @@ button:not(:disabled) {
 .prep-interview { display: flex; align-items: center; gap: .5rem; min-height: 44px; text-align: left; color: var(--color-board-accent); font-size: .8125rem; font-weight: 600; }
 
 /* Dates and spacing group the agenda; interview events carry the emphasis. */
-.prep-agenda-day + .prep-agenda-day { margin-top: .5rem; }
+.prep-agenda-day + .prep-agenda-day { margin-top: .25rem; }
 .prep-interview { width: 100%; margin-bottom: .75rem; padding: .75rem; border: 1px solid var(--color-board-accent); border-radius: 10px; background: var(--color-board-tag); }
 .prep-interview svg { flex-shrink: 0; }
 .prep-interview-label { display: block; margin-bottom: .25rem; font-size: .6875rem; font-weight: 500; }
