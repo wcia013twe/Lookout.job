@@ -334,3 +334,12 @@ projection. Each group shows Today/In X days. Week navigation is removed from
 this compact widget; the scoped planner's weekOf read remains available. Undated
 and overdue tasks stay in Other pending tasks. Source dates, duplicate rules,
 budgets and completion writers are unchanged; this is a presentation correction.
+
+
+Calendar company events use the shared logo component at 20px; unknown companies
+retain its fallback and general prep uses the calendar icon. Logo display sizes
+reuse one canonical CDN URL for normal browser/CDN caching; images lazy-load and
+decode asynchronously. This adds no account data or separate cache backend.
+
+Palantir and Palantir Technologies resolve to the same palantir.com logo URL.
+Calendar day padding is 12px per edge with a 4px inter-day margin.

@@ -16,6 +16,7 @@ try{
  await page.getByText('Complete the assessment',{exact:true}).waitFor();
  assert.equal(await page.locator('.prep-interview').filter({hasText:'Example Dated Assessment (demo)'}).count(),1,'Dated action card includes company exactly once');
  assert.equal(await page.getByText('Assessment with a saved deadline',{exact:true}).count(),0,'No additional undated row when the next action owns the deadline');
+ assert(await page.locator('.prep-interview [aria-hidden="true"] .h-5.w-5').count(),'Known companies use tiny shared logo marks');
  assert.equal(await page.getByText('No scheduled tasks',{exact:true}).count(),0);
  assert(await page.locator('.prep-agenda-day').count()>0);
  assert(await page.getByText(/^In [0-9]+ days?$/).count());
