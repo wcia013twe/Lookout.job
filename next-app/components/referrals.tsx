@@ -1,4 +1,5 @@
 "use client";
+import {OwnedDecisionActions} from './decision-buttons';
 import ApiError from './api-error';
 import { useState, type ReactNode } from "react";
 import { CompanyLogo } from "./role-card";
@@ -52,8 +53,9 @@ export function MessageEditor({ contact, update, remove, processContext = false,
     {!personContext && ongoing && <OutreachConversation contact={contact} update={update} ongoing/>}
     {!personContext && ongoing ? <details className="mt-7 border-t border-board-line pt-5"><summary className="cursor-pointer text-sm font-semibold">Prepare another message</summary>{draftMessage()}</details> : draftMessage()}
     {!personContext && !ongoing && <OutreachConversation contact={contact} update={update} ongoing={false}/>}
+    {personContext&&<OwnedDecisionActions kind="review_outreach" sourceId={String(contact._cloudId||contact.id)} body={contact.message||''} subject={contact.subject||''} recipient={contact.contact||contact.name||''} destination={String(contact.email||contact.linkedin||'')}/>}
     {!personContext && <details className="network-contact-management"><summary>Manage contact</summary><div className="mt-3 flex flex-wrap items-center justify-between gap-3"><label className="flex flex-wrap items-center gap-2 text-sm text-board-muted">Outreach status<select className={control} value={contact.status || "Not asked"} onChange={e => update({ status: e.target.value })}>{OUTREACH_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label><button className="min-h-11 px-3 text-sm text-board-muted hover:text-board-text" type="button" onClick={remove}>Remove contact</button></div>
-    <p className="mt-3 text-xs text-board-muted">Update the status after you send. Copying a message doesn’t mark it sent.</p></details>}
+    <OwnedDecisionActions kind="review_outreach" sourceId={String(contact._cloudId||contact.id)} body={contact.message||''} subject={contact.subject||''} recipient={contact.contact||contact.name||''} destination={String(contact.email||contact.linkedin||'')}/><p className="mt-3 text-xs text-board-muted">Update the status after you send. Copying a message doesn’t mark it sent.</p></details>}
   </section>;
 }
 export default function Referrals({company,contactIds=[]}: {company?: string;contactIds?:string[]}) {

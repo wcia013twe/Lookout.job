@@ -32,7 +32,7 @@ const calendarLabel = (date: string, options: Intl.DateTimeFormatOptions) => new
 // Presentational boundary also used by the isolated demo/browser verification.
 export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComplete, onOpen, busy = false, locked = false }: {
   agenda: Agenda; minutes: string; onMinutes: (value: string) => void; onBudget: () => void;
-  onComplete: (item: Item) => void; onOpen: (id: string) => void; busy?: boolean; locked?: boolean;
+  onComplete: (item: Item) => void; onOpen: (id: string,roundId?:string) => void; busy?: boolean; locked?: boolean;
 }) {
   const days = agenda.days.filter(day => day.items.length || day.interviews.length || day.completedMinutes);
   const scheduled = agenda.days.reduce((sum, day) => sum + day.plannedMinutes, 0);
@@ -47,7 +47,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
       {days.map(day => <section key={day.date} className={`prep-agenda-day ${day.interviews.length ? "prep-interview-day" : ""}`} aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
         <h3 className={`prep-date ${day.date === agenda.today ? "prep-date-today" : ""}`}><span>{day.date === agenda.today ? "Today" : calendarLabel(day.date, { weekday: "short" })}</span><span className="prep-date-number">{calendarLabel(day.date, { day: "numeric" })}</span></h3>
         <div className="min-w-0">
-          {day.interviews.map(interview => <button key={interview.applicationId} type="button" onClick={() => onOpen(interview.applicationId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">Interview</span><strong className="block">{interview.company}</strong><span className="block text-xs font-normal">{interview.stage}</span></span></button>)}
+          {day.interviews.map(interview => <button key={`${interview.applicationId}:${(interview as any).roundId||'standalone'}`} type="button" onClick={() => onOpen(interview.applicationId,(interview as any).roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">Interview</span><strong className="block">{interview.company}</strong><span className="block text-xs font-normal">{interview.stage}</span></span></button>)}
           {day.completedMinutes > 0 && <p className="mb-2 text-xs text-board-accent">{day.completedMinutes} min practiced</p>}
           <ul className="space-y-2">{day.items.map(item => <li key={item.id} className="prep-session">
             <details className="min-w-0 flex-1">
@@ -55,7 +55,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
               <div className="pb-2 pt-1 text-xs leading-relaxed text-board-muted">
                 <p>{item.detail}</p>
                 <p className="mt-2">{item.reason}{item.remainingAfter ? ` · ${item.remainingAfter} min continues later` : ""}</p>
-                <div className="mt-1 flex flex-wrap gap-x-3">{item.targets.filter(target=>target.applicationId).map(target => <button key={`${target.applicationId}:${target.taskId}`} type="button" className="inline-flex min-h-11 items-center text-left font-semibold text-board-accent underline underline-offset-4" onClick={() => onOpen(target.jobId)}>{target.company}</button>)}</div>
+                <div className="mt-1 flex flex-wrap gap-x-3">{item.targets.filter(target=>target.applicationId).map(target => <button key={`${target.applicationId}:${target.taskId}`} type="button" className="inline-flex min-h-11 items-center text-left font-semibold text-board-accent underline underline-offset-4" onClick={() => onOpen(target.jobId,(target as any).roundId)}>{target.company}</button>)}</div>
                 {!!item.artifacts?.length && <ul className="mt-2">{item.artifacts.map(a=><li key={a.id}><Link className="inline-flex min-h-11 items-center font-semibold text-board-accent underline underline-offset-4" href={a.path}>Open {a.title}</Link></li>)}</ul>}
                 {item.needsMaterial&&!item.artifacts?.length&&<p className="mt-2">Supporting material hasn’t been prepared yet.</p>}
                 {item.learning&&<p className="mt-2">Learning goal · {item.targets[0]?.company}</p>}
@@ -87,6 +87,7 @@ function Planner() {
   const w = useWorkspace(), owner = w.demo ? "demo" : w.user?.id || null;
   const [bundle, setBundle] = useState<Bundle | null>(null), [loading, setLoading] = useState(true), [error, setError] = useState(""), [feedback, setFeedback] = useState("");
   const [minutes, setMinutes] = useState("45"), [busy, setBusy] = useState(false), [retry, setRetry] = useState(0), [review, setReview] = useState<string | null>(null);
+  const [reviewRound,setReviewRound]=useState<string|undefined>(undefined);
   const [clock, setClock] = useState(() => new Date());
   const generation = useRef(0), mutation = useRef(false), sessionRequest = useRef<{ key: string; input: SessionInput } | null>(null);
   const loadedBudget = useRef<number | null>(null);
@@ -97,9 +98,9 @@ function Planner() {
   const applicationKey = Object.values(w.state.workflow.applications as Record<string, Application>).map(a => `${a.id}:${a.backendId || ""}`).sort().join("|");
   useEffect(() => { const timer = setInterval(() => setClock(new Date()), 60000); return () => clearInterval(timer); }, []);
   useEffect(() => {
-    if (!owner || w.demo) return;
+    if (!owner) return;
     return subscribePreparationRefresh(document, window, owner, () => {
-      if (!mutation.current && window.JB?.auth?.userId === owner) setRetry(n => n + 1);
+      if (!mutation.current && (w.demo || window.JB?.auth?.userId === owner)) setRetry(n => n + 1);
     });
   }, [owner, w.demo]);
   useEffect(() => {
@@ -119,7 +120,7 @@ function Planner() {
     } }).catch(() => { if (generation.current === epoch) setError("Your prep planner could not load. Reload to try again."); }).finally(() => { if (generation.current === epoch) setLoading(false); });
     return () => { generation.current++; };
   }, [services, applicationKey, retry, today, !owner && localPlans, !owner && localPlanner]);
-  const applications = Object.fromEntries(Object.entries({ ...bundle?.applications, ...w.state.workflow.applications } as Record<string, Application>).map(([id, app]) => [id, { ...app, ...(['Rejected','Withdrawn'].includes(w.state.tracker.items[id]?.status) ? {status:w.state.tracker.items[id].status} : {}) }]));
+  const applications = Object.fromEntries(Object.entries({ ...bundle?.applications, ...w.state.workflow.applications, ...bundle?.applications } as Record<string, Application>).map(([id, app]) => [id, { ...app, ...(['Rejected','Withdrawn'].includes(w.state.tracker.items[id]?.status) ? {status:w.state.tracker.items[id].status} : {}) }]));
   const rawAgenda = bundle ? agendaFor({ ...bundle, applications, today }) : null;
   const agenda = rawAgenda && bundle ? {...rawAgenda,days:rawAgenda.days.map(day => ({...day,items:day.items.map(item => {
     const details = item.targets.map(target => bundle.plans.find(row => row.application_id === target.applicationId)?.plan.tasks.find(task => task.id === target.taskId)?.detail).filter((detail): detail is string => !!detail);
@@ -152,9 +153,9 @@ function Planner() {
     mutate(async () => services ? services.completePreparationSession(input) : saveLocal(localSession(bundle,input)), "Session recorded. Your practice and remaining time are updated.");
   }
   return <SurfacePanel className="action-widget prep-widget" aria-labelledby="prep-planner-heading" aria-busy={loading || busy}>
-    {loading && !bundle ? <><h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={setReview} busy={busy || loading || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>}
+    {loading && !bundle ? <><h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={(id,roundId)=>{setReviewRound(roundId);setReview(id);}} busy={busy || loading || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>}
     {error && <div role="alert"><Notice>{error}</Notice><button type="button" className={`${secondary} mt-3`} onClick={() => {setBusy(false);setRetry(n => n + 1);}}>Reload planner</button></div>}
     {feedback && <p role="status" className="mt-3 text-sm text-board-muted">{feedback}</p>}
-    {review && <DraftReview key={review} id={review} onClose={() => {setReview(null);setRetry(n => n + 1);}} />}
+    {review && <DraftReview key={review} id={review} initialTab="Interview" initialRoundId={reviewRound} onClose={() => {setReview(null);setRetry(n => n + 1);}} />}
   </SurfacePanel>;
 }

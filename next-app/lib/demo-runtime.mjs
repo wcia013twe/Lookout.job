@@ -1,3 +1,4 @@
+import {withActionBoardDemo,enableActionBoardScenario} from './action-board-demo.mjs';
 import {withApplicationFlowDemo} from './application-flow-demo.mjs';
 import {createDemoSimplifyImport} from './simplify-import-demo.mjs';
 import {demoPack,demoPackTask} from './card-pack-demo.mjs';
@@ -23,6 +24,7 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
   fixtures.state.ui={...fixtures.state.ui,profileConflict:{fields:[]}};
  }
  withApplicationFlowDemo(fixtures,apiScenario);
+ if(apiScenario==='action-board')enableActionBoardScenario(fixtures,date);
  const store=createDemoStore(fixtures.state);
- return {store,services:{...demoApiScenario(createDemoServices(store),apiScenario),simplifyImport:createDemoSimplifyImport()}};
+ return {store,services:{...demoApiScenario(withActionBoardDemo(createDemoServices(store),store),apiScenario),simplifyImport:createDemoSimplifyImport()}};
 }

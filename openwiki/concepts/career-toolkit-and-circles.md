@@ -209,3 +209,15 @@ separation and actual-call/Calendar limits are unchanged. Existing scoped artifa
 and mock tools own execution; no new generic writer or consent is introduced.
 A detached MCP generation test covers discovery, recipe loading, save/read-back
 and read-only denial. Hosted availability requires the normal main-branch release.
+
+## Canonical round preparation (connected board source update)
+
+Application milestones now retain a stable round identity across append-only corrections, an explicit practice category and time zone, and confirmed/proposed/incorrect details. Lifecycle supports cancellation separately from completion. The milestone writer accepts `practiceCategory`, `timeZone` and optional `proposedAt`; unknown confirmed times remain null. A person may confirm a proposed time through Action Board, producing a correction that retains the original evidence.
+
+Confirmed scheduled rounds receive round-scoped tasks inside the existing application plan and versioned preparation-session ledger. Weekly Prep derives the active date and practice grouping from the current round, without interpreting its label. Rescheduling fences stale sessions, keeps existing task IDs/completed work/time credit and recalculates allocation; completed, cancelled and superseded rounds do not produce future work. Generic practice can still share one session across its explicit task targets. Learning goals and the daily budget retain their existing rules.
+
+Legacy tasks attach automatically only when one current confirmed round matches the application and exact date. Ambiguous or unmatched work remains standalone. Existing ledger entries are never rewritten. Task and material links select the actual round or immutable artifact revision and provide a return to Action Board. The desktop planner's existing layout is preserved.
+
+The detached scenario `?demo=1&demoApi=action-board` covers the shared decision rows, exact review, stopped/resumed applications, manual outreach readiness, proposed-round confirmation, cancellation and typed practice. It is fictional, resettable and has no account/backend access. Migration, function release and authenticated hosted verification remain separate from local tests and screenshots.
+
+Tailored round resources use the existing `update_preparation_plan` operation with `roundId` and current `expectedVersion`, omitting `deadline`. It reads the owned current canonical round, preserves other rounds and completed task identities, and saves through the original plan validator. Legacy standalone inputs remain supported; linked plans reject newly duplicated standalone task templates and foreign-round links. Daily planning uses the owner's configured time zone while retaining the event's original time zone as evidence.

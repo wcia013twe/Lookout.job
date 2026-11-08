@@ -30,6 +30,7 @@ export function toolWorkflow(tool) {
   if (/^(toolkit\.|artifacts\.|mock\.|learning\.|local\.career\.)/.test(op)) return 'toolkit';
   if (op==='imports.update') return 'applications';
   if (/^(search\.|backend\.jobs\.|imports\.|jobs\.|batches\.|selection\.|preferences\.(targets|profile)\.)/.test(op)) return 'search';
+  if(op==='actions.board.read')return 'applications';
   if (/^(applications\.|drafts\.|approvals\.|submission\.|runner\.|preparation\.|human\.|local\.(inspect|resume|try|submit|submit_batch)$)/.test(op)) return 'applications';
   if (/^(profile\.|answers\.|resumes\.|preferences\.resumes\.|local\.profile_resume$)/.test(op)) return 'profile';
   if (/^(contacts\.|companies\.|company_workspaces\.|outreach\.)/.test(op)) return 'network';

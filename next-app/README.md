@@ -497,3 +497,9 @@ About me work and education entries reuse the shared CompanyLogo renderer. Logo.
 Demo check: fictional employers/schools show briefcases without external logo requests. Edit an organization name to a real brand to check logo loading and name changes; simulate failed image responses to check the direct briefcase fallback on desktop/mobile. Reset restores the fictional records. Run `node scripts/check-profile-logos-ui.mjs` against an isolated frontend with a fake logo token for mocked success/failure and reset coverage.
 
 Role-card company marks use 56px on desktop and 48px on mobile. The ranking badge is temporarily commented out; saved ranking settings and card color treatment remain available. Demo check: inspect Discover cards on desktop/mobile to confirm the larger company mark, title wrapping and absence of the ranking badge.
+
+### Connected Action Board
+
+The desktop layout and existing review dialogs stay unchanged. Existing rows gain Accept/Reject and human-input links; mobile touch swipes invoke the same version-checked human decisions. Exact application/message review is required before acceptance. Reject keeps the application saved and stops agent work until human Resume; accepting outreach means ready for the user to send. Saved-answer links expand the actual My Agent question bank. Canonical round IDs/categories drive Weekly Prep and select the right interview details; materials open exact artifact versions.
+
+Use `?demo=1&demoApi=action-board` for isolated connected-flow coverage and `node scripts/check-connected-action-board-ui.mjs` against the local port-3107 preview. The script accepts `LOOKOUT_UI_URL` and `LOOKOUT_UI_ARTIFACTS`, checks desktop framing/mobile gestures and rejects demo backend access. Backend migration/functions require their own release; older endpoints retain the existing handoff view with a refresh error instead of false decisions.

@@ -38,11 +38,12 @@ export interface Application {
 }
 
 export interface ApplicationMilestone {
+  round_id?:string;practice_category?:string;time_zone?:string;confirmation?:string;proposed_at?:string|null;
   id: string;
   application_id?: string;
   kind: string;
   label: string;
-  phase: "scheduled" | "completed" | "received";
+  phase: "scheduled" | "completed" | "received" | "cancelled";
   occurred_at?: string | null;
   created_at?: string;
   source: { kind: string; note?: string; timestampConfirmed?: boolean; messageId?: string; subject?: string; excerpt?: string; receivedAt?: string; url?: string };
