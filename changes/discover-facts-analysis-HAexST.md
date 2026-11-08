@@ -50,3 +50,7 @@
   The broad local Discover browser check passed the new caution assertions but
   later failed an unrelated compact-card hidden-label assertion. A dedicated
   repair-only browser regression covers the changed section and interactions.
+- Dedicated browser regression passed with fictional records: three fit bullets,
+  two bounded caution bullets, dark desktop/light mobile surfaces, no horizontal
+  overflow, Job Description disclosure, Escape/focus return, reopen and Close.
+  Screenshots were visually inspected. No private account browser claim is made.
