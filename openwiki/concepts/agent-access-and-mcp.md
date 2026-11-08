@@ -159,3 +159,20 @@ Local runtime follow-up: migration `20261107210538` was applied to the existing 
 ## Connected human-decision boundary (source update)
 
 `read_action_board` / `actions.board.read` requires `workspace:read` and exposes deterministic pending decisions, source/version keys, current work holds, human decision history and exact website links. It is discoverable under applications and routes through the same Edge/SQL authority as browser reads. Agent credentials cannot call the authenticated-human review/response/resume operation. Existing `request_human_action` links now select the owned answer, application or outreach record. A declined application is a durable stop condition, never an invitation to repair it; only human Resume lifts the hold. Acceptance is neither submission nor message delivery. Canonical application/interview/outreach guides and change-feed guide versions carry these rules. Hosted parity requires migration plus gateway/MCP release and an authenticated check.
+
+## Task text updates (notification guide v3)
+
+Prepared-work review handoffs and task completion summaries use the existing
+versioned Notifications guide and delivery policy. Prepared means saved and read
+back; messages identify roles and material exceptions. Completion summaries
+distinguish discovery, preparation and confirmed submission, and explain which
+authorized work continues independently. Routine start announcements and repeated
+unchanged reminders are omitted; overlapping updates are combined. No new daily
+digest schedule or parallel update store is introduced. Existing polling resumes
+authorized work after record changes independently of message composition.
+
+Current exact-version approval remains an authenticated website action. Text can
+collect missing facts through supported writers but cannot approve a batch or
+forge a human receipt; swipe approval is not advertised without UI verification.
+Contract 122 updates source directions only, not runtime messaging, scheduler
+activation or hosted deployment.

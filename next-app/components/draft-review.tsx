@@ -1,4 +1,5 @@
 "use client";
+import ApplicationRoundList from "./application-round-list";
 import {draftPayload} from '../../lib/cloud-model.mjs';
 import {ApplicationWorkControl} from './decision-buttons';
 import type {BoardItem} from '../lib/use-action-board';
@@ -371,7 +372,7 @@ export default function DraftReview({ id, application, importedTracker, onClose,
             <div className="interview-support-body">
               <h3 className="support-heading">Interview rounds &amp; history</h3>
               <ApplicationTimeline application={current} demo={w.demo}/>
-              {workflow && <TimelineEditor selectedRoundId={initialRoundId} application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}
+              {workflow && <><ApplicationRoundList application={current!}/>{current.imported?<button type="button" className={secondary} onClick={()=>{setTab('Overview');requestAnimationFrame(()=>{const editor=dialog.current?.querySelector<HTMLDetailsElement>('[data-import-tracking]');if(editor){editor.open=true;editor.scrollIntoView({block:'start'});}});}}>Edit rounds</button>:<TimelineEditor selectedRoundId={initialRoundId} application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}</>}
               <InterviewDebriefs application={current}/>
             </div>
           </details>

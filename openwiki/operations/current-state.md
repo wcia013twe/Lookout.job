@@ -391,6 +391,16 @@ and data validation passed. No real candidate session, Calendar event, worker or
 database restart, push or hosted deployment occurred. Muse must retry its original
 session save; source/tool discovery alone must not be called persistence-ready.
 
+## Shared application round counts (contract 121 source update)
+
+Native milestone round metadata and imported record.rounds feed one shared
+projector used by Applications Stats and the workspace:read MCP
+read_application_round_stats tool. Counts distinguish rounds from applications,
+Screen from Interview, and pending/scheduled/completed/cancelled. Existing scoped
+writers retain owner, version, evidence and retry/correction checks. No private
+application data is automatically backfilled from notes. Runtime activation and
+production release are separate; consult the feature note for actual receipts.
+
 
 ### Agent-reviewed private Discover handoff
 

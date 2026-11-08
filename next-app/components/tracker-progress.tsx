@@ -1,5 +1,5 @@
 import type {ReactNode} from 'react';
-import { timelineItems } from '../../lib/application-timeline.mjs';
+import {applicationRounds} from '../../lib/application-rounds.mjs';
 import { trackerProgress, trackerStages, sharedTrackerStage } from '../../lib/tracker-display.mjs';
 import { CompanyLogo } from './role-card';
 import type { Application } from './workflow-types';
@@ -9,8 +9,8 @@ export function ApplicationIdentity({company,title,location,jobId,children}:{com
 }
 export default function TrackerProgress({application, item={}, vertical=false}: {application:Application; item?:{status?:string;openedDate?:string;appliedDate?:string};vertical?:boolean}) {
  const progress=trackerProgress(application,item);
- const nextRound = vertical ? timelineItems(application).filter(event => event.phase === 'scheduled' && ['technical_round','recruiter_call','interview','onsite'].includes(event.kind)).sort((a,b)=>(a.occurred_at || '9999').localeCompare(b.occurred_at || '9999'))[0] : null;
- return <><StageProgress progress={progress} vertical={vertical}/>{nextRound && <section className="tracker-next-round" aria-label="Next interview context"><h4>{nextRound.label}</h4>{nextRound.occurred_at && <time dateTime={nextRound.occurred_at}>{new Date(nextRound.occurred_at).toLocaleString(undefined,{month:'short',day:'numeric',...(nextRound.occurred_at.length===10?{timeZone:'UTC'}:{hour:'numeric',minute:'2-digit',timeZoneName:'short'})})}</time>}{(nextRound.source.note||nextRound.source.excerpt)&&<p>{(nextRound.source.note||nextRound.source.excerpt).trim().split('\n')[0]}</p>}</section>}</>;
+ const nextRound=vertical?applicationRounds(application).filter(round=>!round.cancelled&&round.phase==='scheduled').sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'))[0]:null;
+ return <><StageProgress progress={progress} vertical={vertical}/>{nextRound && <section className="tracker-next-round" aria-label="Next interview context"><h4>{nextRound.label}</h4>{nextRound.date && <time dateTime={nextRound.date}>{new Date(nextRound.date).toLocaleString(undefined,{month:'short',day:'numeric',...(nextRound.date.length===10?{timeZone:'UTC'}:{hour:'numeric',minute:'2-digit',timeZoneName:'short'})})}</time>}{(nextRound.notes)&&<p>{(nextRound.notes).trim().split('\n')[0]}</p>}</section>}</>;
 }
 export function SharedApplicationStages({stage}:{stage:string}) {
  const progress=sharedTrackerStage(stage);

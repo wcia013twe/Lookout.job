@@ -1,7 +1,9 @@
+import {validateRoundMetadata} from './application-rounds.mjs';
 export const MILESTONE_KINDS = ['submitted','recruiter_call','technical_round','interview','offer','rejected','withdrawn'];
 const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(value) && Number.isFinite(Date.parse(value));
 const bounded = (value,max) => typeof value==='string' && value.trim() && value.length<=max;
 export function validateMilestone(payload) {
+ if(payload.round!==undefined){validateRoundMetadata(payload.round);if(!['recruiter_call','technical_round','interview'].includes(payload.kind))throw Error('Round metadata is only for process rounds.');}
  const s=payload.source;
  if(payload.practiceCategory!==undefined&&!['general','coding','systems','behavioral','sql','ml'].includes(payload.practiceCategory))throw Error('Invalid practice category');
  if(payload.timeZone!==undefined){try{new Intl.DateTimeFormat('en',{timeZone:payload.timeZone});}catch{throw Error('Invalid timezone');}}
