@@ -33,3 +33,7 @@ accessible check/red-X semantics and action anatomy in light/dark themes.
 
 Embedded application summaries use a neutral white/deep surface with a stronger
 contrasting border and subtle elevation to separate them from tinted action cards.
+
+Input follow-up: use a small static notification dot on pending human blockers
+and navigation, with an accessible label and board-level input count. Filled
+application drafts lead the existing list. No flashing/pulsing or new layout.

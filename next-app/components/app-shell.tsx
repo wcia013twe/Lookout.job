@@ -1,4 +1,6 @@
 "use client";
+import ActionAttention from './action-attention';
+import {needsUnblocking} from '../../lib/action-board.mjs';
 import {useActionBoard} from '../lib/use-action-board';
 import {EXTRA_FEATURES_ENABLED, pausedFrontendRoute} from "../../lib/feature-scope.mjs";
 import Link from "next/link";
@@ -127,6 +129,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             className="workspace-nav-link"
           >
             <span>{label}</span>
+            {href === "/needs-you/" && !board.error && <ActionAttention count={board.snapshot?.items.filter(needsUnblocking).length||0} compact/>}
             {href === "/needs-you/" && needs > 0 && <span className="workspace-count grid min-h-5 min-w-5 place-items-center rounded-md px-1 text-[11px] tabular-nums">{needs}</span>}
           </Link>
         ))}

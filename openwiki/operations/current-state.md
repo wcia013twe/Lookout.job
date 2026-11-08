@@ -672,3 +672,13 @@ applied-history toggle does not reveal rejected roles. A fictional rejection-onl
 fixture covers the detached demo. The direct worker's existing tracked-job
 exclusion is tested with Submitted and Rejected records, preserving each full
 application row. No new writer, migration, tool or permission is added.
+
+
+Action Board input indicators derive from the existing owned pending decisions:
+blockers, missing answers, uncertain submissions and drafts with unanswered
+required fields. A reusable passive dot appears on affected cards and navigation,
+with an accessible input count; successful owning-record resolution removes it.
+Filled application drafts lead the list using a stable partition; chronology
+within each group, review gates and backend priority/supersession remain intact.
+This adds no notification delivery service or new MCP mutation. Existing
+`read_action_board` and owning writers supply the same pending items to agents.
