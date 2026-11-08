@@ -13,3 +13,10 @@ page jumps. Keep existing consent, outcome and durable stop distinctions.
 Use incumbent theme tokens, typography and dividers. Identity comes from the
 owned object and content anatomy: form, letter, calendar/round, task, verification.
 No new navigation, separate workflow status, decorative card grid or side panel.
+
+User-approved material follow-up: surround each action with a full 1px border,
+12px corners and breathing room. Reuse Career Toolkit's light/dark material
+colors: applications blue, questions lavender, interviews green and tasks slate.
+Outreach uses cyan, blockers/uncertainty amber, and submission reports sage.
+Text/muted/border colors follow each material; keep decision controls and page
+composition unchanged.

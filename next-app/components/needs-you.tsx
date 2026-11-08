@@ -47,7 +47,7 @@ export default function NeedsYou() {
           </div>
           {(board.error||feedback)&&<p role="status" className="mt-3 text-sm">{board.error||feedback}</p>}{board.error&&<button type="button" onClick={()=>void board.refresh()} className="handoff-action">Reload actions</button>}
           {setup&&<p className="my-4 text-sm text-board-muted">Add and verify your profile and résumé to finish application approvals. <Link href="/profile/" className="underline underline-offset-4">Set up profile</Link></p>}
-          {handoffCount ? <ul className="mt-3 divide-y divide-board-line">
+          {handoffCount ? <ul className="mt-4 space-y-4">
             {board.snapshot?.items.map(item=><ActionDecisionCard key={`${w.user?.id||'demo'}:${item.key}`} item={item} busy={board.busy||w.locked||!!board.error} onRespond={respond}/>)}
             {!board.snapshot&&actions.map(({item,application}) => {
               if(!application)return <NeedsYouRow key={item.id} title="Application action" context="Saved application" reason={item.reason} control={<Link href="/applications/" className="handoff-action">Open Applications</Link>}/>;

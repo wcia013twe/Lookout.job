@@ -538,3 +538,8 @@ separate. This applies both in calendar days and Other pending tasks. Action
 cards show company and description. The detached demo covers an assessment
 whose deadline is saved on next action with its attention flag false. Source
 validation and local read-back receipts are recorded in the shared calendar note.
+
+Action card material follow-up: each type now has a full border and colored
+background, borrowing the Career Toolkit's theme-aware material palette. Matching
+ink/divider colors preserve contrast in light and dark modes. This is a visual
+change; the existing inline decision and ownership rules are unchanged.

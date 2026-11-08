@@ -66,3 +66,18 @@ Limits: checks use disposable migrated databases and fictional detached browser 
   owned inline board reads succeeded (14 and 11 pending items). No real decisions,
   submissions or outreach were performed. No push or hosted deployment; real-account
   browser sign-in and hosted MCP activation were not exercised.
+
+## Follow-up: action-type borders and materials
+
+- Add full borders and spaced, colored action surfaces using the Career Toolkit
+  workspace palette. Applications are blue; questions lavender; interviews green;
+  outreach cyan; blockers/uncertainty amber; task actions slate; submission reports
+  sage. Match ink, secondary text and internal dividers to each light/dark material.
+- Preserve inline form/review controls and board/Weekly Prep placement. Remove the
+  extra question-box fill now that its containing card owns the material.
+- Verification: `npm test` passed (1,074 passed, five skipped), data validation
+  passed (158 roles), typecheck and production build passed. The desktop/light
+  and mobile/dark views show seven distinct materials with full 1px borders,
+  stable focus backgrounds and no horizontal overflow. Existing inline decision,
+  calendar and mobile-swipe browser checks passed; Impeccable detector returned
+  no findings. No backend changes, real-account writes or hosted release.
