@@ -45,7 +45,7 @@ function Actions({role,onPreview}:{role:Role;onPreview?:(role:Role)=>void}){
    setSaved(result.job);
    document.dispatchEvent(new CustomEvent('workspace:cloud-ready',{detail:{userId:owner}}));
    if(!w.demo)await window.JB?.cloud?.refresh?.();
-  }catch(e){if(active.current)setError(e instanceof Error?e.message:'Application job could not queue. Your posting stays here.');}
+  }catch(e){if(active.current)setError(e&&typeof e==='object'&&'message' in e&&typeof e.message==='string'?e.message:'Application job could not queue. Your posting stays here.');}
   finally{if(active.current)setBusy(false);}
  }
  return <div className="mt-auto pt-1 md:pt-2"><div className="role-card-actions grid gap-2 min-[360px]:grid-cols-2">

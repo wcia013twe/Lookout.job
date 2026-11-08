@@ -17,6 +17,12 @@ begin
  if public.agent_dispatch(h,'applications.submit_job',p)<>result then raise exception 'Website/MCP mismatch';end if;
  again:=public.backend_job_dispatch(h,'applications.submit_job',p||'{"eventKey":"mcp-click:2"}');
  if again->'job'->>'id'<>b::text or (select count(*) from private.backend_jobs where user_id=u)<>1 then raise exception 'Double click queued duplicate active job';end if;
+ -- Workday intake uses the same versioned writer; it grants no submission capability.
+ again:=public.queue_application_job(jsonb_set(jsonb_set(p,'{posting,id}','"fictional-workday"'),'{posting,url}','"https://fixture.wd5.myworkdayjobs.com/en-US/External/job/Remote/Associate-Software-Engineer_JR-026548"')||'{"eventKey":"workday-click"}');
+ if again->'job'->>'status'<>'queued' then raise exception 'Workday request not queued';end if;
+ if public.agent_dispatch(h,'applications.submit_job',jsonb_set(jsonb_set(p,'{posting,id}','"fictional-workday"'),'{posting,url}','"https://fixture.wd5.myworkdayjobs.com/en-US/External/job/Remote/Associate-Software-Engineer_JR-026548"')||'{"eventKey":"workday-click"}')<>again then raise exception 'Workday MCP parity';end if;
+ again:=public.queue_application_job(jsonb_set(jsonb_set(p,'{posting,id}','"fictional-other-provider"'),'{posting,url}','"https://careers.example.com/jobs/fictional-001"')||'{"eventKey":"other-provider-click"}');
+ if again->'job'->>'status'<>'queued' then raise exception 'Muse intake still provider gated';end if;
  if (select receipt from public.applications where id=a) is not null or (select status from public.applications where id=a)<>'Queued' or exists(select 1 from public.approvals where application_id=a) then raise exception 'Queue minted submission/approval';end if;
  begin perform public.backend_job_dispatch(h,'backend.jobs.submit',jsonb_build_object('kind','application_submit','input',jsonb_build_object('applicationId',a,'expectedRevision',0),'eventKey','generic-queue'));raise exception 'Generic queue bypass';exception when invalid_parameter_value then null;end;
  -- Search-only workers leave application work alone; no feature flag can claim it accidentally.

@@ -2,7 +2,7 @@
 
 **AI Apply → existing change feed → Muse pickup → host browser work → saved outcome.**
 
-Discover's AI Apply calls `queueApplicationJob` / `queue_application_job` (`applications.submit_job`). The existing closed SQL helper validates the selected canonical Greenhouse, Ashby or Lever posting, current application revision, owned profile and active scoped connection. It creates/reuses the application and a connection-bound queued job (legacy kind `application_submit`). Active requests deduplicate; exact retry keys replay their original receipt. Opening a posting is separate and does not apply.
+Discover's AI Apply calls `queueApplicationJob` / `queue_application_job` (`applications.submit_job`). The existing closed SQL helper validates the selected HTTPS posting, current application revision, owned profile and active scoped connection. It creates/reuses the application and a connection-bound queued job (legacy kind `application_submit`). Active requests deduplicate; exact retry keys replay their original receipt. Opening a posting is separate and does not apply.
 
 The job insert emits one idempotent `application_requested` pointer in the existing Muse change feed. The count-only watcher sees it; the external host still supplies polling, wake delivery, computer use and optional subagents. Reading/acknowledging the feed grants no permission and never marks work complete. Current queued roles show **Waiting for Muse**; a successful pickup shows **Muse is working**.
 
@@ -25,3 +25,5 @@ Website queueing and MCP `queue_application_job` share the same SQL writer. Agen
 The detached demo uses memory-only queue/pickup/outcome services and explicitly labelled Demo controls. It never opens employer forms, reads private files or submits. Reset removes simulated requests and outcomes.
 
 The migration, gateway/MCP release and rebuilt Node runtime must all be activated in the intended environment, and Muse must refresh developer context/tool discovery (application-workspace v27 / developer139). Local-main landing or a static frontend build alone does not activate the backend or verify the watcher/browser host.
+
+Muse request intake accepts HTTPS posting URLs independently of deterministic adapter support; the old provider allowlist is commented out. This only queues agent work; deterministic submission platform support and approval/receipt authority are unchanged. Queue failures display the backend message, including plain-object RPC errors.
