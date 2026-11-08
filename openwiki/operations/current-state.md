@@ -758,6 +758,17 @@ and border. It renders a saved fitLabel when present, otherwise an existing
 saved priority. Scores never synthesize a label. Exact owned role identity links
 a board application to its saved discovery label; missing labels are omitted.
 
+### Bounded Discover analysis
+
+The five-point fit analysis keeps Team, Your contribution and Your growth in a
+rounded fit surface, with Support and Practical fit in a separate rounded
+“What to watch out for” surface. Saved caveats and trailing priority text remain
+intact, including the legacy prose fallback. This is presentation over existing
+owned records, not a new assessment or writer. Hosted release is verified
+separately from source and component tests.
+The disclosure heading is Job Description. Explicitly marked Structured paraphrase
+content is presented as a saved summary rather than an employer quotation; saved
+content and the existing source URL are preserved.
 
 ### Unified Action Board and AI Apply change feed
 
@@ -838,3 +849,7 @@ Local routing activation: the migration and Node image lookout-node:application-
 ## Ten-second watcher follow-up
 
 Package 0.2.1 defaults and minimums are 10 seconds for count polling and wake cooldown (up to 10% polling jitter). Explicit existing configs retain their values and must set both fields to 10. Error backoff stays exponential, capped at five minutes plus jitter; serialized worker/durable acknowledgement rules are unchanged. Guides agent-package 3/change-resumption 4 and developer 148 describe the new contract. Runtime installation/activation must be verified separately from package publication.
+Discover cards use the original tier-colored company header and glass body,
+compact compensation/location facts and four match scores. Fit/recommendation
+summaries stay out of the cards; full analysis remains in the job drawer. The
+separate embedded role widget is unchanged. Demo cards share this presentation.

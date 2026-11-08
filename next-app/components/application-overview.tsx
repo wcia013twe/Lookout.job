@@ -55,6 +55,6 @@ export default function ApplicationOverview({ application, role, workflow, item,
     <section className="application-overview-attention"><h3>Current prep</h3><div className="mt-3 flex flex-wrap gap-3"><button className={secondary} onClick={onPreparation}>Interview brief</button><Link className={secondary} href="/career-toolkit/#workspace">Toolkit workspace</Link></div></section>
     {facts.whyItFits&&<details className="application-overview-context"><summary className="min-h-11 cursor-pointer py-3 font-semibold">Fit notes</summary><p>{facts.whyItFits}</p></details>}
     {EXTRA_FEATURES_ENABLED && !application.imported && <InterviewIntelligence jobId={application.id} applicationId={application.backendId}/> }
-    <details className="application-overview-description"><summary><h3>About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary><JobDescription description={facts.description} url={url || facts.applicationUrl} demo={demo} /></details>
+    <details className="application-overview-description"><summary><h3>Job Description</h3><ProfileIcon name="chevron" width={18} height={18} /></summary><JobDescription description={facts.description} url={url || facts.applicationUrl} demo={demo} /></details>
   </section>;
 }

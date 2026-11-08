@@ -56,6 +56,7 @@ for (const [file, behavior] of [
   ['backend-jobs','backend execution isolates owners, replays writes, fences leases and dispatch, and rejects retired scheduling'],
   ['agent-connection-test','lightweight agent check-in exposes owned automation settings without advancing onboarding or creating tasks'],
   ['discover-removal','Discover removal isolates owners, scopes and batches and preserves applications'],
+  ['publish-saved-jd','publication copies the latest owned JD, preserves analysis and existing jobs, and excludes foreign captures and agent summaries'],
   ['job-assessment','dynamic private assessments validate scores, preserve retries and isolate owners'],
   ['website-onboarding','website completion persists separately from agent readiness, rejects agents, isolates owners and replays safely'],
   ['simplify-import','Simplify imports retain missing URLs and source reports, preserve status, isolate owners, reject stale writes and replay safely'],
