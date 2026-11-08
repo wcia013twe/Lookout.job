@@ -2,6 +2,9 @@ export interface ApplicationQuestion {
   id?: string;
   question: string;
   answer: string;
+  answerSource?: string;
+  questionSource?: string;
+  inferenceNote?: string;
   savedAnswerId?: string;
   savedAnswerVersion?: number;
 }
@@ -24,6 +27,9 @@ export interface Application {
   executionJob?: {id:string;status:string;result?:{summary?:string}} | null;
   revision?: number;
   receipt?: { message: string; source: string; observedUrl?: string };
+  inferences?: {field:string;reason:string}[];
+  coverLetter?: string;
+  coverLetterSource?: string;
   resumeId?: string;
   blocker?: string;
   questions: ApplicationQuestion[];

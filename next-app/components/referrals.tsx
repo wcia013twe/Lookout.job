@@ -40,7 +40,7 @@ export function MessageEditor({ contact, update, remove, processContext = false,
     <h3 className="mt-6 flex items-center gap-2 text-lg font-bold">{personContext&&<ProfileIcon name="mail" width={18} height={18}/>}Draft message</h3>
     {(contact.subject || personContext) && <div className="mt-4"><Field label="Email subject"><input className={control} name="subject" value={contact.subject||''} onChange={e => update({ subject: e.target.value })}/></Field></div>}
     <AnnotatedMessage contact={contact} name={contact.contact || contact.name || "contact"} onChange={message => { update({ message }); setFeedback(""); }}/>
-    <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>{personContext&&<ProfileIcon name="copy" width={16} height={16}/>}Copy message</button>{contact.subject && <button className={secondary} type="button" onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}</div>
+    <div className="mt-4 flex flex-wrap gap-2"><button className={primary} type="button" disabled={!ready} onClick={() => copy(contact.message, "Message")}>{personContext&&<ProfileIcon name="copy" width={16} height={16}/>}Copy message</button>{contact.subject && <button className="min-h-11 px-2 text-sm text-board-muted underline decoration-board-line underline-offset-4 hover:text-board-text" type="button" onClick={() => copy(contact.subject, "Subject")}>Copy subject</button>}</div>
     <Notice>{feedback}</Notice>
     {contact.message && !ready && <Notice>Replace the bracketed placeholders before copying.</Notice>}
   </>; }

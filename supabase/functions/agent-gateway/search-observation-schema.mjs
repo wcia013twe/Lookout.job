@@ -7,7 +7,7 @@ export const observationSchema={type:'object',additionalProperties:false,propert
  sourceId:{type:'string',minLength:1,description:'Exact source_id from read_search_run (portal:* or query:*), not a board name or URL.'},
  url:{...text(2048,1),pattern:'^https://[^\\s/]+[^\\s]*$',description:'Observed employer/ATS HTTPS URL.'},
  company:{...text(200,1),pattern:'\\S'},title:{...text(500,1),pattern:'\\S'},
- location:nullable(text(500)),checkedAt:{...timestamp,description:'Actual observation time; no more than five minutes in the future.'},
+ location:nullable(text(2000)),checkedAt:{...timestamp,description:'Actual observation time; no more than five minutes in the future.'},
  liveness:{type:'string',enum:['active','expired','uncertain']},evidence:{...text(5000,1),pattern:'\\S'},
  employerPostedAt:nullable(timestamp),sourceListAgeDays:{type:['integer','null'],minimum:0,maximum:2147483647},
  description:nullable(text(60000)),atsIdentity:nullable({type:'string',maxLength:2196}),requisitionId:nullable({type:'string'}),employmentType:nullable({type:'string'}),

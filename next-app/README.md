@@ -509,3 +509,5 @@ The desktop layout and existing review dialogs stay unchanged. Existing rows gai
 Use `?demo=1&demoApi=action-board` for isolated connected-flow coverage and `node scripts/check-connected-action-board-ui.mjs` against the local port-3107 preview. The script accepts `LOOKOUT_UI_URL` and `LOOKOUT_UI_ARTIFACTS`, checks desktop framing/mobile gestures and rejects demo backend access. Backend migration/functions require their own release; older endpoints retain the existing handoff view with a refresh error instead of false decisions.
 
 Network relationship views offer All people, Continue conversations and Prospects over saved interactions. Update relationship maintains context, thread link, optional dated note and next action/follow-up without changing drafts or interaction history. Last logged interaction previews are based on saved history, not synced inbox state.
+
+Person outreach uses a compact Reviewed / Mark ready / Dismiss footer; Copy message remains primary and Copy subject is a quiet text action. Exact-version review and manual-send boundaries are unchanged.

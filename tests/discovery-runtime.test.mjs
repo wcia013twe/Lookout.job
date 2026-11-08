@@ -132,14 +132,14 @@ test('worker fetches and checkpoints sources beyond the former ten-source sample
 
 
 test('retry identity pagination reads beyond the old 5000-observation ceiling',async()=>{
- const h=harness([]);let pages=0;
+ const h=harness([]);const offsets=[];
  const dispatch=async(operation,payload)=>{
-  if(operation==='search.history.read'){pages++;return {listings:[],nextOffset:payload.offset<5100?payload.offset+100:null};}
+  if(operation==='search.history.read'){offsets.push(payload.offset);return {listings:[],nextOffset:payload.offset<5100?payload.offset+100:null};}
   return h.dispatch(operation,payload);
  };
  const execute=async task=>task==='inspect-discovery-filters'?{ready:true}:[];
  await executeSearch({...job,search_run_id:h.run.id},dispatch,{execute});
- assert.equal(pages,52);
+ assert.deepEqual(offsets,[...Array.from({length:52},(_,i)=>i*100),...Array.from({length:52},(_,i)=>i*100)]);
 });
 
 test('all provider results are verified in 25-link batches without dropping the tail',async()=>{

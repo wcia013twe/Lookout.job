@@ -1,0 +1,10 @@
+# Compact communication widget
+
+- Action Board communication reviews now embed a small neutral summary matching the application attachment: saved recipient, company, destination and optional subject. Its link opens the owned Network message with the board return path and scroll position retained.
+- Application widgets now open their details when clicked; the separate text link is removed. External job-posting links remain independently accessible.
+- Inline Edit message supports subject/body changes, Save message and Cancel. It preserves contact history/status through the existing owner/revision-checked writer; agents retain save_contact parity. Changed drafts reset exact review, and unsaved edits disable decisions.
+- The full draft stays inline. Exact-message review and human sending are unchanged. This uses existing board reads/responses and read_action_board MCP; no schema changes or message sending.
+- Detached demo includes fictional subject/destination metadata; missing optional fields stay hidden. Desktop/mobile UI checks cover the reference, details link, review gate and human-send semantics. Visually inspected desktop light/mobile dark captures under /private/tmp/communication-widget-ui.
+- Validation: focused message/board tests (13 passed), catalog validation (158 roles), frontend typecheck, production static export, UI interaction checks and Impeccable detector (no findings). Final full suite: 1,102 passed, five skipped. Final desktop/mobile interaction run also passed inline Save/Cancel, review reset and whole-widget application navigation.
+- Limits: local source/demo verification only; hosted release and real-account browser flow were not exercised. Initial sandbox-only suite could not bind HTTP servers; rerun with localhost access.
+- Integrated concurrent local-main pending-input indicators, filled-draft ordering and default-demo coverage without dropping either feature. Merged checks: 1,104 tests passed, five skipped; typecheck, catalog validation, static production export and desktop/mobile interaction suite passed.

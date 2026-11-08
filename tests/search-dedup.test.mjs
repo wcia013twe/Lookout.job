@@ -36,3 +36,12 @@ test('explicit history uses copied dedup without editing previous records',async
 test('malformed child output fails loudly instead of saving a false shortlist',async()=>{
  for(const out of [null,[{id:id(2)}],[{id:id(1)},{id:id(1)}]])await assert.rejects(()=>deduplicateDiscoveryRows([row(1)],[],{execute:async()=>out}),/Malformed/);
 });
+
+
+test('verified SmartRecruiters native identity survives storage mapping across different public URL forms',async()=>{
+ const identity='ats:smartrecruiters:Example:744000159509479';
+ const old=row(1,{identity,canonical_url:'https://jobs.smartrecruiters.com/Example/744000159509479-software-engineer?oga=true',requisition_id:null});
+ const alias=row(2,{identity,canonical_url:'https://jobs.smartrecruiters.com/Example/744000159509479',requisition_id:null});
+ const distinct=row(3,{identity:'ats:smartrecruiters:Example:744000159509480',canonical_url:'https://jobs.smartrecruiters.com/Example/744000159509480',requisition_id:null});
+ assert.deepEqual((await deduplicateDiscoveryRows([alias,distinct],[old])).retainedListingIds,[distinct.id]);
+});

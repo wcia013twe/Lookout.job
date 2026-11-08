@@ -104,3 +104,58 @@ Limits: checks use disposable migrated databases and fictional detached browser 
   shared Circles preview; browser checks cover preview stages, event-only exclusion,
   inline forms/review, upcoming dates and mobile scrolling/swipes. Impeccable
   detector returned no findings. No hosted release.
+
+
+## Follow-up: unblock notifications and filled drafts first
+
+- Add reusable ActionAttention dot/count for human blockers, missing answers,
+  uncertain submissions and drafts missing required answers. Show it in existing
+  navigation and affected card headers; show the input count above the list.
+- Stably move filled application drafts to the top. Do not confer review or
+  approval; keep owning-record receipts and submission distinctions unchanged.
+- Existing fictional connected-board fixtures exercise notification appearance,
+  resolution and draft-first ordering. Existing read_action_board MCP boundary
+  supplies these same source decisions; no new service, writer or delivery channel.
+- Verification: full `npm test` passed (1,100 passed, five skipped); focused board tests, data validation (158 roles), frontend typecheck and production build passed. Desktop/mobile fictional browser checks verified draft-first order, navigation/card dots, resolution, required fields, keyboard access and swipes. Screenshot review preserved the existing two-column desktop layout. No hosted publication or external notification delivery.
+
+
+## Follow-up: preview unblock examples in the ordinary demo
+
+- Enable connected Action Board fixtures in ordinary demo mode, retaining
+  explicitly selected scenarios. Add fictional CAPTCHA and submission-timeout
+  examples alongside filled drafts and missing answers; preserve input gates and
+  in-memory reset. Uncertain attempts take precedence over draft review.
+- Verify pending resolution and reset through detached services and the default
+  desktop/mobile demo route. No production service or MCP contract changed.
+- Verification: 18 focused tests passed; full `npm test` passed (1,101 passed, five skipped); data validation (158 roles), frontend typecheck and production build passed. Desktop/mobile browser checks passed on the ordinary demo route, including required input gates, CAPTCHA resolution, uncertain-submission recovery, notification removal, keyboard controls and mobile swipes. No account writes or hosted publication.
+
+
+## Follow-up: separate discovered-role widget
+
+- Replace Discover's decorative role face with a compact opportunity widget:
+  small company identity, role title, job facts, fit summary and existing actions.
+  Keep match details expandable and retain the existing grid, preview and queue
+  writers. Application references retain their separate progress-stage widget.
+- Uses existing demo discoveries (including Example Query Labs) in both themes.
+  No domain service, data, approval or MCP behavior changes.
+- Verification: final combined-source checks below cover this widget; desktop/mobile screenshots and queue/keyboard preview interactions passed.
+
+
+## Follow-up: Submission and Need your input review design
+
+- Both application card families reuse the compact Discover role widget.
+  Show saved résumé name/version, employer questions, AI-drafted/inferred answer
+  sources, other inferred details and unknown provenance without guessing.
+- Source disclosures travel with the existing owned draft. Extend the read
+  projection for inferences/cover-letter source, preserve them through browser
+  sync, and label compact agent answer updates as AI-drafted. Human receipts
+  remain authoritative; these labels cannot confer verification or approval.
+- Application guide25/developer137 explains one writer/read-back flow with no
+  duplicate board post. Add fictional direct-source, generated and inferred
+  examples. Preserve the concurrently landed communication widget.
+- Verification: full `npm test` passed (1,107 passed, five skipped), including owner-scoped SQL web/MCP read parity; 56 focused guide/board/demo tests and disclosure/sync tests passed. Data validation (158 roles), frontend typecheck and production build passed. Desktop/light and mobile/dark checks covered labels, résumé versions, source disclosures, CAPTCHA/uncertainty resolution, exact review, communication editing, keyboard access and swipes. Compact-widget screenshots verified the matching application material and readable mobile labels. New projection/guide changes require backend release for
+  hosted availability; legacy provenance is not fabricated or backfilled.
+
+Saved label refinement: widgets display the existing stored fitLabel when
+present, otherwise saved recommendation.priority. No score-to-label inference
+or new classification state. Demo includes Strong fit and priority fallbacks.

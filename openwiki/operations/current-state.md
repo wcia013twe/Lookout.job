@@ -654,6 +654,15 @@ A fictional 32+14 overlap fixture proves 42 unique roles, not a 14-role cap;
 fictional UI fixtures cover an older unapplied role and the applied-history toggle.
 Local build/test evidence and hosted release remain separate.
 
+### Orchestrator audit rule (contract 136 source update)
+
+Application guide24 requires the coordinating Agent to reconcile every assigned
+job, inspect saved analysis/drafts for omissions and mistakes, repair supported
+gaps and read back corrections before calling work ready. Unresolved information
+stays explicit; submission summaries are audited against saved outcomes. No new
+tools, UI, schema or runtime are added. Gateway release/client refresh and real
+host compliance remain separate from source validation.
+
 ### Rejection-only Discover protection
 
 Discover explicitly excludes rejected outcomes even when there is no recorded
@@ -663,3 +672,88 @@ applied-history toggle does not reveal rejected roles. A fictional rejection-onl
 fixture covers the detached demo. The direct worker's existing tracked-job
 exclusion is tested with Submitted and Rejected records, preserving each full
 application row. No new writer, migration, tool or permission is added.
+
+### Embedded communication reference
+
+Action Board message reviews now embed a compact communication summary alongside
+the existing application attachment pattern. It shows the saved recipient, company,
+destination and subject when available; its link opens the owned Network message
+and retains the board return path. Application summaries are also clickable across
+the widget, with a separate accessible external-posting target and no extra
+details text link. The complete draft and exact-message review
+remain inline. Acceptance still only marks the draft ready for the human to send.
+This is presentation over the existing board read/response boundary (including
+read_action_board MCP); it introduces no writer, sending capability or schema.
+Detached fixtures cover a subject/email and missing optional metadata. Hosted
+release and real-account browser verification remain separate.
+
+The board's Edit message control saves subject/body through the existing
+owner/revision-checked save_outreach_contact writer, preserving all other contact
+fields and status. Cancel keeps the saved draft. Unsaved editing disables
+decisions; changed drafts receive a new exact-review identity. Agents use the
+existing save_contact/contacts.save boundary. No message is sent. Detached
+interaction and adapter checks cover save/cancel, fresh review and stale writes.
+
+
+Action Board input indicators derive from the existing owned pending decisions:
+blockers, missing answers, uncertain submissions and drafts with unanswered
+required fields. A reusable passive dot appears on affected cards and navigation,
+with an accessible input count; successful owning-record resolution removes it.
+Filled application drafts lead the list using a stable partition; chronology
+within each group, review gates and backend priority/supersession remain intact.
+This adds no notification delivery service or new MCP mutation. Existing
+`read_action_board` and owning writers supply the same pending items to agents.
+
+### Single-portal persistence repair
+
+The existing `submit_portal_search` tool and leased worker remain the execution
+path. Shared observation validation and SQL now accept location text up to 2000
+characters: one valid 572-character Cisco location previously rejected an entire
+final save batch. This preserves the complete location rather than truncating it.
+
+The owned, paged worker history now includes applied/rejected imported tracker
+records as well as native applications, and is refreshed after collection before
+final deduplication. Imports are identity hints only; search never rewrites their
+records or excludes every role at a company. Lease, owner, settings and bounded
+transaction checks remain in place. Fictional SQL-leased tests cover multi-location
+saves, imported applied/rejected exclusions and an import arriving mid-collection.
+
+A live local Jobright-only run retained 845 source rows, but its 581 selected
+public detail pages exposed no employer application link; it saved zero listings.
+That is unresolved coverage, not evidence of an empty job market. Exact employer
+link research remains the existing agent handoff; no login bypass, guessed links,
+LLM worker or alternate write path was introduced. Local Docker persistence proof
+is recorded separately from hosted deployment in the feature change note.
+
+The ordinary detached demo now includes the connected Action Board examples
+without a hidden scenario parameter: filled drafts first, a missing answer,
+CAPTCHA verification, and an uncertain submission. All resolve in memory through
+fictional services and return on Reset demo data. Explicit named test scenarios
+keep their existing fixtures. No account writes or external employer forms open.
+
+The repeat test also exposed a SmartRecruiters URL-alias gap: its native identity
+was not reconstructed from storage, which retained only Greenhouse/Lever triples.
+The existing adapter now restores all five verified provider triples (including
+Ashby, Workday and SmartRecruiters) before delegating to copied Career Ops dedup.
+An unchanged short/slugged URL pair is covered by both child-process and SQL-leased
+regressions; distinct native posting IDs remain separate.
+
+Discover now uses a dedicated compact DiscoveredRoleWidget with company identity,
+role title, facts, fit summary, expandable match details and existing queue/preview
+actions. The decorative rarity banner is removed. Application references retain
+the shared Circles progress preview; discovery never implies an application
+stage. This is presentation only; existing service and MCP writers are unchanged.
+
+Action review now groups application preparation/submission under Submission,
+and questions, CAPTCHA/login blockers and uncertainty under Need your input.
+Both use the compact role widget and display the selected draft résumé/version,
+employer-question sources, AI/inference labels and explicit unknown sources.
+Draft inferences are part of the same owned draft/projection, not a parallel
+post. Read parity and receipt authority remain unchanged; hosted projection
+and guide25/contract137 availability requires the normal backend release.
+
+The shared miniwidget's compact board variant now matches the application
+attachment's icon, role/company hierarchy, spacing, contrasting neutral surface
+and border. It renders a saved fitLabel when present, otherwise an existing
+saved priority. Scores never synthesize a label. Exact owned role identity links
+a board application to its saved discovery label; missing labels are omitted.

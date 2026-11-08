@@ -398,3 +398,36 @@ prior assignment. Confirmed/uncertain work is never resubmitted. Existing websit
 review and scoped MCP preparation/submission paths are unchanged. This instruction
 update needs gateway release and client context refresh; host subagent behavior
 and live employer submission are not verified by source checks.
+
+### Orchestrator quality audit (application guide v24)
+
+The coordinating Agent audits every assigned job against saved analysis/drafts
+before the review handoff, checking role accounting, source facts, team scope,
+eligibility, disclosed pay, four fit dimensions, candidate evidence/material gap,
+resume and employer questions/answers. It fills supported omissions and corrects
+mistakes directly or delegates specific repairs, then reads back and rechecks them.
+Unknown facts remain explicit; human edits, holds, version locks and renewed
+approval requirements remain authoritative. Submission summaries likewise require
+per-item saved attempt/receipt evidence. This is a host instruction using existing
+scoped tools, not a new review service or proof of host compliance.
+
+
+### Action review source disclosures
+
+Submission cards cover prepared drafts and submission steps; Need your input
+cards cover questions, CAPTCHA/login blockers and uncertainty. Both reuse the
+compact discovered-role identity widget and show the saved draft résumé/version.
+The board reads questions and resume selection from the owned draft. Question
+metadata uses existing direct profile/saved-answer/preference references or
+answerSource=ai_generated/inferred with inferenceNote. questionSource distinguishes
+observed employer_form fields from hypothetical ai_generated questions; unknown
+legacy provenance remains unknown. Draft inferences [{field,reason}] and
+coverLetterSource are read by the same owner/version-scoped projection for web
+and MCP. These labels are disclosures, never human verification or consent.
+
+Agents save through prepare_draft and read back the current revision and board;
+there is no second board post. Browser refresh/focus/reconnect and existing
+workspace-refresh events synchronize the projection; no new push channel is
+claimed. Changed draft content requires current-version review. Legacy data is
+not backfilled with invented provenance. Gateway guide25/contract137 and the new
+read projection require their normal backend release for hosted availability.

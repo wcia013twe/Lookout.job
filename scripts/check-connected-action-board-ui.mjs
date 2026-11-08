@@ -6,13 +6,16 @@ if(!['localhost','127.0.0.1'].includes(new URL(base).hostname))throw Error('Use 
 const dir=process.env.LOOKOUT_UI_ARTIFACTS||'/tmp/connected-action-board-ui';await mkdir(dir,{recursive:true});
 const browser=await chromium.launch();const errors=[];
 const attach=page=>{page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/\/(rest|functions)\/v1\//.test(r.url()))errors.push('Detached demo attempted backend access');});};
-const path='/needs-you/?demo=1&demoApi=action-board';
+const path='/needs-you/?demo=1';
 const card=(page,kind)=>page.locator(`.action-board-row[data-kind="${kind}"]`);
 const accept=row=>row.getByRole('button',{name:/^Accept:/});
 const reject=row=>row.getByRole('button',{name:/^Reject:/});
 try{
  const desktop=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),page=await desktop.newPage();attach(page);
  await page.goto(base+path);const application=card(page,'review_application').first();await application.waitFor();
+ assert.equal(await page.locator('.action-board-row[data-kind]').first().getAttribute('data-kind'),'review_application','Filled draft leads the list');
+ await page.locator('.needs-you-priority').getByText(/actions? need(s)? your input/).first().waitFor();
+ assert(await page.locator('.workspace-nav-link[href="/needs-you/"]').getByText(/actions? need(s)? your input/).count(),'Navigation advertises unblock tasks');
  await page.getByText('Complete the assessment',{exact:true}).waitFor();
  assert.equal(await page.locator('.prep-interview').filter({hasText:'Example Dated Assessment (demo)'}).count(),1,'Dated action card includes company exactly once');
  assert.equal(await page.getByText('Assessment with a saved deadline',{exact:true}).count(),0,'No additional undated row when the next action owns the deadline');
@@ -22,20 +25,47 @@ try{
  assert(await page.getByText(/^In [0-9]+ days?$/).count());
  assert.equal(await page.getByRole('button',{name:'Next week',exact:true}).count(),0);
  const left=await page.locator('.needs-you-priority').boundingBox(),right=await page.locator('.prep-widget').boundingBox();assert(right.x>=left.x+left.width,'Desktop keeps its two columns');
- for(const row of await page.locator('.action-board-row[data-kind]').all()){assert.equal(await accept(row).count(),1);assert.equal(await reject(row).count(),1);assert(await row.getByRole('region',{name:'Attached job context'}).count()||await row.locator('a').first().innerText());}
- assert.equal(await page.getByText('Imported',{exact:true}).count(),0);assert.equal(await page.locator('.action-board-row').filter({hasText:'Example Scheduled (demo)'}).count(),0);await application.getByRole('region',{name:'Attached job context'}).waitFor();assert(await application.getByRole('list',{name:/Shared application stage:/}).count());
+ for(const row of await page.locator('.action-board-row[data-kind]').all()){assert.equal(await accept(row).count(),1);assert.equal(await reject(row).count(),1);assert(await row.locator('[data-discovered-role]').count()||await row.getByRole('region',{name:'Attached job context'}).count()||await row.locator('a').first().innerText());}
+ assert.equal(await page.getByText('Imported',{exact:true}).count(),0);assert.equal(await page.locator('.action-board-row').filter({hasText:'Example Scheduled (demo)'}).count(),0);await application.locator('[data-discovered-role]').waitFor();assert.equal(await application.getByRole('heading',{name:'Submission',exact:true}).count(),1);await application.getByText(/Saved draft résumé/).waitFor();await application.getByText(/AI-drafted answer/).first().waitFor();await application.getByRole('region',{name:'Inferred details'}).waitFor();
+ const applicationDetails=application.getByRole('link',{name:/Open application details for/});
+ assert(await applicationDetails.count());
+ assert(await applicationDetails.locator('.sr-only').count(),'Application details use the whole widget; no separate visible link');
+ const communication=card(page,'review_outreach').first().getByRole('region',{name:'Attached communication context'});
+ await communication.getByRole('link',{name:/Open communication details for/}).waitFor();
+ assert.match(await communication.innerText(),/contact@example.com/);
+ assert.match(await communication.innerText(),/Team and engineer ownership/);
+ assert.match(await communication.getByRole('link').getAttribute('href'),/person=[^&]+&returnTo=/);
+ await applicationDetails.click({position:{x:20,y:20}});
+ await page.waitForURL(/\/applications\/\?application=/);
+ await page.goBack();await application.waitFor();
  const phoneContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await phoneContext.newPage();attach(phone);await phone.goto(base+path);await card(phone,'review_application').first().waitFor();assert(await phone.locator('.prep-agenda-day').count()>0);assert(await phone.getByText(/^In [0-9]+ days?$/).count());
+ await card(phone,'review_outreach').first().getByRole('region',{name:'Attached communication context'}).waitFor();
  assert(await phone.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
  if(process.env.LOOKOUT_UI_CAPTURE!=='0'){await page.screenshot({path:`${dir}/desktop.png`,fullPage:true});await phone.screenshot({path:`${dir}/mobile.png`,fullPage:true});}
  assert(await accept(application).isDisabled());await application.getByRole('checkbox',{name:'I reviewed this exact application revision.'}).click();await accept(application).waitFor();await page.waitForFunction(()=>{const row=document.querySelector('[data-kind="review_application"]');return !row?.querySelector('button[aria-label^="Accept:"]')?.disabled;},null,{timeout:10000});await accept(application).focus();await accept(application).press('Enter');await page.getByText('This version is approved. It has not been submitted.',{exact:true}).waitFor();
- const blocker=card(page,'resolve_blocker').filter({hasText:'Your start date is needed'});assert(await accept(blocker).isDisabled());await blocker.getByLabel('When can you start?',{exact:false}).fill('June 2027 (fictional)');await blocker.getByRole('checkbox',{name:'I have checked the answers shown above.'}).check();await accept(blocker).click();await page.getByText('Answers saved. The updated application is ready for review.',{exact:true}).waitFor();
+ const manual=card(page,'resolve_blocker').filter({hasText:'Example Verification (demo)'});assert.equal(await manual.getByRole('heading',{name:'Need your input',exact:true}).count(),1);assert(await accept(manual).isDisabled());await manual.getByLabel('How did you resolve this blocker?').fill('Completed the fictional employer verification.');await manual.getByRole('checkbox',{name:'I have checked the answers shown above.'}).check();await accept(manual).click();await manual.waitFor({state:'detached'});
+ const uncertain=card(page,'check_submission').filter({hasText:'Example Timeout (demo)'});assert(await accept(uncertain).isDisabled());await uncertain.getByLabel('Employer portal or confirmation evidence').fill('Fictional portal shows no submission.');await uncertain.getByRole('checkbox',{name:'I checked the employer portal or confirmation email.'}).check();await reject(uncertain).click();await uncertain.waitFor({state:'detached'});
+ const blocker=card(page,'resolve_blocker').filter({hasText:'Your start date is needed'});assert(await accept(blocker).isDisabled());assert.equal(await blocker.getByText('1 action needs your input',{exact:true}).count(),1);await blocker.getByLabel('When can you start?',{exact:false}).fill('June 2027 (fictional)');await blocker.getByRole('checkbox',{name:'I have checked the answers shown above.'}).check();await accept(blocker).click();await page.getByText('Answers saved. The updated application is ready for review.',{exact:true}).waitFor();assert.equal(await blocker.count(),0,'Resolved blocker removes its notification with the owning decision');
  const missing=card(page,'missing_answer').filter({hasText:'What is your preferred work location?'});assert(await accept(missing).isDisabled());await missing.getByLabel('What is your preferred work location?',{exact:true}).fill('Remote in the US (fictional)');await accept(missing).click();await missing.waitFor({state:'detached'});
- const message=card(page,'review_outreach').first();await message.getByText('Accept makes this message ready for you to send.',{exact:true}).waitFor();assert(await accept(message).isDisabled());await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).click();await accept(message).click();await page.getByText('Ready for you to send. Nothing was sent.',{exact:true}).waitFor();
+ const message=card(page,'review_outreach').first();await message.getByText('Accept makes this message ready for you to send.',{exact:true}).waitFor();assert(await accept(message).isDisabled());await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).click();
+ await message.getByRole('button',{name:'Edit message',exact:true}).click();
+ await message.getByRole('textbox',{name:'Draft message',exact:true}).fill('Fictional edited message that should be discarded.');
+ await message.getByRole('button',{name:'Cancel',exact:true}).click();
+ assert.equal(await message.getByText('Fictional edited message that should be discarded.',{exact:true}).count(),0);
+ await message.getByRole('button',{name:'Edit message',exact:true}).click();
+ assert(await accept(message).isDisabled());
+ await message.getByRole('textbox',{name:'Subject (optional)',exact:true}).fill('Edited subject (fictional)');
+ await message.getByRole('textbox',{name:'Draft message',exact:true}).fill('Fictional revised message about team ownership.');
+ await message.getByRole('button',{name:'Save message',exact:true}).click();
+ await message.getByText('Fictional revised message about team ownership.',{exact:true}).waitFor();
+ await message.getByRole('region',{name:'Attached communication context'}).getByText('Edited subject (fictional)',{exact:false}).waitFor();
+ assert(await accept(message).isDisabled());assert.equal(await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).isChecked(),false);
+ await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).click();await accept(message).click();await page.getByText('Ready for you to send. Nothing was sent.',{exact:true}).waitFor();
  const task=card(page,'imported_action');await task.getByText('Choose an interview time',{exact:true}).waitFor();await accept(task).click();await task.waitFor({state:'detached'});
  const interview=card(page,'confirm_interview').first();await accept(interview).click();await page.getByText('Interview details confirmed. Weekly prep is updated.',{exact:true}).waitFor();
  // A mobile vertical drag must remain scroll; an intentional horizontal drag rejects.
  const pending=card(phone,'review_application').first(),cdp=await phoneContext.newCDPSession(phone);
- async function swipe(dx,dy){await pending.scrollIntoViewIfNeeded();const box=await pending.boundingBox(),x=box.x+box.width*.7,y=box.y+24;await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});for(let i=1;i<=8;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx*i/8,y:y+dy*i/8,id:1}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
+ async function swipe(dx,dy){await pending.evaluate(row=>row.scrollIntoView({block:'start'}));const box=await pending.boundingBox(),x=box.x+box.width*.7,y=box.y+24;await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});for(let i=1;i<=8;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx*i/8,y:y+dy*i/8,id:1}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
  await swipe(0,-130);assert.equal(await pending.count(),1);await swipe(-145,0);await phone.getByText('Application saved. Agent work stopped until you resume it.',{exact:true}).waitFor();
  assert.deepEqual(errors,[]);await desktop.close();await phoneContext.close();console.log(`Upcoming dates/day tags and inline action cards verified: distinct content, references, no imported label, guarded forms, exact review, keyboard decisions, manual outreach and mobile scrolling/swipes. Screenshots: ${dir}`);
 }finally{await browser.close();}

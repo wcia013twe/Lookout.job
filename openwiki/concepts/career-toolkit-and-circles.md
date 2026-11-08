@@ -343,3 +343,5 @@ decode asynchronously. This adds no account data or separate cache backend.
 
 Palantir and Palantir Technologies resolve to the same palantir.com logo URL.
 Calendar day padding is 12px per edge with a 4px inter-day margin.
+
+The person draft footer uses a primary Copy message action, quiet Copy subject action and compact Reviewed / Mark ready / Dismiss row. Reviewed still saves the exact-version human review receipt; Mark ready stays disabled until that receipt is present. Draft changes invalidate the matching decision. Readiness remains separate from sending; the Action Board and existing human-only decision writer retain their validation.
