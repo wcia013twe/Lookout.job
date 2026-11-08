@@ -6,7 +6,7 @@ import InterviewBrief from "./interview-brief";
 import { subscribePreparationRefresh } from "../lib/action-board.mjs";
 import { Notice, secondary } from "./ui";
 import type { Application, PreparationPlan } from "./workflow-types";
-export default function ApplicationPreparation({ application, onRounds }: { application: Application; onRounds: () => void }) {
+export default function ApplicationPreparation({ application, onRounds, selectedRoundId }: { application: Application;selectedRoundId?:string; onRounds: () => void }) {
   const w = useWorkspace(), owner = w.demo ? "demo" : w.user?.id || null;
   const [row, setRow] = useState<{ plan: PreparationPlan } | null>(null);
   const [loading, setLoading] = useState(Boolean(owner)), [error, setError] = useState(""), [retry, setRetry] = useState(0);
@@ -30,5 +30,5 @@ export default function ApplicationPreparation({ application, onRounds }: { appl
     return () => { active = false; ++generation; stop(); };
   }, [owner, application.backendId, retry, w.client, w.services]);
   const plan = owner ? row?.plan : w.state.workflow.preparationPlans?.[application.id];
-  return <div className="min-w-0" aria-busy={loading}>{loading ? <Notice>Loading interview brief…</Notice> : error ? <div><Notice>{error}</Notice><button className={`${secondary} mt-3`} onClick={() => setRetry(value => value + 1)}>Retry brief</button></div> : <InterviewBrief application={application} plan={plan} demo={w.demo} timeZone={w.state.workflow.searchPreferences?.quietMode?.timezone} onRounds={onRounds}/>}</div>;
+  return <div className="min-w-0" aria-busy={loading}>{loading ? <Notice>Loading interview brief…</Notice> : error ? <div><Notice>{error}</Notice><button className={`${secondary} mt-3`} onClick={() => setRetry(value => value + 1)}>Retry brief</button></div> : <InterviewBrief selectedRoundId={selectedRoundId} application={application} plan={plan} demo={w.demo} timeZone={w.state.workflow.searchPreferences?.quietMode?.timezone} onRounds={onRounds}/>}</div>;
 }

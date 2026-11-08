@@ -406,3 +406,21 @@ production release are separate; consult the feature note for actual receipts.
 
 A completed or partial direct scan supplies the private shortlist; it does not itself populate Discover. The connected personal agent now finishes an authorized search by reading all shortlist pages and current candidate/profile evidence, selecting personally suitable live opportunities, writing the four assessment dimensions and role-specific narrative, then publishing through the existing scoped `publish_batch` service. It reads each returned private batch back before claiming Discover is populated. Stable run/profile/chunk event keys prevent duplicate batches on completion-event replay. No new model runtime, scheduler, worker publication, automatic applications or shared hosted-board collection is added. Raw filter matches remain outside Discover until agent review. Empty Discover keeps the existing search-history/request control visible while waiting.
 
+## Connected Action Board (contract 120 source update)
+
+The source preserves desktop Action Board framing and existing review dialogs,
+adding deterministic human questions and Accept/Reject controls with mobile swipe
+parity. Exact application/message review is versioned; application rejection
+keeps the job saved and fences agent work until a version-checked human Resume.
+Outreach acceptance only marks the message ready for the user to send.
+Canonical round IDs, typed practice categories, confirmation and cancellation now
+drive the existing Weekly Prep/session ledger without duplicate deadline labels.
+
+The website and read-only `read_action_board` MCP operation share owned SQL
+projection and validation; human decisions remain authenticated website actions.
+Disposable database, upgrade, domain and detached browser checks establish local
+source behavior. The integrated production export and desktop/mobile connected
+flow were verified. Migration plus gateway/MCP release and an authenticated
+hosted check are still required; no hosted parity or real submission/message
+execution is claimed. See the connected-action-board feature note and the
+application-submission and Career Toolkit concept pages for the contract.

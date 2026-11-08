@@ -1,4 +1,5 @@
 "use client";
+import BoardReturn from "./board-return";
 import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 import { useEffect, useState } from "react";
 import ProfileSurface, { profileStyles } from "./profile-surface";
@@ -32,7 +33,8 @@ function ProfileContent() {
   const [active, setActive] = useState<ProfileSectionId>("about"),
     [visited, setVisited] = useState<ProfileSectionId[]>(["about"]);
   useEffect(() => {
-    const section = new URLSearchParams(window.location.search).get("section");
+    const query = new URLSearchParams(window.location.search);
+    const section = query.has("answer")?"agent":query.get("section");
     const requested = section === "kit" ? "preferences" : section === "overview" ? "about" : section;
     if (sections.some(([id]) => id === requested)) {
       setActive(requested as ProfileSectionId);
@@ -44,7 +46,7 @@ function ProfileContent() {
     setVisited((prev) => (prev.includes(id) ? prev : [...prev, id]));
   }
   return (
-    <ProfileSurface>
+    <ProfileSurface><BoardReturn/>
       <div className={profileStyles.profileHeader}>
         <h1 className="text-2xl font-bold tracking-tight">My Profile</h1>
         <ProfileSwitcher/>

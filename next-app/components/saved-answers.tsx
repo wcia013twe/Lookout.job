@@ -1,5 +1,5 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ProfileCard } from "./profile-section";
 import { useWorkspace } from "../lib/workspace";
 import { Field, control, primary, secondary, Notice } from "./ui";
@@ -28,6 +28,7 @@ export default function SavedAnswers() {
     [feedback, setFeedback] = useState(""),
     [showEditor, setShowEditor] = useState(false);
   const answers: AnswerRecord[] = w.state.workflow.savedAnswers || [];
+  useEffect(()=>{const requested=new URL(location.href).searchParams.get('answer');if(!requested)return;const row=answers.find(a=>a.id===requested);if(row){setEditing(row.id);setFields({question:row.question,answer:row.answer,companyScope:row.companyScope||'',policy:row.policy||'ask',verified:!!row.verifiedAt});setShowEditor(true);requestAnimationFrame(()=>{const form=document.getElementById('saved-answer-editor');form?.scrollIntoView({block:'start'});form?.querySelector<HTMLElement>('input,textarea,select')?.focus({preventScroll:true});});}else{setFeedback('This saved answer is no longer available.');} },[w.user?.id,answers.map(a=>a.id).join(',')]);
   const companyQuestion = fields.question === previousEmploymentQuestion;
   function change<K extends keyof AnswerFields>(
     key: K,
@@ -174,7 +175,7 @@ export default function SavedAnswers() {
       {showEditor && (
         <div className="mt-5">
           {" "}
-          <form onSubmit={save} className="space-y-4">
+          <form id="saved-answer-editor" onSubmit={save} className="space-y-4">
             {companyQuestion ? (
               <>
                 <h3 className="font-semibold">{previousEmploymentQuestion}</h3>

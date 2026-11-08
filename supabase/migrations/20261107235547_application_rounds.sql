@@ -26,9 +26,9 @@ begin
  end loop;
 end $$;
 revoke all on function private.validate_imported_rounds(jsonb) from public,anon,authenticated;
-create or replace function private.record_application_milestone_owned(owner_id uuid,app_id uuid,payload jsonb,source_kind text)
+create or replace function private.record_milestone_before_board(owner_id uuid,app_id uuid,payload jsonb,source_kind text)
 returns public.application_milestones language plpgsql security definer set search_path='' as $$
-declare m public.application_milestones; s jsonb:=payload->'source'; date_value timestamptz; replacement_id uuid;
+declare m public.application_milestones; s jsonb:=payload->'source'; date_value timestamptz; replacement_id uuid; effective_round jsonb;
 begin
  perform 1 from public.applications where id=app_id and user_id=owner_id;
  if not found then raise exception 'Owned application not found' using errcode='P0002'; end if;
@@ -36,10 +36,11 @@ begin
   or jsonb_typeof(payload->'eventKey') is distinct from 'string' or length(trim(coalesce(payload->>'eventKey',''))) not between 1 and 200
   or jsonb_typeof(payload->'label') is distinct from 'string' or length(trim(coalesce(payload->>'label',''))) not between 1 and 300
   or coalesce(payload->>'kind','') not in ('submitted','recruiter_call','technical_round','interview','offer','rejected','withdrawn')
-  or coalesce(payload->>'phase','') not in ('scheduled','completed','received')
+  or coalesce(payload->>'phase','') not in ('scheduled','completed','received','cancelled')
   or jsonb_typeof(s) is distinct from 'object' or s->>'kind' is distinct from source_kind
   or s-'kind'-'messageId'-'subject'-'excerpt'-'receivedAt'-'timestampConfirmed'-'note'<>'{}'::jsonb or octet_length(s::text)>10000
  then raise exception 'Invalid milestone' using errcode='22023'; end if;
+ if payload#>>'{round,cancelled}'='true' then payload:=jsonb_set(payload,'{phase}','"cancelled"'::jsonb);end if;
  if payload?'round' then
   perform private.validate_round_metadata(payload->'round');
   if payload->>'kind' not in ('recruiter_call','technical_round','interview') then raise exception 'Round metadata requires process kind' using errcode='22023';end if;
@@ -70,13 +71,15 @@ begin
   if not found then raise exception 'Owned milestone not found' using errcode='P0002'; end if;
   if exists(select 1 from public.application_milestones where supersedes_id=replacement_id and (user_id<>owner_id or event_key<>payload->>'eventKey')) then raise exception 'Milestone already replaced; reread timeline' using errcode='40001'; end if;
  end if;
+ effective_round:=payload->'round';
+ if effective_round is null and replacement_id is not null then select round-'cancelled' into effective_round from public.application_milestones where id=replacement_id and user_id=owner_id and application_id=app_id;end if;
  insert into public.application_milestones(user_id,application_id,event_key,kind,label,occurred_at,phase,source,supersedes_id,round)
- values(owner_id,app_id,payload->>'eventKey',payload->>'kind',payload->>'label',date_value,payload->>'phase',s,replacement_id,payload->'round')
+ values(owner_id,app_id,payload->>'eventKey',payload->>'kind',payload->>'label',date_value,payload->>'phase',s,replacement_id,effective_round)
  on conflict(user_id,event_key) do nothing returning * into m;
  if m.id is null then
   select * into m from public.application_milestones where user_id=owner_id and event_key=payload->>'eventKey';
   if m.application_id is distinct from app_id or m.kind is distinct from payload->>'kind' or m.label is distinct from payload->>'label'
-   or m.occurred_at is distinct from date_value or m.phase is distinct from payload->>'phase' or m.source is distinct from s or m.supersedes_id is distinct from replacement_id or m.round is distinct from payload->'round'
+   or m.occurred_at is distinct from date_value or m.phase is distinct from payload->>'phase' or m.source is distinct from s or m.supersedes_id is distinct from replacement_id or m.round is distinct from effective_round
   then raise exception 'Milestone event key reused with different evidence' using errcode='40001'; end if;
  end if;
  insert into public.activity_events(user_id,application_id,event_key,kind,actor,payload)
@@ -86,8 +89,8 @@ begin
  -- Milestones are process observations, never application receipts or approvals.
  return m;
 end $$;
-revoke all on function private.record_application_milestone_owned(uuid,uuid,jsonb,text) from public,anon,authenticated;
-grant execute on function private.record_application_milestone_owned(uuid,uuid,jsonb,text) to service_role;
+revoke all on function private.record_milestone_before_board(uuid,uuid,jsonb,text) from public,anon,authenticated;
+grant execute on function private.record_milestone_before_board(uuid,uuid,jsonb,text) to service_role;
 create or replace function private.validate_imported_actions(r jsonb) returns void
 language plpgsql set search_path='' as $$
 declare d text; stages text[]:=array['SAVED','APPLIED','SCREEN','INTERVIEW','OFFER']; stage jsonb; current_stage integer;

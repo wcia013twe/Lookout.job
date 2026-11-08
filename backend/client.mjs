@@ -58,6 +58,14 @@ function createBackend(client, expectedUserId = null) {
     return data.data;
   }
   return {
+    async readActionBoard() {
+      const id=await owner(); const data=await result(client.rpc('read_action_board'));
+      if(await owner()!==id)throw Error('Account changed'); return data;
+    },
+    async respondActionBoard(payload) {
+      const id=await owner(); const data=await result(client.rpc('respond_action_board',{payload}));
+      if(await owner()!==id)throw Error('Account changed'); return data;
+    },
     async queueApplicationJob(payload) {
       const id=await owner();
       const value=await result(client.rpc('queue_application_job',{payload}));

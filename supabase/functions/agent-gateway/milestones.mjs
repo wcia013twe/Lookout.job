@@ -5,7 +5,10 @@ const bounded = (value,max) => typeof value==='string' && value.trim() && value.
 export function validateMilestone(payload) {
  if(payload.round!==undefined){validateRoundMetadata(payload.round);if(!['recruiter_call','technical_round','interview'].includes(payload.kind))throw Error('Round metadata is only for process rounds.');}
  const s=payload.source;
- if(!bounded(payload.eventKey,200)||!bounded(payload.label,300)||!MILESTONE_KINDS.includes(payload.kind)||!['scheduled','completed','received'].includes(payload.phase)
+ if(payload.practiceCategory!==undefined&&!['general','coding','systems','behavioral','sql','ml'].includes(payload.practiceCategory))throw Error('Invalid practice category');
+ if(payload.timeZone!==undefined){try{new Intl.DateTimeFormat('en',{timeZone:payload.timeZone});}catch{throw Error('Invalid timezone');}}
+ if(payload.proposedAt!==undefined&&payload.proposedAt!==null&&!timestamp(payload.proposedAt))throw Error('Proposed time needs explicit timezone');
+ if(!bounded(payload.eventKey,200)||!bounded(payload.label,300)||!MILESTONE_KINDS.includes(payload.kind)||!['scheduled','completed','received','cancelled'].includes(payload.phase)
   ||!s||typeof s!=='object'||Array.isArray(s)||Object.keys(s).some(k=>!['kind','messageId','subject','excerpt','receivedAt','timestampConfirmed','note'].includes(k))
   ||!['email','user_reported'].includes(s.kind)
   ||(s.kind==='email'&&(!bounded(s.messageId,200)||!bounded(s.subject,300)||!bounded(s.excerpt,2000)||!timestamp(s.receivedAt)))

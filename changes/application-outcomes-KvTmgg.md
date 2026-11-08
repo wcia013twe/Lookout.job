@@ -238,3 +238,12 @@
   its version 15 while retaining round guide versions 16/6 and contract 121.
   No personal records were migrated from notes; runtime activation follows the
   committed source and is recorded separately below.
+- Integrated the concurrent Connected Action Board implementation, preserving
+  native stable round IDs, practice categories/timezones, confirmation, cancellation
+  and round-linked prep. The round migration now extends its underlying writer
+  instead of replacing that wrapper. Corrections/confirmation preserve stage/type
+  when omitted; cancelled phase and unconfirmed dates use the same projection.
+  Updated workflow references to application-workspace 17 / interview-preparation 7.
+- Hierarchy remains Applied → Screen → Interview → Offer, with each employer's
+  ordered rounds nested inside those broad phases. Source changes do not invent
+  rounds from notes or backfill personal records.

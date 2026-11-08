@@ -327,3 +327,14 @@ reordered, completed, rescheduled or cancelled. Saved rounds display under
 Interview. The fictional `?demo=1&demoApi=application-rounds` scenario and isolated
 import editor cover Screen take-homes and mixed round states without account
 storage/backend calls. Source verification is not a hosted release claim.
+## Connected Action Board decisions (source update)
+
+Desktop retains its rows, framing and existing review dialog. Accept/Reject controls and required human questions are derived by `read_action_board`; mobile horizontal swipes use the same human response operation. Application and outreach acceptance require acknowledgment of the exact saved content first. Unsaved application edits and changed source keys invalidate board review. Missing answers and uncertain submissions open their owned input/recovery flow instead of offering binary acceptance. Answer links open My Agent's expanded shared question bank; application links select the Documents or Interview tab and owned round.
+
+The existing application inbox remains authoritative for application handoffs. Versioned human review/response receipts add answer, interview and outreach decisions without duplicating their drafts. `respond_action_board` is authenticated-human-only and checks source locks, current keys and replay events. `read_action_board` is the gated read-only MCP counterpart; `request_human_action` returns owned record links. Agents cannot approve, verify, reject or resume through these reads. Responses and history do not establish external execution. Outreach acceptance means ready for the human to send, never sent or authorized agent sending.
+
+Rejecting an application keeps its history and tracker state, resets draft review to invalidate approval, cancels queued execution and persists a human-controlled work hold. Draft/preparation writes, queueing and runner prefill/claim/start are fenced until an explicit human Resume action in the existing application controls. Already-started outcomes remain real or uncertain; no click is undone or receipt fabricated. Resume never restores a declined approval. Declined outreach cannot be automatically rewritten into a new decision; explicit human initiation is required.
+
+Source checks include the connected-board database scenario, unique-versus-ambiguous legacy-plan upgrade, shared planner/demo tests and `scripts/check-connected-action-board-ui.mjs`. These establish local source behavior only. The migration and gateway/MCP must release together before advertising hosted parity.
+
+Round integration retains the connected Action Board stable round_id, confirmation, practice focus and timezone. Proposed or incorrect dates do not supply a next-action date. Native cancellation uses phase cancelled; Screen/Interview remains independent of practice focus. Guide versions are application-workspace 17 and interview-preparation 7.

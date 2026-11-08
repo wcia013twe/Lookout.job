@@ -27,6 +27,7 @@ test('Node HTTP MCP and browser read the same atomic handoffs through Edge/SQL',
    const result=await rpc('agent_dispatch',{credential_hash:hash,...body});
    return Response.json(result.error?{error:result.error.message}:{data:result.data},{status:result.error?400:200});
   }});
+  const boardRead=await dispatch(token,'actions.board.read',{});assert.equal(boardRead.status,200);assert.deepEqual(boardRead.data.items,[]);
   server=createApi({dispatch});server.listen(0,'127.0.0.1');await once(server,'listening');
   const url=`http://127.0.0.1:${server.address().port}/mcp`;
   let id=0;
@@ -44,6 +45,7 @@ test('Node HTTP MCP and browser read the same atomic handoffs through Edge/SQL',
    const result=await call('tools/call',{name:'read_action_inbox',arguments:{state:'all'}});
    assert(!result.isError,JSON.stringify(result));return result.structuredContent||JSON.parse(result.content[0].text);
   };
+  const boardTool=await call('tools/call',{name:'read_action_board',arguments:{}});assert(!boardTool.isError);const board=boardTool.structuredContent||JSON.parse(boardTool.content[0].text);assert.equal(board.items[0].kind,'resolve_blocker');
   const inbox=await read();assert.equal(inbox.items.length,1);assert.equal(inbox.items[0].kind,'resolve_blocker');
   await call('tools/call',{name:'report_application_failure',arguments:failure});
   assert.equal((await read()).items.length,1);

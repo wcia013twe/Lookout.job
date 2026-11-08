@@ -30,9 +30,9 @@ export function applicationRounds(application={}){
  const replaced=new Set(rows.map(r=>r.supersedes_id).filter(Boolean)),seen=new Set();
  return rows.flatMap((r,index)=>{
   if(replaced.has(r.id)||!legacy[r.kind]||r.id==='current-status')return [];
-  const id=r.id||`legacy-round-${index}`;if(seen.has(id))return [];seen.add(id);
+  const id=r.round_id||r.roundId||r.id||`legacy-round-${index}`;if(seen.has(id))return [];seen.add(id);
   const defaults=legacy[r.kind],meta=r.round||{};
-  return [{id,label:r.label||'Recorded round',stage:ROUND_STAGES.includes(meta.stage)?meta.stage:defaults[0],type:ROUND_TYPES.includes(meta.type)?meta.type:defaults[1],phase:ROUND_PHASES.includes(r.phase)?r.phase:'received',date:roundDate(r.occurred_at),notes:r.source?.note||r.source?.excerpt||'',cancelled:meta.cancelled===true,status:meta.cancelled?'cancelled':r.phase==='completed'?'completed':r.phase==='scheduled'?'scheduled':'pending'}];
+  return [{id,label:r.label||'Recorded round',stage:ROUND_STAGES.includes(meta.stage)?meta.stage:defaults[0],type:ROUND_TYPES.includes(meta.type)?meta.type:defaults[1],phase:ROUND_PHASES.includes(r.phase)?r.phase:'received',date:r.confirmation&&r.confirmation!=='confirmed'?null:roundDate(r.occurred_at),notes:r.source?.note||r.source?.excerpt||'',cancelled:meta.cancelled===true||r.phase==='cancelled',status:(meta.cancelled||r.phase==='cancelled')?'cancelled':r.phase==='completed'?'completed':r.phase==='scheduled'?'scheduled':'pending'}];
  }).sort((a,b)=>rootIndex(a.id)-rootIndex(b.id));
 }
 export function applicationRoundLevel(application){return Math.max(0,...applicationRounds(application).filter(r=>!r.cancelled).map(r=>r.stage==='INTERVIEW'?3:2));}

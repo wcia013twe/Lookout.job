@@ -1,4 +1,5 @@
 'use client';
+import BoardReturn from '../../../components/board-return';
 import Link from 'next/link';
 import {apiErrorText} from '../../../../lib/api-failure.mjs';
 import ApiError from '../../../components/api-error';
@@ -21,7 +22,7 @@ export default function ToolkitWorkspace(){
  const [tab,setTab]=useState('workspace');
  useEffect(()=>{const read=()=>setTab(location.hash&&location.hash!=='#workspace'?'tools':'workspace');read();window.addEventListener('hashchange',read);return()=>window.removeEventListener('hashchange',read);},[]);
  const owner=w.demo?`demo-${w.demoEpoch}`:w.user?.id;
- return <>
+ return <><BoardReturn/>
   {!params.get('artifact')&&<div className={styles.workspaceTopbar}>
   {!params.get('artifact')&&<header className={styles.workspaceHeading}><h1>{tab==='tools'?'Tools & skills':'Career Toolkit'}</h1></header>}
   <nav className={styles.workspaceTabs} aria-label="Career Toolkit sections">{[['workspace','Workspace'],['tools','Tools & skills']].filter(([id])=>id!==tab).map(([id,label])=><Link key={id} href={`/career-toolkit/#${id}`} onClick={()=>setTab(id)} aria-current={tab===id?'page':undefined}><ToolkitIcon name={id==='workspace'?'documents':'all'} size={17}/>{label}</Link>)}</nav></div>}

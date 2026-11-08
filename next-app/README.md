@@ -501,3 +501,9 @@ Role-card company marks use 56px on desktop and 48px on mobile. The ranking badg
 Network person details use a LinkedIn-blue profile button and an email icon box for saved Gmail threads. Other conversation providers retain their existing link.
 
 Network offers an Application filter across tracked/imported records and an unlinked-people option. Person cards show each linked company/role using existing application tags or role URL associations. Selecting an application clears the selected person and company filter; no contact data is rewritten.
+
+### Connected Action Board
+
+The desktop layout and existing review dialogs stay unchanged. Existing rows gain Accept/Reject and human-input links; mobile touch swipes invoke the same version-checked human decisions. Exact application/message review is required before acceptance. Reject keeps the application saved and stops agent work until human Resume; accepting outreach means ready for the user to send. Saved-answer links expand the actual My Agent question bank. Canonical round IDs/categories drive Weekly Prep and select the right interview details; materials open exact artifact versions.
+
+Use `?demo=1&demoApi=action-board` for isolated connected-flow coverage and `node scripts/check-connected-action-board-ui.mjs` against the local port-3107 preview. The script accepts `LOOKOUT_UI_URL` and `LOOKOUT_UI_ARTIFACTS`, checks desktop framing/mobile gestures and rejects demo backend access. Backend migration/functions require their own release; older endpoints retain the existing handoff view with a refresh error instead of false decisions.

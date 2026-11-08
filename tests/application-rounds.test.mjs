@@ -32,13 +32,13 @@ test('real browser and scoped MCP writers/readers share exact native/imported ro
   const app=(await db.query("insert into public.applications(user_id,job_id,draft,status) values($1,'round-test','{}','Submitted') returning id",[u])).rows[0].id;
   const sql=async(op,payload={},h=hash)=>(await db.query('select public.agent_dispatch($1,$2,$3) data',[h,op,payload])).rows[0].data;
   const human=async(payload)=>(await db.query("select set_config('test.uid',$1,false)",[u]),(await db.query('select to_jsonb(public.record_application_milestone($1,$2)) data',[app,payload])).rows[0].data);
-  const first={eventKey:'screen-home',kind:'technical_round',label:'Take home',phase:'completed',occurredAt:null,round:{stage:'SCREEN',type:'take_home'},source:{kind:'user'}};
-  const screen=await human(first);assert.equal(screen.round.stage,'SCREEN');
+  const first={eventKey:'screen-home',kind:'technical_round',label:'Take home',phase:'completed',occurredAt:null,round:{stage:'SCREEN',type:'take_home'},practiceCategory:'coding',timeZone:'America/New_York',source:{kind:'user'}};
+  const screen=await human(first);assert.equal(screen.round.stage,'SCREEN');assert.equal(screen.round_id,screen.id);assert.equal(screen.practice_category,'coding');assert.equal(screen.time_zone,'America/New_York');
   const next={applicationId:app,eventKey:'tech',kind:'technical_round',label:'Technical 1',phase:'scheduled',occurredAt:null,round:{stage:'INTERVIEW',type:'technical'},source:{kind:'user_reported',note:'Candidate described the round.'}};
   const scheduled=await sql('applications.milestone',next);assert.deepEqual(await sql('applications.milestone',next),scheduled);
   await assert.rejects(sql('applications.milestone',{...next,round:{stage:'SCREEN',type:'oa'}}),error=>error.code==='40001');
-  await sql('applications.milestone',{...next,eventKey:'complete-tech',supersedesId:scheduled.id,phase:'completed'});
-  await sql('applications.milestone',{...next,eventKey:'cancel-manager',label:'Manager',round:{stage:'INTERVIEW',type:'hiring_manager',cancelled:true}});
+  const completed=await sql('applications.milestone',{...next,eventKey:'complete-tech',supersedesId:scheduled.id,phase:'completed',round:undefined});assert.equal(completed.round_id,scheduled.round_id);assert.deepEqual(completed.round,scheduled.round);assert.equal(applicationRounds({milestones:[scheduled,completed]})[0].id,scheduled.round_id);
+  await sql('applications.milestone',{...next,eventKey:'cancel-manager',label:'Manager',phase:'cancelled',round:{stage:'INTERVIEW',type:'hiring_manager'}});
   const row={company:'Imported',title:'Engineer',location:'Remote',url:null,status:'APPLIED',employmentType:'FT',appliedDate:'2026-11-01',statusDate:null,archived:false,archivedDate:null,notes:'Original notes'};
   await sql('imports.save',{rows:[row],expectedVersion:0,eventKey:'round-import'});
   const imported=(await sql('imports.list')).records[0];
