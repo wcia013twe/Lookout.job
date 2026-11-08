@@ -332,3 +332,15 @@ The existing adapter now restores all five verified provider triples (including
 Ashby, Workday and SmartRecruiters) before delegating to copied Career Ops dedup.
 An unchanged short/slugged URL pair is covered by both child-process and SQL-leased
 regressions; distinct native posting IDs remain separate.
+
+### Copy-only JD publication
+
+New canonical-URL jobs published through `publish_batch` copy the latest owned
+`search_observations.description` matching that URL, ordered by checked time,
+creation time and ID. Agent-supplied `employer.description` is ignored. Without a
+saved observation the description is empty and the UI reports it was not collected.
+Existing catalog jobs remain unchanged through both ID and URL publication. This
+guards publication only; it does not prove source captures are complete or repair
+previous summaries. Fictional SQL fixtures exercise full text, owner isolation,
+missing captures, separate fit analysis and existing-job publication. Hosted rollout
+requires the migration; local checks alone do not establish deployment.
