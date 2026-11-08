@@ -247,3 +247,13 @@
 - Hierarchy remains Applied → Screen → Interview → Offer, with each employer's
   ordered rounds nested inside those broad phases. Source changes do not invent
   rounds from notes or backfill personal records.
+- Final frozen integrated source passed the complete suite: 1,055 passed,
+  5 existing skips, zero failures (1,060 total). The 13 focused round/connected-board
+  tests also passed, including metadata preservation through corrections. Both
+  production-export browser scripts passed on desktop/mobile; build, typecheck,
+  158-role data validation and diff checks passed. Earlier intermediate runs were
+  superseded after concurrent-source integration and catalog/version updates.
+- Preserved the subsequent broader-fit guidance (search 16), combined application
+  guide 18 / preparation guide 7 and developer contract 122. Remote #78's squash
+  tree exactly matched ancestor c84de87; integrated that duplicate history without
+  discarding newer local work. Development activation receipt follows below.
