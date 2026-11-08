@@ -4,7 +4,7 @@
 > Hosted-board collection and automatic publication are disabled. The receipt's
 > first 100 IDs are a preview; page the run for all results. SQL leases/checkpoints
 > remain durable; temporary snapshot references are fenced. Missing files trigger
-> recollection; finished runs clean up, abandoned files expire after three days.
+> recollection; finished runs without retained Jobright leads clean up; retained pools and abandoned files expire after seven days.
 > See `backend/runtime/README.md` for current storage/recovery details. Legacy
 > manual discovery operations documented below remain explicit fallback tools.
 
@@ -72,7 +72,7 @@ Profiles use bounded YAML frontmatter (`id`, `name`, `active`, `filters`, and `p
 
 For the automated backend route, `submit_backend_job` accepts only `kind: 'search_ats'`, a saved `profileId`, and a stable `eventKey`. It requires the appropriate read/preferences/draft scopes. The job is not proof that a worker is configured: it requires the Node API, worker, and database migration to be deployed and execution enabled. The worker itself never schedules searches; it claims already queued jobs. See [Local stack, backend processes, and release boundaries](../operations/local-and-release-runtime.md) for startup and release separation.
 
-Before collection, the worker loads the profile and portals context and runs `inspect-discovery-filters`. A non-ready plan fails before creating a run, with a recovery instruction to correct the profile; broadening a query to bypass targeting is not a recovery path. Starting a run pins the context and enabled-source/query snapshot. A fresh run defaults to three days, while backlog mode defaults to 30 days.
+Before collection, the worker loads the profile and portals context and runs `inspect-discovery-filters`. A non-ready plan fails before creating a run, with a recovery instruction to correct the profile; broadening a query to bypass targeting is not a recovery path. Starting a run pins the context and enabled-source/query snapshot. A fresh run defaults to three days and backlog mode to 30 days; an explicit saved max_posting_age_days governs provider collection and screening (this user now uses seven days).
 
 ## Leased execution and collection
 
@@ -209,3 +209,14 @@ Search guide17, application guide19 and developer contract124 advertise the scop
 ### Compact team-focused fit analysis
 
 Search guide18 makes the default analysis a 130–180-word decision brief: existing priority with a short verdict; up to five chat bullets covering team, candidate contribution, growth, support and practical fit; and one sentence on what changes priority. Research exact-team evidence first and clearly distinguish adjacent-team context, inference and unknowns. Save the same substance in existing whyItFits/materialGap text and four assessments; no new tags, fields or Markdown-rendering requirement. Application guide20 follows this format during authorized work. This changes future instructions, not historical assessments or publication.
+
+
+### Broader collection with recoverable Jobright leads
+
+Both Jobright providers snapshot every published row into immutable, lease-fenced temporary storage before title triage or detail resolution. Source dates/work settings remain source-list metadata. Each raw row retains resolution and triage status, while only live parsed, filtered and history-deduplicated jobs enter database discoveries. Completion keeps Jobright pools for seven days; read expiry is enforced even before filesystem pruning. A missing pool is explicit, never silently replaced by a fresh feed.
+
+The existing `read_search_source_leads` tool pages all retained rows (100 maximum per response) after both run/source and backend-job ownership checks. It never drops title-excluded or unresolved rows. The API requires the existing staging volume mounted read-only at the same configured path as the worker. This works on the existing single-host Docker/Compute Engine deployment; separately hosted API/worker instances need a genuinely shared staging volume. No new database table or generic file reader is introduced.
+
+Explicit engineering families expand to common title variants while preserving negative and seniority rules. US-wide profile targeting recognizes country/state forms and treats incomplete locations as unknown; explicit foreign countries and explicit scanner/narrow city restrictions retain their exclusions. The saved freshness limit controls provider collection as well as later filtering. General was updated through the owned writer to seven days with engineering aliases; candidate facts and applications were preserved.
+
+Search guide19/developer131 directs the connected agent to inspect retained/pending counts, page source pools, research exact employer links for plausible unresolved leads and use the existing verification/screening/deduplication path before private publication. Worker completion does not imply those research tasks finished. Source accounting distinguishes raw, title-excluded, unresolved, verified, filtered and screened-candidate counts from the final shortlist. No automatic worker search engine or LLM is added.

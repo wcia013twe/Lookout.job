@@ -3,21 +3,21 @@ import {discoveryDedupRow} from '../../lib/search-dedup.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
 import type {Payload} from './types.ts';
 export interface Listing {sourceId:string;url:string;company:string;title:string;location:string|null;checkedAt:string;liveness:'active';evidence:string;employerPostedAt:string|null;sourceListAgeDays:number|null;description:string;atsIdentity?:string;requisitionId?:string;listingIdentity?:Payload;employmentType?:string}
-export interface SourceResult {listings:Listing[];coverage:'exhaustive'|'truncated'|'inaccessible';blocker:string;total:number;examined?:number;provenance?:Payload;diagnostics?:{url:string;status:string;reason:string}[]}
+export interface SourceResult {listings:Listing[];coverage:'exhaustive'|'truncated'|'inaccessible';blocker:string;total:number;examined?:number;provenance?:Payload;duplicateUrls?:string[];diagnostics?:{url:string;status:string;reason:string}[]}
 export type Execute=(task:string,input:Payload,options?:{signal?:AbortSignal})=>Promise<any>;
 export type VerificationBatch=(result:SourceResult,progress:{processed:number;batchIndex:number;available:number;examined:number})=>Promise<void>;
 // Public identity metadata only enters the existing sanitized CareerOps child.
 // No provider, URL normalization or deduplication implementation lives here.
-export async function fetchSource(sourceId:string,source:Payload,{execute=executeCareerTask,previous=[],profile={},days=3,request=fetch,signal,onBatch,prefilter=false}: {execute?:Execute;previous?:Payload[];profile?:Payload;days?:number;request?:typeof fetch;signal?:AbortSignal;onBatch?:VerificationBatch;prefilter?:boolean|Payload}={}):Promise<SourceResult>{
+export async function fetchSource(sourceId:string,source:Payload,{execute=executeCareerTask,previous=[],profile={},days=3,request=fetch,signal,onBatch,onLeads,prefilter=false}: {execute?:Execute;previous?:Payload[];profile?:Payload;days?:number;request?:typeof fetch;signal?:AbortSignal;onBatch?:VerificationBatch;onLeads?:(rows:Payload[])=>Promise<void>;prefilter?:boolean|Payload}={}):Promise<SourceResult>{
  let checkpointFailed=false;
  try{
   signal?.throwIfAborted();
-  const collected=await collectSource(sourceId,source,{execute,profile,days,request,prefilter});
+  const collected=await collectSource(sourceId,source,{execute,profile,days,request,prefilter,onLeads:onLeads?async rows=>{try{await onLeads(rows);}catch(error){checkpointFailed=true;throw error;}}:undefined});
   if(collected.coverage==='inaccessible')return {listings:[],coverage:'inaccessible',total:collected.total,examined:collected.examined,blocker:collected.blocker,diagnostics:collected.diagnostics,provenance:collected.provenance};
   const candidates=prefilter&&collected.jobs.length?await execute('prefilter-discovery',{profile,jobs:collected.jobs,config:prefilter===true?undefined:prefilter}):collected.jobs;
   const unique=candidates.length?await deduplicate(candidates,previous,execute):[];
   const checked=await verifySourceBatches(sourceId,unique,{execute,source,signal,onBatch:onBatch?async(result,progress)=>{try{await onBatch(result,{...progress,available:collected.total,examined:collected.examined});}catch(error){checkpointFailed=true;throw error;}}:undefined});
-  return {...checked,total:collected.total,examined:collected.examined,
+  return {...checked,duplicateUrls:candidates.filter((row:Payload)=>!unique.some((kept:Payload)=>kept.url===row.url)).map((row:Payload)=>row.url),total:collected.total,examined:collected.examined,
    coverage:collected.coverage==='exhaustive'?checked.coverage:'truncated',
    blocker:[collected.blocker,checked.blocker].filter(Boolean).join(' '),
    diagnostics:[...(collected.diagnostics||[]),...(checked.diagnostics||[])],

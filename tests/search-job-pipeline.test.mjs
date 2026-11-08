@@ -268,7 +268,7 @@ test('direct search excludes an already tracked Applied job and preserves its ap
 test('a completed direct shortlist reaches private Discover only through agent-reviewed publication, with replay and website parity',async()=>{
  const {batchRoles}=await import('../lib/cloud-model.mjs');
  const {readGuide}=await import('../supabase/functions/agent-gateway/guides.mjs');
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,18);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,19);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  const hash=f.owner.replaceAll('-','').repeat(2);
@@ -289,4 +289,39 @@ test('a completed direct shortlist reaches private Discover only through agent-r
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,1);
  assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
  assert(!Object.hasOwn(read.items[0].job.employer,'matchAssessment'));
+});
+
+test('a leased Jobright run retains every raw lead after completion and exposes only its owned temporary pool',async()=>{
+ const {mkdtemp,rm}=await import('node:fs/promises');const {tmpdir}=await import('node:os');const path=await import('node:path');
+ const {readSearchSourceLeads}=await import('../backend/runtime/search-intake.ts');
+ const root=await mkdtemp(path.join(tmpdir(),'jobright-pool-test-')),f=await fixture();
+ const address='https://github.com/jobright-ai/2026-Software-Engineer-New-Grad';
+ const portals={tracked_companies:[{id:'jobright-newgrad',name:'Jobright fixture',careers_url:address,enabled:true}],search_queries:[]};
+ const projection={active:true,filters:{Employment:'Full-time',Location:'United States'},instructions:'## Priority & flexibility\n- Location: Required\n\n## Career Ops discovery filters\n\n```json\n{"title_filter":{"positive":["Software Engineer"],"negative":["word:Senior"]},"skip_tiers":["senior"],"max_posting_age_days":7}\n```'};
+ await db.query("update public.search_documents set projection=$2 where user_id=$1 and kind='profile'",[f.owner,projection]);await db.query("update public.search_documents set projection=$2 where user_id=$1 and kind='portals'",[f.owner,portals]);
+ const savedFetch=globalThis.fetch,id=n=>String(n).padStart(24,'0');
+ globalThis.fetch=async url=>{
+  const s=String(url);if(s.includes('raw.githubusercontent'))return new Response([['Software Development Engineer',1],['Software Engineer',2],['Senior Software Engineer',3]].map(([title,n])=>`| [Fictional](https://example.test) | [${title}](https://jobright.ai/jobs/info/${id(n)}) | Hawthorne, CA | Hybrid | Nov 07 |`).join('\n'));
+  const n=Number(new URL(s).pathname.split('/').at(-1));return new Response(`<script id="__NEXT_DATA__">${JSON.stringify({props:{pageProps:{dataSource:{jobResult:{jobId:id(n),applyLink:n===1?'https://job-boards.greenhouse.io/example/jobs/100':null}}}}})}</script>`);
+ };
+ try{
+  const execute=async(task,input)=>task==='verify-discovery-leads'?{jobs:input.leads.map(({url})=>({url,title:'Software Development Engineer',company:'Fictional',location:'Hawthorne, CA',employmentType:'FT',description:'Fictional systems engineering.',postedAt:null,listingIdentity:{ats_provider:'greenhouse',board_slug:'example',posting_id:'100'}})),diagnostics:input.leads.map(({url})=>({url,status:'active',extraction:'parsed'}))}:executeCareerTask(task,input);
+  await workOnce(rpc,{execute,stagingRoot:root});const j=await result(f.job.id);
+  assert.equal(j.status,'partial');assert.equal(j.result.retainedLeads,3);assert.equal(j.result.pendingLeadResolution,1);assert.equal(j.result.saved,1,JSON.stringify(j.result));
+  const call=async(operation,payload)=>{try{return {data:(await db.query(operation==='backend.jobs.read'?'select public.backend_job_dispatch($1,$2,$3) data':'select public.agent_dispatch($1,$2,$3) data',[f.owner.replaceAll('-','').repeat(2),operation,payload])).rows[0].data,error:null};}catch(e){return {error:{code:e.code,message:e.message}};}};
+  const page=await readSearchSourceLeads(call,{runId:j.search_run_id,sourceId:'portal:jobright-newgrad',offset:0,limit:2},{stagingRoot:root});assert.equal(page.error,null);assert.equal(page.data.total,3);assert.equal(page.data.nextOffset,2);assert.equal(page.data.verified,false);
+  const last=await readSearchSourceLeads(call,{runId:j.search_run_id,sourceId:'portal:jobright-newgrad',offset:2,limit:2},{stagingRoot:root});assert.equal(last.data.leads[0].triageStatus,'filtered-title');assert.equal(last.data.nextOffset,null);
+  const {createDispatch,credentialHash}=await import('../backend/runtime/service.ts');const token='jb_agent_'+f.owner.replaceAll('-','').repeat(2),hash=credentialHash(token);
+  await db.query('update private.agent_connections set token_hash=$2 where user_id=$1',[f.owner,hash]);
+  const previousRoot=process.env.LOOKOUT_SEARCH_STAGING_DIR;process.env.LOOKOUT_SEARCH_STAGING_DIR=root;
+  try{
+   const dispatch=createDispatch({supabaseUrl:'https://example.supabase.co',rpc:async(name,args)=>{try{return {data:(await db.query(`select public.${name}($1,$2,$3) data`,[args.credential_hash,args.operation,args.payload])).rows[0].data,error:null};}catch(e){return {data:null,error:{code:e.code,message:e.message}};}}});
+   const {createHandler}=await import('../supabase/functions/agent-mcp/protocol.mjs');const handler=createHandler(dispatch);
+   const response=await handler(new Request('http://local/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_search_source_leads',arguments:{runId:j.search_run_id,sourceId:'portal:jobright-newgrad',limit:100}}})}));
+   const body=await response.json();assert(!body.result?.isError,JSON.stringify(body));const data=body.result.structuredContent||JSON.parse(body.result.content[0].text);assert.equal(data.total,3);assert.equal(data.leads.length,3);
+  }finally{if(previousRoot===undefined)delete process.env.LOOKOUT_SEARCH_STAGING_DIR;else process.env.LOOKOUT_SEARCH_STAGING_DIR=previousRoot;}
+  const denied=await readSearchSourceLeads(async()=>({error:{code:'42501'}}),{runId:j.search_run_id,sourceId:'portal:jobright-newgrad'},{stagingRoot:root});assert.equal(denied.error.code,'42501');
+  assert.equal((await db.query('select count(distinct listing_id)::int n from public.search_observations where run_id=$1',[j.search_run_id])).rows[0].n,1);
+  assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
+ }finally{globalThis.fetch=savedFetch;await rm(root,{recursive:true,force:true});}
 });

@@ -1,3 +1,4 @@
+import {isUsWideProfile,usLocationEvidence} from './profile-location-evidence.mjs';
 import {discoveryConstraints,observedEmployment,assertDiscoverySourceFacts,assertDiscoveryResults,DISCOVERY_EVALUATION_SCOPE} from '../lib/discovery-filter-contract.mjs';
 // Translate Lookout records; all configured search predicates remain upstream.
 import {inspectDiscoveryFilters} from './career-search-plan.mjs';
@@ -18,6 +19,8 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
  const locations=String(filters.Location||'').split(/[;,]/).map(x=>x.trim()).filter(Boolean);
  const explicitLocation=plan.profileOverrides.includes('location_filter');
  const portalLocationGate=scan.buildLocationFilter(portals.location_filter);
+ const usWide=!explicitLocation&&!portals.location_filter&&isUsWideProfile(locations);
+ const usStateMatch=scan.buildLocationFilter({allow:['United States'],always_allow:['United States'],strict:true});
  const locationGate=scan.buildLocationFilter(explicitLocation?portals.location_filter:locations.length?{allow:locations,strict:strength('Location')==='Required'}:portals.location_filter);
  const workTerms=constraints.workArrangement.values.flatMap(value=>value==='on-site'?['on-site','onsite','in-office','in office']:[value]);
  const workKnown=scan.buildLocationFilter({allow:['remote','hybrid','on-site','onsite','in-office','in office'],strict:true}),workGate=scan.buildLocationFilter({allow:workTerms,strict:true});
@@ -42,7 +45,10 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
   const locationUrl=job.canonical_url||job.url,locationEvidence=Boolean(job.location?.trim()||scan.locationHintFromUrl(locationUrl));
   // Saved profile location preferences have explicit strengths. A raw upstream
   // portals.location_filter is a scanner gate, not an implicit soft preference.
-  upstream('location',locationGate(job.location,locationUrl,job.title),locationEvidence,explicitLocation||!locations.length?true:strength('Location')==='Required',locationConfigured);
+  if(usWide){
+   const status=usLocationEvidence(job.location,usStateMatch);
+   add('location',status,status==='unknown'?'Country is not established by this abbreviated or incomplete location; retain for employer verification.':status==='met'?'Explicit US country/state evidence matches the US-wide profile; work authorization is separate.':'An explicit non-US country conflicts with the US-wide profile.',strength('Location')==='Required');
+  }else upstream('location',locationGate(job.location,locationUrl,job.title),locationEvidence,explicitLocation||!locations.length?true:strength('Location')==='Required',locationConfigured);
   if(!explicitLocation&&locations.length&&portals.location_filter&&!portalLocationGate(job.location,locationUrl,job.title))add('location-policy','unmet','Original Career Ops shared location policy rejected this lead.',true);
   for(const key of ['experience','graduation','availability','authorization','prior-application','company-limits'])add(key,'unknown',key==='authorization'?'Authorization/sponsorship is not inferred from country or a passed discovery filter.':`Agent must reconcile ${key} with current applicant evidence and this exact employer requirement before claiming eligibility.`);
   if(filters['Minimum base pay']&&!portals.salary_filter)add('minimum-base-pay','unknown','Minimum base pay has no normalized salary_filter.',strength('Minimum base pay')==='Required');
