@@ -96,3 +96,29 @@ test('Palantir research remains dated and attributed inside a detached fictional
  for(const resource of list.items.filter(row=>row.content.kind==='resource'))assert.match(resource.content.resourceUrl,/^https:/);
  assert(!JSON.stringify(list).includes('interviewerProfile'));
 });
+
+test('mock rejection diagnostics retain reason and field types but never private values',async()=>{
+ const {mockRejection}=await import('../supabase/functions/agent-mcp/mock-diagnostics.mjs');
+ const privateValue='PRIVATE_INTERVIEWER_QUESTION';
+ const event=mockRejection('save_mock_interview','validation',privateValue,{artifact:{...artifact,title:privateValue,body:privateValue},interviewerProfile:privateValue},400);
+ assert(!JSON.stringify(event).includes(privateValue));assert(!JSON.stringify(event).includes(artifact.id));
+ assert.equal(event.shape.interviewerProfile,'string');assert.equal(event.shape.fieldTypes.durationMinutes,'number');
+ const logs=[];
+ const handler=createHandler(async()=>({status:200,data:{scopes:['workspace:read','drafts:write']}}),undefined,[],event=>logs.push(event));
+ const response=await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'save_mock_interview',arguments:{artifact:{...artifact,weekOf:'2026-11-09'},interviewerProfile:privateValue}}})}));
+ const result=await response.json();assert.equal(result.error.code,-32602);assert.match(logs[0].diagnosticId,/^[a-f0-9-]{36}$/);
+ assert.equal(logs[0].reason,'Assign the mock to its scheduled local week');assert(!JSON.stringify(logs).includes(privateValue));
+});
+
+
+test('mock discovery advertises the required offset and excludes document-only preparedFor',()=>{
+ const schema=MOCK_TOOLS.find(tool=>tool.name==='save_mock_interview').inputSchema.properties.artifact;
+ assert(!Object.hasOwn(schema.properties,'preparedFor'));assert(!Object.hasOwn(schema.properties,'materials'));assert(!Object.hasOwn(schema.properties,'resourceUrl'));
+ assert.deepEqual(schema.properties.kind.enum,['mock_interview']);
+ const pattern=new RegExp(schema.properties.scheduledAt.pattern);
+ assert(!pattern.test('2026-11-09T15:00:00'));assert(pattern.test('2026-11-09T15:00:00-05:00'));
+ const correct={...artifact,scheduledAt:'2026-11-09T15:00:00-05:00',weekOf:'2026-11-09',durationMinutes:45};
+ assert.throws(()=>validateMock('mock.save',{artifact:{...correct,scheduledAt:'2026-11-09T15:00:00'},interviewerProfile:'placeholder'}),/explicit UTC offset/);
+ assert.throws(()=>validateMock('mock.save',{artifact:{...correct,preparedFor:'Target interview on Wednesday'},interviewerProfile:'placeholder'}),/Remove preparedFor/);
+ assert.doesNotThrow(()=>validateMock('mock.save',{artifact:correct,interviewerProfile:'placeholder'}));
+});

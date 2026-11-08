@@ -1,3 +1,4 @@
+import {mockRejection} from './mock-diagnostics.mjs';
 import {PERMISSIONS_HANDOFF_TOOL} from '../agent-gateway/connection-permissions.mjs';
 import {ACCESS_TOOLS,DEFAULT_TOOL_NAMES,toolWorkflow,publicTool,validAccessArguments} from './tool-surface.mjs';
 import {AUDIT_TOOLS} from '../agent-gateway/agent-audit.mjs';
@@ -103,7 +104,7 @@ async function readBody(request) {
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
   return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
 }
-function validArgs(tool, args) {
+function validArgs(tool, args, onFailure=()=>{}) {
   try {
     if (!args || typeof args !== 'object' || Array.isArray(args)) return false;
     const schema = tool.inputSchema;
@@ -122,10 +123,10 @@ function validArgs(tool, args) {
     // runner extras retain their own validation boundary and cannot add SQL ops.
     if(OPERATIONS.includes(tool.operation))validateRequest({operation:tool.operation,payload:args});
     return true;
-  } catch {return false;}
+  } catch (error) {onFailure(error);return false;}
 }
 const hasToolScopes=(tool,scopes,payload=undefined)=>requiredToolScopes(tool,payload).every(scope=>scopes.includes(scope));
-export function createHandler(forward, allowedOrigins = ['https://wcia013twe.github.io'], extraTools = []) {
+export function createHandler(forward, allowedOrigins = ['https://wcia013twe.github.io'], extraTools = [], diagnostic = event=>console.warn(JSON.stringify(event))) {
   const availableTools = [...TOOLS, ...extraTools].filter(tool => enabledMcpOperation(tool.operation));
   return async request => {
     const origin = request.headers.get('Origin');
@@ -176,21 +177,23 @@ export function createHandler(forward, allowedOrigins = ['https://wcia013twe.git
       name=args.name;
       args=args.arguments;
     }
+    const rejectMock=(stage,message,status=400)=>{const event=mockRejection(name,stage,message,args,status);try{diagnostic(event);}catch{}};
     const tool = availableTools.find(tool => tool.name === name);
     if (!tool) return error(id, -32602, 'Unknown tool');
     if (!hasToolScopes(tool,scopes,args)) return result(id, { content: [{ type: 'text', text: 'Missing required scope: ' + requiredToolScopes(tool,args).filter(scope=>!scopes.includes(scope)).join(', ') }], isError: true });
     if (tool.operation.startsWith('artifacts.') || tool.operation.startsWith('learning.') || tool.operation.startsWith('mock.')) {
       try { validateArtifact(tool.operation, args); validateMock(tool.operation, args); }
-      catch (e) { return error(id, -32602, e.message); }
+      catch (e) { if(tool.operation.startsWith('mock.'))rejectMock('validation',e.message);return error(id,-32602,e.message); }
     }
     if (tool.operation.startsWith('search.')) {
       try { validateSearch(tool.operation, args); }
       catch (e) { return error(id, -32602, e.message); }
     }
-    if (!validArgs(tool, args)) return error(id, -32602, 'Invalid tool arguments');
+    let argumentError;
+    if (!validArgs(tool,args,e=>{argumentError=e;})) {if(tool.operation.startsWith('mock.'))rejectMock('contract',argumentError?.message||'Invalid tool arguments');return error(id,-32602,'Invalid tool arguments');}
     try {
       const response = await forward(token, tool.operation, args);
-      if (response.status !== 200) return result(id, { content: [{ type: 'text', text: JSON.stringify({ status: response.status, error: response.error ?? 'Operation rejected' }) }], isError: true });
+      if (response.status !== 200) {if(tool.operation.startsWith('mock.'))rejectMock('backend',response.error,response.status);return result(id, { content: [{ type: 'text', text: JSON.stringify({ status: response.status, error: response.error ?? 'Operation rejected' }) }], isError: true });}
       return result(id, { content: [{ type: 'text', text: JSON.stringify(response.data ?? null) }] });
     } catch { return result(id, { content: [{ type: 'text', text: 'Gateway unavailable; check current state before retrying writes.' }], isError: true }); }
   };

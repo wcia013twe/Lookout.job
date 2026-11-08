@@ -26,13 +26,16 @@ async function call(name,args){
 let created=false;
 try{
  sql(`begin; insert into auth.users(id) values('${owner}'); insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values('${owner}','Fictional local mock proof','${hash}',array['workspace:read','drafts:write'],now()+interval '10 minutes'); commit;`);created=true;
- const saved=await call('call_discovered_tool',{name:'save_mock_interview',arguments:payload});
+ const attempt=artifact=>call('call_discovered_tool',{name:'save_mock_interview',arguments:{...payload,artifact}});
+ await assert.rejects(attempt({...payload.artifact,scheduledAt:'2026-11-09T15:00:00'}));
+ await assert.rejects(attempt({...payload.artifact,preparedFor:'Target interview on Wednesday'}));
+ const saved=await attempt(payload.artifact);
  assert.equal(saved.artifact.id,session);assert.equal(saved.artifact.version,1);
  const replay=await call('call_discovered_tool',{name:'save_mock_interview',arguments:payload});assert.equal(replay.artifact.version,1);
  const internal=await call('call_discovered_tool',{name:'read_mock_interview',arguments:{id:session}});assert.equal(internal.interviewerProfile,profile);
  const visible=await call('call_discovered_tool',{name:'read_artifact',arguments:{id:session}});assert(!JSON.stringify(visible).includes(profile));
  assert.equal(visible.content.durationMinutes,45);assert.equal(visible.content.timeZone,'America/New_York');
- console.log('Passed: local Node MCP -> Edge -> SQL mock save/read/retry; hidden profile stays out of ordinary artifact reads.');
+ console.log('Passed: local mock offset/preparedFor rejection plus Node MCP -> Edge -> SQL save/read/retry; hidden profile stays out of ordinary artifact reads.');
 }finally{
  if(created){sql(`delete from auth.users where id='${owner}';`);assert.equal(sql(`select (select count(*) from auth.users where id='${owner}')+(select count(*) from public.career_artifacts where id='${session}')+(select count(*) from private.mock_interview_profiles where artifact_id='${session}')+(select count(*) from private.agent_connections where user_id='${owner}');`),'0');console.log('Fictional proof account, connection, artifact and profile removed.');}
 }

@@ -239,3 +239,16 @@ Legacy tasks attach automatically only when one current confirmed round matches 
 The detached scenario `?demo=1&demoApi=action-board` covers the shared decision rows, exact review, stopped/resumed applications, manual outreach readiness, proposed-round confirmation, cancellation and typed practice. It is fictional, resettable and has no account/backend access. Migration, function release and authenticated hosted verification remain separate from local tests and screenshots.
 
 Tailored round resources use the existing `update_preparation_plan` operation with `roundId` and current `expectedVersion`, omitting `deadline`. It reads the owned current canonical round, preserves other rounds and completed task identities, and saves through the original plan validator. Legacy standalone inputs remain supported; linked plans reject newly duplicated standalone task templates and foreign-round links. Daily planning uses the owner's configured time zone while retaining the event's original time zone as evidence.
+
+### Mock schema and rejection diagnostics (contract 122)
+
+Mock discovery now advertises only mock fields, requires scheduling fields and
+shows an RFC 3339 timestamp pattern with an explicit UTC offset. A separate
+`timeZone` does not make an offset-free `scheduledAt` valid. `preparedFor` is
+brief-only and is omitted from the mock schema; target-interview context belongs
+in purpose/body. Material-format guide v2 states the same rules. MCP mock
+validation/backend rejections produce a server diagnostic ID, stage, allowlisted
+reason and field types only. They never record request values, mock IDs, tokens
+or interviewer-profile content. Historical rejections without these diagnostics
+cannot be reconstructed from logs; unchanged JSON-RPC error bodies preserve
+client compatibility.
