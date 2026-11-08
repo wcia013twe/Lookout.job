@@ -30,3 +30,6 @@ Palette refinement: use restrained lavender/blue, teal, muted amber and sage
 accents blended lightly into the active workspace surface, rather than broad
 pastel fills. Inherit theme text colors, keep borders subtle, and retain existing
 accessible check/red-X semantics and action anatomy in light/dark themes.
+
+Embedded application summaries use a neutral white/deep surface with a stronger
+contrasting border and subtle elevation to separate them from tinted action cards.
