@@ -32,7 +32,7 @@ export async function consumeMuseChanges({call, handle, verify, connectionKey, g
         seen.add(event.id);
         // Accept only known read destinations and matching workflow references.
         if (!event.refresh || event.refresh.tool !== type.readTool || event.workflow?.guideId !== type.workflow.guideId) continue;
-        const expectedArguments = ['read_personal_context','read_agent_schedule'].includes(type.readTool) ? {}
+        const expectedArguments = ['read_personal_context','read_agent_schedule','read_action_board'].includes(type.readTool) ? {}
           : type.readTool === 'read_search_context' ? {profileId:event.recordId}
           : type.readTool === 'read_backend_jobs' ? {jobId:event.recordId} : {applicationId:event.recordId};
         if (JSON.stringify(event.refresh.arguments) !== JSON.stringify(expectedArguments)) continue;

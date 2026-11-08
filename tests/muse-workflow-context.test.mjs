@@ -212,3 +212,12 @@ test('recall guidance separates broad worth-a-look review from deeper top-pick r
  assert.match(search.instructions,/Employer-confirmed closure is an actual exclusion/);
  assert.match(notifications.instructions,/unresolved source leads using actual saved results/);
 });
+
+test('receiver handles Action Board decisions and AI Apply pointers through their scoped readers',async()=>{
+ const f=fixture(['action_decision','application_requested']);
+ const result=await consumeMuseChanges({call:f.call,connectionKey:'action-requests',handle:async({guide})=>{assert.equal(guide.id,'application-workspace');return {status:'handled'};},verify:async()=>true});
+ assert.equal(result.acknowledgedIds.length,2);
+ assert.deepEqual(f.calls.find(c=>c.name==='read_action_board').args,{});
+ assert.deepEqual(f.calls.find(c=>c.name==='read_backend_jobs').args,{jobId:'fictional-record'});
+ const again=await consumeMuseChanges({call:f.call,connectionKey:'action-requests',handle:async()=>assert.fail('already acknowledged'),verify:async()=>true});assert.equal(again.acknowledgedIds.length,0);
+});

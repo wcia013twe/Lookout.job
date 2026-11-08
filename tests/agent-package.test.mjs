@@ -14,9 +14,10 @@ const watchUrl='https://example.test/functions/v1/agent-gateway/pending-count?wa
 const fixture=()=>({watchUrl,wake:{command:process.execPath,args:['-e','process.exit(0)']}});
 const config=()=>validateConfig(fixture());
 test('config accepts count-only HTTPS URLs and literal command args, rejects credential fields',()=>{
- assert.equal(config().pollIntervalSeconds,120);
+ assert.equal(config().pollIntervalSeconds,60);assert.equal(config().wakeCooldownSeconds,60);
+ assert.equal(pollDelay(config(),1,()=>0),120000);assert.equal(pollDelay(config(),2,()=>0),240000);assert.equal(pollDelay(config(),9,()=>0),300000);
  for(const patch of [{token:'secret'},{wake:{command:'wake',args:['jb_agent_'+'a'.repeat(64)]}},{watchUrl:watchUrl.replace('https:','http:')},{watchUrl:watchUrl+'&token=secret'},{watchUrl:watchUrl+'&watchId=bad'},{watchUrl:watchUrl.replace('https://','https://user:pass@')},{watchUrl:watchUrl+'#fragment'},{wake:{command:'echo',args:'bad'}},{wake:{command:'echo',args:[],env:{TOKEN:'secret'}}},{pollIntervalSeconds:1},{requestTimeoutSeconds:61},{wakeCooldownSeconds:0}])assert.throws(()=>validateConfig({...fixture(),...patch}));
- assert.ok(pollDelay(config(),0,()=>0)>=120000);assert.ok(pollDelay(config(),9,()=>0)<=3600000);
+ assert.ok(pollDelay(config(),0,()=>0)>=60000);assert.ok(pollDelay(config(),9,()=>0)<=300000);
  assert.ok(pollDelay(config(),1,()=>0)>pollDelay(config(),0,()=>0));
 });
 test('poller sends no credentials, rejects errors/redirects/large or malformed responses',async()=>{
@@ -79,5 +80,22 @@ test('existing scoped guide/MCP boundary discovers agent package and preserves h
  assert.deepEqual(await guideDispatch('agent-package',async()=>({error:{code:'42501'}})),{error:{code:'42501'}});
  const handler=createHandler(async(_token,operation,payload)=>operation==='credentials.verify'?{status:200,data:{scopes:['workspace:read']}}:{status:200,data:(await guideDispatch(payload.id,async()=>({data:{}}))).data});
  const response=await handler(new Request('https://example.test/mcp',{method:'POST',headers:{Authorization:'Bearer jb_agent_'+'a'.repeat(64),'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_guide',arguments:{id:'agent-package'}}})}));
- const result=await response.json();assert.ok(!result.result.isError);assert.equal(JSON.parse(result.result.content[0].text).distribution.archive,'lookout-agent-0.1.0.tgz');
+ const result=await response.json();assert.ok(!result.result.isError);assert.equal(JSON.parse(result.result.content[0].text).distribution.archive,'lookout-agent-0.2.0.tgz');
+});
+
+test('failed wake retries after one minute without acknowledging or requiring a version change',async()=>{
+ const state={lastWakeAt:null};let attempts=0;const options={cooldownMs:config().wakeCooldownSeconds*1000,persist:async()=>{},wake:async()=>{attempts++;if(attempts===1)throw Error('host unavailable');}};
+ await assert.rejects(handleCount(1,state,{...options,now:1000}));
+ assert.equal(await handleCount(1,state,{...options,now:60999}),'cooldown');
+ assert.equal(await handleCount(1,state,{...options,now:61000}),'wake-command-completed');assert.equal(attempts,2);
+});
+
+test('fictional AI Apply and Action Board events wake the receiver without any context version counter',async()=>{
+ const events=[{id:'00000000-0000-4000-8000-000000000091',kind:'application_requested',recordId:'fictional-queued-job',version:1},{id:'00000000-0000-4000-8000-000000000092',kind:'action_decision',recordId:'fictional-decision',version:1}];
+ const demo=createMuseChangeFeedDemo({get:()=>events});const {watchId}=await demo.configureAgentWatch({enabled:true});
+ const baseline=(await demo.readMuseChanges()).items.filter(e=>!events.some(x=>x.id===e.id));await demo.acknowledgeMuseChanges({eventIds:baseline.map(e=>e.id)});
+ const state={lastWakeAt:null};let wakes=0;const opts={now:1000,cooldownMs:60000,persist:async()=>{},wake:async()=>{wakes++;}};
+ await handleCount(await demo.readAgentPendingCount(watchId),state,opts);assert.equal(wakes,1);assert.equal(await demo.readAgentPendingCount(watchId),2,'wake never consumes events');
+ const pending=(await demo.readMuseChanges()).items;assert.deepEqual(pending.map(e=>e.refresh.tool),['read_backend_jobs','read_action_board']);
+ await demo.acknowledgeMuseChanges({eventIds:pending.map(e=>e.id)});assert.equal(await demo.readAgentPendingCount(watchId),0);
 });

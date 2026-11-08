@@ -181,3 +181,7 @@ activation or hosted deployment.
 ### Muse-owned AI Apply routing (source update)
 
 The narrowly scoped claim_application_request and report_application_request tools route through backend_job_dispatch on both Edge and Node. They share current job/application version checks, active connection scopes and existing job projection/feed state. The request belongs to its bound connection; there is no timed agent takeover or automatic browser runtime. See [the routing contract](../../docs/discover-application-jobs.md) and [current implementation state](../operations/current-state.md) for activation and host-verification limits.
+
+### Event-driven Muse wake contract
+
+The receiver polls the existing pending-event count, including application requests and Action Board decisions, independently of context versions. Agent package 0.2.0 defaults to 60-second polling and wake cooldown with capped error backoff. The authenticated worker reads actual events, deduplicates by event ID, reconciles durable domain state, verifies progress/blockers and acknowledges only handled events. Hosts must coalesce workers and retain a pending drain while busy. Existing explicit host settings must be updated; legacy configure_agent_watch responses still recommend 120 seconds. Package/guide source and local builds do not establish host activation or end-to-end delivery.
