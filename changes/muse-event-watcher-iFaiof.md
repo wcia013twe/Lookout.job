@@ -39,3 +39,5 @@ Local activation read-back confirmed developer142/application-workspace29/change
 
 - Application guide30/developer143 explicitly group unanswered employer fields in one existing application/card, preserve answered fields, label proposals unconfirmed, and require complete-group read-back before notifying. Resolution continues the same application to Submission review.
 - Existing prepare_draft/read_application_record/read_action_board paths and detached demo guide references are unchanged apart from the current version; no new writer/UI or per-field task. Validation: full suite 1136 passed/five skipped, data validation, diff checks and local API image build passed.
+
+Local read-back confirmed developer143/application-workspace30 and the explicit grouped-input instruction after API/Edge activation. No real application card, answer or approval was changed. Host compliance and hosted deployment remain separate.
