@@ -34,6 +34,18 @@ accessible check/red-X semantics and action anatomy in light/dark themes.
 Embedded application summaries use a neutral white/deep surface with a stronger
 contrasting border and subtle elevation to separate them from tinted action cards.
 
+Communication reviews embed a compact neutral communication reference with saved
+recipient, company, destination and optional subject. The whole summary opens the
+owned Network message with a board return path. Keep the complete message and
+exact-message review inline, and preserve the human-send boundary.
+
+Both embedded summaries open details by clicking the widget itself; application
+posting links remain independently accessible. No separate details text link.
+
+Communication drafts support inline Edit message, optional subject, Save message
+and Cancel. Keep decisions disabled during editing and require fresh review
+after saved content changes; preserve human sending.
+
 Input follow-up: use a small static notification dot on pending human blockers
 and navigation, with an accessible label and board-level input count. Filled
 application drafts lead the existing list. No flashing/pulsing or new layout.

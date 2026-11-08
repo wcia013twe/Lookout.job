@@ -52,7 +52,7 @@ export default function NeedsYou() {
           {!board.error&&unblockCount>0&&<p className="mt-3"><ActionAttention count={unblockCount}/></p>}
           {setup&&<p className="my-4 text-sm text-board-muted">Add and verify your profile and résumé to finish application approvals. <Link href="/profile/" className="underline underline-offset-4">Set up profile</Link></p>}
           {handoffCount ? <ul className="mt-4 space-y-4">
-            {items.map(item=><ActionDecisionCard key={`${w.user?.id||'demo'}:${item.key}`} item={item} busy={board.busy||w.locked||!!board.error} onRespond={respond}/>)}
+            {items.map(item=><ActionDecisionCard key={`${w.user?.id||'demo'}:${item.key}`} item={item} busy={board.busy||w.locked||!!board.error} onRespond={respond} onSaveMessage={board.saveMessage}/>)}
             {!board.snapshot&&actions.map(({item,application}) => {
               if(!application)return <NeedsYouRow key={item.id} title="Application action" context="Saved application" reason={item.reason} control={<Link href="/applications/" className="handoff-action">Open Applications</Link>}/>;
               const uncertain = item.kind === "check_submission";

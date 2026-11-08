@@ -1,3 +1,4 @@
+import {actionBoardMessageFields} from '../../lib/action-board.mjs';
 // Detached, fictional services: no imports of account clients or persistent storage.
 const copy=structuredClone;
 const signature=value=>encodeURIComponent(JSON.stringify(value));
@@ -14,11 +15,17 @@ export function withActionBoardDemo(services,store){
   }
   for(const row of imports){const r=row.record;if(r.needsAction===true&&r.nextAction?.trim()&&!r.archived&&!['REJECTED','WITHDRAWN','CLOSED'].includes(r.status))result.push({key:`imported:${row.id}:${signature(r)}`,kind:'imported_action',sourceId:row.id,version:signature(r),company:r.company,role:r.title,status:r.status,employmentType:r.employmentType,appliedDate:r.appliedDate,actionDate:r.actionDate,reason:r.nextAction,href:`/applications/?application=import:${row.id}&tab=Overview`,canAccept:false,canReject:false,requiresReview:false});}
   for(const answer of answers.filter(a=>!a.verifiedAt&&a.imported))result.push({key:`answer:${answer.id}:${signature(answer)}`,kind:['','ask me'].includes(answer.answer?.trim().toLowerCase()||'')?'missing_answer':'verify_answer',sourceId:answer.id,version:signature(answer),title:answer.question,body:answer.answer,reason:'This proposed answer has not been verified. Choose whether it may be reused.',href:`/profile/?section=agent&answer=${answer.id}`,canAccept:!['','ask me'].includes(answer.answer?.trim().toLowerCase()||''),canReject:!['','ask me'].includes(answer.answer?.trim().toLowerCase()||''),requiresReview:false});
-  for(const c of contacts.filter(c=>c.message?.trim()&&!/\[[^\]]+\]/.test(c.message)&&['Not asked','Draft','Drafted'].includes(c.status||'Not asked')))result.push({key:`outreach:${c.id}:${signature([c.message,c.subject,c.contact||c.name,c.email,c.linkedin])}`,kind:'review_outreach',sourceId:c.id,version:String(c._revision||0),title:'Review message',recipient:c.contact||c.name,subject:c.subject||'',company:c.company,body:c.message,reason:'This message is ready for review. Accepting marks it ready for you to send.',href:`/referrals/?person=${c.id}`,canAccept:true,canReject:true,requiresReview:true});
+  for(const c of contacts.filter(c=>c.message?.trim()&&!/\[[^\]]+\]/.test(c.message)&&['Not asked','Draft','Drafted'].includes(c.status||'Not asked')))result.push({key:`outreach:${c.id}:${signature([c.message,c.subject,c.contact||c.name,c.email,c.linkedin])}`,kind:'review_outreach',sourceId:c.id,version:String(c._revision||0),title:'Review message',recipient:c.contact||c.name,subject:c.subject||'',destination:c.email||c.linkedin||'',company:c.company,body:c.message,reason:'This message is ready for review. Accepting marks it ready for you to send.',href:`/referrals/?person=${c.id}`,canAccept:true,canReject:true,requiresReview:true});
   return result.map(i=>{const app=apps.find(a=>a.backendId===i.applicationId),resume=(store.get('workflow.resumes')||[]).find(r=>r.id===app?.resumeId);return {...i,canAccept:true,canReject:true,questions:app?.questions||i.questions,coverLetter:app?.coverLetter,resume:resume?{id:resume.id,name:resume.name,version:resume.version}:undefined,reference:{id:i.sourceId,kind:i.applicationId?'application':i.kind==='review_outreach'?'person':'answer',label:i.kind==='review_outreach'?(i.recipient||i.company):i.kind==='confirm_interview'?i.title:i.company||i.title||'Saved application',detail:['review_outreach','confirm_interview'].includes(i.kind)?i.company:i.role,href:i.href},createdAt:'2026-11-07T12:00:00Z',reviewed:!!receipts.get(i.key)?.reviewed_at}}).filter(i=>includeResolved||!receipts.get(i.key)?.response);
  }
  return {...services,
   async readActionBoard(){const imports=services.simplifyImport?(await services.simplifyImport('list')).records:undefined;return copy({items:items(false,imports),outreach:items(true).filter(i=>i.kind==='review_outreach'&&receipts.get(i.key)?.response).map(i=>({...i,response:receipts.get(i.key).response})),holds:[...holds.values()],history:[...receipts].filter(([,r])=>r.response).map(([decision_key,r])=>({decision_key,...r}))});},
+  async saveActionBoardMessage({id,expectedRevision,subject,message}){
+   const fields=actionBoardMessageFields({subject,message}),contact=(store.get('network.referrals')||[]).find(c=>c.id===id);
+   if(!contact||(contact._revision||0)!==expectedRevision)throw Error('Message changed. Reload actions before saving.');
+   const saved={...contact,...fields,_revision:(contact._revision||0)+1};
+   store.update('network.referrals',rows=>rows.map(c=>c.id===id?saved:c));return copy(saved);
+  },
   async respondActionBoard(payload){
    const old=events.get(payload.eventKey);if(old){if(JSON.stringify(old.payload)!==JSON.stringify(payload))throw Error('Retry changed');return copy(old.result);}
    const input=payload.input||{},response=payload.response;
@@ -74,6 +81,8 @@ export function withActionBoardDemo(services,store){
 }
 export function enableActionBoardScenario(fixtures,date){
  fixtures.state.demo.connectedBoard=true;
+ const messageContact=fixtures.state.network.referrals.find(c=>c.status==='Not asked');
+ if(messageContact){messageContact.email='contact@example.com';messageContact.subject='Team and engineer ownership (fictional)';}
  fixtures.state.demo.boardImports=[{id:'00000000-0000-4000-8000-000000000777',identity_key:'fictional-board-import',source_rows:[],record:{company:'Example Follow-up (demo)',title:'Systems Engineer',location:'Remote',employmentType:'FT',status:'APPLIED',statusDate:date,appliedDate:date,url:null,notes:'Fictional application',archived:false,needsAction:true,nextAction:'Choose an interview time',actionDate:date}}];
 
  fixtures.state.demo.boardImports.push({id:'00000000-0000-4000-8000-000000000780',identity_key:'demo-event-only',source_rows:[],record:{company:'Example Scheduled (demo)',title:'Engineer',location:'Remote',employmentType:'FT',status:'INTERVIEW',statusDate:date,appliedDate:date,url:null,archived:false,archivedDate:null,notes:'Fictional scheduled interview, no human task.',needsAction:false,nextAction:'Technical interview',actionDate:date,rounds:[{id:'event-only-round',label:'Technical interview',stage:'INTERVIEW',type:'technical',phase:'scheduled',date,notes:'Fictional event only.',cancelled:false}]}});
