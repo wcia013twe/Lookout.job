@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildPreparationAgenda} from '../lib/preparation-planner.mjs';
+import {buildPreparationAgenda,buildWeeklyPreparationAgenda} from '../lib/preparation-planner.mjs';
 import {createTestDatabase} from './helpers/database.mjs';
 import {museFeatureDispatch} from '../supabase/functions/agent-gateway/muse-features.mjs';
 const today='2026-11-07';
@@ -40,7 +40,7 @@ test('owned browser and MCP snapshots share imported dates and public mock logis
   assert.deepEqual(agent,browser);assert.equal(browser.imports.length,1);assert.equal(browser.calendarArtifacts.length,1);
   assert(!JSON.stringify(browser).includes('private source notes'));assert(!JSON.stringify(browser.calendarArtifacts).includes('body'));
   const result=await museFeatureDispatch({operation:'preparation.planner.read',payload:{},now:new Date(today+'T12:00:00Z'),rpc:async()=>({data:agent})});
-  assert.deepEqual(result.data.agenda,buildPreparationAgenda({...browser,today}));
+  assert.deepEqual(result.data.agenda,buildWeeklyPreparationAgenda({...browser,today}));
   await db.query("select set_config('test.uid',$1,false)",[other]);const foreign=(await db.query('select public.read_preparation_planner() data')).rows[0].data;
   assert.notEqual(foreign.imports[0].id,browser.imports[0].id);assert.notEqual(foreign.calendarArtifacts[0].id,browser.calendarArtifacts[0].id);
  }finally{await db.close();}
@@ -59,4 +59,32 @@ test('fictional Toolkit changes feed the same calendar snapshot and stay resetta
  // Use the existing fictional material collection; no real backend or account access.
  assert.ok(before.calendarArtifacts.every(row=>row.content.kind==='mock_interview'));
  assert.deepEqual((await createDemoServices(createMemoryStore(createDemoWorkspace('2026-11-07T12:00:00Z'))).readPreparationPlanner()).calendarArtifacts,before.calendarArtifacts);
+});
+
+test('weekly calendar keeps Monday through Sunday including empty and past days, without allocating practice in the past',()=>{
+ const input={today:'2026-11-07',learningGoals:[{id:'goal',version:1,goal:{active:true,title:'Systems',tasks:[{id:'task',title:'Practice',detail:'Explain tradeoffs',minutes:240,targetDate:'2026-11-08'}]}}],settings:{dailyMinutes:15}};
+ const agenda=buildWeeklyPreparationAgenda(input);
+ assert.deepEqual(agenda.days.map(d=>d.date),['2026-11-02','2026-11-03','2026-11-04','2026-11-05','2026-11-06','2026-11-07','2026-11-08']);
+ assert(agenda.days.slice(0,5).every(d=>!d.items.length));assert.equal(agenda.unscheduled,1);assert(agenda.pending.some(t=>t.title==='Practice'&&t.reason==='Outside daily budget'));
+ assert.equal(buildWeeklyPreparationAgenda({...input,weekOf:'2026-11-09'}).days[0].date,'2026-11-09');
+ assert.throws(()=>buildWeeklyPreparationAgenda({...input,weekOf:'2026-11-10'}),/Monday/);
+});
+test('undated assessments and overdue/out-of-week actions stay visible, while cancelled and completed rounds do not return',()=>{
+ const make=(id,phase='received',date=null)=>({id,label:id,stage:'SCREEN',type:'oa',phase,date,cancelled:false});
+ const input={today:'2026-11-07',imports:[{id:'import',record:{company:'Assessment Co',status:'SCREEN',needsAction:true,nextAction:'Submit response',actionDate:'2026-11-01',rounds:[make('undated'),make('done','completed'),{...make('cancel'),cancelled:true},make('next-week','scheduled','2026-11-11')]}}]};
+ const agenda=buildWeeklyPreparationAgenda(input);
+ assert.deepEqual(agenda.pending.map(p=>p.title).sort(),['Submit response','next-week','undated']);
+ assert.equal(agenda.pending.find(p=>p.title==='undated').date,null);assert.equal(agenda.pending.find(p=>p.title==='Submit response').reason,'Overdue');
+ assert(buildWeeklyPreparationAgenda({...input,weekOf:'2026-11-09'}).days.flatMap(d=>d.interviews).some(r=>r.roundId==='next-week'));
+});
+test('MCP week selection projects the same source and rejects invalid or injected week arguments',async()=>{
+ const {validateRequest}=await import('../supabase/functions/agent-gateway/contract.mjs');
+ const {TOOLS}=await import('../supabase/functions/agent-mcp/protocol.mjs');
+ const schema=TOOLS.find(t=>t.name==='read_preparation_planner').inputSchema;
+ assert(new RegExp(schema.properties.weekOf.pattern).test('2026-11-09'));
+ const payload={weekOf:'2026-11-09'},snapshot={timeZone:'America/New_York'};validateRequest({operation:'preparation.planner.read',payload});
+ const result=await museFeatureDispatch({operation:'preparation.planner.read',payload,now:new Date('2026-11-08T01:00:00Z'),rpc:async(op,p)=>{assert.deepEqual(p,{});return {data:snapshot};}});
+ assert.deepEqual(result.data.agenda,buildWeeklyPreparationAgenda({...snapshot,today:'2026-11-07',weekOf:payload.weekOf}));
+ for(const bad of ['2026-11-10','2026-02-30',null,42])assert.throws(()=>validateRequest({operation:'preparation.planner.read',payload:{weekOf:bad}}));
+ assert.throws(()=>validateRequest({operation:'preparation.planner.read',payload:{weekOf:'2026-11-09',userId:'other'}}));
 });

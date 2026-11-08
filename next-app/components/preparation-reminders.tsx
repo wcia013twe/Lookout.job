@@ -3,7 +3,7 @@ import SurfacePanel from "./surface-panel";
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createBackend } from "../../backend/client.mjs";
-import { buildPreparationAgenda, plannerToday, recordLocalPreparationSession, validatePlannerMinutes } from "../../lib/preparation-planner.mjs";
+import { buildWeeklyPreparationAgenda, plannerWeekStart, plannerDay, plannerToday, recordLocalPreparationSession, validatePlannerMinutes } from "../../lib/preparation-planner.mjs";
 import { useWorkspace } from "../lib/workspace";
 import { subscribePreparationRefresh } from "../lib/action-board.mjs";
 import DraftReview from "./draft-review";
@@ -27,29 +27,34 @@ type Bundle = {
 type Item = { learning?: boolean; needsMaterial?: boolean; artifacts?: {id:string;title:string;path:string}[]; context?: string; id: string; title: string; detail: string; minutes: number; remainingAfter: number; shared: boolean; reason: string; targets: Target[] };
 type CalendarEvent = {id:string;applicationId?:string;roundId?:string;company?:string;title:string;date:string;kind:string;path?:string};
 type Day = { events?: CalendarEvent[]; date: string; plannedMinutes: number; completedMinutes: number; items: Item[]; interviews: { applicationId: string; company: string; stage: string; kind?:string; roundId?:string }[] };
-export type Agenda = { today: string; dailyMinutes: number; days: Day[]; unscheduled: number; dormantCount: number; uncertainCount: number; expiredCount: number };
-const agendaFor = buildPreparationAgenda as unknown as (input: Bundle & { applications: Record<string, Application>; today: string }) => Agenda;
+type PendingTask = CalendarEvent & {reason:string};
+export type Agenda = { weekOf?:string; pending?:PendingTask[]; today: string; dailyMinutes: number; days: Day[]; unscheduled: number; dormantCount: number; uncertainCount: number; expiredCount: number };
+const agendaFor = buildWeeklyPreparationAgenda as unknown as (input: Bundle & { applications: Record<string, Application>; today: string; weekOf:string }) => Agenda;
 const localSession = recordLocalPreparationSession as unknown as (bundle: Bundle, input: SessionInput) => Bundle;
 const calendarLabel = (date: string, options: Intl.DateTimeFormatOptions) => new Date(`${date}T12:00:00Z`).toLocaleDateString(undefined, { ...options, timeZone: "UTC" });
 
 // Presentational boundary also used by the isolated demo/browser verification.
-export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComplete, onOpen, busy = false, locked = false }: {
+export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComplete, onOpen, busy = false, locked = false, onWeek, weekOffset = 0, timeZone }: {
   agenda: Agenda; minutes: string; onMinutes: (value: string) => void; onBudget: () => void;
+  onWeek?: (offset:number) => void; weekOffset?:number; timeZone?:string;
   onComplete: (item: Item) => void; onOpen: (id: string,roundId?:string) => void; busy?: boolean; locked?: boolean;
 }) {
-  const days = agenda.days.filter(day => day.items.length || day.interviews.length || day.events?.length || day.completedMinutes);
+  const days = agenda.days;
   const scheduled = agenda.days.reduce((sum, day) => sum + day.plannedMinutes, 0);
   return <>
     <div className="flex items-start justify-between gap-3">
       <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>
       <span className="prep-total">{scheduled} min</span>
     </div>
-    <p className="mt-2 text-xs text-board-muted">{calendarLabel(agenda.today, { month: "short", day: "numeric" })}–{agenda.days.length ? calendarLabel(agenda.days[agenda.days.length - 1].date, { month: "short", day: "numeric" }) : ""} · {agenda.dailyMinutes === 0 ? "Paused" : `${agenda.dailyMinutes} min/day`}</p>
+    <p className="mt-2 text-xs text-board-muted">{calendarLabel(agenda.weekOf || agenda.days[0]?.date || agenda.today, { month: "short", day: "numeric" })}–{agenda.days.length ? calendarLabel(agenda.days[agenda.days.length - 1].date, { month: "short", day: "numeric" }) : ""} · {agenda.dailyMinutes === 0 ? "Paused" : `${agenda.dailyMinutes} min/day`}</p>
+    {timeZone && <p className="mt-1 text-xs text-board-muted">{timeZone}</p>}
+    {onWeek && <div className="mt-2 flex flex-wrap items-center justify-between gap-2" aria-label="Calendar week navigation"><button type="button" className={secondary} onClick={()=>onWeek(weekOffset-1)} aria-label="Previous week">←</button><button type="button" className={secondary} onClick={()=>onWeek(0)} disabled={weekOffset===0}>This week</button><button type="button" className={secondary} onClick={()=>onWeek(weekOffset+1)} aria-label="Next week">→</button></div>}
     {!days.length && <p className="mt-5 text-sm text-board-muted">{agenda.dailyMinutes === 0 ? "Prep paused. Set daily minutes in Plan settings to resume." : "Ask your agent to prepare your week from your interviews and learning goals."}</p>}
     <div className="prep-agenda mt-4" aria-label="Weekly preparation agenda">
       {days.map(day => <section key={day.date} className={`prep-agenda-day ${(day.interviews.length || day.events?.length) ? "prep-interview-day" : ""}`} aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
         <h3 className={`prep-date ${day.date === agenda.today ? "prep-date-today" : ""}`}><span>{day.date === agenda.today ? "Today" : calendarLabel(day.date, { weekday: "short" })}</span><span className="prep-date-number">{calendarLabel(day.date, { day: "numeric" })}</span></h3>
         <div className="min-w-0">
+          {!day.items.length && !day.interviews.length && !day.events?.length && !day.completedMinutes && <p className="py-1 text-xs text-board-muted">No scheduled tasks</p>}
           {day.events?.map(event => event.path ? <Link key={event.id} href={event.path} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.title}</strong></span></Link> : <button key={event.id} type="button" onClick={() => onOpen(event.applicationId!,event.roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.company}</strong><span className="block text-xs font-normal">{event.title}</span></span></button>)}
           {day.interviews.map(interview => <button key={`${interview.applicationId}:${(interview as any).roundId||'standalone'}`} type="button" onClick={() => onOpen(interview.applicationId,(interview as any).roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{interview.kind || "Interview"}</span><strong className="block">{interview.company}</strong><span className="block text-xs font-normal">{interview.stage}</span></span></button>)}
           {day.completedMinutes > 0 && <p className="mb-2 text-xs text-board-accent">{day.completedMinutes} min practiced</p>}
@@ -70,6 +75,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
         </div>
       </section>)}
     </div>
+    {!!agenda.pending?.length && <details className="mt-4" open><summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold">Other pending tasks ({agenda.pending.length})</summary><ul className="space-y-3">{agenda.pending.map(task=><li key={task.id} className="text-xs"><p className="text-board-muted">{task.company}{task.company ? ' · ' : ''}{task.reason}{task.date ? ` · ${task.date}` : ''}</p>{task.path ? <Link href={task.path} className="inline-flex min-h-11 items-center font-semibold text-board-accent underline underline-offset-4">{task.title}</Link> : <button type="button" className="inline-flex min-h-11 items-center text-left font-semibold text-board-accent underline underline-offset-4" onClick={()=>onOpen(task.applicationId!,task.roundId)}>{task.title}</button>}</li>)}</ul></details>}
     {agenda.unscheduled > 0 && <Notice>{agenda.unscheduled} prep {agenda.unscheduled === 1 ? "task won’t" : "tasks won’t"} fit. Increase your daily budget.</Notice>}
     <details className="prep-settings mt-3 text-xs text-board-muted">
       <summary className="min-h-11 cursor-pointer py-3 font-semibold">Plan settings &amp; details</summary>
@@ -92,6 +98,7 @@ function Planner() {
   const [bundle, setBundle] = useState<Bundle | null>(null), [loading, setLoading] = useState(true), [error, setError] = useState(""), [feedback, setFeedback] = useState("");
   const [minutes, setMinutes] = useState("45"), [busy, setBusy] = useState(false), [retry, setRetry] = useState(0), [review, setReview] = useState<string | null>(null);
   const [reviewRound,setReviewRound]=useState<string|undefined>(undefined);
+  const [weekOffset,setWeekOffset] = useState(0);
   const [clock, setClock] = useState(() => new Date());
   const generation = useRef(0), mutation = useRef(false), sessionRequest = useRef<{ key: string; input: SessionInput } | null>(null);
   const loadedBudget = useRef<number | null>(null);
@@ -125,7 +132,7 @@ function Planner() {
     return () => { generation.current++; };
   }, [services, applicationKey, retry, today, w.demo && w.state, !owner && localPlans, !owner && localPlanner]);
   const applications = Object.fromEntries(Object.entries({ ...bundle?.applications, ...w.state.workflow.applications, ...bundle?.applications } as Record<string, Application>).map(([id, app]) => [id, { ...app, ...(['Rejected','Withdrawn'].includes(w.state.tracker.items[id]?.status) ? {status:w.state.tracker.items[id].status} : {}) }]));
-  const rawAgenda = bundle ? agendaFor({ ...bundle, applications, today }) : null;
+  const rawAgenda = bundle ? agendaFor({ ...bundle, applications, today, weekOf:plannerDay(plannerWeekStart(today),weekOffset*7) }) : null;
   const agenda = rawAgenda && bundle ? {...rawAgenda,days:rawAgenda.days.map(day => ({...day,items:day.items.map(item => {
     const details = item.targets.map(target => bundle.plans.find(row => row.application_id === target.applicationId)?.plan.tasks.find(task => task.id === target.taskId)?.detail).filter((detail): detail is string => !!detail);
     return {...item,context:details[0]?.split(/(?<=[.!?])\s/)[0]};
@@ -157,7 +164,7 @@ function Planner() {
     mutate(async () => services ? services.completePreparationSession(input) : saveLocal(localSession(bundle,input)), "Session recorded. Your practice and remaining time are updated.");
   }
   return <SurfacePanel className="action-widget prep-widget" aria-labelledby="prep-planner-heading" aria-busy={loading || busy}>
-    {loading && !bundle ? <><h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={(id,roundId)=>{setReviewRound(roundId);setReview(id);}} busy={busy || loading || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>}
+    {loading && !bundle ? <><h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2><p role="status" className="mt-4 text-sm text-board-muted">Building your week…</p></> : agenda ? <WeeklyPreparation agenda={agenda} onWeek={setWeekOffset} weekOffset={weekOffset} timeZone={timeZone} minutes={minutes} onMinutes={setMinutes} onBudget={saveBudget} onComplete={complete} onOpen={(id,roundId)=>{setReviewRound(roundId);setReview(id);}} busy={busy || loading || !!error} locked={w.locked} /> : <h2 id="prep-planner-heading" className="widget-heading text-lg font-semibold"><TaskIcon calendar />Weekly prep</h2>}
     {error && <div role="alert"><Notice>{error}</Notice><button type="button" className={`${secondary} mt-3`} onClick={() => {setBusy(false);setRetry(n => n + 1);}}>Reload planner</button></div>}
     {feedback && <p role="status" className="mt-3 text-sm text-board-muted">{feedback}</p>}
     {review && <DraftReview key={review} id={review} initialTab="Interview" initialRoundId={reviewRound} onClose={() => {setReview(null);setRetry(n => n + 1);}} />}
