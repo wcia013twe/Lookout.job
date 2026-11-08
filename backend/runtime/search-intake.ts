@@ -34,10 +34,12 @@ export async function readSearchSourceLeads(call:Call,payload:Payload,{stagingRo
   if(!job)return {error:{code:'42501',message:'Retained source pool must belong to this owned backend run.'}};
   const snapshot=await new SearchStaging(stagingRoot,jobId,payload.runId).read(source.checkpoint?.stagingKey);
   if(!Array.isArray(snapshot?.rawLeads)||!Number.isFinite(Date.parse(snapshot.retainedAt))||Date.now()-Date.parse(snapshot.retainedAt)>7*86400000)return {error:{code:'P0002',message:'Temporary Jobright pool is unavailable or expired. Start a new authorized search; no leads were inferred.'}};
-  const offset=payload.offset||0,limit=payload.limit||50,total=snapshot.rawLeads.length;
-  return {data:{sourceId:payload.sourceId,total,offset,nextOffset:offset+limit<total?offset+limit:null,leads:snapshot.rawLeads.slice(offset,offset+limit),storage:'temporary-source-leads',verified:false,applicantEligibility:'not-evaluated',retentionDays:7},error:null};
+  const sourceTotal=snapshot.rawLeads.length,rows=payload.resolution==='unresolved'?snapshot.rawLeads.filter((row:Payload)=>['pending','unresolved'].includes(row.resolution)||row.triageStatus==='verification-unresolved'):snapshot.rawLeads;
+  const offset=payload.offset||0,limit=payload.limit||50,total=rows.length;
+  return {data:{sourceId:payload.sourceId,sourceTotal,resolution:payload.resolution||'all',total,offset,nextOffset:offset+limit<total?offset+limit:null,leads:rows.slice(offset,offset+limit),storage:'temporary-source-leads',verified:false,applicantEligibility:'not-evaluated',retentionDays:7},error:null};
  }
 
+ if(payload.resolution==='unresolved')return {error:{code:'22023',message:'Unresolved paging applies only to retained Jobright pools.'}};
  if(!simplifyFeed(address))return {error:{code:'22023',message:'Source requires the agent runtime or supported copied provider scanner; aggregate lead paging supports official Simplify feeds only.'}};
  try{
   const context=await call('search.context',{profileId:result.data.profile_id});if(context.error)return context;

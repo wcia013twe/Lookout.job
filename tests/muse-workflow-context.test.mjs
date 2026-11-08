@@ -164,7 +164,7 @@ test('admin demo services expose the same workflow routing while keeping pending
 });
 
 test('direct search completion requires personal analysis then private publication and read-back; demo retains the pending state',async()=>{
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,19);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,20);
  assert.match(guide.instructions,/Private Discover publication is the final step[\s\S]*after agent personal fit analysis/);
  assert.match(guide.instructions,/Read back every returned batch with read_batch/);
  assert.match(guide.instructions,/discover:<runId>:profile:<version>:part:<index>/);
@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,19);assert.equal(apps.version,23);assert.equal(digest.version,3);
+ assert.equal(search.version,20);assert.equal(apps.version,23);assert.equal(digest.version,4);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
@@ -201,4 +201,14 @@ test('fit brief is concise, team-specific and uses existing narrative and priori
  assert.match(search.instructions,/do not require Markdown rendering or add new fields/);
  assert.match(search.instructions,/Do not append a research diary/);
  assert.match(apps.instructions,/follow career-find-jobs’ compact team-focused decision brief/);
+});
+
+test('recall guidance separates broad worth-a-look review from deeper top-pick research and unresolved recovery',()=>{
+ const search=readGuide('career-find-jobs'),notifications=readGuide('notifications');
+ assert.match(search.instructions,/MTS is a role family, not proof of the senior Staff rank/);
+ assert.match(search.instructions,/Unknown start date, team, experience level/);
+ assert.match(search.instructions,/broad Worth a look group alongside Top picks/);
+ assert.match(search.instructions,/resolution=unresolved/);
+ assert.match(search.instructions,/Employer-confirmed closure is an actual exclusion/);
+ assert.match(notifications.instructions,/unresolved source leads using actual saved results/);
 });

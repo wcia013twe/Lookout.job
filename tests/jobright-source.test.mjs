@@ -54,3 +54,10 @@ test('Jobright resolved URLs honor real copied prior-history dedup before employ
  }});
  assert.equal(verified,0);assert.equal(out.listings.length,0);assert.equal(out.coverage,'truncated');
 });
+
+test('nested and escaped bracket titles survive parsing and inherit employer research hints',()=>{
+ const md=[`| [Nutanix](https://www.nutanix.com) | **[[2027] Member of Technical Staff 1](https://jobright.ai/jobs/info/${id(901)})** | United States | Hybrid | Nov 07 |`,`| ↳ | [\\[2027\\] Software Engineer](https://jobright.ai/jobs/info/${id(902)}) | United States | Hybrid | Nov 07 |`].join('\n');
+ const rows=parseJobrightList(md,'FT',address);assert.equal(rows.length,2);assert.equal(rows[0].title,'[2027] Member of Technical Staff 1');assert.equal(rows[1].title,'[2027] Software Engineer');
+ assert(rows.every(r=>r.companyWebsite==='https://www.nutanix.com/'));assert.match(rows[0].researchQuery,/Nutanix.*Member of Technical Staff.*careers/);
+ assert(!rows.some(r=>r.url===r.companyWebsite));
+});

@@ -6,7 +6,7 @@ const feeds={
  'https://github.com/jobright-ai/2026-Software-Engineer-Internship':{repo:'2026-Software-Engineer-Internship',employmentType:'Internship'},
 } as const;
 export function jobrightFeed(address:unknown){return typeof address==='string'?feeds[address.replace(/\/$/,'') as keyof typeof feeds]||null:null;}
-const text=(s:string)=>s.replace(/<[^>]*>/g,'').replace(/\*\*/g,'').replace(/&amp;/g,'&').trim();
+const text=(s:string)=>s.replace(/<[^>]*>/g,'').replace(/\*\*/g,'').replace(/&amp;/g,'&').replace(/\\([\[\]\\])/g,'$1').trim();
 function jobrightId(address:string){try{const u=new URL(address);return u.protocol==='https:'&&u.hostname==='jobright.ai'&&!u.username&&!u.password&&(!u.port||u.port==='443')?u.pathname.match(/^\/jobs\/info\/([a-f0-9]{24})$/)?.[1]:null;}catch{return null;}}
 async function boundedText(response:Response,max:number){
  if(!response.ok)throw Error('Jobright HTTP '+response.status);
@@ -16,17 +16,20 @@ async function boundedText(response:Response,max:number){
  return Buffer.concat(chunks).toString('utf8');
 }
 export function parseJobrightList(markdown:string,employmentType:string,address:string){
- const leads:Payload[]=[];let company='';const seen=new Set<string>();
+ const leads:Payload[]=[];let company='',companyWebsite:string|null=null;const seen=new Set<string>();
  for(const line of markdown.split('\n')){
   if(!line.trim().startsWith('|'))continue;
   const cells=line.trim().replace(/^\||\|$/g,'').split(/(?<!\\)\|/);if(cells.length<5)continue;
-  const companyCell=cells[0].trim();if(companyCell!=='↳')company=text(companyCell.replace(/\[([^\]]+)\]\([^)]*\)/g,'$1'));
-  const link=cells[1].match(/\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/);if(!company||!link)continue;
+  const companyCell=cells[0].trim();if(companyCell!=='↳'){
+   company=text(companyCell.replace(/\[([^\]]+)\]\([^)]*\)/g,'$1'));companyWebsite=null;
+   const link=companyCell.match(/\[(.*?)\]\((https:\/\/[^\s)]+)\)/);if(link)try{companyWebsite=publicUrl(link[2]);}catch{}
+  }
+  const link=cells[1].match(/\[(.*?)\]\((https:\/\/[^\s)]+)\)/);if(!company||!link)continue;
   let url:string;try{url=publicUrl(link[2].replace(/&amp;/g,'&'));}catch{continue;}
   const id=jobrightId(url);if(new URL(url).hostname==='jobright.ai'&&!id)continue;
   if(id)url='https://jobright.ai/jobs/info/'+id;
   if(seen.has(url))continue;seen.add(url);
-  leads.push({url,title:text(link[1]),company,location:text(cells[2]),employmentType,leadSource:address,sourceListedDate:text(cells[4]),sourceWorkSetting:text(cells[3])});
+  leads.push({url,title:text(link[1]),company,location:text(cells[2]),employmentType,leadSource:address,companyWebsite,researchQuery:[company,text(link[1]),text(cells[2]),'careers'].filter(Boolean).join(' '),sourceListedDate:text(cells[4]),sourceWorkSetting:text(cells[3])});
  }
  return leads;
 }

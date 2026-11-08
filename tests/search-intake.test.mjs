@@ -16,3 +16,8 @@ test('aggregate lead paging has an owned bounded read boundary',()=>{
  assert.doesNotThrow(()=>validateSearchIntake('search.source.leads',{runId:p.runId,sourceId:p.sourceId,offset:0,limit:25}));
  for(const patch of [{limit:101},{offset:-1},{runId:'bad'},{sourceId:''},{url:'https://arbitrary.test'}])assert.throws(()=>validateSearchIntake('search.source.leads',{runId:p.runId,sourceId:p.sourceId,...patch}));
 });
+
+test('focused unresolved paging is explicit and bounded',()=>{
+ assert.doesNotThrow(()=>validateSearchIntake('search.source.leads',{runId:p.runId,sourceId:p.sourceId,resolution:'unresolved',limit:100}));
+ for(const resolution of ['anything',null,{},['unresolved']])assert.throws(()=>validateSearchIntake('search.source.leads',{runId:p.runId,sourceId:p.sourceId,resolution}));
+});

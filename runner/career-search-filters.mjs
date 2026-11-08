@@ -1,8 +1,8 @@
+import {discoveryTitlePolicy} from './discovery-title-policy.mjs';
 import {isUsWideProfile,usLocationEvidence} from './profile-location-evidence.mjs';
 import {discoveryConstraints,observedEmployment,assertDiscoverySourceFacts,assertDiscoveryResults,DISCOVERY_EVALUATION_SCOPE} from '../lib/discovery-filter-contract.mjs';
 // Translate Lookout records; all configured search predicates remain upstream.
 import {inspectDiscoveryFilters} from './career-search-plan.mjs';
-import {classifyTier} from './vendor/career-ops/classify-tier.mjs';
 import {readField} from '../lib/search-profile.mjs';
 export async function filterDiscovery({profile,listings,portals={},now=Date.now()}){
  const plan=await inspectDiscoveryFilters({profile,portals});
@@ -13,7 +13,7 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
  const instructions=profile.instructions||'',filters=profile.filters||{},diagnostics=[...plan.warnings,...plan.validation.warnings.map(e=>e.path+': '+e.message)];
  const field=(heading,key)=>{const result=readField(instructions,heading,key);if(result.conflict)throw Error('Resolve duplicate preference '+key);return result.value;};
  const strength=key=>field('Priority & flexibility',key)||(/required/i.test(filters[key]||'')||key==='Employment'?'Required':'Preferred');
- const title=buildTitleFilter(portals.title_filter),content=scan.buildContentFilter(portals.content_filter),age=scan.buildPostingAgeFilter(portals.max_posting_age_days,now),dates=scan.buildPostedDateFilter(portals.posted_after,portals.posted_before);
+ const titlePolicy=discoveryTitlePolicy(portals.title_filter),title=titlePolicy.matches,content=scan.buildContentFilter(portals.content_filter),age=scan.buildPostingAgeFilter(portals.max_posting_age_days,now),dates=scan.buildPostedDateFilter(portals.posted_after,portals.posted_before);
  const country=field('Eligibility & availability','Work authorization country');const countryGate=scan.buildCountryEligibilityFilter(portals.country_eligibility_filter,country);
  const visa=scan.buildVisaFilter(portals.visa_filter),salary=scan.buildSalaryFilter(portals.salary_filter),cooldown=scan.buildCooldownFilter(portals.re_apply_windows,new Date(now).toISOString().slice(0,10));
  const locations=String(filters.Location||'').split(/[;,]/).map(x=>x.trim()).filter(Boolean);
@@ -35,7 +35,7 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
   // Only a conservative PASS becomes unknown; never soften an explicit false.
   const upstream=(name,passed,present=true,required=true,configured=true)=>add(name,!configured?'not-applicable':!passed?'unmet':present?'met':'unknown',!configured?'No constraint is configured for this discovery gate.':!passed?`Original CareerOps ${name} predicate rejected this lead, including any configured missing-evidence policy.`:present?`Original CareerOps ${name} predicate kept this lead.`:`Missing source data; upstream conservative pass does not establish ${name}.`,configured&&required);
   upstream('careerops-title',title(job.title),Boolean(job.title),true,Boolean(portals.title_filter?.positive?.length||portals.title_filter?.negative?.length));upstream('careerops-posting-age',age(job.postedAt),Number.isFinite(job.postedAt),true,Number(portals.max_posting_age_days)>0);upstream('careerops-posted-date',dates(job.postedAt),Number.isFinite(job.postedAt),true,Boolean(portals.posted_after||portals.posted_before));upstream('careerops-content',content(job.description,scan.matchedTitleKeywords(job.title,portals.title_filter)),Boolean(job.description),true,Boolean(portals.content_filter?.positive?.length||portals.content_filter?.negative?.length||Object.keys(portals.content_filter?.by_title_keyword||{}).length));upstream('careerops-country',countryGate(job.description),Boolean(job.description)&&Boolean(country),true,Boolean(portals.country_eligibility_filter));upstream('careerops-visa',visa(job.description),Boolean(job.description),true,Boolean(portals.visa_filter&&portals.visa_filter.enabled!==false));upstream('careerops-salary',salary(job.salary),Boolean(job.salary),true,Boolean(portals.salary_filter&&(Number(portals.salary_filter.min)>0||Number(portals.salary_filter.max)>0)));
-  upstream('careerops-seniority',!(portals.skip_tiers||[]).includes(classifyTier(job.title)),Boolean(job.title),true,Boolean(portals.skip_tiers?.length));
+  upstream('careerops-seniority',!(portals.skip_tiers||[]).includes(titlePolicy.tier(job.title)),Boolean(job.title),true,Boolean(portals.skip_tiers?.length));
   const cooling=cooldown(job);upstream('careerops-cooldown',!cooling.skip,true,true,Object.keys(portals.re_apply_windows||{}).length>0);
   const requested=constraints.employment,observed=observedEmployment(item.employment_type??item.employmentType??observation.employment_type);
   const type=observed||(intern(job.title)?'Internship':newgrad(job.title)?'FT':null);
@@ -55,14 +55,13 @@ export async function filterDiscovery({profile,listings,portals={},now=Date.now(
   const decision=hardFailure?'ineligible':'review-needed';return {listingId:item.id||item.url,passed:!hardFailure,rejectedBy,checks,decision,explanation:hardFailure?'Excluded by a Required saved discovery constraint: '+rejectedBy.join(', '):'Passed configured required discovery gates; unresolved personal eligibility and narrative fit still require agent review.'};
  });
  assertDiscoveryResults(results,listings);
- return {results,diagnostics,filterPlan:plan,provenance:{...DISCOVERY_EVALUATION_SCOPE,commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',filters:'scan.mjs exported predicates + title-keywords.mjs',personalScoresProduced:false}};
+ return {results,diagnostics,filterPlan:plan,provenance:{...DISCOVERY_EVALUATION_SCOPE,commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',filters:'scan.mjs exported predicates + title-keywords.mjs + Lookout title-context normalization',personalScoresProduced:false}};
 }
 
 // Only metadata gates whose evidence is already available. Description-based
 // and unresolved employment/location predicates remain in full verification.
 export async function prefilterDiscovery({profile,jobs,config}){
  const plan=config?{ready:true,config}:await inspectDiscoveryFilters({profile,portals:{}});if(!plan.ready)throw Error('Search filters are not ready');
- const {buildTitleFilter}=await import('./vendor/career-ops/title-keywords.mjs');
- const title=buildTitleFilter(plan.config.title_filter);
- return jobs.filter(job=>title(job.title)&&!(plan.config.skip_tiers||[]).includes(classifyTier(job.title)));
+ const titlePolicy=discoveryTitlePolicy(plan.config.title_filter);
+ return jobs.filter(job=>titlePolicy.matches(job.title)&&!(plan.config.skip_tiers||[]).includes(titlePolicy.tier(job.title)));
 }

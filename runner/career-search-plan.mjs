@@ -37,5 +37,5 @@ export async function inspectDiscoveryFilters({profile={},portals={}}) {
  const providers=await loadProviders(fileURLToPath(new URL('./vendor/career-ops/providers/',import.meta.url)));
  const sources=(portals.tracked_companies||[]).filter(s=>s.enabled).map(s=>({...s,...(s.config||{})}));
  const unclaimed=findUnclaimedEntries(sources.filter(s=>!['hiringcafe','simplify-summer','simplify-newgrad','simplify-offseason','jobright-newgrad','jobright-internship'].includes(s.id)),providers);
- return {...plan,ready:plan.ready&&validation.errors.length===0,validation,sourceDiagnostics:{unclaimed,staleQueries:findStaleScanQueries(sources,plan.config.title_filter?.positive||[])},provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',validation:'validate-portals.mjs',audit:'audit-portals.mjs',seniority:'classify-tier.mjs'}};
+ return {...plan,ready:plan.ready&&validation.errors.length===0,validation,sourceDiagnostics:{unclaimed,staleQueries:findStaleScanQueries(sources,plan.config.title_filter?.positive||[])},provenance:{commit:'c78e14cdfd52f18a92e4a67694efab7ddef59385',validation:'validate-portals.mjs',audit:'audit-portals.mjs',seniority:'classify-tier.mjs via Lookout title-context normalization'}};
 }

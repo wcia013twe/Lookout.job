@@ -268,7 +268,7 @@ test('direct search excludes an already tracked Applied job and preserves its ap
 test('a completed direct shortlist reaches private Discover only through agent-reviewed publication, with replay and website parity',async()=>{
  const {batchRoles}=await import('../lib/cloud-model.mjs');
  const {readGuide}=await import('../supabase/functions/agent-gateway/guides.mjs');
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,19);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,20);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  const hash=f.owner.replaceAll('-','').repeat(2);
@@ -310,6 +310,7 @@ test('a leased Jobright run retains every raw lead after completion and exposes 
   assert.equal(j.status,'partial');assert.equal(j.result.retainedLeads,3);assert.equal(j.result.pendingLeadResolution,1);assert.equal(j.result.saved,1,JSON.stringify(j.result));
   const call=async(operation,payload)=>{try{return {data:(await db.query(operation==='backend.jobs.read'?'select public.backend_job_dispatch($1,$2,$3) data':'select public.agent_dispatch($1,$2,$3) data',[f.owner.replaceAll('-','').repeat(2),operation,payload])).rows[0].data,error:null};}catch(e){return {error:{code:e.code,message:e.message}};}};
   const page=await readSearchSourceLeads(call,{runId:j.search_run_id,sourceId:'portal:jobright-newgrad',offset:0,limit:2},{stagingRoot:root});assert.equal(page.error,null);assert.equal(page.data.total,3);assert.equal(page.data.nextOffset,2);assert.equal(page.data.verified,false);
+  const focused=await readSearchSourceLeads(call,{runId:j.search_run_id,sourceId:'portal:jobright-newgrad',resolution:'unresolved',limit:100},{stagingRoot:root});assert.equal(focused.data.sourceTotal,3);assert.equal(focused.data.total,1);assert.equal(focused.data.leads[0].resolution,'unresolved');assert(focused.data.leads[0].researchQuery);
   const last=await readSearchSourceLeads(call,{runId:j.search_run_id,sourceId:'portal:jobright-newgrad',offset:2,limit:2},{stagingRoot:root});assert.equal(last.data.leads[0].triageStatus,'filtered-title');assert.equal(last.data.nextOffset,null);
   const {createDispatch,credentialHash}=await import('../backend/runtime/service.ts');const token='jb_agent_'+f.owner.replaceAll('-','').repeat(2),hash=credentialHash(token);
   await db.query('update private.agent_connections set token_hash=$2 where user_id=$1',[f.owner,hash]);

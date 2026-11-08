@@ -41,3 +41,22 @@ test('retained source paging rejects expired pools and mismatched backend runs b
   const wrong=await readSearchSourceLeads(call,payload,{stagingRoot:root,readJob:async()=>({data:{jobs:[{id:jobId,search_run_id:'another-run'}]}})});assert.equal(wrong.error.code,'42501');assert.equal(wrong.data,undefined);
  }finally{await rm(root,{recursive:true,force:true});}
 });
+
+test('MTS wording is not a senior Staff rank while explicit seniority and custom exclusions still win',async()=>{
+ const {discoveryTitlePolicy}=await import('../runner/discovery-title-policy.mjs');
+ const filter={positive:['Member of Technical Staff','word:MTS','Software Engineer'],negative:['word:Staff','word:Senior','word:Principal']};
+ const policy=discoveryTitlePolicy(filter);
+ for(const title of ['Member of Technical Staff 1','Member of the Technical Staff I','MTS','MTS III','Technical Staff Member']){
+  // The second spelling needs its own positive alias; the rank normalization
+  // itself must never classify the role family as senior.
+  assert.notEqual(policy.tier(title),'senior',title);
+ }
+ assert(policy.matches('[Junior / Senior / Staff] Software Engineer'));assert(!policy.matches('Senior [Junior / Staff] Software Engineer'));assert(policy.matches('Member of Technical Staff 1'));assert(policy.matches('MTS III'));
+ for(const title of ['Senior Member of Technical Staff','Principal MTS','Staff Software Engineer','Staff Member of Technical Staff'])assert(!policy.matches(title),title);
+ assert(!discoveryTitlePolicy({...filter,negative:['Member of Technical Staff']}).matches('Member of Technical Staff 1'));
+ const p={...profile,instructions:profile.instructions.replace('"word:Senior"','"word:Senior","word:Staff"')};
+ const jobs=['Member of Technical Staff 1','MTS III','GPU Driver Engineer','Associate Developer','Application Development Engineer','Platform Developer','Junior Developer'].map((title,i)=>({id:String(i),title,location:'United States',employmentType:'FT'}));
+ const originals=structuredClone(jobs);assert.equal((await prefilterDiscovery({profile:p,jobs})).length,jobs.length);
+ const results=await filterDiscovery({profile:p,listings:jobs});assert(results.results.every(r=>r.passed));assert.deepEqual(jobs,originals);
+ assert(results.results.every(r=>r.checks.some(c=>c.requirement==='experience'&&c.status==='unknown')));
+});
