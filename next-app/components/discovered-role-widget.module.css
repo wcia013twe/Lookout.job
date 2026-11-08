@@ -7,3 +7,10 @@
 .savedLabel{flex:0 0 auto;max-width:32%;padding:4px 7px;border:1px solid var(--color-board-line);border-radius:6px;background:var(--color-board-tag);color:var(--color-board-text);font-size:11px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
 .widget[data-compact=true]{height:auto;padding:12px 14px;border-radius:10px}.widget[data-compact=true] .header{margin:0}.widget[data-compact=true] .title{font-size:12px;line-height:1.5}.widget[data-compact=true] .identity p{margin-top:2px;font-size:11px}
 @media(max-width:767px){.widget{padding:16px}.header{flex-wrap:wrap}.savedLabel{max-width:100%;margin-left:44px}.identity{flex-basis:calc(100% - 44px)}.widget[data-compact=true] .header{flex-wrap:nowrap}.widget[data-compact=true] .identity{flex-basis:auto}.widget[data-compact=true] .savedLabel{max-width:32%;margin-left:0}}
+
+.savedLabel[data-priority=consider]{display:inline-flex;align-items:center;gap:6px;max-width:none;padding:5px 10px;border-radius:999px;border-color:light-dark(#d9cfee,#514268);background:light-dark(#f2edf9,#30273f);color:light-dark(#62428a,#dbcaef);font-weight:650;line-height:1.5;white-space:nowrap}
+.savedLabel[data-priority=consider]::before{content:"";width:5px;height:5px;flex:none;border-radius:50%;background:currentColor}
+.widget[data-compact=true] .savedLabel[data-priority=consider]{max-width:none}
+.widget[data-compact=false] .header:has(.savedLabel[data-priority=consider]){flex-wrap:wrap}
+.widget[data-compact=false] .header:has(.savedLabel[data-priority=consider]) .identity{flex-basis:calc(100% - 44px)}
+.widget[data-compact=false] .savedLabel[data-priority=consider]{margin-left:44px}

@@ -13,6 +13,10 @@ try{
   await page.goto(base+'/discover/?demo=1');
   const card=page.locator('[data-discovered-role="demo-discover-good"]');await card.waitFor();
   await card.getByText('Strong fit',{exact:true}).waitFor();
+  const consider=page.locator('[data-discovered-role="demo-discover-unknown"] [data-priority="consider"]');
+  await consider.getByText('Strong Consider',{exact:true}).waitFor();
+  assert.equal(await consider.evaluate(el=>getComputedStyle(el).whiteSpace),'nowrap');
+  await consider.screenshot({path:`${dir}/${name}-strong-consider.png`});
   assert.equal(await card.getByRole('list',{name:/Shared application stage/}).count(),0,'Opportunity has no application progress');
   assert(await card.getByRole('button',{name:'AI Apply',exact:true}).isEnabled());
   const summary=card.locator('summary').filter({hasText:'76% job match'});
