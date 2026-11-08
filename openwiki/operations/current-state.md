@@ -737,3 +737,23 @@ The existing adapter now restores all five verified provider triples (including
 Ashby, Workday and SmartRecruiters) before delegating to copied Career Ops dedup.
 An unchanged short/slugged URL pair is covered by both child-process and SQL-leased
 regressions; distinct native posting IDs remain separate.
+
+Discover now uses a dedicated compact DiscoveredRoleWidget with company identity,
+role title, facts, fit summary, expandable match details and existing queue/preview
+actions. The decorative rarity banner is removed. Application references retain
+the shared Circles progress preview; discovery never implies an application
+stage. This is presentation only; existing service and MCP writers are unchanged.
+
+Action review now groups application preparation/submission under Submission,
+and questions, CAPTCHA/login blockers and uncertainty under Need your input.
+Both use the compact role widget and display the selected draft résumé/version,
+employer-question sources, AI/inference labels and explicit unknown sources.
+Draft inferences are part of the same owned draft/projection, not a parallel
+post. Read parity and receipt authority remain unchanged; hosted projection
+and guide25/contract137 availability requires the normal backend release.
+
+The shared miniwidget's compact board variant now matches the application
+attachment's icon, role/company hierarchy, spacing, contrasting neutral surface
+and border. It renders a saved fitLabel when present, otherwise an existing
+saved priority. Scores never synthesize a label. Exact owned role identity links
+a board application to its saved discovery label; missing labels are omitted.
