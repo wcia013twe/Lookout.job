@@ -563,3 +563,9 @@ projection. Each group shows Today/In X days. Week navigation is removed from
 this compact widget; the scoped planner's weekOf read remains available. Undated
 and overdue tasks stay in Other pending tasks. Source dates, duplicate rules,
 budgets and completion writers are unchanged; this is a presentation correction.
+
+
+Material prep dates are locally activated at contract 130 (toolkit-materials v3).
+Connected schema discovery and disposable live save/list/calendar/clear checks
+passed, with private mock separation retained and all fixtures removed. Existing
+real dates were not backfilled. This is a local receipt, not a hosted release.
