@@ -108,3 +108,16 @@ test('filled drafts, approved applications and explicit next actions stage with 
  store.update('demo.boardImports',rows=>rows.map(row=>({...row,record:{...row.record,needsAction:false}})));
  assert(!(await services.readActionBoard()).items.some(i=>i.kind==='imported_action'));
 });
+
+test('scheduled interview context alone is not an action; an explicit confirmation task remains actionable',async()=>{
+ const {demoFixtures,createMemoryStore,createDemoServices}=await import('../next-app/lib/demo.mjs');
+ const {withActionBoardDemo,enableActionBoardScenario}=await import('../next-app/lib/action-board-demo.mjs');
+ const fixtures=demoFixtures('2026-11-07');enableActionBoardScenario(fixtures,'2026-11-07');
+ const store=createMemoryStore(fixtures.state),services=withActionBoardDemo(createDemoServices(store),store);
+ const event=store.get('demo.boardImports').find(row=>row.identity_key==='demo-event-only');
+ assert(event.record.rounds.some(round=>round.phase==='scheduled'));
+ assert(!(await services.readActionBoard()).items.some(item=>item.sourceId===event.id));
+ store.update('demo.boardImports',rows=>rows.map(row=>row.id===event.id?{...row,record:{...row.record,needsAction:true,nextAction:'Confirm interview time'}}:row));
+ assert((await services.readActionBoard()).items.some(item=>item.sourceId===event.id));
+ assert.deepEqual(store.get('demo.boardImports').find(row=>row.id===event.id).record.rounds,event.record.rounds);
+});

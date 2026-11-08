@@ -9,3 +9,5 @@
 .card[data-kind="submit_application"]{--action-fill:light-dark(#e3eddf,#34412f);--action-ink:light-dark(#354b2b,#f0f9e8);--action-muted:light-dark(#536749,#ceddc1)}
 .card .kindIcon,.card .at,.card .reference a{color:var(--action-ink)}
 .card[data-kind]:focus-within{background:var(--action-fill)}
+
+.applicationReference{margin:14px 0 16px}.applicationReference>a{display:inline-flex;min-height:32px;align-items:center;color:var(--action-ink);font-size:12px;text-decoration:underline;text-underline-offset:3px}.applicationReference>section{margin:0 0 4px}

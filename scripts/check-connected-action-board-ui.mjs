@@ -21,8 +21,8 @@ try{
  assert(await page.getByText(/^In [0-9]+ days?$/).count());
  assert.equal(await page.getByRole('button',{name:'Next week',exact:true}).count(),0);
  const left=await page.locator('.needs-you-priority').boundingBox(),right=await page.locator('.prep-widget').boundingBox();assert(right.x>=left.x+left.width,'Desktop keeps its two columns');
- for(const row of await page.locator('.action-board-row[data-kind]').all()){assert.equal(await accept(row).count(),1);assert.equal(await reject(row).count(),1);assert(await row.locator('a').first().innerText());}
- assert.equal(await page.getByText('Imported',{exact:true}).count(),0);
+ for(const row of await page.locator('.action-board-row[data-kind]').all()){assert.equal(await accept(row).count(),1);assert.equal(await reject(row).count(),1);assert(await row.getByRole('region',{name:'Attached job context'}).count()||await row.locator('a').first().innerText());}
+ assert.equal(await page.getByText('Imported',{exact:true}).count(),0);assert.equal(await page.locator('.action-board-row').filter({hasText:'Example Scheduled (demo)'}).count(),0);await application.getByRole('region',{name:'Attached job context'}).waitFor();assert(await application.getByRole('list',{name:/Shared application stage:/}).count());
  const phoneContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await phoneContext.newPage();attach(phone);await phone.goto(base+path);await card(phone,'review_application').first().waitFor();assert(await phone.locator('.prep-agenda-day').count()>0);assert(await phone.getByText(/^In [0-9]+ days?$/).count());
  assert(await phone.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
  if(process.env.LOOKOUT_UI_CAPTURE!=='0'){await page.screenshot({path:`${dir}/desktop.png`,fullPage:true});await phone.screenshot({path:`${dir}/mobile.png`,fullPage:true});}

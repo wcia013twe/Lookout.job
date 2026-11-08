@@ -585,3 +585,9 @@ The existing `read_search_source_leads` tool pages all retained rows (100 maximu
 Explicit engineering families expand to common title variants while preserving negative and seniority rules. US-wide profile targeting recognizes country/state forms and treats incomplete locations as unknown; explicit foreign countries and explicit scanner/narrow city restrictions retain their exclusions. The saved freshness limit controls provider collection as well as later filtering. General was updated through the owned writer to seven days with engineering aliases; candidate facts and applications were preserved.
 
 Search guide19/developer131 directs the connected agent to inspect retained/pending counts, page source pools, research exact employer links for plausible unresolved leads and use the existing verification/screening/deduplication path before private publication. Worker completion does not imply those research tasks finished. Source accounting distinguishes raw, title-excluded, unresolved, verified, filtered and screened-candidate counts from the final shortlist. No automatic worker search engine or LLM is added.
+
+Action Board application references now reuse the Circles JobAttachment component
+instead of a text-only @ mention. Scheduled interviews remain calendar context;
+only explicitly flagged human tasks enter the decision list. Three event-only
+flags were corrected via the scoped tracker writer with round/date/status
+preservation verified; genuine assessment and confirmation tasks remain pending.

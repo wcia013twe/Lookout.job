@@ -85,3 +85,22 @@ Limits: checks use disposable migrated databases and fictional detached browser 
 - Landing integration preserved the subsequently landed upcoming-date calendar.
   Nineteen focused calendar/board tests, frontend typecheck, production build and
   the updated desktop/mobile interaction flow passed on the combined source.
+
+## Follow-up: real application previews and event-only corrections
+
+- Embed Circles' actual JobAttachment component for referenced applications,
+  including company identity and shared progress stages. Keep the owning details
+  link secondary and retain type-colored cards and inline decisions.
+- Scheduled interviews are calendar context unless their owning record explicitly
+  requests human work. Update the agent guide and fictional event-only fixture;
+  protect explicit assessment/time-confirmation tasks in source-based tests.
+- Corrected three incorrectly flagged event-only records through the existing
+  scoped MCP tracker mutation. Read-back verified that only needsAction changed;
+  five genuine tasks remain flagged. Round details, dates and hiring status were
+  preserved. No application approvals, submissions or outreach occurred.
+- Verification: `npm test` passed (1,085 passed, five skipped); 33 focused
+  board/guide/MCP checks, data validation (158 roles), frontend typecheck and
+  production build passed. Desktop/light and mobile/dark screenshots verified the
+  shared Circles preview; browser checks cover preview stages, event-only exclusion,
+  inline forms/review, upcoming dates and mobile scrolling/swipes. Impeccable
+  detector returned no findings. No hosted release.

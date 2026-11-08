@@ -1,6 +1,11 @@
 "use client";
 import {useState,useId} from 'react';
 import Link from 'next/link';
+import JobAttachment from '../app/circles/_components/job-attachment';
+import {applicationContext} from '../../lib/circle-attachments.mjs';
+import {trackerProgress} from '../../lib/tracker-display.mjs';
+import {importStatuses} from '../../lib/simplify-import.mjs';
+import type {Application} from './workflow-types';
 import {useWorkspace} from '../lib/workspace';
 import {SwipeDecision} from './decision-buttons';
 import type {BoardItem} from '../lib/use-action-board';
@@ -25,6 +30,12 @@ export default function ActionDecisionCard({item,busy,onRespond}:{item:BoardItem
  const acceptVerb=dirty&&item.kind==='review_application'?'Save changes for a new review':actionVerbs[0];
  const objectLabel=item.reference?.label||item.company||item.recipient||'Saved answer';
  const objectDetail=item.reference?.detail||item.role||item.recipient;
+ const applicationItem=!!item.applicationId||item.kind==='imported_action';
+ const application=Object.values(w.state.workflow.applications as Record<string,Application>).find(app=>app.backendId===item.applicationId);
+ const stage=application?trackerProgress(application,w.state.tracker.items[application.id]||{}).status:importStatuses[item.status||'']||item.status;
+ const context=applicationContext(application||{company:item.company,title:item.role},stage);
+ const attachment={title:item.role||application?.title||'Application',body:'',type:'discussion',sources:[],provenance:'private_record',personalDisclosure:false,...context};
+
  async function respond(response:string){
   setError('');let input:Record<string,unknown>|undefined;
   if(response==='accept'){
@@ -39,7 +50,8 @@ export default function ActionDecisionCard({item,busy,onRespond}:{item:BoardItem
  return <li className={`action-board-row ${styles.card}`} data-kind={item.kind}>
  <SwipeDecision canAccept={!acceptDisabled} canReject={!rejectDisabled} disabled={busy} onRespond={response=>void respond(response)}>
   <header className={styles.header}><span className={styles.kindIcon}><KindIcon kind={item.kind}/></span><h3>{names[item.kind]||'Your decision'}</h3>{item.kind==='review_application'&&<span className={styles.revision}>Revision {item.version}</span>}</header>
-  <div className={styles.reference}><span className={styles.at} aria-hidden="true">@</span><div><Link href={`${item.href}&returnTo=%2Fneeds-you%2F`} onClick={()=>{try{sessionStorage.setItem('lookout:board-scroll',String(window.scrollY));}catch{}}}>{objectLabel}</Link>{objectDetail&&objectDetail!==objectLabel&&<p>{objectDetail}</p>}</div></div>
+  {applicationItem?<div className={styles.applicationReference}><JobAttachment content={attachment}/><Link href={`${item.href}&returnTo=%2Fneeds-you%2F`} onClick={()=>{try{sessionStorage.setItem('lookout:board-scroll',String(window.scrollY));}catch{}}}>Open application details</Link></div>:<div className={styles.reference}><span className={styles.at} aria-hidden="true">@</span><div><Link href={`${item.href}&returnTo=%2Fneeds-you%2F`}>{objectLabel}</Link>{objectDetail&&objectDetail!==objectLabel&&<p>{objectDetail}</p>}</div></div>}
+
   {item.kind==='imported_action'?<div className={styles.task}><strong>{item.reason}</strong>{item.actionDate&&<span>Due {new Date(item.actionDate+'T12:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'})}</span>}</div>:<p className={styles.reason}>{item.reason}</p>}
   {native&&<div className={styles.document}>
    {!(w.state.workflow.resumes||[]).length&&<p className={styles.resume}><span>Résumé</span><strong>{item.resume?.name||'No résumé selected'}</strong></p>}{(w.state.workflow.resumes||[]).length>0&&<label className={styles.field}><span>Résumé</span><select value={resumeId} disabled={busy} onChange={e=>{setResumeId(e.target.value);setConfirmed(false);}}><option value="">Choose your résumé</option>{w.state.workflow.resumes.map((r:any)=><option key={r.id} value={r.id}>{r.name}</option>)}</select></label>}

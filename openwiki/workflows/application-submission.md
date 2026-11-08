@@ -371,3 +371,11 @@ human verification note and confirmation; reports and observed receipts stay
 distinct. The same narrowly scoped authenticated response RPC enforces ownership,
 source locks, versioning and idempotency. Agents can read the shared projection
 and human-action links but cannot manufacture a human response.
+
+Application references on action cards render the same compact JobAttachment UI
+as Circles, including the company/role identity and stage strip. These are private
+read-only previews, not Circle publications. A scheduled round alone is never a
+human handoff; needsAction must represent a real unresolved task. Clearing an
+incorrect event-only flag preserves the scheduled round and its calendar display.
+Explicit assessment or time-confirmation tasks remain actionable even when a
+round is scheduled. No display-label interpretation is needed at board read time.

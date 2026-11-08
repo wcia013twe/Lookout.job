@@ -122,6 +122,10 @@ begin
  if exists(select 1 from private.action_board_items(u) x where x->>'key'=item->>'key') then raise exception 'Imported action kept stale identity';end if;
  update public.imported_jobs set record=record||'{"needsAction":false}' where id=imp;
  if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=imp::text) then raise exception 'Cross-page resolution did not clear board';end if;
+ update public.imported_jobs set record=record||'{"nextAction":"Technical interview","rounds":[{"id":"fictional-event-round","label":"Technical interview","stage":"INTERVIEW","type":"technical","phase":"scheduled","date":"2026-11-15","notes":"","cancelled":false}]}' where id=imp;
+ if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=imp::text) then raise exception 'Scheduled event became a human action';end if;
+ update public.imported_jobs set record=record||'{"needsAction":true,"nextAction":"Confirm interview time"}' where id=imp;
+ if not exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=imp::text) then raise exception 'Explicit confirmation task hidden by scheduled event';end if;
  update public.imported_jobs set record=record||'{"needsAction":true,"archived":true}' where id=imp;
  if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=imp::text) then raise exception 'Archived action surfaced';end if;
  update public.imported_jobs set record=record||'{"archived":false,"status":"REJECTED"}' where id=imp;

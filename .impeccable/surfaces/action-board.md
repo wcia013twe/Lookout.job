@@ -20,3 +20,8 @@ colors: applications blue, questions lavender, interviews green and tasks slate.
 Outreach uses cyan, blockers/uncertainty amber, and submission reports sage.
 Text/muted/border colors follow each material; keep decision controls and page
 composition unchanged.
+
+Clarification: “reference the application” means embed Circles' existing compact
+JobAttachment UI with company identity and stage strip, not merely an @ text link.
+Scheduled interviews belong to calendar context unless an explicit human task
+remains. Preserve real assessment/time-confirmation handoffs.
