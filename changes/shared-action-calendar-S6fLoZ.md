@@ -34,3 +34,13 @@ Calendar events and rounds use a 20px variant of the existing shared company log
 ## Palantir logo consistency and day spacing
 
 Maps Palantir and Palantir Technologies to palantir.com so they reuse exactly one logo URL/cache entry. Reduces calendar day vertical padding from 16px to 12px per edge and the extra inter-day margin from 8px to 4px; card spacing is unchanged. Validation: five logo-alias/upcoming-view checks passed; frontend typecheck, data validation (158 roles) and production export passed. Detached desktop/mobile flows and screenshots passed the spacing review. The alias test verifies identical Palantir CDN URLs; no live CDN cache-hit claim. No push or hosted deployment.
+
+
+## Theme-aligned action-card colors
+
+Replaces broad pastel fills with restrained material tints mixed into the active workspace panel. Review work uses lavender/blue, interviews teal, outreach blue and blockers muted amber. Text inherits the active theme, controls blend with the card and borders follow the accent. Existing card anatomy, decisions and behavior are unchanged. Validation: frontend typecheck, data validation (158 roles) and production export passed. Detached desktop/mobile action flows passed. Four light/dark desktop/mobile screenshots were inspected; sampled headings, labels and helper text had minimum contrast 6.17:1 light and 7.10:1 dark, and no horizontal overflow. This CSS-only pass adds no product action or backend change. No push or hosted deployment.
+
+
+## Embedded application contrast
+
+Separates minimized application summaries from tinted action cards using a neutral white/deep surface, a stronger theme-derived border and subtle elevation. Scoped to the Action Board embedding; shared application cards elsewhere keep their existing styling. Validation: frontend typecheck, data validation (158 roles) and production export passed. Detached desktop/mobile interactions passed. Light/dark desktop/mobile screenshots were inspected; minimum widget-border versus action-card contrast was 4.30:1 light and 5.10:1 dark, with sampled widget title contrast above 15:1. No overflow, product actions or backend changes. Nothing pushed or published.

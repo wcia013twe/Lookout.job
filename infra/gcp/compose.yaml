@@ -11,6 +11,9 @@ services:
     environment:
       LOOKOUT_PROCESS: api
       PORT: '8080'
+      LOOKOUT_SEARCH_STAGING_DIR: /var/lib/lookout/search-runs
+    volumes:
+      - search_staging:/var/lib/lookout/search-runs:ro
     restart: unless-stopped
     init: true
     healthcheck:

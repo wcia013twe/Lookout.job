@@ -25,3 +25,11 @@ Clarification: “reference the application” means embed Circles' existing com
 JobAttachment UI with company identity and stage strip, not merely an @ text link.
 Scheduled interviews belong to calendar context unless an explicit human task
 remains. Preserve real assessment/time-confirmation handoffs.
+
+Palette refinement: use restrained lavender/blue, teal, muted amber and sage
+accents blended lightly into the active workspace surface, rather than broad
+pastel fills. Inherit theme text colors, keep borders subtle, and retain existing
+accessible check/red-X semantics and action anatomy in light/dark themes.
+
+Embedded application summaries use a neutral white/deep surface with a stronger
+contrasting border and subtle elevation to separate them from tinted action cards.
