@@ -653,3 +653,12 @@ MCP `read_batch` own access; no new service or database migration is introduced.
 A fictional 32+14 overlap fixture proves 42 unique roles, not a 14-role cap;
 fictional UI fixtures cover an older unapplied role and the applied-history toggle.
 Local build/test evidence and hosted release remain separate.
+
+### Orchestrator audit rule (contract 136 source update)
+
+Application guide24 requires the coordinating Agent to reconcile every assigned
+job, inspect saved analysis/drafts for omissions and mistakes, repair supported
+gaps and read back corrections before calling work ready. Unresolved information
+stays explicit; submission summaries are audited against saved outcomes. No new
+tools, UI, schema or runtime are added. Gateway release/client refresh and real
+host compliance remain separate from source validation.

@@ -398,3 +398,15 @@ prior assignment. Confirmed/uncertain work is never resubmitted. Existing websit
 review and scoped MCP preparation/submission paths are unchanged. This instruction
 update needs gateway release and client context refresh; host subagent behavior
 and live employer submission are not verified by source checks.
+
+### Orchestrator quality audit (application guide v24)
+
+The coordinating Agent audits every assigned job against saved analysis/drafts
+before the review handoff, checking role accounting, source facts, team scope,
+eligibility, disclosed pay, four fit dimensions, candidate evidence/material gap,
+resume and employer questions/answers. It fills supported omissions and corrects
+mistakes directly or delegates specific repairs, then reads back and rechecks them.
+Unknown facts remain explicit; human edits, holds, version locks and renewed
+approval requirements remain authoritative. Submission summaries likewise require
+per-item saved attempt/receipt evidence. This is a host instruction using existing
+scoped tools, not a new review service or proof of host compliance.
