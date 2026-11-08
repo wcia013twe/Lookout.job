@@ -263,3 +263,19 @@ application state. Existing profile employment/search/date controls still apply.
 Website reads use the existing authenticated/RLS batch readers; MCP's existing
 `read_batch` remains the owner-scoped reader for each original batch. No new
 queue, database table, migration, publication or agent analysis is required.
+
+### Explicit applied/rejected exclusion
+
+Discover uses the same status predicate for its cumulative board, date-filtered
+views, single-batch views, public browsing and the onboarding saved-role preview.
+Applied roles are excluded by default. An explicit Include applied jobs toggle
+can expose applied history; it never exposes rejected roles. A recorded rejection
+is sufficient even without a submission date or receipt. Matching checks all
+owned application records by job ID or canonical URL, plus tracker outcomes, so
+a queued duplicate cannot conceal an earlier submission or rejection. Pending,
+failed, blocked or uncertain preparation alone is not an application/rejection.
+
+The direct worker already excludes tracked application identities independently
+of status; real leased SQL regression coverage now checks both Submitted and
+Rejected, including a rejection without submitted_at. These visibility checks
+never mutate application history or rewrite immutable batches.

@@ -1,6 +1,5 @@
 "use client";
 import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
-import { roleApplied } from '../../lib/discover-application-state.mjs';
 import { useRef, useState } from "react";
 import Link from "next/link";
 import {matchesPostingAge,postingAgeOptions} from "../../lib/posting-age.mjs";
@@ -35,7 +34,7 @@ function DiscoverBoard() {
   const sourceRoles=(publicView?(w.publicRoles||w.roles):w.roles).filter((role:Role)=>matchesProfileEmployment(role,a.profile)).map((role:Role)=>({...role,rankingProfile:a.profile}));
   const sourceDate=publicView?(w.publicDate||w.date):w.date;
   const savedRole=!w.demo?savedOnboardingRole([a.profile],w.publicRoles||w.roles):null;
-  const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)&&!roleApplied(savedRole,w.state.workflow.applications,w.state.tracker.items)?{...savedRole,rankingProfile:a.profile}:null;
+  const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)&&matchesDiscoveryStatus(savedRole,{applications:w.state.workflow.applications,trackerItems:w.state.tracker.items})?{...savedRole,rankingProfile:a.profile}:null;
   const reduced = useReducedMotion();
   const board = useRef<HTMLElement>(null);
   const [arrival, setArrival] = useState<{owner:string;ids:string[];run:number}|null>(null);
@@ -54,7 +53,7 @@ function DiscoverBoard() {
     (r: Role) =>
       matchesPostingAge(r, postingAge) &&
       (selectedDay === "all" || r.discoveredDate === selectedDay) &&
-      ((w.discoveryLog&&!publicView)?matchesDiscoveryStatus(r,{applications:w.state.workflow.applications,trackerItems:w.state.tracker.items,includeApplied}):(viewDay !== "latest" || !roleApplied(r,w.state.workflow.applications,w.state.tracker.items))) &&
+      matchesDiscoveryStatus(r,{applications:w.state.workflow.applications,trackerItems:w.state.tracker.items,includeApplied:Boolean(w.discoveryLog&&!publicView&&includeApplied)}) &&
       `${r.company} ${r.title} ${r.location} ${r.category}`
         .toLowerCase()
         .includes(search.toLowerCase()),
