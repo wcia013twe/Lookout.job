@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,21);assert.equal(apps.version,28);assert.equal(digest.version,5);
+ assert.equal(search.version,21);assert.equal(apps.version,29);assert.equal(digest.version,5);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
@@ -226,7 +226,7 @@ test('AI Apply guides require quiet host-browser preparation, Lookout recovery a
  const apps=readGuide('application-workspace'),notice=readGuide('notifications');
  assert.match(apps.instructions,/without another chat instruction to start a browser run/);
  assert.match(apps.instructions,/Workday or another employer platform is not itself a blocker/);
- assert.match(apps.instructions,/first reread the current Lookout job\/application/);
+ assert.match(apps.instructions,/Before asking the user for any application fact/);
  assert.match(apps.instructions,/secure password manager/);assert.match(apps.instructions,/Never keep passwords in chat/);
  assert.match(apps.instructions,/request its secure entry card/);assert.match(apps.instructions,/already authorized mailbox integration/);
  assert.match(apps.instructions,/Preserve the user's existing exact-version submission gate/);

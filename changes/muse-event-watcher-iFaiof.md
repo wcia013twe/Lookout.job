@@ -26,3 +26,9 @@ Live dev activation: lookout-node:muse-public-transport-140 and reloaded tunnel 
 - Blocker handoff clarification: require report_application_failure or exact draft-question writer, application/Action Board read-back, and a concrete Need your input card before reporting/acknowledging handled work. Existing owner/revision/stop checks and human decisions remain. The Node/MCP/browser integration fixture now covers an agent secure-entry blocker and its matching card/recovery action.
 
 Local activation: API image lookout-node:quiet-browser-141 and refreshed mounted Edge runtime read back developer141, application-workspace28 and notifications5 through the connected MCP. Guide read-back confirms required Need your input handoff and quiet execution. No password was generated/stored and no real application outcome/card/acknowledgement was fabricated by this maintenance pass.
+
+## Follow-up: batch concurrency and Lookout-first recovery
+
+- Application guide29/change-resumption3/developer142 add three general rules: check Lookout before asking, parallelize independent work, and serialize shared accounts/sessions and records. One dispatcher may coordinate multiple workers; existing claim/version/approval safeguards remain.
+- Shared guide and detached demo feed references stay current. Full suite, existing focused guide checks, data validation and production build passed; host compliance remains unverified.
+- Preserve the existing browser tab/session while waiting when supported, resume the same application, and verify employer draft persistence before claiming safe reopening.
