@@ -1,6 +1,7 @@
+import { applicationRounds, roundDate } from './application-rounds.mjs';
 import { preparationDate } from './preparation-model.mjs';
 const DAY = 86400000;
-const closed = new Set(['Rejected', 'Withdrawn', 'Closed']);
+const closed = new Set(['Rejected', 'Withdrawn', 'Closed', 'Posting closed']);
 export const plannerDay = (date, offset = 0) => new Date(Date.parse(`${date}T12:00:00Z`) + offset * DAY).toISOString().slice(0, 10);
 export function plannerToday(now = new Date(), timeZone = 'UTC') {
   try {
@@ -78,7 +79,7 @@ export function roundPreparationRows(rows, applications, timeZone='UTC') {
   })];
  });
 }
-export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, learningGoals = [], artifacts = [], today = plannerToday(), timeZone = 'UTC', holds = [] } = {}) {
+export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, learningGoals = [], artifacts = [], today = plannerToday(), timeZone = 'UTC', holds = [], imports = [], calendarArtifacts = [] } = {}) {
   if (!preparationDate(today)) throw Error('Choose a valid planner date.');
   const dailyMinutes = validatePlannerMinutes(settings.dailyMinutes ?? 45);
   const end = plannerDay(today, 6), progress = new Map(), spent = new Map();
@@ -88,17 +89,39 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
     for (const target of session.targets || []) progress.set(targetKey(target), (progress.get(targetKey(target)) || 0) + session.minutes);
   }
   const groups = new Map(), interviews = [], dormant = [], uncertain = [], expired = [];
+  const activeApplication = app => !['rejected','withdrawn','closed','posting closed'].includes(String(app.status).toLowerCase()) && !app.archived && !holds.some(h => h.application_id === (app.backendId || app.id) && !h.resumed_at);
+  const dayOf = value => roundDate(value) ? value.length === 10 ? value : plannerToday(value, timeZone) : null;
+  // Saved rounds are calendar events even before a preparation plan exists.
+  const native = Object.values(applications);
+  const imported = imports.filter(row => !native.some(app => (row.record.url && row.record.url === app.url) || ['company','title','location'].every(k => String(row.record[k] || '').toLowerCase() === String(app[k] || '').toLowerCase()))).map(row => ({...row.record, id:`import:${row.id}`, imported:row}));
+  const events = [];
+  for (const app of [...native, ...imported].filter(activeApplication)) {
+    for (const round of applicationRounds(app)) {
+      const date = dayOf(round.date);
+      if (round.cancelled || !['pending','scheduled'].includes(round.status) || !date) continue;
+      if (date >= today && date <= end) interviews.push({applicationId:app.id, roundId:round.id, company:app.company, title:app.title, stage:round.label, date, kind:round.stage === 'SCREEN' ? 'Screen' : 'Interview'});
+    }
+    if (app.imported && app.needsAction && app.nextAction && preparationDate(app.actionDate)) {
+      events.push({id:`action:${app.id}`, applicationId:app.id, company:app.company, title:app.nextAction, date:app.actionDate, kind:'Next action'});
+    }
+  }
+  for (const artifact of calendarArtifacts) {
+    const c = artifact.content || {}, date = dayOf(c.scheduledAt);
+    if (artifact.archived || c.kind !== 'mock_interview' || !['scheduled','in_progress'].includes(c.sessionStatus) || !date) continue;
+    events.push({id:`mock:${artifact.id}`, title:c.title, date, kind:'Mock interview', path:`/career-toolkit/?artifact=${encodeURIComponent(artifact.id)}`});
+  }
+
   const rows = Array.isArray(plans) ? plans : Object.entries(plans).map(([id, value]) => value?.plan ? value : { application_id: id, version: 0, plan: value });
   for (const row of roundPreparationRows(rows,applications,timeZone)) {
     if(holds.some(h=>h.application_id===row.application_id&&!h.resumed_at))continue;
     const plan = row.plan;
     const application = applications[plan?.applicationId] || Object.values(applications).find(a => a.backendId === row.application_id);
-    if (!application || !plan || closed.has(application.status) || (application.milestones || []).some(event => ['rejected','withdrawn'].includes(event.kind) && event.phase !== 'scheduled')) continue;
+    if (!application || !plan || !activeApplication(application) || (application.milestones || []).some(event => ['rejected','withdrawn'].includes(event.kind) && event.phase !== 'scheduled')) continue;
     const date = preparationDate(plan.deadline?.date);
     if (!date || plan.deadline?.status !== 'confirmed') { uncertain.push(application.id); continue; }
     if (date < today) { expired.push(application.id); continue; }
     if (date > end) { dormant.push(application.id); continue; }
-    interviews.push({ roundId:plan.roundId, standalone:!!plan.standalone, applicationId: application.id, company: application.company, title: application.title, date, stage: plan.deadline.stage });
+    if (!applicationRounds(application).length) interviews.push({ roundId:plan.roundId, standalone:!!plan.standalone, applicationId: application.id, company: application.company, title: application.title, date, stage: plan.deadline.stage });
     for (const task of plan.tasks || []) {
       if (task.completed || !Number.isFinite(task.minutes) || task.minutes <= 0) continue;
       const target = { applicationId: row.application_id || application.backendId || application.id, jobId: application.id, roundId:plan.roundId, taskId: task.id, expectedVersion: row.version || 0, company: application.company, deadline: date, minutes: task.minutes, priority: application.priority === 'Apply Now' ? 1.5 : 1 };
@@ -132,7 +155,7 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
       for (const target of targets) planned.set(targetKey(target), Math.min(target.remaining, (planned.get(targetKey(target)) || 0) + minutes));
       return { learning:Boolean(group.learning), artifacts:[...new Map(targets.flatMap(references).map(a=>[a.id,a])).values()], needsMaterial:group.learning || group.key.startsWith('practice:'), id: `${date}:${group.key}`, title: group.title, detail: group.detail, shared: group.shared, minutes, remainingAfter: Math.max(0, remaining - minutes), targets, reason: group.learning ? `Learning goal: ${targets[0].company} · target ${targets[0].deadline}` : `${targets.length > 1 ? `Covers ${targets.length} interviews` : `For ${targets[0].company}`} · earliest round ${targets.map(t => t.deadline).sort()[0]}` };
     });
-    return { date, completedMinutes, plannedMinutes: items.reduce((sum, item) => sum + item.minutes, 0), items, interviews: interviews.filter(i => i.date === date) };
+    return { date, completedMinutes, plannedMinutes: items.reduce((sum, item) => sum + item.minutes, 0), items, events: events.filter(e => e.date === date).sort((a,b)=>a.id.localeCompare(b.id)), interviews: interviews.filter(i => i.date === date) };
   });
   const unscheduled = [...ordered,...learning].flatMap(g => g.targets).filter(t => (planned.get(targetKey(t)) || 0) < t.remaining).length;
   return { today, dailyMinutes, days, interviews, unscheduled, dormantCount: dormant.length, uncertainCount: uncertain.length, expiredCount: expired.length };

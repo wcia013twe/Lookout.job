@@ -457,3 +457,23 @@ local database without changing application, import or decision records. Both
 owned reads succeeded and all eight flagged imported actions were included.
 Detached desktop/mobile flows, full tests, data checks, typecheck and production
 build passed; real-account browser and hosted verification remain separate. See the connected-action-board change note for verification receipts.
+
+
+### Shared Action Board calendar (contract 125 source update)
+
+The existing seven-day Weekly prep calendar also projects current application
+rounds without requiring a preparation plan, explicit dated imported next actions,
+and scheduled/in-progress Toolkit mock sessions. The shared owned planner snapshot
+includes imported records without source notes and only visible mock logistics;
+private interviewer preparation stays excluded. Website and MCP
+`read_preparation_planner` use the same projector. Existing round corrections,
+import updates, mock lifecycle and practice writers remain authoritative.
+Cancelled/completed rounds and mocks, archived mocks and terminal applications
+leave the upcoming calendar; source links open their existing editors. Dates use
+the saved preparation timezone, and native/import duplicate preference matches
+round stats. Existing interview/learning practice still shares one daily budget.
+The visible calendar refreshes every minute, on focus/reconnect and account sync;
+returning to the board reloads the owned snapshot. Demo reads the same fictional
+mock sources. No external Calendar events, calls or scheduler are created.
+Source validation and local runtime activation are reported in the feature note;
+hosted deployment is separate.

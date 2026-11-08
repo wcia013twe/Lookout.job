@@ -20,10 +20,13 @@ type Bundle = {
   sessions: { id: string; minutes: number; completed_at: string; targets: SessionInput["targets"] }[];
   learningGoals?: unknown[];
   artifacts?: unknown[];
+  imports?: unknown[];
+  calendarArtifacts?: unknown[];
   timeZone: string;
 };
 type Item = { learning?: boolean; needsMaterial?: boolean; artifacts?: {id:string;title:string;path:string}[]; context?: string; id: string; title: string; detail: string; minutes: number; remainingAfter: number; shared: boolean; reason: string; targets: Target[] };
-type Day = { date: string; plannedMinutes: number; completedMinutes: number; items: Item[]; interviews: { applicationId: string; company: string; stage: string }[] };
+type CalendarEvent = {id:string;applicationId?:string;roundId?:string;company?:string;title:string;date:string;kind:string;path?:string};
+type Day = { events?: CalendarEvent[]; date: string; plannedMinutes: number; completedMinutes: number; items: Item[]; interviews: { applicationId: string; company: string; stage: string; kind?:string; roundId?:string }[] };
 export type Agenda = { today: string; dailyMinutes: number; days: Day[]; unscheduled: number; dormantCount: number; uncertainCount: number; expiredCount: number };
 const agendaFor = buildPreparationAgenda as unknown as (input: Bundle & { applications: Record<string, Application>; today: string }) => Agenda;
 const localSession = recordLocalPreparationSession as unknown as (bundle: Bundle, input: SessionInput) => Bundle;
@@ -34,7 +37,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
   agenda: Agenda; minutes: string; onMinutes: (value: string) => void; onBudget: () => void;
   onComplete: (item: Item) => void; onOpen: (id: string,roundId?:string) => void; busy?: boolean; locked?: boolean;
 }) {
-  const days = agenda.days.filter(day => day.items.length || day.interviews.length || day.completedMinutes);
+  const days = agenda.days.filter(day => day.items.length || day.interviews.length || day.events?.length || day.completedMinutes);
   const scheduled = agenda.days.reduce((sum, day) => sum + day.plannedMinutes, 0);
   return <>
     <div className="flex items-start justify-between gap-3">
@@ -44,10 +47,11 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
     <p className="mt-2 text-xs text-board-muted">{calendarLabel(agenda.today, { month: "short", day: "numeric" })}–{agenda.days.length ? calendarLabel(agenda.days[agenda.days.length - 1].date, { month: "short", day: "numeric" }) : ""} · {agenda.dailyMinutes === 0 ? "Paused" : `${agenda.dailyMinutes} min/day`}</p>
     {!days.length && <p className="mt-5 text-sm text-board-muted">{agenda.dailyMinutes === 0 ? "Prep paused. Set daily minutes in Plan settings to resume." : "Ask your agent to prepare your week from your interviews and learning goals."}</p>}
     <div className="prep-agenda mt-4" aria-label="Weekly preparation agenda">
-      {days.map(day => <section key={day.date} className={`prep-agenda-day ${day.interviews.length ? "prep-interview-day" : ""}`} aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
+      {days.map(day => <section key={day.date} className={`prep-agenda-day ${(day.interviews.length || day.events?.length) ? "prep-interview-day" : ""}`} aria-label={calendarLabel(day.date, { weekday: "long", month: "short", day: "numeric" })}>
         <h3 className={`prep-date ${day.date === agenda.today ? "prep-date-today" : ""}`}><span>{day.date === agenda.today ? "Today" : calendarLabel(day.date, { weekday: "short" })}</span><span className="prep-date-number">{calendarLabel(day.date, { day: "numeric" })}</span></h3>
         <div className="min-w-0">
-          {day.interviews.map(interview => <button key={`${interview.applicationId}:${(interview as any).roundId||'standalone'}`} type="button" onClick={() => onOpen(interview.applicationId,(interview as any).roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">Interview</span><strong className="block">{interview.company}</strong><span className="block text-xs font-normal">{interview.stage}</span></span></button>)}
+          {day.events?.map(event => event.path ? <Link key={event.id} href={event.path} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.title}</strong></span></Link> : <button key={event.id} type="button" onClick={() => onOpen(event.applicationId!,event.roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{event.kind}</span><strong className="block">{event.company}</strong><span className="block text-xs font-normal">{event.title}</span></span></button>)}
+          {day.interviews.map(interview => <button key={`${interview.applicationId}:${(interview as any).roundId||'standalone'}`} type="button" onClick={() => onOpen(interview.applicationId,(interview as any).roundId)} className="prep-interview"><TaskIcon calendar /><span><span className="prep-interview-label">{interview.kind || "Interview"}</span><strong className="block">{interview.company}</strong><span className="block text-xs font-normal">{interview.stage}</span></span></button>)}
           {day.completedMinutes > 0 && <p className="mb-2 text-xs text-board-accent">{day.completedMinutes} min practiced</p>}
           <ul className="space-y-2">{day.items.map(item => <li key={item.id} className="prep-session">
             <details className="min-w-0 flex-1">
@@ -74,7 +78,7 @@ export function WeeklyPreparation({ agenda, minutes, onMinutes, onBudget, onComp
         <button type="submit" className={secondary} disabled={busy || locked || minutes === String(agenda.dailyMinutes)}>Save budget</button>
       </form>
       {!!(agenda.dormantCount || agenda.uncertainCount || agenda.expiredCount) && <p className="mt-4">Outside this week: {agenda.dormantCount} later interviews · {agenda.uncertainCount} dates to confirm · {agenda.expiredCount} past deadlines.</p>}
-      <p className="mt-3 leading-relaxed">Shared practice counts once. The plan prioritizes interviews, then learning goals, within your daily budget.</p>
+      <p className="mt-3 leading-relaxed">Shared practice counts once. Dates come from Applications and Career Toolkit. The plan prioritizes interviews, then learning goals, within your daily budget.</p>
     </details>
   </>;
 }
@@ -96,7 +100,7 @@ function Planner() {
   const today = plannerToday(clock, timeZone);
   const localPlans = w.state.workflow.preparationPlans, localPlanner = w.state.workflow.preparationPlanner;
   const applicationKey = Object.values(w.state.workflow.applications as Record<string, Application>).map(a => `${a.id}:${a.backendId || ""}`).sort().join("|");
-  useEffect(() => { const timer = setInterval(() => setClock(new Date()), 60000); return () => clearInterval(timer); }, []);
+  useEffect(() => { const timer = setInterval(() => { setClock(new Date()); if (document.visibilityState === "visible" && !mutation.current) setRetry(n => n + 1); }, 60000); return () => clearInterval(timer); }, []);
   useEffect(() => {
     if (!owner) return;
     return subscribePreparationRefresh(document, window, owner, () => {
@@ -119,7 +123,7 @@ function Planner() {
       loadedBudget.current = value.settings.dailyMinutes;
     } }).catch(() => { if (generation.current === epoch) setError("Your prep planner could not load. Reload to try again."); }).finally(() => { if (generation.current === epoch) setLoading(false); });
     return () => { generation.current++; };
-  }, [services, applicationKey, retry, today, !owner && localPlans, !owner && localPlanner]);
+  }, [services, applicationKey, retry, today, w.demo && w.state, !owner && localPlans, !owner && localPlanner]);
   const applications = Object.fromEntries(Object.entries({ ...bundle?.applications, ...w.state.workflow.applications, ...bundle?.applications } as Record<string, Application>).map(([id, app]) => [id, { ...app, ...(['Rejected','Withdrawn'].includes(w.state.tracker.items[id]?.status) ? {status:w.state.tracker.items[id].status} : {}) }]));
   const rawAgenda = bundle ? agendaFor({ ...bundle, applications, today }) : null;
   const agenda = rawAgenda && bundle ? {...rawAgenda,days:rawAgenda.days.map(day => ({...day,items:day.items.map(item => {
