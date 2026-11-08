@@ -379,3 +379,22 @@ human handoff; needsAction must represent a real unresolved task. Clearing an
 incorrect event-only flag preserves the scheduled round and its calendar display.
 Explicit assessment or time-confirmation tasks remain actionable even when a
 round is scheduled. No display-label interpretation is needed at board read time.
+
+## Agent-managed application sets (application guide v23)
+
+Any connected Agent can coordinate small nonoverlapping job sets through its
+host's subagents, retaining assignments and session references in its own context.
+Subagents analyze fit and save/read back application drafts through existing scoped
+tools, then stop for exact-version human review in Lookout. The user tells the
+Agent "I approved them; continue" to resume the responsible subagents. That message
+requests continuation; each application still requires its current authenticated
+approval and fresh server authorization. Approved items can proceed independently.
+
+Lookout remains the authority for drafts, approvals, holds, attempts and receipts.
+No assignment table, automatic approval watcher, scheduler or wake mechanism is
+added. Unsupported host delegation falls back to direct work; lost subagent
+sessions can be replaced using saved application references after stopping the
+prior assignment. Confirmed/uncertain work is never resubmitted. Existing website
+review and scoped MCP preparation/submission paths are unchanged. This instruction
+update needs gateway release and client context refresh; host subagent behavior
+and live employer submission are not verified by source checks.

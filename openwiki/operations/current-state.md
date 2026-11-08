@@ -591,3 +591,14 @@ instead of a text-only @ mention. Scheduled interviews remain calendar context;
 only explicitly flagged human tasks enter the decision list. Three event-only
 flags were corrected via the scoped tracker writer with round/date/status
 preservation verified; genuine assessment and confirmation tasks remain pending.
+
+### Agent-managed application sets (contract 133 source update)
+
+Application-workspace guide23 describes host-managed job assignments for any
+connected Agent: delegate analysis/preparation, save drafts, wait for authenticated
+Lookout review, then resume the assigned subagent on the user's explicit continue
+request. Each item rechecks its exact approval and server authorization. Assignment
+routing stays in Agent context; existing domain records retain all application
+state. No new tools, schema, UI, automatic watcher or wake runtime are introduced.
+Host delegation/resume and real employer execution remain unverified; gateway
+release and client context refresh are separate from local source validation.
