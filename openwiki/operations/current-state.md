@@ -484,6 +484,22 @@ hosted deployment is separate.
 
 Search guide17, application guide19 and developer contract124 advertise the scoped publication path. Fictional Discover previews cover hourly/monthly and undisclosed pay; validation covers annual pay too. Local code/database tests and a frontend export establish source behavior only; hosted release remains separate.
 
+### Inline action card design
+
+The Action Board source now uses distinct inline content for application drafts,
+questions, outreach, interviews, next actions and submission verification. It
+uses Circles-style owned object mentions and check/red-X decisions, with required
+input and exact saved-review gates. Saving answers is distinct from approval;
+reported submission is distinct from execution. Website and read-only MCP share
+the enriched projection and source identities. Migration `20261108005642` extends
+the existing human-only response operation and was applied locally without
+changing application, import or decision records. Both owned reads succeeded;
+integrated tests (1,074 passed, five skipped), build, typecheck, data checks and
+detached desktop/mobile flows passed. Combined developer contract 129 and
+application-workspace guide 21 include current calendar/Network work. Hosted
+release and real-account browser verification remain separate. Consult the
+connected-action-board feature note for receipts.
+
 
 #### Full-week calendar and missing-task correction (contract 126)
 

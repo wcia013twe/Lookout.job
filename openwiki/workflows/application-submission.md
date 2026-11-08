@@ -353,3 +353,21 @@ row; keys change when the source record changes. Exact imported links use
 `application=import:<owned-id>` and remain selectable even when ordinary tracker
 deduplication hides the matching imported role. Website and `read_action_board`
 MCP read the same projection.
+
+### Inline referenced action cards
+
+The board retains its framing and Weekly Prep placement but gives each action a
+content-specific view: editable application answers, saved-answer/reuse fields,
+a complete outreach message, interview details, an explicit next-action task, or
+a submission verification form. Each names its owned object with the Circles
+`@` reference treatment; provenance labels such as Imported are omitted. Optional
+reference links remain, but routine review and responses happen in the card.
+Check and red-X controls have explicit accessible action names. Required answers
+and evidence gate acceptance. Saving edited draft answers creates a new revision
+and invalidates review; it never approves that revision. Blocker acceptance saves
+human corrections, while rejection durably stops application work. Proposed
+answer edits retain explicit reuse permission. Submission outcomes require a
+human verification note and confirmation; reports and observed receipts stay
+distinct. The same narrowly scoped authenticated response RPC enforces ownership,
+source locks, versioning and idempotency. Agents can read the shared projection
+and human-action links but cannot manufacture a human response.
