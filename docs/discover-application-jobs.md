@@ -24,7 +24,7 @@ Website queueing and MCP `queue_application_job` share the same SQL writer. Agen
 
 The detached demo uses memory-only queue/pickup/outcome services and explicitly labelled Demo controls. It never opens employer forms, reads private files or submits. Reset removes simulated requests and outcomes.
 
-The migration, gateway/MCP release and rebuilt Node runtime must all be activated in the intended environment, and Muse must refresh developer context/tool discovery (application-workspace v29 / developer142). Local-main landing or a static frontend build alone does not activate the backend or verify the watcher/browser host.
+The migration, gateway/MCP release and rebuilt Node runtime must all be activated in the intended environment, and Muse must refresh developer context/tool discovery (application-workspace v30 / developer143). Local-main landing or a static frontend build alone does not activate the backend or verify the watcher/browser host.
 
 Muse request intake accepts HTTPS posting URLs independently of deterministic adapter support; the old provider allowlist is commented out. This only queues agent work; deterministic submission platform support and approval/receipt authority are unchanged. Queue failures display the backend message, including plain-object RPC errors.
 
@@ -35,3 +35,5 @@ A real blocker must be saved on the owning application with report_application_f
 One dispatcher may coordinate parallel independent applications with separate browser sessions. Serialize shared employer accounts/sessions and records, keep one owner/writer per application, and retain existing claim/version/approval safeguards. Workers check current Lookout facts and application state before asking the user for information.
 
 While waiting, retain the existing browser tab/session when supported and resume the same application. Verify employer-side draft persistence before relying on reopening; no automatic session-retention guarantee is implied.
+
+Group all unanswered employer fields for one application into its existing draft.questions and one Need your input card. Verify the complete group before notifying; proposals remain unconfirmed. When resolved, continue the same application to Submission review. Do not create per-field tasks or a duplicate application.

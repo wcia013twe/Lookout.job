@@ -34,3 +34,8 @@ Local activation: API image lookout-node:quiet-browser-141 and refreshed mounted
 - Preserve the existing browser tab/session while waiting when supported, resume the same application, and verify employer draft persistence before claiming safe reopening.
 
 Local activation read-back confirmed developer142/application-workspace29/change-resumption3 after Node image and mounted Edge refresh. The concise concurrency and retained-tab instructions are present. No employer browser session, application state or real claims were changed by this pass.
+
+## Follow-up: one grouped application input card
+
+- Application guide30/developer143 explicitly group unanswered employer fields in one existing application/card, preserve answered fields, label proposals unconfirmed, and require complete-group read-back before notifying. Resolution continues the same application to Submission review.
+- Existing prepare_draft/read_application_record/read_action_board paths and detached demo guide references are unchanged apart from the current version; no new writer/UI or per-field task. Validation: full suite 1136 passed/five skipped, data validation, diff checks and local API image build passed.
