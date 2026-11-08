@@ -33,6 +33,7 @@ function Actions({role,onPreview}:{role:Role;onPreview?:(role:Role)=>void}){
    const result=await api.queueApplicationJob({...payload,eventKey:pending.current.key});
    if(!active.current||!w.demo&&window.JB?.auth?.userId!==owner)return;
    setSaved(result.job);
+   document.dispatchEvent(new CustomEvent('workspace:cloud-ready',{detail:{userId:owner}}));
    if(!w.demo)await window.JB?.cloud?.refresh?.();
   }catch(e){if(active.current)setError(e instanceof Error?e.message:'Application job could not queue. Your posting stays here.');}
   finally{if(active.current)setBusy(false);}
