@@ -13,6 +13,15 @@ try{
   await page.goto(base+'/discover/?demo=1');
   const card=page.locator('[data-discovered-role="demo-discover-good"]');await card.waitFor();
   await card.getByText('Strong fit',{exact:true}).waitFor();
+  const consider=page.locator('[data-discovered-role="demo-discover-unknown"] [data-priority="consider"]');
+  await consider.getByText('Strong Consider',{exact:true}).waitFor();
+  const facts=page.locator('[data-discovered-role="demo-discover-unknown"]').getByRole('region',{name:'Job facts'});
+  assert.equal(await facts.locator('[data-priority="consider"]').count(),1);
+  const typeBox=await facts.getByText('Full-time',{exact:true}).boundingBox(),priorityBox=await consider.boundingBox();
+  assert(priorityBox.x>typeBox.x+typeBox.width,'Priority follows the employment type');
+  assert(Math.abs((priorityBox.y+priorityBox.height/2)-(typeBox.y+typeBox.height/2))<2,'Tags share the same row');
+  assert.equal(await consider.evaluate(el=>getComputedStyle(el).whiteSpace),'nowrap');
+  await consider.screenshot({path:`${dir}/${name}-strong-consider.png`});
   assert.equal(await card.getByRole('list',{name:/Shared application stage/}).count(),0,'Opportunity has no application progress');
   assert(await card.getByRole('button',{name:'AI Apply',exact:true}).isEnabled());
   const summary=card.locator('summary').filter({hasText:'76% job match'});
