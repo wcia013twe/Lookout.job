@@ -113,7 +113,7 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
       // An imported application may describe its one open round through its
       // next action. Keep that saved deadline; do not synthesize a round date.
       if (!date && rounds.length === 1 && hasAction) continue;
-      if (outside(date)) pending.push({id:`round:${app.id}:${round.id}`,applicationId:app.id,roundId:round.id,company:app.company,title:round.label,date,reason:pendingReason(date)});
+      if (outside(date)) pending.push({id:`round:${app.id}:${round.id}`,applicationId:app.id,roundId:round.id,company:app.company,title:round.label,date,kind:round.stage === 'SCREEN' ? 'Screen' : 'Interview',reason:pendingReason(date)});
       else interviews.push({applicationId:app.id, roundId:round.id, company:app.company, title:app.title, stage:round.label, date, kind:round.stage === 'SCREEN' ? 'Screen' : 'Interview'});
     }
     // A dated round already represents this application's action on that day.
