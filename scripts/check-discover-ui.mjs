@@ -34,6 +34,8 @@ try{
  await panel.getByRole('heading',{name:'About the job',exact:true}).waitFor();
  await panel.getByRole('region',{name:'Job facts',exact:true}).waitFor();
  await panel.getByRole('heading',{name:'AI fit analysis',exact:true}).waitFor();
+ assert.equal(await panel.getByRole('list',{name:'Role fit analysis'}).locator('li').count(),5);
+ await panel.getByText('Remote (demo). Core hours are not disclosed; relocation is not provided.',{exact:true}).waitFor();
  await panel.getByRole('heading',{name:'Application answers',exact:true}).waitFor();
  await panel.getByText('Can you work onsite three days per week?',{exact:true}).waitFor();
  await panel.getByLabel('Can you work onsite three days per week?',{exact:true}).fill('Temporary review answer');
@@ -63,7 +65,7 @@ try{
  await page.screenshot({path:dir+'/discover-cards-desktop.png'});
  const unknown=page.locator('article').filter({hasText:'Example Search (demo)'});
  await unknown.getByText('Match not assessed',{exact:true}).waitFor();
- assert.equal(await unknown.getByText('Unknown',{exact:true}).count(),0,'Unassessed cards omit empty factor bars');
+ assert.equal(await unknown.getByText('Not rated',{exact:true}).count(),0,'Unassessed cards omit empty factor bars');
  const bounds=await Promise.all([card,unknown].map(async item=>({title:await item.locator('header').boundingBox(),facts:await item.getByRole('region',{name:'Job facts',exact:true}).boundingBox(),match:await item.locator('summary').filter({hasText:/match.*details/}).boundingBox(),action:await item.getByRole('button',{name:'AI Apply',exact:true}).boundingBox()})));
  for(const key of ['title','facts','match','action']) assert(Math.abs(bounds[0][key].y-bounds[1][key].y)<2,`${key} rows align despite title length and assessment differences`);
  await unknown.locator('h3 button').click();
@@ -73,7 +75,7 @@ try{
  await page.getByRole('combobox',{name:'Application profile',exact:true}).selectOption('internships');
  await page.locator('article').filter({hasText:'Example Compute (demo)'}).locator('h3 button').click();
  await panel.getByText('54% job match',{exact:true}).waitFor();
- await panel.getByText('Unknown',{exact:true}).waitFor();
+ await panel.getByText('Not rated',{exact:true}).first().waitFor();
  await page.keyboard.press('Escape');
  assert.equal(errors.length,0,errors.join('\n'));
  console.log(JSON.stringify({result:'passed',viewports:['1440x1000 dark','390x844 light'],checks:['demo scores and unknowns','panel sections','ephemeral prefill edits','Escape and focus restoration','collapsed saved details and visible review questions','icon job facts','no preview service calls','no demo external posting','horizontal overflow','shared card row alignment','compact unassessed state'],artifacts:dir},null,2));

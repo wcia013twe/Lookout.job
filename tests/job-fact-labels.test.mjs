@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {compensationLabel, workSettingLabel, sponsorshipLabel} from '../next-app/lib/job-fact-labels.ts';
+import {compensationLabel, workSettingLabel, sponsorshipLabel, jobFactText} from '../next-app/lib/job-fact-labels.ts';
 
 test('verbose SingleStore facts become concise unknowns without inventing policy',()=>{
  assert.equal(workSettingLabel('Posting specifies San Francisco or Seattle. Remote/hybrid schedule and team-specific office attendance are not disclosed.'),'Not disclosed');
@@ -22,4 +22,16 @@ test('known employer base pay is not hidden because bonus or equity is unknown',
  const pay='$120,000–$150,000/year base; bonus and equity not disclosed';
  assert.equal(compensationLabel(pay),pay);
  assert.equal(compensationLabel('Base salary: $60/hour; bonus unknown'),'Base salary: $60/hour; bonus unknown');
+});
+
+test('detailed facts preserve authorization, relocation, cadence and policy caveats',()=>{
+ for(const value of [
+  'Not disclosed. Requires US work authorization now and in future.',
+  'Not disclosed. Attendance not stated. Relocation assistance beyond 50 miles.',
+  'Hybrid. At least four office days; body also says 60%, which contradicts the policy.',
+  'Remote. Core hours unknown; no relocation support.',
+  'Sponsorship considered. Employer may consider current or future sponsorship.',
+  'No new H-1B sponsorship. US citizenship is required.'
+ ])assert.equal(jobFactText(value),value);
+ assert.equal(jobFactText(''),'Not disclosed');assert.equal(jobFactText(undefined),'Not disclosed');
 });
