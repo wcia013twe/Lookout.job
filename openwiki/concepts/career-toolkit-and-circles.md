@@ -226,6 +226,8 @@ create the user's requested session or any Calendar event.
 
 Network people can now be filtered by tracked or imported application, or by No linked application. Cards display linked company/role labels using the existing explicit-tag/role-URL association rules. Company and application filters can be combined, and existing process deep links select the same filter. No contact write, new ranking store or inferred company-only process link is introduced; scoped list_contacts/save_contact remain the agent read/write boundary.
 
+The cold-outreach guide now tells agents to suggest application-relevant contacts during authorized work, merge exact existing application IDs into contact tags, verify structured profile/conversation routes and point to the Network Application filter after read-back. Hidden UI suggestions do not disable contextual agent recommendations. Company-only matches stay unlinked until a clear role-specific purpose is established; human drafts/history/states remain intact. Source instructions require gateway/MCP release and a context refresh before availability in deployed agents is claimed.
+
 ## Canonical round preparation (connected board source update)
 
 Application milestones now retain a stable round identity across append-only corrections, an explicit practice category and time zone, and confirmed/proposed/incorrect details. Lifecycle supports cancellation separately from completion. The milestone writer accepts `practiceCategory`, `timeZone` and optional `proposedAt`; unknown confirmed times remain null. A person may confirm a proposed time through Action Board, producing a correction that retains the original evidence.
