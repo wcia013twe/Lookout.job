@@ -543,3 +543,13 @@ Action card material follow-up: each type now has a full border and colored
 background, borrowing the Career Toolkit's theme-aware material palette. Matching
 ink/divider colors preserve contrast in light and dark modes. This is a visual
 change; the existing inline decision and ownership rules are unchanged.
+
+
+#### Upcoming relevant-date presentation
+
+The website calendar now skips empty/past days and groups upcoming dated work
+chronologically, including dates beyond the current week from the owned pending
+projection. Each group shows Today/In X days. Week navigation is removed from
+this compact widget; the scoped planner's weekOf read remains available. Undated
+and overdue tasks stay in Other pending tasks. Source dates, duplicate rules,
+budgets and completion writers are unchanged; this is a presentation correction.

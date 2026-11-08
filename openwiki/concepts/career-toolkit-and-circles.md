@@ -309,3 +309,13 @@ whose deadline is saved on next action with its attention flag false. Source
 validation and local read-back receipts are recorded in the shared calendar note.
 
 Network relationship views now separate All people, Continue conversations and Prospects. A valid logged sent/received message or non-cancelled meeting establishes a conversation; research, drafts, thread URLs alone and legacy hiring statuses do not. Cards and details show the last logged interaction and saved reply/waiting state, not live inbox state. Update relationship edits the compact summary, existing thread URL, optional dated update, next action and follow-up using the existing contact envelope and revision boundary. Drafts/history/application links remain unchanged; no sending or inbox sync occurs. MCP list_contacts/save_contact can read and maintain the same records.
+
+
+#### Upcoming relevant-date presentation
+
+The website calendar now skips empty/past days and groups upcoming dated work
+chronologically, including dates beyond the current week from the owned pending
+projection. Each group shows Today/In X days. Week navigation is removed from
+this compact widget; the scoped planner's weekOf read remains available. Undated
+and overdue tasks stay in Other pending tasks. Source dates, duplicate rules,
+budgets and completion writers are unchanged; this is a presentation correction.
