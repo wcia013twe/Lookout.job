@@ -773,10 +773,33 @@ same requests and lifecycle in detached memory. Historical Done/Dismissed receip
 are not retroactive permissions. Contract138/guide26 and the migration require
 normal backend release; a real Muse wake remains host/environment verification.
 
-Local activation on 2026-11-08 applied the missing watcher, schedule refresh,
+Local activation of revision 35310de9 on 2026-11-08 applied the missing watcher, schedule refresh,
 disclosure and pipeline migrations and refreshed the API/Edge runtime. Existing
 account records were preserved; the worker was retained. A disposable local
 account verified authenticated human approval, MCP pickup/completion and feed
 acknowledgement with count 0 → 1 → 0. AI Apply event insertion was verified in a
 rolled-back transaction before worker visibility. This establishes local runtime
 behavior only; hosted deployment and the actual Muse host wake remain unverified.
+
+### Muse-owned AI Apply routing (source update)
+
+AI Apply now emits the existing application_requested feed pointer and waits for
+its bound agent. The agent-only claim_application_request / report_application_request
+tools use the existing job journal, current job/application versions, active
+connection scopes and human stop checks. Single pickup has no timed takeover.
+Muse reuses the saved draft with its host browser and optional host subagents;
+no backend browser session transfers. Outcome reports distinguish prepared,
+completed, blocked and uncertain, never create approval/submission evidence,
+and retain the existing application projection and finished-job feed.
+
+Deterministic worker pickup is disabled in SQL and its runtime hookup plus
+Node/local deterministic browser-tool registrations are commented out. Source
+implementations remain. Search workers and separate approval/receipt authorities
+are preserved. Existing started deterministic attempts can still persist a true
+finish. Host computer use cannot bypass required approval, authorization, stops
+or uncertainty checks; unavailable capability must become a saved blocker.
+
+See [the current routing contract](../../docs/discover-application-jobs.md).
+This is source-level behavior: migration, gateway/MCP and Node activation plus
+real watcher/browser-host verification are separate. The detached demo traces
+fictional pickup/outcome in memory and never opens or submits an employer form.

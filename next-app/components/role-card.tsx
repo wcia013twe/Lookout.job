@@ -10,7 +10,8 @@ export type Role = {
   discoveredDate: string; sourceFreshness: string; whyItFits: string; applicationUrl: string;
 };
 import {useWorkspace} from '../lib/workspace';
-import DiscoveredRoleWidget from './discovered-role-widget';
+import DiscoveredRoleWidget,{SavedRoleTag} from './discovered-role-widget';
+import {savedRoleLabel} from '../../lib/job-assessment.mjs';
 import ApplicationActions from './application-actions';
 import RoleJobFacts from './role-job-facts';
 import RoleMatchPreview, {type MatchPreview} from './role-match-preview';
@@ -18,9 +19,10 @@ export {CompanyLogo} from './company-logo';
 
 export default function RoleCard({role,onPreview}:{role:Role;onPreview?:(role:Role)=>void}) {
  const w=useWorkspace();
+ const priorityWithType=savedRoleLabel(role)==='Strong Consider';
  const assessment=w.demo?role.matchPreview:role.matchAssessment;
- return <DiscoveredRoleWidget role={role} onPreview={onPreview?()=>onPreview(role):undefined}>
-  <RoleJobFacts role={role} compact/>
+ return <DiscoveredRoleWidget hideSavedLabel={priorityWithType} role={role} onPreview={onPreview?()=>onPreview(role):undefined}>
+  <RoleJobFacts role={role} compact priorityTag={priorityWithType?<SavedRoleTag role={role}/>:undefined}/>
   <p className="line-clamp-3 text-sm leading-relaxed text-board-muted">{role.whyItFits}</p>
   {onPreview?<details className="border-t border-board-line pt-1 text-sm">
    <summary className="min-h-11 cursor-pointer py-3 font-semibold text-board-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-board-accent">{typeof assessment?.percent==='number'?`${assessment.percent}% job match · View details`:'View match details'}</summary>

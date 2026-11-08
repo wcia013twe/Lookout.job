@@ -21,7 +21,7 @@ const harness=(scopes=allScopes,extra=[],reply={status:200,data:{ok:true}})=>{
  return {handler,calls,send,call,discover};
 };
 test('initial catalog and gated counts match hosted, Node and stdio plans',async()=>{
- for(const [extras,exposed,gated] of [[[],47,81],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],50,81],[LOCAL_TOOLS,50,91]]){
+ for(const [extras,exposed,gated] of [[[],47,83],[[RESUME_PARSE_TOOL,...SUBMISSION_TOOLS],50,83],[LOCAL_TOOLS,48,91]]){
   const h=harness(allScopes,extras),listed=(await h.send('tools/list')).result.tools,discovered=await h.discover();
   assert.equal(listed.length,exposed);assert.equal(discovered.filter(tool=>tool.gated).length,gated);
   assert.equal(discovered.length,active.length+extras.length);
@@ -48,7 +48,7 @@ test('workflow groups cover the catalog once and exact-name lookup includes core
  }
  assert.equal(new Set(seen).size,seen.length);
  assert.deepEqual(seen.sort(),(await h.discover()).map(t=>t.name).sort());
- for(const name of ['read_toolkit_context','submit_search_leads','inspect_application'])assert.equal((await h.discover('all',name))[0].name,name);
+ for(const name of ['read_toolkit_context','submit_search_leads','fingerprint_resume','claim_application_request'])assert.equal((await h.discover('all',name))[0].name,name);
  assert.deepEqual(await h.discover('profile','inspect_application'),[]);
  assert.deepEqual(await harness().discover('all','inspect_application'),[]);
  assert.deepEqual(await h.discover('all','not_registered'),[]);
@@ -113,7 +113,7 @@ test('fictional admin demo edits profile, discovers and reads a gated brief, rej
 });
 test('startup explains executable discovery and preserves the small permanent contract',()=>{
  assert.match(bootstrapInstructions,/discover_tools/);assert.match(bootstrapInstructions,/call_discovered_tool/);
- assert.equal(contract.developerVersion,138);
+ assert.equal(contract.developerVersion,139);
  assert(Buffer.byteLength(JSON.stringify(contract))+Buffer.byteLength(bootstrapInstructions)<=6000);
  assert.equal(ACCESS_TOOLS.length,2);
 });

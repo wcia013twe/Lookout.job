@@ -1,3 +1,4 @@
+import {validateApplicationRequest} from '../../supabase/functions/agent-gateway/application-requests.mjs';
 import {validateRoundMetadata} from '../../lib/application-rounds.mjs';
 import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
 import {createMuseChangeFeedDemo,emitDemoMuseChange} from '../../lib/muse-change-feed-demo.mjs';
@@ -161,6 +162,23 @@ export function createDemoServices(store) {
     if (!value || value.backendId !== id || !String(id).startsWith('demo-')) throw new Error('Fictional demo application not found.');
     return value;
   }
+  const requestReceipts=new Map();
+  function applicationRequest(operation,payload){
+   validateApplicationRequest(operation,payload);
+   const app=Object.values(store.get('workflow.applications')||{}).find(a=>a.executionJob?.id===payload.jobId);
+   if(!app)throw Error('Fictional application request missing.');
+   const signature=JSON.stringify({operation,payload}),prior=requestReceipts.get(payload.eventKey);
+   if(prior){if(prior.signature!==signature)throw Error('Retry changed.');return copy(prior.result);}
+   const job=app.executionJob;
+   if(job.version!==payload.expectedVersion||(app.backendRevision||0)!==payload.expectedRevision)throw Error('Application request changed.');
+   const claim=operation==='applications.request.claim';
+   if(job.status!==(claim?'queued':'running')||!claim&&job.result?.executor!=='muse')throw Error('Request cannot continue.');
+   const next={...job,status:claim?'running':['blocked','uncertain'].includes(payload.outcome)?'partial':'completed',version:job.version+1,result:{fictional:true,executor:'muse',outcome:claim?'working':payload.outcome,applicationId:app.backendId,applicationRevision:app.backendRevision||0,verifiedSubmission:false,summary:claim?'Muse picked up the fictional request.':payload.summary}};
+   store.set('workflow.applications.'+app.id,{...app,executionJob:next});
+   const result={job:copy(next),applicationId:app.backendId};requestReceipts.set(payload.eventKey,{signature,result});
+   if(!claim)emitDemoMuseChange(store,{eventKey:'application-outcome:'+job.id,kind:'backend_job_finished',entity:'backend_job',recordId:job.id,version:next.version,status:next.status,summary:payload.summary});
+   return copy(result);
+  }
   const artifactDemo = createArtifactDemo(store);
   function plannerBundle() {
     return {...artifactDemo.artifactSnapshot(),imports:copy(store.get('demo.boardImports') || []),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
@@ -178,6 +196,8 @@ export function createDemoServices(store) {
       emitDemoMuseChange(store,{eventKey:'apply:'+job.id,kind:'application_requested',entity:'backend_job',recordId:job.id,applicationId:app.backendId,version:1,status:'queued',summary:'Fictional AI Apply request; preparation is not submission approval.'});
       return {application:copy(app),job:copy(job)};
     },
+    async claimApplicationRequest(payload){return applicationRequest('applications.request.claim',payload);},
+    async reportApplicationRequest(payload){return applicationRequest('applications.request.report',payload);},
     async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
     async resolveProfileConflict(choice='review') {
       const scenario=store.get('demo.profileConflict');if(!scenario)throw Error('No fictional profile conflict');
