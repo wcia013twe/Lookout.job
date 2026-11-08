@@ -32,3 +32,5 @@ Local activation: API image lookout-node:quiet-browser-141 and refreshed mounted
 - Application guide29/change-resumption3/developer142 add three general rules: check Lookout before asking, parallelize independent work, and serialize shared accounts/sessions and records. One dispatcher may coordinate multiple workers; existing claim/version/approval safeguards remain.
 - Shared guide and detached demo feed references stay current. Full suite, existing focused guide checks, data validation and production build passed; host compliance remains unverified.
 - Preserve the existing browser tab/session while waiting when supported, resume the same application, and verify employer draft persistence before claiming safe reopening.
+
+Local activation read-back confirmed developer142/application-workspace29/change-resumption3 after Node image and mounted Edge refresh. The concise concurrency and retained-tab instructions are present. No employer browser session, application state or real claims were changed by this pass.
