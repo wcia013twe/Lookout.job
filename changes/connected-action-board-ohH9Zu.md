@@ -191,3 +191,14 @@ or new classification state. Demo includes Strong fit and priority fallbacks.
   worker visibility. Disposable account removed; real decisions untouched.
   Merged Discover checks and frontend typecheck passed. No push or hosted release;
   the user's actual Muse host wake was not tested.
+
+## Local Muse tool activation (2026-11-08)
+
+- Applied committed migration 20261108050816 locally, with existing account
+  record hashes unchanged. Built API image lookout-node:muse-requests-c7d8534a,
+  replaced only the local API and reloaded the Edge runtime.
+- Connected MCP discovery exposes claim_application_request and
+  report_application_request. A disposable authenticated account exercised the
+  shared human queue writer, MCP claim and a blocked outcome, alongside the
+  approval/feed lifecycle. All passed; disposable account removed. No real
+  approval, employer action, host wake or hosted release was performed.

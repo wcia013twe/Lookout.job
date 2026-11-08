@@ -803,3 +803,11 @@ See [the current routing contract](../../docs/discover-application-jobs.md).
 This is source-level behavior: migration, gateway/MCP and Node activation plus
 real watcher/browser-host verification are separate. The detached demo traces
 fictional pickup/outcome in memory and never opens or submits an employer form.
+
+Local Muse request activation (2026-11-08): migration 20261108050816 and
+API image lookout-node:muse-requests-c7d8534a are active in the local stack.
+Connected MCP discovery exposes both claim_application_request and
+report_application_request. A disposable account verified authenticated queueing,
+MCP pickup and a saved blocked outcome; no employer action or real account
+decision occurred. Actual Muse wake/browser work and hosted release remain
+unverified.
