@@ -30,7 +30,8 @@ try{
  assert.equal(await caution.locator('li').count(),2);
  for(const [width,height,theme] of [[1440,1000,'dark'],[390,844,'light']]) {
   await page.setViewportSize({width,height});await page.emulateMedia({colorScheme:theme});
-  await caution.scrollIntoViewIfNeeded();
+  await caution.evaluate(el=>el.scrollIntoView({block:"center"}));
+  await page.waitForTimeout(200);
   for(const section of [fit,caution]) assert(await section.evaluate(el=>getComputedStyle(el).borderRadius!=='0px' && getComputedStyle(el).backgroundColor!=='rgba(0, 0, 0, 0)'));
   assert(await panel.evaluate(el=>el.scrollWidth<=el.clientWidth+1));
   await page.screenshot({path:dir+`/analysis-${width}-${theme}.png`});
