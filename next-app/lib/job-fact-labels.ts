@@ -23,3 +23,8 @@ export function sponsorshipLabel(value?: string) {
   if (/^(?:yes|available)(?:$|[.(])|^(?:visa )?sponsorship (?:is )?(?:available|offered|provided)(?:$|[\s.(])/i.test(text)) return 'Available';
   return 'Not disclosed';
 }
+
+// Detailed facts are evidence, not an enum. Keep qualifications and unknowns visible.
+export function jobFactText(value?: string) {
+  return clean(value) || 'Not disclosed';
+}

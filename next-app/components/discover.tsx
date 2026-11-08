@@ -1,4 +1,6 @@
 "use client";
+import {useSimplifyImports} from '../lib/simplify-import';
+import {discoveryApplications} from '../../lib/discover-application-state.mjs';
 import {EXTRA_FEATURES_ENABLED} from "../../lib/feature-scope.mjs";
 import { useRef, useState } from "react";
 import Link from "next/link";
@@ -28,13 +30,15 @@ function SelectedBoard() {
 }
 function DiscoverBoard() {
   const w = useWorkspace();
+  const imports = useSimplifyImports();
+  const applications = discoveryApplications(w.state.workflow.applications, imports.records);
   const a = useApplicationProfile();
   const [publicView,setPublicView]=useState(false);
   const newArrival=showAgentEmptyState({signedIn:!!w.user,hasPrivateBatch:w.hasPrivateBatch,demo:w.demo,demoArrival:w.state.ui?.dashboardArrival});
   const sourceRoles=(publicView?(w.publicRoles||w.roles):w.roles).filter((role:Role)=>matchesProfileEmployment(role,a.profile)).map((role:Role)=>({...role,rankingProfile:a.profile}));
   const sourceDate=publicView?(w.publicDate||w.date):w.date;
   const savedRole=!w.demo?savedOnboardingRole([a.profile],w.publicRoles||w.roles):null;
-  const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)&&matchesDiscoveryStatus(savedRole,{applications:w.state.workflow.applications,trackerItems:w.state.tracker.items})?{...savedRole,rankingProfile:a.profile}:null;
+  const firstRole=savedRole&&matchesProfileEmployment(savedRole,a.profile)&&matchesDiscoveryStatus(savedRole,{applications,trackerItems:w.state.tracker.items})?{...savedRole,rankingProfile:a.profile}:null;
   const reduced = useReducedMotion();
   const board = useRef<HTMLElement>(null);
   const [arrival, setArrival] = useState<{owner:string;ids:string[];run:number}|null>(null);
@@ -53,7 +57,7 @@ function DiscoverBoard() {
     (r: Role) =>
       matchesPostingAge(r, postingAge) &&
       (selectedDay === "all" || r.discoveredDate === selectedDay) &&
-      matchesDiscoveryStatus(r,{applications:w.state.workflow.applications,trackerItems:w.state.tracker.items,includeApplied:Boolean(w.discoveryLog&&!publicView&&includeApplied)}) &&
+      matchesDiscoveryStatus(r,{applications,trackerItems:w.state.tracker.items,includeApplied:Boolean(w.discoveryLog&&!publicView&&includeApplied)}) &&
       `${r.company} ${r.title} ${r.location} ${r.category}`
         .toLowerCase()
         .includes(search.toLowerCase()),
@@ -72,6 +76,7 @@ function DiscoverBoard() {
   const arriving = arrival?.owner === previewOwner ? arrival : null;
   const roleGroups = [{key:a.profile.id,label:a.profile.name,roles}];
   const header=<div className="mb-6 flex flex-wrap items-start justify-between gap-4 [&>.workspace-heading]:mb-0"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
+  if ((w.user || w.demo) && !imports.ready) return <>{header}<Notice>{imports.error ? `Application history could not load: ${imports.error}` : 'Checking application history before showing roles…'}{imports.error && <button type="button" className="ml-3 underline" onClick={()=>void imports.refresh()}>Retry</button>}</Notice></>;
   if(newArrival&&!publicView)return <>
     {header}
     {firstRole ? <section className="mt-6 md:mt-9" aria-label="Your first role to explore">

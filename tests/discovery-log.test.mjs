@@ -51,3 +51,18 @@ test('a queued duplicate cannot mask a prior submitted application',()=>{
  const role={id:'catalog',applicationUrl:'https://example.com/jobs/already-applied'},applications={queued:{id:'queued',url:role.applicationUrl,status:'Queued'},submitted:{id:'submitted',url:role.applicationUrl,status:'Submitted'}};
  assert.equal(matchesDiscoveryStatus(role,{applications}),false);assert.equal(matchesDiscoveryStatus(role,{applications,includeApplied:true}),true);
 });
+
+test('Discover reads imported outcomes without collapsing native duplicates or guessing null-URL identity',async()=>{
+ const {discoveryApplications}=await import('../lib/discover-application-state.mjs');
+ const role={id:'catalog',applicationUrl:'https://example.com/jobs/exact',company:'Fictional employer',title:'Software Engineer'};
+ const native={catalog:{id:'catalog',url:role.applicationUrl,status:'Queued'}};
+ for(const status of ['APPLIED','REJECTED']){
+  const records=[{id:'imported',record:{company:role.company,title:role.title,url:role.applicationUrl,status}}],before=structuredClone(records);
+  assert.equal(matchesDiscoveryStatus(role,{applications:discoveryApplications(native,records)}),false);assert.deepEqual(records,before);
+  records[0].record.url=null;assert.equal(matchesDiscoveryStatus(role,{applications:discoveryApplications(native,records)}),true,'Do not infer requisition identity from a common title');
+ }
+});
+test('all matching tracker keys participate instead of allowing an empty alias to mask rejection',()=>{
+ const role={id:'catalog',applicationUrl:'https://example.com/jobs/exact'};
+ assert.equal(matchesDiscoveryStatus(role,{applications:{alias:{id:'different',url:role.applicationUrl,status:'Queued'}},trackerItems:{alias:{},catalog:{status:'Rejected'}}}),false);
+});
