@@ -73,3 +73,7 @@ retry. Signed receipts are unavailable: stored confirmation is specifically
 runner-observed employer evidence. The browser can read its own minimal attempt
 metadata, not write receipts or transitions. See runner/README.md and the gateway
 submission modules for the execution contract.
+
+### Explicit AI Apply routing (2026-11-08)
+
+Future requests use an owned, versioned application-agent preference, separate from the display agent name. My Agent → Use for AI Apply and scoped MCP read_application_agent/select_application_agent use the same validators and database ownership/version checks. New connections do not replace the saved choice; unavailable selections fail without fallback. Existing queued/running jobs keep their connection and claim authority. Without a saved choice, browser queueing requires exactly one eligible connection; MCP retains the authenticated caller as its explicit destination. Changing the preference grants no scopes, approval or submission receipt. Migration 20261108081625; local activation and hosted release must be verified separately.

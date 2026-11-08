@@ -1,3 +1,4 @@
+import {createApplicationAgentDemo} from '../../lib/application-agent-demo.mjs';
 import {validateApplicationRequest} from '../../supabase/functions/agent-gateway/application-requests.mjs';
 import {validateRoundMetadata} from '../../lib/application-rounds.mjs';
 import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
@@ -186,12 +187,15 @@ export function createDemoServices(store) {
   }
   return {
     ...createMuseChangeFeedDemo(store),
+    ...createApplicationAgentDemo(store),
     backendJobs:createBackendJobsDemo(store),
     async queueApplicationJob(payload) {
       // The demo's example.com postings are inert; validate using a fictional supported URL.
       validateApplicationJob({...payload,posting:{...payload.posting,url:'https://job-boards.greenhouse.io/lookout_fictional_demo/jobs/1'}});
+      const routing=await createApplicationAgentDemo(store).readApplicationAgent();
+      if(routing.connectionId&&!routing.available)throw Error('Selected AI Apply agent is unavailable; choose an active agent in My Agent');
       const role=payload.posting,previous=store.get('workflow.applications.'+role.id);
-      const job=previous?.executionJob||{id:crypto.randomUUID(),status:'queued',version:1,kind:'application_submit',input:{applicationId:'demo-application-'+role.id,expectedRevision:0}};
+      const job=previous?.executionJob||{id:crypto.randomUUID(),status:'queued',version:1,kind:'application_submit',connection_id:store.get('demo.applicationAgent')?.connectionId||null,input:{applicationId:'demo-application-'+role.id,expectedRevision:0}};
       const app={...role,url:role.url,backendId:'demo-application-'+role.id,id:role.id,status:'Queued',questions:[],backendRevision:0,...previous,executionJob:job};
       store.set('workflow.applications.'+role.id,app);
       emitDemoMuseChange(store,{eventKey:'apply:'+job.id,kind:'application_requested',entity:'backend_job',recordId:job.id,applicationId:app.backendId,version:1,status:'queued',summary:'Fictional AI Apply request; preparation is not submission approval.'});

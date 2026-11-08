@@ -1,3 +1,4 @@
+import {validateApplicationAgent} from '../lib/application-agent.mjs';
 import {actionBoardMessageFields} from '../lib/action-board.mjs';
 import {withLatestPostingEvidence} from '../lib/batch-posting-evidence.mjs';
 import {validateWorkExperience} from '../supabase/functions/agent-gateway/work-experience.mjs';
@@ -75,6 +76,15 @@ function createBackend(client, expectedUserId = null) {
     async respondActionBoard(payload) {
       const id=await owner(); const data=await result(client.rpc('respond_action_board',{payload}));
       if(await owner()!==id)throw Error('Account changed'); return data;
+    },
+    async readApplicationAgent() {
+      const id=await owner();const data=await result(client.rpc('read_application_agent'));
+      if(await owner()!==id)throw Error('Account changed');return data;
+    },
+    async selectApplicationAgent(payload) {
+      validateApplicationAgent('applications.agent.select',payload);
+      const id=await owner();const data=await result(client.rpc('select_application_agent',{payload}));
+      if(await owner()!==id)throw Error('Account changed');return data;
     },
     async queueApplicationJob(payload) {
       const id=await owner();
