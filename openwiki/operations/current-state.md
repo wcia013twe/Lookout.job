@@ -772,3 +772,11 @@ normal Action Board displays this pipeline inline. Demo fixtures exercise the
 same requests and lifecycle in detached memory. Historical Done/Dismissed receipts
 are not retroactive permissions. Contract138/guide26 and the migration require
 normal backend release; a real Muse wake remains host/environment verification.
+
+Local activation on 2026-11-08 applied the missing watcher, schedule refresh,
+disclosure and pipeline migrations and refreshed the API/Edge runtime. Existing
+account records were preserved; the worker was retained. A disposable local
+account verified authenticated human approval, MCP pickup/completion and feed
+acknowledgement with count 0 → 1 → 0. AI Apply event insertion was verified in a
+rolled-back transaction before worker visibility. This establishes local runtime
+behavior only; hosted deployment and the actual Muse host wake remain unverified.

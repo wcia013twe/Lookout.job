@@ -180,3 +180,14 @@ or new classification state. Demo includes Strong fit and priority fallbacks.
 - Verification: full `npm test` passed (1,117 passed, five skipped); 38 focused board/MCP/guide tests and the SQL/demo lifecycle checks passed. Data validation (158 roles), frontend typecheck and production build passed. Desktop/mobile browser checks verified approval stays pending, Muse pickup and completion, required input, stops, source labels, keyboard access and swipes. SQL checks cover replay, feed privacy/counts/acknowledgements, owner/scope isolation, single-agent claims, rejection across edits, AI Apply queue events/cancellation and late outcomes. Hosted migration/gateway/MCP release and authenticated
   host wake verification remain separate; no account decisions or submissions
   were made as part of development.
+
+- Local activation (2026-11-08): landed in main at 35310de9. Applied the four
+  missing watcher/schedule/disclosure/pipeline migrations to the local stack,
+  preserving hashes of existing account records. Rebuilt and replaced only the
+  local API image; retained the existing worker and its jobs. Reloaded the local
+  Edge runtime. A disposable authenticated account verified human approval →
+  feed → MCP pickup/completion → acknowledgement, with watcher count 0 → 1 → 0.
+  AI Apply emitted exactly one feed event in a transaction rolled back before
+  worker visibility. Disposable account removed; real decisions untouched.
+  Merged Discover checks and frontend typecheck passed. No push or hosted release;
+  the user's actual Muse host wake was not tested.
