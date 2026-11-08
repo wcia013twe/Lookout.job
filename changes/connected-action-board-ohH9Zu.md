@@ -81,3 +81,7 @@ Limits: checks use disposable migrated databases and fictional detached browser 
   stable focus backgrounds and no horizontal overflow. Existing inline decision,
   calendar and mobile-swipe browser checks passed; Impeccable detector returned
   no findings. No backend changes, real-account writes or hosted release.
+
+- Landing integration preserved the subsequently landed upcoming-date calendar.
+  Nineteen focused calendar/board tests, frontend typecheck, production build and
+  the updated desktop/mobile interaction flow passed on the combined source.
