@@ -10,7 +10,7 @@ const sql=query=>{
  catch{throw Error('Local proof SQL failed; inspect locally without logging credentials.');}
 };
 assert.equal(sql("select to_regprocedure('private.mock_interview_owned(uuid,text,jsonb)') is not null;"),'t','Apply local migration 20261107201448 before evaluating mock saves');
-const owner=randomUUID(),session=randomUUID(),token='jb_agent_'+randomBytes(32).toString('hex');
+const owner=randomUUID(),session=randomUUID(),material=randomUUID(),token='jb_agent_'+randomBytes(32).toString('hex');
 const hash=createHash('sha256').update(token).digest('hex');
 const profile='FICTIONAL_PRIVATE_INTERVIEWER_'+randomUUID();
 const payload={artifact:{id:session,expectedVersion:0,title:'Fictional local mock proof',purpose:'Verify mock persistence, not a real interview',kind:'mock_interview',format:'markdown',body:'Fictional logistics only. No event or call.',weekOf:'2026-11-09',scheduledAt:'2026-11-09T15:00:00-05:00',timeZone:'America/New_York',durationMinutes:45,sessionStatus:'scheduled',sources:[],links:[]},interviewerProfile:profile};
@@ -39,7 +39,14 @@ try{
  assert(planner.agenda.days.flatMap(day=>day.events||[]).some(event=>event.id==='mock:'+session));
  assert(!JSON.stringify(planner).includes(profile));
  assert.equal(visible.content.durationMinutes,45);assert.equal(visible.content.timeZone,'America/New_York');
- console.log('Passed: local mock offset/preparedFor rejection plus Node MCP -> Edge -> SQL save/read/retry and calendar read-back; hidden profile stays out of ordinary artifact reads.');
+ const document={id:material,expectedVersion:0,title:'Fictional assigned material',purpose:'Check calendar assignment',kind:'notes',format:'markdown',body:'Fictional material only.',prepOn:'2026-11-10',sources:[],links:[]};
+ const materialSave=await call('call_discovered_tool',{name:'save_artifact',arguments:document});assert.equal(materialSave.version,1);
+ const datedPlanner=await call('read_preparation_planner',{weekOf:'2026-11-09'});
+ assert(datedPlanner.agenda.days.flatMap(day=>day.events||[]).some(event=>event.id==='material:'+material&&event.date===document.prepOn));
+ const week=await call('call_discovered_tool',{name:'list_artifacts',arguments:{weekOf:'2026-11-09'}});assert(week.items.some(row=>row.id===material));
+ const {prepOn,...undated}=document;await call('call_discovered_tool',{name:'save_artifact',arguments:{...undated,expectedVersion:1}});
+ const clearedPlanner=await call('read_preparation_planner',{weekOf:'2026-11-09'});assert(!clearedPlanner.calendarArtifacts.some(row=>row.id===material));
+ console.log('Passed: local mock offset/preparedFor rejection plus Node MCP -> Edge -> SQL save/read/retry and calendar read-back, plus material date save/list/calendar/clear; hidden profile stays out of ordinary artifact reads.');
 }finally{
- if(created){sql(`delete from auth.users where id='${owner}';`);assert.equal(sql(`select (select count(*) from auth.users where id='${owner}')+(select count(*) from public.career_artifacts where id='${session}')+(select count(*) from private.mock_interview_profiles where artifact_id='${session}')+(select count(*) from private.agent_connections where user_id='${owner}');`),'0');console.log('Fictional proof account, connection, artifact and profile removed.');}
+ if(created){sql(`delete from auth.users where id='${owner}';`);assert.equal(sql(`select (select count(*) from auth.users where id='${owner}')+(select count(*) from public.career_artifacts where id in ('${session}','${material}'))+(select count(*) from private.mock_interview_profiles where artifact_id='${session}')+(select count(*) from private.agent_connections where user_id='${owner}');`),'0');console.log('Fictional proof account, connection, artifact and profile removed.');}
 }

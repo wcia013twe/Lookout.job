@@ -123,9 +123,12 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
     }
   }
   for (const artifact of calendarArtifacts) {
-    const c = artifact.content || {}, date = dayOf(c.scheduledAt);
-    if (artifact.archived || c.kind !== 'mock_interview' || !['scheduled','in_progress'].includes(c.sessionStatus) || !date) continue;
-    events.push({id:`mock:${artifact.id}`, title:c.title, date, kind:'Mock interview', path:`/career-toolkit/?artifact=${encodeURIComponent(artifact.id)}`});
+    const c = artifact.content || {};
+    if (artifact.archived || ['cover_letter','application_template'].includes(c.kind)) continue;
+    const mock = c.kind === 'mock_interview';
+    const date = mock ? dayOf(c.scheduledAt) : preparationDate(c.prepOn);
+    if (!date || (mock && !['scheduled','in_progress'].includes(c.sessionStatus))) continue;
+    events.push({id:`${mock?'mock':'material'}:${artifact.id}`, company:c.company, title:c.title, date, kind:mock?'Mock interview':'Prep material', path:`/career-toolkit/?artifact=${encodeURIComponent(artifact.id)}`});
   }
 
   for (const event of events) if (outside(event.date)) pending.push({...event,reason:pendingReason(event.date)});

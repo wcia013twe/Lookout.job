@@ -12,6 +12,7 @@ function Context({artifact,application,compact=false}:{artifact:ArtifactSummary;
  const c=artifact.content;
  return <div className={styles.materialContext}>
   <span>{compact&&(application?.company||c.company)?`${(application?.company||c.company)?.replace(/ \(demo\)$/,'')} · `:''}{artifactLabels[c.kind as keyof typeof artifactLabels]||c.kind}{c.durationMinutes?` · ${c.durationMinutes} min`:''}{c.sessionStatus?` · ${c.sessionStatus.replace('_',' ')}`:''}</span>
+  {c.prepOn&&<span>Prep on {new Date(c.prepOn+'T12:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'})}</span>}
   {application&&<Link className={styles.applicationLink} href={`/applications/?application=${encodeURIComponent(application.id)}`} title={`${application.company} · ${application.title}`}><ToolkitIcon name="offers" size={13}/>{application.title}<ToolkitIcon name="chevron" size={12}/></Link>}
  </div>;
 }
@@ -41,6 +42,6 @@ export function SavedMaterialRow({artifact,application,demo=false}:{artifact:Art
   <Link href={calendar||(c.kind==='resource'&&c.resourceUrl?c.resourceUrl:artifact.path||artifactPath(artifact.id))} target={calendar||c.kind==='resource'?'_blank':undefined} rel={calendar||c.kind==='resource'?'noopener noreferrer':undefined} className={styles.savedMaterialRow}>
    <span className={styles.savedMaterialIcon}>{(application?.company||c.company)?<CompanyLogo company={application?.company||c.company||''}/>:<ToolkitIcon name={iconFor(c.kind)} size={22}/>}</span>
    <div><h3>{c.title}</h3><p>{artifactPurpose(c)}</p></div><ToolkitIcon name="arrow" size={17}/>
-  </Link><Context artifact={artifact} application={application} compact/>
+  </Link>{c.kind==='resource'&&<Link className="text-xs text-board-accent underline" href={artifact.path||artifactPath(artifact.id)}>Details & prep date</Link>}<Context artifact={artifact} application={application} compact/>
  </article></li>;
 }
