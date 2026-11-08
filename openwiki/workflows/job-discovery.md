@@ -300,3 +300,10 @@ That is unresolved coverage, not evidence of an empty job market. Exact employer
 link research remains the existing agent handoff; no login bypass, guessed links,
 LLM worker or alternate write path was introduced. Local Docker persistence proof
 is recorded separately from hosted deployment in the feature change note.
+
+The repeat test also exposed a SmartRecruiters URL-alias gap: its native identity
+was not reconstructed from storage, which retained only Greenhouse/Lever triples.
+The existing adapter now restores all five verified provider triples (including
+Ashby, Workday and SmartRecruiters) before delegating to copied Career Ops dedup.
+An unchanged short/slugged URL pair is covered by both child-process and SQL-leased
+regressions; distinct native posting IDs remain separate.

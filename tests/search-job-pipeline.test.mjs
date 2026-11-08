@@ -400,3 +400,18 @@ test('an import recorded during collection is rechecked before the final shortli
  assert(imported);assert.equal((await result(f.job.id)).result.shortlist.totalRetained,0);
  assert.equal((await db.query('select count(*)::int n from public.search_listings where user_id=$1',[f.owner])).rows[0].n,0);
 });
+
+
+test('an unchanged SmartRecruiters posting is not saved again when its public URL form changes',async()=>{
+ const f=await fixture({portalId:'example'}),t=tasks();let short=false;
+ const execute=async(task,input)=>{
+  const value=await t.execute(task,input);
+  if(task==='verify-discovery-leads')return {...value,jobs:value.jobs.map(row=>row.url.endsWith('/100')?{...row,url:'https://jobs.smartrecruiters.com/Example/744000159509479'+(short?'':'-software-engineer?oga=true'),listingIdentity:{ats_provider:'smartrecruiters',board_slug:'Example',posting_id:'744000159509479'}}:row)};
+  return value;
+ };
+ await workOnce(rpc,{execute});assert.equal((await result(f.job.id)).result.shortlist.totalRetained,1);
+ short=true;
+ const second=(await db.query('select public.backend_job_dispatch($1,$2,$3) data',[f.hash,'backend.jobs.portal.submit',{kind:'search_ats',input:{profileId:f.profile,portalId:'example'},eventKey:'smartrecruiters-url-alias'}])).rows[0].data;
+ await workOnce(rpc,{execute});assert.equal((await result(second.id)).result.shortlist.totalRetained,0);
+ assert.equal((await db.query('select count(*)::int n from public.search_observations where user_id=$1',[f.owner])).rows[0].n,1);
+});

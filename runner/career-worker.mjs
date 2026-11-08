@@ -103,7 +103,7 @@ export async function deduplicateDiscovery(jobs,previous=[],workspace=process.en
  const {resolveColumns,parseTrackerRow}=await import('./vendor/career-ops/tracker-parse.mjs');
  const identityRow=row=>{
   const parts=String(row.identity||row.atsIdentity||'').replace(/^ats:/,'').split(':');
-  return {...row,url:row.canonical_url||row.url,requisitionId:row.requisition_id??row.requisitionId,...(!row.listingIdentity&&parts.length===3&&['greenhouse','lever'].includes(parts[0])?{listingIdentity:{ats_provider:parts[0],board_slug:parts[1],posting_id:parts[2]}}:{})};
+  return {...row,url:row.canonical_url||row.url,requisitionId:row.requisition_id??row.requisitionId,...(!row.listingIdentity&&parts.length===3&&['greenhouse','lever','ashby','workday','smartrecruiters'].includes(parts[0])?{listingIdentity:{ats_provider:parts[0],board_slug:parts[1],posting_id:parts[2]}}:{})};
  };
  previous=previous.map(identityRow);jobs=jobs.map(identityRow);
  const seen=new Set();

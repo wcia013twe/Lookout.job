@@ -425,6 +425,10 @@ Career Ops dedup removes in-pool aliases, unchanged previously saved jobs, and
 tracked applications. Description changes or source metadata changes may return
 an existing job for review. Only this final shortlist is saved and screened.
 Applications and their statuses are never changed by this pipeline.
+The thin dedup adapter restores verified native identities for Greenhouse, Lever,
+Ashby, Workday and SmartRecruiters; an alternate URL form for the same native
+posting must not cause an unchanged job to be saved again. The copied Career Ops
+identity and URL comparison implementations remain unchanged.
 
 Only job metadata, aggregate counts and bounded diagnostics enter SQL during
 collection. `search.history.read` is service-only, account scoped, fenced and

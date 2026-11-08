@@ -730,3 +730,10 @@ without a hidden scenario parameter: filled drafts first, a missing answer,
 CAPTCHA verification, and an uncertain submission. All resolve in memory through
 fictional services and return on Reset demo data. Explicit named test scenarios
 keep their existing fixtures. No account writes or external employer forms open.
+
+The repeat test also exposed a SmartRecruiters URL-alias gap: its native identity
+was not reconstructed from storage, which retained only Greenhouse/Lever triples.
+The existing adapter now restores all five verified provider triples (including
+Ashby, Workday and SmartRecruiters) before delegating to copied Career Ops dedup.
+An unchanged short/slugged URL pair is covered by both child-process and SQL-leased
+regressions; distinct native posting IDs remain separate.
