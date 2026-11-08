@@ -338,3 +338,18 @@ Rejecting an application keeps its history and tracker state, resets draft revie
 Source checks include the connected-board database scenario, unique-versus-ambiguous legacy-plan upgrade, shared planner/demo tests and `scripts/check-connected-action-board-ui.mjs`. These establish local source behavior only. The migration and gateway/MCP must release together before advertising hosted parity.
 
 Round integration retains the connected Action Board stable round_id, confirmation, practice focus and timezone. Proposed or incorrect dates do not supply a next-action date. Native cancellation uses phase cancelled; Screen/Interview remains independent of practice focus. Guide versions are application-workspace 18 and interview-preparation 7; integrated developer contract 122.
+
+### Application coverage on the Action Board
+
+The owner-scoped board read also includes Draft applications with a saved résumé,
+cover letter or answered question, Approved applications still awaiting submission,
+and imported records with `needsAction: true` and a nonempty `nextAction`. These
+are links to existing editors, not new approval or execution controls. Inbox
+blockers/review/uncertainty take precedence for the same native application;
+claimed, started, uncertain and confirmed attempts prevent ordinary submission suggestions.
+Stopped native work and archived/terminal imported records do not contribute these
+additional rows. Clearing the imported flag on its owning page clears its board
+row; keys change when the source record changes. Exact imported links use
+`application=import:<owned-id>` and remain selectable even when ordinary tracker
+deduplication hides the matching imported role. Website and `read_action_board`
+MCP read the same projection.

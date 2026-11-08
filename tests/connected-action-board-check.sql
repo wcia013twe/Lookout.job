@@ -92,4 +92,39 @@ begin
  perform private.workspace_reset_service(u,'finish',jsonb_build_object('resetId',result->>'resetId'));
  if exists(select 1 from private.action_decision_receipts where user_id=u) or exists(select 1 from private.action_response_events where user_id=u) or exists(select 1 from public.application_work_holds where user_id=u) then raise exception 'Workspace reset retained decision or hold state';end if;
 end $$;
+-- Supplemental actions are derived from owning records, with no new consent path.
+do $$
+declare u uuid:=gen_random_uuid();v uuid:=gen_random_uuid();app uuid;imp uuid;item jsonb;k text;
+begin
+ insert into auth.users(id) values(u),(v);
+ perform set_config('test.uid',u::text,true);
+ insert into public.jobs(id,canonical_url,employer) values('board-filled-fixture','https://example.com/board-filled','{"company":"Fictional Filled","title":"Engineer"}');
+ insert into public.applications(user_id,job_id,status,draft) values(u,'board-filled-fixture','Draft','{}') returning id into app;
+ if exists(select 1 from private.action_board_items(u) x where x->>'applicationId'=app::text) then raise exception 'Empty draft surfaced';end if;
+ update public.applications set draft='{"questions":[{"question":"Why?","answer":"Fictional answer"}]}' where id=app;
+ select x into item from private.action_board_items(u) x where x->>'applicationId'=app::text;
+ if item->>'kind' is distinct from 'prepared_application' or item->>'canAccept'<>'false' then raise exception 'Filled draft not staged safely';end if;
+ k:=item->>'key';
+ begin perform public.respond_action_board(jsonb_build_object('key',k,'response','accept','eventKey',gen_random_uuid()));raise exception 'Partial draft accepted';exception when invalid_parameter_value then null;end;
+ update public.applications set status='Awaiting approval' where id=app;
+ if (select count(*) from private.action_board_items(u) x where x->>'applicationId'=app::text)<>1 then raise exception 'Inbox draft duplicated';end if;
+ update public.applications set status='Approved' where id=app;
+ if not exists(select 1 from private.action_board_items(u) x where x->>'kind'='submit_application') then raise exception 'Approved application vanished';end if;
+ insert into public.submission_attempts(user_id,application_id,attempt_key,revision,state,context_snapshot,authorization_snapshot,started_at) select u,app,'fixture-started',revision,'started','{}','{}',now() from public.applications where id=app;
+ if exists(select 1 from private.action_board_items(u) x where x->>'kind'='submit_application') then raise exception 'Delayed uncertainty offered submission';end if;
+ update public.applications set status='Submitted' where id=app;
+ if exists(select 1 from private.action_board_items(u) x where x->>'kind' in ('prepared_application','submit_application')) then raise exception 'Submitted application resurrected';end if;
+ insert into public.imported_jobs(user_id,identity_key,record,source_rows) values(u,'board-import','{"company":"Fictional Import","title":"Engineer","status":"APPLIED","needsAction":true,"nextAction":"Choose an interview time","actionDate":"2026-11-15"}','[]') returning id into imp;
+ select x into item from private.action_board_items(u) x where x->>'sourceId'=imp::text;
+ if item->>'kind' is distinct from 'imported_action' or item->>'href' not like '%application=import:%' or item->>'canAccept'<>'false' then raise exception 'Imported next action missing exact editor';end if;
+ if exists(select 1 from private.action_board_items(v) x where x->>'sourceId'=imp::text) then raise exception 'Imported action leaked';end if;
+ update public.imported_jobs set record=record||'{"nextAction":"Send availability"}' where id=imp;
+ if exists(select 1 from private.action_board_items(u) x where x->>'key'=item->>'key') then raise exception 'Imported action kept stale identity';end if;
+ update public.imported_jobs set record=record||'{"needsAction":false}' where id=imp;
+ if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=imp::text) then raise exception 'Cross-page resolution did not clear board';end if;
+ update public.imported_jobs set record=record||'{"needsAction":true,"archived":true}' where id=imp;
+ if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=imp::text) then raise exception 'Archived action surfaced';end if;
+ update public.imported_jobs set record=record||'{"archived":false,"status":"REJECTED"}' where id=imp;
+ if exists(select 1 from private.action_board_items(u) x where x->>'sourceId'=imp::text) then raise exception 'Terminal action surfaced';end if;
+end $$;
 rollback;

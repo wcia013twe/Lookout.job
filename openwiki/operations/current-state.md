@@ -445,6 +445,18 @@ No real user session or external event was created. Forty-nine relevant integrat
 checks passed; a full-suite search-pipeline failure passed on isolated rerun.
 Hosted publication was not performed.
 
+### Connected Action Board application coverage follow-up
+
+The shared board projection includes filled native drafts, approved applications
+awaiting submission, and explicitly flagged imported application next actions.
+These open exact existing records without inventing binary approval. The source
+update preserves inbox precedence, owner isolation, hold enforcement and
+cross-page resolution. Migration
+`20261108004208_action_board_application_actions.sql` was applied to the existing
+local database without changing application, import or decision records. Both
+owned reads succeeded and all eight flagged imported actions were included.
+Detached desktop/mobile flows, full tests, data checks, typecheck and production
+build passed; real-account browser and hosted verification remain separate. See the connected-action-board change note for verification receipts.
 
 ### Employer compensation on private Discover cards
 

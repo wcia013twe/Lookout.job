@@ -16,3 +16,23 @@ The final guide-only networking merge preserved both canonical sources at cold-o
 Integrated current local main without dropping its search/toolkit/import changes. The combined agent contract is 120; guide routing retains the current canonical versions. Screenshots are in `/tmp/connected-action-board-ui/`.
 
 Limits: checks use disposable migrated databases and fictional detached browser state. No account writes, employer submissions, message sending, hosted deployment or real-client verification occurred. Migration plus gateway/MCP production release and an authenticated hosted check are required before claiming deployed parity. The temporary preview used port 3107 and was stopped; existing local services were untouched.
+
+## Follow-up: filled applications and application next actions
+
+- Extend the shared owner-scoped board read with populated Draft applications,
+  Approved applications awaiting submission, and imported `needsAction` records.
+  Existing blockers and submission uncertainty retain precedence. These rows use
+  owning editors with no fabricated binary decision or second workflow status.
+- Add exact imported-record links, preserving selection across tracker deduplication.
+  Completed/archived/terminal imported actions disappear based on their source.
+- Extend fictional connected-board fixtures and source/ownership/resolution checks.
+- Validation: full `npm test` passed (1,059 passed, five skipped); focused SQL,
+  board/demo tests, data validation (158 roles), frontend typecheck and production
+  build passed. The expanded desktop/mobile production-export flow passed,
+  including imported-editor save, board return, resolution, keyboard and swipes.
+  Desktop screenshot review preserved existing framing.
+- Applied only migration `20261108004208` to the existing local backend. Application,
+  imported-record and decision-receipt counts remained unchanged. Owned board reads
+  succeeded for both local accounts; the eight flagged imported actions now appear.
+  No account actions were accepted, submitted, sent or modified. No push or hosted
+  deployment occurred; browser sign-in to a real account was not exercised.

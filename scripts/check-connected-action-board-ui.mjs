@@ -15,6 +15,8 @@ try{
  assert(right.x>=left.x+left.width,'Desktop retains the original two-column framing');
  assert.equal(await app.getByRole('button',{name:'Accept',exact:true}).isDisabled(),true);
  if(process.env.LOOKOUT_UI_CAPTURE!=='0')await page.screenshot({path:`${dir}/desktop.png`,fullPage:true});
+ const filled=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Review a filled application',exact:true})});await filled.waitFor();assert.equal(await filled.getByRole('button',{name:'Accept',exact:true}).count(),0);
+ const approved=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Continue an approved application',exact:true})});await approved.waitFor();
  await app.getByRole('button',{name:/^Review application:/}).click();
  const dialog=page.getByRole('dialog');await dialog.getByRole('button',{name:'I reviewed this exact application version'}).click();
  await dialog.getByRole('button',{name:'Close application details'}).click();
@@ -33,6 +35,10 @@ try{
  const correction=dialog.getByLabel('Replaces an earlier update (optional)');assert(await correction.inputValue());
  await dialog.locator('form.interview-round-editor').getByLabel('Progress').selectOption('cancelled');await dialog.getByRole('button',{name:'Save round update',exact:true}).click();await dialog.getByText('Timeline update recorded.',{exact:true}).waitFor();
  await dialog.getByRole('button',{name:'Close application details'}).click();await round.waitFor({state:'detached'});
+ const imported=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Application next action',exact:true})});await imported.getByText('Choose an interview time',{exact:true}).waitFor();assert.equal(await imported.getByRole('button',{name:'Accept',exact:true}).count(),0);
+ await imported.getByRole('link',{name:'Open application',exact:true}).click();await dialog.getByText('Example Follow-up (demo)',{exact:true}).first().waitFor();
+ await dialog.locator('[data-import-tracking] > summary').click();await dialog.getByLabel('Needs my action',{exact:true}).uncheck();await dialog.getByRole('button',{name:'Save tracking',exact:true}).click();await dialog.getByText('Tracking saved.',{exact:true}).waitFor();
+ await dialog.getByRole('button',{name:'Close application details'}).click();await page.getByRole('link',{name:'Back to Action Board',exact:true}).click();await page.getByRole('heading',{name:'Your next actions',exact:true}).waitFor();await imported.waitFor({state:'detached'});
  await desktop.close();
  const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await mobile.newPage();attach(phone);
  await phone.goto(base+path);const pending=applicationRow(phone);await pending.waitFor();
