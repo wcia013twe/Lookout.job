@@ -29,10 +29,15 @@ try{
  assert.equal(await card.getByText('Fictional evidence:',{exact:false}).count(),0,'Score reasoning stays out of card');
  await card.locator('h3 button').click();
  const panel=page.getByRole('dialog');
- await panel.getByRole('heading',{name:'About the job',exact:true}).waitFor();
+ await panel.getByRole('heading',{name:'Job Description',exact:true}).waitFor();
  await panel.getByRole('region',{name:'Job facts',exact:true}).waitFor();
  await panel.getByRole('heading',{name:'AI fit analysis',exact:true}).waitFor();
- assert.equal(await panel.getByRole('list',{name:'Role fit analysis'}).locator('li').count(),5);
+ assert.equal(await panel.getByRole('list',{name:'Role fit analysis'}).locator('li').count(),3);
+ const cautions=panel.getByRole('region',{name:'What to watch out for'});
+ assert.equal(await cautions.locator('li').count(),2);
+ assert(await cautions.evaluate(el=>getComputedStyle(el).borderRadius!=='0px' && getComputedStyle(el).backgroundColor!=='rgba(0, 0, 0, 0)'));
+ await cautions.getByText('Support:',{exact:true}).waitFor();
+ await cautions.getByText('Practical fit:',{exact:true}).waitFor();
  await panel.getByText('Remote (demo). Core hours are not disclosed; relocation is not provided.',{exact:true}).waitFor();
  await panel.getByRole('heading',{name:'Application answers',exact:true}).waitFor();
  await panel.getByText('Can you work onsite three days per week?',{exact:true}).waitFor();

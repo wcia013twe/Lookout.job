@@ -663,3 +663,15 @@ applied-history toggle does not reveal rejected roles. A fictional rejection-onl
 fixture covers the detached demo. The direct worker's existing tracked-job
 exclusion is tested with Submitted and Rejected records, preserving each full
 application row. No new writer, migration, tool or permission is added.
+
+### Bounded Discover analysis
+
+The five-point fit analysis keeps Team, Your contribution and Your growth in a
+rounded fit surface, with Support and Practical fit in a separate rounded
+“What to watch out for” surface. Saved caveats and trailing priority text remain
+intact, including the legacy prose fallback. This is presentation over existing
+owned records, not a new assessment or writer. Hosted release is verified
+separately from source and component tests.
+The disclosure heading is Job Description. Explicitly marked Structured paraphrase
+content is presented as a saved summary rather than an employer quotation; saved
+content and the existing source URL are preserved.
