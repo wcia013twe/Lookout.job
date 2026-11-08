@@ -1,3 +1,4 @@
+import {validateRoundMetadata} from '../../lib/application-rounds.mjs';
 import {validateApplicationJob} from '../../supabase/functions/agent-gateway/application-jobs.mjs';
 import {createMuseChangeFeedDemo} from '../../lib/muse-change-feed-demo.mjs';
 import {readDemoSubmissionBatches} from '../../lib/submission-batches-demo.mjs';
@@ -224,9 +225,10 @@ export function createDemoServices(store) {
       const current = application(id);
       if (!input || typeof input.eventKey !== 'string' || !input.eventKey.trim() || input.eventKey.length > 120 || !['submitted', 'recruiter_call', 'technical_round', 'interview', 'offer', 'rejected', 'withdrawn'].includes(input.kind) || !['scheduled', 'completed', 'received'].includes(input.phase) || input.source?.kind !== 'user') throw new Error('Choose a valid user-reported demo milestone.');
       if (input.occurredAt != null && (typeof input.occurredAt !== 'string' || !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(input.occurredAt) || !Number.isFinite(Date.parse(input.occurredAt)) || input.source.timestampConfirmed !== true)) throw new Error('Choose a valid milestone date with a confirmed time zone, or leave it unknown.');
+      if(input.round)validateRoundMetadata(input.round);
       const milestones = copy(current.milestones || []);
       const source = { kind: 'user', ...(input.source.note ? { note: input.source.note } : {}), ...(input.occurredAt ? { timestampConfirmed: true } : {}) };
-      const content = { kind: input.kind, label: input.label || input.kind.replaceAll('_', ' '), occurred_at: input.occurredAt || null, phase: input.phase, source, supersedes_id: input.supersedesId || null };
+      const content = { ...(input.round?{round:copy(input.round)}:{}),kind: input.kind, label: input.label || input.kind.replaceAll('_', ' '), occurred_at: input.occurredAt || null, phase: input.phase, source, supersedes_id: input.supersedesId || null };
       const existing = milestones.find(row => row.event_key === input.eventKey);
       if (existing) {
         if (Object.keys(content).some(key => JSON.stringify(existing[key]) !== JSON.stringify(content[key]))) {

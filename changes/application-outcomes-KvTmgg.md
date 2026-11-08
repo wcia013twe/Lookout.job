@@ -203,3 +203,29 @@
 - Production build, catalog validation (158 roles) and diff check passed. The
   fictional application preview confirmed the original lavender color and green
   glyph in computed styles and screenshot. No backend change or new tests.
+
+## Follow-up: dynamic employer rounds and shared chart/Muse counts
+
+- Adds typed Screen/Interview rounds (OA, take-home, technical, system design,
+  behavioral, hiring manager, onsite, recruiter, other) with custom names and
+  pending/scheduled/completed/cancelled states. Existing native milestones and
+  imported record.rounds are the only saved sources; there is no count store.
+- Shared applicationRounds/applicationRoundStats drive UI round lists, progress,
+  next dates, Stats and scoped read_application_round_stats. Native corrections
+  count once; no synthetic status, note or activity-text rounds. Unique jobs stay
+  separate from round counts, using the board's native/import duplicate rule.
+- Existing native milestone writer gains optional round metadata under its owned
+  evidence/replay/replacement boundary. Imported full-list edits keep stable IDs,
+  global tracker version and exact retries, and advance earlier active status to
+  the explicit round stage without touching terminal outcomes or inventing Offer.
+- Native editor supports type/stage/cancellation and replacement prefill. Imported
+  Interview links to the working Tracking details round editor; its rounds can
+  be added/reordered/edited. Current-stage checks follow saved round phases.
+- Contract 121, application-workspace 16 and interview-preparation 6 document
+  canonical round fields, count/read-back rules and employer-round vs prep/mock
+  distinctions. Change-feed workflow references match the guide versions.
+- Added real SQL browser/MCP parity, owner/version/replay and shared-counter tests,
+  rendering/count unit checks, and a resettable mixed-state round demo. Initial
+  broad suite had 1,040 passing, 5 skipped and one expected catalog-size assertion;
+  the assertion was updated for the new supporting read tool and focused tests
+  passed. Final integrated validation and runtime receipts follow below.

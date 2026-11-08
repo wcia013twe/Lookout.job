@@ -295,3 +295,35 @@ are unchanged.
 
 Palette refinement: progress uses the softer original lavender (#a78bcb), with a
 contrasting green checkmark inside. No completion or data behavior changes.
+
+### Dynamic rounds and shared Stats (contract 121 source update)
+
+Employer rounds now have an explicit Screen/Interview assignment and type,
+including OA, take-home, technical, system design, behavioral, hiring manager,
+onsite, recruiter and other. Custom labels do not determine stage or counts.
+Native steps remain immutable application milestones with optional round metadata;
+corrections/reschedules use the current supersedesId. Imported steps use the owned
+record.rounds array with stable IDs and full-array replacement/version/replay.
+These are the only round sources; no independent count or progress store exists.
+
+Applications → Stats uses the same applicationRoundStats projector as MCP
+read_application_round_stats. The application flow remains one entry per job;
+Rounds counts each saved round once by phase, stage and type. Cancelled records
+stay visible in activity totals but do not promote stages or supply next actions.
+Replacements count once; stage/status placeholders and note text count zero.
+The MCP reader applies the same native/import duplicate preference as the board.
+
+An active Interview round displays Interview; Screen-only take-homes stay Screen.
+Imported status advances to that saved stage when earlier, preserving terminal
+outcomes and never creating Offer. Actual round phases determine current-stage
+completion when rounds exist; legacy completedStages is the stage-only fallback.
+All known rounds completed means waiting for the employer. Confirmed pending dates
+feed the existing Next action sort; unknown dates remain null.
+
+The native Add round editor supports stage/type and cancellation; replacing an
+existing event preloads its saved identity/details. Imported Interview → Edit
+rounds opens Overview Tracking details, where steps can be added, renamed,
+reordered, completed, rescheduled or cancelled. Saved rounds display under
+Interview. The fictional `?demo=1&demoApi=application-rounds` scenario and isolated
+import editor cover Screen take-homes and mixed round states without account
+storage/backend calls. Source verification is not a hosted release claim.

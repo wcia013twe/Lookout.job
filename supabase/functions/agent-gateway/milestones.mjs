@@ -1,7 +1,9 @@
+import {validateRoundMetadata} from './application-rounds.mjs';
 export const MILESTONE_KINDS = ['submitted','recruiter_call','technical_round','interview','offer','rejected','withdrawn'];
 const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(value) && Number.isFinite(Date.parse(value));
 const bounded = (value,max) => typeof value==='string' && value.trim() && value.length<=max;
 export function validateMilestone(payload) {
+ if(payload.round!==undefined){validateRoundMetadata(payload.round);if(!['recruiter_call','technical_round','interview'].includes(payload.kind))throw Error('Round metadata is only for process rounds.');}
  const s=payload.source;
  if(!bounded(payload.eventKey,200)||!bounded(payload.label,300)||!MILESTONE_KINDS.includes(payload.kind)||!['scheduled','completed','received'].includes(payload.phase)
   ||!s||typeof s!=='object'||Array.isArray(s)||Object.keys(s).some(k=>!['kind','messageId','subject','excerpt','receivedAt','timestampConfirmed','note'].includes(k))

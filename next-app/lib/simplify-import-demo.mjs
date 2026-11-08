@@ -16,7 +16,9 @@ export function createDemoSimplifyImport(){
    validateImport('imports.update',p);
    const old=records.find(r=>r.id===p.id);if(!old)throw Error('Imported job not found.');
    if(!Object.hasOwn(importStatuses,p.changes.status||old.record.status)||!Object.hasOwn(importEmploymentTypes,p.changes.employmentType||old.record.employmentType))throw Error('Unsupported tracker value.');
-   const merged={...old.record,...p.changes};validateImportedActions(merged);
+   const merged={...old.record,...p.changes};
+   const stage=['SAVED','APPLIED','SCREEN','INTERVIEW','OFFER'];const roundRank=Math.max(0,...(merged.rounds||[]).filter(r=>!r.cancelled).map(r=>r.stage==='INTERVIEW'?3:2));if(stage.includes(merged.status)&&roundRank>stage.indexOf(merged.status))merged.status=stage[roundRank];
+   validateImportedActions(merged);
    old.record=merged;version++;
    const result={version,record:structuredClone(old),verifiedSubmission:false};events.set(p.eventKey,{request:JSON.stringify(p),result:structuredClone(result)});return result;
   }

@@ -1,3 +1,4 @@
+import {roundStatsFromContext} from '../../lib/application-rounds.mjs';
 import {withApplicationFlowDemo} from './application-flow-demo.mjs';
 import {createDemoSimplifyImport} from './simplify-import-demo.mjs';
 import {demoPack,demoPackTask} from './card-pack-demo.mjs';
@@ -24,5 +25,6 @@ export function createDetachedDemo({date,models,presets,apiScenario}) {
  }
  withApplicationFlowDemo(fixtures,apiScenario);
  const store=createDemoStore(fixtures.state);
- return {store,services:{...demoApiScenario(createDemoServices(store),apiScenario),simplifyImport:createDemoSimplifyImport()}};
+ const simplifyImport=createDemoSimplifyImport();
+ return {store,services:{...demoApiScenario(createDemoServices(store),apiScenario),simplifyImport,readApplicationRoundStats:async()=>roundStatsFromContext({applications:Object.values(store.get('workflow.applications')),imports:(await simplifyImport('list')).records})}};
 }

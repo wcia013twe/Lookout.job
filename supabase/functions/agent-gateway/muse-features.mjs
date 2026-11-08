@@ -1,3 +1,4 @@
+import {roundStatsFromContext} from './application-rounds.mjs';
 import { buildPreparationAgenda, plannerToday } from './preparation-planner.mjs';
 import { createPreparationPlan, setPreparationTaskCompletion, PREPARATION_GUIDES } from './preparation-model.mjs';
 import { buildDeliveryPolicy, normalizeQuietMode } from './quiet-mode.mjs';
@@ -36,6 +37,7 @@ export function notificationAdvice(bundle, now=new Date()) {
  return {delivery,events:delivery.decision==='due'?events.filter(e=>ids.includes(e.id)):[],pendingCount:events.length,applications:bundle.applications||[],transport:'agent-runtime',acknowledgeOnlyAfterDelivery:true};
 }
 export async function museFeatureDispatch({operation,payload,rpc,loadJob,now=new Date()}) {
+ if(operation==='applications.round_stats'){const read=await rpc(operation,payload);return read.error?read:{data:roundStatsFromContext(read.data),error:null};}
  if (['preparation.planner.read','preparation.budget','preparation.session.complete'].includes(operation)) {
   const bundle = await rpc(operation, payload);
   if (bundle.error) return bundle;

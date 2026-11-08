@@ -9,6 +9,7 @@ import ApplicationOverview from "./application-overview";
 import ImportedApplicationTracking,{type ImportUpdate} from "./imported-application-tracking";
 import ProfileIcon from "./profile-icon";
 import ApplicationTimeline from "./application-timeline";
+import ApplicationRoundList from "./application-round-list";
 import TimelineEditor from "./timeline-editor";
 import SubmissionRecord from "./submission-record";
 import type { SubmissionRecordProps } from "./submission-record";
@@ -366,7 +367,7 @@ export default function DraftReview({ id, application, importedTracker, onClose 
             <div className="interview-support-body">
               <h3 className="support-heading">Interview rounds &amp; history</h3>
               <ApplicationTimeline application={current} demo={w.demo}/>
-              {workflow && <TimelineEditor application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}
+              {workflow && <><ApplicationRoundList application={current!}/>{current.imported?<button type="button" className={secondary} onClick={()=>{setTab('Overview');requestAnimationFrame(()=>{const editor=dialog.current?.querySelector<HTMLDetailsElement>('[data-import-tracking]');if(editor){editor.open=true;editor.scrollIntoView({block:'start'});}});}}>Edit rounds</button>:<TimelineEditor application={current} open={roundEditorOpen} onOpenChange={setRoundEditorOpen}/>}</>}
               <InterviewDebriefs application={current}/>
             </div>
           </details>
