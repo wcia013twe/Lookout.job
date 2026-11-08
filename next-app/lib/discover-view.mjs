@@ -1,4 +1,4 @@
-import {roleApplied} from "../../lib/discover-application-state.mjs";
+import {roleApplied,roleRejected} from "../../lib/discover-application-state.mjs";
 import {readField, promptFromProfile} from "../../lib/search-profile.mjs";
 
 // Public browsing remains available; a signed-in workspace starts with agent-owned finds.
@@ -15,5 +15,5 @@ export function matchesProfileEmployment(role, profile) {
 }
 
 export function matchesDiscoveryStatus(role,{applications={},trackerItems={},includeApplied=false}={}) {
- return includeApplied||!roleApplied(role,applications,trackerItems);
+ return !roleRejected(role,applications,trackerItems)&&(includeApplied||!roleApplied(role,applications,trackerItems));
 }

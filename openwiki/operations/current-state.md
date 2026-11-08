@@ -662,3 +662,13 @@ gaps and read back corrections before calling work ready. Unresolved information
 stays explicit; submission summaries are audited against saved outcomes. No new
 tools, UI, schema or runtime are added. Gateway release/client refresh and real
 host compliance remain separate from source validation.
+
+### Rejection-only Discover protection
+
+Discover explicitly excludes rejected outcomes even when there is no recorded
+submission. All matching owned job/URL records and tracker outcomes participate;
+a queued duplicate cannot mask an older submission or rejection. The existing
+applied-history toggle does not reveal rejected roles. A fictional rejection-only
+fixture covers the detached demo. The direct worker's existing tracked-job
+exclusion is tested with Submitted and Rejected records, preserving each full
+application row. No new writer, migration, tool or permission is added.

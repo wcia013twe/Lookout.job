@@ -13,3 +13,4 @@
 - Existing scoped preparation/publication/submission/read tools remain the website/MCP boundary; no new product behavior or demo state is introduced.
 - Validation: final npm test passed (1,096 passed, five skipped), focused guide/MCP/workflow tests passed (31), validate:data passed (158 roles), and git diff --check passed. An earlier full-suite execution session disappeared without a completion receipt; the complete rerun above passed. No frontend build needed for this instruction-only follow-up.
 - Limits: instruction delivery and source checks cannot establish host compliance; gateway release/client refresh and live execution remain separate.
+- Landing integrated newer local-main Discover work; preserved both status-document additions. Post-integration guide/MCP/workflow/Discover checks passed (37), catalog validation and diff checks passed.
