@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import {createBackend} from "../../backend/client.mjs";
+import {applicationAgentEligible} from "../../lib/application-agent.mjs";
 import {sameScopes} from "../../supabase/functions/agent-gateway/connection-permissions.mjs";
 import AgentPreference from "./agent-preference";
 import {readAgentSelection} from "../../lib/agent-selection.mjs";
@@ -42,6 +44,8 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
     [revokeTarget, setRevokeTarget] = useState<string | null>(null),
     [permissionEdit, setPermissionEdit] = useState<AgentConnection | null>(null),
     [permissionSelection, setPermissionSelection] = useState<string[]>([]);
+  const [applicationAgent,setApplicationAgent]=useState<{connectionId:string|null;connectionName?:string;version:number;available:boolean}>({connectionId:null,version:0,available:false});
+  const api=w.demo?w.services:w.client&&w.user?createBackend(w.client,w.user.id):null;
   const generation = useRef(0);
   const additionalPermissions = optionalScopes.filter(([scope]) => supportedScopes.includes(scope) && !connectionScopes(access).includes(scope));
   async function call(operation: string, payload: Record<string, unknown> = {}) {
@@ -52,9 +56,10 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
   async function refresh(saved = false, expected?: {id:string;scopes:string[]}) {
     const epoch = generation.current;
     try {
-      const response = await call("connections.list");
+      const [response,routing] = await Promise.all([call("connections.list"),api.readApplicationAgent()]);
       if(expected && !response.data?.some((c:AgentConnection)=>c.id===expected.id && sameScopes(c.scopes,expected.scopes)))throw Error("Saved permissions could not be verified. Refresh connections before retrying.");
       if (epoch === generation.current) {
+        setApplicationAgent(routing);
         setConnections((response.data || []).filter((connection: AgentConnection) => !connection.revoked_at));
         onConnectionsChange?.(response.data || []);
         setSupportedScopes(response.supportedScopes || ["preferences:write"]);
@@ -76,6 +81,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
     setAction("");
     setNameError("");
     setConnections([]);
+    setApplicationAgent({connectionId:null,version:0,available:false});
     setSupportedScopes([]);
     setFeedback("");
     setRevokeTarget(null);
@@ -87,6 +93,17 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
       generation.current++;
     };
   }, [w.user?.id, w.demo, w.demoEpoch]);
+  async function chooseApplicationAgent(connection:AgentConnection){
+    const epoch=generation.current;
+    setBusy(true);setAction("refresh");setFeedback("");
+    try{
+      const saved=await api.selectApplicationAgent({connectionId:connection.id,expectedVersion:applicationAgent.version});
+      const verified=await api.readApplicationAgent();
+      if(verified.connectionId!==connection.id||verified.version!==saved.version)throw Error("Agent choice could not be verified. Refresh before retrying.");
+      if(epoch===generation.current){setApplicationAgent(verified);setFeedback(`Future AI Apply requests will go to ${connection.name}.`);}
+    }catch(error){if(epoch===generation.current)setFeedback(errorMessage(error));}
+    finally{if(epoch===generation.current)setBusy(false);}
+  }
   async function issue(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget,
@@ -298,6 +315,8 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
           <h3 className="font-semibold">Your connections</h3>
           {(w.user || w.demo) && <button className={secondary} disabled={busy || loading} onClick={() => { setAction("refresh"); setFeedback(""); setLoading(true); void refresh(); }}>{loading ? "Loading…" : "Refresh connections"}</button>}
         </div>
+        <p className="mt-3 text-sm text-board-muted">Choose which connection receives future AI Apply requests. Existing requests keep their assigned agent.</p>
+        {applicationAgent.connectionId&&!applicationAgent.available&&<p role="status" className="mt-3 text-sm">Your AI Apply agent is unavailable. Choose another active connection before queueing.</p>}
         {feedback && (action === "refresh" || !action) && <p role="status" className="mt-3 text-sm leading-relaxed">{feedback}</p>}
         {loading ? (
           <p role="status" className="py-5 text-sm text-board-muted">Loading your connections…</p>
@@ -314,6 +333,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
                     <div className="min-w-0 flex-1 basis-48">
                       <div className="flex flex-wrap items-center gap-2">
                         <strong className="break-words text-sm">{c.name}</strong>
+                        {applicationAgent.connectionId===c.id&&<span className="text-xs text-board-accent">AI Apply agent</span>}
                         <span className={`rounded border px-2 py-0.5 text-xs ${active ? "border-board-accent text-board-text" : "border-board-line text-board-muted"}`}>{c.revoked_at ? "Revoked" : expired ? "Expired" : "Active"}</span>
                       </div>
                       <p className="mt-2 text-xs leading-relaxed text-board-muted">
@@ -323,6 +343,7 @@ export default function AgentConnections({onboarding=false,onSetupCopied,onConne
                     </div>
                     {!c.revoked_at && (
                       <div className="flex flex-wrap gap-2">
+                        {applicationAgentEligible(c)&&applicationAgent.connectionId!==c.id&&<button className={secondary} disabled={busy} onClick={()=>chooseApplicationAgent(c)}>Use for AI Apply</button>}
                         {active && <button className={secondary} disabled={busy} onClick={() => editPermissions(c)}>
                           Edit permissions
                         </button>}
