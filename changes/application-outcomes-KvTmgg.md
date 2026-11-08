@@ -257,3 +257,9 @@
   guide 18 / preparation guide 7 and developer contract 122. Remote #78's squash
   tree exactly matched ancestor c84de87; integrated that duplicate history without
   discarding newer local work. Development activation receipt follows below.
+- Live dev verification found the scoped round reader's private SQL projection
+  lacked its service_role execution grant. Added a narrow follow-up migration,
+  retained stable IDs/confirmation/order in the context projection and added a
+  regression using Supabase's service-role BYPASSRLS behavior (the test fixture's
+  placeholder role otherwise differs). Round and hosted-upgrade tests pass.
+  The final integration also retains the current mock schema/diagnostics fix.

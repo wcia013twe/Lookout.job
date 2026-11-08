@@ -45,7 +45,10 @@ test('real browser and scoped MCP writers/readers share exact native/imported ro
   const update={id:imported.id,expectedVersion:1,eventKey:'rounds',changes:{rounds:[round('home','SCREEN','completed'),round('technical','INTERVIEW'),round('cancelled','INTERVIEW','received',{cancelled:true})]}};
   const saved=await sql('imports.update',update);assert.equal(saved.record.record.status,'INTERVIEW');assert.deepEqual(saved.record.source_rows,imported.source_rows);
   assert.deepEqual(await sql('imports.update',update),saved);await assert.rejects(sql('imports.update',{...update,eventKey:'stale'}),e=>e.code==='40001');
+  await db.exec('alter role service_role bypassrls; set role service_role');
   const context=await sql('applications.round_stats'),expected=roundStatsFromContext(context);
+  await db.exec('reset role');
+  assert(context.applications[0].milestones.every(m=>m.round_id&&m.confirmation));
   assert.equal(expected.total,6);assert.equal(expected.byStage.SCREEN.completed,2);assert.equal(expected.byStage.INTERVIEW.completed,1);assert.equal(expected.byStage.INTERVIEW.scheduled,1);assert.equal(expected.cancelled,2);
   const rpc=async(op,payload)=>{try{return {data:await sql(op,payload),error:null};}catch(error){return {error};}};
   const handler=createHandler(async(_token,op,payload)=>{validateRequest({operation:op,payload});if(op==='credentials.verify')return {status:200,data:{scopes:['workspace:read']}};const result=await museFeatureDispatch({operation:op,payload,rpc});return {status:result.error?400:200,data:result.data};});
