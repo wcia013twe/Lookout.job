@@ -39,7 +39,7 @@ try{
  assert(planner.agenda.days.flatMap(day=>day.events||[]).some(event=>event.id==='mock:'+session));
  assert(!JSON.stringify(planner).includes(profile));
  assert.equal(visible.content.durationMinutes,45);assert.equal(visible.content.timeZone,'America/New_York');
- console.log('Passed: local mock offset/preparedFor rejection plus Node MCP -> Edge -> SQL save/read/retry; hidden profile stays out of ordinary artifact reads.');
+ console.log('Passed: local mock offset/preparedFor rejection plus Node MCP -> Edge -> SQL save/read/retry and calendar read-back; hidden profile stays out of ordinary artifact reads.');
 }finally{
  if(created){sql(`delete from auth.users where id='${owner}';`);assert.equal(sql(`select (select count(*) from auth.users where id='${owner}')+(select count(*) from public.career_artifacts where id='${session}')+(select count(*) from private.mock_interview_profiles where artifact_id='${session}')+(select count(*) from private.agent_connections where user_id='${owner}');`),'0');console.log('Fictional proof account, connection, artifact and profile removed.');}
 }
