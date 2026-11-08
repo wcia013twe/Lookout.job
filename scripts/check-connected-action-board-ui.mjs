@@ -27,6 +27,9 @@ try{
  const left=await page.locator('.needs-you-priority').boundingBox(),right=await page.locator('.prep-widget').boundingBox();assert(right.x>=left.x+left.width,'Desktop keeps its two columns');
  for(const row of await page.locator('.action-board-row[data-kind]').all()){assert.equal(await accept(row).count(),1);assert.equal(await reject(row).count(),1);assert(await row.locator('[data-discovered-role]').count()||await row.getByRole('region',{name:'Attached job context'}).count()||await row.locator('a').first().innerText());}
  assert.equal(await page.getByText('Imported',{exact:true}).count(),0);assert.equal(await page.locator('.action-board-row').filter({hasText:'Example Scheduled (demo)'}).count(),0);await application.locator('[data-discovered-role]').waitFor();assert.equal(await application.getByRole('heading',{name:'Submission',exact:true}).count(),1);await application.getByText(/Saved draft résumé/).waitFor();await application.getByText(/AI-drafted answer/).first().waitFor();await application.getByRole('region',{name:'Inferred details'}).waitFor();
+ assert.equal(await application.getByLabel('Email',{exact:false}).count(),0,'Profile email stays off the decision card');
+ assert.equal(await application.getByLabel('Current location',{exact:false}).count(),0,'Sourced location stays off the decision card');
+ await application.getByRole('heading',{name:'Answers to review',exact:true}).waitFor();
  const applicationDetails=application.getByRole('link',{name:/Open application details for/});
  assert(await applicationDetails.count());
  assert(await applicationDetails.locator('.sr-only').count(),'Application details use the whole widget; no separate visible link');
@@ -37,6 +40,8 @@ try{
  assert.match(await communication.getByRole('link').getAttribute('href'),/person=[^&]+&returnTo=/);
  await applicationDetails.click({position:{x:20,y:20}});
  await page.waitForURL(/\/applications\/\?application=/);
+ await page.getByText('Current location',{exact:true}).first().waitFor();
+ await page.getByText('New York, NY (demo)',{exact:true}).first().waitFor({state:'attached'});
  await page.goBack();await application.waitFor();
  const phoneContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await phoneContext.newPage();attach(phone);await phone.goto(base+path);await card(phone,'review_application').first().waitFor();assert(await phone.locator('.prep-agenda-day').count()>0);assert(await phone.getByText(/^In [0-9]+ days?$/).count());
  await card(phone,'review_outreach').first().getByRole('region',{name:'Attached communication context'}).waitFor();

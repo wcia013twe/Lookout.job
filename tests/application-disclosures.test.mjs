@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {answerDisclosure,draftInferences,applicationActionLabel} from '../lib/application-disclosures.mjs';
+import {answerDisclosure,draftInferences,applicationActionLabel,showAnswerOnCard} from '../lib/application-disclosures.mjs';
 import {draftPayload,fromCloud} from '../lib/cloud-model.mjs';
 test('source labels never invent human confirmation or a missing provenance',()=>{
  assert.match(answerDisclosure({answer:'Draft',answerSource:'ai_generated'}),/AI-drafted/);
@@ -29,4 +29,19 @@ test('role widgets render saved labels without inventing a verdict from scores',
  assert.equal(savedRoleLabel({priority:'Strong Consider'}),'Strong Consider');
  assert.equal(savedRoleLabel({matchAssessment:{percent:98}}),null);
  assert.equal(savedRoleLabel({fitLabel:'x'.repeat(81)}),null);
+});
+
+test('application cards focus on unresolved and proposed answers without hiding unrecorded provenance',()=>{
+ const questions=[
+  {question:'Email',answer:'candidate@example.com',profileField:'email'},
+  {question:'Start date',answer:'',preferenceField:'startDate'},
+  {question:'Salary',answer:'95000',answerSource:'inferred'},
+  {question:'Why this role?',answer:'Draft prose',answerSource:'ai_generated'},
+  {question:'Authorization',answer:'Yes',savedAnswerId:'known-answer'},
+  {question:'Location preference',answer:'Remote',preferenceField:'workSetting'},
+  {question:'Unrecorded answer',answer:'Needs review'},
+  {question:'Hidden field',answer:'',fieldType:'hidden'},
+ ];
+ assert.deepEqual(questions.filter(showAnswerOnCard).map(q=>q.question),['Start date','Salary','Why this role?','Unrecorded answer']);
+ assert.equal(questions.length,8);assert.equal(questions[0].answer,'candidate@example.com');
 });

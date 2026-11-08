@@ -41,3 +41,8 @@ Local activation read-back confirmed developer142/application-workspace29/change
 - Existing prepare_draft/read_application_record/read_action_board paths and detached demo guide references are unchanged apart from the current version; no new writer/UI or per-field task. Validation: full suite 1136 passed/five skipped, data validation, diff checks and local API image build passed.
 
 Local read-back confirmed developer143/application-workspace30 and the explicit grouped-input instruction after API/Edge activation. No real application card, answer or approval was changed. Host compliance and hosted deployment remain separate.
+
+## Follow-up: focused application question review
+
+- Keep the résumé and unanswered/inferred/AI-drafted/unsourced answers on the decision card; move direct sourced facts out of its visible question list while preserving the complete application via the widget. All answers keep original indices in validation/save payloads; existing exact review/approval gates remain. Existing read_action_board/response tools retain their full data and writer boundaries.
+- Guide31/developer144 require preserving the full draft instead of pruning saved questions. Demo includes sourced facts alongside proposals and missing answers; browser coverage checks card filtering and full-widget access. Validation: full suite 1137 passed/five skipped; focused disclosure/guide checks, frontend typecheck/build, data validation and Docker image build passed. Desktop/mobile detached-demo interactions verified source filtering, full-widget access, résumé retention, required-answer resolution and exact review; screenshots in /tmp/lookout-focused-card-ui. Mechanical design detector returned no findings. No real-account browser verification.
