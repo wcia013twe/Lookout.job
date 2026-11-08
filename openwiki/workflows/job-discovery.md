@@ -279,3 +279,24 @@ The direct worker already excludes tracked application identities independently
 of status; real leased SQL regression coverage now checks both Submitted and
 Rejected, including a rejection without submitted_at. These visibility checks
 never mutate application history or rewrite immutable batches.
+
+### Single-portal persistence repair
+
+The existing `submit_portal_search` tool and leased worker remain the execution
+path. Shared observation validation and SQL now accept location text up to 2000
+characters: one valid 572-character Cisco location previously rejected an entire
+final save batch. This preserves the complete location rather than truncating it.
+
+The owned, paged worker history now includes applied/rejected imported tracker
+records as well as native applications, and is refreshed after collection before
+final deduplication. Imports are identity hints only; search never rewrites their
+records or excludes every role at a company. Lease, owner, settings and bounded
+transaction checks remain in place. Fictional SQL-leased tests cover multi-location
+saves, imported applied/rejected exclusions and an import arriving mid-collection.
+
+A live local Jobright-only run retained 845 source rows, but its 581 selected
+public detail pages exposed no employer application link; it saved zero listings.
+That is unresolved coverage, not evidence of an empty job market. Exact employer
+link research remains the existing agent handoff; no login bypass, guessed links,
+LLM worker or alternate write path was introduced. Local Docker persistence proof
+is recorded separately from hosted deployment in the feature change note.

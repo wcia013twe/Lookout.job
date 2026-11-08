@@ -365,3 +365,38 @@ test('portal selection validates owner configuration, disabled sources, input sh
  assert.equal((await db.query("select count(*)::int n from public.search_documents where user_id=$1 and kind='portals'",[f.owner])).rows[0].n,0);
  await db.query("update private.backend_jobs set status='cancelled' where user_id=any($1::uuid[])",[[f.owner,other.owner]]);
 });
+
+
+test('single-portal leased search saves a valid long employer location unchanged in the database',async()=>{
+ const f=await fixture({portalId:'example'}),t=tasks(),location='Remote, United States; '.repeat(26);
+ assert(location.length>500&&location.length<=2000);
+ await workOnce(rpc,{execute:async(task,input)=>{
+  const result=await t.execute(task,input);
+  if(task==='verify-discovery-leads')return {...result,jobs:result.jobs.map(row=>row.url.endsWith('/100')?{...row,location}:row)};
+  return result;
+ }});
+ const j=await result(f.job.id);assert.equal(j.status,'completed');assert.equal(j.result.shortlist.totalRetained,1);
+ assert.equal((await db.query('select location from public.search_listings where user_id=$1',[f.owner])).rows[0].location,location);
+ assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
+});
+
+
+for(const status of ['APPLIED','REJECTED'])test(`single-source search excludes an imported ${status} posting and preserves its original record`,async()=>{
+ const f=await fixture({portalId:'example'}),t=tasks(),record={company:'Example (fictional)',title:'Software Engineer New Grad',location:'Remote',employmentType:'FT',url:'https://job-boards.greenhouse.io/example/jobs/100',status,appliedDate:null};
+ await db.query('insert into public.imported_jobs(user_id,identity_key,record,source_rows) values($1,$2,$3,$4)',[f.owner,'url:'+record.url,record,[record]]);
+ const before=(await db.query('select to_jsonb(i) data from public.imported_jobs i where user_id=$1',[f.owner])).rows;
+ await workOnce(rpc,{execute:t.execute});assert.equal((await result(f.job.id)).result.shortlist.totalRetained,0);
+ assert.deepEqual((await db.query('select to_jsonb(i) data from public.imported_jobs i where user_id=$1',[f.owner])).rows,before);
+ assert(!t.calls.filter(c=>c.task==='verify-discovery-leads').flatMap(c=>c.input.leads).some(lead=>lead.url.endsWith('/100')));
+});
+
+test('an import recorded during collection is rechecked before the final shortlist write',async()=>{
+ const f=await fixture({portalId:'example'}),t=tasks();let imported=false;
+ await workOnce(rpc,{execute:async(task,input)=>{
+  const value=await t.execute(task,input);
+  if(task==='filter-discovery'&&!imported){imported=true;const record={company:'Example (fictional)',title:'Software Engineer New Grad',location:'Remote',url:'https://job-boards.greenhouse.io/example/jobs/100',status:'REJECTED'};await db.query('insert into public.imported_jobs(user_id,identity_key,record,source_rows) values($1,$2,$3,$4)',[f.owner,'late-import',record,[record]]);}
+  return value;
+ }});
+ assert(imported);assert.equal((await result(f.job.id)).result.shortlist.totalRetained,0);
+ assert.equal((await db.query('select count(*)::int n from public.search_listings where user_id=$1',[f.owner])).rows[0].n,0);
+});

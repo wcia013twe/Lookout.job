@@ -1,0 +1,12 @@
+# Single-portal shortlist persistence repair
+
+- Used the existing `submit_portal_search` tool and leased worker against the real local account; no alternate search or database write path was added.
+- Fixed an observed final-batch failure: Cisco returned a valid 572-character multi-location value, while both SQL and shared MCP/browser validation capped it at 500. Both now preserve up to 2000 characters with the existing row/byte transaction bounds.
+- Included owned applied/rejected imported tracker records in paged worker history, and refreshed history after collection before final deduplication. Search never changes those records or bans unrelated jobs at the same employer.
+- Updated fictional demo diagnostics for imported applied/rejected exclusions and a multi-location result.
+
+Validation: `npm test` passed 1105 tests, with five skips and zero failures. Runtime TypeScript and `npm run validate:data` (158 catalog roles) passed. Focused SQL-leased regressions cover the multi-location save, imported applied/rejected exclusions, mid-collection import, and complete pagination on both history reads.
+
+Local live proof: the existing single-portal tool scanned Simplify new-grad, checked its configured 100 employer-link subset, parsed 49 jobs, filtered out eight, staged 41, removed 32 unchanged/duplicate results and saved nine shortlist rows. Scoped MCP read-back and direct local database counts confirmed nine distinct listing IDs, nine observations and the complete 572-character Cisco location. ServiceNow Agent Eval Platform and Verkada University Graduate 2027 are among the saved rows. All 157 imported records retained the identical before/after fingerprint; native applications remained at zero. These are worker shortlist rows awaiting agent fit analysis, not a new Discover publication.
+
+Verification limits: coverage remains partial. Simplify retains its previously configured 100 newest title-matching lead limit. The Jobright-only run retained 845 raw source rows but all 581 selected public pages lacked an employer application URL, so it saved zero; existing agent employer-link recovery is still needed. The nine rows include two distinct Workday IDs/URLs for identically titled LexisNexis postings, preserved under the existing native-identity policy; this is not a claim of nine unique opportunities. Local Docker/migrations were activated; nothing was pushed, hosted or deployed to GCP.

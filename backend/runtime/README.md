@@ -429,6 +429,12 @@ Applications and their statuses are never changed by this pipeline.
 Only job metadata, aggregate counts and bounded diagnostics enter SQL during
 collection. `search.history.read` is service-only, account scoped, fenced and
 paged at 100 identities; it includes content hashes, never full prior JDs.
+Owned applied/rejected imported tracker records participate alongside native
+applications using exact URLs and existing identity deduplication. History is
+read again after collection, immediately before the final shortlist selection.
+Unapplied saved imports and unrelated roles at the same company are not bans.
+Official multi-location observations preserve up to 2000 characters in both
+the shared website/MCP schema and SQL; longer values are still rejected.
 Final writes retain bounded per-batch transactions; an interrupted final write
 can leave qualifying shortlist rows, and recovery completes the same run.
 They are not an agent-ready receipt until the backend job finishes.

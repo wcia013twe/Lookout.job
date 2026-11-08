@@ -57,7 +57,8 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
  const staging=new SearchStaging(stagingRoot,job.id,run.id);
  await pruneSearchStaging(stagingRoot);
  const history:Payload[]=[];
- for(let offset=0;;){const page=await dispatch('search.history.read',{offset,limit:100});history.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid search history page');offset=page.nextOffset;}
+ const refreshHistory=async()=>{history.length=0;for(let offset=0;;){const page=await dispatch('search.history.read',{offset,limit:100});history.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid search history page');offset=page.nextOffset;}};
+ await refreshHistory();
  const persisted:Payload[]=[];
  for(let offset=0;;){const page=await dispatch('search.discoveries.read',{runId:run.id,offset,limit:100,purpose:'screening'});persisted.push(...page.listings);if(page.nextOffset===null)break;if(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('Invalid discovery page');offset=page.nextOffset;}
  const sources=orderedSearchSources(run.sources||[],run.id),snapshots=new Map<string,Payload>(),seen:Payload[]=[];
@@ -101,6 +102,8 @@ export async function executeSearch(job:Claim['job'],dispatch:Dispatch,{execute=
  },10,onFailure);
  const latestContext=await dispatch('search.context',{profileId});
  if(latestContext.personalVersion!==context.personalVersion||latestContext.documents.find((d:Payload)=>d.kind==='profile'&&d.id===profileId)?.version!==profile.version)throw Error('Job settings changed during source collection');
+ // Catch applications/imports recorded while provider collection was running.
+ await refreshHistory();
  // Compare unchanged content only after fresh verification. Existing tracked
  // applications are excluded before verification and are never updated here.
  const pool=[...snapshots.values()].flatMap(snapshot=>snapshot.accepted);
