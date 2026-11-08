@@ -253,11 +253,12 @@ test('collection and rejected jobs remain outside permanent storage until the sh
  assert.deepEqual(rows.map(row=>row.title),['Software Engineer New Grad']);
 });
 
-test('direct search excludes an already tracked Applied job and preserves its application',async()=>{
+for(const status of ['Submitted','Rejected'])test(`direct search excludes a tracked ${status} job and preserves its application`,async()=>{
  const f=await fixture(),t=tasks(),id='protected-'+f.owner;
- await db.query("insert into public.jobs(id,canonical_url,employer) values($1,'https://job-boards.greenhouse.io/example/jobs/100','{}')",[id]);
- await db.query("insert into public.applications(user_id,job_id,status) values($1,$2,'Queued')",[f.owner,id]);
- await db.query("update public.applications set status='Submitted',submitted_at=now() where user_id=$1",[f.owner]);
+ await db.query("insert into public.jobs(id,canonical_url,employer) values($1,'https://job-boards.greenhouse.io/example/jobs/100','{}') on conflict(canonical_url) do nothing",[id]);
+ const canonical=(await db.query("select id from public.jobs where canonical_url='https://job-boards.greenhouse.io/example/jobs/100'")).rows[0].id;
+ await db.query("insert into public.applications(user_id,job_id,status) values($1,$2,'Queued')",[f.owner,canonical]);
+ await db.query("update public.applications set status=$2,submitted_at=case when $2='Submitted' then now() else null end where user_id=$1",[f.owner,status]);
  const before=(await db.query('select to_jsonb(a) data from public.applications a where user_id=$1',[f.owner])).rows;
  await workOnce(rpc,{execute:t.execute});
  assert.equal((await result(f.job.id)).result.shortlist.totalRetained,0);
