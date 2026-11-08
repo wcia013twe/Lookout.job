@@ -653,3 +653,13 @@ MCP `read_batch` own access; no new service or database migration is introduced.
 A fictional 32+14 overlap fixture proves 42 unique roles, not a 14-role cap;
 fictional UI fixtures cover an older unapplied role and the applied-history toggle.
 Local build/test evidence and hosted release remain separate.
+
+### Rejection-only Discover protection
+
+Discover explicitly excludes rejected outcomes even when there is no recorded
+submission. All matching owned job/URL records and tracker outcomes participate;
+a queued duplicate cannot mask an older submission or rejection. The existing
+applied-history toggle does not reveal rejected roles. A fictional rejection-only
+fixture covers the detached demo. The direct worker's existing tracked-job
+exclusion is tested with Submitted and Rejected records, preserving each full
+application row. No new writer, migration, tool or permission is added.

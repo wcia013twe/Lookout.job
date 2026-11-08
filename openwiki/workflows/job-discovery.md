@@ -263,3 +263,45 @@ application state. Existing profile employment/search/date controls still apply.
 Website reads use the existing authenticated/RLS batch readers; MCP's existing
 `read_batch` remains the owner-scoped reader for each original batch. No new
 queue, database table, migration, publication or agent analysis is required.
+
+### Explicit applied/rejected exclusion
+
+Discover uses the same status predicate for its cumulative board, date-filtered
+views, single-batch views, public browsing and the onboarding saved-role preview.
+Applied roles are excluded by default. An explicit Include applied jobs toggle
+can expose applied history; it never exposes rejected roles. A recorded rejection
+is sufficient even without a submission date or receipt. Matching checks all
+owned application records by job ID or canonical URL, plus tracker outcomes, so
+a queued duplicate cannot conceal an earlier submission or rejection. Pending,
+failed, blocked or uncertain preparation alone is not an application/rejection.
+
+The direct worker already excludes tracked application identities independently
+of status; real leased SQL regression coverage now checks both Submitted and
+Rejected, including a rejection without submitted_at. These visibility checks
+never mutate application history or rewrite immutable batches.
+
+
+### Discover evidence display and imported outcomes
+
+The preview preserves full source-backed attendance and sponsorship text, including
+uncertainty, work-authorization restrictions, cadence and relocation notes. A null
+match score is displayed as “Not rated” with the saved reason expanded; it does
+not imply the employer omitted pay. Five saved plain-text labels (Team, Your
+contribution, Your growth, Support, Practical fit) render as five escaped list
+items. Legacy prose is preserved with its line breaks; missing sections are never
+invented. The ongoing compact card redesign is outside this change.
+
+Discover reads the existing owned Simplify history as Applications does, and checks
+all exact-ID/URL native and imported matches. It waits for history to load and
+offers retry on failure. Rejections stay excluded even in applied-history mode;
+explicit batch and day views use the same predicate. Null-URL imports and email-only
+outcomes cannot establish a specific catalog identity. Use the existing scoped
+batch dismissal for an authorized exact-role hold; do not infer companywide status
+or invent tracker records. The latest dismissed occurrence suppresses older copies
+in the cumulative view.
+
+The batch URL migration updates only the returned link to the verified Pages path
+`https://wcia013twe.github.io/Lookout.job/`, preserving dispatch scopes and grants.
+Publishing an already cataloged canonical URL does not overwrite employer facts,
+including deadline; source-backed deadlines can remain explicit in the private
+Practical fit narrative without changing the shared catalog.

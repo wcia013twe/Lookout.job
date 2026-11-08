@@ -31,3 +31,38 @@ test('all owned batches are paged beyond 200 and account changes reject accumula
  assert.equal((await api.allBatches()).length,205);assert.equal(calls,2);
  api.getBatch=async id=>{owner='two';return batch(id,'2026-11-07',[]);};await assert.rejects(()=>api.allBatches(),/Account changed/);
 });
+
+
+test('rejected jobs never reappear, including rejection-only imports, tracker outcomes and applied-history mode',()=>{
+ const role={id:'catalog',applicationUrl:'https://example.com/jobs/rejected'};
+ const fixtures=[
+  {applications:{catalog:{id:'catalog',status:'Rejected'}}},
+  {applications:{imported:{id:'different-id',url:role.applicationUrl,status:'Rejected'}}},
+  {trackerItems:{catalog:{status:'Rejected'}}},
+  {applications:{alias:{id:'different-id',applicationUrl:role.applicationUrl,status:'Queued',milestones:[{id:'rejection',kind:'rejected',phase:'received',occurred_at:'2026-11-07T12:00:00Z'}]}}},
+  {applications:{queued:{id:'queued',url:role.applicationUrl,status:'Queued'},rejected:{id:'rejected',url:role.applicationUrl,status:'Rejected'}}},
+ ];
+ for(const fixture of fixtures){const before=structuredClone(fixture);assert.equal(matchesDiscoveryStatus(role,fixture),false);assert.equal(matchesDiscoveryStatus(role,{...fixture,includeApplied:true}),false);assert.deepEqual(fixture,before);}
+ assert.equal(matchesDiscoveryStatus(role,{applications:{unrelated:{id:'unrelated',url:'https://example.com/jobs/other',status:'Rejected'}}}),true);
+ assert.equal(matchesDiscoveryStatus(role,{applications:{queued:{id:'queued',url:role.applicationUrl,status:'Queued',milestones:[{id:'future',kind:'rejected',phase:'scheduled'}]}}}),true);
+});
+
+test('a queued duplicate cannot mask a prior submitted application',()=>{
+ const role={id:'catalog',applicationUrl:'https://example.com/jobs/already-applied'},applications={queued:{id:'queued',url:role.applicationUrl,status:'Queued'},submitted:{id:'submitted',url:role.applicationUrl,status:'Submitted'}};
+ assert.equal(matchesDiscoveryStatus(role,{applications}),false);assert.equal(matchesDiscoveryStatus(role,{applications,includeApplied:true}),true);
+});
+
+test('Discover reads imported outcomes without collapsing native duplicates or guessing null-URL identity',async()=>{
+ const {discoveryApplications}=await import('../lib/discover-application-state.mjs');
+ const role={id:'catalog',applicationUrl:'https://example.com/jobs/exact',company:'Fictional employer',title:'Software Engineer'};
+ const native={catalog:{id:'catalog',url:role.applicationUrl,status:'Queued'}};
+ for(const status of ['APPLIED','REJECTED']){
+  const records=[{id:'imported',record:{company:role.company,title:role.title,url:role.applicationUrl,status}}],before=structuredClone(records);
+  assert.equal(matchesDiscoveryStatus(role,{applications:discoveryApplications(native,records)}),false);assert.deepEqual(records,before);
+  records[0].record.url=null;assert.equal(matchesDiscoveryStatus(role,{applications:discoveryApplications(native,records)}),true,'Do not infer requisition identity from a common title');
+ }
+});
+test('all matching tracker keys participate instead of allowing an empty alias to mask rejection',()=>{
+ const role={id:'catalog',applicationUrl:'https://example.com/jobs/exact'};
+ assert.equal(matchesDiscoveryStatus(role,{applications:{alias:{id:'different',url:role.applicationUrl,status:'Queued'}},trackerItems:{alias:{},catalog:{status:'Rejected'}}}),false);
+});

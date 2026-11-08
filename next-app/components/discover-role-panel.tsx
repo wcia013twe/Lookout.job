@@ -6,6 +6,7 @@ import { primary, secondary } from "./ui";
 import { CompanyLogo, type Role } from "./role-card";
 import RoleMatchPreview from "./role-match-preview";
 import RoleJobFacts from "./role-job-facts";
+import RoleFitAnalysis from "./role-fit-analysis";
 import RoleApplicationPreview from "./role-application-preview";
 import ProfileIcon from "./profile-icon";
 import { companyRanking } from "../lib/role-display";
@@ -44,14 +45,7 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
       <div className={styles.match}><RoleMatchPreview sample={sample} demo={w.demo} expanded /></div>
       <section aria-labelledby="fit-reasoning">
         <div className="mb-4 flex items-center gap-2 text-board-accent"><ProfileIcon name="sliders" /><h3 id="fit-reasoning" className="text-lg font-semibold">{assessmentPending?"Agent review pending":"AI fit analysis"}</h3></div>
-        <div className={styles.reasoning}>
-          <h4 className="mb-2 flex items-center gap-2 text-sm font-semibold text-board-success"><ProfileIcon name="check" width={18} height={18} />Why it’s here</h4>
-          <p className="max-w-prose text-sm leading-relaxed">{assessmentPending?"Saved from your onboarding preferences. Your agent still needs to verify the employer posting and compare it with your profile and résumé.":role.whyItFits || "No fit research collected yet."}</p>
-        </div>
-        {role.materialGap && <div className={styles.uncertainty}>
-          <h4 className="mb-2 flex items-center gap-2 text-sm font-semibold text-board-warning"><ProfileIcon name="shield" width={18} height={18} />What needs a closer look</h4>
-          <p className="max-w-prose text-sm leading-relaxed text-board-muted">{role.materialGap}</p>
-        </div>}
+        {assessmentPending ? <p className="max-w-prose text-sm leading-relaxed">Saved from your onboarding preferences. Your agent still needs to verify the employer posting and compare it with your profile and résumé.</p> : <RoleFitAnalysis whyItFits={role.whyItFits} materialGap={role.materialGap} />}
         <p className="mt-3 text-xs text-board-muted">{w.demo ? "Fictional example · no live AI evaluation" : "Collected research · no new AI evaluation"}</p>
       </section>
       <RoleApplicationPreview role={role} />
