@@ -223,3 +223,5 @@ The local-only `scripts/check-local-toolkit-mock.mjs` checks the prerequisite an
 exercises actual Node MCP -> Edge -> SQL saves, idempotent retries and private
 profile separation using a disposable account removed in `finally`. It does not
 create the user's requested session or any Calendar event.
+
+Network people can now be filtered by tracked or imported application, or by No linked application. Cards display linked company/role labels using the existing explicit-tag/role-URL association rules. Company and application filters can be combined, and existing process deep links select the same filter. No contact write, new ranking store or inferred company-only process link is introduced; scoped list_contacts/save_contact remain the agent read/write boundary.
