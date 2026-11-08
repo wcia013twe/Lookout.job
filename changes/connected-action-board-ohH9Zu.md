@@ -36,3 +36,33 @@ Limits: checks use disposable migrated databases and fictional detached browser 
   succeeded for both local accounts; the eight flagged imported actions now appear.
   No account actions were accepted, submitted, sent or modified. No push or hosted
   deployment occurred; browser sign-in to a real account was not exercised.
+
+## Follow-up: referenced inline action cards
+
+- Use Impeccable's Operate guidance within the existing board and Weekly Prep
+  framing. Give drafts, questions, messages, interviews, task actions and
+  verification requests distinct content layouts and Circles-style @ object links.
+  Remove Imported provenance tags. Every decision card has a check and red X with
+  accessible, action-specific names.
+- Put required answer fields, reuse settings, résumé selection, exact review and
+  verification evidence in the cards. Disable acceptance until prerequisites are
+  met. Save edits before reviewing/approving a new revision; preserve the durable
+  work stop on rejection. Task decisions clear the existing needsAction field.
+- Extend the shared owned projection and authenticated response RPC, retaining
+  source locks, stale rejection, idempotency and existing domain validators.
+  Agent read parity remains read-only; no human confirmations can be forged.
+- Update fictional fixtures and inline browser interactions.
+- Validation: integrated `npm test` passed (1,074 passed, five skipped), data
+  validation (158 roles), frontend typecheck and production build passed. Expanded
+  desktop/mobile browser checks passed, including source references, required-field
+  gates, exact review, inline resolution, keyboard decisions, scroll/swipe separation
+  and the current seven-day calendar. Forty focused combined guide/calendar/board
+  tests passed. Impeccable detector returned no findings; desktop/mobile visuals
+  were inspected in the incumbent theme system.
+- Integrated current local main's calendar and Network work without discarding its
+  behavior. Combined developer contract is 129; application-workspace guide 21.
+- Applied only migration `20261108005642` to the existing local database. Hashes of
+  application, imported-job and decision-receipt records remained unchanged. Both
+  owned inline board reads succeeded (14 and 11 pending items). No real decisions,
+  submissions or outreach were performed. No push or hosted deployment; real-account
+  browser sign-in and hosted MCP activation were not exercised.

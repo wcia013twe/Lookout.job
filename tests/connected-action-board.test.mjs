@@ -95,15 +95,15 @@ test('owned application links select exact native and imported identities',()=>{
  assert(!matchesBoardApplication({id:'job'},'job'));
  assert(!matchesBoardApplication({id:'import:one'},null));
 });
-test('filled drafts, approved applications and explicit imported next actions stage without binary consent',async()=>{
+test('filled drafts, approved applications and explicit next actions stage with guarded human controls',async()=>{
  const {demoFixtures,createMemoryStore,createDemoServices}=await import('../next-app/lib/demo.mjs');
  const {withActionBoardDemo,enableActionBoardScenario}=await import('../next-app/lib/action-board-demo.mjs');
  const fixtures=demoFixtures('2026-11-07');enableActionBoardScenario(fixtures,'2026-11-07');
  const store=createMemoryStore(fixtures.state),services=withActionBoardDemo(createDemoServices(store),store);
  const board=await services.readActionBoard();
  for(const kind of ['prepared_application','submit_application','imported_action']){
-  const item=board.items.find(i=>i.kind===kind);assert(item,kind);assert(!item.canAccept&&!item.canReject);
-  await assert.rejects(services.respondActionBoard({key:item.key,response:'accept',eventKey:crypto.randomUUID()}),/owning editor/);
+  const item=board.items.find(i=>i.kind===kind);assert(item,kind);assert(item.canAccept&&item.canReject);
+  if(kind!=='imported_action')await assert.rejects(services.respondActionBoard({key:item.key,response:'accept',eventKey:crypto.randomUUID()}),/form fields|Verification note/);
  }
  store.update('demo.boardImports',rows=>rows.map(row=>({...row,record:{...row.record,needsAction:false}})));
  assert(!(await services.readActionBoard()).items.some(i=>i.kind==='imported_action'));
