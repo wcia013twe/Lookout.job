@@ -430,3 +430,17 @@ application-submission and Career Toolkit concept pages for the contract.
 Search guide16 surfaces relevant plausible jobs after personal analysis instead of selecting only exceptional fits. Fit strength guides priority and tailoring depth; weaker fit, unknown pay, unclear team scope and unconfirmed clearance/citizenship are not automatic rejections. User-requested clearance roles stay visible with active-at-application/start versus obtainable-after-hire requirements called out explicitly. Confirmed non-exempt mandatory conflicts and clearly unrelated work can still be excluded. Conditional graduation scenarios remain targeting, never changes to actual education facts or employer-form answers.
 
 Application guide17 supports routine accurate preparation volume during already authorized application work, with deeper effort for the best matches. Notifications guide2 distinguishes actual prepared, tailored, blocked, ready-for-review and submitted counts. Instructions do not execute work, activate schedules, send messages or grant submission consent. Match strength reuses the existing recommendation priority (Apply Now, Strong Consider, Skip Unless Team Fit) and four fit scores, with no separate tag, column or UI. Lower priority does not stop otherwise authorized preparation. Current Discover batches and applications are not reassessed or republished by this pass.
+
+## Mock schema diagnostics (contract 123, locally verified)
+
+The mock tool schema now excludes document-only preparedFor/materials/resourceUrl,
+requires its scheduling fields and advertises an explicit-offset RFC 3339
+scheduledAt pattern. Material-format guide v2 explains these requirements. The
+local API/gateway refresh was verified through connected discovery and disposable
+Node MCP -> Edge -> SQL tests: each invalid field gets a specific rejection, while
+the corrected mock saves, replays and reads with its profile kept private. Server
+mock-rejection logs retain generated diagnostic IDs, stages, allowlisted reasons
+and field types only. Historical failures without this logging cannot be recovered.
+No real user session or external event was created. Forty-nine relevant integrated
+checks passed; a full-suite search-pipeline failure passed on isolated rerun.
+Hosted publication was not performed.
