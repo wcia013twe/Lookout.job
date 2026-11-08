@@ -164,7 +164,7 @@ test('admin demo services expose the same workflow routing while keeping pending
 });
 
 test('direct search completion requires personal analysis then private publication and read-back; demo retains the pending state',async()=>{
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,17);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,18);
  assert.match(guide.instructions,/Private Discover publication is the final step[\s\S]*after agent personal fit analysis/);
  assert.match(guide.instructions,/Read back every returned batch with read_batch/);
  assert.match(guide.instructions,/discover:<runId>:profile:<version>:part:<index>/);
@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,17);assert.equal(apps.version,19);assert.equal(digest.version,3);
+ assert.equal(search.version,18);assert.equal(apps.version,20);assert.equal(digest.version,3);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
@@ -187,4 +187,18 @@ test('broad fit guidance retains clearance unknowns, conditional scenarios and r
  assert.match(apps.instructions,/close fit determines priority and tailoring depth, not whether to do the work at all/i);
  assert.match(apps.instructions,/Do not start applications merely because a search was requested/);
  assert.match(digest.instructions,/Counts and continuation claims require saved records and actual execution evidence/);
+});
+
+test('fit brief is concise, team-specific and uses existing narrative and priority fields',()=>{
+ const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace');
+ assert.match(search.instructions,/about 130–180 words per role/);
+ assert.match(search.instructions,/Team, Your contribution, Your growth, Support, Practical fit/);
+ assert.match(search.instructions,/what would raise or lower the priority/);
+ assert.match(search.instructions,/clearly labeled adjacent context, never as proof/);
+ assert.match(search.instructions,/not proof of structured mentorship/);
+ assert.match(search.instructions,/whether internships count toward an experience limit/);
+ assert.match(search.instructions,/reuse recommendation.whyItFits[\s\S]*recommendation.materialGap/);
+ assert.match(search.instructions,/do not require Markdown rendering or add new fields/);
+ assert.match(search.instructions,/Do not append a research diary/);
+ assert.match(apps.instructions,/follow career-find-jobs’ compact team-focused decision brief/);
 });

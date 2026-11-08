@@ -268,7 +268,7 @@ test('direct search excludes an already tracked Applied job and preserves its ap
 test('a completed direct shortlist reaches private Discover only through agent-reviewed publication, with replay and website parity',async()=>{
  const {batchRoles}=await import('../lib/cloud-model.mjs');
  const {readGuide}=await import('../supabase/functions/agent-gateway/guides.mjs');
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,17);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,18);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  const hash=f.owner.replaceAll('-','').repeat(2);

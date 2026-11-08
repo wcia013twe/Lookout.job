@@ -506,3 +506,7 @@ and undated pending assessment rounds; it did not infer tasks from material text
 or assign guessed dates. The detached demo covers an unfinished undated OA.
 Validation and local activation receipts are in the shared calendar feature note;
 hosted deployment remains separate.
+
+### Compact team-focused fit analysis
+
+Search guide18 makes the default analysis a 130–180-word decision brief: existing priority with a short verdict; up to five chat bullets covering team, candidate contribution, growth, support and practical fit; and one sentence on what changes priority. Research exact-team evidence first and clearly distinguish adjacent-team context, inference and unknowns. Save the same substance in existing whyItFits/materialGap text and four assessments; no new tags, fields or Markdown-rendering requirement. Application guide20 follows this format during authorized work. This changes future instructions, not historical assessments or publication.
