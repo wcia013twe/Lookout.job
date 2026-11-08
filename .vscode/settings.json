@@ -1,0 +1,32 @@
+{
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "Tectonic",
+      "tools": [
+        "tectonic"
+      ]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "tectonic",
+      "command": "tectonic",
+      "args": [
+        "--synctex",
+        "--keep-logs",
+        "-Z",
+        "search-path=%DIR%/docs/figures",
+        "--outdir",
+        "%OUTDIR%",
+        "%DOC_EXT%"
+      ]
+    }
+  ],
+  "latex-workshop.latex.outDir": "%DIR%/.latex-build",
+  "latex-workshop.latex.autoBuild.run": "onFileChange",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "[latex]": {
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000
+  }
+}
