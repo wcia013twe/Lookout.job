@@ -838,3 +838,7 @@ Local routing activation: the migration and Node image lookout-node:application-
 Discover compact Strong Consider cards omit the reasoning excerpt while retaining
 the saved label, match scores and full analysis in the job preview. The detached
 demo shares this presentation; saved assessments and service/MCP boundaries are unchanged.
+
+Discover card previews now display all seven saved job facts directly, replacing
+the compact facts, reasoning excerpt and four-score disclosure. Full analysis
+remains in the job drawer. Demo and account cards share this presentation.
