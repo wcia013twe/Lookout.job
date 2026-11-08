@@ -3,7 +3,7 @@ import type { Role } from "./role-card";
 import {formatPostedDate,formatAvailabilityCheck,postingStatus} from "../../lib/posting-age.mjs";
 import {compensationLabel,jobFactText} from "../lib/job-fact-labels";
 import ProfileIcon, { type ProfileIconName } from "./profile-icon";
-export default function RoleJobFacts({ role, compact = false, unrecorded = false, priorityTag }: { role: Role; compact?: boolean; unrecorded?: boolean; priorityTag?:ReactNode }) {
+export default function RoleJobFacts({ role, compact = false, cardPreview = false, unrecorded = false, priorityTag }: { role: Role; compact?: boolean; cardPreview?: boolean; unrecorded?: boolean; priorityTag?:ReactNode }) {
   const status = postingStatus(role);
   const pay = role.compensation;
   const facts: { icon: ProfileIconName; label: string; value: string }[] = [
@@ -12,9 +12,11 @@ export default function RoleJobFacts({ role, compact = false, unrecorded = false
     ...(!compact ? [
       { icon: "building" as const, label: "Work setting", value: jobFactText(role.workSetting) },
       { icon: "sliders" as const, label: "Focus", value: role.category || "Not disclosed" },
+      ...(!cardPreview ? [
       { icon: "shield" as const, label: "Sponsorship", value: jobFactText(role.sponsorship) },
       { icon: "clock" as const, label: "Posted", value: formatPostedDate(role) },
       { icon: "clock" as const, label: "Availability checked", value: formatAvailabilityCheck(role) },
+      ] : []),
     ] : []),
   ];
   return <section aria-label="Job facts">

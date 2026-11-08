@@ -853,3 +853,7 @@ demo shares this presentation; saved assessments and service/MCP boundaries are 
 Discover card previews now display all seven saved job facts directly, replacing
 the compact facts, reasoning excerpt and four-score disclosure. Full analysis
 remains in the job drawer. Demo and account cards share this presentation.
+
+Discover cards now limit visible facts to Compensation, Location, Work setting
+and Focus. Sponsorship, Posted and Availability checked remain in the full job
+preview. This is presentation-only and applies equally to the detached demo.

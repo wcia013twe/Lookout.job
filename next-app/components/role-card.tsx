@@ -19,7 +19,7 @@ export {CompanyLogo} from './company-logo';
 export default function RoleCard({role,onPreview}:{role:Role;onPreview?:(role:Role)=>void}) {
  const priorityWithType=savedRoleLabel(role)==='Strong Consider';
  return <DiscoveredRoleWidget hideSavedLabel={priorityWithType} role={role} onPreview={onPreview?()=>onPreview(role):undefined}>
-  <RoleJobFacts role={role} priorityTag={priorityWithType?<SavedRoleTag role={role}/>:undefined}/>
+  <RoleJobFacts role={role} cardPreview priorityTag={priorityWithType?<SavedRoleTag role={role}/>:undefined}/>
   <ApplicationActions role={role} onPreview={onPreview}/>
  </DiscoveredRoleWidget>;
 }

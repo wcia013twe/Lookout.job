@@ -24,7 +24,8 @@ try{
  const card=page.locator('article').filter({hasText:'Example Query Labs (demo)'});
  await card.getByRole('region',{name:'Job facts',exact:true}).waitFor();
  const before=cloud.length;
- for(const label of ['Compensation','Location','Work setting','Focus','Sponsorship','Posted','Availability checked']) assert.equal(await card.locator('dt').filter({hasText:new RegExp('^'+label+'$')}).count(),1,`Card shows ${label}`);
+ for(const label of ['Compensation','Location','Work setting','Focus']) assert.equal(await card.locator('dt').filter({hasText:new RegExp('^'+label+'$')}).count(),1,`Card shows ${label}`);
+ for(const label of ['Sponsorship','Posted','Availability checked']) assert.equal(await card.locator('dt').filter({hasText:new RegExp('^'+label+'$')}).count(),0,`Card omits ${label}`);
  assert.equal(await card.getByLabel('Job match preview').count(),0,'Four match scores stay out of the card');
  assert.equal(await card.getByText('Good',{exact:true}).count(),0,'Card omits redundant rating adjectives');
  assert.equal(await card.getByText('Fictional evidence:',{exact:false}).count(),0,'Score reasoning stays out of card');

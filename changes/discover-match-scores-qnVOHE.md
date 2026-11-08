@@ -10,3 +10,8 @@
 - Replace compact facts, reasoning excerpts and four match scores with the seven labeled job facts directly on every Discover card: compensation, location, work setting, focus, sponsorship, posted date and availability check. Values come from each saved role; nothing is hardcoded from the example.
 - The full job drawer retains its analysis. Demo cards share the same component; no backend or MCP changes.
 - Validation: frontend typecheck, data validation, production build and desktop/mobile detached demo checks.
+
+## Follow-up: four card facts
+
+- Remove Sponsorship, Posted and Availability checked from Discover cards. Keep Compensation, Location, Work setting and Focus. Full job-preview facts remain available; demo cards use the same presentation.
+- Validation: frontend typecheck, data validation and production build.
