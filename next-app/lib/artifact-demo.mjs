@@ -1,7 +1,7 @@
 import {demoMaterialSources,toolkitResearch,researchCheckedAt,palantirDemoApplicationId} from './toolkit-demo-research.mjs';
 import {demoMaterialDocument} from './toolkit-demo-documents.mjs';
 import {debriefMarker} from '../../lib/interview-debrief.mjs';
-import {validateArtifact,artifactResponse,artifactMetadata,isPreparedArtifact,artifactSubjectKeys,weekStart,shiftWeek} from '../../lib/artifacts.mjs';
+import {validateArtifact,artifactResponse,artifactMetadata,isPreparedArtifact,artifactSubjectKeys,artifactWeek,weekStart,shiftWeek} from '../../lib/artifacts.mjs';
 const clone=value=>structuredClone(value);
 export const demoGoalId='33333333-aaaa-4000-8000-333333333333';
 export const demoArtifactIds={pack:'11111111-aaaa-4000-8000-111111111111',interactive:'22222222-aaaa-4000-8000-222222222222',company:'44444444-aaaa-4000-8000-444444444444'};
@@ -64,11 +64,12 @@ export function createArtifactDemo(store){
  }
  // Keep older examples available without competing with the five current previews.
  for(const id of [demoArtifactIds.pack,demoArtifactIds.interactive])delete seed.find(row=>row.id===id).content.weekOf;
+ for(const [id,days] of [[demoArtifactIds.company,1],['aaaaaaaa-2222-4000-8000-222222222222',2]]){const row=seed.find(r=>r.id===id);if(row){const date=new Date(row.content.weekOf+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+days);row.content.prepOn=date.toISOString().slice(0,10);}}
  const rows=()=>store.get('demo.artifacts')??seed;
  const history=()=>store.get('demo.artifactHistory')??Object.fromEntries(seed.map(r=>[r.id,[r]]));
  function saveRows(row){store.set('demo.artifacts',[row,...rows().filter(r=>r.id!==row.id)]);store.set('demo.artifactHistory',{...history(),[row.id]:[row,...(history()[row.id]||[])]});return artifactResponse(clone(row));}
  return {
-  artifactSnapshot(){return {calendarArtifacts:rows().filter(r=>!r.archived&&r.content.kind==='mock_interview').map(r=>({id:r.id,content:clone(r.content)})),learningGoals:clone(goals()),artifacts:rows().filter(r=>!r.archived).map(r=>({id:r.id,version:r.version,title:r.content.title,links:clone(r.content.links),path:artifactResponse(r).path}))};},
+  artifactSnapshot(){return {calendarArtifacts:rows().filter(r=>!r.archived&&(r.content.kind==='mock_interview'||r.content.prepOn)).map(r=>({id:r.id,content:clone(r.content)})),learningGoals:clone(goals()),artifacts:rows().filter(r=>!r.archived).map(r=>({id:r.id,version:r.version,title:r.content.title,links:clone(r.content.links),path:artifactResponse(r).path}))};},
   async artifactAction(operation,payload={}){
    validateArtifact(operation,payload);
    if(operation==='learning.read')return clone(goals());
@@ -81,7 +82,7 @@ export function createArtifactDemo(store){
     const row={id,version:expectedVersion+1,goal};store.set('demo.learningGoals',[row,...goals().filter(g=>g.id!==id)]);return clone(row);
    }
    if(operation==='artifacts.list'){
-    const filtered=rows().filter(r=>r.archived===!!payload.archived&&(!payload.shelf||(!['cover_letter','application_template'].includes(r.content.kind)&&(payload.shelf==='all'||isPreparedArtifact(r.content,payload.asOf||today)===(payload.shelf==='prepared'))))&&(!payload.kind||r.content.kind===payload.kind)&&(!payload.weekOf||r.content.weekOf===payload.weekOf)&&(!payload.applicationId||r.content.links.some(l=>l.applicationId===payload.applicationId))&&(!payload.goalId||r.content.links.some(l=>l.goalId===payload.goalId))&&['companyWorkspaceId','contactId','jobId'].every(k=>!payload[k]||r.content.links.some(l=>l[k]===payload[k]))&&(!payload.query||JSON.stringify(r.content).toLowerCase().includes(payload.query.toLowerCase())));
+    const filtered=rows().filter(r=>r.archived===!!payload.archived&&(!payload.shelf||(!['cover_letter','application_template'].includes(r.content.kind)&&(payload.shelf==='all'||isPreparedArtifact(r.content,payload.asOf||today)===(payload.shelf==='prepared'))))&&(!payload.kind||r.content.kind===payload.kind)&&(!payload.weekOf||artifactWeek(r.content)===payload.weekOf)&&(!payload.applicationId||r.content.links.some(l=>l.applicationId===payload.applicationId))&&(!payload.goalId||r.content.links.some(l=>l.goalId===payload.goalId))&&['companyWorkspaceId','contactId','jobId'].every(k=>!payload[k]||r.content.links.some(l=>l[k]===payload[k]))&&(!payload.query||JSON.stringify(r.content).toLowerCase().includes(payload.query.toLowerCase())));
     filtered.sort((a,b)=>b.updated_at.localeCompare(a.updated_at)||a.id.localeCompare(b.id));
     if(payload.shelf==='prepared')filtered.sort((a,b)=>a.content.preparedFor.localeCompare(b.content.preparedFor));
     const off=payload.offset||0;return {items:filtered.slice(off,off+25).map(r=>artifactMetadata(artifactResponse(clone(r)))),nextOffset:filtered.length>off+25?off+25:null};

@@ -2,7 +2,7 @@ import {ARTIFACT_TOOLS,validateArtifact,uuid} from './artifacts.mjs';
 const object=(properties,required)=>({type:'object',properties,required,additionalProperties:false});
 const base=ARTIFACT_TOOLS.find(t=>t.operation==='artifacts.save').inputSchema;
 // Advertise exactly the mock payload, rather than unrelated document-only fields.
-const artifact={...base,properties:{...Object.fromEntries(Object.entries(base.properties).filter(([key])=>!['preparedFor','materials','resourceUrl'].includes(key))),
+const artifact={...base,properties:{...Object.fromEntries(Object.entries(base.properties).filter(([key])=>!['prepOn','preparedFor','materials','resourceUrl'].includes(key))),
  kind:{type:'string',enum:['mock_interview']},
  scheduledAt:{type:'string',format:'date-time',pattern:'^\\d{4}-\\d{2}-\\d{2}T.*(Z|[+-]\\d{2}:\\d{2})$',description:'RFC 3339 instant with explicit offset, for example 2026-11-09T15:00:00-05:00. A separate timeZone does not supply a missing offset.'},
  weekOf:{type:'string',pattern:'^\\d{4}-\\d{2}-\\d{2}$',description:'Monday YYYY-MM-DD matching scheduledAt in timeZone.'},

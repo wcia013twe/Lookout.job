@@ -58,3 +58,16 @@ Narrowed mock discovery to mock-only fields, required scheduling metadata and ex
 Validation: 49 integrated guide/MCP/schema/privacy checks passed; frontend typecheck/build and 158-role validation passed. The full suite had 1,051 passes, five skips and one unrelated search-pipeline failure; that exact test passed on an isolated rerun. No search behavior was changed. A concurrent main contract update was integrated, and this schema/diagnostic refresh uses contract 123 so clients actually invalidate their previous catalog. Runtime verification follows local landing.
 
 Local receipt: refreshed only the API using the current `/private/tmp/lookout-rounds-runtime.json` configuration plus an API-image-only override and reloaded the mounted gateway. Connected context reports 123; discovered mock schema excludes preparedFor and requires the explicit-offset scheduling fields. The disposable local proof rejected offset-free scheduledAt and mock preparedFor separately, then saved/read/retried the corrected fictional session and removed every fixture. Actual API logs contain only the two allowlisted reasons, stage and generated diagnostic IDs (no request values/profile). The user's session was not saved or altered. Tunnel address unchanged; no push or hosted release.
+
+
+## Material preparation dates
+
+Added optional Prep on date to Toolkit materials/resources, editable and clearable
+in the existing reader and available through save_artifact. Weekly placement and
+the Action Board calendar use that saved date; target interview/need dates remain
+separate. No duplicate task, event, completion or time-credit writer is added.
+Mocks keep their scheduled timestamp. Shared SQL checks preserve ownership,
+versions, history and exact retries. Demo dates cover company context/round brief,
+with undated reusable resources and date edit/clear support.
+
+Validation: full suite 1,077 passed, five skipped; typecheck/build and 158-role data validation passed. Desktop/mobile detached demo save/clear/read-back and overflow checks passed, with screenshots inspected. The mechanical design check reported no findings. Initial internal-disk failures were resolved by moving this task cache and test temporary files to the external SSD. After concurrent Action Board integration, 45 material/calendar/mock/ownership/discovery checks passed. Agent contract is 130; toolkit-materials guide is v3. Local activation is pending; hosted publication is separate.

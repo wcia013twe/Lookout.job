@@ -311,6 +311,21 @@ validation and local read-back receipts are recorded in the shared calendar note
 Network relationship views now separate All people, Continue conversations and Prospects. A valid logged sent/received message or non-cancelled meeting establishes a conversation; research, drafts, thread URLs alone and legacy hiring statuses do not. Cards and details show the last logged interaction and saved reply/waiting state, not live inbox state. Update relationship edits the compact summary, existing thread URL, optional dated update, next action and follow-up using the existing contact envelope and revision boundary. Drafts/history/application links remain unchanged; no sending or inbox sync occurs. MCP list_contacts/save_contact can read and maintain the same records.
 
 
+### Assigned material preparation dates
+
+Toolkit documents and online resources support optional `prepOn` (YYYY-MM-DD),
+separate from a brief's target/need `preparedFor` date. The reader's Prep on
+control saves or clears it through the existing owner/version-checked
+`artifact_action` writer; agents use `save_artifact` with the same validation.
+Omit `prepOn` in a revision to clear it. Its Monday week takes precedence over
+legacy `weekOf` in weekly lists; clearing restores the stored weekly assignment.
+The calendar reads the current saved artifact directly, links to its reader and
+never creates a second task, time credit or completion record. Archived material
+is excluded. Undated materials remain reusable; no dates are inferred. Mock
+interviews retain `scheduledAt`, and application documents cannot use `prepOn`.
+Planner snapshots expose only calendar metadata, never document bodies or private
+interviewer profiles. Demo includes dated company context and a round brief plus
+undated resources. Runtime/hosted availability requires its own verification.
 #### Upcoming relevant-date presentation
 
 The website calendar now skips empty/past days and groups upcoming dated work

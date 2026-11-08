@@ -57,7 +57,7 @@ test('fictional Toolkit changes feed the same calendar snapshot and stay resetta
  store.set('demo.artifacts',[{id:'demo-calendar',version:2,content:mock('demo-calendar','cancelled').content,archived:false}]);
  assert.equal(buildPreparationAgenda({...await services.readPreparationPlanner(),today}).days.flatMap(d=>d.events).length,0);
  // Use the existing fictional material collection; no real backend or account access.
- assert.ok(before.calendarArtifacts.every(row=>row.content.kind==='mock_interview'));
+ assert.ok(before.calendarArtifacts.every(row=>row.content.kind==='mock_interview'||row.content.prepOn));
  assert.deepEqual((await createDemoServices(createMemoryStore(createDemoWorkspace('2026-11-07T12:00:00Z'))).readPreparationPlanner()).calendarArtifacts,before.calendarArtifacts);
 });
 

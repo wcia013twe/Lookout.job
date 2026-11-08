@@ -545,6 +545,21 @@ ink/divider colors preserve contrast in light and dark modes. This is a visual
 change; the existing inline decision and ownership rules are unchanged.
 
 
+### Assigned material preparation dates
+
+Toolkit documents and online resources support optional `prepOn` (YYYY-MM-DD),
+separate from a brief's target/need `preparedFor` date. The reader's Prep on
+control saves or clears it through the existing owner/version-checked
+`artifact_action` writer; agents use `save_artifact` with the same validation.
+Omit `prepOn` in a revision to clear it. Its Monday week takes precedence over
+legacy `weekOf` in weekly lists; clearing restores the stored weekly assignment.
+The calendar reads the current saved artifact directly, links to its reader and
+never creates a second task, time credit or completion record. Archived material
+is excluded. Undated materials remain reusable; no dates are inferred. Mock
+interviews retain `scheduledAt`, and application documents cannot use `prepOn`.
+Planner snapshots expose only calendar metadata, never document bodies or private
+interviewer profiles. Demo includes dated company context and a round brief plus
+undated resources. Runtime/hosted availability requires its own verification.
 #### Upcoming relevant-date presentation
 
 The website calendar now skips empty/past days and groups upcoming dated work

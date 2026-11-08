@@ -6,7 +6,7 @@ import ApiError from '../../../components/api-error';
 import {Fragment,useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {useRouter,useSearchParams} from 'next/navigation';
 import {createBackend} from '../../../../backend/client.mjs';
-import {artifactLabels,artifactPath,uuid,dateInZone,weekStart,shiftWeek} from '../../../../lib/artifacts.mjs';
+import {artifactLabels,artifactPath,artifactPrepDate,uuid,dateInZone,weekStart,shiftWeek} from '../../../../lib/artifacts.mjs';
 import {useWorkspace} from '../../../lib/workspace';
 import {control,secondary,Notice} from '../../../components/ui';
 import ToolkitLibrary from './toolkit-library';
@@ -54,12 +54,23 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
    if(allWeeks)return first;
    const rows=[...first.items];let cursor=first.nextOffset;
    while(cursor!==null&&cursor!==undefined){if(epoch!==generation.current||!stillOwner())return {items:[],nextOffset:null};const page:Page=await services.artifactAction('artifacts.list',{...filters,offset:cursor});rows.push(...page.items);if(page.nextOffset!==null&&page.nextOffset<=cursor)throw Error('Materials could not be loaded. Retry this week.');cursor=page.nextOffset;}
-   rows.sort((a,b)=>{const x=a.content.scheduledAt||a.content.preparedFor,y=b.content.scheduledAt||b.content.preparedFor;return x&&y?Date.parse(x)-Date.parse(y)||b.updated_at.localeCompare(a.updated_at):x?-1:y?1:b.updated_at.localeCompare(a.updated_at);});
+   rows.sort((a,b)=>{const x=artifactPrepDate(a.content,timeZone),y=artifactPrepDate(b.content,timeZone);return x&&y?Date.parse(x)-Date.parse(y)||b.updated_at.localeCompare(a.updated_at):x?-1:y?1:b.updated_at.localeCompare(a.updated_at);});
    return {items:rows,nextOffset:null};
   })();
   request.then((value:Artifact|Page)=>{if(epoch!==generation.current||!stillOwner())return;if(artifactId)setArtifact(value as Artifact);else{const page=value as Page;setItems(old=>offset?[...old.filter(r=>!page.items.some(n=>n.id===r.id)),...page.items]:page.items);setNext(page.nextOffset);}}).catch((failure:unknown)=>{if(epoch===generation.current&&stillOwner())setError(apiErrorText(artifactId?'artifacts.read':'artifacts.list',failure));}).finally(()=>{if(epoch===generation.current)setLoading(false);});
   return()=>{generation.current++;};
  },[services,artifactId,revision,search,kind,archived,offset,today,reload,week,allWeeks]);
+ async function savePrepDate(prepOn:string){
+  if(!artifact||!services||busy||w.locked||revision)return;
+  const epoch=generation.current;setBusy(true);setFeedback('');
+  try{
+   const {prepOn:oldDate,...content}=artifact.content;
+   await services.artifactAction('artifacts.save',{...content,...(prepOn?{prepOn}:{}),id:artifact.id,expectedVersion:artifact.version});
+   const saved=await services.artifactAction('artifacts.read',{id:artifact.id});
+   if(epoch===generation.current&&stillOwner()){setArtifact(saved);setFeedback(prepOn?'Prep date saved. Your calendar is updated.':'Prep date cleared. The material remains saved.');}
+  }catch(failure){if(epoch===generation.current&&stillOwner())setError(apiErrorText('artifacts.save',failure));}
+  finally{if(stillOwner())setBusy(false);}
+ }
  async function archive(){
   if(!artifact||!services||busy||w.locked)return;const epoch=generation.current;setBusy(true);setFeedback('');
   try{await services.artifactAction('artifacts.archive',{id:artifact.id,expectedVersion:artifact.version,archived:!artifact.archived});if(epoch===generation.current&&stillOwner())setReload(n=>n+1);}
@@ -68,9 +79,10 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
  }
  const readMaterial=useCallback((id:string,version:number)=>services!.artifactAction('artifacts.read',{id,version}),[services]);
  return <div className="min-w-0">
+  {feedback&&<p role="status" className="mb-3 text-sm text-board-muted">{feedback}</p>}
   <ApiError message={error} onRetry={()=>setReload(n=>n+1)}/>
   {!owner&&<Notice><Link className="text-board-accent underline" href="/profile/">Sign in through Profile</Link> to see the materials your agent has prepared.</Notice>}
-  {artifactId?<>{!artifact&&<Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>}{artifact&&!loading&&<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onVersion={v=>router.push(artifactPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} busy={busy}/>} {artifact&&!loading&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
+  {artifactId?<>{!artifact&&<Link className={styles.backLink} href="/career-toolkit/#workspace">Back to workspace</Link>}{artifact&&!loading&&<ArtifactViewer key={`${artifact.id}:${artifact.version}`} artifact={artifact} demo={!!w.demo} historical={!!revision} onVersion={v=>router.push(artifactPath(artifact.id,v==='latest'?undefined:Number(v)))} onArchive={archive} onPrepDate={savePrepDate} locked={w.locked} busy={busy}/>} {artifact&&!loading&&!!artifact.content.materials?.length&&<ArtifactCollection key={`collection:${artifact.id}:${artifact.version}`} materials={artifact.content.materials} read={readMaterial}/>}</>:<>
    <div className={styles.weekToolbar} aria-label="Preparation week">
     <div className={styles.weekNavigation}>
      <button className={styles.quietAction} aria-label="Previous week" disabled={allWeeks} onClick={()=>changeWeek(shiftWeek(week,-1))}><span className={styles.previousChevron}><ToolkitIcon name="chevron" size={16}/></span></button>
@@ -90,16 +102,15 @@ function Workspace({w,owner,artifactId,revision}:{w:ReturnType<typeof useWorkspa
     const linkedId=row.content.links?.find(link=>link.applicationId)?.applicationId;
     const linked=linkedId?Object.values(w.state.workflow.applications as Record<string,any>).find(app=>app.id===linkedId||app.backendId===linkedId):undefined;
     const application=linked?{id:linked.backendId||linked.id,title:linked.title,company:linked.company}:undefined;
-    const date=(row.content.scheduledAt?dateInZone(timeZone,new Date(row.content.scheduledAt)):row.content.preparedFor)||'';
+    const date=artifactPrepDate(row.content,timeZone)||'';
     const previous=items[index-1]?.content;
-    const previousDate=previous?(previous.scheduledAt?dateInZone(timeZone,new Date(previous.scheduledAt)):previous.preparedFor)||'':null;
+    const previousDate=previous?artifactPrepDate(previous,timeZone)||'':null;
     const compact=allWeeks||!['mock_interview','interview_brief','weekly_prep','company_research'].includes(row.content.kind);
     return <Fragment key={row.id}>{!allWeeks&&(index===0||date!==previousDate)&&<li className={styles.timelineHeading}><h2>{date?new Date(date+'T12:00:00Z').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'}):'Resources & notes'}</h2></li>}{compact?<SavedMaterialRow artifact={row} application={application} demo={!!w.demo}/>:<ArtifactTile artifact={row} application={application} demo={!!w.demo} featured dated={!!date}/>}</Fragment>;
    })}</ul>{!items.length&&<div className="py-12"><h3 className="text-lg font-semibold">{search||kind||archived?'No materials match':allWeeks?'No saved materials':'No preparation saved for this week'}</h3><p className="mt-3 max-w-prose text-sm leading-relaxed text-board-muted">{search||kind||archived?'Try another topic or collection.':'Ask your agent to prepare this week, or browse All materials for reusable work.'}</p></div>}{next!==null&&<button className={`${secondary} mt-4`} onClick={()=>setOffset(next)}>Load more materials</button>}</>}
    </section>
   </>}
   {loading&&<Notice>Loading your materials…</Notice>}
-  <p role="status" className="mt-3 text-sm leading-relaxed text-board-muted">{feedback}</p>
   {!artifactId&&<p className={styles.workspaceFoot}><ToolkitIcon name="calendar" size={16}/><Link href="/needs-you/">Open your weekly plan</Link></p>}
  </div>;
 }
