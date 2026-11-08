@@ -1,3 +1,4 @@
+import {APPLICATION_REQUEST_TOOLS} from './application-requests.mjs';
 import {permissionHandoff} from './connection-permissions.mjs';
 import {pendingCountResponse} from './pending-count.mjs';
 import {withLatestPostingEvidence} from '../../../lib/batch-posting-evidence.mjs';
@@ -112,7 +113,7 @@ Deno.serve(withGatewayCors(async request => {
       if(auth.error){const [status,message]=databaseFailure(auth.error);return respond({error:message},status);}
       return respond({error:'Search pipeline operations require the configured Node MCP endpoint. This Edge endpoint has not saved or screened any records.'},501);
     }
-    if(BACKEND_OPERATIONS.includes(operation)) {
+    if(BACKEND_OPERATIONS.includes(operation)||APPLICATION_REQUEST_TOOLS.some(t=>t.operation===operation)) {
       const {data,error}=await admin.rpc('backend_job_dispatch',{credential_hash:await hashToken(bearer),operation,payload});
       if(error){const [status,message]=databaseFailure(error);return respond({error:message},status);}
       return respond({data});
