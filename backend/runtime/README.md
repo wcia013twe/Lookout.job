@@ -495,3 +495,7 @@ adapters: ByteDance collection exists, but its full-description verification
 is unsupported by the current pinned verifier; TikTok needs separate adapter
 configuration/support. Those return explicit coverage limitations, never
 verified empty results. No automatic publication or applications.
+
+## Muse dev watcher transport
+
+The Node API serves the existing scalar-only `GET /agent-gateway/pending-count?watchId=...` via `agent_pending_count`. It shares Edge validation and never reads event bodies or acknowledges work. Unknown handles return zero; malformed requests return 400 and database failures 503. The dev tunnel additionally allows only `/agent-package/manifest.json` and the pinned 0.2.0 archive, generated into the API image with SHA-256 metadata. Obtain these assets from the same HTTPS origin as `/mcp` when the hosted website has an older release. `/v1`, health and all other paths remain denied by the tunnel. Package reads grant no account access. Existing scoped configure/read/ack MCP tools remain the writer boundaries.

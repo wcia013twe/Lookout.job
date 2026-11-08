@@ -8,3 +8,8 @@
 - Limits: host watcher activation, actual Muse wake/browser work and employer submission remain unverified. Existing configure_agent_watch returns a legacy 120-second recommendation; host config explicitly overrides it to 60. No real event acknowledged or job claimed for testing.
 
 Local activation: API image lookout-node:muse-event-watcher-140 is running; connected MCP read-back returned developer140 and agent-package/change-resumption v2. The existing localhost frontend serves the checksummed 0.2.0 archive. WGU remained queued v1 and its Dots Local watch remained disabled for the host handoff. Search worker and Edge runtime were not restarted.
+
+## Follow-up: reachable dev transport
+
+- Serve the existing count handler from Node and generate/serve the checksummed 0.2.0 package in its image. Open only these exact count/package paths in the existing dev tunnel; retain denial of other API routes. Public package downloads do not read private data; scoped MCP configure/read/ack tools remain unchanged.
+- Validation: full suite 1135 passed/five skipped, data validation, production static-export/package build and Docker image build passed. Detached transport fixtures cover count and package reads, malformed requests, upstream failure, checksum/size, old archive rejection and host boundaries. Host wake/application work remains unverified.

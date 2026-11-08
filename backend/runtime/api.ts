@@ -3,16 +3,28 @@ import {createHandler} from '../../supabase/functions/agent-mcp/protocol.mjs';
 import type {Reply} from './service.ts';
 import {RESUME_PARSE_TOOL,validateResumeParse} from '../../lib/resume-import.mjs';
 import {ResumeParseError} from './resume-parser.ts';
+import {pendingCountResponse} from '../../supabase/functions/agent-gateway/pending-count.mjs';
+import {agentPackageResponse} from './agent-package.ts';
 import type {Payload} from './types.ts';
 
 type Dispatch = (token: string, operation: string, payload: Payload) => Promise<Reply>;
-export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,executionTools=[]}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; executionTools?: any[]}) {
+export function createApi({dispatch,allowedHosts=['localhost','127.0.0.1','[::1]'],allowedOrigins=['http://localhost:3000','http://127.0.0.1:3000'],parseHuman,readCount,readPackage=agentPackageResponse,executionTools=[]}: {dispatch: Dispatch; allowedHosts?: string[]; allowedOrigins?: string[]; parseHuman?: (token:string,payload:Payload)=>Promise<any>; readCount?: (watchId:string)=>Promise<any>; readPackage?: (request:Request)=>Promise<Response>; executionTools?: any[]}) {
   const mcp=createHandler(dispatch,allowedOrigins,[RESUME_PARSE_TOOL,...executionTools]);
   const server=createServer(async (req,res)=>{
     const json=(status:number,data: unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     let url:URL;
     try{url=new URL(req.url||'/', 'http://'+req.headers.host);}catch{return json(400,{error:'Invalid request URL'});}
     if(!allowedHosts.includes(url.hostname))return json(403,{error:'Host forbidden'});
+    if(url.pathname==='/agent-gateway/pending-count'||url.pathname.startsWith('/agent-package/')){
+      try{
+        const request=new Request(url,{method:req.method||'GET'});
+        const response=url.pathname==='/agent-gateway/pending-count'
+          ? await pendingCountResponse(request,readCount||(()=>Promise.resolve({error:true})))
+          : await readPackage(request);
+        response.headers.forEach((value:string,name:string)=>res.setHeader(name,value));
+        res.statusCode=response.status;return res.end(Buffer.from(await response.arrayBuffer()));
+      }catch{return json(503,{error:'Public resource unavailable'});}
+    }
     if(url.pathname==='/healthz' && req.method==='GET')return json(200,{status:'ok',service:'lookout-api'});
     if(!['/mcp','/v1/operations','/v1/resume-import'].includes(url.pathname))return json(404,{error:'Not found'});
     const origin=req.headers.origin;

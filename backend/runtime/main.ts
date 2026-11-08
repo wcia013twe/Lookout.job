@@ -38,7 +38,7 @@ if(mode==='worker'){
   // Deterministic submission remains implemented in submission.ts; registration is paused.
   // const dispatch=createSubmissionService({dispatch:dataDispatch,projectUrl:url});
   // const executionTools=SUBMISSION_TOOLS;
-  const server=createApi({dispatch:dataDispatch,executionTools:[],parseHuman:parser.human,allowedHosts,allowedOrigins});
+  const server=createApi({readCount:(watchId:string)=>rpc('agent_pending_count',{watch_id:watchId}),dispatch:dataDispatch,executionTools:[],parseHuman:parser.human,allowedHosts,allowedOrigins});
   server.listen(port,'0.0.0.0',()=>console.log(`Lookout MCP API listening on port ${port}.`));
   controller.signal.addEventListener('abort',()=>{server.close();server.closeIdleConnections();setTimeout(()=>server.closeAllConnections(),25000).unref();},{once:true});
 }else throw Error('LOOKOUT_PROCESS must be api or worker');
