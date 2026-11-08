@@ -492,8 +492,13 @@ uses Circles-style owned object mentions and check/red-X decisions, with require
 input and exact saved-review gates. Saving answers is distinct from approval;
 reported submission is distinct from execution. Website and read-only MCP share
 the enriched projection and source identities. Migration `20261108005642` extends
-the existing human-only response operation; hosted release and verification are
-separate. Consult the connected-action-board feature note for local receipts.
+the existing human-only response operation and was applied locally without
+changing application, import or decision records. Both owned reads succeeded;
+integrated tests (1,074 passed, five skipped), build, typecheck, data checks and
+detached desktop/mobile flows passed. Combined developer contract 129 and
+application-workspace guide 21 include current calendar/Network work. Hosted
+release and real-account browser verification remain separate. Consult the
+connected-action-board feature note for receipts.
 
 
 #### Full-week calendar and missing-task correction (contract 126)

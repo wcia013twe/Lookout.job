@@ -52,4 +52,17 @@ Limits: checks use disposable migrated databases and fictional detached browser 
   source locks, stale rejection, idempotency and existing domain validators.
   Agent read parity remains read-only; no human confirmations can be forged.
 - Update fictional fixtures and inline browser interactions.
-- Validation and local activation receipts: pending. No hosted release.
+- Validation: integrated `npm test` passed (1,074 passed, five skipped), data
+  validation (158 roles), frontend typecheck and production build passed. Expanded
+  desktop/mobile browser checks passed, including source references, required-field
+  gates, exact review, inline resolution, keyboard decisions, scroll/swipe separation
+  and the current seven-day calendar. Forty focused combined guide/calendar/board
+  tests passed. Impeccable detector returned no findings; desktop/mobile visuals
+  were inspected in the incumbent theme system.
+- Integrated current local main's calendar and Network work without discarding its
+  behavior. Combined developer contract is 129; application-workspace guide 21.
+- Applied only migration `20261108005642` to the existing local database. Hashes of
+  application, imported-job and decision-receipt records remained unchanged. Both
+  owned inline board reads succeeded (14 and 11 pending items). No real decisions,
+  submissions or outreach were performed. No push or hosted deployment; real-account
+  browser sign-in and hosted MCP activation were not exercised.
