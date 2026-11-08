@@ -3,13 +3,15 @@ const uuidPattern='^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-
 const uuid={type:'string',pattern:uuidPattern};
 const profile={type:'string',pattern:'^[a-zA-Z0-9_-]{1,80}$',minLength:1,maxLength:80};
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
-const input=object({profileId:profile});
+const portal={type:'string',minLength:1,maxLength:160,description:'Exact enabled portal ID from read_search_context; not a URL or company-name guess.'};
+const input=object({profileId:profile,portalId:portal},['profileId']);
 const kind={type:'string',enum:['search_ats']};
 const eventKey={type:'string',minLength:1,maxLength:160,description:'Stable nonempty retry key for this exact request.'};
 const currentVersion={type:'integer',minimum:1};
 const execution='Requires a configured Node API, worker and backend-job migration; tool discovery alone does not prove the worker is running. search_ats executes one bounded collect → verify → screen → deduplicate job against the saved owned profile, uses temporary volume staging and persists only the filtered shortlist in result.shortlist (pipelineVersion 2; page through run discoveries for all results), and retains diagnostics. Partial source coverage remains explicit. The agent analyses the shortlist afterward; hosted-board publication is disabled for the direct workflow. It never applies, sends messages or runs an LLM.';
 export const BACKEND_TOOLS=[
   {name:'submit_backend_job',operation:'backend.jobs.submit',scope:'preferences:write',requiredScopes:['workspace:read','drafts:write'],description:'Queue an authorized bounded ATS search for one saved active profile. Requires workspace:read, preferences:write and drafts:write. Connection identity is derived from the current credential; do not supply connectionId. '+execution,inputSchema:object({kind,input,eventKey})},
+  {name:'submit_portal_search',operation:'backend.jobs.portal.submit',scope:'preferences:write',requiredScopes:['workspace:read','drafts:write'],description:'Search exactly one enabled saved or built-in portal using the selected owned profile. Read read_search_context to obtain portalId. No other portals or web queries are scanned. Uses the same leased staging, verification, filtering and history deduplication as a full search. Agent fit analysis and selecting the top roles happen afterward; never truncates collection to a requested top count. Unsupported portals return explicit coverage blockers. '+execution,inputSchema:object({kind,input:object({profileId:profile,portalId:portal}),eventKey})},
   {name:'read_backend_jobs',operation:'backend.jobs.read',scope:'workspace:read',readOnly:true,description:'Read owned backend-job states, versions, results and safe diagnostics; optionally select one job. A queued or running job is not a completed search. No lease secrets are returned. '+execution,inputSchema:object({jobId:uuid},[])},
   {name:'cancel_backend_job',operation:'backend.jobs.cancel',scope:'preferences:write',requiredScopes:['workspace:read','drafts:write'],description:'Request cancellation of an owned queued/running backend job at its current expectedVersion. Requires workspace:read, preferences:write and drafts:write. A completed job cannot be rewritten; cancellation does not retract prior saved work.',inputSchema:object({jobId:uuid,expectedVersion:currentVersion})},
 ];
@@ -26,7 +28,9 @@ export function validateBackendJob(operation,payload,{allowHumanConnection=false
   if(browserWrite&&!isUuid(payload.connectionId))throw Error('Owned backend connection ID required');
   for(const key of ['jobId'])if(Object.hasOwn(payload,key)&&!isUuid(payload[key]))throw Error('Backend record UUID required');
   if(Object.hasOwn(payload,'kind')&&payload.kind!=='search_ats')throw Error('Only bounded search_ats jobs are supported');
-  if(Object.hasOwn(payload,'input')&&(!isObject(payload.input)||Object.keys(payload.input).length!==1||!Object.hasOwn(payload.input,'profileId')||typeof payload.input.profileId!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(payload.input.profileId)))throw Error('A saved profile ID is the only backend job input');
+  if(Object.hasOwn(payload,'input')&&(!isObject(payload.input)||Object.keys(payload.input).some(key=>!['profileId','portalId'].includes(key))||!Object.hasOwn(payload.input,'profileId')||typeof payload.input.profileId!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(payload.input.profileId)))throw Error('A saved profile ID and optional portal ID are the only backend job inputs');
+  if(operation==='backend.jobs.portal.submit'&&!Object.hasOwn(payload.input||{},'portalId'))throw Error('Single portal search requires portalId');
+  if(payload.input&&Object.hasOwn(payload.input,'portalId')&&(typeof payload.input.portalId!=='string'||!payload.input.portalId.trim()||payload.input.portalId.length>160||/[\u0000-\u001f]/.test(payload.input.portalId)))throw Error('An exact enabled portal ID is required');
   if(Object.hasOwn(payload,'eventKey')&&(typeof payload.eventKey!=='string'||!payload.eventKey.trim()||payload.eventKey.length>160||/[\u0000-\u001f]/.test(payload.eventKey)))throw Error('Stable eventKey required (1–160 characters, no control characters)');
   if(Object.hasOwn(payload,'expectedVersion')&&(!Number.isSafeInteger(payload.expectedVersion)||payload.expectedVersion<1))throw Error('Current backend record version required');
 

@@ -52,7 +52,7 @@ test('scope-filtered discovery exposes only bounded workspace tools', async () =
   const discovery=await (await handler([],['approvals:read'])(request(rpc('tools/call',{name:'discover_tools',arguments:{workflow:'all'}})))).json();
   assert.deepEqual(JSON.parse(discovery.result.content[0].text).tools.map(tool=>tool.name),['read_approval']);
   assert.ok(!TOOLS.some(tool => /browser|shell|sql|approve|issue|revoke/.test(tool.name)));
-  assert.deepEqual(TOOLS.filter(tool=>/submit/.test(tool.name)).map(tool=>tool.name),['submit_search_leads','submit_backend_job']);
+  assert.deepEqual(TOOLS.filter(tool=>/submit/.test(tool.name)).map(tool=>tool.name),['submit_search_leads','submit_backend_job','submit_portal_search']);
 });
 test('context discovery and calls use workspace scope and accept no owner injection', async () => {
   const calls = [], handle = handler(calls, ['workspace:read']);

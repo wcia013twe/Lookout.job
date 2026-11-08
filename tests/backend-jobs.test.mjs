@@ -12,7 +12,7 @@ const token='jb_agent_'+'f'.repeat(64);
 const request=(method,params)=>new Request('http://localhost/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
 
 test('backend job tools share a closed gateway contract and expose no worker controls',()=>{
-  assert.equal(new Set(BACKEND_OPERATIONS).size,3);
+  assert.equal(new Set(BACKEND_OPERATIONS).size,4);
   for(const tool of BACKEND_TOOLS) {
     assert.equal(TOOLS.filter(t=>t.name===tool.name&&t.operation===tool.operation).length,1);
     assert.equal(tool.inputSchema.additionalProperties,false);
@@ -102,4 +102,21 @@ test('application demo jobs expose bounded repair and uncertain handoffs without
  uncertain.result.blocker.message='mutated';
  assert.notEqual((await demo.read({jobId:uncertain.id})).jobs[0].result.blocker.message,'mutated');
  demo.reset();assert.equal((await demo.read()).jobs.length,8);
+});
+
+
+test('single portal MCP tool requires a portal ID and shares browser validation and demo isolation',async()=>{
+ const calls=[],scopes=['workspace:read','preferences:write','drafts:write'];
+ const handle=createHandler(async(_token,op,payload)=>{calls.push([op,payload]);return {status:200,data:op==='credentials.verify'?{scopes}:{id:uuid}};});
+ const payload={...submit,input:{profileId:'general',portalId:'fictional-employer'}};
+ const invoke=async arguments_ => (await handle(request('tools/call',{name:'call_discovered_tool',arguments:{name:'submit_portal_search',arguments:arguments_}}))).json();
+ assert.equal((await invoke(submit)).error.code,-32602);
+ for(const portalId of ['',null,7,'x'.repeat(161),'bad\n'])assert.throws(()=>validateBackendJob('backend.jobs.submit',{...payload,input:{...payload.input,portalId}}));
+ const reply=await invoke(payload);assert.equal(reply.result.isError,undefined);assert.deepEqual(calls.at(-1),['backend.jobs.portal.submit',payload]);
+ const browserCalls=[],service=createBackendJobsService({owner:async()=>uuid,rpc:async(name,args)=>{browserCalls.push([name,args]);return {data:{id:uuid}};}});
+ await service.submit({...payload,connectionId:uuid});assert.deepEqual(browserCalls.at(-1),['backend_job_action',{operation:'backend.jobs.submit',payload:{...payload,connectionId:uuid}}]);
+ const demo=createBackendJobsDemo(),before=await demo.read();
+ assert(before.jobs.some(j=>j.input.portalId==='fictional-employer'));
+ const queued=await demo.submit({...payload,connectionId:DEMO_BACKEND_CONNECTION_ID});assert.equal(queued.input.portalId,'fictional-employer');assert.equal(queued.status,'queued');
+ demo.reset();assert.deepEqual(await demo.read(),before);
 });

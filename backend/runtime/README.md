@@ -462,3 +462,26 @@ SQL save/read/retry with a 45-minute mock. It verifies normal artifact reads omi
 the private profile and removes its fixtures in `finally`. No user interview,
 Calendar event, worker or scheduler is created. Discovery-only checks do not prove
 this persistence path works.
+
+## Focused portal searches
+
+`submit_portal_search` is a narrowly scoped MCP operation `backend.jobs.portal.submit`, delegated to `backend.jobs.submit`
+with `{kind:"search_ats", input:{profileId,portalId}, eventKey}`. The existing
+browser `backendJobs.submit` service accepts the same optional `input.portalId`
+with its explicit owned connection. Read the exact enabled portal ID from
+`read_search_context`; URLs and guessed company names are not source IDs.
+SQL resolves the owner's saved portal document (built-ins only when absent),
+validates at queue/claim/dispatch, pins exactly one source, excludes web queries,
+and fences run creation against widening the queued portal. Retry keys include
+the unchanged selected portal payload. Existing full searches remain unchanged.
+
+The same leased volume staging, live verification, profile screening, history
+deduplication and final shortlist persistence run for that source. The receipt
+adds `scope:{kind:"portal",portalId}` or `{kind:"all-enabled"}`. Top-two selection
+is the connected agent's fit-analysis step after the complete bounded shortlist;
+it does not truncate provider collection. Run two portals sequentially for one
+profile and deduplicate the combined recommendations. This does not add portal
+adapters: ByteDance collection exists, but its full-description verification
+is unsupported by the current pinned verifier; TikTok needs separate adapter
+configuration/support. Those return explicit coverage limitations, never
+verified empty results. No automatic publication or applications.

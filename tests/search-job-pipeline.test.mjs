@@ -6,17 +6,17 @@ import {workOnce,executeSearch} from '../backend/runtime/worker.ts';
 import {verifyDiscoveryLeads} from '../runner/career-search-intake.mjs';
 import {executeCareerTask} from '../runner/career-tools.mjs';
 let db;before(async()=>{db=await createTestDatabase();});after(async()=>{await db?.close();});
-async function fixture({partial=false,extraSources=0}={}){
+async function fixture({partial=false,extraSources=0,portalId,queries=[]}={}){
  const owner=randomUUID(),profile='profile_'+owner.replaceAll('-','');
  await db.query('insert into auth.users values($1)',[owner]);
  await db.query("insert into private.agent_connections(user_id,name,token_hash,scopes,expires_at) values($1,'Fictional pipeline',$2,array['workspace:read','preferences:write','drafts:write'],now()+interval '1 day')",[owner,owner.replaceAll('-','').repeat(2)]);
  const hash=owner.replaceAll('-','').repeat(2);
  const projection={active:true,filters:{Employment:'Full-time','Work arrangement':'Remote required'},instructions:''};
- const portals={tracked_companies:[{id:'example',name:'Example (fictional)',careers_url:'https://job-boards.greenhouse.io/example',enabled:true},...(partial?[{id:'unsupported',name:'Unsupported fictional source',careers_url:'https://unsupported.test/careers',enabled:true}]:[])],search_queries:[]};
+ const portals={tracked_companies:[{id:'example',name:'Example (fictional)',careers_url:'https://job-boards.greenhouse.io/example',enabled:true},...(partial?[{id:'unsupported',name:'Unsupported fictional source',careers_url:'https://unsupported.test/careers',enabled:true}]:[])],search_queries:queries};
  for(let i=1;i<=extraSources;i++)portals.tracked_companies.push({id:'example-'+i,name:`Example ${i} (fictional)`,careers_url:`https://job-boards.greenhouse.io/example${i}`,enabled:true});
  await db.query("insert into public.search_documents(user_id,kind,id,version,content,projection) values($1,'profile',$2,1,'{}',$3),($1,'portals','shared',1,'{}',$4)",[owner,profile,projection,portals]);
- const q=await db.query("select public.backend_job_dispatch($1,'backend.jobs.submit',$2) data",[hash,{kind:'search_ats',input:{profileId:profile},eventKey:'single-job'}]);
- return {owner,profile,job:q.rows[0].data};
+ const q=await db.query("select public.backend_job_dispatch($1,$2,$3) data",[hash,portalId?'backend.jobs.portal.submit':'backend.jobs.submit',{kind:'search_ats',input:{profileId:profile,...(portalId?{portalId}:{})},eventKey:'single-job'}]);
+ return {owner,profile,hash,job:q.rows[0].data};
 }
 async function rpc(name,args){try{return {data:(await db.query('select public.backend_worker($1,$2) data',[args.operation,args.payload])).rows[0].data,error:null};}catch(e){return {data:null,error:{code:e.code,message:e.message}};}}
 function tasks(){
@@ -268,7 +268,7 @@ test('direct search excludes an already tracked Applied job and preserves its ap
 test('a completed direct shortlist reaches private Discover only through agent-reviewed publication, with replay and website parity',async()=>{
  const {batchRoles}=await import('../lib/cloud-model.mjs');
  const {readGuide}=await import('../supabase/functions/agent-gateway/guides.mjs');
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,20);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,21);assert.match(guide.instructions,/never publish the raw or merely filter-passed shortlist/);assert.match(guide.instructions,/Complete the private Discover handoff/);
  const f=await fixture(),t=tasks();await workOnce(rpc,{execute:t.execute});const j=await result(f.job.id);
  assert.equal((await db.query('select count(*)::int n from public.job_batches where user_id=$1',[f.owner])).rows[0].n,0);
  const hash=f.owner.replaceAll('-','').repeat(2);
@@ -325,4 +325,42 @@ test('a leased Jobright run retains every raw lead after completion and exposes 
   assert.equal((await db.query('select count(distinct listing_id)::int n from public.search_observations where run_id=$1',[j.search_run_id])).rows[0].n,1);
   assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
  }finally{globalThis.fetch=savedFetch;await rm(root,{recursive:true,force:true});}
+});
+
+
+test('single portal SQL-leased job scans only its selected source, omits queries, and retries the same shortlist',async()=>{
+ const f=await fixture({extraSources:2,portalId:'example-1',queries:['software engineer']}),t=tasks();
+ const claim=(await rpc('backend_worker',{operation:'claim',payload:{}})).data;
+ const dispatch=async(operation,payload)=>{const x=await rpc('backend_worker',{operation:'dispatch',payload:{jobId:f.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,operation,payload}});if(x.error)throw x.error;return x.data;};
+ await assert.rejects(()=>dispatch('search.run.start',{profileId:f.profile,eventKey:`job:${f.job.id}:start`}),e=>e.code==='42501');
+ await assert.rejects(()=>dispatch('search.run.start',{profileId:f.profile,portalId:'example',eventKey:`job:${f.job.id}:start`}),e=>e.code==='42501');
+ const first=await executeSearch(claim.job,dispatch,{execute:t.execute});
+ assert.equal(first.status,'completed');assert.deepEqual(first.result.scope,{kind:'portal',portalId:'example-1'});
+ const run=await dispatch('search.run.read',{runId:first.result.runId});
+ assert.deepEqual(run.sources.map(s=>s.source_id),['portal:example-1']);
+ assert.deepEqual(t.calls.filter(c=>c.task==='discovery').map(c=>c.input.target.id),['portal:example-1']);
+ assert.equal(first.result.shortlist.totalRetained,1);assert.equal(first.result.shortlist.excludedCount,2);
+ t.calls.length=0;
+ const again=await executeSearch({...claim.job,search_run_id:run.id},dispatch,{execute:t.execute});
+ assert.deepEqual(again.result.shortlist,first.result.shortlist);assert(!t.calls.some(c=>c.task==='discovery'));
+ assert.equal((await db.query('select count(*)::int n from public.applications where user_id=$1',[f.owner])).rows[0].n,0);
+ const done=await rpc('backend_worker',{operation:'finish',payload:{jobId:f.job.id,leaseToken:claim.leaseToken,expectedVersion:claim.job.version,...again}});assert.equal(done.error,null);
+ const request={kind:'search_ats',input:{profileId:f.profile,portalId:'example-1'},eventKey:'single-job'};
+ assert.equal((await db.query("select public.backend_job_dispatch($1,'backend.jobs.submit',$2) data",[f.hash,request])).rows[0].data.id,f.job.id);
+ await assert.rejects(()=>db.query("select public.backend_job_dispatch($1,'backend.jobs.submit',$2)",[f.hash,{...request,input:{profileId:f.profile,portalId:'example'}}]),/Event key payload changed/);
+});
+
+test('portal selection validates owner configuration, disabled sources, input shape and built-in defaults',async()=>{
+ const f=await fixture(),other=await fixture({extraSources:1});
+ const queue=portalId=>db.query("select public.backend_job_dispatch($1,'backend.jobs.submit',$2) data",[f.hash,{kind:'search_ats',input:{profileId:f.profile,portalId},eventKey:'portal-validation-'+String(portalId)}]);
+ for(const id of ['missing','example-1','https://arbitrary.test',null,17,''])await assert.rejects(()=>queue(id),/portal/i);
+ await db.query("update public.search_documents set projection=jsonb_set(projection,'{tracked_companies,0,enabled}','false') where user_id=$1 and kind='portals'",[f.owner]);
+ await assert.rejects(()=>queue('example'),/Enabled owned portal/);
+ await db.query("delete from public.search_documents where user_id=$1 and kind='portals'",[f.owner]);
+ const builtin=await queue('careerops-b964b9ab5d89caef');assert.equal(builtin.rows[0].data.input.portalId,'careerops-b964b9ab5d89caef');
+ // Agent-executed single-source runs share the same source resolver and omit queries.
+ const run=(await db.query("select public.agent_dispatch($1,'search.run.start',$2) data",[f.hash,{profileId:f.profile,portalId:'careerops-b964b9ab5d89caef',eventKey:'manual-portal'}])).rows[0].data;
+ assert.deepEqual(run.sources.map(s=>s.source.name),['ByteDance']);
+ assert.equal((await db.query("select count(*)::int n from public.search_documents where user_id=$1 and kind='portals'",[f.owner])).rows[0].n,0);
+ await db.query("update private.backend_jobs set status='cancelled' where user_id=any($1::uuid[])",[[f.owner,other.owner]]);
 });

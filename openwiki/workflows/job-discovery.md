@@ -227,3 +227,21 @@ Search guide19/developer131 directs the connected agent to inspect retained/pend
 Jobright Markdown parsing now preserves nested/escaped brackets in posting titles and inherits the source company website as an unverified research hint. Software-engineering family aliases include MTS/Member of Technical Staff, junior/associate/application developers and platform/GPU/graphics engineering. Both prefilter and full screening use the same title-context adapter: Staff inside the MTS family and bracketed multi-level ranges offering a junior path do not become senior-only exclusions. Explicit senior rank outside those contexts and explicit role-specific negative rules still apply. Original titles and identities are preserved; unknown actual experience requirements remain for review. The copied Career Ops matcher/classifier implementations remain unchanged.
 
 The existing owned `read_search_source_leads` tool accepts optional `resolution=unresolved`; it pages only pending/unresolved/reverification rows while sourceTotal preserves the full pool count. Returned companyWebsite/researchQuery fields guide the connected agent's exact employer lookup; they are not canonical application URLs or live-job evidence. No search engine, LLM or automatic publication is added to the worker. Search guide20 and notifications guide4 distinguish broadly verified Worth a look recommendations from deeply researched Top picks using existing priorities/scores, and require honest recovery counts. Closed employer postings stay out of live recommendations. Saved profile constraints, candidate facts, current batches and application permissions are unchanged.
+
+## Focused single-portal searches
+
+`submit_portal_search` queues the existing direct `search_ats` pipeline with
+`input:{profileId,portalId}` and a stable event key. Obtain the exact enabled ID
+from current owned search context. The browser backend-job service shares this
+optional input and SQL ownership validation. Saved settings remain unchanged;
+SQL pins only the selected portal, omits web queries, and rejects a worker that
+omits or changes the queued selection. `start_search_run` also accepts the same
+portal selector for explicit agent-executed work. Disabled/unowned IDs fail.
+
+All existing staging, leases, verification, filtering, deduplication and agent
+publication boundaries remain. A top-two demo request limits final agent
+recommendations, not collection. For two employers, reconcile each run before
+starting the next on that profile and deduplicate combined results. New source
+selection does not imply new provider support: ByteDance has a collector but
+currently lacks supported full-JD verification; TikTok is not a configured
+automated source. Test that support before using either in a live class demo.

@@ -630,3 +630,15 @@ release and client context refresh are separate from local source validation.
 Jobright Markdown parsing now preserves nested/escaped brackets in posting titles and inherits the source company website as an unverified research hint. Software-engineering family aliases include MTS/Member of Technical Staff, junior/associate/application developers and platform/GPU/graphics engineering. Both prefilter and full screening use the same title-context adapter: Staff inside the MTS family and bracketed multi-level ranges offering a junior path do not become senior-only exclusions. Explicit senior rank outside those contexts and explicit role-specific negative rules still apply. Original titles and identities are preserved; unknown actual experience requirements remain for review. The copied Career Ops matcher/classifier implementations remain unchanged.
 
 The existing owned `read_search_source_leads` tool accepts optional `resolution=unresolved`; it pages only pending/unresolved/reverification rows while sourceTotal preserves the full pool count. Returned companyWebsite/researchQuery fields guide the connected agent's exact employer lookup; they are not canonical application URLs or live-job evidence. No search engine, LLM or automatic publication is added to the worker. Search guide20 and notifications guide4 distinguish broadly verified Worth a look recommendations from deeply researched Top picks using existing priorities/scores, and require honest recovery counts. Closed employer postings stay out of live recommendations. Saved profile constraints, candidate facts, current batches and application permissions are unchanged.
+
+## Single-portal search (local feature)
+
+The focused tool `submit_portal_search` uses `backend.jobs.portal.submit` and
+delegates to `backend.jobs.submit`, with a required `input.portalId` on the tool and an optional selector on the original
+browser/MCP operation. SQL validates owned enabled sources, creates exactly one
+source attempt, excludes configured queries and fences queued selection at run
+creation. The existing full pipeline produces the shortlist; Muse still chooses
+and analyzes top roles. Fixture coverage includes selected-source isolation,
+retry, owner/disabled validation, browser/MCP parity and detached demo reset.
+No TikTok adapter or ByteDance verifier was added. Local activation and live
+portal verification are reported separately in the feature change note.
