@@ -295,3 +295,5 @@ and undated pending assessment rounds; it did not infer tasks from material text
 or assign guessed dates. The detached demo covers an unfinished undated OA.
 Validation and local activation receipts are in the shared calendar feature note;
 hosted deployment remains separate.
+
+Network relationship views now separate All people, Continue conversations and Prospects. A valid logged sent/received message or non-cancelled meeting establishes a conversation; research, drafts, thread URLs alone and legacy hiring statuses do not. Cards and details show the last logged interaction and saved reply/waiting state, not live inbox state. Update relationship edits the compact summary, existing thread URL, optional dated update, next action and follow-up using the existing contact envelope and revision boundary. Drafts/history/application links remain unchanged; no sending or inbox sync occurs. MCP list_contacts/save_contact can read and maintain the same records.
