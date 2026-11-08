@@ -121,6 +121,7 @@ export function enableActionBoardScenario(fixtures,date){
  const discovered=(fixtures.state.demo.roles||[]).find(role=>role.id===app.id);if(discovered)discovered.priority='Apply Now';
  app.status='Awaiting approval';app.questionsReviewed=true;app.questions=(app.questions||[]).map(q=>({...q,answer:q.answer||'Fictional candidate answer'}));
  app.questions=app.questions.map((q,index)=>({...q,questionSource:'employer_form',...(index===0?{answer:fixtures.state.workflow.profile.email,profileField:'email'}:{answerSource:'ai_generated'})}));
+ app.questions.push({id:'demo-sourced-location',question:'Current location',answer:'New York, NY (demo)',questionSource:'employer_form',profileField:'location',required:true});
  app.inferences=[{field:'Team scope',reason:'The draft assumes this role includes query-performance work based on the posting. Confirm the exact team and ownership.'}];
  fixtures.state.workflow.profile.verified=true;
  fixtures.state.workflow.savedAnswers.push({id:'demo-board-missing',question:'What is your preferred work location?',answer:'',imported:true,policy:'ask',companyScope:''});
