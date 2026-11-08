@@ -72,5 +72,11 @@ try{
  const pending=card(phone,'review_application').first(),cdp=await phoneContext.newCDPSession(phone);
  async function swipe(dx,dy){await pending.evaluate(row=>row.scrollIntoView({block:'start'}));const box=await pending.boundingBox(),x=box.x+box.width*.7,y=box.y+24;await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});for(let i=1;i<=8;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx*i/8,y:y+dy*i/8,id:1}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
  await swipe(0,-130);assert.equal(await pending.count(),1);await swipe(-145,0);await phone.getByText('Application saved. Agent work stopped until you resume it.',{exact:true}).waitFor();
+ for(const surface of [page,phone]){
+  await surface.goto(base+'/applications/?demo=1');
+  const submitted=surface.locator('.tracker-row').filter({hasText:'Harbor Data (demo)'});await submitted.waitFor();
+  assert.match(await submitted.innerText(),/Applied/);
+  assert.equal(await submitted.getByText(/AI Apply:/).count(),0,'Recorded submission supersedes its old blocked preparation job');
+ }
  assert.deepEqual(errors,[]);await desktop.close();await phoneContext.close();console.log(`Upcoming dates/day tags and inline action cards verified: distinct content, references, no imported label, guarded forms, exact review, keyboard decisions, manual outreach and mobile scrolling/swipes. Screenshots: ${dir}`);
 }finally{await browser.close();}

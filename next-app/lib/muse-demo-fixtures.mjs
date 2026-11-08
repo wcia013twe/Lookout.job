@@ -104,6 +104,7 @@ export function createDemoWorkspace(now = new Date()) {
   applications['demo-uncertain'].submissionAttempts = [{ id: uncertainAttempt.id, state: uncertainAttempt.state, startedAt: uncertainAttempt.started_at }];
   applications['demo-confirmed'].receipt = copy(confirmedAttempt.receipt);
   applications['demo-confirmed'].submittedAt = at;
+  applications['demo-confirmed'].executionJob = {id:'demo-historical-preparation',status:'partial',result:{executor:'muse',outcome:'blocked',verifiedSubmission:false,summary:'Fictional historical preparation blocker; submission was subsequently recorded separately.'}};
   const submittedResume = { id: resumeId, name: resume.name, version: 2, variant: 'Backend', contentHash: hash };
   applications['demo-confirmed'].submittedResume = { ...copy(submittedResume), evidenceSource: 'observed_confirmation' };
   applications['demo-interview'].submittedResume = { ...copy(submittedResume), evidenceSource: 'email' };
