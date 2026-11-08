@@ -853,3 +853,5 @@ Discover cards use the original tier-colored company header and glass body,
 compact compensation/location facts and four match scores. Fit/recommendation
 summaries stay out of the cards; full analysis remains in the job drawer. The
 separate embedded role widget is unchanged. Demo cards share this presentation.
+
+Local publication verified: the Muse dev tunnel serves manifest/archive 0.2.1 with matching SHA-256 and 10/10 defaults. Refreshed MCP reads developer148 and agent-package guide3/package0.2.1. The existing watch handle/config was not changed; Muse must upgrade its installed package, set both explicit intervals to10 and restart its existing host service. Remote running cadence remains unverified.
