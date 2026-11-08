@@ -458,6 +458,26 @@ owned reads succeeded and all eight flagged imported actions were included.
 Detached desktop/mobile flows, full tests, data checks, typecheck and production
 build passed; real-account browser and hosted verification remain separate. See the connected-action-board change note for verification receipts.
 
+
+### Shared Action Board calendar (contract 125 source update)
+
+The existing seven-day Weekly prep calendar also projects current application
+rounds without requiring a preparation plan, explicit dated imported next actions,
+and scheduled/in-progress Toolkit mock sessions. The shared owned planner snapshot
+includes imported records without source notes and only visible mock logistics;
+private interviewer preparation stays excluded. Website and MCP
+`read_preparation_planner` use the same projector. Existing round corrections,
+import updates, mock lifecycle and practice writers remain authoritative.
+Cancelled/completed rounds and mocks, archived mocks and terminal applications
+leave the upcoming calendar; source links open their existing editors. Dates use
+the saved preparation timezone, and native/import duplicate preference matches
+round stats. Existing interview/learning practice still shares one daily budget.
+The visible calendar refreshes every minute, on focus/reconnect and account sync;
+returning to the board reloads the owned snapshot. Demo reads the same fictional
+mock sources. No external Calendar events, calls or scheduler are created.
+Source validation and local runtime activation are reported in the feature note;
+hosted deployment is separate.
+
 ### Employer compensation on private Discover cards
 
 `publish_batch` accepts optional `recommendation.jobFacts.compensation` for an existing catalog job, using the same source URL/check timestamp as its other observed facts. It is bounded employer pay text preserving currency, range, original pay period (hour/week/month/year) and base/bonus/equity distinctions. No automatic annualization or benchmark substitution occurs. The browser and card-pack projection prefer this private observed value over older catalog compensation; explicit Not disclosed can override an outdated value. Omission retains the catalog fallback. Cards no longer extract a salary from personal fit prose, which can contain comparison benchmarks. This extends the existing private JSON observation; it does not rewrite catalog facts, assessments, applications or historical batches and introduces no database column/migration.
@@ -474,3 +494,42 @@ reported submission is distinct from execution. Website and read-only MCP share
 the enriched projection and source identities. Migration `20261108005642` extends
 the existing human-only response operation; hosted release and verification are
 separate. Consult the connected-action-board feature note for local receipts.
+
+
+#### Full-week calendar and missing-task correction (contract 126)
+
+The Action Board now displays every Monday–Sunday date with previous/next/current
+week controls. `read_preparation_planner` accepts optional Monday `weekOf`; website
+and MCP use `buildWeeklyPreparationAgenda` over the existing owned snapshot.
+The lower-level rolling allocator remains available for bounded planning checks.
+Past days never acquire newly allocated practice. The saved timezone is shown.
+
+Other pending tasks retains unfinished assessment rounds with unknown dates,
+imported next actions without dates, overdue/out-of-week events and preparation
+or learning tasks excluded by budget/date rules. Links open their owning source;
+unknown dates remain null. Week browsing does not change dates, task completion,
+budget or personal preferences. Dated interviews/mocks outside the selected week
+remain accessible through navigation and pending items. Completed/cancelled rounds
+and inactive/terminal/archived sources retain their existing exclusion rules.
+
+A scoped diagnosis found zero saved learning goals/preparation plans, one mock,
+and undated pending assessment rounds; it did not infer tasks from material text
+or assign guessed dates. The detached demo covers an unfinished undated OA.
+Validation and local activation receipts are in the shared calendar feature note;
+hosted deployment remains separate.
+
+### Compact team-focused fit analysis
+
+Search guide18 makes the default analysis a 130–180-word decision brief: existing priority with a short verdict; up to five chat bullets covering team, candidate contribution, growth, support and practical fit; and one sentence on what changes priority. Research exact-team evidence first and clearly distinguish adjacent-team context, inference and unknowns. Save the same substance in existing whyItFits/materialGap text and four assessments; no new tags, fields or Markdown-rendering requirement. Application guide20 follows this format during authorized work. This changes future instructions, not historical assessments or publication.
+
+
+#### Application date precedence and duplicate removal (contract 128)
+
+Imported next actions use saved actionDate even without needsAction. A lone
+unfinished undated round is represented by its existing next action; the date
+is not copied into the round. Current round dates suppress duplicate same-day
+application actions; different-day actions and multiple open rounds remain
+separate. This applies both in calendar days and Other pending tasks. Action
+cards show company and description. The detached demo covers an assessment
+whose deadline is saved on next action with its attention flag false. Source
+validation and local read-back receipts are recorded in the shared calendar note.

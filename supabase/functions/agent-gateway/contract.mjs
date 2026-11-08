@@ -67,8 +67,9 @@ export function validateRequest(input) {
     validateTargets(p.targets);
   }
   if (['preparation.planner.read','preparation.budget','preparation.session.complete'].includes(input.operation)) {
-    const keys = {'preparation.planner.read':[], 'preparation.budget':['dailyMinutes','expectedVersion'], 'preparation.session.complete':['sessionId','minutes','targets']}[input.operation];
+    const keys = {'preparation.planner.read':['weekOf'], 'preparation.budget':['dailyMinutes','expectedVersion'], 'preparation.session.complete':['sessionId','minutes','targets']}[input.operation];
     if (Object.keys(p).some(k=>!keys.includes(k))) throw Error('Unknown planner argument');
+    if (input.operation==='preparation.planner.read' && p.weekOf !== undefined && (typeof p.weekOf !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(p.weekOf) || !Number.isFinite(Date.parse(p.weekOf)) || new Date(p.weekOf+'T12:00:00Z').toISOString().slice(0,10)!==p.weekOf || new Date(p.weekOf+'T12:00:00Z').getUTCDay()!==1)) throw Error('Choose a Monday week date.');
     if (input.operation==='preparation.budget' && (!Number.isInteger(p.dailyMinutes)||p.dailyMinutes<0||p.dailyMinutes>240||!Number.isSafeInteger(p.expectedVersion)||p.expectedVersion<0)) throw Error('Bounded daily budget and current version required');
     if (input.operation==='preparation.session.complete') {
       const uuid = v => typeof v==='string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);

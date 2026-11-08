@@ -68,7 +68,7 @@ export function createArtifactDemo(store){
  const history=()=>store.get('demo.artifactHistory')??Object.fromEntries(seed.map(r=>[r.id,[r]]));
  function saveRows(row){store.set('demo.artifacts',[row,...rows().filter(r=>r.id!==row.id)]);store.set('demo.artifactHistory',{...history(),[row.id]:[row,...(history()[row.id]||[])]});return artifactResponse(clone(row));}
  return {
-  artifactSnapshot(){return {learningGoals:clone(goals()),artifacts:rows().filter(r=>!r.archived).map(r=>({id:r.id,version:r.version,title:r.content.title,links:clone(r.content.links),path:artifactResponse(r).path}))};},
+  artifactSnapshot(){return {calendarArtifacts:rows().filter(r=>!r.archived&&r.content.kind==='mock_interview').map(r=>({id:r.id,content:clone(r.content)})),learningGoals:clone(goals()),artifacts:rows().filter(r=>!r.archived).map(r=>({id:r.id,version:r.version,title:r.content.title,links:clone(r.content.links),path:artifactResponse(r).path}))};},
   async artifactAction(operation,payload={}){
    validateArtifact(operation,payload);
    if(operation==='learning.read')return clone(goals());

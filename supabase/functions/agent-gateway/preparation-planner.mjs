@@ -1,7 +1,14 @@
+import { applicationRounds, roundDate } from './application-rounds.mjs';
 import { preparationDate } from './preparation-model.mjs';
 const DAY = 86400000;
-const closed = new Set(['Rejected', 'Withdrawn', 'Closed']);
 export const plannerDay = (date, offset = 0) => new Date(Date.parse(`${date}T12:00:00Z`) + offset * DAY).toISOString().slice(0, 10);
+export const plannerWeekStart = date => plannerDay(date, -(new Date(`${date}T12:00:00Z`).getUTCDay() + 6) % 7);
+export function buildWeeklyPreparationAgenda(input = {}) {
+ const today = input.today || plannerToday(new Date(), input.timeZone || 'UTC');
+ const weekOf = input.weekOf || plannerWeekStart(today);
+ if (!preparationDate(weekOf) || plannerWeekStart(weekOf) !== weekOf) throw Error('Choose a Monday week date.');
+ return {...buildPreparationAgenda({...input,today,windowStart:weekOf}),weekOf};
+}
 export function plannerToday(now = new Date(), timeZone = 'UTC') {
   try {
     const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(now)).map(p => [p.type, p.value]));
@@ -78,27 +85,64 @@ export function roundPreparationRows(rows, applications, timeZone='UTC') {
   })];
  });
 }
-export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, learningGoals = [], artifacts = [], today = plannerToday(), timeZone = 'UTC', holds = [] } = {}) {
+export function buildPreparationAgenda({ applications = {}, plans = [], sessions = [], settings = {}, learningGoals = [], artifacts = [], today = plannerToday(), timeZone = 'UTC', holds = [], imports = [], calendarArtifacts = [], windowStart = today } = {}) {
   if (!preparationDate(today)) throw Error('Choose a valid planner date.');
   const dailyMinutes = validatePlannerMinutes(settings.dailyMinutes ?? 45);
-  const end = plannerDay(today, 6), progress = new Map(), spent = new Map();
+  if (!preparationDate(windowStart)) throw Error('Choose a valid calendar start date.');
+  const end = plannerDay(windowStart, 6), progress = new Map(), spent = new Map();
   for (const session of sessions) {
     const date = plannerToday(session.completed_at || session.completedAt, timeZone);
     spent.set(date, (spent.get(date) || 0) + session.minutes);
     for (const target of session.targets || []) progress.set(targetKey(target), (progress.get(targetKey(target)) || 0) + session.minutes);
   }
-  const groups = new Map(), interviews = [], dormant = [], uncertain = [], expired = [];
+  const groups = new Map(), interviews = [], dormant = [], uncertain = [], expired = [], pending = [];
+  const outside = date => !date || date < windowStart || date > end;
+  const pendingReason = date => !date ? 'No date set' : date < today ? 'Overdue' : 'Outside this week';
+  const activeApplication = app => !['rejected','withdrawn','closed','posting closed'].includes(String(app.status).toLowerCase()) && !app.archived && !holds.some(h => h.application_id === (app.backendId || app.id) && !h.resumed_at);
+  const dayOf = value => roundDate(value) ? value.length === 10 ? value : plannerToday(value, timeZone) : null;
+  // Saved rounds are calendar events even before a preparation plan exists.
+  const native = Object.values(applications);
+  const imported = imports.filter(row => !native.some(app => (row.record.url && row.record.url === app.url) || ['company','title','location'].every(k => String(row.record[k] || '').toLowerCase() === String(app[k] || '').toLowerCase()))).map(row => ({...row.record, id:`import:${row.id}`, imported:row}));
+  const events = [];
+  for (const app of [...native, ...imported].filter(activeApplication)) {
+    const rounds = applicationRounds(app).filter(round => !round.cancelled && ['pending','scheduled'].includes(round.status));
+    const actionDate = preparationDate(app.actionDate);
+    const hasAction = Boolean(app.imported && app.nextAction && (actionDate || app.needsAction));
+    for (const round of rounds) {
+      const date = dayOf(round.date);
+      // An imported application may describe its one open round through its
+      // next action. Keep that saved deadline; do not synthesize a round date.
+      if (!date && rounds.length === 1 && hasAction) continue;
+      if (outside(date)) pending.push({id:`round:${app.id}:${round.id}`,applicationId:app.id,roundId:round.id,company:app.company,title:round.label,date,reason:pendingReason(date)});
+      else interviews.push({applicationId:app.id, roundId:round.id, company:app.company, title:app.title, stage:round.label, date, kind:round.stage === 'SCREEN' ? 'Screen' : 'Interview'});
+    }
+    // A dated round already represents this application's action on that day.
+    const roundOwnsActionDate = actionDate && rounds.some(round => dayOf(round.date) === actionDate);
+    if (hasAction && !roundOwnsActionDate) {
+      events.push({id:`action:${app.id}`, applicationId:app.id, path:`/applications/?application=${encodeURIComponent(app.id)}`, company:app.company, title:app.nextAction, date:actionDate, kind:'Next action'});
+    }
+  }
+  for (const artifact of calendarArtifacts) {
+    const c = artifact.content || {}, date = dayOf(c.scheduledAt);
+    if (artifact.archived || c.kind !== 'mock_interview' || !['scheduled','in_progress'].includes(c.sessionStatus) || !date) continue;
+    events.push({id:`mock:${artifact.id}`, title:c.title, date, kind:'Mock interview', path:`/career-toolkit/?artifact=${encodeURIComponent(artifact.id)}`});
+  }
+
+  for (const event of events) if (outside(event.date)) pending.push({...event,reason:pendingReason(event.date)});
+  const missingTasks = (row,application,date,reason) => {
+   for (const task of row.plan.tasks || []) if (!task.completed) pending.push({id:`prep:${row.application_id}:${task.id}`,applicationId:application.id,roundId:task.roundId,company:application.company,title:task.title,date,reason});
+  };
   const rows = Array.isArray(plans) ? plans : Object.entries(plans).map(([id, value]) => value?.plan ? value : { application_id: id, version: 0, plan: value });
   for (const row of roundPreparationRows(rows,applications,timeZone)) {
     if(holds.some(h=>h.application_id===row.application_id&&!h.resumed_at))continue;
     const plan = row.plan;
     const application = applications[plan?.applicationId] || Object.values(applications).find(a => a.backendId === row.application_id);
-    if (!application || !plan || closed.has(application.status) || (application.milestones || []).some(event => ['rejected','withdrawn'].includes(event.kind) && event.phase !== 'scheduled')) continue;
+    if (!application || !plan || !activeApplication(application) || (application.milestones || []).some(event => ['rejected','withdrawn'].includes(event.kind) && event.phase !== 'scheduled')) continue;
     const date = preparationDate(plan.deadline?.date);
-    if (!date || plan.deadline?.status !== 'confirmed') { uncertain.push(application.id); continue; }
-    if (date < today) { expired.push(application.id); continue; }
-    if (date > end) { dormant.push(application.id); continue; }
-    interviews.push({ roundId:plan.roundId, standalone:!!plan.standalone, applicationId: application.id, company: application.company, title: application.title, date, stage: plan.deadline.stage });
+    if (!date || plan.deadline?.status !== 'confirmed') { uncertain.push(application.id); missingTasks(row,application,null,'Date needs confirmation'); continue; }
+    if (date < today) { expired.push(application.id); missingTasks(row,application,date,'Overdue'); continue; }
+    if (date > end) { dormant.push(application.id); missingTasks(row,application,date,'Outside this week'); continue; }
+    if (!applicationRounds(application).length) interviews.push({ roundId:plan.roundId, standalone:!!plan.standalone, applicationId: application.id, company: application.company, title: application.title, date, stage: plan.deadline.stage });
     for (const task of plan.tasks || []) {
       if (task.completed || !Number.isFinite(task.minutes) || task.minutes <= 0) continue;
       const target = { applicationId: row.application_id || application.backendId || application.id, jobId: application.id, roundId:plan.roundId, taskId: task.id, expectedVersion: row.version || 0, company: application.company, deadline: date, minutes: task.minutes, priority: application.priority === 'Apply Now' ? 1.5 : 1 };
@@ -113,7 +157,8 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
   for (const row of learningGoals) {
     if (!row.goal?.active) continue;
     for (const task of row.goal.tasks || []) {
-      if (task.completed || !Number.isFinite(task.minutes) || task.minutes <= 0 || !preparationDate(task.targetDate) || task.targetDate > end) continue;
+      if (task.completed || !Number.isFinite(task.minutes) || task.minutes <= 0) continue;
+      if (!preparationDate(task.targetDate) || task.targetDate > end) { pending.push({id:`goal:${row.id}:${task.id}`,title:task.title,company:row.goal.title,date:task.targetDate || null,reason:pendingReason(task.targetDate),path:'/career-toolkit/'}); continue; }
       const target = {goalId:row.id,taskId:task.id,expectedVersion:row.version,company:row.goal.title,deadline:task.targetDate < today ? today : task.targetDate,minutes:task.minutes,priority:1};
       target.remaining=Math.max(0,task.minutes-(progress.get(targetKey(target))||0));
       if(target.remaining)learning.push({key:`learning:${row.id}:${task.id}`,title:task.title,detail:task.detail,shared:false,learning:true,targets:[target]});
@@ -123,8 +168,8 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
   const ordered = [...groups.values()].sort((a, b) => a.key.localeCompare(b.key));
   const planned = new Map();
   const days = Array.from({ length: 7 }, (_, i) => {
-    const date = plannerDay(today, i), completedMinutes = spent.get(date) || 0;
-    const available = Math.max(0, dailyMinutes - completedMinutes);
+    const date = plannerDay(windowStart, i), completedMinutes = spent.get(date) || 0;
+    const available = date < today ? 0 : Math.max(0, dailyMinutes - completedMinutes);
     const interviewPicks = allocate(ordered, available, date, planned);
     const picks = [...interviewPicks,...allocate(learning,available-interviewPicks.reduce((sum,p)=>sum+p.minutes,0),date,planned)];
     const items = picks.map(({ group, targets, minutes }) => {
@@ -132,10 +177,11 @@ export function buildPreparationAgenda({ applications = {}, plans = [], sessions
       for (const target of targets) planned.set(targetKey(target), Math.min(target.remaining, (planned.get(targetKey(target)) || 0) + minutes));
       return { learning:Boolean(group.learning), artifacts:[...new Map(targets.flatMap(references).map(a=>[a.id,a])).values()], needsMaterial:group.learning || group.key.startsWith('practice:'), id: `${date}:${group.key}`, title: group.title, detail: group.detail, shared: group.shared, minutes, remainingAfter: Math.max(0, remaining - minutes), targets, reason: group.learning ? `Learning goal: ${targets[0].company} · target ${targets[0].deadline}` : `${targets.length > 1 ? `Covers ${targets.length} interviews` : `For ${targets[0].company}`} · earliest round ${targets.map(t => t.deadline).sort()[0]}` };
     });
-    return { date, completedMinutes, plannedMinutes: items.reduce((sum, item) => sum + item.minutes, 0), items, interviews: interviews.filter(i => i.date === date) };
+    return { date, completedMinutes, plannedMinutes: items.reduce((sum, item) => sum + item.minutes, 0), items, events: events.filter(e => e.date === date).sort((a,b)=>a.id.localeCompare(b.id)), interviews: interviews.filter(i => i.date === date) };
   });
   const unscheduled = [...ordered,...learning].flatMap(g => g.targets).filter(t => (planned.get(targetKey(t)) || 0) < t.remaining).length;
-  return { today, dailyMinutes, days, interviews, unscheduled, dormantCount: dormant.length, uncertainCount: uncertain.length, expiredCount: expired.length };
+  for (const group of [...ordered,...learning]) for (const target of group.targets) if ((planned.get(targetKey(target)) || 0) < target.remaining) pending.push({id:`unallocated:${targetKey(target)}`,title:group.title,company:target.company,date:target.deadline,applicationId:target.jobId,roundId:target.roundId,path:target.goalId?'/career-toolkit/':undefined,reason:'Outside daily budget'});
+  return { today, dailyMinutes, days, interviews, pending, unscheduled, dormantCount: dormant.length, uncertainCount: uncertain.length, expiredCount: expired.length };
 }
 
 // Guest and demo mutations mirror the atomic owned RPC's version/credit rules.

@@ -252,3 +252,60 @@ reason and field types only. They never record request values, mock IDs, tokens
 or interviewer-profile content. Historical rejections without these diagnostics
 cannot be reconstructed from logs; unchanged JSON-RPC error bodies preserve
 client compatibility.
+
+
+### Shared Action Board calendar (contract 125 source update)
+
+The existing seven-day Weekly prep calendar also projects current application
+rounds without requiring a preparation plan, explicit dated imported next actions,
+and scheduled/in-progress Toolkit mock sessions. The shared owned planner snapshot
+includes imported records without source notes and only visible mock logistics;
+private interviewer preparation stays excluded. Website and MCP
+`read_preparation_planner` use the same projector. Existing round corrections,
+import updates, mock lifecycle and practice writers remain authoritative.
+Cancelled/completed rounds and mocks, archived mocks and terminal applications
+leave the upcoming calendar; source links open their existing editors. Dates use
+the saved preparation timezone, and native/import duplicate preference matches
+round stats. Existing interview/learning practice still shares one daily budget.
+The visible calendar refreshes every minute, on focus/reconnect and account sync;
+returning to the board reloads the owned snapshot. Demo reads the same fictional
+mock sources. No external Calendar events, calls or scheduler are created.
+Source validation and local runtime activation are reported in the feature note;
+hosted deployment is separate.
+
+
+#### Full-week calendar and missing-task correction (contract 126)
+
+The Action Board now displays every Monday–Sunday date with previous/next/current
+week controls. `read_preparation_planner` accepts optional Monday `weekOf`; website
+and MCP use `buildWeeklyPreparationAgenda` over the existing owned snapshot.
+The lower-level rolling allocator remains available for bounded planning checks.
+Past days never acquire newly allocated practice. The saved timezone is shown.
+
+Other pending tasks retains unfinished assessment rounds with unknown dates,
+imported next actions without dates, overdue/out-of-week events and preparation
+or learning tasks excluded by budget/date rules. Links open their owning source;
+unknown dates remain null. Week browsing does not change dates, task completion,
+budget or personal preferences. Dated interviews/mocks outside the selected week
+remain accessible through navigation and pending items. Completed/cancelled rounds
+and inactive/terminal/archived sources retain their existing exclusion rules.
+
+A scoped diagnosis found zero saved learning goals/preparation plans, one mock,
+and undated pending assessment rounds; it did not infer tasks from material text
+or assign guessed dates. The detached demo covers an unfinished undated OA.
+Validation and local activation receipts are in the shared calendar feature note;
+hosted deployment remains separate.
+
+
+#### Application date precedence and duplicate removal (contract 128)
+
+Imported next actions use saved actionDate even without needsAction. A lone
+unfinished undated round is represented by its existing next action; the date
+is not copied into the round. Current round dates suppress duplicate same-day
+application actions; different-day actions and multiple open rounds remain
+separate. This applies both in calendar days and Other pending tasks. Action
+cards show company and description. The detached demo covers an assessment
+whose deadline is saved on next action with its attention flag false. Source
+validation and local read-back receipts are recorded in the shared calendar note.
+
+Network relationship views now separate All people, Continue conversations and Prospects. A valid logged sent/received message or non-cancelled meeting establishes a conversation; research, drafts, thread URLs alone and legacy hiring statuses do not. Cards and details show the last logged interaction and saved reply/waiting state, not live inbox state. Update relationship edits the compact summary, existing thread URL, optional dated update, next action and follow-up using the existing contact envelope and revision boundary. Drafts/history/application links remain unchanged; no sending or inbox sync occurs. MCP list_contacts/save_contact can read and maintain the same records.

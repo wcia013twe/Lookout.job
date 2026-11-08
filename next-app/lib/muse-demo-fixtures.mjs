@@ -163,7 +163,7 @@ export function createDemoServices(store) {
   }
   const artifactDemo = createArtifactDemo(store);
   function plannerBundle() {
-    return {...artifactDemo.artifactSnapshot(),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
+    return {...artifactDemo.artifactSnapshot(),imports:copy(store.get('demo.boardImports') || []),applications:copy(store.get('workflow.applications') || {}),plans:Object.values(copy(store.get('demo.preparationRows') || {})),settings:copy(store.get('demo.plannerSettings') || {dailyMinutes:45,version:0}),sessions:copy(store.get('demo.preparationSessions') || []),timeZone:store.get('workflow.searchPreferences.quietMode.timezone') || 'UTC'};
   }
   return {
     ...createMuseChangeFeedDemo(),

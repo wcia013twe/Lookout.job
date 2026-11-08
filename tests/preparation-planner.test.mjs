@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildPreparationAgenda, recordLocalPreparationSession, plannerToday } from '../lib/preparation-planner.mjs';
+import { buildPreparationAgenda, buildWeeklyPreparationAgenda, recordLocalPreparationSession, plannerToday } from '../lib/preparation-planner.mjs';
 import { createPreparationPlan } from '../lib/preparation-model.mjs';
 import { museFeatureDispatch } from '../supabase/functions/agent-gateway/muse-features.mjs';
 import { validateRequest } from '../supabase/functions/agent-gateway/contract.mjs';
@@ -86,7 +86,7 @@ test('session budget and target validation prevent double credit and partial loc
 test('MCP planner uses the same owned snapshot and optimization as the website',async()=>{
  const bundle=fixture(), calls=[];
  const response=await museFeatureDispatch({operation:'preparation.planner.read',payload:{},now:new Date(now),rpc:async(op,payload)=>{calls.push([op,payload]);return{data:bundle,error:null};}});
- assert.deepEqual(response.data.agenda,agenda(bundle));
+ assert.deepEqual(response.data.agenda,buildWeeklyPreparationAgenda({...bundle,today}));
  assert.deepEqual(calls,[['preparation.planner.read',{}]]);
  for(const [operation,scope] of [['preparation.planner.read','workspace:read'],['preparation.budget','preferences:write'],['preparation.session.complete','drafts:write']]) assert.equal(TOOLS.find(t=>t.operation===operation).scope,scope);
  const denied={error:{code:'42501'}};assert.equal(await museFeatureDispatch({operation:'preparation.planner.read',payload:{},rpc:async()=>denied}),denied);

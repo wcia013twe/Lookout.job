@@ -13,10 +13,20 @@ const reject=row=>row.getByRole('button',{name:/^Reject:/});
 try{
  const desktop=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),page=await desktop.newPage();attach(page);
  await page.goto(base+path);const application=card(page,'review_application').first();await application.waitFor();
+ await page.getByText('Complete the assessment',{exact:true}).waitFor();
+ assert.equal(await page.locator('.prep-interview').filter({hasText:'Example Dated Assessment (demo)'}).count(),1,'Dated action card includes company exactly once');
+ assert.equal(await page.getByText('Assessment with a saved deadline',{exact:true}).count(),0,'No additional undated row when the next action owns the deadline');
+ assert.equal(await page.locator('.prep-agenda-day').count(),7,'All seven days remain visible');
+ assert(await page.getByText('No scheduled tasks',{exact:true}).count());
+ assert(await page.getByRole('button',{name:'This week',exact:true}).isDisabled());
+ await page.getByRole('button',{name:'Next week',exact:true}).click();
+ assert.equal(await page.locator('.prep-agenda-day').count(),7);
+ assert.equal(await page.getByRole('button',{name:'This week',exact:true}).isDisabled(),false);
+ await page.getByRole('button',{name:'This week',exact:true}).click();
  const left=await page.locator('.needs-you-priority').boundingBox(),right=await page.locator('.prep-widget').boundingBox();assert(right.x>=left.x+left.width,'Desktop keeps its two columns');
  for(const row of await page.locator('.action-board-row[data-kind]').all()){assert.equal(await accept(row).count(),1);assert.equal(await reject(row).count(),1);assert(await row.locator('a').first().innerText());}
  assert.equal(await page.getByText('Imported',{exact:true}).count(),0);
- const phoneContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await phoneContext.newPage();attach(phone);await phone.goto(base+path);await card(phone,'review_application').first().waitFor();
+ const phoneContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await phoneContext.newPage();attach(phone);await phone.goto(base+path);await card(phone,'review_application').first().waitFor();assert.equal(await phone.locator('.prep-agenda-day').count(),7);
  assert(await phone.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
  if(process.env.LOOKOUT_UI_CAPTURE!=='0'){await page.screenshot({path:`${dir}/desktop.png`,fullPage:true});await phone.screenshot({path:`${dir}/mobile.png`,fullPage:true});}
  assert(await accept(application).isDisabled());await application.getByRole('checkbox',{name:'I reviewed this exact application revision.'}).click();await accept(application).waitFor();await page.waitForFunction(()=>{const row=document.querySelector('[data-kind="review_application"]');return !row?.querySelector('button[aria-label^="Accept:"]')?.disabled;},null,{timeout:10000});await accept(application).focus();await accept(application).press('Enter');await page.getByText('This version is approved. It has not been submitted.',{exact:true}).waitFor();

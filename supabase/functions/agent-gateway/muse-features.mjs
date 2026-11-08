@@ -1,5 +1,5 @@
 import {roundStatsFromContext} from './application-rounds.mjs';
-import { buildPreparationAgenda, plannerToday } from './preparation-planner.mjs';
+import { buildWeeklyPreparationAgenda, plannerToday } from './preparation-planner.mjs';
 import { createPreparationPlan, setPreparationTaskCompletion, PREPARATION_GUIDES } from './preparation-model.mjs';
 import { buildDeliveryPolicy, normalizeQuietMode } from './quiet-mode.mjs';
 import { applicationPolicy } from './application-policy.mjs';
@@ -39,10 +39,10 @@ export function notificationAdvice(bundle, now=new Date()) {
 export async function museFeatureDispatch({operation,payload,rpc,loadJob,now=new Date()}) {
  if(operation==='applications.round_stats'){const read=await rpc(operation,payload);return read.error?read:{data:roundStatsFromContext(read.data),error:null};}
  if (['preparation.planner.read','preparation.budget','preparation.session.complete'].includes(operation)) {
-  const bundle = await rpc(operation, payload);
+  const bundle = await rpc(operation, operation==='preparation.planner.read'?{}:payload);
   if (bundle.error) return bundle;
   const timeZone = bundle.data.timeZone || 'UTC';
-  return {data:{...bundle.data,agenda:buildPreparationAgenda({...bundle.data,today:plannerToday(now,timeZone),timeZone})},error:null};
+  return {data:{...bundle.data,agenda:buildWeeklyPreparationAgenda({...bundle.data,weekOf:payload.weekOf,today:plannerToday(now,timeZone),timeZone})},error:null};
  }
  if(operation==='preparation.update'||operation==='preparation.complete') {
   const read=await rpc('preparation.read',{applicationId:payload.applicationId});

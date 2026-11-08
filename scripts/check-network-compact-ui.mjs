@@ -32,6 +32,15 @@ try{
  await applicationFilter.selectOption('');
  assert.equal(await people.locator('li').count(),4);
 
+
+ const relationshipViews=page.getByRole('group',{name:'Relationship views',exact:true});
+ await relationshipViews.getByRole('button',{name:/^Continue conversations/}).click();
+ assert.equal(await people.locator('li').count(),2);
+ assert.match(page.url(),/relationship=conversations/);
+ await relationshipViews.getByRole('button',{name:/^Prospects/}).click();
+ assert.equal(await people.locator('li').count(),2);
+ await people.getByRole('button',{name:/Morgan \(fictional\)/}).waitFor();
+ await relationshipViews.getByRole('button',{name:/^All people/}).click();
  assert.equal(await page.getByRole('navigation',{name:'Network views'}).count(),0);
  assert.equal(await page.getByRole('button',{name:/Find people|Prepare with Muse|Request outreach/}).count(),0);
  await page.screenshot({path:dir+'/network-desktop.png',fullPage:true});
@@ -44,12 +53,24 @@ try{
  await detail.getByRole('link',{name:'Open Gmail',exact:true}).waitFor();
  const draft=detail.getByRole('textbox',{name:'Message for Jamie (fictional)',exact:true});const before=await draft.inputValue();
  assert.equal(await detail.locator('details').first().getAttribute('open'),null);
- await detail.getByRole('button',{name:'Add update',exact:true}).click();
- await detail.getByRole('textbox',{name:'Relationship update',exact:true}).fill('Fictional update: discussed ownership and agreed to send two questions.');
+ await detail.getByRole('button',{name:'Update relationship',exact:true}).click();
+ await detail.getByRole('textbox',{name:'Relationship update (optional)',exact:true}).fill('Fictional update: discussed ownership and agreed to send two questions.');
  await detail.getByRole('textbox',{name:'Next step',exact:true}).fill('Send the two questions.');
- await detail.getByRole('button',{name:'Save update',exact:true}).click();
+ await detail.getByRole('textbox',{name:'Relationship context',exact:true}).fill('Fictional university contact; offered an engineer introduction.');
+ await detail.getByRole('textbox',{name:'Conversation link',exact:true}).fill('https://example.com/demo/existing-thread');
+ await detail.getByRole('button',{name:'Save relationship',exact:true}).click();
  await detail.getByText('Fictional update: discussed ownership and agreed to send two questions.',{exact:true}).waitFor();
  assert.equal(await draft.inputValue(),before);
+ assert.equal(await detail.getByRole('link',{name:'Open conversation',exact:true}).first().getAttribute('href'),'https://example.com/demo/existing-thread');
+ await detail.getByText('Fictional university contact; offered an engineer introduction.',{exact:true}).waitFor();
+ const savedHistory=await page.evaluate(()=>{const p=window.JB.store.get('network.referrals').find(p=>p.id==='demo-referral');const c=JSON.parse(p.notes);return {messages:c.messages,meetings:c.meetings,updates:p.relationshipUpdates,message:p.message,status:p.status,tags:p.tags};});
+ await detail.getByRole('button',{name:'Update relationship',exact:true}).click();
+ await detail.getByRole('textbox',{name:'Relationship context',exact:true}).fill('Fictional university contact; engineer introduction pending.');
+ await detail.screenshot({path:dir+'/relationship-editor-desktop.png'});
+ await detail.getByRole('button',{name:'Save relationship',exact:true}).click();
+ const afterContextOnly=await page.evaluate(()=>{const p=window.JB.store.get('network.referrals').find(p=>p.id==='demo-referral');const c=JSON.parse(p.notes);return {messages:c.messages,meetings:c.meetings,updates:p.relationshipUpdates,message:p.message,status:p.status,tags:p.tags};});
+ assert.deepEqual(afterContextOnly,savedHistory,'Context-only maintenance must preserve drafts, history, tags and status without fabricating an interaction');
+
  await detail.getByRole('button',{name:'Copy message',exact:true}).click();await detail.getByText('Message copied.',{exact:true}).waitFor();
  await detail.locator('summary').filter({hasText:/^History$/}).click();
  assert.equal(await detail.getByRole('list',{name:'Conversation timeline'}).locator('.network-message-event').count(),8);

@@ -51,3 +51,15 @@ test('meetings are separate optional notes, preserve message turn and status, an
  const {id,...record}=updated;assert.doesNotThrow(()=>validateRequest({operation:'contacts.save',payload:{id,record,expectedRevision:2}}));
  for(const invalid of [{...meeting,date:'2026-02-30'},{...meeting,status:'assumed-complete'},{...meeting,kind:'message'},{...meeting,notes:'x'.repeat(4001)},{...meeting,id:message.id},{...meeting,send:true}])assert.throws(()=>recordMeeting(contact,invalid));
 });
+
+test('conversation overview requires recorded interaction and keeps drafts/status/links distinct',async()=>{
+ const {conversationOverview}=await import('../lib/outreach-conversation.mjs');
+ for(const contact of [{message:'An unsent draft'},{status:'Interviewing'},{status:'Replied'},{relationshipSummary:'Knows the company'},{notes:JSON.stringify({format:'lookout-conversation-v1',notes:'Research',url:'https://example.com/thread',messages:[]})}])assert.equal(conversationOverview(contact).hasConversation,false);
+ const sent={...logInteraction({},message),message:'Edited next draft'};
+ assert.equal(conversationOverview(sent).hasConversation,true);
+ assert.equal(conversationOverview(sent).lastMessage.body,message.body);
+ assert.equal(conversationOverview(sent).lastInteractionDate,message.date);
+ const meeting={id:'scheduled-only',kind:'meeting',status:'scheduled',date:'2026-12-01',notes:'',location:''};
+ const planned=recordMeeting({},meeting);assert.equal(conversationOverview(planned).hasConversation,true);assert.equal(conversationOverview(planned).lastInteractionDate,null);
+ assert.equal(conversationOverview(recordMeeting({}, {...meeting,status:'cancelled'})).hasConversation,false);
+});
