@@ -263,3 +263,14 @@
   regression using Supabase's service-role BYPASSRLS behavior (the test fixture's
   placeholder role otherwise differs). Round and hosted-upgrade tests pass.
   The final integration also retains the current mock schema/diagnostics fix.
+- Dev activation verified through the authenticated Muse connector: contract 123,
+  discovery of read_application_round_stats and a successful aggregate read from
+  the real owner-scoped backend after the service grant. Applied/registered local
+  migrations 20261107215826, 20261107235547 and 20261107235949. No imported notes
+  were converted into rounds, no real submissions/messages were sent and no hosted
+  production mutation was performed. Preserved the newer mock-schema API activation,
+  existing worker/tunnel and unrelated shared-main edits.
+- The notification-guide-only final merge passed 29 focused workflow/MCP checks;
+  the service-role reader plus hosted-upgrade regression passed all 6 tests.
+- Final post-live-fix complete suite: 1,057 passed, 5 existing skips, zero failures
+  (1,062 total). Data validation and diff checks remain clean.
