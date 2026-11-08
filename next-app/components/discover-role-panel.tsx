@@ -50,7 +50,7 @@ export default function DiscoverRolePanel({ role, onClose, assessmentPending=fal
       </section>
       <RoleApplicationPreview role={role} />
       <details className="border-t border-board-line pt-3">
-        <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3"><h3 className="text-lg font-semibold">About the job</h3><ProfileIcon name="chevron" width={18} height={18} /></summary>
+        <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3"><h3 className="text-lg font-semibold">Job Description</h3><ProfileIcon name="chevron" width={18} height={18} /></summary>
         <JobDescription description={role.description} url={role.applicationUrl} demo={w.demo} />
       </details>
     </div>

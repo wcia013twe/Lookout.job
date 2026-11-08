@@ -27,3 +27,26 @@
   Integrated local checks: 1,123 passed, 5 skipped, zero failed; typecheck,
   data validation, and production build passed. No local integration changes
   were pushed as part of the scoped production release.
+
+## Restore bounded analysis cautions
+
+- Restore rounded, shaded fit and caution sections after the five-bullet renderer
+  removed their visual boundaries. Keep Team, Your contribution and Your growth
+  under Why it’s here, and Support and Practical fit under What to watch out for.
+  Render all saved caveats, trailing priority text and legacy prose unchanged.
+- The existing fictional Discover demo covers both complete five-label analysis
+  and missing gaps; its browser check now asserts three fit bullets, two caution
+  bullets and a visible rounded caution surface. Render regressions cover both
+  active-clearance and obtain-clearance caveats without using private records.
+- This is presentation only. No saved jobs, JD text, assessments, application
+  state, service contracts, credentials or permissions change. Existing scoped
+  readers still supply the same saved fields to the website and MCP.
+- Focused validation: eight parser/React-render tests passed. Full checks and
+  deployment verification will be recorded after they complete.
+- Follow-up heading: rename About the job to Job Description in Discover and
+  application previews. Explicit Structured paraphrase content is labeled as a
+  saved summary and rendered as prose, not an employer quotation; text is intact.
+- Initial full suite: 1,126 passed, five skipped; data/type/build checks passed.
+  The broad local Discover browser check passed the new caution assertions but
+  later failed an unrelated compact-card hidden-label assertion. A dedicated
+  repair-only browser regression covers the changed section and interactions.
