@@ -11,6 +11,8 @@ Validation on the integrated source: `npm test` passed (1048 passed, 5 skipped; 
 
 The final Network filter follow-up was checked with 20 focused network/import/connected-board tests, frontend typecheck and another production build.
 
+The final guide-only networking merge preserved both canonical sources at cold-outreach v9; all 15 focused outreach/context/MCP tests and the final production build passed.
+
 Integrated current local main without dropping its search/toolkit/import changes. The combined agent contract is 120; guide routing retains the current canonical versions. Screenshots are in `/tmp/connected-action-board-ui/`.
 
 Limits: checks use disposable migrated databases and fictional detached browser state. No account writes, employer submissions, message sending, hosted deployment or real-client verification occurred. Migration plus gateway/MCP production release and an authenticated hosted check are required before claiming deployed parity. The temporary preview used port 3107 and was stopped; existing local services were untouched.
