@@ -84,6 +84,7 @@ function DiscoverBoard() {
       <button type="button" className="mt-6 min-h-11 text-sm text-board-muted underline underline-offset-4 hover:text-board-text" onClick={()=>setPublicView(true)}>Explore public roles</button>
       {w.demo&&<p className="mt-3 text-xs text-board-muted">Demo · a new workspace preview</p>}
     </div>}
+    <SearchSweeps />
     {preview&&<DiscoverRolePanel key={preview.id} role={preview} assessmentPending onClose={()=>setPreview(null)}/>}
   </>;
   return (

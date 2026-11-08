@@ -277,6 +277,25 @@ milestone/preparation writers remain separate; generic native workflow mutations
 on imported records still report the documented mismatch. Migration, gateway/MCP
 and dev runtime activation are required before tools advertise these fields.
 
+### Green progress checkmarks
+
+Progress now shows green checks for steps before the current stage, recorded
+opened links, and a reported Applied/Submitted step. An explicit completedStages
+flag can complete the current Screen/Interview/Offer without advancing its status.
+A current screening/interview is otherwise pending. In the imported editor,
+already-passed steps appear checked and disabled; current-stage completion stays
+editable. These are display projections: no dates, receipts or stored completion
+flags are generated. Synthetic current-status timeline entries cannot promote a
+Phone Screen into Interview. Shared community stage displays still show only the
+shared current step, without projecting private history.
+
+Visual correction: the progress bar, circles and current-step ring are purple;
+only the checkmark glyph inside a completed step is green. Completion rules above
+are unchanged.
+
+Palette refinement: progress uses the softer original lavender (#a78bcb), with a
+contrasting green checkmark inside. No completion or data behavior changes.
+
 ## Connected Action Board decisions (source update)
 
 Desktop retains its rows, framing and existing review dialog. Accept/Reject controls and required human questions are derived by `read_action_board`; mobile horizontal swipes use the same human response operation. Application and outreach acceptance require acknowledgment of the exact saved content first. Unsaved application edits and changed source keys invalidate board review. Missing answers and uncertain submissions open their owned input/recovery flow instead of offering binary acceptance. Answer links open My Agent's expanded shared question bank; application links select the Documents or Interview tab and owned round.

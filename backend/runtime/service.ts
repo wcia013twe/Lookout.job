@@ -4,7 +4,7 @@ import {ResumeParseError} from './resume-parser.ts';
 import {createHash} from 'node:crypto';
 import {validateRequest} from '../../supabase/functions/agent-gateway/contract.mjs';
 import {guideDispatch,guideDiscoveryDispatch} from '../../supabase/functions/agent-gateway/guides.mjs';
-import {databaseFailure,validationMessage} from '../../supabase/functions/agent-gateway/request-errors.mjs';
+import {databaseFailure,gatewayFailure,validationMessage} from '../../supabase/functions/agent-gateway/request-errors.mjs';
 import {operationService} from '../../lib/mcp-services.mjs';
 import type {Rpc, Payload} from './types.ts';
 
@@ -17,7 +17,7 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
     if(!/^jb_agent_[a-f0-9]{64}$/.test(token))return {status:401,error:'Agent credential required'};
     try {validateRequest({operation,payload});}catch(error){return {status:400,error:validationMessage(error)};}
     const service=operationService(operation);
-    if(!service)return {status:400,error:'No service owns this operation'};
+    if(!service)return {status:400,error:'This tool has no route in the running API. Update the backend before retrying; changing the content will not fix it.'};
     if(service.handler==='edge' && service.owner==='human connection management')return {status:403,error:'Use the human-authenticated connection management service'};
     const hash=credentialHash(token);
     const authorize=(_operation: string,_payload: Payload)=>rpc('agent_dispatch',{credential_hash:hash,operation:_operation,payload:_payload});
@@ -40,7 +40,8 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
         // Existing domain operations retain their exact gateway behavior during migration.
         const response=await request(gateway,{method:'POST',redirect:'error',signal:AbortSignal.timeout(20000),headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({operation,payload})});
         const body=await response.json();
-        return response.ok?{status:200,data:body.data}:{status:response.status,error:'Gateway operation rejected; read current state before retrying'};
+        if(response.ok)return {status:200,data:body.data};
+        const [status,error]=gatewayFailure(response.status,body);return {status,error};
       }
       if(result.error){const [status,error]=databaseFailure(result.error);return {status,error};}
       return {status:200,data:result.data};
