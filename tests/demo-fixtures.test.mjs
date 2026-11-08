@@ -30,3 +30,9 @@ test('Discover demo includes explicit hourly, monthly and undisclosed employer p
  const roles=discoverPreviewRoles('2026-11-07');
  assert(roles.some(r=>r.compensation?.includes('/hr')));assert(roles.some(r=>r.compensation?.includes('/month')));assert(roles.some(r=>!r.compensation));
 });
+
+test('Discover demo covers unchecked forms alongside recorded partial questions',()=>{
+ const roles=discoverPreviewRoles('2026-11-08');
+ assert(roles.some(r=>r.reviewPreview.length===0));
+ assert(roles.some(r=>r.reviewPreview.some(q=>q.required&&q.answer==='')));
+});

@@ -121,3 +121,11 @@ test('a workspace generator discovers the recipe and saves/reads static HTML thr
  assert.equal((await call('call_discovered_tool',{name:'save_artifact',arguments:{...payload,expectedVersion:1}})).isError,true);
  assert.equal(writes.length,1);
 });
+
+test('application guide requires saved, verified employer questions before notification',async()=>{
+ const guide=JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../supabase/functions/agent-gateway/skills/application-workspace.json',import.meta.url),'utf8'));
+ assert.match(guide.instructions,/save each newly observed page of employer questions through prepare_draft/);
+ assert.match(guide.instructions,/read_application_record and read_action_board to verify every field/);
+ assert.match(guide.instructions,/A chat bundle alone is not a saved handoff/);
+ assert.match(guide.instructions,/inspectionComplete=false/);
+});

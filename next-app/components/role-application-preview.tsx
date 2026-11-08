@@ -5,7 +5,7 @@ import { useWorkspace } from "../lib/workspace";
 import { control, primary, Field } from "./ui";
 import type { Role } from "./role-card";
 import ProfileIcon from "./profile-icon";
-import {applicationReviewQuestions,applicationReviewSummary,applicationReviewGroups} from "../../lib/application-review.mjs";
+import {applicationReviewSummary,applicationReviewGroups,applicationPreparationMessage} from "../../lib/application-review.mjs";
 import {confirmDraftAnswer} from "../../lib/confirm-draft-answer.mjs";
 import styles from "./discover-role-panel.module.css";
 type Question={id?:string;fieldId?:string;question:string;answer?:string;reason?:string;required?:boolean;fieldType?:string;maxLength?:number;options?:{value:string;label:string}[]};
@@ -27,7 +27,7 @@ export default function RoleApplicationPreview({role}:{role:Role}){
  const groups=applicationReviewGroups(source,draft?.questionsReviewed===true),summary=applicationReviewSummary(source,draft?.questionsReviewed===true);
  const optionalLabels=[...new Set(groups.optional.map((q:Question)=>q.question))];
  const checkedAt=draft?.inspectedAt&&Number.isFinite(Date.parse(draft.inspectedAt))?new Date(draft.inspectedAt).toLocaleString():null;
- if(!draft&&applicationReviewQuestions(source).length===0)return null;
+
  const editable=!w.locked&&(w.demo||Boolean(w.user&&draft&&w.models.workflowModel.canEdit(draft)));
  async function confirm(fieldId:string,answer:string,expectedRevision:number){
   const owner=w.user?.id,epoch=w.demoEpoch;
@@ -42,11 +42,13 @@ export default function RoleApplicationPreview({role}:{role:Role}){
  }
  return <section aria-labelledby="application-preview" className={styles.application}>
   <h3 id="application-preview" className="mb-4 text-lg font-semibold">Application answers</h3>
+  <p className="mb-4 text-sm text-board-muted">{applicationPreparationMessage(draft)}</p>
   {groups.human.map((q:Question)=><AnswerEditor key={q.fieldId||q.id||q.question} question={q} revision={draft?.backendRevision??draft?.revision??0} disabled={!editable} onConfirm={confirm}/>)}
-  {groups.human.length===0&&<p className="text-sm text-board-muted">No answers needed from you right now.</p>}
+  {draft?.inspectionComplete===true&&groups.human.length===0&&groups.agent.length===0&&groups.browser.length===0&&<p className="text-sm text-board-muted">No answers needed from you right now.</p>}
+  {groups.browser.length>0&&<p className="mt-4 text-sm text-board-muted">Some employer fields still need browser review.</p>}
   {groups.agent.length>0&&<p className="mt-4 text-sm text-board-muted">Your agent has {groups.agent.length} {groups.agent.length===1?"answer":"answers"} to draft.</p>}
   {groups.optional.length>0&&<details className="mt-5 border-t border-board-line pt-3"><summary className="cursor-pointer text-sm font-semibold">Optional questions ({optionalLabels.length})</summary><ul className="mt-2 list-disc pl-5 text-sm text-board-muted">{optionalLabels.map((label,index)=><li key={index}>{label}</li>)}</ul></details>}
-  <details className="mt-4 text-xs text-board-muted"><summary className="cursor-pointer">Preparation details</summary><p className="mt-2">{summary.filled} saved answers. {checkedAt?`Form checked ${checkedAt}. `:""}Conditional fields still need browser review.</p><p className="mt-2">Confirming saves this answer only. Application approval and submission are separate.</p></details>
+  <details className="mt-4 text-xs text-board-muted"><summary className="cursor-pointer">Preparation details</summary><p className="mt-2">{summary.filled} saved answers. {checkedAt?`Form checked ${checkedAt}. `:""}{draft?.inspectionComplete===true?"New conditional questions may still appear if answers change.":"Conditional fields still need browser review."}</p><p className="mt-2">Confirming saves this answer only. Application approval and submission are separate.</p></details>
   {draft&&<Link href="/applications/" className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-board-accent">View full application<ProfileIcon name="arrow" width={16} height={16}/></Link>}
  </section>;
 }
