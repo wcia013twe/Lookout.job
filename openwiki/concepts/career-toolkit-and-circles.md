@@ -240,7 +240,7 @@ The detached scenario `?demo=1&demoApi=action-board` covers the shared decision 
 
 Tailored round resources use the existing `update_preparation_plan` operation with `roundId` and current `expectedVersion`, omitting `deadline`. It reads the owned current canonical round, preserves other rounds and completed task identities, and saves through the original plan validator. Legacy standalone inputs remain supported; linked plans reject newly duplicated standalone task templates and foreign-round links. Daily planning uses the owner's configured time zone while retaining the event's original time zone as evidence.
 
-### Mock schema and rejection diagnostics (contract 122)
+### Mock schema and rejection diagnostics (contract 123)
 
 Mock discovery now advertises only mock fields, requires scheduling fields and
 shows an RFC 3339 timestamp pattern with an explicit UTC offset. A separate
