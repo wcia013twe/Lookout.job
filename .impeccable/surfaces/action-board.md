@@ -45,3 +45,7 @@ posting links remain independently accessible. No separate details text link.
 Communication drafts support inline Edit message, optional subject, Save message
 and Cancel. Keep decisions disabled during editing and require fresh review
 after saved content changes; preserve human sending.
+
+Input follow-up: use a small static notification dot on pending human blockers
+and navigation, with an accessible label and board-level input count. Filled
+application drafts lead the existing list. No flashing/pulsing or new layout.

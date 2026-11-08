@@ -1,7 +1,8 @@
 "use client";
 import {useActionBoard,type BoardItem} from '../lib/use-action-board';
 import ActionDecisionCard from './action-decision-card';
-import {decisionTitle,decisionFeedback} from '../../lib/action-board.mjs';
+import ActionAttention from './action-attention';
+import {decisionTitle,decisionFeedback,orderBoardItems,needsUnblocking} from '../../lib/action-board.mjs';
 import SurfacePanel from "./surface-panel";
 import Link from "next/link";
 import { useWorkspace } from "../lib/workspace";
@@ -33,6 +34,8 @@ export default function NeedsYou() {
   useEffect(()=>{if(!board.snapshot)return;let saved=0;try{saved=Number(sessionStorage.getItem('lookout:board-scroll'));sessionStorage.removeItem('lookout:board-scroll');}catch{}if(saved>0)requestAnimationFrame(()=>window.scrollTo(0,saved));},[!!board.snapshot]);
   const applications=Object.values(w.state.workflow.applications as Record<string,Application>);
   const actions=pendingActions(inbox,Date.now()).map(item=>({item,application:applications.find(app=>app.backendId===item.application_id)}));
+  const items=orderBoardItems(board.snapshot?.items||[]);
+  const unblockCount=items.filter(needsUnblocking).length;
   const decisionHistory=board.snapshot?.history.filter(item=>!['review_application','resolve_blocker','check_submission'].includes(item.source_kind||'review_application')||!inbox.some(row=>row.application_id===item.source_id&&row.resolved_at))||[];
   const history=inbox.filter(item=>item.resolved_at).sort((a,b)=>String(b.resolved_at).localeCompare(String(a.resolved_at)));
   const handoffCount = (board.snapshot?.items.length ?? actions.length) + (setup ? 1 : 0);
@@ -46,9 +49,10 @@ export default function NeedsYou() {
             <span className="action-widget-count rounded-md px-2 py-1 text-xs font-semibold tabular-nums">{handoffCount}</span>
           </div>
           {(board.error||feedback)&&<p role="status" className="mt-3 text-sm">{board.error||feedback}</p>}{board.error&&<button type="button" onClick={()=>void board.refresh()} className="handoff-action">Reload actions</button>}
+          {!board.error&&unblockCount>0&&<p className="mt-3"><ActionAttention count={unblockCount}/></p>}
           {setup&&<p className="my-4 text-sm text-board-muted">Add and verify your profile and résumé to finish application approvals. <Link href="/profile/" className="underline underline-offset-4">Set up profile</Link></p>}
           {handoffCount ? <ul className="mt-4 space-y-4">
-            {board.snapshot?.items.map(item=><ActionDecisionCard key={`${w.user?.id||'demo'}:${item.key}`} item={item} busy={board.busy||w.locked||!!board.error} onRespond={respond} onSaveMessage={board.saveMessage}/>)}
+            {items.map(item=><ActionDecisionCard key={`${w.user?.id||'demo'}:${item.key}`} item={item} busy={board.busy||w.locked||!!board.error} onRespond={respond} onSaveMessage={board.saveMessage}/>)}
             {!board.snapshot&&actions.map(({item,application}) => {
               if(!application)return <NeedsYouRow key={item.id} title="Application action" context="Saved application" reason={item.reason} control={<Link href="/applications/" className="handoff-action">Open Applications</Link>}/>;
               const uncertain = item.kind === "check_submission";

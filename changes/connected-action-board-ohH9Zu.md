@@ -104,3 +104,27 @@ Limits: checks use disposable migrated databases and fictional detached browser 
   shared Circles preview; browser checks cover preview stages, event-only exclusion,
   inline forms/review, upcoming dates and mobile scrolling/swipes. Impeccable
   detector returned no findings. No hosted release.
+
+
+## Follow-up: unblock notifications and filled drafts first
+
+- Add reusable ActionAttention dot/count for human blockers, missing answers,
+  uncertain submissions and drafts missing required answers. Show it in existing
+  navigation and affected card headers; show the input count above the list.
+- Stably move filled application drafts to the top. Do not confer review or
+  approval; keep owning-record receipts and submission distinctions unchanged.
+- Existing fictional connected-board fixtures exercise notification appearance,
+  resolution and draft-first ordering. Existing read_action_board MCP boundary
+  supplies these same source decisions; no new service, writer or delivery channel.
+- Verification: full `npm test` passed (1,100 passed, five skipped); focused board tests, data validation (158 roles), frontend typecheck and production build passed. Desktop/mobile fictional browser checks verified draft-first order, navigation/card dots, resolution, required fields, keyboard access and swipes. Screenshot review preserved the existing two-column desktop layout. No hosted publication or external notification delivery.
+
+
+## Follow-up: preview unblock examples in the ordinary demo
+
+- Enable connected Action Board fixtures in ordinary demo mode, retaining
+  explicitly selected scenarios. Add fictional CAPTCHA and submission-timeout
+  examples alongside filled drafts and missing answers; preserve input gates and
+  in-memory reset. Uncertain attempts take precedence over draft review.
+- Verify pending resolution and reset through detached services and the default
+  desktop/mobile demo route. No production service or MCP contract changed.
+- Verification: 18 focused tests passed; full `npm test` passed (1,101 passed, five skipped); data validation (158 roles), frontend typecheck and production build passed. Desktop/mobile browser checks passed on the ordinary demo route, including required input gates, CAPTCHA resolution, uncertain-submission recovery, notification removal, keyboard controls and mobile swipes. No account writes or hosted publication.
