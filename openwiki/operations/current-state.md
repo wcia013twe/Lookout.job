@@ -400,3 +400,9 @@ Screen from Interview, and pending/scheduled/completed/cancelled. Existing scope
 writers retain owner, version, evidence and retry/correction checks. No private
 application data is automatically backfilled from notes. Runtime activation and
 production release are separate; consult the feature note for actual receipts.
+
+
+### Agent-reviewed private Discover handoff
+
+A completed or partial direct scan supplies the private shortlist; it does not itself populate Discover. The connected personal agent now finishes an authorized search by reading all shortlist pages and current candidate/profile evidence, selecting personally suitable live opportunities, writing the four assessment dimensions and role-specific narrative, then publishing through the existing scoped `publish_batch` service. It reads each returned private batch back before claiming Discover is populated. Stable run/profile/chunk event keys prevent duplicate batches on completion-event replay. No new model runtime, scheduler, worker publication, automatic applications or shared hosted-board collection is added. Raw filter matches remain outside Discover until agent review. Empty Discover keeps the existing search-history/request control visible while waiting.
+

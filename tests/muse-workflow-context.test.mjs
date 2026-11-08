@@ -162,3 +162,12 @@ test('admin demo services expose the same workflow routing while keeping pending
  assert.equal(JSON.stringify(store.get('workflow')),before);
  assert.equal((await createDemoServices(store).readMuseChanges()).items.length,5);
 });
+
+test('direct search completion requires personal analysis then private publication and read-back; demo retains the pending state',async()=>{
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,15);
+ assert.match(guide.instructions,/Private Discover publication is the final step[\s\S]*after agent personal fit analysis/);
+ assert.match(guide.instructions,/Read back every returned batch with read_batch/);
+ assert.match(guide.instructions,/discover:<runId>:profile:<version>:part:<index>/);
+ assert(!guide.instructions.includes('Do not automatically call publish_batch after a direct search.'));
+ const {searchDemo}=await import('../lib/search/demo.mjs');assert.match(searchDemo().runs.find(r=>r.id==='demo-run').summary,/agent fit analysis pending before private Discover publication/);
+});

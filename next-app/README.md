@@ -499,3 +499,5 @@ Demo check: fictional employers/schools show briefcases without external logo re
 Role-card company marks use 56px on desktop and 48px on mobile. The ranking badge is temporarily commented out; saved ranking settings and card color treatment remain available. Demo check: inspect Discover cards on desktop/mobile to confirm the larger company mark, title wrapping and absence of the ranking badge.
 
 Network person details use a LinkedIn-blue profile button and an email icon box for saved Gmail threads. Other conversation providers retain their existing link.
+
+Network offers an Application filter across tracked/imported records and an unlinked-people option. Person cards show each linked company/role using existing application tags or role URL associations. Selecting an application clears the selected person and company filter; no contact data is rewritten.

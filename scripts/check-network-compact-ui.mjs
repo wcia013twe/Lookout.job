@@ -21,6 +21,17 @@ try{
  assert.equal(await suggestions.count(),0);
  await people.getByRole('button',{name:/Jamie \(fictional\)/}).waitFor();
  assert.equal(await people.locator('li').count(),4);
+ const applicationFilter=page.getByRole('combobox',{name:'Application',exact:true});
+ await applicationFilter.selectOption('demo-stripe');
+ assert.equal(await people.locator('li').count(),2);
+ assert.match(page.url(),/process=demo-stripe/);
+ assert.equal(await people.getByText('Application: Stripe · Infrastructure Engineer',{exact:true}).count(),2);
+ await applicationFilter.selectOption('unlinked');
+ assert.equal(await people.locator('li').count(),1);
+ await people.getByRole('button',{name:/Sam \(fictional\)/}).waitFor();
+ await applicationFilter.selectOption('');
+ assert.equal(await people.locator('li').count(),4);
+
  assert.equal(await page.getByRole('navigation',{name:'Network views'}).count(),0);
  assert.equal(await page.getByRole('button',{name:/Find people|Prepare with Muse|Request outreach/}).count(),0);
  await page.screenshot({path:dir+'/network-desktop.png',fullPage:true});

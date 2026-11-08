@@ -229,3 +229,12 @@
   broad suite had 1,040 passing, 5 skipped and one expected catalog-size assertion;
   the assertion was updated for the new supporting read tool and focused tests
   passed. Final integrated validation and runtime receipts follow below.
+- Final integrated verification passed: full npm suite 1,045 passed / 5 existing
+  skips, frontend typecheck/static build, catalog validation (158 roles), detector
+  and diff check. Desktop/mobile demo exercised adding a Screen take-home,
+  completing it without an Interview promotion, adding a real Interview round,
+  saving its date and reading the distinct round/application totals in Stats.
+- Local-main integration preserved the newer private Discover handoff guide and
+  its version 15 while retaining round guide versions 16/6 and contract 121.
+  No personal records were migrated from notes; runtime activation follows the
+  committed source and is recorded separately below.

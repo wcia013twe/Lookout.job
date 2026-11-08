@@ -49,3 +49,20 @@ test('networking distinguishes requested engineers, copied participants and cold
  assert.match(prep,/message ID, subject, conversation link/);
  assert.match(prep,/application-linked interview_brief through save_artifact/);
 });
+
+test('agents suggest application-linked networking using existing associations and visible contact routes',()=>{
+ const guide=readGuide('cold-outreach');
+ assert.match(guide.instructions,/suggest useful contacts for the current role and stage even though the UI suggestions section is hidden/);
+ assert.match(guide.instructions,/merge an application:<id> tag into its existing tags/);
+ assert.match(guide.instructions,/backendId/);
+ assert.match(guide.instructions,/import:<record ID>/);
+ assert.match(guide.instructions,/Do not link by employer name alone/);
+ assert.match(guide.instructions,/Network → Application/);
+ assert.match(guide.instructions,/URL buried only in research notes does not populate a contact button/);
+ assert.doesNotMatch(guide.instructions,/Muse suggestions above them/);
+ const people=demoOutreachContacts('2026-11-07');
+ const warm=people.find(p=>p.id==='demo-referral'),engineer=people.find(p=>p.id==='demo-new-connection');
+ assert.deepEqual(warm.tags,engineer.tags);
+ assert.equal(warm.status,'Referred');
+ assert.equal(engineer.status,'Not asked');
+});
