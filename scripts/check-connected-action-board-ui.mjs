@@ -14,13 +14,10 @@ try{
  await page.getByText('Complete the assessment',{exact:true}).waitFor();
  assert.equal(await page.locator('.prep-interview').filter({hasText:'Example Dated Assessment (demo)'}).count(),1,'Dated action card includes company exactly once');
  assert.equal(await page.getByText('Assessment with a saved deadline',{exact:true}).count(),0,'No additional undated row when the next action owns the deadline');
- assert.equal(await page.locator('.prep-agenda-day').count(),7,'All seven days remain visible');
- assert(await page.getByText('No scheduled tasks',{exact:true}).count());
- assert(await page.getByRole('button',{name:'This week',exact:true}).isDisabled());
- await page.getByRole('button',{name:'Next week',exact:true}).click();
- assert.equal(await page.locator('.prep-agenda-day').count(),7);
- assert.equal(await page.getByRole('button',{name:'This week',exact:true}).isDisabled(),false);
- await page.getByRole('button',{name:'This week',exact:true}).click();
+ assert.equal(await page.getByText('No scheduled tasks',{exact:true}).count(),0,'Empty dates are omitted');
+ assert(await page.locator('.prep-agenda-day').count()>0);
+ assert(await page.getByText(/^In [0-9]+ days?$/).count(),'Upcoming dates show relative-day tags');
+ assert.equal(await page.getByRole('button',{name:'Next week',exact:true}).count(),0);
  const left=await page.locator('.needs-you-priority').boundingBox(),right=await page.locator('.prep-widget').boundingBox();
  assert(right.x>=left.x+left.width,'Desktop retains the original two-column framing');
  assert.equal(await app.getByRole('button',{name:'Accept',exact:true}).isDisabled(),true);
@@ -40,7 +37,7 @@ try{
  await page.getByRole('button',{name:'I reviewed this exact message'}).click();await page.getByRole('button',{name:'Accept',exact:true}).click();await page.getByText('Ready for you to send. Nothing was sent.',{exact:true}).waitFor();
  await page.getByRole('link',{name:'Back to Action Board',exact:true}).click();
  const interview=page.locator('.action-board-row').filter({has:page.getByRole('heading',{name:'Confirm interview details',exact:true})});await interview.getByRole('button',{name:'Accept',exact:true}).click();
- const round=page.getByRole('button',{name:/^Interview .+ Follow-up$/});if(!await round.count())await page.getByRole('button',{name:'Next week',exact:true}).click();await round.waitFor();await round.click();
+ const round=page.getByRole('button',{name:/^Interview .+ Follow-up$/});await round.waitFor();await round.click();
  await dialog.getByRole('button',{name:'Save round update',exact:true}).waitFor();
  const correction=dialog.getByLabel('Replaces an earlier update (optional)');assert(await correction.inputValue());
  await dialog.locator('form.interview-round-editor').getByLabel('Progress').selectOption('cancelled');await dialog.getByRole('button',{name:'Save round update',exact:true}).click();await dialog.getByText('Timeline update recorded.',{exact:true}).waitFor();
@@ -52,7 +49,7 @@ try{
  await desktop.close();
  const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await mobile.newPage();attach(phone);
  await phone.goto(base+path);const pending=applicationRow(phone);await pending.waitFor();
- await phone.getByText('Complete the assessment',{exact:true}).waitFor();assert.equal(await phone.locator('.prep-agenda-day').count(),7);
+ await phone.getByText('Complete the assessment',{exact:true}).waitFor();assert(await phone.locator('.prep-agenda-day').count()>0);assert(await phone.getByText(/^In [0-9]+ days?$/).count());
  assert(await phone.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
  if(process.env.LOOKOUT_UI_CAPTURE!=='0')await phone.screenshot({path:`${dir}/mobile.png`,fullPage:true});
  const cdp=await mobile.newCDPSession(phone);
@@ -61,5 +58,5 @@ try{
  await swipe(-145,0);await phone.getByText('Application saved. Agent work stopped until you resume it.',{exact:true}).waitFor();assert.equal(await pending.count(),0);
  await phone.getByText(/Action history ·/).click();await phone.getByRole('link',{name:'View application',exact:true}).click();
  await phone.getByText('Agent work stopped. This job stays saved.',{exact:true}).waitFor();await phone.getByRole('button',{name:'Resume agent work',exact:true}).click();await phone.getByText('Agent work stopped. This job stays saved.',{exact:true}).waitFor({state:'detached'});
- assert.deepEqual(errors,[]);await mobile.close();console.log(`Connected board verified: seven-day weeks, navigation, undated task visibility, desktop layout, exact review, answer/outreach links, canonical cancellation, mobile swipes, stop/resume. Screenshots: ${dir}`);
+ assert.deepEqual(errors,[]);await mobile.close();console.log(`Connected board verified: upcoming relevant dates, relative-day tags, undated task visibility, desktop layout, exact review, answer/outreach links, canonical cancellation, mobile swipes, stop/resume. Screenshots: ${dir}`);
 }finally{await browser.close();}

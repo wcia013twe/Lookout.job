@@ -522,3 +522,13 @@ separate. This applies both in calendar days and Other pending tasks. Action
 cards show company and description. The detached demo covers an assessment
 whose deadline is saved on next action with its attention flag false. Source
 validation and local read-back receipts are recorded in the shared calendar note.
+
+
+#### Upcoming relevant-date presentation
+
+The website calendar now skips empty/past days and groups upcoming dated work
+chronologically, including dates beyond the current week from the owned pending
+projection. Each group shows Today/In X days. Week navigation is removed from
+this compact widget; the scoped planner's weekOf read remains available. Undated
+and overdue tasks stay in Other pending tasks. Source dates, duplicate rules,
+budgets and completion writers are unchanged; this is a presentation correction.
