@@ -11,6 +11,8 @@ test('company aliases reuse an employer domain rather than an ATS or guessed dom
   assert.equal(url.searchParams.get('fallback'), '404');
   assert.equal(companyLogoUrl('Amazon/AWS', token), companyLogoUrl('AWS', token));
   assert.equal(new URL(companyLogoUrl('NVIDIA', token)).pathname, '/nvidia.com');
+  assert.equal(new URL(companyLogoUrl('Palantir', token)).pathname, '/palantir.com');
+  assert.equal(companyLogoUrl('Palantir', token), companyLogoUrl('Palantir Technologies', token));
 });
 test('unmapped names are encoded as one name lookup, never interpreted as URLs', () => {
   const name = 'An Unknown Brand & Co / research?token=bad#x';

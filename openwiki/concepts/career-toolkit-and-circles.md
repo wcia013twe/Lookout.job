@@ -340,3 +340,6 @@ Calendar company events use the shared logo component at 20px; unknown companies
 retain its fallback and general prep uses the calendar icon. Logo display sizes
 reuse one canonical CDN URL for normal browser/CDN caching; images lazy-load and
 decode asynchronously. This adds no account data or separate cache backend.
+
+Palantir and Palantir Technologies resolve to the same palantir.com logo URL.
+Calendar day padding is 12px per edge with a 4px inter-day margin.

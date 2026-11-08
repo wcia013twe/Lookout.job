@@ -29,3 +29,8 @@ Integrated verification after concurrent inline Action Board landing: 19 focused
 ## Tiny calendar company logos
 
 Calendar events and rounds use a 20px variant of the existing shared company logo component, with the existing fallback for unknown companies. Non-company prep retains its calendar icon. Images lazy-load and decode asynchronously. Display sizes share the same canonical CDN URL, so normal browser/CDN caching can reuse a company image across surfaces; no database, duplicated assets or service-worker cache was added. Validation: eight existing logo/cache and upcoming-view checks passed, frontend typecheck and production export passed, data validation passed (158 roles). Detached desktop/mobile checks verified 20px shared marks, labels, no overflow and existing decisions; screenshots inspected. Fictional logos use local fallbacks. This verifies URL reuse and rendering, not live CDN cache-hit rates or response TTLs. No push or hosted deployment.
+
+
+## Palantir logo consistency and day spacing
+
+Maps Palantir and Palantir Technologies to palantir.com so they reuse exactly one logo URL/cache entry. Reduces calendar day vertical padding from 16px to 12px per edge and the extra inter-day margin from 8px to 4px; card spacing is unchanged. Validation: five logo-alias/upcoming-view checks passed; frontend typecheck, data validation (158 roles) and production export passed. Detached desktop/mobile flows and screenshots passed the spacing review. The alias test verifies identical Palantir CDN URLs; no live CDN cache-hit claim. No push or hosted deployment.
