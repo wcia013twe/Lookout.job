@@ -164,10 +164,27 @@ test('admin demo services expose the same workflow routing while keeping pending
 });
 
 test('direct search completion requires personal analysis then private publication and read-back; demo retains the pending state',async()=>{
- const guide=readGuide('career-find-jobs');assert.equal(guide.version,15);
+ const guide=readGuide('career-find-jobs');assert.equal(guide.version,16);
  assert.match(guide.instructions,/Private Discover publication is the final step[\s\S]*after agent personal fit analysis/);
  assert.match(guide.instructions,/Read back every returned batch with read_batch/);
  assert.match(guide.instructions,/discover:<runId>:profile:<version>:part:<index>/);
  assert(!guide.instructions.includes('Do not automatically call publish_batch after a direct search.'));
  const {searchDemo}=await import('../lib/search/demo.mjs');assert.match(searchDemo().runs.find(r=>r.id==='demo-run').summary,/agent fit analysis pending before private Discover publication/);
+});
+
+test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
+ const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
+ assert.equal(search.version,16);assert.equal(apps.version,17);assert.equal(digest.version,2);
+ assert.match(search.instructions,/How good a fit is this job/);
+ assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
+ assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
+ assert.match(search.instructions,/December graduation internship scenario is not a confirmed education change/);
+ assert.match(search.instructions,/A disclosed salary is known even when compensation fit is uncertain/);
+ assert.match(search.instructions,/There is no separate displayed matchStrength field/);
+ assert.match(search.instructions,/Reuse recommendation.priority \(Apply Now, Strong Consider, Skip Unless Team Fit\)/);
+ assert.match(search.instructions,/Do not add a separate narrative strength label/);
+ assert.match(apps.instructions,/Do not add a separate match-strength tag/);
+ assert.match(apps.instructions,/close fit determines priority and tailoring depth, not whether to do the work at all/i);
+ assert.match(apps.instructions,/Do not start applications merely because a search was requested/);
+ assert.match(digest.instructions,/Counts and continuation claims require saved records and actual execution evidence/);
 });
