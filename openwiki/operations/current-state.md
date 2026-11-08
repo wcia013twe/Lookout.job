@@ -285,6 +285,27 @@ The resettable fictional demo includes a review handoff; demo approval remains
 disabled. Source verification does not establish production deployment.
 ## Weekly Career Toolkit (contract 113 source update)
 
+### Later hosted schema refresh, November 7
+
+Protected PR #80 released the reviewed 104-migration source through official
+backend run `42439092216`, commit
+`d057a578eebf3549a6ebc0bf41d0905298265c5e` (developer contract 132). All
+3,144 live schema/permission entries match source replay, and all 62 MCP/93
+gateway files match that release. The four pending migrations added application
+action projections, shared calendar reads, inline decisions and material prep
+dates. Full local tests passed (1,085 passed, 5 skipped), protected CI/build passed,
+and hosted SQL/MCP checks verified ownership, retry, calendar metadata privacy,
+material date save/clear and human-only action boundaries. Disposable accounts
+and records were removed; accounts, profiles, files, connections, artifacts,
+private mock profiles, imported records and backend jobs ended at zero. Six shared
+companies remain; knowledge publication is disabled. No personal data was copied.
+
+The running local Docker stack was inspected without modification: two accounts,
+eight files and 97 history entries, with older schema gaps. This hosted receipt
+uses committed migrations as authority and does not claim local runtime parity.
+GCP API/worker and website publication are separate releases. See the reconciliation
+change note for the exact upgrade, security advisor and verification scope.
+
 The existing Toolkit cards and reader now support explicit weekly filtering and
 an All materials library. Agent preparation follows the pinned Career Ops loop,
 curating external resources and reusing stories rather than generating every
