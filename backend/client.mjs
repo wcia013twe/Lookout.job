@@ -1,3 +1,4 @@
+import {actionBoardMessageFields} from '../lib/action-board.mjs';
 import {withLatestPostingEvidence} from '../lib/batch-posting-evidence.mjs';
 import {validateWorkExperience} from '../supabase/functions/agent-gateway/work-experience.mjs';
 import {createBackendJobsService} from '../lib/backend-jobs.mjs';
@@ -61,6 +62,15 @@ function createBackend(client, expectedUserId = null) {
     async readActionBoard() {
       const id=await owner(); const data=await result(client.rpc('read_action_board'));
       if(await owner()!==id)throw Error('Account changed'); return data;
+    },
+    async saveActionBoardMessage({id,expectedRevision,subject,message}) {
+      const fields=actionBoardMessageFields({subject,message});
+      const userId=await owner();
+      const row=await result(client.from('outreach_contacts').select('*').eq('user_id',userId).eq('id',id).single());
+      if(row.deleted_at||row.revision!==expectedRevision)throw Error('Message changed. Reload actions before saving.');
+      const saved=await result(client.rpc('save_outreach_contact',{p_id:id,p_expected_revision:expectedRevision,p_record:{...row.record,...fields},p_expected_owner:userId,p_deleted:false}));
+      if(await owner()!==userId)throw Error('Account changed');
+      return saved;
     },
     async respondActionBoard(payload) {
       const id=await owner(); const data=await result(client.rpc('respond_action_board',{payload}));

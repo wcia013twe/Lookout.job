@@ -23,5 +23,11 @@ export function useActionBoard(){
   catch(e){if(version===epoch.current)setError('The decision changed or could not save. Reload and review its current version.');throw e;}
   finally{if(version===epoch.current){mutating.current=false;setBusy(false);}}
  }
- return {snapshot,error,busy,refresh,respond};
+ async function saveMessage(item:BoardItem,fields:{subject:string;message:string}){
+  if(mutating.current||!api.current)throw Error('Wait for the current save to finish.');
+  const version=epoch.current;mutating.current=true;setBusy(true);
+  try{await api.current.saveActionBoardMessage({id:item.sourceId,expectedRevision:Number(item.version),...fields});if(version===epoch.current)await refresh();}
+  finally{if(version===epoch.current){mutating.current=false;setBusy(false);}}
+ }
+ return {snapshot,error,busy,refresh,respond,saveMessage};
 }
