@@ -39,3 +39,6 @@ supabase/.temp/
 /agent-package/*.config.json
 /agent-package/*.state.json
 /agent-package/*.lock
+
+# LaTeX compiler output.
+.latex-build/

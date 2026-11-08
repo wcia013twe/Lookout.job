@@ -1,5 +1,7 @@
 # Local application runner
 
+Current orchestration: deterministic inspect/try/submit registrations are temporarily commented out in `runtime.mjs`. Implementations remain available to controlled tests. Muse application requests use host computer use; see [AI Apply routing](../docs/discover-application-jobs.md).
+
 The stdio MCP adapter forwards the board's scoped data tools and adds:
 
 | Tool | Behavior |

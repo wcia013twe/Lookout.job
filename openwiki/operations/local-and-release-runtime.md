@@ -241,3 +241,7 @@ restart, container removal, database reset or takeover of another server is adde
 Tests cover timeout termination, fallback credential restrictions, tunnel failures,
 occupied ports and lock recovery. Local live verification is recorded in the
 startup feature change note; it does not establish cold Docker or hosted behavior.
+
+### Muse dev event transport
+
+The Node API exposes the shared scalar pending-count reader and exact public agent-package assets through the existing dev tunnel. Its policy still denies all other non-MCP paths, including `/v1` and health. The image generates its manifest/archive from committed package sources, so the public hosted site need not match a local dev release. Download the manifest and named archive from the MCP tunnel origin; verify version and checksum. This transport introduces no new domain writer or approval authority. Live reachability must be verified separately after API activation and tunnel policy reload.

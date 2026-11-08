@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,21);assert.equal(apps.version,25);assert.equal(digest.version,4);
+ assert.equal(search.version,21);assert.equal(apps.version,34);assert.equal(digest.version,5);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
@@ -211,4 +211,26 @@ test('recall guidance separates broad worth-a-look review from deeper top-pick r
  assert.match(search.instructions,/resolution=unresolved/);
  assert.match(search.instructions,/Employer-confirmed closure is an actual exclusion/);
  assert.match(notifications.instructions,/unresolved source leads using actual saved results/);
+});
+
+test('receiver handles Action Board decisions and AI Apply pointers through their scoped readers',async()=>{
+ const f=fixture(['action_decision','application_requested']);
+ const result=await consumeMuseChanges({call:f.call,connectionKey:'action-requests',handle:async({guide})=>{assert.equal(guide.id,'application-workspace');return {status:'handled'};},verify:async()=>true});
+ assert.equal(result.acknowledgedIds.length,2);
+ assert.deepEqual(f.calls.find(c=>c.name==='read_action_board').args,{});
+ assert.deepEqual(f.calls.find(c=>c.name==='read_backend_jobs').args,{jobId:'fictional-record'});
+ const again=await consumeMuseChanges({call:f.call,connectionKey:'action-requests',handle:async()=>assert.fail('already acknowledged'),verify:async()=>true});assert.equal(again.acknowledgedIds.length,0);
+});
+
+test('AI Apply guides require quiet host-browser preparation, Lookout recovery and secure account handling',()=>{
+ const apps=readGuide('application-workspace'),notice=readGuide('notifications');
+ assert.match(apps.instructions,/without another chat instruction to start a browser run/);
+ assert.match(apps.instructions,/Workday or another employer platform is not itself a blocker/);
+ assert.match(apps.instructions,/Before asking the user for any application fact/);
+ assert.match(apps.instructions,/secure password manager/);assert.match(apps.instructions,/Never keep passwords in chat/);
+ assert.match(apps.instructions,/request its secure entry card/);assert.match(apps.instructions,/already authorized mailbox integration/);
+ assert.match(apps.instructions,/Preserve the user's existing exact-version submission gate/);
+ assert.match(apps.instructions,/call report_application_failure/);assert.match(apps.instructions,/then read_action_board and verify/);assert.match(apps.instructions,/A blocked backend job or a chat-only explanation is not a complete handoff/);
+ assert.equal(apps.runner.registration,'paused');assert.deepEqual(apps.runner.tools,[]);
+ assert.match(notice.instructions,/continue silently/);assert.match(notice.instructions,/genuinely missing decision/);
 });

@@ -215,63 +215,38 @@ async function workerProfile(){
  await tool('save_search_profile',{expectedVersion:0,profile:{id:'worker-execution',name:'Fictional worker execution',active:true,filters:{Employment:'Full-time'},priorities:{},instructions}});
  workerProfileReady=true;
 }
-test('AI Apply durable job executes the existing one-click runner and projects its real result',async()=>{
- await workerProfile();const f=await application('normal',{profileId:'worker-execution'});
- const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'worker-submit:1'};
+for(const ats of ['greenhouse','ashby','lever'])test(`${ats}: AI Apply waits for Muse, host browser fills, then saves review handoff without submitting`,async()=>{
+ await workerProfile();const f=await application('normal',{ats,profileId:'worker-execution'});
+ const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'muse-request-'+ats};
  const queued=await tool('queue_application_job',payload);
- assert.equal(queued.job.status,'queued');assert.equal(f.fixture.posts,0);
- const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
- assert.equal(await workOnce(rpc,{applicationExecutor:executor}),true);
+ // Even an old configured executor cannot claim this request after migration.
+ const executor=createApplicationExecutor({download:async()=>bytes,browserFactory:()=>{throw Error('Deterministic browser must remain unopened');}});
+ assert.equal(await workOnce(rpc,{applicationExecutor:executor}),false);
+ assert.equal(f.fixture.posts,0);
+ const feed=await tool('read_muse_changes',{limit:50}),event=feed.items.find(e=>e.kind==='application_requested'&&e.recordId===queued.job.id);
+ assert(event);assert.deepEqual(event.refresh,{tool:'read_backend_jobs',arguments:{jobId:queued.job.id}});
+ const current=(await tool('read_application_record',{applicationId:f.app.id})).application;
+ const pickup={jobId:queued.job.id,expectedVersion:queued.job.version,expectedRevision:current.revision,eventKey:'muse-pickup-'+ats};
+ const claimed=await tool('claim_application_request',pickup);assert.equal(claimed.job.status,'running');
+ assert.deepEqual(await tool('claim_application_request',pickup),claimed);
+ // Host-computer-use fixture: separate browser owned by the assigned agent.
+ const provider=await browserFactory(),page=await provider.getPage();
+ try{
+  await page.goto(f.url);const form=await inspectBrowserForm(page);
+  assert.equal(form.formFingerprint,current.draft.formFingerprint);
+  for(const q of current.draft.questions){
+   if(q.fieldType==='file')await page.locator('#'+q.fieldId).setInputFiles({name:'resume.pdf',mimeType:'application/pdf',buffer:bytes});
+   else await page.locator('#'+q.fieldId).fill(q.answer);
+  }
+  assert.equal(await page.locator('#email').inputValue(),'fictional@example.com');
+  assert.equal(f.fixture.posts,0,'Live form filled, Submit never clicked');
+ }finally{await provider.close();}
+ const saved=await tool('report_application_request',{jobId:queued.job.id,expectedVersion:claimed.job.version,expectedRevision:current.revision,eventKey:'muse-outcome-'+ats,outcome:'prepared',summary:'Fictional host browser filled and checked; waiting for review.'});
+ assert.equal(saved.job.status,'completed');assert.equal(saved.job.result.verifiedSubmission,false);
  const record=await tool('read_application_record',{applicationId:f.app.id});
- assert.equal(record.application.status,'Submitted',JSON.stringify({blocker:record.application.blocker,job:record.application.execution_job}));assert.equal(record.application.execution_job.status,'completed');assert.equal(f.fixture.posts,1);
- const repeat=await tool('queue_application_job',payload);assert.equal(repeat.job.id,queued.job.id);assert.equal(f.fixture.posts,1);
-});
-test('AI Apply inspects an empty draft, selects its mapped resume and submits permitted routine fields',async()=>{
- await workerProfile();const f=await application('normal',{profileId:'worker-execution',emptyResume:true});
- await db.query("update public.applications set draft=jsonb_build_object('url',$2::text,'searchProfileId','worker-execution') where id=$1",[f.app.id,f.url]);
- const current=await row('select revision from public.applications where id=$1',[f.app.id]);
- const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:current.revision,eventKey:'worker-prefill:1'};
- await tool('queue_application_job',payload);
- const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
- await workOnce(rpc,{applicationExecutor:executor});
- const record=await tool('read_application_record',{applicationId:f.app.id});
- assert(record.application.draft.formFingerprint);assert.equal(record.application.draft.resumeId,resumeId);
- assert.equal(record.application.status,'Submitted',JSON.stringify(record.application.execution_job));assert.equal(f.fixture.posts,1);
-});
-
-test('Queued worker preserves pre-click HITL and post-click uncertainty without a second submission',async()=>{
- const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
- for(const mode of ['unnamed','uncertain']){
-  await workerProfile();const f=await application(mode,{profileId:'worker-execution'});
-  const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'worker-stop:'+mode};
-  const queued=await tool('queue_application_job',payload);await workOnce(rpc,{applicationExecutor:executor});
-  const record=await tool('read_application_record',{applicationId:f.app.id});
-  assert.equal(record.application.execution_job.status,'partial');assert.equal(record.application.receipt,null);
-  const observed=await tool('read_backend_jobs',{jobId:queued.job.id}),blocker=observed.jobs[0].result.blocker;
-  assert(blocker);assert.equal(blocker.submitClickAttempted,mode==='uncertain');
-  assert.equal(blocker.safeToRetry,mode!=='uncertain');
-  if(mode==='uncertain'){assert.equal(blocker.submissionState,'uncertain');assert.equal(blocker.recovery.action,'verify-outcome');}
-  assert.equal(f.fixture.posts,mode==='uncertain'?1:0);
-  const inbox=await tool('read_action_inbox');assert(inbox.items.some(item=>item.application_id===f.app.id));
-  if(mode==='uncertain')assert.equal((await row('select state from public.submission_attempts where application_id=$1',[f.app.id])).state,'uncertain');
-  const replay=await tool('queue_application_job',payload);assert.equal(replay.job.id,queued.job.id);
-  assert.equal(await workOnce(rpc,{applicationExecutor:executor}),false);assert.equal(f.fixture.posts,mode==='uncertain'?1:0);
- }
-});
-
-test('An AI Apply click never replaces exact human approval when auto-apply is off',async()=>{
- let instructions=updateField('','Application automation','Auto-apply routine matches','No');
- instructions=updateField(instructions,'Company priorities','Tier list ID','ft');
- instructions=updateField(instructions,'Application materials','Default resume ID',resumeId);
- await tool('save_search_profile',{expectedVersion:0,profile:{id:'worker-human-review',name:'Fictional human review',active:true,filters:{Employment:'Full-time'},priorities:{},instructions}});
- const f=await application('normal',{profileId:'worker-human-review'});
- await tool('queue_application_job',{posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-human-review',expectedRevision:f.app.revision,eventKey:'worker-human-review'});
- const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return (await promise).getPage();},close:async()=>{if(promise)await (await promise).close();}};}});
- await workOnce(rpc,{applicationExecutor:executor});
- const record=await tool('read_application_record',{applicationId:f.app.id});
- assert.equal(record.application.status,'Blocked');assert.equal(record.application.execution_job.status,'partial');assert.equal(f.fixture.posts,0);
- assert.equal((await row('select count(*)::int n from public.approvals where application_id=$1',[f.app.id])).n,0);
- const inbox=await tool('read_action_inbox');assert(inbox.items.some(item=>item.application_id===f.app.id));
+ assert.equal(record.application.execution_job.result.outcome,'prepared');assert.notEqual(record.application.status,'Submitted');assert.equal(f.fixture.posts,0);
+ assert.equal((await row('select count(*)::int n from public.submission_attempts where application_id=$1',[f.app.id])).n,0);
+ assert.equal((await tool('queue_application_job',payload)).job.id,queued.job.id);
 });
 
 for(const ats of ['ashby','lever']) {
@@ -286,15 +261,7 @@ for(const ats of ['ashby','lever']) {
   assert.equal((await tool('submit_application',{applicationId:f.app.id,attemptId:'platform-'+ats})).status,'Already submitted');
   assert.equal(f.fixture.posts,1);
  });
- test(`${ats}: AI Apply queue and worker reuse the supported submission executor`,async()=>{
-  await workerProfile();const f=await application('normal',{ats,profileId:'worker-execution'}),payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-execution',expectedRevision:f.app.revision,eventKey:'worker-'+ats};
-  const queued=await tool('queue_application_job',payload);
-  const executor=createApplicationExecutor({download:async()=>bytes,browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return(await promise).getPage();},close:async()=>{if(promise)await(await promise).close();}};}});
-  await workOnce(rpc,{applicationExecutor:executor});
-  const saved=await row('select status from public.applications where id=$1',[f.app.id]);
-  assert.equal(saved.status,'Submitted');assert.equal(f.fixture.posts,1);
-  assert.equal((await tool('queue_application_job',payload)).job.id,queued.job.id);
- });
+
 }
 
 for(const ats of ['ashby','lever']) {
@@ -319,38 +286,15 @@ test('Lever resume parsing cannot silently replace an authorized contact answer'
  assert.equal(result.status,'Needs you');assert.equal(f.fixture.posts,0);
 });
 
-test('Muse reads a queued blocker through the completion feed, repairs from Lookout and submits once',async()=>{
- await workerProfile();const f=await application('changed',{profileId:'worker-execution'});
- const payload={posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-execution',expectedRevision:f.app.revision,eventKey:'muse-repair-job'};
- const queued=await tool('queue_application_job',payload);
- const executor=createApplicationExecutor({download:async resume=>resumeFiles.get(resume.object_path),browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return(await promise).getPage();},close:async()=>{if(promise)await(await promise).close();}};}});
- await workOnce(rpc,{applicationExecutor:executor});
- const feed=await tool('read_muse_changes',{limit:50});
- const event=feed.items.find(item=>item.kind==='backend_job_finished'&&item.recordId===queued.job.id);
- assert(event);assert.deepEqual(event.refresh,{tool:'read_backend_jobs',arguments:{jobId:queued.job.id}});
- const jobs=await tool(event.refresh.tool,event.refresh.arguments),job=jobs.jobs[0];
- assert.equal(job.kind,'application_submit');assert.equal(job.status,'partial');
- const blocker=job.result.blocker;assert.equal(blocker.code,'form-changed');assert.equal(blocker.safeToRetry,true);
- assert(blocker.questions.some(q=>q.fieldId==='phone'));assert(!JSON.stringify(blocker).includes('fictional@example.com'));assert.equal(f.fixture.posts,0);
- const provider=await browserFactory(),page=await provider.getPage();await page.goto(f.url);const form=await inspectBrowserForm(page);await provider.close();
- const current=(await tool('read_application_record',{applicationId:f.app.id})).application;
- await tool('prepare_draft',{jobId:f.jobId,expectedRevision:current.revision,blocker:'',draft:{...current.draft,formFingerprint:form.formFingerprint,questions:form.questions.flatMap(q=>q.fields.map(field=>({fieldId:field.id,fieldType:field.type,question:q.question,required:q.required,options:field.options,answer:''})))}});
- const repaired=(await tool('read_application_record',{applicationId:f.app.id})).application;
- assert.equal(repaired.draft.questions.find(q=>q.fieldId==='phone').answer,'+1 202-555-0100');
- const result=await tool('submit_application',{applicationId:f.app.id,attemptId:'muse-repaired-job'});
- assert.equal(result.status,'Submitted',JSON.stringify(result));assert.equal(f.fixture.posts,1);
-});
-
-test('queued initial form inspection retains actionable custom-control details for Muse',async()=>{
+test('Muse records a host-browser blocker and saves the application handoff without running deterministic tools',async()=>{
  await workerProfile();const f=await application('normal',{profileId:'worker-execution'});
- await db.query('update public.applications set draft=$1 where id=$2',[{searchProfileId:'worker-execution'},f.app.id]);
- const app=await row('select * from public.applications where id=$1',[f.app.id]);
  f.fixture.extra='<button type="button" role="combobox" aria-label="Choose an office">Choose an office</button>';
- const queued=await tool('queue_application_job',{posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},profileId:'worker-execution',expectedRevision:app.revision,eventKey:'initial-custom-control'});
- const executor=createApplicationExecutor({download:async()=>bytes,browserFactory:()=>{let promise;return {getPage:async()=>{promise??=browserFactory();return(await promise).getPage();},close:async()=>{if(promise)await(await promise).close();}};}});
- await workOnce(rpc,{applicationExecutor:executor});
- const job=(await tool('read_backend_jobs',{jobId:queued.job.id})).jobs[0];
- assert.equal(job.result.blocker.code,'form-inspection');assert.equal(job.result.blocker.recovery.action,'use-browser');
- assert.equal(job.result.blocker.questions[0].question,'Choose an office');assert.equal(job.result.blocker.questions[0].fieldType,'unsupported');
- assert(job.result.blocker.reasons.some(reason=>/Custom/.test(reason)));assert.equal(job.result.blocker.submitClickAttempted,false);assert.equal(f.fixture.posts,0);
+ const queued=await tool('queue_application_job',{posting:{id:f.jobId,url:f.url,company:'Fixture Systems',title:'Fictional Engineer',employmentType:'FT',location:'Remote'},expectedRevision:f.app.revision,eventKey:'muse-blocker'});
+ const claimed=await tool('claim_application_request',{jobId:queued.job.id,expectedVersion:queued.job.version,expectedRevision:f.app.revision,eventKey:'muse-blocker-pickup'});
+ const provider=await browserFactory();
+ try{const page=await provider.getPage();await page.goto(f.url);const form=await inspectBrowserForm(page);assert(form.blockers.length);assert(form.questions.some(q=>q.question==='Choose an office'));}finally{await provider.close();}
+ await tool('report_application_failure',{applicationId:f.app.id,eventKey:'muse-browser-blocker',expectedRevision:f.app.revision,stage:'agent',outcome:'blocked',reason:'Employer office control needs human review.',nextAction:'Choose an office on the employer form.',attempts:[{stage:'agent',status:'failed'}]});
+ const app=(await tool('read_application_record',{applicationId:f.app.id})).application;
+ const outcome=await tool('report_application_request',{jobId:queued.job.id,expectedVersion:claimed.job.version,expectedRevision:app.revision,eventKey:'muse-blocker-outcome',outcome:'blocked',summary:'Employer office selection needs human input; no Submit click.'});
+ assert.equal(outcome.job.status,'partial');assert.equal(app.status,'Blocked');assert.equal(f.fixture.posts,0);
 });

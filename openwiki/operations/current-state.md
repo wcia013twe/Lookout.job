@@ -769,3 +769,79 @@ separately from source and component tests.
 The disclosure heading is Job Description. Explicitly marked Structured paraphrase
 content is presented as a saved summary rather than an employer quotation; saved
 content and the existing source URL are preserved.
+
+### Unified Action Board and AI Apply change feed
+
+Production paths now emit action_decision (human decisions/native approvals)
+and application_requested (AI Apply job insertion) into the existing pointer-only
+change feed and count-only watcher. Per-connection acknowledgement is delivery
+consumption, never completion. Tracker approvals stay pending until the claimed
+agent reports an outcome through record_tracker_action_progress. Owner/version/
+connection fences, durable rejection, explicit human reopening and late-outcome
+preservation use the existing decision ledger and owning tracker records. The
+normal Action Board displays this pipeline inline. Demo fixtures exercise the
+same requests and lifecycle in detached memory. Historical Done/Dismissed receipts
+are not retroactive permissions. Contract138/guide26 and the migration require
+normal backend release; a real Muse wake remains host/environment verification.
+
+Local activation of revision 35310de9 on 2026-11-08 applied the missing watcher, schedule refresh,
+disclosure and pipeline migrations and refreshed the API/Edge runtime. Existing
+account records were preserved; the worker was retained. A disposable local
+account verified authenticated human approval, MCP pickup/completion and feed
+acknowledgement with count 0 → 1 → 0. AI Apply event insertion was verified in a
+rolled-back transaction before worker visibility. This establishes local runtime
+behavior only; hosted deployment and the actual Muse host wake remain unverified.
+
+### Muse-owned AI Apply routing (source update)
+
+AI Apply now emits the existing application_requested feed pointer and waits for
+its bound agent. The agent-only claim_application_request / report_application_request
+tools use the existing job journal, current job/application versions, active
+connection scopes and human stop checks. Single pickup has no timed takeover.
+Muse reuses the saved draft with its host browser and optional host subagents;
+no backend browser session transfers. Outcome reports distinguish prepared,
+completed, blocked and uncertain, never create approval/submission evidence,
+and retain the existing application projection and finished-job feed.
+
+Deterministic worker pickup is disabled in SQL and its runtime hookup plus
+Node/local deterministic browser-tool registrations are commented out. Source
+implementations remain. Search workers and separate approval/receipt authorities
+are preserved. Existing started deterministic attempts can still persist a true
+finish. Host computer use cannot bypass required approval, authorization, stops
+or uncertainty checks; unavailable capability must become a saved blocker.
+
+See [the current routing contract](../../docs/discover-application-jobs.md).
+This is source-level behavior: migration, gateway/MCP and Node activation plus
+real watcher/browser-host verification are separate. The detached demo traces
+fictional pickup/outcome in memory and never opens or submits an employer form.
+
+Local Muse request activation (2026-11-08): migration 20261108050816 and
+API image lookout-node:muse-requests-c7d8534a are active in the local stack.
+Connected MCP discovery exposes both claim_application_request and
+report_application_request. A disposable account verified authenticated queueing,
+MCP pickup and a saved blocked outcome; no employer action or real account
+decision occurred. Actual Muse wake/browser work and hosted release remain
+unverified.
+
+### One-minute Muse event watcher (local activation)
+
+Agent package 0.2.0 uses 60-second default polling/wake cooldown and bounded error backoff against the existing event count. Context versions remain freshness checks. The optional receiver adapter now accepts Action Board refresh arguments; authenticated handling still requires verified durable outcomes before acknowledgement. Local Node MCP read-back confirmed developer140 and agent-package/change-resumption v2, and localhost serves the checksummed 0.2.0 package. This does not activate a host watcher: Dots Local watch was disabled and WGU remained queued v1 at verification. Edge/hosted release, actual host wake and employer work remain separate.
+
+Local dev transport verification (2026-11-08): Node image lookout-node:muse-public-transport-140 serves shared `/agent-gateway/pending-count` and checksummed `/agent-package/manifest.json` plus archive 0.2.0 through the MCP tunnel origin. Live public checks confirmed archive internal version/hash, active-watch count 1, missing-ID 400, unknown-ID zero and denial of unrelated paths. Hosted site publication remains separate. The enabled watch belongs to Muse Local, while WGU is queued for Dots Local (watch disabled); no request was rebound, claimed or acknowledged to hide that mismatch.
+
+Quiet application guidance locally activated (2026-11-08): connected MCP read-back confirmed developer141/application-workspace28/notifications5 after Node image activation and local Edge refresh. The guides require quiet browser work, Lookout-first recovery and a verified owning Need your input card for real blockers. Host secure-store/mailbox use is conditional on actual authorized capability; secrets never belong in Lookout or ordinary messages. Existing human approval and secure-entry boundaries remain. Fictional MCP-to-board integration covers the agent secure-entry handoff; real host compliance/credential capability and hosted release remain unverified.
+
+General batch/resume guidance locally activated (2026-11-08): MCP read-back confirmed developer142/application-workspace29/change-resumption3. The rules are Lookout-first facts, parallel independent work, serialized shared accounts/records, and retaining/resuming the same browser application where supported. Employer draft persistence and host session retention require evidence; no host isolation, real account state or actual browser compliance is established by guide activation.
+
+Grouped-input clarification locally activated (2026-11-08): connected MCP read-back confirmed developer143/application-workspace30, explicitly requiring all unanswered employer fields in one existing application/Need your input card, verified before notification, then the same application’s Submission review after resolution. This is a guide clarification over existing scoped writers/projections, not a new card implementation or evidence of host compliance. No real answers/cards/approvals were changed by this pass.
+
+### Discover question inspection disclosure
+
+Source now keeps Application answers visible for unchecked Discover jobs and distinguishes missing/partial form inspection from an explicitly completed inspection. An empty draft cannot produce the no-input reassurance. Fictional demo roles cover unchecked and partial questions. Developer146/application-workspace33 requires incrementally saved employer questions and a read-back-verified grouped Need your input handoff before notification. This uses existing draft/board boundaries; guide deployment, external host compliance and real WGU record repair are not established by this source change.
+Focused card and submission-label repair locally activated (2026-11-08): card UI keeps résumé and unresolved/proposed/unsourced questions while full saved answers remain in the application widget and versioned payloads. Applications suppresses superseded preparation warnings after applied/later progress while retaining genuine uncertainty. Existing Discover default filtering already excludes recorded applied roles, with explicit history browsing preserved. Desktop/mobile detached checks and full suite passed; Node/Edge MCP read-back confirmed developer145/application-workspace32. WGU was read back as Submitted with its historical partial/blocked job unchanged; this pass did not modify real application data or establish real-account browser refresh.
+
+### Explicit AI Apply routing (2026-11-08)
+
+Future requests use an owned, versioned application-agent preference, separate from the display agent name. My Agent → Use for AI Apply and scoped MCP read_application_agent/select_application_agent use the same validators and database ownership/version checks. New connections do not replace the saved choice; unavailable selections fail without fallback. Existing queued/running jobs keep their connection and claim authority. Without a saved choice, browser queueing requires exactly one eligible connection; MCP retains the authenticated caller as its explicit destination. Changing the preference grants no scopes, approval or submission receipt. Migration 20261108081625; local activation and hosted release must be verified separately.
+
+Local routing activation: the migration and Node image lookout-node:application-agent-147 are active. Scoped MCP write/read-back saved Muse Local as the default, and the live queue resolver confirmed Dots callers target it without queueing a test application. Full suite (1145 passed/five skipped), focused final reset/demo checks, production build and detached desktop/mobile selector checks passed. Existing WGU state, Dots permissions and watch configuration were not changed. Hosted release and real-account browser interaction remain unverified.

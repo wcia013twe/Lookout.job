@@ -15,8 +15,8 @@ export function validateConfig(input){
  if(url.protocol!=='https:'||url.username||url.password||url.hash||!url.pathname.endsWith('/agent-gateway/pending-count')||url.searchParams.getAll('watchId').length!==1||[...url.searchParams.keys()].some(key=>key!=='watchId')||! /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(url.searchParams.get('watchId')||''))throw Error('Use an HTTPS count-only watch URL without credentials or extra parameters');
  const wake=input.wake;
  if(!wake||typeof wake!=='object'||Array.isArray(wake)||Object.keys(wake).some(key=>!['command','args'].includes(key))||typeof wake.command!=='string'||!wake.command.trim()||wake.command.includes('\0')||!Array.isArray(wake.args)||wake.args.length>100||wake.args.some(arg=>typeof arg!=='string'||arg.includes('\0')||arg.length>4096))throw Error('Wake requires command and an array of literal arguments');
- const config={...input,watchUrl:url.href,pollIntervalSeconds:input.pollIntervalSeconds??120,wakeCooldownSeconds:input.wakeCooldownSeconds??1800,requestTimeoutSeconds:input.requestTimeoutSeconds??15,wakeTimeoutSeconds:input.wakeTimeoutSeconds??60};
- for(const [key,min,max]of [['pollIntervalSeconds',120,3600],['wakeCooldownSeconds',120,86400],['requestTimeoutSeconds',1,60],['wakeTimeoutSeconds',1,300]])if(!Number.isInteger(config[key])||config[key]<min||config[key]>max)throw Error(`Invalid ${key}: choose ${min}–${max}`);
+ const config={...input,watchUrl:url.href,pollIntervalSeconds:input.pollIntervalSeconds??60,wakeCooldownSeconds:input.wakeCooldownSeconds??60,requestTimeoutSeconds:input.requestTimeoutSeconds??15,wakeTimeoutSeconds:input.wakeTimeoutSeconds??60};
+ for(const [key,min,max]of [['pollIntervalSeconds',60,3600],['wakeCooldownSeconds',60,86400],['requestTimeoutSeconds',1,60],['wakeTimeoutSeconds',1,300]])if(!Number.isInteger(config[key])||config[key]<min||config[key]>max)throw Error(`Invalid ${key}: choose ${min}–${max}`);
  return config;
 }
 export async function readPendingCount(config,{fetchImpl=fetch,signal}={}){
@@ -35,7 +35,7 @@ export async function handleCount(count,state,{now=Date.now(),cooldownMs,wake,pe
  state.lastWakeAt=now;await persist(state);await wake();return 'wake-command-completed';
 }
 export function pollDelay(config,failures=0,random=Math.random){
- return Math.round(Math.min(3600000,config.pollIntervalSeconds*1000*2**Math.min(failures,5))*(1+random()*0.1));
+ return Math.round(Math.min(Math.max(300000,config.pollIntervalSeconds*1000),config.pollIntervalSeconds*1000*2**Math.min(failures,5))*(1+random()*0.1));
 }
 export function wakeCommand(config,{signal,spawnImpl=spawn}={}){
  // Pass only ordinary process-location settings. No inherited agent/API tokens.

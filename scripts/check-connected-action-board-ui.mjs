@@ -27,6 +27,9 @@ try{
  const left=await page.locator('.needs-you-priority').boundingBox(),right=await page.locator('.prep-widget').boundingBox();assert(right.x>=left.x+left.width,'Desktop keeps its two columns');
  for(const row of await page.locator('.action-board-row[data-kind]').all()){assert.equal(await accept(row).count(),1);assert.equal(await reject(row).count(),1);assert(await row.locator('[data-discovered-role]').count()||await row.getByRole('region',{name:'Attached job context'}).count()||await row.locator('a').first().innerText());}
  assert.equal(await page.getByText('Imported',{exact:true}).count(),0);assert.equal(await page.locator('.action-board-row').filter({hasText:'Example Scheduled (demo)'}).count(),0);await application.locator('[data-discovered-role]').waitFor();assert.equal(await application.getByRole('heading',{name:'Submission',exact:true}).count(),1);await application.getByText(/Saved draft résumé/).waitFor();await application.getByText(/AI-drafted answer/).first().waitFor();await application.getByRole('region',{name:'Inferred details'}).waitFor();
+ assert.equal(await application.getByLabel('Email',{exact:false}).count(),0,'Profile email stays off the decision card');
+ assert.equal(await application.getByLabel('Current location',{exact:false}).count(),0,'Sourced location stays off the decision card');
+ await application.getByRole('heading',{name:'Answers to review',exact:true}).waitFor();
  const applicationDetails=application.getByRole('link',{name:/Open application details for/});
  assert(await applicationDetails.count());
  assert(await applicationDetails.locator('.sr-only').count(),'Application details use the whole widget; no separate visible link');
@@ -37,6 +40,8 @@ try{
  assert.match(await communication.getByRole('link').getAttribute('href'),/person=[^&]+&returnTo=/);
  await applicationDetails.click({position:{x:20,y:20}});
  await page.waitForURL(/\/applications\/\?application=/);
+ await page.getByText('Current location',{exact:true}).first().waitFor();
+ await page.getByText('New York, NY (demo)',{exact:true}).first().waitFor({state:'attached'});
  await page.goBack();await application.waitFor();
  const phoneContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),phone=await phoneContext.newPage();attach(phone);await phone.goto(base+path);await card(phone,'review_application').first().waitFor();assert(await phone.locator('.prep-agenda-day').count()>0);assert(await phone.getByText(/^In [0-9]+ days?$/).count());
  await card(phone,'review_outreach').first().getByRole('region',{name:'Attached communication context'}).waitFor();
@@ -61,11 +66,17 @@ try{
  await message.getByRole('region',{name:'Attached communication context'}).getByText('Edited subject (fictional)',{exact:false}).waitFor();
  assert(await accept(message).isDisabled());assert.equal(await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).isChecked(),false);
  await message.getByRole('checkbox',{name:'I reviewed this exact message.'}).click();await accept(message).click();await page.getByText('Ready for you to send. Nothing was sent.',{exact:true}).waitFor();
- const task=card(page,'imported_action');await task.getByText('Choose an interview time',{exact:true}).waitFor();await accept(task).click();await task.waitFor({state:'detached'});
+ const task=card(page,'imported_action');await task.getByText('Choose an interview time',{exact:true}).waitFor();await accept(task).click();await task.waitFor({state:'detached'});const pipeline=page.getByRole('region',{name:'Tracker action pipeline'});await pipeline.getByText('Approved · waiting for Muse',{exact:true}).waitFor();await pipeline.getByRole('button',{name:'Demo: Muse picks up',exact:true}).click();await pipeline.getByText('Muse is working',{exact:true}).waitFor();await pipeline.getByRole('button',{name:'Demo: save outcome',exact:true}).click();await pipeline.getByText('Muse reported completion',{exact:true}).waitFor();
  const interview=card(page,'confirm_interview').first();await accept(interview).click();await page.getByText('Interview details confirmed. Weekly prep is updated.',{exact:true}).waitFor();
  // A mobile vertical drag must remain scroll; an intentional horizontal drag rejects.
  const pending=card(phone,'review_application').first(),cdp=await phoneContext.newCDPSession(phone);
  async function swipe(dx,dy){await pending.evaluate(row=>row.scrollIntoView({block:'start'}));const box=await pending.boundingBox(),x=box.x+box.width*.7,y=box.y+24;await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});for(let i=1;i<=8;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx*i/8,y:y+dy*i/8,id:1}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
  await swipe(0,-130);assert.equal(await pending.count(),1);await swipe(-145,0);await phone.getByText('Application saved. Agent work stopped until you resume it.',{exact:true}).waitFor();
+ for(const surface of [page,phone]){
+  await surface.goto(base+'/applications/?demo=1');
+  const submitted=surface.locator('.tracker-row').filter({hasText:'Harbor Data (demo)'});await submitted.waitFor();
+  assert.match(await submitted.innerText(),/Applied/);
+  assert.equal(await submitted.getByText(/AI Apply:/).count(),0,'Recorded submission supersedes its old blocked preparation job');
+ }
  assert.deepEqual(errors,[]);await desktop.close();await phoneContext.close();console.log(`Upcoming dates/day tags and inline action cards verified: distinct content, references, no imported label, guarded forms, exact review, keyboard decisions, manual outreach and mobile scrolling/swipes. Screenshots: ${dir}`);
 }finally{await browser.close();}

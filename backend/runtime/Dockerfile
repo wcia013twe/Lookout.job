@@ -5,6 +5,9 @@ ENV LOOKOUT_CHROMIUM_EXECUTABLE=/usr/bin/chromium
 RUN apk add --no-cache chromium
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+COPY agent-package ./agent-package
+COPY scripts/build-agent-package.mjs ./scripts/build-agent-package.mjs
+RUN node scripts/build-agent-package.mjs /app/public/agent-package
 COPY backend/runtime ./backend/runtime
 COPY supabase/functions ./supabase/functions
 COPY lib ./lib

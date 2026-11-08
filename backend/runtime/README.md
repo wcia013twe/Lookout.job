@@ -328,7 +328,7 @@ extraction outcomes are separate source diagnostics, not a new service or table.
 ## Programmatic application submission
 
 The configured Node API can expose `submit_application` and
-`submit_application_batch` when `LOOKOUT_SUBMISSION_ENABLED=true`. Its default is
+`submit_application_batch` implementations are retained, but runtime registration is temporarily commented out for Muse-owned computer use. The historical `LOOKOUT_SUBMISSION_ENABLED` default is
 off; discovery is filtered by workspace:read, drafts:write, approvals:read and
 resumes:read. These tools reuse the local runner implementation; no parallel
 submission engine or search-cron execution path exists. Browser contexts and
@@ -369,7 +369,7 @@ and real employer behavior remain unverified until separately exercised.
 
 ## Application jobs
 
-`queue_application_job` accepts a selected canonical Greenhouse, Ashby or Lever posting and pins the current owned application revision/profile in the durable backend queue. With both execution and submission flags enabled, the worker uses its fenced application RPC path and the existing guarded runner. Search claims exclude application jobs. No LLM runs inside this worker. See [the shared contract and verification limits](../../docs/discover-application-jobs.md).
+`queue_application_job` accepts a selected canonical Greenhouse, Ashby or Lever posting and pins the current owned application revision/profile in the durable backend queue. Application worker hookup and deterministic submission-tool registration are currently commented out. AI Apply emits a change-feed pointer; Muse uses claim_application_request, its authorized host browser and report_application_request. LOOKOUT_SUBMISSION_ENABLED does not restore the paused registrations. Search claims exclude application jobs. No LLM runs inside this worker. See [the shared contract and verification limits](../../docs/discover-application-jobs.md).
 
 ## Shared default search sources
 
@@ -495,3 +495,7 @@ adapters: ByteDance collection exists, but its full-description verification
 is unsupported by the current pinned verifier; TikTok needs separate adapter
 configuration/support. Those return explicit coverage limitations, never
 verified empty results. No automatic publication or applications.
+
+## Muse dev watcher transport
+
+The Node API serves the existing scalar-only `GET /agent-gateway/pending-count?watchId=...` via `agent_pending_count`. It shares Edge validation and never reads event bodies or acknowledges work. Unknown handles return zero; malformed requests return 400 and database failures 503. The dev tunnel additionally allows only `/agent-package/manifest.json` and the pinned 0.2.0 archive, generated into the API image with SHA-256 metadata. Obtain these assets from the same HTTPS origin as `/mcp` when the hosted website has an older release. `/v1`, health and all other paths remain denied by the tunnel. Package reads grant no account access. Existing scoped configure/read/ack MCP tools remain the writer boundaries.

@@ -31,3 +31,12 @@ test('personal facts and conflicting options are not misrouted as agent writing 
  const {applicationReviewGroups}=await import('../lib/application-review.mjs');const g=applicationReviewGroups([{question:'Years of experience?',required:true,fieldType:'text',answer:''},{question:'Why do you need sponsorship?',required:true,fieldType:'textarea',answer:''},{question:'Availability',required:false,answer:'',reason:'conflicting-application-preference'},{question:'Resume',required:true,fieldType:'file',answer:''}]);
  assert.equal(g.human.length,3);assert.equal(g.agent.length,0);assert.equal(g.optional.length,0);assert.equal(g.browser.length,1);
 });
+
+test('preparation does not mistake absent questions or partial inspection for no input', async()=>{
+ const {applicationPreparationMessage:message}=await import('../lib/application-review.mjs');
+ assert.match(message(), /haven’t been checked/);
+ assert.match(message({questions:[]}), /haven’t been checked/);
+ assert.match(message({inspectedAt:'2026-11-08',questions:[]}), /partially checked/);
+ assert.match(message({questions:[{question:'Relatives at employer?',answer:''}]}), /partially checked/);
+ assert.match(message({inspectionComplete:true,questions:[]}), /Employer questions checked/);
+});

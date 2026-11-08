@@ -159,3 +159,46 @@ Limits: checks use disposable migrated databases and fictional detached browser 
 Saved label refinement: widgets display the existing stored fitLabel when
 present, otherwise saved recommendation.priority. No score-to-label inference
 or new classification state. Demo includes Strong fit and priority fallbacks.
+
+
+## Follow-up: one production change-feed pipeline
+
+- Consolidate human decisions/native approvals and AI Apply into the existing
+  owned change feed and count watcher; preserve per-connection acknowledgements,
+  pointer-only privacy and idempotency. AI Apply retains its existing backend job.
+- Tracker approval keeps needsAction pending. Extend the existing decision ledger
+  with exact-source audit/pickup/outcome receipts; add scoped MCP progress reporting
+  with version, owner and single-connection fences. No parallel editable sheet.
+- Rejection survives edits, cancels queued matching jobs and fences further work.
+  Reopening is human-only and needs verification for blocked/uncertain outcomes.
+  Preserve late real outcomes without clearing new tasks or granting submission.
+  Do not reinterpret legacy Done/Dismissed receipts as approvals.
+- Show lifecycle in the normal Action Board. Detached fixtures cover the same
+  pipeline, AI Apply feed pointers, progress and reset; demo-only buttons cannot
+  impersonate an agent in real accounts. Contract138/application guide26 describes
+  this flow and coordination with existing workers.
+- Verification: full `npm test` passed (1,117 passed, five skipped); 38 focused board/MCP/guide tests and the SQL/demo lifecycle checks passed. Data validation (158 roles), frontend typecheck and production build passed. Desktop/mobile browser checks verified approval stays pending, Muse pickup and completion, required input, stops, source labels, keyboard access and swipes. SQL checks cover replay, feed privacy/counts/acknowledgements, owner/scope isolation, single-agent claims, rejection across edits, AI Apply queue events/cancellation and late outcomes. Hosted migration/gateway/MCP release and authenticated
+  host wake verification remain separate; no account decisions or submissions
+  were made as part of development.
+
+- Local activation (2026-11-08): landed in main at 35310de9. Applied the four
+  missing watcher/schedule/disclosure/pipeline migrations to the local stack,
+  preserving hashes of existing account records. Rebuilt and replaced only the
+  local API image; retained the existing worker and its jobs. Reloaded the local
+  Edge runtime. A disposable authenticated account verified human approval →
+  feed → MCP pickup/completion → acknowledgement, with watcher count 0 → 1 → 0.
+  AI Apply emitted exactly one feed event in a transaction rolled back before
+  worker visibility. Disposable account removed; real decisions untouched.
+  Merged Discover checks and frontend typecheck passed. No push or hosted release;
+  the user's actual Muse host wake was not tested.
+
+## Local Muse tool activation (2026-11-08)
+
+- Applied committed migration 20261108050816 locally, with existing account
+  record hashes unchanged. Built API image lookout-node:muse-requests-c7d8534a,
+  replaced only the local API and reloaded the Edge runtime.
+- Connected MCP discovery exposes claim_application_request and
+  report_application_request. A disposable authenticated account exercised the
+  shared human queue writer, MCP claim and a blocked outcome, alongside the
+  approval/feed lifecycle. All passed; disposable account removed. No real
+  approval, employer action, host wake or hosted release was performed.

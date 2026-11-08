@@ -175,7 +175,7 @@ begin
  insert into public.imported_jobs(user_id,identity_key,record,source_rows) values(u,'inline-import','{"company":"Fictional Import","title":"Engineer","location":"Remote","url":null,"status":"APPLIED","employmentType":"FT","appliedDate":"2026-11-07","statusDate":"2026-11-07","archived":false,"archivedDate":null,"notes":"Fictional","needsAction":true,"nextAction":"Choose an interview time"}','[]') returning id into imp;
  select x into item from private.action_board_items(u) x where x->>'sourceId'=imp::text;
  req:=jsonb_build_object('key',item->>'key','response','accept','eventKey',gen_random_uuid());receipt:=public.respond_action_board(req);
- if public.respond_action_board(req)<>receipt or exists(select 1 from public.imported_jobs where id=imp and record->'needsAction'='true'::jsonb) then raise exception 'Task completion failed';end if;
+ if public.respond_action_board(req)<>receipt or not exists(select 1 from public.imported_jobs where id=imp and record->'needsAction'='true'::jsonb) then raise exception 'Approval incorrectly completed tracker task';end if;
  execute 'set local role authenticated';
  begin perform private.respond_action_board_before_inline_cards('{}');raise exception 'Legacy decision bypass exposed';exception when insufficient_privilege then null;end;
  execute 'reset role';
