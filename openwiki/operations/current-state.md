@@ -483,3 +483,26 @@ hosted deployment is separate.
 `publish_batch` accepts optional `recommendation.jobFacts.compensation` for an existing catalog job, using the same source URL/check timestamp as its other observed facts. It is bounded employer pay text preserving currency, range, original pay period (hour/week/month/year) and base/bonus/equity distinctions. No automatic annualization or benchmark substitution occurs. The browser and card-pack projection prefer this private observed value over older catalog compensation; explicit Not disclosed can override an outdated value. Omission retains the catalog fallback. Cards no longer extract a salary from personal fit prose, which can contain comparison benchmarks. This extends the existing private JSON observation; it does not rewrite catalog facts, assessments, applications or historical batches and introduces no database column/migration.
 
 Search guide17, application guide19 and developer contract124 advertise the scoped publication path. Fictional Discover previews cover hourly/monthly and undisclosed pay; validation covers annual pay too. Local code/database tests and a frontend export establish source behavior only; hosted release remains separate.
+
+
+#### Full-week calendar and missing-task correction (contract 126)
+
+The Action Board now displays every Monday–Sunday date with previous/next/current
+week controls. `read_preparation_planner` accepts optional Monday `weekOf`; website
+and MCP use `buildWeeklyPreparationAgenda` over the existing owned snapshot.
+The lower-level rolling allocator remains available for bounded planning checks.
+Past days never acquire newly allocated practice. The saved timezone is shown.
+
+Other pending tasks retains unfinished assessment rounds with unknown dates,
+imported next actions without dates, overdue/out-of-week events and preparation
+or learning tasks excluded by budget/date rules. Links open their owning source;
+unknown dates remain null. Week browsing does not change dates, task completion,
+budget or personal preferences. Dated interviews/mocks outside the selected week
+remain accessible through navigation and pending items. Completed/cancelled rounds
+and inactive/terminal/archived sources retain their existing exclusion rules.
+
+A scoped diagnosis found zero saved learning goals/preparation plans, one mock,
+and undated pending assessment rounds; it did not infer tasks from material text
+or assign guessed dates. The detached demo covers an unfinished undated OA.
+Validation and local activation receipts are in the shared calendar feature note;
+hosted deployment remains separate.

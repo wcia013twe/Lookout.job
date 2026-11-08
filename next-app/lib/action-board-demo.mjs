@@ -58,6 +58,7 @@ export function enableActionBoardScenario(fixtures,date){
  fixtures.state.demo.connectedBoard=true;
  fixtures.state.demo.boardImports=[{id:'00000000-0000-4000-8000-000000000777',identity_key:'fictional-board-import',source_rows:[],record:{company:'Example Follow-up (demo)',title:'Systems Engineer',location:'Remote',employmentType:'FT',status:'APPLIED',statusDate:date,appliedDate:date,url:null,notes:'Fictional application',archived:false,needsAction:true,nextAction:'Choose an interview time',actionDate:date}}];
 
+ fixtures.state.demo.boardImports.push({id:'00000000-0000-4000-8000-000000000778',record:{company:'Example Assessment (demo)',title:'Engineer',status:'SCREEN',rounds:[{id:'demo-undated-assessment',label:'Complete the assessment',stage:'SCREEN',type:'oa',phase:'received',date:null,notes:'Fictional task with no deadline.',cancelled:false}]}});
  const apps=Object.values(fixtures.state.workflow.applications),app=apps[0];
  app.status='Awaiting approval';app.questionsReviewed=true;
  fixtures.state.workflow.savedAnswers.push({id:'demo-board-answer',question:'Can you work onsite three days a week?',answer:'Yes, for the fictional demo.',imported:true,policy:'ask',companyScope:''});

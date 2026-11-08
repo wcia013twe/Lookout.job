@@ -34,7 +34,7 @@ try{
  const replay=await call('call_discovered_tool',{name:'save_mock_interview',arguments:payload});assert.equal(replay.artifact.version,1);
  const internal=await call('call_discovered_tool',{name:'read_mock_interview',arguments:{id:session}});assert.equal(internal.interviewerProfile,profile);
  const visible=await call('call_discovered_tool',{name:'read_artifact',arguments:{id:session}});assert(!JSON.stringify(visible).includes(profile));
- const planner=await call('read_preparation_planner',{});
+ const planner=await call('read_preparation_planner',{weekOf:payload.artifact.weekOf});
  assert.equal(planner.calendarArtifacts.filter(row=>row.id===session).length,1);
  assert(planner.agenda.days.flatMap(day=>day.events||[]).some(event=>event.id==='mock:'+session));
  assert(!JSON.stringify(planner).includes(profile));
