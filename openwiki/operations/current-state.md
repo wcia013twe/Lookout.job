@@ -1247,3 +1247,16 @@ discovery without duplicate call counts; this is a diagnostics correction, not a
 new participant run or product-effectiveness claim.
 
 Future JOB01 freezes also bind the shared executor timing/capture source, checked against the actual imported helper implementations. Historical freezes remain unchanged; this closes a prospective source-integrity gap without claiming a changed participant outcome.
+
+### JOB01/JOB02 controlled comparison closeout
+
+[Controlled pilot results](../../docs/job-controlled-pilot-results.md) distinguish
+harness clearance from product and outcome success. JOB01 baseline/Lookout returned
+9/10 versus 7/10 final targets, with quality gaps in both and a retained baseline
+timeout. JOB02 both met controlled saved-work outcomes with one observed question
+turn each; Lookout took more active time and tokens, and its six native persistence
+adherence checks failed despite current owned IDs. Exact native error cause remains
+uncertain. Frozen sources/evidence, independent final review, native confirmation
+and complete Langfuse read-backs are retained. Earlier invalid JOB02 pairs remain
+separate; no live employer readiness, proactive-effort benefit or general winner is
+claimed. Dollar costs remain unknown. This focused update does not regenerate the wiki.
