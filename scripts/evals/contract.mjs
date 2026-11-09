@@ -32,11 +32,13 @@ export function build(r,configIds={}) {
   const rootId=hash([traceId,'root']).slice(0,16);
   const experimentName=[r.campaignId,r.condition,'r'+r.repeat,r.harnessVersion,r.graderVersion].join('-');
   const metadata=Object.fromEntries(['campaignId','suiteId','suiteVersion','scenarioId','scenarioVersion','condition','episodeId','model','reasoning','harnessVersion','graderVersion','evidenceDigest'].map(k=>[k,r[k]]));
+  metadata.repeat=String(r.repeat);
   const experimentMetadata=Object.fromEntries(['campaignId','suiteId','suiteVersion','condition','model','reasoning','harnessVersion','graderVersion'].map(k=>[k,r[k]]));
   const span={traceId,spanId:rootId,name:'evaluate-'+r.condition,kind:1,
     startTimeUnixNano:ns(r.startedAt),endTimeUnixNano:ns(r.endedAt),
     attributes:Object.entries({
-      'langfuse.observation.type':'span','langfuse.trace.name':'evaluate-'+r.condition,
+      'langfuse.observation.type':'span','langfuse.trace.name':[r.condition,r.campaignId,r.scenarioVersion,r.graderVersion].join(' · '),
+      'langfuse.trace.tags':['eval-case:'+r.scenarioId,'eval-run:'+r.repeat],
       'langfuse.environment':environment,'langfuse.release':r.campaignId,
       'langfuse.version':[r.scenarioId,r.scenarioVersion,r.graderVersion].join(':'),
       'session.id':r.episodeId,

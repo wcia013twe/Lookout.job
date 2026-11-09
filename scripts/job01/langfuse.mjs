@@ -12,7 +12,7 @@ export function registration(spec,manifest){
 export function scores(run,grade){
  if(grade.evidenceDigest!==hash(run)||grade.episodeId!==run.episodeId)throw Error('Stale grade');
  const traceId=hash([run.version,run.condition,run.episodeId]).slice(0,32),out=[];
- const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'job01_'+name,value,dataType,environment:run.synthetic?'verification':'benchmark'});
+ const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'job01_'+name,value,dataType,environment:run.synthetic?'verification':run.pilot?'pilot':'benchmark'});
  add('time_execution_seconds',grade.timeToTask.executionSeconds);
  for(const [k,v] of Object.entries(grade.effortToTask))add('effort_'+k,v);
  add('quality_review_status',grade.status,'CATEGORICAL');add('run_status',run.status,'CATEGORICAL');
@@ -33,8 +33,8 @@ export function build(run,grade,spec,reg){
  if(!Number.isFinite(run.startedAt)||run.startedAt<=0)throw Error('startedAt epoch seconds required');
  if(run.checkpoints.reduce((n,c)=>n+c.executionSeconds,0)!==grade.timeToTask.executionSeconds)throw Error('Duration mismatch');
  const plan=scores(run,grade),rootId=hash(plan.traceId+'root').slice(0,16);
- const experimentId=hash([spec.version,run.pairId||run.episodeId,run.condition,run.synthetic===true]);
- const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':'benchmark','langfuse.trace.name':'JOB01 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
+ const experimentId=hash([spec.version,run.pairId||run.episodeId,run.condition,run.synthetic===true,run.pilot===true]);
+ const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':run.pilot?'pilot':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':run.pilot?'pilot':'benchmark','langfuse.trace.name':'JOB01 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.pilot':String(run.pilot===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
  const ns=x=>(BigInt(Math.round(x*1e6))*1000n).toString();
  const span=(id,name,start,seconds,parent)=>({traceId:plan.traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(start+seconds),attributes:Object.entries({...base,'langfuse.observation.type':'span'}).map(([k,v])=>attr(k,v))});
  const spans=[span(rootId,'JOB01 job selection trajectory',run.startedAt,grade.timeToTask.executionSeconds)];let cursor=run.startedAt;

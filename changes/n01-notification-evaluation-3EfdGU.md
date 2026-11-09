@@ -21,3 +21,7 @@
 Renamed current N01 case COM1, with COM2 reserved for application communication and COM3 for connection discovery. Added native Lookout storage orientation and equivalent baseline persistent-file orientation; removed conflicting common file-storage instruction. Historical runs retained. Focused verification and paired subscription pilot recorded separately; no product UI/backend changes or demo fixtures needed.
 
 Validation: three focused Node tests passed (including 23 Python regressions); data validation passed for 158 roles. Paired pilot pending at commit time. No push/publication.
+
+## Final-state review contract
+
+Documented prospective COM1–COM4 post-run read-only saved-state verification and participant final reconciliation. Added COM4 design with explicit implementation gaps. Historical COM1-stream-v3 source/freeze and scores unchanged. Documentation-only checks: diff whitespace; no runtime tests applicable. COM1/COM2 implementation delegated to isolated checkouts; COM3 design update delegated. No push.

@@ -1031,3 +1031,32 @@ materials and external sends. The standalone runner/grader checks evidence compl
 native outcomes separately, and emits detailed structural traces plus the shared eval summary.
 A dedicated COM2 account and actual tool preflight remain required before execution. Synthetic
 checks establish contracts only; no COM2 participant, database reset or live export is claimed.
+
+### Langfuse selected case/run view
+
+The common dashboard is now Eval Case & Run, filtered by eval-case and eval-run
+native Tags selectors. Future common exports supply these tags. Seven panels show
+one selected attempt per condition; campaign/version labels retain disambiguation.
+Saved remote configuration was read back; populated rendering awaits compatible
+measured exports. Historical traces were not backfilled. See docs/langfuse-evals.md.
+### JOB01 pilot-host preparation
+
+The [JOB01 host](../../docs/job01-job-search.md#ready-to-run-paired-pilot-host)
+reuses N01's candidate and pinned executor with a newly verified local test account,
+staged email versus user-upload delivery, and an internal-network inference gateway.
+A no-inference preflight passed for both conditions. Ten-target inclusion at each
+grading turn is separate from analysis quality; reviewed extraction binds to actual
+saved-state evidence. Earlier setup failures are retained. No participant pilot or
+real model outcome is claimed. Product state, original accounts and public catalog
+maintenance remain outside this evaluation setup.
+
+### JOB01 complete-shortlist clarification
+
+Prospective JOB01-search-v2 returns a complete updated shortlist at the later
+grading turn and removes interested-role tracking. Initial style follows onboarding;
+corrected style applies only after feedback. Fixed per-turn storage orientation
+explicitly directs Lookout tool use and permits baseline notes. Stage-specific
+quality includes unsuitable extras, separately from exact target recall. Effort
+counts unique interaction turns with overlapping category breakdowns. Pilot
+telemetry is labeled pilot, not measured. Existing private freezes and prior
+datasets remain unchanged; new preparation/preflight is required before execution.
