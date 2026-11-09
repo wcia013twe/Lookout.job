@@ -203,6 +203,20 @@ export function createDemoServices(store) {
     },
     async claimApplicationRequest(payload){return applicationRequest('applications.request.claim',payload);},
     async reportApplicationRequest(payload){return applicationRequest('applications.request.report',payload);},
+    async recordApplicationProgress(payload) {
+      const {applicationId,expectedRevision,status,note,eventKey}=payload;
+      if(!['Submitted','Interview','Offer','Rejected','Withdrawn'].includes(status)||!note?.trim()||note.length>2000||!eventKey?.trim())throw Error('Progress report required');
+      const signature=JSON.stringify(payload),prior=requestReceipts.get('progress:'+eventKey);
+      if(prior){if(prior.signature!==signature)throw Error('Event key conflict');return copy(prior.result);}
+      const current=application(applicationId);
+      if((current.backendRevision||0)!==expectedRevision)throw Error('Application changed');
+      if((current.submissionAttempts||[]).some(a=>['claimed','started','uncertain'].includes(a.state)))throw Error('Submission requires human recovery');
+      if(['Interview','Offer'].includes(status)&&!['Submitted','Interview','Offer'].includes(current.status))throw Error('Record submission first');
+      const saved={...current,status,blocker:null,...(status==='Submitted'?{submittedAt:current.submittedAt||new Date().toISOString()}:{})};
+      store.set('workflow.applications.'+current.id,saved);
+      const result={request:copy(payload),application:copy(saved),source:'user-reported-through-agent',confirmed:false};
+      requestReceipts.set('progress:'+eventKey,{signature,result});return copy(result);
+    },
     async readApplicationBatches(payload={}) {return readDemoSubmissionBatches(payload);},
     async resolveProfileConflict(choice='review') {
       const scenario=store.get('demo.profileConflict');if(!scenario)throw Error('No fictional profile conflict');

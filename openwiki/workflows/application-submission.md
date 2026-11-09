@@ -505,3 +505,38 @@ answer uses the existing blocker note payload; no employer fields are invented.
 Save and resume Muse saves through the existing versioned response boundary
 without granting submission approval. Actual host resumption remains separately
 verified. The detached demo includes a fictional hub-ranking textbox.
+
+
+### Superseded preparation blockers on recorded progress
+
+The shared `private.version_application` transition clears an unchanged preparation
+blocker on status-only writes to Submitted, Interview, Offer, Rejected or Withdrawn
+when no claimed, started or uncertain submission attempt exists. Website
+`set_application_stage` and MCP `record_application_progress` (`applications.progress`)
+therefore use the same cleanup, ownership and version boundaries. Draft content,
+draft revision, existing submission timestamp/receipt and historical execution-job
+outcomes are preserved; cleanup gets a separate preparation_blocker_cleared activity.
+Reported progress still does not create employer confirmation or human approval.
+Tracked draft edits remain forbidden and unresolved submission attempts retain
+their evidence, blocker and existing recovery/retry protections.
+
+Migration `20261108235459_clear_superseded_application_blockers.sql` also reconciles
+legacy tracked blockers through that transition. Regression coverage exercises
+both the authenticated website writer and actual MCP tool dispatch, stale versions,
+ownership/scopes, replay, legacy reconciliation and uncertainty. The detached demo
+can report submission after its fictional preparation failure, preserving the old
+job result and resetting independently. Runtime activation is a separate check.
+
+
+### AI Apply pickup receipt
+
+Application-workspace 37 and notifications 6 request one short host-conversation
+acknowledgement after a successful claim and running-job read-back. A batch receipt
+names only actually claimed roles; remaining queued requests are described as
+queued. This direct response need not wait for the routine digest, but keeps host
+messaging permissions and explicit quiet-time restrictions. Existing message/delivery
+receipts prevent duplicate announcements; a failed send is not delivery. The agent
+then works quietly, retaining all existing review, blocker and submission gates.
+The receipt never consumes the work event before a verified outcome or blocker.
+Developer151 and the matching feed guide reference expose the new procedure;
+actual external host message delivery requires a real host receipt.

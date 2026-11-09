@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,21);assert.equal(apps.version,36);assert.equal(digest.version,5);
+ assert.equal(search.version,21);assert.equal(apps.version,37);assert.equal(digest.version,6);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
@@ -233,4 +233,16 @@ test('AI Apply guides require quiet host-browser preparation, Lookout recovery a
  assert.match(apps.instructions,/call report_application_failure/);assert.match(apps.instructions,/then read_action_board and verify/);assert.match(apps.instructions,/A blocked backend job or a chat-only explanation is not a complete handoff/);
  assert.equal(apps.runner.registration,'paused');assert.deepEqual(apps.runner.tools,[]);
  assert.match(notice.instructions,/continue silently/);assert.match(notice.instructions,/genuinely missing decision/);
+});
+
+
+test('AI Apply pickup receipt follows a verified claim, groups the batch and preserves quiet execution and consent boundaries',()=>{
+ const apps=readGuide('application-workspace'),notice=readGuide('notifications');
+ assert.equal(apps.version,37);assert.equal(notice.version,6);
+ for(const phrase of ['After claim_application_request succeeds, read_backend_jobs','one brief pickup acknowledgement','actual claimed count','only one request was claimed','avoid duplicate announcements','do not claim a ping was delivered','never completes work','continue quietly'])assert.ok(apps.instructions.includes(phrase),phrase);
+ assert.match(notice.instructions,/After the single verified pickup acknowledgement/);
+ assert.match(notice.instructions,/need not wait for the routine progress digest/);
+ assert.match(apps.instructions,/respect host messaging permissions and explicit quiet-time restrictions/);
+ assert.match(apps.instructions,/do not create a schedule, change notification settings/);
+ assert.doesNotMatch(apps.instructions,/Work quietly: no routine start announcements/);
 });

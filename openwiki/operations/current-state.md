@@ -867,3 +867,25 @@ Local recovery verified: developer149 is live. A single idempotent Whatnot recov
 Human resolve_blocker acceptance now saves answers/notes and clears the blocker with questionsReviewed=false, returning the application to Draft instead of automatically producing Awaiting approval. Muse owns the subsequent preparation/readiness declaration; final human submission approval remains separate. The saved response event and historical decision are preserved. Existing exact-review approvals and other card actions retain their validators. Fictional demo and database regression cover the no-question note case and structured-answer blocker case.
 
 Verified locally:1153 full-suite tests passed/five skipped; focused blocker/response/guide tests, production frontend build, Docker build and data validation passed. Migration20261108233438 applied alone. Whatnot was version-fenced from revision3/Awaiting approval to revision4/Draft by changing only its readiness flag; no résumé, questions, saved ranking, decision history, approval or submission was fabricated. Scoped read_action_board confirms no Whatnot card remains. Hosted release and external Muse preparation remain unverified.
+
+
+### Superseded preparation blocker cleanup
+
+Migration 20261108235459 makes recorded tracking stages retire stale preparation
+blockers in the shared application transition and reconciles existing tracked rows.
+Website set_application_stage and MCP record_application_progress keep their
+existing ownership/version checks and reported-progress provenance. No active or
+uncertain submission attempt is cleared, and no draft, approval, submission receipt
+or historical job outcome is manufactured or rewritten. The detached demo covers
+reported submission after a fictional blocked preparation. Source verification and
+local database activation are recorded separately in the feature change note;
+hosted release is not implied.
+
+
+AI Apply pickup guidance (developer151/application-workspace37/notifications6)
+requires a brief host-conversation receipt only after verified claim, grouped for
+requests claimed together, followed by quiet preparation. It never reports queued
+roles as running, grants submission approval or acknowledges unhandled work.
+Existing host messaging permission, quiet-time restrictions and real delivery
+receipts remain required. Guide availability and actual Muse notification delivery
+are separate verification boundaries.
