@@ -142,10 +142,10 @@ test('invalid comparison cannot export quality even when private review exists',
 
 test('product-use intent is target-scoped and order/pronoun/tense independent',()=>{
  const a=read(new URL('../examples/job02/controlled-actor.json',import.meta.url)),expected=actorAnswer(a,'personal','Why do you want to apply?');
- for(const q of ['For Northstar Tools: have you used its product before?','Have you used Northstar Tools before?','Have you used their product?','Have you tried the product?','Are you familiar with it?','Any prior experience using Northstar Tools?','Do you use it?','Have you tried it?']){
+ for(const q of ['For Northstar Tools: have you used its product before?','Have you used Northstar Tools before?','Have you used their product?','Have you tried the product?','Are you familiar with it?','Any prior experience using Northstar Tools?','Do you use it?','Have you tried it?','Have you previously worked with Northstar Tools?','Are you already a Northstar Tools customer?']){
   const actual=actorAnswer(a,'personal',q);assert.equal(actual.factId,expected.factId,q);assert.equal(actual.answer,expected.answer,q);assert.equal(actorAnswer(a,'clean',q).factId,null,q);
  }
- for(const q of ['What is your citizenship?','What is your favorite color?','How many years of professional experience do you have?','Have you used Python?'])assert.equal(actorAnswer(a,'personal',q).factId,null,q);
+ for(const q of ['What is your citizenship?','What is your favorite color?','How many years of professional experience do you have?','Have you used Python?','Have you tried any other tools?','Have you worked for Northstar Tools?','Have you used other tools besides Northstar Tools?'])assert.equal(actorAnswer(a,'personal',q).factId,null,q);
 });
 test('specific application email authority beats contact fallback and fails closed on ambiguity',async()=>{
  const {applicationEmailAuthority:email}=await import('../scripts/job02/candidate-authority.mjs');

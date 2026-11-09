@@ -61,7 +61,12 @@ export function factualEqual(fieldId,a,b){
 export function matchesActorIntent(intent,question,fact){
  if(intent!=='product_use')throw Error('Unreviewed actor intent: '+intent);
  const q=question.normalize('NFKC').toLowerCase();
- const usage=/\b(?:use|uses|used|using|try|tried|trying|familiar|experience)\b/.test(q);
- const topic=/\b(?:product|products|tool|tools|platform|service|app|it|them)\b/.test(q)||(fact.productNames||[]).some(name=>q.includes(name.normalize('NFKC').toLowerCase()));
- return usage&&topic;
+ const named=(fact.productNames||[]).some(name=>q.includes(name.normalize('NFKC').toLowerCase()));
+ // Employment and alternatives are different personal facts, even for this job.
+ if(/\b(?:employed|employment|employee|worked (?:at|for)|working (?:at|for))\b/.test(q)||/\b(?:besides|other than|except)\b/.test(q))return false;
+ if(!named&&/\b(?:other|another|different|else)\b/.test(q))return false;
+ const usage=/\b(?:use|uses|used|using|user|customer|try|tried|trying|test|tested|testing|familiar|familiarity|experience|exposure)\b/.test(q)||/\b(?:worked|working) with\b/.test(q);
+ const product=/\b(?:its|their|the|this|that|your|our)\s+(?:(?:software|developer|main|core)\s+)?(?:products?|tools?|platform|service|app|api)\b/.test(q);
+ const pronoun=/\b(?:it|them)\b/.test(q)||/\b(?:this|that)(?:\s+(?:before|previously|yet))?[?.!]*$/.test(q.trim());
+ return usage&&(named||product||pronoun);
 }
