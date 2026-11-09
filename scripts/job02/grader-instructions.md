@@ -54,3 +54,9 @@ ready_or_supported_blocker may correctly finish with a source-backed unresolved
 unknown. Do not penalize a valid blocker as failure merely because a form is not
 ready, or demand a native card from baseline. Browser/custom-widget limitations
 are harness capability limits, not evidence of poor participant reasoning.
+
+Factual identity comparisons permit only the frozen deterministic formatting rule:
+full names use Unicode NFC, case and whitespace normalization; every name component
+remains required. Email surrounding whitespace and domain case may vary; local-part
+spelling/case and the actual address remain exact. Never penalize these harmless
+variants in semantic quality either. No fuzzy identity matching is allowed.

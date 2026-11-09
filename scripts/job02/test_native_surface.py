@@ -21,6 +21,10 @@ class NativeSurface(unittest.TestCase):
   with tempfile.TemporaryDirectory()as t:
    root=Path(t);(root/'suite').mkdir();(root/'candidate').mkdir();(root/'suite/scenario.json').write_text('{}');(root/'candidate/profile.md').write_text('first-message onboarding')
    env={'ROOT':root,'json':json};exec(compile(ast.Module(body=[f],type_ignores=[]),'prompt','exec'),env)
-   self.assertEqual(env['prompt']({'id':'continue'},'baseline'),env['prompt']({'id':'continue'},'lookout'))
-   self.assertEqual(env['prompt']({'id':'prepare'},'baseline').replace('\nfirst-message onboarding',''),env['prompt']({'id':'prepare'},'lookout'))
+   orientations={'baseline':'Use your persistent workspace files to retain relevant context, drafts, questions and next steps; verify saved changes. ','lookout':'Lookout is your persistent recruiting workspace. Use Lookout tools to retrieve relevant saved context and save meaningful drafts, questions and next steps; verify saved changes. '}
+   for stage in ['continue','prepare']:
+    prompts={c:env['prompt']({'id':stage},c)for c in orientations}
+    for c,orientation in orientations.items():
+     self.assertEqual(prompts[c].count(orientation),1);prompts[c]=prompts[c].replace(orientation,'').replace('\nfirst-message onboarding','')
+    self.assertEqual(prompts['baseline'],prompts['lookout'])
 if __name__=='__main__':unittest.main()

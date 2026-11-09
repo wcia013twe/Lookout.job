@@ -5,7 +5,7 @@
     {
       "id": "motivation",
       "targetId": "personal",
-      "questionPattern": "why.*(apply|join|work)|motivat|interest.*(role|company)",
+      "questionPattern": "why.*(apply|join|work)|motivat|interest.*(role|company)|(?:have you|whether you|you.ve|ever).*(?:used|use).*Northstar",
       "answer": "I want to own reliable backend systems and learn how this team operates them. Keep the answer specific to evidence in this job description; do not invent personal use of the product.",
       "reuse": "target_only"
     },

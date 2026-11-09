@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
 import {spawnSync} from 'node:child_process';
-import {read,write,hash,digest,actorAnswer,validateTargets,readiness,launchGate,assertFrozen,gates} from '../scripts/job02/core.mjs';
+import {read,write,hash,digest,actorAnswer,validateTargets,readiness,launchGate,assertFrozen,gates,factualEqual} from '../scripts/job02/core.mjs';
 import {mcp,responsePayload} from '../scripts/job02/native.mjs';
 import {BrowserHost} from '../scripts/job02/browser.mjs';
 import {build} from '../scripts/evals/contract.mjs';
@@ -107,6 +107,35 @@ test('controlled registration/export binds actual dataset and excludes private c
 
 test('prepare creates launcher directories before frozen readiness and no attempt',()=>{
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'job02-prepare-')),candidate=root+'/source-candidate';fs.mkdirSync(candidate);fs.writeFileSync(candidate+'/profile.md','Fictional candidate');fs.writeFileSync(candidate+'/resume.pdf','%PDF fictional');
- write(root+'/account.private.json',{apiUrl:'http://127.0.0.1:54321',mcpUrl:'http://127.0.0.1:8080/mcp',email:'job02-pilot-00000000-0000-0000-0000-000000000000@example.test',status:'verified'});write(root+'/runtime-input.json',{model:scenario.model,reasoning:scenario.reasoning,networkPolicy:'JOB01-isolated-inference',imageId:'sha256:fictional'});
+ write(root+'/cloned-context.private.json',{settings:{profile:{facts:{name:'Fictional candidate'}}}});write(root+'/owned-targets.private.json',{status:'fixture'});write(root+'/account.private.json',{apiUrl:'http://127.0.0.1:54321',mcpUrl:'http://127.0.0.1:8080/mcp',email:'job02-pilot-00000000-0000-0000-0000-000000000000@example.test',status:'verified'});write(root+'/runtime-input.json',{model:scenario.model,reasoning:scenario.reasoning,networkPolicy:'JOB01-isolated-inference',imageId:'sha256:fictional'});
  const r=spawnSync('node',['scripts/job02/cli.mjs','prepare','--root',root,'--candidate',candidate,'--reference','examples/job02/reference.template.json','--runtime',root+'/runtime-input.json'],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.equal(fs.statSync(root+'/runs').isDirectory(),true);assert.equal(fs.statSync(root+'/receipts').isDirectory(),true);assert.equal(fs.existsSync(root+'/pilot-attempt.json'),false);
+});
+
+// These gaps were observed in the preserved first controlled pair.
+test('prospective readiness requires identity, equivalent responses, owned records and storage proof',()=>{
+ const r=root();const result=readiness(r,{});
+ for(const gate of ['candidate_consistency','actor_equivalence','owned_target_lifecycle','storage_orientation'])assert.ok(result.errors.includes('Missing actual bound gate: '+gate));
+});
+test('narrow necessary product-use question receives same reviewed fact as combined motivation question',()=>{
+ const narrow=actorAnswer(actor,'personal','Have you used Northstar Tools before?');
+ const broad=actorAnswer(actor,'personal','Why do you want to apply, and have you used Northstar Tools before?');
+ assert.equal(narrow.factId,'motivation');assert.equal(narrow.answer,broad.answer);
+ assert.equal(actorAnswer(actor,'clean','Have you used Northstar Tools before?').factId,null);
+});
+
+test('receipt gate names stay unique',()=>assert.equal(new Set(gates).size,gates.length));
+
+test('factual equality accepts harmless name/email formatting without wrong identity',()=>{
+ assert.equal(factualEqual('name','Fictional Person','  FICTIONAL   PERSON '),true);
+ assert.equal(factualEqual('name','Fictional Person','Fictional Other'),false);
+ assert.equal(factualEqual('name','Fictional Person','Fictional'),false);
+ assert.equal(factualEqual('email','person@example.test',' person@EXAMPLE.TEST '),true);
+ assert.equal(factualEqual('email','person@example.test','other@example.test'),false);
+ assert.equal(factualEqual('email','person@example.test','Person@example.test'),false);
+});
+
+test('invalid comparison cannot export quality even when private review exists',async()=>{
+ const {build}=await import('../scripts/job02/langfuse.mjs');
+ const summary={scenarioVersion:scenario.version,validity:{comparable:false},evaluation:{quality:.9,taskSuccess:true}};
+ assert.throws(()=>build(summary,scenario,{scenarioHash:hash(scenario)}),/Invalid comparison/);
 });

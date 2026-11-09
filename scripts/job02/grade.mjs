@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {read,write,hash,digest,files,assertFrozen} from './core.mjs';
+import {read,write,hash,digest,files,assertFrozen,factualEqual} from './core.mjs';
 import {assign,authorize} from '../job01/grading.mjs';
 import {validate as validateEval} from '../evals/contract.mjs';
 export function handoff(root){
@@ -30,7 +30,7 @@ export function finalize(root,submission){
     if(typeof r.complete!=='boolean')throw Error('Explicit target completion judgment required');
     for(const k of applicable){const q=r.checks[k];if(!q||q.rating!==null&&![0,1,2].includes(q.rating))throw Error('Missing quality judgment: '+k);citation(dir,q);ratings.push(q.rating);}
     const visible=browser.targets.find(x=>x.targetId===t.id);
-    if(stage.id==='continue')for(const f of ref.fields?.[t.id]||[]){const got=visible?.fields?.filter(x=>x.fieldId===f.fieldId);fieldChecks.push({targetId:t.id,fieldId:f.fieldId,observable:got?.length===1,correct:got?.length===1?f.acceptedValues.some(v=>JSON.stringify(v)===JSON.stringify(got[0].value)):null});}
+    if(stage.id==='continue')for(const f of ref.fields?.[t.id]||[]){const got=visible?.fields?.filter(x=>x.fieldId===f.fieldId);fieldChecks.push({targetId:t.id,fieldId:f.fieldId,observable:got?.length===1,correct:got?.length===1?f.acceptedValues.some(v=>factualEqual(f.fieldId,v,got[0].value)):null});}
     if(stage.id==='continue')targets.push({id:t.id,expectedOutcome:ref.outcomes?.[t.id]??(t.kind==='workday'?'manual':'ready'),complete:r.complete,liveReady:t.kind==='workday'?null:visible?.readyToSubmit===true,observed:t.kind==='workday'?true:visible?.observed!==false&&!!visible});
    }
   }

@@ -1,7 +1,7 @@
 {
   "taskId": "JOB02",
-  "version": "JOB02-controlled-clearing-v1",
-  "graderVersion": "JOB02-review-v3",
+  "version": "JOB02-controlled-clearing-v2",
+  "graderVersion": "JOB02-review-v4",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
   "stageBudgetSeconds": 600,
@@ -72,7 +72,12 @@
     "acknowledge_muse_changes",
     "start_agent_audit_run",
     "append_agent_audit_events",
-    "read_agent_audit_run"
+    "read_agent_audit_run",
+    "read_application_policy",
+    "read_search_context",
+    "read_application_agent",
+    "read_user_brief",
+    "list_jobs"
   ],
   "quality": [
     "routing",

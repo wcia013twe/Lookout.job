@@ -1,12 +1,12 @@
 {
-  "version": "JOB02-actor-v1",
+  "version": "JOB02-actor-v2",
   "fictional": true,
   "facts": [
     {
       "id": "motivation",
       "targetId": "personal",
-      "questionPattern": "why.*(apply|join|work)|motivat|interest.*(role|company)",
-      "answer": "I haven't used Northstar Tools before. I want to own reliable backend systems and learn how this team operates them. Keep the answer specific to evidence in this job description; do not invent personal use of the product.",
+      "questionPattern": "why.*(apply|join|work)|motivat|interest.*(role|company)|(?:have you|whether you|you.ve|ever).*(?:used|use).*Northstar",
+      "answer": "I haven't used Northstar Tools before. I want to own reliable backend systems and learn how this team operates them.",
       "reuse": "target_only"
     },
     {
