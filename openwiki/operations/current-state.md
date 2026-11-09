@@ -1004,11 +1004,12 @@ are included. This focused update does not refresh the generated wiki as a whole
 ### N02 bounded job selection and analysis
 
 The [N02 infrastructure](../../docs/n02-job-search.md) uses frozen source packets
-and prospective N02-search-v2. Its primary artifact is a final list of up to X
-target jobs with analyses (default 10, provisional). Coverage and fit use a private
-reviewed final-preference reference with defensible alternatives; this is not
-exhaustive corpus recall. Saved history remains separate. Intermediate checkpoints
-assess preference handling and continuity; time, effort and quality remain separate
-from Lookout adherence. Langfuse registration, stage/root observations, experiment
-linking and scores have synthetic transport verification; no participant run,
-real wake or candidate-grounded reference quality is implied. V1 remains retained.
+and prospective N02-search-v3. At each grading turn, ten predetermined target IDs
+must appear in the returned saved-job list; additional appropriate jobs are allowed.
+Exact recall and missing/extra IDs are separate from semantic analysis quality.
+Intermediate checkpoints assess preferences/continuity. Both conditions reuse N01
+candidate context; Lookout receives scheduled email evidence, baseline the same
+email uploaded with a user request. Time, effort and quality remain separate from
+native-tool adherence. Langfuse plumbing has synthetic verification; no participant
+run or real wake is implied. Private candidate-grounded targets require independent
+review before the paired pilot. V1/v2 scenarios and datasets remain retained.

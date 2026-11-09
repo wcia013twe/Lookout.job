@@ -1,5 +1,5 @@
 {
-  "version": "N02-search-v2",
+  "version": "N02-search-v3",
   "taskId": "N02",
   "scope": "Bounded job selection and analysis; no application drafting, filling or submission.",
   "policy": {
@@ -9,7 +9,12 @@
     "userResponseDelayMinutes": 5,
     "wakeDelayMinutes": 0,
     "baselineInitiationDelayMinutes": 0,
-    "stageBudgetSeconds": 300
+    "stageBudgetSeconds": 300,
+    "candidateContext": "Reuse N01 candidate resume and onboarding context; do not replay onboarding in fresh sessions.",
+    "evidenceDelivery": {
+      "lookout": "email available during configured scheduled wake",
+      "baseline": "same email uploaded by user with initiation prompt"
+    }
   },
   "stages": [
     {
@@ -18,7 +23,12 @@
       "minute": 0,
       "kind": "external",
       "batch": "initial",
-      "baseline": "Select and save up to {targetLimit} suitable target jobs from the available board, with evidence-grounded fit analyses. Fewer is appropriate when fewer qualify."
+      "baseline": "Review this job email and save suitable target jobs with evidence-grounded fit analyses using my current preferences.",
+      "email": {
+        "id": "job-email-initial_search",
+        "subject": "New graduate job opportunities",
+        "body": "Please review the attached frozen job listings."
+      }
     },
     {
       "id": "career_change",
@@ -42,7 +52,12 @@
       "minute": 2880,
       "kind": "external",
       "batch": "later",
-      "baseline": "Update my final saved list of up to {targetLimit} target jobs and their analyses using the available jobs and my current preferences. Fewer is appropriate when fewer qualify."
+      "baseline": "Review this job email and save suitable target jobs with evidence-grounded fit analyses using my current preferences.",
+      "email": {
+        "id": "job-email-continuation",
+        "subject": "New graduate job opportunities",
+        "body": "Please review the attached frozen job listings."
+      }
     }
   ],
   "quality": [
@@ -60,10 +75,13 @@
     "career_preference_updated",
     "style_preference_updated"
   ],
-  "targetLimit": 10,
-  "targetLimitStatus": "provisional; fix before a paired run",
   "checkpointQuality": [
     "preference_handling",
     "continuity"
+  ],
+  "expectedTargetCount": 10,
+  "gradingStages": [
+    "initial_search",
+    "continuation"
   ]
 }

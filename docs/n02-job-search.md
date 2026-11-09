@@ -1,128 +1,117 @@
 # N02: Job selection and analysis across sessions
 
-N02-search-v2 measures time to task, effort to task and quality of completion. It ends with
-saved jobs and analyses; drafting and live form filling belong to N03.
+N02-search-v3 grades **whether all ten predetermined targets appear in the returned
+saved-job list at each grading turn**, plus the quality of their analyses. Ten is
+not an output cap. Additional suitable roles are allowed and reviewed separately.
+A later turn has its own expected ten. No application drafting, filling or sending.
 
-The main artifact is the **final list of up to X target jobs plus their analyses**.
-`targetLimit` defaults to 10 provisionally; fix it in the scenario before a paired
-run. Cumulative saved history and interested roles are not the target list.
+## Candidate, sessions and evidence
 
-Both conditions use the same frozen Jobright source, resume, initial context,
-model and reasoning settings. Baseline receives non-resume context in its first
-message and may save notes; the harness creates no profile file. Resume remains
-accessible. Fresh sessions retain saved state without onboarding replay or a
-standing-goal prompt. Record actual Lookout host configuration before execution.
+Reuse the N01 candidate resume/onboarding infrastructure. Both receive the same
+facts and model settings; baseline receives non-resume context in its first message
+and may save notes. Fresh sessions retain state without replay. No standing goal.
+Record actual Lookout configuration. Source packets use the same frozen board and
+Jobright detail evidence; they do not establish live employer availability.
 
-`examples/n02/scenario.json` defines initial search, confirmed career change,
-style correction and fresh-session continuation. The two changes share session 2
-but have separate checkpoints. Lookout receives its recorded wake prompt;
-baseline receives a prescribed initiation. There is no drafting reminder.
+1. Initial job email: Lookout sees the email during a configured scheduled wake;
+   baseline gets the identical uploaded email and a user request to act.
+2. Fresh session: both get the same career-priority update and style correction,
+   with a checkpoint after each.
+3. Fresh session: another equivalent email delivery releases the later batch.
 
-## Frozen source and private reference
+The condition-specific initiation is deliberate. Email bodies and job records
+match; future evidence and target labels remain private. Baseline prompts do not
+replay preferences. `examples/n02/scenario.json` owns stage requests and timing.
 
-Source infrastructure lives at `fixtures/job-board/<snapshotId>/`: manifest and
-jobs JSON are content-bound. No live search or changing evidence during a pair.
-An operator creates a **private**, independently reviewed reference:
+## Private reference and packets
+
+`fixtures/job-board/<snapshotId>/manifest.json` binds `jobs.json` by hash. Keep this
+private reference outside the participant workspace and public board:
 
 ```json
 {
   "snapshotId": "<manifest snapshotId>",
   "sourceHash": "<manifest files.jobs.json>",
   "status": "reviewed",
-  "reviewer": "<reviewer>",
+  "reviewer": "<independent reviewer>",
   "batches": {
-    "initial": [{"id":"<job ID>","finalFit":"strong","rationale":"<candidate evidence and gaps>","evidence":["<source and resume references>"]}],
-    "later": [{"id":"<job ID>","finalFit":"plausible","rationale":"<candidate evidence and gaps>","evidence":["<source and resume references>"]}]
+    "initial": [{"id":"<visible job ID>"}],
+    "later": [{"id":"<visible job ID>"}]
+  },
+  "expectedTargets": {
+    "initial_search": ["<exactly ten unique visible job IDs>"],
+    "continuation": ["<exactly ten unique visible job IDs>"]
+  },
+  "targetRationales": {
+    "<job ID>": {"rationale":"<candidate match>","materialGap":"<gap>","evidence":["<source and resume references>"]}
   }
 }
 ```
 
-This is a final-preference reference only, not a before/after assessment matrix.
-Strong and plausible entries form the qualifying target pool; plausible entries
-are acceptable alternatives. Labels are strong/plausible/weak/ineligible/unknown. The example labels are schema
-illustrations, **not ground truth**. Listing-only evidence cannot justify invented
-requirements, availability or deep fit claims. Include complete frozen descriptions
-where available and label uncertainty. Reference is never mounted or hosted on the
-board. Baseline and Lookout packets contain identical selected job records.
+The array strings above illustrate schema, not literal valid target sets. Review
+labels against candidate facts and frozen evidence; do not fabricate eligibility
+or deep scope. Expected targets are a predefined evaluation subset, not exhaustive
+corpus ground truth. Candidate conflict or unknown citizenship stays uncertain.
 
 ```sh
 node scripts/n02/task.mjs --source <snapshot-directory> --reference <private-reference.json> --stage initial_search --condition baseline --output <new-packet.json>
 ```
 
-Lookout additionally requires `--configuration <private-config.json>` containing
-`source` (actual configuration provenance) and `wakePrompt` (actual wake text).
-Stage IDs are in the scenario. Onboarding/resume transport remains host-owned.
+Lookout also needs `--configuration <private-config.json>` with configuration
+`source` and actual `wakePrompt`. Packet includes current jobs, email and delivery
+mode, never expected IDs. Onboarding, isolated account state and participant
+execution are host-owned; do not use the networking-specific N01 runner unchanged.
 
 ## Evidence and grading
 
-A host writes a terminal run JSON with version, episodeId, condition, snapshotId,
-sourceHash, startedAt (epoch seconds), status (completed/timed_out/execution_failed/harness_failed), and
-finalTargetJobIds, and checkpoints. Each checkpoint contains stage, executionSeconds,
-simulatedCompletionMinute, and interactions with nonnegative counts for
+Run JSON has version, episodeId, condition, snapshotId, sourceHash, startedAt (epoch
+seconds), terminal status, and checkpoints. Each checkpoint has stage,
+executionSeconds, simulatedCompletionMinute, and interactions with nonnegative
 scriptedInitiations/questions/repeatedContext/reminders/corrections/approvals.
-Keep native records, saved files and tool traces alongside it; independently
-extract the final target IDs from these records, not participant claims. Preserve
-other saved/interested jobs separately; they do not count toward the target cap.
+Grading stages also require `savedJobIds`, independently extracted from the
+returned/saved target list at that turn. Keep raw native records, files and tool
+traces; cumulative unrelated history is not the returned list.
 
-Review JSON binds `evidenceDigest` to SHA256 of JSON.stringify(run) and names a
-reviewer. `checkpoints[stage]` contains only preference_handling and continuity.
-`finalSelection` contains the scenario quality keys (analysis accuracy, saved and
-applied preferences, style, preservation). Each rating is
-`{rating: 0|1|2, evidence: "<artifact location and rationale>"}` for not met/partial/met.
-`finalSelection.alternatives[jobId]` may contain
-`{accepted:true,evidence:"<source/resume rationale>"}` for defensible unlisted
-alternatives. Adherence remains separate with `{status,evidence}`. Missing review
-stays review_required. Preserve immutable supporting artifacts; the run binding
-does not independently hash external artifact files.
+Review binds `evidenceDigest` to SHA256 of JSON.stringify(run), names a reviewer,
+and supplies `checkpoints[stage][qualityKey] = {rating:0|1|2,evidence:"location and rationale"}`.
+All checkpoints review preference_handling and continuity. Grading turns also
+review the scenario quality keys: analysis accuracy, saved/applied career and
+style preferences, style adherence and preserved interests. Missing review stays
+review_required. Adherence uses scenario keys with status/evidence separately.
 
 ```sh
 node scripts/n02/task.mjs --source <snapshot-directory> --reference <private-reference.json> --run <run.json> --review <review.json> --output <new-grade.json>
 ```
 
-Report execution seconds separately from simulated completion minutes. Scripted
-initiations are not measured human effort. Final quality includes target coverage, selection fit, evidence accuracy, retained
-and applied preferences, style and preserved interests. Coverage divides defensible
-final targets by min(X, number of reviewed qualifying targets), capped at 1.
-Accepted alternatives can substitute for reference targets. Fewer jobs receive
-full coverage when fewer qualify; no count penalty forces weak selections. Unknown
-selections require review instead of being automatically labeled poor. Coverage
-is relative to the reviewed reference, never exhaustive corpus recall. Intermediate
-checkpoints assess preference handling and continuity only. Semantic analysis may use any storage
-or presentation format. Separate adherence from all three outcome dimensions.
+- **Time:** actual execution duration separately from simulated completion time.
+- **Effort:** observed questions, reminders, repeated context, corrections and
+  approvals; prescribed initiations remain separate from measured human effort.
+- **Quality:** exact expected-target recall at each grading turn (matched/10),
+  matched/missing/unexpected IDs, plus semantic analysis and preference checks.
 
-## Langfuse integration and limits
+Nine expected targets plus an excellent alternative is still 0.9 exact recall;
+the alternative can receive a favorable semantic assessment. Extras never reduce
+recall automatically. Intermediate update turns do not require per-job analysis
+matrices. Independent review judges quality across equivalent storage formats.
 
-The adapter reuses the existing N01 credential policy and pinned CLI transport.
-One prospective dataset item represents the whole trajectory, bound to snapshot
-and source hash. It contains structural metadata only, not resume, reference labels
-or private records. Preview registration before writing:
+## Langfuse and readiness
+
+The adapter reuses N01 CLI/credential transport, registers one trajectory item,
+exports root/stage spans and root scores, and verifies experiment/score read-back.
+Only structural metadata is uploaded. Version/condition bind trace IDs; stage
+spans explicitly describe a duration-derived synthetic timeline, not wall-clock
+capture. Keep the same project and receipt directory:
 
 ```sh
-node scripts/n02/langfuse.mjs --register --manifest <manifest.json> --dry-run
-node --env-file=<private-env> scripts/n02/langfuse.mjs --register --manifest <manifest.json>
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --dry-run
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json>
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --verify
+node --env-file=<private-env> scripts/n02/langfuse.mjs --register --manifest <manifest.json> --receipt-dir <private-receipts>
+node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --dry-run
+node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts>
+node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --verify
 ```
 
-The score plan uses time/effort/quality prefixes and separate adherence categories.
-The exporter creates a trajectory root, stage spans, experiment/dataset-item links
-and root scores via OpenTelemetry, with project-bound registration and ingestion
-receipts. Use the same `--receipt-dir` for registration, export and verification.
-`--verify` checks observations, scores and experiment read-back; ingestion delay
-may require another verification, never a participant rerun. Stage spans represent
-sequential execution duration, not simulated event waits or exact model calls.
-
-`node scripts/n02/smoke.mjs <manifest.json> <new-directory>` creates explicitly
-synthetic transport evidence without fit scores or participant content. Live
-registration and synthetic five-span/fourteen-score experiment read-back were
-verified on 2026-11-09. The immutable v1 scenario is retained as
-`scenario-v1.json`; v2 uses its own dataset/item and registration receipt. This proves plumbing only. No participant runner, account
-reset, live wake, or completed evaluation is claimed by these adapters.
-Do not reuse the networking-specific N01 runner unchanged.
-
-Fix execution limits, event/response timing and user-actor answers before a pair.
-Preserve failures and timeouts, distinguish harness failures, freeze checkpoints,
-and provide no hidden retries or participant rescue. Future events and review
-labels stay outside participant workspaces. Internal infrastructure has no product
-UI/demo or new MCP action; existing scoped product capabilities are what is graded.
+V1/v2 scenarios and live datasets remain immutable; v3 uses separate registration.
+Synthetic telemetry verifies plumbing, not participant quality. Fix actor answers,
+budgets, timing, target references and configuration before a paired pilot. Preserve
+failures and distinguish harness failures; no rescue or silent retries. Do not run
+the paired pilot until explicitly authorized. Internal infrastructure adds no
+product UI/MCP action; existing scoped capabilities are what is graded.
