@@ -88,7 +88,7 @@ Participant outputs and stage metadata are saved before after-state capture. Rea
 
 ## Shared transport
 
-COM01–04 and JOB01–02 now use `scripts/evals/workspace_transport.py` through small
+COM01–04 and JOB01–04 now use `scripts/evals/workspace_transport.py` through small
 case argument adapters. New freezes include the shared source; existing frozen
 checkouts remain unchanged. See [shared harness boundaries](../scripts/evals/README.md)
 for testing goals and defect attribution. This consolidation does not change

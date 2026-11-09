@@ -16,9 +16,9 @@ When reviewing a case, distinguish:
   valid setup and harness. A participant mistake alone is insufficient evidence.
 
 Reuse existing infrastructure before copying a case. `workspace_transport.py`
-provides authenticated HTTP-to-stdio transport for COM01–04 and JOB01–02. Their
+provides authenticated HTTP-to-stdio transport for COM01–04 and JOB01–04. Their
 small `transport.py` adapters specify the case bridge arguments; JOB02 retains
-its graceful EOF shutdown. New freezes bind the shared implementation as well as
+its graceful EOF shutdown; the shared JOB03/04 host retains stderr capture. New freezes bind the shared implementation as well as
 the adapter. Keep old frozen checkouts unchanged; migrate only future setups.
 
 Shared timing/capture and diagnostics remain in `scripts/communication/`, cost

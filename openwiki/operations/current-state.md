@@ -1219,7 +1219,7 @@ PILOT05 failed before inference on a global fixture application-ID collision. CO
 ### Shared benchmark transport
 
 [Shared harness boundaries](../../scripts/evals/README.md) separate testing goals,
-setup mismatches, harness defects and Lookout defects. COM01–04 and JOB01–02 share
+setup mismatches, harness defects and Lookout defects. COM01–04 and JOB01–04 share
 one HTTP-to-stdio transport, preserving case arguments and JOB02's EOF shutdown.
 Prospective freezes include the shared executable. Local synthetic HTTP/worker
 and freeze tests establish this boundary; no participant rerun or hosted release

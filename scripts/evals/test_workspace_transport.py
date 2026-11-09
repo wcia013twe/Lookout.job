@@ -7,13 +7,14 @@ from unittest.mock import patch
 from workspace_transport import WorkspaceBridge
 
 ROOT=Path(__file__).resolve().parents[2]
-CASES=['n01','com2','com3','com4','job01','job02']
+CASES=['n01','com2','com3','com4','job01','job02','jobs']
 
 class TransportTests(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)
+  (self.root/'run/stage-1').mkdir(parents=True)
   self.script=self.root/'echo.py'
-  self.script.write_text('import json,sys\nfrom pathlib import Path\nfor line in sys.stdin:\n m=json.loads(line);print(json.dumps({"id":m["id"],"args":sys.argv[1:]}),flush=True)\nPath(__file__).with_suffix(".closed").touch()\n')
+  self.script.write_text('import json,sys\nfrom pathlib import Path\nprint("fictional worker diagnostic",file=sys.stderr,flush=True)\nfor line in sys.stdin:\n m=json.loads(line);print(json.dumps({"id":m["id"],"args":sys.argv[1:]}),flush=True)\nPath(__file__).with_suffix(".closed").touch()\n')
   self.bridges=[]
  def tearDown(self):
   for bridge in self.bridges:
@@ -49,6 +50,9 @@ class TransportTests(unittest.TestCase):
     with ThreadPoolExecutor(max_workers=4) as pool:
      replies=list(pool.map(lambda i:self.request(bridge,{'id':i}),range(4)))
     self.assertEqual([(status,json.loads(body)['id']) for status,body in replies],[(200,i) for i in range(4)])
+    if case=='jobs':
+     self.assertTrue(bridge.server.daemon_threads)
+     self.assertIn('fictional worker diagnostic',(self.root/'run/stage-1/bridge-stderr.log').read_text())
  def test_rejected_requests_never_reach_worker(self):
   bridge=self.start()
   self.assertEqual(self.request(bridge,{'id':1},key='wrong')[0],403)
