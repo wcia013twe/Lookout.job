@@ -1,99 +1,179 @@
-# JOB02 plan: application drafting and live form filling
+# JOB02 plan: batch preparation, questions and live form filling
 
-Status: design plan; implementation, target selection and preflight pending.
+Status: design only. No targets selected, harness implemented, readiness certified
+or JOB02 participant run. JOB01 is independent and must not be changed by this work.
 
-## Research question
+## Research question and scope
 
-Does Lookout reduce time and required user interactions when preparing an accurate
-application and filling a live form across sessions, while maintaining writing
-quality and respecting the stop-before-submit instruction?
+Does Lookout reduce time and required user interactions when preparing a small
+application batch, resolving missing information and filling supported live forms
+across sessions, while preserving factual and writing quality?
 
-## Scope
+Use three preselected targets shared by both conditions. Discovery belongs to
+JOB01. Reuse its starting candidate profile and resume, not participant-generated
+outcomes. Lookout receives an isolated native account and standard retrieve/save
+orientation; baseline receives complete context in its first message and may keep
+persistent files. No automatic onboarding replay in later sessions. Draft generation
+is part of application preparation; do not add a separate drafting prompt.
 
-Use one preselected job and the same live application form for both conditions.
-Discovery and job selection belong to JOB01. Complete the initial golden path
-before adding preference changes, multiple applications or difficult ATS recovery.
+| Target | Required outcome | Evidence |
+| --- | --- | --- |
+| Workday/manual | Save the canonical employer link and precise manual-completion handoff; stop before account creation, sign-in, question preview or filling. | Actual destination, owned unfinished application and rendered/read-back action card. Keep inspection incomplete; no invented questions. |
+| Personal-input question | Inspect a supported form, save the exact unresolved question, request needed input, then incorporate the controlled user's response. | Question identity, choices/limits, saved answer card, actor response receipt and final draft/live values. |
+| Clean Greenhouse | Inspect all reachable conditional questions, fill supported fields and correct resume, save draft and reach a verified ready-to-submit stopping point. | Full live form inspection, final visible values, upload evidence, validation state and saved draft. No Submit click. |
 
-Reuse the COM1/JOB01 candidate profile, resume and controlled user actor. Freeze the
-same starting career and writing preferences for both conditions. Do not make JOB02
-depend on either participant's JOB01 performance or inherit unequal run outcomes.
-Lookout uses an isolated native account; baseline gets complete context in its
-first message and may save persistent notes. Both retain their saved state across
-fresh sessions without automatic onboarding replay.
+Prefer a native Greenhouse form for the personal-input target too, keeping ATS
+coverage small. Its real form must contain a question whose answer depends on a
+withheld personal fact or intent. “Why do you want to apply?” is not automatically
+a blocker: grounded drafting is valid when known motivation suffices. Do not
+manufacture an employer question to force the desired interaction. Unknown facts
+remain unknown, including eligibility or conflicting dates.
 
-## Two-session flow
+## Two-session stream
 
-| Stage | Shared task/evidence | Lookout | Baseline |
-| --- | --- | --- | --- |
-| Prepare | Selected job, canonical application URL, resume, candidate facts, writing preferences; prepare and fill, stopping before Submit | Normal task request and standard native retrieval/save orientation. Drafting follows the existing application workflow; no separate draft-generation prompt. | Equivalent task request plus first-message personal context; files may persist. |
-| Continue in a fresh session | Same target and current live form; same prior permissions | Recorded scheduled continuation with relevant native state available. | Prescribed request to continue the application, using retained files. |
-| Finish | Form filled to the permitted stopping point; application answers/draft and genuine blockers saved | Native records plus browser evidence | Saved files plus equivalent browser evidence |
+1. **Prepare the batch:** Both receive the same three jobs, evidence and instruction
+   to prepare applications and fill supported forms, stopping before Submit. Lookout
+   follows existing native preparation/card flow; baseline saves equivalent drafts,
+   specific questions and next steps in files/chat. Both have the same actual browser
+   capabilities, network access and budgets.
+2. **Controlled response:** At the frozen response boundary, the actor answers only
+   questions actually requested, using predefined facts. Lookout receives saved
+   human card answers/change events; baseline receives the same semantic answers
+   through its user-message channel. Unasked facts are not volunteered. A missing
+   request remains a participant outcome, not grounds for coordinator assistance.
+3. **Fresh-session continuation:** Lookout receives the fixed simulated wake;
+   baseline receives a prescribed continuation request. Both reconcile saved state,
+   apply answers to the right application/field and complete independent work.
+   Workday remains manual; answering its card does not authorize automation.
+4. **Capture and grade:** Freeze final browser and durable-state evidence before a
+   fresh independent grading agent reads either condition. No participant rescue.
 
-The session boundary occurs after the fixed preparation turn, not after a
-coordinator decides the work is good enough. Agents may inspect the live form
-while drafting. Both have equivalent browser capabilities, network access, timing
-and fixed user-response facts; Lookout additionally has its native workspace.
-Neither receives hidden answer keys or in-run coaching.
+Freeze exact session budgets, wake/response delays and stopping rules before
+execution. The first boundary is fixed, not chosen after checking output quality.
+Keep browser state equally across conditions; record whether fresh session means
+new model context with retained browser cookies/pages. Neither condition receives
+hidden target outcomes, answer keys or grading instructions.
 
-## Target and live evidence
+## Controlled answers and native response boundary
 
-Select an accessible native Greenhouse, Ashby or Lever form compatible with the
-current preparation tools. It should contain factual fields, resume upload and at
-least one substantive written response so both filling and writing can be graded.
-Exclude login, CAPTCHA and Workday/company-site handoffs from this first golden
-path; current product guidance hands those back to the user.
+Freeze one answer sheet distinguishing already available facts, withheld reusable
+facts, job-specific personal intent and genuinely unknown facts. Include accepted
+semantic paraphrases and explicit reuse scope. The actor returns the requested fact
+or “unknown”; it never coaches, repairs malformed cards or supplies extra hints.
+Scope personal motivation to its job; reuse factual answers elsewhere only when
+meaning, options and user permission support it.
 
-Before freezing, inspect the actual form, its conditional questions and upload
-behavior. Confirm that filling/uploading does not create an application or send
-an employer notification before Submit. Freeze the job description, initial form
-structure and field-level reference answers with provenance. Preserve uncertainty
-in conflicting graduation facts or unknown eligibility; ask the controlled actor
-when needed rather than inventing answers.
+Use the existing product boundaries, not an agent-writable fake card:
 
-Capture the form actually seen by each participant and final visible values,
-selected choices, uploaded-file evidence and validation errors. Grade against
-that live evidence. If the form changes between conditions, retain both records
-and mark comparability limits; do not silently substitute a fixture or another job.
+- Participant saves exact observed questions through `prepare_draft`, preserves
+  human edits and reads `read_action_board`. One application's unresolved fields
+  belong to its existing Need your input card. Workday is a fieldless manual blocker.
+- A separate controlled-human actor uses the authenticated website/service
+  `respondActionBoard` client → `respond_action_board` RPC boundary for the dedicated
+  test account (see [client](../backend/client.mjs)). Freeze its actual payload,
+  source key/revision, deployed route and identity after verifying the selected stack. The participant has no access to this human session
+  or credential. Answer-only blocker responses grant no final approval.
+- Capture the saved response plus its `action_decision`/`savedResponse` event, then
+  verify the same application and question IDs through read-only state. Participant
+  refreshes current state and uses its supported draft writer; the actor does not
+  complete application work on its behalf. Missing events must not be replaced by
+  secret chat hints. Baseline receives the same response once with its field context.
 
-## Completion and grading
+Current source supports draft-derived cards and human-only responses, but does not
+prove this harness can deliver them. Deterministic `inspect_application`/
+`try_application` registrations are paused; source/tests alone do not establish
+participant browser availability. Verify the actual host tools for both conditions.
+See [application-workspace](../supabase/functions/agent-gateway/skills/application-workspace.json),
+[runner limits](../runner/README.md) and
+[application workflow](../openwiki/workflows/application-submission.md).
 
-Completion means supported fields are accurately filled, substantive answers are
-saved, and genuine unresolved requirements are identified. Submit is never clicked;
-no approval to submit or submission receipt is required. Partial completion and
-access failures remain visible outcomes.
+## Grading gates
 
-Use one fresh final grading agent for both conditions after execution, following
-the JOB01 assignment and evidence-binding pattern. The grader did not implement,
-operate or participate in either run. Native read-only confirmation uses only the
-dedicated test account and remains outside participant metrics. Baseline saved
-files receive equivalent outcome checks.
+Use one fresh final grader for both conditions, following JOB01's frozen
+assignment, artifact binding and independence attestation. It neither implements
+nor operates the runs. Confirm native state read-only under the dedicated test
+account; inspect baseline files equivalently. Keep grader activity outside metrics.
 
-| Dimension | Evidence and measure |
+| Dimension | Checks |
 | --- | --- |
-| Time to task | Actual preparation/filling execution duration; separately report fixed simulated wake/user-response delays. |
-| Effort to task | Unique observed user interaction turns; prescribed initiations separate; overlapping categories only as breakdowns. |
-| Quality of completion | Correct live field values and resume; grounded written answers; saved writing preferences applied; no invented facts; accurate blockers and stopping state. Report field accuracy and substantive writing quality separately. |
+| Time to task | Actual execution duration through each permitted outcome; fixed simulated waiting reported separately. Incomplete work retains its timeout, not a successful completion time. |
+| Effort to task | Unique required user interaction turns, including repeated/unnecessary requests; scripted initiations separate. Category counts may overlap and must not be summed. |
+| Quality of completion | Per-target routing/completion, question coverage and necessity, answer accuracy, resume identity, grounded writing/style, durable answers and honest blockers. Report each target and before/after checkpoint; batch averages must not hide a failed target. |
 
-Use frozen 0/1/2 anchors for semantic writing judgments. Include concrete checks
-for the candidate's style, factual support, role relevance and compliance with form
-length limits. Missing evidence cannot become a pass. Report Lookout tool adherence
-separately from quality; successful calls alone do not establish correct saves.
+**Before the answer:** Check the question was actually observed, necessary after
+consulting available facts, specific and answerable, with correct job/field/options.
+Group related missing fields without making the user decipher diagnostics. Baseline
+may pass equivalent user-facing handoff quality without a Lookout card.
 
-## Implementation sequence
+**After the answer:** Compare the exact actor response to saved and live values.
+Facts use exact values or valid equivalent choices; written responses use frozen
+0/1/2 anchors for fidelity to personal intent, factual support, role relevance,
+style and length limits. Check correct field mapping, persistence across the fresh
+session, allowed reuse and preservation of unrelated answers. Do not clear a
+blocker while required fields remain unresolved. Merely copying the user response
+into chat does not establish a saved or filled answer.
 
-1. Select and inspect the shared target; confirm supported browser paths for both
-   conditions and validate the no-submit boundary, including resume upload.
-2. Freeze scenario, candidate context, field reference, actor facts, session budgets,
-   event/response timing, grader instructions and runtime versions. Register a
-   prospective JOB02 Langfuse item using the existing time/effort/quality contract.
-3. Add isolated two-session execution, browser/form evidence capture and separate
-   native confirmation. Reuse proven host components without modifying JOB01's
-   active frozen checkout or accounts. Test any new browser-capture boundaries.
-4. Preflight both conditions without filling a real application. Verify synthetic
-   telemetry and final-grader handoff; then run one explicitly authorized paired
-   pilot. Preserve timeouts, failures and setup errors; no silent retries or rescue.
+**Completion:** Workday's correct outcome is a manual handoff, not form readiness.
+The input target must resolve what the actor answered and retain genuine unknowns.
+Greenhouse must have observed complete inspection and accurate final live fields;
+a saved draft, resume upload or “ready” message alone cannot pass. No actual
+submission, approval forgery or unsupported Submitted status is acceptable.
+Missing evidence is ungradable, never an inferred pass. Report native Lookout
+adherence separately as correct / attempted but failed / omitted / not applicable.
 
-Ready-to-run gate: shared target and browser support verified; equivalent inputs,
-fixed actor/timing and independent grader instructions frozen; preflight passed;
-submission control unavailable or guarded with a verified stop boundary. This plan
-alone does not establish readiness or authorize a JOB02 application run.
+## Prove the harness before starting participants
+
+Implementation must emit receipts; this checklist is not a passing receipt. Use
+small fictional fixture accounts and controlled forms for all rehearsal writes.
+Never rehearse against a real employer application or overwrite historical runs.
+
+| Gate | Required retained proof before readiness |
+| --- | --- |
+| Runtime and parity | Both actual participant containers can use the selected browser, inspect a controlled form, persist/reopen a page, access their own resume and retain output across sessions. Verify actual auth, tool schemas/scopes, target network paths and isolated account ownership. No inference-only connectivity check can stand in for browser proof. |
+| Three-path rehearsal | Run the actual harness adapters on synthetic Workday redirect, missing-question and clean Greenhouse-like forms. Prove correct question/choice capture, file-byte/hash matching, final-value capture, card save/read-back, real controlled-human response ingress, fresh-session recovery and baseline-equivalent delivery. Retain expected-versus-observed assertions. This is infrastructure testing, not participant quality evidence. |
+| Stop boundary | Prove final submission cannot execute through every exposed browser/tool path, including click, keyboard Enter and scripted form submission. Exercise the deny path against a controlled endpoint with a request counter. Resume upload/ATS autosave is separately inspected: if it creates an employer application or notification before Submit, the live target is ineligible. Do not assume a disabled button is a complete guard. |
+| Fail-closed checks | Inject expired auth/tool denial, failed draft write/read-back, stale card revision, missing/misrouted actor event, changed form fingerprint/conditional field and missing final evidence. Each must record a specific failure and prevent readiness; none may yield an empty-success result or silently fall back to chat/fixtures. |
+| Live target check | Read-only inspect the three exact canonical URLs and conditional structure with both host paths; record time, fingerprint and supported controls. Validate upload/autosave semantics from provider evidence or a controlled equivalent; unresolved live side effects block live use. Recheck immediately before each condition. Material drift stops that pair as incomparable; no silent target replacement. |
+| Grading/telemetry rehearsal | Produce a synthetic complete trajectory and a deliberately incomplete one. Prove the independent grader handoff contains all evidence bindings, missing evidence cannot pass, timing/turn arithmetic is correct and native confirmation cannot write. Verify Langfuse export/read-back with synthetic labeling through the existing eval contract; never label a pilot as measured. |
+
+Each failure gets an error ID, logs, classification and, after a code fix, a new
+passing receipt linked to that ID. Keep failed receipts and attempts. An explicit
+setup rerun is allowed before participants; no hidden retries. After participants
+start, freeze errors/timeouts as outcomes; no repair-and-resume under the same run.
+
+`readiness.json` must bind source hashes, runtime image/model/reasoning, actual
+tool schemas and application guide versions, scenario/actor/rubric/grader hashes,
+candidate/resume hashes, exact target URLs/form fingerprints, budgets/timing and
+all gate receipt hashes. It must show zero unresolved harness errors. The launcher
+must validate those bindings and fail before model execution if absent, failed or
+stale; evidence that it rejects a tampered binding is required. Credentials stay
+private and are referenced by nonsecret identity only.
+
+A broken bridge, actor ingress, evidence recorder or launch guard is a harness
+failure. An agent ignoring an available tool, asking again despite accessible
+answers, mapping a value incorrectly or claiming readiness prematurely is a
+participant failure. A live target outage/drift is an external-source failure.
+Keep the failed attempt and its time; do not score infrastructure failure as poor
+participant quality or silently rerun a condition. The independent grader may mark
+affected comparisons ungradable. Uncertain classification remains explicit.
+
+## Implementation order and current blockers
+
+1. Select the three exact targets and read-only inspect them; verify safe live
+   upload/autosave behavior and actual browser support before building extra layers.
+2. Freeze the concise scenario, answer sheet, field reference, budgets and grading
+   anchors. Implement only the missing JOB02 browser/evidence and controlled-human
+   response adapters, reusing JOB01 capture/grader contracts without changing its
+   active checkout, accounts or freezes.
+3. Run the three-path rehearsal and injected failure gates, fix diagnosed harness
+   errors, retain failure-to-fix receipts, then prepare a new bound readiness record.
+4. Assign the fresh final grader, register the prospective JOB02 dataset/export
+   using the existing pinned Langfuse transport, and verify synthetic read-back.
+   Record exact resolved transport versions at freeze; no new SDK is needed.
+5. Present readiness evidence and remaining limits before an authorized paired
+   pilot. This plan does not launch participants or establish that a gate passed.
+
+Current blockers are target selection and safe live side effects; actual browser
+parity; controlled-human answer ingress; capture/submission guards; synthetic and
+failure rehearsals; frozen grader/actor references; and receipt-bound readiness.
+Do not start JOB02 until those have concrete passing evidence.
