@@ -167,7 +167,12 @@ class Tests(unittest.TestCase):
    prompt=runner.inputs_prompt(SPEC['stages'][5],condition)
    self.assertIn('2026-11-17T14:00:00+00:00',prompt)
    self.assertNotIn('2026-11-23',prompt)
+ def test_cumulative_sources_hide_future_and_keep_delivery_duplicates(self):
+  a={'id':'one','inbox':[{'id':'mail','body':'original'}]}
+  b={'id':'two','inbox':[{'id':'mail','body':'original'}]}
+  result=runner.released_sources([a,b])
+  self.assertEqual(len(result['inbox']),1)
+  self.assertEqual(len(result['notificationHistory']),2)
+  self.assertEqual(result['currentNotifications']['eventId'],'two')
+  self.assertRaises(RuntimeError,runner.released_sources,[a,{'id':'bad','inbox':[{'id':'mail','body':'changed'}]}])
 if __name__=='__main__':unittest.main()
-
-
-
