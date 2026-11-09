@@ -72,7 +72,7 @@ s=importlib.util.spec_from_file_location('job02_test_runner','scripts/job02/runn
 with tempfile.TemporaryDirectory() as t:
  root=Path(t);j.ROOT=root
  for n in ['suite','candidate','runs']:(root/n).mkdir()
- spec={'version':'unit-drift','targets':[],'stages':[{'id':'prepare','session':1}],'stageBudgetSeconds':30}
+ spec={'version':'unit-drift','model':'gpt-5.6-terra','reasoning':'medium','targets':[],'stages':[{'id':'prepare','session':1}],'stageBudgetSeconds':30}
  (root/'suite/scenario.json').write_text(json.dumps(spec));(root/'candidate/resume.pdf').write_bytes(b'fixture');(root/'runtime.private.json').write_text('{}')
  calls=[];j.node=lambda action,*args:calls.append(action);j.snapshot=lambda p:p.write_text('{}');j.capture=lambda *a:(_ for _ in ()).throw(AssertionError('Should stop before final capture'))
  j.host.infrastructure=lambda:None;j.host.close_infrastructure=lambda:None;j.runtime.cost.persist=lambda *a:{'coverage':{'status':'unknown'}}
