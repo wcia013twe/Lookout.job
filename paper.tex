@@ -34,9 +34,9 @@ for Personalized AI Agents}
 
 Personal AI agents can use external tools to execute complex tasks, but managing workflows that span multiple services and sessions introduces challenges in maintaining task state, coordinating actions, and incorporating user preferences. General-purpose browser automation and tool interfaces provide access to external systems, but the extent to which dedicated software environments improve agent performance remains unclear.
 
-This paper presents Lookout, an agent-native workspace designed to support personal AI agents in managing job search workflows. Lookout provides structured access to job opportunities, persistent application records, and tools for executing and tracking actions on behalf of users. The system separates agent reasoning and personalization from domain-specific workflow management, allowing existing personal agents to operate through a shared software environment. Its design applies course concepts in typed tool use, context management, external memory, and long-horizon verification. Changing domain knowledge enters the agent through retrieved context rather than model-weight updates.
+This paper presents Lookout, an agent-native workspace designed to support personal AI agents in managing job search workflows. Lookout provides structured access to job opportunities, persistent application records, and tools for executing and tracking actions on behalf of users. The system separates agent reasoning and personalization from domain-specific workflow management, allowing existing personal agents to operate through a shared software environment. Typed operations, selectively retrieved context, and persistent workflow records allow the workspace to preserve changing job-search information across agent sessions.
 
-We formulate an evaluation to test whether providing agents with this workspace improves task completion, execution efficiency, and workflow continuity compared with agents using general-purpose tools. We implement controlled JOB and COM task families and a Langfuse reporting pipeline that separates quality, execution time, user effort, and cost. Diagnostic pilots expose state-reconciliation failures and tool overhead, but do not establish a general performance advantage.
+We formulate an evaluation to test whether providing agents with this workspace improves task completion, execution efficiency, and workflow continuity compared with agents using general-purpose tools. We implement controlled JOB and COM task families and a Langfuse reporting pipeline that separates quality, execution time, user effort, and cost. This draft describes the system and evaluation protocol; experimental results and conclusions remain to be added.
 
 \section{Introduction}
 \subsection{Motivation}
@@ -49,11 +49,9 @@ This paper investigates whether dedicated software environments improve how pers
 
 To study this question, we developed Lookout, a job-search workspace that allows existing personal agents to discover opportunities, manage applications, and coordinate actions with users through structured tools and persistent workflow records.
 
-The design draws explicitly on CAP 6938, AI Knowledge Systems: Lecture 15's agent interfaces and context management, Lecture 16's external memory and long-horizon evaluation, and Lecture 18's distinction between using new knowledge in context and internalizing it through training~\cite{lecture15,lecture16,lecture18}. We apply these concepts at the workspace boundary while leaving the model's reasoning and training to its external host.
-
 The primary contributions of this work are:
 
-Agent-native workspace architecture: A course-grounded design that combines typed domain operations, selectively loaded context, and persistent workflow state to coordinate delegated execution and human oversight.
+Agent-native workspace architecture: A design that combines typed domain operations, selectively loaded context, and persistent workflow state to coordinate delegated execution and human oversight.
 
 System implementation: Lookout, an MCP-accessible job-search workspace integrating opportunity discovery, application management, and user review workflows.
 
@@ -114,21 +112,10 @@ The external agent is responsible for reasoning, planning, and applying knowledg
 
 The system exposes two interfaces to the same underlying workspace. Agents interact through MCP tools, while users inspect and modify records through the web interface. This separation allows either participant to update ongoing work without requiring the other to remain continuously active.
 
-\subsection{Course Concepts and Design Rationale}
-\paragraph{Typed actions (Lecture 15).}
-Slides 3, 7, 9, and 15 describe the context--action--observation loop and the role of the agent interface~\cite{lecture15}. Lookout supplies named MCP operations with JSON schemas, ownership checks, and expected revisions. An agent reads an application, saves a draft, and inspects the saved result. The external host supplies reasoning and planning; Lookout does not implement a ReAct policy or train a planner.
+\subsection{Tool Feedback and Context Retrieval}
+SWE-agent treats the available actions and returned observations as an interface that can be designed for an agent~\cite{sweagent}. Lookout applies this principle to job-search records: MCP operations expose domain actions with JSON schemas, ownership checks, and expected revisions. After saving a draft, the agent reads the result before continuing. The external host remains responsible for reasoning and planning.
 
-\paragraph{Selective context (Lecture 15).}
-Slides 18--19 and 22--30 discuss long-context degradation and context control~\cite{lecture15}. Common tools appear initially; \texttt{discover\_tools} returns supporting schemas and \texttt{read\_guide} loads versioned procedures on demand. Personal/developer version checks identify changed context. After context loss, missing content must be fetched even if its version is known. This controls workspace-supplied context, without guaranteeing a bound on the host's total prompt. Reduced tokens and missed instructions are evaluation targets.
-
-\paragraph{External memory (Lecture 16).}
-Slides 4, 6--8, and 10--11 distinguish external facts, procedural memory, and retrieval across sessions~\cite{lecture16}. Lookout stores personal facts and application history separately from maintained workflow guides. Explicit domain writers preserve user corrections; guides are software artifacts rather than strategies autonomously learned from trajectories. Current-record reads and connection-specific invalidation let subsequent sessions use changed facts without recovering the complete conversation.
-
-\paragraph{Verification and handoffs (Lecture 16).}
-Slides 14--18 and 27--29 discuss compounding errors, execution checks, and structured handoffs~\cite{lecture16}. Lookout records blockers and observed outcomes. Change events point to affected records, which the next session rereads before continuing. Event acknowledgement is separate from task completion. Connection-bound application pickup and one-browser-writer guidance constrain duplicate execution. Lookout does not itself create cooperating role agents; parallel-agent performance remains outside this study.
-
-\paragraph{Knowledge updates (Lecture 18).}
-Slides 3, 15, and 18--24 distinguish supplying knowledge in context from changing model parameters~\cite{lecture18}. Lookout retrieves changing facts and procedures while keeping the external model fixed. Server-side revisions make stale approvals unusable regardless of remembered instructions. No continual-learning training, LoRA adaptation, or test-time training is performed. The proposed correction-uptake experiment therefore measures context updating, not catastrophic forgetting or a general advantage over parameter updates.
+The workspace initially exposes common tools. Supporting schemas load through \texttt{discover\_tools}, and versioned procedures through \texttt{read\_guide}. Personal and developer version checks identify changed context; after context loss, missing content must be retrieved even when its version is known. Application facts and user corrections remain in domain records, while procedures remain in maintained guides. This makes their updates available across sessions without requiring a complete conversation history. The evaluation will measure the retrieval overhead and whether agents use the current information correctly.
 
 \subsection{Agent Interface and Personalization}
 Agents access discovery, application preparation, and workflow coordination through domain operations. Common tools appear by default; specialized schemas are discovered when needed. Personalization remains divided: the external host holds broader user knowledge, while Lookout stores search constraints, selected resumes, verified answers, and application history. Agents combine these sources without transferring ownership of their private memory to Lookout.
@@ -143,7 +130,7 @@ Lookout supports delegated workflows in which the agent performs routine activit
 Human intervention does not necessarily coincide with an active agent session. After a user updates the workspace, the new state can be made available to the personal agent for subsequent execution. The agent can retrieve the updated context and determine how to continue within the applicable authorization constraints. This design allows delegated activities to progress asynchronously while preserving a common record of human decisions and agent actions.
 
 \subsection{Worked Example: A Correction Across Sessions}
-Consider a fictional employer form with an unanswered relocation question. During authorized preparation, the agent reads the owned application, discovers the draft-writing schema, and saves the observed question with a blocker. The user supplies an answer through the authenticated human-input path. That answer is a saved fact, not approval of a changed application. In a later session, the agent reloads missing guides and changed context, reads the current application revision, and revises the same draft using the existing answer. It verifies the saved result and handles the corresponding event before acknowledging it. A stale draft write must reconcile with the user's correction, and an uncertain employer outcome must remain blocked. This example connects typed actions and observations (Lecture 15), external memory and cross-session recovery (Lecture 16), and context-based knowledge updating without training (Lecture 18). It describes the intended contract, not a measured end-to-end agent trial.
+Consider a fictional employer form with an unanswered relocation question. During authorized preparation, the agent reads the owned application, discovers the draft-writing schema, and saves the observed question with a blocker. The user supplies an answer through the authenticated human-input path. That answer is a saved fact, not approval of a changed application. In a later session, the agent reloads missing guides and changed context, reads the current application revision, and revises the same draft using the existing answer. It verifies the saved result and handles the corresponding event before acknowledging it. A stale draft write must reconcile with the user's correction, and an uncertain employer outcome must remain blocked. The example illustrates how a saved correction changes subsequent execution without replaying the earlier conversation. It describes the workflow contract; end-to-end agent behavior remains to be evaluated.
 
 \section{Implementation}
 \subsection{Technology Stack}
@@ -175,7 +162,7 @@ Docker Compose separates the Node API, worker, and Caddy TLS proxy. The worker w
 \authorinput{Supply the final deployment revision/date and redacted health, authenticated MCP, and bounded-job receipts if a live GCP deployment is claimed. Add the code-zip README and narrated-video links. Verify the supplied archive on a clean machine; credentials and private benchmark evidence must be excluded.}
 
 \section{Evaluation Design and Infrastructure}
-The implementation includes eight case families: JOB01--04 for job-search execution and COM01--04 for communication continuity. Each evaluated item is a complete trajectory across sessions, not one message. Harness tests, diagnostic participant pilots, and the planned repeated comparison provide different evidence and are reported separately.
+The implementation includes eight case families: JOB01--04 for job-search execution and COM01--04 for communication continuity. Each evaluated item is a complete trajectory across sessions, not one message. The following protocol specifies the comparison, evidence capture, and planned measurements. Implementation tests are separate from agent-performance evaluation.
 
 \subsection{Comparison and Experimental Controls}
 The comparison holds the model, reasoning setting, candidate evidence, released events, task intent, and case-specific budgets fixed. Baseline agents use general-purpose tools and persistent files; Lookout agents use native scoped MCP operations and domain records. Both must preserve equivalent durable outputs. Native initialization, supporting-tool discovery, failed calls, and read-back verification count toward Lookout execution. Giving the baseline persistent files avoids assuming that only Lookout can remember facts.
@@ -225,22 +212,12 @@ The common result contract identifies campaign, suite, case/version, condition, 
 
 The current \emph{Eval Case \& Run} view filters by case and repetition, showing both conditions. Campaign and version labels distinguish repeated run numbers. Measured, pilot, and synthetic exports use separate environments; empty measured panels do not mean zero performance. Independent review and billing evidence remain external to Langfuse.
 
-\subsection{Pilot Evidence and Remaining Experiments}
-Repository records document one diagnostic pair each for COM03 and COM04. Baseline/Lookout passed 5/8 versus 3/8 semantic checks for COM03 and 13/14 versus 12/14 for COM04. Active minutes were 5.35/12.99 and 6.03/9.65, respectively. Neither pair passed every semantic check; both COM04 conditions passed final saved-state/report checks. These are historical pilots with unequal explicit persistence instructions, unblinded review, and overlapping criteria. They expose reconciliation and discovery overhead, but cannot establish a causal performance difference. These pilots remain separate from future corrected runs.
+\subsection{Planned Comparisons and Scope}
+The planned study repeats reset trajectories and alternates or randomizes condition order. Per-case outcomes and paired differences will be reported separately from aggregate scores. Repeated-reliability measures distinguish all-trials success ($\mathrm{pass}^{k}$) from at-least-one success (pass@$k$). Proposed ablations compare eager versus progressive schema loading, file recovery versus current domain records, and retained context versus version-triggered refresh. These comparisons have not yet been included as results in this draft.
 
-For the measured study, alternate or randomize condition order and repeat reset trajectories. Report per-case outcomes and paired differences with uncertainty computed at the case level. Repeated-reliability measures should distinguish all-trials success ($\mathrm{pass}^{k}$) from at-least-one success (pass@$k$). Model parameters remain fixed. Proposed ablations compare eager versus progressive schema loading, file recovery versus current domain records, and retained context versus version-triggered refresh. These isolate Lecture 15's interface/context choices and Lectures 16/18's external-memory updates; they have not been executed.
+The workspace depends on the external agent's model, scheduling, and browser capabilities. Controlled fixtures cannot establish live-source coverage, employer submission reliability, hiring outcomes, or user satisfaction. Tool granularity and prebuilt domain logic may also affect the comparison. Exact capabilities and budgets must therefore accompany the eventual results.
 
-\authorinput{Confirm which frozen JOB/COM campaigns enter the final results, their exact model/host IDs, repetitions, budgets, order, and reviewer protocol. Add verified JOB01/03/04 outcomes and corrected COM results from final receipts. Do not use a preflight pass as a participant result.}
-
-\section{Discussion}
-\subsection{Design Implications}
-Lookout makes domain state and human decisions available independently of a conversation. This architecture provides explicit places to enforce ownership, revision checks, and outcome distinctions. The course connection is therefore an applied systems synthesis: design the action space and observations, retrieve the right external state, and verify progress across sessions. Whether these mechanisms improve end-to-end performance remains an empirical question.
-
-\subsection{Limitations and Threats to Validity}
-The workspace does not supply an agent model, scheduler, notification transport, or general-purpose browser. Agent-host capabilities and source availability affect execution. Current local activation evidence does not establish hosted release, a real Muse wake, or employer submission. The retained deterministic runner is not an active production execution path. A controlled fixture study would also have limited ecological validity: live forms, changing postings, sensitive user data, and consequential decisions may introduce failures absent from fixtures. Tool granularity and the workspace's prebuilt domain logic may confound comparisons unless the baseline and budgets are documented carefully.
-
-\section{Conclusion and Future Work}
-Lookout implements a shared job-search workspace with scoped agent operations, persistent domain records, and explicit human-decision and outcome boundaries. The implementation includes controlled JOB/COM scenarios, artifact-based grading, and Langfuse reporting. Diagnostic pilots reveal continuity failures and interface overhead. A repeated comparison with matched durable-output requirements is still needed before claiming improved completion, efficiency, or supervision.
+\authorinput{Add experimental results, analysis, and conclusions after the evaluated campaigns are finalized. Record model/host IDs, repetitions, budgets, condition order, and reviewer protocol. Keep provisional runs separate from the final comparison.}
 
 \begin{thebibliography}{99}
 \bibitem{swebench} C. E. Jimenez et al., ``SWE-bench: Can Language Models Resolve Real-World GitHub Issues?'' ICLR, 2024. \url{https://arxiv.org/abs/2310.06770}.
@@ -251,9 +228,6 @@ Lookout implements a shared job-search workspace with scoped agent operations, p
 \bibitem{stateharness} C. Zou, Y. Zhou, X. Luo, and X. Zhang, ``StateHarness: Maintaining Evolving Project State for Long-Horizon Coding Agents,'' arXiv:2610.17616, 2026. \url{https://arxiv.org/abs/2610.17616}.
 \bibitem{alwayson} T. Ding, A. Nannapaneni, B. Liu, and L. Zhang, ``Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents,'' arXiv:2606.30306, 2026. \url{https://arxiv.org/abs/2606.30306}.
 \bibitem{kolab} S. A. Hayati et al., ``Kolab: Benchmarking Human-Agent Collaboration in Long-Horizon Workflows,'' arXiv:2610.21109, 2026. \url{https://arxiv.org/abs/2610.21109}.
-\bibitem{lecture15} S. N. Lim, ``AI Agents I: Tools, Reasoning Loops, Planning, and Context Management,'' CAP 6938: AI Knowledge Systems, Lecture 15, University of Central Florida, Oct. 20, 2026. Course slides supplied with this project.
-\bibitem{lecture16} S. N. Lim, ``AI Agents II: Memory, Long-Horizon Agents, and Multi-Agent Systems,'' CAP 6938: AI Knowledge Systems, Lecture 16, University of Central Florida, Oct. 22, 2026. Course slides supplied with this project.
-\bibitem{lecture18} S. N. Lim, ``Knowledge Updating II: Continual Learning and Knowledge Injection,'' CAP 6938: AI Knowledge Systems, Lecture 18, University of Central Florida, Oct. 29, 2026. Course slides supplied with this project.
 \end{thebibliography}
 
 \end{document}
