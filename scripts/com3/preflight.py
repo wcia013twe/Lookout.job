@@ -8,7 +8,7 @@ if a.output.exists():raise SystemExit('Retain existing preflight evidence; choos
 a.output.mkdir(mode=0o700,parents=True)
 runner.snapshot(a.output/'owner-state.json') # Read-only owner assignment and required-table check.
 inputs=a.output/'live-inputs';inputs.mkdir();(inputs/'sources.json').write_text('{"calendar":[],"inbox":[]}')
-out=a.output/'output';out.mkdir();report={'suiteHash':suite,'imageId':image,'inferenceExecuted':False,'domainWrites':False,'resetProbe':'passed_rolled_back','contactWriterProbe':'passed_rolled_back','exactSeedProbe':'passed_rolled_back','auditWriterProbe':'passed_rolled_back','nativeContractFingerprint':'verified','conditions':{}}
+out=a.output/'output';out.mkdir();report={'suiteHash':suite,'imageId':image,'inferenceExecuted':False,'domainWrites':False,'resetProbe':'passed_rolled_back','timelineWriterProbe':'passed_rolled_back','contactWriterProbe':'passed_rolled_back','exactSeedProbe':'passed_rolled_back','auditWriterProbe':'passed_rolled_back','nativeContractFingerprint':'verified','conditions':{}}
 for condition in ['baseline','lookout']:
  sd=a.output/condition;sd.mkdir();session=None
  try:

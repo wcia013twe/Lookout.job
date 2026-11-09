@@ -1272,3 +1272,7 @@ uncertain. Frozen sources/evidence, independent final review, native confirmatio
 and complete Langfuse read-backs are retained. Earlier invalid JOB02 pairs remain
 separate; no live employer readiness, proactive-effort benefit or general winner is
 claimed. Dollar costs remain unknown. This focused update does not regenerate the wiki.
+
+### COM03 native timeline restriction
+
+PILOT07 completed but retained an isolation confound: native application timeline tools were hidden while change-feed events referenced them. COM03 v6 restores the existing scoped reader/writer and adds rolled-back timeline readback/provenance verification to the full reset probe. No product behavior or approval authority changes. COM04/PILOT06 clears its controlled comparison; quality remains 14/14 baseline versus 13/14 Lookout, with a late promise checkpoint. See [communication results](../../docs/communication-cleared-pilots.md). COM03 requires a new prospective pair; completed stages alone do not establish clearance.

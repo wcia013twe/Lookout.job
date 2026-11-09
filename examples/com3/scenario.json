@@ -1,5 +1,5 @@
 {
-  "version": "COM3-stream-v5",
+  "version": "COM3-stream-v6",
   "taskId": "COM3",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -254,7 +254,8 @@
     "nativeMcpDiscovery": true,
     "measuresProactiveInitiation": false,
     "equalDurableOutputObligations": true,
-    "nativeAuditAndChanges": true
+    "nativeAuditAndChanges": true,
+    "nativeApplicationTimeline": true
   },
   "defaultAnswer": "I have no additional information right now. Preserve uncertainty and leave messages unsent.",
   "finalStateChecks": [

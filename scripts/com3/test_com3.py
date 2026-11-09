@@ -14,6 +14,14 @@ class Contracts(unittest.TestCase):
   self.assertEqual(a,fixture_for_owner(original,'00000000-0000-4000-8000-000000000001'))
   self.assertIn('application:'+a['application']['id'],a['contacts'][0]['record']['tags'])
   self.assertEqual(a['application']['draft'],original['application']['draft'])
+ def test_native_timeline_not_filtered(self):
+  import ast
+  tree=ast.parse((ROOT/'scripts/com3/prepare.py').read_text())
+  lists=[ast.literal_eval(k.value) for n in ast.walk(tree) if isinstance(n,ast.Call) for k in n.keywords if k.arg=='allowedTools']
+  self.assertEqual(len(lists),1)
+  self.assertTrue({'read_application_timeline','record_application_milestone'}<=set(lists[0]))
+  self.assertNotIn('submit_application',lists[0])
+  self.assertTrue(SPEC['policy']['nativeApplicationTimeline'])
  def test_shape(self):
   self.assertEqual(len(SPEC['stages']),10);self.assertEqual(len({s['session'] for s in SPEC['stages']}),6)
  def test_future_sources_hidden(self):
