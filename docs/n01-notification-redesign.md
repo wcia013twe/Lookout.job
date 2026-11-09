@@ -1,8 +1,8 @@
-# N01: networking across sessions — stream v2
+# COM1: networking across sessions — stream v2
 
 ## Research intent and onboarding
 
-Compare required user interactions, completion time, and outcome quality for an ongoing networking workflow. Lookout adherence is a separate dimension. This is a prospective redesign, not a regrade of N01 v6 or stream v1 or evidence of superiority.
+Compare required user interactions, completion time, and outcome quality for an ongoing networking workflow. Lookout adherence is a separate dimension. This is a prospective redesign, not a regrade of COM1 v6 or stream v1 or evidence of superiority.
 
 Both conditions use Terra `gpt-5.6-terra`, medium reasoning, the same complete initial context and resume, fixed fictional networking evidence, and sequential isolated container sessions. Neither receives a standing career-goal prompt. The baseline receives all non-resume context in the first user message. The harness never mounts a profile file, creates a baseline state file, or replays onboarding in fresh sessions. The baseline may choose to save notes. Resume remains accessible. Lookout receives the same first message and its cloned native context; its records are not required to be mirrored to local files.
 
@@ -45,7 +45,7 @@ No rescue, in-run repair, silent replacement or retry. Stop a failed condition, 
 
 The executable specification is `examples/n01/scenario.json`. Implementation is in `scripts/n01/`; frozen runtime-v4 and completed campaigns are unchanged.
 
-1. `python3 scripts/n01/prepare.py --source <previous-isolated-N01-root> --background <baseline-kit> --destination <new-private-root>` creates private inputs, shares the same account lock, and freezes inputs/executable files plus container image. It does not reset an account. Keep the executable checkout available for the freeze lifetime.
+1. `python3 scripts/n01/prepare.py --source <previous-isolated-COM1-root> --background <baseline-kit> --destination <new-private-root>` creates private inputs, shares the same account lock, and freezes inputs/executable files plus container image. It does not reset an account. Keep the executable checkout available for the freeze lifetime.
 2. `python3 scripts/n01/preflight.py --task-dir <new-private-root> --output <new-private-receipt-directory>` checks subscription login, container isolation and actual tool schemas, without inference, resets or domain writes.
 3. `node --env-file=<private-env> scripts/n01/langfuse.mjs --register --receipt-dir <private-receipts>` registers only checkpoint metadata, boolean rubric keys and policy. Detailed prompts, names, preferences, profiles, resumes and hashes of personal evidence are not in the dataset registration. Registration is already done for this version in the connected project.
 4. `python3 scripts/n01/orchestrate.py --task-dir <new-private-root> --pair-id <unique-pair> --repeat 1 --pilot --langfuse-env <private-env> --receipt-dir <private-receipts>` executes the pair, then creates pending grades and review templates and exports structural results. Drop `--pilot` only for a frozen measured campaign. The pinned CLI is `langfuse-cli@1.3.1` (API schema 4.71.0); `LANGFUSE_CLI` can identify an installed executable. Secrets remain on the orchestrator host.
@@ -69,3 +69,9 @@ Review templates default independence to false; the reviewer must explicitly att
 Captured question IDs are source-file line references. Additional unanswered demands must identify unique completed agent-message lines, explicitly exclude duplicates of captured questions, and are reported separately from answered exchanges. Reusing an interaction ID is rejected. Human semantic judgment is still required to detect paraphrased duplicate questions.
 
 Waiting time is explicitly labelled simulated waiting, not task-completion time. Stage success and reached coverage accompany exported waiting metrics. Stage-specific native logs and user-actor answers now follow the active turn even when a session resumes.
+
+## Case names and prospective storage guidance
+
+COM1 is the former N01 networking continuity case. COM2 covers application-stage communication; COM3 is the planned post-application connection discovery case. Historical N01 runs remain unchanged. The existing scripts/n01 and examples/n01 paths remain compatibility entry points.
+
+COM1-stream-v3 adds condition-specific storage orientation to every turn, including every fresh session. Lookout is explicitly instructed to retrieve and save relevant recruiting state through its tools; baseline may retain files across sessions. No standing career goal or event-specific answer is added. Native adherence is a usage diagnostic, separate from quality, user interactions and time. The quality rubric is unchanged; the earlier onboarding-observability and draft-history interpretation limitations remain and this rerun is a pilot.

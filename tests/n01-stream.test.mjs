@@ -6,10 +6,10 @@ import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {build,validateReply} from '../scripts/n01/langfuse.mjs';
 const spec=JSON.parse(readFileSync(new URL('../examples/n01/scenario.json',import.meta.url)));
-test('N01 Python contract and grader regression suite',()=>{
+test('COM1 Python contract and grader regression suite',()=>{
  const r=spawnSync('python3',['-m','unittest','discover','-s','scripts/n01','-p','test_*.py'],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);
 });
-test('N01 experiment is one trajectory with stage children and root scores; private content excluded',()=>{
+test('COM1 experiment is one trajectory with stage children and root scores; private content excluded',()=>{
  const dir=mkdtempSync(path.join(tmpdir(),'n01-fixture-'));
  try{
  const script="import sys,json; from pathlib import Path; sys.path.insert(0,'scripts/n01'); from test_n01 import fixture,SPEC; import grade; p=Path(sys.argv[1]); r=fixture(p); (p/'grade.json').write_text(json.dumps(grade.grade(p,SPEC,r)))";

@@ -1,4 +1,4 @@
-"""Run one N01 pair, preserve every attempt, then grade/export terminal trajectories."""
+"""Run one COM1 pair, preserve every attempt, then grade/export terminal trajectories."""
 import argparse,json,subprocess,sys
 from pathlib import Path
 import runner,grade

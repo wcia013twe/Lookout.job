@@ -1,7 +1,7 @@
 """Independent local-first grading. Missing semantic review is pending, never a pass."""
 import argparse,hashlib,json,math
 from pathlib import Path
-GRADER_VERSION='N01-grade-v2'
+GRADER_VERSION='COM1-grade-v2'
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}

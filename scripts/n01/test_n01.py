@@ -5,7 +5,7 @@ ROOT=Path(__file__).resolve().parents[2];SPEC=json.loads((ROOT/'examples/n01/sce
 def save(p,v):p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(v)+'\n')
 def fixture(run,condition='lookout',status='completed'):
  start=time.time()-100
- save(run/'run.json',{'version':SPEC['version'],'episodeId':run.name,'taskId':'N01','pairId':'verification','condition':condition,'repeat':1,'pilot':True,'synthetic':True,'scenarioDigest':grade.scenario_digest(SPEC),'suiteHash':'fictional-verification','model':'fixture-no-model','reasoning':'none','status':status,'startedAt':start,'durationSeconds':70})
+ save(run/'run.json',{'version':SPEC['version'],'episodeId':run.name,'taskId':'COM1','pairId':'verification','condition':condition,'repeat':1,'pilot':True,'synthetic':True,'scenarioDigest':grade.scenario_digest(SPEC),'suiteHash':'fictional-verification','model':'fixture-no-model','reasoning':'none','status':status,'startedAt':start,'durationSeconds':70})
  save(run/'initial-state.json',{'fictional':True})
  for i,s in enumerate(SPEC['stages'],1):
   sd=run/f'stage-{i}';save(sd/'stage-run.json',{'status':'completed','durationSeconds':2,'startedAt':start+i*5,'threadId':s['session']})
@@ -49,6 +49,14 @@ class Tests(unittest.TestCase):
   for s in SPEC['stages'][1:]:
    for c in ['baseline','lookout']:self.assertNotIn('PRIVATE BACKGROUND',runner.inputs_prompt(s,c));self.assertNotIn('profile.md',runner.inputs_prompt(s,c))
   self.assertNotIn('Help me prepare',runner.inputs_prompt(SPEC['stages'][1],'lookout'))
+ def test_condition_storage_instructions(self):
+  for stage in SPEC['stages'][1:]:
+   lookout=runner.inputs_prompt(stage,'lookout');baseline=runner.inputs_prompt(stage,'baseline')
+   self.assertIn('Lookout is your persistent recruiting workspace',lookout)
+   self.assertIn('verify saved changes',lookout)
+   self.assertIn('persist across sessions',baseline)
+   self.assertNotIn('Use its tools',baseline)
+  self.assertNotIn('Saved work belongs in /workspace/output',(ROOT/'scripts/n01/prepare.py').read_text())
  def test_model_and_no_mirror_contract(self):
   s=(ROOT/'scripts/n01/runner.py').read_text();self.assertIn('gpt-5.6-terra',s);self.assertIn('model_reasoning_effort="medium"',s);self.assertNotIn("out/'state.json'",s)
  def test_actor_no_future_preferences(self):

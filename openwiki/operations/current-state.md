@@ -1000,3 +1000,8 @@ future-batch packaging. The public archive is not a participant sandbox; N02 use
 private staged packets. Static-only public publication is separate from Lookout
 frontend/backend deployment. No candidate data, scoring labels or product actions
 are included. This focused update does not refresh the generated wiki as a whole.
+
+
+### Communication benchmark naming
+
+COM1 (formerly N01) uses prospective COM1-stream-v3 storage orientation: native Lookout retrieval/save guidance versus baseline persistent-file guidance. Historical results remain N01; legacy scripts/n01 paths remain supported. COM2 is application communication and COM3 is planned connection discovery. Adherence is diagnostic; pilot quality rubric calibration remains outstanding.
