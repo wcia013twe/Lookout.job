@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {packet,grade,hash,read} from '../scripts/n02/task.mjs';
-import {registration,scores,build} from '../scripts/n02/langfuse.mjs';
-const spec=read(new URL('../examples/n02/scenario.json',import.meta.url));
+import {packet,grade,hash,read} from '../scripts/job01/task.mjs';
+import {registration,scores,build} from '../scripts/job01/langfuse.mjs';
+const spec=read(new URL('../examples/job01/scenario.json',import.meta.url));
 const jobs=Array.from({length:12},(_,i)=>({id:'job'+i,title:'Fixture '+i}));
 const board={manifest:{snapshotId:'test',files:{'jobs.json':'abc'}},jobs,ids:new Set(jobs.map(j=>j.id))};
 const initial=jobs.slice(0,10).map(j=>j.id),later=jobs.slice(2).map(j=>j.id);
@@ -13,5 +13,5 @@ test('ten exact expected IDs produce full recall, extras do not reduce recall',(
 test('nine targets plus a plausible different job is 0.9 exact recall, not substituted',()=>{const r={...run,checkpoints:[{...run.checkpoints[0],savedJobIds:[...initial.slice(0,9),'job11']}]};const s=grade(spec,ref,board,r).qualityOfCompletion[0].quality.selection;assert.equal(s.recall,.9);assert.deepEqual(s.missing,['job9']);assert.deepEqual(s.unexpected,['job11']);});
 test('later grading turn uses its own expected ten; updates grade preference and continuity only',()=>{const r={...run,checkpoints:[...run.checkpoints,{stage:'career_change',executionSeconds:1},{stage:'continuation',executionSeconds:1,savedJobIds:initial}]};const g=grade(spec,ref,board,r);assert.equal(g.qualityOfCompletion[2].quality.selection.recall,.8);assert.equal(g.qualityOfCompletion[1].quality.selection,null);assert.deepEqual(Object.keys(g.qualityOfCompletion[1].quality.semantic),spec.checkpointQuality);});
 test('incomplete target reference and duplicate output fail closed',()=>{assert.throws(()=>grade(spec,{...ref,expectedTargets:{...ref.expectedTargets,initial_search:initial.slice(1)}},board,run),/Expected checkpoint/);assert.throws(()=>grade(spec,ref,board,{...run,checkpoints:[{...run.checkpoints[0],savedJobIds:['job0','job0']}]}),/Unique/);});
-test('v3 telemetry reports checkpoint recall separately from semantic review',()=>{const item=registration(spec,board.manifest);assert.equal(item.datasetName,'Lookout-N02-search-v3');assert.equal(item.input.expectedTargetCount,10);const p=scores(run,grade(spec,ref,board,run));assert.ok(p.scores.some(s=>s.name==='n02_quality_initial_search_expected_recall'&&s.value===1));assert.ok(p.scores.some(s=>s.name==='n02_quality_review_status'&&s.value==='review_required'));});
+test('JOB01 telemetry reports checkpoint recall separately from semantic review',()=>{const item=registration(spec,board.manifest);assert.equal(item.datasetName,'Lookout-JOB01-search-v1');assert.equal(item.input.expectedTargetCount,10);const p=scores(run,grade(spec,ref,board,run));assert.ok(p.scores.some(s=>s.name==='job01_quality_initial_search_expected_recall'&&s.value===1));assert.ok(p.scores.some(s=>s.name==='job01_quality_review_status'&&s.value==='review_required'));});
 test('trace IDs separate conditions and frozen registration drift fails',()=>{const r={...run,startedAt:1700000000,synthetic:true};const reg={datasetId:'ds',itemId:'item',scenarioHash:hash(spec),snapshotId:'test',sourceHash:'abc'};const p=build(r,grade(spec,ref,board,r),spec,reg);const other={...r,condition:'lookout'};assert.notEqual(p.traceId,build(other,grade(spec,ref,board,other),spec,reg).traceId);assert.throws(()=>build(r,grade(spec,ref,board,r),spec,{...reg,sourceHash:'drift'}),/binding/);});

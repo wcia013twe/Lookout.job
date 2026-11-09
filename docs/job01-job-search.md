@@ -1,6 +1,6 @@
-# N02: Job selection and analysis across sessions
+# JOB01: Job selection and analysis across sessions
 
-N02-search-v3 grades **whether all ten predetermined targets appear in the returned
+JOB01-search-v1 grades **whether all ten predetermined targets appear in the returned
 saved-job list at each grading turn**, plus the quality of their analyses. Ten is
 not an output cap. Additional suitable roles are allowed and reviewed separately.
 A later turn has its own expected ten. No application drafting, filling or sending.
@@ -21,7 +21,7 @@ Jobright detail evidence; they do not establish live employer availability.
 
 The condition-specific initiation is deliberate. Email bodies and job records
 match; future evidence and target labels remain private. Baseline prompts do not
-replay preferences. `examples/n02/scenario.json` owns stage requests and timing.
+replay preferences. `examples/job01/scenario.json` owns stage requests and timing.
 
 ## Private reference and packets
 
@@ -54,7 +54,7 @@ or deep scope. Expected targets are a predefined evaluation subset, not exhausti
 corpus ground truth. Candidate conflict or unknown citizenship stays uncertain.
 
 ```sh
-node scripts/n02/task.mjs --source <snapshot-directory> --reference <private-reference.json> --stage initial_search --condition baseline --output <new-packet.json>
+node scripts/job01/task.mjs --source <snapshot-directory> --reference <private-reference.json> --stage initial_search --condition baseline --output <new-packet.json>
 ```
 
 Lookout also needs `--configuration <private-config.json>` with configuration
@@ -80,7 +80,7 @@ style preferences, style adherence and preserved interests. Missing review stays
 review_required. Adherence uses scenario keys with status/evidence separately.
 
 ```sh
-node scripts/n02/task.mjs --source <snapshot-directory> --reference <private-reference.json> --run <run.json> --review <review.json> --output <new-grade.json>
+node scripts/job01/task.mjs --source <snapshot-directory> --reference <private-reference.json> --run <run.json> --review <review.json> --output <new-grade.json>
 ```
 
 - **Time:** actual execution duration separately from simulated completion time.
@@ -103,15 +103,79 @@ spans explicitly describe a duration-derived synthetic timeline, not wall-clock
 capture. Keep the same project and receipt directory:
 
 ```sh
-node --env-file=<private-env> scripts/n02/langfuse.mjs --register --manifest <manifest.json> --receipt-dir <private-receipts>
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --dry-run
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts>
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --verify
+node --env-file=<private-env> scripts/job01/langfuse.mjs --register --manifest <manifest.json> --receipt-dir <private-receipts>
+node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --dry-run
+node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts>
+node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --verify
 ```
 
-V1/v2 scenarios and live datasets remain immutable; v3 uses separate registration.
+Historical N02 v1/v2/v3 scenarios remain in examples/n02, and live N02 datasets stay immutable. JOB01 has its own registration.
 Synthetic telemetry verifies plumbing, not participant quality. Fix actor answers,
 budgets, timing, target references and configuration before a paired pilot. Preserve
 failures and distinguish harness failures; no rescue or silent retries. Do not run
 the paired pilot until explicitly authorized. Internal infrastructure adds no
 product UI/MCP action; existing scoped capabilities are what is graded.
+
+## Ready-to-run paired pilot host
+
+`pilot.py` reuses N01's pinned subscription executor and its candidate profile/PDF,
+not N01's networking scenario or reset procedure. A fresh local-only test account
+is cloned and read back; the original candidate account is never changed. Historical
+N02/JOB01 setup failures remain separate from participant results.
+
+Preparation freezes the executable files, candidate files, reviewed private target
+reference, stage packets and Docker image. Both conditions use gpt-5.6-terra with
+medium reasoning. Four turns have 300-second limits; career/style changes share a
+session and the final email starts fresh. Baseline may retain its own notes; only
+its first turn includes the full initial profile. Lookout reads its cloned native
+profile. Both retain the same resume.
+
+For email turns, Lookout receives `read_inbox` during a configured scheduled wake.
+Baseline receives the same email as an uploaded file plus a user request. Each
+condition sees only released jobs. The baseline has `ask_user` but no Lookout tools.
+The controlled actor acknowledges unresolved graduation/citizenship facts without
+inventing an answer. This pilot is provisional source-based screening, not certified
+eligibility or verified live employer availability.
+
+The participant container is attached only to an internal Docker network. An
+isolated gateway permits TLS connections to the inference hosts and forwards to
+one bearer-protected workspace bridge. Live job sites, the full public archive,
+direct internet sockets, future packets and grading references are unavailable.
+Preflight checks login presence, actual tool schemas, mounts and network routing;
+it performs no inference or participant domain writes. An inference-host HTTP
+response is a connectivity check, not proof a future model turn will succeed.
+
+```sh
+# Preparation only; ROOT must hold a newly cloned dedicated account receipt.
+node scripts/job01/account.mjs create ROOT N01_PRIVATE_MANIFEST N01_RESUME_PDF
+python3 -B scripts/job01/pilot.py prepare --root ROOT --n01 N01_BASELINE_KIT --reference PRIVATE_REVIEWED_REFERENCE
+python3 -B scripts/job01/pilot.py preflight --root ROOT --output ROOT/preflight-1
+
+# Starts both conditions once. Do not invoke until starting the pilot is intended.
+python3 -B scripts/job01/pilot.py run --root ROOT --pair-id JOB01-pilot-1
+```
+
+The host refuses a second attempt in the same workspace and requires a matching
+successful preflight. Failures/timeouts are retained; neither condition is rescued.
+Both conditions are attempted before grading. Native before/after snapshots, tool
+traces, file snapshots and hashes support equivalent independent extraction.
+
+Raw runs intentionally omit `savedJobIds`; missing extraction is not zero recall.
+An independent extractor cites frozen artifact paths and provides the actual saved
+IDs at each grading turn. Additional prose interaction demands are counted only
+once, separately from captured `ask_user` exchanges. Then:
+
+```sh
+node scripts/job01/extract.mjs --run RUN_DIRECTORY --extraction PRIVATE_EXTRACTION_JSON --output RUN_DIRECTORY/run.reviewable.json
+node scripts/job01/task.mjs --source SNAPSHOT_DIRECTORY --reference PRIVATE_REFERENCE --run RUN_DIRECTORY/run.reviewable.json --output RUN_DIRECTORY/grade.pending.json
+# Complete the separate semantic review, then regrade and export through langfuse.mjs.
+```
+
+Extraction shape: `{reviewer, checkpoints: {[stage]: {savedJobIds, evidence:
+["stage-1/output/saved.md"], outcomeComplete, additionalInteractions:
+{questions:0,repeatedContext:0,reminders:0,corrections:0,approvals:0}}}}`.
+Every executed checkpoint needs cited evidence and explicit additional counts;
+`savedJobIds` is required only on grading turns. Native records and file outputs
+are equally valid evidence. Only reviewed completed outcomes receive a simulated
+completion time: event minute + active execution duration + the predefined delay
+per answered question. No real human effort minutes are inferred.

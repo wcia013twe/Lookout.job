@@ -165,11 +165,13 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='N01-stream-v2':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v3':raise RuntimeError('Wrong runtime configuration')
 
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
- prefix='Your resume is /inputs/resume.pdf. Calendar and inbox are available through tools and /inputs/sources.json. Your saved files are in /workspace/output. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages or submit applications. '
+ prefix='Your resume is /inputs/resume.pdf. Calendar and inbox are available through tools and /inputs/sources.json. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages or submit applications. '
+ storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records, and save meaningful updates, drafts, and next steps there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, drafts, and next steps. ')
+ prefix += storage
  if stage['kind']=='onboarding':
   return prefix+stage['request']+'\n\n'+(R/'background'/'onboarding.md').read_text()
  if stage['kind']=='user_update':return prefix+stage['request']

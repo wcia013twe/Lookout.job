@@ -1,6 +1,6 @@
 {
-  "version": "N01-stream-v2",
-  "taskId": "N01",
+  "version": "COM1-stream-v3",
+  "taskId": "COM1",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
   "stages": [

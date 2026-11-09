@@ -1,4 +1,4 @@
-"""Create a new private N01 workspace. Never changes a historical suite or account."""
+"""Create a new private COM1 workspace. Never changes a historical suite or account."""
 import argparse,hashlib,json,shutil,subprocess
 from pathlib import Path
 
@@ -22,7 +22,7 @@ def prepare(source,background,destination):
   if c['id']=='ivo':c['record'].update(company='Harbor Tools',title='Developer Platform Engineer')
  (destination/'suite/initial-state.json').write_text(json.dumps(initial,indent=2)+'\n')
  (destination/'suite/scenario.json').write_text(json.dumps(spec,indent=2)+'\n')
- (destination/'suite/contract.md').write_text('Private recruiting workspace. Resume and currently available calendar/inbox evidence are in /inputs. Saved work belongs in /workspace/output. Use only available evidence. Do not send messages or submit applications.\n')
+ (destination/'suite/contract.md').write_text('Private recruiting workspace. Resume and currently available calendar/inbox evidence are in /inputs. Use the persistent storage described in your session instructions. Use only available evidence. Do not send messages or submit applications.\n')
  profile=(background/'profile.md').read_text()
  contacts='\n\n## My networking contacts\n'
  for c in initial['contacts']:
@@ -30,7 +30,7 @@ def prepare(source,background,destination):
  goals='\n\n## My current networking preferences\n'+initial['profileFacts']['introduction'].split('## Networking goals')[-1]
  (destination/'background/onboarding.md').write_text(profile+contacts+goals+'\nI have introductory conversations with Dana and Ivo coming up. Do not send messages or submit anything without my approval.\n')
  shutil.copyfile(background/'resume.pdf',destination/'background/resume.pdf')
- config=json.loads((source/'runtime-config.json').read_text());config['version']=spec['version'];config['productConfiguration']=spec['policy']['productConfiguration']
+ config=json.loads((source/'runtime-config.json').read_text());config['version']=spec['version'];config['taskId']=spec['taskId'];config['productConfiguration']=spec['policy']['productConfiguration']
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
  # Freeze the actual executable and inputs, not a parallel copy of their schemas.
  files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]

@@ -11,3 +11,5 @@
 - V2 uses separate dataset/item registration and trace IDs include version/condition; duration-derived spans explicitly identify their synthetic timeline. Seven focused tests and data validation pass. No real participant evaluation or candidate-grounded reference labels were generated.
 
 - V3 clarifies ten as predetermined checkpoint targets, not an output cap: exact recall/missing/extra IDs at initial and continuation turns, semantic analysis separate; intermediate turns only preferences/continuity. Same email evidence has deliberate scheduled-wake versus user-upload delivery. Reuses N01 candidate context and keeps private target rationales outside source. V1/v2 remain retained; paired pilot is not executed.
+
+- User-facing test case renamed JOB01 (JOB01-search-v1). Active adapters, scenario, docs and tests moved to job01 paths; historical N02 scenarios and datasets remain unchanged. No participant pilot executed.
