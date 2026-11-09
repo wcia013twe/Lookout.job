@@ -613,3 +613,13 @@ permissions and verification, saved resume display, explicit completion, origina
 diagnostics, genuine unanswered-question gates, no account/backend calls and reset.
 Runtime guide activation, saved personal preferences and actual host behavior must
 be verified separately.
+
+### Submission cards temporarily hidden on the website
+
+The Action Board hides `review_application`, `prepared_application` and
+`submit_application` cards, including detached demo presentation, fallback inbox
+rows and displayed action counts. Input requests, blockers and uncertain outcomes
+remain visible. `SHOW_SUBMISSION_CARDS` in `lib/action-board.mjs` controls this
+presentation-only pause. Saved drafts, history, backend/MCP projections and existing
+submission approval requirements remain intact. AI Apply does not gain submission
+authority from this UI change; application details remain available in Applications.
