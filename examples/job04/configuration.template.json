@@ -1,0 +1,13 @@
+{
+  "benchmarkTaskId": "JOB04",
+  "dedicated": true,
+  "ownerId": null,
+  "readOnlyOwnerId": null,
+  "source": "Not configured: actual isolated owner and host required",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "normalProductConfiguration": {
+    "captured": false
+  },
+  "runtimeFiles": []
+}

@@ -1095,3 +1095,34 @@ reports feed scenario/common Langfuse scores and explicit offline cost-per-succe
 aggregation including failed attempts. See docs/eval-cost-accounting.md. Syntax and
 catalog checks only: no participant run, historical backfill, metered external
 billing or live ingestion is established. Existing freezes must not be rewritten.
+
+### JOB02 batch application preparation infrastructure
+
+The [JOB02 plan](../../docs/job02-application-plan.md) covers a fixed three-target
+batch: Workday manual handoff, personal-input answer card and supported Greenhouse
+preparation. Implementation verification includes a fictional browser rehearsal
+and actual no-inference container/tool/browser probes; setup failures are retained.
+Exact live target safety and authenticated human-response ingress remain separate
+readiness gates. No participant or real employer form execution is claimed.
+
+### JOB03 portfolio tracking and reminder evaluation
+
+[JOB03](../../docs/job03-application-tracking.md) has five fictional applications
+across eight sessions: mixed decisions, B's controlled preparation interruption
+and later resume, rejection, duplicate notifications and dated reminder behavior.
+Frozen expected states, independent final review and cost coverage remain separate
+from native adherence. Actual native owner/adapter/shared reminder service are
+unconfigured; retained preflight is blocked. No participant or real schedule is
+verified; unit tests do not establish reminder delivery.
+
+### JOB04 pipeline-aware preparation evaluation
+
+[JOB04](../../docs/job04-interview-preparation.md) implements seven checkpoints
+across six sessions for pipeline facts, generation/non-generation, user debriefs,
+round-specific adaptation, duplicate/logistics reuse and closure. Fresh independent
+review compares grounded specificity, not usefulness or interview outcomes. Time,
+unique effort, quality and common cost accounting are separate; unknown cost stays
+unknown. Fourteen scripted tests and an actual blocked no-inference preparation
+receipt exist. A dedicated native owner and real isolated runtime adapter with
+save/read/revise/restore receipts are still required; no participant run is ready
+or claimed. This is benchmark infrastructure, not an interview-prep product change.

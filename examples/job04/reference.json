@@ -1,0 +1,58 @@
+{
+  "taskId": "JOB04",
+  "version": "JOB04-preparation-v1",
+  "checkpoints": {
+    "submitted": {
+      "pipeline": "submitted",
+      "roundStatus": "none",
+      "newPrep": false
+    },
+    "screen_invitation": {
+      "pipeline": "recruiter_screen",
+      "roundStatus": "scheduled",
+      "confirmedAt": "2026-11-12T10:00:00-05:00",
+      "prep": "recruiter_specific"
+    },
+    "screen_debrief": {
+      "pipeline": "recruiter_screen",
+      "roundStatus": "completed_user_reported",
+      "nextRound": "expected_unconfirmed",
+      "gap": "database migration tradeoffs",
+      "debrief": "user_reported"
+    },
+    "technical_invitation": {
+      "pipeline": "technical_interview",
+      "roundStatus": "scheduled",
+      "confirmedAt": "2026-11-17T14:00:00-05:00",
+      "prep": "distributed_systems_with_migration_gap"
+    },
+    "logistics_duplicate": {
+      "pipeline": "technical_interview",
+      "roundStatus": "scheduled",
+      "confirmedAt": "2026-11-17T14:00:00-05:00",
+      "meetingUrl": "https://meet.example.test/linden-technical-updated",
+      "duplicatePrep": false
+    },
+    "rejection": {
+      "pipeline": "rejected",
+      "roundStatus": "cancelled",
+      "activePrep": false,
+      "keepHistory": true
+    },
+    "final_reconciliation": {
+      "pipeline": "rejected",
+      "roundStatus": "cancelled",
+      "duplicatePrep": false,
+      "activePrep": false,
+      "keepHistory": true
+    }
+  },
+  "sentinelApplicationId": "44444444-4444-4444-8444-444444444402",
+  "sentinelUnchanged": true,
+  "unmeasured": [
+    "usefulness",
+    "coaching effectiveness",
+    "interview outcomes"
+  ],
+  "scoringNote": "Specificity requires accurate substantive tailoring; length or company-name counts alone earn no credit. Equivalent baseline files and native records are acceptable."
+}
