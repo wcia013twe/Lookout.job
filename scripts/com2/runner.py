@@ -6,7 +6,7 @@ from diagnostics import verify_contact_writer,verify_runtime_guidance,verify_see
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 import cost
 from transport import Bridge
-from runtime import StageClock,ensure_awake,snapshot_with_receipt
+from runtime import StageClock,ensure_awake,snapshot_with_receipt,stop_container_client
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
 R=LIB;S=R/'suite';RUNS=R/'runs';CONFIG={};TASK='';IMAGE='lookout-benchmark:0.164.0'
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -75,8 +75,14 @@ class Session:
    write(run/'isolation.json',{'session':label,'hostPathsVisible':visible,'mounts':json.loads(command(['docker','inspect',self.name,'--format','{{json .Mounts}}'],text=True).stdout),'auth':'Subscription credential in ephemeral container tmpfs, readable by runtime; no host config/history copied. Network remains available for inference.'})
   except Exception:self.close();raise
  def close(self):
-  subprocess.run(['docker','rm','-f',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
-  if self.bridge:self.bridge.close();self.bridge=None
+  result={'containerRemoved':False}
+  try:
+   response=subprocess.run(['docker','rm','-f',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=10)
+   result['containerRemoved']=response.returncode==0
+  except (OSError,subprocess.SubprocessError) as error:result['errorType']=type(error).__name__
+  finally:
+   if self.bridge:self.bridge.close();self.bridge=None
+  return result
  def turn(self,stage_dir,stage,resume=False):
   cmd=['docker','exec','-i',self.name,'codex','--no-daemon','--ask-for-approval','never','exec']
   if resume:
@@ -94,11 +100,14 @@ class Session:
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
   clock=StageClock();meta['startedAt']=clock.startWall
-  expired=threading.Event();usage=None;events=0;usage_complete=False
+  expired=threading.Event();usage=None;events=0;usage_complete=False;termination={};stop_lock=threading.Lock()
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
    def stop():
-    if proc.poll() is None:expired.set();subprocess.run(['docker','kill',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
+    with stop_lock:
+     if proc.poll() is None:
+      expired.set();termination.update(stop_container_client(proc,self.name))
+      write(stage_dir/'termination.json',termination)
    timer=threading.Timer(stage['seconds'],stop);timer.start()
    try:
     proc.stdin.write(prompt);proc.stdin.close()
@@ -121,15 +130,19 @@ class Session:
       trace.write(json.dumps({'sequence':events,'capturedAt':time.time(),'event':json.loads(raw)})+'\n');trace.flush()
     code=proc.wait()
    finally:
-    timer.cancel()
-    if proc.poll() is None:stop();proc.wait(timeout=30)
+    timer.cancel();timer.join(timeout=20)
+    if proc.poll() is None:stop()
     timing=clock.finish()
+    if termination and not termination.get('containerStopped'):
+     timing['valid']=False;timing['invalidReasons'].append('container_stop_unconfirmed')
   active_seconds=timing['wallSeconds']
   timing['wallBudgetExceeded']=timing['wallSeconds']>stage['seconds']+5
   meta['timing']=timing
+  if termination:meta['termination']=termination;meta['hostControlFailed']=not termination.get('containerStopped')
   meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
   meta['environmentTimingConfounded']=not timing['valid'] or timing['monotonicSeconds']>stage['seconds']+5
-  usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
+  meta.update(status='artifact_failed' if meta.get('hostControlFailed') else 'timed_out' if expired.is_set() else 'execution_finished',durationSeconds=active_seconds);write(stage_dir/'stage-run.json',meta)
+  usage_after={'error':'container_stop_unconfirmed'} if meta.get('hostControlFailed') else cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
   meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta

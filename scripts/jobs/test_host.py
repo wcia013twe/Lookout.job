@@ -74,6 +74,27 @@ class ServicesTest(unittest.TestCase):
    self.assertTrue(result['environmentTimingConfounded']);self.assertEqual(result['cost']['status'],'unknown')
 
 
+ def test_unconfirmed_container_stop_keeps_receipt_and_skips_docker_usage(self):
+  from unittest.mock import patch,MagicMock
+  import host
+  runtime=host.runtime;session=runtime.Session.__new__(runtime.Session)
+  session.name='fictional-owned-container';session.condition='baseline';session.bridge=None;session.thread_id='thread';session.auth={'tokens':{}}
+  proc=MagicMock();proc.stdout=[];proc.poll.return_value=None;proc.wait.return_value=1
+  def terminate(*args):
+   proc.poll.return_value=1
+   return {'containerStopped':False,'hostClientStopped':True,'errors':['TimeoutExpired']}
+  def timer_factory(seconds,callback):
+   timer=MagicMock();timer.start.side_effect=callback;return timer
+  clock=MagicMock();clock.startWall=100;clock.finish.return_value={'wallSeconds':3,'monotonicSeconds':3,'valid':True,'invalidReasons':[]}
+  with tempfile.TemporaryDirectory() as tmp:
+   stage=Path(tmp)/'stage-1';stage.mkdir()
+   with patch.object(runtime,'inputs_prompt',create=True,return_value='fixture'),patch.object(runtime.subprocess,'Popen',return_value=proc),patch.object(runtime.threading,'Timer',side_effect=timer_factory),patch.object(runtime,'stop_container_client',side_effect=terminate),patch.object(runtime.cost,'capture',return_value={'error':'fixture'}) as capture,patch.object(runtime,'StageClock',return_value=clock):
+    result=session.turn(stage,{'_index':1,'_session':1,'seconds':1})
+   self.assertTrue(result['hostControlFailed']);self.assertEqual(result['status'],'artifact_failed');self.assertIsNone(result['executionSeconds'])
+   self.assertIn('container_stop_unconfirmed',result['timing']['invalidReasons']);self.assertEqual(capture.call_count,1)
+   self.assertFalse(json.loads((stage/'termination.json').read_text())['containerStopped'])
+   self.assertTrue(json.loads((stage/'stage-run.json').read_text())['hostControlFailed'])
+
  def test_context_parity_includes_keyed_false_null_zero_and_empty_values(self):
   import importlib.util,copy
   library=Path(__file__).resolve().parents[1]/'com2/parity.py';spec=importlib.util.spec_from_file_location('clock_parity_fixture',library);parity=importlib.util.module_from_spec(spec);spec.loader.exec_module(parity)

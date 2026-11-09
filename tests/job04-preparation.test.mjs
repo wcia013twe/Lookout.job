@@ -95,3 +95,12 @@ test('invalid execution timing stays unknown in a partial final review',()=>{
  const a=read(path.join(root,'grading/assignment.json'));a.handoffHash=hash(h);fs.writeFileSync(path.join(root,'grading/assignment.json'),JSON.stringify(a));submission.attestation.assignmentHash=hash(a);
  assert.equal(finalize(root,submission).grades.lookout.executionSeconds,null);
 });
+
+test('unconfirmed container termination halts pair before other condition or grading',()=>{
+ const {root,command}=setup();
+ fs.writeFileSync(command[1],`import fs from 'node:fs';import{createHash}from'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8'));let r={requestHash:createHash('sha256').update(JSON.stringify(q)).digest('hex'),receiptId:'fixture',ownerId:q.ownerId,capturedAt:'2026-11-09T15:00:00Z'};if(q.operation==='participant.turn')Object.assign(r,{status:'execution_failed',hostControlFailed:true,timing:{valid:false,wallSeconds:11},executionSeconds:null});else r.status='confirmed';console.log(JSON.stringify(r));`);
+ const receipt=path.join(root,'receipts/fixture.json');assert.equal(preflight(root,command,receipt,service).ready,true);
+ const halted=run(root,command,receipt,'uncontained-fixture');assert.equal(halted.gradingBlocked,true);assert.deepEqual(halted.unattemptedConditions,['lookout']);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
+ const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints[0].executionSeconds,null);assert.equal(r.checkpoints[0].executionWallSeconds,11);assert.equal(r.hostControlFailed,true);
+ assert.equal(read(path.join(root,'runs/baseline/stage-1/after.json')).reason,'container_stop_unconfirmed');
+});

@@ -175,3 +175,15 @@ saved name/email field markers; it is not a seeded employer form or a native
 question-prefill test. Native initialSavedState retains the same fixture evidence.
 Actual standalone service proof passed; both cases still need the final-source
 live native/container preflight. No new pair is cleared by this work.
+
+
+The COM2 Session used by JOB now reuses COM's bounded container/client shutdown
+helper. A timer records whether Docker confirmed the owned container stopped;
+local reader exit alone cannot establish that. On unconfirmed remote termination,
+timing/usage remain incomplete, a private host-control marker is retained, and
+JOB writes `pair-halted.json` without launching the other condition or creating a
+grading handoff. Do not resume/retry the participant. Inspect ownership and remote
+process state after Docker recovers before stopping any leftover process.
+Coordinator wall/adapter observation is retained separately; invalid or absent
+executor timing cannot become active time or zero. Synthetic process/coordinator
+checks verify these guards, not live Docker recovery or native readiness.

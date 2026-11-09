@@ -136,6 +136,7 @@ class Host:
  def dispatch(self,req):
   if req.get('benchmarkTaskId')!=self.case or req.get('ownerId')!=self.owner:raise ValueError('Request owner/case mismatch')
   self.verify();op=req['operation'];c=req.get('condition')
+  if op in ['condition.setup','participant.turn'] and (self.root/'host-control-failure.json').exists():raise ValueError('Prior participant container stop unconfirmed; no further participant may start')
   clock_receipt=None
   if op=='participant.turn':
    if self.cfg.get('backendRoot'):
@@ -189,12 +190,13 @@ class Host:
   runtime.inputs_prompt=lambda *_:prompt
   wall_started=time.time();monotonic_started=time.monotonic()
   sm=self.sessions[c][1].turn(sd,{'_index':self.stage,'_session':session_id,'seconds':req['budgetSeconds']},resume)
+  if sm.get('hostControlFailed'):write(self.root/'host-control-failure.json',{'condition':c,'stage':stage,'termination':sm.get('termination'),'participantRetry':False})
   timing={'wallSeconds':time.time()-wall_started,'monotonicSeconds':time.monotonic()-monotonic_started,'executorSeconds':sm['durationSeconds'],'budgetSeconds':req['budgetSeconds']}
   timing['wallMinusMonotonicSeconds']=timing['wallSeconds']-timing['monotonicSeconds']
   timing.update(sm.get('timing',{}));timing['wallBudgetExceeded']=timing['wallSeconds']>req['budgetSeconds']+5
   write(sd/'timing.json',timing)
   trace=[json.loads(x) for x in (sd/'trace.jsonl').read_text().splitlines()];tools=[json.loads(x) for x in (sd/'lookout-trace.jsonl').read_text().splitlines()];interactions=[x['data'] for x in tools if x['type']=='user.interaction']
-  return {'status':'execution_failed' if sm['status']=='artifact_failed' else sm['status'],'participantRuntimeStatus':sm['status'],'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'actualPrompt':(sd/'prompt.txt').read_text(),'actualPromptSha256':digest(sd/'prompt.txt'),'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'clock':clock_receipt,'timing':timing,'executionSeconds':sm.get('executionSeconds',sm['durationSeconds']),'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
+  return {'status':'execution_failed' if sm['status']=='artifact_failed' else sm['status'],'participantRuntimeStatus':sm['status'],'hostControlFailed':sm.get('hostControlFailed',False),'termination':sm.get('termination'),'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'actualPrompt':(sd/'prompt.txt').read_text(),'actualPromptSha256':digest(sd/'prompt.txt'),'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'clock':clock_receipt,'timing':timing,'executionSeconds':sm.get('executionSeconds',sm['durationSeconds']),'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
  def preflight(self):
   # Actual no-model Session construction checks auth, mounts and MCP forwarding.
   root=self.root;spec=read(root/'suite/scenario.json');(root/'receipts').mkdir(exist_ok=True);out=root/'receipts'/('host-'+uuid.uuid4().hex[:8]);out.mkdir();gates=[]

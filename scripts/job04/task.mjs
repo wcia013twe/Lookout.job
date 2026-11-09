@@ -133,7 +133,7 @@ export function run(root,command,preflightFile,pairId){
      const input=packet(spec,evidence,stage,condition,fs.readFileSync(path.join(root,'candidate/profile.md'),'utf8'));write(path.join(sd,'input.json'),input);
      const req={operation:'participant.turn',benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,condition,packet:input,session:stage.session,resume:i>0&&stage.session===spec.stages[i-1].session,budgetSeconds:spec.policy.stageBudgetSeconds,actor:{version:'released-only-v1',events:spec.stages.slice(0,i+1).filter(s=>s.kind==='user').map(s=>({id:s.id,request:s.request})),responseDelayMinutes:spec.policy.userResponseDelayMinutes}};
      start=performance.now();const result=bound(adapter(command,req,(spec.policy.stageBudgetSeconds+45)*1000),req);cp.adapterSeconds=(performance.now()-start)/1000;cp.executionSeconds=result.timing?.valid===false?null:result.executionSeconds??cp.adapterSeconds;cp.executionWallSeconds=result.timing?.wallSeconds??cp.adapterSeconds;cp.containerStartupSeconds=result.containerStartupSeconds??null;cp.mcpDiagnostics=result.mcpDiagnostics??null;start=null;
-     write(path.join(sd,'response.json'),result);check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal receipt required');cp.status=result.status;
+     write(path.join(sd,'response.json'),result);if(result.hostControlFailed)r.hostControlFailed=true;check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal receipt required');cp.status=result.status;
      check(result.participantExecuted===true&&result.synthetic===false,'Actual participant execution receipt required');
      check(result.session===stage.session&&result.resume===req.resume,'Unexpected session continuity');
      check(result.isolation?.futureEvidenceVisible===false&&result.isolation?.graderVisible===false&&result.isolation?.credentialsVisible===false,'Participant isolation violated');
@@ -142,9 +142,9 @@ export function run(root,command,preflightFile,pairId){
      cp.scriptedInitiations=Number(stage.id!=='screen_debrief');cp.prescribedPrompts=1;
      write(path.join(sd,'stage-run.json'),{status:cp.status,cost:stageCost(result.cost),durationSeconds:cp.executionSeconds});
     }catch(e){cp.status=e.message==='adapter_timeout'?'timed_out':'harness_failed';cp.error=e.message;write(path.join(sd,'failure.json'),{error:e.message});}
-    finally{if(start!==null)cp.executionSeconds=(performance.now()-start)/1000;
+    finally{if(start!==null){cp.executionWallSeconds=(performance.now()-start)/1000;cp.executionSeconds=null;}
      if(!fs.existsSync(path.join(sd,'stage-run.json')))write(path.join(sd,'stage-run.json'),{status:cp.status,durationSeconds:cp.executionSeconds,cost:{status:'unknown',tokens:null,model:null}});
-     try{write(path.join(sd,'after.json'),capture(root,command,condition,'snapshot',{stage:stage.id}));}catch(e){cp.status='harness_failed';cp.captureError=e.message;}
+     try{write(path.join(sd,'after.json'),r.hostControlFailed?{status:'unavailable',reason:'container_stop_unconfirmed'}:capture(root,command,condition,'snapshot',{stage:stage.id}));}catch(e){cp.status='harness_failed';cp.captureError=e.message;}
     }
     saveProgress();if(cp.status!=='completed'){r.status=cp.status;break;}
    }
@@ -154,6 +154,7 @@ export function run(root,command,preflightFile,pairId){
   // Same cost accounting convention as other COM/JOB cases. This helper performs no inference.
   const cost=spawnSync('python3',['-B','-c',"import sys,json;sys.path.insert(0,sys.argv[1]);import cost;print(json.dumps(cost.summarize(sys.argv[2],sys.argv[3])))",path.join(repo,'scripts/n01'),dir,path.join(root,'suite/cost-policy.json')],{encoding:'utf8',timeout:15000});
   if(cost.status!==0){r.status='harness_failed';r.cost=null;r.costError='Cost summarization failed; participant evidence retained';}else{r.cost=JSON.parse(cost.stdout);costValues(r.cost);write(path.join(dir,'cost.json'),r.cost);}saveProgress();
+  if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   try{write(path.join(dir,'terminal-confirmation.json'),capture(root,command,condition,condition==='lookout'?'native.readonly_confirmation':'baseline.final_files'));}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
   write(path.join(dir,'evidence-hashes.json'),manifest(dir));
  }

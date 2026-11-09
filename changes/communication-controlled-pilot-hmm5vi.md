@@ -141,3 +141,25 @@
 - Focused checks:22 JOB Python and34 coordinator Node tests pass before final
   documentation checks. Docker read-only version probe still times out; no restart
   or new participant attempt. Latest complete native gates remain outstanding.
+
+
+## Shared timeout containment audit
+
+- The JOB-used COM2 Session still depended on Docker kill to unblock its reader.
+  It now reuses the existing shared stop_container_client helper used by COM03:
+  bounded remote stop plus bounded local client teardown, with distinct receipts.
+  Session close always releases its bridge and reports container removal status.
+- Unconfirmed native container stop invalidates timing, skips further Docker usage
+  capture, persists termination evidence before more I/O, and marks host control
+  failed. JOB host forbids subsequent participant setup/turns. Both coordinators
+  halt the pair before the other condition or grading, retaining partial state.
+- Corrected JOB03's remaining invalid/null-to-adapter fallback and both cases'
+  adapter-error timing fallback: unavailable active time stays null; adapter/wall
+  duration is retained separately. Historical receipts are never recalculated.
+- Verification:23 JOB Python,45 COM2 Python,eight shared-runtime Python and42 Node
+  checks passed; catalog158 and diff checks passed. Scripted coordinator probes
+  confirm no other condition/grading starts after unconfirmed stop; runtime probe
+  confirms partial usage and persisted termination. No inference or actual Docker
+  shutdown was performed. Shared Docker version probes still time out.
+- Final-source actual native preflights remain the external blocker. No new pair,
+  remote publication or product-effectiveness conclusion is implied.

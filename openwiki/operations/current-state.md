@@ -1312,3 +1312,11 @@ failure, saved fields and single/cancelled delivery behavior. The partial form i
 this shared service, not a seeded native employer form. Actual standalone service
 proof passed, with no inference. Latest complete native/container gates remain
 unverified because the shared Docker engine still times out; no new pair is cleared.
+
+
+The JOB-used COM2 Session also now reuses shared bounded container/client teardown.
+Unconfirmed remote termination persists timing/termination evidence and halts JOB
+before the other condition or final grading. Local client exit is not remote
+termination proof; active time/usage remain unknown where capture is incomplete.
+Scripted process/coordinator checks pass; live Docker recovery and complete native
+preflight remain outstanding. No historical participant was resumed or retried.
