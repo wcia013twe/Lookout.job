@@ -44,7 +44,7 @@ def run(pair_id):
   for condition in ['baseline','lookout']:
    out=ROOT/'runs'/condition;out.mkdir(mode=0o700);inputs=out/'live-inputs';inputs.mkdir();files=out/'output';files.mkdir()
    runtime.write(inputs/'targets.json',[{k:t[k]for k in ['id','kind','url','title','company','nativeJobId']}for t in spec['targets']]);shutil.copyfile(ROOT/'candidate/resume.pdf',inputs/'resume.pdf')
-   meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','model':spec['model'],'reasoning':spec['reasoning'],'startedAt':time.time(),'status':'running','stages':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0,'hostAwakeGuard':awake};session=None
+   meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','model':spec['model'],'reasoning':spec['reasoning'],'startedAt':time.time(),'status':'running','stages':[],'startups':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0,'hostAwakeGuard':awake};session=None
    try:
     snapshot(out/'initial-state.json')
     for index,step in enumerate(spec['stages'],1):
@@ -52,14 +52,19 @@ def run(pair_id):
      if index==2:
       node('respond','--condition',condition,'--run',out);meta['simulatedWaitingMinutes']=spec['wakeDelayMinutes']+spec['userResponseDelayMinutes']
      cfg={'targets':spec['targets'],'resume':str(ROOT/'candidate/resume.pdf'),'output':str(sd/'browser'),'profile':str(out/'browser-profile'),'executablePath':json.loads((ROOT/'runtime.private.json').read_text()).get('browserExecutable'),'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','fixtureRoot':str(ROOT/'suite/forms')}
-     (out/'browser-config.private.json').write_text(json.dumps(cfg));runtime.write(out/'active-stage.json',{'stage':index});session=runtime.Session(sd,inputs,files,condition,str(step['session']))
+     (out/'browser-config.private.json').write_text(json.dumps(cfg));runtime.write(out/'active-stage.json',{'stage':index})
+     startup=runtime.StageClock()
+     try:session=runtime.Session(sd,inputs,files,condition,str(step['session']))
+     finally:
+      timing=startup.finish();receipt={'stage':index,'status':'completed'if session else'failed','startedAt':startup.startWall,'durationSeconds':timing['monotonicSeconds'],'rawWallSeconds':timing['wallSeconds'],'timing':timing};meta['startups'].append(receipt);runtime.write(sd/'session-startup.json',receipt)
+     if not timing['valid']:raise RuntimeError('Session startup timing invalid')
      result=session.turn(sd,stage,False);meta['stages'].append({'id':step['id'],'index':index,**result});runtime.write(out/'run.json',meta)
      if (sd/'browser/form-drift.json').exists():
       meta['sourceDrift']=True;raise RuntimeError('Frozen form drift: pair stopped before another condition')
      capture(session,'final');session.close();session=None
      snapshot(sd/'after-state.json');shutil.copytree(files,sd/'output')
      runtime.write(out/'run.json',meta)
-     if result['status']!='completed':meta['status']=result['status'];break
+     if result['status']!='completed':meta['status']='harness_failed' if result['status']=='artifact_failed' else result['status'];break
     else:meta['status']='completed'
    except Exception as error:
     if any(out.glob('stage-*/browser/form-drift.json')):meta['sourceDrift']=True

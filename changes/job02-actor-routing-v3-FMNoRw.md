@@ -9,3 +9,5 @@
 - Independent pre-run review caught product worked-with phrasing and unrelated other-tool matching before any v3 freeze/model turn. Preserve its blocked review; add target-topic specificity, employment/alternative exclusions and positive/negative metamorphic cases. Require re-review before freezing.
 
 - Independent setup re-review passed with 33 hashes after the actor repairs; preserve the first blocked report and its source-probe/hash timing limitation. Use the existing shared host-awake guard before participant attempt creation and record its method; focused regression verifies failure stops before any attempt/retry.
+
+- Record each container/session startup with shared monotonic/wall timing, including constructor failures. Preserve raw stage wall/timing receipts; only validated execution timing is aggregated as activeSeconds. Invalid timing remains null/unknown and is never presented as valid elapsed performance.

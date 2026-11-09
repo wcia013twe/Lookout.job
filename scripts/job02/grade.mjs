@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {read,write,hash,digest,files,assertFrozen,factualEqual} from './core.mjs';
+import {timingSummary} from './timing.mjs';
 import {assign,authorize} from '../job01/grading.mjs';
 import {validate as validateEval} from '../evals/contract.mjs';
 export function handoff(root){
@@ -40,9 +41,10 @@ export function finalize(root,submission){
   const reviewed=ratings.length>0&&ratings.every(r=>r!==null)&&run.stages.length===spec.stages.length,quality=reviewed?ratings.reduce((a,b)=>a+b,0)/(ratings.length*2):null;
   const finalReached=run.stages.some(s=>s.id==='continue'),allObserved=targets.length===3&&targets.every(t=>t.observed),fieldsKnown=fieldChecks.every(f=>f.observable);
   const success=reviewed&&finalReached&&allObserved&&fieldsKnown?run.status==='completed'&&targets.every(t=>t.complete&&(t.expectedOutcome!=='ready'||t.liveReady===true))&&fieldChecks.every(f=>f.correct):null;
-  const result={diagnostics:run.diagnostics??null,cost:run.cost??null,condition,status:run.status,reviewed,quality,taskSuccess:success,targets,fieldChecks,uniqueInteractionTurns:turnMap.size,prescribedInitiations:run.prescribedInitiations,wallDurationSeconds:run.endedAt-run.startedAt,activeSeconds:run.stages.reduce((n,s)=>n+s.durationSeconds,0),simulatedWaitingMinutes:run.simulatedWaitingMinutes,adherence:condition==='lookout'?review.adherence:undefined};
+  const timing=timingSummary(run);
+  const result={timing,diagnostics:run.diagnostics??null,cost:run.cost??null,condition,status:run.status,reviewed,quality,taskSuccess:success,targets,fieldChecks,uniqueInteractionTurns:turnMap.size,prescribedInitiations:run.prescribedInitiations,wallDurationSeconds:run.endedAt-run.startedAt,activeSeconds:timing.activeSeconds,sessionStartupSeconds:timing.sessionStartupSeconds,simulatedWaitingMinutes:run.simulatedWaitingMinutes,adherence:condition==='lookout'?review.adherence:undefined};
   const summary=validateEval({schemaVersion:1,campaignId:'JOB02-pilot',suiteId:'JOB02',suiteVersion:spec.version,scenarioId:'JOB02',scenarioVersion:spec.version,condition,episodeId:run.episodeId,model:spec.model,reasoning:spec.reasoning,harnessVersion:'JOB02-host-v3',graderVersion:spec.graderVersion,repeat:1,evidenceDigest:hash(manifest),pilot:true,synthetic:false,startedAt:run.startedAt,endedAt:run.endedAt,status:run.status,cost:run.cost??undefined,evaluation:{reviewed,taskSuccess:success,quality,activeSeconds:result.activeSeconds,toolCalls:run.toolCalls,wakesUsed:run.stages.length}});
-  summary.diagnostics=run.diagnostics??null;summary.effort={uniqueInteractionTurns:result.uniqueInteractionTurns,prescribedInitiations:result.prescribedInitiations};summary.wallDurationSeconds=result.wallDurationSeconds;results.push({result,summary});
+  summary.timing=timing;summary.diagnostics={...run.diagnostics,session_startup_seconds:timing.sessionStartupSeconds,raw_stage_wall_seconds:timing.rawStageWallSeconds,execution_timing_valid:Number(timing.executionValid)};summary.effort={uniqueInteractionTurns:result.uniqueInteractionTurns,prescribedInitiations:result.prescribedInitiations};summary.wallDurationSeconds=result.wallDurationSeconds;results.push({result,summary});
  }
  write(root+'/grading/final.json',{assignment:a,attestation:submission.attestation,nativeConfirmationHash:digest(root+'/grading/native-confirmation.json'),results});return results;
 }
