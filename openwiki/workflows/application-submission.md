@@ -347,8 +347,10 @@ explicit human decisions and actions requiring attention.
 Assessment tasks (OA, online/coding/technical assessments and take-home
 assessments) remain on their application tracker and are excluded from Action
 Board decisions and tracker work. The Action Board is limited to Muse work that
-needs human approval or input; preparation reminders, networking follow-ups and
-AI Apply activity are presented in their owning workspaces.
+needs human approval or input. The weekly preparation calendar remains beside
+the action list and shows dated interview rounds, assessment next actions,
+preparation sessions and materials. Networking follow-ups and AI Apply status
+remain in their owning workspaces.
 
 ### Application coverage on the Action Board
 
