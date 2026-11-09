@@ -8,3 +8,9 @@
 - Connected Langfuse dataset registered; synthetic baseline/Lookout experiment observations and scores ingested/read back. These are explicitly verification/pilot fixtures with no model execution, not measured results. Final verification receipts accompany the private workspace.
 - Demo coverage: wholly fictional local fixtures exercise both conditions and telemetry failure paths; no product UI changes or production data mutation. No paid model API or semantic LLM judge. Semantic grading requires independent local evidence review; real participant E2E remains unrun.
 - No push, PR or deployment. Keep the isolated checkout because the private prospective freeze references its executable files; preserve prior failed/setup and synthetic verification receipts.
+
+## Grading audit follow-up
+
+- Stream v2 / grader v2 reject absent telemetry, incomplete completed-runs, manifest-only quality evidence, stale/mismatched rubric reviews, duplicate interaction references and unsupported native outcome evidence. Unreached adherence opportunities are neutral with coverage; unanswered demands are separate from captured exchanges. Export stage success/reached flags and rename timing to simulated waiting.
+- Corrected resumed-turn native log and user-actor routing via a host-only active-stage receipt. No benchmark metadata enters participant inputs. Prior freezes/results preserved.
+- Focused verification: 22 Python regressions through three Node tests, syntax checks and data validation. Full-suite existing database failure remains as documented above. New prospective pilot runs are separate from synthetic verification.

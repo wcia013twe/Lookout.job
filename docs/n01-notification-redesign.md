@@ -1,8 +1,8 @@
-# N01: networking across sessions — stream v1
+# N01: networking across sessions — stream v2
 
 ## Research intent and onboarding
 
-Compare required user interactions, completion time, and outcome quality for an ongoing networking workflow. Lookout adherence is a separate dimension. This is a prospective redesign, not a regrade of N01 v6 or evidence of superiority.
+Compare required user interactions, completion time, and outcome quality for an ongoing networking workflow. Lookout adherence is a separate dimension. This is a prospective redesign, not a regrade of N01 v6 or stream v1 or evidence of superiority.
 
 Both conditions use Terra `gpt-5.6-terra`, medium reasoning, the same complete initial context and resume, fixed fictional networking evidence, and sequential isolated container sessions. Neither receives a standing career-goal prompt. The baseline receives all non-resume context in the first user message. The harness never mounts a profile file, creates a baseline state file, or replays onboarding in fresh sessions. The baseline may choose to save notes. Resume remains accessible. Lookout receives the same first message and its cloned native context; its records are not required to be mirrored to local files.
 
@@ -33,11 +33,11 @@ Metrics:
 
 - Assigned onboarding, assigned initiation, and necessary user updates are separate counts.
 - Observed question turns plus independently reviewed additional interaction demands. Never double-count an `ask_user` exchange in the additional list; categories are clarification, context restatement, correction, reminder, approval.
-- Actual execution seconds, observable tool/command/file steps, and event-to-outcome simulated minutes. Both trigger delays are zero; simulated latency measures protocol assumptions plus answer delays, not measured human response time. Failed checkpoints have null completion latency, never zero.
+- Actual execution seconds, observable tool/command/file steps, and simulated waiting minutes. Both trigger delays are zero; simulated latency measures protocol assumptions plus answer delays, not measured human response time. Failed checkpoints have null waiting values, never zero; every stage exports reached/success indicators so failed cases remain visible.
 - Eight semantic quality checks: initial context, preparation, tentative preference, reply, confirmed preference, follow-through, duplicate handling and preservation. Completed execution alone is not successful completion. Accept equivalent saved representations and grounded prose; do not grade exact field placement or exact wording.
-- Six adherence checks: fresh context retrieval, tentative reaction saved, reply saved, confirmed preference saved, follow-through saved, duplicate checked. Classification: used correctly, attempted but failed, omitted, not applicable; successful calls stay pending review until the saved outcome is verified. Baseline adherence is not applicable and excluded from an adherence fraction.
+- Six adherence checks: fresh context retrieval, tentative reaction saved, reply saved, confirmed preference saved, follow-through saved, duplicate checked. Classification: used correctly, attempted but failed, omitted, not applicable; successful calls stay pending review until the saved outcome is verified. Unreached opportunities are reported separately and excluded from adherence fraction; coverage is always reported. Baseline adherence is not applicable and excluded from an adherence fraction.
 
-The local deterministic grader validates terminal status, counts observations, matches expected tool opportunities, validates evidence references and binds review to evidence hashes. Semantic criteria and native outcome correctness require an independent reviewer with cited local files. No paid LLM judge is invoked. A missing review produces `pending_review` with no quality score. Review all checkpoints, preservation and visible user questions; missing stages cannot earn credit. Review is external to participants and must never be used to coach them mid-run.
+The local deterministic grader validates terminal status, counts observations, matches expected tool opportunities, validates stage completeness and checkpoint-specific evidence references, and binds review to evidence, scenario and grader versions. Missing logs invalidate grading instead of becoming zero effort. Semantic criteria and native outcome correctness require an independent reviewer with cited local files. No paid LLM judge is invoked. A missing review produces `pending_review` with no quality score. Review all checkpoints, preservation and visible user questions; missing stages cannot earn credit. Review is external to participants and must never be used to coach them mid-run.
 
 No rescue, in-run repair, silent replacement or retry. Stop a failed condition, preserve artifacts, and still attempt its paired condition. Grade only after both have terminated. Reporting failures do not rerun participants. A rubric/scenario change requires a new prospective version and new registration; keep the old results.
 
@@ -61,3 +61,11 @@ Synthetic verification uses `environment=verification`, `pilot=true`, `synthetic
 Focused Python and Node tests cover prompt visibility, baseline/native separation, pending review, omissions, successful-call-with-wrong-outcome, timeout, stale evidence, review path escape, question counts, trajectory grouping, root scores, deterministic IDs, private-content exclusion and partial-ingestion failures. The fictional no-model fixture exercises both export conditions without spending model tokens.
 
 Live read-back status and actual preflight receipts are reported in the change note. A live telemetry smoke test is not an end-to-end participant benchmark. Semantic grading remains manual by design; no automatic semantic judge or paid API has been configured.
+
+## Grading audit corrections (v2)
+
+Review templates default independence to false; the reviewer must explicitly attest independence. Completed runs require all seven terminal stage receipts and required logs/snapshots. Quality passes require the matching stage output/trace/state evidence; a manifest alone is insufficient. Native writes additionally require the corresponding after-state snapshot. Reviews cannot pass unreached/incomplete checkpoints. Missing telemetry is an invalid grading result, not a participant omission.
+
+Captured question IDs are source-file line references. Additional unanswered demands must identify unique completed agent-message lines, explicitly exclude duplicates of captured questions, and are reported separately from answered exchanges. Reusing an interaction ID is rejected. Human semantic judgment is still required to detect paraphrased duplicate questions.
+
+Waiting time is explicitly labelled simulated waiting, not task-completion time. Stage success and reached coverage accompany exported waiting metrics. Stage-specific native logs and user-actor answers now follow the active turn even when a session resumes.
