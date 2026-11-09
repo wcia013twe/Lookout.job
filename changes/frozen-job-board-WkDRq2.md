@@ -5,3 +5,5 @@
 - Publish only the generated static export to the separate public Lookout-eval-job-board repository, at user request. No Lookout production deployment or product data changes.
 - Validation: focused parser/provenance/hash/subset regression, npm run validate:data, desktop/mobile browser checks (794 rows, no viewport overflow, detail navigation). Locked root and frontend installs completed. Product full suite/build not run: source tooling and standalone static artifact only, no runtime changes.
 - Limits: Jobright-derived descriptions are not employer-verified availability. Most listings have no captured description; preserve that uncertainty. N02 private reference labels and participant execution remain separate. No product UI/demo/MCP capability changed; standalone board checks cover this infrastructure surface.
+
+- Publication verified: GitHub Pages build succeeded; deployed jobs JSON contains 794 rows and matches its SHA-256 manifest. Public export commit: 9257b36.
