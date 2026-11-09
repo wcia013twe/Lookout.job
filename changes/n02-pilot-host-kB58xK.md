@@ -5,3 +5,9 @@
 - Separate exact-ten target extraction from analysis review. Missing extraction cannot become zero recall; external reviewer citations bind to saved artifact hashes. Track actual interaction categories and preserve unresolved graduation/citizenship evidence.
 - Validation: 10 focused source/JOB01 host/grader tests; data validation; dedicated candidate/resume read-back; successful no-inference preflight for both conditions (login presence, native scopes, direct/public-web blocks and inference routing). Earlier DNS and unavailable-tool setup failures retained separately.
 - Limits: no paired participant run or model inference executed. Exact target recall is a reference inclusion measure, not proof of optimality or eligibility. Root/frontend locked installs completed; no product runtime/schema/UI/MCP changes, so full product suite/build and demo changes are not applicable. Existing JOB01 synthetic Langfuse traces verified separately.
+
+## JOB01 v2 clarification verification
+
+- Refreshed the private freeze after complete-shortlist, stage-specific style, suitability and unique-turn grading changes; previous freezes retained. Both conditions passed no-inference preflight. Twelve focused tests passed; implementation-pass data validation passed.
+- Registered the prospective v2 Langfuse dataset and accepted synthetic transport export. Remote observations read-back failed; recorded the failure without retry or participant execution. No measured quality or model outcome is claimed.
+- Private prepared root: `/Volumes/External SSD/Lookout/tmp/job01-pilot-v2-ready-20261109`. Launch script saved but not executed. No product deployment or public-board changes.
