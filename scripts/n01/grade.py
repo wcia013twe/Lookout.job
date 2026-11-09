@@ -1,7 +1,8 @@
 """Independent local-first grading. Missing semantic review is pending, never a pass."""
 import argparse,hashlib,json,math
 from pathlib import Path
-GRADER_VERSION='COM1-grade-v2'
+GRADER_VERSION='COM1-grade-v3'
+from terminal_state import validate_terminal_state
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -11,7 +12,7 @@ def rows(p):return [json.loads(x) for x in p.read_text().splitlines() if x] if p
 def evidence_digest(run):
  h=hashlib.sha256()
  for p in sorted(run.rglob('*')):
-  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt'] or 'output' in p.parts):
+  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt','terminal-state.json'] or 'output' in p.parts):
    h.update(str(p.relative_to(run)).encode());h.update(p.read_bytes())
  return h.hexdigest()
 def tool_calls(stage):
@@ -75,6 +76,8 @@ def grade(run,spec,review=None):
  if m['status'] not in TERMINAL:raise ValueError('Cannot grade an active run')
  if m.get('version')!=spec['version'] or m.get('condition') not in ['baseline','lookout']:raise ValueError('Wrong scenario/condition')
  stages=validate_evidence(run,spec,m)
+ terminal=None
+ if m['status']=='completed' or (run/'terminal-state.json').exists():terminal=validate_terminal_state(run,m)
  deliveries=[];execution=0;toolcount=0;questions=[];calls={};stepcount=0
  for i,sd in stages.items():
   sm=read(sd/'stage-run.json');execution+=sm['durationSeconds'];calls[i]=tool_calls(sd)
@@ -98,7 +101,11 @@ def grade(run,spec,review=None):
   for key,item in review['quality'].items():
    if type(item.get('pass')) is not bool:raise ValueError('Unresolved quality decision')
    if unavailable[key] and item['pass']:raise ValueError('Unreached/incomplete checkpoint cannot pass')
-   if not unavailable[key]:check_review_evidence(run,item,check_stages[key],item['pass'])
+   if not unavailable[key]:
+    check_review_evidence(run,item,check_stages[key],item['pass'])
+    if key in ['saved_state','report_accuracy']:
+     if terminal is None or 'terminal-state.json' not in item.get('evidence',[]):raise ValueError('Final checks require independent terminal state evidence')
+     if key=='report_accuracy' and item['pass'] and not any('/output/final-report.md' in ref for ref in item['evidence']):raise ValueError('Report accuracy requires final report evidence')
    elif not item.get('reason'):raise ValueError('Unavailable checkpoint requires explanation')
   seen={q['interactionId'] for q in questions}
   for item in review.get('additionalInteractions',[]):

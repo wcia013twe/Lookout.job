@@ -2,6 +2,7 @@
 import argparse,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
 from transport import Bridge
+from terminal_state import capture_terminal_state
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
 R=LIB;S=R/'suite';RUNS=R/'runs';CONFIG={};TASK='';IMAGE='lookout-benchmark:0.164.0'
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -153,7 +154,14 @@ def run(condition,repeat,pair_id,pilot=False):
   if session:session.close()
   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
   except Exception:meta['finalStateCaptured']=False
-  meta['durationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
+  meta['participantEndedAt']=time.time();meta['durationSeconds']=meta['participantEndedAt']-meta['startedAt'];write(run/'run.json',meta)
+  try:
+   capture_terminal_state(run,R,meta)
+   meta['terminalCaptureStatus']='captured'
+  except Exception as e:
+   meta['terminalCaptureStatus']='failed'
+   write(run/'terminal-capture-error.json',{'errorType':type(e).__name__,'error':str(e)[:300]})
+  write(run/'run.json',meta)
   for p in run.rglob('*'):
    if p.is_file() and not p.is_symlink():p.chmod(0o600)
   fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
@@ -165,7 +173,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM1-stream-v3':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v4':raise RuntimeError('Wrong runtime configuration')
 
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
@@ -174,7 +182,7 @@ def inputs_prompt(stage,condition):
  prefix += storage
  if stage['kind']=='onboarding':
   return prefix+stage['request']+'\n\n'+(R/'background'/'onboarding.md').read_text()
- if stage['kind']=='user_update':return prefix+stage['request']
+ if stage['kind'] in ['user_update','reconciliation']:return prefix+stage['request']
  if condition=='baseline':return prefix+stage['baseline']
  return prefix+'Scheduled networking check. Review the available updates under the configured read/prepare/save permissions.'
 

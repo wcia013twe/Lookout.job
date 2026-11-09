@@ -1078,3 +1078,6 @@ reads succeeded, not that semantic matching or participant quality passed.
 ### COM3 connection discovery benchmark
 
 COM3 adds a six-session, ten-turn post-application networking case with a release-gated 30-document corpus, retained emails, independent durable-state grading and an isolated local owner. Source: scripts/com3 and docs/com3-connection-discovery.md. Native writer/readback smoke and restoration pass; no participant performance is asserted.
+### Prospective COM1 terminal-state evaluation
+
+COM1-stream-v4 adds a final participant reconciliation and independent saved-state/report-accuracy checks. Terminal evidence is captured under the account lock and bound to owner, episode, scenario and snapshot/file hashes; historical review does not query a reused live account. Optional scoped reads supplement the frozen snapshot. See [COM1 evaluation](../../docs/n01-notification-redesign.md). Focused fixtures verify contracts; no v4 participant run or live scoped-capture verification is claimed.
