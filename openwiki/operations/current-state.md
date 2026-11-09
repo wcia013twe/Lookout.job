@@ -1074,3 +1074,7 @@ grader with no inherited context; shell tooling does not spawn an agent. Both
 conditions use frozen artifact citations and rubric bindings. Partial attempts stay
 reportable; prior freezes remain unchanged. Native confirmation success means
 reads succeeded, not that semantic matching or participant quality passed.
+
+### COM3 connection discovery benchmark
+
+COM3 adds a six-session, ten-turn post-application networking case with a release-gated 30-document corpus, retained emails, independent durable-state grading and an isolated local owner. Source: scripts/com3 and docs/com3-connection-discovery.md. Native writer/readback smoke and restoration pass; no participant performance is asserted.

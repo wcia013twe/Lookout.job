@@ -1,6 +1,6 @@
 # COM3: Appropriate connections after applying
 
-**6 sessions; 10 staged interactions per condition.** Design only; implementation ownership and search-source choice are coordinated separately. One interaction here means one released participant turn, not a measured unit of human effort.
+**6 sessions; 10 staged interactions per condition.** Implemented as COM3-stream-v1; fixed-corpus search approved. One interaction here means one released participant turn, not a measured unit of human effort.
 
 ## Intent and initial state
 
@@ -31,13 +31,13 @@ Five shared user messages: turns 1/3/5/7/10. Five review activations: 2/4/6/8/9.
 
 Use frozen origin plus minute offsets for an explicit ordinary business clock in every prompt, identical across conditions. The container wall date is not the workflow date. Validate source dates against that clock before freezing.
 
-## Search evidence — pending user choice
+## Search evidence — approved fixed corpus
 
-Recommended reproducible v1: approximately 30 frozen fictional documents, deterministic ordinary text search and full-source reads, identically accessible to both conditions. Include role/team pages, current/archived profiles, alumni directories, technical work, plausible alternatives and distractors. No relevance labels, answer lists or private rubric in visible sources. Later documents must be inaccessible even when an ID is guessed.
+Implemented reproducible v1: 30 frozen fictional documents, deterministic ordinary text search and full-source reads, identically accessible to both conditions. Include role/team pages, current/archived profiles, alumni directories, technical work, plausible alternatives and distractors. No relevance labels, answer lists or private rubric in visible sources. Later documents must be inaccessible even when an ID is guessed.
 
-Proposed shared tools: search_sources(query,cursor) returns source ID/title/snippet/date/next cursor; read_source(sourceId) returns the full released source/provenance. Log query, returned IDs and read IDs. Freeze sources, ranking implementation and release schedule. Existing COM1 runner disables web search; it cannot establish discovery without new shared source tools.
+Shared tools: search_sources(query,cursor) returns source ID/title/snippet/date/next cursor; read_source(sourceId) returns the full released source/provenance. Log query, returned IDs and read IDs. Freeze sources, ranking implementation and release schedule. Existing COM1 runner disables web search; it cannot establish discovery without new shared source tools.
 
-This is controlled-corpus discovery, not measured open-web coverage. If the user chooses live search, stop corpus-dependent implementation and define equivalent access, temporal capture, privacy, availability and reproducibility policy first. Search mode is not silently decided by this document.
+This is controlled-corpus discovery, not measured open-web coverage. Live search is outside this version.
 
 Private independently reviewed reference must accept multiple supported candidates. For example, a current retrieval-infrastructure engineer with a relevant public talk and an engineer working on retrieval evaluation can both be valid. A prestigious but irrelevant employee, obsolete affiliation, unverified identity or opted-out person is not equivalent. No exact candidate ID is universally required. Zero contacts can pass when evidence genuinely lacks an appropriate route; add a separate no-eligible-match variant instead of rewarding skipped discovery in a corpus with strong matches.
 
@@ -62,3 +62,15 @@ Both use subscription gpt-5.6-terra, medium. Turn 1 and 10 have 180 seconds; all
 Whole trajectory is one dataset item; version COM3-stream-v1, COM3-grade-v1, COM3-harness-v1. Use shared eval_v1 summary identity/scores, structural detailed turn/tool telemetry and local private evidence. Shared wakesUsed must be documented as attempted participant turns; separately report actual scheduled wakes and assigned baseline initiations. No raw profile/resume/messages/records or hidden reasoning exported. Pending common summaries stay local until independent final review because shared result bindings are immutable. Compare actual active seconds separately from simulated waiting and quality/coverage; ten turns are not ten independent cases.
 
 Before execution: settle search mode, review corpus/reference if chosen, implement release-gated tools, provision dedicated isolated owner, verify native reads/writer roundtrips/restoration and graded terminal capture, pilot without rescue, then freeze prospective measured inputs/rubric.
+
+## Implemented setup — COM3-stream-v1
+
+Six sessions; ten released interactions. The implementation uses the agreed controlled corpus: 30 searchable documents, with later versions released only at their assigned turns. Key role/team/talk documents contain substantive technical detail; source URLs resolve through read_source. This measures discovery and reconstruction within a bounded public-source corpus, not live-web recall. Both conditions have the same search/read allowance, 30 combined calls per fresh session.
+
+Released emails persist for both conditions, deduplicated by immutable message ID. Current notification IDs and historical deliveries remain separate; no future documents or previous user prompts are injected. Both receive the same authoritative business clock. Terminal lookup uses a separate read-only credential; pre-final capture is passive snapshots/files only. Independent grading compares pre-final continuity against terminal reconciliation and requires durable record/file evidence at saved-work checkpoints. No participant execution occurs during readiness.
+
+Implementation: scripts/com3 (isolated adaptation), examples/com3 (fixture/scenario/corpus). prepare.py verifies source/native/onboarding parity. writer_smoke.py validates contact, artifact, complete company-record payloads and their reads against the actual local bridge, then restores the owner. preflight.py is separately read-only. The first company smoke intentionally failed loudly on an incomplete payload; the corrected complete schema passed, and both attempts restored fixtures.
+
+Validation: 11 search/release/actor/credential/telemetry boundary regressions and catalog validation pass; Python compilation passes. Semantic grading still requires an independent reviewer. No claim of participant performance or automatic semantic-judge validation is made.
+
+Readiness receipts (private experiment-control directory): `com3-ready-v1` frozen inputs, `com3-preflight-v1` read-only bridge/container verification, `com3-writer-smoke-v2` successful write/read/restore receipt, `com3-langfuse-v1` prospective dataset registration and readback. Dataset: Lookout-COM3-stream-v1. No participant has run.
