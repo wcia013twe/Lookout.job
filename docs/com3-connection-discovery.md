@@ -96,3 +96,7 @@ Prospective COM3-stream-v4 / COM3-grade-v4 uses equal durable-output obligations
 Shared host awake/monotonic-clock/capture guards are reused. Startup containers and audit response overhead are separately reported within wall/execution costs, not added twice. Read-only pre/post native startup/schema/guide fingerprints detect drift. Grading requires durable evidence at each relevant checkpoint for both positive and negative judgments. Paginated score verification replaces the first-page assumption. No product changes or participant-specific coaching.
 
 A case clears only with a comparable, frozen pair, validated timing/usage and complete independent evidence review/export. Semantic failures remain findings; a higher Lookout score is not a clearance condition. Human cognitive effort and subscription dollar allocation remain unmeasured. PILOT05 (COM03) and PILOT06 (COM04) are prospective; earlier PILOT03/04 results remain historical.
+
+## Fresh-owner reset repair
+
+PILOT05 stopped before inference because fixture application UUIDs were globally fixed and collided with a historical owner. COM3-stream-v5 now deterministically remaps application IDs and all linked contact tags per owner. The full reset is exercised in a rolled-back preflight transaction; existing account guards remain. The two failed setup attempts and earlier freezes remain intact. PILOT07 uses the unused isolated owner, unchanged task semantics and COM3-grade-v4. Actual no-inference preflight and focused regressions passed; participant outcomes are still pending.

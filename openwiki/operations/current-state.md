@@ -1176,3 +1176,7 @@ The JOB01 controlled v5 pair has a read-only clearance at `/Volumes/External SSD
 ### COM03/COM04 native-startup continuation
 
 Prospective COM03 v4/grade v4 and COM04 v5/grade v4 align durable-output obligations, restore native audit/change-feed capabilities and preserve native startup prose. Fresh fictional owners, native contract fingerprints, shared awake/timing/capture guards and complete paginated score readback remove identified harness confounds. Audit/container overhead remains counted and separately visible. Durable quality requires checkpoint evidence for failures as well as passes. No Lookout product change is included; a case clearing is independent of which condition scores higher. Final prospective runs remain required; old pilot evidence is unchanged.
+
+### COM03 fresh-owner reset probe
+
+PILOT05 failed before inference on a global fixture application-ID collision. COM03 v5 remaps fixture IDs/references per owner and probes the complete reset in a rolled-back transaction before participants start. Focused checks and actual preflight pass; PILOT07 remains prospective. The failed setup evidence and live PILOT06 COM04 sources are preserved.

@@ -5,6 +5,15 @@ ROOT=Path(__file__).resolve().parents[2]
 SPEC=json.loads((ROOT/'examples/com3/scenario.json').read_text())
 CORPUS=json.loads((ROOT/'examples/com3/corpus.json').read_text())
 class Contracts(unittest.TestCase):
+ def test_fresh_owner_fixture_ids_and_references(self):
+  from prepare import fixture_for_owner
+  original=json.loads((ROOT/'examples/com3/fixture.json').read_text())
+  a=fixture_for_owner(original,'00000000-0000-4000-8000-000000000001');b=fixture_for_owner(original,'00000000-0000-4000-8000-000000000002')
+  self.assertNotEqual(a['application']['id'],b['application']['id'])
+  self.assertNotEqual(a['sentinelApplication']['id'],b['sentinelApplication']['id'])
+  self.assertEqual(a,fixture_for_owner(original,'00000000-0000-4000-8000-000000000001'))
+  self.assertIn('application:'+a['application']['id'],a['contacts'][0]['record']['tags'])
+  self.assertEqual(a['application']['draft'],original['application']['draft'])
  def test_shape(self):
   self.assertEqual(len(SPEC['stages']),10);self.assertEqual(len({s['session'] for s in SPEC['stages']}),6)
  def test_future_sources_hidden(self):

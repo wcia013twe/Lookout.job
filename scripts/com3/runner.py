@@ -40,6 +40,7 @@ def verify():
  verify_seed_contacts(R)
  verify_native_contract(R)
  verify_audit_contract(R)
+ command(['node',str(LIB/'reset-probe.mjs'),str(R)])
  return digest(R/'freeze.json'),image
 
 def snapshot(p):snapshot_with_receipt(['node',str(R/'snapshot.mjs'),str(p)],p)
@@ -209,7 +210,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM3-stream-v4' or CONFIG.get('taskId')!='COM3':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM3-stream-v5' or CONFIG.get('taskId')!='COM3':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM3':raise RuntimeError('Dedicated COM3 account receipt required')
 

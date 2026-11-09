@@ -1,5 +1,5 @@
 """Freeze COM3 private inputs without inference, account reset or domain writes."""
-import argparse,hashlib,json,os,shutil,subprocess
+import argparse,hashlib,json,os,shutil,subprocess,uuid
 from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
@@ -7,6 +7,13 @@ from cost import validate_policy
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from native_contract import capture_native_contract
 from parity import complete_and_verify
+
+def fixture_for_owner(fixture,owner):
+ # Application UUIDs are globally unique; remap all references, including contact tags.
+ mapping={fixture[key]['id']:str(uuid.uuid5(uuid.UUID(owner),fixture[key]['id'])) for key in ['application','sentinelApplication']}
+ text=json.dumps(fixture)
+ for old,new in mapping.items():text=text.replace(old,new)
+ return json.loads(text)
 
 def prepare(source,background,destination,cost_policy=None):
  source,background,destination=[Path(p).resolve() for p in [source,background,destination]]
@@ -16,7 +23,7 @@ def prepare(source,background,destination,cost_policy=None):
  clone=json.loads((source/'cloned-context.private.json').read_text())
  for name in ['profile.md','resume.pdf']:
   if not (background/name).is_file():raise ValueError('Complete background and resume required')
- repo=Path(__file__).resolve().parents[2];spec=json.loads((repo/'examples/com3/scenario.json').read_text());fixture=json.loads((repo/'examples/com3/fixture.json').read_text())
+ repo=Path(__file__).resolve().parents[2];spec=json.loads((repo/'examples/com3/scenario.json').read_text());fixture=fixture_for_owner(json.loads((repo/'examples/com3/fixture.json').read_text()),account['userId'])
  # A source must provide the exact equivalent native profile facts, not a handwritten summary.
  initial_source=json.loads((source/'suite/initial-state.json').read_text())
  profile=initial_source['profileFacts']
