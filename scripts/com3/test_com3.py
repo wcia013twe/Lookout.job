@@ -1,4 +1,5 @@
-import json,sys,tempfile,unittest
+import json,sys,tempfile,unittest,subprocess
+from unittest.mock import patch
 from pathlib import Path
 import search,runner,capture,grade,user_actor
 ROOT=Path(__file__).resolve().parents[2]
@@ -22,6 +23,27 @@ class Contracts(unittest.TestCase):
   self.assertTrue({'read_application_timeline','record_application_milestone'}<=set(lists[0]))
   self.assertNotIn('submit_application',lists[0])
   self.assertTrue(SPEC['policy']['nativeApplicationTimeline'])
+ def test_host_failure_persists_stage_and_unblocks_reader(self):
+  from runtime import stop_container_client
+  real_popen=subprocess.Popen
+  def local_process(*args,**kwargs):
+   return real_popen([sys.executable,'-c','import time; time.sleep(60)'],**kwargs)
+  def unavailable(*args,**kwargs):raise subprocess.TimeoutExpired('fictional Docker probe',10)
+  with tempfile.TemporaryDirectory() as td:
+   sd=Path(td)/'stage-1';sd.mkdir()
+   session=runner.Session.__new__(runner.Session);session.name='fictional-container';session.condition='baseline';session.bridge=None;session.thread_id=None;session.auth={'tokens':{}}
+   with patch.object(runner.subprocess,'Popen',side_effect=local_process),patch.object(runner,'inputs_prompt',return_value='fictional task'),patch.object(runner.cost,'capture',return_value={'error':'unavailable'}),patch.object(runner,'stop_container_client',side_effect=lambda proc,name:stop_container_client(proc,name,unavailable)):
+    result=session.turn(sd,{'_index':1,'_session':'test','seconds':1})
+   self.assertEqual(result['status'],'artifact_failed');self.assertTrue(result['hostControlFailed']);self.assertIsNone(result['executionSeconds'])
+   self.assertIn('container_stop_unconfirmed',result['timing']['invalidReasons'])
+   self.assertTrue(json.loads((sd/'termination.json').read_text())['hostClientStopped'])
+   self.assertEqual(json.loads((sd/'stage-run.json').read_text())['status'],'artifact_failed')
+ def test_cleanup_failure_still_closes_bridge(self):
+  from unittest.mock import Mock
+  session=runner.Session.__new__(runner.Session);session.name='fictional-container';bridge=Mock();session.bridge=bridge
+  with patch.object(runner.subprocess,'run',side_effect=subprocess.TimeoutExpired('fictional Docker probe',10)):
+   result=session.close()
+  self.assertFalse(result['containerRemoved']);bridge.close.assert_called_once();self.assertIsNone(session.bridge)
  def test_shape(self):
   self.assertEqual(len(SPEC['stages']),10);self.assertEqual(len({s['session'] for s in SPEC['stages']}),6)
  def test_future_sources_hidden(self):

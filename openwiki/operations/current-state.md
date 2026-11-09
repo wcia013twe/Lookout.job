@@ -1276,3 +1276,7 @@ claimed. Dollar costs remain unknown. This focused update does not regenerate th
 ### COM03 native timeline restriction
 
 PILOT07 completed but retained an isolation confound: native application timeline tools were hidden while change-feed events referenced them. COM03 v6 restores the existing scoped reader/writer and adds rolled-back timeline readback/provenance verification to the full reset probe. No product behavior or approval authority changes. COM04/PILOT06 clears its controlled comparison; quality remains 14/14 baseline versus 13/14 Lookout, with a late promise checkpoint. See [communication results](../../docs/communication-cleared-pilots.md). COM03 requires a new prospective pair; completed stages alone do not establish clearance.
+
+### COM03 host-control failure
+
+PILOT08 remains uncleared after Docker stopped responding during baseline checkpoint 8; the timeout's Docker kill also timed out. Partial evidence and a failed-clearance receipt are preserved. Prospective COM03 v7 bounds local reader teardown, retains termination/timing evidence and halts the pair without grading when container death is unconfirmed. Eight shared runtime tests and five Node checks pass; live recovery/preflight remains unverified pending ownership authorization for the failed run/shared Docker. COM04/PILOT06 remains cleared. This is harness failure handling, not a Lookout product change.

@@ -84,11 +84,11 @@ async function main(){
  const config=tracingConfig();const project=sha(config?[config.baseUrl,config.publicKey]:['offline']);
  const regfile=path.join(receiptDir,project+'-dataset.json');
  if(v.register){
-  const name='Lookout-COM3-stream-v6';
+  const name='Lookout-COM3-stream-v7';
   if(v['dry-run']){console.log(JSON.stringify({name,version:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),qualityKeys:Object.keys(spec.quality),mode:'metadata-only'}));return;}
   const ds=unwrap(cli(['datasets','create'],{name,description:'COM3 application communication across sessions. Structural manifest only; private user profile and event packets stay local.',metadata:{version:spec.version,unit:'whole trajectory',status:'prospective'}}));
   if(!ds.id)throw Error('Missing dataset id');
-  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM3-stream-v6',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
+  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM3-stream-v7',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
   if(!item.id)throw Error('Missing item id');
   const saved={datasetId:ds.id,itemId:item.id,name,scenarioHash:sha(spec)};writeFileSync(regfile,JSON.stringify(saved,null,2)+'\n',{mode:0o600});console.log(JSON.stringify(saved));return;
  }
