@@ -7,3 +7,5 @@
 - Root npm ci succeeded; next-app npm ci failed with npm Exit handler never called; frontend untouched. No production deployment or private Langfuse content upload.
 
 Root completed retained released-email archive and explicit scenario-clock guidance following user approval. COM4 subagent stopped at subscription usage limit; its existing work and verification were preserved.
+
+Final readiness: four Node checks (including 25 Python cases), data158, syntax and diff checks passed. Dedicated COM4 writer/readback/restore and read-only terminal shape probes passed. Frozen com4-ready-v1, read-only container/bridge preflight com4-preflight-v1 and metadata-only Langfuse dataset registration/readback verified. No participant inference, push or publication. Login is not a remaining-quota guarantee. Source checkout retained for freeze reproducibility.
