@@ -1,0 +1,245 @@
+{
+  "version": "COM3-corpus-v1",
+  "documents": [
+    {
+      "id": "role-ls417",
+      "title": "Linden Search LS-417 Early-Career Engineer Retrieval Platform",
+      "text": "The Retrieval Platform group builds the shared systems that turn customer documents into queryable indexes. Early-career engineers pair with experienced engineers on ingestion diagnostics, indexing jobs, service interfaces and evaluation tooling. Recent projects include understanding the cost of compacting small index segments and comparing query results across new index versions. Work includes writing tests, inspecting operational metrics and documenting decisions for colleagues who use the platform. Candidates should be comfortable programming backend services, reasoning about data structures and communicating tradeoffs. Experience with databases, retrieval experiments or storage projects can provide useful foundations; expertise in every listed system is not expected. The role is based in the United States and includes collaboration with evaluation and storage engineers. Applications open as of November 7. Requisition LS-417.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/jobs/LS-417"
+    },
+    {
+      "id": "maya-profile",
+      "title": "Maya Chen \u2014 Linden developer productivity",
+      "text": "Maya Chen is a software engineer in Developer Productivity at Linden Search. Her team maintains internal build and deployment tooling. Professional profile: https://linden.example.test/people/maya-chen.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/people/maya-chen"
+    },
+    {
+      "id": "maya-alumni",
+      "title": "University alumni engineering panel",
+      "text": "Maya Chen discussed moving from class projects into developer productivity engineering at Linden during the university alumni panel.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/maya-alumni"
+    },
+    {
+      "id": "evan-archive",
+      "title": "Evan Cole \u2014 archived Linden engineer bio",
+      "text": "Archived 2023 biography: Evan Cole is an engineer working on retrieval infrastructure at Linden Search.",
+      "releasedVersion": 1,
+      "publishedAt": "2023-06-01",
+      "url": "https://linden.example.test/evan-archive"
+    },
+    {
+      "id": "evan-current",
+      "title": "Evan Cole \u2014 independent consultant",
+      "text": "Evan left Linden in 2024 and now consults independently.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-10-15",
+      "url": "https://linden.example.test/evan-current"
+    },
+    {
+      "id": "alex-old",
+      "title": "Alex Morgan \u2014 search engineer",
+      "text": "Archived 2024 team listing: Alex Morgan, Retrieval Systems, Linden Search.",
+      "releasedVersion": 1,
+      "publishedAt": "2024-02-01",
+      "url": "https://linden.example.test/alex-old"
+    },
+    {
+      "id": "priya-profile",
+      "title": "Priya Iyer \u2014 software engineer, Linden",
+      "text": "Priya Iyer is a software engineer at Linden Search working on evaluation and retrieval infrastructure. Professional profile: https://linden.example.test/people/priya-iyer.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/people/priya-iyer"
+    },
+    {
+      "id": "jordan-profile",
+      "title": "Jordan Wells \u2014 software engineer, Linden",
+      "text": "Jordan Wells is a software engineer working on storage and indexing at Linden Search. Technical writing covers immutable segments and operational correctness. Professional profile: https://linden.example.test/people/jordan-wells.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/people/jordan-wells"
+    },
+    {
+      "id": "company",
+      "title": "Linden Search engineering overview",
+      "text": "Linden builds search infrastructure. Retrieval teams own indexing, serving and evaluation; Developer Productivity supports tooling across teams.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/company"
+    },
+    {
+      "id": "careers-faq",
+      "title": "Linden careers frequently asked questions",
+      "text": "Individual application decisions are communicated by the recruiting team. Employees may choose whether to participate in the referral program.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/careers-faq"
+    },
+    {
+      "id": "evaluation-old",
+      "title": "Linden retrieval evaluation 2025",
+      "text": "Priya Iyer describes retrieval evaluation using query slices, recall and ranking tradeoffs.",
+      "releasedVersion": 1,
+      "publishedAt": "2025-04-03",
+      "url": "https://linden.example.test/evaluation-old"
+    },
+    {
+      "id": "segments-old",
+      "title": "Segment lifecycle notes",
+      "text": "Jordan Wells describes immutable segment storage and compaction safety, including disk usage tradeoffs during merges.",
+      "releasedVersion": 1,
+      "publishedAt": "2025-09-18",
+      "url": "https://linden.example.test/segments-old"
+    },
+    {
+      "id": "internship",
+      "title": "Linden summer product design internship",
+      "text": "Summer product design intern: conduct user interviews, prototype interfaces and work with design researchers on usability studies.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/internship"
+    },
+    {
+      "id": "sales",
+      "title": "Linden customer sales leadership",
+      "text": "Casey Rowan leads enterprise sales and customer account development.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/sales"
+    },
+    {
+      "id": "recruiter",
+      "title": "Linden recruiting office",
+      "text": "Taylor Kim is a university recruiter handling candidate scheduling and recruiting process questions.",
+      "releasedVersion": 1,
+      "publishedAt": "2026-11-07",
+      "url": "https://linden.example.test/recruiter"
+    },
+    {
+      "id": "alex-current",
+      "title": "Linden engineering team update",
+      "text": "Current team directory: Alex Morgan moved to advertising analytics in 2025. Priya Iyer and Jordan Wells are engineers in Retrieval Infrastructure. Maya Chen remains in Developer Productivity. This directory supersedes archived team listings.",
+      "releasedVersion": 2,
+      "publishedAt": "2026-11-10",
+      "url": "https://linden.example.test/engineering/team-2026"
+    },
+    {
+      "id": "retrieval-overview",
+      "title": "Retrieval infrastructure charter",
+      "text": "Retrieval Infrastructure maintains indexing, segment storage and evaluation tooling used by several product teams. Priya Iyer focuses on evaluation instrumentation and comparing query quality across index releases. Jordan Wells focuses on segment storage reliability, compaction and recovery. Team members work together when an index format change improves cost but changes ranking behavior on particular query groups. The team maintains explicit interfaces between ingestion, the index build pipeline and serving. Engineers rotate through operational review and use small deployments to investigate unexpected results before broader rollout. Developer Productivity, where Maya Chen works, supports build and deployment tooling across these groups. The November directory reflects current assignments; archived articles remain available because they describe the systems as they existed at publication.",
+      "releasedVersion": 2,
+      "publishedAt": "2026-11-10",
+      "url": "https://linden.example.test/retrieval-overview"
+    },
+    {
+      "id": "alex-talk",
+      "title": "Advertising analytics measurement",
+      "text": "Alex Morgan speaks about campaign measurement and advertising analytics.",
+      "releasedVersion": 2,
+      "publishedAt": "2026-11-10",
+      "url": "https://linden.example.test/alex-talk"
+    },
+    {
+      "id": "team-history",
+      "title": "Team directory change log",
+      "text": "Prior retrieval team pages retain historical authorship; present team assignments should use November 2026 directory.",
+      "releasedVersion": 2,
+      "publishedAt": "2026-11-10",
+      "url": "https://linden.example.test/team-history"
+    },
+    {
+      "id": "product-roadmap",
+      "title": "Linden interface roadmap",
+      "text": "Product UI roadmap covers customer-facing dashboards and interface improvements.",
+      "releasedVersion": 2,
+      "publishedAt": "2026-11-10",
+      "url": "https://linden.example.test/product-roadmap"
+    },
+    {
+      "id": "technical-index",
+      "title": "Linden engineering talks November 2026",
+      "text": "Talks: Priya Iyer, Query slices and retrieval evaluation; Jordan Wells, Segment compaction and reliable indexing. Both are Retrieval Infrastructure engineers. Links: /talk-priya and /talk-jordan.",
+      "releasedVersion": 3,
+      "publishedAt": "2026-11-12",
+      "url": "https://linden.example.test/engineering/talks-2026"
+    },
+    {
+      "id": "talk-priya",
+      "title": "Priya Iyer: Query slices and retrieval evaluation",
+      "text": "Priya Iyer, Retrieval Infrastructure: Query slices and retrieval evaluation. A single aggregate quality score can hide regressions affecting uncommon queries. This talk follows an index change through a fixed evaluation set, comparing recall and ranking quality by query length, language and document freshness. Priya describes why the team keeps both a broad reference set and narrower regression cases. Engineers inspect disagreements between the sets instead of treating an improved average as a complete release decision. The examples compare reranked results against earlier retrieval stages and discuss the time cost of evaluating many candidates. A final section covers reproducibility: storing the index version, query set version and configuration alongside a result so another engineer can investigate it. Questions from the audience address noisy labels, stale documents and balancing evaluation speed against confidence. Speaker profile: https://linden.example.test/people/priya-iyer.",
+      "releasedVersion": 3,
+      "publishedAt": "2026-11-12",
+      "url": "https://linden.example.test/talk-priya"
+    },
+    {
+      "id": "talk-jordan",
+      "title": "Jordan Wells: Segment compaction and reliable indexing",
+      "text": "Jordan Wells, Retrieval Infrastructure: Segment compaction and reliable indexing. Many small immutable segments make incremental updates easy, but increase metadata overhead and read amplification. Compaction trades temporary write and disk usage for simpler reads. Jordan follows a versioned index through a merge, a worker restart and recovery. Readers must keep a consistent view while the new version is prepared, and old objects cannot be removed until active readers no longer need them. The talk describes validation checks before publishing a segment manifest, metrics for abandoned merge work and the value of testing interrupted writes. The examples emphasize failure recovery and correctness before tuning throughput. Audience questions compare whole-segment rewrites with incremental changes and ask how teams decide when background compaction is consuming too much capacity. Speaker profile: https://linden.example.test/people/jordan-wells.",
+      "releasedVersion": 3,
+      "publishedAt": "2026-11-12",
+      "url": "https://linden.example.test/talk-jordan"
+    },
+    {
+      "id": "talk-ui",
+      "title": "Interface accessibility at Linden",
+      "text": "Morgan Lee discusses interface accessibility and product design.",
+      "releasedVersion": 3,
+      "publishedAt": "2026-11-12",
+      "url": "https://linden.example.test/talk-ui"
+    },
+    {
+      "id": "conference-other",
+      "title": "Priya Iyer at Cedar Health",
+      "text": "Priya Iyer is a physician at Cedar Health presenting clinical treatment outcomes.",
+      "releasedVersion": 3,
+      "publishedAt": "2026-11-12",
+      "url": "https://linden.example.test/conference-other"
+    },
+    {
+      "id": "jordan-alumni",
+      "title": "Jordan Wells alumni interview",
+      "text": "Linden engineer Jordan Wells describes learning storage invariants early in their career in an alumni interview.",
+      "releasedVersion": 3,
+      "publishedAt": "2026-11-12",
+      "url": "https://linden.example.test/jordan-alumni"
+    },
+    {
+      "id": "support-guide",
+      "title": "Customer support integration guide",
+      "text": "Customer API support documentation explains integration authentication and request formats.",
+      "releasedVersion": 3,
+      "publishedAt": "2026-11-12",
+      "url": "https://linden.example.test/support-guide"
+    },
+    {
+      "id": "closure",
+      "title": "LS-417 intake notice",
+      "text": "Applications for LS-417 are closed. Existing applicants will be contacted separately by the recruiting team.",
+      "releasedVersion": 4,
+      "publishedAt": "2026-11-13",
+      "url": "https://linden.example.test/jobs/LS-417-intake"
+    },
+    {
+      "id": "newsletter-archive",
+      "title": "Engineering newsletter archive",
+      "text": "November newsletter archive: links to Query slices and retrieval evaluation and Segment compaction and reliable indexing talks.",
+      "releasedVersion": 4,
+      "publishedAt": "2026-11-13",
+      "url": "https://linden.example.test/newsletter-archive"
+    },
+    {
+      "id": "company-news",
+      "title": "Linden office volunteering day",
+      "text": "Linden employees joined a weekend office volunteering day.",
+      "releasedVersion": 4,
+      "publishedAt": "2026-11-13",
+      "url": "https://linden.example.test/company-news"
+    }
+  ]
+}

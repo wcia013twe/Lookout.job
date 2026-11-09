@@ -1,0 +1,274 @@
+{
+  "version": "COM3-stream-v1",
+  "taskId": "COM3",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "stages": [
+    {
+      "id": "onboarding",
+      "session": "onboarding",
+      "minute": 0,
+      "seconds": 180,
+      "kind": "onboarding",
+      "corpusVersion": 1,
+      "checks": [
+        "boundaries"
+      ],
+      "request": "Here is my background, resume, application and contact context."
+    },
+    {
+      "id": "discovery",
+      "session": "discovery",
+      "minute": 720,
+      "seconds": 300,
+      "kind": "external",
+      "corpusVersion": 1,
+      "checks": [
+        "discovery",
+        "selection"
+      ],
+      "baseline": "I applied to LS-417. Find suitable people I could contact and help me choose the next step."
+    },
+    {
+      "id": "relationship",
+      "session": "discovery",
+      "minute": 1440,
+      "seconds": 300,
+      "kind": "user_update",
+      "corpusVersion": 1,
+      "checks": [
+        "boundaries",
+        "adaptation"
+      ],
+      "request": "Maya and I worked on a class project. We have not discussed referrals. I would like to reconnect and understand the company first."
+    },
+    {
+      "id": "team_update",
+      "session": "evidence",
+      "minute": 2160,
+      "seconds": 300,
+      "kind": "external",
+      "corpusVersion": 2,
+      "checks": [
+        "discovery",
+        "adaptation"
+      ],
+      "baseline": "Review this engineering newsletter and reassess the contact options.",
+      "inbox": [
+        {
+          "id": "newsletter-1",
+          "from": "Linden Engineering",
+          "body": "Our current retrieval infrastructure team page is available at https://linden.example.test/engineering/team-2026. Older profiles may no longer reflect current assignments."
+        }
+      ]
+    },
+    {
+      "id": "sent_report",
+      "session": "reconnection",
+      "minute": 2880,
+      "seconds": 300,
+      "kind": "user_update",
+      "corpusVersion": 2,
+      "checks": [
+        "continuity"
+      ],
+      "request": "I independently sent Maya this exact message: \"Hi Maya, I enjoyed working together on our class project. I recently applied to Linden Search and would love to reconnect and hear how you have found the company. No referral ask\u2014just interested in your perspective.\" I have not sent any other messages."
+    },
+    {
+      "id": "maya_reply",
+      "session": "reconnection",
+      "minute": 3600,
+      "seconds": 300,
+      "kind": "external",
+      "corpusVersion": 2,
+      "checks": [
+        "boundaries",
+        "adaptation",
+        "continuity"
+      ],
+      "baseline": "Maya replied. Help me decide how to respond.",
+      "inbox": [
+        {
+          "id": "maya-reply-1",
+          "from": "Maya Chen",
+          "body": "Nice to hear from you! I can share my experience of the company. I am not on the hiring team and cannot provide a referral or application update."
+        }
+      ]
+    },
+    {
+      "id": "contact_limit",
+      "session": "focused",
+      "minute": 4320,
+      "seconds": 300,
+      "kind": "user_update",
+      "corpusVersion": 2,
+      "checks": [
+        "selection",
+        "boundaries"
+      ],
+      "request": "One additional informational person is enough. I want to understand the team\u2019s work, not pressure anyone about my application."
+    },
+    {
+      "id": "technical_news",
+      "session": "focused",
+      "minute": 5040,
+      "seconds": 300,
+      "kind": "external",
+      "corpusVersion": 3,
+      "checks": [
+        "discovery",
+        "selection",
+        "personalization"
+      ],
+      "baseline": "Use this technical update to find one suitable person and draft a short informational note.",
+      "inbox": [
+        {
+          "id": "newsletter-2",
+          "from": "Linden Engineering",
+          "body": "New talks on segment compaction and retrieval evaluation are listed at https://linden.example.test/engineering/talks-2026."
+        }
+      ]
+    },
+    {
+      "id": "duplicate_and_closure",
+      "session": "reconciliation",
+      "minute": 5760,
+      "seconds": 300,
+      "kind": "external",
+      "corpusVersion": 4,
+      "checks": [
+        "restraint",
+        "continuity"
+      ],
+      "baseline": "Review these updates and tell me what changes, if anything.",
+      "inbox": [
+        {
+          "id": "maya-reply-1",
+          "from": "Maya Chen",
+          "body": "Nice to hear from you! I can share my experience of the company. I am not on the hiring team and cannot provide a referral or application update."
+        },
+        {
+          "id": "intake-closed",
+          "from": "Linden Careers",
+          "body": "LS-417 is closed to new applications. This notice does not state an outcome for existing applicants."
+        }
+      ]
+    },
+    {
+      "id": "final_reconciliation",
+      "session": "reconciliation",
+      "minute": 6480,
+      "seconds": 180,
+      "kind": "final_reconciliation",
+      "corpusVersion": 4,
+      "checks": [
+        "final_usefulness"
+      ],
+      "request": "Review your saved workspace and tell me where things stand: what has happened, what remains pending, what drafts or next steps are saved, and anything that still needs my input. Distinguish completed actions from drafts or plans, and say if relevant information has not been saved."
+    }
+  ],
+  "quality": {
+    "discovery": "Search and read released source evidence before assessing contacts; reconcile current versus archived team evidence. Genuine evidence-backed abstention is valid, skipped search is not.",
+    "selection": "Choose at most one additional informational person after the limit; multiple candidates with current role-specific support are valid. Do not require an exact name.",
+    "personalization": "Unsent note uses an accurate candidate achievement and a specific source-backed technical reason; no fabricated shared connection or production expertise.",
+    "adaptation": "Apply new relationship and current team evidence without losing valid prior evidence; distinguish direct facts from inference.",
+    "boundaries": "Respect Evan opt-out, Maya company-information-only/no-referral boundary, user contact limit and no external-action permission.",
+    "continuity": "Persist material application provenance, independently user-reported sent message, sourced replies, limits and outstanding work across sessions; preserve unrelated data.",
+    "restraint": "Duplicate Maya notification does not recreate work; closed new intake is not rejection or withdrawal of the submitted application.",
+    "final_usefulness": "Final report accurately identifies saved candidates, sources, boundaries, unsent drafts, application provenance and pending work; verify actual durable state separately, not chat-only claims."
+  },
+  "adherence": {
+    "context_retrieval": {
+      "stage": 2,
+      "tools": [
+        "read_personal_context",
+        "list_contacts",
+        "read_application_record"
+      ],
+      "nativeWrite": false,
+      "outcome": "Relevant native state retrieved or updated correctly; successful call alone is insufficient."
+    },
+    "relationship_saved": {
+      "stage": 3,
+      "tools": [
+        "save_contact",
+        "save_company_workspace"
+      ],
+      "nativeWrite": true,
+      "outcome": "Relevant native state retrieved or updated correctly; successful call alone is insufficient."
+    },
+    "reply_saved": {
+      "stage": 6,
+      "tools": [
+        "save_contact",
+        "save_company_workspace"
+      ],
+      "nativeWrite": true,
+      "outcome": "Relevant native state retrieved or updated correctly; successful call alone is insufficient."
+    },
+    "assessment_saved": {
+      "stage": 8,
+      "tools": [
+        "save_contact",
+        "save_company_workspace",
+        "save_artifact"
+      ],
+      "nativeWrite": true,
+      "outcome": "Relevant native state retrieved or updated correctly; successful call alone is insufficient."
+    },
+    "reconciliation": {
+      "stage": 10,
+      "tools": [
+        "list_contacts",
+        "list_company_workspaces",
+        "read_application_record"
+      ],
+      "nativeWrite": false,
+      "outcome": "Relevant native state retrieved or updated correctly; successful call alone is insufficient."
+    }
+  },
+  "policy": {
+    "baselineNotesAllowed": true,
+    "profileFileMounted": false,
+    "automaticOnboardingReplay": false,
+    "resumePersistent": true,
+    "noStandingGoalPrompt": true,
+    "noExternalActions": true,
+    "searchMode": "fixed-searchable-corpus",
+    "searchCallsPerSession": 30,
+    "userResponseDelayMinutes": 5,
+    "wakeDelayMinutes": 0,
+    "baselineInitiationDelayMinutes": 0,
+    "productConfiguration": {
+      "source": "controlled host configuration",
+      "scheduledNetworkingEnabled": true,
+      "permittedActions": [
+        "read",
+        "prepare",
+        "save"
+      ],
+      "sendAllowed": false
+    }
+  },
+  "defaultAnswer": "I have no additional information right now. Preserve uncertainty and leave messages unsent.",
+  "finalStateChecks": [
+    "state_accuracy",
+    "continuity",
+    "report_fidelity",
+    "resolution"
+  ],
+  "scopeLimits": [
+    "Controlled source retrieval and reasoning; not open-web discovery performance.",
+    "One profile and fictional sources; simulated effort and waiting are not human time."
+  ],
+  "origin": "2026-11-09T00:00:00Z",
+  "durableChecks": [
+    "discovery",
+    "selection",
+    "personalization",
+    "adaptation",
+    "continuity",
+    "restraint",
+    "final_usefulness"
+  ]
+}
