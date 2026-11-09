@@ -4,7 +4,9 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
-GRADER_VERSION='COM4-grade-v2'
+from native_contract import infrastructure_metrics
+from review_evidence import require_durable_evidence
+GRADER_VERSION='COM4-grade-v4'
 from terminal_state import validate_terminal_state
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
@@ -15,7 +17,7 @@ def rows(p):return [json.loads(x) for x in p.read_text().splitlines() if x] if p
 def evidence_digest(run):
  h=hashlib.sha256()
  for p in sorted(run.rglob('*')):
-  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt','terminal-state.json'] or 'output' in p.parts):
+  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','output-hashes.json','session-startup.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt','terminal-state.json'] or 'output' in p.parts):
    h.update(str(p.relative_to(run)).encode());h.update(p.read_bytes())
  return h.hexdigest()
 def tool_calls(stage):
@@ -59,6 +61,7 @@ def validate_evidence(run,spec,m):
   d=read(sd/'delivery.json');expected=spec['stages'][i-1]
   if d.get('stage')!=i or d.get('eventId')!=expected['id'] or d.get('releasedMinute')!=expected['minute']:raise ValueError('Delivery differs from scenario')
   if not isinstance(d.get('triggerMinute'),(int,float)) or not math.isfinite(d['triggerMinute']) or d['triggerMinute']<d['releasedMinute']:raise ValueError('Invalid delivery time')
+  if d.get('assignedInitiation')!=(expected['kind']=='external') or d.get('assignedOnboarding')!=(expected['kind']=='onboarding') or d.get('necessaryUserUpdate')!=(expected['kind']=='user_update'):raise ValueError('Delivery interaction classification differs from scenario')
   reached[i]=sd
  if list(reached)!=list(range(1,len(reached)+1)):raise ValueError('Noncontiguous stage receipts')
  if m['status']=='completed' and (len(reached)!=len(spec['stages']) or any(read(sd/'stage-run.json')['status']!='completed' for sd in reached.values())):raise ValueError('Completed run has incomplete stages')
@@ -70,20 +73,21 @@ def check_review_evidence(run,item,stage_ids,passed,native_write=False):
  refs=[ref.split('#')[0] for ref in item['evidence']]
  for i in stage_ids:
   prefix=f'stage-{i}/'
-  valid=[ref for ref in refs if ref.startswith(prefix) and (ref.endswith('trace.jsonl') or ref.endswith('after-state.json') or '/output/' in ref or (not passed and ref.endswith('stage-run.json')))]
+  valid=[ref for ref in refs if ref.startswith(prefix) and (ref.endswith('trace.jsonl') or ref.endswith('after-state.json') or '/output/' in ref or (not passed and (ref.endswith('stage-run.json') or ref.endswith('output-hashes.json'))))]
   if not valid:raise ValueError('Checkpoint needs its own output/state/trace evidence')
   if native_write and prefix+'after-state.json' not in refs:raise ValueError('Native writes require after-state evidence')
 
 def grade(run,spec,review=None):
  run=Path(run);m=read(run/'run.json')
  if m['status'] not in TERMINAL:raise ValueError('Cannot grade an active run')
+ if m['status']=='completed' and not m.get('synthetic') and m.get('nativeContractStable') is not True:raise ValueError('Native runtime stability not verified')
  if m.get('taskId')!=spec['taskId'] or m.get('version')!=spec['version'] or m.get('condition') not in ['baseline','lookout']:raise ValueError('Wrong scenario/condition')
  stages=validate_evidence(run,spec,m)
  terminal=None
  if m['status']=='completed' or (run/'terminal-state.json').exists():terminal=validate_terminal_state(run,m)
  deliveries=[];execution=0;toolcount=0;questions=[];calls={};stepcount=0
  for i,sd in stages.items():
-  sm=read(sd/'stage-run.json');execution+=sm['durationSeconds'];calls[i]=tool_calls(sd)
+  sm=read(sd/'stage-run.json');execution+=(sm.get('executionSeconds') or 0) if 'timing' in sm else sm['durationSeconds'];calls[i]=tool_calls(sd)
   d=read(sd/'delivery.json');deliveries.append(d)
   for index,row in enumerate(rows(sd/'lookout-trace.jsonl'),1):
    if row['type']=='user.interaction':questions.append({'stage':i,**row['data'],'interactionId':f'stage-{i}/lookout-trace.jsonl#L{index}'})
@@ -106,11 +110,7 @@ def grade(run,spec,review=None):
    if unavailable[key] and item['pass']:raise ValueError('Unreached/incomplete checkpoint cannot pass')
    if not unavailable[key]:
     check_review_evidence(run,item,check_stages[key],item['pass'])
-    if item['pass'] and key in spec.get('durableChecks',[]):
-     for i in check_stages[key]:
-      refs=[ref.split('#')[0] for ref in item['evidence']]
-      if m['condition']=='lookout' and f'stage-{i}/after-state.json' not in refs:raise ValueError('Durable quality needs native after-state')
-      if m['condition']=='baseline' and not any(ref.startswith(f'stage-{i}/output/') for ref in refs):raise ValueError('Durable quality needs saved file evidence')
+    if key in spec.get('durableChecks',[]):require_durable_evidence(item,check_stages[key],m['condition'])
     if key in ['saved_state','report_accuracy']:
      if terminal is None or 'terminal-state.json' not in item.get('evidence',[]):raise ValueError('Independent terminal evidence required')
      if key=='saved_state' and f"stage-{len(spec['stages'])}/before-state.json" not in item.get('evidence',[]):raise ValueError('Pre-final snapshot evidence required for reconciliation review')
@@ -147,6 +147,11 @@ def grade(run,spec,review=None):
   adherence[key]={'status':status,'calls':relevant}
  metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'stage_coverage':len(stages)/len(spec['stages'])}
  metrics.update(call_metrics(stages.values()))
+ metrics.update(infrastructure_metrics(stages.values()))
+ timing_valid=all(read(sd/'stage-run.json').get('timing',{}).get('valid',bool(m.get('synthetic'))) for sd in stages.values())
+ metrics['timing_valid']=int(timing_valid)
+ if not timing_valid:metrics['execution_seconds']=None
+ metrics.update(prescribed_user_turns=len(deliveries),scheduled_wakes=0,total_wall_seconds=m['durationSeconds'])
  for category in ['clarification','context_restatement','correction','reminder','approval']:
   metrics['observed_'+category+'_turns']=sum(q['category']==category for q in questions)
   if complete:metrics['observed_'+category+'_demands']=sum(x['category']==category for x in additional)
@@ -166,7 +171,7 @@ def grade(run,spec,review=None):
   metrics[f'stage_{i}_reached']=int(i in stages)
   if resolved:metrics[f'stage_{i}_success']=int(achieved)
   waiting=(delivered['triggerMinute']-delivered['releasedMinute'])+sum(q['simulatedDelayMinutes'] for q in questions if q['stage']==i) if achieved else None
-  latencies.append({'stage':i,'eventId':stage['id'],'achieved':bool(achieved) if resolved else None,'simulated_waiting_minutes':waiting,'execution_seconds':read(stages[i]/'stage-run.json')['durationSeconds'] if i in stages else None})
+  latencies.append({'stage':i,'eventId':stage['id'],'achieved':bool(achieved) if resolved else None,'simulated_waiting_minutes':waiting,'execution_seconds':(read(stages[i]/'stage-run.json').get('executionSeconds') if 'timing' in read(stages[i]/'stage-run.json') else read(stages[i]/'stage-run.json')['durationSeconds'] if m.get('synthetic') else None) if i in stages else None})
  return {'cost':m.get('cost'),'version':spec['version'],'graderVersion':GRADER_VERSION,'scenarioDigest':scenario_digest(spec),'episodeId':m['episodeId'],'status':'graded' if complete else 'pending_review','evidenceDigest':evidence_digest(run),'reviewer':review.get('reviewer') if complete else None,'metrics':metrics,'quality':quality,'adherence':adherence,'latencies':latencies,'questions':questions,'additionalDemands':additional,'limitations':['Scripted interactions are not measured human cognitive effort.','Simulated waiting excludes compute and is not time to task completion.','Unanswered demands are not completed user exchanges.','Semantic quality and native outcomes require independent evidence review.']}
 
 if __name__=='__main__':

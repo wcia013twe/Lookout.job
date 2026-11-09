@@ -35,10 +35,13 @@ class ServicesTest(unittest.TestCase):
   proc=MagicMock();proc.stdout=[];proc.wait.return_value=0;proc.poll.return_value=0
   with tempfile.TemporaryDirectory() as tmp:
    stage=Path(tmp)/'stage-1';stage.mkdir()
-   with patch.object(runtime,'inputs_prompt',create=True,return_value='fictional prompt'),patch.object(runtime.subprocess,'Popen',return_value=proc),patch.object(runtime.threading,'Timer'),patch.object(runtime.cost,'capture',return_value={'error':'unavailable'}),patch.object(runtime.time,'time',side_effect=[100,700]),patch.object(runtime.time,'monotonic',side_effect=[10,13]):
+   fake_clock=MagicMock();fake_clock.startWall=100;fake_clock.finish.return_value={'wallSeconds':600,'monotonicSeconds':3,'valid':False,'invalidReasons':['wall_monotonic_divergence']}
+   with patch.object(runtime,'inputs_prompt',create=True,return_value='fictional prompt'),patch.object(runtime.subprocess,'Popen',return_value=proc),patch.object(runtime.threading,'Timer'),patch.object(runtime.cost,'capture',return_value={'error':'unavailable'}),patch.object(runtime,'StageClock',return_value=fake_clock):
     result=session.turn(stage,{'_index':1,'_session':1,'seconds':300})
-   self.assertEqual(result['durationSeconds'],3);self.assertEqual(result['timing']['wallSeconds'],600)
+   self.assertIsNone(result['executionSeconds']);self.assertEqual(result['durationSeconds'],600)
+   self.assertEqual(result['timing']['monotonicSeconds'],3);self.assertEqual(result['status'],'artifact_failed')
    self.assertTrue(result['environmentTimingConfounded']);self.assertEqual(result['cost']['status'],'unknown')
+
 
  def test_native_clock_gate_rejects_compressed_future_dates(self):
   now='2026-11-09T14:00:00Z'

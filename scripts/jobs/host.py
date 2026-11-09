@@ -45,7 +45,7 @@ def prepare(case,root,source,background):
  import parity
  initial={'profileFacts':clone['settings']['profile']['facts'],'contacts':[]}
  onboarding,receipt=parity.complete_and_verify(owned,background,(background/'profile.md').read_text(),initial)
- files=[LIB/n for n in ['account.mjs','host.py','client.py','bridge.py','transport.py','services.py','preflight.mjs','audit.py']]+[REPO/'scripts/com2'/n for n in ['runner.py','service.py']]+[REPO/'scripts/n01/cost.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/com2/parity.py']
+ files=[LIB/n for n in ['account.mjs','host.py','client.py','bridge.py','transport.py','services.py','preflight.mjs','audit.py']]+[REPO/'scripts/com2'/n for n in ['runner.py','service.py']]+[REPO/'scripts/n01/cost.py',REPO/'scripts/communication/runtime.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/com2/parity.py']
  cfg={'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v2','normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
  if case=='JOB04':cfg['applicationIdMapping']={x['id']:str(uuid.uuid5(uuid.UUID(a['userId']),x['id'])) for x in read(REPO/'examples/job04/evidence.json')['applications']}
  cfgpath=owned/'configuration.json';write(cfgpath,cfg)
@@ -75,7 +75,7 @@ class Host:
  def __init__(self,root):
   self.root=root;self.cfg=read(root/'host-config.json');self.case=self.cfg['caseId'];self.owner=read(root/'account.private.json')['userId'];self.sessions={};self.stage=0
   self.lock=(root/'account.lock').open('a');fcntl.flock(self.lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-  runtime.R=root
+  runtime.R=root;self.awake=runtime.ensure_awake()
  def verify(self):
   f=read(self.root/'host-freeze.json')
   for n,h in f['files'].items():
@@ -135,10 +135,10 @@ class Host:
   sm=self.sessions[c][1].turn(sd,{'_index':self.stage,'_session':session_id,'seconds':req['budgetSeconds']},resume)
   timing={'wallSeconds':time.time()-wall_started,'monotonicSeconds':time.monotonic()-monotonic_started,'executorSeconds':sm['durationSeconds'],'budgetSeconds':req['budgetSeconds']}
   timing['wallMinusMonotonicSeconds']=timing['wallSeconds']-timing['monotonicSeconds']
-  timing['wallBudgetExceeded']=timing['wallSeconds']>req['budgetSeconds']+5
+  timing.update(sm.get('timing',{}));timing['wallBudgetExceeded']=timing['wallSeconds']>req['budgetSeconds']+5
   write(sd/'timing.json',timing)
   trace=[json.loads(x) for x in (sd/'trace.jsonl').read_text().splitlines()];tools=[json.loads(x) for x in (sd/'lookout-trace.jsonl').read_text().splitlines()];interactions=[x['data'] for x in tools if x['type']=='user.interaction']
-  return {'status':sm['status'],'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'timing':timing,'executionSeconds':sm['durationSeconds'],'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
+  return {'status':'execution_failed' if sm['status']=='artifact_failed' else sm['status'],'participantRuntimeStatus':sm['status'],'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'timing':timing,'executionSeconds':sm.get('executionSeconds',sm['durationSeconds']),'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
  def preflight(self):
   # Actual no-model Session construction checks auth, mounts and MCP forwarding.
   root=self.root;(root/'receipts').mkdir(exist_ok=True);out=root/'receipts'/('host-'+uuid.uuid4().hex[:8]);out.mkdir();gates=[]

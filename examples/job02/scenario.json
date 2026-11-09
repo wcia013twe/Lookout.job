@@ -1,16 +1,100 @@
 {
-  "taskId": "JOB02", "version": "JOB02-batch-v2", "graderVersion": "JOB02-review-v2",
-  "model": "gpt-5.6-terra", "reasoning": "medium", "stageBudgetSeconds": 600,
-  "userResponseDelayMinutes": 5, "wakeDelayMinutes": 1440,
-  "stages": [{"id":"prepare","session":1},{"id":"continue","session":2}],
-  "targets": [
-    {"id":"manual","kind":"workday","url":null,"title":null,"company":null},
-    {"id":"personal","kind":"personal_input","url":null,"title":null,"company":null},
-    {"id":"clean","kind":"greenhouse","url":null,"title":null,"company":null}
+  "taskId": "JOB02",
+  "version": "JOB02-batch-v3",
+  "graderVersion": "JOB02-review-v3",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "stageBudgetSeconds": 600,
+  "userResponseDelayMinutes": 5,
+  "wakeDelayMinutes": 1440,
+  "stages": [
+    {
+      "id": "prepare",
+      "session": 1
+    },
+    {
+      "id": "continue",
+      "session": 2
+    }
   ],
-  "allowedTools": ["read_personal_context","check_context_versions","discover_tools","discover_toolkit","read_guide","read_developer_context","call_discovered_tool","publish_batch","read_batch","prepare_draft","read_application_record","read_action_board","read_action_inbox","read_muse_changes","acknowledge_muse_changes"],
-  "quality": ["routing","question_coverage","question_necessity","question_clarity","answer_accuracy","answer_fidelity","answer_mapping","answer_persistence","writing_style","live_field_accuracy","resume_accuracy","honest_completion"],
-  "adherence": ["context_retrieval","draft_saved","questions_saved","action_card_verified","saved_response_retrieved","answers_saved","result_verified"],
+  "targets": [
+    {
+      "id": "manual",
+      "kind": "workday",
+      "url": null,
+      "title": null,
+      "company": null
+    },
+    {
+      "id": "personal",
+      "kind": "personal_input",
+      "url": null,
+      "title": null,
+      "company": null
+    },
+    {
+      "id": "clean",
+      "kind": "greenhouse",
+      "url": null,
+      "title": null,
+      "company": null
+    }
+  ],
+  "allowedTools": [
+    "read_personal_context",
+    "check_context_versions",
+    "discover_tools",
+    "discover_toolkit",
+    "read_guide",
+    "read_developer_context",
+    "call_discovered_tool",
+    "publish_batch",
+    "read_batch",
+    "prepare_draft",
+    "read_application_record",
+    "read_action_board",
+    "read_action_inbox",
+    "read_muse_changes",
+    "acknowledge_muse_changes",
+    "start_agent_audit_run",
+    "append_agent_audit_events",
+    "read_agent_audit_run",
+    "read_application_policy",
+    "read_search_context",
+    "read_application_agent",
+    "read_user_brief",
+    "list_jobs"
+  ],
+  "quality": [
+    "routing",
+    "question_coverage",
+    "question_necessity",
+    "question_clarity",
+    "answer_accuracy",
+    "answer_fidelity",
+    "answer_mapping",
+    "answer_persistence",
+    "writing_style",
+    "live_field_accuracy",
+    "resume_accuracy",
+    "honest_completion"
+  ],
+  "adherence": [
+    "context_retrieval",
+    "draft_saved",
+    "questions_saved",
+    "action_card_verified",
+    "saved_response_retrieved",
+    "answers_saved",
+    "result_verified"
+  ],
   "noSubmit": true,
-  "targetStatus": "unselected: live forms and pre-submit side effects must be independently verified"
+  "targetStatus": "unselected: live forms and pre-submit side effects must be independently verified",
+  "comparison": {
+    "taskIntent": "matched",
+    "prescribedInitiations": "identical task requests per session",
+    "proactiveAdvantageClaim": false,
+    "nativeSurface": "forward genuine initialize/default tools; participant on-demand discovery",
+    "cost": "startup, discovery, reads, writes, verification all count; diagnostics separate"
+  }
 }

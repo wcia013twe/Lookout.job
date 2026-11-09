@@ -1,6 +1,6 @@
 # JOB03: application decisions and reminders across sessions
 
-JOB03-tracking-v3 is an isolated fictional five-job trajectory, not a product
+JOB03-tracking-v4 is an isolated fictional five-job trajectory, not a product
 feature or a participant result. It freezes every job's expected state at eight
 checkpoints across eight fresh sessions. A single message updates A/B/C: A becomes
 **user-reported submitted**, with no validated receipt, and requests a dated

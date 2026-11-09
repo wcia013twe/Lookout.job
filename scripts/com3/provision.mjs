@@ -23,7 +23,7 @@ ok(await admin.from('profiles').upsert({...remap(original.profile),user_id:user.
 for(const old of original.resumes){const row=remap(old);ok(await admin.storage.from('resumes').upload(row.object_path,pdf,{contentType:'application/pdf',upsert:false}));ok(await admin.from('resumes').insert(row));}
 ok(await admin.from('preferences').upsert({...remap(original.preferences),user_id:user.id}));
 async function credential(name,scopes){const token='jb_agent_'+randomBytes(32).toString('hex');ok(await admin.rpc('manage_agent_connection',{owner_id:user.id,operation:'connections.issue',payload:{name,tokenHash:sha(token),expiresInDays:7,scopes}}));return token;}
-account.scopes=['workspace:read','network:write','drafts:write'];account.token=await credential('COM3 participant isolated',account.scopes);
+account.scopes=['workspace:read','activity:write','network:write','drafts:write'];account.token=await credential('COM3 participant isolated',account.scopes);
 account.readToken=await credential('COM3 terminal verification read only',['workspace:read']);account.readScopes=['workspace:read'];account.idMapping=Object.fromEntries(mapping);save('account.private.json',account);
 const response=await fetch(account.mcpUrl,{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream',authorization:'Bearer '+account.readToken},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_personal_context',arguments:{}}})});
 const j=await response.json();if(!response.ok||j.error||j.result?.isError)throw Error('Read-only cloned context lookup failed');

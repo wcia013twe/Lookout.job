@@ -1,10 +1,19 @@
 """Freeze COM3 private inputs without inference, account reset or domain writes."""
-import argparse,hashlib,json,os,shutil,subprocess
+import argparse,hashlib,json,os,shutil,subprocess,uuid
 from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 from cost import validate_policy
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from native_contract import capture_native_contract
 from parity import complete_and_verify
+
+def fixture_for_owner(fixture,owner):
+ # Application UUIDs are globally unique; remap all references, including contact tags.
+ mapping={fixture[key]['id']:str(uuid.uuid5(uuid.UUID(owner),fixture[key]['id'])) for key in ['application','sentinelApplication']}
+ text=json.dumps(fixture)
+ for old,new in mapping.items():text=text.replace(old,new)
+ return json.loads(text)
 
 def prepare(source,background,destination,cost_policy=None):
  source,background,destination=[Path(p).resolve() for p in [source,background,destination]]
@@ -14,13 +23,13 @@ def prepare(source,background,destination,cost_policy=None):
  clone=json.loads((source/'cloned-context.private.json').read_text())
  for name in ['profile.md','resume.pdf']:
   if not (background/name).is_file():raise ValueError('Complete background and resume required')
- repo=Path(__file__).resolve().parents[2];spec=json.loads((repo/'examples/com3/scenario.json').read_text());fixture=json.loads((repo/'examples/com3/fixture.json').read_text())
+ repo=Path(__file__).resolve().parents[2];spec=json.loads((repo/'examples/com3/scenario.json').read_text());fixture=fixture_for_owner(json.loads((repo/'examples/com3/fixture.json').read_text()),account['userId'])
  # A source must provide the exact equivalent native profile facts, not a handwritten summary.
  initial_source=json.loads((source/'suite/initial-state.json').read_text())
  profile=initial_source['profileFacts']
  destination.mkdir(mode=0o700,parents=True)
  for name in ['suite','background','runs']:(destination/name).mkdir()
- for name in ['account.private.json','cloned-context.private.json','grader.private.json']:shutil.copyfile(source/name,destination/name)
+ for name in ['account.private.json','cloned-context.private.json','grader.private.json','source-manifest.private.json']:shutil.copyfile(source/name,destination/name)
  (destination/'account.lock').symlink_to(source/'account.lock')
  apps=[fixture['application'],fixture['sentinelApplication']]
  for app in apps:app['jobId']+='-'+account['userId']
@@ -37,17 +46,19 @@ def prepare(source,background,destination,cost_policy=None):
  (destination/'background/onboarding.md').write_text(onboarding)
  shutil.copyfile(background/'resume.pdf',destination/'background/resume.pdf')
  for name in ['reset.mjs','snapshot.mjs']:shutil.copyfile(repo/'scripts/com3'/name,destination/name)
- config=dict(version=spec['version'],taskId='COM3',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_application_record','list_contacts','save_contact','list_company_workspaces','save_company_workspace','list_artifacts','read_artifact','save_artifact'])
+ config=dict(version=spec['version'],taskId='COM3',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_muse_changes','acknowledge_muse_changes','start_agent_audit_run','append_agent_audit_events','read_agent_audit_run','read_application_record','list_contacts','save_contact','list_company_workspaces','save_company_workspace','list_artifacts','read_artifact','save_artifact'])
  config['requiredGuidance']={'developerVersion':json.loads((repo/'supabase/functions/agent-gateway/instructions.json').read_text())['developerVersion'],'outreachGuideVersion':json.loads((repo/'supabase/functions/agent-gateway/skills/cold-outreach.json').read_text())['version']}
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
  pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'
  validate_policy(json.loads(pricing.read_text()))
  shutil.copyfile(pricing,destination/'cost-policy.json')
+ (destination/'native-contract.json').write_text(json.dumps(capture_native_contract(destination),indent=2)+'\n')
  files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]
  files+=list((repo/'scripts/com3').glob('*.py'))+list((repo/'scripts/com3').glob('*.mjs'))
+ files += [repo/'scripts/communication/verify-langfuse-pilot.mjs']
  files += [repo/'scripts/n01/cost.py',repo/'scripts/n01/cost-export.mjs']
  files+=list((repo/'scripts/communication').glob('*.py'))
- files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
+ files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/functions/agent-gateway/skills/agent-audit.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
  files+=list((repo/'scripts/evals').glob('*.mjs'))+[repo/'backend/runtime/trace-policy.mjs']
  sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
  image=subprocess.run(['docker','image','inspect','lookout-benchmark:0.164.0','--format','{{.Id}}'],check=True,capture_output=True,text=True,timeout=30).stdout.strip()

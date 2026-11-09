@@ -39,7 +39,7 @@
         "title": "Recruiter",
         "relationship": "Recruiter for application AS-417. No interview scheduled yet.",
         "status": "Contacted",
-        "draft": ""
+        "message": ""
       }
     },
     {
@@ -49,7 +49,7 @@
         "company": "Birch Data",
         "relationship": "Unrelated professional contact. Keep existing draft and status.",
         "status": "Not contacted",
-        "draft": "Thank you for sharing the team overview."
+        "message": "Thank you for sharing the team overview."
       }
     }
   ],

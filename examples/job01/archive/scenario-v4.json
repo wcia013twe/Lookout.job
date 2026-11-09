@@ -1,0 +1,111 @@
+{
+  "version": "JOB01-search-v4",
+  "taskId": "JOB01",
+  "scope": "Bounded job selection and analysis; no application drafting, filling or submission.",
+  "policy": {
+    "baselineNotesAllowed": true,
+    "automaticOnboardingReplay": false,
+    "noStandingGoalPrompt": true,
+    "userResponseDelayMinutes": 5,
+    "wakeDelayMinutes": 0,
+    "baselineInitiationDelayMinutes": 0,
+    "stageBudgetSeconds": 300,
+    "candidateContext": "Reuse N01 candidate resume and onboarding context; do not replay onboarding in fresh sessions.",
+    "evidenceDelivery": {
+      "lookout": "email available during configured scheduled wake",
+      "baseline": "same email uploaded by user with initiation prompt"
+    },
+    "effort": "Unique observed interaction turns are primary; category counts overlap and must not be summed. Prescribed initiations separate."
+  },
+  "stages": [
+    {
+      "id": "initial_search",
+      "session": 1,
+      "minute": 0,
+      "kind": "external",
+      "batch": "initial",
+      "baseline": "Review this job email and save suitable target jobs with evidence-grounded fit analyses using my current preferences.",
+      "email": {
+        "id": "job-email-initial_search",
+        "subject": "New graduate job opportunities",
+        "body": "Please review the attached frozen job listings."
+      }
+    },
+    {
+      "id": "career_change",
+      "session": 2,
+      "minute": 1440,
+      "kind": "user_update",
+      "batch": "initial",
+      "request": "Platform engineering is now my primary focus. Keep inference infrastructure secondary."
+    },
+    {
+      "id": "style_change",
+      "session": 2,
+      "minute": 1445,
+      "kind": "user_update",
+      "batch": "initial",
+      "request": "Keep analyses concise. For the top three, lead with technical fit and name one material gap. Put remaining recommendations on one line each. Avoid promotional language."
+    },
+    {
+      "id": "continuation",
+      "session": 3,
+      "minute": 2880,
+      "kind": "external",
+      "batch": "later",
+      "baseline": "Review this job email and save a complete updated shortlist with evidence-grounded fit analyses using my current preferences.",
+      "email": {
+        "id": "job-email-continuation",
+        "subject": "New graduate job opportunities",
+        "body": "Please review the attached frozen job listings and prepare a complete updated shortlist, not only newly added jobs."
+      }
+    }
+  ],
+  "adherence": [
+    "context_retrieval",
+    "job_selection_saved",
+    "analysis_saved",
+    "career_preference_updated",
+    "style_preference_updated"
+  ],
+  "expectedTargetCount": 10,
+  "gradingStages": [
+    "initial_search",
+    "continuation"
+  ],
+  "stageQuality": {
+    "initial_search": [
+      "analysis_accuracy",
+      "initial_preferences_applied",
+      "initial_style_adherence",
+      "selection_suitability"
+    ],
+    "career_change": [
+      "career_preference_saved"
+    ],
+    "style_change": [
+      "style_preference_saved"
+    ],
+    "continuation": [
+      "analysis_accuracy",
+      "career_preference_saved",
+      "style_preference_saved",
+      "preferences_applied",
+      "style_adherence",
+      "selection_suitability",
+      "continuity"
+    ]
+  },
+  "qualityRubric": {
+    "analysis_accuracy": "Claims and material gaps are grounded in released evidence and candidate facts; uncertain eligibility remains uncertain.",
+    "initial_preferences_applied": "Initial shortlist follows onboarding career preferences, without anticipating the later platform-first update.",
+    "initial_style_adherence": "Initial analyses follow onboarding presentation preferences; the later top-three format is not expected yet.",
+    "career_preference_saved": "Confirmed platform-primary/inference-secondary preference is accurately retained without unrelated changes.",
+    "style_preference_saved": "The user correction is retained after it is delivered.",
+    "preferences_applied": "Complete updated shortlist reflects the confirmed current preferences.",
+    "style_adherence": "Later analyses follow the corrected top-three concise format.",
+    "selection_suitability": "Judge all returned jobs, including extras: suitable extras are acceptable; unsupported, ineligible or off-preference extras reduce quality. Exact target recall remains separate.",
+    "continuity": "Fresh-session work uses retained context and returns the complete current shortlist, not just new additions."
+  },
+  "finalGraderRequired": true
+}

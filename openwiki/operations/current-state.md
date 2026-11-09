@@ -1177,3 +1177,41 @@ completion nor source tests establish a measured comparative result. Historical
 freezes/outcomes remain unchanged. Focused tests and actual blocked no-inference
 probes verify these boundaries, not a production or hosted capability. This is a
 focused manual update, not a refresh of generated wiki coverage.
+### JOB01 matched-intent repair
+
+Prospective JOB01-search-v5 / JOB01-review-v2 gives both participants identical
+prescribed task requests and released evidence; proactive effort savings are outside
+this comparison. Native startup and on-demand discovery are retained within task
+permissions, including audit/change-feed capabilities. Container startup, native MCP
+startup/discovery response time/bytes, total execution, effort, cost and semantic
+quality remain distinct. Returned recall and durable saving are separate checks.
+Historical runs/freezes remain unchanged. Focused fixture checks establish harness
+contracts only; fresh-account preflight and paired pilot evidence are still required.
+
+### COM03/COM04 matched-intent comparison
+
+Prospective COM3-stream-v3 / COM3-grade-v3 and COM4-stream-v4 / COM4-grade-v3 use identical prescribed task requests and evidence in both conditions, retaining native scoped startup/default tools/on-demand discovery. Generic scheduled wakes and proactive effort credit are excluded. Wrapped tool and failure telemetry records cumulative response latency/bytes within execution; wall time and prescribed/observed effort remain separate. Actual no-inference preflights passed in new private roots; historical freezes remain unchanged. Focused fixtures and catalog checks passed. Participant results and product recommendations require post-pair semantic review; readiness alone implies no performance outcome. See the case docs for limits. This focused update does not regenerate the wiki.
+
+### Communication clearing preflight
+
+COM01 v7/COM02 v6 add equal durable-output obligations, corrected chronology, negative-save evidence validation, exact-fixture dispatch probes and existing native application rediscovery. COM02 setup performs a locked native write/readback/restoration smoke; it is not read-only. Focused checks and live preflight pass; pilot evidence and independent grading remain required. See [repair protocol](../../docs/communication-repairs.md).
+
+### Communication host timing and capture integrity
+
+Prospective COM01 v8/COM02 v7 use shared run-scoped idle-sleep prevention, wall/monotonic and heartbeat interruption detection, null invalid execution timing, and durable participant output capture before database snapshots. Read-only transient snapshot retries carry redacted receipts; agent turns are never retried. Existing interrupted pilots are unchanged. Focused regression checks cover these contracts; fresh live paired runs remain required. See [repair protocol](../../docs/communication-repairs.md).
+
+### JOB01 controlled pilot closure
+
+The JOB01 controlled v5 pair has a read-only clearance at `/Volumes/External SSD/Lookout/tmp/job01-controlled-v5-20261109-1/receipts/clearance.json`, with private final review under that root's `grading/`. It verifies immutable runtime/evidence, matched inputs, fresh independent grading/native confirmation and Langfuse read-backs. Baseline hit its final-stage timeout; Lookout completed process stages; both had quality gaps. Returned target membership and durable saving are separate checks. Dollar costs are unknown, with baseline usage coverage three of four stages. This is controlled-harness clearance, not a general effectiveness claim.
+
+### COM03/COM04 completed controlled pilots
+
+[PILOT03/PILOT04 results](../../docs/communication-com03-com04-pilots.md) record completed paired execution and independent post-pair grading. Baseline/Lookout passed 5/8 versus 3/8 COM03 checks and 13/14 versus 12/14 COM04 checks; both COM04 final saved-state/report checks passed. Overlapping COM03 failures, one pair per case and unblinded review limit interpretation. Lookout took more active time and reported input tokens; dollar cost remains unknown. Product schema, commitment/constraint reconciliation and discovery-volume improvements are flagged only. A supplemental paginated Langfuse readback verifier fixes the observed first-page verification limit without altering frozen exporters. Frozen task-intent/evidence parity and integrity were checked. Baseline optional file retention versus explicit Lookout save/verify remains a harness confound: these diagnostic pairs do not certify measured-comparison readiness. Equal durable-output obligations require a prospective freeze; existing grades remain unchanged. These results supersede the earlier pending-result notes, not historical freezes; no hosted release is implied.
+
+### COM03/COM04 native-startup continuation
+
+Prospective COM03 v4/grade v4 and COM04 v5/grade v4 align durable-output obligations, restore native audit/change-feed capabilities and preserve native startup prose. Fresh fictional owners, native contract fingerprints, shared awake/timing/capture guards and complete paginated score readback remove identified harness confounds. Audit/container overhead remains counted and separately visible. Durable quality requires checkpoint evidence for failures as well as passes. No Lookout product change is included; a case clearing is independent of which condition scores higher. Final prospective runs remain required; old pilot evidence is unchanged.
+
+### COM03 fresh-owner reset probe
+
+PILOT05 failed before inference on a global fixture application-ID collision. COM03 v5 remaps fixture IDs/references per owner and probes the complete reset in a rolled-back transaction before participants start. Focused checks and actual preflight pass; PILOT07 remains prospective. The failed setup evidence and live PILOT06 COM04 sources are preserved.

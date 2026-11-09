@@ -5,11 +5,15 @@ import readline from 'node:readline';
 import {chromium} from 'playwright';
 import {hash,write,read} from './core.mjs';
 export class BrowserHost{
- constructor({targets,resume,output,profile,executablePath,synthetic=false}){Object.assign(this,{targets,resume,output,profile,executablePath,synthetic});this.pages=new Map();this.events=[];this.sequence=0;}
+ constructor({targets,resume,output,profile,executablePath,synthetic=false,controlled=false,fixtureRoot=null}){Object.assign(this,{targets,resume,output,profile,executablePath,synthetic,controlled,fixtureRoot});this.pages=new Map();this.events=[];this.sequence=0;}
  async start(){fs.mkdirSync(this.output,{recursive:true,mode:0o700});this.context=await chromium.launchPersistentContext(this.profile,{headless:true,executablePath:this.executablePath||undefined,serviceWorkers:'block',acceptDownloads:false});
   await this.context.routeWebSocket('**/*',ws=>ws.close());
   await this.context.route('**/*',async route=>{
    const req=route.request(),u=new URL(req.url()),target=this.context.pages().find(p=>p===req.frame().page())?._job02Target;
+   if(this.controlled){
+    if(target&&req.method()==='GET'&&req.url()===target.url&&req.isNavigationRequest()&&target.fixture&&/^[a-z0-9_-]+\.html$/i.test(target.fixture)){return route.fulfill({status:200,contentType:'text/html',body:fs.readFileSync(path.join(this.fixtureRoot,target.fixture))});}
+    this.events.push({kind:'network_blocked',targetId:target?.id,method:req.method(),url:u.origin+u.pathname});return route.abort('blockedbyclient');
+   }
    const allowed=target&&this.allowRequest(req,target);
    if(!allowed){this.events.push({kind:'network_blocked',targetId:target?.id,method:req.method(),url:u.origin+u.pathname});return route.abort('blockedbyclient');}
    return route.continue();
@@ -30,7 +34,7 @@ export class BrowserHost{
   const data=await p.evaluate(()=>{
    const els=[...document.querySelectorAll('input:not([type=submit]):not([type=button]),textarea,select')];
    const fields=els.map((e,index)=>({fieldId:e.id||`${e.name||e.tagName.toLowerCase()}:${index}`,index,fieldType:e.type||e.tagName.toLowerCase(),question:(e.labels?.[0]?.innerText||e.getAttribute('aria-label')||e.name||'').trim(),required:e.required,disabled:e.disabled,visible:!!(e.offsetWidth||e.offsetHeight||e.getClientRects().length),options:e.tagName==='SELECT'?[...e.options].map(o=>({value:o.value,label:o.label})):[],maxLength:e.maxLength>0?e.maxLength:null,value:e.type==='file'?null:e.type==='checkbox'||e.type==='radio'?e.checked:e.value,files:e.files?[...e.files].map(f=>({name:f.name,size:f.size,type:f.type})):[],valid:e.checkValidity(),validationMessage:e.validationMessage||null}));
-   return {url:location.href,fields,alerts:[...document.querySelectorAll('[role=alert],.error,.field-error,[aria-invalid=true]')].filter(e=>e.offsetWidth||e.offsetHeight||e.getClientRects().length).map(e=>e.innerText||e.getAttribute('aria-label')||'Invalid control').filter(Boolean),busy:!!document.querySelector('[aria-busy=true]'),formCount:document.forms.length,iframeCount:document.querySelectorAll('iframe').length,nextControl:[...document.querySelectorAll('button,input[type=submit]')].some(e=>/^(next|continue|save and continue)$/i.test(e.innerText?.trim()||e.value||'')),submitControls:[...document.querySelectorAll('button[type=submit],input[type=submit]')].map(e=>({text:e.innerText||e.value,disabled:e.disabled}))};
+   return {url:location.href,pageText:document.body.innerText.slice(0,30000),fields,alerts:[...document.querySelectorAll('[role=alert],.error,.field-error,[aria-invalid=true]')].filter(e=>e.offsetWidth||e.offsetHeight||e.getClientRects().length).map(e=>e.innerText||e.getAttribute('aria-label')||'Invalid control').filter(Boolean),busy:!!document.querySelector('[aria-busy=true]'),formCount:document.forms.length,iframeCount:document.querySelectorAll('iframe').length,nextControl:[...document.querySelectorAll('button,input[type=submit]')].some(e=>/^(next|continue|save and continue)$/i.test(e.innerText?.trim()||e.value||'')),submitControls:[...document.querySelectorAll('button[type=submit],input[type=submit]')].map(e=>({text:e.innerText||e.value,disabled:e.disabled}))};
   });
   const shape=data.fields.map(({value,files,valid,validationMessage,...f})=>f),fingerprint=hash(shape);
   const target=this.target(id),allowed=[target.expectedFingerprint,...(target.expectedFingerprints||[])].filter(Boolean);

@@ -1,17 +1,59 @@
 {
-  "version":"JOB02-reference-v1", "status":"unreviewed", "reviewer":null,
-  "criteria":{
-    "prepare":{
-      "manual":["routing","honest_completion"],
-      "personal":["question_coverage","question_necessity","question_clarity","answer_mapping","writing_style","honest_completion"],
-      "clean":["routing","live_field_accuracy","resume_accuracy","honest_completion"]
+  "version": "JOB02-reference-v1",
+  "status": "unreviewed",
+  "reviewer": null,
+  "criteria": {
+    "prepare": {
+      "manual": [
+        "routing",
+        "honest_completion"
+      ],
+      "personal": [
+        "question_coverage",
+        "question_necessity",
+        "question_clarity",
+        "answer_mapping",
+        "writing_style",
+        "honest_completion"
+      ],
+      "clean": [
+        "routing",
+        "live_field_accuracy",
+        "resume_accuracy",
+        "honest_completion"
+      ]
     },
-    "continue":{
-      "manual":["routing","honest_completion"],
-      "personal":["answer_accuracy","answer_fidelity","answer_mapping","answer_persistence","writing_style","live_field_accuracy","resume_accuracy","honest_completion"],
-      "clean":["live_field_accuracy","resume_accuracy","honest_completion"]
+    "continue": {
+      "manual": [
+        "routing",
+        "honest_completion"
+      ],
+      "personal": [
+        "answer_accuracy",
+        "answer_fidelity",
+        "answer_mapping",
+        "answer_persistence",
+        "writing_style",
+        "live_field_accuracy",
+        "resume_accuracy",
+        "honest_completion"
+      ],
+      "clean": [
+        "live_field_accuracy",
+        "resume_accuracy",
+        "honest_completion"
+      ]
     }
   },
-  "fields":{"manual":[],"personal":[],"clean":[]},
-  "note":"Replace empty personal/clean lists with actual {fieldId,acceptedValues} references from the selected forms and frozen candidate; store privately. Actor and required unknown fields are graded separately. Mark reviewed only after independent validation."
+  "fields": {
+    "manual": [],
+    "personal": [],
+    "clean": []
+  },
+  "note": "Replace empty personal/clean lists with actual {fieldId,acceptedValues} references from the selected forms and frozen candidate; store privately. Actor and required unknown fields are graded separately. Mark reviewed only after independent validation.",
+  "outcomes": {
+    "manual": "manual",
+    "personal": "ready_or_supported_blocker",
+    "clean": "ready"
+  }
 }

@@ -44,3 +44,19 @@ Use the output template. Attest exact reviewer identity, assignment hash and tha
 you did not implement, operate or participate. No hidden chain-of-thought requested;
 concise evidence-grounded judgments suffice. Native confirmation success only means
 reads succeeded; compare its returned state semantically to saved evidence.
+
+This is a matched-task comparison: both conditions receive the same task request
+and prescribed initiation count. Do not claim a proactive effort advantage. Native
+startup/discovery/read/write/verification calls count as real participant work;
+startup/discovery latency and bytes are diagnostics, never subtracted from cost.
+Follow each frozen reference.outcomes target: ready requires live readiness;
+ready_or_supported_blocker may correctly finish with a source-backed unresolved
+unknown. Do not penalize a valid blocker as failure merely because a form is not
+ready, or demand a native card from baseline. Browser/custom-widget limitations
+are harness capability limits, not evidence of poor participant reasoning.
+
+Factual identity comparisons permit only the frozen deterministic formatting rule:
+full names use Unicode NFC, case and whitespace normalization; every name component
+remains required. Email surrounding whitespace and domain case may vary; local-part
+spelling/case and the actual address remain exact. Never penalize these harmless
+variants in semantic quality either. No fuzzy identity matching is allowed.

@@ -53,6 +53,12 @@ def main():
  receipt=validate_setup(a.destination,a.case)
  receipt['graderReadVerified']=verify_grader(a.destination)
  subprocess.run([sys.executable,str(folder/'preflight.py'),'--task-dir',str(a.destination.resolve()),'--output',str(a.preflight_output.resolve())],check=True)
+ if a.case=='COM2':
+  smoke=a.preflight_output/'native-roundtrip'
+  subprocess.run([sys.executable,str(folder/'writer_smoke.py'),'--task-dir',str(a.destination.resolve()),'--output',str(smoke)],check=True)
+  native=json.loads((smoke/'receipt.json').read_text())
+  if not native.get('restored') or not native.get('writerRoundtripsVerified') or not native.get('applicationRediscovered') or not native.get('exactSeededContactsRoundtripped'):raise RuntimeError('Exact fixture native roundtrip incomplete')
+  receipt['nativeRoundtripVerified']=True
  receipt.update(setupVersion='communication-setup-v1',taskDir=str(a.destination.resolve()),preflight='passed',commands={'run':str(folder/'orchestrate.py'),'grade':str(folder/'grade.py'),'summary':str(folder/'summary.py'),'export':str(folder/'langfuse.mjs')})
  dest=a.preflight_output/'setup-receipt.json';dest.write_text(json.dumps(receipt,indent=2)+'\n');dest.chmod(0o600)
  print(json.dumps({'case':a.case,'ready':True,'inferenceExecuted':False,'receipt':str(dest)}))

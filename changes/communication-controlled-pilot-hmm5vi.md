@@ -37,8 +37,8 @@
 - JOB04 stderr records model-endpoint DNS failures; its nominal 300-second turn
   took about 588 wall seconds. JOB03 also exceeded a wall budget. The old runtime
   lacks monotonic/suspension receipts, so timeout attribution remains confounded.
-- Prospective Session duration uses monotonic elapsed time including native costs,
-  retaining wall drift and overrun diagnostics. Host v2 adds no-inference DNS/TLS
+- Prospective execution timing uses the shared StageClock monotonic elapsed time including native costs,
+  retaining wall drift/heartbeat gaps and overrun diagnostics; invalid timing is null. Host v2 adds no-inference DNS/TLS
   and native-backend clock gates. Compressed simulated dates do not align with the
   backend real date: new pairs remain blocked until an isolated clock exists.
 - Independent fresh-context review is finalized for JOB03 and the observed JOB04
@@ -48,7 +48,7 @@
   No comparative product conclusion is supported by this confounded pilot.
 - Review-only validation permits retired execution bytes while still verifying
   frozen inputs/rubric/evidence/assignment. Execution validation remains strict.
-- Verification: 46 focused Node checks, eight Python checks, syntax/diff checks
+- Verification: 46 focused Node checks, 14 Python checks (eight JOB host plus six shared runtime), syntax/diff checks
   and 158-role catalog validation passed. Actual no-inference probes exercised
   both cases' native writes/restoration, full-context parity, scoped/default
   discovery, containers, DNS/TLS and JOB03 shared reminder/preview services. Clock
@@ -58,3 +58,7 @@
   here are dedicated fictional owners. Private records remain outside Git.
 - No product UI/service/schema change; fictional benchmark and service fixtures
   are demo coverage. No full-suite, deployment, push, publication or paid API claim.
+
+- Integrated newer local-main COM timing/capture guards during landing; preserve
+  run-scoped awake protection, shared StageClock invalidation and null invalid
+  execution time. JOB freezes bind the shared runtime dependency explicitly.

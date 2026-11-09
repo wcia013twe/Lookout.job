@@ -2,10 +2,11 @@
 import argparse,datetime,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
-from diagnostics import verify_contact_writer,verify_runtime_guidance
+from diagnostics import verify_contact_writer,verify_runtime_guidance,verify_seed_contacts
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 import cost
 from transport import Bridge
+from runtime import StageClock,ensure_awake,snapshot_with_receipt
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
 R=LIB;S=R/'suite';RUNS=R/'runs';CONFIG={};TASK='';IMAGE='lookout-benchmark:0.164.0'
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -32,10 +33,11 @@ def verify():
  image=command(['docker','image','inspect',IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
  if image!=lock['imageId']:raise RuntimeError('Container image changed')
  verify_contact_writer(R)
+ verify_seed_contacts(R)
  verify_runtime_guidance(R)
  return digest(R/'freeze.json'),image
 
-def snapshot(p):command(['node',str(R/'snapshot.mjs'),str(p)])
+def snapshot(p):snapshot_with_receipt(['node',str(R/'snapshot.mjs'),str(p)],p)
 def validate_initial(p):
  tables=json.loads(p.read_text())['tables'];original=json.loads((R/'cloned-context.private.json').read_text())['settings']
  if not all(isinstance(x,list) for x in tables.values()):raise RuntimeError('Snapshot incomplete')
@@ -90,8 +92,8 @@ class Session:
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
-  monotonic_started=time.monotonic()
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
+  clock=StageClock();meta['startedAt']=clock.startWall
   expired=threading.Event();usage=None;events=0;usage_complete=False
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
@@ -121,21 +123,25 @@ class Session:
    finally:
     timer.cancel()
     if proc.poll() is None:stop();proc.wait(timeout=30)
-  wall_seconds=time.time()-meta['startedAt'];active_seconds=time.monotonic()-monotonic_started
-  meta['timing']={'basis':'monotonic_elapsed_including_native_calls','wallSeconds':wall_seconds,'monotonicSeconds':active_seconds,'wallMinusMonotonicSeconds':wall_seconds-active_seconds,'wallBudgetExceeded':wall_seconds>stage['seconds']+5}
-  meta['environmentTimingConfounded']=abs(wall_seconds-active_seconds)>5 or active_seconds>stage['seconds']+5
+    timing=clock.finish()
+  active_seconds=timing['wallSeconds']
+  timing['wallBudgetExceeded']=timing['wallSeconds']>stage['seconds']+5
+  meta['timing']=timing
+  meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
+  meta['environmentTimingConfounded']=not timing['valid'] or timing['monotonicSeconds']>stage['seconds']+5
   usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
-  meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
+  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
+ awake=ensure_awake()
  suite_hash,image=verify();RUNS.mkdir(exist_ok=True)
  lock=(R/'account.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'ownerId':json.loads((R/'grader.private.json').read_text())['userId'],'startedAt':time.time(),'stages':[]};write(run/'run.json',meta)
+ meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'ownerId':json.loads((R/'grader.private.json').read_text())['userId'],'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
@@ -164,14 +170,16 @@ def run(condition,repeat,pair_id,pilot=False):
    record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
    write(sd/'delivery.json',record)
    sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm)
-   snapshot(sd/'after-state.json');hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   write(run/'run.json',meta)
+   hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   snapshot(sd/'after-state.json')
    write(run/'run.json',meta)
    print(json.dumps({'run':str(run),'stage':i,'status':sm['status']}),flush=True)
    if sm['status']!='completed':meta['status']=sm['status'];break
    # No outcome parsing or semantic grading between stages; bad saved work carries forward.
   else:meta['status']='completed'
  except Exception as e:
-  meta.update(status='setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
+  meta.update(status='artifact_failed' if meta['stages'] else 'setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
  finally:
   if session:session.close()
   meta['participantEndedAt']=time.time();write(run/'run.json',meta)
@@ -195,7 +203,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM2-stream-v5' or CONFIG.get('taskId')!='COM2':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM2-stream-v7' or CONFIG.get('taskId')!='COM2':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM2':raise RuntimeError('Dedicated COM2 account receipt required')
 
@@ -217,7 +225,8 @@ def released_sources(stages):
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
  prefix='Your resume is /inputs/resume.pdf. Earlier released emails and historical calendar evidence remain available through tools and /inputs/sources.json. currentNotifications identifies this turn’s deliveries; notificationHistory retains duplicate deliveries. Reconcile historical invitations with later updates. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages, submit applications, or create interview preparation materials. '
- storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records, and save meaningful updates, drafts, and next steps there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, drafts, and next steps. ')
+ storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records. Your durable storage is Lookout native records; /workspace/output may hold temporary notes and the final report. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions and are your durable storage. ')
+ storage += 'Keep supplied contact states and boundaries, current task priorities, material decisions, conversation outcomes, commitments, drafts and next steps recoverable across sessions. Save meaningful new information and requested work before ending the turn, and verify saved changes. Preserve existing history and unrelated records. Already-stored unchanged information needs no duplicate write. You do not need to copy the full personal profile or resume. Python and standard shell tools are available; jq is not installed. Database/file timestamps are capture times, not event times; use the stated workspace time and source events for chronology. '
  prefix += storage
  spec=json.loads((S/'scenario.json').read_text())
  now=datetime.datetime.fromisoformat(spec['origin'].replace('Z','+00:00'))+datetime.timedelta(minutes=stage['minute'])

@@ -1,6 +1,6 @@
 # JOB04: pipeline-aware interview preparation
 
-JOB04-preparation-v2 uses the [shared JOB host](../scripts/jobs/README.md) with
+JOB04-preparation-v3 uses the [shared JOB host](../scripts/jobs/README.md) with
 per-freeze native/container preflight gates. JOB04 compares
 specificity and factual grounding; it does not measure usefulness, coaching
 quality or interview outcomes. No model run or account mutation is implied by a

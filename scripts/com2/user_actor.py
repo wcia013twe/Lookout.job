@@ -6,6 +6,9 @@ def answer(question,stage_index,spec):
  if not 1<=stage_index<=len(spec['stages']):raise ValueError('Unknown release index')
  released=spec['stages'][:stage_index]
  known={s['id']:s for s in released}
+ if re.search(r'UUID|application.?id|record.?id|identifier|which application|find.*application',question,re.I):
+  return 'The application is Alder Systems Platform Engineer, reference AS-417. I do not have an internal record identifier to add.','clarification'
+
  if re.search(r'\bsent\b|did I send|have I sent|did.*reply|responded',question,re.I):
   if re.search(r'start.date|earliest',question,re.I):return 'I have not sent a start-date reply. Only the availability reply has been reported sent.' if 'sent_report' in known else 'I have not reported sending a start-date reply.','context_restatement'
   if 'sent_report' in known:return known['sent_report']['request'],'context_restatement'

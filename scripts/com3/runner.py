@@ -3,10 +3,12 @@ import datetime
 import argparse,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
-from diagnostics import verify_contact_writer,verify_runtime_guidance
+from diagnostics import verify_contact_writer,verify_runtime_guidance,verify_seed_contacts
+from native_contract import verify_native_contract,verify_audit_contract
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 import cost
 from transport import Bridge
+from runtime import StageClock,ensure_awake,snapshot_with_receipt
 from capture import capture
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
 R=LIB;S=R/'suite';RUNS=R/'runs';CONFIG={};TASK='';IMAGE='lookout-benchmark:0.164.0'
@@ -35,9 +37,13 @@ def verify():
  if image!=lock['imageId']:raise RuntimeError('Container image changed')
  verify_contact_writer(R)
  verify_runtime_guidance(R)
+ verify_seed_contacts(R)
+ verify_native_contract(R)
+ verify_audit_contract(R)
+ command(['node',str(LIB/'reset-probe.mjs'),str(R)])
  return digest(R/'freeze.json'),image
 
-def snapshot(p):command(['node',str(R/'snapshot.mjs'),str(p)])
+def snapshot(p):snapshot_with_receipt(['node',str(R/'snapshot.mjs'),str(p)],p)
 def validate_initial(p):
  tables=json.loads(p.read_text())['tables'];original=json.loads((R/'cloned-context.private.json').read_text())['settings']
  if not all(isinstance(x,list) for x in tables.values()):raise RuntimeError('Snapshot incomplete')
@@ -58,6 +64,7 @@ def validate_initial(p):
 
 class Session:
  def __init__(self,run,inputs,out,condition,label):
+  startup_started=time.monotonic()
   self.name='career-session-'+uuid.uuid4().hex[:10];self.bridge=None;self.thread_id=None;self.condition=condition
   self.auth=json.loads((Path.home()/'.codex/auth.json').read_text())
   if self.auth.get('OPENAI_API_KEY') or not self.auth.get('tokens'):raise RuntimeError('Subscription-only auth required')
@@ -73,6 +80,7 @@ class Session:
    visible=json.loads(command(['docker','exec',self.name,'python3','-c','import os,json; print(json.dumps({p:os.path.exists(p) for p in '+repr(paths)+'}))'],text=True).stdout)
    if any(visible.values()):raise RuntimeError('Unexpected host path visible')
    write(run/'isolation.json',{'session':label,'hostPathsVisible':visible,'mounts':json.loads(command(['docker','inspect',self.name,'--format','{{json .Mounts}}'],text=True).stdout),'auth':'Subscription credential in ephemeral container tmpfs, readable by runtime; no host config/history copied. Network remains available for inference.'})
+   write(run/'session-startup.json',{'durationSeconds':time.monotonic()-startup_started,'scope':'bridge, container, subscription login and isolation checks; excludes model execution'})
   except Exception:self.close();raise
  def close(self):
   subprocess.run(['docker','rm','-f',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
@@ -93,6 +101,7 @@ class Session:
   (stage_dir/'prompt.txt').write_text(prompt)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
+  clock=StageClock();meta['startedAt']=clock.startWall
   expired=threading.Event();usage=None;events=0;usage_complete=False
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
@@ -122,19 +131,23 @@ class Session:
    finally:
     timer.cancel()
     if proc.poll() is None:stop();proc.wait(timeout=30)
-  active_seconds=time.time()-meta['startedAt']
+    timing=clock.finish()
+  active_seconds=timing['wallSeconds']
+  meta['timing']=timing
+  meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
   usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
-  meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
+  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
+ awake=ensure_awake()
  suite_hash,image=verify();RUNS.mkdir(exist_ok=True)
  lock=(R/'account.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'ownerId':json.loads((R/'account.private.json').read_text())['userId'],'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[]};write(run/'run.json',meta)
+ meta={'ownerId':json.loads((R/'account.private.json').read_text())['userId'],'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
@@ -162,22 +175,25 @@ def run(condition,repeat,pair_id,pilot=False):
     session=Session(sd,inputs,out,condition,stage['_session'])
    previous_session=stage['_session']
    meta['status']='running';write(run/'run.json',meta)
-   record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':condition=='baseline' and stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
+   record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
    write(sd/'delivery.json',record)
-   sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm)
-   snapshot(sd/'after-state.json');hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
-   write(run/'run.json',meta)
+   sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm);write(run/'run.json',meta)
+   try:snapshot(sd/'after-state.json')
+   finally:
+    hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
    print(json.dumps({'run':str(run),'stage':i,'status':sm['status']}),flush=True)
    if sm['status']!='completed':meta['status']=sm['status'];break
    # No outcome parsing or semantic grading between stages; bad saved work carries forward.
   else:meta['status']='completed'
  except Exception as e:
-  meta.update(status='setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
+  meta.update(status='artifact_failed' if meta['stages'] else 'setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
  finally:
   if session:session.close()
   meta['participantEndedAt']=time.time()
   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
   except Exception:meta['finalStateCaptured']=False
+  try:verify_native_contract(R);meta['nativeContractStable']=True
+  except Exception:meta['nativeContractStable']=False
   meta['durationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
   try:capture(run,R)
   except Exception as error:
@@ -194,7 +210,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM3-stream-v2' or CONFIG.get('taskId')!='COM3':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM3-stream-v5' or CONFIG.get('taskId')!='COM3':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM3':raise RuntimeError('Dedicated COM3 account receipt required')
 
@@ -216,14 +232,14 @@ def released_sources(stages):
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
  prefix='Your resume is /inputs/resume.pdf. Earlier released emails and historical calendar evidence remain available through tools and /inputs/sources.json; currentNotifications identifies this turn’s deliveries and notificationHistory retains duplicates. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages, submit applications. '
- storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records, and save meaningful updates, drafts, and next steps there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, drafts, and next steps. ')
+ storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records. Your durable storage is Lookout native records; /workspace/output may hold temporary notes and the final report. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions and are your durable storage. ')
+ storage += 'Keep supplied contact states and boundaries, current task priorities, material decisions, conversation outcomes, commitments, drafts and next steps recoverable across sessions. Save meaningful new information and requested work before ending the turn, and verify saved changes. Preserve existing history and unrelated records. Already-stored unchanged information needs no duplicate write. You do not need to copy the full personal profile or resume. Python and standard shell tools are available; jq is not installed. Database/file timestamps are capture times, not event times; use the stated workspace time and source events for chronology. '
  prefix += storage+'Current workspace time: '+(datetime.datetime.fromisoformat(json.loads((S/'scenario.json').read_text())['origin'].replace('Z','+00:00'))+datetime.timedelta(minutes=stage['minute'])).isoformat()+'. This business clock governs deadlines rather than container wall time. Public source snapshots are available through search_sources and read_source; at most 30 combined source calls per session. '
  if stage['kind']=='final_reconciliation':prefix+='Read your saved records/files before reporting; reconcile material discrepancies using supported tools and distinguish saved work from unsaved output. '
  if stage['kind']=='onboarding':
   return prefix+stage['request']+'\n\n'+(R/'background'/'onboarding.md').read_text()
  if stage['kind'] in ['user_update','final_reconciliation']:return prefix+stage['request']
- if condition=='baseline':return prefix+stage['baseline']
- return prefix+'Scheduled recruiting connection check. Review the available updates under the configured read/prepare/save permissions.'
+ return prefix+stage['baseline']
 
 def packets():
  spec=json.loads((S/'scenario.json').read_text())

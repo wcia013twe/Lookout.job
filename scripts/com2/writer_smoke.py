@@ -22,9 +22,26 @@ try:
  # tools/list verifies actual deployed schema discovery through the same bridge participants use.
  proc.stdin.write(json.dumps({'jsonrpc':'2.0','id':0,'method':'tools/list','params':{}})+'\n');proc.stdin.flush();schemas=json.loads(proc.stdout.readline());(out/'schemas.private.json').write_text(json.dumps(schemas,indent=2)+'\n')
  if schemas.get('error'):raise RuntimeError('Actual tool schema discovery failed')
- initial=json.loads((runner.S/'initial-state.json').read_text());app=initial['applications'][0]['id']
+ initial=json.loads((runner.S/'initial-state.json').read_text())
+ toolkit=call('read_toolkit_context')
+ candidates=toolkit.get('applications',[])
+ target=initial['applications'][0]
+ matches=[x for x in candidates if x.get('job_id')==target['jobId']]
+ if len(matches)!=1:raise RuntimeError('Application cannot be rediscovered through scoped toolkit')
+ app=matches[0]['id']
+ if app!=target['id']:raise RuntimeError('Rediscovered application mismatch')
  context=call('read_personal_context');assert context['settings']['profile']['user_id']==report['ownerId']
- call('read_application_record',{'applicationId':app});call('list_contacts')
+ call('read_application_record',{'applicationId':app});call('read_application_timeline',{'applicationId':app})
+ for seeded in initial['contacts']:
+  people=call('list_contacts')
+  rows=people if isinstance(people,list) else people.get('contacts',[])
+  found=next(x for x in rows if x['id']==seeded['id'])
+  writable=dict(seeded['record']);writable['message']=writable.get('message','')+' Native roundtrip probe.'
+  call('save_contact',{'id':seeded['id'],'record':writable,'expectedRevision':found['revision']})
+  people=call('list_contacts');rows=people if isinstance(people,list) else people.get('contacts',[])
+  found=next(x for x in rows if x['id']==seeded['id'])
+  if found.get('message',found.get('record',{}).get('message'))!=writable['message']:raise RuntimeError('Seeded contact write/read mismatch')
+ report['exactSeededContactsRoundtripped']=len(initial['contacts']);report['applicationRediscovered']=True
  # New person draft, then genuine list read-back; no claims of sending.
  cid='smoke-contact';record={'contact':'Readiness Person','company':'Alder Systems','status':'Not contacted','subject':'Availability','message':'Tuesday 2–4 PM or Wednesday 10 AM–noon Eastern works for me.'}
  call('save_contact',{'id':cid,'record':record,'expectedRevision':0});people=call('list_contacts')

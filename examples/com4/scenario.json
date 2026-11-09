@@ -1,5 +1,5 @@
 {
-  "version": "COM4-stream-v3",
+  "version": "COM4-stream-v5",
   "taskId": "COM4",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -284,8 +284,8 @@
     "wakeDelayMinutes": 0,
     "baselineInitiationDelayMinutes": 0,
     "productConfiguration": {
-      "source": "controlled host configuration",
-      "scheduledNetworkingEnabled": true,
+      "source": "Controlled matched user requests; no scheduled initiation benefit is measured.",
+      "scheduledNetworkingEnabled": false,
       "permittedActions": [
         "read",
         "prepare",
@@ -293,7 +293,13 @@
       ],
       "sendAllowed": false
     },
-    "retainedReleasedInbox": true
+    "retainedReleasedInbox": true,
+    "comparisonMode": "matched-intent-native-mcp",
+    "identicalTaskRequests": true,
+    "nativeMcpDiscovery": true,
+    "measuresProactiveInitiation": false,
+    "equalDurableOutputObligations": true,
+    "nativeAuditAndChanges": true
   },
   "durableChecks": [
     "conditional_bio",

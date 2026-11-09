@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
-GRADER_VERSION='COM1-grade-v5'
+GRADER_VERSION='COM1-grade-v7'
 from terminal_state import validate_terminal_state
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
@@ -83,7 +83,7 @@ def grade(run,spec,review=None):
  if m['status']=='completed' or (run/'terminal-state.json').exists():terminal=validate_terminal_state(run,m)
  deliveries=[];execution=0;toolcount=0;questions=[];calls={};stepcount=0
  for i,sd in stages.items():
-  sm=read(sd/'stage-run.json');execution+=sm['durationSeconds'];calls[i]=tool_calls(sd)
+  sm=read(sd/'stage-run.json');execution+=(sm.get('executionSeconds') or 0) if 'timing' in sm else sm['durationSeconds'];calls[i]=tool_calls(sd)
   d=read(sd/'delivery.json');deliveries.append(d)
   for index,row in enumerate(rows(sd/'lookout-trace.jsonl'),1):
    if row['type']=='user.interaction':questions.append({'stage':i,**row['data'],'interactionId':f'stage-{i}/lookout-trace.jsonl#L{index}'})
@@ -106,7 +106,7 @@ def grade(run,spec,review=None):
    if unavailable[key] and item['pass']:raise ValueError('Unreached/incomplete checkpoint cannot pass')
    if not unavailable[key]:
     check_review_evidence(run,item,check_stages[key],item['pass'])
-    if item['pass'] and key in ['tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
+    if item['pass'] and key in ['initial_context','preparation','tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
      for i in check_stages[key]:
       refs=[x.split('#')[0] for x in item['evidence']]
       valid=(f'stage-{i}/after-state.json' in refs) if m['condition']=='lookout' else any(x.startswith(f'stage-{i}/output/') for x in refs)
@@ -148,6 +148,9 @@ def grade(run,spec,review=None):
   adherence[key]={'status':status,'calls':relevant}
  metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'stage_coverage':len(stages)/len(spec['stages'])}
  metrics.update(call_metrics(stages.values()))
+ timing_valid=all(read(sd/'stage-run.json').get('timing',{}).get('valid',bool(m.get('synthetic'))) for sd in stages.values())
+ metrics['timing_valid']=int(timing_valid)
+ if not timing_valid:metrics['execution_seconds']=None
  for category in ['clarification','context_restatement','correction','reminder','approval']:
   metrics['observed_'+category+'_turns']=sum(q['category']==category for q in questions)
   if complete:metrics['observed_'+category+'_demands']=sum(x['category']==category for x in additional)
@@ -167,7 +170,7 @@ def grade(run,spec,review=None):
   metrics[f'stage_{i}_reached']=int(i in stages)
   if resolved:metrics[f'stage_{i}_success']=int(achieved)
   waiting=(delivered['triggerMinute']-delivered['releasedMinute'])+sum(q['simulatedDelayMinutes'] for q in questions if q['stage']==i) if achieved else None
-  latencies.append({'stage':i,'eventId':stage['id'],'achieved':bool(achieved) if resolved else None,'simulated_waiting_minutes':waiting,'execution_seconds':read(stages[i]/'stage-run.json')['durationSeconds'] if i in stages else None})
+  latencies.append({'stage':i,'eventId':stage['id'],'achieved':bool(achieved) if resolved else None,'simulated_waiting_minutes':waiting,'execution_seconds':(read(stages[i]/'stage-run.json').get('executionSeconds') if 'timing' in read(stages[i]/'stage-run.json') else read(stages[i]/'stage-run.json')['durationSeconds'] if m.get('synthetic') else None) if i in stages else None})
  return {'cost':m.get('cost'),'version':spec['version'],'graderVersion':GRADER_VERSION,'scenarioDigest':scenario_digest(spec),'episodeId':m['episodeId'],'status':'graded' if complete else 'pending_review','evidenceDigest':evidence_digest(run),'reviewer':review.get('reviewer') if complete else None,'metrics':metrics,'quality':quality,'adherence':adherence,'latencies':latencies,'questions':questions,'additionalDemands':additional,'limitations':['Scripted interactions are not measured human cognitive effort.','Simulated waiting excludes compute and is not time to task completion.','Unanswered demands are not completed user exchanges.','Semantic quality and native outcomes require independent evidence review.']}
 
 if __name__=='__main__':

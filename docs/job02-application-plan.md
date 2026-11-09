@@ -241,3 +241,69 @@ without starting the other condition or creating a comparable paired grade.
 The corrected fictional browser rehearsal tests these guards for both conditions.
 Historical v1 preflight receipts are not readiness for the v2 source; prepare and
 verify a new setup. Live-target and authenticated-response gates remain required.
+
+
+## Prospective matched-task v3 audit
+
+`JOB02-batch-v3` / `JOB02-review-v3` gives both conditions identical task intent,
+continuation request and prescribed initiation count. First-message candidate
+onboarding differs only by its intended storage delivery. There is no proactive
+initiation advantage claim. Lookout receives genuine native initialize prose and
+default tools, including its normal audit procedure; supporting schemas require
+participant discovery. Isolation filters schemas and checks both wrapper and inner
+permissions, without rewriting native guidance. All actual startup, discovery,
+read/write and verification work remains in time/cost. Separate structural
+startup/discovery latency and byte diagnostics do not subtract that overhead.
+
+The grading audit found that a correctly retained unknown could fail solely from
+not reaching live readiness. The frozen reference now specifies each expected
+outcome: manual handoff, ready, or ready with a supported unresolved blocker.
+Independent semantic evidence is still required; wrong observed factual values
+still fail. This rule applies equally to both storage formats.
+
+Read-only selection from the original frozen board found three available targets:
+Adobe R172083 (Workday), Garner Associate Software Engineer (Greenhouse 6174210004)
+and Verkada Backend Engineer - Connectivity (Greenhouse 5194598007). See
+[bounded target records](../examples/job02/live-targets.json). No fields were filled
+and no files uploaded. Both Greenhouse pages contain React/custom combobox controls
+and invisible reCAPTCHA/third-party frames. The current simple native-field adapter
+cannot establish a complete, accurate ready state on these forms. Their upload and
+autosave side effects remain unverified. These are harness capability/safety
+blockers, not participant failures. Do not silently substitute controlled fixtures
+and label the resulting run live. Fixture rehearsals remain valid failure-injection
+infrastructure. A live paired pilot requires supported adapters and passing gates.
+
+
+## Explicit controlled clearing pilot
+
+The user authorized a controlled-form clearing pilot while live targets remain
+blocked. `controlled-scenario.json` uses clearly fictional employers and frozen
+HTML served entirely by browser interception; every other request is aborted.
+It is labeled controlled clearing, never live employer validation. The personal
+question asks both motivation and prior product use, making the missing user fact
+concrete. Actual authenticated native cards/responses are rehearsed on a separate
+sacrificial local owner before creating the participant owner. A JSONB key-order
+verification defect was caught there and fixed using structural exact equality;
+no human write was silently replayed.
+
+The controlled path retains the same two-session task, no-submit boundary, matched
+prompts, native default/on-demand surface, and time/effort/quality/cost accounting.
+Its prospective registration and final structural export use the same project and
+receipt directory through `scripts/job02/langfuse.mjs`; no private candidate facts,
+answers, raw transcripts or browser field values are uploaded. Model/subscription
+availability is established only by the actual single paired attempt; failures
+remain failures with no paid-API fallback, model substitution or rescue.
+
+
+## First controlled pair: validity hold
+
+The single completed controlled pair is preserved at `/Volumes/External SSD/Lookout/tmp/job02-controlled-clearing-v1-20261109-4`. Fresh independent review found no comparable-effectiveness conclusion is justified: supplied résumé/profile identity differed, exact-field grading privileged one source, and a narrow necessary product-use question received different actor facts from a combined motivation question. Native draft writes returned owned-record-not-found because supplied target aliases had no corresponding owned native records. The container had writable `/workspace/output`, but the common task prompt did not identify it. These are harness limitations; do not turn computed exact-reference scores into a winner. Any subsequent trial requires prospective repairs, a new dedicated owner/freeze, actual readiness receipts and independent grading.
+
+Prospective readiness now additionally requires four actual, hash-bound receipts:
+
+- `candidate_consistency`: compare the supplied résumé, readable profile and native profile with each exact reference; resolve conflicts in the next approved candidate pack or mark alternatives/unknowns fairly before freezing. Never change the preserved pack.
+- `actor_equivalence`: replay combined and narrower questions, paraphrases, unknowns and ambiguity against both response ingress paths; equivalent requested facts must yield equivalent facts. The example product-use matcher regression covers the observed narrow question; it is not proof of complete semantic coverage.
+- `owned_target_lifecycle`: on dedicated sacrificial records, prove each exact target ID/URL maps to an owned native job and can prepare/read back its draft, manual card or answer card. The actual participant owner must have the frozen equivalent prerequisites. Schema discovery or an unrelated successful card does not satisfy this receipt.
+- `storage_orientation`: prove the exact participant mount is writable, survives a fresh session, and the identical task request names `/workspace/output`. Native storage remains the product default; both conditions know their available file path.
+
+All four are mandatory gates. Each needs an actual passing receipt bound to the next freeze before its trial. Controlled fixtures remain isolated; live employer forms still have separate custom-widget/upload/autosave blockers.

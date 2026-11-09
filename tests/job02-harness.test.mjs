@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
 import {spawnSync} from 'node:child_process';
-import {read,write,hash,digest,actorAnswer,validateTargets,readiness,launchGate,assertFrozen,gates} from '../scripts/job02/core.mjs';
+import {read,write,hash,digest,actorAnswer,validateTargets,readiness,launchGate,assertFrozen,gates,factualEqual} from '../scripts/job02/core.mjs';
 import {mcp,responsePayload} from '../scripts/job02/native.mjs';
 import {BrowserHost} from '../scripts/job02/browser.mjs';
 import {build} from '../scripts/evals/contract.mjs';
@@ -25,20 +25,22 @@ test('model has no generic browser click/key/script/submit operation',async()=>{
 test('live navigation/mutation boundary rejects off-target URLs and submission paths',()=>{const b=new BrowserHost({targets:[]}),t={url:'https://job-boards.greenhouse.io/fictional/jobs/1',safeBeforeSubmit:true,safeUploadEndpoints:[]};const page={mainFrame:()=>frame},frame={page:()=>page};function request(url,method='GET',navigation=false){return {url:()=>url,method:()=>method,isNavigationRequest:()=>navigation,resourceType:()=>navigation?'document':'fetch',frame:()=>frame};}assert.equal(b.allowRequest(request(t.url,'GET',true),t),true);assert.equal(b.allowRequest(request(t.url+'/submit','POST'),t),false);assert.equal(b.allowRequest(request('https://other.example/','GET',true),t),false);assert.equal(b.allowRequest(request(t.url+'?submit=true','GET',true),t),false);});
 test('offline common telemetry preserves pilot exclusion and missing quality',()=>{const r={schemaVersion:1,campaignId:'JOB02-pilot',suiteId:'JOB02',suiteVersion:scenario.version,scenarioId:'JOB02',scenarioVersion:scenario.version,condition:'baseline',episodeId:'fixture',model:scenario.model,reasoning:scenario.reasoning,harnessVersion:'JOB02-host-v1',graderVersion:scenario.graderVersion,repeat:1,evidenceDigest:'a'.repeat(64),pilot:true,synthetic:false,startedAt:1,endedAt:2,status:'completed',evaluation:{reviewed:false,taskSuccess:null,quality:null,activeSeconds:1,toolCalls:0,wakesUsed:2}};const b=build(r);assert.equal(b.environment,'benchmark-pilot');assert.equal(b.scores.some(s=>s.name==='eval_v1_quality'),false);});
 
-test('fresh final grader cannot pass a wrong live value despite perfect semantic ratings',async()=>{
+test('final grading rejects wrong live values and accepts a supported frozen blocker outcome',async()=>{
+ for(const supportedBlocker of [false,true]){
  const {handoff,assignGrader,finalize}=await import('../scripts/job02/grade.mjs');
  const r=fs.mkdtempSync(path.join(os.tmpdir(),'job02-grade-'));fs.mkdirSync(r+'/suite');
  const spec={...scenario,targets:scenario.targets.map(t=>({...t,url:'https://example.test/'+t.id}))};
- const ref={criteria:Object.fromEntries(spec.stages.map(s=>[s.id,Object.fromEntries(spec.targets.map(t=>[t.id,['routing']]))])),fields:{manual:[],personal:[{fieldId:'email',acceptedValues:['right@example.test']}],clean:[{fieldId:'email',acceptedValues:['right@example.test']}]}};
+ const ref={outcomes:{personal:supportedBlocker?'ready_or_supported_blocker':'ready'},criteria:Object.fromEntries(spec.stages.map(s=>[s.id,Object.fromEntries(spec.targets.map(t=>[t.id,['routing']]))])),fields:{manual:[],personal:[{fieldId:'email',acceptedValues:['right@example.test']}],clean:[{fieldId:'email',acceptedValues:['right@example.test']}]}};
  write(r+'/suite/scenario.json',spec);write(r+'/reference.private.json',ref);fs.writeFileSync(r+'/suite/grader-instructions.md','Frozen review rules');write(r+'/freeze.json',{version:spec.version,files:{}});write(r+'/pilot-attempt.json',{pairId:'fixture'});
  for(const c of ['baseline','lookout']){
   const dir=r+'/runs/'+c;write(dir+'/run.json',{episodeId:c+'-fixture',condition:c,status:'completed',startedAt:1,endedAt:3,toolCalls:1,prescribedInitiations:1,simulatedWaitingMinutes:5,interactions:[],stages:spec.stages.map((s,i)=>({id:s.id,index:i+1,durationSeconds:1}))});
-  for(let index=1;index<=2;index++)write(dir+'/stage-'+index+'/browser/final.json',{targets:spec.targets.map(t=>({targetId:t.id,observed:true,readyToSubmit:true,fields:[{fieldId:'email',value:c==='baseline'&&t.id==='personal'?'wrong@example.test':'right@example.test'}]}))});
+  for(let index=1;index<=2;index++)write(dir+'/stage-'+index+'/browser/final.json',{targets:spec.targets.map(t=>({targetId:t.id,observed:true,readyToSubmit:!(supportedBlocker&&t.id==='personal'),fields:[{fieldId:'email',value:!supportedBlocker&&c==='baseline'&&t.id==='personal'?'wrong@example.test':'right@example.test'}]}))});
  }
  const h=handoff(r);assert.throws(()=>assignGrader(r,'operator','operator',['operator']),/Fresh reviewer/);const assignment=assignGrader(r,'fresh-reviewer','operator',['operator','implementer']);write(r+'/grading/native-confirmation.json',{status:'confirmed',handoffHash:hash(h)});
  const submission={attestation:{reviewerAgentId:'fresh-reviewer',assignmentHash:hash(assignment),didImplement:false,didOperate:false,didParticipate:false,freshContext:true},conditions:{}};
  for(const c of ['baseline','lookout']){const cite={evidenceFiles:['stage-2/browser/final.json'],explanation:'Synthetic field proof'};submission.conditions[c]={checkpoints:Object.fromEntries(spec.stages.map(s=>[s.id,Object.fromEntries(spec.targets.map(t=>[t.id,{...cite,complete:true,checks:{routing:{...cite,rating:2}}}]))])),additionalTurns:[],adherence:Object.fromEntries(spec.adherence.map(k=>[k,{...cite,status:'used_correctly'}]))};}
- const result=finalize(r,submission);assert.equal(result[0].result.taskSuccess,false);assert.equal(result[1].result.taskSuccess,true);
+ const result=finalize(r,submission);assert.equal(result[0].result.taskSuccess,supportedBlocker);assert.equal(result[1].result.taskSuccess,true);
+ }
 });
 
 test('frozen form drift rejects reinspection, fill and upload before any mutation',async t=>{
@@ -70,7 +72,7 @@ s=importlib.util.spec_from_file_location('job02_test_runner','scripts/job02/runn
 with tempfile.TemporaryDirectory() as t:
  root=Path(t);j.ROOT=root
  for n in ['suite','candidate','runs']:(root/n).mkdir()
- spec={'version':'unit-drift','targets':[],'stages':[{'id':'prepare','session':1}],'stageBudgetSeconds':30}
+ spec={'version':'unit-drift','model':'gpt-5.6-terra','reasoning':'medium','targets':[],'stages':[{'id':'prepare','session':1}],'stageBudgetSeconds':30}
  (root/'suite/scenario.json').write_text(json.dumps(spec));(root/'candidate/resume.pdf').write_bytes(b'fixture');(root/'runtime.private.json').write_text('{}')
  calls=[];j.node=lambda action,*args:calls.append(action);j.snapshot=lambda p:p.write_text('{}');j.capture=lambda *a:(_ for _ in ()).throw(AssertionError('Should stop before final capture'))
  j.host.infrastructure=lambda:None;j.host.close_infrastructure=lambda:None;j.runtime.cost.persist=lambda *a:{'coverage':{'status':'unknown'}}
@@ -87,4 +89,53 @@ with tempfile.TemporaryDirectory() as t:
  assert meta['stages'][0]['durationSeconds']==1
  assert 'handoff' not in calls and 'confirm' not in calls
 `],{encoding:'utf8',env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});assert.equal(r.status,0,r.stderr);
+});
+
+
+test('native human-event verification ignores JSONB key order but detects changed answers',async()=>{
+ const {matchesSavedResponse}=await import('../scripts/job02/native.mjs');const payload={key:'owned:revision',response:'accept',eventKey:'event',input:{answers:['exact answer'],confirmed:true}};
+ assert.equal(matchesSavedResponse({savedResponse:{input:{confirmed:true,answers:['exact answer']},eventKey:'event',response:'accept',key:'owned:revision'}},payload),true);
+ assert.equal(matchesSavedResponse({savedResponse:{...payload,input:{answers:['different'],confirmed:true}}},payload),false);
+});
+
+test('controlled registration/export binds actual dataset and excludes private contents',async()=>{
+ const {registration,build}=await import('../scripts/job02/langfuse.mjs');const spec=read(new URL('../examples/job02/controlled-scenario.json',import.meta.url)),reg=registration(spec);assert.equal(reg.input.mode,'controlled_clearing');assert.equal('candidate'in reg.input,false);
+ const summary={schemaVersion:1,campaignId:'JOB02-controlled',suiteId:'JOB02',suiteVersion:spec.version,scenarioId:'JOB02',scenarioVersion:spec.version,condition:'baseline',episodeId:'controlled-transport',model:spec.model,reasoning:spec.reasoning,harnessVersion:'JOB02-host-v3',graderVersion:spec.graderVersion,repeat:1,evidenceDigest:'a'.repeat(64),pilot:true,synthetic:true,startedAt:1,endedAt:2,status:'completed',diagnostics:{mcp_discovery_seconds:.2},effort:{uniqueInteractionTurns:1,prescribedInitiations:2},evaluation:{reviewed:false,taskSuccess:null,quality:null,activeSeconds:1,toolCalls:1,wakesUsed:2}};
+ const p=build(summary,spec,{scenarioHash:hash(spec),datasetId:'registered-dataset',itemId:'registered-item'});assert.equal(p.span.attributes.find(a=>a.key==='langfuse.experiment.dataset.id').value.stringValue,'registered-dataset');assert.equal(p.environment,'verification');assert.ok(p.scores.some(s=>s.name==='job02_mcp_discovery_seconds'&&s.value===.2));
+});
+
+
+test('prepare creates launcher directories before frozen readiness and no attempt',()=>{
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'job02-prepare-')),candidate=root+'/source-candidate';fs.mkdirSync(candidate);fs.writeFileSync(candidate+'/profile.md','Fictional candidate');fs.writeFileSync(candidate+'/resume.pdf','%PDF fictional');
+ write(root+'/cloned-context.private.json',{settings:{profile:{facts:{name:'Fictional candidate'}}}});write(root+'/owned-targets.private.json',{status:'fixture'});write(root+'/account.private.json',{apiUrl:'http://127.0.0.1:54321',mcpUrl:'http://127.0.0.1:8080/mcp',email:'job02-pilot-00000000-0000-0000-0000-000000000000@example.test',status:'verified'});write(root+'/runtime-input.json',{model:scenario.model,reasoning:scenario.reasoning,networkPolicy:'JOB01-isolated-inference',imageId:'sha256:fictional'});
+ const r=spawnSync('node',['scripts/job02/cli.mjs','prepare','--root',root,'--candidate',candidate,'--reference','examples/job02/reference.template.json','--runtime',root+'/runtime-input.json'],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.equal(fs.statSync(root+'/runs').isDirectory(),true);assert.equal(fs.statSync(root+'/receipts').isDirectory(),true);assert.equal(fs.existsSync(root+'/pilot-attempt.json'),false);
+});
+
+// These gaps were observed in the preserved first controlled pair.
+test('prospective readiness requires identity, equivalent responses, owned records and storage proof',()=>{
+ const r=root();const result=readiness(r,{});
+ for(const gate of ['candidate_consistency','actor_equivalence','owned_target_lifecycle','storage_orientation'])assert.ok(result.errors.includes('Missing actual bound gate: '+gate));
+});
+test('narrow necessary product-use question receives same reviewed fact as combined motivation question',()=>{
+ const narrow=actorAnswer(actor,'personal','Have you used Northstar Tools before?');
+ const broad=actorAnswer(actor,'personal','Why do you want to apply, and have you used Northstar Tools before?');
+ assert.equal(narrow.factId,'motivation');assert.equal(narrow.answer,broad.answer);
+ assert.equal(actorAnswer(actor,'clean','Have you used Northstar Tools before?').factId,null);
+});
+
+test('receipt gate names stay unique',()=>assert.equal(new Set(gates).size,gates.length));
+
+test('factual equality accepts harmless name/email formatting without wrong identity',()=>{
+ assert.equal(factualEqual('name','Fictional Person','  FICTIONAL   PERSON '),true);
+ assert.equal(factualEqual('name','Fictional Person','Fictional Other'),false);
+ assert.equal(factualEqual('name','Fictional Person','Fictional'),false);
+ assert.equal(factualEqual('email','person@example.test',' person@EXAMPLE.TEST '),true);
+ assert.equal(factualEqual('email','person@example.test','other@example.test'),false);
+ assert.equal(factualEqual('email','person@example.test','Person@example.test'),false);
+});
+
+test('invalid comparison cannot export quality even when private review exists',async()=>{
+ const {build}=await import('../scripts/job02/langfuse.mjs');
+ const summary={scenarioVersion:scenario.version,validity:{comparable:false},evaluation:{quality:.9,taskSuccess:true}};
+ assert.throws(()=>build(summary,scenario,{scenarioHash:hash(scenario)}),/Invalid comparison/);
 });

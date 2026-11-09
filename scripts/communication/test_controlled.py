@@ -29,6 +29,15 @@ class Controlled(unittest.TestCase):
    self.assertNotIn('Scheduled networking check',text)
    self.assertNotIn('Scheduled application communication check',text)
    self.assertIn("'assignedInitiation':stage['kind']=='external'",text)
+ def test_event_order_and_fixture_contract(self):
+  from datetime import datetime,timedelta
+  spec=json.loads((ROOT/'examples/n01/scenario.json').read_text());origin=datetime.fromisoformat(spec['policy']['clockOrigin'].replace('Z','+00:00'))
+  for stage_index,event_index in [(2,0),(4,1)]:
+   meeting=datetime.fromisoformat(spec['stages'][1]['calendar'][event_index]['time'].replace('Z','+00:00'))
+   self.assertGreater(origin+timedelta(minutes=spec['stages'][stage_index]['minute']),meeting)
+  fixture=json.loads((ROOT/'examples/com2/fixture.json').read_text())
+  for c in fixture['contacts']:self.assertNotIn('draft',c['record']);self.assertIn('message',c['record'])
+  text=(ROOT/'scripts/com2/prepare.py').read_text();self.assertIn("'read_toolkit_context'",text);self.assertIn("'read_application_timeline'",text)
  def test_measurements_are_additive_not_extra_calls(self):
   with tempfile.TemporaryDirectory() as td:
    p=Path(td)
