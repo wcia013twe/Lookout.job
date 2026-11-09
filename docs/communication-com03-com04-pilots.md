@@ -1,6 +1,6 @@
 # PILOT03 / PILOT04: controlled communication results
 
-Completed November 9, 2026. These are two harness-clearing pairs, not measured population estimates. Both participants finished before independent semantic review for their case. No coaching, hints, participant retries or product repairs occurred during execution. No Lookout product changes are included in this pass; the recommendations below are flags for a later feature pass.
+Completed November 9, 2026. These are two diagnostic harness-clearing pairs, not measured population estimates. Residual harness confounds remain; these pilots do not certify readiness for a measured comparison. Both participants finished before independent semantic review for their case. No coaching, hints, participant retries or product repairs occurred during execution. No Lookout product changes are included in this pass; the recommendations below are flags for a later feature pass.
 
 ## Comparison and results
 
@@ -39,6 +39,7 @@ Effort is mixed and narrowly observable. Both conditions had 10 prescribed turns
 
 These are cumulative MCP response timings within total execution, not additional model processing time. Bytes are response payloads, not tokens. Observable steps include other participant actions and must not be added to MCP calls.
 
+- **Durable-output instruction asymmetry remains.** The baseline prefix says it “may” retain context in files, whereas Lookout is explicitly told to save meaningful updates and verify saved changes. Task intent and evidence match, but persistence obligation is not equally explicit. This may affect checkpoint quality, work and usage. A prospective rerun should require equivalent durable outcomes in both conditions while retaining each native storage method; preserve these runs and grades unchanged. Do not attribute all observed differences to Lookout.
 - Initial COM03 source search requested limit 20 despite the advertised maximum 10. The bridge's opaque `ValueError` is a harness diagnostic weakness; the invalid request is a participant error, not a Lookout backend failure. Improve future diagnostics symmetrically without coaching this run.
 - COM04's initial change-feed read was denied by the allowed-scope wrapper. This is an isolation/native-startup interaction, not evidence that the product service is broken. It remains counted in usage and is a residual limitation of the controlled surface.
 - Final COM04 score readback exceeded the exporter's first-page limit of 100. Supplemental `scripts/communication/verify-langfuse-pilot.mjs` reads all score pages, checks exact values and subject/environment bindings, and fails on safety caps. Frozen exporters and failed verification receipts remain intact. Use this verifier for these roots; incorporate pagination into future versioned exporters before new freezes.

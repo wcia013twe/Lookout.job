@@ -14,3 +14,6 @@
 - Final grades, detailed traces and common summaries exported/read back from the same prospective receipt directories. Added supplemental paginated verifier after COM04 exceeded the frozen exporter’s 100-score readback limit; two pagination/binding tests pass. Frozen exporter sources unchanged.
 - [Results and product flags](../docs/communication-com03-com04-pilots.md) separate checkpoint quality, final state, effort, time and usage. No Lookout product changes applied. Single unblinded pair per case; no causal/general performance or dollar-cost claim.
 - Case docs and OpenWiki updated. Catalog validation passes (158 roles). No pushes, PR or deployment; authorized structural Langfuse telemetry only. Retain this checkout because frozen manifests reference its source.
+
+- Report explicitly flags residual durable-output instruction asymmetry (baseline optional retention versus explicit native save/verify). These diagnostic pilots do not clear a fully controlled measured comparison. Preserve their grades; correct obligations prospectively.
+- Local main advanced shared frozen source files. Keep this original checkout intact; land the report/verifier through a separate integration checkout rather than invalidating historical hashes.
