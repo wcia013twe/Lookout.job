@@ -29,7 +29,7 @@ export function validateReference(spec,reference,actor){
 }
 export function actorAnswer(actor,targetId,question){
  if(typeof question!=='string'||!question.trim())throw Error('Specific question required');
- const found=actor.facts.filter(f=>(f.targetId===targetId||f.targetId==='*')&&new RegExp(f.questionPattern,'i').test(question));
+ const found=actor.facts.filter(f=>(f.targetId===targetId||f.targetId==='*')&&((f.questionPattern&&new RegExp(f.questionPattern,'i').test(question))||(f.intents||[]).some(intent=>matchesActorIntent(intent,question,f))));
  if(found.length!==1)return {factId:null,answer:actor.unknownResponse,reuse:'none',ambiguous:found.length>1};
  const f=found[0];return {factId:f.unknown?null:f.id,answer:f.answer,reuse:f.reuse,unknown:f.unknown===true};
 }
@@ -56,4 +56,12 @@ export function factualEqual(fieldId,a,b){
  if(typeof a!=='string'||typeof b!=='string')return JSON.stringify(a)===JSON.stringify(b);
  const normal=v=>fieldId==='name'?v.normalize('NFC').trim().replace(/\s+/gu,' ').toLocaleLowerCase('en-US'):fieldId==='email'?v.trim().replace(/@([^@]+)$/,(_,domain)=>'@'+domain.toLowerCase()):v;
  return normal(a)===normal(b);
+}
+
+export function matchesActorIntent(intent,question,fact){
+ if(intent!=='product_use')throw Error('Unreviewed actor intent: '+intent);
+ const q=question.normalize('NFKC').toLowerCase();
+ const usage=/\b(?:use|uses|used|using|try|tried|trying|familiar|experience)\b/.test(q);
+ const topic=/\b(?:product|products|tool|tools|platform|service|app|it|them)\b/.test(q)||(fact.productNames||[]).some(name=>q.includes(name.normalize('NFKC').toLowerCase()));
+ return usage&&topic;
 }

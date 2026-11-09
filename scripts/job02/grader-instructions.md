@@ -60,3 +60,9 @@ full names use Unicode NFC, case and whitespace normalization; every name compon
 remains required. Email surrounding whitespace and domain case may vary; local-part
 spelling/case and the actual address remain exact. Never penalize these harmless
 variants in semantic quality either. No fuzzy identity matching is allowed.
+
+For an application field, an explicit active saved application-profile instruction
+(such as the designated application email) outranks generic résumé contact facts.
+The frozen reference records that authority; different contact and application
+addresses with distinct meanings are not inherently contradictory. Conflicting
+active application-specific instructions must be resolved or remain unknown.
