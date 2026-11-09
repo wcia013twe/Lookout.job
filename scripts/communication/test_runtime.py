@@ -1,7 +1,24 @@
-import json,subprocess,tempfile,unittest
+import json,subprocess,tempfile,unittest,sys
 from pathlib import Path
-from runtime import StageClock,snapshot_with_receipt,clean_error
+from runtime import StageClock,snapshot_with_receipt,clean_error,stop_container_client
 class RuntimeTests(unittest.TestCase):
+ def test_docker_timeout_unblocks_host_without_claiming_container_stopped(self):
+  proc=subprocess.Popen([sys.executable,'-c','import time; time.sleep(60)'],stdout=subprocess.PIPE,text=True)
+  def fail(*args,**kwargs):raise subprocess.TimeoutExpired('docker',10)
+  try:
+   receipt=stop_container_client(proc,'fictional-test-container',fail)
+   self.assertFalse(receipt['containerStopped']);self.assertTrue(receipt['hostClientStopped'])
+   self.assertEqual(proc.stdout.read(),'');self.assertIn('TimeoutExpired',receipt['errors'])
+  finally:
+   if proc.poll() is None:proc.kill();proc.wait()
+   proc.stdout.close()
+ def test_successful_container_stop_recorded_separately(self):
+  proc=subprocess.Popen([sys.executable,'-c','import time; time.sleep(60)'])
+  try:
+   receipt=stop_container_client(proc,'fictional-test-container',lambda *a,**k:subprocess.CompletedProcess(a,0))
+   self.assertTrue(receipt['containerStopped']);self.assertTrue(receipt['hostClientStopped'])
+  finally:
+   if proc.poll() is None:proc.kill();proc.wait()
  def test_normal_clock(self):
   state=[10.,20.];clock=StageClock(lambda:state[0],lambda:state[1],heartbeat=False)
   for _ in range(5):state[0]+=1;state[1]+=1;clock.sample()

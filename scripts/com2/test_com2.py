@@ -24,12 +24,27 @@ def fixture(run,condition='lookout',status='completed'):
  review=grade.template(run,SPEC);review.update(reviewer='fixture-only',independentOfParticipant=True,interactionReviewComplete=True)
  for key,x in review['quality'].items():
   indices=list(range(1,len(SPEC['stages'])+1)) if key=='preservation' else [i for i,s in enumerate(SPEC['stages'],1) if key in s['checks']]
-  x.update({'pass':True,'reason':'Synthetic fixture only','evidence':[ref for i in indices for ref in [f'stage-{i}/output/result.md',f'stage-{i}/after-state.json']]+(['terminal-capture.json'] if key in ['final_state','final_report'] else [])})
+  x.update({'pass':True,'reason':'Synthetic fixture only','userImpact':'Fictional checkpoint task outcome is incorrect; cited fixture state is the evidence.','evidence':[ref for i in indices for ref in [f'stage-{i}/output/result.md',f'stage-{i}/after-state.json']]+(['terminal-capture.json'] if key in ['final_state','final_report'] else [])})
  for key,x in review['adherence'].items():x.update(outcomeVerified=True,reason='Synthetic fixture only',evidence=[f"stage-{SPEC['adherence'][key]['stage']}/after-state.json"])
  return review
 class Tests(unittest.TestCase):
  def setUp(self):self.t=tempfile.TemporaryDirectory();self.run=Path(self.t.name)/'fictional';self.review=fixture(self.run)
  def tearDown(self):self.t.cleanup()
+ def test_terminal_capture_reads_application_timeline_without_writes(self):
+  import capture,shutil
+  from unittest.mock import patch
+  root=Path(self.t.name)/'source';root.mkdir()
+  save(root/'grader.private.json',{'userId':'fictional-owner','taskId':'COM2','apiUrl':'http://127.0.0.1:54321','mcpUrl':'http://127.0.0.1:8080/mcp','readToken':'fictional','scopes':['workspace:read']})
+  save(self.run/'final-state.json',{'userId':'fictional-owner','tables':{'profiles':[],'applications':[{'id':'fictional-app'}],'application_milestones':[],'outreach_contacts':[],'career_artifacts':[]}})
+  (self.run/'output').mkdir();(self.run/'terminal-capture.json').unlink();shutil.rmtree(self.run/'final-files')
+  calls=[]
+  def lookup(config,name,args):
+   calls.append((name,args));self.assertEqual(config['scopes'],['workspace:read'])
+   return {'settings':{'profile':{'user_id':'fictional-owner'}}} if name=='read_personal_context' else {'current':'fixture'}
+  with patch.object(capture,'lookup',side_effect=lookup):result=capture.capture(self.run,root)
+  self.assertIn(('read_application_timeline',{'applicationId':'fictional-app'}),calls)
+  self.assertTrue(all(name in capture.READS for name,args in calls))
+  self.assertTrue(any(x['tool']=='read_application_timeline' for x in result['nativeLookups']))
  def test_missing_saved_file_can_fail(self):
   import capture
   review=fixture(self.run,'baseline')
@@ -52,6 +67,15 @@ class Tests(unittest.TestCase):
    v=json.loads(p.read_text());v.update(timing={'valid':True},executionSeconds=1);save(p,v)
   g=grade.grade(self.run,SPEC)
   self.assertEqual(g['metrics']['timing_valid'],1);self.assertEqual(g['metrics']['execution_seconds'],len(SPEC['stages']))
+ def test_related_checkpoint_failures_count_as_one_primary_outcome(self):
+  for key in ['terminal_reconciliation', 'final_state', 'final_report']:self.review['quality'][key]['pass']=False
+  result=grade.grade(self.run,SPEC,self.review)
+  self.assertEqual(result['metrics']['quality_fraction'],12/13)
+  self.assertEqual(result['metrics']['primary_outcome_count'],13)
+  self.assertEqual(sum(x is False for x in result['primaryOutcomes'].values()),1)
+ def test_failed_check_needs_user_impact(self):
+  item=self.review['quality']['terminal_reconciliation'];item['pass']=False;item['userImpact']=''
+  with self.assertRaisesRegex(ValueError,'user impact'):grade.grade(self.run,SPEC,self.review)
  def test_missing_review_pending(self):
   g=grade.grade(self.run,SPEC);self.assertEqual(g['status'],'pending_review');self.assertNotIn('quality_pass',g['metrics']);self.assertTrue(all(v is None for v in g['quality'].values()))
  def test_no_tools_omitted_even_good_quality(self):

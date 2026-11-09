@@ -100,3 +100,11 @@ A case clears only with a comparable, frozen pair, validated timing/usage and co
 ## Fresh-owner reset repair
 
 PILOT05 stopped before inference because fixture application UUIDs were globally fixed and collided with a historical owner. COM3-stream-v5 now deterministically remaps application IDs and all linked contact tags per owner. The full reset is exercised in a rolled-back preflight transaction; existing account guards remain. The two failed setup attempts and earlier freezes remain intact. PILOT07 uses the unused isolated owner, unchanged task semantics and COM3-grade-v4. Actual no-inference preflight and focused regressions passed; participant outcomes are still pending.
+
+### Native timeline isolation repair
+
+PILOT07 completed but does not clear: its allowlist hid `read_application_timeline` and `record_application_milestone` even while native change-feed pointers required the reader. This affected application closure handling and final reconciliation. COM3-stream-v6 restores both existing owner-scoped tools under existing workspace/activity permissions; no submission or approval capability is added. The complete rolled-back reset probe now exercises timeline read/write/readback, checks user-reported provenance and unchanged Submitted/no-receipt state. Historical results remain diagnostic, not clean product attribution. PILOT08 is prospective; COM04/PILOT06 is already cleared and will not rerun.
+
+### Bounded host-failure handling
+
+PILOT08 exposed an unresponsive Docker daemon and a deadline-handler failure after seven completed baseline stages. COM03 v7 bounds the Docker kill and local reader teardown, records unconfirmed container termination independently, preserves partial output before native capture, closes transport even on cleanup error, and halts the pair before another participant or grading. Focused fictional-process regressions pass; live host recovery and a new frozen preflight remain required. PILOT08 evidence is preserved without quality inference.

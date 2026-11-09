@@ -15,3 +15,39 @@
   no SQL, backend, domain or Action Board test source changed in this pass.
 - Limits: no participant inference, account writes, product/demo changes or
   hosted deployment. Incoming main's JOB03/04 host was integrated before migration.
+
+## COM01/COM02 review follow-up
+
+- Revalidated all four PILOT-05 grades and evidence digests, all 87 frozen source
+  bindings, and all 42 stage clocks; no capture failures/retries observed.
+- Primary grades retained: COM01 baseline/Lookout 7/10 and 9/10; COM02 14/15
+  and 11/15. Scores describe these trajectories, not product-defect attribution.
+- Shared guidance now distinguishes design validity from execution clearance and
+  permits unresolved attribution. Correlated scoring, one pair/case, concurrent
+  timing and absent human-effort measurement limit general conclusions.
+- Validation: documentation diff check and catalog validation; no new inference,
+  account writes, primary regrading or product changes. Prior test limits above
+  remain unchanged.
+
+## Prospective COM01/COM02 design revision
+
+- Version new scenarios/graders; score frozen user-outcome groups through one
+  shared helper while retaining checkpoint diagnostics. Require cited impact
+  for observed failures, not raw-storage conformity or automatic defect blame.
+- Clarify Sam's unsent draft; preserve uncertainty for conflicting candidate facts.
+  Capture COM02's actual read-only timeline for final-state review.
+- Reuse COM03’s owner-scoped fixture-ID mapping in COM02 via one shared helper
+  so the planned fresh owners do not collide.
+- Reuse existing orchestrators with shared serial-pair locking and alternating
+  order. Freeze a four-pair-per-case pilot plan; no participants launched here.
+- Fresh freezes include the common grading contract alongside each scenario.
+- Common summaries validate grouped scores; prospective exporters reuse the
+  existing paginated verifier. Existing PILOT-05 sources and grades stay frozen.
+- Validation: 21 affected Node checks passed; final 10-check fixture/freeze
+  rerun passed after the shared fixture extraction and contract binding. Catalog
+  validation (158 roles), diff check and 87 historical freeze bindings passed.
+  Full SSD suite before the final extraction: 1,294 passed, five skipped, one
+  unchanged connected Action Board SQL failure (Invalid human decision). An
+  earlier internal-temp run stopped with ENOSPC; the SSD rerun completed.
+- Limits: no new inference, live preflight, human study, Langfuse registration/
+  export, product change or deployment. The four-pair plan has not been executed.

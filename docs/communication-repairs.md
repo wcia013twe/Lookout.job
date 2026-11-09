@@ -93,3 +93,13 @@ case argument adapters. New freezes include the shared source; existing frozen
 checkouts remain unchanged. See [shared harness boundaries](../scripts/evals/README.md)
 for testing goals and defect attribution. This consolidation does not change
 participant prompts, tool permissions, timeouts, grading or product behavior.
+
+## Prospective outcome study
+
+COM01 v9/grade v8 and COM02 v8/grade v7 adopt the shared
+[outcome and study contract](com-final-state-grading.md#prospective-com01com02-outcome-study).
+Checkpoint diagnostics remain available; primary quality counts frozen outcome
+groups. Reached failures require cited user impact. New pairs run serially and
+alternate condition order by repeat; the four-pair plan is prospective, not executed.
+Sam's message state is explicit. Future exporters reuse shared paginated score
+verification. Historical PILOT-05 roots and grades are unchanged.

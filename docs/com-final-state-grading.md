@@ -35,3 +35,50 @@ Missing required capture invalidates that verification rather than becoming an a
 | COM4 | Introduction commitment, responsible party, promised timing, linked conversation and fulfilled/remaining obligations |
 
 Version prompts, scenario, grader and evidence bindings prospectively. Publish only structural metrics to Langfuse; raw profile, messages, records and evidence remain local. Report quality, observed effort, execution time and native usage separately.
+
+## Prospective COM01/COM02 outcome study
+
+COM1-stream-v9 / COM1-grade-v8 and COM2-stream-v8 / COM2-grade-v7 retain
+checkpoint diagnostics but score **eight and thirteen primary user outcomes**.
+The frozen `qualityGroups` partition includes each checkpoint exactly once.
+COM01 groups initial context, preservation and final factual reporting into one
+source-fidelity outcome; COM02 groups closure and final state/report into one
+closure outcome. All checks in a group must pass. The root `quality_fraction`
+and common-summary quality use groups; `checkpoint_quality_fraction` is diagnostic.
+Groups are scoring units, not independent errors or statistically independent tasks.
+No historical grades, scenarios or exports are recalculated.
+
+Fail a reached checkpoint only with a concrete, cited `userImpact`: wrong current
+advice, a misleading current view, lost obligation, unusable draft, false claim or
+violated boundary. Raw historical rows, superseded events and different storage
+layouts are insufficient alone. Equivalent baseline files and native records are
+accepted. A cancelled appointment still presented as the current next action is
+a failure; an accurately archived invitation is not. COM02 terminal capture also
+reads `read_application_timeline` using the existing workspace-read-only credential;
+lookup failures remain explicit limitations. Cross-check effective records and the
+report, rather than requiring every database field to be rewritten. Unreached or
+unverifiable work is not an observed user error. A failing outcome does not identify
+whether model behavior, product, harness or design caused it.
+
+Sam's COM01 fixture now explicitly separates the reported conversation from an
+unsent thank-you draft, in both initial native state and onboarding. A conflicting
+profile/resume fact must remain uncertain unless released evidence resolves it;
+no grader may silently prefer one date or penalize acknowledged uncertainty.
+
+The question is **prompted communication continuity with Lookout versus persistent
+files using the same model**, not proactive assistance, actual human-effort savings,
+real-world hiring outcomes or dollar cost. Prescribed prompts, actual interaction
+demands, execution time, tokens and native adherence remain separate measures.
+
+Before collecting a new series, freeze four pairs per case: `--repeat 1` through
+`--repeat 4` under one campaign, using fresh prepared roots and dedicated owners.
+COM02 and COM03 reuse one owner-scoped fixture-ID helper so fresh accounts do not
+collide on globally unique application IDs. Odd pairs run baseline first; even
+pairs run Lookout first (two of each). Existing
+orchestrators now share a cross-checkout pair lock and reject overlapping revised
+COM01/COM02 execution. Run the series sequentially, avoid other benchmark workloads,
+retain every failure, and do not stop/retry for favorable scores. The lock cannot
+control unrelated host/provider load. Four pairs are a small counterbalanced pilot,
+not a power calculation or permission to claim a statistical winner. Report each
+paired result and its order, not just a pooled checkpoint total. Scheduled/proactive
+benefits need a separately specified study; none is launched by this revision.

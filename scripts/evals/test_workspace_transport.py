@@ -74,6 +74,7 @@ class TransportTests(unittest.TestCase):
     facts={'introduction':'Fictional candidate'};resume=b'%PDF fictional'
     settings={'profile':{'facts':facts},'preferences':{},'answers':[],'resumes':[{'id':'resume','content_hash':hashlib.sha256(resume).hexdigest()}]}
     files={'account.private.json':{'status':'verified','apiUrl':'http://127.0.0.1:54321','mcpUrl':'http://127.0.0.1:8080/mcp','email':'fictional@example.test','benchmarkTaskId':case.upper(),'userId':'00000000-0000-0000-0000-000000000001','idMapping':{}},'grader.private.json':{},'cloned-context.private.json':{'settings':settings},'source-manifest.private.json':{'settings':settings},'suite/initial-state.json':{'profileFacts':facts,'contacts':[]},'runtime-config.json':{}}
+    if case=='n01':files['suite/initial-state.json']['contacts']=[{'id':'sam','record':{'contact':'Sam Reed','status':'Contacted','message':'Fictional prior message'}}]
     for name,value in files.items():(source/name).write_text(json.dumps(value))
     for name in ['snapshot.mjs','reset.mjs','account.lock']:(source/name).touch()
     (source/'profile.md').write_text('Fictional candidate');(source/'resume.pdf').write_bytes(resume)
@@ -82,7 +83,12 @@ class TransportTests(unittest.TestCase):
     with patch.object(module.subprocess,'run',return_value=subprocess.CompletedProcess([],0,stdout='sha256:fictional')):
      with patch.object(module,'capture_native_contract',return_value={},create=True):
       destination=source/'prepared';module.prepare(source,source,destination)
+    if case=='n01':
+     note=json.loads((destination/'suite/initial-state.json').read_text())['contacts'][0]['record']['notes']
+     self.assertIn('unsent thank-you draft',note);self.assertIn(note,(destination/'background/onboarding.md').read_text())
     freeze=json.loads((destination/'freeze.json').read_text())
+    if case in ['n01','com2']:
+     self.assertEqual(freeze['files']['suite/grading-contract.md'],hashlib.sha256((destination/'suite/grading-contract.md').read_bytes()).hexdigest())
     self.assertEqual(freeze['files'][os.path.relpath(shared,destination.resolve())],hashlib.sha256(shared.read_bytes()).hexdigest())
  def test_job02_graceful_close_delivers_eof(self):
   bridge=self.start(graceful_close=True);bridge.close();self.bridges.remove(bridge)

@@ -1229,7 +1229,8 @@ product schema, shared clock, real account or historical pilot outcome.
 ### Shared benchmark transport
 
 [Shared harness boundaries](../../scripts/evals/README.md) separate testing goals,
-setup mismatches, harness defects and Lookout defects. COM01–04 and JOB01–04 share
+experimental-design limits, setup mismatches, harness defects and Lookout defects.
+Execution clearance alone does not establish design validity or causal attribution. COM01–04 and JOB01–04 share
 one HTTP-to-stdio transport, preserving case arguments and JOB02's EOF shutdown.
 Prospective freezes include the shared executable. Local synthetic HTTP/worker
 and freeze tests establish this boundary; no participant rerun or hosted release
@@ -1266,3 +1267,35 @@ No new participant was launched. Historical freezes and grading remain intact.
 Focused checks pass; the full suite has one Action Board SQL failure reproduced
 on unchanged local main. This records harness progress, not comparative quality
 or final launch clearance; see the feature change note for verification limits.
+### Prospective COM01/COM02 outcome study
+
+COM01 v9/grade v8 and COM02 v8/grade v7 separate eight/thirteen primary outcomes
+from diagnostic checkpoint counts, require evidence-grounded user impact for
+reached failures, and clarify Sam's unsent draft. Existing orchestrators share a
+serial pair lock and alternate order across the four-pair prospective pilot plan.
+Read-only COM02 terminal evidence adds the native timeline; future export checks
+reuse shared pagination. See the [study contract](../../docs/com-final-state-grading.md#prospective-com01com02-outcome-study).
+Synthetic checks do not establish participant performance or design effectiveness;
+no new pair, account mutation, human-effort benefit or product change is claimed.
+Historical PILOT-05 evidence and grades remain unchanged.
+
+### JOB01/JOB02 controlled comparison closeout
+
+[Controlled pilot results](../../docs/job-controlled-pilot-results.md) distinguish
+harness clearance from product and outcome success. JOB01 baseline/Lookout returned
+9/10 versus 7/10 final targets, with quality gaps in both and a retained baseline
+timeout. JOB02 both met controlled saved-work outcomes with one observed question
+turn each; Lookout took more active time and tokens, and its six native persistence
+adherence checks failed despite current owned IDs. Exact native error cause remains
+uncertain. Frozen sources/evidence, independent final review, native confirmation
+and complete Langfuse read-backs are retained. Earlier invalid JOB02 pairs remain
+separate; no live employer readiness, proactive-effort benefit or general winner is
+claimed. Dollar costs remain unknown. This focused update does not regenerate the wiki.
+
+### COM03 native timeline restriction
+
+PILOT07 completed but retained an isolation confound: native application timeline tools were hidden while change-feed events referenced them. COM03 v6 restores the existing scoped reader/writer and adds rolled-back timeline readback/provenance verification to the full reset probe. No product behavior or approval authority changes. COM04/PILOT06 clears its controlled comparison; quality remains 14/14 baseline versus 13/14 Lookout, with a late promise checkpoint. See [communication results](../../docs/communication-cleared-pilots.md). COM03 requires a new prospective pair; completed stages alone do not establish clearance.
+
+### COM03 host-control failure
+
+PILOT08 remains uncleared after Docker stopped responding during baseline checkpoint 8; the timeout's Docker kill also timed out. Partial evidence and a failed-clearance receipt are preserved. Prospective COM03 v7 bounds local reader teardown, retains termination/timing evidence and halts the pair without grading when container death is unconfirmed. Eight shared runtime tests and five Node checks pass; live recovery/preflight remains unverified pending ownership authorization for the failed run/shared Docker. COM04/PILOT06 remains cleared. This is harness failure handling, not a Lookout product change.

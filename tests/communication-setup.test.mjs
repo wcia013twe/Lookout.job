@@ -13,6 +13,11 @@ for case,folder in setup.CASES.items():
   for name,value in [('account.private.json',a),('grader.private.json',grader),('suite/scenario.json',spec),('runtime-config.json',config),('cost-policy.json',{'schemaVersion':1,'currency':'USD','rates':[]})]:(p/name).write_text(json.dumps(value))
   assert setup.normalize(case.replace('COM','COM0'))==case
   assert setup.validate_setup(p,case)['inferenceExecuted'] is False
+  malformed={**spec,'qualityGroups':{'broken':[]}};(p/'suite/scenario.json').write_text(json.dumps(malformed))
+  try:setup.validate_setup(p,case)
+  except ValueError:pass
+  else:raise AssertionError('Invalid outcome partition accepted before inference')
+  (p/'suite/scenario.json').write_text(json.dumps(spec))
   grader['taskId']=grader.pop('benchmarkTaskId');(p/'grader.private.json').write_text(json.dumps(grader));assert setup.validate_setup(p,case)['readOnlyGrader'] is True
   grader['scopes'].append('network:write');(p/'grader.private.json').write_text(json.dumps(grader))
   try:setup.validate_setup(p,case)

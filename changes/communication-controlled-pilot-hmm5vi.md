@@ -118,3 +118,5 @@
 - No new pair is cleared. No push/publication/deployment or paid API use.
 
 - Final local guards: 31 Python checks pass (21 JOB, four controlled contract, six shared runtime); targeted Node/coordinator and catalog checks rerun after the reference launch guard. Live final-source preflight remains outstanding.
+
+- Integrated newer local main shared termination guards, preserving both wiki updates. Post-integration: 40 Node checks,21 JOB Python guards,eight shared runtime checks and catalog158 pass.

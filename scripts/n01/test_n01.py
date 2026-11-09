@@ -23,7 +23,7 @@ def fixture(run,condition='lookout',status='completed'):
  review=grade.template(run,SPEC);review.update(reviewer='fixture-only',independentOfParticipant=True,interactionReviewComplete=True)
  for key,x in review['quality'].items():
   indices=list(range(1,len(SPEC['stages'])+1)) if key=='preservation' else [i for i,s in enumerate(SPEC['stages'],1) if key in s['checks']]
-  x.update({'pass':True,'reason':'Synthetic fixture only','evidence':[f'stage-{i}/output/result.md' for i in indices]})
+  x.update({'pass':True,'reason':'Synthetic fixture only','userImpact':'Fictional checkpoint task outcome is incorrect; cited fixture state is the evidence.','evidence':[f'stage-{i}/output/result.md' for i in indices]})
  for key in ['initial_context','preparation','tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
   review['quality'][key]['evidence'] += [f'stage-{i}/after-state.json' for i,stage in enumerate(SPEC['stages'],1) if key in stage['checks']]
  for key in ['saved_state','report_accuracy']:review['quality'][key]['evidence']+=['terminal-state.json','stage-8/output/final-report.md']
@@ -42,6 +42,15 @@ class Tests(unittest.TestCase):
    v=json.loads(p.read_text());v.update(timing={'valid':True},executionSeconds=1);save(p,v)
   g=grade.grade(self.run,SPEC)
   self.assertEqual(g['metrics']['timing_valid'],1);self.assertEqual(g['metrics']['execution_seconds'],len(SPEC['stages']))
+ def test_related_checkpoint_failures_count_as_one_primary_outcome(self):
+  for key in ['initial_context', 'preservation', 'report_accuracy']:self.review['quality'][key]['pass']=False
+  result=grade.grade(self.run,SPEC,self.review)
+  self.assertEqual(result['metrics']['quality_fraction'],7/8)
+  self.assertEqual(result['metrics']['primary_outcome_count'],8)
+  self.assertEqual(sum(x is False for x in result['primaryOutcomes'].values()),1)
+ def test_failed_check_needs_user_impact(self):
+  item=self.review['quality']['initial_context'];item['pass']=False;item['userImpact']=''
+  with self.assertRaisesRegex(ValueError,'user impact'):grade.grade(self.run,SPEC,self.review)
  def test_missing_review_pending(self):
   g=grade.grade(self.run,SPEC);self.assertEqual(g['status'],'pending_review');self.assertNotIn('quality_pass',g['metrics']);self.assertTrue(all(v is None for v in g['quality'].values()))
  def test_no_tools_omitted_even_good_quality(self):
