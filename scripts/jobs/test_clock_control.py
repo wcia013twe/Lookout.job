@@ -20,6 +20,16 @@ class ClockControlTests(unittest.TestCase):
   with patch.object(clock_control.backend,'inspect',return_value=(Path('/fictional'),{'services':{'api':{'name':'owned-test'}}})),patch.object(clock_control.database,'sql',return_value='{"now":"2026-11-09T14:00:00Z"}'),patch.object(clock_control.database,'call') as call:
    call.return_value.stdout='{"status":405,"now":"2026-11-10T14:00:00Z"}'
    with self.assertRaises(ValueError):clock_control.observe('/fictional')
+ def test_node_api_clock_must_match_sql_and_edge(self):
+  with patch.object(clock_control.backend,'inspect',return_value=(Path('/fictional'),{'services':{'api':{'name':'owned-test'}}})),patch.object(clock_control.database,'sql',return_value='{"now":"2026-11-09T14:00:00Z"}'),patch.object(clock_control.database,'call') as call:
+   packet={'status':405,'now':'2026-11-09T14:00:00Z','nodeStatus':200,'nodeNow':'2026-11-10T14:00:00Z'}
+   call.return_value.stdout=json.dumps(packet)
+   with self.assertRaises(ValueError):clock_control.observe('/fictional')
+   packet['nodeNow']=packet['now'];call.return_value.stdout=json.dumps(packet)
+   self.assertEqual(clock_control.observe('/fictional')['nodeApiNow'],packet['now'])
+   del packet['nodeNow'];call.return_value.stdout=json.dumps(packet)
+   with self.assertRaises(ValueError):clock_control.observe('/fictional')
+
  def test_move_rejects_stale_native_date(self):
   with patch.object(clock_control.database,'advance'),patch.object(clock_control,'observe',return_value={'javascriptNow':'2026-11-10T14:00:00Z'}):
    with self.assertRaises(ValueError):clock_control.move('/fictional','2026-11-09T14:00:00Z')

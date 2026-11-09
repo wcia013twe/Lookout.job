@@ -7,12 +7,12 @@ import isolated_clock_database as database
 def observe(root):
  root,m=backend.inspect(root)
  sql=json.loads(database.sql(root,"select json_build_object('now',now());"))['now']
- code="fetch('http://edge:9000',{signal:AbortSignal.timeout(10000)}).then(r=>console.log(JSON.stringify({status:r.status,now:r.headers.get('x-job-fixture-now')}))).catch(()=>process.exit(1))"
+ code="Promise.all([fetch('http://edge:9000',{signal:AbortSignal.timeout(10000)}),fetch('http://127.0.0.1:8080/healthz',{signal:AbortSignal.timeout(10000)})]).then(([r,n])=>console.log(JSON.stringify({status:r.status,now:r.headers.get('x-job-fixture-now'),nodeStatus:n.status,nodeNow:n.headers.get('x-job-fixture-node-now')}))).catch(()=>process.exit(1))"
  edge=json.loads(database.call(['docker','exec',m['services']['api']['name'],'node','-e',code],timeout=15).stdout)
- if edge['status']!=405 or not edge['now']:raise ValueError('Native Edge clock observation unavailable')
+ if edge['status']!=405 or not edge['now'] or edge.get('nodeStatus')!=200 or not edge.get('nodeNow'):raise ValueError('Native Edge clock observation unavailable')
  stamp=lambda x:datetime.datetime.fromisoformat(x.replace('Z','+00:00')).timestamp()
- if abs(stamp(edge['now'])-stamp(sql))>5:raise ValueError('SQL/JavaScript fixture clocks differ')
- return {'sqlNow':sql,'javascriptNow':edge['now'],'aligned':True,'clockMode':'ticking_isolated_backend','nativeTaskReads':0,'participantExecuted':False}
+ if max(abs(stamp(edge['now'])-stamp(sql)),abs(stamp(edge['nodeNow'])-stamp(sql)))>5:raise ValueError('SQL/JavaScript fixture clocks differ')
+ return {'sqlNow':sql,'javascriptNow':edge['now'],'nodeApiNow':edge['nodeNow'],'aligned':True,'clockMode':'ticking_isolated_backend','nativeTaskReads':0,'participantExecuted':False}
 
 def move(root,at):
  database.advance(root,at);result=observe(root)

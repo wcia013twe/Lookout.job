@@ -163,3 +163,31 @@
   shutdown was performed. Shared Docker version probes still time out.
 - Final-source actual native preflights remain the external blocker. No new pair,
   remote publication or product-effectiveness conclusion is implied.
+
+
+## Three-process clock audit and remaining external block
+
+- Source audit found native Node API still used real time while Edge/SQL were
+  simulated. The isolated API now preloads the same opt-in Date proxy, with its
+  dependency hash bound. Observer-only HTTP telemetry reports its actual process
+  date; the gate rejects missing/divergent SQL, Edge or Node readbacks. Product
+  source/body/permissions and participant runtime are unchanged.
+- Verification:24 JOB Python and42 Node checks, catalog158 and diff checks pass.
+  Actual local Node HTTP preload preserves status/body and advances the wall clock
+  without changing monotonic timing. It is not complete native-stack clearance.
+- Read-only historical revalidation: both review freezes and all134 run-evidence
+  files (76 JOB03,58 JOB04) match. Independent submissions, final reviews and runtime
+  attestations are present. Frozen grades/references were not rewritten.
+- Completion audit: timeout attribution is honestly limited by DNS/wall-time
+  confounds; native-surface/context/timing/continuity/shared-service repairs and
+  independent review are recorded. Final-source native permissions/discovery,
+  full three-process clocks and owned-process inventory still require actual live
+  preflights. Earlier successful roots cannot prove this revision. No new pair
+  may launch. Focused verification and documentation are committed/local-landed;
+  no push or publication is authorized or performed.
+- Docker version probes have timed out across three consecutive goal turns.
+  Last full preflight attempt failed at image inspection before provisioning;
+  both private logs and all earlier attempts remain retained. The engine is shared
+  with other sessions, so no restart or unrelated process/container action was
+  attempted. Remaining verification requires external shared-engine recovery;
+  inspect ownership before stopping any leftover pilot process afterward.

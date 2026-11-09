@@ -46,14 +46,14 @@ def prepare(root,initial_at):
  secret=secrets.token_hex(32);key=jwt(secret)
  envfile(root/'rest.private.env',{'PGRST_DB_URI':f"postgresql://postgres@{db['container']}:5432/postgres",'PGRST_DB_SCHEMAS':'public','PGRST_DB_EXTRA_SEARCH_PATH':'public,extensions','PGRST_DB_ANON_ROLE':'anon','PGRST_JWT_SECRET':secret,'PGRST_SERVER_PORT':'3000','PGRST_LOG_LEVEL':'warn'})
  envfile(root/'edge.private.env',{'SUPABASE_URL':'http://kong:8000','SUPABASE_SERVICE_ROLE_KEY':key,'LOOKOUT_JOB_CLOCK_FIXTURE':'1','LOOKOUT_JOB_CLOCK_FILE':'/job-clock/time.rc'})
- envfile(root/'api.private.env',{'SUPABASE_URL':'http://kong:8000','SUPABASE_SERVICE_ROLE_KEY':key,'LOOKOUT_PROCESS':'api','PORT':'8080'})
+ envfile(root/'api.private.env',{'SUPABASE_URL':'http://kong:8000','SUPABASE_SERVICE_ROLE_KEY':key,'LOOKOUT_PROCESS':'api','PORT':'8080','LOOKOUT_JOB_CLOCK_FIXTURE':'1','LOOKOUT_JOB_CLOCK_FILE':'/job-clock/time.rc'})
  m={'kind':'isolated-job-clock-http-v1','root':str(root),'status':'provisioning','ingressNetwork':ingress,'services':{},'participantExecuted':False,'initialAt':initial_at,'sourceFiles':{},'limitations':['Native HTTP verification pending.','No real Auth/Storage service or external employer integration.']};save(root,m)
  def mount(source,target):return ['--mount',f'type=bind,source={source},target={target},readonly']
  common_source=mount(REPO/'supabase/functions','/app/supabase/functions')+mount(REPO/'lib','/app/lib')
  for directory in [REPO/'supabase/functions',REPO/'lib',REPO/'backend/runtime']:
   for p in sorted(directory.rglob('*')):
    if p.is_file() and p.suffix in ['.mjs','.js','.ts','.json','.py']:m['sourceFiles'][str(p.relative_to(REPO))]=database.sha(p.read_bytes())
- for relative in ['scripts/jobs/clock-edge/index.ts','scripts/jobs/clock_proxy.mjs','scripts/jobs/virtual_clock.mjs']:
+ for relative in ['scripts/jobs/clock-edge/index.ts','scripts/jobs/clock_proxy.mjs','scripts/jobs/virtual_clock.mjs','scripts/jobs/clock_node.mjs']:
   m['sourceFiles'][relative]=database.sha((REPO/relative).read_bytes())
  def create(role,args,command):
   name=db['container']+'-'+role;image=json.loads(database.call(['docker','image','inspect',IMAGES[role]]).stdout)[0]
@@ -67,7 +67,7 @@ def prepare(root,initial_at):
   edge=create('edge',['--env-file',str(root/'edge.private.env'),*common_source,*mount(REPO/'scripts/jobs','/app/scripts/jobs'),*mount(root/'clock','/job-clock')],['start','--main-service','/app/scripts/jobs/clock-edge'])
   # Download only pinned public module dependencies, then remove egress before readiness.
   database.call(['docker','network','connect',ingress,edge])
-  api=create('api',['--env-file',str(root/'api.private.env'),*common_source,*mount(REPO/'backend/runtime','/app/backend/runtime'),'-p','127.0.0.1::8080'],['node','backend/runtime/main.ts'])
+  api=create('api',['--env-file',str(root/'api.private.env'),*common_source,*mount(REPO/'backend/runtime','/app/backend/runtime'),*mount(REPO/'scripts/jobs/clock_node.mjs','/app/scripts/jobs/clock_node.mjs'),*mount(REPO/'scripts/jobs/virtual_clock.mjs','/app/scripts/jobs/virtual_clock.mjs'),*mount(root/'clock','/job-clock'),'-p','127.0.0.1::8080'],['node','--import','/app/scripts/jobs/clock_node.mjs','backend/runtime/main.ts'])
   info=json.loads(database.call(['docker','inspect',api]).stdout)[0];port=info['NetworkSettings']['Ports']['8080/tcp'][0]['HostPort'];url='http://127.0.0.1:'+port
   for _ in range(100):
    try:

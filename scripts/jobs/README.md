@@ -141,7 +141,7 @@ Both participants receive the exact local PDF; remote Storage retrieval remains
 unverified. Full canonical settings, including false/null/zero/empty fields, are
 included once in baseline onboarding and verified against the native clone.
 
-SQL and JavaScript use the same ticking simulated clock. Each stage is observed
+SQL, Edge JavaScript and the native Node API use the same ticking simulated clock. Each stage is observed
 without a native task read; host clock control is separate harness time. Preflight
 restoration is permitted only before any attempt and only for the bound pilot.
 Discovery, startup instructions, guides and JSON/Unicode tool responses pass
@@ -187,3 +187,11 @@ process state after Docker recovers before stopping any leftover process.
 Coordinator wall/adapter observation is retained separately; invalid or absent
 executor timing cannot become active time or zero. Synthetic process/coordinator
 checks verify these guards, not live Docker recovery or native readiness.
+
+
+The Node API now preloads the same harness-only Date proxy; an observer header
+reports its actual process date without changing native response bodies. The
+clock gate requires SQL, Edge and Node API readbacks to align. A local HTTP
+preload test passes, but this latest three-process wiring still needs the complete
+actual native preflight after Docker recovers. Earlier two-clock receipts cannot
+clear this revision. No production entry point imports the fixture preload.

@@ -69,7 +69,7 @@ def prepare(case,root,source,background,backend_root=None):
  files=[LIB/n for n in ['account.mjs','host.py','client.py','bridge.py','transport.py','services.py','preflight.mjs','audit.py']]+[REPO/'scripts/com2'/n for n in ['runner.py','service.py']]+[REPO/'scripts/n01/cost.py',REPO/'scripts/communication/runtime.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/com2/parity.py']
  files += [REPO/'scripts/evals/workspace_transport.py',REPO/'scripts/communication/native_contract.py']
  if backend_root:
-  files += [LIB/n for n in ['isolated_endpoint.mjs','isolated_backend.py','isolated_clock_database.py','virtual_clock.mjs','clock_control.py','clock_proxy.mjs','clock-edge/index.ts']]
+  files += [LIB/n for n in ['isolated_endpoint.mjs','isolated_backend.py','isolated_clock_database.py','virtual_clock.mjs','clock_control.py','clock_proxy.mjs','clock_node.mjs','clock-edge/index.ts']]
   descriptor=read(Path(backend_root)/'backend.json')
   files += [REPO/n for n in descriptor['sourceFiles']]
   files=list(dict.fromkeys(files))

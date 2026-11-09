@@ -1320,3 +1320,9 @@ before the other condition or final grading. Local client exit is not remote
 termination proof; active time/usage remain unknown where capture is incomplete.
 Scripted process/coordinator checks pass; live Docker recovery and complete native
 preflight remain outstanding. No historical participant was resumed or retried.
+
+
+The isolated Node API is now included in the ticking clock dependency and observer
+gate alongside SQL and Edge. Local HTTP preload and fail-closed three-clock
+observer tests pass; latest full native/container wiring remains unverified until
+the shared Docker engine responds. Earlier two-clock gates do not clear it.
