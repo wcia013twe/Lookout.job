@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-11-09 morning sweep (staged 2026-11-09)",
+ "lastRun": "2026-11-09 midday story check (staged 2026-11-09)",
  "drops": [
   {
    "company": "Cloudflare",
@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Est\u00e9e Lauder",
+   "company": "Estée Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -1689,7 +1689,7 @@
    "source": "zero2sudo",
    "status": "pending",
    "skipReason": null,
-   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA \u2014 Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
+   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA — Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
   },
   {
    "company": "RTX",
@@ -5788,7 +5788,7 @@
   },
   {
    "company": "NVIDIA",
-   "title": "Technical Learning Content Development Intern, Physical AI \u2013 Summer 2027",
+   "title": "Technical Learning Content Development Intern, Physical AI – Summer 2027",
    "location": "Santa Clara, CA",
    "type": "Internship",
    "comp": null,
@@ -5840,7 +5840,7 @@
   },
   {
    "company": "Bosch",
-   "title": "Junior Management Program \u2013 Manufacturing \u2013 VM",
+   "title": "Junior Management Program – Manufacturing – VM",
    "location": "Florence, KY",
    "type": "Full Time",
    "comp": null,
@@ -6914,6 +6914,32 @@
    "status": "skipped",
    "skipReason": "PM lane",
    "note": "Evening story frame Nov 8, 2026 (3h). 2026 Summer Internship, Bachelor's degree or above; no link domain or deadline legible on frame. Off-target on frame evidence."
+  },
+  {
+   "company": "The New York Times",
+   "title": "iOS Engineering Intern",
+   "location": null,
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "iOS/mobile scope, off-target lane",
+   "note": "November 8 Recap frame, Nov 9, 2026 (~21m at 12:24 PM). Story segments 5-8 could not be isolated as separate frames despite repeated navigation attempts; role listed in the Recap only, frame not individually read, so location, link domain, and compensation are not individually verified. Sibling NYT engineering intern frames (Frontend, read Nov 9) show New York, NY on job-boards.greenhouse.io. Off-target on title evidence."
+  },
+  {
+   "company": "The New York Times",
+   "title": "Android Engineering Intern",
+   "location": null,
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-09",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Android/mobile scope, off-target lane",
+   "note": "November 8 Recap frame, Nov 9, 2026 (~21m at 12:24 PM). Story segments 5-8 could not be isolated as separate frames despite repeated navigation attempts; role listed in the Recap only, frame not individually read, so location, link domain, and compensation are not individually verified. Sibling NYT engineering intern frames (Frontend, read Nov 9) show New York, NY on job-boards.greenhouse.io. Off-target on title evidence."
   }
  ]
 }
