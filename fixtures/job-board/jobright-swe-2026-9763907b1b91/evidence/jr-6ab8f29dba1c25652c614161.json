@@ -1,0 +1,183 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6ab8f29dba1c25652c614161",
+  "capturedAt": "2026-11-09T17:50:41.048417+00:00",
+  "responseSha256": "75210ec5bf9a2922df604178a78d310bd87261e84a4c8f7aacd6e3e60bcced27",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6ab8f29dba1c25652c614161",
+    "jobTitle": "Junior IT Developer (MFC)",
+    "jobLocation": "Arlington Heights, IL",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 10:59:35",
+    "employmentType": "Full-time",
+    "salaryDesc": "$72K/yr - $78K/yr",
+    "jobSummary": "WITRON develops intralogistics and automation systems for distribution centers. The Junior IT Developer supports the Material Flow Control team by developing and maintaining software that coordinates material movement, interfaces with hardware, and works with the Warehouse Management System.",
+    "coreResponsibilities": [
+      "Working together with the responsible team-lead or project-lead to create technical solutions for our existing WWMS application. Areas of work include, for example routing configuration for new warehouses, traffic analysis, coding new or improving existing action point handling, debugging or researching reported issues or questions around traffic routing, developing new and expanding existing interfaces to add features and new support new hardware components",
+      "Development, testing, and deployment of change requests, projects, assignments in a collaborative international team environment or working individually on isolated issues",
+      "If you see something, say something: Supporting and improving existing and/or new applications and functionalities",
+      "Creation of technical documents and specifications for your solutions to allow maintainability of your software",
+      "Collaborating with our analyst team on topics that come up during project ramp-up, development, testing and after final acceptance",
+      "All hands on deck during on-site project commissioning and ramp-up. You’ll be working on north American based projects (USA and Canada)",
+      "Limited communication with clients within the respective field and independent decision-making based on knowledge level",
+      "Based on experience, knowledge level, and personal preference responsibilities will be expanded to never run out of interesting tasks"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "You can demonstrate practical experience developing software in C/C++ environments, possess a solid understanding of software development fundamentals, coding practices, and problem-solving techniques, and have exposure to background processes, multithreading, and system-level programming concepts",
+      "Basic knowledge of PL/SQL",
+      "Demonstrated ability to communicate effectively with both local and international colleagues and customers in English, across technical and non-technical contexts",
+      "Ability to be a team player, work and support the team especially under pressure and take responsibility within your area of expertise",
+      "Great attitude towards solving big problems and a “Can-Do” attitude",
+      "Bachelor's degree in computer science/engineering or equivalent experience combined with some educational experience",
+      "Experience should include project design, coding, testing, delivery and technical documentation of GitHub projects, or personal coding examples, class projects or previous professional assignments",
+      "Ideally you are proficient in C, with good working knowledge of C++",
+      "Ideally, you have projects to showcase during the interview process",
+      "Helpful but not required: Familiarity with the Visual Studio IDE, including Team Foundation Server (TFS)/Azure DevOps source control, debugging, and day-to-day development workflows",
+      "Helpful but not required: Exposure to logistics industry / terminology",
+      "Helpful but not required: Exposure to large codebases",
+      "We value team players, practical experience, problem-solving ability, “Can do”-Attitude and a great personality - whether you learned through school, self-study, online courses, or hands-on project",
+      "Logistics exposure is helpful but not required"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "You can demonstrate practical experience developing software in C/C++ environments, possess a solid understanding of software development fundamentals, coding practices, and problem-solving techniques, and have exposure to background processes, multithreading, and system-level programming concepts",
+        "Basic knowledge of PL/SQL",
+        "Demonstrated ability to communicate effectively with both local and international colleagues and customers in English, across technical and non-technical contexts",
+        "Ability to be a team player, work and support the team especially under pressure and take responsibility within your area of expertise",
+        "Great attitude towards solving big problems and a “Can-Do” attitude",
+        "Bachelor's degree in computer science/engineering or equivalent experience combined with some educational experience",
+        "Experience should include project design, coding, testing, delivery and technical documentation of GitHub projects, or personal coding examples, class projects or previous professional assignments"
+      ],
+      "preferredHave": [
+        "Ideally you are proficient in C, with good working knowledge of C++",
+        "Ideally, you have projects to showcase during the interview process",
+        "Helpful but not required: Familiarity with the Visual Studio IDE, including Team Foundation Server (TFS)/Azure DevOps source control, debugging, and day-to-day development workflows",
+        "Helpful but not required: Exposure to logistics industry / terminology",
+        "Helpful but not required: Exposure to large codebases",
+        "We value team players, practical experience, problem-solving ability, “Can do”-Attitude and a great personality - whether you learned through school, self-study, online courses, or hands-on project",
+        "Logistics exposure is helpful but not required"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "C/C++"
+          },
+          {
+            "skill": "Software Development Fundamentals"
+          },
+          {
+            "skill": "Coding Practices"
+          },
+          {
+            "skill": "Background Processes"
+          },
+          {
+            "skill": "Multithreading"
+          },
+          {
+            "skill": "System-Level Programming"
+          },
+          {
+            "skill": "PL/SQL"
+          },
+          {
+            "skill": "Project Design"
+          },
+          {
+            "skill": "Coding"
+          },
+          {
+            "skill": "Software Testing"
+          },
+          {
+            "skill": "Project Delivery"
+          },
+          {
+            "skill": "Technical Documentation"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Effective Communication"
+          },
+          {
+            "skill": "Teamwork"
+          },
+          {
+            "skill": "Working Under Pressure"
+          },
+          {
+            "skill": "Taking Responsibility"
+          },
+          {
+            "skill": "Problem-Solving"
+          },
+          {
+            "skill": "Can-Do Attitude"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "C"
+          },
+          {
+            "skill": "C++"
+          },
+          {
+            "skill": "Project Portfolio"
+          },
+          {
+            "skill": "Visual Studio IDE"
+          },
+          {
+            "skill": "TFS"
+          },
+          {
+            "skill": "Azure DevOps"
+          },
+          {
+            "skill": "Source Control"
+          },
+          {
+            "skill": "Debugging"
+          },
+          {
+            "skill": "Development Workflows"
+          },
+          {
+            "skill": "Logistics Industry Knowledge"
+          },
+          {
+            "skill": "Logistics Terminology"
+          },
+          {
+            "skill": "Large Codebases"
+          },
+          {
+            "skill": "Hands-On Project Experience"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Personable"
+          }
+        ]
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "WITRON develops intralogistics and automation systems for distribution centers. The Junior IT Developer supports the Material Flow Control team by developing and maintaining software that coordinates material movement, interfaces with hardware, and works with the Warehouse Management System.\nResponsibilities\nWorking together with the responsible team-lead or project-lead to create technical solutions for our existing WWMS application. Areas of work include, for example routing configuration for new warehouses, traffic analysis, coding new or improving existing action point handling, debugging or researching reported issues or questions around traffic routing, developing new and expanding existing interfaces to add features and new support new hardware components\nDevelopment, testing, and deployment of change requests, projects, assignments in a collaborative international team environment or working individually on isolated issues\nIf you see something, say something: Supporting and improving existing and/or new applications and functionalities\nCreation of technical documents and specifications for your solutions to allow maintainability of your software\nCollaborating with our analyst team on topics that come up during project ramp-up, development, testing and after final acceptance\nAll hands on deck during on-site project commissioning and ramp-up. You’ll be working on north American based projects (USA and Canada)\nLimited communication with clients within the respective field and independent decision-making based on knowledge level\nBased on experience, knowledge level, and personal preference responsibilities will be expanded to never run out of interesting tasks\nSkills\nYou can demonstrate practical experience developing software in C/C++ environments, possess a solid understanding of software development fundamentals, coding practices, and problem-solving techniques, and have exposure to background processes, multithreading, and system-level programming concepts\nBasic knowledge of PL/SQL\nDemonstrated ability to communicate effectively with both local and international colleagues and customers in English, across technical and non-technical contexts\nAbility to be a team player, work and support the team especially under pressure and take responsibility within your area of expertise\nGreat attitude towards solving big problems and a “Can-Do” attitude\nBachelor's degree in computer science/engineering or equivalent experience combined with some educational experience\nExperience should include project design, coding, testing, delivery and technical documentation of GitHub projects, or personal coding examples, class projects or previous professional assignments\nIdeally you are proficient in C, with good working knowledge of C++\nIdeally, you have projects to showcase during the interview process\nHelpful but not required: Familiarity with the Visual Studio IDE, including Team Foundation Server (TFS)/Azure DevOps source control, debugging, and day-to-day development workflows\nHelpful but not required: Exposure to logistics industry / terminology\nHelpful but not required: Exposure to large codebases\nWe value team players, practical experience, problem-solving ability, “Can do”-Attitude and a great personality - whether you learned through school, self-study, online courses, or hands-on project\nLogistics exposure is helpful but not required\nBenefits\nThree bonus opportunities; participation in the WITRON bonus program once eligible.\nComprehensive health benefits.\nCompany-paid Basic Life, Dependent Life, AD&D, Short-Term Disability, and Long-Term Disability Insurance.\n401(k) match.\nDental Insurance.\nVision Insurance.\nAccident Insurance.\nHospital Indemnity Insurance.\nCritical Illness Insurance.\nAdded benefits or bonuses to celebrate certain employee milestones.\nBrand-name work apparel and professional tools.\nTeam environment, collaboration, open-door policy, company events, and team-building measures.\nCareer development and advancement opportunities; employee potential is recognized and supported.\nOccasional remote work after 6 months, depending on individual work-style, performance, and gained knowledge.\nCompany Overview\nWITRON designs and implements innovative logistics and material flow systems with trend-setting ergonomic work places and processes that offer their customers sustainable competitive advantages. It was founded in 1971, and is headquartered in Parkstein, Bayern, DEU, with a workforce of 5001-10000 employees. Its website is https://www.witron.com.\nCompany H1B Sponsorship\nWITRON Group has a track record of offering H1B sponsorships, with 1 in 2022. Please note that this does not guarantee sponsorship for this specific role.",
+  "sourceDatePosted": "2026-11-09 10:59:35"
+}

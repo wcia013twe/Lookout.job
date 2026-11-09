@@ -1,0 +1,283 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6aeb8676765815f7d746142d",
+  "capturedAt": "2026-11-09T17:50:44.156696+00:00",
+  "responseSha256": "74c6aa8bc201fd1b32ee3365e87f4edfaa80b65e94726bb5cdb3eb81d6fe4cdd",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6aeb8676765815f7d746142d",
+    "jobTitle": "Web Developer, Junior (Active Secret Clearance or Able to Obtain)",
+    "jobLocation": "Orlando, FL",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 00:09:32",
+    "employmentType": "Full-time",
+    "salaryDesc": "$52K/yr - $88K/yr",
+    "jobSummary": "Akima Mission Optimization (AMO), an Akima company, is hiring a Junior Web Developer to support the Naval Air Warfare Center Training Systems Division. The role develops and maintains websites, web applications, and databases, with a focus on full-stack development, usability, performance, and integration.",
+    "coreResponsibilities": [
+      "Develops, implements, and maintains websites, web applications, and application databases",
+      "Ensures all code is properly structured, adheres to industry standards, and is compatible with various browsers and devices",
+      "Optimizes website performance, scalability, and server-side code and processes",
+      "Integrates websites with other computer applications and develop website infrastructure",
+      "Designs user-friendly interfaces, navigation menus, and digital layouts that ensure compatibility and usability across different browsers and devices",
+      "Utilizes web frameworks and client-side coding to enhance user experience"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Must be a US Citizen with a Secret clearance (or ability to obtain one prior to start)",
+      "B.S. degree in Information Technology, Computer Science, Computer Engineering, or Software Engineering specializing in Web Design and Development",
+      "Experience in web development, with programming languages such as: React, JavaScript, Typescript, SQL, and CSS",
+      "Experience designing, developing, or integrating RESTful APIs and backend services",
+      "Working knowledge of SQL databases, including queries, schema design, and data integration",
+      "Familiarity with Git-based version control, including branching, merging, and code collaboration",
+      "Experience writing, updating, and maintaining efficient, testable, and well-documented code",
+      "Basic familiarity with Linux environments, command-line operations, or Bash scripting",
+      "Proven experience in writing, updating, and maintaining efficient, testable, and well-documented code",
+      "Strong analytical, problem-solving, communication, and teamwork skills",
+      "Active Secret clearance",
+      "Experience with Python libraries or frameworks such as pandas, NumPy, Flask, FastAPI, Django, Plotly, Dash, or SQLAlchemy",
+      "Experience with React-based application development, including state management, reusable components, and responsive design",
+      "Familiarity with Docker, Docker Compose, or similar containerization tools",
+      "Experience with GitLab, GitLab CI/CD pipelines, or similar DevOps workflows",
+      "Familiarity with cloud technologies such as AWS EC2, S3, or equivalent services",
+      "Experience managing or supporting web servers such as Nginx, Apache, or cloud-hosted application environments",
+      "Understanding of web application performance concepts such as lazy loading, optimized rendering, asset management, and computational efficiency",
+      "Experience working in an Agile development environment, including sprint planning, backlog grooming, daily stand-ups, and estimation using tools such as Jira"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Must be a US Citizen with a Secret clearance (or ability to obtain one prior to start)",
+        "B.S. degree in Information Technology, Computer Science, Computer Engineering, or Software Engineering specializing in Web Design and Development",
+        "Experience in web development, with programming languages such as: React, JavaScript, Typescript, SQL, and CSS",
+        "Experience designing, developing, or integrating RESTful APIs and backend services",
+        "Working knowledge of SQL databases, including queries, schema design, and data integration",
+        "Familiarity with Git-based version control, including branching, merging, and code collaboration",
+        "Experience writing, updating, and maintaining efficient, testable, and well-documented code",
+        "Basic familiarity with Linux environments, command-line operations, or Bash scripting",
+        "Proven experience in writing, updating, and maintaining efficient, testable, and well-documented code",
+        "Strong analytical, problem-solving, communication, and teamwork skills"
+      ],
+      "preferredHave": [
+        "Active Secret clearance",
+        "Experience with Python libraries or frameworks such as pandas, NumPy, Flask, FastAPI, Django, Plotly, Dash, or SQLAlchemy",
+        "Experience with React-based application development, including state management, reusable components, and responsive design",
+        "Familiarity with Docker, Docker Compose, or similar containerization tools",
+        "Experience with GitLab, GitLab CI/CD pipelines, or similar DevOps workflows",
+        "Familiarity with cloud technologies such as AWS EC2, S3, or equivalent services",
+        "Experience managing or supporting web servers such as Nginx, Apache, or cloud-hosted application environments",
+        "Understanding of web application performance concepts such as lazy loading, optimized rendering, asset management, and computational efficiency",
+        "Experience working in an Agile development environment, including sprint planning, backlog grooming, daily stand-ups, and estimation using tools such as Jira"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Web Development"
+          },
+          {
+            "skill": "Web Design"
+          },
+          {
+            "skill": "React"
+          },
+          {
+            "skill": "JavaScript"
+          },
+          {
+            "skill": "TypeScript"
+          },
+          {
+            "skill": "SQL"
+          },
+          {
+            "skill": "CSS"
+          },
+          {
+            "skill": "RESTful APIs"
+          },
+          {
+            "skill": "Backend Services"
+          },
+          {
+            "skill": "SQL Databases"
+          },
+          {
+            "skill": "SQL Queries"
+          },
+          {
+            "skill": "Database Schema Design"
+          },
+          {
+            "skill": "Data Integration"
+          },
+          {
+            "skill": "Git"
+          },
+          {
+            "skill": "Version Control"
+          },
+          {
+            "skill": "Merging"
+          },
+          {
+            "skill": "Code Collaboration"
+          },
+          {
+            "skill": "Code Writing"
+          },
+          {
+            "skill": "Code Testing"
+          },
+          {
+            "skill": "Code Documentation"
+          },
+          {
+            "skill": "Linux"
+          },
+          {
+            "skill": "Command-Line Operations"
+          },
+          {
+            "skill": "Bash Scripting"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Analytical Skills"
+          },
+          {
+            "skill": "Problem-Solving"
+          },
+          {
+            "skill": "Communication"
+          },
+          {
+            "skill": "Teamwork"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "Pandas"
+          },
+          {
+            "skill": "NumPy"
+          },
+          {
+            "skill": "Flask"
+          },
+          {
+            "skill": "FastAPI"
+          },
+          {
+            "skill": "Django"
+          },
+          {
+            "skill": "Plotly"
+          },
+          {
+            "skill": "Dash"
+          },
+          {
+            "skill": "SQLAlchemy"
+          },
+          {
+            "skill": "React Development"
+          },
+          {
+            "skill": "State Management"
+          },
+          {
+            "skill": "Reusable Components"
+          },
+          {
+            "skill": "Responsive Design"
+          },
+          {
+            "skill": "Docker"
+          },
+          {
+            "skill": "Docker Compose"
+          },
+          {
+            "skill": "Containerization"
+          },
+          {
+            "skill": "GitLab"
+          },
+          {
+            "skill": "CI/CD Pipelines"
+          },
+          {
+            "skill": "DevOps Workflows"
+          },
+          {
+            "skill": "AWS EC2"
+          },
+          {
+            "skill": "AWS S3"
+          },
+          {
+            "skill": "Cloud Services"
+          },
+          {
+            "skill": "Nginx"
+          },
+          {
+            "skill": "Apache"
+          },
+          {
+            "skill": "Web Server Management"
+          },
+          {
+            "skill": "Cloud-Hosted Applications"
+          },
+          {
+            "skill": "Lazy Loading"
+          },
+          {
+            "skill": "Optimized Rendering"
+          },
+          {
+            "skill": "Asset Management"
+          },
+          {
+            "skill": "Computational Efficiency"
+          },
+          {
+            "skill": "Agile Development"
+          },
+          {
+            "skill": "Sprint Planning"
+          },
+          {
+            "skill": "Backlog Grooming"
+          },
+          {
+            "skill": "Daily Stand-Ups"
+          },
+          {
+            "skill": "Estimation"
+          },
+          {
+            "skill": "Jira"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": true,
+    "isClearanceRequired": true
+  },
+  "descriptionText": "Akima Mission Optimization (AMO), an Akima company, is hiring a Junior Web Developer to support the Naval Air Warfare Center Training Systems Division. The role develops and maintains websites, web applications, and databases, with a focus on full-stack development, usability, performance, and integration.\nResponsibilities\nDevelops, implements, and maintains websites, web applications, and application databases\nEnsures all code is properly structured, adheres to industry standards, and is compatible with various browsers and devices\nOptimizes website performance, scalability, and server-side code and processes\nIntegrates websites with other computer applications and develop website infrastructure\nDesigns user-friendly interfaces, navigation menus, and digital layouts that ensure compatibility and usability across different browsers and devices\nUtilizes web frameworks and client-side coding to enhance user experience\nSkills\nMust be a US Citizen with a Secret clearance (or ability to obtain one prior to start)\nB.S. degree in Information Technology, Computer Science, Computer Engineering, or Software Engineering specializing in Web Design and Development\nExperience in web development, with programming languages such as: React, JavaScript, Typescript, SQL, and CSS\nExperience designing, developing, or integrating RESTful APIs and backend services\nWorking knowledge of SQL databases, including queries, schema design, and data integration\nFamiliarity with Git-based version control, including branching, merging, and code collaboration\nExperience writing, updating, and maintaining efficient, testable, and well-documented code\nBasic familiarity with Linux environments, command-line operations, or Bash scripting\nProven experience in writing, updating, and maintaining efficient, testable, and well-documented code\nStrong analytical, problem-solving, communication, and teamwork skills\nActive Secret clearance\nExperience with Python libraries or frameworks such as pandas, NumPy, Flask, FastAPI, Django, Plotly, Dash, or SQLAlchemy\nExperience with React-based application development, including state management, reusable components, and responsive design\nFamiliarity with Docker, Docker Compose, or similar containerization tools\nExperience with GitLab, GitLab CI/CD pipelines, or similar DevOps workflows\nFamiliarity with cloud technologies such as AWS EC2, S3, or equivalent services\nExperience managing or supporting web servers such as Nginx, Apache, or cloud-hosted application environments\nUnderstanding of web application performance concepts such as lazy loading, optimized rendering, asset management, and computational efficiency\nExperience working in an Agile development environment, including sprint planning, backlog grooming, daily stand-ups, and estimation using tools such as Jira\nBenefits\nAccess to comprehensive benefits\nGrowth opportunities\nExcellent retirement options\nCompany Overview\nAkima focuses on delivering services in the areas of logistics, IT, supply chain, systems engineering, construction and protective services. It was founded in 1995, and is headquartered in Herndon, Virginia, USA, with a workforce of 5001-10000 employees. Its website is https://www.akima.com.",
+  "sourceDatePosted": "2026-11-09 00:09:32"
+}

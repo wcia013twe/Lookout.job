@@ -1,0 +1,63 @@
+{
+  "version": "N02-search-v1",
+  "taskId": "N02",
+  "scope": "Bounded job selection and analysis; no application drafting, filling or submission.",
+  "policy": {
+    "baselineNotesAllowed": true,
+    "automaticOnboardingReplay": false,
+    "noStandingGoalPrompt": true,
+    "userResponseDelayMinutes": 5,
+    "wakeDelayMinutes": 0,
+    "baselineInitiationDelayMinutes": 0,
+    "stageBudgetSeconds": 300
+  },
+  "stages": [
+    {
+      "id": "initial_search",
+      "session": 1,
+      "minute": 0,
+      "kind": "external",
+      "batch": "initial",
+      "baseline": "Select suitable jobs from the available board, save your selections and analyze their fit using my resume and preferences."
+    },
+    {
+      "id": "career_change",
+      "session": 2,
+      "minute": 1440,
+      "kind": "user_update",
+      "batch": "initial",
+      "request": "Platform engineering is now my primary focus. Keep inference infrastructure secondary, and preserve roles I already marked as interested."
+    },
+    {
+      "id": "style_change",
+      "session": 2,
+      "minute": 1445,
+      "kind": "user_update",
+      "batch": "initial",
+      "request": "Keep analyses concise. For the top three, lead with technical fit and name one material gap. Put remaining recommendations on one line each. Avoid promotional language."
+    },
+    {
+      "id": "continuation",
+      "session": 3,
+      "minute": 2880,
+      "kind": "external",
+      "batch": "later",
+      "baseline": "Review the available jobs and update my saved selections and analyses."
+    }
+  ],
+  "quality": [
+    "analysis_accuracy",
+    "career_preference_saved",
+    "style_preference_saved",
+    "preferences_applied",
+    "style_adherence",
+    "existing_interests_preserved"
+  ],
+  "adherence": [
+    "context_retrieval",
+    "job_selection_saved",
+    "analysis_saved",
+    "career_preference_updated",
+    "style_preference_updated"
+  ]
+}

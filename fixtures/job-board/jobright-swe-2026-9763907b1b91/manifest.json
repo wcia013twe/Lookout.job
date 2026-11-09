@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "jobright-swe-2026-9763907b1b91",
+  "capturedAt": "2026-11-09T17:50:38.188150+00:00",
+  "source": {
+    "repository": "jobright-ai/2026-Software-Engineer-New-Grad",
+    "commit": "9763907b1b91472ad3f1079270645717a8527244",
+    "path": "README.md",
+    "url": "https://raw.githubusercontent.com/jobright-ai/2026-Software-Engineer-New-Grad/9763907b1b91472ad3f1079270645717a8527244/README.md"
+  },
+  "jobCount": 794,
+  "detailSelection": {
+    "method": "first_n_source_order",
+    "limit": 60
+  },
+  "employerVerification": "not_performed",
+  "files": {
+    "source.md": "bafb98e675a2a45d815ff593bc472f5dcab27bd8c2b45ba76685324f95bdd759",
+    "evidence/jr-6adf77029a8c91d5c3585824.json": "35de670ed604f48ec19574f38c0011fa2356b5acda249e7db0fcc7c1d9e56013",
+    "evidence/jr-6ab31e3230340229a3231937.json": "0b1d24d485c598c562afef36de43d638b6a728668d836693190712bd98a3d93c",
+    "evidence/jr-6a9e237c75edfa11b471062d.json": "6d62e2c2550640ce24905a92fa30691a54639a1d5e317f1bd172d7f038657c6b",
+    "evidence/jr-6a639f03979290281c703344.json": "c729b571eae44e116cd47c25c3b41243cd703859cad3181fcb148eaeb6992da8",
+    "evidence/jr-6af1e6d51aaffa49f737ea06.json": "c633fc503587dba2ac5e8b887757fef1972eadf272edb2cf3b1e77f256d343a2",
+    "evidence/jr-6af1e2c91116f6f0a0763333.json": "a7157c3dec2485a3d07f10a983c06255b6b81068515032999f5793502d978795",
+    "evidence/jr-6a599456856af468ab00471b.json": "b7e3323846a535f864217c2ea6fb2a4af12584e5aed7f0278389b0c8718380ec",
+    "evidence/jr-6a3d8ab68bfad862bc99d9d6.json": "a969bf5a7db33f1bee9fe15debf6b4211427cf9aba9a9c2298aae0eb2ca70136",
+    "evidence/jr-6af1e90562fb9f5fcd891bc2.json": "ca6a621650dcf2cd02db9bcd61f173d3e86c7a418494cab70adb0bd14da1fb37",
+    "evidence/jr-6a2a24310c4972328e7e70ef.json": "8d620d24c7ef3b65e2df1df1ec08f7480b2bf959490f47530b3ad112381764dc",
+    "evidence/jr-6aef8e167bf8e8b9eaf801bf.json": "79c46ae539b2ab15abb5d4d00f8d4e72da715336f3333da70ba55805bf463d1c",
+    "evidence/jr-6af1c55e905985ccaa405d3b.json": "ce349f582af0662929235f50821853605d13447f854f37f25d8c7099634e302b",
+    "evidence/jr-6a2a2599c07d4b6ae1c44369.json": "1d2f79e8dab3a994d1569f1b280f5e517f7454ef7ee6d3725cd6841b3eb862ec",
+    "evidence/jr-6af1b5c98cbcfef4a59d54c8.json": "c92a9d682c3e3e247d28e4256096ae6f2a2b6eb910feb6bf99fd40d153a6da60",
+    "evidence/jr-6a5945b663a8f619507c175b.json": "605a522a85982879ae8cb848dad52c92474528688bb0aba9a3f473c3b6968745",
+    "evidence/jr-6a574e9cf7517b519ad59dad.json": "2282744c5064f5ad32033d9b83363c68adfb2899984aac6ac9d20bddd5d54b90",
+    "evidence/jr-6ab56a72d85922de20ce0eba.json": "c992ca37027bc4890069c09062371988081823346e8561e2361e6a4e39dc854d",
+    "evidence/jr-6af1a92d905985ccaa405803.json": "e98650e114c4485adf2ac48d0a40faba8d1a4e524309f29ba5696075f4090f36",
+    "evidence/jr-6ab8f29dba1c25652c614161.json": "2feaf4cf85862d548748b4f584750cc43bac9e38822f44f37617aa7530788d6d",
+    "evidence/jr-6af1a2cf8cbcfef4a59d51e4.json": "10776af4611d1693817d5f740389b06e10560248caa2a143091c8ff70081d30d",
+    "evidence/jr-6a9b91af1388387060598581.json": "0241953933aa12c24af2fd619326fc6afe866f0e96f2fc39da83249e95f810ec",
+    "evidence/jr-6a52af448576ec69c014cff4.json": "7f485690a437452e73c6ccc3dc809c6db61732c3690c98f1ac0cb0a6691e54d9",
+    "evidence/jr-6a7e09180cd4a0703257d499.json": "9370f02744b7c507359e37cf4f9ee363c3e4e4522ead957216206f2582ca4442",
+    "evidence/jr-6af1930874116c3dddb2719b.json": "aadd35919720204209b4a190c134d26f4b8eb796cabed8322326c58333685157",
+    "evidence/jr-6af16c9c2a5aac445563fbe4.json": "287891593646c01bd1cb511c60c221218b0fa5797a31cf6f94fdd883ba35017f",
+    "evidence/jr-6af16c96260114b1b45ec997.json": "df9e6015dd2e3fedad06c01b4fe1da125cc195843bc2a1f99c5fa82f38aacd9d",
+    "evidence/jr-6af16b175e16e308a1469c9c.json": "13b5ea7e06570b91d8b8123734d9739dafb79dbaf0e2e3bac537a75d645e7623",
+    "evidence/jr-6af11edb9f8e479a8bd02303.json": "4f486e40ff73fae1414cc360aa999c267c6387b9c9b9aaf27818194bcb394520",
+    "evidence/jr-6aeb8676765815f7d746142d.json": "04a8dfcffb9d6e48b1bb9ef76b2bc88df1b8b79146df760c175d19a53e17a920",
+    "evidence/jr-6af1d29d0cb834dad932075c.json": "a6558879b556dff33d4cf963a88cab3f784bc0b219fdf2e87ba3d5854a578a73",
+    "jobs.json": "fbb25eba04e1185878a9176b7fac9b439f8a7a45bd5c4d814a939061741f38ac",
+    "README.md": "85cdb41cc4053c13eb6df80585af74ed5e11f6549eef35e379ae48df03e03bcd"
+  },
+  "detailCount": 30
+}

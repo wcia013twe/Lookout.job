@@ -1,0 +1,226 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af11edb9f8e479a8bd02303",
+  "capturedAt": "2026-11-09T17:50:43.575228+00:00",
+  "responseSha256": "3ded3e3ee80d7eb17c8aead70e3d70112c22c8ec4f2cd69fc5efd8143d73d072",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af11edb9f8e479a8bd02303",
+    "jobTitle": "Full Stack Software Engineer, Internal Platforms",
+    "jobLocation": "Hawthorne, CA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 04:29:46",
+    "employmentType": "Full-time",
+    "salaryDesc": "$125K/yr - $160K/yr",
+    "jobSummary": "SpaceX is hiring a Full Stack Software Engineer to build and evolve internal platforms and applications used across the company. The role develops reliable software, prototypes and product solutions that improve operations and support manufacturing, launch, and Starlink systems.",
+    "minYearsOfExperience": 1,
+    "coreResponsibilities": [
+      "Develop highly reliable software solutions that are used across SpaceX",
+      "Create new applications that improve how SpaceX operates",
+      "Build prototypes to prove out key design concepts and quantify technical constraints",
+      "Own all aspects of software engineering and product development",
+      "Deep dive into your users’ problems to find and create efficient solutions",
+      "Bring your voice to the table in team collaborations on architecture, design, and code reviews"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor's degree in computer science, engineering, math, or scientific discipline; OR 2+ years of professional experience building software in lieu of a degree",
+      "1+ years of experience in full stack development",
+      "To conform to U.S. Government export regulations, applicant must be a (i) U.S. citizen or national, (ii) U.S. lawful, permanent resident (aka green card holder), (iii) Refugee under 8 U.S.C. § 1157, or (iv) Asylee under 8 U.S.C. § 1158, or be eligible to obtain the required authorizations from the U.S. Department of State",
+      "Programming experience in Python, C#.NET, Go, Scala, Java, or similar object-oriented language",
+      "1+ years of rigorous experience building single page web applications",
+      "Experience with version control, continuous integration, and continuous delivery concepts",
+      "Expertise in designing software systems",
+      "Deep understanding of testing, continuous integration, build, deployment & monitoring",
+      "Expertise in profiling and improving application performance",
+      "Experience with build systems (Make, Bazel/Pants/Buck, Gradle) and package management tools (pip, npm)",
+      "Experience with UNIX-like operating systems and tools like Terraform, Ansible, Puppet for managing them",
+      "Experience working with in-stream data processing using Apache Kafka, RabbitMQ, ActiveMQ, or similar technologies",
+      "Production experience with Docker and Kubernetes",
+      "Front-end experience in Angular, React, or similar JavaScript framework",
+      "Database experience with PostgreSQL, SQL Server, or similar database technologies"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor's degree in computer science, engineering, math, or scientific discipline; OR 2+ years of professional experience building software in lieu of a degree",
+        "1+ years of experience in full stack development",
+        "To conform to U.S. Government export regulations, applicant must be a (i) U.S. citizen or national, (ii) U.S. lawful, permanent resident (aka green card holder), (iii) Refugee under 8 U.S.C. § 1157, or (iv) Asylee under 8 U.S.C. § 1158, or be eligible to obtain the required authorizations from the U.S. Department of State"
+      ],
+      "preferredHave": [
+        "Programming experience in Python, C#.NET, Go, Scala, Java, or similar object-oriented language",
+        "1+ years of rigorous experience building single page web applications",
+        "Experience with version control, continuous integration, and continuous delivery concepts",
+        "Expertise in designing software systems",
+        "Deep understanding of testing, continuous integration, build, deployment & monitoring",
+        "Expertise in profiling and improving application performance",
+        "Experience with build systems (Make, Bazel/Pants/Buck, Gradle) and package management tools (pip, npm)",
+        "Experience with UNIX-like operating systems and tools like Terraform, Ansible, Puppet for managing them",
+        "Experience working with in-stream data processing using Apache Kafka, RabbitMQ, ActiveMQ, or similar technologies",
+        "Production experience with Docker and Kubernetes",
+        "Front-end experience in Angular, React, or similar JavaScript framework",
+        "Database experience with PostgreSQL, SQL Server, or similar database technologies"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [
+          "Bachelor's degree in computer science, engineering, math, or scientific discipline; OR 2+ years of professional experience building software in lieu of a degree",
+          "1+ years of experience in full stack development"
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Computer Science"
+          },
+          {
+            "skill": "Mathematics"
+          },
+          {
+            "skill": "Scientific Disciplines"
+          },
+          {
+            "skill": "Software Development"
+          },
+          {
+            "skill": "Full-Stack Development"
+          }
+        ],
+        "softSkill": []
+      },
+      "preferredHave": {
+        "yoe": [
+          "1+ years of rigorous experience building single page web applications"
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "C#/.NET"
+          },
+          {
+            "skill": "Go"
+          },
+          {
+            "skill": "Scala"
+          },
+          {
+            "skill": "Java"
+          },
+          {
+            "skill": "Object-Oriented Programming"
+          },
+          {
+            "skill": "Single-Page Application Development"
+          },
+          {
+            "skill": "Version Control"
+          },
+          {
+            "skill": "Continuous Integration"
+          },
+          {
+            "skill": "Continuous Delivery"
+          },
+          {
+            "skill": "Software Systems Design"
+          },
+          {
+            "skill": "Software Testing"
+          },
+          {
+            "skill": "Build Automation"
+          },
+          {
+            "skill": "Software Deployment"
+          },
+          {
+            "skill": "Application Monitoring"
+          },
+          {
+            "skill": "Performance Profiling"
+          },
+          {
+            "skill": "Performance Optimization"
+          },
+          {
+            "skill": "Make"
+          },
+          {
+            "skill": "Bazel"
+          },
+          {
+            "skill": "Pants"
+          },
+          {
+            "skill": "Buck"
+          },
+          {
+            "skill": "Gradle"
+          },
+          {
+            "skill": "pip"
+          },
+          {
+            "skill": "npm"
+          },
+          {
+            "skill": "UNIX-Like Operating Systems"
+          },
+          {
+            "skill": "Terraform"
+          },
+          {
+            "skill": "Ansible"
+          },
+          {
+            "skill": "Puppet"
+          },
+          {
+            "skill": "In-Stream Data Processing"
+          },
+          {
+            "skill": "Apache Kafka"
+          },
+          {
+            "skill": "RabbitMQ"
+          },
+          {
+            "skill": "ActiveMQ"
+          },
+          {
+            "skill": "Docker"
+          },
+          {
+            "skill": "Kubernetes"
+          },
+          {
+            "skill": "Angular"
+          },
+          {
+            "skill": "React"
+          },
+          {
+            "skill": "JavaScript Frameworks"
+          },
+          {
+            "skill": "PostgreSQL"
+          },
+          {
+            "skill": "SQL Server"
+          },
+          {
+            "skill": "Database Technologies"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "SpaceX is hiring a Full Stack Software Engineer to build and evolve internal platforms and applications used across the company. The role develops reliable software, prototypes and product solutions that improve operations and support manufacturing, launch, and Starlink systems.\nResponsibilities\nDevelop highly reliable software solutions that are used across SpaceX\nCreate new applications that improve how SpaceX operates\nBuild prototypes to prove out key design concepts and quantify technical constraints\nOwn all aspects of software engineering and product development\nDeep dive into your users’ problems to find and create efficient solutions\nBring your voice to the table in team collaborations on architecture, design, and code reviews\nSkills\nBachelor's degree in computer science, engineering, math, or scientific discipline; OR 2+ years of professional experience building software in lieu of a degree\n1+ years of experience in full stack development\nTo conform to U.S. Government export regulations, applicant must be a (i) U.S. citizen or national, (ii) U.S. lawful, permanent resident (aka green card holder), (iii) Refugee under 8 U.S.C. § 1157, or (iv) Asylee under 8 U.S.C. § 1158, or be eligible to obtain the required authorizations from the U.S. Department of State\nProgramming experience in Python, C#.NET, Go, Scala, Java, or similar object-oriented language\n1+ years of rigorous experience building single page web applications\nExperience with version control, continuous integration, and continuous delivery concepts\nExpertise in designing software systems\nDeep understanding of testing, continuous integration, build, deployment & monitoring\nExpertise in profiling and improving application performance\nExperience with build systems (Make, Bazel/Pants/Buck, Gradle) and package management tools (pip, npm)\nExperience with UNIX-like operating systems and tools like Terraform, Ansible, Puppet for managing them\nExperience working with in-stream data processing using Apache Kafka, RabbitMQ, ActiveMQ, or similar technologies\nProduction experience with Docker and Kubernetes\nFront-end experience in Angular, React, or similar JavaScript framework\nDatabase experience with PostgreSQL, SQL Server, or similar database technologies\nBenefits\nMay be eligible for long-term incentives in the form of company stock or long-term cash awards\nPotential discretionary bonuses\nAbility to purchase additional stock at a discount through an Employee Stock Purchase Plan\nComprehensive medical, vision, and dental coverage\nAccess to a 401(k) retirement plan\nShort- and long-term disability insurance\nLife insurance\nPaid parental leave\nVarious other discounts\nMay accrue 3 weeks of paid vacation\nEligible for 10 or more paid holidays per year\nPaid sick leave accrued pursuant to Company policy, which satisfies or exceeds the accrual, carryover, and use requirements of the law\nCompany Overview\nSpaceX develops and operates rockets, satellite networks, and AI infrastructure including launch, connectivity, and cloud services. It was founded in 2002, and is headquartered in Starbase, Texas, USA, with a workforce of 1001-5000 employees. Its website is https://www.spacex.com.\nCompany H1B Sponsorship\nSpaceX has a track record of offering H1B sponsorships, with 34 in 2026, 21 in 2025, 17 in 2024, 2 in 2023, 3 in 2022, 1 in 2020. Please note that this does not guarantee sponsorship for this specific role.",
+  "sourceDatePosted": "2026-11-09 04:29:46"
+}

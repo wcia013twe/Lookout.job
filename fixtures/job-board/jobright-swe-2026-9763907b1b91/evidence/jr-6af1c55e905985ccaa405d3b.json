@@ -1,0 +1,150 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af1c55e905985ccaa405d3b",
+  "capturedAt": "2026-11-09T17:50:39.704355+00:00",
+  "responseSha256": "5135b484da8958caa9f83faa5798e975c5250483933c9dda37720021012f9e6c",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af1c55e905985ccaa405d3b",
+    "jobTitle": "Software Developer",
+    "jobLocation": "United States",
+    "workModel": "Remote",
+    "publishTime": "2026-11-09 13:06:38",
+    "employmentType": "Full-time",
+    "salaryDesc": "$98K/yr - $141K/yr",
+    "jobSummary": "Cohen Development Group is hiring an entry-level Software Developer to build and maintain applications that support construction operations. The role focuses on streamlining workflows, improving project visibility, and collaborating with engineers and business stakeholders to deliver reliable software.",
+    "coreResponsibilities": [
+      "Develop, test, and maintain software applications supporting construction operations",
+      "Collaborate with senior developers, designers, and project stakeholders to define requirements",
+      "Write clean, well-documented, and maintainable code",
+      "Participate in code reviews and incorporate feedback to improve code quality",
+      "Troubleshoot and resolve software defects and performance issues",
+      "Assist in integrating third-party tools and APIs into existing systems",
+      "Contribute to technical documentation and user guides",
+      "Participate in agile development sprints, planning, and retrospectives",
+      "Support deployment and monitoring of applications in production environments",
+      "Continuously learn new technologies and best practices to enhance development skills"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor's degree in Computer Science, Software Engineering, or a related field, or equivalent practical experience",
+      "Strong foundation in at least one programming language such as JavaScript, Python, Java, or C#",
+      "Understanding of core software development concepts including data structures, algorithms, and object-oriented programming",
+      "Familiarity with version control systems such as Git",
+      "Basic knowledge of databases and SQL or NoSQL data management",
+      "Strong problem-solving skills and attention to detail",
+      "Effective communication skills and the ability to work collaboratively in a remote team environment",
+      "Eagerness to learn, adapt, and grow within a fast-moving development team",
+      "Exposure to cloud platforms such as AWS, Azure, or GCP",
+      "Interest in or familiarity with construction technology or project management software"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor's degree in Computer Science, Software Engineering, or a related field, or equivalent practical experience",
+        "Strong foundation in at least one programming language such as JavaScript, Python, Java, or C#",
+        "Understanding of core software development concepts including data structures, algorithms, and object-oriented programming",
+        "Familiarity with version control systems such as Git",
+        "Basic knowledge of databases and SQL or NoSQL data management",
+        "Strong problem-solving skills and attention to detail",
+        "Effective communication skills and the ability to work collaboratively in a remote team environment",
+        "Eagerness to learn, adapt, and grow within a fast-moving development team"
+      ],
+      "preferredHave": [
+        "Exposure to cloud platforms such as AWS, Azure, or GCP",
+        "Interest in or familiarity with construction technology or project management software"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "JavaScript"
+          },
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "Java"
+          },
+          {
+            "skill": "C#"
+          },
+          {
+            "skill": "Data Structures"
+          },
+          {
+            "skill": "Algorithms"
+          },
+          {
+            "skill": "Object-Oriented Programming"
+          },
+          {
+            "skill": "Git"
+          },
+          {
+            "skill": "Database Management"
+          },
+          {
+            "skill": "SQL"
+          },
+          {
+            "skill": "NoSQL"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Problem-Solving"
+          },
+          {
+            "skill": "Attention to Detail"
+          },
+          {
+            "skill": "Communication"
+          },
+          {
+            "skill": "Collaboration"
+          },
+          {
+            "skill": "Eagerness to Learn"
+          },
+          {
+            "skill": "Adaptability"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "AWS"
+          },
+          {
+            "skill": "Azure"
+          },
+          {
+            "skill": "Google Cloud Platform"
+          },
+          {
+            "skill": "Construction Technology"
+          },
+          {
+            "skill": "Project Management Software"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Interest in Construction Technology"
+          }
+        ]
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Note: The job is a remote job and is open to candidates in USA. Cohen Development Group is hiring an entry-level Software Developer to build and maintain applications that support construction operations. The role focuses on streamlining workflows, improving project visibility, and collaborating with engineers and business stakeholders to deliver reliable software.\nResponsibilities\nDevelop, test, and maintain software applications supporting construction operations\nCollaborate with senior developers, designers, and project stakeholders to define requirements\nWrite clean, well-documented, and maintainable code\nParticipate in code reviews and incorporate feedback to improve code quality\nTroubleshoot and resolve software defects and performance issues\nAssist in integrating third-party tools and APIs into existing systems\nContribute to technical documentation and user guides\nParticipate in agile development sprints, planning, and retrospectives\nSupport deployment and monitoring of applications in production environments\nContinuously learn new technologies and best practices to enhance development skills\nSkills\nBachelor's degree in Computer Science, Software Engineering, or a related field, or equivalent practical experience\nStrong foundation in at least one programming language such as JavaScript, Python, Java, or C#\nUnderstanding of core software development concepts including data structures, algorithms, and object-oriented programming\nFamiliarity with version control systems such as Git\nBasic knowledge of databases and SQL or NoSQL data management\nStrong problem-solving skills and attention to detail\nEffective communication skills and the ability to work collaboratively in a remote team environment\nEagerness to learn, adapt, and grow within a fast-moving development team\nExposure to cloud platforms such as AWS, Azure, or GCP\nInterest in or familiarity with construction technology or project management software\nBenefits\nRemote working environment\nMeaningful opportunities for professional growth within a dedicated development group\nCompany Overview\nCDG Maui, Inc. is a General Contractor specializing in pre-development, design, planning and vertical construction. It was founded in undefined, and is headquartered in Kihei, Hawaii, USA, with a workforce of 11-50 employees. Its website is https://cdgmaui.com.",
+  "sourceDatePosted": "2026-11-09 13:06:38"
+}

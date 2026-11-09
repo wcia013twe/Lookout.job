@@ -1,0 +1,176 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af16b175e16e308a1469c9c",
+  "capturedAt": "2026-11-09T17:50:42.945997+00:00",
+  "responseSha256": "b2a7a632aa6497217a3ebb1942d9b9dd83656dad72fcfd2dde6d18237ea15efc",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af16b175e16e308a1469c9c",
+    "jobTitle": "Graduate Development Program, Associate Technology Engineer, Technology Engineering",
+    "jobLocation": "Waltham, MA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 06:41:27",
+    "employmentType": "Full-time",
+    "salaryDesc": "$74K/yr - $86K/yr",
+    "jobSummary": "National Grid is hiring an Associate Technology Engineer to design, configure, test, and improve endpoint technology used by employees. The role supports device management, application delivery, security, automation, and digital employee experience across Windows, macOS, and iOS environments.",
+    "coreResponsibilities": [
+      "Support the design, configuration, testing, and implementation of endpoint solutions across Windows, macOS, and iOS environments",
+      "Help manage device enrollment, provisioning, configuration, application deployment, patching, compliance, security, and operating system lifecycle activities",
+      "Use tools such as Microsoft Intune, Jamf, and Nexthink to support device health, endpoint management, analytics, and the digital employee experience",
+      "Develop and maintain scripts, configuration standards, test plans, implementation procedures, and technical documentation",
+      "Investigate technical issues, review device logs and configuration data, and work with experienced engineers and operational teams to identify lasting solutions",
+      "Follow version control, cybersecurity, change management, architecture, testing, and engineering assurance practices throughout the technology lifecycle"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor or Master's degree Computer Science, Computer Networks, Cyber Security, Information Technology, Engineering, or a related field from an accredited institution",
+      "Graduated between May 2026 and June 2027",
+      "Ability to begin the National Grid Graduate Program on June 7, 2027, or July 12, 2027",
+      "Work authorization that does not now or in the future require sponsorship of a visa for employment authorization in the United States (such as sponsorship for an H-1B, TN, O, L, STEM OPT, or other employment-based work authorization)",
+      "Foundational knowledge of Windows, macOS, and/or iOS, endpoint management, device provisioning, application deployment, patching, security, and compliance",
+      "Exposure to scripting or automation using PowerShell, shell scripting, or a similar technology, along with strong problem-solving, communication, and documentation skills",
+      "Experience with Microsoft Intune, Jamf, Nexthink, Microsoft Configuration Manager, Windows Autopilot, Apple Business Manager, application packaging, device compliance, or endpoint security",
+      "Familiarity with Git, APIs, endpoint analytics, Agile ways of working, or digital employee experience tools",
+      "An entry-level certification or active study toward one, such as Microsoft 365 Fundamentals, Microsoft Azure Fundamentals, or an Apple certification"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor or Master's degree Computer Science, Computer Networks, Cyber Security, Information Technology, Engineering, or a related field from an accredited institution",
+        "Graduated between May 2026 and June 2027",
+        "Ability to begin the National Grid Graduate Program on June 7, 2027, or July 12, 2027",
+        "Work authorization that does not now or in the future require sponsorship of a visa for employment authorization in the United States (such as sponsorship for an H-1B, TN, O, L, STEM OPT, or other employment-based work authorization)",
+        "Foundational knowledge of Windows, macOS, and/or iOS, endpoint management, device provisioning, application deployment, patching, security, and compliance",
+        "Exposure to scripting or automation using PowerShell, shell scripting, or a similar technology, along with strong problem-solving, communication, and documentation skills"
+      ],
+      "preferredHave": [
+        "Experience with Microsoft Intune, Jamf, Nexthink, Microsoft Configuration Manager, Windows Autopilot, Apple Business Manager, application packaging, device compliance, or endpoint security",
+        "Familiarity with Git, APIs, endpoint analytics, Agile ways of working, or digital employee experience tools",
+        "An entry-level certification or active study toward one, such as Microsoft 365 Fundamentals, Microsoft Azure Fundamentals, or an Apple certification"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Computer Science"
+          },
+          {
+            "skill": "Computer Networks"
+          },
+          {
+            "skill": "Cybersecurity"
+          },
+          {
+            "skill": "Windows"
+          },
+          {
+            "skill": "macOS"
+          },
+          {
+            "skill": "iOS"
+          },
+          {
+            "skill": "Endpoint Management"
+          },
+          {
+            "skill": "Device Provisioning"
+          },
+          {
+            "skill": "Application Deployment"
+          },
+          {
+            "skill": "Patching"
+          },
+          {
+            "skill": "Security"
+          },
+          {
+            "skill": "Compliance"
+          },
+          {
+            "skill": "PowerShell"
+          },
+          {
+            "skill": "Shell Scripting"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Problem-Solving"
+          },
+          {
+            "skill": "Communication"
+          },
+          {
+            "skill": "Documentation"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Microsoft Intune"
+          },
+          {
+            "skill": "Jamf"
+          },
+          {
+            "skill": "Nexthink"
+          },
+          {
+            "skill": "Microsoft Configuration Manager"
+          },
+          {
+            "skill": "Windows Autopilot"
+          },
+          {
+            "skill": "Apple Business Manager"
+          },
+          {
+            "skill": "Application Packaging"
+          },
+          {
+            "skill": "Device Compliance"
+          },
+          {
+            "skill": "Endpoint Security"
+          },
+          {
+            "skill": "Git"
+          },
+          {
+            "skill": "API Familiarity"
+          },
+          {
+            "skill": "Endpoint Analytics"
+          },
+          {
+            "skill": "Agile Ways of Working"
+          },
+          {
+            "skill": "Digital Employee Experience Tools"
+          },
+          {
+            "skill": "Microsoft 365 Fundamentals"
+          },
+          {
+            "skill": "Microsoft Azure Fundamentals"
+          },
+          {
+            "skill": "Apple Certification"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "National Grid is hiring an Associate Technology Engineer to design, configure, test, and improve endpoint technology used by employees. The role supports device management, application delivery, security, automation, and digital employee experience across Windows, macOS, and iOS environments.\nResponsibilities\nSupport the design, configuration, testing, and implementation of endpoint solutions across Windows, macOS, and iOS environments\nHelp manage device enrollment, provisioning, configuration, application deployment, patching, compliance, security, and operating system lifecycle activities\nUse tools such as Microsoft Intune, Jamf, and Nexthink to support device health, endpoint management, analytics, and the digital employee experience\nDevelop and maintain scripts, configuration standards, test plans, implementation procedures, and technical documentation\nInvestigate technical issues, review device logs and configuration data, and work with experienced engineers and operational teams to identify lasting solutions\nFollow version control, cybersecurity, change management, architecture, testing, and engineering assurance practices throughout the technology lifecycle\nSkills\nBachelor or Master's degree Computer Science, Computer Networks, Cyber Security, Information Technology, Engineering, or a related field from an accredited institution\nGraduated between May 2026 and June 2027\nAbility to begin the National Grid Graduate Program on June 7, 2027, or July 12, 2027\nWork authorization that does not now or in the future require sponsorship of a visa for employment authorization in the United States (such as sponsorship for an H-1B, TN, O, L, STEM OPT, or other employment-based work authorization)\nFoundational knowledge of Windows, macOS, and/or iOS, endpoint management, device provisioning, application deployment, patching, security, and compliance\nExposure to scripting or automation using PowerShell, shell scripting, or a similar technology, along with strong problem-solving, communication, and documentation skills\nExperience with Microsoft Intune, Jamf, Nexthink, Microsoft Configuration Manager, Windows Autopilot, Apple Business Manager, application packaging, device compliance, or endpoint security\nFamiliarity with Git, APIs, endpoint analytics, Agile ways of working, or digital employee experience tools\nAn entry-level certification or active study toward one, such as Microsoft 365 Fundamentals, Microsoft Azure Fundamentals, or an Apple certification\nBenefits\nStructured development opportunities, mentorship, and ongoing feedback to accelerate your career growth\nExposure to leaders, cross-functional teams, and diverse areas of the business\nOpportunities to build your professional network and develop lasting industry connections\nMeaningful work and real-world experience that provide a strong foundation for a long-term career at National Grid\nUp to $6,000 in student loan repayment assistance\nTuition reimbursement of up to $8,000 annually for undergraduate studies and $10,000 annually for graduate studies\nGuidance from experienced engineers while building practical engineering and problem-solving skills\nCompany Overview\nNational Grid facilitates electricity and gas transmission system and focuses on delivering clean energy. It was founded in 1990, and is headquartered in London, England, GBR, with a workforce of 10001+ employees. Its website is https://www.nationalgrid.com.",
+  "sourceDatePosted": "2026-11-09 06:41:27"
+}
