@@ -37,14 +37,14 @@ def capture(session,label):
  return reply
 
 def run(pair_id):
- node('check-launch');attempt=ROOT/'pilot-attempt.json'
+ node('check-launch');awake=runtime.ensure_awake();runtime.write(ROOT/'host-awake.json',awake);attempt=ROOT/'pilot-attempt.json'
  with attempt.open('x')as f:json.dump({'pairId':pair_id,'startedAt':time.time()},f)
  spec=json.loads((ROOT/'suite/scenario.json').read_text());host.infrastructure();results=[]
  try:
   for condition in ['baseline','lookout']:
    out=ROOT/'runs'/condition;out.mkdir(mode=0o700);inputs=out/'live-inputs';inputs.mkdir();files=out/'output';files.mkdir()
    runtime.write(inputs/'targets.json',[{k:t[k]for k in ['id','kind','url','title','company','nativeJobId']}for t in spec['targets']]);shutil.copyfile(ROOT/'candidate/resume.pdf',inputs/'resume.pdf')
-   meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','model':spec['model'],'reasoning':spec['reasoning'],'startedAt':time.time(),'status':'running','stages':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0};session=None
+   meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','model':spec['model'],'reasoning':spec['reasoning'],'startedAt':time.time(),'status':'running','stages':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0,'hostAwakeGuard':awake};session=None
    try:
     snapshot(out/'initial-state.json')
     for index,step in enumerate(spec['stages'],1):
