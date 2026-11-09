@@ -1,0 +1,101 @@
+{
+  "version": "JOB03-tracking-v1",
+  "fictional": true,
+  "candidate": {
+    "name": "Morgan Example",
+    "graduation": "May 2027",
+    "experience": [
+      "Oracle backend internship",
+      "Goldman Sachs engineering internship"
+    ],
+    "unknowns": [
+      "citizenship",
+      "graduation-delay decision"
+    ]
+  },
+  "jobs": {
+    "A": {
+      "company": "Alder Compute",
+      "title": "Inference Systems Engineer",
+      "status": "unsubmitted",
+      "provenance": null,
+      "receipt": null,
+      "answer": null,
+      "blocker": null,
+      "reminder": null,
+      "history": []
+    },
+    "B": {
+      "company": "Birch Database",
+      "title": "Storage Engineer",
+      "status": "unsubmitted",
+      "provenance": null,
+      "receipt": null,
+      "answer": null,
+      "blocker": "earliest-start-date",
+      "reminder": null,
+      "history": [],
+      "preparation": {
+        "state": "saved_partial",
+        "completedFields": [
+          "name",
+          "email"
+        ],
+        "pendingField": "earliest-start-date",
+        "failureKey": null,
+        "failureCount": 0,
+        "applicationCount": 1
+      }
+    },
+    "C": {
+      "company": "Cedar Search",
+      "title": "Search Infrastructure Engineer",
+      "status": "unsubmitted",
+      "provenance": null,
+      "receipt": null,
+      "answer": null,
+      "blocker": "work-authorization",
+      "reminder": {
+        "key": "C-followup",
+        "state": "scheduled",
+        "dueAt": "2026-11-19T14:00:00Z",
+        "timeZone": "America/New_York"
+      },
+      "history": []
+    },
+    "D": {
+      "company": "Dogwood Systems",
+      "title": "Distributed Systems Engineer",
+      "status": "submitted",
+      "provenance": "user_reported",
+      "receipt": null,
+      "answer": null,
+      "blocker": null,
+      "reminder": {
+        "key": "D-followup",
+        "state": "scheduled",
+        "dueAt": "2026-11-20T14:00:00Z",
+        "timeZone": "America/New_York"
+      },
+      "history": [
+        "D-user-report"
+      ]
+    },
+    "E": {
+      "company": "Elm Data",
+      "title": "Retrieval Engineer",
+      "status": "unsubmitted",
+      "provenance": null,
+      "receipt": null,
+      "answer": null,
+      "blocker": "team-scope",
+      "reminder": {
+        "key": "E-followup",
+        "state": "scheduled",
+        "dueAt": "2026-11-23T14:00:00Z",
+        "timeZone": "America/New_York"
+      },
+      "history": []
+    }
+  }
+}
