@@ -62,3 +62,27 @@
 - Integrated newer local-main COM timing/capture guards during landing; preserve
   run-scoped awake protection, shared StageClock invalidation and null invalid
   execution time. JOB freezes bind the shared runtime dependency explicitly.
+
+## Isolated native-clock substrate continuation
+
+- Added a separate network-disabled, owner-labeled PostgreSQL fixture. It replays
+  all 119 current source migrations without copying shared account data or
+  rewriting product SQL. Its minimal Auth/Storage bootstrap is not an external
+  Auth/Storage service or a ready participant host.
+- The pinned fixture image uses process-local ticking clock offsets. Preserved
+  a volume-initialization failure, a fixed-clock native-sleep failure and a
+  path-with-spaces probe failure. No participant was retried or executed.
+- Actual source SQL artifact save/filter checks change shelf membership after the
+  simulated date; native timed waits progress. The unmodified preparation feature
+  dispatcher saved/read a plan using the same simulated JavaScript/SQL date.
+- Three Node clock tests and five Python owner/network/rewind guard tests pass;
+  catalog validation passes. Actual reusable no-inference proof uses a fresh
+  isolated fixture, with all owned completed database processes stopped and
+  volumes/evidence preserved. No shared service or host clock was changed.
+- Remaining work: connect native HTTP/MCP and candidate-context cloning, bind the
+  clock dependency in a fresh host freeze, verify per-stage clock readback, then
+  run complete actual paired no-inference gates. Existing launch block remains.
+  This is intentional committed progress toward clock isolation, not clearance.
+- Integrated current local main's shared transport instead of copying it. After
+  integration, four focused Node checks (clock plus shared transport), 19 Python
+  checks (clock fixture, JOB host and shared timing) and catalog validation pass.

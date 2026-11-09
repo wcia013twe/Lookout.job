@@ -1216,6 +1216,16 @@ Prospective COM03 v4/grade v4 and COM04 v5/grade v4 align durable-output obligat
 
 PILOT05 failed before inference on a global fixture application-ID collision. COM03 v5 remaps fixture IDs/references per owner and probes the complete reset in a rolled-back transaction before participants start. Focused checks and actual preflight pass; PILOT07 remains prospective. The failed setup evidence and live PILOT06 COM04 sources are preserved.
 
+### JOB isolated-clock substrate preparation
+
+The [shared JOB host reference](../../scripts/jobs/README.md#isolated-clock-substrate-not-yet-connected-to-the-pilot-host)
+documents a new network-disabled PostgreSQL fixture replaying exact migrations,
+with process-local ticking clock offsets and a harness-only JavaScript loader.
+Actual no-inference source SQL shelf/date and preparation save/read probes align
+JavaScript and database dates while native waits progress. A fixed-clock sleep
+failure is retained. The native HTTP/MCP host and full context are not connected;
+current JOB launch gates remain blocked. This focused preparation changes no
+product schema, shared clock, real account or historical pilot outcome.
 ### Shared benchmark transport
 
 [Shared harness boundaries](../../scripts/evals/README.md) separate testing goals,

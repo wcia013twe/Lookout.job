@@ -85,3 +85,37 @@ Finalization now verifies frozen inputs, rubric, manifests, reviewer binding and
 run evidence without requiring today's execution files to equal retired runtime
 bytes. New execution still requires all original runtime/executable hashes.
 Separate implementation/operator audits cannot supply semantic ratings.
+
+## Isolated clock substrate (not yet connected to the pilot host)
+
+`isolated_clock_database.py` creates a new owner-labeled PostgreSQL container and
+volume with no network and no published ports. It replays the exact repository
+migrations over a minimal fictional Auth/Storage SQL bootstrap; it neither clones
+shared database contents nor changes production schema or clocks. The native HTTP,
+Auth and Storage services are not established by this fixture. Every existing root
+is rejected for preparation; stop checks container ID/owner/network and preserves
+its volume and receipts.
+
+Build the separate pinned test image with:
+
+```sh
+docker build -f scripts/jobs/clock-postgres.Dockerfile -t lookout-job-clock-postgres:0.1 scripts/jobs
+python3 -B scripts/jobs/isolated_clock_database.py prepare --virtual-clock --root NEW_PRIVATE_ROOT
+python3 -B scripts/jobs/probe_isolated_clock.py NEW_PRIVATE_ROOT
+python3 -B scripts/jobs/isolated_clock_database.py stop --root NEW_PRIVATE_ROOT
+```
+
+The clock uses a ticking process-local `libfaketime` offset, leaving monotonic
+host timing intact. A fixed absolute clock was rejected after an actual native
+`pg_sleep` probe failed to complete; that setup and failure are retained. The
+JavaScript fixture loader uses the same offset file and is never imported by a
+production entry point. Clock advancement requires an explicit timezone, refuses
+rewinds and records native SQL readback. Both paths fail closed on invalid data.
+
+The reusable no-inference proof creates only fictional rows in its own empty
+fixture: native artifact save/shelf reads change as the date passes; native sleep
+progresses; the unmodified preparation feature dispatcher saves/reads a plan with
+JavaScript and SQL on the same simulated date. This establishes the clock substrate,
+not complete host parity or readiness. Native HTTP/MCP, full candidate-context
+cloning, per-stage clock acknowledgements and complete paired host preflight must
+still be connected and verified. The existing host-v2 launch gate remains closed.
