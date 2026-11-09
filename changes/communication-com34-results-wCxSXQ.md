@@ -5,3 +5,9 @@
 - Report product schema, commitment/constraint reconciliation and discovery-volume flags without applying product changes. Explicitly retain the residual optional-baseline versus required-Lookout persistence confound; no measured-comparison clearance or causal claim.
 - Validation: two pagination/binding regression tests and catalog validation (158 roles) pass; final exports read back and original frozen hashes remain intact. Locked root/frontend dependencies installed. Earlier pilot harness checks are listed in the linked result report.
 - No push, PR or deployment. Authorized structural benchmark telemetry only. Private evidence and historical freezes retained.
+
+## Prospective native-startup repair
+
+- COM03 v4/grade v4 and COM04 v5/grade v4 align persistence obligations and preserve native audit/startup prose. Scoped change-feed/audit capabilities and fresh fictional owners remove prior-run contamination without changing the product.
+- Reuse shared awake guard, monotonic stage clock and capture-failure receipts; separately measure container startup and native audit calls. Bind native startup/schema/guide fingerprints and require positive/negative durable evidence per checkpoint. Reuse score pagination. Fix COM04 provisioning paths with spaces.
+- Validation: 11 focused Node checks (including Python suites), three parity/evidence checks and six shared runtime checks pass; actual initial no-inference preflights pass, final post-integration freezes/preflights remain required. Audit start/append/read probes roll back. Preserve unsuccessful setup attempts and older freezes.

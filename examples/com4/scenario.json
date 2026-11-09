@@ -1,5 +1,5 @@
 {
-  "version": "COM4-stream-v4",
+  "version": "COM4-stream-v5",
   "taskId": "COM4",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -297,7 +297,9 @@
     "comparisonMode": "matched-intent-native-mcp",
     "identicalTaskRequests": true,
     "nativeMcpDiscovery": true,
-    "measuresProactiveInitiation": false
+    "measuresProactiveInitiation": false,
+    "equalDurableOutputObligations": true,
+    "nativeAuditAndChanges": true
   },
   "durableChecks": [
     "conditional_bio",

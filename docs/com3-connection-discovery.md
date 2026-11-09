@@ -88,3 +88,11 @@ Prospective PILOT03 (COM03) and PILOT04 (COM04) require both participants to fin
 ## Completed controlled pilots
 
 PILOT03 and PILOT04 have completed both participants and post-pair independent review. See [results and flagged product changes](communication-com03-com04-pilots.md). Final-state success, checkpoint quality, prescribed effort, execution time and token usage are reported separately. No Lookout product changes were applied. Historical readiness sections above are not current execution status.
+
+## Native-startup controlled continuation
+
+Prospective COM3-stream-v4 / COM3-grade-v4 uses equal durable-output obligations in both conditions. Native startup prose, audit guide and scoped audit/change-feed tools remain available; their real usage stays in product costs. Fresh fictional owners avoid prior-trial feed/audit contamination. The original account reset guard still refuses unexpected audit history; run each new pair baseline first and preserve the native owner afterward.
+
+Shared host awake/monotonic-clock/capture guards are reused. Startup containers and audit response overhead are separately reported within wall/execution costs, not added twice. Read-only pre/post native startup/schema/guide fingerprints detect drift. Grading requires durable evidence at each relevant checkpoint for both positive and negative judgments. Paginated score verification replaces the first-page assumption. No product changes or participant-specific coaching.
+
+A case clears only with a comparable, frozen pair, validated timing/usage and complete independent evidence review/export. Semantic failures remain findings; a higher Lookout score is not a clearance condition. Human cognitive effort and subscription dollar allocation remain unmeasured. PILOT05 (COM03) and PILOT06 (COM04) are prospective; earlier PILOT03/04 results remain historical.

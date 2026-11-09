@@ -5,10 +5,11 @@ import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
+import {fileURLToPath} from 'node:url';
 const root=path.resolve(process.argv[2]);
 if(fs.existsSync(root))throw Error('New provisioning root required');
 fs.mkdirSync(root,{recursive:true,mode:0o700});
-const repo=path.resolve(path.dirname(new URL(import.meta.url).pathname),'../..');
+const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const require=createRequire(repo+'/package.json');
 const {createClient}=require('@supabase/supabase-js');
 const source=JSON.parse(fs.readFileSync(path.resolve(process.argv[3]),'utf8'));
@@ -36,8 +37,8 @@ ok(await admin.from('profiles').upsert({...remap(original.profile),user_id:user.
 for(const old of original.resumes){const row=remap(old);ok(await admin.storage.from('resumes').upload(row.object_path,pdf,{contentType:'application/pdf',upsert:false}));ok(await admin.from('resumes').insert(row));}
 ok(await admin.from('preferences').upsert({...remap(original.preferences),user_id:user.id}));
 const token='jb_agent_'+randomBytes(32).toString('hex');
-// No activity:write: direct database audit writes are disabled for this credential.
-const scopes=['workspace:read','network:write'];
+// Native audit/change-feed writes are allowed only within this dedicated owner.
+const scopes=['workspace:read','activity:write','network:write'];
 ok(await admin.rpc('manage_agent_connection',{owner_id:user.id,operation:'connections.issue',payload:{name:'Recruiting workspace',tokenHash:createHash('sha256').update(token).digest('hex'),expiresInDays:7,scopes}}));
 receipt.token=token;receipt.scopes=scopes;receipt.idMapping=Object.fromEntries(mapping);persist();
 async function rpc(name,args={}){const res=await fetch(receipt.mcpUrl,{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream',authorization:'Bearer '+token},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})});const j=await res.json();if(!res.ok||j.error||j.result?.isError)throw Error('Read-back MCP rejected');const d=j.result.structuredContent||JSON.parse(j.result.content[0].text);return d.data||d;}

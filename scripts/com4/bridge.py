@@ -23,22 +23,12 @@ def record(kind,data):
  with target.open('a') as f:f.write(json.dumps({'sequence':sequence,'timestamp':time.time(),'type':kind,'data':scrub(data)})+'\n')
 
 def clean(v):
- if isinstance(v,list):return [clean(x) for x in v if not (isinstance(x,dict) and (x.get('id')=='agent-audit' or ('inputSchema' in x and x.get('name') not in allowed)))]
- if isinstance(v,dict):
-  out={k:clean(x) for k,x in v.items()}
-  if out.get('name')=='save_profile_package' and 'inputSchema' in out and config.get('profileIntroductionOnly'):
-   props=out['inputSchema']['properties']
-   out['inputSchema']['properties']={k:v for k,v in props.items() if k in ['eventKey','expectedPersonalVersion','facts','source']}
-   out['inputSchema']['properties']['facts']['properties']={'introduction':props['facts']['properties']['introduction']}
-   out['description']+=' This connection permits facts.introduction only; other profile fields and preferences are outside its permissions.'
-
-  if isinstance(out.get('instructions'),list):out['instructions']=[x for x in out['instructions'] if 'Assignment data collection is enabled' not in str(x)]
-  return out
- if isinstance(v,str):
-  if v.startswith('{') or v.startswith('['):
-   try:return json.dumps(clean(json.loads(v)))
-   except ValueError:pass
-  return v.replace('For authorized work load agent-audit to record the run.','Audit-writing tools are not available on this connection.')
+ # Scope tool schemas only. Native prose and guide instructions remain intact.
+ if isinstance(v,list):return [clean(x) for x in v if not (isinstance(x,dict) and 'inputSchema' in x and x.get('name') not in allowed)]
+ if isinstance(v,dict):return {k:clean(x) for k,x in v.items()}
+ if isinstance(v,str) and v.startswith(('{','[')):
+  try:return json.dumps(clean(json.loads(v)))
+  except ValueError:pass
  return v
 
 def upstream(message):

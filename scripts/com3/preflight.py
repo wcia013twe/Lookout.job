@@ -8,7 +8,7 @@ if a.output.exists():raise SystemExit('Retain existing preflight evidence; choos
 a.output.mkdir(mode=0o700,parents=True)
 runner.snapshot(a.output/'owner-state.json') # Read-only owner assignment and required-table check.
 inputs=a.output/'live-inputs';inputs.mkdir();(inputs/'sources.json').write_text('{"calendar":[],"inbox":[]}')
-out=a.output/'output';out.mkdir();report={'suiteHash':suite,'imageId':image,'inferenceExecuted':False,'domainWrites':False,'contactWriterProbe':'passed_rolled_back','conditions':{}}
+out=a.output/'output';out.mkdir();report={'suiteHash':suite,'imageId':image,'inferenceExecuted':False,'domainWrites':False,'contactWriterProbe':'passed_rolled_back','exactSeedProbe':'passed_rolled_back','auditWriterProbe':'passed_rolled_back','nativeContractFingerprint':'verified','conditions':{}}
 for condition in ['baseline','lookout']:
  sd=a.output/condition;sd.mkdir();session=None
  try:
@@ -35,6 +35,10 @@ for condition in ['baseline','lookout']:
    if {t['name'] for t in value['tools']}-set(runner.CONFIG['allowedTools']):raise RuntimeError('Out-of-scope discovery schema')
    wrapped=request({'jsonrpc':'2.0','id':4,'method':'tools/call','params':{'name':'call_discovered_tool','arguments':{'name':'read_guide','arguments':{'id':'cold-outreach'}}}})
    if wrapped.get('error') or wrapped.get('result',{}).get('isError'):raise RuntimeError('Native wrapped guide read failed')
+   changes=request({'jsonrpc':'2.0','id':6,'method':'tools/call','params':{'name':'call_discovered_tool','arguments':{'name':'read_muse_changes','arguments':{}}}})
+   if changes.get('error') or changes.get('result',{}).get('isError'):raise RuntimeError('Native change-feed read failed')
+   audit=request({'jsonrpc':'2.0','id':7,'method':'tools/call','params':{'name':'call_discovered_tool','arguments':{'name':'read_guide','arguments':{'id':'agent-audit'}}}})
+   if audit.get('error') or audit.get('result',{}).get('isError'):raise RuntimeError('Native audit guide unavailable')
    denied=request({'jsonrpc':'2.0','id':5,'method':'tools/call','params':{'name':'call_discovered_tool','arguments':{'name':'save_profile_package','arguments':{}}}})
    if not denied.get('result',{}).get('isError'):raise RuntimeError('Out-of-scope wrapper was not denied')
 
