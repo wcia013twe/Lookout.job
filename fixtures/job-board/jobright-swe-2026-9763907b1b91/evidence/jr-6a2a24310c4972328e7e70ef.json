@@ -1,0 +1,146 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6a2a24310c4972328e7e70ef",
+  "capturedAt": "2026-11-09T17:50:39.699935+00:00",
+  "responseSha256": "0e4665d5e796c9d7faa4b81585d7aaa7268dfaa2550aacd1699eb1ccced452ff",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6a2a24310c4972328e7e70ef",
+    "jobTitle": "Embedded Software Engineer, Implant Embedded Systems",
+    "jobLocation": "Austin, TX",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 13:27:17",
+    "employmentType": "Full-time",
+    "salaryDesc": "$119K/yr - $281K/yr",
+    "jobSummary": "Neuralink is creating devices that enable a bi-directional interface with the brain, aiming to restore movement and sight. They are seeking an Embedded Software Engineer to work on high-performance, safety-critical embedded systems for brain-computer interfaces, with responsibilities including defining and implementing firmware features.",
+    "minYearsOfExperience": 1,
+    "coreResponsibilities": [
+      "Own complex challenges from definition to solution",
+      "Utilize your ability to work cross functionally to deliver safety critical systems while considering power, radio, and thermal requirements",
+      "Take ownership of products and/or core features; from planning and design to execution and testing",
+      "Build on your fundamental understanding of hardware while contributing to bare-metal firmware",
+      "Embrace a fast-paced iterative environment that prioritizes shipping manufacturable solutions"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor's degree in computer science, electrical engineering, related field, or equivalent experience",
+      "1+ years of experience with embedded systems (including internships)",
+      "Proficient in embedded C or Rust",
+      "Ability to design bare-metal embedded systems in highly constrained environments",
+      "Strong Electrical Engineering fundamentals",
+      "Signal processing fundamentals",
+      "You find enormous challenges exciting and enjoy discovering and defining problems as much as solving them",
+      "You deliver. You may enjoy thoughtful conversations about problems and perfecting design, but in the end, you know that delivering reliable manufacturable solutions matters",
+      "You are a cross-disciplinary team member. You are excited to work with and learn from chip designers to neuroscientists",
+      "Experience with embedded stacks for ARM cores",
+      "Experience with safety-critical systems",
+      "Experience with FPGA development and testing",
+      "Experience with RF, BLE, TCP/IP stacks from a practical embedded perspective",
+      "Prior work or experience with applied cryptography and embedded systems security"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor's degree in computer science, electrical engineering, related field, or equivalent experience",
+        "1+ years of experience with embedded systems (including internships)",
+        "Proficient in embedded C or Rust",
+        "Ability to design bare-metal embedded systems in highly constrained environments",
+        "Strong Electrical Engineering fundamentals",
+        "Signal processing fundamentals",
+        "You find enormous challenges exciting and enjoy discovering and defining problems as much as solving them",
+        "You deliver. You may enjoy thoughtful conversations about problems and perfecting design, but in the end, you know that delivering reliable manufacturable solutions matters",
+        "You are a cross-disciplinary team member. You are excited to work with and learn from chip designers to neuroscientists"
+      ],
+      "preferredHave": [
+        "Experience with embedded stacks for ARM cores",
+        "Experience with safety-critical systems",
+        "Experience with FPGA development and testing",
+        "Experience with RF, BLE, TCP/IP stacks from a practical embedded perspective",
+        "Prior work or experience with applied cryptography and embedded systems security"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [
+          "1+ years of experience with embedded systems (including internships)"
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Bachelor's in Computer Science"
+          },
+          {
+            "skill": "Embedded Systems Experience"
+          },
+          {
+            "skill": "Embedded C Proficiency"
+          },
+          {
+            "skill": "Rust Proficiency"
+          },
+          {
+            "skill": "Bare-Metal Design"
+          },
+          {
+            "skill": "Electrical Engineering Fundamentals"
+          },
+          {
+            "skill": "Signal Processing Fundamentals"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Problem Solving"
+          },
+          {
+            "skill": "Team Collaboration"
+          },
+          {
+            "skill": "Adaptability"
+          },
+          {
+            "skill": "Curiosity"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Embedded stacks for ARM"
+          },
+          {
+            "skill": "Safety-critical systems"
+          },
+          {
+            "skill": "FPGA development"
+          },
+          {
+            "skill": "FPGA testing"
+          },
+          {
+            "skill": "RF stacks"
+          },
+          {
+            "skill": "BLE stacks"
+          },
+          {
+            "skill": "TCP/IP stacks"
+          },
+          {
+            "skill": "Applied cryptography"
+          },
+          {
+            "skill": "Embedded systems security"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Neuralink is creating devices that enable a bi-directional interface with the brain, aiming to restore movement and sight. They are seeking an Embedded Software Engineer to work on high-performance, safety-critical embedded systems for brain-computer interfaces, with responsibilities including defining and implementing firmware features.\nResponsibilities\nOwn complex challenges from definition to solution\nUtilize your ability to work cross functionally to deliver safety critical systems while considering power, radio, and thermal requirements\nTake ownership of products and/or core features; from planning and design to execution and testing\nBuild on your fundamental understanding of hardware while contributing to bare-metal firmware\nEmbrace a fast-paced iterative environment that prioritizes shipping manufacturable solutions\nSkills\nBachelor's degree in computer science, electrical engineering, related field, or equivalent experience\n1+ years of experience with embedded systems (including internships)\nProficient in embedded C or Rust\nAbility to design bare-metal embedded systems in highly constrained environments\nStrong Electrical Engineering fundamentals\nSignal processing fundamentals\nYou find enormous challenges exciting and enjoy discovering and defining problems as much as solving them\nYou deliver. You may enjoy thoughtful conversations about problems and perfecting design, but in the end, you know that delivering reliable manufacturable solutions matters\nYou are a cross-disciplinary team member. You are excited to work with and learn from chip designers to neuroscientists\nExperience with embedded stacks for ARM cores\nExperience with safety-critical systems\nExperience with FPGA development and testing\nExperience with RF, BLE, TCP/IP stacks from a practical embedded perspective\nPrior work or experience with applied cryptography and embedded systems security\nBenefits\nExcellent medical, dental, and vision insurance through a PPO plan\nPaid holidays\nCommuter benefits\nMeals provided\nEquity (RSUs) •\\•Temporary Employees & Interns excluded•\n401(k) plan •\\•Interns initially excluded until they work 1,000 hours•\nParental leave •\\•Temporary Employees & Interns excluded•\nFlexible time off •\\•Temporary Employees & Interns excluded•\nCompany Overview\nNeuralink is a neurotechnology company that focuses on developing brain-computer interfaces designed to treat neurological disorders. It was founded in 2016, and is headquartered in Austin, Texas, USA, with a workforce of 201-500 employees. Its website is https://www.neuralink.com.\nCompany H1B Sponsorship\nNeuralink has a track record of offering H1B sponsorships, with 22 in 2026, 10 in 2025, 14 in 2024, 7 in 2023, 5 in 2022, 7 in 2021, 6 in 2020. Please note that this does not guarantee sponsorship for this specific role.",
+  "sourceDatePosted": "2026-11-09 13:27:17"
+}

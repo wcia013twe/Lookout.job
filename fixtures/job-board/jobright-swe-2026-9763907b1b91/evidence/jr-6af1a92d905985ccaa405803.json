@@ -1,0 +1,242 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af1a92d905985ccaa405803",
+  "capturedAt": "2026-11-09T17:50:41.030791+00:00",
+  "responseSha256": "762bb1efa220d9377d27c702acdaabef70b07a11592241d5fb1a0f818b15a9b9",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af1a92d905985ccaa405803",
+    "jobTitle": "Junior Infrastructure Engineer",
+    "jobLocation": "Cardiff, Wales",
+    "workModel": "Hybrid",
+    "publishTime": "2026-11-09 11:06:21",
+    "employmentType": "Full-time",
+    "salaryDesc": "£0/yr - £35K/yr",
+    "jobSummary": "LDMS is hiring a Junior Infrastructure Engineer to help build and support the cloud infrastructure behind its SaaS products and internal tools. The role also supports Oracle databases and middleware and end-user computing, while contributing to infrastructure improvements, proof-of-concept solutions, and documentation.",
+    "minYearsOfExperience": 1,
+    "coreResponsibilities": [
+      "Help build and support the cloud infrastructure that underpins our SaaS products and internal tooling – this will be your primary focus",
+      "Support our Oracle RDBMS and middleware and our end user computing estate – for example, database patching and backups, user requests, and device management through Intune – learning these technologies and helping the wider team support them (no prior experience needed)",
+      "Plan, implement and test solutions with growing independence, knowing when to ask for help",
+      "Learn how our infrastructure works and suggest improvements",
+      "Help build proof-of-concept solutions to evaluate new technologies",
+      "Write clear documentation so others can understand and build on your work",
+      "Learn from experienced engineers, who will mentor you on technology, architecture and best practices"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "A proactive, self-starting attitude and a willingness to ask questions",
+      "Curiosity and an appetite for exploring new technologies",
+      "A genuine enjoyment of learning from others and sharing what you learn",
+      "A belief that constant improvement underpins good engineering",
+      "1–2 years' experience in an infrastructure, cloud, or IT operations role, or a relevant degree plus around a year of industry experience (for example, a placement year or internship)",
+      "An understanding of how cloud infrastructure supports production services",
+      "Some hands-on experience with core AWS services such as EC2, VPC, ECS, RDS, and IAM, alongside a basic understanding of cloud security and networking fundamentals (for example, VPCs, subnets, and firewall rules)",
+      "Exposure to, or a strong interest in, Infrastructure-as-Code tools (for example, Terraform or similar) and version control such as Git",
+      "A basic understanding of CI/CD pipelines that enable automated, reliable delivery of infrastructure changes",
+      "Awareness of monitoring and observability concepts, including metrics, logging, and alerting",
+      "Basic scripting ability in a language such as Python, Bash, or PowerShell to automate operational tasks and workflows",
+      "Certifications such as AWS Cloud Practitioner are a plus",
+      "Exposure to Microsoft 365 services such as Entra ID, Intune, Defender, and Conditional Access",
+      "Experience with Oracle RDBMS, Oracle middleware, or PostgreSQL",
+      "Some experience using Linux and Windows, including the command line; exposure to Ansible is a bonus",
+      "Familiarity to containers (for example, Docker or ECS, our current platform) or Kubernetes/EKS"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "A proactive, self-starting attitude and a willingness to ask questions",
+        "Curiosity and an appetite for exploring new technologies",
+        "A genuine enjoyment of learning from others and sharing what you learn",
+        "A belief that constant improvement underpins good engineering",
+        "1–2 years' experience in an infrastructure, cloud, or IT operations role, or a relevant degree plus around a year of industry experience (for example, a placement year or internship)",
+        "An understanding of how cloud infrastructure supports production services",
+        "Some hands-on experience with core AWS services such as EC2, VPC, ECS, RDS, and IAM, alongside a basic understanding of cloud security and networking fundamentals (for example, VPCs, subnets, and firewall rules)",
+        "Exposure to, or a strong interest in, Infrastructure-as-Code tools (for example, Terraform or similar) and version control such as Git",
+        "A basic understanding of CI/CD pipelines that enable automated, reliable delivery of infrastructure changes",
+        "Awareness of monitoring and observability concepts, including metrics, logging, and alerting",
+        "Basic scripting ability in a language such as Python, Bash, or PowerShell to automate operational tasks and workflows"
+      ],
+      "preferredHave": [
+        "Certifications such as AWS Cloud Practitioner are a plus",
+        "Exposure to Microsoft 365 services such as Entra ID, Intune, Defender, and Conditional Access",
+        "Experience with Oracle RDBMS, Oracle middleware, or PostgreSQL",
+        "Some experience using Linux and Windows, including the command line; exposure to Ansible is a bonus",
+        "Familiarity to containers (for example, Docker or ECS, our current platform) or Kubernetes/EKS"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [
+          "1–2 years’ experience in an infrastructure, cloud, or IT operations role, or a relevant degree plus around a year of industry experience (for example, a placement year or internship)."
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Infrastructure Operations"
+          },
+          {
+            "skill": "Cloud Operations"
+          },
+          {
+            "skill": "IT Operations"
+          },
+          {
+            "skill": "Production Cloud Infrastructure"
+          },
+          {
+            "skill": "AWS EC2"
+          },
+          {
+            "skill": "AWS VPC"
+          },
+          {
+            "skill": "AWS ECS"
+          },
+          {
+            "skill": "AWS RDS"
+          },
+          {
+            "skill": "AWS IAM"
+          },
+          {
+            "skill": "Cloud Security"
+          },
+          {
+            "skill": "Cloud Networking"
+          },
+          {
+            "skill": "Infrastructure as Code"
+          },
+          {
+            "skill": "Terraform"
+          },
+          {
+            "skill": "Git"
+          },
+          {
+            "skill": "CI/CD Pipelines"
+          },
+          {
+            "skill": "Infrastructure Automation"
+          },
+          {
+            "skill": "Monitoring"
+          },
+          {
+            "skill": "Observability"
+          },
+          {
+            "skill": "Metrics"
+          },
+          {
+            "skill": "Logging"
+          },
+          {
+            "skill": "Alerting"
+          },
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "Bash"
+          },
+          {
+            "skill": "PowerShell"
+          },
+          {
+            "skill": "Operational Scripting"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Proactive Attitude"
+          },
+          {
+            "skill": "Self-Starting"
+          },
+          {
+            "skill": "Questioning Mindset"
+          },
+          {
+            "skill": "Curiosity"
+          },
+          {
+            "skill": "Continuous Learning"
+          },
+          {
+            "skill": "Knowledge Sharing"
+          },
+          {
+            "skill": "Continuous Improvement"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "AWS Cloud Practitioner"
+          },
+          {
+            "skill": "Microsoft 365"
+          },
+          {
+            "skill": "Entra ID"
+          },
+          {
+            "skill": "Microsoft Intune"
+          },
+          {
+            "skill": "Microsoft Defender"
+          },
+          {
+            "skill": "Conditional Access"
+          },
+          {
+            "skill": "Oracle RDBMS"
+          },
+          {
+            "skill": "Oracle Middleware"
+          },
+          {
+            "skill": "PostgreSQL"
+          },
+          {
+            "skill": "Linux"
+          },
+          {
+            "skill": "Windows"
+          },
+          {
+            "skill": "Command-Line Skills"
+          },
+          {
+            "skill": "Ansible"
+          },
+          {
+            "skill": "Containerization"
+          },
+          {
+            "skill": "Docker"
+          },
+          {
+            "skill": "Amazon ECS"
+          },
+          {
+            "skill": "Kubernetes"
+          },
+          {
+            "skill": "Amazon EKS"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "LDMS is hiring a Junior Infrastructure Engineer to help build and support the cloud infrastructure behind its SaaS products and internal tools. The role also supports Oracle databases and middleware and end-user computing, while contributing to infrastructure improvements, proof-of-concept solutions, and documentation.\nResponsibilities\nHelp build and support the cloud infrastructure that underpins our SaaS products and internal tooling – this will be your primary focus\nSupport our Oracle RDBMS and middleware and our end user computing estate – for example, database patching and backups, user requests, and device management through Intune – learning these technologies and helping the wider team support them (no prior experience needed)\nPlan, implement and test solutions with growing independence, knowing when to ask for help\nLearn how our infrastructure works and suggest improvements\nHelp build proof-of-concept solutions to evaluate new technologies\nWrite clear documentation so others can understand and build on your work\nLearn from experienced engineers, who will mentor you on technology, architecture and best practices\nSkills\nA proactive, self-starting attitude and a willingness to ask questions\nCuriosity and an appetite for exploring new technologies\nA genuine enjoyment of learning from others and sharing what you learn\nA belief that constant improvement underpins good engineering\n1–2 years' experience in an infrastructure, cloud, or IT operations role, or a relevant degree plus around a year of industry experience (for example, a placement year or internship)\nAn understanding of how cloud infrastructure supports production services\nSome hands-on experience with core AWS services such as EC2, VPC, ECS, RDS, and IAM, alongside a basic understanding of cloud security and networking fundamentals (for example, VPCs, subnets, and firewall rules)\nExposure to, or a strong interest in, Infrastructure-as-Code tools (for example, Terraform or similar) and version control such as Git\nA basic understanding of CI/CD pipelines that enable automated, reliable delivery of infrastructure changes\nAwareness of monitoring and observability concepts, including metrics, logging, and alerting\nBasic scripting ability in a language such as Python, Bash, or PowerShell to automate operational tasks and workflows\nCertifications such as AWS Cloud Practitioner are a plus\nExposure to Microsoft 365 services such as Entra ID, Intune, Defender, and Conditional Access\nExperience with Oracle RDBMS, Oracle middleware, or PostgreSQL\nSome experience using Linux and Windows, including the command line; exposure to Ansible is a bonus\nFamiliarity to containers (for example, Docker or ECS, our current platform) or Kubernetes/EKS\nBenefits\nHybrid/Flexible Working\nMentorship from experienced engineers on technology, architecture and best practices\nCompany Overview\nLDMS are pioneers of Credit Software, with a long history of delivering state-of-the-art loan management solutions across EMEA. It was founded in 2011, and is headquartered in Cardiff, Cardiff, GBR, with a workforce of 51-200 employees. Its website is https://www.ldms.com/.",
+  "sourceDatePosted": "2026-11-09 11:06:21"
+}

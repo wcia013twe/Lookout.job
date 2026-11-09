@@ -1,0 +1,201 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af1e6d51aaffa49f737ea06",
+  "capturedAt": "2026-11-09T17:50:38.954058+00:00",
+  "responseSha256": "3f5e1adb3095b6bee6bd94cdab28a15621d13868a134e0d64deabc1d7b0a06b7",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af1e6d51aaffa49f737ea06",
+    "jobTitle": "Wordpress Specialist",
+    "jobLocation": "Groveland, MA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 15:29:25",
+    "employmentType": "Full-time",
+    "jobSummary": "John Guilfoil Public Relations is hiring a Wordpress Specialist for its Website Division. The role designs, builds, updates, and supports client websites, including transferring data and launching new sites, while responding to client support requests.",
+    "coreResponsibilities": [
+      "Website design (blocks and custom/css), moderate Wordpress development, day-to-day updates/edits as requested by clients, transferring of data to new sites and new website builds",
+      "Meeting with the clients to understand their wants and needs",
+      "Exploring templates and layouts",
+      "Building out a Wordpress website",
+      "Ultimately launching a new and advanced website",
+      "Respond to client support requests in a timely manner",
+      "Develop and Design Wordpress websites with moderate functionality",
+      "News blogs, public safety/police/fire websites, school and government websites",
+      "Membership sites, news/event portals, agency websites, event ticketing, LMS",
+      "Work with the team on existing client websites and new website creation",
+      "Partner with Account Teams to troubleshoot client website errors and problems as they arise",
+      "Other duties and special projects as assigned"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Understanding of the Wordpress platform & navigating the backend dashboard with Gutenberg Blocks and other editors",
+      "Design eye and development skill from kickoff to launch",
+      "Knowledge of Wordpress Plugins such as Gravity Forms, Events Calendar Pro, Paid Memberships Pro, Advanced Forms, ACF, etc",
+      "Exhibit the ability to effectively communicate and demonstrate organizational skills",
+      "Familiarity with the Adobe Creative Suite, specifically Photoshop",
+      "Familiarity with Canva",
+      "Familiarity with Social Media Platforms such as; Facebook, Instagram, X, and LinkedIn",
+      "Familiarity with Cloudflare",
+      "HTML, CSS, Javascript and PHP experience",
+      "Ability to work positively and collaboratively with co-workers and clients",
+      "Ability to work in a team environment and maximize input effectively across all levels",
+      "Ability to work independently with managers oversight",
+      "Self-motivated",
+      "Effective time management skills to manage multiple tasks/projects simultaneously",
+      "Committed to the company's vision, mission and strategic goals",
+      "Intermediate knowledge of WordPress themes and plugins, graphic design software",
+      "Custom Fields experience a plus"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Understanding of the Wordpress platform & navigating the backend dashboard with Gutenberg Blocks and other editors",
+        "Design eye and development skill from kickoff to launch",
+        "Knowledge of Wordpress Plugins such as Gravity Forms, Events Calendar Pro, Paid Memberships Pro, Advanced Forms, ACF, etc",
+        "Exhibit the ability to effectively communicate and demonstrate organizational skills",
+        "Familiarity with the Adobe Creative Suite, specifically Photoshop",
+        "Familiarity with Canva",
+        "Familiarity with Social Media Platforms such as; Facebook, Instagram, X, and LinkedIn",
+        "Familiarity with Cloudflare",
+        "HTML, CSS, Javascript and PHP experience",
+        "Ability to work positively and collaboratively with co-workers and clients",
+        "Ability to work in a team environment and maximize input effectively across all levels",
+        "Ability to work independently with managers oversight",
+        "Self-motivated",
+        "Effective time management skills to manage multiple tasks/projects simultaneously",
+        "Committed to the company's vision, mission and strategic goals",
+        "Intermediate knowledge of WordPress themes and plugins, graphic design software",
+        "Custom Fields experience a plus"
+      ],
+      "preferredHave": []
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "WordPress Platform"
+          },
+          {
+            "skill": "WordPress Backend"
+          },
+          {
+            "skill": "Gutenberg Blocks"
+          },
+          {
+            "skill": "WordPress Editors"
+          },
+          {
+            "skill": "WordPress Themes"
+          },
+          {
+            "skill": "WordPress Plugin Knowledge"
+          },
+          {
+            "skill": "Gravity Forms"
+          },
+          {
+            "skill": "Events Calendar Pro"
+          },
+          {
+            "skill": "Paid Memberships Pro"
+          },
+          {
+            "skill": "Advanced Forms"
+          },
+          {
+            "skill": "Advanced Custom Fields"
+          },
+          {
+            "skill": "Web Design"
+          },
+          {
+            "skill": "Web Development"
+          },
+          {
+            "skill": "Project Lifecycle Management"
+          },
+          {
+            "skill": "Adobe Creative Suite"
+          },
+          {
+            "skill": "Adobe Photoshop"
+          },
+          {
+            "skill": "Canva"
+          },
+          {
+            "skill": "Facebook"
+          },
+          {
+            "skill": "Instagram"
+          },
+          {
+            "skill": "X"
+          },
+          {
+            "skill": "LinkedIn"
+          },
+          {
+            "skill": "Cloudflare"
+          },
+          {
+            "skill": "HTML"
+          },
+          {
+            "skill": "CSS"
+          },
+          {
+            "skill": "JavaScript"
+          },
+          {
+            "skill": "PHP"
+          },
+          {
+            "skill": "Graphic Design Software"
+          },
+          {
+            "skill": "Custom Fields"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Communication"
+          },
+          {
+            "skill": "Organizational Skills"
+          },
+          {
+            "skill": "Collaboration"
+          },
+          {
+            "skill": "Teamwork"
+          },
+          {
+            "skill": "Independent Work"
+          },
+          {
+            "skill": "Self-Motivation"
+          },
+          {
+            "skill": "Time Management"
+          },
+          {
+            "skill": "Strategic Goal Alignment"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "John Guilfoil Public Relations is hiring a Wordpress Specialist for its Website Division. The role designs, builds, updates, and supports client websites, including transferring data and launching new sites, while responding to client support requests.\nResponsibilities\nWebsite design (blocks and custom/css), moderate Wordpress development, day-to-day updates/edits as requested by clients, transferring of data to new sites and new website builds\nMeeting with the clients to understand their wants and needs\nExploring templates and layouts\nBuilding out a Wordpress website\nUltimately launching a new and advanced website\nRespond to client support requests in a timely manner\nDevelop and Design Wordpress websites with moderate functionality\nNews blogs, public safety/police/fire websites, school and government websites\nMembership sites, news/event portals, agency websites, event ticketing, LMS\nWork with the team on existing client websites and new website creation\nPartner with Account Teams to troubleshoot client website errors and problems as they arise\nOther duties and special projects as assigned\nSkills\nUnderstanding of the Wordpress platform & navigating the backend dashboard with Gutenberg Blocks and other editors\nDesign eye and development skill from kickoff to launch\nKnowledge of Wordpress Plugins such as Gravity Forms, Events Calendar Pro, Paid Memberships Pro, Advanced Forms, ACF, etc\nExhibit the ability to effectively communicate and demonstrate organizational skills\nFamiliarity with the Adobe Creative Suite, specifically Photoshop\nFamiliarity with Canva\nFamiliarity with Social Media Platforms such as; Facebook, Instagram, X, and LinkedIn\nFamiliarity with Cloudflare\nHTML, CSS, Javascript and PHP experience\nAbility to work positively and collaboratively with co-workers and clients\nAbility to work in a team environment and maximize input effectively across all levels\nAbility to work independently with managers oversight\nSelf-motivated\nEffective time management skills to manage multiple tasks/projects simultaneously\nCommitted to the company's vision, mission and strategic goals\nIntermediate knowledge of WordPress themes and plugins, graphic design software\nCustom Fields experience a plus\nCompany Overview\nJohn Guilfoil Public Relations provides strategy, content, press releases, crisis management, website design, and development services. It was founded in 2013, and is headquartered in Groveland, Massachusetts, USA, with a workforce of 11-50 employees. Its website is https://jgpr.net.",
+  "sourceDatePosted": "2026-11-09 15:29:25"
+}

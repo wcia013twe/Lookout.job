@@ -1,0 +1,95 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6a574e9cf7517b519ad59dad",
+  "capturedAt": "2026-11-09T17:50:40.377559+00:00",
+  "responseSha256": "df9027129b9a32410a1918febdfaf66177a61d76aa58645e837a6bed29924f6c",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6a574e9cf7517b519ad59dad",
+    "jobTitle": "Software Engineer I / II",
+    "jobLocation": "New York, NY",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 12:00:05",
+    "employmentType": "Full-time",
+    "salaryDesc": "$160K/yr - $250K/yr",
+    "jobSummary": "Giga builds AI agents for enterprise customer support and operations. Software engineers build and maintain the backend systems powering those agents, including data pipelines, integrations, and agent infrastructure, while shipping features and taking ownership of projects as they grow.",
+    "minYearsOfExperience": 1,
+    "coreResponsibilities": [
+      "You'll work across the backend, from data pipelines and integrations to agent infrastructure, shipping features alongside experienced engineers who will help you grow",
+      "We expect you to ramp up quickly, take ownership of your work, and operate with increasing independence as you learn the codebase",
+      "Atlas: Building features for our AI assistant: charts and alerts in Slack, natural language queries, and expanding Atlas to manage platform resources",
+      "Activity Stream: Log visualization with filters, timestamps, and frequency charts to give visibility into agent behavior",
+      "Dynamic knowledge: Adding time-based knowledge (like ongoing incidents) that auto-updates from sources like status pages",
+      "Agent memory: Conversation awareness and recent interaction lookups so agents remember context across sessions",
+      "As an early-career engineer, you'll be paired with senior engineers on larger initiatives while also owning smaller projects end-to-end as you ramp up"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Have 1-3 years of professional software engineering experience",
+      "Are curious and ask good questions—you want to understand why things work, not just how",
+      "Can take feedback well and iterate quickly",
+      "Prefer shipping over perfection but still care about quality",
+      "Want to grow at a startup where you'll have real responsibility early"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Have 1-3 years of professional software engineering experience",
+        "Are curious and ask good questions—you want to understand why things work, not just how",
+        "Can take feedback well and iterate quickly",
+        "Prefer shipping over perfection but still care about quality",
+        "Want to grow at a startup where you'll have real responsibility early"
+      ],
+      "preferredHave": []
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [
+          "Have 1-3 years of professional software engineering experience"
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Professional software engineering experience"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Curiosity"
+          },
+          {
+            "skill": "Asking insightful questions"
+          },
+          {
+            "skill": "Receptiveness to feedback"
+          },
+          {
+            "skill": "Rapid iteration"
+          },
+          {
+            "skill": "Execution focus"
+          },
+          {
+            "skill": "Quality orientation"
+          },
+          {
+            "skill": "Growth mindset"
+          },
+          {
+            "skill": "Ownership"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Giga builds AI agents for enterprise customer support and operations. Software engineers build and maintain the backend systems powering those agents, including data pipelines, integrations, and agent infrastructure, while shipping features and taking ownership of projects as they grow.\nResponsibilities\nYou'll work across the backend, from data pipelines and integrations to agent infrastructure, shipping features alongside experienced engineers who will help you grow\nWe expect you to ramp up quickly, take ownership of your work, and operate with increasing independence as you learn the codebase\nAtlas: Building features for our AI assistant: charts and alerts in Slack, natural language queries, and expanding Atlas to manage platform resources\nActivity Stream: Log visualization with filters, timestamps, and frequency charts to give visibility into agent behavior\nDynamic knowledge: Adding time-based knowledge (like ongoing incidents) that auto-updates from sources like status pages\nAgent memory: Conversation awareness and recent interaction lookups so agents remember context across sessions\nAs an early-career engineer, you'll be paired with senior engineers on larger initiatives while also owning smaller projects end-to-end as you ramp up\nSkills\nHave 1-3 years of professional software engineering experience\nAre curious and ask good questions—you want to understand why things work, not just how\nCan take feedback well and iterate quickly\nPrefer shipping over perfection but still care about quality\nWant to grow at a startup where you'll have real responsibility early\nBenefits\nBonus\nEquity\nCatered lunch daily\nDinner stipend\n$300/month wellness & commuter benefit (gym, fitness classes, mental health)\n401(k) plan\nMedical, dental, and vision coverage\nCompany Overview\nGiga provides an AI platform for voice and chat agents automating customer service and operational workflows with analytics. It was founded in 2024, and is headquartered in San Francisco, California, USA, with a workforce of 51-200 employees. Its website is https://giga.ai.\nCompany H1B Sponsorship\nGiga has a track record of offering H1B sponsorships, with 8 in 2026. Please note that this does not guarantee sponsorship for this specific role.",
+  "sourceDatePosted": "2026-11-09 12:00:05"
+}
