@@ -162,7 +162,7 @@ def run(condition,repeat,pair_id,pilot=False):
     session=Session(sd,inputs,out,condition,stage['_session'])
    previous_session=stage['_session']
    meta['status']='running';write(run/'run.json',meta)
-   record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
+   record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':condition=='baseline' and stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
    write(sd/'delivery.json',record)
    sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm)
    snapshot(sd/'after-state.json');hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
@@ -194,7 +194,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM3-stream-v3' or CONFIG.get('taskId')!='COM3':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM3-stream-v2' or CONFIG.get('taskId')!='COM3':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM3':raise RuntimeError('Dedicated COM3 account receipt required')
 
@@ -222,7 +222,8 @@ def inputs_prompt(stage,condition):
  if stage['kind']=='onboarding':
   return prefix+stage['request']+'\n\n'+(R/'background'/'onboarding.md').read_text()
  if stage['kind'] in ['user_update','final_reconciliation']:return prefix+stage['request']
- return prefix+stage['baseline']
+ if condition=='baseline':return prefix+stage['baseline']
+ return prefix+'Scheduled recruiting connection check. Review the available updates under the configured read/prepare/save permissions.'
 
 def packets():
  spec=json.loads((S/'scenario.json').read_text())

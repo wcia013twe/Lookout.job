@@ -61,3 +61,11 @@ Cost is the fourth dimension, separate from quality, active time and effort. All
 - 44 focused checks passed (including per-case cost exports), and 158 catalog roles validated. The full suite initially reported 1202 passes, five skips and three failures; the two changed-contract failures were corrected and reverified. The unmodified connected-decision database scenario still reported Invalid human decision. Do not describe the full suite as green.
 - Separate Langfuse datasets for COM1-v5, COM2-v4, COM3-v2 and COM4-v3 were registered and read back; no pilot scores were overwritten.
 - Authoritative private setups are `com1-repaired-v5-r2`, `com2-repaired-v4-r2`, `com3-repaired-v2-r2`, `com4-repaired-v3-r2` under the existing experiment-control directory. Earlier preparation attempts remain retained and superseded.
+
+## Matched-intent pilot isolation (COM01/COM02)
+
+COM1-stream-v6 / COM1-grade-v5 and COM2-stream-v5 / COM2-grade-v4 give both conditions the same external-stage request. Both incur prescribed initiations; these controlled pilots do not estimate proactive initiation savings. Scheduled configuration is disabled. Native MCP initialization and default tools are forwarded through the scoped bridge; the bridge no longer performs eager all-tool discovery. Existing local-only authorization restrictions and audit isolation remain. Supporting schemas are discovered by the participant.
+
+Structural MCP request measurements distinguish initialization/listing, discovery/guides, and task calls using elapsed seconds and response bytes (not token estimates). These are components of execution time, not additional time to add to it. Historical uninstrumented traces do not acquire zero overhead. Numeric measurements flow into detailed Langfuse scores.
+
+COM03/04 preliminary changes are retained only in checkpoint 9752e265 for separate continuation; this pass does not activate or claim verification for them. No product instructions or runtime were changed. Fresh frozen setups and prospective dataset receipts must be created before inference. Never edit PILOT-02 or other historical freezes.

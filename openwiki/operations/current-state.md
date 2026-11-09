@@ -1137,3 +1137,7 @@ partial review after failed after-state capture, retaining time/effort/cost.
 Historical pilot/receipt folders are unchanged. Focused regressions and fictional
 browser rehearsal verify these repairs; actual JOB02 live targets/human ingress,
 JOB03 native/reminder service and JOB04 actual host gates remain unresolved.
+
+### Matched-intent communication pilot harness
+
+COM01 v6 and COM02 v5 use identical task requests and scoped native MCP startup/discovery rather than eager schema injection. Structural startup/discovery overhead is measured separately. This isolates tool/storage effects; proactive user-effort savings are not measured. See [repair protocol](../../docs/communication-repairs.md). Focused checks verify contracts; fresh native preflight and participant runs remain separate evidence.

@@ -11,7 +11,7 @@ def fixture(run,condition='lookout',status='completed'):
  (run/'output').mkdir(exist_ok=True)
  for i,s in enumerate(SPEC['stages'],1):
   sd=run/f'stage-{i}';save(sd/'stage-run.json',{'status':'completed','durationSeconds':2,'startedAt':start+i*5,'threadId':s['session']})
-  save(sd/'delivery.json',{'stage':i,'eventId':s['id'],'releasedMinute':s['minute'],'triggerMinute':s['minute'],'assignedInitiation':condition=='baseline' and s['kind']=='external','assignedOnboarding':i==1,'necessaryUserUpdate':s['kind']=='user_update'})
+  save(sd/'delivery.json',{'stage':i,'eventId':s['id'],'releasedMinute':s['minute'],'triggerMinute':s['minute'],'assignedInitiation':s['kind']=='external','assignedOnboarding':i==1,'necessaryUserUpdate':s['kind']=='user_update'})
   save(sd/'trace.jsonl',{'capturedAt':start+i*5+1,'event':{'type':'item.completed','item':{'id':'a','type':'agent_message','text':'Fictional fixture; no model ran.'}}})
   (sd/'lookout-trace.jsonl').write_text('')
   save(sd/'after-state.json',{'fictional':True});save(sd/'before-state.json',{'fictional':True})
@@ -58,7 +58,7 @@ class Tests(unittest.TestCase):
   self.assertIn('PRIVATE BACKGROUND',runner.inputs_prompt(SPEC['stages'][0],'baseline'))
   for s in SPEC['stages'][1:]:
    for c in ['baseline','lookout']:self.assertNotIn('PRIVATE BACKGROUND',runner.inputs_prompt(s,c));self.assertNotIn('profile.md',runner.inputs_prompt(s,c))
-  self.assertNotIn('Help me prepare',runner.inputs_prompt(SPEC['stages'][1],'lookout'))
+  self.assertIn('Help me prepare',runner.inputs_prompt(SPEC['stages'][1],'lookout'))
  def test_condition_storage_instructions(self):
   for stage in SPEC['stages'][1:]:
    lookout=runner.inputs_prompt(stage,'lookout');baseline=runner.inputs_prompt(stage,'baseline')

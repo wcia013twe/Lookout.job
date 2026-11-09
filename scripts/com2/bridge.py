@@ -99,14 +99,14 @@ for line in sys.stdin:
    payload=args.get('arguments',{}) if name=='call_discovered_tool' else args
    if name in {x['name'] for x in LOCAL_TOOLS}:
     reply={'jsonrpc':'2.0','id':mid,'result':{'content':[{'type':'text','text':json.dumps(local_call(name,args))}]}}
-    record('mcp.measurement',{'method':method,'tool':msg.get('params',{}).get('name'),'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});record('mcp.response',reply);print(json.dumps(reply),flush=True);continue
+    record('mcp.measurement',{'method':method,'tool':(msg.get('params',{}).get('arguments',{}).get('name') if msg.get('params',{}).get('name')=='call_discovered_tool' else msg.get('params',{}).get('name')),'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});record('mcp.response',reply);print(json.dumps(reply),flush=True);continue
    deny=a.condition!='lookout' or actual not in allowed
    if actual=='save_profile_package' and config.get('profileIntroductionOnly'):
     deny=deny or set(payload.get('facts',{}))!={'introduction'} or not set(payload)<={'eventKey','expectedPersonalVersion','facts','source'}
    if deny:reply={'jsonrpc':'2.0','id':mid,'result':{'isError':True,'content':[{'type':'text','text':'This operation is outside the current workspace permissions.'}]}}
    else:reply=clean(upstream(msg))
   else:reply={'jsonrpc':'2.0','id':mid,'error':{'code':-32601,'message':'Method not supported'}}
-  record('mcp.measurement',{'method':method,'tool':msg.get('params',{}).get('name'),'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});record('mcp.response',reply);print(json.dumps(reply),flush=True)
+  record('mcp.measurement',{'method':method,'tool':(msg.get('params',{}).get('arguments',{}).get('name') if msg.get('params',{}).get('name')=='call_discovered_tool' else msg.get('params',{}).get('name')),'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});record('mcp.response',reply);print(json.dumps(reply),flush=True)
  except Exception as e:
   record('mcp.error',{'errorType':type(e).__name__,'detail':str(e)[:400]})
   print(json.dumps({'jsonrpc':'2.0','id':locals().get('mid'),'error':{'code':-32603,'message':'Workspace service failed: '+type(e).__name__}}),flush=True)
