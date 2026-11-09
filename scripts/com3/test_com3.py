@@ -44,6 +44,24 @@ class Contracts(unittest.TestCase):
   with patch.object(runner.subprocess,'run',side_effect=subprocess.TimeoutExpired('fictional Docker probe',10)):
    result=session.close()
   self.assertFalse(result['containerRemoved']);bridge.close.assert_called_once();self.assertIsNone(session.bridge)
+ def test_pair_halts_without_grading_after_unconfirmed_termination(self):
+  import runpy
+  from types import SimpleNamespace
+  from unittest.mock import Mock
+  with tempfile.TemporaryDirectory() as td:
+   root=Path(td);runs=root/'runs';runs.mkdir()
+   def write(path,value):path.write_text(json.dumps(value))
+   def failed_run(*args):
+    run=runs/'fictional-baseline';run.mkdir();write(run/'run.json',{'hostControlFailed':True,'status':'artifact_failed'});return run
+   fake_runner=SimpleNamespace(RUNS=runs,configure=Mock(),run=Mock(side_effect=failed_run),write=write)
+   fake_grade=SimpleNamespace(grade=Mock());fake_summary=SimpleNamespace(build=Mock())
+   args=['orchestrate.py','--task-dir',str(root),'--pair-id','FICTIONAL','--repeat','1','--pilot','--langfuse-env',str(root/'absent.env'),'--receipt-dir',str(root/'receipts')]
+   with patch.dict(sys.modules,{'runner':fake_runner,'grade':fake_grade,'summary':fake_summary}),patch.object(sys,'argv',args),self.assertRaises(SystemExit) as stopped:
+    runpy.run_path(str(ROOT/'scripts/com3/orchestrate.py'),run_name='__main__')
+   self.assertEqual(stopped.exception.code,1);fake_runner.run.assert_called_once_with('baseline',1,'FICTIONAL',True)
+   fake_grade.grade.assert_not_called();fake_summary.build.assert_not_called()
+   self.assertTrue(json.loads((root/'pair-halted.json').read_text())['remainingConditionNotStarted'])
+   self.assertFalse(json.loads((runs/'fictional-baseline/grading-invalid.json').read_text())['scored'])
  def test_shape(self):
   self.assertEqual(len(SPEC['stages']),10);self.assertEqual(len({s['session'] for s in SPEC['stages']}),6)
  def test_future_sources_hidden(self):
