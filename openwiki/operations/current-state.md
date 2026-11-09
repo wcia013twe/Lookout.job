@@ -1259,3 +1259,16 @@ reuse shared pagination. See the [study contract](../../docs/com-final-state-gra
 Synthetic checks do not establish participant performance or design effectiveness;
 no new pair, account mutation, human-effort benefit or product change is claimed.
 Historical PILOT-05 evidence and grades remain unchanged.
+
+### JOB01/JOB02 controlled comparison closeout
+
+[Controlled pilot results](../../docs/job-controlled-pilot-results.md) distinguish
+harness clearance from product and outcome success. JOB01 baseline/Lookout returned
+9/10 versus 7/10 final targets, with quality gaps in both and a retained baseline
+timeout. JOB02 both met controlled saved-work outcomes with one observed question
+turn each; Lookout took more active time and tokens, and its six native persistence
+adherence checks failed despite current owned IDs. Exact native error cause remains
+uncertain. Frozen sources/evidence, independent final review, native confirmation
+and complete Langfuse read-backs are retained. Earlier invalid JOB02 pairs remain
+separate; no live employer readiness, proactive-effort benefit or general winner is
+claimed. Dollar costs remain unknown. This focused update does not regenerate the wiki.

@@ -266,3 +266,6 @@ Total execution time, effort and cost did not change. Future score timestamps ar
 bound to execution, and wrapped measurements name the actual inner tool.
 
 Future JOB01 setup binds the shared timing/capture implementation imported by the executor in its source freeze. This prospective integrity correction does not rewrite completed freezes or imply a changed historical outcome.
+
+
+See [the independently reviewed controlled pilot results](job-controlled-pilot-results.md) for the final comparison, native-workflow limitations and retained evidence.
