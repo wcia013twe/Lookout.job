@@ -20,7 +20,7 @@ export function validateReference(ref,board){
   const entries=ref.batches?.[batch];if(!Array.isArray(entries)||!entries.length)throw Error('Both batches required');
   const seen=new Set();for(const x of entries){
    if(!board.ids.has(x.id)||seen.has(x.id))throw Error('Invalid/repeated reference job');seen.add(x.id);
-   for(const key of ['initialFit','updatedFit'])if(!['strong','plausible','weak','ineligible','unknown'].includes(x[key]))throw Error('Invalid fit label');
+   if(!['strong','plausible','weak','ineligible','unknown'].includes(x.finalFit))throw Error('Invalid fit label');
    if(!x.evidence?.length||!x.rationale?.trim())throw Error('Evidence and rationale required');
   }
  }
@@ -31,8 +31,11 @@ export function packet(spec,ref,board,stageId,condition,productConfiguration){
  if(condition==='lookout'&&(!productConfiguration?.source||!productConfiguration?.wakePrompt))throw Error('Recorded product configuration required');
  const ids=new Set(ref.batches[s.batch].map(j=>j.id));
  // No future stages, reference labels, rubric, or other-condition prompt reaches participant.
- return {prompt:s.kind==='user_update'?s.request:condition==='baseline'?s.baseline:productConfiguration.wakePrompt,jobs:board.jobs.filter(j=>ids.has(j.id)),snapshotId:board.manifest.snapshotId};
+ const limit=targetLimit(spec);
+ const prompt=s.kind==='user_update'?s.request:condition==='baseline'?s.baseline:productConfiguration.wakePrompt;
+ return {prompt:prompt.replaceAll('{targetLimit}',String(limit)),targetLimit:limit,jobs:board.jobs.filter(j=>ids.has(j.id)),snapshotId:board.manifest.snapshotId};
 }
+export function targetLimit(spec){if(!Number.isInteger(spec.targetLimit)||spec.targetLimit<1)throw Error('Positive targetLimit required');return spec.targetLimit;}
 export function grade(spec,ref,board,run,review){
  validateReference(ref,board);
  if(run.version!==spec.version||run.snapshotId!==ref.snapshotId||run.sourceHash!==ref.sourceHash||!['lookout','baseline'].includes(run.condition))throw Error('Run binding mismatch');
@@ -43,22 +46,26 @@ export function grade(spec,ref,board,run,review){
  for(const c of run.checkpoints){
   const stage=spec.stages.find(s=>s.id===c.stage);if(!stage||checkpoints.some(x=>x.stage===c.stage))throw Error('Invalid checkpoint');
   if(!Number.isFinite(c.executionSeconds)||c.executionSeconds<0)throw Error('Invalid duration');duration+=c.executionSeconds;
-  const current=ref.batches[stage.batch];
-  // Saved lists are cumulative: retaining earlier roles is not an unsupported selection.
-  const allowed=new Map((stage.batch==='later'?[...ref.batches.initial,...current]:current).map(j=>[j.id,j]));
-  const saved=new Set(c.savedJobIds);if(saved.size!==c.savedJobIds.length)throw Error('Duplicate saved IDs');
-  const fit=stage.id==='initial_search'?'initialFit':'updatedFit';
-  const strong=[...allowed.values()].filter(j=>j[fit]==='strong');
-  const hits=strong.filter(j=>saved.has(j.id)).length;
-  const defensible=[...saved].filter(id=>['strong','plausible'].includes(allowed.get(id)?.[fit])).length;
   const interactions=c.interactions||{};for(const key of Object.keys(effort)){const n=interactions[key]??0;if(!Number.isInteger(n)||n<0)throw Error('Invalid interaction count');effort[key]+=n;}
   const q=reviewed?review.checkpoints?.[c.stage]:null;
-  const quality=Object.fromEntries(spec.quality.map(k=>{const a=q?.[k];return [k,a&&[0,1,2].includes(a.rating)&&a.evidence?.trim()?a:null]}));
-  checkpoints.push({stage:c.stage,quality:{coverage:strong.length?hits/strong.length:null,selectionPrecision:saved.size?defensible/saved.size:null,missedStrong:strong.filter(j=>!saved.has(j.id)).map(j=>j.id),unsupportedSelections:[...saved].filter(id=>!allowed.has(id)),semantic:quality},simulatedCompletionMinute:Number.isFinite(c.simulatedCompletionMinute)?c.simulatedCompletionMinute:null});
+  const quality=Object.fromEntries(spec.checkpointQuality.map(k=>{const a=q?.[k];return [k,a&&[0,1,2].includes(a.rating)&&a.evidence?.trim()?a:null]}));
+  checkpoints.push({stage:c.stage,quality:{semantic:quality},simulatedCompletionMinute:Number.isFinite(c.simulatedCompletionMinute)?c.simulatedCompletionMinute:null});
  }
- const semanticComplete=checkpoints.length===spec.stages.length&&checkpoints.every(c=>Object.values(c.quality.semantic).every(Boolean));
+ const limit=targetLimit(spec),allowed=new Map([...ref.batches.initial,...ref.batches.later].map(j=>[j.id,j]));
+ const ids=run.finalTargetJobIds;
+ if(!Array.isArray(ids)||ids.some(id=>typeof id!=='string')||new Set(ids).size!==ids.length)throw Error('Unique finalTargetJobIds required');
+ const unknown=ids.filter(id=>!allowed.has(id)||allowed.get(id).finalFit==='unknown');
+ const alternatives=reviewed?review.finalSelection?.alternatives||{}:{};
+ const alternative=id=>alternatives[id]?.accepted===true&&!!alternatives[id]?.evidence?.trim();
+ const qualifying=[...allowed.values()].filter(j=>['strong','plausible'].includes(j.finalFit));
+ const defensible=ids.filter(id=>['strong','plausible'].includes(allowed.get(id)?.finalFit)||alternative(id));
+ const denominator=Math.min(limit,qualifying.length||defensible.length);
+ const semantic=Object.fromEntries(spec.quality.map(k=>{const a=reviewed?review.finalSelection?.[k]:null;return [k,a&&[0,1,2].includes(a.rating)&&a.evidence?.trim()?a:null]}));
+ const finalSelection={targetLimit:limit,savedCount:ids.length,overLimit:ids.length>limit,coverage:denominator?Math.min(defensible.length,denominator)/denominator:null,coverageDenominator:denominator,coverageScope:'reviewed qualifying targets; not exhaustive source recall',selectionPrecision:ids.length?defensible.length/ids.length:null,unreviewedSelections:unknown.filter(id=>!alternative(id)),semantic};
+ const semanticComplete=checkpoints.length===spec.stages.length&&checkpoints.every(c=>Object.values(c.quality.semantic).every(Boolean))&&Object.values(semantic).every(Boolean)&&finalSelection.unreviewedSelections.length===0;
+
  const adherence=Object.fromEntries(spec.adherence.map(k=>{const a=reviewed?review.adherence?.[k]:null;return [k,run.condition==='baseline'?{status:'not_applicable'}:a&&['used_correctly','attempted_but_failed','omitted','not_applicable'].includes(a.status)&&a.evidence?.trim()?a:{status:'unreviewed'}]}));
- return {version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration},effortToTask:effort,qualityOfCompletion:checkpoints,adherence};
+ return {version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration},effortToTask:effort,qualityOfCompletion:checkpoints,finalSelection,adherence};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{

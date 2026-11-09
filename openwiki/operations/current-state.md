@@ -1000,3 +1000,15 @@ future-batch packaging. The public archive is not a participant sandbox; N02 use
 private staged packets. Static-only public publication is separate from Lookout
 frontend/backend deployment. No candidate data, scoring labels or product actions
 are included. This focused update does not refresh the generated wiki as a whole.
+
+### N02 bounded job selection and analysis
+
+The [N02 infrastructure](../../docs/n02-job-search.md) uses frozen source packets
+and prospective N02-search-v2. Its primary artifact is a final list of up to X
+target jobs with analyses (default 10, provisional). Coverage and fit use a private
+reviewed final-preference reference with defensible alternatives; this is not
+exhaustive corpus recall. Saved history remains separate. Intermediate checkpoints
+assess preference handling and continuity; time, effort and quality remain separate
+from Lookout adherence. Langfuse registration, stage/root observations, experiment
+linking and scores have synthetic transport verification; no participant run,
+real wake or candidate-grounded reference quality is implied. V1 remains retained.

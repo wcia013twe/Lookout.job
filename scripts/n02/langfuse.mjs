@@ -7,20 +7,21 @@ import path from 'node:path';
 import {cli,unwrap,validateReply} from '../n01/langfuse.mjs';
 import {read,hash} from './task.mjs';
 export function registration(spec,manifest){
- return {datasetName:'Lookout-N02-search-v1',id:'lookout-N02-'+manifest.snapshotId,input:{scenario:spec.version,snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json'],stages:spec.stages.map(({id,session,kind,minute})=>({id,session,kind,minute}))},expectedOutput:{completion:'Saved job selections and evidence-grounded analyses reflect retained career and style preferences.'},metadata:{unit:'whole trajectory',status:'prospective',dimensions:['time_to_task','effort_to_task','quality_of_completion'],privateEvidence:'not uploaded',fitReference:'independently reviewed before participant execution'}};
+ return {datasetName:'Lookout-'+spec.version,id:'lookout-'+spec.version+'-'+manifest.snapshotId,input:{scenario:spec.version,snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json'],targetLimit:spec.targetLimit,stages:spec.stages.map(({id,session,kind,minute})=>({id,session,kind,minute}))},expectedOutput:{completion:'Saved job selections and evidence-grounded analyses reflect retained career and style preferences.'},metadata:{unit:'whole trajectory',status:'prospective',dimensions:['time_to_task','effort_to_task','quality_of_completion'],privateEvidence:'not uploaded',fitReference:'independently reviewed before participant execution'}};
 }
 export function scores(run,grade){
  if(grade.evidenceDigest!==hash(run)||grade.episodeId!==run.episodeId)throw Error('Stale grade');
- const traceId=hash(['n02',run.episodeId]).slice(0,32),out=[];
+ const traceId=hash([run.version,run.condition,run.episodeId]).slice(0,32),out=[];
  const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'n02_'+name,value,dataType,environment:run.synthetic?'verification':'benchmark'});
  add('time_execution_seconds',grade.timeToTask.executionSeconds);
  for(const [k,v] of Object.entries(grade.effortToTask))add('effort_'+k,v);
  add('quality_review_status',grade.status,'CATEGORICAL');add('run_status',run.status,'CATEGORICAL');
  for(const c of grade.qualityOfCompletion){
-  for(const k of ['coverage','selectionPrecision'])if(c.quality[k]!==null)add('quality_'+c.stage+'_'+k,c.quality[k]);
+  for(const k of ['coverage','selectionPrecision'])if(Number.isFinite(c.quality[k]))add('quality_'+c.stage+'_'+k,c.quality[k]);
   for(const [k,v] of Object.entries(c.quality.semantic))if(v)add('quality_'+c.stage+'_'+k,v.rating);
   if(c.simulatedCompletionMinute!==null)add('time_'+c.stage+'_simulated_completion_minute',c.simulatedCompletionMinute);
  }
+ if(grade.finalSelection){for(const k of ['coverage','selectionPrecision','savedCount','targetLimit'])if(Number.isFinite(grade.finalSelection[k]))add('quality_final_'+k,grade.finalSelection[k]);add('quality_final_over_limit',grade.finalSelection.overLimit?1:0);for(const [k,v] of Object.entries(grade.finalSelection.semantic))if(v)add('quality_final_'+k,v.rating);}
  for(const [k,v] of Object.entries(grade.adherence))add('adherence_'+k,v.status,'CATEGORICAL');
  return {traceId,scores:out};
 }
@@ -31,8 +32,8 @@ export function build(run,grade,spec,reg){
  if(!Number.isFinite(run.startedAt)||run.startedAt<=0)throw Error('startedAt epoch seconds required');
  if(run.checkpoints.reduce((n,c)=>n+c.executionSeconds,0)!==grade.timeToTask.executionSeconds)throw Error('Duration mismatch');
  const plan=scores(run,grade),rootId=hash(plan.traceId+'root').slice(0,16);
- const experimentId=hash(['n02-v1',run.pairId||run.episodeId,run.condition,run.synthetic===true]);
- const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`N02-${run.synthetic?'synthetic':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':'benchmark','langfuse.trace.name':'N02 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
+ const experimentId=hash([spec.version,run.pairId||run.episodeId,run.condition,run.synthetic===true]);
+ const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':'benchmark','langfuse.trace.name':'N02 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
  const ns=x=>(BigInt(Math.round(x*1e6))*1000n).toString();
  const span=(id,name,start,seconds,parent)=>({traceId:plan.traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(start+seconds),attributes:Object.entries({...base,'langfuse.observation.type':'span'}).map(([k,v])=>attr(k,v))});
  const spans=[span(rootId,'N02 job selection trajectory',run.startedAt,grade.timeToTask.executionSeconds)];let cursor=run.startedAt;
@@ -45,7 +46,7 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
  const spec=read(v.scenario||new URL('../../examples/n02/scenario.json',import.meta.url));
  const config=tracingConfig(),project=hash(config?[config.baseUrl,config.publicKey]:['offline']);
  const dir=path.resolve(v['receipt-dir']||'.langfuse-exports/n02');mkdirSync(dir,{recursive:true,mode:0o700});
- const regfile=path.join(dir,project+'-dataset.json');
+ const regfile=path.join(dir,project+'-'+spec.version+'-dataset.json');
  if(v.register){
   const manifest=read(v.manifest),item=registration(spec,manifest);
   if(v['dry-run'])console.log(JSON.stringify(item,null,2));
