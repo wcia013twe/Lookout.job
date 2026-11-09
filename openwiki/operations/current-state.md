@@ -1229,7 +1229,8 @@ product schema, shared clock, real account or historical pilot outcome.
 ### Shared benchmark transport
 
 [Shared harness boundaries](../../scripts/evals/README.md) separate testing goals,
-setup mismatches, harness defects and Lookout defects. COM01–04 and JOB01–04 share
+experimental-design limits, setup mismatches, harness defects and Lookout defects.
+Execution clearance alone does not establish design validity or causal attribution. COM01–04 and JOB01–04 share
 one HTTP-to-stdio transport, preserving case arguments and JOB02's EOF shutdown.
 Prospective freezes include the shared executable. Local synthetic HTTP/worker
 and freeze tests establish this boundary; no participant rerun or hosted release
