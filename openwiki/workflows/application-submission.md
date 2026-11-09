@@ -623,3 +623,15 @@ remain visible. `SHOW_SUBMISSION_CARDS` in `lib/action-board.mjs` controls this
 presentation-only pause. Saved drafts, history, backend/MCP projections and existing
 submission approval requirements remain intact. AI Apply does not gain submission
 authority from this UI change; application details remain available in Applications.
+
+### Visible AI Apply activity
+
+Discover's AI Apply button shows Queued until a saved execution-job claim changes
+its status to running, then Working with a spinner. Applications rows and the
+Action Board's separate AI Apply list show the same active journal states. This
+list does not add to the human action count and has no Needs input flag. Terminal
+jobs and later recorded application progress do not display active flags, even
+when an old result says working. Reduced motion disables spinner animation.
+Existing scoped queue/claim/report writers and workspace refresh own these facts;
+the UI creates no new status store or permission. Browser activity without a saved
+running job cannot be inferred from this indicator.

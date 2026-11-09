@@ -1,5 +1,6 @@
 "use client";
-import {applicationWorkLabel} from "../../lib/application-request-state.mjs";
+import ApplyWorkFlag from './apply-work-flag';
+import {applicationWorkFlag,applicationWorkLabel} from "../../lib/application-request-state.mjs";
 import {matchesBoardApplication} from '../../lib/action-board.mjs';
 import { useEffect, useState } from 'react';
 import {applicationAction,nextActionTime} from '../../lib/action-inbox.mjs';
@@ -32,7 +33,7 @@ export default function ApplicationList({items,active=false,sortByAction=false,p
  <div className="tracker-row-progress"><TrackerProgress application={a} item={item}/>{!!progress.rounds&&<small>{progress.rounds} interview {progress.rounds===1?'step':'steps'} recorded</small>}</div>
  <button className="tracker-button tracker-row-status workspace-secondary inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50" onClick={()=>setReview(a.id)} aria-label={`View ${a.title}: ${progress.status}`}>{progress.status}<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
  <ApplicationActionNotice title={a.title} company={a.company} action={action} next={next} onOpen={()=>setReview(a.id)}/>
- {workLabel&&<span className="tracker-workflow">AI Apply: {workLabel}</span>}
+ {applicationWorkFlag(a,item)?<span className="tracker-workflow"><ApplyWorkFlag application={a} item={item}/></span>:workLabel&&<span className="tracker-workflow">AI Apply: {workLabel}</span>}
  {!action&&['Queued','Draft','Awaiting approval','Approved','Blocked'].includes(a.status)&&<span className="tracker-workflow">Preparation: {a.status}</span>}
  </li>;})}</ul>{review&&<DraftReview key={`${w.demo?'demo':w.user?.id||'guest'}:${review}`} id={review} application={items.find(a=>a.id===review&&a.imported)} importedTracker={onUpdateImport?{version:importVersion,update:onUpdateImport}:undefined} onClose={()=>setReview(null)}/>}</>;
 }

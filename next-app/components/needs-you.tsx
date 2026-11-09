@@ -4,6 +4,8 @@ import ActionDecisionCard from './action-decision-card';
 import TrackerWorkList,{type TrackerWork} from './tracker-work-list';
 import ActionAttention from './action-attention';
 import {decisionTitle,decisionFeedback,orderBoardItems,needsUnblocking,isVisibleBoardItem} from '../../lib/action-board.mjs';
+import ApplyWorkFlag from './apply-work-flag';
+import {applicationWorkFlag} from '../../lib/application-request-state.mjs';
 import SurfacePanel from "./surface-panel";
 import Link from "next/link";
 import { useWorkspace } from "../lib/workspace";
@@ -36,6 +38,7 @@ export default function NeedsYou() {
   },[inbox,now]);
   useEffect(()=>{if(!board.snapshot)return;let saved=0;try{saved=Number(sessionStorage.getItem('lookout:board-scroll'));sessionStorage.removeItem('lookout:board-scroll');}catch{}if(saved>0)requestAnimationFrame(()=>window.scrollTo(0,saved));},[!!board.snapshot]);
   const applications=Object.values(w.state.workflow.applications as Record<string,Application>);
+  const activeApplications=applications.filter(app=>applicationWorkFlag(app,w.state.tracker.items[app.id]||{}));
   const actions=pendingActions(inbox,Date.now()).filter(isVisibleBoardItem).map(item=>({item,application:applications.find(app=>app.backendId===item.application_id)}));
   const items=orderBoardItems((board.snapshot?.items||[]).filter(isVisibleBoardItem));
   const unblockCount=items.filter(needsUnblocking).length;
@@ -70,7 +73,7 @@ export default function NeedsYou() {
           <TrackerWorkList items={board.snapshot?.trackerWork||[]} busy={board.busy||w.locked||!!board.error} onRespond={respondWork} onDemoProgress={w.demo?demoProgress:undefined}/>
           {!!(history.length+decisionHistory.length) && <details className="mt-5 border-t border-board-line pt-3"><summary className="min-h-11 cursor-pointer py-2 font-semibold">Action history · {history.length+decisionHistory.length}</summary><ul className="divide-y divide-board-line">{history.map(item=><li className="py-3 text-sm" key={item.id}><p>{applications.find(app=>app.backendId===item.application_id)?.company || "Application"} · {item.reason}</p><p className="mt-1 text-xs text-board-muted">{item.resolution === "work_stopped" ? "Agent work stopped" : item.resolution === "superseded" ? "Replaced by updated action" : item.resolution === "user_reported_submitted" ? "You reported submission · retry blocked" : "Resolved"} · revision {item.revision} · {new Date(item.resolved_at!).toLocaleString()}</p><Link className="handoff-action" href={`/applications/?application=${item.application_id}`}>View application</Link></li>)}{decisionHistory.map(item=><li className="py-3 text-sm" key={item.decision_key}><p>{decisionTitle({kind:item.source_kind})} · {decisionFeedback({kind:item.source_kind},item.response)}</p><p className="mt-1 text-xs text-board-muted">{new Date(item.responded_at).toLocaleString()}</p>{item.source_kind==='review_application'&&<Link className="handoff-action" href={`/applications/?application=${item.source_id}`}>View application</Link>}</li>)}</ul></details>}
         </SurfacePanel>
-        <div><PreparationReminders /><NetworkFollowUps /></div>
+        <div>{activeApplications.length>0&&<SurfacePanel className="mb-4" aria-labelledby="muse-work-heading"><h2 id="muse-work-heading" className="text-lg font-semibold">AI Apply</h2><ul className="mt-3 divide-y divide-board-line">{activeApplications.map(app=><li key={app.backendId||app.id} className="py-3"><Link href={`/applications/?application=${app.backendId||app.id}`} className="block text-sm font-semibold underline underline-offset-4">{app.company} · {app.title}</Link><div className="mt-2"><ApplyWorkFlag application={app} item={w.state.tracker.items[app.id]||{}}/></div></li>)}</ul></SurfacePanel>}<PreparationReminders /><NetworkFollowUps /></div>
       </div>
       {review && <DraftReview key={review} id={review} initialRoundId={reviewDecision?.kind==='confirm_interview'?reviewDecision.sourceId:undefined} initialTab={reviewDecision?.kind==='confirm_interview'?'Interview':'Documents'} boardDecision={reviewDecision?.kind==='review_application'?reviewDecision:undefined} onBoardReviewed={async()=>{if(reviewDecision&&!await respond(reviewDecision,'review'))throw Error('Review could not save');}} onClose={() => {setReview(null);setReviewDecision(null);void board.refresh();}} />}
     </>

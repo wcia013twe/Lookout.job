@@ -55,3 +55,14 @@ test('recorded submission leaves Discover, remains in Applications and supersede
  assert.equal(applicationWorkLabel({...app,status:'Queued'},{status:'Applied'}),'');
  assert.equal(applicationWorkLabel({...app,executionJob:{...job,result:{executor:'muse',outcome:'uncertain'}}}),'Verify the submission outcome');
 });
+
+test('activity flags reflect journal pickup, never stale terminal results or later progress',async()=>{
+ const {applicationWorkFlag}=await import('../lib/application-request-state.mjs');
+ const app={status:'Draft',executionJob:{status:'queued'}};
+ assert.deepEqual(applicationWorkFlag(app),{label:'Queued',working:false});
+ assert.deepEqual(applicationWorkFlag({...app,executionJob:{status:'running'}}),{label:'Working',working:true});
+ for(const status of ['partial','failed','cancelled','completed'])assert.equal(applicationWorkFlag({...app,executionJob:{status,result:{executor:'muse',outcome:'working'}}}),null,status);
+ assert.equal(applicationWorkFlag({...app,status:'Submitted'}),null);
+ assert.equal(applicationWorkFlag(app,{status:'Applied'}),null);
+ assert.equal(applicationWorkFlag({...app,status:'Withdrawn'}),null);
+});

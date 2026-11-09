@@ -16,3 +16,12 @@
 
 - Follow-up validation: full suite1,166 passed/five skipped; focused disclosure/database/response checks8/8 and consent/secure-entry guide checks15/15 passed. Final production build, typecheck, data validation (158 roles), git diff --check and the mechanical design detector (no findings) passed. Two bounded desktop/mobile visual rounds confirmed useful task controls, selected resume display, no empty answer review or unrelated inference panel, explicit keyboard completion and retained real-answer gates; screenshots are in /private/tmp/lookout-application-access-ui.
 - Runtime limit at source landing: the local Docker API and daemon socket became unresponsive; connected profile reads timed out. Recovery is in progress. Updated Muse guide activation and durable storage of the user's required-consent/decline-marketing preference are not yet verified. Existing real application blockers have not been falsely cleared or reported as resolved.
+
+## Follow-up: visible AI Apply activity
+
+- Discover's AI Apply control shows Queued, then Working with a reduced-motion-aware spinner only after a recorded pickup. Applications and the Action Board show the same active flags; board activity is separate from human action counts. No Needs input flag is added. Historical/terminal jobs and later application progress never spin. Reuse existing scoped queue/claim/report tools and realtime refresh; no parallel status store.
+- Final validation recorded below.
+
+- Consent preference saved through the owned versioned profile writer and verified on read-back (General profile46). Audit run read-back includes the saved preference and terminal event. This creates no human approval or submission receipt.
+
+- Final integrated validation: npm test passed (1,167 passed/five skipped), frontend typecheck, data validation (158 roles), production build and diff checks passed. Desktop/mobile detached demo verifies Queued → Working → saved outcome, duplicate-request disablement, reduced-motion spinner, separate board activity and terminal cleanup without backend/employer access. Screenshots: /private/tmp/lookout-working-ui.
