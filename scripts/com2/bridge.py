@@ -52,8 +52,8 @@ def unwrap(result):
  return value
 
 LOCAL_TOOLS=[
- {'name':'read_calendar','description':'Read currently available calendar events.','inputSchema':{'type':'object','properties':{},'additionalProperties':False}},
- {'name':'read_inbox','description':'Read currently available inbox notifications. Repeated IDs represent the same message.','inputSchema':{'type':'object','properties':{},'additionalProperties':False}},
+ {'name':'read_calendar','description':'Read released historical calendar evidence; reconcile older invitations with later email updates.','inputSchema':{'type':'object','properties':{},'additionalProperties':False}},
+ {'name':'read_inbox','description':'Read all released emails, deduplicated by message ID. Current deliveries are identified in /inputs/sources.json.','inputSchema':{'type':'object','properties':{},'additionalProperties':False}},
  {'name':'ask_user','description':'Ask the user a question when an answer is needed.','inputSchema':{'type':'object','properties':{'question':{'type':'string'}},'required':['question'],'additionalProperties':False}}
 ]
 def local_call(name,args):

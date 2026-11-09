@@ -1,4 +1,4 @@
-# COM2: Application communication continuity — stream v1
+# COM2: Application communication continuity — stream v3
 
 ## Purpose and comparison
 
@@ -25,7 +25,7 @@ Jules contact, personal profile and resume are preservation sentinels. All event
 
 Times advance through simulation; no calendar-day waiting occurs. Each row is released only
 when reached. Rows with the same session resume it; all others start a new isolated session.
-There are 12 turns in 7 sessions. Confirmation and its duplicate calendar notice are batched
+There are 13 turns in 7 sessions. Confirmation and its duplicate calendar notice are batched
 naturally rather than forcing another user initiation. The later stale reminder merits one
 ordinary review request; it does not instruct the baseline to create a reply.
 
@@ -156,3 +156,13 @@ version mismatch, native after-state requirements, duplicate interaction counts,
 shared-summary validation, pilot/synthetic routing and private-content exclusion. The fixtures are
 fictional, local and never participant results. This evaluation-only pass changes no product UI,
 MCP authority or database schema; fictional COM2 fixtures provide its isolated demo coverage.
+
+## Prospective v3 readiness contract
+
+The thirteenth turn, in the closure session, requests a factual report grounded in saved records/files. Seven fresh sessions remain. The grader applies `docs/com-final-state-grading.md`: passive checkpoint capture during execution, independent grading only afterward, read-only owner-bound terminal native lookup, and equivalent baseline final file capture. Missing verification is a limitation/invalid evaluation, not invented participant failure. Earlier continuity and final repairs remain distinct. Simple onboarding acknowledgement passes preservation checks. Durable checkpoints require record/file evidence, not chat alone.
+
+Both conditions retain all released emails. The inbox archive deduplicates message IDs and fails loudly if an ID changes content; current notification IDs and delivery history retain duplicates. Calendar evidence remains historical, not automatically current. Future packets and old user prompts are not replayed. Identical business time is supplied each turn from the frozen origin plus minute.
+
+`provision.mjs` creates a dedicated fictional COM2 owner and clones authorized context exactly. A separate workspace:read credential is reserved for the grader. `parity.py` records source-to-native equivalence and full onboarding fact coverage. `writer_smoke.py` performs actual owned-fixture writer/readback checks, including contact, artifact, scheduled/rescheduled/completed/cancelled and rejected milestone variants, then resets and validates the baseline. This writer smoke is separate from read-only preflight. No participant is executed by either check.
+
+Shared `wakesUsed` retains the shared contract’s attempted participant-turn count; COM2 additionally reports actual scheduled external wakes and attempted participant turns separately. Neither is interpreted as observed user effort.

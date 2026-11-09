@@ -14,9 +14,10 @@ def prepare(source,background,destination):
  # A source must provide the exact equivalent native profile facts, not a handwritten summary.
  initial_source=json.loads((source/'suite/initial-state.json').read_text())
  profile=initial_source['profileFacts']
+ if profile!=clone['settings']['profile']['facts']:raise ValueError('Native initial profile differs from cloned manifest')
  destination.mkdir(mode=0o700,parents=True)
  for name in ['suite','background','runs']:(destination/name).mkdir()
- for name in ['account.private.json','cloned-context.private.json']:shutil.copyfile(source/name,destination/name)
+ for name in ['account.private.json','grader.private.json','cloned-context.private.json','source-manifest.private.json']:shutil.copyfile(source/name,destination/name)
  (destination/'account.lock').symlink_to(source/'account.lock')
  apps=[fixture['application'],fixture['sentinelApplication']]
  for app in apps:app['jobId']+='-'+account['userId']
@@ -27,6 +28,10 @@ def prepare(source,background,destination):
  app_text='\n'.join(f"I reported applying to {a['company']} for {a['title']} ({a['role']}) on {a['submittedAt']}. The current tracker status is {a['status']}; no employer receipt is available. The application record is {a['id']}, and its posting is {a['url']}." for a in apps)
  contact_text='\n'.join(f"{c['record']['contact']}: {c['record']['relationship']} Current contact status: {c['record']['status']}."+(f" Email: {c['record']['email']}." if c['record'].get('email') else '')+(f" Existing draft: {c['record']['draft']}" if c['record'].get('draft') else '') for c in fixture['contacts'])
  onboarding=(background/'profile.md').read_text()+'\n\n'+fixture['onboarding']+'\n\n'+app_text+'\n\n'+contact_text
+ # Preserve every source fact, including values absent from an older readable profile export.
+ import parity
+ onboarding,receipt=parity.complete_and_verify(source,background,onboarding,initial)
+ (destination/'context-parity.json').write_text(json.dumps(receipt,indent=2)+'\n')
  (destination/'background/onboarding.md').write_text(onboarding)
  shutil.copyfile(background/'resume.pdf',destination/'background/resume.pdf')
  for name in ['reset.mjs','snapshot.mjs']:shutil.copyfile(repo/'scripts/com2'/name,destination/name)

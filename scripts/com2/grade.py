@@ -1,7 +1,7 @@
 """Independent local-first grading. Missing semantic review is pending, never a pass."""
 import argparse,hashlib,json,math
 from pathlib import Path
-GRADER_VERSION='COM2-grade-v1'
+GRADER_VERSION='COM2-grade-v2'
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -11,7 +11,7 @@ def rows(p):return [json.loads(x) for x in p.read_text().splitlines() if x] if p
 def evidence_digest(run):
  h=hashlib.sha256()
  for p in sorted(run.rglob('*')):
-  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt'] or 'output' in p.parts):
+  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt','terminal-capture.json'] or 'output' in p.parts or 'final-files' in p.parts):
    h.update(str(p.relative_to(run)).encode());h.update(p.read_bytes())
  return h.hexdigest()
 def tool_calls(stage):
@@ -54,11 +54,15 @@ def validate_evidence(run,spec,m):
   if sm['status']=='completed' and not rows(sd/'trace.jsonl'):raise ValueError('Completed stage has empty trace')
   d=read(sd/'delivery.json');expected=spec['stages'][i-1]
   if d.get('stage')!=i or d.get('eventId')!=expected['id'] or d.get('releasedMinute')!=expected['minute']:raise ValueError('Delivery differs from scenario')
+  if d.get('kind')!=expected['kind'] or d.get('assignedInitiation')!=(m['condition']=='baseline' and expected['kind']=='external') or d.get('assignedOnboarding')!=(expected['kind']=='onboarding') or d.get('necessaryUserUpdate')!=(expected['kind']=='user_update'):raise ValueError('Delivery interaction classification differs from scenario')
   if not isinstance(d.get('triggerMinute'),(int,float)) or not math.isfinite(d['triggerMinute']) or d['triggerMinute']<d['releasedMinute']:raise ValueError('Invalid delivery time')
   reached[i]=sd
  if list(reached)!=list(range(1,len(reached)+1)):raise ValueError('Noncontiguous stage receipts')
  if m['status']=='completed' and (len(reached)!=len(spec['stages']) or any(read(sd/'stage-run.json')['status']!='completed' for sd in reached.values())):raise ValueError('Completed run has incomplete stages')
  if reached and not (run/'initial-state.json').is_file():raise ValueError('Missing initial state')
+ if reached:
+  import capture
+  capture.validate(run,m)
  return reached
 
 def check_review_evidence(run,item,stage_ids,passed,native_write=False):
@@ -98,7 +102,14 @@ def grade(run,spec,review=None):
   for key,item in review['quality'].items():
    if type(item.get('pass')) is not bool:raise ValueError('Unresolved quality decision')
    if unavailable[key] and item['pass']:raise ValueError('Unreached/incomplete checkpoint cannot pass')
-   if not unavailable[key]:check_review_evidence(run,item,check_stages[key],item['pass'])
+   if not unavailable[key]:
+    check_review_evidence(run,item,check_stages[key],item['pass'])
+    if key in spec.get('durableChecks',[]):
+     refs=[x.split('#')[0] for x in item['evidence']]
+     for i in check_stages[key]:
+      prefix=f'stage-{i}/'
+      if not any(ref.startswith(prefix) and ('/output/' in ref if m['condition']=='baseline' else ref.endswith('after-state.json')) for ref in refs):raise ValueError('Durable checkpoint requires saved state/file evidence, not chat alone')
+    if key in ['final_state','final_report'] and 'terminal-capture.json' not in [x.split('#')[0] for x in item['evidence']]:raise ValueError('Final judgment requires bound terminal capture')
    elif not item.get('reason'):raise ValueError('Unavailable checkpoint requires explanation')
   seen={q['interactionId'] for q in questions}
   for item in review.get('additionalInteractions',[]):
@@ -129,7 +140,7 @@ def grade(run,spec,review=None):
    check_review_evidence(run,item,[rule['stage']],item['outcomeVerified'],native_write=rule.get('nativeWrite',False))
    status='used_correctly' if item['outcomeVerified'] else 'attempted_but_failed'
   adherence[key]={'status':status,'calls':relevant}
- metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'stage_coverage':len(stages)/len(spec['stages'])}
+ metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'attempted_participant_turns':len(stages),'scheduled_wakes':sum(d['kind']=='external' for d in deliveries) if m['condition']=='lookout' else 0,'stage_coverage':len(stages)/len(spec['stages'])}
  for category in ['clarification','context_restatement','correction','reminder','approval']:
   metrics['observed_'+category+'_turns']=sum(q['category']==category for q in questions)
   if complete:metrics['observed_'+category+'_demands']=sum(x['category']==category for x in additional)

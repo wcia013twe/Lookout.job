@@ -7,6 +7,7 @@ def answer(question,stage_index,spec):
  released=spec['stages'][:stage_index]
  known={s['id']:s for s in released}
  if re.search(r'\bsent\b|did I send|have I sent|did.*reply|responded',question,re.I):
+  if re.search(r'start.date|earliest',question,re.I):return 'I have not sent a start-date reply. Only the availability reply has been reported sent.' if 'sent_report' in known else 'I have not reported sending a start-date reply.','context_restatement'
   if 'sent_report' in known:return known['sent_report']['request'],'context_restatement'
   return 'I have not reported sending any reply to these new messages. Leave drafts for review.','clarification'
  if re.search(r'\bsend\b|submit|permission|approval',question,re.I):

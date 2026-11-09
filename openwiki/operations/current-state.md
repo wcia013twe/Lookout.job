@@ -1025,7 +1025,7 @@ A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals
 ### COM2 communication evaluation (local infrastructure)
 
 [COM2 application communication continuity](../../docs/com2-application-communication.md) adds
-an isolated 12-turn, seven-session fictional stream for scheduling, user-reported completion,
+an isolated 13-turn, seven-session fictional stream for scheduling, user-reported completion,
 source-backed advancement, requests, rejection and stale notifications. It excludes preparation
 materials and external sends. The standalone runner/grader checks evidence completeness and
 native outcomes separately, and emits detailed structural traces plus the shared eval summary.

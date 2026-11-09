@@ -1,5 +1,5 @@
 """Private coordinator for ordinary recruiting sessions; no evaluation metadata is mounted."""
-import argparse,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
+import argparse,datetime,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
 from transport import Bridge
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
@@ -120,7 +120,7 @@ def run(condition,repeat,pair_id,pilot=False):
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[]};write(run/'run.json',meta)
+ meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'ownerId':json.loads((R/'grader.private.json').read_text())['userId'],'startedAt':time.time(),'stages':[]};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
@@ -133,7 +133,7 @@ def run(condition,repeat,pair_id,pilot=False):
    (inputs/'workspace.md').write_text((S/'contract.md').read_text())
    # User messages travel through stdin only, never as a persistent input file.
    # The metadata packet, future requests, model/budget and condition never enter the container.
-   visible={k:stage.get(k,[]) for k in ['calendar','inbox']}
+   visible=released_sources(packets()[:i])
    write(inputs/'sources.json',visible)
    for name in CONFIG.get('publicFiles',[]):shutil.copyfile(S/name,inputs/Path(name).name)
    for p in inputs.iterdir():shutil.copyfile(p,sd/'inputs'/p.name)
@@ -159,9 +159,15 @@ def run(condition,repeat,pair_id,pilot=False):
   meta.update(status='setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
  finally:
   if session:session.close()
+  meta['participantEndedAt']=time.time();write(run/'run.json',meta)
   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
   except Exception:meta['finalStateCaptured']=False
-  meta['durationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
+  meta['durationSeconds']=meta['participantEndedAt']-meta['startedAt'];write(run/'run.json',meta)
+  try:
+   import capture
+   capture.capture(run,R)
+  except Exception as error:
+   meta['verificationLimitation']=type(error).__name__+': '+str(error)[:200];write(run/'run.json',meta)
   for p in run.rglob('*'):
    if p.is_file() and not p.is_symlink():p.chmod(0o600)
   fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
@@ -173,15 +179,35 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM2-stream-v1' or CONFIG.get('taskId')!='COM2':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM2-stream-v3' or CONFIG.get('taskId')!='COM2':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM2':raise RuntimeError('Dedicated COM2 account receipt required')
 
+def released_sources(stages):
+ inbox={};calendar={};deliveries=[]
+ for stage in stages:
+  current={'eventId':stage['id'],'inboxIds':[],'calendarIds':[]}
+  for message in stage.get('inbox',[]):
+   key=message['id']
+   if key in inbox and inbox[key]!=message:raise RuntimeError('Inbox ID collision with different content: '+key)
+   inbox[key]=message;current['inboxIds'].append(key)
+  for event in stage.get('calendar',[]):
+   key=event['id']
+   if key in calendar and calendar[key]!=event:raise RuntimeError('Calendar ID collision with different content: '+key)
+   calendar[key]=event;current['calendarIds'].append(key)
+  deliveries.append(current)
+ return {'inbox':list(inbox.values()),'calendar':list(calendar.values()),'currentNotifications':deliveries[-1] if deliveries else {},'notificationHistory':deliveries,'calendarMeaning':'Released historical calendar evidence. Older invitations and reminders are not assertions of current status; reconcile email updates and revisions.'}
+
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
- prefix='Your resume is /inputs/resume.pdf. Calendar and inbox are available through tools and /inputs/sources.json. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages, submit applications, or create interview preparation materials. '
+ prefix='Your resume is /inputs/resume.pdf. Earlier released emails and historical calendar evidence remain available through tools and /inputs/sources.json. currentNotifications identifies this turn’s deliveries; notificationHistory retains duplicate deliveries. Reconcile historical invitations with later updates. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages, submit applications, or create interview preparation materials. '
  storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records, and save meaningful updates, drafts, and next steps there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, drafts, and next steps. ')
  prefix += storage
+ spec=json.loads((S/'scenario.json').read_text())
+ now=datetime.datetime.fromisoformat(spec['origin'].replace('Z','+00:00'))+datetime.timedelta(minutes=stage['minute'])
+ prefix+='Current workspace time: '+now.isoformat()+'. Use this business time for the current work; container wall time does not define deadlines. '
+ if stage['id']=='final_reconciliation':prefix+=('Retrieve relevant Lookout records before reporting and verify any material correction. ' if condition=='lookout' else 'Read your saved files before reporting and verify any material correction. ')+'Cite saved records/files when available; distinguish saved from unsaved. '
+
  if stage['kind']=='onboarding':
   return prefix+stage['request']+'\n\n'+(R/'background'/'onboarding.md').read_text()
  if stage['kind']=='user_update':return prefix+stage['request']
