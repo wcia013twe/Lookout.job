@@ -1160,3 +1160,20 @@ passed and paired pilots were launched; quality remains pending independent fina
 review. Earlier blocked roots and an interpreter-symlink preflight failure remain
 historical. Focused source/tests and pilot execution are separate evidence. This
 manual update does not refresh generated coverage beyond this specific boundary.
+
+
+### JOB03/JOB04 terminal audit and prospective clock gate
+
+The [shared JOB host](../../scripts/jobs/README.md) now fails closed on native
+backend/simulated-stage clock mismatch and checks DNS/TLS without inference in
+both containers. Prospective JOB03 v4/JOB04 v3 retain monotonic elapsed time,
+wall drift and overrun diagnostics. The compressed fixtures currently remain
+blocked: no shared backend clock was changed and no new participant pair ran.
+Historical JOB04 has model-endpoint DNS errors and a wall-budget overrun;
+precise timeout attribution is unresolved because old monotonic timing is absent.
+Raw host calls and failed-turn time remain reportable without inventing usage.
+Fresh independent semantic review is finalized (JOB04 Lookout partial); neither
+completion nor source tests establish a measured comparative result. Historical
+freezes/outcomes remain unchanged. Focused tests and actual blocked no-inference
+probes verify these boundaries, not a production or hosted capability. This is a
+focused manual update, not a refresh of generated wiki coverage.

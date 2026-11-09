@@ -8,6 +8,7 @@ LIB=Path(__file__).resolve().parent;REPO=LIB.parents[1]
 sys.path.insert(0,str(LIB))
 from transport import Bridge
 from services import Services
+from audit import clock_alignment
 sys.path.insert(0,str(REPO/'scripts/communication'))
 from diagnostics import call_metrics
 sys.path.insert(0,str(REPO/'scripts/com2'))
@@ -44,8 +45,8 @@ def prepare(case,root,source,background):
  import parity
  initial={'profileFacts':clone['settings']['profile']['facts'],'contacts':[]}
  onboarding,receipt=parity.complete_and_verify(owned,background,(background/'profile.md').read_text(),initial)
- files=[LIB/n for n in ['account.mjs','host.py','client.py','bridge.py','transport.py','services.py','preflight.mjs']]+[REPO/'scripts/com2'/n for n in ['runner.py','service.py']]+[REPO/'scripts/n01/cost.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/com2/parity.py']
- cfg={'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v1','normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
+ files=[LIB/n for n in ['account.mjs','host.py','client.py','bridge.py','transport.py','services.py','preflight.mjs','audit.py']]+[REPO/'scripts/com2'/n for n in ['runner.py','service.py']]+[REPO/'scripts/n01/cost.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/com2/parity.py']
+ cfg={'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v2','normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
  if case=='JOB04':cfg['applicationIdMapping']={x['id']:str(uuid.uuid5(uuid.UUID(a['userId']),x['id'])) for x in read(REPO/'examples/job04/evidence.json')['applications']}
  cfgpath=owned/'configuration.json';write(cfgpath,cfg)
  cmd=['node',str(REPO/'scripts'/case.lower()/'task.mjs'),'--action','prepare','--root',str(root),'--configuration',str(cfgpath)]
@@ -88,6 +89,9 @@ class Host:
  def dispatch(self,req):
   if req.get('benchmarkTaskId')!=self.case or req.get('ownerId')!=self.owner:raise ValueError('Request owner/case mismatch')
   self.verify();op=req['operation'];c=req.get('condition')
+  if op=='participant.turn':
+   alignment=clock_alignment(read(self.root/'suite/scenario.json'),account(self.root,'snapshot')['capturedAt'])
+   if not alignment['aligned']:raise ValueError('Native backend clock differs from simulated stages; new pair blocked')
   if op=='host.preflight':return self.preflight()
   if c not in ['baseline','lookout']:raise ValueError('Condition required')
   run=self.root/'host-runs'/c;out=run/'output';inputs=run/'live-inputs'
@@ -127,12 +131,17 @@ class Host:
   prompt+='Current time: '+now+'\n'+(packet.get('prompt') or packet.get('input',{}).get('message',''))
   if req.get('notification'):prompt+='\nCurrent reminders: '+json.dumps(req['notification'])
   runtime.inputs_prompt=lambda *_:prompt
+  wall_started=time.time();monotonic_started=time.monotonic()
   sm=self.sessions[c][1].turn(sd,{'_index':self.stage,'_session':session_id,'seconds':req['budgetSeconds']},resume)
+  timing={'wallSeconds':time.time()-wall_started,'monotonicSeconds':time.monotonic()-monotonic_started,'executorSeconds':sm['durationSeconds'],'budgetSeconds':req['budgetSeconds']}
+  timing['wallMinusMonotonicSeconds']=timing['wallSeconds']-timing['monotonicSeconds']
+  timing['wallBudgetExceeded']=timing['wallSeconds']>req['budgetSeconds']+5
+  write(sd/'timing.json',timing)
   trace=[json.loads(x) for x in (sd/'trace.jsonl').read_text().splitlines()];tools=[json.loads(x) for x in (sd/'lookout-trace.jsonl').read_text().splitlines()];interactions=[x['data'] for x in tools if x['type']=='user.interaction']
-  return {'status':sm['status'],'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'executionSeconds':sm['durationSeconds'],'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
+  return {'status':sm['status'],'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'timing':timing,'executionSeconds':sm['durationSeconds'],'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
  def preflight(self):
   # Actual no-model Session construction checks auth, mounts and MCP forwarding.
-  root=self.root;out=root/'receipts'/('host-'+uuid.uuid4().hex[:8]);out.mkdir();gates=[]
+  root=self.root;(root/'receipts').mkdir(exist_ok=True);out=root/'receipts'/('host-'+uuid.uuid4().hex[:8]);out.mkdir();gates=[]
   def gate(name,fn):
    value=fn();write(out/(name+'.json'),value);gates.append({'name':name,'status':'passed','path':str(out/(name+'.json')),'sha256':digest(out/(name+'.json'))})
   gate('native_owner_snapshot',lambda:account(root,'snapshot'))
@@ -161,6 +170,9 @@ class Host:
     def call(msg):
      request=__import__('urllib.request',fromlist=['Request']).Request(session.bridge.url.replace('host.docker.internal','127.0.0.1'),data=json.dumps(msg).encode(),headers={'Authorization':'Bearer '+session.bridge.key,'Content-Type':'application/json'})
      with __import__('urllib.request',fromlist=['urlopen']).urlopen(request,timeout=100) as response:return json.load(response)
+    # DNS/TLS only: never request a generation, send auth, or substitute a model.
+    probe="import socket,ssl,json,time; t=time.monotonic(); addresses=socket.getaddrinfo('chatgpt.com',443); sock=socket.create_connection(('chatgpt.com',443),timeout=10); tls=ssl.create_default_context().wrap_socket(sock,server_hostname='chatgpt.com'); print(json.dumps({'dns':bool(addresses),'tls':tls.version(),'seconds':time.monotonic()-t,'participantExecuted':False})); tls.close()"
+    gate(c+'_inference_transport',lambda:json.loads(runtime.command(['docker','exec',session.name,'python3','-c',probe],text=True,timeout=20).stdout))
     init=call({'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-06-18','capabilities':{},'clientInfo':{'name':'workspace','version':'1'}}});listed=call({'jsonrpc':'2.0','id':2,'method':'tools/list','params':{}})
     if init.get('error') or listed.get('error'):raise ValueError('Native initialization/list failed')
     names={t['name'] for t in listed['result']['tools']}
@@ -183,7 +195,10 @@ class Host:
    service=Services(out/'test-clock.sqlite');r=service.schedule('probe','A','2026-11-18T14:00:00Z','America/New_York');assert service.schedule('probe','A',r['dueAt'],r['timeZone'])['duplicate'];assert not service.deliver('2026-11-18T13:59:59Z');assert len(service.deliver(r['dueAt']))==1;assert not service.deliver(r['dueAt']);r=service.schedule('cancel','C',r['dueAt'],r['timeZone']);service.cancel(r['reminderId']);assert not service.deliver(r['dueAt']);gate('shared_test_clock',service.snapshot)
    service=Services(out/'preview.sqlite');service.seed({'B':{'preparation':{'completedFields':['name','email'],'pendingField':'earliest-start-date'}}})
    service.arm('B','preview-timeout');assert service.preview('B')['status']=='preview_timeout';assert Services(service.file).preview('B',{'earliest-start-date':'2027-01-19'})['status']=='prepared';gate('interruption_recovery',service.snapshot)
-  return {'participantExecuted':False,'ready':True,'gates':gates,'model':'gpt-5.6-terra','reasoning':'medium','imageId':read(root/'host-freeze.json')['imageId'],'limitations':['No inference/model availability verified until participant launch.','Fictional local services do not establish real employer access or product scheduling.']}
+  alignment=clock_alignment(read(root/'suite/scenario.json'),account(root,'snapshot')['capturedAt'])
+  gate('native_clock_alignment',lambda:alignment)
+  if not alignment['aligned']:gates[-1]['status']='blocked'
+  return {'participantExecuted':False,'ready':alignment['aligned'],'gates':gates,'model':'gpt-5.6-terra','reasoning':'medium','imageId':read(root/'host-freeze.json')['imageId'],'limitations':['No inference/model availability verified until participant launch.','Fictional local services do not establish real employer access or product scheduling.']}
  def close(self):
   for _,session in self.sessions.values():session.close()
   fcntl.flock(self.lock,fcntl.LOCK_UN);self.lock.close()

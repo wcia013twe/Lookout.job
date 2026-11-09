@@ -40,10 +40,10 @@ export function prepare(root,configuration,candidate){
  for(const n of ['scripts/job04/task.mjs','scripts/n01/cost.py','scripts/n01/cost-export.mjs'])lock.executables[path.join(repo,n)]=digest(path.join(repo,n));
  lock.version=read(path.join(root,'suite/scenario.json')).version;write(path.join(root,'freeze.json'),lock);return {prepared:true,version:lock.version,participantExecuted:false};
 }
-export function frozen(root){
+export function frozen(root,{reviewOnly=false}={}){
  const f=read(path.join(root,'freeze.json'));
  for(const [n,d]of Object.entries(f.files))check(privateFile(path.join(root,n))===d,'Frozen input changed: '+n);
- for(const [n,d]of Object.entries(f.executables))check(privateFile(n)===d,'Frozen executable changed: '+n);
+ if(!reviewOnly)for(const [n,d]of Object.entries(f.executables))check(privateFile(n)===d,'Frozen executable changed: '+n);
  return f;
 }
 export function adapter(command,request,timeout=30000){
@@ -69,7 +69,7 @@ export function preflight(root,command,output,execute=adapter){
   check(cfg.ownerId&&cfg.readOnlyOwnerId===cfg.ownerId&&cfg.source&&cfg.normalProductConfiguration?.captured===true,'Dedicated owner/read-only identity and actual product configuration required');
   const binding=runtimeBinding(command,cfg);receipt.runtime=binding;
   const call=(operation,args={})=>{const req={operation,benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,...args};const entry={request:req};receipt.calls.push(entry);try{entry.result=bound(execute(command,req),req);return entry.result;}catch(e){entry.error=e.message;throw e;}};
-  if(cfg.hostVersion==='jobs-host-v1'){
+  if(['jobs-host-v1','jobs-host-v2'].includes(cfg.hostVersion)){
    receipt.host=verifyHostGates(root,call('host.preflight'));
    receipt.ready=true;receipt.status='ready';receipt.completedAt=new Date().toISOString();write(output,receipt);return receipt;
   }
@@ -119,7 +119,7 @@ export function stageCost(c){
 export function run(root,command,preflightFile,pairId){
  const f=frozen(root),cfg=read(path.join(root,'configuration.json')),pre=read(preflightFile),spec=read(path.join(root,'suite/scenario.json')),evidence=read(path.join(root,'suite/evidence.json'));
  check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&hash(pre.runtime)===hash(runtimeBinding(command,cfg)),'Matching successful preflight required; unresolved errors block execution');
- if(cfg.hostVersion==='jobs-host-v1')verifyHostGates(root,pre.host);
+ if(['jobs-host-v1','jobs-host-v2'].includes(cfg.hostVersion))verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe pair ID required');
  const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only; no reset or silent retry');fs.mkdirSync(runs,{mode:0o700});
  for(const condition of conditions){
@@ -171,7 +171,8 @@ export function assign(h,reviewer,excluded){
 }
 export function compareState(expected,actual){return Object.fromEntries(Object.entries(expected).map(([k,v])=>[k,{pass:JSON.stringify(actual?.[k])===JSON.stringify(v),expected:v,actual:actual?.[k]??null}]));}
 export function finalize(root,submission){
- const f=frozen(root),h=read(path.join(root,'grading/handoff.json')),a=read(path.join(root,'grading/assignment.json')),at=submission.attestation,spec=read(path.join(root,'suite/scenario.json')),ref=read(path.join(root,'suite/reference.json'));
+ // Completed evidence review binds frozen inputs/runs, not today's adapter bytes.
+ const f=frozen(root,{reviewOnly:true}),h=read(path.join(root,'grading/handoff.json')),a=read(path.join(root,'grading/assignment.json')),at=submission.attestation,spec=read(path.join(root,'suite/scenario.json')),ref=read(path.join(root,'suite/reference.json'));
  check(h.freezeHash===hash(f)&&a.handoffHash===hash(h)&&a.forkTurns==='none','Frozen assignment/rubric binding changed');
  check(!Object.values(a.excluded).flat().includes(a.reviewer)&&at?.reviewer===a.reviewer&&at.assignmentHash===hash(a)&&at.freshContext===true&&['didImplement','didCoordinate','didOperate','didParticipate'].every(k=>at[k]===false),'Fresh independent grader attestation required');
  const grades={};

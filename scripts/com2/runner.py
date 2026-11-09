@@ -90,6 +90,7 @@ class Session:
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
+  monotonic_started=time.monotonic()
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
   expired=threading.Event();usage=None;events=0;usage_complete=False
   with (stage_dir/'stderr.log').open('w') as errors:
@@ -120,7 +121,9 @@ class Session:
    finally:
     timer.cancel()
     if proc.poll() is None:stop();proc.wait(timeout=30)
-  active_seconds=time.time()-meta['startedAt']
+  wall_seconds=time.time()-meta['startedAt'];active_seconds=time.monotonic()-monotonic_started
+  meta['timing']={'basis':'monotonic_elapsed_including_native_calls','wallSeconds':wall_seconds,'monotonicSeconds':active_seconds,'wallMinusMonotonicSeconds':wall_seconds-active_seconds,'wallBudgetExceeded':wall_seconds>stage['seconds']+5}
+  meta['environmentTimingConfounded']=abs(wall_seconds-active_seconds)>5 or active_seconds>stage['seconds']+5
   usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
   meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)

@@ -231,3 +231,14 @@ is false, whole-trajectory qualityFraction stays null and observedQualityFractio
 is explicitly partial. Missing evidence without a recorded capture failure still
 rejects finalization. Prior v1 receipts/freezes remain historical; new preparation
 and actual-service preflight are required for execution.
+
+
+## November 9 terminal audit and prospective clock block
+
+See the [shared JOB audit](../scripts/jobs/README.md#post-pair-audit-and-prospective-launch-block-2026-11-09)
+for the independently reviewed historical attempts, timeout/transport evidence,
+monotonic timing repair and current blocked readiness. Historical frozen versions
+remain unchanged. New host-v2 preparations require native clock alignment as well
+as no-inference native/container/transport gates; the compressed multi-day fixture
+cannot currently pass clock alignment on the shared real-time backend. Do not
+interpret completed turns or a partial review as a measured quality advantage.

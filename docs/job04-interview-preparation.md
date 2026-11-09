@@ -178,3 +178,14 @@ Prospective v2 uses the shared JOB host and actual per-freeze gates described
 above. Both conditions' native/container preflights passed before the paired
 pilot launch. The interpreter-path failure in an earlier no-inference setup is
 retained. Launch readiness does not establish participant completion or quality.
+
+
+## November 9 terminal audit and prospective clock block
+
+See the [shared JOB audit](../scripts/jobs/README.md#post-pair-audit-and-prospective-launch-block-2026-11-09)
+for the independently reviewed historical attempts, timeout/transport evidence,
+monotonic timing repair and current blocked readiness. Historical frozen versions
+remain unchanged. New host-v2 preparations require native clock alignment as well
+as no-inference native/container/transport gates; the compressed multi-day fixture
+cannot currently pass clock alignment on the shared real-time backend. Do not
+interpret completed turns or a partial review as a measured quality advantage.

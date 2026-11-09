@@ -26,7 +26,7 @@ export function prepare(root,configuration){
  const executables=Object.fromEntries(['scripts/job03/task.mjs','scripts/job03/cost.mjs','scripts/n01/cost-export.mjs'].map(n=>{const p=path.join(base,n);return [p,crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex')];}));
  write(path.join(root,'freeze.json'),{version:read(path.join(root,'suite/scenario.json')).version,files:bindings,executables,createdAt:new Date().toISOString(),participantExecuted:false});return {prepared:true,root};
 }
-export function frozen(root){const f=read(path.join(root,'freeze.json'));for(const [name,h]of Object.entries(f.files)){const content=name==='configuration.json'?hash(read(path.join(root,name))):hash(fs.readFileSync(path.join(root,'suite',name),'utf8'));check(content===h,'Frozen input changed: '+name);}for(const [name,h]of Object.entries(f.executables||{}))check(crypto.createHash('sha256').update(fs.readFileSync(name)).digest('hex')===h,'Frozen executable changed: '+name);return f;}
+export function frozen(root,{reviewOnly=false}={}){const f=read(path.join(root,'freeze.json'));for(const [name,h]of Object.entries(f.files)){const content=name==='configuration.json'?hash(read(path.join(root,name))):hash(fs.readFileSync(path.join(root,'suite',name),'utf8'));check(content===h,'Frozen input changed: '+name);}if(!reviewOnly)for(const [name,h]of Object.entries(f.executables||{}))check(crypto.createHash('sha256').update(fs.readFileSync(name)).digest('hex')===h,'Frozen executable changed: '+name);return f;}
 // Bind adapter entrypoint plus declared dependencies/image locks; argv alone is insufficient.
 export function runtimeBinding(command,config){
  check(Array.isArray(command)&&command.length&&command.every(x=>typeof x==='string'),'Adapter command argv required');
@@ -54,7 +54,7 @@ export function preflight(root,command,output){
   check(config.ownerId&&config.readOnlyOwnerId===config.ownerId,'Dedicated native owner and read-only confirmation owner required');
   check(config.normalProductConfiguration.status!=='not_captured','Actual normal product configuration has not been captured');
   receipt.runtime=runtimeBinding(command,config);
-  if(config.hostVersion==='jobs-host-v1'){
+  if(['jobs-host-v1','jobs-host-v2'].includes(config.hostVersion)){
    const {verifyHostGates}=hostGates;
    receipt.host=verifyHostGates(root,call('host.preflight'));receipt.ready=true;receipt.status='ready';receipt.completedAt=new Date().toISOString();write(output,receipt);return receipt;
   }
@@ -95,7 +95,7 @@ export function actor(question,released){
 function capture(root,command,condition,stage,operation,args={}){const config=read(path.join(root,'configuration.json'));const request={operation,benchmarkTaskId:'JOB03',ownerId:config.ownerId,condition,stage:stage.id,now:stage.at,...args};const result=adapter(command,request);bound(result,request);return result;}
 export function run(root,command,preflightFile,pairId){
  const f=frozen(root),pre=read(preflightFile);check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&pre.configurationHash===hash(read(path.join(root,'configuration.json')))&&pre.adapterCommandHash===hash(command)&&pre.runtime&&hash(pre.runtime)===hash(runtimeBinding(command,read(path.join(root,'configuration.json')))),'Matching successful actual-service preflight required');
- if(read(path.join(root,'configuration.json')).hostVersion==='jobs-host-v1')hostGates.verifyHostGates(root,pre.host);
+ if(['jobs-host-v1','jobs-host-v2'].includes(read(path.join(root,'configuration.json')).hostVersion))hostGates.verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe unique pair ID required');const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only: preserve errors; prepare a separately authorized campaign to rerun');fs.mkdirSync(runs);
  const spec=read(path.join(root,'suite/scenario.json')),fixture=read(path.join(root,'suite/fixture.json'));
  for(const condition of conditions){
@@ -152,7 +152,8 @@ export function additionalInteractions(r,review,manifest,dir){
  return {turns:ids.size,answered};
 }
 export function finalize(root,submission){
- const f=frozen(root),spec=read(path.join(root,'suite/scenario.json')),h=read(path.join(root,'grading/handoff.json')),a=read(path.join(root,'grading/assignment.json')),at=submission.attestation;
+ // Completed evidence review binds frozen inputs/runs, not today's adapter bytes.
+ const f=frozen(root,{reviewOnly:true}),spec=read(path.join(root,'suite/scenario.json')),h=read(path.join(root,'grading/handoff.json')),a=read(path.join(root,'grading/assignment.json')),at=submission.attestation;
  check(h.freezeHash===hash(f)&&h.scenarioHash===hash(spec)&&a.handoffHash===hash(h)&&a.forkTurns==='none','Changed frozen grading inputs');check(at?.reviewer===a.reviewer&&at.assignmentHash===hash(a)&&at.freshContext===true&&['didImplement','didOperate','didParticipate','didCoordinate'].every(k=>at[k]===false),'Fresh independent grader attestation required');
  const grades={};for(const condition of conditions){const dir=path.join(root,'runs',condition),r=read(path.join(dir,'run.json')),binding=h.runs.find(x=>x.condition===condition),manifest=read(path.join(dir,'evidence-hashes.json'));check(hash(r)===binding.runHash&&hash(manifest)===hash(binding.manifest),'Evidence manifest changed');for(const [p,digest]of Object.entries(manifest))check(hash(fs.readFileSync(path.join(dir,p),'utf8'))===digest,'Frozen evidence changed');
   const review=submission.conditions?.[condition];check(review?.reviewer===a.reviewer,'Assigned reviewer required');const checks=[],stateChecks={};check(r.checkpoints.length<=spec.stages.length&&r.checkpoints.every((c,i)=>c.stage===spec.stages[i].id),'Invalid checkpoint order/duplicate');const complete=r.status==='completed'&&r.checkpoints.length===spec.stages.length&&r.checkpoints.every(c=>c.status==='completed'&&!c.captureError&&Number.isFinite(c.executionSeconds)&&Number.isInteger(c.uniqueTurns)&&Number.isInteger(c.answeredTurns));

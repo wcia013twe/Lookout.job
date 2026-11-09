@@ -1,6 +1,6 @@
 {
-  "version": "JOB03-tracking-v3",
-  "graderVersion": "JOB03-grade-v3",
+  "version": "JOB03-tracking-v4",
+  "graderVersion": "JOB03-grade-v4",
   "comparison": {"mode":"matched_intent","proactiveEffortMeasured":false},
   "stageQuality": {
     "initial": ["entity_routing","preservation","report_fidelity"],
