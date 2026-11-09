@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Genuine local native lifecycle on a dedicated sacrificial owner; no employer access.
+import {applicationEmailAuthority} from './candidate-authority.mjs';
 import {account,mcp,respond} from './native.mjs';import {read,write,actorAnswer} from './core.mjs';
-const [root,scenario,actorFile,out]=process.argv.slice(2);const a=account(root),spec=read(scenario),actor=read(actorFile);const context=await mcp(a,'read_personal_context',{}),facts=context.settings.profile.facts,resumeId=context.settings.resumes[0].id;
+const [root,scenario,actorFile,out]=process.argv.slice(2);const a=account(root),spec=read(scenario),actor=read(actorFile);const context=await mcp(a,'read_personal_context',{}),facts=context.settings.profile.facts,applicationEmail=applicationEmailAuthority(context.settings,context.settings.profile.facts.email).value,resumeId=context.settings.resumes[0].id;
 const records=[];for(const t of spec.targets){
- const questions=t.id==='manual'?[]:[{id:'name',fieldId:'name',fieldType:'text',question:'Full name',answer:facts.name,required:true,questionSource:'employer_form',answerSource:'profile'},{id:'email',fieldId:'email',fieldType:'email',question:'Email',answer:facts.email,required:true,questionSource:'employer_form',answerSource:'profile'}];
+ const questions=t.id==='manual'?[]:[{id:'name',fieldId:'name',fieldType:'text',question:'Full name',answer:facts.name,required:true,questionSource:'employer_form',answerSource:'profile'},{id:'email',fieldId:'email',fieldType:'email',question:'Email',answer:applicationEmail,required:true,questionSource:'employer_form',answerSource:'profile'}];
  if(t.id==='personal')questions.push({id:'motivation',fieldId:'motivation',fieldType:'textarea',question:'Why do you want to apply, and have you used Northstar Tools before?',answer:'',required:true,questionSource:'employer_form'});
  const draft={resumeId,questionsReviewed:false,inspectionComplete:t.id!=='manual',inspectedAt:new Date().toISOString(),questions};
  const saved=await mcp(a,'call_discovered_tool',{name:'prepare_draft',arguments:{jobId:t.nativeJobId,expectedRevision:-1,draft,...(t.id==='manual'?{blocker:'Workday requires a manual handoff.'}:t.id==='personal'?{blocker:'Please answer the motivation and product-use question.'}:{}),responseMode:'full'}});

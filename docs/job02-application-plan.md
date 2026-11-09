@@ -307,3 +307,11 @@ Prospective readiness now additionally requires four actual, hash-bound receipts
 - `storage_orientation`: prove the exact participant mount is writable, survives a fresh session, and the identical task request names `/workspace/output`. Native storage remains the product default; both conditions know their available file path.
 
 All four are mandatory gates. Each needs an actual passing receipt bound to the next freeze before its trial. Controlled fixtures remain isolated; live employer forms still have separate custom-widget/upload/autosave blockers.
+
+## Prospective v3: intent and field authority
+
+The completed controlled-v2 pair is retained at `/Volumes/External SSD/Lookout/tmp/job02-controlled-clearing-v2-20261109-2`; independent review marked comparison invalid. Its actor matched employer names only after usage verbs, so equivalent product-use questions released different facts. Its exact email reference also ignored a specific saved application-email instruction. Diagnostic scores remain private; structural exports explicitly mark invalidity and omit comparative quality/task success.
+
+Controlled-v3 uses a target-scoped product-use intent predicate with independent usage/topic checks; employer order, product pronouns and supported tense/paraphrase variants do not affect the predefined answer. Other targets and unrelated personal unknowns remain unresolved. Metamorphic tests and actual parity receipts must cover both observed question forms plus independent paraphrases before another freeze; the actor never depends on condition.
+
+For application fields, an explicit active application-profile instruction outranks generic résumé contact information. Preserve both facts with distinct meanings. Derive the application-email reference from all supplied active profile instructions, fail closed on conflicting or unresolved application-specific instructions, and use verified contact fallback only when no specific instruction exists. Validate the readable/native/full-settings/reference authority together. A different contact email is not itself a contradiction. No original N01 files or saved preference values are rewritten to make a reference pass.

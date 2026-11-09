@@ -7,6 +7,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 import {costValues} from '../n01/cost-export.mjs';
+import {verifyHostGates} from '../jobs/preflight.mjs';
 export const hash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 export const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
 export const write=(p,x)=>fs.writeFileSync(p,JSON.stringify(x,null,2)+'\n',{flag:'wx',mode:0o600});
@@ -23,7 +24,14 @@ export function prepare(root,configuration,candidate){
  fs.mkdirSync(root,{recursive:true,mode:0o700});for(const n of ['suite','candidate','receipts'])fs.mkdirSync(path.join(root,n),{mode:0o700});
  const lock={files:{},executables:{},createdAt:new Date().toISOString()};
  const copy=(src,dst)=>{fs.copyFileSync(src,path.join(root,dst),fs.constants.COPYFILE_EXCL);fs.chmodSync(path.join(root,dst),0o600);lock.files[dst]=digest(path.join(root,dst));};
- for(const n of ['scenario.json','evidence.json','reference.json'])copy(path.join(repo,'examples/job04',n),'suite/'+n);
+ for(const n of ['scenario.json','evidence.json','reference.json']){
+  if(n==='evidence.json'&&configuration.applicationIdMapping){
+   const evidence=read(path.join(repo,'examples/job04',n)),mapping=configuration.applicationIdMapping;
+   check(evidence.applications.every(a=>typeof mapping[a.id]==='string'&&/^[a-f0-9-]{36}$/.test(mapping[a.id]))&&new Set(Object.values(mapping)).size===evidence.applications.length,'Unique owner-specific application IDs required');
+   const remap=x=>typeof x==='string'?(mapping[x]??x):Array.isArray(x)?x.map(remap):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).map(([k,v])=>[k,remap(v)])):x;
+   write(path.join(root,'suite',n),remap(evidence));lock.files['suite/'+n]=digest(path.join(root,'suite',n));
+  }else copy(path.join(repo,'examples/job04',n),'suite/'+n);
+ }
  copy(path.join(repo,'scripts/job04/grader-instructions.md'),'suite/grader-instructions.md');
  for(const n of ['profile.md','resume.pdf'])copy(path.join(candidate,n),'candidate/'+n);
  copy(path.join(repo,'examples/evals/cost-policy.json'),'suite/cost-policy.json');
@@ -32,10 +40,10 @@ export function prepare(root,configuration,candidate){
  for(const n of ['scripts/job04/task.mjs','scripts/n01/cost.py','scripts/n01/cost-export.mjs'])lock.executables[path.join(repo,n)]=digest(path.join(repo,n));
  lock.version=read(path.join(root,'suite/scenario.json')).version;write(path.join(root,'freeze.json'),lock);return {prepared:true,version:lock.version,participantExecuted:false};
 }
-export function frozen(root){
+export function frozen(root,{reviewOnly=false}={}){
  const f=read(path.join(root,'freeze.json'));
  for(const [n,d]of Object.entries(f.files))check(privateFile(path.join(root,n))===d,'Frozen input changed: '+n);
- for(const [n,d]of Object.entries(f.executables))check(privateFile(n)===d,'Frozen executable changed: '+n);
+ if(!reviewOnly)for(const [n,d]of Object.entries(f.executables))check(privateFile(n)===d,'Frozen executable changed: '+n);
  return f;
 }
 export function adapter(command,request,timeout=30000){
@@ -48,7 +56,8 @@ export function bound(x,req){check(x.requestHash===hash(req)&&typeof x.receiptId
 export function runtimeBinding(command,configuration){
  check(Array.isArray(command)&&command.length,'Actual adapter argv required');
  const files=configuration.runtimeFiles;check(Array.isArray(files)&&files.length,'Frozen adapter/runtime files required');
- const bindings=Object.fromEntries(files.map(f=>[fs.realpathSync(f),privateFile(f)]));
+ check(path.isAbsolute(command[0]),'Absolute adapter executable required');
+ const bindings=Object.fromEntries([...files,...command.filter(x=>path.isAbsolute(x)&&fs.existsSync(x)&&fs.statSync(x).isFile())].map(f=>{const real=fs.realpathSync(f);return [real,privateFile(real)];}));
  // The adapter entry script/binary must be among recorded files, not an unbound command string.
  check(command.some(v=>path.isAbsolute(v)&&fs.existsSync(v)&&bindings[fs.realpathSync(v)]),'Adapter command must name a bound executable file');
  return {argv:command,files:bindings};
@@ -60,6 +69,10 @@ export function preflight(root,command,output,execute=adapter){
   check(cfg.ownerId&&cfg.readOnlyOwnerId===cfg.ownerId&&cfg.source&&cfg.normalProductConfiguration?.captured===true,'Dedicated owner/read-only identity and actual product configuration required');
   const binding=runtimeBinding(command,cfg);receipt.runtime=binding;
   const call=(operation,args={})=>{const req={operation,benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,...args};const entry={request:req};receipt.calls.push(entry);try{entry.result=bound(execute(command,req),req);return entry.result;}catch(e){entry.error=e.message;throw e;}};
+  if(['jobs-host-v1','jobs-host-v2'].includes(cfg.hostVersion)){
+   receipt.host=verifyHostGates(root,call('host.preflight'));
+   receipt.ready=true;receipt.status='ready';receipt.completedAt=new Date().toISOString();write(output,receipt);return receipt;
+  }
   const c=call('capabilities');check(c.actual===true&&c.synthetic===false&&c.dedicated===true&&c.model===spec.model&&c.reasoning===spec.reasoning,'Actual isolated host with matching model/reasoning required');
   for(const k of ['participant.sessions','participant.capture','actor.controlled','evidence.release_isolation','native.write_readback','native.restore','native.readonly_confirmation','baseline.files','pipeline.milestones','toolkit.artifacts','usage.counter_delta'])check(c.capabilities?.includes(k),'Missing actual capability: '+k);
   check(c.isolation?.futureEvidenceVisible===false&&c.isolation?.graderVisible===false&&c.isolation?.credentialsVisible===false&&c.isolation?.liveWebEnabled===false,'Participant isolation proof required');
@@ -80,7 +93,7 @@ export function packet(spec,evidence,stage,condition,profile){
  check(conditions.includes(condition),'Unknown condition');
  const events=stage.eventIds.map(id=>{const e=evidence.events.find(e=>e.id===id);check(e,'Unknown released evidence');return e;});
  const orientation=condition==='lookout'?'Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant context and records and save meaningful pipeline updates, preparation and debriefs. Preserve unrelated information and verify saves.':'Your files in /workspace/output persist across sessions. You may retain context, drafts and next steps there.';
- return {stage:stage.id,session:stage.session,minute:stage.minute,orientation,permissions:'Read, analyze, prepare and save. Use only released evidence. Do not send, submit, contact interviewers, browse live sources or mark practice complete without user report.',prompt:stage.kind==='user'?stage.request:condition==='lookout'?spec.productConfiguration.wakePrompt:stage.baseline,events,sources:evidence.sources,...(stage.id===spec.stages[0].id?{applications:evidence.applications,...(condition==='baseline'?{onboarding:profile}:{})}:{})};
+ return {stage:stage.id,session:stage.session,minute:stage.minute,orientation,permissions:'Read, analyze, prepare and save. Use only released evidence. Do not send, submit, contact interviewers, browse live sources or mark practice complete without user report.',prompt:stage.request??stage.baseline,events,sources:evidence.sources,...(stage.id===spec.stages[0].id?{applications:evidence.applications,...(condition==='baseline'?{onboarding:profile}:{})}:{})};
 }
 export function actor(question,released){
  if(/send|submit|permission|contact|schedule.*call/i.test(question))return {answer:'Read, prepare and save only; no sending, application submission or external scheduling.',category:'approval'};
@@ -106,6 +119,7 @@ export function stageCost(c){
 export function run(root,command,preflightFile,pairId){
  const f=frozen(root),cfg=read(path.join(root,'configuration.json')),pre=read(preflightFile),spec=read(path.join(root,'suite/scenario.json')),evidence=read(path.join(root,'suite/evidence.json'));
  check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&hash(pre.runtime)===hash(runtimeBinding(command,cfg)),'Matching successful preflight required; unresolved errors block execution');
+ if(['jobs-host-v1','jobs-host-v2'].includes(cfg.hostVersion))verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe pair ID required');
  const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only; no reset or silent retry');fs.mkdirSync(runs,{mode:0o700});
  for(const condition of conditions){
@@ -118,14 +132,14 @@ export function run(root,command,preflightFile,pairId){
      write(path.join(sd,'before.json'),capture(root,command,condition,'snapshot',{stage:stage.id}));
      const input=packet(spec,evidence,stage,condition,fs.readFileSync(path.join(root,'candidate/profile.md'),'utf8'));write(path.join(sd,'input.json'),input);
      const req={operation:'participant.turn',benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,condition,packet:input,session:stage.session,resume:i>0&&stage.session===spec.stages[i-1].session,budgetSeconds:spec.policy.stageBudgetSeconds,actor:{version:'released-only-v1',events:spec.stages.slice(0,i+1).filter(s=>s.kind==='user').map(s=>({id:s.id,request:s.request})),responseDelayMinutes:spec.policy.userResponseDelayMinutes}};
-     start=performance.now();const result=bound(adapter(command,req,spec.policy.stageBudgetSeconds*1000),req);cp.executionSeconds=(performance.now()-start)/1000;start=null;
+     start=performance.now();const result=bound(adapter(command,req,(spec.policy.stageBudgetSeconds+45)*1000),req);cp.adapterSeconds=(performance.now()-start)/1000;cp.executionSeconds=result.executionSeconds??cp.adapterSeconds;cp.containerStartupSeconds=result.containerStartupSeconds??null;cp.mcpDiagnostics=result.mcpDiagnostics??null;start=null;
      write(path.join(sd,'response.json'),result);check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal receipt required');cp.status=result.status;
      check(result.participantExecuted===true&&result.synthetic===false,'Actual participant execution receipt required');
      check(result.session===stage.session&&result.resume===req.resume,'Unexpected session continuity');
      check(result.isolation?.futureEvidenceVisible===false&&result.isolation?.graderVisible===false&&result.isolation?.credentialsVisible===false,'Participant isolation violated');
      check(Array.isArray(result.trace)&&result.trace.length>0&&Array.isArray(result.toolTrace)&&result.files&&typeof result.files==='object'&&!Array.isArray(result.files),'Trace/tool/output evidence required');
      check(Array.isArray(result.interactions),'Captured user interactions required');const ids=new Set();for(const x of result.interactions){check(x.id&&!ids.has(x.id)&&typeof x.question==='string'&&typeof x.answered==='boolean'&&Array.isArray(x.categories),'Unique evidenced interaction turns required');ids.add(x.id);}cp.uniqueTurns=ids.size;cp.answeredTurns=result.interactions.filter(x=>x.answered).length;
-     cp.scriptedInitiations=Number(condition==='baseline'&&stage.kind==='email');
+     cp.scriptedInitiations=Number(stage.id!=='screen_debrief');cp.prescribedPrompts=1;
      write(path.join(sd,'stage-run.json'),{status:cp.status,cost:stageCost(result.cost),durationSeconds:cp.executionSeconds});
     }catch(e){cp.status=e.message==='adapter_timeout'?'timed_out':'harness_failed';cp.error=e.message;write(path.join(sd,'failure.json'),{error:e.message});}
     finally{if(start!==null)cp.executionSeconds=(performance.now()-start)/1000;
@@ -157,7 +171,8 @@ export function assign(h,reviewer,excluded){
 }
 export function compareState(expected,actual){return Object.fromEntries(Object.entries(expected).map(([k,v])=>[k,{pass:JSON.stringify(actual?.[k])===JSON.stringify(v),expected:v,actual:actual?.[k]??null}]));}
 export function finalize(root,submission){
- const f=frozen(root),h=read(path.join(root,'grading/handoff.json')),a=read(path.join(root,'grading/assignment.json')),at=submission.attestation,spec=read(path.join(root,'suite/scenario.json')),ref=read(path.join(root,'suite/reference.json'));
+ // Completed evidence review binds frozen inputs/runs, not today's adapter bytes.
+ const f=frozen(root,{reviewOnly:true}),h=read(path.join(root,'grading/handoff.json')),a=read(path.join(root,'grading/assignment.json')),at=submission.attestation,spec=read(path.join(root,'suite/scenario.json')),ref=read(path.join(root,'suite/reference.json'));
  check(h.freezeHash===hash(f)&&a.handoffHash===hash(h)&&a.forkTurns==='none','Frozen assignment/rubric binding changed');
  check(!Object.values(a.excluded).flat().includes(a.reviewer)&&at?.reviewer===a.reviewer&&at.assignmentHash===hash(a)&&at.freshContext===true&&['didImplement','didCoordinate','didOperate','didParticipate'].every(k=>at[k]===false),'Fresh independent grader attestation required');
  const grades={};
@@ -182,7 +197,7 @@ export function finalize(root,submission){
   grades[condition]={status:complete?'reviewed':'partial_review',executionSeconds:r.checkpoints.reduce((n,c)=>n+c.executionSeconds,0),effort:{uniqueTurns:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns))?r.checkpoints.reduce((n,c)=>n+c.uniqueTurns,0)+extra.size:null,scriptedInitiations:r.checkpoints.reduce((n,c)=>n+(c.scriptedInitiations??0),0),categories:'overlapping diagnostic categories; never sum into effort'},simulatedWaitingMinutes:r.checkpoints.every(c=>Number.isInteger(c.answeredTurns))?(r.checkpoints.reduce((n,c)=>n+c.answeredTurns,0)+extraAnswered)*spec.policy.userResponseDelayMinutes:null,cost:r.cost,checkpoints,adherence:condition==='lookout'?review.adherence:null,unreachedStages:spec.stages.filter(s=>!r.checkpoints.some(c=>c.stage===s.id)).map(s=>s.id),limitations:['Specificity and factual grounding measured; usefulness and interview outcomes unmeasured.','Participant cost excludes preflight and final grading; those costs are unmeasured unless separately captured.'],review};
  }
  const comparison=Object.fromEntries(['candidate_specificity','role_specificity','round_specificity','grounding','generation_decision','debrief_adaptation'].map(k=>{const means=Object.fromEntries(conditions.map(c=>{const values=Object.values(grades[c].checkpoints).map(x=>x.ratings?.[k]?.rating).filter(Number.isFinite);return [c,grades[c].status==='reviewed'&&values.length?values.reduce((n,v)=>n+v,0)/values.length:null];}));return [k,{...means,result:means.baseline===null||means.lookout===null?'unreviewed':means.baseline===means.lookout?'tie':means.lookout>means.baseline?'lookout_higher':'baseline_higher'}];}));
- const result={version:spec.version,graderVersion:'JOB04-grade-v1',assignment:a,attestation:at,grades,comparison,unmeasured:['usefulness','coaching effectiveness','interview outcomes']};write(path.join(root,'grading/final.json'),result);return result;
+ const result={version:spec.version,graderVersion:spec.graderVersion??'JOB04-grade-v1',assignment:a,attestation:at,grades,comparison,unmeasured:['usefulness','coaching effectiveness','interview outcomes','proactive user-effort savings']};write(path.join(root,'grading/final.json'),result);return result;
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))try{
  const {values:v}=parseArgs({options:{action:{type:'string'},root:{type:'string'},configuration:{type:'string'},candidate:{type:'string'},adapter:{type:'string'},output:{type:'string'},preflight:{type:'string'},pair:{type:'string'},reviewer:{type:'string'},excluded:{type:'string'},submission:{type:'string'},execute:{type:'boolean'}}});let result;

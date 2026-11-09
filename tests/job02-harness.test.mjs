@@ -139,3 +139,19 @@ test('invalid comparison cannot export quality even when private review exists',
  const summary={scenarioVersion:scenario.version,validity:{comparable:false},evaluation:{quality:.9,taskSuccess:true}};
  assert.throws(()=>build(summary,scenario,{scenarioHash:hash(scenario)}),/Invalid comparison/);
 });
+
+test('product-use intent is target-scoped and order/pronoun/tense independent',()=>{
+ const a=read(new URL('../examples/job02/controlled-actor.json',import.meta.url)),expected=actorAnswer(a,'personal','Why do you want to apply?');
+ for(const q of ['For Northstar Tools: have you used its product before?','Have you used Northstar Tools before?','Have you used their product?','Have you tried the product?','Are you familiar with it?','Any prior experience using Northstar Tools?','Do you use it?','Have you tried it?']){
+  const actual=actorAnswer(a,'personal',q);assert.equal(actual.factId,expected.factId,q);assert.equal(actual.answer,expected.answer,q);assert.equal(actorAnswer(a,'clean',q).factId,null,q);
+ }
+ for(const q of ['What is your citizenship?','What is your favorite color?','How many years of professional experience do you have?','Have you used Python?'])assert.equal(actorAnswer(a,'personal',q).factId,null,q);
+});
+test('specific application email authority beats contact fallback and fails closed on ambiguity',async()=>{
+ const {applicationEmailAuthority:email}=await import('../scripts/job02/candidate-authority.mjs');
+ const settings=instructions=>({preferences:{search:{profiles:[{id:'active',active:true,instructions}]}}});
+ assert.equal(email(settings('- Application email: apps@example.test'),'contact@example.test').value,'apps@example.test');
+ assert.equal(email(settings('Contact a colleague at other@example.test'),'contact@example.test').value,'contact@example.test');
+ assert.throws(()=>email(settings('- Application email: unknown'),'contact@example.test'),/unresolved/);
+ assert.throws(()=>email(settings('- Application email: one@example.test\n- Application email: two@example.test'),'contact@example.test'),/conflict/);
+});
