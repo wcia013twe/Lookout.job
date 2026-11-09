@@ -6838,6 +6838,82 @@
    "status": "added",
    "skipReason": null,
    "note": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ381194): Summer 2027 AI Engineering Internship, Bellevue, $27-$50/hr, End Date Nov 12, 2026. Distinct from REQ380765 (AI agents/dev tools): this req is churn retention and cross/upsell, production-grade LLM solutions. Added to jobs.json."
+  },
+  {
+   "company": "Tesla",
+   "title": "Internship, Software Engineer, Inference Infrastructure (Summer 2027)",
+   "location": "Palo Alto, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.tesla.com/careers/search/job/289254",
+   "dateSeen": "2026-11-08",
+   "source": "zero2sudo",
+   "status": "added",
+   "note": "Evening story frame Nov 8, 2026 (3h). Req 289254; verified live Nov 8, 2026 on Tesla careers: starts May 2027, min 12 weeks, full-time on-site; no deadline shown. ML inference systems, direct ML systems/infra lane fit."
+  },
+  {
+   "company": "Tesla",
+   "title": "Internship, Software Engineer, SI Reinforcement Learning (Winter/Spring 2027)",
+   "location": "Palo Alto, CA",
+   "type": "Internship",
+   "comp": null,
+   "url": "https://www.tesla.com/careers/search/job/289240",
+   "dateSeen": "2026-11-08",
+   "source": "zero2sudo",
+   "status": "pending",
+   "note": "Evening story frame Nov 8, 2026 (3h). Req 289240; verified live Nov 8, 2026 on Tesla careers: starts Jan 2027 through ~May 2027, min 12 weeks, full-time on-site; no deadline shown. Distinct req from the boarded Summer 2027 RL intern (Req 289241). Term overlaps spring semester; Wesley's call (cf. DataRobot Jan-Jun 2027 pending)."
+  },
+  {
+   "company": "Shield AI",
+   "title": "Engineer I, Software - Autonomous Pilot Integration - New Grad - 6125",
+   "location": "Washington, D.C.",
+   "type": "FT",
+   "comp": "$77,200-$211,200/yr",
+   "url": "https://jobs.lever.co/shieldai/af183d8c-51d0-40df-9c04-fbddae0d83aa",
+   "dateSeen": "2026-11-08",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Autonomous pilot / flight-system integration, defense focus; weak fit for backend/distributed/AI-infra targets (same call as Oct 8 Simulation Framework Engineer I)",
+   "note": "Evening story frame Nov 8, 2026 (3h). Req 6125; verified live Nov 8, 2026 on Shield AI Lever (jobs.lever.co/shieldai): Hivemind Solutions, Flight System Integration, full-time on-site; grad Dec 2026-Aug 2027; no deadline shown."
+  },
+  {
+   "company": "The New York Times",
+   "title": "Full-Stack Engineering Intern",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-08",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Full-stack scope, off-target lane",
+   "note": "Evening story frame Nov 8, 2026 (3h). Link text job-boards.greenhouse.io; no deadline shown. Not verified at source; off-target on frame evidence. Same role family as the Nov 8 morning sweep unverified NYT Full-Stack/Frontend interns."
+  },
+  {
+   "company": "The New York Times",
+   "title": "Frontend Engineering Intern",
+   "location": "New York, NY",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-08",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "Frontend scope, off-target lane",
+   "note": "Evening story frame Nov 8, 2026 (3h). Link text job-boards.greenhouse.io; no deadline shown. Not verified at source; off-target on frame evidence."
+  },
+  {
+   "company": "TikTok",
+   "title": "GEO Content PM Intern",
+   "location": "New York, San Jose, Seattle, Los Angeles, Washington D.C.",
+   "type": "Internship",
+   "comp": null,
+   "url": null,
+   "dateSeen": "2026-11-08",
+   "source": "zero2sudo",
+   "status": "skipped",
+   "skipReason": "PM lane",
+   "note": "Evening story frame Nov 8, 2026 (3h). 2026 Summer Internship, Bachelor's degree or above; no link domain or deadline legible on frame. Off-target on frame evidence."
   }
  ]
 }
