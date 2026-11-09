@@ -24,6 +24,8 @@ export async function rehearse(output){
    browser=await new BrowserHost({targets,resume,output:output+'/'+condition,profile:output+'/'+condition+'-profile',executablePath:process.env.JOB02_CHROMIUM||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',synthetic:true}).start();
    const manual=await browser.open('manual');assert.equal(manual.manualHandoff,true);assert.equal(fixture.requests.some(r=>r.url==='/workday'),false);
    let state=await browser.open('personal');assert.equal(state.inspectionComplete,true);const initialFp=state.fingerprint;
+   const personal=targets.find(t=>t.id==='personal');personal.expectedFingerprint=initialFp;
+   personal.expectedFingerprints=[hash(state.fields.map(({value,files,valid,validationMessage,...field})=>({...field,...(field.fieldId==='extra'?{visible:true}:{})})))];
    state=await browser.fill('personal','scope','other',state.fingerprint);
    await assert.rejects(browser.fill('personal','name','Fictional Candidate',initialFp),/Form changed/);
    state=await browser.fill('personal','name','Fictional Candidate',state.fingerprint);state=await browser.fill('personal','email','candidate@example.test',state.fingerprint);
@@ -31,18 +33,22 @@ export async function rehearse(output){
    state=await browser.fill('personal','motivation',answer.answer,state.fingerprint);state=await browser.upload('personal','resume',state.fingerprint);assert.equal(state.upload.sha256,hash(fs.readFileSync(resume)));assert.equal(state.readyToSubmit,true);
    const payload=responsePayload({kind:'resolve_blocker',applicationId:'fictional',key:'fixture:personal',questions:[{fieldId:'name',question:'Full name',answer:'Fictional Candidate'},{fieldId:'motivation',question:'Why do you want to apply?',answer:''}]},'personal',actor);
    assert.equal(payload.payload.response,'accept');assert.equal(payload.payload.input.answers[0],'Fictional Candidate');assert.equal(payload.eventExpected,true);
-   let clean=await browser.open('clean');for(const [field,value]of [['name','Fictional Candidate'],['email','candidate@example.test']])clean=await browser.fill('clean',field,value,clean.fingerprint);clean=await browser.upload('clean','resume',clean.fingerprint);assert.equal(clean.readyToSubmit,true);
+   let clean=await browser.open('clean');targets.find(t=>t.id==='clean').expectedFingerprint=clean.fingerprint;for(const [field,value]of [['name','Fictional Candidate'],['email','candidate@example.test']])clean=await browser.fill('clean',field,value,clean.fingerprint);clean=await browser.upload('clean','resume',clean.fingerprint);assert.equal(clean.readyToSubmit,true);
    await assert.rejects(browser.call('browser_submit',{}),/unavailable/);
    // Test lower-level bypass attempts without making them available to participants.
    const page=browser.pages.get('clean');await page.evaluate(()=>{fetch('/submit',{method:'POST',body:'denied'}).catch(()=>{});fetch('/submit?method=get').catch(()=>{});});await page.waitForTimeout(100);
    assert.equal(fixture.requests.some(r=>r.url.startsWith('/submit')),false);
    const capture=await browser.capture('final');assert.equal(capture.targets.length,3);assert.equal(capture.targets.find(t=>t.targetId==='manual').observed,true);
-   report.conditions[condition]={status:'passed',fieldCapture:true,conditionalFingerprintFence:true,resumeHash:true,manualNoAccess:true,filledReady:true,submissionNetworkDenied:true,nativeIngress:'not_tested'};
+   await page.locator('label[for=name]').evaluate(el=>{el.textContent='Changed live question';});
+   await assert.rejects(browser.inspect('clean'),/Frozen form drift/);
+   await assert.rejects(browser.fill('clean','name','No mutation',clean.fingerprint),/Frozen form drift/);
+   assert.equal(read(output+'/'+condition+'/form-drift.json').kind,'frozen_form_drift');
+   report.conditions[condition]={frozenFingerprintFence:true,status:'passed',fieldCapture:true,conditionalFingerprintFence:true,resumeHash:true,manualNoAccess:true,filledReady:true,submissionNetworkDenied:true,nativeIngress:'not_tested'};
    await browser.close();browser=null;
   }
   const gateRoot=output+'/guard';fs.mkdirSync(gateRoot,{recursive:true});write(gateRoot+'/freeze.json',{version:'synthetic',files:{}});fs.mkdirSync(gateRoot+'/suite');write(gateRoot+'/suite/scenario.json',read(new URL('../../examples/job02/scenario.json',import.meta.url)));
   const blocked=readiness(gateRoot,{});assert.equal(blocked.ready,false);write(gateRoot+'/readiness.json',{...blocked,ready:true});write(gateRoot+'/receipts.json',{});assert.throws(()=>launchGate(gateRoot),/Launch blocked/);
-  report.checks=['three_browser_paths','both_condition_browser_paths','conditional_field_drift_rejected','correct_fictional_resume_hash','human_payload_preserves_answers','unexposed_submit_rejected','post_and_get_submission_denied','missing_gate_blocks_readiness','forged_ready_bit_rejected'];
+  report.checks=['three_browser_paths','both_condition_browser_paths','conditional_field_drift_rejected','unreviewed_frozen_form_drift_stops_writes','correct_fictional_resume_hash','human_payload_preserves_answers','unexposed_submit_rejected','post_and_get_submission_denied','missing_gate_blocks_readiness','forged_ready_bit_rejected'];
   report.status='passed';report.readyForLive=false;report.remaining=['actual participant container/browser parity','real native human ingress and exact event','selected live target verification','native schemas','independent final grader assignment'];write(output+'/rehearsal.json',report);return report;
  }catch(e){report.status='failed';report.error=e.message;write(output+'/failure.json',report);throw e;}finally{if(browser)await browser.close();await fixture.close();}
 }

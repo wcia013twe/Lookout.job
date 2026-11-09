@@ -82,13 +82,13 @@ def prepare(root,n01,reference,cost_policy=None):
  shutil.copyfile(REPO/'examples/job01/scenario.json',root/'suite/scenario.json')
  shutil.copyfile(LIB/'grader-instructions.md',root/'suite/grader-instructions.md')
  shutil.copyfile(source/'manifest.json',root/'source-manifest.json')
- cfg={'version':'JOB01-search-v3','taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch'],
+ spec=json.loads((root/'suite/scenario.json').read_text())
+ cfg={'version':spec['version'],'taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch'],
       'productConfiguration':{'source':'JOB01 controlled host configuration; candidate context cloned from N01; not an assertion of an installed live account schedule','scheduledJobReviewEnabled':True,'wakePrompt':'Scheduled job-review check. Review the released inbox updates under the configured read/analyze/save permissions.','permittedActions':['read','analyze','save'],'sendAllowed':False},'model':'gpt-5.6-terra','reasoning':'medium','noParticipantRunYet':True}
  pricing=Path(cost_policy) if cost_policy else REPO/'examples/evals/cost-policy.json'
  runtime.cost.validate_policy(json.loads(pricing.read_text()))
  shutil.copyfile(pricing,root/'cost-policy.json')
  write(root/'runtime-config.json',cfg);write(root/'product-configuration.json',cfg['productConfiguration'])
- spec=json.loads((root/'suite/scenario.json').read_text())
  for s in spec['stages']:
   for c in ['baseline','lookout']:
    ORIGINAL_COMMAND(['node',str(LIB/'task.mjs'),'--source',str(source),'--reference',str(root/'reference.private.json'),'--stage',s['id'],'--condition',c,'--configuration',str(root/'product-configuration.json'),'--output',str(root/'packets'/f'{s["id"]}-{c}.json')])
@@ -161,14 +161,21 @@ def run_pair(pair_id):
       if session:session.close()
       session=runtime.Session(sd,inputs,out,condition,str(stage['session']))
      previous=stage['session'];result=session.turn(sd,stage,resume)
-     snapshot(sd/'after-state.json');shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',runtime.file_hashes(out))
+     checkpoint={'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':None,'interactionEvidenceStatus':'pending_capture','selectionEvidenceStatus':'pending_independent_extraction','captureStatus':'pending'}
+     meta['checkpoints'].append(checkpoint);write(run/'run.json',meta)
      interactions=[]
      for line in (sd/'lookout-trace.jsonl').read_text().splitlines():
       x=json.loads(line)
       if x.get('type')=='user.interaction':interactions.append(x)
      turn_ids=[f"{s['id']}:ask_user:{i}" for i in range(1,len(interactions)+1)]
      counts={'uniqueTurns':len(interactions),'scriptedInitiations':int(condition=='baseline' and s['kind']=='external'),'questions':len(interactions),'repeatedContext':sum(x['data'].get('category')=='context_restatement' for x in interactions),'reminders':0,'corrections':0,'approvals':sum(x['data'].get('category')=='approval' for x in interactions)}
-     meta['checkpoints'].append({'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':counts,'interactionTurnIds':turn_ids,'answeredTurnCount':len(interactions),'simulatedCompletionMinute':None,'interactionEvidenceStatus':'additional_prose_demands_pending_review','selectionEvidenceStatus':'pending_independent_extraction'})
+     checkpoint.update({'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':counts,'interactionTurnIds':turn_ids,'answeredTurnCount':len(interactions),'simulatedCompletionMinute':None,'interactionEvidenceStatus':'additional_prose_demands_pending_review','selectionEvidenceStatus':'pending_independent_extraction'})
+     write(run/'run.json',meta)
+     try:
+      snapshot(sd/'after-state.json');shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',runtime.file_hashes(out))
+      checkpoint['captureStatus']='captured'
+     except Exception as capture_error:
+      checkpoint.update(captureStatus='failed',captureError=type(capture_error).__name__);write(run/'run.json',meta);raise
      write(run/'run.json',meta)
      if result['status']!='completed':meta['status']=result['status'];break
     else:meta['status']='completed'

@@ -50,12 +50,17 @@ def run(pair_id):
       node('respond','--condition',condition,'--run',out);meta['simulatedWaitingMinutes']=spec['wakeDelayMinutes']+spec['userResponseDelayMinutes']
      cfg={'targets':spec['targets'],'resume':str(ROOT/'candidate/resume.pdf'),'output':str(sd/'browser'),'profile':str(out/'browser-profile'),'executablePath':json.loads((ROOT/'runtime.private.json').read_text()).get('browserExecutable'),'synthetic':False}
      (out/'browser-config.private.json').write_text(json.dumps(cfg));runtime.write(out/'active-stage.json',{'stage':index});session=runtime.Session(sd,inputs,files,condition,str(step['session']))
-     result=session.turn(sd,stage,False);meta['stages'].append({'id':step['id'],'index':index,**result});runtime.write(out/'run.json',meta);capture(session,'final');session.close();session=None
+     result=session.turn(sd,stage,False);meta['stages'].append({'id':step['id'],'index':index,**result});runtime.write(out/'run.json',meta)
+     if (sd/'browser/form-drift.json').exists():
+      meta['sourceDrift']=True;raise RuntimeError('Frozen form drift: pair stopped before another condition')
+     capture(session,'final');session.close();session=None
      snapshot(sd/'after-state.json');shutil.copytree(files,sd/'output')
      runtime.write(out/'run.json',meta)
      if result['status']!='completed':meta['status']=result['status'];break
     else:meta['status']='completed'
-   except Exception as error:meta.update(status='harness_failed',errorType=type(error).__name__,error=str(error)[:300])
+   except Exception as error:
+    if any(out.glob('stage-*/browser/form-drift.json')):meta['sourceDrift']=True
+    meta.update(status='harness_failed',errorType=type(error).__name__,error=str(error)[:300])
    finally:
     if session:session.close()
     for sd in sorted(out.glob('stage-*')):
@@ -71,8 +76,11 @@ def run(pair_id):
       if not any(x.get('targetId')==record['targetId'] for x in meta['interactions']):meta['interactions'].append({'turnId':'card:'+record['sourceKey'],'targetId':record['targetId'],'category':'card_response','evidence':'human-response-receipt.json'})
     meta['cost']=runtime.cost.persist(out,ROOT/'cost-policy.json');meta['endedAt']=time.time();runtime.write(out/'run.json',meta)
    results.append({'condition':condition,'status':meta['status']})
+   if meta.get('sourceDrift'):
+    runtime.write(ROOT/'pair-stop.json',{'reason':'frozen_form_drift','condition':condition,'attempts':results,'unexecutedConditions':[c for c in ['baseline','lookout'] if c not in [r['condition'] for r in results]]});break
  finally:host.close_infrastructure()
- node('handoff');node('confirm');print(json.dumps({'attempts':results,'grading':'fresh final grader assignment required'}))
+ if not (ROOT/'pair-stop.json').exists():node('handoff');node('confirm')
+ print(json.dumps({'attempts':results,'grading':'fresh final grader assignment required'}))
 
 if __name__=='__main__':
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True);p.add_argument('--pair-id',required=True);a=p.parse_args();configure(a.root);run(a.pair_id)

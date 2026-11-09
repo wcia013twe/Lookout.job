@@ -1,6 +1,6 @@
 # JOB01: Job selection and analysis across sessions
 
-JOB01-search-v3 grades **whether all ten predetermined targets appear in the returned
+JOB01-search-v4 grades **whether all ten predetermined targets appear in the returned
 saved-job list at each grading turn**, plus the quality of their analyses. Ten is
 not an output cap. Additional suitable roles are allowed and reviewed separately.
 A later turn has its own expected ten and requires a complete updated shortlist,
@@ -227,3 +227,10 @@ for pending grades but cannot mark v3 reviewed. Unreached stages are reported;
 failed/partial attempts remain partial_review without invented checks. Agent
 identity/history is enforced by coordinator assignment plus reviewer attestation,
 not claimed as independently provable by the shell. No participant rerun or rescue.
+
+## Prospective capture-failure correction
+
+JOB01-search-v4 records participant results, active duration and interaction evidence
+before after-state/output capture. A failed capture is retained separately and the
+executed checkpoint stays reached. Historical v3 pilot files, grades and source
+checkout remain unchanged; prepare a new root to use this correction.

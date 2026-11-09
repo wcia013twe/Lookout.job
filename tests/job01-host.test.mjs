@@ -50,3 +50,40 @@ test('extraction binds frozen saved evidence and never treats missing review as 
  writeFileSync(path.join(root,'saved.json'),'tampered');assert.throws(()=>extract(root,review,spec),/Evidence changed/);
  }finally{rmSync(root,{recursive:true,force:true});}
 });
+test('post-turn capture failure retains reached stage duration and interaction evidence',()=>{
+ const result=spawnSync('python3',['-B','-c',String.raw`
+import importlib.util,tempfile,json
+from pathlib import Path
+s=importlib.util.spec_from_file_location('pilot','scripts/job01/pilot.py');p=importlib.util.module_from_spec(s);s.loader.exec_module(p)
+with tempfile.TemporaryDirectory() as t:
+ root=Path(t);p.PRIVATE=root
+ for n in ['suite','runs','candidate','packets','grading']:(root/n).mkdir()
+ (root/'candidate/resume.pdf').write_bytes(b'fictional')
+ (root/'freeze.json').write_text('{}')
+ (root/'readiness.json').write_text(json.dumps({'readyForPilot':True,'freezeHash':p.digest(root/'freeze.json')}))
+ stage={'id':'initial_search','session':1,'kind':'external'}
+ (root/'suite/scenario.json').write_text(json.dumps({'version':'unit-test','policy':{'stageBudgetSeconds':30},'stages':[stage]}))
+ (root/'source-manifest.json').write_text(json.dumps({'snapshotId':'fixture','files':{'jobs.json':'fixture'}}))
+ for c in ['baseline','lookout']:(root/'packets'/f'initial_search-{c}.json').write_text(json.dumps({'jobs':[],'email':None}))
+ p.verify=lambda:None;p.infrastructure=lambda:None;p.close_infrastructure=lambda:None;p.ORIGINAL_COMMAND=lambda *a,**k:None;p.subprocess.run=lambda *a,**k:None
+ p.runtime.CONFIG={'model':'fixture','reasoning':'medium'};p.runtime.cost.persist=lambda *a,**k:{'coverage':{'status':'unknown'}}
+ def snap(destination):
+  if destination.name=='after-state.json':raise RuntimeError('Injected post-turn capture failure')
+  destination.write_text('{}')
+ p.snapshot=snap
+ class Session:
+  def __init__(self,*a):pass
+  def close(self):pass
+  def turn(self,sd,stage,resume):
+   (sd/'lookout-trace.jsonl').write_text(json.dumps({'type':'user.interaction','data':{'category':'clarification'}})+'\n')
+   return {'startedAt':100,'durationSeconds':12.5,'status':'completed'}
+ p.runtime.Session=Session;p.run_pair('fixture-pair')
+ for run in (root/'runs').iterdir():
+  m=json.loads((run/'run.json').read_text());assert m['status']=='harness_failed'
+  assert len(m['checkpoints'])==1
+  cp=m['checkpoints'][0];assert cp['stage']=='initial_search' and cp['executionSeconds']==12.5
+  assert cp['interactions']['uniqueTurns']==1 and cp['answeredTurnCount']==1
+  assert cp['captureStatus']=='failed' and cp['captureError']=='RuntimeError'
+  assert cp['status']=='completed' # Participant result stays distinct from harness capture failure.
+`],{encoding:'utf8',env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});assert.equal(result.status,0,result.stderr);
+});

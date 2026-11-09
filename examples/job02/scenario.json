@@ -1,5 +1,5 @@
 {
-  "taskId": "JOB02", "version": "JOB02-batch-v1", "graderVersion": "JOB02-review-v1",
+  "taskId": "JOB02", "version": "JOB02-batch-v2", "graderVersion": "JOB02-review-v2",
   "model": "gpt-5.6-terra", "reasoning": "medium", "stageBudgetSeconds": 600,
   "userResponseDelayMinutes": 5, "wakeDelayMinutes": 1440,
   "stages": [{"id":"prepare","session":1},{"id":"continue","session":2}],

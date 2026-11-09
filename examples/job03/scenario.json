@@ -1,6 +1,6 @@
 {
-  "version": "JOB03-tracking-v1",
-  "graderVersion": "JOB03-grade-v1",
+  "version": "JOB03-tracking-v2",
+  "graderVersion": "JOB03-grade-v2",
   "fictional": true,
   "timezone": "America/New_York",
   "budgetSeconds": 300,

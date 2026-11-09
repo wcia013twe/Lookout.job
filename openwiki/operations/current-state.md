@@ -1126,3 +1126,14 @@ unknown. Fourteen scripted tests and an actual blocked no-inference preparation
 receipt exist. A dedicated native owner and real isolated runtime adapter with
 save/read/revise/restore receipts are still required; no participant run is ready
 or claimed. This is benchmark infrastructure, not an interview-prep product change.
+
+### JOB benchmark review repairs (prospective)
+
+JOB01-search-v4 persists reached-turn metrics before output/state capture.
+JOB02-batch-v2 fences live forms against frozen/reviewed conditional fingerprints
+and stops incomparable pairs on drift. JOB03-tracking-v2 / JOB03-grade-v2 bind
+actual adapter/interpreter/dependency bytes and permit explicitly unverifiable
+partial review after failed after-state capture, retaining time/effort/cost.
+Historical pilot/receipt folders are unchanged. Focused regressions and fictional
+browser rehearsal verify these repairs; actual JOB02 live targets/human ingress,
+JOB03 native/reminder service and JOB04 actual host gates remain unresolved.

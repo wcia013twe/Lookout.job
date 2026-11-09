@@ -26,13 +26,19 @@ export class BrowserHost{
  async open(id){const t=this.target(id);if(t.kind==='workday'){this.manuals??=new Set();this.manuals.add(id);return {targetId:id,manualHandoff:true,url:t.url,inspectionComplete:false,questions:[],reason:'Workday is yours to complete. Open the employer application link.'};}
   let p=this.pages.get(id);if(!p){p=await this.context.newPage();p._job02Target=t;this.pages.set(id,p);await p.goto(t.url,{waitUntil:'domcontentloaded',timeout:30000});}return this.inspect(id);
  }
- async inspect(id){const p=this.pages.get(id);if(!p)throw Error('Open this target first');
+ async inspect(id){if(this.drift)throw Error('Frozen form drift; stop this pair and prepare a new target freeze');const p=this.pages.get(id);if(!p)throw Error('Open this target first');
   const data=await p.evaluate(()=>{
    const els=[...document.querySelectorAll('input:not([type=submit]):not([type=button]),textarea,select')];
    const fields=els.map((e,index)=>({fieldId:e.id||`${e.name||e.tagName.toLowerCase()}:${index}`,index,fieldType:e.type||e.tagName.toLowerCase(),question:(e.labels?.[0]?.innerText||e.getAttribute('aria-label')||e.name||'').trim(),required:e.required,disabled:e.disabled,visible:!!(e.offsetWidth||e.offsetHeight||e.getClientRects().length),options:e.tagName==='SELECT'?[...e.options].map(o=>({value:o.value,label:o.label})):[],maxLength:e.maxLength>0?e.maxLength:null,value:e.type==='file'?null:e.type==='checkbox'||e.type==='radio'?e.checked:e.value,files:e.files?[...e.files].map(f=>({name:f.name,size:f.size,type:f.type})):[],valid:e.checkValidity(),validationMessage:e.validationMessage||null}));
    return {url:location.href,fields,alerts:[...document.querySelectorAll('[role=alert],.error,.field-error,[aria-invalid=true]')].filter(e=>e.offsetWidth||e.offsetHeight||e.getClientRects().length).map(e=>e.innerText||e.getAttribute('aria-label')||'Invalid control').filter(Boolean),busy:!!document.querySelector('[aria-busy=true]'),formCount:document.forms.length,iframeCount:document.querySelectorAll('iframe').length,nextControl:[...document.querySelectorAll('button,input[type=submit]')].some(e=>/^(next|continue|save and continue)$/i.test(e.innerText?.trim()||e.value||'')),submitControls:[...document.querySelectorAll('button[type=submit],input[type=submit]')].map(e=>({text:e.innerText||e.value,disabled:e.disabled}))};
   });
   const shape=data.fields.map(({value,files,valid,validationMessage,...f})=>f),fingerprint=hash(shape);
+  const target=this.target(id),allowed=[target.expectedFingerprint,...(target.expectedFingerprints||[])].filter(Boolean);
+  if((!this.synthetic&&!target.expectedFingerprint)||(allowed.length&&!allowed.includes(fingerprint))){
+   this.drift={kind:'frozen_form_drift',targetId:id,expectedFingerprint:target.expectedFingerprint??null,allowedFingerprints:allowed,observedFingerprint:fingerprint,submissionAllowed:false};
+   fs.mkdirSync(this.output,{recursive:true,mode:0o700});write(path.join(this.output,'form-drift.json'),this.drift);
+   throw Error('Frozen form drift; stop this pair and prepare a new target freeze');
+  }
   const complete=data.formCount===1&&data.iframeCount===0&&!data.nextControl;
   const result={targetId:id,...data,fingerprint,inspectionComplete:complete,readyToSubmit:complete&&data.fields.filter(f=>f.visible&&!f.disabled).every(f=>f.valid)&&data.alerts.length===0&&!data.busy,resumeUpload:this.uploads?.get(id)||null,submissionAllowed:false};
   this.last??=new Map();this.last.set(id,result);return result;

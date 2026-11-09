@@ -13,6 +13,7 @@ export function validateTargets(spec){
   const u=new URL(t.url);if(u.protocol!=='https:'||u.username||u.password||u.hash)throw Error('Canonical HTTPS target required');
   if(kind==='workday'&&!/(^|\.)myworkdayjobs\.com$/.test(u.hostname))throw Error('Manual target must be actual Workday');
   if(kind!=='workday'&&!['job-boards.greenhouse.io','boards.greenhouse.io'].includes(u.hostname))throw Error('Supported single-page native Greenhouse target required');
+  if(t.expectedFingerprints!==undefined&&(!Array.isArray(t.expectedFingerprints)||t.expectedFingerprints.length>20||t.expectedFingerprints.some(x=>typeof x!=='string'||! /^[a-f0-9]{64}$/.test(x))))throw Error('Reviewed conditional form fingerprints required');
   if(kind!=='workday'&&(t.safeBeforeSubmit!==true||!t.sideEffectEvidence?.length||!t.expectedFingerprint))throw Error('Live upload/autosave evidence and form fingerprint required');
  }
  if(new Set(spec.targets.map(t=>t.id)).size!==3||new Set(spec.targets.map(t=>t.url)).size!==3)throw Error('Unique targets required');

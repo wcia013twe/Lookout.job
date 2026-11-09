@@ -229,3 +229,15 @@ participant execution. Real human ingress, live target safety, full stop-boundar
 and failure rehearsals, grader handoff/telemetry and reviewed private references
 remain mandatory. Harness/preflight and grader billing are not collected by this
 pass; their cost remains unknown, separate from prospective participant counters.
+
+## Prospective frozen-form correction
+
+JOB02-batch-v2 enforces each target’s frozen expectedFingerprint during inspection
+and before fill/upload. Pre-reviewed conditional branches may be enumerated in
+expectedFingerprints (up to 20 hashes); unreviewed changes cannot be accepted by
+reinspection. Live forms without a frozen fingerprint are rejected. A sticky
+form-drift.json receipt prevents further writes, and the host records pair-stop.json
+without starting the other condition or creating a comparable paired grade.
+The corrected fictional browser rehearsal tests these guards for both conditions.
+Historical v1 preflight receipts are not readiness for the v2 source; prepare and
+verify a new setup. Live-target and authenticated-response gates remain required.

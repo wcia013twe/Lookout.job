@@ -10,5 +10,6 @@
   "normalProductConfiguration": {
     "status": "not_captured",
     "note": "Replace with actual host configuration before a successful preflight. This template establishes no runtime capability."
-  }
+  },
+  "runtimeFiles": []
 }

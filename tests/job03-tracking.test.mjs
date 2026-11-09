@@ -91,3 +91,23 @@ test('one controlled B preparation failure retains progress and fresh-session re
  assert.notEqual(spec.stages.find(x=>x.id==='multi_update').session,spec.stages.find(x=>x.id==='resume_preparation').session);
  const bad=structuredClone(spec.expected.resume_preparation);bad.B.preparation.applicationCount=2;assert(!compareState(spec.expected.resume_preparation,bad).pass);
 });
+test('editing adapter bytes at the same path invalidates successful readiness before any participant attempt',t=>{
+ const root=setup(t),command=lateFailureAdapter(t,'ok'),file=path.join(root,'ready.json');const pre=preflight(root,command,file);assert.equal(pre.ready,true,pre.blockers.join('; '));
+ assert.ok(pre.runtime.files[fs.realpathSync(command[0])]);assert.ok(pre.runtime.files[fs.realpathSync(command[1])]);
+ fs.appendFileSync(command[1],'\n// Changed adapter at same argv path');assert.throws(()=>run(root,command,file,'not-run'),/successful actual-service/);assert.equal(fs.existsSync(path.join(root,'runs')),false);
+});
+test('declared dependency changes invalidate runtime binding without changing adapter argv',async t=>{
+ const {runtimeBinding}=await import('../scripts/job03/task.mjs');const command=lateFailureAdapter(t,'ok'),dependency=path.join(workspace(t),'dependency.mjs');fs.writeFileSync(dependency,'original');const cfg={...config,runtimeFiles:[dependency]};const before=runtimeBinding(command,cfg);fs.writeFileSync(dependency,'changed');assert.notEqual(hash(before),hash(runtimeBinding(command,cfg)));assert.throws(()=>runtimeBinding(['node',command[1]],cfg),/Absolute/);
+});
+test('missing after-state capture finalizes as unverifiable partial evidence while preserving metrics',t=>{
+ const {root,submission}=gradedRoot(t);
+ for(const condition of ['baseline','lookout']){
+  const dir=path.join(root,'runs',condition),r=read(path.join(dir,'run.json'));r.status='harness_failed';Object.assign(r.checkpoints[0],{status:'harness_failed',captureError:'Injected snapshot failure',participantAttempted:true,executionSeconds:17,uniqueTurns:2,answeredTurns:1});
+  fs.unlinkSync(path.join(dir,'initial/after.json'));fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r));write(path.join(dir,'initial/error.json'),{error:'Injected snapshot failure'});
+  const manifest={};for(const p of ['initial/error.json','terminal-confirmation.json','run.json'])manifest[p]=hash(fs.readFileSync(path.join(dir,p),'utf8'));fs.writeFileSync(path.join(dir,'evidence-hashes.json'),JSON.stringify(manifest));
+  const h=read(path.join(root,'grading/handoff.json')),b=h.runs.find(x=>x.condition===condition);b.runHash=hash(r);b.manifest=manifest;fs.writeFileSync(path.join(root,'grading/handoff.json'),JSON.stringify(h));
+  submission.conditions[condition].extraction={};submission.conditions[condition].checkpoints={};for(const entry of Object.values(submission.conditions[condition].adherence)){entry.status='unreached';entry.evidenceFiles=['terminal-confirmation.json'];}
+ }
+ const h=read(path.join(root,'grading/handoff.json')),a=assign(h,'fresh',{implementers:['i'],coordinators:['c'],operators:['o'],participants:['p']});fs.writeFileSync(path.join(root,'grading/assignment.json'),JSON.stringify(a));submission.attestation.assignmentHash=hash(a);
+ const result=finalize(root,submission);for(const grade of Object.values(result.grades)){assert.equal(grade.status,'partial_review');assert.equal(grade.stateChecks.initial.pass,null);assert.deepEqual(grade.unverifiableStages,['initial']);assert.equal(grade.executionSeconds,17);assert.equal(grade.uniqueInteractionTurns,2);assert.equal(grade.qualityFraction,null);assert.equal(grade.strictPass,false);assert.equal(grade.cost.coverage.status,'unknown');}
+});

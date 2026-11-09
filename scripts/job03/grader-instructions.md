@@ -63,3 +63,9 @@ failure. Verify receipt/delta provenance, no duplicated usage and no invented ra
 or bill. Preflight, harness, grader and external processing costs remain separately
 unmeasured. Any USD model estimate must retain its frozen exact model, dated source
 and estimate label; actualBilling is a separate local receipt-based metric.
+
+When after.json is absent and the host records harness_failed/captureError, leave
+that checkpoint ungraded rather than inventing state or evidence. Finalization
+marks it unverifiable and retains a partial result with observed metrics. Cite
+other preserved artifacts for native adherence when possible; a capture error is
+not proof that the participant did or did not save its work.

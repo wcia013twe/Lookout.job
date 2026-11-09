@@ -1,0 +1,8 @@
+# JOB benchmark review repairs
+
+- Fix JOB01 post-turn capture failures dropping executed checkpoint duration and interactions. Persist metrics first and retain separate capture diagnostics.
+- Fix JOB02 frozen-form enforcement for inspection/fill/upload. Only reviewed conditional fingerprints are allowed; unreviewed drift creates a sticky host receipt and stops the pair before another condition or comparable grade.
+- Fix JOB03 adapter/interpreter/dependency byte binding at preflight/launch and coordinator/cost source binding at prepare. A missing after-state with a recorded capture failure now yields an unverifiable partial grade while retaining time, effort and available cost.
+- Archive the previous active scenarios; prospective versions are JOB01-search-v4, JOB02-batch-v2 and JOB03-tracking-v2/JOB03-grade-v2. Existing private freezes/pilot/grades remain unchanged.
+- Validation: 75 focused benchmark/cost tests; local fictional Playwright rehearsal with frozen-form guards; data validation (158 roles); JS/Python syntax and diff checks. Root/frontend locked dependencies installed. All 119 historical JOB01 participant artifacts still match their recorded hashes. Rehearsal receipt: /Volumes/External SSD/Lookout/tmp/job-bench-fixes-rehearsal-20261109-1/rehearsal.json.
+- Limits: no participant inference, real employer interactions, account mutation, schedules, external telemetry, push or publication. Live readiness blockers remain documented. Product suite/build/demo changes are not applicable to evaluation-only changes; detached fixtures and browser rehearsal cover representative states.

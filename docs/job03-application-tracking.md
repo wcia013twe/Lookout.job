@@ -1,6 +1,6 @@
 # JOB03: application decisions and reminders across sessions
 
-JOB03-tracking-v1 is an isolated fictional five-job trajectory, not a product
+JOB03-tracking-v2 is an isolated fictional five-job trajectory, not a product
 feature or a participant result. It freezes every job's expected state at eight
 checkpoints across eight fresh sessions. A single message updates A/B/C: A becomes
 **user-reported submitted**, with no validated receipt, and requests a dated
@@ -34,7 +34,7 @@ actual service and owner-bound adapter pass preflight.** No source-only or synth
 check can set measured readiness. The retained local blocked preflight is a setup
 result, not a participant attempt. No production change is proposed to hide this gap.
 
-An adapter is a JSON file holding an argv array, e.g. `["python3","/private/path/host.py"]`.
+An adapter is a JSON file holding an argv array, e.g. `["/absolute/path/to/python3","/private/path/host.py"]`.
 Each process receives one JSON request on stdin and returns one JSON result on
 stdout. No shell, retry or implicit rescue occurs. The host owns credentials;
 never include them in the prepared configuration, packets or grading handoff.
@@ -199,3 +199,20 @@ accepts this cost report's standard token/estimate fields unchanged. Its exporte
 does not carry actual billed extensions, so `actualBilling` remains explicitly
 local and standard `billedUsd` remains null. No shared module or external export
 is changed.
+
+## Prospective runtime/capture corrections
+
+JOB03-tracking-v2 / JOB03-grade-v2 bind coordinator/cost executables at preparation
+and hash the actual absolute adapter interpreter, argv file arguments and declared
+runtimeFiles dependencies during preflight. Launch rechecks those bytes; the same
+command string cannot reuse readiness after an adapter or dependency edit. Declare
+all implementation dependencies and immutable image locks in runtimeFiles; never
+include credentials or mutable reminder-service data.
+
+If a checkpoint records harness_failed plus captureError and lacks after.json,
+the grader reports unverifiable_capture_failure instead of requiring a fictitious
+extraction. Time, effort and available cost remain in a partial_review; strictPass
+is false, whole-trajectory qualityFraction stays null and observedQualityFraction
+is explicitly partial. Missing evidence without a recorded capture failure still
+rejects finalization. Prior v1 receipts/freezes remain historical; new preparation
+and actual-service preflight are required for execution.

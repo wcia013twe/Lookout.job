@@ -22,9 +22,20 @@ export function prepare(root,configuration){
  const files=['scripts/job03/cost.mjs','examples/job03/scenario.json','examples/job03/fixture.json','scripts/job03/task.mjs','scripts/job03/grader-instructions.md'];
  const bindings={};for(const f of files){const content=fs.readFileSync(path.join(base,f));const name=path.basename(f);fs.writeFileSync(path.join(root,'suite',name),content,{flag:'wx',mode:0o600});bindings[name]=hash(content.toString());}
  write(path.join(root,'configuration.json'),configuration);bindings['configuration.json']=hash(configuration);
- write(path.join(root,'freeze.json'),{version:'JOB03-tracking-v1',files:bindings,createdAt:new Date().toISOString(),participantExecuted:false});return {prepared:true,root};
+ const executables=Object.fromEntries(['scripts/job03/task.mjs','scripts/job03/cost.mjs','scripts/n01/cost-export.mjs'].map(n=>{const p=path.join(base,n);return [p,crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex')];}));
+ write(path.join(root,'freeze.json'),{version:read(path.join(root,'suite/scenario.json')).version,files:bindings,executables,createdAt:new Date().toISOString(),participantExecuted:false});return {prepared:true,root};
 }
-export function frozen(root){const f=read(path.join(root,'freeze.json'));for(const [name,h]of Object.entries(f.files)){const content=name==='configuration.json'?hash(read(path.join(root,name))):hash(fs.readFileSync(path.join(root,'suite',name),'utf8'));check(content===h,'Frozen input changed: '+name);}return f;}
+export function frozen(root){const f=read(path.join(root,'freeze.json'));for(const [name,h]of Object.entries(f.files)){const content=name==='configuration.json'?hash(read(path.join(root,name))):hash(fs.readFileSync(path.join(root,'suite',name),'utf8'));check(content===h,'Frozen input changed: '+name);}for(const [name,h]of Object.entries(f.executables||{}))check(crypto.createHash('sha256').update(fs.readFileSync(name)).digest('hex')===h,'Frozen executable changed: '+name);return f;}
+// Bind adapter entrypoint plus declared dependencies/image locks; argv alone is insufficient.
+export function runtimeBinding(command,config){
+ check(Array.isArray(command)&&command.length&&command.every(x=>typeof x==='string'),'Adapter command argv required');
+ check(path.isAbsolute(command[0]),'Absolute adapter executable required');
+ check(config.runtimeFiles===undefined||Array.isArray(config.runtimeFiles),'runtimeFiles must list adapter dependencies');
+ const names=[...command.filter(v=>path.isAbsolute(v)&&fs.existsSync(v)&&fs.statSync(v).isFile()),...(config.runtimeFiles||[])];
+ const files=Object.fromEntries(names.map(name=>{const real=fs.realpathSync(name);check(fs.statSync(real).isFile(),'Runtime binding must be a file');return [real,crypto.createHash('sha256').update(fs.readFileSync(real)).digest('hex')];}));
+ check(command.some(v=>path.isAbsolute(v)&&fs.existsSync(v)&&files[fs.realpathSync(v)]),'Adapter entrypoint must be in runtimeFiles');
+ return {command,files};
+}
 // One JSON request/response per process. No shell interpolation, no implicit retries.
 export function adapter(command,request,timeout=30000){
  check(Array.isArray(command)&&command.length&&command.every(x=>typeof x==='string'),'Adapter command argv required');
@@ -41,6 +52,7 @@ export function preflight(root,command,output){
   check(command,'No actual JOB03 native/reminder adapter configured');
   check(config.ownerId&&config.readOnlyOwnerId===config.ownerId,'Dedicated native owner and read-only confirmation owner required');
   check(config.normalProductConfiguration.status!=='not_captured','Actual normal product configuration has not been captured');
+  receipt.runtime=runtimeBinding(command,config);
   const c=call('capabilities');check(c.actual===true&&c.synthetic===false&&c.benchmarkTaskId==='JOB03'&&c.dedicated===true,'Actual dedicated service required; synthetic receipts cannot establish readiness');
   for(const k of ['native.write_readback','native.restore','native.readonly_confirmation','baseline.files','participant.sessions','actor.controlled','browser.equal','application.interruption','reminder.schedule','reminder.read','reminder.cancel','reminder.delivery','reminder.test_clock'])check(c.capabilities?.includes(k),'Missing capability: '+k);
   check(c.reminderServiceId&&c.reminderServiceId===c.baselineReminderServiceId&&c.reminderServiceId===c.lookoutReminderServiceId,'Both conditions require the same actual reminder service');
@@ -77,7 +89,7 @@ export function actor(question,released){
 }
 function capture(root,command,condition,stage,operation,args={}){const config=read(path.join(root,'configuration.json'));const request={operation,benchmarkTaskId:'JOB03',ownerId:config.ownerId,condition,stage:stage.id,now:stage.at,...args};const result=adapter(command,request);bound(result,request);return result;}
 export function run(root,command,preflightFile,pairId){
- const f=frozen(root),pre=read(preflightFile);check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&pre.configurationHash===hash(read(path.join(root,'configuration.json')))&&pre.adapterCommandHash===hash(command),'Matching successful actual-service preflight required');
+ const f=frozen(root),pre=read(preflightFile);check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&pre.configurationHash===hash(read(path.join(root,'configuration.json')))&&pre.adapterCommandHash===hash(command)&&pre.runtime&&hash(pre.runtime)===hash(runtimeBinding(command,read(path.join(root,'configuration.json')))),'Matching successful actual-service preflight required');
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe unique pair ID required');const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only: preserve errors; prepare a separately authorized campaign to rerun');fs.mkdirSync(runs);
  const spec=read(path.join(root,'suite/scenario.json')),fixture=read(path.join(root,'suite/fixture.json'));
  for(const condition of conditions){
@@ -125,11 +137,17 @@ export function finalize(root,submission){
  check(h.freezeHash===hash(f)&&h.scenarioHash===hash(spec)&&a.handoffHash===hash(h)&&a.forkTurns==='none','Changed frozen grading inputs');check(at?.reviewer===a.reviewer&&at.assignmentHash===hash(a)&&at.freshContext===true&&['didImplement','didOperate','didParticipate','didCoordinate'].every(k=>at[k]===false),'Fresh independent grader attestation required');
  const grades={};for(const condition of conditions){const dir=path.join(root,'runs',condition),r=read(path.join(dir,'run.json')),binding=h.runs.find(x=>x.condition===condition),manifest=read(path.join(dir,'evidence-hashes.json'));check(hash(r)===binding.runHash&&hash(manifest)===hash(binding.manifest),'Evidence manifest changed');for(const [p,digest]of Object.entries(manifest))check(hash(fs.readFileSync(path.join(dir,p),'utf8'))===digest,'Frozen evidence changed');
   const review=submission.conditions?.[condition];check(review?.reviewer===a.reviewer,'Assigned reviewer required');const checks=[],stateChecks={};check(r.checkpoints.length<=spec.stages.length&&r.checkpoints.every((c,i)=>c.stage===spec.stages[i].id),'Invalid checkpoint order/duplicate');const complete=r.status==='completed'&&r.checkpoints.length===spec.stages.length&&r.checkpoints.every(c=>c.status==='completed'&&!c.captureError&&Number.isFinite(c.executionSeconds)&&Number.isInteger(c.uniqueTurns)&&Number.isInteger(c.answeredTurns));
-  for(const cp of r.checkpoints){const extraction=review.extraction?.[cp.stage];check(extraction?.jobs&&Array.isArray(extraction.evidenceFiles)&&extraction.evidenceFiles.includes(cp.stage+'/after.json')&&extraction.evidenceFiles.every(p=>p in manifest),'Independent per-job extraction with durable evidence required');stateChecks[cp.stage]=compareState(spec.expected[cp.stage],extraction.jobs);const ratings=review.checkpoints?.[cp.stage];for(const key of spec.quality){const c=ratings?.[key];check(c&&[0,1,2].includes(c.rating)&&c.reason&&Array.isArray(c.evidenceFiles)&&c.evidenceFiles.length&&c.evidenceFiles.every(p=>p in manifest),'Complete rubric with frozen citations required');check(c.evidenceFiles.some(p=>p===cp.stage+'/after.json'),'Checkpoint saved-state citation required');checks.push(c.rating);}}
+  const unverifiable=[];
+  for(const cp of r.checkpoints){
+   if(!(cp.stage+'/after.json' in manifest)){
+    check(cp.captureError&&cp.status==='harness_failed','Missing after-state without recorded capture failure');
+    unverifiable.push(cp.stage);stateChecks[cp.stage]={pass:null,status:'unverifiable_capture_failure',captureError:cp.captureError};continue;
+   }
+   const extraction=review.extraction?.[cp.stage];check(extraction?.jobs&&Array.isArray(extraction.evidenceFiles)&&extraction.evidenceFiles.includes(cp.stage+'/after.json')&&extraction.evidenceFiles.every(p=>p in manifest),'Independent per-job extraction with durable evidence required');stateChecks[cp.stage]=compareState(spec.expected[cp.stage],extraction.jobs);const ratings=review.checkpoints?.[cp.stage];for(const key of spec.quality){const c=ratings?.[key];check(c&&[0,1,2].includes(c.rating)&&c.reason&&Array.isArray(c.evidenceFiles)&&c.evidenceFiles.length&&c.evidenceFiles.every(p=>p in manifest),'Complete rubric with frozen citations required');check(c.evidenceFiles.some(p=>p===cp.stage+'/after.json'),'Checkpoint saved-state citation required');checks.push(c.rating);}}
   check('terminal-confirmation.json' in manifest,'Terminal confirmation attempt required');
   if(condition==='lookout')for(const key of spec.adherence){const c=review.adherence?.[key];check(['met','unmet','unreached'].includes(c?.status)&&Array.isArray(c.evidenceFiles)&&c.evidenceFiles.length&&c.evidenceFiles.every(p=>p in manifest),'Separate native adherence review required');}
   const cost=costForRun(root,dir,r);if(r.cost)check(hash(cost)===hash(r.cost),'Executor cost evidence mismatch');
-  grades[condition]={cost,status:complete?'reviewed':'partial_review',qualityFraction:checks.length?checks.reduce((x,y)=>x+y,0)/(checks.length*2):null,stateChecks,strictPass:complete&&checks.every(x=>x===2)&&Object.values(stateChecks).every(x=>x.pass),executionSeconds:r.checkpoints.reduce((x,y)=>x+y.executionSeconds,0),uniqueInteractionTurns:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns))?r.checkpoints.reduce((x,y)=>x+y.uniqueTurns,0):null,effortComplete:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns)),simulatedWaitingSeconds:r.checkpoints.every(c=>Number.isInteger(c.answeredTurns))?r.checkpoints.reduce((x,y)=>x+y.answeredTurns*spec.actorDelaySeconds,0):null,unreachedStages:spec.stages.filter(s=>!r.checkpoints.some(c=>c.stage===s.id)).map(s=>s.id),adherence:condition==='lookout'?review.adherence:null,review};
+  grades[condition]={cost,status:complete?'reviewed':'partial_review',unverifiableStages:unverifiable,qualityFraction:complete&&checks.length?checks.reduce((x,y)=>x+y,0)/(checks.length*2):null,observedQualityFraction:checks.length?checks.reduce((x,y)=>x+y,0)/(checks.length*2):null,stateChecks,strictPass:complete&&checks.every(x=>x===2)&&Object.values(stateChecks).every(x=>x.pass),executionSeconds:r.checkpoints.reduce((x,y)=>x+y.executionSeconds,0),uniqueInteractionTurns:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns))?r.checkpoints.reduce((x,y)=>x+y.uniqueTurns,0):null,effortComplete:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns)),simulatedWaitingSeconds:r.checkpoints.every(c=>Number.isInteger(c.answeredTurns))?r.checkpoints.reduce((x,y)=>x+y.answeredTurns*spec.actorDelaySeconds,0):null,unreachedStages:spec.stages.filter(s=>!r.checkpoints.some(c=>c.stage===s.id)).map(s=>s.id),adherence:condition==='lookout'?review.adherence:null,review};
  }
  const out={version:spec.version,graderVersion:spec.graderVersion,handoffHash:hash(h),assignment:a,attestation:at,grades};write(path.join(root,'grading/final.json'),out);return out;
 }
