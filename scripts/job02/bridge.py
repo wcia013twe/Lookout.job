@@ -40,16 +40,23 @@ def clean(x):
   except ValueError:pass
  return x
 
-def schemas(mid):
- native=[]
+def permitted_native(name,args):
+ return a.condition=='lookout'and name in allowed and (name!='call_discovered_tool'or args.get('name')in allowed)
+
+def initialize_result(msg):
+ note='Fixed-target browser operations, user questions and released user responses are available through local tools.'
  if a.condition=='lookout':
-  reply=upstream({'jsonrpc':'2.0','id':mid,'method':'tools/list','params':{}});by={t['name']:t for t in reply['result']['tools']if t['name']in allowed}
-  more=unwrap(upstream({'jsonrpc':'2.0','id':mid,'method':'tools/call','params':{'name':'discover_tools','arguments':{'workflow':'all'}}}))
-  for t in more.get('tools',[]):
-   if t.get('name')in allowed:by[t['name']]={k:v for k,v in t.items()if k in ['name','description','inputSchema','annotations']}
-  if allowed-set(by):raise RuntimeError('Required actual native schemas missing: '+','.join(sorted(allowed-set(by))))
-  native=list(by.values())
- return tools+native
+  native=clean(upstream(msg))
+  if native.get('error'):raise RuntimeError('Native initialization failed')
+  result=native['result'];result['instructions']=result.get('instructions','')+'\n'+note
+  return result
+ return {'protocolVersion':msg.get('params',{}).get('protocolVersion','2024-11-05'),'capabilities':{'tools':{}},'serverInfo':{'name':'workspace','version':'JOB02-host-v3'},'instructions':note}
+
+def schemas(mid):
+ if a.condition=='baseline':return tools
+ reply=clean(upstream({'jsonrpc':'2.0','id':mid,'method':'tools/list','params':{}}))
+ if reply.get('error'):raise RuntimeError('Native default tools unavailable')
+ return reply['result']['tools']+tools
 
 def call(name,args):
  if name=='ask_user':
@@ -73,25 +80,31 @@ def call(name,args):
 
 try:
  for line in sys.stdin:
-  mid=None
+  mid=None;method=None;actual=None;msg={};host_capture=False;started=time.monotonic()
   try:
    msg=json.loads(line);mid=msg.get('id');method=msg.get('method')
    if mid is None:continue
-   trace('mcp.request',msg)
-   if method=='initialize':result={'protocolVersion':msg.get('params',{}).get('protocolVersion','2024-11-05'),'capabilities':{'tools':{}},'serverInfo':{'name':'workspace','version':'JOB02-host-v1'}}
+   host_capture=method=='tools/call'and msg.get('params',{}).get('name')=='capture'and msg.get('_hostOnly')==account.get('hostKey')
+   if not host_capture:trace('mcp.request',msg)
+   started=time.monotonic()
+   if method=='initialize':result=initialize_result(msg)
    elif method=='ping':result={}
    elif method=='tools/list':result={'tools':schemas(mid)}
    elif method=='tools/call':
     q=msg.get('params',{});name=q.get('name');args=q.get('arguments',{});actual=args.get('name')if name=='call_discovered_tool'else name
     if name in {t['name']for t in tools}or name=='capture'and msg.get('_hostOnly')==account.get('hostKey'):result={'content':[{'type':'text','text':json.dumps(call(name,args))}]}
-    elif a.condition=='lookout'and actual in allowed:
-     reply=clean(upstream(msg));trace('mcp.response',reply);print(json.dumps(reply),flush=True);continue
+    elif permitted_native(name,args):
+     native=clean(upstream(msg))
+     if native.get('error'):raise RuntimeError('Native operation failed: '+str(native['error'].get('code')))
+     result=native['result']
     else:raise PermissionError('Outside JOB02 permissions')
    else:raise ValueError('Method unavailable')
    reply={'jsonrpc':'2.0','id':mid,'result':result}
   except Exception as e:
    trace('mcp.error',{'errorType':type(e).__name__,'detail':str(e)[:300]});reply={'jsonrpc':'2.0','id':mid,'error':{'code':-32603,'message':str(e)[:300]}}
-  trace('mcp.response',reply);print(json.dumps(reply),flush=True)
+  if not locals().get('host_capture',False):
+   trace('mcp.measurement',{'method':method,'tool':actual if method=='tools/call'else None,'durationSeconds':time.monotonic()-started,'requestBytes':len(json.dumps(msg).encode()),'responseBytes':len(json.dumps(reply).encode())});trace('mcp.response',reply)
+  print(json.dumps(reply),flush=True)
 finally:
  browser.stdin.close()
  try:browser.wait(timeout=10)

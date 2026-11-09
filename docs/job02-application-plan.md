@@ -241,3 +241,34 @@ without starting the other condition or creating a comparable paired grade.
 The corrected fictional browser rehearsal tests these guards for both conditions.
 Historical v1 preflight receipts are not readiness for the v2 source; prepare and
 verify a new setup. Live-target and authenticated-response gates remain required.
+
+
+## Prospective matched-task v3 audit
+
+`JOB02-batch-v3` / `JOB02-review-v3` gives both conditions identical task intent,
+continuation request and prescribed initiation count. First-message candidate
+onboarding differs only by its intended storage delivery. There is no proactive
+initiation advantage claim. Lookout receives genuine native initialize prose and
+default tools, including its normal audit procedure; supporting schemas require
+participant discovery. Isolation filters schemas and checks both wrapper and inner
+permissions, without rewriting native guidance. All actual startup, discovery,
+read/write and verification work remains in time/cost. Separate structural
+startup/discovery latency and byte diagnostics do not subtract that overhead.
+
+The grading audit found that a correctly retained unknown could fail solely from
+not reaching live readiness. The frozen reference now specifies each expected
+outcome: manual handoff, ready, or ready with a supported unresolved blocker.
+Independent semantic evidence is still required; wrong observed factual values
+still fail. This rule applies equally to both storage formats.
+
+Read-only selection from the original frozen board found three available targets:
+Adobe R172083 (Workday), Garner Associate Software Engineer (Greenhouse 6174210004)
+and Verkada Backend Engineer - Connectivity (Greenhouse 5194598007). See
+[bounded target records](../examples/job02/live-targets.json). No fields were filled
+and no files uploaded. Both Greenhouse pages contain React/custom combobox controls
+and invisible reCAPTCHA/third-party frames. The current simple native-field adapter
+cannot establish a complete, accurate ready state on these forms. Their upload and
+autosave side effects remain unverified. These are harness capability/safety
+blockers, not participant failures. Do not silently substitute controlled fixtures
+and label the resulting run live. Fixture rehearsals remain valid failure-injection
+infrastructure. A live paired pilot requires supported adapters and passing gates.
