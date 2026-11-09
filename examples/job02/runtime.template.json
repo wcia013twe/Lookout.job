@@ -1,0 +1,7 @@
+{
+ "model":"gpt-5.6-terra", "reasoning":"medium",
+ "imageId":null,
+ "networkPolicy":"JOB01-isolated-inference",
+ "browserExecutable":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+ "note":"Resolve actual Docker image SHA and verify browser path in the selected host. This is not a readiness receipt."
+}

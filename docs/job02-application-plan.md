@@ -1,11 +1,11 @@
 # JOB02 plan: batch preparation, questions and live form filling
 
-Status: design only. No targets selected, harness implemented, readiness certified
-or JOB02 participant run. JOB01 is independent and must not be changed by this work.
+Status: local harness implemented; live targets, human-ingress proof and complete
+readiness remain blocked. No JOB02 participant run. JOB01 is independent and must not be changed by this work.
 
 ## Research question and scope
 
-Does Lookout reduce time and required user interactions when preparing a small
+Does Lookout reduce time, cost and required user interactions when preparing a small
 application batch, resolving missing information and filling supported live forms
 across sessions, while preserving factual and writing quality?
 
@@ -38,7 +38,7 @@ remain unknown, including eligibility or conflicting dates.
    capabilities, network access and budgets.
 2. **Controlled response:** At the frozen response boundary, the actor answers only
    questions actually requested, using predefined facts. Lookout receives saved
-   human card answers/change events; baseline receives the same semantic answers
+   human card answers and, for completed blocker responses, change events; baseline receives the same semantic answers
    through its user-message channel. Unasked facts are not volunteered. A missing
    request remains a participant outcome, not grounds for coordinator assistance.
 3. **Fresh-session continuation:** Lookout receives the fixed simulated wake;
@@ -71,9 +71,13 @@ Use the existing product boundaries, not an agent-writable fake card:
 - A separate controlled-human actor uses the authenticated website/service
   `respondActionBoard` client → `respond_action_board` RPC boundary for the dedicated
   test account (see [client](../backend/client.mjs)). Freeze its actual payload,
-  source key/revision, deployed route and identity after verifying the selected stack. The participant has no access to this human session
-  or credential. Answer-only blocker responses grant no final approval.
-- Capture the saved response plus its `action_decision`/`savedResponse` event, then
+  source key/revision, deployed route and identity after verifying the selected stack.
+  The participant has no access to this human session or credential. A completed
+  blocker uses `accept` with confirmed shown answers; this is not final application
+  approval. Partial `save` retains unresolved blockers and does not emit an
+  `action_decision`; the fixed wake must read current state.
+- Capture the saved response and its exact `action_decision`/`savedResponse` event
+  when completion emits one; retain the partial-save receipt otherwise. Then
   verify the same application and question IDs through read-only state. Participant
   refreshes current state and uses its supported draft writer; the actor does not
   complete application work on its behalf. Missing events must not be replaced by
@@ -98,6 +102,7 @@ account; inspect baseline files equivalently. Keep grader activity outside metri
 | --- | --- |
 | Time to task | Actual execution duration through each permitted outcome; fixed simulated waiting reported separately. Incomplete work retains its timeout, not a successful completion time. |
 | Effort to task | Unique required user interaction turns, including repeated/unnecessary requests; scripted initiations separate. Category counts may overlap and must not be summed. |
+| Cost | Reuse the [shared cost contract](eval-cost-accounting.md): actual structural usage deltas and complete/partial/unknown coverage; participant costs separate from preflight/harness and final grader. Empty rates mean no USD estimate; never turn unknown into zero or claim a subscription bill. |
 | Quality of completion | Per-target routing/completion, question coverage and necessity, answer accuracy, resume identity, grounded writing/style, durable answers and honest blockers. Report each target and before/after checkpoint; batch averages must not hide a failed target. |
 
 **Before the answer:** Check the question was actually observed, necessary after
@@ -177,3 +182,50 @@ Current blockers are target selection and safe live side effects; actual browser
 parity; controlled-human answer ingress; capture/submission guards; synthetic and
 failure rehearsals; frozen grader/actor references; and receipt-bound readiness.
 Do not start JOB02 until those have concrete passing evidence.
+
+
+## Implemented commands and retained verification
+
+The implementation is confined to `scripts/job02`, `examples/job02` and focused
+benchmark tests. It changes no product service or UI. The fictional rehearsal
+forms are its detached demo coverage; they cannot be mistaken for employer results.
+
+- `node scripts/job02/rehearse.mjs NEW_OUTPUT`: real local browser exercise of all
+  three fictional paths for both condition adapters, screenshots/field captures,
+  conditional fingerprint conflict, resume-byte hash and denied POST/GET submission.
+- `node scripts/job02/account.mjs create ROOT N01_MANIFEST RESUME`: new dedicated
+  local owner, candidate clone/read-back and scoped connection; never resets an
+  existing account or touches the original candidate account.
+- `node scripts/job02/cli.mjs prepare --root ROOT --candidate KIT --reference REF
+  --runtime RUNTIME [--scenario SCENARIO] [--actor ACTOR] [--cost-policy POLICY]`:
+  freeze private inputs/executables. Templates deliberately contain unselected URLs,
+  unreviewed answers and no assumed pricing; preparation does not certify readiness.
+- `python3 -B scripts/job02/preflight.py --root ROOT --output NEW_PROBE`: actual
+  pinned container/MCP/browser path on fictional forms, no participant inference
+  or employer access. Missing deployed schemas fail and retain a failure receipt.
+- `node scripts/job02/cli.mjs preflight --root ROOT --receipts GATE_MAP`: validate
+  all named bound receipts and unresolved-error ledger. It writes blocked readiness
+  when any actual gate is missing. Receipts must come from observed probes; manually
+  setting `ready` cannot bypass recalculation or the pinned image check.
+- Only after passing every gate: `python3 -B scripts/job02/runner.py --root ROOT
+  --pair-id NEW_PAIR`. This creates one exclusive attempt, preserves failures and
+  emits the final-grader handoff plus separate read-only confirmation attempt.
+- Coordinator assigns a fresh reviewer through `cli.mjs assign --root ROOT
+  --reviewer AGENT --coordinator OPERATOR --excluded EXCLUDED_JSON`; reviewer follows
+  frozen instructions and supplies `cli.mjs finalize --root ROOT --submission REVIEW`.
+  Result summaries use the shared eval contract offline; no live Langfuse export
+  or automatic agent spawning is performed by these commands.
+
+Fourteen focused tests pass, including actual HTTP auth/write-error propagation,
+unknown facts, actor scope, evidence drift, forged readiness, self-grader exclusion
+and an incorrect live value failing despite perfect semantic ratings. Synthetic
+browser rehearsals passed; these do not prove deployed native ingress or live ATS
+safety. Two actual setup defects were caught before inference: a shared-runner import
+collision and a missing change-feed acknowledgement scope. Both failed setups were
+retained; a separate final setup passed actual subscription/container/MCP/browser
+probes for both conditions, with receipts linking both defects to the fix. Full
+readiness still reports blocked, and a launch-check receipt proves rejection before
+participant execution. Real human ingress, live target safety, full stop-boundary
+and failure rehearsals, grader handoff/telemetry and reviewed private references
+remain mandatory. Harness/preflight and grader billing are not collected by this
+pass; their cost remains unknown, separate from prospective participant counters.
