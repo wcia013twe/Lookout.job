@@ -1005,3 +1005,19 @@ are included. This focused update does not refresh the generated wiki as a whole
 ### Communication benchmark naming
 
 COM1 (formerly N01) uses prospective COM1-stream-v3 storage orientation: native Lookout retrieval/save guidance versus baseline persistent-file guidance. Historical results remain N01; legacy scripts/n01 paths remain supported. COM2 is application communication and COM3 is planned connection discovery. Adherence is diagnostic; pilot quality rubric calibration remains outstanding.
+### JOB01 bounded job selection and analysis
+
+The [JOB01 infrastructure](../../docs/job01-job-search.md) uses frozen source packets
+and prospective JOB01-search-v1. At each grading turn, ten predetermined target IDs
+must appear in the returned saved-job list; additional appropriate jobs are allowed.
+Exact recall and missing/extra IDs are separate from semantic analysis quality.
+Intermediate checkpoints assess preferences/continuity. Both conditions reuse N01
+candidate context; Lookout receives scheduled email evidence, baseline the same
+email uploaded with a user request. Time, effort and quality remain separate from
+native-tool adherence. Langfuse plumbing has synthetic verification; no participant
+run or real wake is implied. Private candidate-grounded targets require independent
+review before the paired pilot. Historical N02 scenarios/datasets remain retained.
+
+### Reusable Langfuse evaluation contract
+
+A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.

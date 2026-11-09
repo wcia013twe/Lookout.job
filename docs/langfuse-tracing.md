@@ -64,3 +64,7 @@ Source checks: backend TypeScript and exporter syntax. An offline preview of one
 ## N01 notification-stream experiments
 
 The prospective N01 stream redesign now has a separate orchestrator, independent local grader, and experiment/score exporter. See [N01 setup, stream table and grading](n01-notification-redesign.md). One whole trajectory maps to one item trace with stage children; semantic results remain pending until reviewed. The existing historical importer and old campaigns are unchanged. Dataset registration is metadata-only; full private source context remains local. Synthetic verification is explicitly excluded from measured results.
+
+## Common evaluation dashboard
+
+See [reusable evaluation setup](langfuse-evals.md) for the versioned final-result contract, `npm run evals:langfuse`, score definitions and Eval Overview dashboard. This adds summary experiment items independently of the existing trace-only exporter.

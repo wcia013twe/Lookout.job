@@ -41,17 +41,17 @@ bound in `manifest.json`; verification runs before export. Store the manifest ha
 in experiment registration as well when freezing a campaign. No evaluator labels
 belong in this directory or the public export.
 
-## Stage isolation and N02
+## Stage isolation and JOB01
 
 The complete public archive is for infrastructure inspection. Do not give its URL
-to staged participants: it reveals all listings. Use N02's selected stage packets,
+to staged participants: it reveals all listings. Use JOB01's selected stage packets,
 or export a JSON array of allowed IDs with `--ids <stage-ids.json>`. A subset
 contains only the selected jobs and local pages, not the original README, full
 manifest or future detail files. The host must restrict outside/live source access
 if strict frozen-source isolation is required; static hosting is not an access
 control or a participant sandbox.
 
-[N02](n02-job-search.md) owns private reference labels, batches, preference changes
+[JOB01](job01-job-search.md) owns private reference labels, batches, preference changes
 and grading. This snapshot does not establish candidate fit; listing-only roles
 cannot support detailed requirements analysis. Use captured descriptions for
 analysis tasks and finalize private reference assessments before execution.
