@@ -140,7 +140,7 @@ import importlib.util,sys
 from pathlib import Path
 s=importlib.util.spec_from_file_location('pilot','scripts/job01/pilot.py');p=importlib.util.module_from_spec(s);s.loader.exec_module(p)
 files={x.resolve() for x in p.runtime_source_files()}
-for helper in [p.runtime.StageClock,p.runtime.ensure_awake,p.runtime.snapshot_with_receipt]:
+for helper in [p.runtime.StageClock,p.runtime.ensure_awake,p.runtime.snapshot_with_receipt,p.Bridge.__mro__[1]]:
  implementation=Path(sys.modules[helper.__module__].__file__).resolve()
  assert implementation in files, f'Imported runtime implementation is not frozen: {implementation.name}'
 assert all(x.is_file() for x in files)

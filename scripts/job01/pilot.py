@@ -14,7 +14,7 @@ PRIVATE=None;NETWORK=None;GATEWAYS=[];ORIGINAL_COMMAND=runtime.command
 
 def runtime_source_files():
  files=[p for folder in [LIB,REPO/'scripts/n01'] for p in folder.iterdir() if p.suffix in ['.mjs','.py']]
- return files+[REPO/'scripts/communication/diagnostics.py',REPO/'scripts/communication/runtime.py',REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
+ return files+[REPO/'scripts/evals/workspace_transport.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/communication/runtime.py',REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
 
 def command(args,**kw):
  if args[:2]==['docker','create']:

@@ -48,6 +48,7 @@ def prepare(source,background,destination,cost_policy=None):
  files+=list((repo/'scripts/n01').glob('*.py'))+list((repo/'scripts/n01').glob('*.mjs'))
  import os
  files+=list((repo/'scripts/communication').glob('*.py'))
+ files += [repo/'scripts/evals/workspace_transport.py']
  files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
  sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
  image=subprocess.run(['docker','image','inspect','lookout-benchmark:0.164.0','--format','{{.Id}}'],check=True,capture_output=True,text=True,timeout=30).stdout.strip()

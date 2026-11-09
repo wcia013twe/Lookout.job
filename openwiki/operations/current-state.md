@@ -1216,6 +1216,15 @@ Prospective COM03 v4/grade v4 and COM04 v5/grade v4 align durable-output obligat
 
 PILOT05 failed before inference on a global fixture application-ID collision. COM03 v5 remaps fixture IDs/references per owner and probes the complete reset in a rolled-back transaction before participants start. Focused checks and actual preflight pass; PILOT07 remains prospective. The failed setup evidence and live PILOT06 COM04 sources are preserved.
 
+### Shared benchmark transport
+
+[Shared harness boundaries](../../scripts/evals/README.md) separate testing goals,
+setup mismatches, harness defects and Lookout defects. COM01–04 and JOB01–04 share
+one HTTP-to-stdio transport, preserving case arguments and JOB02's EOF shutdown.
+Prospective freezes include the shared executable. Local synthetic HTTP/worker
+and freeze tests establish this boundary; no participant rerun or hosted release
+is implied. Existing frozen checkouts remain unchanged.
+
 ### JOB01 wrapped-discovery telemetry correction
 
 JOB01 now measures wrapped native calls by their actual inner tool and binds score

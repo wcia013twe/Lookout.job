@@ -46,6 +46,7 @@ def prepare(case,root,source,background):
  initial={'profileFacts':clone['settings']['profile']['facts'],'contacts':[]}
  onboarding,receipt=parity.complete_and_verify(owned,background,(background/'profile.md').read_text(),initial)
  files=[LIB/n for n in ['account.mjs','host.py','client.py','bridge.py','transport.py','services.py','preflight.mjs','audit.py']]+[REPO/'scripts/com2'/n for n in ['runner.py','service.py']]+[REPO/'scripts/n01/cost.py',REPO/'scripts/communication/runtime.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/com2/parity.py']
+ files += [REPO/'scripts/evals/workspace_transport.py']
  cfg={'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v2','normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
  if case=='JOB04':cfg['applicationIdMapping']={x['id']:str(uuid.uuid5(uuid.UUID(a['userId']),x['id'])) for x in read(REPO/'examples/job04/evidence.json')['applications']}
  cfgpath=owned/'configuration.json';write(cfgpath,cfg)
