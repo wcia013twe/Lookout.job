@@ -149,3 +149,10 @@ test('AI Apply conditionally prepares changed or incomplete work and reuses unch
  assert.match(section,/ask about conflicts rather than silently overwriting them/);
  assert.match(section,/Material corrections invalidate approval/);
 });
+
+
+test('routine consent follows explicit saved instructions while login and host access remain separate from submission',()=>{
+ const guide=readGuide('application-workspace');
+ assert.equal(guide.version,40);
+ for(const phrase of ['Application consent instructions','accept those routine required notices','Decline optional marketing','Do not infer this permission from AI Apply','save_search_profile','background/credit checks','Create Account/Sign In is not automatically a human blocker','do not override it','review nonexistent answers','recheck real host/employer access','public-inspection-only work','request only the specific secure password entry','do not hand back the whole sign-in/application workflow'])assert.ok(guide.instructions.includes(phrase),phrase);
+});

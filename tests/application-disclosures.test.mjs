@@ -45,3 +45,19 @@ test('application cards focus on unresolved and proposed answers without hiding 
  assert.deepEqual(questions.filter(showAnswerOnCard).map(q=>q.question),['Start date','Salary','Why this role?','Unrecorded answer']);
  assert.equal(questions.length,8);assert.equal(questions[0].answer,'candidate@example.com');
 });
+
+test('login and host permission handoffs are completion tasks rather than empty answer reviews',async()=>{
+ const {blockerCompletionAction}=await import('../lib/application-disclosures.mjs');
+ const task=reason=>blockerCompletionAction({kind:'resolve_blocker',questions:[],reason});
+ assert.equal(task('Apply Manually requires Create Account/Sign In before Application Questions.').kind,'sign_in');
+ assert.equal(task('Complete candidate sign-in through a secure supported browser session.').kind,'sign_in');
+ const permission=task('Host auto-review denied observing the authentication origin under the public-inspection-only scope.');
+ assert.equal(permission.kind,'host_permission');assert.match(permission.instruction,/cannot change/);
+ assert.match(permission.label,/Access approved/);assert.match(permission.note,/I approved/);
+ assert.equal(task('The employer requires a CAPTCHA.').kind,'verification');
+ assert.equal(task('The host cannot enter the password; human secure entry is required.').kind,'secure_entry');
+ assert.equal(task('Rank your preferred office locations.'),null,'An actual personal decision still needs an answer');
+ assert.equal(task('No sign-in is required. Choose your location.'),null);
+ assert.equal(blockerCompletionAction({kind:'resolve_blocker',reason:'Sign in to continue',questions:[{question:'When can you start?',answer:''}]}),null,'Keep real unanswered questions visible');
+ assert.equal(blockerCompletionAction({kind:'check_submission',reason:'Complete sign-in',questions:[]}),null,'Never replace uncertain-submission recovery');
+});

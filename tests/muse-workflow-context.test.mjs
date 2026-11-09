@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,21);assert.equal(apps.version,39);assert.equal(digest.version,6);
+ assert.equal(search.version,21);assert.equal(apps.version,40);assert.equal(digest.version,6);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
@@ -276,7 +276,7 @@ test('uncertain application fixture stays blocked after rereading a redelivered 
 
 test('AI Apply pickup receipt follows a verified claim, groups the batch and preserves quiet execution and consent boundaries',()=>{
  const apps=readGuide('application-workspace'),notice=readGuide('notifications');
- assert.equal(apps.version,39);assert.equal(notice.version,6);
+ assert.equal(apps.version,40);assert.equal(notice.version,6);
  for(const phrase of ['After claim_application_request succeeds, read_backend_jobs','one brief pickup acknowledgement','actual claimed count','only one request was claimed','avoid duplicate announcements','do not claim a ping was delivered','never completes work','continue quietly'])assert.ok(apps.instructions.includes(phrase),phrase);
  assert.match(apps.instructions,/simply list the tasks received/);
  assert.match(notice.instructions,/After the single verified pickup acknowledgement/);

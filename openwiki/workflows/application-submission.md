@@ -574,3 +574,42 @@ behavior.
 ### Conditional preparation on AI Apply
 
 Application guide39/developer153 tells Muse to reuse current saved preparation and call the existing prepare_draft only for missing/incomplete preparation, new employer questions, or relevant changed facts/materials. AI Apply itself remains a queue operation. Freshness is checked against current relevant sources; a context-version change alone does not justify rewriting all answers. The filler preserves nonempty answers, so changed facts require explicit reconciliation while preserving human decisions. An unchanged approved draft is reused. New live-form questions pass through the same filler before remaining personal decisions are grouped on the existing board card. This is agent guidance, not a new automatic queue hook or evidence of live host adoption.
+
+
+### Specific access handoffs and routine consent
+
+Fieldless sign-in, secure-password-entry, host-permission and employer-verification
+blockers use task-specific completion controls. They display the current saved
+resume and retain the original diagnostic behind Why Muse paused; unrelated
+resume editing, draft-inference review and answer-review checkboxes stay out of
+these access tasks. Other personal decisions and actual unanswered questions keep
+their existing answer fields and review gates. Text classification is presentation
+only and cannot grant host permission or resolve submission uncertainty.
+
+A person explicitly choosing a completion button sends the existing authenticated
+respond_action_board request with the complete saved answer array, a bounded
+completion note and confirmation. The existing owner/version validator stores
+that human update, clears the preparation blocker and leaves questionsReviewed
+false. No approval or employer receipt is created. MCP read_action_board exposes
+the same owned handoff; agents cannot invoke the human response writer. Muse must
+verify real employer/host access when resuming the same application session.
+
+Developer154/application-workspace40 requires ordinary Workday/account flows to
+remain with Muse when authorized secure host capabilities exist. A password-entry
+restriction produces only the necessary secure-entry handoff, never a request for
+passwords in Lookout/chat or a handback of the entire application. AI Apply
+preparation should include expected employer authentication redirects rather than
+being delegated as public-inspection-only work; actual host denials remain binding.
+Routine required privacy/application-processing consent may be accepted only under
+the user's explicit standing instruction or saved Application consent profile
+instructions. Optional marketing defaults to decline unless separately authorized.
+Sensitive authorizations, factual attestations and final submission retain their
+existing human boundaries. Save the user's chosen preparation preference through
+the existing versioned save_search_profile instruction field; this creates no
+formal consent receipt or submission approval.
+
+Detached fixtures and desktop/mobile checks cover sign-in, secure entry, host
+permissions and verification, saved resume display, explicit completion, original
+diagnostics, genuine unanswered-question gates, no account/backend calls and reset.
+Runtime guide activation, saved personal preferences and actual host behavior must
+be verified separately.

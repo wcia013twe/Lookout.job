@@ -26,3 +26,14 @@
 .editMessage,.messageActions button{min-height:44px;padding:8px 12px;border:1px solid var(--color-board-line);border-radius:8px;background:var(--color-board-panel);color:var(--action-ink);font:inherit;font-size:12px;cursor:pointer}.editMessage:hover:not(:disabled),.messageActions button:hover:not(:disabled){background:var(--color-board-tag)}.messageActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.editMessage:disabled,.messageActions button:disabled{opacity:.5;cursor:not-allowed}
 
 .disclosures{margin:0 0 16px;padding:14px;border:1px solid var(--color-board-line);border-radius:8px;background:var(--color-board-panel);font-size:13px;line-height:1.6}.disclosures h4,.sectionTitle{font-size:13px;font-weight:650}.disclosures ul{padding-left:18px;list-style:disc}.disclosures li{margin-top:10px}.disclosures p{color:var(--action-muted)}.sectionTitle{margin-top:18px}.applicationReference>article{height:auto;margin:0}
+
+.blockerTask{border-block:1px solid var(--color-board-line);padding:16px 0;font-size:13px;line-height:1.65}
+.blockerTask h4{font-size:15px;font-weight:650;margin-bottom:8px}
+.blockerTask p{max-width:65ch;overflow-wrap:anywhere}
+.blockerTask>p:not(.resume){color:var(--action-muted)}
+.blockerTask details{margin-top:8px;color:var(--action-muted)}
+.blockerTask summary{cursor:pointer;min-height:44px;display:flex;align-items:center;text-decoration:underline;text-underline-offset:3px}
+.blockerTask details p{white-space:pre-wrap;margin-top:8px}
+.taskFooter{flex-direction:column;align-items:stretch;gap:12px}
+.taskFooter .decisions{justify-content:flex-end}
+.taskFooter .taskAccept{width:auto;min-width:0;min-height:44px;height:auto;padding:10px 14px;font:inherit;font-size:13px;font-weight:600;line-height:1.5}

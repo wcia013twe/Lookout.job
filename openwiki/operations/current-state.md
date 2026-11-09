@@ -924,3 +924,18 @@ Whatnot remains Submitted with blocker null and its existing history unchanged.
 Final integrated suite:1,162 passed/five skipped; final guide checks44/44, production
 build, typecheck, Docker build and data validation passed. Actual Muse message
 sending, host refresh/compliance and hosted release remain unverified.
+
+
+### Access-task cards and routine-consent guidance (follow-up source)
+
+Fieldless sign-in, secure-entry, host-permission and employer-verification cards
+show the selected resume and a specific human completion action through the
+existing versioned human response boundary. They do not ask users to review unseen
+answers, edit unrelated resume selections or review draft inferences. Real answer
+fields and submission-uncertainty controls remain separate. User completion is a
+reported update, not proof that host access changed or an application submitted.
+Developer154/application-workspace40 keeps supported Workday sign-in/preparation
+with Muse and narrows any necessary password handoff to secure entry. Required
+privacy/application-processing consent needs explicit user/saved-profile authority;
+optional marketing is declined unless authorized. Source, detached visual checks,
+local activation and real host execution are separate verification boundaries.
