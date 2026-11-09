@@ -21,6 +21,7 @@ export function validateTargets(spec){
 }
 export function validateReference(spec,reference,actor){
  if(reference.status!=='reviewed'||!reference.reviewer||actor.status!=='reviewed'||!actor.reviewer)throw Error('Reviewed private field reference and actor required');
+ for(const t of spec.targets)if(reference.outcomes?.[t.id]!==undefined&&!['manual','ready','ready_or_supported_blocker'].includes(reference.outcomes[t.id]))throw Error('Frozen target outcome invalid');
  for(const stage of spec.stages)for(const target of spec.targets){const criteria=reference.criteria?.[stage.id]?.[target.id];if(!Array.isArray(criteria)||!criteria.length||criteria.some(k=>!spec.quality.includes(k)))throw Error('Applicable stage-target rubric required');}
  for(const target of spec.targets.filter(t=>t.kind!=='workday')){const fields=reference.fields?.[target.id];if(!Array.isArray(fields)||!fields.length||fields.some(f=>!f.fieldId||!Array.isArray(f.acceptedValues)||!f.acceptedValues.length))throw Error('Live factual field references required');}
  return true;

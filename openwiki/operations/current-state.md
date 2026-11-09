@@ -1152,3 +1152,7 @@ startup/discovery response time/bytes, total execution, effort, cost and semanti
 quality remain distinct. Returned recall and durable saving are separate checks.
 Historical runs/freezes remain unchanged. Focused fixture checks establish harness
 contracts only; fresh-account preflight and paired pilot evidence are still required.
+
+### COM03/COM04 matched-intent comparison
+
+Prospective COM3-stream-v3 / COM3-grade-v3 and COM4-stream-v4 / COM4-grade-v3 use identical prescribed task requests and evidence in both conditions, retaining native scoped startup/default tools/on-demand discovery. Generic scheduled wakes and proactive effort credit are excluded. Wrapped tool and failure telemetry records cumulative response latency/bytes within execution; wall time and prescribed/observed effort remain separate. Actual no-inference preflights passed in new private roots; historical freezes remain unchanged. Focused fixtures and catalog checks passed. Participant results and product recommendations require post-pair semantic review; readiness alone implies no performance outcome. See the case docs for limits. This focused update does not regenerate the wiki.

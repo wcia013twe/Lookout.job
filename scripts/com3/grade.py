@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
 from capture import validate as validate_capture
-GRADER_VERSION='COM3-grade-v2'
+GRADER_VERSION='COM3-grade-v3'
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -59,6 +59,7 @@ def validate_evidence(run,spec,m):
   d=read(sd/'delivery.json');expected=spec['stages'][i-1]
   if d.get('stage')!=i or d.get('eventId')!=expected['id'] or d.get('releasedMinute')!=expected['minute']:raise ValueError('Delivery differs from scenario')
   if not isinstance(d.get('triggerMinute'),(int,float)) or not math.isfinite(d['triggerMinute']) or d['triggerMinute']<d['releasedMinute']:raise ValueError('Invalid delivery time')
+  if d.get('assignedInitiation')!=(expected['kind']=='external') or d.get('assignedOnboarding')!=(expected['kind']=='onboarding') or d.get('necessaryUserUpdate')!=(expected['kind']=='user_update'):raise ValueError('Delivery interaction classification differs from scenario')
   reached[i]=sd
  if list(reached)!=list(range(1,len(reached)+1)):raise ValueError('Noncontiguous stage receipts')
  if m['status']=='completed' and (len(reached)!=len(spec['stages']) or any(read(sd/'stage-run.json')['status']!='completed' for sd in reached.values())):raise ValueError('Completed run has incomplete stages')
@@ -165,6 +166,7 @@ def grade(run,spec,review=None):
   adherence[key]={'status':status,'calls':relevant}
  metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'stage_coverage':len(stages)/len(spec['stages'])}
  metrics.update(call_metrics(stages.values()))
+ metrics.update(prescribed_user_turns=len(deliveries),scheduled_wakes=0,total_wall_seconds=m['durationSeconds'])
  for category in ['clarification','context_restatement','correction','reminder','approval']:
   metrics['observed_'+category+'_turns']=sum(q['category']==category for q in questions)
   if complete:metrics['observed_'+category+'_demands']=sum(x['category']==category for x in additional)

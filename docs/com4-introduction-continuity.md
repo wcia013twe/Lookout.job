@@ -1,5 +1,7 @@
 # COM4 — Introduction continuity
 
+Current prospective comparison: COM4-stream-v4 / COM4-grade-v3. Both conditions receive identical task requests and released evidence; scheduled initiation is disabled. Native Lookout startup, default tools and participant-driven discovery are retained with account/tool isolation. Earlier notification-stream descriptions below are historical where they describe generic wakes. No proactive effort advantage is measured.
+
 Implemented prospective `COM4-stream-v2`; no participant execution. **7 sessions, 12 turns**, 3,480-second per-condition ceiling. Dates in every prompt are the simulated business clock; no real waiting.
 
 ## Notification stream
@@ -55,3 +57,11 @@ Fictional no-model fixtures cover grading, actor release gates, owner/time/hash 
 Both conditions can reread all previously released emails. The archive deduplicates message IDs; currentNotifications and notificationHistory preserve actual deliveries. Conflicting content under an existing ID fails loudly. Calendar evidence is explicitly historical and must be reconciled with later changes. User messages are not automatically replayed. Both conditions receive the same frozen business clock; future packets remain inaccessible.
 
 The common dashboard `wakesUsed` field counts attempted participant turns (including user-triggered turns), not scheduled-only wakes. Case-level assigned initiation and observed interactions retain their separate meanings.
+
+## Matched-intent pilot verification
+
+Both cases passed actual no-inference preflight: subscription login, isolated containers, native startup/default surface, filtered discovery, wrapped guide reads, out-of-scope denial and rolled-back writer checks. Complete initial context and private account provenance were verified without exposing candidate contents. COM3 preparation now retains its source manifest for later setup reuse; the first attempt from an older manifest-less freeze remains preserved.
+
+MCP startup/discovery latency and response bytes are cumulative request measurements within execution time, not extra wall time or model-only time. Wrapped calls and transport errors are captured. Real discovery, reads, writes and verification remain product costs. Prescribed turns, observed questions/demands, active execution, total wall time and token/cost coverage stay separate. Missing prices remain unknown. Scripted effort is not measured human cognitive effort.
+
+Prospective PILOT03 (COM03) and PILOT04 (COM04) require both participants to finish before independent semantic review. No rescue, hints or participant retries. Completion is not a quality pass. Any resulting Lookout recommendations must be supported by frozen evidence and separated from harness repairs. This pass changes no product/UI behavior; fictional benchmark fixtures cover the changed harness.
