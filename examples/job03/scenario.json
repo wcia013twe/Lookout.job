@@ -1,6 +1,17 @@
 {
-  "version": "JOB03-tracking-v2",
-  "graderVersion": "JOB03-grade-v2",
+  "version": "JOB03-tracking-v3",
+  "graderVersion": "JOB03-grade-v3",
+  "comparison": {"mode":"matched_intent","proactiveEffortMeasured":false},
+  "stageQuality": {
+    "initial": ["entity_routing","preservation","report_fidelity"],
+    "interrupted_preparation": ["entity_routing","answer_and_blocker","preservation","report_fidelity","interrupted_preparation_recovery"],
+    "multi_update": ["entity_routing","submission_provenance","answer_and_blocker","terminal_transitions","reminder_receipts","preservation","report_fidelity"],
+    "resume_preparation": ["entity_routing","answer_and_blocker","preservation","report_fidelity","interrupted_preparation_recovery"],
+    "rejection": ["entity_routing","submission_provenance","terminal_transitions","history_and_dedup","reminder_receipts","preservation","report_fidelity"],
+    "duplicate": ["entity_routing","history_and_dedup","preservation","report_fidelity"],
+    "reminder_due": ["entity_routing","reminder_receipts","preservation","report_fidelity"],
+    "final": ["entity_routing","submission_provenance","answer_and_blocker","terminal_transitions","history_and_dedup","reminder_receipts","preservation","report_fidelity","interrupted_preparation_recovery"]
+  },
   "fictional": true,
   "timezone": "America/New_York",
   "budgetSeconds": 300,
@@ -74,7 +85,7 @@
       "session": "s7",
       "at": "2026-11-18T14:00:00Z",
       "kind": "reminder",
-      "message": ""
+      "message": "Review any follow-up reminders due now and save the appropriate next steps. Do not send anything."
     },
     {
       "id": "final",

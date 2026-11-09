@@ -1,6 +1,8 @@
 {
   "taskId": "JOB04",
-  "version": "JOB04-preparation-v1",
+  "version": "JOB04-preparation-v2",
+  "graderVersion": "JOB04-grade-v2",
+  "comparison": {"mode":"matched_intent","proactiveEffortMeasured":false},
   "dimensions": [
     "time_to_task",
     "effort_to_task",
@@ -25,7 +27,7 @@
   },
   "productConfiguration": {
     "source": "Controlled JOB04 host; not an assertion of a real installed scheduler",
-    "scheduledInterviewReview": true,
+    "scheduledInterviewReview": false,
     "wakePrompt": "Scheduled preparation review. Review the currently released updates using the configured read, prepare and save permissions.",
     "permittedActions": [
       "read",

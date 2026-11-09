@@ -1141,3 +1141,22 @@ JOB03 native/reminder service and JOB04 actual host gates remain unresolved.
 ### Matched-intent communication pilot harness
 
 COM01 v6 and COM02 v5 use identical task requests and scoped native MCP startup/discovery rather than eager schema injection. Structural startup/discovery overhead is measured separately. This isolates tool/storage effects; proactive user-effort savings are not measured. See [repair protocol](../../docs/communication-repairs.md). Focused checks verify contracts; fresh native preflight and participant runs remain separate evidence.
+
+### JOB03/JOB04 matched-intent pilot host
+
+[Shared JOB host](../../scripts/jobs/README.md) wires JOB03 tracking/grade v3 and
+JOB04 preparation/grade v2 to COM's pinned Terra medium subscription Session,
+credential-free MCP client and structural usage/latency diagnostics. Dedicated
+fictional local owners clone full candidate context and resume, hold separate
+locks and use separate read-only terminal credentials. Both conditions receive
+identical task requests/evidence; native tool startup and file/native storage
+orientation differ intentionally. Proactive effort savings are unmeasured.
+
+JOB03's shared durable local test-clock reminder and interrupted-preview services
+do not establish product scheduling or employer integration. No-inference gates
+exercise native artifact/milestone writes and readback/restoration, guidance
+versions, both containers, default discovery and wrapper scope. Actual preflights
+passed and paired pilots were launched; quality remains pending independent final
+review. Earlier blocked roots and an interpreter-symlink preflight failure remain
+historical. Focused source/tests and pilot execution are separate evidence. This
+manual update does not refresh generated coverage beyond this specific boundary.

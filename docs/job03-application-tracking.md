@@ -1,6 +1,6 @@
 # JOB03: application decisions and reminders across sessions
 
-JOB03-tracking-v2 is an isolated fictional five-job trajectory, not a product
+JOB03-tracking-v3 is an isolated fictional five-job trajectory, not a product
 feature or a participant result. It freezes every job's expected state at eight
 checkpoints across eight fresh sessions. A single message updates A/B/C: A becomes
 **user-reported submitted**, with no validated receipt, and requests a dated
@@ -28,11 +28,25 @@ The controlled actor refuses sends/submissions and uses only released facts.
 Lookout's backend has no built-in scheduler: `backend/agent-contract.md` and
 `mcp/README.md` explicitly separate saved schedule definitions from actual host
 activation. Saving an action-board item or promising a reminder is insufficient.
-The repository does not currently supply an actual JOB03 shared reminder service
-or dedicated owner adapter. **JOB03 is blocked for participant execution until an
-actual service and owner-bound adapter pass preflight.** No source-only or synthetic
-check can set measured readiness. The retained local blocked preflight is a setup
-result, not a participant attempt. No production change is proposed to hide this gap.
+The [shared JOB host](../scripts/jobs/README.md) now supplies a dedicated-owner
+adapter using COM's subscription-backed Terra medium Session, plus durable local
+test-clock reminders and fictional interrupted previews shared by both conditions.
+These services do not imply a product scheduler or employer integration. Actual
+owner-bound native/container/service preflight must pass for each new freeze.
+Historical blocked preflights remain setup evidence. A passing unit test never
+establishes execution readiness or participant quality.
+
+The prospective comparison gives both conditions identical requests and evidence,
+including the reminder review request. It measures tool/storage effects, not
+proactive effort savings. Stage-specific quality checks replace repeating every
+event-specific criterion at every checkpoint. Independent review includes prose
+questions as well as captured ask_user calls. Participant duration, adapter wall
+time, container startup and native startup/discovery measurements are kept distinct;
+MCP diagnostics remain part of participant time rather than added again.
+
+The following generic adapter contract is retained for hosts without
+`hostVersion: jobs-host-v1`; the shared host instead supplies hash-bound evidence
+gates through `host.preflight` as described above.
 
 An adapter is a JSON file holding an argv array, e.g. `["/absolute/path/to/python3","/private/path/host.py"]`.
 Each process receives one JSON request on stdin and returns one JSON result on
@@ -69,12 +83,13 @@ Neither original COM1 nor active JOB01 owner/source may be used.
 
 ```sh
 node scripts/job03/task.mjs --action prepare --root NEW_ROOT --configuration PRIVATE_CONFIG_JSON
-node NEW_ROOT/suite/task.mjs --action preflight --root NEW_ROOT --adapter ADAPTER_ARGV_JSON --output NEW_ROOT/preflight.json
+node scripts/job03/task.mjs --action preflight --root NEW_ROOT --adapter ADAPTER_ARGV_JSON --output NEW_ROOT/preflight.json
 # Omit --adapter to retain a blocked, no-participant preflight when service is absent.
 ```
 
-The copied task runner supports prepared roots independently of a changing shared
-checkout. `preflight.json` binds freeze/configuration and includes every probe/error.
+The copied task runner is frozen review evidence. Execute the source-bound
+coordinator from the task checkout; its absolute executable/dependency hashes
+must match the preparation. `preflight.json` binds configuration and probe/errors.
 A failed probe does not run participants. Synthetic/injected failures verify the
 harness only, never actual scheduling/native capability. Source tests do not imply
 deployment. Provisioning an actual isolated native owner, adapter/service, model
