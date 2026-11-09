@@ -1299,3 +1299,16 @@ PILOT07 completed but retained an isolation confound: native application timelin
 ### COM03 host-control failure
 
 PILOT08 remains uncleared after Docker stopped responding during baseline checkpoint 8; the timeout's Docker kill also timed out. Partial evidence and a failed-clearance receipt are preserved. Prospective COM03 v7 bounds local reader teardown, retains termination/timing evidence and halts the pair without grading when container death is unconfirmed. Eight shared runtime tests and five Node checks pass; live recovery/preflight remains unverified pending ownership authorization for the failed run/shared Docker. COM04/PILOT06 remains cleared. This is harness failure handling, not a Lookout product change.
+
+
+### JOB03 prospective fixture and shared identifier reconciliation
+
+JOB03 v6 clears active preparation blockers after withdrawal while preserving
+initial/historical evidence. The reference-contract guard now passes the corrected
+prospective scenario without rewriting frozen reviews. Shared fictional preview
+and reminder services normalize application keys and native UUIDs to one state
+for both conditions, reject unknown identifiers, and preserve exactly one injected
+failure, saved fields and single/cancelled delivery behavior. The partial form is
+this shared service, not a seeded native employer form. Actual standalone service
+proof passed, with no inference. Latest complete native/container gates remain
+unverified because the shared Docker engine still times out; no new pair is cleared.

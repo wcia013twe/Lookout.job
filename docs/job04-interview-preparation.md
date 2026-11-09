@@ -196,5 +196,5 @@ clock and preserves native startup and all scoped on-demand tools. Full canonica
 context and equal save/verify obligations are now explicit. See the
 [shared host launch limits](../scripts/jobs/README.md#native-http-clock-integration-and-retained-launch-blocks):
 latest-source live gates remain outstanding after Docker became unresponsive;
-JOB03 additionally needs prospective reference/partial-form reconciliation.
+JOB03 v6 also reconciles terminal blockers and shared key/UUID preview/reminder identity; both latest full gates still need live verification.
 Historical outcomes, independent grades and failed attempts remain unchanged.

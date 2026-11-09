@@ -1,6 +1,6 @@
 {
-  "version": "JOB03-tracking-v5",
-  "graderVersion": "JOB03-grade-v5",
+  "version": "JOB03-tracking-v6",
+  "graderVersion": "JOB03-grade-v6",
   "comparison": {"mode":"matched_intent","proactiveEffortMeasured":false},
   "stageQuality": {
     "initial": ["entity_routing","preservation","report_fidelity"],
@@ -335,7 +335,7 @@
         "provenance": "user_reported",
         "receipt": null,
         "answer": null,
-        "blocker": "work-authorization",
+        "blocker": null,
         "reminder": {
           "key": "C-followup",
           "state": "cancelled",
@@ -434,7 +434,7 @@
         "provenance": "user_reported",
         "receipt": null,
         "answer": null,
-        "blocker": "work-authorization",
+        "blocker": null,
         "reminder": {
           "key": "C-followup",
           "state": "cancelled",
@@ -533,7 +533,7 @@
         "provenance": "user_reported",
         "receipt": null,
         "answer": null,
-        "blocker": "work-authorization",
+        "blocker": null,
         "reminder": {
           "key": "C-followup",
           "state": "cancelled",
@@ -633,7 +633,7 @@
         "provenance": "user_reported",
         "receipt": null,
         "answer": null,
-        "blocker": "work-authorization",
+        "blocker": null,
         "reminder": {
           "key": "C-followup",
           "state": "cancelled",
@@ -733,7 +733,7 @@
         "provenance": "user_reported",
         "receipt": null,
         "answer": null,
-        "blocker": "work-authorization",
+        "blocker": null,
         "reminder": {
           "key": "C-followup",
           "state": "cancelled",
@@ -833,7 +833,7 @@
         "provenance": "user_reported",
         "receipt": null,
         "answer": null,
-        "blocker": "work-authorization",
+        "blocker": null,
         "reminder": {
           "key": "C-followup",
           "state": "cancelled",

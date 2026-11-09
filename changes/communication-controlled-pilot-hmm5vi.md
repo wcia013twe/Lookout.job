@@ -120,3 +120,24 @@
 - Final local guards: 31 Python checks pass (21 JOB, four controlled contract, six shared runtime); targeted Node/coordinator and catalog checks rerun after the reference launch guard. Live final-source preflight remains outstanding.
 
 - Integrated newer local main shared termination guards, preserving both wiki updates. Post-integration: 40 Node checks,21 JOB Python guards,eight shared runtime checks and catalog158 pass.
+
+
+## JOB03 reference and shared-identifier reconciliation
+
+- Prospective JOB03 tracking/grade v6 clears C's active blocker after withdrawal,
+  matching terminal semantics for both storage orientations; historical initial
+  state, frozen references and independent grades are unchanged.
+- Shared services previously used A/B keys while native records exposed UUIDs,
+  with no schema explanation. Both identifiers now normalize to the same shared
+  state, identically for both conditions; unknown identifiers fail without writes.
+- Audited partial preparation: saved name/email markers and the pending question
+  live in the shared fictional preview service. Both see identical initial state;
+  native initialSavedState preserves it. This is deliberately not a real employer
+  form or native question-prefill benchmark. No candidate values were invented.
+- Added actual no-inference gate for identifier parity, deduplicated reminder
+  schedule and interruption recovery. Independent standalone service proof passed:
+  saved fields persist, failure occurs once, resume stays unsubmitted, reminder
+  delivers once, cancellation persists. Its private receipt is retained.
+- Focused checks:22 JOB Python and34 coordinator Node tests pass before final
+  documentation checks. Docker read-only version probe still times out; no restart
+  or new participant attempt. Latest complete native gates remain outstanding.

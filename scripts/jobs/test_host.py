@@ -21,6 +21,23 @@ class ServicesTest(unittest.TestCase):
    result=Services(s.file).preview('B',{'earliest-start-date':'2027-01-19'});self.assertEqual(result['status'],'prepared');self.assertFalse(result['submitted'])
    self.assertEqual(s.snapshot()['previews'][0]['failures'],1)
    with self.assertRaises(ValueError):s.arm('B','timeout-1')
+ def test_shared_services_use_one_state_for_keys_and_native_ids(self):
+  apps=[{'key':'A','id':'uuid-a'},{'key':'B','id':'uuid-b'},{'key':'C','id':'uuid-c'}]
+  with tempfile.TemporaryDirectory() as tmp:
+   file=Path(tmp)/'state.sqlite';s=Services(file,apps)
+   s.seed({'B':{'preparation':{'completedFields':['name','email'],'pendingField':'earliest-start-date'}}})
+   original=s.schedule('A-followup','uuid-a','2026-11-18T14:00:00Z','America/New_York')
+   self.assertEqual(original['applicationId'],'A')
+   self.assertEqual(s.schedule('A-followup','A',original['dueAt'],original['timeZone'])['reminderId'],original['reminderId'])
+   s.arm('uuid-b','one-failure');self.assertEqual(s.preview('B')['status'],'preview_timeout')
+   resumed=Services(file,apps).preview('uuid-b',{'earliest-start-date':'2027-01-19'})
+   self.assertEqual(resumed['status'],'prepared');self.assertEqual(set(resumed['savedFields']),{'name','email','earliest-start-date'})
+   self.assertEqual(s.snapshot()['previews'][0]['failures'],1)
+   for value in ['missing','another-account-uuid']:
+    with self.assertRaises(ValueError):s.schedule('foreign',value,original['dueAt'],original['timeZone'])
+    with self.assertRaises(ValueError):s.preview(value)
+   with self.assertRaises(ValueError):Services(file,[{'key':'A','id':'same'},{'key':'B','id':'same'}])
+
  def test_native_reply_is_not_reformatted_or_pruned(self):
   source={'instructions':['Keep native behavior.'],'tools':[{'name':'read_guide','inputSchema':{}},{'name':'forbidden','inputSchema':{}}]}
   result=clean(source,{'read_guide'});self.assertEqual(result['instructions'],source['instructions']);self.assertEqual(result,source);self.assertEqual(clean('{"name":"Résumé"}',{'read_guide'}),'{"name":"Résumé"}')
@@ -118,5 +135,9 @@ class ReferenceContractTest(unittest.TestCase):
   self.assertTrue(audit('JOB04',bad)['aligned'])
   bad['expected']['withdraw']['C']['blocker']=None
   self.assertTrue(audit('JOB03',bad)['aligned'])
+  scenario=json.loads((Path(__file__).resolve().parents[2]/'examples/job03/scenario.json').read_text())
+  self.assertTrue(audit('JOB03',scenario)['aligned'])
+  self.assertEqual(scenario['expected']['initial']['C']['blocker'],'work-authorization')
+  self.assertIsNone(scenario['expected']['multi_update']['C']['blocker'])
 
 if __name__=='__main__':unittest.main()

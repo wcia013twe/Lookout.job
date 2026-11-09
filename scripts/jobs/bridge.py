@@ -18,7 +18,7 @@ def tools(case):
  def tool(name,description,props={},required=[]):return {'name':name,'description':description,'inputSchema':{'type':'object','properties':props,'required':required,'additionalProperties':False}}
  text={'type':'string'}
  result=[tool('read_inbox','Read currently released evidence and retained earlier messages.'),tool('ask_user','Ask the user for needed information.',{'question':text},['question'])]
- if case=='JOB03':result += [tool('schedule_reminder','Schedule a follow-up in the shared local test-clock service; no external send.',{k:text for k in ['key','applicationId','dueAt','timeZone']},['key','applicationId','dueAt','timeZone']),tool('read_reminders','Read saved reminder state.'),tool('cancel_reminder','Cancel a saved reminder.',{'reminderId':text},['reminderId']),tool('preview_saved_application','Continue the existing fictional saved preview. Never submits or accesses an employer. Previously saved fields persist on failure.',{'applicationId':text,'answers':{'type':'object','additionalProperties':text}},['applicationId'])]
+ if case=='JOB03':result += [tool('schedule_reminder','Schedule a follow-up in the shared local test-clock service; applicationId accepts the saved application key or ID. No external send.',{k:text for k in ['key','applicationId','dueAt','timeZone']},['key','applicationId','dueAt','timeZone']),tool('read_reminders','Read saved reminder state.'),tool('cancel_reminder','Cancel a saved reminder.',{'reminderId':text},['reminderId']),tool('preview_saved_application','Continue the existing fictional saved preview. Never submits or accesses an employer. Previously saved fields persist on failure. applicationId accepts the saved application key or ID.',{'applicationId':text,'answers':{'type':'object','additionalProperties':text}},['applicationId'])]
  return result
 
 def main():
@@ -61,7 +61,7 @@ def main():
      elif name=='ask_user':
       answer,category=actor(args['question'],sources['releasedStageIds']);result={'answer':answer};record('user.interaction',{'id':'ask-'+str(time.time_ns()),'question':args['question'],'answer':answer,'answered':True,'categories':[category]})
      else:
-      service=Services(run/'services.sqlite')
+      service=Services(run/'services.sqlite',json.loads((a.root/'host-initial.json').read_text()))
       if name=='schedule_reminder':result=service.schedule(**args)
       elif name=='read_reminders':result=service.read()
       elif name=='cancel_reminder':result=service.cancel(**args)

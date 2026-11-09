@@ -151,7 +151,7 @@ reads/writes and verification inside turns count as product costs. The native
 audit-contract probe rolls back its fictional transaction. Negative permission
 proof requires a real scope/ownership denial; HTTP 406 is a protocol error.
 
-JOB03-tracking/grade-v5 and JOB04-preparation/grade-v4 prescribe the same
+JOB03-tracking/grade-v6 and JOB04-preparation/grade-v4 prescribe the same
 retrieve/save/verify obligations in each storage orientation. Actual prompt text
 and hash are captured; invalid/partial timing remains unknown, with wall time
 retained separately. Scripted requests are not observed human effort.
@@ -162,9 +162,16 @@ fresh attempt failed before provisioning because Docker stopped responding;
 private logs and all preceding failed/prototype roots are retained. No inference
 was launched. Final-source native-surface/audit gates still need a live run.
 
-JOB03 also retains an explicit prospective reference-contract launch block:
-its frozen reference keeps a preparation blocker after withdrawal, whereas the
-current native terminal transition clears it. The partial-form fixture's saved
-fields also need a native question-schema mapping audit. Reconcile these
-prospectively for both conditions; do not rewrite historical evidence or grades.
-JOB04 needs the final-source live preflight. No new pair is cleared by this work.
+JOB03 v6 reconciles the prospective withdrawn-state reference: its active
+preparation blocker is cleared, while initial/historical saved evidence remains.
+The reference-contract gate rejects terminal references that retain active
+preparation blockers. Historical frozen references/grades remain unchanged.
+Shared reminder and preview services accept either the saved application key or
+native UUID and normalize both to one state; the same identifiers and tool
+schema are supplied to both conditions. Unknown IDs fail without mutation.
+A preflight gate proves key/UUID idempotence and one-time interruption recovery.
+The partial form is deliberately the shared fictional preview service, including
+saved name/email field markers; it is not a seeded employer form or a native
+question-prefill test. Native initialSavedState retains the same fixture evidence.
+Actual standalone service proof passed; both cases still need the final-source
+live native/container preflight. No new pair is cleared by this work.

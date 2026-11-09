@@ -15,6 +15,7 @@ export function verifyHostGates(root,result){
   if(g.name==='native_clock_alignment'&&JSON.parse(fs.readFileSync(p)).aligned!==true)throw Error('Native backend clock differs from simulated stages');
   seen.add(g.name);
  }
+ if(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).hostVersion==='jobs-host-v3'&&JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).benchmarkTaskId==='JOB03')required.push('shared_application_identifiers');
  if(required.some(n=>!seen.has(n)))throw Error('Actual host gates incomplete');
  return result;
 }

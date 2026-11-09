@@ -130,7 +130,7 @@ class Host:
    for name,h in descriptor['sourceFiles'].items():
     if digest(REPO/name)!=h:raise ValueError('Native backend source changed')
   if runtime.command(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()!=f['imageId']:raise ValueError('Pinned image changed')
- def service(self,c):return Services(self.root/'host-runs'/c/'services.sqlite')
+ def service(self,c):return Services(self.root/'host-runs'/c/'services.sqlite',read(self.root/'host-initial.json'))
  def snapshot(self,c):
   return {'native':account(self.root,'snapshot') if c=='lookout' else None,'files':collect_files(self.root/'host-runs'/c/'output'),'services':self.service(c).snapshot() if self.case=='JOB03' else None}
  def dispatch(self,req):
@@ -197,11 +197,11 @@ class Host:
   return {'status':'execution_failed' if sm['status']=='artifact_failed' else sm['status'],'participantRuntimeStatus':sm['status'],'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'actualPrompt':(sd/'prompt.txt').read_text(),'actualPromptSha256':digest(sd/'prompt.txt'),'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'clock':clock_receipt,'timing':timing,'executionSeconds':sm.get('executionSeconds',sm['durationSeconds']),'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
  def preflight(self):
   # Actual no-model Session construction checks auth, mounts and MCP forwarding.
-  root=self.root;(root/'receipts').mkdir(exist_ok=True);out=root/'receipts'/('host-'+uuid.uuid4().hex[:8]);out.mkdir();gates=[]
+  root=self.root;spec=read(root/'suite/scenario.json');(root/'receipts').mkdir(exist_ok=True);out=root/'receipts'/('host-'+uuid.uuid4().hex[:8]);out.mkdir();gates=[]
   def gate(name,fn):
    value=fn();write(out/(name+'.json'),value);gates.append({'name':name,'status':'passed','path':str(out/(name+'.json')),'sha256':digest(out/(name+'.json'))})
   if self.cfg.get('backendRoot'):
-   spec=read(root/'suite/scenario.json');first=spec['stages'][0]
+   first=spec['stages'][0]
    initial=first.get('at') or (datetime.datetime.fromisoformat(spec['epoch'])+datetime.timedelta(minutes=first['minute'])).isoformat()
    clock_control.restore_preflight(self.cfg['backendRoot'],root,initial)
   gate('native_owner_snapshot',lambda:account(root,'snapshot'))
@@ -260,6 +260,11 @@ class Host:
    service=Services(out/'test-clock.sqlite');r=service.schedule('probe','A','2026-11-18T14:00:00Z','America/New_York');assert service.schedule('probe','A',r['dueAt'],r['timeZone'])['duplicate'];assert not service.deliver('2026-11-18T13:59:59Z');assert len(service.deliver(r['dueAt']))==1;assert not service.deliver(r['dueAt']);r=service.schedule('cancel','C',r['dueAt'],r['timeZone']);service.cancel(r['reminderId']);assert not service.deliver(r['dueAt']);gate('shared_test_clock',service.snapshot)
    service=Services(out/'preview.sqlite');service.seed({'B':{'preparation':{'completedFields':['name','email'],'pendingField':'earliest-start-date'}}})
    service.arm('B','preview-timeout');assert service.preview('B')['status']=='preview_timeout';assert Services(service.file).preview('B',{'earliest-start-date':'2027-01-19'})['status']=='prepared';gate('interruption_recovery',service.snapshot)
+   apps=read(root/'host-initial.json');mapped=Services(out/'identifier-mapping.sqlite',apps);mapped.seed(read(root/'suite/fixture.json')['jobs'])
+   bid=next(x['id'] for x in apps if x['key']=='B');aid=next(x['id'] for x in apps if x['key']=='A')
+   mapped.arm(bid,'mapped-timeout');assert mapped.preview('B')['status']=='preview_timeout';assert mapped.preview(bid,{'earliest-start-date':'2027-01-19'})['status']=='prepared'
+   by_id=mapped.schedule('mapped-A',aid,r['dueAt'],r['timeZone']);by_key=mapped.schedule('mapped-A','A',r['dueAt'],r['timeZone']);assert by_key['duplicate'] and by_key['reminderId']==by_id['reminderId'] and by_id['applicationId']=='A'
+   gate('shared_application_identifiers',lambda:{'keyAndIdSameState':True,'snapshot':mapped.snapshot(),'nativeEmployerFormSeeded':False,'previewStateIsSharedFictionalService':True})
   if self.cfg.get('backendRoot'):
    clocks=[]
    try:
