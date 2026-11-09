@@ -3,7 +3,7 @@ import {useActionBoard,type BoardItem} from '../lib/use-action-board';
 import ActionDecisionCard from './action-decision-card';
 import TrackerWorkList,{type TrackerWork} from './tracker-work-list';
 import ActionAttention from './action-attention';
-import {decisionTitle,decisionFeedback,orderBoardItems,needsUnblocking,isVisibleBoardItem} from '../../lib/action-board.mjs';
+import {decisionTitle,decisionFeedback,orderBoardItems,needsUnblocking,isCalendarContextAction,isVisibleBoardItem} from '../../lib/action-board.mjs';
 import SurfacePanel from "./surface-panel";
 import Link from "next/link";
 import { useWorkspace } from "../lib/workspace";
@@ -39,7 +39,7 @@ export default function NeedsYou() {
   const items=orderBoardItems((board.snapshot?.items||[]).filter(isVisibleBoardItem));
   const trackerWork=(board.snapshot?.trackerWork||[]).filter(item=>isVisibleBoardItem({kind:'imported_action',action:item.action}));
   const unblockCount=items.filter(needsUnblocking).length;
-  const decisionHistory=board.snapshot?.history.filter(item=>item.source_kind!=='confirm_interview'&&!(item.source_kind==='imported_action'&&/\b(oa|online assessment|coding assessment|technical assessment|take[ -]?home(?: assessment)?)\b/i.test(item.source_summary?.action||''))&&(!['review_application','resolve_blocker','check_submission'].includes(item.source_kind||'review_application')||!inbox.some(row=>row.application_id===item.source_id&&row.resolved_at)))||[];
+  const decisionHistory=board.snapshot?.history.filter(item=>item.source_kind!=='confirm_interview'&&!(item.source_kind==='imported_action'&&isCalendarContextAction(item.source_summary?.action||''))&&(!['review_application','resolve_blocker','check_submission'].includes(item.source_kind||'review_application')||!inbox.some(row=>row.application_id===item.source_id&&row.resolved_at)))||[];
   const history=inbox.filter(item=>item.resolved_at).sort((a,b)=>String(b.resolved_at).localeCompare(String(a.resolved_at)));
   const handoffCount = (board.snapshot ? items.length : actions.length) + (setup ? 1 : 0);
   return (

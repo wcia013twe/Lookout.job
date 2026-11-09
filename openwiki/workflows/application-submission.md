@@ -344,13 +344,19 @@ Applications → Interview editor; they are not shown as Action Board tasks. Use
 the round editor to correct or confirm the event. The Action Board remains for
 explicit human decisions and actions requiring attention.
 
-Assessment tasks (OA, online/coding/technical assessments and take-home
+Assessment tasks (OA, online/coding/technical assessments, provider-named
+HackerRank/HireVue/CodeSignal/Codility tasks and take-home
 assessments) remain on their application tracker and are excluded from Action
 Board decisions and tracker work. The Action Board is limited to Muse work that
 needs human approval or input. The weekly preparation calendar remains beside
 the action list and shows dated interview rounds, assessment next actions,
 preparation sessions and materials. Networking follow-ups and AI Apply status
 remain in their owning workspaces.
+
+An imported action that describes a scheduled screen/interview (for example,
+"Recruiter screen with …, Fri …, Google Meet") is also calendar context. Its
+saved application round and date remain unchanged and visible in Applications
+and the weekly preparation calendar; it does not appear as a Muse approval.
 
 ### Application coverage on the Action Board
 
