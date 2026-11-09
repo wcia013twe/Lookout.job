@@ -119,3 +119,52 @@ JavaScript and SQL on the same simulated date. This establishes the clock substr
 not complete host parity or readiness. Native HTTP/MCP, full candidate-context
 cloning, per-stage clock acknowledgements and complete paired host preflight must
 still be connected and verified. The existing host-v2 launch gate remains closed.
+
+
+## Native HTTP clock integration and retained launch blocks
+
+Prospective `jobs-host-v3` connects the isolated database to unmodified product
+PostgREST, Edge gateway and Node API on dedicated private networks. Only the
+loopback MCP endpoint is published. Image IDs, native source hashes and immutable
+Edge npm payload hashes are bound in the freeze. Use a fresh backend root:
+
+```sh
+python3 -B scripts/jobs/isolated_backend.py prepare --root NEW_BACKEND_ROOT --at 2026-11-09T14:00:00Z
+python3 -B scripts/jobs/host.py prepare --case JOB04 --root NEW_PILOT_ROOT --source-manifest PRIVATE_MANIFEST --background BACKGROUND_DIRECTORY --backend NEW_BACKEND_ROOT
+```
+
+The earlier `serve` and coordinator preflight commands then apply. Stop with
+`isolated_backend.py stop --root NEW_BACKEND_ROOT`; owner/ID guards preserve
+unrelated services and retained volumes. Do not restart a shared Docker engine.
+The bootstrap provides SQL Auth/Storage tables, not real Auth/Storage services.
+Both participants receive the exact local PDF; remote Storage retrieval remains
+unverified. Full canonical settings, including false/null/zero/empty fields, are
+included once in baseline onboarding and verified against the native clone.
+
+SQL and JavaScript use the same ticking simulated clock. Each stage is observed
+without a native task read; host clock control is separate harness time. Preflight
+restoration is permitted only before any attempt and only for the bound pilot.
+Discovery, startup instructions, guides and JSON/Unicode tool responses pass
+through unchanged. All granted native tools remain available on demand; scope
+and ownership are enforced by the native server. Real discovery, audit calls,
+reads/writes and verification inside turns count as product costs. The native
+audit-contract probe rolls back its fictional transaction. Negative permission
+proof requires a real scope/ownership denial; HTTP 406 is a protocol error.
+
+JOB03-tracking/grade-v5 and JOB04-preparation/grade-v4 prescribe the same
+retrieve/save/verify obligations in each storage orientation. Actual prompt text
+and hash are captured; invalid/partial timing remains unknown, with wall time
+retained separately. Scripted requests are not observed human effort.
+
+Two earlier full no-inference freezes passed the then-current 17 JOB03 / 15 JOB04
+gates. They do not clear subsequent tool-surface and reference changes. The next
+fresh attempt failed before provisioning because Docker stopped responding;
+private logs and all preceding failed/prototype roots are retained. No inference
+was launched. Final-source native-surface/audit gates still need a live run.
+
+JOB03 also retains an explicit prospective reference-contract launch block:
+its frozen reference keeps a preparation blocker after withdrawal, whereas the
+current native terminal transition clears it. The partial-form fixture's saved
+fields also need a native question-schema mapping audit. Reconcile these
+prospectively for both conditions; do not rewrite historical evidence or grades.
+JOB04 needs the final-source live preflight. No new pair is cleared by this work.

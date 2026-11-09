@@ -86,3 +86,35 @@
 - Integrated current local main's shared transport instead of copying it. After
   integration, four focused Node checks (clock plus shared transport), 19 Python
   checks (clock fixture, JOB host and shared timing) and catalog validation pass.
+
+
+## Native HTTP/context/surface continuation — intentional progress
+
+- Connected owner-isolated native PostgREST/Edge/Node HTTP services to ticking
+  SQL/JavaScript clocks. Bound product source, image IDs and immutable Edge npm
+  payloads; guarded backend identity, private networks and pilot ownership.
+  No product service/schema, host clock or shared account was changed.
+- Complete canonical settings now include false/null/zero/empty values in initial
+  baseline context. Clone equality and exact local resume PDF bytes are checked;
+  real Auth/Storage services and remote resume retrieval remain unverified.
+- Preserved native bootstrap, all scoped on-demand tools, audit instructions and
+  exact Unicode/JSON responses. Scope/ownership proof rejects protocol406 as
+  permission evidence; audit probes share the COM rolled-back SQL helper.
+  Actual native audit/read/write/discovery/verification costs remain in turns.
+- Prospective JOB03 v5/JOB04 v4 match retrieve/save/verify obligations. Captured
+  prompts are frozen; partial/invalid execution time stays null, wall time separate.
+- Retained gzip-framing, port/network, missing-Accept and other failed/prototype
+  roots. Two full then-current no-inference freezes passed 17/15 gates and were
+  stopped with retained volumes. Final-surface attempt failed before provisioning
+  on unresponsive Docker; no shared-engine restart and no inference or retry.
+- New reference-contract gate blocks JOB03: withdrawn reference retains an active
+  preparation blocker while source terminal transitions clear it. Partial-form
+  native question mapping remains to audit. Historical grades/references unchanged.
+- Verification so far: 54 focused Node checks and catalog158 passed; host/clock
+  Python checks passed before the new reference guard, with final checks below.
+  Full npm test:1303 total,1297 passed,1 failed,5 skipped. The Action Board SQL
+  `Invalid human decision` failure reproduces on unchanged main; unrelated source
+  was preserved. Latest native-surface/audit gates still need actual live preflight.
+- No new pair is cleared. No push/publication/deployment or paid API use.
+
+- Final local guards: 31 Python checks pass (21 JOB, four controlled contract, six shared runtime); targeted Node/coordinator and catalog checks rerun after the reference launch guard. Live final-source preflight remains outstanding.

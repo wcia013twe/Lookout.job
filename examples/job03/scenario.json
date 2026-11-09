@@ -1,6 +1,6 @@
 {
-  "version": "JOB03-tracking-v4",
-  "graderVersion": "JOB03-grade-v4",
+  "version": "JOB03-tracking-v5",
+  "graderVersion": "JOB03-grade-v5",
   "comparison": {"mode":"matched_intent","proactiveEffortMeasured":false},
   "stageQuality": {
     "initial": ["entity_routing","preservation","report_fidelity"],
@@ -99,7 +99,7 @@
     "standingGoal": null,
     "onboardingReplay": false,
     "lookoutOrientation": "Retrieve relevant Lookout context and records with your scoped tools before acting; save material updates in the normal native records and verify writes.",
-    "baselineOrientation": "Read your persistent files before acting; you may save notes and updated application state in those files.",
+    "baselineOrientation": "Retrieve relevant context and records from your persistent files before acting; save material updates in those files and verify writes.",
     "sharedCapabilities": [
       "browser",
       "files",

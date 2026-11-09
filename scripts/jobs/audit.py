@@ -1,5 +1,5 @@
 """Post-pair structural audit. Never supplies semantic quality judgments."""
-import argparse,hashlib,json,datetime,sys
+import argparse,hashlib,json,datetime,sys,math
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
@@ -58,13 +58,15 @@ def audit(root):
    if case=='JOB03':actual=hashlib.sha256(p.read_text().encode()).hexdigest()
    else:actual=digest(p)
    if actual!=sha:problems.append(condition+': changed evidence '+relative)
-  reached=[];inputs[condition]={};diagnostics={};turn_seconds=0;startup_seconds=0;startup_known=True;missing_response=[]
+  reached=[];inputs[condition]={};diagnostics={};turn_seconds=0;startup_seconds=0;startup_known=True;missing_response=[];time_known=True
   for i,cp in enumerate(run['checkpoints']):
    stage=cp['stage'];sd=directory/(stage if case=='JOB03' else f'stage-{i+1}');reached.append(stage)
    if stage!=stage_ids[i]:problems.append(condition+': wrong stage order')
    packet=read(sd/'input.json');inputs[condition][stage]={'request':packet.get('prompt') or packet.get('input',{}).get('message'),'evidence':packet.get('events',packet.get('input',{}).get('source')),'roleSources':packet.get('sources')}
    if cp['status']=='harness_failed':problems.append(condition+': retained harness failure at '+stage)
-   turn_seconds+=cp.get('executionSeconds',0)
+   seconds=cp.get('executionSeconds')
+   if isinstance(seconds,(int,float)) and math.isfinite(seconds) and seconds>=0:turn_seconds+=seconds
+   else:time_known=False
    if not (sd/'response.json').exists():
     startup_known=False;missing_response.append(stage);continue
    response=read(sd/'response.json')
@@ -74,7 +76,7 @@ def audit(root):
    else:startup_seconds+=response['containerStartupSeconds']
   confirmation=read(directory/'terminal-confirmation.json')
   if condition=='lookout' and confirmation.get('status')!='confirmed':problems.append('lookout: terminal native confirmation unavailable')
-  conditions[condition]={'status':run['status'],'reached':reached,'unreached':[s for s in stage_ids if s not in reached],'participantTurnSeconds':turn_seconds,'timingBasis':'recorded checkpoint duration including failed attempts; adapter wall time when executor receipt absent','missingResponseStages':missing_response,'hostObservations':host_observations(root,condition,run['checkpoints']),'containerStartupSeconds':startup_seconds if startup_known else None,'diagnosticsWithinTurn':diagnostics,'cost':run.get('cost'),'confirmationReadSucceeded':confirmation.get('status')=='confirmed' if condition=='lookout' else bool(confirmation.get('files') is not None),'semanticQuality':'pending_independent_review'}
+  conditions[condition]={'status':run['status'],'reached':reached,'unreached':[s for s in stage_ids if s not in reached],'participantTurnSeconds':turn_seconds if time_known else None,'knownParticipantSeconds':turn_seconds,'executionTimingCoverage':'complete' if time_known else 'partial','timingBasis':'recorded checkpoint duration including failed attempts; adapter wall time when executor receipt absent','missingResponseStages':missing_response,'hostObservations':host_observations(root,condition,run['checkpoints']),'containerStartupSeconds':startup_seconds if startup_known else None,'diagnosticsWithinTurn':diagnostics,'cost':run.get('cost'),'confirmationReadSucceeded':confirmation.get('status')=='confirmed' if condition=='lookout' else bool(confirmation.get('files') is not None),'semanticQuality':'pending_independent_review'}
  shared=set(inputs['baseline'])&set(inputs['lookout'])
  for stage in shared:
   if inputs['baseline'][stage]!=inputs['lookout'][stage]:problems.append('Intent/evidence mismatch at '+stage)

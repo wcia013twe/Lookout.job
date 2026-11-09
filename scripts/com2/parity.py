@@ -33,5 +33,9 @@ def complete_and_verify(source,background,onboarding,initial):
  for person in initial['contacts']:
   for key,value in leaves(person['record']):
    if value not in [None,''] and normalize(value) not in normalize(onboarding):onboarding+='\nFor '+person['record']['contact']+', '+key+': '+str(value)+'.\n'
+ # Include exact keyed values as well as readable prose; substring coverage alone
+ # cannot prove false/zero/null/empty fields were conveyed. No file is injected.
+ canonical=json.dumps(manifest['settings'],sort_keys=True,ensure_ascii=False,indent=2)
+ onboarding+='\nComplete saved context supplied with onboarding (authoritative keyed export):\n```json\n'+canonical+'\n```\n'
  sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
- return onboarding,dict(sourceManifestSha256=sha(source/'source-manifest.private.json'),profileExportSha256=sha(Path(background)/'profile.md'),nativeEquivalentBeyondOwnershipMapping=True,initialProfileMatchesClone=True,coveredSourcePaths=covered,additionalVerbatimSourcePaths=added,fixtureContactFieldsIncluded=True)
+ return onboarding,dict(canonicalCompleteSettingsIncluded=True,canonicalSettingsSha256=hashlib.sha256(canonical.encode()).hexdigest(),sourceManifestSha256=sha(source/'source-manifest.private.json'),profileExportSha256=sha(Path(background)/'profile.md'),nativeEquivalentBeyondOwnershipMapping=True,initialProfileMatchesClone=True,coveredSourcePaths=covered,additionalVerbatimSourcePaths=added,fixtureContactFieldsIncluded=True)

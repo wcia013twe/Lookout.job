@@ -112,3 +112,8 @@ test('missing after-state capture finalizes as unverifiable partial evidence whi
  const h=read(path.join(root,'grading/handoff.json')),a=assign(h,'fresh',{implementers:['i'],coordinators:['c'],operators:['o'],participants:['p']});fs.writeFileSync(path.join(root,'grading/assignment.json'),JSON.stringify(a));submission.attestation.assignmentHash=hash(a);
  const result=finalize(root,submission);for(const grade of Object.values(result.grades)){assert.equal(grade.status,'partial_review');assert.equal(grade.stateChecks.initial.pass,null);assert.deepEqual(grade.unverifiableStages,['initial']);assert.equal(grade.executionSeconds,17);assert.equal(grade.uniqueInteractionTurns,2);assert.equal(grade.qualityFraction,null);assert.equal(grade.strictPass,false);assert.equal(grade.cost.coverage.status,'unknown');}
 });
+
+test('prospective storage instructions require saving and verification in both conditions',()=>{
+ const scenario=JSON.parse(fs.readFileSync(new URL('../examples/job03/scenario.json',import.meta.url),'utf8'));
+ for(const key of ['lookoutOrientation','baselineOrientation']){assert.match(scenario.configuration[key],/save material updates/);assert.match(scenario.configuration[key],/verify writes/);assert.doesNotMatch(scenario.configuration[key],/you may save/);}
+});

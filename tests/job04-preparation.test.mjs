@@ -86,3 +86,12 @@ test('historical review survives retired runtime bytes while execution remains h
  const {submission}=pair(root);fs.unlinkSync(retired);
  assert.throws(()=>frozen(root));assert.equal(finalize(root,submission).grades.baseline.status,'reviewed');
 });
+
+test('invalid execution timing stays unknown in a partial final review',()=>{
+ const {root}=setup(),{submission}=pair(root,true),dir=path.join(root,'runs/lookout');
+ const run=read(path.join(dir,'run.json'));run.checkpoints[0].executionSeconds=null;fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(run,null,2)+'\n');
+ const files=read(path.join(dir,'evidence-hashes.json'));files['run.json']=hash(fs.readFileSync(path.join(dir,'run.json'),'utf8'));fs.writeFileSync(path.join(dir,'evidence-hashes.json'),JSON.stringify(files));
+ const h=read(path.join(root,'grading/handoff.json'));const item=h.runs.find(x=>x.condition==='lookout');item.runHash=hash(run);item.manifest=files;fs.writeFileSync(path.join(root,'grading/handoff.json'),JSON.stringify(h));
+ const a=read(path.join(root,'grading/assignment.json'));a.handoffHash=hash(h);fs.writeFileSync(path.join(root,'grading/assignment.json'),JSON.stringify(a));submission.attestation.assignmentHash=hash(a);
+ assert.equal(finalize(root,submission).grades.lookout.executionSeconds,null);
+});

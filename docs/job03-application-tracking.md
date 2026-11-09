@@ -1,6 +1,6 @@
 # JOB03: application decisions and reminders across sessions
 
-JOB03-tracking-v4 is an isolated fictional five-job trajectory, not a product
+JOB03-tracking-v5 is an isolated fictional five-job trajectory, not a product
 feature or a participant result. It freezes every job's expected state at eight
 checkpoints across eight fresh sessions. A single message updates A/B/C: A becomes
 **user-reported submitted**, with no validated receipt, and requests a dated
@@ -242,3 +242,12 @@ remain unchanged. New host-v2 preparations require native clock alignment as wel
 as no-inference native/container/transport gates; the compressed multi-day fixture
 cannot currently pass clock alignment on the shared real-time backend. Do not
 interpret completed turns or a partial review as a measured quality advantage.
+
+
+Prospective host v3 connects native HTTP/MCP to an isolated ticking SQL/JavaScript
+clock and preserves native startup and all scoped on-demand tools. Full canonical
+context and equal save/verify obligations are now explicit. See the
+[shared host launch limits](../scripts/jobs/README.md#native-http-clock-integration-and-retained-launch-blocks):
+latest-source live gates remain outstanding after Docker became unresponsive;
+JOB03 additionally needs prospective reference/partial-form reconciliation.
+Historical outcomes, independent grades and failed attempts remain unchanged.

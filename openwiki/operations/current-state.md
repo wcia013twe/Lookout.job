@@ -1246,3 +1246,23 @@ discovery without duplicate call counts; this is a diagnostics correction, not a
 new participant run or product-effectiveness claim.
 
 Future JOB01 freezes also bind the shared executor timing/capture source, checked against the actual imported helper implementations. Historical freezes remain unchanged; this closes a prospective source-integrity gap without claiming a changed participant outcome.
+
+
+### JOB03/JOB04 native HTTP clock integration (prospective, launch blocked)
+
+The [shared JOB host](../../scripts/jobs/README.md#native-http-clock-integration-and-retained-launch-blocks)
+now connects an isolated ticking SQL/JavaScript backend to unchanged native HTTP
+services, with source/image/package bindings and ownership guards. Host v3 clones
+complete canonical candidate settings; both participants receive exact local PDF
+bytes, while remote Auth/Storage services remain unverified. Native startup,
+Unicode/JSON responses and all granted on-demand tools pass through. Audit calls
+and every actual native operation inside a turn remain product costs.
+
+Earlier full no-inference roots passed 17/15 then-current gates; later native
+surface/audit changes still require fresh actual gates after Docker timed out
+before provisioning. JOB03's reference-contract gate additionally blocks the
+withdrawn-application blocker mismatch; partial-form native mapping needs audit.
+No new participant was launched. Historical freezes and grading remain intact.
+Focused checks pass; the full suite has one Action Board SQL failure reproduced
+on unchanged local main. This records harness progress, not comparative quality
+or final launch clearance; see the feature change note for verification limits.
