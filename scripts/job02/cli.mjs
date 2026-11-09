@@ -14,6 +14,7 @@ try{
  let result;
  if(action==='prepare'){
   if(fs.existsSync(root+'/freeze.json'))throw Error('Never overwrite a frozen JOB02 setup');account(root);
+  for(const d of ['runs','receipts'])fs.mkdirSync(root+'/'+d,{recursive:true,mode:0o700});
   const scenario=read(v.scenario||repo+'/examples/job02/scenario.json'),actor=read(v.actor||repo+'/examples/job02/actor.json'),runtime=read(v.runtime);
   if(runtime.model!==scenario.model||runtime.reasoning!==scenario.reasoning||runtime.networkPolicy!=='JOB01-isolated-inference'||!runtime.imageId)throw Error('Pinned runtime/explicit network policy required');
   for(const name of ['profile.md','resume.pdf']){const to=root+'/candidate/'+name;fs.mkdirSync(path.dirname(to),{recursive:true,mode:0o700});fs.copyFileSync(path.resolve(v.candidate,name),to);fs.chmodSync(to,0o600);}

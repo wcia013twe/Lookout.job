@@ -22,3 +22,9 @@
 - Add real sacrificial native card/human response smoke. Caught JSONB key-order-sensitive event verification before inference, replaced it with structural equality and added regression coverage. Earlier saved write/failure remains retained; a new fictional application passed the corrected smoke.
 - Controlled browser rehearsal verifies both ready forms, pinned resume bytes, manual handoff and blocked native/script/keyboard/GET submission. Structural prospective registration/export binds actual dataset IDs and includes effort/latency diagnostics plus the shared cost report without private payloads.
 - Verification before landing: 19 Node + 3 Python focused tests and JS/Python syntax; local data validation. New owner/freeze/preflight, actual registration, one authorized paired attempt and independent post-run grading are separate runtime receipts, not asserted by this source change.
+
+
+## Pre-inference launch precondition repair
+
+- First controlled launch attempt failed before any participant/container/model turn because prepare omitted ROOT/runs. Retained root/attempt/failure separately as a harness setup failure.
+- Prepare now creates run/receipt directories, readiness rejects missing run directories or an existing attempt, and a regression invokes actual prepare to verify launcher prerequisites before inference. A fresh owner/freeze is required; failed roots are never repaired in place.
