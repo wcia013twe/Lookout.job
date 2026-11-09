@@ -1013,3 +1013,7 @@ email uploaded with a user request. Time, effort and quality remain separate fro
 native-tool adherence. Langfuse plumbing has synthetic verification; no participant
 run or real wake is implied. Private candidate-grounded targets require independent
 review before the paired pilot. Historical N02 scenarios/datasets remain retained.
+
+### Reusable Langfuse evaluation contract
+
+A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.

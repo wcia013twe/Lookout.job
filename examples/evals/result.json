@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "networking-example",
+  "suiteId": "networking",
+  "suiteVersion": "v1",
+  "scenarioId": "N01",
+  "scenarioVersion": "v1",
+  "condition": "baseline",
+  "repeat": 1,
+  "episodeId": "fictional-example-001",
+  "model": "example-model",
+  "reasoning": "medium",
+  "harnessVersion": "v1",
+  "graderVersion": "v1",
+  "evidenceDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "startedAt": 1794229200,
+  "endedAt": 1794229230,
+  "status": "completed",
+  "pilot": true,
+  "synthetic": true,
+  "evaluation": {
+    "reviewed": false,
+    "taskSuccess": null,
+    "quality": null,
+    "activeSeconds": 30,
+    "toolCalls": 2,
+    "wakesUsed": 1
+  }
+}
