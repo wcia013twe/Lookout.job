@@ -1021,3 +1021,14 @@ review before the paired pilot. Historical N02 scenarios/datasets remain retaine
 ### Reusable Langfuse evaluation contract
 
 A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.
+
+### JOB01 pilot-host preparation
+
+The [JOB01 host](../../docs/job01-job-search.md#ready-to-run-paired-pilot-host)
+reuses N01's candidate and pinned executor with a newly verified local test account,
+staged email versus user-upload delivery, and an internal-network inference gateway.
+A no-inference preflight passed for both conditions. Ten-target inclusion at each
+grading turn is separate from analysis quality; reviewed extraction binds to actual
+saved-state evidence. Earlier setup failures are retained. No participant pilot or
+real model outcome is claimed. Product state, original accounts and public catalog
+maintenance remain outside this evaluation setup.

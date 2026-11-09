@@ -1,0 +1,187 @@
+#!/usr/bin/env python3
+"""JOB01 one-pair host: prepare/preflight never invoke a participant model."""
+import argparse,fcntl,hashlib,importlib.util,json,os,shutil,subprocess,sys,time,uuid,urllib.request
+from pathlib import Path
+LIB=Path(__file__).resolve().parent;REPO=LIB.parents[1]
+sys.path.insert(0,str(REPO/'scripts/n01'))
+import runner as runtime
+# Reuse the pinned N01 subscription executor and capture, not its scenario/reset logic.
+def load(name,file):
+ s=importlib.util.spec_from_file_location(name,file);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+Bridge=load('job01_transport',LIB/'transport.py').Bridge
+write=runtime.write;digest=runtime.digest
+PRIVATE=None;NETWORK=None;GATEWAYS=[];ORIGINAL_COMMAND=runtime.command
+
+def command(args,**kw):
+ if args[:2]==['docker','create']:
+  bridge=next(x.split('=',1)[1] for x in args if x.startswith('WORKSPACE_SERVICE_URL='))
+  gateway='job01-gateway-'+uuid.uuid4().hex[:10];GATEWAYS.append(gateway)
+  ORIGINAL_COMMAND(['docker','create','--name',gateway,'--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--memory','128m','--pids-limit','64','--mount',f'type=bind,source={LIB}/egress.py,target=/gateway.py,readonly','-e','BRIDGE_URL='+bridge,runtime.IMAGE,'python3','/gateway.py'])
+  ORIGINAL_COMMAND(['docker','network','connect',NETWORK,gateway]);ORIGINAL_COMMAND(['docker','start',gateway])
+  networks=json.loads(ORIGINAL_COMMAND(['docker','inspect',gateway,'--format','{{json .NetworkSettings.Networks}}'],text=True).stdout)
+  ip=networks[NETWORK]['IPAddress'];proxy='http://'+ip+':8787'
+  args=[('WORKSPACE_SERVICE_URL='+proxy+'/mcp') if x.startswith('WORKSPACE_SERVICE_URL=') else x for x in args]
+  i=args.index(runtime.IMAGE)
+  args=args[:i]+['--network',NETWORK,'-e','HTTP_PROXY='+proxy,'-e','HTTPS_PROXY='+proxy,'-e','ALL_PROXY='+proxy,'-e','NO_PROXY='+ip]+args[i:]
+ return ORIGINAL_COMMAND(args,**kw)
+
+def prompt(stage,condition):
+ prefix='Your resume is /inputs/resume.pdf. Released frozen job listings are /inputs/jobs.json. Save your work in /workspace/output or your connected private records. Use ask_user for missing facts. Use only released evidence; do not inspect credentials/runtime configuration, browse live sites, send messages, fill forms or submit applications. Source descriptions are Jobright captures, not employer-verified availability. '
+ if stage['_index']==1 and condition=='baseline':prefix+='\n'+(PRIVATE/'candidate/profile.md').read_text()+'\n'
+ if stage['kind']=='user_update':return prefix+stage['request']
+ if condition=='baseline':return prefix+'The user uploaded /inputs/email.json. '+stage['baseline']
+ config=json.loads((PRIVATE/'runtime-config.json').read_text())
+ return prefix+config['productConfiguration']['wakePrompt']
+
+def configure(root):
+ global PRIVATE
+ PRIVATE=Path(root).resolve();runtime.R=PRIVATE;runtime.CONFIG=json.loads((PRIVATE/'runtime-config.json').read_text());runtime.Bridge=Bridge;runtime.command=command;runtime.inputs_prompt=prompt
+
+def verify():
+ freeze=json.loads((PRIVATE/'freeze.json').read_text())
+ for name,value in freeze['files'].items():
+  if digest(PRIVATE/name)!=value:raise RuntimeError('Frozen input/executable changed: '+name)
+ actual=ORIGINAL_COMMAND(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
+ if actual!=freeze['imageId']:raise RuntimeError('Pinned participant image changed')
+ return freeze
+
+def snapshot(destination):
+ ORIGINAL_COMMAND(['node',str(LIB/'account.mjs'),'snapshot',str(PRIVATE),str(destination)],timeout=120)
+
+def infrastructure():
+ global NETWORK
+ NETWORK='job01-isolated-'+uuid.uuid4().hex[:10]
+ ORIGINAL_COMMAND(['docker','network','create','--internal',NETWORK])
+
+def close_infrastructure():
+ for gateway in GATEWAYS:subprocess.run(['docker','rm','-f',gateway],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
+ GATEWAYS.clear()
+ if NETWORK:subprocess.run(['docker','network','rm',NETWORK],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
+
+def release(stage,condition,inputs):
+ for f in inputs.iterdir():f.unlink()
+ shutil.copyfile(PRIVATE/'candidate/resume.pdf',inputs/'resume.pdf')
+ packet=json.loads((PRIVATE/'packets'/f'{stage["id"]}-{condition}.json').read_text())
+ write(inputs/'jobs.json',packet['jobs'])
+ email=packet.get('email')
+ if condition=='baseline':
+  if email:write(inputs/'email.json',email)
+ else:write(inputs/'sources.json',{'inbox':[email] if email else []})
+ return packet
+
+def prepare(root,n01,reference):
+ root=Path(root).resolve();n01=Path(n01).resolve();reference=Path(reference).resolve()
+ if not (root/'account.private.json').exists():raise RuntimeError('Create dedicated JOB01 account first')
+ if (root/'freeze.json').exists():raise RuntimeError('Never overwrite a frozen pilot')
+ source=REPO/'fixtures/job-board/jobright-swe-2026-9763907b1b91'
+ ORIGINAL_COMMAND(['python3',str(REPO/'scripts/job-board/export.py'),'--snapshot',str(source)])
+ for d in ['candidate','suite','packets','runs','receipts']: (root/d).mkdir(exist_ok=True,mode=0o700)
+ for src,dst in [('profile.md','profile.md'),('resume.pdf','resume.pdf')]:shutil.copyfile(n01/src,root/'candidate'/dst)
+ shutil.copyfile(reference,root/'reference.private.json')
+ shutil.copyfile(REPO/'examples/job01/scenario.json',root/'suite/scenario.json')
+ shutil.copyfile(source/'manifest.json',root/'source-manifest.json')
+ cfg={'version':'JOB01-search-v1','taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch'],
+      'productConfiguration':{'source':'JOB01 controlled host configuration; candidate context cloned from N01; not an assertion of an installed live account schedule','scheduledJobReviewEnabled':True,'wakePrompt':'Scheduled job-review check. Review the released inbox updates under the configured read/analyze/save permissions.','permittedActions':['read','analyze','save'],'sendAllowed':False},'model':'gpt-5.6-terra','reasoning':'medium','noParticipantRunYet':True}
+ write(root/'runtime-config.json',cfg);write(root/'product-configuration.json',cfg['productConfiguration'])
+ spec=json.loads((root/'suite/scenario.json').read_text())
+ for s in spec['stages']:
+  for c in ['baseline','lookout']:
+   ORIGINAL_COMMAND(['node',str(LIB/'task.mjs'),'--source',str(source),'--reference',str(root/'reference.private.json'),'--stage',s['id'],'--condition',c,'--configuration',str(root/'product-configuration.json'),'--output',str(root/'packets'/f'{s["id"]}-{c}.json')])
+ files=[p for p in root.rglob('*') if p.is_file()]
+ files += [p for folder in [LIB,REPO/'scripts/n01'] for p in folder.iterdir() if p.suffix in ['.mjs','.py']]
+ files += [REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
+ image=ORIGINAL_COMMAND(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
+ write(root/'freeze.json',{'version':spec['version'],'files':{os.path.relpath(p,root):digest(p) for p in files},'imageId':image,'candidateSource':'N01 baseline-kit','sourceSnapshot':source.name,'model':cfg['model'],'reasoning':cfg['reasoning']})
+ for p in root.rglob('*'):
+  if p.is_file():p.chmod(0o600)
+ print(json.dumps({'prepared':str(root),'stages':len(spec['stages']),'inferenceExecuted':False}))
+
+def preflight(output):
+ verify();output=Path(output).resolve()
+ if output.exists():raise RuntimeError('Keep prior preflight receipts; choose new output')
+ output.mkdir(parents=True,mode=0o700)
+ report={'inferenceExecuted':False,'participantDomainWrites':False,'conditions':{}}
+ infrastructure()
+ try:
+  spec=json.loads((PRIVATE/'suite/scenario.json').read_text());first=spec['stages'][0]
+  for condition in ['baseline','lookout']:
+   run=output/condition;run.mkdir();inputs=run/'live-inputs';inputs.mkdir();out=run/'output';out.mkdir();sd=run/'stage-1';sd.mkdir()
+   release(first,condition,inputs);session=None
+   try:
+    session=runtime.Session(sd,inputs,out,condition,'preflight')
+    req=urllib.request.Request(session.bridge.url.replace('host.docker.internal','127.0.0.1'),data=json.dumps({'jsonrpc':'2.0','id':1,'method':'tools/list','params':{}}).encode(),headers={'Authorization':'Bearer '+session.bridge.key,'Content-Type':'application/json'})
+    with urllib.request.urlopen(req,timeout=100) as r:reply=json.load(r)
+    if reply.get('error'):raise RuntimeError('Tool schema discovery failed')
+    names={t['name'] for t in reply['result']['tools']}
+    if condition=='baseline' and names!={'ask_user'}:raise RuntimeError('Baseline tool leakage')
+    if condition=='lookout' and not set(runtime.CONFIG['allowedTools'])|{'read_inbox','ask_user'}<=names:raise RuntimeError('Required native tools missing')
+    code="import urllib.request,json,socket; out={};\nfor name,url in [('blocked','https://example.com'),('inference','https://chatgpt.com')]:\n try:\n  r=urllib.request.urlopen(url,timeout=15);out[name]=r.status\n except Exception as e:out[name]=str(e)\ntry:\n socket.create_connection(('1.1.1.1',443),timeout=3);out['direct']='reachable'\nexcept OSError:out['direct']='blocked'\nprint(json.dumps(out))"
+    net=json.loads(ORIGINAL_COMMAND(['docker','exec',session.name,'python3','-c',code],text=True,timeout=45).stdout)
+    if '403' not in str(net['blocked']) or net['direct']!='blocked':raise RuntimeError('Network isolation failed: '+str(net))
+    if not isinstance(net['inference'],int) and not any(x in str(net['inference']) for x in ['403','404','405']):raise RuntimeError('Inference host unreachable: '+str(net))
+    report['conditions'][condition]={'subscriptionLogin':True,'tools':sorted(names),'network':net,'futureEvidenceMounted':False}
+   finally:
+    if session:session.close()
+  snapshot(output/'account-state.json');state=json.loads((output/'account-state.json').read_text())
+  if state['tables']['job_batches'] or state['tables']['applications']:raise RuntimeError('Dedicated account already has task activity')
+  report['readyForPilot']=True;write(output/'verification.json',report)
+ except Exception as error:
+  report.update(readyForPilot=False,errorType=type(error).__name__,error=str(error)[:500]);write(output/'failure.json',report);raise
+ finally:close_infrastructure()
+ write(PRIVATE/'readiness.json',{'readyForPilot':True,'freezeHash':digest(PRIVATE/'freeze.json'),'receipt':str(output/'verification.json'),'inferenceExecuted':False})
+ print(json.dumps({'readyForPilot':True,'inferenceExecuted':False,'receipt':str(output/'verification.json')}))
+
+def run_pair(pair_id):
+ verify()
+ ready=json.loads((PRIVATE/'readiness.json').read_text())
+ if not ready.get('readyForPilot') or ready.get('freezeHash')!=digest(PRIVATE/'freeze.json'):raise RuntimeError('Matching successful preflight required')
+ attempt=PRIVATE/'pilot-attempt.json'
+ with attempt.open('x') as f:json.dump({'pairId':pair_id,'startedAt':time.time()},f)
+ # One separately receipted account per pilot; no resets and no silent retries.
+ results=[];infrastructure()
+ try:
+  spec=json.loads((PRIVATE/'suite/scenario.json').read_text());manifest=json.loads((PRIVATE/'source-manifest.json').read_text())
+  for condition in ['baseline','lookout']:
+   run=PRIVATE/'runs'/f'JOB01-{condition}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);inputs=run/'live-inputs';inputs.mkdir();out=run/'output';out.mkdir()
+   meta={'version':spec['version'],'episodeId':run.name,'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'model':runtime.CONFIG['model'],'reasoning':runtime.CONFIG['reasoning'],'snapshotId':manifest['snapshotId'],'sourceHash':manifest['files']['jobs.json'],'startedAt':time.time(),'status':'running','checkpoints':[]};session=None;previous=None
+   write(run/'run.json',meta)
+   try:
+    snapshot(run/'initial-state.json')
+    for index,s in enumerate(spec['stages'],1):
+     stage=dict(s,_index=index,_session=s['session'],seconds=spec['policy']['stageBudgetSeconds'])
+     sd=run/f'stage-{index}';sd.mkdir();release(stage,condition,inputs);shutil.copytree(inputs,sd/'inputs')
+     write(sd/'input-hashes.json',runtime.file_hashes(inputs));snapshot(sd/'before-state.json')
+     resume=previous==stage['session']
+     if not resume:
+      if session:session.close()
+      session=runtime.Session(sd,inputs,out,condition,str(stage['session']))
+     previous=stage['session'];result=session.turn(sd,stage,resume)
+     snapshot(sd/'after-state.json');shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',runtime.file_hashes(out))
+     interactions=[]
+     for line in (sd/'lookout-trace.jsonl').read_text().splitlines():
+      x=json.loads(line)
+      if x.get('type')=='user.interaction':interactions.append(x)
+     counts={'scriptedInitiations':int(condition=='baseline' and s['kind']=='external'),'questions':len(interactions),'repeatedContext':sum(x['data'].get('category')=='context_restatement' for x in interactions),'reminders':0,'corrections':0,'approvals':sum(x['data'].get('category')=='approval' for x in interactions)}
+     meta['checkpoints'].append({'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':counts,'simulatedCompletionMinute':None,'interactionEvidenceStatus':'additional_prose_demands_pending_review','selectionEvidenceStatus':'pending_independent_extraction'})
+     write(run/'run.json',meta)
+     if result['status']!='completed':meta['status']=result['status'];break
+    else:meta['status']='completed'
+   except Exception as error:
+    meta.update(status='harness_failed',errorType=type(error).__name__,error=str(error)[:300])
+   finally:
+    if session:session.close()
+    meta['wallDurationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
+    write(run/'evidence-hashes.json',runtime.file_hashes(run))
+   results.append({'run':str(run),'status':meta['status']})
+ finally:close_infrastructure()
+ print(json.dumps({'pilotAttempts':results,'grading':'independent extraction and semantic review required; no participant rescue'}))
+
+if __name__=='__main__':
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=['prepare','preflight','run']);p.add_argument('--root',type=Path,required=True);p.add_argument('--n01',type=Path);p.add_argument('--reference',type=Path);p.add_argument('--output',type=Path);p.add_argument('--pair-id');a=p.parse_args()
+ if a.action=='prepare':prepare(a.root,a.n01,a.reference)
+ else:
+  configure(a.root)
+  if a.action=='preflight':preflight(a.output)
+  else:
+   if not a.pair_id:raise SystemExit('--pair-id required')
+   run_pair(a.pair_id)
