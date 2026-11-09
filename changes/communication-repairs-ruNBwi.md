@@ -6,3 +6,5 @@
 - Updated general Lookout networking guidance for duplicate events, grounded preparation and save failure recovery; no scenario answers or coordinator assistance.
 - Demo coverage: fictional rolled-back writer probes for all four isolated owners and COM4 extended-field writer/readback smoke; no real sends.
 - Validation: focused harness/guide regressions and data validation; final counts and local activation recorded in the repair report. No participant rerun, hosted deployment or push implied.
+
+- Incorporated the concurrently added cost dimension into COM2–4 separate runners and all common summaries. Added one consistent no-inference setup entry point with shared policy/tool checks.

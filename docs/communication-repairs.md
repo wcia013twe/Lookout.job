@@ -13,6 +13,7 @@ The COM1-stream-v3 pilot exposed a **local Lookout activation mismatch**, not mi
 | Post-terminal read-only native verification and saved-file evidence | Grader | Upgraded | Existing | Existing | Existing |
 | Initial profile/preferences/answers parity | Harness | Expanded full readable context | Existing verified parity | Existing verified parity | Existing verified parity |
 | Introduction-interest actor answer after evidence release | Actor | Fixed | Case-specific | Case-specific | Case-specific |
+| Structural token deltas, frozen cost policy, grade and Langfuse cost summaries | Harness / telemetry | Preserved | Added parity | Added parity | Added parity |
 | Discovery/read/write/question/control/failure/retry counts | Shared telemetry | Added | Added | Added | Added |
 | Stable message identity, existing drafts, bounded recovery and grounded preparation | Lookout guide | General guidance | General guidance | General guidance | General guidance |
 
@@ -35,3 +36,19 @@ COM1-v3 retrospective diagnostic only: 31 discovery/guide calls, 36 reads, 11 wr
 ## Verification limits
 
 Focused harness/guide checks, rolled-back writer probes and a native writer/readback smoke establish implementation contracts. Fresh paired participant runs are needed to assess quality, duplicate handling and actual overhead after repairs. Final reconciliation cannot erase earlier checkpoint failures. Baseline final-report.md is valid persistent storage; chat-only claims are not. Grade final saved state against both pre-final and terminal evidence.
+
+## Consistent setup tools
+
+Use one entry point for all four cases (COM01–04 aliases accepted):
+
+```sh
+python3 scripts/communication/setup.py --case COM01 \
+  --source /absolute/verified-case-account \
+  --background /absolute/baseline-kit \
+  --destination /absolute/new-case-root \
+  --preflight-output /absolute/new-preflight-root
+```
+
+Optional `--cost-policy /absolute/policy.json` is identical for all cases. The default records usage without guessing prices. Setup validates owner/grader identity, subscription-only Terra medium isolation, first-message-only context, persistent resume and baseline notes, common native tools, frozen product versions, cost policy and account locks; then runs the actual case preflight. It never launches participants, resets accounts, fixes participant outcomes or overwrites old setups. The receipt provides the case-specific run, grade, summary and export entry points with the same argument conventions. COM3 adds fixed-source search/read tools to both conditions; applications and artifact tools differ only where the case needs them.
+
+Cost is the fourth dimension, separate from quality, active time and effort. All four runners use the existing structural counter-delta implementation. Missing counters/prices are unknown, subscription use is not an API invoice, and tool-call counts are not dollar costs. Resumed counters are subtracted once; reasoning-token subsets are not added again. Synthetic full-path tests cover per-case grading, detailed Langfuse and common summary exports. Actual participant counter capture still awaits a run.

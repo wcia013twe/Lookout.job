@@ -1,9 +1,12 @@
 """Freeze COM3 private inputs without inference, account reset or domain writes."""
 import argparse,hashlib,json,os,shutil,subprocess
 from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
+from cost import validate_policy
 from parity import complete_and_verify
 
-def prepare(source,background,destination):
+def prepare(source,background,destination,cost_policy=None):
  source,background,destination=[Path(p).resolve() for p in [source,background,destination]]
  if destination.exists():raise ValueError('Use a new destination; preserve prior versions')
  account=json.loads((source/'account.private.json').read_text())
@@ -37,8 +40,12 @@ def prepare(source,background,destination):
  config=dict(version=spec['version'],taskId='COM3',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_application_record','list_contacts','save_contact','list_company_workspaces','save_company_workspace','list_artifacts','read_artifact','save_artifact'])
  config['requiredGuidance']={'developerVersion':json.loads((repo/'supabase/functions/agent-gateway/instructions.json').read_text())['developerVersion'],'outreachGuideVersion':json.loads((repo/'supabase/functions/agent-gateway/skills/cold-outreach.json').read_text())['version']}
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
+ pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'
+ validate_policy(json.loads(pricing.read_text()))
+ shutil.copyfile(pricing,destination/'cost-policy.json')
  files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]
  files+=list((repo/'scripts/com3').glob('*.py'))+list((repo/'scripts/com3').glob('*.mjs'))
+ files += [repo/'scripts/n01/cost.py',repo/'scripts/n01/cost-export.mjs']
  files+=list((repo/'scripts/communication').glob('*.py'))
  files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
  files+=list((repo/'scripts/evals').glob('*.mjs'))+[repo/'backend/runtime/trace-policy.mjs']
@@ -50,4 +57,4 @@ def prepare(source,background,destination):
   if p.is_file() and not p.is_symlink():p.chmod(0o600)
  return destination
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--background',required=True);p.add_argument('--destination',required=True);a=p.parse_args();print(prepare(a.source,a.background,a.destination))
+ p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--background',required=True);p.add_argument('--destination',required=True);p.add_argument('--cost-policy');a=p.parse_args();print(prepare(a.source,a.background,a.destination,a.cost_policy))
