@@ -958,3 +958,19 @@ action. Resume details and diagnostic prose are omitted from this card. Other
 access tasks and actual unanswered questions retain their separate controls.
 Missing/unsafe links fall back to saved application details. The owned human
 response writer and agent read boundary are unchanged.
+
+### Temporary Workday and company-site manual handoff
+
+Developer155/application-workspace41 supersedes the earlier Workday sign-in/resume
+procedure: return these applications to the user with the saved employer job link.
+Muse stops before account setup, credentials, previewing remaining questions,
+filling or submission. Native Greenhouse, Ashby and Lever flows retain existing
+preparation; redirects into Workday/company forms hand back. Save and verify a
+manual blocker on the existing unfinished application, preserve all prior work and
+uncertain/submitted outcomes, report a currently claimed request blocked and never
+reopen terminal history. Human responses do not authorize automatic retries.
+Fieldless company/Workday blocker cards show Open application without a resume-Muse
+button; the user can record the actual outcome in Applications. Existing versioned
+prepare_draft/report and human progress writers provide MCP parity. No new store,
+approval or employer receipt is created. Local runtime activation is verified
+separately from source/tests and actual Muse host adoption.

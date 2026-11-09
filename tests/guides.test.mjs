@@ -153,6 +153,11 @@ test('AI Apply conditionally prepares changed or incomplete work and reuses unch
 
 test('routine consent follows explicit saved instructions while login and host access remain separate from submission',()=>{
  const guide=readGuide('application-workspace');
- assert.equal(guide.version,40);
- for(const phrase of ['Application consent instructions','accept those routine required notices','Decline optional marketing','Do not infer this permission from AI Apply','save_search_profile','background/credit checks','Create Account/Sign In is not automatically a human blocker','do not override it','review nonexistent answers','recheck real host/employer access','public-inspection-only work','request only the specific secure password entry','do not hand back the whole sign-in/application workflow'])assert.ok(guide.instructions.includes(phrase),phrase);
+ assert.equal(guide.version,41);
+ for(const phrase of ['Application consent instructions','accept those routine required notices','Decline optional marketing','Do not infer this permission from AI Apply','save_search_profile','background/credit checks','review nonexistent answers','Recheck real host/employer access'])assert.ok(guide.instructions.includes(phrase),phrase);
+});
+
+test('temporary Workday and company-site handoff stops browser work and preserves recorded progress',()=>{
+ const guide=readGuide('application-workspace');
+ for(const phrase of ['Temporary manual handoff','return Workday and direct company-site applications to the user','Greenhouse, Ashby and Lever','do not attempt account creation','Manual application handoff:','inspectionComplete=false','terminal old request is history','Do not ask the user to sign in so Muse can resume','uncertain outcomes remain stopped'])assert.ok(guide.instructions.includes(phrase),phrase);
 });

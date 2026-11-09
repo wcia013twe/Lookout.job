@@ -40,3 +40,21 @@ and MCP read boundary are unchanged; signing in creates no submission approval.
 Detached fictional demo coverage verifies the link and explicit completion.
 
 - Sign-in follow-up validation: full npm test passed (1,168 passed/five skipped), focused disclosure/link validation6/6, frontend typecheck, production build, data validation158 and diff checks passed. One desktop/mobile visual round verified the saved employer link, no resume/answer-review controls, explicit keyboard completion and unchanged other access/answer gates; fictional demo made no backend/employer calls. No real sign-in or host session was exercised.
+
+### Temporary Workday and company-site manual handoff
+
+Developer155/application-workspace41 supersedes the earlier Workday sign-in/resume
+procedure: return these applications to the user with the saved employer job link.
+Muse stops before account setup, credentials, previewing remaining questions,
+filling or submission. Native Greenhouse, Ashby and Lever flows retain existing
+preparation; redirects into Workday/company forms hand back. Save and verify a
+manual blocker on the existing unfinished application, preserve all prior work and
+uncertain/submitted outcomes, report a currently claimed request blocked and never
+reopen terminal history. Human responses do not authorize automatic retries.
+Fieldless company/Workday blocker cards show Open application without a resume-Muse
+button; the user can record the actual outcome in Applications. Existing versioned
+prepare_draft/report and human progress writers provide MCP parity. No new store,
+approval or employer receipt is created. Local runtime activation is verified
+separately from source/tests and actual Muse host adoption.
+
+- Temporary manual policy validation: full suite1,170 passed/five skipped; focused guide/MCP/disclosure checks47/47, typecheck, build, data158 and diff checks passed. Fictional desktop/mobile handoff shows the employer link without resume/answer review; no backend/employer calls. Saved General profile47 preference and complete audit log verified on read-back. Actual host adoption remains separate from the local guide activation.

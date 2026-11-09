@@ -68,3 +68,12 @@ test('employer sign-in links use saved HTTP destinations and reject executable o
  assert.equal(applicationEmployerUrl({url:'#',applicationUrl:'https://employer.example/apply'}),'https://employer.example/apply');
  for(const url of ['javascript:alert(1)','data:text/html,test','https://secret:password@employer.example/','/applications/'])assert.equal(applicationEmployerUrl({url}),null);
 });
+
+test('fieldless Workday and direct company-site blockers return a manual link handoff',async()=>{
+ const {blockerCompletionAction}=await import('../lib/application-disclosures.mjs');
+ const item={kind:'resolve_blocker',questions:[],reason:'Sign in to continue'};
+ for(const url of ['https://employer.wd5.myworkdayjobs.com/en-US/jobs/job/Engineer','https://www.amazon.jobs/en/jobs/123','https://careers.company.example/job/123'])assert.equal(blockerCompletionAction(item,{url}).kind,'manual_application');
+ assert.equal(blockerCompletionAction({...item,reason:'Manual application handoff: continue at employer.'}).kind,'manual_application');
+ assert.equal(blockerCompletionAction(item,{url:'https://job-boards.greenhouse.io/company/jobs/123'}).kind,'sign_in');
+ assert.equal(blockerCompletionAction({...item,kind:'check_submission'},{url:'https://careers.company.example/job/123'}),null);
+});

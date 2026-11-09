@@ -33,7 +33,10 @@ try {
     const link=card.getByRole('link',{name:'Open application',exact:true});await link.waitFor();
     assert.equal(await link.getAttribute('href'),'https://example.com/careers/demo-signin');
     assert.equal(await link.getAttribute('target'),'_blank');
-    await card.getByText('Muse couldn’t access the application questions.',{exact:false}).waitFor();
+    await card.getByText('Workday and company-site applications are yours to complete for now.',{exact:false}).waitFor();
+    assert.equal(await card.getByRole('button').count(),0,'Manual handoff only returns the employer link');
+    await card.scrollIntoViewIfNeeded();await card.screenshot({path:`${dir}/${name}-${key}.png`});
+    continue;
    }else await card.getByText('Résumé selected',{exact:true}).waitFor();
    const button=card.getByRole('button',{name:'Accept: '+label,exact:true});assert.equal(await button.isEnabled(),true);
    await card.scrollIntoViewIfNeeded();await card.screenshot({path:`${dir}/${name}-${key}.png`});

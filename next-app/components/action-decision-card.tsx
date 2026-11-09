@@ -28,8 +28,9 @@ export default function ActionDecisionCard({item,busy,onRespond,onSaveMessage}:{
  const savedResumeId=item.resume?.id||application?.resumeId||'';
  const selectedResume=item.resume||(w.state.workflow.resumes||[]).find((r:any)=>r.id===savedResumeId);
  const resumeId=resumeChoice??savedResumeId;
- const taskAction=blockerCompletionAction(item);
- const signInTask=taskAction?.kind==='sign_in';
+ const taskAction=blockerCompletionAction(item,application);
+ const manualTask=taskAction?.kind==='manual_application';
+ const signInTask=taskAction?.kind==='sign_in'||manualTask;
  const employerUrl=applicationEmployerUrl(application);
  const reviewQuestions=(item.questions||[]).filter(showAnswerOnCard);
  const dirty=native&&(resumeId!==savedResumeId||answers.some((value,index)=>value!==answerText(item.questions?.[index]?.answer)));
@@ -97,10 +98,10 @@ export default function ActionDecisionCard({item,busy,onRespond,onSaveMessage}:{
   {needsNote&&<label className={styles.field} htmlFor={`${id}-note`}><span>{outcome?'Employer portal or confirmation evidence':item.reason||'What does Muse need to continue?'}</span><textarea id={`${id}-note`} rows={2} maxLength={500} required disabled={busy} placeholder={outcome?'What did you check, and what did it show?':'Write your answer…'} value={note} onChange={e=>setNote(e.target.value)}/></label>}
   {((native&&!taskAction&&(item.kind!=='review_application'||dirty))||outcome)&&<label className={styles.confirmation}><input type="checkbox" disabled={busy} checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/><span>{outcome?'I checked the employer portal or confirmation email.':reviewQuestions.length?'I have checked the answers shown above.':'I confirm this update for Muse.'}</span></label>}
   {item.requiresReview&&<label className={styles.confirmation}><input type="checkbox" checked={item.reviewed} disabled={busy||editingMessage||item.reviewed||(native&&(!complete||dirty))} onChange={()=>void onRespond(item,'review')}/><span>{outreach?'I reviewed this exact message.':'I reviewed this exact application revision.'}</span></label>}
-  <footer className={`${styles.footer} ${taskAction?styles.taskFooter:''}`}><div className={styles.meaning}>{!taskAction&&<span>{acceptVerb}</span>}<small>{taskAction?'Saves your update so Muse can resume preparation.':null}{taskAction?null:item.kind==='check_submission'?'X verifies not submitted':outreach?'Nothing is sent automatically':item.kind==='resolve_blocker'?'Saves your answer without approving submission':native?'Rejection keeps it saved and stops agent work':item.kind==='imported_action'?'Approval is not completion · X stops agent work':item.kind==='submit_application'?'A user report, not an observed submission receipt':'X declines this proposal'}</small></div><div className={styles.decisions}>
+  <footer className={`${styles.footer} ${taskAction?styles.taskFooter:''}`}><div className={styles.meaning}>{!taskAction&&<span>{acceptVerb}</span>}<small>{manualTask?'Afterward, update its status in Applications.':taskAction?'Saves your update so Muse can resume preparation.':null}{taskAction?null:item.kind==='check_submission'?'X verifies not submitted':outreach?'Nothing is sent automatically':item.kind==='resolve_blocker'?'Saves your answer without approving submission':native?'Rejection keeps it saved and stops agent work':item.kind==='imported_action'?'Approval is not completion · X stops agent work':item.kind==='submit_application'?'A user report, not an observed submission receipt':'X declines this proposal'}</small></div>{!manualTask&&<div className={styles.decisions}>
    <button type="button" className={styles.reject} disabled={rejectDisabled} aria-label={`Reject: ${actionVerbs[1]}`} title={actionVerbs[1]} onClick={()=>void respond('reject')}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-   <button type="button" className={`${styles.accept} ${taskAction?styles.taskAccept:''}`} disabled={acceptDisabled} aria-label={`Accept: ${acceptVerb}`} title={acceptVerb} onClick={()=>void respond('accept')}>{taskAction?<span>{acceptVerb}</span>:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>}</button>
-  </div></footer>
+   {!manualTask&&<button type="button" className={`${styles.accept} ${taskAction?styles.taskAccept:''}`} disabled={acceptDisabled} aria-label={`Accept: ${acceptVerb}`} title={acceptVerb} onClick={()=>void respond('accept')}>{taskAction?<span>{acceptVerb}</span>:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>}</button>}
+  </div>}</footer>
   {error&&<p role="alert" className={styles.error}>{error}</p>}
  </SwipeDecision></li>;
 }
