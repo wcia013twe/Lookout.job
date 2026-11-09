@@ -1012,3 +1012,7 @@ assess preference handling and continuity; time, effort and quality remain separ
 from Lookout adherence. Langfuse registration, stage/root observations, experiment
 linking and scores have synthetic transport verification; no participant run,
 real wake or candidate-grounded reference quality is implied. V1 remains retained.
+
+### Reusable Langfuse evaluation contract
+
+A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.
