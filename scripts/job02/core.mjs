@@ -10,6 +10,7 @@ export function validateTargets(spec){
  if(spec.taskId!=='JOB02'||spec.noSubmit!==true||spec.targets.length!==3)throw Error('JOB02 fixed three-target no-submit scenario required');
  for(const [i,kind]of ['workday','personal_input','greenhouse'].entries()){
   const t=spec.targets[i];if(t.kind!==kind||!t.id||!t.url||!t.title||!t.company)throw Error('Exact live target selection pending: '+kind);
+  if(spec.mode==='controlled_clearing'&&(t.fictional!==true||! /^[a-z0-9_-]+\.html$/i.test(t.fixture||'')))throw Error('Explicit frozen fictional target required');
   const u=new URL(t.url);if(u.protocol!=='https:'||u.username||u.password||u.hash)throw Error('Canonical HTTPS target required');
   if(kind==='workday'&&!/(^|\.)myworkdayjobs\.com$/.test(u.hostname))throw Error('Manual target must be actual Workday');
   if(kind!=='workday'&&!['job-boards.greenhouse.io','boards.greenhouse.io'].includes(u.hostname))throw Error('Supported single-page native Greenhouse target required');
@@ -37,7 +38,7 @@ export const gates=['browser_parity','native_schemas','human_ingress','three_pat
 export function readiness(root,receipts){
  const freeze=assertFrozen(root),errors=[];try{validateTargets(read(path.join(root,'suite/scenario.json')));}catch(e){errors.push(e.message);}
  try{validateReference(read(path.join(root,'suite/scenario.json')),read(path.join(root,'reference.private.json')),read(path.join(root,'suite/actor.private.json')));}catch(e){errors.push(e.message);}
- for(const gate of gates){const r=receipts[gate];if(!r||r.status!=='passed'||r.freezeHash!==digest(path.join(root,'freeze.json'))||r.synthetic!==false&&['browser_parity','native_schemas','human_ingress','live_targets'].includes(gate)||!r.artifacts||!Object.keys(r.artifacts).length)errors.push('Missing actual bound gate: '+gate);else for(const [p,h]of Object.entries(r.artifacts))if(!fs.existsSync(p)||digest(p)!==h)errors.push('Gate evidence changed: '+gate);}
+ for(const gate of gates){const r=receipts[gate];if(!r||r.status!=='passed'||r.freezeHash!==digest(path.join(root,'freeze.json'))||r.synthetic!==false&&['browser_parity','native_schemas','human_ingress',...(read(path.join(root,'suite/scenario.json')).mode==='controlled_clearing'?[]:['live_targets'])].includes(gate)||!r.artifacts||!Object.keys(r.artifacts).length)errors.push('Missing actual bound gate: '+gate);else for(const [p,h]of Object.entries(r.artifacts))if(!fs.existsSync(p)||digest(p)!==h)errors.push('Gate evidence changed: '+gate);}
  const ledger=fs.existsSync(path.join(root,'errors.json'))?read(path.join(root,'errors.json')):[];
  for(const e of ledger)if(!e.resolvedBy||!Object.values(receipts).some(r=>r.id===e.resolvedBy&&r.status==='passed'&&r.errorIds?.includes(e.id)))errors.push('Unresolved harness error: '+e.id);
  return {taskId:'JOB02',ready:errors.length===0,freezeHash:digest(path.join(root,'freeze.json')),gateHashes:Object.fromEntries(Object.entries(receipts).map(([k,v])=>[k,hash(v)])),errors,inferenceExecuted:false,createdAt:new Date().toISOString(),version:freeze.version};

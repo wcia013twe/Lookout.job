@@ -13,7 +13,7 @@
       "id": "graduation",
       "targetId": "*",
       "questionPattern": "graduat|start date|availability",
-      "answer": "My profile and resume have conflicting graduation dates. I cannot resolve that discrepancy in this test; leave timing uncertain.",
+      "answer": "My profile and resume have conflicting graduation dates. I cannot resolve that discrepancy right now; leave timing uncertain.",
       "reuse": "same_meaning",
       "unknown": true
     },

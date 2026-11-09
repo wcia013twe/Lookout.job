@@ -1,5 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 import {randomUUID} from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
 import {read,hash,actorAnswer} from './core.mjs';
 export function account(root){const a=read(root+'/account.private.json');if(a.apiUrl!=='http://127.0.0.1:54321'||a.mcpUrl!=='http://127.0.0.1:8080/mcp'||!/^job02-pilot-[a-f0-9-]+@example.test$/.test(a.email)||a.status!=='verified')throw Error('Dedicated verified local JOB02 account required');return a;}
 export function scrub(x){if(Array.isArray(x))return x.map(scrub);if(x&&typeof x==='object')return Object.fromEntries(Object.entries(x).filter(([k])=>!/token|password|secret|signed.?url|download.?url/i.test(k)).map(([k,v])=>[k,scrub(v)]));if(typeof x==='string'&&/jb_agent_|[?&]token=/.test(x))return '[REDACTED]';return x;}
@@ -25,6 +26,7 @@ export function responsePayload(item,targetId,actor){
  const complete=item.questions.every((q,i)=>q.required===false||q.fieldType==='hidden'||answers[i].trim()&& !/^ask me$/i.test(answers[i].trim()));
  return {payload:{key:item.key,response:complete?'accept':'save',eventKey:randomUUID(),input:{answers,...(complete?{confirmed:true}:{})}},resolved,eventExpected:complete};
 }
+export const matchesSavedResponse=(event,payload)=>event.savedResponse?.eventKey===payload.eventKey&&event.savedResponse?.key===payload.key&&isDeepStrictEqual(event.savedResponse,payload);
 export async function respond(root,actor,spec){
  const a=account(root);if(!a.anonKey||!a.password)throw Error('Separate controlled-human sign-in unavailable');
  const client=createClient(a.apiUrl,a.anonKey,{auth:{persistSession:false,autoRefreshToken:false}}),login=await client.auth.signInWithPassword({email:a.email,password:a.password});
@@ -44,7 +46,7 @@ export async function respond(root,actor,spec){
   }
   const after=await mcp(a,'read_action_board'),events=await mcp(a,'read_muse_changes',{limit:50});
   const listed=events.items??events.events??events.changes??[];
-  for(const record of records){const event=listed.find(e=>e.savedResponse?.eventKey===record.payload.eventKey&&e.savedResponse?.key===record.sourceKey&&hash(e.savedResponse)===hash(record.payload));if(record.eventExpected&&!event)throw Error('Exact saved human response event missing');}
+  for(const record of records){const event=listed.find(e=>matchesSavedResponse(e,record.payload));if(record.eventExpected&&!event)throw Error('Exact saved human response event missing');}
   return {status:'responded',synthetic:false,actorHash:hash(actor),at:new Date().toISOString(),records,before:scrub(before),after:scrub(after),events:scrub(events)};
  }finally{await client.auth.signOut();}
 }

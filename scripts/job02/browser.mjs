@@ -5,11 +5,15 @@ import readline from 'node:readline';
 import {chromium} from 'playwright';
 import {hash,write,read} from './core.mjs';
 export class BrowserHost{
- constructor({targets,resume,output,profile,executablePath,synthetic=false}){Object.assign(this,{targets,resume,output,profile,executablePath,synthetic});this.pages=new Map();this.events=[];this.sequence=0;}
+ constructor({targets,resume,output,profile,executablePath,synthetic=false,controlled=false,fixtureRoot=null}){Object.assign(this,{targets,resume,output,profile,executablePath,synthetic,controlled,fixtureRoot});this.pages=new Map();this.events=[];this.sequence=0;}
  async start(){fs.mkdirSync(this.output,{recursive:true,mode:0o700});this.context=await chromium.launchPersistentContext(this.profile,{headless:true,executablePath:this.executablePath||undefined,serviceWorkers:'block',acceptDownloads:false});
   await this.context.routeWebSocket('**/*',ws=>ws.close());
   await this.context.route('**/*',async route=>{
    const req=route.request(),u=new URL(req.url()),target=this.context.pages().find(p=>p===req.frame().page())?._job02Target;
+   if(this.controlled){
+    if(target&&req.method()==='GET'&&req.url()===target.url&&req.isNavigationRequest()&&target.fixture&&/^[a-z0-9_-]+\.html$/i.test(target.fixture)){return route.fulfill({status:200,contentType:'text/html',body:fs.readFileSync(path.join(this.fixtureRoot,target.fixture))});}
+    this.events.push({kind:'network_blocked',targetId:target?.id,method:req.method(),url:u.origin+u.pathname});return route.abort('blockedbyclient');
+   }
    const allowed=target&&this.allowRequest(req,target);
    if(!allowed){this.events.push({kind:'network_blocked',targetId:target?.id,method:req.method(),url:u.origin+u.pathname});return route.abort('blockedbyclient');}
    return route.continue();

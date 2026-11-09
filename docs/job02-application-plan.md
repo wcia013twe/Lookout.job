@@ -272,3 +272,24 @@ autosave side effects remain unverified. These are harness capability/safety
 blockers, not participant failures. Do not silently substitute controlled fixtures
 and label the resulting run live. Fixture rehearsals remain valid failure-injection
 infrastructure. A live paired pilot requires supported adapters and passing gates.
+
+
+## Explicit controlled clearing pilot
+
+The user authorized a controlled-form clearing pilot while live targets remain
+blocked. `controlled-scenario.json` uses clearly fictional employers and frozen
+HTML served entirely by browser interception; every other request is aborted.
+It is labeled controlled clearing, never live employer validation. The personal
+question asks both motivation and prior product use, making the missing user fact
+concrete. Actual authenticated native cards/responses are rehearsed on a separate
+sacrificial local owner before creating the participant owner. A JSONB key-order
+verification defect was caught there and fixed using structural exact equality;
+no human write was silently replayed.
+
+The controlled path retains the same two-session task, no-submit boundary, matched
+prompts, native default/on-demand surface, and time/effort/quality/cost accounting.
+Its prospective registration and final structural export use the same project and
+receipt directory through `scripts/job02/langfuse.mjs`; no private candidate facts,
+answers, raw transcripts or browser field values are uploaded. Model/subscription
+availability is established only by the actual single paired attempt; failures
+remain failures with no paid-API fallback, model substitution or rescue.

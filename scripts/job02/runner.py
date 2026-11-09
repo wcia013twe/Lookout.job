@@ -42,14 +42,14 @@ def run(pair_id):
   for condition in ['baseline','lookout']:
    out=ROOT/'runs'/condition;out.mkdir(mode=0o700);inputs=out/'live-inputs';inputs.mkdir();files=out/'output';files.mkdir()
    runtime.write(inputs/'targets.json',[{k:t[k]for k in ['id','kind','url','title','company']}for t in spec['targets']]);shutil.copyfile(ROOT/'candidate/resume.pdf',inputs/'resume.pdf')
-   meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'startedAt':time.time(),'status':'running','stages':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0};session=None
+   meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','model':spec['model'],'reasoning':spec['reasoning'],'startedAt':time.time(),'status':'running','stages':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0};session=None
    try:
     snapshot(out/'initial-state.json')
     for index,step in enumerate(spec['stages'],1):
      stage=dict(step,_index=index,_session=step['session'],seconds=spec['stageBudgetSeconds']);sd=out/f'stage-{index}';sd.mkdir();(sd/'browser').mkdir();shutil.copytree(inputs,sd/'inputs')
      if index==2:
       node('respond','--condition',condition,'--run',out);meta['simulatedWaitingMinutes']=spec['wakeDelayMinutes']+spec['userResponseDelayMinutes']
-     cfg={'targets':spec['targets'],'resume':str(ROOT/'candidate/resume.pdf'),'output':str(sd/'browser'),'profile':str(out/'browser-profile'),'executablePath':json.loads((ROOT/'runtime.private.json').read_text()).get('browserExecutable'),'synthetic':False}
+     cfg={'targets':spec['targets'],'resume':str(ROOT/'candidate/resume.pdf'),'output':str(sd/'browser'),'profile':str(out/'browser-profile'),'executablePath':json.loads((ROOT/'runtime.private.json').read_text()).get('browserExecutable'),'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','fixtureRoot':str(ROOT/'suite/forms')}
      (out/'browser-config.private.json').write_text(json.dumps(cfg));runtime.write(out/'active-stage.json',{'stage':index});session=runtime.Session(sd,inputs,files,condition,str(step['session']))
      result=session.turn(sd,stage,False);meta['stages'].append({'id':step['id'],'index':index,**result});runtime.write(out/'run.json',meta)
      if (sd/'browser/form-drift.json').exists():

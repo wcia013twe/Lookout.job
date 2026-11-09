@@ -30,7 +30,7 @@ def unwrap(r):
 
 def obj(props,required):return {'type':'object','properties':props,'required':required,'additionalProperties':False}
 text={'type':'string'}
-tools=[{'name':'ask_user','description':'Save a specific missing-information question for the controlled user response at the next session. Do independent work meanwhile.','inputSchema':obj({'targetId':text,'question':text},['targetId','question'])},{'name':'read_user_updates','description':'Read actual user responses currently released to this session.','inputSchema':obj({},[])}]
+tools=[{'name':'ask_user','description':'Save a specific missing-information question for the user response at the next session. Do independent work meanwhile.','inputSchema':obj({'targetId':text,'question':text},['targetId','question'])},{'name':'read_user_updates','description':'Read actual user responses currently released to this session.','inputSchema':obj({},[])}]
 for name,props,required in [('browser_open',{'targetId':text},['targetId']),('browser_inspect',{'targetId':text},['targetId']),('browser_fill',{'targetId':text,'fieldId':text,'value':{'oneOf':[text,{'type':'boolean'}]},'expectedFingerprint':text},['targetId','fieldId','value','expectedFingerprint']),('browser_upload_resume',{'targetId':text,'fieldId':text,'expectedFingerprint':text},['targetId','fieldId','expectedFingerprint'])]:tools.append({'name':name,'description':'Bounded live application operation; no Submit, click, keyboard or arbitrary scripts. Use exact inspected fields.','inputSchema':obj(props,required)})
 def clean(x):
  if isinstance(x,list):return [clean(y)for y in x if not isinstance(y,dict)or 'inputSchema'not in y or y.get('name')in allowed]
@@ -50,7 +50,7 @@ def initialize_result(msg):
   if native.get('error'):raise RuntimeError('Native initialization failed')
   result=native['result'];result['instructions']=result.get('instructions','')+'\n'+note
   return result
- return {'protocolVersion':msg.get('params',{}).get('protocolVersion','2024-11-05'),'capabilities':{'tools':{}},'serverInfo':{'name':'workspace','version':'JOB02-host-v3'},'instructions':note}
+ return {'protocolVersion':msg.get('params',{}).get('protocolVersion','2024-11-05'),'capabilities':{'tools':{}},'serverInfo':{'name':'workspace','version':'3'},'instructions':note}
 
 def schemas(mid):
  if a.condition=='baseline':return tools

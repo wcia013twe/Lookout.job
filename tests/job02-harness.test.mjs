@@ -90,3 +90,16 @@ with tempfile.TemporaryDirectory() as t:
  assert 'handoff' not in calls and 'confirm' not in calls
 `],{encoding:'utf8',env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});assert.equal(r.status,0,r.stderr);
 });
+
+
+test('native human-event verification ignores JSONB key order but detects changed answers',async()=>{
+ const {matchesSavedResponse}=await import('../scripts/job02/native.mjs');const payload={key:'owned:revision',response:'accept',eventKey:'event',input:{answers:['exact answer'],confirmed:true}};
+ assert.equal(matchesSavedResponse({savedResponse:{input:{confirmed:true,answers:['exact answer']},eventKey:'event',response:'accept',key:'owned:revision'}},payload),true);
+ assert.equal(matchesSavedResponse({savedResponse:{...payload,input:{answers:['different'],confirmed:true}}},payload),false);
+});
+
+test('controlled registration/export binds actual dataset and excludes private contents',async()=>{
+ const {registration,build}=await import('../scripts/job02/langfuse.mjs');const spec=read(new URL('../examples/job02/controlled-scenario.json',import.meta.url)),reg=registration(spec);assert.equal(reg.input.mode,'controlled_clearing');assert.equal('candidate'in reg.input,false);
+ const summary={schemaVersion:1,campaignId:'JOB02-controlled',suiteId:'JOB02',suiteVersion:spec.version,scenarioId:'JOB02',scenarioVersion:spec.version,condition:'baseline',episodeId:'controlled-transport',model:spec.model,reasoning:spec.reasoning,harnessVersion:'JOB02-host-v3',graderVersion:spec.graderVersion,repeat:1,evidenceDigest:'a'.repeat(64),pilot:true,synthetic:true,startedAt:1,endedAt:2,status:'completed',diagnostics:{mcp_discovery_seconds:.2},effort:{uniqueInteractionTurns:1,prescribedInitiations:2},evaluation:{reviewed:false,taskSuccess:null,quality:null,activeSeconds:1,toolCalls:1,wakesUsed:2}};
+ const p=build(summary,spec,{scenarioHash:hash(spec),datasetId:'registered-dataset',itemId:'registered-item'});assert.equal(p.span.attributes.find(a=>a.key==='langfuse.experiment.dataset.id').value.stringValue,'registered-dataset');assert.equal(p.environment,'verification');assert.ok(p.scores.some(s=>s.name==='job02_mcp_discovery_seconds'&&s.value===.2));
+});

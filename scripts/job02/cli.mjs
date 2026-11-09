@@ -8,7 +8,7 @@ import {read,write,hash,digest,files,readiness,launchGate,actorAnswer,recordErro
 import {confirm,respond,account,scrub} from './native.mjs';
 import {handoff,assignGrader,finalize} from './grade.mjs';
 const lib=path.dirname(fileURLToPath(import.meta.url)),repo=path.resolve(lib,'../..');
-const {values:v,positionals}=parseArgs({allowPositionals:true,options:{root:{type:'string'},scenario:{type:'string'},actor:{type:'string'},reference:{type:'string'},candidate:{type:'string'},output:{type:'string'},condition:{type:'string'},run:{type:'string'},receipts:{type:'string'},reviewer:{type:'string'},coordinator:{type:'string'},excluded:{type:'string'},submission:{type:'string'},runtime:{type:'string'},'cost-policy':{type:'string'},detail:{type:'string'},'error-id':{type:'string'},receipt:{type:'string'}}});
+const {values:v,positionals}=parseArgs({allowPositionals:true,options:{root:{type:'string'},scenario:{type:'string'},actor:{type:'string'},reference:{type:'string'},candidate:{type:'string'},output:{type:'string'},condition:{type:'string'},run:{type:'string'},receipts:{type:'string'},reviewer:{type:'string'},coordinator:{type:'string'},excluded:{type:'string'},submission:{type:'string'},runtime:{type:'string'},'cost-policy':{type:'string'},detail:{type:'string'},'error-id':{type:'string'},receipt:{type:'string'},forms:{type:'string'}}});
 const action=positionals[0],root=path.resolve(v.root||'.');
 try{
  let result;
@@ -18,6 +18,7 @@ try{
   if(runtime.model!==scenario.model||runtime.reasoning!==scenario.reasoning||runtime.networkPolicy!=='JOB01-isolated-inference'||!runtime.imageId)throw Error('Pinned runtime/explicit network policy required');
   for(const name of ['profile.md','resume.pdf']){const to=root+'/candidate/'+name;fs.mkdirSync(path.dirname(to),{recursive:true,mode:0o700});fs.copyFileSync(path.resolve(v.candidate,name),to);fs.chmodSync(to,0o600);}
   fs.copyFileSync(v['cost-policy']||repo+'/examples/evals/cost-policy.json',root+'/cost-policy.json');
+  if(scenario.mode==='controlled_clearing'){if(!v.forms)throw Error('Frozen controlled forms required');fs.cpSync(path.resolve(v.forms),root+'/suite/forms',{recursive:true,errorOnExist:true});}
   write(root+'/suite/scenario.json',scenario);write(root+'/suite/actor.private.json',actor);write(root+'/runtime.private.json',runtime);write(root+'/reference.private.json',read(v.reference));
   fs.copyFileSync(lib+'/grader-instructions.md',root+'/suite/grader-instructions.md');
   const inputs={};for(const folder of [root+'/candidate',root+'/suite'])for(const p of Object.keys(files(folder)))inputs[path.relative(root,path.join(folder,p))]=digest(path.join(folder,p));

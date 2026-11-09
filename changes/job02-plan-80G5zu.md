@@ -14,3 +14,11 @@
 - Audit and correct target-outcome grading: source-backed unknown blockers may satisfy a frozen appropriate-blocker outcome for either condition; exact wrong live values still fail. Version prospective scenario/reviewer; retain v2.
 - Add reusable read-only target inspection and three original-board canonical target records. All returned HTTP200, but both Greenhouse forms use unsupported custom React controls/invisible reCAPTCHA; upload/autosave safety is unverified. No live filling/upload, participant run, target substitution or external export.
 - Focused verification: 17 Node tests, 3 native-surface Python tests, Python/JS syntax and 158-role data validation passed. Actual new-source native preflight is reported separately; no passing live-ready claim.
+
+
+## Explicit controlled clearing pilot preparation
+
+- Add frozen fictional forms served only by intercepted browser routes; all external requests denied. Live target limitations remain explicit. Remove harness/test wording from participant-facing messages, preserve matched tasks/native product instructions, and retain actual model identity.
+- Add real sacrificial native card/human response smoke. Caught JSONB key-order-sensitive event verification before inference, replaced it with structural equality and added regression coverage. Earlier saved write/failure remains retained; a new fictional application passed the corrected smoke.
+- Controlled browser rehearsal verifies both ready forms, pinned resume bytes, manual handoff and blocked native/script/keyboard/GET submission. Structural prospective registration/export binds actual dataset IDs and includes effort/latency diagnostics plus the shared cost report without private payloads.
+- Verification before landing: 19 Node + 3 Python focused tests and JS/Python syntax; local data validation. New owner/freeze/preflight, actual registration, one authorized paired attempt and independent post-run grading are separate runtime receipts, not asserted by this source change.
