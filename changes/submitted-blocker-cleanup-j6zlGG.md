@@ -25,3 +25,5 @@
 - Consent preference saved through the owned versioned profile writer and verified on read-back (General profile46). Audit run read-back includes the saved preference and terminal event. This creates no human approval or submission receipt.
 
 - Final integrated validation: npm test passed (1,167 passed/five skipped), frontend typecheck, data validation (158 roles), production build and diff checks passed. Desktop/mobile detached demo verifies Queued → Working → saved outcome, duplicate-request disablement, reduced-motion spinner, separate board activity and terminal cleanup without backend/employer access. Screenshots: /private/tmp/lookout-working-ui.
+
+- Local activation complete: API image lookout-node:application-access-154 is healthy; local MCP read-back returns developer154/application-workspace40. The missing temporary compose definition was recovered from the running API configuration, preserving environment, ports, existing volume/network and worker. General profile46 consent preference is verified. Actual employer sign-in, host password capability and Muse message delivery remain unverified; nothing pushed or published.

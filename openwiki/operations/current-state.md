@@ -939,3 +939,15 @@ with Muse and narrows any necessary password handoff to secure entry. Required
 privacy/application-processing consent needs explicit user/saved-profile authority;
 optional marketing is declined unless authorized. Source, detached visual checks,
 local activation and real host execution are separate verification boundaries.
+
+### AI Apply activity and local access-guidance activation
+
+Discover shows Queued until the owned job is claimed, then Working with a spinner.
+Applications and the Action Board show the same active states, separate from human
+action counts. No Needs input activity flag is added. Terminal jobs, later recorded
+application progress and unrecorded browser activity cannot produce Working.
+Desktop/mobile detached transitions and reduced motion are verified. Local API/MCP
+read-back returns developer154/application-workspace40; the explicit required-consent
+accept/optional-marketing decline preference is saved and read back in General
+profile46. Real employer sign-in, password-host support and external Muse messages
+remain unverified; no hosted release is implied.
