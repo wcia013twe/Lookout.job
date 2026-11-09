@@ -6,6 +6,7 @@ import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {parseArgs} from 'node:util';
 import {fileURLToPath} from 'node:url';
+import {summarize as summarizeCost,validatePolicy} from './cost.mjs';
 export const hash=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 export const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
 export const write=(p,x)=>fs.writeFileSync(p,JSON.stringify(x,null,2)+'\n',{flag:'wx',mode:0o600});
@@ -17,7 +18,8 @@ export function prepare(root,configuration){
  check(configuration?.benchmarkTaskId==='JOB03'&&configuration.dedicated===true&&configuration.fictional===true,'Dedicated fictional JOB03 configuration required');
  check(typeof configuration.source==='string'&&configuration.source.trim()&&configuration.normalProductConfiguration&&configuration.model&&configuration.reasoning,'Record actual normal product configuration, source, model and reasoning');
  fs.mkdirSync(root,{recursive:true,mode:0o700});fs.mkdirSync(path.join(root,'suite'));
- const files=['examples/job03/scenario.json','examples/job03/fixture.json','scripts/job03/task.mjs','scripts/job03/grader-instructions.md'];
+ validatePolicy(configuration.costPolicy);
+ const files=['scripts/job03/cost.mjs','examples/job03/scenario.json','examples/job03/fixture.json','scripts/job03/task.mjs','scripts/job03/grader-instructions.md'];
  const bindings={};for(const f of files){const content=fs.readFileSync(path.join(base,f));const name=path.basename(f);fs.writeFileSync(path.join(root,'suite',name),content,{flag:'wx',mode:0o600});bindings[name]=hash(content.toString());}
  write(path.join(root,'configuration.json'),configuration);bindings['configuration.json']=hash(configuration);
  write(path.join(root,'freeze.json'),{version:'JOB03-tracking-v1',files:bindings,createdAt:new Date().toISOString(),participantExecuted:false});return {prepared:true,root};
@@ -83,14 +85,14 @@ export function run(root,command,preflightFile,pairId){
   try{
    write(path.join(dir,'setup.json'),capture(root,command,condition,{id:'setup',at:spec.stages[0].at},'condition.setup'));
    for(const [i,stage]of spec.stages.entries()){
-    const cp=path.join(dir,stage.id);fs.mkdirSync(cp);let started=null;const entry={stage:stage.id,status:'completed',eventAt:stage.at,session:stage.session};r.checkpoints.push(entry);
+    const cp=path.join(dir,stage.id);fs.mkdirSync(cp);let started=null;const entry={stage:stage.id,participantAttempted:false,status:'completed',eventAt:stage.at,session:stage.session};r.checkpoints.push(entry);
     try{
      write(path.join(cp,'before.json'),capture(root,command,condition,stage,'snapshot'));
      const request=packet(spec,fixture,stage,condition,i===0);write(path.join(cp,'input.json'),request);
      // Host delivers due reminders through the actual shared service; the participant receives only current notifications.
      let controlledFailure=null;if(stage.failure){controlledFailure=capture(root,command,condition,stage,'application.arm_failure',{failure:stage.failure});write(path.join(cp,'failure.json'),controlledFailure);check(controlledFailure.armed===true&&controlledFailure.eventKey===stage.failure.eventKey,'One controlled preparation failure must be armed');}
      let notification=null;if(stage.kind==='reminder'){notification=capture(root,command,condition,stage,'reminder.wake');write(path.join(cp,'wake.json'),notification);}
-     started=performance.now();const result=adapter(command,{operation:'participant.turn',condition,packet:request,notification,controlledFailure,budgetSeconds:spec.budgetSeconds,actor:{policy:'released-only-v1',released:spec.stages.slice(0,i+1).filter(x=>x.kind==='user').map(x=>({id:x.id,message:x.message})),delaySeconds:spec.actorDelaySeconds}},spec.budgetSeconds*1000);
+     entry.participantAttempted=true;started=performance.now();const result=adapter(command,{operation:'participant.turn',condition,packet:request,notification,controlledFailure,budgetSeconds:spec.budgetSeconds,actor:{policy:'released-only-v1',released:spec.stages.slice(0,i+1).filter(x=>x.kind==='user').map(x=>({id:x.id,message:x.message})),delaySeconds:spec.actorDelaySeconds}},spec.budgetSeconds*1000);
      write(path.join(cp,'response.json'),result);check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal status required');entry.status=result.status;
      check(Array.isArray(result.interactions),'Captured interactions required');const ids=new Set();for(const x of result.interactions){check(x.id&&!ids.has(x.id)&&typeof x.answered==='boolean'&&Array.isArray(x.categories),'Unique interaction evidence required');ids.add(x.id);}entry.uniqueTurns=ids.size;entry.answeredTurns=result.interactions.filter(x=>x.answered).length;
     }catch(e){entry.status=e.message==='adapter_timeout'?'timed_out':'harness_failed';entry.error=e.message;write(path.join(cp,'error.json'),{error:e.message});}
@@ -98,7 +100,7 @@ export function run(root,command,preflightFile,pairId){
     if(entry.status!=='completed'){r.status=entry.status;break;}
    }
   }catch(e){r.status='harness_failed';r.error=e.message;}
-  r.endedAt=new Date().toISOString();write(path.join(dir,'run.json'),r);
+  r.endedAt=new Date().toISOString();r.cost=costForRun(root,dir,r);write(path.join(dir,'cost.json'),r.cost);write(path.join(dir,'run.json'),r);
   // These read-only terminal receipts are outside measured execution and never affect the other condition.
   try{write(path.join(dir,'terminal-confirmation.json'),capture(root,command,condition,{id:'terminal'},condition==='lookout'?'native.readonly_confirmation':'baseline.final_files'));}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
   const files={};const walk=p=>{for(const e of fs.readdirSync(p,{withFileTypes:true})){const q=path.join(p,e.name);if(e.isDirectory())walk(q);else files[path.relative(dir,q)]=hash(fs.readFileSync(q,'utf8'));}};walk(dir);write(path.join(dir,'evidence-hashes.json'),files);
@@ -110,6 +112,7 @@ export function handoff(root){
  const h={version:spec.version,freezeHash:hash(f),scenarioHash:hash(spec),runs,dispatch:'Launch an independent fresh grader with fork_turns:none after both attempts. Exclude implementers, coordinators, operators and participants. No credentials. Shell does not launch agents.'};fs.mkdirSync(path.join(root,'grading'));write(path.join(root,'grading/handoff.json'),h);return h;
 }
 export function assign(h,reviewer,excluded){check(reviewer&&['implementers','coordinators','operators','participants'].every(k=>Array.isArray(excluded[k])&&excluded[k].length),'Explicit exclusion roster required');check(!Object.values(excluded).flat().includes(reviewer),'Reviewer must be independent');return {handoffHash:hash(h),reviewer,excluded,forkTurns:'none'};}
+export function costForRun(root,dir,r){return summarizeCost(r.checkpoints.map(c=>{const file=c.stage+'/response.json',p=path.join(dir,file);return {stage:c.stage,attempted:c.participantAttempted,usage:fs.existsSync(p)?read(p).usage:null,evidenceFile:fs.existsSync(p)?file:null};}),read(path.join(root,'configuration.json')).costPolicy);}
 export function compareState(expected,actual){
  const mismatches=[];
  for(const [id,want]of Object.entries(expected))for(const [field,value]of Object.entries(want)){
@@ -125,7 +128,8 @@ export function finalize(root,submission){
   for(const cp of r.checkpoints){const extraction=review.extraction?.[cp.stage];check(extraction?.jobs&&Array.isArray(extraction.evidenceFiles)&&extraction.evidenceFiles.includes(cp.stage+'/after.json')&&extraction.evidenceFiles.every(p=>p in manifest),'Independent per-job extraction with durable evidence required');stateChecks[cp.stage]=compareState(spec.expected[cp.stage],extraction.jobs);const ratings=review.checkpoints?.[cp.stage];for(const key of spec.quality){const c=ratings?.[key];check(c&&[0,1,2].includes(c.rating)&&c.reason&&Array.isArray(c.evidenceFiles)&&c.evidenceFiles.length&&c.evidenceFiles.every(p=>p in manifest),'Complete rubric with frozen citations required');check(c.evidenceFiles.some(p=>p===cp.stage+'/after.json'),'Checkpoint saved-state citation required');checks.push(c.rating);}}
   check('terminal-confirmation.json' in manifest,'Terminal confirmation attempt required');
   if(condition==='lookout')for(const key of spec.adherence){const c=review.adherence?.[key];check(['met','unmet','unreached'].includes(c?.status)&&Array.isArray(c.evidenceFiles)&&c.evidenceFiles.length&&c.evidenceFiles.every(p=>p in manifest),'Separate native adherence review required');}
-  grades[condition]={status:complete?'reviewed':'partial_review',qualityFraction:checks.length?checks.reduce((x,y)=>x+y,0)/(checks.length*2):null,stateChecks,strictPass:complete&&checks.every(x=>x===2)&&Object.values(stateChecks).every(x=>x.pass),executionSeconds:r.checkpoints.reduce((x,y)=>x+y.executionSeconds,0),uniqueInteractionTurns:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns))?r.checkpoints.reduce((x,y)=>x+y.uniqueTurns,0):null,effortComplete:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns)),simulatedWaitingSeconds:r.checkpoints.every(c=>Number.isInteger(c.answeredTurns))?r.checkpoints.reduce((x,y)=>x+y.answeredTurns*spec.actorDelaySeconds,0):null,unreachedStages:spec.stages.filter(s=>!r.checkpoints.some(c=>c.stage===s.id)).map(s=>s.id),adherence:condition==='lookout'?review.adherence:null,review};
+  const cost=costForRun(root,dir,r);if(r.cost)check(hash(cost)===hash(r.cost),'Executor cost evidence mismatch');
+  grades[condition]={cost,status:complete?'reviewed':'partial_review',qualityFraction:checks.length?checks.reduce((x,y)=>x+y,0)/(checks.length*2):null,stateChecks,strictPass:complete&&checks.every(x=>x===2)&&Object.values(stateChecks).every(x=>x.pass),executionSeconds:r.checkpoints.reduce((x,y)=>x+y.executionSeconds,0),uniqueInteractionTurns:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns))?r.checkpoints.reduce((x,y)=>x+y.uniqueTurns,0):null,effortComplete:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns)),simulatedWaitingSeconds:r.checkpoints.every(c=>Number.isInteger(c.answeredTurns))?r.checkpoints.reduce((x,y)=>x+y.answeredTurns*spec.actorDelaySeconds,0):null,unreachedStages:spec.stages.filter(s=>!r.checkpoints.some(c=>c.stage===s.id)).map(s=>s.id),adherence:condition==='lookout'?review.adherence:null,review};
  }
  const out={version:spec.version,graderVersion:spec.graderVersion,handoffHash:hash(h),assignment:a,attestation:at,grades};write(path.join(root,'grading/final.json'),out);return out;
 }
