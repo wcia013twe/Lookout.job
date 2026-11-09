@@ -42,3 +42,6 @@ supabase/.temp/
 
 # LaTeX compiler output.
 .latex-build/
+
+# Local Langfuse ingestion receipts (never benchmark evidence)
+.langfuse-exports/

@@ -1,3 +1,4 @@
+import {traceWork} from './tracing.ts';
 import {submitSearchLeads,readSearchSourceLeads,readSearchFilterPlan} from './search-intake.ts';
 import {screenSearchDiscoveries} from '../../lib/search-screening.mjs';
 import {ResumeParseError} from './resume-parser.ts';
@@ -13,7 +14,7 @@ export const credentialHash = (token: string) => createHash('sha256').update(tok
 export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc: Rpc; supabaseUrl: string; request?: typeof fetch;parseResume?:(token:string,payload:Payload)=>Promise<any>}) {
   const gateway=new URL('/functions/v1/agent-gateway',supabaseUrl);
   if(!['https:','http:'].includes(gateway.protocol) || (gateway.protocol==='http:' && !['127.0.0.1','localhost','kong','host.docker.internal'].includes(gateway.hostname))) throw Error('Use HTTPS Supabase or an explicit local development host');
-  return async (token: string, operation: string, payload: Payload): Promise<Reply> => {
+  const dispatch = async (token: string, operation: string, payload: Payload): Promise<Reply> => {
     if(!/^jb_agent_[a-f0-9]{64}$/.test(token))return {status:401,error:'Agent credential required'};
     try {validateRequest({operation,payload});}catch(error){return {status:400,error:validationMessage(error)};}
     const service=operationService(operation);
@@ -47,4 +48,7 @@ export function createDispatch({rpc,supabaseUrl,request=fetch,parseResume}: {rpc
       return {status:200,data:result.data};
     }catch{return {status:503,error:'Backend unavailable; read current state before retrying a write'};}
   };
+  return (token: string, operation: string, payload: Payload): Promise<Reply> => traceWork(
+    'execute-agent-tool', {operation: operationService(operation) ? operation : 'unknown'},
+    () => dispatch(token, operation, payload), {type: 'tool', summarize: reply => ({status: reply.status})});
 }

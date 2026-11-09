@@ -1,3 +1,4 @@
+import {initializeTracing, traceWork} from './tracing.ts';
 import {setTimeout as delay} from 'node:timers/promises';
 import {createClient} from '@supabase/supabase-js';
 import {createResumeParser} from './resume-parser.ts';
@@ -10,6 +11,7 @@ import {createDispatch} from './service.ts';
 import {runWorker} from './worker.ts';
 import type {Rpc} from './types.ts';
 
+initializeTracing();
 const url=process.env.SUPABASE_URL;
 const key=process.env.SUPABASE_SERVICE_ROLE_KEY;
 if(!url||!key)throw Error('SUPABASE_URL and server-only SUPABASE_SERVICE_ROLE_KEY are required');
@@ -38,7 +40,7 @@ if(mode==='worker'){
   // Deterministic submission remains implemented in submission.ts; registration is paused.
   // const dispatch=createSubmissionService({dispatch:dataDispatch,projectUrl:url});
   // const executionTools=SUBMISSION_TOOLS;
-  const server=createApi({readCount:(watchId:string)=>rpc('agent_pending_count',{watch_id:watchId}),dispatch:dataDispatch,executionTools:[],parseHuman:parser.human,allowedHosts,allowedOrigins});
+  const server=createApi({readCount:(watchId:string)=>rpc('agent_pending_count',{watch_id:watchId}),dispatch:dataDispatch,executionTools:[],parseHuman:(token,payload)=>traceWork('parse-resume',{channel:'human'},()=>parser.human(token,payload),{type:'tool',summarize:()=>({status:'completed',reviewRequired:true})}),allowedHosts,allowedOrigins});
   server.listen(port,'0.0.0.0',()=>console.log(`Lookout MCP API listening on port ${port}.`));
   controller.signal.addEventListener('abort',()=>{server.close();server.closeIdleConnections();setTimeout(()=>server.closeAllConnections(),25000).unref();},{once:true});
 }else throw Error('LOOKOUT_PROCESS must be api or worker');

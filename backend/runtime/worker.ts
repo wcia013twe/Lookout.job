@@ -1,3 +1,4 @@
+import {traceWork} from './tracing.ts';
 import {screenSearchDiscoveries} from '../../lib/search-screening.mjs';
 import {deduplicateDiscoveryRows} from '../../lib/search-dedup.mjs';
 import {executeCareerTask} from '../../runner/career-tools.mjs';
@@ -166,12 +167,12 @@ export async function workOnce(rpc:Rpc,{execute,applicationExecutor,signal,heart
     catch(error){controller.abort(error);throw error;}
   };
   const runTask:import('./ats.ts').Execute=async(task,input)=>{
-    controller.signal.throwIfAborted();return (execute||executeCareerTask)(task,input,{signal:controller.signal});
+    controller.signal.throwIfAborted();return traceWork('execute-career-task',{task},()=>(execute||executeCareerTask)(task,input,{signal:controller.signal}),{type:'tool'});
   };
   try{
     if(!['search_ats','application_submit'].includes(claim.job.kind))throw Error('Unsupported backend job');
     if(claim.job.kind==='search_ats')renew();
-    const outcome=claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,stagingRoot,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})});
+    const outcome=await traceWork('execute-backend-job',{kind:claim.job.kind},async()=>claim.job.kind==='application_submit'&&applicationExecutor?await applicationExecutor(claim,rpc):await executeSearch(claim.job,fencedDispatch,{execute:runTask,stagingRoot,signal:controller.signal,onFailure:error=>controller.abort(error),request:(url,init={})=>fetch(url,{...init,signal:AbortSignal.any([controller.signal,...(init.signal?[init.signal]:[])])})}),{sessionId:'job-'+claim.job.id,summarize:outcome=>({status:outcome.status,saved:outcome.result?.saved??null})});
     await stop();controller.signal.throwIfAborted();await call('finish',{...fence,...outcome});
     if(claim.job.kind==='search_ats'&&outcome.result?.pipelineVersion===2&&!outcome.result?.retainedLeads)await new SearchStaging(stagingRoot||process.env.LOOKOUT_SEARCH_STAGING_DIR||path.join(tmpdir(),'lookout-search-staging'),claim.job.id,outcome.result.runId).clear();
   }catch(error){

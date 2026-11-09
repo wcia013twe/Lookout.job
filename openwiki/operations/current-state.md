@@ -978,3 +978,7 @@ separately from source/tests and actual Muse host adoption.
 Local API/MCP activation read-back confirms developer155/application-workspace41
 and its Workday/company-site manual-handoff rule. General profile47 stores the
 explicit user preference. Actual external Muse host refresh remains unverified.
+
+### Optional Langfuse tracing (source integration)
+
+The Node API tool dispatcher, human resume parser and worker execution have optional server-only tracing. A separate versioned importer reads terminal runtime-v4 Codex logs without changing frozen benchmarks. Structural capture is the default; exact model-call boundaries and hidden reasoning are unavailable. See [setup and verification limits](../../docs/langfuse-tracing.md). Source type/syntax checks passed; live ingestion and a rebuilt backend are not yet verified. No historical runs were uploaded. Hosted Edge and the intelligence service are outside this pass; detached UI demo remains isolated.

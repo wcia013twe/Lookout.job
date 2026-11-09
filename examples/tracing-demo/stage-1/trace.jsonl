@@ -1,0 +1,3 @@
+{"capturedAt": 1794229201, "event": {"type": "item.started", "item": {"id": "tool1", "type": "command_execution", "command": "read fictional notes"}}}
+{"capturedAt": 1794229202, "event": {"type": "item.completed", "item": {"id": "tool1", "type": "command_execution", "command": "read fictional notes", "aggregated_output": "Fictional contact prefers a follow-up next week.", "exit_code": 0, "status": "completed"}}}
+{"capturedAt": 1794229203, "event": {"type": "item.completed", "item": {"id": "message1", "type": "agent_message", "text": "A follow-up draft is ready. Nothing was sent."}}}
