@@ -61,3 +61,10 @@ test('login and host permission handoffs are completion tasks rather than empty 
  assert.equal(blockerCompletionAction({kind:'resolve_blocker',reason:'Sign in to continue',questions:[{question:'When can you start?',answer:''}]}),null,'Keep real unanswered questions visible');
  assert.equal(blockerCompletionAction({kind:'check_submission',reason:'Complete sign-in',questions:[]}),null,'Never replace uncertain-submission recovery');
 });
+
+test('employer sign-in links use saved HTTP destinations and reject executable or credential-bearing URLs',async()=>{
+ const {applicationEmployerUrl}=await import('../lib/application-disclosures.mjs');
+ assert.equal(applicationEmployerUrl({url:'https://employer.example/jobs/123'}),'https://employer.example/jobs/123');
+ assert.equal(applicationEmployerUrl({url:'#',applicationUrl:'https://employer.example/apply'}),'https://employer.example/apply');
+ for(const url of ['javascript:alert(1)','data:text/html,test','https://secret:password@employer.example/','/applications/'])assert.equal(applicationEmployerUrl({url}),null);
+});

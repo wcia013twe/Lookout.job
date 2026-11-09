@@ -28,11 +28,17 @@ try {
    assert.equal(await card.getByRole('textbox').count(),0,'No answer field or credential collection');
    assert.equal(await card.getByRole('checkbox').count(),0,'No review checkbox without questions');
    assert.equal(await card.getByText('No résumé selected',{exact:true}).count(),0,'Saved selection is shown');
-   await card.getByText('Résumé selected',{exact:true}).waitFor();
+   if(key==='signin'){
+    assert.equal(await card.getByText('Résumé selected',{exact:true}).count(),0);
+    const link=card.getByRole('link',{name:'Open application',exact:true});await link.waitFor();
+    assert.equal(await link.getAttribute('href'),'https://example.com/careers/demo-signin');
+    assert.equal(await link.getAttribute('target'),'_blank');
+    await card.getByText('Muse couldn’t access the application questions.',{exact:false}).waitFor();
+   }else await card.getByText('Résumé selected',{exact:true}).waitFor();
    const button=card.getByRole('button',{name:'Accept: '+label,exact:true});assert.equal(await button.isEnabled(),true);
    await card.scrollIntoViewIfNeeded();await card.screenshot({path:`${dir}/${name}-${key}.png`});
-   await card.getByText('Why Muse paused',{exact:true}).click();
-   assert.equal(await card.locator('details[open]').count(),1,'Original saved reason remains accessible');
+   if(key!=='signin'){await card.getByText('Why Muse paused',{exact:true}).click();
+   assert.equal(await card.locator('details[open]').count(),1,'Original saved reason remains accessible');}
    await button.focus();await button.press('Enter');await card.waitFor({state:'detached'});
   }
   const answer=row('Your start date is needed');await answer.waitFor();

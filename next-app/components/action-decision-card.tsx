@@ -2,7 +2,7 @@
 import {useState,useId} from 'react';
 import Link from 'next/link';
 import DiscoveredRoleWidget from './discovered-role-widget';
-import {answerDisclosure,draftInferences,applicationActionLabel,showAnswerOnCard,blockerCompletionAction} from '../../lib/application-disclosures.mjs';
+import {answerDisclosure,draftInferences,applicationActionLabel,showAnswerOnCard,blockerCompletionAction,applicationEmployerUrl} from '../../lib/application-disclosures.mjs';
 import JobAttachment from '../app/circles/_components/job-attachment';
 import CommunicationAttachment from './communication-attachment';
 import {applicationContext} from '../../lib/circle-attachments.mjs';
@@ -29,6 +29,8 @@ export default function ActionDecisionCard({item,busy,onRespond,onSaveMessage}:{
  const selectedResume=item.resume||(w.state.workflow.resumes||[]).find((r:any)=>r.id===savedResumeId);
  const resumeId=resumeChoice??savedResumeId;
  const taskAction=blockerCompletionAction(item);
+ const signInTask=taskAction?.kind==='sign_in';
+ const employerUrl=applicationEmployerUrl(application);
  const reviewQuestions=(item.questions||[]).filter(showAnswerOnCard);
  const dirty=native&&(resumeId!==savedResumeId||answers.some((value,index)=>value!==answerText(item.questions?.[index]?.answer)));
  const complete=(item.questions||[]).every((q,index)=>q.required===false||q.fieldType==='hidden'||(!!answers[index]?.trim()&&answers[index].trim().toLowerCase()!=='ask me'));
@@ -75,8 +77,8 @@ export default function ActionDecisionCard({item,busy,onRespond,onSaveMessage}:{
   {item.reviewed&&native&&!taskAction&&<p className={styles.muted}>Reviewed by you for this exact revision.</p>}
   {taskAction&&<section className={styles.blockerTask} aria-label={taskAction.heading}>
    <h4>{taskAction.heading}</h4><p>{taskAction.instruction}</p>
-   <p className={styles.resume}><span>Résumé selected</span><strong>{selectedResume?.name||(savedResumeId?'Saved résumé · details unavailable':'No résumé selected')}{selectedResume?.version!=null?` · version ${selectedResume.version}`:''}</strong></p>
-   <details><summary>Why Muse paused</summary><p>{item.reason}</p></details>
+   {signInTask?(employerUrl?<a className={styles.employerLink} href={employerUrl} target="_blank" rel="noopener noreferrer" onClick={e=>{if(w.demo)e.preventDefault();}}>Open application <span aria-hidden="true">↗</span></a>:<Link className={styles.employerLink} href={item.href}>Open application details</Link>):<p className={styles.resume}><span>Résumé selected</span><strong>{selectedResume?.name||(savedResumeId?'Saved résumé · details unavailable':'No résumé selected')}{selectedResume?.version!=null?` · version ${selectedResume.version}`:''}</strong></p>}
+   {!signInTask&&<details><summary>Why Muse paused</summary><p>{item.reason}</p></details>}
   </section>}
   {native&&!taskAction&&<div className={styles.document}>
    {!(w.state.workflow.resumes||[]).length&&<p className={styles.resume}><span>Résumé</span><strong>{item.resume?.name||'No résumé selected'}</strong></p>}{(w.state.workflow.resumes||[]).length>0&&<label className={styles.field}><span>Résumé used</span><select value={resumeId} disabled={busy} onChange={e=>{setResumeChoice(e.target.value);setConfirmed(false);}}><option value="">No résumé selected</option>{w.state.workflow.resumes.map((r:any)=><option key={r.id} value={r.id}>{r.name}{r.version!=null?` · version ${r.version}`:""}</option>)}</select></label>}

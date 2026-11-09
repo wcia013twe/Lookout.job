@@ -635,3 +635,14 @@ when an old result says working. Reduced motion disables spinner animation.
 Existing scoped queue/claim/report writers and workspace refresh own these facts;
 the UI creates no new status store or permission. Browser activity without a saved
 running job cannot be inferred from this indicator.
+
+### Simplified employer sign-in handoff
+
+Fieldless sign-in blockers now show a short explanation, Open application linking
+to the existing saved employer URL, and I signed in — resume Muse. Resume metadata,
+diagnostic prose and answer-review controls stay out of this handoff. Missing or
+unsafe URLs fall back to application details. Original diagnostics remain saved;
+host-permission, secure-entry, real questions and uncertain-submission controls
+retain their specific behavior. The existing owner/version-checked human response
+and MCP read boundary are unchanged; signing in creates no submission approval.
+Detached fictional demo coverage verifies the link and explicit completion.

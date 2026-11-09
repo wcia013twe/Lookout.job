@@ -27,3 +27,16 @@
 - Final integrated validation: npm test passed (1,167 passed/five skipped), frontend typecheck, data validation (158 roles), production build and diff checks passed. Desktop/mobile detached demo verifies Queued → Working → saved outcome, duplicate-request disablement, reduced-motion spinner, separate board activity and terminal cleanup without backend/employer access. Screenshots: /private/tmp/lookout-working-ui.
 
 - Local activation complete: API image lookout-node:application-access-154 is healthy; local MCP read-back returns developer154/application-workspace40. The missing temporary compose definition was recovered from the running API configuration, preserving environment, ports, existing volume/network and worker. General profile46 consent preference is verified. Actual employer sign-in, host password capability and Muse message delivery remain unverified; nothing pushed or published.
+
+### Simplified employer sign-in handoff
+
+Fieldless sign-in blockers now show a short explanation, Open application linking
+to the existing saved employer URL, and I signed in — resume Muse. Resume metadata,
+diagnostic prose and answer-review controls stay out of this handoff. Missing or
+unsafe URLs fall back to application details. Original diagnostics remain saved;
+host-permission, secure-entry, real questions and uncertain-submission controls
+retain their specific behavior. The existing owner/version-checked human response
+and MCP read boundary are unchanged; signing in creates no submission approval.
+Detached fictional demo coverage verifies the link and explicit completion.
+
+- Sign-in follow-up validation: full npm test passed (1,168 passed/five skipped), focused disclosure/link validation6/6, frontend typecheck, production build, data validation158 and diff checks passed. One desktop/mobile visual round verified the saved employer link, no resume/answer-review controls, explicit keyboard completion and unchanged other access/answer gates; fictional demo made no backend/employer calls. No real sign-in or host session was exercised.

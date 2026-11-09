@@ -951,3 +951,10 @@ read-back returns developer154/application-workspace40; the explicit required-co
 accept/optional-marketing decline preference is saved and read back in General
 profile46. Real employer sign-in, password-host support and external Muse messages
 remain unverified; no hosted release is implied.
+
+Fieldless employer sign-in blockers now show only a brief access explanation, the
+saved employer application link and the existing explicit sign-in completion
+action. Resume details and diagnostic prose are omitted from this card. Other
+access tasks and actual unanswered questions retain their separate controls.
+Missing/unsafe links fall back to saved application details. The owned human
+response writer and agent read boundary are unchanged.
