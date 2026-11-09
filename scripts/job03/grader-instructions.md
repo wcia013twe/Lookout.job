@@ -55,3 +55,11 @@ same application. There must be exactly one controlled failure, one application,
 retained completed fields and no submission/validated receipt. The answer turn
 alone must not prematurely finish preparation. Check the historical failure and
 recovery at their own checkpoints; final success cannot erase lost progress.
+
+Report cost separately from time, effort, quality and native adherence. The final
+coordinator recomputes participant-only counter coverage from frozen executor
+responses. Missing/partial counters or billing are unknown, never zero or a quality
+failure. Verify receipt/delta provenance, no duplicated usage and no invented rate
+or bill. Preflight, harness, grader and external processing costs remain separately
+unmeasured. Any USD model estimate must retain its frozen exact model, dated source
+and estimate label; actualBilling is a separate local receipt-based metric.

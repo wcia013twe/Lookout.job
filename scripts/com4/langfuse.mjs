@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {costValues} from '../n01/cost-export.mjs';
 // Versioned experiment mapping. Structural upload only; no participant credentials/content.
 import {readFileSync,writeFileSync,mkdirSync,existsSync,readdirSync,openSync,closeSync,unlinkSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
@@ -61,6 +62,7 @@ export function build(run,grade,spec,registration={}){
  function score(name,value,dataType='NUMERIC'){
   scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'com4_'+name,value,dataType,environment:m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'COM4-stream-v3; '+grade.status});
  }
+ for(const [name,value,type] of costValues(m.cost))score(name,value,type);
  for(const [k,v] of Object.entries(grade.metrics))if(Number.isFinite(v))score(k,v);
  score('review_status',grade.status,'CATEGORICAL');
  for(const [k,v] of Object.entries(grade.adherence))score('adherence_'+k,v.status,'CATEGORICAL');

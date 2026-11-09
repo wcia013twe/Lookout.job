@@ -127,8 +127,8 @@ artifact. Deterministic expected-state comparisons expose field-level difference
 semantic review checks whether extraction/provenance/reminder claims match receipts.
 Final repairs cannot erase earlier routing or status errors.
 
-Main dimensions remain actual execution seconds, unique observed interaction turns
-and outcome quality. Actor delay is explicitly simulated waiting, not real human
+Main dimensions remain actual execution seconds, unique observed interaction turns,
+participant cost and outcome quality. Actor delay is explicitly simulated waiting, not real human
 minutes. Initial context and prescribed notifications are separate from observed
 questions, approvals or corrections. Missing interaction capture stays incomplete;
 partial runs list unreached stages. Native adherence is reported separately, and
@@ -161,3 +161,41 @@ alone is not proof recovery worked. The later answer turn clears the question bu
 does not silently finish preparation. The separate resume session must reuse B,
 retain its fields and one-failure history, prepare the draft, and leave it unsubmitted.
 This is fixture-only preparation; external forms/submissions remain prohibited.
+
+## Cost as a separate dimension
+
+The executor returns structural `usage` with each `participant.turn` response:
+`{schemaVersion:1,scope:"participant_turn",basis:"turn_delta",source,receiptId,
+status:"complete",model,tokens:{input_tokens,cached_input_tokens,output_tokens}}`.
+These must be actual provider/executor counters for that turn, including failed
+turns when available; resumed-session cumulative totals must first become deltas.
+Cached input is part of input, and reasoning output is part of output. Unique
+receipt IDs prevent counting one counter receipt twice. No transcript or hidden
+reasoning is needed for cost capture. The raw receipt stays in frozen response
+evidence; `run.json.cost`, `cost.json`, and final grade `cost` retain the aggregate.
+The independent grader recomputes it from frozen responses before accepting it.
+
+Absent, malformed, duplicate or killed-turn counters produce partial/unknown
+coverage, diagnostic `observedTokens`, and null full totals. They never become
+zero. An explicitly reported zero with a valid executor receipt remains valid.
+Preflight, state captures, harness, grader, infrastructure and Lookout processing
+are separately unmeasured, never assumed free or added to participant counters.
+Cost availability does not alter task quality or native adherence.
+
+Optional `configuration.costPolicy` uses the existing
+[eval cost policy](eval-cost-accounting.md): schemaVersion 1, USD, exact model
+`rates` entries with HTTPS `sourceUrl`, real ISO `asOf`, input/cached/output USD per
+million and supported reasoning/cache conventions. Rates are frozen before the
+pair and default to empty. No prices are fetched or guessed; unmatched models
+remain unpriced. Model USD is labeled estimated API-equivalent, never subscription
+charges. External costs and total USD remain null in this scoped adapter.
+
+An executor can alternatively supply actual billed USD via `usage.billedUsd`,
+`currency:"USD"`, and `billingBasis:"actual_provider_billed"` with the same unique
+source/receipt/turn binding. These local `actualBilling` totals have separate
+coverage; a missing turn prevents a complete billed total. Guessed allocation or
+subscription-plan prices do not qualify. The existing common eval-v1 `costValues`
+accepts this cost report's standard token/estimate fields unchanged. Its exporter
+does not carry actual billed extensions, so `actualBilling` remains explicitly
+local and standard `billedUsd` remains null. No shared module or external export
+is changed.

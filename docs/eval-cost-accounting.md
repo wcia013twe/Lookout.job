@@ -7,7 +7,7 @@ will correctly reject changed executable hashes.
 
 ## Capture and accounting
 
-COM's shared `Session.turn` (also used by JOB) reads **only structural counters**
+Each COM case's `Session.turn` (and the COM1 session reused by JOB) reads **only structural counters**
 from the current isolated container's session log before/after a turn. It selects
 `event_msg/token_count/info.total_token_usage` and session model identifiers.
 It never exports prompts, credential files, reasoning text or host session history.
@@ -26,7 +26,7 @@ a future authorized run must verify counters against its raw structural receipts
 
 ## Frozen rates and external costs
 
-Both prepare commands accept `--cost-policy /absolute/policy.json`. Without it,
+All COM and JOB prepare commands accept `--cost-policy /absolute/policy.json`. Without it,
 `examples/evals/cost-policy.json` is copied before the workspace is frozen.
 Default rates are empty: the requested model has **no assumed API-equivalent rate**.
 The policy is never mounted into the participant workspace.
