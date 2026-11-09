@@ -16,7 +16,7 @@ test('COM1 experiment is one trajectory with stage children and root scores; pri
  const r=spawnSync('python3',['-c',script,dir],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);
  const g=JSON.parse(readFileSync(path.join(dir,'grade.json')));const p=build(dir,g,spec);
  assert.equal(p.spans.filter(s=>!s.parentSpanId).length,1);
- assert.equal(p.spans.filter(s=>s.parentSpanId===p.rootId).length,7);
+ assert.equal(p.spans.filter(s=>s.parentSpanId===p.rootId).length,spec.stages.length);
  assert.ok(p.spans.every(s=>s.traceId===p.traceId));assert.ok(p.scores.every(s=>s.observationId===p.rootId));
  const encoded=JSON.stringify(p);assert.ok(!encoded.includes(g.evidenceDigest));assert.ok(!encoded.includes('fictional-verification'));assert.ok(!encoded.includes('Dana'));assert.ok(!encoded.includes('Ivo'));assert.ok(!encoded.includes('Fictional fixture; no model ran.'));
  assert.deepEqual(build(dir,g,spec),p,'stable IDs and timestamps');

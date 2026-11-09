@@ -1,4 +1,4 @@
-# COM1: networking across sessions — stream v2
+# COM1: networking across sessions — stream v4
 
 ## Research intent and onboarding
 
@@ -19,9 +19,10 @@ The controlled host configuration enables scheduled networking checks with read/
 | Confirmed preference | Direction decision | “After speaking with Ivo too, platform engineering is now my primary focus. Keep inference infrastructure secondary, and keep existing conversations going.” | Same message |
 | Later developments | Platform introduction offer and inference conversation opportunity | Notifications and wake in fresh session | Same evidence plus “Review these updates and help me with the next steps.” |
 | Duplicate delivery | Same email with identical message ID | Notification and wake in fresh session | “This notification appeared again. Check whether anything else is needed.” |
+| Final reconciliation | Same status-report request, no new scenario facts | Fresh reads of native records; reconcile and save material corrections, then save final report | Fresh reads of persistent files; reconcile and save material corrections, then save final report |
 | Grading | Same semantic outcome criteria | Quality, time, interaction counts and native adherence | Quality, time and interaction counts; assigned initiation reported separately |
 
-The initial reaction resumes the preparation session. All other stages start fresh sessions. Seven turns have fixed budgets of 180/300/300/300/300/300/180 seconds. Contacts/events in this scenario are controlled fiction. Calendar/inbox tools expose only currently released evidence. Saved agent-created records remain available across sessions; future packets and rubric never enter participant containers.
+The initial reaction resumes the preparation session. All other stages start fresh sessions. Eight turns have fixed budgets of 180/300/300/300/300/300/180/300 seconds. Contacts/events in this scenario are controlled fiction. Calendar/inbox tools expose only currently released evidence. Saved agent-created records remain available across sessions; future packets and rubric never enter participant containers.
 
 ## Telemetry and independent grading
 
@@ -75,3 +76,12 @@ Waiting time is explicitly labelled simulated waiting, not task-completion time.
 COM1 is the former N01 networking continuity case. COM2 covers application-stage communication; COM3 is the planned post-application connection discovery case. Historical N01 runs remain unchanged. The existing scripts/n01 and examples/n01 paths remain compatibility entry points.
 
 COM1-stream-v3 adds condition-specific storage orientation to every turn, including every fresh session. Lookout is explicitly instructed to retrieve and save relevant recruiting state through its tools; baseline may retain files across sessions. No standing career goal or event-specific answer is added. Native adherence is a usage diagnostic, separate from quality, user interactions and time. The quality rubric is unchanged; the earlier onboarding-observability and draft-history interpretation limitations remain and this rerun is a pilot.
+
+
+## COM1-stream-v4 final reconciliation
+
+Implements the [common final saved-state contract](com-final-state-grading.md) prospectively. An eighth fresh session asks both participants to inspect durable state, reconcile material discrepancies using supported tools, and save `final-report.md` covering preferences, contacts, saved drafts, completed/pending work, provenance and unsaved gaps. No rubric, expected answer or prior missing fact is provided. No forced redundant writes. Two independent quality checks, `saved_state` and `report_accuracy`, complement the existing checkpoint grades. Existing preservation/history criteria remain unchanged in this pilot version; later repairs cannot erase earlier failures.
+
+After participant termination and final passive snapshot, while still holding the shared account lock, the harness captures a private `terminal-state.json` receipt. It binds episode, scenario digest/version, isolated owner, termination/capture times, initial/final snapshot hashes and persistent output hashes. Lookout uses only `check_context_versions`, `read_personal_context` and `list_contacts` for independent scoped reads; versions must be stable and returned contact owners/records/revisions must agree with the final snapshot. Baseline gets equivalent file inspection. Optional lookup unavailability is explicit and a complete bound snapshot remains usable; mismatched owner/state/version/time is invalid. Capture failures are retained and cannot silently become a successful saved-state grade.
+
+Historical grading never queries a potentially reset live account: it validates and uses the frozen terminal receipt. The independent reviewer must cite terminal evidence for both final checks and the actual report for report fidelity. Report text is not proof of persistence; baseline report-only copies likewise do not satisfy domain-state continuity. Personal receipts stay local; existing structural Langfuse mapping adds the two scores and final stage to a new COM1-stream-v4 dataset/experiment version. Registration, scoped live capture and participant execution have not been run for this version. Historical v3 checkout and artifacts remain unchanged.

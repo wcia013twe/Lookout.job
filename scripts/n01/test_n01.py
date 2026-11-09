@@ -1,12 +1,14 @@
 import importlib.util,json,tempfile,unittest,time,subprocess
 from pathlib import Path
-import grade,runner,user_actor
+import grade,runner,user_actor,terminal_state
 ROOT=Path(__file__).resolve().parents[2];SPEC=json.loads((ROOT/'examples/n01/scenario.json').read_text())
 def save(p,v):p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(v)+'\n')
 def fixture(run,condition='lookout',status='completed'):
  start=time.time()-100
- save(run/'run.json',{'version':SPEC['version'],'episodeId':run.name,'taskId':'COM1','pairId':'verification','condition':condition,'repeat':1,'pilot':True,'synthetic':True,'scenarioDigest':grade.scenario_digest(SPEC),'suiteHash':'fictional-verification','model':'fixture-no-model','reasoning':'none','status':status,'startedAt':start,'durationSeconds':70})
- save(run/'initial-state.json',{'fictional':True})
+ save(run/'run.json',{'version':SPEC['version'],'episodeId':run.name,'taskId':'COM1','pairId':'verification','condition':condition,'repeat':1,'pilot':True,'synthetic':True,'scenarioDigest':grade.scenario_digest(SPEC),'suiteHash':'fictional-verification','model':'fixture-no-model','reasoning':'none','status':status,'startedAt':start,'durationSeconds':70,'participantEndedAt':start+70})
+ snapshot={'tables':{'profiles':[{'id':'fixture-owner','user_id':'fixture-owner','facts':{}}],'outreach_contacts':[]}}
+ save(run/'initial-state.json',snapshot);save(run/'final-state.json',snapshot)
+ (run/'output').mkdir(exist_ok=True)
  for i,s in enumerate(SPEC['stages'],1):
   sd=run/f'stage-{i}';save(sd/'stage-run.json',{'status':'completed','durationSeconds':2,'startedAt':start+i*5,'threadId':s['session']})
   save(sd/'delivery.json',{'stage':i,'eventId':s['id'],'releasedMinute':s['minute'],'triggerMinute':s['minute'],'assignedInitiation':condition=='baseline' and s['kind']=='external','assignedOnboarding':i==1,'necessaryUserUpdate':s['kind']=='user_update'})
@@ -14,10 +16,18 @@ def fixture(run,condition='lookout',status='completed'):
   (sd/'lookout-trace.jsonl').write_text('')
   save(sd/'after-state.json',{'fictional':True});save(sd/'before-state.json',{'fictional':True})
   (sd/'prompt.txt').write_text('fictional prompt');(sd/'output').mkdir(exist_ok=True);(sd/'output/result.md').write_text('fictional result')
+ (run/'stage-8/output/final-report.md').write_text('fixture report')
+ save(run/'grader.private.json',{'status':'verified','mcpUrl':'http://127.0.0.1:8080/mcp','userId':'fixture-owner','benchmarkTaskId':'COM1','scopes':['workspace:read']})
+ (run/'terminal-state.json').unlink(missing_ok=True)
+ if status!='running':terminal_state.capture_terminal_state(run,run,json.loads((run/'run.json').read_text()),lookup=lambda a,n: [] if n=='list_contacts' else {'settings':{'profile':{'user_id':'fixture-owner','facts':{}}}} if n=='read_personal_context' else {})
  review=grade.template(run,SPEC);review.update(reviewer='fixture-only',independentOfParticipant=True,interactionReviewComplete=True)
  for key,x in review['quality'].items():
-  indices=list(range(1,8)) if key=='preservation' else [i for i,s in enumerate(SPEC['stages'],1) if key in s['checks']]
+  indices=list(range(1,len(SPEC['stages'])+1)) if key=='preservation' else [i for i,s in enumerate(SPEC['stages'],1) if key in s['checks']]
   x.update({'pass':True,'reason':'Synthetic fixture only','evidence':[f'stage-{i}/output/result.md' for i in indices]})
+ for key in ['tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
+  review['quality'][key]['evidence'] += [f'stage-{i}/after-state.json' for i,stage in enumerate(SPEC['stages'],1) if key in stage['checks']]
+ for key in ['saved_state','report_accuracy']:review['quality'][key]['evidence']+=['terminal-state.json','stage-8/output/final-report.md']
+ review['quality']['saved_state']['evidence']+=['stage-7/after-state.json','stage-7/output/result.md']
  for key,x in review['adherence'].items():x.update(outcomeVerified=True,reason='Synthetic fixture only',evidence=[f"stage-{SPEC['adherence'][key]['stage']}/after-state.json"])
  return review
 class Tests(unittest.TestCase):
@@ -86,6 +96,7 @@ class Tests(unittest.TestCase):
   import shutil
   m=json.loads((self.run/'run.json').read_text());m['status']='setup_failed';save(self.run/'run.json',m)
   for p in self.run.glob('stage-*'):shutil.rmtree(p)
+  (self.run/'terminal-state.json').unlink()
   g=grade.grade(self.run,SPEC);self.assertEqual(g['adherence']['confirmed_saved']['status'],'not_reached');self.assertEqual(g['metrics']['stage_4_success'],0)
  def test_captured_question_cannot_be_added_again(self):
   self.review['additionalInteractions']=[{'interactionId':'stage-4/lookout-trace.jsonl#L1','category':'clarification','reason':'duplicate','evidence':['stage-4/trace.jsonl']}]
@@ -98,4 +109,59 @@ class Tests(unittest.TestCase):
   self.review['additionalInteractions']=[x,x];self.assertRaises(ValueError,grade.grade,self.run,SPEC,self.review)
  def test_waiting_label_and_coverage(self):
   g=grade.grade(self.run,SPEC,self.review);self.assertIn('simulated_waiting_minutes',g['latencies'][0]);self.assertEqual(g['metrics']['stage_7_success'],1)
+ def test_final_report_prompt_both_conditions(self):
+  for c in ['baseline','lookout']:
+   prompt=runner.inputs_prompt(SPEC['stages'][-1],c)
+   self.assertIn('actual durable records',prompt);self.assertIn('Reconcile material discrepancies',prompt);self.assertIn('final-report.md',prompt)
+ def test_report_alone_cannot_pass(self):
+  self.review['quality']['report_accuracy']['evidence']=['stage-8/output/final-report.md']
+  self.assertRaises(ValueError,grade.grade,self.run,SPEC,self.review)
+ def test_terminal_owner_mismatch_rejected(self):
+  p=self.run/'terminal-state.json';x=json.loads(p.read_text());x['ownerId']='another-user';save(p,x)
+  self.assertRaises(ValueError,grade.grade,self.run,SPEC)
+ def test_terminal_capture_before_participant_end_rejected(self):
+  p=self.run/'terminal-state.json';x=json.loads(p.read_text());x['captureStartedAt']=0;save(p,x)
+  self.assertRaises(ValueError,grade.grade,self.run,SPEC)
+ def test_terminal_version_mismatch_rejected(self):
+  p=self.run/'terminal-state.json';x=json.loads(p.read_text());x['scenarioVersion']='old';save(p,x)
+  self.assertRaises(ValueError,grade.grade,self.run,SPEC)
+ def test_saved_file_change_rejected(self):
+  (self.run/'output/late.md').write_text('later state')
+  self.assertRaises(ValueError,grade.grade,self.run,SPEC)
+ def test_scoped_reads_are_allowlisted(self):
+  self.assertRaises(ValueError,terminal_state.call,{},'save_contact')
+ def test_optional_lookup_failure_uses_bound_snapshot(self):
+  (self.run/'terminal-state.json').unlink()
+  def unavailable(a,n):raise RuntimeError('unavailable')
+  receipt=terminal_state.capture_terminal_state(self.run,self.run,json.loads((self.run/'run.json').read_text()),lookup=unavailable)
+  self.assertEqual(receipt['source'],'post_terminal_snapshot')
+  terminal_state.validate_terminal_state(self.run,json.loads((self.run/'run.json').read_text()))
+ def test_scoped_wrong_owner_fails_capture(self):
+  (self.run/'terminal-state.json').unlink()
+  def wrong(a,n):return [{'id':'wrong','user_id':'other'}] if n=='list_contacts' else {}
+  self.assertRaises(ValueError,terminal_state.capture_terminal_state,self.run,self.run,json.loads((self.run/'run.json').read_text()),wrong)
+ def test_missing_terminal_capture_invalidates_completed_run(self):
+  (self.run/'terminal-state.json').unlink()
+  self.assertRaises(ValueError,grade.grade,self.run,SPEC)
+class RepairTests(unittest.TestCase):
+ def test_inbox_retained_and_duplicate_delivery_separate(self):
+  sources=runner.released_sources(SPEC['stages'][:7])
+  self.assertEqual(len(sources['inbox']),3)
+  self.assertEqual(sources['currentNotifications']['inboxIds'],['email-ivo-2'])
+  self.assertEqual(sum('email-ivo-2' in d['inboxIds'] for d in sources['notificationHistory']),2)
+  self.assertEqual(runner.released_sources(SPEC['stages'][:3])['inbox'],[])
+ def test_collision_rejected(self):
+  self.assertRaises(RuntimeError,runner.released_sources,[{'id':'a','inbox':[{'id':'x','body':'a'}]},{'id':'b','inbox':[{'id':'x','body':'b'}]}])
+ def test_actor_introduction_is_not_future_leak(self):
+  self.assertNotIn('Yes, I am interested',user_actor.answer('Do you want Ivo to introduce you?',5,SPEC)[0])
+  self.assertIn('Yes, I am interested',user_actor.answer('Do you want Ivo to introduce you?',6,SPEC)[0])
+ def test_call_categories_and_retry_are_separate(self):
+  from diagnostics import call_metrics
+  with tempfile.TemporaryDirectory() as d:
+   p=Path(d);events=[]
+   for i,name,ok in [(1,'discover_tools',True),(2,'list_contacts',True),(3,'save_contact',False),(4,'save_contact',True),(5,'ask_user',True)]:
+    events.extend([{'type':'mcp.request','data':{'id':i,'method':'tools/call','params':{'name':name,'arguments':{}}}},{'type':'mcp.response','data':{'id':i,'result':{'isError':not ok}}}])
+   (p/'lookout-trace.jsonl').write_text('\n'.join(map(json.dumps,events)))
+   m=call_metrics([p]);self.assertEqual(m['tool_write_calls'],2);self.assertEqual(m['tool_failed_calls'],1);self.assertEqual(m['tool_exact_retries_after_failure'],1);self.assertEqual(m['tool_read_calls'],1);self.assertEqual(m['tool_discovery_calls'],1)
+
 if __name__=='__main__':unittest.main()

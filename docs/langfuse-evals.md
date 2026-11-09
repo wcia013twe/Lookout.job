@@ -65,3 +65,10 @@ Receipts are project-scoped under ignored `.langfuse-exports/evals/`; use `--rec
 ## Scope and verification
 
 Source syntax and repository data validation are recorded in the change note. Setup performs live configuration read-back. No participant runs, real grades, stale history or synthetic scores are uploaded as part of setup. Future result ingestion remains a separate operation; empty tables are expected until compatible measured records arrive. No product UI, backend schema, MCP authority or browser demo changes.
+
+## Cost dimension
+
+Prospective COM/JOB runs now include an optional top-level cost report. See
+[usage capture, pricing and paper aggregation](eval-cost-accounting.md). Register
+common cost scores with `--setup --scores-only` to preserve dashboard layouts.
+Unknown cost is absent, never zero; model estimates are not subscription invoices.

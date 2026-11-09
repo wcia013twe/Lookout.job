@@ -1,7 +1,11 @@
 """Private coordinator for ordinary recruiting sessions; no evaluation metadata is mounted."""
 import argparse,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from diagnostics import verify_contact_writer,verify_runtime_guidance
 from transport import Bridge
+from terminal_state import capture_terminal_state
+import cost
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
 R=LIB;S=R/'suite';RUNS=R/'runs';CONFIG={};TASK='';IMAGE='lookout-benchmark:0.164.0'
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -27,6 +31,8 @@ def verify():
   if digest(R/'background'/name)!=value:raise RuntimeError('Frozen background changed')
  image=command(['docker','image','inspect',IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
  if image!=lock['imageId']:raise RuntimeError('Container image changed')
+ verify_contact_writer(R)
+ verify_runtime_guidance(R)
  return digest(R/'freeze.json'),image
 
 def snapshot(p):command(['node',str(R/'snapshot.mjs'),str(p)])
@@ -75,8 +81,9 @@ class Session:
   (stage_dir/'lookout-trace.jsonl').touch(exist_ok=True)
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
+  usage_before=cost.capture(self.name,self.thread_id if resume else None)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
-  expired=threading.Event();usage=None;events=0
+  expired=threading.Event();usage=None;events=0;usage_complete=False
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
    def stop():
@@ -94,6 +101,8 @@ class Session:
        if resume and tid!=self.thread_id:raise RuntimeError('Resume unexpectedly changed session')
        self.thread_id=tid
       if e.get('usage'):usage=e['usage']
+      if e.get('type') in ('turn.started','turn.failed'):usage_complete=False
+      if e.get('type')=='turn.completed':usage_complete=True
       if e.get('item',{}).get('type')=='reasoning':e={'type':e.get('type'),'item':{'type':'reasoning','content':'not captured'}}
       raw=json.dumps(e)
       for token in [*self.auth['tokens'].values(),self.bridge.key if self.bridge else None]:
@@ -103,7 +112,10 @@ class Session:
    finally:
     timer.cancel()
     if proc.poll() is None:stop();proc.wait(timeout=30)
-  meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=time.time()-meta['startedAt'],usage=usage)
+  active_seconds=time.time()-meta['startedAt']
+  usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
+  meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
+  meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
@@ -125,7 +137,7 @@ def run(condition,repeat,pair_id,pilot=False):
    (inputs/'workspace.md').write_text((S/'contract.md').read_text())
    # User messages travel through stdin only, never as a persistent input file.
    # The metadata packet, future requests, model/budget and condition never enter the container.
-   visible={k:stage.get(k,[]) for k in ['calendar','inbox']}
+   visible=released_sources(packets()[:i])
    write(inputs/'sources.json',visible)
    for name in CONFIG.get('publicFiles',[]):shutil.copyfile(S/name,inputs/Path(name).name)
    for p in inputs.iterdir():shutil.copyfile(p,sd/'inputs'/p.name)
@@ -153,7 +165,15 @@ def run(condition,repeat,pair_id,pilot=False):
   if session:session.close()
   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
   except Exception:meta['finalStateCaptured']=False
-  meta['durationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
+  meta['participantEndedAt']=time.time();meta['durationSeconds']=meta['participantEndedAt']-meta['startedAt'];write(run/'run.json',meta)
+  try:
+   capture_terminal_state(run,R,meta)
+   meta['terminalCaptureStatus']='captured'
+  except Exception as e:
+   meta['terminalCaptureStatus']='failed'
+   write(run/'terminal-capture-error.json',{'errorType':type(e).__name__,'error':str(e)[:300]})
+  write(run/'run.json',meta)
+  meta['cost']=cost.persist(run,R/'cost-policy.json');write(run/'run.json',meta)
   for p in run.rglob('*'):
    if p.is_file() and not p.is_symlink():p.chmod(0o600)
   fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
@@ -165,16 +185,34 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM1-stream-v3':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v5':raise RuntimeError('Wrong runtime configuration')
+
+def released_sources(stages):
+ inbox={};calendar={};deliveries=[]
+ for stage in stages:
+  current={'eventId':stage['id'],'inboxIds':[],'calendarIds':[]}
+  for message in stage.get('inbox',[]):
+   key=message['id']
+   if key in inbox and inbox[key]!=message:raise RuntimeError('Inbox ID collision with different content: '+key)
+   inbox[key]=message;current['inboxIds'].append(key)
+  for event in stage.get('calendar',[]):
+   key=event['id']
+   if key in calendar and calendar[key]!=event:raise RuntimeError('Calendar ID collision with different content: '+key)
+   calendar[key]=event;current['calendarIds'].append(key)
+  deliveries.append(current)
+ return {'inbox':list(inbox.values()),'calendar':list(calendar.values()),'currentNotifications':deliveries[-1] if deliveries else {},'notificationHistory':deliveries,'calendarMeaning':'Released historical calendar evidence. Older invitations and reminders are not assertions of current status; reconcile email updates and revisions.'}
 
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
- prefix='Your resume is /inputs/resume.pdf. Calendar and inbox are available through tools and /inputs/sources.json. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages or submit applications. '
+ prefix='Your resume is /inputs/resume.pdf. Previously released emails and historical calendar evidence remain available through tools and /inputs/sources.json. currentNotifications identifies current deliveries; notificationHistory includes repeated deliveries. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages or submit applications. '
  storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records, and save meaningful updates, drafts, and next steps there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, drafts, and next steps. ')
  prefix += storage
+ from datetime import datetime,timedelta
+ now=datetime.fromisoformat('2026-11-09T00:00:00+00:00')+timedelta(minutes=stage['minute'])
+ prefix += 'Current workspace time: '+now.isoformat()+'. Use this time for deadlines, not the container wall clock. '
  if stage['kind']=='onboarding':
   return prefix+stage['request']+'\n\n'+(R/'background'/'onboarding.md').read_text()
- if stage['kind']=='user_update':return prefix+stage['request']
+ if stage['kind'] in ['user_update','reconciliation']:return prefix+stage['request']
  if condition=='baseline':return prefix+stage['baseline']
  return prefix+'Scheduled networking check. Review the available updates under the configured read/prepare/save permissions.'
 

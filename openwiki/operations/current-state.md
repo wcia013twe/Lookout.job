@@ -1078,3 +1078,20 @@ reads succeeded, not that semantic matching or participant quality passed.
 ### COM3 connection discovery benchmark
 
 COM3 adds a six-session, ten-turn post-application networking case with a release-gated 30-document corpus, retained emails, independent durable-state grading and an isolated local owner. Source: scripts/com3 and docs/com3-connection-discovery.md. Native writer/readback smoke and restoration pass; no participant performance is asserted.
+### Prospective COM1 terminal-state evaluation
+
+COM1-stream-v4 adds a final participant reconciliation and independent saved-state/report-accuracy checks. Terminal evidence is captured under the account lock and bound to owner, episode, scenario and snapshot/file hashes; historical review does not query a reused live account. Optional scoped reads supplement the frozen snapshot. See [COM1 evaluation](../../docs/n01-notification-redesign.md). Focused fixtures verify contracts; no v4 participant run or live scoped-capture verification is claimed.
+
+### Communication repair protocol
+
+[COM1–4 repair mapping](../../docs/communication-repairs.md) documents the local missing-person-card migration that caused valid advertised fields to fail, shared rolled-back writer checks before inference, classified call metrics and prospective versions. COM1 now retains released emails and uses independent read-only terminal verification, observable onboarding and semantic preservation grading. General outreach guidance covers stable message IDs, reuse of saved drafts and bounded recovery. Old pilot scores/freezes remain historical; repaired participant performance and hosted release are unverified.
+
+### Prospective evaluation cost accounting
+
+COM and JOB's shared session runtime records structural cumulative-token deltas
+across resumed sessions, with complete/partial/unknown coverage. Frozen policies
+supply exact sourced rates; defaults leave dollar estimates unavailable. Whole-run
+reports feed scenario/common Langfuse scores and explicit offline cost-per-success
+aggregation including failed attempts. See docs/eval-cost-accounting.md. Syntax and
+catalog checks only: no participant run, historical backfill, metered external
+billing or live ingestion is established. Existing freezes must not be rewritten.

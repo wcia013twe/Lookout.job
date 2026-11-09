@@ -1,3 +1,4 @@
+import {costValues,costProvenance} from '../n01/cost-export.mjs';
 import {createHash} from 'node:crypto';
 import {statuses, VERSION} from './config.mjs';
 export const hash=v=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
@@ -17,6 +18,7 @@ export function validate(r) {
   if(!e.reviewed&&(e.taskSuccess!==null||e.quality!==null))throw Error('Unreviewed quality judgments must be null');
   if(e.taskSuccess===true&&r.status!=='completed')throw Error('Incomplete execution cannot be a full task success');
   for(const key of ['activeSeconds','toolCalls','wakesUsed'])if(e[key]!==null&&(!Number.isFinite(e[key])||e[key]<0||key!=='activeSeconds'&&!Number.isSafeInteger(e[key])))throw Error(key+' must be nonnegative or null');
+  costValues(r.cost);
   return r;
 }
 const attr=(key,v)=>({key,value:{stringValue:typeof v==='string'?v:JSON.stringify(v)}});
@@ -37,6 +39,7 @@ export function build(r,configIds={}) {
   const span={traceId,spanId:rootId,name:'evaluate-'+r.condition,kind:1,
     startTimeUnixNano:ns(r.startedAt),endTimeUnixNano:ns(r.endedAt),
     attributes:Object.entries({
+      ...(r.cost?{'langfuse.observation.metadata.cost':costProvenance(r.cost)}:{}),
       'langfuse.observation.type':'span','langfuse.trace.name':[r.condition,r.campaignId,r.scenarioVersion,r.graderVersion].join(' · '),
       'langfuse.trace.tags':['eval-case:'+r.scenarioId,'eval-run:'+r.repeat],
       'langfuse.environment':environment,'langfuse.release':r.campaignId,
@@ -54,9 +57,10 @@ export function build(r,configIds={}) {
       ...(r.status!=='completed'?{'langfuse.observation.level':'ERROR'}:{}),
     }).map(([k,v])=>attr(k,v))};
   const scores=[];
-  const add=(suffix,value,dataType='NUMERIC')=>{if(value===null)return;const name='eval_v1_'+suffix;scores.push({id:hash([traceId,name]),traceId,observationId:rootId,name,value,dataType,environment,...(configIds[name]?{configId:configIds[name]}:{}),timestamp:new Date(r.endedAt*1000).toISOString(),comment:'Grader '+r.graderVersion+'; evidence '+r.evidenceDigest});};
+  const add=(suffix,value,dataType='NUMERIC')=>{if(value===null)return;const name='eval_v1_'+suffix;scores.push({id:hash([traceId,name]),traceId,observationId:rootId,name,value:dataType==='BOOLEAN'?Number(value):value,dataType,environment,...(configIds[name]?{configId:configIds[name]}:{}),timestamp:new Date(r.endedAt*1000).toISOString(),comment:'Grader '+r.graderVersion+'; evidence '+r.evidenceDigest});};
   add('execution_status',r.status,'CATEGORICAL');add('reviewed',r.evaluation.reviewed,'BOOLEAN');
   add('task_success',r.evaluation.taskSuccess,'BOOLEAN');add('quality',r.evaluation.quality);
   add('active_seconds',r.evaluation.activeSeconds);add('tool_calls',r.evaluation.toolCalls);add('wakes_used',r.evaluation.wakesUsed);
+  for(const [name,value,type] of costValues(r.cost))add(name,value,type);
   return {experimentId,experimentName,datasetId,itemId,traceId,rootId,environment,span,scores};
 }

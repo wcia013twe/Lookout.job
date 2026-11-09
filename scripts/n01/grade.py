@@ -1,7 +1,11 @@
 """Independent local-first grading. Missing semantic review is pending, never a pass."""
 import argparse,hashlib,json,math
 from pathlib import Path
-GRADER_VERSION='COM1-grade-v2'
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from diagnostics import call_metrics
+GRADER_VERSION='COM1-grade-v4'
+from terminal_state import validate_terminal_state
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -11,7 +15,7 @@ def rows(p):return [json.loads(x) for x in p.read_text().splitlines() if x] if p
 def evidence_digest(run):
  h=hashlib.sha256()
  for p in sorted(run.rglob('*')):
-  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt'] or 'output' in p.parts):
+  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt','terminal-state.json'] or 'output' in p.parts):
    h.update(str(p.relative_to(run)).encode());h.update(p.read_bytes())
  return h.hexdigest()
 def tool_calls(stage):
@@ -75,6 +79,8 @@ def grade(run,spec,review=None):
  if m['status'] not in TERMINAL:raise ValueError('Cannot grade an active run')
  if m.get('version')!=spec['version'] or m.get('condition') not in ['baseline','lookout']:raise ValueError('Wrong scenario/condition')
  stages=validate_evidence(run,spec,m)
+ terminal=None
+ if m['status']=='completed' or (run/'terminal-state.json').exists():terminal=validate_terminal_state(run,m)
  deliveries=[];execution=0;toolcount=0;questions=[];calls={};stepcount=0
  for i,sd in stages.items():
   sm=read(sd/'stage-run.json');execution+=sm['durationSeconds'];calls[i]=tool_calls(sd)
@@ -98,7 +104,18 @@ def grade(run,spec,review=None):
   for key,item in review['quality'].items():
    if type(item.get('pass')) is not bool:raise ValueError('Unresolved quality decision')
    if unavailable[key] and item['pass']:raise ValueError('Unreached/incomplete checkpoint cannot pass')
-   if not unavailable[key]:check_review_evidence(run,item,check_stages[key],item['pass'])
+   if not unavailable[key]:
+    check_review_evidence(run,item,check_stages[key],item['pass'])
+    if item['pass'] and key in ['tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
+     for i in check_stages[key]:
+      refs=[x.split('#')[0] for x in item['evidence']]
+      valid=(f'stage-{i}/after-state.json' in refs) if m['condition']=='lookout' else any(x.startswith(f'stage-{i}/output/') for x in refs)
+      if not valid:raise ValueError('Saved outcome requires durable checkpoint evidence')
+    if key in ['saved_state','report_accuracy']:
+     if terminal is None or 'terminal-state.json' not in item.get('evidence',[]):raise ValueError('Final checks require independent terminal state evidence')
+     if key=='saved_state':
+      check_review_evidence(run,item,[len(spec['stages'])-1],item['pass'])
+     if key=='report_accuracy' and item['pass'] and not any('/output/final-report.md' in ref for ref in item['evidence']):raise ValueError('Report accuracy requires final report evidence')
    elif not item.get('reason'):raise ValueError('Unavailable checkpoint requires explanation')
   seen={q['interactionId'] for q in questions}
   for item in review.get('additionalInteractions',[]):
@@ -130,6 +147,7 @@ def grade(run,spec,review=None):
    status='used_correctly' if item['outcomeVerified'] else 'attempted_but_failed'
   adherence[key]={'status':status,'calls':relevant}
  metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'stage_coverage':len(stages)/len(spec['stages'])}
+ metrics.update(call_metrics(stages.values()))
  for category in ['clarification','context_restatement','correction','reminder','approval']:
   metrics['observed_'+category+'_turns']=sum(q['category']==category for q in questions)
   if complete:metrics['observed_'+category+'_demands']=sum(x['category']==category for x in additional)
@@ -150,7 +168,7 @@ def grade(run,spec,review=None):
   if resolved:metrics[f'stage_{i}_success']=int(achieved)
   waiting=(delivered['triggerMinute']-delivered['releasedMinute'])+sum(q['simulatedDelayMinutes'] for q in questions if q['stage']==i) if achieved else None
   latencies.append({'stage':i,'eventId':stage['id'],'achieved':bool(achieved) if resolved else None,'simulated_waiting_minutes':waiting,'execution_seconds':read(stages[i]/'stage-run.json')['durationSeconds'] if i in stages else None})
- return {'version':spec['version'],'graderVersion':GRADER_VERSION,'scenarioDigest':scenario_digest(spec),'episodeId':m['episodeId'],'status':'graded' if complete else 'pending_review','evidenceDigest':evidence_digest(run),'reviewer':review.get('reviewer') if complete else None,'metrics':metrics,'quality':quality,'adherence':adherence,'latencies':latencies,'questions':questions,'additionalDemands':additional,'limitations':['Scripted interactions are not measured human cognitive effort.','Simulated waiting excludes compute and is not time to task completion.','Unanswered demands are not completed user exchanges.','Semantic quality and native outcomes require independent evidence review.']}
+ return {'cost':m.get('cost'),'version':spec['version'],'graderVersion':GRADER_VERSION,'scenarioDigest':scenario_digest(spec),'episodeId':m['episodeId'],'status':'graded' if complete else 'pending_review','evidenceDigest':evidence_digest(run),'reviewer':review.get('reviewer') if complete else None,'metrics':metrics,'quality':quality,'adherence':adherence,'latencies':latencies,'questions':questions,'additionalDemands':additional,'limitations':['Scripted interactions are not measured human cognitive effort.','Simulated waiting excludes compute and is not time to task completion.','Unanswered demands are not completed user exchanges.','Semantic quality and native outcomes require independent evidence review.']}
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);p.add_argument('--scenario',type=Path,default=Path(__file__).resolve().parents[2]/'examples/n01/scenario.json');p.add_argument('--review',type=Path);p.add_argument('--template',action='store_true');p.add_argument('--output',type=Path,required=True);a=p.parse_args()

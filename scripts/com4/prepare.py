@@ -47,9 +47,12 @@ def prepare(source,background,destination):
  (destination/'context-parity.json').write_text(json.dumps({'verified':True,'profileFactsDigest':hashlib.sha256(json.dumps(profile,sort_keys=True).encode()).hexdigest(),'onboardingDigest':hashlib.sha256(onboarding.encode()).hexdigest(),'resumeDigest':resume_hash,'allNativeProfileFactsRendered':True,'allNativePreferencesRendered':True,'bothConditionsSameFirstMessage':True},indent=2)+'\n')
  for name in ['reset.mjs','snapshot.mjs']:shutil.copyfile(repo/'scripts/com4'/name,destination/name)
  config=dict(version=spec['version'],taskId='COM4',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','list_contacts','save_contact'])
+ config['requiredGuidance']={'developerVersion':json.loads((repo/'supabase/functions/agent-gateway/instructions.json').read_text())['developerVersion'],'outreachGuideVersion':json.loads((repo/'supabase/functions/agent-gateway/skills/cold-outreach.json').read_text())['version']}
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
  files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]
  files+=list((repo/'scripts/com4').glob('*.py'))+list((repo/'scripts/com4').glob('*.mjs'))
+ files+=list((repo/'scripts/communication').glob('*.py'))
+ files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
  files+=list((repo/'scripts/evals').glob('*.mjs'))+[repo/'backend/runtime/trace-policy.mjs']
  sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
  image=subprocess.run(['docker','image','inspect','lookout-benchmark:0.164.0','--format','{{.Id}}'],check=True,capture_output=True,text=True,timeout=30).stdout.strip()

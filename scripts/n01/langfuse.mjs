@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {parseArgs} from 'node:util';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {costValues,costProvenance} from './cost-export.mjs';
 import {tracingConfig} from '../../backend/runtime/trace-policy.mjs';
 const sha=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 const json=p=>JSON.parse(readFileSync(p,'utf8'));
@@ -27,16 +28,16 @@ export function build(run,grade,spec,registration={}){
  const m=json(path.join(run,'run.json'));
  if(!['completed','execution_failed','timed_out','setup_failed','artifact_failed'].includes(m.status))throw Error('Terminal run required');
  if(grade.scenarioDigest!==m.scenarioDigest)throw Error('Grade/run rubric mismatch');
- if(grade.graderVersion!=='COM1-grade-v2')throw Error('Unsupported grader version');
+ if(grade.graderVersion!=='COM1-grade-v4')throw Error('Unsupported grader version');
  if(m.version!==spec.version||grade.version!==spec.version||grade.episodeId!==m.episodeId)throw Error('Run/grade/scenario mismatch');
  const evidence=spawnSync('python3',[path.join(path.dirname(fileURLToPath(import.meta.url)),'digest.py'),run],{encoding:'utf8'});
  if(evidence.status!==0||evidence.stdout.trim()!==grade.evidenceDigest)throw Error('Stale grade evidence');
- const datasetId=registration.datasetId||'lookout-com1-stream-v3';
- const itemId=registration.itemId||'COM1-stream-v3';
+ const datasetId=registration.datasetId||'lookout-com1-stream-v4';
+ const itemId=registration.itemId||'COM1-stream-v5';
  const experimentId=sha(['com1-export-1',spec.version,m.pairId,m.condition,m.repeat,m.pilot===true]);
  const traceId=sha(['com1-export-1',spec.version,m.episodeId]).slice(0,32),rootId=sha(traceId+'root').slice(0,16);
  const experimentName=`${spec.version}-${m.pilot?'pilot':'measured'}-${m.pairId}-${m.condition}-r${m.repeat}`;
- const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':'benchmark','langfuse.trace.name':'COM1 networking trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
+ const base={...(m.cost?{'langfuse.observation.metadata.cost':JSON.stringify(costProvenance(m.cost))}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':'benchmark','langfuse.trace.name':'COM1 networking trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
  const spans=[];
  function span(id,name,type,start,end,parent,extra={}){
   spans.push({traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(Math.max(start,end)),attributes:Object.entries({...base,'langfuse.observation.type':type,...extra}).map(([k,v])=>attr(k,v))});
@@ -59,8 +60,9 @@ export function build(run,grade,spec,registration={}){
  }
  const scores=[];
  function score(name,value,dataType='NUMERIC'){
-  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'com1_'+name,value,dataType,environment:m.synthetic?'verification':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'COM1-stream-v3; '+grade.status});
+  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'com1_'+name,value,dataType,environment:m.synthetic?'verification':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'COM1-stream-v5; '+grade.status});
  }
+ for(const [name,value,type] of costValues(m.cost))score(name,value,type);
  for(const [k,v] of Object.entries(grade.metrics))if(Number.isFinite(v))score(k,v);
  score('review_status',grade.status,'CATEGORICAL');
  for(const [k,v] of Object.entries(grade.adherence))score('adherence_'+k,v.status,'CATEGORICAL');
@@ -81,10 +83,10 @@ async function main(){
  const config=tracingConfig();const project=sha(config?[config.baseUrl,config.publicKey]:['offline']);
  const regfile=path.join(receiptDir,project+'-dataset.json');
  if(v.register){
-  const name='Lookout-COM1-stream-v3';
+  const name='Lookout-COM1-stream-v5';
   const ds=unwrap(cli(['datasets','create'],{name,description:'COM1 networking across sessions. Structural manifest only; private user profile and event packets stay local.',metadata:{version:spec.version,unit:'whole trajectory',status:'prospective'}}));
   if(!ds.id)throw Error('Missing dataset id');
-  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM1-stream-v3',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
+  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM1-stream-v5',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
   if(!item.id)throw Error('Missing item id');
   const saved={datasetId:ds.id,itemId:item.id,name,scenarioHash:sha(spec)};writeFileSync(regfile,JSON.stringify(saved,null,2)+'\n',{mode:0o600});console.log(JSON.stringify(saved));return;
  }

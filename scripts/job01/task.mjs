@@ -69,7 +69,7 @@ export function grade(spec,ref,board,run,review,authorization={}){
  const semanticComplete=checkpoints.length===spec.stages.length&&checkpoints.every(c=>Object.values(c.quality.semantic).every(Boolean));
 
  const adherence=Object.fromEntries(spec.adherence.map(k=>{const a=reviewed?review.adherence?.[k]:null;return [k,run.condition==='baseline'?{status:'not_applicable'}:a&&['used_correctly','attempted_but_failed','omitted','not_applicable'].includes(a.status)&&a.evidence?.trim()?a:{status:'unreviewed'}]}));
- return {version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration},effortToTask:effort,qualityOfCompletion:checkpoints,adherence};
+ return {cost:run.cost??null,version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration},effortToTask:effort,qualityOfCompletion:checkpoints,adherence};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{

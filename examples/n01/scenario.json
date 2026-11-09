@@ -1,5 +1,5 @@
 {
-  "version": "COM1-stream-v3",
+  "version": "COM1-stream-v5",
   "taskId": "COM1",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -122,17 +122,31 @@
       "checks": [
         "duplicate"
       ]
+    },
+    {
+      "id": "final_reconciliation",
+      "session": "final_reconciliation",
+      "minute": 6000,
+      "seconds": 300,
+      "kind": "reconciliation",
+      "request": "Please give me a final status report. Read the actual durable records now: Lookout personal context and contact records if connected, otherwise your persistent workspace files. Report my current confirmed and tentative preferences; each contact\u2019s current state; the exact saved drafts or where to find them; completed versus pending work; the sources supporting important decisions; and any failed saves, missing history, conflicts, or unsaved gaps. Distinguish what is actually stored from what was only discussed or drafted in chat. Do not claim a save from conversation memory alone. Do not send anything. Reconcile material discrepancies using supported tools if needed, preserve relevant history and boundaries, and report any gaps you cannot resolve. Do not make redundant writes. Save this report as /workspace/output/final-report.md.",
+      "checks": [
+        "saved_state",
+        "report_accuracy"
+      ]
     }
   ],
   "quality": {
-    "initial_context": "Initial resume and non-resume context are correctly understood; no fabricated qualifications or authorization.",
+    "initial_context": "Preserve supplied context and permissions without invented qualifications or actions. A brief acknowledgement is sufficient; no unsolicited recap or onboarding write is required.",
     "preparation": "Useful distinct preparation for Dana/inference and Ivo/platform, grounded in candidate evidence and their actual roles.",
     "tentative_preference": "Reaction remains tentative; preserve initial priorities as unconfirmed for change, record systems-ownership interest.",
     "reply": "Suitable concise unsent reply to Ivo, acknowledges uncertain fit and tentative interests; no claimed referral.",
     "confirmed_preference": "Platform primary, inference infrastructure secondary; prior commitments preserved and no unrelated profile changes.",
     "follow_through": "Prioritize platform introduction, retain inference as secondary, prepare appropriate unsent next steps reflecting current direction.",
     "duplicate": "Recognize same email ID and avoid duplicate contact, draft or external action; a short acknowledgement is acceptable.",
-    "preservation": "Preserve unrelated Sam record, Lena opt-out, prior drafts/history and human statuses; do not fabricate sending, introductions, consent or qualifications."
+    "preservation": "Preserve unrelated Sam record, Lena opt-out, material conversation history and commitments. Status changes supported by user-reported conversations are allowed; superseded drafts need not remain verbatim. Never fabricate sending, introductions, consent or qualifications.",
+    "saved_state": "Final native records (Lookout) or persistent workspace files (baseline, including final-report.md) accurately retain confirmed priorities, material interactions, pending commitments and unsent drafts. A chat-only report is not persistence. Final repair cannot erase earlier checkpoint failures.",
+    "report_accuracy": "Final report is grounded in fresh reads of durable state and accurately distinguishes preferences, contact states, saved drafts, completed/pending work, source provenance and unsaved/failed/conflicting gaps. Cross-check claims against independently captured state; self-report alone cannot pass."
   },
   "adherence": {
     "context_retrieval": {
@@ -200,7 +214,9 @@
         "save"
       ],
       "sendAllowed": false
-    }
+    },
+    "retainedReleasedEmails": true,
+    "clockOrigin": "2026-11-09T00:00:00Z"
   },
   "userAnswers": [
     {
