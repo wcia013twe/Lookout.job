@@ -1021,3 +1021,13 @@ review before the paired pilot. Historical N02 scenarios/datasets remain retaine
 ### Reusable Langfuse evaluation contract
 
 A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.
+
+### COM2 communication evaluation (local infrastructure)
+
+[COM2 application communication continuity](../../docs/com2-application-communication.md) adds
+an isolated 12-turn, seven-session fictional stream for scheduling, user-reported completion,
+source-backed advancement, requests, rejection and stale notifications. It excludes preparation
+materials and external sends. The standalone runner/grader checks evidence completeness and
+native outcomes separately, and emits detailed structural traces plus the shared eval summary.
+A dedicated COM2 account and actual tool preflight remain required before execution. Synthetic
+checks establish contracts only; no COM2 participant, database reset or live export is claimed.

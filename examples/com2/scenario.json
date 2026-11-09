@@ -1,0 +1,340 @@
+{
+  "version": "COM2-stream-v1",
+  "taskId": "COM2",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "stages": [
+    {
+      "id": "onboarding",
+      "session": "onboarding",
+      "minute": 0,
+      "seconds": 180,
+      "kind": "onboarding",
+      "checks": [
+        "initial_context"
+      ],
+      "request": "Here is my background, resume, and current application information."
+    },
+    {
+      "id": "availability_request",
+      "session": "availability",
+      "minute": 10,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "availability_request"
+      ],
+      "baseline": "Help me respond to this request for availability.",
+      "inbox": [
+        {
+          "id": "alder-availability",
+          "from": "Leah Park <leah@alder.example>",
+          "subject": "Alder AS-417 screening",
+          "receivedAt": "2026-11-16T14:10:00Z",
+          "body": "We would like to schedule a 30-minute recruiter screen for your Platform Engineer application AS-417. What times work Tuesday November 17 or Wednesday November 18? Please include your timezone."
+        }
+      ]
+    },
+    {
+      "id": "availability_answer",
+      "session": "availability",
+      "minute": 70,
+      "seconds": 300,
+      "kind": "user_update",
+      "checks": [
+        "availability_draft"
+      ],
+      "request": "Tuesday November 17 from 2 to 4 PM or Wednesday November 18 from 10 AM to noon Eastern works. Please draft that."
+    },
+    {
+      "id": "sent_report",
+      "session": "confirmation",
+      "minute": 120,
+      "seconds": 300,
+      "kind": "user_update",
+      "checks": [
+        "sent_report"
+      ],
+      "request": "I sent the availability reply to Leah myself, with both of those windows. No other message has been sent."
+    },
+    {
+      "id": "confirmation",
+      "session": "confirmation",
+      "minute": 130,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "confirmation_no_action"
+      ],
+      "baseline": "Check the scheduling updates.",
+      "inbox": [
+        {
+          "id": "alder-confirmed",
+          "from": "Leah Park <leah@alder.example>",
+          "subject": "Confirmed recruiter screen",
+          "receivedAt": "2026-11-16T16:10:00Z",
+          "body": "Confirmed: Tuesday November 17, 2026 at 2:30 PM America/New_York, for 30 minutes. Sam Ortiz is our scheduling coordinator. No reply is needed. The calendar invitation is for this same appointment."
+        }
+      ],
+      "calendar": [
+        {
+          "id": "alder-screen-calendar",
+          "uid": "alder-screen-1",
+          "sequence": 0,
+          "application": "AS-417",
+          "title": "Alder recruiter screen",
+          "time": "2026-11-17T14:30:00-05:00",
+          "end": "2026-11-17T15:00:00-05:00",
+          "timeZone": "America/New_York",
+          "relatedMessageId": "alder-confirmed",
+          "notes": "Same appointment confirmed by Leah; no response required."
+        }
+      ]
+    },
+    {
+      "id": "reschedule",
+      "session": "reschedule",
+      "minute": 1440,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "reschedule"
+      ],
+      "baseline": "Check this scheduling change.",
+      "inbox": [
+        {
+          "id": "alder-rescheduled",
+          "from": "Sam Ortiz <sam@alder.example>",
+          "subject": "Replacement recruiter screen time",
+          "receivedAt": "2026-11-17T14:00:00Z",
+          "body": "Your recruiter screen is now Wednesday November 18, 2026 at 10:30 AM America/New_York, for 30 minutes. This replaces the Tuesday November 17 at 2:30 PM appointment, which is cancelled. No reply needed; the replacement is confirmed."
+        }
+      ]
+    },
+    {
+      "id": "screen_completed",
+      "session": "screen_outcome",
+      "minute": 3060,
+      "seconds": 300,
+      "kind": "user_update",
+      "checks": [
+        "reported_completion"
+      ],
+      "request": "I finished the Alder recruiter screen this morning. I have not received a decision about another round yet."
+    },
+    {
+      "id": "technical_invitation",
+      "session": "screen_outcome",
+      "minute": 3120,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "technical_invitation"
+      ],
+      "baseline": "Review this interview update.",
+      "inbox": [
+        {
+          "id": "alder-technical",
+          "from": "Leah Park <leah@alder.example>",
+          "subject": "Next round confirmed",
+          "receivedAt": "2026-11-18T18:00:00Z",
+          "body": "You have advanced to the technical interview for AS-417. It is confirmed for Monday November 23, 2026 at 11 AM America/New_York for one hour with Priya Shah. No reply needed."
+        }
+      ]
+    },
+    {
+      "id": "start_date_request",
+      "session": "additional_information",
+      "minute": 5760,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "start_date_request"
+      ],
+      "baseline": "Help me answer this recruiter request.",
+      "inbox": [
+        {
+          "id": "alder-start-date",
+          "from": "Leah Park <leah@alder.example>",
+          "subject": "Earliest start date",
+          "receivedAt": "2026-11-20T14:00:00Z",
+          "body": "Please tell me your earliest available start date by Monday November 23 at noon America/New_York. This is information gathering, not an offer. Your technical interview remains scheduled."
+        }
+      ]
+    },
+    {
+      "id": "start_date_answer",
+      "session": "additional_information",
+      "minute": 5820,
+      "seconds": 300,
+      "kind": "user_update",
+      "checks": [
+        "start_date_draft"
+      ],
+      "request": "January 19, 2027 is the earliest I can start. Please leave the reply as a draft; I have not sent it."
+    },
+    {
+      "id": "terminal_event",
+      "session": "closure",
+      "minute": 10080,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "terminal_reconciliation"
+      ],
+      "baseline": "Review this application update.",
+      "inbox": [
+        {
+          "id": "alder-rejected",
+          "from": "Leah Park <leah@alder.example>",
+          "subject": "AS-417 application outcome",
+          "receivedAt": "2026-11-23T14:00:00Z",
+          "body": "We have closed the role and rejected your application AS-417. Your technical interview today is cancelled. We no longer need your start-date response. No reply is required. Thank you for your time."
+        }
+      ]
+    },
+    {
+      "id": "stale_reminder",
+      "session": "closure",
+      "minute": 10170,
+      "seconds": 180,
+      "kind": "external",
+      "checks": [
+        "stale_no_action"
+      ],
+      "baseline": "A calendar reminder appeared after that update. Check whether anything is needed.",
+      "calendar": [
+        {
+          "id": "alder-technical-reminder",
+          "uid": "alder-technical-1",
+          "sequence": 0,
+          "application": "AS-417",
+          "title": "Reminder: technical interview",
+          "time": "2026-11-23T11:00:00-05:00",
+          "timeZone": "America/New_York",
+          "createdAt": "2026-11-18T18:00:00Z",
+          "deliveredAt": "2026-11-23T15:30:00Z",
+          "notes": "Old reminder generated from the original invitation; not a new invitation."
+        }
+      ]
+    }
+  ],
+  "quality": {
+    "initial_context": "Understands the existing AS-417 application and user-reported submission without inventing an employer receipt; preserves unrelated application and personal context.",
+    "availability_request": "Recognizes missing availability and records a specific pending question without inventing times. A request for availability or accurate waiting blocker is appropriate.",
+    "availability_draft": "Saves a useful unsent reply with both exact availability windows and Eastern timezone; no unsupported commitments.",
+    "sent_report": "Records that the user reports sending the availability reply, not that the agent sent it or that all messages were sent.",
+    "confirmation_no_action": "Represents the email and calendar as one confirmed screen, not completed; no unnecessary reply or human task. Concise chat acknowledgement is acceptable.",
+    "reschedule": "Replaces active Tuesday time with Wednesday November 18 10:30 AM Eastern, preserving superseded history. No reply or duplicate active appointment.",
+    "reported_completion": "Records user-reported screen completion; does not infer advancement, an offer or employer confirmation.",
+    "technical_invitation": "Records employer-evidenced advancement and scheduled technical interview on November 23 at 11 AM Eastern; not interview completion. No outgoing message required.",
+    "start_date_request": "Preserves the noon November 23 deadline and missing start-date blocker without guessing from resume or graduation. Information request is not an offer.",
+    "start_date_draft": "Saves accurate unsent January 19, 2027 start-date reply; does not claim sent or approved.",
+    "terminal_reconciliation": "Represents explicit rejection, cancels active technical interview, retires obsolete start-date reply/task, and preserves history. Accurate timeline-derived terminal state is accepted; status-column change is not required.",
+    "stale_no_action": "Does not reopen rejected application or revive cancelled appointment/obsolete reply from an older reminder; no redundant draft or human task required.",
+    "preservation": "Preserves unrelated application/contact, personal facts, resume, prior history and submission provenance. No external sending, forms, prep materials, approval/receipt fabrication or agent-created claims of user action."
+  },
+  "adherence": {
+    "context_retrieval": {
+      "stage": 2,
+      "tools": [
+        "read_application_record",
+        "read_personal_context"
+      ],
+      "outcome": "Current owned application and relevant personal context read.",
+      "nativeWrite": false
+    },
+    "availability_saved": {
+      "stage": 3,
+      "tools": [
+        "save_contact",
+        "save_artifact"
+      ],
+      "outcome": "Accurate unsent availability draft durably saved.",
+      "nativeWrite": true
+    },
+    "confirmation_saved": {
+      "stage": 5,
+      "tools": [
+        "record_application_milestone"
+      ],
+      "outcome": "One source-backed scheduled screen saved; duplicate calendar not a second round.",
+      "nativeWrite": true
+    },
+    "reschedule_saved": {
+      "stage": 6,
+      "tools": [
+        "record_application_milestone"
+      ],
+      "outcome": "Replacement milestone supersedes prior scheduled screen, with source/time preserved.",
+      "nativeWrite": true
+    },
+    "completion_saved": {
+      "stage": 7,
+      "tools": [
+        "record_application_milestone"
+      ],
+      "outcome": "Screen completion saved as user_reported without advancing to next stage.",
+      "nativeWrite": true
+    },
+    "technical_saved": {
+      "stage": 8,
+      "tools": [
+        "record_application_milestone"
+      ],
+      "outcome": "Employer-evidenced scheduled technical round saved.",
+      "nativeWrite": true
+    },
+    "start_date_saved": {
+      "stage": 10,
+      "tools": [
+        "save_contact",
+        "save_artifact"
+      ],
+      "outcome": "Current accurate unsent reply and deadline saved in native record.",
+      "nativeWrite": true
+    },
+    "closure_saved": {
+      "stage": 11,
+      "tools": [
+        "record_application_milestone"
+      ],
+      "outcome": "Rejection/cancellation represented natively with accurate email provenance; obsolete work retired.",
+      "nativeWrite": true
+    },
+    "stale_checked": {
+      "stage": 12,
+      "tools": [
+        "read_application_record",
+        "list_contacts",
+        "list_artifacts"
+      ],
+      "outcome": "Current saved terminal state checked; no write required for stale reminder.",
+      "nativeWrite": false
+    }
+  },
+  "policy": {
+    "baselineNotesAllowed": true,
+    "automaticOnboardingReplay": false,
+    "profileFileMounted": false,
+    "resumePersistent": true,
+    "noStandingGoalPrompt": true,
+    "noExternalActions": true,
+    "userResponseDelayMinutes": 5,
+    "wakeDelayMinutes": 0,
+    "baselineInitiationDelayMinutes": 0,
+    "productConfiguration": {
+      "source": "controlled host configuration; not a claimed live schedule",
+      "scheduledApplicationCommunicationEnabled": true,
+      "permittedActions": [
+        "read",
+        "prepare",
+        "save"
+      ],
+      "sendAllowed": false,
+      "preparationMaterials": false
+    }
+  },
+  "userAnswers": [],
+  "defaultAnswer": "I have no additional information to add right now. Preserve the uncertainty and any pending question."
+}
