@@ -1,6 +1,6 @@
 # JOB01: Job selection and analysis across sessions
 
-JOB01-search-v2 grades **whether all ten predetermined targets appear in the returned
+JOB01-search-v3 grades **whether all ten predetermined targets appear in the returned
 saved-job list at each grading turn**, plus the quality of their analyses. Ten is
 not an output cap. Additional suitable roles are allowed and reviewed separately.
 A later turn has its own expected ten and requires a complete updated shortlist,
@@ -117,8 +117,8 @@ node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grad
 node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --verify
 ```
 
-Historical N02 scenarios and JOB01 v1 remain archived with their datasets unchanged.
-JOB01 v2 has its own registration. Pilot experiments and scores are explicitly
+Historical N02 scenarios and JOB01 v1/v2 remain archived with their datasets unchanged.
+JOB01 v3 has its own registration. Pilot experiments and scores are explicitly
 labeled pilot; synthetic verification remains separate from measured runs.
 Synthetic telemetry verifies plumbing, not participant quality. Fix actor answers,
 budgets, timing, target references and configuration before a paired pilot. Preserve
@@ -191,3 +191,39 @@ Captured ask_user turn IDs cannot be counted again. Every checkpoint needs evide
 savedJobIds is required only at grading turns. Only reviewed completed outcomes
 receive simulated completion time: event minute + active execution duration +
 fixed delay per answered unique turn. No real human effort minutes are inferred.
+
+## Independent final grading agent
+
+JOB01 v3 freezes `grader-instructions.md` during preparation. After both terminal
+attempts, the host emits `grading/handoff.json` and per-condition templates. It
+attempts read-only native confirmation once using the dedicated account and all
+explicit final owned batch IDs. Credentials stay in the host helper; the receipt
+is outside participant hashes/timing. `confirmed` means reads succeeded, not that
+live state semantically matches the snapshots. Failure remains an attached receipt.
+
+The coordinator must launch a **fresh agent with fork_turns:none** after the run;
+the shell cannot launch collaboration agents. Supply only handoff-listed evidence
+and frozen instructions, never account credentials/configuration. The reviewer
+must not have implemented, coordinated, operated or participated in the pair.
+Record the real agent ID and an explicit exclusion roster covering those roles:
+
+```sh
+node scripts/job01/grading.mjs --action assign --root ROOT --reviewer FRESH_AGENT_ID --coordinator COORDINATOR_ID --excluded PRIVATE_EXCLUDED_AGENT_IDS_JSON
+node scripts/job01/grading.mjs --action finalize --root ROOT --source SNAPSHOT_DIRECTORY --submission PRIVATE_GRADER_SUBMISSION_JSON
+```
+
+Submission has `{attestation,conditions:{baseline:{extraction,review},lookout:{extraction,review}}}`.
+Attestation binds assignmentHash and reviewerAgentId and asserts didImplement,
+didOperate and didParticipate false, freshContext true. Semantic/adherence entries
+include `evidenceFiles` naming existing frozen participant artifacts, alongside
+ratings and explanation. Anchors: 0 unmet/contradicted, 1 partial/material gap,
+2 fully supported. Native confirmation is supporting evidence, never a substitute
+for historical checkpoints. The final output binds its receipt and assignment.
+
+Finalization uses existing extraction/grading and writes `grading/final.json` only
+after validating both conditions. Missing assignment, changed rubric/evidence or
+invented citation paths block finalization. Standalone `task.mjs` remains useful
+for pending grades but cannot mark v3 reviewed. Unreached stages are reported;
+failed/partial attempts remain partial_review without invented checks. Agent
+identity/history is enforced by coordinator assignment plus reviewer attestation,
+not claimed as independently provable by the shell. No participant rerun or rescue.
