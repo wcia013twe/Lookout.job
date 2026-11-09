@@ -912,3 +912,15 @@ This is source-level behavior. The detached demo exercises rereading a saved
 uncertain request after service recreation and rejecting a second pickup;
 reset remains isolated. Gateway activation, actual Muse guide refresh, host
 session retention and real employer behavior require separate verification.
+
+
+Local activation verified after landing a911b9e4: migration20261108235459 applied
+alone (no remaining legacy rows needed cleanup). Rollback-only fictional human
+and agent progress reports cleared stale blockers without changing drafts/revisions
+or creating submission evidence. API image lookout-node:application-pickup-152 is
+healthy and local Edge was refreshed; the worker was preserved. Connected MCP reads
+developer152/application-workspace38/notifications6 and the task-list pickup rule.
+Whatnot remains Submitted with blocker null and its existing history unchanged.
+Final integrated suite:1,162 passed/five skipped; final guide checks44/44, production
+build, typecheck, Docker build and data validation passed. Actual Muse message
+sending, host refresh/compliance and hosted release remain unverified.
