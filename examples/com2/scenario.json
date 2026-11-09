@@ -1,5 +1,5 @@
 {
-  "version": "COM2-stream-v6",
+  "version": "COM2-stream-v7",
   "taskId": "COM2",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -364,7 +364,8 @@
     "nativeMcpDiscovery": true,
     "measuresProactiveInitiation": false,
     "requiredDurableOutcomes": true,
-    "captureTimeIsNotEventTime": true
+    "captureTimeIsNotEventTime": true,
+    "hostTimingIntegrityRequired": true
   },
   "userAnswers": [],
   "defaultAnswer": "I have no additional information to add right now. Preserve the uncertainty and any pending question.",

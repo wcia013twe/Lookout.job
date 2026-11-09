@@ -4,6 +4,7 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import verify_contact_writer,verify_runtime_guidance,verify_seed_contacts
 from transport import Bridge
+from runtime import StageClock,ensure_awake,snapshot_with_receipt
 from terminal_state import capture_terminal_state
 import cost
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
@@ -36,7 +37,7 @@ def verify():
  verify_runtime_guidance(R)
  return digest(R/'freeze.json'),image
 
-def snapshot(p):command(['node',str(R/'snapshot.mjs'),str(p)])
+def snapshot(p):snapshot_with_receipt(['node',str(R/'snapshot.mjs'),str(p)],p)
 def validate_initial(p):
  tables=json.loads(p.read_text())['tables'];original=json.loads((R/'cloned-context.private.json').read_text())['settings']
  if not all(isinstance(x,list) for x in tables.values()):raise RuntimeError('Snapshot incomplete')
@@ -84,6 +85,7 @@ class Session:
   (stage_dir/'prompt.txt').write_text(prompt)
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
+  clock=StageClock();meta['startedAt']=clock.startWall
   expired=threading.Event();usage=None;events=0;usage_complete=False
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
@@ -113,19 +115,23 @@ class Session:
    finally:
     timer.cancel()
     if proc.poll() is None:stop();proc.wait(timeout=30)
-  active_seconds=time.time()-meta['startedAt']
+    timing=clock.finish()
+  active_seconds=timing['wallSeconds']
+  meta['timing']=timing
+  meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
   usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
-  meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
+  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
+ awake=ensure_awake()
  suite_hash,image=verify();RUNS.mkdir(exist_ok=True)
  lock=(R/'account.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[]};write(run/'run.json',meta)
+ meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
@@ -154,14 +160,16 @@ def run(condition,repeat,pair_id,pilot=False):
    record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
    write(sd/'delivery.json',record)
    sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm)
-   snapshot(sd/'after-state.json');hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   write(run/'run.json',meta)
+   hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   snapshot(sd/'after-state.json')
    write(run/'run.json',meta)
    print(json.dumps({'run':str(run),'stage':i,'status':sm['status']}),flush=True)
    if sm['status']!='completed':meta['status']=sm['status'];break
    # No outcome parsing or semantic grading between stages; bad saved work carries forward.
   else:meta['status']='completed'
  except Exception as e:
-  meta.update(status='setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
+  meta.update(status='artifact_failed' if meta['stages'] else 'setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
  finally:
   if session:session.close()
   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
@@ -186,7 +194,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM1-stream-v7':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v8':raise RuntimeError('Wrong runtime configuration')
 
 def released_sources(stages):
  inbox={};calendar={};deliveries=[]

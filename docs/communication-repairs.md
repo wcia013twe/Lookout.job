@@ -79,3 +79,9 @@ COM2 contact fixtures use valid message fields (application draft remains valid)
 Both cases validate exact prospective contact records through scoped transactional dispatch with rollback. Shared COM2 setup additionally resets only its dedicated demo owner under its lock, roundtrips each seeded contact through MCP, rediscovers application identity, exercises artifacts and milestone transitions, then restores the fixture. This is a reversible native write preflight, not a read-only check or inference. Prior terminal evidence remains frozen.
 
 Shell failures are measured separately from MCP failures. Python availability and missing jq are explicitly stated to both arms. Prospective preparations passed live native checks, including COM2 fixture restoration; 12 focused Node checks (including Python suites), four shared controlled checks passed. Participant performance is not established by preflight. Product writable-schema/error-message improvements remain separately flagged and were not implemented in this harness pass.
+
+## Prospective runtime integrity repair (COM01 v8 / COM02 v7)
+
+Run-scoped macOS caffeinate reduces idle sleep; lid closure and forced sleep remain possible. Stage receipts retain wall and monotonic elapsed time plus heartbeat gaps. A clock divergence above two seconds or heartbeat gap above ten seconds invalidates timing and fails the run loudly; invalid execution time is null, never zero or retrospectively corrected. Existing interrupted pilots remain invalid.
+
+Participant outputs and stage metadata are saved before after-state capture. Read-only snapshot failures retain redacted diagnostics and permit one retry only for transient transport/process errors; participant turns are never retried. Capture receipts distinguish these infrastructure retries from agent tool calls. Both cases share this implementation. No Lookout product behavior changes.

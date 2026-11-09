@@ -1160,3 +1160,7 @@ Prospective COM3-stream-v3 / COM3-grade-v3 and COM4-stream-v4 / COM4-grade-v3 us
 ### Communication clearing preflight
 
 COM01 v7/COM02 v6 add equal durable-output obligations, corrected chronology, negative-save evidence validation, exact-fixture dispatch probes and existing native application rediscovery. COM02 setup performs a locked native write/readback/restoration smoke; it is not read-only. Focused checks and live preflight pass; pilot evidence and independent grading remain required. See [repair protocol](../../docs/communication-repairs.md).
+
+### Communication host timing and capture integrity
+
+Prospective COM01 v8/COM02 v7 use shared run-scoped idle-sleep prevention, wall/monotonic and heartbeat interruption detection, null invalid execution timing, and durable participant output capture before database snapshots. Read-only transient snapshot retries carry redacted receipts; agent turns are never retried. Existing interrupted pilots are unchanged. Focused regression checks cover these contracts; fresh live paired runs remain required. See [repair protocol](../../docs/communication-repairs.md).

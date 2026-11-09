@@ -1,5 +1,5 @@
 {
-  "version": "COM1-stream-v7",
+  "version": "COM1-stream-v8",
   "taskId": "COM1",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -222,7 +222,8 @@
     "nativeMcpDiscovery": true,
     "measuresProactiveInitiation": false,
     "requiredDurableOutcomes": true,
-    "captureTimeIsNotEventTime": true
+    "captureTimeIsNotEventTime": true,
+    "hostTimingIntegrityRequired": true
   },
   "userAnswers": [
     {

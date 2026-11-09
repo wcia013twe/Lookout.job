@@ -22,7 +22,7 @@ for run in results:
   template=run/'review-template.json';template.write_text(json.dumps(grade.template(run,spec),indent=2)+'\n');template.chmod(0o600)
   common=summary.build(run,spec,result,a.pair_id)
   summary_path=run/'eval-summary.pending.json';summary_path.write_text(json.dumps(common,indent=2)+'\n');summary_path.chmod(0o600)
-  if json.loads((run/'run.json').read_text())['status']!='completed':failed=True
+  if json.loads((run/'run.json').read_text())['status']!='completed' or result['metrics'].get('timing_valid')!=1:failed=True
   export=subprocess.run(['node','--env-file='+str(a.langfuse_env.resolve()),str(Path(__file__).with_name('langfuse.mjs')),'--run',str(run),'--grade',str(target),'--scenario',str(runner.S/'scenario.json'),'--receipt-dir',str(a.receipt_dir.resolve())],timeout=300)
   if export.returncode:failed=True;print(json.dumps({'run':run.name,'reportingFailed':True,'participantRetry':False}),file=sys.stderr)
  except Exception as e:

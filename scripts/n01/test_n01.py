@@ -33,6 +33,15 @@ def fixture(run,condition='lookout',status='completed'):
 class Tests(unittest.TestCase):
  def setUp(self):self.t=tempfile.TemporaryDirectory();self.run=Path(self.t.name)/'fictional';self.review=fixture(self.run)
  def tearDown(self):self.t.cleanup()
+ def test_invalid_host_timing_is_unknown_not_zero(self):
+  p=self.run/'stage-1/stage-run.json';v=json.loads(p.read_text());v.update(timing={'valid':False},executionSeconds=None);save(p,v)
+  g=grade.grade(self.run,SPEC)
+  self.assertEqual(g['metrics']['timing_valid'],0);self.assertIsNone(g['metrics']['execution_seconds'])
+ def test_valid_host_timing_uses_monotonic_duration(self):
+  for p in self.run.glob('stage-*/stage-run.json'):
+   v=json.loads(p.read_text());v.update(timing={'valid':True},executionSeconds=1);save(p,v)
+  g=grade.grade(self.run,SPEC)
+  self.assertEqual(g['metrics']['timing_valid'],1);self.assertEqual(g['metrics']['execution_seconds'],len(SPEC['stages']))
  def test_missing_review_pending(self):
   g=grade.grade(self.run,SPEC);self.assertEqual(g['status'],'pending_review');self.assertNotIn('quality_pass',g['metrics']);self.assertTrue(all(v is None for v in g['quality'].values()))
  def test_no_tools_omitted_even_good_quality(self):
