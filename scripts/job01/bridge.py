@@ -94,7 +94,7 @@ for line in sys.stdin:
    if deny:reply={'jsonrpc':'2.0','id':mid,'result':{'isError':True,'content':[{'type':'text','text':'This operation is outside the current workspace permissions.'}]}}
    else:reply=clean(upstream(msg))
   else:reply={'jsonrpc':'2.0','id':mid,'error':{'code':-32601,'message':'Method not supported'}}
-  record('mcp.response',reply);record('mcp.measurement',{'method':method,'tool':msg.get('params',{}).get('name'),'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});print(json.dumps(reply),flush=True)
+  record('mcp.response',reply);record('mcp.measurement',{'method':method,'tool':actual if method=='tools/call' else None,'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});print(json.dumps(reply),flush=True)
  except Exception as e:
   record('mcp.error',{'errorType':type(e).__name__,'detail':str(e)[:400]})
   if 'request_started' in locals():record('mcp.measurement',{'method':locals().get('method'),'tool':locals().get('msg',{}).get('params',{}).get('name'),'durationSeconds':time.monotonic()-request_started,'responseBytes':0,'transportFailed':True})

@@ -18,3 +18,11 @@ test('trace IDs separate conditions and frozen registration drift fails',()=>{co
 
 test('rubric applies only current preferences/style and grades unsuitable extras separately',()=>{assert.ok(!spec.stageQuality.initial_search.includes('style_preference_saved'));assert.ok(spec.stageQuality.initial_search.includes('initial_style_adherence'));assert.ok(spec.stageQuality.continuation.includes('selection_suitability'));assert.equal(JSON.stringify(spec).includes('existing_interests_preserved'),false);assert.match(spec.stages.at(-1).baseline,/complete updated shortlist/);});
 test('pilot telemetry cannot be named or tagged measured',()=>{const r={...run,startedAt:1700000000,pilot:true,synthetic:false};const reg={datasetId:'ds',itemId:'item',scenarioHash:hash(spec),snapshotId:'test',sourceHash:'abc'};const p=build(r,grade(spec,ref,board,r),spec,reg);assert.ok(p.scores.every(s=>s.environment==='pilot'));const attrs=Object.fromEntries(p.spans[0].attributes.map(a=>[a.key,a.value.stringValue]));assert.match(attrs['langfuse.experiment.name'],/-pilot-/);assert.equal(attrs['langfuse.environment'],'pilot');});
+
+test('JOB01 score timestamps stay bound to execution across repeated exports',()=>{
+ const timed={...run,startedAt:100,wallDurationSeconds:8};
+ const g=grade(spec,ref,board,timed);
+ const a=scores(timed,g),b=scores(timed,g);
+ assert.ok(a.scores.every(s=>s.timestamp==='1970-01-01T00:01:48.000Z'));
+ assert.deepEqual(a,b);
+});

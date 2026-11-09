@@ -1142,6 +1142,41 @@ JOB03 native/reminder service and JOB04 actual host gates remain unresolved.
 
 COM01 v6 and COM02 v5 use identical task requests and scoped native MCP startup/discovery rather than eager schema injection. Structural startup/discovery overhead is measured separately. This isolates tool/storage effects; proactive user-effort savings are not measured. See [repair protocol](../../docs/communication-repairs.md). Focused checks verify contracts; fresh native preflight and participant runs remain separate evidence.
 
+### JOB03/JOB04 matched-intent pilot host
+
+[Shared JOB host](../../scripts/jobs/README.md) wires JOB03 tracking/grade v3 and
+JOB04 preparation/grade v2 to COM's pinned Terra medium subscription Session,
+credential-free MCP client and structural usage/latency diagnostics. Dedicated
+fictional local owners clone full candidate context and resume, hold separate
+locks and use separate read-only terminal credentials. Both conditions receive
+identical task requests/evidence; native tool startup and file/native storage
+orientation differ intentionally. Proactive effort savings are unmeasured.
+
+JOB03's shared durable local test-clock reminder and interrupted-preview services
+do not establish product scheduling or employer integration. No-inference gates
+exercise native artifact/milestone writes and readback/restoration, guidance
+versions, both containers, default discovery and wrapper scope. Actual preflights
+passed and paired pilots were launched; quality remains pending independent final
+review. Earlier blocked roots and an interpreter-symlink preflight failure remain
+historical. Focused source/tests and pilot execution are separate evidence. This
+manual update does not refresh generated coverage beyond this specific boundary.
+
+
+### JOB03/JOB04 terminal audit and prospective clock gate
+
+The [shared JOB host](../../scripts/jobs/README.md) now fails closed on native
+backend/simulated-stage clock mismatch and checks DNS/TLS without inference in
+both containers. Prospective JOB03 v4/JOB04 v3 retain monotonic elapsed time,
+wall drift and overrun diagnostics. The compressed fixtures currently remain
+blocked: no shared backend clock was changed and no new participant pair ran.
+Historical JOB04 has model-endpoint DNS errors and a wall-budget overrun;
+precise timeout attribution is unresolved because old monotonic timing is absent.
+Raw host calls and failed-turn time remain reportable without inventing usage.
+Fresh independent semantic review is finalized (JOB04 Lookout partial); neither
+completion nor source tests establish a measured comparative result. Historical
+freezes/outcomes remain unchanged. Focused tests and actual blocked no-inference
+probes verify these boundaries, not a production or hosted capability. This is a
+focused manual update, not a refresh of generated wiki coverage.
 ### JOB01 matched-intent repair
 
 Prospective JOB01-search-v5 / JOB01-review-v2 gives both participants identical
@@ -1189,3 +1224,13 @@ one HTTP-to-stdio transport, preserving case arguments and JOB02's EOF shutdown.
 Prospective freezes include the shared executable. Local synthetic HTTP/worker
 and freeze tests establish this boundary; no participant rerun or hosted release
 is implied. Existing frozen checkouts remain unchanged.
+
+### JOB01 wrapped-discovery telemetry correction
+
+JOB01 now measures wrapped native calls by their actual inner tool and binds score
+timestamps to execution. The retained v5 pilot's eight affected guide/context reads
+were reclassified from frozen traces; corrected score read-back passed. Original
+runtime, participant evidence and semantic grades remain unchanged. Total execution,
+effort and cost are unchanged. Controlled fixture checks cover direct and wrapped
+discovery without duplicate call counts; this is a diagnostics correction, not a
+new participant run or product-effectiveness claim.
