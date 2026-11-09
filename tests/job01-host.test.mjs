@@ -6,7 +6,7 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {extract} from '../scripts/job01/extract.mjs';
-test('host release isolates future evidence and onboarding while preserving asymmetric email delivery',()=>{
+test('host release isolates future evidence and onboarding while matching email evidence and task intent',()=>{
  const result=spawnSync('python3',['-B','-c',String.raw`
 import importlib.util,tempfile,json
 from pathlib import Path
@@ -19,14 +19,15 @@ with tempfile.TemporaryDirectory() as t:
  payload={'jobs':[{'id':'released'}],'email':{'id':'shared-email','body':'Shared evidence'}}
  for c in ['baseline','lookout']:(root/'packets'/f'initial_search-{c}.json').write_text(json.dumps(payload))
  inputs=root/'inputs';inputs.mkdir();p.release(stage,'baseline',inputs)
- assert (inputs/'email.json').exists() and not (inputs/'sources.json').exists()
+ assert (inputs/'email.json').exists() and (inputs/'sources.json').exists()
  assert 'PRIVATE_INITIAL_CONTEXT' in p.prompt(stage,'baseline')
  stage['_index']=4;assert 'PRIVATE_INITIAL_CONTEXT' not in p.prompt(stage,'baseline')
  p.release(stage,'lookout',inputs)
- assert not (inputs/'email.json').exists() and json.loads((inputs/'sources.json').read_text())['inbox'][0]==payload['email']
+ assert (inputs/'email.json').exists() and json.loads((inputs/'sources.json').read_text())['inbox'][0]==payload['email']
  assert not (inputs/'profile.md').exists()
  assert 'PRIVATE_INITIAL_CONTEXT' not in p.prompt(stage,'lookout')
  assert 'Use Lookout tools' in p.prompt(stage,'lookout')
+ assert p.prompt(stage,'baseline').endswith(stage['baseline']) and p.prompt(stage,'lookout').endswith(stage['baseline'])
  assert 'persist across sessions' in p.prompt(stage,'baseline')
  spec={'stages':[{'kind':'external'},{'kind':'user_update','request':'Platform first'},{'kind':'user_update','request':'Concise style'}]}
  assert 'Platform first' not in a.answer('What are my preferences?',1,spec)[0]
@@ -86,4 +87,27 @@ with tempfile.TemporaryDirectory() as t:
   assert cp['captureStatus']=='failed' and cp['captureError']=='RuntimeError'
   assert cp['status']=='completed' # Participant result stays distinct from harness capture failure.
 `],{encoding:'utf8',env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});assert.equal(result.status,0,result.stderr);
+});
+
+test('native startup and tool discovery are preserved without eager schema injection',()=>{
+ const result=spawnSync('python3',['-B','-c',String.raw`
+import ast,json
+from types import SimpleNamespace
+from pathlib import Path
+source=Path('scripts/job01/bridge.py').read_text();tree=ast.parse(source)
+functions=ast.Module(body=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in ['clean','visible_tools']],type_ignores=[])
+calls=[]
+def upstream(msg):
+ calls.append(msg)
+ return {'jsonrpc':'2.0','id':msg['id'],'result':{'tools':[{'name':'read_personal_context','inputSchema':{}},{'name':'submit_application','inputSchema':{}}]}}
+ns={'json':json,'allowed':{'read_personal_context','discover_tools','call_discovered_tool'},'upstream':upstream,'a':SimpleNamespace(condition='lookout'),'LOCAL_TOOLS':[{'name':'ask_user'},{'name':'read_inbox'},{'name':'read_calendar'}]}
+exec(compile(functions,'bridge-functions','exec'),ns)
+reply=ns['visible_tools'](1)
+assert [m['method'] for m in calls]==['tools/list']
+assert {t['name'] for t in reply['result']['tools']}=={'read_personal_context','ask_user','read_inbox'}
+native={'instructions':['Assignment data collection is enabled','For authorized work load agent-audit to record the run.'],'guides':[{'id':'agent-audit'}]}
+assert ns['clean'](native)==native
+assert "or name not in allowed or actual not in allowed" in source
+assert "if a.condition=='lookout':reply=upstream(msg)" in source
+`],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);
 });

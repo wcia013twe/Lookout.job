@@ -40,8 +40,8 @@ export function packet(spec,ref,board,stageId,condition,productConfiguration){
  if(condition==='lookout'&&(!productConfiguration?.source||!productConfiguration?.wakePrompt))throw Error('Recorded product configuration required');
  const ids=new Set(ref.batches[s.batch].map(j=>j.id));
  // No future stages, reference labels, rubric, or other-condition prompt reaches participant.
- const prompt=s.kind==='user_update'?s.request:condition==='baseline'?s.baseline:productConfiguration.wakePrompt;
- return {prompt,...(s.email?{email:s.email,delivery:condition==='lookout'?'scheduled_email':'user_uploaded_email'}:{}),jobs:board.jobs.filter(j=>ids.has(j.id)),snapshotId:board.manifest.snapshotId};
+ const prompt=s.kind==='user_update'?s.request:s.baseline;
+ return {prompt,...(s.email?{email:s.email,delivery:'matched_uploaded_email'}:{}),jobs:board.jobs.filter(j=>ids.has(j.id)),snapshotId:board.manifest.snapshotId};
 }
 export function grade(spec,ref,board,run,review,authorization={}){
  validateReference(ref,board,spec);
@@ -69,7 +69,7 @@ export function grade(spec,ref,board,run,review,authorization={}){
  const semanticComplete=checkpoints.length===spec.stages.length&&checkpoints.every(c=>Object.values(c.quality.semantic).every(Boolean));
 
  const adherence=Object.fromEntries(spec.adherence.map(k=>{const a=reviewed?review.adherence?.[k]:null;return [k,run.condition==='baseline'?{status:'not_applicable'}:a&&['used_correctly','attempted_but_failed','omitted','not_applicable'].includes(a.status)&&a.evidence?.trim()?a:{status:'unreviewed'}]}));
- return {cost:run.cost??null,version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration},effortToTask:effort,qualityOfCompletion:checkpoints,adherence};
+ return {cost:run.cost??null,version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration,wallDurationSeconds:run.wallDurationSeconds??null,sessionStartupSeconds:run.checkpoints.reduce((n,c)=>n+(c.sessionStartupSeconds??0),0)},toolDiagnostics:run.toolDiagnostics??null,effortToTask:effort,qualityOfCompletion:checkpoints,adherence};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{

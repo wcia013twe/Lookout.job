@@ -23,16 +23,12 @@ def record(kind,data):
  with target.open('a') as f:f.write(json.dumps({'sequence':sequence,'timestamp':time.time(),'type':kind,'data':scrub(data)})+'\n')
 
 def clean(v):
- if isinstance(v,list):return [clean(x) for x in v if not (isinstance(x,dict) and (x.get('id')=='agent-audit' or ('inputSchema' in x and x.get('name') not in allowed)))]
- if isinstance(v,dict):
-  out={k:clean(x) for k,x in v.items()}
-  if isinstance(out.get('instructions'),list):out['instructions']=[x for x in out['instructions'] if 'Assignment data collection is enabled' not in str(x)]
-  return out
- if isinstance(v,str):
-  if v.startswith('{') or v.startswith('['):
-   try:return json.dumps(clean(json.loads(v)))
-   except ValueError:pass
-  return v.replace('For authorized work load agent-audit to record the run.','Audit-writing tools are not available on this connection.')
+ # Scope tool schemas only. Native prose and guide instructions remain intact.
+ if isinstance(v,list):return [clean(x) for x in v if not (isinstance(x,dict) and 'inputSchema' in x and x.get('name') not in allowed)]
+ if isinstance(v,dict):return {k:clean(x) for k,x in v.items()}
+ if isinstance(v,str) and v.startswith(('{','[')):
+  try:return json.dumps(clean(json.loads(v)))
+  except ValueError:pass
  return v
 
 def upstream(message):
@@ -67,47 +63,39 @@ def local_call(name,args):
  return {'answer':answer}
 
 def visible_tools(mid):
- if a.condition=='baseline':return {'jsonrpc':'2.0','id':mid,'result':{'tools':[t for t in LOCAL_TOOLS if t['name']=='ask_user']}}
- # Retrieve genuine registered schemas, expose allowed gated tools as direct named calls.
+ local=[t for t in LOCAL_TOOLS if t['name']!='read_calendar']
+ if a.condition=='baseline':return {'jsonrpc':'2.0','id':mid,'result':{'tools':local}}
  reply=upstream({'jsonrpc':'2.0','id':mid,'method':'tools/list','params':{}})
  if reply.get('error'):return reply
- byname={t['name']:t for t in reply.get('result',{}).get('tools',[]) if t.get('name') in allowed}
- discovered=upstream({'jsonrpc':'2.0','id':mid,'method':'tools/call','params':{'name':'discover_tools','arguments':{'workflow':'all'}}})
- if discovered.get('error') or discovered.get('result',{}).get('isError'):raise RuntimeError('Tool discovery unavailable')
- value=unwrap(discovered['result']);registered=value.get('tools',[]) if isinstance(value,dict) else []
- for t in registered:
-  if t.get('name') in allowed:byname[t['name']]={k:v for k,v in t.items() if k in ['name','description','inputSchema','annotations']}
- missing=allowed-set(byname)
- if missing:raise RuntimeError('Required tools unavailable: '+','.join(sorted(missing)))
- if config.get('profileIntroductionOnly') and 'save_profile_package' in byname:
-  t=byname['save_profile_package'];props=t['inputSchema']['properties']
-  t['inputSchema']['properties']={k:v for k,v in props.items() if k in ['eventKey','expectedPersonalVersion','facts','source']}
-  t['inputSchema']['properties']['facts']['properties']={'introduction':props['facts']['properties']['introduction']}
-  t['description']='Save a user-authorized change to the personal introduction. Read current personalVersion first and preserve unrelated introduction text. Supply facts.introduction only with expectedPersonalVersion and a stable eventKey. This does not change other profile facts, search preferences or human verification.'
- return {'jsonrpc':'2.0','id':mid,'result':{'tools':clean(list(byname.values()))+[t for t in LOCAL_TOOLS if t['name']!='read_calendar']}}
+ reply=clean(reply)
+ reply['result']['tools']+=local
+ return reply
 
 for line in sys.stdin:
  try:
   msg=json.loads(line);mid=msg.get('id');method=msg.get('method')
   if mid is None:continue
-  record('mcp.request',msg)
-  if method=='initialize':reply={'jsonrpc':'2.0','id':mid,'result':{'protocolVersion':msg.get('params',{}).get('protocolVersion','2024-11-05'),'capabilities':{'tools':{}},'serverInfo':{'name':'workspace','version':'1'},'instructions':'User questions and released job evidence are available. '+('Connected Lookout records store personal context and recruiting work. Preserve unrelated facts and history when updating records.' if a.condition=='lookout' else '')}}
+  record('mcp.request',msg);request_started=time.monotonic()
+  if method=='initialize':
+   if a.condition=='lookout':reply=upstream(msg)
+   else:reply={'jsonrpc':'2.0','id':mid,'result':{'protocolVersion':msg.get('params',{}).get('protocolVersion','2024-11-05'),'capabilities':{'tools':{}},'serverInfo':{'name':'workspace','version':'1'},'instructions':'User questions and released job evidence are available.'}}
   elif method=='ping':reply={'jsonrpc':'2.0','id':mid,'result':{}}
   elif method=='tools/list':reply=visible_tools(mid)
   elif method=='tools/call':
    params=msg.get('params',{});name=params.get('name');args=params.get('arguments',{})
    actual=args.get('name') if name=='call_discovered_tool' else name
    payload=args.get('arguments',{}) if name=='call_discovered_tool' else args
-   if name in ({'ask_user'} if a.condition=='baseline' else {'read_inbox','ask_user'}):
+   if name in {'read_inbox','ask_user'}:
     reply={'jsonrpc':'2.0','id':mid,'result':{'content':[{'type':'text','text':json.dumps(local_call(name,args))}]}}
-    record('mcp.response',reply);print(json.dumps(reply),flush=True);continue
-   deny=a.condition!='lookout' or actual not in allowed
+    record('mcp.response',reply);record('mcp.measurement',{'method':method,'tool':name,'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});print(json.dumps(reply),flush=True);continue
+   deny=a.condition!='lookout' or name not in allowed or actual not in allowed or (name=='call_discovered_tool' and actual=='call_discovered_tool')
    if actual=='save_profile_package' and config.get('profileIntroductionOnly'):
     deny=deny or set(payload.get('facts',{}))!={'introduction'} or not set(payload)<={'eventKey','expectedPersonalVersion','facts','source'}
    if deny:reply={'jsonrpc':'2.0','id':mid,'result':{'isError':True,'content':[{'type':'text','text':'This operation is outside the current workspace permissions.'}]}}
    else:reply=clean(upstream(msg))
   else:reply={'jsonrpc':'2.0','id':mid,'error':{'code':-32601,'message':'Method not supported'}}
-  record('mcp.response',reply);print(json.dumps(reply),flush=True)
+  record('mcp.response',reply);record('mcp.measurement',{'method':method,'tool':msg.get('params',{}).get('name'),'durationSeconds':time.monotonic()-request_started,'responseBytes':len(json.dumps(reply).encode())});print(json.dumps(reply),flush=True)
  except Exception as e:
   record('mcp.error',{'errorType':type(e).__name__,'detail':str(e)[:400]})
+  if 'request_started' in locals():record('mcp.measurement',{'method':locals().get('method'),'tool':locals().get('msg',{}).get('params',{}).get('name'),'durationSeconds':time.monotonic()-request_started,'responseBytes':0,'transportFailed':True})
   print(json.dumps({'jsonrpc':'2.0','id':locals().get('mid'),'error':{'code':-32603,'message':'Workspace service failed: '+type(e).__name__}}),flush=True)

@@ -40,7 +40,7 @@ if(mode==='snapshot'){
  for(const r of expected.resumes){ok(await db.storage.from('resumes').upload(r.object_path,pdf,{contentType:'application/pdf'}));ok(await db.from('resumes').insert(r));}
  ok(await db.from('preferences').upsert({...expected.preferences,user_id:user.id}));
  const token='jb_agent_'+randomBytes(32).toString('hex');
- const scopes=['workspace:read','profile:write','preferences:write','batches:write'];
+ const scopes=['workspace:read','profile:write','preferences:write','batches:write','activity:write'];
  ok(await db.rpc('manage_agent_connection',{owner_id:user.id,operation:'connections.issue',payload:{name:'JOB01 isolated pilot',tokenHash:hash(token),expiresInDays:7,scopes}}));
  Object.assign(a,{token,scopes,idMapping:Object.fromEntries(mapping)});write(file,a);
  const res=await fetch(a.mcpUrl,{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream',authorization:'Bearer '+token},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_personal_context',arguments:{}}})});

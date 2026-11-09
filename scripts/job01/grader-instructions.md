@@ -37,3 +37,11 @@ didParticipate:false,freshContext:true}. The coordinator finalizes through gradi
 standalone grading cannot produce a reviewed result for this scenario. This
 provenance gate records assignment and attestation; it cannot independently prove
 an agent's real identity or undisclosed history.
+
+This matched-intent scenario does not measure proactive initiation savings. Count
+prescribed prompts equally. Exact target recall measures the returned list and is
+separate from durable saving and semantic suitability. Resolve native job UUIDs
+through canonical application URLs/source IDs, then unambiguous company/title/location;
+do not penalize ownership-specific IDs. saved_work accepts equivalent native record
+or persistent file layouts. Missing captures are unverified, never an automatic zero
+or pass. Native discovery/audit/verification are real product costs, not harness overhead.

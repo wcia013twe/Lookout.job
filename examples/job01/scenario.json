@@ -1,5 +1,5 @@
 {
-  "version": "JOB01-search-v4",
+  "version": "JOB01-search-v5",
   "taskId": "JOB01",
   "scope": "Bounded job selection and analysis; no application drafting, filling or submission.",
   "policy": {
@@ -12,10 +12,11 @@
     "stageBudgetSeconds": 300,
     "candidateContext": "Reuse N01 candidate resume and onboarding context; do not replay onboarding in fresh sessions.",
     "evidenceDelivery": {
-      "lookout": "email available during configured scheduled wake",
-      "baseline": "same email uploaded by user with initiation prompt"
+      "lookout": "Identical released email and job evidence with identical task request.",
+      "baseline": "Identical released email and job evidence with identical task request."
     },
-    "effort": "Unique observed interaction turns are primary; category counts overlap and must not be summed. Prescribed initiations separate."
+    "effort": "Unique observed interaction turns are primary; category counts overlap and must not be summed. Prescribed initiations separate. Both conditions receive the same prescribed initiations; proactive effort savings are not measured.",
+    "comparisonMode": "matched-intent"
   },
   "stages": [
     {
@@ -78,7 +79,8 @@
       "analysis_accuracy",
       "initial_preferences_applied",
       "initial_style_adherence",
-      "selection_suitability"
+      "selection_suitability",
+      "saved_work"
     ],
     "career_change": [
       "career_preference_saved"
@@ -93,7 +95,8 @@
       "preferences_applied",
       "style_adherence",
       "selection_suitability",
-      "continuity"
+      "continuity",
+      "saved_work"
     ]
   },
   "qualityRubric": {
@@ -105,7 +108,9 @@
     "preferences_applied": "Complete updated shortlist reflects the confirmed current preferences.",
     "style_adherence": "Later analyses follow the corrected top-three concise format.",
     "selection_suitability": "Judge all returned jobs, including extras: suitable extras are acceptable; unsupported, ineligible or off-preference extras reduce quality. Exact target recall remains separate.",
-    "continuity": "Fresh-session work uses retained context and returns the complete current shortlist, not just new additions."
+    "continuity": "Fresh-session work uses retained context and returns the complete current shortlist, not just new additions.",
+    "saved_work": "Complete shortlist and analysis are durably saved in owned records or persistent files. Chat-only output is insufficient. Accept equivalent native record/file layouts; do not demand a particular storage field."
   },
-  "finalGraderRequired": true
+  "finalGraderRequired": true,
+  "graderVersion": "JOB01-review-v2"
 }
