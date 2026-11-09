@@ -17,6 +17,7 @@ begin
     -- progress report into draft editing, approval, or uncertainty resolution.
     if new.status in ('Submitted','Interview','Offer','Rejected','Withdrawn')
       and new.blocker is not null
+      and coalesce(new.execution_job#>>'{result,outcome}','') <> 'uncertain'
       and not exists(select 1 from public.submission_attempts
         where application_id=old.id and state in ('claimed','started','uncertain')) then
       new.blocker := null;
@@ -59,5 +60,6 @@ end $$;
 -- revision, submission timestamp/receipt, attempts and historical job outcomes.
 update public.applications set status=status
 where status in ('Submitted','Interview','Offer','Rejected','Withdrawn') and blocker is not null
+  and coalesce(execution_job#>>'{result,outcome}','') <> 'uncertain'
   and not exists(select 1 from public.submission_attempts
     where application_id=applications.id and state in ('claimed','started','uncertain'));

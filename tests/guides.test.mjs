@@ -125,7 +125,10 @@ test('a workspace generator discovers the recipe and saves/reads static HTML thr
 test('application guide requires saved, verified employer questions before notification',async()=>{
  const guide=JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../supabase/functions/agent-gateway/skills/application-workspace.json',import.meta.url),'utf8'));
  assert.match(guide.instructions,/save each newly observed page of employer questions through prepare_draft/);
- assert.match(guide.instructions,/read_application_record and read_action_board to verify every field/);
+ assert.match(guide.instructions,/Only this inspected full response may replace the immediate read_application_record after that draft write/);
+ assert.match(guide.instructions,/compact, incomplete, missing the exact saved application\/revision\/draft[\s\S]*call read_application_record/);
+ assert.match(guide.instructions,/never replaces read_action_board before a human handoff or fresh authorization\/attempt reads before submission/);
+ assert.match(guide.instructions,/claim\/report response and a subagent completion message do not verify complete saved draft content/);
  assert.match(guide.instructions,/A chat bundle alone is not a saved handoff/);
  assert.match(guide.instructions,/inspectionComplete=false/);
 });

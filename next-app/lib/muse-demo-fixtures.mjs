@@ -212,7 +212,7 @@ export function createDemoServices(store) {
       if((current.backendRevision||0)!==expectedRevision)throw Error('Application changed');
       if((current.submissionAttempts||[]).some(a=>['claimed','started','uncertain'].includes(a.state)))throw Error('Submission requires human recovery');
       if(['Interview','Offer'].includes(status)&&!['Submitted','Interview','Offer'].includes(current.status))throw Error('Record submission first');
-      const saved={...current,status,blocker:null,...(status==='Submitted'?{submittedAt:current.submittedAt||new Date().toISOString()}:{})};
+      const saved={...current,status,blocker:current.executionJob?.result?.outcome==='uncertain'?current.blocker:null,...(status==='Submitted'?{submittedAt:current.submittedAt||new Date().toISOString()}:{})};
       store.set('workflow.applications.'+current.id,saved);
       const result={request:copy(payload),application:copy(saved),source:'user-reported-through-agent',confirmed:false};
       requestReceipts.set('progress:'+eventKey,{signature,result});return copy(result);

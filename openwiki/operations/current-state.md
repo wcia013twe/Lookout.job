@@ -882,10 +882,33 @@ local database activation are recorded separately in the feature change note;
 hosted release is not implied.
 
 
-AI Apply pickup guidance (developer151/application-workspace37/notifications6)
+AI Apply pickup guidance (developer152/application-workspace38/notifications6)
 requires a brief host-conversation receipt only after verified claim, grouped for
 requests claimed together, followed by quiet preparation. It never reports queued
 roles as running, grants submission approval or acknowledges unhandled work.
 Existing host messaging permission, quiet-time restrictions and real delivery
 receipts remain required. Guide availability and actual Muse notification delivery
 are separate verification boundaries.
+
+
+## Compact draft handoff and reread recovery (source update)
+
+`prepare_draft` defaults to its compact response and accepts
+`responseMode: "full"` for the persisted application. Muse may use that returned
+saved revision and answer set instead of immediately rereading the draft.
+The owning Action Board card still requires `read_action_board` verification
+before a grouped-input notification. Claim/report, progress/evidence writes and
+event acknowledgement remain separate scoped operations with their existing
+validation and readback requirements.
+
+Recovery guidance starts from current owned application and request records,
+including terminal request history, rather than repeating the previous chat's
+steps. Missing/stale guides reload; stale writes reconcile against current
+revisions. Saved outcomes can recover lost acknowledgements without repeating
+employer work. Uncertain submission remains a stop, and final human approval is
+not implied by answered questions or refreshed context.
+
+This is source-level behavior. The detached demo exercises rereading a saved
+uncertain request after service recreation and rejecting a second pickup;
+reset remains isolated. Gateway activation, actual Muse guide refresh, host
+session retention and real employer behavior require separate verification.

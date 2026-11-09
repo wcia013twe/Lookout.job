@@ -45,7 +45,8 @@ test('browser and MCP share owned date saves, week reassignment, clear, versions
 test('detached demo date changes move the same material and update its calendar without duplicate tasks',async()=>{
  const demo=createArtifactDemo(createMemoryStore({demo:{fictional:true}}));
  await demo.artifactAction('artifacts.save',doc);
- assert.equal((await demo.artifactAction('artifacts.list',{weekOf:'2026-11-09',query:'Query plans'})).items.length,1);
+ // Seeded demo content can match this query when the current UTC week rolls over.
+ assert.equal((await demo.artifactAction('artifacts.list',{weekOf:'2026-11-09',query:'Query plans'})).items.filter(item=>item.id===id).length,1);
  assert(demo.artifactSnapshot().calendarArtifacts.some(a=>a.id===id&&a.content.prepOn===doc.prepOn));
  const {prepOn,...cleared}=doc;await demo.artifactAction('artifacts.save',{...cleared,expectedVersion:1});assert(!demo.artifactSnapshot().calendarArtifacts.some(a=>a.id===id));
 });

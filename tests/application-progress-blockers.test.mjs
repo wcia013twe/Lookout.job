@@ -71,6 +71,15 @@ test('progress cleanup preserves active/uncertain attempts and retains human rec
  const db=await createTestDatabase();
  try {
   await connections(db);const mcp=mcpClient(db);
+  const host=await app(db,'host-uncertain','Check employer confirmation before retrying.');
+  const execution={id:'fictional-host-request',status:'partial',result:{executor:'muse',outcome:'uncertain',verifiedSubmission:false}};
+  await db.query('update public.applications set execution_job=$2 where id=$1',[host.id,execution]);
+  await db.query("select set_config('test.uid',$1,false)",[owner]);await db.exec('set role authenticated');
+  const reported=(await db.query('select * from public.set_application_stage($1,$2,$3,$4)',[host.id,host.revision,'Submitted','User reported employer status'])).rows[0];
+  assert.equal(reported.blocker,host.blocker);assert.deepEqual(reported.execution_job,execution);
+  await db.exec('reset role');
+  const hostProgress=await mcp({applicationId:host.id,expectedRevision:host.revision,status:'Submitted',note:'User reported employer status',eventKey:'host-uncertain-progress'});
+  assert.equal(hostProgress.application.blocker,host.blocker);assert.equal(hostProgress.confirmed,false);
   for(const state of ['claimed','started','uncertain']) {
    const a=await app(db,'guard-'+state,'Verify submission before retrying.');const t=await attempt(db,a,state);
    const request={applicationId:a.id,expectedRevision:a.revision,status:'Submitted',note:'Reported progress',eventKey:'guard-'+state};
@@ -96,6 +105,8 @@ test('migration reconciles legacy tracked blockers without changing status, draf
    const a=await app(db,'legacy-'+status);await db.query("update public.applications set status=$2,submitted_at='2026-10-30T12:00:00Z',receipt=$3 where id=$1",[a.id,status,{source:'fictional-existing-evidence'}]);
    legacy.push((await db.query('select * from public.applications where id=$1',[a.id])).rows[0]);
   }
+  const host=await app(db,'legacy-host-uncertain','Host submission outcome uncertain');
+  await db.query("update public.applications set execution_job='{\"status\":\"partial\",\"result\":{\"outcome\":\"uncertain\"}}',status='Submitted' where id=$1",[host.id]);
   const a=await app(db,'legacy-uncertain','Submission outcome uncertain');await attempt(db,a,'uncertain');
   await db.query("update public.applications set status='Submitted' where id=$1",[a.id]);
  }});
@@ -105,6 +116,7 @@ test('migration reconciles legacy tracked blockers without changing status, draf
    assert.ok(before.blocker);assert.equal(after.blocker,null);
    for(const key of Object.keys(before).filter(k=>!['blocker','updated_at'].includes(k)))assert.deepEqual(after[key],before[key],key);
   }
+  assert.equal((await db.query("select blocker from public.applications where job_id='legacy-host-uncertain'")).rows[0].blocker,'Host submission outcome uncertain');
   const uncertain=(await db.query("select * from public.applications where job_id='legacy-uncertain'")).rows[0];
   assert.equal(uncertain.blocker,'Submission outcome uncertain');
   assert.equal((await db.query("select count(*)::int n from public.action_inbox where application_id=$1 and kind='check_submission' and resolved_at is null",[uncertain.id])).rows[0].n,1);
@@ -124,6 +136,9 @@ test('detached demo reports submission after a preparation failure, retains hist
  await assert.rejects(api.recordApplicationProgress({...request,note:'Changed retry'}),/conflict/);
  const uncertain=store.get('workflow.applications.demo-uncertain');
  await assert.rejects(api.recordApplicationProgress({...request,applicationId:uncertain.backendId,expectedRevision:uncertain.backendRevision||0,eventKey:'demo-uncertain'}),/human recovery/);
+ const hostStore=createMemoryStore(fixture.state);hostStore.set('workflow.applications.demo-stripe.executionJob.result.outcome','uncertain');
+ const hostResult=await createDemoServices(hostStore).recordApplicationProgress({...request,eventKey:'host-uncertainty'});
+ assert.equal(hostResult.application.blocker,before.blocker);assert.equal(hostResult.confirmed,false);
  const reset=createMemoryStore(demoFixtures('2026-11-08').state);assert.equal(reset.get('workflow.applications.demo-stripe').status,'Blocked');
  assert.equal(fixture.state.workflow.applications['demo-stripe'].status,'Blocked');
 });
