@@ -1,0 +1,13 @@
+{
+  "version": "JOB04-preparation-v1",
+  "ready": false,
+  "status": "blocked",
+  "participantExecuted": false,
+  "source": "Summary of actual no-inference local preparation/preflight; full immutable receipt remains private",
+  "receipt": "/Volumes/External SSD/Lookout/tmp/job04-preflight-20261109-1/receipts/preflight-1.json",
+  "blockers": [
+    "Dedicated owner/read-only identity and actual product configuration required",
+    "Actual isolated host adapter and native probe/rehearsal receipts remain unconfigured"
+  ],
+  "syntheticTestsEstablishRuntimeReadiness": false
+}

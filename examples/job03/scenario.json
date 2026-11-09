@@ -885,5 +885,17 @@
     "retrieve_native",
     "save_native",
     "verify_native"
-  ]
+  ],
+  "dimensions": [
+    "time",
+    "effort",
+    "cost",
+    "quality"
+  ],
+  "costAccounting": {
+    "source": "participant executor per-turn receipt deltas",
+    "unknownIsZero": false,
+    "rates": "optional frozen exact-model dated sourced policy",
+    "nonParticipant": "separately unmeasured"
+  }
 }

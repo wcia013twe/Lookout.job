@@ -4,6 +4,8 @@ import argparse,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import verify_contact_writer,verify_runtime_guidance
+sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
+import cost
 from transport import Bridge
 from capture import capture
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
@@ -90,7 +92,8 @@ class Session:
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
-  expired=threading.Event();usage=None;events=0
+  usage_before=cost.capture(self.name,self.thread_id if resume else None)
+  expired=threading.Event();usage=None;events=0;usage_complete=False
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
    def stop():
@@ -108,6 +111,8 @@ class Session:
        if resume and tid!=self.thread_id:raise RuntimeError('Resume unexpectedly changed session')
        self.thread_id=tid
       if e.get('usage'):usage=e['usage']
+      if e.get('type') in ('turn.started','turn.failed'):usage_complete=False
+      if e.get('type')=='turn.completed':usage_complete=True
       if e.get('item',{}).get('type')=='reasoning':e={'type':e.get('type'),'item':{'type':'reasoning','content':'not captured'}}
       raw=json.dumps(e)
       for token in [*self.auth['tokens'].values(),self.bridge.key if self.bridge else None]:
@@ -117,7 +122,10 @@ class Session:
    finally:
     timer.cancel()
     if proc.poll() is None:stop();proc.wait(timeout=30)
-  meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=time.time()-meta['startedAt'],usage=usage)
+  active_seconds=time.time()-meta['startedAt']
+  usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
+  meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
+  meta.update(status='timed_out' if expired.is_set() else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
@@ -174,6 +182,7 @@ def run(condition,repeat,pair_id,pilot=False):
   try:capture(run,R)
   except Exception as error:
    meta['terminalCaptureError']=type(error).__name__+': '+str(error);meta['status']='artifact_failed';write(run/'run.json',meta)
+  meta['cost']=cost.persist(run,R/'cost-policy.json');write(run/'run.json',meta)
   for p in run.rglob('*'):
    if p.is_file() and not p.is_symlink():p.chmod(0o600)
   fcntl.flock(lock,fcntl.LOCK_UN);lock.close()

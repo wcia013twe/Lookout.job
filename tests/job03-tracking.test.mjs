@@ -61,7 +61,7 @@ test('missing checkpoint evidence and reused implementer attestation fail',t=>{
  const b=gradedRoot(t);b.submission.attestation.didImplement=true;assert.throws(()=>finalize(b.root,b.submission),/attestation/);
 });
 test('partial checkpoint coverage cannot become strict pass or report complete trajectory',t=>{
- const {root,submission}=gradedRoot(t);const result=finalize(root,submission);assert.equal(result.grades.baseline.unreachedStages.length,7);
+ const {root,submission}=gradedRoot(t);const result=finalize(root,submission);assert.equal(result.grades.baseline.unreachedStages.length,7);assert.equal(result.grades.baseline.cost.coverage.status,'unknown');assert.equal(result.grades.baseline.cost.tokens,null);
  // A dishonest host completed marker must not bypass stage coverage.
  assert.equal(result.grades.baseline.strictPass,false);
 });

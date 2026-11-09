@@ -7,3 +7,9 @@
 - Verification: 14 focused JOB03 tests passed; Node syntax and `npm run validate:data` passed (158 roles). Tests use fictional local/injected evidence only. Root/frontend npm ci were attempted but failed because registry.npmjs.org DNS resolution was unavailable (npm then reported "Exit handler never called"). No dependencies are needed for these Node-only scripts/tests; broad app build/database checks are outside this evaluation-only change.
 - Readiness: blocked. The actual dedicated JOB03 native owner/read-only credential, participant host adapter and equivalent shared reminder service are not configured. A retained no-participant blocked preflight is in examples/job03/preflight.blocked.json; it does not prove native writers or scheduling/delivery. Source confirms Lookout has no built-in scheduler. This pass adds the runnable boundary and checks, not an invented service or deployment.
 - Demo coverage consists of the detached fictional JOB03 fixtures and regression tests; no product UI, database, public catalog or MCP authority changes.
+
+## Cost dimension follow-up
+
+- Added participant executor turn-delta receipts and whole-trajectory cost to runs/final grades, preserving the common eval-v1 shape. Missing, malformed or duplicate usage remains incomplete with null full totals; preflight, harness, grader and external processing stay separately unmeasured.
+- Optional frozen exact-model dated sourced rates produce labeled API-equivalent estimates only. Actual billed provider receipts have separate local coverage; unsupported common billed export is explicitly documented. No prices, service charges or zero costs are guessed.
+- Verification: 21 JOB03 tests pass, including missing/valid/duplicate/cumulative counters, cached/reasoning subsets, actual billing, exact dated pricing and common-cost validation; Node syntax, data validation and diff checks pass. No participant, schedule, export or historical result was executed or modified.
