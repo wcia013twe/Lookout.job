@@ -1,7 +1,10 @@
 """Independent local-first grading. Missing semantic review is pending, never a pass."""
 import argparse,hashlib,json,math
 from pathlib import Path
-GRADER_VERSION='COM1-grade-v3'
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from diagnostics import call_metrics
+GRADER_VERSION='COM1-grade-v4'
 from terminal_state import validate_terminal_state
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
@@ -103,8 +106,15 @@ def grade(run,spec,review=None):
    if unavailable[key] and item['pass']:raise ValueError('Unreached/incomplete checkpoint cannot pass')
    if not unavailable[key]:
     check_review_evidence(run,item,check_stages[key],item['pass'])
+    if item['pass'] and key in ['tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
+     for i in check_stages[key]:
+      refs=[x.split('#')[0] for x in item['evidence']]
+      valid=(f'stage-{i}/after-state.json' in refs) if m['condition']=='lookout' else any(x.startswith(f'stage-{i}/output/') for x in refs)
+      if not valid:raise ValueError('Saved outcome requires durable checkpoint evidence')
     if key in ['saved_state','report_accuracy']:
      if terminal is None or 'terminal-state.json' not in item.get('evidence',[]):raise ValueError('Final checks require independent terminal state evidence')
+     if key=='saved_state':
+      check_review_evidence(run,item,[len(spec['stages'])-1],item['pass'])
      if key=='report_accuracy' and item['pass'] and not any('/output/final-report.md' in ref for ref in item['evidence']):raise ValueError('Report accuracy requires final report evidence')
    elif not item.get('reason'):raise ValueError('Unavailable checkpoint requires explanation')
   seen={q['interactionId'] for q in questions}
@@ -137,6 +147,7 @@ def grade(run,spec,review=None):
    status='used_correctly' if item['outcomeVerified'] else 'attempted_but_failed'
   adherence[key]={'status':status,'calls':relevant}
  metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'stage_coverage':len(stages)/len(spec['stages'])}
+ metrics.update(call_metrics(stages.values()))
  for category in ['clarification','context_restatement','correction','reminder','approval']:
   metrics['observed_'+category+'_turns']=sum(q['category']==category for q in questions)
   if complete:metrics['observed_'+category+'_demands']=sum(x['category']==category for x in additional)

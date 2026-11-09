@@ -1,6 +1,8 @@
 """Private coordinator for ordinary recruiting sessions; no evaluation metadata is mounted."""
 import argparse,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from diagnostics import verify_contact_writer,verify_runtime_guidance
 from transport import Bridge
 from terminal_state import capture_terminal_state
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
@@ -28,6 +30,8 @@ def verify():
   if digest(R/'background'/name)!=value:raise RuntimeError('Frozen background changed')
  image=command(['docker','image','inspect',IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
  if image!=lock['imageId']:raise RuntimeError('Container image changed')
+ verify_contact_writer(R)
+ verify_runtime_guidance(R)
  return digest(R/'freeze.json'),image
 
 def snapshot(p):command(['node',str(R/'snapshot.mjs'),str(p)])
@@ -126,7 +130,7 @@ def run(condition,repeat,pair_id,pilot=False):
    (inputs/'workspace.md').write_text((S/'contract.md').read_text())
    # User messages travel through stdin only, never as a persistent input file.
    # The metadata packet, future requests, model/budget and condition never enter the container.
-   visible={k:stage.get(k,[]) for k in ['calendar','inbox']}
+   visible=released_sources(packets()[:i])
    write(inputs/'sources.json',visible)
    for name in CONFIG.get('publicFiles',[]):shutil.copyfile(S/name,inputs/Path(name).name)
    for p in inputs.iterdir():shutil.copyfile(p,sd/'inputs'/p.name)
@@ -173,13 +177,31 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM1-stream-v4':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v5':raise RuntimeError('Wrong runtime configuration')
+
+def released_sources(stages):
+ inbox={};calendar={};deliveries=[]
+ for stage in stages:
+  current={'eventId':stage['id'],'inboxIds':[],'calendarIds':[]}
+  for message in stage.get('inbox',[]):
+   key=message['id']
+   if key in inbox and inbox[key]!=message:raise RuntimeError('Inbox ID collision with different content: '+key)
+   inbox[key]=message;current['inboxIds'].append(key)
+  for event in stage.get('calendar',[]):
+   key=event['id']
+   if key in calendar and calendar[key]!=event:raise RuntimeError('Calendar ID collision with different content: '+key)
+   calendar[key]=event;current['calendarIds'].append(key)
+  deliveries.append(current)
+ return {'inbox':list(inbox.values()),'calendar':list(calendar.values()),'currentNotifications':deliveries[-1] if deliveries else {},'notificationHistory':deliveries,'calendarMeaning':'Released historical calendar evidence. Older invitations and reminders are not assertions of current status; reconcile email updates and revisions.'}
 
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
- prefix='Your resume is /inputs/resume.pdf. Calendar and inbox are available through tools and /inputs/sources.json. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages or submit applications. '
+ prefix='Your resume is /inputs/resume.pdf. Previously released emails and historical calendar evidence remain available through tools and /inputs/sources.json. currentNotifications identifies current deliveries; notificationHistory includes repeated deliveries. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages or submit applications. '
  storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records, and save meaningful updates, drafts, and next steps there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, drafts, and next steps. ')
  prefix += storage
+ from datetime import datetime,timedelta
+ now=datetime.fromisoformat('2026-11-09T00:00:00+00:00')+timedelta(minutes=stage['minute'])
+ prefix += 'Current workspace time: '+now.isoformat()+'. Use this time for deadlines, not the container wall clock. '
  if stage['kind']=='onboarding':
   return prefix+stage['request']+'\n\n'+(R/'background'/'onboarding.md').read_text()
  if stage['kind'] in ['user_update','reconciliation']:return prefix+stage['request']

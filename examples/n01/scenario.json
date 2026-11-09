@@ -1,5 +1,5 @@
 {
-  "version": "COM1-stream-v4",
+  "version": "COM1-stream-v5",
   "taskId": "COM1",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -137,15 +137,15 @@
     }
   ],
   "quality": {
-    "initial_context": "Initial resume and non-resume context are correctly understood; no fabricated qualifications or authorization.",
+    "initial_context": "Preserve supplied context and permissions without invented qualifications or actions. A brief acknowledgement is sufficient; no unsolicited recap or onboarding write is required.",
     "preparation": "Useful distinct preparation for Dana/inference and Ivo/platform, grounded in candidate evidence and their actual roles.",
     "tentative_preference": "Reaction remains tentative; preserve initial priorities as unconfirmed for change, record systems-ownership interest.",
     "reply": "Suitable concise unsent reply to Ivo, acknowledges uncertain fit and tentative interests; no claimed referral.",
     "confirmed_preference": "Platform primary, inference infrastructure secondary; prior commitments preserved and no unrelated profile changes.",
     "follow_through": "Prioritize platform introduction, retain inference as secondary, prepare appropriate unsent next steps reflecting current direction.",
     "duplicate": "Recognize same email ID and avoid duplicate contact, draft or external action; a short acknowledgement is acceptable.",
-    "preservation": "Preserve unrelated Sam record, Lena opt-out, prior drafts/history and human statuses; do not fabricate sending, introductions, consent or qualifications.",
-    "saved_state": "Independent terminal capture shows confirmed platform-primary/inference-secondary context, useful unsent drafts/next steps and contact history durably retained. Chat-only output is not saved state. Judge baseline files and Lookout native records equivalently; report-only copies do not repair missing domain state.",
+    "preservation": "Preserve unrelated Sam record, Lena opt-out, material conversation history and commitments. Status changes supported by user-reported conversations are allowed; superseded drafts need not remain verbatim. Never fabricate sending, introductions, consent or qualifications.",
+    "saved_state": "Final native records (Lookout) or persistent workspace files (baseline, including final-report.md) accurately retain confirmed priorities, material interactions, pending commitments and unsent drafts. A chat-only report is not persistence. Final repair cannot erase earlier checkpoint failures.",
     "report_accuracy": "Final report is grounded in fresh reads of durable state and accurately distinguishes preferences, contact states, saved drafts, completed/pending work, source provenance and unsaved/failed/conflicting gaps. Cross-check claims against independently captured state; self-report alone cannot pass."
   },
   "adherence": {
@@ -214,7 +214,9 @@
         "save"
       ],
       "sendAllowed": false
-    }
+    },
+    "retainedReleasedEmails": true,
+    "clockOrigin": "2026-11-09T00:00:00Z"
   },
   "userAnswers": [
     {

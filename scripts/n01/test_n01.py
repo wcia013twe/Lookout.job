@@ -6,7 +6,7 @@ def save(p,v):p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps
 def fixture(run,condition='lookout',status='completed'):
  start=time.time()-100
  save(run/'run.json',{'version':SPEC['version'],'episodeId':run.name,'taskId':'COM1','pairId':'verification','condition':condition,'repeat':1,'pilot':True,'synthetic':True,'scenarioDigest':grade.scenario_digest(SPEC),'suiteHash':'fictional-verification','model':'fixture-no-model','reasoning':'none','status':status,'startedAt':start,'durationSeconds':70,'participantEndedAt':start+70})
- snapshot={'tables':{'profiles':[{'id':'fixture-owner'}],'outreach_contacts':[]}}
+ snapshot={'tables':{'profiles':[{'id':'fixture-owner','user_id':'fixture-owner','facts':{}}],'outreach_contacts':[]}}
  save(run/'initial-state.json',snapshot);save(run/'final-state.json',snapshot)
  (run/'output').mkdir(exist_ok=True)
  for i,s in enumerate(SPEC['stages'],1):
@@ -17,14 +17,17 @@ def fixture(run,condition='lookout',status='completed'):
   save(sd/'after-state.json',{'fictional':True});save(sd/'before-state.json',{'fictional':True})
   (sd/'prompt.txt').write_text('fictional prompt');(sd/'output').mkdir(exist_ok=True);(sd/'output/result.md').write_text('fictional result')
  (run/'stage-8/output/final-report.md').write_text('fixture report')
- save(run/'account.private.json',{'status':'verified','mcpUrl':'http://127.0.0.1:8080/mcp'})
+ save(run/'grader.private.json',{'status':'verified','mcpUrl':'http://127.0.0.1:8080/mcp','userId':'fixture-owner','benchmarkTaskId':'COM1','scopes':['workspace:read']})
  (run/'terminal-state.json').unlink(missing_ok=True)
- if status!='running':terminal_state.capture_terminal_state(run,run,json.loads((run/'run.json').read_text()),lookup=lambda a,n: [] if n=='list_contacts' else {})
+ if status!='running':terminal_state.capture_terminal_state(run,run,json.loads((run/'run.json').read_text()),lookup=lambda a,n: [] if n=='list_contacts' else {'settings':{'profile':{'user_id':'fixture-owner','facts':{}}}} if n=='read_personal_context' else {})
  review=grade.template(run,SPEC);review.update(reviewer='fixture-only',independentOfParticipant=True,interactionReviewComplete=True)
  for key,x in review['quality'].items():
   indices=list(range(1,len(SPEC['stages'])+1)) if key=='preservation' else [i for i,s in enumerate(SPEC['stages'],1) if key in s['checks']]
   x.update({'pass':True,'reason':'Synthetic fixture only','evidence':[f'stage-{i}/output/result.md' for i in indices]})
+ for key in ['tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
+  review['quality'][key]['evidence'] += [f'stage-{i}/after-state.json' for i,stage in enumerate(SPEC['stages'],1) if key in stage['checks']]
  for key in ['saved_state','report_accuracy']:review['quality'][key]['evidence']+=['terminal-state.json','stage-8/output/final-report.md']
+ review['quality']['saved_state']['evidence']+=['stage-7/after-state.json','stage-7/output/result.md']
  for key,x in review['adherence'].items():x.update(outcomeVerified=True,reason='Synthetic fixture only',evidence=[f"stage-{SPEC['adherence'][key]['stage']}/after-state.json"])
  return review
 class Tests(unittest.TestCase):
@@ -140,4 +143,25 @@ class Tests(unittest.TestCase):
  def test_missing_terminal_capture_invalidates_completed_run(self):
   (self.run/'terminal-state.json').unlink()
   self.assertRaises(ValueError,grade.grade,self.run,SPEC)
+class RepairTests(unittest.TestCase):
+ def test_inbox_retained_and_duplicate_delivery_separate(self):
+  sources=runner.released_sources(SPEC['stages'][:7])
+  self.assertEqual(len(sources['inbox']),3)
+  self.assertEqual(sources['currentNotifications']['inboxIds'],['email-ivo-2'])
+  self.assertEqual(sum('email-ivo-2' in d['inboxIds'] for d in sources['notificationHistory']),2)
+  self.assertEqual(runner.released_sources(SPEC['stages'][:3])['inbox'],[])
+ def test_collision_rejected(self):
+  self.assertRaises(RuntimeError,runner.released_sources,[{'id':'a','inbox':[{'id':'x','body':'a'}]},{'id':'b','inbox':[{'id':'x','body':'b'}]}])
+ def test_actor_introduction_is_not_future_leak(self):
+  self.assertNotIn('Yes, I am interested',user_actor.answer('Do you want Ivo to introduce you?',5,SPEC)[0])
+  self.assertIn('Yes, I am interested',user_actor.answer('Do you want Ivo to introduce you?',6,SPEC)[0])
+ def test_call_categories_and_retry_are_separate(self):
+  from diagnostics import call_metrics
+  with tempfile.TemporaryDirectory() as d:
+   p=Path(d);events=[]
+   for i,name,ok in [(1,'discover_tools',True),(2,'list_contacts',True),(3,'save_contact',False),(4,'save_contact',True),(5,'ask_user',True)]:
+    events.extend([{'type':'mcp.request','data':{'id':i,'method':'tools/call','params':{'name':name,'arguments':{}}}},{'type':'mcp.response','data':{'id':i,'result':{'isError':not ok}}}])
+   (p/'lookout-trace.jsonl').write_text('\n'.join(map(json.dumps,events)))
+   m=call_metrics([p]);self.assertEqual(m['tool_write_calls'],2);self.assertEqual(m['tool_failed_calls'],1);self.assertEqual(m['tool_exact_retries_after_failure'],1);self.assertEqual(m['tool_read_calls'],1);self.assertEqual(m['tool_discovery_calls'],1)
+
 if __name__=='__main__':unittest.main()

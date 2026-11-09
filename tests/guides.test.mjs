@@ -161,3 +161,11 @@ test('temporary Workday and company-site handoff stops browser work and preserve
  const guide=readGuide('application-workspace');
  for(const phrase of ['Temporary manual handoff','return Workday and direct company-site applications to the user','Greenhouse, Ashby and Lever','do not attempt account creation','Manual application handoff:','inspectionComplete=false','terminal old request is history','Do not ask the user to sign in so Muse can resume','uncertain outcomes remain stopped'])assert.ok(guide.instructions.includes(phrase),phrase);
 });
+
+test('network guide handles duplicate evidence and rejected saves without invented completion',()=>{
+ const guide=readGuide('cold-outreach');
+ assert.match(guide.instructions,/stable source message ID/);
+ assert.match(guide.instructions,/no new draft, contact or commitment/);
+ assert.match(guide.instructions,/Do not repeat an unchanged invalid payload/);
+ assert.match(guide.instructions,/not a completed workspace update/);
+});

@@ -5,6 +5,8 @@ def answer(question,stage_index,spec):
  if not isinstance(question,str) or not question.strip():raise ValueError('A question is required')
  if re.search(r'\bsend\b|submit|permission|approval',question,re.I):
   return 'Do not send messages or submit anything. Leave drafts for me to review.','approval'
+ if stage_index>=6 and re.search(r'introduc',question,re.I) and re.search(r'Ivo|Mina|platform',question,re.I):
+  return 'Yes, I am interested in the platform introduction. Prepare a short introduction for me to review; do not send it.','clarification'
  if re.search(r'priorit|prefer|direction|career goal|focus|interest',question,re.I):
   known=[s['request'] for s in spec['stages'][:stage_index] if s['kind']=='user_update']
   return (known[-1] if known else 'My initial networking preference is inference systems first and backend developer-platform teams second.'),'context_restatement'

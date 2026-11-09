@@ -1,4 +1,4 @@
-"""Read-only live connectivity/isolation check. No inference, reset or personal writes."""
+"""Read-only live connectivity/isolation check. No inference, reset or retained personal writes; writer probe rolls back."""
 import argparse,json,urllib.request,time
 from pathlib import Path
 import runner
@@ -7,7 +7,7 @@ runner.configure(a.task_dir);suite,image=runner.verify()
 if a.output.exists():raise SystemExit('Retain existing preflight evidence; choose new output')
 a.output.mkdir(mode=0o700,parents=True)
 inputs=a.output/'live-inputs';inputs.mkdir();(inputs/'sources.json').write_text('{"calendar":[],"inbox":[]}')
-out=a.output/'output';out.mkdir();report={'suiteHash':suite,'imageId':image,'inferenceExecuted':False,'domainWrites':False,'conditions':{}}
+out=a.output/'output';out.mkdir();report={'suiteHash':suite,'imageId':image,'inferenceExecuted':False,'domainWrites':False,'contactWriterProbe':'passed_rolled_back','conditions':{}}
 for condition in ['baseline','lookout']:
  sd=a.output/condition;sd.mkdir();session=None
  try:
