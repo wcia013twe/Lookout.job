@@ -1,19 +1,13 @@
 """Freeze COM3 private inputs without inference, account reset or domain writes."""
-import argparse,hashlib,json,os,shutil,subprocess,uuid
+import argparse,hashlib,json,os,shutil,subprocess
 from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 from cost import validate_policy
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from native_contract import capture_native_contract
+from fixtures import fixture_for_owner
 from parity import complete_and_verify
-
-def fixture_for_owner(fixture,owner):
- # Application UUIDs are globally unique; remap all references, including contact tags.
- mapping={fixture[key]['id']:str(uuid.uuid5(uuid.UUID(owner),fixture[key]['id'])) for key in ['application','sentinelApplication']}
- text=json.dumps(fixture)
- for old,new in mapping.items():text=text.replace(old,new)
- return json.loads(text)
 
 def prepare(source,background,destination,cost_policy=None):
  source,background,destination=[Path(p).resolve() for p in [source,background,destination]]

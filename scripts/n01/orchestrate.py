@@ -2,18 +2,22 @@
 import argparse,json,subprocess,sys
 from pathlib import Path
 import runner,grade,summary
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from design import condition_order,serial_pair,outcome_groups
 p=argparse.ArgumentParser();p.add_argument('--task-dir',type=Path,required=True);p.add_argument('--pair-id',required=True);p.add_argument('--repeat',type=int,default=1);p.add_argument('--pilot',action='store_true');p.add_argument('--langfuse-env',type=Path,required=True);p.add_argument('--receipt-dir',type=Path,required=True);a=p.parse_args()
 if a.repeat<1 or not a.pair_id.strip():p.error('Positive repeat and nonempty pair ID required')
 runner.configure(a.task_dir);results=[];failed=False
-for condition in (['baseline','lookout'] if a.repeat%2 else ['lookout','baseline']):
- before=set(runner.RUNS.glob('*/run.json'))
- try:run=runner.run(condition,a.repeat,a.pair_id,a.pilot)
- except Exception as e:
-  failed=True;print(json.dumps({'condition':condition,'executionError':type(e).__name__}),file=sys.stderr)
-  new=set(runner.RUNS.glob('*/run.json'))-before
-  if len(new)!=1:continue
-  run=next(iter(new)).parent
- results.append(run)
+outcome_groups(json.loads((runner.S/'scenario.json').read_text()))
+with serial_pair():
+ for condition in condition_order(a.repeat):
+  before=set(runner.RUNS.glob('*/run.json'))
+  try:run=runner.run(condition,a.repeat,a.pair_id,a.pilot)
+  except Exception as e:
+   failed=True;print(json.dumps({'condition':condition,'executionError':type(e).__name__}),file=sys.stderr)
+   new=set(runner.RUNS.glob('*/run.json'))-before
+   if len(new)!=1:continue
+   run=next(iter(new)).parent
+  results.append(run)
 # No grading, intervention or hints while either participant is running.
 for run in results:
  try:

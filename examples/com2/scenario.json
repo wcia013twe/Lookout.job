@@ -1,5 +1,5 @@
 {
-  "version": "COM2-stream-v7",
+  "version": "COM2-stream-v8",
   "taskId": "COM2",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -383,5 +383,65 @@
     "terminal_reconciliation",
     "stale_no_action",
     "final_state"
-  ]
+  ],
+  "qualityGroups": {
+    "closure_and_final_status": [
+      "terminal_reconciliation",
+      "final_state",
+      "final_report"
+    ],
+    "initial_context": [
+      "initial_context"
+    ],
+    "availability_request": [
+      "availability_request"
+    ],
+    "availability_draft": [
+      "availability_draft"
+    ],
+    "sent_report": [
+      "sent_report"
+    ],
+    "confirmation_no_action": [
+      "confirmation_no_action"
+    ],
+    "reschedule": [
+      "reschedule"
+    ],
+    "reported_completion": [
+      "reported_completion"
+    ],
+    "technical_invitation": [
+      "technical_invitation"
+    ],
+    "start_date_request": [
+      "start_date_request"
+    ],
+    "start_date_draft": [
+      "start_date_draft"
+    ],
+    "stale_no_action": [
+      "stale_no_action"
+    ],
+    "preservation": [
+      "preservation"
+    ]
+  },
+  "study": {
+    "version": "communication-outcomes-v1",
+    "question": "For identical explicit requests across fresh sessions, how does an agent using Lookout compare with the same model using persistent files on communication continuity, task outcomes and execution resources?",
+    "primaryMeasure": "Equal-weight frozen outcome groups; checkpoint checks remain diagnostics, not independent tasks.",
+    "requiresUserImpact": true,
+    "plannedPairsPerCase": 4,
+    "conditionOrder": "Odd repetitions baseline/lookout; even repetitions lookout/baseline.",
+    "execution": "Serial pairs across revised COM01/COM02 harnesses; unrelated host/provider load remains uncontrolled.",
+    "stoppingRule": "Complete all four preplanned pairs including failures; do not stop or retry for a favorable score.",
+    "claimLimits": [
+      "No proactive-initiation or measured human-effort benefit.",
+      "No invoice/financial cost claim from tokens.",
+      "No general product-defect attribution or statistical winner from a diagnostic pair.",
+      "Four pairs are a small counterbalanced pilot, not a power calculation."
+    ],
+    "userImpactRule": "Judge effective current user-facing state, advice and obligations, accepting equivalent durable representations. Historical rows, superseded events and different storage layouts alone are not failures. A reached failure needs userImpact explaining a concrete incorrect current instruction/view, missed obligation, unusable draft, unsupported action or violated boundary, with checkpoint evidence. A score does not establish product, model, harness or design fault."
+  }
 }

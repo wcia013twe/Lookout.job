@@ -4,6 +4,8 @@ from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 from cost import validate_policy
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
+from fixtures import fixture_for_owner
 
 def prepare(source,background,destination,cost_policy=None):
  source,background,destination=[Path(p).resolve() for p in [source,background,destination]]
@@ -13,7 +15,7 @@ def prepare(source,background,destination,cost_policy=None):
  clone=json.loads((source/'cloned-context.private.json').read_text())
  for name in ['profile.md','resume.pdf']:
   if not (background/name).is_file():raise ValueError('Complete background and resume required')
- repo=Path(__file__).resolve().parents[2];spec=json.loads((repo/'examples/com2/scenario.json').read_text());fixture=json.loads((repo/'examples/com2/fixture.json').read_text())
+ repo=Path(__file__).resolve().parents[2];spec=json.loads((repo/'examples/com2/scenario.json').read_text());fixture=fixture_for_owner(json.loads((repo/'examples/com2/fixture.json').read_text()),account['userId'])
  # A source must provide the exact equivalent native profile facts, not a handwritten summary.
  initial_source=json.loads((source/'suite/initial-state.json').read_text())
  profile=initial_source['profileFacts']
@@ -44,11 +46,13 @@ def prepare(source,background,destination,cost_policy=None):
  pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'
  validate_policy(json.loads(pricing.read_text()))
  shutil.copyfile(pricing,destination/'cost-policy.json')
+ shutil.copyfile(repo/'docs/com-final-state-grading.md',destination/'suite/grading-contract.md')
  files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]
  files+=list((repo/'scripts/com2').glob('*.py'))+list((repo/'scripts/com2').glob('*.mjs'))
  files += [repo/'scripts/n01/cost.py',repo/'scripts/n01/cost-export.mjs']
  files+=list((repo/'scripts/communication').glob('*.py'))
  files += [repo/'scripts/evals/workspace_transport.py']
+ files += [repo/'scripts/communication/verify-langfuse-pilot.mjs']
  files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
  files+=list((repo/'scripts/evals').glob('*.mjs'))+[repo/'backend/runtime/trace-policy.mjs']
  sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()

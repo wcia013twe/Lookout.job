@@ -1247,3 +1247,15 @@ discovery without duplicate call counts; this is a diagnostics correction, not a
 new participant run or product-effectiveness claim.
 
 Future JOB01 freezes also bind the shared executor timing/capture source, checked against the actual imported helper implementations. Historical freezes remain unchanged; this closes a prospective source-integrity gap without claiming a changed participant outcome.
+
+### Prospective COM01/COM02 outcome study
+
+COM01 v9/grade v8 and COM02 v8/grade v7 separate eight/thirteen primary outcomes
+from diagnostic checkpoint counts, require evidence-grounded user impact for
+reached failures, and clarify Sam's unsent draft. Existing orchestrators share a
+serial pair lock and alternate order across the four-pair prospective pilot plan.
+Read-only COM02 terminal evidence adds the native timeline; future export checks
+reuse shared pagination. See the [study contract](../../docs/com-final-state-grading.md#prospective-com01com02-outcome-study).
+Synthetic checks do not establish participant performance or design effectiveness;
+no new pair, account mutation, human-effort benefit or product change is claimed.
+Historical PILOT-05 evidence and grades remain unchanged.

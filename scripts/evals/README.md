@@ -29,6 +29,9 @@ small `transport.py` adapters specify the case bridge arguments; JOB02 retains
 its graceful EOF shutdown; the shared JOB03/04 host retains stderr capture. New freezes bind the shared implementation as well as
 the adapter. Keep old frozen checkouts unchanged; migrate only future setups.
 
+COM01/COM02 reuse `scripts/communication/design.py` for primary outcome scoring
+and serial, alternating-order pairs; their outcome partitions live in scenarios.
+
 Shared timing/capture and diagnostics remain in `scripts/communication/`, cost
 accounting in `scripts/n01/cost*`, and common result/export contracts here. These
 are existing shared boundaries, not a claim that all case runners are unified.
