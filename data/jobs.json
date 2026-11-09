@@ -4078,6 +4078,24 @@
    "discoverySource": "Morning sweep 2026-11-09 (Simplify intern list)",
    "verification": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ381194): Summer 2027 AI Engineering Internship, Bellevue, $27-$50/hr, End Date Nov 12, 2026. Distinct from REQ380765 (AI agents/dev tools): this req is churn retention and cross/upsell, production-grade LLM solutions.",
    "verifiedDate": "2026-11-09"
+  },
+  {
+   "id": "tesla-internship-swe-inference-infrastructure-289254",
+   "company": "Tesla",
+   "title": "Internship, Software Engineer, Inference Infrastructure (Summer 2027)",
+   "employmentType": "Internship",
+   "location": "Palo Alto, CA",
+   "category": "ML systems & AI infrastructure",
+   "priority": "Apply Now",
+   "postedDate": null,
+   "discoveredDate": "2026-11-08",
+   "sourceFreshness": "zero2sudo story Nov 8, 2026 (3h); verified live Nov 8, 2026",
+   "whyItFits": "Inference Infrastructure intern: ML inference systems, direct ML systems/infra lane fit. Starts May 2027, minimum 12 weeks, full-time on-site. Tesla SI.",
+   "applicationUrl": "https://www.tesla.com/careers/search/job/289254",
+   "applicationStatus": "New",
+   "discoverySource": "Evening sudo check 2026-11-08 (zero2sudo story)",
+   "verification": "Verified live Nov 8, 2026 on Tesla careers (Req 289254): Internship, Software Engineer, Inference Infrastructure (Summer 2027), Palo Alto, starts May 2027, min 12 weeks, full-time on-site; no deadline shown.",
+   "verifiedDate": "2026-11-08"
   }
  ]
 }
