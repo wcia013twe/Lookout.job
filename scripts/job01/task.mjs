@@ -43,12 +43,12 @@ export function packet(spec,ref,board,stageId,condition,productConfiguration){
  const prompt=s.kind==='user_update'?s.request:condition==='baseline'?s.baseline:productConfiguration.wakePrompt;
  return {prompt,...(s.email?{email:s.email,delivery:condition==='lookout'?'scheduled_email':'user_uploaded_email'}:{}),jobs:board.jobs.filter(j=>ids.has(j.id)),snapshotId:board.manifest.snapshotId};
 }
-export function grade(spec,ref,board,run,review){
+export function grade(spec,ref,board,run,review,authorization={}){
  validateReference(ref,board,spec);
  if(run.version!==spec.version||run.snapshotId!==ref.snapshotId||run.sourceHash!==ref.sourceHash||!['lookout','baseline'].includes(run.condition))throw Error('Run binding mismatch');
  if(!['completed','timed_out','execution_failed','harness_failed'].includes(run.status))throw Error('Terminal run required');
  if(!Array.isArray(run.checkpoints))throw Error('Checkpoints required');
- const evidenceDigest=hash(run),reviewed=review?.evidenceDigest===evidenceDigest&&!!review.reviewer?.trim();
+ const evidenceDigest=hash(run),reviewed=(!spec.finalGraderRequired||authorization.assignmentVerified===true)&&review?.evidenceDigest===evidenceDigest&&!!review.reviewer?.trim();
  const checkpoints=[];const effort={uniqueTurns:0,scriptedInitiations:0,questions:0,repeatedContext:0,reminders:0,corrections:0,approvals:0};let duration=0;
  for(const c of run.checkpoints){
   const stage=spec.stages.find(s=>s.id===c.stage);if(!stage||checkpoints.some(x=>x.stage===c.stage))throw Error('Invalid checkpoint');

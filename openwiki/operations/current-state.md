@@ -1022,6 +1022,15 @@ review before the paired pilot. Historical N02 scenarios/datasets remain retaine
 
 A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.
 
+### COM2 communication evaluation (local infrastructure)
+
+[COM2 application communication continuity](../../docs/com2-application-communication.md) adds
+an isolated 13-turn, seven-session fictional stream for scheduling, user-reported completion,
+source-backed advancement, requests, rejection and stale notifications. It excludes preparation
+materials and external sends. The standalone runner/grader checks evidence completeness and
+native outcomes separately, and emits detailed structural traces plus the shared eval summary.
+A dedicated COM2 account and actual tool preflight remain required before execution. Synthetic
+checks establish contracts only; no COM2 participant, database reset or live export is claimed.
 
 ### Langfuse selected case/run view
 
@@ -1056,3 +1065,12 @@ datasets remain unchanged; new preparation/preflight is required before executio
 ### COM4 introduction-continuity evaluation
 
 Prospective COM4 has a 12-turn/7-session notification stream, dedicated fictional local owner, supported contact-field writer verification, independent read-only terminal capture and saved-state/report grading. Semantic commitment state is evaluated separately from the direction-derived UI waiting label. See [COM4](../../docs/com4-introduction-continuity.md). Readiness checks do not imply participant execution or a measured advantage.
+### JOB01 independent final-grader handoff
+
+Prospective JOB01-search-v3 freezes reviewer instructions, automatically emits a
+post-pair handoff and separate read-only native-confirmation receipt, and requires
+a fresh agent assignment/attestation before final review. Coordinators launch the
+grader with no inherited context; shell tooling does not spawn an agent. Both
+conditions use frozen artifact citations and rubric bindings. Partial attempts stay
+reportable; prior freezes remain unchanged. Native confirmation success means
+reads succeeded, not that semantic matching or participant quality passed.

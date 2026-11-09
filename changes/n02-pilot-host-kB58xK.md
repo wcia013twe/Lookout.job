@@ -11,3 +11,9 @@
 - Refreshed the private freeze after complete-shortlist, stage-specific style, suitability and unique-turn grading changes; previous freezes retained. Both conditions passed no-inference preflight. Twelve focused tests passed; implementation-pass data validation passed.
 - Registered the prospective v2 Langfuse dataset and accepted synthetic transport export. Remote observations read-back failed; recorded the failure without retry or participant execution. No measured quality or model outcome is claimed.
 - Private prepared root: `/Volumes/External SSD/Lookout/tmp/job01-pilot-v2-ready-20261109`. Launch script saved but not executed. No product deployment or public-board changes.
+
+## JOB01 v3 independent-grader preparation
+
+- Prepared a new private v3 freeze including final-grader instructions, preserving earlier setups. Both conditions passed no-inference preflight; 16 focused tests passed and implementation-pass data validation passed.
+- Registered v3 in Langfuse and verified synthetic observations, experiment and scores by read-back. The prior v2 read-back also passed on an explicit later check; its initial failure receipt remains.
+- Ready root: `/Volumes/External SSD/Lookout/tmp/job01-pilot-v3-ready-20261109`. No participant attempt exists. After execution, coordinator must dispatch a fresh grader from the generated handoff; shell does not spawn collaboration agents. Actual final-state confirmation awaits participant output.
