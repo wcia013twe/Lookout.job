@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "lastRun": "2026-11-08 morning sweep (staged 2026-11-08)",
+ "lastRun": "2026-11-09 morning sweep (staged 2026-11-09)",
  "drops": [
   {
    "company": "Cloudflare",
@@ -159,7 +159,7 @@
    "note": "Verified live 2026-10-08. Term-time = during school semester."
   },
   {
-   "company": "Estée Lauder",
+   "company": "Est\u00e9e Lauder",
    "title": "Lauder Summer 2027 Intern, Technology, Data & Analytics",
    "location": "New York, NY",
    "type": "Internship",
@@ -1689,7 +1689,7 @@
    "source": "zero2sudo",
    "status": "pending",
    "skipReason": null,
-   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA — Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
+   "note": "Story-verified 2026-10-23 midday (Bosch Research and Technology Center NA; Sunnyvale/Pittsburgh/Cambridge; jobs.smartrecruiters.com). Canonical SmartRecruiters URL not located; mirrored copies (career.io, simplify.jobs) of the 'LLM & Agentic AI R&D Intern' JD verify content (Sunnyvale, $39-64/hr; the mirror version is Summer 2026). Eligibility: PhD or Master's, min 3.0 GPA \u2014 Wesley (M.S.) eligible. Kept pending until the live req URL is confirmed."
   },
   {
    "company": "RTX",
@@ -5788,7 +5788,7 @@
   },
   {
    "company": "NVIDIA",
-   "title": "Technical Learning Content Development Intern, Physical AI – Summer 2027",
+   "title": "Technical Learning Content Development Intern, Physical AI \u2013 Summer 2027",
    "location": "Santa Clara, CA",
    "type": "Internship",
    "comp": null,
@@ -5840,7 +5840,7 @@
   },
   {
    "company": "Bosch",
-   "title": "Junior Management Program – Manufacturing – VM",
+   "title": "Junior Management Program \u2013 Manufacturing \u2013 VM",
    "location": "Florence, KY",
    "type": "Full Time",
    "comp": null,
@@ -6057,7 +6057,7 @@
    "source": "zero2sudo",
    "status": "added",
    "skipReason": null,
-   "note": "Midday story frame Nov 6, 2026. Verified live Nov 6, 2026 on Tinder careers: Palo Alto CA (also Los Angeles), BS/BA, MS or PhD pursuing, $47/hr, program June 1-Aug 31, 2027, hybrid 3 days/week. Added to jobs.json."
+   "note": "Midday story frame Nov 6, 2026. Verified live Nov 6, 2026 on Tinder careers: Palo Alto CA (also Los Angeles), BS/BA, MS or PhD pursuing, $47/hr, program June 1-Aug 31, 2027, hybrid 3 days/week. Added to jobs.json. Removed from jobs.json Nov 8, 2026 (lifeattinder: 'This role has been filled'; Greenhouse mirror 404). Re-checked Nov 9, 2026: lifeattinder still reads filled; Lever apply form still loads (lingering form). Removal stands."
   },
   {
    "company": "Tinder",
@@ -6070,7 +6070,7 @@
    "source": "zero2sudo",
    "status": "added",
    "skipReason": null,
-   "note": "Midday story frame Nov 6, 2026. Verified live Nov 6, 2026 on Tinder careers: Palo Alto CA, BS/BA or MS pursuing, $47/hr, program June 1-Aug 31, 2027, hybrid 3 days/week. Added to jobs.json."
+   "note": "Midday story frame Nov 6, 2026. Verified live Nov 6, 2026 on Tinder careers: Palo Alto CA, BS/BA or MS pursuing, $47/hr, program June 1-Aug 31, 2027, hybrid 3 days/week. Added to jobs.json. Removed from jobs.json Nov 8, 2026 (lifeattinder: 'This role has been filled'; Greenhouse mirror 404). Re-checked Nov 9, 2026: lifeattinder still reads filled; Lever apply form still loads (lingering form). Removal stands."
   },
   {
    "company": "Zoox",
@@ -6260,12 +6260,12 @@
    "location": "San Francisco, CA",
    "type": "Internship",
    "comp": null,
-   "url": null,
+   "url": "https://jobs.lever.co/matchgroup/573621f6-9931-4e39-840a-1d04171be2ff/apply",
    "dateSeen": "2026-11-06",
    "source": "zero2sudo",
    "status": "skipped",
    "skipReason": "Data-science lane, not SWE/MLE",
-   "note": "Midday story frame Nov 6, 2026. No live check; off-target on frame evidence."
+   "note": "Midday story frame Nov 6, 2026. Data-science lane, not SWE/MLE. Verified live Nov 9, 2026 on Lever (San Francisco, hybrid, June 1-Aug 31, 2027); skip reason stands."
   },
   {
    "company": "TikTok",
@@ -6577,7 +6577,7 @@
    "source": "morning sweep",
    "status": "skipped",
    "skipReason": "Common, promotions full-stack; no exceptional team fit.",
-   "note": "Verified live Nov 7, 2026. Common, promotions full-stack; no exceptional team fit."
+   "note": "Verified live Nov 7, 2026. Common, promotions full-stack; no exceptional team fit. Re-verified live Nov 9, 2026 on Workday (Req R31442, posted 3 days ago, $97,500-$160,000); skip reason stands."
   },
   {
    "company": "AbbVie",
@@ -6590,7 +6590,7 @@
    "source": "morning sweep",
    "status": "skipped",
    "skipReason": "Non-tech corporate IT (pharma enterprise apps); low pay.",
-   "note": "Verified live Nov 7, 2026. Non-tech corporate IT (pharma enterprise apps); low pay."
+   "note": "Verified live Nov 7, 2026. Non-tech corporate IT (pharma enterprise apps); low pay. Re-verified live Nov 9, 2026 on SmartRecruiters; skip reason stands."
   },
   {
    "company": "T-Mobile",
@@ -6642,7 +6642,7 @@
    "source": "morning sweep",
    "status": "skipped",
    "skipReason": "Common, small industrial firm, Tulsa onsite, $20-$24/hr; no exceptional team evidence.",
-   "note": "Verified live Nov 7, 2026. Common, small industrial firm, Tulsa onsite, $20-$24/hr; no exceptional team evidence."
+   "note": "Verified live Nov 7, 2026. Common, small industrial firm, Tulsa onsite, $20-$24/hr; no exceptional team evidence. Re-verified live Nov 9, 2026 on Paylocity (May 24-Aug 6, on-site; current enrollment in a bachelor's or master's program required); skip reason stands."
   },
   {
    "company": "American Express",
@@ -6721,6 +6721,123 @@
    "status": "pending",
    "skipReason": null,
    "note": "Verified live Nov 7, 2026. Held: requires US citizenship and ability to obtain interim Secret DoD clearance; graduation window not visible in portion read. Scope includes Kafka/Elasticsearch/Databricks and AI/ML automation, but defense + Common + clearance flag keep it held."
+  },
+  {
+   "company": "Prosync",
+   "title": "Software Engineer 0/I",
+   "location": "Annapolis Junction, MD",
+   "type": "FT",
+   "comp": null,
+   "url": "https://apply.workable.com/prosync/j/6ECFBED6E7/apply",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "skipped",
+   "skipReason": "Active TS/SCI with Fullscope Polygraph required; Level I requires Bachelor's + 7 years experience.",
+   "note": "Verified live Nov 9, 2026 on Workable. Active TS/SCI with Fullscope Polygraph required; Level I requires Bachelor's + 7 years experience."
+  },
+  {
+   "company": "Huntington Ingalls Industries",
+   "title": "Engineer Software 1",
+   "location": "Newport News, VA",
+   "type": "FT",
+   "comp": "$69,000-$86,000/year",
+   "url": "https://careers.huntingtoningalls.com/job/Newport-News-ENGINEER-SOFTWARE-1-Virg/1448477600/?ats=successfactors",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "skipped",
+   "skipReason": "US Citizenship Required: Yes; Wesley's citizenship is unconfirmed (authorized to work, no sponsorship needed). Defense shipbuilding, no exceptional team fit.",
+   "note": "Verified live Nov 9, 2026 (Req ID 50466, dated Nov 6, 2026). US Citizenship Required: Yes; Wesley's citizenship is unconfirmed. Clearance not required to start."
+  },
+  {
+   "company": "Shield AI",
+   "title": "Engineer II, Software - Ground Control Station - Full Stack - New Grad",
+   "location": "Washington, DC",
+   "type": "FT",
+   "comp": null,
+   "url": "https://jobs.lever.co/shieldai/88f7b66e-3412-40c8-b74d-aafc462405ff/apply",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "skipped",
+   "skipReason": "Common, full-stack ground-control UI; export-control question in form; no ML-systems/distributed team evidence.",
+   "note": "Verified live Nov 9, 2026 on Lever (0d, on-site). Common, full-stack ground-control UI; export-control question in form; no ML-systems/distributed team evidence."
+  },
+  {
+   "company": "Shield AI",
+   "title": "Software Engineer 1 New Grad - Software - Autonomy Capabilities",
+   "location": "United States",
+   "type": "FT",
+   "comp": null,
+   "url": "https://jobs.ashbyhq.com/shield-ai/955d48ad-9380-4621-91f4-51f3f093ac10",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "skipped",
+   "skipReason": "Not confirmed live: Ashby 'Page not found' on repeated live-browser loads and text fetch 404 on Nov 9, 2026; likely removed/unlisted (404 is not proof of closure).",
+   "note": "Not confirmed live Nov 9, 2026: Ashby 'Page not found' on repeated live-browser loads and text fetch returned HTTP 404; board stayed blank, posting API Unauthorized. Likely removed/unlisted; separate Shield AI Lever new-grad role (Ground Control Station) is live."
+  },
+  {
+   "company": "T-Mobile",
+   "title": "Summer 2027 Software Engineer HR Data Products Internship",
+   "location": "Bellevue, WA",
+   "type": "Internship",
+   "comp": "$27-$50/hour",
+   "url": "https://tmobile.wd1.myworkdayjobs.com/External/job/Bellevue-Washington/Summer-2027-Software-Engineer-HR-Data-Products-Internship_REQ380916",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "skipped",
+   "skipReason": "Common, HR data-products scope (data analysis/modeling for HR and Workplace Experience); no exceptional team fit. Courses-remaining gate applies.",
+   "note": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ380916; End Date Nov 12, 2026). Renumbered duplicate REQ380766 also loads live with identical title, location and end date. Common, HR data-products scope; no exceptional team fit."
+  },
+  {
+   "company": "T-Mobile",
+   "title": "Summer 2027 AI Strategist Internship",
+   "location": "Bellevue, WA",
+   "type": "Internship",
+   "comp": "$27-$50/hour",
+   "url": "https://tmobile.wd1.myworkdayjobs.com/External/job/Bellevue-Washington/Summer-2027-AI-Strategist-Internship_REQ381279",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "skipped",
+   "skipReason": "Applied prompt-engineering/strategy role (prompt library, IntentCX virtual assistants), not ML systems/infra. Courses-remaining gate applies.",
+   "note": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ381279; End Date Nov 13, 2026). Prompt engineering for AI-powered customer experience, hands-on LLM prompting (Claude, ChatGPT, Copilot)."
+  },
+  {
+   "company": "Cook Group",
+   "title": "Software Engineer 1, Full-Stack",
+   "location": "Bloomington, IN; Indianapolis, IN; West Lafayette, IN",
+   "type": "FT",
+   "comp": null,
+   "url": "https://americas-cookmedical.icims.com/jobs/20446/job",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on Cook Medical iCIMS (Req 2026-20446): Software Engineer 1, Full-Stack, posted 11/6/2026, Bloomington/Indianapolis/West Lafayette, IN. Added to jobs.json."
+  },
+  {
+   "company": "T-Mobile",
+   "title": "Summer 2027 Data Engineering Internship",
+   "location": "Frisco, TX; Atlanta, GA",
+   "type": "Internship",
+   "comp": "$27-$50/hour",
+   "url": "https://tmobile.wd1.myworkdayjobs.com/External/job/Frisco-Texas/Summer-2027-Data-Engineering-Internship_REQ380754",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ380754): Summer 2027 Data Engineering Internship, Frisco/Atlanta, $27-$50/hr, End Date Nov 12, 2026. Renumbered duplicate REQ380755 also loads live with identical title, locations and end date. Added to jobs.json."
+  },
+  {
+   "company": "T-Mobile",
+   "title": "Summer 2027 AI Engineering Internship",
+   "location": "Bellevue, WA",
+   "type": "Internship",
+   "comp": "$27-$50/hour",
+   "url": "https://tmobile.wd1.myworkdayjobs.com/External/job/Bellevue-Washington/Summer-2027-AI-Engineering-Internship_REQ381194",
+   "dateSeen": "2026-11-09",
+   "source": "morning sweep",
+   "status": "added",
+   "skipReason": null,
+   "note": "Verified live Nov 9, 2026 on T-Mobile Workday (REQ381194): Summer 2027 AI Engineering Internship, Bellevue, $27-$50/hr, End Date Nov 12, 2026. Distinct from REQ380765 (AI agents/dev tools): this req is churn retention and cross/upsell, production-grade LLM solutions. Added to jobs.json."
   }
  ]
 }
