@@ -505,3 +505,32 @@ answer uses the existing blocker note payload; no employer fields are invented.
 Save and resume Muse saves through the existing versioned response boundary
 without granting submission approval. Actual host resumption remains separately
 verified. The detached demo includes a fictional hub-ranking textbox.
+
+
+### Compact draft saves and reread recovery
+
+`prepare_draft` keeps its compact response by default. When Muse needs to verify
+saved answers and the new draft revision, it requests `responseMode: "full"` and
+checks the returned persisted application against the intended changes. This
+can replace the immediate `read_application_record` for that draft save only.
+The response does not verify an Action Board card, claim a request, acknowledge
+an event, approve submission or establish an employer outcome. Before notifying
+the user of grouped questions, still read `read_action_board` and verify the
+owning Need your input card. Other writes retain their existing readback rules.
+
+After compaction, interruption, a timeout or a version conflict, reload the
+current guide when missing or stale, then reread the same application and
+`read_backend_jobs` for its request. Reconcile saved answers, current revisions,
+human holds, approval and attempt evidence before choosing the next action.
+A completed or partial request is historical evidence, not permission to claim
+again or create a replacement. Recover a lost response by inspecting durable
+state; reuse a retry key only for the identical supported retry. If the save
+succeeded but event acknowledgement failed, verify the saved outcome and
+acknowledge that event without repeating employer work. Uncertain submission
+outcomes remain stopped for verification; rereading never authorizes another
+submission. Browser/session recovery still depends on the host and employer.
+
+This change reduces redundant draft reads through existing scoped writers. It
+introduces no atomic save/report/acknowledgement transaction or new workflow
+store. Source tests and detached demos do not establish deployed or real-host
+behavior.

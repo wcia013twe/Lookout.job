@@ -867,3 +867,26 @@ Local recovery verified: developer149 is live. A single idempotent Whatnot recov
 Human resolve_blocker acceptance now saves answers/notes and clears the blocker with questionsReviewed=false, returning the application to Draft instead of automatically producing Awaiting approval. Muse owns the subsequent preparation/readiness declaration; final human submission approval remains separate. The saved response event and historical decision are preserved. Existing exact-review approvals and other card actions retain their validators. Fictional demo and database regression cover the no-question note case and structured-answer blocker case.
 
 Verified locally:1153 full-suite tests passed/five skipped; focused blocker/response/guide tests, production frontend build, Docker build and data validation passed. Migration20261108233438 applied alone. Whatnot was version-fenced from revision3/Awaiting approval to revision4/Draft by changing only its readiness flag; no résumé, questions, saved ranking, decision history, approval or submission was fabricated. Scoped read_action_board confirms no Whatnot card remains. Hosted release and external Muse preparation remain unverified.
+
+
+## Compact draft handoff and reread recovery (source update)
+
+`prepare_draft` defaults to its compact response and accepts
+`responseMode: "full"` for the persisted application. Muse may use that returned
+saved revision and answer set instead of immediately rereading the draft.
+The owning Action Board card still requires `read_action_board` verification
+before a grouped-input notification. Claim/report, progress/evidence writes and
+event acknowledgement remain separate scoped operations with their existing
+validation and readback requirements.
+
+Recovery guidance starts from current owned application and request records,
+including terminal request history, rather than repeating the previous chat's
+steps. Missing/stale guides reload; stale writes reconcile against current
+revisions. Saved outcomes can recover lost acknowledgements without repeating
+employer work. Uncertain submission remains a stop, and final human approval is
+not implied by answered questions or refreshed context.
+
+This is source-level behavior. The detached demo exercises rereading a saved
+uncertain request after service recreation and rejecting a second pickup;
+reset remains isolated. Gateway activation, actual Muse guide refresh, host
+session retention and real employer behavior require separate verification.

@@ -174,7 +174,7 @@ test('direct search completion requires personal analysis then private publicati
 
 test('broad fit guidance retains clearance unknowns, conditional scenarios and routine authorized preparation',()=>{
  const search=readGuide('career-find-jobs'),apps=readGuide('application-workspace'),digest=readGuide('notifications');
- assert.equal(search.version,21);assert.equal(apps.version,36);assert.equal(digest.version,5);
+ assert.equal(search.version,21);assert.equal(apps.version,37);assert.equal(digest.version,5);
  assert.match(search.instructions,/How good a fit is this job/);
  assert.match(search.instructions,/Missing clearance, citizenship[\s\S]*is unknown, not a negative fact/);
  assert.match(search.instructions,/keep them visible[\s\S]*active clearance required at application\/start/);
@@ -233,4 +233,42 @@ test('AI Apply guides require quiet host-browser preparation, Lookout recovery a
  assert.match(apps.instructions,/call report_application_failure/);assert.match(apps.instructions,/then read_action_board and verify/);assert.match(apps.instructions,/A blocked backend job or a chat-only explanation is not a complete handoff/);
  assert.equal(apps.runner.registration,'paused');assert.deepEqual(apps.runner.tools,[]);
  assert.match(notice.instructions,/continue silently/);assert.match(notice.instructions,/genuinely missing decision/);
+});
+
+
+test('application handoff fixture rereads a saved terminal report after acknowledgement failure without replaying browser work',async()=>{
+ const f=fixture(['application_requested']);f.setFailAck(true);
+ let browserRuns=0,reports=0,reads=0;
+ let job={id:'fictional-record',kind:'application_submit',status:'running',result:{executor:'muse',outcome:'working'}};
+ const call=async(name,args)=>{
+  if(name==='read_backend_jobs'){reads++;return {jobs:[structuredClone(job)]};}
+  return f.call(name,args);
+ };
+ // This is an injected host fixture: the adapter supplies current state; the host must reconcile it.
+ const handle=async({current,guide})=>{
+  assert.equal(guide.id,'application-workspace');
+  if(current.jobs[0].status==='running'){
+   browserRuns++;reports++;job={...job,status:'completed',result:{executor:'muse',outcome:'prepared'}};
+  }else assert.equal(current.jobs[0].result.outcome,'prepared');
+  return {status:'handled'};
+ };
+ const options={call,handle,verify:async()=>job.status==='completed',connectionKey:'application-ack-recovery'};
+ await assert.rejects(consumeMuseChanges(options),/ack offline/);assert.equal(f.acks.size,0);
+ f.setFailAck(false);await consumeMuseChanges(options);
+ assert.equal(reads,2);assert.equal(browserRuns,1);assert.equal(reports,1);assert.equal(f.acks.size,1);
+ assert(!f.calls.some(c=>/claim_application_request|submit_application|queue_application/.test(c.name)));
+});
+
+test('uncertain application fixture stays blocked after rereading a redelivered request',async()=>{
+ const f=fixture(['application_requested']);f.setFailAck(true);
+ const call=async(name,args)=>name==='read_backend_jobs'?{jobs:[{id:'fictional-record',kind:'application_submit',status:'partial',result:{executor:'muse',outcome:'uncertain'}}]}:f.call(name,args);
+ let checks=0;
+ const options={call,connectionKey:'application-uncertain-recovery',handle:async({current})=>{
+  checks++;assert.equal(current.jobs[0].result.outcome,'uncertain');
+  f.state.blocked=true;f.state.resumeCondition='Human verifies the existing employer submission';
+  return {status:'blocked',resumeCondition:f.state.resumeCondition};
+ },verify:async()=>f.state.blocked&&!!f.state.resumeCondition};
+ await assert.rejects(consumeMuseChanges(options),/ack offline/);f.setFailAck(false);
+ await consumeMuseChanges(options);assert.equal(checks,2);assert.equal(f.acks.size,1);
+ assert(!f.calls.some(c=>/submit_application|claim_application_request|queue_application/.test(c.name)));
 });

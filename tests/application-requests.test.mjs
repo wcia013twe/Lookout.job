@@ -40,6 +40,7 @@ test('detached demo traces request, single pickup and review outcome without mar
  const report={...payload,expectedVersion:2,eventKey:'demo-result',outcome:'prepared',summary:'Fictional draft checked; waiting for human review.'};
  const outcome=await api.reportApplicationRequest(report);assert.equal(applicationRequestLabel(outcome.job),'Ready for review');
  assert.deepEqual(await api.reportApplicationRequest(report),outcome);
+ await assert.rejects(api.claimApplicationRequest({...payload,expectedVersion:outcome.job.version,eventKey:'terminal-reclaim'}));
  assert.equal(store.get('workflow.applications.demo-agent-role').status,'Queued');assert.equal(outcome.job.result.verifiedSubmission,false);
  const changes=(await api.readMuseChanges()).items;assert(changes.some(e=>e.kind==='application_requested'&&e.recordId===queued.job.id));assert(changes.some(e=>e.kind==='backend_job_finished'&&e.recordId===queued.job.id));
  const reset=createMemoryStore(fixture.state);assert.equal(reset.get('workflow.applications.demo-agent-role'),undefined);
