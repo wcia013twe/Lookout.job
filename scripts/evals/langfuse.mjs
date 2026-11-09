@@ -11,8 +11,9 @@ const save=(p,data)=>{writeFileSync(p+'.tmp',JSON.stringify(data,null,2)+'\n',{m
 const contains=(obj,id)=>!!obj&&typeof obj==='object'&&(obj.id===id||Object.values(obj).some(v=>contains(v,id)));
 const configs=()=>rows(call(['score-configs','list','--all']));
 async function main() {
-  const {values:v}=parseArgs({options:{setup:{type:'boolean'},record:{type:'string'},verify:{type:'boolean'},'dry-run':{type:'boolean'},'receipt-dir':{type:'string'},help:{type:'boolean'}}});
-  if(v.help||!v.setup&&!v.record){console.log('Usage: npm run evals:langfuse -- --setup | --record <result.json> [--dry-run|--verify] [--receipt-dir <directory>]');return;}
+  const {values:v}=parseArgs({options:{setup:{type:'boolean'},'scores-only':{type:'boolean'},record:{type:'string'},verify:{type:'boolean'},'dry-run':{type:'boolean'},'receipt-dir':{type:'string'},help:{type:'boolean'}}});
+  if(v.help||!v.setup&&!v.record){console.log('Usage: npm run evals:langfuse -- --setup [--scores-only] | --record <result.json> [--dry-run|--verify] [--receipt-dir <directory>]');return;}
+  if(v['scores-only']&&!v.setup)throw Error('--scores-only requires --setup');
   if(v.setup&&v.record)throw Error('Choose setup or a result record');
   const record=v.record?read(v.record):null;
   const preview=record?build(record):null; // Validate before network or mutation.
@@ -33,6 +34,7 @@ async function main() {
         found ||= unwrap(call(['score-configs','create'],spec));
         if(!found.id)throw Error('Score config ID missing');ids[spec.name]=found.id;
       }
+      if(v['scores-only']){console.log(JSON.stringify({version:VERSION,scoreConfigIds:ids,status:'configured',dashboardChanged:false}));return;}
       const dashboards=rows(call(['unstable-dashboards','list','--all'])).filter(x=>x.name===dashboard.name);
       if(dashboards.length>1)throw Error('Multiple dashboards named '+dashboard.name);
       const saved=dashboards[0]||unwrap(call(['unstable-dashboards','create'],dashboard));
@@ -57,7 +59,7 @@ async function main() {
     return;
   }
   const existing=configs(),ids={};
-  for(const spec of scoreConfigs){const found=existing.filter(x=>x.name===spec.name&&!x.isArchived);if(found.length!==1)throw Error('Run --setup first; score configuration missing/ambiguous');ids[spec.name]=found[0].id;}
+  for(const spec of scoreConfigs){if(spec.name.startsWith('eval_v1_cost_')&&!record.cost)continue;const found=existing.filter(x=>x.name===spec.name&&!x.isArchived);if(found.length!==1)throw Error('Run --setup first; score configuration missing/ambiguous');ids[spec.name]=found[0].id;}
   const plan=build(record,ids);
   const receipt=path.join(dir,project+'-'+plan.traceId+'.json');
   // Prevent duplicate scenario attempts within an experiment and silent regrading.
@@ -68,7 +70,7 @@ async function main() {
     const obs=rows(call(['observations','list','--trace-id',plan.traceId,'--fields','core,basic','--all']));
     const scores=rows(call(['scores','list','--trace-id',plan.traceId,'--fields','subject','--all']));
     const experiments=rows(call(['experiments','list','--id',plan.experimentId,'--from-start-time',new Date(record.startedAt*1000-1000).toISOString()]));
-    const verified=obs.some(x=>x.id===plan.rootId)&&experiments.some(x=>x.id===plan.experimentId)&&plan.scores.every(s=>scores.some(x=>x.id===s.id&&x.name===s.name&&x.value===s.value&&x.subject?.id===plan.rootId&&x.subject?.traceId===plan.traceId));
+    const verified=obs.some(x=>x.id===plan.rootId)&&experiments.some(x=>x.id===plan.experimentId)&&plan.scores.every(s=>scores.some(x=>x.id===s.id&&x.name===s.name&&x.value===(s.dataType==='BOOLEAN'?Boolean(s.value):s.value)&&x.subject?.id===plan.rootId&&x.subject?.traceId===plan.traceId));
     save(receipt+'.verification.json',{verified,traceId:plan.traceId,experimentId:plan.experimentId});
     if(!verified)throw Error('Read-back incomplete; retry verification later, never rerun participant');
     console.log(JSON.stringify({verified,traceId:plan.traceId,experimentId:plan.experimentId}));return;

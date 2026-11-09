@@ -1,8 +1,9 @@
 """Create a new private COM1 workspace. Never changes a historical suite or account."""
 import argparse,hashlib,json,shutil,subprocess
 from pathlib import Path
+from cost import validate_policy
 
-def prepare(source,background,destination):
+def prepare(source,background,destination,cost_policy=None):
  source,background,destination=map(lambda p:Path(p).resolve(),[source,background,destination])
  if destination.exists():raise ValueError('Destination already exists; use a new version')
  if not (source/'account.private.json').is_file():raise ValueError('Verified isolated account receipt required')
@@ -39,6 +40,9 @@ def prepare(source,background,destination):
  config=json.loads((source/'runtime-config.json').read_text());config['version']=spec['version'];config['taskId']=spec['taskId'];config['productConfiguration']=spec['policy']['productConfiguration']
  config['requiredGuidance']={'developerVersion':json.loads((repo/'supabase/functions/agent-gateway/instructions.json').read_text())['developerVersion'],'outreachGuideVersion':json.loads((repo/'supabase/functions/agent-gateway/skills/cold-outreach.json').read_text())['version']}
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
+ pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'
+ validate_policy(json.loads(pricing.read_text()))
+ shutil.copyfile(pricing,destination/'cost-policy.json')
  # Freeze the actual executable and inputs, not a parallel copy of their schemas.
  files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]
  files+=list((repo/'scripts/n01').glob('*.py'))+list((repo/'scripts/n01').glob('*.mjs'))
@@ -53,5 +57,5 @@ def prepare(source,background,destination):
   if p.is_file() and not p.is_symlink():p.chmod(0o600)
  return destination
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--background',required=True);p.add_argument('--destination',required=True);a=p.parse_args()
- print(prepare(a.source,a.background,a.destination))
+ p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--background',required=True);p.add_argument('--destination',required=True);p.add_argument('--cost-policy');a=p.parse_args()
+ print(prepare(a.source,a.background,a.destination,a.cost_policy))

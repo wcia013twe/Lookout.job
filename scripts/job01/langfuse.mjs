@@ -4,15 +4,17 @@ import {tracingConfig} from '../../backend/runtime/trace-policy.mjs';
 import {parseArgs} from 'node:util';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {costValues,costProvenance} from '../n01/cost-export.mjs';
 import {cli,unwrap,validateReply} from '../n01/langfuse.mjs';
 import {read,hash} from './task.mjs';
 export function registration(spec,manifest){
- return {datasetName:'Lookout-'+spec.version,id:'lookout-'+spec.version+'-'+manifest.snapshotId,input:{scenario:spec.version,snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json'],expectedTargetCount:spec.expectedTargetCount,stages:spec.stages.map(({id,session,kind,minute})=>({id,session,kind,minute}))},expectedOutput:{completion:'Saved job selections and evidence-grounded analyses reflect retained career and style preferences.'},metadata:{unit:'whole trajectory',status:'prospective',dimensions:['time_to_task','effort_to_task','quality_of_completion'],privateEvidence:'not uploaded',fitReference:'independently reviewed before participant execution'}};
+ return {datasetName:'Lookout-'+spec.version,id:'lookout-'+spec.version+'-'+manifest.snapshotId,input:{scenario:spec.version,snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json'],expectedTargetCount:spec.expectedTargetCount,stages:spec.stages.map(({id,session,kind,minute})=>({id,session,kind,minute}))},expectedOutput:{completion:'Saved job selections and evidence-grounded analyses reflect retained career and style preferences.'},metadata:{unit:'whole trajectory',status:'prospective',dimensions:['time_to_task','effort_to_task','quality_of_completion','cost'],privateEvidence:'not uploaded',fitReference:'independently reviewed before participant execution'}};
 }
 export function scores(run,grade){
  if(grade.evidenceDigest!==hash(run)||grade.episodeId!==run.episodeId)throw Error('Stale grade');
  const traceId=hash([run.version,run.condition,run.episodeId]).slice(0,32),out=[];
  const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'job01_'+name,value,dataType,environment:run.synthetic?'verification':run.pilot?'pilot':'benchmark'});
+ for(const [name,value,type] of costValues(run.cost))add(name,value,type);
  add('time_execution_seconds',grade.timeToTask.executionSeconds);
  for(const [k,v] of Object.entries(grade.effortToTask))add('effort_'+k,v);
  add('quality_review_status',grade.status,'CATEGORICAL');add('run_status',run.status,'CATEGORICAL');
@@ -34,7 +36,7 @@ export function build(run,grade,spec,reg){
  if(run.checkpoints.reduce((n,c)=>n+c.executionSeconds,0)!==grade.timeToTask.executionSeconds)throw Error('Duration mismatch');
  const plan=scores(run,grade),rootId=hash(plan.traceId+'root').slice(0,16);
  const experimentId=hash([spec.version,run.pairId||run.episodeId,run.condition,run.synthetic===true,run.pilot===true]);
- const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':run.pilot?'pilot':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':run.pilot?'pilot':'benchmark','langfuse.trace.name':'JOB01 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.pilot':String(run.pilot===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
+ const base={...(run.cost?{'langfuse.observation.metadata.cost':JSON.stringify(costProvenance(run.cost))}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':run.pilot?'pilot':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':run.pilot?'pilot':'benchmark','langfuse.trace.name':'JOB01 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.pilot':String(run.pilot===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
  const ns=x=>(BigInt(Math.round(x*1e6))*1000n).toString();
  const span=(id,name,start,seconds,parent)=>({traceId:plan.traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(start+seconds),attributes:Object.entries({...base,'langfuse.observation.type':'span'}).map(([k,v])=>attr(k,v))});
  const spans=[span(rootId,'JOB01 job selection trajectory',run.startedAt,grade.timeToTask.executionSeconds)];let cursor=run.startedAt;

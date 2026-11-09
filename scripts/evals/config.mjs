@@ -1,6 +1,8 @@
 export const VERSION = 'eval-v1';
 export const statuses = ['completed','timed_out','execution_failed','setup_failed','artifact_failed','harness_failed'];
 export const scoreConfigs = [
+  {name:'eval_v1_cost_coverage',dataType:'CATEGORICAL',categories:['complete','partial','unknown'].map((label,value)=>({label,value})),description:'Provider usage coverage, not grading success.'},
+  ...['input_tokens','cached_input_tokens','output_tokens','estimated_model_usd','estimated_total_usd','toolUsd','infrastructureUsd','lookoutProcessingUsd','attempted_stages','covered_stages'].map(key=>({name:'eval_v1_cost_'+key,dataType:'NUMERIC',minValue:0,description:'Whole-trajectory cost accounting. Missing stays absent; USD estimates are API-equivalent, not subscription charges.'})),
   {name:'eval_v1_task_success',dataType:'BOOLEAN',description:'Whole-trajectory success under the declared grader. Missing/unreviewed judgments are omitted, never zero.'},
   {name:'eval_v1_quality',dataType:'NUMERIC',minValue:0,maxValue:1,description:'Reviewed normalized rubric score. Compare only matching scenario and grader versions.'},
   {name:'eval_v1_active_seconds',dataType:'NUMERIC',minValue:0,description:'Sum of active execution seconds across wakes; includes failed attempts. Excludes simulated waiting and export time.'},
