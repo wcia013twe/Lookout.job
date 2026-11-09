@@ -27,6 +27,7 @@ if(mode==='snapshot'){
  write(sourceManifest,out);console.log('Dedicated JOB02 state captured');
 }else{
  if(fs.existsSync(file))throw Error('Receipt already exists; never create/retry over an existing account');
+ fs.mkdirSync(root,{recursive:true,mode:0o700});
  const source=JSON.parse(fs.readFileSync(sourceManifest)),original=structuredClone(source.settings);
  const pdf=fs.readFileSync(resumeFile);
  if(original.answers.length||original.resumes.some(r=>r.content_hash!==hash(pdf)||!r.object_path))throw Error('Candidate needs additional provenance/files');

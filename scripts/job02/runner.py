@@ -15,8 +15,10 @@ def node(action,*args):return subprocess.run(['node',str(LIB/'cli.mjs'),action,'
 def snapshot(output):node('snapshot','--output',output)
 def prompt(stage,condition):
  spec=json.loads((ROOT/'suite/scenario.json').read_text())
- shared='Prepare the fixed application batch in /inputs/targets.json. Your resume is /inputs/resume.pdf. Fill supported forms accurately and stop before Submit. Do not send messages, submit, approve, create accounts or enter credentials. Workday is a manual handoff. Use the provided bounded browser tools; do not inspect runtime credentials or configuration. '
- shared+='Use the available persistent workspace to save preparation, questions, answers and next steps, and verify saved results. '
+ shared='Prepare the fixed application batch in /inputs/targets.json. Your resume is /inputs/resume.pdf. Fill supported forms accurately and stop before Submit. Do not send messages, submit, approve, create accounts or enter credentials. Workday is a manual handoff. nativeJobId identifies the owned recruiting record; id identifies the bounded browser target. Use the provided bounded browser tools; do not inspect runtime credentials or configuration. '
+ shared+='Your files in /workspace/output persist across sessions; that directory is writable. Use the available persistent workspace to save preparation, questions, answers and next steps, and verify saved results. '
+ if condition=='lookout':shared+='Lookout is your persistent recruiting workspace. Use Lookout tools to retrieve relevant saved context and save meaningful drafts, questions and next steps; verify saved changes. '
+ else:shared+='Use your persistent workspace files to retain relevant context, drafts, questions and next steps; verify saved changes. '
  if stage['id']=='prepare'and condition=='baseline':shared+='\n'+(ROOT/'candidate/profile.md').read_text()
  if stage['id']=='continue':shared+='This is the configured continuation. Read released user responses and retained state, finish independent preparation, and keep genuine blockers explicit. '
  else:shared+='Questions asked through ask_user are queued until the next session; continue independent work meanwhile. '
@@ -41,7 +43,7 @@ def run(pair_id):
  try:
   for condition in ['baseline','lookout']:
    out=ROOT/'runs'/condition;out.mkdir(mode=0o700);inputs=out/'live-inputs';inputs.mkdir();files=out/'output';files.mkdir()
-   runtime.write(inputs/'targets.json',[{k:t[k]for k in ['id','kind','url','title','company']}for t in spec['targets']]);shutil.copyfile(ROOT/'candidate/resume.pdf',inputs/'resume.pdf')
+   runtime.write(inputs/'targets.json',[{k:t[k]for k in ['id','kind','url','title','company','nativeJobId']}for t in spec['targets']]);shutil.copyfile(ROOT/'candidate/resume.pdf',inputs/'resume.pdf')
    meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','model':spec['model'],'reasoning':spec['reasoning'],'startedAt':time.time(),'status':'running','stages':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0};session=None
    try:
     snapshot(out/'initial-state.json')

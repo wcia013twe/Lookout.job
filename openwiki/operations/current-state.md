@@ -1160,3 +1160,8 @@ Prospective COM3-stream-v3 / COM3-grade-v3 and COM4-stream-v4 / COM4-grade-v3 us
 ### Communication clearing preflight
 
 COM01 v7/COM02 v6 add equal durable-output obligations, corrected chronology, negative-save evidence validation, exact-fixture dispatch probes and existing native application rediscovery. COM02 setup performs a locked native write/readback/restoration smoke; it is not read-only. Focused checks and live preflight pass; pilot evidence and independent grading remain required. See [repair protocol](../../docs/communication-repairs.md).
+
+
+### JOB01 controlled pilot closure
+
+The JOB01 controlled v5 pair has a read-only clearance at `/Volumes/External SSD/Lookout/tmp/job01-controlled-v5-20261109-1/receipts/clearance.json`, with private final review under that root's `grading/`. It verifies immutable runtime/evidence, matched inputs, fresh independent grading/native confirmation and Langfuse read-backs. Baseline hit its final-stage timeout; Lookout completed process stages; both had quality gaps. Returned target membership and durable saving are separate checks. Dollar costs are unknown, with baseline usage coverage three of four stages. This is controlled-harness clearance, not a general effectiveness claim.

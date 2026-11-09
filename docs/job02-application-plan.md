@@ -293,3 +293,17 @@ receipt directory through `scripts/job02/langfuse.mjs`; no private candidate fac
 answers, raw transcripts or browser field values are uploaded. Model/subscription
 availability is established only by the actual single paired attempt; failures
 remain failures with no paid-API fallback, model substitution or rescue.
+
+
+## First controlled pair: validity hold
+
+The single completed controlled pair is preserved at `/Volumes/External SSD/Lookout/tmp/job02-controlled-clearing-v1-20261109-4`. Fresh independent review found no comparable-effectiveness conclusion is justified: supplied résumé/profile identity differed, exact-field grading privileged one source, and a narrow necessary product-use question received different actor facts from a combined motivation question. Native draft writes returned owned-record-not-found because supplied target aliases had no corresponding owned native records. The container had writable `/workspace/output`, but the common task prompt did not identify it. These are harness limitations; do not turn computed exact-reference scores into a winner. Any subsequent trial requires prospective repairs, a new dedicated owner/freeze, actual readiness receipts and independent grading.
+
+Prospective readiness now additionally requires four actual, hash-bound receipts:
+
+- `candidate_consistency`: compare the supplied résumé, readable profile and native profile with each exact reference; resolve conflicts in the next approved candidate pack or mark alternatives/unknowns fairly before freezing. Never change the preserved pack.
+- `actor_equivalence`: replay combined and narrower questions, paraphrases, unknowns and ambiguity against both response ingress paths; equivalent requested facts must yield equivalent facts. The example product-use matcher regression covers the observed narrow question; it is not proof of complete semantic coverage.
+- `owned_target_lifecycle`: on dedicated sacrificial records, prove each exact target ID/URL maps to an owned native job and can prepare/read back its draft, manual card or answer card. The actual participant owner must have the frozen equivalent prerequisites. Schema discovery or an unrelated successful card does not satisfy this receipt.
+- `storage_orientation`: prove the exact participant mount is writable, survives a fresh session, and the identical task request names `/workspace/output`. Native storage remains the product default; both conditions know their available file path.
+
+All four are mandatory gates. Each needs an actual passing receipt bound to the next freeze before its trial. Controlled fixtures remain isolated; live employer forms still have separate custom-widget/upload/autosave blockers.

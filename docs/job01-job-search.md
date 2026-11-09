@@ -1,7 +1,7 @@
 # JOB01: Job selection and analysis across sessions
 
 JOB01-search-v5 / JOB01-review-v2 grades **whether all ten predetermined targets appear in the returned
-saved-job list at each grading turn**, plus the quality of their analyses. Ten is
+target list at each grading turn**, plus the quality of their analyses. Ten is
 not an output cap. Additional suitable roles are allowed and reviewed separately.
 A later turn has its own expected ten and requires a complete updated shortlist,
 not only additions. This is lookup and analysis, not interest tracking. No application drafting, filling or sending.
@@ -252,3 +252,8 @@ prospective dataset before inference and pass the frozen runtime configuration's
 `langfuseReceiptDirectory` to every registration/export/verification command. Only
 structural metrics are exported. A fresh independent grader reviews both terminal
 participants; completion alone does not establish quality.
+
+
+## Controlled v5 closeout
+
+The preserved paired pilot at `/Volumes/External SSD/Lookout/tmp/job01-controlled-v5-20261109-1` cleared its harness audit: `receipts/clearance.json` verifies frozen inputs/runtime, identical task inputs, model/session controls, 136 artifact hashes, fresh final grading, native confirmation and both Langfuse read-backs. Private semantic evidence remains in `grading/`. Baseline reached its fixed final-stage timeout; Lookout completed all process stages. Both returned saved work and both had final quality gaps. Target-list membership is graded independently from durable saving; a returned target need not be saved perfectly, and a saved record outside the returned list does not count as returned. Participant dollar costs remain unknown; baseline usage covers three of four stages. This closes the controlled harness run, without asserting broader product effectiveness.

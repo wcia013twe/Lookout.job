@@ -107,6 +107,20 @@ test('controlled registration/export binds actual dataset and excludes private c
 
 test('prepare creates launcher directories before frozen readiness and no attempt',()=>{
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'job02-prepare-')),candidate=root+'/source-candidate';fs.mkdirSync(candidate);fs.writeFileSync(candidate+'/profile.md','Fictional candidate');fs.writeFileSync(candidate+'/resume.pdf','%PDF fictional');
- write(root+'/account.private.json',{apiUrl:'http://127.0.0.1:54321',mcpUrl:'http://127.0.0.1:8080/mcp',email:'job02-pilot-00000000-0000-0000-0000-000000000000@example.test',status:'verified'});write(root+'/runtime-input.json',{model:scenario.model,reasoning:scenario.reasoning,networkPolicy:'JOB01-isolated-inference',imageId:'sha256:fictional'});
+ write(root+'/cloned-context.private.json',{settings:{profile:{facts:{name:'Fictional candidate'}}}});write(root+'/owned-targets.private.json',{status:'fixture'});write(root+'/account.private.json',{apiUrl:'http://127.0.0.1:54321',mcpUrl:'http://127.0.0.1:8080/mcp',email:'job02-pilot-00000000-0000-0000-0000-000000000000@example.test',status:'verified'});write(root+'/runtime-input.json',{model:scenario.model,reasoning:scenario.reasoning,networkPolicy:'JOB01-isolated-inference',imageId:'sha256:fictional'});
  const r=spawnSync('node',['scripts/job02/cli.mjs','prepare','--root',root,'--candidate',candidate,'--reference','examples/job02/reference.template.json','--runtime',root+'/runtime-input.json'],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.equal(fs.statSync(root+'/runs').isDirectory(),true);assert.equal(fs.statSync(root+'/receipts').isDirectory(),true);assert.equal(fs.existsSync(root+'/pilot-attempt.json'),false);
 });
+
+// These gaps were observed in the preserved first controlled pair.
+test('prospective readiness requires identity, equivalent responses, owned records and storage proof',()=>{
+ const r=root();const result=readiness(r,{});
+ for(const gate of ['candidate_consistency','actor_equivalence','owned_target_lifecycle','storage_orientation'])assert.ok(result.errors.includes('Missing actual bound gate: '+gate));
+});
+test('narrow necessary product-use question receives same reviewed fact as combined motivation question',()=>{
+ const narrow=actorAnswer(actor,'personal','Have you used Northstar Tools before?');
+ const broad=actorAnswer(actor,'personal','Why do you want to apply, and have you used Northstar Tools before?');
+ assert.equal(narrow.factId,'motivation');assert.equal(narrow.answer,broad.answer);
+ assert.equal(actorAnswer(actor,'clean','Have you used Northstar Tools before?').factId,null);
+});
+
+test('receipt gate names stay unique',()=>assert.equal(new Set(gates).size,gates.length));

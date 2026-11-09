@@ -29,6 +29,12 @@ def probe(root,output):
      with urllib.request.urlopen(req,timeout=110)as response:reply=json.load(response)
      if reply.get('error')or reply.get('result',{}).get('isError'):raise RuntimeError('Actual preflight operation failed: '+str(reply)[:250])
      return reply
+    # Verify exact writable mount and persistence through an independent fresh container/process, without inference.
+    payload='JOB02 persistent storage probe'
+    subprocess.run(['docker','exec',session.name,'python3','-c',"from pathlib import Path;Path('/workspace/output/storage-probe.txt').write_text('JOB02 persistent storage probe')"],check=True,capture_output=True,timeout=30)
+    subprocess.run(['docker','run','--rm','--read-only','--network','none','--mount',f'type=bind,source={out},target=/workspace/output',job.runtime.IMAGE,'python3','-c',"from pathlib import Path;assert Path('/workspace/output/storage-probe.txt').read_text()=='JOB02 persistent storage probe'"],check=True,capture_output=True,timeout=30)
+    if '/workspace/output' not in job.prompt({'id':'prepare'},condition):raise RuntimeError('Participant prompt omits actual persistent path')
+    job.runtime.write(stage/'storage-verification.json',{'status':'passed','actualMountWritable':True,'freshContainerReadback':True,'promptNamesPath':'/workspace/output' in job.prompt({'id':'prepare'},condition),'inferenceExecuted':False})
     initial=request('initialize',{'protocolVersion':'2024-11-05','capabilities':{},'clientInfo':{'name':'JOB02-preflight','version':'3'}});job.runtime.write(stage/'actual-initialize.json',initial)
     tools=request('tools/list',{});job.runtime.write(stage/'actual-tools.json',tools)
     names={t['name']for t in tools['result']['tools']}
@@ -45,8 +51,8 @@ def probe(root,output):
    finally:
     if session:session.close()
   report['status']='passed';job.runtime.write(output/'verification.json',report)
-  artifacts={str(p):hashlib.sha256(p.read_bytes()).hexdigest()for p in output.rglob('*')if p.is_file()and p.name in ['verification.json','actual-tools.json','actual-initialize.json','actual-discovery.json','browser-open.json','final.json','final-clean.png','isolation.json']}
-  for gate in ['browser_parity','native_schemas']:
+  artifacts={str(p):hashlib.sha256(p.read_bytes()).hexdigest()for p in output.rglob('*')if p.is_file()and p.name in ['verification.json','actual-tools.json','actual-initialize.json','actual-discovery.json','browser-open.json','final.json','final-clean.png','isolation.json','storage-verification.json']}
+  for gate in ['browser_parity','native_schemas','storage_orientation']:
    job.runtime.write(output/(gate+'.json'),{'id':'JOB02-'+gate+'-'+str(time.time_ns()),'gate':gate,'status':'passed','synthetic':False,'fixtureForms':True,'freezeHash':hashlib.sha256((root/'freeze.json').read_bytes()).hexdigest(),'artifacts':artifacts,'errorIds':[]})
  except Exception as e:
   report.update(status='failed',errorType=type(e).__name__,error=str(e)[:400]);job.runtime.write(output/'failure.json',report)
