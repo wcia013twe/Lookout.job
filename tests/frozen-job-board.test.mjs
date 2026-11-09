@@ -31,6 +31,6 @@ with tempfile.TemporaryDirectory() as temp:
  (tamper/'jobs.json').write_text('[]')
  try: x.verify(tamper); raise AssertionError('tampering accepted')
  except ValueError: pass
-`], {encoding:'utf8'});
+`], {encoding:'utf8', env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});
  assert.equal(result.status,0,result.stderr);
 });
