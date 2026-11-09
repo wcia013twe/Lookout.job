@@ -43,7 +43,9 @@ export function grade(spec,ref,board,run,review){
  for(const c of run.checkpoints){
   const stage=spec.stages.find(s=>s.id===c.stage);if(!stage||checkpoints.some(x=>x.stage===c.stage))throw Error('Invalid checkpoint');
   if(!Number.isFinite(c.executionSeconds)||c.executionSeconds<0)throw Error('Invalid duration');duration+=c.executionSeconds;
-  const allowed=new Map(ref.batches[stage.batch].map(j=>[j.id,j]));
+  const current=ref.batches[stage.batch];
+  // Saved lists are cumulative: retaining earlier roles is not an unsupported selection.
+  const allowed=new Map((stage.batch==='later'?[...ref.batches.initial,...current]:current).map(j=>[j.id,j]));
   const saved=new Set(c.savedJobIds);if(saved.size!==c.savedJobIds.length)throw Error('Duplicate saved IDs');
   const fit=stage.id==='initial_search'?'initialFit':'updatedFit';
   const strong=[...allowed.values()].filter(j=>j[fit]==='strong');
