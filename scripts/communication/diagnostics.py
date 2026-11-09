@@ -4,11 +4,16 @@ from pathlib import Path
 
 def call_metrics(stages):
  counts={k:0 for k in ['tool_discovery_calls','tool_read_calls','tool_write_calls','tool_user_calls','tool_other_calls','mcp_control_requests','tool_failed_calls','tool_unanswered_calls','tool_exact_retries_after_failure','tool_calls_after_same_tool_failure']}
+ measured=0;timing={k:0 for k in ['mcp_startup_seconds','mcp_startup_response_bytes','mcp_discovery_seconds','mcp_discovery_response_bytes','mcp_task_tools_seconds','mcp_task_tools_response_bytes']}
  for stage in stages:
   pending={};failed=set();failed_names=set()
   p=Path(stage)/'lookout-trace.jsonl'
   for line in p.read_text().splitlines() if p.exists() else []:
    row=json.loads(line);d=row.get('data',{})
+   if row.get('type')=='mcp.measurement':
+    measured+=1
+    group='startup' if d['method'] in ['initialize','tools/list'] else 'discovery' if d.get('tool') in ['discover_tools','discover_toolkit','read_guide','read_developer_context'] else 'task_tools'
+    timing['mcp_'+group+'_seconds']+=d['durationSeconds'];timing['mcp_'+group+'_response_bytes']+=d['responseBytes']
    if row.get('type')=='mcp.request':
     if d.get('method')!='tools/call':counts['mcp_control_requests']+=1;continue
     params=d.get('params',{});name=params.get('name','');args=params.get('arguments',{})
@@ -26,6 +31,7 @@ def call_metrics(stages):
     # A transport error has no trustworthy request identity; unresolved calls stay explicit.
     pass
   counts['tool_unanswered_calls']+=len(pending)
+ if measured:counts.update(timing,mcp_measured_requests=measured)
  return counts
 
 def verify_contact_writer(root):

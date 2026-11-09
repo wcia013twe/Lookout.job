@@ -1,5 +1,5 @@
 {
-  "version": "COM1-stream-v5",
+  "version": "COM1-stream-v6",
   "taskId": "COM1",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -206,8 +206,8 @@
     "wakeDelayMinutes": 0,
     "baselineInitiationDelayMinutes": 0,
     "productConfiguration": {
-      "source": "controlled host configuration, not claimed live account schedule",
-      "scheduledNetworkingEnabled": true,
+      "source": "Controlled matched user requests; no scheduled initiation benefit is measured.",
+      "scheduledNetworkingEnabled": false,
       "permittedActions": [
         "read",
         "prepare",
@@ -216,7 +216,11 @@
       "sendAllowed": false
     },
     "retainedReleasedEmails": true,
-    "clockOrigin": "2026-11-09T00:00:00Z"
+    "clockOrigin": "2026-11-09T00:00:00Z",
+    "comparisonMode": "matched-intent-native-mcp",
+    "identicalTaskRequests": true,
+    "nativeMcpDiscovery": true,
+    "measuresProactiveInitiation": false
   },
   "userAnswers": [
     {

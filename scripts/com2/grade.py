@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
-GRADER_VERSION='COM2-grade-v3'
+GRADER_VERSION='COM2-grade-v4'
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -57,7 +57,7 @@ def validate_evidence(run,spec,m):
   if sm['status']=='completed' and not rows(sd/'trace.jsonl'):raise ValueError('Completed stage has empty trace')
   d=read(sd/'delivery.json');expected=spec['stages'][i-1]
   if d.get('stage')!=i or d.get('eventId')!=expected['id'] or d.get('releasedMinute')!=expected['minute']:raise ValueError('Delivery differs from scenario')
-  if d.get('kind')!=expected['kind'] or d.get('assignedInitiation')!=(m['condition']=='baseline' and expected['kind']=='external') or d.get('assignedOnboarding')!=(expected['kind']=='onboarding') or d.get('necessaryUserUpdate')!=(expected['kind']=='user_update'):raise ValueError('Delivery interaction classification differs from scenario')
+  if d.get('kind')!=expected['kind'] or d.get('assignedInitiation')!=(expected['kind']=='external') or d.get('assignedOnboarding')!=(expected['kind']=='onboarding') or d.get('necessaryUserUpdate')!=(expected['kind']=='user_update'):raise ValueError('Delivery interaction classification differs from scenario')
   if not isinstance(d.get('triggerMinute'),(int,float)) or not math.isfinite(d['triggerMinute']) or d['triggerMinute']<d['releasedMinute']:raise ValueError('Invalid delivery time')
   reached[i]=sd
  if list(reached)!=list(range(1,len(reached)+1)):raise ValueError('Noncontiguous stage receipts')
@@ -143,7 +143,7 @@ def grade(run,spec,review=None):
    check_review_evidence(run,item,[rule['stage']],item['outcomeVerified'],native_write=rule.get('nativeWrite',False))
    status='used_correctly' if item['outcomeVerified'] else 'attempted_but_failed'
   adherence[key]={'status':status,'calls':relevant}
- metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'attempted_participant_turns':len(stages),'scheduled_wakes':sum(d['kind']=='external' for d in deliveries) if m['condition']=='lookout' else 0,'stage_coverage':len(stages)/len(spec['stages'])}
+ metrics={'execution_seconds':execution,'tool_calls':toolcount,'observable_steps':stepcount,'assigned_initiations':sum(d['assignedInitiation'] for d in deliveries),'assigned_onboarding':sum(d['assignedOnboarding'] for d in deliveries),'necessary_user_updates':sum(d['necessaryUserUpdate'] for d in deliveries),'observed_question_turns':len(questions),'completed_execution':int(m['status']=='completed'),'attempted_participant_turns':len(stages),'scheduled_wakes':0,'stage_coverage':len(stages)/len(spec['stages'])}
  metrics.update(call_metrics(stages.values()))
  for category in ['clarification','context_restatement','correction','reminder','approval']:
   metrics['observed_'+category+'_turns']=sum(q['category']==category for q in questions)

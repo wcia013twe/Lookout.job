@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
-GRADER_VERSION='COM4-grade-v2'
+GRADER_VERSION='COM4-grade-v3'
 from terminal_state import validate_terminal_state
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 

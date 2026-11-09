@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
 from capture import validate as validate_capture
-GRADER_VERSION='COM3-grade-v2'
+GRADER_VERSION='COM3-grade-v3'
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
