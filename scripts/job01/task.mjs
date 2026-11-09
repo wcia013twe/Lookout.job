@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Host-neutral N02 packets and evidence grading. Never invokes a participant.
+// Host-neutral JOB01 packets and evidence grading. Never invokes a participant.
 import {readFileSync, writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {parseArgs} from 'node:util';
@@ -74,7 +74,7 @@ export function grade(spec,ref,board,run,review){
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{
  const {values:v}=parseArgs({options:{source:{type:'string'},reference:{type:'string'},scenario:{type:'string'},stage:{type:'string'},condition:{type:'string'},configuration:{type:'string'},run:{type:'string'},review:{type:'string'},output:{type:'string'}}});
- const spec=read(v.scenario||new URL('../../examples/n02/scenario.json',import.meta.url)),board=source(v.source),ref=read(v.reference);
+ const spec=read(v.scenario||new URL('../../examples/job01/scenario.json',import.meta.url)),board=source(v.source),ref=read(v.reference);
  const result=v.run?grade(spec,ref,board,read(v.run),v.review?read(v.review):null):packet(spec,ref,board,v.stage,v.condition,v.configuration?read(v.configuration):null);
  const out=JSON.stringify(result,null,2)+'\n';if(v.output)writeFileSync(v.output,out,{flag:'wx',mode:0o600});else process.stdout.write(out);
  }catch(e){console.error(e.message);process.exitCode=1;}

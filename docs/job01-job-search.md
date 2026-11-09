@@ -1,6 +1,6 @@
-# N02: Job selection and analysis across sessions
+# JOB01: Job selection and analysis across sessions
 
-N02-search-v3 grades **whether all ten predetermined targets appear in the returned
+JOB01-search-v1 grades **whether all ten predetermined targets appear in the returned
 saved-job list at each grading turn**, plus the quality of their analyses. Ten is
 not an output cap. Additional suitable roles are allowed and reviewed separately.
 A later turn has its own expected ten. No application drafting, filling or sending.
@@ -21,7 +21,7 @@ Jobright detail evidence; they do not establish live employer availability.
 
 The condition-specific initiation is deliberate. Email bodies and job records
 match; future evidence and target labels remain private. Baseline prompts do not
-replay preferences. `examples/n02/scenario.json` owns stage requests and timing.
+replay preferences. `examples/job01/scenario.json` owns stage requests and timing.
 
 ## Private reference and packets
 
@@ -54,7 +54,7 @@ or deep scope. Expected targets are a predefined evaluation subset, not exhausti
 corpus ground truth. Candidate conflict or unknown citizenship stays uncertain.
 
 ```sh
-node scripts/n02/task.mjs --source <snapshot-directory> --reference <private-reference.json> --stage initial_search --condition baseline --output <new-packet.json>
+node scripts/job01/task.mjs --source <snapshot-directory> --reference <private-reference.json> --stage initial_search --condition baseline --output <new-packet.json>
 ```
 
 Lookout also needs `--configuration <private-config.json>` with configuration
@@ -80,7 +80,7 @@ style preferences, style adherence and preserved interests. Missing review stays
 review_required. Adherence uses scenario keys with status/evidence separately.
 
 ```sh
-node scripts/n02/task.mjs --source <snapshot-directory> --reference <private-reference.json> --run <run.json> --review <review.json> --output <new-grade.json>
+node scripts/job01/task.mjs --source <snapshot-directory> --reference <private-reference.json> --run <run.json> --review <review.json> --output <new-grade.json>
 ```
 
 - **Time:** actual execution duration separately from simulated completion time.
@@ -103,13 +103,13 @@ spans explicitly describe a duration-derived synthetic timeline, not wall-clock
 capture. Keep the same project and receipt directory:
 
 ```sh
-node --env-file=<private-env> scripts/n02/langfuse.mjs --register --manifest <manifest.json> --receipt-dir <private-receipts>
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --dry-run
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts>
-node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --verify
+node --env-file=<private-env> scripts/job01/langfuse.mjs --register --manifest <manifest.json> --receipt-dir <private-receipts>
+node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --dry-run
+node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts>
+node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --verify
 ```
 
-V1/v2 scenarios and live datasets remain immutable; v3 uses separate registration.
+Historical N02 v1/v2/v3 scenarios remain in examples/n02, and live N02 datasets stay immutable. JOB01 has its own registration.
 Synthetic telemetry verifies plumbing, not participant quality. Fix actor answers,
 budgets, timing, target references and configuration before a paired pilot. Preserve
 failures and distinguish harness failures; no rescue or silent retries. Do not run

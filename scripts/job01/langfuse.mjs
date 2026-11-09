@@ -12,7 +12,7 @@ export function registration(spec,manifest){
 export function scores(run,grade){
  if(grade.evidenceDigest!==hash(run)||grade.episodeId!==run.episodeId)throw Error('Stale grade');
  const traceId=hash([run.version,run.condition,run.episodeId]).slice(0,32),out=[];
- const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'n02_'+name,value,dataType,environment:run.synthetic?'verification':'benchmark'});
+ const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'job01_'+name,value,dataType,environment:run.synthetic?'verification':'benchmark'});
  add('time_execution_seconds',grade.timeToTask.executionSeconds);
  for(const [k,v] of Object.entries(grade.effortToTask))add('effort_'+k,v);
  add('quality_review_status',grade.status,'CATEGORICAL');add('run_status',run.status,'CATEGORICAL');
@@ -34,25 +34,25 @@ export function build(run,grade,spec,reg){
  if(run.checkpoints.reduce((n,c)=>n+c.executionSeconds,0)!==grade.timeToTask.executionSeconds)throw Error('Duration mismatch');
  const plan=scores(run,grade),rootId=hash(plan.traceId+'root').slice(0,16);
  const experimentId=hash([spec.version,run.pairId||run.episodeId,run.condition,run.synthetic===true]);
- const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':'benchmark','langfuse.trace.name':'N02 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
+ const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':'benchmark','langfuse.trace.name':'JOB01 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
  const ns=x=>(BigInt(Math.round(x*1e6))*1000n).toString();
  const span=(id,name,start,seconds,parent)=>({traceId:plan.traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(start+seconds),attributes:Object.entries({...base,'langfuse.observation.type':'span'}).map(([k,v])=>attr(k,v))});
- const spans=[span(rootId,'N02 job selection trajectory',run.startedAt,grade.timeToTask.executionSeconds)];let cursor=run.startedAt;
+ const spans=[span(rootId,'JOB01 job selection trajectory',run.startedAt,grade.timeToTask.executionSeconds)];let cursor=run.startedAt;
  for(const c of run.checkpoints){if(!Number.isFinite(c.executionSeconds)||c.executionSeconds<0)throw Error('Invalid checkpoint duration');spans.push(span(hash(plan.traceId+c.stage).slice(0,16),c.stage,cursor,c.executionSeconds,rootId));cursor+=c.executionSeconds;}
  return {...plan,rootId,experimentId,spans,scores:plan.scores.map(s=>({...s,observationId:rootId}))};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{
  const {values:v}=parseArgs({options:{scenario:{type:'string'},manifest:{type:'string'},register:{type:'boolean'},'dry-run':{type:'boolean'},verify:{type:'boolean'},'receipt-dir':{type:'string'},run:{type:'string'},grade:{type:'string'}}});
- const spec=read(v.scenario||new URL('../../examples/n02/scenario.json',import.meta.url));
+ const spec=read(v.scenario||new URL('../../examples/job01/scenario.json',import.meta.url));
  const config=tracingConfig(),project=hash(config?[config.baseUrl,config.publicKey]:['offline']);
- const dir=path.resolve(v['receipt-dir']||'.langfuse-exports/n02');mkdirSync(dir,{recursive:true,mode:0o700});
+ const dir=path.resolve(v['receipt-dir']||'.langfuse-exports/job01');mkdirSync(dir,{recursive:true,mode:0o700});
  const regfile=path.join(dir,project+'-'+spec.version+'-dataset.json');
  if(v.register){
   const manifest=read(v.manifest),item=registration(spec,manifest);
   if(v['dry-run'])console.log(JSON.stringify(item,null,2));
   else {
-   const ds=unwrap(cli(['datasets','create'],{name:item.datasetName,description:'N02 bounded job selection and analysis across sessions; prospective infrastructure only.'}));const saved=unwrap(cli(['dataset-items','create'],item));
+   const ds=unwrap(cli(['datasets','create'],{name:item.datasetName,description:'JOB01 bounded job selection and analysis across sessions; prospective infrastructure only.'}));const saved=unwrap(cli(['dataset-items','create'],item));
    if(!ds.id||!saved.id)throw Error('Registration IDs missing');
    const reg={datasetId:ds.id,itemId:saved.id,scenarioHash:hash(spec),snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json']};
    writeFileSync(regfile,JSON.stringify(reg,null,2)+'\n',{mode:0o600});console.log(JSON.stringify({...reg,status:'registered_no_participant_run'}));
@@ -76,7 +76,7 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
    try{
     if(existsSync(receipt))console.log(JSON.stringify({status:'already_accepted',traceId:plan.traceId}));
     else {
-     validateReply(cli(['otel','export-traces'],{resourceSpans:[{resource:{attributes:[attr('service.name','lookout-n02')]},scopeSpans:[{scope:{name:'lookout-n02',version:spec.version},spans:plan.spans}]}]}));
+     validateReply(cli(['otel','export-traces'],{resourceSpans:[{resource:{attributes:[attr('service.name','lookout-job01')]},scopeSpans:[{scope:{name:'lookout-job01',version:spec.version},spans:plan.spans}]}]}));
      validateReply(cli(['scores','create'],plan.scores));
      const result={status:'accepted_not_verified',traceId:plan.traceId,experimentId:plan.experimentId};writeFileSync(receipt,JSON.stringify(result)+'\n',{mode:0o600});console.log(JSON.stringify(result));
     }
