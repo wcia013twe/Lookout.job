@@ -570,3 +570,7 @@ This change reduces redundant draft reads through existing scoped writers. It
 introduces no atomic save/report/acknowledgement transaction or new workflow
 store. Source tests and detached demos do not establish deployed or real-host
 behavior.
+
+### Conditional preparation on AI Apply
+
+Application guide39/developer153 tells Muse to reuse current saved preparation and call the existing prepare_draft only for missing/incomplete preparation, new employer questions, or relevant changed facts/materials. AI Apply itself remains a queue operation. Freshness is checked against current relevant sources; a context-version change alone does not justify rewriting all answers. The filler preserves nonempty answers, so changed facts require explicit reconciliation while preserving human decisions. An unchanged approved draft is reused. New live-form questions pass through the same filler before remaining personal decisions are grouped on the existing board card. This is agent guidance, not a new automatic queue hook or evidence of live host adoption.

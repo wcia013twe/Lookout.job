@@ -132,3 +132,20 @@ test('application guide requires saved, verified employer questions before notif
  assert.match(guide.instructions,/A chat bundle alone is not a saved handoff/);
  assert.match(guide.instructions,/inspectionComplete=false/);
 });
+
+
+test('AI Apply conditionally prepares changed or incomplete work and reuses unchanged approved drafts',()=>{
+ const guide=readGuide('application-workspace').instructions;
+ const section=guide.split('## Decide whether preparation is needed')[1].split('\n## ')[0];
+ assert.match(section,/preparation is missing or incomplete/);
+ assert.match(section,/newly observed or conditional employer questions need filling/);
+ assert.match(section,/relevant facts, permitted answers or selected resume have changed/);
+ assert.match(section,/Otherwise reuse the current saved draft and prepared materials/);
+ assert.match(section,/Never rewrite an unchanged approved draft/);
+ assert.match(section,/same application\/jobId and current expectedRevision/);
+ assert.match(section,/preserving existing questions and human answers/);
+ assert.match(section,/use answerUpdates for supported corrections/);
+ assert.match(section,/do not assume rerunning it replaces stale values/);
+ assert.match(section,/ask about conflicts rather than silently overwriting them/);
+ assert.match(section,/Material corrections invalidate approval/);
+});
