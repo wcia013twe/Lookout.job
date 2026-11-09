@@ -20,7 +20,7 @@ def prepare(source,background,destination,cost_policy=None):
  profile=initial_source['profileFacts']
  destination.mkdir(mode=0o700,parents=True)
  for name in ['suite','background','runs']:(destination/name).mkdir()
- for name in ['account.private.json','cloned-context.private.json','grader.private.json']:shutil.copyfile(source/name,destination/name)
+ for name in ['account.private.json','cloned-context.private.json','grader.private.json','source-manifest.private.json']:shutil.copyfile(source/name,destination/name)
  (destination/'account.lock').symlink_to(source/'account.lock')
  apps=[fixture['application'],fixture['sentinelApplication']]
  for app in apps:app['jobId']+='-'+account['userId']

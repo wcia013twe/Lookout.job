@@ -1,5 +1,7 @@
 # COM3: Appropriate connections after applying
 
+Current prospective comparison: COM3-stream-v3 / COM3-grade-v3. Both conditions receive identical task requests and released evidence; scheduled initiation is disabled. Native Lookout startup, default tools and participant-driven discovery are retained with account/tool isolation. Earlier notification-stream descriptions below are historical where they describe generic wakes. No proactive effort advantage is measured.
+
 **6 sessions; 10 staged interactions per condition.** Implemented as COM3-stream-v1; fixed-corpus search approved. One interaction here means one released participant turn, not a measured unit of human effort.
 
 ## Intent and initial state
@@ -74,3 +76,11 @@ Implementation: scripts/com3 (isolated adaptation), examples/com3 (fixture/scena
 Validation: 11 search/release/actor/credential/telemetry boundary regressions and catalog validation pass; Python compilation passes. Semantic grading still requires an independent reviewer. No claim of participant performance or automatic semantic-judge validation is made.
 
 Readiness receipts (private experiment-control directory): `com3-ready-v1` frozen inputs, `com3-preflight-v1` read-only bridge/container verification, `com3-writer-smoke-v2` successful write/read/restore receipt, `com3-langfuse-v1` prospective dataset registration and readback. Dataset: Lookout-COM3-stream-v1. No participant has run.
+
+## Matched-intent pilot verification
+
+Both cases passed actual no-inference preflight: subscription login, isolated containers, native startup/default surface, filtered discovery, wrapped guide reads, out-of-scope denial and rolled-back writer checks. Complete initial context and private account provenance were verified without exposing candidate contents. COM3 preparation now retains its source manifest for later setup reuse; the first attempt from an older manifest-less freeze remains preserved.
+
+MCP startup/discovery latency and response bytes are cumulative request measurements within execution time, not extra wall time or model-only time. Wrapped calls and transport errors are captured. Real discovery, reads, writes and verification remain product costs. Prescribed turns, observed questions/demands, active execution, total wall time and token/cost coverage stay separate. Missing prices remain unknown. Scripted effort is not measured human cognitive effort.
+
+Prospective PILOT03 (COM03) and PILOT04 (COM04) require both participants to finish before independent semantic review. No rescue, hints or participant retries. Completion is not a quality pass. Any resulting Lookout recommendations must be supported by frozen evidence and separated from harness repairs. This pass changes no product/UI behavior; fictional benchmark fixtures cover the changed harness.

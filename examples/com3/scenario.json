@@ -1,5 +1,5 @@
 {
-  "version": "COM3-stream-v2",
+  "version": "COM3-stream-v3",
   "taskId": "COM3",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -240,15 +240,19 @@
     "wakeDelayMinutes": 0,
     "baselineInitiationDelayMinutes": 0,
     "productConfiguration": {
-      "source": "controlled host configuration",
-      "scheduledNetworkingEnabled": true,
+      "source": "Controlled matched user requests; no scheduled initiation benefit is measured.",
+      "scheduledNetworkingEnabled": false,
       "permittedActions": [
         "read",
         "prepare",
         "save"
       ],
       "sendAllowed": false
-    }
+    },
+    "comparisonMode": "matched-intent-native-mcp",
+    "identicalTaskRequests": true,
+    "nativeMcpDiscovery": true,
+    "measuresProactiveInitiation": false
   },
   "defaultAnswer": "I have no additional information right now. Preserve uncertainty and leave messages unsent.",
   "finalStateChecks": [

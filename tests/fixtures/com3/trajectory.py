@@ -14,7 +14,7 @@ def fixture(run,condition):
  save(run/'initial-state.json',state)
  for i,s in enumerate(SPEC['stages'],1):
   sd=run/f'stage-{i}';save(sd/'stage-run.json',{'status':'completed','durationSeconds':2,'startedAt':start+i*5,'threadId':s['session']})
-  save(sd/'delivery.json',{'stage':i,'kind':s['kind'],'eventId':s['id'],'releasedMinute':s['minute'],'triggerMinute':s['minute'],'assignedInitiation':condition=='baseline' and s['kind']=='external','assignedOnboarding':i==1,'necessaryUserUpdate':s['kind']=='user_update'})
+  save(sd/'delivery.json',{'stage':i,'kind':s['kind'],'eventId':s['id'],'releasedMinute':s['minute'],'triggerMinute':s['minute'],'assignedInitiation':s['kind']=='external','assignedOnboarding':i==1,'necessaryUserUpdate':s['kind']=='user_update'})
   save(sd/'trace.jsonl',{'capturedAt':start+i*5+1,'event':{'type':'item.completed','item':{'id':'message','type':'agent_message','text':'PRIVATE_SYNTHETIC_CONTENT'}}})
   events=[]
   if condition=='lookout':
