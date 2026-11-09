@@ -6,6 +6,7 @@ A case is ready to launch only after its implementation and isolated environment
 
 - Versioned scenario, actor, grader, allowed tools, budgets and staged evidence are frozen together with actual executable source and container image.
 - Fresh-session grouping and released-turn counts are explicit. Future events/answers are inaccessible; profile is given equally at onboarding, resume remains available, baseline persistence is agent-created.
+- A private parity receipt verifies complete profile facts and resume equivalence between native state and readable initial prompt; no unannounced extra native preferences. Each turn exposes the same explicit scenario clock to both conditions.
 - Each case owns a dedicated fictional local account, authenticated server-side case marker and lock. No real owner or another case may be reset. Both conditions start from equivalent facts.
 - Actual scoped writers have passed a separate save/read smoke on that owner, including the precise fields/provenance required by the case. Fixture restored afterward. Listing schemas alone is insufficient.
 - Subscription login, container isolation, read tools and equal evidence tools pass preflight without inference.
@@ -23,7 +24,7 @@ Application communication only; no interview prep/forms/sends. Distinguish user-
 
 ### COM3
 
-User approved fixed searchable fictional sources. Verify deterministic content-based search, pagination, equal per-session budgets and release-gated source reads even when future IDs are guessed. At least two evidence-supported final candidates, clear opts-out, current versus archived affiliation, truthful profile hooks and no invented referral authority. Reference alternatives stay private. Report controlled discovery, not open-web coverage or hiring improvement.
+User approved fixed searchable fictional sources. Verify deterministic content-based search, pagination, equal per-session budgets and release-gated source reads even when future IDs are guessed. At least two evidence-supported final candidates, clear opts-out, current versus archived affiliation, truthful profile hooks and no invented referral authority. Reference alternatives stay private. Source prose must not contain grader advice, candidate suitability labels or personalized answer hints. Every supplied source link must be resolvable through the controlled reader. Report controlled discovery, not open-web coverage or hiring improvement.
 
 ### COM4
 
