@@ -7,3 +7,13 @@
 - Limits: future result ingestion is not exercised; dashboard API is unstable; shared receipt storage is needed for cross-machine duplicate protection. Metric semantics remain the grader/orchestrator's responsibility.
 
 - Live configuration: Eval Overview v1 created in the configured Langfuse project; seven score configs and all eight dashboard placements read back. Widget metric queries accepted with zero compatible measured rows. No run data uploaded.
+
+## Case/run dashboard follow-up
+
+Replaced the live overview with Eval Case & Run and two native tag filters.
+Seven selected-attempt panels replace cross-case rates/medians. Future common
+exports add case/run tags and trace repeat metadata; trace labels distinguish
+campaign/version collisions. Existing records and participant runs are untouched.
+Saved dashboard readback confirms both filters and seven placements; Metrics API
+accepted the tag filters. Native custom dropdown labels and populated UI rendering
+are not verified. No participant tests or historical uploads were performed.

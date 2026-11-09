@@ -1,3 +1,15 @@
+> Current dashboard: **Eval Case & Run**. Use exactly two Tags filters:
+> `eval-case:<scenarioId>` and `eval-run:<repeat>` (defaults COM1 / 1).
+> Both conditions appear in the same selected view. Native hosted Langfuse labels
+> these dropdowns Tags; custom field labels are not configured. Widget environment
+> remains benchmark, excluding pilot/synthetic exports. Empty panels are expected
+> until compatible measured results are exported. Old exports are not backfilled.
+> Run numbers may repeat across campaigns; trace labels include condition, campaign,
+> scenario version and grader version to keep distinct attempts in separate rows.
+> Status count must be one per row: a higher count is ambiguous and must not be
+> interpreted as one result. This view has no cross-case success-rate summary.
+> Earlier campaign overview instructions below describe the superseded layout.
+
 # Reusable Langfuse evaluation setup
 
 ## Daily use
