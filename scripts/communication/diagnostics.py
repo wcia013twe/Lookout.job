@@ -4,8 +4,15 @@ from pathlib import Path
 
 def call_metrics(stages):
  counts={k:0 for k in ['tool_discovery_calls','tool_read_calls','tool_write_calls','tool_user_calls','tool_other_calls','mcp_control_requests','tool_failed_calls','tool_unanswered_calls','tool_exact_retries_after_failure','tool_calls_after_same_tool_failure']}
+ counts.update(shell_commands=0,shell_failed_commands=0)
  measured=0;timing={k:0 for k in ['mcp_startup_seconds','mcp_startup_response_bytes','mcp_discovery_seconds','mcp_discovery_response_bytes','mcp_task_tools_seconds','mcp_task_tools_response_bytes']}
  for stage in stages:
+  trace=Path(stage)/'trace.jsonl'
+  for line in trace.read_text().splitlines() if trace.exists() else []:
+   event=json.loads(line).get('event',{});item=event.get('item',{})
+   if event.get('type')=='item.completed' and item.get('type')=='command_execution':
+    counts['shell_commands']+=1
+    if item.get('exit_code') not in [None,0] or item.get('status')=='failed':counts['shell_failed_commands']+=1
   pending={};failed=set();failed_names=set()
   p=Path(stage)/'lookout-trace.jsonl'
   for line in p.read_text().splitlines() if p.exists() else []:
@@ -67,3 +74,26 @@ def verify_runtime_guidance(root):
  context=call('read_developer_context',{});guide=call('read_guide',{'id':'cold-outreach'})
  if context.get('developerVersion')!=expected['developerVersion'] or guide.get('version')!=expected['outreachGuideVersion']:raise RuntimeError('Runtime guidance differs from frozen configuration; activate the intended runtime or prepare a new version')
  return expected
+
+
+def verify_seed_contacts(root):
+ """Roundtrip exact prospective contact records through scoped dispatch, rolled back."""
+ root=Path(root);a=json.loads((root/'account.private.json').read_text())
+ if a.get('status')!='verified' or a.get('apiUrl')!='http://127.0.0.1:54321' or not a.get('email','').endswith('@example.test'):raise RuntimeError('Local fictional owner required')
+ contacts=json.loads((root/'suite/initial-state.json').read_text())['contacts']
+ q=lambda x:"'"+str(x).replace("'","''")+"'"
+ th=hashlib.sha256(a['token'].encode()).hexdigest()
+ statements=['BEGIN;']
+ for c in contacts:
+  base=json.dumps({'id':c['id'],'record':c['record']})
+  payload=q(base)+"::jsonb || jsonb_build_object('expectedRevision',coalesce((select revision from public.outreach_contacts where user_id="+q(a['userId'])+"::uuid and id="+q(c['id'])+"),0))"
+  statements.append("SELECT public.agent_dispatch("+q(th)+",'contacts.save',"+payload+");")
+ statements.append('ROLLBACK;')
+ result=subprocess.run(['docker','exec','-i','supabase_db_lookout-local','psql','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1','-Atq'],input='\n'.join(statements),text=True,capture_output=True,timeout=30)
+ if result.returncode:raise RuntimeError('Exact seeded contact validation failed; transaction rolled back')
+ rows=[json.loads(line) for line in result.stdout.splitlines() if line.strip()]
+ if len(rows)!=len(contacts):raise RuntimeError('Incomplete exact contact validation')
+ for c,row in zip(contacts,rows):
+  row=row.get('data',row)
+  if row.get('user_id')!=a['userId'] or row.get('record')!=c['record']:raise RuntimeError('Exact contact roundtrip mismatch')
+ return {'verified':True,'contacts':len(contacts),'rolledBack':True}

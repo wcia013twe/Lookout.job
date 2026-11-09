@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
-GRADER_VERSION='COM2-grade-v4'
+GRADER_VERSION='COM2-grade-v5'
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 TERMINAL={'completed','execution_failed','timed_out','setup_failed','artifact_failed'}
@@ -14,7 +14,7 @@ def rows(p):return [json.loads(x) for x in p.read_text().splitlines() if x] if p
 def evidence_digest(run):
  h=hashlib.sha256()
  for p in sorted(run.rglob('*')):
-  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt','terminal-capture.json'] or 'output' in p.parts or 'final-files' in p.parts):
+  if p.is_file() and not p.is_symlink() and (p.name in ['run.json','trace.jsonl','lookout-trace.jsonl','delivery.json','stage-run.json','after-state.json','before-state.json','initial-state.json','final-state.json','prompt.txt','output-hashes.json','terminal-capture.json'] or 'output' in p.parts or 'final-files' in p.parts):
    h.update(str(p.relative_to(run)).encode());h.update(p.read_bytes())
  return h.hexdigest()
 def tool_calls(stage):
@@ -51,9 +51,11 @@ def validate_evidence(run,spec,m):
   if sm.get('status') not in TERMINAL:raise ValueError('Nonterminal stage receipt')
   for name in ['durationSeconds','startedAt']:
    if not isinstance(sm.get(name),(int,float)) or not math.isfinite(sm[name]) or sm[name]<0:raise ValueError('Invalid stage timing')
-  for name in ['trace.jsonl','lookout-trace.jsonl','delivery.json','prompt.txt','before-state.json','after-state.json']:
+  for name in ['trace.jsonl','lookout-trace.jsonl','delivery.json','prompt.txt','output-hashes.json','before-state.json','after-state.json']:
    if not (sd/name).is_file() or (sd/name).is_symlink():raise ValueError('Missing required telemetry: '+str(sd/name))
   if not (sd/'output').is_dir():raise ValueError('Missing output snapshot')
+  import capture
+  if read(sd/'output-hashes.json')!=capture.files(sd/'output'):raise ValueError('Output manifest mismatch')
   if sm['status']=='completed' and not rows(sd/'trace.jsonl'):raise ValueError('Completed stage has empty trace')
   d=read(sd/'delivery.json');expected=spec['stages'][i-1]
   if d.get('stage')!=i or d.get('eventId')!=expected['id'] or d.get('releasedMinute')!=expected['minute']:raise ValueError('Delivery differs from scenario')
@@ -111,7 +113,11 @@ def grade(run,spec,review=None):
      refs=[x.split('#')[0] for x in item['evidence']]
      for i in check_stages[key]:
       prefix=f'stage-{i}/'
-      if not any(ref.startswith(prefix) and ('/output/' in ref if m['condition']=='baseline' else ref.endswith('after-state.json')) for ref in refs):raise ValueError('Durable checkpoint requires saved state/file evidence, not chat alone')
+      if m['condition']=='lookout':
+       if prefix+'after-state.json' not in refs:raise ValueError('Durable checkpoint requires native state evidence')
+      elif item['pass']:
+       if not any(ref.startswith(prefix+'output/') for ref in refs):raise ValueError('Durable checkpoint requires saved file evidence')
+      elif not (any(ref.startswith(prefix+'output/') for ref in refs) or prefix+'output-hashes.json' in refs):raise ValueError('Missing-save failure requires output or sealed output manifest evidence')
     if key in ['final_state','final_report'] and 'terminal-capture.json' not in [x.split('#')[0] for x in item['evidence']]:raise ValueError('Final judgment requires bound terminal capture')
    elif not item.get('reason'):raise ValueError('Unavailable checkpoint requires explanation')
   seen={q['interactionId'] for q in questions}

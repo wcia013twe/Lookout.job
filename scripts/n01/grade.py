@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from diagnostics import call_metrics
-GRADER_VERSION='COM1-grade-v5'
+GRADER_VERSION='COM1-grade-v6'
 from terminal_state import validate_terminal_state
 def scenario_digest(spec):return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
@@ -106,7 +106,7 @@ def grade(run,spec,review=None):
    if unavailable[key] and item['pass']:raise ValueError('Unreached/incomplete checkpoint cannot pass')
    if not unavailable[key]:
     check_review_evidence(run,item,check_stages[key],item['pass'])
-    if item['pass'] and key in ['tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
+    if item['pass'] and key in ['initial_context','preparation','tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
      for i in check_stages[key]:
       refs=[x.split('#')[0] for x in item['evidence']]
       valid=(f'stage-{i}/after-state.json' in refs) if m['condition']=='lookout' else any(x.startswith(f'stage-{i}/output/') for x in refs)

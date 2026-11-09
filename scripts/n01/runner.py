@@ -2,7 +2,7 @@
 import argparse,fcntl,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
-from diagnostics import verify_contact_writer,verify_runtime_guidance
+from diagnostics import verify_contact_writer,verify_runtime_guidance,verify_seed_contacts
 from transport import Bridge
 from terminal_state import capture_terminal_state
 import cost
@@ -32,6 +32,7 @@ def verify():
  image=command(['docker','image','inspect',IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
  if image!=lock['imageId']:raise RuntimeError('Container image changed')
  verify_contact_writer(R)
+ verify_seed_contacts(R)
  verify_runtime_guidance(R)
  return digest(R/'freeze.json'),image
 
@@ -185,7 +186,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM1-stream-v6':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM1-stream-v7':raise RuntimeError('Wrong runtime configuration')
 
 def released_sources(stages):
  inbox={};calendar={};deliveries=[]
@@ -205,7 +206,8 @@ def released_sources(stages):
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.
  prefix='Your resume is /inputs/resume.pdf. Previously released emails and historical calendar evidence remain available through tools and /inputs/sources.json. currentNotifications identifies current deliveries; notificationHistory includes repeated deliveries. Use ask_user for questions requiring an answer. Do not inspect credentials/runtime configuration, browse live sites, send messages or submit applications. '
- storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records, and save meaningful updates, drafts, and next steps there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, drafts, and next steps. ')
+ storage = ('Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant personal context and recruiting records. Your durable storage is Lookout native records; /workspace/output may hold temporary notes and the final report. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions and are your durable storage. ')
+ storage += 'Keep supplied contact states and boundaries, current task priorities, material decisions, conversation outcomes, commitments, drafts and next steps recoverable across sessions. Save meaningful new information and requested work before ending the turn, and verify saved changes. Preserve existing history and unrelated records. Already-stored unchanged information needs no duplicate write. You do not need to copy the full personal profile or resume. Python and standard shell tools are available; jq is not installed. Database/file timestamps are capture times, not event times; use the stated workspace time and source events for chronology. '
  prefix += storage
  from datetime import datetime,timedelta
  now=datetime.fromisoformat('2026-11-09T00:00:00+00:00')+timedelta(minutes=stage['minute'])

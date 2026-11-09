@@ -24,7 +24,7 @@ def fixture(run,condition='lookout',status='completed'):
  for key,x in review['quality'].items():
   indices=list(range(1,len(SPEC['stages'])+1)) if key=='preservation' else [i for i,s in enumerate(SPEC['stages'],1) if key in s['checks']]
   x.update({'pass':True,'reason':'Synthetic fixture only','evidence':[f'stage-{i}/output/result.md' for i in indices]})
- for key in ['tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
+ for key in ['initial_context','preparation','tentative_preference','reply','confirmed_preference','follow_through','saved_state']:
   review['quality'][key]['evidence'] += [f'stage-{i}/after-state.json' for i,stage in enumerate(SPEC['stages'],1) if key in stage['checks']]
  for key in ['saved_state','report_accuracy']:review['quality'][key]['evidence']+=['terminal-state.json','stage-8/output/final-report.md']
  review['quality']['saved_state']['evidence']+=['stage-7/after-state.json','stage-7/output/result.md']

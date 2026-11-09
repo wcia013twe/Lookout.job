@@ -29,7 +29,7 @@ def prepare(source,background,destination,cost_policy=None):
  (destination/'suite/scenario.json').write_text(json.dumps(spec,indent=2)+'\n')
  (destination/'suite/contract.md').write_text('Private recruiting workspace. Resume and currently released inbox/calendar evidence are in /inputs. Save work in /workspace/output or available connected records. Do not send messages, submit forms, or create interview preparation materials.\n')
  app_text='\n'.join(f"I reported applying to {a['company']} for {a['title']} ({a['role']}) on {a['submittedAt']}. The current tracker status is {a['status']}; no employer receipt is available. The application record is {a['id']}, and its posting is {a['url']}." for a in apps)
- contact_text='\n'.join(f"{c['record']['contact']}: {c['record']['relationship']} Current contact status: {c['record']['status']}."+(f" Email: {c['record']['email']}." if c['record'].get('email') else '')+(f" Existing draft: {c['record']['draft']}" if c['record'].get('draft') else '') for c in fixture['contacts'])
+ contact_text='\n'.join(f"{c['record']['contact']}: {c['record']['relationship']} Current contact status: {c['record']['status']}."+(f" Email: {c['record']['email']}." if c['record'].get('email') else '')+(f" Existing draft: {c['record']['message']}" if c['record'].get('message') else '') for c in fixture['contacts'])
  onboarding=(background/'profile.md').read_text()+'\n\n'+fixture['onboarding']+'\n\n'+app_text+'\n\n'+contact_text
  # Preserve every source fact, including values absent from an older readable profile export.
  import parity
@@ -38,7 +38,7 @@ def prepare(source,background,destination,cost_policy=None):
  (destination/'background/onboarding.md').write_text(onboarding)
  shutil.copyfile(background/'resume.pdf',destination/'background/resume.pdf')
  for name in ['reset.mjs','snapshot.mjs']:shutil.copyfile(repo/'scripts/com2'/name,destination/name)
- config=dict(version=spec['version'],taskId='COM2',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_application_record','record_application_milestone','list_contacts','save_contact','list_artifacts','read_artifact','save_artifact'])
+ config=dict(version=spec['version'],taskId='COM2',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['read_toolkit_context','read_application_timeline','check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_application_record','record_application_milestone','list_contacts','save_contact','list_artifacts','read_artifact','save_artifact'])
  config['requiredGuidance']={'developerVersion':json.loads((repo/'supabase/functions/agent-gateway/instructions.json').read_text())['developerVersion'],'outreachGuideVersion':json.loads((repo/'supabase/functions/agent-gateway/skills/cold-outreach.json').read_text())['version']}
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
  pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'

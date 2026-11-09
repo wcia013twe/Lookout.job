@@ -69,3 +69,13 @@ COM1-stream-v6 / COM1-grade-v5 and COM2-stream-v5 / COM2-grade-v4 give both cond
 Structural MCP request measurements distinguish initialization/listing, discovery/guides, and task calls using elapsed seconds and response bytes (not token estimates). These are components of execution time, not additional time to add to it. Historical uninstrumented traces do not acquire zero overhead. Numeric measurements flow into detailed Langfuse scores.
 
 COM03/04 preliminary changes are retained only in checkpoint 9752e265 for separate continuation; this pass does not activate or claim verification for them. No product instructions or runtime were changed. Fresh frozen setups and prospective dataset receipts must be created before inference. Never edit PILOT-02 or other historical freezes.
+
+## PILOT-04 clearing gates (COM01/COM02)
+
+COM1-stream-v7 / COM1-grade-v6 and COM2-stream-v6 / COM2-grade-v5 preserve matched task requests and native discovery. Both now explicitly require durable requested work, decisions and contact boundaries; full profile copying is not required. COM1 reactions occur after the meetings, and capture timestamps are distinguished from event time. Ambiguous final-report grading is narrowed to material current-state errors, not legitimate continuing exploration.
+
+COM2 contact fixtures use valid message fields (application draft remains valid). Existing read_toolkit_context and read_application_timeline provide application rediscovery and supersession; no product tool added. Actor identity questions no longer match incidental completion wording. Negative durability judgments can cite bound output manifests; positive judgments still require saved content.
+
+Both cases validate exact prospective contact records through scoped transactional dispatch with rollback. Shared COM2 setup additionally resets only its dedicated demo owner under its lock, roundtrips each seeded contact through MCP, rediscovers application identity, exercises artifacts and milestone transitions, then restores the fixture. This is a reversible native write preflight, not a read-only check or inference. Prior terminal evidence remains frozen.
+
+Shell failures are measured separately from MCP failures. Python availability and missing jq are explicitly stated to both arms. Prospective preparations passed live native checks, including COM2 fixture restoration; 12 focused Node checks (including Python suites), four shared controlled checks passed. Participant performance is not established by preflight. Product writable-schema/error-message improvements remain separately flagged and were not implemented in this harness pass.

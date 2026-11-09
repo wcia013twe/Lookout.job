@@ -4,6 +4,7 @@ import grade,runner,user_actor
 ROOT=Path(__file__).resolve().parents[2];SPEC=json.loads((ROOT/'examples/com2/scenario.json').read_text())
 def save(p,v):p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(v)+'\n')
 def fixture(run,condition='lookout',status='completed'):
+ import capture
  start=time.time()-100
  save(run/'run.json',{'version':SPEC['version'],'episodeId':run.name,'taskId':'COM2','pairId':'verification','condition':condition,'repeat':1,'pilot':True,'synthetic':True,'scenarioDigest':grade.scenario_digest(SPEC),'suiteHash':'fictional-verification','model':'fixture-no-model','reasoning':'none','status':status,'ownerId':'fictional-owner','participantEndedAt':start+70,'startedAt':start,'durationSeconds':70})
  save(run/'initial-state.json',{'fictional':True})
@@ -13,7 +14,7 @@ def fixture(run,condition='lookout',status='completed'):
   save(sd/'trace.jsonl',{'capturedAt':start+i*5+1,'event':{'type':'item.completed','item':{'id':'a','type':'agent_message','text':'Fictional fixture; no model ran.'}}})
   (sd/'lookout-trace.jsonl').write_text('')
   save(sd/'after-state.json',{'fictional':True});save(sd/'before-state.json',{'fictional':True})
-  (sd/'prompt.txt').write_text('fictional prompt');(sd/'output').mkdir(exist_ok=True);(sd/'output/result.md').write_text('fictional result')
+  (sd/'prompt.txt').write_text('fictional prompt');(sd/'output').mkdir(exist_ok=True);(sd/'output/result.md').write_text('fictional result');save(sd/'output-hashes.json',capture.files(sd/'output'))
  import capture,shutil
  save(run/'final-state.json',{'userId':'fictional-owner','tables':{'profiles':[],'applications':[],'application_milestones':[],'outreach_contacts':[],'career_artifacts':[]}})
  if (run/'final-files').exists():shutil.rmtree(run/'final-files')
@@ -29,6 +30,19 @@ def fixture(run,condition='lookout',status='completed'):
 class Tests(unittest.TestCase):
  def setUp(self):self.t=tempfile.TemporaryDirectory();self.run=Path(self.t.name)/'fictional';self.review=fixture(self.run)
  def tearDown(self):self.t.cleanup()
+ def test_missing_saved_file_can_fail(self):
+  import capture
+  review=fixture(self.run,'baseline')
+  (self.run/'stage-3/output/result.md').unlink();save(self.run/'stage-3/output-hashes.json',{})
+  review['quality']['availability_draft'].update({'pass':False,'reason':'Draft only in chat; no file saved','evidence':['stage-3/trace.jsonl','stage-3/output-hashes.json']})
+  review['quality']['preservation']['evidence']=[x for x in review['quality']['preservation']['evidence'] if x!='stage-3/output/result.md']
+  review['evidenceDigest']=grade.evidence_digest(self.run)
+  result=grade.grade(self.run,SPEC,review);self.assertFalse(result['quality']['availability_draft'])
+  review['quality']['availability_draft']['pass']=True
+  self.assertRaises(ValueError,grade.grade,self.run,SPEC,review)
+ def test_identity_question_does_not_get_completion_answer(self):
+  answer,category=user_actor.answer('I completed the read but cannot find the application UUID. Which identifier?',7,SPEC)
+  self.assertIn('AS-417',answer);self.assertNotIn('finished',answer)
  def test_missing_review_pending(self):
   g=grade.grade(self.run,SPEC);self.assertEqual(g['status'],'pending_review');self.assertNotIn('quality_pass',g['metrics']);self.assertTrue(all(v is None for v in g['quality'].values()))
  def test_no_tools_omitted_even_good_quality(self):
