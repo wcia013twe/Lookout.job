@@ -60,3 +60,7 @@ npm run tracing:export-codex -- --run examples/tracing-demo --dry-run
 This is separate from the detached product UI demo, which never initializes backend tracing or loads real credentials. There is no new product action, MCP tool, schema, approval or agent contract change. Hosted Edge endpoints and the separate intelligence embedding service are not instrumented by this Node-runtime pass. External Muse inference remains outside backend visibility.
 
 Source checks: backend TypeScript and exporter syntax. An offline preview of one existing N01 run produced four traces / 56 observations; no historical data was uploaded (the user chose to skip stale runs). Live ingestion/read-back and backend restart remain unverified. No test suite or participant run was executed.
+
+## N01 notification-stream experiments
+
+The prospective N01 stream redesign now has a separate orchestrator, independent local grader, and experiment/score exporter. See [N01 setup, stream table and grading](n01-notification-redesign.md). One whole trajectory maps to one item trace with stage children; semantic results remain pending until reviewed. The existing historical importer and old campaigns are unchanged. Dataset registration is metadata-only; full private source context remains local. Synthetic verification is explicitly excluded from measured results.

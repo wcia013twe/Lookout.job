@@ -982,3 +982,7 @@ explicit user preference. Actual external Muse host refresh remains unverified.
 ### Optional Langfuse tracing (source integration)
 
 The Node API tool dispatcher, human resume parser and worker execution have optional server-only tracing. A separate versioned importer reads terminal runtime-v4 Codex logs without changing frozen benchmarks. Structural capture is the default; exact model-call boundaries and hidden reasoning are unavailable. See [setup and verification limits](../../docs/langfuse-tracing.md). Source type/syntax checks passed; live ingestion and a rebuilt backend are not yet verified. No historical runs were uploaded. Hosted Edge and the intelligence service are outside this pass; detached UI demo remains isolated.
+
+### N01 prospective notification-stream evaluation
+
+The separate [N01 stream harness](../../docs/n01-notification-redesign.md) delivers first-message onboarding, staged user reactions and simulated calendar/inbox wakes across fresh sessions. It records local evidence and separates prescribed initiation, observed interaction demands, quality and native-tool adherence. Independent semantic review is required; missing review cannot produce a quality pass. A dedicated Langfuse mapping registers one trajectory per item, stage child spans and root scores. Frozen prior campaigns are unchanged; synthetic telemetry verification does not establish participant performance or a real host schedule. No production/UI/MCP contract was changed.
