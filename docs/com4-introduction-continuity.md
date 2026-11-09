@@ -65,3 +65,7 @@ Both cases passed actual no-inference preflight: subscription login, isolated co
 MCP startup/discovery latency and response bytes are cumulative request measurements within execution time, not extra wall time or model-only time. Wrapped calls and transport errors are captured. Real discovery, reads, writes and verification remain product costs. Prescribed turns, observed questions/demands, active execution, total wall time and token/cost coverage stay separate. Missing prices remain unknown. Scripted effort is not measured human cognitive effort.
 
 Prospective PILOT03 (COM03) and PILOT04 (COM04) require both participants to finish before independent semantic review. No rescue, hints or participant retries. Completion is not a quality pass. Any resulting Lookout recommendations must be supported by frozen evidence and separated from harness repairs. This pass changes no product/UI behavior; fictional benchmark fixtures cover the changed harness.
+
+## Completed controlled pilots
+
+PILOT03 and PILOT04 have completed both participants and post-pair independent review. See [results and flagged product changes](communication-com03-com04-pilots.md). Final-state success, checkpoint quality, prescribed effort, execution time and token usage are reported separately. No Lookout product changes were applied. Historical readiness sections above are not current execution status.
