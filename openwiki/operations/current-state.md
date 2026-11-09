@@ -1017,3 +1017,12 @@ review before the paired pilot. V1/v2 scenarios and datasets remain retained.
 ### Reusable Langfuse evaluation contract
 
 A common [eval-v1 result contract and dashboard setup](../../docs/langfuse-evals.md) supports future scenarios without modifying the N01/N02 exporters. Setup creates score definitions and comparison tables; final-result export registers whole-trajectory experiment items using local dataset correlation IDs. Scenario/grader versions separate comparisons; pilots and synthetic traffic are excluded from the measured dashboard. Detailed traces and private evidence stay in their existing stores. Configuration setup does not execute participants or upload historical grades.
+
+
+### Langfuse selected case/run view
+
+The common dashboard is now Eval Case & Run, filtered by eval-case and eval-run
+native Tags selectors. Future common exports supply these tags. Seven panels show
+one selected attempt per condition; campaign/version labels retain disambiguation.
+Saved remote configuration was read back; populated rendering awaits compatible
+measured exports. Historical traces were not backfilled. See docs/langfuse-evals.md.
