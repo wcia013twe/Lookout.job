@@ -337,18 +337,25 @@ Rejecting an application keeps its history and tracker state, resets draft revie
 
 Source checks include the connected-board database scenario, unique-versus-ambiguous legacy-plan upgrade, shared planner/demo tests and `scripts/check-connected-action-board-ui.mjs`. These establish local source behavior only. The migration and gateway/MCP must release together before advertising hosted parity.
 
-Round integration retains the connected Action Board stable round_id, confirmation, practice focus and timezone. Proposed or incorrect dates do not supply a next-action date. Native cancellation uses phase cancelled; Screen/Interview remains independent of practice focus. Guide versions are application-workspace 18 and interview-preparation 7; integrated developer contract 122.
+Round records retain their stable round_id, confirmation, practice focus and timezone. Proposed or incorrect dates do not supply a next-action date. Native cancellation uses phase cancelled; Screen/Interview remains independent of practice focus. Round confirmations are saved in the timeline but are not Action Board decisions. Guide versions are application-workspace 18 and interview-preparation 7; integrated developer contract 122.
 
 Scheduled interview round confirmations remain in the owned round timeline and
 Applications → Interview editor; they are not shown as Action Board tasks. Use
 the round editor to correct or confirm the event. The Action Board remains for
 explicit human decisions and actions requiring attention.
 
+Assessment tasks (OA, online/coding/technical assessments and take-home
+assessments) remain on their application tracker and are excluded from Action
+Board decisions and tracker work. The Action Board is limited to Muse work that
+needs human approval or input; preparation reminders, networking follow-ups and
+AI Apply activity are presented in their owning workspaces.
+
 ### Application coverage on the Action Board
 
-The owner-scoped board read also includes Draft applications with a saved résumé,
+The owner-scoped board read includes Draft applications with a saved résumé,
 cover letter or answered question, Approved applications still awaiting submission,
-and imported records with `needsAction: true` and a nonempty `nextAction`. These
+and imported records with `needsAction: true` and a nonempty `nextAction`, except
+assessment tasks (which remain on Applications). These
 are links to existing editors, not new approval or execution controls. Inbox
 blockers/review/uncertainty take precedence for the same native application;
 claimed, started, uncertain and confirmed attempts prevent ordinary submission suggestions.
