@@ -21,9 +21,9 @@ History uses the frozen logical event IDs, once each, in chronological order;
 retain the distinction between user report and employer evidence. No validated
 submission receipt exists. A correct final repair cannot erase an earlier error.
 
-Rate each `quality` key at every reached checkpoint: 0 unmet/contradicted, 1 partial
-or material gap, 2 fully supported. For inapplicable event-specific criteria,
-correct preservation is the expected behavior. Include `reason` and frozen
+Rate only that checkpoint's `stageQuality` keys (fall back to `quality` for older
+versions): 0 unmet/contradicted, 1 partial or material gap, 2 fully supported.
+Include `reason` and frozen
 `evidenceFiles`, including the checkpoint's durable `after.json`. Check routing,
 B's saved answer and only B's cleared blocker, unsubmitted B, A's user-reported
 submission, C's withdrawal, D's sourced rejection, obsolete actions cancelled,
@@ -39,6 +39,13 @@ not a scheduler receipt. Lookout native usage is separate diagnostic adherence:
 baseline quality. Count unique interactions once even across categories; scripted
 initiations and simulated waiting are separate from actual effort and execution.
 Read-only terminal native and baseline-file confirmation occur after timing ends.
+
+Both conditions receive identical task intent and released evidence. Prescribed
+prompts are scripted inputs, not measured human effort. This comparison does not
+measure proactive user-effort savings. Inspect visible prose demands as well as
+ask_user calls. Set interactionReviewComplete:true and provide additionalInteractions
+with unique id, stage, answered boolean, reason and frozen evidenceFiles; use []
+when there are none. Do not count an already captured interaction twice.
 
 Submit `{attestation, conditions:{baseline:{reviewer,extraction,checkpoints},
 lookout:{reviewer,extraction,checkpoints,adherence}}}`. `extraction[stage]` contains

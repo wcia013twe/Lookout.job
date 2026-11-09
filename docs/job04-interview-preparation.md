@@ -1,6 +1,7 @@
 # JOB04: pipeline-aware interview preparation
 
-Implemented infrastructure, not yet ready for participant execution. JOB04 compares
+JOB04-preparation-v3 uses the [shared JOB host](../scripts/jobs/README.md) with
+per-freeze native/container preflight gates. JOB04 compares
 specificity and factual grounding; it does not measure usefulness, coaching
 quality or interview outcomes. No model run or account mutation is implied by a
 passing scripted harness test.
@@ -23,11 +24,22 @@ unrelated application B must keep its pending availability question and state.
 
 Seven checkpoints span six sessions. Only adjacent technical/logistics turns share
 a session. Neither receives a standing-goal prompt or automatic onboarding replay.
-Lookout receives available email evidence on a recorded preparation wake; baseline
-gets the same evidence with a prescribed initiation. Both get the same debrief and
-final reconciliation request. Lookout gets standard native retrieve/save guidance;
+Both receive identical email-review requests, evidence, debriefs and final
+reconciliation intent. Scheduled preparation is disabled for this comparison;
+proactive effort savings are not measured. Lookout gets native retrieve/save guidance;
 baseline may retain files. Candidate context appears once in baseline onboarding;
 Lookout retrieves equivalent context. The actual runtime must verify parity.
+
+The host reuses COM's pinned Terra medium subscription Session and structural cost
+capture. Native initialization/default tools are forwarded with only scope/audit
+isolation; supporting tools are discovered on demand. Each native call remains a
+product cost. Startup/discovery latency and response bytes are diagnostics within
+the turn. Container startup and adapter wall time are separately captured. Native
+confirmation uses a separate workspace-read credential after participant timing.
+Owner-specific application IDs are remapped consistently in released evidence.
+Historical v1 roots and failed setup receipts are preserved. Interpreter symlinks
+bind to the executable bytes rather than failing merely because of installation
+layout. A completed pilot still needs fresh independent semantic review.
 
 Interview guides and product configuration are frozen. No real scheduler, live
 research, external contacts, submissions or automatic mock execution are involved.
@@ -145,7 +157,7 @@ node scripts/job04/task.mjs --action finalize --root ROOT --submission GRADER_SU
 Final JSON is local. No external telemetry upload or dashboard change is performed.
 Use the existing common cost contract if a later authorized exporter is added.
 
-## Verification recorded in this implementation
+## Historical v1 verification
 
 Fourteen focused tests pass, including a scripted paired protocol exercise with
 no model calls, injected invalid receipts/readback/restore/capture prerequisites,
@@ -158,6 +170,22 @@ An actual prepare/preflight invocation using the retained private candidate kit
 produced ready:false without inference or native calls. Its private receipt is
 `/Volumes/External SSD/Lookout/tmp/job04-preflight-20261109-1/receipts/preflight-1.json`;
 the safe summary is `examples/job04/preflight.blocked.json`. A dedicated owner,
-actual configuration and host adapter/probe receipts remain missing. Decision:
-**NO-GO for a participant run** until the above live gates pass. No production
+actual configuration and host adapter/probe receipts were missing. That version's
+decision was **NO-GO for a participant run** until live gates passed. No production
 runtime, personal account or external scheduler was changed.
+
+Prospective v2 uses the shared JOB host and actual per-freeze gates described
+above. Both conditions' native/container preflights passed before the paired
+pilot launch. The interpreter-path failure in an earlier no-inference setup is
+retained. Launch readiness does not establish participant completion or quality.
+
+
+## November 9 terminal audit and prospective clock block
+
+See the [shared JOB audit](../scripts/jobs/README.md#post-pair-audit-and-prospective-launch-block-2026-11-09)
+for the independently reviewed historical attempts, timeout/transport evidence,
+monotonic timing repair and current blocked readiness. Historical frozen versions
+remain unchanged. New host-v2 preparations require native clock alignment as well
+as no-inference native/container/transport gates; the compressed multi-day fixture
+cannot currently pass clock alignment on the shared real-time backend. Do not
+interpret completed turns or a partial review as a measured quality advantage.

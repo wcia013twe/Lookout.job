@@ -125,8 +125,10 @@ class Session:
     if proc.poll() is None:stop();proc.wait(timeout=30)
     timing=clock.finish()
   active_seconds=timing['wallSeconds']
+  timing['wallBudgetExceeded']=timing['wallSeconds']>stage['seconds']+5
   meta['timing']=timing
   meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
+  meta['environmentTimingConfounded']=not timing['valid'] or timing['monotonicSeconds']>stage['seconds']+5
   usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
   meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)

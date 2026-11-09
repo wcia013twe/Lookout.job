@@ -1,0 +1,87 @@
+# Shared JOB pilot host
+
+Prospective JOB03/JOB04 host wiring reuses the subscription-backed COM participant
+session, transport, service client, structural usage accounting and MCP diagnostics.
+Historical freezes and active COM owners/runs are not modified.
+
+Prepare a new private root with `python3 -B scripts/jobs/host.py prepare --case
+JOB03|JOB04 --root ROOT --source-manifest PRIVATE_MANIFEST --background
+BACKGROUND_DIRECTORY`. The host creates its receipts directory when probing.
+Preparation clones a fresh fictional local owner and verifies the exact context
+and resume. It never resets the source owner. Keep all roots private.
+
+Start `python3 -B scripts/jobs/host.py serve --root ROOT`. This process holds only
+that owner's lock. It serves the argv recorded in `ROOT/adapter.json` to the
+existing case coordinator. Use `node scripts/job03/task.mjs` (or job04) with
+`--action preflight --root ROOT --adapter ROOT/adapter.json --output
+ROOT/receipts/preflight.json`. Inspect ready/status/blockers; process exit alone is
+not readiness. Only then use the same coordinator with `--action run --execute
+--root ROOT --adapter ROOT/adapter.json --preflight ROOT/receipts/preflight.json
+--pair UNIQUE_PAIR_ID`.
+
+The actual no-inference preflight tests native artifact/milestone save and
+readback, restores only its fictional fixtures, checks native guide versions,
+starts both isolated subscription containers, and verifies default-tool discovery
+and wrapper scope. JOB03 adds durable SQLite reminders with a fixed event clock
+and one interrupted fictional preview. These services are identical for both
+conditions; they establish neither a Lookout scheduler nor employer integration.
+Independent final review follows both attempts. Readiness, successful reads and
+completed turns are never quality passes.
+
+Both conditions get identical requests and evidence. Storage orientation and
+native startup differ intentionally. Proactive effort savings are unmeasured.
+Prospective participant-turn time uses monotonic elapsed time and includes actual MCP startup/discovery/tool latency. Wall time, wall-minus-monotonic drift and budget overruns are retained separately; significant drift/overrun confounds timing. Historical times remain unchanged. Adapter
+wall time and container startup are separate; MCP timing/bytes are diagnostics
+within the turn, not additional elapsed time. All native calls within participant
+turns remain product costs. Final confirmation and grading are outside participant
+metrics. Unpriced or partial usage stays unknown.
+
+Keep historical roots and failed no-inference receipts. Runtime files, interpreter,
+image, inputs and evidence gates are hash-bound. Changes require a new freeze,
+never a repaired participant. Stop only this setup's host/containers afterward.
+
+After both attempts terminate, run `python3 -B scripts/jobs/audit.py --root ROOT
+--output ROOT/receipts/structural-audit.json`. It checks captured intent/evidence
+parity and integrity, reports time/cost coverage, and hashes supplemental actual
+prompts/full onboarding for the reviewer. It does not grade quality or publish to
+Langfuse. Retain backend-clock alignment and shared-host-load limits when interpreting
+time or calendar behavior; a harness-clearing pilot is not a measured comparison.
+
+## Post-pair audit and prospective launch block (2026-11-09)
+
+`jobs-host-v2`, JOB03-tracking/grade-v4 and JOB04-preparation/grade-v3 add
+DNS/TLS probes inside both containers without authentication or inference, native
+backend clock comparison, and per-turn clock rechecks. All stage timestamps must
+align within five minutes of the backend clock. The compressed multi-day fixtures
+currently fail this gate: an isolated backend clock aligned per stage is still
+required. Do not mutate the shared backend clock or shift only one condition's
+facts, remove date-dependent native tools, or bypass the gate to launch a pair.
+A DNS/TLS pass does not establish ongoing model availability.
+
+The November 9 historical JOB03 pair completed 8/8 turns in each condition;
+JOB04 completed 7/7 baseline and reached 3/7 Lookout turns before timeout. JOB04's
+raw stderr records model-endpoint DNS failures, while the 300-second turn took
+about 588 wall seconds. JOB03 also has a completed wall-budget overrun. The old
+runtime did not record monotonic/wall drift, so suspension, clock adjustment,
+Docker/host delays and participant behavior cannot be fully separated. This is
+external-failure evidence and a timing confound, not a clean participant timeout.
+No historical attempt was resumed or retried.
+
+Audit v2 retains failed-turn elapsed time and supplemental native-call diagnostics
+from raw host traces even when the coordinator received no response. These
+observations do not backfill frozen usage counters. JOB04's total participant
+cost and failed-turn effort remain incomplete; subscription billing and unpriced
+processing stay unknown. Scripted prompts are not observed human effort.
+
+A fresh independent reviewer graded the terminal frozen evidence after both
+attempts, with a user-authorized Terra 6.1 medium grading-only exception. All
+participants remained pinned to subscription Terra 5.6 medium. JOB03 has quality
+gaps in both conditions; JOB04 Lookout remains a partial review with four
+unreached checkpoints. Clock/transport/timing confounds prevent a measured
+comparative claim. Private submissions, attestations and final results are saved
+alongside the historical runs, without changing freezes or recorded outcomes.
+
+Finalization now verifies frozen inputs, rubric, manifests, reviewer binding and
+run evidence without requiring today's execution files to equal retired runtime
+bytes. New execution still requires all original runtime/executable hashes.
+Separate implementation/operator audits cannot supply semantic ratings.

@@ -79,3 +79,10 @@ test('specificity comparison and simulated time use complete independently revie
 test('complete usage preserves cached subset without inventing monetary costs',()=>{
  const dir=temp();fs.mkdirSync(path.join(dir,'stage-1'));write(path.join(dir,'stage-1/stage-run.json'),{cost:stageCost({status:'complete',source:'codex_session_total_token_usage_delta',model:spec.model,tokens:{input_tokens:100,cached_input_tokens:30,output_tokens:20}})});const py="import sys,json;sys.path.insert(0,sys.argv[1]);import cost;print(json.dumps(cost.summarize(sys.argv[2])))";const c=JSON.parse(execFileSync('python3',['-B','-c',py,path.resolve('scripts/n01'),dir],{encoding:'utf8'}));assert.equal(c.coverage.status,'complete');assert.equal(c.tokens.cached_input_tokens,30);assert.equal(c.tokens.input_tokens,100);assert.equal(c.estimatedModelUsd,null);assert.equal(c.billedUsd,null);costValues(c);
 });
+
+test('historical review survives retired runtime bytes while execution remains hash-bound',()=>{
+ const {root,parent}=setup(),retired=path.join(parent,'retired-runtime');fs.writeFileSync(retired,'old runtime bytes');
+ const freeze=read(path.join(root,'freeze.json'));freeze.executables[retired]=hash('old runtime bytes');fs.writeFileSync(path.join(root,'freeze.json'),JSON.stringify(freeze));
+ const {submission}=pair(root);fs.unlinkSync(retired);
+ assert.throws(()=>frozen(root));assert.equal(finalize(root,submission).grades.baseline.status,'reviewed');
+});
