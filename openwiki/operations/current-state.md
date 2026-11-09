@@ -1234,3 +1234,5 @@ runtime, participant evidence and semantic grades remain unchanged. Total execut
 effort and cost are unchanged. Controlled fixture checks cover direct and wrapped
 discovery without duplicate call counts; this is a diagnostics correction, not a
 new participant run or product-effectiveness claim.
+
+Future JOB01 freezes also bind the shared executor timing/capture source, checked against the actual imported helper implementations. Historical freezes remain unchanged; this closes a prospective source-integrity gap without claiming a changed participant outcome.

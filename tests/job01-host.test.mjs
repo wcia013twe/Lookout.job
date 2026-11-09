@@ -132,3 +132,17 @@ for wrapped in [False,True]:
   assert out['mcp_discovery_response_bytes']>0 and out['mcp_task_tools_response_bytes']==0
 `],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);
 });
+
+
+test('future freezes bind the imported shared timing and capture implementation',()=>{
+ const result=spawnSync('python3',['-B','-c',String.raw`
+import importlib.util,sys
+from pathlib import Path
+s=importlib.util.spec_from_file_location('pilot','scripts/job01/pilot.py');p=importlib.util.module_from_spec(s);s.loader.exec_module(p)
+files={x.resolve() for x in p.runtime_source_files()}
+for helper in [p.runtime.StageClock,p.runtime.ensure_awake,p.runtime.snapshot_with_receipt,p.Bridge.__mro__[1]]:
+ implementation=Path(sys.modules[helper.__module__].__file__).resolve()
+ assert implementation in files, f'Imported runtime implementation is not frozen: {implementation.name}'
+assert all(x.is_file() for x in files)
+`],{encoding:'utf8',env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});assert.equal(result.status,0,result.stderr);
+});

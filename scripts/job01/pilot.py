@@ -12,6 +12,10 @@ Bridge=load('job01_transport',LIB/'transport.py').Bridge
 write=runtime.write;digest=runtime.digest
 PRIVATE=None;NETWORK=None;GATEWAYS=[];ORIGINAL_COMMAND=runtime.command
 
+def runtime_source_files():
+ files=[p for folder in [LIB,REPO/'scripts/n01'] for p in folder.iterdir() if p.suffix in ['.mjs','.py']]
+ return files+[REPO/'scripts/evals/workspace_transport.py',REPO/'scripts/communication/diagnostics.py',REPO/'scripts/communication/runtime.py',REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
+
 def command(args,**kw):
  if args[:2]==['docker','create']:
   bridge=next(x.split('=',1)[1] for x in args if x.startswith('WORKSPACE_SERVICE_URL='))
@@ -97,9 +101,7 @@ def prepare(root,n01,reference,cost_policy=None):
   for c in ['baseline','lookout']:
    ORIGINAL_COMMAND(['node',str(LIB/'task.mjs'),'--source',str(source),'--reference',str(root/'reference.private.json'),'--stage',s['id'],'--condition',c,'--configuration',str(root/'product-configuration.json'),'--output',str(root/'packets'/f'{s["id"]}-{c}.json')])
  files=[p for p in root.rglob('*') if p.is_file()]
- files += [p for folder in [LIB,REPO/'scripts/n01'] for p in folder.iterdir() if p.suffix in ['.mjs','.py']]
- files += [REPO/'scripts/evals/workspace_transport.py']
- files += [REPO/'scripts/communication/diagnostics.py',REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
+ files += runtime_source_files()
  image=ORIGINAL_COMMAND(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
  write(root/'freeze.json',{'version':spec['version'],'files':{os.path.relpath(p,root):digest(p) for p in files},'imageId':image,'candidateSource':'N01 baseline-kit','sourceSnapshot':source.name,'model':cfg['model'],'reasoning':cfg['reasoning']})
  for p in root.rglob('*'):

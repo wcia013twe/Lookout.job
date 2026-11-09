@@ -5,3 +5,5 @@
 - Derive application-email authority from all active saved application-profile instructions. Preserve distinct contact facts; fail closed on specific unknown/conflicting instructions and use verified contact fallback only when no specific preference exists. Document identical semantic grading authority.
 - Validation: 27 focused Node tests, 3 Python native-surface tests and local catalog validation (158 roles) pass. New candidate/native/actor/preflight evidence, new owner/freeze/registration and another participant trial remain separate runtime work; no passing trial or live employer readiness is claimed here.
 - Nothing pushed or published; no product/schema changes or employer actions.
+
+- Independent pre-run review caught product worked-with phrasing and unrelated other-tool matching before any v3 freeze/model turn. Preserve its blocked review; add target-topic specificity, employment/alternative exclusions and positive/negative metamorphic cases. Require re-review before freezing.
