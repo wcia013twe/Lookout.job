@@ -25,3 +25,7 @@ Validation: three focused Node tests passed (including 23 Python regressions); d
 ## Final-state review contract
 
 Documented prospective COM1–COM4 post-run read-only saved-state verification and participant final reconciliation. Added COM4 design with explicit implementation gaps. Historical COM1-stream-v3 source/freeze and scores unchanged. Documentation-only checks: diff whitespace; no runtime tests applicable. COM1/COM2 implementation delegated to isolated checkouts; COM3 design update delegated. No push.
+
+## COM2–COM4 launch review
+
+Added explicit readiness gate for isolated accounts, actual scoped writer roundtrips, frozen evidence/source, after-run grading, final-report fidelity and case-specific design limits. Documentation-only diff check; participant execution not authorized by this preparation pass. Concurrent case implementations remain in separate checkouts.

@@ -1,5 +1,5 @@
 {
-  "version": "JOB01-search-v2",
+  "version": "JOB01-search-v3",
   "taskId": "JOB01",
   "scope": "Bounded job selection and analysis; no application drafting, filling or submission.",
   "policy": {
@@ -106,5 +106,6 @@
     "style_adherence": "Later analyses follow the corrected top-three concise format.",
     "selection_suitability": "Judge all returned jobs, including extras: suitable extras are acceptable; unsupported, ineligible or off-preference extras reduce quality. Exact target recall remains separate.",
     "continuity": "Fresh-session work uses retained context and returns the complete current shortlist, not just new additions."
-  }
+  },
+  "finalGraderRequired": true
 }

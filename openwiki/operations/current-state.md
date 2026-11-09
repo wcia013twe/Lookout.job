@@ -1060,3 +1060,13 @@ quality includes unsuitable extras, separately from exact target recall. Effort
 counts unique interaction turns with overlapping category breakdowns. Pilot
 telemetry is labeled pilot, not measured. Existing private freezes and prior
 datasets remain unchanged; new preparation/preflight is required before execution.
+
+### JOB01 independent final-grader handoff
+
+Prospective JOB01-search-v3 freezes reviewer instructions, automatically emits a
+post-pair handoff and separate read-only native-confirmation receipt, and requires
+a fresh agent assignment/attestation before final review. Coordinators launch the
+grader with no inherited context; shell tooling does not spawn an agent. Both
+conditions use frozen artifact citations and rubric bindings. Partial attempts stay
+reportable; prior freezes remain unchanged. Native confirmation success means
+reads succeeded, not that semantic matching or participant quality passed.
