@@ -6,3 +6,5 @@
 - Add requested docs-only JOB01 controlled-pilot closeout; returned target membership remains distinct from durable saving.
 - Validation: focused Node/Python checks, fictional browser rehearsal and actual sacrificial native draft/read/card/human-ingress smoke; full final preflight receipts pending. Local catalog validates 158 roles.
 - Limits: live employer custom widgets/upload/autosave remain unverified. No new participant trial claimed by this change note. Nothing pushed/published.
+
+- Follow-up audit: expose all scrubbed saved settings equally at onboarding; preserve normal on-demand owned application reads; manual smoke remains fieldless. Deterministic names tolerate Unicode/case/space formatting, emails tolerate trim/domain case only. Both conditions use the same rules. The first unlaunched v2 setup was explicitly retired and its source archived before this grading repair; no participant/model turn occurred.

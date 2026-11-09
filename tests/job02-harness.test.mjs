@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
 import {spawnSync} from 'node:child_process';
-import {read,write,hash,digest,actorAnswer,validateTargets,readiness,launchGate,assertFrozen,gates} from '../scripts/job02/core.mjs';
+import {read,write,hash,digest,actorAnswer,validateTargets,readiness,launchGate,assertFrozen,gates,factualEqual} from '../scripts/job02/core.mjs';
 import {mcp,responsePayload} from '../scripts/job02/native.mjs';
 import {BrowserHost} from '../scripts/job02/browser.mjs';
 import {build} from '../scripts/evals/contract.mjs';
@@ -124,3 +124,18 @@ test('narrow necessary product-use question receives same reviewed fact as combi
 });
 
 test('receipt gate names stay unique',()=>assert.equal(new Set(gates).size,gates.length));
+
+test('factual equality accepts harmless name/email formatting without wrong identity',()=>{
+ assert.equal(factualEqual('name','Fictional Person','  FICTIONAL   PERSON '),true);
+ assert.equal(factualEqual('name','Fictional Person','Fictional Other'),false);
+ assert.equal(factualEqual('name','Fictional Person','Fictional'),false);
+ assert.equal(factualEqual('email','person@example.test',' person@EXAMPLE.TEST '),true);
+ assert.equal(factualEqual('email','person@example.test','other@example.test'),false);
+ assert.equal(factualEqual('email','person@example.test','Person@example.test'),false);
+});
+
+test('invalid comparison cannot export quality even when private review exists',async()=>{
+ const {build}=await import('../scripts/job02/langfuse.mjs');
+ const summary={scenarioVersion:scenario.version,validity:{comparable:false},evaluation:{quality:.9,taskSuccess:true}};
+ assert.throws(()=>build(summary,scenario,{scenarioHash:hash(scenario)}),/Invalid comparison/);
+});
