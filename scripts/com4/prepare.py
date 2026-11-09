@@ -41,10 +41,10 @@ def prepare(source,background,destination):
  (destination/'suite/scenario.json').write_text(json.dumps(spec,indent=2)+'\n')
  (destination/'suite/contract.md').write_text('Private recruiting workspace. Resume and currently released inbox/calendar evidence are in /inputs. Save work in /workspace/output or available connected records. Do not send messages, submit forms, or create interview preparation materials.\n')
  contact_text='\n\n'.join(c['record']['contact']+'\n'+'\n'.join(k+': '+str(v) for k,v in c['record'].items() if k!='contact') for c in fixture['contacts'])
- onboarding=(background/'profile.md').read_text()+'\n\n## My complete saved profile details\n'+'\n'.join(readable_facts(profile))+'\n\n'+fixture['onboarding']+'\n\n'+contact_text
+ onboarding=(background/'profile.md').read_text()+'\n\n## My complete saved profile details\n'+'\n'.join(readable_facts(profile))+'\n\n## My complete saved preferences\n'+'\n'.join(readable_facts(clone['settings'].get('preferences',{})))+'\n\n'+fixture['onboarding']+'\n\n'+contact_text
  (destination/'background/onboarding.md').write_text(onboarding)
  shutil.copyfile(background/'resume.pdf',destination/'background/resume.pdf')
- (destination/'context-parity.json').write_text(json.dumps({'verified':True,'profileFactsDigest':hashlib.sha256(json.dumps(profile,sort_keys=True).encode()).hexdigest(),'onboardingDigest':hashlib.sha256(onboarding.encode()).hexdigest(),'resumeDigest':resume_hash,'allNativeProfileFactsRendered':True,'bothConditionsSameFirstMessage':True},indent=2)+'\n')
+ (destination/'context-parity.json').write_text(json.dumps({'verified':True,'profileFactsDigest':hashlib.sha256(json.dumps(profile,sort_keys=True).encode()).hexdigest(),'onboardingDigest':hashlib.sha256(onboarding.encode()).hexdigest(),'resumeDigest':resume_hash,'allNativeProfileFactsRendered':True,'allNativePreferencesRendered':True,'bothConditionsSameFirstMessage':True},indent=2)+'\n')
  for name in ['reset.mjs','snapshot.mjs']:shutil.copyfile(repo/'scripts/com4'/name,destination/name)
  config=dict(version=spec['version'],taskId='COM4',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','list_contacts','save_contact'])
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')

@@ -172,7 +172,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM4-stream-v1' or CONFIG.get('taskId')!='COM4':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM4-stream-v2' or CONFIG.get('taskId')!='COM4':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM4':raise RuntimeError('Dedicated COM4 account receipt required')
 

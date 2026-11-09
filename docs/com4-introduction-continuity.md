@@ -1,6 +1,6 @@
 # COM4 — Introduction continuity
 
-Implemented prospective `COM4-stream-v1`; no participant execution. **7 sessions, 12 turns**, 3,480-second per-condition ceiling. Dates in every prompt are the simulated business clock; no real waiting.
+Implemented prospective `COM4-stream-v2`; no participant execution. **7 sessions, 12 turns**, 3,480-second per-condition ceiling. Dates in every prompt are the simulated business clock; no real waiting.
 
 ## Notification stream
 
