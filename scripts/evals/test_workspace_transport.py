@@ -1,0 +1,89 @@
+"""Exercise real local HTTP/subprocess transport without accounts or inference."""
+import hashlib,http.client,importlib.util,json,os,subprocess,sys,tempfile,unittest
+from contextlib import suppress
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+from unittest.mock import patch
+from workspace_transport import WorkspaceBridge
+
+ROOT=Path(__file__).resolve().parents[2]
+CASES=['n01','com2','com3','com4','job01','job02']
+
+class TransportTests(unittest.TestCase):
+ def setUp(self):
+  self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)
+  self.script=self.root/'echo.py'
+  self.script.write_text('import json,sys\nfrom pathlib import Path\nfor line in sys.stdin:\n m=json.loads(line);print(json.dumps({"id":m["id"],"args":sys.argv[1:]}),flush=True)\nPath(__file__).with_suffix(".closed").touch()\n')
+  self.bridges=[]
+ def tearDown(self):
+  for bridge in self.bridges:
+   bridge.close()
+   for pipe in [bridge.proc.stdin,bridge.proc.stdout]:
+    if pipe and not pipe.closed:
+     with suppress(BrokenPipeError):pipe.close()
+  self.tmp.cleanup()
+ def request(self,bridge,message,key=None,path='/mcp'):
+  conn=http.client.HTTPConnection('127.0.0.1',bridge.server.server_port,timeout=5)
+  try:
+   conn.request('POST',path,json.dumps(message),{'Authorization':'Bearer '+(key or bridge.key)})
+   reply=conn.getresponse();return reply.status,reply.read()
+  finally:conn.close()
+ def start(self,**kwargs):
+  bridge=WorkspaceBridge([sys.executable,str(self.script)],**kwargs);self.bridges.append(bridge);return bridge
+ def test_case_arguments_and_concurrent_requests(self):
+  real_popen=subprocess.Popen
+  for case in CASES:
+   with self.subTest(case=case):
+    path=ROOT/'scripts'/case/'transport.py'
+    spec=importlib.util.spec_from_file_location('case_'+case,path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    commands=[]
+    def launch(command,**kwargs):
+     commands.append(command);return real_popen([command[0],str(self.script),*command[2:]],**kwargs)
+    with patch('workspace_transport.subprocess.Popen',side_effect=launch):
+     bridge=module.Bridge(self.root/'run/stage-1',self.root,'lookout')
+    self.bridges.append(bridge)
+    expected=['--root',str(self.root),'--capture',str(self.root/'run/stage-1/lookout-trace.jsonl'),'--condition','lookout']
+    expected+=['--run',str(self.root/'run')] if case=='job02' else ['--inputs',str(self.root/'run/live-inputs')]
+    self.assertEqual(commands[0],[sys.executable,str(path.with_name('bridge.py')),*expected])
+    self.assertEqual(bridge.graceful_close,case=='job02')
+    with ThreadPoolExecutor(max_workers=4) as pool:
+     replies=list(pool.map(lambda i:self.request(bridge,{'id':i}),range(4)))
+    self.assertEqual([(status,json.loads(body)['id']) for status,body in replies],[(200,i) for i in range(4)])
+ def test_rejected_requests_never_reach_worker(self):
+  bridge=self.start()
+  self.assertEqual(self.request(bridge,{'id':1},key='wrong')[0],403)
+  self.assertEqual(self.request(bridge,{'id':1},path='/other')[0],403)
+  self.assertEqual(self.request(bridge,{'method':'notification'})[0],400)
+  self.assertEqual(self.request(bridge,{'id':2})[0],200)
+ def test_worker_exit_and_timeout_are_transport_failures(self):
+  bridge=self.start();bridge.proc.kill();bridge.proc.wait()
+  self.assertEqual(self.request(bridge,{'id':1})[0],502)
+  bridge=self.start()
+  with patch('workspace_transport.select.select',return_value=([],[],[])):
+   self.assertEqual(self.request(bridge,{'id':2})[0],502)
+  bridge.proc.wait(timeout=3)
+ def test_new_communication_freezes_bind_shared_transport(self):
+  shared=ROOT/'scripts/evals/workspace_transport.py'
+  for case in ['n01','com2','com3','com4']:
+   with self.subTest(case=case):
+    source=self.root/case;source.mkdir();(source/'suite').mkdir()
+    facts={'introduction':'Fictional candidate'};resume=b'%PDF fictional'
+    settings={'profile':{'facts':facts},'preferences':{},'answers':[],'resumes':[{'id':'resume','content_hash':hashlib.sha256(resume).hexdigest()}]}
+    files={'account.private.json':{'status':'verified','apiUrl':'http://127.0.0.1:54321','mcpUrl':'http://127.0.0.1:8080/mcp','email':'fictional@example.test','benchmarkTaskId':case.upper(),'userId':'00000000-0000-0000-0000-000000000001','idMapping':{}},'grader.private.json':{},'cloned-context.private.json':{'settings':settings},'source-manifest.private.json':{'settings':settings},'suite/initial-state.json':{'profileFacts':facts,'contacts':[]},'runtime-config.json':{}}
+    for name,value in files.items():(source/name).write_text(json.dumps(value))
+    for name in ['snapshot.mjs','reset.mjs','account.lock']:(source/name).touch()
+    (source/'profile.md').write_text('Fictional candidate');(source/'resume.pdf').write_bytes(resume)
+    sys.path.insert(0,str(ROOT/'scripts'/case));sys.modules.pop('parity',None)
+    spec=importlib.util.spec_from_file_location('prepare_'+case,ROOT/'scripts'/case/'prepare.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    with patch.object(module.subprocess,'run',return_value=subprocess.CompletedProcess([],0,stdout='sha256:fictional')):
+     with patch.object(module,'capture_native_contract',return_value={},create=True):
+      destination=source/'prepared';module.prepare(source,source,destination)
+    freeze=json.loads((destination/'freeze.json').read_text())
+    self.assertEqual(freeze['files'][os.path.relpath(shared,destination.resolve())],hashlib.sha256(shared.read_bytes()).hexdigest())
+ def test_job02_graceful_close_delivers_eof(self):
+  bridge=self.start(graceful_close=True);bridge.close();self.bridges.remove(bridge)
+  self.assertEqual(bridge.proc.returncode,0)
+  self.assertTrue(self.script.with_suffix('.closed').exists())
+  bridge.proc.stdout.close()
+
+if __name__=='__main__':unittest.main()

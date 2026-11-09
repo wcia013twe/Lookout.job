@@ -85,3 +85,11 @@ Shell failures are measured separately from MCP failures. Python availability an
 Run-scoped macOS caffeinate reduces idle sleep; lid closure and forced sleep remain possible. Stage receipts retain wall and monotonic elapsed time plus heartbeat gaps. A clock divergence above two seconds or heartbeat gap above ten seconds invalidates timing and fails the run loudly; invalid execution time is null, never zero or retrospectively corrected. Existing interrupted pilots remain invalid.
 
 Participant outputs and stage metadata are saved before after-state capture. Read-only snapshot failures retain redacted diagnostics and permit one retry only for transient transport/process errors; participant turns are never retried. Capture receipts distinguish these infrastructure retries from agent tool calls. Both cases share this implementation. No Lookout product behavior changes.
+
+## Shared transport
+
+COM01–04 and JOB01–02 now use `scripts/evals/workspace_transport.py` through small
+case argument adapters. New freezes include the shared source; existing frozen
+checkouts remain unchanged. See [shared harness boundaries](../scripts/evals/README.md)
+for testing goals and defect attribution. This consolidation does not change
+participant prompts, tool permissions, timeouts, grading or product behavior.

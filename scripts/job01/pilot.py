@@ -98,6 +98,7 @@ def prepare(root,n01,reference,cost_policy=None):
    ORIGINAL_COMMAND(['node',str(LIB/'task.mjs'),'--source',str(source),'--reference',str(root/'reference.private.json'),'--stage',s['id'],'--condition',c,'--configuration',str(root/'product-configuration.json'),'--output',str(root/'packets'/f'{s["id"]}-{c}.json')])
  files=[p for p in root.rglob('*') if p.is_file()]
  files += [p for folder in [LIB,REPO/'scripts/n01'] for p in folder.iterdir() if p.suffix in ['.mjs','.py']]
+ files += [REPO/'scripts/evals/workspace_transport.py']
  files += [REPO/'scripts/communication/diagnostics.py',REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
  image=ORIGINAL_COMMAND(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
  write(root/'freeze.json',{'version':spec['version'],'files':{os.path.relpath(p,root):digest(p) for p in files},'imageId':image,'candidateSource':'N01 baseline-kit','sourceSnapshot':source.name,'model':cfg['model'],'reasoning':cfg['reasoning']})
