@@ -9,3 +9,5 @@
 
 - N02-search-v2 makes the final capped target-job list and its analyses the main artifact. Target limit 10 is provisional/configurable. Coverage is capped against reviewed qualifying targets, with evidence-backed alternatives and no exhaustive-label claim. Saved history is separate; intermediate reviews only assess preference handling/continuity. V1 scenario and live dataset remain unchanged.
 - V2 uses separate dataset/item registration and trace IDs include version/condition; duration-derived spans explicitly identify their synthetic timeline. Seven focused tests and data validation pass. No real participant evaluation or candidate-grounded reference labels were generated.
+
+- V3 clarifies ten as predetermined checkpoint targets, not an output cap: exact recall/missing/extra IDs at initial and continuation turns, semantic analysis separate; intermediate turns only preferences/continuity. Same email evidence has deliberate scheduled-wake versus user-upload delivery. Reuses N01 candidate context and keeps private target rationales outside source. V1/v2 remain retained; paired pilot is not executed.

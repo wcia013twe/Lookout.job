@@ -7,7 +7,7 @@ import path from 'node:path';
 import {cli,unwrap,validateReply} from '../n01/langfuse.mjs';
 import {read,hash} from './task.mjs';
 export function registration(spec,manifest){
- return {datasetName:'Lookout-'+spec.version,id:'lookout-'+spec.version+'-'+manifest.snapshotId,input:{scenario:spec.version,snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json'],targetLimit:spec.targetLimit,stages:spec.stages.map(({id,session,kind,minute})=>({id,session,kind,minute}))},expectedOutput:{completion:'Saved job selections and evidence-grounded analyses reflect retained career and style preferences.'},metadata:{unit:'whole trajectory',status:'prospective',dimensions:['time_to_task','effort_to_task','quality_of_completion'],privateEvidence:'not uploaded',fitReference:'independently reviewed before participant execution'}};
+ return {datasetName:'Lookout-'+spec.version,id:'lookout-'+spec.version+'-'+manifest.snapshotId,input:{scenario:spec.version,snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json'],expectedTargetCount:spec.expectedTargetCount,stages:spec.stages.map(({id,session,kind,minute})=>({id,session,kind,minute}))},expectedOutput:{completion:'Saved job selections and evidence-grounded analyses reflect retained career and style preferences.'},metadata:{unit:'whole trajectory',status:'prospective',dimensions:['time_to_task','effort_to_task','quality_of_completion'],privateEvidence:'not uploaded',fitReference:'independently reviewed before participant execution'}};
 }
 export function scores(run,grade){
  if(grade.evidenceDigest!==hash(run)||grade.episodeId!==run.episodeId)throw Error('Stale grade');
@@ -17,6 +17,7 @@ export function scores(run,grade){
  for(const [k,v] of Object.entries(grade.effortToTask))add('effort_'+k,v);
  add('quality_review_status',grade.status,'CATEGORICAL');add('run_status',run.status,'CATEGORICAL');
  for(const c of grade.qualityOfCompletion){
+  if(c.quality.selection){add('quality_'+c.stage+'_expected_recall',c.quality.selection.recall);add('quality_'+c.stage+'_missing_count',c.quality.selection.missing.length);add('quality_'+c.stage+'_extra_count',c.quality.selection.unexpected.length);}
   for(const k of ['coverage','selectionPrecision'])if(Number.isFinite(c.quality[k]))add('quality_'+c.stage+'_'+k,c.quality[k]);
   for(const [k,v] of Object.entries(c.quality.semantic))if(v)add('quality_'+c.stage+'_'+k,v.rating);
   if(c.simulatedCompletionMinute!==null)add('time_'+c.stage+'_simulated_completion_minute',c.simulatedCompletionMinute);

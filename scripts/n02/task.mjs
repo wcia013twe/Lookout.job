@@ -13,31 +13,38 @@ export function source(dir){
  const ids=new Set(jobs.map(j=>j.id));if(ids.size!==jobs.length)throw Error('Duplicate source IDs');
  return {manifest,jobs,ids};
 }
-export function validateReference(ref,board){
+export function validateReference(ref,board,spec){
  if(ref.snapshotId!==board.manifest.snapshotId||ref.sourceHash!==board.manifest.files['jobs.json'])throw Error('Reference source mismatch');
  if(ref.status!=='reviewed'||!ref.reviewer?.trim())throw Error('Independent fit-reference review required');
  for(const batch of ['initial','later']){
   const entries=ref.batches?.[batch];if(!Array.isArray(entries)||!entries.length)throw Error('Both batches required');
   const seen=new Set();for(const x of entries){
    if(!board.ids.has(x.id)||seen.has(x.id))throw Error('Invalid/repeated reference job');seen.add(x.id);
-   if(!['strong','plausible','weak','ineligible','unknown'].includes(x.finalFit))throw Error('Invalid fit label');
-   if(!x.evidence?.length||!x.rationale?.trim())throw Error('Evidence and rationale required');
+
   }
  }
+ if(spec){
+  if(!Number.isInteger(spec.expectedTargetCount)||spec.expectedTargetCount<1)throw Error('Expected target count required');
+  for(const stageId of spec.gradingStages){
+   const ids=ref.expectedTargets?.[stageId],stage=spec.stages.find(s=>s.id===stageId);
+   const visible=new Set(ref.batches[stage.batch].map(j=>j.id));
+   if(!Array.isArray(ids)||ids.length!==spec.expectedTargetCount||new Set(ids).size!==ids.length||ids.some(id=>!visible.has(id)))throw Error('Expected checkpoint targets must be unique and present in its evidence batch');
+   for(const id of ids){const r=ref.targetRationales?.[id];if(!r?.rationale?.trim()||!r?.materialGap?.trim()||!r?.evidence?.length)throw Error('Expected target rationale, gap and evidence required');}
+  }
+ }
+
 }
 export function packet(spec,ref,board,stageId,condition,productConfiguration){
- validateReference(ref,board);
+ validateReference(ref,board,spec);
  const s=spec.stages.find(s=>s.id===stageId);if(!s||!['lookout','baseline'].includes(condition))throw Error('Invalid stage/condition');
  if(condition==='lookout'&&(!productConfiguration?.source||!productConfiguration?.wakePrompt))throw Error('Recorded product configuration required');
  const ids=new Set(ref.batches[s.batch].map(j=>j.id));
  // No future stages, reference labels, rubric, or other-condition prompt reaches participant.
- const limit=targetLimit(spec);
  const prompt=s.kind==='user_update'?s.request:condition==='baseline'?s.baseline:productConfiguration.wakePrompt;
- return {prompt:prompt.replaceAll('{targetLimit}',String(limit)),targetLimit:limit,jobs:board.jobs.filter(j=>ids.has(j.id)),snapshotId:board.manifest.snapshotId};
+ return {prompt,...(s.email?{email:s.email,delivery:condition==='lookout'?'scheduled_email':'user_uploaded_email'}:{}),jobs:board.jobs.filter(j=>ids.has(j.id)),snapshotId:board.manifest.snapshotId};
 }
-export function targetLimit(spec){if(!Number.isInteger(spec.targetLimit)||spec.targetLimit<1)throw Error('Positive targetLimit required');return spec.targetLimit;}
 export function grade(spec,ref,board,run,review){
- validateReference(ref,board);
+ validateReference(ref,board,spec);
  if(run.version!==spec.version||run.snapshotId!==ref.snapshotId||run.sourceHash!==ref.sourceHash||!['lookout','baseline'].includes(run.condition))throw Error('Run binding mismatch');
  if(!['completed','timed_out','execution_failed','harness_failed'].includes(run.status))throw Error('Terminal run required');
  if(!Array.isArray(run.checkpoints))throw Error('Checkpoints required');
@@ -48,24 +55,21 @@ export function grade(spec,ref,board,run,review){
   if(!Number.isFinite(c.executionSeconds)||c.executionSeconds<0)throw Error('Invalid duration');duration+=c.executionSeconds;
   const interactions=c.interactions||{};for(const key of Object.keys(effort)){const n=interactions[key]??0;if(!Number.isInteger(n)||n<0)throw Error('Invalid interaction count');effort[key]+=n;}
   const q=reviewed?review.checkpoints?.[c.stage]:null;
-  const quality=Object.fromEntries(spec.checkpointQuality.map(k=>{const a=q?.[k];return [k,a&&[0,1,2].includes(a.rating)&&a.evidence?.trim()?a:null]}));
-  checkpoints.push({stage:c.stage,quality:{semantic:quality},simulatedCompletionMinute:Number.isFinite(c.simulatedCompletionMinute)?c.simulatedCompletionMinute:null});
+  const keys=spec.gradingStages.includes(stage.id)?[...spec.checkpointQuality,...spec.quality]:spec.checkpointQuality;
+  const quality=Object.fromEntries(keys.map(k=>{const a=q?.[k];return [k,a&&[0,1,2].includes(a.rating)&&a.evidence?.trim()?a:null]}));
+  let selection=null;
+  if(spec.gradingStages.includes(stage.id)){
+   const ids=c.savedJobIds;
+   if(!Array.isArray(ids)||ids.some(id=>typeof id!=='string')||new Set(ids).size!==ids.length)throw Error('Unique checkpoint savedJobIds required');
+   const expected=ref.expectedTargets[stage.id],matched=expected.filter(id=>ids.includes(id));
+   selection={expectedCount:expected.length,returnedCount:ids.length,recall:matched.length/expected.length,matched,missing:expected.filter(id=>!ids.includes(id)),unexpected:ids.filter(id=>!expected.includes(id)),scope:'exact predetermined checkpoint targets; extras reviewed separately, not automatically wrong'};
+  }
+  checkpoints.push({stage:c.stage,quality:{selection,semantic:quality},simulatedCompletionMinute:Number.isFinite(c.simulatedCompletionMinute)?c.simulatedCompletionMinute:null});
  }
- const limit=targetLimit(spec),allowed=new Map([...ref.batches.initial,...ref.batches.later].map(j=>[j.id,j]));
- const ids=run.finalTargetJobIds;
- if(!Array.isArray(ids)||ids.some(id=>typeof id!=='string')||new Set(ids).size!==ids.length)throw Error('Unique finalTargetJobIds required');
- const unknown=ids.filter(id=>!allowed.has(id)||allowed.get(id).finalFit==='unknown');
- const alternatives=reviewed?review.finalSelection?.alternatives||{}:{};
- const alternative=id=>alternatives[id]?.accepted===true&&!!alternatives[id]?.evidence?.trim();
- const qualifying=[...allowed.values()].filter(j=>['strong','plausible'].includes(j.finalFit));
- const defensible=ids.filter(id=>['strong','plausible'].includes(allowed.get(id)?.finalFit)||alternative(id));
- const denominator=Math.min(limit,qualifying.length||defensible.length);
- const semantic=Object.fromEntries(spec.quality.map(k=>{const a=reviewed?review.finalSelection?.[k]:null;return [k,a&&[0,1,2].includes(a.rating)&&a.evidence?.trim()?a:null]}));
- const finalSelection={targetLimit:limit,savedCount:ids.length,overLimit:ids.length>limit,coverage:denominator?Math.min(defensible.length,denominator)/denominator:null,coverageDenominator:denominator,coverageScope:'reviewed qualifying targets; not exhaustive source recall',selectionPrecision:ids.length?defensible.length/ids.length:null,unreviewedSelections:unknown.filter(id=>!alternative(id)),semantic};
- const semanticComplete=checkpoints.length===spec.stages.length&&checkpoints.every(c=>Object.values(c.quality.semantic).every(Boolean))&&Object.values(semantic).every(Boolean)&&finalSelection.unreviewedSelections.length===0;
+ const semanticComplete=checkpoints.length===spec.stages.length&&checkpoints.every(c=>Object.values(c.quality.semantic).every(Boolean));
 
  const adherence=Object.fromEntries(spec.adherence.map(k=>{const a=reviewed?review.adherence?.[k]:null;return [k,run.condition==='baseline'?{status:'not_applicable'}:a&&['used_correctly','attempted_but_failed','omitted','not_applicable'].includes(a.status)&&a.evidence?.trim()?a:{status:'unreviewed'}]}));
- return {version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration},effortToTask:effort,qualityOfCompletion:checkpoints,finalSelection,adherence};
+ return {version:spec.version,evidenceDigest,episodeId:run.episodeId,status:semanticComplete?'reviewed':'review_required',runStatus:run.status,timeToTask:{executionSeconds:duration},effortToTask:effort,qualityOfCompletion:checkpoints,adherence};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{
