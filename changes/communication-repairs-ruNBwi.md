@@ -8,3 +8,5 @@
 - Validation: focused harness/guide regressions and data validation; final counts and local activation recorded in the repair report. No participant rerun, hosted deployment or push implied.
 
 - Incorporated the concurrently added cost dimension into COM2–4 separate runners and all common summaries. Added one consistent no-inference setup entry point with shared policy/tool checks.
+
+- Final verification: 44 focused checks passed; 158 roles valid; all four shared setup/live read-only grader preflights passed. Local API developer156/cold-outreach10 healthy. Full-suite unmodified connected-decision DB failure retained; historical results untouched.
