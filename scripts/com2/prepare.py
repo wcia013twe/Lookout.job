@@ -48,6 +48,7 @@ def prepare(source,background,destination,cost_policy=None):
  files+=list((repo/'scripts/com2').glob('*.py'))+list((repo/'scripts/com2').glob('*.mjs'))
  files += [repo/'scripts/n01/cost.py',repo/'scripts/n01/cost-export.mjs']
  files+=list((repo/'scripts/communication').glob('*.py'))
+ files += [repo/'scripts/evals/workspace_transport.py']
  files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
  files+=list((repo/'scripts/evals').glob('*.mjs'))+[repo/'backend/runtime/trace-policy.mjs']
  sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()

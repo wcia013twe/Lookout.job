@@ -13,7 +13,8 @@ export function registration(spec,manifest){
 export function scores(run,grade){
  if(grade.evidenceDigest!==hash(run)||grade.episodeId!==run.episodeId)throw Error('Stale grade');
  const traceId=hash([run.version,run.condition,run.episodeId]).slice(0,32),out=[];
- const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'job01_'+name,value,dataType,environment:run.synthetic?'verification':run.pilot?'pilot':'benchmark'});
+ const timestamp=Number.isFinite(run.startedAt)?new Date((run.startedAt+(run.wallDurationSeconds??grade.timeToTask.executionSeconds))*1000).toISOString():null;
+ const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'job01_'+name,value,dataType,environment:run.synthetic?'verification':run.pilot?'pilot':'benchmark',...(timestamp?{timestamp}:{})});
  for(const [name,value,type] of costValues(run.cost))add(name,value,type);
  add('time_execution_seconds',grade.timeToTask.executionSeconds);
  for(const k of ['wallDurationSeconds','sessionStartupSeconds'])if(Number.isFinite(grade.timeToTask[k]))add('time_'+k,grade.timeToTask[k]);

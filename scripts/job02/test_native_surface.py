@@ -27,4 +27,11 @@ class NativeSurface(unittest.TestCase):
     for c,orientation in orientations.items():
      self.assertEqual(prompts[c].count(orientation),1);prompts[c]=prompts[c].replace(orientation,'').replace('\nfirst-message onboarding','')
     self.assertEqual(prompts['baseline'],prompts['lookout'])
+ def test_awake_guard_fails_before_attempt_without_participant_retry(self):
+  tree=ast.parse((ROOT/'scripts/job02/runner.py').read_text());f=next(n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='run');calls=[]
+  def guard():calls.append('awake');raise RuntimeError('guard unavailable')
+  with tempfile.TemporaryDirectory()as t:
+   env={'ROOT':Path(t),'node':lambda action:calls.append(action),'runtime':SimpleNamespace(ensure_awake=guard)};exec(compile(ast.Module(body=[f],type_ignores=[]),'run','exec'),env)
+   with self.assertRaisesRegex(RuntimeError,'guard unavailable'):env['run']('fixed-pair')
+   self.assertEqual(calls,['check-launch','awake']);self.assertFalse((Path(t)/'pilot-attempt.json').exists())
 if __name__=='__main__':unittest.main()

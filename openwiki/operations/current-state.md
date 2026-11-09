@@ -1226,3 +1226,23 @@ JavaScript and database dates while native waits progress. A fixed-clock sleep
 failure is retained. The native HTTP/MCP host and full context are not connected;
 current JOB launch gates remain blocked. This focused preparation changes no
 product schema, shared clock, real account or historical pilot outcome.
+### Shared benchmark transport
+
+[Shared harness boundaries](../../scripts/evals/README.md) separate testing goals,
+setup mismatches, harness defects and Lookout defects. COM01–04 and JOB01–04 share
+one HTTP-to-stdio transport, preserving case arguments and JOB02's EOF shutdown.
+Prospective freezes include the shared executable. Local synthetic HTTP/worker
+and freeze tests establish this boundary; no participant rerun or hosted release
+is implied. Existing frozen checkouts remain unchanged.
+
+### JOB01 wrapped-discovery telemetry correction
+
+JOB01 now measures wrapped native calls by their actual inner tool and binds score
+timestamps to execution. The retained v5 pilot's eight affected guide/context reads
+were reclassified from frozen traces; corrected score read-back passed. Original
+runtime, participant evidence and semantic grades remain unchanged. Total execution,
+effort and cost are unchanged. Controlled fixture checks cover direct and wrapped
+discovery without duplicate call counts; this is a diagnostics correction, not a
+new participant run or product-effectiveness claim.
+
+Future JOB01 freezes also bind the shared executor timing/capture source, checked against the actual imported helper implementations. Historical freezes remain unchanged; this closes a prospective source-integrity gap without claiming a changed participant outcome.

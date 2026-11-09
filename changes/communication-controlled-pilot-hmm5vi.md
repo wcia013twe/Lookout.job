@@ -83,3 +83,6 @@
   clock dependency in a fresh host freeze, verify per-stage clock readback, then
   run complete actual paired no-inference gates. Existing launch block remains.
   This is intentional committed progress toward clock isolation, not clearance.
+- Integrated current local main's shared transport instead of copying it. After
+  integration, four focused Node checks (clock plus shared transport), 19 Python
+  checks (clock fixture, JOB host and shared timing) and catalog validation pass.

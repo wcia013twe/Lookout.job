@@ -109,6 +109,7 @@ test('prepare creates launcher directories before frozen readiness and no attemp
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'job02-prepare-')),candidate=root+'/source-candidate';fs.mkdirSync(candidate);fs.writeFileSync(candidate+'/profile.md','Fictional candidate');fs.writeFileSync(candidate+'/resume.pdf','%PDF fictional');
  write(root+'/cloned-context.private.json',{settings:{profile:{facts:{name:'Fictional candidate'}}}});write(root+'/owned-targets.private.json',{status:'fixture'});write(root+'/account.private.json',{apiUrl:'http://127.0.0.1:54321',mcpUrl:'http://127.0.0.1:8080/mcp',email:'job02-pilot-00000000-0000-0000-0000-000000000000@example.test',status:'verified'});write(root+'/runtime-input.json',{model:scenario.model,reasoning:scenario.reasoning,networkPolicy:'JOB01-isolated-inference',imageId:'sha256:fictional'});
  const r=spawnSync('node',['scripts/job02/cli.mjs','prepare','--root',root,'--candidate',candidate,'--reference','examples/job02/reference.template.json','--runtime',root+'/runtime-input.json'],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.equal(fs.statSync(root+'/runs').isDirectory(),true);assert.equal(fs.statSync(root+'/receipts').isDirectory(),true);assert.equal(fs.existsSync(root+'/pilot-attempt.json'),false);
+ const shared=path.resolve('scripts/evals/workspace_transport.py');assert.equal(JSON.parse(fs.readFileSync(root+'/freeze.json')).files[path.relative(root,shared)],digest(shared));
 });
 
 // These gaps were observed in the preserved first controlled pair.
@@ -138,4 +139,20 @@ test('invalid comparison cannot export quality even when private review exists',
  const {build}=await import('../scripts/job02/langfuse.mjs');
  const summary={scenarioVersion:scenario.version,validity:{comparable:false},evaluation:{quality:.9,taskSuccess:true}};
  assert.throws(()=>build(summary,scenario,{scenarioHash:hash(scenario)}),/Invalid comparison/);
+});
+
+test('product-use intent is target-scoped and order/pronoun/tense independent',()=>{
+ const a=read(new URL('../examples/job02/controlled-actor.json',import.meta.url)),expected=actorAnswer(a,'personal','Why do you want to apply?');
+ for(const q of ['For Northstar Tools: have you used its product before?','Have you used Northstar Tools before?','Have you used their product?','Have you tried the product?','Are you familiar with it?','Any prior experience using Northstar Tools?','Do you use it?','Have you tried it?','Have you previously worked with Northstar Tools?','Are you already a Northstar Tools customer?']){
+  const actual=actorAnswer(a,'personal',q);assert.equal(actual.factId,expected.factId,q);assert.equal(actual.answer,expected.answer,q);assert.equal(actorAnswer(a,'clean',q).factId,null,q);
+ }
+ for(const q of ['What is your citizenship?','What is your favorite color?','How many years of professional experience do you have?','Have you used Python?','Have you tried any other tools?','Have you worked for Northstar Tools?','Have you used other tools besides Northstar Tools?'])assert.equal(actorAnswer(a,'personal',q).factId,null,q);
+});
+test('specific application email authority beats contact fallback and fails closed on ambiguity',async()=>{
+ const {applicationEmailAuthority:email}=await import('../scripts/job02/candidate-authority.mjs');
+ const settings=instructions=>({preferences:{search:{profiles:[{id:'active',active:true,instructions}]}}});
+ assert.equal(email(settings('- Application email: apps@example.test'),'contact@example.test').value,'apps@example.test');
+ assert.equal(email(settings('Contact a colleague at other@example.test'),'contact@example.test').value,'contact@example.test');
+ assert.throws(()=>email(settings('- Application email: unknown'),'contact@example.test'),/unresolved/);
+ assert.throws(()=>email(settings('- Application email: one@example.test\n- Application email: two@example.test'),'contact@example.test'),/conflict/);
 });
