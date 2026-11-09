@@ -58,3 +58,5 @@ approval or employer receipt is created. Local runtime activation is verified
 separately from source/tests and actual Muse host adoption.
 
 - Temporary manual policy validation: full suite1,170 passed/five skipped; focused guide/MCP/disclosure checks47/47, typecheck, build, data158 and diff checks passed. Fictional desktop/mobile handoff shows the employer link without resume/answer review; no backend/employer calls. Saved General profile47 preference and complete audit log verified on read-back. Actual host adoption remains separate from the local guide activation.
+
+- Local activation verified: healthy API image lookout-node:manual-applications-155, Edge refreshed with worker preserved, MCP read-back developer155/application-workspace41 includes the temporary manual handoff and no-automatic-resume rule. Final desktop/mobile confirmation shows only the employer link, no decision/resume controls. Nothing pushed or hosted; no employer form opened or submitted.

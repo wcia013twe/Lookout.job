@@ -974,3 +974,7 @@ button; the user can record the actual outcome in Applications. Existing version
 prepare_draft/report and human progress writers provide MCP parity. No new store,
 approval or employer receipt is created. Local runtime activation is verified
 separately from source/tests and actual Muse host adoption.
+
+Local API/MCP activation read-back confirms developer155/application-workspace41
+and its Workday/company-site manual-handoff rule. General profile47 stores the
+explicit user preference. Actual external Muse host refresh remains unverified.
