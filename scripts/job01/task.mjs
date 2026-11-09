@@ -49,13 +49,13 @@ export function grade(spec,ref,board,run,review){
  if(!['completed','timed_out','execution_failed','harness_failed'].includes(run.status))throw Error('Terminal run required');
  if(!Array.isArray(run.checkpoints))throw Error('Checkpoints required');
  const evidenceDigest=hash(run),reviewed=review?.evidenceDigest===evidenceDigest&&!!review.reviewer?.trim();
- const checkpoints=[];const effort={scriptedInitiations:0,questions:0,repeatedContext:0,reminders:0,corrections:0,approvals:0};let duration=0;
+ const checkpoints=[];const effort={uniqueTurns:0,scriptedInitiations:0,questions:0,repeatedContext:0,reminders:0,corrections:0,approvals:0};let duration=0;
  for(const c of run.checkpoints){
   const stage=spec.stages.find(s=>s.id===c.stage);if(!stage||checkpoints.some(x=>x.stage===c.stage))throw Error('Invalid checkpoint');
   if(!Number.isFinite(c.executionSeconds)||c.executionSeconds<0)throw Error('Invalid duration');duration+=c.executionSeconds;
-  const interactions=c.interactions||{};for(const key of Object.keys(effort)){const n=interactions[key]??0;if(!Number.isInteger(n)||n<0)throw Error('Invalid interaction count');effort[key]+=n;}
+  const interactions=c.interactions||{};if(!Number.isInteger(interactions.uniqueTurns)||interactions.uniqueTurns<0)throw Error('Unique interaction turn count required');for(const key of Object.keys(effort)){const n=interactions[key]??0;if(!Number.isInteger(n)||n<0)throw Error('Invalid interaction count');effort[key]+=n;}
   const q=reviewed?review.checkpoints?.[c.stage]:null;
-  const keys=spec.gradingStages.includes(stage.id)?[...spec.checkpointQuality,...spec.quality]:spec.checkpointQuality;
+  const keys=spec.stageQuality[stage.id];if(!Array.isArray(keys)||!keys.length)throw Error('Stage-specific quality rubric required');
   const quality=Object.fromEntries(keys.map(k=>{const a=q?.[k];return [k,a&&[0,1,2].includes(a.rating)&&a.evidence?.trim()?a:null]}));
   let selection=null;
   if(spec.gradingStages.includes(stage.id)){

@@ -26,6 +26,8 @@ with tempfile.TemporaryDirectory() as t:
  assert not (inputs/'email.json').exists() and json.loads((inputs/'sources.json').read_text())['inbox'][0]==payload['email']
  assert not (inputs/'profile.md').exists()
  assert 'PRIVATE_INITIAL_CONTEXT' not in p.prompt(stage,'lookout')
+ assert 'Use Lookout tools' in p.prompt(stage,'lookout')
+ assert 'persist across sessions' in p.prompt(stage,'baseline')
  spec={'stages':[{'kind':'external'},{'kind':'user_update','request':'Platform first'},{'kind':'user_update','request':'Concise style'}]}
  assert 'Platform first' not in a.answer('What are my preferences?',1,spec)[0]
  assert 'Concise style' in a.answer('What are my preferences?',3,spec)[0]
@@ -36,13 +38,15 @@ test('extraction binds frozen saved evidence and never treats missing review as 
  const root=mkdtempSync(path.join(tmpdir(),'job01-extract-'));
  try{
  const spec={gradingStages:['initial_search'],stages:[{id:'initial_search',minute:0}],policy:{userResponseDelayMinutes:5}};
- const run={checkpoints:[{stage:'initial_search',status:'completed',executionSeconds:60,interactions:{questions:1,repeatedContext:0,reminders:0,corrections:0,approvals:0}}]};
+ const run={checkpoints:[{stage:'initial_search',status:'completed',executionSeconds:60,interactionTurnIds:['ask1'],answeredTurnCount:1,interactions:{uniqueTurns:1,questions:1,repeatedContext:0,reminders:0,corrections:0,approvals:0}}]};
  writeFileSync(path.join(root,'run.json'),JSON.stringify(run));writeFileSync(path.join(root,'saved.json'),'["job-a"]');
  const hash=x=>createHash('sha256').update(x).digest('hex');
  writeFileSync(path.join(root,'evidence-hashes.json'),JSON.stringify({'run.json':hash(JSON.stringify(run)),'saved.json':hash('["job-a"]')}));
  assert.throws(()=>extract(root,{reviewer:'reviewer'},spec),/Cited/);
- const review={reviewer:'reviewer',checkpoints:{initial_search:{savedJobIds:['job-a'],evidence:['saved.json'],outcomeComplete:true,additionalInteractions:{questions:0,repeatedContext:0,reminders:0,corrections:0,approvals:0}}}};
- const result=extract(root,review,spec);assert.deepEqual(result.checkpoints[0].savedJobIds,['job-a']);assert.equal(result.checkpoints[0].simulatedCompletionMinute,6);
+ const review={reviewer:'reviewer',checkpoints:{initial_search:{savedJobIds:['job-a'],evidence:['saved.json'],outcomeComplete:true,additionalTurns:[{id:'extra1',evidence:['saved.json'],answered:true,categories:['questions','repeatedContext','approvals']}]}}};
+ const result=extract(root,review,spec);assert.deepEqual(result.checkpoints[0].savedJobIds,['job-a']);assert.equal(result.checkpoints[0].simulatedCompletionMinute,11);
+ assert.equal(result.checkpoints[0].interactions.uniqueTurns,2);assert.equal(result.checkpoints[0].interactions.repeatedContext,1);assert.equal(result.checkpoints[0].interactions.approvals,1);
+ const duplicate=structuredClone(review);duplicate.checkpoints.initial_search.additionalTurns.push(duplicate.checkpoints.initial_search.additionalTurns[0]);assert.throws(()=>extract(root,duplicate,spec),/Unique additional/);
  writeFileSync(path.join(root,'saved.json'),'tampered');assert.throws(()=>extract(root,review,spec),/Evidence changed/);
  }finally{rmSync(root,{recursive:true,force:true});}
 });

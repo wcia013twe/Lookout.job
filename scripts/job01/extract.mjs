@@ -23,17 +23,25 @@ export function extract(root,extraction,spec){
    if(!Array.isArray(entry.savedJobIds)||entry.savedJobIds.some(id=>typeof id!=='string')||new Set(entry.savedJobIds).size!==entry.savedJobIds.length)throw Error('Explicit unique saved-job IDs required');
    c.savedJobIds=entry.savedJobIds;c.selectionEvidenceStatus='independently_extracted';
   }
-  // Count only additional demands not already captured by ask_user; categories are disjoint additions.
-  for(const name of ['questions','repeatedContext','reminders','corrections','approvals']){
-   const count=entry.additionalInteractions?.[name];
-   if(!Number.isInteger(count)||count<0)throw Error('Explicit additional interaction counts required');
-   c.interactions[name]+=count;
+  // Unique turn IDs are counted once; diagnostic categories may overlap.
+  if(!Number.isInteger(c.answeredTurnCount)||c.answeredTurnCount<0||c.answeredTurnCount>c.interactions.uniqueTurns)throw Error('Captured answered-turn count required');
+  const known=new Set(c.interactionTurnIds||[]);
+  if(known.size!==(c.interactionTurnIds||[]).length||c.interactions.uniqueTurns!==known.size)throw Error('Captured unique turn IDs required');
+  if(!Array.isArray(entry.additionalTurns))throw Error('Explicit additionalTurns array required');
+  for(const turn of entry.additionalTurns){
+   if(typeof turn.id!=='string'||!turn.id.trim()||known.has(turn.id))throw Error('Unique additional turn ID required');
+   if(!Array.isArray(turn.evidence)||!turn.evidence.length||turn.evidence.some(file=>!(file in frozen)))throw Error('Cited frozen evidence required for each additional turn');
+   if(typeof turn.answered!=='boolean'||!Array.isArray(turn.categories)||!turn.categories.length||new Set(turn.categories).size!==turn.categories.length||turn.categories.some(k=>!['questions','repeatedContext','reminders','corrections','approvals'].includes(k)))throw Error('Explicit answer state and valid categories required');
+   known.add(turn.id);c.interactions.uniqueTurns++;
+   for(const category of turn.categories)c.interactions[category]++;
+   if(turn.answered)c.answeredTurnCount++;
   }
+  c.interactionTurnIds=[...known];
   c.interactionEvidenceStatus='independently_reviewed';
-  c.simulatedCompletionMinute=entry.outcomeComplete===true&&c.status==='completed'?stage.minute+c.executionSeconds/60+c.interactions.questions*spec.policy.userResponseDelayMinutes:null;
+  c.simulatedCompletionMinute=entry.outcomeComplete===true&&c.status==='completed'?stage.minute+c.executionSeconds/60+c.answeredTurnCount*spec.policy.userResponseDelayMinutes:null;
   c.extractionEvidence=entry.evidence;
  }
- out.extraction={reviewer:extraction.reviewer,evidenceManifestHash:hash(fs.readFileSync(path.join(root,'evidence-hashes.json'))),timing:'fixed event minute + actual active duration + fixed delay per answered question; uncompleted outcomes remain null'};
+ out.extraction={reviewer:extraction.reviewer,evidenceManifestHash:hash(fs.readFileSync(path.join(root,'evidence-hashes.json'))),timing:'fixed event minute + actual active duration + fixed delay per answered interaction turn; uncompleted outcomes remain null'};
  return out;
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(import.meta.filename)){

@@ -13,3 +13,5 @@
 - V3 clarifies ten as predetermined checkpoint targets, not an output cap: exact recall/missing/extra IDs at initial and continuation turns, semantic analysis separate; intermediate turns only preferences/continuity. Same email evidence has deliberate scheduled-wake versus user-upload delivery. Reuses N01 candidate context and keeps private target rationales outside source. V1/v2 remain retained; paired pilot is not executed.
 
 - User-facing test case renamed JOB01 (JOB01-search-v1). Active adapters, scenario, docs and tests moved to job01 paths; historical N02 scenarios and datasets remain unchanged. No participant pilot executed.
+
+- JOB01-search-v2: complete updated shortlist, no interested-role tracking, onboarding style initially and corrected style after feedback; per-stage applicable quality including unsuitable extras. Standard per-turn Lookout tool orientation mirrors COM1. Unique interaction IDs/citations support primary effort counts with overlapping diagnostic categories; pilots no longer mislabeled measured. Eleven focused tests and data validation pass. No private freeze/account changes, live registration or participant run in this pass.

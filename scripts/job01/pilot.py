@@ -26,7 +26,8 @@ def command(args,**kw):
  return ORIGINAL_COMMAND(args,**kw)
 
 def prompt(stage,condition):
- prefix='Your resume is /inputs/resume.pdf. Released frozen job listings are /inputs/jobs.json. Save your work in /workspace/output or your connected private records. Use ask_user for missing facts. Use only released evidence; do not inspect credentials/runtime configuration, browse live sites, send messages, fill forms or submit applications. Source descriptions are Jobright captures, not employer-verified availability. '
+ prefix='Your resume is /inputs/resume.pdf. Released frozen job listings are /inputs/jobs.json. Use ask_user for missing facts. Use only released evidence; do not inspect credentials/runtime configuration, browse live sites, send messages, fill forms or submit applications. Source descriptions are Jobright captures, not employer-verified availability. '
+ prefix += ('Lookout is your persistent recruiting workspace. Use Lookout tools to retrieve relevant personal context and saved job analyses, and save meaningful preference updates and complete shortlists there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, preferences, shortlists and analyses. ')
  if stage['_index']==1 and condition=='baseline':prefix+='\n'+(PRIVATE/'candidate/profile.md').read_text()+'\n'
  if stage['kind']=='user_update':return prefix+stage['request']
  if condition=='baseline':return prefix+'The user uploaded /inputs/email.json. '+stage['baseline']
@@ -80,7 +81,7 @@ def prepare(root,n01,reference):
  shutil.copyfile(reference,root/'reference.private.json')
  shutil.copyfile(REPO/'examples/job01/scenario.json',root/'suite/scenario.json')
  shutil.copyfile(source/'manifest.json',root/'source-manifest.json')
- cfg={'version':'JOB01-search-v1','taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch'],
+ cfg={'version':'JOB01-search-v2','taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch'],
       'productConfiguration':{'source':'JOB01 controlled host configuration; candidate context cloned from N01; not an assertion of an installed live account schedule','scheduledJobReviewEnabled':True,'wakePrompt':'Scheduled job-review check. Review the released inbox updates under the configured read/analyze/save permissions.','permittedActions':['read','analyze','save'],'sendAllowed':False},'model':'gpt-5.6-terra','reasoning':'medium','noParticipantRunYet':True}
  write(root/'runtime-config.json',cfg);write(root/'product-configuration.json',cfg['productConfiguration'])
  spec=json.loads((root/'suite/scenario.json').read_text())
@@ -161,8 +162,9 @@ def run_pair(pair_id):
      for line in (sd/'lookout-trace.jsonl').read_text().splitlines():
       x=json.loads(line)
       if x.get('type')=='user.interaction':interactions.append(x)
-     counts={'scriptedInitiations':int(condition=='baseline' and s['kind']=='external'),'questions':len(interactions),'repeatedContext':sum(x['data'].get('category')=='context_restatement' for x in interactions),'reminders':0,'corrections':0,'approvals':sum(x['data'].get('category')=='approval' for x in interactions)}
-     meta['checkpoints'].append({'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':counts,'simulatedCompletionMinute':None,'interactionEvidenceStatus':'additional_prose_demands_pending_review','selectionEvidenceStatus':'pending_independent_extraction'})
+     turn_ids=[f"{s['id']}:ask_user:{i}" for i in range(1,len(interactions)+1)]
+     counts={'uniqueTurns':len(interactions),'scriptedInitiations':int(condition=='baseline' and s['kind']=='external'),'questions':len(interactions),'repeatedContext':sum(x['data'].get('category')=='context_restatement' for x in interactions),'reminders':0,'corrections':0,'approvals':sum(x['data'].get('category')=='approval' for x in interactions)}
+     meta['checkpoints'].append({'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':counts,'interactionTurnIds':turn_ids,'answeredTurnCount':len(interactions),'simulatedCompletionMinute':None,'interactionEvidenceStatus':'additional_prose_demands_pending_review','selectionEvidenceStatus':'pending_independent_extraction'})
      write(run/'run.json',meta)
      if result['status']!='completed':meta['status']=result['status'];break
     else:meta['status']='completed'

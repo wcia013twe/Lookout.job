@@ -1,15 +1,19 @@
 # JOB01: Job selection and analysis across sessions
 
-JOB01-search-v1 grades **whether all ten predetermined targets appear in the returned
+JOB01-search-v2 grades **whether all ten predetermined targets appear in the returned
 saved-job list at each grading turn**, plus the quality of their analyses. Ten is
 not an output cap. Additional suitable roles are allowed and reviewed separately.
-A later turn has its own expected ten. No application drafting, filling or sending.
+A later turn has its own expected ten and requires a complete updated shortlist,
+not only additions. This is lookup and analysis, not interest tracking. No application drafting, filling or sending.
 
 ## Candidate, sessions and evidence
 
 Reuse the N01 candidate resume/onboarding infrastructure. Both receive the same
 facts and model settings; baseline receives non-resume context in its first message
 and may save notes. Fresh sessions retain state without replay. No standing goal.
+Every turn includes standard storage orientation: Lookout must use its tools for
+context, preference updates and saved shortlists; baseline may retain local notes.
+This is fixed onboarding/transport guidance, never a failure-triggered reminder.
 Record actual Lookout configuration. Source packets use the same frozen board and
 Jobright detail evidence; they do not establish live employer availability.
 
@@ -67,31 +71,35 @@ execution are host-owned; do not use the networking-specific N01 runner unchange
 Run JSON has version, episodeId, condition, snapshotId, sourceHash, startedAt (epoch
 seconds), terminal status, and checkpoints. Each checkpoint has stage,
 executionSeconds, simulatedCompletionMinute, and interactions with nonnegative
-scriptedInitiations/questions/repeatedContext/reminders/corrections/approvals.
+uniqueTurns plus scriptedInitiations/questions/repeatedContext/reminders/corrections/approvals.
 Grading stages also require `savedJobIds`, independently extracted from the
 returned/saved target list at that turn. Keep raw native records, files and tool
 traces; cumulative unrelated history is not the returned list.
 
 Review binds `evidenceDigest` to SHA256 of JSON.stringify(run), names a reviewer,
 and supplies `checkpoints[stage][qualityKey] = {rating:0|1|2,evidence:"location and rationale"}`.
-All checkpoints review preference_handling and continuity. Grading turns also
-review the scenario quality keys: analysis accuracy, saved/applied career and
-style preferences, style adherence and preserved interests. Missing review stays
-review_required. Adherence uses scenario keys with status/evidence separately.
+`stageQuality` lists only criteria applicable at each turn. Initially assess
+onboarding career/style adherence, analysis accuracy and selection suitability.
+Career/style update turns assess only the newly saved preference. Continuation
+assesses the complete current shortlist, analysis, saved/applied preferences,
+corrected style, suitability and continuity. `qualityRubric` defines these checks.
+No initial expectation anticipates future corrections. Missing review stays
+review_required. Adherence remains separate.
 
 ```sh
 node scripts/job01/task.mjs --source <snapshot-directory> --reference <private-reference.json> --run <run.json> --review <review.json> --output <new-grade.json>
 ```
 
 - **Time:** actual execution duration separately from simulated completion time.
-- **Effort:** observed questions, reminders, repeated context, corrections and
-  approvals; prescribed initiations remain separate from measured human effort.
+- **Effort:** unique observed interaction turns. Questions, reminders, repeated
+  context, corrections and approvals are overlapping breakdowns, never summed.
+  Prescribed initiations remain separate from observed effort.
 - **Quality:** exact expected-target recall at each grading turn (matched/10),
   matched/missing/unexpected IDs, plus semantic analysis and preference checks.
 
 Nine expected targets plus an excellent alternative is still 0.9 exact recall;
 the alternative can receive a favorable semantic assessment. Extras never reduce
-recall automatically. Intermediate update turns do not require per-job analysis
+recall automatically, but unsuitable extras reduce selection-suitability quality. Intermediate update turns do not require per-job analysis
 matrices. Independent review judges quality across equivalent storage formats.
 
 ## Langfuse and readiness
@@ -109,7 +117,9 @@ node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grad
 node --env-file=<private-env> scripts/job01/langfuse.mjs --run <run.json> --grade <grade.json> --receipt-dir <private-receipts> --verify
 ```
 
-Historical N02 v1/v2/v3 scenarios remain in examples/n02, and live N02 datasets stay immutable. JOB01 has its own registration.
+Historical N02 scenarios and JOB01 v1 remain archived with their datasets unchanged.
+JOB01 v2 has its own registration. Pilot experiments and scores are explicitly
+labeled pilot; synthetic verification remains separate from measured runs.
 Synthetic telemetry verifies plumbing, not participant quality. Fix actor answers,
 budgets, timing, target references and configuration before a paired pilot. Preserve
 failures and distinguish harness failures; no rescue or silent retries. Do not run
@@ -172,10 +182,12 @@ node scripts/job01/task.mjs --source SNAPSHOT_DIRECTORY --reference PRIVATE_REFE
 ```
 
 Extraction shape: `{reviewer, checkpoints: {[stage]: {savedJobIds, evidence:
-["stage-1/output/saved.md"], outcomeComplete, additionalInteractions:
-{questions:0,repeatedContext:0,reminders:0,corrections:0,approvals:0}}}}`.
-Every executed checkpoint needs cited evidence and explicit additional counts;
-`savedJobIds` is required only on grading turns. Native records and file outputs
-are equally valid evidence. Only reviewed completed outcomes receive a simulated
-completion time: event minute + active execution duration + the predefined delay
-per answered question. No real human effort minutes are inferred.
+["stage-1/output/saved.md"], outcomeComplete, additionalTurns:
+[{id:"stage1-extra1", evidence:["stage-1/trace.jsonl"], answered:true,
+categories:["questions","repeatedContext"]}]}}}`. Supply an empty array when
+there are no additional turns. Stable turn IDs and citations prevent double
+counting; a turn can belong to several categories but counts once in uniqueTurns.
+Captured ask_user turn IDs cannot be counted again. Every checkpoint needs evidence;
+savedJobIds is required only at grading turns. Only reviewed completed outcomes
+receive simulated completion time: event minute + active execution duration +
+fixed delay per answered unique turn. No real human effort minutes are inferred.

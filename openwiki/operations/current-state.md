@@ -1040,3 +1040,14 @@ grading turn is separate from analysis quality; reviewed extraction binds to act
 saved-state evidence. Earlier setup failures are retained. No participant pilot or
 real model outcome is claimed. Product state, original accounts and public catalog
 maintenance remain outside this evaluation setup.
+
+### JOB01 complete-shortlist clarification
+
+Prospective JOB01-search-v2 returns a complete updated shortlist at the later
+grading turn and removes interested-role tracking. Initial style follows onboarding;
+corrected style applies only after feedback. Fixed per-turn storage orientation
+explicitly directs Lookout tool use and permits baseline notes. Stage-specific
+quality includes unsuitable extras, separately from exact target recall. Effort
+counts unique interaction turns with overlapping category breakdowns. Pilot
+telemetry is labeled pilot, not measured. Existing private freezes and prior
+datasets remain unchanged; new preparation/preflight is required before execution.
