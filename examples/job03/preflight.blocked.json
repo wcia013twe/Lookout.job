@@ -1,0 +1,14 @@
+{
+  "version": "JOB03-tracking-v1",
+  "freezeHash": "13b49641460c58994b0ec89eb370a6ab618b7c04fae8fb65565d0cc4ac5c32c7",
+  "configurationHash": "1fc986c813c3839703db953655157528c0078b535e84797fb1368b78544a5c57",
+  "adapterCommandHash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "participantExecuted": false,
+  "ready": false,
+  "status": "blocked",
+  "calls": [],
+  "blockers": [
+    "No actual JOB03 native/reminder adapter configured"
+  ],
+  "completedAt": "2026-11-09T19:39:27.856Z"
+}

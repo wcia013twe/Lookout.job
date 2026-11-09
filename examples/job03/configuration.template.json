@@ -1,0 +1,14 @@
+{
+  "benchmarkTaskId": "JOB03",
+  "dedicated": true,
+  "fictional": true,
+  "ownerId": null,
+  "readOnlyOwnerId": null,
+  "source": "JOB03 source-only preparation; no account or service provisioned",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "normalProductConfiguration": {
+    "status": "not_captured",
+    "note": "Replace with actual host configuration before a successful preflight. This template establishes no runtime capability."
+  }
+}
