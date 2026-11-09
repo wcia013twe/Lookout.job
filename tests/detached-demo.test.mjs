@@ -71,13 +71,18 @@ test('account routes leave remembered demo mode while explicit previews remain i
 });
 
 
-test('default demo previews filled drafts and resolvable human unblock notifications',async()=>{
- const {orderBoardItems,needsUnblocking}=await import('../lib/action-board.mjs');
+test('default demo hides submission cards while retaining drafts and resolvable input requests',async()=>{
+ const {orderBoardItems,needsUnblocking,isVisibleBoardItem}=await import('../lib/action-board.mjs');
  const shared=await models(),runtime=createDetachedDemo({date:fixturesDate,models:shared,presets});
  const first=await runtime.services.readActionBoard(),ordered=orderBoardItems(first.items);
  assert.equal(ordered[0].kind,'review_application');
  assert(first.items.some(i=>i.kind==='prepared_application'));
  assert(first.items.some(i=>i.kind==='missing_answer'));
+ const visible=first.items.filter(isVisibleBoardItem);
+ assert(visible.length < first.items.length);
+ assert(visible.every(i=>!['review_application','prepared_application','submit_application'].includes(i.kind)));
+ for(const kind of ['missing_answer','resolve_blocker','check_submission'])assert(visible.some(i=>i.kind===kind),kind);
+ assert.deepEqual((await runtime.services.readActionBoard()).items,first.items);
  const manual=first.items.find(i=>i.sourceId==='demo-manual-board');
  assert.equal(manual.kind,'resolve_blocker');assert.match(manual.reason,/CAPTCHA/);assert(needsUnblocking(manual));
  const uncertain=first.items.find(i=>i.sourceId==='demo-uncertain-board');

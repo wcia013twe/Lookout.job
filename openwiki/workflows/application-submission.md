@@ -574,3 +574,14 @@ behavior.
 ### Conditional preparation on AI Apply
 
 Application guide39/developer153 tells Muse to reuse current saved preparation and call the existing prepare_draft only for missing/incomplete preparation, new employer questions, or relevant changed facts/materials. AI Apply itself remains a queue operation. Freshness is checked against current relevant sources; a context-version change alone does not justify rewriting all answers. The filler preserves nonempty answers, so changed facts require explicit reconciliation while preserving human decisions. An unchanged approved draft is reused. New live-form questions pass through the same filler before remaining personal decisions are grouped on the existing board card. This is agent guidance, not a new automatic queue hook or evidence of live host adoption.
+
+
+### Submission cards temporarily hidden on the website
+
+The Action Board hides `review_application`, `prepared_application` and
+`submit_application` cards, including detached demo presentation, fallback inbox
+rows and displayed action counts. Input requests, blockers and uncertain outcomes
+remain visible. `SHOW_SUBMISSION_CARDS` in `lib/action-board.mjs` controls this
+presentation-only pause. Saved drafts, history, backend/MCP projections and existing
+submission approval requirements remain intact. AI Apply does not gain submission
+authority from this UI change; application details remain available in Applications.
