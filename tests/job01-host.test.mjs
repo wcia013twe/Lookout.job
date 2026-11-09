@@ -111,3 +111,24 @@ assert "or name not in allowed or actual not in allowed" in source
 assert "if a.condition=='lookout':reply=upstream(msg)" in source
 `],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);
 });
+
+test('wrapped native guide reads produce discovery measurements exactly once',()=>{
+ const result=spawnSync('python3',['-B','-c',String.raw`
+import ast,json,time,io,contextlib,sys,tempfile,importlib.util
+from pathlib import Path
+from types import SimpleNamespace
+source=ast.parse(Path('scripts/job01/bridge.py').read_text())
+code=ast.Module(body=[n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='clean']+[n for n in source.body if isinstance(n,ast.For)],type_ignores=[])
+for wrapped in [False,True]:
+ rows=[];msg={'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'call_discovered_tool' if wrapped else 'read_guide','arguments':{'name':'read_guide','arguments':{'id':'agent-audit'}} if wrapped else {'id':'agent-audit'}}}
+ def upstream(x):return {'jsonrpc':'2.0','id':x['id'],'result':{'content':[{'type':'text','text':'Native fixture guide'}]}}
+ ns={'json':json,'time':time,'sys':SimpleNamespace(stdin=io.StringIO(json.dumps(msg)+'\n')),'a':SimpleNamespace(condition='lookout'),'allowed':{'call_discovered_tool','read_guide'},'config':{},'upstream':upstream,'record':lambda k,d:rows.append({'type':k,'data':d})}
+ with contextlib.redirect_stdout(io.StringIO()):exec(compile(code,'bridge-loop','exec'),ns)
+ measurements=[r for r in rows if r['type']=='mcp.measurement'];assert len(measurements)==1 and measurements[0]['data']['tool']=='read_guide'
+ spec=importlib.util.spec_from_file_location('diag','scripts/communication/diagnostics.py');diag=importlib.util.module_from_spec(spec);spec.loader.exec_module(diag)
+ with tempfile.TemporaryDirectory() as tmp:
+  p=Path(tmp);(p/'lookout-trace.jsonl').write_text('\n'.join(json.dumps(r)for r in rows)+'\n');out=diag.call_metrics([p])
+  assert out['tool_discovery_calls']==1 and out['mcp_measured_requests']==1
+  assert out['mcp_discovery_response_bytes']>0 and out['mcp_task_tools_response_bytes']==0
+`],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);
+});

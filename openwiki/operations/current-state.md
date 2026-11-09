@@ -1180,3 +1180,13 @@ Prospective COM03 v4/grade v4 and COM04 v5/grade v4 align durable-output obligat
 ### COM03 fresh-owner reset probe
 
 PILOT05 failed before inference on a global fixture application-ID collision. COM03 v5 remaps fixture IDs/references per owner and probes the complete reset in a rolled-back transaction before participants start. Focused checks and actual preflight pass; PILOT07 remains prospective. The failed setup evidence and live PILOT06 COM04 sources are preserved.
+
+### JOB01 wrapped-discovery telemetry correction
+
+JOB01 now measures wrapped native calls by their actual inner tool and binds score
+timestamps to execution. The retained v5 pilot's eight affected guide/context reads
+were reclassified from frozen traces; corrected score read-back passed. Original
+runtime, participant evidence and semantic grades remain unchanged. Total execution,
+effort and cost are unchanged. Controlled fixture checks cover direct and wrapped
+discovery without duplicate call counts; this is a diagnostics correction, not a
+new participant run or product-effectiveness claim.

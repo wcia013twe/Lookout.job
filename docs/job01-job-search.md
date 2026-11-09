@@ -257,3 +257,10 @@ participants; completion alone does not establish quality.
 ## Controlled v5 closeout
 
 The preserved paired pilot at `/Volumes/External SSD/Lookout/tmp/job01-controlled-v5-20261109-1` cleared its harness audit: `receipts/clearance.json` verifies frozen inputs/runtime, identical task inputs, model/session controls, 136 artifact hashes, fresh final grading, native confirmation and both Langfuse read-backs. Private semantic evidence remains in `grading/`. Baseline reached its fixed final-stage timeout; Lookout completed all process stages. Both returned saved work and both had final quality gaps. Target-list membership is graded independently from durable saving; a returned target need not be saved perfectly, and a saved record outside the returned list does not count as returned. Participant dollar costs remain unknown; baseline usage covers three of four stages. This closes the controlled harness run, without asserting broader product effectiveness.
+
+The v5 audit reclassified eight wrapped guide/context reads into discovery timing
+and response bytes. It preserved raw runs, independent ratings, original exports
+and the original clearance receipt. Corrected derivatives are in
+`grading/exports-metric-corrected/`; the current clearance links verified read-back.
+Total execution time, effort and cost did not change. Future score timestamps are
+bound to execution, and wrapped measurements name the actual inner tool.
