@@ -50,7 +50,7 @@ Stage IDs are in the scenario. Onboarding/resume transport remains host-owned.
 ## Evidence and grading
 
 A host writes a terminal run JSON with version, episodeId, condition, snapshotId,
-sourceHash, status (completed/timed_out/execution_failed/harness_failed), and
+sourceHash, startedAt (epoch seconds), status (completed/timed_out/execution_failed/harness_failed), and
 checkpoints. Each checkpoint contains stage, executionSeconds, savedJobIds,
 simulatedCompletionMinute, and interactions with nonnegative counts for
 scriptedInitiations/questions/repeatedContext/reminders/corrections/approvals.
@@ -85,13 +85,24 @@ or private records. Preview registration before writing:
 ```sh
 node scripts/n02/langfuse.mjs --register --manifest <manifest.json> --dry-run
 node --env-file=<private-env> scripts/n02/langfuse.mjs --register --manifest <manifest.json>
-node scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --dry-run
+node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --dry-run
+node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json>
+node --env-file=<private-env> scripts/n02/langfuse.mjs --run <run.json> --grade <grade.json> --verify
 ```
 
 The score plan uses time/effort/quality prefixes and separate adherence categories.
-Participant trace creation, dataset-run linking and score upload remain host
-integration work; the CLI refuses standalone score upload. No participant runner,
-account reset, live wake, or completed evaluation is claimed by these adapters.
+The exporter creates a trajectory root, stage spans, experiment/dataset-item links
+and root scores via OpenTelemetry, with project-bound registration and ingestion
+receipts. Use the same `--receipt-dir` for registration, export and verification.
+`--verify` checks observations, scores and experiment read-back; ingestion delay
+may require another verification, never a participant rerun. Stage spans represent
+sequential execution duration, not simulated event waits or exact model calls.
+
+`node scripts/n02/smoke.mjs <manifest.json> <new-directory>` creates explicitly
+synthetic transport evidence without fit scores or participant content. Live
+registration and synthetic five-span/fourteen-score experiment read-back were
+verified on 2026-11-09. This proves plumbing only. No participant runner, account
+reset, live wake, or completed evaluation is claimed by these adapters.
 Do not reuse the networking-specific N01 runner unchanged.
 
 Fix execution limits, event/response timing and user-actor answers before a pair.

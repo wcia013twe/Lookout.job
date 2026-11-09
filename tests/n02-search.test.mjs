@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {packet,grade,hash,read} from '../scripts/n02/task.mjs';
-import {registration,scores} from '../scripts/n02/langfuse.mjs';
+import {registration,scores,build} from '../scripts/n02/langfuse.mjs';
 const spec=read(new URL('../examples/n02/scenario.json',import.meta.url));
 const board={manifest:{snapshotId:'test',files:{'jobs.json':'abc'}},jobs:[{id:'a',title:'Platform'},{id:'b',title:'Inference'}],ids:new Set(['a','b'])};
 const entry=id=>({id,initialFit:'strong',updatedFit:id==='a'?'strong':'weak',rationale:'fixture only',evidence:['fixture:1']});
@@ -14,3 +14,13 @@ test('Langfuse registration and scores separate structural metadata and umbrella
 test('unsupported selections reduce precision and duplicate selections are rejected',()=>{const modified={...run,checkpoints:[{...run.checkpoints[0],savedJobIds:['a','b']}]};const g=grade(spec,ref,board,modified);assert.equal(g.qualityOfCompletion[0].quality.selectionPrecision,.5);assert.deepEqual(g.qualityOfCompletion[0].quality.unsupportedSelections,['b']);assert.throws(()=>grade(spec,ref,board,{...run,checkpoints:[{...run.checkpoints[0],savedJobIds:['a','a']}]}),/Duplicate/);});
 
 test('later saved list may preserve earlier roles',()=>{const g=grade(spec,ref,board,{...run,checkpoints:[{stage:'continuation',executionSeconds:1,savedJobIds:['a']}]});assert.deepEqual(g.qualityOfCompletion[0].quality.unsupportedSelections,[]);assert.equal(g.qualityOfCompletion[0].quality.coverage,1);});
+
+test('trace links stages and root scores to registered dataset without private content',()=>{
+ const r={...run,startedAt:1700000000,synthetic:true};const g=grade(spec,ref,board,r);
+ const reg={datasetId:'ds',itemId:'item',scenarioHash:hash(spec),snapshotId:'test',sourceHash:'abc'};
+ const p=build(r,g,spec,reg);assert.equal(p.spans.length,2);assert.ok(p.scores.every(s=>s.observationId===p.rootId));
+ assert.ok(p.spans[0].attributes.some(a=>a.key==='langfuse.experiment.dataset.id'&&a.value.stringValue==='ds'));
+ assert.equal(JSON.stringify(p).includes('savedJobIds'),false);
+ assert.throws(()=>build(r,g,spec,{...reg,sourceHash:'drift'}),/binding/);
+ assert.throws(()=>build(r,{...g,timeToTask:{executionSeconds:9}},spec,reg),/Duration/);
+});
