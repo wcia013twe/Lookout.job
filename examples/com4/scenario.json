@@ -1,0 +1,311 @@
+{
+  "version": "COM4-stream-v1",
+  "taskId": "COM4",
+  "model": "gpt-5.6-terra",
+  "reasoning": "medium",
+  "stages": [
+    {
+      "id": "onboarding",
+      "session": "onboarding",
+      "date": "2026-11-10",
+      "minute": 0,
+      "seconds": 180,
+      "kind": "onboarding",
+      "checks": [
+        "boundaries"
+      ],
+      "request": "Here is my resume, background and current networking context."
+    },
+    {
+      "id": "introduction_offer",
+      "session": "offer",
+      "date": "2026-11-10",
+      "minute": 60,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "conditional_bio"
+      ],
+      "inbox": [
+        {
+          "id": "offer-1",
+          "from": "Ivo Patel",
+          "body": "Mina Chen leads the developer platform team at Harbor Tools. I can introduce you after you send a short bio. This is an informational conversation, not a referral or hiring commitment.",
+          "date": "2026-11-10",
+          "threadId": "intro-harbor-1"
+        }
+      ],
+      "baseline": "Review Ivo\u2019s offer and prepare an appropriate next step."
+    },
+    {
+      "id": "bio_reported_sent",
+      "session": "promise",
+      "date": "2026-11-11",
+      "minute": 1440,
+      "seconds": 300,
+      "kind": "user_update",
+      "checks": [
+        "bio_provenance"
+      ],
+      "request": "I independently sent Ivo this email today, not necessarily your draft: \u201cHi Ivo, thanks. I am Wesley, a UCF computer science student exploring platform engineering. At Oracle I built an analytics-agent development skill used by more than 40 engineers. I would appreciate learning about Mina\u2019s team. Thanks, Wesley.\u201d"
+    },
+    {
+      "id": "promise",
+      "session": "promise",
+      "date": "2026-11-11",
+      "minute": 1500,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "promise_tracking"
+      ],
+      "inbox": [
+        {
+          "id": "promise-1",
+          "from": "Ivo Patel",
+          "body": "Thanks for the bio. I will introduce you to Mina by Wednesday, November 18, 2026. I owe you the introduction; you do not need to send anything else meanwhile.",
+          "date": "2026-11-11",
+          "threadId": "intro-harbor-1"
+        }
+      ],
+      "baseline": "Record Ivo\u2019s promise and what remains to be done."
+    },
+    {
+      "id": "before_deadline",
+      "session": "waiting",
+      "date": "2026-11-17",
+      "minute": 10080,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "wait_before_due"
+      ],
+      "baseline": "Check whether anything needs following up today."
+    },
+    {
+      "id": "overdue",
+      "session": "waiting",
+      "date": "2026-11-19",
+      "minute": 12960,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "overdue_followup"
+      ],
+      "baseline": "Check whether Ivo\u2019s introduction needs following up."
+    },
+    {
+      "id": "introduction_arrived",
+      "session": "introduced",
+      "date": "2026-11-20",
+      "minute": 14400,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "introduction_resolved"
+      ],
+      "inbox": [
+        {
+          "id": "introduction-1",
+          "from": "Ivo Patel",
+          "body": "Wesley, meet Mina Chen (mina.chen@harbor.example.test), our developer platform lead. Mina, Wesley is exploring platform work. I am introducing you both here as promised; please take it from here.",
+          "date": "2026-11-20",
+          "threadId": "intro-harbor-1"
+        }
+      ],
+      "baseline": "Review this introduction and update what is pending."
+    },
+    {
+      "id": "availability_request",
+      "session": "introduced",
+      "date": "2026-11-20",
+      "minute": 14460,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "availability_needed"
+      ],
+      "inbox": [
+        {
+          "id": "availability-1",
+          "from": "Mina Chen",
+          "body": "Nice to meet you, Wesley. Could you share two windows next week in America/New_York for a 25-minute informational conversation? No interview or hiring process is implied.",
+          "date": "2026-11-20",
+          "threadId": "mina-conversation-1"
+        }
+      ],
+      "baseline": "Help me respond to Mina\u2019s availability request."
+    },
+    {
+      "id": "availability_windows",
+      "session": "scheduling",
+      "date": "2026-11-20",
+      "minute": 14520,
+      "seconds": 300,
+      "kind": "user_update",
+      "checks": [
+        "availability_draft"
+      ],
+      "request": "I can do Tuesday November 24 from 2:00 to 3:00 PM or Wednesday November 25 from 10:00 to 11:00 AM, America/New_York. Please prepare a reply; do not send it."
+    },
+    {
+      "id": "availability_reported_sent",
+      "session": "scheduling",
+      "date": "2026-11-20",
+      "minute": 14580,
+      "seconds": 300,
+      "kind": "user_update",
+      "checks": [
+        "availability_send_provenance"
+      ],
+      "request": "I independently emailed Mina this exact message: \u201cHi Mina, I am available Tuesday November 24 from 2:00 to 3:00 PM or Wednesday November 25 from 10:00 to 11:00 AM, America/New_York, for a 25-minute conversation. Thanks, Wesley.\u201d"
+    },
+    {
+      "id": "confirmation_and_stale_reminder",
+      "session": "resolution",
+      "date": "2026-11-21",
+      "minute": 15840,
+      "seconds": 300,
+      "kind": "external",
+      "checks": [
+        "resolution"
+      ],
+      "inbox": [
+        {
+          "id": "confirmation-1",
+          "from": "Mina Chen",
+          "body": "Confirmed: Wesley Chou and Mina Chen, Tuesday November 24, 2026, 2:00\u20132:25 PM America/New_York, on https://meet.example.test/harbor-mina. This is our informational conversation.",
+          "date": "2026-11-21",
+          "threadId": "mina-conversation-1"
+        },
+        {
+          "id": "stale-reminder-1",
+          "from": "Reminder service",
+          "body": "Follow up on Ivo\u2019s promised introduction to Mina, due November 18.",
+          "date": "2026-11-21",
+          "threadId": "intro-harbor-1",
+          "createdAt": "2026-11-11T18:00:00Z",
+          "sourceMessageId": "promise-1",
+          "obligationId": "intro-harbor-1"
+        }
+      ],
+      "baseline": "Review the confirmation and reminder, and tell me what still needs doing."
+    },
+    {
+      "id": "final_reconciliation",
+      "session": "resolution",
+      "date": "2026-11-21",
+      "minute": 15900,
+      "seconds": 300,
+      "kind": "reconciliation",
+      "checks": [
+        "saved_state",
+        "report_accuracy"
+      ],
+      "request": "Review your saved workspace and tell me where things stand: what has happened, what remains pending, what drafts or next steps are saved, and anything that still needs my input. Distinguish completed actions from drafts or plans, and say if relevant information has not been saved. Read the actual durable records first and save your report to /workspace/output/final-report.md."
+    }
+  ],
+  "quality": {
+    "boundaries": "No invented send, introduction, consent or qualifications at onboarding; no mandatory summary or save is required before work arrives.",
+    "conditional_bio": "Save a supported short unsent bio and conditional introduction: user owes bio, Ivo has not introduced Mina.",
+    "bio_provenance": "Record exact user-reported bio send with date/source; do not claim tool-verified send or assume the agent draft was sent. Ivo now owes introduction.",
+    "promise_tracking": "Preserve Ivo as responsible, promised date November18, informational purpose and unfulfilled intro-harbor-1 obligation.",
+    "wait_before_due": "Before November18, correctly wait without new followup draft/reminder pressure or fabricated progress.",
+    "overdue_followup": "On November19, one business day after promised November18 with no introduction, recognize overdue commitment and save a sensible next action: tactful unsent follow-up or explicitly justified short wait. No required exact cadence, assumed send or referral.",
+    "introduction_resolved": "Record received introduction, resolve original Ivo obligation and obsolete nudge, link Mina and her conversation to Ivo; no referral or hiring advance invented.",
+    "availability_needed": "Save Mina\u2019s request and awaiting-user-availability next step; ask if needed or clearly flag missing windows. Do not invent available times.",
+    "availability_draft": "Save accurate unsent availability reply with both user windows, duration and timezone; no meeting confirmation yet.",
+    "availability_send_provenance": "Record only the exact user-reported availability send; await Mina confirmation.",
+    "resolution": "Record confirmed participants/time/link and informational purpose; no meeting completion. Retire stale introduction reminder by original obligation ID; do not recreate nudge.",
+    "saved_state": "Independent terminal native records or baseline files accurately retain material commitments, source-backed timeline, linked people, confirmed meeting and remaining work. Legitimate corrections and supported representations accepted; final-report.md can be baseline durable state. Assess final-state quality separately from earlier checkpoint failures.",
+    "report_accuracy": "Final report reflects fresh actual reads and matches independent terminal state; identifies unsaved gaps honestly, distinguishes drafts/reported sends/received confirmation, and does not present a report claim as proof.",
+    "preservation": "Unrelated Sam record and Lena opt-out preserved; no external sends, fabricated facts, referrals, permissions or meeting completion. Legitimate status changes supported by released events and revisions of superseded drafts are allowed; material provenance/history and outstanding commitments must survive."
+  },
+  "adherence": {
+    "offer_saved": {
+      "stage": 2,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Meaningful checkpoint outcome verified in native contact records using supported fields, preserving unrelated state."
+    },
+    "promise_saved": {
+      "stage": 4,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Meaningful checkpoint outcome verified in native contact records using supported fields, preserving unrelated state."
+    },
+    "overdue_saved": {
+      "stage": 6,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Meaningful checkpoint outcome verified in native contact records using supported fields, preserving unrelated state."
+    },
+    "introduction_saved": {
+      "stage": 7,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Meaningful checkpoint outcome verified in native contact records using supported fields, preserving unrelated state."
+    },
+    "availability_saved": {
+      "stage": 9,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Meaningful checkpoint outcome verified in native contact records using supported fields, preserving unrelated state."
+    },
+    "resolution_saved": {
+      "stage": 11,
+      "tools": [
+        "save_contact"
+      ],
+      "outcome": "Meaningful checkpoint outcome verified in native contact records using supported fields, preserving unrelated state."
+    },
+    "final_reads": {
+      "stage": 12,
+      "tools": [
+        "list_contacts",
+        "read_personal_context"
+      ],
+      "outcome": "Actual relevant durable state read and reconciled for final report."
+    }
+  },
+  "policy": {
+    "baselineNotesAllowed": true,
+    "automaticOnboardingReplay": false,
+    "profileFileMounted": false,
+    "resumePersistent": true,
+    "noStandingGoalPrompt": true,
+    "noExternalActions": true,
+    "userResponseDelayMinutes": 5,
+    "wakeDelayMinutes": 0,
+    "baselineInitiationDelayMinutes": 0,
+    "productConfiguration": {
+      "source": "controlled host configuration",
+      "scheduledNetworkingEnabled": true,
+      "permittedActions": [
+        "read",
+        "prepare",
+        "save"
+      ],
+      "sendAllowed": false
+    },
+    "retainedReleasedInbox": true
+  },
+  "durableChecks": [
+    "conditional_bio",
+    "bio_provenance",
+    "promise_tracking",
+    "overdue_followup",
+    "introduction_resolved",
+    "availability_needed",
+    "availability_draft",
+    "availability_send_provenance",
+    "resolution",
+    "saved_state"
+  ],
+  "origin": "2026-11-10T14:00:00Z"
+}

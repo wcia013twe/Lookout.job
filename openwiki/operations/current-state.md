@@ -1051,3 +1051,8 @@ quality includes unsuitable extras, separately from exact target recall. Effort
 counts unique interaction turns with overlapping category breakdowns. Pilot
 telemetry is labeled pilot, not measured. Existing private freezes and prior
 datasets remain unchanged; new preparation/preflight is required before execution.
+
+
+### COM4 introduction-continuity evaluation
+
+Prospective COM4 has a 12-turn/7-session notification stream, dedicated fictional local owner, supported contact-field writer verification, independent read-only terminal capture and saved-state/report grading. Semantic commitment state is evaluated separately from the direction-derived UI waiting label. See [COM4](../../docs/com4-introduction-continuity.md). Readiness checks do not imply participant execution or a measured advantage.
