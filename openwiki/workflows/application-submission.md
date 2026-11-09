@@ -339,6 +339,11 @@ Source checks include the connected-board database scenario, unique-versus-ambig
 
 Round integration retains the connected Action Board stable round_id, confirmation, practice focus and timezone. Proposed or incorrect dates do not supply a next-action date. Native cancellation uses phase cancelled; Screen/Interview remains independent of practice focus. Guide versions are application-workspace 18 and interview-preparation 7; integrated developer contract 122.
 
+Scheduled interview round confirmations remain in the owned round timeline and
+Applications → Interview editor; they are not shown as Action Board tasks. Use
+the round editor to correct or confirm the event. The Action Board remains for
+explicit human decisions and actions requiring attention.
+
 ### Application coverage on the Action Board
 
 The owner-scoped board read also includes Draft applications with a saved résumé,
