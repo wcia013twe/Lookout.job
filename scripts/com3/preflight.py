@@ -19,7 +19,25 @@ for condition in ['baseline','lookout']:
   names={t['name'] for t in response['result']['tools']}
   if not {'read_calendar','read_inbox','ask_user','search_sources','read_source'}<=names:raise RuntimeError('Local tools missing')
   if condition=='baseline' and names!={'read_calendar','read_inbox','ask_user','search_sources','read_source'}:raise RuntimeError('Baseline has native context tools')
-  if condition=='lookout' and not set(runner.CONFIG['allowedTools'])<=names:raise RuntimeError('Native tools missing')
+  if condition=='lookout':
+   if not {'discover_tools','call_discovered_tool'}<=names:raise RuntimeError('Native discovery tools missing')
+   def request(message):
+    req=urllib.request.Request(session.bridge.url.replace('host.docker.internal','127.0.0.1'),data=json.dumps(message).encode(),headers={'Authorization':'Bearer '+session.bridge.key,'Content-Type':'application/json'})
+    with urllib.request.urlopen(req,timeout=100) as response:return json.load(response)
+   init=request({'jsonrpc':'2.0','id':2,'method':'initialize','params':{'protocolVersion':'2025-06-18','capabilities':{},'clientInfo':{'name':'preflight','version':'1'}}})
+   if init.get('error') or not init.get('result',{}).get('instructions'):raise RuntimeError('Native startup unavailable')
+   discovered=request({'jsonrpc':'2.0','id':3,'method':'tools/call','params':{'name':'discover_tools','arguments':{'workflow':'all'}}})
+   if discovered.get('error') or discovered.get('result',{}).get('isError'):raise RuntimeError('Native discovery failed')
+   value=discovered['result'].get('structuredContent')
+   if value is None:value=json.loads(next(b['text'] for b in discovered['result']['content'] if b['type']=='text'))
+   value=value.get('data',value)
+   if not set(runner.CONFIG['allowedTools'])<=names|{t['name'] for t in value['tools']}:raise RuntimeError('Required scoped tools missing')
+   if {t['name'] for t in value['tools']}-set(runner.CONFIG['allowedTools']):raise RuntimeError('Out-of-scope discovery schema')
+   wrapped=request({'jsonrpc':'2.0','id':4,'method':'tools/call','params':{'name':'call_discovered_tool','arguments':{'name':'read_guide','arguments':{'id':'cold-outreach'}}}})
+   if wrapped.get('error') or wrapped.get('result',{}).get('isError'):raise RuntimeError('Native wrapped guide read failed')
+   denied=request({'jsonrpc':'2.0','id':5,'method':'tools/call','params':{'name':'call_discovered_tool','arguments':{'name':'save_profile_package','arguments':{}}}})
+   if not denied.get('result',{}).get('isError'):raise RuntimeError('Out-of-scope wrapper was not denied')
+
   report['conditions'][condition]={'subscriptionLogin':True,'tools':sorted(names),'hostIsolationChecked':True}
  finally:
   if session:session.close()
