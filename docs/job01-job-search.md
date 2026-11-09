@@ -1,6 +1,6 @@
 # JOB01: Job selection and analysis across sessions
 
-JOB01-search-v4 grades **whether all ten predetermined targets appear in the returned
+JOB01-search-v5 / JOB01-review-v2 grades **whether all ten predetermined targets appear in the returned
 saved-job list at each grading turn**, plus the quality of their analyses. Ten is
 not an output cap. Additional suitable roles are allowed and reviewed separately.
 A later turn has its own expected ten and requires a complete updated shortlist,
@@ -17,14 +17,13 @@ This is fixed onboarding/transport guidance, never a failure-triggered reminder.
 Record actual Lookout configuration. Source packets use the same frozen board and
 Jobright detail evidence; they do not establish live employer availability.
 
-1. Initial job email: Lookout sees the email during a configured scheduled wake;
-   baseline gets the identical uploaded email and a user request to act.
+1. Initial job email: both receive identical released files, inbox access and task intent.
 2. Fresh session: both get the same career-priority update and style correction,
    with a checkpoint after each.
 3. Fresh session: another equivalent email delivery releases the later batch.
 
-The condition-specific initiation is deliberate. Email bodies and job records
-match; future evidence and target labels remain private. Baseline prompts do not
+Both conditions receive the same prescribed initiations. This comparison does not
+measure proactive effort savings. Future evidence and target labels remain private. Baseline prompts do not
 replay preferences. `examples/job01/scenario.json` owns stage requests and timing.
 
 ## Private reference and packets
@@ -140,9 +139,8 @@ session and the final email starts fresh. Baseline may retain its own notes; onl
 its first turn includes the full initial profile. Lookout reads its cloned native
 profile. Both retain the same resume.
 
-For email turns, Lookout receives `read_inbox` during a configured scheduled wake.
-Baseline receives the same email as an uploaded file plus a user request. Each
-condition sees only released jobs. The baseline has `ask_user` but no Lookout tools.
+For email turns, both receive the same uploaded files, `read_inbox`, `ask_user`,
+and task request. Each sees only released jobs. Baseline has no native Lookout tools.
 The controlled actor acknowledges unresolved graduation/citizenship facts without
 inventing an answer. This pilot is provisional source-based screening, not certified
 eligibility or verified live employer availability.
@@ -234,3 +232,23 @@ JOB01-search-v4 records participant results, active duration and interaction evi
 before after-state/output capture. A failed capture is retained separately and the
 executed checkpoint stays reached. Historical v3 pilot files, grades and source
 checkout remain unchanged; prepare a new root to use this correction.
+
+## Controlled comparison v5
+
+Native Lookout initialize instructions and default tool schemas are retained within
+the isolated owner/task permissions; gated schemas load only on participant request.
+Audit and change-feed tools are available. No audit instructions are suppressed.
+Baseline onboarding includes every initial saved candidate fact/preference, alongside
+the same resume. Prescribed external initiations are counted equally.
+
+Execution time includes product MCP initialization/discovery/read/write/verification.
+Tool response bytes and startup/discovery time are also reported separately; container
+startup and full wall duration remain separate fields. Returned exact-target recall
+is diagnostic; semantic suitability and durable saved work are graded independently
+with equivalent native-record/file evidence standards. Missing captures are unverified.
+
+Create new private roots and owners. Preserve historical freezes. Register the
+prospective dataset before inference and pass the frozen runtime configuration's
+`langfuseReceiptDirectory` to every registration/export/verification command. Only
+structural metrics are exported. A fresh independent grader reviews both terminal
+participants; completion alone does not establish quality.

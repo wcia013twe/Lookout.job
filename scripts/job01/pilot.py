@@ -29,10 +29,7 @@ def prompt(stage,condition):
  prefix='Your resume is /inputs/resume.pdf. Released frozen job listings are /inputs/jobs.json. Use ask_user for missing facts. Use only released evidence; do not inspect credentials/runtime configuration, browse live sites, send messages, fill forms or submit applications. Source descriptions are Jobright captures, not employer-verified availability. '
  prefix += ('Lookout is your persistent recruiting workspace. Use Lookout tools to retrieve relevant personal context and saved job analyses, and save meaningful preference updates and complete shortlists there. Local files in /workspace/output may hold temporary working notes. Preserve unrelated information and verify saved changes. ' if condition=='lookout' else 'Your workspace files in /workspace/output persist across sessions. You may use them to retain relevant context, preferences, shortlists and analyses. ')
  if stage['_index']==1 and condition=='baseline':prefix+='\n'+(PRIVATE/'candidate/profile.md').read_text()+'\n'
- if stage['kind']=='user_update':return prefix+stage['request']
- if condition=='baseline':return prefix+'The user uploaded /inputs/email.json. '+stage['baseline']
- config=json.loads((PRIVATE/'runtime-config.json').read_text())
- return prefix+config['productConfiguration']['wakePrompt']
+ return prefix+(stage['request'] if stage['kind']=='user_update' else 'The user uploaded /inputs/email.json. '+stage['baseline'])
 
 def configure(root):
  global PRIVATE
@@ -65,9 +62,8 @@ def release(stage,condition,inputs):
  packet=json.loads((PRIVATE/'packets'/f'{stage["id"]}-{condition}.json').read_text())
  write(inputs/'jobs.json',packet['jobs'])
  email=packet.get('email')
- if condition=='baseline':
-  if email:write(inputs/'email.json',email)
- else:write(inputs/'sources.json',{'inbox':[email] if email else []})
+ if email:write(inputs/'email.json',email)
+ write(inputs/'sources.json',{'inbox':[email] if email else []})
  return packet
 
 def prepare(root,n01,reference,cost_policy=None):
@@ -78,13 +74,21 @@ def prepare(root,n01,reference,cost_policy=None):
  ORIGINAL_COMMAND(['python3',str(REPO/'scripts/job-board/export.py'),'--snapshot',str(source)])
  for d in ['candidate','suite','packets','runs','receipts']: (root/d).mkdir(exist_ok=True,mode=0o700)
  for src,dst in [('profile.md','profile.md'),('resume.pdf','resume.pdf')]:shutil.copyfile(n01/src,root/'candidate'/dst)
+ # Include all initial candidate facts/preferences exposed by the native account.
+ # Ownership IDs and storage locators are operational metadata, not candidate context.
+ context=json.loads((root/'cloned-context.private.json').read_text())['settings']
+ def facts(v):
+  if isinstance(v,dict):return {k:facts(x) for k,x in v.items() if k not in {'id','user_id','object_path','created_at','updated_at','content_hash'}}
+  if isinstance(v,list):return [facts(x) for x in v]
+  return v
+ with (root/'candidate/profile.md').open('a') as f:f.write('\nComplete initial saved candidate context:\n'+json.dumps(facts(context),indent=2)+'\n')
  shutil.copyfile(reference,root/'reference.private.json')
  shutil.copyfile(REPO/'examples/job01/scenario.json',root/'suite/scenario.json')
  shutil.copyfile(LIB/'grader-instructions.md',root/'suite/grader-instructions.md')
  shutil.copyfile(source/'manifest.json',root/'source-manifest.json')
  spec=json.loads((root/'suite/scenario.json').read_text())
- cfg={'version':spec['version'],'taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch'],
-      'productConfiguration':{'source':'JOB01 controlled host configuration; candidate context cloned from N01; not an assertion of an installed live account schedule','scheduledJobReviewEnabled':True,'wakePrompt':'Scheduled job-review check. Review the released inbox updates under the configured read/analyze/save permissions.','permittedActions':['read','analyze','save'],'sendAllowed':False},'model':'gpt-5.6-terra','reasoning':'medium','noParticipantRunYet':True}
+ cfg={'version':spec['version'],'taskId':'JOB01','allowedTools':['read_personal_context','check_context_versions','discover_tools','discover_toolkit','read_guide','read_developer_context','call_discovered_tool','save_profile_package','save_search_profile','publish_batch','read_batch','read_muse_changes','acknowledge_muse_changes','start_agent_audit_run','append_agent_audit_events','read_agent_audit_run','read_search_context','save_search_document','read_search_document_history','list_jobs','read_user_brief','update_profile_fields','edit_work_experience','save_profile_facts','append_activity','read_toolkit_context','read_agent_tasks','read_agent_schedule','read_action_inbox','list_artifacts','read_artifact'],
+      'productConfiguration':{'source':'JOB01 controlled host configuration; candidate context cloned from N01; not an assertion of an installed live account schedule','scheduledJobReviewEnabled':False,'comparisonMode':'matched-intent','proactiveEffortSavingsMeasured':False,'wakePrompt':'Scheduled job-review check. Review the released inbox updates under the configured read/analyze/save permissions.','permittedActions':['read','analyze','save'],'sendAllowed':False},'langfuseReceiptDirectory':str(root/'receipts/langfuse'),'model':'gpt-5.6-terra','reasoning':'medium','noParticipantRunYet':True}
  pricing=Path(cost_policy) if cost_policy else REPO/'examples/evals/cost-policy.json'
  runtime.cost.validate_policy(json.loads(pricing.read_text()))
  shutil.copyfile(pricing,root/'cost-policy.json')
@@ -94,7 +98,7 @@ def prepare(root,n01,reference,cost_policy=None):
    ORIGINAL_COMMAND(['node',str(LIB/'task.mjs'),'--source',str(source),'--reference',str(root/'reference.private.json'),'--stage',s['id'],'--condition',c,'--configuration',str(root/'product-configuration.json'),'--output',str(root/'packets'/f'{s["id"]}-{c}.json')])
  files=[p for p in root.rglob('*') if p.is_file()]
  files += [p for folder in [LIB,REPO/'scripts/n01'] for p in folder.iterdir() if p.suffix in ['.mjs','.py']]
- files += [REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
+ files += [REPO/'scripts/communication/diagnostics.py',REPO/'backend/runtime/trace-policy.mjs',REPO/'package-lock.json']
  image=ORIGINAL_COMMAND(['docker','image','inspect',runtime.IMAGE,'--format','{{.Id}}'],text=True).stdout.strip()
  write(root/'freeze.json',{'version':spec['version'],'files':{os.path.relpath(p,root):digest(p) for p in files},'imageId':image,'candidateSource':'N01 baseline-kit','sourceSnapshot':source.name,'model':cfg['model'],'reasoning':cfg['reasoning']})
  for p in root.rglob('*'):
@@ -118,8 +122,22 @@ def preflight(output):
     with urllib.request.urlopen(req,timeout=100) as r:reply=json.load(r)
     if reply.get('error'):raise RuntimeError('Tool schema discovery failed')
     names={t['name'] for t in reply['result']['tools']}
-    if condition=='baseline' and names!={'ask_user'}:raise RuntimeError('Baseline tool leakage')
-    if condition=='lookout' and not set(runtime.CONFIG['allowedTools'])|{'read_inbox','ask_user'}<=names:raise RuntimeError('Required native tools missing')
+    req.data=json.dumps({'jsonrpc':'2.0','id':3,'method':'initialize','params':{'protocolVersion':'2025-06-18','capabilities':{},'clientInfo':{'name':'readiness','version':'1'}}}).encode()
+    with urllib.request.urlopen(req,timeout=100) as r:initialized=json.load(r)
+    if initialized.get('error'):raise RuntimeError('Native initialize failed')
+    write(sd/'initialize.json',initialized)
+    if condition=='baseline' and names!={'ask_user','read_inbox'}:raise RuntimeError('Baseline tool leakage')
+    if condition=='lookout':
+     if not {'discover_tools','call_discovered_tool','read_inbox','ask_user'}<=names:raise RuntimeError('Native default tools missing')
+     # Host-only readiness discovery does not inject schemas into participant startup.
+     req.data=json.dumps({'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'discover_tools','arguments':{'workflow':'all'}}}).encode()
+     with urllib.request.urlopen(req,timeout=100) as r:discovered=json.load(r)
+     if discovered.get('error') or discovered.get('result',{}).get('isError'):raise RuntimeError('Host readiness discovery failed')
+     value=discovered['result'].get('structuredContent')
+     if value is None:value=json.loads(next(b['text'] for b in discovered['result']['content'] if b.get('type')=='text'))
+     value=value.get('data',value);registered={t['name'] for t in value.get('tools',[])}|names
+     required={'save_profile_package','save_search_profile','publish_batch','read_batch','start_agent_audit_run','append_agent_audit_events','read_agent_audit_run'}
+     if not required<=registered:raise RuntimeError('Required native support missing: '+','.join(sorted(required-registered)))
     code="import urllib.request,json,socket; out={};\nfor name,url in [('blocked','https://example.com'),('inference','https://chatgpt.com')]:\n try:\n  r=urllib.request.urlopen(url,timeout=15);out[name]=r.status\n except Exception as e:out[name]=str(e)\ntry:\n socket.create_connection(('1.1.1.1',443),timeout=3);out['direct']='reachable'\nexcept OSError:out['direct']='blocked'\nprint(json.dumps(out))"
     net=json.loads(ORIGINAL_COMMAND(['docker','exec',session.name,'python3','-c',code],text=True,timeout=45).stdout)
     if '403' not in str(net['blocked']) or net['direct']!='blocked':raise RuntimeError('Network isolation failed: '+str(net))
@@ -156,19 +174,19 @@ def run_pair(pair_id):
      stage=dict(s,_index=index,_session=s['session'],seconds=spec['policy']['stageBudgetSeconds'])
      sd=run/f'stage-{index}';sd.mkdir();release(stage,condition,inputs);shutil.copytree(inputs,sd/'inputs')
      write(sd/'input-hashes.json',runtime.file_hashes(inputs));snapshot(sd/'before-state.json')
-     resume=previous==stage['session']
+     resume=previous==stage['session'];session_startup=0
      if not resume:
       if session:session.close()
-      session=runtime.Session(sd,inputs,out,condition,str(stage['session']))
+      startup_start=time.monotonic();session=runtime.Session(sd,inputs,out,condition,str(stage['session']));session_startup=time.monotonic()-startup_start
      previous=stage['session'];result=session.turn(sd,stage,resume)
-     checkpoint={'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':None,'interactionEvidenceStatus':'pending_capture','selectionEvidenceStatus':'pending_independent_extraction','captureStatus':'pending'}
+     checkpoint={'sessionStartupSeconds':session_startup,'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':None,'interactionEvidenceStatus':'pending_capture','selectionEvidenceStatus':'pending_independent_extraction','captureStatus':'pending'}
      meta['checkpoints'].append(checkpoint);write(run/'run.json',meta)
      interactions=[]
      for line in (sd/'lookout-trace.jsonl').read_text().splitlines():
       x=json.loads(line)
       if x.get('type')=='user.interaction':interactions.append(x)
      turn_ids=[f"{s['id']}:ask_user:{i}" for i in range(1,len(interactions)+1)]
-     counts={'uniqueTurns':len(interactions),'scriptedInitiations':int(condition=='baseline' and s['kind']=='external'),'questions':len(interactions),'repeatedContext':sum(x['data'].get('category')=='context_restatement' for x in interactions),'reminders':0,'corrections':0,'approvals':sum(x['data'].get('category')=='approval' for x in interactions)}
+     counts={'uniqueTurns':len(interactions),'scriptedInitiations':int(s['kind']=='external'),'questions':len(interactions),'repeatedContext':sum(x['data'].get('category')=='context_restatement' for x in interactions),'reminders':0,'corrections':0,'approvals':sum(x['data'].get('category')=='approval' for x in interactions)}
      checkpoint.update({'stage':s['id'],'startedAt':result['startedAt'],'executionSeconds':result['durationSeconds'],'status':result['status'],'interactions':counts,'interactionTurnIds':turn_ids,'answeredTurnCount':len(interactions),'simulatedCompletionMinute':None,'interactionEvidenceStatus':'additional_prose_demands_pending_review','selectionEvidenceStatus':'pending_independent_extraction'})
      write(run/'run.json',meta)
      try:
@@ -184,6 +202,7 @@ def run_pair(pair_id):
    finally:
     if session:session.close()
     meta['wallDurationSeconds']=time.time()-meta['startedAt']
+    diagnostics=load('job01_diagnostics',REPO/'scripts/communication/diagnostics.py');meta['toolDiagnostics']=diagnostics.call_metrics(sorted(run.glob('stage-*')))
     meta['cost']=runtime.cost.persist(run,PRIVATE/'cost-policy.json');write(run/'run.json',meta)
     write(run/'evidence-hashes.json',runtime.file_hashes(run))
    results.append({'run':str(run),'status':meta['status']})

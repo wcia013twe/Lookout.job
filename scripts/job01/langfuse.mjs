@@ -16,6 +16,8 @@ export function scores(run,grade){
  const add=(name,value,dataType='NUMERIC')=>out.push({id:hash([traceId,name]),traceId,name:'job01_'+name,value,dataType,environment:run.synthetic?'verification':run.pilot?'pilot':'benchmark'});
  for(const [name,value,type] of costValues(run.cost))add(name,value,type);
  add('time_execution_seconds',grade.timeToTask.executionSeconds);
+ for(const k of ['wallDurationSeconds','sessionStartupSeconds'])if(Number.isFinite(grade.timeToTask[k]))add('time_'+k,grade.timeToTask[k]);
+ for(const [k,v]of Object.entries(run.toolDiagnostics||{}))if(Number.isFinite(v))add('diagnostic_'+k,v);
  for(const [k,v] of Object.entries(grade.effortToTask))add('effort_'+k,v);
  add('quality_review_status',grade.status,'CATEGORICAL');add('run_status',run.status,'CATEGORICAL');
  for(const c of grade.qualityOfCompletion){
@@ -53,7 +55,11 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
  if(v.register){
   const manifest=read(v.manifest),item=registration(spec,manifest);
   if(v['dry-run'])console.log(JSON.stringify(item,null,2));
-  else {
+  else if(existsSync(regfile)){
+   const prior=read(regfile);
+   if(prior.scenarioHash!==hash(spec)||prior.snapshotId!==manifest.snapshotId||prior.sourceHash!==manifest.files['jobs.json'])throw Error('Existing registration binding mismatch');
+   console.log(JSON.stringify({...prior,status:'already_registered'}));
+  } else {
    const ds=unwrap(cli(['datasets','create'],{name:item.datasetName,description:'JOB01 bounded job selection and analysis across sessions; prospective infrastructure only.'}));const saved=unwrap(cli(['dataset-items','create'],item));
    if(!ds.id||!saved.id)throw Error('Registration IDs missing');
    const reg={datasetId:ds.id,itemId:saved.id,scenarioHash:hash(spec),snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json']};

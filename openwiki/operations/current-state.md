@@ -1142,6 +1142,16 @@ JOB03 native/reminder service and JOB04 actual host gates remain unresolved.
 
 COM01 v6 and COM02 v5 use identical task requests and scoped native MCP startup/discovery rather than eager schema injection. Structural startup/discovery overhead is measured separately. This isolates tool/storage effects; proactive user-effort savings are not measured. See [repair protocol](../../docs/communication-repairs.md). Focused checks verify contracts; fresh native preflight and participant runs remain separate evidence.
 
+### JOB01 matched-intent repair
+
+Prospective JOB01-search-v5 / JOB01-review-v2 gives both participants identical
+prescribed task requests and released evidence; proactive effort savings are outside
+this comparison. Native startup and on-demand discovery are retained within task
+permissions, including audit/change-feed capabilities. Container startup, native MCP
+startup/discovery response time/bytes, total execution, effort, cost and semantic
+quality remain distinct. Returned recall and durable saving are separate checks.
+Historical runs/freezes remain unchanged. Focused fixture checks establish harness
+contracts only; fresh-account preflight and paired pilot evidence are still required.
 
 ### COM03/COM04 matched-intent comparison
 
