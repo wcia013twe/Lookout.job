@@ -17,7 +17,10 @@ def scrub(v):
 def record(kind,data):
  global sequence
  sequence+=1
- with a.capture.open('a') as f:f.write(json.dumps({'sequence':sequence,'timestamp':time.time(),'type':kind,'data':scrub(data)})+'\n')
+ target=a.capture
+ pointer=a.capture.parent.parent/'active-stage.json'
+ if pointer.exists():target=a.capture.parent.parent/f"stage-{json.loads(pointer.read_text())['stage']}"/'lookout-trace.jsonl'
+ with target.open('a') as f:f.write(json.dumps({'sequence':sequence,'timestamp':time.time(),'type':kind,'data':scrub(data)})+'\n')
 
 def clean(v):
  if isinstance(v,list):return [clean(x) for x in v if not (isinstance(x,dict) and (x.get('id')=='agent-audit' or ('inputSchema' in x and x.get('name') not in allowed)))]
@@ -57,7 +60,8 @@ def local_call(name,args):
  if name in ['read_calendar','read_inbox']:
   return json.loads((a.inputs/'sources.json').read_text()).get('calendar' if name=='read_calendar' else 'inbox',[])
  question=args.get('question')
- stage_index=int(a.capture.parent.name.split('-')[-1])
+ pointer=a.capture.parent.parent/'active-stage.json'
+ stage_index=json.loads(pointer.read_text())['stage'] if pointer.exists() else int(a.capture.parent.name.split('-')[-1])
  answer,category=user_answer(question,stage_index,spec)
  record('user.interaction',{'question':question,'answer':answer,'category':category,'simulatedDelayMinutes':spec['policy']['userResponseDelayMinutes']})
  return {'answer':answer}

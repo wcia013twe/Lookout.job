@@ -23,5 +23,8 @@ for run in results:
   if json.loads((run/'run.json').read_text())['status']!='completed':failed=True
   export=subprocess.run(['node','--env-file='+str(a.langfuse_env.resolve()),str(Path(__file__).with_name('langfuse.mjs')),'--run',str(run),'--grade',str(target),'--scenario',str(runner.S/'scenario.json'),'--receipt-dir',str(a.receipt_dir.resolve())],timeout=300)
   if export.returncode:failed=True;print(json.dumps({'run':run.name,'reportingFailed':True,'participantRetry':False}),file=sys.stderr)
- except Exception as e:failed=True;print(json.dumps({'run':run.name,'postprocessError':type(e).__name__}),file=sys.stderr)
+ except Exception as e:
+  failed=True
+  (run/'grading-invalid.json').write_text(json.dumps({'status':'invalid_evidence','errorType':type(e).__name__,'detail':str(e),'scored':False},indent=2)+'\n')
+  print(json.dumps({'run':run.name,'postprocessError':type(e).__name__}),file=sys.stderr)
 sys.exit(1 if failed else 0)

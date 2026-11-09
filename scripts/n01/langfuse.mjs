@@ -26,13 +26,15 @@ export function unwrap(r){return r.body??r.data??r;}
 export function build(run,grade,spec,registration={}){
  const m=json(path.join(run,'run.json'));
  if(!['completed','execution_failed','timed_out','setup_failed','artifact_failed'].includes(m.status))throw Error('Terminal run required');
+ if(grade.scenarioDigest!==m.scenarioDigest)throw Error('Grade/run rubric mismatch');
+ if(grade.graderVersion!=='N01-grade-v2')throw Error('Unsupported grader version');
  if(m.version!==spec.version||grade.version!==spec.version||grade.episodeId!==m.episodeId)throw Error('Run/grade/scenario mismatch');
  const evidence=spawnSync('python3',[path.join(path.dirname(fileURLToPath(import.meta.url)),'digest.py'),run],{encoding:'utf8'});
  if(evidence.status!==0||evidence.stdout.trim()!==grade.evidenceDigest)throw Error('Stale grade evidence');
- const datasetId=registration.datasetId||'lookout-n01-stream-v1';
- const itemId=registration.itemId||'N01-stream-v1';
- const experimentId=sha(['n01-export-4',spec.version,m.pairId,m.condition,m.repeat,m.pilot===true]);
- const traceId=sha(['n01-export-4',spec.version,m.episodeId]).slice(0,32),rootId=sha(traceId+'root').slice(0,16);
+ const datasetId=registration.datasetId||'lookout-n01-stream-v2';
+ const itemId=registration.itemId||'N01-stream-v2';
+ const experimentId=sha(['n01-export-5',spec.version,m.pairId,m.condition,m.repeat,m.pilot===true]);
+ const traceId=sha(['n01-export-5',spec.version,m.episodeId]).slice(0,32),rootId=sha(traceId+'root').slice(0,16);
  const experimentName=`${spec.version}-${m.pilot?'pilot':'measured'}-${m.pairId}-${m.condition}-r${m.repeat}`;
  const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':'benchmark','langfuse.trace.name':'N01 networking trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
  const spans=[];
@@ -57,13 +59,13 @@ export function build(run,grade,spec,registration={}){
  }
  const scores=[];
  function score(name,value,dataType='NUMERIC'){
-  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'n01_'+name,value,dataType,environment:m.synthetic?'verification':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'N01-stream-v1; '+grade.status});
+  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'n01_'+name,value,dataType,environment:m.synthetic?'verification':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'N01-stream-v2; '+grade.status});
  }
  for(const [k,v] of Object.entries(grade.metrics))if(Number.isFinite(v))score(k,v);
  score('review_status',grade.status,'CATEGORICAL');
  for(const [k,v] of Object.entries(grade.adherence))score('adherence_'+k,v.status,'CATEGORICAL');
  for(const [k,v] of Object.entries(grade.quality))if(typeof v==='boolean')score('quality_'+k,v?1:0,'BOOLEAN');
- for(const l of grade.latencies)if(l.simulated_minutes!==null)score('stage_'+l.stage+'_simulated_minutes',l.simulated_minutes);
+ for(const l of grade.latencies)if(l.simulated_waiting_minutes!==null)score('stage_'+l.stage+'_simulated_waiting_minutes',l.simulated_waiting_minutes);
  return {traceId,rootId,experimentId,experimentName,datasetId,itemId,spans,scores};
 }
 export function validateReply(reply){
@@ -79,10 +81,10 @@ async function main(){
  const config=tracingConfig();const project=sha(config?[config.baseUrl,config.publicKey]:['offline']);
  const regfile=path.join(receiptDir,project+'-dataset.json');
  if(v.register){
-  const name='Lookout-N01-stream-v1';
+  const name='Lookout-N01-stream-v2';
   const ds=unwrap(cli(['datasets','create'],{name,description:'N01 networking across sessions. Structural manifest only; private user profile and event packets stay local.',metadata:{version:spec.version,unit:'whole trajectory',status:'prospective'}}));
   if(!ds.id)throw Error('Missing dataset id');
-  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-N01-stream-v1',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
+  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-N01-stream-v2',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
   if(!item.id)throw Error('Missing item id');
   const saved={datasetId:ds.id,itemId:item.id,name,scenarioHash:sha(spec)};writeFileSync(regfile,JSON.stringify(saved,null,2)+'\n',{mode:0o600});console.log(JSON.stringify(saved));return;
  }

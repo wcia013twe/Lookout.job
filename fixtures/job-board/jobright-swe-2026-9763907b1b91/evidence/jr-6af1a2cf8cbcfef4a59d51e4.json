@@ -1,0 +1,172 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af1a2cf8cbcfef4a59d51e4",
+  "capturedAt": "2026-11-09T17:50:41.051994+00:00",
+  "responseSha256": "1a520f92efbd1ca2c63d55525b9c582463706a028c9888ecfde95478882ae05b",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af1a2cf8cbcfef4a59d51e4",
+    "jobTitle": "Software Engineer Analyst",
+    "jobLocation": "London, England",
+    "workModel": "Hybrid",
+    "publishTime": "2026-11-09 10:39:11",
+    "employmentType": "Full-time",
+    "salaryDesc": "£30K/yr - £45K/yr",
+    "jobSummary": "Daintta is hiring a graduate Software Engineer Analyst to develop and implement software solutions for government clients. The role contributes to project delivery across technical and non-technical work, including client collaboration, software development, and supporting client engagements.",
+    "coreResponsibilities": [
+      "Learn how to collaborate with clients to understand their software engineering needs and objectives",
+      "Develop, test, and implement high-quality software solutions using industry best practices and coding standards",
+      "Utilise your knowledge in programming languages and technology to implement solutions",
+      "Learn to work with cross-functional teams and clients to gather project requirements, analyse feasibility, and provide technical recommendations",
+      "Develop secure, clean, efficient, and well documented code, ensuring code quality through testing, debugging, and code reviews",
+      "Stay up to date with the latest trends, tools, and technologies in software engineering and share your knowledge with the team",
+      "Collaborate with project teams to ensure successful delivery within the defined timelines and budget",
+      "Demonstrates a balanced approach to AI tools leveraging them to enhance productivity while maintaining strong foundational engineering skills and critical thinking",
+      "Accurately delivering high-quality work to agreed timelines, including taking the initiative and knowing how to jump straight in",
+      "Supporting client engagements, including pitches and presentations",
+      "Helping to support & grow Daintta by actively inputting into the company strategy and helping to shape our future",
+      "Representing us and our core values: Transparent, Fair and Daring"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor's degree in computer science, software engineering, or related field",
+      "Knowledge of a programming language, such as Python, Java, C++, Rust, or Go",
+      "Knowledge and hands on experience with Unix/Linux environments",
+      "Knowledge of database systems and database query languages/tools",
+      "Excellent problem-solving and analytical skills, with the ability to find innovative solutions to complex technical challenges",
+      "Familiarity with cloud environments (e.g., AWS, Azure, or GCP) and core cloud services",
+      "Good communication and presentation skills",
+      "Ability to adapt to new technologies and learn quickly in fast-paced environments",
+      "A passion for delivering high quality software solutions that meet client expectations",
+      "Awareness of DevOps practices and principles, such as CI/CD pipelines and containerisation (e.g. Docker)",
+      "Awareness of software security principles and best practices"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor's degree in computer science, software engineering, or related field",
+        "Knowledge of a programming language, such as Python, Java, C++, Rust, or Go",
+        "Knowledge and hands on experience with Unix/Linux environments",
+        "Knowledge of database systems and database query languages/tools",
+        "Excellent problem-solving and analytical skills, with the ability to find innovative solutions to complex technical challenges",
+        "Familiarity with cloud environments (e.g., AWS, Azure, or GCP) and core cloud services",
+        "Good communication and presentation skills",
+        "Ability to adapt to new technologies and learn quickly in fast-paced environments",
+        "A passion for delivering high quality software solutions that meet client expectations",
+        "Awareness of DevOps practices and principles, such as CI/CD pipelines and containerisation (e.g. Docker)",
+        "Awareness of software security principles and best practices"
+      ],
+      "preferredHave": []
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Computer Science Education"
+          },
+          {
+            "skill": "Programming Languages"
+          },
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "Java"
+          },
+          {
+            "skill": "C++"
+          },
+          {
+            "skill": "Rust"
+          },
+          {
+            "skill": "Go"
+          },
+          {
+            "skill": "Unix/Linux"
+          },
+          {
+            "skill": "Database Systems"
+          },
+          {
+            "skill": "Database Query Languages"
+          },
+          {
+            "skill": "Cloud Environments"
+          },
+          {
+            "skill": "AWS"
+          },
+          {
+            "skill": "Azure"
+          },
+          {
+            "skill": "GCP"
+          },
+          {
+            "skill": "Cloud Services"
+          },
+          {
+            "skill": "DevOps Practices"
+          },
+          {
+            "skill": "CI/CD Pipelines"
+          },
+          {
+            "skill": "Containerization"
+          },
+          {
+            "skill": "Docker"
+          },
+          {
+            "skill": "Software Security"
+          },
+          {
+            "skill": "Security Best Practices"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Problem-Solving"
+          },
+          {
+            "skill": "Analytical Thinking"
+          },
+          {
+            "skill": "Innovative Thinking"
+          },
+          {
+            "skill": "Communication"
+          },
+          {
+            "skill": "Presentation Skills"
+          },
+          {
+            "skill": "Adaptability"
+          },
+          {
+            "skill": "Fast Learning"
+          },
+          {
+            "skill": "Quality Orientation"
+          },
+          {
+            "skill": "Client Focus"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": true
+  },
+  "descriptionText": "Daintta is hiring a graduate Software Engineer Analyst to develop and implement software solutions for government clients. The role contributes to project delivery across technical and non-technical work, including client collaboration, software development, and supporting client engagements.\nResponsibilities\nLearn how to collaborate with clients to understand their software engineering needs and objectives\nDevelop, test, and implement high-quality software solutions using industry best practices and coding standards\nUtilise your knowledge in programming languages and technology to implement solutions\nLearn to work with cross-functional teams and clients to gather project requirements, analyse feasibility, and provide technical recommendations\nDevelop secure, clean, efficient, and well documented code, ensuring code quality through testing, debugging, and code reviews\nStay up to date with the latest trends, tools, and technologies in software engineering and share your knowledge with the team\nCollaborate with project teams to ensure successful delivery within the defined timelines and budget\nDemonstrates a balanced approach to AI tools leveraging them to enhance productivity while maintaining strong foundational engineering skills and critical thinking\nAccurately delivering high-quality work to agreed timelines, including taking the initiative and knowing how to jump straight in\nSupporting client engagements, including pitches and presentations\nHelping to support & grow Daintta by actively inputting into the company strategy and helping to shape our future\nRepresenting us and our core values: Transparent, Fair and Daring\nSkills\nBachelor's degree in computer science, software engineering, or related field\nKnowledge of a programming language, such as Python, Java, C++, Rust, or Go\nKnowledge and hands on experience with Unix/Linux environments\nKnowledge of database systems and database query languages/tools\nExcellent problem-solving and analytical skills, with the ability to find innovative solutions to complex technical challenges\nFamiliarity with cloud environments (e.g., AWS, Azure, or GCP) and core cloud services\nGood communication and presentation skills\nAbility to adapt to new technologies and learn quickly in fast-paced environments\nA passion for delivering high quality software solutions that meet client expectations\nAwareness of DevOps practices and principles, such as CI/CD pipelines and containerisation (e.g. Docker)\nAwareness of software security principles and best practices\nBenefits\n25 days annual leave, plus bank holidays\nUp to 5 days annual training leave\nUp to £1,000 annual training budget, with access to additional training and development budget via business case\nUp to 3 days annual volunteering leave\nCompetitive maternity, paternity, shared parental leave & compassionate leave\nComprehensive Private Health Insurance\nEmployee Assistance Programme - 24/7 support services\n£2,000 Flex Cash Allowance, paid pro-rata over the year\n5% pension contribution\nDiscretionary company awards and bonuses, based on performance and company targets\n1 professional membership paid annually\nUp to £200 of additional IT budget for new joiners\nHybrid working, with 2-3 days working from Daintta office (London or Cheltenham) or on client site as required\nFree breakfast every Tuesday in the London office\nFortnightly drinks – in London\nRegular social events, quizzes, and guest workshops\nHuckletree perks – including gym and restaurant discounts\nEmployee referral programme\nMonthly breakfast club in our Cheltenham office\nCompany Overview\nDaintta is a boutique technical and business consultancy that specialises in quickly untangling complex problems into implementable outcomes It was founded in 2019, and is headquartered in London, England, GBR, with a workforce of 51-200 employees. Its website is https://daintta.com/index.html.",
+  "sourceDatePosted": "2026-11-09 10:39:11"
+}

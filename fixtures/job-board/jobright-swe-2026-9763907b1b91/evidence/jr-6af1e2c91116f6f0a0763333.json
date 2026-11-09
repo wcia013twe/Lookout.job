@@ -1,0 +1,148 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af1e2c91116f6f0a0763333",
+  "capturedAt": "2026-11-09T17:50:38.954277+00:00",
+  "responseSha256": "2cbc872a3aa16631283a4654ec076d9f781a6c5f9862e7073c9bc42091dcc2ef",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af1e2c91116f6f0a0763333",
+    "jobTitle": "Junior SAP ABAP Developer",
+    "jobLocation": "McLean, VA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 15:12:09",
+    "employmentType": "Full-time",
+    "salaryDesc": "$100K/yr - $130K/yr",
+    "jobSummary": "Credence is seeking a Junior SAP ABAP Developer to support the development, integration, modernization, and maintenance of SAP enterprise applications in a federal government environment. The role focuses on SAP ABAP and S/4HANA development, enterprise integrations, testing, troubleshooting, and modernization initiatives.",
+    "minYearsOfExperience": 1,
+    "coreResponsibilities": [
+      "Develop, enhance, test, and troubleshoot SAP ABAP programs",
+      "Support SAP S/4HANA applications and enterprise system integrations",
+      "Assist with SAP interfaces using technologies such as OData, BAPIs, RFCs, and APIs",
+      "Collaborate with senior developers and functional teams to implement technical solutions",
+      "Support system testing, debugging, and issue resolution",
+      "Prepare technical documentation and maintain development records",
+      "Assist with SAP transports, deployments, and change-management activities",
+      "Participate in team meetings, code reviews, and Agile development activities"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor's degree in a related field or equivalent experience",
+      "1-3 years of SAP ABAP development or related technical experience, including relevant internships",
+      "Foundational knowledge of SAP ABAP programming",
+      "Familiarity with SAP ECC or SAP S/4HANA",
+      "Basic understanding of SAP interfaces and integration concepts",
+      "Strong analytical, troubleshooting, and communication skills",
+      "U.S. citizenship and ability to obtain and maintain a Secret clearance",
+      "Exposure to SAP S/4HANA, OData, BAPIs, RFCs, IDocs, or REST/SOAP APIs",
+      "Familiarity with SAP transports, testing, and change management",
+      "Experience supporting enterprise application modernization",
+      "Federal government or DoD experience",
+      "Active Secret clearance preferred but not required"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor's degree in a related field or equivalent experience",
+        "1-3 years of SAP ABAP development or related technical experience, including relevant internships",
+        "Foundational knowledge of SAP ABAP programming",
+        "Familiarity with SAP ECC or SAP S/4HANA",
+        "Basic understanding of SAP interfaces and integration concepts",
+        "Strong analytical, troubleshooting, and communication skills",
+        "U.S. citizenship and ability to obtain and maintain a Secret clearance"
+      ],
+      "preferredHave": [
+        "Exposure to SAP S/4HANA, OData, BAPIs, RFCs, IDocs, or REST/SOAP APIs",
+        "Familiarity with SAP transports, testing, and change management",
+        "Experience supporting enterprise application modernization",
+        "Federal government or DoD experience",
+        "Active Secret clearance preferred but not required"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [
+          "1-3 years of SAP ABAP development or related technical experience, including relevant internships"
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "SAP ABAP Development"
+          },
+          {
+            "skill": "SAP ABAP Programming"
+          },
+          {
+            "skill": "SAP ECC"
+          },
+          {
+            "skill": "SAP S/4HANA"
+          },
+          {
+            "skill": "SAP Interfaces"
+          },
+          {
+            "skill": "Integration Concepts"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Analytical Skills"
+          },
+          {
+            "skill": "Troubleshooting"
+          },
+          {
+            "skill": "Communication"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "OData"
+          },
+          {
+            "skill": "BAPIs"
+          },
+          {
+            "skill": "RFCs"
+          },
+          {
+            "skill": "IDocs"
+          },
+          {
+            "skill": "REST APIs"
+          },
+          {
+            "skill": "SOAP APIs"
+          },
+          {
+            "skill": "SAP Transport Management"
+          },
+          {
+            "skill": "Software Testing"
+          },
+          {
+            "skill": "Change Management"
+          },
+          {
+            "skill": "Enterprise Application Modernization"
+          },
+          {
+            "skill": "Federal Government Experience"
+          },
+          {
+            "skill": "DoD Experience"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": true,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Credence is seeking a Junior SAP ABAP Developer to support the development, integration, modernization, and maintenance of SAP enterprise applications in a federal government environment. The role focuses on SAP ABAP and S/4HANA development, enterprise integrations, testing, troubleshooting, and modernization initiatives.\nResponsibilities\nDevelop, enhance, test, and troubleshoot SAP ABAP programs\nSupport SAP S/4HANA applications and enterprise system integrations\nAssist with SAP interfaces using technologies such as OData, BAPIs, RFCs, and APIs\nCollaborate with senior developers and functional teams to implement technical solutions\nSupport system testing, debugging, and issue resolution\nPrepare technical documentation and maintain development records\nAssist with SAP transports, deployments, and change-management activities\nParticipate in team meetings, code reviews, and Agile development activities\nSkills\nBachelor's degree in a related field or equivalent experience\n1-3 years of SAP ABAP development or related technical experience, including relevant internships\nFoundational knowledge of SAP ABAP programming\nFamiliarity with SAP ECC or SAP S/4HANA\nBasic understanding of SAP interfaces and integration concepts\nStrong analytical, troubleshooting, and communication skills\nU.S. citizenship and ability to obtain and maintain a Secret clearance\nExposure to SAP S/4HANA, OData, BAPIs, RFCs, IDocs, or REST/SOAP APIs\nFamiliarity with SAP transports, testing, and change management\nExperience supporting enterprise application modernization\nFederal government or DoD experience\nActive Secret clearance preferred but not required\nBenefits\nHealth Care Plan (Medical, Dental & Vision)\nRetirement Plan (401k, IRA)\nLife Insurance (Basic, Voluntary & AD&D)\nPaid Time Off (Vacation, Sick & Public Holidays)\nFamily Leave (Maternity, Paternity)\nShort Term & Long Term Disability\nTraining & Development\nWellness Resources\nCompany Overview\nThe proven national security AI company. It was founded in 2005, and is headquartered in Mclean, Virginia, USA, with a workforce of 1001-5000 employees. Its website is http://credence-llc.com.",
+  "sourceDatePosted": "2026-11-09 15:12:09"
+}

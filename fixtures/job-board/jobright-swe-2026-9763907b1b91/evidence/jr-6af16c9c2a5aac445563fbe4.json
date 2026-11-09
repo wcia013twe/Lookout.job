@@ -1,0 +1,187 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6af16c9c2a5aac445563fbe4",
+  "capturedAt": "2026-11-09T17:50:42.317150+00:00",
+  "responseSha256": "7f60e92641401ae50643feed6609458e6137f3e5513c6387a4a1d3e9166bdf32",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6af16c9c2a5aac445563fbe4",
+    "jobTitle": "Graduate Development Program, Associate Engineer, Software Engineering",
+    "jobLocation": "Waltham, MA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 06:47:56",
+    "employmentType": "Full-time",
+    "salaryDesc": "$73K/yr - $102K/yr",
+    "jobSummary": "National Grid is hiring an Associate Software Engineer for its Graduate Development Program to develop and support software used in gas operations. The role involves building and enhancing applications, integrating front-end systems with backend services, testing and debugging changes, and collaborating with engineers and business stakeholders.",
+    "coreResponsibilities": [
+      "Develop, test, maintain, and enhance application features using modern programming languages and frameworks including React, JavaScript, HTML, and CSS",
+      "Apply object-oriented programming (OOP) principles such as encapsulation, inheritance, polymorphism, and abstraction",
+      "Develop reusable, maintainable, and well-structured software components",
+      "Work with REST APIs and integrate front-end applications with backend services",
+      "Write unit tests and participate in code reviews",
+      "Debug application issues and assist with root-cause analysis",
+      "Use Git and established source control and CI/CD practices",
+      "Participate in Agile development activities, including sprint planning, refinement, and retrospectives",
+      "Collaborate with senior engineers and architects to understand technical designs and development standards",
+      "Create and maintain appropriate technical documentation"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Bachelor or Master's degree in Computer Science, Software Engineering, Information Technology, or a related field from an accredited institution",
+      "Graduated between May 2026 and June 2027",
+      "Ability to begin the National Grid Graduate Program on June 7, 2027, or July 12, 2027",
+      "Work authorization that does not now or in the future require sponsorship of a visa for employment authorization in the United States (such as sponsorship for an H-1B, TN, O, L, STEM OPT, or other employment-based work authorization)",
+      "Foundational knowledge of object-oriented programming and software design principles",
+      "Programming experience with at least one object-oriented language, such as Java, Apex, or Python",
+      "Experience or coursework developing user interfaces with React or a similar modern JavaScript framework",
+      "Working knowledge of JavaScript, HTML, and CSS",
+      "A basic understanding of REST APIs, JSON, and client-server application architecture",
+      "Familiarity with Git or another source control platform",
+      "An understanding of the software development lifecycle and Agile development practices",
+      "Strong analytical, troubleshooting, and problem-solving skills",
+      "Exposure to SaaS platforms, including Salesforce or similar tools",
+      "Familiarity with automated testing frameworks",
+      "Exposure to CI/CD tools such as GitHub Actions or similar platforms",
+      "A basic understanding of cloud platforms such as Microsoft Azure or AWS",
+      "Experience with SQL, relational databases, or NoSQL databases"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Bachelor or Master's degree in Computer Science, Software Engineering, Information Technology, or a related field from an accredited institution",
+        "Graduated between May 2026 and June 2027",
+        "Ability to begin the National Grid Graduate Program on June 7, 2027, or July 12, 2027",
+        "Work authorization that does not now or in the future require sponsorship of a visa for employment authorization in the United States (such as sponsorship for an H-1B, TN, O, L, STEM OPT, or other employment-based work authorization)",
+        "Foundational knowledge of object-oriented programming and software design principles",
+        "Programming experience with at least one object-oriented language, such as Java, Apex, or Python",
+        "Experience or coursework developing user interfaces with React or a similar modern JavaScript framework",
+        "Working knowledge of JavaScript, HTML, and CSS",
+        "A basic understanding of REST APIs, JSON, and client-server application architecture",
+        "Familiarity with Git or another source control platform",
+        "An understanding of the software development lifecycle and Agile development practices",
+        "Strong analytical, troubleshooting, and problem-solving skills"
+      ],
+      "preferredHave": [
+        "Exposure to SaaS platforms, including Salesforce or similar tools",
+        "Familiarity with automated testing frameworks",
+        "Exposure to CI/CD tools such as GitHub Actions or similar platforms",
+        "A basic understanding of cloud platforms such as Microsoft Azure or AWS",
+        "Experience with SQL, relational databases, or NoSQL databases"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Computer Science"
+          },
+          {
+            "skill": "Object-Oriented Programming"
+          },
+          {
+            "skill": "Software Design Principles"
+          },
+          {
+            "skill": "Java"
+          },
+          {
+            "skill": "Apex"
+          },
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "User Interface Development"
+          },
+          {
+            "skill": "React"
+          },
+          {
+            "skill": "JavaScript"
+          },
+          {
+            "skill": "HTML"
+          },
+          {
+            "skill": "CSS"
+          },
+          {
+            "skill": "REST APIs"
+          },
+          {
+            "skill": "JSON"
+          },
+          {
+            "skill": "Client-Server Architecture"
+          },
+          {
+            "skill": "Git"
+          },
+          {
+            "skill": "Source Control"
+          },
+          {
+            "skill": "Software Development Lifecycle"
+          },
+          {
+            "skill": "Agile Development"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Analytical Skills"
+          },
+          {
+            "skill": "Troubleshooting"
+          },
+          {
+            "skill": "Problem-Solving"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "SaaS Platforms"
+          },
+          {
+            "skill": "Salesforce"
+          },
+          {
+            "skill": "Automated Testing Frameworks"
+          },
+          {
+            "skill": "CI/CD Tools"
+          },
+          {
+            "skill": "Cloud Platforms"
+          },
+          {
+            "skill": "Microsoft Azure"
+          },
+          {
+            "skill": "AWS"
+          },
+          {
+            "skill": "SQL"
+          },
+          {
+            "skill": "Relational Databases"
+          },
+          {
+            "skill": "NoSQL Databases"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "National Grid is hiring an Associate Software Engineer for its Graduate Development Program to develop and support software used in gas operations. The role involves building and enhancing applications, integrating front-end systems with backend services, testing and debugging changes, and collaborating with engineers and business stakeholders.\nResponsibilities\nDevelop, test, maintain, and enhance application features using modern programming languages and frameworks including React, JavaScript, HTML, and CSS\nApply object-oriented programming (OOP) principles such as encapsulation, inheritance, polymorphism, and abstraction\nDevelop reusable, maintainable, and well-structured software components\nWork with REST APIs and integrate front-end applications with backend services\nWrite unit tests and participate in code reviews\nDebug application issues and assist with root-cause analysis\nUse Git and established source control and CI/CD practices\nParticipate in Agile development activities, including sprint planning, refinement, and retrospectives\nCollaborate with senior engineers and architects to understand technical designs and development standards\nCreate and maintain appropriate technical documentation\nSkills\nBachelor or Master's degree in Computer Science, Software Engineering, Information Technology, or a related field from an accredited institution\nGraduated between May 2026 and June 2027\nAbility to begin the National Grid Graduate Program on June 7, 2027, or July 12, 2027\nWork authorization that does not now or in the future require sponsorship of a visa for employment authorization in the United States (such as sponsorship for an H-1B, TN, O, L, STEM OPT, or other employment-based work authorization)\nFoundational knowledge of object-oriented programming and software design principles\nProgramming experience with at least one object-oriented language, such as Java, Apex, or Python\nExperience or coursework developing user interfaces with React or a similar modern JavaScript framework\nWorking knowledge of JavaScript, HTML, and CSS\nA basic understanding of REST APIs, JSON, and client-server application architecture\nFamiliarity with Git or another source control platform\nAn understanding of the software development lifecycle and Agile development practices\nStrong analytical, troubleshooting, and problem-solving skills\nExposure to SaaS platforms, including Salesforce or similar tools\nFamiliarity with automated testing frameworks\nExposure to CI/CD tools such as GitHub Actions or similar platforms\nA basic understanding of cloud platforms such as Microsoft Azure or AWS\nExperience with SQL, relational databases, or NoSQL databases\nBenefits\nStructured development opportunities, mentorship, and ongoing feedback to accelerate your career growth\nExposure to leaders, cross-functional teams, and diverse areas of the business\nOpportunities to build your professional network and develop lasting industry connections\nMeaningful work and real-world experience that provide a strong foundation for a long-term career at National Grid\nUp to $6,000 in student loan repayment assistance\nTuition reimbursement benefits of up to $8,000 annually for undergraduate studies and $10,000 annually for graduate studies\nThe ability to build technical skills through hands-on development, training, and mentoring\nCompany Overview\nNational Grid facilitates electricity and gas transmission system and focuses on delivering clean energy. It was founded in 1990, and is headquartered in London, England, GBR, with a workforce of 10001+ employees. Its website is https://www.nationalgrid.com.",
+  "sourceDatePosted": "2026-11-09 06:47:56"
+}

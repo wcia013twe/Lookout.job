@@ -71,6 +71,8 @@ class Session:
   for feature in ['apps','plugins','remote_plugin','memories','multi_agent','skill_search']:cmd+=['--disable',feature]
   if self.bridge:cmd+=['-c','mcp_servers.workspace.command="python3"','-c','mcp_servers.workspace.args=["/service.py"]','-c','mcp_servers.workspace.env_vars=["WORKSPACE_SERVICE_URL","WORKSPACE_SERVICE_KEY"]']
   # Deliberately no --ephemeral: only stage 2 resumes stage 1 inside the same disposable tmpfs.
+  write(stage_dir.parent/'active-stage.json',{'stage':stage['_index']})
+  (stage_dir/'lookout-trace.jsonl').touch(exist_ok=True)
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
   meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
@@ -110,7 +112,7 @@ def run(condition,repeat,pair_id,pilot=False):
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'episodeId':run.name,'taskId':TASK,'version':'N01-stream-v1','condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[]};write(run/'run.json',meta)
+ meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[]};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
@@ -163,7 +165,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='N01-stream-v1':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='N01-stream-v2':raise RuntimeError('Wrong runtime configuration')
 
 def inputs_prompt(stage,condition):
  # Transport/infrastructure instructions only, no standing career goal or evaluator contract.

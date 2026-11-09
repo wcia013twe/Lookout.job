@@ -1,0 +1,123 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6a9b91af1388387060598581",
+  "capturedAt": "2026-11-09T17:50:41.673189+00:00",
+  "responseSha256": "287100720b3a03e1dc51ba635b75d0cafc2a5b7ec400f14c52b28ca63d8e57af",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6a9b91af1388387060598581",
+    "jobTitle": "Associate Software Engineer",
+    "jobLocation": "New York, NY",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 10:35:36",
+    "employmentType": "Full-time",
+    "salaryDesc": "$150K/yr - $150K/yr",
+    "jobSummary": "Garner Health is transforming the U.S. healthcare system by using clinical metrics, healthcare data, incentives, and AI to improve care and reduce costs. The Associate Software Engineer will build, optimize, and maintain software systems, collaborate across disciplines, protect user privacy and security, and participate in code reviews.",
+    "coreResponsibilities": [
+      "Use AI to build, optimize, and maintain software systems",
+      "Collaborate across disciplines to understand our users and iterate on new ideas",
+      "Protect our users' privacy and security through secure coding practices",
+      "Participate in code reviews, sharing your insights and learning from others"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "• Recent graduate (Spring 2026) or currently enrolled student (expected graduation of Fall 2026 or Spring 2027), with a Bachelor's or Master's in Computer Science or a related STEM field",
+      "• Solid CS fundamentals with experience in front-end (JavaScript, React) or back-end (Python, Node.js) technologies",
+      "• A track record of shipping high-quality features through internships or personal projects",
+      "• Strong technical writing, analytical, and communication skills",
+      "• Excited to join a high-performing, mission-driven team that values urgency, accountability, and honest feedback",
+      "• A desire to do work that matters: and to be held to a high standard while doing it. You're energized by a mission with measurable outcomes, not just good intentions. You engage with AI tools as part of how you do your best work, and hold yourself accountable to outcomes that matter beyond your team's metrics",
+      "Please note: we are unable to sponsor or take over sponsorship of an employment visa at this time",
+      "• Experience with a database system such as PostgreSQL or ElasticSearch; familiarity with cloud platforms (AWS, Docker) is a plus",
+      "• Exposure to building with AI coding agents (we use Claude Code) is a plus"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "• Recent graduate (Spring 2026) or currently enrolled student (expected graduation of Fall 2026 or Spring 2027), with a Bachelor's or Master's in Computer Science or a related STEM field",
+        "• Solid CS fundamentals with experience in front-end (JavaScript, React) or back-end (Python, Node.js) technologies",
+        "• A track record of shipping high-quality features through internships or personal projects",
+        "• Strong technical writing, analytical, and communication skills",
+        "• Excited to join a high-performing, mission-driven team that values urgency, accountability, and honest feedback",
+        "• A desire to do work that matters: and to be held to a high standard while doing it. You're energized by a mission with measurable outcomes, not just good intentions. You engage with AI tools as part of how you do your best work, and hold yourself accountable to outcomes that matter beyond your team's metrics",
+        "Please note: we are unable to sponsor or take over sponsorship of an employment visa at this time"
+      ],
+      "preferredHave": [
+        "• Experience with a database system such as PostgreSQL or ElasticSearch; familiarity with cloud platforms (AWS, Docker) is a plus",
+        "• Exposure to building with AI coding agents (we use Claude Code) is a plus"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Computer Science degree"
+          },
+          {
+            "skill": "JavaScript"
+          },
+          {
+            "skill": "React"
+          },
+          {
+            "skill": "Python"
+          },
+          {
+            "skill": "Node.js"
+          },
+          {
+            "skill": "Technical writing"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Problem-Solving"
+          },
+          {
+            "skill": "Accountability"
+          },
+          {
+            "skill": "Teamwork"
+          },
+          {
+            "skill": "Adaptability"
+          },
+          {
+            "skill": "High standards"
+          },
+          {
+            "skill": "Mission-driven"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "PostgreSQL"
+          },
+          {
+            "skill": "ElasticSearch"
+          },
+          {
+            "skill": "AWS"
+          },
+          {
+            "skill": "Docker"
+          },
+          {
+            "skill": "AI coding agents"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Garner Health is transforming the U.S. healthcare system by using clinical metrics, healthcare data, incentives, and AI to improve care and reduce costs. The Associate Software Engineer will build, optimize, and maintain software systems, collaborate across disciplines, protect user privacy and security, and participate in code reviews.\nResponsibilities\nUse AI to build, optimize, and maintain software systems\nCollaborate across disciplines to understand our users and iterate on new ideas\nProtect our users' privacy and security through secure coding practices\nParticipate in code reviews, sharing your insights and learning from others\nSkills\n• Recent graduate (Spring 2026) or currently enrolled student (expected graduation of Fall 2026 or Spring 2027), with a Bachelor's or Master's in Computer Science or a related STEM field\n• Solid CS fundamentals with experience in front-end (JavaScript, React) or back-end (Python, Node.js) technologies\n• A track record of shipping high-quality features through internships or personal projects\n• Strong technical writing, analytical, and communication skills\n• Excited to join a high-performing, mission-driven team that values urgency, accountability, and honest feedback\n• A desire to do work that matters: and to be held to a high standard while doing it. You're energized by a mission with measurable outcomes, not just good intentions. You engage with AI tools as part of how you do your best work, and hold yourself accountable to outcomes that matter beyond your team's metrics\nPlease note: we are unable to sponsor or take over sponsorship of an employment visa at this time\n• Experience with a database system such as PostgreSQL or ElasticSearch; familiarity with cloud platforms (AWS, Docker) is a plus\n• Exposure to building with AI coding agents (we use Claude Code) is a plus\nBenefits\nEquity incentive plan\nFlexible PTO\nMedical/Dental/Vision plan options\n401(k) with company match\nFlexible spending accounts\nTeladoc Health\nConsistent coaching to help you grow and do the best work of your career\nCompany Overview\nGarner Health is a healthcare technology company that connects employers and employees with high-performing medical providers. It was founded in 2019, and is headquartered in New York, New York, USA, with a workforce of 201-500 employees. Its website is https://www.garnerhealth.com.",
+  "sourceDatePosted": "2026-11-09 10:35:36"
+}

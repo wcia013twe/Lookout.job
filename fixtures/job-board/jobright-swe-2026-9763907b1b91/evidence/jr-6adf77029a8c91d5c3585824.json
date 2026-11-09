@@ -1,0 +1,286 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6adf77029a8c91d5c3585824",
+  "capturedAt": "2026-11-09T17:50:38.188525+00:00",
+  "responseSha256": "da792aeb29b064ae7942d13296ab9bd4a3acd7e275975d573db30e7e2fa76bba",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6adf77029a8c91d5c3585824",
+    "jobTitle": "Frontend Developer",
+    "jobLocation": "Ottawa, ON",
+    "workModel": "Hybrid",
+    "publishTime": "2026-11-09 16:11:26",
+    "employmentType": "Full-time",
+    "salaryDesc": "CA$68K/yr - CA$75K/yr",
+    "jobSummary": "BUMP is hiring a Frontend Developer for its Prediction Markets team to build and maintain a secure, multi-tenant prediction-market platform for Latin American markets. The role focuses on the mobile-first customer trading application, with additional work on administrative and operational tools, API integrations, testing, and production support.",
+    "minYearsOfExperience": 1,
+    "coreResponsibilities": [
+      "Design, build, test, and maintain React and Next.js web applications",
+      "Develop responsive, mobile-first customer experiences using TypeScript",
+      "Build reusable, accessible, and maintainable components using the platform's design system",
+      "Translate business, product, and design requirements into scalable application features",
+      "Build interfaces that support multilingual, multi-currency, and regional user experiences, including language, date, time, and number formatting",
+      "Contribute to the design and development of secure multi-tenant and white-label platform capabilities",
+      "Develop and enhance customer-facing workflows supporting market discovery, search, filtering, and category navigation",
+      "Build event and market-detail experiences that present real-time pricing, order-book information, and market data",
+      "Develop transaction workflows including outcome selection, bet slips, price locks, fees, order confirmation, and settlement status",
+      "Create interfaces for managing open positions, working orders, transaction history, and trade activity",
+      "Ensure customer-facing transaction states and financial information are displayed clearly, accurately, and consistently",
+      "Deliver localized customer experiences that support multiple languages and currencies",
+      "Design and maintain administrative and operational interfaces supporting market curation and platform operations",
+      "Develop finance, reconciliation, and treasury-monitoring dashboards and reporting solutions",
+      "Build audit-trail views to support compliance, operational transparency, and system traceability",
+      "Create internal tools that support customer service, player management, and operational support activities",
+      "Integrate frontend applications with REST and GraphQL services to deliver secure and scalable functionality",
+      "Implement real-time user experiences using WebSockets to display live prices, scores, account activity, order status, and operational alerts",
+      "Support secure integration of platform capabilities within external customer environments using iFrame and browser messaging technologies",
+      "Collaborate with backend engineers to define, implement, and maintain API contracts and real-time event integrations",
+      "Develop and maintain unit, component, integration, accessibility, Storybook, and end-to-end testing assets",
+      "Troubleshoot and resolve browser, network, rendering, state-management, and TypeScript-related issues",
+      "Monitor, analyze, and improve application performance, accessibility, reliability, and user experience",
+      "Participate in technical design reviews, solution discussions, effort estimation, code reviews, and continuous improvement initiatives",
+      "Adhere to established software development standards for security, accessibility, testing, documentation, and code quality",
+      "Collaborate with Service Desk, Technical Support, and engineering teams to troubleshoot issues and restore platform services",
+      "Analyze root causes of production incidents and implement corrective and preventive measures",
+      "Document production issues, resolutions, workarounds, and follow-up actions to improve operational readiness and platform reliability",
+      "Support ongoing enhancements that improve system stability, supportability, and overall service performance"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "Legally eligible to work in Canada",
+      "Fluent in English (speak, read, write)",
+      "1 year of experience developing web applications using modern JavaScript frameworks and TypeScript",
+      "Strong hands-on experience with React and Next.js in production environments",
+      "Experience building responsive, mobile-first, and accessible user interfaces",
+      "Experience integrating frontend applications with REST and/or GraphQL APIs",
+      "Experience developing and consuming real-time web applications using technologies such as WebSockets or event-driven architectures",
+      "Experience implementing automated testing practices, including unit, integration, and end-to-end testing",
+      "Strong troubleshooting and debugging skills across browser, frontend, API, and application performance issues",
+      "Experience working within Agile software development environments and participating in code reviews and technical design discussions",
+      "Strong communication and collaboration skills with cross-functional technical and business teams",
+      "Post-secondary education in Computer Science, Software Engineering, or a related discipline",
+      "3 years of experience developing web applications using modern JavaScript frameworks and TypeScript",
+      "Experience with financial services, trading, gaming, betting, lottery, or other transaction-heavy platforms",
+      "Experience building multilingual, multi-currency, or internationalized applications",
+      "Experience with design systems, Storybook, and reusable component libraries",
+      "Experience working with secure multi-tenant or white-label SaaS solutions",
+      "Experience embedding applications within external portals using iFrames and browser messaging technologies",
+      "Knowledge of frontend performance optimization, accessibility standards, and secure development practices",
+      "Experience working in cloud-native environments and collaborating with distributed engineering teams",
+      "Experience supporting production systems, participating in on-call rotations, and resolving live service incidents"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "Legally eligible to work in Canada",
+        "Fluent in English (speak, read, write)",
+        "1 year of experience developing web applications using modern JavaScript frameworks and TypeScript",
+        "Strong hands-on experience with React and Next.js in production environments",
+        "Experience building responsive, mobile-first, and accessible user interfaces",
+        "Experience integrating frontend applications with REST and/or GraphQL APIs",
+        "Experience developing and consuming real-time web applications using technologies such as WebSockets or event-driven architectures",
+        "Experience implementing automated testing practices, including unit, integration, and end-to-end testing",
+        "Strong troubleshooting and debugging skills across browser, frontend, API, and application performance issues",
+        "Experience working within Agile software development environments and participating in code reviews and technical design discussions",
+        "Strong communication and collaboration skills with cross-functional technical and business teams"
+      ],
+      "preferredHave": [
+        "Post-secondary education in Computer Science, Software Engineering, or a related discipline",
+        "3 years of experience developing web applications using modern JavaScript frameworks and TypeScript",
+        "Experience with financial services, trading, gaming, betting, lottery, or other transaction-heavy platforms",
+        "Experience building multilingual, multi-currency, or internationalized applications",
+        "Experience with design systems, Storybook, and reusable component libraries",
+        "Experience working with secure multi-tenant or white-label SaaS solutions",
+        "Experience embedding applications within external portals using iFrames and browser messaging technologies",
+        "Knowledge of frontend performance optimization, accessibility standards, and secure development practices",
+        "Experience working in cloud-native environments and collaborating with distributed engineering teams",
+        "Experience supporting production systems, participating in on-call rotations, and resolving live service incidents"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [
+          "1 year of experience developing web applications using modern JavaScript frameworks and TypeScript."
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "English fluency"
+          },
+          {
+            "skill": "Web application development"
+          },
+          {
+            "skill": "JavaScript frameworks"
+          },
+          {
+            "skill": "TypeScript"
+          },
+          {
+            "skill": "React"
+          },
+          {
+            "skill": "Next.js"
+          },
+          {
+            "skill": "Responsive UI development"
+          },
+          {
+            "skill": "Mobile-first design"
+          },
+          {
+            "skill": "Accessible UI development"
+          },
+          {
+            "skill": "REST API integration"
+          },
+          {
+            "skill": "GraphQL API integration"
+          },
+          {
+            "skill": "Real-time web applications"
+          },
+          {
+            "skill": "WebSockets"
+          },
+          {
+            "skill": "Event-driven architectures"
+          },
+          {
+            "skill": "Automated testing"
+          },
+          {
+            "skill": "Unit testing"
+          },
+          {
+            "skill": "Integration testing"
+          },
+          {
+            "skill": "End-to-end testing"
+          },
+          {
+            "skill": "Browser debugging"
+          },
+          {
+            "skill": "Frontend debugging"
+          },
+          {
+            "skill": "API debugging"
+          },
+          {
+            "skill": "Performance troubleshooting"
+          },
+          {
+            "skill": "Agile software development"
+          },
+          {
+            "skill": "Code reviews"
+          },
+          {
+            "skill": "Technical design discussions"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Troubleshooting"
+          },
+          {
+            "skill": "Debugging"
+          },
+          {
+            "skill": "Communication"
+          },
+          {
+            "skill": "Collaboration"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [
+          "3 years of experience developing web applications using modern JavaScript frameworks and TypeScript."
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Computer Science Education"
+          },
+          {
+            "skill": "Financial Services Platforms"
+          },
+          {
+            "skill": "Trading Platforms"
+          },
+          {
+            "skill": "Gaming Platforms"
+          },
+          {
+            "skill": "Betting Platforms"
+          },
+          {
+            "skill": "Lottery Platforms"
+          },
+          {
+            "skill": "Transaction-Heavy Platforms"
+          },
+          {
+            "skill": "Multilingual Applications"
+          },
+          {
+            "skill": "Multi-Currency Applications"
+          },
+          {
+            "skill": "Internationalization"
+          },
+          {
+            "skill": "Design Systems"
+          },
+          {
+            "skill": "Storybook"
+          },
+          {
+            "skill": "Reusable Component Libraries"
+          },
+          {
+            "skill": "Multi-Tenant SaaS"
+          },
+          {
+            "skill": "White-Label Solutions"
+          },
+          {
+            "skill": "iFrame Integration"
+          },
+          {
+            "skill": "Browser Messaging"
+          },
+          {
+            "skill": "Frontend Performance Optimization"
+          },
+          {
+            "skill": "Accessibility Standards"
+          },
+          {
+            "skill": "Secure Development"
+          },
+          {
+            "skill": "Cloud-Native Environments"
+          },
+          {
+            "skill": "Production Systems Support"
+          },
+          {
+            "skill": "Live Incident Resolution"
+          }
+        ],
+        "softSkill": [
+          {
+            "skill": "Distributed Team Collaboration"
+          }
+        ]
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "BUMP is hiring a Frontend Developer for its Prediction Markets team to build and maintain a secure, multi-tenant prediction-market platform for Latin American markets. The role focuses on the mobile-first customer trading application, with additional work on administrative and operational tools, API integrations, testing, and production support.\nResponsibilities\nDesign, build, test, and maintain React and Next.js web applications\nDevelop responsive, mobile-first customer experiences using TypeScript\nBuild reusable, accessible, and maintainable components using the platform's design system\nTranslate business, product, and design requirements into scalable application features\nBuild interfaces that support multilingual, multi-currency, and regional user experiences, including language, date, time, and number formatting\nContribute to the design and development of secure multi-tenant and white-label platform capabilities\nDevelop and enhance customer-facing workflows supporting market discovery, search, filtering, and category navigation\nBuild event and market-detail experiences that present real-time pricing, order-book information, and market data\nDevelop transaction workflows including outcome selection, bet slips, price locks, fees, order confirmation, and settlement status\nCreate interfaces for managing open positions, working orders, transaction history, and trade activity\nEnsure customer-facing transaction states and financial information are displayed clearly, accurately, and consistently\nDeliver localized customer experiences that support multiple languages and currencies\nDesign and maintain administrative and operational interfaces supporting market curation and platform operations\nDevelop finance, reconciliation, and treasury-monitoring dashboards and reporting solutions\nBuild audit-trail views to support compliance, operational transparency, and system traceability\nCreate internal tools that support customer service, player management, and operational support activities\nIntegrate frontend applications with REST and GraphQL services to deliver secure and scalable functionality\nImplement real-time user experiences using WebSockets to display live prices, scores, account activity, order status, and operational alerts\nSupport secure integration of platform capabilities within external customer environments using iFrame and browser messaging technologies\nCollaborate with backend engineers to define, implement, and maintain API contracts and real-time event integrations\nDevelop and maintain unit, component, integration, accessibility, Storybook, and end-to-end testing assets\nTroubleshoot and resolve browser, network, rendering, state-management, and TypeScript-related issues\nMonitor, analyze, and improve application performance, accessibility, reliability, and user experience\nParticipate in technical design reviews, solution discussions, effort estimation, code reviews, and continuous improvement initiatives\nAdhere to established software development standards for security, accessibility, testing, documentation, and code quality\nCollaborate with Service Desk, Technical Support, and engineering teams to troubleshoot issues and restore platform services\nAnalyze root causes of production incidents and implement corrective and preventive measures\nDocument production issues, resolutions, workarounds, and follow-up actions to improve operational readiness and platform reliability\nSupport ongoing enhancements that improve system stability, supportability, and overall service performance\nSkills\nLegally eligible to work in Canada\nFluent in English (speak, read, write)\n1 year of experience developing web applications using modern JavaScript frameworks and TypeScript\nStrong hands-on experience with React and Next.js in production environments\nExperience building responsive, mobile-first, and accessible user interfaces\nExperience integrating frontend applications with REST and/or GraphQL APIs\nExperience developing and consuming real-time web applications using technologies such as WebSockets or event-driven architectures\nExperience implementing automated testing practices, including unit, integration, and end-to-end testing\nStrong troubleshooting and debugging skills across browser, frontend, API, and application performance issues\nExperience working within Agile software development environments and participating in code reviews and technical design discussions\nStrong communication and collaboration skills with cross-functional technical and business teams\nPost-secondary education in Computer Science, Software Engineering, or a related discipline\n3 years of experience developing web applications using modern JavaScript frameworks and TypeScript\nExperience with financial services, trading, gaming, betting, lottery, or other transaction-heavy platforms\nExperience building multilingual, multi-currency, or internationalized applications\nExperience with design systems, Storybook, and reusable component libraries\nExperience working with secure multi-tenant or white-label SaaS solutions\nExperience embedding applications within external portals using iFrames and browser messaging technologies\nKnowledge of frontend performance optimization, accessibility standards, and secure development practices\nExperience working in cloud-native environments and collaborating with distributed engineering teams\nExperience supporting production systems, participating in on-call rotations, and resolving live service incidents\nBenefits\nAn industry-leading defined contribution pension plan with company matching contributions (up to 5%) and payment of service fees\nBest-in-class health, medical, and life insurance benefits\nAccess to virtual and telehealth services and apps\nVery progressive fertility, adoption, and surrogacy benefits to support all definitions of family\nHybrid work model\nCompany Overview\nOriginally established in 1897 to supply security printed products to the Government of Canada, Canadian Bank Note Company, Limited (CBN) continues to provide goods and services in Canada including: currency; passports and ePassports; driver license and identification cards; biometric solutions; postage stamps; permanent resident cards; visas; and vital statistics documents. It was founded in 1897, and is headquartered in Ottawa, Ontario, CAN, with a workforce of 1001-5000 employees. Its website is https://www.cbnco.com/.",
+  "sourceDatePosted": "2026-11-09 16:11:26"
+}

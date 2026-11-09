@@ -1,0 +1,73 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6aef8e167bf8e8b9eaf801bf",
+  "capturedAt": "2026-11-09T17:50:39.700713+00:00",
+  "responseSha256": "0819b94204229a65d6ca54f3197fc53e2c1a8ab8e7d76878f3eaad17bd6b026c",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6aef8e167bf8e8b9eaf801bf",
+    "jobTitle": "Junior Solutions Engineer",
+    "jobLocation": "Canada",
+    "workModel": "Remote",
+    "publishTime": "2026-11-09 13:21:00",
+    "employmentType": "Full-time",
+    "salaryDesc": "CA$70K/yr - CA$100K/yr",
+    "jobSummary": "Pontosense is hiring a Junior Solutions Engineer to serve as a technical partner for key accounts and major customer deployments. The role onboards agencies, manages platform integrations, coordinates technical support for large customers, and relays field feedback to product and engineering.",
+    "coreResponsibilities": [
+      "Technical onboarding. Agencies and partners get set up on our platform, trained and live, with their first sensors in homes",
+      "Integrations. APIs and data flows between our platform and our largest technology and care partners, built, tested and kept running",
+      "Key accounts. Day-to-day technical coordination with our largest customers, and support on the deals that grow them",
+      "Deployment know-how. Guides, checklists and answers, so the next rollout goes faster than the last",
+      "Product feedback. What customers need goes back to product and engineering, with the detail they need to act on it"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "You would rather own a problem than be assigned a task",
+      "The mission matters to you and the pace feels real, not stressful",
+      "You are the person who just fixes it"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "You would rather own a problem than be assigned a task",
+        "The mission matters to you and the pace feels real, not stressful",
+        "You are the person who just fixes it"
+      ],
+      "preferredHave": []
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [],
+        "softSkill": [
+          {
+            "skill": "Ownership"
+          },
+          {
+            "skill": "Mission-Driven"
+          },
+          {
+            "skill": "Problem-Solving"
+          },
+          {
+            "skill": "Resourcefulness"
+          },
+          {
+            "skill": "Composure Under Pressure"
+          }
+        ]
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Note: The job is a remote job and is open to candidates in USA. Pontosense is hiring a Junior Solutions Engineer to serve as a technical partner for key accounts and major customer deployments. The role onboards agencies, manages platform integrations, coordinates technical support for large customers, and relays field feedback to product and engineering.\nResponsibilities\nTechnical onboarding. Agencies and partners get set up on our platform, trained and live, with their first sensors in homes\nIntegrations. APIs and data flows between our platform and our largest technology and care partners, built, tested and kept running\nKey accounts. Day-to-day technical coordination with our largest customers, and support on the deals that grow them\nDeployment know-how. Guides, checklists and answers, so the next rollout goes faster than the last\nProduct feedback. What customers need goes back to product and engineering, with the detail they need to act on it\nSkills\nYou would rather own a problem than be assigned a task\nThe mission matters to you and the pace feels real, not stressful\nYou are the person who just fixes it\nBenefits\nA sensor for your parents, on us\nDirect access to the leadership team. No layers.\nHybrid in Toronto or Waterloo, remote if that's where you do your best work\nHealth, dental and vision benefits\nCompany Overview\nPrivacy-first sensing platform powering contactless safety and health intelligence across home care and smart environments. It was founded in 2021, and is headquartered in Toronto, Ontario, CAN, with a workforce of 51-200 employees. Its website is https://www.pontosense.com/.",
+  "sourceDatePosted": "2026-11-09 13:21:00"
+}

@@ -1,0 +1,97 @@
+{
+  "sourceUrl": "https://jobright.ai/jobs/info/6a639f03979290281c703344",
+  "capturedAt": "2026-11-09T17:50:38.189055+00:00",
+  "responseSha256": "fc2cb2c9deef3c685bebae04d7ae8986eabcaff637bfff444440d9d80d6617b5",
+  "provenance": "Jobright; employer availability not verified",
+  "job": {
+    "jobId": "6a639f03979290281c703344",
+    "jobTitle": "Backend Engineer - Connectivity",
+    "jobLocation": "San Mateo, CA",
+    "workModel": "Onsite",
+    "publishTime": "2026-11-09 15:43:43",
+    "employmentType": "Full-time",
+    "salaryDesc": "$125K/yr - $160K/yr",
+    "jobSummary": "Verkada is transforming how organizations protect their people and places with an integrated, privacy-sensitive AI-powered platform. The Backend Engineer - Connectivity will be responsible for building scalable distributed systems, working with various databases and technologies, and developing features for Verkada's connectivity products.",
+    "minYearsOfExperience": 1,
+    "coreResponsibilities": [
+      "Build scalable distributed systems capable of handling high traffic from 100s of thousands of devices deployed around the world",
+      "Work with high concurrency key-value storage systems (Redis, DynamoDB)",
+      "Work with Postgres relational databases",
+      "Work with logging and message passing technologies like Kafka and SQS",
+      "Deploy services via Terraform and Kubernetes",
+      "Develop large scale systems to interact with and configure products remotely",
+      "Define and improve low-latency, high-throughput, high-reliability microservice architectures",
+      "Design and develop features incorporating cutting edge computer vision",
+      "Design clean APIs and implement them using Python and/or Go"
+    ],
+    "educationSummaries": [],
+    "skillSummaries": [
+      "1+ years backend engineering experience in a production environment",
+      "BS/MS in Computer Science or similar technical field of study",
+      "Experience developing and launching products",
+      "Working knowledge of Python and/or Go",
+      "Comfortable working in an agile team software development environment",
+      "Familiarity with REST APIs, ability to read python server code a plus"
+    ],
+    "isDeleted": false,
+    "qualifications": {
+      "mustHave": [
+        "1+ years backend engineering experience in a production environment",
+        "BS/MS in Computer Science or similar technical field of study",
+        "Experience developing and launching products",
+        "Working knowledge of Python and/or Go",
+        "Comfortable working in an agile team software development environment"
+      ],
+      "preferredHave": [
+        "Familiarity with REST APIs, ability to read python server code a plus"
+      ]
+    },
+    "detailQualifications": {
+      "mustHave": {
+        "yoe": [
+          "1+ years backend engineering experience in a production environment"
+        ],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "Backend engineering experience"
+          },
+          {
+            "skill": "BS/MS in Computer Science"
+          },
+          {
+            "skill": "Product development experience"
+          },
+          {
+            "skill": "Python knowledge"
+          },
+          {
+            "skill": "Go knowledge"
+          },
+          {
+            "skill": "Agile team experience"
+          }
+        ],
+        "softSkill": []
+      },
+      "preferredHave": {
+        "yoe": [],
+        "education": [],
+        "hardSkill": [
+          {
+            "skill": "REST APIs"
+          },
+          {
+            "skill": "Python server code"
+          }
+        ],
+        "softSkill": []
+      }
+    },
+    "isWorkAuthRequired": false,
+    "isCitizenOnly": false,
+    "isClearanceRequired": false
+  },
+  "descriptionText": "Verkada is transforming how organizations protect their people and places with an integrated, privacy-sensitive AI-powered platform. The Backend Engineer - Connectivity will be responsible for building scalable distributed systems, working with various databases and technologies, and developing features for Verkada's connectivity products.\nResponsibilities\nBuild scalable distributed systems capable of handling high traffic from 100s of thousands of devices deployed around the world\nWork with high concurrency key-value storage systems (Redis, DynamoDB)\nWork with Postgres relational databases\nWork with logging and message passing technologies like Kafka and SQS\nDeploy services via Terraform and Kubernetes\nDevelop large scale systems to interact with and configure products remotely\nDefine and improve low-latency, high-throughput, high-reliability microservice architectures\nDesign and develop features incorporating cutting edge computer vision\nDesign clean APIs and implement them using Python and/or Go\nSkills\n1+ years backend engineering experience in a production environment\nBS/MS in Computer Science or similar technical field of study\nExperience developing and launching products\nWorking knowledge of Python and/or Go\nComfortable working in an agile team software development environment\nFamiliarity with REST APIs, ability to read python server code a plus\nBenefits\nHealthcare programs that can be tailored to meet the personal health and financial well-being needs - Premiums are 100% covered for the employee under at least one plan and 80% for family premiums under all plans\nNationwide medical, vision and dental coverage\nHealth Saving Account (HSA) with annual employer contributions\nFlexible Spending Account (FSA) with tax saving options\nExpanded mental health support\nPaid parental leave policy & fertility benefits\nTime off to relax and recharge through our paid holidays\nFirmwide extended holidays\nFlexible PTO and personal sick time\nProfessional development stipend\nWellness/fitness benefits\nHealthy lunches provided daily\nCommuter benefits\nProfessional development stipend\nWellness/fitness benefits\nCompany Overview\nVerkada is a cyber security company that offers an AI integrated platform for cloud physical security. It was founded in 2016, and is headquartered in San Mateo, California, USA, with a workforce of 1001-5000 employees. Its website is https://www.verkada.com.\nCompany H1B Sponsorship\nVerkada has a track record of offering H1B sponsorships, with 71 in 2026, 70 in 2025, 51 in 2024, 44 in 2023, 43 in 2022, 19 in 2021, 13 in 2020. Please note that this does not guarantee sponsorship for this specific role.",
+  "sourceDatePosted": "2026-11-09 15:43:43"
+}
