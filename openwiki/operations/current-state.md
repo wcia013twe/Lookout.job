@@ -1460,3 +1460,13 @@ remain. Focused boundaries pass; each new pair must pass actual source-bound
 no-inference gates, including its completion-policy gate, before participant launch.
 JOB03 EVAL-01/02 remain under original freezes and are not silently pooled with the
 amended future pairs. All historical evidence is retained.
+
+
+JOB03 EVAL-01/02/03 now have terminal8/8 paired evidence, exact5.6 medium independent
+reviews, deterministic finalization and verified common Langfuse readbacks. Neither
+condition strict-passed any of these pairs; report per-pair scores and the mixed
+hard-deadline/reference-only policy provenance without a general effectiveness
+claim. JOB04 EVAL-01 passed19 source-bound actual no-inference gates and is executing
+with no total turn deadline. All JOB04 outcomes and overall goal completion remain
+pending. Read-only audit-v3 supplements confirm recorded native clocks/timing for
+completed JOB03 roots without replacing their original audits or quality grades.

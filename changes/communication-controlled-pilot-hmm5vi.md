@@ -393,3 +393,24 @@
   catalog158 and diff checks pass. The first combined Python discovery failed from
   the new test module leaking import-path order; the isolated import now restores
   its caller's path. Both failed and passing logs remain. No participant retry.
+
+
+## JOB03 EVAL series completed; JOB04 executing
+
+- All three JOB03 pairs completed8/8 turns in both conditions, with one fresh
+  exact5.6 medium grader per terminal pair. Deterministic finalization and common
+  Langfuse upload/paginated readback are verified for all six condition records.
+- EVAL-01: baseline quality0.954545, Lookout0.477273; observed active seconds320.628/1229.809. Neither strict-passed.
+- EVAL-02: baseline quality0.954545, Lookout0.363636; observed active seconds302.372/1503.835. Neither strict-passed.
+- EVAL-03: baseline quality0.795455, Lookout0.352273; observed active seconds330.916/1269.319. Neither strict-passed.
+- These are per-pair observations, not a general product conclusion. EVAL-01/02
+  retain hard-deadline freezes; EVAL-03 uses the recorded reference-only amendment.
+  All16 EVAL-03 stage receipts have valid timing. No participant or grader retry.
+- JOB04 EVAL-01 passed19 actual no-inference gates, including completion policy,
+  canonical context, scopes, native startup/discovery and three-process clocks;
+  its baseline participant is running. Remaining paired evaluations are pending.
+- A separately frozen read-only audit v3 corrects v2's unconditional historical
+  clock warnings using bound preflight/actual native-turn readbacks and timing
+  receipts. Supplementary v3 audits pass for the three completed JOB03 pairs;
+  old reports/grades/evidence remain. It is not a new quality grader. Main auditor
+  source installation waits until frozen participant executions end.
