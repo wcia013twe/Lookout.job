@@ -1438,3 +1438,15 @@ checks pass; actual EVAL publication/readback remains pending the first pair.
 JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independent grader to subscription gpt-5.6-terra medium, with the shared read-only grader executor and a fixed 600-second review budget. JOB01 detailed and JOB02 combined detailed/common exports reuse shared structural provenance and paginated score readback. Initial freezes and actual readiness remain separate; no EVAL participant execution is claimed here.
 
 COM03/COM04 prospective evaluation reporting now carries the shared allowlisted provenance via `scripts/evals/provenance.mjs` in detailed exports and common summaries. This is reporting-only; historical frozen participant sources and final records are preserved. Twelve focused case/provenance checks passed; new EVAL-01–03 execution remains queued.
+
+
+JOB03/JOB04 EVAL continuation: JOB03 EVAL-01 has a completed exact5.6 medium
+independent review and verified common Langfuse readback for both conditions.
+Neither condition strict-passed; one pair under concurrent host load supports no
+general effectiveness conclusion. JOB03 EVAL-02 is executing under its original
+freeze. User-authorized future participant completion policy removes total turn
+limits symmetrically, while retaining bounded individual operations and cleanup;
+that adapter change is staged pending the shared Session update and fresh gates.
+Remaining graders use shared reference-only execution. Historical freezes and old
+executor bytes are preserved. Full series completion and participant-policy live
+verification are still outstanding.

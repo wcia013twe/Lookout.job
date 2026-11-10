@@ -339,3 +339,34 @@
   to the400 frozen participant files; source digest recheck passes.23 Node reporting
   and JOB04 checks plus catalog158 pass. Remote publication remains unverified
   until the first completed EVAL; no participant or grader ran in this pass.
+
+
+## EVAL execution checkpoint and authorized completion-policy amendment
+
+- JOB03 EVAL-01 completed8/8 turns in both conditions. A fresh subscription
+  gpt-5.6-terra medium grader completed independently, with unchanged read-only
+  evidence, exact observed model and confirmed cleanup. Deterministic finalization
+  passed. Baseline quality0.954545, Lookout0.477273; neither strict-passed.
+  Recorded active seconds320.628/1229.809 and complete usage coverage are one-pair
+  observations under concurrent shared-host load, not a general product conclusion.
+- Common exports uploaded and both paginated readbacks verified on delivery3;
+  retries changed transport only. Historical pilots, references and reviews remain
+  separate and unchanged. JOB03 EVAL-02 launched Lookout-first after21 fresh gates.
+- Released21 retired empty owned diagnostic networks after checking exact labels,
+  IDs, stopped owned containers and zero endpoints. Inspect/release evidence retained;
+  no active evaluation network, container, volume or unrelated service was removed.
+- User removed participant turn limits for future pairs. EVAL-02 keeps its active
+  freeze; future launches are held while the completion-policy adapter is staged
+  outside active source and the shared Session owner updates its implementation.
+  No healthy participant is restarted to apply policy. Both conditions must receive
+  the same amendment; scenario intent, evidence, rubric and condition order stay fixed.
+- Remaining graders bind the separately retained shared reference-only executor
+  from d7af027c; the outer grading subprocess cap is also removed. Original executor
+  bytes and EVAL-01 receipts remain. No grader/model substitution or participant retry.
+- Staged checks: three Python completion/HTTP boundary tests and one Node policy
+  test pass without inference. Participant source remains unchanged until EVAL-02
+  terminates. Integration, focused checks and fresh actual gates remain required.
+- Audit limitation found: structural-audit v2 prints historical clock/monotonic
+  warnings even for current isolated three-clock runs. Its actual structural
+  parity result is clean, but those generic warnings must not override the bound
+  per-stage clock/timing evidence. Reporting-text correction remains prospective.
