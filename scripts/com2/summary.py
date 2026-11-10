@@ -10,6 +10,9 @@ def build(run,spec,result,campaign):
  reviewed=result['status']=='graded'
  if result['status'] not in ['graded','pending_review']:raise ValueError('Unknown grade state')
  if reviewed and (not result.get('reviewer') or any(type(v) is not bool for v in result['quality'].values())):raise ValueError('Independent final review required')
+ if reviewed:
+  expected=grade.score_outcomes(spec,result['quality'])
+  if result.get('primaryOutcomes')!=expected or result['metrics'].get('quality_fraction')!=sum(expected.values())/len(expected):raise ValueError('Primary outcome score mismatch')
  # Count observable tool invocations once. The MCP transport logs are not added again.
  steps=0
  for sd in run.glob('stage-*'):
@@ -17,7 +20,7 @@ def build(run,spec,result,campaign):
   for row in grade.rows(sd/'trace.jsonl'):
    e=row.get('event',{})
    if e.get('type')=='item.completed' and e.get('item',{}).get('type') in ['command_execution','mcp_tool_call','web_search']:steps+=1
- return dict(cost=m.get('cost'),schemaVersion=1,campaignId=campaign,suiteId='communication',suiteVersion='1',scenarioId='COM2',scenarioVersion=spec['version'],condition=m['condition'],repeat=m['repeat'],episodeId=m['episodeId'],model=m['model'],reasoning=m['reasoning'],harnessVersion='COM2-harness-v2',graderVersion=grade.GRADER_VERSION,evidenceDigest=result['evidenceDigest'],startedAt=m['startedAt'],endedAt=m['startedAt']+m['durationSeconds'],status=m['status'],pilot=m.get('pilot') is True,synthetic=m.get('synthetic') is True,evaluation=dict(reviewed=reviewed,taskSuccess=bool(result['metrics']['quality_pass']) if reviewed else None,quality=result['metrics'].get('quality_fraction') if reviewed else None,activeSeconds=result['metrics']['execution_seconds'],toolCalls=steps,wakesUsed=sum(v for k,v in result['metrics'].items() if k.startswith('stage_') and k.endswith('_reached'))))
+ return dict(provenance=result.get('provenance'),cost=m.get('cost'),schemaVersion=1,campaignId=campaign,suiteId='communication',suiteVersion='1',scenarioId='COM2',scenarioVersion=spec['version'],condition=m['condition'],repeat=m['repeat'],episodeId=m['episodeId'],model=m['model'],reasoning=m['reasoning'],harnessVersion='COM2-harness-v3',graderVersion=grade.GRADER_VERSION,evidenceDigest=result['evidenceDigest'],startedAt=m['startedAt'],endedAt=m['startedAt']+m['durationSeconds'],status=m['status'],pilot=m.get('pilot') is True,synthetic=m.get('synthetic') is True,evaluation=dict(reviewed=reviewed,taskSuccess=bool(result['metrics']['quality_pass']) if reviewed else None,quality=result['metrics'].get('quality_fraction') if reviewed else None,activeSeconds=result['metrics']['execution_seconds'],toolCalls=steps,wakesUsed=sum(v for k,v in result['metrics'].items() if k.startswith('stage_') and k.endswith('_reached'))))
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);p.add_argument('--scenario',type=Path,required=True);p.add_argument('--grade',type=Path,required=True);p.add_argument('--campaign',required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
  if a.output.exists():p.error('Preserve previous summary; use a new output')

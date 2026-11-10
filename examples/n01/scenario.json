@@ -1,5 +1,5 @@
 {
-  "version": "COM1-stream-v8",
+  "version": "COM1-stream-v9",
   "taskId": "COM1",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",
@@ -137,8 +137,8 @@
     }
   ],
   "quality": {
-    "initial_context": "Supplied contact identities, existing state, do-not-contact boundaries and current networking priorities remain recoverable in durable storage without invented qualifications or actions. Existing native records need no duplicate write; full resume/profile copying is not required.",
-    "preparation": "Save useful distinct preparation for Dana/inference and Ivo/platform, grounded in candidate evidence and actual roles. Future/past education assertions must agree with supplied dates and workspace time; genuine source conflicts may be flagged or avoided.",
+    "initial_context": "Supplied contact identities, existing state, do-not-contact boundaries and current networking priorities remain recoverable in durable storage without invented qualifications or actions. Existing native records need no duplicate write; full resume/profile copying is not required. Sam\u2019s introductory conversation and unsent thank-you draft are explicitly distinct in the supplied fixture.",
+    "preparation": "Save useful distinct preparation for Dana/inference and Ivo/platform, grounded in candidate evidence and actual roles. Future/past education assertions must agree with supplied dates and workspace time; genuine source conflicts may be flagged or avoided. If profile and resume conflict, preserve or flag uncertainty; neither source is silently treated as confirmed solely to satisfy grading.",
     "tentative_preference": "Reaction remains tentative; preserve initial priorities as unconfirmed for change, record systems-ownership interest.",
     "reply": "Save a suitable concise unsent reply to Ivo, acknowledging uncertain fit and tentative interests; no claimed referral.",
     "confirmed_preference": "Platform primary, inference infrastructure secondary; prior commitments preserved and no unrelated profile changes.",
@@ -237,5 +237,53 @@
       "category": "clarification"
     }
   ],
-  "defaultAnswer": "I have no additional information to add right now. Please preserve any uncertainty."
+  "defaultAnswer": "I have no additional information to add right now. Please preserve any uncertainty.",
+  "qualityGroups": {
+    "source_fidelity_and_report": [
+      "initial_context",
+      "preservation",
+      "report_accuracy"
+    ],
+    "preparation": [
+      "preparation"
+    ],
+    "tentative_preference": [
+      "tentative_preference"
+    ],
+    "reply": [
+      "reply"
+    ],
+    "confirmed_preference": [
+      "confirmed_preference"
+    ],
+    "follow_through": [
+      "follow_through"
+    ],
+    "duplicate": [
+      "duplicate"
+    ],
+    "saved_state": [
+      "saved_state"
+    ]
+  },
+  "study": {
+    "version": "communication-outcomes-v1",
+    "question": "For identical explicit requests across fresh sessions, how does an agent using Lookout compare with the same model using persistent files on communication continuity, task outcomes and execution resources?",
+    "primaryMeasure": "Equal-weight frozen outcome groups; checkpoint checks remain diagnostics, not independent tasks.",
+    "requiresUserImpact": true,
+    "plannedPairsPerCase": 4,
+    "conditionOrder": "Odd repetitions baseline/lookout; even repetitions lookout/baseline.",
+    "execution": "Serial pairs across revised COM01/COM02 harnesses; unrelated host/provider load remains uncontrolled.",
+    "stoppingRule": "Complete all four preplanned pairs including failures; do not stop or retry for a favorable score.",
+    "claimLimits": [
+      "No proactive-initiation or measured human-effort benefit.",
+      "No invoice/financial cost claim from tokens.",
+      "No general product-defect attribution or statistical winner from a diagnostic pair.",
+      "Four pairs are a small counterbalanced pilot, not a power calculation."
+    ],
+    "userImpactRule": "Judge effective current user-facing state, advice and obligations, accepting equivalent durable representations. Historical rows, superseded events and different storage layouts alone are not failures. A reached failure needs userImpact explaining a concrete incorrect current instruction/view, missed obligation, unusable draft, unsupported action or violated boundary, with checkpoint evidence. A score does not establish product, model, harness or design fault."
+  },
+  "initialContactClarifications": {
+    "sam": "The saved message is an unsent thank-you draft. The introductory conversation happened; no evidence says this exact draft was sent. Keep this unrelated relationship unchanged."
+  }
 }

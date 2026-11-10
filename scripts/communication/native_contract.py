@@ -27,20 +27,23 @@ def verify_native_contract(root):
  if capture_native_contract(root)!=json.loads((Path(root)/'native-contract.json').read_text()):raise RuntimeError('Native startup/schema/guide drift; retain evidence, do not retry participant')
  return True
 
-def verify_audit_contract(root):
- a=json.loads((Path(root)/'account.private.json').read_text())
- if a.get('status')!='verified' or a.get('apiUrl')!='http://127.0.0.1:54321' or a.get('benchmarkTaskId') not in ['COM3','COM4']:raise ValueError('Dedicated local account required')
- if not {'workspace:read','activity:write'}<=set(a['scopes']):raise ValueError('Native startup scopes missing')
+def audit_probe_sql(token_hash,owner_id,key=None):
  q=lambda s:"'"+s.replace("'","''")+"'"
- token_hash=hashlib.sha256(a['token'].encode()).hexdigest();key='preflight-'+uuid.uuid4().hex
+ key='preflight-'+uuid.uuid4().hex if key is None else key
  payload=json.dumps({'eventKey':key,'task':'Fictional rolled-back audit probe','area':'network','mode':'controlled'})
- sql=f"""BEGIN; DO $probe$ DECLARE r jsonb; x jsonb; BEGIN
+ return f"""BEGIN; DO $probe$ DECLARE r jsonb; x jsonb; BEGIN
  r:=public.agent_audit_dispatch('{token_hash}','audit.start',{q(payload)}::jsonb); r:=coalesce(r->'data',r);
- IF r->>'user_id' IS DISTINCT FROM {q(a['userId'])} THEN RAISE EXCEPTION 'Audit owner mismatch'; END IF;
+ IF r->>'user_id' IS DISTINCT FROM {q(owner_id)} THEN RAISE EXCEPTION 'Audit owner mismatch'; END IF;
  x:=public.agent_audit_dispatch('{token_hash}','audit.append',jsonb_build_object('runId',r->>'id','events',jsonb_build_array(jsonb_build_object('eventKey','done','kind','run.finished','summary','Rolled back probe'))));
  x:=public.agent_audit_dispatch('{token_hash}','audit.read',jsonb_build_object('runId',r->>'id'));x:=coalesce(x->'data',x);
  IF x->'events'->0->>'event_key' IS DISTINCT FROM 'done' THEN RAISE EXCEPTION 'Audit readback mismatch'; END IF;
  END $probe$; ROLLBACK;"""
+
+def verify_audit_contract(root):
+ a=json.loads((Path(root)/'account.private.json').read_text())
+ if a.get('status')!='verified' or a.get('apiUrl')!='http://127.0.0.1:54321' or a.get('benchmarkTaskId') not in ['COM3','COM4']:raise ValueError('Dedicated local account required')
+ if not {'workspace:read','activity:write'}<=set(a['scopes']):raise ValueError('Native startup scopes missing')
+ sql=audit_probe_sql(hashlib.sha256(a['token'].encode()).hexdigest(),a['userId'])
  result=subprocess.run(['docker','exec','-i','supabase_db_lookout-local','psql','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1','-Atq'],input=sql,text=True,capture_output=True,timeout=30)
  if result.returncode:raise RuntimeError('Native audit write/read probe failed; transaction rolled back')
  return {'verified':True,'rolledBack':True}

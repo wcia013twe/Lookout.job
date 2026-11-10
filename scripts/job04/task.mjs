@@ -7,7 +7,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 import {costValues} from '../n01/cost-export.mjs';
-import {verifyHostGates} from '../jobs/preflight.mjs';
+import {verifyHostGates,executionOrder} from '../jobs/preflight.mjs';
 export const hash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 export const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
 export const write=(p,x)=>fs.writeFileSync(p,JSON.stringify(x,null,2)+'\n',{flag:'wx',mode:0o600});
@@ -68,8 +68,8 @@ export function preflight(root,command,output,execute=adapter){
  try{
   check(cfg.ownerId&&cfg.readOnlyOwnerId===cfg.ownerId&&cfg.source&&cfg.normalProductConfiguration?.captured===true,'Dedicated owner/read-only identity and actual product configuration required');
   const binding=runtimeBinding(command,cfg);receipt.runtime=binding;
-  const call=(operation,args={})=>{const req={operation,benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,...args};const entry={request:req};receipt.calls.push(entry);try{entry.result=bound(execute(command,req),req);return entry.result;}catch(e){entry.error=e.message;throw e;}};
-  if(['jobs-host-v1','jobs-host-v2'].includes(cfg.hostVersion)){
+  const call=(operation,args={})=>{const req={operation,benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,...args};const entry={request:req};receipt.calls.push(entry);try{entry.result=bound(execute(command,req,operation==='host.preflight'?300000:30000),req);return entry.result;}catch(e){entry.error=e.message;throw e;}};
+  if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(cfg.hostVersion)){
    receipt.host=verifyHostGates(root,call('host.preflight'));
    receipt.ready=true;receipt.status='ready';receipt.completedAt=new Date().toISOString();write(output,receipt);return receipt;
   }
@@ -92,7 +92,7 @@ export function preflight(root,command,output,execute=adapter){
 export function packet(spec,evidence,stage,condition,profile){
  check(conditions.includes(condition),'Unknown condition');
  const events=stage.eventIds.map(id=>{const e=evidence.events.find(e=>e.id===id);check(e,'Unknown released evidence');return e;});
- const orientation=condition==='lookout'?'Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant context and records and save meaningful pipeline updates, preparation and debriefs. Preserve unrelated information and verify saves.':'Your files in /workspace/output persist across sessions. You may retain context, drafts and next steps there.';
+ const orientation=condition==='lookout'?'Lookout is your persistent recruiting workspace. Use its tools to retrieve relevant context and records and save meaningful pipeline updates, preparation and debriefs. Preserve unrelated information and verify saves.':'Your files in /workspace/output persist across sessions. Use them to retrieve relevant context and records and save meaningful pipeline updates, preparation and debriefs. Preserve unrelated information and verify saves.';
  return {stage:stage.id,session:stage.session,minute:stage.minute,orientation,permissions:'Read, analyze, prepare and save. Use only released evidence. Do not send, submit, contact interviewers, browse live sources or mark practice complete without user report.',prompt:stage.request??stage.baseline,events,sources:evidence.sources,...(stage.id===spec.stages[0].id?{applications:evidence.applications,...(condition==='baseline'?{onboarding:profile}:{})}:{})};
 }
 export function actor(question,released){
@@ -119,11 +119,12 @@ export function stageCost(c){
 export function run(root,command,preflightFile,pairId){
  const f=frozen(root),cfg=read(path.join(root,'configuration.json')),pre=read(preflightFile),spec=read(path.join(root,'suite/scenario.json')),evidence=read(path.join(root,'suite/evidence.json'));
  check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&hash(pre.runtime)===hash(runtimeBinding(command,cfg)),'Matching successful preflight required; unresolved errors block execution');
- if(['jobs-host-v1','jobs-host-v2'].includes(cfg.hostVersion))verifyHostGates(root,pre.host);
+ if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(cfg.hostVersion))verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe pair ID required');
  const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only; no reset or silent retry');fs.mkdirSync(runs,{mode:0o700});
- for(const condition of conditions){
-  const dir=path.join(runs,condition);fs.mkdirSync(dir,{mode:0o700});const saveProgress=()=>fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const r={version:spec.version,episodeId:pairId+'-'+condition,pairId,condition,model:spec.model,reasoning:spec.reasoning,pilot:true,synthetic:false,status:'running',checkpoints:[],startedAt:new Date().toISOString()};saveProgress();
+ const executionConditions=executionOrder(cfg);
+ for(const condition of executionConditions){
+  const dir=path.join(runs,condition);fs.mkdirSync(dir,{mode:0o700});const saveProgress=()=>fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const r={version:spec.version,episodeId:pairId+'-'+condition,pairId,condition,repeat:cfg.repeat??1,conditionOrder:executionConditions,model:spec.model,reasoning:spec.reasoning,pilot:true,synthetic:false,status:'running',checkpoints:[],startedAt:new Date().toISOString()};saveProgress();
   try{
    write(path.join(dir,'setup.json'),capture(root,command,condition,'condition.setup',{initial:evidence.applications}));
    for(const [i,stage]of spec.stages.entries()){
@@ -132,8 +133,8 @@ export function run(root,command,preflightFile,pairId){
      write(path.join(sd,'before.json'),capture(root,command,condition,'snapshot',{stage:stage.id}));
      const input=packet(spec,evidence,stage,condition,fs.readFileSync(path.join(root,'candidate/profile.md'),'utf8'));write(path.join(sd,'input.json'),input);
      const req={operation:'participant.turn',benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,condition,packet:input,session:stage.session,resume:i>0&&stage.session===spec.stages[i-1].session,budgetSeconds:spec.policy.stageBudgetSeconds,actor:{version:'released-only-v1',events:spec.stages.slice(0,i+1).filter(s=>s.kind==='user').map(s=>({id:s.id,request:s.request})),responseDelayMinutes:spec.policy.userResponseDelayMinutes}};
-     start=performance.now();const result=bound(adapter(command,req,(spec.policy.stageBudgetSeconds+45)*1000),req);cp.adapterSeconds=(performance.now()-start)/1000;cp.executionSeconds=result.executionSeconds??cp.adapterSeconds;cp.containerStartupSeconds=result.containerStartupSeconds??null;cp.mcpDiagnostics=result.mcpDiagnostics??null;start=null;
-     write(path.join(sd,'response.json'),result);check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal receipt required');cp.status=result.status;
+     start=performance.now();const result=bound(adapter(command,req,(spec.policy.stageBudgetSeconds+45)*1000),req);cp.adapterSeconds=(performance.now()-start)/1000;cp.executionSeconds=result.timing?.valid===false?null:result.executionSeconds??cp.adapterSeconds;cp.executionWallSeconds=result.timing?.wallSeconds??cp.adapterSeconds;cp.containerStartupSeconds=result.containerStartupSeconds??null;cp.mcpDiagnostics=result.mcpDiagnostics??null;start=null;
+     write(path.join(sd,'response.json'),result);if(result.hostControlFailed)r.hostControlFailed=true;check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal receipt required');cp.status=result.status;
      check(result.participantExecuted===true&&result.synthetic===false,'Actual participant execution receipt required');
      check(result.session===stage.session&&result.resume===req.resume,'Unexpected session continuity');
      check(result.isolation?.futureEvidenceVisible===false&&result.isolation?.graderVisible===false&&result.isolation?.credentialsVisible===false,'Participant isolation violated');
@@ -142,9 +143,9 @@ export function run(root,command,preflightFile,pairId){
      cp.scriptedInitiations=Number(stage.id!=='screen_debrief');cp.prescribedPrompts=1;
      write(path.join(sd,'stage-run.json'),{status:cp.status,cost:stageCost(result.cost),durationSeconds:cp.executionSeconds});
     }catch(e){cp.status=e.message==='adapter_timeout'?'timed_out':'harness_failed';cp.error=e.message;write(path.join(sd,'failure.json'),{error:e.message});}
-    finally{if(start!==null)cp.executionSeconds=(performance.now()-start)/1000;
+    finally{if(start!==null){cp.executionWallSeconds=(performance.now()-start)/1000;cp.executionSeconds=null;}
      if(!fs.existsSync(path.join(sd,'stage-run.json')))write(path.join(sd,'stage-run.json'),{status:cp.status,durationSeconds:cp.executionSeconds,cost:{status:'unknown',tokens:null,model:null}});
-     try{write(path.join(sd,'after.json'),capture(root,command,condition,'snapshot',{stage:stage.id}));}catch(e){cp.status='harness_failed';cp.captureError=e.message;}
+     try{write(path.join(sd,'after.json'),r.hostControlFailed?{status:'unavailable',reason:'container_stop_unconfirmed'}:capture(root,command,condition,'snapshot',{stage:stage.id}));}catch(e){cp.status='harness_failed';cp.captureError=e.message;}
     }
     saveProgress();if(cp.status!=='completed'){r.status=cp.status;break;}
    }
@@ -154,12 +155,15 @@ export function run(root,command,preflightFile,pairId){
   // Same cost accounting convention as other COM/JOB cases. This helper performs no inference.
   const cost=spawnSync('python3',['-B','-c',"import sys,json;sys.path.insert(0,sys.argv[1]);import cost;print(json.dumps(cost.summarize(sys.argv[2],sys.argv[3])))",path.join(repo,'scripts/n01'),dir,path.join(root,'suite/cost-policy.json')],{encoding:'utf8',timeout:15000});
   if(cost.status!==0){r.status='harness_failed';r.cost=null;r.costError='Cost summarization failed; participant evidence retained';}else{r.cost=JSON.parse(cost.stdout);costValues(r.cost);write(path.join(dir,'cost.json'),r.cost);}saveProgress();
-  try{write(path.join(dir,'terminal-confirmation.json'),capture(root,command,condition,condition==='lookout'?'native.readonly_confirmation':'baseline.final_files'));}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
+  if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:executionConditions.slice(executionConditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
+  try{const confirmation=capture(root,command,condition,condition==='lookout'?'native.readonly_confirmation':'baseline.final_files');write(path.join(dir,'terminal-confirmation.json'),confirmation);if(confirmation.hostControlFailed){r.hostControlFailed=true;r.status='harness_failed';}}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
+  if(r.hostControlFailed){fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const halted={status:'host_control_failed',condition,unattemptedConditions:executionConditions.slice(executionConditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   write(path.join(dir,'evidence-hashes.json'),manifest(dir));
  }
  return handoff(root);
 }
 export function handoff(root){
+ check(!fs.existsSync(path.join(root,'pair-halted.json')),'Unconfirmed containment blocks grading handoff');
  const f=frozen(root),spec=read(path.join(root,'suite/scenario.json')),runs=conditions.map(condition=>{const dir=path.join(root,'runs',condition),r=read(path.join(dir,'run.json'));check(r.condition===condition&&r.version===spec.version&&terminal.includes(r.status),'Terminal condition attempts required');const files=read(path.join(dir,'evidence-hashes.json'));verifiedManifest(dir,files);return {condition,pairId:r.pairId,manifest:files,runHash:hash(r)};});
  check(runs[0].pairId===runs[1].pairId,'Matching pair required');
  const h={version:spec.version,freezeHash:hash(f),runs,dispatch:'Coordinator must spawn a fresh final grader with fork_turns:none. Exclude implementers/coordinators/operators/participants. Shell never launches the grader.',evidence:['suite/scenario.json','suite/reference.json','suite/evidence.json','suite/grader-instructions.md','candidate/profile.md','candidate/resume.pdf','runs/baseline','runs/lookout'],neverShare:['configuration.json','credentials','adapter runtime files']};
@@ -194,7 +198,7 @@ export function finalize(root,submission){
   for(const x of review.additionalInteractions){cite(x);const cp=r.checkpoints.find(c=>c.stage===x.stage);check(cp&&!extra.has(x.id)&&x.id&&typeof x.answered==='boolean','Unique cited additional interaction required');const response=read(path.join(dir,'stage-'+cp.index+'/response.json'));check(!response.interactions.some(y=>y.id===x.id),'Do not double-count captured interaction');extra.add(x.id);if(x.answered){extraAnswered++;extraByStage[x.stage]=(extraByStage[x.stage]??0)+1;}}
   for(const cp of r.checkpoints){const result=checkpoints[cp.stage];result.simulatedCompletionMinute=review.checkpoints?.[cp.stage]?.outcomeComplete===true&&cp.status==='completed'&&Number.isInteger(cp.answeredTurns)?spec.stages[cp.index-1].minute+cp.executionSeconds/60+(cp.answeredTurns+(extraByStage[cp.stage]??0))*spec.policy.userResponseDelayMinutes:null;}
   const complete=r.status==='completed'&&r.checkpoints.length===spec.stages.length&&full;
-  grades[condition]={status:complete?'reviewed':'partial_review',executionSeconds:r.checkpoints.reduce((n,c)=>n+c.executionSeconds,0),effort:{uniqueTurns:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns))?r.checkpoints.reduce((n,c)=>n+c.uniqueTurns,0)+extra.size:null,scriptedInitiations:r.checkpoints.reduce((n,c)=>n+(c.scriptedInitiations??0),0),categories:'overlapping diagnostic categories; never sum into effort'},simulatedWaitingMinutes:r.checkpoints.every(c=>Number.isInteger(c.answeredTurns))?(r.checkpoints.reduce((n,c)=>n+c.answeredTurns,0)+extraAnswered)*spec.policy.userResponseDelayMinutes:null,cost:r.cost,checkpoints,adherence:condition==='lookout'?review.adherence:null,unreachedStages:spec.stages.filter(s=>!r.checkpoints.some(c=>c.stage===s.id)).map(s=>s.id),limitations:['Specificity and factual grounding measured; usefulness and interview outcomes unmeasured.','Participant cost excludes preflight and final grading; those costs are unmeasured unless separately captured.'],review};
+  grades[condition]={status:complete?'reviewed':'partial_review',executionSeconds:r.checkpoints.every(c=>Number.isFinite(c.executionSeconds))?r.checkpoints.reduce((n,c)=>n+c.executionSeconds,0):null,effort:{uniqueTurns:r.checkpoints.every(c=>Number.isInteger(c.uniqueTurns))?r.checkpoints.reduce((n,c)=>n+c.uniqueTurns,0)+extra.size:null,scriptedInitiations:r.checkpoints.reduce((n,c)=>n+(c.scriptedInitiations??0),0),categories:'overlapping diagnostic categories; never sum into effort'},simulatedWaitingMinutes:r.checkpoints.every(c=>Number.isInteger(c.answeredTurns))?(r.checkpoints.reduce((n,c)=>n+c.answeredTurns,0)+extraAnswered)*spec.policy.userResponseDelayMinutes:null,cost:r.cost,checkpoints,adherence:condition==='lookout'?review.adherence:null,unreachedStages:spec.stages.filter(s=>!r.checkpoints.some(c=>c.stage===s.id)).map(s=>s.id),limitations:['Specificity and factual grounding measured; usefulness and interview outcomes unmeasured.','Participant cost excludes preflight and final grading; those costs are unmeasured unless separately captured.'],review};
  }
  const comparison=Object.fromEntries(['candidate_specificity','role_specificity','round_specificity','grounding','generation_decision','debrief_adaptation'].map(k=>{const means=Object.fromEntries(conditions.map(c=>{const values=Object.values(grades[c].checkpoints).map(x=>x.ratings?.[k]?.rating).filter(Number.isFinite);return [c,grades[c].status==='reviewed'&&values.length?values.reduce((n,v)=>n+v,0)/values.length:null];}));return [k,{...means,result:means.baseline===null||means.lookout===null?'unreviewed':means.baseline===means.lookout?'tie':means.lookout>means.baseline?'lookout_higher':'baseline_higher'}];}));
  const result={version:spec.version,graderVersion:spec.graderVersion??'JOB04-grade-v1',assignment:a,attestation:at,grades,comparison,unmeasured:['usefulness','coaching effectiveness','interview outcomes','proactive user-effort savings']};write(path.join(root,'grading/final.json'),result);return result;

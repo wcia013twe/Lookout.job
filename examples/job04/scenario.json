@@ -1,7 +1,7 @@
 {
   "taskId": "JOB04",
-  "version": "JOB04-preparation-v3",
-  "graderVersion": "JOB04-grade-v3",
+  "version": "JOB04-preparation-v4",
+  "graderVersion": "JOB04-grade-v4",
   "comparison": {"mode":"matched_intent","proactiveEffortMeasured":false},
   "dimensions": [
     "time_to_task",

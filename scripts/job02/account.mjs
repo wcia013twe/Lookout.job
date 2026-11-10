@@ -5,6 +5,7 @@ import {execFileSync} from 'node:child_process';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {createClient} from '@supabase/supabase-js';
+import {cloneCanonicalProfiles,verifyCanonicalProfiles} from '../evals/canonical-search-context.mjs';
 const [mode,root,sourceManifest,resumeFile]=process.argv.slice(2);
 if(!root||!['create','snapshot'].includes(mode))throw Error('Usage: account.mjs create ROOT N01_MANIFEST RESUME | snapshot ROOT OUTPUT');
 const cfg=JSON.parse(execFileSync('supabase',['status','-o','json'],{cwd:path.resolve(import.meta.dirname,'../..'),encoding:'utf8',stdio:['ignore','pipe','pipe']}));
@@ -19,7 +20,7 @@ if(mode==='snapshot'){
  if(a.status!=='verified'||!/^job02-pilot-[a-f0-9-]+@example.test$/.test(a.email))throw Error('Dedicated JOB02 receipt required');
  if(ok(await db.auth.admin.getUserById(a.userId)).user.email!==a.email)throw Error('Owner mismatch');
  const out={capturedAt:new Date().toISOString(),tables:{}};
- for(const t of ['profiles','preferences','resumes','answer_library','job_batches','applications'])out.tables[t]=ok(await db.from(t).select('*').eq('user_id',a.userId).limit(10000));
+ for(const t of ['profiles','preferences','resumes','answer_library','job_batches','applications','search_documents','search_document_revisions'])out.tables[t]=ok(await db.from(t).select('*').eq('user_id',a.userId).limit(10000));
  const batchIds=out.tables.job_batches.map(x=>x.id);
  out.tables.batch_items=batchIds.length?ok(await db.from('batch_items').select('*').in('batch_id',batchIds)):[];
  const ids=out.tables.batch_items.map(x=>x.job_id);
@@ -40,6 +41,7 @@ if(mode==='snapshot'){
  ok(await db.from('profiles').upsert({...expected.profile,user_id:user.id}));
  for(const r of expected.resumes){ok(await db.storage.from('resumes').upload(r.object_path,pdf,{contentType:'application/pdf'}));ok(await db.from('resumes').insert(r));}
  ok(await db.from('preferences').upsert({...expected.preferences,user_id:user.id}));
+ const canonicalClone=await cloneCanonicalProfiles(db,expected,user.id);
  const token='jb_agent_'+randomBytes(32).toString('hex');
  const scopes=['workspace:read','profile:write','preferences:write','batches:write','drafts:write','resumes:read','activity:write'];
  ok(await db.rpc('manage_agent_connection',{owner_id:user.id,operation:'connections.issue',payload:{name:'JOB02 isolated pilot',tokenHash:hash(token),expiresInDays:7,scopes}}));
@@ -49,6 +51,16 @@ if(mode==='snapshot'){
  const value=reply.result.structuredContent||JSON.parse(reply.result.content[0].text),actual=value.data||value;
  const normalize=s=>({...s,resumes:[...s.resumes].sort((a,b)=>a.id.localeCompare(b.id))});
  if(!isDeepStrictEqual(normalize(actual.settings),normalize(expected)))throw Error('Clone differs beyond ownership IDs');
+ const contexts=[];
+ for(const profile of expected.preferences.search?.profiles||[]){
+  const response=await fetch(a.mcpUrl,{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream',authorization:'Bearer '+token},body:JSON.stringify({jsonrpc:'2.0',id:2,method:'tools/call',params:{name:'read_search_context',arguments:{profileId:profile.id}}})});
+  let body=await response.text();if(body.trimStart().startsWith('data:'))body=body.split('\n').find(l=>l.startsWith('data: {')).slice(6);
+  const result=JSON.parse(body);if(!response.ok||result.error||result.result?.isError)throw Error('Native canonical context read failed');
+  const value=result.result.structuredContent||JSON.parse(result.result.content[0].text);contexts.push(value.data||value);
+ }
+ const context={profiles:contexts[0]?.profiles||[],documents:contexts.flatMap(c=>c.documents||[])};
+ const canonicalReadback=verifyCanonicalProfiles(expected,context);
+ write(path.join(root,'canonical-context-clone.private.json'),{...canonicalClone,...canonicalReadback});
  const downloaded=ok(await db.storage.from('resumes').download(expected.resumes[0].object_path));
  if(hash(Buffer.from(await downloaded.arrayBuffer()))!==hash(pdf))throw Error('Resume clone mismatch');
  a.status='verified';write(file,a);write(path.join(root,'cloned-context.private.json'),actual);

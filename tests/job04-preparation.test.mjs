@@ -8,7 +8,7 @@ import {prepare,frozen,preflight,packet,actor,hash,read,write,run,handoff,assign
 import {costValues} from '../scripts/n01/cost-export.mjs';
 const spec=read(new URL('../examples/job04/scenario.json',import.meta.url)),evidence=read(new URL('../examples/job04/evidence.json',import.meta.url)),ref=read(new URL('../examples/job04/reference.json',import.meta.url));
 const temp=()=>fs.mkdtempSync(path.join(os.tmpdir(),'job04-test-'));
-function setup(){const parent=temp(),candidate=path.join(parent,'candidate');fs.mkdirSync(candidate);fs.writeFileSync(path.join(candidate,'profile.md'),'Fixture candidate with saved preferences.');fs.writeFileSync(path.join(candidate,'resume.pdf'),'%PDF fictional test bytes, never upload');const adapter=path.join(parent,'adapter.mjs');fs.writeFileSync(adapter,'// synthetic unit fixture; no runtime or inference\n');const config={benchmarkTaskId:'JOB04',dedicated:true,ownerId:'fictional-owner',readOnlyOwnerId:'fictional-owner',source:'synthetic unit test only',model:spec.model,reasoning:spec.reasoning,normalProductConfiguration:{captured:true},runtimeFiles:[adapter]};const root=path.join(parent,'prepared');prepare(root,config,candidate);return {root,command:[process.execPath,adapter],parent,config};}
+function setup(repeat=1){const parent=temp(),candidate=path.join(parent,'candidate');fs.mkdirSync(candidate);fs.writeFileSync(path.join(candidate,'profile.md'),'Fixture candidate with saved preferences.');fs.writeFileSync(path.join(candidate,'resume.pdf'),'%PDF fictional test bytes, never upload');const adapter=path.join(parent,'adapter.mjs');fs.writeFileSync(adapter,'// synthetic unit fixture; no runtime or inference\n');const config={repeat,benchmarkTaskId:'JOB04',dedicated:true,ownerId:'fictional-owner',readOnlyOwnerId:'fictional-owner',source:'synthetic unit test only',model:spec.model,reasoning:spec.reasoning,normalProductConfiguration:{captured:true},runtimeFiles:[adapter]};const root=path.join(parent,'prepared');prepare(root,config,candidate);return {root,command:[process.execPath,adapter],parent,config};}
 function service(command,req){let data={};switch(req.operation){
  case 'capabilities':data={actual:true,synthetic:false,dedicated:true,model:spec.model,reasoning:spec.reasoning,capabilities:['participant.sessions','participant.capture','actor.controlled','evidence.release_isolation','native.write_readback','native.restore','native.readonly_confirmation','baseline.files','pipeline.milestones','toolkit.artifacts','usage.counter_delta'],isolation:{futureEvidenceVisible:false,graderVisible:false,credentialsVisible:false,liveWebEnabled:false},guideVersions:{'interview-preparation':10,'toolkit-materials':3}};break;
  case 'context.parity':data={equal:true,fullContextRendered:true,resumeHash:req.resumeHash};break;
@@ -85,4 +85,36 @@ test('historical review survives retired runtime bytes while execution remains h
  const freeze=read(path.join(root,'freeze.json'));freeze.executables[retired]=hash('old runtime bytes');fs.writeFileSync(path.join(root,'freeze.json'),JSON.stringify(freeze));
  const {submission}=pair(root);fs.unlinkSync(retired);
  assert.throws(()=>frozen(root));assert.equal(finalize(root,submission).grades.baseline.status,'reviewed');
+});
+
+test('invalid execution timing stays unknown in a partial final review',()=>{
+ const {root}=setup(),{submission}=pair(root,true),dir=path.join(root,'runs/lookout');
+ const run=read(path.join(dir,'run.json'));run.checkpoints[0].executionSeconds=null;fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(run,null,2)+'\n');
+ const files=read(path.join(dir,'evidence-hashes.json'));files['run.json']=hash(fs.readFileSync(path.join(dir,'run.json'),'utf8'));fs.writeFileSync(path.join(dir,'evidence-hashes.json'),JSON.stringify(files));
+ const h=read(path.join(root,'grading/handoff.json'));const item=h.runs.find(x=>x.condition==='lookout');item.runHash=hash(run);item.manifest=files;fs.writeFileSync(path.join(root,'grading/handoff.json'),JSON.stringify(h));
+ const a=read(path.join(root,'grading/assignment.json'));a.handoffHash=hash(h);fs.writeFileSync(path.join(root,'grading/assignment.json'),JSON.stringify(a));submission.attestation.assignmentHash=hash(a);
+ assert.equal(finalize(root,submission).grades.lookout.executionSeconds,null);
+});
+
+test('unconfirmed container termination halts pair before other condition or grading',()=>{
+ const {root,command}=setup();
+ fs.writeFileSync(command[1],`import fs from 'node:fs';import{createHash}from'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8'));let r={requestHash:createHash('sha256').update(JSON.stringify(q)).digest('hex'),receiptId:'fixture',ownerId:q.ownerId,capturedAt:'2026-11-09T15:00:00Z'};if(q.operation==='participant.turn')Object.assign(r,{status:'execution_failed',hostControlFailed:true,timing:{valid:false,wallSeconds:11},executionSeconds:null});else r.status='confirmed';console.log(JSON.stringify(r));`);
+ const receipt=path.join(root,'receipts/fixture.json');assert.equal(preflight(root,command,receipt,service).ready,true);
+ const halted=run(root,command,receipt,'uncontained-fixture');assert.equal(halted.gradingBlocked,true);assert.deepEqual(halted.unattemptedConditions,['lookout']);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
+ const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints[0].executionSeconds,null);assert.equal(r.checkpoints[0].executionWallSeconds,11);assert.equal(r.hostControlFailed,true);
+ assert.equal(read(path.join(root,'runs/baseline/stage-1/after.json')).reason,'container_stop_unconfirmed');
+});
+
+test('terminal cleanup failure halts JOB04 after a completed condition before peer and grading',()=>{
+ const {root,command}=setup();
+ fs.writeFileSync(command[1],`import fs from 'node:fs';import{createHash}from'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8'));let r={requestHash:createHash('sha256').update(JSON.stringify(q)).digest('hex'),receiptId:'fixture',ownerId:q.ownerId,capturedAt:'2026-11-09T15:00:00Z'};if(q.operation==='participant.turn')Object.assign(r,{participantExecuted:true,synthetic:false,status:'completed',session:q.session,resume:q.resume,executionSeconds:1,isolation:{futureEvidenceVisible:false,graderVisible:false,credentialsVisible:false},trace:[{}],toolTrace:[],files:{},interactions:[]});else if(q.operation==='baseline.final_files')Object.assign(r,{status:'execution_failed',hostControlFailed:true,participantExecuted:false});else r.status='confirmed';console.log(JSON.stringify(r));`);
+ const receipt=path.join(root,'receipts/fixture.json');assert.equal(preflight(root,command,receipt,service).ready,true);
+ const halted=run(root,command,receipt,'terminal-cleanup');assert.equal(halted.gradingBlocked,true);assert.equal(fs.existsSync(path.join(root,'runs/lookout')),false);assert.equal(fs.existsSync(path.join(root,'grading/handoff.json')),false);
+ const r=read(path.join(root,'runs/baseline/run.json'));assert.equal(r.checkpoints.length,spec.stages.length);assert.ok(r.checkpoints.every(c=>c.status==='completed'));assert.equal(r.hostControlFailed,true);assert.equal(r.status,'harness_failed');assert.equal(read(path.join(root,'runs/baseline/terminal-confirmation.json')).hostControlFailed,true);
+});
+
+test('even repeat runs Lookout first and halts baseline after unconfirmed cleanup',()=>{
+ const {root,command}=setup(2);
+ fs.writeFileSync(command[1],`import fs from 'node:fs';import{createHash}from'node:crypto';const q=JSON.parse(fs.readFileSync(0,'utf8'));const r={requestHash:createHash('sha256').update(JSON.stringify(q)).digest('hex'),receiptId:'fixture',ownerId:q.ownerId,capturedAt:'2026-11-09T15:00:00Z',status:'confirmed'};if(q.operation==='participant.turn')Object.assign(r,{status:'execution_failed',hostControlFailed:true,executionSeconds:null,timing:{valid:false}});console.log(JSON.stringify(r));`);
+ const receipt=path.join(root,'receipts/fixture.json');assert.equal(preflight(root,command,receipt,service).ready,true);const result=run(root,command,receipt,'even-repeat');assert.equal(result.condition,'lookout');assert.deepEqual(result.unattemptedConditions,['baseline']);assert.equal(fs.existsSync(path.join(root,'runs/baseline')),false);
 });

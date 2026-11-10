@@ -1,6 +1,6 @@
 # JOB04: pipeline-aware interview preparation
 
-JOB04-preparation-v3 uses the [shared JOB host](../scripts/jobs/README.md) with
+JOB04-preparation-v4 uses the [shared JOB host](../scripts/jobs/README.md) with
 per-freeze native/container preflight gates. JOB04 compares
 specificity and factual grounding; it does not measure usefulness, coaching
 quality or interview outcomes. No model run or account mutation is implied by a
@@ -27,7 +27,7 @@ a session. Neither receives a standing-goal prompt or automatic onboarding repla
 Both receive identical email-review requests, evidence, debriefs and final
 reconciliation intent. Scheduled preparation is disabled for this comparison;
 proactive effort savings are not measured. Lookout gets native retrieve/save guidance;
-baseline may retain files. Candidate context appears once in baseline onboarding;
+baseline receives the same retrieve/save/verify obligation using files. Candidate context appears once in baseline onboarding;
 Lookout retrieves equivalent context. The actual runtime must verify parity.
 
 The host reuses COM's pinned Terra medium subscription Session and structural cost
@@ -189,3 +189,12 @@ remain unchanged. New host-v2 preparations require native clock alignment as wel
 as no-inference native/container/transport gates; the compressed multi-day fixture
 cannot currently pass clock alignment on the shared real-time backend. Do not
 interpret completed turns or a partial review as a measured quality advantage.
+
+
+Prospective host v3 connects native HTTP/MCP to an isolated ticking SQL/JavaScript
+clock and preserves native startup and all scoped on-demand tools. Full canonical
+context and equal save/verify obligations are now explicit. See the
+[shared host launch limits](../scripts/jobs/README.md#native-http-clock-integration-and-retained-launch-blocks):
+latest-source live gates remain outstanding after Docker became unresponsive;
+JOB03 v6 also reconciles terminal blockers and shared key/UUID preview/reminder identity; both latest full gates still need live verification.
+Historical outcomes, independent grades and failed attempts remain unchanged.

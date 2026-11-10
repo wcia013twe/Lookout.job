@@ -41,7 +41,9 @@ def run(pair_id):
  with attempt.open('x')as f:json.dump({'pairId':pair_id,'startedAt':time.time()},f)
  spec=json.loads((ROOT/'suite/scenario.json').read_text());host.infrastructure();results=[]
  try:
-  for condition in ['baseline','lookout']:
+  order=json.loads((ROOT/'runtime.private.json').read_text()).get('conditionOrder',['baseline','lookout'])
+  if sorted(order)!=['baseline','lookout']:raise RuntimeError('Invalid frozen condition order')
+  for condition in order:
    out=ROOT/'runs'/condition;out.mkdir(mode=0o700);inputs=out/'live-inputs';inputs.mkdir();files=out/'output';files.mkdir()
    runtime.write(inputs/'targets.json',[{k:t[k]for k in ['id','kind','url','title','company','nativeJobId']}for t in spec['targets']]);shutil.copyfile(ROOT/'candidate/resume.pdf',inputs/'resume.pdf')
    meta={'taskId':'JOB02','version':spec['version'],'episodeId':'JOB02-'+condition+'-'+uuid.uuid4().hex[:8],'pairId':pair_id,'condition':condition,'pilot':True,'synthetic':False,'controlled':spec.get('mode')=='controlled_clearing','model':spec['model'],'reasoning':spec['reasoning'],'startedAt':time.time(),'status':'running','stages':[],'startups':[],'interactions':[],'toolCalls':0,'prescribedInitiations':2,'simulatedWaitingMinutes':0,'hostAwakeGuard':awake};session=None

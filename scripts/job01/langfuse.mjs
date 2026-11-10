@@ -7,6 +7,8 @@ import path from 'node:path';
 import {costValues,costProvenance} from '../n01/cost-export.mjs';
 import {cli,unwrap,validateReply} from '../n01/langfuse.mjs';
 import {read,hash} from './task.mjs';
+import {exportProvenance} from '../evals/provenance.mjs';
+import {readScores} from '../communication/verify-langfuse-pilot.mjs';
 export function registration(spec,manifest){
  return {datasetName:'Lookout-'+spec.version,id:'lookout-'+spec.version+'-'+manifest.snapshotId,input:{scenario:spec.version,snapshotId:manifest.snapshotId,sourceHash:manifest.files['jobs.json'],expectedTargetCount:spec.expectedTargetCount,stages:spec.stages.map(({id,session,kind,minute})=>({id,session,kind,minute}))},expectedOutput:{completion:'Saved job selections and evidence-grounded analyses reflect retained career and style preferences.'},metadata:{unit:'whole trajectory',status:'prospective',dimensions:['time_to_task','effort_to_task','quality_of_completion','cost'],privateEvidence:'not uploaded',fitReference:'independently reviewed before participant execution'}};
 }
@@ -39,7 +41,8 @@ export function build(run,grade,spec,reg){
  if(run.checkpoints.reduce((n,c)=>n+c.executionSeconds,0)!==grade.timeToTask.executionSeconds)throw Error('Duration mismatch');
  const plan=scores(run,grade),rootId=hash(plan.traceId+'root').slice(0,16);
  const experimentId=hash([spec.version,run.pairId||run.episodeId,run.condition,run.synthetic===true,run.pilot===true]);
- const base={...(run.cost?{'langfuse.observation.metadata.cost':JSON.stringify(costProvenance(run.cost))}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':run.pilot?'pilot':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':run.pilot?'pilot':'benchmark','langfuse.trace.name':'JOB01 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.pilot':String(run.pilot===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
+ const provenance=exportProvenance(grade.provenance);
+ const base={...(Object.keys(provenance).length?{'langfuse.observation.metadata.provenance':JSON.stringify(provenance),'langfuse.experiment.metadata.provenance':JSON.stringify(provenance)}:{}),...(run.cost?{'langfuse.observation.metadata.cost':JSON.stringify(costProvenance(run.cost))}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':`${spec.version}-${run.synthetic?'synthetic':run.pilot?'pilot':'measured'}-${run.pairId||run.episodeId}-${run.condition}`,'langfuse.experiment.dataset.id':reg.datasetId,'langfuse.experiment.item.id':reg.itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':run.synthetic?'verification':run.pilot?'pilot':'benchmark','langfuse.trace.name':'JOB01 job selection trajectory','session.id':run.episodeId,'langfuse.experiment.metadata.condition':run.condition,'langfuse.experiment.metadata.synthetic':String(run.synthetic===true),'langfuse.experiment.metadata.pilot':String(run.pilot===true),'langfuse.experiment.metadata.capture':'structure-only','langfuse.experiment.metadata.timeline':'synthetic sequential execution durations; not wall-clock stage timestamps'};
  const ns=x=>(BigInt(Math.round(x*1e6))*1000n).toString();
  const span=(id,name,start,seconds,parent)=>({traceId:plan.traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(start+seconds),attributes:Object.entries({...base,'langfuse.observation.type':'span'}).map(([k,v])=>attr(k,v))});
  const spans=[span(rootId,'JOB01 job selection trajectory',run.startedAt,grade.timeToTask.executionSeconds)];let cursor=run.startedAt;
@@ -75,7 +78,7 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
   else if(v.verify){
    const arr=x=>Array.isArray(x)?x:x.data||[];
    const obs=arr(unwrap(cli(['observations','list','--trace-id',plan.traceId,'--limit','1000','--fields','core,basic,metadata'])));
-   const sc=arr(unwrap(cli(['scores','list','--trace-id',plan.traceId,'--limit','100','--fields','subject'])));
+   const sc=readScores(cli,unwrap,plan.traceId);
    const ex=arr(unwrap(cli(['experiments','list','--id',plan.experimentId,'--from-start-time',new Date(run.startedAt*1000-1000).toISOString()])));
    const verified=plan.spans.every(s=>obs.some(o=>o.id===s.spanId))&&plan.scores.every(s=>sc.some(o=>o.id===s.id&&o.value===s.value&&o.subject?.id===plan.rootId&&o.subject?.traceId===plan.traceId&&o.environment===s.environment))&&ex.some(e=>e.id===plan.experimentId);
    writeFileSync(receipt+'.verification.json',JSON.stringify({verified,traceId:plan.traceId,experimentId:plan.experimentId})+'\n',{mode:0o600});

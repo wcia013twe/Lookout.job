@@ -1,19 +1,13 @@
 """Freeze COM3 private inputs without inference, account reset or domain writes."""
-import argparse,hashlib,json,os,shutil,subprocess,uuid
+import argparse,hashlib,json,os,shutil,subprocess
 from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 from cost import validate_policy
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"communication"))
 from native_contract import capture_native_contract
+from fixtures import fixture_for_owner
 from parity import complete_and_verify
-
-def fixture_for_owner(fixture,owner):
- # Application UUIDs are globally unique; remap all references, including contact tags.
- mapping={fixture[key]['id']:str(uuid.uuid5(uuid.UUID(owner),fixture[key]['id'])) for key in ['application','sentinelApplication']}
- text=json.dumps(fixture)
- for old,new in mapping.items():text=text.replace(old,new)
- return json.loads(text)
 
 def prepare(source,background,destination,cost_policy=None):
  source,background,destination=[Path(p).resolve() for p in [source,background,destination]]
@@ -46,7 +40,7 @@ def prepare(source,background,destination,cost_policy=None):
  (destination/'background/onboarding.md').write_text(onboarding)
  shutil.copyfile(background/'resume.pdf',destination/'background/resume.pdf')
  for name in ['reset.mjs','snapshot.mjs']:shutil.copyfile(repo/'scripts/com3'/name,destination/name)
- config=dict(version=spec['version'],taskId='COM3',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_muse_changes','acknowledge_muse_changes','start_agent_audit_run','append_agent_audit_events','read_agent_audit_run','read_application_record','list_contacts','save_contact','list_company_workspaces','save_company_workspace','list_artifacts','read_artifact','save_artifact'])
+ config=dict(version=spec['version'],taskId='COM3',suiteByTask=False,resetArgs=[],publicFiles=[],productConfiguration=spec['policy']['productConfiguration'],databaseContainer='supabase_db_lookout-local',allowedTools=['check_context_versions','read_personal_context','read_developer_context','read_guide','discover_toolkit','discover_tools','call_discovered_tool','read_muse_changes','acknowledge_muse_changes','start_agent_audit_run','append_agent_audit_events','read_agent_audit_run','read_application_record','read_application_timeline','record_application_milestone','list_contacts','save_contact','list_company_workspaces','save_company_workspace','list_artifacts','read_artifact','save_artifact'])
  config['requiredGuidance']={'developerVersion':json.loads((repo/'supabase/functions/agent-gateway/instructions.json').read_text())['developerVersion'],'outreachGuideVersion':json.loads((repo/'supabase/functions/agent-gateway/skills/cold-outreach.json').read_text())['version']}
  (destination/'runtime-config.json').write_text(json.dumps(config,indent=2)+'\n')
  pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'

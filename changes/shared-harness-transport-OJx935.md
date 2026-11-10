@@ -28,3 +28,60 @@
 - Validation: documentation diff check and catalog validation; no new inference,
   account writes, primary regrading or product changes. Prior test limits above
   remain unchanged.
+
+## Prospective COM01/COM02 design revision
+
+- Version new scenarios/graders; score frozen user-outcome groups through one
+  shared helper while retaining checkpoint diagnostics. Require cited impact
+  for observed failures, not raw-storage conformity or automatic defect blame.
+- Clarify Sam's unsent draft; preserve uncertainty for conflicting candidate facts.
+  Capture COM02's actual read-only timeline for final-state review.
+- Reuse COM03’s owner-scoped fixture-ID mapping in COM02 via one shared helper
+  so the planned fresh owners do not collide.
+- Reuse existing orchestrators with shared serial-pair locking and alternating
+  order. Freeze a four-pair-per-case pilot plan; no participants launched here.
+- Fresh freezes include the common grading contract alongside each scenario.
+- Common summaries validate grouped scores; prospective exporters reuse the
+  existing paginated verifier. Existing PILOT-05 sources and grades stay frozen.
+- Validation: 21 affected Node checks passed; final 10-check fixture/freeze
+  rerun passed after the shared fixture extraction and contract binding. Catalog
+  validation (158 roles), diff check and 87 historical freeze bindings passed.
+  Full SSD suite before the final extraction: 1,294 passed, five skipped, one
+  unchanged connected Action Board SQL failure (Invalid human decision). An
+  earlier internal-temp run stopped with ENOSPC; the SSD rerun completed.
+- Limits: no new inference, live preflight, human study, Langfuse registration/
+  export, product change or deployment. The four-pair plan has not been executed.
+
+
+## Scheduled review: revised runner compatibility
+
+- Fix stale COM01/COM02 runtime version guards left behind by the prospective
+  scenario revision. Current preparations now configure; obsolete versions reject.
+- Add a no-inference runner-configuration regression check. Frozen pilot files,
+  participant execution, product behavior and shared services remain unchanged.
+- Validation: four setup/design/transport Node checks and catalog validation (158
+  roles) passed; COM01/COM02 stream and native-setup checks also passed. Live
+  preflight remains unverified while shared Docker is unavailable.
+
+
+## Docker recovery follow-up: shared bridge teardown
+
+- Reproduced a separate bridge cleanup deadlock with a fictional worker emitting
+  a partial response line. HTTP handler joining waited on the still-live worker.
+- Stop the bridge worker before joining request threads; retain JOB02 graceful
+  EOF behavior. Regression exercises both graceful and immediate shutdown.
+- Validation: seven focused Node checks (including real local worker regressions),
+  catalog validation (158 roles), and diff checks passed. No participant run, product
+  behavior or frozen evidence changes.
+
+
+## JOB01/JOB02 quality-gap investigation
+
+- Located a missed canonical-profile fixture prerequisite; selected-profile draft
+  calls can fail before the writer despite valid owned job/resume IDs. Existing
+  setup probes omitted that field. Recorded source/evidence limits in the existing
+  pilot report and handed prospective shared-clone repair to its owning chat.
+- Added a fictional missing/present canonical-profile regression; no product,
+  participant, historical account or frozen-result mutation.
+- Validation: 12 application-preference checks, catalog validation (158 roles),
+  and diff checks passed.

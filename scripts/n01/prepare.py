@@ -21,6 +21,9 @@ def prepare(source,background,destination,cost_policy=None):
  for c in initial['contacts']:
   if c['id']=='dana':c['record'].update(company='Aster Compute',title='Inference Engineer')
   if c['id']=='ivo':c['record'].update(company='Harbor Tools',title='Developer Platform Engineer')
+ for contact in initial['contacts']:
+  clarification=spec.get('initialContactClarifications',{}).get(contact['id'])
+  if clarification:contact['record']['notes']=clarification
  (destination/'suite/initial-state.json').write_text(json.dumps(initial,indent=2)+'\n')
  (destination/'suite/scenario.json').write_text(json.dumps(spec,indent=2)+'\n')
  (destination/'suite/contract.md').write_text('Private recruiting workspace. Resume and currently available calendar/inbox evidence are in /inputs. Use the persistent storage described in your session instructions. Use only available evidence. Do not send messages or submit applications.\n')
@@ -43,12 +46,14 @@ def prepare(source,background,destination,cost_policy=None):
  pricing=Path(cost_policy) if cost_policy else repo/'examples/evals/cost-policy.json'
  validate_policy(json.loads(pricing.read_text()))
  shutil.copyfile(pricing,destination/'cost-policy.json')
+ shutil.copyfile(repo/'docs/com-final-state-grading.md',destination/'suite/grading-contract.md')
  # Freeze the actual executable and inputs, not a parallel copy of their schemas.
  files=[p for p in destination.rglob('*') if p.is_file() and not p.is_symlink()]
  files+=list((repo/'scripts/n01').glob('*.py'))+list((repo/'scripts/n01').glob('*.mjs'))
  import os
  files+=list((repo/'scripts/communication').glob('*.py'))
  files += [repo/'scripts/evals/workspace_transport.py']
+ files += [repo/'scripts/communication/verify-langfuse-pilot.mjs']
  files += [repo/'supabase/functions/agent-gateway/instructions.json', repo/'supabase/functions/agent-gateway/skills/cold-outreach.json', repo/'supabase/migrations/20261103224016_network_person_cards.sql']
  sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
  image=subprocess.run(['docker','image','inspect','lookout-benchmark:0.164.0','--format','{{.Id}}'],check=True,capture_output=True,text=True,timeout=30).stdout.strip()

@@ -28,7 +28,7 @@ def call_metrics(stages):
     fingerprint=hashlib.sha256(json.dumps([name,args],sort_keys=True).encode()).hexdigest()
     if fingerprint in failed:counts['tool_exact_retries_after_failure']+=1
     if name in failed_names:counts['tool_calls_after_same_tool_failure']+=1
-    category='discovery' if name in ['discover_tools','discover_toolkit','read_guide','read_developer_context'] else 'user' if name=='ask_user' else 'read' if name.startswith(('read_','list_','check_','search_')) else 'write' if name.startswith(('save_','update_','record_','create_','delete_','propose_')) else 'other'
+    category='write' if name in ['start_agent_audit_run','append_agent_audit_events'] else 'discovery' if name in ['discover_tools','discover_toolkit','read_guide','read_developer_context'] else 'user' if name=='ask_user' else 'read' if name.startswith(('read_','list_','check_','search_')) else 'write' if name.startswith(('save_','update_','record_','create_','delete_','propose_')) else 'other'
     counts['tool_'+category+'_calls']+=1;pending[d['id']]=(name,fingerprint)
    elif row.get('type')=='mcp.response' and d.get('id') in pending:
     name,fingerprint=pending.pop(d['id'])

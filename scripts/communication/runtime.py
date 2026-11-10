@@ -58,3 +58,23 @@ def snapshot_with_receipt(command,target,execute=subprocess.run):
    # Retry only transient transport/process failures, not invalid or foreign snapshot content.
    transient=isinstance(error,subprocess.TimeoutExpired) or bool(re.search(r'(?i)connection|connect to.*docker|daemon|timed? out|timeout|server closed|unexpected EOF|temporar|input/output|broken pipe',clean_error(error)))
    if not transient or attempt==2:raise RuntimeError('State capture failed; see '+receipt.name) from error
+
+
+def stop_container_client(proc,container,execute=subprocess.run):
+ """Bound Docker shutdown and always unblock the host reader. Never claim remote death from local exit."""
+ result={'containerStopped':False,'hostClientStopped':False,'errors':[]}
+ try:
+  response=execute(['docker','kill',container],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=10)
+  result['containerStopped']=response.returncode==0
+  if response.returncode:result['errors'].append('docker_kill_nonzero')
+ except (OSError,subprocess.SubprocessError) as error:result['errors'].append(type(error).__name__)
+ finally:
+  if proc.poll() is None:
+   proc.terminate()
+   try:proc.wait(timeout=2)
+   except subprocess.TimeoutExpired:
+    proc.kill()
+    try:proc.wait(timeout=2)
+    except subprocess.TimeoutExpired:result['errors'].append('host_client_stop_timeout')
+  result['hostClientStopped']=proc.poll() is not None
+ return result

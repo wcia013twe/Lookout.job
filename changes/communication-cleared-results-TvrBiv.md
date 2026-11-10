@@ -1,0 +1,7 @@
+# Communication comparison continuation
+
+- Independently reviewed and cleared COM04/PILOT06: 14/14 baseline versus 13/14 Lookout quality checks; both final saved states pass. Full usage/timing and detailed/common Langfuse readbacks verified. Flagged late promise intake, native audit assertion-schema mismatch and discovery cost; no product changes.
+- Preserved COM03/PILOT07 diagnostic grades (7/8 baseline, 6/8 Lookout), but denied clearance because the harness hid task-relevant native application timeline tools.
+- COM03 v6 restores the existing scoped reader/writer, extends the complete rolled-back reset probe with timeline write/readback and no-receipt/status assertions, and adds read-only terminal timeline verification. Reuses shared transport/owner-fixture helpers. No submission/approval authority added.
+- Validation: six focused Node checks (including 13 Python COM03 checks and shared-transport tests), actual no-inference preflight in the fresh PILOT08-r2 root, native discovery/wrapper isolation, subscription login, rolled-back reset/audit/contact/timeline probes; catalog validation 158 roles. First v6 preparation rejected an outdated runtime version guard before inference and is retained; corrected guard/dataset labels verified in the fresh root.
+- Limits: PILOT08 has not yet run; no general effectiveness, proactive-effort or dollar-cost claim. One pair per case and unblinded coordinator review. Historical roots/source checkouts retained. No hosted product deployment or GitHub publication. Structural Langfuse telemetry only.
