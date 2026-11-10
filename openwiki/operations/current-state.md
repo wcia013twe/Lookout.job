@@ -1352,9 +1352,9 @@ preflight or participant experiment has yet run in this recovery pass.
 
 ### JOB03/JOB04 serialized recovery preflights
 
-After4cf6e44b, actual fresh JOB03/JOB04 no-inference roots passed20/17 gates,
+After 4cf6e44b, actual fresh JOB03/JOB04 no-inference roots passed 20/17 gates,
 including native permissions/discovery, full context and SQL/Edge/Node API dates
-at all8/7 stages. Fixture setup now waits for Edge readiness beyond Node health.
+at all 8/7 stages. Fixture setup now waits for Edge readiness beyond Node health.
 Retained startup failures and address-pool exhaustion remain separate; exactly
 four empty root-owned failed-fixture networks were released with stopped-container
 checks and retained receipts/volumes. Both new roots' runtime/gate hashes and owned
@@ -1362,3 +1362,8 @@ service shutdowns were verified. No inference or participant experiment ran.
 Participant-path Session.close receipt propagation still needs a source-only
 containment audit before later execution; these gates do not prove product quality
 or performance. See the shared JOB host and feature note for exact limits.
+### COM03 recovery verification (no inference)
+
+Coordinated Docker recovery is complete. PILOT08's exact container is independently confirmed exited (255), with a separate shutdown receipt; its original failed evidence remains unchanged. A fresh fictional owner and `com3-native-v7-readiness` freeze at source `53fbef83` passed actual no-inference preflight: both subscription containers, native startup/discovery/wrapper isolation, complete rolled-back reset, contact, exact seed, audit and timeline write/readback probes. Frozen source integrity was rechecked. Six Node COM03/transport checks (including sixteen Python COM03 checks) and eight shared-runtime tests pass. No active career-session containers remained when the Docker verification slot was released to JOB03/04.
+
+No new participant pair or product change was authorized in this bounded pass. COM03 still needs a prospective paired trial and independent review; COM04/PILOT06 stays cleared. The subsequently landed shared bridge teardown repair (`4cf6e44b`, implementation `ec91e19c`) does not rewrite this freeze or establish the cause of Docker's outage. Future execution preparation must pull and re-freeze that helper; the completed `53fbef83` preflight remains historical readiness evidence.
