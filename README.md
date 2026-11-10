@@ -2,6 +2,152 @@
 
 A job-search workspace with a public catalog, private candidate records, and tools for each user's own Muse agent. Next.js, React, and Tailwind provide the UI; GitHub Pages serves its static export; Supabase handles identity, private data, files, and agent access. Theme styling can change the presentation without changing the application workflow.
 
+## Setup and usage manual
+
+[Demo](#1-run-the-demo) · [Local setup](#2-start-the-local-backend) · [Agent connection](#3-connect-your-agent) · [Use Lookout](#4-use-the-workspace) · [Validation](#5-run-checks-and-build) · [Troubleshooting](#6-troubleshooting)
+
+Lookout stores job-search records and exposes them through a web interface and scoped MCP tools. Bring an external agent for reasoning, browser execution, scheduling, and notifications. GCP hosting and Langfuse telemetry are optional; neither is required for the demo.
+
+### 1. Run the demo
+
+Use **Node.js 24**, npm, and Git. Node 24 matches CI and the Node runtime image. From the extracted code archive or repository root, install the locked dependencies:
+
+```sh
+npm ci
+npm ci --prefix next-app
+npm run dev
+```
+
+Open **http://localhost:3000/?demo=1**. This is the recommended first run for reviewing the interface: it requires no account, Docker, API keys, Google configuration, or agent connection. Use the URL with `?demo=1` to enter the isolated demo rather than the account workspace.
+
+Visit Discover, Applications, Action Board, Network, and Career Toolkit. Edit a fictional profile or pending item, then use **Reset demo data** to restore the fixtures. Demo edits use disposable memory and do not submit forms, send outreach, or write to real accounts. Refresh also restores the fixtures. **Exit demo mode** returns to normal account startup. Ctrl-C stops the frontend.
+
+If dependencies must be kept on an external drive, put the checkout there and set `npm_config_cache` to an available cache directory before installation. Existing environment files should be preserved; do not replace them merely to run the demo.
+
+### 2. Start the local backend
+
+Account-backed local use additionally requires a running Docker engine and the repository's pinned Supabase CLI. After installing dependencies, put its binary directory on PATH so `make` uses the locked CLI rather than a different globally installed major version:
+
+```sh
+export PATH="$PWD/node_modules/.bin:$PATH"
+supabase --version
+docker info
+```
+
+The lockfile pins Supabase CLI **2.122.0**. Keep that version for this configuration; the project's `[inbucket]` settings and startup scripts target CLI v2. The [Supabase CLI documentation](https://supabase.com/docs/guides/local-development/cli/getting-started) describes installation prerequisites. Do not run `supabase init` or link a hosted project: `supabase/config.toml` and `supabase/migrations/` already define this local project.
+
+For Google account sign-in, configure a Google Web OAuth client with callback `http://127.0.0.1:54321/auth/v1/callback` and the frontend origin `http://localhost:3000`. The `client_id` in `supabase/config.toml` must belong to that client. Set its matching secret in the shell used to start Supabase:
+
+```sh
+export SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET='<your local Google OAuth client secret>'
+make dev
+```
+
+Use your own local OAuth configuration; the committed client ID does not supply its secret. Provider setup is described in [Supabase's Google sign-in guide](https://supabase.com/docs/guides/auth/social-sign-in/auth-google). The demo remains available if account sign-in is not configured.
+
+`make dev` starts or reuses local Supabase, applies migrations on initial creation, and starts the frontend at **http://localhost:3000** with local public connection settings. The first run downloads Docker images. On shared `main`, the frontend uses the managed preview of landed commits; task branches run their own frontend. Local users and data are separate from hosted accounts. A fresh database starts without candidate records or an agent connection.
+
+| Service | Default local address |
+| --- | --- |
+| Frontend | http://localhost:3000 |
+| Supabase API | http://127.0.0.1:54321 |
+| Supabase Studio | http://127.0.0.1:54323 |
+| Email preview | http://127.0.0.1:54324 |
+| Edge MCP, when served | http://127.0.0.1:54321/functions/v1/agent-mcp |
+| Optional Node MCP | http://127.0.0.1:8080/mcp |
+
+Serve the local Edge Functions in a second terminal. For a fresh checkout with neither local environment file present:
+
+```sh
+npm run supabase:env
+npm run supabase:functions
+```
+
+`supabase:env` writes root `.env.local` and `supabase/functions/.env.local`; it refuses to overwrite either existing file. If they already exist, retain them and merge the appropriate local settings using [the Edge configuration reference](backend/local-edge-functions.md). The Edge runtime supplies its internal service credentials. Only public API URLs and anonymous/publishable keys belong in frontend settings.
+
+The optional Node API supports additional runtime operations, including the discovery worker and configured resume parsing. Create its ignored configuration only if it does not exist:
+
+```sh
+cp -n backend/runtime/.env.example backend/runtime/.env.local
+```
+
+Set `SUPABASE_URL=http://host.docker.internal:54321` and the **local** `SUPABASE_SERVICE_ROLE_KEY` in that server-only file, using the local values shown by `make status`. Keep `LOOKOUT_SUBMISSION_ENABLED=false`. Enable `LOOKOUT_EXECUTION_ENABLED=true` only when you intend to run discovery jobs. `APILAYER_API_KEY` is needed only for resume parsing. Then start this checkout's Node services:
+
+```sh
+docker compose -f backend/runtime/compose.yaml build api
+docker compose -f backend/runtime/compose.yaml up -d api worker
+```
+
+When using Node-backed frontend operations, add `NEXT_PUBLIC_LOOKOUT_API_URL=http://127.0.0.1:8080` and, for a locally reachable agent, `NEXT_PUBLIC_AGENT_MCP_URL=http://127.0.0.1:8080/mcp` to root `.env.local`, then restart the frontend. Do not put the service-role key or agent bearer token in any `NEXT_PUBLIC_` variable. `make dev` does not start the Node API/worker automatically. See [runtime setup](backend/runtime/README.md) for its configuration and discovery limits. Do not replace services owned by another checkout.
+
+### 3. Connect your agent
+
+1. Open the account workspace without `?demo=1` and sign in. Under **My Profile**, add your verified background, resume, job preferences, and search sources. Review extracted resume facts before using them.
+2. Open **My Agent → Your connections** and create a connection with the permissions needed for your intended work. Use **Set up connection** to obtain the endpoint and connection instructions for the active environment.
+3. In an MCP-capable agent client, register that endpoint and store the issued token as a secret bearer credential. A local client must be able to reach the local endpoint. A remote client needs an HTTPS endpoint or the optional development tunnel described below.
+4. Ask the agent to connect, load Lookout's onboarding instructions, and confirm the account context before starting work. The client must support the endpoint's Streamable HTTP transport and authentication. Naming an agent in the profile alone does not connect it.
+
+For remote access to a local Node API, configure `NGROK_AUTHTOKEN` and `NGROK_URL` in root `.env.local`, then run `make muse-dev` with the Node API already running. Register `https://<your-tunnel-host>/mcp` in a separate development connector and restart the frontend so its connection instructions reflect the tunnel. `make muse-dev-logs` shows tunnel status; `make muse-dev-down` stops only the tunnel. Follow [the full tunnel instructions](backend/runtime/README.md#optional-muse-development-tunnel); ngrok credentials run the tunnel, while the Lookout connection token authenticates the agent.
+
+An initial request can be:
+
+> Read my Lookout profile and saved preferences. Find suitable roles, explain the strongest matches and one material gap for each, and save the results to Discover. Ask for any facts you cannot verify. Do not submit applications or send messages.
+
+Subsequent authorized work should reuse the saved records. Scheduling, notifications, inbox access, and browser actions depend on the external host; saving a schedule in Lookout does not activate those capabilities. See [the agent quickstart](mcp/README.md#agent-quickstart).
+
+### 4. Use the workspace
+
+| Area | Typical use |
+| --- | --- |
+| My Profile / My Agent | Maintain verified facts, resume selection, preferences, sources, and agent connections. |
+| Discover | Review saved recommendations and fit evidence. Opening an employer link does not submit an application. |
+| Applications | Inspect drafts, track progress, and review the timeline. **AI Apply** queues work for the selected connected agent; browser execution depends on its host. |
+| Action Board | Answer missing questions and resolve blockers. An answer supplies information; it does not approve a changed application. |
+| Network | Maintain contacts, relationship notes, outreach drafts, and next steps. A saved draft does not establish that a message was sent. |
+| Career Toolkit | Read saved preparation materials and update them after interviews or feedback. |
+
+Review unresolved questions before continuing an application. Human approvals apply to the relevant draft revision; automatic submission requires separate account-wide consent and policy checks. Reported progress and verified employer evidence remain distinct. If an external action has an uncertain outcome, verify it before retrying. The retained deterministic application worker is paused; it is not enabled by starting the discovery worker.
+
+Use Ctrl-C to stop the frontend. `make status` shows local service details (including credentials, which must remain private); `make down` stops this project's Supabase services while preserving data. The optional Node services and tunnel have separate lifecycles. To stop Node services owned by this checkout, use `docker compose -f backend/runtime/compose.yaml stop api worker`.
+
+### 5. Run checks and build
+
+```sh
+npm test
+npm run validate:data
+npm --prefix next-app run typecheck
+npm run build
+```
+
+The verified full-suite run reports **1,323 tests: 1,318 passed, zero failed, and five explicitly skipped**. The skipped cases exercise the temporarily paused Community MCP interface; its rejection path is tested separately. The suite includes unit, contract, and disposable-database tests, so this is not a count of unit tests alone. Rerun the command after changing the source. These checks do not require a live agent or a GCP deployment. Database tests use disposable PGlite instances. For one existing test file, use `node --test tests/<name>.test.mjs`. `npm run test:db` is the focused database command; the full suite already includes those scenarios.
+
+The static frontend is written to `next-app/out/`. Endpoint overrides must be set before building. For a local static build, use the matching public URL and anonymous/publishable key from `make status`; otherwise the configured hosted defaults apply. Build output and test success are separate from hosted deployment verification.
+
+To rebuild the report with [Tectonic](https://tectonic-typesetting.github.io/):
+
+```sh
+tectonic paper.tex
+```
+
+Optional tracing setup is in [Langfuse tracing](docs/langfuse-tracing.md); evaluation reporting is in [Langfuse evals](docs/langfuse-evals.md). Server-only keys are optional for ordinary app use. GCP provisioning files are in `infra/gcp/`; deploying them requires separate cloud, DNS, and server-secret configuration. No cloud provisioning command is needed for local review.
+
+### 6. Troubleshooting
+
+| Symptom | Check or next step |
+| --- | --- |
+| Installation or scripts fail under an older Node version | Switch to Node 24 and rerun both locked dependency installs. |
+| Supabase rejects configuration keys | Check `supabase --version` and use the lockfile-pinned binary on PATH. |
+| Docker or Supabase startup times out | Start/check Docker, inspect `make status`, and retry after diagnosing the failure. Startup preserves existing data. |
+| Port 3000 is occupied | Reuse the existing Lookout server or choose `PORT=3001 make dev`; also allow that origin/redirect when testing OAuth. |
+| Google sign-in fails locally | Check the matching client ID/secret, callback URL, frontend origin, and local redirect configuration. Use the demo for account-free review. |
+| `supabase:env` refuses to run | One of its output files exists. Review and merge the local values instead of overwriting the file. |
+| Agent cannot reach localhost | Use a client on the same machine or configure the optional HTTPS development tunnel. |
+| AI Apply stays queued | Confirm the selected connection, token permissions, external host activity, and host browser capability. Queueing does not execute the browser. |
+| Resume parsing is unavailable | Configure and run the Node API with its server-only parser key, set the public API URL, and restart the frontend. |
+| Tests fail | Inspect the failing case and report the failure; a count of test cases is not a claim that all passed. |
+
+The remaining sections provide detailed feature and operational references. Some describe historical rollouts; use [current implementation state](openwiki/operations/current-state.md) and the current source for release-sensitive decisions.
+
 ## Personal agents: start here
 
 Read the compact [agent quickstart](mcp/README.md#agent-quickstart) for connection,
@@ -132,46 +278,7 @@ Keep installed `node_modules/` for local development. `.next/`, `out/`, generate
 
 ## Run and validate
 
-Node 22+:
-
-```sh
-npm ci
-npm ci --prefix next-app
-npm test
-npm run validate:data
-npm run dev
-```
-
-For the local Docker-backed stack, install the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started), start Docker Desktop (or another Docker engine), then run:
-
-```sh
-# One-time dependency setup; keep installs/caches on the external SSD.
-npm_config_cache="/Volumes/External SSD/Lookout/npm-cache" make install
-make dev
-```
-
-`make dev` (also `make up`, or just `make`) starts local Supabase containers,
-applies `supabase/migrations/` on first startup, attempts the configured ngrok MCP tunnel without blocking the frontend, and runs Next.js at
-`http://localhost:3000` with the local API URL and anonymous key. The frontend
-runs on the host; Supabase runs in Docker. Configure `NGROK_AUTHTOKEN` and
-`NGROK_URL` in the root `.env.local` and start the Node API before running
-`make dev` when a remote agent needs the tunnel; local frontend startup does not require it. See [tunnel setup](backend/runtime/README.md). The local stack uses separate data
-from the hosted project. Studio is at `http://localhost:54323`, email preview
-at `http://localhost:54324`, and the API at `http://127.0.0.1:54321`.
-
-Ctrl-C stops the frontend; `make down` stops this project's containers and
-preserves data. Use `make services`, `make frontend`, and `make status` separately
-as needed. A repeated `make dev` recognizes an existing Lookout on port 3000 and leaves it running. An unrelated listener produces a clear error; use `PORT=3001 make dev` for a separate preview. The first services startup may download Docker images; keep Docker's disk
-image on the external SSD. Local Google OAuth requires separate provider secrets
-and callback setup; hosted Google configuration is not copied. Local agent
-endpoints require a runtime that can reach your localhost. `npm run dev` retains
-the hosted backend default for the existing workflow. Demo fixtures remain
-fictional and isolated; this startup tooling does not change product actions or
-MCP contracts.
-
-`npm test` uses Node's built-in runner with at most four concurrent test files. It migrates one disposable PGlite baseline, then loads independent databases for ordinary integration tests; custom migration and hosted-upgrade scenarios still replay their own history. The temporary snapshot is removed after the run. `npm run test:db` runs only the database scenarios for focused debugging; do not repeat it after a successful full run. Run a single file directly with `node --test tests/<name>.test.mjs` to avoid full-suite setup. Hosted checks remain separate.
-
-Open `http://localhost:3000`. Production is built and deployed by `.github/workflows/deploy.yml` from `next-app/out/`. Production Google redirect configuration is documented in [backend/README.md](backend/README.md); localhost OAuth requires an explicitly allowed local redirect. The React export bundles the browser client at build time.
+Use the [setup manual](#setup-and-usage-manual) above for the demo, local stack, validation commands, and build. `npm run dev` uses configured hosted defaults unless overridden; `make dev` selects local Supabase. `npm test` runs up to four test files concurrently and removes its disposable database snapshot afterward. Hosted checks remain separate from these local checks.
 
 ## Code map and invariants for Muse/other agents
 
