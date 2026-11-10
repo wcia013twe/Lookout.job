@@ -14,8 +14,15 @@ for condition in (['baseline','lookout'] if a.repeat%2 else ['lookout','baseline
   if len(new)!=1:continue
   run=next(iter(new)).parent
  results.append(run)
+ if json.loads((run/'run.json').read_text()).get('hostControlFailed'):
+  failed=True
+  runner.write(a.task_dir/'pair-halted.json',{'reason':'Host container control failed','remainingConditionNotStarted':True,'participantRetry':False,'run':run.name})
+  break
 # No grading, intervention or hints while either participant is running.
 for run in results:
+ if json.loads((run/'run.json').read_text()).get('hostControlFailed'):
+  runner.write(run/'grading-invalid.json',{'status':'invalid_evidence','scored':False,'reason':'Participant termination unconfirmed after host control failure'})
+  continue
  try:
   spec=json.loads((runner.S/'scenario.json').read_text());result=grade.grade(run,spec)
   target=run/'grade.pending.json';target.write_text(json.dumps(result,indent=2)+'\n');target.chmod(0o600)
