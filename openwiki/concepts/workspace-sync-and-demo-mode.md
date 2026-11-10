@@ -160,3 +160,18 @@ When changing workspace data semantics, also follow the database consistency and
 ### Startup recovery
 
 Auth session and website setup reads report a retryable error after 12 seconds instead of leaving the workspace loading indefinitely. A timed-out read does not grant access or discard cached account data. The timeout does not establish why the underlying service or browser session stalled.
+
+
+### Email/password sign-in and password recovery
+
+`/login/` supports email/password alongside Google through Supabase Auth. Using
+the existing account email opens the same owner-scoped workspace; the form does
+not create a second account. Set or reset password sends an Auth recovery email
+with a PKCE return to `/reset-password/`, which remains outside onboarding
+redirects while the human chooses a password. Passwords go only to Auth and are
+never written to workspace storage. The detached demo simulates feedback without
+an Auth client, email, or backend writes. Sign-in and password recovery are human
+authentication boundaries, not MCP actions: agents direct the human to the website
+and cannot set passwords or enroll/remove MFA through product tools. This UI does
+not enroll or disable MFA; an account with existing MFA still follows Auth policy.
+Local checks do not establish email delivery or live hosted login.

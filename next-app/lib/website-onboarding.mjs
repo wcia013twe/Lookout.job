@@ -3,7 +3,7 @@ export function websiteOnboardingComplete(session){
  return typeof session?.data?.websiteCompletedAt==='string' && Number.isFinite(Date.parse(session.data.websiteCompletedAt));
 }
 export function websiteOnboardingDestination({path,demo,authReady,signedIn,status}){
- if(demo||!authReady||/^\/(privacy|workspace-reset)\/?$/.test(path)||/^\/career-toolkit\/[^/]+\/?$/.test(path))return null;
+ if(demo||!authReady||/^\/(privacy|workspace-reset|reset-password)\/?$/.test(path)||/^\/career-toolkit\/[^/]+\/?$/.test(path))return null;
  const onboarding=/^\/onboarding\/?$/.test(path);
  if(!signedIn)return null; // The existing signed-out sign-in screen owns guest access.
  if(status==='incomplete')return onboarding?null:'/onboarding/';

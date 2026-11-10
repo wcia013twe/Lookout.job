@@ -40,6 +40,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const isPrivacy = /^\/privacy\/?$/.test(path);
   const hasAccess = canViewWorkspace(w);
   const isOnboarding = /\/onboarding\/?$/.test(path);
+  const isPasswordReset = /^\/reset-password\/?$/.test(path);
   const isAuthRoute = /^\/(login|signup)\/?$/.test(path);
   // An unresolved session is not a signed-out session. This also covers the
   // provider's hydration/lazy-loading fallback and returning users on auth URLs.
@@ -50,6 +51,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       onRetry={!w.authReady ? () => window.location.reload() : w.websiteOnboarding?.retry}
     />;
   }
+  if (isPasswordReset) return <AuthPage resetPassword />;
   if (isAuthRoute) return <AuthPage signup={path.startsWith("/signup")} />;
   if (!hasAccess && /^\/discover\/?$/.test(path)) return <AuthPage />;
   if (!hasAccess && path === "/") return <LandingPage />;
