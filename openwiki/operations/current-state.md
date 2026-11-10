@@ -1486,3 +1486,7 @@ Dockerfile and stamps its exact source revision before building; a regression
 checks all Docker COPY inputs. GCP activation and authenticated account smoke
 checks remain separate until verified. Execution/submission switches stay off.
 Local account data is not migrated by code deployment.
+
+### Completed COM03/COM04 EVAL-01–03
+
+All six planned pairs finished: eleven normal participant completions and one original-policy COM03 final-stage timeout; no replacements. Ten of twelve independent exact-Terra-medium reviews validated; both EVAL-01 Lookout grades remain unknown. All four fully reviewed pairs favor baseline quality; Lookout active execution is 3.02–3.24× baseline in COM03 and 2.11–2.38× in COM04 under uncontrolled host load. Dollar cost and human/proactive effort remain unknown. All 24 detailed/common trajectory exports pass readback. Source/background integrity, twelve owners, released evidence, order, clocks and 66 preserved native startup bodies were verified. See `docs/communication-eval-series.md` for policy/review amendments, all outcomes and product flags. Historical PILOT09 first-review status is separate: baseline8/8, Lookout review invalid/unknown, score delivery verified. No product change, push or deployment.
