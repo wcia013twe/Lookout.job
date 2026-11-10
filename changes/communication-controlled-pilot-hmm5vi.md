@@ -210,3 +210,39 @@
   catalog158 pass; diff checks pass. Historical roots are untouched. Native
   three-process clocks/permission/discovery still require a fresh actual preflight
   after the recovery owner hands over engine use. No participant experiments.
+
+
+## Serialized recovery verification — no participants (2026-11-09)
+
+- Integrated4cf6e44b shared bridge shutdown before creating fresh roots. The first
+  fresh HTTP fixtures failed on native developer-context setup. Read-only routing
+  diagnosis in the owned failed fixture subsequently succeeded, and Node health
+  was found not to establish Edge readiness. The fixture now waits for an
+  unauthenticated405 plus clock header before native setup; no task read, native
+  response rewriting, participant retry or inference is involved.
+- Retained both05 failures, the06 JOB04 address-pool-exhaustion failure and all
+  previous freezes. Released exactly four05 networks after checking root labels,
+  exact container IDs, stopped state and zero active endpoints. Release receipts,
+  containers, volumes and historical files are preserved. No unrelated networks
+  or shared services were altered.
+- Actual final-source no-inference gates passed: JOB03 root
+  job-native-clock-v3-preflights-06/JOB03 has20 passed gates; JOB04 root
+  job-native-clock-v3-preflights-07/JOB04 has17. Three-process SQL/Edge/Node dates
+  were read back at all8/7 stages, with full canonical context, native scope and
+  ownership denial, native audit contract, startup/discovery passthrough and
+  scoped participant containers. JOB03 additionally verified shared reminders,
+  one-time preview interruption and key/UUID parity. No model was invoked.
+- Independently rechecked every gate digest and frozen runtime hash. Both local
+  Session-container removals are confirmed for each case; all five owned backend
+  services are stopped, volumes retained. These ready roots are verification-only,
+  not participant runs or quality/cost outcomes. No participant experiment was
+  authorized or launched by this recovery pass.
+- Focused checks:25 JOB Python,42 Node, six shared transport tests and catalog158
+  pass. Initial shared-transport test invocation lacked socket-bind permission;
+  rerun with permitted local sockets passed. Prior full-suite Action Board SQL
+  failure remains a separately reproduced limitation; full suite was not repeated.
+- Remaining source audit: JOB participant session-transition/terminal paths still
+  discard Session.close cleanup receipts, unlike the newly checked preflight path.
+  A future source-only containment pass should propagate unconfirmed cleanup and
+  rebind/reverify prospective freezes before any later experiment. No completion
+  or product-performance claim follows from these preflight results.

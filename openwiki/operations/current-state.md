@@ -1348,3 +1348,17 @@ retains cleanup failures as host-control markers. Endpoint inspection is bounded
 Recovery owner reports the engine healthy; JOB has integrated53fbef83 and passed
 source checks while awaiting serialized Docker use after COM03. No latest native
 preflight or participant experiment has yet run in this recovery pass.
+
+
+### JOB03/JOB04 serialized recovery preflights
+
+After4cf6e44b, actual fresh JOB03/JOB04 no-inference roots passed20/17 gates,
+including native permissions/discovery, full context and SQL/Edge/Node API dates
+at all8/7 stages. Fixture setup now waits for Edge readiness beyond Node health.
+Retained startup failures and address-pool exhaustion remain separate; exactly
+four empty root-owned failed-fixture networks were released with stopped-container
+checks and retained receipts/volumes. Both new roots' runtime/gate hashes and owned
+service shutdowns were verified. No inference or participant experiment ran.
+Participant-path Session.close receipt propagation still needs a source-only
+containment audit before later execution; these gates do not prove product quality
+or performance. See the shared JOB host and feature note for exact limits.

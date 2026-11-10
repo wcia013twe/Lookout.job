@@ -203,3 +203,23 @@ host-control marker and blocks readiness/subsequent setup. Dedicated endpoint
 identity inspection is time-bounded. Following shared-engine recovery, serialize
 complete native preflights with the recovery owner and other benchmark owners;
 do not overlap provisioning with their verification or launch participants.
+
+
+## Serialized recovery verification (2026-11-09)
+
+Fresh source-bound JOB03/JOB04 roots passed20/17 actual no-inference gates after
+shared bridge4cf6e44b and an Edge-readiness fix. Node health alone is insufficient:
+setup now waits for an unauthenticated native405/clock header before issuing the
+fictional connection's native calls. All8/7 scripted stages have SQL, Edge and
+Node API date readbacks. Scope/ownership negatives, native startup/discovery and
+full context are verified. Session cleanup and owned backend stopped state were
+checked; historical failures and all database volumes remain preserved.
+
+These receipts do not authorize participant experiments or establish quality,
+effort, time or cost outcomes. The next source audit must propagate Session.close
+failures through participant session transitions and terminal confirmation, where
+cleanup receipts are still discarded. Any changed runtime requires a fresh freeze
+and actual verification before later execution. Retained unused fixture networks
+can exhaust Docker address pools: release only root-labeled, empty networks after
+verifying all exact owned containers stopped, and save release evidence; preserve
+historical files/containers/volumes and unrelated sessions.

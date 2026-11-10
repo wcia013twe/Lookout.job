@@ -75,6 +75,22 @@ def prepare(root,initial_at):
     if healthy.get('status')=='ok':break
    except Exception:time.sleep(.2)
   else:raise RuntimeError('Isolated Node API did not become ready')
+  # Node health does not establish Edge readiness (cold native module loading).
+  # Probe only unauthenticated method rejection; no task read/write or model call.
+  probes=[]
+  probe_code="fetch('http://edge:9000',{signal:AbortSignal.timeout(5000)}).then(r=>console.log(JSON.stringify({status:r.status,clock:r.headers.get('x-job-fixture-now')}))).catch(()=>process.exit(1))"
+  for _ in range(20):
+   started=time.monotonic()
+   try:
+    value=json.loads(database.call(['docker','exec',api,'node','-e',probe_code],timeout=8).stdout)
+    probes.append({'seconds':time.monotonic()-started,**value})
+    if value.get('status')==405 and value.get('clock'):break
+   except (OSError,subprocess.SubprocessError,ValueError) as error:probes.append({'seconds':time.monotonic()-started,'errorType':type(error).__name__})
+   time.sleep(.2)
+  else:
+   database.save(root/'edge-readiness.json',{'ready':False,'participantExecuted':False,'probes':probes})
+   raise RuntimeError('Native Edge did not become ready')
+  database.save(root/'edge-readiness.json',{'ready':True,'participantExecuted':False,'nativeTaskReads':0,'probes':probes})
   # Fictional connection, issued by the unchanged native owner-scoped function.
   owner=str(uuid.uuid4());token='jb_agent_'+secrets.token_hex(32);token_hash=hashlib.sha256(token.encode()).hexdigest()
   payload=json.dumps({'name':'Isolated HTTP readiness','tokenHash':token_hash,'expiresInDays':90,'scopes':['workspace:read','drafts:write','activity:write','tracking:write','answers:write']})
