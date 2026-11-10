@@ -318,3 +318,5 @@ For application fields, an explicit active application-profile instruction outra
 
 
 See [the independently reviewed controlled pilot results](job-controlled-pilot-results.md) for the final comparison, native-workflow limitations and retained evidence.
+
+Prospective account setup now migrates legacy search profiles into canonical documents and revisions using the product serializer, verifies native read_search_context, and snapshots both tables. The three-target lifecycle must pass searchProfileId and verify the saved selected profile. This setup correction does not retroactively clear historical native failures; see the supplemental result caveat. Only profile documents are reconstructed from the frozen legacy source; no unseen rules or portals are invented.

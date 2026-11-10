@@ -1260,3 +1260,5 @@ uncertain. Frozen sources/evidence, independent final review, native confirmatio
 and complete Langfuse read-backs are retained. Earlier invalid JOB02 pairs remain
 separate; no live employer readiness, proactive-effort benefit or general winner is
 claimed. Dollar costs remain unknown. This focused update does not regenerate the wiki.
+
+Supplemental JOB setup audit found legacy preferences were cloned without canonical search documents. Future JOB01/JOB02 accounts share canonical-profile migration and native readback; JOB02 lifecycle includes the selected profile explicitly. Historical evidence is preserved, and prior product-attribution claims require the supplemental setup caveat. This is prospective harness setup, not a product fix or a rerun.

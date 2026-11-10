@@ -27,6 +27,7 @@ try{
   const inputs={};for(const folder of [root+'/candidate',root+'/suite'])for(const p of Object.keys(files(folder)))inputs[path.relative(root,path.join(folder,p))]=digest(path.join(folder,p));
   for(const p of ['owned-targets.private.json','account.private.json','runtime.private.json','reference.private.json','cost-policy.json'])inputs[p]=digest(root+'/'+p);
   for(const folder of [lib,repo+'/scripts/n01',repo+'/scripts/job01',repo+'/scripts/evals',repo+'/scripts/communication'])for(const p of fs.readdirSync(folder))if(/\.(mjs|py|md)$/.test(p))inputs[path.relative(root,path.join(folder,p))]=digest(path.join(folder,p));
+  for(const p of ['lib/search/documents.mjs','lib/search-profile.mjs','lib/search/discovery-config.mjs','lib/search/default-portals.json','lib/search/title-aliases.mjs','lib/job-assessment.mjs','lib/application-preference-fields.mjs','supabase/functions/agent-gateway/job-assessment.mjs'])inputs[path.relative(root,repo+'/'+p)]=digest(repo+'/'+p);
   inputs[path.relative(root,repo+'/package-lock.json')]=digest(repo+'/package-lock.json');
   write(root+'/freeze.json',{taskId:'JOB02',version:scenario.version,files:inputs,imageId:runtime.imageId,model:scenario.model,reasoning:scenario.reasoning});result={prepared:true,inferenceExecuted:false,ready:false};
  }else if(action==='preflight'){
