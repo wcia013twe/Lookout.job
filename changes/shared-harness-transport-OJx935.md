@@ -85,3 +85,15 @@
   participant, historical account or frozen-result mutation.
 - Validation: 12 application-preference checks, catalog validation (158 roles),
   and diff checks passed.
+
+
+## Healthy-work completion policy
+
+- Removed the shared subscription grader's total-duration kill. Existing seconds
+  arguments remain reference metadata; overruns are measured, not task failures.
+- Keep exact model, read-only evidence, timing integrity and bounded setup/cleanup
+  checks. Owners must remove their outer grading task deadlines too; active old
+  processes retain their original code until safely amended by their owner.
+- Added a beyond-reference-duration completion regression with mocked execution.
+- Validation: five grader boundary checks, catalog validation (158 roles), and
+  diff checks passed; participant runners are repaired by their owning chats.

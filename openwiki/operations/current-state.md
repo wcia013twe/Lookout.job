@@ -1438,3 +1438,11 @@ checks pass; actual EVAL publication/readback remains pending the first pair.
 JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independent grader to subscription gpt-5.6-terra medium, with the shared read-only grader executor and a fixed 600-second review budget. JOB01 detailed and JOB02 combined detailed/common exports reuse shared structural provenance and paginated score readback. Initial freezes and actual readiness remain separate; no EVAL participant execution is claimed here.
 
 COM03/COM04 prospective evaluation reporting now carries the shared allowlisted provenance via `scripts/evals/provenance.mjs` in detailed exports and common summaries. This is reporting-only; historical frozen participant sources and final records are preserved. Twelve focused case/provenance checks passed; new EVAL-01–03 execution remains queued.
+
+
+Shared subscription grading now treats `--seconds` as reference duration only,
+with no total task deadline for healthy work. Receipts record reference overruns;
+model/evidence/timing-integrity and containment checks remain enforced. Individual
+setup/cleanup operation limits remain bounded. Participant deadline-policy changes
+are handled in their owning chats with amendment provenance; old terminated runs
+remain preserved and are not silently resumed or replaced.
