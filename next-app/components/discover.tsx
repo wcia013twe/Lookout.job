@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import {matchesPostingAge,postingAgeOptions} from "../../lib/posting-age.mjs";
 import { useWorkspace } from "../lib/workspace";
-import { Heading, control, Notice, InsetBox } from "./ui";
+import { Heading, control, Notice } from "./ui";
 import RoleCard, { type Role } from "./role-card";
 import DiscoverRolePanel from "./discover-role-panel";
 import SearchSweeps from "./search-sweeps";
@@ -75,7 +75,7 @@ function DiscoverBoard() {
   }
   const arriving = arrival?.owner === previewOwner ? arrival : null;
   const roleGroups = [{key:a.profile.id,label:a.profile.name,roles}];
-  const header=<div className="mb-6 flex flex-wrap items-start justify-between gap-4 [&>.workspace-heading]:mb-0"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
+  const header=<div className="discover-header mb-3 flex flex-wrap items-center justify-between gap-3 [&_.workspace-heading_p]:mt-1"><Heading title="Discover">{newArrival&&!publicView?"Your agent’s finds will appear here.":publicView?"Explore the public catalog.":w.batchLabel}</Heading><div className="w-full empty:hidden sm:w-64"><ProfileSwitcher manage={false}/></div></div>;
   if ((w.user || w.demo) && !imports.ready) return <>{header}<Notice>{imports.error ? `Application history could not load: ${imports.error}` : 'Checking application history before showing roles…'}{imports.error && <button type="button" className="ml-3 underline" onClick={()=>void imports.refresh()}>Retry</button>}</Notice></>;
   if(newArrival&&!publicView)return <>
     {header}
@@ -99,7 +99,7 @@ function DiscoverBoard() {
       {header}
       {!publicView&&!w.discoveryLog&&w.hasPrivateBatch&&<Link href="/discover/" className="mb-4 inline-flex min-h-11 items-center text-sm text-board-accent underline underline-offset-4">Show jobs from all batches</Link>}
       {newArrival&&publicView&&<button type="button" className="mb-4 min-h-11 text-sm text-board-muted underline underline-offset-4" onClick={()=>setPublicView(false)}>Back to my agent’s finds</button>}
-      <InsetBox className="mb-3 grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_200px_200px] md:gap-3">
+      <div aria-label="Filter jobs" className="grid grid-cols-2 items-end gap-2 md:grid-cols-[minmax(0,1fr)_160px_180px] md:gap-3">
         <input
           aria-label="Search roles or companies"
           placeholder="Search roles or companies"
@@ -110,18 +110,20 @@ function DiscoverBoard() {
         <label className="flex min-w-0 flex-col gap-1 text-xs text-board-muted">Posted<select aria-label="Posted" className={control} value={postingAge} onChange={event=>setPostingAge(event.target.value)}>{postingAgeOptions.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
         <DayFilter label="Discover day" dates={dates} latest={sourceDate} value={viewDay} onChange={setDay} />
 
-      </InsetBox>
-      {w.discoveryLog&&!publicView&&<label className="mb-3 flex min-h-11 items-center gap-2 text-sm text-board-muted"><input type="checkbox" checked={includeApplied} onChange={event=>setIncludeApplied(event.target.checked)}/>Include applied jobs</label>}
-      <Notice>
+      </div>
+      <div className="mt-1 flex min-h-11 flex-wrap items-center justify-between gap-x-4 gap-y-1">
+      {w.discoveryLog&&!publicView&&<label className="flex min-h-11 items-center gap-2 text-sm text-board-muted"><input type="checkbox" checked={includeApplied} onChange={event=>setIncludeApplied(event.target.checked)}/>Include applied jobs</label>}
+      <p role="status" className="text-sm text-board-muted">
         {roles.length} to review ·{" "}
         {roles.filter((r: Role) => r.priority === "Apply Now").length} apply now
-      </Notice>
+      </p>
+      </div>
       {/* Paused: card-pack widgets and reveal effects. */}
       {EXTRA_FEATURES_ENABLED && <CardPackWidgets key={previewOwner} onOpened={populateBoard}/>}
       <section ref={board} aria-label="Discover board" className="scroll-mt-6">
       {arriving && <p role="status" className="mt-4 text-sm text-board-muted">{arriving.ids.length} pack {arriving.ids.length === 1 ? "job" : "jobs"} on your board.</p>}
       {roleGroups.map(({ key, label, roles: group }) => (
-        <section key={key} data-dashboard-tour="roles" className="mt-6 md:mt-9" aria-label={label}>
+        <section key={key} data-dashboard-tour="roles" className="mt-3 md:mt-4" aria-label={label}>
           <div className="mb-3 flex items-center gap-3 md:mb-4">
             <h2 className="text-xl font-semibold tracking-tight">{label}</h2>
             <span className="rounded-md bg-board-tag px-2 py-1 text-xs tabular-nums text-board-muted">{group.length}</span>
