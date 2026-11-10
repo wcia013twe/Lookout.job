@@ -1439,6 +1439,9 @@ JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independen
 
 COM03/COM04 prospective evaluation reporting now carries the shared allowlisted provenance via `scripts/evals/provenance.mjs` in detailed exports and common summaries. This is reporting-only; historical frozen participant sources and final records are preserved. Twelve focused case/provenance checks passed; new EVAL-01–03 execution remains queued.
 
+### Healthy communication task completion amendment
+
+The user explicitly removes hard participant deadlines for healthy COM03/COM04 work. The opt-in `LOOKOUT_PARTICIPANT_DEADLINES=disabled-by-user` bypasses the task Timer and elapsed-budget classification, records policy/source hashes, and keeps bounded individual operation/containment guards. Former scenario seconds remain reference metadata. Original frozen sources and previously interrupted attempts are preserved; no automatic replacement. Seventeen COM03 and 28 COM04 Python checks passed; live amended execution remains prospective. Shared independent grader policy is owned separately.
 
 Shared subscription grading now treats `--seconds` as reference duration only,
 with no total task deadline for healthy work. Receipts record reference overruns;
