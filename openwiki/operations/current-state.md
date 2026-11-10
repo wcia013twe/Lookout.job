@@ -1336,3 +1336,10 @@ four-pair study remain unverified and unexecuted.
 ### COM02 prospective containment propagation
 
 COM02 now propagates host-control and container-removal failures through run finalization and pair orchestration. Unconfirmed participants are not assigned an end timestamp, terminal snapshot, grade or export; the remaining condition is halted. Focused mocked checks pass; live containment recovery is not verified or attempted. Historical frozen trials are unchanged.
+
+
+JOB no-inference readiness now requires confirmed test-container removal and
+retains cleanup failures as host-control markers. Endpoint inspection is bounded.
+Recovery owner reports the engine healthy; JOB has integrated53fbef83 and passed
+source checks while awaiting serialized Docker use after COM03. No latest native
+preflight or participant experiment has yet run in this recovery pass.

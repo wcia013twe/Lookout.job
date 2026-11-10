@@ -191,3 +191,22 @@
   with other sessions, so no restart or unrelated process/container action was
   attempted. Remaining verification requires external shared-engine recovery;
   inspect ownership before stopping any leftover pilot process afterward.
+
+
+## Recovery coordination: bounded source-only pass
+
+- Recovery owner reports Docker29.9.2 healthy and has reserved first no-inference
+  use for COM03. JOB performed no Docker probes, provisioning or participant work
+  while waiting for the serialized handoff. Recovery is reported by that owner;
+  JOB final-source native gates have not yet been rerun.
+- Integrated local main53fbef83 (including prospective COM runtime version guards
+  and containment halt). Dedicated native endpoint inspection now has a10-second
+  bound instead of an unbounded Docker subprocess.
+- No-inference host preflight now records container cleanup and refuses readiness
+  if removal is unconfirmed; it retains a private host-control marker rather than
+  allowing subsequent participant setup. This extends existing shared teardown
+  evidence; no product behavior or participant budget changed.
+- Source-only validation:25 JOB Python,47 COM2 Python,eight Node checks and
+  catalog158 pass; diff checks pass. Historical roots are untouched. Native
+  three-process clocks/permission/discovery still require a fresh actual preflight
+  after the recovery owner hands over engine use. No participant experiments.

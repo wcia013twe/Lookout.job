@@ -38,6 +38,18 @@ class ServicesTest(unittest.TestCase):
     with self.assertRaises(ValueError):s.preview(value)
    with self.assertRaises(ValueError):Services(file,[{'key':'A','id':'same'},{'key':'B','id':'same'}])
 
+ def test_no_inference_cleanup_must_be_confirmed_before_readiness(self):
+  from unittest.mock import MagicMock
+  import host
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);out=root/'receipts';out.mkdir();session=MagicMock()
+   session.close.return_value={'containerRemoved':False,'errorType':'TimeoutExpired'}
+   with self.assertRaisesRegex(RuntimeError,'launch blocked'):host.preflight_cleanup(session,root,'baseline',out)
+   marker=json.loads((root/'host-control-failure.json').read_text());self.assertFalse(marker['participantExecuted'])
+   self.assertEqual(marker['phase'],'no_inference_preflight');self.assertFalse(json.loads((out/'baseline-cleanup.json').read_text())['containerRemoved'])
+   (root/'host-control-failure.json').unlink();session.close.return_value={'containerRemoved':True}
+   self.assertTrue(host.preflight_cleanup(session,root,'lookout',out)['containerRemoved']);self.assertFalse((root/'host-control-failure.json').exists())
+
  def test_native_reply_is_not_reformatted_or_pruned(self):
   source={'instructions':['Keep native behavior.'],'tools':[{'name':'read_guide','inputSchema':{}},{'name':'forbidden','inputSchema':{}}]}
   result=clean(source,{'read_guide'});self.assertEqual(result['instructions'],source['instructions']);self.assertEqual(result,source);self.assertEqual(clean('{"name":"Résumé"}',{'read_guide'}),'{"name":"Résumé"}')
