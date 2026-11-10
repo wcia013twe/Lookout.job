@@ -1450,3 +1450,13 @@ that adapter change is staged pending the shared Session update and fresh gates.
 Remaining graders use shared reference-only execution. Historical freezes and old
 executor bytes are preserved. Full series completion and participant-policy live
 verification are still outstanding.
+
+
+JOB future-pair completion policy is now wired through the shared Session,
+coordinator subprocess and HTTP adapter, with explicit jobs-host-v4 provenance.
+Reference seconds no longer terminate healthy work or invalidate it solely for
+elapsed duration. Individual operations, clock-integrity and owned cleanup checks
+remain. Focused boundaries pass; each new pair must pass actual source-bound
+no-inference gates, including its completion-policy gate, before participant launch.
+JOB03 EVAL-01/02 remain under original freezes and are not silently pooled with the
+amended future pairs. All historical evidence is retained.

@@ -7,7 +7,8 @@ export function verifyHostGates(root,result){
  const required=['native_owner_snapshot','context_parity','native_guidance','artifact_write_readback','pipeline_write_readback','restored_initial','scoped_native_discovery','native_audit_contract','baseline_container_surface','lookout_container_surface'];
  if(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).benchmarkTaskId==='JOB03')required.push('shared_test_clock','interruption_recovery');
  if(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).hostVersion!=='jobs-host-v1')required.push('native_clock_alignment','baseline_inference_transport','lookout_inference_transport');
- if(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).hostVersion==='jobs-host-v3')required.push('resume_byte_parity','native_backend_identity','native_scope_permissions','fixture_reference_contract','canonical_search_context');
+ if(['jobs-host-v3','jobs-host-v4'].includes(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).hostVersion))required.push('resume_byte_parity','native_backend_identity','native_scope_permissions','fixture_reference_contract','canonical_search_context');
+ if(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).hostVersion==='jobs-host-v4')required.push('participant_completion_policy');
  const seen=new Set();
  for(const g of result.gates){
   const p=fs.realpathSync(g.path),base=fs.realpathSync(path.join(root,'receipts'))+path.sep;
@@ -15,9 +16,17 @@ export function verifyHostGates(root,result){
   if(g.name==='native_clock_alignment'&&JSON.parse(fs.readFileSync(p)).aligned!==true)throw Error('Native backend clock differs from simulated stages');
   seen.add(g.name);
  }
- if(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).hostVersion==='jobs-host-v3'&&JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).benchmarkTaskId==='JOB03')required.push('shared_application_identifiers');
+ if(['jobs-host-v3','jobs-host-v4'].includes(JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).hostVersion)&&JSON.parse(fs.readFileSync(path.join(root,'configuration.json'))).benchmarkTaskId==='JOB03')required.push('shared_application_identifiers');
  if(required.some(n=>!seen.has(n)))throw Error('Actual host gates incomplete');
  return result;
 }
 
 export function executionOrder(configuration){const repeat=configuration.repeat??1;if(!Number.isSafeInteger(repeat)||repeat<1)throw Error('Positive repeat required');const expected=repeat%2?['baseline','lookout']:['lookout','baseline'];const order=configuration.conditionOrder??expected;if(JSON.stringify(order)!==JSON.stringify(expected))throw Error('Frozen order must alternate by repetition');return order;}
+
+// Explicit opt-in; existing fixed-budget cases retain their original behavior.
+export function participantBudget(configuration,fixedSeconds){
+ if(configuration.participantTurnPolicy===undefined||configuration.participantTurnPolicy==='fixed')return fixedSeconds;
+ if(configuration.participantTurnPolicy==='until_completion'&&configuration.hostVersion==='jobs-host-v4')return null;
+ throw Error('Unsupported participant completion policy');
+}
+export const participantAdapterTimeout=seconds=>seconds===null?0:(seconds+45)*1000;

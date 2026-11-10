@@ -7,7 +7,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 import {costValues} from '../n01/cost-export.mjs';
-import {verifyHostGates,executionOrder} from '../jobs/preflight.mjs';
+import {verifyHostGates,executionOrder,participantBudget,participantAdapterTimeout} from '../jobs/preflight.mjs';
 export const hash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 export const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
 export const write=(p,x)=>fs.writeFileSync(p,JSON.stringify(x,null,2)+'\n',{flag:'wx',mode:0o600});
@@ -69,7 +69,7 @@ export function preflight(root,command,output,execute=adapter){
   check(cfg.ownerId&&cfg.readOnlyOwnerId===cfg.ownerId&&cfg.source&&cfg.normalProductConfiguration?.captured===true,'Dedicated owner/read-only identity and actual product configuration required');
   const binding=runtimeBinding(command,cfg);receipt.runtime=binding;
   const call=(operation,args={})=>{const req={operation,benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,...args};const entry={request:req};receipt.calls.push(entry);try{entry.result=bound(execute(command,req,operation==='host.preflight'?300000:30000),req);return entry.result;}catch(e){entry.error=e.message;throw e;}};
-  if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(cfg.hostVersion)){
+  if(['jobs-host-v1','jobs-host-v2','jobs-host-v3','jobs-host-v4'].includes(cfg.hostVersion)){
    receipt.host=verifyHostGates(root,call('host.preflight'));
    receipt.ready=true;receipt.status='ready';receipt.completedAt=new Date().toISOString();write(output,receipt);return receipt;
   }
@@ -119,7 +119,7 @@ export function stageCost(c){
 export function run(root,command,preflightFile,pairId){
  const f=frozen(root),cfg=read(path.join(root,'configuration.json')),pre=read(preflightFile),spec=read(path.join(root,'suite/scenario.json')),evidence=read(path.join(root,'suite/evidence.json'));
  check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&hash(pre.runtime)===hash(runtimeBinding(command,cfg)),'Matching successful preflight required; unresolved errors block execution');
- if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(cfg.hostVersion))verifyHostGates(root,pre.host);
+ if(['jobs-host-v1','jobs-host-v2','jobs-host-v3','jobs-host-v4'].includes(cfg.hostVersion))verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe pair ID required');
  const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only; no reset or silent retry');fs.mkdirSync(runs,{mode:0o700});
  const executionConditions=executionOrder(cfg);
@@ -132,8 +132,8 @@ export function run(root,command,preflightFile,pairId){
     try{
      write(path.join(sd,'before.json'),capture(root,command,condition,'snapshot',{stage:stage.id}));
      const input=packet(spec,evidence,stage,condition,fs.readFileSync(path.join(root,'candidate/profile.md'),'utf8'));write(path.join(sd,'input.json'),input);
-     const req={operation:'participant.turn',benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,condition,packet:input,session:stage.session,resume:i>0&&stage.session===spec.stages[i-1].session,budgetSeconds:spec.policy.stageBudgetSeconds,actor:{version:'released-only-v1',events:spec.stages.slice(0,i+1).filter(s=>s.kind==='user').map(s=>({id:s.id,request:s.request})),responseDelayMinutes:spec.policy.userResponseDelayMinutes}};
-     start=performance.now();const result=bound(adapter(command,req,(spec.policy.stageBudgetSeconds+45)*1000),req);cp.adapterSeconds=(performance.now()-start)/1000;cp.executionSeconds=result.timing?.valid===false?null:result.executionSeconds??cp.adapterSeconds;cp.executionWallSeconds=result.timing?.wallSeconds??cp.adapterSeconds;cp.containerStartupSeconds=result.containerStartupSeconds??null;cp.mcpDiagnostics=result.mcpDiagnostics??null;start=null;
+     const req={operation:'participant.turn',benchmarkTaskId:'JOB04',ownerId:cfg.ownerId,condition,packet:input,session:stage.session,resume:i>0&&stage.session===spec.stages[i-1].session,referenceSeconds:spec.policy.stageBudgetSeconds,budgetSeconds:participantBudget(cfg,spec.policy.stageBudgetSeconds),actor:{version:'released-only-v1',events:spec.stages.slice(0,i+1).filter(s=>s.kind==='user').map(s=>({id:s.id,request:s.request})),responseDelayMinutes:spec.policy.userResponseDelayMinutes}};
+     start=performance.now();const result=bound(adapter(command,req,participantAdapterTimeout(req.budgetSeconds)),req);cp.adapterSeconds=(performance.now()-start)/1000;cp.executionSeconds=result.timing?.valid===false?null:result.executionSeconds??cp.adapterSeconds;cp.executionWallSeconds=result.timing?.wallSeconds??cp.adapterSeconds;cp.containerStartupSeconds=result.containerStartupSeconds??null;cp.mcpDiagnostics=result.mcpDiagnostics??null;start=null;
      write(path.join(sd,'response.json'),result);if(result.hostControlFailed)r.hostControlFailed=true;check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal receipt required');cp.status=result.status;
      check(result.participantExecuted===true&&result.synthetic===false,'Actual participant execution receipt required');
      check(result.session===stage.session&&result.resume===req.resume,'Unexpected session continuity');

@@ -370,3 +370,26 @@
   warnings even for current isolated three-clock runs. Its actual structural
   parity result is clean, but those generic warnings must not override the bound
   per-stage clock/timing evidence. Reporting-text correction remains prospective.
+
+
+## Healthy completion adapter installation
+
+- Reused the exact shared Session implementation from3ab71da5; JOB host passes
+  allowHealthyCompletion for the new frozen jobs-host-v4 until_completion policy.
+  Existing scenario seconds are reference metadata, with prompts/evidence/rubrics
+  and AB/BA/AB order unchanged. Old active/terminated roots stay preserved.
+- Removed the JOB participant HTTP response cap, Node adapter total-turn cap and
+  private direct-launcher cap in this mode. Shared remaining graders and their
+  outer caller also have no total-duration cap. Native operations and cleanup
+  retain individual limits; elapsed/usage and genuine clock failures remain.
+- Long healthy-turn/invalid-clock/failed-exit and HTTP boundary probes pass; real
+  subprocess probes cover both case adapters. Focused checks and catalog validation
+  pass before enabling future launches. Each future pair still requires its fresh
+  actual no-inference native/container/clock/completion-policy gates before inference.
+- This amendment applies to JOB03 EVAL-03 and all JOB04 EVAL pairs. JOB03 EVAL-01/02
+  retain their original hard-deadline freezes. No result-driven replacement attempt.
+
+- Final installed-source checks:53 Node,30 JOB Python and48 shared Session tests,
+  catalog158 and diff checks pass. The first combined Python discovery failed from
+  the new test module leaking import-path order; the isolated import now restores
+  its caller's path. Both failed and passing logs remain. No participant retry.

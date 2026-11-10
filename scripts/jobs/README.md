@@ -264,3 +264,20 @@ serial_pair helper and the agreed host handoff. No prompt/rubric/quality tuning 
 favorable-score replacement runs. Preserve failures, declared budgets, repair
 provenance and separate independent grading. Pending live readiness is not a
 participant result. The current chat directly coordinates existing executors.
+
+
+## User-amended healthy completion policy
+
+For newly prepared pairs, `host.py prepare --no-turn-limit` freezes
+`participantTurnPolicy: until_completion` under `jobs-host-v4`. Both conditions
+use the shared Session's `allowHealthyCompletion` flag. Scenario seconds remain
+reference metadata; the participant timer, coordinator subprocess wait, host HTTP
+response wait and direct launcher total-duration cap are removed in this mode.
+A reference overrun alone cannot become a timeout, invalid timing or failed review.
+Elapsed time and usage remain measured. Individual native calls, setup and cleanup
+operations remain bounded; the owning chat monitors actual errors and progress.
+A new completion-policy gate accompanies all prior native/clock/context gates.
+Existing roots, active old timers and terminated attempts retain their original
+freeze; no healthy participant is restarted or historical result rewritten.
+Reference-only pairs have a distinct harness version and must be reported with the
+policy amendment, rather than silently pooled with hard-deadline attempts.

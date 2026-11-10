@@ -74,7 +74,8 @@ def collect_files(out):
    result[str(p.relative_to(out))]=p.read_text()
  return result
 
-def prepare(case,root,source,background,backend_root=None,repeat=1):
+def prepare(case,root,source,background,backend_root=None,repeat=1,no_turn_limit=False):
+ if no_turn_limit and not backend_root:raise ValueError('Completion policy requires isolated native backend')
  if root.exists():raise ValueError('New private frozen root required')
  owned=root.with_name(root.name+'-owner')
  result=account(owned,'create',case,source,background/'resume.pdf',*([backend_root] if backend_root else []))
@@ -90,7 +91,7 @@ def prepare(case,root,source,background,backend_root=None,repeat=1):
   descriptor=read(Path(backend_root)/'backend.json')
   files += [REPO/n for n in descriptor['sourceFiles']]
   files=list(dict.fromkeys(files))
- cfg={'repeat':repeat,'conditionOrder':condition_order(repeat),'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v3' if backend_root else 'jobs-host-v2','normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
+ cfg={'repeat':repeat,'conditionOrder':condition_order(repeat),'benchmarkTaskId':case,'dedicated':True,'fictional':True,'ownerId':a['userId'],'readOnlyOwnerId':a['userId'],'source':'Dedicated local JOB host; matched intent; no proactive comparison','model':'gpt-5.6-terra','reasoning':'medium','hostVersion':'jobs-host-v4' if no_turn_limit else 'jobs-host-v3' if backend_root else 'jobs-host-v2',**({'participantTurnPolicy':'until_completion'} if no_turn_limit else {}),'normalProductConfiguration':{'captured':True,'status':'captured','scheduledApplicationCommunicationEnabled':False},'runtimeFiles':[str(p) for p in files],'costPolicy':read(REPO/'examples/evals/cost-policy.json')}
  if case=='JOB04':cfg['applicationIdMapping']={x['id']:str(uuid.uuid5(uuid.UUID(a['userId']),x['id'])) for x in read(REPO/'examples/job04/evidence.json')['applications']}
  cfgpath=owned/'configuration.json';write(cfgpath,cfg)
  cmd=['node',str(REPO/'scripts'/case.lower()/'task.mjs'),'--action','prepare','--root',str(root),'--configuration',str(cfgpath)]
@@ -109,7 +110,7 @@ def prepare(case,root,source,background,backend_root=None,repeat=1):
   apps.append({'key':str(key),'id':ident,'company':item['company'],'title':item['title'],'status':status,'draft':{'note':'Existing fictional application; no submission receipt.','blocker':item.get('blocker'),'initialSavedState':item}})
  write(root/'host-initial.json',apps)
  allowed=account(root,'surface')['names']
- write(root/'host-config.json',{'caseId':case,**({'backendRoot':str(Path(backend_root).resolve())} if backend_root else {}),'allowedTools':allowed,'runtimeImage':runtime.IMAGE,'developerVersion':read(REPO/'supabase/functions/agent-gateway/instructions.json')['developerVersion'],'guideVersions':{n:read(REPO/'supabase/functions/agent-gateway/skills'/f'{n}.json')['version'] for n in ['interview-preparation','toolkit-materials']}})
+ write(root/'host-config.json',{'caseId':case,**({'participantTurnPolicy':'until_completion'} if no_turn_limit else {}),**({'backendRoot':str(Path(backend_root).resolve())} if backend_root else {}),'allowedTools':allowed,'runtimeImage':runtime.IMAGE,'developerVersion':read(REPO/'supabase/functions/agent-gateway/instructions.json')['developerVersion'],'guideVersions':{n:read(REPO/'supabase/functions/agent-gateway/skills'/f'{n}.json')['version'] for n in ['interview-preparation','toolkit-materials']}})
  if backend_root:
   binding=Path(backend_root)/'pilot-binding.json'
   if binding.exists():raise ValueError('Native backend already bound; use a fresh fixture')
@@ -218,16 +219,21 @@ class Host:
   if req.get('notification'):prompt+='\nCurrent reminders: '+json.dumps(req['notification'])
   runtime.inputs_prompt=lambda *_:prompt
   wall_started=time.time();monotonic_started=time.monotonic()
-  sm=self.sessions[c][1].turn(sd,{'_index':self.stage,'_session':session_id,'seconds':req['budgetSeconds']},resume)
+  until_completion=self.cfg.get('participantTurnPolicy')=='until_completion'
+  if (req['budgetSeconds'] is None)!=until_completion:raise ValueError('Request differs from frozen participant completion policy')
+  sm=self.sessions[c][1].turn(sd,{'_index':self.stage,'_session':session_id,'seconds':req['referenceSeconds'] if until_completion else req['budgetSeconds'],'allowHealthyCompletion':until_completion},resume)
   if sm.get('hostControlFailed'):write(self.root/'host-control-failure.json',{'condition':c,'stage':stage,'termination':sm.get('termination'),'participantRetry':False})
   timing={'wallSeconds':time.time()-wall_started,'monotonicSeconds':time.monotonic()-monotonic_started,'executorSeconds':sm['durationSeconds'],'budgetSeconds':req['budgetSeconds']}
   timing['wallMinusMonotonicSeconds']=timing['wallSeconds']-timing['monotonicSeconds']
-  timing.update(sm.get('timing',{}));timing['wallBudgetExceeded']=timing['wallSeconds']>req['budgetSeconds']+5
+  timing.update(sm.get('timing',{}));timing['wallBudgetExceeded']=req['budgetSeconds'] is not None and timing['wallSeconds']>req['budgetSeconds']+5
+  timing['referenceBudgetExceeded']=sm.get('referenceBudgetExceeded',False)
+  timing['referenceSeconds']=req.get('referenceSeconds',req['budgetSeconds'])
   write(sd/'timing.json',timing)
   trace=[json.loads(x) for x in (sd/'trace.jsonl').read_text().splitlines()];tools=[json.loads(x) for x in (sd/'lookout-trace.jsonl').read_text().splitlines()];interactions=[x['data'] for x in tools if x['type']=='user.interaction']
   return {'status':'execution_failed' if sm['status']=='artifact_failed' else sm['status'],'participantRuntimeStatus':sm['status'],'hostControlFailed':sm.get('hostControlFailed',False),'termination':sm.get('termination'),'participantExecuted':True,'synthetic':False,'session':session_id,'resume':resume,'trace':trace,'toolTrace':tools,'actualPrompt':(sd/'prompt.txt').read_text(),'actualPromptSha256':digest(sd/'prompt.txt'),'files':collect_files(out),'interactions':interactions,'cost':sm['cost'],'usage':{'schemaVersion':1,'scope':'participant_turn','basis':'turn_delta','receiptId':str(uuid.uuid4()),'source':sm['cost'].get('source'),'model':sm['cost'].get('model'),'status':sm['cost'].get('status'),'tokens':sm['cost'].get('tokens')},'clock':clock_receipt,'timing':timing,'executionSeconds':sm.get('executionSeconds',sm['durationSeconds']),'containerStartupSeconds':setup_seconds,'mcpDiagnostics':call_metrics([sd]),'isolation':{'futureEvidenceVisible':False,'graderVisible':False,'credentialsVisible':False,'note':'Host credentials absent; subscription credential is available to the container runtime in ephemeral tmpfs as in COM.'}}
  def preflight(self):
   # Actual no-model Session construction checks auth, mounts and MCP forwarding.
+  # Completion-policy provenance is checked separately from model availability.
   root=self.root;spec=read(root/'suite/scenario.json');(root/'receipts').mkdir(exist_ok=True);out=root/'receipts'/('host-'+uuid.uuid4().hex[:8]);out.mkdir();gates=[]
   def gate(name,fn):
    value=fn();write(out/(name+'.json'),value);gates.append({'name':name,'status':'passed','path':str(out/(name+'.json')),'sha256':digest(out/(name+'.json'))})
@@ -311,6 +317,8 @@ class Host:
   else:alignment=clock_alignment(read(root/'suite/scenario.json'),account(root,'snapshot')['capturedAt'])
   gate('native_clock_alignment',lambda:alignment)
   if not alignment['aligned']:gates[-1]['status']='blocked'
+  if self.cfg.get('participantTurnPolicy')=='until_completion':
+   gate('participant_completion_policy',lambda:{'policy':'until_completion','budgetSeconds':None,'bothConditions':True,'participantExecuted':False})
   reference=fixture_reference_contract(self.case,spec)
   gate('fixture_reference_contract',lambda:reference)
   if not reference['aligned']:gates[-1]['status']='blocked'
@@ -321,8 +329,8 @@ class Host:
   if self.backend_lock:fcntl.flock(self.backend_lock,fcntl.LOCK_UN);self.backend_lock.close()
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','serve']);p.add_argument('--root',type=Path,required=True);p.add_argument('--case',choices=['JOB03','JOB04']);p.add_argument('--source-manifest',type=Path);p.add_argument('--background',type=Path);p.add_argument('--backend',type=Path);p.add_argument('--repeat',type=int,default=1);a=p.parse_args();root=a.root.resolve()
- if a.action=='prepare':prepare(a.case,root,a.source_manifest,a.background,a.backend,a.repeat);return
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','serve']);p.add_argument('--root',type=Path,required=True);p.add_argument('--case',choices=['JOB03','JOB04']);p.add_argument('--source-manifest',type=Path);p.add_argument('--background',type=Path);p.add_argument('--backend',type=Path);p.add_argument('--repeat',type=int,default=1);p.add_argument('--no-turn-limit',action='store_true');a=p.parse_args();root=a.root.resolve()
+ if a.action=='prepare':prepare(a.case,root,a.source_manifest,a.background,a.backend,a.repeat,a.no_turn_limit);return
  host=Host(root);host.verify();key=secrets.token_urlsafe(32)
  class Handler(http.server.BaseHTTPRequestHandler):
   def log_message(self,*args):pass

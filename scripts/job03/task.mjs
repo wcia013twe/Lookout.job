@@ -54,7 +54,7 @@ export function preflight(root,command,output){
   check(config.ownerId&&config.readOnlyOwnerId===config.ownerId,'Dedicated native owner and read-only confirmation owner required');
   check(config.normalProductConfiguration.status!=='not_captured','Actual normal product configuration has not been captured');
   receipt.runtime=runtimeBinding(command,config);
-  if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(config.hostVersion)){
+  if(['jobs-host-v1','jobs-host-v2','jobs-host-v3','jobs-host-v4'].includes(config.hostVersion)){
    const {verifyHostGates}=hostGates;
    receipt.host=verifyHostGates(root,call('host.preflight'));receipt.ready=true;receipt.status='ready';receipt.completedAt=new Date().toISOString();write(output,receipt);return receipt;
   }
@@ -95,7 +95,7 @@ export function actor(question,released){
 function capture(root,command,condition,stage,operation,args={}){const config=read(path.join(root,'configuration.json'));const request={operation,benchmarkTaskId:'JOB03',ownerId:config.ownerId,condition,stage:stage.id,now:stage.at,...args};const result=adapter(command,request);bound(result,request);return result;}
 export function run(root,command,preflightFile,pairId){
  const f=frozen(root),pre=read(preflightFile);check(pre.ready===true&&pre.status==='ready'&&pre.freezeHash===hash(f)&&pre.configurationHash===hash(read(path.join(root,'configuration.json')))&&pre.adapterCommandHash===hash(command)&&pre.runtime&&hash(pre.runtime)===hash(runtimeBinding(command,read(path.join(root,'configuration.json')))),'Matching successful actual-service preflight required');
- if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(read(path.join(root,'configuration.json')).hostVersion))hostGates.verifyHostGates(root,pre.host);
+ if(['jobs-host-v1','jobs-host-v2','jobs-host-v3','jobs-host-v4'].includes(read(path.join(root,'configuration.json')).hostVersion))hostGates.verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe unique pair ID required');const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only: preserve errors; prepare a separately authorized campaign to rerun');fs.mkdirSync(runs);
  const spec=read(path.join(root,'suite/scenario.json')),fixture=read(path.join(root,'suite/fixture.json'));
  const executionConditions=hostGates.executionOrder(read(path.join(root,'configuration.json')));
@@ -111,7 +111,7 @@ export function run(root,command,preflightFile,pairId){
      // Host delivers due reminders through the actual shared service; the participant receives only current notifications.
      let controlledFailure=null;if(stage.failure){controlledFailure=capture(root,command,condition,stage,'application.arm_failure',{failure:stage.failure});write(path.join(cp,'failure.json'),controlledFailure);check(controlledFailure.armed===true&&controlledFailure.eventKey===stage.failure.eventKey,'One controlled preparation failure must be armed');}
      let notification=null;if(stage.kind==='reminder'){notification=capture(root,command,condition,stage,'reminder.wake');write(path.join(cp,'wake.json'),notification);}
-     entry.participantAttempted=true;started=performance.now();const result=adapter(command,{operation:'participant.turn',benchmarkTaskId:'JOB03',ownerId:read(path.join(root,'configuration.json')).ownerId,condition,packet:request,notification,controlledFailure,budgetSeconds:spec.budgetSeconds,actor:{policy:'released-only-v1',released:spec.stages.slice(0,i+1).filter(x=>x.kind==='user').map(x=>({id:x.id,message:x.message})),delaySeconds:spec.actorDelaySeconds}},(spec.budgetSeconds+45)*1000);
+     entry.participantAttempted=true;started=performance.now();const result=adapter(command,{operation:'participant.turn',benchmarkTaskId:'JOB03',ownerId:read(path.join(root,'configuration.json')).ownerId,condition,packet:request,notification,controlledFailure,referenceSeconds:spec.budgetSeconds,budgetSeconds:hostGates.participantBudget(read(path.join(root,'configuration.json')),spec.budgetSeconds),actor:{policy:'released-only-v1',released:spec.stages.slice(0,i+1).filter(x=>x.kind==='user').map(x=>({id:x.id,message:x.message})),delaySeconds:spec.actorDelaySeconds}},hostGates.participantAdapterTimeout(hostGates.participantBudget(read(path.join(root,'configuration.json')),spec.budgetSeconds)));
      entry.adapterSeconds=(performance.now()-started)/1000;entry.executionSeconds=result.timing?.valid===false?null:result.executionSeconds??entry.adapterSeconds;entry.executionWallSeconds=result.timing?.wallSeconds??entry.adapterSeconds;entry.containerStartupSeconds=result.containerStartupSeconds??null;entry.mcpDiagnostics=result.mcpDiagnostics??null;started=null;
      write(path.join(cp,'response.json'),result);if(result.hostControlFailed)r.hostControlFailed=true;check(['completed','timed_out','execution_failed'].includes(result.status),'Participant terminal status required');entry.status=result.status;
      check(Array.isArray(result.interactions),'Captured interactions required');const ids=new Set();for(const x of result.interactions){check(x.id&&!ids.has(x.id)&&typeof x.answered==='boolean'&&Array.isArray(x.categories),'Unique interaction evidence required');ids.add(x.id);}entry.uniqueTurns=ids.size;entry.answeredTurns=result.interactions.filter(x=>x.answered).length;
