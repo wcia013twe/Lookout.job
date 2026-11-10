@@ -1,0 +1,804 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-11-10T04:31:08.925Z",
+  "source": "Langfuse environment=benchmark; common evaluate-* roots only; no pilots or verification traces",
+  "rows": [
+    {
+      "case": "COM1",
+      "run": 1,
+      "condition": "baseline",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-01",
+      "traceId": "6e1d282edd8da27f543c7c8d990b31dd",
+      "scores": {
+        "wakes_used": 8,
+        "quality": 1,
+        "active_seconds": 507.72611608299485,
+        "execution_status": "completed",
+        "cost_output_tokens": 17649,
+        "cost_input_tokens": 843377,
+        "reviewed": true,
+        "cost_coverage": "complete",
+        "tool_calls": 37,
+        "cost_cached_input_tokens": 728064,
+        "task_success": true
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 1,
+      "condition": "lookout",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-01",
+      "traceId": "44ef17cb46d649c517ca5629fe72dd02",
+      "scores": {
+        "cost_output_tokens": 20362,
+        "cost_cached_input_tokens": 1966336,
+        "active_seconds": 613.2034917900164,
+        "cost_coverage": "complete",
+        "wakes_used": 8,
+        "cost_input_tokens": 2254392,
+        "execution_status": "completed",
+        "tool_calls": 111,
+        "reviewed": true,
+        "task_success": true,
+        "quality": 1
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 2,
+      "condition": "baseline",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-02",
+      "traceId": "7953629a99cf52d13a35b6f510619996",
+      "scores": {
+        "cost_cached_input_tokens": 560384,
+        "execution_status": "completed",
+        "quality": 0.375,
+        "cost_coverage": "complete",
+        "task_success": false,
+        "cost_input_tokens": 662571,
+        "cost_output_tokens": 13908,
+        "tool_calls": 31,
+        "reviewed": true,
+        "active_seconds": 407.3492656659946,
+        "wakes_used": 8
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 2,
+      "condition": "lookout",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-02",
+      "traceId": "727f0218dac97f5ba94a797766117930",
+      "scores": {
+        "cost_cached_input_tokens": 1634816,
+        "cost_coverage": "complete",
+        "execution_status": "completed",
+        "wakes_used": 8,
+        "cost_output_tokens": 16648,
+        "reviewed": true,
+        "active_seconds": 498.30939466699783,
+        "tool_calls": 91,
+        "quality": 1,
+        "task_success": true,
+        "cost_input_tokens": 1891865
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 3,
+      "condition": "baseline",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-03",
+      "traceId": "43366d738f0299c9f6487e20790b6b6e",
+      "scores": {
+        "cost_cached_input_tokens": 583168,
+        "cost_input_tokens": 684304,
+        "cost_coverage": "complete",
+        "cost_output_tokens": 12884,
+        "execution_status": "completed",
+        "tool_calls": 28,
+        "task_success": true,
+        "active_seconds": 385.8525146670145,
+        "wakes_used": 8,
+        "quality": 1,
+        "reviewed": true
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 3,
+      "condition": "lookout",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-03",
+      "traceId": "50c5f203cdeffad4fe77cf8ef68c3fc0",
+      "scores": {
+        "execution_status": "completed",
+        "tool_calls": 112,
+        "cost_coverage": "complete",
+        "task_success": true,
+        "wakes_used": 8,
+        "cost_input_tokens": 2547405,
+        "cost_cached_input_tokens": 2244608,
+        "active_seconds": 645.2576783329714,
+        "quality": 1,
+        "cost_output_tokens": 21559,
+        "reviewed": true
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 4,
+      "condition": "baseline",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-04",
+      "traceId": "683a05819a38a27b1411b09e960df921",
+      "scores": {
+        "cost_output_tokens": 15845,
+        "reviewed": true,
+        "task_success": true,
+        "quality": 1,
+        "execution_status": "completed",
+        "cost_cached_input_tokens": 759808,
+        "wakes_used": 8,
+        "cost_coverage": "complete",
+        "cost_input_tokens": 872894,
+        "tool_calls": 42,
+        "active_seconds": 458.43428600000334
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 4,
+      "condition": "lookout",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-04",
+      "traceId": "87ae98f185262bde1bc679fad9c41c00",
+      "scores": {
+        "task_success": true,
+        "reviewed": true,
+        "cost_cached_input_tokens": 2065408,
+        "cost_output_tokens": 20427,
+        "active_seconds": 606.1108475829824,
+        "execution_status": "completed",
+        "quality": 1,
+        "cost_input_tokens": 2367069,
+        "tool_calls": 109,
+        "wakes_used": 8,
+        "cost_coverage": "complete"
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 5,
+      "condition": "baseline",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-05",
+      "traceId": "240f0f8bdd18a53462ef2e104cd120a1",
+      "scores": {
+        "cost_coverage": "complete",
+        "active_seconds": 389.9346087919839,
+        "cost_cached_input_tokens": 619264,
+        "cost_output_tokens": 13190,
+        "cost_input_tokens": 714497,
+        "tool_calls": 34,
+        "task_success": false,
+        "execution_status": "completed",
+        "quality": 0.75,
+        "reviewed": true,
+        "wakes_used": 8
+      }
+    },
+    {
+      "case": "COM1",
+      "run": 5,
+      "condition": "lookout",
+      "version": "COM1:COM1-stream-v9:COM1-grade-v8",
+      "release": "EVAL-05",
+      "traceId": "1d013f09889b8eeb1296ef36d26bf82c",
+      "scores": {
+        "cost_input_tokens": 2465346,
+        "reviewed": true,
+        "tool_calls": 123,
+        "active_seconds": 744.8299068739725,
+        "execution_status": "completed",
+        "wakes_used": 8,
+        "cost_output_tokens": 22193,
+        "quality": 1,
+        "cost_coverage": "complete",
+        "cost_cached_input_tokens": 2177792,
+        "task_success": true
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 1,
+      "condition": "baseline",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-01",
+      "traceId": "76f3c69e48e12a8f26880fafd3f9a4f7",
+      "scores": {
+        "cost_coverage": "complete",
+        "tool_calls": 35,
+        "reviewed": true,
+        "execution_status": "completed",
+        "cost_output_tokens": 14575,
+        "wakes_used": 13,
+        "task_success": true,
+        "cost_cached_input_tokens": 812800,
+        "quality": 1,
+        "cost_input_tokens": 936865,
+        "active_seconds": 468.3588125840033
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 1,
+      "condition": "lookout",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-01",
+      "traceId": "63d86d8b201202f5464b43fbbd15c51f",
+      "scores": {
+        "execution_status": "completed",
+        "task_success": false,
+        "quality": 0.9230769230769231,
+        "reviewed": true,
+        "cost_cached_input_tokens": 3967488,
+        "active_seconds": 669.3309187080013,
+        "wakes_used": 13,
+        "cost_coverage": "complete",
+        "cost_input_tokens": 4327864,
+        "tool_calls": 153,
+        "cost_output_tokens": 21179
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 2,
+      "condition": "baseline",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-02",
+      "traceId": "5e177fbf2e519f8e4a1c56684ec54750",
+      "scores": {
+        "reviewed": true,
+        "wakes_used": 13,
+        "tool_calls": 39,
+        "cost_input_tokens": 1106510,
+        "execution_status": "completed",
+        "task_success": true,
+        "quality": 1,
+        "cost_output_tokens": 25280,
+        "cost_cached_input_tokens": 944384,
+        "active_seconds": 740.8474343329872,
+        "cost_coverage": "complete"
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 2,
+      "condition": "lookout",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-02",
+      "traceId": "6c5ef1389b4ff8f8e9155081b0b47177",
+      "scores": {
+        "active_seconds": 677.8277713319985,
+        "execution_status": "completed",
+        "reviewed": true,
+        "tool_calls": 141,
+        "wakes_used": 13,
+        "quality": 0.7692307692307693,
+        "cost_input_tokens": 3759594,
+        "cost_output_tokens": 20881,
+        "task_success": false,
+        "cost_cached_input_tokens": 3387904,
+        "cost_coverage": "complete"
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 3,
+      "condition": "baseline",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-03",
+      "traceId": "758e3c7cdd49099c84c37b48a62d5c8e",
+      "scores": {
+        "execution_status": "completed",
+        "cost_output_tokens": 17309,
+        "cost_coverage": "complete",
+        "active_seconds": 528.7735942920117,
+        "task_success": true,
+        "cost_input_tokens": 1109698,
+        "tool_calls": 39,
+        "quality": 1,
+        "reviewed": true,
+        "wakes_used": 13,
+        "cost_cached_input_tokens": 970752
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 3,
+      "condition": "lookout",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-03",
+      "traceId": "8b68be78ca083e48e293e9beb0637657",
+      "scores": {
+        "tool_calls": 138,
+        "execution_status": "completed",
+        "active_seconds": 714.976464833002,
+        "reviewed": true,
+        "wakes_used": 13,
+        "quality": 0.9230769230769231,
+        "cost_coverage": "complete",
+        "cost_output_tokens": 22438,
+        "cost_input_tokens": 3869254,
+        "cost_cached_input_tokens": 3529216,
+        "task_success": false
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 4,
+      "condition": "baseline",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-04",
+      "traceId": "b3add71252ad099b88edc43c90e3ac73",
+      "scores": {
+        "tool_calls": 40,
+        "cost_cached_input_tokens": 971264,
+        "cost_coverage": "complete",
+        "active_seconds": 626.2013150419662,
+        "cost_output_tokens": 21739,
+        "execution_status": "completed",
+        "cost_input_tokens": 1112990,
+        "quality": 1,
+        "task_success": true,
+        "wakes_used": 13,
+        "reviewed": true
+      }
+    },
+    {
+      "case": "COM2",
+      "run": 4,
+      "condition": "lookout",
+      "version": "COM2:COM2-stream-v8:COM2-grade-v7",
+      "release": "EVAL-04",
+      "traceId": "bfc35b30e3455e202e3e5b92e4569edd",
+      "scores": {
+        "execution_status": "completed",
+        "reviewed": true,
+        "tool_calls": 158,
+        "cost_coverage": "complete",
+        "quality": 0.9230769230769231,
+        "task_success": false,
+        "wakes_used": 13,
+        "cost_cached_input_tokens": 3787520,
+        "active_seconds": 759.0404637939646,
+        "cost_output_tokens": 24747,
+        "cost_input_tokens": 4134585
+      }
+    },
+    {
+      "case": "COM3",
+      "run": 1,
+      "condition": "baseline",
+      "version": "COM3:COM3-stream-v7:COM3-grade-v4",
+      "release": "EVAL-01",
+      "traceId": "31590a6e825ac6c947fa665379a4a273",
+      "scores": {
+        "cost_cached_input_tokens": 738048,
+        "wakes_used": 10,
+        "quality": 1,
+        "cost_input_tokens": 868762,
+        "execution_status": "completed",
+        "reviewed": true,
+        "cost_coverage": "complete",
+        "cost_output_tokens": 12805,
+        "tool_calls": 56,
+        "active_seconds": 405.9390512900136,
+        "task_success": true
+      }
+    },
+    {
+      "case": "COM3",
+      "run": 1,
+      "condition": "lookout",
+      "version": "COM3:COM3-stream-v7:COM3-grade-v4",
+      "release": "EVAL-01",
+      "traceId": "03a318ef1e7b470906b5806a57f5f82f",
+      "scores": {
+        "tool_calls": 263,
+        "execution_status": "timed_out",
+        "wakes_used": 10,
+        "cost_coverage": "partial",
+        "reviewed": false,
+        "active_seconds": 1422.5889705009613
+      }
+    },
+    {
+      "case": "COM3",
+      "run": 2,
+      "condition": "baseline",
+      "version": "COM3:COM3-stream-v7:COM3-grade-v4",
+      "release": "EVAL-02",
+      "traceId": "b63dc6ec8aff51178ed55706cabf53f3",
+      "scores": {
+        "wakes_used": 10,
+        "tool_calls": 63,
+        "reviewed": true,
+        "task_success": true,
+        "active_seconds": 465.70295295699907,
+        "cost_input_tokens": 958741,
+        "execution_status": "completed",
+        "quality": 1,
+        "cost_cached_input_tokens": 836352,
+        "cost_output_tokens": 14912,
+        "cost_coverage": "complete"
+      }
+    },
+    {
+      "case": "COM3",
+      "run": 2,
+      "condition": "lookout",
+      "version": "COM3:COM3-stream-v7:COM3-grade-v4",
+      "release": "EVAL-02",
+      "traceId": "421afdacb3fa0e7c4111a8b719152fa5",
+      "scores": {
+        "tool_calls": 281,
+        "cost_output_tokens": 44746,
+        "cost_input_tokens": 9368381,
+        "active_seconds": 1408.227635083007,
+        "cost_coverage": "complete",
+        "task_success": false,
+        "reviewed": true,
+        "cost_cached_input_tokens": 8868864,
+        "quality": 0.75,
+        "wakes_used": 10,
+        "execution_status": "completed"
+      }
+    },
+    {
+      "case": "COM3",
+      "run": 3,
+      "condition": "baseline",
+      "version": "COM3:COM3-stream-v7:COM3-grade-v4",
+      "release": "EVAL-03",
+      "traceId": "58fa3992623675790e004051ea4cca55",
+      "scores": {
+        "cost_input_tokens": 957950,
+        "quality": 1,
+        "wakes_used": 10,
+        "cost_cached_input_tokens": 839424,
+        "cost_coverage": "complete",
+        "execution_status": "completed",
+        "tool_calls": 60,
+        "task_success": true,
+        "active_seconds": 461.6372460400016,
+        "reviewed": true,
+        "cost_output_tokens": 14445
+      }
+    },
+    {
+      "case": "COM3",
+      "run": 3,
+      "condition": "lookout",
+      "version": "COM3:COM3-stream-v7:COM3-grade-v4",
+      "release": "EVAL-03",
+      "traceId": "864de68bf0ff875c4d40eb8e1961da56",
+      "scores": {
+        "tool_calls": 267,
+        "quality": 0.75,
+        "wakes_used": 10,
+        "cost_cached_input_tokens": 10145792,
+        "reviewed": true,
+        "cost_output_tokens": 50464,
+        "cost_coverage": "complete",
+        "execution_status": "completed",
+        "cost_input_tokens": 10711138,
+        "task_success": false,
+        "active_seconds": 1497.6022442499816
+      }
+    },
+    {
+      "case": "COM4",
+      "run": 1,
+      "condition": "baseline",
+      "version": "COM4:COM4-stream-v6:COM4-grade-v4",
+      "release": "EVAL-01",
+      "traceId": "77160830a0de7c324dc58e62560c67df",
+      "scores": {
+        "cost_coverage": "complete",
+        "quality": 0.9285714285714286,
+        "wakes_used": 12,
+        "task_success": false,
+        "execution_status": "completed",
+        "active_seconds": 429.788232624036,
+        "tool_calls": 35,
+        "cost_cached_input_tokens": 706816,
+        "cost_input_tokens": 817686,
+        "cost_output_tokens": 13358,
+        "reviewed": true
+      }
+    },
+    {
+      "case": "COM4",
+      "run": 1,
+      "condition": "lookout",
+      "version": "COM4:COM4-stream-v6:COM4-grade-v4",
+      "release": "EVAL-01",
+      "traceId": "40f4a3e6650cebe3e7ce67d484ae4a35",
+      "scores": {
+        "cost_input_tokens": 7034455,
+        "cost_cached_input_tokens": 6570496,
+        "reviewed": false,
+        "cost_coverage": "complete",
+        "tool_calls": 251,
+        "wakes_used": 12,
+        "active_seconds": 1219.446435876991,
+        "execution_status": "completed",
+        "cost_output_tokens": 40813
+      }
+    },
+    {
+      "case": "COM4",
+      "run": 2,
+      "condition": "baseline",
+      "version": "COM4:COM4-stream-v6:COM4-grade-v4",
+      "release": "EVAL-02",
+      "traceId": "489dc5389cd7a112e46cd91c915e8700",
+      "scores": {
+        "tool_calls": 39,
+        "wakes_used": 12,
+        "cost_output_tokens": 17197,
+        "quality": 1,
+        "reviewed": true,
+        "execution_status": "completed",
+        "cost_cached_input_tokens": 872192,
+        "task_success": true,
+        "cost_coverage": "complete",
+        "active_seconds": 543.4913204159675,
+        "cost_input_tokens": 1003724
+      }
+    },
+    {
+      "case": "COM4",
+      "run": 2,
+      "condition": "lookout",
+      "version": "COM4:COM4-stream-v6:COM4-grade-v4",
+      "release": "EVAL-02",
+      "traceId": "85a11ac87f232f0582f616280859aea1",
+      "scores": {
+        "tool_calls": 211,
+        "cost_output_tokens": 39173,
+        "reviewed": true,
+        "cost_cached_input_tokens": 6569472,
+        "cost_coverage": "complete",
+        "cost_input_tokens": 7046441,
+        "wakes_used": 12,
+        "task_success": false,
+        "active_seconds": 1148.9257539989921,
+        "quality": 0.7857142857142857,
+        "execution_status": "completed"
+      }
+    },
+    {
+      "case": "COM4",
+      "run": 3,
+      "condition": "baseline",
+      "version": "COM4:COM4-stream-v6:COM4-grade-v4",
+      "release": "EVAL-03",
+      "traceId": "700dd4f8a251a0afef74ad85d8865e04",
+      "scores": {
+        "tool_calls": 36,
+        "task_success": true,
+        "cost_coverage": "complete",
+        "wakes_used": 12,
+        "execution_status": "completed",
+        "cost_input_tokens": 880707,
+        "cost_output_tokens": 16866,
+        "reviewed": true,
+        "quality": 1,
+        "active_seconds": 506.1465413309925,
+        "cost_cached_input_tokens": 759040
+      }
+    },
+    {
+      "case": "COM4",
+      "run": 3,
+      "condition": "lookout",
+      "version": "COM4:COM4-stream-v6:COM4-grade-v4",
+      "release": "EVAL-03",
+      "traceId": "1eab6985bad1e50d371dd61e9d0df474",
+      "scores": {
+        "task_success": false,
+        "tool_calls": 230,
+        "wakes_used": 12,
+        "cost_coverage": "complete",
+        "active_seconds": 1202.1328207509796,
+        "quality": 0.8571428571428571,
+        "cost_input_tokens": 6916572,
+        "cost_cached_input_tokens": 6425088,
+        "reviewed": true,
+        "execution_status": "completed",
+        "cost_output_tokens": 41368
+      }
+    },
+    {
+      "case": "JOB03",
+      "run": 1,
+      "condition": "baseline",
+      "version": "JOB03:JOB03-tracking-v6:JOB03-grade-v6",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "73a122484503d0370cb321441a3112e6",
+      "scores": {
+        "cost_coverage": "complete",
+        "reviewed": true,
+        "task_success": false,
+        "cost_output_tokens": 9129,
+        "cost_cached_input_tokens": 704256,
+        "quality": 0.9545454545454546,
+        "active_seconds": 320.62778154302214,
+        "execution_status": "completed",
+        "cost_input_tokens": 808913
+      }
+    },
+    {
+      "case": "JOB03",
+      "run": 1,
+      "condition": "lookout",
+      "version": "JOB03:JOB03-tracking-v6:JOB03-grade-v6",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "552fca23fa7401867861d83122683d5a",
+      "scores": {
+        "quality": 0.4772727272727273,
+        "cost_output_tokens": 39486,
+        "reviewed": true,
+        "task_success": false,
+        "cost_coverage": "complete",
+        "cost_cached_input_tokens": 6753792,
+        "execution_status": "completed",
+        "active_seconds": 1229.8085606230015,
+        "cost_input_tokens": 7214856
+      }
+    },
+    {
+      "case": "JOB03",
+      "run": 2,
+      "condition": "baseline",
+      "version": "JOB03:JOB03-tracking-v6:JOB03-grade-v6",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "94ba3b9eb8d403fa4b4edb678c10e939",
+      "scores": {
+        "reviewed": true,
+        "task_success": false,
+        "active_seconds": 302.3722174160066,
+        "cost_input_tokens": 721947,
+        "execution_status": "completed",
+        "cost_cached_input_tokens": 621312,
+        "cost_coverage": "complete",
+        "cost_output_tokens": 9310,
+        "quality": 0.9545454545454546
+      }
+    },
+    {
+      "case": "JOB03",
+      "run": 2,
+      "condition": "lookout",
+      "version": "JOB03:JOB03-tracking-v6:JOB03-grade-v6",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "6b519abc73cc22e8227f4ab1d2c0dd53",
+      "scores": {
+        "cost_output_tokens": 49295,
+        "quality": 0.36363636363636365,
+        "reviewed": true,
+        "cost_input_tokens": 8663058,
+        "task_success": false,
+        "cost_coverage": "complete",
+        "active_seconds": 1503.8353791249974,
+        "cost_cached_input_tokens": 8116992,
+        "execution_status": "completed"
+      }
+    },
+    {
+      "case": "JOB03",
+      "run": 3,
+      "condition": "baseline",
+      "version": "JOB03:JOB03-tracking-v6:JOB03-grade-v6",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "e5e4ed922a7b8de235b52b84c0e533cb",
+      "scores": {
+        "cost_coverage": "complete",
+        "reviewed": true,
+        "task_success": false,
+        "cost_input_tokens": 849733,
+        "cost_output_tokens": 9965,
+        "execution_status": "completed",
+        "active_seconds": 330.9157691249857,
+        "quality": 0.7954545454545454,
+        "cost_cached_input_tokens": 741632
+      }
+    },
+    {
+      "case": "JOB03",
+      "run": 3,
+      "condition": "lookout",
+      "version": "JOB03:JOB03-tracking-v6:JOB03-grade-v6",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "01daebb4a15a47bea827d6140a96be9c",
+      "scores": {
+        "cost_output_tokens": 43280,
+        "quality": 0.3522727272727273,
+        "cost_input_tokens": 7857909,
+        "cost_cached_input_tokens": 7357952,
+        "execution_status": "completed",
+        "reviewed": true,
+        "task_success": false,
+        "active_seconds": 1269.31887779299,
+        "cost_coverage": "complete"
+      }
+    },
+    {
+      "case": "JOB04",
+      "run": 1,
+      "condition": "baseline",
+      "version": "JOB04:JOB04-preparation-v4:JOB04-grade-v4",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "f4e26d8682c459f9aa4ec7d5f9648e40",
+      "scores": {
+        "cost_cached_input_tokens": 621312,
+        "reviewed": true,
+        "execution_status": "completed",
+        "active_seconds": 445.49297712702537,
+        "cost_output_tokens": 15603,
+        "cost_coverage": "complete",
+        "cost_input_tokens": 728516
+      }
+    },
+    {
+      "case": "JOB04",
+      "run": 1,
+      "condition": "lookout",
+      "version": "JOB04:JOB04-preparation-v4:JOB04-grade-v4",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "d95f63c2b810ef446e929dd9efc251ef",
+      "scores": {
+        "execution_status": "completed",
+        "cost_input_tokens": 8427321,
+        "cost_cached_input_tokens": 7922944,
+        "active_seconds": 1281.4502107500157,
+        "cost_output_tokens": 44535,
+        "cost_coverage": "complete",
+        "reviewed": true
+      }
+    },
+    {
+      "case": "JOB04",
+      "run": 2,
+      "condition": "baseline",
+      "version": "JOB04:JOB04-preparation-v4:JOB04-grade-v4",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "70acb0ce8c4a5d5b2f08149a84a4fc46",
+      "scores": {
+        "execution_status": "harness_failed",
+        "cost_coverage": "unknown",
+        "reviewed": false
+      }
+    },
+    {
+      "case": "JOB04",
+      "run": 2,
+      "condition": "lookout",
+      "version": "JOB04:JOB04-preparation-v4:JOB04-grade-v4",
+      "release": "JOB-EVAL-01-03",
+      "traceId": "0052b3102fb641fad39c6d7b7179fb51",
+      "scores": {
+        "execution_status": "harness_failed",
+        "cost_coverage": "partial",
+        "reviewed": false
+      }
+    }
+  ]
+}

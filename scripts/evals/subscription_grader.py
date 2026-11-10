@@ -22,7 +22,7 @@ def cli_command(name):
  for feature in ['apps','plugins','remote_plugin','memories','multi_agent','skill_search']:cmd+=['--disable',feature]
  return cmd+['-']
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--evidence',type=Path,required=True);p.add_argument('--instructions',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--seconds',type=int,required=True);p.add_argument('--expected-image-id',required=True);a=p.parse_args()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--evidence',type=Path,required=True);p.add_argument('--instructions',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--seconds',type=int,required=True,help='Reference duration only; healthy grading has no hard task deadline');p.add_argument('--expected-image-id',required=True);a=p.parse_args()
  evidence=a.evidence.resolve();instructions=a.instructions.resolve();out=a.output.resolve()
  if not evidence.is_dir() or not instructions.is_file() or a.seconds<1:p.error('Existing evidence/instructions and positive declared seconds required')
  if out.exists():p.error('Use a new output directory; preserve prior grading attempts')
@@ -31,7 +31,7 @@ def main():
  if auth.get('OPENAI_API_KEY') or not auth.get('tokens'):raise RuntimeError('Subscription-only auth required; API keys not accepted')
  out.mkdir(parents=True,mode=0o700);review=out/'output';review.mkdir(mode=0o700)
  name='lookout-grader-'+uuid.uuid4().hex[:10];proc=None;clock=None;create_attempted=False
- meta={'role':'independent_grader','model':MODEL,'model_reasoning_effort':REASONING,'subscriptionOnly':True,'budgetSeconds':a.seconds,'startedAt':time.time(),'status':'setup_failed','container':name,'evidenceReadOnly':True,'accountWriterTools':False,'evidenceManifest':files,'instructionsSha256':sha(instructions),'executorSha256':sha(__file__),'expectedImageId':a.expected_image_id,'command':cli_command(name)}
+ meta={'role':'independent_grader','model':MODEL,'model_reasoning_effort':REASONING,'subscriptionOnly':True,'budgetSeconds':a.seconds,'budgetPolicy':'reference_only','hardDeadlineSeconds':None,'startedAt':time.time(),'status':'setup_failed','container':name,'evidenceReadOnly':True,'accountWriterTools':False,'evidenceManifest':files,'instructionsSha256':sha(instructions),'executorSha256':sha(__file__),'expectedImageId':a.expected_image_id,'command':cli_command(name)}
  def save():
   f=out/'grader-run.json';f.write_text(json.dumps(meta,indent=2)+'\n');f.chmod(0o600)
  def run(args,**kwargs):return subprocess.run(args,check=True,capture_output=True,timeout=30,**kwargs)
@@ -52,12 +52,10 @@ def main():
   meta['status']='running';save();clock=StageClock()
   with (out/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cli_command(name),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
-   try:
-    raw,_=proc.communicate('You are an independent evaluator. Evidence is read-only at /evidence. Write only /workspace/output/review.json. Do not contact services, participants or accounts. Follow the supplied frozen review instructions.\n\n'+prompt,timeout=a.seconds)
-   except subprocess.TimeoutExpired as error:
-    meta['termination']=stop_container_client(proc,name);meta['hostControlFailed']=not meta['termination'].get('containerStopped');meta['status']='timed_out';raw=error.output or '';raw=raw.decode(errors='replace') if isinstance(raw,bytes) else raw
-   else:meta['exitCode']=proc.returncode;meta['status']='execution_finished' if proc.returncode==0 else 'execution_failed'
+   raw,_=proc.communicate('You are an independent evaluator. Evidence is read-only at /evidence. Write only /workspace/output/review.json. Do not contact services, participants or accounts. Follow the supplied frozen review instructions.\n\n'+prompt)
+   meta['exitCode']=proc.returncode;meta['status']='execution_finished' if proc.returncode==0 else 'execution_failed'
   meta['timing']=clock.finish();clock=None
+  meta['referenceBudgetExceeded']=meta['timing']['monotonicSeconds']>a.seconds
   events=[]
   for line in raw.splitlines():
    try:event=json.loads(line)

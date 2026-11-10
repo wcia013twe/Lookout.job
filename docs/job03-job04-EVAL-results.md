@@ -11,6 +11,8 @@ Participants and independent graders use subscription gpt-5.6-terra, medium.
 There are no participant retries, replacement trials, grader retries or model substitutions.
 JOB03 EVAL-01/02 retain their original deadlines. JOB03 EVAL-03 and all JOB04 pairs
 use the prospectively frozen completion policy: healthy turns have no total limit.
+The first JOB03 grader retained its original 600-second limit; later graders use
+reference-only duration. No grader was interrupted by elapsed time in this series.
 Concurrent shared-host load remains a confound; keep those policy groups distinct.
 
 ## Accepted reviews and active time

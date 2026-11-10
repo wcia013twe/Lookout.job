@@ -8,7 +8,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const infra = join(root, 'infra/gcp');
 // Explicit committed paths exclude the downloaded SDK, credentials, account data,
 // Terraform state and unrelated local files from the upload and Docker context.
-export const sourcePaths = ['.dockerignore', 'package.json', 'package-lock.json', 'backend/runtime', 'supabase/functions', 'lib', 'runner', 'infra/gcp/compose.yaml', 'infra/gcp/Caddyfile', 'infra/gcp/deploy-remote.sh'];
+export const sourcePaths = ['.dockerignore', 'package.json', 'package-lock.json', 'backend/runtime', 'agent-package', 'scripts/build-agent-package.mjs', 'supabase/functions', 'lib', 'runner', 'infra/gcp/compose.yaml', 'infra/gcp/Caddyfile', 'infra/gcp/deploy-remote.sh'];
 
 export function validateRuntimeEnv(text) {
   const values = {};

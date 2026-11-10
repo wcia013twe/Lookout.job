@@ -503,3 +503,9 @@
 - Final resource inspection found110 owned retained containers, none running. No
   unrelated resource was stopped/removed. Local delivery uses the authorized
   feature:land command; all private evidence and this task checkout are retained.
+
+- Integrated local main9a37b395; the single OpenWiki append conflict retained
+  both sides (incoming main text has zero deleted lines). Incoming main updated
+  the previously failing Action Board test. After integration: full npm test1327
+  total,1322 passed,0 failed,5 skipped;37 JOB Python tests, catalog158 and diff
+  checks pass. The earlier failed full-suite log remains preserved separately.

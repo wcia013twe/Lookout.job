@@ -1400,6 +1400,15 @@ clearance/grades remain intact, but native-workflow attribution requires this se
 caveat. See docs/job-controlled-pilot-results.md; prospective shared-clone/lifecycle
 repair remains with the owning chat. No product or participant run was changed.
 
+### JOB participant deadline policy amendment (2026-11-09)
+
+JOB01 and JOB02 adapters opt into healthy completion in the shared session executor.
+Historical scenario seconds remain a measured reference; they no longer install a
+participant kill timer, invalidate timing, or classify completed work as timed out.
+Both conditions use the same policy. Actual process failures and host timing faults
+remain recorded; network, state capture, and containment cleanup operations retain
+bounded timeouts. Previously frozen sources and terminated attempts stay unchanged.
+The separate coordinator owns the corresponding independent-grader policy.
 ### Frozen repeated communication evaluations
 
 The user has selected EVAL-01 through EVAL-03 for each communication case, with alternating condition order. Both participant and independent grader must be subscription-backed `gpt-5.6-terra` with medium reasoning; no model substitution. Existing historical pilots/diagnostics remain separate. Use separate dedicated per-condition owners/roots so native audit history is preserved when Lookout runs first. Task facts and rubric stay fixed; input parity permits only explicit ownership-ID remapping. Quality misses remain outcomes, not triggers for replacement runs. Execution/containment or validity failures retain their evidence and are disclosed.
@@ -1438,6 +1447,54 @@ checks pass; actual EVAL publication/readback remains pending the first pair.
 JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independent grader to subscription gpt-5.6-terra medium, with the shared read-only grader executor and a fixed 600-second review budget. JOB01 detailed and JOB02 combined detailed/common exports reuse shared structural provenance and paginated score readback. Initial freezes and actual readiness remain separate; no EVAL participant execution is claimed here.
 
 COM03/COM04 prospective evaluation reporting now carries the shared allowlisted provenance via `scripts/evals/provenance.mjs` in detailed exports and common summaries. This is reporting-only; historical frozen participant sources and final records are preserved. Twelve focused case/provenance checks passed; new EVAL-01–03 execution remains queued.
+
+### Healthy communication task completion amendment
+
+The user explicitly removes hard participant deadlines for healthy COM03/COM04 work. The opt-in `LOOKOUT_PARTICIPANT_DEADLINES=disabled-by-user` bypasses the task Timer and elapsed-budget classification, records policy/source hashes, and keeps bounded individual operation/containment guards. Former scenario seconds remain reference metadata. Original frozen sources and previously interrupted attempts are preserved; no automatic replacement. Seventeen COM03 and 28 COM04 Python checks passed; live amended execution remains prospective. Shared independent grader policy is owned separately.
+
+Shared subscription grading now treats `--seconds` as reference duration only,
+with no total task deadline for healthy work. Receipts record reference overruns;
+model/evidence/timing-integrity and containment checks remain enforced. Individual
+setup/cleanup operation limits remain bounded. Participant deadline-policy changes
+are handled in their owning chats with amendment provenance; old terminated runs
+remain preserved and are not silently resumed or replaced.
+
+### Communication healthy-completion policy amendment
+
+COM01/COM02 shared runners and orchestrators support explicit `--allow-healthy-completion` (stage adapter flag `allowHealthyCompletion=True`). Original seconds remain reference metadata, with no task timer or overrun-based status/timing rejection. Actual elapsed/usage and real process, clock and containment errors remain enforced; operation timeouts remain bounded. This source amendment does not change already-running Python frames or historical frozen evidence. Live macOS timer cancellation was denied before execution; no healthy participant was restarted. No product, prompt or rubric change.
+
+### Explicit JOB01 initial-timeout recovery
+
+`scripts/job01/recover.py` supports an operator-authorized recovery of a first-stage
+timeout only. It keeps original freezes and both old participant artifacts, copies
+the unchanged baseline, and continues Lookout against retained owned state in a new
+isolated session. A sibling evidence root records amended executor hashes and the
+fresh-context confound. Original elapsed work, observed turns and incomplete usage
+remain in cumulative accounting. It checks artifact/state consistency before any
+participant inference, preserves failures, and requests independent grading after
+completion. It never resets the owner, changes the rubric or grants extra tools.
+
+
+### Hosted synchronization (2026-11-09)
+
+PR #83 synchronized accumulated local changes into production commit `1a54994d`.
+GitHub deployment `42748313688` passed hosted migrations/functions, full CI and
+Pages publication. Public API/MCP build variables now point to the existing GCP
+HTTPS endpoint. The first GCP retry stopped during local Terraform preflight.
+The release upload now includes the agent package and builder required by the
+Dockerfile and stamps its exact source revision before building; a regression
+checks all Docker COPY inputs. GCP activation and authenticated account smoke
+checks remain separate until verified. Execution/submission switches stay off.
+Local account data is not migrated by code deployment.
+
+### Completed COM03/COM04 EVAL-01–03
+
+All six planned pairs finished: eleven normal participant completions and one original-policy COM03 final-stage timeout; no replacements. Ten of twelve independent exact-Terra-medium reviews validated; both EVAL-01 Lookout grades remain unknown. All four fully reviewed pairs favor baseline quality; Lookout active execution is 3.02–3.24× baseline in COM03 and 2.11–2.38× in COM04 under uncontrolled host load. Dollar cost and human/proactive effort remain unknown. All 24 detailed/common trajectory exports pass readback. Source/background integrity, twelve owners, released evidence, order, clocks and 66 preserved native startup bodies were verified. See `docs/communication-eval-series.md` for policy/review amendments, all outcomes and product flags. Historical PILOT09 first-review status is separate: baseline8/8, Lookout review invalid/unknown, score delivery verified. No product change, push or deployment.
+
+
+### COM03/COM04 EVAL-04/05 completed
+
+The authorized extension used eight fresh owners with unchanged COM3-stream-v7 / COM4-stream-v6 and grade-v4 rubrics, subscription `gpt-5.6-terra` medium, established v2 review instructions and no hard task deadlines. All eight participants completed normally; all eight independent reviews validated. COM03 EVAL-04 tied at 8/8 with full task success; the other three pairs favored baseline quality. Together EVAL-01–05 has eight fully reviewed pairs: seven higher baseline scores and one tie; both EVAL-01 Lookout grades remain unknown. All forty detailed/common exports across the full series pass readback. Extension controls verify 88 stages, 44 native startup bodies, 132 identical input-file comparisons, frozen source/owners/order, clocks and containment. Docker recovery preceded extension provisioning/inference; no extension attempt was interrupted or replaced. Native costs remain included; shared-host load, dollars and human/proactive effort limits remain explicit. No product change, deployment or publication occurred. See [the expanded series report](../../docs/communication-eval-series.md) for evidence-qualified product flags and unchanged history. This focused update does not regenerate the wiki.
 
 
 JOB03/JOB04 EVAL continuation: JOB03 EVAL-01 has a completed exact5.6 medium
@@ -1512,7 +1569,9 @@ find no intent/evidence mismatch; completed pairs have bound three-clock and
 monotonic evidence, while the interrupted pair retains capture/confirmation gaps.
 The final receipt audit checked 406 participant files, exact pins/order/continuity,
 six distinct independent grader threads and export readbacks. Historical 134 files
-and both historical final-grade hashes remain unchanged. Final repository validation:37 focused Python tests pass; full npm test reports
-1319 passed,1 pre-existing Action Board SQL failure and5 skipped. Catalog158 passes.
+and both historical final-grade hashes remain unchanged. Before integration, full npm test reported1319 passed,1 existing Action Board SQL
+failure and5 skipped. The failed log remains. After integrating local main9a37b395
+and its test update, the merged suite passes1322/1327 with5 skipped and0 failed.
+All37 focused JOB Python tests, catalog158 and diff checks pass.
 Local delivery uses feature:land without Git push/deployment; task checkout and
 private evidence remain retained.

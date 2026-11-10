@@ -36,6 +36,20 @@ class ExecutionContainment(unittest.TestCase):
    self.assertIn('container_stop_unconfirmed',result['timing']['invalidReasons'])
    self.assertTrue(json.loads((sd/'termination.json').read_text())['hostClientStopped'])
    self.assertEqual(json.loads((sd/'stage-run.json').read_text())['status'],'artifact_failed')
+ def test_explicit_user_deadline_override_preserves_healthy_completion(self):
+  import time
+  from types import SimpleNamespace
+  real_popen=subprocess.Popen;created=[]
+  def local_process(args,**kwargs):
+   child=real_popen([sys.executable,'-c','import time; time.sleep(.08); print(\'{"type":"thread.started","thread_id":"fictional"}\'); print(\'{"type":"turn.completed"}\')'],**kwargs);created.append(child);return child
+  with tempfile.TemporaryDirectory() as td:
+   root=Path(td);sd=root/'stage-1';sd.mkdir();session=runner.Session.__new__(runner.Session)
+   session.name='fictional-container';session.bridge=None;session.thread_id=None;session.condition='baseline';session.auth={'tokens':{}}
+   clock=SimpleNamespace(startWall=time.time(),finish=lambda:{'valid':True,'wallSeconds':5.,'monotonicSeconds':5.,'invalidReasons':[]})
+   with patch.dict('os.environ',{'LOOKOUT_PARTICIPANT_DEADLINES':'disabled-by-user'}),patch.object(runner.subprocess,'Popen',side_effect=local_process),patch.object(runner,'inputs_prompt',return_value='fictional task'),patch.object(runner.cost,'capture',return_value={'error':'unavailable'}),patch.object(runner,'StageClock',return_value=clock),patch.object(runner.threading,'Timer',side_effect=AssertionError('No deadline timer allowed')),patch.object(runner,'stop_container_client') as stop:
+    result=session.turn(sd,{'_index':1,'_session':'test','seconds':.01})
+   for child in created:child.stdout.close()
+   self.assertEqual(result['status'],'completed');self.assertFalse(result['deadlineEnforced']);self.assertEqual(result['executionSeconds'],5.);stop.assert_not_called()
  def test_cleanup_failure_still_closes_bridge(self):
   from unittest.mock import Mock
   session=runner.Session.__new__(runner.Session);session.name='fictional-container';bridge=Mock();session.bridge=bridge
