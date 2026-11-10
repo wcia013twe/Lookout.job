@@ -7,3 +7,4 @@
 
 - Reporting-only follow-up: COM03/COM04 detailed exporters and common summaries carry the shared allowlisted participant/grader/freeze/failure provenance. Historical final records and active participant freezes remain unchanged.
 - Reporting validation: twelve focused case/provenance checks passed after correcting import placement; catalog validation passed (158 roles). No live inference in this pass.
+- Recorded prospective AB/BA/AB ordering, owner-ID-only parity, fixed 600-second independent grader budget and neutral review instructions in `docs/communication-eval-series.md` and `scripts/communication/independent-review.md`. No grader inference yet.
