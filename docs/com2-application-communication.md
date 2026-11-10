@@ -166,3 +166,9 @@ Both conditions retain all released emails. The inbox archive deduplicates messa
 `provision.mjs` creates a dedicated fictional COM2 owner and clones authorized context exactly. A separate workspace:read credential is reserved for the grader. `parity.py` records source-to-native equivalence and full onboarding fact coverage. `writer_smoke.py` performs actual owned-fixture writer/readback checks, including contact, artifact, scheduled/rescheduled/completed/cancelled and rejected milestone variants, then resets and validates the baseline. This writer smoke is separate from read-only preflight. No participant is executed by either check.
 
 Shared `wakesUsed` retains the shared contract’s attempted participant-turn count; COM2 additionally reports actual scheduled external wakes and attempted participant turns separately. Neither is interpreted as observed user effort.
+
+### Revised owner-scoped fixture readiness
+
+COM2-stream-v8 preparation derives application IDs from the dedicated owner. An older owner seeded with fixed IDs is not reusable without an explicit migration: the reset guard correctly rejects those records as unexpected activity. Preserve that owner and its historical trials; use `scripts/com2/provision.mjs` to create a fresh fictional owner from the authorized manifest/resume, then run shared setup. Do not weaken the reset guard.
+
+Live no-inference verification passed using a fresh owner in `com2-v8-readiness-final02` with `com2-v8-readiness-final02-preflight/setup-receipt.json` under the private experiment-control directory. Native writer/readback, terminal read-only capture and restoration passed. The earlier legacy-owner failure is retained as `com2-v8-readiness-final01-preflight`. No participant was run.

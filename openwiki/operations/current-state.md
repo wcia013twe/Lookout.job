@@ -1382,3 +1382,6 @@ files and independent-review assignments remain intact. No inference was run.
 This closes the previously listed propagation gap; historical timing/transport
 confounds, unpriced costs and diagnostic-only grading limits remain documented.
 No new participant experiment or product-performance conclusion is implied.
+### COM01/COM02 revised live readiness
+
+Current-source COM1-stream-v9 and COM2-stream-v8 passed fresh no-inference setup on the recovered local stack. COM01 receipts are `com1-v9-readiness-final01-preflight`; COM02 receipts are `com2-v8-readiness-final02-preflight` under private experiment-control. COM02's native writer/readback and restoration passed on a freshly provisioned owner. Its old fixed-ID owner was rejected by the reset guard and preserved; prospective owner-scoped fixtures require a fresh account. Nine focused checks and catalog validation passed. No participant experiment or new study was launched; historical PILOT-05 remains unchanged.
