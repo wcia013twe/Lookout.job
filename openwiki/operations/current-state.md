@@ -1424,3 +1424,5 @@ read-only grader executor are reused; no new orchestrator service is introduced.
 ### Structural independent grader export provenance
 
 The common exporter and COM01/02 detailed exporters accept one optional strict allowlisted provenance object for participant/grader settings, receipt/freeze/evidence hashes, condition order and failure/repair/confound status. No private raw content is permitted. Summary adapters carry the same object. Reporting-only source is versioned separately from frozen participant execution. Focused contract/privacy and existing COM01/02/cost checks passed; network read-back remains a per-evaluation delivery gate.
+
+JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independent grader to subscription gpt-5.6-terra medium, with the shared read-only grader executor and a fixed 600-second review budget. JOB01 detailed and JOB02 combined detailed/common exports reuse shared structural provenance and paginated score readback. Initial freezes and actual readiness remain separate; no EVAL participant execution is claimed here.
