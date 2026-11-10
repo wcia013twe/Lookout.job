@@ -76,6 +76,17 @@ class ServicesTest(unittest.TestCase):
     result=h.dispatch(req)
    constructor.assert_not_called();self.assertTrue(result['hostControlFailed']);self.assertIsNone(result['executionSeconds']);self.assertEqual(json.loads((root/'host-control-failure.json').read_text())['phase'],'session_transition')
 
+ def test_baseline_setup_never_resets_lookout_state_in_reversed_pairs(self):
+  from unittest.mock import MagicMock,patch
+  import host
+  with tempfile.TemporaryDirectory() as tmp:
+   h=host.Host.__new__(host.Host);h.root=Path(tmp);h.case='JOB04';h.owner='fictional';h.cfg={};h.verify=MagicMock();h.snapshot=MagicMock(return_value={})
+   with patch.object(host,'account') as account:
+    h.dispatch({'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':'baseline','operation':'condition.setup'})
+    account.assert_not_called()
+    h.dispatch({'benchmarkTaskId':'JOB04','ownerId':'fictional','condition':'lookout','operation':'condition.setup'})
+    account.assert_called_once_with(h.root,'seed')
+
  def test_native_reply_is_not_reformatted_or_pruned(self):
   source={'instructions':['Keep native behavior.'],'tools':[{'name':'read_guide','inputSchema':{}},{'name':'forbidden','inputSchema':{}}]}
   result=clean(source,{'read_guide'});self.assertEqual(result['instructions'],source['instructions']);self.assertEqual(result,source);self.assertEqual(clean('{"name":"Résumé"}',{'read_guide'}),'{"name":"Résumé"}')

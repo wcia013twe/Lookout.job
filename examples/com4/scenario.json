@@ -1,5 +1,5 @@
 {
-  "version": "COM4-stream-v5",
+  "version": "COM4-stream-v6",
   "taskId": "COM4",
   "model": "gpt-5.6-terra",
   "reasoning": "medium",

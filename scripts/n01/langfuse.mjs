@@ -8,6 +8,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {costValues,costProvenance} from './cost-export.mjs';
 import {tracingConfig} from '../../backend/runtime/trace-policy.mjs';
+import {exportProvenance} from '../evals/provenance.mjs';
 import {readScores} from '../communication/verify-langfuse-pilot.mjs';
 const sha=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 const json=p=>JSON.parse(readFileSync(p,'utf8'));
@@ -38,7 +39,8 @@ export function build(run,grade,spec,registration={}){
  const experimentId=sha(['com1-export-1',spec.version,m.pairId,m.condition,m.repeat,m.pilot===true]);
  const traceId=sha(['com1-export-1',spec.version,m.episodeId]).slice(0,32),rootId=sha(traceId+'root').slice(0,16);
  const experimentName=`${spec.version}-${m.pilot?'pilot':'measured'}-${m.pairId}-${m.condition}-r${m.repeat}`;
- const base={...(m.cost?{'langfuse.observation.metadata.cost':JSON.stringify(costProvenance(m.cost))}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':'benchmark','langfuse.trace.name':'COM1 networking trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
+ const provenance=exportProvenance(grade.provenance);
+ const base={...(Object.keys(provenance).length?{'langfuse.observation.metadata.provenance':JSON.stringify(provenance),'langfuse.experiment.metadata.provenance':JSON.stringify(provenance)}:{}),...(m.cost?{'langfuse.observation.metadata.cost':JSON.stringify(costProvenance(m.cost))}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':'benchmark','langfuse.trace.name':'COM1 networking trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
  const spans=[];
  function span(id,name,type,start,end,parent,extra={}){
   spans.push({traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(Math.max(start,end)),attributes:Object.entries({...base,'langfuse.observation.type':type,...extra}).map(([k,v])=>attr(k,v))});

@@ -1,4 +1,5 @@
-import json,tempfile,unittest,time,copy
+import json,tempfile,unittest,time,copy,sys,subprocess
+from unittest.mock import patch
 from pathlib import Path
 import grade,runner,user_actor,terminal_state,summary
 ROOT=Path(__file__).resolve().parents[2];SPEC=json.loads((ROOT/'examples/com4/scenario.json').read_text())
@@ -19,6 +20,61 @@ def fixture(run,condition='lookout',status='completed'):
  for key in ['saved_state','report_accuracy']:review['quality'][key]['evidence']+=['terminal-state.json','stage-12/before-state.json']
  for key,x in review['adherence'].items():i=SPEC['adherence'][key]['stage'];x.update(outcomeVerified=True,reason='Fixture',evidence=[f'stage-{i}/after-state.json',f'stage-{i}/trace.jsonl'])
  return review
+class ExecutionContainment(unittest.TestCase):
+ def test_host_failure_persists_stage_and_unblocks_reader(self):
+  from runtime import stop_container_client
+  real_popen=subprocess.Popen
+  def local_process(*args,**kwargs):
+   return real_popen([sys.executable,'-c','import time; time.sleep(60)'],**kwargs)
+  def unavailable(*args,**kwargs):raise subprocess.TimeoutExpired('fictional Docker probe',10)
+  with tempfile.TemporaryDirectory() as td:
+   sd=Path(td)/'stage-1';sd.mkdir()
+   session=runner.Session.__new__(runner.Session);session.name='fictional-container';session.condition='baseline';session.bridge=None;session.thread_id=None;session.auth={'tokens':{}}
+   with patch.object(runner.subprocess,'Popen',side_effect=local_process),patch.object(runner,'inputs_prompt',return_value='fictional task'),patch.object(runner.cost,'capture',return_value={'error':'unavailable'}),patch.object(runner,'stop_container_client',side_effect=lambda proc,name:stop_container_client(proc,name,unavailable)):
+    result=session.turn(sd,{'_index':1,'_session':'test','seconds':1})
+   self.assertEqual(result['status'],'artifact_failed');self.assertTrue(result['hostControlFailed']);self.assertIsNone(result['executionSeconds'])
+   self.assertIn('container_stop_unconfirmed',result['timing']['invalidReasons'])
+   self.assertTrue(json.loads((sd/'termination.json').read_text())['hostClientStopped'])
+   self.assertEqual(json.loads((sd/'stage-run.json').read_text())['status'],'artifact_failed')
+ def test_explicit_user_deadline_override_preserves_healthy_completion(self):
+  import time
+  from types import SimpleNamespace
+  real_popen=subprocess.Popen;created=[]
+  def local_process(args,**kwargs):
+   child=real_popen([sys.executable,'-c','import time; time.sleep(.08); print(\'{"type":"thread.started","thread_id":"fictional"}\'); print(\'{"type":"turn.completed"}\')'],**kwargs);created.append(child);return child
+  with tempfile.TemporaryDirectory() as td:
+   root=Path(td);sd=root/'stage-1';sd.mkdir();session=runner.Session.__new__(runner.Session)
+   session.name='fictional-container';session.bridge=None;session.thread_id=None;session.condition='baseline';session.auth={'tokens':{}}
+   clock=SimpleNamespace(startWall=time.time(),finish=lambda:{'valid':True,'wallSeconds':5.,'monotonicSeconds':5.,'invalidReasons':[]})
+   with patch.dict('os.environ',{'LOOKOUT_PARTICIPANT_DEADLINES':'disabled-by-user'}),patch.object(runner.subprocess,'Popen',side_effect=local_process),patch.object(runner,'inputs_prompt',return_value='fictional task'),patch.object(runner.cost,'capture',return_value={'error':'unavailable'}),patch.object(runner,'StageClock',return_value=clock),patch.object(runner.threading,'Timer',side_effect=AssertionError('No deadline timer allowed')),patch.object(runner,'stop_container_client') as stop:
+    result=session.turn(sd,{'_index':1,'_session':'test','seconds':.01})
+   for child in created:child.stdout.close()
+   self.assertEqual(result['status'],'completed');self.assertFalse(result['deadlineEnforced']);self.assertEqual(result['executionSeconds'],5.);stop.assert_not_called()
+ def test_cleanup_failure_still_closes_bridge(self):
+  from unittest.mock import Mock
+  session=runner.Session.__new__(runner.Session);session.name='fictional-container';bridge=Mock();session.bridge=bridge
+  with patch.object(runner.subprocess,'run',side_effect=subprocess.TimeoutExpired('fictional Docker probe',10)):
+   result=session.close()
+  self.assertFalse(result['containerRemoved']);bridge.close.assert_called_once();self.assertIsNone(session.bridge)
+ def test_pair_halts_without_grading_after_unconfirmed_termination(self):
+  import runpy
+  from types import SimpleNamespace
+  from unittest.mock import Mock
+  with tempfile.TemporaryDirectory() as td:
+   root=Path(td);runs=root/'runs';runs.mkdir()
+   def write(path,value):path.write_text(json.dumps(value))
+   def failed_run(*args):
+    run=runs/'fictional-baseline';run.mkdir();write(run/'run.json',{'hostControlFailed':True,'status':'artifact_failed'});return run
+   fake_runner=SimpleNamespace(RUNS=runs,configure=Mock(),run=Mock(side_effect=failed_run),write=write)
+   fake_grade=SimpleNamespace(grade=Mock());fake_summary=SimpleNamespace(build=Mock())
+   args=['orchestrate.py','--task-dir',str(root),'--pair-id','FICTIONAL','--repeat','1','--pilot','--langfuse-env',str(root/'absent.env'),'--receipt-dir',str(root/'receipts')]
+   with patch.dict(sys.modules,{'runner':fake_runner,'grade':fake_grade,'summary':fake_summary}),patch.object(sys,'argv',args),self.assertRaises(SystemExit) as stopped:
+    runpy.run_path(str(ROOT/'scripts/com4/orchestrate.py'),run_name='__main__')
+   self.assertEqual(stopped.exception.code,1);fake_runner.run.assert_called_once_with('baseline',1,'FICTIONAL',True)
+   fake_grade.grade.assert_not_called();fake_summary.build.assert_not_called()
+   self.assertTrue(json.loads((root/'pair-halted.json').read_text())['remainingConditionNotStarted'])
+   self.assertFalse(json.loads((runs/'fictional-baseline/grading-invalid.json').read_text())['scored'])
+
 class Tests(unittest.TestCase):
  def setUp(self):self.t=tempfile.TemporaryDirectory();self.run=Path(self.t.name)/'fixture';self.review=fixture(self.run)
  def tearDown(self):self.t.cleanup()

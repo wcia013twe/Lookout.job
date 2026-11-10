@@ -98,8 +98,9 @@ export function run(root,command,preflightFile,pairId){
  if(['jobs-host-v1','jobs-host-v2','jobs-host-v3'].includes(read(path.join(root,'configuration.json')).hostVersion))hostGates.verifyHostGates(root,pre.host);
  check(/^[A-Za-z0-9_-]+$/.test(pairId),'Safe unique pair ID required');const runs=path.join(root,'runs');check(!fs.existsSync(runs),'One attempt only: preserve errors; prepare a separately authorized campaign to rerun');fs.mkdirSync(runs);
  const spec=read(path.join(root,'suite/scenario.json')),fixture=read(path.join(root,'suite/fixture.json'));
- for(const condition of conditions){
-  const dir=path.join(runs,condition);fs.mkdirSync(dir);const r={version:spec.version,pairId,condition,startedAt:new Date().toISOString(),status:'completed',checkpoints:[]};
+ const executionConditions=hostGates.executionOrder(read(path.join(root,'configuration.json')));
+ for(const condition of executionConditions){
+  const dir=path.join(runs,condition);fs.mkdirSync(dir);const r={version:spec.version,pairId,condition,repeat:read(path.join(root,'configuration.json')).repeat??1,conditionOrder:executionConditions,model:read(path.join(root,'configuration.json')).model,reasoning:read(path.join(root,'configuration.json')).reasoning,startedAt:new Date().toISOString(),status:'completed',checkpoints:[]};
   try{
    write(path.join(dir,'setup.json'),capture(root,command,condition,{id:'setup',at:spec.stages[0].at},'condition.setup'));
    for(const [i,stage]of spec.stages.entries()){
@@ -120,10 +121,10 @@ export function run(root,command,preflightFile,pairId){
    }
   }catch(e){r.status='harness_failed';r.error=e.message;}
   r.endedAt=new Date().toISOString();r.cost=costForRun(root,dir,r);write(path.join(dir,'cost.json'),r.cost);write(path.join(dir,'run.json'),r);
-  if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
+  if(r.hostControlFailed){const halted={status:'host_control_failed',condition,unattemptedConditions:executionConditions.slice(executionConditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   // These read-only terminal receipts are outside measured execution and never affect the other condition.
   try{const confirmation=capture(root,command,condition,{id:'terminal'},condition==='lookout'?'native.readonly_confirmation':'baseline.final_files');write(path.join(dir,'terminal-confirmation.json'),confirmation);if(confirmation.hostControlFailed){r.hostControlFailed=true;r.status='harness_failed';}}catch(e){write(path.join(dir,'terminal-confirmation.json'),{status:'failed',error:e.message});}
-  if(r.hostControlFailed){fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const halted={status:'host_control_failed',condition,unattemptedConditions:conditions.slice(conditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
+  if(r.hostControlFailed){fs.writeFileSync(path.join(dir,'run.json'),JSON.stringify(r,null,2)+'\n',{mode:0o600});const halted={status:'host_control_failed',condition,unattemptedConditions:executionConditions.slice(executionConditions.indexOf(condition)+1),gradingBlocked:true,participantRetry:false};write(path.join(root,'pair-halted.json'),halted);return halted;}
   const files={};const walk=p=>{for(const e of fs.readdirSync(p,{withFileTypes:true})){const q=path.join(p,e.name);if(e.isDirectory())walk(q);else files[path.relative(dir,q)]=hash(fs.readFileSync(q,'utf8'));}};walk(dir);write(path.join(dir,'evidence-hashes.json'),files);
  }
  return handoff(root);

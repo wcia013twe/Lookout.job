@@ -7,7 +7,7 @@ from native_contract import verify_native_contract,verify_audit_contract
 sys.path.append(str(Path(__file__).resolve().parents[1]/"n01"))
 import cost
 from transport import Bridge
-from runtime import StageClock,ensure_awake,snapshot_with_receipt
+from runtime import StageClock,ensure_awake,snapshot_with_receipt,stop_container_client
 from terminal_state import capture_terminal_state
 LIB=Path(__file__).resolve().parent; CONTROL=LIB.parent
 R=LIB;S=R/'suite';RUNS=R/'runs';CONFIG={};TASK='';IMAGE='lookout-benchmark:0.164.0'
@@ -74,8 +74,14 @@ class Session:
    write(run/'session-startup.json',{'durationSeconds':time.monotonic()-startup_started,'scope':'bridge, container, subscription login and isolation checks; excludes model execution'})
   except Exception:self.close();raise
  def close(self):
-  subprocess.run(['docker','rm','-f',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
-  if self.bridge:self.bridge.close();self.bridge=None
+  result={'containerRemoved':False}
+  try:
+   response=subprocess.run(['docker','rm','-f',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=10)
+   result['containerRemoved']=response.returncode==0
+  except (OSError,subprocess.SubprocessError) as error:result['errorType']=type(error).__name__
+  finally:
+   if self.bridge:self.bridge.close();self.bridge=None
+  return result
  def turn(self,stage_dir,stage,resume=False):
   cmd=['docker','exec','-i',self.name,'codex','--no-daemon','--ask-for-approval','never','exec']
   if resume:
@@ -90,15 +96,21 @@ class Session:
   (stage_dir/'lookout-trace.jsonl').touch(exist_ok=True)
   prompt=(inputs_prompt(stage,self.condition))
   (stage_dir/'prompt.txt').write_text(prompt)
-  meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'command':cmd};write(stage_dir/'stage-run.json',meta)
+  deadlines_disabled=os.environ.get('LOOKOUT_PARTICIPANT_DEADLINES')=='disabled-by-user'
+  meta={'stage':stage['_index'],'session':stage['_session'],'resumed':resume,'status':'running','startedAt':time.time(),'budgetSeconds':stage['seconds'],'deadlineEnforced':not deadlines_disabled,'deadlinePolicy':'explicit_user_override_healthy_work_finishes' if deadlines_disabled else 'frozen_stage_budget','executionSourceSha256':digest(Path(__file__)),'command':cmd};write(stage_dir/'stage-run.json',meta)
   usage_before=cost.capture(self.name,self.thread_id if resume else None)
   clock=StageClock();meta['startedAt']=clock.startWall
-  expired=threading.Event();usage=None;events=0;usage_complete=False
+  expired=threading.Event();usage=None;events=0;usage_complete=False;termination={};stop_lock=threading.Lock()
   with (stage_dir/'stderr.log').open('w') as errors:
    proc=subprocess.Popen(cmd+['-'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=errors,text=True)
    def stop():
-    if proc.poll() is None:expired.set();subprocess.run(['docker','kill',self.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
-   timer=threading.Timer(stage['seconds'],stop);timer.start()
+    with stop_lock:
+     if proc.poll() is None:
+      expired.set();termination.update(stop_container_client(proc,self.name))
+      write(stage_dir/'termination.json',termination)
+   timer=None
+   if not deadlines_disabled:
+    timer=threading.Timer(stage['seconds'],stop);timer.start()
    try:
     proc.stdin.write(prompt);proc.stdin.close()
     with (stage_dir/'trace.jsonl').open('w') as trace:
@@ -120,15 +132,20 @@ class Session:
       trace.write(json.dumps({'sequence':events,'capturedAt':time.time(),'event':json.loads(raw)})+'\n');trace.flush()
     code=proc.wait()
    finally:
-    timer.cancel()
-    if proc.poll() is None:stop();proc.wait(timeout=30)
+    if timer:timer.cancel();timer.join(timeout=20)
+    if proc.poll() is None:stop()
     timing=clock.finish()
+    if termination and not termination.get('containerStopped'):
+     timing['valid']=False;timing['invalidReasons'].append('container_stop_unconfirmed')
   active_seconds=timing['wallSeconds']
   meta['timing']=timing
+  if termination:meta['termination']=termination;meta['hostControlFailed']=not termination.get('containerStopped')
   meta['executionSeconds']=timing['monotonicSeconds'] if timing['valid'] else None
-  usage_after=cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
+  # Persist termination/timing before any further Docker access.
+  meta.update(status='artifact_failed' if meta.get('hostControlFailed') else 'timed_out' if expired.is_set() else 'execution_finished',durationSeconds=active_seconds);write(stage_dir/'stage-run.json',meta)
+  usage_after={'error':'container_stop_unconfirmed'} if meta.get('hostControlFailed') else cost.capture(self.name,self.thread_id) if self.thread_id else {'error':'missing_thread_id'}
   meta['cost']=cost.delta(usage_before,usage_after,usage_complete and not expired.is_set())
-  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or timing['monotonicSeconds']>stage['seconds']+3 else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
+  meta.update(status='artifact_failed' if not timing['valid'] else 'timed_out' if expired.is_set() or (not deadlines_disabled and timing['monotonicSeconds']>stage['seconds']+3) else 'completed' if code==0 else 'execution_failed',exitCode=code,threadId=self.thread_id,durationSeconds=active_seconds,usage=usage)
   write(stage_dir/'stage-run.json',meta);return meta
 
 def run(condition,repeat,pair_id,pilot=False):
@@ -138,7 +155,7 @@ def run(condition,repeat,pair_id,pilot=False):
  existing=[json.loads(x.read_text()) for x in RUNS.glob('*/run.json')]
  if any(x.get('taskId')==TASK and x.get('pairId')==pair_id and x.get('condition')==condition for x in existing):raise RuntimeError('This pair/condition already has an attempt; use a new pair ID for a separately reported attempt')
  run=RUNS/f'{TASK}-{condition}-r{repeat}-{uuid.uuid4().hex[:8]}';run.mkdir(mode=0o700);out=run/'output';out.mkdir();inputs=run/'live-inputs';inputs.mkdir()
- meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
+ meta={'episodeId':run.name,'taskId':TASK,'version':CONFIG['version'],'scenarioDigest':hashlib.sha256(json.dumps(json.loads((S/'scenario.json').read_text()),sort_keys=True,separators=(',',':')).encode()).hexdigest(),'condition':condition,'repeat':repeat,'pairId':pair_id,'pilot':pilot,'measured':not pilot,'suiteHash':suite_hash,'imageId':image,'status':'starting','model':'gpt-5.6-terra','reasoning':'medium','participantDeadlineEnforced':os.environ.get('LOOKOUT_PARTICIPANT_DEADLINES')!='disabled-by-user','executionSourceSha256':digest(Path(__file__)),'budgetSeconds':sum(x['seconds'] for x in packets()),'startedAt':time.time(),'stages':[],'hostAwakeGuard':awake};write(run/'run.json',meta)
  session=None
  try:
   snapshot(run/'before-reset.json');command(['node',str(R/'reset.mjs')]+[v.replace('{task}',TASK) for v in CONFIG.get('resetArgs',[])]);snapshot(run/'initial-state.json');validate_initial(run/'initial-state.json')
@@ -160,16 +177,19 @@ def run(condition,repeat,pair_id,pilot=False):
    write(sd/'input-hashes.json',file_hashes(inputs));snapshot(sd/'before-state.json')
    resume=stage['_session']==previous_session
    if not resume:
-    if session:session.close()
+    if session:
+     cleanup=session.close()
+     if not cleanup['containerRemoved']:meta['hostControlFailed']=True;raise RuntimeError('Container cleanup unconfirmed; halt pair')
     session=Session(sd,inputs,out,condition,stage['_session'])
    previous_session=stage['_session']
    meta['status']='running';write(run/'run.json',meta)
    record={'stage':i,'eventId':stage['id'],'kind':stage['kind'],'releasedMinute':stage['minute'],'triggerMinute':stage['minute'],'assignedInitiation':stage['kind']=='external','assignedOnboarding':stage['kind']=='onboarding','necessaryUserUpdate':stage['kind']=='user_update'}
    write(sd/'delivery.json',record)
    sm=session.turn(sd,stage,resume=resume);meta['stages'].append(sm);write(run/'run.json',meta)
-   try:snapshot(sd/'after-state.json')
-   finally:
-    hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   hashes=file_hashes(out);shutil.copytree(out,sd/'output');write(sd/'output-hashes.json',hashes)
+   if sm.get('hostControlFailed'):
+    meta['hostControlFailed']=True;meta['status']='artifact_failed';break
+   snapshot(sd/'after-state.json')
    print(json.dumps({'run':str(run),'stage':i,'status':sm['status']}),flush=True)
    if sm['status']!='completed':meta['status']=sm['status'];break
    # No outcome parsing or semantic grading between stages; bad saved work carries forward.
@@ -177,12 +197,18 @@ def run(condition,repeat,pair_id,pilot=False):
  except Exception as e:
   meta.update(status='artifact_failed' if meta['stages'] else 'setup_failed',errorType=type(e).__name__,error=str(e)[:400]);raise
  finally:
-  if session:session.close()
-  try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
-  except Exception:meta['finalStateCaptured']=False
-  try:verify_native_contract(R);meta['nativeContractStable']=True
-  except Exception:meta['nativeContractStable']=False
-  meta['participantEndedAt']=time.time();meta['durationSeconds']=meta['participantEndedAt']-meta['startedAt'];write(run/'run.json',meta)
+  if session:
+   cleanup=session.close();meta['cleanup']=cleanup
+   if not cleanup['containerRemoved']:meta['hostControlFailed']=True;meta['status']='artifact_failed'
+  if meta.get('hostControlFailed'):
+   meta['participantTerminationConfirmed']=False;meta['finalStateCaptured']=False;meta['nativeContractStable']=False
+  else:
+   meta['participantEndedAt']=time.time();meta['participantTerminationConfirmed']=True
+   try:snapshot(run/'final-state.json');meta['finalStateCaptured']=True
+   except Exception:meta['finalStateCaptured']=False
+   try:verify_native_contract(R);meta['nativeContractStable']=True
+   except Exception:meta['nativeContractStable']=False
+  meta['durationSeconds']=time.time()-meta['startedAt'];write(run/'run.json',meta)
   try:
    capture_terminal_state(run,R,meta);meta['terminalCaptureStatus']='captured'
   except Exception as e:
@@ -200,7 +226,7 @@ def configure(root,task=None):
  R=Path(root).resolve();CONFIG=json.loads((R/'runtime-config.json').read_text());TASK=task or CONFIG['taskId']
  S=R/'suite'/TASK if CONFIG.get('suiteByTask') else R/'suite';RUNS=R/'runs'
  if not (S/'initial-state.json').exists():raise RuntimeError('Unknown task suite')
- if CONFIG.get('version')!='COM4-stream-v5' or CONFIG.get('taskId')!='COM4':raise RuntimeError('Wrong runtime configuration')
+ if CONFIG.get('version')!='COM4-stream-v6' or CONFIG.get('taskId')!='COM4':raise RuntimeError('Wrong runtime configuration')
  account=json.loads((R/'account.private.json').read_text())
  if account.get('benchmarkTaskId')!='COM4':raise RuntimeError('Dedicated COM4 account receipt required')
 

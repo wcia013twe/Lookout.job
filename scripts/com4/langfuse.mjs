@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {exportProvenance} from '../evals/provenance.mjs';
 import {readScores} from '../communication/verify-langfuse-pilot.mjs';
 import {costValues} from '../n01/cost-export.mjs';
 // Versioned experiment mapping. Structural upload only; no participant credentials/content.
@@ -34,11 +35,12 @@ export function build(run,grade,spec,registration={}){
  const evidence=spawnSync('python3',[path.join(path.dirname(fileURLToPath(import.meta.url)),'digest.py'),run],{encoding:'utf8'});
  if(evidence.status!==0||evidence.stdout.trim()!==grade.evidenceDigest)throw Error('Stale grade evidence');
  const datasetId=registration.datasetId||'lookout-com4-stream-v2';
- const itemId=registration.itemId||'COM4-stream-v5';
+ const itemId=registration.itemId||'COM4-stream-v6';
  const experimentId=sha(['com4-export-1',spec.version,m.pairId,m.condition,m.repeat,m.pilot===true]);
  const traceId=sha(['com4-export-1',spec.version,m.episodeId]).slice(0,32),rootId=sha(traceId+'root').slice(0,16);
  const experimentName=`${spec.version}-${m.pilot?'pilot':'measured'}-${m.pairId}-${m.condition}-r${m.repeat}`;
- const base={'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark','langfuse.trace.name':'COM4 introduction continuity trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
+ const provenance=exportProvenance(grade.provenance);
+ const base={...(Object.keys(provenance).length?{'langfuse.observation.metadata.provenance':JSON.stringify(provenance),'langfuse.experiment.metadata.provenance':JSON.stringify(provenance)}:{}),'langfuse.experiment.id':experimentId,'langfuse.experiment.name':experimentName,'langfuse.experiment.dataset.id':datasetId,'langfuse.experiment.item.id':itemId,'langfuse.experiment.item.root_observation_id':rootId,'langfuse.environment':m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark','langfuse.trace.name':'COM4 introduction continuity trajectory','session.id':m.episodeId,'langfuse.experiment.metadata.condition':m.condition,'langfuse.experiment.metadata.model':m.model,'langfuse.experiment.metadata.reasoning':m.reasoning,'langfuse.experiment.metadata.pilot':String(m.pilot===true),'langfuse.experiment.metadata.synthetic':String(m.synthetic===true),'langfuse.experiment.metadata.capture':'structure-only'};
  const spans=[];
  function span(id,name,type,start,end,parent,extra={}){
   spans.push({traceId,spanId:id,...(parent?{parentSpanId:parent}:{}),name,kind:1,startTimeUnixNano:ns(start),endTimeUnixNano:ns(Math.max(start,end)),attributes:Object.entries({...base,'langfuse.observation.type':type,...extra}).map(([k,v])=>attr(k,v))});
@@ -61,7 +63,7 @@ export function build(run,grade,spec,registration={}){
  }
  const scores=[];
  function score(name,value,dataType='NUMERIC'){
-  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'com4_'+name,value,dataType,environment:m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'COM4-stream-v5; '+grade.status});
+  scores.push({id:sha([traceId,name]),traceId,observationId:rootId,name:'com4_'+name,value,dataType,environment:m.synthetic?'verification':m.pilot?'benchmark-pilot':'benchmark',timestamp:new Date((m.startedAt+m.durationSeconds)*1000).toISOString(),comment:'COM4-stream-v6; '+grade.status});
  }
  for(const [name,value,type] of costValues(m.cost))score(name,value,type);
  for(const [k,v] of Object.entries(grade.metrics))if(Number.isFinite(v))score(k,v);
@@ -84,11 +86,11 @@ async function main(){
  const config=tracingConfig();const project=sha(config?[config.baseUrl,config.publicKey]:['offline']);
  const regfile=path.join(receiptDir,project+'-dataset.json');
  if(v.register){
-  const name='Lookout-COM4-stream-v5';
+  const name='Lookout-COM4-stream-v6';
   if(v['dry-run']){console.log(JSON.stringify({name,version:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),qualityKeys:Object.keys(spec.quality),mode:'metadata-only'}));return;}
   const ds=unwrap(cli(['datasets','create'],{name,description:'COM4 introduction continuity across sessions. Structural manifest only; private user profile and event packets stay local.',metadata:{version:spec.version,unit:'whole trajectory',status:'prospective'}}));
   if(!ds.id)throw Error('Missing dataset id');
-  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM4-stream-v5',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
+  const item=unwrap(cli(['dataset-items','create'],{datasetName:name,id:'lookout-COM4-stream-v6',input:{scenario:spec.version,stages:spec.stages.map(s=>({id:s.id,kind:s.kind,minute:s.minute})),policy:spec.policy},expectedOutput:Object.fromEntries(Object.keys(spec.quality).map(k=>[k,true])),metadata:{version:spec.version,privateEvidence:'not uploaded'}}));
   if(!item.id)throw Error('Missing item id');
   const saved={datasetId:ds.id,itemId:item.id,name,scenarioHash:sha(spec)};writeFileSync(regfile,JSON.stringify(saved,null,2)+'\n',{mode:0o600});console.log(JSON.stringify(saved));return;
  }

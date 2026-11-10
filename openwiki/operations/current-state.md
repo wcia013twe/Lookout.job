@@ -1409,3 +1409,52 @@ Both conditions use the same policy. Actual process failures and host timing fau
 remain recorded; network, state capture, and containment cleanup operations retain
 bounded timeouts. Previously frozen sources and terminated attempts stay unchanged.
 The separate coordinator owns the corresponding independent-grader policy.
+### Frozen repeated communication evaluations
+
+The user has selected EVAL-01 through EVAL-03 for each communication case, with alternating condition order. Both participant and independent grader must be subscription-backed `gpt-5.6-terra` with medium reasoning; no model substitution. Existing historical pilots/diagnostics remain separate. Use separate dedicated per-condition owners/roots so native audit history is preserved when Lookout runs first. Task facts and rubric stay fixed; input parity permits only explicit ownership-ID remapping. Quality misses remain outcomes, not triggers for replacement runs. Execution/containment or validity failures retain their evidence and are disclosed.
+
+Before this series, COM04 adopts the already-tested shared bounded host-stop behavior (COM4-stream-v6/grade-v4); COM03 remains v7/grade-v4. Ten focused checks and eight runtime tests pass. No product, task-prompt or rubric tuning is included. New frozen roots, live readiness and the three evaluations remain pending the serialized host queue; an existing active pilot is never relabeled as EVAL. The current chat orchestrates existing commands directly and reuses the shared read-only Terra grader executor.
+### Shared subscription independent grader executor
+
+`scripts/evals/subscription_grader.py` provides one read-only independent grading invocation using the existing pinned subscription runtime, exact gpt-5.6-terra/medium settings, separate output JSON, shared bounded stop/timing and observed-model validation. Case owners directly invoke it and apply their frozen deterministic grader afterward. Four mocked boundary checks pass; live inference/model access is not established by those checks. No scheduler, product writer, model substitution or participant orchestration is added.
+
+### JOB03/JOB04 planned EVAL-01–03 freeze
+
+Latest authorization supersedes four repeats with three paired evaluations per
+case in AB/BA/AB order. Both participant and grader must be subscription
+ gpt-5.6-terra medium. Scenarios/rubrics stay unchanged. New owner setup reuses the
+shared canonical-profile serializer/readback helper; personal-settings equality
+alone is not full native context parity. Counterbalanced setup preserves native
+state when baseline runs second. Source checks pass; actual new canonical gates
+await the shared-host slot after JOB01/02. No new EVAL participant has run and
+historical pilots remain separate. Existing shared serial_pair and the shared
+read-only grader executor are reused; no new orchestrator service is introduced.
+
+### Structural independent grader export provenance
+
+The common exporter and COM01/02 detailed exporters accept one optional strict allowlisted provenance object for participant/grader settings, receipt/freeze/evidence hashes, condition order and failure/repair/confound status. No private raw content is permitted. Summary adapters carry the same object. Reporting-only source is versioned separately from frozen participant execution. Focused contract/privacy and existing COM01/02/cost checks passed; network read-back remains a per-evaluation delivery gate.
+
+
+### JOB03/JOB04 per-pair reporting connection
+
+[Reporting entrypoints](../../docs/job03-job04-reporting.md) connect finalized JOB
+reviews to the existing common Langfuse exporter and paginated verification, with
+exact-model provenance, immutable sanitized records and bounded delivery-only
+retries. Detailed JOB reviews remain local because no case detailed exporter
+exists. Undefined/partial quality stays null. The adapter replays deterministic
+validation before graded export and changes no frozen participant source. Local
+checks pass; actual EVAL publication/readback remains pending the first pair.
+JOB01/JOB02 prospective EVAL-01–03 preparation pins participant and independent grader to subscription gpt-5.6-terra medium, with the shared read-only grader executor and a fixed 600-second review budget. JOB01 detailed and JOB02 combined detailed/common exports reuse shared structural provenance and paginated score readback. Initial freezes and actual readiness remain separate; no EVAL participant execution is claimed here.
+
+COM03/COM04 prospective evaluation reporting now carries the shared allowlisted provenance via `scripts/evals/provenance.mjs` in detailed exports and common summaries. This is reporting-only; historical frozen participant sources and final records are preserved. Twelve focused case/provenance checks passed; new EVAL-01–03 execution remains queued.
+
+### Healthy communication task completion amendment
+
+The user explicitly removes hard participant deadlines for healthy COM03/COM04 work. The opt-in `LOOKOUT_PARTICIPANT_DEADLINES=disabled-by-user` bypasses the task Timer and elapsed-budget classification, records policy/source hashes, and keeps bounded individual operation/containment guards. Former scenario seconds remain reference metadata. Original frozen sources and previously interrupted attempts are preserved; no automatic replacement. Seventeen COM03 and 28 COM04 Python checks passed; live amended execution remains prospective. Shared independent grader policy is owned separately.
+
+Shared subscription grading now treats `--seconds` as reference duration only,
+with no total task deadline for healthy work. Receipts record reference overruns;
+model/evidence/timing-integrity and containment checks remain enforced. Individual
+setup/cleanup operation limits remain bounded. Participant deadline-policy changes
+are handled in their owning chats with amendment provenance; old terminated runs
+remain preserved and are not silently resumed or replaced.
