@@ -1424,3 +1424,14 @@ read-only grader executor are reused; no new orchestrator service is introduced.
 ### Structural independent grader export provenance
 
 The common exporter and COM01/02 detailed exporters accept one optional strict allowlisted provenance object for participant/grader settings, receipt/freeze/evidence hashes, condition order and failure/repair/confound status. No private raw content is permitted. Summary adapters carry the same object. Reporting-only source is versioned separately from frozen participant execution. Focused contract/privacy and existing COM01/02/cost checks passed; network read-back remains a per-evaluation delivery gate.
+
+
+### JOB03/JOB04 per-pair reporting connection
+
+[Reporting entrypoints](../../docs/job03-job04-reporting.md) connect finalized JOB
+reviews to the existing common Langfuse exporter and paginated verification, with
+exact-model provenance, immutable sanitized records and bounded delivery-only
+retries. Detailed JOB reviews remain local because no case detailed exporter
+exists. Undefined/partial quality stays null. The adapter replays deterministic
+validation before graded export and changes no frozen participant source. Local
+checks pass; actual EVAL publication/readback remains pending the first pair.

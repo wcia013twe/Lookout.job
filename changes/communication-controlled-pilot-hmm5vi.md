@@ -319,3 +319,23 @@
   Cases remain planned until the required slot/readiness exists. Quality failures
   are results, never reasons to replace attempts. Exact-model grading will use the
   shared read-only executor being supplied by COM01/02; no substitute model.
+
+
+## Per-pair automatic reporting connection (reporting only)
+
+- Added scripts/jobs/report.mjs using existing evals contract, provenance helper
+  and langfuse.mjs --record/--verify. No detailed JOB03/04 remote exporter exists;
+  local final reviews remain detailed, and common remote summaries are supported.
+- Before first graded export, validates exact5.6 medium subscription/read-only
+  grader provenance and byte-bound submission, replays the frozen deterministic
+  finalizer locally, and checks evidence bindings. Immutable records omit private
+  profiles/resumes/prompts/review prose. JOB04 undefined overall quality/pass and
+  unnormalized counts remain null. Partial/unreviewed outcomes never become passes.
+- --publish uploads and verifies each condition per finished pair. Records and
+  delivery-N receipts remain local; --deliver retries only saved delivery/verify,
+  bounded to three attempts. Existing common IDs and paginated readbacks are reused.
+  Structural-only reporting supports terminal failures without fabricated quality.
+- Exact entrypoints/receipt paths are in docs/job03-job04-reporting.md. No changes
+  to the400 frozen participant files; source digest recheck passes.23 Node reporting
+  and JOB04 checks plus catalog158 pass. Remote publication remains unverified
+  until the first completed EVAL; no participant or grader ran in this pass.
